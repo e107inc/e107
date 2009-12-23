@@ -10,64 +10,64 @@ class e_admin_request
 	 * @var array
 	 */
 	protected $_request_qry;
-	
+
 	/**
 	 * Current POST array
 	 * @var array
 	 */
 	protected $_posted_qry;
-	
+
 	/**
 	 * Current Mode
 	 * @var string
 	 */
 	protected $_mode = '';
-	
+
 	/**
 	 * Default Mode
 	 * @var string
 	 */
 	protected $_default_mode = 'main';
-	
+
 	/**
 	 * Key name for mode search
 	 * @var string
 	 */
 	protected $_mode_key = 'mode';
-	
+
 	/**
 	 * Current action
 	 * @var string
 	 */
 	protected $_action = '';
-	
+
 	/**
 	 * Default Action
 	 * @var string
 	 */
 	protected $_default_action = 'index';
-	
+
 	/**
 	 * Key name for action search
 	 * @var string
 	 */
 	protected $_action_key = 'action';
-	
+
 	/**
 	 * Current ID
 	 * @var integer
 	 */
 	protected $_id = 0;
-	
+
 	/**
 	 * Key name for ID search
 	 * @var string
 	 */
 	protected $_id_key = 'id';
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param string|array $qry [optional]
 	 * @return none
 	 */
@@ -82,7 +82,7 @@ class e_admin_request
 			$this->parseRequest($request_string);
 		}
 	}
-	
+
 	/**
 	 * Parse request data
 	 * @param string|array $request_data
@@ -95,34 +95,34 @@ class e_admin_request
 			parse_str($request_data, $request_data);
 		}
 		$this->_request_qry = (array) $request_data;
-		
+
 		// Set current mode
 		if(isset($this->_request_qry[$this->_mode_key]))
 		{
 			$this->_mode = preg_replace('/[^\w]/', '', $this->_request_qry[$this->_mode_key]);
 		}
-		
+
 		// Set current action
 		if(isset($this->_request_qry[$this->_action_key]))
 		{
 			$this->_action = preg_replace('/[^\w]/', '', $this->_request_qry[$this->_action_key]);
 		}
-		
+
 		// Set current id
 		if(isset($this->_request_qry[$this->_id_key]))
 		{
 			$this->_id = intval($this->_request_qry[$this->_id_key]);
 		}
-		
+
 		$this->_posted_qry = $_POST; //raw?
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Retrieve variable from GET scope
 	 * If $key is null, all GET data will be returned
-	 * 
+	 *
 	 * @param string $key [optional]
 	 * @param mixed $default [optional]
 	 * @return mixed
@@ -135,12 +135,12 @@ class e_admin_request
 		}
 		return (isset($this->_request_qry[$key]) ? $this->_request_qry[$key] : $default);
 	}
-	
+
 	/**
 	 * Set/Unset GET variable
 	 * If $key is array, $value is not used.
-	 * If $value is null, (string) $key is unset 
-	 * 
+	 * If $value is null, (string) $key is unset
+	 *
 	 * @param string|array $key
 	 * @param mixed $value [optional]
 	 * @return e_admin_request
@@ -155,21 +155,21 @@ class e_admin_request
 			}
 			return $this;
 		}
-		
+
 		if(null === $value)
 		{
 			unset($this->_request_qry[$key]);
 			return $this;
 		}
-		
+
 		$this->_request_qry[$key] = $value;
 		return $this;
 	}
-	
+
 	/**
 	 * Retrieve variable from POST scope
 	 * If $key is null, all POST data will be returned
-	 * 
+	 *
 	 * @param string $key [optional]
 	 * @param mixed $default [optional]
 	 * @return mixed
@@ -182,12 +182,12 @@ class e_admin_request
 		}
 		return (isset($this->_posted_qry[$key]) ? $this->_posted_qry[$key] : $default);
 	}
-	
+
 	/**
 	 * Set/Unset POST variable
 	 * If $key is array, $value is not used.
-	 * If $value is null, (string) $key is unset 
-	 * 
+	 * If $value is null, (string) $key is unset
+	 *
 	 * @param object $key
 	 * @param object $value [optional]
 	 * @return e_admin_request
@@ -202,18 +202,18 @@ class e_admin_request
 			}
 			return $this;
 		}
-		
+
 		if(null === $value)
 		{
 			unset($this->_posted_qry[$key]);
 			return $this;
 		}
-		
+
 		$tp = e107::getParser();
 		$this->_posted_qry[$tp->post_toForm($key)] = $tp->post_toForm($value);
 		return $this;
 	}
-	
+
 	/**
 	 * Get current mode
 	 * @return string
@@ -223,7 +223,7 @@ class e_admin_request
 		if(!$this->_mode) return $this->getDefaultMode();
 		return $this->_mode;
 	}
-	
+
 	/**
 	 * Get default mode
 	 * @return string
@@ -232,17 +232,17 @@ class e_admin_request
 	{
 		return $this->_default_mode;
 	}
-	
+
 	/**
 	 * Get current mode name
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getModeName()
 	{
 		return strtolower(str_replace('-', '_', $this->getMode()));
 	}
-	
+
 	/**
 	 * Reset current mode
 	 * @param string $mode
@@ -254,7 +254,7 @@ class e_admin_request
 		$this->setQuery($this->_mode_key, $this->_mode);
 		return $this;
 	}
-	
+
 	/**
 	 * Set default mode
 	 * @param string $mode
@@ -265,7 +265,7 @@ class e_admin_request
 		if($mode) $this->_default_mode = $mode;
 		return $this;
 	}
-	
+
 	/**
 	 * Set mode key name
 	 * @param string $key
@@ -276,7 +276,7 @@ class e_admin_request
 		$this->_mode_key = $key;
 		return $this;
 	}
-	
+
 	/**
 	 * Get current action
 	 * @return TBD
@@ -286,7 +286,7 @@ class e_admin_request
 		if(!$this->_action) return $this->getDefaultAction();
 		return $this->_action;
 	}
-	
+
 	/**
 	 * Get default action
 	 * @return string
@@ -295,7 +295,7 @@ class e_admin_request
 	{
 		return $this->_default_action;
 	}
-	
+
 	/**
 	 * Get current action name
 	 * @return string camelized action
@@ -304,10 +304,10 @@ class e_admin_request
 	{
 		return $this->camelize($this->getAction());
 	}
-	
+
 	/**
 	 * Reset current action
-	 * 
+	 *
 	 * @param string $action
 	 * @return e_admin_request
 	 */
@@ -317,10 +317,10 @@ class e_admin_request
 		$this->setQuery($this->_action_key, $this->_action);
 		return $this;
 	}
-	
+
 	/**
 	 * Set default action
-	 * 
+	 *
 	 * @param string $action
 	 * @return e_admin_request
 	 */
@@ -329,7 +329,7 @@ class e_admin_request
 		if($action) $this->_default_action = $action;
 		return $this;
 	}
-	
+
 	/**
 	 * Set action key name
 	 * @param string $key
@@ -340,7 +340,7 @@ class e_admin_request
 		$this->_action_key = $key;
 		return $this;
 	}
-	
+
 	/**
 	 * Get current ID
 	 * @return integer
@@ -349,7 +349,7 @@ class e_admin_request
 	{
 		return $this->_id;
 	}
-	
+
 	/**
 	 * Reset current ID
 	 * @param string $id
@@ -362,7 +362,7 @@ class e_admin_request
 		$this->setQuery($this->_id_key, $id);
 		return $this;
 	}
-	
+
 	/**
 	 * Set id key name
 	 * @param string $key
@@ -373,11 +373,11 @@ class e_admin_request
 		$this->_id_key = $key;
 		return $this;
 	}
-	
+
 	/**
 	 * Build query string from current request array
 	 * NOTE: changing url separator to &amp; ($encode==true) (thus URL XHTML compliance) works in PHP 5.1.2+ environment
-	 * 
+	 *
 	 * @param string|array $merge_with [optional] override request values
 	 * @param boolean $encode if true &amp; separator will be used, all values will be http encoded, default true
 	 * @param string|array $exclude_from_query numeric array/comma separated list of vars to be excluded from current query, true - don't use current query at all
@@ -386,7 +386,7 @@ class e_admin_request
 	public function buildQueryString($merge_with = array(), $encode = true, $exclude_from_query = '')
 	{
 		$ret = $this->getQuery();
-		
+
 		//special case - exclude all current
 		if(true === $exclude_from_query)
 		{
@@ -397,14 +397,14 @@ class e_admin_request
 		{
 			$exclude_from_query = array_map('trim', explode(',', $exclude_from_query));
 		}
-		if($exclude_from_query) 
+		if($exclude_from_query)
 		{
 			foreach ($exclude_from_query as $var)
 			{
 				unset($ret[$var]);
 			}
 		}
-		
+
 		if(is_string($merge_with))
 		{
 			parse_str($merge_with, $merge_with);
@@ -416,7 +416,7 @@ class e_admin_request
 			$separator = '&amp;';
 			//$ret = array_map('rawurlencode', $ret);
 		}
-		
+
 		$ret = http_build_query($ret, 'numeric_', $separator);
 		if(!$encode)
 		{
@@ -424,10 +424,10 @@ class e_admin_request
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Convert string to CamelCase
-	 * 
+	 *
 	 * @param string $str
 	 * @return string
 	 */
@@ -448,56 +448,56 @@ class e_admin_response
 	 * @var array
 	 */
 	protected $_body = array();
-	
+
 	/**
 	 * Title segments
 	 *
 	 * @var unknown_type
 	 */
 	protected $_title = array();
-	
+
 	/**
 	 * e107 meta title
 	 *
 	 * @var array
 	 */
 	protected $_e_PAGETITLE = array();
-	
+
 	/**
 	 * e107 meta description
 	 *
 	 * @var array
 	 */
 	protected $_META_DESCRIPTION = array();
-	
+
 	/**
 	 * e107 meta keywords
 	 *
 	 * @var array
 	 */
 	protected $_META_KEYWORDS = array();
-	
+
 	/**
 	 * Render mods
 	 *
 	 * @var array
 	 */
 	protected $_render_mod = array();
-	
+
 	/**
 	 * Meta title segment description
 	 *
 	 * @var string
 	 */
 	protected $_meta_title_separator = ' - ';
-	
+
 	/**
 	 * Title segment separator
 	 *
 	 * @var string
 	 */
 	protected $_title_separator = ' &raquo; ';
-	
+
 	/**
 	 * Constructor
 	 *
@@ -553,7 +553,7 @@ class e_admin_response
 		$this->_body[$namespace] = array_merge(array($content), $this->_body[$namespace]);
 		return $this;
 	}
-	
+
 	/**
 	 * Get body segments from a namespace
 	 *
@@ -597,7 +597,7 @@ class e_admin_response
 	 * @return e_admin_response
 	 */
 	function appendTitle($title, $namespace = 'default')
-	{ 
+	{
 		if(empty($title))
 		{
 			return $this;
@@ -606,7 +606,7 @@ class e_admin_response
 		{
 			$this->_title[$namespace] = array();
 		}
-		$this->_title[$namespace][] = $title; 
+		$this->_title[$namespace][] = $title;
 		return $this;
 	}
 
@@ -699,7 +699,7 @@ class e_admin_response
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Add meta title segment
 	 *
@@ -711,7 +711,7 @@ class e_admin_response
 		$this->addMetaData('e_PAGETITLE', $title);
 		return $this;
 	}
-	
+
 	/**
 	 * Add meta description segment
 	 *
@@ -723,7 +723,7 @@ class e_admin_response
 		$this->addMetaData('META_DESCRIPTION', $description);
 		return $this;
 	}
-	
+
 	/**
 	 * Add meta keywords segment
 	 *
@@ -746,12 +746,12 @@ class e_admin_response
 		//HEADERF already included or meta content already sent
 		if(e_AJAX_REQUEST || defined('HEADER_INIT') || defined('e_PAGETITLE'))
 			return $this;
-			
+
 		if(!defined('e_PAGETITLE') && !empty($this->_e_PAGETITLE))
 		{
 			define('e_PAGETITLE', implode($this->_meta_title_separator, $this->_e_PAGETITLE));
 		}
-		
+
 		if(!defined('META_DESCRIPTION') && !empty($this->_META_DESCRIPTION))
 		{
 			define('META_DESCRIPTION', implode(' ', $this->_META_DESCRIPTION));
@@ -762,7 +762,7 @@ class e_admin_response
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Add content segment to the header namespace
 	 *
@@ -774,7 +774,7 @@ class e_admin_response
 		$this->appendBody($content, 'header_content');
 		return $this;
 	}
-	
+
 	/**
 	 * Get page header namespace content segments
 	 *
@@ -786,7 +786,7 @@ class e_admin_response
 	{
 		return $this->getBody('header_content', $reset, $glue);
 	}
-	
+
 	/**
 	 * Switch to iframe mod
 	 * FIXME - implement e_IFRAME to frontend - header_default.php
@@ -796,9 +796,9 @@ class e_admin_response
 	function setIframeMod()
 	{
 		global $HEADER, $FOOTER, $CUSTOMHEADER, $CUSTOMFOOTER;
-		$HEADER = $FOOTER = ''; 
+		$HEADER = $FOOTER = '';
 		$CUSTOMHEADER = $CUSTOMFOOTER = array();
-		
+
 		// New
 		if(!defined('e_IFRAME'))
 		{
@@ -820,63 +820,63 @@ class e_admin_response
 		{
 			parse_str($options, $options);
 		}
-		
+
 		// Merge with all available default options
 		$options = array_merge(array(
-			'messages' => true, 
-			'render' => true, 
-			'meta' => false, 
-			'return' => false, 
+			'messages' => true,
+			'render' => true,
+			'meta' => false,
+			'return' => false,
 			'raw' => false,
 			'ajax' => false
 		), $options);
-		
+
 		$content = $this->getBody($name, true);
-		$title = $this->getTitle($name, true); 
+		$title = $this->getTitle($name, true);
 		$return = $options['return'];
-		
+
 		if($options['ajax'] || e_AJAX_REQUEST)
 		{
 			$type = $options['ajax'] && is_string($options['ajax']) ? $options['ajax'] : '';
 			$this->getJsHelper()->sendResponse($type);
 		}
-		
+
 		if($options['messages'])
 		{
 			$content = e107::getMessage()->render().$content;
 		}
-		
+
 		if($options['meta'])
 		{
 			$this->sendMeta();
 		}
-		
+
 		// raw output expected - force return array
 		if($options['raw'])
 		{
 			return array($title, $content, $this->getRenderMod($name));
 		}
-		
+
 		//render disabled by the controller
 		if(!$this->getRenderMod($name))
 		{
 			$options['render'] = false;
 		}
-		
+
 		if($options['render'])
 		{
 			return e107::getRender()->tablerender($title, $content, $this->getRenderMod($name), $return);
 		}
-		
+
 		if($return)
 		{
 			return $content;
 		}
-		
+
 		print($content);
 		return '';
 	}
-	
+
 	/**
 	 * Get JS Helper instance
 	 *
@@ -898,42 +898,42 @@ class e_admin_dispatcher
 	 * @var e_admin_request
 	 */
 	protected $_request = null;
-	
+
 	/**
 	 * @var e_admin_response
 	 */
 	protected $_response = null;
-	
-	/** 
+
+	/**
 	 * @var e_admin_controller
 	 */
 	protected $_current_controller = null;
-	
+
 	/**
 	 * Required (set by child class).
-	 * Controller map array in format 
+	 * Controller map array in format
 	 * 'MODE' => array('controller' =>'CONTROLLER_CLASS_NAME'[, 'path' => 'CONTROLLER SCRIPT PATH', 'ui' => extend of 'comments_admin_form_ui', 'uipath' => 'path/to/ui/']);
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $modes;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $defaultMode = '';
-	
+
 	/**
 	 * @var string
 	 */
 	protected $defaultAction = '';
-	
+
 	/**
-	 * Optional - map 'mode/action' pair to 'modeAlias/actionAlias'  
+	 * Optional - map 'mode/action' pair to 'modeAlias/actionAlias'
 	 * @var string
 	 */
 	protected $adminMenuAliases = array();
-	
+
 	/**
 	 * Optional (set by child class).
 	 * Required for admin menu render
@@ -942,21 +942,21 @@ class e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array();
-	
+
 	/**
 	 * Optional (set by child class).
 	 * @var string
 	 */
 	protected $menuTitle = 'Menu';
-	
+
 	/**
 	 * @var string
 	 */
 	protected $pluginTitle = '';
-	
+
 	/**
-	 * Constructor 
-	 * 
+	 * Constructor
+	 *
 	 * @param string|array|e_admin_request $request [optional]
 	 * @param e_admin_response $response
 	 */
@@ -966,31 +966,31 @@ class e_admin_dispatcher
 		{
 			$request = new e_admin_request($request);
 		}
-		
+
 		if(null === $response)
 		{
 			$response = new e_admin_response();
 		}
-		
+
 		$this->setRequest($request)->setResponse($response)->init();
-		
+
 		if(!$this->defaultMode || !$this->defaultAction)
 		{
 			$this->setDefaults();
 		}
-		
+
 		$request->setDefaultMode($this->defaultMode)->setDefaultAction($this->defaultAction);
-		
+
 		// register itself
 		e107::setRegistry('admin/ui/dispatcher', $this);
-		
+
 		if($auto_observe)
 		{
 			$this->runObservers(true);
 		}
-		
+
 	}
-	
+
 	/**
 	 * User defined constructor - called before _initController() method
 	 * @return e_admin_dispatcher
@@ -998,7 +998,7 @@ class e_admin_dispatcher
 	public function init()
 	{
 	}
-	
+
 	/**
 	 * Retrieve missing default action/mode
 	 * @return e_admin_dispatcher
@@ -1017,13 +1017,13 @@ class e_admin_dispatcher
 			$mode = key($this->modes);
 			$action = $this->modes[$mode]['index'];
 		}
-		
+
 		if(!$this->defaultMode) $this->defaultMode = $mode;
 		if(!$this->defaultAction) $this->defaultAction = $action;
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Get request object
 	 * @return e_admin_request
@@ -1032,7 +1032,7 @@ class e_admin_dispatcher
 	{
 		return $this->_request;
 	}
-	
+
 	/**
 	 * Set request object
 	 * @param e_admin_request $request
@@ -1043,7 +1043,7 @@ class e_admin_dispatcher
 		$this->_request = $request;
 		return $this;
 	}
-	
+
 	/**
 	 * Get response object
 	 * @return e_admin_response
@@ -1052,7 +1052,7 @@ class e_admin_dispatcher
 	{
 		return $this->_response;
 	}
-	
+
 	/**
 	 * Set response object
 	 * @param e_admin_response $response
@@ -1063,38 +1063,38 @@ class e_admin_dispatcher
 		$this->_response = $response;
 		return $this;
 	}
-	
+
 	/**
 	 * Dispatch & render all
-	 * 
-	 * @param boolean $return if true, array(title, body, render_mod) will be returned 
+	 *
+	 * @param boolean $return if true, array(title, body, render_mod) will be returned
 	 * @return string|array current admin page body
 	 */
 	public function run($return = false)
 	{
 		return $this->runObserver()->renderPage($return);
 	}
-	
+
 	/**
 	 * Run observers/headers only, should be called before header.php call
-	 * 
+	 *
 	 * @return e_admin_dispatcher
 	 */
 	public function runObservers($run_header = true)
 	{
 		//search for $actionName.'Observer' method. Additional $actionName.$triggerName.'Trigger' methods will be called as well
 		$this->getController()->dispatchObserver();
-		
+
 		//search for $actionName.'Header' method, js manager should be used inside for sending JS to the page,
 		// meta information should be created there as well
 		if($run_header)
 		{
 			$this->getController()->dispatchHeader();
-			
+
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Run page action.
 	 * If return type is array, it should contain allowed response options (see e_admin_response::send())
@@ -1104,7 +1104,7 @@ class e_admin_dispatcher
 	 * - response: return response object
 	 * - raw: return array(title, content, render mode)
 	 * - ajax: force ajax output (and exit)
-	 * 
+	 *
 	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax[_text|_json|_xml]
 	 * @return mixed
 	 */
@@ -1119,20 +1119,20 @@ class e_admin_dispatcher
 		{
 			case 'render_return':
 				$options = array(
-					'messages' => true, 
-					'render' => true, 
-					'meta' => true, 
-					'return' => true, 
+					'messages' => true,
+					'render' => true,
+					'meta' => true,
+					'return' => true,
 					'raw' => false
 				);
 			break;
 
 			case 'raw':
 				$options = array(
-					'messages' => false, 
-					'render' => false, 
-					'meta' => false, 
-					'return' => true, 
+					'messages' => false,
+					'render' => false,
+					'meta' => false,
+					'return' => true,
 					'raw' => true
 				);
 			break;
@@ -1142,43 +1142,43 @@ class e_admin_dispatcher
 			case 'ajax_xml';
 			case 'ajax_json';
 				$options = array(
-					'messages' => false, 
-					'render' => false, 
-					'meta' => false, 
-					'return' => false, 
+					'messages' => false,
+					'render' => false,
+					'meta' => false,
+					'return' => false,
 					'raw' => false,
 					'ajax' => str_replace(array('ajax_', 'ajax'), array('', 'text'), $return_type)
 				);
 			break;
-		
+
 			case 'response':
 				return $response;
 			break;
-			
+
 			case 'render':
 			default:
 				$options = array(
-					'messages' => true, 
-					'render' => true, 
-					'meta' => false, 
-					'return' => false, 
+					'messages' => true,
+					'render' => true,
+					'meta' => false,
+					'return' => false,
 					'raw' => false
 				);
 			break;
 		}
 		return $response->send('default', $options);
 	}
-	
+
 	/**
 	 * Proxy method
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getHeader()
 	{
 		return $this->getController()->getHeader();
 	}
-	
+
 	/**
 	 * Get current controller object
 	 * @return e_admin_controller
@@ -1191,10 +1191,10 @@ class e_admin_dispatcher
 		}
 		return $this->_current_controller;
 	}
-	
+
 	/**
 	 * Try to init Controller from request using current controller map
-	 * 
+	 *
 	 * @return e_admin_dispatcher
 	 */
 	protected function _initController()
@@ -1205,7 +1205,7 @@ class e_admin_dispatcher
 		{
 			$class_name = $this->modes[$request->getModeName()]['controller'];
 			$class_path = vartrue($this->modes[$request->getModeName()]['path']);
-			
+
 			if($class_path)
 			{
 				require_once(e107::getParser()->replaceConstants($class_path));
@@ -1214,22 +1214,22 @@ class e_admin_dispatcher
 			{
 				$this->_current_controller = new  $class_name($request, $response);
 				//give access to current request object, user defined init
-				$this->_current_controller->setRequest($this->getRequest())->init(); 
+				$this->_current_controller->setRequest($this->getRequest())->init();
 			}
 			else
 			{
-				//TODO - get default controller (core or user defined), set Action for 
+				//TODO - get default controller (core or user defined), set Action for
 				//'Controller not found' page, add message(?), break
-				// get default controller 
+				// get default controller
 				$this->_current_controller = $this->getDefaultController();
 				// add messages
 				e107::getMessage()->add('Can\'t find class '.($class_name ? $class_name : 'n/a'), E_MESSAGE_ERROR)
 					->add('Requested: '.e_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
-				// 
+				//
 				$request->setMode($this->getDefaultControllerName())->setAction('e404');
-				$this->_current_controller->setRequest($request)->init(); 
+				$this->_current_controller->setRequest($request)->init();
 			}
-			
+
 			if(vartrue($this->modes[$request->getModeName()]['ui']))
 			{
 				$class_name = $this->modes[$request->getModeName()]['ui'];
@@ -1244,12 +1244,12 @@ class e_admin_dispatcher
 				}
 			}
 			$this->_current_controller->setParam('modes', $this->modes);
-			
+
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Default controller object - needed if controller not found
 	 * @return e_admin_controller
@@ -1259,7 +1259,7 @@ class e_admin_dispatcher
 		$class_name = $this->getDefaultControllerName();
 		return new $class_name($this->getRequest(), $this->getResponse());
 	}
-	
+
 	/**
 	 *  Default controller name - needed if controller not found
 	 * @return string name of controller
@@ -1268,7 +1268,7 @@ class e_admin_dispatcher
 	{
 		return 'e_admin_controller';
 	}
-	
+
 	/**
 	 * Generic Admin Menu Generator
 	 * @return string
@@ -1277,11 +1277,11 @@ class e_admin_dispatcher
 	{
 		$tp = e107::getParser();
 		$var = array();
-		
+
 		foreach($this->adminMenu as $key => $val)
 		{
 			$tmp = explode('/', trim($key, '/'), 2);
-			
+
 			foreach ($val as $k=>$v)
 			{
 				switch($k)
@@ -1289,12 +1289,12 @@ class e_admin_dispatcher
 					case 'caption':
 						$k2 = 'text';
 					break;
-					
+
 					case 'url':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs').'?mode='.$tmp[0].'&amp;action='.$tmp[1];
 					break;
-				
+
 					default:
 						$k2 = $k;
 					break;
@@ -1306,12 +1306,12 @@ class e_admin_dispatcher
 			{
 				$var[$key]['link'] = e_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
 			}
-			
+
 			/*$var[$key]['text'] = $val['caption'];
 			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
 			$var[$key]['perm'] = $val['perm'];	*/
 		}
-		
+
 		$request = $this->getRequest();
 		$selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
@@ -1325,24 +1325,24 @@ class e_admin_controller
 	 * @var e_admin_request
 	 */
 	protected $_request;
-	
+
 	/**
 	 * @var e_admin_response
 	 */
 	protected $_response;
-	
+
 	/**
 	 * @var array User defined parameters
 	 */
 	protected $_params = array();
-	
+
 	/**
 	 * @var string default action name
 	 */
 	protected $_default_action = 'index';
-	
+
 	/**
-	 * Constructor 
+	 * Constructor
 	 * @param e_admin_request $request [optional]
 	 */
 	public function __construct($request, $response, $params = array())
@@ -1352,7 +1352,7 @@ class e_admin_controller
 			->setResponse($response)
 			->setParams($params);
 	}
-	
+
 	/**
 	 * User defined init
 	 * Called before dispatch routine
@@ -1360,7 +1360,7 @@ class e_admin_controller
 	public function init()
 	{
 	}
-	
+
 	/**
 	 * Get controller parameter
 	 * Currently used core parameters:
@@ -1368,8 +1368,8 @@ class e_admin_controller
 	 * - modes - see dispatcher::$modes
 	 * - ajax_response - text|xml|json - default is 'text'; this should be set by the action method
 	 * - TODO - more parameters/add missing to this list
-	 * 
-	 * @param string $key [optional] if null - get whole array 
+	 *
+	 * @param string $key [optional] if null - get whole array
 	 * @param mixed $default [optional]
 	 * @return mixed
 	 */
@@ -1381,7 +1381,7 @@ class e_admin_controller
 		}
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
 	}
-	
+
 	/**
 	 * Set parameter
 	 * @param string $key
@@ -1398,7 +1398,7 @@ class e_admin_controller
 		$this->_params[$key] = $value;
 		return $this;
 	}
-	
+
 	/**
 	 * Merge passed parameter array with current parameters
 	 * @param array $params
@@ -1409,7 +1409,7 @@ class e_admin_controller
 		$this->_params = array_merge($this->_params, $params);
 		return $this;
 	}
-	
+
 	/**
 	 * Reset parameter array
 	 * @param array $params
@@ -1420,16 +1420,16 @@ class e_admin_controller
 		$this->_params = $params;
 		return $this;
 	}
-	
+
 	/**
 	 * Get current request object
-	 * @return e_admin_request 
+	 * @return e_admin_request
 	 */
 	public function getRequest()
 	{
 		return $this->_request;
 	}
-	
+
 	/**
 	 * Set current request object
 	 * @param e_admin_request $request
@@ -1443,13 +1443,13 @@ class e_admin_controller
 
 	/**
 	 * Get current response object
-	 * @return e_admin_response 
+	 * @return e_admin_response
 	 */
 	public function getResponse()
 	{
 		return $this->_response;
 	}
-	
+
 	/**
 	 * Set current response object
 	 * @param e_admin_response $response
@@ -1460,9 +1460,9 @@ class e_admin_controller
 		$this->_response = $response;
 		return $this;
 	}
-	
+
 	/**
-	 * Request proxy method 
+	 * Request proxy method
 	 * @param string $key [optional]
 	 * @param mixed $default [optional]
 	 * @return mixed
@@ -1471,9 +1471,9 @@ class e_admin_controller
 	{
 		return $this->getRequest()->getQuery($key, $default);
 	}
-	
+
 	/**
-	 * Request proxy method 
+	 * Request proxy method
 	 * @param string|array $key
 	 * @param mixed $value [optional]
 	 * @return e_admin_controller
@@ -1483,9 +1483,9 @@ class e_admin_controller
 		$this->getRequest()->setQuery($key, $value);
 		return $this;
 	}
-	
+
 	/**
-	 * Request proxy method 
+	 * Request proxy method
 	 * @param string $key [optional]
 	 * @param mixed $default [optional]
 	 * @return mixed
@@ -1494,9 +1494,9 @@ class e_admin_controller
 	{
 		return $this->getRequest()->getPosted($key, $default);
 	}
-	
+
 	/**
-	 * Request proxy method 
+	 * Request proxy method
 	 * @param string $key
 	 * @param mixed $value [optional]
 	 * @return e_admin_controller
@@ -1506,7 +1506,7 @@ class e_admin_controller
 		$this->getRequest()->setPosted($key, $value);
 		return $this;
 	}
-	
+
 	/**
 	 * Add page title, response proxy method
 	 *
@@ -1520,7 +1520,7 @@ class e_admin_controller
 		if($meta) $this->addMetaTitle($title);
 		return $this;
 	}
-	
+
 	/**
 	 * Add page meta title, response proxy method.
 	 * Should be called before header.php
@@ -1533,11 +1533,11 @@ class e_admin_controller
 		$this->getResponse()->addMetaTitle($title);
 		return $this;
 	}
-	
+
 	/**
 	 * Add header content, response proxy method
 	 * Should be called before header.php
-	 * 
+	 *
 	 * @param string $content
 	 * @return e_admin_controller
 	 */
@@ -1546,7 +1546,7 @@ class e_admin_controller
 		$this->getResponse()->addHeaderContent($content);
 		return $this;
 	}
-	
+
 	/**
 	 * Get header content, response proxy method
 	 *
@@ -1556,7 +1556,7 @@ class e_admin_controller
 	{
 		return $this->getResponse()->getHeaderContent();
 	}
-	
+
 	/**
 	 * Get current mode, response proxy method
 	 * @return string
@@ -1565,7 +1565,7 @@ class e_admin_controller
 	{
 		return $this->getRequest()->getMode();
 	}
-	
+
 	/**
 	 * Get current actin, response proxy method
 	 * @return string
@@ -1574,7 +1574,7 @@ class e_admin_controller
 	{
 		return $this->getRequest()->getAction();
 	}
-	
+
 	/**
 	 * Get current ID, response proxy method
 	 * @return string
@@ -1583,7 +1583,7 @@ class e_admin_controller
 	{
 		return $this->getRequest()->getId();
 	}
-	
+
 	/**
 	 * Get response owned JS Helper instance, response proxy method
 	 *
@@ -1593,16 +1593,16 @@ class e_admin_controller
 	{
 		return $this->getResponse()->getJsHelper();
 	}
-	
+
 	protected function _preDispatch($action = '')
 	{
-		if(!$action) $action = $this->getRequest()->getActionName(); 
-		$method = $this->toMethodName($action, 'page'); 
+		if(!$action) $action = $this->getRequest()->getActionName();
+		$method = $this->toMethodName($action, 'page');
 		if(!method_exists($this, $method))
 		{
 			$this->getRequest()->setAction($this->getDefaultAction());
 		}
-		
+
 		// switch to 404 if needed
 		$method = $this->toMethodName($this->getRequest()->getActionName(), 'page');
 		if(!method_exists($this, $method))
@@ -1611,10 +1611,10 @@ class e_admin_controller
 			e107::getMessage()->add('Action <strong>'.$method.'</strong> not found!', E_MESSAGE_ERROR);
 		}
 	}
-	
+
 	/**
 	 * Dispatch observer, check for triggers
-	 * 
+	 *
 	 * @param string $action [optional]
 	 * @return e_admin_controller
 	 */
@@ -1626,13 +1626,13 @@ class e_admin_controller
 			$request = new e_admin_request();
 			$this->setRequest($request);
 		}
-		
+
 		$this->_preDispatch($action);
 		if(null === $action)
 		{
 			$action = $request->getActionName();
 		}
-		
+
 		// check for observer
 		$actionObserverName = $this->toMethodName($action, 'observer', e_AJAX_REQUEST);
 		if(method_exists($this, $actionObserverName))
@@ -1648,7 +1648,7 @@ class e_admin_controller
 			{
 				if(strpos($key, 'etrigger_') === 0)
 				{
-					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false); 
+					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
 					if(method_exists($this, $actionTriggerName))
 					{
 						$this->$actionTriggerName($value);
@@ -1661,10 +1661,10 @@ class e_admin_controller
 				}
 			}
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Dispatch header, not allowed in Ajax mode
 	 * @param string $action [optional]
@@ -1677,35 +1677,35 @@ class e_admin_controller
 		{
 			return $this;
 		}
-		
+
 		$request = $this->getRequest();
 		if(null === $request)
 		{
 			$request = new e_admin_request();
 			$this->setRequest($request);
 		}
-		
+
 		$this->_preDispatch($action);
 		if(null === $action)
 		{
 			$action = $request->getActionName();
 		}
-		
+
 		// check for observer
-		$actionHeaderName = $this->toMethodName($action, 'header', false); 
+		$actionHeaderName = $this->toMethodName($action, 'header', false);
 		if(method_exists($this, $actionHeaderName))
 		{
 			$this->$actionHeaderName();
 		}
-		
+
 		//send meta data
 		$this->getResponse()->sendMeta();
 		return $this;
 	}
-	
+
 	/**
 	 * Dispatch controller action
-	 * 
+	 *
 	 * @param string $action [optional]
 	 * @return e_admin_response
 	 */
@@ -1718,15 +1718,15 @@ class e_admin_controller
 			$this->setRequest($request);
 		}
 		$response = $this->getResponse();
-		$this->_preDispatch($action); 
-		
+		$this->_preDispatch($action);
+
 		if(null === $action)
 		{
 			$action = $request->getActionName();
 		}
-		 
+
 		// check for observer
-		$actionName = $this->toMethodName($action, 'page');   
+		$actionName = $this->toMethodName($action, 'page');
 		$ret = '';
 		if(!method_exists($this, $actionName)) // pre dispatch already switched to default action/not found page if needed
 		{
@@ -1735,23 +1735,23 @@ class e_admin_controller
 		}
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
-		
-		
+
+
 		//Ajax XML/JSON communication
 		if(e_AJAX_REQUEST && is_array($ret))
 		{
 			$response_type = $this->getParam('ajax_response', 'xml');
 			ob_clean();
 			$js_helper = $response->getJsHelper();
-			foreach ($ret as $act => $data) 
+			foreach ($ret as $act => $data)
 			{
 				$js_helper->addResponse($data, $act);
 			}
 			$js_helper->sendResponse($response_type);
 		}
-		
+
 		$ret .= ob_get_clean();
-		
+
 		// Ajax text response
 		if(e_AJAX_REQUEST)
 		{
@@ -1762,33 +1762,33 @@ class e_admin_controller
 		{
 			$response->appendBody($ret);
 		}
-		
+
 		return $response;
 	}
-	
+
 	public function E404Observer()
 	{
 		$this->getResponse()->setTitle('Page Not Found');
 	}
-	
+
 	public function E404Page()
 	{
 		return '<div class="center">Requested page was not found!</div>'; // TODO - lan
 	}
-	
-	
+
+
 	public function E404AjaxPage()
 	{
 		exit;
 	}
-	
+
 	/**
 	 * Generic redirect handler, it handles almost everything we would need.
 	 * Additionally, it moves currently registered system messages to SESSION message stack
 	 * In almost every case {@link redirectAction()} and {@link redirectMode()} are better solution
-	 * 
-	 * @param string $action defaults to current action 
-	 * @param string $mode defaults to current mode 
+	 *
+	 * @param string $action defaults to current action
+	 * @param string $mode defaults to current mode
 	 * @param string|array $exclude_query comma delimited variable names to be excluded from current query OR TRUE to exclude everything
 	 * @param string|array $merge_query query string (&amp; delimiter) or associative array to be merged with current query
 	 * @param string $path default to e_SELF
@@ -1801,21 +1801,21 @@ class e_admin_controller
 		if($mode) $request->setMode($mode);
 		if($action) $request->setAction($action);
 		if(!$path) $path = e_SELF;
-		
+
 		$url = $path.'?'.$request->buildQueryString($merge_query, false, $exclude_query);
 		// Transfer all messages to session
-		e107::getMessage()->moveToSession(); 
+		e107::getMessage()->moveToSession();
 		// write session data
 		session_write_close();
 		// do redirect
 		header('Location: '.$url);
 		exit;
 	}
-	
+
 	/**
-	 * Convenient redirect() proxy method, make life easier when redirecting between actions 
+	 * Convenient redirect() proxy method, make life easier when redirecting between actions
 	 * in same mode.
-	 * 
+	 *
 	 * @param string $action [optional]
 	 * @param string|array $exclude_query [optional]
 	 * @param string|array $merge_query [optional]
@@ -1825,11 +1825,11 @@ class e_admin_controller
 	{
 		$this->redirect($action, null, $exclude_query, $merge_query);
 	}
-	
+
 	/**
 	 * Convenient redirect to another mode (doesn't use current Query state)
 	 * If path is empty, it'll be auto-detected from modes (dispatcher) array
-	 * 
+	 *
 	 * @param string $mode
 	 * @param string $action
 	 * @param string|array $query [optional]
@@ -1848,11 +1848,11 @@ class e_admin_controller
 		}
 		$this->redirect($action, $mode, true, $query, $path);
 	}
-	
+
 	/**
 	 * Convert action name to method name
-	 * 
-	 * @param string $action_name formatted (e.g. request method getActionName()) action name  
+	 *
+	 * @param string $action_name formatted (e.g. request method getActionName()) action name
 	 * @param string $type page|observer|header|trigger
 	 * @param boolean $ajax force with true/false, if null will be auto-resolved
 	 * @return string
@@ -1862,14 +1862,14 @@ class e_admin_controller
 		if(null === $ajax) $ajax = e_AJAX_REQUEST; //auto-resolving
 		return $action_name.($ajax ? 'Ajax' : '').ucfirst(strtolower($type));
 	}
-	
+
 	/**
 	 * Check if there is a trigger available in the posted data
 	 * @return boolean
 	 */
 	public function hasTrigger()
 	{
-		$posted = array_keys($this->getPosted()); 
+		$posted = array_keys($this->getPosted());
 		foreach ($posted as $key)
 		{
 			if(strpos($key, 'etrigger_') === 0)
@@ -1879,7 +1879,7 @@ class e_admin_controller
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get default action
 	 * @return string action
@@ -1888,9 +1888,9 @@ class e_admin_controller
 	{
 		return $this->_default_action;
 	}
-	
+
 	/**
-	 * Set default action 
+	 * Set default action
 	 * @param string $action_name
 	 * @return e_admin_controller
 	 */
@@ -1899,7 +1899,7 @@ class e_admin_controller
 		$this->_default_action = $action_name;
 		return $this;
 	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -1907,7 +1907,7 @@ class e_admin_controller
 	{
 		return $this->getParam('enable_triggers');
 	}
-	
+
 	/**
 	 * @param boolean $flag
 	 * @return e_admin_controller
@@ -1926,75 +1926,93 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array UI field data
 	 */
 	protected $fields = array();
-	
+
 	/**
 	 * @var array default fields activated on List view
 	 */
 	protected $fieldpref = array();
-	
+
 	/**
 	 * @var array Plugin Preference description array
 	 */
 	protected $prefs = array();
-	
+
 	/**
 	 * Data required for _modifyListQry() to automate
 	 * db query building
-	 * @var array 
+	 * @var array
 	 */
 	protected $tableJoin = array();
-	
+
 	/**
 	 * Main model table alias
 	 * @var string
 	 */
 	protected $tableAlias;
-	
+
 	/**
 	 * @var string plugin name
 	 */
 	protected $pluginName;
-	
-	
+
+	/**
+	 * @var string
+	 */
+	protected $defaultOrderField = null;
+
+	/**
+	 * @var string
+	 */
+	protected $defaultOrder = 'asc';
+
+	/**
+	 * @var string SQL order, false to disable order, null is default order
+	 */
+	protected $listOrder = null;
+
+	/**
+	 * @var boolean
+	 */
 	protected $batchDelete = true;
-	
+
 	/**
 	 * Could be LAN constant (mulit-language support)
+	 *
 	 * @var string plugin name
 	 */
 	protected $pluginTitle;
-	
+
 	/**
 	 * Default (db) limit value
 	 * @var integer
 	 */
 	protected $perPage = 20;
-	
+
 	/**
 	 * @var e_admin_model
 	 */
 	protected $_model = null;
-	
+
 	/**
 	 * @var e_admin_tree_model
 	 */
 	protected $_tree_model = null;
-	
+
 	/**
 	 * @var e_admin_tree_model
 	 */
 	protected $_ui = null;
-	
+
 	/**
 	 * @var e_plugin_pref|e_core_pref
 	 */
 	protected $_pref = null;
-	
+
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -2002,7 +2020,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->pluginName;
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -2010,7 +2028,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return deftrue($this->pluginTitle, $this->pluginTitle);
 	}
-	
+
 	/**
 	 * Get all field data
 	 * @return array
@@ -2019,9 +2037,9 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->fields;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $field
 	 * @param string $key attribute name
 	 * @param mixed $default default value if not set, default is null
@@ -2039,9 +2057,9 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		return $default;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $field
 	 * @param string $key attribute name
 	 * @param mixed $value default value if not set, default is null
@@ -2083,7 +2101,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->fields[$field][$key] = $value;
 		return $this;
 	}
-	
+
 	/**
 	 * Get fields stored as user preferences
 	 * @return array
@@ -2092,26 +2110,37 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->fieldpref;
 	}
-	
+
 	/**
-	 * Get Config data array 
+	 * Get Config data array
 	 * @return array
 	 */
 	public function getPrefs()
 	{
 		return $this->prefs;
 	}
-	
+
 	public function getPerPage()
 	{
 		return $this->perPage;
 	}
-	
+
 	public function getPrimaryName()
 	{
 		return $this->getModel()->getFieldIdName();
 	}
-	
+
+
+	public function getDefaultOrderField()
+	{
+		return ($this->defaultOrder ? $this->defaultOrderField : $this->getPrimaryName());
+	}
+
+	public function getDefaultOrder()
+	{
+		return ($this->defaultOrder ? $this->defaultOrder : 'asc');
+	}
+
 	/**
 	 * Get column preference array
 	 * @return array
@@ -2121,7 +2150,7 @@ class e_admin_controller_ui extends e_admin_controller
 		global $user_pref;
 		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
 	}
-	
+
 	/**
 	 * Set column preference array
 	 * @return boolean success
@@ -2133,7 +2162,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->fieldpref = $new;
 		return save_prefs('user');
 	}
-	
+
 	/**
 	 * Get current model
 	 *
@@ -2145,7 +2174,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$this->_setModel();
 		}
-		
+
 		return $this->_model;
 	}
 
@@ -2159,7 +2188,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->_model = $model;
 		return $this;
 	}
-	
+
 	/**
 	 * Get model validation array
 	 * @return array
@@ -2168,7 +2197,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->getModel()->getValidationRules();
 	}
-	
+
 	/**
 	 * Get model data field array
 	 * @return array
@@ -2177,7 +2206,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->getModel()->getDataFields();
 	}
-	
+
 	/**
 	 * Get model table or alias
 	 * @param boolean $alias get table alias on true, default false
@@ -2189,17 +2218,17 @@ class e_admin_controller_ui extends e_admin_controller
 		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
 		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
 	}
-	
+
 	public function getIfTableAlias($prefix = false, $quote = false)
 	{
 		$alias = $this->getTableName(true);
 		if($alias)
 		{
 			return $alias;
-		} 
+		}
 		return ( !$quote ? $this->getTableName(false, $prefix) : '`'.$this->getTableName(false, $prefix).'`' );
 	}
-	
+
 	/**
 	 * Get join table data
 	 * @param string $table if null all data will be returned
@@ -2218,10 +2247,10 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
 	}
-	
+
 	public function setJoinData($table, $data)
 	{
-		if(null === $data) 
+		if(null === $data)
 		{
 			unset($this->tableJoin[$table]);
 			return $this;
@@ -2229,7 +2258,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->tableJoin[$table] = (array) $data;
 		return $this;
 	}
-	
+
 	/**
 	 * User defined model setter
 	 * @return e_admin_controller_ui
@@ -2238,7 +2267,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this;
 	}
-	
+
 	/**
 	 * Get current tree model
 	 * @return e_admin_tree
@@ -2249,10 +2278,10 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$this->_setTreeModel();
 		}
-		
+
 		return $this->_tree_model;
 	}
-	
+
 	/**
 	 * Set controller tree model
 	 * @param e_admin_tree $tree_model
@@ -2263,7 +2292,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->_tree_model = $tree_model;
 		return $this;
 	}
-	
+
 	/**
 	 * User defined tree model setter
 	 * @return e_admin_controller_ui
@@ -2272,7 +2301,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this;
 	}
-	
+
 	/**
 	 * Get extended (UI) Form instance
 	 *
@@ -2286,7 +2315,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		return $this->_ui;
 	}
-	
+
 	/**
 	 * Set controller UI form
 	 * @param e_admin_form_ui $ui
@@ -2306,22 +2335,22 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this;
 	}
-	
+
 	/**
-	 * Get Config object 
+	 * Get Config object
 	 * @return e_plugin_pref or e_core_pref when used in core areas
 	 */
 	public function getConfig()
-	{ 
+	{
 		if(null === $this->_pref)
 		{
 			$this->_setConfig();
 		}
 		return $this->_pref;
 	}
-	
+
 	/**
-	 * Set Config object 
+	 * Set Config object
 	 * @return e_admin_controller_ui
 	 */
 	public function setConfig($config)
@@ -2329,7 +2358,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->_prefs = $config;
 		return $this;
 	}
-	
+
 	/**
 	 * User defined config setter
 	 * @return e_admin_controller_ui
@@ -2338,7 +2367,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this;
 	}
-	
+
 	/**
 	 * Manage column visibility
 	 * @param string $batch_trigger
@@ -2356,13 +2385,13 @@ class e_admin_controller_ui extends e_admin_controller
 				continue;
 			}
 		}
-		
+
 		if($cols)
 		{
 			$this->setUserPref($cols);
 		}
 	}
-	
+
 	/**
 	 * Handle posted batch options routine
 	 * @param string $batch_trigger
@@ -2374,12 +2403,12 @@ class e_admin_controller_ui extends e_admin_controller
 		//$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
 		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
 		$selected = array_values($this->getPosted($multi_name, array()));
-		
+
 		if(empty($selected)) return $this;
-		
+
 		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
-		
+
 		$this->setTriggersEnabled(false); //disable further triggering
 
 		switch($trigger[0])
@@ -2392,8 +2421,8 @@ class e_admin_controller_ui extends e_admin_controller
 					$this->$method($selected);
 				}
 			break;
-			
-			case 'bool': 
+
+			case 'bool':
 				$field = $trigger[1];
 				$value = $trigger[2] ? 1 : 0;
 				//something like handleListBoolBatch(); for custom handling of 'bool' batch
@@ -2404,7 +2433,7 @@ class e_admin_controller_ui extends e_admin_controller
 					break;
 				}
 			break;
-			
+
 			case 'boolreverse':
 				$field = $trigger[1];
 				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
@@ -2415,7 +2444,7 @@ class e_admin_controller_ui extends e_admin_controller
 					break;
 				}
 			break;
-		
+
 			default:
 				$field = $trigger[0];
 				$value = $trigger[1]; //TODO - errors
@@ -2435,7 +2464,7 @@ class e_admin_controller_ui extends e_admin_controller
 			break;
 		}
 		return $this;
-	}	
+	}
 
 	/**
 	 * Handle requested filter dropdown value
@@ -2453,11 +2482,11 @@ class e_admin_controller_ui extends e_admin_controller
 		$res = array();
 		switch($filter[0])
 		{
-			case 'bool': 
+			case 'bool':
 				// direct query
 				$res = array($filter[1], $filter[2]);
 			break;
-		
+
 			default:
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
@@ -2473,8 +2502,8 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		return $res;
 	}
-	
-	
+
+
 	/**
 	 * Convert posted to model values after submit (based on field type)
 	 * @param array $data
@@ -2495,10 +2524,10 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'datestamp':
 					if(!is_numeric($value))
 					{
-						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0; 
+						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0;
 					}
 				break;
-				
+
 				case 'ip': // TODO - ask Steve if this check is required
 					if(strpos($value, '.') !== FALSE)
 					{
@@ -2509,10 +2538,10 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		$data = $model->getData();
 		unset($model);
-		
+
 		$this->toData($data);
 	}
-	
+
 	/**
 	 * User defined method for converting POSTED to MODEL data
 	 * @param array $data posted data
@@ -2522,7 +2551,7 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function toData(&$data, $type = '')
 	{
 	}
-	
+
 	/**
 	 * Take approproate action after successfull submit
 	 *
@@ -2533,19 +2562,19 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action') && $noredirect_for == $this->getAction())
 		{
-			return; 
+			return;
 		}
-		
+
 		$choice = $this->getPosted('__after_submit_action', 0);
 		switch ($choice) {
 			case 'create': // create
 				$this->redirectAction('create', 'id');
 			break;
-			
+
 			case 'edit': // edit
 				$this->redirectAction('edit', '', 'id='.$id);
 			break;
-			
+
 			case 'list': // list
 				$this->redirectAction('list', 'id');
 			break;
@@ -2557,17 +2586,17 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		return;
 	}
-	
+
 	/**
 	 * Build ajax auto-complete filter response
 	 * @return string response markup
 	 */
 	protected function renderAjaxFilterResponse($listQry = '')
 	{
-		
+
 		$srch = $this->getPosted('searchquery');
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
-		
+
 		$ret = '<ul>';
 		$ret .= '<li>'.$srch.'<span class="informal warning"> (typed)</span></li>'; // fix Enter - search for typed word only
 
@@ -2576,7 +2605,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
-			
+
 			// Make query
 			$sql = e107::getDb();
 			if($qry && $sql->db_Select_gen($qry))
@@ -2587,7 +2616,7 @@ class e_admin_controller_ui extends e_admin_controller
 					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
 					foreach ($tmp as $w)
 					{
-						if($w == $srch) 
+						if($w == $srch)
 						{
 							array_unshift($reswords, $w); //exact match
 							continue;
@@ -2597,22 +2626,22 @@ class e_admin_controller_ui extends e_admin_controller
 					}
 				}
 			}
-			
-			// Build response 
+
+			// Build response
 			$reswords = array_unique($reswords);
 			if($reswords)
 			{
 				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
 			}
 		}
-		
+
 		$ret .= '<li><span class="informal warning"> clear filter </span></li>'; // clear filter option
 		$ret .= '</ul>';
 		return $ret;
 	}
-	
+
 	/**
-	 * Parses all available field data, adds internal attributes for handling join requests 
+	 * Parses all available field data, adds internal attributes for handling join requests
 	 * @return e_admin_controller_ui
 	 */
 	protected function parseAliases()
@@ -2640,12 +2669,12 @@ class e_admin_controller_ui extends e_admin_controller
 				$this->setJoinData($table, $att);
 			}
 		}
-		
+
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
 		{
-			// tableAlias.fieldName.fieldAlias 
+			// tableAlias.fieldName.fieldAlias
 			if(strpos($field, '.') !== false)
 			{
 				$tmp = explode('.', $field, 3);
@@ -2653,7 +2682,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$att['alias'] = vartrue($tmp[2]);
 				$att['field'] = $tmp[1];
 				$field = $att['alias'] ? $att['alias'] : $tmp[1];
-				$fields[$field] = $att; 
+				$fields[$field] = $att;
 				unset($tmp);
 			}
 			else
@@ -2663,9 +2692,9 @@ class e_admin_controller_ui extends e_admin_controller
 				$att['field'] = $field;
 				$fields[$field] = $att;
 			}
-			
+
 			if($fields[$field]['table'] == $this->getIfTableAlias(false))
-			{ 
+			{
 				$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
 				$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
 			}
@@ -2674,9 +2703,9 @@ class e_admin_controller_ui extends e_admin_controller
 				$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 			}
 			/*if($fields[$field]['table'])
-			{ 
+			{
 				if($fields[$field]['table'] == $this->getIfTableAlias(false))
-				{ 
+				{
 					$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
 					$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
 				}
@@ -2691,10 +2720,10 @@ class e_admin_controller_ui extends e_admin_controller
 			}*/
 		}
 		$this->fields = $fields;
-		
+
 		return $this;
 	}
-	
+
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
@@ -2707,7 +2736,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSFieldsArr = array(); // FROM for main table
 		$tableSJoinArr = array(); // FROM for join tables
 		$filter = array();
-		
+
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		list($filterField, $filterValue) = $searchFilter;
@@ -2726,25 +2755,25 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				continue;
 			}
-			
+
 			// select FROM... for main table
 			if($var['alias'] && vartrue($var['__tableFrom']))
 			{
 				$tableSFieldsArr[] = $var['__tableFrom'];
 			}
-			
-			// filter for WHERE and FROM clauses 
+
+			// filter for WHERE and FROM clauses
 			$searchable_types = array('text', 'textarea', 'bbarea', 'user'); //method?
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types))
 			{
-				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";	
+				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";
 				if($isfilter)
 				{
 					$filterFrom[] = $var['__tableField'];
 				}
 			}
 		}
-		
+
 		if($isfilter)
 		{
 			if(!$filterFrom) return false;
@@ -2754,11 +2783,11 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath.'*';
 		}
-		
+
 		$jwhere = array();
 		$joins = array();
 		//file_put_contents('e:/www/log', $tableSFields."\n\n", FILE_APPEND);
-		if($this->getJoinData()) 
+		if($this->getJoinData())
 		{
 			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
 			foreach ($this->getJoinData() as $jtable => $tparams)
@@ -2781,21 +2810,21 @@ class e_admin_controller_ui extends e_admin_controller
 						}*/
 					}
 				}
-				
+
 				// Prepare Joins
 				$joins[] = "
 					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
-				
+
 				// Prepare Where
 				if(vartrue($tparams['where']))
 				{
 					$jwhere[] = $tparams['where'];
 				}
 			}
-			
+
 			//From
 			$qry .= ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom;
-			
+
 			// Joins
 			if(count($joins) > 0)
 			{
@@ -2819,7 +2848,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['limitTo'] = false === $forceTo ? intval($this->getPerPage()) : intval($forceTo);
 			return $rawData;
 		}
-		
+
 		// join where
 		if(count($jwhere) > 0)
 		{
@@ -2830,34 +2859,41 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
 		}
-		
+
 		// where query
 		if(count($searchQry) > 0)
 		{
 			$qry .= " WHERE ".implode(" AND ", $searchQry);
 		}
-		
-		$orderField = $request->getQuery('field', $this->getPrimaryName());
-		if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
+
+		if(null !== $this->listOrder && $this->listOrder)
 		{
-			// no need of sanitize - it's found in field array
-			$qry .= ' ORDER BY  '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+			$qry .= ' ORDER BY '.$this->listOrder;
 		}
-				
+		elseif(false !== $this->listOrder)
+		{
+			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
+			$orderDef = (null === $request->getQuery('asc', null) ? $this->getDefaultOrder() : $request->getQuery('asc'));
+			if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
+			{
+				// no need of sanitize - it's found in field array
+				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) == 'desc' ? 'DESC' : 'ASC');
+			}
+		}
 		if($this->getPerPage() || false !== $forceTo)
 		{
 			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
 			if(false === $forceTo) $forceTo = $this->getPerPage();
 			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
 		}
-		
+
 		return $qry;
 	}
-	
+
 	/**
 	 * Manage submit item
 	 * Note: $callbackBefore will break submission if returns false
-	 * 
+	 *
 	 * @param string $callbackBefore existing method from $this scope to be called before submit
 	 * @param string $callbackAfter existing method from $this scope to be called after successfull submit
 	 * @param string $noredirectAction passed to doAfterSubmit()
@@ -2867,10 +2903,10 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		$model = $this->getModel();
 		$old_data = $model->getData();
-		
+
 		$_posted = $this->getPosted();
 		$this->convertToData($_posted);
-		
+
 		if($callbackBefore && method_exists($this, $callbackBefore))
 		{
 			$data = $this->$callbackBefore($_posted, $old_data, $model->getId());
@@ -2893,19 +2929,19 @@ class e_admin_controller_ui extends e_admin_controller
 				$_posted = array_merge($_posted, $data);
 			}
 		}
-		
-			
+
+
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false, false)
 			->save(true);
 		// Scenario II - inner model sanitize
 		//$this->getModel()->setPosted($this->convertToData($_POST, null, false, true);
-		
+
 		// Take action based on use choice after success
 		if(!$this->getModel()->hasError())
 		{
 			// callback (if any)
-			if($callbackAfter && method_exists($this, $callbackAfter)) 
+			if($callbackAfter && method_exists($this, $callbackAfter))
 			{
 				$this->$callbackAfter($model->getData(), $old_data, $model->getId());
 			}
@@ -2922,7 +2958,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			return false;
 		}
-		
+
 		// Copy model messages to the default message stack
 		$model->setMessages();
 		return false;
@@ -2935,39 +2971,39 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $fieldTypes = array();
 	protected $dataFields = array();
 	protected $validationRules = array();
-	
+
 	protected $table;
 	protected $pid;
 	protected $listQry;
 	protected $editQry;
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 * @param e_admin_request $request
 	 * @param e_admin_response $response
 	 * @param array $params [optional]
 	 */
 	public function __construct($request, $response, $params = array())
 	{
-		$this->setDefaultAction($request->getDefaultAction());	
+		$this->setDefaultAction($request->getDefaultAction());
 		$params['enable_triggers'] = true; // override
-		
+
 		parent::__construct($request, $response, $params);
 
 		if(!$this->pluginName)
 		{
 			$this->pluginName = 'core';
 		}
-		
+
 		$ufieldpref = $this->getUserPref();
 		if($ufieldpref)
 		{
 			$this->fieldpref = $ufieldpref;
 		}
-		
-		$this->addTitle($this->pluginTitle, true)->parseAliases(); 
+
+		$this->addTitle($this->pluginTitle, true)->parseAliases();
 	}
-	
+
 	/**
 	 * Catch fieldpref submit
 	 * @param string $batch_trigger
@@ -2978,7 +3014,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->setTriggersEnabled(false); //disable further triggering
 		parent::manageColumns();
 	}
-	
+
 	/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
@@ -2986,11 +3022,11 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListBatchTrigger($batch_trigger)
 	{
-		$this->setPosted('etrigger_batch', null); 
+		$this->setPosted('etrigger_batch', null);
 		// proceed ONLY if there is no other trigger
 		if($batch_trigger && !$this->hasTrigger()) $this->_handleListBatch($batch_trigger);
 	}
-	
+
 	/**
 	 * Batch delete trigger
 	 * @param array $selected
@@ -3002,7 +3038,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			e107::getMessage()->add('Batch delete not allowed!', E_MESSAGE_WARNING);
 			return;
-		} 
+		}
 		// delete one by one - more control, less performance
 		// TODO - pass  afterDelete() callback to tree delete method?
 		$set_messages = true;
@@ -3027,7 +3063,7 @@ class e_admin_ui extends e_admin_controller_ui
 		//$this->getTreeModel()->delete($selected);
 		if($set_messages) $this->getTreeModel()->setMessages();
 	}
-	
+
 	/**
 	 * Batch boolean trigger
 	 * @param array $selected
@@ -3042,7 +3078,7 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		$this->getTreeModel()->setMessages();
 	}
-	
+
 	/**
 	 * Batch boolean reverse trigger
 	 * @param array $selected
@@ -3060,7 +3096,7 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		$this->getTreeModel()->setMessages();
 	}
-	
+
 	/**
 	 * Batch default (field) trigger
 	 * @param array $selected
@@ -3070,13 +3106,13 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$cnt = $this->getTreeModel()->update($field, "'".$value."'", $selected, $value, false);
 		if($cnt)
-		{ 
-			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field)); 
+		{
+			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
 			$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> record(s).');
 		}
 		$this->getTreeModel()->setMessages();
 	}
-	
+
 	/**
 	 * Catch delete submit
 	 * @param string $batch_trigger
@@ -3085,7 +3121,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListDeleteTrigger($posted)
 	{
 		$this->setTriggersEnabled(false);
-		$id = intval(array_shift($posted)); 
+		$id = intval(array_shift($posted));
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id);
 		if($model)
@@ -3105,7 +3141,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 		}
 	}
-	
+
 	/**
 	 * User defined pre-delete logic
 	 */
@@ -3113,7 +3149,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return true;
 	}
-	
+
 	/**
 	 * User defined after-delete logic
 	 */
@@ -3121,7 +3157,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return true;
 	}
-	
+
 	/**
 	 * List action header
 	 * @return void
@@ -3141,7 +3177,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 		$this->addTitle('List'); // FIXME - get captions from dispatch list
 	}
-	
+
 	/**
 	 * Filter response ajax page
 	 * @return string
@@ -3150,7 +3186,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->renderAjaxFilterResponse($this->listQry); //listQry will be used only if available
 	}
-	
+
 	/**
 	 * Generic List action page
 	 * @return string
@@ -3159,7 +3195,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->getUI()->getList();
 	}
-	
+
 	/**
 	 * List action observer
 	 * @return void
@@ -3168,7 +3204,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
 	}
-	
+
 	/**
 	 * Generic List action page (Ajax)
 	 * @return string
@@ -3177,7 +3213,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->getUI()->getList(true);
 	}
-	
+
 	/**
 	 * Generic Edit observer
 	 */
@@ -3186,7 +3222,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getModel()->load($this->getId());
 		$this->addTitle(LAN_UPDATE, true);
 	}
-	
+
 	/**
 	 * Generic Create submit trigger
 	 */
@@ -3194,7 +3230,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->redirectAction('list', 'id');
 	}
-	
+
 	/**
 	 * Generic Edit submit trigger
 	 */
@@ -3202,7 +3238,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 	}
-	
+
 	/**
 	 * Edit - send JS to page Header
 	 * @return none
@@ -3211,7 +3247,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		e107::getJs()->requireCoreLib('core/admin.js');
 	}
-	
+
 	/**
 	 * Generic Edit page
 	 * @return string
@@ -3220,7 +3256,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->CreatePage();
 	}
-	
+
 	/**
 	 * Generic Create observer
 	 * @return string
@@ -3230,7 +3266,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->setTriggersEnabled(true);
 		$this->addTitle(LAN_CREATE, true);
 	}
-	
+
 	/**
 	 * Generic Create submit trigger
 	 */
@@ -3238,7 +3274,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->redirectAction('list', 'id');
 	}
-	
+
 	/**
 	 * Generic Create submit trigger
 	 */
@@ -3246,49 +3282,49 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->_manageSubmit('beforeCreate', 'afterCreate', 'onCreateError');
 	}
-	
+
 	/**
 	 * User defined pre-create logic, return false to prevent DB query execution
 	 */
 	public function beforeCreate($new_data, $old_data)
 	{
 	}
-	
+
 	/**
 	 * User defined after-create logic
 	 */
 	public function afterCreate($new_data, $old_data, $id)
 	{
 	}
-	
+
 	/**
 	 * User defined error handling, return true to suppress model messages
 	 */
 	public function onCreateError($new_data, $old_data)
 	{
 	}
-	
+
 	/**
 	 * User defined pre-update logic, return false to prevent DB query execution
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 	}
-	
+
 	/**
 	 * User defined after-update logic
 	 */
 	public function afterUpdate($new_data, $old_data, $id)
 	{
 	}
-	
+
 	/**
 	 * User defined error handling, return true to suppress model messages
 	 */
 	public function onUpdateError($new_data, $old_data, $id)
 	{
 	}
-		
+
 	/**
 	 * Create - send JS to page Header
 	 * @return none
@@ -3298,16 +3334,16 @@ class e_admin_ui extends e_admin_controller_ui
 		// TODO - invoke it on className (not all textarea elements)
 		e107::getJs()->requireCoreLib('core/admin.js');
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return TBD
 	 */
 	public function CreatePage()
 	{
 		return $this->getUI()->getCreate();
 	}
-	
+
 	public function PrefsSaveTrigger()
 	{
 		$this->getConfig()
@@ -3316,14 +3352,14 @@ class e_admin_ui extends e_admin_controller_ui
 			->save(true);
 
 		$this->getConfig()->setMessages();
-		
+
 	}
-	
+
 	public function PrefsPage()
 	{
 		return $this->getUI()->getSettings();
 	}
-	
+
 	/**
 	 * Parent overload
 	 * @return e_admin_ui
@@ -3334,13 +3370,13 @@ class e_admin_ui extends e_admin_controller_ui
 		if(strpos($this->table, '.') !== false)
 		{
 			$tmp = explode('.', $this->table, 2);
-			$this->table = $tmp[1]; 
+			$this->table = $tmp[1];
 			$this->tableAlias = $tmp[0];
 			unset($tmp);
 		}
-		
+
 		parent::parseAliases();
-		
+
 		return $this;
 	}
 
@@ -3348,18 +3384,18 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		if(!varset($this->pid) && vartrue($this->fields))
 		{
-			e107::getMessage()->add("There is no <strong>pid</strong> set.", E_MESSAGE_WARNING);			
+			e107::getMessage()->add("There is no <strong>pid</strong> set.", E_MESSAGE_WARNING);
 		}
-		
+
 		return $this->pid;
 	}
-	
+
 	public function getTableName($alias = false, $prefix = false)
 	{
 		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
 		return ($prefix ? '#' : '').$this->table;
 	}
-	
+
 	/**
 	 * Validation rules retrieved from controller object
 	 * @return array
@@ -3368,7 +3404,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->validationRules;
 	}
-	
+
 	/**
 	 * Data Field array retrieved from controller object
 	 * @return array
@@ -3377,51 +3413,51 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->dataFields;
 	}
-	
-	
+
+
 	/**
 	 * Set read and write parms with drop-down-list array data (ie. type='dropdown')
 	 * @param str $field
 	 * @param array $array [optional]
 	 * @return none
 	 */
-	public function setDropDown($field,$array) //TODO Have Miro check this. 
+	public function setDropDown($field,$array) //TODO Have Miro check this.
 	{
 		$this->fields[$field]['readParms'] = $array;
 		$this->fields[$field]['writeParms'] = $array;
 	}
 
-	
+
 	/**
-	 * Set Config object 
+	 * Set Config object
 	 * @return e_admin_ui
 	 */
 	protected function _setConfig()
-	{ 
+	{
 		$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
-		
+
 		$dataFields = $validateRules = array();
 		foreach ($this->prefs as $key => $att)
 		{
 			// create dataFields array
 			$dataFields[$key] = vartrue($att['data'], 'string');
-			
+
 			// create validation array
 			if(vartrue($att['validate']))
 			{
 				$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 			}
-			/* Not implemented in e_model yet 
+			/* Not implemented in e_model yet
 			elseif(vartrue($att['check']))
 			{
 				$validateRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 			}*/
 		}
 		$this->_pref->setDataFields($dataFields)->setValidationRules($validateRules);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set current model
 	 *
@@ -3461,7 +3497,7 @@ class e_admin_ui extends e_admin_controller_ui
 				}*/
 			}
 		}
-		
+
 		// default model
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
@@ -3470,11 +3506,11 @@ class e_admin_ui extends e_admin_controller_ui
 			->setFieldTypes($this->fieldTypes)
 			->setDataFields($this->dataFields)
 			->setMessageStackName('admin_ui_model_'.$this->table)
-			->setParam('db_query', $this->editQry);		
-			
+			->setParam('db_query', $this->editQry);
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set current tree
 	 * @return e_admin_ui
@@ -3487,7 +3523,7 @@ class e_admin_ui extends e_admin_controller_ui
 			->setFieldIdName($this->pid)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
-		
+
 		return $this;
 	}
 
@@ -3513,13 +3549,13 @@ class e_admin_ui extends e_admin_controller_ui
 }
 
 class e_admin_form_ui extends e_form
-{	
+{
 	/**
 	 * @var e_admin_ui
 	 */
 	protected $_controller = null;
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param e_admin_ui $controller
@@ -3529,13 +3565,13 @@ class e_admin_form_ui extends e_form
 	{
 		$this->_controller = $controller;
 		parent::__construct($tabindex);
-		
-		// protect current methods from conflict. 
+
+		// protect current methods from conflict.
 		$this->preventConflict();
 		// user constructor
 		$this->init();
 	}
-	
+
 	protected function preventConflict()
 	{
 		$err = "";
@@ -3543,38 +3579,38 @@ class e_admin_form_ui extends e_form
 
 		foreach($fields as $val)
 		{
-			if(method_exists('e_form',$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party. 
+			if(method_exists('e_form',$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
 			{
 				$err .= "<h2>ERROR: The field name (".$val.") is not allowed.</h2>";
 				$err .= "Please rename the key (".$val.") to something else in your fields array and database table.<br /><br />";
-			}	
+			}
 		}
-		
+
 		if($err)
 		{
 			echo $err;
 			exit;
-		}		
+		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * User defined init
 	 */
 	public function init()
 	{
 	}
-	
+
 	/**
 	 * TODO - lans
-	 * Generic DB Record Creation Form. 
+	 * Generic DB Record Creation Form.
 	 * @return string
 	 */
 	function getCreate()
 	{
 		$controller = $this->getController();
-		$request = $controller->getRequest(); 
+		$request = $controller->getRequest();
 		if($controller->getId())
 		{
 			$legend = LAN_UPDATE.' record #'.$controller->getId();
@@ -3595,24 +3631,24 @@ class e_admin_form_ui extends e_form
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
 						'after_submit_options' => true, // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
-						'triggers' => 'auto', // standard create/update-cancel triggers 
+						'triggers' => 'auto', // standard create/update-cancel triggers
 					)
-				) 
+				)
 		);
 		$models[] = $controller->getModel();
-		
+
 		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}
-	
+
 	/**
 	 * TODO - lans
-	 * Generic Settings Form. 
+	 * Generic Settings Form.
 	 * @return string
 	 */
 	function getSettings()
 	{
 		$controller = $this->getController();
-		$request = $controller->getRequest(); 
+		$request = $controller->getRequest();
 		$legend = 'Settings';
 		$forms = $models = array();
 		$forms[] = array(
@@ -3626,20 +3662,20 @@ class e_admin_form_ui extends e_form
 						'fields' => $controller->getPrefs(), //see e_admin_ui::$prefs
 						'after_submit_options' => false,
 						'after_submit_default' => false, // or true for default redirect options
-						'triggers' => array('save' => array(LAN_SAVE, 'update')), // standard create/update-cancel triggers 
+						'triggers' => array('save' => array(LAN_SAVE, 'update')), // standard create/update-cancel triggers
 					)
-				) 
+				)
 		);
 		$models[] = $controller->getConfig();
-		
+
 		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}
-	
+
 	/**
 	 * Create list view
 	 * Search for the following GET variables:
 	 * - from: integer, current page
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getList($ajax = false)
@@ -3650,7 +3686,7 @@ class e_admin_form_ui extends e_form
 		$request = $controller->getRequest();
 		$id = $this->getElementId();
 		$tree = $options = array();
-		$tree[$id] = $controller->getTreeModel(); 
+		$tree[$id] = $controller->getTreeModel();
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
@@ -3663,9 +3699,9 @@ class e_admin_form_ui extends e_form
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
-			'table_pre' => '', // markup to be added before opening table element 
+			'table_pre' => '', // markup to be added before opening table element
 			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete()) : '',
-			'fieldset_pre' => '', // markup to be added before opening fieldset element 
+			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
 			'from' => $controller->getQuery('from', 0), // current page, default 0
@@ -3674,7 +3710,7 @@ class e_admin_form_ui extends e_form
 		);
 		return $this->renderListForm($options, $tree, $ajax);
 	}
-	
+
 	function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
 		if(!$input_options) $input_options = array('size' => 20);
@@ -3682,7 +3718,7 @@ class e_admin_form_ui extends e_form
 		{
 			$location = 'main/list'; //default location
 		}
-		$l = e107::getParser()->post_toForm(explode('/', $location)); 
+		$l = e107::getParser()->post_toForm(explode('/', $location));
 		if(!is_array($input_options))
 		{
 			parse_str($input_options, $input_options);
@@ -3700,7 +3736,7 @@ class e_admin_form_ui extends e_form
 							".$this->option('Clear Filter', '___reset___')."
 							".$this->renderBatchFilter('filter', $current_query[1])."
 						".$this->select_close()."
-						<div class='e-autocomplete'></div>	
+						<div class='e-autocomplete'></div>
 						".$this->hidden('mode', $l[0])."
 						".$this->hidden('action', $l[1])."
 						".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
@@ -3710,24 +3746,24 @@ class e_admin_form_ui extends e_form
 					</div>
 				</fieldset>
 			</form>
-		"; 
+		";
 
 		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
 		//TODO - external JS
 		e107::getJs()->footerInline("
 	            //autocomplete fields
-	             \$\$('input[name=searchquery]').each(function(el, cnt) { 
+	             \$\$('input[name=searchquery]').each(function(el, cnt) {
 				 	if(!cnt) el.activate();
 					else return;
 					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_SELF."?mode=".$l[0]."&action=filter', {
 					  paramName: 'searchquery',
 					  minChars: 2,
 					  frequency: 0.5,
-					  afterUpdateElement: function(txt, li) { 
+					  afterUpdateElement: function(txt, li) {
 					  	var cfrm = el.up('form'), cont = cfrm.next('.e-container');
 						if(!cont) {
 							return;
-						} 
+						}
 					  	cfrm.submitForm(cont);
 					  },
 					  indicator:  el.next('span.indicator'),
@@ -3735,7 +3771,7 @@ class e_admin_form_ui extends e_form
 					});
 					var sel = el.next('select.filter');
 					if(sel) {
-						sel.observe('change', function (e) { 
+						sel.observe('change', function (e) {
 							var cfrm = e.element().up('form'), cont = cfrm.next('.e-container');
 							if(cfrm && cont && e.element().value != '___reset___') {
 								e.stop();
@@ -3747,19 +3783,19 @@ class e_admin_form_ui extends e_form
 					}
 				});
 		");
-		
-		return $text;	
+
+		return $text;
 	}
-	
+
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
 	function renderBatch($allow_delete = false)
-	{	
+	{
 		$fields = $this->getController()->getFields();
 		if(!varset($fields['checkboxes']))
 		{
 			return '';
-		}	
-		
+		}
+
 		$text = "
 			<div class='buttons-bar left'>
          		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
@@ -3773,26 +3809,26 @@ class e_admin_form_ui extends e_form
 		";
 		return $text;
 	}
-	
+
 	// TODO - do more
-	function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters. 
+	function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
 	{
 		$optdiz = array('batch' => 'Modify ', 'filter'=> 'Filter by ');
 		$table = $this->getController()->getTableName();
 		$text = '';
 		$textsingle = '';
-				
+
 		foreach($this->getController()->getFields() as $key=>$val)
 		{
 			if(!varset($val[$type]))
 			{
 				continue;
 			}
-			
+
 			$option = array();
 			$parms = vartrue($val['writeParms'], array());
 			if(is_string($parms)) parse_str($parms, $parms);
-			
+
 			switch($val['type'])
 			{
 					case 'boolean': //TODO modify description based on $val['parm]
@@ -3804,7 +3840,7 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 
-					case 'templates': 
+					case 'templates':
 					case 'layouts':
 						$parms['raw'] = true;
 						$val['writeParms'] = $parms;
@@ -3814,23 +3850,23 @@ class e_admin_form_ui extends e_form
 							$option[$key.'__'.$k] = $name;
 						}
 					break;
-					
-					case 'dropdown': // use the array $parm; 
+
+					case 'dropdown': // use the array $parm;
 						unset($parms['__options']); //remove element options if any
 						foreach($parms as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
 						}
 					break;
-					
-					case 'datestamp': // use $parm to determine unix-style or YYYY-MM-DD 
-					    //TODO last hour, today, yesterday, this-month, last-month etc. 
+
+					case 'datestamp': // use $parm to determine unix-style or YYYY-MM-DD
+					    //TODO last hour, today, yesterday, this-month, last-month etc.
 					/*	foreach($val['parm'] as $k=>$name)
 						{
-							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+							$text .= $frm->option($name, $type.'__'.$key."__".$k);
 						}*/
 					break;
-					
+
 					case 'userclass':
 					//case 'userclasses':
 						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], ''));
@@ -3838,12 +3874,12 @@ class e_admin_form_ui extends e_form
 						{
 							$option[$key.'__'.$k] = $name;
 						}
-					break;					
-				
+					break;
+
 					case 'method':
 						$method = $key;
 						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
-						
+
 						if(is_array($list))
 						{
 							//check for single option
@@ -3865,33 +3901,33 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 			}
-				
+
 			if(count($option) > 0)
 			{
 				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), varset($disabled))."\n";
 				foreach($option as $okey=>$oval)
 				{
-					$text .= $this->option($oval, $okey, $selected == $okey)."\n";			
+					$text .= $this->option($oval, $okey, $selected == $okey)."\n";
 				}
-				$text .= "\t".$this->optgroup_close()."\n";	
+				$text .= "\t".$this->optgroup_close()."\n";
 			}
 		}
-		
+
 		return $textsingle.$text;
-		
+
 	}
-	
+
 	public function getElementId()
 	{
 		$controller = $this->getController();
 		return str_replace('_', '-', ($controller->getPluginName() == 'core' ? 'core-'.$controller->getTableName() : 'plugin-'.$controller->getPluginName()));
 	}
-	
+
 	/**
 	 * @return e_admin_ui
 	 */
 	public function getController()
-	{	
+	{
 		return $this->_controller;
 	}
 }
@@ -3905,8 +3941,8 @@ include_once(e107::coreTemplatePath('admin_icons'));
  * 2. [DONE - at least for alpha release] remove duplicated code (e_form & e_admin_form_ui), refactoring
  * 3. make JS Manager handle Styles (.css files and inline CSS)
  * 4. [DONE] e_form is missing some methods used in e_admin_form_ui
- * 5. [DONE] date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
- * 		Windows and PHP < 5.1.0 - build custom strptime() function (php_compatibility_handler.php) on this - 
+ * 5. [DONE] date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for
+ * 		Windows and PHP < 5.1.0 - build custom strptime() function (php_compatibility_handler.php) on this -
  * 		http://sauron.lionel.free.fr/?page=php_lib_strptime (bad license so no copy/paste is allowed!)
  * 6. [DONE - read/writeParms introduced ] $fields[parms] mess - fix it, separate list/edit mode parms somehow
  * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
@@ -3915,7 +3951,7 @@ include_once(e107::coreTemplatePath('admin_icons'));
  * 10. draggable (or not?) ordering (list view)
  * 11. [DONE] realtime search filter (typing text) - like downloads currently
  * 12. [DONE] autosubmit when 'filter' dropdown is changed (quick fix?)
- * 13. tablerender captions 
+ * 13. tablerender captions
  * 14. [DONE] textareas auto-height
  * 15. [DONE] multi JOIN table support (optional), aliases
  * 16. tabs support (create/edit view)

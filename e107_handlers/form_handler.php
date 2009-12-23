@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.102 $
- * $Date: 2009-12-23 10:04:38 $
- * $Author: e107coders $
+ * $Revision: 1.103 $
+ * $Date: 2009-12-23 15:12:13 $
+ * $Author: secretr $
  *
 */
 
@@ -73,9 +73,9 @@ class e_form
 
 	function __construct($enable_tabindex = false)
 	{
-		
+
 		$this->_tabindex_enabled = $enable_tabindex;
-		$this->_uc = e107::getUserClass();		
+		$this->_uc = e107::getUserClass();
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
@@ -84,9 +84,9 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
-	
+
 	function iconpreview($id, $default, $width='', $height='') // FIXME
-	{		
+	{
 		$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
 		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
@@ -116,27 +116,27 @@ class e_form
 
 		return $ret;
 	}
-	
+
 	// FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
-	//FIXME - use the media-manager as an image selector. 
+	//FIXME - use the media-manager as an image selector.
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
-		// Temporary Fix for using Media-Manager data 
-		
+		// Temporary Fix for using Media-Manager data
+
 		$sql = e107::getDb();
+
 		if($sql->db_Select('core_media','*',"media_userclass IN (".USERCLASS_LIST.") ORDER BY media_name"))
 		{
 			while($row = $sql->db_Fetch())
 			{
 				$opts[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
 			}
-			
-			asort($opts);		
-			return $this->selectbox($name,$opts,$default, array('default'=>'&nbsp;'));	
+
+			asort($opts);
+			return $this->selectbox($name,$opts,$default, array('default'=>'&nbsp;'));
 		}
-		
-		// ----------------		
-		
+		// ----------------
+
 		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
@@ -153,12 +153,12 @@ class e_form
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
-		$tp = e107::getParser(); 
+		$tp = e107::getParser();
 		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 		return $ret;
 	}
-	
+
 	/**
 	 * Date field with popup calendar
 	 * $options allowed keys:
@@ -166,7 +166,7 @@ class e_form
 	 * - others: ???, default is false
 	 * - weeks: show weeks, default is false
 	 * - size: input field size attribute, default 25
-	 * 
+	 *
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
 	 * @param array $options calendar options
@@ -195,21 +195,21 @@ class e_form
 
 		return $cal->make_input_field($cal_options, $cal_attrib);
 	}
-	
+
 	/**
 	 * User auto-complete search
-	 * 
+	 *
 	 * @param string $name_fld field name for user name
 	 * @param string $id_fld field name for user id
-	 * @param string $default_name default user name value 
+	 * @param string $default_name default user name value
 	 * @param integer $default_id default user id
-	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name) 
+	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name)
 	 * @return string HTML text for display
 	 */
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
-		
+
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
 		$ret = '
 		<div class="e-autocomplete-c">
@@ -218,30 +218,30 @@ class e_form
 				<span class="indicator" style="display: none;">
 					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
 				</span>
-				<div class="e-autocomplete"></div>	
-		</div>	
+				<div class="e-autocomplete"></div>
+		</div>
 		';
-		
+
 		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
 		//TODO - external JS
 		e107::getJs()->footerInline("
 	            //autocomplete fields
 	             \$\$('input[name={$name_fld}]').each(function(el) {
 
-	             	if(el.readOnly) { 
-	             		el.observe('click', function(ev) { ev.stop(); var el1 = ev.findElement('input'); el1.blur(); } ); 
-	             		el.next('span.indicator').hide(); 
+	             	if(el.readOnly) {
+	             		el.observe('click', function(ev) { ev.stop(); var el1 = ev.findElement('input'); el1.blur(); } );
+	             		el.next('span.indicator').hide();
 	             		el.next('div.e-autocomplete').hide();
-	             		return; 
+	             		return;
 					}
 					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_FILE_ABS."e_ajax.php', {
 					  paramName: '{$name_fld}',
 					  minChars: 2,
 					  frequency: 0.5,
-					  afterUpdateElement: function(txt, li) { 
+					  afterUpdateElement: function(txt, li) {
 					  	if(!\$(li)) return;
-					  	if(\$(li).id) { 
-							el.next('input[name={$id_fld}]').value = parseInt(\$(li).id); 
+					  	if(\$(li).id) {
+							el.next('input[name={$id_fld}]').value = parseInt(\$(li).id);
 						} else {
 							el.next('input[name={$id_fld}]').value = 0
 						}
@@ -252,7 +252,7 @@ class e_form
 				});
 		");
 		return $ret;
-		
+
 	}
 
 	function file($name, $options = array())
@@ -261,7 +261,7 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
-	
+
 	function upload($name, $options = array())
 	{
 		return 'Ready to use upload form fields, optional - file list view';
@@ -283,7 +283,7 @@ class e_form
 		{
 			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox textarea e-autoheight';
 		}
-		
+
 		$options = $this->format_options('textarea', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>".(false !== $counter ? $this->hidden('__'.$name.'autoheight_opt', $counter) : '');
@@ -294,22 +294,22 @@ class e_form
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 		switch($size)
-		{			
+		{
 			case 'medium':
 				$rows = '10';
 			break;
-			
+
 			case 'small':
 				$rows = '7';
 			break;
-			
+
 			case 'large':
 			default:
 				$rows = '15';
 				$size = 'large';
 			break;
 		}
-		
+
 		// auto-height support
 	   	$options = array('class' => 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
@@ -339,7 +339,7 @@ class e_form
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
 	}
-	
+
 	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
 	{
 		return $this->checkbox($name, $value, $checked, $options).$this->label($label_title, $name, $value);
@@ -372,7 +372,7 @@ class e_form
 			return '';
 
 		$tmp = explode(',', $current_value); //TODO add support for when $current_value is an array.
-		
+
 		$class = $style = '';
 		if($nest_level == 0)
 		{
@@ -386,11 +386,11 @@ class e_form
 
 		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
-	
-	
+
+
 	function uc_label($classnum)
 	{
-		return $this->_uc->uc_get_classname($classnum);	
+		return $this->_uc->uc_get_classname($classnum);
 	}
 
 	function radio($name, $value, $checked = false, $options = array())
@@ -437,7 +437,7 @@ class e_form
 	}
 
 	/**
-	 * 
+	 *
 	 * @param object $name
 	 * @param object $option_array
 	 * @param object $selected [optional]
@@ -446,17 +446,19 @@ class e_form
 	 */
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
+		if(!is_array($options)) parse_str($options, $options);
+
 		if($option_array == 'yesno')
 		{
 			$option_array = array(1=>LAN_YES,0=>LAN_NO);
-		} 
+		}
 		$text = $this->select_open($name, $options)."\n";
-		
+
 		if(vartrue($options['default']))
 		{
-			$text .= $this->option($options['default'],''); 
+			$text .= $this->option($options['default'],'');
 		}
-		
+
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
 		return $text;
 	}
@@ -516,14 +518,14 @@ class e_form
 				$text .= $this->optgroup_open($value);
 				foreach($label as $val => $lab)
 				{
-					$text .= $this->option($lab, $val, ($selected == $val), $options)."\n";		
+					$text .= $this->option($lab, $val, ($selected == $val), $options)."\n";
 				}
-				$text .= $this->optgroup_close();	
+				$text .= $this->optgroup_close();
 			}
 			else
 			{
-				$text .= $this->option($label, $value, $selected == $value, $options)."\n";	
-			}			
+				$text .= $this->option($label, $value, $selected == $value, $options)."\n";
+			}
 		}
 
 		return $text;
@@ -571,7 +573,7 @@ class e_form
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $name
 	 * @param string $value
 	 * @param string $action [optional] default is submit
@@ -633,7 +635,7 @@ class e_form
 				case 'title':
 					if($optval) $ret .= " title='{$optval}'";
 					break;
-					
+
 				case 'label':
 					if($optval) $ret .= " label='{$optval}'";
 					break;
@@ -690,7 +692,7 @@ class e_form
 		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
 		$value = trim(str_replace("/","-",$value), '-');
 		if(!$id_value && is_numeric($value)) $id_value = $value;
-		
+
 		// clean - do it better, this could lead to dups
 		$id_value = trim($id_value, '-');
 
@@ -843,7 +845,7 @@ class e_form
 				</div>
 			</div></div>
 		</div>
-		";  
+		";
 
 		$text .= "";
 		return $text;
@@ -877,20 +879,20 @@ class e_form
         $text = "";
 
 		// Recommended pattern: mode=list&field=[FIELD]&asc=[ASC]&from=[FROM]
-		
+
 		if(strpos($querypattern,'&')!==FALSE)
 		{
-			// we can assume it's always $_GET since that's what it will generate 
+			// we can assume it's always $_GET since that's what it will generate
 			// more flexible (e.g. pass default values for order/field when they can't be found in e_QUERY) & secure
-			$tmp = str_replace('&amp;', '&', $requeststr ? $requeststr : e_QUERY); 
+			$tmp = str_replace('&amp;', '&', $requeststr ? $requeststr : e_QUERY);
 			parse_str($tmp, $tmp);
-			
+
 			$etmp = array();
 			parse_str(str_replace('&amp;', '&', $querypattern), $etmp);
 		}
 		else // Legacy Queries. eg. main.[FIELD].[ASC].[FROM]
 		{
-			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
+			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY));
 			$etmp = explode(".", $querypattern);
 		}
 
@@ -930,7 +932,7 @@ class e_form
 					$repl = array($key,$ascdesc,$from);
                 	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
 				}
-				
+
 				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= vartrue($val['title'], '');
 				$text .= ($val['url']) ? "</a>" : "";
@@ -951,9 +953,9 @@ class e_form
 		";
 
 	}
-	
+
 	/**
-	 * Render Table cells from field listing. 
+	 * Render Table cells from field listing.
 	 * @param array $fieldarray - eg. $this->fields
 	 * @param array $currentlist - eg $this->fieldpref
 	 * @param array $fieldvalues - eg. $row
@@ -964,14 +966,14 @@ class e_form
 	{
 		$cnt = 0;
 		$ret = '';
-		
+
 		/*$fieldarray 	= $obj->fields;
 		$currentlist 	= $obj->fieldpref;
 		$pid 			= $obj->pid;*/
-	
+
 		$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
 		unset($fieldvalues['__trclass']);
-		
+
 		foreach ($fieldarray as $field => $data)
 		{
 			// shouldn't happen...
@@ -980,7 +982,7 @@ class e_form
 				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
 				$field = $data['alias'];
 			}
-			
+
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
@@ -993,10 +995,10 @@ class e_form
 						Not Found!
 					</td>
 				";
-				
+
 				continue;
 			}
-			
+
 			$tdclass = vartrue($data['class']);
 			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
 			// there is no other way for now - prepare user data
@@ -1023,10 +1025,10 @@ class e_form
 					'.$value.'
 				</td>
 			';
-			
+
 			$cnt++;
 		}
-		
+
 		if($cnt)
 		{
 			return '
@@ -1035,10 +1037,10 @@ class e_form
 				</tr>
 			';
 		}
-		
+
 		return '';
 	}
-	
+
 	/**
 	 * Render Field Value
 	 * @param string $field field name
@@ -1062,9 +1064,9 @@ class e_form
 				{
 					parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 					// keep other vars in tact
-					$query['action'] = 'edit'; 
-					$query['id'] = $id; 
-					
+					$query['action'] = 'edit';
+					$query['id'] = $id;
+
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
 
@@ -1074,14 +1076,14 @@ class e_form
 				//$attributes['type'] = 'text';
 				return $value;
 			break;
-		
+
 			case 'checkboxes':
 				$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
 				//$attributes['type'] = 'text';
 				return $value;
 			break;
 		}
-		
+
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1093,14 +1095,14 @@ class e_form
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
 			break;
-			
+
 			case 'ip':
 				$e107 = e107::getInstance();
 				$value = $e107->ipDecode($value);
 				// else same
 			break;
-			
-			case 'templates': 
+
+			case 'templates':
 			case 'layouts':
 				$pre = vartrue($parms['pre']);
 				$post = vartrue($parms['post']);
@@ -1117,16 +1119,16 @@ class e_form
 				$tmp = $this->renderElement($key, '', $attributes);
 				$value = $pre.vartrue($tmp[$value]).$post;
 			break;
-			
+
 			case 'dropdown':
 				if(vartrue($parms) && is_array($parms))
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 				}
 			break;
-				
+
 			case 'text':
-				
+
 				if(vartrue($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
@@ -1137,7 +1139,7 @@ class e_form
 				}
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;
-			
+
 			case 'bbarea':
 			case 'textarea':
 				$expand = '...';
@@ -1150,7 +1152,7 @@ class e_form
 					$ttl = vartrue($parms['expand'], '&nbsp;...');
 					$expand = '&nbsp;<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
 				}
-				
+
 				$oldval = $value;
 				if(vartrue($parms['truncate']))
 				{
@@ -1169,11 +1171,11 @@ class e_form
 					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.$oldval.'</div></div>';
 				}
 			break;
-			
+
 			case 'icon':
 				$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
 			break;
-			
+
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
@@ -1183,15 +1185,15 @@ class e_form
 					$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.defset($ttl, $ttl).'</a>';
 				}
 			break;
-			
+
 			case 'datestamp':
 				$value = $value ? e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
 			break;
-			
+
 			case 'userclass':
 				$value = $this->_uc->uc_get_classname($value);
 			break;
-			
+
 			case 'userclasses':
 				$classes = explode(',', $value);
 				$value = array();
@@ -1201,7 +1203,7 @@ class e_form
 				}
 				$value = implode(vartrue($parms['separator']), $pieces);
 			break;
-			
+
 			/*case 'user_name':
 			case 'user_loginname':
 			case 'user_login':
@@ -1215,7 +1217,7 @@ class e_form
 					{
 						$value = $value[$attributes['type']] ? $value[$attributes['type']] : $value['user_name'];
 					}
-					else 
+					else
 					{
 						$value = 'not found';
 					}
@@ -1246,11 +1248,12 @@ class e_form
 					$value = $ttl;
 				}
 			break;
-			
+
+			case 'bool':
 			case 'boolean':
 				$value = $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
 			break;
-							
+
 			case 'url':
 				if(!$value) break;
 				$ttl = $value;
@@ -1260,7 +1263,7 @@ class e_form
 				}
 				$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
 			break;
-			
+
 			case 'email':
 				if(!$value) break;
 				$ttl = $value;
@@ -1270,26 +1273,26 @@ class e_form
 				}
 				$value = "<a href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
 			break;
-			
-			case 'method': // Custom Function 
-				$method = $field; 
-				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms)); 
+
+			case 'method': // Custom Function
+				$method = $field;
+				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 			break;
-			
+
 			case 'hidden':
 				return (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 			break;
-			
+
 			//TODO - order
-			
+
 			default:
 				//unknown type
 			break;
 		}
-		
+
 		return $value;
 	}
-	
+
 	/**
 	 * Auto-render Form Element
 	 * @param string $key
@@ -1301,12 +1304,12 @@ class e_form
 	{
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
-		
+
 		if(is_string($parms)) parse_str($parms, $parms);
-		
+
 		if(vartrue($attributes['readonly'])) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			return $this->renderValue($key, $value, $attributes);	
+			return $this->renderValue($key, $value, $attributes);
 		}
 
 		switch($attributes['type'])
@@ -1318,41 +1321,40 @@ class e_form
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
 				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
-			
+
 			case 'ip':
 				return $this->text($key, e107::getInstance()->ipDecode($value), 32, $parms);
 			break;
-			
+
 			case 'url':
 			case 'email':
 			case 'text':
-				
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
 			break;
-			
+
 			case 'textarea':
 				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
 			break;
-			
+
 			case 'bbarea':
 				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'), varset($parms['counter'], false));
 			break;
-			
+
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
 				return $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
 			break;
-			
-			case 'icon': 
+
+			case 'icon':
 				$label = varset($parms['label'], 'LAN_EDIT');
 				$ajax = varset($parms['ajax'], true) ? true : false;
 				unset($parms['label'], $parms['ajax']);
 				return $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
 			break;
-			
+
 			case 'datestamp':
 				if(vartrue($parms['auto']))
 				{
@@ -1366,22 +1368,22 @@ class e_form
 					
 				return $this->datepicker($key, $value, $parms);
 			break;
-			
+
 			case 'layouts': //to do - exclude param (exact match)
 				$location = varset($parms['plugin']); // empty - core
 				$ilocation = vartrue($parms['id'], $location); // omit if same as plugin name
-				$where = vartrue($parms['area'], 'front'); //default is 'front' 
+				$where = vartrue($parms['area'], 'front'); //default is 'front'
 				$filter = varset($parms['filter']);
 				$merge = vartrue($parms['merge']) ? true : false;
 				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
 				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
 					$layouts[0] = array('default' => $parms['default']) + $layouts[0];
-				}	
+				}
 				$info = array();
 				if($layouts[1])
 				{
-					foreach ($layouts[1] as $k => $info_array) 
+					foreach ($layouts[1] as $k => $info_array)
 					{
 						if(isset($info_array['description']))
 						$info[$k] = defset($info_array['description'], $info_array['description']);
@@ -1390,8 +1392,8 @@ class e_form
 
 				//$this->selectbox($key, $layouts, $value)
 				return (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value, true, $info));
-			break; 
-				
+			break;
+
 			case 'templates': //to do - exclude param (exact match)
 				$templates = array();
 				if(varset($parms['default']))
@@ -1406,7 +1408,7 @@ class e_form
 					$k = str_replace('_template.php', '', $files['fname']);
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
 				}
-				
+
 				// override
 				$where = vartrue($parms['area'], 'front');
 				$location = vartrue($parms['plugin']) ? $parms['plugin'].'/' : '';
@@ -1417,15 +1419,15 @@ class e_form
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
 				}
 				return (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
-			break; 
-					
+			break;
+
 			case 'dropdown':
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions);
 				unset($parms['__options']);
 				return $this->selectbox($key, $parms, $value, $eloptions);
-			break; 
-			
+			break;
+
 			case 'userclass':
 			case 'userclasses':
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,classes,admin,main'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
@@ -1433,7 +1435,7 @@ class e_form
 				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
 				return $this->$method($key, $value, $uc_options, vartrue($parms['__options'], array()));
 			break;
-			
+
 			/*case 'user_name':
 			case 'user_loginname':
 			case 'user_login':
@@ -1444,7 +1446,7 @@ class e_form
 				// Just temporary solution, could be changed soon
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
-				
+
 				if((empty($value) && vartrue($parms['currentInit'])) || vartrue($parms['current']))
 				{
 					$value = USERID;
@@ -1458,31 +1460,32 @@ class e_form
 				{
 					$value = get_user_data($value);
 				}
-				
+
 				$colname = vartrue($parms['nameType'], 'user_name');
 				$parms['__options']['name'] = $colname;
-				
+
 				if(!$value) $value = array();
 				$uname = varset($value[$colname]);
 				$value = varset($value['user_id'], 0);
 				return $this->userpicker(vartrue($parms['nameField'], $key.'_usersearch'), $key, $uname, $value, vartrue($parms['__options']));
 			break;
-			
+
+			case 'bool':
 			case 'boolean':
 				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
 				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
 				unset($parms['enabled'], $parms['disabled']);
 				return $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
 			break;
-			
-			case 'method': // Custom Function 
+
+			case 'method': // Custom Function
 				return call_user_func_array(array($this, $key), array($value, 'write', $parms));
 			break;
-			
+
 			case 'upload': //TODO - from method
 				return $tp->parseTemplate("{UPLOADFILE=".e_UPLOAD."}");
 			break;
-			
+
 			case 'hidden':
 				$ret = (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 				return $ret.$this->hidden($key, $value);
@@ -1493,7 +1496,7 @@ class e_form
 			break;
 		}
 	}
-	
+
 	/**
 	 * Generic List Form, used internal by admin UI
 	 * Expected options array format:
@@ -1511,9 +1514,9 @@ class e_form
 	 * 		'form_post' => '', // markup to be added after closing form element
 	 * 		'fields' => array(...), // see e_admin_ui::$fields
 	 * 		'fieldpref' => array(...), // see e_admin_ui::$fieldpref
-	 * 		'table_pre' => '', // markup to be added before opening table element 
+	 * 		'table_pre' => '', // markup to be added before opening table element
 	 * 		'table_post' => '', // markup to be added after closing table element (e.g. Batch actions)
-	 * 		'fieldset_pre' => '', // markup to be added before opening fieldset element 
+	 * 		'fieldset_pre' => '', // markup to be added before opening fieldset element
 	 * 		'fieldset_post' => '', // markup to be added after closing fieldset element
 	 * 		'perPage' => 15, // if 0 - no next/prev navigation
 	 * 		'from' => 0, // current page, default 0
@@ -1531,13 +1534,13 @@ class e_form
 	public function renderListForm($form_options, $tree_models, $nocontainer = false)
 	{
 		$tp = e107::getParser();
-		
+
 		foreach ($form_options as $fid => $options)
 		{
 			$tree_model = $tree_models[$fid];
 			$tree = $tree_model->getTree();
 			$total = $tree_model->getTotal();
-			
+
 			$amount = $options['perPage'];
 			$from = vartrue($options['from'], 0);
 			$field = vartrue($options['field'], $options['pid']);
@@ -1548,7 +1551,7 @@ class e_form
 			$formurl = $url.($query ? '?'.$query : '');
 			$fields = $options['fields'];
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
-	
+
 	        $text = "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 					".vartrue($options['fieldset_pre'])."
@@ -1560,7 +1563,7 @@ class e_form
 							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
 							<tbody>
 			";
-	
+
 			if(!$tree)
 			{
 				$text .= "
@@ -1571,27 +1574,27 @@ class e_form
 			}
 			else
 			{
-				
+
 				foreach($tree as $model)
 				{
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
-	
+
 			}
-	
+
 			$text .= "
 							</tbody>
 						</table>
 						".vartrue($options['table_post'])."
 			";
-			
-			
+
+
 			if($tree && $amount)
-			{ 
+			{
 				$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
 		    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
-			
+
 			$text .= "
 					</fieldset>
 					".vartrue($options['fieldset_post'])."
@@ -1601,13 +1604,13 @@ class e_form
 			{
 				$text = '<div class="e-container">'.$text.'</div>';
 			}
-			
+
 		}
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
-	
+
 	/**
-	 * Generic DB Record Management Form. 
+	 * Generic DB Record Management Form.
 	 * TODO - lans
 	 * TODO - move fieldset & table generation in separate methods, needed for ajax calls
 	 * Expected arrays format:
@@ -1624,23 +1627,23 @@ class e_form
 	 * 				'fields' => array(...), //see e_admin_ui::$fields
 	 * 				'after_submit_options' => array('action' => 'Label'[,...]), // or true for default redirect options
 	 * 				'after_submit_default' => 'action_name',
-	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
+	 * 				'triggers' => 'auto', // standard create/update-cancel triggers
 	 * 				//or custom trigger array in format array('sibmit' => array('Title', 'create', '1'), 'cancel') - trigger name - title, action, optional hidden value (in this case named sibmit_value)
 	 * 			),
-	 * 
+	 *
 	 * 			'advanced' => array(
 	 * 				'legend' => 'Fieldset Legend',
 	 * 				'fields' => array(...), //see e_admin_ui::$fields
 	 * 				'after_submit_options' => array('__default' => 'action_name' 'action' => 'Label'[,...]), // or true for default redirect options
-	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
+	 * 				'triggers' => 'auto', // standard create/update-cancel triggers
 	 * 				//or custom trigger array in format array('submit' => array('Title', 'create', '1'), 'cancel' => array('cancel', 'cancel')) - trigger name - title, action, optional hidden value (in this case named sibmit_value)
 	 * 			)
-	 * 		) 
+	 * 		)
 	 * );
 	 * $models[0] = new e_admin_model($data);
 	 * $models[0]->setFieldIdName('primary_id'); // you need to do it if you don't use your own admin model extension
 	 * </code>
-	 * @param array $forms numerical array 
+	 * @param array $forms numerical array
 	 * @param array $models numerical array with values instance of e_admin_model
 	 * @param boolean $nocontainer don't enclose in div container
 	 * @return string
@@ -1648,25 +1651,25 @@ class e_form
 	function renderCreateForm($forms, $models, $nocontainer = false)
 	{
 		$text = '';
-		foreach ($forms as $fid => $form) 
+		foreach ($forms as $fid => $form)
 		{
 			$model = $models[$fid];
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
-			
+
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 			";
-		
-			foreach ($form['fieldsets'] as $elid => $data) 
+
+			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
 				$text .= $this->renderCreateFieldset($elid, $data, $model, $nocontainer);
 			}
-			
+
 			$text .= "
 			</form>
-			";	
+			";
 			e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
 		}
 		if(!$nocontainer)
@@ -1675,7 +1678,7 @@ class e_form
 		}
 		return $text;
 	}
-	
+
 	function renderCreateFieldset($id, $fdata, $model, $nocontainer = false)
 	{
 		$text = vartrue($fdata['fieldset_pre'])."
@@ -1689,20 +1692,20 @@ class e_form
 					</colgroup>
 					<tbody>
 		";
-					
+
 		foreach($fdata['fields'] as $key => $att)
 		{
 			// convert aliases - not supported in edit mod
 			if($att['alias'] && !$model->hasData($key))
 			{
-				$key = $att['field']; 
+				$key = $att['field'];
 			}
-			
+
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
 			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
 			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
-			
+
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
 			$keyName = $key;
 			if(strpos($valPath, '/')) //not TRUE, cause string doesn't start with /
@@ -1714,7 +1717,7 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-			
+
 			// type null - system (special) fields
 			if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
@@ -1731,12 +1734,12 @@ class e_form
 				";
 			}
 			//if($bckp) $model->remove($bckp);
-							
+
 		}
 
 		$text .= "
 					</tbody>
-				</table>	
+				</table>
 				".vartrue($fdata['table_post'])."
 				<div class='buttons-bar center'>
 		";
@@ -1747,7 +1750,7 @@ class e_form
 					{
 						$submitopt = $defsubmitopt;
 					}
-					
+
 					if($submitopt)
 					{
 						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
@@ -1757,7 +1760,7 @@ class e_form
 							</div>
 						';
 					}
-					
+
 					$triggers = vartrue($fdata['triggers'], 'auto');
 					if(is_string($triggers) && 'auto' === $triggers)
 					{
@@ -1772,7 +1775,7 @@ class e_form
 						}
 						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
 					}
-					
+
 					foreach ($triggers as $trigger => $tdata)
 					{
 						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
@@ -1781,26 +1784,26 @@ class e_form
 							$text .= $this->hidden($trigger.'_value', $tdata[2]);
 						}
 					}
-					
+
 		$text .= "
 				</div>
 			</fieldset>
 			".vartrue($fdata['fieldset_post'])."
-		";	
+		";
 		return $text;
 	}
-	
+
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
 	function filterType($fieldarray)
 	{
 		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
 	}
-		
+
 	function filterValue($type = '', $fields = '')
 	{
 		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
 	}
-		
+
 	/**
 	 * Generates a batch options select component
 	 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
@@ -1818,14 +1821,14 @@ class e_form
 			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
 				".$this->option('With selected...', '')."
 		";
-		
-		
-		//used for getperms() check 
+
+
+		//used for getperms() check
 		$permissions = vartrue($options['__permissions'], array());
 		//used for check_classs() check
 		$classes = vartrue($options['__check_class'], array());
 		unset($options['__permissions'], $options['__check_class']);
-		
+
 		foreach ($options as $key => $val)
 		{
 			if(isset($permissions[$key]) && !getperms($permissions[$key]))
@@ -1835,35 +1838,35 @@ class e_form
 			$disabled = false;
 			if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
 			{
-				$disabled = true; 
+				$disabled = true;
 			}
 			if(!is_array($val))
 			{
 				if($disabled) $val = $val.' ('.LAN_NOPERMISSION.')';
-				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";		
+				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";
 			}
 			else
 			{
 				if($disabled) $val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
-				
+
 				$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
 		      	foreach ($val[1] as $k => $v)
 		      	{
-		      		$disabled = false; 
+		      		$disabled = false;
 					if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
 					{
-						$disabled = true; 
+						$disabled = true;
 						$v = $v.' ('.LAN_NOPERMISSION.')';
 					}
-					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";	
+					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";
 		      	}
 		      	$text .= $this->optgroup_close()."\n";
-				
-			}		   
+
+			}
 		}
 
 
-		if ($ucOptions) // Userclass List. 
+		if ($ucOptions) // Userclass List.
 		{
 	   		foreach ($ucOptions as $ucKey => $ucVal)
 			{
@@ -1875,14 +1878,14 @@ class e_form
 	      		$text .= $this->optgroup_close()."\n";
 			}
 		}
-		
+
 
 		$text .= "
 				".$this->select_close()."
 				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
 			</div><div class='clear'></div>
 		";
-		
+
 		return $text;
 	}
 }
