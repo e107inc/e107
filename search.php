@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-11-18 01:04:24 $
+|     $Revision: 1.15 $
+|     $Date: 2009-12-23 11:32:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -84,23 +84,25 @@ if ($search_info['news'] = search_info('news', 'core', false, array('sfile' => e
 	unset($search_info['news']);
 }
 
-if ($search_info['comments'] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
-   //	$search_id++;
-} else {
-	unset($search_info['comments']);
+if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
+{
+	if ($search_info['comments'] = search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_SEARCH_99, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
+	   //	$search_id++;
+	} else {
+		unset($search_info['comments']);
+	}
 }
 
-if ($search_info['users'] = search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
-	//	$search_id++;
-} else {
-	unset($search_info['users']);
+
+if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
+{
+	if ($search_info['users'] = search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
+		//	$search_id++;
+	} else {
+		unset($search_info['users']);
+	}
 }
 
-if ($search_info['downloads'] = search_info('downloads', 'core', false, array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php', 'advanced' => e_HANDLER.'search/advanced_download.php', 'id' => 'download'))) {
-	//	$search_id++;
-} else {
-	unset($search_info['downloads']);
-}
 
 if ($search_info['pages'] = search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
    //	$search_id++;
@@ -108,12 +110,19 @@ if ($search_info['pages'] = search_info('pages', 'core', false, array('sfile' =>
 	unset($search_info['pages']);
 }
 
+ $e_searchList = e107::getConfig('core')->get('e_search_list');
+
 //plugin search routines    // plugin folder is used as the search key. ie. $_GET['t'] = 'chatbox';
 foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-	if (is_readable(e_PLUGIN.$plug_dir."/e_search.php")) {
-		if ($search_info[$plug_dir] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php")) {
+	
+	if (in_array($plug_dir,$e_searchList) && is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+	{
+		if ($search_info[$plug_dir] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
+		{
 		  //	$search_id++;
-		} else {
+		}
+		else
+		{
 			unset($search_info[$plug_dir]);
 		}
 	}
