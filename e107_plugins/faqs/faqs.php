@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-12 10:30:28 $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-23 11:32:09 $
  * $Author: e107coders $
  */
 
@@ -381,7 +381,7 @@ class faq
         }
         $text_menu .="</div>";
 
-		$text_menu .= "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faq}")."</div>";
+		$text_menu .= "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
        return $text_menu;
 
 		// require_once (FOOTERF);
