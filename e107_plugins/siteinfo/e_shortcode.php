@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.1 2009-09-19 17:36:35 e107coders Exp $
+* $Id: e_shortcode.php,v 1.2 2009-12-23 10:04:39 e107coders Exp $
 *
 * Siteinfo shortcode batch
 */
@@ -43,8 +43,17 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	{
 		parse_str($parm);		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
 		// Paths to image file, link are relative to site base
-
-		if (isset($file) && $file && is_readable($file))
+		$tp = e107::getParser();
+				
+		$logopref = e107::getConfig('core')->get('sitelogo');
+		$logo = $tp->replaceConstants($logopref);
+	
+		if(vartrue($logopref) && is_readable($logo))
+		{
+			$logo = $tp->replaceConstants($logopref,'abs');
+			$path = $tp->replaceConstants($logopref);
+		}
+		elseif (isset($file) && $file && is_readable($file))
 		{
 			$logo = e_HTTP.$file;						// HTML path
 			$path = e_BASE.$file;						// PHP path
