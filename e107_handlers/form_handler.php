@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.103 $
- * $Date: 2009-12-23 15:12:13 $
- * $Author: secretr $
+ * $Revision: 1.104 $
+ * $Date: 2009-12-24 22:36:34 $
+ * $Author: e107coders $
  *
 */
 
@@ -1356,7 +1356,7 @@ class e_form
 			break;
 
 			case 'datestamp':
-				if(vartrue($parms['auto']))
+				if(vartrue($parms['auto']) && ($value == null))
 				{
 					$value = time();
 				}
