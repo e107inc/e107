@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.104 $
- * $Date: 2009-12-24 22:36:34 $
+ * $Revision: 1.105 $
+ * $Date: 2009-12-24 23:02:17 $
  * $Author: e107coders $
  *
 */
@@ -1356,9 +1356,12 @@ class e_form
 			break;
 
 			case 'datestamp':
-				if(vartrue($parms['auto']) && ($value == null))
+				// If hidden, value is updated regardless. eg. a 'last updated' field. 
+				// If not hidden, and there is a value, it is retained. eg. during the update of an existing record.
+				// otherwise it is added. eg. during the creation of a new record.  
+				if(vartrue($parms['auto']) && (($value == null) || vartrue($parms['hidden'])))
 				{
-					$value = time();
+					$value = time();  
 				}
 					
 				if(vartrue($parms['hidden']))
