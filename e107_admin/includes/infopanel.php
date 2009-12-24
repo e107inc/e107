@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.17 $
- |     $Date: 2009-11-18 01:04:42 $
+ |     $Revision: 1.18 $
+ |     $Date: 2009-12-24 10:00:30 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -133,6 +133,7 @@ $text .= "
 				<th>Username</th>
 				<th>IP</th>
 				<th>Page</th>
+				<th>Agent</th>
 			</tr>
 		</thead>
 		<tbody>";
@@ -146,6 +147,7 @@ $text .= "
 					<td>".renderOnlineName($val['online_user_id'])."</td>
 					<td>".e107::ipDecode($val['online_ip'])."</td>
 					<td class='nowrap'><a href='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50)."</a></td>
+					<td class='nowrap'>".$tp->text_truncate($val['online_agent'],20,'...')."</td>
 				</tr>
 				";
 		}
