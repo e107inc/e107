@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.170 $
-* $Date: 2009-12-18 20:49:54 $
-* $Author: e107steved $
+* $Revision: 1.171 $
+* $Date: 2009-12-24 09:59:20 $
+* $Author: e107coders $
 *
 */
 //
@@ -1584,18 +1584,19 @@ function init_session()
 
 	define('USERIP', $e107->getip());
 	
-
-    if(isset($_E107['cli']) && $_SERVER['argv'][1])
+    if(varset($_E107['cli']))
 	{
-		require_once(e_HANDLER.'cli_class.php');
-		$cli = new eCLI;
-		$arg = $cli->parse_args();
-		if($arg['u'] && $arg['p'])
-		{
-	        e107_require_once(e_HANDLER.'login.php');
-			$usr = new userlogin;
-			$cli_log = $usr->userlogin(trim($arg['u']), trim($arg['p']), 0);
-		}
+		define('USER', true);
+		define('USERID', 1);
+		define('USERNAME', 'e107-cli');
+		define('USERTHEME', false);
+		define('ADMIN', true);
+		define('GUEST', false);
+		define('USERCLASS', '');
+		define('USEREMAIL', '');
+		define('USERCLASS_LIST', '');
+		define('USERCLASS', '');		
+		return;
 	}
 
 	if (!isset($_COOKIE[e_COOKIE]) && !isset($_SESSION[e_COOKIE]) && !isset($_E107['cli']))

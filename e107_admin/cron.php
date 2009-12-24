@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-11-27 21:42:46 $
-|     $Author: e107steved $
+|     $Revision: 1.25 $
+|     $Date: 2009-12-24 09:59:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,7 @@ class cron
     	$this->cronAction = e_QUERY;
 		
 		// The 'available' flag only gives the option to configure the cron if the underlying feature is enabled
-		$this->coreCrons['_system_cron'] = array(
+		$this->coreCrons['_system'] = array(
 			0 => array('name' => 'Test Email', 'function' => 'sendEmail', 'description' => 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'),
 			1 => array('name' => 'Mail Queue', 'function' => 'procEmailQueue', 'description' => 'Process mail queue'),
 			2 => array('name' => 'Mail Bounce Check', 'function' => 'procEmailBounce', 'description' => 'Check for bounced emails', 'available' => vartrue($pref['mail_bounce_auto'])),
@@ -119,7 +119,8 @@ class cron
 		
 		$active = ($ago < 125) ? TRUE : FALSE;
 		$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
-
+		$lastRefresh = ($ago < 10000) ? $ago.' seconds ago.' : 'Never';
+		
 		$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
 		
 		// print_a($pref['e_cron_pref']);	
@@ -134,11 +135,13 @@ class cron
 				}
 			}
 		}
+		
 		$mes->add("Active Crons: <b>".count($list)."</b>", E_MESSAGE_INFO);			
-		$mes->add("Last cron refresh was ".$ago.' seconds ago.', E_MESSAGE_INFO);
+		$mes->add("Last cron refresh: ".$lastRefresh, E_MESSAGE_INFO);
 
 		//FIXME: for Windows, the is_executable() function only checks the file
 		// extensions of exe, com, bat and cmd.
+
 		if(!is_executable(e_BASE."cron.php"))
 		{
 				$mes->add("Please CHMOD /cron.php to 755" , E_MESSAGE_WARNING);	

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-10-24 12:01:24 $
+|     $Revision: 1.8 $
+|     $Date: 2009-12-24 09:59:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,11 +21,15 @@
 // Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login. 
 
 $_E107['cli'] = TRUE;
+$_E107['debug'] = FALSE;
+$_E107['no_online'] = TRUE;
+
 require_once(realpath(dirname(__FILE__)."/class2.php"));
-	
-	$pwd = trim($_SERVER['argv'][1]);
+
+	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
+		
 	if($pref['e_cron_pwd'] != $pwd)
-	{
+	{	
 		require_once(e_HANDLER."mail.php");
 		$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
 		<br /><br /> 
@@ -59,21 +63,35 @@ if($pref['e_cron_pref']) // grab cron
 }
 
 
+if($_E107['debug'] && $_SERVER['QUERY_STRING'])
+{
+	echo "<h1>Cron List</h1>";
+	print_a($list);
+}
+
 require_once(e_HANDLER."cron_class.php");
 
 
 $cron = new CronParser();
+
 
 foreach($list as $func=>$val)
 {
 	$cron->calcLastRan($val['tab']);
 	$due = $cron->getLastRanUnix();
 	
+	if($_E107['debug'])
+	{
+		echo "<br />Cron: ".$val['function'];
+	}
+		
     if($due > (time()-45))
 	{
+		if($_E107['debug'])	{ 	echo "<br />Running Now...<br />path: ".$val['path']; }
+		
 		if(($val['path']=='_system') || is_readable(e_PLUGIN.$val['path']."/e_cron.php"))
 		{
-			if($val['path'] != '_system')
+			if($val['path'] != '_system') // this is correct. 
 			{
 				include_once(e_PLUGIN.$val['path']."/e_cron.php");
 			}
@@ -85,13 +103,24 @@ foreach($list as $func=>$val)
 				if(method_exists($obj,$val['function']))
 				{
 					//	$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
+					if($_E107['debug'])	{ echo "<br />Method Found: ".$classname."::".$val['function']."()"; }
+					
 					$status = call_user_func(array($obj,$val['function']));
 					if(!$status)
 					{
 						//TODO log error in admin log. 
-						// echo "\nerror running the function ".$func.".\n"; log the error.
+						// echo "\nerror running the function ".$func.".\n"; // log the error.
+						if($_E107['debug'])	{ 	echo "<br />Method returned False: ".$val['function']; }
 					}					 					
 				}
+				else
+				{
+					if($_E107['debug'])	{ 	echo "<br />Couldn't find method: ".$val['function']; }
+				}
+			}
+			else
+			{
+				if($_E107['debug'])	{ 	echo "<br />Couldn't find class: ".$classname; }
 			}
 
 		}
