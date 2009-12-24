@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.18 $
- |     $Date: 2009-12-24 10:00:30 $
+ |     $Revision: 1.19 $
+ |     $Date: 2009-12-24 10:51:23 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -39,10 +39,11 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 // ---------------------- Start Panel --------------------------------
 
 	$text = "<div style='text-align:center'>";
-	if (!vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
+	if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
 	{
 		$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
 	}
+		
 	$iconlist = array_merge($array_functions_assoc, getPluginLinks(E_16_PLUGMANAGER, "array"));
 
 	$text .= "
@@ -62,7 +63,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		// Rendering the saved configuration.
 		foreach ($iconlist as $key=>$val)
 		{
-			if (!isset($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+			if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
 				$text .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 			}

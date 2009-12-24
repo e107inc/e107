@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.171 $
-* $Date: 2009-12-24 09:59:20 $
+* $Revision: 1.172 $
+* $Date: 2009-12-24 10:51:23 $
 * $Author: e107coders $
 *
 */
@@ -1321,19 +1321,20 @@ function getperms($arg, $ap = ADMINPERMS)
 		return true;
 	}
 
-	$ap = '.'.$ap;
 	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
 	{
-		$psql = new db;
-		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' "))
+		$sql = e107::getDb('psql');
+		
+		if ($sql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
-			$row = $psql->db_Fetch();
-			$arg = 'P'.$row[0];
+			$row = $sql->db_Fetch();
+			$arg = 'P'.$row['plugin_id'];			
 		}
 	}
+	
+	$ap_array = explode('.',$ap);
 
-
-	if (strpos($ap, '.'.$arg.'.') !== false)
+	if(in_array($arg,$ap_array))
 	{
 		return true;
 	}
@@ -1342,7 +1343,7 @@ function getperms($arg, $ap = ADMINPERMS)
     	$tmp = explode("|", $arg);
 		foreach($tmp as $val)
 		{
-            if (strpos($ap, '.'.$val.'.') !== false)
+		   	if(in_array($arg,$ap_array))
 			{
 				return true;
 			}
