@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cron_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-11-27 21:42:46 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-12-24 09:59:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -32,7 +32,9 @@ class _system_cron
 		
 	function sendEmail() // Test Email. 
 	{
-		global $pref;
+		global $pref, $_E107;
+		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
+		
 	    require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
 
@@ -80,7 +82,7 @@ class _system_cron
 
 
 
- /* $Id: cron_class.php,v 1.5 2009-11-27 21:42:46 e107steved Exp $ */
+ /* $Id: cron_class.php,v 1.6 2009-12-24 09:59:21 e107coders Exp $ */
 
 /**####################################################################################################**\
    Version: V1.01
