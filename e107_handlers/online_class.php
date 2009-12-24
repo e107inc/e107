@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-24 10:00:30 $
  * $Author: e107coders $
 */
 
@@ -41,7 +41,20 @@ class e_online
 			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
 			$page = $tp -> toDB($page, true);
 			$ip = $e107->getip();
-			$udata = (USER === true ? USERID.".".USERNAME : "0");
+			$udata = (USER === true) ? USERID.".".USERNAME : "0";
+			$agent = $_SERVER['HTTP_USER_AGENT'];
+						
+			$insert_query = array(
+				'online_timestamp'	=> time(),
+				'online_flag'		=> 0,
+				'online_user_id'	=> $udata,
+				'online_ip'			=> $ip,
+				'online_location'	=> $page,
+				'online_pagecount'	=> 1,
+				'online_active'		=> 0,
+				'online_agent'		=> $agent
+			);
+			
 			if (USER)
 			{
 				// Find record that matches IP or visitor, or matches user info
@@ -80,7 +93,7 @@ class e_online
 				} 
 				else 
 				{
-					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1, 0");
+					$sql->db_Insert("online",$insert_query);
 				}
 			}
 			else
@@ -106,7 +119,7 @@ class e_online
 				} 
 				else 
 				{
-					$sql->db_Insert("online", " '".time()."', '0', '0', '{$ip}', '{$page}', 1, 0");
+					$sql->db_Insert("online",$insert_query);
 				}
 			}
 

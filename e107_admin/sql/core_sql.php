@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-12-15 11:51:02 $
+ * $Revision: 1.46 $
+ * $Date: 2009-12-24 10:00:30 $
  * $Author: e107coders $
 */
 
@@ -354,7 +354,8 @@ CREATE TABLE online (
   online_ip varchar(45) NOT NULL default '',
   online_location text NOT NULL,        
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
-  online_active int(10) unsigned NOT NULL default '0'
+  online_active int(10) unsigned NOT NULL default '0',
+  online_agent varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
