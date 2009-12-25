@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.19 $
- |     $Date: 2009-12-24 10:51:23 $
+ |     $Revision: 1.20 $
+ |     $Date: 2009-12-25 23:32:18 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -167,7 +167,7 @@ $text .= "
 		{
 			$id = $frm->name2id('core-infopanel_'.$val);
 			$text .= "
-			<div id='".$id."' class='f-left' style='width:24.5%' >
+			<div id='".$id."' class='f-left' style='width:49%' >
 			<div class='left' style='border:1px solid silver;margin:10px'>
 			";
 			$text .= $tp->parseTemplate("{PLUGIN=$val|TRUE}");

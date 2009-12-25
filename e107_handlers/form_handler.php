@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.106 $
- * $Date: 2009-12-25 02:06:31 $
+ * $Revision: 1.107 $
+ * $Date: 2009-12-25 23:32:18 $
  * $Author: e107coders $
  *
 */
@@ -1308,9 +1308,9 @@ class e_form
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
-		if(vartrue($attributes['readonly'])) // quick fix (maybe 'noedit'=>'readonly'?)
+		if(vartrue($attributes['readonly']) && vartrue($value)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			return $this->renderValue($key, $value, $attributes);
+			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); // 
 		}
 
 		switch($attributes['type'])
@@ -1369,7 +1369,7 @@ class e_form
 				{
 					return $this->hidden($key, $value);
 				}
-					
+									
 				return $this->datepicker($key, $value, $parms);
 			break;
 
