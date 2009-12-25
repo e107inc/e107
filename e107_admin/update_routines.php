@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2009-12-15 11:51:02 $
+|     $Revision: 1.73 $
+|     $Date: 2009-12-25 23:32:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -868,6 +868,11 @@ function update_706_to_800($type='')
 function core_media_import($cat,$epath)
 {
 	if(!vartrue($cat)){ return;}
+	
+	if(!is_readable($path))
+	{
+		return;
+	}
 	
 	$fl = e107::getFile();
 	$tp = e107::getParser();
