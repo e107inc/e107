@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.105 $
- * $Date: 2009-12-24 23:02:17 $
+ * $Revision: 1.106 $
+ * $Date: 2009-12-25 02:06:31 $
  * $Author: e107coders $
  *
 */
@@ -1158,6 +1158,7 @@ class e_form
 				{
 					$value = $oldval = strip_tags($value);
 					$value = $tp->text_truncate($value, $parms['truncate'], $expand);
+					$truncated = str_replace($expand,'',$value);
 					$toexpand = $value != $oldval;
 				}
 				elseif(vartrue($parms['htmltruncate']))
@@ -1166,9 +1167,9 @@ class e_form
 					$toexpand = $value != $oldval;
 				}
 				if($toexpand)
-				{
+				{			
 					// force hide! TODO - core style .expand-c (expand container)
-					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.$oldval.'</div></div>';
+					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.str_replace($truncated,' ',$oldval).'</div></div>';
 				}
 			break;
 
