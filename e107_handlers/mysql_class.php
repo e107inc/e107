@@ -9,10 +9,28 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.70 $
- * $Date: 2009-12-15 22:34:04 $
+ * $Revision: 1.71 $
+ * $Date: 2009-12-25 10:25:11 $
  * $Author: e107steved $
 */
+
+
+/**
+ *	MySQL Abstraction class
+ *
+ *	@package    e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: mysql_class.php,v 1.71 2009-12-25 10:25:11 e107steved Exp $;
+ *
+ *	@todo separate cache for db type tables
+ */
+
+/*
+	Parameters related to auto-generation of field definitions on db_Insert() and db_Update()
+*/
+	define('ALLOW_AUTO_FIELD_DEFS', TRUE);	// Temporary so new functionality can be disabled if it causes problems
+	define('e_DB_CACHE', e_CACHE);			// Use standard cache directory for now - should really be elsewhere
+
 
 if(defined('MYSQL_LIGHT'))
 {
@@ -27,9 +45,6 @@ if(defined('MYSQL_LIGHT'))
 elseif(defined('E107_INSTALL'))
 {
 	define('E107_DEBUG_LEVEL', 0);
-	//define('e_QUERY', '');
-	//require_once("e107_config.php");
-	//define('MPREFIX', $mySQLprefix);
 	require('e107_config.php');
 	$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 	e107::getInstance()->initInstallSql($sql_info);
@@ -46,17 +61,9 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
-/**
- * MySQL Abstraction class
- *
- * @package e107
- * @category e107_handlers
- * @version $Revision: 1.70 $
- * @author $Author: e107steved $
- *
- */
-class e_db_mysql {
 
+class e_db_mysql 
+{
 	// TODO switch to protected vars where needed
 	public $mySQLserver;
 	public $mySQLuser;
@@ -68,8 +75,8 @@ class e_db_mysql {
 	public $mySQLrows;
 	public $mySQLerror = '';			// Error reporting mode - TRUE shows messages
 	
-	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrNum() 
-	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrText()
+	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber() 
+	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
 	
 	public $mySQLcurTable;
 	public $mySQLlanguage;
@@ -79,6 +86,7 @@ class e_db_mysql {
 
 	public $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 
+	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	/**
 	 * MySQL Charset
 	 *
@@ -365,7 +373,7 @@ class e_db_mysql {
 
 	/**
 	* @return int Last insert ID or false on error
-	* @param string $table
+	* @param string $tableName - Name of table to access, without any language or general DB prefix
 	* @param string/array $arg
 	* @param string $debug
 	* @desc Insert a row into the table<br />
@@ -375,9 +383,9 @@ class e_db_mysql {
 	*
 	* @access public
 	*/
-	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function db_Insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
@@ -404,6 +412,13 @@ class e_db_mysql {
 				unset($_tmp);
 			}
 			if(!isset($arg['data'])) { return false; }
+
+
+			// See if we need to auto-add field types array
+			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			{
+				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+			}
 
 
 			// Handle 'NOT NULL' fields without a default value
@@ -483,8 +498,8 @@ class e_db_mysql {
 
 	/**
 	* @return int number of affected rows, or false on error
-	* @param string $table
-	* @param string $arg
+	* @param string $tableName - Name of table to access, without any language or general DB prefix
+	* @param array|string $arg  (array preferred)
 	* @param bool $debug
 	* @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
 	* <br />
@@ -499,9 +514,9 @@ class e_db_mysql {
 	*
 	* @access public
 	*/
-	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function db_Update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
 
 		if(!$this->mySQLaccess)
@@ -515,7 +530,7 @@ class e_db_mysql {
 		   	$new_data = '';
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 		   	{
-			   	//Convert data if not using 'new' format (is this needed?)
+			   	//Convert data if not using 'new' format
 		   		$_tmp = array();
 		   		if(isset($arg['WHERE']))
 		   		{
@@ -527,6 +542,12 @@ class e_db_mysql {
 		   		unset($_tmp);
 		   	}
 	   		if(!isset($arg['data'])) { return false; }
+
+			// See if we need to auto-add field types array
+			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			{
+				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+			}
 
 			$fieldTypes = $this->_getTypes($arg);
 			foreach ($arg['data'] as $fn => $fv)
@@ -1452,7 +1473,7 @@ class e_db_mysql {
 	 * @TODO Simplify when the conversion script will be available
 	 *
 	 * @access public
-	 * @param string    MySQL charset may be forced in special occasion.
+	 * @param string    MySQL charset may be forced in special circumstances
 	 *                  UTF-8 encoding and decoding is left to the progammer
 	 * @param bool      TRUE enter debug mode. default FALSE
 	 * @return string   hardcoded error message
@@ -1497,6 +1518,180 @@ class e_db_mysql {
 		$this->mySQLcharset = $charset;
 		return $message;
 	}
+
+
+
+	/**
+	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
+	 *
+	 *	The information is sought in a specific order:
+	 *		a) In our internal cache
+	 *		b) in the directory e_DB_CACHEDIR - file name $tableName.php
+	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
+	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
+	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
+	 *		d) The table structure is read from the DB, and a definition created:
+	 *			AUTOINCREMENT fields - ignored (or integer)
+	 *			integer type fields - 'int' processing
+	 *			character/string type fields - todb processing
+	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
+	 *
+	 *	@param string $tableName - table name, without any prefixes (language or general)
+	 *
+	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
+	 */
+	public function getFieldDefs($tableName)
+	{
+		if (!isset($this->dbFieldDefs[$tableName]))
+		{
+			if (is_readable(e_DB_CACHE.$tableName.'.php'))
+			{
+				$temp = file_get_contents(e_DB_CACHE.$tableName.'.php', FILE_TEXT);
+				if ($temp !== FALSE)
+				{
+					$array = e107::getArrayStorage();
+					$typeDefs = $array->ReadArray($temp);
+					unset($temp);
+					$this->dbFieldDefs[$tableName] = $typeDefs;
+				}
+			}
+			else
+			{		// Need to try and find a table definition
+				$searchArray = array(e_ADMIN.'sql/db_field_defs.php');
+				$sqlFiles = e107::getPref('e_sql_list');
+				foreach ($sqlFiles as $p => $f)
+				{
+					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
+				}
+				unset($sqlFiles);
+				$found = FALSE;
+				foreach ($searchArray as $defFile)
+				{
+					//echo "Check: {$defFile}, {$tableName}<br />";
+					if ($this->loadTableDef($defFile, $tableName))
+					{
+						echo "Found: {$defFile}, {$tableName}<br />";
+						$found = TRUE;
+						break;
+					}
+				}
+				if (!$found)
+				{	// Need to read table structure from DB and create the file
+					$this->makeTableDef($tableName);
+				}
+			}
+		}
+		return $this->dbFieldDefs[$tableName];
+	}
+	
+
+	/* 
+	 *	Search the specified file for a field type definition of the specified table.
+	 *
+	 *	If found, generate and save a cache file in the e_DB_CACHE directory, 
+	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
+	 *
+	 *	@param	string $defFile - file name, including path
+	 *	@param	string $tableName - name of table sought
+	 *
+	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
+	 */
+	protected function loadTableDef($defFile, $tableName)
+	{
+		$result = FALSE;
+		// Read the file using the array handler routines
+		// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
+		$temp = file_get_contents($defFile);
+		// Strip any comments  (only /*...*/ supported
+		$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
+		//echo "Check: {$defFile}, {$tableName}<br />";
+		if ($temp !== FALSE)
+		{
+			$array = e107::getArrayStorage();
+			$typeDefs = $array->ReadArray($temp);
+			unset($temp);
+			if (isset($typeDefs[$tableName]))
+			{
+				$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
+				$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
+				if (FALSE === file_put_contents(e_DB_CACHE.$tableName.'.php', $fileData))
+				{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+				}
+				$result = TRUE;
+			}
+		}
+		
+		if (!$result)
+		{
+			$this->dbFieldDefs[$tableName] = FALSE;
+		}
+		return $result;
+	}
+
+
+	/**
+	 *	Creates a field type definition from the structure of the table in the DB
+	 *
+	 *	Generate and save a cache file in the e_DB_CACHE directory, 
+	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
+	 *
+	 *	@param	string $tableName - name of table sought
+	 *
+	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
+	 */
+	protected function makeTableDef($tableName)
+	{
+		require_once(e_HANDLER.'db_table_admin_class.php');
+		$dbAdm = new db_table_admin();
+
+		$baseStruct = $dbAdm->get_current_table($tableName);
+		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		$outDefs = array();
+		foreach ($fieldDefs as $k => $v)
+		{
+			switch ($v['type'])
+			{
+				case 'field' :
+					if (vartrue($v['autoinc']))
+					{
+						//break;		Probably include autoinc fields in array
+					}
+					$baseType = preg_replace('#\(\d+?\)#', '', $v['fieldtype']);		// Should strip any length
+					switch ($baseType)
+					{
+						case 'int' :
+						case 'shortint' :
+						case 'tinyint' :
+							$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
+							break;
+						case 'char' :
+						case 'text' :
+						case 'varchar' :
+							$outDefs['_FIELD_TYPES'][$v['name']] = 'todb';
+							break;
+					}
+					if (isset($v['nulltype']) && !isset($v['default']))
+					{
+						$outDefs['_NOTNULL'][$v['name']] = '';
+					}
+					break;
+				case 'pkey' :
+				case 'ukey' :
+				case 'key' :
+					break;			// Do nothing with keys for now
+				default :
+					echo "Unexpected field type: {$k} => {$v['type']}<br />";
+			}
+		}
+		$array = e107::getArrayStorage();
+		$this->dbFieldDefs[$tableName] = $outDefs;
+		$toSave = $array->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
+		if (FALSE === file_put_contents(e_DB_CACHE.$tableName.'.php', $toSave))
+		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+			echo "Error writing file: ".e_DB_CACHE.$tableName.'.php'.'<br />';
+		}
+	}
+
 }
 
 /**
