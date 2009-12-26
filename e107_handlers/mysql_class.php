@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.71 $
- * $Date: 2009-12-25 10:25:11 $
+ * $Revision: 1.72 $
+ * $Date: 2009-12-26 23:20:21 $
  * $Author: e107steved $
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.71 2009-12-25 10:25:11 e107steved Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.72 2009-12-26 23:20:21 e107steved Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -1570,7 +1570,6 @@ class e_db_mysql
 					//echo "Check: {$defFile}, {$tableName}<br />";
 					if ($this->loadTableDef($defFile, $tableName))
 					{
-						echo "Found: {$defFile}, {$tableName}<br />";
 						$found = TRUE;
 						break;
 					}
@@ -1602,7 +1601,7 @@ class e_db_mysql
 		// Read the file using the array handler routines
 		// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
 		$temp = file_get_contents($defFile);
-		// Strip any comments  (only /*...*/ supported
+		// Strip any comments  (only /*...*/ supported)
 		$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
 		//echo "Check: {$defFile}, {$tableName}<br />";
 		if ($temp !== FALSE)
