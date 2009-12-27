@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-11-20 22:23:02 $
- * $Author: e107steved $
+ * $Revision: 1.21 $
+ * $Date: 2009-12-27 11:25:18 $
+ * $Author: e107coders $
 */
 
 /*
@@ -123,7 +123,7 @@ if (!defined('e107_INIT')) { exit; }
 require_once(e_HANDLER.'phpmailer/class.phpmailer.php');
 
 // Directory for log (if enabled)
-define('MAIL_LOG_PATH',e_FILE.'logs/');
+define('MAIL_LOG_PATH',e_LOG);
 
 class e107Email extends PHPMailer
 {

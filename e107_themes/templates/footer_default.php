@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
- |     $Revision: 1.21 $
- |     $Date: 2009-11-18 01:06:08 $
+ |     $Revision: 1.22 $
+ |     $Date: 2009-12-27 11:25:18 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -129,8 +129,7 @@ if (varset($e107_popup) != 1)
 	{
 		// Need to log the page info to a text file as CSV data
 
-		//FIXME need another name
-		$logname = e_MEDIA."logs/logd_".date("z.Y", time()).".csv";
+		$logname = e_LOG."logd_".date("z.Y", time()).".csv";
 		$logfp = fopen($logname, 'a+');
 		fwrite($logfp, $logLine."\n");
 		fclose($logfp);

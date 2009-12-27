@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.56 $
-* $Date: 2009-12-02 16:51:04 $
-* $Author: secretr $
+* $Revision: 1.57 $
+* $Date: 2009-12-27 11:25:19 $
+* $Author: e107coders $
 *
 */
 
@@ -36,7 +36,7 @@ $HANDLERS_DIRECTORY  = "e107_handlers/";
 $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY      = "e107_docs/help/";
 $CACHE_DIRECTORY 	 = "e107_media/cache/";
-$DOWNLOADS_DIRECTORY = "e107_media/downloads/";
+$DOWNLOADS_DIRECTORY = "e107_media/files/";
 $UPLOADS_DIRECTORY   = "e107_media/public/";
 
 /* End configurable variables */
@@ -1183,7 +1183,7 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
-		$data['must_write'] = 'e107_config.php|{$FILES_DIRECTORY}temp/|{$FILES_DIRECTORY}logs/';
+		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}temp/|{$MEDIA_DIRECTORY}logs/|{$MEDIA_DIRECTORY}images/';
 		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$FILES_DIRECTORY}public/avatars/|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
 		foreach ($this->e107->e107_dirs as $dir_name => $value)

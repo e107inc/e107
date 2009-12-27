@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-12-23 10:04:38 $
+ * $Revision: 1.41 $
+ * $Date: 2009-12-27 11:25:17 $
  * $Author: e107coders $
  *
 */
@@ -1109,7 +1109,7 @@ $text .= "
 						<td class='label'>".PRFLAN_196."</td>
 						<td class='control'>
 						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'])."
-						<div class='field-help'>".PRFLAN_196a." <strong>".e_FILE_ABS."logs/</strong></div>
+						<div class='field-help'>".PRFLAN_196a." <strong>".e_LOG_ABS."</strong></div>
 						</td>
 					</tr>
 					<tr>
