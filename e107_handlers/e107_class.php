@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.97 $
- * $Date: 2009-12-27 11:25:18 $
+ * $Revision: 1.98 $
+ * $Date: 2009-12-27 13:56:14 $
  * $Author: e107coders $
 */
 
@@ -157,7 +157,8 @@ class e107
 		'e_userperms'				=> '{e_HANDLER}user_handler.php',
 		'UserHandler'				=> '{e_HANDLER}user_handler.php',
 		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php',
-		'redirection'				=> '{e_HANDLER}redirection_class.php'
+		'redirection'				=> '{e_HANDLER}redirection_class.php',
+		'e107Email'					=> '{e_HANDLER}mail.php'
 	);
 
 	/**
@@ -229,6 +230,7 @@ class e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info)
 	{
+		
 		if(empty($this->e107_dirs))
 		{
 			// Do some security checks/cleanup, prepare the environment
@@ -259,7 +261,7 @@ class e107
 			{
 				$e107_paths['LOGS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'logs/';
 			}	
-
+	
 			// folder info
 			$this->e107_dirs = $e107_paths;
 
@@ -280,8 +282,11 @@ class e107
 			$this->set_urls();
 
 			// cleanup QUERY_STRING and friends, set  related constants
+			
 			$this->set_request();
+			
 		}
+	
 		return $this;
 	}
 
@@ -537,11 +542,13 @@ class e107
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
+		
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 
 		//singleton object found - overload not possible
 		if(self::getRegistry($id))
 		{
+			
 			return self::getRegistry($id);
 		}
 
@@ -563,9 +570,9 @@ class e107
 		}
 
 		if($path && is_string($path) && !class_exists($class_name, false))
-		{
+		{			
 			e107_require_once($path); //no existence/security checks here!
-			//e107_require_once() is available without class2.php. - see core_functions.php
+			//e107_require_once() is available without class2.php. - see core_functions.php			
 		}
 		if(class_exists($class_name, false))
 		{
@@ -772,6 +779,7 @@ class e107
 	 */
 	public static function getParser()
 	{
+		
 		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
 	}
 
@@ -856,6 +864,16 @@ class e107
 	public static function getRender()
 	{
 		return self::getSingleton('e107table');
+	}
+	
+	/**
+	 * Retrieve e107Email singleton object
+	 *
+	 * @return e107Email
+	 */
+	public static function getEmail()
+	{
+		return self::getSingleton('e107Email', true);
 	}
 
 	/**
@@ -1683,8 +1701,14 @@ class e107
 		}
 
 		// Absolute file-path of directory containing class2.php
-//		define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
-		define("e_ROOT", realpath(dirname(__FILE__)."/../"));			// Specified format gives trailing slash already (at least on Windows)
+	//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
+	
+		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux. 
+		if(substr($e_ROOT,-1) != '/')
+		{
+			$e_ROOT .= "/";	
+		}
+		define("e_ROOT", $e_ROOT);			// Specified format gives trailing slash already (at least on Windows)
 
 		$this->relative_base_path = (!isset($_E107['cli'])) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
@@ -1849,6 +1873,7 @@ class e107
 	 */
 	public function set_request()
 	{
+		
 		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
 		if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
 		{
@@ -1885,6 +1910,7 @@ class e107
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING'] = e_QUERY;
+		
 	}
 
 	/**
