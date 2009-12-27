@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.72 $
- * $Date: 2009-12-26 23:20:21 $
- * $Author: e107steved $
+ * $Revision: 1.73 $
+ * $Date: 2009-12-27 10:52:22 $
+ * $Author: e107coders $
 */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.72 2009-12-26 23:20:21 e107steved Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.73 2009-12-27 10:52:22 e107coders Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -77,6 +77,7 @@ class e_db_mysql
 	
 	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber() 
 	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
+	protected $mySQLlastQuery = '';
 	
 	public $mySQLcurTable;
 	public $mySQLlanguage;
@@ -246,6 +247,8 @@ class e_db_mysql
 	{
 		global $db_time,$db_mySQLQueryCount,$queryinfo;
 		$db_mySQLQueryCount++;
+		
+		$this->mySQLlastQuery = $query;
 
 		if ($debug == 'now')
 		{
@@ -883,10 +886,10 @@ class e_db_mysql
 	*/
 	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		global $db_mySQLQueryCount;
+				
 		$this->tabset = FALSE;
-
-
-
+	
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
 
 		if(strpos($query,'`#') !== FALSE)
@@ -1465,6 +1468,11 @@ class e_db_mysql
 	function getLastErrorText()
 	{
 		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
+	}
+	
+	function getLastQuery()
+	{
+		return $this->mySQLlastQuery;
 	}
 
 	/**

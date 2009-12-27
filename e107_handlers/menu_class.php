@@ -9,8 +9,8 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.17 $
+ * $Date: 2009-12-27 10:52:22 $
  * $Author: e107coders $
 */
 
@@ -60,6 +60,13 @@ class e_menu
 	 */
 	public function init()
 	{
+		global $_E107;
+		
+		if(vartrue($_E107['cli']))
+		{
+			return;
+		}
+		
 		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
 		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
