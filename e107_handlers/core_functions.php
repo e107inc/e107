@@ -9,9 +9,9 @@
  * e107 Core functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/core_functions.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-27 13:56:14 $
+ * $Author: e107coders $
 */
 
 //
@@ -107,32 +107,34 @@ function deftrue($str, $default='')
 
 function e107_include($fname)
 {
-	global $e107_debug;
-	$ret = ($e107_debug ? include($fname) : @include($fname));
+	global $e107_debug, $_E107;
+	$ret = (($e107_debug || $_E107['debug']) ? include($fname) : @include($fname));
 	return $ret;
 }
 
 function e107_include_once($fname)
 {
-	global $e107_debug;
+	global $e107_debug, $_E107;
 	if(is_readable($fname))
 	{
-		$ret = (!$e107_debug)? @include_once($fname) : include_once($fname);
+		$ret = ($e107_debug || $_E107['debug']) ? include_once($fname) : @include_once($fname);
 	}
 	return (isset($ret)) ? $ret : '';
 }
 
 function e107_require_once($fname)
 {
-	global $e107_debug;
-	$ret = ($e107_debug ? require_once($fname) : @require_once($fname));
+	global $e107_debug, $_E107;
+	
+	$ret = (($e107_debug || $_E107['debug']) ? require_once($fname) : @require_once($fname));
+	
 	return $ret;
 }
 
 function e107_require($fname)
 {
-	global $e107_debug;
-	$ret = ($e107_debug ? require($fname) : @require($fname));
+	global $e107_debug, $_E107;
+	$ret = (($e107_debug || $_E107['debug']) ? require($fname) : @require($fname));
 	return $ret;
 }
 

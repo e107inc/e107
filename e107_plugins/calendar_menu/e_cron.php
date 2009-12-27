@@ -9,9 +9,9 @@
  * Plugin configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_cron.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-12-20 22:47:27 $
- * $Author: e107steved $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-27 13:56:15 $
+ * $Author: e107coders $
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_cron.php,v 1.3 2009-12-20 22:47:27 e107steved Exp $;
+ *	@version 	$Id: e_cron.php,v 1.4 2009-12-27 13:56:15 e107coders Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -87,7 +87,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 	{
 		if ($this->logRequirement == 0) return;
 
-		$logFilename = e_FILE.'logs/calendar_mail.txt';
+		$logFilename = e_LOG.'calendar_mail.txt';
 		if ($this->logHandle == NULL)
 		{
 			if (!($this->logHandle = fopen($logFilename, "a"))) 
