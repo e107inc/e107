@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-18 01:05:12 $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-27 11:25:18 $
  * $Author: e107coders $
 |
 | Modifications in hand to work with most recent mailout.php
@@ -31,7 +31,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_mailout.php");
 
 // Directory for log (if enabled)
 //FIXME need another name
-define('MAIL_LOG_PATH',e_MEDIA."logs/");
+define('MAIL_LOG_PATH',e_LOG);
 
 $HEADER = "";
 $FOOTER = "";

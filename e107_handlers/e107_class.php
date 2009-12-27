@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.96 $
- * $Date: 2009-12-15 11:05:17 $
+ * $Revision: 1.97 $
+ * $Date: 2009-12-27 11:25:18 $
  * $Author: e107coders $
 */
 
@@ -1713,7 +1713,7 @@ class e107
 			
 			define("e_MEDIA", e_BASE.$this->e107_dirs['MEDIA_DIRECTORY']);
 			define("e_CACHE", e_BASE.$this->e107_dirs['CACHE_DIRECTORY']);
-			define("e_LOGS", e_BASE,$this->e107_dirs['LOGS_DIRECTORY']);
+			define("e_LOG", e_BASE.$this->e107_dirs['LOGS_DIRECTORY']);
 			
 //
 // HTTP absolute paths
@@ -1726,6 +1726,7 @@ class e107
 			define("e_HANDLER_ABS", e_HTTP.$this->e107_dirs['HANDLERS_DIRECTORY']);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$this->e107_dirs['LANGUAGES_DIRECTORY']);
 			define("e_MEDIA_ABS", e_HTTP.$this->e107_dirs['MEDIA_DIRECTORY']);
+			define("e_LOG_ABS", e_HTTP.$this->e107_dirs['LOGS_DIRECTORY']);
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
 			{
