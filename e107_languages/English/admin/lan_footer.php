@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_footer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-29 17:45:58 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-12-27 11:50:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("FOOTLAN_1", "Site");
@@ -27,5 +27,5 @@ define("FOOTLAN_15", "Documentation");
 define("FOOTLAN_16", "Database");
 define("FOOTLAN_17", "Charset");
 define("FOOTLAN_18", "Site Theme");
-
+define("FOOTLAN_19", "Server Time");
 ?>

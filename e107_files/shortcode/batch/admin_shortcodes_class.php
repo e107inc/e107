@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.33 2009-12-01 20:05:53 e107steved Exp $
+* $Id: admin_shortcodes_class.php,v 1.34 2009-12-27 11:50:34 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -807,7 +807,13 @@ class admin_shortcodes
 			".FOOTLAN_16.": ".$mySQLdefaultdb."
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
-			<br />utf-8"; //@TODO is this still needed?
+			<br />utf-8 
+			<br /><br />
+			<b>".FOOTLAN_19."</b>
+			<br />
+			".date('r').
+			"<br />";
+			
 			return $ns->tablerender(FOOTLAN_13, $text, '', TRUE);
 		}
 	}
