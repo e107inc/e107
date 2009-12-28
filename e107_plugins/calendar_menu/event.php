@@ -9,8 +9,8 @@
  * Calender plugin - event listing and event entry
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-12-20 22:47:32 $
+ * $Revision: 1.18 $
+ * $Date: 2009-12-28 21:49:23 $
  * $Author: e107steved $
  */
 
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: event.php,v 1.17 2009-12-20 22:47:32 e107steved Exp $;
+ *	@version 	$Id: event.php,v 1.18 2009-12-28 21:49:23 e107steved Exp $;
  */
 
 require_once('../../class2.php');
@@ -242,6 +242,7 @@ if ($mult_count > 1)
 
 // Calculate any action, plus start date/number of events, from query
 unset($dateArray);
+$ds = '';			// Gets set if viewing a single day
 if (isset($_POST['jump']))
 {
 	$dateArray	= getdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));

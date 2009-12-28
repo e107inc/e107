@@ -9,8 +9,8 @@
  * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-12-20 22:47:22 $
+ * $Revision: 1.18 $
+ * $Date: 2009-12-28 21:49:23 $
  * $Author: e107steved $
  *
 */
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_shortcodes.php,v 1.17 2009-12-20 22:47:22 e107steved Exp $;
+ *	@version 	$Id: calendar_shortcodes.php,v 1.18 2009-12-28 21:49:23 e107steved Exp $;
  */
 
 /*
@@ -653,15 +653,15 @@ class event_calendar_shortcodes
 		$show_title = $this->e107->tp->toHTML($this->event['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
 		if(isset($this->event['fulltopic']) && !$this->event['fulltopic'])
 		{
-		  $show_title = $this->e107->tp->text_truncate($show_title, 10, "...");
+		  $show_title = $this->e107->tp->text_truncate($show_title, 10, '...');
 		}
-		if($ev['startofevent'])
+		if($this->event['startofevent'])
 		{
-		  return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+		  return "<b><a title='{$this->event['event_title']}' href='".e_PLUGIN.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 		}
 		else
 		{
-		  return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
+		  return "<a title='{$this->event['event_title']}' href='".e_PLUGIN.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
 		}
 	}
 
@@ -824,7 +824,7 @@ class event_calendar_shortcodes
 	{
 		global $pref;
 		$event_author_name = strstr(varset($this->event['event_author'],'0.??'),'.');
-		if (USERNAME == $event_author_name || $this_ecalClass->cal_super || check_class($pref['eventpost_admin']))
+		if (USERNAME == $event_author_name || $this->ecalClass->cal_super || check_class($pref['eventpost_admin']))
 		{
 			return "<a href='event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 		}
