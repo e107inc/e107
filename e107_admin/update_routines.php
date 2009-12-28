@@ -11,11 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2009-12-28 17:53:10 $
+|     $Revision: 1.75 $
+|     $Date: 2009-12-28 22:40:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
+/**
+ *	@package    e107
+ *	@subpackage	admin
+ *	@version 	$Id: update_routines.php,v 1.75 2009-12-28 22:40:37 e107steved Exp $;
+ *
+ *	Update routines from older e107 versions to current.
+ *
+ *	Also links to plugin update routines.
+ *
+ *	2-stage process - routines identify whether update is required, and then execute as instructed.
+ */
 
 // [debug=8] shows the operations on major table update
 
@@ -275,7 +287,8 @@ function update_706_to_800($type='')
 	$pluginChangedTables = array('linkwords' => 'linkwords', 
 								'featurebox' => 'featurebox',
 								'links_page' => 'links_page',
-								'poll' => 'polls'
+								'poll' => 'polls',
+								'content' => 'pcontent'
 								);
 								
 	$setCorePrefs = array( //modified prefs during upgrade. 
