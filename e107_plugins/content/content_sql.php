@@ -6,15 +6,24 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	Database structure for content management plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/content/content_sql.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-28 22:40:38 $
+ * $Author: e107steved $
  */
 
-header("location:../index.php");
+
+/**
+ *	@package    e107_plugins
+ *	@subpackage	content_management
+ *	@version 	$Id: content_sql.php,v 1.4 2009-12-28 22:40:38 e107steved Exp $;
+ *
+ *	Database structure for content management plugin
+ */
+
+header('location:../index.php');
 exit;
 ?>
 # Table structure for table `content`
@@ -43,7 +52,8 @@ CREATE TABLE pcontent (
   content_score tinyint(3) unsigned NOT NULL default '0',
   content_meta text NOT NULL,
   content_layout varchar(255) NOT NULL default '',
-  PRIMARY KEY  (content_id)
+  PRIMARY KEY  (content_id),
+  KEY content_parent (content_parent)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
