@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2009-12-25 23:32:18 $
-|     $Author: e107coders $
+|     $Revision: 1.74 $
+|     $Date: 2009-12-28 17:53:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -386,6 +386,7 @@ function update_706_to_800($type='')
 	}
 
 
+	$statusTexts = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail', E_MESSAGE_INFO => 'Info');
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
@@ -411,6 +412,52 @@ function update_706_to_800($type='')
 	
 	//TODO de-serialize the user_prefs also. 
 	
+
+
+	// Move the maximum online counts from menu prefs to a separate pref - 'history'
+	$menuConfig = e107::getConfig('menu'); 
+	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
+	{
+		$status = E_MESSAGE_SUCCESS;
+		if ($just_check) return update_needed('Move online counts from menupref');
+		$newPrefs = e107::getConfig('history');
+		foreach (array('most_members_online', 'most_guests_online', 'most_online_datestamp') as $v)
+		{
+			if (FALSE === $newPrefs->get($v, FALSE))
+			{
+				if (FALSE !== $menuConfig->get($v, FALSE))
+				{
+					$newPrefs->set($v,$menuConfig->get($v));
+				}
+				else
+				{
+					$newPrefs->set($v, 0);
+				}
+			}
+			$menuConfig->remove($v);
+		}
+		$result = $newPrefs->save(false, true, false);
+		if ($result === TRUE)
+		{
+			$resultMessage = 'Historic member counts updated';
+		}
+		elseif ($result === FALSE)
+		{
+			$resultMessage = 'moving historic member counts';
+			$status = E_MESSAGE_ERROR;
+		}
+		else
+		{	// No change
+			$resultMessage = 'Historic member counts already updated';
+			$status = E_MESSAGE_INFO;
+		}
+		$result = $menuConfig->save(false, true, false);	// Save updated menuprefs - without the counts
+		$updateMessages[] = $statusTexts[$status].': '.$resultMessage;		// Admin log message
+		$mes->add($resultMessage,$status);									// User message
+	}
+
+
+
 	// ++++++++ Modify Menu Paths +++++++. 
 	if(varset($changeMenuPaths))
 	{		
@@ -439,7 +486,7 @@ function update_706_to_800($type='')
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
 		{
-			$status = $sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$status = $sql->db_Update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
 		}
 		else
@@ -456,7 +503,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed();
 
-		$status = $sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$status = $sql->db_Update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
 		catch_error($sql);
 	}
@@ -548,7 +595,7 @@ function update_706_to_800($type='')
 			{
 				if ($just_check) return update_needed('Update newsfeed field definition');
 				$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$updateMessages[] = LAN_UPDATE_40; //FIXME
+				$updateMessages[] = LAN_UPDATE_40;
 				$mes->add(LAN_UPDATE_21."newsfeed",$status);
 			//	catch_error($sql);
 			}

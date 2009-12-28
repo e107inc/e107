@@ -9,16 +9,16 @@
  * e107 Mailout - mail database API and utility routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-13 21:52:32 $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-28 17:53:10 $
  * $Author: e107steved $
 */
 
 /**
  * 
  * @package     e107
- * @category	e107_handlers
- * @version     $Revision: 1.10 $
+ * @subpackage	e107_handlers
+ * @version     $Revision: 1.11 $
  * @author      $Author: e107steved $
 
 

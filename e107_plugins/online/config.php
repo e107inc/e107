@@ -9,21 +9,32 @@
  * Plugin Administration - Online menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-28 17:53:11 $
+ * $Author: e107steved $
  *
 */
 $eplug_admin = TRUE;
-require_once("../../class2.php");
-include_lan(e_PLUGIN."online/languages/".e_LANGUAGE.".php");
+require_once('../../class2.php');
+include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
-if (!getperms("1")) 
+if (!getperms('1')) 
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit ;
 }
-require_once(e_ADMIN."auth.php");
+require_once(e_ADMIN.'auth.php');
+
+$menu_pref = e107::getConfig('menu')->getPref('');
+if (!isset($menu_pref['online_ls_caption'])) 
+{	// Assume that if one isn't set, none are set
+	$menu_pref['online_ls_caption'] = 'LAN_LASTSEEN_1';		//caption for the lastseen_menu
+	$menu_pref['online_ls_amount'] = 10;					//amount of records to show in the lastseen_menu
+	$menu_pref['online_caption'] = 'LAN_ONLINE_10';			//caption for the online_menu
+	$menu_pref['online_show_memberlist'] = true;			//toggle whether to show a simple member list of online members (shwoing user1, user2, user3)
+	$menu_pref['online_show_memberlist_extended'] = false;	//toggle whether to show the extended member list of online members (showing 'user viewing page')
+}
+
 
 if (isset($_POST['update_menu'])) 
 {
@@ -37,20 +48,19 @@ if (isset($_POST['update_menu']))
 	}
 	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_02'))
 	{
-		$tmp = addslashes(serialize($menu_pref));
-		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+		$menuPref = e107::getConfig('menu');
+		//e107::getConfig('menu')->setPref('', $menu_pref);
+		//e107::getConfig('menu')->save(false, true, false);
+		foreach ($temp as $k => $v)
+		{
+			$menuPref->setPref($k, $v);
+		}
+		$menuPref->save(false, true, false);
 	}
-	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
+	$ns->tablerender('', "<div style='text-align:center'><b>".LAN_UPDATED.'</b></div>');
 }
 
 
-function defaultpref(){
-	$menu_pref['online_ls_caption'] = 'LAN_LASTSEEN_1';		//caption for the lastseen_menu
-	$menu_pref['online_ls_amount'] = 10;					//amount of records to show in the lastseen_menu
-	$menu_pref['online_caption'] = 'LAN_ONLINE_10';			//caption for the online_menu
-	$menu_pref['online_show_memberlist'] = true;			//toggle whether to show a simple member list of online members (shwoing user1, user2, user3)
-	$menu_pref['online_show_memberlist_extended'] = false;	//toggle whether to show the extended member list of online members (showing 'user viewing page')
-}
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='menu_form'>
