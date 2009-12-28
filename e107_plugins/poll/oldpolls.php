@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-28 18:13:07 $
+ * $Author: e107steved $
  */
 
 require_once("../../class2.php");
@@ -75,7 +75,7 @@ if(e_QUERY)
 		{
 			$text .= "
 			<tr>
-			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option)."</b>&nbsp;&nbsp;</td>
+			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option, TRUE, 'TITLE')."</b>&nbsp;&nbsp;</td>
 			<td class='smalltext'>
 			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'>
 			</div>
