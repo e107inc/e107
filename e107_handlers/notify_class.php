@@ -9,11 +9,19 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.10 $
-* $Date: 2009-11-27 21:42:46 $
+* $Revision: 1.11 $
+* $Date: 2009-12-28 22:16:54 $
 * $Author: e107steved $
 *
 */
+
+/**
+ *	@package    e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: notify_class.php,v 1.11 2009-12-28 22:16:54 e107steved Exp $;
+ *
+ *	Handler for 'notify' events - sends email notifications to the appropriate user groups
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -52,8 +60,10 @@ class notify
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
 	 * @return none
+	 *
+	 *	@todo handle 'everyone except' clauses (email address filter done)
+	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
-	// TODO: handle 'everyone except' clauses (email address filter done)
 	function send($id, $subject, $message)
 	{
 		$e107 = e107::getInstance();
@@ -66,6 +76,7 @@ class notify
 		{
 			$emailFilter = $this->notify_prefs['event'][$id]['email'];
 		}
+		$blockOriginator = FALSE;		// TODO: set this using a pref
 		if (is_numeric($this -> notify_prefs['event'][$id]['class']))
 		{
 			switch ($notifyTarget)
@@ -84,6 +95,10 @@ class notify
 					break;
 			}
 			$qry = 'SELECT user_id,user_name,user_email FROM `#user` WHERE '.$qry;
+			if ($blockOriginator)
+			{
+				$qry .= ' AND `user_id` != '.USERID;
+			}
 			if (FALSE !== ($count = $e107->sql->db_Select_gen($qry)))
 			{
 				if ($count <= 5)
@@ -155,8 +170,11 @@ class notify
 		}
 		elseif ($notifyTarget == 'email')
 		{	// Single email address - that can always go immediately
-			e107_require_once(e_HANDLER.'mail.php');
-			sendemail($this->notify_prefs['event'][$id]['email'], $subject, $message);
+			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
+			{
+				e107_require_once(e_HANDLER.'mail.php');
+				sendemail($this->notify_prefs['event'][$id]['email'], $subject, $message);
+			}
 		}
 	}
 }

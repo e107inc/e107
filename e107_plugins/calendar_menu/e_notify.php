@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_notify.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-20 22:47:28 $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-28 22:16:54 $
  * $Author: e107steved $
  */
 
@@ -19,14 +19,14 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_notify.php,v 1.5 2009-12-20 22:47:28 e107steved Exp $;
+ *	@version 	$Id: e_notify.php,v 1.6 2009-12-28 22:16:54 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
 {
-	include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+	include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_class.php');
 	$config_category = NT_LAN_EC_1;
 	$config_events = array('ecalnew' => NT_LAN_EC_7, 'ecaledit' => NT_LAN_EC_2);
 }

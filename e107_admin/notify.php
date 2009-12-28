@@ -9,9 +9,17 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-28 22:16:54 $
  * $Author: e107steved $
+ */
+
+/**
+ *	@package    e107
+ *	@subpackage	admin
+ *	@version 	$Id: notify.php,v 1.13 2009-12-28 22:16:54 e107steved Exp $;
+ *
+ *	'Notify' admin page - selects action on various events 
  */
 
 require_once('../class2.php');
@@ -70,6 +78,7 @@ class notify_config
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
+		$recalibrate = FALSE;
 		// load every e_notify.php file.
 		if($pref['e_notify_list'])
 		{
@@ -209,7 +218,7 @@ class notify_config
 	function render_event($id, $description) 
 	{
 		global $rs, $tp, $uc;
-		$text .= "
+		$text = "
 			<tr>
 				<td >".$description.":	</td>
 				<td  class='nowrap'>
