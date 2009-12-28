@@ -1299,7 +1299,19 @@ class e_admin_dispatcher
 						$k2 = $k;
 					break;
 				}
-				$var[$key][$k2] = $v;
+							 
+				if($val['perm']!= null) // check perms 
+				{
+					if(getperms($val['perm']))
+					{
+						$var[$key][$k2] = $v;		
+					}	
+				}
+				else
+				{
+					$var[$key][$k2] = $v;	
+				}
+				
 			}
 			// TODO slide down menu options?
 			if(!vartrue($var[$key]['link']))
