@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
- |     $Revision: 1.16 $
- |     $Date: 2009-08-20 10:18:13 $
- |     $Author: marj_nl_fr $
+ |     $Revision: 1.17 $
+ |     $Date: 2009-12-28 18:13:46 $
+ |     $Author: e107steved $
  +----------------------------------------------------------------------------+
  */
 require_once("../../class2.php");
@@ -72,7 +72,7 @@ if(e_QUERY)
 		{
 			$text .= "
 			<tr>
-			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option)."</b>&nbsp;&nbsp;</td>
+			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option, TRUE, 'TITLE')."</b>&nbsp;&nbsp;</td>
 			<td class='smalltext'>
 				<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'>
 				</div>
