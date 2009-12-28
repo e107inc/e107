@@ -1,10 +1,20 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.2 2009-12-28 17:53:10 e107steved Exp $
+* $Id: e_shortcode.php,v 1.3 2009-12-28 21:36:13 e107steved Exp $
 *
 * Banner shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
+
+/**
+ *	e107 Banner management plugin
+ *
+ *	Handles the display and sequencing of banners on web pages, including counting impressions
+ *
+ *	@package	e107_plugins
+ *	@subpackage	banner
+ *	@version 	$Id: e_shortcode.php,v 1.3 2009-12-28 21:36:13 e107steved Exp $;
+ */
 
 class banner_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLDER]_shortcodes
 {	

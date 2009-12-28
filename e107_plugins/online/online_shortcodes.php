@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_shortcodes.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-28 17:53:11 $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-28 21:36:13 $
  * $Author: e107steved $
 */
 if (!defined('e107_INIT')) { exit; }
@@ -21,12 +21,12 @@ initShortcodeClass('online_shortcodes');
 
 class online_shortcodes
 {
-	var $e107;
-	var	$memberInfo = array();				// Site stats
-	var	$currentMember = array('oid' => '0', 'oname' => '??', 'page' => 'lost');
-	var	$currentUser = array();				// Information about current user (for last seen)
-	var	$onlineMembersList = '';
-	var	$gen;
+	protected $e107;
+	public $memberInfo = array();				// Site stats
+	public $currentMember = array('oid' => '0', 'oname' => '??', 'page' => 'lost');
+	public $currentUser = array();				// Information about current user (for last seen)
+	public $onlineMembersList = '';
+	protected $gen;
 	
 	
 	public function __construct()

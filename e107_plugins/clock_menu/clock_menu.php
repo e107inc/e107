@@ -17,16 +17,27 @@
 | GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-11-19 10:10:54 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.3 $
+|     $Date: 2009-12-28 21:36:13 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
+
+/**
+ *	e107 Clock display menu plugin
+ *
+ *	Handles the display of a clock/calendar in a menu
+ *
+ *	@package	e107_plugins
+ *	@subpackage	clock
+ *	@version 	$Id: clock_menu.php,v 1.3 2009-12-28 21:36:13 e107steved Exp $;
+ */
+
 //FIXME looks pretty much to be 0.6 compatible
 if (!defined('e107_INIT')) { exit(); }
 include_lan(e_PLUGIN.'/clock_menu/languages/'.e_LANGUAGE.'.php');
+$menu_pref = e107::getConfig('menu')->getPref('');
 
-global $menu_pref;
 $indexArray = array('clock_dateprefix','clock_format','clock_datesuffix1','clock_datesuffix2','clock_datesuffix3','clock_datesuffix4');
 foreach($indexArray as $ind)
 {
@@ -36,7 +47,7 @@ foreach($indexArray as $ind)
 	}
 }
 
-$ec_dir = e_PLUGIN."clock_menu/";
+$ec_dir = e_PLUGIN.'clock_menu/';
 
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
 if (!isset($clock_flat) || !$clock_flat) {

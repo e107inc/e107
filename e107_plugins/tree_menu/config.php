@@ -9,22 +9,36 @@
  * Plugin Administration - Tree menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
  *
 */
-$eplug_admin = TRUE;
-require_once("../../class2.php");
-include_lan(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
 
-if (!getperms("4")) 
+/**
+ *	e107 Tree menu plugin
+ *
+ *	Provides alternative menu style
+ *
+ *	@package	e107_plugins
+ *	@subpackage	online
+ *	@version 	$Id: config.php,v 1.5 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ */
+
+$eplug_admin = TRUE;
+require_once('../../class2.php');
+include_lan(e_PLUGIN.'tree_menu/languages/'.e_LANGUAGE.'.php');
+
+if (!getperms('4')) 
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit ;
 }
-require_once(e_ADMIN."auth.php");
-	
+require_once(e_ADMIN.'auth.php');
+
+$menu_pref = e107::getConfig('menu')->getPref('');
+
 if (isset($_POST['update_menu'])) 
 {
 	$temp = array();
@@ -38,8 +52,12 @@ if (isset($_POST['update_menu']))
 
 	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_01'))
 	{
-		$tmp = addslashes(serialize($menu_pref));
-		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+		$menuPref = e107::getConfig('menu');
+		foreach ($temp as $k => $v)
+		{
+			$menuPref->setPref($k, $v);
+		}
+		$menuPref->save(false, true, false);
 	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".TREE_L3."</b></div>");
 }

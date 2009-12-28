@@ -9,11 +9,24 @@
  * Banner Menu Configuration (OLD - redirects to e107_admin/banner.php)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/config.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Banner management plugin
+ *
+ *	Handles the display and sequencing of banners on web pages, including counting impressions
+ *
+ *	@package	e107_plugins
+ *	@subpackage	banner
+ *	@version 	$Id: config.php,v 1.4 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ *	@todo - try and access file for menu config without a redirect
+ */
+
 $eplug_admin = TRUE;
 require_once("../../class2.php");
 
@@ -21,7 +34,7 @@ require_once("../../class2.php");
  * The same, cleaned up code is already part of banner.php
  * FIXME - we should be able to combine all core menus in a nice way... somehow
  */
-header('Location:'.e_ADMIN_ABS.'banner.php?menu');
+header('Location:'.e_PLUGIN_ABS.'banner/admin_banner.php?menu');
 exit;
 
 if (!getperms("1")) 		// Access to those who can change prefs, theme etc

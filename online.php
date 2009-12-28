@@ -11,12 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-11-18 01:04:24 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2009-12-28 21:36:13 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-require_once("class2.php");
+
+/**
+ *	@package    e107
+ *	@subpackage	user
+ *	@version 	$Id: online.php,v 1.12 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ *	Display list of online users, and the pages they're viewing
+ */
+
+require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
@@ -272,25 +281,19 @@ Think these are no longer used
 	
 $ONLINE_TABLE_MEMBERS_ONLINE = ONLINE_EL1.GUESTS_ONLINE;
 $ONLINE_TABLE_GUESTS_ONLINE = ONLINE_EL2.MEMBERS_ONLINE;
-if ((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])) 
-{
-	global $sysprefs;
-	$menu_pref['most_members_online'] = MEMBERS_ONLINE;
-	$menu_pref['most_guests_online'] = GUESTS_ONLINE;
-	$menu_pref['most_online_datestamp'] = time();
-	$sysprefs->setArray('menu_pref');
-}
 	
 if (!isset($gen) || !is_object($gen)) 
 {
   $gen = new convert;
 }
+
+$siteHistory = e107::getConfig('history')->getPref('');
 	
-$datestamp = $gen->convert_date($menu_pref['most_online_datestamp'], "short");
+$datestamp = $gen->convert_date($siteHistory['most_online_datestamp'], "short");
 	
-$ONLINE_TABLE_MOST_EVER_ONLINE = ONLINE_EL8.($menu_pref['most_members_online'] + $menu_pref['most_guests_online']);
-$ONLINE_TABLE_MOST_MEMBERS_ONLINE = ONLINE_EL2.$menu_pref['most_members_online'];
-$ONLINE_TABLE_MOST_GUESTS_ONLINE = ONLINE_EL1.$menu_pref['most_guests_online'];
+$ONLINE_TABLE_MOST_EVER_ONLINE = ONLINE_EL8.($siteHistory['most_members_online'] + $siteHistory['most_guests_online']);
+$ONLINE_TABLE_MOST_MEMBERS_ONLINE = ONLINE_EL2.$siteHistory['most_members_online'];
+$ONLINE_TABLE_MOST_GUESTS_ONLINE = ONLINE_EL1.$siteHistory['most_guests_online'];
 $ONLINE_TABLE_DATESTAMP = $datestamp;
 	
 $total_members = $sql->db_Count("user","(*)","where user_ban = 0");

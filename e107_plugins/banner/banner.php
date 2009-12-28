@@ -9,9 +9,19 @@
  * 
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-19 13:46:29 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
+ */
+
+/**
+ *	e107 Banner management plugin
+ *
+ *	Handles the display and sequencing of banners on web pages, including counting impressions
+ *
+ *	@package	e107_plugins
+ *	@subpackage	banner
+ *	@version 	$Id: banner.php,v 1.4 2009-12-28 21:36:13 e107steved Exp $;
  */
 
 if (!defined('e107_INIT'))
