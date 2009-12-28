@@ -9,8 +9,8 @@
  * Forthcoming events menu handler for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/next_event_menu.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-20 22:47:33 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-28 17:53:11 $
  * $Author: e107steved $
  */
 
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: next_event_menu.php,v 1.9 2009-12-20 22:47:33 e107steved Exp $;
+ *	@version 	$Id: next_event_menu.php,v 1.10 2009-12-28 17:53:11 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -27,6 +27,12 @@ $e107 = e107::getInstance();
 
 if (!$e107->isInstalled('calendar_menu')) return '';
 
+
+if (!isset($scal_class) || !is_object($ecal_class)) 
+{
+	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
+	$ecal_class = new ecal_class;
+}
 
 // See if the page is already in the cache
 $cache_tag = 'nq_event_cal_next';
@@ -36,11 +42,6 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	return;
 }
 
-if (!is_object($ecal_class)) 
-{
-	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
-	$ecal_class = new ecal_class;
-}
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 

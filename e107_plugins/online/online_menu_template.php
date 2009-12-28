@@ -9,11 +9,12 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_menu_template.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-28 17:53:11 $
+ * $Author: e107steved $
 */
 
+global $sc_style;
 //##### LASTSEEN MENU ---------------------------------------------------------
 
 $sc_style['LASTSEEN_DATE']['pre'] = "<br /> [ ";

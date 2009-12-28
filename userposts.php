@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-11-18 01:04:24 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2009-12-28 17:53:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
@@ -101,7 +101,7 @@ if ($action == "comments")
 
 	global $row;
 	foreach($data as $row){
-		$userposts_comments_table_string .= parse_userposts_comments_table($row);
+		$userposts_comments_table_string .= parse_userposts_comments_table($row, $USERPOSTS_COMMENTS_TABLE);
 	}
 
 	$userposts_comments_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_START);
@@ -212,9 +212,9 @@ if ($action == 'forums' || isset($_POST['fsearch']))
 require_once(FOOTERF);
 
 
-function parse_userposts_comments_table($row)
+function parse_userposts_comments_table($row, $USERPOSTS_COMMENTS_TABLE)
 {
-	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $menu_pref, $id, $sql2, $comment_files;
+//	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $id, $sql2, $comment_files;
 
 	$gen = new convert;
 	$datestamp = $gen->convert_date($row['comment_datestamp'], "short");

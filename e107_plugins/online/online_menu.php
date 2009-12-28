@@ -9,14 +9,17 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_menu.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-28 17:53:11 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-global $tp, $sc_style, $gen, $menu_pref, $pref;
+//global $pref;
+global $menu_pref;
+
+$tp = e107::getParser();
 
 include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
@@ -24,75 +27,66 @@ require_once(e_PLUGIN.'online/online_shortcodes.php');
 
 if (is_readable(THEME.'online_menu_template.php')) 
 {
-	require_once(THEME.'online_menu_template.php');
+	require(THEME.'online_menu_template.php');
 } 
 else 
 {
-	require_once(e_PLUGIN.'online/online_menu_template.php');
+	require(e_PLUGIN.'online/online_menu_template.php');
 }
 
-if(!defined("e_TRACKING_DISABLED") && varsettrue($pref['track_online']))
+//if(!defined('e_TRACKING_DISABLED') && varsettrue($pref['track_online']))
+if(!defined('e_TRACKING_DISABLED'))
 {
-	if (!is_object($gen)) { $gen = new convert; }
-
-	//update most ever online
-	if ((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])) 
-	{
-		$menu_pref['most_members_online'] = MEMBERS_ONLINE;
-		$menu_pref['most_guests_online'] = GUESTS_ONLINE;
-		$menu_pref['most_online_datestamp'] = time();
-		$tmp = addslashes(serialize($menu_pref));
-		$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
-	}
-
 	//display list of 'member viewing page'
-	if($menu_pref['online_show_memberlist_extended'])
+	if (e107::getConfig('menu')->get('online_show_memberlist_extended'))
 	{
 		if (MEMBERS_ONLINE) 
 		{
-			global $listuserson, $pinfo, $ADMIN_DIRECTORY, $online_location_page, $oid, $oname, $online_location_page;
+			global $listuserson;
 			$ret='';
 			foreach($listuserson as $uinfo => $pinfo) 
 			{
-				list($oid, $oname) = explode(".", $uinfo, 2);
-				$online_location_page = substr(strrchr($pinfo, "/"), 1);
-				if ($pinfo == "log.php" || $pinfo == "error.php") {
-					$pinfo = "news.php";
-					$online_location_page = "news.php";
-				}
-				if ($online_location_page == "request.php") 
+				$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
+				if ($pinfo == 'log.php' || $pinfo == 'error.php') 
 				{
-					$pinfo = "download.php";
+					$pinfo = 'news.php';
+					$online_location_page = 'news';
 				}
-				if (strstr($online_location_page, "forum")) 
+				elseif ($online_location_page == 'request.php') 
 				{
-					$pinfo = e_PLUGIN."forum/forum.php";
-					$online_location_page = "forum.php";
+					$pinfo = 'download.php';
+					$online_location_page = 'news';
 				}
-				if (strstr($online_location_page, "content")) 
+				elseif (strstr($online_location_page, 'forum')) 
 				{
-					$pinfo = "content.php";
-					$online_location_page = "content.php";
+					$pinfo = e_PLUGIN.'forum/forum.php';
+					$online_location_page = 'forum';
 				}
-				if (strstr($online_location_page, "comment")) 
+				elseif (strstr($online_location_page, 'content')) 
 				{
-					$pinfo = "comment.php";
-					$online_location_page = "comment.php";
+					$pinfo = 'content.php';
+					$online_location_page = 'content';
 				}
-				$ret .= $tp -> parseTemplate($TEMPLATE_ONLINE['ONLINE_MEMBERS_LIST_EXTENDED'], FALSE, $online_shortcodes);
+				elseif (strstr($online_location_page, 'comment')) 
+				{
+					$pinfo = 'comment.php';
+					$online_location_page = 'comment';
+				}
+				list($oid, $oname) = explode('.', $uinfo, 2);
+				setScVar('online_shortcodes', 'currentMember', array('oid' => $oid, 'oname' => $oname, 'page' => $online_location_page, 'pinfo' => $pinfo));
+				$ret .= $tp->parseTemplate($TEMPLATE_ONLINE['ONLINE_MEMBERS_LIST_EXTENDED'], TRUE);
 			}
-			global $ONLINE_MEMBERS_LIST_EXTENDED;
-			$ONLINE_MEMBERS_LIST_EXTENDED = $ret;
+			setScVar('online_shortcodes', 'onlineMembersList', $ret);
 		}
 	}
 
-	$text = $e107->tp->parseTemplate($TEMPLATE_ONLINE['ENABLED'], TRUE);
+	$text = $tp->parseTemplate($TEMPLATE_ONLINE['ENABLED'], TRUE);
 }
 else
 {
 	if (ADMIN)
 	{
-		$text = $e107->tp -> parseTemplate($TEMPLATE_ONLINE['DISABLED'], TRUE);
+		$text = $tp->parseTemplate($TEMPLATE_ONLINE['DISABLED'], TRUE);
 	}
 	else
 	{
@@ -100,8 +94,8 @@ else
 	}
 }
 
-$img = (is_readable(THEME."images/online_menu.png") ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : "");
-$caption = $img." ".varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
+$img = (is_readable(THEME.'images/online_menu.png') ? "<img src='".THEME_ABS."images/online_menu.png' alt='' />" : '');
+$caption = $img.' '.varsettrue($menu_pref['online_caption'],LAN_ONLINE_10);
 $ns->tablerender($caption, $text, 'online');
 
 ?>
