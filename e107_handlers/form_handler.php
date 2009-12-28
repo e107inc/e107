@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.107 $
- * $Date: 2009-12-25 23:32:18 $
+ * $Revision: 1.108 $
+ * $Date: 2009-12-28 01:02:26 $
  * $Author: e107coders $
  *
 */
@@ -1071,7 +1071,22 @@ class e_form
 					$query = http_build_query($query);
 
 					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
-					$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
+					
+					if(varset($parms['deleteClass']))
+					{
+						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
+						if(check_class($cls))
+						{
+							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
+						}	
+					}
+					else
+					{
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');	
+					}
+					
+					
+					
 				}
 				//$attributes['type'] = 'text';
 				return $value;
