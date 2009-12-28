@@ -9,49 +9,64 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/admin_banner.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
  *
 */
 
-require_once("../../class2.php");
-if (!getperms("D"))
+/**
+ *	e107 Banner management plugin
+ *
+ *	Handles the display and sequencing of banners on web pages, including counting impressions
+ *
+ *	@package	e107_plugins
+ *	@subpackage	banner
+ *	@version 	$Id: admin_banner.php,v 1.5 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ *	@todo language file issues to resolve
+ */
+
+require_once('../../class2.php');
+if (!getperms('D'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
 $e_sub_cat = 'banner';
 
-require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER."form_handler.php");
+require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form();
 
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."file_class.php");
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'file_class.php');
 $fl = new e_file;
 
-require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER.'message_handler.php');
 $emessage = eMessage::getInstance();
 
 //@FIXME mix up in banner language files
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-include_lan(e_PLUGIN."banner/languages/".e_LANGUAGE.".php");
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_menus.php');
+include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'.php');
+include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
 
 if(e_QUERY)
 {
-	list($action, $sub_action, $id) = explode(".", e_QUERY);
+	list($action, $sub_action, $id) = explode('.', e_QUERY);
 }
 
-$images = $fl->get_files(e_IMAGE."banners/","","standard");
+$images = $fl->get_files(e_IMAGE.'banners/','','standard');
 
+
+$menu_pref = e107::getConfig('menu')->getPref('');
 if (isset($_POST['update_menu']))
 {
-	$menu_pref['banner_caption']	= $e107->tp->toDB($_POST['banner_caption']);
-	$menu_pref['banner_amount']		= intval($_POST['banner_amount']);
-	$menu_pref['banner_rendertype']	= intval($_POST['banner_rendertype']);
+	$temp['banner_caption']	= $e107->tp->toDB($_POST['banner_caption']);
+	$temp['banner_amount']		= intval($_POST['banner_amount']);
+	$temp['banner_rendertype']	= intval($_POST['banner_rendertype']);
 
 	if (isset($_POST['multiaction_cat_active']))
 	{
@@ -63,12 +78,22 @@ if (isset($_POST['update_menu']))
 		}
 		$cat = substr($cat, 0, -1);*/
 		$cat = implode('|', $e107->tp->toDB($_POST['multiaction_cat_active']));
-		$menu_pref['banner_campaign'] = $cat;
+		$temp['banner_campaign'] = $cat;
 	}
+	if ($admin_log->logArrayDiffs($temp,$menu_pref,'BANNER_01'))
+	{
+		$menuPref = e107::getConfig('menu');
+		//e107::getConfig('menu')->setPref('', $menu_pref);
+		//e107::getConfig('menu')->save(false, true, false);
+		foreach ($temp as $k => $v)
+		{
+			$menuPref->setPref($k, $v);
+		}
+		$menuPref->save(false, true, false);
 
-	$sysprefs->setArray('menu_pref');
-	banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
-	$emessage->add(BANNER_MENU_L2, E_MESSAGE_SUCCESS);
+		//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
+		$emessage->add(BANNER_MENU_L2, E_MESSAGE_SUCCESS);
+	}
 }
 
 

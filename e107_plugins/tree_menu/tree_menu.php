@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/tree_menu.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -25,12 +25,17 @@ if (!defined('e107_INIT')) { exit; }
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
 
-/* changes by jalist
-26/01/2005
-+ complete rewrite
-+ now uses single db query, links and sublinks are built into array
-*/
 
+/**
+ *	e107 Tree menu plugin
+ *
+ *	Provides alternative menu style
+ *
+ *	@package	e107_plugins
+ *	@subpackage	online
+ *	@version 	$Id: tree_menu.php,v 1.8 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ */
 
 global $tp;
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
@@ -45,8 +50,8 @@ $linkArray = $sql->db_getList();
 // all main links now held in array, we now need to loop through them and assign the sublinks to the correct parent links ...
 
 $mainLinkArray = array();
-foreach($linkArray as $links) {
-
+foreach($linkArray as $links) 
+{
 // Updated to stop using the deprecated method of splitting the link-name in 3.
 // Now uses uses the link parent to determine the 'tree'.
 

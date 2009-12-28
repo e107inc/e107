@@ -9,14 +9,27 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2009-12-28 21:36:13 $
+ * $Author: e107steved $
  */
+
+/**
+ *	e107 Login menu plugin
+ *
+ *	Handles the login menu options
+ *
+ *	@package	e107_plugins
+ *	@subpackage	login
+ *	@version 	$Id: login_menu.php,v 1.15 2009-12-28 21:36:13 e107steved Exp $;
+ */
+
 
 if (!defined('e107_INIT')) { exit; }
 
-if(defined("FPW_ACTIVE"))
+$loginPrefs = e107::getConfig('menu')->getPref('login_menu');
+
+if(defined('FPW_ACTIVE'))
 {
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
@@ -69,6 +82,7 @@ $ip = $e107->getip();
 if (USER == TRUE || ADMIN == TRUE)
 {
     require_once(e_PLUGIN."login_menu/login_menu_class.php");
+	$loginClass = new login_menu_class();
 
     //login class ??? - TODO
 	if ($sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
@@ -77,15 +91,20 @@ if (USER == TRUE || ADMIN == TRUE)
 	}
 
 	//get templates
-    if (!isset($LOGIN_MENU_LOGGED)) {
-		if (file_exists(THEME."login_menu_template.php")){
-	   		require(THEME."login_menu_template.php");
-		}else{
-			require(e_PLUGIN."login_menu/login_menu_template.php");
+    if (!isset($LOGIN_MENU_LOGGED)) 
+	{
+		if (file_exists(THEME.'login_menu_template.php'))
+		{
+	   		require(THEME.'login_menu_template.php');
+		}
+		else
+		{
+			require(e_PLUGIN.'login_menu/login_menu_template.php');
 		}
 	}
-	if(!$LOGIN_MENU_LOGGED){
-    	require(e_PLUGIN."login_menu/login_menu_template.php");
+	if(!$LOGIN_MENU_LOGGED)
+	{
+    	require(e_PLUGIN.'login_menu/login_menu_template.php');
 	}
 
     //prepare
@@ -95,7 +114,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ News Stats -----------
 
-		if (varsettrue($menu_pref['login_menu']['new_news']))
+		if (varsettrue($loginPrefs['new_news']))
 		{
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
             $menu_data['new_news'] = $sql->db_Count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")");
@@ -104,7 +123,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Comments Stats -----------
 
-		if (varsettrue($menu_pref['login_menu']['new_comments']))
+		if (varsettrue($loginPrefs['new_comments']))
 		{
 			$menu_data['new_comments'] = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 			$new_total += $menu_data['new_comments'];
@@ -112,7 +131,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Member Stats -----------
 
-		if (varsettrue($menu_pref['login_menu']['new_members'])) 
+		if (varsettrue($loginPrefs['new_members'])) 
         {
 			$menu_data['new_users'] = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
 			$new_total += $menu_data['new_users'];
@@ -120,8 +139,8 @@ if (USER == TRUE || ADMIN == TRUE)
 		
 		// ------------ Enable stats / other ---------------
 		
-		$menu_data['enable_stats'] = $menu_data || varsettrue($menu_pref['login_menu']['external_stats']) ? true : false;
-		$menu_data['new_total'] = $new_total + login_menu_class::get_stats_total();
+		$menu_data['enable_stats'] = $menu_data || varsettrue($loginPrefs['external_stats']) ? true : false;
+		$menu_data['new_total'] = $new_total + $loginClass->get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
 		$menu_data['link_bullet_src'] = $bullet_src;
 		

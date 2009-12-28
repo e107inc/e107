@@ -9,18 +9,18 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-28 17:53:10 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-28 21:36:13 $
  * $Author: e107steved $
 */
 
 
 /**
- * 
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: online_class.php,v 1.9 2009-12-28 17:53:10 e107steved Exp $;
+ *	@version 	$Id: online_class.php,v 1.10 2009-12-28 21:36:13 e107steved Exp $;
  *
+ *	Handler to keep track of online users
  */
 
 /*

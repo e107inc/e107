@@ -9,11 +9,23 @@
  * Plugin Administration - Online menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/config.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-28 17:53:11 $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-28 21:36:13 $
  * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Online users plugin
+ *
+ *	Handles the display of users who are online
+ *
+ *	@package	e107_plugins
+ *	@subpackage	online
+ *	@version 	$Id: config.php,v 1.6 2009-12-28 21:36:13 e107steved Exp $;
+ *
+ */
+
 $eplug_admin = TRUE;
 require_once('../../class2.php');
 include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');

@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.33 $
- |     $Date: 2009-11-18 01:04:43 $
- |     $Author: e107coders $
+ |     $Revision: 1.34 $
+ |     $Date: 2009-12-28 21:36:13 $
+ |     $Author: e107steved $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -827,7 +827,7 @@ class comment
 
 		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
-			global $pref,$menu_pref,$sql,$sql2,$tp;
+			global $pref,$sql,$sql2,$tp;
 			$from1 = ($from ? $from : '0');
 			$amount1 = ($amount ? $amount : '10');
 			$valid = ($cdvalid ? $cdvalid : '0');
