@@ -9,10 +9,17 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-12-12 16:40:39 $
- * $Author: secretr $
+ * $Revision: 1.26 $
+ * $Date: 2009-12-30 21:04:11 $
+ * $Author: e107steved $
 */
+/**
+ *	@package    e107
+ *	@subpackage	user
+ *	@version 	$Id: news.php,v 1.26 2009-12-30 21:04:11 e107steved Exp $;
+ *
+ *	News front page display
+ */
 
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
@@ -163,7 +170,7 @@ if ($action == 'cat' || $action == 'all')
 	if($action == 'cat') setNewsFrontMeta($newsList[1], 'category');
 	elseif($category_name)
 	{
-		define("e_PAGETITLE", $tp->toHTML($category_name,FALSE,"TITLE"));
+		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
 	}
 
 	require_once(HEADERF);
@@ -212,11 +219,11 @@ if ($action == 'cat' || $action == 'all')
 
     if(!$NEWSLISTTITLE)
 	{
-		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,'TITLE')."'";
 	}
 	else
 	{
-    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,"TITLE"),$NEWSLISTTITLE);
+    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 
 	ob_start();
@@ -522,7 +529,7 @@ $frows = $sql -> db_Fetch();
 
 //echo "<br />Total ".$news_total." items found, ".count($newsAr)." displayed, Interval = {$interval}<br /><br />";
 
-$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,"TITLE");
+$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,'TITLE');
 
 switch($action)
 {
@@ -792,7 +799,7 @@ function renderCache($cache, $nfp = FALSE){
 function render_newscats(){  // --  CNN Style Categories. ----
 	global $pref,$ns,$tp;
 	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
-		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak,emotes_off,no_make_clickable');
+		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'TITLE');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
 }
