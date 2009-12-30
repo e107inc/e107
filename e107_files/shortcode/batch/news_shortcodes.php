@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-12-03 20:47:46 $
-|     $Author: bugrain $
+|     $Revision: 1.43 $
+|     $Date: 2009-12-30 20:59:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -66,7 +66,7 @@ SC_BEGIN NEWSCATEGORY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$category_name = $tp -> toHTML($news_item['category_name'],FALSE,"defs");
+$category_name = $tp -> toHTML($news_item['category_name'],FALSE,'TITLE');
 return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_HTTP."news.php?cat.".$news_item['news_category']."'>".$category_name."</a>";
 SC_END
 
@@ -239,7 +239,7 @@ SC_BEGIN CAPTIONCLASS
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'TITLE');
 return "<div class='category".$news_item['news_category']."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 
@@ -247,7 +247,7 @@ SC_BEGIN ADMINCAPTION
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE,'TITLE');
 return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 

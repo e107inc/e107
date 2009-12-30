@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.129 $
-|     $Date: 2009-11-15 21:41:50 $
+|     $Revision: 1.130 $
+|     $Date: 2009-12-30 20:59:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ if ($action == 'cat' || $action == 'all')
 
 	if($category_name)
 	{
-		define("e_PAGETITLE", $tp->toHTML($category_name,FALSE,"TITLE"));
+		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
 	}
 
 	require_once(HEADERF);
@@ -178,11 +178,11 @@ if ($action == 'cat' || $action == 'all')
 
     if(!$NEWSLISTTITLE)
 	{
-		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,"TITLE")."'";
+		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,'TITLE')."'";
 	}
 	else
 	{
-    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,"TITLE"),$NEWSLISTTITLE);
+    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 
 	ob_start();
@@ -419,7 +419,7 @@ if (!$sql->db_Select_gen($query))
 $newsAr = $sql -> db_getList();
 
 
-$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,"TITLE");
+$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,'TITLE');
 
 if($action != "" && !is_numeric($action))
 {
@@ -672,7 +672,7 @@ function renderCache($cache, $nfp = FALSE){
 function render_newscats(){  // --  CNN Style Categories. ----
 	global $pref,$ns,$tp;
 	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
-		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak,emotes_off,no_make_clickable');
+		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'TITLE');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
 }
