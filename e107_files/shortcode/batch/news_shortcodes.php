@@ -1,10 +1,18 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.32 2009-12-03 20:46:39 bugrain Exp $
+* $Id: news_shortcodes.php,v 1.33 2009-12-30 21:04:11 e107steved Exp $
 *
 * News shortcode batch
 */
+/**
+ *	@package    e107
+ *	@subpackage	shortcodes
+ *	@version 	$Id: news_shortcodes.php,v 1.33 2009-12-30 21:04:11 e107steved Exp $;
+ *
+ *	Shortcodes for news item display
+ */
+
 if (!defined('e107_INIT')) { exit; }
 //include_once(e_HANDLER.'shortcode_handler.php');
 
@@ -268,13 +276,13 @@ class news_shortcodes
 
 	function sc_captionclass()
 	{
-		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
+		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
 		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_admincaption()
 	{
-		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
+		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
