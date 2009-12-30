@@ -9,8 +9,8 @@
  * Templates for event calendar displays
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-20 22:47:26 $
+ * $Revision: 1.12 $
+ * $Date: 2009-12-30 21:06:39 $
  * $Author: e107steved $
  */
 
@@ -19,9 +19,8 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_template.php,v 1.11 2009-12-20 22:47:26 e107steved Exp $;
+ *	@version 	$Id: calendar_template.php,v 1.12 2009-12-30 21:06:39 e107steved Exp $;
  *
- *	@todo Replace expandit on events with latest auto-management
  */
 
 
@@ -176,32 +175,11 @@ $EVENT_EVENT_DATETIME[2]  = "{EC_EVENT_DATE_START} <b>".EC_LAN_69."</b> {EC_EVEN
 $EVENT_EVENT_DATETIME[3]  = "{EC_EVENT_DATE_START}";
 
 
-/* This is roughly what's wanted, but div not allowed 
 $EVENT_EVENT_TABLE = "
 <tr>
   <td >
-	<a href='#{EC_EVENT_ID}' class='e-show-if-js e-expandit fcaption'><div title='".EC_LAN_132."' style='cursor:pointer; text-align:left; border:0px solid #000;' >{EC_EVENT_RECENT_ICON}{EC_EVENT_CAT_ICON}{EC_EVENT_HEADING_DATE}{EC_IFNOT_ALLDAY=EC_EVENT_TIME_START}&nbsp;-&nbsp;{EC_EVENT_TITLE}</div></a>
+	<a href='#{EC_EVENT_ID}' class='e-show-if-js e-expandit fcaption' style='display:inline-block; cursor:pointer; text-align:left; border:0px solid #000; width:100%' title='".EC_LAN_132."'>{EC_EVENT_RECENT_ICON}{EC_EVENT_CAT_ICON}{EC_EVENT_HEADING_DATE}{EC_IFNOT_ALLDAY=EC_EVENT_TIME_START}&nbsp;-&nbsp;{EC_EVENT_TITLE}</a>
 	<div id='{EC_EVENT_ID}' {EC_EVENT_DISPLAYCLASS} style='padding-top:10px; padding-bottom:10px; text-align:left;'>
-	  <table style='width:100%;'  cellspacing='0' cellpadding='0'>
-		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_AUTHOR} {EC_EVENT_CAT_ICON} {EC_EVENT_CATEGORY} {EC_EVENT_CONTACT} {EC_EVENT_OPTIONS}</td></tr>
-		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_EVENT_DATE_TIME}</td></tr>\n
-		{EC_EVENT_LOCATION}
-		{EC_EVENT_DETAILS}
-		{EC_EVENT_THREAD}
-	  </table>
-	</div>
-  </td>
-</tr>\n
-";
-*/
-
-
-// This works, but not using latest class structure
-$EVENT_EVENT_TABLE = "
-<tr>
-  <td >
-	<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EC_EVENT_ID}')\">{EC_EVENT_RECENT_ICON}{EC_EVENT_CAT_ICON}{EC_EVENT_HEADING_DATE}{EC_IFNOT_ALLDAY=EC_EVENT_TIME_START}&nbsp;-&nbsp;{EC_EVENT_TITLE}</div>
-	<div id='{EC_EVENT_ID}' style='{EC_EVENT_DISPLAYSTYLE}padding-top:10px; padding-bottom:10px; text-align:left;'>
 	  <table style='width:100%;'  cellspacing='0' cellpadding='0'>
 		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_AUTHOR} {EC_EVENT_CAT_ICON} {EC_EVENT_CATEGORY} {EC_EVENT_CONTACT} {EC_EVENT_OPTIONS}</td></tr>
 		<tr><td colspan='2' class='forumheader3'>{EC_EVENT_EVENT_DATE_TIME}</td></tr>\n
