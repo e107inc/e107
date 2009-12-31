@@ -9,9 +9,9 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-23 00:52:27 $
- * $Author: e107coders $
+ * $Revision: 1.12 $
+ * $Date: 2009-12-31 09:55:57 $
+ * $Author: e107steved $
  *
 */
 require_once("../class2.php");
@@ -548,7 +548,11 @@ if(isset($_POST['do_fix']))
 			break;
 			
 			case 'create':
-				$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
+			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
+			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
+			{
+				$query .= ') TYPE=MyISAM;';
+			}
 			break;
 		}
 
@@ -632,12 +636,14 @@ require_once(e_ADMIN."footer.php");
 exit;
 
 // --------------------------------------------------------------
-function fix_form($table,$field, $newvalue,$mode,$after =''){
+function fix_form($table,$field, $newvalue,$mode,$after ='')
+{
 	global $frm;
 	
 	if($mode == 'create')
 	{
 		$newvalue = implode("\n",$newvalue);
+		$field = $table;		// Value for $field may be rubbish!
 	}
 	else
 	{
