@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.173 $
-* $Date: 2010-01-02 14:56:10 $
+* $Revision: 1.174 $
+* $Date: 2010-01-02 21:42:51 $
 * $Author: e107steved $
 *
 */
@@ -743,14 +743,14 @@ function getip()
 }
 
 // for multi-language these definitions needs to come after the language loaded.
-define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'emotes_off, defs, no_make_clickable')));
+define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'TITLE,er_on')));
 define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton']));
-define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off, defs'));
-define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off, defs'));
+define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
+define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
 define('SITEADMIN', $pref['siteadmin']);
 define('SITEADMINEMAIL', $pref['siteadminemail']);
-define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off, defs'));
-define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off, defs'));
+define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
+define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
 
 /* Withdrawn 0.8
 // legacy module.php file loading.
