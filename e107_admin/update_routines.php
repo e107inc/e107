@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2009-12-28 22:40:37 $
+|     $Revision: 1.76 $
+|     $Date: 2010-01-02 22:16:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 /**
  *	@package    e107
  *	@subpackage	admin
- *	@version 	$Id: update_routines.php,v 1.75 2009-12-28 22:40:37 e107steved Exp $;
+ *	@version 	$Id: update_routines.php,v 1.76 2010-01-02 22:16:30 e107steved Exp $;
  *
  *	Update routines from older e107 versions to current.
  *
@@ -929,7 +929,7 @@ function core_media_import($cat,$epath)
 {
 	if(!vartrue($cat)){ return;}
 	
-	if(!is_readable($path))
+	if(!is_readable($epath))
 	{
 		return;
 	}
