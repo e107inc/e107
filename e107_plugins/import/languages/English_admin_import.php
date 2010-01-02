@@ -9,10 +9,19 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/import/languages/English_admin_import.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-12-19 17:54:00 $
+ * $Revision: 1.4 $
+ * $Date: 2010-01-02 22:57:40 $
  * $Author: e107steved $
  */
+
+
+/**
+ *	e107 Import plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	import
+ *	@version 	$Id: English_admin_import.php,v 1.4 2010-01-02 22:57:40 e107steved Exp $;
+*/
 
 if (!defined('e107_INIT')) { exit; }
 

@@ -6,22 +6,33 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
+ * Linkwords plugin - admin page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision: 1.12 $
+ * $Date: 2010-01-02 22:57:41 $
+ * $Author: e107steved $
  */
 
-require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('linkwords')) 
+
+/**
+ *	e107 Linkword plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	linkwords
+ *	@version 	$Id: admin_config.php,v 1.12 2010-01-02 22:57:41 e107steved Exp $;
+ *
+ *	Administration page
+ */
+
+require_once('../../class2.php');
+if (!getperms('P') || !e107::isInstalled('linkwords')) 
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	 exit ;
 }
-require_once(e_ADMIN."auth.php");
-include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
+require_once(e_ADMIN.'auth.php');
+include_lan(e_PLUGIN.'linkwords/languages/'.e_LANGUAGE.'_admin_linkwords.php');
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 $lw_context_areas = array(
@@ -47,7 +58,7 @@ function lw_act_opts($curval)
   $ret = '';
   foreach ($lwaction_vals as $opt => $val)
   {
-    $selected = ($curval == $opt ? "selected='selected'" : "");
+    $selected = ($curval == $opt ? "selected='selected'" : '');
 	$ret .= "<option value='{$opt}' {$selected}>{$val}</option>\n";
   }
   return $ret;
@@ -58,11 +69,11 @@ $deltest = array_flip($_POST);
 
 if(isset($deltest[LWLAN_17]))
 {
-	$delete_id = str_replace("delete_", "", $deltest[LWLAN_17]);
+	$delete_id = intval(str_replace('delete_', '', $deltest[LWLAN_17]));
 
-	if ($sql->db_Count("linkwords", "(*)", "WHERE linkword_id = ".$delete_id))
+	if ($sql->db_Count('linkwords', '(*)', "WHERE linkword_id = ".$delete_id))
 	{
-		$sql->db_Delete("linkwords", "linkword_id=".$delete_id);
+		$sql->db_Delete('linkwords', 'linkword_id='.$delete_id);
 		$admin_log->log_event('LINKWD_03','ID: '.$delete_id,'');
 		$e107->ecache->clear_sys(LW_CACHE_TAG);
 		$message = LWLAN_19;
@@ -71,7 +82,7 @@ if(isset($deltest[LWLAN_17]))
 
 if(e_QUERY)
 {
-  $lw_qs = explode(".", e_QUERY);
+  $lw_qs = explode('.', e_QUERY);
   if (!isset($lw_qs[0])) $lw_qs[0] = 'words';
   if (!isset($lw_qs[1])) $lw_qs[1] = -1;
   $action = $lw_qs[0];
@@ -181,7 +192,11 @@ if($action == "edit")
 }
 else
 {
-  unset($linkword_word, $linkword_link, $linkword_active);
+	$linkword_word = '';
+	$linkword_link = '';
+	$linkword_active = '';
+	$linkword_tooltip = '';
+	$linkword_tip_id = '';
 }
 
 

@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-02 22:57:41 $
+ * $Author: e107steved $
  */
 /*
 |
@@ -24,11 +24,21 @@ TODO:
 +----------------------------------------------------------------------------+
 */
 
+/**
+ *	e107 Linkword plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	linkwords
+ *	@version 	$Id: e_tohtml.php,v 1.10 2010-01-02 22:57:41 e107steved Exp $;
+ *
+ *	'Hook' page
+ *	The class is 'hooked' by the parser, to add linkword capability to any context where its enabled.
+ */
+
 if (!defined('e107_INIT')) { exit; }
 // if (!plugInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
 
 define('LW_CACHE_ENABLE', TRUE);
-define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 class e_tohtml_linkwords
 {
@@ -71,6 +81,7 @@ class e_tohtml_linkwords
 		} 
 
 		// Will probably need linkwords on this page - so get the info
+		define('LW_CACHE_TAG', 'nomd5_linkwords');		// Put it here to avoid conflict on admin pages
 		if (LW_CACHE_ENABLE && ($temp = $e107->ecache->retrieve_sys(LW_CACHE_TAG)))
 		{
 			$ret = eval($temp);
