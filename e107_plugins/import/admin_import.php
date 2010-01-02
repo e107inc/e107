@@ -9,15 +9,24 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/import/admin_import.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:46 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-02 22:57:40 $
+ * $Author: e107steved $
  */
 
-/*
+
+/**
+ *	e107 Import plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	import
+ *	@version 	$Id: admin_import.php,v 1.5 2010-01-02 22:57:40 e107steved Exp $;
+
+
 Routine manages import from other databases
 Options supported:
 	CSV (with format file)
+	WordPress (users)
 	Mambo/Joomla
 	PHPBB2
 	PHPBB3
@@ -35,14 +44,13 @@ require_once("../../class2.php");
 // define("USE_PERSISTANT_DB",TRUE);
 
 
-require_once (e_HANDLER."form_handler.php");
+require_once (e_HANDLER.'form_handler.php');
 $frm = new e_form();
-require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER.'message_handler.php');
 
 $emessage = &eMessage::getInstance(); //nothing wrong with doing it twice
 
-// Language defs - maybe move out later
-include_lan(e_PLUGIN."import/languages/".e_LANGUAGE."_admin_import.php");
+include_lan(e_PLUGIN.'import/languages/'.e_LANGUAGE.'_admin_import.php');
 
 
 // Source DB types (i.e. CMS types) supported. Key of each element is the 'short code' for the type
@@ -67,8 +75,8 @@ $fl = new e_file;
 $importClassList = $fl->get_files(e_PLUGIN.'import', "^.+?_import_class\.php$", "standard", 1);
 foreach($importClassList as $file)
 {
-  $tag = str_replace('_class.php','',$file['fname']);
-  include_once($file['fpath'].$file['fname']);		// This will set up the variables
+	$tag = str_replace('_class.php','',$file['fname']);
+	include_once($file['path'].$file['fname']);		// This will set up the variables
 }
 unset($importClassList);
 unset($fl);
@@ -368,7 +376,9 @@ else
 
 
 
-
+/*
+ *	Currently unused function - shows available import methods and capabilities
+ */
 function showStartPage()
 {
     global $ns, $emessage, $frm, $import_class_names, $import_class_support, $db_import_blocks, $import_class_comment;
@@ -376,7 +386,7 @@ function showStartPage()
 	$text = "
 	<form method='post' action='".e_SELF."' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
-		<legend class='e-hideme'>".DBLAN_10."</legend>
+		<legend class='e-hideme'>".'DBLAN_10'."</legend>
             <table cellpadding='0' cellspacing='0' class='adminlist'>
 			<colgroup span='2'>
 			<col />
@@ -423,7 +433,6 @@ function showStartPage()
              $text .= "
 			 	<td class='center middle'>
 			 		".$frm->radio('import_type', $k)."
-			 		<!-- <input class='button' style='width: 100%' type='submit' name='db_update' value='".DBLAN_16."' /> -->
 			 	</td>
 			 </tr>";
 		}
