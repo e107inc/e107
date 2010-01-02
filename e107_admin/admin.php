@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-07-18 15:53:42 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.43 $
+|     $Date: 2010-01-02 16:42:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -199,9 +199,12 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 	return $text;
 }
 
-function render_clean() {
+function render_clean() 
+{
 	global $td;
-	while ($td <= ADLINK_COLS) {
+	$text = '';
+	while ($td <= ADLINK_COLS) 
+	{
 		$text .= "<td class='td' style='width:20%;'></td>";
 		$td++;
 	}
