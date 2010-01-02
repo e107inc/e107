@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.121 $
-|     $Date: 2009-08-15 11:54:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.122 $
+|     $Date: 2010-01-02 17:01:08 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -306,7 +306,7 @@ function hilite($link,$enabled=''){
     if (isset($pref['frontpage']['all']))
     {
       list($fp,$fp_q) = explode("?",$pref['frontpage']['all']."?");
-      if (strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == $tmp[1] && $link == e_HTTP."index.php")
+      if (strpos(e_SELF,"/".$pref['frontpage']['all'])!== FALSE && $fp_q == varset($tmp[1],'') && $link == e_HTTP."index.php")
       {
         return TRUE;
       }

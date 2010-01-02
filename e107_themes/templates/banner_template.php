@@ -1,9 +1,10 @@
 <?php
-// $Id: banner_template.php,v 1.7 2008-05-03 19:40:15 e107steved Exp $
+// $Id: banner_template.php,v 1.8 2010-01-02 17:01:09 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_banner.php");
 // ##### LOGIN TABLE -------------------------------------------------------------------------------
 global $BANNER_LOGIN_TABLE;
 if(!isset($BANNER_LOGIN_TABLE))

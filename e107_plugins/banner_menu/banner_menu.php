@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-08-03 08:08:36 $
+|     $Revision: 1.14 $
+|     $Date: 2010-01-02 17:01:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -74,11 +74,14 @@ else
   }
 
   $txt = $BANNER_MENU_START;
-  foreach($parms as $parm)
+  if (isset($parms))
   {
-	$bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
-	$BANNER = eval($bannersccode);
-	$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+	  foreach($parms as $parm)
+	  {
+		$bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
+		$BANNER = eval($bannersccode);
+		$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+	  }
   }
   $txt .= $BANNER_MENU_END;
 }

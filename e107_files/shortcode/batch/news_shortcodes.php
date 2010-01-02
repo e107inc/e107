@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-12-30 20:59:52 $
+|     $Revision: 1.44 $
+|     $Date: 2010-01-02 17:04:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $news_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-if(!$GLOBALS['NEWS_CSSMODE']){ $GLOBALS['NEWS_CSSMODE'] = "news"; }
+if(!isset($GLOBALS['NEWS_CSSMODE'])){ $GLOBALS['NEWS_CSSMODE'] = "news"; }
 /*
 SC_BEGIN NEWSTITLE
 global $tp;
