@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2009-10-04 15:35:23 $
+|     $Revision: 1.102 $
+|     $Date: 2010-01-02 22:10:35 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -293,7 +293,7 @@ if ($action == "list")
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['parent_icon']);
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
-		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($row['parent_name']);
+		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($row['parent_name'], FALSE, 'TITLE');
 		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
@@ -328,8 +328,8 @@ if ($action == "list")
 	}
 	$DOWNLOAD_CATEGORY_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 
-	$DOWNLOAD_CATEGORY = $tp->toHTML($download_category_name,FALSE,"emotes_off, no_make_clickable");
-	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE,'description');
+	$DOWNLOAD_CATEGORY = $tp->toHTML($download_category_name,FALSE,'TITLE');
+	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE,'DESCRIPTION');
 
 	$load_template = 'download_template';
 	if (!isset($DOWNLOAD_LIST_TABLE)) eval($template_load_core);
@@ -684,7 +684,7 @@ function parse_download_cat_parent_table($row)
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
-		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($download_category_name,FALSE,"emotes_off, no_make_clickable");
+		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($download_category_name,FALSE,'TITLE');
 		$DOWNLOAD_CAT_MAIN_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
@@ -721,10 +721,10 @@ function parse_download_cat_child_table($row)
 
 	$DOWNLOAD_CAT_SUB_ICON = get_cat_icons($row['download_category_icon'],$row['d_count']);
 	$DOWNLOAD_CAT_SUB_NEW_ICON = check_new_download($row['d_last_subs']);
-	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,"emotes_off, no_make_clickable");
+	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,'TITLE');
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>" : $dcatname);
 	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
-	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'description');
+	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
 	$DOWNLOAD_CAT_SUB_COUNT = $row['d_count'];
 	$DOWNLOAD_CAT_SUB_SIZE = parsesize( $row['d_size']);
 	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval( $row['d_requests']);
@@ -733,13 +733,13 @@ function parse_download_cat_child_table($row)
 	foreach($row['subsubcats'] as $subrow)
 	{
 	  $DOWNLOAD_CAT_SUBSUB_ICON = get_cat_icons($subrow['download_category_icon'],$subrow['d_count']);
-	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'description');
+	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'DESCRIPTION');
 	  $DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
 	  $DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
 	  $DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
 
 	  $DOWNLOAD_CAT_SUBSUB_NEW_ICON = check_new_download($subrow['d_last']);
-	  $DOWNLOAD_CAT_SUBSUB_NAME = ($subrow['d_count'] ? "<a href='".e_BASE."download.php?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name'],FALSE,"emotes_off, no_make_clickable"));
+	  $DOWNLOAD_CAT_SUBSUB_NAME = ($subrow['d_count'] ? "<a href='".e_BASE."download.php?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name'],FALSE,'TITLE'));
 	  $DOWNLOAD_CAT_SUBSUB .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
 	}
 

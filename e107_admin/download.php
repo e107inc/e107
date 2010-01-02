@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2009-12-15 22:21:12 $
+|     $Revision: 1.110 $
+|     $Date: 2010-01-02 22:10:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -62,14 +62,17 @@ $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
 $rs = new form;
+$action = '';
 $sub_action = '';
+$id = 0;
+$delete = '';
 if (e_QUERY)
 {
-	$tmp = explode(".", e_QUERY);
+	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
-  $sub_action = varset($tmp[1],'');
-  $id = varset($tmp[2],'');
-  $from = varset($tmp[3], 0);
+	$sub_action = varset($tmp[1],'');
+	$id = varset($tmp[2],'');
+	$from = varset($tmp[3], 0);
 	unset($tmp);
 }
 
@@ -80,7 +83,7 @@ if(isset($_POST['delete']))
 	unset($_POST['searchquery']);
 }
 
-$from = ($from ? $from : 0);
+$from = varset($from, 0);
 $amount = 50;
 
 

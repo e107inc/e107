@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-01-29 23:46:07 $
-|     $Author: bugrain $
+|     $Revision: 1.32 $
+|     $Date: 2010-01-02 22:10:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -143,8 +143,8 @@ return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.
 SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY
-global $dl;
-return $dl['download_category_name'];
+global $tp,$dl;
+$text = $tp -> toHTML($dl['download_category_name'], FALSE,'TITLE');
 SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY_ICON
@@ -159,7 +159,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY_DESCRIPTION
 global $tp,$dl;
-$text = $tp -> toHTML($dl['download_category_description'], TRUE,'description');
+$text = $tp -> toHTML($dl['download_category_description'], TRUE,'DESCRIPTION');
 if($parm){
 	return substr($text,0,$parm);
 }else{
