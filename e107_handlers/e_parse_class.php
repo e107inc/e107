@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.88 $
-* $Date: 2009-12-12 11:01:04 $
-* $Author: e107coders $
+* $Revision: 1.89 $
+* $Date: 2010-01-02 21:42:51 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -55,9 +55,9 @@ class e_parse
 	// 'Hooked' parsers (array)
 	var $e_hook;
 
-	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;', ' & ');
+	var $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
-	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"', ' &amp; ');
+	var $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
 
 	// Set to TRUE or FALSE once it has been calculated
 	var $e_highlighting;
@@ -159,7 +159,7 @@ class e_parse
 				// text is the 'content' of a link (A tag, etc)
 				'LINKTEXT' =>
 					array(
-						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes_on'=>FALSE, 'hook'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE
+						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes'=>FALSE, 'hook'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE
 						),
 				// text is used (for admin edit) without fancy conversions or html.
 				'RAWTEXT' =>
@@ -170,8 +170,8 @@ class e_parse
 
 	// Individual modifiers change the current context
 	var $e_Modifiers = array(
-				'emotes_off'	=> array('emotes_on' => FALSE),
-				'emotes_on'		=> array('emotes_on' => TRUE),
+				'emotes_off'	=> array('emotes' => FALSE),
+				'emotes_on'		=> array('emotes' => TRUE),
 				'no_hook'		=> array('hook' => FALSE),
 				'do_hook'		=> array('hook' => TRUE),
 				// New for 0.8
@@ -952,12 +952,15 @@ class e_parse
 	 * @param string $text
 	 * @param boolean $parseBB [optional]
 	 * @param string $modifiers [optional] TITLE|SUMMARY|DESCRIPTION|BODY|RAW|LINKTEXT etc.
+	 *		Comma-separated list, no spaces allowed
+	 *		first modifier must be a CONTEXT modifier, in UPPER CASE.
+	 *		subsequent modifiers are lower case - see $this->e_Modifiers for possible values
 	 * @param mixed $postID [optional]
 	 * @param boolean $wrap [optional]
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toHTML($text, $parseBB = FALSE, $modifiers = '', $postID = "", $wrap = FALSE)
+	public function toHTML($text, $parseBB = FALSE, $modifiers = '', $postID = '', $wrap = FALSE)
 	{
 		if($text == '')
 		{
@@ -979,8 +982,8 @@ class e_parse
 			$psm = trim($aMods[0]);
 			if (isset($this->e_SuperMods[$psm]))
 			{
-				// Supermodifier found - it simply overrides the default
-				$opts = $this->e_SuperMods[$psm];
+				// Supermodifier found - override default values where necessary
+				$opts = array_merge($opts,$this->e_SuperMods[$psm]);
 				$opts['context'] = $psm;
 				unset($aMods[0]);
 			}
@@ -989,7 +992,7 @@ class e_parse
 			// (there should only be one or two out of the list of possibles)
 			foreach ($aMods as $mod)
 			{
-				// Slight concession to varying coding styles
+				// Slight concession to varying coding styles - stripping spaces is a waste of CPU cycles!
 				$mod = trim($mod);
 				if (isset($this->e_Modifiers[$mod]))
 				{
