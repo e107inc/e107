@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.172 $
-* $Date: 2009-12-24 10:51:23 $
-* $Author: e107coders $
+* $Revision: 1.173 $
+* $Date: 2010-01-02 14:56:10 $
+* $Author: e107steved $
 *
 */
 //
@@ -1943,7 +1943,7 @@ function force_userupdate($currentUser)
 
 	if (!e107::getPref('disable_emailcheck',TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if(e107::getDb()->db_Select('user_extended_struct', 'user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	if(e107::getDb()->db_Select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
 	{
 		while($row = e107::getDb()->db_Fetch())
 		{
