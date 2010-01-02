@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.34 2009-12-27 11:50:34 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.35 2010-01-02 22:31:11 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
@@ -98,6 +98,9 @@ class admin_shortcodes
 				if (is_readable('plugin.xml'))
 				{
 					$xml = e107::getXml();
+					/**
+					 *	@todo: folder and administration are deprecated. What replaces them?
+					 */
 					$xml->filter = array('folder' => FALSE, 'administration' => FALSE);		// Just need one variable
 					$readFile = $xml->loadXMLfile('plugin.xml', true, true);
 					$eplug_icon = $readFile['folder'].'/'.$readFile['administration']['icon'];
