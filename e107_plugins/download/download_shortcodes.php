@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-02 22:10:27 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -38,7 +38,7 @@ class download_shortcodes
 	// Category ************************************************************************************
    function sc_download_cat_main_name() {
       global $tp, $dlrow;
-      return $tp->toHTML($dlrow['download_category_name'], FALSE, 'USER_TITLE');
+      return $tp->toHTML($dlrow['download_category_name'], FALSE, 'TITLE');
    }
    function sc_download_cat_main_description() {
       global $tp, $dlrow;
@@ -54,11 +54,11 @@ class download_shortcodes
       global $tp, $dlsubrow;
       if ($dlsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubrow['download_category_id']."'>".$tp->toHTML($dlsubrow['download_category_name'], FALSE, 'USER_TITLE')."</a>";
+         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubrow['download_category_id']."'>".$tp->toHTML($dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
-         return $tp->toHTML($dlsubrow['download_category_name'], FALSE, 'USER_TITLE');
+         return $tp->toHTML($dlsubrow['download_category_name'], FALSE, 'TITLE');
       }
    }
    function sc_download_cat_sub_description() {
@@ -90,11 +90,11 @@ class download_shortcodes
       global $tp, $dlsubsubrow;
       if ($dlsubsubrow['d_count'])
       {
-         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubsubrow['download_category_id']."'>".$tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'USER_TITLE')."</a>";
+         return "<a href='".e_PLUGIN."download/download.php?list.".$dlsubsubrow['download_category_id']."'>".$tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
-         return $tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'USER_TITLE');
+         return $tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'TITLE');
       }
    }
    function sc_download_cat_subsub_description() {
@@ -131,7 +131,7 @@ class download_shortcodes
       	}else{
       		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$dlrow['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$dlrow['download_id']."' title='".LAN_dl_32."'>");
       	}
-      	$text .= $tp->toHTML($dlrow['download_name'], FALSE, 'USER_TITLE')."</a>";
+      	$text .= $tp->toHTML($dlrow['download_name'], FALSE, 'TITLE')."</a>";
       	return $text;
       }
       return  "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$tp->toHTML($dlrow['download_name'],TRUE,'LINKTEXT')."</a>";
