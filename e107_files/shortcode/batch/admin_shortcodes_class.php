@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.35 2010-01-02 22:31:11 e107steved Exp $
+* $Id: admin_shortcodes_class.php,v 1.36 2010-01-03 14:46:16 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
@@ -14,7 +14,7 @@ class admin_shortcodes
 		if (!ADMIN) { return ''; }
 		return "
 		<div style='text-align: center'>
-		<input class='button' type='button' onclick=\"javascript: window.open('".e_ADMIN."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
+		<input class='button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
 		</div>";
 	}
 
@@ -115,7 +115,7 @@ class admin_shortcodes
 					$icon = E_32_CAT_PLUG;
 					return $icon;
 				}
-				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_icon)) ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
+				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_icon)) ? "<img src='".e_PLUGIN_ABS.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
 			}
 			else
 			{
@@ -301,7 +301,7 @@ class admin_shortcodes
 
 					if($amount = $sql -> db_Select('generic', '*', $queryString))
 					{
-						$text .= "<br /><b><a href='".e_ADMIN."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
+						$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 					}
 					$text .= "</div>";
 					return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);
@@ -353,8 +353,8 @@ class admin_shortcodes
 						$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
 					}
 					$text .= ($cnt ? '</ul>' : '');
-					$text .= "[ <a href='".e_ADMIN."admin_log.php?adminlog'>".ADLAN_117."</a> ]";
-					$text .= "<br />[ <a href='".e_ADMIN."admin_log.php?config'>".ADLAN_118."</a> ]";
+					$text .= "[ <a href='".e_ADMIN_ABS."admin_log.php?adminlog'>".ADLAN_117."</a> ]";
+					$text .= "<br />[ <a href='".e_ADMIN_ABS."admin_log.php?config'>".ADLAN_118."</a> ]";
 
 					//			$text .= "<br />[ <a href='".e_ADMIN."admin_log.php?purge' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\">".ADLAN_118."</a> ]\n";
 
@@ -429,7 +429,7 @@ class admin_shortcodes
 		{
 			if ($link == 'index')
 			{
-				$image = "<a href='".e_ADMIN."index.php'>".$image.'</a>';
+				$image = "<a href='".e_ADMIN_ABS."index.php'>".$image.'</a>';
 			}
 			else
 			{
@@ -535,9 +535,9 @@ class admin_shortcodes
 				$active_page = time();
 			}
 			$e107_var['x']['text'] = ADLAN_52;
-			$e107_var['x']['link'] = e_ADMIN.'admin.php';
+			$e107_var['x']['link'] = e_ADMIN_ABS.'admin.php';
 			$e107_var['y']['text'] = ADLAN_53;
-			$e107_var['y']['link'] = e_BASE."index.php";
+			$e107_var['y']['link'] = e_HTTP."index.php";
 
 			//$text .= show_admin_menu("",$active_page,$e107_var);
 			$e107_var['afuncs']['text'] = ADLAN_93;
@@ -603,7 +603,7 @@ class admin_shortcodes
 			}
 
 			$e107_var['lout']['text']=ADLAN_46;
-			$e107_var['lout']['link']=e_ADMIN.'admin.php?logout';
+			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
 
 			$text = e_admin_menu('', '', $e107_var);
 			return $ns->tablerender(LAN_head_1, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
@@ -840,10 +840,10 @@ class admin_shortcodes
 
 					$text = "
 					<div class='left'>
-						<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": <a href='".e_ADMIN."users.php?filter=0'>".$members."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: <a href='".e_ADMIN."users.php?filter=unverified'>".$unverified."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": <a href='".e_ADMIN."users.php?filter=banned'>".$banned."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN."comment.php'>".$comments."</a></div>";
+						<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": <a href='".e_ADMIN_ABS."users.php?filter=0'>".$members."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: <a href='".e_ADMIN_ABS."users.php?filter=unverified'>".$unverified."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": <a href='".e_ADMIN_ABS."users.php?filter=banned'>".$banned."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN_ABS."comment.php'>".$comments."</a></div>";
 
 					if(vartrue($pref['e_status_list']))
 					{
@@ -858,7 +858,7 @@ class admin_shortcodes
 
 					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
-						$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
+						$text .= "<img src='".e_IMAGE_ABS."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a>";
 					}
 					$text .= "</div>";
 					return $ns -> tablerender(LAN_STATUS, $text, '', TRUE);
@@ -1091,7 +1091,7 @@ class admin_shortcodes
 				{
 					if ($file != '.' && $file != '..' && $file != 'CVS')
 					{
-						$text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN.'docs.php?'.$i, E_16_DOCS);
+						$text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN_ABS.'docs.php?'.$i, E_16_DOCS);
 						$i++;
 					}
 				}
@@ -1108,8 +1108,8 @@ class admin_shortcodes
 				$text .= "<td style='width: 160px; white-space: nowrap'>
 				<div class='menuBar' style='width: 100%'>";
 
-				$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
-				$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
+				$text .= adnav_cat(ADLAN_53, e_HTTP.'index.php', E_16_NAV_LEAV);
+				$text .= adnav_cat(ADLAN_46, e_ADMIN_ABS.'admin.php?logout', E_16_NAV_LGOT);
 
 				$text .= '</div>
 				</td>';
@@ -1305,7 +1305,7 @@ class admin_shortcodes
 		if(!varsettrue($parms['disable_ll']))
 		{
 			$menu_vars['home']['text'] = ADLAN_53;
-			$menu_vars['home']['link'] = e_BASE.'index.php';
+			$menu_vars['home']['link'] = e_HTTP.'index.php';
 			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['perm'] = '';
@@ -1326,7 +1326,7 @@ class admin_shortcodes
         $action = "";
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
-		$var['menumanager']['link'] = e_ADMIN_ABS."menus.php";
+		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
 
 		if(vartrue($pref['menuconfig_list']))
 		{

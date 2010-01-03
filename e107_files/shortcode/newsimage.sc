@@ -1,4 +1,4 @@
 
 
-return "<img src='".e_IMAGE."newspost_images/".$parm."' alt='' />";
+return "<img src='".e_IMAGE_ABS."newspost_images/".$parm."' alt='' />";
 
