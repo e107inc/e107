@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-12-06 15:39:31 $
+ * $Revision: 1.33 $
+ * $Date: 2010-01-03 12:14:06 $
  * $Author: e107steved $
  *
 */
@@ -141,7 +141,7 @@ class page
         $this->fieldpref = (varset($user_pref['admin_cpage_columns'])) ? $user_pref['admin_cpage_columns'] : array("page_id","page_title","page_theme"); ;
 
     	$this->fields = array(
-			'page_id'			=> array('title'=> ID, 					'width'=>'5%', 'forced'=> TRUE),
+			'page_id'			=> array('title'=> 'ID',			'width'=>'5%', 'forced'=> TRUE),
             'page_title'	   	=> array('title'=> CUSLAN_1, 		'type' => 'text', 'width'=>'auto'),
 			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 'width' => 'auto','nolist'=>true),
 			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 'width' => 'auto'),
@@ -214,7 +214,7 @@ class page
 			{
 				$pge['page_title'] = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
 				$authorData = get_user_data($pge['page_author']);
-				$pge['page_author'] = $authorData['user_name'];
+				$pge['page_author'] = varset($authorData['user_name'], '?');
 
 				$text .= $frm->renderTableRow($this->fields,$this->fieldpref,$pge,'page_id');
 			}
