@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.108 $
- * $Date: 2009-12-28 01:02:26 $
- * $Author: e107coders $
+ * $Revision: 1.109 $
+ * $Date: 2010-01-03 12:14:06 $
+ * $Author: e107steved $
  *
 */
 
@@ -977,7 +977,7 @@ class e_form
 		foreach ($fieldarray as $field => $data)
 		{
 			// shouldn't happen...
-			if(!isset($fieldvalues[$field]) && $data['alias'])
+			if(!isset($fieldvalues[$field]) && isset($data['alias']))
 			{
 				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
 				$field = $data['alias'];
@@ -1002,7 +1002,7 @@ class e_form
 			$tdclass = vartrue($data['class']);
 			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
 			// there is no other way for now - prepare user data
-			if('user' == $data['type']/* && isset($data['readParms']['idField'])*/)
+			if('user' == varset($data['type'], '')/* && isset($data['readParms']['idField'])*/)
 			{
 				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
 				if(isset($data['readParms']['idField']))
@@ -1099,7 +1099,7 @@ class e_form
 			break;
 		}
 
-		switch($attributes['type'])
+		switch(varset($attributes['type'],''))
 		{
 			case 'number':
 				if($parms)
