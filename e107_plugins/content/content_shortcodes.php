@@ -188,14 +188,14 @@ if($sc_mode){
 			if( varsettrue($row['content_pe']) && varsettrue($content_pref["content_catall_peicon"])){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
-				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
+				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 				return $epicons;
 			}
 	}elseif($sc_mode=='catlist'){
 			if( (varsettrue($content_pref["content_cat_peicon"]) && varsettrue($row['content_pe'])) || varsettrue($content_pref["content_cat_peicon_all"]) ){
 				$epicons = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				$epicons .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
-				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$qs[1]}");
+				$epicons .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_72."^plugin:content.$qs[1]}");
 				return $epicons;
 			}
 	}
