@@ -83,7 +83,7 @@ if ($parms[1] == 'icon')
 	}
 	elseif(file_exists(e_IMAGE."user_icons/{$parms[0]}.png"))
 	{
-		return "<img src='".e_IMAGE."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
+		return "<img src='".e_IMAGE_ABS."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
 	}
 	return "";
 }

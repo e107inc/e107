@@ -25,7 +25,7 @@ else
 }
 if($image && file_exists(e_FILE."public/avatars/".$image))
 {
-	 return "<img src='".e_FILE."public/avatars/{$image}' alt='' />";
+	 return "<img src='".e_FILE_ABS."public/avatars/{$image}' alt='' />";
 }
 else
 {

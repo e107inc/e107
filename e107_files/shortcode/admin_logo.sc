@@ -12,7 +12,7 @@ else if (is_readable(THEME."images/e_adminlogo.png"))
 }
 else
 {
-	$logo = e_IMAGE."adminlogo.png";
+	$logo = e_IMAGE_ABS."adminlogo.png";
 	$path = $logo;
 }
 
@@ -22,7 +22,7 @@ $image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensio
 
 if (isset($link) && $link) {
 	if ($link == 'index') {
-		$image = "<a href='".e_ADMIN."index.php'>".$image."</a>";
+		$image = "<a href='".e_ADMIN_ABS."index.php'>".$image."</a>";
 	}
 	else
 	{

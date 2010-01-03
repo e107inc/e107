@@ -100,7 +100,7 @@ if (ADMIN) {
 	$i=1;
 	while ($file = readdir($handle)) {
 		if ($file != "." && $file != ".." && $file != "CVS") {
-			$text .= adnav_main(str_replace("_", " ", $file), e_ADMIN."docs.php?".$i, E_16_DOCS);
+			$text .= adnav_main(str_replace("_", " ", $file), e_ADMIN_ABS."docs.php?".$i, E_16_DOCS);
 			$i++;
 		}
 	}
@@ -115,8 +115,8 @@ if (ADMIN) {
 		$text .= "<td style='width: 160px; white-space: nowrap'>
 		<div class='menuBar' style='width: 100%'>";
 
-		$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
-		$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
+		$text .= adnav_cat(ADLAN_53, e_HTTP.'index.php', E_16_NAV_LEAV);
+		$text .= adnav_cat(ADLAN_46, e_ADMIN_ABS.'admin.php?logout', E_16_NAV_LGOT);
 
 		$text .= "</div>
 		</td>";

@@ -7,7 +7,7 @@ if (getperms('0') || getperms('4'))
 			$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
 			$banned = $sql -> db_Count("user", "(*)", "WHERE user_ban=1");
 			$comments = $sql -> db_Count("comments");
-			$unver = ($unverified ? " <a href='".e_ADMIN."users.php?unverified'>".ADLAN_111."</a>" : ADLAN_111);
+			$unver = ($unverified ? " <a href='".e_ADMIN_ABS."users.php?unverified'>".ADLAN_111."</a>" : ADLAN_111);
 
 			$text = "<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": ".$members."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: ".$unverified."</div>";
@@ -25,7 +25,7 @@ if (getperms('0') || getperms('4'))
 
 			if($flo = $sql -> db_Count("generic", "(*)", "WHERE gen_type='failed_login'"))
 			{
-				$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
+				$text .= "<img src='".e_IMAGE_ABS."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a>";
 			}
 
 

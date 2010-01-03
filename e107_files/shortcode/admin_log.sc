@@ -18,9 +18,9 @@ if (getperms('0'))
 				$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
 			}
 			$text .= ($cnt ? "</ul>" : "");
-			$text .= "[ <a href='".e_ADMIN."admin_log.php?logall'>".ADLAN_117."</a> ]";
+			$text .= "[ <a href='".e_ADMIN_ABS."admin_log.php?logall'>".ADLAN_117."</a> ]";
 
-			$text .= "<br />[ <a href='".e_ADMIN."admin_log.php?purge' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\">".ADLAN_118."</a> ]\n";
+			$text .= "<br />[ <a href='".e_ADMIN_ABS."admin_log.php?purge' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\">".ADLAN_118."</a> ]\n";
 
 			$text .= "</div>";
 

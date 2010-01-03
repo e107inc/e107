@@ -76,10 +76,10 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		extract($row3);
 
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='".e_BASE."news.php?cat.".$category_id."'><img src='".e_IMAGE."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='".e_HTTP."news.php?cat.".$category_id."'><img src='".e_IMAGE_ABS."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
 
 		$search[1] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[1] = ($category_name) ? "<a href='".e_BASE."news.php?cat.".$category_id."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='".e_HTTP."news.php?cat.".$category_id."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='".NEWSCAT_CELL."; width:$wid%;'>\n";
