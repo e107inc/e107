@@ -9,8 +9,8 @@
  *	PM plugin - base class API
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-12-18 20:49:55 $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-04 21:35:38 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_class.php,v 1.12 2009-12-18 20:49:55 e107steved Exp $;
+ *	@version 	$Id: pm_class.php,v 1.13 2010-01-04 21:35:38 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -213,7 +213,7 @@ class private_message
 		$newvals = '';
 		if($this->e107->sql->db_Select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
-			$row = $sql->db_Fetch();
+			$row = $this->e107->sql->db_Fetch();
 			if($row['pm_to'] == USERID)
 			{
 				$newvals = 'pm_read_del = 1';
@@ -259,7 +259,7 @@ class private_message
 
 
 
-	/*
+	/**
 	 *	Send an email to notify of a PM
 	 *
 	 *	@param int $uid - not used
@@ -286,7 +286,7 @@ class private_message
 	}
 
 
-	/*
+	/**
 	 *	Send PM read receipt
 	 *
 	 *	@param array $pmInfo - PM details
@@ -357,8 +357,6 @@ class private_message
 	 *	@param int $to - user doing the blocking
 	 *
 	 *	@return string result message
-	 *
-	 *	@todo change db access to use arrays
 	 */
 	function block_add($from, $to = USERID)
 	{
@@ -373,7 +371,11 @@ class private_message
 		  
 			if(!$this->e107->sql->db_Count('private_msg_block', '(*)', 'WHERE pm_block_from = '.$from." AND pm_block_to = '".$this->e107->tp->toDB($to)."'"))
 			{
-				if($this->e107->sql->db_Insert('private_msg_block', "0, '".$from."', '".$this->e107->tp -> toDB($to)."', '".time()."', '0'"))
+				if($this->e107->sql->db_Insert('private_msg_block', array(
+						'pm_block_from' => $from,
+						'pm_block_to' => $to,
+						'pm_block_datestamp' => time()
+					)))
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}

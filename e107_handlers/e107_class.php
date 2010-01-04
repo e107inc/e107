@@ -2,24 +2,31 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.98 $
- * $Date: 2009-12-27 13:56:14 $
- * $Author: e107coders $
+ * $Revision: 1.99 $
+ * $Date: 2010-01-04 21:35:38 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+
 /**
- * e107 class
+ * 
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Revision: 1.99 $
+ * @author      $Author: e107steved $
  *
+ *	e107_class - core class with many system-related methods
  */
+
 class e107
 {
 	/**
@@ -1704,11 +1711,11 @@ class e107
 	//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 	
 		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux. 
-		if(substr($e_ROOT,-1) != '/')
+		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\'))
 		{
-			$e_ROOT .= "/";	
+			$e_ROOT .= '/';
 		}
-		define("e_ROOT", $e_ROOT);			// Specified format gives trailing slash already (at least on Windows)
+		define('e_ROOT', $e_ROOT);			// Specified format gives trailing slash already (at least on Windows)
 
 		$this->relative_base_path = (!isset($_E107['cli'])) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";

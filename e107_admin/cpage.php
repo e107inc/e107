@@ -2,31 +2,41 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.33 $
- * $Date: 2010-01-03 12:14:06 $
+ * $Revision: 1.34 $
+ * $Date: 2010-01-04 21:35:37 $
  * $Author: e107steved $
  *
 */
 
-require_once("../class2.php");
+/**
+ * 
+ * @package     e107
+ * @subpackage	admin
+ * @version     $Revision: 1.34 $
+ * @author      $Author: e107steved $
 
-if (!getperms("5|J")) { header("location:".e_BASE."index.php"); exit; }
+ *	Admin-related functions for custom page and menu creation
+*/
+
+require_once('../class2.php');
+
+if (!getperms("5|J")) { header('location:'.e_BASE.'index.php'); exit; }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'custom';
 
-require_once("auth.php");
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."message_handler.php");
-require_once(e_HANDLER."form_handler.php");
+require_once('auth.php');
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'message_handler.php');
+require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form(true);
 $emessage = &eMessage::getInstance();
 $page = new page;
@@ -93,7 +103,7 @@ if (isset($_POST['saveOptions']))
 
 if(!e_QUERY)
 {
-	if(getperms("5"))
+	if(getperms('5'))
 	{
 		$page->showExistingPages();
 	}
@@ -103,7 +113,7 @@ if(!e_QUERY)
 	}
 
 }
-elseif($_GET['action']=='edit')
+elseif(varset($_GET['action'],'')=='edit')
 {
 	$action = 'create';
 	$sub_action = 'edit';
@@ -118,11 +128,11 @@ elseif(vartrue($_GET['menus']))
 }
 else
 {
-	$function = $action."Page";
+	$function = $action.'Page';
 	$page->$function();
 }
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 class page
 {
@@ -282,8 +292,14 @@ class page
 				$menu_name					  = $tp->toForm($row['page_theme']);
 			}
 		}
+		else
+		{
+			$menu_name = '';
+			$page_title = '';
+			$data = '';
+		}
 
-		$e_qry = ($mode) ? "menus=1" : "";
+		$e_qry = ($mode) ? 'menus=1' : '';
 
 		$text = "
 			<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
@@ -538,7 +554,20 @@ class page
 		{	// New page/menu
 			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
 
-			$pid = admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."', '".$_POST['page_template']."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
+			$info = array(
+				'page_title' => $page_title,
+				'page_text' => $page_text,
+				'page_author' => $pauthor,
+				'page_datestamp' => time(),
+				'page_rating_flag' => varset($_POST['page_rating_flag'],0),
+				'page_comment_flag' => varset($_POST['page_comment_flag'], ''),
+				'page_password' => varset($_POST['page_password'], ''),
+				'page_class' => varset($_POST['page_class'],e_UC_PUBLIC),
+				'page_ip_restrict' => '',
+				'page_theme' => $menuname,
+				'page_template' => varset($_POST['page_template'],'')
+				);
+			$pid = admin_update($sql->db_Insert('page', $info), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
@@ -546,9 +575,9 @@ class page
 				$sql->db_Insert("menus", "0, '{$menuname}', '0', '0', '0', '', '".$pid."' ");
 			}
 
-			if($_POST['page_link'])
+			if(vartrue($_POST['page_link']))
 			{
-				$link = "page.php?".$pid;
+				$link = 'page.php?'.$pid;
 				if (!$sql->db_Select("links", "link_id", "link_name='".$tp->toDB($_POST['page_link'])."'"))
 				{
 					$linkname = $tp->toDB($_POST['page_link']);
