@@ -9,8 +9,8 @@
  * Forthcoming events menu handler for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-20 22:47:20 $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-04 22:36:27 $
  * $Author: e107steved $
  */
  
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_menu.php,v 1.9 2009-12-20 22:47:20 e107steved Exp $;
+ *	@version 	$Id: calendar_menu.php,v 1.10 2010-01-04 22:36:27 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -69,7 +69,7 @@ $cal_titles = array();
 $cal_recent = array();
 $cal_totev = 0;
 
-$ev_list = $ecal_class->get_events($cal_monthstart, $cal_monthend, FALSE, $cat_filter, $show_recurring, 
+$ev_list = $ecal_class->get_events($cal_monthstart, $cal_monthend, TRUE, $cat_filter, $show_recurring, 
 						'event_start, event_thread, event_title, event_recurring, event_allday', 'event_cat_icon');
 $cal_totev = count($ev_list);
 
