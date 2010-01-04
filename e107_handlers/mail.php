@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.22 $
- * $Date: 2010-01-04 10:14:48 $
+ * $Revision: 1.23 $
+ * $Date: 2010-01-04 10:18:02 $
  * $Author: e107coders $
 */
 
@@ -686,10 +686,10 @@ class e107Email extends PHPMailer
 					$filename = basename($url);
 					$directory = dirname($url);
 					if ($directory == '.') $directory='';
-					if (strpos($directory, e_HTTP) === 0) 
+					if ((strpos($directory, e_HTTP) === 0) && (e_HTTP != '/'))  // FIXME - if e_HTTP == '/' - breaks full path; 
 					{
-						// $directory = str_replace(e_HTTP, '', $directory); // FIXME - if e_HTTP == '/' - breaks full path; 
-						// $basedir = e_ROOT;
+						$directory = str_replace(e_HTTP, '', $directory); 
+						$basedir = e_ROOT;
 					}
 					
 					if(vartrue($_E107['debug']))
