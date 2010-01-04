@@ -9,8 +9,8 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.12 $
+ * $Date: 2010-01-04 21:35:38 $
  * $Author: e107steved $
  */
 
@@ -20,20 +20,19 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_conf.php,v 1.11 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id: pm_conf.php,v 1.12 2010-01-04 21:35:38 e107steved Exp $;
  */
 
 
 /*
 TODO:
 1. Limits page needs some lines round the table
-2. Limits page - test
+2. Prefs - use new get method
 3. Maintenance page - to be tested
-4. Check operation of user dropdown/popup bit
+4. Put prefs into plugin.xml
 5. User option to enable/disable email notification of PMs
 6. Cron-triggered bulk send.
 7. What are implications of 'anyone but' userclasses?
-8. Put prefs into plugin.xml
 */
 
 
@@ -110,8 +109,7 @@ if ($savePMP)
 }
 
 
-//$lan_file = e_PLUGIN.'pm/languages/admin/'.e_LANGUAGE.'.php';
-// include_once(is_readable($lan_file) ? $lan_file : e_PLUGIN."pm/languages/admin/English.php");
+//include_lan(e_PLUGIN.'pm/languages/admin/'.e_LANGUAGE.'.php');
 	
 if (isset($_POST['update_prefs'])) 
 {

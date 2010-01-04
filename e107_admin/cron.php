@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc
+|     Copyright (C) 2008-2010 e107 Inc
 |     http://e107.org/
 |
 |
@@ -11,10 +11,20 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-12-24 09:59:21 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2010-01-04 21:35:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
+*/
+
+/**
+ * 
+ * @package     e107
+ * @subpackage	admin
+ * @version     $Revision: 1.26 $
+ * @author      $Author: e107steved $
+
+ *	Admin-related functions for cron (Scheduler) management
 */
 
 require_once('../class2.php');
@@ -181,20 +191,21 @@ function cronName($classname,$method)
 	
 	function cronExecute($class_func)
 	{
+		echo "Execute: {$class_func}<br />";
 		//TODO LANs
 		list($class_name,$method_name) = explode("__",$class_func);
 		$mes = e107::getMessage();
 		
 		$taskName = $class_name;
-		if($class_name =='_system_cron')
+		if($class_name =='_system')
 		{
 			require_once(e_HANDLER.'cron_class.php');
 		}
 		else
 		{
 			require_once(e_PLUGIN.$class_name.'/e_cron.php');
-			$class_name .= '_cron';
 		}
+		$class_name .= '_cron';
 		$status =  $this->cronExecuteMethod($class_name,$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add("Running <b>".$this->cronName($taskName,$method_name)."</b>", $status); 	
 

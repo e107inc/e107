@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Mailout - mail database API and utility routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-28 17:53:10 $
+ * $Revision: 1.12 $
+ * $Date: 2010-01-04 21:35:38 $
  * $Author: e107steved $
 */
 
@@ -18,7 +18,7 @@
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.11 $
+ * @version     $Revision: 1.12 $
  * @author      $Author: e107steved $
 
 
@@ -887,7 +887,7 @@ class e107MailManager
 	 *                 'dup' if duplicate of existing email
 	 *                 integer - number of email recipient in DB
 	 */
-	public function mailAddNoDup($handle, $mailRecip, $initStatus = MAIL_STATUS_TEMP, $priority = E107_EMAIL_PRIORITY_LOW)
+	public function mailAddNoDup($handle, $mailRecip, $initStatus = MAIL_STATUS_TEMP, $priority = self::E107_EMAIL_PRIORITY_LOW)
 	{
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		if (!isset($this->mailCounters[$handle])) return 'nocounter';

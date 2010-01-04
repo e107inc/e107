@@ -2,21 +2,27 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-01 20:05:53 $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-04 21:35:38 $
  * $Author: e107steved $
  *
 */
 
-/*
-Various admin-related mailout functions, mostly to do with creating and handling forms. 
+/**
+ * 
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Revision: 1.10 $
+ * @author      $Author: e107steved $
+
+ *	Various admin-related mailout functions, mostly to do with creating and handling forms. 
 */
 
 
@@ -218,7 +224,7 @@ class mailoutAdminClass extends e107MailManager
 		$curTable = $this->tasks[$this->mode]['defaultTable'];
 		if ($curTable)
 		{
-			if (is_array($user_pref['admin_mailout_columns'][$mode]))
+			if (isset($user_pref['admin_mailout_columns'][$mode]) && is_array($user_pref['admin_mailout_columns'][$mode]))
 			{	// Use saved list of fields to view if it exists
 				$this->fieldPref = $user_pref['admin_mailout_columns'][$mode];
 			}
@@ -352,7 +358,7 @@ class mailoutAdminClass extends e107MailManager
 			print_a($mailData);
 			return 'Error';
 		}
-		$text .= "<select name='mailaction[{$mailData['mail_source_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
+		$text = "<select name='mailaction[{$mailData['mail_source_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
 				<option selected='selected' value=''>&nbsp;</option>\n";
 		foreach ($this->modeOptions[$mode] as $key => $val)
 		{
@@ -379,7 +385,7 @@ class mailoutAdminClass extends e107MailManager
 			print_a($targetData);
 			return 'Error';
 		}
-		$text .= "<select name='targetaction[{$targetData['mail_target_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
+		$text = "<select name='targetaction[{$targetData['mail_target_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
 				<option selected='selected' value=''>&nbsp;</option>\n";
 		foreach ($this->modeOptions[$mode] as $key => $val)
 		{
@@ -552,7 +558,7 @@ class mailoutAdminClass extends e107MailManager
 
 		foreach ($ue->fieldDefinitions as $fd)
 		{
-			if ($v['user_extended_struct_text'] != '_system_')
+			if ($fd['user_extended_struct_text'] != '_system_')
 			{
 				$value = 'ue.user_'.$fd['user_extended_struct_name'];
 				$selected = ($value == $curval) ? " selected='selected'" : '';
@@ -1177,7 +1183,7 @@ class mailoutAdminClass extends e107MailManager
 		$text = "<div style='text-align:center'>";
 
 		$text .= "
-			<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID.'&amp;savepage='.$nextPage."' id='email_send' method='post'>
+			<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID."' id='email_send' method='post'>
 			<fieldset id='email-send'>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
 			<colgroup span='2'>
@@ -1192,14 +1198,14 @@ class mailoutAdminClass extends e107MailManager
 		// Add in core and any plugin selectors here
 		foreach ($this->mailHandlers as $m)
 		{
-			if ($m->mailer_enabled)
+			if ($m->mailerEnabled)
 			{
-				$text .= '<tr><td>'.LAN_MAILOUT_180.'<br />'.$m->mailer_name.'</td><td>'.$m->show_select(FALSE).'</td></tr>';
+				$text .= '<tr><td>'.LAN_MAILOUT_180.'<br />'.$m->mailerName.'</td><td>'.$m->showSelect(FALSE).'</td></tr>';
 			}
 		}
 
 		// Figures - number of emails to send, number of duplicates stripped
-		$text .= '<tr><td>'.LAN_MAILOUT_173.'</td><td>'.($mailData['mail_togo_count'])."<input type='hidden' name='mailIDConf' value='{$mailID}' /></td></tr>";
+		$text .= '<tr><td>'.LAN_MAILOUT_173.'</td><td>'.($mailData['mail_togo_count'])."<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
 		$text .= '<tr><td>'.LAN_MAILOUT_71.'</td><td> '.$counters['add'].' '.LAN_MAILOUT_69.$counters['dups'].LAN_MAILOUT_70.'</td></tr>';
 		$text .= "</tbody></table>\n</fieldset>";
 
