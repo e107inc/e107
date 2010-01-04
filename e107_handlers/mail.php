@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-12-27 11:25:18 $
+ * $Revision: 1.22 $
+ * $Date: 2010-01-04 10:14:48 $
  * $Author: e107coders $
 */
 
@@ -673,6 +673,7 @@ class e107Email extends PHPMailer
    */
 	public function MsgHTML($message, $basedir = '') 
 	{
+		global $_E107;
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3])) 
 		{
@@ -685,11 +686,18 @@ class e107Email extends PHPMailer
 					$filename = basename($url);
 					$directory = dirname($url);
 					if ($directory == '.') $directory='';
-					if (strpos($directory, e_HTTP) === 0)
+					if (strpos($directory, e_HTTP) === 0) 
 					{
-						$directory = str_replace(e_HTTP, '', $directory);
-						$basedir = e_ROOT;
+						// $directory = str_replace(e_HTTP, '', $directory); // FIXME - if e_HTTP == '/' - breaks full path; 
+						// $basedir = e_ROOT;
 					}
+					
+					if(vartrue($_E107['debug']))
+					{
+						$message .= " -- Debug Info --<br />";
+						$message .= "CID file <b>{$filename}</b> in <b>{$directory}</b>.<br />Base = ".e_HTTP."<br />BaseDir = {$basedir}<br />";	
+					}
+					
 					//echo "CID file {$filename} in {$directory}. Base = ".e_HTTP."   BaseDir = {$basedir}<br />";
 					$cid = 'cid:' . md5($filename);
 					$ext = pathinfo($filename, PATHINFO_EXTENSION);
