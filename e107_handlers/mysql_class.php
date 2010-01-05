@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.73 $
- * $Date: 2009-12-27 10:52:22 $
- * $Author: e107coders $
+ * $Revision: 1.74 $
+ * $Date: 2010-01-05 22:00:41 $
+ * $Author: e107steved $
 */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.73 2009-12-27 10:52:22 e107coders Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.74 2010-01-05 22:00:41 e107steved Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -878,7 +878,8 @@ class e_db_mysql
 	/**
 	* Function to handle any MySQL query
 	* @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
-	*		Recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions
+	*		Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
+	*			likely that this will become mandatory at some point
 	* @return boolean | integer
 	*		Returns FALSE if there is an error in the query
 	*		Returns TRUE if the query is successful, and it does not return a row count
@@ -894,16 +895,16 @@ class e_db_mysql
 
 		if(strpos($query,'`#') !== FALSE)
 		{
-			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
+			$query = str_replace('`#','`'.$this->mySQLPrefix,$query);	// This simple substitution should be OK when backticks used
+			//$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
-		{
+		{	// Deprecated scenario - caused problems when '#' appeared in data - hence use of backticks
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
 
-		$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru
-		//FIXME - this is a quick Fix for REGEXP queries, as used in admin_ui.
-		$query = str_replace("`#","`".$this->mySQLPrefix,$query);
+		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys 
+																// the point of requiring backticks round table names - wrecks &#039;, for example
 
 		if ($this->mySQLresult === FALSE)
 		{	// Failed query
@@ -1531,7 +1532,7 @@ class e_db_mysql
 
 	/**
 	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
-	 *
+	 *<code>
 	 *	The information is sought in a specific order:
 	 *		a) In our internal cache
 	 *		b) in the directory e_DB_CACHEDIR - file name $tableName.php
@@ -1543,7 +1544,7 @@ class e_db_mysql
 	 *			integer type fields - 'int' processing
 	 *			character/string type fields - todb processing
 	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
-	 *
+	 *</code>
 	 *	@param string $tableName - table name, without any prefixes (language or general)
 	 *
 	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
