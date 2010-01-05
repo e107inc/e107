@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links_page_sql.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:46 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-05 21:05:29 $
+ * $Author: e107steved $
  */
 
 header("location:../index.php");
@@ -43,7 +43,7 @@ CREATE TABLE links_page (
   link_order int(10) unsigned NOT NULL default '0',
   link_refer int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
-  link_class smallint(5) unsigned NOT NULL default '0',
+  link_class smallint(5) NOT NULL default '0',
   link_datestamp int(10) unsigned NOT NULL default '0',
   link_author varchar(255) NOT NULL default '',
   PRIMARY KEY  (link_id)
