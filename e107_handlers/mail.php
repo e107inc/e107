@@ -2,16 +2,26 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.23 $
- * $Date: 2010-01-04 10:18:02 $
- * $Author: e107coders $
+ * $Revision: 1.24 $
+ * $Date: 2010-01-05 20:14:11 $
+ * $Author: e107steved $
+*/
+
+/**
+ * 
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Revision: 1.24 $
+ * @author      $Author: e107steved $
+
+ *	Mailout handler - concerned with processing and sending a single email
 */
 
 /*
@@ -673,7 +683,6 @@ class e107Email extends PHPMailer
    */
 	public function MsgHTML($message, $basedir = '') 
 	{
-		global $_E107;
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3])) 
 		{
@@ -686,19 +695,12 @@ class e107Email extends PHPMailer
 					$filename = basename($url);
 					$directory = dirname($url);
 					if ($directory == '.') $directory='';
-					if ((strpos($directory, e_HTTP) === 0) && (e_HTTP != '/'))  // FIXME - if e_HTTP == '/' - breaks full path; 
+					if (strpos($directory, e_HTTP) === 0)
 					{
-						$directory = str_replace(e_HTTP, '', $directory); 
-						$basedir = e_ROOT;
+						$directory = substr(SERVERBASE, 0, -1).$directory;		// Convert to absolute server reference
+						$basedir = '';
 					}
-					
-					if(vartrue($_E107['debug']))
-					{
-						$message .= " -- Debug Info --<br />";
-						$message .= "CID file <b>{$filename}</b> in <b>{$directory}</b>.<br />Base = ".e_HTTP."<br />BaseDir = {$basedir}<br />";	
-					}
-					
-					//echo "CID file {$filename} in {$directory}. Base = ".e_HTTP."   BaseDir = {$basedir}<br />";
+					//echo "CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
 					$cid = 'cid:' . md5($filename);
 					$ext = pathinfo($filename, PATHINFO_EXTENSION);
 					$mimeType  = self::_mime_types($ext);
