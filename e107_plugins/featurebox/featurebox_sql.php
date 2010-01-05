@@ -4,7 +4,7 @@ CREATE TABLE featurebox (
   `fb_title` varchar(200) NOT NULL DEFAULT '',
   `fb_text` text NOT NULL,
   `fb_mode` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fb_class` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `fb_class` smallint(5) NOT NULL DEFAULT '0',
   `fb_rendertype` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `fb_template` varchar(50) NOT NULL DEFAULT '',
   `fb_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -21,7 +21,7 @@ CREATE TABLE featurebox_category (
   `fb_category_icon` varchar(255) NOT NULL DEFAULT '',
   `fb_category_template` varchar(50) NOT NULL DEFAULT 'default',
   `fb_category_random` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `fb_category_class` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `fb_category_class` smallint(5) NOT NULL DEFAULT '0',
   `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`fb_category_id`),
   UNIQUE KEY `fb_category_template` (`fb_category_template`)
