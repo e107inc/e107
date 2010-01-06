@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-12-17 17:15:20 $
+ * $Revision: 1.41 $
+ * $Date: 2010-01-06 08:53:58 $
  * $Author: secretr $
  *
 */
@@ -2740,7 +2740,10 @@ function replaceSC(sc, form, container, scfile) {
 
 //DEPRECATED!!! Use e107Ajax.submitForm() || form.submitForm() instead
 function sendInfo(handler, container, form) {
-	$(form).submitForm(container, null, handler);
+	if(form)
+		$(form).submitForm(container, null, handler);
+	else
+		new e107Ajax.Updater(container, handler);
 }
 
 // -------------------------------------------------------------------
