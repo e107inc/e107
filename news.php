@@ -9,14 +9,14 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-12-30 21:04:11 $
+ * $Revision: 1.27 $
+ * $Date: 2010-01-06 20:12:09 $
  * $Author: e107steved $
 */
 /**
  *	@package    e107
  *	@subpackage	user
- *	@version 	$Id: news.php,v 1.26 2009-12-30 21:04:11 e107steved Exp $;
+ *	@version 	$Id: news.php,v 1.27 2010-01-06 20:12:09 e107steved Exp $;
  *
  *	News front page display
  */
@@ -35,23 +35,25 @@ if (isset($NEWSHEADER))
   exit;
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+
 $cacheString = 'news.php_default_';
 $action = '';
 $sub_action = '';
-$order = "news_datestamp";
+$order = 'news_datestamp';
 $newsfrom = 0;
 
-if (!defined("ITEMVIEW"))
+if (!defined('ITEMVIEW'))
 {
-  define("ITEMVIEW", varset($pref['newsposts'],15));
+  define('ITEMVIEW', varset($pref['newsposts'],15));
 }
 
 if (e_QUERY)
 {
   $tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
   $action = $tmp[0];						// At least one parameter here
-  $sub_action = varset($tmp[1],'');			// Usually a numeric category, but don't presume yet
-  $id = varset($tmp[2],'');					// ID of specific news item where required
+	$sub_action = varset($tmp[1],'');			// Usually a numeric category, or numeric news item number, but don't presume yet
+//	$id = varset($tmp[2],'');					// ID of specific news item where required
   $newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
   $cacheString = 'news.php_'.e_QUERY;
 }
@@ -118,7 +120,7 @@ if ($action == 'cat' || $action == 'all')
 	if ($action == 'cat' && $category != 0)
 	{
 		$gen = new convert;
-		$sql->db_Select("news_category", "*", "category_id='$category'");
+		$sql->db_Select("news_category", "*", "category_id='{$category}'");
 		$row = $sql->db_Fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
@@ -225,7 +227,7 @@ if ($action == 'cat' || $action == 'all')
 	{
     	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-
+	$text .= "<div style='text-align:center;'><a href='".e_SELF."' alt=''>".LAN_NEWS_84."</a></div>";
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text);
 	$cache_data = ob_get_flush();
@@ -239,12 +241,12 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 //		DISPLAY SINGLE ITEM IN EXTENDED FORMAT HERE
 //------------------------------------------------------
-if ($action == "extend")
+if ($action == 'extend') 
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
 	  require_once(HEADERF);
-	  renderCache($newsCachedPage, TRUE);
+		renderCache($newsCachedPage, TRUE);		// This exits if cache used
 	}
 	// <-- Cache
 
@@ -283,6 +285,7 @@ if ($action == "extend")
 	if ($sql->db_Select_gen($query))
 	{
 		$news = $sql->db_Fetch();
+		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 		
 		//***NEW [SecretR] - comments handled inside now
 		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
@@ -308,6 +311,34 @@ if ($action == "extend")
 		  }
 		  define("e_PAGETITLE",$news['news_title']);
 		}*/
+
+		if (TRUE)
+		{
+			/* Added by nlStart - show links to previous and next news */
+			if (!isset($news['news_extended'])) $news['news_extended'] = '';
+			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+			$prev_query = "SELECT news_id, news_title FROM `#news`
+				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
+			$sql->db_Select_gen($prev_query);
+			$prev_news = $sql->db_Fetch();
+			if ($prev_news)
+			{
+				$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
+			}
+			$next_query = "SELECT news_id, news_title FROM `#news` AS n
+				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
+			$sql->db_Select_gen($next_query);
+			$next_news = $sql->db_Fetch();
+			if ($next_news)
+			{
+				$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
+			}
+			$news['news_extended'].="<br /><br />";
+		}
 
 		require_once(HEADERF);
 		
@@ -341,7 +372,7 @@ if ($action == "extend")
 // Show title, author, first part of news item...
 if (empty($order))
 {
-  $order = "news_datestamp";
+  $order = 'news_datestamp';
 }
 $order = $tp -> toDB($order, true);
 

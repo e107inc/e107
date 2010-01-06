@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2010-01-04 21:35:37 $
+|     $Revision: 1.27 $
+|     $Date: 2010-01-06 20:12:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
  * 
  * @package     e107
  * @subpackage	admin
- * @version     $Revision: 1.26 $
+ * @version     $Revision: 1.27 $
  * @author      $Author: e107steved $
 
  *	Admin-related functions for cron (Scheduler) management
@@ -191,7 +191,6 @@ function cronName($classname,$method)
 	
 	function cronExecute($class_func)
 	{
-		echo "Execute: {$class_func}<br />";
 		//TODO LANs
 		list($class_name,$method_name) = explode("__",$class_func);
 		$mes = e107::getMessage();
