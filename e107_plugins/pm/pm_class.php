@@ -9,8 +9,8 @@
  *	PM plugin - base class API
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-04 21:35:38 $
+ * $Revision: 1.14 $
+ * $Date: 2010-01-06 20:09:58 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_class.php,v 1.13 2010-01-04 21:35:38 e107steved Exp $;
+ *	@version 	$Id: pm_class.php,v 1.14 2010-01-06 20:09:58 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -102,43 +102,80 @@ class private_message
 	 *	Send a PM
 	 *
 	 *	@param	array $vars	- PM information
+	 *		['receipt'] - set TRUE if read receipt required
+	 *		['uploaded'] - list of attachments (if any) - each is an array('size', 'name')
+	 *		['to_userclass'] - set TRUE if sending to a user class
+	 *		['to_array'] = array of recipients
+	 *		['pm_userclass'] = target user class
+	 *		['to_info'] = recipients array of array('user_id', 'user_class')
+	 *
+	 *		May also be an array as received from the generic table, if sending via a cron job
+	 *			identified by the existence of $vars['pm_from']
 	 *
 	 *	@return	string - text detailing result
-	 *
-	 *	@todo Convert DB calls to use arrays
 	 */
 	function add($vars)
 	{
 		$tp = $this->e107->tp;
-		$vars['options'] = '';
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
 		$ret = '';
-		if(isset($vars['receipt']) && $vars['receipt']) {$pm_options .= '+rr+';	}
-		if(isset($vars['uploaded']))
-		{
-			foreach($vars['uploaded'] as $u)
+		$addOutbox = TRUE;
+		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
+		if (isset($vars['pm_from']))
+		{	// Doing bulk send off cron task
+			$info = array();
+			foreach ($vars as $k => $v)
 			{
-				if (!isset($u['error']) || !$u['error'])
+				if (strpos($k, 'pm_') === 0)
 				{
-					$pmsize += $u['size'];
-					$a_list[] = $u['name'];
+					$info[$k] = $v;
+					unset($vars[$k]);
 				}
 			}
-			$attachlist = implode(chr(0), $a_list);
+			$addOutbox = FALSE;			// Don't add to outbox - was done earlier
 		}
-		$pmsize += strlen($vars['pm_message']);
+		else
+		{	// Send triggered by user - may be immediate or bulk dependent on number of recipients
+			$vars['options'] = '';
+			if(isset($vars['receipt']) && $vars['receipt']) {$pm_options .= '+rr+';	}
+			if(isset($vars['uploaded']))
+			{
+				foreach($vars['uploaded'] as $u)
+				{
+					if (!isset($u['error']) || !$u['error'])
+					{
+						$pmsize += $u['size'];
+						$a_list[] = $u['name'];
+					}
+				}
+				$attachlist = implode(chr(0), $a_list);
+			}
+			$pmsize += strlen($vars['pm_message']);
 
-		$pm_subject = trim($tp->toDB($vars['pm_subject']));
-		$pm_message = trim($tp->toDB($vars['pm_message']));
-		
-		if (!$pm_subject && !$pm_message && !$attachlist)
-		{  // Error - no subject, no message body and no uploaded files
-			return LAN_PM_65;
+			$pm_subject = trim($tp->toDB($vars['pm_subject']));
+			$pm_message = trim($tp->toDB($vars['pm_message']));
+			
+			if (!$pm_subject && !$pm_message && !$attachlist)
+			{  // Error - no subject, no message body and no uploaded files
+				return LAN_PM_65;
+			}
+			
+			// Most of the pm info is fixed - just need to set the 'to' user on each send
+			$info = array(
+				'pm_from' => $vars['from_id'],
+				'pm_sent' => time(),					/* Date sent */
+				'pm_read' => 0,							/* Date read */
+				'pm_subject' => $pm_subject,
+				'pm_text' => $pm_message,
+				'pm_sent_del' => 1,						/* Set when can delete */
+				'pm_read_del' => 0,						/* set when can delete */
+				'pm_attachments' => $attachlist,
+				'pm_option' => $pm_options,				/* Options associated with PM - '+rr' for read receipt */
+				'pm_size' => $pmsize
+				);
 		}
-		
-		$sendtime = time();
 		if(isset($vars['to_userclass']) || isset($vars['to_array']))
 		{
 			if(isset($vars['to_userclass']))
@@ -154,14 +191,41 @@ class private_message
 				$tolist = $vars['to_array'];
 				$class = FALSE;
 			}
+			// Sending multiple PMs here. If more than some number ($maxSendNow), need to split into blocks.
+			if (count($tolist) > $maxSendNow)
+			{
+				$totalSend = count($tolist);
+				$targets = array_chunk($tolist, $maxSendNow);		// Split into a number of lists, each with the maximum number of elements (apart from the last block, of course)
+				unset($tolist);
+				$array = new ArrayData;
+				$pmInfo = $info;
+				$genInfo = array(
+					'gen_type' => 'pm_bulk',
+					'gen_datestamp' => time(),
+					'gen_user_id' => USERID,
+					'gen_ip' => ''
+					);
+				for ($i = 0; $i < count($targets) - 1; $i++)
+				{	// Save the list in the 'generic' table
+					$pmInfo['to_array'] = $targets[$i];			// Should be in exactly the right format
+					$genInfo['gen_intdata'] = count($targets[$i]);
+					$genInfo['gen_chardata'] = $array->WriteArray($pmInfo,TRUE);
+					$this->e107->sql->db_Insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
+				}
+				$toclass .= ' ['.$totalSend.']';
+				$tolist = $targets[count($targets) - 1];		// Send the residue now (means user probably isn't kept hanging around too long if sending lots)
+				unset($targets);
+			}
 			foreach($tolist as $u)
 			{
 				set_time_limit(30);
-				if($pmid = $this->e107->sql->db_Insert('private_msg', "0, '".intval($vars['from_id'])."', '".$tp -> toDB($u['user_id'])."', '".intval($sendtime)."', '0', '{$pm_subject}', '{$pm_message}', '1', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
+				$info['pm_to'] = intval($u['user_id']);		// Sending to a single user now
+
+				if($pmid = $this->e107->sql->db_Insert('private_msg', $info))
 				{
 					if($class == FALSE)
 					{
-						$toclass .= $u['user_name'].", ";
+						$toclass .= $u['user_name'].', ';
 					}
 					if(check_class($this->pmPrefs['notify_class'], $u['user_class']))
 					{
@@ -174,15 +238,22 @@ class private_message
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
 				}
 			}
-			if(!$pmid = $this->e107->sql->db_Insert('private_msg', "0, '".intval($vars['from_id'])."', '".$tp -> toDB($toclass)."', '".intval($sendtime)."', '1', '{$pm_subject}', '{$pm_message}', '0', '1', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
+			if ($addOutbox)
 			{
-				$ret .= LAN_PM_41."<br />";
+				$info['pm_to'] = $toclass;		// Class info to put into outbox
+				$info['pm_sent_del'] = 0;
+				$info['pm_read_del'] = 1;
+				if(!$pmid = $this->e107->sql->db_Insert('private_msg', $info))
+				{
+					$ret .= LAN_PM_41.'<br />';
+				}
 			}
 			
 		}
 		else
-		{
-			if($pmid = $this->e107->sql->db_Insert('private_msg', "0, '".intval($vars['from_id'])."', '".$tp -> toDB($vars['to_info']['user_id'])."', '".intval($sendtime)."', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
+		{	// Sending to a single person
+			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
+			if($pmid = $this->e107->sql->db_Insert('private_msg', $info))
 			{
 				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
 				{
@@ -493,33 +564,29 @@ class private_message
 	 *	@param int $limit - number of messages
 	 *
 	 *	@return boolean|array - FALSE if none found or error, array of PMs if available
-	 *
-	 *	@todo - use MYSQL_CALC_ROWS
 	 */
 	function pm_get_inbox($uid = USERID, $from = 0, $limit = 10)
 	{
 		$ret = array();
+		$total_messages = 0;
 		$uid = intval($uid);
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		if($total_messages = $this->e107->sql->db_Count('private_msg', '(*)', "WHERE pm_to='{$uid}' AND pm_read_del=0"))
+		$qry = "
+		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
+		LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
+		WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
+		ORDER BY pm.pm_sent DESC
+		LIMIT ".$from.", ".$limit."
+		";
+		if($this->e107->sql->db_Select_gen($qry))
 		{
-			$qry = "
-			SELECT pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
-			LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
-			WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
-			ORDER BY pm.pm_sent DESC
-			LIMIT ".$from.", ".$limit."
-			";
-			if($this->e107->sql->db_Select_gen($qry))
-			{
-				$ret['messages'] = $this->e107->sql->db_getList();
-			}
-			$ret['total_messages'] = $total_messages;		// Should always be defined
-			return $ret;
+			$total_messages = $this->e107->sql->total_results;		// Total number of messages
+			$ret['messages'] = $this->e107->sql->db_getList();
 		}
-		return FALSE;
+		$ret['total_messages'] = $total_messages;		// Should always be defined
+		return $ret;
 	}
 
 
@@ -531,29 +598,27 @@ class private_message
 	 *	@param int $limit - number of messages
 	 *
 	 *	@return boolean|array - FALSE if none found or error, array of PMs if available
-	 *
-	 *	@todo - use MYSQL_CALC_ROWS
 	 */
 	function pm_get_outbox($uid = USERID, $from = 0, $limit = 10)
 	{
+		$ret = array();
+		$total_messages = 0;
 		$uid = intval($uid);
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		if($total_messages = $this->e107->sql->db_Count("private_msg", "(*)", "WHERE pm_from='{$uid}' AND pm_sent_del=0"))
+		$qry = "
+		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
+		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
+		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
+		ORDER BY pm.pm_sent DESC
+		LIMIT ".$from.', '.$limit;
+		if($this->e107->sql->db_Select_gen($qry))
 		{
-			$qry = "
-			SELECT pm.*, u.user_image, u.user_name FROM #private_msg AS pm
-			LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-			WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
-			ORDER BY pm.pm_sent DESC
-			LIMIT ".$from.', '.$limit;
-			if($this->e107->sql->db_Select_gen($qry))
-			{
-				$ret['messages'] = $this->e107->sql->db_getList();
-				$ret['total_messages'] = $total_messages;
-			}
+			$total_messages = $this->e107->sql->total_results;		// Total number of messages
+			$ret['messages'] = $this->e107->sql->db_getList();
 		}
+		$ret['total_messages'] = $total_messages;
 		return $ret;
 	}
 

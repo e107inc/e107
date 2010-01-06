@@ -9,8 +9,8 @@
  *	Private messenger plugin - default preferences (used if no stored values)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_default.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-12-18 20:49:55 $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-06 20:09:58 $
  * $Author: e107steved $
  */
 
@@ -22,7 +22,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_default.php,v 1.4 2009-12-18 20:49:55 e107steved Exp $;
+ *	@version 	$Id: pm_default.php,v 1.5 2010-01-06 20:09:58 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -46,7 +46,8 @@ function pm_set_default_prefs()
 		'sendall_class'		=>	e_UC_ADMIN,
 		'multi_class'		=> e_UC_ADMIN,
 		'allow_userclass'	=> '1',
-		'pm_limits'			=> '0'
+		'pm_limits'			=> '0',
+		'pm_max_send'		=> '100'
 	);
 	return $ret;
 }

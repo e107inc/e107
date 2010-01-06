@@ -46,22 +46,11 @@ define('ADLAN_PM_43', "Add New Limit");
 define('ADLAN_PM_44', "seconds");
 define('ADLAN_PM_45', "Limit PM By: ");
 
-//define('ADLAN_PM_46', "PM Conversion");
-//define('ADLAN_PM_47', "You do not appear to have any old messages from previous versions, it is safe to uninstall the old plugin");
-//define('ADLAN_PM_48', "You have {OLDCOUNT} messages from the older version, please decide what you would like to do with these messages<br /><br />If converting messages, any message successfully converted will be removed from old system.");
-//define('ADLAN_PM_49', "Convert to new PM");
-//define('ADLAN_PM_50', "Discard old messages");
-//define('ADLAN_PM_51', "PM #{PMNUM} not converted");
-//define('ADLAN_PM_52', "messages converted");
-//define('ADLAN_PM_53', "No records found to convert.");
-
 define('ADLAN_PM_54', "Main settings");
 define('ADLAN_PM_55', "Limits");
-//define('ADLAN_PM_56', "Conversion");
 
 define('ADLAN_PM_57', "This plugin is a fully featured Private Messaging system.");
 define('ADLAN_PM_58', "Private Messenger");
-
 define('ADLAN_PM_59', 'Maintenance');
 define('ADLAN_PM_60', 'PM Maintenance');
 define('ADLAN_PM_61', 'Execute');
@@ -84,8 +73,8 @@ define('ADLAN_PM_77', '(Empty all fields and Update to delete a limit)');
 define('ADLAN_PM_78', 'Check attachments');
 define('ADLAN_PM_79', '--ORPHANS-- unused attachments deleted. --MISSING-- missing attachments noted');
 define('ADLAN_PM_80', 'Preference formats updated');
-define('ADLAN_PM_81', '');
-define('ADLAN_PM_82', '');
+define('ADLAN_PM_81', 'Maximum number of PMs to send immediately');
+define('ADLAN_PM_82', 'If sending more than this, they are added to a queue, and sent out using the cron task');
 define('ADLAN_PM_83', '');
 
 ?>
