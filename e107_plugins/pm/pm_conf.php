@@ -9,8 +9,8 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.12 $
- * $Date: 2010-01-04 21:35:38 $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-06 20:09:58 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_conf.php,v 1.12 2010-01-04 21:35:38 e107steved Exp $;
+ *	@version 	$Id: pm_conf.php,v 1.13 2010-01-06 20:09:58 e107steved Exp $;
  */
 
 
@@ -364,6 +364,10 @@ function show_options($pm_prefs)
 	<tr>
 		<td>".ADLAN_PM_31."</td>
 		<td>".e107::getUserClass()->uc_dropdown('pm_option-opt_userclass', $pm_prefs['opt_userclass'], 'nobody,member,admin,classes')."</td>
+	</tr>
+	<tr>
+		<td>".ADLAN_PM_81."</td>
+		<td>".form::form_text('pm_option-pm_max_send', 5, $pm_prefs['pm_max_send'], 5)."<span style='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	<tr>
 		<td colspan='2' style='text-align:center'><input type='submit' class='button' name='update_prefs' value='".ADLAN_PM_32."' /></td>
