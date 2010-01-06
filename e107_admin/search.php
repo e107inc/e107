@@ -9,9 +9,9 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2010-01-06 22:36:45 $
+ * $Author: e107steved $
  *
 */
 
@@ -111,7 +111,7 @@ if (isset($_POST['update_main']))
 	else
 	{
 		$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-		$emessage->add(LAN_ERROR." ".mysql_errno().": ".mysql_error(), E_MESSAGE_ERROR);
+		$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
 	}
 }
 
@@ -148,7 +148,7 @@ if (isset($_POST['update_handler']))
 	else
 	{
 		$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-		$emessage->add(LAN_ERROR." ".mysql_errno().": ".mysql_error(), E_MESSAGE_ERROR);
+		$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
 	}
 
 }
@@ -178,7 +178,7 @@ if (isset($_POST['update_prefs']))
 		else //it's an error
 		{
 			$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-			$emessage->add(LAN_ERROR." ".mysql_errno().": ".mysql_error(), E_MESSAGE_ERROR);
+			$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
 		}
 	}
 	else $emessage->add(LAN_NO_CHANGE); //info
