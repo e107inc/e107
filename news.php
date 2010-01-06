@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.130 $
-|     $Date: 2009-12-30 20:59:53 $
+|     $Revision: 1.131 $
+|     $Date: 2010-01-06 20:14:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,25 +28,27 @@ if (isset($NEWSHEADER))
   exit;
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+
 $cacheString = 'news.php_default_';
 $action = '';
 $sub_action = '';
-$order = "news_datestamp";
+$order = 'news_datestamp';
 $newsfrom = 0;
 
-if (!defined("ITEMVIEW"))
+if (!defined('ITEMVIEW'))
 {
-  define("ITEMVIEW", varset($pref['newsposts'],15));
+  define('ITEMVIEW', varset($pref['newsposts'],15));
 }
 
 if (e_QUERY) 
 {
-  $tmp = explode(".", e_QUERY);
-  $action = $tmp[0];						// At least one parameter here
-  $sub_action = varset($tmp[1],'');			// Usually a numeric category, but don't presume yet
-  $id = varset($tmp[2],'');					// ID of specific news item where required
-  $newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
-  $cacheString = 'news.php_'.e_QUERY;
+	$tmp = explode('.', e_QUERY);
+	$action = $tmp[0];							// At least one parameter here
+	$sub_action = varset($tmp[1],'');			// Usually a numeric category, or numeric news item number, but don't presume yet
+//	$id = varset($tmp[2],'');					// ID of specific news item where required
+	$newsfrom = intval(varset($tmp[2],0));		// Item number for first item on multi-page lists
+	$cacheString = 'news.php_'.e_QUERY;
 }
 
 //$newsfrom = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
@@ -97,7 +99,7 @@ if ($action == 'cat' || $action == 'all')
 	if ($action == 'cat' && $category != 0)	
 	{
 		$gen = new convert;
-		$sql->db_Select("news_category", "*", "category_id='$category'");
+		$sql->db_Select("news_category", "*", "category_id='{$category}'");
 		$row = $sql->db_Fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
@@ -159,10 +161,10 @@ if ($action == 'cat' || $action == 'all')
 		</div>\n";
 
 	}
-	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
-	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
-	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+	$param['itemlink'] = (defined('NEWSLIST_ITEMLINK')) ? NEWSLIST_ITEMLINK : '';
+	$param['thumbnail'] =(defined('NEWSLIST_THUMB')) ? NEWSLIST_THUMB : 'border:0px';
+	$param['catlink']  = (defined('NEWSLIST_CATLINK')) ? NEWSLIST_CATLINK : '';
+	$param['caticon'] =  (defined('NEWSLIST_CATICON')) ? NEWSLIST_CATICON : ICONSTYLE;
 	$sql->db_Select_gen($query);
 	$newsList = $sql->db_getList();
 	foreach($newsList as $row)
@@ -184,7 +186,7 @@ if ($action == 'cat' || $action == 'all')
 	{
     	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-
+	$text .= "<div style='text-align:center;'><a href='".e_SELF."' alt=''>".LAN_NEWS_84."</a></div>";
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text);
 	$cache_data = ob_get_flush();
@@ -198,51 +200,79 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 //		DISPLAY SINGLE ITEM IN EXTENDED FORMAT HERE
 //------------------------------------------------------
-if ($action == "extend") 
+if ($action == 'extend') 
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
-	  require_once(HEADERF);
-	  renderCache($newsCachedPage, TRUE);
+		require_once(HEADERF);
+		renderCache($newsCachedPage, TRUE);		// This exits if cache used
 	}
 	// <-- Cache
 
 	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
 	{
-	  $query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
-		GROUP by n.news_id";
+		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+			LEFT JOIN #user AS u ON n.news_author = u.user_id
+			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+			LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
+			WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
+			AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
+			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().') ';
 	}
 	else
 	{
-	  $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") ";
+		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+			LEFT JOIN #user AS u ON n.news_author = u.user_id
+			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+			WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
+			AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
+			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") ";
 	}
 	if ($sql->db_Select_gen($query))
 	{
 		$news = $sql->db_Fetch();
+		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
 		if($news['news_title'])
 		{
 		  if($pref['meta_news_summary'] && $news['news_title'])
 		  {
-			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
+			define('META_DESCRIPTION',SITENAME.': '.$news['news_title'].' - '.$news['news_summary']);
 		  }
 		  define("e_PAGETITLE",$news['news_title']);
 		}
 
+		if (TRUE)
+		{
+			/* Added by nlStart - show links to previous and next news */
+			if (!isset($news['news_extended'])) $news['news_extended'] = '';
+			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+			$prev_query = "SELECT news_id, news_title FROM `#news`
+				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
+			$sql->db_Select_gen($prev_query);
+			$prev_news = $sql->db_Fetch();
+			if ($prev_news)
+			{
+				$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
+			}
+			$next_query = "SELECT news_id, news_title FROM `#news` AS n
+				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
+			$sql->db_Select_gen($next_query);
+			$next_news = $sql->db_Fetch();
+			if ($next_news)
+			{
+				$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
+			}
+			$news['news_extended'].="<br /><br />";
+		}
+		
 		require_once(HEADERF);
 		ob_start();
-		$ix->render_newsitem($news, "extend");
+		$ix->render_newsitem($news, 'extend');
 		$cache_data = ob_get_contents();
 		ob_end_flush();
 		setNewsCache($cacheString, $cache_data);
@@ -262,7 +292,7 @@ if ($action == "extend")
 // Show title, author, first part of news item...
 if (empty($order))
 {
-  $order = "news_datestamp";
+  $order = 'news_datestamp';
 }
 $order = $tp -> toDB($order, true);
 
@@ -672,7 +702,7 @@ function renderCache($cache, $nfp = FALSE){
 function render_newscats(){  // --  CNN Style Categories. ----
 	global $pref,$ns,$tp;
 	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
-		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'TITLE');
+		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak,emotes_off,no_make_clickable');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
 }
