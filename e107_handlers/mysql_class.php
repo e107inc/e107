@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.74 $
- * $Date: 2010-01-05 22:00:41 $
+ * $Revision: 1.75 $
+ * $Date: 2010-01-07 21:05:24 $
  * $Author: e107steved $
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.74 2010-01-05 22:00:41 e107steved Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.75 2010-01-07 21:05:24 e107steved Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -94,6 +94,7 @@ class e_db_mysql
 	 * @var string
 	 */
 	public $mySQLcharset;
+	public	$mySqlServerInfo = '?';			// Server info - needed for various things
 
 	public $total_results = false;			// Total number of results
 
@@ -169,6 +170,8 @@ class e_db_mysql
 				return 'e1';
 			}
 		}
+
+		$this->mySqlServerInfo = mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
@@ -1507,7 +1510,7 @@ class e_db_mysql
 			else
 			{
 				// Check if MySQL version is utf8 compatible
-				preg_match('/^(.*?)($|-)/', mysql_get_server_info(), $mysql_version);
+				preg_match('/^(.*?)($|-)/', $this->mySqlServerInfo, $mysql_version);
 				if (version_compare($mysql_version[1], '4.1.2', '<'))
 				{
 					// reset utf8

@@ -1,10 +1,18 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.36 2010-01-03 14:46:16 e107steved Exp $
+* $Id: admin_shortcodes_class.php,v 1.37 2010-01-07 21:05:14 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
+/**
+ *	@package    e107
+ *	@subpackage	shortcodes
+ *	@version 	$Id: admin_shortcodes_class.php,v 1.37 2010-01-07 21:05:14 e107steved Exp $;
+ *
+ *	Shortcodes for admin items
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
@@ -805,7 +813,7 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".mysql_get_server_info().
+			".e107::getDB()->mySqlServerInfo.
 			"<br />
 			".FOOTLAN_16.": ".$mySQLdefaultdb."
 			<br /><br />
