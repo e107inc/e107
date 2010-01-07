@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.110 $
- * $Date: 2010-01-07 22:06:10 $
+ * $Revision: 1.111 $
+ * $Date: 2010-01-07 23:44:33 $
  * $Author: e107coders $
  *
 */
@@ -1351,7 +1351,16 @@ class e_form
 			break;
 
 			case 'textarea':
-				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
+				$text = "";
+				if($parms['append']) // similar to comments - TODO TBD. a 'comment' field type may be better. 
+				{
+					$attributes['readParms'] = 'bb=1';
+					$text = $this->renderValue($key, $value, $attributes).$this->hidden($key, $value).'<br />';
+					$value = "";
+				}
+											
+				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
+				return $text;
 			break;
 
 			case 'bbarea':
@@ -1611,7 +1620,12 @@ class e_form
 			if($tree && $amount)
 			{
 				$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
-		    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+		    	//$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+				$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+				if ($nextprev)
+				{
+					$text .= "<div class='nextprev-bar'>".$nextprev."</div>";	
+				} 
 			}
 
 			$text .= "
