@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-18 01:05:23 $
+ * $Revision: 1.18 $
+ * $Date: 2010-01-08 23:29:23 $
  * $Author: e107coders $
  */
 
@@ -126,7 +126,7 @@ else
 	{
 		$texta =  (e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>");
 	}
-	$texta .= "<div style='text-align:center; width:100%'>";
+	$texta .= "<div id='chatbox-input-block'>";
 
 	if(($pref['anon_post'] == "1" && USER == FALSE))
 	{
@@ -182,6 +182,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	{
 		$obj2 = new convert;
 		$cbpost = $sql -> db_getList();
+		$text .= "<div id='chatbox-posts-block'>\n";
 		foreach($cbpost as $cb)
 		{
 			// get available vars
@@ -225,6 +226,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			$replace = array($cb_nick,$datestamp,($cb['cb_blocked'] ? CHATBOX_L6 : $cb_message));
 			$text .= str_replace($search,$replace,$CHATBOXSTYLE);
 		}
+		$text .= "</div>";
 	}
 	else
 	{
