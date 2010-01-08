@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/admin_chatbox.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 01:05:23 $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-08 23:29:19 $
  * $Author: e107coders $
  */
 
@@ -138,7 +138,7 @@ $text .= "</select>
 	</tr>
 
 	<tr><td>".CHBLAN_32.": </td>
-	<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "admin, classes")."
+	<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "nobody,main,admin, classes")."
 	</td>
 	</tr>
 
