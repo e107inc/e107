@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.387 $
-|     $Date: 2010-01-02 21:42:16 $
+|     $Revision: 1.388 $
+|     $Date: 2010-01-09 20:32:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -613,7 +613,7 @@ $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
 // for multi-language these definitions needs to come after the language loaded.
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", 'TITLE,value')));
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", 'USER_TITLE,value')));
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off, defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off,defs"));
