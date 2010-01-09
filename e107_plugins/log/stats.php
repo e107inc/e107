@@ -9,21 +9,29 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2010-01-09 12:44:11 $
+ * $Author: e107steved $
  */
 
-require_once("../../class2.php");
-if (!plugInstalled('log')) 
+/**
+ *	e107 Stats logging plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	log
+ *	@version 	$Id: stats.php,v 1.15 2010-01-09 12:44:11 e107steved Exp $;
+ */
+
+require_once('../../class2.php');
+if (!e107::isInstalled('log')) 
 {
-	header("Location: ".e_BASE."index.php");
+	header('Location: '.e_BASE.'index.php');
 	exit;
 }
 
-include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 
-$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
+$bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
 $eplug_css[] = "<style type='text/css'>
 <!--
 .b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font-size: 0px }
@@ -406,6 +414,13 @@ $country["zw"] = "Zimbabwe";
 6: screen resolution/colour depth
 7: referers
 8: search engine strings
+9: Recent visitors
+10: Daily visitors
+11: Monthly visitors
+12: Error pages today
+13: Error pages all-time
+14: Browsers consolidated
+15: OSs consolidated
 */
 
 function display_pars($rec_pars, $disp_pars = '*')
@@ -555,7 +570,7 @@ switch($action)
 15 - Consolidated OS view (not listed as a menu option)
 */
 
-$path = e_PLUGIN."log/stats.php";
+$path = e_PLUGIN_ABS.'log/stats.php';
 $links = "
 <div style='text-align: center;'>".
 ($action != 1 ? "<a href='{$path}?1'>".ADSTAT_L8."</a>" : "<b>".ADSTAT_L8."</b>")." | ".
@@ -638,11 +653,13 @@ class siteStats
 
 		/* get today's logfile ... */
 		$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
-		if(is_readable($logfile)) {
+		if(is_readable($logfile)) 
+		{
 			require($logfile);
 		}
 		$logfile = e_PLUGIN."log/logs/logi_".date("z.Y", time()).".php";
-		if(is_readable($logfile)) {
+		if(is_readable($logfile)) 
+		{
 			require($logfile);
 		}
 
@@ -797,12 +814,12 @@ class siteStats
 		{
 			if($info['ttlv'])
 			{
-			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_BASE.'index.php';		// Avoids empty link
+			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr>
 				<td class='forumheader3' >
-				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
-				<img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
+				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
 				";
 				$text .= "</td>
 				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>
@@ -831,10 +848,10 @@ class siteStats
 		{
 			if($info['ttlv'])
 			{
-			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_BASE.'index.php';		// Avoids empty link
+			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['unqv']/$totalv) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
+				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
 				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['unqv'])."</td>
 				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
@@ -952,7 +969,7 @@ class siteStats
 				}
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
+				<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
 				($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
 				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
@@ -1075,7 +1092,7 @@ class siteStats
 
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
+			<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
 			($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
 			<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -1239,7 +1256,7 @@ class siteStats
 			{
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>".
+				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>".
 				($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
 				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
@@ -1313,7 +1330,7 @@ class siteStats
 				$key = substr($key, 0, 50)." ...";
 			}
 			$text .= "<tr>
-			<td class='forumheader3'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
+			<td class='forumheader3'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
 			<td class='forumheader3'>".$this -> bar($percentage, $info['ttl'])."</td>
 			<td class='forumheader3' style='text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -1383,7 +1400,7 @@ class siteStats
 			$percentage = round(($info/$total) * 100, 2);
 			$key = str_replace("%20", " ", $key);
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 60%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
+			<td class='forumheader3' style='width: 60%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
 			<td class='forumheader3' style='width: 30%;'>".$this -> bar($percentage, $info)."</td>
 			<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -1430,8 +1447,8 @@ class siteStats
 			$datestamp = $gen -> convert_date($datestamp, "long");
 
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 30%;'>$datestamp</td>
-			<td class='forumheader3' style='width: 70%;'>Host: $host<br />".ADSTAT_L26.": $browser<br />".ADSTAT_L27.": $os<br />".ADSTAT_L29.": $screen".($referer ? "<br />".ADSTAT_L32.": <a href='$referer' rel='external'>$referer</a>" : "")."</td>
+			<td class='forumheader3' style='width: 30%;'>{$datestamp}</td>
+			<td class='forumheader3' style='width: 70%;'>Host: {$host}<br />".ADSTAT_L26.": {$browser}<br />".ADSTAT_L27.": {$os}<br />".ADSTAT_L29.": {$screen}".($referer ? "<br />".ADSTAT_L32.": <a href='{$referer}' rel='external'>{$referer}</a>" : "")."</td>
 			</tr>\n";
 		}
 
@@ -1543,7 +1560,7 @@ class siteStats
 		foreach($newArray as $key => $total) {
 			$barWidth = round(($total['total']/$ttotal) * 100, 2);
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
+			<td class='forumheader3' style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> {$key}</td>
 			<td class='forumheader3' style='width: 70%;'>".$this -> bar($barWidth, $total['total'])."</td>
 			</tr>\n";
 
@@ -1555,7 +1572,7 @@ class siteStats
 		foreach($newArray as $key => $total) {
 			$barWidth = round(($total['unique']/$utotal) * 100, 2);
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
+			<td class='forumheader3' style='width: 30%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> {$key}</td>
 			<td class='forumheader3' style='width: 70%;'>".$this -> bar($barWidth, $total['unique'])."</td>
 			</tr>\n";
 		}
@@ -1565,7 +1582,8 @@ class siteStats
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderMonthly() {
+	function renderMonthly() 
+	{
 		global $sql;
 
 		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) {
@@ -1577,7 +1595,8 @@ class siteStats
 		$monthTotal = array();
 		$mtotal = 0;
 		$utotal = 0;
-		foreach($array as $info) {
+		foreach($array as $info) 
+		{
 			$date = $info['log_id'];
 			$stats = unserialize($info['log_data']);
 
@@ -1624,7 +1643,8 @@ class siteStats
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function getWidthRatio ($array, $column) {
+	function getWidthRatio ($array, $column) 
+	{
 		$tmpArray = $this -> arraySort($array, $column);
 		$data = each($tmpArray);
 		$maxValue = $data[1]['totalv'];
@@ -1642,10 +1662,15 @@ class siteStats
 		return $ratio;
 	}
 
-	function getcountry($dom) {
+
+
+	function getcountry($dom) 
+	{
 		global $country;
 		return $country[$dom];
 	}
+
+
 
 	function bar($percen, $val)
 	{
@@ -1653,6 +1678,8 @@ class siteStats
 		</td>
 		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
 	}
+
+
 
 	function remove_entry($toremove) 
 	{	// Note - only removes info from the database - not from the current page file
