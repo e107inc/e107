@@ -9,12 +9,20 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
- * $Revision: 1.18 $
- * $Date: 2010-01-08 23:29:23 $
- * $Author: e107coders $
+ * $Revision: 1.19 $
+ * $Date: 2010-01-09 12:06:14 $
+ * $Author: e107steved $
  */
 
-global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
+/**
+ *	e107 Chatbox plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	chatbox
+ *	@version 	$Id: chatbox_menu.php,v 1.19 2010-01-09 12:06:14 e107steved Exp $;
+ */
+
+global $tp, $e107cache, $e_event, $e107, $pref;
 if (!plugInstalled('chatbox_menu')) 
 {
 	return '';
@@ -24,22 +32,19 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 {
 	if(isset($_POST['chat_submit']))
 	{
-		include_once("../../class2.php");
+		include_once('../../class2.php');
 
 		//Normally the menu.sc file will auto-load the language file, this is needed in case
 		//ajax is turned on and the menu is not loaded from the menu.sc
-		include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+		include_lan(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 	}
-  //	$footer_js[] = e_FILE_ABS.'e_ajax.php';
-
-
 }
 
-if(!defined("e_HANDLER")){ exit; }
-require_once(e_HANDLER."emote.php");
+if(!defined('e_HANDLER')){ exit; }
+require_once(e_HANDLER.'emote.php');
 
 $emessage='';
-if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
+if(isset($_POST['chat_submit']) && $_POST['cmessage'] != '')
 {
 	if(!USER && !$pref['anon_post'])
 	{
@@ -136,7 +141,7 @@ else
 	if($pref['cb_layer'] == 2)
 	{
 
-		$oc = "onclick=\"javascript:sendInfo('".SITEURL.$PLUGINS_DIRECTORY."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
+		$oc = "onclick=\"javascript:sendInfo('".SITEURLBASE.e_PLUGIN_ABS."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
 	}
 	else
 	{
@@ -189,7 +194,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			list($cb_uid, $cb_nick) = explode(".", $cb['cb_nick'], 2);
 			if($cb['user_name'])
 			{
-				$cb_nick = "<a href='".e_BASE."user.php?id.{$cb_uid}'>{$cb['user_name']}</a>";
+				$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>{$cb['user_name']}</a>";
 			}
 			else
 			{
@@ -212,11 +217,11 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 				$bullet = '';
 				if(defined('BULLET'))
 				{
-					$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+					$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
 				}
 				elseif(file_exists(THEME.'images/bullet2.gif'))
 				{
-					$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+					$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
 				}
 				// default chatbox style
 				$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
@@ -235,7 +240,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	$total_chats = $sql -> db_Count("chatbox");
 	if($total_chats > $chatbox_posts || CB_MOD)
 	{
-		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
+		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN_ABS."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
 	}
 	$e107cache->set("nq_chatbox", $text);
 }

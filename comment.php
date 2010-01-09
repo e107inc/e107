@@ -11,12 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-11-18 01:04:24 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2010-01-09 12:06:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-require_once("class2.php");
+
+
+/**
+ *	@package    e107
+ *	@subpackage	user
+ *	@version 	$Id: comment.php,v 1.14 2010-01-09 12:06:09 e107steved Exp $;
+ *
+ *	Display comments
+ */
+
+require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
@@ -148,15 +158,15 @@ if ($redirectFlag)
 				exit;
 					
 			case "poll" :
-			echo "<script type='text/javascript'>document.location.href='".e_BASE."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
 			exit;
 			break;
 			case "download" :
-			echo "<script type='text/javascript'>document.location.href='".e_BASE."download.php?view.{$redirectFlag}'</script>\n";
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
 			exit;
 			break;
 			case "page" :
-			echo "<script type='text/javascript'>document.location.href='".e_BASE."page.php?{$redirectFlag}'</script>\n";
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
 			exit;
 			break;
 		}
@@ -358,7 +368,7 @@ else
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news")
 {
-	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
+	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".SITEURLBASE.e_PLUGIN_ABS."trackback/trackback.php?pid={$id}</span>";
 }
 
 $field = ($field ? $field : ($id ? $id : ""));			// ID of associated source item
@@ -404,7 +414,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 		echo "<a name='track'></a>".COMLAN_316;
 	}
 	if (ADMIN && getperms("B")) {
-		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
+		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}
 }
 
