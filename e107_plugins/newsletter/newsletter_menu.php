@@ -2,18 +2,26 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Newsletter plugin - newsletter selection menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/newsletter_menu.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-09 12:44:11 $
  * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Newsletter plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	newsletter
+ *	@version 	$Id: newsletter_menu.php,v 1.5 2010-01-09 12:44:11 e107steved Exp $;
+ */
 
 if (!defined('e107_INIT')) { exit; }
 if (!$e107->isInstalled('newsletter')) 
@@ -95,7 +103,7 @@ foreach($newsletterArray as $nl)
 	$nl_count = $sql -> db_Count('newsletter', "(*)", "WHERE newsletter_parent='".$nl['newsletter_id']."' AND newsletter_flag='1'");
 	if($nl_count > 0 && USER)
 	{	// display issued newsletters
-		$text .= "<br /><a href='".e_PLUGIN."newsletter/nl_archive.php?show.".$nl['newsletter_id']."' alt='".NLLAN_72."' title='".NLLAN_72."'>".NLLAN_72."</a><br/><br/>";
+		$text .= "<br /><a href='".e_PLUGIN_ABS."newsletter/nl_archive.php?show.".$nl['newsletter_id']."' alt='".NLLAN_72."' title='".NLLAN_72."'>".NLLAN_72."</a><br/><br/>";
 	}
 	$text .= "</form>
 	</div>

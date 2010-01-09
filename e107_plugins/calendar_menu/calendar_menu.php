@@ -9,8 +9,8 @@
  * Forthcoming events menu handler for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-04 22:36:27 $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-09 12:44:11 $
  * $Author: e107steved $
  */
  
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_menu.php,v 1.10 2010-01-04 22:36:27 e107steved Exp $;
+ *	@version 	$Id: calendar_menu.php,v 1.11 2010-01-09 12:44:11 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -192,7 +192,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 			}
 		}
 	}
-    $cal_text .= $CALENDAR_MENU_DAY_START[$cal_css]."<a {$title} href='" . e_PLUGIN . "calendar_menu/event.php?{$cal_linkut}'>{$cal_img}</a>";
+    $cal_text .= $CALENDAR_MENU_DAY_START[$cal_css]."<a {$title} href='" . e_PLUGIN_ABS."calendar_menu/event.php?{$cal_linkut}'>{$cal_img}</a>";
     $cal_text .= $CALENDAR_MENU_DAY_END[$cal_css];
     $cal_loop++;
     if ($cal_loop == 7)
