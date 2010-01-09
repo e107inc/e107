@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-11-18 01:05:47 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2010-01-09 10:12:49 $
+|     $Author: e107steved $
 |
 | File locking added
 |
@@ -224,6 +224,7 @@ function getBrowser($agent) {
 
 function getOs($agent) {
 	$os = array(
+		"windows7" 		=> array('name' => 'Windows 7', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.1'),
 		"windowsvista" => array('name' => 'Windows Vista', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.0'),
 		"windows2003" => array('name' => 'Windows 2003', 'rule' => 'wi(n|ndows)[ \-]?(2003|nt[ /]?5\.2)'),
 		"windowsxp"   => array('name' => 'Windows XP',   'rule' => 'Windows XP'),
@@ -257,11 +258,16 @@ function getOs($agent) {
 		"palm"        => array('name' => 'PalmOS',       'rule' => 'Palm[ \-]?(Source|OS)[ /]?([0-9.]{1,10})'),
 		"palm2"       => array('name' => 'PalmOS',       'rule' => 'Palm[ \-]?(Source|OS)')
 	);
-	foreach($os as $key => $info) {
-		if (preg_match("#".$info['rule']."#i", $agent, $results)) {
-			if(strstr($key, "win")) {
+	foreach($os as $key => $info) 
+	{
+		if (preg_match("#".$info['rule']."#i", $agent, $results)) 
+		{
+			if(strstr($key, "win")) 
+			{
 				return ($info['name']);
-			} else {
+			} 
+			else 
+			{
 				return ($info['name']." ".$results[1]);
 			}
 		}
