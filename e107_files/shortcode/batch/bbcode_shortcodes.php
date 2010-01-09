@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-06-02 18:55:26 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2010-01-09 14:39:22 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -72,7 +72,7 @@ $bbcode['prefile'] = array("expandit","prefile_selector_".$rand, LANHELP_39,"pre
 
 if(!isset($iconpath[$parm]))
 {
-	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
+	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME_ABS."bbcode/" : e_IMAGE_ABS."generic/bbcode/");
     $iconpath[$parm] .= $bbcode[$parm][3];
 }
 

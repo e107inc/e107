@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-10-21 13:06:21 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2010-01-09 14:39:22 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $FILES_DIRECTORY,$pref,$sql;
-$path = e_PLUGIN."rss_menu/";
+$path = e_PLUGIN_ABS."rss_menu/";
 
 $des = "";
 $topic = "";

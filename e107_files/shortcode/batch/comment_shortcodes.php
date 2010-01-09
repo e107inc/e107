@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-05-25 08:25:33 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2010-01-09 14:39:21 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -35,7 +35,7 @@ SC_BEGIN USERNAME
 global $USERNAME, $comrow;
 if (isset($comrow['user_id']) && $comrow['user_id']) 
 {
-	$USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
+	$USERNAME = "<a href='".SITEURL."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
 }
 else
 {
@@ -58,7 +58,7 @@ global $REPLY, $comrow, $action, $pref, $table, $id, $thisaction, $thistable, $t
 $REPLY = '';
 if($comrow['comment_lock'] != "1"){
 	if ($thisaction == "comment" && $pref['nested_comments']) {
-		$REPLY = "<a href='".e_BASE."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+		$REPLY = "<a href='".SITEURL."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 	}
 }
 return $REPLY;
@@ -111,7 +111,7 @@ if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow
 	else
 	{
 //		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-		return "<a href='".e_BASE."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
+		return "<a href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
 	}
 }
 else
@@ -128,7 +128,7 @@ SC_END
 SC_BEGIN IPADDRESS
 global $IPADDRESS, $comrow;
 require_once(e_HANDLER."encrypt_handler.php");
-return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".decode_ip($comrow['comment_ip'])."</a>" : "");
+return (ADMIN ? "<a href='".SITEURL."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".decode_ip($comrow['comment_ip'])."</a>" : "");
 SC_END
 
 SC_BEGIN LEVEL
