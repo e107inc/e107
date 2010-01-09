@@ -9,8 +9,8 @@
  * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-12-28 21:49:23 $
+ * $Revision: 1.19 $
+ * $Date: 2010-01-09 12:06:09 $
  * $Author: e107steved $
  *
 */
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_shortcodes.php,v 1.18 2009-12-28 21:49:23 e107steved Exp $;
+ *	@version 	$Id: calendar_shortcodes.php,v 1.19 2010-01-09 12:06:09 e107steved Exp $;
  */
 
 /*
@@ -543,7 +543,7 @@ class event_calendar_shortcodes
 	{
 		$cal_dayarray = getdate($this->event['event_start']);
 		$cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
-		return ' '.str_replace(e_HTTP,SITEURL, e_PLUGIN_ABS).'calendar_menu/event.php?'.$cal_linkut.' ';
+		return ' '.SITEURLBASE.e_PLUGIN_ABS.'calendar_menu/event.php?'.$cal_linkut.' ';
 	}
 
 
@@ -579,19 +579,19 @@ class event_calendar_shortcodes
 
 	public function sc_ec_calendar_calendar_day_today_heading()
 	{
-		return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
+		return "<b><a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
 	}
 
 
 	public function sc_ec_calendar_calendar_day_event_heading()
 	{
-		return "<a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart.".one'>".$this->days[($this->curDay-1)]."</a>";
+		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart.".one'>".$this->days[($this->curDay-1)]."</a>";
 	}
 
 
 	public function sc_ec_calendar_calendar_day_empty_heading()
 	{
-		return "<a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a>";
+		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a>";
 	}
 
 
@@ -599,10 +599,9 @@ class event_calendar_shortcodes
 	{
 		if (!isset($this->event['is_recent'])) return '';
 		if (!$this->event['startofevent']) return '';		// Only display on first day of multi-day events
-		$recent_icon = EC_RECENT_ICON;
-		if (is_readable($recent_icon))
+		if (is_readable(EC_RECENT_ICON))
 		{
-			return "<img src='".$recent_icon."' alt='' /> ";
+			return "<img src='".EC_RECENT_ICON_ABS."' alt='' /> ";
 		}
 		return "R";
 	}
@@ -630,11 +629,11 @@ class event_calendar_shortcodes
 		}
 		elseif(defined('BULLET'))
 		{
-			$img = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+			$img = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$img = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+			$img = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
 		}
 		return $img;
 	}
@@ -657,11 +656,11 @@ class event_calendar_shortcodes
 		}
 		if($this->event['startofevent'])
 		{
-		  return "<b><a title='{$this->event['event_title']}' href='".e_PLUGIN.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+		  return "<b><a title='{$this->event['event_title']}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 		}
 		else
 		{
-		  return "<a title='{$this->event['event_title']}' href='".e_PLUGIN.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
+		  return "<a title='{$this->event['event_title']}' href='".e_PLUGIN_ABS.'calendar_menu/event.php?'.$linkut.'.event.'.$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
 		}
 	}
 
@@ -792,7 +791,7 @@ class event_calendar_shortcodes
 		}
 		if(USER)
 		{
-			return "<a href='".e_BASE."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
+			return "<a href='".e_HTTP."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
 		}
 		return $event_author_name;
 	}
@@ -826,7 +825,7 @@ class event_calendar_shortcodes
 		$event_author_name = strstr(varset($this->event['event_author'],'0.??'),'.');
 		if (USERNAME == $event_author_name || $this->ecalClass->cal_super || check_class($pref['eventpost_admin']))
 		{
-			return "<a href='event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+			return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 		}
 	}
 
@@ -875,7 +874,7 @@ class event_calendar_shortcodes
 	public function sc_ec_eventarchive_date()
 	{
 		$startds = $this->ecalClass->event_date_string($this->event['event_start']);
-		return "<a href='event.php?".$this->event['event_start'].'.event.'.$this->event['event_id']."'>".$startds."</a>";
+		return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->event['event_start'].'.event.'.$this->event['event_id']."'>".$startds."</a>";
 	}
 
 
@@ -915,10 +914,9 @@ class event_calendar_shortcodes
 		global $pref;
 		if (!$pref['eventpost_fe_showrecent']) return;
 		if (!isset($this->event['is_recent'])) return;
-		$recent_icon = EC_RECENT_ICON;
-		if (is_readable($recent_icon))
+		if (is_readable(EC_RECENT_ICON))
 		{
-			return "<img src='".$recent_icon."' alt='' /> ";
+			return "<img src='".EC_RECENT_ICON_ABS."' alt='' /> ";
 		}
 		return '';
 	}
@@ -968,11 +966,11 @@ class event_calendar_shortcodes
 			}
 			elseif(defined('BULLET'))
 			{
-				$fe_icon_file = THEME.'images/'.BULLET;
+				$fe_icon_file = THEME_ABS.'images/'.BULLET;
 			}
 			elseif(file_exists(THEME.'images/bullet2.gif'))
 			{
-				$fe_icon_file = THEME.'images/bullet2.gif';
+				$fe_icon_file = THEME_ABS.'images/bullet2.gif';
 			}
 		}
 		return $fe_icon_file;
