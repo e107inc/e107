@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.174 $
-* $Date: 2010-01-02 21:42:51 $
+* $Revision: 1.175 $
+* $Date: 2010-01-09 20:32:51 $
 * $Author: e107steved $
 *
 */
@@ -743,7 +743,7 @@ function getip()
 }
 
 // for multi-language these definitions needs to come after the language loaded.
-define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'TITLE,er_on')));
+define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on')));
 define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton']));
 define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
 define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
