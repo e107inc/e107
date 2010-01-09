@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-09 18:40:15 $
+ * $Author: secretr $
  * 
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
@@ -81,11 +81,25 @@ class e_jsmanager
     protected $_runtime_footer_src = array();
 	
     /**
-     * All registered JS files
+     * Index of all registered JS/CSS files - for faster searching
      *
      * @var array
      */
-    protected $_js_all = array();	
+    protected $_index_all = array();	
+    
+    /**
+     * Registered CSS files by type (core|theme|plugin|other)
+     * 
+     * @var array
+     */
+    protected $_e_css = array();
+    
+    /**
+     * Inline CSS
+     * 
+     * @var array
+     */
+    protected $_e_css_src = array();
 	
     /**
      * Runtime location
@@ -162,7 +176,7 @@ class e_jsmanager
 		// Try to load browser cache id from core preferences
 		$this->setCacheId(e107::getPref('e_jslib_browser_cache', 0));
 		
-		// Load stored in preferences core lib paths ASAP
+		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
 		$core_libs = e107::getPref('e_jslib_core');
 		if(!$core_libs)
 		{
@@ -190,6 +204,80 @@ class e_jsmanager
 			$theme_libs = array();
 		}
 		$this->themeLib($theme_libs);
+	}
+	
+	/**
+	 * Add Core CSS file for inclusion in site header, shorthand of headerFile() method
+	 * 
+	 * @param string|array $file_path relative to {e_FILE}jslib/ folder
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	public function coreCSS($file_path, $media = 'screen')
+	{
+		$this->addJs('core_css', $file_path, $media);	
+		return $this;
+	}
+	
+	/**
+	 * Add Plugin CSS file(s) for inclusion in site header
+	 * 
+	 * @param string $plugname
+	 * @param string|array $file_path relative to e107_plugins/myplug/ folder or array in format 'path - media'
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	public function pluginCSS($plugname, $file_path, $media = 'screen')
+	{
+		if(is_array($file_path))
+		{
+			foreach ($file_path as $fpath => $media_attr)
+			{
+				$this->addJs('plugin_css', $plugname.':'.$fpath, $media_attr);
+			}
+			return $this;
+		}
+		$this->addJs('plugin_css', $plugname.':'.$file_path, $media);		
+		return $this;
+	}
+	
+	/**
+	 * Add Theme CSS file(s) for inclusion in site header
+	 * 
+	 * @param string|array $file_path relative to e107_themes/current_theme/ folder
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	protected function themeCSS($file_path, $media = 'screen')
+	{
+		$this->addJs('theme_css', $file_path, $media);		
+		return $this;
+	}
+	
+	/**
+	 * Add CSS file(s) for inclusion in site header
+	 * 
+	 * @param string|array $file_path path, shortcodes usage is prefered
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	public function otherCSS($file_path, $media = 'screen')
+	{
+		$this->addJs('other_css', $file_path, $media);		
+		return $this;
+	}
+	
+	/**
+	 * Add CSS code to site header
+	 * 
+	 * @param string|array $js_content
+	 * @param string $media (not implemented yet) any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	public function inlineCSS($css_content, $media = 'screen')
+	{
+		$this->addJs('inline_css', $css_content, $media);		
+		return $this;
 	}
 	
 	/**
@@ -373,7 +461,7 @@ class e_jsmanager
 	}
 	
 	/**
-	 * Add JS file(s) for inclusion in site header
+	 * Add JS code to site header
 	 * 
 	 * @param string|array $js_content
 	 * @param integer $zone 1-5 (see header.php)
@@ -386,8 +474,8 @@ class e_jsmanager
 	}
 	
 	/**
-	 * Add JS file(s) for inclusion in site header if possible, else 
-	 * use {@link footerFile()}
+	 * Add JS code to site site header if possible, else 
+	 * use {@link footerInline()}
 	 * 
 	 * @param string $js_content
 	 * @param integer $zone 1-5 (see header.php and footer.php)
@@ -428,9 +516,9 @@ class e_jsmanager
 	 * @see footerFile()
 	 * @see headerInline()
 	 * @see footerInline()
-	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline - runtime
+	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css - runtime
 	 * @param string|array $file_path
-	 * @param string|integer $runtime_location admin|front|all (jslib), 0-5 (runtime inclusion)
+	 * @param string|integer $runtime_location admin|front|all (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
 	 * @return object $this
 	 */
 	protected function addJs($type, $file_path, $runtime_location = '')
@@ -439,6 +527,7 @@ class e_jsmanager
 		{
 			return $this;
 		}
+
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fp => $loc)
@@ -471,6 +560,41 @@ class e_jsmanager
 			case 'theme':
 				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
 				$registry = &$this->_e_jslib_theme;
+			break;
+			
+			case 'core_css':
+				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/');
+				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
+				$registry = &$this->_e_css['core'];
+				$runtime = true;
+			break;
+		
+			case 'plugin_css':
+				$file_path = explode(':', $file_path);
+				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
+				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
+				$registry = &$this->_e_css['plugin'];
+				$runtime = true;
+			break;
+			
+			case 'theme_css':
+				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
+				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
+				$registry = &$this->_e_css['theme'];
+				$runtime = true;
+			break;
+			
+			case 'other_css':
+				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 4);
+				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
+				$registry = &$this->_e_css['other'];
+				$runtime = true;
+			break;
+			
+			case 'inline_css': // no zones, TODO - media?
+				$this->_e_css_src[] = $file_path;
+				return $this;
+				break;
 			break;
 			
 			case 'header':
@@ -509,7 +633,6 @@ class e_jsmanager
 				{
 					$zone = 5;
 				}
-				//$this->_js_all[] = $file_path;
 				$this->_runtime_header_src[$zone][] = $file_path;
 				return $this;
 				break;
@@ -521,7 +644,6 @@ class e_jsmanager
 				{
 					$zone = 5;
 				}
-				//$this->_js_all[] = $file_path;
 				$this->_runtime_footer_src[$zone][] = $file_path;
 				return $this;
 			break;
@@ -531,12 +653,12 @@ class e_jsmanager
 			break;
 		}
 
-		if(in_array($file_path, $this->_js_all) || (!$runtime && $runtime_location != 'all' && $runtime_location != $this->getCurrentLocation()))
+		if(in_array($file_path, $this->_index_all) || (!$runtime && $runtime_location != 'all' && $runtime_location != $this->getCurrentLocation()))
 		{
 			return $this;
 		}
 		
-		$this->_js_all[] = $file_path;
+		$this->_index_all[] = $file_path;
 		$registry[] = $file_path;
 		
 		return $this;
@@ -545,7 +667,7 @@ class e_jsmanager
 	/**
 	 * Render registered JS
 	 * 
-	 * @param string $mod core|plugin|theme|header|footer|header_inline|footer_inline
+	 * @param string $mod core|plugin|theme|header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css
 	 * @param integer $zone 1-5 - only used when in 'header','footer','header_inline' and 'footer_inline' render mod
 	 * @param boolean $external exrernal file calls, only used when NOT in 'header_inline' and 'footer_inline' render mod
 	 * @param boolean $return
@@ -570,7 +692,7 @@ class e_jsmanager
 				{
 					$this->setLastModfied($mod, $this->renderFile($paths, $external, $plugname.' libraries'));
 				}*/
-				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, $plugname.' libraries'));
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, 'Plugin libraries'));
 				$this->_e_jslib_plugin = array();
 			break;
 			
@@ -582,6 +704,31 @@ class e_jsmanager
 			case 'header':
 				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone);
 				unset($this->_runtime_header[$zone]);
+			break;
+			
+			case 'core_css': //e_jslib
+				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', false);
+				unset($this->_e_css['core']);
+			break;
+		
+			case 'plugin_css': //e_jslib
+				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', false);
+				unset($this->_e_css['plugin']);
+			break;
+			
+			case 'theme_css': //e_jslib
+				$this->renderFile(varset($this->_e_css['theme'], array()), $external, 'Theme CSS', false);
+				unset($this->_e_css['theme']);
+			break;
+			
+			case 'other_css':
+				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', false);
+				unset($this->_e_css['other']);
+			break;
+			
+			case 'inline_css':
+				$this->renderInline($this->_e_css_src, 'Inline CSS', 'css');
+				$this->_e_css_src = array();
 			break;
 			
 			case 'footer':
@@ -633,11 +780,10 @@ class e_jsmanager
 	}
 	
 	/**
-	 * Render JS file array
-	 * TODO - option to output <script src='$path'>
+	 * Render JS/CSS file array
 	 * 
 	 * @param array $file_path_array
-	 * @param boolean $external if true - external file calls, else get file contents
+	 * @param string|boolean $external if true - external js file calls, if js|css - external js|css file calls, else output file contents
 	 * @param string $label added as comment if non-empty
 	 * @return void
 	 */
@@ -649,9 +795,9 @@ class e_jsmanager
 		}
 		$tp = e107::getParser();
 		echo "\n";
-		if($external && $label) //TODO - print comments only if site debug is on
+		if($label) //TODO - print comments only if site debug is on
 		{
-			echo "<!-- [JSManager] ".$label." -->\n";
+			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
 		}
 		
 		$lmodified = 0;
@@ -659,7 +805,16 @@ class e_jsmanager
 		{
             if (substr($path, - 4) == '.php')
             {
-            	if($external)
+            	if('css' === $external)
+				{
+					$path = explode('|', $path, 2);
+					$media = $path[0];
+					$path = $path[1];
+					echo '<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'" />';
+					echo "\n";
+					continue;
+				}
+				elseif($external) //true or 'js'
 				{
 					echo '<script type="text/javascript" src="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'"></script>';
 					echo "\n";
@@ -673,6 +828,15 @@ class e_jsmanager
             }
             else
             {
+				if('css' === $external)
+				{
+					$path = explode('|', $path, 2);
+					$media = $path[0];
+					$path = $path[1];
+					echo '<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'" />';
+					echo "\n";
+					continue;
+				}
             	if($external)
 				{
 					echo '<script type="text/javascript" src="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'"></script>';
@@ -691,31 +855,48 @@ class e_jsmanager
 	}
 	
 	/**
-	 * Render JS source array
+	 * Render JS/CSS source array
 	 * 
 	 * @param array $js_content_array
 	 * @param string $label added as comment if non-empty
 	 * @return void
 	 */
-	public function renderInline($js_content_array, $label = '')
+	function renderInline($content_array, $label = '', $type = 'js')
 	{
-		if(empty($js_content_array))
+		if(empty($content_array))
 		{
 			return '';
 		}
 		
-		$js_content_array = array_unique($js_content_array); //TODO quick fix, we need better control!
+		$content_array = array_unique($content_array); //TODO quick fix, we need better control!
 		echo "\n";
-		if($label) //TODO - print comments only if site debug is on
+		
+		switch ($type) 
 		{
-			echo "<!-- [JSManager] ".$label." -->\n";
+			case 'js':
+				if($label) //TODO - print comments only if site debug is on
+				{
+					echo "<!-- [JSManager] ".$label." -->\n";
+				}
+				echo '<script type="text/javascript">';
+				echo "\n//<![CDATA[\n";
+				echo implode("\n\n", $content_array);
+				echo "\n//]]>\n";
+				echo '</script>';
+				echo "\n";
+			break;
+			
+			case 'css':
+				if($label) //TODO - print comments only if site debug is on
+				{
+					echo "<!-- [CSSManager] ".$label." -->\n";
+				}
+				echo '<style type="text/css">';
+				echo implode("\n\n", $content_array);
+				echo '</style>';
+				echo "\n";
+			break;
 		}
-		echo '<script type="text/javascript">';
-		echo "\n//<![CDATA[\n";
-		echo implode("\n\n", $js_content_array);
-		echo "\n//]]>\n";
-		echo '</script>';
-		echo "\n";
 	}
 	
 	/**
