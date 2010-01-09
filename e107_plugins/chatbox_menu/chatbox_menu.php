@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2009-08-23 10:39:52 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.82 $
+|     $Date: 2010-01-09 12:01:38 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -133,7 +133,7 @@ else
 	if($pref['cb_layer'] == 2)
 	{
 
-		$oc = "onclick=\"javascript:sendInfo('".SITEURL.$PLUGINS_DIRECTORY."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
+		$oc = "onclick=\"javascript:sendInfo('".SITEURLBASE.e_PLUGIN_ABS."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
 	}
 	else
 	{
@@ -185,7 +185,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			list($cb_uid, $cb_nick) = explode(".", $cb['cb_nick'], 2);
 			if($cb['user_name'])
 			{
-				$cb_nick = "<a href='".e_BASE."user.php?id.{$cb_uid}'>{$cb['user_name']}</a>";
+				$cb_nick = "<a href='".e_HTTP."user.php?id.{$cb_uid}'>{$cb['user_name']}</a>";
 			}
 			else
 			{
@@ -208,11 +208,11 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 				$bullet = '';
 				if(defined('BULLET'))
 				{
-					$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+					$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
 				}
 				elseif(file_exists(THEME.'images/bullet2.gif'))
 				{
-					$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+					$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 				}
 				// default chatbox style
 				$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
@@ -230,7 +230,7 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	$total_chats = $sql -> db_Count("chatbox");
 	if($total_chats > $chatbox_posts || CB_MOD)
 	{
-		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
+		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN_ABS."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
 	}
 	$e107cache->set("nq_chatbox", $text);
 }

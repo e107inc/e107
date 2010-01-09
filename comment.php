@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2008-11-04 22:10:32 $
+|     $Revision: 1.60 $
+|     $Date: 2010-01-09 12:01:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -143,15 +143,15 @@ if ($redirectFlag)
 	{
 	  case "news" :
 	  case "poll" :
-		echo "<script type='text/javascript'>document.location.href='".e_BASE."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
+		echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
 		exit;
 		break;
 	  case "download" :
-		echo "<script type='text/javascript'>document.location.href='".e_BASE."download.php?view.{$redirectFlag}'</script>\n";
+		echo "<script type='text/javascript'>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
 		exit;
 		break;
 	  case "page" :
-		echo "<script type='text/javascript'>document.location.href='".e_BASE."page.php?{$redirectFlag}'</script>\n";
+		echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
 		exit;
 		break;
 	}
@@ -352,7 +352,7 @@ else
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news")
 {
-  echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
+  echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".SITEURLBASE.e_PLUGIN_ABS."trackback/trackback.php?pid={$id}</span>";
 }
 
 $field = ($field ? $field : ($id ? $id : ""));			// ID of associated source item
@@ -398,7 +398,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 		echo "<a name='track'></a>".COMLAN_316;
 	}
 	if (ADMIN && getperms("B")) {
-		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
+		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}
 }
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-12-03 20:38:13 $
+|     $Revision: 1.11 $
+|     $Date: 2010-01-09 12:01:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
@@ -90,21 +90,21 @@ while ($news = $sql->db_Fetch())
 	$xmonth = date("n", $news['news_datestamp']);
 	if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 	{
-		$month_links[$xmonth] = e_BASE."news.php?month.".formatDate($req_year, $xmonth);
+		$month_links[$xmonth] = e_HTTP."news.php?month.".formatDate($req_year, $xmonth);
 	}
 	if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
 	{
 		$xday = date("j", $news['news_datestamp']);
 		if (!isset($day_links[$xday]) || !$day_links[$xday])
 		{
-			$day_links[$xday] = e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+			$day_links[$xday] = e_HTTP."news.php?day.".formatDate($req_year, $req_month, $xday);
 		}
 	}
 }
 
 // if we're listing the current year, add the current month to the list regardless of posts
 if ($req_year == $cur_year) {
-	$month_links[$cur_month] = e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
+	$month_links[$cur_month] = e_HTTP."news.php?month.".formatDate($cur_year, $cur_month);
 }
 	
 // go over the link array and create the option fields

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/archive.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-10-21 19:03:20 $
+|     $Revision: 1.8 $
+|     $Date: 2010-01-09 12:01:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
@@ -92,7 +92,7 @@ for($i = $start_year; $i <= $end_year; $i++)
 					list($xmonth, $xday) = explode(" ", date("n j", $news['news_datestamp']));
 					if (!$day_links[$xmonth][$xday]) 
 					{
-						$day_links[$xmonth][$xday] = e_BASE."news.php?day.".formatdate($req_year, $xmonth, $xday);
+						$day_links[$xmonth][$xday] = e_HTTP."news.php?day.".formatdate($req_year, $xmonth, $xday);
 					}
 				}
 			}
@@ -123,7 +123,7 @@ for($i = 1; $i <= 12; $i++)
 	// href the current month regardless of newsposts or any month with news
 	if (($req_year == $cur_year && $i == $cur_month) || $day_links[$i]) 
 	{
-		$archive .= "<a class='forumlink' href='".e_BASE."news.php?month.".formatDate($req_year, $i)."'>".$marray[$i-1]."</a>";
+		$archive .= "<a class='forumlink' href='".e_HTTP."news.php?month.".formatDate($req_year, $i)."'>".$marray[$i-1]."</a>";
 	} 
 	else 
 	{
