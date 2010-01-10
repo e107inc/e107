@@ -9,11 +9,18 @@
  * List Language
  *
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-11-18 01:05:47 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2010-01-10 12:19:45 $
+|     $Author: e107steved $
  *
 */
+
+/**
+ *	Language file list_new plugin 
+ *
+ *	@package e107_plugins
+ *	@subpackage list_new
+ */
 
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "List New Items"); }
 
