@@ -2,19 +2,26 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Mailout handling - selector for 'core' users
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2010-01-10 06:20:43 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2010-01-10 11:01:29 $
+ * $Author: e107steved $
  *
 */
 
+/**
+ *	e107 Mail handling - core selector for users
+ *
+ *	@package	e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: mailout_class.php,v 1.9 2010-01-10 11:01:29 e107steved Exp $;
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -36,9 +43,8 @@ It is the responsibility of each class to manager permission restrictions where 
 TODO:
 	1. accept varying date formats for last visit
 	2. Use XHTML calendar for last visit
-	3. Sort classes for table cells
-
 */
+
 // These variables determine the circumstances under which this class is loaded (only used during loading, and may be overwritten later)
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
 	$mailerExcludeDefault = TRUE;				// Mandatory - if TRUE, when this plugin's mailout is active, the default (core) isn't loaded
@@ -276,10 +282,10 @@ class core_mailout
 			$u_array = array('user_name'=>LAN_MAILOUT_43,'user_login'=>LAN_MAILOUT_44,'user_email'=>LAN_MAILOUT_45);
 	
 			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));								
-			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, $selectVals['user_search_name'],'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', $selectVals['user_search_value']);	
-			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', $selectVals['last_visit_match'])."  ".$frm->text('last_visit_date', $selectVals['last_visit_date']);			
-			$var[3]['html'] 	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_1_value',$selectVals['extended_1_value']);			
-			$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',$selectVals['extended_2_value']);
+			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
+			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));
+			$var[3]['html'] 	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_1_value',varset($selectVals['extended_1_value'], ''));
+			$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',varset($selectVals['extended_2_value'],''));
 		
 		}
 		else // Display existing values

@@ -2,18 +2,27 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Administration - Mailout
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.34 $
- * $Date: 2010-01-10 06:20:31 $
- * $Author: e107coders $
+ * $Revision: 1.35 $
+ * $Date: 2010-01-10 11:01:27 $
+ * $Author: e107steved $
  *
 */
+
+
+/**
+ *	e107 Mail handling - Admin
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: mailout.php,v 1.35 2010-01-10 11:01:27 e107steved Exp $;
+ */
 
 /*
 Features:
@@ -523,7 +532,7 @@ switch ($action)
 
 	case 'makemail' :
 	default :
-		if (!is_array($mailData))
+		if (!isset($mailData) || !is_array($mailData))
 		{
 			$mailData = array();			// Empty array just in case
 		}
@@ -577,6 +586,7 @@ function saveMailPrefs(&$emessage)
 	$temp['mail_workpertick'] = intval($_POST['mail_workpertick']);
 	$temp['mail_workpertick'] = min($temp['mail_workpertick'],1000);
 	$temp['mail_bounce'] = isset($bounceOpts[$_POST['mail_bounce']]) ? $_POST['mail_bounce'] : 'none';
+	$temp['mail_bounce_auto'] = 0;				// Make sure this is always defined
 	switch ($temp['mail_bounce'])
 	{
 		case 'none' :
@@ -594,9 +604,9 @@ function saveMailPrefs(&$emessage)
 	$temp['mail_bounce_user'] =	$e107->tp->toDB($_POST['mail_bounce_user']);
 	$temp['mail_bounce_pass'] = $e107->tp->toDB($_POST['mail_bounce_pass']);
 	$temp['mail_bounce_type'] = $e107->tp->toDB($_POST['mail_bounce_type']);
-	$temp['mail_bounce_delete'] = intval($_POST['mail_bounce_delete']);
+	$temp['mail_bounce_delete'] = intval(varset($_POST['mail_bounce_delete'], 0));
 
-	$temp['mailout_enabled'] = implode(',',$_POST['mail_mailer_enabled']);
+	$temp['mailout_enabled'] = implode(',',varset($_POST['mail_mailer_enabled'], ''));
 	$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
 
 	if ($e107->admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
@@ -640,7 +650,7 @@ function show_prefs($mailAdmin)
 		</colgroup>
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
-			<td>".$frm->admin_button(testemail, LAN_MAILOUT_112)."&nbsp;
+			<td>".$frm->admin_button('testemail', LAN_MAILOUT_112)."&nbsp;
 			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 			</td>
 		</tr>

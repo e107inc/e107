@@ -3,7 +3,7 @@
  + ----------------------------------------------------------------------------+
  |     e107 website system
  |
- |     ?Copyright (C) 2008-2009 e107 Inc (e107.org)
+ |     ?Copyright (C) 2008-2010 e107 Inc (e107.org)
  |     http://e107.org
  |
  |
@@ -11,13 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision: 1.20 $
- |     $Date: 2009-11-30 20:40:03 $
+ |     $Revision: 1.21 $
+ |     $Date: 2010-01-10 11:01:28 $
  |     $Author: e107steved $
- To do:
- 1. Do we need to check for presence of elements of debug_backtrace() to avoid notices?
- 2. Reflect possible DB structure changes once finalised
- 3. Ad user audit trail
  +----------------------------------------------------------------------------+
  */
 
@@ -27,8 +23,11 @@ if (!defined('e107_INIT'))
 }
 
 /**
- * Admin logging class.
+ *	Admin logging class.
  *
+ *	@package	e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: admin_log_class.php,v 1.21 2010-01-10 11:01:28 e107steved Exp $;
  */
 class e_admin_log
 {
@@ -351,7 +350,7 @@ class e_admin_log
 		$changes = array();
 		foreach ($new as $k=>$v)
 		{
-			if ($v != $old[$k])
+			if ($v != varset($old[$k],''))
 			{
 				$old[$k] = $v;
 				$changes[] = $k.'=>'.$v;
