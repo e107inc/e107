@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/languages/English_admin_newsletter.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-19 20:24:21 $
- * $Author: e107steved $
+ * $Revision: 1.2 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -65,7 +65,7 @@ define('NLLAN_44', 'Newsletter Front Page');
 define('NLLAN_45', 'Create Newsletter');
 define('NLLAN_46', 'Create mailing');
 define('NLLAN_47', 'Newsletter Options');
-define('NLLAN_48', 'Subscribers to each newsletter');
+define('NLLAN_48', 'Newsletter Subscribers');
 define('NLLAN_49', 'Newsletter: ');
 
 define('NLLAN_54', 'Sending');

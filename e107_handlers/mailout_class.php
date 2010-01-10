@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-01 20:05:53 $
- * $Author: e107steved $
+ * $Revision: 1.7 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -47,11 +47,11 @@ class core_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
-	protected $e107;
+	// protected $e107;
 	public $mailerSource = 'core';					// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = LAN_MAILOUT_68;			// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
-	protected $adminHandler = NULL;					// Filled in with the name of the admin handler on creation
+	// protected $adminHandler = NULL;					// Filled in with the name of the admin handler on creation
 
 	// List of fields used by selectors
 	private	$selectFields = array('email_to', 
@@ -64,8 +64,9 @@ class core_mailout
 	// Constructor
 	public function __construct()
 	{
-		$this->e107 = e107::getInstance();
-		$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
+		//FIXME Bad for Performance and causes data conflicts. 
+		// $this->e107 = e107::getInstance();
+		// $this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
 	}
   
   
@@ -250,125 +251,58 @@ class core_mailout
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
-		$ret = "<table style='width:95%'>";
-
-		$ret = "<fieldset id='core-mail-recipients'>
-		<table cellpadding='0' cellspacing='0' class='adminedit'>
-		<colgroup span='2'>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		<tbody>";
-
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$admin = e107::getRegistry('_mailout_admin');
+		
+		$var = array();
+	
+		$var[0]['caption'] 	= LAN_MAILOUT_03;	// User class select
+		$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
+		$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
+		$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+		$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+		
 		if ($allow_edit)
 		{  
-			// User class select
-			$ret .= "<tr>
-				<td>".LAN_MAILOUT_03.": </td>
-				<td>
-				".$this->adminHandler->userClassesTotals('email_to', varset($selectVals['email_to'], ''))."</td>
-				</tr>";
-		
-			// User Search Field.
 			$u_array = array('user_name'=>LAN_MAILOUT_43,'user_login'=>LAN_MAILOUT_44,'user_email'=>LAN_MAILOUT_45);
-			$ret .= "
-				<tr>
-					<td style='width:35%'>".LAN_MAILOUT_46."
-					<select name='user_search_name' class='tbox'>
-					<option value=''>&nbsp;</option>";
-
-			foreach ($u_array as $key=>$val)
-			{
-				$selected = '';
-				if (isset($selectVals['user_search_name']) && ($selectVals['user_search_name'] == $v)) { $selected = " selected='selected'"; }
-				$ret .= "<option value='{$key}' >".$val."</option>\n";
-			}
-			$ret .= "
-				</select> ".LAN_MAILOUT_47." </td>
-				<td style='width:65%'>
-				<input type='text' name='user_search_value' class='tbox' style='width:80%' value='".varset($selectVals['user_search_value'])."' />
-				</td></tr>
-				";
-
-			// User last visit
-			$ret .= "
-				<tr><td>".LAN_MAILOUT_56.' '.$this->adminHandler->comparisonSelect('last_visit_match', $selectVals['last_visit_match'])." </td>
-				<td>
-				<input type='text' name='last_visit_date' class='tbox' style='width:30%' value='".varset($selectVals['last_visit_date'], '')."' />
-				</td></tr>";
-			
-
-			// Extended user fields
-			$ret .= "
-				<tr><td>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." </td>
-				<td>
-				<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='".varset($selectVals['extended_1_value'], '')."' />
-				</td></tr>
-				<tr><td>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." </td>
-				<td>
-				<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='".varset($selectVals['extended_2_value'], '')."' />
-				</td></tr>
-				";
+	
+			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));								
+			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, $selectVals['user_search_name'],'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', $selectVals['user_search_value']);	
+			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', $selectVals['last_visit_match'])."  ".$frm->text('last_visit_date', $selectVals['last_visit_date']);			
+			$var[3]['html'] 	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_1_value',$selectVals['extended_1_value']);			
+			$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',$selectVals['extended_2_value']);
+		
 		}
-		else
-		{ 	// Display existing values
+		else // Display existing values
+		{ 	
 			if(is_numeric($selectVals['email_to']))
 			{
-				$this->e107->sql->db_Select('userclass_classes', 'userclass_name', "userclass_id = ".intval($selectVals['email_to']));
-				$row = $this->e107->sql->db_Fetch();
+				$sql->db_Select('userclass_classes', 'userclass_name', "userclass_id = ".intval($selectVals['email_to']));
+				$row = $sql->db_Fetch();
 				$_to = LAN_MAILOUT_23.$row['userclass_name'];
 			}
 			else
 			{
 				$_to = $selectVals['email_to'];
 			}
-			$ret .= "<tr>
-					<td>".LAN_MAILOUT_03."</td>
-					<td>".$_to."&nbsp;";
+			
+			$var_0 = $_to."&nbsp;";
 			if($selectVals['email_to'] == "self")
 			{
-				$text .= "&lt;".USEREMAIL."&gt;";
+				$var_0 .= "&lt;".USEREMAIL."&gt;";
 			}
-			$ret .= "</td></tr>";
-
-
-			if (vartrue($selectVals['user_search_name']) && vartrue($selectVals['user_search_value']))
-			{
-				$ret .= "
-				<tr>
-					<td>".$selectVals['user_search_name']."</td>
-					<td>".varset($selectVals['user_search_value'])."&nbsp;</td>
-				</tr>";
-			}
-
-			if (vartrue($selectVals['last_visit_match']) && vartrue($selectVals['last_visit_date']))
-			{
-				$ret .= "
-				  <tr>
-					<td>".LAN_MAILOUT_56."</td>
-					<td>".$selectVals['last_visit_match'].' '.gmstrtotime("%D-%M-%Y",$selectVals['last_visit_date'])."&nbsp;</td>
-				  </tr>";
-			}
-
-			if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
-			{
-				$ret .= "
-				  <tr>
-					<td>".$selectVals['extended_1_name']."</td>
-					<td>".$selectVals['extended_1_value']."&nbsp;</td>
-				  </tr>";
-			}
-			if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
-			{
-				$ret .= "
-				  <tr>
-					<td>".$selectVals['extended_2_name']."</td>
-					<td>".$selectVals['extended_2_value']."&nbsp;</td>
-				  </tr>";
-			}
+			
+			$var[0]['html'] = $var_0;
+			$var[1]['html'] = vartrue($selectVals['user_search_name'])."  ". vartrue($selectVals['user_search_value']);
+			$var[2]['html'] = vartrue($selectVals['last_visit_match']).' '.gmstrftime("%D-%M-%Y",vartrue($selectVals['last_visit_date'])); //FIXME use e107 date function. 
+			$var[3]['html'] = vartrue($selectVals['extended_1_name']).' '.vartrue($selectVals['extended_1_value']);
+			$var[4]['html'] = vartrue($selectVals['extended_2_name']).' '.vartrue($selectVals['extended_2_value']);
+			
 		}
 
-		return $ret.'</tbody></table></fieldset>';
+		return $var;
+
 	}
 }
 

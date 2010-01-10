@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-12-01 20:05:51 $
- * $Author: e107steved $
+ * $Revision: 1.33 $
+ * $Date: 2010-01-10 03:56:26 $
+ * $Author: e107coders $
  *
 */
 
@@ -468,7 +468,7 @@ if (is_array($errors) && (count($errors) > 0))
 }
 if ($emessage->hasMessage())
 {
-	$e107->ns->tablerender(LAN_MAILOUT_97, $emessage->render());
+	 $ns->tablerender(LAN_MAILOUT_97, $emessage->render());
 }
 
 
@@ -887,7 +887,9 @@ function show_prefs($mailAdmin)
 //-----------------------------------------------------------
 function show_maint($debug = FALSE)
 {
-	$e107 = e107::getInstance();
+	$mes = e107::getMessage();
+	$ns = e107::getRender();
+	
 	$text = "<div style='text-align:center'>";
 
 	$text .= "
@@ -904,7 +906,7 @@ function show_maint($debug = FALSE)
 		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td><input class='button' type='submit' name='email_dross' value=\"".LAN_SUBMIT."\" /> <br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
 		$text .= "</tbody></table>\n</fieldset></form></div>";
 
-		$e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $text);
+		$ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $mes->render().$text);
 
 //	$text .= "</table></div>";
 }

@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/e_mailout.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-12-01 20:05:54 $
- * $Author: e107steved $
+ * $Revision: 1.3 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -34,11 +34,9 @@ class newsletter_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
-	protected $e107;
 	public $mailerSource = 'newsletter';			// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = NLLAN_48;					// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
-	protected $adminHandler = NULL;					// Filled in with the name of the admin handler on creation
 	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
 	private	$targets = array();						// Used to store potential recipients
 	private $ourDB;
@@ -47,8 +45,9 @@ class newsletter_mailout
 	// Constructor
 	public function __construct()
 	{
-		$this->e107 = e107::getInstance();
-		$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
+		// BAD FOR PERFORMANCE
+		//$this->e107 = e107::getInstance();
+		//$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
 	}
   
   
@@ -85,6 +84,9 @@ class newsletter_mailout
 	 */
 	public function selectInit($selectVals = FALSE)
 	{
+		$sql = e107::getDb();
+		
+		
 		if (($selectVals === FALSE) || ($selectVals == ''))
 		{
 			return 0;				// No valid selector - so no valid records
@@ -92,7 +94,7 @@ class newsletter_mailout
 
 		$qry = "SELECT newsletter_id,newsletter_subscribers FROM `#newsletter` WHERE (`newsletter_parent`=0) AND (`newsletter_id` IN ({$selectVals}))";
 //		echo "Selector {$selectVals} query: ".$qry.'<br />';
-		if (!($this->e107->sql->db_Select_gen($qry))) return FALSE;
+		if (!($sql->db_Select_gen($qry))) return FALSE;
 		$this->selectorActive = TRUE;
 		$this->mail_count = 1;			// We have no idea of how many subscribers without reading all relevant DB records
 		$this->mail_read = 0;
@@ -114,13 +116,17 @@ class newsletter_mailout
 	 */
 	public function selectAdd()
 	{
+		
+		$sql = e107::getDb();
+		
+		
 		if (!$this->selectorActive) return FALSE;
 		
 		while ($this->selectorActive)
 		{
 			if (count($this->targets) == 0)
 			{	// Read in and process another newletter mailing list
-				if (!($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC)))
+				if (!($row = $sql->db_Fetch(MYSQL_ASSOC)))
 				{
 					$this->selectorActive = FALSE;
 					return FALSE;		// Run out of DB records
@@ -173,35 +179,42 @@ class newsletter_mailout
 	 * @param boolean $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
 	 * @param string $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return string Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return array Returns array which is displayed in a table cell
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
-		$ret = "<table style='width:95%'>";
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+				
 		$selects = array_flip(explode(',', $selectVals));
 
-		if ($this->e107->sql->db_Select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
+		if ($sql->db_Select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
 		{
-			while ($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))
+			$c=0;
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$checked = (isset($selects[$row['newsletter_id']])) ? " checked='checked'" : '';
+				
 				if ($allow_edit)
 				{
-					$ret .= "<tr><td><input type='checkbox' name='nl_category_sel[]' value='{$row['newsletter_id']}' {$checked}/></td><td>
-						".$row['newsletter_title']."</td></tr>";
+					$var[$c]['caption'] = $row['newsletter_title'];
+					$var[$c]['html'] = $frm->checkbox('nl_category_sel[]',$row['newsletter_id'] ,$checked);
 				}
 				elseif($checked)
 				{
-					$ret .= "<tr><td>".NLLAN_49."</td><td>
-						".$row['newsletter_title']."</td></tr>";
+					$var[$c]['caption'] = $row['newsletter_title'];
+					$var[$c]['html'] = NLLAN_49;
 				}
+				$c++;
 			}
 		}
 		else
 		{
-			$ret .= "<tr><td colspan='2'>".NLLAN_50.'</td></tr>';
+			$var[$c]['caption'] = NLLAN_50;
+			$var[$c]['html'] = '';
 		}
-		return $ret.'</table>';
+		
+		return $var; 
 	}
 }
 

@@ -9,13 +9,13 @@
  * Event calendar - language file for mailout related routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_mailer.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-22 10:11:32 $
- * $Author: e107steved $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
-define('LAN_EC_MAIL_01', 'Event calendar subscribers list');
+define('LAN_EC_MAIL_01', 'Event Calendar Subscribers');
 define('LAN_EC_MAIL_02', 'No categories defined, or database error');
 define('LAN_EC_MAIL_03', 'Category: ');
 define('LAN_EC_MAIL_04', 'Calendar Subscriptions');

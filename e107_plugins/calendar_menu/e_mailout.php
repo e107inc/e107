@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-20 22:47:28 $
- * $Author: e107steved $
+ * $Revision: 1.9 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_mailout.php,v 1.8 2009-12-20 22:47:28 e107steved Exp $;
+ *	@version 	$Id: e_mailout.php,v 1.9 2010-01-10 03:56:28 e107coders Exp $;
  */
 
 if (!defined('e107_INIT')) { exit(); }
@@ -41,19 +41,15 @@ class calendar_menu_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
-	protected $e107;
-	public $mailerSource = 'calendar_menu';			// Plugin name (core mailer is special case) Must be directory for this file
+	public $mailerSource = 'calendar_menu';	//FIXME should be auto-detected		// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = LAN_EC_MAIL_01;			// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
-	protected $adminHandler = NULL;					// Filled in with the name of the admin handler on creation
 	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
 
 
 	// Constructor
 	public function __construct()
 	{
-		$this->e107 = e107::getInstance();
-		$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
 	}
   
   
@@ -90,6 +86,9 @@ class calendar_menu_mailout
 	 */
 	public function selectInit($selectVals = FALSE)
 	{
+		
+		$sql = e107::getDb();
+				
 		if (($selectVals === FALSE) || ($selectVals == ''))
 		{
 			return 0;				// No valid selector - so no valid records
@@ -100,7 +99,7 @@ class calendar_menu_mailout
 		$qry .= ' LEFT JOIN `#user` AS u ON es.`event_subid` = u.`user_id` WHERE es.`event_cat` IN (\''.$selectVals.'\') AND u.`user_id` IS NOT NULL';
 		$qry .= ' GROUP BY u.`user_id`';
 //		echo "Selector query: ".$qry.'<br />';
-		if (!( $this->mail_count = $this->e107->sql->db_Select_gen($qry))) return FALSE;
+		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
 		$this->selectorActive = TRUE;
 		$this->mail_read = 0;
 		return $this->mail_count;
@@ -120,8 +119,10 @@ class calendar_menu_mailout
 	 */
 	public function selectAdd()
 	{
+		$sql = e107::getDb();
+				
 		if (!$this->selectorActive) return FALSE;
-		if (!($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
+		if (!($row = $sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],
@@ -154,35 +155,49 @@ class calendar_menu_mailout
 	 * @param boolean $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
 	 * @param string $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return string Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return array Returns array which is displayed in a table cell.
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
-		$ret = "<table style='width:95%'>";
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+				
+		// $ret = "<table style='width:95%'>";
 		$selects = array_flip(explode(',', $selectVals));
 
-		if ($this->e107->sql->db_Select('event_cat', 'event_cat_id, event_cat_name', "event_cat_name != 'Default'"))
+		if ($sql->db_Select('event_cat', 'event_cat_id, event_cat_name', "event_cat_name != 'Default'"))
 		{
-			while ($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))
+			$c=0;
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$checked = (isset($selects[$row['event_cat_id']])) ? " checked='checked'" : '';
 				if ($allow_edit)
 				{
-					$ret .= "<tr><td><input type='checkbox' name='ec_category_sel[]' value='{$row['event_cat_id']}' {$checked}/></td><td>
-						".$row['event_cat_name']."</td></tr>";
+					$var[$c]['caption'] = $row['event_cat_name'];
+					$var[$c]['html'] = $frm->checkbox('ec_category_sel[]',$row['event_cat_id'],$checked);
+					
+					/*$ret .= "<tr><td><input type='checkbox' name='ec_category_sel[]' value='{$row['event_cat_id']}' {$checked}/></td><td>
+						".$row['event_cat_name']."</td></tr>";*/
 				}
 				elseif($checked)
 				{
-					$ret .= "<tr><td>".LAN_EC_MAIL_03."</td><td>
-						".$row['event_cat_name']."</td></tr>";
+					$var[$c]['caption'] = $row['event_cat_name'];
+					$var[$c]['html'] = LAN_EC_MAIL_03;
+					
+					/*$ret .= "<tr><td>".LAN_EC_MAIL_03."</td><td>
+						".$row['event_cat_name']."</td></tr>";*/
 				}
+				$c++;
 			}
 		}
 		else
 		{
-			$ret .= "<tr><td colspan='2'>".LAN_EC_MAIL_02.'</td></tr>';
+			$var[0]['caption'] = LAN_EC_MAIL_02;
+			$var[0]['html'] = '';
 		}
-		return $ret.'</table>';
+		
+		return $var;
+		// return $ret.'</table>';
 	}
 }
 
