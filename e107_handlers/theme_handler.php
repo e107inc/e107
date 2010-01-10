@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.68 $
- * $Date: 2010-01-10 15:56:46 $
+ * $Revision: 1.69 $
+ * $Date: 2010-01-10 16:24:09 $
  * $Author: secretr $
  */
 
@@ -841,8 +841,7 @@ class themeHandler
 				$itext .= "</td>
 								<td style='vertical-align:top'>";
 				// Default
-				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",
-					 $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
+				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
 				
 				$itext .= "</td>";
 				
@@ -1189,18 +1188,20 @@ class themeHandler
 		{
 			return;
 		}
-		
-		//global $pref;
-		$key = key($array);
-		//['sitetheme_custompages']
-		$array[$key] = trim(str_replace("\r\n", "\n", $array[$key]));
-		$newprefs[$key] = array_filter(explode("\n", $array[$key]));
-		$newprefs[$key] = array_unique($newprefs[$key]);
+		$newprefs = array();
+		foreach ($array as $key => $newpref)
+		{
+			$newpref = trim(str_replace("\r\n", "\n", $newpref));
+			$newprefs[$key] = array_filter(explode("\n", $newpref));
+			$newprefs[$key] = array_unique($newprefs[$key]);
+			
+		}
 		
 		if(e107::getPref('sitetheme_deflayout') == 'legacyCustom')
 		{
 			$newprefs['legacyCustom'] = array();
 		}
+
 		//setPosted couldn't be used here - sitetheme_custompages structure is not defined
 		e107::getConfig()->set('sitetheme_custompages', e107::getParser()->toDB($newprefs));
 	}
