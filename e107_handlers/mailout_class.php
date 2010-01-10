@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2010-01-10 03:56:28 $
+ * $Revision: 1.8 $
+ * $Date: 2010-01-10 06:20:43 $
  * $Author: e107coders $
  *
 */
@@ -80,12 +80,15 @@ class core_mailout
 	 */
 	public function returnSelectors()
 	{
+		$tp = e107::getParser();
+		
+		
 		$res = array();
 		foreach ($this->selectFields as $k)
 		{
 			if (varsettrue($_POST[$k]))
 			{
-				$res[$k] = $this->e107->tp->toDB($_POST[$k]);
+				$res[$k] = $tp->toDB($_POST[$k]);
 			}
 		}
 		return $res;
@@ -103,6 +106,9 @@ class core_mailout
 	 */
 	public function selectInit($selectVals = FALSE)
 	{
+		$sql = e107::getDb();
+		
+		
 		$where = array();
 		$incExtended = array();
 		if ($selectVals === FALSE)
@@ -195,7 +201,7 @@ class core_mailout
 
 		$qry .= ' WHERE '.implode(' AND ',$where).' ORDER BY u.user_name';
 //		echo "Selector query: ".$qry.'<br />';
-		if (!( $this->mail_count = $this->e107->sql->db_Select_gen($qry))) return FALSE;
+		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}
@@ -214,7 +220,9 @@ class core_mailout
 	 */
 	public function selectAdd()
 	{
-		if (!($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
+		$sql = e107::getDb();
+		
+		if (!($row = $sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],
@@ -276,6 +284,11 @@ class core_mailout
 		}
 		else // Display existing values
 		{ 	
+			if(!vartrue($selectVals['email_to']))
+			{
+				return;
+			}
+		
 			if(is_numeric($selectVals['email_to']))
 			{
 				$sql->db_Select('userclass_classes', 'userclass_name', "userclass_id = ".intval($selectVals['email_to']));

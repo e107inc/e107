@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.33 $
- * $Date: 2010-01-10 03:56:26 $
+ * $Revision: 1.34 $
+ * $Date: 2010-01-10 06:20:31 $
  * $Author: e107coders $
  *
 */
@@ -219,6 +219,7 @@ switch ($action)
 
 	case 'makemail' :
 		$newMail = TRUE;
+		
 		if (isset($_POST['save_email']))
 		{
 			$subAction = 'new';

@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.9 $
- * $Date: 2010-01-10 03:56:28 $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-10 06:20:43 $
  * $Author: e107coders $
  *
 */
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_mailout.php,v 1.9 2010-01-10 03:56:28 e107coders Exp $;
+ *	@version 	$Id: e_mailout.php,v 1.10 2010-01-10 06:20:43 e107coders Exp $;
  */
 
 if (!defined('e107_INIT')) { exit(); }
@@ -161,7 +161,7 @@ class calendar_menu_mailout
 	{
 		$sql = e107::getDb();
 		$frm = e107::getForm();
-				
+		$var = array();		
 		// $ret = "<table style='width:95%'>";
 		$selects = array_flip(explode(',', $selectVals));
 
@@ -197,7 +197,6 @@ class calendar_menu_mailout
 		}
 		
 		return $var;
-		// return $ret.'</table>';
 	}
 }
 

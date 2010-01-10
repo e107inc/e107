@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2010-01-10 03:56:28 $
+ * $Revision: 1.12 $
+ * $Date: 2010-01-10 06:20:41 $
  * $Author: e107coders $
  *
 */
@@ -19,7 +19,7 @@
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.11 $
+ * @version     $Revision: 1.12 $
  * @author      $Author: e107coders $
 
  *	Various admin-related mailout functions, mostly to do with creating and handling forms. 
@@ -476,12 +476,14 @@ class mailoutAdminClass extends e107MailManager
 		
 		$ret .= "<div class='admintabs' id='tab-container'>\n";
 		
-		foreach ($this->mailHandlers as $key=>$m)
+		foreach ($this->mailHandlers as $m)
 		{
+			$key = $m->mailerSource;
+			
 			if ($m->mailerEnabled)
 			{
-				$tab .= "<li id='tab-main_".$key."'><a href='#core-main_".$key."'>".$m->mailerName."</a></li>";
-				$tabc .= "<div id='core-main_".$key."'>";
+				$tab .= "<li id='tab-main_".$key."'><a href='#main-mail-".$key."'>".$m->mailerName."</a></li>";
+				$tabc .= "<div id='main-mail-".$key."'>";
 				
 				$content = $m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE));
 				
@@ -549,7 +551,9 @@ class mailoutAdminClass extends e107MailManager
 
 		$ret = '';
 		$this->checkDB(2);			// Make sure DB object created
-		$ret .= "<select style='width:80%' class='tbox' name='{$name}' >\n";
+		$ret .= "<select style='width:80%' class='tbox' name='{$name}' >
+		<option value=''>&nbsp;</option>\n";
+		
 		foreach ($fixedClasses as $k => $v)
 		{
 			$sel = ($k == $curSel) ? " selected='selected'" : '';
@@ -612,17 +616,22 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function parseEmailPost($newMail = TRUE)
 	{
-		$ret = array(	'mail_title'		=> $this->e107->tp->toDB($_POST['email_title']),
-						'mail_subject'		=> $this->e107->tp->toDB($_POST['email_subject']),
-						'mail_body' 		=> $this->e107->tp->toDB($_POST['email_body']),
-						'mail_sender_email' => $this->e107->tp->toDB($_POST['email_from_email']),
-						'mail_sender_name'	=> $this->e107->tp->toDB($_POST['email_from_name']),
-						'mail_copy_to'		=> $this->e107->tp->toDB($_POST['email_cc']),
-						'mail_bcopy_to'		=> $this->e107->tp->toDB($_POST['email_bcc']),
-						'mail_attach'		=> $this->e107->tp->toDB(trim($_POST['email_attachment'])),
-						'mail_send_style'	=> $this->e107->tp->toDB(varset($_POST['send_style'],'textonly')),
+		$tp = e107::getParser();
+				
+		$ret = array(	'mail_title'		=> $_POST['email_title'],
+						'mail_subject'		=> $_POST['email_subject'],
+						'mail_body' 		=> $_POST['email_body'],
+						'mail_sender_email' => $_POST['email_from_email'],
+						'mail_sender_name'	=> $_POST['email_from_name'],
+						'mail_copy_to'		=> $_POST['email_cc'],
+						'mail_bcopy_to'		=> $_POST['email_bcc'],
+						'mail_attach'		=> trim($_POST['email_attachment']),
+						'mail_send_style'	=> varset($_POST['send_style'],'textonly'),
 						'mail_include_images' => (isset($_POST['mail_include_images']) ? 1 : 0)
 					); 
+					
+		$ret = $tp->toDB($ret);	// recursive 
+					
 		if (isset($_POST['mail_source_id']))
 		{
 			$ret['mail_source_id'] = intval($_POST['mail_source_id']);
@@ -684,6 +693,9 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function showMailDetail(&$mailSource, $options='basic')
 	{
+		$tp = e107::getParser();
+		
+		
 		if (!isset($this->mailDetailDisplay[$options]))
 		{
 			return "<tr><td colspan='2'>Programming bungle - invalid option value: {$options}</td></tr>";
@@ -693,7 +705,7 @@ class mailoutAdminClass extends e107MailManager
 		foreach ($this->mailDetailDisplay[$options] as $k => $v)
 		{
 			$res .= '<tr><td>'.$this->fields['mail_content'][$k]['title'].'</td><td>';
-			$res .= ($v > 1) ? $this->e107->tp->text_truncate($mailSource[$k], $v, '...') : $mailSource[$k];
+			$res .= ($v > 1) ? $tp->text_truncate($mailSource[$k], $v, '...') : $mailSource[$k];
 			$res .= '</td></tr>'."\n";
 		}
 		return $res;
@@ -767,6 +779,8 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		$debug = (e_MENU == "debug") ? "?[debug]" : "";
+		
+	
 		
 		$text .= "<div>
 			<form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>
@@ -1150,6 +1164,10 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function sendEmailCircular($mailData, $fromHold = FALSE)
 	{
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+	
+		
 		if ($fromHold)
 		{	// Email data already generated
 			$mailMainID = $mailData['mail_source_id'];
@@ -1228,9 +1246,16 @@ class mailoutAdminClass extends e107MailManager
 		// Add in core and any plugin selectors here
 		foreach ($this->mailHandlers as $m)
 		{
-			if ($m->mailerEnabled)
+
+			if ($m->mailerEnabled && ($contentArray = $m->showSelect(FALSE,$mailData['mail_selectors'][$m->mailerSource])))
 			{
-				$text .= '<tr><td>'.LAN_MAILOUT_180.'<br />'.$m->mailerName.'</td><td>'.$m->showSelect(FALSE).'</td></tr>';
+				$text .= '<tr><td>'.LAN_MAILOUT_180.'<br />'.$m->mailerName.'</td>';
+				$text .= '<td><ul>';
+				foreach($contentArray as $val)
+				{
+					$text .= "<li>".$val['caption']." : ".$val['html']."</li>";	
+				}
+				$text .= '</ul></td></tr>';
 			}
 		}
 
@@ -1251,8 +1276,8 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</div>
 		</form>
 		</div>";
-
-		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_179."</div>", $text);
+		
+		e107::getRender()->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_179."</div>",$mes->render(). $text);
 	}	// End of previewed email
 
 
