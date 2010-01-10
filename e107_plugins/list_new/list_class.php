@@ -9,21 +9,23 @@
  * List Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-10 12:19:41 $
+ * $Author: e107steved $
  *
 */
 if (!defined('e107_INIT')) { exit; }
 
 /**
- * e107 List New Plugin
- * @package list_new
+ *	Base class for list_new plugin
+ *
+ *	@package e107_plugins
+ *	@subpackage list_new
  */
+
 /**
  * class listclass
  * The base class
- * @package list_new
  */
 class listclass
 {

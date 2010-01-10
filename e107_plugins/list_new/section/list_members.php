@@ -9,11 +9,18 @@
  * Members e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_members.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision: 1.7 $
+ * $Date: 2010-01-10 12:19:50 $
+ * $Author: e107steved $
  *
 */
+
+/**
+ *	Users interface for list_new plugin
+ *
+ *	@package e107_plugins
+ *	@subpackage list_new
+ */
 if (!defined('e107_INIT')) { exit; }
 
 class list_members
