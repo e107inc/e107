@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.75 $
- * $Date: 2010-01-07 21:05:24 $
+ * $Revision: 1.76 $
+ * $Date: 2010-01-10 13:48:42 $
  * $Author: e107steved $
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.75 2010-01-07 21:05:24 e107steved Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.76 2010-01-10 13:48:42 e107steved Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -909,12 +909,12 @@ class e_db_mysql
 		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys 
 																// the point of requiring backticks round table names - wrecks &#039;, for example
 
-		if ($this->mySQLresult === FALSE)
+		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE)
 		{	// Failed query
 			$this->dbError('db_Select_gen('.$query.')');
 			return FALSE;
 		}
-		elseif (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
+		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
 			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
