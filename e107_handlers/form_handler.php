@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.111 $
- * $Date: 2010-01-07 23:44:33 $
+ * $Revision: 1.112 $
+ * $Date: 2010-01-10 03:56:27 $
  * $Author: e107coders $
  *
 */
@@ -439,12 +439,13 @@ class e_form
 	/**
 	 *
 	 * @param object $name
-	 * @param object $option_array
+	 * @param array $option_array
 	 * @param object $selected [optional]
 	 * @param object $options [optional]
+	 * @param boolean $defaultBlank [optional] set to TRUE if the first entry should be blank
 	 * @return string HTML text for display
 	 */
-	function selectbox($name, $option_array, $selected = false, $options = array())
+	function selectbox($name, $option_array, $selected = false, $options = array(),$defaultBlank= false)
 	{
 		if(!is_array($options)) parse_str($options, $options);
 
@@ -455,8 +456,13 @@ class e_form
 		$text = $this->select_open($name, $options)."\n";
 
 		if(vartrue($options['default']))
-		{
+		{			
 			$text .= $this->option($options['default'],'');
+		}
+		
+		if(vartrue($defaultBlank))
+		{
+			$text .= $this->option('&nbsp;','');		
 		}
 
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();

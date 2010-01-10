@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-12-01 20:05:54 $
- * $Author: e107steved $
+ * $Revision: 1.16 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -85,7 +85,7 @@ define('LAN_MAILOUT_57', 'Send bulk SMTP emails in blocks');			// SMTP KeepAlive
 //define('LAN_MAILOUT_65', 'seconds');
 //define('LAN_MAILOUT_66', 'Cancelled Successfully');
 define('LAN_MAILOUT_67', 'The email could not be sent. Please review your SMTP settings, or select another mailing method and try again.');
-define('LAN_MAILOUT_68','Include from registered users');
+define('LAN_MAILOUT_68','Registered Users');
 define('LAN_MAILOUT_69','matches, after ');
 define('LAN_MAILOUT_70',' duplicates stripped.');
 define('LAN_MAILOUT_71','Total emails to send');

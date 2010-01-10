@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-04 21:35:38 $
- * $Author: e107steved $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-10 03:56:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -19,8 +19,8 @@
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.10 $
- * @author      $Author: e107steved $
+ * @version     $Revision: 1.11 $
+ * @author      $Author: e107coders $
 
  *	Various admin-related mailout functions, mostly to do with creating and handling forms. 
 */
@@ -409,17 +409,15 @@ class mailoutAdminClass extends e107MailManager
 	{
 		global $pref;
 
-
-
 		$ret = 0;
 		$toLoad = explode(',', $options);
 		if (in_array('core', $toLoad) || ($options == 'all'))
 		{
 			require_once(e_HANDLER.'mailout_class.php');
-			$this->mailHandlers[] = new core_mailout($this);		// Start by loading the core mailout class
+			$this->mailHandlers[] = new core_mailout;		// Start by loading the core mailout class
 			$ret++;
 		}
-
+		
 		$active_mailers = explode(',',varset($pref['mailout_enabled'],''));
 
 		// Load additional configured handlers
@@ -439,7 +437,7 @@ class mailoutAdminClass extends e107MailManager
 					$temp = new $mailClass;
 					if ($temp->mailerEnabled)
 					{
-						$this->mailHandlers[] = &$temp;
+						$this->mailHandlers[] = $temp;
 						$ret++;
 						if (varset($mailerExcludeDefault,FALSE) && isset($this->mailHandlers[0]) && ($this->mailHandlers[0]->mailerSource == 'core'))
 						{
@@ -473,14 +471,49 @@ class mailoutAdminClass extends e107MailManager
 	public function emailSelector($options = 'all', $selectorInfo = FALSE)
 	{
 		$ret = '';
-		foreach ($this->mailHandlers as $m)
+		$tab = '';
+		$tabc = '';
+		
+		$ret .= "<div class='admintabs' id='tab-container'>\n";
+		
+		foreach ($this->mailHandlers as $key=>$m)
 		{
 			if ($m->mailerEnabled)
 			{
-				$ret .= "<tr><td style='vertical-align: middle'>".$m->mailerName."</td><td>".$m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE))."</td></tr>";
+				$tab .= "<li id='tab-main_".$key."'><a href='#core-main_".$key."'>".$m->mailerName."</a></li>";
+				$tabc .= "<div id='core-main_".$key."'>";
+				
+				$content = $m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE));
+				
+				if(is_array($content))
+				{
+					$tabc .= "<table class='adminform' style='width:100%;margin-left:0px'>
+					<colgroup span='2'>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					";
+					
+					foreach($content as $var)
+					{
+						$tabc .= "<tr><td>".$var['caption']."</td><td>".$var['html']."</td></tr>";	
+					}
+					$tabc .= "</table>";	
+				}
+				else
+				{
+					$tabc .= $content;	//BC (0.8 only) but should be deprecated			
+				}
+				
+				$tabc .= "</div>";				
 			}
 		}
+		$ret .= "<ul class='e-tabs e-hideme' id='core-mail-tabs'>".$tab."</ul>";
+		$ret .= $tabc;	
+		$ret .= "</div>";
+		
 		return $ret;
+
 	}
 
 
@@ -706,117 +739,111 @@ class mailoutAdminClass extends e107MailManager
 	{
 		global $pref,$HANDLERS_DIRECTORY;
 		global $mailAdmin;
-
+		
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		
 		if (!is_array($mailSource))
 		{
-			$this->e107->ns->tablerender('ERROR!!', 'Coding error - mail not array (521)');
-			exit;
+			$mes = e107::getMessage();
+			$mes->add('Coding error - mail not array (521)', E_MESSAGE_ERROR);
+			//$ns->tablerender('ERROR!!', );
+			//exit;
 		}
 		
 		$email_subject = varset($mailSource['mail_subject'], '');
-		$email_body = $this->e107->tp->toForm(varset($mailSource['mail_body'],''));
+		$email_body = $tp->toForm(varset($mailSource['mail_body'],''));
 		$email_id = varset($mailSource['mail_source_id'],'');
+		
 		$text = '';
 
 		if(strpos($_SERVER['SERVER_SOFTWARE'],'mod_gzip') && !is_readable(e_HANDLER.'phpmailer/.htaccess'))
 		{
 			$warning = LAN_MAILOUT_40.' '.$HANDLERS_DIRECTORY.'phpmailer/ '.LAN_MAILOUT_41;
-			$this->e107->ns->tablerender(LAN_MAILOUT_42, $warning);
+			$ns->tablerender(LAN_MAILOUT_42, $warning);
 		}
 
 		$debug = (e_MENU == "debug") ? "?[debug]" : "";
+		
 		$text .= "<div>
 			<form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>
+			".$this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE))."
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 			<colgroup span='2'>
 				<col class='col-label' />
 				<col class='col-control' />
 			</colgroup>
 			<tr>
-			<td>".LAN_MAILOUT_111.": </td>
-			<td>
-			<input type='text' name='email_title' class='tbox' style='width:80%' size='10' value=\"".varset($mailSource['mail_title'],'')."\" />
-			</td>
+				<td>".LAN_MAILOUT_111.": </td>
+				<td>".$frm->text('email_title',varset($mailSource['mail_title'],''))."</td>
 			</tr>
 
 			<tr>
-			<td>".LAN_MAILOUT_01.": </td>
-			<td>
-			<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value=\"".varset($mailSource['mail_from_name'],USERNAME)."\" />
-			</td>
-			</tr>";
-
-
-		$text .="
-			<tr>
-			<td>".LAN_MAILOUT_02.": </td>
-			<td >
-			<input type='text' name='email_from_email' class='tbox' style='width:80%' value=\"".varset($mailSource['mail_from_email'],USEREMAIL)."\" />
-			</td>
-			</tr>";
-
-
-	// Add in the core and any plugin selectors here
-		$text .= $this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE));
-
-
-
-	// CC, BCC
-		$text .= "
-			<tr>
-			<td>".LAN_MAILOUT_04.": </td>
-			<td >
-			<input type='text' name='email_cc' class='tbox' style='width:80%' value=\"".$mailSource['mail_cc']."\" />
-			</td>
+				<td>".LAN_MAILOUT_01.": </td>
+				<td>".$frm->text('email_from_name',varset($mailSource['mail_from_name'],USERNAME))."</td>
 			</tr>
 
 			<tr>
-			<td>".LAN_MAILOUT_05.": </td>
-			<td >
-			<input type='text' name='email_bcc' class='tbox' style='width:80%' value='".$mailSource['mail_bcc']."' />
-			</td>
+				<td>".LAN_MAILOUT_02.": </td>
+				<td >".$frm->text('email_from_email',varset($mailSource['mail_from_email'],USEREMAIL))."</td>
 			</tr>";
 
 
-
-	// Close one table, open another - to give a boundary between addressees and content
-		$text .= "</table>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-			<colgroup span='2'>
-				<col class='col-label' />
-				<col class='col-control' />
-			</colgroup>";
-
-	// Subject
+			// Add in the core and any plugin selectors here
+	
+		/*$text .= "
+		
+			<tr>
+				<td>".LAN_MAILOUT_03.": </td>
+				<td>".$this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE))."</td>
+			</tr>";*/
+		
 		$text .= "
 			<tr>
-			<td>".LAN_MAILOUT_51.": </td>
-			<td>
-			<input type='text' name='email_subject' class='tbox' style='width:80%' value='{$email_subject}' />
-			</td>
+				<td>".LAN_MAILOUT_04.": </td>
+				<td>".$frm->text('email_cc',varset($mailSource['mail_cc'],''))."</td>
+			</tr>
+
+			<tr>
+				<td>".LAN_MAILOUT_05.": </td>
+				<td>".$frm->text('email_bcc',varset($mailSource['mail_bcc'],''))."</td>
+			</tr>
+
+			<tr>
+				<td>".LAN_MAILOUT_51.": </td>
+				<td>".$frm->text('email_subject',varset($email_subject,''))."</td>
 			</tr>";
 
 
 	// Attachment.
-		if ($this->e107->isInstalled('download'))
+		if (e107::isInstalled('download'))
 		{
 			// TODO - use download plugin API
-			$text .= "<tr>
+			
+			if($sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name"))
+			{
+				$text .= "<tr>
 				<td>".LAN_MAILOUT_07.": </td>
 				<td >";
-			$text .= "<select class='tbox' name='email_attachment' >
+				$text .= "<select class='tbox' name='email_attachment' >
 				<option value=''>&nbsp;</option>\n";
-			$this->e107->sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
-			while ($row = $this->e107->sql->db_Fetch()) 
-			{
-				$selected = ($mailSource['mail_attach'] == $row['download_url']) ? "selected='selected'" : '';
-//				$text .= "<option value='".urlencode($row['download_url'])."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
-				$text .= "<option value='".$row['download_url']."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
+								
+				while ($row = $this->e107->sql->db_Fetch()) 
+				{
+					$selected = ($mailSource['mail_attach'] == $row['download_url']) ? "selected='selected'" : '';
+	//				$text .= "<option value='".urlencode($row['download_url'])."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
+					$text .= "<option value='".$row['download_url']."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
+				}
+				$text .= " </select>";
+				
+				$text .= "</td>
+				</tr>";
 			}
-			$text .= " </select>";
 
-			$text .= "</td>
-			</tr>";
+			
 		}
 
 
@@ -824,22 +851,6 @@ class mailoutAdminClass extends e107MailManager
 			<tr>
 			<td>".LAN_MAILOUT_09.": </td>
 			<td >\n";
-
-		$text .= $this->sendStyleSelect($mailSource['mail_send_style']);
-		$checked = (isset($mailSource['mail_include_images']) && $mailSource['mail_include_images']) ? " checked='checked'" : '';
-		$text .= "&nbsp;&nbsp;<input type='checkbox' name='mail_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
-		$text .="
-		</td></tr>\n
-			<tr>
-			<td colspan='2' >
-			<textarea rows='10' cols='20' id='email_body' name='email_body'  class='e-wysiwyg tbox' style='width:80%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
-			</td>
-			</tr>";
-
-		$text .="
-			<tr>
-			<td colspan='2'>
-			<div>";
 
 		global $eplug_bb;
 
@@ -853,7 +864,23 @@ class mailoutAdminClass extends e107MailManager
 				'function_var'	=> 'sc_selector'
 		);
 
-		$text .= display_help('helpb','mailout');
+
+		$text .= $this->sendStyleSelect($mailSource['mail_send_style']);
+		$checked = (isset($mailSource['mail_include_images']) && $mailSource['mail_include_images']) ? " checked='checked'" : '';
+		$text .= "&nbsp;&nbsp;<input type='checkbox' name='mail_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
+		$text .="
+		</td></tr>\n
+			<tr>
+			<td>&nbsp;</td>
+			<td>".$frm->bbarea('email_body',$email_body,'mailout','helpb')."</td>
+			</tr>";
+
+		$text .="
+			<tr>
+			<td colspan='2'>
+			<div>";
+
+	//	$text .= display_help('helpb','mailout');
 
 		if(e_WYSIWYG) 
 		{
@@ -870,24 +897,27 @@ class mailoutAdminClass extends e107MailManager
 
 
 		$text .= "<div class='buttons-bar center'>";
+		
 		if($email_id)
 		{
-			$text .= "<input type='hidden' name='mail_source_id' value='".$email_id."' />";
-			$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
+			$text .= $frm->hidden('mail_source_id',$email_id);
+			$text .= $frm->admin_button('update_email',LAN_UPDATE);
+			//$text .= "<input type='hidden' name='mail_source_id' value='".$email_id."' />";
+			//$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
 		}
 		else
 		{
-			$text .= "<input class='button' type='submit' name='save_email' value=\"".LAN_SAVE."\" />";
+			$text .= $frm->admin_button('save_email',LAN_SAVE);
 		}
 
-		$text .="&nbsp;<input class='button' type='submit' name='send_email' value=\"".LAN_MAILOUT_08."\" />
+		$text .= $frm->admin_button('send_email',LAN_MAILOUT_08);
 
-		</div>
+		$text .= "</div>
 
 		</form>
 		</div>";
 
-		$this->e107->ns->tablerender(LAN_MAILOUT_15, $text);		// Render the complete form
+		$ns->tablerender(LAN_MAILOUT_15,$mes->render(). $text);		// Render the complete form
 	}
 
 
