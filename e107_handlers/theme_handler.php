@@ -9,9 +9,9 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.67 $
- * $Date: 2009-11-19 10:07:32 $
- * $Author: e107coders $
+ * $Revision: 1.68 $
+ * $Date: 2010-01-10 15:56:46 $
+ * $Author: secretr $
  */
 
 if(!defined('e107_INIT'))
@@ -823,7 +823,7 @@ class themeHandler
 				{
 					foreach ($pref['sitetheme_custompages'][$key] as $cp)
 					{
-						$custompage_diz .= "<a href='#element-to-be-shown' class='e-expandit'>".trim($cp)."</a>&nbsp;";
+						$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='e-expandit'>".trim($cp)."</a>&nbsp;";
 						if($count > 4)
 						{
 							$custompage_diz .= "...";
@@ -834,14 +834,14 @@ class themeHandler
 				}
 				else
 				{
-					$custompage_diz = "<a href='#element-to-be-shown' class='e-expandit'>None</a> ";
+					$custompage_diz = "<a href='#element-to-be-shown-{$key}' class='e-expandit'>None</a> ";
 				}
 
 				
 				$itext .= "</td>
 								<td style='vertical-align:top'>";
 				// Default
-				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",
+				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",
 					 $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
 				
 				$itext .= "</td>";
