@@ -9,20 +9,18 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2010-01-10 06:20:41 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-10 11:01:28 $
+ * $Author: e107steved $
  *
 */
 
 /**
- * 
- * @package     e107
- * @subpackage	e107_handlers
- * @version     $Revision: 1.12 $
- * @author      $Author: e107coders $
-
  *	Various admin-related mailout functions, mostly to do with creating and handling forms. 
+ * 
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: mailout_admin_class.php,v 1.13 2010-01-10 11:01:28 e107steved Exp $;
 */
 
 
@@ -879,7 +877,7 @@ class mailoutAdminClass extends e107MailManager
 		);
 
 
-		$text .= $this->sendStyleSelect($mailSource['mail_send_style']);
+		$text .= $this->sendStyleSelect(varset($mailSource['mail_send_style'], ''));
 		$checked = (isset($mailSource['mail_include_images']) && $mailSource['mail_include_images']) ? " checked='checked'" : '';
 		$text .= "&nbsp;&nbsp;<input type='checkbox' name='mail_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
 		$text .="
