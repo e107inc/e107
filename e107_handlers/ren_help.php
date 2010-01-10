@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-12-07 20:48:04 $
- * $Author: e107steved $
+ * $Revision: 1.17 $
+ * $Date: 2010-01-10 13:18:08 $
+ * $Author: secretr $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -79,6 +79,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	{
         $BBCODE_TEMPLATE = $temp[$mode];
 	}
+
     if(is_readable(e_FILE."shortcode/batch/bbcode_shortcodes.php"))
 	{
   		require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
@@ -232,12 +233,13 @@ function PreImage_Select($formid) {
 function PreFile_Select($formid='prefile_selector') 
 {
 	require_once(e_HANDLER."userclass_class.php");
-	global $IMAGES_DIRECTORY, $fl, $sql;
+	global $IMAGES_DIRECTORY, $fl;
 
+	$sql = e107::getDb();
 	$filelist = array();
 	$downloadList = array();
 
-	$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
+	/*$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 		if($download_url)
@@ -245,7 +247,7 @@ function PreFile_Select($formid='prefile_selector')
 			$filelist[] = array('id' => $download_id, 'name' => $download_name, 'url' => $download_url, 'class' => $download_class);
 			$downloadList[] = $download_url;
 		}
-	}
+	}*/
 
 	$tmp = $fl->get_files(e_FILE.'downloads/');
 	foreach($tmp as $value)
