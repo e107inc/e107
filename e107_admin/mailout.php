@@ -9,8 +9,8 @@
  * Administration - Mailout
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.35 $
- * $Date: 2010-01-10 11:01:27 $
+ * $Revision: 1.36 $
+ * $Date: 2010-01-11 21:08:38 $
  * $Author: e107steved $
  *
 */
@@ -21,7 +21,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: mailout.php,v 1.35 2010-01-10 11:01:27 e107steved Exp $;
+ *	@version 	$Id: mailout.php,v 1.36 2010-01-11 21:08:38 e107steved Exp $;
  */
 
 /*
@@ -43,14 +43,6 @@ Extra mailout address handlers - these provide email addresses
 4. Interface is implemented as a class, which must be called 'plugin_path_mailout'
 5. see mailout_class.php in the handlers directory for an example (also simpler examples in newsletter and event calendar plugins)
 
-
-Each mailout task class, must include a number of mandatory entry points:
-	show_select($allow_edit = FALSE) - in edit mode, returns text which facilitates address selection. Otherwise shows the current selection criteria
-		- the display is assigned to a single table cell
-	function returnSelectors() - returns storable representation of user-entered selection criteria
-	select_init() - initialise the selection mechanism
-	select_add() - routine pulls out email addresses etc, for caller to add to the list of addressees
-	select_close() - selection complete
 */
 
 
@@ -345,8 +337,6 @@ switch ($action)
 		break;
 
 	case 'mailsendnow' :			// Send mail previously on 'held' list. Need to give opportunity to change time/date etc
-//		$midAction = 'midMoveToSend';
-//		$action = 'pending';
 		$action = 'marksend';			// This shows the email details for confirmation
 		$fromHold = TRUE;
 		$mailData['mail_source_id'] = $mailId;
@@ -542,7 +532,7 @@ switch ($action)
 
 
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 
 
@@ -662,7 +652,7 @@ function show_prefs($mailAdmin)
 	$mailers = array('php','smtp','sendmail');
 	foreach($mailers as $opt)
 	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
+		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
 		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
 	}
 	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
@@ -716,7 +706,7 @@ function show_prefs($mailAdmin)
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_57."</td><td>
 		";
-	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : "";
+	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
 	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
 		</td>
 		</tr>";
@@ -731,10 +721,9 @@ function show_prefs($mailAdmin)
 
 
 // Sendmail. -------------->
-	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : "";
+	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
 	$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
-
 	<tr>
 	<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
 	<td>
@@ -795,10 +784,10 @@ function show_prefs($mailAdmin)
 		<td>".LAN_MAILOUT_72."</td>
 		<td> 
 		<select class='tbox' name='mail_log_option'>\n
-		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : "").">".LAN_MAILOUT_73."</option>\n
-		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : "").">".LAN_MAILOUT_74."</option>\n
-		<option value='2'".(($mail_log_option==2) ? " selected='selected'" : "").">".LAN_MAILOUT_75."</option>\n
-		<option value='3'".(($mail_log_option==3) ? " selected='selected'" : "").">".LAN_MAILOUT_119."</option>\n
+		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : '').">".LAN_MAILOUT_73."</option>\n
+		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : '').">".LAN_MAILOUT_74."</option>\n
+		<option value='2'".(($mail_log_option==2) ? " selected='selected'" : '').">".LAN_MAILOUT_75."</option>\n
+		<option value='3'".(($mail_log_option==3) ? " selected='selected'" : '').">".LAN_MAILOUT_119."</option>\n
 		</select>\n
 		<input type='checkbox' name='mail_log_email' value='1' {$check} />".LAN_MAILOUT_76.
 		"</td>
@@ -817,8 +806,8 @@ function show_prefs($mailAdmin)
 		<td>".LAN_MAILOUT_231."</td><td>";
 		
 	// bounce divs = mail_bounce_none, mail_bounce_auto, mail_bounce_mail
-	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : "";
-	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : "";
+	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : '';
+	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : '';
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
 	$text .= "<select name='mail_bounce' class='tbox' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
 	foreach ($bounceOpts as $k => $v)
@@ -843,11 +832,11 @@ function show_prefs($mailAdmin)
 		
 	if(!is_readable(e_HANDLER.'bounce_handler.php'))
 	{
-		$text .= "<br /><span class='required'>".LAN_MAILOUT_161."</span>";
+		$text .= "<br /><span class='required'>".LAN_MAILOUT_161.'</span>';
 	}
 	elseif(!is_executable(e_HANDLER.'bounce_handler.php'))		// Seems to give wrong answers on Windoze
 	{
-		$text .= "<br /><span class='required'>".LAN_MAILOUT_162."</span>";
+		$text .= "<br /><span class='required'>".LAN_MAILOUT_162.'</span>';
 	}
 	$text .= "<br /><span class='field-help'>".LAN_MAILOUT_235."</span></td></tr>
 	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>
@@ -887,7 +876,7 @@ function show_prefs($mailAdmin)
 
 	</div></form>";
 
-	$caption = ADLAN_136." :: ".LAN_PREFS;
+	$caption = ADLAN_136.' :: '.LAN_PREFS;
 	$e107->ns->tablerender($caption,$mes->render(). $text);
 }
 

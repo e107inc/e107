@@ -9,8 +9,8 @@
  * Mailout handling - selector for 'core' users
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2010-01-10 11:01:29 $
+ * $Revision: 1.10 $
+ * $Date: 2010-01-11 21:09:28 $
  * $Author: e107steved $
  *
 */
@@ -20,7 +20,9 @@
  *
  *	@package	e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_class.php,v 1.9 2010-01-10 11:01:29 e107steved Exp $;
+ *	@version 	$Id: mailout_class.php,v 1.10 2010-01-11 21:09:28 e107steved Exp $;
+ *
+ *	@todo	last visit date needs XHTML calendar on display, and needs to accept varying input formats
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -39,10 +41,6 @@ In general each class object must be self-contained, and use internal variables 
 The class may use the global $e107->sql object for database access - it will effectively have exclusive use of this during the email address search phase
 
 It is the responsibility of each class to manager permission restrictions where required.
-
-TODO:
-	1. accept varying date formats for last visit
-	2. Use XHTML calendar for last visit
 */
 
 // These variables determine the circumstances under which this class is loaded (only used during loading, and may be overwritten later)
@@ -54,10 +52,9 @@ class core_mailout
 	protected $mailCount = 0;
 	protected $mailRead = 0;
 	// protected $e107;
-	public $mailerSource = 'core';					// Plugin name (core mailer is special case) Must be directory for this file
+	//public $mailerSource = 'core';					// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = LAN_MAILOUT_68;			// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
-	// protected $adminHandler = NULL;					// Filled in with the name of the admin handler on creation
 
 	// List of fields used by selectors
 	private	$selectFields = array('email_to', 
@@ -79,15 +76,17 @@ class core_mailout
 	/**
 	 * Return data representing the user's selection criteria as entered in the $_POST array.
 	 * 
-	 * This is stored in the DB with a saved email. (Just return an empty string or array if this is undesirable)
+	 * The value returned can be as simple as an array of chosen fields from the $_POST array, or it may be processed to make it more
+	 * convenient to use later. (In general, at least basic sanitising should be performed)
+	 * Conflicting selection criteria can also be resolved here.
+	 * The returned data is stored in the DB with a saved email. (Just return an empty string or array if this is undesirable)
 	 * The returned value is passed back to selectInit() and showSelect when needed.
 	 *
-	 * @return Selection data - may be string, array or whatever suits
+	 * @return mixed Selection data - may be string, array or whatever suits
 	 */
 	public function returnSelectors()
 	{
 		$tp = e107::getParser();
-		
 		
 		$res = array();
 		foreach ($this->selectFields as $k)
@@ -106,15 +105,14 @@ class core_mailout
 	 * Needs to save any queries or other information into internal variables, do initial DB queries as appropriate.
 	 * Could in principle read all addresses and buffer them for later routines, if this is more convenient
 	 *
-	 * @param $selectVals - array of selection criteria as returned by returnSelectors()
+	 * @param mixed $selectVals - selection criteria as returned by returnSelectors() (so format is whatever is chosen by the coder)
 	 *
-	 * @return Return number of records available (or 1 if unknown) on success, FALSE on failure
+	 * @return int|boolean number of records available (or 1 if unknown) on success, FALSE on failure
 	 */
 	public function selectInit($selectVals = FALSE)
 	{
 		$sql = e107::getDb();
-		
-		
+
 		$where = array();
 		$incExtended = array();
 		if ($selectVals === FALSE)
@@ -215,9 +213,9 @@ class core_mailout
 
 
 	/**
-	 * Return an email address to add to the recipients list. Return FALSE if no more addresses to add 
+	 * Return one email address to add to the recipients list. Return FALSE if no more addresses to add 
 	 *
-	 * @return FALSE if no more addresses available; else an array:
+	 * @return boolean|array FALSE if no more addresses available; else an array:
 	 *	'mail_recipient_id' - non-zero if a registered user, zero if a non-registered user. (Always non-zero from this class)
 	 *	'mail_recipient_name' - user name
 	 *	'mail_recipient_email' - email address to use
@@ -245,16 +243,17 @@ class core_mailout
 	}
 
 
-	// Called once all email addresses read, to do any housekeeping needed
+	/**
+	 *	Called once all email addresses read, to do any housekeeping needed
+	 *
+	 *	@return none
+	 */
 	public function select_close()
 	{	
 		// Nothing to do here
 	}
   
 
-	// Called to show current selection criteria, and optionally allow edit
-	// 
-	// 
 	/**
 	 * Called to show current selection criteria, and optionally allow edit
 	 * 
@@ -272,10 +271,6 @@ class core_mailout
 		$var = array();
 	
 		$var[0]['caption'] 	= LAN_MAILOUT_03;	// User class select
-		$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
-		$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
-		$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
-		$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
 		
 		if ($allow_edit)
 		{  
@@ -283,40 +278,58 @@ class core_mailout
 	
 			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));								
 			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
-			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));
+			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));	// FIXME: Should include date selector
 			$var[3]['html'] 	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_1_value',varset($selectVals['extended_1_value'], ''));
 			$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',varset($selectVals['extended_2_value'],''));
-		
+
+			$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
+			$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
+			$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+			$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
 		}
 		else // Display existing values
 		{ 	
-			if(!vartrue($selectVals['email_to']))
+			if (!vartrue($selectVals['email_to']))
 			{
 				return;
 			}
 		
-			if(is_numeric($selectVals['email_to']))
+			if (is_numeric($selectVals['email_to']))
 			{
-				$sql->db_Select('userclass_classes', 'userclass_name', "userclass_id = ".intval($selectVals['email_to']));
-				$row = $sql->db_Fetch();
-				$_to = LAN_MAILOUT_23.$row['userclass_name'];
+				$_to = LAN_MAILOUT_23.e107::getUserClass()->uc_get_classname(intval($selectVals['email_to']));
 			}
 			else
 			{
 				$_to = $selectVals['email_to'];
 			}
 			
-			$var_0 = $_to."&nbsp;";
-			if($selectVals['email_to'] == "self")
+			$var_0 = $_to.'&nbsp;';
+			if ($selectVals['email_to'] == 'self')
 			{
-				$var_0 .= "&lt;".USEREMAIL."&gt;";
+				$var_0 .= '&lt;'.USEREMAIL.'&gt;';
 			}
 			
 			$var[0]['html'] = $var_0;
-			$var[1]['html'] = vartrue($selectVals['user_search_name'])."  ". vartrue($selectVals['user_search_value']);
-			$var[2]['html'] = vartrue($selectVals['last_visit_match']).' '.gmstrftime("%D-%M-%Y",vartrue($selectVals['last_visit_date'])); //FIXME use e107 date function. 
-			$var[3]['html'] = vartrue($selectVals['extended_1_name']).' '.vartrue($selectVals['extended_1_value']);
-			$var[4]['html'] = vartrue($selectVals['extended_2_name']).' '.vartrue($selectVals['extended_2_value']);
+			if (vartrue($selectVals['user_search_name']) && vartrue($selectVals['user_search_value']))
+			{
+				$var[1]['html'] = $selectVals['user_search_name'].'  '.$selectVals['user_search_value'];
+				$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
+			}
+			if (vartrue($selectVals['last_visit_match']) && vartrue($selectVals['last_visit_date']))
+			{
+				$var[2]['html'] = $selectVals['last_visit_match'].' '.gmstrftime("%D-%M-%Y",$selectVals['last_visit_date']); //FIXME use e107 date function. 
+				$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
+			}
+			if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
+			{
+				$var[3]['html'] = $selectVals['extended_1_name'].' '.$selectVals['extended_1_value'];
+				$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+			}
+			if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
+			{
+				$var[4]['html'] = $selectVals['extended_2_name'].' '.$selectVals['extended_2_value'];
+				$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+			}
 			
 		}
 

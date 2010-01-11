@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Event calendar - mailout function
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-10 06:20:43 $
- * $Author: e107coders $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-11 21:09:35 $
+ * $Author: e107steved $
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_mailout.php,v 1.10 2010-01-10 06:20:43 e107coders Exp $;
+ *	@version 	$Id: e_mailout.php,v 1.11 2010-01-11 21:09:35 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit(); }
@@ -41,7 +41,7 @@ class calendar_menu_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
-	public $mailerSource = 'calendar_menu';	//FIXME should be auto-detected		// Plugin name (core mailer is special case) Must be directory for this file
+	//public $mailerSource = 'calendar_menu';	//FIXME should be auto-detected		// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = LAN_EC_MAIL_01;			// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
 	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
@@ -139,16 +139,19 @@ class calendar_menu_mailout
 	}
 
 
-	// Called once all email addresses read, to do any housekeeping needed
+
+	/**
+	 *	Called once all email addresses read, to do any housekeeping needed
+	 *
+	 *	@return none
+	 */
 	public function select_close()
 	{	
 		// Nothing to do here
 	}
+
   
 
-	// Called to show current selection criteria, and optionally allow edit
-	// 
-	// 
 	/**
 	 * Called to show current selection criteria, and optionally allow edit
 	 * 
@@ -181,8 +184,8 @@ class calendar_menu_mailout
 				}
 				elseif($checked)
 				{
-					$var[$c]['caption'] = $row['event_cat_name'];
-					$var[$c]['html'] = LAN_EC_MAIL_03;
+					$var[$c]['html'] = $row['event_cat_name'];
+					$var[$c]['caption'] = LAN_EC_MAIL_03;
 					
 					/*$ret .= "<tr><td>".LAN_EC_MAIL_03."</td><td>
 						".$row['event_cat_name']."</td></tr>";*/

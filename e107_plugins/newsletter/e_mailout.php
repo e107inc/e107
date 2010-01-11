@@ -2,19 +2,27 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Newsletter plugin - mailout function
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/e_mailout.php,v $
- * $Revision: 1.4 $
- * $Date: 2010-01-10 06:20:46 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-11 21:09:52 $
+ * $Author: e107steved $
  *
 */
 
+
+/**
+ *	e107 Newsletter plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: e_mailout.php,v 1.5 2010-01-11 21:09:52 e107steved Exp $;
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -22,9 +30,9 @@ if (!defined('e107_INIT')) { exit; }
 include_lan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
 
 /* 
-Class for event calendar mailout function
+Class for newsletter mailout function
 
-Allows admins to send mail to those subscribed to calendar events
+Allows admins to send mail to those subscribed to one or more newsletters
 */
 // These variables determine the circumstances under which this class is loaded (only used during loading, and may be overwritten later)
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
@@ -34,7 +42,7 @@ class newsletter_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
-	public $mailerSource = 'newsletter';			// Plugin name (core mailer is special case) Must be directory for this file
+	//public $mailerSource = 'newsletter';			// Plugin name (core mailer is special case) Must be directory for this file
 	public $mailerName = NLLAN_48;					// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled = TRUE;					// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
 	private $selectorActive = FALSE;				// Set TRUE if we've got a valid selector to start returning entries
