@@ -9,18 +9,18 @@
  * e107 Mailout - mail database API and utility routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2010-01-04 21:35:38 $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-11 21:09:15 $
  * $Author: e107steved $
 */
 
 /**
  * 
- * @package     e107
- * @subpackage	e107_handlers
- * @version     $Revision: 1.12 $
- * @author      $Author: e107steved $
-
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: mail_manager_class.php,v 1.13 2010-01-11 21:09:15 e107steved Exp $;
+ *
+ *	@todo - consider whether to extract links in text-only emails
 
 This class isolates the caller from the underlying database used to buffer and send emails.
 Also includes a number of useful routines
@@ -35,10 +35,6 @@ There is an option to override the style information sent if the email is to inc
 theme-related information. Create file 'emailstyle.css' in the current theme directory, and this
 will be included in preference to the current theme style.
 
-
-TODO:
-	- Consider whether to extract links in text-only emails
-	- makeEmailBody - could use regex to modify links
 
 
 Event Triggers generated

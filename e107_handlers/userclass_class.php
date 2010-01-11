@@ -2,21 +2,26 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ * User class functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-12-07 20:43:37 $
+ * $Revision: 1.48 $
+ * $Date: 2010-01-11 21:09:31 $
  * $Author: e107steved $
  */
 
-/*
-This class handles everything a user needs. Admin functions inherit from it.
-*/
+/**
+ * 
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: userclass_class.php,v 1.48 2010-01-11 21:09:31 e107steved Exp $;
+ *
+ *	This class handles all user-related user class functions.  Admin functions inherit from it.
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -90,11 +95,12 @@ class user_class
 
 
 	/**
-	  Ensure the tree of userclass data is stored in our object ($this->class_tree).
-	  Only read if its either not present, or the $force flag is set.
-	  Data is cached if enabled
-	  @param boolean $force - set to TRUE to force a re-read of the info regardless.
-	  @return none
+	 *	Ensure the tree of userclass data is stored in our object ($this->class_tree).
+	 *	Only read if its either not present, or the $force flag is set.
+	 *	Data is cached if enabled
+	 *
+	 *	@param boolean $force - set to TRUE to force a re-read of the info regardless.
+	 *	@return none
 	*/
 	protected function readTree($force = FALSE)
 	{
@@ -232,7 +238,8 @@ class user_class
 
 
 
-	/** Combines the selected editable classes into the main class list for a user.
+	/** 
+	 *	Combines the selected editable classes into the main class list for a user.
 	 *	@param array|string $combined - the complete list of current class memberships
 	 *	@param array|string $possible - the classes which are being edited
 	 *	@param array|string $actual - the actual membership of the editable classes
@@ -399,7 +406,9 @@ class user_class
 
 
 
-	/** Generate an ordered array  classid=>classname - used for dropdown and check box lists
+	/** 
+	 *	Generate an ordered array  classid=>classname - used for dropdown and check box lists
+	 *
 	 *	@param string $optlist - comma-separated list of classes/class types to include (see uc_dropdown for details)
 	 *	@param boolean $just_ids - if TRUE, each returned array value is '1'; otherwise it is the class name
 	 *	@return array of user classes; ky is numeric class id, value is '1' or class name according to $just_ids
@@ -483,11 +492,13 @@ class user_class
 
 	/**
 	 *	Very similar to self::uc_dropdown, but returns a list of check boxes. Doesn't encapsulate it.
+	 *
 	 *	@param string $fieldname is the name for the array of checkboxes
 	 *	@param string $curval is a comma separated list of class IDs for boxes which are checked.
 	 *	@param string $optlist as for uc_dropdown
 	 *	@param boolean $showdescription - if TRUE, appends the class description in brackets
 	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
+	 *
 	 *	return string|array according to $asArray
 	 */
 	public function uc_checkboxes($fieldname, $curval='', $optlist = '', $showdescription = FALSE, $asArray = FALSE)
@@ -513,7 +524,7 @@ class user_class
 
 
 	/**
-	 *	Used by @see vetted_tree() to generate lower levels of tree
+	 *	Used by @see{vetted_tree()} to generate lower levels of tree
 	 */
 	protected function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
 	{

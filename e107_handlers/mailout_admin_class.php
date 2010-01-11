@@ -6,11 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Mailout - admin-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-10 11:01:28 $
+ * $Revision: 1.14 $
+ * $Date: 2010-01-11 21:09:21 $
  * $Author: e107steved $
  *
 */
@@ -20,7 +20,7 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_admin_class.php,v 1.13 2010-01-10 11:01:28 e107steved Exp $;
+ *	@version 	$Id: mailout_admin_class.php,v 1.14 2010-01-11 21:09:21 e107steved Exp $;
 */
 
 
@@ -319,6 +319,15 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
+
+	/**
+	 *	Get the user name associated with a user ID.
+	 *	The result is cached in case required again
+	 *
+	 *	@param int $uid - User ID
+	 *
+	 *	@return string with user name and user login name (UID if user not found)
+	 */
 	protected function getUserName($uid)
 	{
 		if (!isset($this->userCache[$uid]))
@@ -412,7 +421,7 @@ class mailoutAdminClass extends e107MailManager
 		if (in_array('core', $toLoad) || ($options == 'all'))
 		{
 			require_once(e_HANDLER.'mailout_class.php');
-			$this->mailHandlers[] = new core_mailout;		// Start by loading the core mailout class
+			$this->mailHandlers['core'] = new core_mailout;		// Start by loading the core mailout class
 			$ret++;
 		}
 		
@@ -421,7 +430,7 @@ class mailoutAdminClass extends e107MailManager
 		// Load additional configured handlers
 		foreach ($pref['e_mailout_list'] as $mailer => $v)
 		{
-			if (isset($pref['plug_installed'][$mailer]) && in_array($mailer,$active_mailers) && (($options == 'all') || in_array('core', $toLoad)))
+			if (isset($pref['plug_installed'][$mailer]) && in_array($mailer,$active_mailers) && (($options == 'all') || in_array($mailer, $toLoad)))
 			{  // Could potentially use this handler - its installed and enabled
 				if (!is_readable(e_PLUGIN.$mailer.'/e_mailout.php'))
 				{
@@ -435,11 +444,11 @@ class mailoutAdminClass extends e107MailManager
 					$temp = new $mailClass;
 					if ($temp->mailerEnabled)
 					{
-						$this->mailHandlers[] = $temp;
+						$this->mailHandlers[$mailer] = $temp;
 						$ret++;
-						if (varset($mailerExcludeDefault,FALSE) && isset($this->mailHandlers[0]) && ($this->mailHandlers[0]->mailerSource == 'core'))
+						if (varset($mailerExcludeDefault,FALSE) && isset($this->mailHandlers['core']))
 						{
-							$this->mailHandlers[0]->mailerEnabled = FALSE;			// Don't need default (core) handler
+							$this->mailHandlers['core']->mailerEnabled = FALSE;			// Don't need default (core) handler
 							$ret--;
 						}
 					}
@@ -458,7 +467,7 @@ class mailoutAdminClass extends e107MailManager
 	/**
 	 * Generate the HTML for displaying email selection fields
 	 * 
-	 * @param $options - comma-separate string of areas to display:
+	 * @param $options - comma-separated string of areas to display:
 	 *		plugins - selectors from any available plugins
 	 *		cc - field for 'cc' options
 	 *		bcc -  field for 'bcc' options
@@ -474,16 +483,14 @@ class mailoutAdminClass extends e107MailManager
 		
 		$ret .= "<div class='admintabs' id='tab-container'>\n";
 		
-		foreach ($this->mailHandlers as $m)
+		foreach ($this->mailHandlers as $key => $m)
 		{
-			$key = $m->mailerSource;
-			
 			if ($m->mailerEnabled)
 			{
 				$tab .= "<li id='tab-main_".$key."'><a href='#main-mail-".$key."'>".$m->mailerName."</a></li>";
 				$tabc .= "<div id='main-mail-".$key."'>";
 				
-				$content = $m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE));
+				$content = $m->showSelect(TRUE, varset($selectorInfo[$key], FALSE));
 				
 				if(is_array($content))
 				{
@@ -525,11 +532,11 @@ class mailoutAdminClass extends e107MailManager
 	public function getAllSelectors()
 	{
 		$ret = array();
-		foreach ($this->mailHandlers as $m)
+		foreach ($this->mailHandlers as $key => $m)
 		{
 			if ($m->mailerEnabled)
 			{
-				$ret[$m->mailerSource] = $m->returnSelectors();
+				$ret[$key] = $m->returnSelectors();
 			}
 		}
 		return $ret;
@@ -1195,12 +1202,12 @@ class mailoutAdminClass extends e107MailManager
 
 			$this->mailInitCounters($mailMainID);			// Initialise counters for emails added
 
-			foreach ($this->mailHandlers as $m)
+			foreach ($this->mailHandlers as $key => $m)
 			{	// Get email addresses from each handler in turn. Do them one at a time, so that all can use the $sql data object
-				if ($m->mailerEnabled && isset($mailData['mail_selectors'][$m->mailerSource]))
+				if ($m->mailerEnabled && isset($mailData['mail_selectors'][$key]))
 				{
 					// Initialise
-					$mailerCount = $m->selectInit($mailData['mail_selectors'][$m->mailerSource]);
+					$mailerCount = $m->selectInit($mailData['mail_selectors'][$key]);
 					if ($mailerCount > 0)
 					{
 						// Get email addresses - add to list, strip duplicates
@@ -1242,10 +1249,10 @@ class mailoutAdminClass extends e107MailManager
 
 
 		// Add in core and any plugin selectors here
-		foreach ($this->mailHandlers as $m)
+		foreach ($this->mailHandlers as $key => $m)
 		{
 
-			if ($m->mailerEnabled && ($contentArray = $m->showSelect(FALSE,$mailData['mail_selectors'][$m->mailerSource])))
+			if ($m->mailerEnabled && ($contentArray = $m->showSelect(FALSE,$mailData['mail_selectors'][$key])))
 			{
 				$text .= '<tr><td>'.LAN_MAILOUT_180.'<br />'.$m->mailerName.'</td>';
 				$text .= '<td><ul>';
