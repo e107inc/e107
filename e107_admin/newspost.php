@@ -9,22 +9,34 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.64 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.65 $
+ * $Date: 2010-01-11 21:18:13 $
+ * $Author: e107steved $
 */
-require_once("../class2.php");
 
-if (!getperms("H|N"))
+
+/**
+ *	e107 News administration
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: newspost.php,v 1.65 2010-01-11 21:18:13 e107steved Exp $;
+ *
+ *	@todo - e_NEWSIMAGE needs to be defined
+ */
+
+require_once('../class2.php');
+
+if (!getperms('H|N'))
 {
-	header("Location:".e_BASE."index.php");
+	header('Location:'.e_BASE.'index.php');
 	exit;
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 // -------- Presets. ------------  // always load before auth.php
-require_once(e_HANDLER."preset_class.php");
+require_once(e_HANDLER.'preset_class.php');
 $pst = new e_preset();
 $pst->form = "core-newspost-create-form"; // form id of the form that will have it's values saved.
 $pst->page = "newspost.php?create"; // display preset options on which page(s).
