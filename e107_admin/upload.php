@@ -6,18 +6,27 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	File Upload facility - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.14 $
+ * $Date: 2010-01-11 21:31:58 $
+ * $Author: e107steved $
  */
 
-require_once("../class2.php");
-if (!getperms("V")) 
+
+/**
+ *	e107 Upload handling - Admin
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: upload.php,v 1.14 2010-01-11 21:31:58 e107steved Exp $;
+ */
+
+require_once('../class2.php');
+if (!getperms('V')) 
 {
-  header("location:".e_BASE."index.php");
+  header('location:'.e_BASE.'index.php');
   exit;
 }
 
@@ -29,7 +38,7 @@ $e_sub_cat = 'upload';
 $action = 'list';			// Default action
 if (e_QUERY) 
 {
-  $tmp = explode(".", e_QUERY);
+  $tmp = explode('.', e_QUERY);
   $action = $tmp[0];
   $id = varset($tmp[1],0);
 }
@@ -140,7 +149,7 @@ if (isset($_POST['optionsubmit']))
 
 if (isset($message)) 
 {
-  require_once(e_HANDLER."message_handler.php");
+  require_once(e_HANDLER.'message_handler.php');
   message_handler("ADMIN_MESSAGE", $message);
 }
 
@@ -153,7 +162,7 @@ if (!FILE_UPLOADS)
 switch ($action)
 {
   case 'filetypes' :
-	if(!getperms("0")) exit;
+	if(!getperms('0')) exit;
 
 	$definition_source = UPLLAN_58;
 	$source_file = '';
@@ -277,8 +286,9 @@ switch ($action)
 
 	$ns->tablerender(UPLLAN_49, $text);
     break;
+
   case 'options' :
-	if(!getperms("0")) exit;
+	if(!getperms('0')) exit;
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?options'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -286,13 +296,6 @@ switch ($action)
 	<td style='width:50%' class='forumheader3'>".UPLLAN_25."<br />
 	<span class='smalltext'>".UPLLAN_26."</span></td>
 	<td style='width:50%' class='forumheader3'>". ($pref['upload_enabled'] == 1 ? $rs->form_radio("upload_enabled", 1, 1)." ".LAN_YES.$rs->form_radio("upload_enabled", 0)." ".LAN_NO : $rs->form_radio("upload_enabled", 1)." ".LAN_YES.$rs->form_radio("upload_enabled", 0, 1)." ".LAN_NO)."
-	</td>
-	</tr>
-
-	<tr>
-	<td style='width:50%' class='forumheader3'>".UPLLAN_29."<br />
-	<span class='smalltext'>".UPLLAN_30."</span></td>
-	<td style='width:50%' class='forumheader3'>". ($pref['upload_storagetype'] == 1 ? $rs->form_radio("upload_storagetype", 1, 1)." ".UPLLAN_31."<br />".$rs->form_radio("upload_storagetype", 2)." ".UPLLAN_32 : $rs->form_radio("upload_storagetype", 1)." ".UPLLAN_31."<br />".$rs->form_radio("upload_storagetype", 2, 1)." ".UPLLAN_32)."
 	</td>
 	</tr>
 
@@ -322,7 +325,7 @@ switch ($action)
     break;
 	
   case 'view' :
-	$sql->db_Select("upload", "*", "upload_id='{$id}'");
+	$sql->db_Select('upload', '*', "upload_id='{$id}'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 

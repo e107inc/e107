@@ -4,11 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-06 23:00:25 $
+|     $Revision: 1.5 $
+|     $Date: 2010-01-11 21:32:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
+
+/**
+ *	e107 Upload handling - Admin language file
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: lan_upload.php,v 1.5 2010-01-11 21:32:10 e107steved Exp $;
+ */
+
+
 define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 define("UPLLAN_3", "Upload ID");
@@ -38,10 +49,10 @@ define("UPLLAN_25", "Uploads Enabled?");
 define("UPLLAN_26", "No public uploads will be permitted if disabled");
 define("UPLLAN_27", "unmoderated public uploads");
 
-define("UPLLAN_29", "Storage type");
-define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files, and is hard-limited to a maximum of approximately 500kb");
-define("UPLLAN_31", "Flatfile");
-define("UPLLAN_32", "Binary");
+//define("UPLLAN_29", "Storage type");
+//define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files, and is hard-limited to a maximum of approximately 500kb");
+//define("UPLLAN_31", "Flatfile");
+//define("UPLLAN_32", "Binary");
 define("UPLLAN_33", "Maximum file size");
 define("UPLLAN_34", "Absolute maximum upload size in bytes. Further limited by settings from php.ini, and by the settings in filetypes.xml");
 define("UPLLAN_35", 'Size');
