@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2010-01-02 22:16:30 $
+|     $Revision: 1.77 $
+|     $Date: 2010-01-11 21:31:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 /**
  *	@package    e107
  *	@subpackage	admin
- *	@version 	$Id: update_routines.php,v 1.76 2010-01-02 22:16:30 e107steved Exp $;
+ *	@version 	$Id: update_routines.php,v 1.77 2010-01-11 21:31:54 e107steved Exp $;
  *
  *	Update routines from older e107 versions to current.
  *
@@ -261,7 +261,7 @@ function update_706_to_800($type='')
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
-						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news'
+						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype'
 );
 
 	// List of DB tables not required (includes a few from 0.6xx)
