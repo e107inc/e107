@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.18 $
+ * $Date: 2010-01-12 13:11:48 $
+ * $Author: secretr $
  *
 */
 
@@ -508,7 +508,7 @@ class e_validator
 			case 'str':
 			case 'string':
 				$tmp = explode('-', $cond);
-				$length = e107::getParser()->uStrLen($value);
+				$length = e107::getParser()->ustrlen($value);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_SHORT);
@@ -843,7 +843,7 @@ class validatorClass
 					}
 					$value = $newValue;
 				}
-				if (!$errNum && isset($defs['minLength']) && ($tp->uStrLen($value) < $defs['minLength']))
+				if (!$errNum && isset($defs['minLength']) && ($tp->ustrlen($value) < $defs['minLength']))
 				{
 					if ($value == '') 
 					{
@@ -857,7 +857,7 @@ class validatorClass
 						$errNum = ERR_TOO_SHORT;
 					}
 				}
-				if (!$errNum && isset($defs['maxLength']) && $tp->uStrLen($value) > $defs['maxLength'])
+				if (!$errNum && isset($defs['maxLength']) && $tp->ustrlen($value) > $defs['maxLength'])
 				{
 					if (varsettrue($defs['longtrim']))
 					{
@@ -878,11 +878,11 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['fixedBlock']))
 				{
-					$newValue = $tp->uStrToLower($value);
+					$newValue = $tp->ustrtolower($value);
 					$temp = explode(',',$defs['fixedBlock']);
 					foreach ($temp as $t)
 					{
-						if ($newValue == $tp->uStrToLower($t))
+						if ($newValue == $tp->ustrtolower($t))
 						{
 							$errNum = ERR_INVALID_WORD;
 							break;
