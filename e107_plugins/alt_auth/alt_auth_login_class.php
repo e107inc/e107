@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-12 13:11:48 $
+ * $Author: secretr $
  */
 
 define('AA_DEBUG',FALSE);
@@ -221,16 +221,16 @@ class alt_login
 		switch ($method)
 		{
 			case 'bool1' :
-				switch ($tp->uStrToUpper($word))
+				switch ($tp->ustrtoupper($word))
 				{
 					case 'TRUE' : return TRUE;
 					case 'FALSE' : return FALSE;
 				}
 				return $word;
 			case 'ucase' :
-				return $tp->uStrToUpper($word);
+				return $tp->ustrtoupper($word);
 			case 'lcase' :
-				return $tp->uStrToLower($word);
+				return $tp->ustrtolower($word);
 			case 'ucfirst' :
 				return ucfirst($word);						// TODO: Needs changing to utf-8 function
 			case 'ucwords' :

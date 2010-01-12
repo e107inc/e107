@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.90 $
-* $Date: 2010-01-09 13:17:45 $
+* $Revision: 1.91 $
+* $Date: 2010-01-12 13:11:48 $
 * $Author: secretr $
 *
 */
@@ -25,9 +25,9 @@ class e_parse
 {
 	/**
 	 * Flag for global use indicates whether utf-8 character set
-	 * 
+	 *
 	 * @var boolean
-	 */ 
+	 */
 	protected $isutf8 = FALSE;
 
 	/**
@@ -35,7 +35,7 @@ class e_parse
 	 *    0 = 'do nothing'
 	 *    1 = 'use mb_string'
 	 *    2 = emulation
-	 * 
+	 *
 	 * @var integer
 	 */
 	protected $utfAction;
@@ -235,7 +235,7 @@ class e_parse
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
 		$this->initCharset();
-	  
+
 		// Preprocess the supermods to be useful default arrays with all values
 		foreach ($this->e_SuperMods as $key => $val)
 		{
@@ -290,16 +290,16 @@ class e_parse
 			}
 //		}
 	}
-	
+
 
 	/**
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/strlen strlen PHP function.
 	 * Returns the length of the given string.
-	 * 
+	 *
 	 * @param string $str The UTF-8 encoded string being measured for length.
 	 * @return integer The length (amount of UTF-8 characters) of the string on success, and 0 if the string is empty.
 	 */
-	public function uStrLen($str)
+	public function ustrlen($str)
 	{
 		switch($this->utfAction)
 		{
@@ -317,11 +317,11 @@ class e_parse
 	/**
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtolower strtolower PHP function.
 	 * Make a string lowercase.
-	 * 
+	 *
 	 * @param string $str The UTF-8 encoded string to be lowercased.
 	 * @return string Specified string with all alphabetic characters converted to lowercase.
 	 */
-	public function uStrToLower($str)
+	public function ustrtolower($str)
 	{
 		switch($this->utfAction)
 		{
@@ -342,7 +342,7 @@ class e_parse
 	 * @param string $str The UTF-8 encoded string to be uppercased.
 	 * @return string Specified string with all alphabetic characters converted to uppercase.
 	 */
-	public function uStrToUpper($str)
+	public function ustrtoupper($str)
 	{
 		switch($this->utfAction)
 		{
@@ -361,14 +361,14 @@ class e_parse
 	 * Find the position of the first occurrence of a case-sensitive UTF-8 encoded string.
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the first occurrence of needle in the haystack string.
-	 *  
+	 *
 	 * @param string $haystack The UTF-8 encoded string being searched in.
 	 * @param integer $needle The UTF-8 encoded string being searched for.
 	 * @param integer $offset [optional] The optional offset parameter allows you to specify which character in haystack to start searching.
 	 * 				 The position returned is still relative to the beginning of haystack.
 	 * @return integer|boolean Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
 	 */
-	public function uStrPos($haystack, $needle, $offset = 0)
+	public function ustrpos($haystack, $needle, $offset = 0)
 	{
 		switch($this->utfAction)
 		{
@@ -386,14 +386,14 @@ class e_parse
 	 * Find the position of the last  occurrence of a case-sensitive UTF-8 encoded string.
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the last occurrence of needle in the haystack string.
-	 *  
+	 *
 	 * @param string $haystack The UTF-8 encoded string being searched in.
 	 * @param integer $needle The UTF-8 encoded string being searched for.
 	 * @param integer $offset [optional] - The optional offset parameter allows you to specify which character in haystack to start searching.
 	 * 				 The position returned is still relative to the beginning of haystack.
 	 * @return integer|boolean Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
 	 */
-	public function uStrrPos($haystack, $needle, $offset = 0)
+	public function ustrrpos($haystack, $needle, $offset = 0)
 	{
 		switch($this->utfAction)
 		{
@@ -409,18 +409,18 @@ class e_parse
 	/**
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 * Returns the portion of string specified by the start and length parameters.
-	 * 
+	 *
 	 * NOTE: May be subtle differences in return values dependent on which routine is used.
 	 *  Native substr() routine can return FALSE. mb_substr() and utf8_substr() just return an empty string.
-	 * 
+	 *
 	 * @param string $str The UTF-8 encoded string.
 	 * @param integer $start Start of portion to be returned. Position is counted in amount of UTF-8 characters from the beginning of str.
 	 * 				First character's position is 0. Second character position is 1, and so on.
-	 * @param integer $length [optional] If length is given, the string returned will contain at most length characters beginning from start 
+	 * @param integer $length [optional] If length is given, the string returned will contain at most length characters beginning from start
 	 * 				(depending on the length of string). If length is omitted, the rest of string from start will be returned.
 	 * @return string The extracted UTF-8 encoded part of input string.
 	 */
-	public function uSubStr($str, $start, $length = NULL)
+	public function usubstr($str, $start, $length = NULL)
 	{
 		switch($this->utfAction)
 		{
@@ -429,11 +429,11 @@ class e_parse
 			case 1:
 				if(is_null($length))
 				{
-					return mb_substr($haystack, $needle);
+					return mb_substr($str, $start);
 				}
 				else
 				{
-					return mb_substr($haystack, $needle, $offset);
+					return mb_substr($str, $start, $length);
 				}
 		}
 		return utf8_substr($str, $start, $length);
@@ -629,7 +629,7 @@ class e_parse
 			{
 				// We are within an HTML tag
 				// Create a lowercase copy of this tag's contents
-				$lvalue = strtolower(substr($value, 1, -1)); 
+				$lvalue = strtolower(substr($value, 1, -1));
 				if ($lvalue)
 				{
 					// Tag of non-zero length
@@ -641,7 +641,7 @@ class e_parse
 
 						// If this is a protected element, activate the associated protection flag
 						if(in_array($t[1], $nobreak))
-							array_unshift($innbk, $t[1]); 
+							array_unshift($innbk, $t[1]);
 					}
 					else
 					{
@@ -761,7 +761,7 @@ class e_parse
 						$value .= $sp;
 					}
 					// Put captured HTML entities back into the string
-					foreach ($ents[0] as $ent) 
+					foreach ($ents[0] as $ent)
 						$value = preg_replace("/\x06/", $ent, $value, 1);
 				}
 			}
@@ -771,11 +771,11 @@ class e_parse
 		// Return contents of the drain
 		return $drain;
 	}
-	
+
 	/**
 	 * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
 	 * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
-	 * 
+	 *
 	 * Truncate a HTML string
 	 *
 	 * Cuts a string to the length of $length and adds the value of $ending if the text is longer than length.
@@ -787,8 +787,8 @@ class e_parse
 	 * @return string Trimmed string.
 	 */
 	function html_truncate($text, $length = 100, $ending = '...', $exact = true)
-	{		
-		if($this->uStrLen(preg_replace('/<.*?>/', '', $text)) <= $length)
+	{
+		if($this->ustrlen(preg_replace('/<.*?>/', '', $text)) <= $length)
 		{
 			return $text;
 		}
@@ -796,9 +796,10 @@ class e_parse
 		$openTags = array();
 		$truncate = '';
 		preg_match_all('/(<\/?([\w+]+)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER);
+
 		foreach($tags as $tag)
 		{
-			if(!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/si', $tag[2]))
+			if(!$tag[2] || !preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/si', $tag[2]))
 			{
 				if(preg_match('/<[\w]+[^>]*>/s', $tag[0]))
 				{
@@ -814,7 +815,8 @@ class e_parse
 				}
 			}
 			$truncate .= $tag[1];
-			$contentLength = $this->uStrLen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
+			$contentLength = $this->ustrlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
+
 			if($contentLength + $totalLength > $length)
 			{
 				$left = $length - $totalLength;
@@ -826,7 +828,7 @@ class e_parse
 						if($entity[1] + 1 - $entitiesLength <= $left)
 						{
 							$left--;
-							$entitiesLength += $this->uStrLen($entity[0]);
+							$entitiesLength += $this->ustrlen($entity[0]);
 						}
 						else
 						{
@@ -834,7 +836,8 @@ class e_parse
 						}
 					}
 				}
-				$truncate .= $this->uSubStr($tag[3], 0, $left + $entitiesLength);
+
+				$truncate .= $this->usubstr($tag[3], 0, $left + $entitiesLength);
 				break;
 			}
 			else
@@ -849,10 +852,10 @@ class e_parse
 		}
 		if(!$exact)
 		{
-			$spacepos = $this->uStrrPos($truncate, ' ');
+			$spacepos = $this->ustrrpos($truncate, ' ');
 			if(isset($spacepos))
 			{
-				$bits = $this->uSubStr($truncate, $spacepos);
+				$bits = $this->usubstr($truncate, $spacepos);
 				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
 				if(!empty($droppedTags))
 				{
@@ -864,7 +867,7 @@ class e_parse
 						}
 					}
 				}
-				$truncate = $this->uSubStr($truncate, 0, $spacepos);
+				$truncate = $this->usubstr($truncate, 0, $spacepos);
 			}
 		}
 		$truncate .= $ending;
@@ -903,7 +906,7 @@ class e_parse
 					$pos++;
 				break;
 
-				
+
 				case ">":
 					if($text {$pos - 1} == "/")
 					{
@@ -918,7 +921,7 @@ class e_parse
 					$pos++;
 				break;
 
-				
+
 				case "&":
 					if($text {$pos + 1} == "#")
 					{
@@ -1068,13 +1071,13 @@ class e_parse
 		if($text == '')
 		{
 			return $text;
-		}	
+		}
 
 		global $pref, $fromadmin;
 
 		// Set default modifiers to start
 		$opts = $this->e_optDefault;
-		
+
 
 		// Now process any modifiers that are specified
 		if ($modifiers)
@@ -1114,7 +1117,7 @@ class e_parse
 		if(!varsettrue($pref['smiley_activate']))
 		{
 			$opts['emotes'] = FALSE;
-		}	
+		}
 		if(!varsettrue($pref['make_clickable']))
 		{
 			$opts['link_click'] = FALSE;
@@ -1221,20 +1224,20 @@ class e_parse
 								$bbcode = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
 							}
 							break;
-							
+
 						case 'html' :
 							$proc_funcs = TRUE;
 							$convertNL = FALSE;
 							break;
-							
+
 						case 'hide' :
 							$proc_funcs = TRUE;
-							
+
 						default :		// Most bbcodes will just execute their normal file
 							// Just read in the code file and execute it
 							$bbcode = file_get_contents($bbFile);
 					}   // end - switch ($matches[2])
-					
+
 					if ($bbcode)
 					{	// Execute the file
 						ob_start();
@@ -1313,7 +1316,7 @@ class e_parse
 								// CHARSET is utf-8 - e_parse_class.php too
 								//$email_text = ($this->isutf8) ? "\\1\\2©\\3" : "\\1\\2&copy;\\3";
 								$email_text = '$1$2©$3';
-								
+
 								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
 								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
 								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $sub_blk);
@@ -1540,7 +1543,7 @@ class e_parse
 
 		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
 		$trans_tbl = array_flip($trans_tbl);
-		
+
 		return strtr($stringarray, $trans_tbl);
 	}
 
@@ -1597,7 +1600,7 @@ class e_parse
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
-			
+
 		if($mode != "")
 		{
 			$e107 = e107::getInstance();
@@ -1612,7 +1615,7 @@ class e_parse
 				$e107->getFolder('themes'),
 			//	$e107->getFolder('downloads'),
 				$e107->getFolder('handlers'),
-				$e107->getFolder('media')				
+				$e107->getFolder('media')
 			);
 
 			switch ($mode)
@@ -1681,7 +1684,7 @@ class e_parse
 					$replace_absolute[] = '';
 				}
 				$search[] = "{USERID}";
-			}	
+			}
 
 			$replace = ((string)$mode == "full" || (string)$mode=='abs' ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
@@ -1700,7 +1703,7 @@ class e_parse
 		{
 			$srch = array('{THEME}', '{THEME_ABS}');
 			$repl = array(THEME, THEME_ABS);
-			$text = str_replace($srch, $repl, $text);	
+			$text = str_replace($srch, $repl, $text);
 		}
 
 		return $text;
@@ -1865,14 +1868,14 @@ class e_parse
 				$ret = e107::getScParser();
 			break;
 
-			
+
 			default:
 				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
 				return NULL;
 			break;
 		}
 
-		
+
 		$this->$name = $ret;
 		return $ret;
 	}

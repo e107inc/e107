@@ -9,9 +9,9 @@
  * Comment menu shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision: 1.8 $
+ * $Date: 2010-01-12 13:11:48 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -72,7 +72,7 @@ $COMMENT = '';
 if($menu_pref['comment_characters'] > 0)
 {
   $COMMENT = strip_tags($tp->toHTML($row['comment_comment'], TRUE, "emotes_off, no_make_clickable", "", e107::getPref('menu_wordwrap')));
-  if ($tp->uStrLen($COMMENT) > $menu_pref['comment_characters'])
+  if ($tp->ustrlen($COMMENT) > $menu_pref['comment_characters'])
   {
 	$COMMENT = $tp->text_truncate($COMMENT, $menu_pref['comment_characters'],'').($row['comment_url'] ? " <a href='".$row['comment_url']."'>" : "").defset($menu_pref['comment_postfix'], $menu_pref['comment_postfix']).($row['comment_url'] ? "</a>" : "");
   }
