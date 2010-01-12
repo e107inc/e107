@@ -213,7 +213,6 @@ City, State, Country
 		<core name='upload_class'>255</core>
 		<core name='upload_enabled'>0</core>
 		<core name='upload_maxfilesize'></core>
-		<core name='upload_storagetype'>1</core>
 		<core name='useGeshi'>0</core>
 		<core name='use_coppa'>1</core>
 		<core name='user_reg'>1</core>
