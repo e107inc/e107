@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2009-12-13 21:52:31 $
-|     $Author: e107steved $
+|     $Revision: 1.40 $
+|     $Date: 2010-01-12 16:14:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -107,19 +107,6 @@ class links_admin_ui extends e_admin_ui
 			$this->linkParent[$id] = $row['link_name'];
 		}
 
-		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
-
-		foreach($tmp as $cat=> $array)
-		{
-			$func = array();
-			foreach($array as $val)
-			{
-				$newkey = $cat.'::'.$val['function'];
-				$func[$newkey] = $val['name'];
-			}
-			$this->linkFunctions[$cat] = $func;
-		}
-
 		$this->linkCategory = array(
 			1	=> "1 - Main",
 			2	=> "2 - Alt",
@@ -146,7 +133,7 @@ class links_admin_ui extends e_admin_ui
 		$this->setDropDown('link_parent',$this->linkParent);
 		$this->setDropDown('link_category',$this->linkCategory);
 		$this->setDropDown('link_open',$this->linkOpen);
-	//	$this->setDropDown('link_function',$this->linkFunctions);
+		//$this->setDropDown('link_function',$this->linkFunctions);
 		// $this->setDropDown('link_template',$sitelinksTemplates);
 
 
@@ -353,9 +340,22 @@ class links_admin_ui extends e_admin_ui
 class links_admin_form_ui extends e_admin_form_ui
 {
 
+	private $linkFunctions;
+
 	function init()
 	{
+		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
 
+		foreach($tmp as $cat=> $array)
+		{
+			$func = array();
+			foreach($array as $val)
+			{
+				$newkey = $cat.'::'.$val['function'];
+				$func[$newkey] = $val['name'];
+			}
+			$this->linkFunctions[$cat] = $func;
+		}
 	}
 
 
@@ -387,7 +387,7 @@ class links_admin_form_ui extends e_admin_form_ui
 		}
 
 		if($mode == 'write')
-		{
+		{					
 			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
 		}
 
