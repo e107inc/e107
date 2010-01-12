@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/calendar/calendar_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-12 07:38:29 $
- * $Author: secretr $
+ * $Revision: 1.6 $
+ * $Date: 2010-01-12 17:58:54 $
+ * $Author: e107coders $
  * 
 */
 
@@ -107,8 +107,13 @@ class DHTML_Calendar
 		$id = $this->_gen_id();
 		$attrstr = $this->_make_html_attr(array_merge($field_attributes, array('id' => $this->_field_id($id), 'type' => 'text')));
 		$ret .= '<input ' . $attrstr .'/> ';
-		$ret .= "<a href='#' id='".$this->_trigger_id($id)."'>".$this->calendar_img."</a>";
-		$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => $this->_trigger_id($id)));
+		
+		//TODO perhaps make an admin-pref option for this. Default should be without the trigger-image. 
+	//	$ret .= "<a href='#' id='".$this->_trigger_id($id)."'>".$this->calendar_img."</a>";
+	//	$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => $this->_trigger_id($id)));
+	
+		$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => null));
+	
 		e107::getJs()->footerInline($this->_make_calendar($options, false)); 
 		//JS manager to send JS to header if possible, if not - footer
 		e107::getJs()
