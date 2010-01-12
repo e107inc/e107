@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.112 $
- * $Date: 2010-01-10 03:56:27 $
+ * $Revision: 1.113 $
+ * $Date: 2010-01-12 17:25:20 $
  * $Author: e107coders $
  *
 */
@@ -124,8 +124,15 @@ class e_form
 		// Temporary Fix for using Media-Manager data
 
 		$sql = e107::getDb();
+		
+		// $sc_parameters is currently being used to select the media-category. 
 
-		if($sql->db_Select('core_media','*',"media_userclass IN (".USERCLASS_LIST.") ORDER BY media_name"))
+		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
+		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : "";
+		$qry .= "ORDER BY media_name";
+		
+
+		if($sql->db_Select_gen($qry))
 		{
 			while($row = $sql->db_Fetch())
 			{
