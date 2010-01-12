@@ -9,9 +9,9 @@
  * Admin Footer
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.18 $
+ * $Date: 2010-01-12 07:38:29 $
+ * $Author: secretr $
  */
 if (!defined('e107_INIT'))
 {
@@ -306,7 +306,63 @@ echo "</body></html>";
 //
 // I Send the buffered page data, along with appropriate headers
 //
-$page = ob_get_clean();
+
+// SecretR - EXPERIMENT! SEND CSS data to header. Performance tests in progress.
+$tmp = array();
+$e_js =  e107::getJs();
+// Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
+$tmp1 = $e_js->renderJs('other_css', false, 'css', true);
+if($tmp1) 
+{
+	$tmp['search'][] = '<!-- footer_other_css -->';
+	$tmp['replace'][] = $tmp1;
+}
+
+// Core CSS
+$tmp1 = $e_js->renderJs('core_css', false, 'css', true);
+if($tmp1) 
+{
+	$tmp['search'][] = '<!-- footer_core_css -->';
+	$tmp['replace'][] = $tmp1;
+}
+
+
+// Plugin CSS
+$tmp1 = $e_js->renderJs('plugin_css', false, 'css', true);
+if($tmp1) 
+{
+	$tmp['search'][] = '<!-- footer_plugin_css -->';
+	$tmp['replace'][] = $tmp1;
+}
+
+//echo "<!-- Theme css -->\n";
+$tmp1 = $e_js->renderJs('theme_css', false, 'css', true);
+if($tmp1) 
+{
+	$tmp['search'][] = '<!-- footer_theme_css -->';
+	$tmp['replace'][] = $tmp1;
+}
+
+// Inline CSS - not sure if this should stay at all!
+$tmp1 = $e_js->renderJs('inline_css', false, 'css', true);
+if($tmp1) 
+{
+	$tmp['search'][] = '<!-- footer_inline_css -->';
+	$tmp['replace'][] = $tmp1;
+}
+
+if($tmp)
+{
+	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
+}
+else
+{
+	$page = ob_get_clean();
+}
+unset($tmp1, $tmp1);
+
+
+
 
 $etag = md5($page);
 header("Cache-Control: must-revalidate");
