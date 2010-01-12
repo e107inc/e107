@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.66 $
- * $Date: 2010-01-12 17:25:18 $
+ * $Revision: 1.67 $
+ * $Date: 2010-01-12 18:00:27 $
  * $Author: e107coders $
 */
 
@@ -1541,7 +1541,7 @@ class admin_newspost
 								<td>";
 			
 		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer. 					
-		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&action=create'>".NWSLAN_69."</a>";						
+		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create'>".NWSLAN_69."</a>";						
 		
 		// e_NEWSIMAGE is deprecated. 
 		
