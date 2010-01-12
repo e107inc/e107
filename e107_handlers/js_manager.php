@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-09 18:40:15 $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-12 07:38:28 $
  * $Author: secretr $
  * 
 */
@@ -213,7 +213,7 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function coreCSS($file_path, $media = 'screen')
+	public function coreCSS($file_path, $media = 'all')
 	{
 		$this->addJs('core_css', $file_path, $media);	
 		return $this;
@@ -227,7 +227,7 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function pluginCSS($plugname, $file_path, $media = 'screen')
+	public function pluginCSS($plugname, $file_path, $media = 'all')
 	{
 		if(is_array($file_path))
 		{
@@ -248,7 +248,7 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	protected function themeCSS($file_path, $media = 'screen')
+	public function themeCSS($file_path, $media = 'all')
 	{
 		$this->addJs('theme_css', $file_path, $media);		
 		return $this;
@@ -261,7 +261,7 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function otherCSS($file_path, $media = 'screen')
+	public function otherCSS($file_path, $media = 'all')
 	{
 		$this->addJs('other_css', $file_path, $media);		
 		return $this;
@@ -274,7 +274,7 @@ class e_jsmanager
 	 * @param string $media (not implemented yet) any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function inlineCSS($css_content, $media = 'screen')
+	public function inlineCSS($css_content, $media = 'all')
 	{
 		$this->addJs('inline_css', $css_content, $media);		
 		return $this;
@@ -808,7 +808,7 @@ class e_jsmanager
             	if('css' === $external)
 				{
 					$path = explode('|', $path, 2);
-					$media = $path[0];
+					$media = $path[0] ? $path[0] : 'all';
 					$path = $path[1];
 					echo '<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'" />';
 					echo "\n";

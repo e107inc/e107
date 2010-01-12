@@ -9,8 +9,8 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.55 $
- * $Date: 2009-11-28 15:32:47 $
+ * $Revision: 1.56 $
+ * $Date: 2010-01-12 07:38:29 $
  * $Author: secretr $
 */
 
@@ -37,8 +37,8 @@ $sql->db_Mark_Time('(Header Top)');
 // A: Admin Defines and Links
 // B: Send HTTP headers that come before any html
 // C: Send start of HTML
-// D: Send JS
-// E: Send CSS
+// D: Send CSS
+// E: Send JS
 // F: Send Meta Tags and Icon links
 // G: Send final theme headers (theme_head() function)
 // H: Generate JS for image preloading (setup for onload)
@@ -105,7 +105,105 @@ echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_
 echo "<title>".LAN_head_4.(defined("e_PAGETITLE") ? " - ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))." :: ".SITENAME."</title>\n";
 
 //
-// D: Send JS
+// D: Send CSS
+//
+echo "<!-- *CSS* -->\n";
+$e_js =  e107::getJs();
+if (isset($eplug_css) && $eplug_css)
+{
+	//echo "\n<!-- eplug_css -->\n";
+	//echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
+	$e_js->otherCSS('{e_FILE}e107.css');
+}
+
+
+if (!isset($no_core_css) || !$no_core_css)
+{
+	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+	$e_js->otherCSS('{e_FILE}e107.css');
+}
+//NEW - Iframe mod
+if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
+{
+	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	$e_js->themeCSS($css_file);
+}
+elseif (isset($pref['themecss']) && $pref['themecss'])
+{
+	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	$e_js->themeCSS($css_file);
+}
+else
+{
+	$css_file = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	$e_js->themeCSS($css_file);
+}
+
+// FIXME: TEXTDIRECTION compatibility CSS (marj?)
+// TODO: probably better to externalise along with some other things above
+// possibility to overwrite some CSS definition according to TEXTDIRECTION
+// especially usefull for rtl.css
+// see _blank theme for examples
+if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
+{
+	//echo '
+	//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
+	$e_js->themeCSS(strtolower(TEXTDIRECTION).'.css');
+}
+
+// ################### RENDER CSS
+
+// Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
+$e_js->renderJs('other_css', false, 'css', false);
+echo "\n<!-- footer_other_css -->\n";
+
+// Core CSS
+$e_js->renderJs('core_css', false, 'css', false);
+echo "\n<!-- footer_core_css -->\n";
+
+// Plugin CSS
+$e_js->renderJs('plugin_css', false, 'css', false);
+echo "\n<!-- footer_plugin_css -->\n";
+
+// Theme CSS
+//echo "<!-- Theme css -->\n";
+$e_js->renderJs('theme_css', false, 'css', false);
+echo "\n<!-- footer_theme_css -->\n";
+
+// Inline CSS - not sure if this should stay at all!
+$e_js->renderJs('inline_css', false, 'css', false);
+echo "\n<!-- footer_inline_css -->\n";
+
+
+
+//
+// Unobtrusive JS via CSS, prevent 3rd party code overload
+//
+require_once(e_FILE."/e_css.php");
+
+//iepngfix - IE6 only
+if ((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
+{
+	/*
+	 * The only problem is that the browser is REALLY,
+	 * REALLY slow when it has to render more elements
+	 * try e.g. "div, img, td, input" (or just *) instead only img rule
+	 * However I hope this will force IE6 user to hate it :)
+	 */
+	echo "<!--[if lte IE 6]>\n";
+	echo "<style type='text/css'>\n";
+	echo "img {\n";
+	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
+	echo "}\n";
+	echo "</style>\n";
+	echo "<![endif]-->\n";
+}
+
+//
+// E: Send JS
 //
 echo "<!-- *JS* -->\n";
 
@@ -166,59 +264,9 @@ function savepreset(ps,pid){
 </script>\n";
 }
 
-//iepngfix - IE6 only
-if ((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
-{
-	/*
-	 * The only problem is that the browser is REALLY,
-	 * REALLY slow when it has to render more elements
-	 * try e.g. "div, img, td, input" (or just *) instead only img rule
-	 * However I hope this will force IE6 user to hate it :)
-	 */
-	echo "<!--[if lte IE 6]>\n";
-	echo "<style type='text/css'>\n";
-	echo "img {\n";
-	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
-	echo "}\n";
-	echo "</style>\n";
-	echo "<![endif]-->\n";
-}
 
-//
-// E: Send CSS
-//
-echo "<!-- *CSS* -->\n";
 
-if (isset($eplug_css) && $eplug_css)
-{
-	echo "\n<!-- eplug_css -->\n";
-	echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
-}
-
-echo "<!-- Theme css -->\n";
-if (!isset($no_core_css) || !$no_core_css)
-{
-	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-}
-//NEW - Iframe mod
-if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss']))
-{
-	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-}
-elseif (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
-{
-	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? THEME_ABS.'admin_'.$pref['themecss'] : THEME_ABS.$pref['themecss'];
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-	
-}
-else
-{
-	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
-	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-}
-
-// [JSManager] Load JS Includes - Zone 3 - After Theme CSS, before e_meta and headerjs()
+// [JSManager] Load JS Includes - Zone 3 - before e_meta and headerjs()
 e107::getJs()->renderJs('header', 3);
 e107::getJs()->renderJs('header_inline', 3);
 
@@ -278,21 +326,6 @@ if (function_exists('theme_head'))
 	echo "\n<!-- *THEME HEAD* -->\n";
 	echo theme_head();
 }
-
-// FIXME: TEXTDIRECTION compatibility CSS (marj?)
-// TODO: probably better to externalise along with some other things above
-// possibility to overwrite some CSS definition according to TEXTDIRECTION
-// especially usefull for rtl.css
-// see _blank theme for examples
-if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
-{
-	echo '
-	<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
-}
-//
-// Unobtrusive JS, prevent 3rd party code overload
-//
-require_once(e_FILE."/e_css.php");
 
 //
 // H: Generate JS for image preloads [user mode only]

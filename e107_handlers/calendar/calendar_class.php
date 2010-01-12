@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/calendar/calendar_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:49:18 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.5 $
+ * $Date: 2010-01-12 07:38:29 $
+ * $Author: secretr $
  * 
 */
 
@@ -82,7 +82,9 @@ class DHTML_Calendar
 	}
 
 	function load_files() {
-		return $this->get_load_files_code();
+		//return $this->get_load_files_code();
+		// JS and CSS are now sent on the fly - see make_input_field()
+		return '';
 	}
 
 	function get_load_files_code() {
@@ -107,7 +109,13 @@ class DHTML_Calendar
 		$ret .= '<input ' . $attrstr .'/> ';
 		$ret .= "<a href='#' id='".$this->_trigger_id($id)."'>".$this->calendar_img."</a>";
 		$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => $this->_trigger_id($id)));
-		e107::getJs()->footerInline($this->_make_calendar($options, false)); //FIXME - get_load_files_code() to use JS Manager
+		e107::getJs()->footerInline($this->_make_calendar($options, false)); 
+		//JS manager to send JS to header if possible, if not - footer
+		e107::getJs()
+			->tryHeaderFile($this->calendar_file)
+			->tryHeaderFile($this->calendar_setup_file)
+			->tryHeaderFile($this->calendar_lang_file)
+			->otherCSS($this->calendar_theme_file); // send CSS to the site header
 		return $ret;
 	}
 
