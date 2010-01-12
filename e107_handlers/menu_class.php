@@ -9,9 +9,9 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-12-27 10:52:22 $
- * $Author: e107coders $
+ * $Revision: 1.18 $
+ * $Date: 2010-01-12 12:23:02 $
+ * $Author: secretr $
 */
 
 if(!defined('e107_INIT'))
@@ -21,7 +21,7 @@ if(!defined('e107_INIT'))
 
 /**
  * Retrieve and render site menus
- * 
+ *
  * @package e107
  * @category e107_handlers
  * @version 1.0
@@ -37,7 +37,7 @@ class e_menu
 	 * @var array
 	 */
 	public $eMenuActive = array();
-	
+
 	/**
 	 * Visibility check cache
 	 *
@@ -61,12 +61,12 @@ class e_menu
 	public function init()
 	{
 		global $_E107;
-		
+
 		if(vartrue($_E107['cli']))
 		{
 			return;
 		}
-		
+
 		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
 		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
@@ -113,36 +113,44 @@ class e_menu
 
 	/**
 	 * Check visibility of a menu against URL
-	 * 
+	 *
 	 * @param array $row menu data
 	 * @return boolean
 	 */
 	protected function isVisible($row, $url = '')
 	{
-		$iD = varset($row['id']);
-		
+		$iD = varset($row['menu_id']);
+
 		if(isset($this->_visibility_cache[$iD]))
 		{
 			return $this->_visibility_cache[$iD];
 		}
-		
+
 		$show_menu = TRUE;
+		$tp = e107::getParser();
 		if($row['menu_pages'])
 		{
 			list ($listtype, $listpages) = explode("-", $row['menu_pages'], 2);
 			$pagelist = explode("|", $listpages);
-			$check_url = $url ? $url : e_SELF.(e_QUERY ? "?".e_QUERY : '');
+			// TODO - check against REQUEST_URI, see what would get broken
+			$check_url = $url ? $url : ($_SERVER['REQUEST_URI'] ? SITEURLBASE.$_SERVER['REQUEST_URI'] : e_SELF.(e_QUERY ? "?".e_QUERY : ''));
+
 			switch($listtype)
 			{
 				case '1': //show menu
 					$show_menu = false;
+
 					foreach($pagelist as $p)
 					{
+						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)==='!')
 						{
 							$p = substr($p, 0, -1);
-							$show_menu = true;
-							break 2;
+							if(substr($check_url, strlen($p)*-1) == $p)
+							{
+								$show_menu = true;
+								break 2;
+							}
 						}
 						elseif(strpos($check_url, $p) !== false)
 						{
@@ -155,10 +163,11 @@ class e_menu
 					$show_menu = true;
 					foreach($pagelist as $p)
 					{
+						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)=='!')
 						{
 							$p = substr($p, 0, -1);
-							if(substr($check_url, strlen($p)*-1)==$p)
+							if(substr($check_url, strlen($p)*-1) == $p)
 							{
 								$show_menu = false;
 								break 2;
@@ -173,7 +182,7 @@ class e_menu
 					break;
 			} //end switch
 		} //endif menu_pages
-		
+
 		$this->_visibility_cache[$iD] = $show_menu;
 		return $show_menu;
 	}
@@ -189,7 +198,7 @@ class e_menu
 		global $sql, $ns, $tp, $sc_style;
 		global $error_handler;
 		$e107 = e107::getInstance();
-		
+
 		$tmp = explode(':', $parm);
 		$buffer_output = true; // Default - return all output.
 		if(isset($tmp[1])&&$tmp[1]=='echo')
@@ -233,12 +242,12 @@ class e_menu
 		global $sql; // required at the moment.
 		global $ns, $tp, $sc_style, $e107_debug;
 		$e107 = e107::getInstance();
-		
+
 		if($return)
 		{
 			ob_start();
 		}
-		
+
 		if(vartrue($error_handler->debug))
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
@@ -261,10 +270,10 @@ class e_menu
 			//e107_include(e_PLUGIN.$mpath."/".$mname.".php");
 			if(substr($mpath,-1)!='/')
 			{
-				$mpath .= '/';	
+				$mpath .= '/';
 			}
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
-			
+
 			/*if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
 			{
 				include_once (e_PLUGIN.$mpath."/".$mname.".php");
@@ -275,7 +284,7 @@ class e_menu
 		{
 			echo "\n<!-- Menu End: ".$mname." -->\n";
 		}
-		
+
 		if($return)
 		{
 			$ret = ob_get_contents();
