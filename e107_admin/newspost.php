@@ -9,21 +9,10 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.65 $
- * $Date: 2010-01-11 21:18:13 $
- * $Author: e107steved $
+ * $Revision: 1.66 $
+ * $Date: 2010-01-12 17:25:18 $
+ * $Author: e107coders $
 */
-
-
-/**
- *	e107 News administration
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id: newspost.php,v 1.65 2010-01-11 21:18:13 e107steved Exp $;
- *
- *	@todo - e_NEWSIMAGE needs to be defined
- */
 
 require_once('../class2.php');
 
@@ -1426,8 +1415,8 @@ class admin_newspost
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".NWSLAN_6.": </td>
-								<td class='control'>
+								<td>".NWSLAN_6.": </td>
+								<td>
 		";
 		
 		if (!$this->news_categories)
@@ -1452,15 +1441,15 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_12.":</td>
-								<td class='control'>
+								<td>".NWSLAN_12.":</td>
+								<td>
 									".$frm->text('news_title', $tp->post_toForm($_POST['news_title']))."
 								</td>
 							</tr>
 
 							<tr>
-								<td class='label'>".LAN_NEWS_27.":</td>
-								<td class='control'>
+								<td>".LAN_NEWS_27.":</td>
+								<td>
 									".$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250)."
 								</td>
 							</tr>
@@ -1470,10 +1459,8 @@ class admin_newspost
 		// -------- News Author ---------------------
         $text .="
 							<tr>
-								<td class='label'>
-									".LAN_NEWS_50.":
-								</td>
-								<td class='control'>
+								<td>".LAN_NEWS_50.":</td>
+								<td>
 		";
 
 		if(!getperms('0') && !check_class($pref['news_editauthor']))
@@ -1526,8 +1513,8 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_13.":<br /></td>
-								<td class='control'>";
+								<td>".NWSLAN_13.":<br /></td>
+								<td>";
 
 		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
         $text .= $frm->bbarea('news_body', $val, 'news', 'helpb');
@@ -1541,8 +1528,8 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_14.":</td>
-								<td class='control'>
+								<td>".NWSLAN_14.":</td>
+								<td>
 									<a href='#news-extended-cont' class='e-expandit' onclick=\"$ff_expand\">".NWSLAN_83."</a>
 									<div class='e-hideme' id='news-extended-cont'>
 										".$frm->bbarea('news_extended', $val, 'extended', 'helpc')."
@@ -1550,9 +1537,16 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_66.":</td>
-								<td class='control'>
-									<a href='#news-upload-cont' class='e-expandit'>".NWSLAN_69."</a>
+								<td>".NWSLAN_66.":</td>
+								<td>";
+			
+		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer. 					
+		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&action=create'>".NWSLAN_69."</a>";						
+		
+		// e_NEWSIMAGE is deprecated. 
+		
+		// DEPRECATED METHOD below. 						
+		/*$text .= "<a href='#news-upload-cont' class='e-expandit'>".NWSLAN_69."</a>
 									<div class='e-hideme' id='news-upload-cont'>
 		";
 
@@ -1605,16 +1599,22 @@ class admin_newspost
 
 		}
 		$text .= "
-									</div>
+									</div>";
+		*/
+		
+		
+		$text .= "
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_67.":</td>
-								<td class='control'>
+								<td>".NWSLAN_67.":</td>
+								<td>
 									<a href='#news-images-cont' class='e-expandit'>".LAN_NEWS_23."</a>
 									<div class='e-hideme' id='news-images-cont'>
 		";
-
+		
+		
+/*
 		$parms = "name=news_thumbnail";
 		$parms .= "&path=".e_NEWSIMAGE;
 		$parms .= "&filter=0";
@@ -1624,12 +1624,17 @@ class admin_newspost
 		$parms .= "&label=-- ".LAN_NEWS_48." --";
 		$parms .= "&subdirs=0";
 		$parms .= "&tabindex=".$frm->getNext();
+		*/
+		
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
 
-		$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
-		$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
+
+		$text .= $frm->imagepicker('news_thumbnail', $default,'','news');
+
+	//	$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+	//	$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 		$text .= "
 									</div>
