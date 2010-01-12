@@ -9,9 +9,9 @@
 * Featurebox administration
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-* $Revision: 1.15 $
-* $Date: 2009-12-13 10:28:15 $
-* $Author: secretr $
+* $Revision: 1.16 $
+* $Date: 2010-01-12 16:09:56 $
+* $Author: e107coders $
 *
 */
 require_once("../../class2.php");
@@ -73,7 +73,7 @@ class fb_category_ui extends e_admin_ui
 		'fb_category_title' 	=> array('title'=> LAN_TITLE,			'type' => 'text',		'data' => 'str',  	'width' => 'auto', 'validate' => 'str', 'rule' => '1-200', 'error' => 'String between 1-200 characters expected', 'help' => 'up to 200 characters', 'thclass' => 'left'), 
 		'fb_category_template' 	=> array('title'=> 'Category template',	'type' => 'layouts',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&id=featurebox_category&merge=1', 'filter' => true),
 		'fb_category_random' 	=> array('title'=> 'Random',			'type' => 'boolean',	'data' => 'int', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'batch' => true, 'filter' => true),
-		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'width' => 'auto'),
+		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'width' => 'auto', 'filter' => true, 'batch' => true),
 		'fb_category_limit' 	=> array('title'=> 'Limit',				'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
 		'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 	);	
@@ -179,7 +179,7 @@ class fb_main_ui extends e_admin_ui
         'fb_template' 		=> array('title'=> FBLAN_25,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
 		'fb_image' 			=> array('title'=> "Image",				'type' => 'image',			'width' => 'auto'),
 		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
-		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'width' => 'auto'),	// User id
+		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'width' => 'auto', 'filter' => true, 'batch' => true),	// User id
 		'fb_order' 			=> array('title'=> LAN_ORDER,			'type' => 'number',			'data'=> 'int','width' => '5%' ),
 		'options' 			=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 	);
