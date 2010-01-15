@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.136 $
-|     $Date: 2010-01-13 20:13:45 $
+|     $Revision: 1.137 $
+|     $Date: 2010-01-15 20:02:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -349,7 +349,7 @@ if (isset($_POST['register']))
         $error = TRUE;
 	}
 
-	if(vartrue($pref['xup_enabled']) && $_POST['xupexist'])
+	if(varsettrue($pref['xup_enabled']) && $_POST['xupexist'])
 	{
 		require_once(e_HANDLER."xml_class.php");
 		$xml = new parseXml;
