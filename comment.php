@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2010-01-09 12:06:09 $
+|     $Revision: 1.15 $
+|     $Date: 2010-01-15 21:10:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 /**
  *	@package    e107
  *	@subpackage	user
- *	@version 	$Id: comment.php,v 1.14 2010-01-09 12:06:09 e107steved Exp $;
+ *	@version 	$Id: comment.php,v 1.15 2010-01-15 21:10:23 e107steved Exp $;
  *
  *	Display comments
  */
@@ -352,10 +352,18 @@ elseif ($action == 'comment')
 			else
 			{	// Error - emit some debug code
 				require_once(HEADERF);
-				echo "Comment error: {$table}  Field: {$e_comment['db_id']}  ID {$id}   Title: {$e_comment['db_title']}<br />";
-				echo "<pre>";
-				var_dump($e_comment);
-				echo "</pre>";
+				if (E107_DEBUG_LEVEL)
+				{
+					echo "Comment error: {$table}  Field: {$e_comment['db_id']}  ID {$id}   Title: {$e_comment['db_title']}<br />";
+					echo "<pre>";
+					var_dump($e_comment);
+					echo "</pre>"; 
+				}
+				else
+				{
+					header('location:'.e_BASE.'index.php');
+					exit;
+				}
 			}
 		}
 	}
