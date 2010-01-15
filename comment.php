@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2010-01-09 12:01:33 $
+|     $Revision: 1.61 $
+|     $Date: 2010-01-15 21:10:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -316,31 +316,39 @@ elseif ($action == 'comment')
 		  }
 		  break;
 		default :		// Hope its a plugin table
-		  $e_comment = $cobj->get_e_comment();
-		  if ($table == $e_comment[$table]['eplug_comment_ids'])
-		  {
-			if ($sql->db_Select($table,$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
+			$e_comment = $cobj->get_e_comment();
+			if ($table == $e_comment[$table]['eplug_comment_ids'])
 			{
-			  $row = $sql->db_Fetch();
-			  $subject = $row[$e_comment[$table]['db_title']];
-			  $title = $e_comment[$table]['plugin_name'];
-			  $field = $id;
-			  require_once(HEADERF);
+				if ($sql->db_Select($table,$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
+				{
+				  $row = $sql->db_Fetch();
+				  $subject = $row[$e_comment[$table]['db_title']];
+				  $title = $e_comment[$table]['plugin_name'];
+				  $field = $id;
+				  require_once(HEADERF);
+				}
+				else
+				{
+				  header("location:".e_BASE."index.php");
+				  exit;
+				}
 			}
 			else
-			{
-			  header("location:".e_BASE."index.php");
-			  exit;
+			{	// Error - emit some debug code
+				require_once(HEADERF);
+				if (E107_DEBUG_LEVEL)
+				{
+					echo "Comment error: {$table}  Field: {$e_comment['db_id']}  ID {$id}   Title: {$e_comment['db_title']}<br />";
+					echo "<pre>";
+					var_dump($e_comment);
+					echo "</pre>"; 
+				}
+				else
+				{
+					header('location:'.e_BASE.'index.php');
+					exit;
+				}
 			}
-		  }
-		  else
-		  {	// Error - emit some debug code
-			require_once(HEADERF);
-			echo "Comment error: {$table}  Field: {$e_comment['db_id']}  ID {$id}   Title: {$e_comment['db_title']}<br />";
-			echo "<pre>";
-			var_dump($e_comment);
-			echo "</pre>"; 
-		  }
 	  }
 	}
 }
