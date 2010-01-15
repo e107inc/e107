@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2010-01-03 19:48:18 $
+|     $Revision: 1.43 $
+|     $Date: 2010-01-15 21:23:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ $text .= ",remove_script_host : true\n";
 $text .= ",relative_urls: true\n";
 $text .= ",document_base_url: '".SITEURL."'\n";
 $text .= ",theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3'\n";
-$text .= ",popup_css: '".THEME."style.css'\n";
+//$text .= ",popup_css: '".THEME_ABS."style.css'\n";
 $text .= ",verify_css_classes : false\n";
 $text .= ",cleanup_callback : \"tinymce_html_bbcode_control\" \n";
 $text .= (ADMIN) ? "\n, external_link_list_url: '../".$HANDLERS_DIRECTORY."tiny_mce/filelist.php'\n" : "";
