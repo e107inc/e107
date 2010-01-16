@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Linkwords plugin - admin page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
- * $Revision: 1.12 $
- * $Date: 2010-01-02 22:57:41 $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-16 20:49:51 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: admin_config.php,v 1.12 2010-01-02 22:57:41 e107steved Exp $;
+ *	@version 	$Id: admin_config.php,v 1.13 2010-01-16 20:49:51 e107steved Exp $;
  *
  *	Administration page
  */
@@ -119,6 +119,7 @@ if (isset($_POST['saveopts_linkword']))
 	}
 	$pref['lw_page_visibility'] = '2-'.implode("|", $pagelist);		// '2' for 'hide on specified pages'
 	$pref['lw_ajax_enable'] = isset($_POST['lw_ajax_enable']);
+	$pref['lw_notsamepage'] = isset($_POST['lw_notsamepage']);
 	save_prefs();
 	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'];
 	$e107->ecache->clear_sys(LW_CACHE_TAG);
@@ -345,27 +346,36 @@ if ($action=='options')
   <td class='forumheader3'>";
   foreach ($lw_context_areas as $lw_key=>$lw_desc)
   {
-    $checked = $pref['lw_context_visibility'][$lw_key] ? 'checked=checked' : '';
-	$text .= "<input type='checkbox' name='lw_visibility_area[]' value={$lw_key} {$checked} />{$lw_desc}<br />";
+    $checked = $pref['lw_context_visibility'][$lw_key] ? "checked='checked'" : '';
+	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} />{$lw_desc}<br />";
   }
   $text .= "</td>
-  <td class='forumheader3'>".LWLAN_27."
+  <td class='forumheader3'>".LWLAN_27."</td>
   </tr>
 
   <tr>
   <td class='forumheader3'>".LWLAN_28."</td>
   <td class='forumheader3'><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea>
   </td>
-  <td class='forumheader3'>".LWLAN_29."
+  <td class='forumheader3'>".LWLAN_29."</td>
   </tr>";
 
   $checked = varset($pref['lw_ajax_enable'],0) ? 'checked=checked' : '';
   $text .= "
   <tr>
   <td class='forumheader3'>".LWLAN_59."</td>
-  <td class='forumheader3'><input type='checkbox' name='lw_ajax_enable' {$checked}>
+  <td class='forumheader3'><input type='checkbox' name='lw_ajax_enable' {$checked} />
   </td>
-  <td class='forumheader3'>".""."
+  <td class='forumheader3'>".""."</td>
+  </tr>";
+
+  $checked = varset($pref['lw_notsamepage'],0) ? 'checked=checked' : '';
+  $text .= "
+  <tr>
+  <td class='forumheader3'>".LWLAN_64."</td>
+  <td class='forumheader3'><input type='checkbox' name='lw_notsamepage' {$checked} />
+  </td>
+  <td class='forumheader3'>".LWLAN_65."</td>
   </tr>
 
 <tr>
