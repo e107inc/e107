@@ -2,37 +2,29 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-02 22:57:41 $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-16 20:49:53 $
  * $Author: e107steved $
  */
-/*
-|
-| *utf - flags functions which need utf-8-aware code
-TODO:
-	1. Add utf-8 aware routines - done, test a bit more
-	2. Add special effects for tooltips
-	3. Caching?
-|
-+----------------------------------------------------------------------------+
-*/
 
 /**
  *	e107 Linkword plugin
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: e_tohtml.php,v 1.10 2010-01-02 22:57:41 e107steved Exp $;
+ *	@version 	$Id: e_tohtml.php,v 1.11 2010-01-16 20:49:53 e107steved Exp $;
  *
  *	'Hook' page
  *	The class is 'hooked' by the parser, to add linkword capability to any context where its enabled.
+ *
+ *	@todo Link to capability for clever display options on tooltips
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -187,14 +179,17 @@ class e_tohtml_linkwords
 		}
 		return $ptext;
 	}
+
+
 	
 	function linksproc($text,$first,$limit)
 	{  // This function is called recursively - it splits the text up into blocks - some containing a particular linkword
-		global $tp;
+		$tp = e107::getParser();
+		$doSamePage = !e107::getPref('lw_notsamepage');
 
 		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
 //		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-		while (($first < $limit) && (strpos($tp->uStrToLower($text),$this->word_list[$first]) === FALSE))   { $first++; };		// *utf  
+		while (($first < $limit) && (strpos($tp->ustrtolower($text),$this->word_list[$first]) === FALSE))   { $first++; };		// *utf  
 		if ($first == $limit) return $text;		// Return if no linkword found
 
 		// There's at least one occurrence of the linkword in the text
@@ -224,9 +219,13 @@ class e_tohtml_linkwords
 		}
 		if ($this->link_list[$first]) 
 		{	// Got link
-			$linkwd = " href='".$tp->replaceConstants($this->link_list[$first])."' ";
-			if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
-			$lwClass[] = 'lw_link';
+			$newLink = $tp->replaceConstants($this->link_list[$first], 'full');
+			if ($doSamePage || ($newLink != e_SELF.'?'.e_QUERY))
+			{
+				$linkwd = " href='".$newLink."' ";
+				if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
+				$lwClass[] = 'lw_link';
+			}
 		}
 		if (!count($lwClass))
 		{

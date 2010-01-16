@@ -1,5 +1,30 @@
 <?php
-	
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Linkwords plugin - language file (only needed for admin)
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/languages/English_admin_linkwords.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2010-01-16 20:49:55 $
+ * $Author: e107steved $
+ */
+
+
+/**
+ *	e107 Linkword plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	linkwords
+ *	@version 	$Id: English_admin_linkwords.php,v 1.2 2010-01-16 20:49:55 e107steved Exp $;
+ *
+ *	Language file
+ */
+
 define("LWLAN_1", "Field(s) left blank.");
 define("LWLAN_2", "Link word saved.");
 define("LWLAN_3", "Link word updated.");
@@ -66,26 +91,31 @@ define('LWLAN_60', 'LW ID');
 define('LWLAN_61', 'ID');
 define('LWLAN_62', 'Tooltip ID (LW ID)');
 define('LWLAN_63', '(Positive integers only)');
+define('LWLAN_64', 'Suppress link on current page');
+define('LWLAN_65', 'When checked, suppresses clickable link if points to current page');
+
 
 // Installation-related
-define("LWLANINS_1", "Linkwords");
-define("LWLANINS_2", "This plugin links specified words with a defined link and/or tooltip");
-define("LWLANINS_3", "Configure LinkWords");
-define("LWLANINS_4", "To configure please click on the link in the plugins section of the admin front page");
-define("LWLANINS_5", 'Upgrade complete');
+define('LWLANINS_1', 'Linkwords');
+define('LWLANINS_2', 'This plugin links specified words with a defined link and/or tooltip');
+define('LWLANINS_3', 'Configure LinkWords');
+define('LWLANINS_4', 'To configure please click on the link in the plugins section of the admin front page');
+define('LWLANINS_5', 'Upgrade complete');
 
 
 // Help text
 define('LAN_LW_HELP_00','Linkwords Help');
 define('LAN_LW_HELP_01','
-  <b><u>Areas to enable</u></b><br />
+  <b>Areas to enable</b><br />
   many areas of text have an associated \'context\', and linkwords will only be displayed in areas matching that context.<br /><br />
-  <b><u>Linkwords Disable</u></b><br />
+  <b>Linkwords Disable</b><br />
   Linkwords may be disabled on specific pages, or pages matching a pattern. Enter these here (same syntax as for menus), one pattern per line. 
   If the pattern ends in \'!\', this corresponds to \'end of query\', and is usually an exact match. Otherwise any URL containing the specified string will match.<br />
-  Note that linkwords are <i>never</i> displayed on admin pages.
-  <b><u>Enable Ajax Functionality</u></b><br />
-  The tooltips can use Ajax to get information for display. This usually requires some custom coding.
+  Note that linkwords are <i>never</i> displayed on admin pages.<br /><br />
+  <b>Enable Ajax Functionality</b><br />
+  The tooltips can use Ajax to get information for display. This usually requires some custom coding.<br /><br />
+  <b>Suppress link on current page</b><br />
+  Usually its pointless for the user to be able to click a link if they\'re already on the page. Tick this box to remove the option,<br />
   ');
 define('LAN_LW_HELP_02','Define the words which become clickable links, or which display text on mouseover, here<br /><br />
   <b><u>Word to Link</u></b><br />
