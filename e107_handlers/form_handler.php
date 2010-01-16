@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.113 $
- * $Date: 2010-01-12 17:25:20 $
- * $Author: e107coders $
+ * $Revision: 1.114 $
+ * $Date: 2010-01-16 14:17:10 $
+ * $Author: secretr $
  *
 */
 
@@ -445,10 +445,10 @@ class e_form
 
 	/**
 	 *
-	 * @param object $name
+	 * @param string $name
 	 * @param array $option_array
-	 * @param object $selected [optional]
-	 * @param object $options [optional]
+	 * @param boolean $selected [optional]
+	 * @param string|array $options [optional]
 	 * @param boolean $defaultBlank [optional] set to TRUE if the first entry should be blank
 	 * @return string HTML text for display
 	 */
@@ -463,13 +463,13 @@ class e_form
 		$text = $this->select_open($name, $options)."\n";
 
 		if(vartrue($options['default']))
-		{			
+		{
 			$text .= $this->option($options['default'],'');
 		}
-		
+
 		if(vartrue($defaultBlank))
 		{
-			$text .= $this->option('&nbsp;','');		
+			$text .= $this->option('&nbsp;','');
 		}
 
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
@@ -1084,22 +1084,22 @@ class e_form
 					$query = http_build_query($query);
 
 					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
-					
+
 					if(varset($parms['deleteClass']))
 					{
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
 						{
 							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
-						}	
+						}
 					}
 					else
 					{
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');	
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
 					}
-					
-					
-					
+
+
+
 				}
 				//$attributes['type'] = 'text';
 				return $value;
@@ -1195,7 +1195,7 @@ class e_form
 					$toexpand = $value != $oldval;
 				}
 				if($toexpand)
-				{			
+				{
 					// force hide! TODO - core style .expand-c (expand container)
 					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.str_replace($truncated,' ',$oldval).'</div></div>';
 				}
@@ -1338,7 +1338,7 @@ class e_form
 
 		if(vartrue($attributes['readonly']) && vartrue($value)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); // 
+			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 
 		switch($attributes['type'])
@@ -1365,13 +1365,13 @@ class e_form
 
 			case 'textarea':
 				$text = "";
-				if($parms['append']) // similar to comments - TODO TBD. a 'comment' field type may be better. 
+				if($parms['append']) // similar to comments - TODO TBD. a 'comment' field type may be better.
 				{
 					$attributes['readParms'] = 'bb=1';
 					$text = $this->renderValue($key, $value, $attributes).$this->hidden($key, $value).'<br />';
 					$value = "";
 				}
-											
+
 				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
 				return $text;
 			break;
@@ -1394,19 +1394,19 @@ class e_form
 			break;
 
 			case 'datestamp':
-				// If hidden, value is updated regardless. eg. a 'last updated' field. 
+				// If hidden, value is updated regardless. eg. a 'last updated' field.
 				// If not hidden, and there is a value, it is retained. eg. during the update of an existing record.
-				// otherwise it is added. eg. during the creation of a new record.  
+				// otherwise it is added. eg. during the creation of a new record.
 				if(vartrue($parms['auto']) && (($value == null) || vartrue($parms['hidden'])))
 				{
-					$value = time();  
+					$value = time();
 				}
-					
+
 				if(vartrue($parms['hidden']))
 				{
 					return $this->hidden($key, $value);
 				}
-									
+
 				return $this->datepicker($key, $value, $parms);
 			break;
 
@@ -1524,6 +1524,7 @@ class e_form
 			break;
 
 			case 'upload': //TODO - from method
+				// TODO uploadfile SC is now processing uploads as well (add it to admin UI), write/readParms have to be added (see uploadfile.php parms)
 				return $tp->parseTemplate("{UPLOADFILE=".e_UPLOAD."}");
 			break;
 
@@ -1637,8 +1638,8 @@ class e_form
 				$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 				if ($nextprev)
 				{
-					$text .= "<div class='nextprev-bar'>".$nextprev."</div>";	
-				} 
+					$text .= "<div class='nextprev-bar'>".$nextprev."</div>";
+				}
 			}
 
 			$text .= "

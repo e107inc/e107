@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision: 1.9 $
+ * $Date: 2010-01-16 14:17:10 $
+ * $Author: secretr $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ get_files() is the usual entry point.
 				'standard' or empty string - uses the standard exclude list
 				Otherwise a single directory name, or an array of names.
 	$recurse_level - number of directory levels to search.
-	
+
 	If the standard file or directory filter is unacceptable in a special application, the relevant variable can be set to an empty array (emphasis - ARRAY).
 
 setDefaults() restores the defaults - preferable to setting using a 'fixed' string. Can be called prior to using the class without knowledge of what went before.
@@ -40,7 +40,7 @@ get_dirs() returns a list of the directories in a specified directory (no recurs
 rmtree() attempts to remove a complete directory tree, including the files it contains
 
 
-Note: 
+Note:
 	Directory filters look for an exact match (i.e. regex not supported)
 	Behaviour is slightly different to previous version:
 		$omit used to be applied to just files (so would recurse down a tree even if no files match) - now used for directories
@@ -57,7 +57,7 @@ class e_file
 	var $finfo = 'default';
 
 	// Constructor
-	function e_file()
+	function __construct()
 	{
 		$this->setDefaults();
 	}
@@ -68,18 +68,19 @@ class e_file
 		$this->dirFilter = array('/', 'CVS', '.svn');										// Default directory filter (exact matches only)
 		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp');		// Default file filter (regex format)
 	}
-	
+
 	public function setFileInfo($val='default')
 	{
-		$this->finfo = $val;	
+		$this->finfo = $val;
 	}
-	
+
 	/**
-	 * 
-	 * @param object $path
-	 * @param object $fmask [optional]
-	 * @param object $omit [optional]
-	 * @param object $recurse_level [optional]
+	 * Read files from given path
+	 *
+	 * @param string $path
+	 * @param string $fmask [optional]
+	 * @param string $omit [optional]
+	 * @param integer $recurse_level [optional]
 	 * @return array of file names/paths
 	 */
 	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0)
@@ -144,39 +145,39 @@ class e_file
 						}
 					}
 					if($rejected == FALSE)
-					{						
-						switch($this->mode) //TODO remove this check from the loop. 
+					{
+						switch($this->mode) //TODO remove this check from the loop.
 						{
 							case 'fname':
 								$ret[] = $file;
 							break;
-							
+
 							case 'path':
 								$ret[] = $path."/";
-							break;						
+							break;
 
 							case 'full':
 								$ret[] = $path."/".$file;
-							break;							
-						
+							break;
+
 							default:
-								
+
 								if($this->finfo == 'all')
 								{
-									$finfo = $this->get_file_info($path."/".$file); 		
+									$finfo = $this->get_file_info($path."/".$file);
 								}
 								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-								$finfo['fname'] = $file;	
-								
+								$finfo['fname'] = $file;
+
 								$ret[] = $finfo;
 							break;
-						}						
+						}
 					}
 				}
-				
 
-				
-			}			
+
+
+			}
 		}
 		return $ret;
 	}
@@ -184,18 +185,18 @@ class e_file
 	function get_file_info($path_to_file)
 	{
 		$finfo = array();
-		
+
 		$tmp = getimagesize($path_to_file);
 		$finfo['img-width'] = $tmp[0];
 		$finfo['img-height'] = $tmp[1];
 		$finfo['mime'] = $tmp['mime'];
-									
-									
+
+
 		$tmp2 = stat($path_to_file);
 		$finfo['fsize'] = $tmp2['size'];
 		$finfo['modified'] = $tmp2['mtime'];
-		
-		return $finfo;		
+
+		return $finfo;
 	}
 
 
@@ -279,4 +280,3 @@ class e_file
 	}
 
 }
-?>
