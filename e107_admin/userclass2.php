@@ -9,16 +9,25 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-26 21:43:38 $
- * $Author: bugrain $
+ * $Revision: 1.37 $
+ * $Date: 2010-01-16 19:53:34 $
+ * $Author: e107steved $
  *
 */
 
-require_once("../class2.php");
-if (!getperms("4"))
+
+/**
+ *	e107 Userclass handling - Admin
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: userclass2.php,v 1.37 2010-01-16 19:53:34 e107steved Exp $;
+ */
+
+require_once('../class2.php');
+if (!getperms('4'))
 {
-  header("location:".e_BASE."index.php");
+  header('location:'.e_BASE.'index.php');
   exit;
 }
 
@@ -30,7 +39,7 @@ $e_sub_cat = 'userclass';
 require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
 
-require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER.'form_handler.php');
 
 
 $frm = new e_form();
@@ -859,7 +868,7 @@ function userclass2_adminmenu()
 
 class uclass_manager
 {
-    function uclass_manager()
+    public function __construct()
 	{
 		global $user_pref;
     	if(isset($_POST['etrigger_ecolumns']))
@@ -885,15 +894,18 @@ class uclass_manager
 	}
 
 
-	function show_existing()
+	/**
+	 *	Show list of existing userclasses, followed by graphical tree of the hierarchy
+	 */
+	public function show_existing()
 	{
 	    global $e_userclass;
 
 		$tp 	= e107::getParser();
 		$sql 	= e107::getDb();
 		$frm 	= new uclassFrm;
-		$ns = e107::getRender();
-   	$mes = e107::getMessage();
+		$ns 	= e107::getRender();
+		$mes 	= e107::getMessage();
 
 
 		if (!$total = $sql->db_Select('userclass_classes', '*'))
@@ -922,11 +934,15 @@ class uclass_manager
 			$text .= "</tbody></table></fieldset></form>";
 		}
 
+		$text .= $e_userclass->show_graphical_tree();	// Show the tree as well - sometimes more useful
+
 		$ns->tablerender(UCSLAN_21, $mes->render().$text );
 
 	}
 }
-require_once("footer.php");
+
+require_once('footer.php');
+
 
 
 function headerjs()
