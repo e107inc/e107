@@ -9,15 +9,24 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.57 $
-* $Date: 2009-12-27 11:25:19 $
-* $Author: e107coders $
+* $Revision: 1.58 $
+* $Date: 2010-01-16 19:54:04 $
+* $Author: e107steved $
 *
 */
+
+/**
+ *	@package    e107
+ *	@subpackage	install
+ *	@version 	$Id: install_.php,v 1.58 2010-01-16 19:54:04 e107steved Exp $;
+ *
+ *	Installer base routine
+ */
 
 // minimal software version
 define('MIN_PHP_VERSION',   '5.0');
 define('MIN_MYSQL_VERSION', '4.1.2');
+define('MAKE_INSTALL_LOG', TRUE);
 
 // ensure CHARSET is UTF-8 if used
 //define('CHARSET', 'utf-8');
@@ -159,7 +168,7 @@ if(isset($_GET['create_tables']))
 	exit;
 }
 
-header("Content-type: text/html; charset=utf-8");
+header('Content-type: text/html; charset=utf-8');
 $e_install = new e_install();
 $e_forms = new e_forms();
 
@@ -181,10 +190,20 @@ class e_install
 	var $previous_steps;
 	var $stage;
 	var $post_data;
-	var $required = ""; //TODO - use for highlighting required fields with css/js.
+	var $required = ""; 		//TODO - use for highlighting required fields with css/js.
+	var $logFile;			// Name of log file, empty string if logging disabled
+	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
 
+
+//	public function __construct()
 	function e_install()
 	{
+		$this->logFile = '';
+		if (MAKE_INSTALL_LOG)
+		{
+			$this->logFile = dirname(__FILE__).'/e107InstallLog.log';
+		}
+//		$this->logLine('Query string: ');
 		$this->template = new SimpleTemplate();
 		while (@ob_end_clean());
 		global $e107;
@@ -201,14 +220,32 @@ class e_install
 		$this->get_lan_file();
 		$this->post_data = $_POST;
 
-		$this->template->SetTag("required", "");
+		$this->template->SetTag('required', '');
 		if(isset($this->previous_steps['language']))
 		{
 			define("e_LANGUAGE", $this->previous_steps['language']);
 			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 		}
-
 	}
+
+
+
+	/**
+	 *	Write a line of text to the log file (if enabled) - prepend time/date, append \n
+	 *	Can always call this routine - it will return if logging disabled
+	 *
+	 *	@param	string $logLine - text to log
+	 *	@return none
+	 */
+	protected function logLine($logLine)
+	{
+		if (!MAKE_INSTALL_LOG || ($this->logFile == '')) return;
+		$logfp = fopen($this->logFile, 'a+');
+		fwrite($logfp, ($now = time()).', '.gmstrftime('%y-%m-%d %H:%M:%S',$now).'  '.$logLine."\n"); 
+		fclose($logfp);
+	}
+
+
 
 	function renderPage()
 	{
@@ -284,10 +321,13 @@ class e_install
 		}
 	}
 
+
+
 	private function stage_1()
 	{
 		global $e_forms;
 		$this->stage = 1;
+		$this->logLine('Stage 1 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -298,12 +338,16 @@ class e_install
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_006);
 		$this->template->SetTag("stage_content", "<div style='text-align: center;'><label for='language'>".LANINS_005."</label>\n<br /><br /><br />\n".$e_forms->return_form()."</div>");
+		$this->logLine('Stage 1 completed');
 	}
+
+
 
 	private function stage_2()
 	{
 		global $e_forms;
 		$this->stage = 2;
+		$this->logLine('Stage 2 started');
 		$this->previous_steps['language'] = $_POST['language'];
 
 		$this->template->SetTag("installation_heading", LANINS_001);
@@ -352,6 +396,7 @@ class e_install
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
+		$this->logLine('Stage 2 completed');
 	}
 
 
@@ -360,6 +405,7 @@ class e_install
 		global $e_forms;
 		$success = TRUE;
 		$this->stage = 3;
+		$this->logLine('Stage 3 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -482,13 +528,17 @@ class e_install
 		else
 			$this->finish_form(3);
 		$this->template->SetTag("stage_content", $head.$e_forms->return_form());
+		$this->logLine('Stage 3 completed');
 	}
+
+
 
 	private function stage_4()
 	{
 		global $e_forms;
 
 		$this->stage = 4;
+		$this->logLine('Stage 4 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -547,7 +597,7 @@ class e_install
 				$mysql_help = LANINS_105;
 			}
 		}
-		if(!function_exists("utf8_encode"))
+		if(!function_exists('utf8_encode'))
 		{
 			$xml_installed = false;
 		}
@@ -600,10 +650,13 @@ class e_install
 			</table>\n<br /><br />\n\n";
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
+		$this->logLine('Stage 4 completed');
 	}
 
+
+
 	/**
-	 * Collect Admin Login Data.
+	 * Install stage 5 - collect Admin Login Data.
 	 *
 	 * @return string HTML form of stage 5.
 	 */
@@ -612,6 +665,7 @@ class e_install
 	{
 		global $e_forms;
 		$this->stage = 5;
+		$this->logLine('Stage 5 started');
 
 		$this->display_required();
 		$this->template->SetTag("installation_heading", LANINS_001);
@@ -658,6 +712,7 @@ class e_install
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
+		$this->logLine('Stage 5 completed');
 	}
 
 	/**
@@ -669,7 +724,7 @@ class e_install
 	{
 		global $e_forms;
 		$this->stage = 6;
-
+		$this->logLine('Stage 6 started');
 
 
 		// -------------------- Save Step 5 Data -------------------------
@@ -797,13 +852,17 @@ class e_install
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
+		$this->logLine('Stage 6 completed');
 	}
+
+
 
 	private function stage_7()
 	{
 		global $e_forms;
 
 		$this->stage = 7;
+		$this->logLine('Stage 7 started');
 
 		if(varset($_POST['sitename']))
 		{
@@ -858,14 +917,22 @@ class e_install
 		$e_forms->add_button("submit", LANINS_035);
 
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
-
+		$this->logLine('Stage 7 completed');
 	}
 
+
+
+	/**
+	 *	Stage 8 - actually create database and set up the site
+	 *
+		@return none
+	 */
 	private function stage_8()
 	{
 
 		global $e_forms;
 		$this->stage = 8;
+		$this->logLine('Stage 8 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -917,23 +984,28 @@ class e_install
 		if ($config_result)
 		{
 			$page = $config_result."<br />";
+			$this->logLine('Error writing config file: '.$config_result);
 		}
 		else
 		{
+			$this->logLine('Config file written successfully');
 			$errors = $this->create_tables();
 			if ($errors == true)
 			{
+				$this->logLine('Errors creating tables: '.$errors);
 				$page = $errors."<br />";
 			}
 			else
 			{
+				$this->logLine('Tables created successfully');
 				$this->import_configuration();
 				$page = nl2br(LANINS_069)."<br />";
-				$e_forms->add_button("submit", LANINS_035);
+				$e_forms->add_button('submit', LANINS_035);
 			}
 		}
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
+		$this->logLine('Stage 8 completed');
 	}
 
 
@@ -946,6 +1018,8 @@ class e_install
 	 //FIXME always return FALSE???
 	public function import_configuration()
 	{
+		$this->logLine('Starting configuration import');
+
 		// Basic stuff to get the handlers/classes to work.
 
 
@@ -990,6 +1064,8 @@ class e_install
 		//Create default plugin-table entries.
 //		e107::getConfig('core')->clearPrefCache();
 		e107::getSingleton('e107plugin')->update_plugins_table();
+		$this->logLine('Plugins table updated');
+
 
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']))
@@ -1000,7 +1076,8 @@ class e_install
 				{
 					foreach($themeInfo['plugins']['plugin'] as $k=>$plug)
 					{
-						 $this->install_plugin($plug['@attributes']['name']);
+						$this->install_plugin($plug['@attributes']['name']);
+						$this->logLine('Theme-related plugin installed: '.$plug['@attributes']['name']);
 					}
 				}
 			}
@@ -1009,7 +1086,9 @@ class e_install
 
 		//FIXME - should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
 		e107::getXml()->e107Import($XMLImportfile,'replace'); // Add missing core pref values
+		$this->logLine('Core prefs written');
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
+		$this->logLine('Addon prefs saved');
 
 		$tm = e107::getSingleton('themeHandler');
 		$tm->noLog = TRUE;
@@ -1038,12 +1117,15 @@ class e_install
 
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install.
+		$this->logLine('Core prefs set to install choices');
+
 
 		// Create the admin user - replacing any that may be been included in the XML.
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".md5($this->previous_steps['admin']['password'])."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
-		mysql_close();
+		$this->logLine('Admin user created');
+		mysql_close($this->dbLink);
 		return false;
 
 	}
@@ -1217,6 +1299,7 @@ class e_install
 			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".mysql_error($link)."</i>");
 		}
 
+		$this->dbLink = $link;		// Needed for mysql_close() to work round bug in PHP 5.3
 		$db_selected = mysql_select_db($this->previous_steps['mysql']['db'], $link);
 		if(!$db_selected)
 		{

@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.114 $
- * $Date: 2010-01-16 14:17:10 $
- * $Author: secretr $
+ * $Revision: 1.115 $
+ * $Date: 2010-01-16 19:53:57 $
+ * $Author: e107steved $
  *
 */
 
@@ -872,9 +872,9 @@ class e_form
 		{
 			if ((in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced'])) && !vartrue($val['nolist']))
 			{
-				$class = vartrue($val['class']) ? ' class="'.$val['class'].'"' : '';
-				$text .= '
-					<col style="width: '.$val['width'].';"'.$class.'></col>
+				$class = vartrue($val['class']) ? 'class="'.$val['class'].'"' : '';
+				$width = vartrue($val['width']) ? ' style="width:'.$val['width'].'"' : '';
+				$text .= '<col '.$class.$width.' />
 				';
 				$count++;
 			}
