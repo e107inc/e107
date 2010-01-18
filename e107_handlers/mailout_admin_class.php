@@ -9,9 +9,9 @@
  * Mailout - admin-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2010-01-11 21:09:21 $
- * $Author: e107steved $
+ * $Revision: 1.15 $
+ * $Date: 2010-01-18 21:11:43 $
+ * $Author: e107coders $
  *
 */
 
@@ -20,7 +20,7 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_admin_class.php,v 1.14 2010-01-11 21:09:21 e107steved Exp $;
+ *	@version 	$Id: mailout_admin_class.php,v 1.15 2010-01-18 21:11:43 e107coders Exp $;
 */
 
 
@@ -556,7 +556,7 @@ class mailoutAdminClass extends e107MailManager
 
 		$ret = '';
 		$this->checkDB(2);			// Make sure DB object created
-		$ret .= "<select style='width:80%' class='tbox' name='{$name}' >
+		$ret .= "<select class='tbox' name='{$name}' >
 		<option value=''>&nbsp;</option>\n";
 		
 		foreach ($fixedClasses as $k => $v)
