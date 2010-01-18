@@ -9,9 +9,9 @@
  * Template for signup emails
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/email_template.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-18 20:45:19 $
- * $Author: e107steved $
+ * $Revision: 1.11 $
+ * $Date: 2010-01-18 21:08:23 $
+ * $Author: e107coders $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -58,6 +58,45 @@ $EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://ww
 
 // Not used in signup email
 $EMAIL_FOOTER = "
+<br /><br />
+{SITENAME=link}
+</div>
+</body>
+</html>";
+
+
+//TODO - integrate into mailout routine
+
+$MAILOUT_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+<html xmlns='http://www.w3.org/1999/xhtml' >
+<head>
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+{STYLESHEET}
+</head>
+<body>
+<div style='padding:10px'>
+";
+
+$MAILOUT_FOOTER = "
+<br /><br />
+{SITENAME=link}
+</div>
+</body>
+</html>";
+
+
+//TODO - integrate into notification routine
+$NOTIFY_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+<html xmlns='http://www.w3.org/1999/xhtml' >
+<head>
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+{STYLESHEET}
+</head>
+<body>
+<div style='padding:10px'>
+";
+
+$NOTIFY_FOOTER = "
 <br /><br />
 {SITENAME=link}
 </div>
