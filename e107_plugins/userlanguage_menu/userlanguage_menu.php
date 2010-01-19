@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-09-07 09:59:06 $
-|     $Author: secretr $
+|     $Revision: 1.16 $
+|     $Date: 2010-01-19 22:17:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,8 +36,6 @@ if(varset($pref['multilanguage_subdomain']))
 	{
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
 		$urlval   = $slng->subdomainUrl($languageFolder);
-		$text .= '
-				<option value="'.$urlval.'" $selected>$languageFolder</option>';
 		$text .= '
 				<option value="'.$urlval.'"'.$selected.'>'.$languageFolder.'</option>';
 	}
