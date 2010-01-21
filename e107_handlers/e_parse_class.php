@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.222 $
-|     $Date: 2010-01-02 21:42:16 $
-|     $Author: e107steved $
+|     $Revision: 1.223 $
+|     $Date: 2010-01-21 03:57:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -104,6 +104,8 @@ class e_parse
 						// leave opt-in options off
 						)
 		);
+
+	var $replaceVars = array();
 
 	function e_parse()
 	{
@@ -238,6 +240,26 @@ class e_parse
 		}
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 		// End parse {XXX} codes
+	}
+	
+	function simpleParse(&$template, &$vars=false, $replaceUnset=true)
+	{
+		if($vars === false)
+		{
+			$this->replaceVars = &$GLOBALS;
+		}
+		else
+		{
+			$this->replaceVars = &$vars;
+		}
+		$this->replaceUnset = $replaceUnset;
+		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, simpleReplace), $template);
+	}
+	
+	function simpleReplace($tmp) {
+		$unset = ($this->replaceUnset ? '' : $tmp[0]);
+		return (isset($this->replaceVars[$tmp[1]]) ? $this->replaceVars[$tmp[1]] : $unset);
+//		return (isset($this->replaceVars[$tmp[1]]) && is_string($this->replaceVars[$tmp[1]]) ? $this->replaceVars[$tmp[1]] : '');
 	}
 
 
@@ -407,7 +429,7 @@ class e_parse
 										break;
 								}
 								if ($i == 0)
-								{	
+								{
 									// No 'special' break boundary character found - break at the word boundary
 									$pulled = substr($sp,0,$width);
 								}
@@ -509,7 +531,7 @@ class e_parse
 
 	// Truncate a string to a maximum length $len - append the string $more if it was truncated
 	// Uses current CHARSET - for utf-8, returns $len characters rather than $len bytes
-	function text_truncate($text, $len = 200, $more = ' ... ') 
+	function text_truncate($text, $len = 200, $more = ' ... ')
 	{
 	  if (strlen($text) <= $len) return $text; 		// Always valid
 	  if (strtolower(CHARSET) !== 'utf-8')
@@ -824,7 +846,7 @@ class e_parse
 	function toAttribute($text) {
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
 		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
-		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) 
+		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
 		{
 		  $text = $this->replaceConstants($text);
 		  return $text;

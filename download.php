@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2010-01-02 22:10:35 $
-|     $Author: e107steved $
+|     $Revision: 1.103 $
+|     $Date: 2010-01-21 03:57:44 $
+|     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
 */
@@ -197,8 +197,9 @@ switch ($action)
 	  }
 	}
 
-	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
-
+//	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
+	$download_cat_table_start = $tp->simpleParse($DOWNLOAD_CAT_TABLE_START);
+	
 	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 	$DOWNLOAD_CAT_SEARCH = "
 		<form method='get' action='".e_BASE."search.php'>
@@ -209,7 +210,9 @@ switch ($action)
 		</p>
 		</form>";
 
-	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
+//	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
+	$download_cat_table_end = $tp->simpleParse($DOWNLOAD_CAT_TABLE_END);
+	
 	$dl_text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 
 	ob_start();
@@ -294,9 +297,11 @@ if ($action == "list")
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($row['parent_name'], FALSE, 'TITLE');
-		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
+//		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
+		$download_cat_table_start = $tp->simpleParse($DOWNLOAD_CAT_TABLE_START);
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
-		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
+//		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
+		$download_cat_table_end = $tp->simpleParse($DOWNLOAD_CAT_TABLE_END);
 		$text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 		if($DOWNLOAD_CAT_TABLE_RENDERPLAIN)
 		{
@@ -355,8 +360,11 @@ if ($action == "list")
 	$DOWNLOAD_LIST_TOTAL_AMOUNT = $tdownloads." ".LAN_dl_16;
 	$DOWNLOAD_LIST_TOTAL_FILES = $ft." ".LAN_dl_17;
 
-	$download_list_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_START);
-	$download_list_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_END);
+//	$download_list_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_START);
+	$download_list_table_start = $tp->simpleParse($DOWNLOAD_LIST_TABLE_START);
+	
+//	$download_list_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_END);
+	$download_list_table_end = $tp->simpleParse($DOWNLOAD_LIST_TABLE_END);
 	$text .= $download_list_table_start.$download_list_table_string.$download_list_table_end;
 
 
@@ -595,9 +603,11 @@ if($action == "mirror")
 		$DOWNLOAD_MIRROR_DESCRIPTION_LAN = LAN_dl_71;
 		$DOWNLOAD_MIRROR_REQUEST = LAN_dl_72."'".$download_name."'";
 
-		$download_mirror_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_START);
-		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
-
+//		$download_mirror_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_START);
+		$download_mirror_start = $tp->simpleParse($DOWNLOAD_MIRROR_START);
+//		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
+		$download_mirror_end = $tp->simpleParse($DOWNLOAD_MIRROR_END);
+		
 		$text = $download_mirror_start.$download_mirror.$download_mirror_end;
 
 		if($DOWNLOAD_MIRROR_RENDERPLAIN) {
@@ -634,7 +644,8 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
 	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
 
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
+//	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
+	return($tp->simpleParse($DOWNLOAD_MIRROR));
 }
 
 function parsesize($size) {
@@ -673,9 +684,9 @@ function parse_download_cat_parent_table($row)
 
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_PARENT_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_PARENT_TABLE);
 
-	$DOWNLOAD_CAT_MAIN_ICON = '';
-	$DOWNLOAD_CAT_MAIN_NAME = '';
-	$DOWNLOAD_CAT_MAIN_DESCRIPTION = '';
+	$tVars['DOWNLOAD_CAT_MAIN_ICON'] = '';
+	$tVars['DOWNLOAD_CAT_MAIN_NAME'] = '';
+	$tVars['DOWNLOAD_CAT_MAIN_DESCRIPTION'] = '';
 
 	if (check_class($download_category_class))
 	{
@@ -683,11 +694,12 @@ function parse_download_cat_parent_table($row)
 		{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 		}
-		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
-		$DOWNLOAD_CAT_MAIN_NAME = $tp->toHTML($download_category_name,FALSE,'TITLE');
-		$DOWNLOAD_CAT_MAIN_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
+		$tVars['DOWNLOAD_CAT_MAIN_ICON'] = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
+		$tVars['DOWNLOAD_CAT_MAIN_NAME'] = $tp->toHTML($download_category_name,FALSE,'TITLE');
+		$tVars['DOWNLOAD_CAT_MAIN_DESCRIPTION'] = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
 	}
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
+//	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
+	return($tp->simpleParse($template, $tVars));
 }
 
 
@@ -719,31 +731,33 @@ function parse_download_cat_child_table($row)
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_CHILD_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_CHILD_TABLE);
 
-	$DOWNLOAD_CAT_SUB_ICON = get_cat_icons($row['download_category_icon'],$row['d_count']);
-	$DOWNLOAD_CAT_SUB_NEW_ICON = check_new_download($row['d_last_subs']);
+	$tVars['DOWNLOAD_CAT_SUB_ICON'] = get_cat_icons($row['download_category_icon'],$row['d_count']);
+	$tVars['DOWNLOAD_CAT_SUB_NEW_ICON'] = check_new_download($row['d_last_subs']);
 	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,'TITLE');
-	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>" : $dcatname);
-	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
-	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
-	$DOWNLOAD_CAT_SUB_COUNT = $row['d_count'];
-	$DOWNLOAD_CAT_SUB_SIZE = parsesize( $row['d_size']);
-	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval( $row['d_requests']);
-	$DOWNLOAD_CAT_SUBSUB = "";
+	$tVars['DOWNLOAD_CAT_SUB_NAME'] = ($row['d_count'] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>" : $dcatname);
+	$tVars['DOWNLOAD_CAT_SUB_NAME_LINKED'] = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
+	$tVars['DOWNLOAD_CAT_SUB_DESCRIPTION'] = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
+	$tVars['DOWNLOAD_CAT_SUB_COUNT'] = $row['d_count'];
+	$tVars['DOWNLOAD_CAT_SUB_SIZE'] = parsesize( $row['d_size']);
+	$tVars['DOWNLOAD_CAT_SUB_DOWNLOADED'] = intval( $row['d_requests']);
+	$tVars['DOWNLOAD_CAT_SUBSUB'] = "";
 	// check for subsub cats ...
 	foreach($row['subsubcats'] as $subrow)
 	{
-	  $DOWNLOAD_CAT_SUBSUB_ICON = get_cat_icons($subrow['download_category_icon'],$subrow['d_count']);
-	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'DESCRIPTION');
-	  $DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
-	  $DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
-	  $DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_ICON'] = get_cat_icons($subrow['download_category_icon'],$subrow['d_count']);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_DESCRIPTION'] = $tp->toHTML($subrow['download_category_description'],TRUE,'DESCRIPTION');
+	  $tVars['DOWNLOAD_CAT_SUBSUB_COUNT'] = intval($subrow['d_count']);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_SIZE'] = parsesize($subrow['d_size']);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_DOWNLOADED'] = intval($subrow['d_requests']);
 
-	  $DOWNLOAD_CAT_SUBSUB_NEW_ICON = check_new_download($subrow['d_last']);
-	  $DOWNLOAD_CAT_SUBSUB_NAME = ($subrow['d_count'] ? "<a href='".e_BASE."download.php?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name'],FALSE,'TITLE'));
-	  $DOWNLOAD_CAT_SUBSUB .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_NEW_ICON'] = check_new_download($subrow['d_last']);
+	  $tVars['DOWNLOAD_CAT_SUBSUB_NAME'] = ($subrow['d_count'] ? "<a href='".e_BASE."download.php?list.".$subrow['download_category_id']."'>".$tp->toHTML($subrow['download_category_name'])."</a>" : $tp->toHTML($subrow['download_category_name'],FALSE,'TITLE'));
+//	  $tVars['DOWNLOAD_CAT_SUBSUB'] .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
+	  $tVars['DOWNLOAD_CAT_SUBSUB'] .= $tp->simpleParse($DOWNLOAD_CAT_SUBSUB_TABLE, $tVars);
 	}
 
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
+//	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
+	return($tp->simpleParse($template, $tVars));
 }
 
 

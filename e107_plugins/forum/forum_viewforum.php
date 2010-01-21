@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2009-11-19 11:45:49 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.68 $
+|     $Date: 2010-01-21 03:57:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -273,8 +273,11 @@ if($container_only)
 	$forum_view_forum = "";
 }
 
-$forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
-$forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
+//$forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
+$forum_view_start = $tp->simpleParse($FORUM_VIEW_START);
+
+//$forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
+$forum_view_end = $tp->simpleParse($FORUM_VIEW_END);
 
 
 if ($pref['forum_enclose'])
@@ -337,7 +340,7 @@ function parse_thread($thread_info)
 
 	$THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
-	if ($REPLIES >= $pref['forum_popular']) 
+	if ($REPLIES >= $pref['forum_popular'])
 	{
 	  $ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
@@ -459,7 +462,7 @@ function parse_thread($thread_info)
 
 	if (!$REPLIES)
 	{
-		$REPLIES = LAN_317;		// 'None' 
+		$REPLIES = LAN_317;		// 'None'
 		$LASTPOST = " - ";
 	}
 

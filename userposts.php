@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-08-23 10:39:51 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.32 $
+|     $Date: 2010-01-21 03:57:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -103,16 +103,20 @@ if ($action == "comments")
 		$userposts_comments_table_string .= parse_userposts_comments_table($row);
 	}
 
-	$userposts_comments_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_START);
-	$userposts_comments_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_END);
+//	$userposts_comments_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_START);
+	$userposts_comments_table_start = $tp->simpleParse($USERPOSTS_COMMENTS_TABLE_START);
 
+//	$userposts_comments_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_END);
+	$userposts_comments_table_end = $tp->simpleParse($USERPOSTS_COMMENTS_TABLE_END);
+	
 	$ctext .= $userposts_comments_table_start."".$userposts_comments_table_string."".$userposts_comments_table_end;
 
 	$ns->tablerender($ccaption, $ctext);
 
 	$parms = $ctotal.",10,".$from.",".e_SELF."?[FROM].comments.".$id;
 	$USERPOSTS_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
+//	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
+	echo $tp->simpleParse($USERPOSTS_NP_TABLE);
 }
 
 
@@ -194,16 +198,19 @@ if ($action == "forums" || isset($_POST['fsearch']))
 		{
 			$userposts_forum_table_string .= parse_userposts_forum_table($row);
 		}
-		$userposts_forum_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_START);
+//		$userposts_forum_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_START);
+		$userposts_forum_table_start = $tp->simpleParse($USERPOSTS_FORUM_TABLE_START);
 		$USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='' maxlength='50' /> <input class='button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
-		$userposts_forum_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_END);
+//		$userposts_forum_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_END);
+		$userposts_forum_table_end = $tp->simpleParse($USERPOSTS_FORUM_TABLE_END);
 		$ftext .= $userposts_forum_table_start."".$userposts_forum_table_string."".$userposts_forum_table_end;
 	}
 	$ns->tablerender($fcaption, $ftext);
 
 	$parms = $ftotal.",10,".$from.",".e_SELF."?[FROM].forums.".$id;
 	$USERPOSTS_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
+//	echo preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_NP_TABLE);
+	echo $tp->simpleParse($USERPOSTS_NP_TABLE);
 }
 
 require_once(FOOTERF);
@@ -226,14 +233,15 @@ function parse_userposts_comments_table($row)
 	{
 		$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 	}
-	$USERPOSTS_COMMENTS_ICON		= $bullet;
-	$USERPOSTS_COMMENTS_DATESTAMP	= UP_LAN_11." ".$datestamp;
-	$USERPOSTS_COMMENTS_HEADING		= $row['comment_title'];
-	$USERPOSTS_COMMENTS_COMMENT		= $row['comment_comment'];
-	$USERPOSTS_COMMENTS_HREF_PRE	= "<a href='".$row['comment_url']."'>";
-	$USERPOSTS_COMMENTS_TYPE		= $row['comment_type'];
+	$tVars['USERPOSTS_COMMENTS_ICON']		= $bullet;
+	$tVars['USERPOSTS_COMMENTS_DATESTAMP']	= UP_LAN_11." ".$datestamp;
+	$tVars['USERPOSTS_COMMENTS_HEADING']	= $row['comment_title'];
+	$tVars['USERPOSTS_COMMENTS_COMMENT']	= $row['comment_comment'];
+	$tVars['USERPOSTS_COMMENTS_HREF_PRE']	= "<a href='".$row['comment_url']."'>";
+	$tVars['USERPOSTS_COMMENTS_TYPE']		= $row['comment_type'];
 
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE));
+//	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE));
+	return($tp->simpleParse($USERPOSTS_COMMENTS_TABLE, $tVars));
 }
 
 
@@ -247,7 +255,7 @@ function parse_userposts_forum_table($row)
 
 	$poster = substr($thread_user, (strpos($thread_user, ".")+1));
 	$datestamp = $gen->convert_date($thread_datestamp, "short");
-	$DATESTAMP = $datestamp;
+	$tVars['DATESTAMP'] = $datestamp;
 
 	if ($thread_parent)
 	{
@@ -261,25 +269,26 @@ function parse_userposts_forum_table($row)
 			list($thread_name) = $sql2->db_Fetch();
 			$cachevar[$thread_parent] = $thread_name;
 		}
-		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_15.": ";
+		$tVars['USERPOSTS_FORUM_TOPIC_PRE'] = UP_LAN_15.": ";
 	}
 	else
 	{
-		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_2.": ";
+		$tVars['USERPOSTS_FORUM_TOPIC_PRE'] = UP_LAN_2.": ";
 	}
 
 	$tmp = $thread_id;
 	$thread_thread = $tp->toHTML($thread_thread, TRUE, "USER_BODY", $id);
 
-	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
-	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp.".post'>";
-	$USERPOSTS_FORUM_TOPIC = $thread_name;
-	$USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>";
-	$USERPOSTS_FORUM_NAME = $forum_name;
-	$USERPOSTS_FORUM_THREAD = $thread_thread;
-	$USERPOSTS_FORUM_DATESTAMP = UP_LAN_11." ".$datestamp;
+	$tVars['USERPOSTS_FORUM_ICON'] = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
+	$tVars['USERPOSTS_FORUM_TOPIC_HREF_PRE'] = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp.".post'>";
+	$tVars['USERPOSTS_FORUM_TOPIC'] = $thread_name;
+	$tVars['USERPOSTS_FORUM_NAME_HREF_PRE'] = "<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>";
+	$tVars['USERPOSTS_FORUM_NAME'] = $forum_name;
+	$tVars['USERPOSTS_FORUM_THREAD'] = $thread_thread;
+	$tVars['USERPOSTS_FORUM_DATESTAMP'] = UP_LAN_11." ".$datestamp;
 
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE));
+//	return(preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE));
+	return($tp->simpleParse($USERPOSTS_FORUM_TABLE, $tVars));
 }
 
 ?>

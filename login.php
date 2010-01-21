@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,29 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-12-10 20:23:17 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2010-01-21 03:57:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 if (USER)
 {
-	header('location:'.e_BASE.'index.php');      
+	header('location:'.e_BASE.'index.php');
 	exit();
 }
 
 $HEADER = "";
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
-if ($use_imagecode) 
+if ($use_imagecode)
 {
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
 
-if (!USER) 
+if (!USER)
 {
 	require_once(e_HANDLER."form_handler.php");
 	$rs = new form;
@@ -65,9 +65,13 @@ if (!USER)
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/login_template.php");
 		}
 	}
-	$text = preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE);
-	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
-
+//	$text = preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE);
+	$tVars = false;
+	$text = $tp->simpleParse($LOGIN_TABLE, $tVars, false);
+	
+//	echo preg_replace("/\{(.*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_HEADER);
+	echo $tp->simpleParse($LOGIN_TABLE_HEADER, $tVars, false);
+	
 	$ns->tablerender($login_message, $text, 'login_page');
 
 	$LOGIN_TABLE_FOOTER_USERREG = '&nbsp;';		// In case no registration system enabled
@@ -75,7 +79,8 @@ if (!USER)
 	{
 		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 	}
-	echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
+//	echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
+	echo $tp->simpleParse($LOGIN_TABLE_FOOTER, $tVars, false);
 }
 
 echo "</body></html>";
