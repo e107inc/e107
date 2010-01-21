@@ -9,8 +9,8 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-12-31 09:55:57 $
+ * $Revision: 1.13 $
+ * $Date: 2010-01-21 20:44:27 $
  * $Author: e107steved $
  *
 */
@@ -77,29 +77,32 @@ function read_tables($tab)
 	foreach($file as $line)
 	{
 		$line = ltrim(stripslashes($line));
-		$match = array();
-		if (preg_match('/CREATE TABLE (.*) /', $line, $match))
+		if ($line)
 		{
-			if($match[1] != "user_extended")
+			$match = array();
+			if (preg_match('/CREATE TABLE (.*) /', $line, $match))
 			{
-				$table_list[$match[1]]  = 1;
-				$current_table = $match[1];
-				$x = 0;
-				$cnt = 0;
+				if($match[1] != "user_extended")
+				{
+					$table_list[$match[1]]  = 1;
+					$current_table = $match[1];
+					$x = 0;
+					$cnt = 0;
+				}
 			}
-		}
 
-		if (strpos($line, "TYPE=") !== FALSE)
-		{
-			$current_table = "";
-		}
+			if (strpos($line, "TYPE=") !== FALSE)
+			{
+				$current_table = "";
+			}
 
-		if ($current_table && $x)
-		{
-			$tablines[$current_table][$cnt++] = $line;
-		}
+			if ($current_table && $x)
+			{
+				$tablines[$current_table][$cnt++] = $line;
+			}
 
-		$x = 1;
+			$x = 1;
+		}
 	}
 
 // Get multi-language tables as well
