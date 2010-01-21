@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-12-31 09:56:07 $
+|     $Revision: 1.28 $
+|     $Date: 2010-01-21 20:44:21 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,33 +56,39 @@ if (!getperms("0")) {
 
 
 
-function read_tables($tab) {
+function read_tables($tab) 
+{
 	global $tablines;
 	global $table_list;
 	global $tables,$sql,$pref;
 
 	$file = split("\n", $tables[$tab]);
-	foreach($file as $line) {
+	foreach($file as $line) 
+	{
 		$line = ltrim(stripslashes($line));
-		if (preg_match("/CREATE TABLE (.*) /", $line, $match)) {
-			if($match[1] != "user_extended"){
-				$current_table = str_replace('`','',$match[1]);
-				$table_list[$current_table]  = 1;
-				$x = 0;
-				$cnt = 0;
+		if ($line)
+		{
+			if (preg_match("/CREATE TABLE (.*) /", $line, $match)) 
+			{
+				if($match[1] != "user_extended"){
+					$current_table = str_replace('`','',$match[1]);
+					$table_list[$current_table]  = 1;
+					$x = 0;
+					$cnt = 0;
+				}
 			}
+
+			if (strpos($line, "TYPE=") !== FALSE) {
+				$current_table = "";
+			}
+
+			if ($current_table && $x) {
+				$tablines[$current_table][$cnt++] = $line;
+
+			}
+
+			$x = 1;
 		}
-
-		if (strpos($line, "TYPE=") !== FALSE) {
-			$current_table = "";
-		}
-
-		if ($current_table && $x) {
-			$tablines[$current_table][$cnt++] = $line;
-
-		}
-
-		$x = 1;
 	}
 
 // Get multi-language tables as well
