@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.223 $
-|     $Date: 2010-01-21 03:57:44 $
+|     $Revision: 1.224 $
+|     $Date: 2010-01-21 20:56:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -242,9 +242,9 @@ class e_parse
 		// End parse {XXX} codes
 	}
 	
-	function simpleParse(&$template, &$vars=false, $replaceUnset=true)
+	function simpleParse(&$template, &$vars, $replaceUnset=true)
 	{
-		if($vars === false)
+		if(is_null($vars))
 		{
 			$this->replaceVars = &$GLOBALS;
 		}
