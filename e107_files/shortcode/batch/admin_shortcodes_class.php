@@ -1,14 +1,14 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.37 2010-01-07 21:05:14 e107steved Exp $
+* $Id: admin_shortcodes_class.php,v 1.38 2010-01-21 21:47:21 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
 /**
  *	@package    e107
  *	@subpackage	shortcodes
- *	@version 	$Id: admin_shortcodes_class.php,v 1.37 2010-01-07 21:05:14 e107steved Exp $;
+ *	@version 	$Id: admin_shortcodes_class.php,v 1.38 2010-01-21 21:47:21 e107steved Exp $;
  *
  *	Shortcodes for admin items
  */
@@ -425,8 +425,8 @@ class admin_shortcodes
 		}
 		else
 		{
-			$logo = e_IMAGE.'adminlogo.png';
-			$path = $logo;
+			$logo = e_IMAGE_ABS.'adminlogo.png';
+			$path = e_IMAGE.'adminlogo.png';
 		}
 
 		$dimensions = getimagesize($path);
