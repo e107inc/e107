@@ -13,7 +13,7 @@ else if (is_readable(THEME."images/e_adminlogo.png"))
 else
 {
 	$logo = e_IMAGE_ABS."adminlogo.png";
-	$path = $logo;
+	$path = e_IMAGE."adminlogo.png";
 }
 
 $dimensions = getimagesize($path);
