@@ -9,8 +9,8 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-21 20:44:27 $
+ * $Revision: 1.14 $
+ * $Date: 2010-01-22 20:58:56 $
  * $Author: e107steved $
  *
 */
@@ -73,7 +73,7 @@ function read_tables($tab)
 
 	$mes = e107::getMessage();
 
-	$file = split("\n", $tables[$tab]);
+	$file = explode("\n", $tables[$tab]);
 	foreach($file as $line)
 	{
 		$line = ltrim(stripslashes($line));
@@ -198,7 +198,7 @@ function check_tables($what)
 
 		if ($current_tab)
 		{
-			$lines = split("\n", $current_tab);			// Actual table - create one element of $lines per field or other line of info
+			$lines = explode("\n", $current_tab);			// Actual table - create one element of $lines per field or other line of info
 			$fieldnum = 0;
 			foreach($tablines[$k] as $x)
 			{	// $x is a line of the DB definition from the *_sql.php file
@@ -208,13 +208,13 @@ function check_tables($what)
 		  		list($fname, $fparams) = explode(' ', $x, 2);		// Pull out first word of definition
 				if ($fname == 'UNIQUE' || $fname == 'FULLTEXT')
 				{
-					list($key, $key1, $keyname, $keyparms) = split(' ', $x, 4);
+					list($key, $key1, $keyname, $keyparms) = explode(' ', $x, 4);
 					$fname = $key." ".$key1." ".$keyname;
 					$fparams = $keyparms;
 				}
 				elseif ($fname == 'KEY')
 		  		{
-					list($key, $keyname, $keyparms) = split(' ', $x, 3);
+					list($key, $keyname, $keyparms) = explode(' ', $x, 3);
 					$fname = $key." ".$keyname;
 					$fparams = $keyparms;
 		  		}
