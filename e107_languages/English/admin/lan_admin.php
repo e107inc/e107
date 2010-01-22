@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2010-01-22 13:50:28 $
-|     $Author: secretr $
+|     $Revision: 1.63 $
+|     $Date: 2010-01-22 13:53:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -173,7 +173,7 @@ define("ADLAN_151", "Main");
 define("ADLAN_152", "Enter Code");
 
 define("ADLAN_153", "Administration Area");
-define('ADLAN_154', "Error contacting Sourceforge to check for new version");
+define('ADLAN_154', "Error contacting e107.org to check for new version");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
