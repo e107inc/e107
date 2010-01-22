@@ -99,7 +99,7 @@ a.forumlink:visited{
 }
 
 .newsroomHilite {
-	background-color: #c00;
+	background-color: black;
 	color: #fff;
 	cursor: pointer;
 }

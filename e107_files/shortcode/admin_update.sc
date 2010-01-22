@@ -1,4 +1,4 @@
-// $Id: admin_update.sc,v 1.8 2010-01-21 23:42:53 e107coders Exp $
+// $Id: admin_update.sc,v 1.9 2010-01-22 12:24:16 e107coders Exp $
 
 
 	if (!ADMIN) return "";
@@ -28,22 +28,23 @@
 	require_once(e_HANDLER."xml_class.php");
 	
 	$xml = new parseXml;
+	$xm = new XMLParse();
 	
     $ftext = "";
 	
 	if($rawData = $xml -> getRemoteXmlFile($feed,5))
 	{	
-		$array = simplexml_load_string($rawData);
+		$array = $xm->parse($rawData);
 		
 		list($cur_version,$tag) = explode(" ", $e107info['e107_version']);
 		
-		foreach($array->core as $val)
+		foreach($array['e107Release']['core'] as $val)
 		{
 			$val = (array) $val;
 	
-			$version = varsettrue($val['@attributes']['version']);
-			$link = varsettrue($val['@attributes']['url']);
-			$compat = varsettrue($val['@attributes']['compatibility']);
+			$version = varsettrue($val['attributes']['version']);
+			$link = varsettrue($val['attributes']['url']);
+			$compat = varsettrue($val['attributes']['compatibility']);
 	
 		 	if(($compat == '0.7') && version_compare($version,$cur_version)==1)
 			{
