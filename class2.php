@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.389 $
-|     $Date: 2010-01-21 03:57:43 $
+|     $Revision: 1.390 $
+|     $Date: 2010-01-22 15:00:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -199,7 +199,7 @@ $tp = new e_parse;
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
 $e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
-define("e_QUERY", str_replace(array('{', '}'), '', $e_QUERY));
+define("e_QUERY", str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', $e_QUERY));
 //$e_QUERY = e_QUERY;
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
