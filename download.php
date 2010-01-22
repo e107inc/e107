@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2010-01-21 03:57:44 $
+|     $Revision: 1.104 $
+|     $Date: 2010-01-22 13:30:28 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -59,7 +59,7 @@ $order_options = array('download_id','download_datestamp','download_requested','
 $sort_options = array('ASC', 'DESC');
 
 
-if (!e_QUERY || $_GET['elan'])
+if (!e_QUERY || varsettrue($_GET['elan']))
 {
 	$action = 'maincats';		// List categories
 	$maincatval = '';			// Show all main categories
@@ -266,6 +266,7 @@ if ($action == "list")
 	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
 	require_once(HEADERF);
+	$text = '';
 
 	/* SHOW SUBCATS ... */
 	if($sql -> db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
@@ -311,8 +312,8 @@ if ($action == "list")
 		{
 			$ns->tablerender($type, $text);
 		}
-		$text = "";		// If other files, show in a separate block
-		$type = "";   	// Cancel title once displayed
+		$text = '';		// If other files, show in a separate block
+		$type = '';   	// Cancel title once displayed
 	}  // End of subcategory display
 
 // Now display individual downloads
@@ -327,11 +328,11 @@ if ($action == "list")
 
 	if ($total_downloads < $view) { $dl_from = 0; }
 
-	if(strstr($download_category_icon, chr(1)))
+	if(isset($download_category_icon) && strstr($download_category_icon, chr(1)))
 	{
 		list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 	}
-	$DOWNLOAD_CATEGORY_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
+	$DOWNLOAD_CATEGORY_ICON = (varsettrue($download_category_icon) ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 
 	$DOWNLOAD_CATEGORY = $tp->toHTML($download_category_name,FALSE,'TITLE');
 	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE,'DESCRIPTION');
@@ -350,6 +351,7 @@ if ($action == "list")
 	// $total_downloads - total number of entries matching search criteria
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
+	$download_list_table_string = '';
 	while ($row = $sql->db_Fetch())
 	{
 		extract($row);
@@ -370,7 +372,7 @@ if ($action == "list")
 
 	if ($filetotal)
 	{  // Only show list if some files in it
-		if($DOWNLOAD_LIST_TABLE_RENDERPLAIN)
+		if(varsettrue($DOWNLOAD_LIST_TABLE_RENDERPLAIN))
 		{
 			echo $text;
 		}
@@ -443,7 +445,7 @@ $comment_edit_query = 'comment.download.'.$id;
 	define("e_PAGETITLE", $DL_TITLE);
 
 	require_once(HEADERF);
-	$DL_TEMPLATE = $DOWNLOAD_VIEW_TABLE_START.$DOWNLOAD_VIEW_TABLE.$DOWNLOAD_VIEW_TABLE_END;
+	$DL_TEMPLATE = varset($DOWNLOAD_VIEW_TABLE_START, '').$DOWNLOAD_VIEW_TABLE.varset($DOWNLOAD_VIEW_TABLE_END, '');
 	$text = $tp->parseTemplate($DL_TEMPLATE, TRUE, $download_shortcodes);
 
 	if(!isset($DL_VIEW_CAPTION))
@@ -469,9 +471,12 @@ $comment_edit_query = 'comment.download.'.$id;
     $text .= $tp->parseTemplate($DL_VIEW_NEXTPREV,TRUE,$download_shortcodes);
 	$caption = $tp->parseTemplate($DL_VIEW_CAPTION,TRUE,$download_shortcodes);
 
-	if($DOWNLOAD_VIEW_TABLE_RENDERPLAIN) {
+	if(varsettrue($DOWNLOAD_VIEW_TABLE_RENDERPLAIN))
+	{
 		echo $text;
-	} else {
+	}
+	else
+	{
 
 		$ns->tablerender($caption, $text);
 	}
@@ -479,7 +484,7 @@ $comment_edit_query = 'comment.download.'.$id;
 	unset($text);
 
 	if ($dl['download_comment']) {
-		$cobj->compose_comment("download", "comment", $id, $width,$dl['download_name'], $showrate=FALSE);
+		$cobj->compose_comment("download", "comment", $id, 0, $dl['download_name'], $showrate=FALSE);
 	}
 
 	require_once(FOOTERF);
@@ -766,7 +771,7 @@ function parse_download_list_table($row)
 // ***** $agreetext may not need to be global
 	global $download_shortcodes,$tp,$current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
 
-	$agreetext = $tp->toHTML($pref['agree_text'],TRUE,"parse_sc");
+	$agreetext = $tp->toHTML(varset($pref['agree_text'], ''),TRUE,"parse_sc");
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_LIST_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_LIST_TABLE);
 
