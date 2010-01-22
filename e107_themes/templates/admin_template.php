@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2010-01-22 12:42:01 $
+|     $Revision: 1.18 $
+|     $Date: 2010-01-22 13:50:27 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -28,6 +28,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
 <td style='width:17%; vertical-align: top;'>
+".(e_PAGE != 'admin.php' ? '{ADMIN_UPDATE} ' : '')."
 {ADMIN_NAV}
 {ADMIN_LANG}
 {ADMIN_PWORD}
@@ -40,7 +41,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 </td>
 <td style='width:62%; vertical-align: top;'>
 ";
-// {ADMIN_UPDATE} is part of admin.php now
+
 $ADMIN_FOOTER = "</td>
 <td style='width:17%; vertical-align:top'>
 {ADMIN_MENU}

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/admin_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-08-03 19:40:44 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.3 $
+|     $Date: 2010-01-22 13:50:28 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,14 +69,18 @@ $ADMIN_HEADER = "<table class='container'>
 
 <tr><td class='bottom_left_menu_area'>
 {SETSTYLE=bottom_left_menu}
+".(e_PAGE != 'admin.php' ? '{ADMIN_UPDATE} ' : '')."
 {ADMIN_LANG}
 {ADMIN_PWORD}
 {ADMIN_MSG}
 {ADMIN_PLUGINS}";
 
-if ($prehelp!='') {
+if ($prehelp!='')
+{
 	$ADMIN_HEADER .= $prehelp;
-} else {
+}
+else
+{
 	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
 }
 
@@ -100,9 +104,12 @@ $ADMIN_HEADER .= "</td></tr></table>
 <img class='cube_image' src='".THEME_ABS."images/cube.png' alt='' />
 </div>";
 
-if (ADMIN) {
+if (ADMIN) 
+{
 	$ADMIN_HEADER .= "{ADMIN_ALT_NAV=exit=off}";
-} else {
+} 
+else 
+{
 	$ADMIN_HEADER .= "<br />";
 }
 

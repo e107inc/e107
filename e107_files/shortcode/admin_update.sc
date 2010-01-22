@@ -1,6 +1,5 @@
-// $Id: admin_update.sc,v 1.9 2010-01-22 12:24:16 e107coders Exp $
-
-
+// $Id: admin_update.sc,v 1.10 2010-01-22 13:50:28 secretr Exp $
+global $tp;
 	if (!ADMIN) return "";
 
 	global $e107cache,$ns, $pref;
@@ -37,7 +36,7 @@
 		$array = $xm->parse($rawData);
 		
 		list($cur_version,$tag) = explode(" ", $e107info['e107_version']);
-		
+
 		foreach($array['e107Release']['core'] as $val)
 		{
 			$val = (array) $val;
@@ -48,7 +47,15 @@
 	
 		 	if(($compat == '0.7') && version_compare($version,$cur_version)==1)
 			{
-	        	$ftext = "<a rel='external' href='".$link."' >e107 v".$version."</a><br />\n";
+	        	$ftext = "<a rel='external' href='".$link."' >".sprintf(LAN_NEWVERSION_DLD, "e107 v".$version)."</a><br />\n";
+	        	if(varsettrue($val['description']))
+	        	{
+	        		$ftext .= '<br />'.$tp->toHTML(trim($val['description']), true, 'BODY').'<br />';
+	        	}
+	        	if(varsettrue($val['attributes']['infourl']))
+	        	{
+	        		$ftext .= "<a rel='external' href='".$val['attributes']['infourl']."' >".LAN_NEWVERSION_MORE."</a>\n";
+	        	}
 				break;
 			}
 		}

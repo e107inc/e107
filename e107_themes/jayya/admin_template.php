@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-08-03 19:40:43 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.23 $
+|     $Date: 2010-01-22 13:50:28 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,6 +88,7 @@ if(ADMIN)
     <tr>
     <td>
     {SETSTYLE=leftmenu}
+	".(e_PAGE != 'admin.php' ? '{ADMIN_UPDATE} ' : '')."
     {ADMIN_LANG}
     {ADMIN_PWORD}
     {ADMIN_MSG}
@@ -106,7 +107,7 @@ if(ADMIN)
     }
     else
     {
-        $ADMIN_HEADER .= "{ADMIN_UPDATE} {ADMIN_SITEINFO}";
+        $ADMIN_HEADER .= "{ADMIN_SITEINFO}";
     }
 
 
