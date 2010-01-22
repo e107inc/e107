@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2010-01-22 14:36:42 $
+|     $Revision: 1.56 $
+|     $Date: 2010-01-22 15:01:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ $core_image = array (
     'comment.php' => '240a0a659d78c66c88ccf87341e4a520',
     'compact.php' => '20bccea2ef81cc86a86782fa4841e45f',
     'content.php' => 'bf2239404990afed185913002429e682',
-    'core_image.php' => 'da8292f1df754f7699ab36723c68d657',
+    'core_image.php' => '06e88335888d0718fb30a41c20f301b1',
     'cpage.php' => '2af6626d352252cdb393f51447b8630f',
     'credits.php' => '273cb301d908936a58a8d38b4e92ba5a',
     'db.php' => '1609930adca0aee8d3fe649e729feec9',
@@ -3055,7 +3055,7 @@ $core_image = array (
   'article.php' => '274696e46f6946007b5a1d308e033b3a',
   'backend.php' => '312552577f67c7965a76bda84b949a64',
   'banner.php' => 'e028fd2fa6fac77863505acb501b6632',
-  'class2.php' => '7f49e9734826dffb28efe70ed44f14b3',
+  'class2.php' => 'c2b82bc3e2e1722b8cfbd17e1f97dea2',
   'comment.php' => '22392707e8379be29e501b99176e1f74',
   'contact.php' => '086abf7a78a498f82d1824415ef794f2',
   'content.php' => '9a9f4da9afbd0d081e4f275fbcd13674',
