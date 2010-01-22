@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2010-01-02 16:42:43 $
-|     $Author: e107steved $
+|     $Revision: 1.44 $
+|     $Date: 2010-01-22 12:42:01 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -104,6 +104,9 @@ if (isset($potential))
 
 	$ns -> tablerender(LAN_WARNING, $text);
 }
+
+// More visible update check
+echo $tp->parseTemplate('{ADMIN_UPDATE}', true);
 
 // update users using old layout names to their new names
 $update_prefs = FALSE;

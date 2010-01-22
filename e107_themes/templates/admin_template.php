@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-03 19:40:44 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.17 $
+|     $Date: 2010-01-22 12:42:01 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,12 +40,12 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 </td>
 <td style='width:62%; vertical-align: top;'>
 ";
-
+// {ADMIN_UPDATE} is part of admin.php now
 $ADMIN_FOOTER = "</td>
 <td style='width:17%; vertical-align:top'>
 {ADMIN_MENU}
 {ADMIN_PRESET}
-{ADMIN_UPDATE}
+
 {ADMIN_SITEINFO}
 {ADMIN_DOCS}
 </td>
