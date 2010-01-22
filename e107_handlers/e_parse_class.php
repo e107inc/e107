@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.224 $
-|     $Date: 2010-01-21 20:56:40 $
+|     $Revision: 1.225 $
+|     $Date: 2010-01-22 02:22:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -242,9 +242,9 @@ class e_parse
 		// End parse {XXX} codes
 	}
 	
-	function simpleParse(&$template, &$vars, $replaceUnset=true)
+	function simpleParse(&$template, $vars=false, $replaceUnset=true)
 	{
-		if(is_null($vars))
+		if($vars==false)
 		{
 			$this->replaceVars = &$GLOBALS;
 		}
@@ -253,7 +253,7 @@ class e_parse
 			$this->replaceVars = &$vars;
 		}
 		$this->replaceUnset = $replaceUnset;
-		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, simpleReplace), $template);
+		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
 	}
 	
 	function simpleReplace($tmp) {
