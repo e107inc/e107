@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2010-01-21 20:44:21 $
+|     $Revision: 1.29 $
+|     $Date: 2010-01-22 20:59:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ function read_tables($tab)
 	global $table_list;
 	global $tables,$sql,$pref;
 
-	$file = split("\n", $tables[$tab]);
+	$file = explode("\n", $tables[$tab]);
 	foreach($file as $line) 
 	{
 		$line = ltrim(stripslashes($line));
@@ -155,7 +155,7 @@ function check_tables($what)
 		unset($xfields);
 		if ($current_tab) 
 		{
-			$lines = split("\n", $current_tab);			// Create one element of $lines per field or other line of info
+			$lines = explode("\n", $current_tab);			// Create one element of $lines per field or other line of info
 			$fieldnum = 0;
 			foreach($tablines[$k] as $x) 
 			{	// $x is a line of the DB definition from the *_sql.php file
@@ -163,10 +163,10 @@ function check_tables($what)
 				$x = str_replace('`','',$x);				// Remove backticks
 				$fieldnum++;
 				$ffound = 0;
-				list($fname, $fparams) = split(" ", $x, 2);
+				list($fname, $fparams) = explode(" ", $x, 2);
 				if ($fname == "KEY") 
 				{
-					list($key, $keyname, $keyparms) = split(" ", $x, 3);
+					list($key, $keyname, $keyparms) = explode(" ", $x, 3);
 					$fname = $key." ".$keyname;
 					$fparams = $keyparms;
 				}
@@ -200,15 +200,15 @@ function check_tables($what)
 				foreach($lines as $l) 
 				{
 					$xfieldnum++;
-					list($xl, $tmp) = split("\n", $l, 2);			// $tmp should be null
+					list($xl, $tmp) = explode("\n", $l, 2);			// $tmp should be null
 					$xl = ltrim(rtrim(stripslashes($xl)));
 					$xl = preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
 					$xl = str_replace('  ',' ',$xl);				// Remove double spaces
-					list($xfname, $xfparams) = split(" ", $xl, 2);	// Field name and the rest
+					list($xfname, $xfparams) = explode(" ", $xl, 2);	// Field name and the rest
 
 					if ($xfname == "KEY") 
 					{
-						list($key, $keyname, $keyparms) = split(" ", $xl, 3);
+						list($key, $keyname, $keyparms) = explode(" ", $xl, 3);
 						$xfname = $key." ".$keyname;
 						$xfparams = $keyparms;
 					}
