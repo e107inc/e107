@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.92 $
-* $Date: 2010-01-23 03:25:31 $
+* $Revision: 1.93 $
+* $Date: 2010-01-23 16:41:50 $
 * $Author: mcfly_e107 $
 *
 */
@@ -1892,9 +1892,19 @@ class e_parse
 	}
 }
 
-class templateVars
+class e_vars
 {
 	private $vars;
+	
+	public function __construct($array='')
+	{
+		$this->setVars($array);
+	}
+	
+	public function __set($key, $value)
+	{
+		$this->vars[$key] = $value;
+	}
 	
 	public function __get($key)
 	{
@@ -1907,13 +1917,27 @@ class templateVars
 			return false;
 		}
 	}
+	
 	public function emptyVars()
 	{
 		$this->vars = array();
 	}
-
-	public function __set($key, $value)
+	
+	public function setVars($array='', $empty = true)
 	{
-		$this->vars[$key] = $value;
+		if($empty) { $this->vars = array(); }
+		if(is_array($array))
+		{
+			foreach($array as $key => $val)
+			{
+				$this->vars[$key] = $val;
+			}
+		}
 	}
+	
+	public function addVars($array='')
+	{
+		$this->setVars($array);
+	}
+
 }
