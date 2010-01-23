@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-12-17 22:47:20 $
- * $Author: e107steved $
+ * $Revision: 1.41 $
+ * $Date: 2010-01-23 16:41:56 $
+ * $Author: mcfly_e107 $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -149,10 +149,11 @@ class e_shortcode
 	var $registered_codes = array();	// Shortcodes added by plugins
 	var $scClasses = array();					// Batch shortcode classes
 	var $scOverride = array();				// Array of codes found in override/ dir
+	private $eVars = '';
 
 	function e_shortcode($noload=false)
 	{
-		global $pref; 
+		global $pref;
 
 		$this->parseSCFiles = true;	// Default probably never used, but make sure its defined.
 
@@ -181,7 +182,7 @@ class e_shortcode
 				$this->registered_codes[$code]['type'] = 'override';
 				$this->scOverride[] = $code;
 			}
-		}	
+		}
 	}
 	
 	/**
@@ -204,7 +205,7 @@ class e_shortcode
 					$this->registered_codes[$code]['type'] = 'theme';
 				}
 			}
-		}	
+		}
 	}
 	
 	
@@ -214,7 +215,7 @@ class e_shortcode
 	 * @return void
 	 */
 	protected function loadPluginSCFiles()
-	{	
+	{
 		$pref = e107::getConfig('core')->getPref();
 		
 		if(varset($pref['shortcode_list'], '') != '')
@@ -239,12 +240,12 @@ class e_shortcode
 					}
 				}
 			}
-		}	
+		}
 	}
 
 	/**
-	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
-	 * Equivalent to multiple .sc files in the plugin's folder. 
+	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide.
+	 * Equivalent to multiple .sc files in the plugin's folder.
 	 *
 	 * @return void
 	 */
@@ -269,7 +270,7 @@ class e_shortcode
 			
 			$tmp = get_class_methods($classFunc);
 			foreach($tmp as $c)
-			{				
+			{
 				if(strpos($c, 'sc_') === 0)
 				{
 					$sc_func = substr($c, 3);
@@ -277,14 +278,14 @@ class e_shortcode
 					if(!$this->isRegistered($code))
 					{
 						$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
-					}							
+					}
 				}
-			}			
+			}
 		}
 	}
 
 	/**
-	 * Register Core Shortcode Batches. 
+	 * Register Core Shortcode Batches.
 	 * FIXME - currently loaded all the time (even on front-end)
 	 *
 	 * @return void
@@ -321,11 +322,15 @@ class e_shortcode
 		return in_array($code, $this->scOverride);
 	}
 
-	function parseCodes($text, $useSCFiles = true, $extraCodes = '')
+	function parseCodes($text, $useSCFiles = true, $extraCodes = '', &$eVars='')
 	{
 		$saveParseSCFiles = $this->parseSCFiles;		// In case of nested call
 		$this->parseSCFiles = $useSCFiles;
-		
+			
+		if(is_object($eVars)) {
+			$this->eVars = $eVars;
+		}
+
 		//object support
 		if(is_object($extraCodes))
 		{
@@ -356,6 +361,11 @@ class e_shortcode
 	{
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
 
+		if(is_object($this->eVars)) {
+			if($this->eVars->$matches[1]) {
+				return $this->eVars->$matches[1];
+			}
+		}
 		if(strpos($matches[1], E_NL) !== false) { return $matches[0]; }
 
 		if (strpos($matches[1], '='))
