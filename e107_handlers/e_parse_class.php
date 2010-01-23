@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.91 $
-* $Date: 2010-01-12 13:11:48 $
-* $Author: secretr $
+* $Revision: 1.92 $
+* $Date: 2010-01-23 03:25:31 $
+* $Author: mcfly_e107 $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -565,7 +565,18 @@ class e_parse
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 	}
 
-
+	function simpleParse(&$template, &$vars, $replaceUnset=true)
+	{
+		$this->replaceVars = $vars;
+		$this->replaceUnset = $replaceUnset;
+		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
+	}
+	
+	function simpleReplace($tmp) {
+		$unset = ($this->replaceUnset ? '' : $tmp[0]);
+		return ($this->replaceVars->$tmp[1] ? $this->replaceVars->$tmp[1] : $unset);
+	}
+	
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
 	{
 		/*
@@ -1881,3 +1892,28 @@ class e_parse
 	}
 }
 
+class templateVars
+{
+	private $vars;
+	
+	public function __get($key)
+	{
+		if(isset($this->vars[$key]))
+		{
+			return $this->vars[$key];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public function emptyVars()
+	{
+		$this->vars = array();
+	}
+
+	public function __set($key, $value)
+	{
+		$this->vars[$key] = $value;
+	}
+}
