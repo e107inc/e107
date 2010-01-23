@@ -9,9 +9,9 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.17 $
-* $Date: 2010-01-23 03:25:31 $
-* $Author: mcfly_e107 $
+* $Revision: 1.18 $
+* $Date: 2010-01-23 09:53:08 $
+* $Author: e107steved $
 *
 */
 
@@ -391,7 +391,8 @@ function parse_thread($thread_info)
 		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
 		if (strlen($thread_thread) > $tip_length)
 		{
-			$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
+			//$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
+			$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);	// Doesn't split entities
 		}
 		$thread_thread = str_replace("'", '&#39;', $thread_thread);
 		$title = "title='".$thread_thread."'";
