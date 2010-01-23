@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2010-01-21 03:57:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.69 $
+|     $Date: 2010-01-23 09:51:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -368,12 +368,16 @@ function parse_thread($thread_info)
 	if ($pref['forum_tooltip']) {
 		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
 		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
-		if (strlen($thread_thread) > $tip_length) {
-			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
+		if (strlen($thread_thread) > $tip_length) 
+		{
+			//$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
+			$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);	// Doesn't split entities
 		}
 		$thread_thread = str_replace("'", "&#39;", $thread_thread);
 		$title = "title='".$thread_thread."'";
-	} else {
+	} 
+	else 
+	{
 		$title = "";
 	}
 	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['thread_id']}'>{$thread_name}</a>";
