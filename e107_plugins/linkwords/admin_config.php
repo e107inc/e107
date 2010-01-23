@@ -9,8 +9,8 @@
  * Linkwords plugin - admin page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-16 20:49:51 $
+ * $Revision: 1.14 $
+ * $Date: 2010-01-23 10:31:36 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: admin_config.php,v 1.13 2010-01-16 20:49:51 e107steved Exp $;
+ *	@version 	$Id: admin_config.php,v 1.14 2010-01-23 10:31:36 e107steved Exp $;
  *
  *	Administration page
  */
@@ -121,7 +121,7 @@ if (isset($_POST['saveopts_linkword']))
 	$pref['lw_ajax_enable'] = isset($_POST['lw_ajax_enable']);
 	$pref['lw_notsamepage'] = isset($_POST['lw_notsamepage']);
 	save_prefs();
-	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'];
+	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'].'[!br!]'.$pref['lw_notsamepage'];
 	$e107->ecache->clear_sys(LW_CACHE_TAG);
 	$admin_log->log_event('LINKWD_04',$logString,'');
 }
