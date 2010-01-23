@@ -9,16 +9,16 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.58 $
-* $Date: 2010-01-16 19:54:04 $
-* $Author: e107steved $
+* $Revision: 1.59 $
+* $Date: 2010-01-23 02:07:50 $
+* $Author: mcfly_e107 $
 *
 */
 
 /**
  *	@package    e107
  *	@subpackage	install
- *	@version 	$Id: install_.php,v 1.58 2010-01-16 19:54:04 e107steved Exp $;
+ *	@version 	$Id: install_.php,v 1.59 2010-01-23 02:07:50 mcfly_e107 Exp $;
  *
  *	Installer base routine
  */
@@ -47,6 +47,7 @@ $HELP_DIRECTORY      = "e107_docs/help/";
 $CACHE_DIRECTORY 	 = "e107_media/cache/";
 $DOWNLOADS_DIRECTORY = "e107_media/files/";
 $UPLOADS_DIRECTORY   = "e107_media/public/";
+$LOGS_DIRECTORY		 = "e107_files/logs";
 
 /* End configurable variables */
 
@@ -86,7 +87,9 @@ e107_ini_set('magic_quotes_sybase',      0);
 e107_ini_set('arg_separator.output',     '&amp;');
 e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
-session_start();
+
+define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+
 
 $php_version = phpversion();
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))
@@ -151,10 +154,11 @@ function check_class($whatever)
 }
 
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY');
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY');
 $e107 = e107::getInstance();
 $e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
+session_start();
 
 function include_lan($path, $force = false)
 {
@@ -201,7 +205,10 @@ class e_install
 		$this->logFile = '';
 		if (MAKE_INSTALL_LOG)
 		{
-			$this->logFile = dirname(__FILE__).'/e107InstallLog.log';
+			if(is_writable(dirname(__FILE__)))
+			{
+				$this->logFile = dirname(__FILE__).'/e107InstallLog.log';
+			}
 		}
 //		$this->logLine('Query string: ');
 		$this->template = new SimpleTemplate();
@@ -241,7 +248,7 @@ class e_install
 	{
 		if (!MAKE_INSTALL_LOG || ($this->logFile == '')) return;
 		$logfp = fopen($this->logFile, 'a+');
-		fwrite($logfp, ($now = time()).', '.gmstrftime('%y-%m-%d %H:%M:%S',$now).'  '.$logLine."\n"); 
+		fwrite($logfp, ($now = time()).', '.gmstrftime('%y-%m-%d %H:%M:%S',$now).'  '.$logLine."\n");
 		fclose($logfp);
 	}
 
@@ -1123,6 +1130,7 @@ class e_install
 		// Create the admin user - replacing any that may be been included in the XML.
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".md5($this->previous_steps['admin']['password'])."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
+		$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
 		$this->logLine('Admin user created');
 		mysql_close($this->dbLink);
@@ -1507,7 +1515,10 @@ class e_install
 
 		if(mysql_errno())
 		{
-			$this->debug_db_info['db_error_log'][] = 'Query Error [#'.mysql_errno().']: '.mysql_error()."\nQuery: {$qry}";
+			$errorInfo = 'Query Error [#'.mysql_errno().']: '.mysql_error()."\nQuery: {$qry}";
+			echo $errorInfo."<br />";
+			exit;
+			$this->debug_db_info['db_error_log'][] = $errorInfo;
 			//$this->debug_db_info['db_log'][] = $qry;
 			return false;
 		}

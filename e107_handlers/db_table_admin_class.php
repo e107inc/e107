@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * e107 website system
  *
@@ -9,9 +9,9 @@
  * Database utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-01 20:05:53 $
- * $Author: e107steved $
+ * $Revision: 1.15 $
+ * $Date: 2010-01-23 02:07:50 $
+ * $Author: mcfly_e107 $
 */
 
 /*
@@ -35,6 +35,10 @@ class db_table_admin
 	function get_current_table($table_name, $prefix = "")
 	{
 		global $sql;
+		if(!isset($sql))
+		{
+			$sql = new db;
+		}
 		
 		if (!$prefix)
 		{
@@ -67,7 +71,7 @@ class db_table_admin
 	 * Given the name of a file, returns an array, with each element being a table creation definition.
 	 * Tracks the last file read - only reads it once
 	 * If the file name is an empty string, uses a previously read/set buffer
-	 * 
+	 *
 	 * @param string $table_name  - If specified, returns only that table's info; otherwise returns a list of all tables
 	 * 		The table name must include a prefix where appropriate (although not required with standard E107 table definition files)
 	 * @return  string|array
@@ -235,7 +239,7 @@ class db_table_admin
 									if(E107_DBG_SQLDETAILS)
 									{
 										$mes = e107::getMessage();
-										$mes->add("db_table_admin_class.php :: parse_field_defs() Line: 230 - Unknown definition {$i}: ".$fd[$i], E_MESSAGE_DEBUG);								
+										$mes->add("db_table_admin_class.php :: parse_field_defs() Line: 230 - Unknown definition {$i}: ".$fd[$i], E_MESSAGE_DEBUG);
 									}
 								}
 								$i++;
