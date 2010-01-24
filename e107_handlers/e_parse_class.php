@@ -2,18 +2,28 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.93 $
-* $Date: 2010-01-23 16:41:50 $
-* $Author: mcfly_e107 $
+* $Revision: 1.94 $
+* $Date: 2010-01-24 12:05:53 $
+* $Author: secretr $
 *
 */
+
+/**
+ * @package e107
+ * @subpackage e107_handlers
+ * @version $Id: e_parse_class.php,v 1.94 2010-01-24 12:05:53 secretr Exp $
+ * 
+ * Text processing and parsing functions. 
+ * Simple parse data model.
+ */
+
 if (!defined('e107_INIT')) { exit(); }
 
 // Directory for the hard-coded utf-8 handling routines
@@ -1892,52 +1902,118 @@ class e_parse
 	}
 }
 
+/**
+ * Data model for e_parse::simpleParse()
+ * 
+ */
 class e_vars
 {
+	/**
+	 * @var array
+	 */
 	private $vars;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param array $array [optional] initial data
+	 */
 	public function __construct($array='')
 	{
 		$this->setVars($array);
 	}
 	
+	/**
+	 * Set array data
+	 * 
+	 * @param array $array
+	 * @param boolean $empty true (default) override old data, false - merge with existing data
+	 * @return e_vars
+	 */
+	public function setVars(array $array, $empty = true)
+	{
+		if($empty) { $this->emptyVars(); }
+
+		foreach($array as $key => $val)
+		{
+			$this->vars[$key] = $val;
+		}
+
+		return $this;
+	}
+	
+	/**
+	 * Add array data to the object (merge with existing)
+	 * Convenient proxy to setVars methods
+	 * 
+	 * @param array $array
+	 * @return 
+	 */
+	public function addVars(array $array)
+	{
+		$this->setVars($array, false);
+	}
+	
+	/**
+	 * Reset object data
+	 * 
+	 * @return e_vars
+	 */
+	public function emptyVars()
+	{
+		$this->vars = array();
+		return $this;
+	}
+	
+	/**
+	 * Magic setter
+	 * 
+	 * @param string $key
+	 * @param mixed $value
+	 */
 	public function __set($key, $value)
 	{
 		$this->vars[$key] = $value;
 	}
 	
+	/**
+	 * Magic getter
+	 * 
+	 * @param string $key
+	 * @return mixed value or null if key not found
+	 */
 	public function __get($key)
 	{
 		if(isset($this->vars[$key]))
 		{
 			return $this->vars[$key];
 		}
-		else
-		{
-			return false;
-		}
+		
+		return null;
 	}
 	
-	public function emptyVars()
+	/**
+	 * Magic method to check if given data key is set.
+	 * Triggered on <code><?php isset($e_vars->myKey); </code>
+	 * NOTE: works on PHP 5.1.0+
+	 * 
+	 * @param string $key
+	 * @return boolean
+	 */
+	public function __isset($key)
 	{
-		$this->vars = array();
+		return isset($this->vars[$key]);
 	}
 	
-	public function setVars($array='', $empty = true)
+	/**
+	 * Magic method to unset given data key.
+	 * Triggered on <code><?php unset($e_vars->myKey); </code>
+	 * NOTE: works on PHP 5.1.0+
+	 * 
+	 * @param string $key
+	 */
+	public function __unset($key)
 	{
-		if($empty) { $this->vars = array(); }
-		if(is_array($array))
-		{
-			foreach($array as $key => $val)
-			{
-				$this->vars[$key] = $val;
-			}
-		}
+		unset($this->vars[$key]);
 	}
-	
-	public function addVars($array='')
-	{
-		$this->setVars($array);
-	}
-
 }
