@@ -1,6 +1,17 @@
+// $Id: link.bb,v 1.9 2010-01-24 11:44:50 e107steved Exp $
 global $pref;
 
-/*
+/**
+ *	e107 BBCodes
+ *
+ *	@package	e107
+ *	@subpackage	bbcode
+ *	@version 	$Id: link.bb,v 1.9 2010-01-24 11:44:50 e107steved Exp $;
+ *
+ *	@todo try and avoid URLs with a language in [..]
+ */
+
+/**
 	[link=$parm $extras]$code_text[/link]
 	Correct Usage:
 	[link=http://mysite.com external]My text[/link]
@@ -28,6 +39,12 @@ global $pref;
 		list($p1,$p2) = explode("@",$email);
 		$p2=rawurlencode($p2);			// Primarily to pick up spaces, which are not allowed
 		return "<a class='bbcode' rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\"; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
+	}
+
+	if (substr($code_text,0,1) == ']')
+	{	// Special fix for E107 urls including a language (not nice, really)
+		$code_text = substr($code_text,1);
+		$parm .= ']';
 	}
 
 	list($link,$extras) = explode(" ",$parm);
