@@ -1,3 +1,4 @@
+// $Id: link.bb,v 1.28 2010-01-24 11:45:04 e107steved Exp $
 global $pref;
 
 /*
@@ -30,8 +31,13 @@ global $pref;
 		return "<a class='bbcode' rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\"; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
 	}
 
-	list($link,$extras) = explode(" ",$parm);
+	if (substr($code_text,0,1) == ']')
+	{	// Special fix for E107 urls including a language
+		$code_text = substr($code_text,1);
+		$parm .= ']';
+	}
 
+	list($link,$extras) = explode(" ",$parm);
 	if(!$parm) $link = $code_text;
 
 	if($link == "external" && $extras == "")
