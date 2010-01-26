@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.99 $
- * $Date: 2010-01-04 21:35:38 $
- * $Author: e107steved $
+ * $Revision: 1.100 $
+ * $Date: 2010-01-26 12:25:59 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -21,8 +21,8 @@ if (!defined('e107_INIT')) { exit; }
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.99 $
- * @author      $Author: e107steved $
+ * @version     $Revision: 1.100 $
+ * @author      $Author: secretr $
  *
  *	e107_class - core class with many system-related methods
  */
@@ -1074,6 +1074,21 @@ class e107
 			$included = true;
 		}
 		return e_jsmanager::getInstance();
+	}
+	
+	/**
+	 * Retrieve JS Helper object
+	 *
+	 * @param boolean|string $singleton if true return singleton, if string return singleton object, use string as namespace, default false
+	 * @return e_jshelper
+	 */
+	public static function getJshelper($singleton = false)
+	{
+		if($singleton)
+		{
+			return self::getSingleton('e_jshelper', true, (true === $singleton ? '' : $singleton));
+		}
+		return self::getObject('e_jshelper', null, true);
 	}
 
 	/**
