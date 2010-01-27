@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.118 $
-|     $Date: 2009-11-23 21:04:06 $
+|     $Revision: 1.119 $
+|     $Date: 2010-01-27 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -371,7 +371,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	$ue_fields = "";
 	if($_POST['ue'])
 	{
-		if($sql->db_Select('user_extended_struct'))
+		if ($sql->db_Select('user_extended_struct', '*', 'user_extended_struct_type != 0'))		// Get field definitions, but not categories
 		{
 			while($row = $sql->db_Fetch())
 			{
