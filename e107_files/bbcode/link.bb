@@ -1,4 +1,4 @@
-// $Id: link.bb,v 1.9 2010-01-24 11:44:50 e107steved Exp $
+// $Id: link.bb,v 1.10 2010-01-29 16:30:49 secretr Exp $
 global $pref;
 
 /**
@@ -6,7 +6,7 @@ global $pref;
  *
  *	@package	e107
  *	@subpackage	bbcode
- *	@version 	$Id: link.bb,v 1.9 2010-01-24 11:44:50 e107steved Exp $;
+ *	@version 	$Id: link.bb,v 1.10 2010-01-29 16:30:49 secretr Exp $;
  *
  *	@todo try and avoid URLs with a language in [..]
  */
@@ -63,7 +63,7 @@ global $pref;
 	}
 	else
 	{
-    	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
+    	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
 	if (strtolower(substr($link,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
