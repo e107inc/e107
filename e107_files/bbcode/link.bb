@@ -1,4 +1,4 @@
-// $Id: link.bb,v 1.28 2010-01-24 11:45:04 e107steved Exp $
+// $Id: link.bb,v 1.29 2010-01-29 16:29:41 secretr Exp $
 global $pref;
 
 /*
@@ -52,7 +52,7 @@ global $pref;
 	}
 	else
 	{
-    	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
+    	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
 	if (strtolower(substr($link,0,11)) == 'javascript:') return '';
 	return "<a class='bbcode' href='".$tp -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
