@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.391 $
-|     $Date: 2010-01-30 22:21:02 $
+|     $Revision: 1.392 $
+|     $Date: 2010-01-30 22:29:20 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -196,19 +196,19 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 e107_require_once(e_HANDLER.'e_parse_class.php');
 $tp = new e_parse;
 
-//define("e_QUERY", $matches[2]);
-//define("e_QUERY", $_SERVER['QUERY_STRING']);
-$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
+$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
+$e_QUERY = str_replace('&', '&amp;', $tp->post_toForm($e_QUERY));
 
 /**
  * e_QUERY notes:
- * It seems _GET / _POST / _COOKIE are doing urldecode on their data. 
+ * It seems _GET / _POST / _COOKIE are doing pre-urldecode on their data. 
  * There is no official documentation/php.ini setting to confirm this.
- * We could add rawurlencode() after the replacement if problems are reported.
+ * We could add rawurlencode() after the replacement above if problems are reported.
  * 
  * @var string
  */
-define("e_QUERY", str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY)));
+define('e_QUERY', $e_QUERY);
+
 //$e_QUERY = e_QUERY;
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
