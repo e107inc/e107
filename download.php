@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2010-01-22 13:30:28 $
+|     $Revision: 1.105 $
+|     $Date: 2010-01-30 16:26:56 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -627,30 +627,29 @@ if($action == "mirror")
 
 function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 {
-
 	global $pref, $DOWNLOAD_MIRROR, $tp;
+	$tVars = array();
 	list($mirrorHost_id, $mirrorHost_url, $mirrorRequests) = explode(",", $mirrorstring);
 
 	extract($mirrorList[$mirrorHost_id]);
 
-	$DOWNLOAD_MIRROR_NAME = "<a href='{$mirror_url}' rel='external'>{$mirror_name}</a>";
-	$DOWNLOAD_MIRROR_IMAGE = ($mirror_image ? "<a href='{$mirror_url}' rel='external'><img src='".e_FILE."downloadimages/".$mirror_image."' alt='' style='border:0' /></a>" : "");
-	$DOWNLOAD_MIRROR_LOCATION = ($mirror_location ? $mirror_location : "");
-	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
+	$tVars['DOWNLOAD_MIRROR_NAME'] = "<a href='{$mirror_url}' rel='external'>{$mirror_name}</a>";
+	$tVars['DOWNLOAD_MIRROR_IMAGE'] = ($mirror_image ? "<a href='{$mirror_url}' rel='external'><img src='".e_FILE."downloadimages/".$mirror_image."' alt='' style='border:0' /></a>" : "");
+	$tVars['DOWNLOAD_MIRROR_LOCATION'] = ($mirror_location ? $mirror_location : "");
+	$tVars['DOWNLOAD_MIRROR_DESCRIPTION'] = ($mirror_description ? $mirror_description : "");
 
-	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
+	$tVars['DOWNLOAD_MIRROR_FILESIZE'] = parsesize($row['download_filesize']);
 	$agreetext = '';
 	if ($pref['agree_flag'])
 	{
 		$agreetext = " onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."');\"";
 	}
-	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}'{$agreetext} title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
+	$tVars['DOWNLOAD_MIRROR_LINK'] = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}'{$agreetext} title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
-	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
-	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
+	$tVars['DOWNLOAD_MIRROR_REQUESTS'] = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
+	$tVars['DOWNLOAD_TOTAL_MIRROR_REQUESTS'] = (ADMIN ? LAN_dl_74.$mirror_count : "");
 
-//	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
-	return($tp->simpleParse($DOWNLOAD_MIRROR));
+	return($tp->simpleParse($DOWNLOAD_MIRROR, $tVars));
 }
 
 function parsesize($size) {
