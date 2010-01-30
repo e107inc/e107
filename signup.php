@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-11-24 16:41:10 $
- * $Author: secretr $
+ * $Revision: 1.46 $
+ * $Date: 2010-01-30 21:27:23 $
+ * $Author: e107steved $
  *
 */
 
@@ -138,7 +138,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 	elseif(!$_POST['submit_resend'])
 	{	// Display form to get info from user
 		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?resend' name='resend_form'>
+		<form method='post' action='".e_SELF."?resend' id='resend_form'>
 		<table style='".USER_WIDTH."' class='fborder'>
 		<tr>
 			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_48."</td>
