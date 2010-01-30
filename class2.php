@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|    	Steve Dunstan 2001-2002
+|	  Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.390 $
-|     $Date: 2010-01-22 15:00:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.391 $
+|     $Date: 2010-01-30 22:21:02 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -199,7 +199,16 @@ $tp = new e_parse;
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
 $e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
-define("e_QUERY", str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', $e_QUERY));
+
+/**
+ * e_QUERY notes:
+ * It seems _GET / _POST / _COOKIE are doing urldecode on their data. 
+ * There is no official documentation/php.ini setting to confirm this.
+ * We could add rawurlencode() after the replacement if problems are reported.
+ * 
+ * @var string
+ */
+define("e_QUERY", str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY)));
 //$e_QUERY = e_QUERY;
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
