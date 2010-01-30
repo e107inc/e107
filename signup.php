@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.137 $
-|     $Date: 2010-01-15 20:02:29 $
+|     $Revision: 1.138 $
+|     $Date: 2010-01-30 21:27:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 	{
 
 		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?resend' name='resend_form'>
+		<form method='post' action='".e_SELF."?resend' id='resend_form'>
 		<table style='".USER_WIDTH."' class='fborder'>
 		<tr>
 			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_48."</td>
