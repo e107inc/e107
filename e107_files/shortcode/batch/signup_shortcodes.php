@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-11-11 19:53:44 $
+|     $Revision: 1.17 $
+|     $Date: 2010-01-30 21:23:05 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -288,7 +288,7 @@ if ($pref['signup_option_timezone'])
 	{
 		if ($timezone[$count] == $user_timezone)
 		{
-			$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+			$text .= "<option value='".$timezone[$count]."' selected='selected'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
 		}
 		else
 		{
