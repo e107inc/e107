@@ -9,19 +9,24 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-12-16 22:26:27 $
+ * $Revision: 1.22 $
+ * $Date: 2010-01-31 22:21:11 $
  * $Author: e107steved $
  *
 */
 
 
-/*
-USER HANDLER CLASS - manages login and various user functions
+/**
+ * 
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id: user_handler.php,v 1.22 2010-01-31 22:21:11 e107steved Exp $;
+ *
+ *	USER HANDLER CLASS - manages login and various user functions
+ *
+ *	@todo - consider vetting of user_xup (if we keep it)
+ */
 
-Vetting routines TODO:
-	user_xup processing - nothing special?
-*/
 
 
 if (!defined('e107_INIT')) { exit; }
@@ -58,11 +63,11 @@ class UserHandler
 	var $otherFields = array();
 
 	// Constructor
-	function UserHandler()
+	public function __construct()
 	{
-	  global $pref;
+		global $pref;
 
-/*
+/**
 	Table of vetting methods for user data - lists every field whose value could be set manually.
 	Valid 'vetMethod' values (use comma separated list for multiple vetting):
 		0 - Null method
@@ -145,8 +150,16 @@ class UserHandler
 	}
 
 
-	// Given plaintext password and login name, generate password string to store in DB
-	function HashPassword($password, $login_name, $force='')
+	/**
+	 * 	Given plaintext password and login name, generate password string to store in DB
+	 *
+	 *	@param string $password - plaintext password as entered by user
+	 *	@param string $login_name - string used to log in (could actually be email address)
+	 *	@param empty|PASSWORD_E107_MD5|PASSWORD_E107_SALT $force - if non-empty, forces a particular type of password
+	 *
+	 *	@return string|boolean - FALSE if invalid emcoding method, else encoded password to store in DB
+	 */
+	public function HashPassword($password, $login_name, $force='')
 	{
 	  if ($force == '') $force = $this->preferred;
 	  switch ($force)
@@ -162,55 +175,76 @@ class UserHandler
 	}
 
 
-	// Verify existing plaintext password against a stored hash value (which defines the encoding format and any 'salt')
-	// Return PASSWORD_INVALID if invalid password
-	// Return PASSWORD_VALID if valid password
-	// Return a new hash to store if valid password but non-preferred encoding
-	function CheckPassword($password, $login_name, $stored_hash)
+	/**
+	 *	Verify existing plaintext password against a stored hash value (which defines the encoding format and any 'salt')
+	 *
+	 *	@param string $password - plaintext password as entered by user
+	 *	@param string $login_name - string used to log in (could actually be email address)
+	 *	@param string $stored_hash - required value for password to match
+	 *	
+	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string 
+	 *		PASSWORD_INVALID if no match
+	 *		PASSWORD_VALID if valid password
+	 *		Return a new hash to store if valid password but non-preferred encoding
+	 */
+	public function CheckPassword($password, $login_name, $stored_hash)
 	{
-	  if (strlen(trim($password)) == 0) return PASSWORD_INVALID;
-	  if (($this->passwordOpts <= 1) && (strlen($stored_hash) == 32))
-	  {	// Its simple md5 encoding
-		if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
-		if ($this->preferred == PASSWORD_E107_MD5) return PASSWORD_VALID;
-		return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
-	  }
+		if (strlen(trim($password)) == 0) return PASSWORD_INVALID;
+		if (($this->passwordOpts <= 1) && (strlen($stored_hash) == 32))
+		{	// Its simple md5 encoding
+			if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
+			if ($this->preferred == PASSWORD_E107_MD5) return PASSWORD_VALID;
+			return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
+		}
 
-	  // Allow the salted password even if disabled - for those that do try to go back!
-//  	  if (($this->passwordOpts >= 1) && (strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
-  	  if ((strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
-	  {	// Its the standard E107 salted hash
-		$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
-		if ($hash === FALSE) return PASSWORD_INVALID;
-		return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
-	  }
-
-	  return PASSWORD_INVALID;
+		// Allow the salted password even if disabled - for those that do try to go back!
+		//  if (($this->passwordOpts >= 1) && (strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
+		if ((strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
+		{	// Its the standard E107 salted hash
+			$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
+			if ($hash === FALSE) return PASSWORD_INVALID;
+			return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
+		}
+		return PASSWORD_INVALID;
 	}
 
 
-	// Verifies a standard response to a CHAP challenge
-	function CheckCHAP($challenge, $response, $login_name, $stored_hash )
+	/**
+	 *	Verifies a standard response to a CHAP challenge
+	 *
+	 *	@param string $challenge - the string sent to the user
+	 *	@param string $response - the response returned by the user
+	 *	@param string $login_name - user's login name
+	 *	@param string $stored_hash - password hash as stored in DB
+	 *
+	 *	@return PASSWORD_INVALID|PASSWORD_VALID
+	 */
+	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
-	  if (strlen($challenge) != 40) return PASSWORD_INVALID;
-	  if (strlen($response) != 32) return PASSWORD_INVALID;
-	  $valid_ret = PASSWORD_VALID;
-	  if (strlen($stored_hash) == 32)
-	  {	// Its simple md5 password storage
-		$stored_hash = PASSWORD_E107_ID.md5($stored_hash.$login_name);			// Convert to the salted format always used by CHAP
-		if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_response;
-	  }
-	  $testval = md5(substr($stored_hash,strlen(PASSWORD_E107_ID)).$challenge);
-	  if ($testval == $response) return $valid_ret;
-	  return PASSWORD_INVALID;
+		if (strlen($challenge) != 40) return PASSWORD_INVALID;
+		if (strlen($response) != 32) return PASSWORD_INVALID;
+		$valid_ret = PASSWORD_VALID;
+		if (strlen($stored_hash) == 32)
+		{	// Its simple md5 password storage
+			$stored_hash = PASSWORD_E107_ID.md5($stored_hash.$login_name);			// Convert to the salted format always used by CHAP
+			if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_response;
+		}
+		$testval = md5(substr($stored_hash,strlen(PASSWORD_E107_ID)).$challenge);
+		if ($testval == $response) return $valid_ret;
+		return PASSWORD_INVALID;
 	}
 
 
 
-	// Checks whether the user has to validate a user setting change by entering password (basically, if that field affects the
-	// stored password value)
-	// Returns TRUE if change required, FALSE otherwise
-	function isPasswordRequired($fieldName)
+	/**
+	 *	Checks whether the user has to validate a change of user settings by entering password (basically, if that field affects the
+	 *	stored password value)
+	 *
+	 *	@param string $fieldName - name of field being changed
+	 *
+	 *	@return bool TRUE if change required, FALSE otherwise
+	 */
+	public function isPasswordRequired($fieldName)
 	{
 		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
 		switch ($fieldName)
@@ -224,8 +258,13 @@ class UserHandler
 	}
 
 
-	// Determines whether its necessary to store a separate password for email address validation
-	function needEmailPassword()
+
+	/**
+	 *	Determines whether its necessary to store a separate password for email address validation
+	 *
+	 *	@return bool TRUE if separate password
+	 */
+	public function needEmailPassword()
 	{
 		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
 		if ($this->passwordEmail) return TRUE;
@@ -233,50 +272,73 @@ class UserHandler
 	}
 
 
-	// Checks whether the password value can be converted to the current default
-	// Returns TRUE if conversion possible.
-	// Returns FALSE if conversion not possible, or not needed
-	function canConvert($password)
-	{
-	  if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
-	  if (strlen($password) == 32) return TRUE;		// Can convert from md5 to salted
-	  return FALSE;
-	}
 
-
-	// Given md5-encoded password and login name, generate password string to store in DB
-	function ConvertPassword($password, $login_name)
+	/**
+	 *	Checks whether the password value can be converted to the current default
+	 *
+	 *	@param string $password - hashed password
+	 *	@return bool TRUE if conversion possible, FALSE if not possible, or not needed.
+	 */
+	public function canConvert($password)
 	{
-	  if ($this->canConvert($password) === FALSE) return $password;
-	  return PASSWORD_E107_ID.md5($password.$login_name);
+		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		if (strlen($password) == 32) return TRUE;		// Can convert from md5 to salted
+		return FALSE;
 	}
 
 
 
-	// Generates a random user login name according to some pattern.
-	// Checked for uniqueness.
-	function generateUserLogin($pattern, $seed='')
+	/**
+	 *	Given md5-encoded password and login name, generate password string to store in DB
+	 *
+	 *	@param string $password - MD5-hashed password
+	 *	@param string $login_name - user's login name
+	 *
+	 *	@return string hashed password to store in DB, converted as necessary
+	 */
+	public function ConvertPassword($password, $login_name)
 	{
-	  $ul_sql = new db;
-	  if (strlen($pattern) < 6) $pattern = '##....';
-	  do
-	  {
-		$newname = $this->generateRandomString($pattern, $seed);
-	  } while ($ul_sql->db_Select('user','user_id',"`user_loginname`='{$newname}'"));
-	  return $newname;
+		if ($this->canConvert($password) === FALSE) return $password;
+		return PASSWORD_E107_ID.md5($password.$login_name);
 	}
 
 
 
-	// Generates a random string - for user login name, password etc, according to some pattern.
-	// Checked for uniqueness.
-	// Pattern format:
-	//		# - an alpha character
-	//		. - a numeric character
-	//		* - an alphanumeric character
-	//		^ - next character from seed
-	//		alphanumerics are included 'as is'
-	function generateRandomString($pattern, $seed = '')
+	/**
+	 *	Generates a random user login name according to some pattern.
+	 *	Checked for uniqueness.
+	 *
+	 *	@param string $pattern - defines the format of the username
+	 *	@param int $seed - may be used with the random pattern generator
+	 *
+	 *	@return string a user login name, guaranteed unique in the database.
+	 */
+	public function generateUserLogin($pattern, $seed='')
+	{
+		$ul_sql = new db;
+		if (strlen($pattern) < 6) $pattern = '##....';
+		do
+		{
+			$newname = $this->generateRandomString($pattern, $seed);
+		} while ($ul_sql->db_Select('user','user_id',"`user_loginname`='{$newname}'"));
+		return $newname;
+	}
+
+
+
+	/**
+	 *	Generates a random string - for user login name, password etc, according to some pattern.
+	 *	@param string $pattern - defines the output format:
+	 *		# - an alpha character
+	 *		. - a numeric character
+	 *		* - an alphanumeric character
+	 *		^ - next character from seed
+	 *		alphanumerics are included 'as is'
+	 *	@param int $seed - may be used with the random pattern generator
+	 *
+	 *	@return string - the required random string
+	 */
+	public function generateRandomString($pattern, $seed = '')
 	{
 		if (strlen($pattern) < 6)
 			$pattern = '##....';
@@ -343,13 +405,6 @@ class UserHandler
 					{
 						$newname .= $c;
 					}
-/*
-					else
-					{
-						$t = rand(0, $alphaNumLength);
-						$newname .= $alphaNum[$t];
-					}
-*/
 			}
 		}
 		return $newname;
@@ -357,17 +412,22 @@ class UserHandler
 
 
 
-	// Split up an email address to check for banned domains.
-	// Return false if invalid address. Otherwise returns a set of values to check
-	function make_email_query($email, $fieldname = 'banlist_ip')
+	/**
+	 *	Split up an email address to check for banned domains.
+	 *	@param string $email - email address to process
+	 *	@param string $fieldname - name of field being searched in DB
+	 *
+	 *	@return bool|string false if invalid address. Otherwise returns a set of values to check
+	 */
+	public function make_email_query($email, $fieldname = 'banlist_ip')
 	{
-		global $tp;
+		$tp = e107::getParser();
 		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
 		if ($tmp == '') return FALSE;
 		if (strpos($tmp,'.') === FALSE) return FALSE;
 		$em = array_reverse(explode('.',$tmp));
 		$line = '';
-		$out = array('*@'.$tmp);		// First element looks for domain as email address
+		$out = array("='*@.{$tmp}'");		// First element looks for domain as email address
 		foreach ($em as $e)
 		{
 			$line = '.'.$e.$line;
@@ -378,11 +438,20 @@ class UserHandler
 
 
 
-	function makeUserCookie($lode,$autologin = FALSE)
+
+	/**
+	 *	Create user cookie
+	 *
+	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
+	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
+	 *
+	 *	@return none
+	 */
+	public function makeUserCookie($lode,$autologin = FALSE)
 	{
 		global $pref;
-		$cookieval = $lode['user_id'].".".md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if ($pref['user_tracking'] == "session")
+		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
+		if ($pref['user_tracking'] == 'session')
 		{
 			$_SESSION[$pref['cookie_name']] = $cookieval;
 		}
@@ -400,21 +469,23 @@ class UserHandler
 	}
 
 
-	// Generate an array of all the basic classes a user belongs to
-	// if $asArray TRUE, returns results in an array; else as a comma-separated string
-	// If $incInherited is TRUE, includes inherited classes
-	function addCommonClasses($userData, $asArray = FALSE, $incInherited = FALSE)
+	/**
+	 *	Generate an array of all the basic classes a user belongs to
+	 *
+	 *	Note that the passed data may relate to the currently logged in user, or if an admin is logged in, to a different user
+	 *
+	 *	@param array $userData - user's data record - must include the 'user_class' element
+	 *	@param boolean $asArray if TRUE, returns results in an array; else as a comma-separated string
+	 *	@param boolean $incInherited if TRUE, includes inherited classes
+	 *	@param boolean $fromAdmin - if TRUE, adds e_UC_ADMIN and e_UC_MAINADMIN in if current user's entitlement permits
+	 *
+	 *	@return array|string of userclass information according to $asArray
+	 */
+	public function addCommonClasses($userData, $asArray = FALSE, $incInherited = FALSE, $fromAdmin = FALSE)
 	{
 		if ($incInherited)
 		{
-			$classList = array();
-			global $e_userclass;
-			if (!isset($e_userclass) && !is_object($e_userclass))
-			{
-				require_once(e_HANDLER."userclass_class.php");
-				$e_userclass = new user_class;
-			}
-			$classList = $e_userclass->get_all_user_classes($var['user_class']);
+			$classList = e107::getUserClass()->get_all_user_classes($var['user_class']);
 		}
 		else
 		{
@@ -427,21 +498,28 @@ class UserHandler
 				$classList[] = $c;
 			}
 		}
-		if ((varset($userData['user_admin'],0) == 1) && strlen($userData['user_perms']))
+		if (((varset($userData['user_admin'],0) == 1) && strlen($userData['user_perms'])) || ($fromAdmin && ADMIN))
 		{
-		  $classList[] = e_UC_ADMIN;
-		  if (strpos($userData['user_perms'],'0') === 0)
-		  {
-			$classList[] = e_UC_MAINADMIN;
-		  }
+			$classList[] = e_UC_ADMIN;
+			if ((strpos($userData['user_perms'],'0') === 0) || getperms('0'))
+			{
+				$classList[] = e_UC_MAINADMIN;
+			}
 		}
 		if ($asArray) return $classList;
 		return implode(',',$classList);
 	}
 
 
-	// Return an array of descriptive names for each field in the user DB. If $all is false, just returns the modifiable ones. Else returns all
-	function getNiceNames($all = FALSE)
+
+	/**
+	 *	Return an array of descriptive names for each field in the user DB.
+	 *
+	 *	@param bool $all if false, just returns modifiable fields. Else returns all
+	 *
+	 *	$return array - key is field name, value is 'nice name' (descriptive name)
+	 */
+	public function getNiceNames($all = FALSE)
 	{
 //		$ret = array('user_id' => LAN_USER_13);
 		foreach ($this->userVettingInfo as $k => $v)
@@ -499,9 +577,16 @@ Following fields auto-filled in code as required:
   user_pwchange
 
 */
-	// Function does validation specific to user data. Updates the $targetData array as appropriate.
-	// Returns TRUE if nothing updated; FALSE if errors found (only checks data previously passed as good)
-	function userValidation(&$targetData)
+
+
+	/**
+	 *	Function does validation specific to user data. Updates the $targetData array as appropriate.
+	 *
+	 *	@param array $targetData - user data generated from earlier vetting stages - only the data in $targetData['data'] is checked
+	 *
+	 *	@return bool TRUE if nothing updated; FALSE if errors found
+	 */
+	public function userValidation(&$targetData)
 	{
 		global $e107, $pref;
 		$u_sql = new db;
@@ -556,10 +641,19 @@ Following fields auto-filled in code as required:
 		return $ret;
 	}
 
-	// Given an array of user data intended to be written to the DB, adds empty strings (or other default value) for any field which doesn't have a default in the SQL definition.
-	// (Avoids problems with MySQL in STRICT mode.).
-	// Returns TRUE if additions made, FALSE if no change.
-	function addNonDefaulted(&$userInfo)
+
+
+	/**
+	 *	Given an array of user data intended to be written to the DB, adds empty strings (or other default value) for any field which doesn't have a default in the SQL definition.
+	 *	(Avoids problems with MySQL in STRICT mode.).
+	 *
+	 *	@param array $userInfo - user data destined for the database
+	 *
+	 *	@return bool TRUE if additions made, FALSE if no change.
+	 *
+	 *	@todo - may be unnecessary with auto-generation of _NOTNULL array in db handler
+	 */
+	public function addNonDefaulted(&$userInfo)
 	{
 //		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '');
 		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '', 'user_realm' => '');	// Delete when McFly finished
@@ -576,8 +670,14 @@ Following fields auto-filled in code as required:
 	}
 
 
-	// Delete time-expired partial registrations from the user DB, clean up user_extended table
-	function deleteExpired($force = FALSE)
+	/**
+	 *	Delete time-expired partial registrations from the user DB, clean up user_extended table
+	 *
+	 *	@param bool $force - set TRUE to force check of user_extended table
+	 *
+	 *	@return int number of user records deleted
+	 */
+	public function deleteExpired($force = FALSE)
 	{
 		global $pref, $sql;
 		$temp1 = 0;
@@ -595,10 +695,20 @@ Following fields auto-filled in code as required:
 	}
 
 
-	// Called to update initial user classes, probationary user class etc
-	function userClassUpdate(&$user, $event='userveri')
+
+	/**
+	 *	Called to update initial user classes, probationary user class etc after various user events
+	 *
+	 *	@param array $user - user data. 'user_class' must be present
+	 *	@param string $event = userveri|userall|userfull|userpartial - defines event
+	 *
+	 *	@return boolean - true if $user['user_class'] updated, false otherwise
+	 */
+	public function userClassUpdate(&$user, $event='userveri')
 	{
-		global $pref, $tp;
+		global $pref;
+
+		$tp = e107::getParser();
 
 		$initClasses = array();
 		$doClasses = FALSE;
@@ -642,14 +752,18 @@ Following fields auto-filled in code as required:
 				$ret = TRUE;
 			}
 		}
+		return $ret;
 	}
+
 
 
 	/**
 	 * Updates user status, primarily the user_ban field, to reflect outside events
+	 *
 	 * @param string $start - 'ban', 'bounce'
 	 * @param integer $uid - internal user ID, zero if not known
 	 * @param string $emailAddress - email address (optional)
+	 *
 	 * @return boolean | string - FALSE if user found, error message if not
 	 */
 	public function userStatusUpdate($action, $uid, $emailAddress = '')
