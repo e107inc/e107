@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2010-01-23 03:25:31 $
+|     $Revision: 1.18 $
+|     $Date: 2010-02-01 03:41:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ if(isset($_GET['f']))
 			break;
 	}
 }
-$fVars = new templateVars;
+$fVars = new e_vars;
 $gen = new convert;
 
 $fVars->FORUMTITLE = LAN_46;
@@ -221,7 +221,7 @@ if (!$forumList)
 }
 
 $forum_string = '';
-$pVars = new templateVars;
+$pVars = new e_vars;
 foreach ($forumList['parents'] as $parent)
 {
 	$status = parse_parent($parent);
@@ -229,7 +229,6 @@ foreach ($forumList['parents'] as $parent)
 	if ($status[1])
 	{
 		$pVars->PARENTNAME = $parent['forum_name'];
-		//$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT);
 		$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
 		if (!count($forumList['forums'][$parent['forum_id']]))
 		{
@@ -262,7 +261,6 @@ foreach ($forumList['parents'] as $parent)
 			}
 			if (isset($FORUM_MAIN_PARENT_END))
 			{
-//				$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT_END);
 				$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
 			}
 		}
@@ -290,7 +288,7 @@ function parse_parent($parent)
 function parse_forum($f, $restricted_string = '')
 {
 	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList;
-	$fVars = new templateVars;
+	$fVars = new e_vars;
 	$e107 = e107::getInstance();
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
@@ -352,7 +350,6 @@ function parse_forum($f, $restricted_string = '')
 		$fVars->LASTPOST = '-';
 	}
 	return $e107->tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
-//	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_FORUM));
 }
 
 function parse_subs($subList, $lastpost_datestamp)
@@ -384,7 +381,7 @@ if (e_QUERY == 'track')
 {
 	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
 	{
-		$trackVars = new templateVars;
+		$trackVars = new e_vars;
 		$viewed = $forum->threadGetUserViewed();
 		$qry = "
 		SELECT t.*, p.* from `#forum_thread` AS t
@@ -406,12 +403,9 @@ if (e_QUERY == 'track')
 				$trackVars->TRACKPOSTNAME = "<a href='{$url}'>".$e107->tp->toHTML($row['thread_name']).'</a>';
 				$trackVars->UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_392."</a>";
 				$forum_trackstring .= $e107->tp->simpleParse($FORUM_TRACK_MAIN, $trackVars);
-//				$forum_trackstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_MAIN);
 			}
 		}
-//		$forum_track_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_START);
 		$forum_track_start = $e107->tp->simpleParse($FORUM_TRACK_START, $trackVars);
-//		$forum_track_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_END);
 		$forum_track_end = $e107->tp->simpleParse($FORUM_TRACK_END, $trackVars);
 		if ($pref['forum_enclose'])
 		{
@@ -426,7 +420,7 @@ if (e_QUERY == 'track')
 
 if (e_QUERY == 'new')
 {
-	$nVars = new templateVars;
+	$nVars = new e_vars;
 	$newThreadList = $forum->threadGetNew(10);
 	foreach($newThreadList as $thread)
 	{
@@ -443,20 +437,16 @@ if (e_QUERY == 'new')
 		}
 		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->getUrl('forum', 'thread', 'func=last&id='.$thread['thread_id'])."'>".$e107->tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 
-//		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 		$forum_newstring .= $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 	}
 
 	if (!$newThreadList)
 	{
 		$nVars->NEWSPOSTNAME = LAN_198;
-//		$forum_newstring = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 		$forum_newstring = $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 		
 	}
-//	$forum_new_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_START);
 	$forum_new_start = $e107->tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
-//	$forum_new_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_END);
 	$forum_new_end = $e107->tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
 	
 	if ($pref['forum_enclose'])
@@ -469,9 +459,7 @@ if (e_QUERY == 'new')
 	}
 }
 
-//$forum_main_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_START);
 $forum_main_start = $e107->tp->simpleParse($FORUM_MAIN_START, $fVars);
-//$forum_main_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_END);
 $forum_main_end = $e107->tp->simpleParse($FORUM_MAIN_END, $fVars);
 
 if ($pref['forum_enclose'])

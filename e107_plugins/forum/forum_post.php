@@ -9,9 +9,9 @@
  * Forum Posting
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-19 09:52:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.42 $
+ * $Date: 2010-02-01 03:41:58 $
+ * $Author: mcfly_e107 $
 */
 
 require_once('../../class2.php');
@@ -44,7 +44,7 @@ switch($action)
 		break;
 
 	case 'nt':
-		$forum_info = $forum->forum_get($id);
+		$forumInfo = $forum->forum_get($id);
 		$forumId = $id;
 		break;
 
@@ -53,10 +53,7 @@ switch($action)
 		$postInfo = $forum->postGet($id, 'post');
 		$threadInfo = $postInfo;
 		$forumId = $postInfo['post_forum'];
-//		print_a($postInfo);
-//		exit;
-//		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-//		$forumId = $forum_info['forum_id'];
+		$forumInfo = $forum->forum_get($forumId);
 		break;
 
 	default:
@@ -65,7 +62,6 @@ switch($action)
 
 }
 
-//echo "forumId = $forumId <br />";
 // check if user can post to this forum ...
 if (!$forum->checkPerm($forumId, 'post'))
 {
@@ -95,7 +91,7 @@ if ($action != 'nt' && !$threadInfo['thread_active'] && !MODERATOR)
 	exit;
 }
 
-$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], true);
+$forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true);
 define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'rp' ? LAN_02.$threadInfo['thread_name'] : LAN_03));
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -479,7 +475,7 @@ if (!$FORUMPOST)
   }
   else
   {
-  include_once(e_PLUGIN.'forum/templates/forum_post_template.php');
+  	include_once(e_PLUGIN.'forum/templates/forum_post_template.php');
   }
 }
 
@@ -554,7 +550,7 @@ function forumjump()
 
 function process_upload()
 {
-	global $pref, $forum_info, $thread_info, $admin_log;
+	global $pref, $forumInfo, $thread_info, $admin_log;
 
 	$postId = (int)$postId;
 	$ret = array();
