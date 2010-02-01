@@ -9,8 +9,8 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.56 $
- * $Date: 2010-01-12 07:38:29 $
+ * $Revision: 1.57 $
+ * $Date: 2010-02-01 17:15:59 $
  * $Author: secretr $
 */
 
@@ -109,19 +109,30 @@ echo "<title>".LAN_head_4.(defined("e_PAGETITLE") ? " - ".e_PAGETITLE : (defined
 //
 echo "<!-- *CSS* -->\n";
 $e_js =  e107::getJs();
-if (isset($eplug_css) && $eplug_css)
-{
-	//echo "\n<!-- eplug_css -->\n";
-	//echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
-	$e_js->otherCSS('{e_FILE}e107.css');
-}
 
-
+// Core CSS - XXX awaiting for path changes
 if (!isset($no_core_css) || !$no_core_css)
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_FILE}e107.css');
 }
+
+// Register Plugin specific CSS 
+// DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
+if (isset($eplug_css) && $eplug_css)
+{
+    if(!is_array($eplug_css))
+	{
+		$eplug_css = array($eplug_css);
+	}
+
+	foreach($eplug_css as $kcss)
+	{
+		// echo ($kcss[0] == "<") ? $kcss : "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+		$e_js->otherCSS($kcss);
+	}
+}
+
 //NEW - Iframe mod
 if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
 {
@@ -176,13 +187,6 @@ echo "\n<!-- footer_theme_css -->\n";
 // Inline CSS - not sure if this should stay at all!
 $e_js->renderJs('inline_css', false, 'css', false);
 echo "\n<!-- footer_inline_css -->\n";
-
-
-
-//
-// Unobtrusive JS via CSS, prevent 3rd party code overload
-//
-require_once(e_FILE."/e_css.php");
 
 //iepngfix - IE6 only
 if ((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
@@ -356,6 +360,11 @@ echo "
 // [JSManager] Load JS Includes - Zone 5 - After theme_head, before e107:loaded trigger
 e107::getJs()->renderJs('header', 5);
 e107::getJs()->renderJs('header_inline', 5);
+
+//
+// Unobtrusive JS via CSS, prevent 3rd party code overload
+//
+require_once(e_FILE."/e_css.php");
 
 /*
  * Fire Event e107:loaded

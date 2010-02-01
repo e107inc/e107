@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.11 $
- * $Date: 2010-01-12 07:38:28 $
+ * $Revision: 1.12 $
+ * $Date: 2010-02-01 17:15:58 $
  * $Author: secretr $
  * 
 */
@@ -418,12 +418,12 @@ class e_jsmanager
 	 * 
 	 * @param string $plugname
 	 * @param string $file_path relative to plugin root folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
 	 * @return e_jsmanager
 	 */
-	public function headerPlugin($plugname, $file_path, $zone = 3)
+	public function headerPlugin($plugname, $file_path)
 	{
-		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), $zone);	
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2);	// Zone 2 - after libraries
 		return $this;
 	}
 	
@@ -528,6 +528,7 @@ class e_jsmanager
 			return $this;
 		}
 
+		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fp => $loc)
@@ -562,7 +563,7 @@ class e_jsmanager
 				$registry = &$this->_e_jslib_theme;
 			break;
 			
-			case 'core_css':
+			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
 				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/');
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
