@@ -9,9 +9,9 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-11-18 01:06:08 $
- * $Author: e107coders $
+ * $Revision: 1.49 $
+ * $Date: 2010-02-01 17:15:59 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -110,82 +110,26 @@ else
 	define("e_WYSIWYG",FALSE);
 }
 
-// [JSManager] Load JS Includes - Zone 1 - Before Library, e_header and style
-e107::getJs()->renderJs('header', 1);
-e107::getJs()->renderJs('header_inline', 1);
-
 //
-// D: send CSS comes first
+// D: Register CSS
 //
+$e_js = e107::getJs();
+$e_pref = e107::getConfig('core');
 
-//Core CSS first
-if (!defined("PREVIEWTHEME") && (!isset($no_core_css) || !$no_core_css)) {
-
-	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-}
-
-//Plugin specific CSS
-if (isset($eplug_css) && $eplug_css)
+// Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
+// NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
+if (/*!defined("PREVIEWTHEME") && */!isset($no_core_css) || !$no_core_css) 
 {
-    if(is_array($eplug_css))
-	{
-		$eplug_css_unique = array_unique($eplug_css);
-		foreach($eplug_css_unique as $kcss)
-		{
-			echo ($kcss[0] == "<") ? $kcss : "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
-		}
-	}
-	else
-	{
-		echo "<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
-	}
-
+	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+	$e_js->otherCSS('{e_FILE}e107.css');
 }
 
-//Theme CSS
-if(defined("PREVIEWTHEME")) {
-	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
-} else {
-	$css_default = "all";
-	if (isset($theme_css_php) && $theme_css_php) {
-		echo "<link rel='stylesheet' href='".THEME_ABS."theme-css.php' type='text/css' />\n";
-	} else {
-		if(isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
-		{
-			// Support for print and handheld media.
-			if(file_exists(THEME."style_mobile.css")){
-            	echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
-				$css_default = "screen";
-			}
-			if(file_exists(THEME."style_print.css")){
-            	echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
-                $css_default = "screen";
-			}
-			echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' media='{$css_default}' />\n";
-
-
-		}
-		else
-		{
-			// Support for print and handheld media.
-			if(file_exists(THEME."style_mobile.css")){
-            	echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
-                $css_default = "screen";
-			}
-			if(file_exists(THEME."style_print.css")){
-            	echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
-                $css_default = "screen";
-			}
-			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
-		}
-	}
-}
-
-
-// Load Plugin Header Files
-if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
+// Load Plugin Header Files, allow them to load CSS/JSS via JS Manager early enouhg
+// NOTE: e_header.php should not output content, it should only register stuff! e_meta.php is more appropriate for outputting header content.
+$e_headers = $e_pref->get('e_header_list');
+if ($e_headers && is_array($e_headers))
 {
-	foreach($pref['e_header_list'] as $val)
+	foreach($e_headers as $val)
 	{
 		if(is_readable(e_PLUGIN.$val."/e_header.php"))
 		{
@@ -193,13 +137,154 @@ if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 		}
 	}
 }
+unset($e_headers);
+
+// re-initalize in case globals are destroyed from $e_headers includes
+$e_js = e107::getJs();
+$e_pref = e107::getConfig('core');
+
+// Register Plugin specific CSS 
+// DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
+if (isset($eplug_css) && $eplug_css)
+{
+    if(!is_array($eplug_css))
+	{
+		$eplug_css = array($eplug_css);
+	}
+
+	foreach($eplug_css as $kcss)
+	{
+		// echo ($kcss[0] == "<") ? $kcss : "<link rel='stylesheet' href='{$kcss}' type='text/css' />\n";
+		$e_js->otherCSS($kcss);
+	}
+}
+
+// Register Theme CSS
+// Writing link tags is DEPRECATED, use $e_js->themeCSS('style/mytheme.css'[, $media = 'all|screen|...']); - current theme is auto-detected
+if(defined("PREVIEWTHEME")) 
+{
+	// XXX - can be PREVIEWTHEME done in a better way than this? 
+	//echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
+	$e_js->otherCSS(PREVIEWTHEME);
+	
+} 
+else 
+{
+	$css_default = "all"; // TODO - default should be defined by the theme
+	// theme-css.php auto-detection TODO - convert it to constant or anything different from GLOBAL
+	if (isset($theme_css_php) && $theme_css_php) 
+	{
+		//echo "<link rel='stylesheet' href='".THEME_ABS."theme-css.php' type='text/css' />\n";
+		$e_js->themeCSS('theme-css.php', $css_default);
+	} 
+	else 
+	{
+		// Theme default
+		if($e_pref->get('themecss') && file_exists(THEME.$e_pref->get('themecss')))
+		{
+			//echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' media='{$css_default}' />\n";
+			$e_js->themeCSS($e_pref->get('themecss'), $css_default);
+		}
+		else
+		{
+			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
+			$e_js->themeCSS('style.css', $css_default);
+		}
+		
+		// Support for print and handheld medi - override theme default CSS
+		if(file_exists(THEME."style_mobile.css"))
+		{
+            //echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
+			//$css_default = "screen";
+			$e_js->themeCSS('style_mobile.css', 'handheld');
+		}
+		if(file_exists(THEME."style_print.css"))
+		{
+            // echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
+            // $css_default = "screen";
+			$e_js->themeCSS('style_print.css', 'print');
+		}
+	}
+	
+	// FIXME: TEXTDIRECTION compatibility CSS (marj?)
+	// TODO: probably better to externalise along with some other things above
+	// possibility to overwrite some CSS definition according to TEXTDIRECTION
+	// especially usefull for rtl.css
+	// see _blank theme for examples
+	if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
+	{
+		//echo '
+		//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
+		$e_js->themeCSS(TEXTDIRECTION.'.css', 'all');
+	}
+}
+
 
 //
-// E: Send JS
+// Render CSS - all in once
+// Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
 //
 
-//FIXME: js manager (prevent duplicates, disable core JS etc)
+// Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility; NOTE - could be removed in the future!!!
+$e_js->renderJs('other_css', false, 'css', false);
+echo "\n<!-- footer_other_css -->\n";
+
+// Core CSS
+$e_js->renderJs('core_css', false, 'css', false);
+echo "\n<!-- footer_core_css -->\n";
+
+// Plugin CSS
+$e_js->renderJs('plugin_css', false, 'css', false);
+echo "\n<!-- footer_plugin_css -->\n";
+
+// Theme CSS
+//echo "<!-- Theme css -->\n";
+$e_js->renderJs('theme_css', false, 'css', false);
+echo "\n<!-- footer_theme_css -->\n";
+
+// Inline CSS - not sure if this should stay at all!
+$e_js->renderJs('inline_css', false, 'css', false);
+echo "\n<!-- footer_inline_css -->\n";
+
+	
+/*
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
+{
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
+}
+*/
+//IEpngfix - visible by IE6 only
+// FIXME - disable this style block via JS for all GOOD browsers.
+if($e_pref->get('enable_png_image_fix') || (isset($sleight) && $sleight == true)) // FIXME - KILL this GLOBAL!
+{
+    /*
+     * The only problem is that the browser is REALLY,
+     * REALLY slow when it has to render more elements
+     * try e.g. "div, img, td, input" (or just *) instead only img rule
+     * However I hope it'll force IE6 users to switch to a modern browser...
+     */
+	echo "<!--[if lte IE 6]>\n";
+	echo "<style type='text/css'>\n";
+	echo "img {\n";
+	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
+	echo "}\n";
+	echo "</style>\n";
+	echo "<![endif]-->\n";
+}
+
+//
+// E: Send JS all in once
+// Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
+// TODO - more work (zones, eplug_js, headerjs etc order)
+//
+
+
+// [JSManager] Load JS Includes - Zone 1 - Before Library
+e107::getJs()->renderJs('header', 1);
+e107::getJs()->renderJs('header_inline', 1);
+
 // Send Javascript Libraries ALWAYS (for now)
+//FIXME: [JS Manager] - build URL, disable core JS, option to use external sources (google)
 $hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_front';
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
 
@@ -208,7 +293,7 @@ e107::getJs()->renderJs('header', 2);
 e107::getJs()->renderJs('header_inline', 2);
 
 // Send Plugin JS Files
-//DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
+//DEPRECATED, $eplug_js will be removed soon - use e107::getJs()->headerPlugin('myplug', 'myplug/js/my.js');
 if (isset($eplug_js) && $eplug_js)
 {
 	echo "\n<!-- eplug_js -->\n";
@@ -240,7 +325,7 @@ else
  	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
 
-//XXX - CHAP JS
+//FIXME - CHAP JS
 // TODO - convert it to e107::getJs()->header/footerFile() call
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
@@ -253,30 +338,6 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
   $js_body_onload[] = "getChallenge();";
 }
 
-/*
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
-{
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
-}
-*/
-
-//IEpngfix - visible by IE6 only
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
-    /*
-     * The only problem is that the browser is REALLY,
-     * REALLY slow when it has to render more elements
-     * try e.g. "div, img, td, input" (or just *) instead only img rule
-     * However I hope it'll force IE6 users to switch to a modern browser...
-     */
-	echo "<!--[if lte IE 6]>\n";
-	echo "<style type='text/css'>\n";
-	echo "img {\n";
-	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
-	echo "}\n";
-	echo "</style>\n";
-	echo "<![endif]-->\n";
-}
-
 //headerjs moved below
 
 // Deprecated function finally removed
@@ -286,12 +347,19 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 e107::getJs()->renderJs('header', 3);
 e107::getJs()->renderJs('header_inline', 3);
 
+// [JSManager] Load JS Includes - Zone 4 - Just before e_meta, after headerjs
+e107::getJs()->renderJs('header', 4);
+e107::getJs()->renderJs('header_inline', 4);
+
+// [JSManager] Load JS Includes - Zone 5 - After headerjs, just before e_meta, e107:loaded trigger
+e107::getJs()->renderJs('header', 5);
+e107::getJs()->renderJs('header_inline', 5);
 
 //
-// F: Send Meta Tags, Icon links, headerjs()
+// F: Send Meta Tags, Icon links
 //
 
-// --- Load plugin Meta files and eplug_ before others --------
+// --- Load plugin Meta files  --------
 if (is_array($pref['e_meta_list']))
 {
 	foreach($pref['e_meta_list'] as $val)
@@ -303,12 +371,13 @@ if (is_array($pref['e_meta_list']))
 	}
 }
 
-//headerjs moved here - it should be able to read any JS/code sent by e_meta
-if (function_exists('headerjs')) {echo headerjs();  }
-
-// [JSManager] Load JS Includes - Zone 4 - Just after e_meta, headerjs
-e107::getJs()->renderJs('header', 4);
-e107::getJs()->renderJs('header_inline', 4);
+//
+// G: Send Theme Headers
+//
+if(function_exists('theme_head'))
+{
+	echo theme_head();
+}
 
 // FIXME description and keywords meta tags shouldn't be sent on all pages
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
@@ -351,24 +420,6 @@ elseif (file_exists(e_BASE."favicon.ico"))
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
-//
-// G: Send Theme Headers
-//
-if(function_exists('theme_head'))
-{
-	echo theme_head();
-}
-
-// FIXME: TEXTDIRECTION compatibility CSS (marj?)
-// TODO: probably better to externalise along with some other things above
-// possibility to overwrite some CSS definition according to TEXTDIRECTION
-// especially usefull for rtl.css
-// see _blank theme for examples
-if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
-{
-	echo '
-	<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
-}
 //
 // Unobtrusive JS, prevent 3rd party code overload
 //
@@ -429,10 +480,6 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 //
 // J: Send end of <head> and start of <body>
 //
-
-// [JSManager] Load JS Includes - Zone 5 - After theme_head, just before e107:loaded trigger
-e107::getJs()->renderJs('header', 5);
-e107::getJs()->renderJs('header_inline', 5);
 
 /*
  * Fire Event e107:loaded
