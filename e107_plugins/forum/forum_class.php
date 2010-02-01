@@ -9,9 +9,9 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.42 $
+ * $Date: 2010-02-01 03:41:58 $
+ * $Author: mcfly_e107 $
  *
 */
 
@@ -1090,7 +1090,7 @@ class e107forum
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
 	 * $thread_title is needed for post-related breadcrumbs
 	 */
-	function set_crumb($forum_href=false, $thread_title='')
+	function set_crumb($forum_href=false, $thread_title='', &$templateVar)
 	{
 		$e107 = e107::getInstance();
 		global $FORUM_CRUMB, $forumInfo, $thread;
@@ -1162,6 +1162,9 @@ class e107forum
 			}
 		}
 		$BACKLINK = $BREADCRUMB;
+		$templateVar->BREADCRUMB = $BREADCRUMB;
+		$templateVar->BACKLINK = $BACKLINK;
+		$templateVar->FORUM_CRUMB = $FORUM_CRUMB;
 	}
 
 

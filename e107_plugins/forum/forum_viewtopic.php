@@ -9,9 +9,9 @@
  * Forum View Topic
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-19 15:31:59 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.26 $
+ * $Date: 2010-02-01 03:41:58 $
+ * $Author: mcfly_e107 $
  *
 */
 
@@ -27,7 +27,7 @@ $highlight_search = isset($_POST['highlight_search']);
 
 if (!e_QUERY)
 {
-	//No paramters given, redirect to forum home
+	//No parameters given, redirect to forum home
 	header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
@@ -125,18 +125,21 @@ if (!$FORUMSTART)
 }
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-$forum->set_crumb(true); // Set $BREADCRUMB (and BACKLINK)
-$THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
-$NEXTPREV = "&lt;&lt; <a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'prev', 'id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
-$NEXTPREV .= ' | ';
-$NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'next', 'id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
+$tVars = new e_vars;
+$forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
+//$tVars->BREADCRUMB = $crumbs['breadcrumb'];
+//$tVars->BACKLINK = $tVars->BREADCRUMB;
+//$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
+$tVars->THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
+$tVars->NEXTPREV = "&lt;&lt; <a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'prev', 'id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
+$tVars->NEXTPREV .= ' | ';
+$tVars->NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'next', 'id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
 
 if ($pref['forum_track'] && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
 	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
-	$TRACK .= "
+	$tVars->TRACK .= "
 			<span id='forum-track-trigger-container'>
 			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
@@ -157,31 +160,31 @@ if ($pref['forum_track'] && USER)
 	";
 }
 
-$MODERATORS = LAN_321 . implode(', ', $forum->modArray);
+$tVars->MODERATORS = LAN_321 . implode(', ', $forum->modArray);
 
-$THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
+$tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
 if ($thread->pages > 1)
 {
 	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
-	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
-$BUTTONS = '';
+$tVars->BUTTONS = '';
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
-	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
+	$tVars->BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
 }
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 {
-	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
+	$tVars->BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
 }
 
-$POLL = $pollstr;
+$tVars->POLL = $pollstr;
 
-$FORUMJUMP = forumjump();
+$tVars->FORUMJUMP = forumjump();
 
-$forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
+$forstr = $tp->simpleParse($FORUMSTART, $tVars);
 
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
@@ -231,7 +234,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 {
 	if (!$forum_quickreply)
 	{
-		$QUICKREPLY = "
+		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "' method='post'>
 		<p>" . LAN_393 . ":<br />
 		<textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
@@ -244,11 +247,12 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	}
 	else
 	{
-		$QUICKREPLY = $forum_quickreply;
+		$tVars->QUICKREPLY = $forum_quickreply;
 	}
 }
 
-$forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
+$forend = $tp->simpleParse($FORUMEND, $tVars);
+
 $forumstring = $forstr . $forthr . $forrep . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read

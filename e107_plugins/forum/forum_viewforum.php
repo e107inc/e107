@@ -9,9 +9,9 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.18 $
-* $Date: 2010-01-23 09:53:08 $
-* $Author: e107steved $
+* $Revision: 1.19 $
+* $Date: 2010-02-01 03:41:58 $
+* $Author: mcfly_e107 $
 *
 */
 
@@ -31,9 +31,7 @@ if (!e_QUERY)
 }
 
 //$view = 25;
-//echo "pref = {$pref['forum_threadspage']} <br />";
 $view = (varset($pref['forum_threadspage']) ? $pref['forum_threadspage'] : 25);
-//echo "view = $view <br />";
 $page = (varset($_GET['p']) ? $_GET['p'] : 0);
 $threadFrom = $page * $view;
 
@@ -41,7 +39,7 @@ require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
 global $forum_info, $FORUM_CRUMB;
-$fVars = new templateVars;
+$fVars = new e_vars;
 
 $fVars->STARTERTITLE = LAN_54;
 $fVars->THREADTITLE = LAN_53;
@@ -153,7 +151,7 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 	$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
 }
 
-$forum->set_crumb(); // set $BREADCRUMB (and $BACKLINK)
+$forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
 
 $fVars->FORUMTITLE = $forumInfo['forum_name'];
 $fVars->MODERATORS = LAN_404.': '.implode(', ', $modArray);
@@ -290,9 +288,7 @@ if($container_only)
 	$forum_view_forum = '';
 }
 
-//$forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
 $forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
-//$forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
 $forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
 
 
@@ -319,7 +315,7 @@ function parse_thread($thread_info)
 {
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $menu_pref, $threadsViewed;
 	global $tp;
-	$tVars = new templateVars;
+	$tVars = new e_vars;
 	$e107 = e107::getInstance();
 	$text = '';
 
@@ -470,30 +466,34 @@ function parse_thread($thread_info)
 		}
 	}
 
-	if ($thread_info['thread_sticky'] == 1 && $FORUM_VIEW_FORUM_STICKY)
-	{
-		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_STICKY));
-	}
-
-	if ($thread_info['thread_sticky'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
-	{
-		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_ANNOUNCE));
-	}
-
 	if (!$tVars->REPLIES)
 	{
 		$tVars->REPLIES = LAN_317;		// 'None'
 		$tVars->LASTPOST = ' - ';
 	}
-
-	return $tp->simpleParse($FORUM_VIEW_FORUM, $tVars);
-	//return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
+	
+	switch($thread_info['thread_sticky'])
+	{
+		case 1:
+			$_TEMPLATE = ($FORUM_VIEW_FORUM_STICKY ? $FORUM_VIEW_FORUM_STICKY : $FORUM_VIEW_FORUM);
+			break;
+		
+		case 2:
+			$_TEMPLATE = ($FORUM_VIEW_FORUM_ANNOUNCE ? $FORUM_VIEW_FORUM_ANNOUNCE : $FORUM_VIEW_FORUM);
+			break;
+		
+		default:
+			$_TEMPLATE = $FORUM_VIEW_FORUM;
+			break;
+	}
+	
+	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
 
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $newflag_list, $tp;
-	$tVars = new templateVars;
+	$tVars = new e_vars;
 	$e107 = e107::getInstance();
 	$forumName = $e107->tp->toHTML($subInfo['forum_name'], true);
 	$tVars->SUB_FORUMTITLE = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$subInfo['forum_id']}")."'>{$forumName}</a>";
@@ -530,7 +530,6 @@ function parse_sub($subInfo)
 	{
 		$tVars->SUB_LASTPOST = '-';
 	}
-//	return  (preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_SUB));
 	return $tp->simpleParse($FORUM_VIEW_SUB, $fVars);
 }
 

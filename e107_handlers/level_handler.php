@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2010-02-01 03:41:59 $
+ * $Author: mcfly_e107 $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -246,9 +246,11 @@ class e107UserRank
 			$search[] = '{'.$f.'}';
 			$replace[] = $userData['user_'.$f];
 		}
-		$calc = '$userLevelValue = '.str_replace($search, $replace, $calc).';';
+		$_calc = trim(str_replace($search, $replace, $calc));
+		if($_calc == '') { return 0; }
+		$calc = '$userLevelValue = '.$_calc.';';
 		$value = eval($calc);
-		return $userLevelValue;
+		return $value;
 	}
 
 }

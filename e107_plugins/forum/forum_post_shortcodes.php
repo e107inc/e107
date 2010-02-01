@@ -139,9 +139,10 @@ class forum_post_shortcodes
 	
 	function sc_backlink()
 	{
-		global $forum, $thread_info,$eaction, $action,$BREADCRUMB;
-		$forum->set_crumb(TRUE,($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name'])));
-		return $BREADCRUMB;
+		global $forum, $thread_info, $eaction, $action;
+		$_tmp = '';
+		$forum->set_crumb(true, ($action == 'nt' ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406.' '.$thread_info['head']['thread_name'])), $_tmp);
+		return $_tmp->BREADCRUMB;
 	}
 	
 	function sc_noemotes()
@@ -186,5 +187,5 @@ class forum_post_shortcodes
 		return '';
 	}
 
-}	
+}
 ?>
