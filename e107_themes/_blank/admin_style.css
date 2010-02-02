@@ -157,6 +157,7 @@ div.bbarea.small, .tbox.small, .tbox.helpbox.small { width: 250px !important; }
 .label-note { font-style: italic; }
 .form-note { font-style: italic; }
 .field-spacer.strong { font-weight: bold }
+.required-label { font-weight: bold }
 
 /* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
 .auto-toggle-area { width: 280px; cursor: pointer; }

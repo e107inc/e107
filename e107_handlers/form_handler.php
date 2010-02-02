@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.116 $
- * $Date: 2010-02-02 09:04:40 $
+ * $Revision: 1.117 $
+ * $Date: 2010-02-02 13:24:09 $
  * $Author: secretr $
  *
 */
@@ -70,12 +70,34 @@ class e_form
 	 * @var user_class
 	 */
 	protected $_uc;
+	
+	protected $_required_string;
 
 	function __construct($enable_tabindex = false)
 	{
-
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
+		$this->setRequiredString('<span class="required">*&nbsp;</span>');
+	}
+	
+	/**
+	 * Get required field markup string
+	 * @return string
+	 */
+	public function getRequiredString()
+	{
+		return $this->_required_string;
+	}
+	
+	/**
+	 * Set required field markup string
+	 * @param string $string
+	 * @return e_form
+	 */
+	public function setRequiredString($string)
+	{
+		$this->_required_string = $string;
+		return $this;
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
@@ -1322,9 +1344,10 @@ class e_form
 	 * @param string $key
 	 * @param mixed $value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
+	 * #param array $required_data required array as defined in e_model/validator
 	 * @return string
 	 */
-	function renderElement($key, $value, $attributes)
+	function renderElement($key, $value, $attributes, $required_data)
 	{
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
@@ -1721,6 +1744,14 @@ class e_form
 		return $text;
 	}
 
+	/**
+	 * Create form fieldset, called internal by {@link renderCreateForm())
+	 * 
+	 * @param string $id field id
+	 * @param array $fdata fieldset data 
+	 * @param e_admin_model $model
+	 * @param boolean $nocontainer ???
+	 */
 	function renderCreateFieldset($id, $fdata, $model, $nocontainer = false)
 	{
 		$text = vartrue($fdata['fieldset_pre'])."
@@ -1735,6 +1766,9 @@ class e_form
 					<tbody>
 		";
 
+		// required fields - model definition
+		$model_required = $model->getValidationRules();
+		$required_help = false; 
 		foreach($fdata['fields'] as $key => $att)
 		{
 			// convert aliases - not supported in edit mod
@@ -1759,17 +1793,34 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-
+				
 			// type null - system (special) fields
 			if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
+				$required = '';
+				$required_class = '';
+				if(isset($model_required[$key]) || vartrue($att['validate']))
+				{
+					$required = $this->getRequiredString();
+					$required_class = ' class="required-label"'; // TODO - add 'required-label' to the core CSS definitions
+					$required_help = true;
+					if($att['validate'])
+					{
+						// override
+						$model_required[$key] = array();
+						$model_required[$key][] = true === $att['validate'] ? 'required' : $att['validate'];
+						$model_required[$key][] = varset($att['rule']);
+						$model_required[$key][] = $att['title'];
+						$model_required[$key][] = varset($att['error']);
+					}
+				}
 				$text .= "
 					<tr>
 						<td class='label'>
-							".defset($att['title'], $att['title']).$label."
+							".$required."<span{$required_class}>".defset($att['title'], $att['title'])."</span>".$label."
 						</td>
 						<td class='control'>
-							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att)."
+							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
 							{$help}
 						</td>
 					</tr>
@@ -1778,10 +1829,16 @@ class e_form
 			//if($bckp) $model->remove($bckp);
 
 		}
+		
+		if($required_help)
+		{
+			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
+		}
 
 		$text .= "
 					</tbody>
 				</table>
+				".$required_help."
 				".vartrue($fdata['table_post'])."
 				<div class='buttons-bar center'>
 		";
