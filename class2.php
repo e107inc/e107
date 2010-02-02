@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.392 $
-|     $Date: 2010-01-30 22:29:20 $
-|     $Author: secretr $
+|     $Revision: 1.393 $
+|     $Date: 2010-02-02 22:29:35 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -255,8 +255,8 @@ define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER."mysql_class.php");
 
-$sql =& new db;
-$sql2 =& new db;
+$sql = new db;
+$sql2 = new db;
 
 $sql->db_SetErrorReporting(FALSE);
 
