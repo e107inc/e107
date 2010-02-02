@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.100 $
- * $Date: 2010-01-26 12:25:59 $
+ * $Revision: 1.101 $
+ * $Date: 2010-02-02 15:25:22 $
  * $Author: secretr $
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.100 $
+ * @version     $Revision: 1.101 $
  * @author      $Author: secretr $
  *
  *	e107_class - core class with many system-related methods
@@ -116,56 +116,59 @@ class e107
 	 * For new/missing handler add
 	 * 'class name' => 'path' pair
 	 *
-	 * Used to auto-load core handlers
-	 * TODO - we really need to alphabetically re-order this!
+	 * Used to auto-load core/plugin handlers
+	 * NOTE: aplhabetically sorted! (by class name)
 	 *
+	 * @see addHandler()
+	 * @see setHandlerOverload()
 	 * @see getSingleton()
 	 * @see getObject()
 	 * @var array
 	 */
-	protected static $_known_handlers = array (
-		'db'						=> '{e_HANDLER}mysql_class.php',
-		'ecache'					=> '{e_HANDLER}cache_handler.php',
-		'user_class'				=> '{e_HANDLER}userclass_class.php',
-		'e107_event'				=> '{e_HANDLER}event_class.php',
-		'ArrayData'					=> '{e_HANDLER}arraystorage_class.php',
-		'eURL'						=> '{e_HANDLER}e107Url.php',
-		'e_file'					=> '{e_HANDLER}file_class.php',
-		'e_admin_log'				=> '{e_HANDLER}admin_log_class.php',
-		'notify'					=> '{e_HANDLER}notify_class.php',
-		'e_online'					=> '{e_HANDLER}online_class.php',
-		'convert'					=> '{e_HANDLER}date_handler.php',
-		'e_news_item' 				=> '{e_HANDLER}news_class.php',
-		'e_news_tree' 				=> '{e_HANDLER}news_class.php',
-		'news' 						=> '{e_HANDLER}news_class.php',
-		'e_form' 					=> '{e_HANDLER}form_handler.php',
-		'e_upgrade' 				=> '{e_HANDLER}e_upgrade_class.php',
-		'e_jshelper' 				=> '{e_HANDLER}js_helper.php',
-		'e_menu' 					=> '{e_HANDLER}menu_class.php',
-		'e107plugin' 				=> '{e_HANDLER}plugin_class.php',
-		'xmlClass' 					=> '{e_HANDLER}xml_class.php',
-		'e107_traffic'				=> '{e_HANDLER}traffic_class.php',
-		'comment'					=> '{e_HANDLER}comment_class.php',
-		'e_validator'				=> '{e_HANDLER}validator_class.php',
-		'themeHandler'				=> '{e_HANDLER}theme_handler.php',
-		'e_model'					=> '{e_HANDLER}model_class.php',
-		'e_admin_model'				=> '{e_HANDLER}model_class.php',
-		'e_admin_dispatcher' 		=> '{e_HANDLER}admin_ui.php',
-		'e_admin_request' 			=> '{e_HANDLER}admin_ui.php',
-		'e_admin_response' 			=> '{e_HANDLER}admin_ui.php',
-		'e_admin_controller' 		=> '{e_HANDLER}admin_ui.php',
-		'e_admin_controller_ui' 	=> '{e_HANDLER}admin_ui.php',
-		'e_admin_ui' 				=> '{e_HANDLER}admin_ui.php',
-		'e_admin_form_ui' 			=> '{e_HANDLER}admin_ui.php',
-		'e_admin_icons' 			=> '{e_HANDLER}admin_ui.php',
-		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
-		'comment'					=> '{e_HANDLER}comment_class.php',
-		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
-		'e_userperms'				=> '{e_HANDLER}user_handler.php',
-		'UserHandler'				=> '{e_HANDLER}user_handler.php',
-		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php',
-		'redirection'				=> '{e_HANDLER}redirection_class.php',
-		'e107Email'					=> '{e_HANDLER}mail.php'
+	protected $_known_handlers = array(
+		'ArrayData'						 => '{e_HANDLER}arraystorage_class.php',
+		'DHTML_Calendar'				 => '{e_HANDLER}calendar/calendar_class.php',
+		'UserHandler'					 => '{e_HANDLER}user_handler.php',
+		'comment'						 => '{e_HANDLER}comment_class.php',
+		'convert'						 => '{e_HANDLER}date_handler.php',
+		'db'							 => '{e_HANDLER}mysql_class.php',
+		'e107Email'						 => '{e_HANDLER}mail.php',
+		'e107_event'					 => '{e_HANDLER}event_class.php',
+		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
+		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
+		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
+		'eURL'							 => '{e_HANDLER}e107Url.php',
+		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
+		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
+		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
+		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
+		'e_admin_icons'					 => '{e_HANDLER}admin_ui.php',
+		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
+		'e_admin_model'					 => '{e_HANDLER}model_class.php',
+		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
+		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
+		'e_admin_ui'					 => '{e_HANDLER}admin_ui.php',
+		'e_file'						 => '{e_HANDLER}file_class.php',
+		'e_form'						 => '{e_HANDLER}form_handler.php',
+		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
+		'e_menu'						 => '{e_HANDLER}menu_class.php',
+		'e_model'						 => '{e_HANDLER}model_class.php',
+		'e_news_item'					 => '{e_HANDLER}news_class.php',
+		'e_news_tree'					 => '{e_HANDLER}news_class.php',
+		'e_online'						 => '{e_HANDLER}online_class.php',
+		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
+		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
+		'e_userperms'					 => '{e_HANDLER}user_handler.php',
+		'e_validator'					 => '{e_HANDLER}validator_class.php',
+		'e_vars'						 => '{e_HANDLER}e_parse_class.php',
+		'ecache'						 => '{e_HANDLER}cache_handler.php',
+		'news'							 => '{e_HANDLER}news_class.php',
+		'notify'						 => '{e_HANDLER}notify_class.php',
+		'redirection'					 => '{e_HANDLER}redirection_class.php',
+		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
+		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
+		'user_class'					 => '{e_HANDLER}userclass_class.php',
+		'xmlClass'						 => '{e_HANDLER}xml_class.php',
 	);
 
 	/**
