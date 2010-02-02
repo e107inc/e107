@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.101 $
- * $Date: 2010-02-02 15:25:22 $
+ * $Revision: 1.102 $
+ * $Date: 2010-02-02 15:49:09 $
  * $Author: secretr $
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.101 $
+ * @version     $Revision: 1.102 $
  * @author      $Author: secretr $
  *
  *	e107_class - core class with many system-related methods
@@ -125,7 +125,7 @@ class e107
 	 * @see getObject()
 	 * @var array
 	 */
-	protected $_known_handlers = array(
+	protected static $_known_handlers = array(
 		'ArrayData'						 => '{e_HANDLER}arraystorage_class.php',
 		'DHTML_Calendar'				 => '{e_HANDLER}calendar/calendar_class.php',
 		'UserHandler'					 => '{e_HANDLER}user_handler.php',
