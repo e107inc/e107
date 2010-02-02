@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.115 $
- * $Date: 2010-01-16 19:53:57 $
- * $Author: e107steved $
+ * $Revision: 1.116 $
+ * $Date: 2010-02-02 09:04:40 $
+ * $Author: secretr $
  *
 */
 
@@ -194,12 +194,7 @@ class e_form
 		{
 		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		}
-		//JS manager to send JS/CSS to header if possible, if not - footer
-		e107::getJs()// FIXME - no CSS support yet!!! ->tryHeaderFile($cal->calendar_theme_file)
-			->tryHeaderFile($cal->calendar_file)
-			->tryHeaderFile($cal->calendar_setup_file)
-			->tryHeaderFile($cal->calendar_lang_file);
-
+			
 		return $cal->make_input_field($cal_options, $cal_attrib);
 	}
 
