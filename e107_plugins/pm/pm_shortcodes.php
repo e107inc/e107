@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-12-12 17:26:10 $
-|     $Author: e107steved $
+|     $Revision: 1.25 $
+|     $Date: 2010-02-03 02:22:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -379,7 +379,7 @@ SC_END
 
 SC_BEGIN PM_NEXTPREV
 global $pmlist, $tp, $pm_start, $pm_prefs, $pmlist;
-return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
+return "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}")."</div>";
 SC_END
 
 SC_BEGIN PM_CHECK_ALL_NONE

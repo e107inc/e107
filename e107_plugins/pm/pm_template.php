@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-12-12 17:26:10 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2010-02-03 02:22:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -28,7 +28,7 @@ $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 $sc_style['PM_ATTACHMENTS']['pre'] = "<br /><div style='vertical-align:bottom; text-align:left;'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
 
-$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
+$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ";
 $sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
 
 $sc_style['EMOTES']['pre'] = "
