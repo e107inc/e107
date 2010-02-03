@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.94 $
-* $Date: 2010-01-24 12:05:53 $
+* $Revision: 1.95 $
+* $Date: 2010-02-03 11:06:31 $
 * $Author: secretr $
 *
 */
@@ -18,7 +18,7 @@
 /**
  * @package e107
  * @subpackage e107_handlers
- * @version $Id: e_parse_class.php,v 1.94 2010-01-24 12:05:53 secretr Exp $
+ * @version $Id: e_parse_class.php,v 1.95 2010-02-03 11:06:31 secretr Exp $
  * 
  * Text processing and parsing functions. 
  * Simple parse data model.
@@ -582,9 +582,9 @@ class e_parse
 		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
 	}
 	
-	function simpleReplace($tmp) {
-		$unset = ($this->replaceUnset ? '' : $tmp[0]);
-		return ($this->replaceVars->$tmp[1] ? $this->replaceVars->$tmp[1] : $unset);
+	protected function simpleReplace($tmp) {
+		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
+		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset);
 	}
 	
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
@@ -1918,7 +1918,7 @@ class e_vars
 	 * 
 	 * @param array $array [optional] initial data
 	 */
-	public function __construct($array='')
+	public function __construct($array = array())
 	{
 		$this->setVars($array);
 	}
@@ -1963,6 +1963,16 @@ class e_vars
 	{
 		$this->vars = array();
 		return $this;
+	}
+	
+	/**
+	 * Check if there is data available
+	 * 
+	 * @return boolean
+	 */
+	public function isEmpty()
+	{
+		return empty($this->vars);
 	}
 	
 	/**
