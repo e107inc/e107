@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.41 $
- * $Date: 2010-01-23 16:41:56 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.42 $
+ * $Date: 2010-02-03 11:08:36 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -133,7 +133,7 @@ function callScFunc($className, $scFuncName, $param= '')
 function initShortcodeClass($class, $force = false)
 {
 	$sc = e107::getScParser();
-	if(class_exists($class, false) && ($force || !isset($sc->scClasses[$class])))
+	if(class_exists($class) && ($force || !isset($sc->scClasses[$class])))
 	{
 		$sc->scClasses[$class] = new $class();
 	}
@@ -437,7 +437,7 @@ class e_shortcode
 							$_method = 'sc_'.strtolower($code);
 							if(!isset($this->scClasses[$_class]))
 							{
-								if(!class_exists($_class, false) && $this->registered_codes[$code]['path'])
+								if(!class_exists($_class) && $this->registered_codes[$code]['path'])
 								{
 									include_once($this->registered_codes[$code]['path']);
 								}
@@ -494,7 +494,7 @@ class e_shortcode
 						
 						include_once(e_FILE.'shortcode/'.strtolower($code).'.php');
 						
-						if(class_exists($_class))
+						if(class_exists($_class, false)) // prevent __autoload - performance
 						{
 							$ret = call_user_func(array($_class,$_function), $parm);
 						}

@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.175 $
-* $Date: 2010-01-09 20:32:51 $
-* $Author: e107steved $
+* $Revision: 1.176 $
+* $Date: 2010-02-03 11:08:36 $
+* $Author: secretr $
 *
 */
 //
@@ -2107,9 +2107,19 @@ function plugInstalled($plugname)
  * {
  * 
  * }
+ * 
+ * // __autoload() will look in e_PLUGIN.'myplug/shortcodes/my_shortcodes.php for this class
+ * // e_admin_ui is core handler, so it'll be autoloaded as well
+ * class plugin_myplug_my_shortcodes extends e_admin_ui
+ * {
+ * 
+ * }
  * </code>
  * TODO - use spl_autoload[_*] for core autoloading some day (PHP5 > 5.1.2)
  * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
+ * 
+ * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to 
+ * distinguish them from the core batches 
  * 
  * @param string $className
  * @return void
@@ -2122,27 +2132,53 @@ function __autoload($className)
         return;
     }
 	$tmp = explode('_', $className);
+	$filename = '';
 	
 	switch($tmp[0])
 	{
-		case 'plugin': 
-			array_shift($tmp);
-			// folder 'includes' is not part of the class name
-			if (!isset($tmp[0]) || !$tmp[0]) return;			// In case we get an empty class part
-			$tmp[0] = $tmp[0].'/includes'; 
+		case 'plugin': // plugin handlers/shortcode batches
+			array_shift($tmp); // remove 'plugin'
+			$end = array_pop($tmp); // check for 'shortcodes' end phrase
+			
+			if (!isset($tmp[0]) || !$tmp[0]) return; // In case we get an empty class part
+			
+			// Currently only batches inside shortcodes/ folder are auto-detected, 
+			// read the todo for e_shortcode.php related problems 
+			if('shortcodes' == $end)
+			{
+				$filename = e_PLUGIN.$tmp[0].'/shortcodes/'; // plugname/shortcodes/
+				unset($tmp[0]);
+				$filename .= implode('_', $tmp).'_shortcodes.php'; // my_shortcodes.php
+				break;
+			}
+			if($end)
+			{
+				$tmp[] = $end; // not a shortcode batch - append the end phrase again
+			}
+			
+			// Handler check 
+			$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name 
 			$filename = e_PLUGIN.implode('/', $tmp).'.php';
 			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
 		break;
 	
-		default: //core libraries
+		default: //core libraries, core shortcode batches
+			// core SC batch check
+			$end = array_pop($tmp);
+			if('shortcodes' == $end) 
+			{
+				$filename = e_FILE.'shortcode/batch/'.$className.'.php'; // core shortcode batch
+				break;
+			}
+
 			$filename = e107::getHandlerPath($className, true); 
 			//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
 		break;
 	}
-
+	
 	if($filename)
 	{
-		// auto load doesn't REQUIRE files, because this will break things like call_user_func()
+		// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 		include($filename);
 	}
 } 
