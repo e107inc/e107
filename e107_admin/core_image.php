@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2010-01-24 15:55:48 $
+|     $Revision: 1.58 $
+|     $Date: 2010-02-04 21:11:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ $core_image = array (
     'comment.php' => '240a0a659d78c66c88ccf87341e4a520',
     'compact.php' => '20bccea2ef81cc86a86782fa4841e45f',
     'content.php' => 'bf2239404990afed185913002429e682',
-    'core_image.php' => 'b308ff6dcaccd29fad2bacee009a1e66',
+    'core_image.php' => '9aa76f9c436b60b4d7969920793b048b',
     'cpage.php' => '2af6626d352252cdb393f51447b8630f',
     'credits.php' => '273cb301d908936a58a8d38b4e92ba5a',
     'db.php' => '1609930adca0aee8d3fe649e729feec9',
@@ -71,7 +71,7 @@ $core_image = array (
     'download.php' => 'eb33cb0fa0acf5bdb68afd6b87ed3bb2',
     'e107_update.php' => 'c23624862e7dc50fab29aa1890c7872a',
     'emoticon.php' => '9403ce6e8c4dc4ab34d32b3d74a1d699',
-    'fileinspector.php' => 'e1d831bfb0ca6a9244a4ced5b0d85fc3',
+    'fileinspector.php' => '3263289bbf6c87a9332a7c8665153cf8',
     'filemanager.php' => '7b05edc097aa543f1a29941600134ed3',
     'filetypes_.php' => 'f951037335e993337792606cc1475cec',
     'fla.php' => '397cfd1d0d0d6ad72ea3b495cef4e505',
@@ -106,7 +106,7 @@ $core_image = array (
     'users.php' => '15a2adcc472bc1e726e2400ba6d4a04e',
     'users_extended.php' => '016339d4fdaeaac0d7e8bb7f91c46952',
     'users_extended_predefined.php' => '51128e45b6620f7b6ead6fbd8521b43e',
-    'ver.php' => 'cc235c03eba17431cb58fde88315ff19',
+    'ver.php' => 'dbc126b04bb4ba0aab2f2bc3ad9f0e12',
     'wmessage.php' => '17afb0f8ef07cfd675cd92e9f7e606a3',
   ),
   $coredir['docs'] => 
@@ -164,7 +164,7 @@ $core_image = array (
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       'justify.bb' => '016500f910beb0f820dd58c4915f2489',
       'left.bb' => '990ddba32b14bea648745cc373035bde',
-      'link.bb' => '076298c6390cb61ee3b4ae96618ab01f',
+      'link.bb' => '1bdce966ba406acd713368481f76ae48',
       'list.bb' => 'b8a3e5c98d6ebc1f1ca1a122bd7ced0e',
       'php.bb' => 'e4ec86c0947ef2544f19d260c05d74ac',
       'quote.bb' => '12bfbba32661e309a33972e388b0e912',
@@ -241,7 +241,7 @@ $core_image = array (
         'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         'news_archives.php' => 'b7513e4539e166bd371833f77b2c2434',
         'news_shortcodes.php' => 'c2a158cbafb4d7727f324dde64e257f8',
-        'signup_shortcodes.php' => '9b3feb7ccebc253b7a0826ccc4135a36',
+        'signup_shortcodes.php' => 'fcfbb12fee9518fc210c417dec3df99a',
         'sitedown_shortcodes.php' => '3af27a1e8b5895ef7eb64ce80b300ce5',
         'user_shortcodes.php' => 'a3b47064debd03115dfb95cb82927438',
         'usersettings_shortcodes.php' => '21d6fd90f2efd6e7229fcf37d6ec689e',
@@ -2373,9 +2373,9 @@ $core_image = array (
       'pm_default.php' => 'b7981b895e3afc6bc95a2198f0c40423',
       'pm_func.php' => '61f9aea908d41a5d23a791efe67ac0ac',
       'pm_notes.txt' => 'df26332907da1f35c4731d8893aea23e',
-      'pm_shortcodes.php' => '877fd4430af30e01722599bbbe373793',
+      'pm_shortcodes.php' => '4269fb94e7d2389bdc0dd5f87c55bea0',
       'pm_sql.php' => '4608486c1027c6485dc32674fd536dc5',
-      'pm_template.php' => '16fd9cc065d391fbc560b25b743eb457',
+      'pm_template.php' => '75e17d700ff10e31c0c00181fa5eedc9',
       'pm_update.php' => 'cb5624f01693633d7509c2b47a91ae20',
       'pm_update_check.php' => 'a5b341b5373844cdfc1f961fb3d3151f',
       'private_msg_menu.php' => '2bcc304712f5e17de30c2f5db785f10b',
@@ -3054,11 +3054,11 @@ $core_image = array (
   'article.php' => '274696e46f6946007b5a1d308e033b3a',
   'backend.php' => '312552577f67c7965a76bda84b949a64',
   'banner.php' => 'e028fd2fa6fac77863505acb501b6632',
-  'class2.php' => 'c2b82bc3e2e1722b8cfbd17e1f97dea2',
+  'class2.php' => '5244ffd4e3b772edff631ef0fff9b857',
   'comment.php' => '22392707e8379be29e501b99176e1f74',
   'contact.php' => '086abf7a78a498f82d1824415ef794f2',
   'content.php' => '9a9f4da9afbd0d081e4f275fbcd13674',
-  'download.php' => '910e55b0e9974fb1a792911fef37ffd4',
+  'download.php' => 'c39401e42df0f077720ee0681c177b1f',
   'e107.htaccess' => 'c5e1ad68b41f947be285926c0f81d914',
   'e107.robots.txt' => '3f7b0f4a9348e494b4cbc1ff8ce84831',
   'e107_config.php' => 'd41d8cd98f00b204e9800998ecf8427e',
@@ -3081,7 +3081,7 @@ $core_image = array (
   'rate.php' => '4730b1d1cf3ace6af2179fb52a521366',
   'request.php' => 'c65a13737a9be96bd04ab836a9a14350',
   'search.php' => '69297aaac6cd8e8c44371e2bdd3d7eec',
-  'signup.php' => 'e2e8ff4725d032a45ddba679b480eeae',
+  'signup.php' => '10a78db0bd691423a020d480709088e9',
   'sitedown.php' => '6583e7e3e5410c3b9097e5b49ae09968',
   'subcontent.php' => '5a534e399228320e38056244e944357d',
   'submitnews.php' => 'f3f70d135b6e2937701871e4ee8cf611',
@@ -3089,7 +3089,7 @@ $core_image = array (
   'upload.php' => '0096a4384f7b820091deae6e94aa4f67',
   'user.php' => '04be88f587ad8a00cbf42eacbef75598',
   'userposts.php' => '8e51d39cc4bdb74563861c5779139730',
-  'usersettings.php' => '0f73f3495a500c15f4d930a1fbcf1bfe',
+  'usersettings.php' => '913519101272d52ff2991a21b0cded06',
 );
 
 $deprecated_image = array (
@@ -3205,7 +3205,6 @@ $deprecated_image = array (
     'downloadOLD.php' => 'da13cde41db327d1a251bd02b4f11974',
     'download_.php' => '17e197e6094df8c6f70c9d6ee5d99cb5',
     'download_category.php' => '6f81e7b0d0fd7b8e1278bab935bcb431',
-    'filetypes.php' => 'f951037335e993337792606cc1475cec',
     'forum.php' => '8fcecb7939d0e2f3776602f12f256d41',
     'forum_conf.php' => '59104f7a4e953f4935c82eaedc060931',
     'header_links.php' => '89b428327e178a5ec1cd590a8a5a5eea',
@@ -5838,7 +5837,7 @@ $deprecated_image = array (
   'chat.php' => 'f99ca9a68e350852ff12b6f201ff46e4',
   'e107_6171_readme.txt' => '7f411eaafccc974f91447c8efd9992d4',
   'forum_post.php' => 'b4537a7296252a0d8c010824b698259b',
-  'install.php' => 'ffd03f3f3d62445d9bd0e4fbc96d361d',
+  'install.php' => '6962265d372d8d5bd08ccb6a87c5187f',
   'oldpolls.php' => '2758e56550195c508819c6062b950bc3',
   'readme.txt' => 'ff257006036939e779d287cdfee3b4b3',
   'sitemap.php' => 'd72fdc265a68f5a3b8a5d4b51d776f84',
