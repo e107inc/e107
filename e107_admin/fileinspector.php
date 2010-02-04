@@ -3,7 +3,7 @@
 +----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (c)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2007-09-27 20:11:35 $
-|     $Author: e107steved $
+|     $Revision: 1.39 $
+|     $Date: 2010-02-04 20:45:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -36,6 +36,8 @@ foreach ($maindirs as $maindirs_key => $maindirs_value) {
 }
 
 require_once('core_image.php');
+$core_image[$coredir['admin']]['filetypes.php'] = ' ';
+
 
 if (e_QUERY) {
 	$fi -> snapshot_interface();
@@ -54,7 +56,7 @@ class file_inspector {
 	var $count = array();
 	var $results = 0;
 	
-	function file_inspector() 
+	function file_inspector()
 	{
 		global $e107;
 		set_time_limit(240);
@@ -242,13 +244,13 @@ class file_inspector {
 	  $test_list = array(
 			$admin_dir.'core_image.php' => 'uncalc',
 			$admin_dir.'filetypes.php' => 'uncalc',
-			$admin_dir.'filetypes_.php' => 'ignore',
-			$admin_dir.'admin_filetypes.php' => 'nocalc',
+			$admin_dir.'filetypes_.php' => 'uncalc',
+			$admin_dir.'admin_filetypes.php' => 'uncalc',
 			$this -> root_dir.'/e107_config.php' => 'uncalc',
+			$this -> root_dir.'/.htaccess' => 'uncalc',
+			$this -> root_dir.'/robots.txt' => 'nocalc',
 			$this -> root_dir.'/e107.htaccess' => 'ignore',
-			$this -> root_dir.'/install.php' => 'ignore',
-			$image_dir.'adminlogo.png' => 'uncalc',				// Users often change logo
-			$image_dir.'logo.png' => 'uncalc'
+			$this -> root_dir.'/e107.robots.txt' => 'ignore',
 		);
 	  if (isset($test_list[$filename])) return $test_list[$filename];
 	  return 'check';
@@ -262,13 +264,13 @@ class file_inspector {
 	//	$dir
 	//	&$tree_end
 	//	&$parent_expand
-	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) 
+	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand)
 	{
 	  global $coredir;
 	
 	  unset ($childOut);
 	  $parent_expand = false;
-	  if (substr($dir, -1) == '/') 
+	  if (substr($dir, -1) == '/')
 	  {
 		$dir = substr($dir, 0, -1);
 	  }
@@ -279,37 +281,37 @@ class file_inspector {
 	  $directory = $level ? basename($dir) : SITENAME;
 	  $level++;
 		
-	  foreach ($list as $key => $value) 
+	  foreach ($list as $key => $value)
 	  {
 		$this -> parent = $dir_id;
-		if (is_array($value)) 
+		if (is_array($value))
 		{ // Entry is a subdirectory - recurse another level
 		  $path = $dir.'/'.$key;
 		  $child_open = false;
 		  $child_end = true;
 		  $sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
 		  $tree_end = false;
-		  if ($child_expand) 
+		  if ($child_expand)
 		  {
 			$parent_expand = true;
 			$last_expand = true;
 		  }
-		} 
-		else 
+		}
+		else
 		{
 		  $path = $dir.'/'.$key;
 		  $fid = strtolower($key);
 		  $this -> files[$dir_id][$fid]['file'] = ($_POST['type'] == 'tree') ? $key : $path;
-		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE)
 		  {	// We're checking a file here
-			if ($_POST['core'] != 'none') 
+			if ($_POST['core'] != 'none')
 			{		// Look at core files
 			  $this -> count['core']['num']++;
 			  $this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
-			  if ($_POST['regex']) 
+			  if ($_POST['regex'])
 			  {	// Developer prefs activated - search file contents according to regex
 				$file_content = file($path);		// Get contents of file
-				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE)
 				{
 				  if ($this -> files[$dir_id][$fid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content))
 				  {	// Search string found - add file to list
@@ -318,41 +320,41 @@ class file_inspector {
 					$dir_icon = 'fileinspector.png';
 					$parent_expand = TRUE;
 					$this -> results++;
-				  } 
-				  else 
+				  }
+				  else
 				  {	// Search string not found - discard from list
 					unset($this -> files[$dir_id][$fid]);
 					$known[$dir_id][$fid] = true;
 					$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
 				  }
 				}
-			  } 
-			  else 
-			  {	
-				if ($_POST['integrity']) 
+			  }
+			  else
+			  {
+				if ($_POST['integrity'])
 				{	// Actually check file integrity
 				  switch ($this_action = $this->check_action($dir,$key))
 				  {
 					case 'ignore' :
 				    case 'check' :
-					  if ($this -> checksum($path) != $value) 
+					  if ($this -> checksum($path) != $value)
 					  {
 						$this -> count['fail']['num']++;
 						$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
 						$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
 						$dir_icon = 'folder_fail.png';
 						$parent_expand = TRUE;
-					  } 
-					  else 
+					  }
+					  else
 					  {
 						$this -> count['pass']['num']++;
 						$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
-						if ($_POST['core'] != 'fail') 
+						if ($_POST['core'] != 'fail')
 						{
 						  $this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
 						  $dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
-						} 
-						else 
+						}
+						else
 						{
 						  unset($this -> files[$dir_id][$fid]);
 						  $known[$dir_id][$fid] = true;
@@ -366,28 +368,28 @@ class file_inspector {
 					  if ($_POST['core'] != 'fail')
 					  {
 						$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
-					  } 
-					  else 
+					  }
+					  else
 					  {
 						unset($this -> files[$dir_id][$fid]);
 						$known[$dir_id][$fid] = true;
 					  }
 					  break;
 				  }
-				} 
-				else 
+				}
+				else
 				{	// Just identify as core file
 				  $this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 				}
 			  }
-			} 
-			else 
+			}
+			else
 			{
 			  unset ($this -> files[$dir_id][$fid]);
 			  $known[$dir_id][$fid] = true;
 			}
-		  } 
-		  else if ($_POST['missing']) 
+		  }
+		  else if ($_POST['missing'])
 		  {
 			switch ($this_action = $this->check_action($dir,$key))
 			{
@@ -405,8 +407,8 @@ class file_inspector {
 				$known[$dir_id][$fid] = true;
 			    break;
 			}
-		  } 
-		  else 
+		  }
+		  else
 		  {
 			unset ($this -> files[$dir_id][$fid]);
 		  }
@@ -525,7 +527,7 @@ class file_inspector {
 			".$scan_text."
 			</div>
 			</td>
-			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";	
+			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
 		} else {
 			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -691,7 +693,7 @@ class file_inspector {
 		$data .= "+ ----------------------------------------------------------------------------+\n";
 		$data .= "|     e107 website system\n";
 		$data .= "|\n";
-		$data .= "|     ©Steve Dunstan 2001-2002\n";
+		$data .= "|     ï¿½Steve Dunstan 2001-2002\n";
 		$data .= "|     http://e107.org\n";
 		$data .= "|     jalist@e107.org\n";
 		$data .= "|\n";
@@ -699,9 +701,9 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.38 $\n";
-		$data .= "|     \$Date: 2007-09-27 20:11:35 $\n";
-		$data .= "|     \$Author: e107steved $\n";
+		$data .= "|     \$Revision: 1.39 $\n";
+		$data .= "|     \$Date: 2010-02-04 20:45:33 $\n";
+		$data .= "|     \$Author: mcfly_e107 $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
