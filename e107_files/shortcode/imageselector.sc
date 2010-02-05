@@ -1,5 +1,5 @@
 
-// $Id: imageselector.sc,v 1.11 2009-11-28 15:31:08 secretr Exp $
+// $Id: imageselector.sc,v 1.12 2010-02-05 10:52:28 secretr Exp $
 //FIXME - full rewrite, backward compatible
 global $sql,$parm,$tp;
 
@@ -23,6 +23,7 @@ if(trim($default[0])=="{")
 
 $scaction = varsettrue($scaction, 'all');
 $text = '';
+$name_id = e107::getForm()->name2id($name);
 
 //Get Select Box Only!
 if($scaction == 'select' || $scaction == 'all')
@@ -53,7 +54,7 @@ if($scaction == 'select' || $scaction == 'all')
 	$tabindex = varset($tabindex) ? " tabindex='{$tabindex}'" : '';
 	$class = varset($class) ? " class='{$class}'" : " class='tbox imgselector'";
 
-	$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name}_prev'); \">
+	$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
 	<option value=''>".$label."</option>\n";
 
 	require_once(e_HANDLER.'admin_handler.php');
@@ -90,25 +91,44 @@ if($scaction == 'select' || $scaction == 'all')
 $hide = '';
 if(!$pvw_default)
 {
-	$pvw_default = ($default) ? $path.$default : e_IMAGE_ABS."generic/blank.gif";
-	$hide = 'display: none;';
+	if($default)
+	{
+		$test = pathinfo($default);
+		if('.' == $test['dirname'])
+		{
+			// file only, add absolute path
+			$path = $tp->createConstants($path, 1);
+			$path = $tp->replaceConstants($path, 'abs');
+			$pvw_default = $path.$default;
+		}
+		else
+		{
+			// path, convert to absolute path
+			$pvw_default = $tp->createConstants($default, 1);
+			$pvw_default = $tp->replaceConstants($pvw_default, 'abs');
+		}
+	}
+	else 
+	{
+		$pvw_default = e_IMAGE_ABS."generic/blank.gif";
+		$hide = ' style="display: none;"';
+	}
 }
 
-
-$text .= "<div class='imgselector-container' id='{$name}_prev'>";
+$text .= "<div class='imgselector-container' id='{$name_id}_prev'>";
 if(varset($click_target))
 {
    $pre		= varset($click_prefix);
    $post 	= varset($click_postfix);
-   $text .= "<a href='#' onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name}\").value+\"{$post}\", true);document.getElementById(\"{$name}\").selectedIndex = -1;return false;'>";
+   $text .= "<a href='#'{$hide} onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name_id}\").value+\"{$post}\", true);document.getElementById(\"{$name_id}\").selectedIndex = -1;return false;'>";
 }
 else
 {
-	$text .= "<a href='{$pvw_default}' rel='external' class='e-image-preview'>";
+	$text .= "<a href='{$pvw_default}'{$hide} rel='external' class='e-image-preview'>";
 }
 if(vartrue($height)) $height = "height:{$height};";
 if(vartrue($width)) $width = "width:{$width}; ";
-$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}{$hide}' /></a>";
+$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}' /></a>";
 
 $text .= "</div>\n";
 
