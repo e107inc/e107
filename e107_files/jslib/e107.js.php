@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.41 $
- * $Date: 2010-01-06 08:53:58 $
+ * $Revision: 1.42 $
+ * $Date: 2010-02-05 13:00:56 $
  * $Author: secretr $
  *
 */
@@ -99,6 +99,8 @@ var e107Registry = {
         e_IMAGE_PACK:    '<?php echo e_IMAGE_ABS; ?>',
         e_PLUGIN:   '<?php echo e_PLUGIN_ABS; ?>',
         e_FILE:     '<?php echo e_FILE_ABS; ?>',
+        e_MEDIA:     '<?php echo e_MEDIA_ABS; ?>', //new
+        e_WEB:     '<?php echo e_WEB; ?>', // new, should be ABS by default
         e_ADMIN: 	'<?php echo deftrue('ADMIN') ? e_ADMIN_ABS : ""; ?>',
         e_THEME:    '<?php echo e_THEME_ABS; ?>',
         THEME:      '<?php echo THEME_ABS; ?>'
