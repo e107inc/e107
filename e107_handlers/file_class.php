@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2010-01-16 14:17:10 $
+ * $Revision: 1.10 $
+ * $Date: 2010-02-05 11:13:38 $
  * $Author: secretr $
  */
 
@@ -51,10 +51,26 @@ Note:
 
 class e_file
 {
-	var	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
-	var $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
-	var $mode = 'default';
-	var $finfo = 'default';
+	public	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
+	public $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
+	
+	/**
+	 * Defines what array format should return get_files() method
+	 * If one of 'fname', 'path', 'full' - numerical array.
+	 * If default - associative array (depends on $finfo value).
+	 * 
+	 * @see get_files()
+	 * @var string one of the following: default (BC) | fname | path | full
+	 */
+	public $mode = 'default';
+	
+	/**
+	 * Defines what info should gatter get_files method.
+	 * Works only in 'default' mode.
+	 * 
+	 * @var string default (BC) | image | file | all
+	 */
+	public $finfo = 'default';
 
 	// Constructor
 	function __construct()
@@ -65,8 +81,8 @@ class e_file
 
 	function setDefaults()
 	{
-		$this->dirFilter = array('/', 'CVS', '.svn');										// Default directory filter (exact matches only)
-		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp');		// Default file filter (regex format)
+		$this->dirFilter = array('/', 'CVS', '.svn'); // Default directory filter (exact matches only)
+		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
 	}
 
 	public function setFileInfo($val='default')
@@ -146,7 +162,7 @@ class e_file
 					}
 					if($rejected == FALSE)
 					{
-						switch($this->mode) //TODO remove this check from the loop.
+						switch($this->mode) 
 						{
 							case 'fname':
 								$ret[] = $file;
@@ -160,11 +176,11 @@ class e_file
 								$ret[] = $path."/".$file;
 							break;
 
+							case 'all':
 							default:
-
-								if($this->finfo == 'all')
+								if('default' != $this->finfo)
 								{
-									$finfo = $this->get_file_info($path."/".$file);
+									$finfo = $this->get_file_info($path."/".$file, ('file' != $this->finfo)); // -> 'all' & 'image'
 								}
 								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
 								$finfo['fname'] = $file;
@@ -174,27 +190,31 @@ class e_file
 						}
 					}
 				}
-
-
-
 			}
 		}
 		return $ret;
 	}
 
-	function get_file_info($path_to_file)
+	function get_file_info($path_to_file, $imgcheck = true)
 	{
 		$finfo = array();
 
-		$tmp = getimagesize($path_to_file);
-		$finfo['img-width'] = $tmp[0];
-		$finfo['img-height'] = $tmp[1];
-		$finfo['mime'] = $tmp['mime'];
+		if($imgcheck && ($tmp = getimagesize($path_to_file)))
+		{
+			$finfo['img-width'] = $tmp[0];
+			$finfo['img-height'] = $tmp[1];
+			$finfo['mime'] = $tmp['mime'];
+		}
 
-
-		$tmp2 = stat($path_to_file);
-		$finfo['fsize'] = $tmp2['size'];
-		$finfo['modified'] = $tmp2['mtime'];
+		$tmp = stat($path_to_file);
+		if($tmp)
+		{
+			$finfo['fsize'] = $tmp['size'];
+			$finfo['modified'] = $tmp['mtime'];
+		}
+		
+		// associative array elements: dirname, basename, extension, filename
+		$finfo['pathinfo'] = pathinfo($path_to_file);
 
 		return $finfo;
 	}
