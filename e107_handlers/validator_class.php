@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.19 $
- * $Date: 2010-02-07 12:13:43 $
+ * $Revision: 1.20 $
+ * $Date: 2010-02-07 13:55:38 $
  * $Author: secretr $
  *
 */
@@ -170,13 +170,13 @@ class e_validator
 	 * - type | condition = 
 	 * 		- regex | regex string
 	 * 		- email | no condition required
-	 * 		- int/integer | number range in format 'min-max'
-	 * 		- float |  number range in format 'min-max'
-	 * 		- str/string | number string length range in format 'min-max'
+	 * 		- int/integer | number range in format 'min:max'
+	 * 		- float |  number range in format 'min:max'
+	 * 		- str/string | number string length range in format 'min:max'
 	 * 		- required | no condition required
 	 * 		- callback | string function name or array(class name|object, method) (static call)
 	 * 		- instanceof | string class name
-	 * 		- array | array count range in format 'min-max'
+	 * 		- array | array count range in format 'min:max'
 	 * 		- compare | string field_name, value should be in format field_name => array('value1', 'value1')
 	 * 					if value1 === value1, field_name => value1 will be added to $_valid_data array
 	 * - field title LAN = 
@@ -511,12 +511,12 @@ class e_validator
 		
 			case 'int':
 			case 'integer':
-				if(!preg_match('/[0-9]/', $value))
+				if(!preg_match('/[0-9]/', $value)) // TODO - negative values!
 				{
 					$this->addValidateResult($name, self::ERR_INT_EXPECTED);
 					return false;
 				}
-				$tmp = explode('-', $cond);
+				$tmp = explode(':', $cond);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > (integer) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
@@ -533,13 +533,18 @@ class e_validator
 			
 			case 'str':
 			case 'string':
-				$tmp = explode('-', $cond);
+			case 'text':
+			case 'varchar':
+				$tmp = explode(':', $cond);
 				$length = e107::getParser()->ustrlen($value);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_SHORT);
 					return false;
 				}
+				
+				if('varchar' == $type && !varset($tmp[1])) $tmp[1] = 255;
+				
 				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
@@ -555,7 +560,7 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_FLOAT_EXPECTED);
 					return false;
 				}
-				$tmp = explode('-', $cond);
+				$tmp = explode(':', $cond);
 				if(is_numeric($tmp[0]) && (float) $tmp[0] > (float) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
@@ -595,7 +600,7 @@ class e_validator
 			case 'file': // TODO - type image - validate dimensions?
 				parse_str($cond, $params);
 				$path = e107::getParser()->replaceConstants(varset($params['base']).$value);
-				if(is_file($path))
+				if(!$value || !is_file($path))
 				{
 					$this->addValidateResult($name, self::ERR_NOT_FILE);
 					return false;
@@ -609,14 +614,19 @@ class e_validator
 				{
 					$tmp = explode('-', $params['size'], 2);
 					$fs = filesize($path);
-					if(!$fs || $fs < (integer) $tmp[0]) 
+					if(!$fs || (integer) $tmp[0] > $fs) 
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMIN_FILE);
 						return false;
 					}
-					elseif(is_numeric(varset($tmp[1])) && $fs > (integer) $tmp[1])
+					elseif(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMAX_FILE);
+						return false;
+					}
+					elseif(is_numeric(varset($params['maxlen'])) && (integer) $params['maxlen'] < e107::getParser()->ustrlen($fs))
+					{
+						$this->addValidateResult($name, self::ERR_TOO_LONG);
 						return false;
 					}
 				}
@@ -630,10 +640,36 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
 					return false;
 				}
+				
+				if('varchar' == $type && !varset($tmp[1])) $tmp[1] = 255;
+				
+				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_LONG);
+					return false;
+				}
+				
 				if(!($value[0] && $value[1] && $value[0] == $value[1]))
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
 					return false;
+				}
+				
+				// check length
+				if($cond)
+				{
+					$tmp = explode('-', $cond);
+					$length = e107::getParser()->ustrlen($value[0]);
+					if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					{
+						$this->addValidateResult($name, self::ERR_TOO_SHORT);
+						return false;
+					}
+					if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					{
+						$this->addValidateResult($name, self::ERR_TOO_LONG);
+						return false;
+					}
 				}
 				$this->addValidData($name, $value[0]);
 				return true;
@@ -649,6 +685,23 @@ class e_validator
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
 					return false;
+				}
+				
+				// check length
+				if($cond)
+				{
+					$tmp = explode('-', $cond);
+					$length = e107::getParser()->ustrlen($value[0]);
+					if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					{
+						$this->addValidateResult($name, self::ERR_TOO_SHORT);
+						return false;
+					}
+					if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					{
+						$this->addValidateResult($name, self::ERR_TOO_LONG);
+						return false;
+					}
 				}
 				$this->addValidData($name, $value[0]);
 				return true;
