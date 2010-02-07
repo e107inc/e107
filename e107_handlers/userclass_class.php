@@ -9,8 +9,8 @@
  * User class functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
- * $Revision: 1.48 $
- * $Date: 2010-01-11 21:09:31 $
+ * $Revision: 1.49 $
+ * $Date: 2010-02-07 19:42:07 $
  * $Author: e107steved $
  */
 
@@ -18,7 +18,7 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: userclass_class.php,v 1.48 2010-01-11 21:09:31 e107steved Exp $;
+ *	@version 	$Id: userclass_class.php,v 1.49 2010-02-07 19:42:07 e107steved Exp $;
  *
  *	This class handles all user-related user class functions.  Admin functions inherit from it.
  */
@@ -1186,8 +1186,8 @@ class user_class_admin extends user_class
 		}
 		if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
 		// Next (commented out) line gives a 'conventional' link
-		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
-	//    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
+		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
+		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_SELF."?action=edit&amp;id={$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
 			//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
 		// vertical-align: middle doesn't work! Nor does text-top

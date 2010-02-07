@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.37 $
- * $Date: 2010-01-16 19:53:34 $
+ * $Revision: 1.38 $
+ * $Date: 2010-02-07 19:42:02 $
  * $Author: e107steved $
  *
 */
@@ -21,7 +21,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: userclass2.php,v 1.37 2010-01-16 19:53:34 e107steved Exp $;
+ *	@version 	$Id: userclass2.php,v 1.38 2010-02-07 19:42:02 e107steved Exp $;
  */
 
 require_once('../class2.php');
@@ -512,7 +512,7 @@ else
 
 $text .= "</div>";
 $text .= "</form></div><br /><br />";
-	$text .= $e_userclass->show_graphical_tree();
+$text .= $e_userclass->show_graphical_tree();
 
 
 $ns->tablerender(UCSLAN_21, $text);
@@ -605,13 +605,6 @@ $ns->tablerender(UCSLAN_21, $text);
   case 'options' :
     if (!check_class(e_UC_MAINADMIN)) break;
 
-	// Set general options
-	if (isset($_POST['set_admin_options']))
-	{
-	  $pref['admin_log_log']['admin_userclass'] = intval($_POST['admin_log_userclass']);
-	  save_prefs();
-	}
-
 	if (isset($_POST['add_class_tree']))
 	{	// Create a default tree
 		$message = UCSLAN_62;
@@ -644,16 +637,6 @@ $ns->tablerender(UCSLAN_21, $text);
 	{
 	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
-
-	$text = "<form method='post' action='".e_SELF."?options' id='optionsForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr><td>".UCSLAN_59."</td><td>
-		<input type='checkbox' name='admin_log_userclass' value='1'".(varset($pref['admin_log_log']['admin_userclass'],0) ? " checked='checked'" : '')."/></td></tr>
-		<tr><td style='text-align:center' colspan='2'>
-		<input class='button' type='submit' name='set_admin_options' value='".UCSLAN_UPDATE."' />
-		</td>
-		</tr></table></form>";
-	$ns->tablerender(UCSLAN_60, $text);
 
 
 	$text = "<form method='post' action='".e_SELF."?options' id='treesetForm'>
@@ -809,13 +792,18 @@ $ns->tablerender(UCSLAN_21, $text);
 
 
 
-// Log event to admin log
+
+/**
+ *	Log event to admin log
+ *
+ *	@param string $msg_num - 2-digit event number (MUST be as a string)
+ *	@param string $woffle - log detail
+ *
+ *	@return none
+ */
 function userclass2_adminlog($msg_num='00', $woffle='')
 {
-  global $pref, $admin_log;
-  if (!varset($pref['admin_log_log']['admin_userclass'],0)) return;
-//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'UCLASS_'.$msg_num);
-  $admin_log->log_event('UCLASS_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
+	e107::getAdminLog()->log_event('UCLASS_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
 
