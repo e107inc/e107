@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2010-02-04 20:45:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.40 $
+|     $Date: 2010-02-07 17:23:50 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -29,7 +29,11 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $fi = new file_inspector;
 
-$DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
+$DOCS_DIRECTORY = $HELP_DIRECTORY;		// Give a sensible, albeit probably invalid, value
+if (substr($HELP_DIRECTORY,-5,5) == 'help/')
+{
+	$DOCS_DIRECTORY = substr($HELP_DIRECTORY,0,-5);		// Whatever $HELP_DIRECTORY is set to, assume docs are in a subdirectory called 'help' off it
+}
 $maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
 foreach ($maindirs as $maindirs_key => $maindirs_value) {
 	$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
@@ -701,9 +705,9 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.39 $\n";
-		$data .= "|     \$Date: 2010-02-04 20:45:33 $\n";
-		$data .= "|     \$Author: mcfly_e107 $\n";
+		$data .= "|     \$Revision: 1.40 $\n";
+		$data .= "|     \$Date: 2010-02-07 17:23:50 $\n";
+		$data .= "|     \$Author: e107steved $\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
