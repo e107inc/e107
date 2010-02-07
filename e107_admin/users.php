@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.71 $
-* $Date: 2009-11-23 01:17:29 $
-* $Author: e107coders $
+* $Revision: 1.72 $
+* $Date: 2010-02-07 18:32:35 $
+* $Author: e107steved $
 *
 */
 require_once ('../class2.php');
@@ -1202,6 +1202,10 @@ class users
 				// return $row[$key].'&nbsp;';	
 				return $prm->renderPerms($row[$key],$row['user_id']);
 			break;
+			
+			case 'user_ban' :
+				return ($row[$key] == 1) ? ADMIN_TRUE_ICON : '';	// We may want to show more of the status later
+				break;
 			
 		}
 				
