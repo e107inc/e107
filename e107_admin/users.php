@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2009-12-15 22:21:12 $
+|     $Revision: 1.102 $
+|     $Date: 2010-02-07 18:32:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -697,7 +697,12 @@ class users
 			{
 				$text .= "&nbsp;";
 			}
-		}elseif(in_array($disp,$boleanfields))
+		}
+		elseif ($disp == 'user_ban')
+		{
+			$text .= ($row[$disp] == 1) ? ADMIN_TRUE_ICON : "";
+		}
+		elseif(in_array($disp,$boleanfields))
 		{
         	$text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "";
 		}
