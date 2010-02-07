@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.20 $
+ * $Date: 2010-02-07 17:24:05 $
+ * $Author: e107steved $
  */
 
 if ($_SERVER['QUERY_STRING'] == 'alone')
@@ -93,9 +93,14 @@ Standalone file scan - checks for a valid set of E107 files<br />";
     echo 'Language file not found - cannot continue<br />';
 	return;
   }
-  
+
+	$DOCS_DIRECTORY = $HELP_DIRECTORY;		// Give a sensible, albeit probably invalid, value
+	if (substr($HELP_DIRECTORY,-5,5) == 'help/')
+	{
+		$DOCS_DIRECTORY = substr($HELP_DIRECTORY,0,-5);		// Whatever $HELP_DIRECTORY is set to, assume docs are in a subdirectory called 'help' off it
+	}
+
   // Strip trailing '/' off each directory name
-  $DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
   $maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
   foreach ($maindirs as $maindirs_key => $maindirs_value) 
   {
@@ -130,7 +135,11 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $fi = new file_inspector;
 
-$DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
+$DOCS_DIRECTORY = $HELP_DIRECTORY;		// Give a sensible, albeit probably invalid, value
+if (substr($HELP_DIRECTORY,-5,5) == 'help/')
+{
+	$DOCS_DIRECTORY = substr($HELP_DIRECTORY,0,-5);		// Whatever $HELP_DIRECTORY is set to, assume docs are in a subdirectory called 'help' off it
+}
 $maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
 foreach ($maindirs as $maindirs_key => $maindirs_value) 
 {
