@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2010-01-22 12:24:16 $
+|     $Revision: 1.12 $
+|     $Date: 2010-02-07 00:43:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,7 @@ class parseXml {
 			}
 			if ($data)
 			{
+				$this->xmlFileContents = $data;
 				return $data;
 			}
 		}
@@ -206,25 +207,25 @@ class CXml
    var $pointer;
 
    function CXml() { }
-  
+
    function Set_xml_data( &$xml_data )
    {
        $this->index = 0;
        $this->pointer[] = &$this->obj_data;
-  
+
        //strip white space between tags
        $this->xml_data = preg_replace("/>[[:space:]]+</i", "><", $xml_data);
        $this->xml_parser = xml_parser_create( "UTF-8" );
-  
+
        xml_parser_set_option( $this->xml_parser, XML_OPTION_CASE_FOLDING, false );
        xml_set_object( $this->xml_parser, $this );
        xml_set_element_handler( $this->xml_parser, "_startElement", "_endElement");
        xml_set_character_data_handler( $this->xml_parser, "_cData" );
-      
+
        xml_parse( $this->xml_parser, $this->xml_data, true );
        xml_parser_free( $this->xml_parser );
    }
-  
+
    function _startElement( $parser, $tag, $attributeList )
    {
        foreach( $attributeList as $name => $value )
@@ -237,7 +238,7 @@ class CXml
        eval( "\$this->pointer[\$this->index]->" . $tag . "[] = \$object;" );
        eval( "\$size = sizeof( \$this->pointer[\$this->index]->" . $tag . " );" );
        eval( "\$this->pointer[] = &\$this->pointer[\$this->index]->" . $tag . "[\$size-1];" );
-          
+
        $this->index++;
    }
 
@@ -246,7 +247,7 @@ class CXml
        array_pop( $this->pointer );
        $this->index--;
    }
-  
+
    function _cData( $parser, $data )
    {
        if (empty($this->pointer[$this->index])) {
@@ -265,7 +266,7 @@ class CXml
 
 /**
  * 0.7 Only Xml Parsing Function.
- * Do not use in plugins if you want them to work in 0.8. 
+ * Do not use in plugins if you want them to work in 0.8.
  */
 class XMLParse
 {
@@ -293,7 +294,7 @@ class XMLParse
         }
 
         $this->isError = false;
-           
+
         if (!$this->parse_init())
         {
             return false;
@@ -307,7 +308,7 @@ class XMLParse
     }
 
     function parse_recurse()
-    {       
+    {
         $found = array();
         $tagCount = array();
 
@@ -330,16 +331,16 @@ class XMLParse
             $tagName = $tag['tag'];
 
             if (isset($tagCount[$tagName]))
-            {       
+            {
                 if ($tagCount[$tagName] == 1)
                 {
                     $found[$tagName] = array($found[$tagName]);
                 }
-                   
+
                 $tagRef =& $found[$tagName][$tagCount[$tagName]];
                 $tagCount[$tagName]++;
             }
-            else   
+            else
             {
                 $tagCount[$tagName] = 1;
                 $tagRef =& $found[$tagName];
@@ -354,12 +355,12 @@ class XMLParse
                     {
                         $tagRef[$this->attribKey] = $tag['attributes'];
                     }
-                       
+
                     if (isset($tag['value']))
                     {
-                        if (isset($tagRef[$this->cdataKey]))   
+                        if (isset($tagRef[$this->cdataKey]))
                         {
-                            $tagRef[$this->cdataKey] = (array)$tagRef[$this->cdataKey];   
+                            $tagRef[$this->cdataKey] = (array)$tagRef[$this->cdataKey];
                             array_unshift($tagRef[$this->cdataKey], $tag['value']);
                         }
                         else
@@ -381,7 +382,7 @@ class XMLParse
                         $tagRef = $tag['value'];
                     }
                     break;
-            }           
+            }
         }
 
         return $found;
@@ -392,8 +393,8 @@ class XMLParse
         $this->parser = xml_parser_create();
 
         $parser = $this->parser;
-        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);    
-        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);       
+        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
         if (!$res = (bool)xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray))
         {
             $this->isError = true;
