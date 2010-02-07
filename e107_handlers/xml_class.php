@@ -9,9 +9,9 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-11-26 17:14:06 $
- * $Author: secretr $
+ * $Revision: 1.39 $
+ * $Date: 2010-02-07 00:44:08 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -27,10 +27,10 @@ if (!defined('e107_INIT')) { exit; }
  */
 class xmlClass
 {
-	
+
 	/**
 	 * Loaded XML string
-	 * 
+	 *
 	 * @var string
 	 */
 	public $xmlFileContents = '';
@@ -47,7 +47,7 @@ class xmlClass
 	 * 	'management' => array('install' => FALSE)
 	 * 	);
 	 * </code>
-	 * 
+	 *
 	 * @see setOptFilter()
 	 * @see parseXml()
 	 * @see xml2array()
@@ -56,91 +56,91 @@ class xmlClass
 	public $filter = false; // Optional filter for loaded XML
 
 	/**
-	 * Set true to strip all mention of comments from the returned array (default); 
+	 * Set true to strip all mention of comments from the returned array (default);
 	 * FALSE to return comment markers (object SimpleXMLElement)
-	 * 
+	 *
 	 * @see setOptStripComments()
 	 * @see parseXml()
 	 * @see xml2array()
 	 * @var boolean
 	 */
-	public $stripComments = true; 
-	
+	public $stripComments = true;
+
 	/**
 	 * Log of all paths replaced.
 	 *
 	 * @var array
-	 */	
+	 */
 	public $fileConvertLog = array();
-	
+
 	public $convertFilePaths = FALSE;
-	
+
 	public $filePathDestination = FALSE;
-	
+
 	public $convertFileTypes = array("jpg", "gif", "png", "jpeg");
-	
+
 	public $filePathPrepend = array();
-	
+
 	public $filePathConvKeys = array();
-	
+
 	public $errors;
-	
+
 	private $arrayTags = false;
-	
+
 	private $stringTags = false;
-	
-	
-	
+
+
+
 	/**
 	 * Add root element to the result array
 	 * Exmple:
 	 * <code>
 	 * <root>
-	 * <tag>some value</tag> 
+	 * <tag>some value</tag>
 	 * </root>
 	 * </code>
-	 * 
+	 *
 	 * if
 	 * <code>$_optAddRoot = true;</code>
 	 * xml2array() result is array('root' => array('tag' => 'some value'));
-	 * 
+	 *
 	 * if
 	 * <code>$_optAddRoot = false;</code>
 	 * xml2array() result is array('tag' => 'some value');
-	 * 
+	 *
 	 * @see xml2array()
 	 * @see setOptAddRoot()
 	 * @var boolean
 	 */
 	protected $_optAddRoot = false;
-	
+
 	/**
 	 * Always return array, even for single first level tag => value pair
 	 * Exmple:
 	 * <code>
 	 * <root>
-	 * <tag>some value</tag> 
+	 * <tag>some value</tag>
 	 * </root>
 	 * </code>
-	 * 
+	 *
 	 * if
 	 * <code>$_optForceArray = true;</code>
 	 * xml2array() result is array('tag' => array('value' => 'some value'));
 	 * where 'value' is the value of $_optValueKey
-	 * 
+	 *
 	 * If
 	 * <code>$_optForceArray = false;</code>
 	 * xml2array() result is array('tag' => 'some value');
-	 * 
+	 *
 	 * @see xml2array()
 	 * @see setOptForceArray()
 	 * @var boolean
 	 */
 	protected $_optForceArray = false;
-	
+
 	/**
 	 * Key name for simple tag => value pairs
-	 * 
+	 *
 	 * @see xml2array()
 	 * @see setOptValueKey()
 	 * @var string
@@ -149,32 +149,32 @@ class xmlClass
 
 	/**
 	 * Constructor - set defaults
-	 * 
+	 *
 	 */
 	function __constructor()
-	{		
+	{
 		$this->reset();
-		
+
 		if(count($this->filePathConversions))
 		{
-			$this->filePathConvKeys = array_keys($this->filePathConversions);			
+			$this->filePathConvKeys = array_keys($this->filePathConversions);
 		}
 	}
-	
+
 	/**
 	 * Reset object
-	 * 
+	 *
 	 * @param boolean $xml_contents [optional]
 	 * @return xmlClass
 	 */
 	function reset($xml_contents = true)
 	{
-		if($xml_contents) 
-		{ 
-			$this->xmlFileContents = ''; 
+		if($xml_contents)
+		{
+			$this->xmlFileContents = '';
 		}
 		$this->filter = false;
-		$this->stripComments = true; 
+		$this->stripComments = true;
 		$this->_optAddRoot = false;
 		$this->_optValueKey = '@value';
 		$this->_optForceArray = false;
@@ -183,7 +183,7 @@ class xmlClass
 
 	/**
 	 * Set addRoot option
-	 * 
+	 *
 	 * @param boolean $flag
 	 * @return xmlClass
 	 */
@@ -192,7 +192,7 @@ class xmlClass
 		$this->_optAddRoot = (boolean) $flag;
 		return $this;
 	}
-	
+
 	/**
 	 * Set Xml tags that should always return arrays.
 	 *
@@ -205,16 +205,16 @@ class xmlClass
 		$this->arrayTags = (array) explode(",", $string);
 		return $this;
 	}
-	
+
 	public function setOptStringTags($string)
 	{
 		$this->stringTags = (array) explode(",", $string);
 		return $this;
 	}
-	
+
 	/**
 	 * Set forceArray option
-	 * 
+	 *
 	 * @param boolean $flag
 	 * @return xmlClass
 	 */
@@ -223,10 +223,10 @@ class xmlClass
 		$this->_optForceArray = (boolean) $flag;
 		return $this;
 	}
-	
+
 	/**
 	 * Set valueKey option
-	 * 
+	 *
 	 * @param string $str
 	 * @return xmlClass
 	 */
@@ -235,10 +235,10 @@ class xmlClass
 		$this->_optValueKey = trim((string) $str);
 		return $this;
 	}
-	
+
 	/**
 	 * Set strpComments option
-	 * 
+	 *
 	 * @param boolean $flag
 	 * @return xmlClass
 	 */
@@ -247,10 +247,10 @@ class xmlClass
 		$this->stripComments = (boolean) $flag;
 		return $this;
 	}
-	
+
 	/**
 	 * Set strpComments option
-	 * 
+	 *
 	 * @param array $filter
 	 * @return xmlClass
 	 */
@@ -278,7 +278,7 @@ class xmlClass
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
 			$data = file_get_contents(urldecode($address));
-	
+
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
 			{
@@ -286,6 +286,7 @@ class xmlClass
 			}
 			if ($data)
 			{
+				$this->xmlFileContents = $data;
 				return $data;
 			}
 		}
@@ -348,8 +349,8 @@ class xmlClass
 
 	/**
 	 * Parse $xmlFileContents XML string to array
-	 * 
-	 * @param string $xml [optional] 
+	 *
+	 * @param string $xml [optional]
 	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
 	 * @return string
 	 */
@@ -370,18 +371,18 @@ class xmlClass
 		if(!$xml = simplexml_load_string($xmlData))
 		{
 			$this->errors = $this->getErrors($xmlData);
-			return FALSE;	
+			return FALSE;
 		};
 
 		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
 	}
-	
+
 	/**
 	 * Advanced XML parser - handles tags with attributes and values
 	 * properly.
 	 * TODO - filter (see xml_convert_to_array)
-	 * 
+	 *
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
 	 * @return array
@@ -390,25 +391,25 @@ class xmlClass
 	{
 		$ret = array();
 		$tags = get_object_vars($xml);
-		
+
 		//remove comments
 		if($this->stripComments && isset($tags['comment']))
 		{
 			unset($tags['comment']);
 		}
-		
+
 		//first call
 		if(!$rec_parent)
 		{
 			//$ret = $this->xml2array($xml, true);
-			//repeating code because of the _optForceArray functionality 
-			
+			//repeating code because of the _optForceArray functionality
+
 			if(!is_object($xml))
 			{
 				return array();
 			}
-			
-			$tags = array_keys($tags); 
+
+			$tags = array_keys($tags);
 			foreach ($tags as $tag)
 			{
 				if($tag == '@attributes')
@@ -429,19 +430,19 @@ class xmlClass
 				}
 				$ret[$tag] = $this->xml2array($xml->{$tag}, $tag);
 			}
-			
-			$ret = $this->parseArrayTags($ret);	
+
+			$ret = $this->parseArrayTags($ret);
 			$ret = $this->parseStringTags($ret);
-			
+
 			return ($this->_optAddRoot ? array($xml->getName() => $ret) : $ret);
 		}
 
-		//Recursive calls start here		
+		//Recursive calls start here
 		if($tags)
 		{
 			$tags = array_keys($tags);
 			$count_tags = count($tags);
-			
+
 			//loop through tags
 			foreach ($tags as $tag)
 			{
@@ -450,19 +451,19 @@ class xmlClass
 					case '@attributes':
 						$tmp = (array) $xml->attributes();
 						$ret['@attributes'] = $tmp['@attributes'];
-						
+
 						if($count_tags == 1) //only attributes & possible value
 						{
 							$ret[$this->_optValueKey] = trim((string) $xml);
 							return $ret;
 						}
 					break;
-					
+
 					case 'comment':
 						$ret[$this->_optValueKey] = trim((string) $xml);
 						$ret['comment'] = $xml->comment;
 					break;
-				
+
 					//more cases?
 					default:
 						$count = count($xml->{$tag});
@@ -472,7 +473,7 @@ class xmlClass
 							{
 								$ret[$tag][$i] = $this->xml2array($xml->{$tag}[$i], $tag);
 								$ret[$tag][$i] = $this->parseStringTags($ret[$tag][$i]);
-								
+
 							}
 						}
 						else //single element
@@ -486,10 +487,10 @@ class xmlClass
 			$ret = $this->parseStringTags($ret);
 			return $ret;
 		}
-		
+
 		//parse value only
 		$ret = trim((string) $xml);
-	
+
 		return ($this->_optForceArray ? array($this->_optValueKey => $ret) : $ret);
 	}
 
@@ -536,19 +537,19 @@ class xmlClass
 			if (count($xml) == 1 && isset($xml[0]))
 			{
 				$xml = $xml[0];
-			
+
 			}
 		}
-		
-		$xml = $this->parseArrayTags($xml);	
+
+		$xml = $this->parseArrayTags($xml);
 	//	$xml = $this->parseStringTags($xml);
-		
+
 		return $xml;
 	}
 
 
 	/**
-	 * Convert Array(0) to String based on specified Tags. 
+	 * Convert Array(0) to String based on specified Tags.
 	 *
 	 * @param array|string $vars
 	 * @return string
@@ -559,21 +560,21 @@ class xmlClass
 		{
 			return $vars;
 		}
-		
+
 		foreach($this->stringTags as $vl)
-		{		
+		{
 			if(varset($vars[$vl][0]))
 			{
-				$vars[$vl] = $vars[$vl][0];	
-			}	
+				$vars[$vl] = $vars[$vl][0];
+			}
 		}
-		
-		return $vars;	
+
+		return $vars;
 	}
 
 	/**
 	 * Return as an array, even when a single xml tag value is found
-	 * Use setArrayTags() to set which tags are affected. 
+	 * Use setArrayTags() to set which tags are affected.
 	 *
 	 * @param array $vars
 	 * @return array
@@ -589,30 +590,32 @@ class xmlClass
 
 		foreach($this->arrayTags as $vl)
 		{
-			
+
 			if(isset($vars[$vl]) && is_array($vars[$vl]) && !varset($vars[$vl][0]))
 			{
 
-				$vars[$vl] = array($vars[$vl]);	
-			}	
+				$vars[$vl] = array($vars[$vl]);
+			}
 		}
-		
+
 		return $vars;
 	}
 
 	/**
 	 * Load XML file and parse it (optional)
-	 * 
+	 *
 	 * @param string $fname local or remote XML source file path
-	 * @param boolean|string $parse false - no parse; 
-	 * 								true - use  xml_convert_to_array(); 
+	 * @param boolean|string $parse false - no parse;
+	 * 								true - use  xml_convert_to_array();
 	 * 								in any other case  - use xml2array()
-	 * 
+	 *
 	 * @param boolean $replace_constants [optional]
 	 * @return mixed
 	 */
 	function loadXMLfile($fname, $parse = false, $replace_constants = false)
 	{
+		global $tp;
+
 		if (empty($fname))
 		{
 			return false;
@@ -633,7 +636,7 @@ class xmlClass
 		{
 			if ($replace_constants == true)
 			{
-				$this->xmlFileContents = e107::getParser()->replaceConstants($this->xmlFileContents, '', true);
+				$this->xmlFileContents = $tp->replaceConstants($this->xmlFileContents, '', true);
 			}
 			if ($parse)
 			{
@@ -646,9 +649,9 @@ class xmlClass
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Convert file path for inclusion in XML file. 
+	 * Convert file path for inclusion in XML file.
 
 	 * @see e107ExportValue()
 	 * @param string $text - callback function
@@ -659,49 +662,49 @@ class xmlClass
 		$fullpath = e107::getParser()->replaceConstants($text[1]);
 		$this->fileConvertLog[] = $fullpath;
 		$file = basename($fullpath);
-		
+
 		return $this->filePathDestination.$file;
 
 	}
-	
-	
+
+
 	/**
 	 * Process data values for XML file. If $this->convertFilePaths is TRUE, convert paths
 	 *
 	 * @see replaceFilePaths()
 	 * @param mixed $val
-	 * @param string $key key for the current value. Used for exception processing. 
+	 * @param string $key key for the current value. Used for exception processing.
 	 * @return mixed
 	 */
 	private function e107ExportValue($val, $key = '')
 	{
 		if($key && isset($this->filePathPrepend[$key]))
 		{
-			$val = $this->filePathPrepend[$key].$val;		
+			$val = $this->filePathPrepend[$key].$val;
 		}
-		
+
 		if($this->convertFilePaths)
 		{
 			$types = implode("|",$this->convertFileTypes);
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
-				
+
 		if(is_array($val))
 		{
-			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";		
+			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";
 		}
-		
+
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
-			return "<![CDATA[". $val."]]>";		
+			return "<![CDATA[". $val."]]>";
 		}
-		
-		return $val;	
+
+		return $val;
 	}
-	
+
 	/**
 	 * Create an e107 Export File in XML format
-	 * Note: If $this->filePathDestination has a value, then the file will be saved there. 
+	 * Note: If $this->filePathDestination has a value, then the file will be saved there.
 	 *
 	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
 	 * @param array $tables - table names without the prefix
@@ -711,12 +714,12 @@ class xmlClass
 	public function e107Export($xmlprefs, $tables, $debug = FALSE)
 	{
 		require_once(e_ADMIN."ver.php");
-		
+
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
 		$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
-	
-		if(varset($xmlprefs)) // Export Core Preferences. 
-		{		
+
+		if(varset($xmlprefs)) // Export Core Preferences.
+		{
 			$text .= "\t<prefs>\n";
 			foreach($xmlprefs as $type)
 			{
@@ -732,7 +735,7 @@ class xmlClass
 			}
 			$text .= "\t</prefs>\n";
 		}
-	
+
 		if(varset($tables))
 		{
 			$text .= "\t<database>\n";
@@ -748,23 +751,23 @@ class xmlClass
 					{
 						$text .= "\t\t\t<field name='".$key."'>".$this->e107ExportValue($val,$key)."</field>\n";
 					}
-					
+
 					$text .= "\t\t</item>\n";
 				}
-				$text .= "\t</dbTable>\n";	
-				
+				$text .= "\t</dbTable>\n";
+
 			}
 			$text .= "\t</database>\n";
 		}
-		
-		
-		
+
+
+
 		$text .= "</e107Export>";
-		
+
 		if($debug==TRUE)
-		{		
+		{
 			echo "<pre>".htmlentities($text)."</pre>";
-			return TRUE;				
+			return TRUE;
 		}
 		else
 		{
@@ -772,24 +775,24 @@ class xmlClass
 			{
 				return FALSE;
 			}
-			
+
 			$path = e107::getParser()->replaceConstants($this->filePathDestination);
 			if($path)
 			{
 				file_put_contents($path."install.xml",$text,FILE_TEXT);
-				return true;	
+				return true;
 			}
-			
+
 			header('Content-type: application/xml', TRUE);
 			header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
 			header("Cache-Control: max-age=30");
 			header("Pragma: public");
 			echo $text;
 			exit;
-		
+
 		}
 	}
-	
+
 	/**
 	 * Return an Array of core preferences from e107 XML Dump data
 	 *
@@ -802,22 +805,22 @@ class xmlClass
 		if(!vartrue($XMLData['prefs'][$prefType]))
 		{
 			return;
-		} 
-		
+		}
+
 		$mes = eMessage::getInstance();
-		
+
 		$pref = array();
 		foreach($XMLData['prefs'][$prefType] as $val)
-		{	
+		{
 			$name = $val['@attributes']['name'];
 			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
-			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);									
-		}	
-	
-		
-		return $pref;	
+			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);
+		}
+
+
+		return $pref;
 	}
 
 	/**
@@ -826,13 +829,13 @@ class xmlClass
 	 * @param path $file - e107 XML file path
 	 * @param string $mode[optional] - add|replace
 	 * @param boolean $debug [optional]
-	 * @return array with keys 'success' and 'failed' - DB table entry status. 
+	 * @return array with keys 'success' and 'failed' - DB table entry status.
 	 */
 	public function e107Import($file,$mode='replace',$debug=FALSE)
 	{
 
 		$xmlArray = $this->loadXMLfile($file,'advanced');
-		
+
 		if($debug)
 		{
 			// $message = print_r($xmlArray);
@@ -841,8 +844,8 @@ class xmlClass
 		}
 
 		$ret = array();
-		
-		//FIXME - doesn't work from install_.php. 		
+
+		//FIXME - doesn't work from install_.php.
 		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
@@ -854,22 +857,22 @@ class xmlClass
 				}
 				else
 				{
-					e107::getConfig($type)->addPref($pArray); // FIXME addPref() doesn't behave the same way as setPref() with arrays. 
+					e107::getConfig($type)->addPref($pArray); // FIXME addPref() doesn't behave the same way as setPref() with arrays.
 				}
 
 				if($debug == FALSE)
 				{
-					 e107::getConfig($type)->save(FALSE,TRUE);	
-				}			  	
+					 e107::getConfig($type)->save(FALSE,TRUE);
+				}
 			}
 		}
-		
+
 		if(vartrue($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
 				$table = $val['@attributes']['name'];
-				
+
 				foreach($val['item'] as $item)
 				{
 					$insert_array = array();
@@ -877,46 +880,46 @@ class xmlClass
 					{
 						$fieldkey = $f['@attributes']['name'];
 						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
-					
-						$insert_array[$fieldkey] = $fieldval;											
+
+						$insert_array[$fieldkey] = $fieldval;
 					}
 					if(($mode == "replace") && e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
-					{			
-						$ret['success'][] = $table;				
+					{
+						$ret['success'][] = $table;
 					}
 					elseif(($mode == "add") && e107::getDB()->db_Insert($table, $insert_array)!==FALSE)
 					{
-						$ret['success'][] = $table;		
+						$ret['success'][] = $table;
 					}
 					else
 					{
-						$ret['failed'][] = $table;							
+						$ret['failed'][] = $table;
 					}
-				}				
-			}				
+				}
+			}
 		}
-		
-		return $ret;				
+
+		return $ret;
 	}
-	
-	
+
+
 	function getErrors($xml)
 	{
 		libxml_use_internal_errors(true);
 		$sxe = simplexml_load_string($xml);
 		$errors = array();
 		if (!$sxe)
-		{   
+		{
 		    foreach(libxml_get_errors() as $error)
 			{
 		        $errors[] = $error->message. "Line:".$error->line." Column:".$error->column;
 			}
 			return $errors;
 		}
-		return FALSE;	
+		return FALSE;
 	}
-	
-	
+
+
 
 
 }
