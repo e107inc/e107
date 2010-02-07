@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-04-04 21:03:51 $
+|     $Revision: 1.14 $
+|     $Date: 2010-02-07 20:37:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -103,8 +103,11 @@ for($a = 0; $a <= (count($class)-1); $a++) {
 	}
 	$text .= "</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
 }
- 
-$adminreturn = e_ADMIN."users.php?cu".($qs[2] ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : "");
+
+if (isset($qs[1]))
+{
+	$adminreturn = e_ADMIN.'users.php?cu.'.$qs[1].(isset($qs[2]) ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : "");
+}
 
 $text .= "	<tr><td class='forumheader' colspan='2' style='text-align:center'>
 			<input type='hidden' name='adminreturn' value='$adminreturn' />
