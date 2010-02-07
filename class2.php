@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.393 $
-|     $Date: 2010-02-02 22:29:35 $
-|     $Author: e107steved $
+|     $Revision: 1.394 $
+|     $Date: 2010-02-07 00:15:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -201,10 +201,10 @@ $e_QUERY = str_replace('&', '&amp;', $tp->post_toForm($e_QUERY));
 
 /**
  * e_QUERY notes:
- * It seems _GET / _POST / _COOKIE are doing pre-urldecode on their data. 
+ * It seems _GET / _POST / _COOKIE are doing pre-urldecode on their data.
  * There is no official documentation/php.ini setting to confirm this.
  * We could add rawurlencode() after the replacement above if problems are reported.
- * 
+ *
  * @var string
  */
 define('e_QUERY', $e_QUERY);
@@ -622,7 +622,7 @@ $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
 // for multi-language these definitions needs to come after the language loaded.
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", 'USER_TITLE,value')));
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", 'USER_TITLE,value,defs')));
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off, defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off,defs"));
@@ -1535,7 +1535,7 @@ function init_session() {
 				unset($user_pref['sitetheme']);
 				save_prefs('user');
 			}
-			
+
 
 			define("USERTHEME", (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 //			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;   Don't look very necessary
@@ -1553,7 +1553,7 @@ function init_session() {
 
 	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
-	
+
 	if(USER)
 	{
 		define('POST_REFERER', md5($currentUser['user_password'].$currentUser['user_lastvisit'].USERCLASS_LIST));
@@ -1566,7 +1566,7 @@ function init_session() {
 		header('location:'.e_BASE.'index.php');
 		exit;
 	}
-	
+
 }
 
 $sql->db_Mark_Time('Start: Go online');
