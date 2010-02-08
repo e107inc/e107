@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-11-19 11:45:49 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.14 $
+|     $Date: 2010-02-08 00:24:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -98,8 +98,11 @@ if(e_QUERY){
 	$sort = (isset($qs[2])) ? $qs[2] : "";
 }
 
+	unset($_POST['sitelanguage']); // quick bug fix for multi-language.
+
 	//create
-	if(isset($qs[0]) && $qs[0] == 'create' && !$_POST){
+	if(isset($qs[0]) && ($qs[0] == 'create') && !$_POST)
+	{
 		$rss -> rssadmincreate();
 
 	//import
