@@ -125,6 +125,17 @@ select, .tbox, .helpbox {
     background:#fff;
     font:12px arial, helvetica, sans-serif;
 }
+
+input[disabled='disabled'],
+textarea[disabled='disabled'],
+select[disabled='disabled'],
+.tbox.disabled,
+.disabled {
+  background-color:#EFEFEF;
+  color:#000;
+  cursor:default;
+}
+
 option { padding-left: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
 
