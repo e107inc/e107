@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
- * $Revision: 1.17 $
- * $Date: 2010-01-09 15:06:37 $
+ * $Revision: 1.18 $
+ * $Date: 2010-02-08 18:30:21 $
  * $Author: secretr $
  */
 
@@ -138,7 +138,7 @@ class bbcode_shortcodes
 		$bbcode_helpactive = TRUE;
 		
 		//FIXME - better bb help
-		return "<input id='{$bbcode_helptag}' class='tbox helpbox{$bbcode_helpsize}' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
+		return "<input id='{$bbcode_helptag}' class='helpbox{$bbcode_helpsize}' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
 	}
 
 	function sc_bb_preimagedir($parm)

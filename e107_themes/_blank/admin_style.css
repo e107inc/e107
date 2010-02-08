@@ -118,12 +118,17 @@ pre {
 /* Form elements */ 
 input.input-text,
 textarea,
-select, .tbox, .helpbox {
+select, .tbox {
     border-width:1px;
     border-style:solid;
     border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
     background:#fff;
     font:12px arial, helvetica, sans-serif;
+}
+
+.helpbox {
+	border: 0px;
+	font: 12px arial, helvetica, sans-serif;
 }
 
 input[disabled='disabled'],
@@ -147,9 +152,9 @@ label { cursor: pointer; }
 .checkbox { margin-right: 5px; }
 
 /* BBcode textareas */
-div.bbarea.large, .tbox.large, .tbox.helpbox.large { width: 95% !important; }
-div.bbarea.medium, .tbox.medium, .tbox.helpbox.medium { width: 60% !important; }
-div.bbarea.small, .tbox.small, .tbox.helpbox.small { width: 250px !important; }
+div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
+div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
 
 .check-block { /* see administration newspost.php */
 	padding: 2px 0px;

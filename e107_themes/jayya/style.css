@@ -121,6 +121,7 @@ ul {
 
 .helpbox {
 	border: 0px;
+	font: 12px arial, helvetica, sans-serif;
 }
 
 /* Theme Specific Classes */
@@ -425,7 +426,7 @@ img.edit	{ margin-right: 5px }
 /* Form elements */ 
 input.input-text,
 textarea,
-select, .tbox, .helpbox {
+select, .tbox {
     border-width:1px;
     border-style:solid;
     border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
@@ -445,13 +446,19 @@ select[disabled='disabled'],
 
 option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
-.tbox.large { width: 95% !important; }
+
 select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
 input.radio { margin-right: 3px; }
 label { cursor: pointer; }
 .checkbox { margin-right: 5px; }
+
+/* BBcode textareas */
+div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
+div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+
 
 .check-block { /* see administration newspost.php */
 	padding: 2px 0px;
