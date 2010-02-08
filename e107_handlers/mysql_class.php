@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.76 $
- * $Date: 2010-01-10 13:48:42 $
- * $Author: e107steved $
+ * $Revision: 1.77 $
+ * $Date: 2010-02-08 09:12:07 $
+ * $Author: secretr $
 */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.76 2010-01-10 13:48:42 e107steved Exp $;
+ *	@version 	$Id: mysql_class.php,v 1.77 2010-02-08 09:12:07 secretr Exp $;
  *
  *	@todo separate cache for db type tables
  */
@@ -469,9 +469,19 @@ class e_db_mysql
 			global $db_ConnectionID;
 			$this->mySQLaccess = $db_ConnectionID;
 		}
-
-		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark ))
+		
+		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+		if ($this->mySQLresult)
 		{
+			if(true === $REPLACE)
+			{
+				$tmp = mysql_affected_rows($this->mySQLaccess); 
+				$this->dbError('db_Replace');
+				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
+				if ($tmp == -1) { return false; } // mysql_affected_rows error
+				return $tmp;
+			}
+
 			$tmp = mysql_insert_id($this->mySQLaccess);
 			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
