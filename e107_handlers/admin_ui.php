@@ -695,7 +695,7 @@ class e_admin_response
 		$meta = '_' . $meta;
 		if(isset($this->{$meta}) && !empty($content))
 		{
-			$this->{$meta}[] = $tp->toAttribute(strip_tags($content));
+			$this->{$meta}[] = strip_tags($content);
 		}
 		return $this;
 	}
