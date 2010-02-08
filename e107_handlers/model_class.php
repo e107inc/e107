@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-12-23 15:12:12 $
+ * $Revision: 1.51 $
+ * $Date: 2010-02-08 14:52:34 $
  * $Author: secretr $
 */
 
@@ -803,6 +803,19 @@ class e_model
     public function setMessages($session = false)
     {
     	e107::getMessage()->moveStack($this->_message_stack, 'default', false, $session);
+		return $this;
+    }
+    
+    /**
+     * Reset model System messages
+     * 
+     * @param boolean|string $type E_MESSAGE_INFO | E_MESSAGE_SUCCESS | E_MESSAGE_WARNING | E_MESSAGE_WARNING | E_MESSAGE_DEBUG | false (all)
+     * @param boolean $session reset also session messages
+     * @return e_model
+     */
+    public function resetMessages($type = false, $session = false)
+    {
+        e107::getMessage()->reset($type, $this->_message_stack, $session);
 		return $this;
     }
 
@@ -1633,6 +1646,24 @@ class e_admin_model extends e_model
 			e107::getMessage()->moveStack($this->_message_stack.'_validator', 'default', false, $session);
 		}
     	parent::setMessages($session);
+		return $this;
+    }
+    
+    /**
+     * Reset model System messages
+     * 
+     * @param boolean|string $type E_MESSAGE_INFO | E_MESSAGE_SUCCESS | E_MESSAGE_WARNING | E_MESSAGE_WARNING | E_MESSAGE_DEBUG | false (all)
+     * @param boolean $session reset session messages
+     * @param boolean $validation reset validation messages as well
+     * @return e_admin_model
+     */
+    public function resetMessages($type = false, $session = false, $validation = false)
+    {
+        if($validation)
+		{
+			e107::getMessage()->reset($type, $this->_message_stack.'_validator', $session);
+		}
+    	parent::resetMessages($type, $session);
 		return $this;
     }
 
