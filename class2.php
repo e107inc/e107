@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.394 $
-|     $Date: 2010-02-07 00:15:39 $
-|     $Author: e107coders $
+|     $Revision: 1.395 $
+|     $Date: 2010-02-09 04:00:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1028,6 +1028,15 @@ function check_email($email) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ *
+ * @param mixed $var
+ * @param string $userclass
+ * @param mixed $peer
+ * @param boolean $debug
+ * @return boolean
+ */
 function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE)
 {
 	global $tp;
@@ -1037,15 +1046,15 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 
 	if (is_numeric($var) && !$var) return TRUE;		// Accept numeric class zero - 'PUBLIC'
 
-	if (!$var || $var == "")
+	if (!$var || $var == '')
 	{	// ....but an empty string or NULL variable is not valid
 		return FALSE;
 	}
 
-	if(strpos($var, ",") !== FALSE)
+	if(strpos($var, ',') !== FALSE)
 	{
-		$lans = explode(",",e_LANLIST);
-		$varList = explode(",", $var);
+		$lans = explode(',', e_LANLIST);
+		$varList = explode(',', $var);
 		rsort($varList); // check the language first.(ie. numbers come last)
 		foreach($varList as $v)
 		{
@@ -1059,20 +1068,33 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 		}
 		return FALSE;
 	}
+	
+	//if peer is array, assume it's a user record
+	if(is_array($peer)) {
+		$_adminperms = ($peer['user_admin'] === 1 ? $peer['user_perms'] : '');
+		$_user = true;
+		$_admin = $peer['user_admin'] === 1;
+		$peer = false;
+	} else {
+		$_adminperms = ADMINPERMS;
+		$_user = USER;
+		$_admin = ADMIN;
+	}
 
+	//Test 'special' userclass numbers
 	if (preg_match("/^([0-9]+)$/", $var) && !$peer)
 	{
-		if ($var == e_UC_MAINADMIN && getperms('0'))
+		if ($var == e_UC_MAINADMIN && getperms('0', $_adminperms))
 		{
         	return TRUE;
 		}
 
-		if ($var == e_UC_MEMBER && USER == TRUE)
+		if ($var == e_UC_MEMBER && $_user == TRUE)
 		{
 			return TRUE;
 		}
 
-		if ($var == e_UC_GUEST && USER == FALSE) {
+		if ($var == e_UC_GUEST && $_user == FALSE) {
 			return TRUE;
 		}
 
@@ -1084,7 +1106,7 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 			return FALSE;
 		}
 
-		if ($var == e_UC_ADMIN && ADMIN) {
+		if ($var == e_UC_ADMIN && $_admin) {
 			return TRUE;
 		}
 		if ($var == e_UC_READONLY) {
@@ -1136,11 +1158,12 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 
 function getperms($arg, $ap = ADMINPERMS)
 {
+	global $PLUGINS_DIRECTORY;
+	
 	if(!ADMIN)
 	{
 		return FALSE;
 	}
-	global $PLUGINS_DIRECTORY;
 	if ($ap == "0")
 	{
 		return TRUE;
