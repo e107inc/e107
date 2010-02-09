@@ -9,20 +9,20 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.102 $
- * $Date: 2010-02-02 15:49:09 $
- * $Author: secretr $
+ * $Revision: 1.103 $
+ * $Date: 2010-02-09 20:43:52 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 
 /**
- * 
+ *
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.102 $
- * @author      $Author: secretr $
+ * @version     $Revision: 1.103 $
+ * @author      $Author: e107coders $
  *
  *	e107_class - core class with many system-related methods
  */
@@ -240,38 +240,53 @@ class e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info)
 	{
-		
+
 		if(empty($this->e107_dirs))
 		{
 			// Do some security checks/cleanup, prepare the environment
 			$this->prepare_request();
-			
+
 			// Set default paths if missing from e107_config.php
 			if(!vartrue($e107_paths['MEDIA_DIRECTORY']))
 			{
-				$e107_paths['MEDIA_DIRECTORY'] = 'e107_media/';		
+				$e107_paths['MEDIA_DIRECTORY'] = 'e107_media/';
+			}
+
+			if(!vartrue($e107_paths['SYSTEM_DIRECTORY']))
+			{
+				$e107_paths['SYSTEM_DIRECTORY'] = 'e107_system/';
+			}
+
+			if(!vartrue($e107_paths['CORE_DIRECTORY']))
+			{
+				$e107_paths['CORE_DIRECTORY'] = 'e107_core/';
+			}
+
+			if(!vartrue($e107_paths['WEB_DIRECTORY']))
+			{
+				$e107_paths['WEB_DIRECTORY'] = 'e107_web/';
 			}
 
 			if(!vartrue($e107_paths['DOWNLOADS_DIRECTORY']))
 			{
 				$e107_paths['DOWNLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'files/';
 			}
-			
+
 			if(!vartrue($e107_paths['UPLOADS_DIRECTORY']))
 			{
 				$e107_paths['UPLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'temp/';
 			}
-			
+
 			if(!vartrue($e107_paths['CACHE_DIRECTORY']))
 			{
-				$e107_paths['CACHE_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'cache/';
-			}			
+				$e107_paths['CACHE_DIRECTORY'] = $e107_paths['SYSTEM_DIRECTORY'].'cache/';
+			}
 
 			if(!vartrue($e107_paths['LOGS_DIRECTORY']))
 			{
-				$e107_paths['LOGS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'logs/';
-			}	
-	
+				$e107_paths['LOGS_DIRECTORY'] = $e107_paths['SYSTEM_DIRECTORY'].'logs/';
+			}
+
 			// folder info
 			$this->e107_dirs = $e107_paths;
 
@@ -292,11 +307,11 @@ class e107
 			$this->set_urls();
 
 			// cleanup QUERY_STRING and friends, set  related constants
-			
+
 			$this->set_request();
-			
+
 		}
-	
+
 		return $this;
 	}
 
@@ -552,13 +567,13 @@ class e107
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
-		
+
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 
 		//singleton object found - overload not possible
 		if(self::getRegistry($id))
 		{
-			
+
 			return self::getRegistry($id);
 		}
 
@@ -580,9 +595,9 @@ class e107
 		}
 
 		if($path && is_string($path) && !class_exists($class_name, false))
-		{			
+		{
 			e107_require_once($path); //no existence/security checks here!
-			//e107_require_once() is available without class2.php. - see core_functions.php			
+			//e107_require_once() is available without class2.php. - see core_functions.php
 		}
 		if(class_exists($class_name, false))
 		{
@@ -789,7 +804,7 @@ class e107
 	 */
 	public static function getParser()
 	{
-		
+
 		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
 	}
 
@@ -875,7 +890,7 @@ class e107
 	{
 		return self::getSingleton('e107table');
 	}
-	
+
 	/**
 	 * Retrieve e107Email singleton object
 	 *
@@ -1078,7 +1093,7 @@ class e107
 		}
 		return e_jsmanager::getInstance();
 	}
-	
+
 	/**
 	 * Retrieve JS Helper object
 	 *
@@ -1297,13 +1312,13 @@ class e107
 		{
 			return $ret;
 		}
-		
+
 		// merge
 		$reg_path = 'core/e107/templates/'.$id;
 		$path = self::coreTemplatePath($id, false);
 		$id = str_replace('/', '_', $id);
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		
+
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
 
@@ -1343,20 +1358,20 @@ class e107
 		{
 			return $ret;
 		}
-		
+
 		// merge
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
 		$path = self::templatePath($plug_name, $id, false);
 		$id = str_replace('/', '_', $id);
 		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		
+
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
 	}
-	
+
 	/**
 	 * Get Template Info array.
 	 * Note: Available only after getTemplate()/getCoreTemplate() call
-	 * 
+	 *
 	 * @param string $plug_name if null - search for core template
 	 * @param string $id
 	 * @param string $key
@@ -1387,7 +1402,7 @@ class e107
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
 	 * @param boolean $merge merge theme with core/plugin layouts, default is false
-	 * @param boolean $allinfo reutrn nimerical array of templates and all available template information 
+	 * @param boolean $allinfo reutrn nimerical array of templates and all available template information
 	 * @return array
 	 */
 	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '', $merge = false, $allinfo = true)
@@ -1404,21 +1419,21 @@ class e107
 			$tmp_info = self::getTemplateInfo($plugin_name, $id, null, $where, $merge);
 		}
 
-		$templates = array(); 
-		if(!$filter_mask) 
+		$templates = array();
+		if(!$filter_mask)
 		{
 			$filter_mask = array();
 		}
 		elseif(!is_array($filter_mask))
 		{
-			$filter_mask = array($filter_mask); 
+			$filter_mask = array($filter_mask);
 		}
 		foreach($tmp as $key => $val)
 		{
 			$match = true;
 			if($filter_mask)
 			{
-				$match = false; 
+				$match = false;
 				foreach ($filter_mask as $mask)
 				{
 					if(preg_match($mask, $key)) //e.g. retrieve only keys starting with 'layout_'
@@ -1442,7 +1457,7 @@ class e107
 	/**
 	 * More abstsract template loader, used
 	 * internal in {@link getTemplate()} and {@link getCoreTemplate()} methods
-	 * If $info is set to true, only template informational array will be returned 
+	 * If $info is set to true, only template informational array will be returned
 	 *
 	 * @param string $id
 	 * @param string|null $key
@@ -1457,7 +1472,7 @@ class e107
 		$var = strtoupper($id).'_TEMPLATE';
 		$regPathInfo = $reg_path.'/info';
 		$var_info = strtoupper($id).'_INFO';
-		
+
 		if(null === self::getRegistry($regPath))
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
@@ -1727,8 +1742,8 @@ class e107
 
 		// Absolute file-path of directory containing class2.php
 	//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
-	
-		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux. 
+
+		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux.
 		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\'))
 		{
 			$e_ROOT .= '/';
@@ -1746,7 +1761,7 @@ class e107
 		  	define('e_BASE', $this->relative_base_path);
 
 			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
-			define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));	
+			define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));
 
 //
 // HTTP relative paths
@@ -1759,11 +1774,15 @@ class e107
 			define("e_HANDLER", e_BASE.$this->e107_dirs['HANDLERS_DIRECTORY']);
 			define("e_LANGUAGEDIR", e_BASE.$this->e107_dirs['LANGUAGES_DIRECTORY']);
 			define("e_DOCS", e_BASE.$this->e107_dirs['HELP_DIRECTORY']);
-			
+
 			define("e_MEDIA", e_BASE.$this->e107_dirs['MEDIA_DIRECTORY']);
+			define("e_CORE", e_BASE.$this->e107_dirs['CORE_DIRECTORY']);
+			define("e_SYSTEM", e_BASE.$this->e107_dirs['SYSTEM_DIRECTORY']);
+			define("e_WEB", e_BASE.$this->e107_dirs['WEB_DIRECTORY']);
+
 			define("e_CACHE", e_BASE.$this->e107_dirs['CACHE_DIRECTORY']);
 			define("e_LOG", e_BASE.$this->e107_dirs['LOGS_DIRECTORY']);
-			
+
 //
 // HTTP absolute paths
 //
@@ -1790,7 +1809,7 @@ class e107
 
 			$DOWNLOADS_DIRECTORY = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
 			$UPLOADS_DIRECTORY = $this->e107_dirs['UPLOADS_DIRECTORY'];
-			
+
 			if ($DOWNLOADS_DIRECTORY{0} == "/")
 			{
 				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
@@ -1898,7 +1917,7 @@ class e107
 	 */
 	public function set_request()
 	{
-		
+
 		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
 		if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
 		{
@@ -1935,7 +1954,7 @@ class e107
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING'] = e_QUERY;
-		
+
 	}
 
 	/**
