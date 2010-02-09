@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-11-23 21:04:22 $
-|     $Author: e107steved $
+|     $Revision: 1.32 $
+|     $Date: 2010-02-09 20:51:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,7 +23,7 @@ if (!defined('e107_INIT')) { exit; }
 Code uses two tables:
 	user_extended_struct - individual field definitions, one record per field
 	user_extended - actual field data, one record per user
-	
+
 //TODO: Should user_extended_validate_entry() ckech DB for DB-type fields?
 
 */
@@ -657,7 +657,7 @@ class e107_user_extended
 		}
 
 		$xml = e107::getXml();
-		$data = $xml->loadXMLfile(e_FILE."cache/user_extended.xml", true);
+		$data = $xml->loadXMLfile(e_CORE."xml/user_extended.xml", true);
 		$ret['version'] = $data['@attributes']['version'];
 		unset($info);
 		foreach($data['item'] as $item)
@@ -707,7 +707,7 @@ class e107_user_extended
 	}
 
 
-	
+
 	/**
 	 * Proxy method for setting the value of an extended field
 	 * (inserts or updates)
@@ -720,7 +720,7 @@ class e107_user_extended
 	 */
 	function set($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{
-		return $this->user_extended_setvalue($uid, $field_name, $newvalue, $fieldType);	
+		return $this->user_extended_setvalue($uid, $field_name, $newvalue, $fieldType);
 	}
 
 
@@ -736,18 +736,18 @@ class e107_user_extended
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		$uid = (int)$uid;
 		switch($fieldType)
 		{
 			case 'int':
 				$newvalue = (int)$newvalue;
 				break;
-			
+
 			case 'escape':
 				$newvalue = "'".mysql_real_escape_string($newvalue)."'";
 				break;
-			
+
 			default:
 				$newvalue = "'".$tp->toDB($newvalue)."'";
 				break;
@@ -757,8 +757,8 @@ class e107_user_extended
 			$field_name = 'user_'.$field_name;
 		}
 		$qry = "
-		INSERT INTO `#user_extended` (user_extended_id, {$field_name}) 
-		VALUES ({$uid}, {$newvalue}) 
+		INSERT INTO `#user_extended` (user_extended_id, {$field_name})
+		VALUES ({$uid}, {$newvalue})
 		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
 		";
 		return $sql->db_Select_gen($qry);
