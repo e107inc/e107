@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-12-23 11:32:09 $
+ * $Revision: 1.8 $
+ * $Date: 2010-02-09 01:33:41 $
  * $Author: e107coders $
  */
 
@@ -177,7 +177,7 @@ class faq
 
 		require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id ORDER BY cat.faq_info_order,f.faq_order ";
+		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
 		$sql->db_Select_gen($query);
 		$text = $tp->parseTemplate($FAQ_START, true);
 		$prevcat = "";
