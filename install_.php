@@ -9,16 +9,16 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.59 $
-* $Date: 2010-01-23 02:07:50 $
-* $Author: mcfly_e107 $
+* $Revision: 1.60 $
+* $Date: 2010-02-09 21:42:11 $
+* $Author: e107coders $
 *
 */
 
 /**
  *	@package    e107
  *	@subpackage	install
- *	@version 	$Id: install_.php,v 1.59 2010-01-23 02:07:50 mcfly_e107 Exp $;
+ *	@version 	$Id: install_.php,v 1.60 2010-02-09 21:42:11 e107coders Exp $;
  *
  *	Installer base routine
  */
@@ -37,17 +37,18 @@ $MySQLprefix	     = 'e107_';
 $ADMIN_DIRECTORY     = "e107_admin/";
 $FILES_DIRECTORY     = "e107_files/";
 $IMAGES_DIRECTORY    = "e107_images/";
-//FIXME need another name
 $MEDIA_DIRECTORY     = "e107_media/";
 $THEMES_DIRECTORY    = "e107_themes/";
 $PLUGINS_DIRECTORY   = "e107_plugins/";
 $HANDLERS_DIRECTORY  = "e107_handlers/";
 $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY      = "e107_docs/help/";
-$CACHE_DIRECTORY 	 = "e107_media/cache/";
+$CACHE_DIRECTORY 	 = "e107_system/cache/";
 $DOWNLOADS_DIRECTORY = "e107_media/files/";
-$UPLOADS_DIRECTORY   = "e107_media/public/";
+$UPLOADS_DIRECTORY   = "e107_media/temp/";
 $LOGS_DIRECTORY		 = "e107_files/logs";
+$CORE_DIRECTORY		 = "e107_core/";
+$SYSTEM_DIRECTORY	 = "e107_system/";
 
 /* End configurable variables */
 
@@ -154,7 +155,7 @@ function check_class($whatever)
 }
 
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY');
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107 = e107::getInstance();
 $e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
@@ -1042,7 +1043,7 @@ class e_install
 		$themeImportFile = array();
 		$themeImportFile[0] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml";
 		$themeImportFile[1] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install/install.xml";
-		$themeImportFile[3] = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";
+		$themeImportFile[3] = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
 
 		if(vartrue($this->previous_steps['generate_content']))
 		{
@@ -1057,7 +1058,7 @@ class e_install
 		}
 		else
 		{
-			$XMLImportfile = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";
+			$XMLImportfile = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
 		}
 
 
@@ -1273,8 +1274,8 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
-		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}temp/|{$MEDIA_DIRECTORY}logs/|{$MEDIA_DIRECTORY}images/';
-		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$FILES_DIRECTORY}public/avatars/|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
+		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/';
+		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
 		foreach ($this->e107->e107_dirs as $dir_name => $value)
 		{
