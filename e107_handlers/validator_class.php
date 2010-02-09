@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2010-02-07 13:55:38 $
+ * $Revision: 1.21 $
+ * $Date: 2010-02-09 13:34:23 $
  * $Author: secretr $
  *
 */
@@ -315,7 +315,7 @@ class e_validator
 			if(($required || $this->isOptionalField($field_name)) && !$this->validateField($field_name, $value, $required))
 			{
 				$this->_is_valid_data = false; 
-				$this->addValidateMessage($this->getFieldName($field_name, $required), $this->getErrorCode($field_name), $this->getFieldMessage($field_name, $required, $value));
+				$this->addValidateMessage($this->getFieldName($field_name, $required), $this->getErrorCode($field_name), $this->getFieldMessage($field_name, $value, $required));
 				continue;
 			}
 		}
@@ -456,7 +456,7 @@ class e_validator
 			$type = $this->_optional_rules[$name][0];
 			$cond = $this->_optional_rules[$name][1];
 		}
-		
+
 		switch ($type) 
 		{
 			case 'required': 
@@ -511,12 +511,13 @@ class e_validator
 		
 			case 'int':
 			case 'integer':
-				if(!preg_match('/[0-9]/', $value)) // TODO - negative values!
+				if(!preg_match('/^-?[\d]+$/', $value)) // negative values support
 				{
 					$this->addValidateResult($name, self::ERR_INT_EXPECTED);
 					return false;
 				}
-				$tmp = explode(':', $cond);
+				// BC! Will be removed after we replace '-' with ':' separator!
+				$tmp = $this->parseMinMax($cond);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > (integer) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
@@ -535,7 +536,7 @@ class e_validator
 			case 'string':
 			case 'text':
 			case 'varchar':
-				$tmp = explode(':', $cond);
+				$tmp = $this->parseMinMax($cond);
 				$length = e107::getParser()->ustrlen($value);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 				{
@@ -560,7 +561,7 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_FLOAT_EXPECTED);
 					return false;
 				}
-				$tmp = explode(':', $cond);
+				$tmp = $this->parseMinMax($cond);
 				if(is_numeric($tmp[0]) && (float) $tmp[0] > (float) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
@@ -582,7 +583,7 @@ class e_validator
 					return false;
 				}
 				$length = count($value);
-				$tmp = explode('-', $cond);
+				$tmp = $this->parseMinMax($cond);
 				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_ARRCOUNT_LOW);
@@ -612,7 +613,7 @@ class e_validator
 				}
 				if(vartrue($params['size']))
 				{
-					$tmp = explode('-', $params['size'], 2);
+					$tmp = $this->parseMinMax($cond);
 					$fs = filesize($path);
 					if(!$fs || (integer) $tmp[0] > $fs) 
 					{
@@ -624,11 +625,11 @@ class e_validator
 						$this->addValidateResult($name, self::ERR_SIZEMAX_FILE);
 						return false;
 					}
-					elseif(is_numeric(varset($params['maxlen'])) && (integer) $params['maxlen'] < e107::getParser()->ustrlen($fs))
-					{
-						$this->addValidateResult($name, self::ERR_TOO_LONG);
-						return false;
-					}
+				}
+				if(is_numeric(varset($params['maxlen'])) && (integer) $params['maxlen'] < e107::getParser()->ustrlen($value))
+				{
+					$this->addValidateResult($name, self::ERR_TOO_LONG);
+					return false;
 				}
 				$this->addValidData($name, $value);
 				return true;
@@ -658,7 +659,7 @@ class e_validator
 				// check length
 				if($cond)
 				{
-					$tmp = explode('-', $cond);
+					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
 					if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 					{
@@ -690,7 +691,7 @@ class e_validator
 				// check length
 				if($cond)
 				{
-					$tmp = explode('-', $cond);
+					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
 					if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
 					{
@@ -712,6 +713,21 @@ class e_validator
 				return false;
 			break;
 		}
+	}
+	
+	protected function parseMinMax($string)
+	{
+		return explode(':', $this->_convertConditionBC($string), 2);
+	}
+	
+	private function _convertConditionBC($condition)
+	{
+		// BC! Will be removed after we replace '-' with ':' separator!
+		if(strpos($condition, ':') === false) 
+		{ 
+			return preg_replace('/^([0-9]+)-([0-9]+)$/', '$1:$2', $condition);
+		}
+		return $condition; 
 	}
 	
 	/**
