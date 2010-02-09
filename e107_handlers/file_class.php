@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-02-05 11:13:38 $
+ * $Revision: 1.11 $
+ * $Date: 2010-02-09 15:24:55 $
  * $Author: secretr $
  */
 
@@ -297,6 +297,61 @@ class e_file
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 *	Parse a file size string (e.g. 16M) and compute the simple numeric value.
+	 *
+	 *	@param string $source - input string which may include 'multiplier' characters such as 'M' or 'G'. Converted to 'decoded value'
+	 *	@param int $compare - a 'compare' value
+	 *	@param string $action - values (gt|lt)
+	 *
+	 *	@return int file size value.
+	 *		If the decoded value evaluates to zero, returns the value of $compare
+	 *		If $action == 'gt', return the larger of the decoded value and $compare
+	 *		If $action == 'lt', return the smaller of the decoded value and $compare
+	 */
+	function file_size_decode($source, $compare = 0, $action = '')
+	{
+		$source = trim($source);
+		if (strtolower(substr($source, -1, 1)) == 'b')
+			$source = substr($source, 0, -1); // Trim a trailing byte indicator
+		$mult = 1;
+		if (strlen($source) && (strtoupper(substr($source, -1, 1)) == 'B'))
+			$source = substr($source, 0, -1);
+		if (!$source || is_numeric($source))
+		{
+			$val = $source;
+		}
+		else
+		{
+			$val = substr($source, 0, -1);
+			switch (substr($source, -1, 1))
+			{
+				case 'T':
+					$val = $val * 1024;
+				case 'G':
+					$val = $val * 1024;
+				case 'M':
+					$val = $val * 1024;
+				case 'K':
+				case 'k':
+					$val = $val * 1024;
+				break;
+			}
+		}
+		if ($val == 0)
+			return $compare;
+		switch ($action)
+		{
+			case 'lt':
+				return min($val, $compare);
+			case 'gt':
+				return max($val, $compare);
+			default:
+				return $val;
+		}
+		return 0;
 	}
 
 }
