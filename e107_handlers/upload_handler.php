@@ -9,8 +9,8 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.29 $
- * $Date: 2010-01-12 09:56:57 $
+ * $Revision: 1.30 $
+ * $Date: 2010-02-09 15:24:53 $
  * $Author: secretr $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: upload_handler.php,v 1.29 2010-01-12 09:56:57 secretr Exp $;
+ *	@version 	$Id: upload_handler.php,v 1.30 2010-02-09 15:24:53 secretr Exp $;
  *
  *	@todo - option to restrict by total size irrespective of number of uploads
  */
@@ -652,7 +652,9 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 
 	/**
 	 *	Parse a file size string (e.g. 16M) and compute the simple numeric value.
+	 *	Proxy to e_file::file_size_decode().
 	 *
+	 *	@see e_file::file_size_decode()
 	 *	@param string $source - input string which may include 'multiplier' characters such as 'M' or 'G'. Converted to 'decoded value'
 	 *	@param int $compare - a 'compare' value
 	 *	@param string $action - values (gt|lt)
@@ -664,45 +666,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	 */
 	function file_size_decode($source, $compare = 0, $action = '')
 	{
-		$source = trim($source);
-		if (strtolower(substr($source, -1, 1)) == 'b')
-			$source = substr($source, 0, -1); // Trim a trailing byte indicator
-		$mult = 1;
-		if (strlen($source) && (strtoupper(substr($source, -1, 1)) == 'B'))
-			$source = substr($source, 0, -1);
-		if (!$source || is_numeric($source))
-		{
-			$val = $source;
-		}
-		else
-		{
-			$val = substr($source, 0, -1);
-			switch (substr($source, -1, 1))
-			{
-				case 'T':
-					$val = $val * 1024;
-				case 'G':
-					$val = $val * 1024;
-				case 'M':
-					$val = $val * 1024;
-				case 'K':
-				case 'k':
-					$val = $val * 1024;
-				break;
-			}
-		}
-		if ($val == 0)
-			return $compare;
-		switch ($action)
-		{
-			case 'lt':
-				return min($val, $compare);
-			case 'gt':
-				return max($val, $compare);
-			default:
-				return $val;
-		}
-		return 0;
+		return e107::getFile(true)->file_size_decode($source, $compare, $action);
 	}
 
 
