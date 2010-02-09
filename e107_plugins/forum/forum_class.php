@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2010-02-06 14:38:10 $
-|     $Author: e107steved $	   ** Amended by Marj to re-order list line 818 - 851
+|     $Revision: 1.78 $
+|     $Date: 2010-02-09 04:12:18 $
+|     $Author: mcfly_e107 $	   ** Amended by Marj to re-order list line 818 - 851
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -127,7 +127,7 @@ class e107forum
 				$this->update_subparent_lp($sub['forum_sub']);
 			}
 		}
-		else 
+		else
 		{
 			$id = (int)$id;
 			if($sql->db_Select('forum', 'forum_lastpost_user, forum_lastpost_info', "forum_id = {$id} OR forum_sub = {$id} ORDER BY forum_lastpost_info DESC LIMIT 1"))
@@ -138,18 +138,18 @@ class e107forum
 		}
 	}
 	
-	function forum_markasread($forum_id) 
+	function forum_markasread($forum_id)
 	{
 	  global $sql;
-	  if ($forum_id != 'all') 
+	  if ($forum_id != 'all')
 	  {
 		$forum_id = intval($forum_id);
 		$extra = " AND thread_forum_id={$forum_id}";
 	  }
 	  $qry = "thread_lastpost > ".USERLV." AND thread_parent = 0 {$extra} ";
-	  if ($sql->db_Select('forum_t', 'thread_id', $qry)) 
+	  if ($sql->db_Select('forum_t', 'thread_id', $qry))
 	  {
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->db_Fetch())
 		{
 		  $u_new .= $row['thread_id'].".";
 		}
@@ -332,6 +332,7 @@ class e107forum
 
 	function forum_get($forum_id)
 	{
+		$sql = new db;
 		$forum_id = intval($forum_id);
 		$qry = "
 		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name, fp.forum_id as parent_id, fp.forum_postclass as parent_postclass, sp.forum_name AS sub_parent FROM #forum AS f
@@ -339,7 +340,6 @@ class e107forum
 		LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id AND f.forum_sub > 0
 		WHERE f.forum_id = {$forum_id}
 		";
-		global $sql;
 		if ($sql->db_Select_gen($qry))
 		{
 			return $sql->db_Fetch();
@@ -691,8 +691,11 @@ class e107forum
 
 	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_s, $forum_sub)
 	{
-		$post_time = time();
 		global $sql, $tp, $pref, $e107;
+		global $PLUGINS_DIRECTORY;
+		
+		$forum_info = '';
+		$post_time = time();
 		$forum_sub = intval($forum_sub);
 		$ip = $e107->getip();
 		//Check for duplicate post
@@ -737,7 +740,6 @@ class e107forum
 			$sql->db_Update('forum_t', "thread_lastpost={$post_time}, thread_lastuser='{$post_user}', thread_total_replies=thread_total_replies+1 WHERE thread_id = ".(int)$thread_parent);
 
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
-			global $PLUGINS_DIRECTORY;
 			$thread_name = $tp->toText($parent_thread[0]['thread_name']);
 			$thread_name = str_replace('&quot;', '"', $thread_name);		// This not picked up by toText();
 			$datestamp = $gen->convert_date($post_time, "long");
@@ -747,33 +749,54 @@ class e107forum
 			{
 				$pref['forum_eprefix'] = "[forum]";
 			}
+
 			//   Send email to originator if 'notify' set
 			$email_addy = '';
-			if ($pref['email_notify'] && ($parent_thread[0]['thread_active'] == 99) && ($parent_thread[0]['user_id'] != USERID))
+			if ($pref['email_notify'] && $parent_thread[0]['thread_active'] == 99 && $parent_thread[0]['user_id'] != USERID)
 			{
-				// Only email if they're still a current member
-				if ($sql->db_Select('user', 'user_id', '(`user_id` = '.$parent_thread[0]['user_id'].') AND (`user_ban` = 0)'))
+				$sql->db_Select('user', 'user_admin, user_perms, user_class, user_ban', 'user_id = '.$parent_thread[0]['user_id']);
+				$thread_owner = $sql->db_Fetch(MYSQL_ASSOC);
+				$forum_info = $this->forum_get($parent_thread[0]['thread_forum_id']);
+				
+				//Ensure owner is not banned and has permissions to view forum and forum parent
+				if(
+					$thread_owner['user_ban'] == 0 &&
+					check_class($forum_info['forum_class'], $thread_owner['user_class'], $thread_owner) &&
+					check_class($forum_info['parent_class'], $thread_owner['user_class'], $thread_owner)
+					)
 				{
 					$gen = new convert;
 					$email_name = $parent_thread[0]['user_name'];
 					$email_addy = $parent_thread[0]['user_email'];
 					$message = LAN_384.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$tp->toHTML($email_post, TRUE, 'USER_BODY')."<br /><br />". LAN_383."<br /><br />".$mail_link;
-					include_once(e_HANDLER.'mail.php');
+					include_once(e_HANDLER."mail.php");
 					sendemail($email_addy, $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $email_name);
 				}
 			}
 
-
-			//   Send email to all users tracking thread - except the one that's just posted
-			if ($pref['forum_track'] && $sql->db_Select("user", "user_id, user_email, user_name", "`user_ban`=0 AND user_realm REGEXP('-".intval($thread_parent)."-') "))
+			// Send email to all users tracking thread - except the one that's just posted
+			if ($pref['forum_track'] && $sql->db_Select('user', 'user_id, user_ban, user_admin, user_perms, user_class, user_email, user_name', "user_realm REGEXP('-".intval($thread_parent)."-') "))
 			{
 				include_once(e_HANDLER.'mail.php');
 				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$tp->toHTML($email_post, TRUE, 'USER_BODY')."<br /><br />". LAN_383."<br /><br />".$mail_link;
-				while ($row = $sql->db_Fetch())
-				{	// Don't sent to self, nor to originator of thread if they've got 'notify' set, nor to banned users
-					if ($row['user_email'] && ($row['user_email'] != $email_addy) && ($row['user_id'] != USERID))	// (May be wrong, but this could be faster than filtering current user in the query)
+				while ($tracker = $sql->db_Fetch(MYSQL_ASSOC))
+				{
+					// Get forum info if we haven't got it already
+					if($forum_info == false)
 					{
-						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $row['user_name']);
+						$forum_info = $this->forum_get($parent_thread[0]['thread_forum_id']);
+					}
+					// Don't send to self, nor to originator of thread if they've got 'notify' set
+					// Also ensure tracker is not banned and has permissions to view forum and forum parent
+					if ($tracker['user_email'] &&
+						$tracker['user_email'] != $email_addy &&
+						$tracker['user_id'] != USERID &&
+						$tracker['user_ban'] == 0 &&
+						check_class($forum_info['forum_class'], $tracker['user_class'], $tracker) &&
+						check_class($forum_info['parent_class'], $tracker['user_class'], $tracker)
+						)
+					{
+						sendemail($tracker['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $tracker['user_name']);
 					}
 				}
 			}
