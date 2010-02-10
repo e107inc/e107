@@ -22,7 +22,7 @@ if (!defined('e107_INIT'))
 }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 global $comment_shortcodes;
-require_once (e_FILE."shortcode/batch/comment_shortcodes.php");
+require_once (e_CORE."shortcodes/batch/comment_shortcodes.php");
 /**
  * Enter description here...
  *
@@ -40,7 +40,7 @@ class comment
 			5	=> 'docs',
 			6	=> 'bugtrack'
 	);
-	
+
 	/**
 	 * Display the comment editing form
 	 *
@@ -349,13 +349,13 @@ class comment
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
 		global $e_event,$e107,$pref,$rater;
-		
+
 		$sql 		= e107::getDb();
 		$sql2 		= e107::getDb('sql2');
 		$tp 		= e107::getParser();
 		$e107cache 	= e107::getCache();
-		
-		
+
+
 		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
 			return;
@@ -428,54 +428,54 @@ class comment
 						$e107cache->clear("comment");
 						return;
 					}
-					
+
 					//FIXME - don't sanitize, pass raw data to e_event, use DB array (inner db sanitize)
 					$edata_li = array(
 						// comment_id - auto-assigned
-						'comment_pid'			=> intval($pid), 
-						'comment_item_id'		=> $id, 
-						'comment_subject'		=> $subject, 
-						'comment_author_id'		=> $cuser_id, 
+						'comment_pid'			=> intval($pid),
+						'comment_item_id'		=> $id,
+						'comment_subject'		=> $subject,
+						'comment_author_id'		=> $cuser_id,
 						'comment_author_name'	=> $cuser_name,
 						'comment_author_email'	=> $tp->toDB($cuser_mail),
-						'comment_datestamp'		=> $_t, 
-						'comment_comment'		=> $comment, 
+						'comment_datestamp'		=> $_t,
+						'comment_comment'		=> $comment,
 						'comment_blocked'		=> 0, //Not blocked by default
-						'comment_ip'			=> $ip, 
+						'comment_ip'			=> $ip,
 						'comment_type'			=> $tp->toDB($type, true),
 						'comment_lock'			=> 0 //Not locked by default
 					);
-					
+
 					//SecretR: new event 'prepostcomment' - allow plugin hooks - e.g. Spam Check
 					$edata_li_hook = array_merge($edata_li, array('comment_nick' => $cuser_id.'.'.$cuser_name, 'comment_time' => $_t));
 					if($e_event->trigger("prepostcomment", $edata_li_hook))
 					{
 						return false; //3rd party code interception
 					}
-					
+
 					//allow 3rd party code to modify insert data
 					if(is_array($edata_li_hook))
 					{
 						foreach (array_keys($edata_li) as $k)
 						{
-							if(isset($edata_li_hook[$k])) 
+							if(isset($edata_li_hook[$k]))
 							{
 								$edata_li[$k] = $edata_li_hook[$k]; //sanitize?
 								continue;
 							}
-							if($k === 'break') 
+							if($k === 'break')
 							{
 								$break = $edata_li_hook[$k];
 							}
 						}
 					}
 					unset($edata_li_hook);
-					
+
 					if (!($inserted_id = $sql->db_Insert("comments", $edata_li)))
 					{
 						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
 						e107::getMessage()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
-						
+
 					}
 					else
 					{
@@ -487,21 +487,21 @@ class comment
 						$edata_li["comment_nick"] = $cuser_id.'.'.$cuser_name;
 						$edata_li["comment_time"] = $_t;
 						$edata_li["comment_id"] = $inserted_id;
-						
+
 						//Why?
 						/*unset($edata_li['comment_pid']);
 						unset($edata_li['comment_author_email']);
 						unset($edata_li['comment_ip']);*/
-						
+
 						$e_event->trigger("postcomment", $edata_li);
 						$e107cache->clear("comment");
-						
+
 						//TODO - should be handled by news
 						if (!$type || $type == "news")
 						{
 							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
 						}
-						
+
 						//if rateindex is posted, enter the rating from this user
 						if ($rateindex)
 						{
@@ -535,7 +535,7 @@ class comment
 		{
 			return $table;
 		}
-		
+
 		switch ($table)
 		{
 			case "news":
@@ -569,7 +569,7 @@ class comment
 		}
 		return $type;
 	}
-	
+
 	/**
 	 * Convert type number to (core) table string
 	 * @param integer|string $type
@@ -589,7 +589,7 @@ class comment
 			}
 		}
 	}
-		
+
 		/**
 		 * Enter description here...
 		 *
@@ -631,17 +631,17 @@ class comment
 			//		Query no longer used
 			//		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 			$type = $this->getCommentType($table);
-			$query = $pref['nested_comments'] ? 
+			$query = $pref['nested_comments'] ?
 				"SELECT c.*, u.*, ue.* FROM #comments AS c
 				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp" 
-					: 
+				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
+					:
 				"SELECT c.*, u.*, ue.* FROM #comments AS c
 				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
-			
+
 			$text = "";
 			$comment = '';
 			$modcomment = '';
@@ -649,10 +649,10 @@ class comment
 			$ret['comment'] = '';
 			if ($comment_total = $sql->db_Select_gen($query))
 			{
-				$width = 0;	
+				$width = 0;
 				//Shortcodes could use $sql, so just grab all results
 				$rows = $sql->db_getList();
-				
+
 				//while ($row = $sql->db_Fetch())
 				foreach ($rows as $row)
 				{
@@ -732,9 +732,9 @@ class comment
 			global $sql;
 			$authors = array();
 			$qry = "
-		SELECT DISTINCT(comment_author_id) AS author 
+		SELECT DISTINCT(comment_author_id) AS author
 		FROM #comments
-		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}' 
+		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}'
 		GROUP BY author
 		";
 			if ($sql->db_Select_gen($qry))
@@ -775,9 +775,9 @@ class comment
 			{
 				return $data;
 			}
-			
+
 			$files = e107::getPref('e_comment_list');
-			
+
 			foreach ($files as $file=>$perms)
 			{
 				unset($e_comment, $key);

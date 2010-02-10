@@ -96,7 +96,7 @@ if(NEWS_REWRITE)
 	//item
 	$rewrite_join = 'LEFT JOIN #news_rewrite AS nr ON n.news_id=nr.news_rewrite_source AND nr.news_rewrite_type=1';
 	$rewrite_cols = ', nr.*';
-	
+
 	//category
 	$rewrite_join_cat = 'LEFT JOIN #news_rewrite AS ncr ON n.news_category=ncr.news_rewrite_source AND ncr.news_rewrite_type=2';
 	$rewrite_cols_cat = ', ncr.news_rewrite_id AS news_category_rewrite_id, ncr.news_rewrite_string AS news_category_rewrite_string ';
@@ -130,8 +130,8 @@ if ($action == 'cat' || $action == 'all')
 		// show archive of all news items using list-style template.
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, 
-		nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols} 
+		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon,
+		nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -150,7 +150,7 @@ if ($action == 'cat' || $action == 'all')
 		if(!defined("NEWSLIST_LIMIT")) { define("NEWSLIST_LIMIT",10); }
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, nc.category_meta_keywords,
-		nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols} 
+		nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -162,13 +162,13 @@ if ($action == 'cat' || $action == 'all')
 		ORDER BY n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
 	}
-	
+
 	$newsList = array();
 	if($sql->db_Select_gen($query))
 	{
 		$newsList = $sql->db_getList();
 	}
-	
+
 	if($action == 'cat') setNewsFrontMeta($newsList[1], 'category');
 	elseif($category_name)
 	{
@@ -199,14 +199,14 @@ if ($action == 'cat' || $action == 'all')
 		</div>\n";
 
 	}
-	
+
 	$param = array();
 	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 	$param['current_action'] = $action;
-	
+
 	foreach($newsList as $row)
 	{
 	  $text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
@@ -241,7 +241,7 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 //		DISPLAY SINGLE ITEM IN EXTENDED FORMAT HERE
 //------------------------------------------------------
-if ($action == 'extend') 
+if ($action == 'extend')
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
@@ -253,8 +253,8 @@ if ($action == 'extend')
 	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
 	{
 	  $query = "
-	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, 
-		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols} 
+	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
+		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 	  	FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -269,37 +269,37 @@ if ($action == 'extend')
 	else
 	{
 	  $query = "
-	  	SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, nc.category_meta_keywords, 
+	  	SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 	  	FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		{$rewrite_join}
 		{$rewrite_join_cat}
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." 
-		AND (n.news_end=0 || n.news_end>".time().") 
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
+		AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		AND n.news_start < ".time()."
+		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_id=".intval($sub_action);
 	}
 	if ($sql->db_Select_gen($query))
 	{
 		$news = $sql->db_Fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
-		
+
 		//***NEW [SecretR] - comments handled inside now
 		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
 		if(!$news['news_allow_comments'] && isset($_POST['commentsubmit']))
 		{
 			$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
-		
+
 			$clean_authorname = $_POST['author_name'];
 			$clean_comment = $_POST['comment'];
 			$clean_subject = $_POST['subject'];
-			
+
 			e107::getSingleton('comment')->enter_comment($clean_authorname, $clean_comment, 'news', $sub_action, $pid, $clean_subject);
 		}
-		
+
 		//More SEO
 		setNewsFrontMeta($news);
 		/*
@@ -318,8 +318,8 @@ if ($action == 'extend')
 			if (!isset($news['news_extended'])) $news['news_extended'] = '';
 			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 			$prev_query = "SELECT news_id, news_title FROM `#news`
-				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
-				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.")
 				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
 			$sql->db_Select_gen($prev_query);
 			$prev_news = $sql->db_Fetch();
@@ -328,8 +328,8 @@ if ($action == 'extend')
 				$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
 			}
 			$next_query = "SELECT news_id, news_title FROM `#news` AS n
-				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
-				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
+				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
+				AND NOT (`news_class` REGEXP ".$nobody_regexp.")
 				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
 			$sql->db_Select_gen($next_query);
 			$next_news = $sql->db_Fetch();
@@ -341,10 +341,10 @@ if ($action == 'extend')
 		}
 
 		require_once(HEADERF);
-		
+
 		$param = array();
 		$param['current_action'] = $action;
-		
+
 		ob_start();
 		$ix->render_newsitem($news, 'extend', '', '', $param);
 		if(e107::getRegistry('news/page_allow_comments'))
@@ -384,7 +384,7 @@ switch ($action)
 	$sub_action = intval($sub_action);
 //	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 	$query = "
-		SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, 
+		SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -404,7 +404,7 @@ switch ($action)
 	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
 	{
 	  $query = "
-	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, 
+	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -449,7 +449,7 @@ switch ($action)
 	$startdate = mktime(0, 0, 0, $month, $day, $year);
 	$enddate = mktime(23, 59, 59, $month, $lastday, $year);
 	$query = "
-		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, 
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -477,8 +477,8 @@ switch ($action)
 	// Get number of news item to show
 	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
 		$query = "
-		SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, 
-		nc.category_name, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, 
+		SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle,
+		nc.category_name, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
 		COUNT(*) AS tbcount{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -495,7 +495,7 @@ switch ($action)
 	else
 	{
 		$query = "
-		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, 
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -657,7 +657,7 @@ else
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 	$param = array();
 	$param['current_action'] = $action;
-	
+
 	$i= 1;
 	while(isset($newsAr[$i]) && $i <= $interval) {
 		$news = $newsAr[$i];
@@ -695,7 +695,7 @@ function show_newsarchive($newsAr, $i = 1)
 	global $ns, $gen, $pref, $tp, $news_archive_shortcodes, $NEWSARCHIVE, $news2;
 
 	// do not show the news archive on the news.php?item.X page (but only on the news mainpage)
-	require_once(e_FILE.'shortcode/batch/news_archives.php');
+	require_once(e_CORE.'shortcodes/batch/news_archives.php');
 
 	$textnewsarchive = '';
 	ob_start();
@@ -843,29 +843,29 @@ function setNewsFrontMeta($news, $type='news')
 		{
 			define('e_PAGETITLE', $news['news_title']);
 		}
-		
+
 		if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
 		{
 			define('META_KEYWORDS', $news['news_meta_keywords']);
 		}
-		
+
 		if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
 		{
 			define('META_DESCRIPTION', $news['news_meta_description']);
 		}
 		return;
 	}
-	
+
 	if($news['category_name'] && !defined('e_PAGETITLE'))
 	{
 		define('e_PAGETITLE', $news['category_name']);
 	}
-	
+
 	if($news['category_meta_keywords'] && !defined('META_KEYWORDS'))
 	{
 		define('META_KEYWORDS', $news['category_meta_keywords']);
 	}
-	
+
 	if($news['category_meta_description'] && !defined('META_DESCRIPTION'))
 	{
 		define('META_DESCRIPTION', $news['category_meta_description']);

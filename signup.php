@@ -39,9 +39,9 @@ require_once(e_HANDLER.'validator_class.php');
 $userMethods = e107::getSession();
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
-require_once(e107::coreTemplatePath('signup')); //correct way to load a core template. 
+require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
 
-include_once(e_FILE.'shortcode/batch/signup_shortcodes.php');
+include_once(e_CORE.'shortcodes/batch/signup_shortcodes.php');
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
 $text = '';
@@ -257,7 +257,7 @@ if($signup_imagecode)
 
 
 if (USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107'))
-{	
+{
 	header('location: '.e_HTTP.'index.php');
 }
 

@@ -31,7 +31,7 @@ if (!defined('e107_INIT')) { exit; }
 function register_shortcode($classFunc, $codes, $path='', $force = false)
 {
 	$sc = e107::getScParser();
-	
+
 	//If codes is set to true, let's go get a list of shortcode methods
 	if(/*is_bool($codes) && */$codes === true) //double check fix
 	{
@@ -46,14 +46,14 @@ function register_shortcode($classFunc, $codes, $path='', $force = false)
 		}
 		unset($tmp);
 	}
-	
+
 	//Register object feature
 	$classObj = null;
 	if(is_object($classFunc))
 	{
 		$classObj = $classFunc;
 		$classFunc = get_class($classObj);
-		
+
 	}
 
 	//We only register these shortcodes if they have not already been registered in some manner
@@ -68,7 +68,7 @@ function register_shortcode($classFunc, $codes, $path='', $force = false)
 				$sc->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
 			}
 		}
-		
+
 		//register object if required
 		if(null !== $classObj && !isset($sc->scClasses[$classFunc]))
 		{
@@ -139,7 +139,7 @@ function initShortcodeClass($class, $force = false)
 	}
 }
 
-	
+
 
 class e_shortcode
 {
@@ -161,18 +161,19 @@ class e_shortcode
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
-		
+
 	}
-	
+
 	/**
-	 * Register any shortcode from the shortcode/override/ directory
+	 * Register any shortcode from the shortcodes/override/ directory
 	 *
 	 * @return void
 	 */
+	//FIXME - should use e_SYSTEM/override/
 	protected function loadOverrideShortcodes()
 	{
 		$pref = e107::getConfig('core')->getPref();
-		
+
 		if(varset($pref['sc_override']))
 		{
 			$tmp = explode(',', $pref['sc_override']);
@@ -184,7 +185,7 @@ class e_shortcode
 			}
 		}
 	}
-	
+
 	/**
 	 * Register any shortcodes that were registered by the theme
 	 * $register_sc[] = 'MY_THEME_CODE'
@@ -194,7 +195,7 @@ class e_shortcode
 	protected function loadThemeShortcodes()
 	{
 		global $register_sc;
-		
+
 		if(isset($register_sc) && is_array($register_sc))
 		{
 			foreach($register_sc as $code)
@@ -207,8 +208,8 @@ class e_shortcode
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Register all .sc files found in plugin directories (via pref)
 	 *
@@ -217,7 +218,7 @@ class e_shortcode
 	protected function loadPluginSCFiles()
 	{
 		$pref = e107::getConfig('core')->getPref();
-		
+
 		if(varset($pref['shortcode_list'], '') != '')
 		{
 			foreach($pref['shortcode_list'] as $path => $namearray)
@@ -252,7 +253,7 @@ class e_shortcode
 	protected function loadPluginShortcodes()
 	{
 		$pref = e107::getConfig('core')->getPref();
-		
+
 		if(!vartrue($pref['e_shortcode_list']))
 		{
 			return;
@@ -267,7 +268,7 @@ class e_shortcode
 			$path = e_PLUGIN.$key.'/e_shortcode.php';
 			$classFunc = $key.'_shortcodes';
 			$this->scClasses[$classFunc] = new $classFunc;
-			
+
 			$tmp = get_class_methods($classFunc);
 			foreach($tmp as $c)
 			{
@@ -295,7 +296,7 @@ class e_shortcode
 		$coreBatchList = array('admin_shortcodes.php');
 		foreach($coreBatchList as $cb)
 		{
-			include_once(e_FILE.'shortcode/batch/'.$cb);
+			include_once(e_CORE.'shortcodes/batch/'.$cb);
 		}
 	}
 
@@ -303,7 +304,7 @@ class e_shortcode
 	{
 		return in_array($code, $this->registered_codes);
 	}
-	
+
 	public function resetScClass($className, $object)
 	{
 		if($this->isScClass($className))
@@ -311,7 +312,7 @@ class e_shortcode
 			$this->scClasses[$className] = $object;
 		}
 	}
-	
+
 	function isScClass($className)
 	{
 		return isset($this->scClasses[$className]);
@@ -326,7 +327,7 @@ class e_shortcode
 	{
 		$saveParseSCFiles = $this->parseSCFiles;		// In case of nested call
 		$this->parseSCFiles = $useSCFiles;
-			
+
 		if(is_object($eVars)) {
 			$this->eVars = $eVars;
 		}
@@ -335,13 +336,13 @@ class e_shortcode
 		if(is_object($extraCodes))
 		{
 			$classname = get_class($extraCodes);
-			
+
 			//register once
 			if(!$this->isScClass($classname))
 			{
 				register_shortcode($extraCodes, true);
 			}
-			
+
 			//always overwrite object
 			$this->scClasses[$classname] = $extraCodes;
 		}
@@ -445,14 +446,14 @@ class e_shortcode
 							}
 							if(method_exists($this->scClasses[$_class], $_method))
 							{
-								
+
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
 							}
 							else
 							{
 								echo $_class.'::'.$_method.' NOT FOUND!<br />';
 							}
-								
+
 							break;
 
 						case 'func':
@@ -474,7 +475,7 @@ class e_shortcode
 							break;
 
 						case 'override':
-							$scFile = e_FILE.'shortcode/override/'.strtolower($code).'.sc';
+							$scFile = e_FILE.'shortcodes/override/'.strtolower($code).'.sc';
 							break;
 
 						case 'theme':
@@ -487,13 +488,13 @@ class e_shortcode
 				{
 					// Code is not registered, let's look for .sc or .php file
 					// .php file takes precedence over .sc file
-					if(is_readable(e_FILE.'shortcode/'.strtolower($code).'.php'))
+					if(is_readable(e_CORE.'shortcodes/single/'.strtolower($code).'.php'))
 					{
 						$_function = strtolower($code).'_shortcode';
 						$_class = strtolower($code);
-						
-						include_once(e_FILE.'shortcode/'.strtolower($code).'.php');
-						
+
+						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
+
 						if(class_exists($_class, false)) // prevent __autoload - performance
 						{
 							$ret = call_user_func(array($_class,$_function), $parm);
@@ -505,7 +506,7 @@ class e_shortcode
 					}
 					else
 					{
-						$scFile = e_FILE.'shortcode/'.strtolower($code).'.sc';
+						$scFile = e_CORE.'shortcodes/single/'.strtolower($code).'.sc';
 					}
 				}
 				if ($scFile && file_exists($scFile))
@@ -523,7 +524,7 @@ class e_shortcode
 
 			if(E107_DBG_SC && $scFile)
 			{
-			  //	echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_FILE.'shortcode/', '', $scFile).'<br />' : '';
+			  //	echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_CORE.'shortcodes/single/', '', $scFile).'<br />' : '';
 			  //	echo "<br />sc= <b>$code</b>";
 			}
 		}

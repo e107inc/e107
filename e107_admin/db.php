@@ -77,7 +77,7 @@ if(isset($_POST['exportXmlFile']))
 		$emessage = eMessage::getInstance();
 		$emessage->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
 	}
-	
+
 }
 
 require_once ("auth.php");
@@ -86,7 +86,7 @@ $frm = new e_form();
 $st = new system_tools;
 
 
-/* No longer needed after XML feature added. 
+/* No longer needed after XML feature added.
 
 if(isset($_POST['backup_core']) || $_GET['mode']=='backup_core')
 {
@@ -111,14 +111,14 @@ require_once ("footer.php");
 
 class system_tools
 {
-	
+
 	public $_options = array();
-		
-	
+
+
 	function __construct()
 	{
 		global $mySQLdefaultdb;
-		
+
 		$this->_options = array(
 			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
 			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
@@ -132,90 +132,90 @@ class system_tools
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
 			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8')
 		);
-		
-		//TODO Merge db_verify.php into db.php 
-		
 
-		
+		//TODO Merge db_verify.php into db.php
+
+
+
 		if(isset($_POST['delplug']))
 		{
-			$this->delete_plugin_entry($_POST['pref_type']);	
+			$this->delete_plugin_entry($_POST['pref_type']);
 		}
-		
+
 		if(isset($_POST['upload']))
-		{	
-			$this->importXmlFile();		
+		{
+			$this->importXmlFile();
 		}
-		
+
 		if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
 		{
 			$this->del_pref_val($_POST['pref_type']);
 		}
-		
+
 		if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 		{
 			// $this->verify_sql_record();  - currently performed in db_verify.php
 		}
-		
+
 		if(isset($_POST['importForm']) ||  $_GET['mode']=='importForm')
 		{
-			$this->importForm();	
+			$this->importForm();
 		}
-		
-				
+
+
 		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode']=='convert_to_utf8')
 		{
-			$this->convertUTF8Form();	
+			$this->convertUTF8Form();
 		}
-				
+
 		if(isset($_POST['exportForm']) ||  $_GET['mode']=='exportForm')
 		{
-			$this->exportXmlForm();		
+			$this->exportXmlForm();
 		}
 
 		if(isset($_POST['optimize_sql']) || $_GET['mode']=='optimize_sql')
 		{
 			$this->optimizesql($mySQLdefaultdb);
 		}
-		
+
 		if(isset($_POST['pref_editor']) || $_GET['mode']=='pref_editor' || isset($_POST['delpref']) || isset($_POST['delpref_checked']))
 		{
 			$type = isset($_GET['type']) ? $_GET['type'] : "core";
 			$this->pref_editor($type);
 		}
-		
+
 		if(isset($_POST['sc_override_scan']) || $_GET['mode']=='sc_override_scan')
 		{
 			$this->scan_override();
 		}
-		
+
 		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
 		{
 			$this->plugin_viewscan();
 		}
-		
+
 		if(vartrue($_POST['perform_utf8_convert']))
 		{
 			$this->perform_utf8_convert();
 		}
-		
+
 		if(!vartrue($_GET['mode']))
-		{		
+		{
 			$this->render_options();
 		}
-		
 
-					
+
+
 	}
-	
+
 	private function convertUTF8Form()
 	{
 		$emessage = e107::getMessage();
 		$frm = e107::getForm();
-		//TODO a function to call the e107_config information in e107_class.php. 
-		require(e_BASE."e107_config.php");	
+		//TODO a function to call the e107_config information in e107_class.php.
+		require(e_BASE."e107_config.php");
 		$dbtable = $mySQLdefaultdb;
-		
+
 		//TODO LAN
 		$message = '
 			This function will permanently modify all tables in your database. ('.$mySQLdefaultdb.')<br />
@@ -234,7 +234,7 @@ class system_tools
 			<strong>Be sure</strong> you followed all steps of the upgrade process first.</li>
 			<li>It should work without troubles for databases of sites using only UTF-8 charset. Probably not with other charsets.</li>
 			<li>The function uses the information_schema database for now.</li>
-			</ul>			
+			</ul>
 			';
 
 		$emessage->add($message, E_MESSAGE_WARNING);
@@ -248,70 +248,70 @@ class system_tools
 					</div>
 				</fieldset>
 			</form>";
-		
-		e107::getRender()->tablerender("Convert Database to UTF-8", $emessage->render().$text);	
-						   
+
+		e107::getRender()->tablerender("Convert Database to UTF-8", $emessage->render().$text);
+
 	}
-	
+
 	private function perform_utf8_convert()
 	{
 		require(e_BASE."e107_config.php");
-		
+
 		$dbtable = $mySQLdefaultdb;
-		
-		//TODO Add a check to be sure the database is not already utf-8. 
+
+		//TODO Add a check to be sure the database is not already utf-8.
 		// yep, needs more methods - possibly a class in e107_handler
-		
-		$sql = e107::getDb();	
+
+		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		
+
 		$ERROR = FALSE;
-			
+
 		if(!mysql_query("USE information_schema;"))
 		{
 			$mes->add("Couldn't read information_schema", E_MESSAGE_ERROR);
 			return;
 		}
-		
-		$queries = array();		
+
+		$queries = array();
 		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
 		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
-		
-		$queries2 = array();	
+
+		$queries2 = array();
 		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
 		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
-		
-		
+
+
 		mysql_query("USE ".$dbtable);
-			
+
 		foreach($queries as $qry)
 		{
 			foreach($qry as $q)
 			{
 				if(!$sql->db_Query($q))
 				{
-					$mes->add($q, E_MESSAGE_ERROR);	
+					$mes->add($q, E_MESSAGE_ERROR);
 					$ERROR = TRUE;
 				}
-			}			
+			}
 		}
-		
+
 		//------------
-				
+
 		$result = mysql_list_tables($dbtable);
 		while ($row = mysql_fetch_array($result, MYSQL_NUM))
 		{
-   			$table = $row[0]; 
+   			$table = $row[0];
 			$tab_query = "ALTER TABLE ".$table." charset=utf8; ";
 			if(!$sql->db_Query($tab_query))
 			{
-				$mes->add($tab_query, E_MESSAGE_ERROR);	
-				$ERROR = TRUE;	
+				$mes->add($tab_query, E_MESSAGE_ERROR);
+				$ERROR = TRUE;
 			}
 		}
-		
+
 		// ---------------
-		
+
 		foreach($queries2 as $qry)
 		{
 			foreach($qry as $q)
@@ -319,32 +319,32 @@ class system_tools
 				if(!$sql->db_Query($q))
 				{
 					$mes->add($q, E_MESSAGE_ERROR);
-					$ERROR = TRUE;	
+					$ERROR = TRUE;
 				}
-			}			
+			}
 		}
 
 		//------------
-		
+
 		$lastQry = "ALTER DATABASE `".$dbtable."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		
+
 		if(!$sql->db_Query($lastQry))
 		{
-			$mes->add($lastQry, E_MESSAGE_ERROR);		
+			$mes->add($lastQry, E_MESSAGE_ERROR);
 		}
 		elseif($ERROR != TRUE)
 		{
 			$message = "Database Converted successfully to UTF-8. <br />
-			Please now add the following line to your e107_config.php file:<br /> 
+			Please now add the following line to your e107_config.php file:<br />
 			<b>\$mySQLcharset   = 'utf8';</b>
 			";
-			
-			$mes->add($message, E_MESSAGE_SUCCESS);			
+
+			$mes->add($message, E_MESSAGE_SUCCESS);
 		}
-		
-		
+
+
 	}
-	
+
 	function getQueries($query)
 	{
 		if(!$result = mysql_query($query))
@@ -354,49 +354,49 @@ class system_tools
 		}
 		while ($row = mysql_fetch_array($result, MYSQL_NUM))
 		{
-   			 $qry[] = $row[0]; 
+   			 $qry[] = $row[0];
 		}
-		
-		return $qry;	
+
+		return $qry;
 	}
 
 
 	/**
-	 * Delete selected preferences. 
+	 * Delete selected preferences.
 	 * @return none
-	 */	
+	 */
 	private function del_pref_val($mode='core')
 	{
 		global $emessage;
-		
+
 		$deleted_list = "";
-		
+
 		$config = ($mode == 'core' || $mode='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
-		
+
 		// Single Pref Deletion	using button
 		if(varset($_POST['delpref']))
 		{
 			$delpref = key($_POST['delpref']);
 			if($config->remove($delpref))
 			{
-				$deleted_list .= "<li>".$delpref."</li>";	
-			}						
+				$deleted_list .= "<li>".$delpref."</li>";
+			}
 		}
-	
+
 		// Multiple Pref deletion using checkboxes
 		if(varset($_POST['delpref2']))
-		{	
+		{
 			foreach($_POST['delpref2'] as $k => $v)
 			{
 				if($config->remove($k))
 				{
-					$deleted_list .= "<li>".$k."</li>";	
-				}						
+					$deleted_list .= "<li>".$k."</li>";
+				}
 			}
-		}	
-		
+		}
+
 		if($deleted_list && $config->save())
-		{			
+		{
 			$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
 			e107::getCache()->clear();
 		}
@@ -406,7 +406,7 @@ class system_tools
 	private function delete_plugin_entry()
 	{
 		global $sql, $emessage;
-	
+
 		$del = array_keys($_POST['delplug']);
 		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
 		{
@@ -416,7 +416,7 @@ class system_tools
 		{
 			$emessage->add(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
 		}
-	
+
 	}
 
 
@@ -424,11 +424,11 @@ class system_tools
 	/**
 	 * Render Options
 	 * @return none
-	 */	
+	 */
 	private function render_options()
 	{
 		$frm = e107::getSingleton('e_form');
-			
+
 		$text = "
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
 			<fieldset id='core-db-plugin-scan'>
@@ -439,7 +439,7 @@ class system_tools
 					<col style='width: 40%'></col>
 				</colgroup>
 				<tbody>";
-		
+
 		foreach($this->_options as $key=>$val)
 		{
 			$text .= "<tr>
@@ -447,12 +447,12 @@ class system_tools
 						<td>
 							".$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key)."
 						</td>
-					</tr>\n";	
-			
-		}	
-			
+					</tr>\n";
+
+		}
+
 		$text .= "
-	
+
 				</tbody>
 				</table>
 				<div class='buttons-bar center'>
@@ -461,36 +461,36 @@ class system_tools
 			</fieldset>
 		</form>
 		";
-		
+
 		$emessage = eMessage::getInstance();
-		e107::getRender()->tablerender(DBLAN_10, $emessage->render().$text);		
+		e107::getRender()->tablerender(DBLAN_10, $emessage->render().$text);
 	}
-	
+
 
 	/**
 	 * Import XML Form
 	 * @return none
-	 */	
+	 */
 	private function importForm()
 	{
 		 // Get largest allowable file upload
-		 
+
 		 $frm = e107::getSingleton('e_form');
-	
-		 
+
+
 				require_once(e_HANDLER.'upload_handler.php');
 				  $max_file_size = get_user_max_upload();
-	
+
 				  $text = "
 					<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$_GET['mode']."'>
 	                <table cellpadding='0' cellspacing='0' class='adminform'>
-			
+
 	                	<colgroup span='2'>
 	                		<col class='col-label' />
 	                		<col class='col-control' />
 	                	</colgroup>
-						
-					
+
+
 					<tbody>
 					<tr>
 					<td>".LAN_UPLOAD."</td>
@@ -502,138 +502,138 @@ class system_tools
 					</tr>
 					</tbody>
 					</table>
-	
+
 					<div class='center buttons-bar'>";
 	                $text .= $frm->admin_button('upload', LAN_UPLOAD, 'submit', LAN_UPLOAD);
-	
+
 					$text .= "
 					</div>
-	
+
 					</form>\n";
-					
+
 		$emessage = eMessage::getInstance();
-		e107::getRender()->tablerender(DBLAN_59, $emessage->render().$text);	
-		
+		e107::getRender()->tablerender(DBLAN_59, $emessage->render().$text);
+
 	}
 
 	/**
 	 * Export XML Dump
 	 * @return  none
-	 */	
+	 */
 	private function exportXmlForm()
 	{
 		$emessage = eMessage::getInstance();
 		$frm = e107::getSingleton('e_form');
-		
-		
+
+
 	//TODO LANs
-		
+
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
 			<legend class='e-hideme'>Export Options</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 				<colgroup span='2'>
-					
+
 					<col style='width: 80%'></col>
 					<col style='width: 20%'></col>
-				</colgroup>	
+				</colgroup>
 				<thead>
 				<tr>
 					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." Preferences</th>
 					<th class='right'>Rows</th>
-					
-				</tr>	
+
+				</tr>
 				</thead>
 				<tbody>
-	
+
 				";
-	
+
 					$pref_types  = e107::getConfig()->aliases;
-					unset($pref_types['core_old'],$pref_types['core_backup']);		
+					unset($pref_types['core_old'],$pref_types['core_backup']);
 			//		$exclusions = array('core_old'=>1,'core_backup'=>1);
 				//	$filteredprefs = array_diff($pref_types,$exclusions);
-					
+
 					foreach($pref_types as $key=>$description)
 					{
-						$checked = ($_POST['xml_prefs'][$key] == $key) ? 1: 0;	
+						$checked = ($_POST['xml_prefs'][$key] == $key) ? 1: 0;
 
 						$text .= "<tr>
 							<td>
 								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked)."
 							".LAN_PREFS.": ".$key."</td>
 							<td>&nbsp;</td>
-	
+
 							</tr>";
-					
+
 					}
 					$text .= "</tbody>
 				</table>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
-				
+
 				<colgroup span='2'>
-					
+
 					<col style='width: 80%'></col>
 					<col style='width: 20%'></col>
-				</colgroup>	
+				</colgroup>
 				<thead>
 				<tr>
 					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables')."Tables</th>
 					<th class='right'>Rows</th>
-					
-				</tr>	
+
+				</tr>
 				</thead>
 				<tbody>\n";
-				
+
 					$tables = table_list();
-					
+
 					foreach($tables as $name=>$count)
-					{	
-						$checked = ($_POST['xml_tables'][$name] == $name) ? 1: 0;			
-						$text .= "<tr>					
+					{
+						$checked = ($_POST['xml_tables'][$name] == $name) ? 1: 0;
+						$text .= "<tr>
 							<td>
-								".$frm->checkbox("xml_tables[".$name."]", $name, $checked)." Table Data: ".$name." 
+								".$frm->checkbox("xml_tables[".$name."]", $name, $checked)." Table Data: ".$name."
 							</td>
 							<td class='right'>$count</td>
 						</tr>";
 					}
-	
+
 					$text .="
-					
+
 					</tbody>
 				</table>
-				
+
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 				<colgroup span='2'>
-					
+
 					<col style='width: 80%'></col>
 					<col style='width: 20%'></col>
-				</colgroup>	
+				</colgroup>
 				<thead>
 				<tr>
 					<th colspan='2'>".LAN_OPTIONS."</th>
-				</tr>	
+				</tr>
 				</thead>
 				<tbody>
 				<tr>
 						<td colspan='2'>";
-						$checked = (vartrue($_POST['package_images'])) ? 1: 0;	
-						$text .= $frm->checkbox("package_images",'package_images', $checked)." Convert paths and package images and xml into: <i>".e107::getParser()->replaceConstants(EXPORT_PATH)."</i>    
-					
+						$checked = (vartrue($_POST['package_images'])) ? 1: 0;
+						$text .= $frm->checkbox("package_images",'package_images', $checked)." Convert paths and package images and xml into: <i>".e107::getParser()->replaceConstants(EXPORT_PATH)."</i>
+
 						</td>
 					</tr>
 				</tbody>
 				</table>
-				
+
 				<div class='buttons-bar center'>
 					".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
 				</div>
 			</fieldset>
 		</form>	";
-		
-	
-		e107::getRender()->tablerender("Export Options",$emessage->render(). $text);		
-		
-		
+
+
+		e107::getRender()->tablerender("Export Options",$emessage->render(). $text);
+
+
 	}
 
 	/**
@@ -646,15 +646,15 @@ class system_tools
 
 		foreach($ret['success'] as $table)
 		{
-			eMessage::getInstance()->add("Inserted $table", E_MESSAGE_SUCCESS);		
+			eMessage::getInstance()->add("Inserted $table", E_MESSAGE_SUCCESS);
 		}
-		
+
 		foreach($ret['failed'] as $table)
 		{
-			eMessage::getInstance()->add("Failed to Insert $table", E_MESSAGE_ERROR);		
-		}				
+			eMessage::getInstance()->add("Failed to Insert $table", E_MESSAGE_ERROR);
+		}
 	}
-	
+
 	/**
 	 * Optimize SQL
 	 * @return none
@@ -667,11 +667,11 @@ class system_tools
 		{
 			mysql_query("OPTIMIZE TABLE ".$row[0]);
 		}
-	
+
 	//	$emessage->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
-		e107::getRender()->tablerender(DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);	
+		e107::getRender()->tablerender(DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
 	}
-	
+
 	/**
 	 * Preferences Editor
 	 * @return string text for display
@@ -679,36 +679,36 @@ class system_tools
 	private function pref_editor($type='core')
 	{
 		//TODO Add drop-down for editing personal perfs also. ie. user pref of self. (admin)
-		
-		global $pref, $e107, $emessage, $frm;
-		
 
-		
+		global $pref, $e107, $emessage, $frm;
+
+
+
 		$config = ($type == 'core') ? e107::getConfig('core') : e107::getPlugConfig($type);
 
 		$spref = $config->getPref();
-	
-		ksort($spref);	
-	
+
+		ksort($spref);
+
 		$text = "
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$type."' id='pref_edit'>
 					<fieldset id='core-db-pref-edit'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
-		
+
 		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n";
-		
+
 	//	e107::getConfig($type)->aliases
-		
+
 		e107::getDb()->db_Select_gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
 		while ($row = e107::getDb()->db_Fetch())
 		{
 			$key = str_replace("plugin_","",$row['e107_name']);
 			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
-			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($key)."</option>\n";	
-		}				
-		
-		
+			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($key)."</option>\n";
+		}
+
+
 		$text .= "</select></div>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
 							<colgroup span='4'>
@@ -727,12 +727,12 @@ class system_tools
 							</thead>
 							<tbody>
 			";
-	
+
 		foreach($spref as $key => $val)
 		{
 			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
 			$ptext = $e107->tp->textclean($ptext, 80);
-	
+
 			$text .= "
 				<tr>
 					<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
@@ -742,7 +742,7 @@ class system_tools
 				</tr>
 				";
 		}
-	
+
 		$text .= "
 							</tbody>
 						</table>
@@ -753,25 +753,26 @@ class system_tools
 						</div>
 					</fieldset>
 				</form>\n\n";
-				
+
 		e107::getRender()->tablerender(DBLAN_10.' :: '.DBLAN_20." :: ".ucwords($type), $emessage->render().$text);
-	
+
 		return $text;
 	}
-	
+
 	/**
 	 * Preferences Editor
 	 * @return none
-	 */	
+	 */
 	private function scan_override()
 	{
 		global $pref, $emessage;
-		
+
 		require_once(e_HANDLER.'file_class.php');
 		$f = new e_file;
-		
+
 		$scList = '';
-		$fList = $f->get_files(e_FILE.'shortcode/override', '\.sc$');
+
+		$fList = $f->get_files(e_SYSTEM.'override/shortcodes', '\.sc$');
 		if(count($fList))
 		{
 			$tmp = array();
@@ -791,38 +792,38 @@ class system_tools
 	/**
 	 * Plugin Folder Scanner
 	 * @return none
-	 */		
+	 */
 	private function plugin_viewscan()
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
 		$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-	
-	
-	
+
+
+
 		global $e107;
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$emessage = e107::getMessage();
 
-		
-		
-	
+
+
+
 		require_once (e_HANDLER."plugin_class.php");
 		$ep = new e107plugin();
 		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
 		$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
-	
+
 		/* we all are awaiting for PHP5 only support - method chaining...
 		$emessage->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
 				 ->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS)
 				 ->add(DBLAN_30);
 		*/
-	
+
 		$emessage->add(DBLAN_23, E_MESSAGE_SUCCESS);
 		$emessage->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
 		$emessage->add(DBLAN_30);
-	
+
 		$text = "
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='plug_edit'>
 					<fieldset id='core-db-plugin-scan'>
@@ -844,19 +845,19 @@ class system_tools
 							</thead>
 							<tbody>
 			";
-	
+
 		$sql->db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		$previous = '';
 		while($row = $sql->db_Fetch())
 		{
 			e107::loadLanFiles($row['plugin_path'],'admin');
-			
+
 			$text .= "
 								<tr>
 									<td>".$e107->tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
 	               					<td>".$row['plugin_path']."</td>
 									<td>";
-	
+
 			if(trim($row['plugin_addons']))
 			{
 				//XXX - $nl_code = ''; - OLD VAR?
@@ -873,12 +874,12 @@ class system_tools
 					$text .= "</div>";
 				}
 			}
-	
+
 			$text .= "
 								</td>
 								<td class='center'>
 				";
-	
+
 			if($previous == $row['plugin_path'])
 			{
 				$delid = $row['plugin_id'];
@@ -898,14 +899,14 @@ class system_tools
 				";
 			$previous = $row['plugin_path'];
 		}
-	
+
 		$text .= "
 							</tbody>
 						</table>
 					</fieldset>
 				</form>
 			";
-	
+
 		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_22, $emessage->render().$text);
 	}
 }
@@ -915,14 +916,14 @@ class system_tools
 function db_adminmenu()
 {
 	global $st;
-	
+
 	foreach($st->_options as $key=>$val)
 	{
 		$var[$key]['text'] = $val['label'];
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
-			
-	e_admin_menu(DBLAN_10, $_GET['mode'], $var);	
+
+	e_admin_menu(DBLAN_10, $_GET['mode'], $var);
 }
 
 
@@ -938,28 +939,28 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 	$xml = e107::getSingleton('xmlClass');
 	$tp = e107::getParser();
 	$emessage = eMessage::getInstance();
-	
+
 	//TODO LANs
-	
+
 	if(vartrue($package))
 	{
-		
+
 		$xml->convertFilePaths = TRUE;
 		$xml->filePathDestination = EXPORT_PATH;
 		$xml->filePathPrepend = array(
 			'news_thumbnail'	=> "{e_IMAGE}newspost_images/"
 		);
-		
-		
+
+
 		$desinationFolder = $tp->replaceConstants($xml->filePathDestination);
-	
+
 		if(!is_writable($desinationFolder))
-		{			
+		{
 			$emessage->add($desinationFolder." is not writable", E_MESSAGE_ERROR);
 			return ;
 		}
 	}
-	
+
 
 	if($xml->e107Export($prefs,$tables,$debug))
 	{
@@ -976,8 +977,8 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				}
 				else
 				{
-					$emessage->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);	
-				}			
+					$emessage->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);
+				}
 			}
 		}
 	}
@@ -989,8 +990,8 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 function table_list()
 {
 	// grab default language lists.
-	//TODO - a similar function is in db_verify.php. Should probably all be moved to mysql_class.php. 
-	
+	//TODO - a similar function is in db_verify.php. Should probably all be moved to mysql_class.php.
+
 	$exclude = array();
 	$exclude[] = "core";
 	$exclude[] = "rbinary";
@@ -1000,19 +1001,19 @@ function table_list()
 	$exclude[] = "upload";
 	$exclude[] = "user_extended_country";
 	$exclude[] = "plugin";
-	
+
 	$coreTables = e107::getDb()->db_TableList('nolan');
 
 	$tables = array_diff($coreTables,$exclude);
-	
+
 	foreach($tables as $e107tab)
-	{		
+	{
 		$count = e107::getDb()->db_Select_gen("SELECT * FROM #".$e107tab);
-			
+
 		if($count)
 		{
-			$tabs[$e107tab] = $count; 
-		}	
+			$tabs[$e107tab] = $count;
+		}
 	}
 
 	return $tabs;
@@ -1035,7 +1036,7 @@ function backup_core()
 */
 
 
-function verify_sql_record() // deprecated by db_verify.php ( i think). 
+function verify_sql_record() // deprecated by db_verify.php ( i think).
 {
 	global $emessage, $sql, $sql2, $sql3, $frm, $e107, $tp;
 

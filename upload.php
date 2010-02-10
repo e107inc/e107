@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -19,7 +19,7 @@
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-if (!$pref['upload_enabled'] || $pref['upload_class'] == 255) 
+if (!$pref['upload_enabled'] || $pref['upload_class'] == 255)
 {
   header("location: ".e_BASE."index.php");
   exit;
@@ -29,7 +29,7 @@ require_once(HEADERF);
 
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
-if (!check_class($pref['upload_class'])) 
+if (!check_class($pref['upload_class']))
 {
   $text = "<div style='text-align:center'>".LAN_UL_002."</div>";
   $ns->tablerender(LAN_UL_020, $text);
@@ -40,9 +40,9 @@ if (!check_class($pref['upload_class']))
 
 $message = '';
 $postemail ='';
-if (isset($_POST['upload'])) 
+if (isset($_POST['upload']))
 {
-  if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category']) 
+  if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category'])
   {
 	require_once(e_HANDLER."upload_handler.php");
 //	$uploaded = file_upload(e_FILE."public/", "unique");
@@ -53,7 +53,7 @@ if (isset($_POST['upload']))
 	{
 	  $message = LAN_UL_021.'<br />';
 	}
-	
+
 // Now see if we have a code file
 	if (count($uploaded) > 0)
 	{
@@ -67,7 +67,7 @@ if (isset($_POST['upload']))
 	    $message .= $uploaded[0]['message'].'<br />';
 	  }
 	}
-	
+
 // Now see if we have an image file
 	if (count($uploaded) > 1)
 	{
@@ -134,9 +134,9 @@ if (isset($_POST['upload']))
 		$e_event->trigger("fileupload", $edata_fu);
 		$message .= "<br />".LAN_404;
 	  }
-	} 
+	}
   }
-  else 
+  else
   {	// Error - missing data
 	require_once(e_HANDLER."message_handler.php");
 	message_handler("ALERT", 5);
@@ -163,7 +163,7 @@ $text = "<div style='text-align:center'>
 	<td class='forumheader3'>".DOWLAN_11.":</td>
 	<td class='forumheader3'>";
 
-	require_once(e_FILE."shortcode/batch/download_shortcodes.php");
+	require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
 	$dlparm = (isset($download_category)) ? $download_category : "";
 	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes);
 
@@ -214,7 +214,7 @@ $text .= " ".$allowed_filetypes."<br />".LAN_407."<br />
 $text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420."</td>
 	</tr>";
 
-if (!USER) 
+if (!USER)
 {	// Prompt for name, email
   $text .= "<tr>
 	<td class='forumheader3'>".LAN_61."</td>

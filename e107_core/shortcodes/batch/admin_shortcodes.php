@@ -30,8 +30,8 @@ $codes = array(
 'admin_status',
 'admin_update',
 'admin_userlan',
-'admin_menumanager',  
+'admin_menumanager',
 );
 
-register_shortcode('admin_shortcodes', $codes, e_FILE.'shortcode/batch/admin_shortcodes_class.php');
+register_shortcode('admin_shortcodes', $codes, e_CORE.'shortcodes/batch/admin_shortcodes_class.php');
 ?>

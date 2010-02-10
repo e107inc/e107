@@ -52,7 +52,7 @@ $menu_pref = e107::getConfig('menu')->getPref('');
 if(isset($campaign))
 {
 	$parm = $campaign;
-	$bannersccode = file_get_contents(e_FILE.'shortcode/banner.sc');
+	$bannersccode = file_get_contents(e_CORE.'shortcodes/single/banner.sc');
 	$BANNER = eval($bannersccode);
 	$txt = $BANNER_MENU_START;
 	$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
@@ -80,11 +80,11 @@ else
 			$parms[] = $menu_pref['banner_campaign'];
 		}
 	}
-	
+
 	$txt = $BANNER_MENU_START;
 	foreach ($parms as $parm)
 	{
-		$bannersccode = file_get_contents(e_FILE.'shortcode/banner.sc');
+		$bannersccode = file_get_contents(e_CORE.'shortcodes/banner.sc');
 		$BANNER = eval($bannersccode);
 		$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
 	}

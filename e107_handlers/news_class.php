@@ -17,7 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 class news {
-	
+
 	protected static $_rewrite_data = array();
 	protected static $_rewrite_map = null;
 
@@ -26,80 +26,80 @@ class news {
 	function submit_item($news, $smessages = false)
 	{
 		global $e107cache, $e_event, $pref, $admin_log;
-		
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+
 		require_once (e_HANDLER."message_handler.php");
 		$emessage = eMessage::getInstance();
-		
+
 		$error = false;
 		if(empty($news['news_title']))
 		{
 			$error = true;
 			$emessage->add('Validation error: News title can\'t be empty!', E_MESSAGE_ERROR, $smessages);
 		}
-		
+
 		if(empty($news['news_category']))
 		{
 			$error = true;
 			$emessage->add('Validation error: News category can\'t be empty!', E_MESSAGE_ERROR, $smessages);
 		}
-		
+
 
 		$data = array();
 		//DB Array
 		$data['data']['news_title'] = $news['news_title'];
 		$data['_FIELD_TYPES']['news_title'] = 'todb';
-		
+
 		$data['data']['news_body'] = $news['news_body'];
 		$data['_FIELD_TYPES']['news_body'] = 'todb';
-		
+
 		$data['data']['news_extended'] = $news['news_extended'];
 		$data['_FIELD_TYPES']['news_extended'] = 'todb';
-		
+
 		$data['data']['news_datestamp'] = $news['news_datestamp'];
 		$data['_FIELD_TYPES']['news_datestamp'] = 'int';
-		
+
 		$data['data']['news_author'] = $news['news_author'] ? $news['news_author'] : USERID;
 		$data['_FIELD_TYPES']['news_author'] = 'int';
-		
+
 		$data['data']['news_category'] = $news['news_category'];
 		$data['_FIELD_TYPES']['news_category'] = 'int';
-		
+
 		$data['data']['news_allow_comments'] = $news['news_allow_comments'];
 		$data['_FIELD_TYPES']['news_allow_comments'] = 'int';
-		
+
 		$data['data']['news_start'] = $news['news_start'];
 		$data['_FIELD_TYPES']['news_start'] = 'int';
-		
+
 		$data['data']['news_end'] = $news['news_end'];
 		$data['_FIELD_TYPES']['news_end'] = 'int';
-		
+
 		$data['data']['news_class'] = $news['news_class'];
 		$data['_FIELD_TYPES']['news_class'] = 'todb';
-		
+
 		$data['data']['news_render_type'] = $news['news_render_type'];
 		$data['_FIELD_TYPES']['news_render_type'] = 'int';
-		
-		
+
+
 		//news_comment_total
-		
+
 		$data['data']['news_summary'] = $news['news_summary'];
 		$data['_FIELD_TYPES']['news_summary'] = 'todb';
-		
+
 		$data['data']['news_thumbnail'] = $news['news_thumbnail'];
 		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
-		
+
 		$data['data']['news_sticky'] = $news['news_sticky'];
 		$data['_FIELD_TYPES']['news_sticky'] = 'int';
 
 		$data['data']['news_meta_keywords'] = $news['news_meta_keywords'];
 		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
-		
+
 		$data['data']['news_meta_description'] = strip_tags($tp->toHTML($news['news_meta_description'], true)); //handle bbcodes
 		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
-		
+
 		$datarw = array();
 		$datarw['data']['news_rewrite_id'] = $news['news_rewrite_id'];
 		$datarw['_FIELD_TYPES']['news_rewrite_id'] = 'int';
@@ -107,7 +107,7 @@ class news {
 		$datarw['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
 		$datarw['data']['news_rewrite_type'] = 1;
 		$datarw['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-		
+
 		if($error)
 		{
 			$data['error'] = true;
@@ -121,10 +121,10 @@ class news {
 
 		//XXX - Now hooks are executed only if no mysql error is found. Should it stay so? Seems sensible to me!
 		if ($news['news_id'])
-		{	
+		{
 			// Updating existing item
 			$data['WHERE'] = 'news_id='.intval($news['news_id']);
-			
+
 			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
 			if ($sql->db_Update('news', $data))
 			{
@@ -136,14 +136,14 @@ class news {
 				{
 					$error = true;
 				}
-				
+
 				e107::getEvent()->trigger('newsupd', $data['data']);
 				$message = LAN_NEWS_21;
 				$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
-				
 
-				
+
+
 				//FIXME - triggerHook should return array(message, message_type)
 				$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
 				$emessage->add(e107::getEvent()->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
@@ -174,7 +174,7 @@ class news {
 						$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
 						$message = "<strong>".LAN_NEWS_46."</strong>";
 					}
-					
+
 					//FIXME - triggerHook should return array(message, message_type)
 					$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
 					$emessage->add(e107::getEvent()->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
@@ -183,7 +183,7 @@ class news {
 			}
 		}
 		else
-		{	
+		{
 			// Adding item
 			$data['data']['news_id'] = $sql->db_Insert('news', $data);
 			$news['news_id'] = $data['data']['news_id'];
@@ -194,18 +194,18 @@ class news {
 				$message = LAN_NEWS_6;
 				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
-				
+
 				//moved down - prevent wrong mysql_insert_id
 				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
-				
+
 				//manage rewrites
 				if('error' === $this->handleRewriteSubmit('insert', $data['data'], $datarw, $smessages))
 				{
 					$error = true;
 				}
-				
+
 				e107::getEvent()->trigger('newspost', $data['data']);
-				
+
 				//XXX - triggerHook after trigger?
 				$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$data['data']['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
 				$emessage->add($e_event->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
@@ -221,9 +221,9 @@ class news {
 		/* FIXME - trackback should be hooked!	*/
 		if($news['news_id'] && $pref['trackbackEnabled'])
 		{
-			
+
 			$excerpt = e107::getParser()->text_truncate(strip_tags(e107::getParser()->post_toHTML($news['news_body'])), 100, '...');
-			
+
 //			$id=mysql_insert_id();
 			$permLink = $e107->base_path."comment.php?comment.news.".intval($news['news_id']);
 
@@ -233,14 +233,14 @@ class news {
 			if($_POST['trackback_urls'])
 			{
 				$urlArray = explode("\n", $_POST['trackback_urls']);
-				foreach($urlArray as $pingurl) 
+				foreach($urlArray as $pingurl)
 				{
 					if(!$terror = $trackback->sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 					{
 						$message .= "<br />successfully pinged {$pingurl}.";
 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-					} 
-					else 
+					}
+					else
 					{
 						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]";
 						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]", E_MESSAGE_ERROR, $smessages);
@@ -282,11 +282,11 @@ class news {
 		$data['error'] = $error;
 		return $data;
 	}
-	
+
 	/**
 	 * Manage SEF URL string for current news
 	 * FIXME - news rewrites should go to different handler
-	 * 
+	 *
 	 * @param string $action insert|update
 	 * @param array $news_data XXX - could be changed to news_id only (integer)
 	 * @param array $rewrite_data
@@ -297,13 +297,13 @@ class news {
 	{
 		$rewrite_data['data']['news_rewrite_source'] = $news_data['news_id'];
 		$rewrite_data['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-		
+
 		$old_rewrite_data = array();
 		if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.intval($rewrite_data['data']['news_rewrite_source']).' AND news_rewrite_type='.intval($rewrite_data['data']['news_rewrite_type'])))
 		{
 			$old_rewrite_data = e107::getDb()->db_Fetch();
 		}
-		
+
 		//Delete if required
 		if (empty($rewrite_data['data']['news_rewrite_string']))
 		{
@@ -314,7 +314,7 @@ class news {
 				e107::getAdminLog()->logArrayAll('NEWS_13', $old_rewrite_data);
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -337,10 +337,10 @@ class news {
 				eMessage::getInstance()->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG, $session_message);
 				return 'error';
 			break;
-		
+
 			case 'update':
 				$id = intval($rewrite_data['data']['news_rewrite_id']);
-				unset($rewrite_data['data']['news_rewrite_id']); 
+				unset($rewrite_data['data']['news_rewrite_id']);
 				if($id)
 				{
 					$rewrite_data['WHERE'] = 'news_rewrite_id='.$id;
@@ -353,7 +353,7 @@ class news {
 						return true;
 					}
 					elseif (e107::getDb()->getLastErrorNumber())
-					{ 
+					{
 						eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
 						if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
 						{
@@ -362,14 +362,14 @@ class news {
 						eMessage::getInstance()->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG, $session_message);
 						return 'error';
 					}
-					
+
 					$rewrite_data['data']['news_rewrite_id'] = $id;
 					if($old_rewrite_data) self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
 					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
-					
+
 					return false;
 				}
-				
+
 				$rewrite_data['data']['news_rewrite_id'] = 0;
 				if($rewrite_data['data']['news_rewrite_id'] = e107::getDb()->db_Insert('news_rewrite', $rewrite_data))
 				{
@@ -378,7 +378,7 @@ class news {
 					e107::getAdminLog()->logArrayAll('NEWS_12', $rewrite_data['data']);
 					return true;
 				}
-				
+
 				eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
 				if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
 				{
@@ -388,10 +388,10 @@ class news {
 				return 'error';
 			break;
 		}
-		
+
 		return false;
 	}
-	
+
 	public static function retrieveRewriteString($news_id, $type = 1)
 	{
 		//XXX - Best way we have now, discuss
@@ -416,7 +416,7 @@ class news {
 			}
 			unset($tmp);
 		}
-		
+
 		//convert type if needed
 		if(is_string($type))
 		{
@@ -426,16 +426,16 @@ class news {
 				case 'extend':
 					$type = 1;
 				break;
-			
+
 				default:
 					$type = 2;
 				break;
 			}
 		}
-		
+
 		return (isset(self::$_rewrite_map[$type][$news_id]) ? self::$_rewrite_map[$type][$news_id] : '');
 	}
-	
+
 	public static function retrieveRewriteData($sefstr, $force = true)
 	{
 		//check runtime cache
@@ -443,55 +443,55 @@ class news {
 		{
 			return self::$_rewrite_data[$sefstr];
 		}
-		
+
 		//check server cache if allowed
 		if(!$force && ($ret = self::getRewriteCache($sefstr, true)))
 		{
 			self::$_rewrite_data[$sefstr] = $ret;
 			return self::$_rewrite_data[$sefstr];
 		}
-		
+
 		//search DB
 		$ret = array();
 		if(e107::getDb()->db_Select('news_rewrite', '*', "news_rewrite_string='".e107::getParser()->toDB($sefstr)."'"))
 		{
 			$ret = e107::getDb()->db_Fetch();
 		}
-		
+
 		//set runtime cache
 		self::$_rewrite_data[$sefstr] = $ret;
-		
+
 		//set server cache
 		if($ret)
 		{
 			self::setRewriteCache($sefstr, $ret);
 		}
-		
+
 		return self::$_rewrite_data[$sefstr];
 	}
-	
+
 	public static function getRewriteCache($sefstr, $toArray = true)
 	{
 		$sefstr = md5($sefstr);
-		
+
 		$ret = ecache::retrieve_sys('news_sefurl'.$sefstr, false, true);
-		
+
 		if($ret && $toArray)
 		{
 			return e107::getArrayStorage()->ReadArray($ret);
 		}
 		return $ret;
 	}
-	
+
 	public static function clearRewriteCache($sefstr = '')
 	{
 		if($sefstr) $sefstr = md5($sefstr);
 		ecache::clear_sys("news_sefurl".$sefstr);
 	}
-	
+
 	public static function setRewriteCache($sefstr, $data)
 	{
-		$sefstr = md5($sefstr); 
+		$sefstr = md5($sefstr);
 		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
 		ecache::set_sys("news_sefurl".$sefstr, $data, true);
 	}
@@ -534,8 +534,8 @@ class news {
 		$tmp['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 
 		if(!$param) $param = array();
-		$param = array_merge($tmp, $param);		
-		
+		$param = array_merge($tmp, $param);
+
 
 // Next three images aren't always defined by the caller, even if most of $param is.
 		if (!isset($param['image_nonew_small']))
@@ -589,7 +589,7 @@ class news {
 		}
 		$loop_uid = $news['news_author'];
 
-		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
+		require_once(e_CORE.'shortcodes/batch/news_shortcodes.php');
 		setScVar('news_shortcodes', 'news_item', $news);
 		setScVar('news_shortcodes', 'param', $param);
 		$text = $e107->tp->parseTemplate($NEWS_PARSE, true);
@@ -622,10 +622,10 @@ class news {
 
 require_once(e_HANDLER.'model_class.php');
 
-class e_news_item extends e_model 
+class e_news_item extends e_model
 {
 	protected $_loaded_once = false;
-	
+
 	/**
 	 * Shortcodes - simple field getter (basic formatting)
 	 * THIS IS ONLY TEST, maybe useful for fields requiring simple formatting - it's a way too complicated for designers,
@@ -639,20 +639,20 @@ class e_news_item extends e_model
 	{
 		$tmp = explode('|', $parm, 2);
 		$field = $tmp[0];
-		
+
 		if(!is_array($parm))
 		{
 			parse_str(varset($tmp[1]), $parm);
 		}
 		$val = $this->get($field, '');
-		
+
 		//do more with $parm array, just an example here
 		if(varsettrue($parm['format']))
 		{
 			switch ($parm['format'])
 			{
 				//USAGE: {NEWS_FIELD=body|format=html&arg=1,BODY} -> callback e107->toHTML($value, true, 'BODY');
-				case 'html': 
+				case 'html':
 					$method = 'toHTML';
 					$callback = e107::getParser();
 					$parm['arg'] = explode(',', varset($parm['arg']));
@@ -660,11 +660,11 @@ class e_news_item extends e_model
 					$params = array($val); //value is always the first callback argument
 					$params += $parm['arg'];
 				break;
-				
+
 				//USAGE: {NEWS_FIELD=body|format=html_truncate&arg=200,...} -> callback e107->html_truncate($value, 200, '...');
 				case 'html_truncate':
 					$val = e107::getParser()->toHTML($val, true);
-					
+
 				//USAGE: {NEWS_FIELD=title|format=text_truncate&arg=100,...} -> callback e107->text_truncate($value, 200, '...');
 				case 'text_truncate':
 					$method = $parm['format'];
@@ -672,7 +672,7 @@ class e_news_item extends e_model
 					$params = array($val); //value is always the first callback argument
 					$params = array_merge($params, explode(',', $parm['arg']));
 				break;
-				
+
 				//USAGE: {NEWS_FIELD=title|format=date} -> strftime($pref[shortdate], $value);
 				//USAGE: {NEWS_FIELD=title|format=date&arg=%Y} -> strftime('%Y', $value);
 				case 'date':
@@ -683,18 +683,18 @@ class e_news_item extends e_model
 					//should be done with date handler (awaiting for modifications)
 					return strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
 				break;
-				
+
 				default:
 					return $val;
 				break;
-					
+
 			}
 			return call_user_func_array(array($callback, $method), $params);
 		}
 
 		return $val;
 	}
-	
+
 	/**
 	 * Shorthand getter for news fields
 	 *
@@ -706,7 +706,7 @@ class e_news_item extends e_model
 	{
 		return parent::get('news_'.$news_field, $default);
 	}
-	
+
 	/**
 	 * Load news item by id
 	 *
@@ -720,13 +720,13 @@ class e_news_item extends e_model
 		{
 			$id = intval($id);
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-			
+
 		  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 			WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
-			
+
 			if(e107::getDb()->db_Select_gen($query))
 			{
 				$this->setData(e107::getDb()->db_Fetch());
@@ -737,7 +737,7 @@ class e_news_item extends e_model
 	}
 }
 
-class e_news_tree extends e_model 
+class e_news_tree extends e_model
 {
 	/**
 	 * Current tree news category id
@@ -745,12 +745,12 @@ class e_news_tree extends e_model
 	 * @var integer
 	 */
 	protected $_current_category_id;
-	
+
 	/**
 	 * @var array
 	 */
 	protected $_tree_db_total = array();
-	
+
 	/**
 	 * Constructor
 	 *
@@ -763,7 +763,7 @@ class e_news_tree extends e_model
 			$this->load($category_id);
 		}
 	}
-	
+
 	/**
 	 * Set current category Id
 	 *
@@ -775,11 +775,11 @@ class e_news_tree extends e_model
 		$this->_current_category_id = intval($category_id);
 		return $this;
 	}
-	
+
 	/**
 	 * Get news item object from the tree
 	 * Preparing for future news SEF string (string $name)
-	 * 
+	 *
 	 * @param string|integer $name
 	 * @param integer $category_id optional category Id
 	 * @return e_news_item
@@ -792,7 +792,7 @@ class e_news_tree extends e_model
 		}
 		return $this->getData('__tree/'.$category_id.'/'.$name);
 	}
-	
+
 	/**
 	 * Set news item object
 	 *
@@ -810,7 +810,7 @@ class e_news_tree extends e_model
 		$this->setData('__tree/'.$category_id.'/'.$name, new e_news_item($data));
 		return $this;
 	}
-	
+
 	/**
 	 * Set new category tree
 	 *
@@ -827,7 +827,7 @@ class e_news_tree extends e_model
 		$this->setData('__tree/'.$category_id, $tree);
 		return $this;
 	}
-	
+
 	/**
 	 * Get tree by category id
 	 *
@@ -842,7 +842,7 @@ class e_news_tree extends e_model
 		}
 		return $this->getData('__tree/'.$category_id);
 	}
-	
+
 	/**
 	 * Total records found (DB)
 	 * @param integer $category_id [optional]
@@ -856,7 +856,7 @@ class e_news_tree extends e_model
 		}
 		return (isset($this->_tree_db_total[$category_id]) ? $this->_tree_db_total[$category_id] : 0);
 	}
-	
+
 	/**
 	 * Load tree by category id
 	 *
@@ -871,13 +871,13 @@ class e_news_tree extends e_model
 		if(is_string($qry_data)) { parse_str($qry_data, $qry_data); }
 
 		$limit_from = varset($qry_data['limit_from'], 0);
-		$limit_to = varset($qry_data['limit_to'], e107::getPref('newspost', 15)); 
+		$limit_to = varset($qry_data['limit_to'], e107::getPref('newspost', 15));
 		$order = varset($qry_data['order'], 'n.news_sticky DESC, n.news_datestamp DESC');
-		
+
 		$this->setCurrentCategoryId($category_id);
-		
+
 		//TODO - file cache $cacheString = md5($category_id.$limit_from.$order.e_CLASS_REGEXP);
-		
+
 		if($force || !$this->isTree())
 		{
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
@@ -891,12 +891,12 @@ class e_news_tree extends e_model
 				WHERE{$where} n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 				ORDER BY ".e107::getParser()->toDB($order)." LIMIT ".intval($limit_from).",".intval($limit_to);
-				
+
 			$tree = array();
 			if(e107::getDb()->db_Select_gen($query))
 			{
 				$this->_tree_db_total[$category_id] = (integer) e107::getDb()->total_results;
-				
+
 				while (true)
 				{
 					$row = e107::getDb()->db_Fetch();
@@ -908,22 +908,22 @@ class e_news_tree extends e_model
 				}
 			}
 			$this->setTree($tree);
-			
+
 		}
-		
+
 		return $this;
 	}
-	
+
 	function isTree($category_id = null)
 	{
 		if(null === $category_id)
 		{
 			$category_id = $this->_current_category_id;
 		}
-		
+
 		return $this->isData('__tree/'.$category_id);
 	}
-	
+
 	function isNode($name, $category_id = null)
 	{
 		if(null === $category_id)
@@ -932,7 +932,7 @@ class e_news_tree extends e_model
 		}
 		return $this->isData('__tree/'.$category_id.'/'.$name);
 	}
-	
+
 	function hasNode($name, $category_id = null)
 	{
 		if(null === $category_id)
@@ -956,38 +956,38 @@ class e_news_category_item extends e_model
 	{
 		return parent::get('category_'.$category_field, $default);
 	}
-	
+
 	public function sc_news_category_title($parm = '')
 	{
 		if('attribute' == $parm) return e107::getParser()->toAttribute($this->get('name'));
 		return $this->get('name');
 	}
-	
+
 	public function sc_news_category_url($parm = '')
 	{
-		
+
 		$url = e107::getUrl()->create('core:news', 'main', 'action=list&id='.$this->getId().'&sef='.$this->get('rewrite_string'));
 		switch($parm)
 		{
 			case 'link':
 				return '<a href="'.$url.'" class="news-category">'.$this->sc_news_category_title().'</a>';
 			break;
-			
+
 			case 'link_icon':
 				return '<a href="'.$url.'" class="news-category">'.$this->sc_news_category_icon().'&nbsp;'.$this->sc_news_category_title().'</a>';
 			break;
-		
+
 			default:
 				return $url;
 			break;
 		}
 	}
-	
+
 	public function sc_news_category_link()
 	{
 		return $this->sc_news_category_url('link');
 	}
-	
+
 	public function sc_news_category_icon($parm = '')
 	{
 		if(!$this->get('icon'))
@@ -998,7 +998,7 @@ class e_news_category_item extends e_model
 		{
 			$src = e107::getParser()->replaceConstants($this->get('icon'));
 		}
-		else 
+		else
 		{
 			$src = e_IMAGE_ABS.'icons/'.$this->get('icon');
 		}
@@ -1010,13 +1010,13 @@ class e_news_category_item extends e_model
 			case 'link':
 				return '<a href="'.$this->sc_news_category_url().'" class="news-category" title="'.$this->sc_news_category_title('attribute').'"><img src="'.$src.'" class="icon news-category" alt="'.$this->sc_news_category_title('attribute').'" /></a>';
 			break;
-		
+
 			default:
 				return '<img src="'.$src.'" class="icon news-category" alt="'.$this->sc_news_category_title('attribute').'" />';
 			break;
 		}
 	}
-	
+
 	public function sc_news_category_news_count($parm = '')
 	{
 		if(!$this->is('category_news_count'))
@@ -1025,7 +1025,7 @@ class e_news_category_item extends e_model
 		}
 		return (string) $this->get('news_count');
 	}
-} 
+}
 
 
 class e_news_category_tree extends e_model
@@ -1034,14 +1034,14 @@ class e_news_category_tree extends e_model
 	 * @var array
 	 */
 	protected $_tree_db_total = array();
-	
+
 	/**
 	 * Get category news item object from the tree
-	 * If $force_empty is true and corresponding category object can't be found, 
+	 * If $force_empty is true and corresponding category object can't be found,
 	 * empty object will be set/returned if
-	 * 
+	 *
 	 * @param integer $category_id
-	 * @param boolean $force_empty 
+	 * @param boolean $force_empty
 	 * @return e_news_category_item
 	 */
 	function getNode($category_id, $force_empty = false)
@@ -1052,10 +1052,10 @@ class e_news_category_tree extends e_model
 			$default = new e_news_category();
 			$this->setNode($category_id, $default);
 		}
-		
+
 		return $this->getData('__tree/'.$category_id, $default);
 	}
-	
+
 	/**
 	 * Set category news item object
 	 *
@@ -1071,10 +1071,10 @@ class e_news_category_tree extends e_model
 		}
 		$this->_tree_total = null;
 		$this->setData('__tree/'.$category_id, $category_object);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set news category tree array
 	 *
@@ -1085,10 +1085,10 @@ class e_news_category_tree extends e_model
 	{
 		$this->_tree_total = null;
 		$this->setData('__tree', $tree);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Get news category tree array
 	 *
@@ -1098,10 +1098,10 @@ class e_news_category_tree extends e_model
 	{
 		return $this->getData('__tree', array());
 	}
-	
+
 	/**
 	 * Total records found (DB)
-	 * 
+	 *
 	 * @return integer
 	 */
 	function getTreeTotal()
@@ -1112,10 +1112,10 @@ class e_news_category_tree extends e_model
 		}
 		return $this->_tree_total;
 	}
-	
+
 	/**
 	 * Load category data from the DB
-	 * 
+	 *
 	 * @param boolean $force
 	 * @return e_news_category_tree
 	 */
@@ -1131,7 +1131,7 @@ class e_news_category_tree extends e_model
 		{
 			$qry = "
 			SELECT nc.*, ncr.news_rewrite_string AS category_rewrite_string, ncr.news_rewrite_id AS category_rewrite_id FROM #news_category AS nc
-			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2 
+			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
 			ORDER BY nc.category_order ASC
 			";
 		}
@@ -1139,11 +1139,11 @@ class e_news_category_tree extends e_model
 		{
 			$qry = "SELECT * FROM #news_category ORDER BY category_order ASC";
 		}
-		
+
 		$tree = array();
 		$sql = e107::getDb();
 		$sql->db_Mark_Time('news_category_tree');
-		
+
 		if($sql->db_Select_gen($qry))
 		{
 			while($row = $sql->db_Fetch())
@@ -1152,13 +1152,13 @@ class e_news_category_tree extends e_model
 			}
 		}
 		$this->setTree($tree);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Load active categories only (containing active news items)
-	 * 
+	 *
 	 * @param boolean $force
 	 * @return e_news_category_tree
 	 */
@@ -1176,7 +1176,7 @@ class e_news_category_tree extends e_model
 		{
 			$qry = "
 			SELECT COUNT(n.news_id) AS category_news_count, nc.*, ncr.news_rewrite_string AS category_rewrite_string, ncr.news_rewrite_id AS category_rewrite_id FROM #news_category AS nc
-			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2 
+			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
 			LEFT JOIN #news AS n ON n.news_category=nc.category_id
 			WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 				AND n.news_start < ".$time." AND (n.news_end=0 || n.news_end>".$time.")
@@ -1195,11 +1195,11 @@ class e_news_category_tree extends e_model
 			ORDER BY nc.category_order ASC
 			";
 		}
-		
+
 		$tree = array();
 		$sql = e107::getDb();
 		$sql->db_Mark_Time('news_category_tree');
-		
+
 		if($sql->db_Select_gen($qry))
 		{
 			while($row = $sql->db_Fetch())
@@ -1208,13 +1208,13 @@ class e_news_category_tree extends e_model
 			}
 		}
 		$this->setTree($tree);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Render Category tree
-	 * 
+	 *
 	 * @param array $parms [return, parsesc=>1|0, mode=>string]
 	 * @param boolean $tablerender
 	 * @param array $force_template template override
@@ -1226,36 +1226,36 @@ class e_news_category_tree extends e_model
 		{
 			return '';
 		}
-		
+
 		$template = $force_template; //TODO template search, more template freedom, tree shortcodes
 		$ret = array();
 		$tp = e107::getParser();
-		
+
 		if(!isset($parms['parsesc'])) $parms['parsesc'] = true;
 		$parsesc = $parms['parsesc'] ? true : false;
-		
+
 		foreach ($this->getTree() as $cat)
 		{
 			$ret[] = $tp->parseTemplate($template['item'], $parsesc, $cat);
 		}
-		
+
 		if($ret)
 		{
 			$separator = varset($template['separator'], '');
 			$ret = implode($separator, $ret);
 			$return = isset($parms['return']) ? true : false;
-			
+
 			if($tablerender)
 			{
 				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSCAT_MENU_TITLE; // found in plugins/news/languages/English.php
 				$mod = true === $tablerender ? 'news_categories_menu' : $tablerender;
 				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
-			
+
 			if($return) return $ret;
 			echo $ret;
 		}
-		
+
 		return '';
 	}
 }
