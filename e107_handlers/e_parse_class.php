@@ -1222,7 +1222,7 @@ class e_parse
 					// $matches[4] - bit between the tags (i.e. text to process)
 					// $matches[5] - closing tag
 					// In case we decide to load a file
-					$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $matches[2])).'.bb';
+					$bbFile = e_CORE.'bbcodes/'.strtolower(str_replace('_', '', $matches[2])).'.bb';
 					$bbcode = '';
 					$code_text = $matches[4];
 					$parm = $matches[3] ? substr($matches[3],1) : '';

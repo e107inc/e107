@@ -99,7 +99,7 @@ class e_bbcode
 					$bbparam = (isset($matches[5])) ? $matches[5] : '';
 					$bbword = (isset($matches[2])) ? $matches[2] : '';
 					if($cont[1] != '/')
-					{ 
+					{
 						$bbstart = $cont;
 						$bbsep = varset($matches[4]);
 					}
@@ -269,7 +269,7 @@ class e_bbcode
 		{	// Find the file
 			if ($this->bbLocation[$code] == 'core')
 			{
-				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $code)).'.bb';
+				$bbFile = e_CORE.'bbcodes/'.strtolower(str_replace('_', '', $code)).'.bb';
 			}
 			else
 			{	// Add code to check for plugin bbcode addition
