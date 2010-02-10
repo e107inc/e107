@@ -125,7 +125,7 @@ function callScFunc($className, $scFuncName, $param= '')
 }
 
 /**
- * Create shortcode object
+ * Create shortcode object - DEPRECATED. use e_shortcode.php or
  *
  * @param string $class
  * @param boolean $force
@@ -267,6 +267,18 @@ class e_shortcode
 			}
 			$path = e_PLUGIN.$key.'/e_shortcode.php';
 			$classFunc = $key.'_shortcodes';
+
+			$this->registerClassMethods($classFunc,$path);
+		}
+	}
+
+	/**
+	 * Common Auto-Register function for class methods.
+	 *
+	 */
+	private function registerClassMethods($classFunc,$path)
+	{
+
 			$this->scClasses[$classFunc] = new $classFunc;
 
 			$tmp = get_class_methods($classFunc);
@@ -282,8 +294,8 @@ class e_shortcode
 					}
 				}
 			}
-		}
 	}
+
 
 	/**
 	 * Register Core Shortcode Batches.
@@ -293,10 +305,15 @@ class e_shortcode
 	 */
 	function loadCoreShortcodes()
 	{
-		$coreBatchList = array('admin_shortcodes.php');
+		$coreBatchList = array('admin_shortcodes');
+
 		foreach($coreBatchList as $cb)
 		{
-			include_once(e_CORE.'shortcodes/batch/'.$cb);
+			$path = e_CORE.'shortcodes/batch/'.$cb.".php";
+			if(include_once($path))
+			{
+				$this->registerClassMethods($cb,$path);
+			}
 		}
 	}
 
