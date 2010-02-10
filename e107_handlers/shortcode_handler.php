@@ -165,11 +165,11 @@ class e_shortcode
 	}
 
 	/**
-	 * Register any shortcode from the shortcodes/override/ directory
+	 * Register any shortcode from the override/shortcodes/ directory
 	 *
 	 * @return void
 	 */
-	//FIXME - should use e_SYSTEM/override/
+
 	protected function loadOverrideShortcodes()
 	{
 		$pref = e107::getConfig('core')->getPref();
@@ -475,7 +475,7 @@ class e_shortcode
 							break;
 
 						case 'override':
-							$scFile = e_FILE.'shortcodes/override/'.strtolower($code).'.sc';
+							$scFile = e_CORE.'override/shortcodes/'.strtolower($code).'.sc';
 							break;
 
 						case 'theme':
