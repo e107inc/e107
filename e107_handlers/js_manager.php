@@ -1,16 +1,16 @@
 <?php
 /*
  * e107 website system
- * 
+ *
  * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
- * 
+ *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
  * $Revision: 1.12 $
  * $Date: 2010-02-01 17:15:58 $
  * $Author: secretr $
- * 
+ *
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 
@@ -22,28 +22,28 @@ class e_jsmanager
      * @var array
      */
     protected $_e_jslib_core = array();
-	
+
     /**
      * Plugin JS library files, loaded via e_jslib.php
      *
      * @var array
      */
     protected $_e_jslib_plugin = array();
-	
+
     /**
      * Theme JS library files, loaded via e_jslib.php
      *
      * @var array
      */
     protected $_e_jslib_theme = array();
-	
+
     /**
      * JS files array - loaded in page header
      *
      * @var array
      */
     protected $_runtime_header = array();
-	
+
     /**
      * JS code array - loaded in page header
      * after all registered JS header files
@@ -51,87 +51,87 @@ class e_jsmanager
      * @var array
      */
     protected $_runtime_header_src = array();
-	
+
     /**
      * Current Header zone (under development)
      *
      * @var array
      */
     protected $_zone_header = 0;
-	
+
     /**
      * Current Footer zone (under development)
      *
      * @var array
      */
     protected $_zone_footer = 0;
-	
+
     /**
      * JS files array - loaded in page footer
      *
      * @var array
      */
     protected $_runtime_footer = array();
-	
+
     /**
      * JS code array - loaded in page footer
      *
      * @var array
      */
     protected $_runtime_footer_src = array();
-	
+
     /**
      * Index of all registered JS/CSS files - for faster searching
      *
      * @var array
      */
-    protected $_index_all = array();	
-    
+    protected $_index_all = array();
+
     /**
      * Registered CSS files by type (core|theme|plugin|other)
-     * 
+     *
      * @var array
      */
     protected $_e_css = array();
-    
+
     /**
      * Inline CSS
-     * 
+     *
      * @var array
      */
     protected $_e_css_src = array();
-	
+
     /**
      * Runtime location
      *
      * @var boolean
      */
     protected $_in_admin = false;
-	
+
 	/**
 	 * Browser cache id
-	 * 
+	 *
 	 * @var integer
 	 */
 	protected $_browser_cache_id = 0;
-	
+
 	/**
 	 * @var array
 	 */
 	protected $_lastModified = array();
-    
+
 	/**
 	 * Singleton instance
 	 * Allow class extends - override {@link getInstance()}
-	 * 
+	 *
 	 * @var e_jsmanager
 	 */
 	protected static $_instance = null;
-    
+
 	/**
 	 * Constructor
-	 * 
-	 * Use {@link getInstance()}, direct instantiating 
+	 *
+	 * Use {@link getInstance()}, direct instantiating
 	 * is not possible for signleton objects
 	 *
 	 * @return void
@@ -147,7 +147,7 @@ class e_jsmanager
 	private function __clone()
 	{
 	}
-	
+
 	/**
 	 * Get singleton instance
 	 *
@@ -162,20 +162,20 @@ class e_jsmanager
 		}
 	  	return self::$_instance;
 	}
-	
+
 	/**
 	 * Get and parse core preference values (if available)
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _init()
 	{
 		// Try to auto-detect runtime location
-		$this->setInAdmin(defset('e_ADMIN_AREA', false)); 
-		
+		$this->setInAdmin(defset('e_ADMIN_AREA', false));
+
 		// Try to load browser cache id from core preferences
 		$this->setCacheId(e107::getPref('e_jslib_browser_cache', 0));
-		
+
 		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
 		$core_libs = e107::getPref('e_jslib_core');
 		if(!$core_libs)
@@ -183,7 +183,7 @@ class e_jsmanager
 			$core_libs = array();
 		}
 		$this->coreLib($core_libs);
-		
+
 		// Load stored in preferences plugin lib paths ASAP
 		$plug_libs = e107::getPref('e_jslib_plugin');
 		if(!$plug_libs)
@@ -194,7 +194,7 @@ class e_jsmanager
 		{
 			$this->pluginLib($plugname, $lib_paths);
 		}
-		
+
 		// Load stored in preferences theme lib paths ASAP
 		// TODO - decide if THEME should directly use themeLib() or
 		// we store paths in 'e_jslib_theme' on theme installation only (theme.xml)!
@@ -205,23 +205,23 @@ class e_jsmanager
 		}
 		$this->themeLib($theme_libs);
 	}
-	
+
 	/**
 	 * Add Core CSS file for inclusion in site header, shorthand of headerFile() method
-	 * 
+	 *
 	 * @param string|array $file_path relative to {e_FILE}jslib/ folder
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
 	public function coreCSS($file_path, $media = 'all')
 	{
-		$this->addJs('core_css', $file_path, $media);	
+		$this->addJs('core_css', $file_path, $media);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Plugin CSS file(s) for inclusion in site header
-	 * 
+	 *
 	 * @param string $plugname
 	 * @param string|array $file_path relative to e107_plugins/myplug/ folder or array in format 'path - media'
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
@@ -237,65 +237,65 @@ class e_jsmanager
 			}
 			return $this;
 		}
-		$this->addJs('plugin_css', $plugname.':'.$file_path, $media);		
+		$this->addJs('plugin_css', $plugname.':'.$file_path, $media);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Theme CSS file(s) for inclusion in site header
-	 * 
+	 *
 	 * @param string|array $file_path relative to e107_themes/current_theme/ folder
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
 	public function themeCSS($file_path, $media = 'all')
 	{
-		$this->addJs('theme_css', $file_path, $media);		
+		$this->addJs('theme_css', $file_path, $media);
 		return $this;
 	}
-	
+
 	/**
 	 * Add CSS file(s) for inclusion in site header
-	 * 
+	 *
 	 * @param string|array $file_path path, shortcodes usage is prefered
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
 	public function otherCSS($file_path, $media = 'all')
 	{
-		$this->addJs('other_css', $file_path, $media);		
+		$this->addJs('other_css', $file_path, $media);
 		return $this;
 	}
-	
+
 	/**
 	 * Add CSS code to site header
-	 * 
+	 *
 	 * @param string|array $js_content
 	 * @param string $media (not implemented yet) any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
 	public function inlineCSS($css_content, $media = 'all')
 	{
-		$this->addJs('inline_css', $css_content, $media);		
+		$this->addJs('inline_css', $css_content, $media);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Core JS library file(s) for inclusion from e_jslib routine
-	 * 
+	 *
 	 * @param string|array $file_path relative to e107_files/jslib/ folder or array in format 'path - runtime location'
 	 * @param string $runtime_location  admin|front|all - where should be JS used
 	 * @return e_jsmanager
 	 */
 	protected function coreLib($file_path, $runtime_location = 'front')
 	{
-		$this->addJs('core', $file_path, $runtime_location);	
+		$this->addJs('core', $file_path, $runtime_location);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Plugin JS library file(s) for inclusion from e_jslib routine
-	 * 
+	 *
 	 * @param string $plugname
 	 * @param string|array $file_path relative to e107_plugins/myplug/ folder or array in format 'path - runtime location'
 	 * @param string $runtime_location admin|front|all - where should be JS used
@@ -311,28 +311,28 @@ class e_jsmanager
 			}
 			return $this;
 		}
-		$this->addJs('plugin', $plugname.':'.$file_path, $runtime_location);		
+		$this->addJs('plugin', $plugname.':'.$file_path, $runtime_location);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Theme JS library file(s) for inclusion from e_jslib routine
-	 * 
+	 *
 	 * @param string|array $file_path relative to e107_themes/current_theme/ folder or array in format 'path - runtime location'
 	 * @param string $runtime_location admin|front|all - where should be JS used
 	 * @return e_jsmanager
 	 */
-	protected function themeLib($file_path, $runtime_location = 'front')
+	public function themeLib($file_path, $runtime_location = 'front')
 	{
-		$this->addJs('theme', $file_path, $runtime_location);		
+		$this->addJs('theme', $file_path, $runtime_location);
 		return $this;
 	}
-	
+
 	/**
-	 * Add Core JS library file(s) for inclusion in site header or site footer (in this order) if not 
+	 * Add Core JS library file(s) for inclusion in site header or site footer (in this order) if not
 	 * already loaded by e_jslib routine. This should avoid dependency problems.
-	 * Extremely useful for shortcodes and menus. 
-	 * 
+	 * Extremely useful for shortcodes and menus.
+	 *
 	 * @param string $file_path relative to e107_files/jslib/ folder
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
@@ -350,11 +350,11 @@ class e_jsmanager
 		$this->tryHeaderFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);
 		return $this;
 	}
-	
+
 	/**
-	 * Add Plugin JS library file(s) for inclusion in site header if not 
+	 * Add Plugin JS library file(s) for inclusion in site header if not
 	 * already loaded by e_jslib routine. This should avoid dependency problems.
-	 * 
+	 *
 	 * @param string $plugname
 	 * @param string $file_path relative to e107_plugins/myplug/ folder
 	 * @param integer $zone 1-5 (see header.php)
@@ -373,49 +373,49 @@ class e_jsmanager
 		$this->tryHeaderFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add JS file(s) for inclusion in site header
-	 * 
+	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerFile($file_path, $zone = 5)
 	{
-		$this->addJs('header', $file_path, $zone);		
+		$this->addJs('header', $file_path, $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Core JS file for inclusion in site header, shorthand of headerFile() method
-	 * 
+	 *
 	 * @param string $file_path relative to {e_FILE}jslib/ folder
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerCore($file_path, $zone = 2)
 	{
-		$this->headerFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);	
+		$this->headerFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Theme JS file for inclusion in site header, shorthand of headerFile() method
-	 * 
+	 *
 	 * @param string $file_path relative to theme root folder
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerTheme($file_path, $zone = 5)
 	{
-		$this->headerFile(THEME.trim($file_path, '/'), $zone);	
+		$this->headerFile(THEME.trim($file_path, '/'), $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add Plugin JS file for inclusion in site header, shorthand of headerFile() method
-	 * 
+	 *
 	 * @param string $plugname
 	 * @param string $file_path relative to plugin root folder
 	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
@@ -426,11 +426,11 @@ class e_jsmanager
 		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2);	// Zone 2 - after libraries
 		return $this;
 	}
-	
+
 	/**
-	 * Add JS file(s) for inclusion in site header if possible, else 
+	 * Add JS file(s) for inclusion in site header if possible, else
 	 * use {@link footerFile()}
-	 * 
+	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
 	 * @param integer $zone 1-5 (see header.php and footer.php)
 	 * @return e_jsmanager
@@ -442,41 +442,41 @@ class e_jsmanager
 			$this->headerFile($file_path, $zone);
 			return $this;
 		}
-		
+
 		$this->footerFile($file_path, $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add JS file(s) for inclusion in site footer
-	 * 
+	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
 	public function footerFile($file_path, $priority = 5)
 	{
-		$this->addJs('footer', $file_path, $priority);		
+		$this->addJs('footer', $file_path, $priority);
 		return $this;
 	}
-	
+
 	/**
 	 * Add JS code to site header
-	 * 
+	 *
 	 * @param string|array $js_content
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerInline($js_content, $zone = 5)
 	{
-		$this->addJs('header_inline', $js_content, $zone);		
+		$this->addJs('header_inline', $js_content, $zone);
 		return $this;
 	}
-	
+
 	/**
-	 * Add JS code to site site header if possible, else 
+	 * Add JS code to site site header if possible, else
 	 * use {@link footerInline()}
-	 * 
+	 *
 	 * @param string $js_content
 	 * @param integer $zone 1-5 (see header.php and footer.php)
 	 * @return e_jsmanager
@@ -488,27 +488,27 @@ class e_jsmanager
 			$this->headerInline($js_content, $zone);
 			return $this;
 		}
-		
+
 		$this->footerInline($js_content, $zone);
 		return $this;
 	}
-	
+
 	/**
 	 * Add JS file(s) for inclusion in site footer
-	 * 
+	 *
 	 * @param string|array $js_content path shortcodes usage is prefered
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
 	public function footerInline($js_content, $priority = 5)
 	{
-		$this->addJs('footer_inline', $js_content, $priority);		
+		$this->addJs('footer_inline', $js_content, $priority);
 		return $this;
 	}
-	
+
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
-	 * 
+	 *
 	 * @see themeLib()
 	 * @see pluginLib()
 	 * @see coreLib()
@@ -542,7 +542,7 @@ class e_jsmanager
 			}
 			return $this;
 		}
-		
+
 		$tp = e107::getParser();
 		$runtime = false;
 		switch($type)
@@ -551,25 +551,25 @@ class e_jsmanager
 				$file_path = '{e_FILE}jslib/'.trim($file_path, '/');
 				$registry = &$this->_e_jslib_core;
 			break;
-		
+
 			case 'plugin':
 				$file_path = explode(':', $file_path);
 				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
 				$registry = &$this->_e_jslib_plugin;
 			break;
-			
+
 			case 'theme':
 				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
 				$registry = &$this->_e_jslib_theme;
 			break;
-			
+
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
 				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/');
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
 			break;
-		
+
 			case 'plugin_css':
 				$file_path = explode(':', $file_path);
 				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
@@ -577,27 +577,27 @@ class e_jsmanager
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
 			break;
-			
+
 			case 'theme_css':
 				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
 			break;
-			
+
 			case 'other_css':
 				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 4);
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
 			break;
-			
+
 			case 'inline_css': // no zones, TODO - media?
 				$this->_e_css_src[] = $file_path;
 				return $this;
 				break;
 			break;
-			
+
 			case 'header':
 				$file_path = $tp->createConstants($file_path, 4);
 				$zone = intval($runtime_location);
@@ -605,14 +605,14 @@ class e_jsmanager
 				{
 					$zone = 5;
 				}
-				if(!isset($this->_runtime_header[$zone])) 
+				if(!isset($this->_runtime_header[$zone]))
 				{
 					$this->_runtime_header[$zone] = array();
 				}
 				$registry = &$this->_runtime_header[$zone];
 				$runtime = true;
 			break;
-			
+
 			case 'footer':
 				$file_path = $tp->createConstants($file_path, 4);
 				$zone = intval($runtime_location);
@@ -620,14 +620,14 @@ class e_jsmanager
 				{
 					$zone = 5;
 				}
-				if(!isset($this->_runtime_footer[$zone])) 
+				if(!isset($this->_runtime_footer[$zone]))
 				{
 					$this->_runtime_footer[$zone] = array();
 				}
 				$registry = &$this->_runtime_footer[$zone];
 				$runtime = true;
 			break;
-			
+
 			case 'header_inline':
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
@@ -638,7 +638,7 @@ class e_jsmanager
 				return $this;
 				break;
 			break;
-			
+
 			case 'footer_inline':
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
@@ -648,7 +648,7 @@ class e_jsmanager
 				$this->_runtime_footer_src[$zone][] = $file_path;
 				return $this;
 			break;
-			
+
 			default:
 				return $this;
 			break;
@@ -658,16 +658,16 @@ class e_jsmanager
 		{
 			return $this;
 		}
-		
+
 		$this->_index_all[] = $file_path;
 		$registry[] = $file_path;
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Render registered JS
-	 * 
+	 *
 	 * @param string $mod core|plugin|theme|header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css
 	 * @param integer $zone 1-5 - only used when in 'header','footer','header_inline' and 'footer_inline' render mod
 	 * @param boolean $external exrernal file calls, only used when NOT in 'header_inline' and 'footer_inline' render mod
@@ -680,14 +680,14 @@ class e_jsmanager
 		{
 			ob_start();
 		}
-		
+
 		switch($mod)
 		{
 			case 'core': //e_jslib
 				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_core, $external, 'Core libraries'));
 				$this->_e_jslib_core = array();
 			break;
-		
+
 			case 'plugin': //e_jslib
 				/*foreach($this->_e_jslib_plugin as $plugname => $paths)
 				{
@@ -696,42 +696,42 @@ class e_jsmanager
 				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, 'Plugin libraries'));
 				$this->_e_jslib_plugin = array();
 			break;
-			
+
 			case 'theme': //e_jslib
 				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_theme, $external, 'Theme libraries'));
 				$this->_e_jslib_theme = array();
 			break;
-			
+
 			case 'header':
 				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone);
 				unset($this->_runtime_header[$zone]);
 			break;
-			
+
 			case 'core_css': //e_jslib
 				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', false);
 				unset($this->_e_css['core']);
 			break;
-		
+
 			case 'plugin_css': //e_jslib
 				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', false);
 				unset($this->_e_css['plugin']);
 			break;
-			
+
 			case 'theme_css': //e_jslib
 				$this->renderFile(varset($this->_e_css['theme'], array()), $external, 'Theme CSS', false);
 				unset($this->_e_css['theme']);
 			break;
-			
+
 			case 'other_css':
 				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', false);
 				unset($this->_e_css['other']);
 			break;
-			
+
 			case 'inline_css':
 				$this->renderInline($this->_e_css_src, 'Inline CSS', 'css');
 				$this->_e_css_src = array();
 			break;
-			
+
 			case 'footer':
 				if(true === $zone)
 				{
@@ -748,12 +748,12 @@ class e_jsmanager
 					unset($this->_runtime_footer[$zone]);
 				}
 			break;
-			
+
 			case 'header_inline':
 				$this->renderInline(varsettrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
 				unset($this->_runtime_header_src[$zone]);
 			break;
-			
+
 			case 'footer_inline':
 				if(true === $zone)
 				{
@@ -771,7 +771,7 @@ class e_jsmanager
 				}
 			break;
 		}
-		
+
 		if($return)
 		{
 			$ret = ob_get_contents();
@@ -779,10 +779,10 @@ class e_jsmanager
 			return $ret;
 		}
 	}
-	
+
 	/**
 	 * Render JS/CSS file array
-	 * 
+	 *
 	 * @param array $file_path_array
 	 * @param string|boolean $external if true - external js file calls, if js|css - external js|css file calls, else output file contents
 	 * @param string $label added as comment if non-empty
@@ -800,7 +800,7 @@ class e_jsmanager
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
 		}
-		
+
 		$lmodified = 0;
 		foreach ($file_path_array as $path)
 		{
@@ -821,7 +821,7 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
-				
+
 				$path = $tp->replaceConstants($path, '');
 				if($checkModified) $lmodified = max($lmodified, filemtime($path));
                 include_once($path);
@@ -844,20 +844,20 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
-				
+
 				$path = $tp->replaceConstants($path, '');
 				if($checkModified) $lmodified = max($lmodified, filemtime($path));
                 echo file_get_contents($path);
                 echo "\n";
             }
 		}
-		
+
 		return $lmodified;
 	}
-	
+
 	/**
 	 * Render JS/CSS source array
-	 * 
+	 *
 	 * @param array $js_content_array
 	 * @param string $label added as comment if non-empty
 	 * @return void
@@ -868,11 +868,11 @@ class e_jsmanager
 		{
 			return '';
 		}
-		
+
 		$content_array = array_unique($content_array); //TODO quick fix, we need better control!
 		echo "\n";
-		
-		switch ($type) 
+
+		switch ($type)
 		{
 			case 'js':
 				if($label) //TODO - print comments only if site debug is on
@@ -886,7 +886,7 @@ class e_jsmanager
 				echo '</script>';
 				echo "\n";
 			break;
-			
+
 			case 'css':
 				if($label) //TODO - print comments only if site debug is on
 				{
@@ -899,21 +899,21 @@ class e_jsmanager
 			break;
 		}
 	}
-	
+
 	/**
 	 * Returns true if currently running in
 	 * administration area.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isInAdmin()
 	{
 		return $this->_in_admin;
 	}
-	
+
 	/**
 	 * Set current script location
-	 * 
+	 *
 	 * @param object $is true - back-end, false - front-end
 	 * @return e_jsmanager
 	 */
@@ -922,10 +922,10 @@ class e_jsmanager
 		$this->_in_admin = (boolean) $is;
 		return $this;
 	}
-	
+
 	/**
 	 * Get current location as a string (admin|front)
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getCurrentLocation()
@@ -935,7 +935,7 @@ class e_jsmanager
 
 	/**
 	 * Get current theme name
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getCurrentTheme()
@@ -943,20 +943,20 @@ class e_jsmanager
 		// XXX - USERTHEME is defined only on user session init
 		return ($this->isInAdmin() ? e107::getPref('admintheme') : defsettrue('USERTHEME', e107::getPref('sitetheme')));
 	}
-	
+
 	/**
 	 * Get browser cache id
-	 * 
+	 *
 	 * @return integer
 	 */
 	public function getCacheId()
 	{
 		return $this->_browser_cache_id;
 	}
-	
+
 	/**
 	 * Set browser cache id
-	 * 
+	 *
 	 * @return e_jsmanager
 	 */
 	public function setCacheId($cacheid)
@@ -964,10 +964,10 @@ class e_jsmanager
 		$this->_browser_cache_id = intval($cacheid);
 		return $this;
 	}
-	
+
 	/**
 	 * Set last modification timestamp for given namespace
-	 * 
+	 *
 	 * @param string $what
 	 * @param integer $when [optional]
 	 * @return e_jsmanager
@@ -977,10 +977,10 @@ class e_jsmanager
 		$this->_lastModified[$what] = $when;
 		return $this;
 	}
-	
+
 	/**
 	 * Get last modification timestamp for given namespace
-	 * 
+	 *
 	 * @param string $what
 	 * @return integer
 	 */
@@ -988,10 +988,10 @@ class e_jsmanager
 	{
 		return (isset($this->_lastModified[$what]) ? $this->_lastModified[$what] : 0);
 	}
-	
+
 	public function addLibPref($mod, $array_newlib)
 	{
-				
+
 		if(!$array_newlib || !is_array($array_newlib))
 		{
 			return $this;
@@ -1003,43 +1003,43 @@ class e_jsmanager
 			$plugname = str_replace('plugin:', '', $mod);
 			$mod = 'plugin';
 		}
-		
+
 		switch($mod)
 		{
 			case 'core':
 			case 'theme':
 				$key = 'e_jslib_'.$mod;
 			break;
-			
+
 			case 'plugin':
 				$key = 'e_jslib_plugin/'.$plugname;
 			break;
-			
+
 			default:
 				return $this;
 			break;
 		}
-		
-		
+
+
 		$libs = $core->getPref($key);
 		if(!$libs) $libs = array();
 		foreach ($array_newlib as $path => $location)
 		{
 			$path = trim($path, '/');
-			
+
 			if(!$path) continue;
-			
+
 			$newlocation = $location == 'all' || (varset($libs[$path]) && $libs[$path] != $location) ? 'all' : $location;
 			$libs[$path] = $newlocation;
 		}
-		
+
 		$core->setPref($key, $libs);
 		return $this;
 	}
-	
+
 	public function removeLibPref($mod, $array_removelib)
 	{
-				
+
 		if(!$array_removelib || !is_array($array_removelib))
 		{
 			return $this;
@@ -1051,24 +1051,24 @@ class e_jsmanager
 			$plugname = str_replace('plugin:', '', $mod);
 			$mod = 'plugin';
 		}
-		
+
 		switch($mod)
 		{
 			case 'core':
 			case 'theme':
 				$key = 'e_jslib_'.$mod;
 			break;
-			
+
 			case 'plugin':
 				$key = 'e_jslib_plugin/'.$plugname;
 			break;
-			
+
 			default:
 				return $this;
 			break;
 		}
-		
-		
+
+
 		$libs = $core->getPref($key);
 		if(!$libs) $libs = array();
 		foreach ($array_removelib as $path => $location)
@@ -1078,9 +1078,9 @@ class e_jsmanager
 
 			unset($libs[$path]);
 		}
-		
+
 		$core->setPref($key, $libs);
 		return $this;
 	}
-	
+
 }
