@@ -8,9 +8,9 @@
  *
  * Release Plugin Administration UI
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
+ * $Source: /cvsroot/e107/e107_0.8/e107_plugins/release/includes/admin.php,v $
  * $Revision: 1.13 $
- * $Date: 2009-11-28 15:34:46 $
+ * $Date: 2009/11/28 15:34:46 $
  * $Author: secretr $
 */
 
@@ -154,6 +154,7 @@ class plugin_release_admin_ui extends e_admin_ui
 		 *    Default is 'str'
 		 *    Used only if $dataFields is not set
 		 *  	full/most recent reference list - e_admin_model::sanitize(), db::_getFieldValue()
+		 *  - dataPath (string) - xpath like path to the model/posted value. Example: 'dataPath' => 'prefix/mykey' will result in $_POST['prefix']['mykey'] 
 		 *  - primary (boolean) primary field (obsolete, $pid is now used)
 		 *  
 		 *  - help (string) edit/create table - inline help, constant name will be accpeted as well, optional
@@ -185,8 +186,12 @@ class plugin_release_admin_ui extends e_admin_ui
 		 *    writeParams are used mainly by edit page, filter (list page), batch (list page)
 		 *    
 		 * $attributes['type']->$attributes['read/writeParams'] pairs:
+		 * 
 		 * - null -> read: n/a
 		 * 		  -> write: n/a
+		 * 
+		 * - dropdown -> read: 'pre', 'post', array in format posted_html_name => value
+		 * 			  -> write: 'pre', 'post', array in format as required by e_form::selectbox()
 		 * 
 		 * - user -> read: [optional] 'link' => true - create link to user profile, 'idField' => 'author_id' - tells to renderValue() where to search for user id (used when 'link' is true and current field is NOT ID field)
 		 * 				   'nameField' => 'comment_author_name' - tells to renderValue() where to search for user name (used when 'link' is true and current field is ID field)
@@ -314,92 +319,3 @@ class plugin_release_admin_form_ui extends e_admin_form_ui
 		return $text;
 	}
 }
-
-/* OBSOLETE - will be removed soon
-class releasePlugin extends e_model_interface
-{
-
-	function __construct()
-	{	
-	
-		$this->pluginTitle = "e107 Release";
-	
-		$this->table = "release";
-	    
-		//TODO change the release_url type back to URL before release. 
-		
-    	$this->fields = array(
-			'checkboxes'				=> array('title'=> '', 					'type' => '',		'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center'),
-			'release_id'				=> array('title'=> ID, 					'type' => '',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE),
-            'release_type'	   			=> array('title'=> 'Type', 				'type' => 'method', 'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-			'release_folder' 			=> array('title'=> 'Folder', 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	
-			'release_name' 				=> array('title'=> 'Name', 				'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
-			'release_version' 			=> array('title'=> 'Version',			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
-			'release_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text', 	'width' => 'auto',	'thclass' => 'left'), 
-         	'release_authorURL' 		=> array('title'=> LAN_AUTHOR.'URL', 	'type' => 'url', 	'width' => 'auto',	'thclass' => 'left'), 
-            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	 
-			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 	'width' => '10%',	'thclass' => 'center' ),	 
-			'release_url' 				=> array('title'=> 'Userclass',				'type' => 'userclass', 	'width' => '10%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE),	 
-			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => '', 		'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
-		);
-		
-		$this->prefs = array( //TODO add option for core or plugin pref. 
-		
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
-		);
-		
-		$this->listQry = "SELECT * FROM #release"; // without any Order or Limit. 
-		$this->editQry = "SELECT * FROM #release WHERE release_id = {ID}";		
-	
-		$this->adminMenu = array(
-			'list'		=> array('caption'=>'Release List', 'perm'=>'0'),
-			'create' 	=> array('caption'=>LAN_CREATE."/".LAN_EDIT, 'perm'=>'0'),
-			'options' 	=> array('caption'=>LAN_OPTIONS, 'perm'=>'0'),
-			'custom'	=> array('caption'=>'Custom Page', 'perm'=>0)				
-		);		
-	}
-	
-	// Custom View/Form-Element method. ie. Naming should match field/key with type=method.
-	
-	
-	function release_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
-	{
-		if($mode == 'list')
-		{
-			return $curVal.' (custom!)';
-		}
-		
-		if($mode == 'batch') // Custom Batch List for release_type
-		{
-			return array('theme'=>"Theme","plugin"=>'Plugin');	
-		}
-		
-		if($mode == 'filter') // Custom Filter List for release_type
-		{
-			return array('theme'=>"Theme","plugin"=>'Plugin');	
-		}
-		
-		$types = array("theme","plugin");
-		$text = "<select class='tbox' name='release_type' >";
-		foreach($types as $val)
-		{
-			$selected = ($curVal == $val) ? "selected='selected'" : "";
-			$text .= "<option value='{$val}' {$selected}>".$val."</option>\n";
-		}
-		$text .= "</select>";
-		return $text;
-	}
-	
-	//custom Page = Naming should match $this->adminMenu key + 'Page'. 
-	function customPage()
-	{
-		$ns = e107::getRender();
-		$ns->tablerender("Custom","This is a custom Page");
-	}
-
-}
-*/
-//$rp = new releasePlugin;
-//$rp->init();
