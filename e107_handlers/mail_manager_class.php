@@ -9,16 +9,16 @@
  * e107 Mailout - mail database API and utility routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-11 21:09:15 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 /**
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mail_manager_class.php,v 1.13 2010-01-11 21:09:15 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	@todo - consider whether to extract links in text-only emails
 

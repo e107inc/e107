@@ -9,9 +9,9 @@
  * News e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_news.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-10 12:19:53 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

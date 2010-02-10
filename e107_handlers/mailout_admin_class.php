@@ -9,9 +9,9 @@
  * Mailout - admin-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2010-01-18 21:11:43 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_admin_class.php,v 1.15 2010-01-18 21:11:43 e107coders Exp $;
+ *	@version 	$Id$;
 */
 
 

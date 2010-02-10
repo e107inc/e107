@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.67 $
- * $Date: 2010-01-12 18:00:27 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 require_once('../class2.php');

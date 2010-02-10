@@ -1,5 +1,5 @@
  /**
- * $Id: element_common.js,v 1.3 2009-10-02 18:19:50 e107coders Exp $
+ * $Id$
  *
  * @author Moxiecode - based on work by Andrew Tetlaw
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.

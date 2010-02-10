@@ -9,9 +9,9 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-06 20:09:58 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_conf.php,v 1.13 2010-01-06 20:09:58 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 

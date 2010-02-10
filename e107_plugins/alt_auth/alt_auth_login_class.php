@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-12 13:11:48 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('AA_DEBUG',FALSE);

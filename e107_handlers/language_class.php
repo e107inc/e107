@@ -4,9 +4,9 @@
 |     e107 website system - Language Class.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/language_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-31 01:18:33 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

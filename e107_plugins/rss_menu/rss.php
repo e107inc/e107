@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-12-03 22:32:34 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /*

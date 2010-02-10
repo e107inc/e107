@@ -9,9 +9,9 @@
  * Administration Icons, should handle all icons in the future (somehow)
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/admin_icons_template.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");

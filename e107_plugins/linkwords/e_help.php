@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_help.php,v $
- * $Revision: 1.4 $
- * $Date: 2010-01-02 22:57:41 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: e_help.php,v 1.4 2010-01-02 22:57:41 e107steved Exp $;
+ *	@version 	$Id$;
  *
  */
 

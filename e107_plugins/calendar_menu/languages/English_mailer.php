@@ -9,9 +9,9 @@
  * Event calendar - language file for mailout related routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_mailer.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-10 03:56:28 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

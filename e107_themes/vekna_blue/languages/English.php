@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/vekna_blue/languages/English.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:06:08 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("LAN_THEME_1", "'vekna blue' by <a href='http://e107.org' rel='external'>jalist</a>, based on, and with permission from Arach's site, <a href='http://e107.vekna.com' rel='external'>http://e107.vekna.com</a>");

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2008-2010 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_validator.php,v 1.1 2010-02-07 12:13:43 secretr Exp $
+ * $Id$
  *
  * Validator Handler - Language File
 */

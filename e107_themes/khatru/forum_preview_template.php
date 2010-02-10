@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/khatru/forum_preview_template.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:06:02 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

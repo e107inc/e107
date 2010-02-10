@@ -1,5 +1,5 @@
 /**
- * $Id: mctabs.js,v 1.4 2009-10-02 18:17:40 e107coders Exp $
+ * $Id$
  *
  * Moxiecode DHTML Tabs script.
  *

@@ -9,9 +9,9 @@
  * Tagwords Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

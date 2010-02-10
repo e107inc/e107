@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/languages/English.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('CLOCK_MENU_L1', 'Clock menu configuration saved');

@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/English_log.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('LAN_AL_AUTH_01','Alt auth Settings changed');

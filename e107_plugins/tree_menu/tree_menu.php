@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/tree_menu.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-28 21:36:13 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -33,7 +33,7 @@ if (!defined('e107_INIT')) { exit; }
  *
  *	@package	e107_plugins
  *	@subpackage	online
- *	@version 	$Id: tree_menu.php,v 1.8 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  *
  */
 

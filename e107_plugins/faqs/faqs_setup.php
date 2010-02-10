@@ -9,9 +9,9 @@
 * Custom FAQ install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs_setup.php,v $
-* $Revision: 1.1 $
-* $Date: 2009-11-09 12:57:34 $
-* $Author: e107coders $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

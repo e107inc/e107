@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-06 15:48:26 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");

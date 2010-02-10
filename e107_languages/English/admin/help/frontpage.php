@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: frontpage.php,v 1.3 2008-12-21 10:58:35 secretr Exp $
+ * $Id$
  *
  * Frontpage Admin Help
  * 

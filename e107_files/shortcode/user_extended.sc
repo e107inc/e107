@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: user_extended.sc,v 1.11 2010-01-03 12:12:34 e107steved Exp $
+ * $Id$
  *
  * Extended user field shortcode
 */

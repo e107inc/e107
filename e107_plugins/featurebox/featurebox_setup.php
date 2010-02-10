@@ -9,9 +9,9 @@
 * Custom Featurebox install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox_setup.php,v $
-* $Revision: 1.4 $
-* $Date: 2009-12-09 18:33:40 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

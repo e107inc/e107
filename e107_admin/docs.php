@@ -9,9 +9,9 @@
  * Docs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-10 00:26:57 $
- * $Author: bugrain $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once("../class2.php");

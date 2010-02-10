@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-18 02:07:14 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if(isset($_GET['configure']))

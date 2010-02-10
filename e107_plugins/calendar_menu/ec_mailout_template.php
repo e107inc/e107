@@ -9,9 +9,9 @@
  * Event calendar mailout - template file
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_mailout_template.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-20 22:47:31 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: ec_mailout_template.php,v 1.5 2009-12-20 22:47:31 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 /*

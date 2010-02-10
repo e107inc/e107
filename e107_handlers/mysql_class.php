@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.77 $
- * $Date: 2010-02-08 09:12:07 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mysql_class.php,v 1.77 2010-02-08 09:12:07 secretr Exp $;
+ *	@version 	$Id$;
  *
  *	@todo separate cache for db type tables
  */

@@ -9,9 +9,9 @@
 *	PM plugin - install/uninstall routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_setup.php,v $
-* $Revision: 1.4 $
-* $Date: 2009-12-17 22:47:20 $
-* $Author: e107steved $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 
@@ -22,7 +22,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_setup.php,v 1.4 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 class pm_setup

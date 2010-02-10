@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-12-21 22:31:03 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once('../../class2.php');

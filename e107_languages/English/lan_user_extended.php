@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-08-07 13:47:35 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 // The LAN numbers correspond directly to the field types

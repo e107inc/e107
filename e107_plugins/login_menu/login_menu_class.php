@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-28 21:36:13 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	login
- *	@version 	$Id: login_menu_class.php,v 1.8 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	@todo	delete references to forum and chatbox plugins
  */

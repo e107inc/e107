@@ -9,9 +9,9 @@
  * Inspired by Magento' decorate JS functions (www.magentocommerce.com) 
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/decorate.js,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:49:18 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  * 
 */
 

@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss_menu.php,v $
- * $Revision: 1.8 $
- * $Date: 2010-01-09 15:06:36 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

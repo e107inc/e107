@@ -9,9 +9,9 @@
  * Plugin Administration - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/admin_pdf_config.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-07 20:46:56 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

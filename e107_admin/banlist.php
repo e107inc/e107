@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-12-19 23:04:42 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: banlist.php,v 1.23 2009-12-19 23:04:42 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 define('BAN_TIME_FORMAT', "%d-%m-%Y %H:%M");

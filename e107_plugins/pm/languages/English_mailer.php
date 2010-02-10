@@ -9,9 +9,9 @@
  * Private Messenger - language file for cron-related routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/languages/English_mailer.php,v $
- * $Revision: 1.1 $
- * $Date: 2010-01-22 21:18:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: English_mailer.php,v 1.1 2010-01-22 21:18:11 e107steved Exp $;
+ *	@version 	$Id$;
  */
 define('LAN_EC_PM_01', '');
 define('LAN_EC_PM_02', '');

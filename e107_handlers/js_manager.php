@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.12 $
- * $Date: 2010-02-01 17:15:58 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;

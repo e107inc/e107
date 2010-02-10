@@ -9,17 +9,17 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.24 $
- * $Date: 2010-01-05 20:14:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 /**
  * 
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.24 $
- * @author      $Author: e107steved $
+ * @version     $Revision$
+ * @author      $Author$
 
  *	Mailout handler - concerned with processing and sending a single email
 */

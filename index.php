@@ -9,9 +9,9 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/index.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-23 00:52:27 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once ('class2.php');

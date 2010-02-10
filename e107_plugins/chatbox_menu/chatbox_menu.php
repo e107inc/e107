@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
- * $Revision: 1.19 $
- * $Date: 2010-01-09 12:06:14 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	chatbox
- *	@version 	$Id: chatbox_menu.php,v 1.19 2010-01-09 12:06:14 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 global $tp, $e107cache, $e_event, $e107, $pref;

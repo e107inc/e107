@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.41 2009-11-30 20:40:03 e107steved Exp $
+// $Id$
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered

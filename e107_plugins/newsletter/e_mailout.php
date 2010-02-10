@@ -9,9 +9,9 @@
  * Newsletter plugin - mailout function
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/e_mailout.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-11 21:09:52 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_mailout.php,v 1.5 2010-01-11 21:09:52 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

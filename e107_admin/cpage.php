@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.34 $
- * $Date: 2010-01-04 21:35:37 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -19,8 +19,8 @@
  * 
  * @package     e107
  * @subpackage	admin
- * @version     $Revision: 1.34 $
- * @author      $Author: e107steved $
+ * @version     $Revision$
+ * @author      $Author$
 
  *	Admin-related functions for custom page and menu creation
 */

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_links.php,v 1.6 2009-11-20 05:01:42 e107coders Exp $
+ * $Id$
  *
  * Admin Language File
  * 

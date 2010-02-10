@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision: 1.21 $
- |     $Date: 2010-01-10 11:01:28 $
- |     $Author: e107steved $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 
@@ -27,7 +27,7 @@ if (!defined('e107_INIT'))
  *
  *	@package	e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: admin_log_class.php,v 1.21 2010-01-10 11:01:28 e107steved Exp $;
+ *	@version 	$Id$;
  */
 class e_admin_log
 {

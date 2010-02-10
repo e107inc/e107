@@ -9,9 +9,9 @@
  * Event calendar plugin - admin functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-12-21 19:52:48 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: admin_config.php,v 1.18 2009-12-21 19:52:48 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 $eplug_admin = true;		// Make sure we show admin theme

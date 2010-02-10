@@ -35,7 +35,7 @@
  * @author Marcus Bointon
  * @copyright 2004 - 2009 Andy Prevost
  * @license http://www.gnu.org/copyleft/lesser.html Distributed under the Lesser General Public License (LGPL)
- * @version $Id: class.pop3.php,v 1.5 2009-09-01 19:53:08 e107steved Exp $
+ * @version $Id$
  */
 
 /**

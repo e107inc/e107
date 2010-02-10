@@ -9,9 +9,9 @@
  * Plugin administration - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/modtrackback.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 $eplug_admin = true;

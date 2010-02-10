@@ -9,15 +9,15 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-12-28 22:16:54 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
  *	@package    e107
  *	@subpackage	admin
- *	@version 	$Id: notify.php,v 1.13 2009-12-28 22:16:54 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	'Notify' admin page - selects action on various events 
  */

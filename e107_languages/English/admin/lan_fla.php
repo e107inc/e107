@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_fla.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-11-08 09:14:39 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 // define("FLALAN_1", "Failed login attempts");

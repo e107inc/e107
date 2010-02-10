@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-05-04 20:09:45 $
-|     $Author: bugrain $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");

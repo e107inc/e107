@@ -9,9 +9,9 @@
  * Private messaging - messages for admin log titles
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/languages/English_log.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-14 19:37:54 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('LAN_AL_PM_ADM_01', 'PM: Default prefs used');

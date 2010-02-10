@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.11 $
-|	$Date: 2008-10-30 21:00:31 $
-|	$Author: e107steved $
+|	$Revision$
+|	$Date$
+|	$Author$
 +----------------------------------------------------------------------------+
 */
 

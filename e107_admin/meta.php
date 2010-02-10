@@ -9,9 +9,9 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once("../class2.php");

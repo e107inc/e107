@@ -9,9 +9,9 @@
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,8 +24,8 @@ define('CACHE_PREFIX','<?php exit;');
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.18 $
- * @author      $Author: e107steved $
+ * @version     $Revision$
+ * @author      $Author$
  */
 class ecache {
 

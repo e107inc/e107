@@ -10,9 +10,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs_shortcodes.php,v $
- |     $Revision: 1.3 $
- |     $Date: 2009-12-23 11:32:09 $
- |     $Author: e107coders $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT')) { exit; }

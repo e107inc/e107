@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/banner/languages/English_menu_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-09-18 22:20:39 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

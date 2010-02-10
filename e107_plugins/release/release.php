@@ -9,9 +9,9 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/release.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-09-29 00:03:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once("../../class2.php");

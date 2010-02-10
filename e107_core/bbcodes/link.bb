@@ -1,4 +1,4 @@
-// $Id: link.bb,v 1.10 2010-01-29 16:30:49 secretr Exp $
+// $Id$
 global $pref;
 
 /**
@@ -6,7 +6,7 @@ global $pref;
  *
  *	@package	e107
  *	@subpackage	bbcode
- *	@version 	$Id: link.bb,v 1.10 2010-01-29 16:30:49 secretr Exp $;
+ *	@version 	$Id$;
  *
  *	@todo try and avoid URLs with a language in [..]
  */

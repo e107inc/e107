@@ -9,9 +9,9 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-11-18 01:06:02 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

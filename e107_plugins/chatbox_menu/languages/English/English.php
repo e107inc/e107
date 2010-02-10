@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/languages/English/English.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("CHATBOX_L1", "Unable to accept post as that username is registered - if it is your username please login to post.");

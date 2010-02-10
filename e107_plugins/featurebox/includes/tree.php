@@ -9,9 +9,9 @@
 * Featurebox Category Tree model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/tree.php,v $
-* $Revision: 1.3 $
-* $Date: 2009-12-10 22:46:45 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

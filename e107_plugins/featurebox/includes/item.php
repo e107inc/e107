@@ -9,9 +9,9 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.8 $
-* $Date: 2009-12-12 16:35:46 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

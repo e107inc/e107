@@ -1,4 +1,4 @@
-//<? $Id: languagelinks.sc,v 1.3 2009-08-03 21:12:45 marj_nl_fr Exp $
+//<? $Id$
 global $pref;
 if( ! defined('LANGLINKS_SEPARATOR'))
 {

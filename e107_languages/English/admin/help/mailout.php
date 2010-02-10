@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/mailout.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-30 20:40:03 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-12-28 21:36:13 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
 /**
  *	@package    e107
  *	@subpackage	user
- *	@version 	$Id: online.php,v 1.12 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Display list of online users, and the pages they're viewing
  */

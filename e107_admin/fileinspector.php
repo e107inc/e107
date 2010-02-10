@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
- * $Revision: 1.20 $
- * $Date: 2010-02-07 17:24:05 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if ($_SERVER['QUERY_STRING'] == 'alone')

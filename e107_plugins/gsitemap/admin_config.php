@@ -9,9 +9,9 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:05:37 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once("../../class2.php");

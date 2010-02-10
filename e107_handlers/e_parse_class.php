@@ -9,16 +9,16 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.95 $
-* $Date: 2010-02-03 11:06:31 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 
 /**
  * @package e107
  * @subpackage e107_handlers
- * @version $Id: e_parse_class.php,v 1.95 2010-02-03 11:06:31 secretr Exp $
+ * @version $Id$
  * 
  * Text processing and parsing functions. 
  * Simple parse data model.

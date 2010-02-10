@@ -9,9 +9,9 @@
  * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.19 $
- * $Date: 2010-01-09 12:06:09 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: calendar_shortcodes.php,v 1.19 2010-01-09 12:06:09 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 /*

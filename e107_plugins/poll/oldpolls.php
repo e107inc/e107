@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-28 18:13:07 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once("../../class2.php");

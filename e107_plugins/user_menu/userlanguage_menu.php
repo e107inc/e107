@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
 if ( ! defined('e107_INIT')) { exit(); }

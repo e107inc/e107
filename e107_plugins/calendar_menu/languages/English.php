@@ -9,9 +9,9 @@
  * These messages are for the 'user' pages of the event calendar (including event entry/editing)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-12-20 22:47:33 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: English.php,v 1.12 2009-12-20 22:47:33 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 define('EC_ADLAN_1', 'Event Calendar');

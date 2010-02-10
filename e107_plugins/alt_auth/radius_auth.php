@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/radius_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-11-18 01:05:22 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 
 RFC2865 is the main RADIUS standard - http://www.faqs.org/rfcs/rfc2865

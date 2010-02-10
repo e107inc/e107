@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_installer.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("LANINS_001", "e107 Installation");

@@ -9,9 +9,9 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.9 $
- * $Date: 2010-01-06 22:36:45 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

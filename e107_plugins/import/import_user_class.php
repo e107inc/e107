@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/import/import_user_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:46 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /*

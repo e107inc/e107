@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
- |     $Revision: 1.22 $
- |     $Date: 2009-12-27 11:25:18 $
- |     $Author: e107coders $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))

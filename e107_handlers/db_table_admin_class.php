@@ -9,9 +9,9 @@
  * Database utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2010-01-23 02:07:50 $
- * $Author: mcfly_e107 $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 /*

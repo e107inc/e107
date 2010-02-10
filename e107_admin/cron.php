@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2010-01-06 20:12:07 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -21,8 +21,8 @@
  * 
  * @package     e107
  * @subpackage	admin
- * @version     $Revision: 1.27 $
- * @author      $Author: e107steved $
+ * @version     $Revision$
+ * @author      $Author$
 
  *	Admin-related functions for cron (Scheduler) management
 */

@@ -9,9 +9,9 @@
  * Plugin Administration - Comment menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 $eplug_admin = TRUE;

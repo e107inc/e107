@@ -9,9 +9,9 @@
  * Bounce handler for cron or manual triggering
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pop_bounce_handler.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-27 21:42:46 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 /*

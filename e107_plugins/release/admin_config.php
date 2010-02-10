@@ -9,9 +9,9 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-01 19:05:26 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

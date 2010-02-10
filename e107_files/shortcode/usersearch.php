@@ -1,6 +1,6 @@
 <?php
 
-// $Id: usersearch.php,v 1.1 2009-11-06 18:37:23 secretr Exp $
+// $Id$
 
 function usersearch_shortcode($parm)
 {

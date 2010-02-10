@@ -9,9 +9,9 @@
  * Sitelinks configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/e_sitelink.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-20 05:01:51 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

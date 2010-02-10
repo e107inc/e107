@@ -9,9 +9,9 @@
  *	PM plugin - menu display
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-12-21 22:31:04 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: private_msg_menu.php,v 1.13 2009-12-21 22:31:04 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

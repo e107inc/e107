@@ -9,9 +9,9 @@
  * These messages are for the 'user' pages of the event calendar (including event entry/editing)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-20 22:47:35 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: English_class.php,v 1.1 2009-12-20 22:47:35 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 // Recurring events texts - the numeric part of each define is the internal value assigned

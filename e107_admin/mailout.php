@@ -9,9 +9,9 @@
  * Administration - Mailout
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.36 $
- * $Date: 2010-01-11 21:08:38 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -21,7 +21,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: mailout.php,v 1.36 2010-01-11 21:08:38 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 /*

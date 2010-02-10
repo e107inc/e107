@@ -9,9 +9,9 @@
  * Forum upgrade routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

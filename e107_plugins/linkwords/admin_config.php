@@ -9,9 +9,9 @@
  * Linkwords plugin - admin page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
- * $Revision: 1.14 $
- * $Date: 2010-01-23 10:31:36 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: admin_config.php,v 1.14 2010-01-23 10:31:36 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Administration page
  */

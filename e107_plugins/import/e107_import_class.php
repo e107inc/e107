@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/import/e107_import_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:46 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 // This must be an incredibly pointless file! But it does allow testing of the basic plugin structure.

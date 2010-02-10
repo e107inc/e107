@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_conf.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-19 09:46:14 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once('../../class2.php');

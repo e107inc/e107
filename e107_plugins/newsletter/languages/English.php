@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/languages/English.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-19 20:24:21 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

@@ -9,9 +9,9 @@
  * Admin Footer
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
- * $Revision: 1.18 $
- * $Date: 2010-01-12 07:38:29 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 if (!defined('e107_INIT'))
 {

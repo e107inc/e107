@@ -1,6 +1,6 @@
 /*
  * e107 website system Copyright (C) 2008-2009 e107 Inc (e107.org)
- * $Id: pdf.sc,v 1.4 2009-11-18 01:05:53 e107coders Exp $
+ * $Id$
 */
 
 if (!plugInstalled('pdf')) 

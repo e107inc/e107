@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cron_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-12-24 09:59:21 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -82,7 +82,7 @@ class _system_cron
 
 
 
- /* $Id: cron_class.php,v 1.6 2009-12-24 09:59:21 e107coders Exp $ */
+ /* $Id$ */
 
 /**####################################################################################################**\
    Version: V1.01

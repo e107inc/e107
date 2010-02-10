@@ -9,9 +9,9 @@
  * Admin Language File
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-18 01:05:12 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 //define("ADMSLAN_0", "New user/admin entry created for"); - no references found
 //define("ADMSLAN_1", "now has admin status."); - no references found

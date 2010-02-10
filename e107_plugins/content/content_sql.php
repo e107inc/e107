@@ -9,16 +9,16 @@
  *	Database structure for content management plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/content/content_sql.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-12-28 22:40:38 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
 /**
  *	@package    e107_plugins
  *	@subpackage	content_management
- *	@version 	$Id: content_sql.php,v 1.4 2009-12-28 22:40:38 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Database structure for content management plugin
  */

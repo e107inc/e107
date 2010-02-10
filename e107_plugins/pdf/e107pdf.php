@@ -9,9 +9,9 @@
  * Plugin - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-06 10:45:50 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 if (!defined('e107_INIT')) { exit; }
 

@@ -1,5 +1,5 @@
 <?php
-// $Id: fpw_template.php,v 1.2 2007-12-06 21:35:55 e107steved Exp $
+// $Id$
 
 
 if (!defined('e107_INIT')) { exit; }

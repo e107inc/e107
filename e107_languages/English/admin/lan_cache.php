@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_cache.php,v 1.3 2008-12-11 18:13:10 secretr Exp $
+ * $Id$
  *
  * Admin Language File
  *

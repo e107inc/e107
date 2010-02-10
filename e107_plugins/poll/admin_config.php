@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-19 16:03:16 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once("../../class2.php");

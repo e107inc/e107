@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.22 $
- * $Date: 2010-01-31 22:21:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: user_handler.php,v 1.22 2010-01-31 22:21:11 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	USER HANDLER CLASS - manages login and various user functions
  *

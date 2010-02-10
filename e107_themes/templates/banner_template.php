@@ -1,5 +1,5 @@
 <?php
-// $Id: banner_template.php,v 1.3 2008-05-03 19:39:59 e107steved Exp $
+// $Id$
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }

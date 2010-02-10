@@ -1,5 +1,5 @@
 
-// $Id: imageselector.sc,v 1.12 2010-02-05 10:52:28 secretr Exp $
+// $Id$
 //FIXME - full rewrite, backward compatible
 global $sql,$parm,$tp;
 
