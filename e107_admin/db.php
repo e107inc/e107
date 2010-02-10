@@ -772,7 +772,7 @@ class system_tools
 
 		$scList = '';
 
-		$fList = $f->get_files(e_SYSTEM.'override/shortcodes', '\.sc$');
+		$fList = $f->get_files(e_CORE.'override/shortcodes', '\.sc$');
 		if(count($fList))
 		{
 			$tmp = array();
