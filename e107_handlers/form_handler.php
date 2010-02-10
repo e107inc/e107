@@ -8,9 +8,9 @@
  *
  * Form Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
+ * $Source: /cvsroot/e107/e107_0.8/e107_handlers/form_handler.php,v $
  * $Revision: 1.117 $
- * $Date: 2010-02-02 13:24:09 $
+ * $Date: 2010/02/02 13:24:09 $
  * $Author: secretr $
  *
 */
@@ -469,24 +469,23 @@ class e_form
 	 * @param boolean $defaultBlank [optional] set to TRUE if the first entry should be blank
 	 * @return string HTML text for display
 	 */
-	function selectbox($name, $option_array, $selected = false, $options = array(),$defaultBlank= false)
+	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
 	{
 		if(!is_array($options)) parse_str($options, $options);
 
 		if($option_array == 'yesno')
 		{
-			$option_array = array(1=>LAN_YES,0=>LAN_NO);
+			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
 		$text = $this->select_open($name, $options)."\n";
 
 		if(vartrue($options['default']))
 		{
-			$text .= $this->option($options['default'],'');
+			$text .= $this->option($options['default'], '');
 		}
-
-		if(vartrue($defaultBlank))
+		elseif($defaultBlank)
 		{
-			$text .= $this->option('&nbsp;','');
+			$text .= $this->option('&nbsp;', '');
 		}
 
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
@@ -964,7 +963,7 @@ class e_form
 				}
 
 				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
-	            $text .= vartrue($val['title'], '');
+	            $text .= defset($val['title'], $val['title']);
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray, $columnPref) : "";
 				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : "";
@@ -1134,8 +1133,8 @@ class e_form
 			case 'number':
 				if($parms)
 				{
-					if(!isset($parms['sep'])) $value = number_format($number, $parms['decimals']);
-					else $value = number_format($number, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
+					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
+					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
@@ -1166,7 +1165,7 @@ class e_form
 			break;
 
 			case 'dropdown':
-				if(vartrue($parms) && is_array($parms))
+				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 				}
@@ -1484,7 +1483,7 @@ class e_form
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions);
 				unset($parms['__options']);
-				return $this->selectbox($key, $parms, $value, $eloptions);
+				return vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			case 'userclass':
