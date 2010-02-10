@@ -80,14 +80,14 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
         $BBCODE_TEMPLATE = $temp[$mode];
 	}
 
-    if(is_readable(e_FILE."shortcode/batch/bbcode_shortcodes.php"))
+    if(is_readable(e_CORE."shortcodes/batch/bbcode_shortcodes.php"))
 	{
-  		require_once(e_FILE."shortcode/batch/bbcode_shortcodes.php");
+  		require_once(e_CORE."shortcodes/batch/bbcode_shortcodes.php");
   		return $tp->parseTemplate($BBCODE_TEMPLATE);
 	}
 	else
 	{
-    	return "ERROR: ".e_FILE."shortcode/batch/bbcode_shortcodes.php IS NOT READABLE.";
+    	return "ERROR: ".e_CORE."shortcodes/batch/bbcode_shortcodes.php IS NOT READABLE.";
 	}
 
 }
@@ -230,7 +230,7 @@ function PreImage_Select($formid) {
 
 
 // Parameter '$bbcode_filedir' removed - not used in code.
-function PreFile_Select($formid='prefile_selector') 
+function PreFile_Select($formid='prefile_selector')
 {
 	require_once(e_HANDLER."userclass_class.php");
 	global $IMAGES_DIRECTORY, $fl;

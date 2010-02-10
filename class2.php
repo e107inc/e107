@@ -93,7 +93,7 @@ if($register_globals == true)
 // MOVED TO $e107->prepare_request()
 // TODO - better ajax detection method (headers when possible)
 //define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-//unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
+//unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
 //
 //if(isset($_E107['minimal']) || e_AJAX_REQUEST)
 //{
@@ -331,7 +331,7 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 // J: MYSQL INITIALIZATION
 //
 e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
-//$eTraffic->Calibrate($eTraffic); 
+//$eTraffic->Calibrate($eTraffic);
 
 e107_require_once(e_HANDLER.'mysql_class.php');
 
@@ -437,7 +437,7 @@ $pref = e107::getPref();
 
 //this could be part of e107->init() method now, prefs will be auto-initialized
 //when proper called (e107::getPref())
-// $e107->set_base_path(); moved to init(). 
+// $e107->set_base_path(); moved to init().
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
@@ -736,8 +736,8 @@ if(isset($pref['notify']) && $pref['notify'] == true)
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
 
-//DEPRECATED but necessary. BC Fix. 
-function getip() 
+//DEPRECATED but necessary. BC Fix.
+function getip()
 {
 	return e107::ipDecode(USERIP);
 }
@@ -1019,14 +1019,14 @@ define('TIMEOFFSET', $e_deltaTime);
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
 if(e_ADMIN_AREA) // Load admin phrases ASAP
-{	
+{
 	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
 
 
 if(!defined('THEME'))
 {
-	
+
 	if (e_ADMIN_AREA && varsettrue($pref['admintheme']))
 	{
 		//We have now e_IFRAME mod and USER_AREA force
@@ -1315,8 +1315,8 @@ function getperms($arg, $ap = ADMINPERMS)
 	{
 		return false;
 	}
-	
-	if ($ap === '0' || $ap === '0.') // BC fix. 
+
+	if ($ap === '0' || $ap === '0.') // BC fix.
 	{
 		return true;
 	}
@@ -1324,14 +1324,14 @@ function getperms($arg, $ap = ADMINPERMS)
 	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
 	{
 		$sql = e107::getDb('psql');
-		
+
 		if ($sql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
 			$row = $sql->db_Fetch();
-			$arg = 'P'.$row['plugin_id'];			
+			$arg = 'P'.$row['plugin_id'];
 		}
 	}
-	
+
 	$ap_array = explode('.',$ap);
 
 	if(in_array($arg,$ap_array))
@@ -1574,17 +1574,17 @@ function init_session()
 	# - return boolean
 	# - scope public
 	*/
-	
-	
+
+
 	global $pref, $user_pref, $currentUser, $e107, $_E107;
-	
+
 	$sql = e107::getDb();
 	$tp = e107::getParser();
 	$eArrayStorage = e107::getArrayStorage();
-	
+
 
 	define('USERIP', $e107->getip());
-	
+
     if(varset($_E107['cli']))
 	{
 		define('USER', true);
@@ -1596,7 +1596,7 @@ function init_session()
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
 		define('USERCLASS_LIST', '');
-		define('USERCLASS', '');		
+		define('USERCLASS', '');
 		return;
 	}
 
@@ -1624,7 +1624,7 @@ function init_session()
 		if (empty($uid) || empty($upw))
 		{
 			//$_SESSION[] = e_SELF."?".e_QUERY;
-			
+
 			cookie(e_COOKIE, '', (time() - 2592000));
 			$_SESSION[e_COOKIE] = "";
 			session_destroy();
@@ -1688,7 +1688,7 @@ function init_session()
 				define('ADMINEMAIL', $result['user_email']);
 				define('ADMINPWCHANGE', $result['user_pwchange']);
 				e107::getRedirect()->setPreviousUrl();
-				
+
 			}
 			else
 			{
@@ -2096,54 +2096,54 @@ function plugInstalled($plugname)
 
 /**
  * Magic class autoload.
- * We are raising plugin structure standard here - plugin auto-loading works ONLY if 
+ * We are raising plugin structure standard here - plugin auto-loading works ONLY if
  * classes live inside 'includes' folder.
- * Example: plugin_myplug_admin_ui -> 
+ * Example: plugin_myplug_admin_ui ->
  * <code>
  * <?php
  * // __autoload() will look in e_PLUGIN.'myplug/includes/admin/ui.php for this class
  * // e_admin_ui is core handler, so it'll be autoloaded as well
  * class plugin_myplug_admin_ui extends e_admin_ui
  * {
- * 
+ *
  * }
- * 
+ *
  * // __autoload() will look in e_PLUGIN.'myplug/shortcodes/my_shortcodes.php for this class
  * // e_admin_ui is core handler, so it'll be autoloaded as well
  * class plugin_myplug_my_shortcodes extends e_admin_ui
  * {
- * 
+ *
  * }
  * </code>
  * TODO - use spl_autoload[_*] for core autoloading some day (PHP5 > 5.1.2)
  * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
- * 
- * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to 
- * distinguish them from the core batches 
- * 
+ *
+ * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to
+ * distinguish them from the core batches
+ *
  * @param string $className
  * @return void
  */
-function __autoload($className) 
+function __autoload($className)
 {
 	//Security...
-    if (strpos($className, '/') !== false) 
+    if (strpos($className, '/') !== false)
 	{
         return;
     }
 	$tmp = explode('_', $className);
 	$filename = '';
-	
+
 	switch($tmp[0])
 	{
 		case 'plugin': // plugin handlers/shortcode batches
 			array_shift($tmp); // remove 'plugin'
 			$end = array_pop($tmp); // check for 'shortcodes' end phrase
-			
+
 			if (!isset($tmp[0]) || !$tmp[0]) return; // In case we get an empty class part
-			
-			// Currently only batches inside shortcodes/ folder are auto-detected, 
-			// read the todo for e_shortcode.php related problems 
+
+			// Currently only batches inside shortcodes/ folder are auto-detected,
+			// read the todo for e_shortcode.php related problems
 			if('shortcodes' == $end)
 			{
 				$filename = e_PLUGIN.$tmp[0].'/shortcodes/'; // plugname/shortcodes/
@@ -2155,35 +2155,35 @@ function __autoload($className)
 			{
 				$tmp[] = $end; // not a shortcode batch - append the end phrase again
 			}
-			
-			// Handler check 
-			$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name 
+
+			// Handler check
+			$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name
 			$filename = e_PLUGIN.implode('/', $tmp).'.php';
 			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
 		break;
-	
+
 		default: //core libraries, core shortcode batches
 			// core SC batch check
 			$end = array_pop($tmp);
-			if('shortcodes' == $end) 
+			if('shortcodes' == $end)
 			{
-				$filename = e_FILE.'shortcode/batch/'.$className.'.php'; // core shortcode batch
+				$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
 				break;
 			}
 
-			$filename = e107::getHandlerPath($className, true); 
+			$filename = e107::getHandlerPath($className, true);
 			//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
 		break;
 	}
-	
+
 	if($filename)
 	{
 		// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 		include($filename);
 	}
-} 
+}
 
-// register __autoload if possible to prevent its override by 
+// register __autoload if possible to prevent its override by
 // 3rd party spl_autoload_register calls
 if(function_exists('spl_autoload_register'))
 {

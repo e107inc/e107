@@ -32,13 +32,13 @@ define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
 
 
-if (!USER) 
+if (!USER)
 {	// Must be logged in to change settings
 	header('location:'.e_BASE.'index.php');
 	exit();
 }
 
-if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" ) 
+if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
 {
 	header('location:'.e_BASE.'usersettings.php');
 	exit();
@@ -56,8 +56,8 @@ $ue = new e107_user_extended;
 $userMethods = e107::getSession();
 
 require_once (e_HANDLER.'ren_help.php');
-include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template. 
-include_once (e_FILE.'shortcode/batch/usersettings_shortcodes.php');
+include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
+include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
 
 require_once (e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
@@ -284,7 +284,7 @@ if (isset($_POST['updatesettings']))
 				unset($changedUserData['user_loginname']);
 			}
 		}
-		else 
+		else
 		{	// Invalid data - from hooked in trigger event
 			$message = "<div style='text-align:center'>".$ret."</div>";
 			$caption = LAN_OK;
@@ -297,7 +297,7 @@ elseif (isset($_POST['SaveValidatedInfo']))
 	if (!$adminEdit && !empty($_POST['updated_data']) && !empty($_POST['currentpassword']) && !empty($_POST['updated_key']))
 	{	// Got some data confirmed with password entry
 		$new_data = base64_decode($_POST['updated_data']);
-		if (md5($new_data) != $_POST['updated_key']) 
+		if (md5($new_data) != $_POST['updated_key'])
 		{  // Should only happen if someone's fooling around
 			echo 'Mismatch on validation key<br />';
 			exit();
@@ -306,7 +306,7 @@ elseif (isset($_POST['SaveValidatedInfo']))
 		if (isset($_POST['updated_extended']))
 		{
 			$new_extended = base64_decode($_POST['updated_extended']);
-			if (md5($new_extended) != $_POST['extended_key']) 
+			if (md5($new_extended) != $_POST['extended_key'])
 			{  // Should only happen if someone's fooling around
 				echo 'Mismatch on validity key<br />';
 				exit();
@@ -369,7 +369,7 @@ if ($dataToSave)
 	}
 	else
 	{
-		if ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname')) 
+		if ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname'))
 			|| (isset($changedUserData['user_email']) && $userMethods->isPasswordRequired('user_email')))
 		{
 			if ($_uid)
@@ -691,7 +691,7 @@ $ns->tablerender(LAN_USET_39, $text);
 
 
 // If a field is required, returns a red asterisk
-function req($field) 
+function req($field)
 {
 	$ret = "";
 	if ($field == 2)
@@ -710,12 +710,12 @@ function delete_file($fname, $dir = 'avatars/')
 	global $sql;
 	$fname = trim($fname);
 	if (!$fname) return false;
-  
-	if (preg_match("#Binary (.*?)/#", $fname, $match)) 
+
+	if (preg_match("#Binary (.*?)/#", $fname, $match))
 	{
 		return $sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
 	}
-	elseif (file_exists(e_UPLOAD.$dir.$fname)) 
+	elseif (file_exists(e_UPLOAD.$dir.$fname))
 	{
 		unlink(e_UPLOAD.$dir.$fname);
 		return true;
@@ -724,7 +724,7 @@ function delete_file($fname, $dir = 'avatars/')
 }
 
 
-function headerjs() 
+function headerjs()
 {
 	global $cal;
 	$script = "<script type=\"text/javascript\">

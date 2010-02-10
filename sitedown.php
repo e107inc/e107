@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -28,7 +28,7 @@ header('Content-type: text/html; charset=utf-8');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-require_once(e_FILE.'shortcode/batch/sitedown_shortcodes.php');
+require_once(e_CORE.'shortcodes/batch/sitedown_shortcodes.php');
 
 if (!$SITEDOWN_TABLE)
 {

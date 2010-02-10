@@ -34,7 +34,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 }
 
 
-//TODO LANs throughout. 
+//TODO LANs throughout.
 
 // ---------------------- Start Panel --------------------------------
 
@@ -43,7 +43,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	{
 		$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
 	}
-		
+
 	$iconlist = array_merge($array_functions_assoc, getPluginLinks(E_16_PLUGMANAGER, "array"));
 
 	$text .= "
@@ -68,13 +68,13 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 				$text .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 			}
 		}
-		
+
 		$text .= "<div class='clear'>&nbsp;</div>
              </div>
          </div>
 		</div>";
-	
-	
+
+
 //  ------------------------------- e107 News --------------------------------
 	$text .= "
 	<div id='core-infopanel_news' class='f-left' style='width:49%'>
@@ -82,21 +82,21 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	<div class='main_caption bevel left'><b>e107 News</b></div>
 	<div class='left block-text'>";
 	// TODO Load with Ajax
-	
-	
+
+
 	/*
 	$xml = e107::getXml();
 	 $vars = $xml->loadXMLfile('http://www.e107.org/e107_plugins/rss_menu/rss.php?1.2', true, true);
 	 $text .= print_r($vars,TRUE);
 	*/
-	
+
 	$text .= "
     RSS News feed from e107.org goes here.
 	</div>
 	</div>
 	</div>
 	";
-	
+
 // ---------------------Latest Stuff ---------------------------
 $text .= "
 	<div id='core-infopanel_latest' class='f-left' style='width:49%' >
@@ -104,7 +104,7 @@ $text .= "
 	<table cellspacing='0' cellpadding='0'>
 	<tr>
 	<td style='padding:0px'>";
-	require_once (e_FILE."shortcode/batch/admin_shortcodes.php");
+	require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 	$text .= $tp->parseTemplate("{ADMIN_LATEST}");
 	$text .= "</td><td style='padding:0px'>";
 	$text .= $tp->parseTemplate("{ADMIN_STATUS}");
@@ -112,15 +112,15 @@ $text .= "
 	</div>
 	</div>
 	";
-	
+
 // ---------------------- Who's Online  ------------------------
-// TODO Could use a new _menu item instead. 
+// TODO Could use a new _menu item instead.
 $text .= "
 	<div id='core-infopanel_online' class='f-left' style='width:49%'>
 	<div style='border:1px solid silver;margin:10px'>
 	<div class='main_caption bevel left'><b>Who's Online</b></div>
 	<div class='left block-text'>
-  
+
 
 		<table cellpadding='0' cellspacing='0' class='adminlist'>
 		<colgroup span='3'>
@@ -153,7 +153,7 @@ $text .= "
 				";
 		}
 	}
-	
+
 	$text .= "</tbody></table></div>
 	</div>
 	</div>
@@ -201,7 +201,7 @@ function renderOnlineName($val)
 	{
 		return "Guest";
 	}
-	return $val;	
+	return $val;
 }
 
 function render_info_panel($caption, $text)
@@ -237,7 +237,7 @@ function render_infopanel_icons()
 	$frm = e107::getSingleton('e_form');
 	global $iconlist,$pluglist, $user_pref;
 	$text = "";
-	
+
 
 	foreach ($iconlist as $key=>$icon)
 	{
@@ -271,7 +271,7 @@ function render_infopanel_menu_options()
 	$text = "";
 	$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 	$settings = varset($user_pref['core-infopanel-menus'],array());
-	
+
 	if (e107::getDb()->db_Select_gen($menu_qry))
 	{
 		while ($row = e107::getDb()->db_Fetch())

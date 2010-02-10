@@ -154,7 +154,7 @@ if(SITECONTACTINFO && $CONTACT_INFO)
 
 if(isset($pref['sitecontacts']) && $pref['sitecontacts'] != 255)
 {
-	require_once(e_FILE."shortcode/batch/contact_shortcodes.php");
+	require_once(e_CORE."shortcodes/batch/contact_shortcodes.php");
 	$text = $tp->parseTemplate($CONTACT_FORM, TRUE, $contact_shortcodes);
 
 	if(trim($text) != "")
