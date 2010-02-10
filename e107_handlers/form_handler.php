@@ -8,7 +8,7 @@
  *
  * Form Handler
  *
- * $Source: /cvsroot/e107/e107_0.8/e107_handlers/form_handler.php,v $
+ * $URL$
  * $Revision$
  * $Date$
  * $Author$
