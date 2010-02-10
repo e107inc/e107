@@ -19,6 +19,7 @@
 */
 
 // Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login. 
+// test
 
 $_E107['cli'] = TRUE;
 $_E107['debug'] = FALSE;
