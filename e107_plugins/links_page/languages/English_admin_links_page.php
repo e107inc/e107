@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English_admin_links_page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-13 16:06:11 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

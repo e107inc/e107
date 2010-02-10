@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /*

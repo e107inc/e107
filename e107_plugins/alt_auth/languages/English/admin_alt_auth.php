@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/admin_alt_auth.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-11-18 01:05:22 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define('LAN_ALT_1', 'Primary authorisation type');

@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: English_admin_featurebox.php,v 1.6 2009-12-18 20:49:55 e107steved Exp $
+* $Id$
 *
 * Featurebox back-end laguage defines
 * TODO - cleanup constants not in use

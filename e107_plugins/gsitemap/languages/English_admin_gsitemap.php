@@ -9,9 +9,9 @@
  * Plugin language file - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/languages/English_admin_gsitemap.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 01:05:37 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 define("GSLAN_Name", "Sitemap");

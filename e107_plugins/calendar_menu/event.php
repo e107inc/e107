@@ -9,9 +9,9 @@
  * Calender plugin - event listing and event entry
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-12-28 21:49:23 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: event.php,v 1.18 2009-12-28 21:49:23 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 require_once('../../class2.php');

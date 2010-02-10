@@ -9,9 +9,9 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-24 16:32:01 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }

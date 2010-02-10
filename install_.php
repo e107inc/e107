@@ -9,16 +9,16 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.60 $
-* $Date: 2010-02-09 21:42:11 $
-* $Author: e107coders $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 
 /**
  *	@package    e107
  *	@subpackage	install
- *	@version 	$Id: install_.php,v 1.60 2010-02-09 21:42:11 e107coders Exp $;
+ *	@version 	$Id$;
  *
  *	Installer base routine
  */

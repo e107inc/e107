@@ -9,9 +9,9 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  */
 require_once ("../class2.php");

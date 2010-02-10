@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: main.php,v 1.1 2009-09-25 20:13:12 secretr Exp $
+ * $Id$
  *
  * eURL configuration script
 */

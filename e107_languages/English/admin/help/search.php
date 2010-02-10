@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: search.php,v 1.2 2008-12-21 11:39:34 secretr Exp $
+ * $Id$
  *
  * Search Admin Help
  * 

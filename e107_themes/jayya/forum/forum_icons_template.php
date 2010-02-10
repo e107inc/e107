@@ -9,9 +9,9 @@
  * Forum icons template - jayya
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/forum/forum_icons_template.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:06:02 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if ( ! defined('e107_INIT')) { exit(); }

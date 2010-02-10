@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English_admin_poll.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("POLL_ADLAN01", "Poll");

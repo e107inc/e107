@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2010-02-09 20:51:28 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
- * $Revision: 1.11 $
- * $Date: 2010-01-16 20:49:53 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: e_tohtml.php,v 1.11 2010-01-16 20:49:53 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	'Hook' page
  *	The class is 'hooked' by the parser, to add linkword capability to any context where its enabled.

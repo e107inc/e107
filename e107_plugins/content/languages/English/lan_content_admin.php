@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-11-17 15:29:55 $
-|     $Author: marj_nl_fr $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

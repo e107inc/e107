@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-17 18:48:02 $
-|     $Author: mcfly_e107 $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("FORCONF_5", "Poll deleted.");

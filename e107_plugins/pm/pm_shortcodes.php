@@ -9,9 +9,9 @@
  *	PM plugin - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-12-17 22:47:20 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_shortcodes.php,v 1.17 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 

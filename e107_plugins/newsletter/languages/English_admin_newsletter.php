@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/languages/English_admin_newsletter.php,v $
- * $Revision: 1.2 $
- * $Date: 2010-01-10 03:56:28 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

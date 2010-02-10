@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_admin_log.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("ADSTAT_ON", "On");

@@ -9,9 +9,9 @@
  * 
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/languages/English_banner.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
  
 define("PAGE_NAME", "Banner");

@@ -9,9 +9,9 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-11-18 01:05:12 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 define("USRLAN_1", "Options Saved.");

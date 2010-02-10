@@ -9,9 +9,9 @@
  * List Admin Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_admin_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2010-01-10 12:19:39 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 if (!defined('e107_INIT')) { exit; }

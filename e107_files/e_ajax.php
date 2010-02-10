@@ -9,9 +9,9 @@
 * Call Shortcodes via AJAX request
 *
 * $Source: /cvs_backup/e107_0.8/e107_files/e_ajax.php,v $
-* $Revision: 1.9 $
-* $Date: 2009-12-10 22:46:45 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 $_E107['minimal'] = TRUE;

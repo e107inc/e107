@@ -1,5 +1,5 @@
 <?php
-/* $Id: plugin.php,v 1.3 2009-12-18 20:49:54 e107steved Exp $ */
+/* $Id$ */
 
 function plugin_shortcode($parm = '')
 {

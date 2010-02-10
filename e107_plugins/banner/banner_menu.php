@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner_menu.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-28 21:36:13 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -21,7 +21,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	banner
- *	@version 	$Id: banner_menu.php,v 1.6 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2010-01-11 21:32:10 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -16,7 +16,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: lan_upload.php,v 1.5 2010-01-11 21:32:10 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 

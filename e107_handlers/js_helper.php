@@ -9,9 +9,9 @@
  * Javascript Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

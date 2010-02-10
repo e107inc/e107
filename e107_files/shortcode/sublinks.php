@@ -1,6 +1,6 @@
 <?php
 
-// $Id: sublinks.php,v 1.1 2009-08-07 14:09:54 e107coders Exp $
+// $Id$
 
 function sublinks_shortcode($parm)
 {

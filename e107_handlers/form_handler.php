@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvsroot/e107/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.117 $
- * $Date: 2010/02/02 13:24:09 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

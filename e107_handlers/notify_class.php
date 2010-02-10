@@ -9,16 +9,16 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.11 $
-* $Date: 2009-12-28 22:16:54 $
-* $Author: e107steved $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 
 /**
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: notify_class.php,v 1.11 2009-12-28 22:16:54 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Handler for 'notify' events - sends email notifications to the appropriate user groups
  */

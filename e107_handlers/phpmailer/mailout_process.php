@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-27 11:25:18 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 |
 | Modifications in hand to work with most recent mailout.php
 

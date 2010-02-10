@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.16 $
- * $Date: 2010-01-10 03:56:28 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

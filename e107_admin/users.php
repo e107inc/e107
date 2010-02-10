@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.72 $
-* $Date: 2010-02-07 18:32:35 $
-* $Author: e107steved $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 require_once ('../class2.php');

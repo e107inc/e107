@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/languages/English.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 //lastseen

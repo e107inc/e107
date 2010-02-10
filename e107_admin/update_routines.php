@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2010-02-09 21:42:11 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
 /**
  *	@package    e107
  *	@subpackage	admin
- *	@version 	$Id: update_routines.php,v 1.78 2010-02-09 21:42:11 e107coders Exp $;
+ *	@version 	$Id$;
  *
  *	Update routines from older e107 versions to current.
  *

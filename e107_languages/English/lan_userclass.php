@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_userclass.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-11-01 17:19:27 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("UC_LAN_0", "Everyone (public)");

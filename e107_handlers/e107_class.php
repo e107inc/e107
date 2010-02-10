@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.103 $
- * $Date: 2010-02-09 20:43:52 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -21,8 +21,8 @@ if (!defined('e107_INIT')) { exit; }
  *
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision: 1.103 $
- * @author      $Author: e107coders $
+ * @version     $Revision$
+ * @author      $Author$
  *
  *	e107_class - core class with many system-related methods
  */

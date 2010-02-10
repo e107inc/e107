@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/log/e_meta.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:47 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 if (!defined('e107_INIT')) { exit; }

@@ -9,9 +9,9 @@
  * Database utilities - create arrays from SQL definition
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/utilities/dbgen.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-12 16:57:49 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 

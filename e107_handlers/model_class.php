@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.51 $
- * $Date: 2010-02-08 14:52:34 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }

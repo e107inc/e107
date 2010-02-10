@@ -9,9 +9,9 @@
  * Plugin - PDF generator - TCPDF script (see below)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/tcpdf.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-06 00:20:15 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 

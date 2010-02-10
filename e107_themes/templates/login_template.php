@@ -1,5 +1,5 @@
 <?php
-// $Id: login_template.php,v 1.8 2009-12-09 20:54:23 e107steved Exp $
+// $Id$
 
 if (!defined('e107_INIT')) { exit; }
 

@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-12 16:36:42 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 // Protect the file from direct access

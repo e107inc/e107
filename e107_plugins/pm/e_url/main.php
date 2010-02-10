@@ -1,5 +1,5 @@
 <?php
-// $Id: main.php,v 1.1 2008-12-02 00:33:29 secretr Exp $
+// $Id$
 function url_pm_main($parms)
 {
 	switch($parms['f'])

@@ -9,9 +9,9 @@
 * Featurebox administration
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-* $Revision: 1.16 $
-* $Date: 2010-01-12 16:09:56 $
-* $Author: e107coders $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 require_once("../../class2.php");

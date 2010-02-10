@@ -8,9 +8,9 @@
  * Featurebox Javascript Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox.js,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-10 22:46:45 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

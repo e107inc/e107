@@ -9,9 +9,9 @@
  *	Private messenger plugin - utility functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-17 22:47:20 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_func.php,v 1.8 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

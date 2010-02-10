@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 // Mods to show extended field categories

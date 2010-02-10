@@ -9,9 +9,9 @@
  *	Private messenger plugin - default preferences (used if no stored values)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_default.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-06 20:09:58 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -22,7 +22,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_default.php,v 1.5 2010-01-06 20:09:58 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

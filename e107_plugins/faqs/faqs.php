@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision: 1.8 $
- * $Date: 2010-02-09 01:33:41 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once ("../../class2.php");

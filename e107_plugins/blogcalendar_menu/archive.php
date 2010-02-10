@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/archive.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 /*
 | Based on code by: Thomas Bouve (crahan@gmx.net)

@@ -9,9 +9,9 @@
  * Sitelinks configuration module - News
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/news/e_sitelink.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-17 16:00:56 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

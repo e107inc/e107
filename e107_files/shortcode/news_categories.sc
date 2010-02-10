@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: news_categories.sc,v 1.7 2009-10-07 15:15:36 secretr Exp $
+ * $Id$
  *
  * News Categories shortcode
 */

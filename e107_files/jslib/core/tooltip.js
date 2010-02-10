@@ -9,9 +9,9 @@
  * Create static/ajax tooltips (unobtrusive Javascript)
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/tooltip.js,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 01:49:18 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  * 
 */
 

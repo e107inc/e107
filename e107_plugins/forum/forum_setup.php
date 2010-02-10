@@ -9,9 +9,9 @@
 * Custom forum install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_setup.php,v $
-* $Revision: 1.4 $
-* $Date: 2009-11-18 01:49:18 $
-* $Author: marj_nl_fr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

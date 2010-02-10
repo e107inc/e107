@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cli_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-10-24 12:01:24 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

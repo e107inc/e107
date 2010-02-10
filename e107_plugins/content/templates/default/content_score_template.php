@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/default/content_score_template.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 global $sc_style, $content_shortcodes;

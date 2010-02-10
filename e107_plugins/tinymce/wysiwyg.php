@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-11-10 01:21:05 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

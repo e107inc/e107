@@ -9,9 +9,9 @@
  * Tagwords Admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/admin_tagwords_config.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

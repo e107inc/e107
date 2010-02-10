@@ -17,9 +17,9 @@
 | GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-12-28 21:36:13 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +---------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	clock
- *	@version 	$Id: clock_menu.php,v 1.3 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 //FIXME looks pretty much to be 0.6 compatible

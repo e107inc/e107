@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
- * $Revision: 1.17 $
- * $Date: 2010-01-10 13:18:08 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

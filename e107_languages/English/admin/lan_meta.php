@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_meta.php,v 1.2 2008-12-15 13:42:25 secretr Exp $
+ * $Id$
  *
  * Admin Language File
  *

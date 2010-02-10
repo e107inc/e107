@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links_page_sql.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-05 21:05:29 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 header("location:../index.php");

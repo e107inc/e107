@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-12-28 21:36:13 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	login
- *	@version 	$Id: login_menu_shortcodes.php,v 1.11 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	@todo Convert to new format
  */

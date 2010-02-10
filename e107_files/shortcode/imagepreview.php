@@ -1,5 +1,5 @@
 <?php 
-// $Id: imagepreview.php,v 1.1 2010-02-05 10:52:27 secretr Exp $
+// $Id$
 
 function imagepreview_shortcode($parm)
 {

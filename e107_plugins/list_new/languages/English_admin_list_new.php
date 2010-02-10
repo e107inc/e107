@@ -9,9 +9,9 @@
  * List Language Admin
  *
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English_admin_list_new.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2010-01-10 12:19:48 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
  *
 */
 

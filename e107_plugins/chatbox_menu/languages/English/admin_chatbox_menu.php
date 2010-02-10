@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/languages/English/admin_chatbox_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |     Encoding:
 +----------------------------------------------------------------------------+
 */

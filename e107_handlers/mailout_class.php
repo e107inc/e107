@@ -9,9 +9,9 @@
  * Mailout handling - selector for 'core' users
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2010-01-11 21:09:28 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_class.php,v 1.10 2010-01-11 21:09:28 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	@todo	last visit date needs XHTML calendar on display, and needs to accept varying input formats
  */

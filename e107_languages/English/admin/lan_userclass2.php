@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-01 17:19:27 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("UCSLAN_1", "Cleared all users from class.");

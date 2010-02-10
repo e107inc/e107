@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: iconpicker.php,v 1.4 2009-07-17 02:28:49 e107coders Exp $
+ * $Id$
  *
  * Image picker shortcode
  *

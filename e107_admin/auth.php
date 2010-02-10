@@ -9,9 +9,9 @@
  * Administration Area Authorization
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-22 14:10:04 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT'))

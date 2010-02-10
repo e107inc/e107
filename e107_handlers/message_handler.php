@@ -9,9 +9,9 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-12-21 22:31:02 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

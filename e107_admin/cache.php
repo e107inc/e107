@@ -9,9 +9,9 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.13 $
- * $Date: 2010-01-04 21:35:37 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 require_once("../class2.php");

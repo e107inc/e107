@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-19 23:04:42 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

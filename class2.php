@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.176 $
-* $Date: 2010-02-03 11:08:36 $
-* $Author: secretr $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 //

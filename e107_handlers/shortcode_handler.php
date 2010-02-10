@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.42 $
- * $Date: 2010-02-03 11:08:36 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }

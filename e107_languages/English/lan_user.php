@@ -9,9 +9,9 @@
  * Language file - user-related (many generic definitions)
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 /*

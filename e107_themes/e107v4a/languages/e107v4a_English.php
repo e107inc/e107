@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/languages/e107v4a_English.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:06:02 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("LAN_THEME_1", "Read/Post Comment: ");

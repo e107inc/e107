@@ -9,14 +9,14 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.27 $
- * $Date: 2010-01-06 20:12:09 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 /**
  *	@package    e107
  *	@subpackage	user
- *	@version 	$Id: news.php,v 1.27 2010-01-06 20:12:09 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	News front page display
  */

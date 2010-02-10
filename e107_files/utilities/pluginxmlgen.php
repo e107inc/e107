@@ -4,9 +4,9 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.10 $
-|	$Date: 2008-12-13 10:30:18 $
-|	$Author: e107steved $
+|	$Revision$
+|	$Date$
+|	$Author$
 +----------------------------------------------------------------------------+
 */
 

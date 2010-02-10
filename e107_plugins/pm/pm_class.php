@@ -9,9 +9,9 @@
  *	PM plugin - base class API
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2010-01-06 20:09:58 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_class.php,v 1.14 2010-01-06 20:09:58 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

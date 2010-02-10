@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: sendpm.sc,v 1.4 2009-12-17 22:47:20 e107steved Exp $
+ * $Id$
  *
  * PM icon shortcode
 */
@@ -10,7 +10,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: sendpm.sc,v 1.4 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');

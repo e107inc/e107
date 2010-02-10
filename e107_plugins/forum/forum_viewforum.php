@@ -9,9 +9,9 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.19 $
-* $Date: 2010-02-01 03:41:58 $
-* $Author: mcfly_e107 $
+* $Revision$
+* $Date$
+* $Author$
 *
 */
 

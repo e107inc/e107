@@ -1,14 +1,14 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.33 2009-12-30 21:04:11 e107steved Exp $
+* $Id$
 *
 * News shortcode batch
 */
 /**
  *	@package    e107
  *	@subpackage	shortcodes
- *	@version 	$Id: news_shortcodes.php,v 1.33 2009-12-30 21:04:11 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Shortcodes for news item display
  */

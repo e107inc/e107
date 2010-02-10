@@ -9,9 +9,9 @@
  * List Page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list.php,v $
- * $Revision: 1.6 $
- * $Date: 2010-01-10 12:19:39 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

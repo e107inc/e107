@@ -9,9 +9,9 @@
  * Traffic handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/traffic_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT'))

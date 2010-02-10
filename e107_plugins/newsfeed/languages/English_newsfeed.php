@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/languages/English_newsfeed.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 define("NFLAN_29", "Available newsfeeds");

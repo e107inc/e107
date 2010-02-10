@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/extended_password_handler.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /*

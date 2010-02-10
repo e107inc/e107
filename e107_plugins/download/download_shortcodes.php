@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
- * $Revision: 1.11 $
- * $Date: 2010-01-02 22:10:27 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

@@ -1,6 +1,6 @@
 <?php
 
-// $Id: wmessage.php,v 1.4 2009-11-19 10:07:30 e107coders Exp $
+// $Id$
 
 function wmessage_shortcode($parm)
 {

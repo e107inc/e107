@@ -9,9 +9,9 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.69 $
- * $Date: 2010-01-10 16:24:09 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if(!defined('e107_INIT'))

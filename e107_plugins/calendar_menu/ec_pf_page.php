@@ -9,9 +9,9 @@
  *	Event calendar - generate lists
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-20 22:47:32 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: ec_pf_page.php,v 1.10 2009-12-20 22:47:32 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 /*

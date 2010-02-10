@@ -9,9 +9,9 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-12-19 17:54:00 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: frontpage.php,v 1.16 2009-12-19 17:54:00 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 require_once ('../class2.php');

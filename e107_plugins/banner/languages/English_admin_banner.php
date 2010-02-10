@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: English_admin_banner.php,v 1.2 2009-12-08 17:21:36 secretr Exp $
+ * $Id$
  *
  * Administration Language File
  *

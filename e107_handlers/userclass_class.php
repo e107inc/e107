@@ -9,16 +9,16 @@
  * User class functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
- * $Revision: 1.49 $
- * $Date: 2010-02-07 19:42:07 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: userclass_class.php,v 1.49 2010-02-07 19:42:07 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	This class handles all user-related user class functions.  Admin functions inherit from it.
  */

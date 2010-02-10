@@ -1,14 +1,14 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.38 2010-01-21 21:47:21 e107steved Exp $
+* $Id$
 *
 * Admin shortcode batch - class
 */
 /**
  *	@package    e107
  *	@subpackage	shortcodes
- *	@version 	$Id: admin_shortcodes_class.php,v 1.38 2010-01-21 21:47:21 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Shortcodes for admin items
  */

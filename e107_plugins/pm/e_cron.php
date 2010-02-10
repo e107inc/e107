@@ -9,9 +9,9 @@
  * Plugin configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/e_cron.php,v $
- * $Revision: 1.1 $
- * $Date: 2010-01-22 21:18:09 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: e_cron.php,v 1.1 2010-01-22 21:18:09 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

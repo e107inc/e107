@@ -1,4 +1,4 @@
-// $Id: img.bb,v 1.14 2009-11-19 13:46:18 e107coders Exp $
+// $Id$
 
 // General purpose image bbcode. As well as the obvious insertion of a picture:
 // 	a) if filname begins with 'th_' or 'thumb_', creates link to main image opening in new window

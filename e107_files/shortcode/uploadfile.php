@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: uploadfile.php,v 1.1 2010-01-16 14:07:20 secretr Exp $
+* $Id$
 *
 * Upload file shortcode
 */
@@ -9,7 +9,7 @@
 /**
  * @package e107
  * @subpackage shortcodes
- * @version $Revision: 1.1 $
+ * @version $Revision$
  * @todo uploadfile shortcode - JS/Flash upload, optional allow image resize (see news administration), optional move by filetype (processing) - similar to Media Manager
  *
  * Print out upload form elements and/or process submitted uploads.

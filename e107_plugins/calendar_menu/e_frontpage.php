@@ -9,9 +9,9 @@
  * Event calendar plugin - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_frontpage.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-12-28 17:53:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_frontpage.php,v 1.1 2009-12-28 17:53:11 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

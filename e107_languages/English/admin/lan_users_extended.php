@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-08-07 13:47:33 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");

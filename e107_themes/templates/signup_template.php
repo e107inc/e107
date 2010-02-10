@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-24 20:08:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }

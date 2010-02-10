@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.21 $
- * $Date: 2010-02-09 13:34:23 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

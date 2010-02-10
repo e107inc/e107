@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-07-04 20:23:12 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");

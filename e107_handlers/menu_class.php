@@ -9,9 +9,9 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.18 $
- * $Date: 2010-01-12 12:23:02 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if(!defined('e107_INIT'))

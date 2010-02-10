@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.20 $
- |     $Date: 2009-12-25 23:32:18 $
- |     $Author: e107coders $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))

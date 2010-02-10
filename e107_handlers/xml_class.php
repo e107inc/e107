@@ -9,9 +9,9 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.39 $
- * $Date: 2010-02-07 00:44:08 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }

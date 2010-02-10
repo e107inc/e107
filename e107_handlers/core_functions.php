@@ -9,9 +9,9 @@
  * e107 Core functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/core_functions.php,v $
- * $Revision: 1.6 $
- * $Date: 2010-01-02 21:43:31 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 //

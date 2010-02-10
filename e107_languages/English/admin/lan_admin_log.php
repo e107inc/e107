@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.10 2009-11-30 20:40:03 e107steved Exp $
+// $Id$
 
 //define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");

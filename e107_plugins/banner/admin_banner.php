@@ -9,9 +9,9 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/admin_banner.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-28 21:36:13 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -22,7 +22,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	banner
- *	@version 	$Id: admin_banner.php,v 1.5 2009-12-28 21:36:13 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	@todo language file issues to resolve
  */

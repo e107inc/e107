@@ -9,9 +9,9 @@
  * Linkwords plugin - language file (only needed for admin)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/languages/English_admin_linkwords.php,v $
- * $Revision: 1.2 $
- * $Date: 2010-01-16 20:49:55 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	linkwords
- *	@version 	$Id: English_admin_linkwords.php,v 1.2 2010-01-16 20:49:55 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Language file
  */

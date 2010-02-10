@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/khatru/languages/English.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:06:08 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("LAN_THEME_1", "'khatru' by <a href='http://e107.org' rel='external'>jalist</a>");

@@ -9,9 +9,9 @@
  * Tagwords shim for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_tagwords.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-12-20 22:47:29 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 /**
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: e_tagwords.php,v 1.2 2009-12-20 22:47:29 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

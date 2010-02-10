@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2010-01-09 10:12:49 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | File locking added
 |

@@ -9,9 +9,9 @@
  * Forum plugin notify language file
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_notify.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 

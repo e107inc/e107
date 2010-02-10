@@ -9,9 +9,9 @@
  * Event calendar - messages for admin log titles
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_log.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('LAN_AL_EC_ADM_01', 'Event Calendar - add event');

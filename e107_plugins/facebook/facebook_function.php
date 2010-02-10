@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-22 14:10:08 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 if (!defined('e107_INIT'))

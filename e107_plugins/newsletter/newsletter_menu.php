@@ -9,9 +9,9 @@
  * Newsletter plugin - newsletter selection menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/newsletter_menu.php,v $
- * $Revision: 1.5 $
- * $Date: 2010-01-09 12:44:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	newsletter
- *	@version 	$Id: newsletter_menu.php,v 1.5 2010-01-09 12:44:11 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }

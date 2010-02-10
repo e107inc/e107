@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/admin_linkspage_config.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:46 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 require_once("../../class2.php");

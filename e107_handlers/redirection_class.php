@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.9 $
- |     $Date: 2009-12-13 21:52:32 $
- |     $Author: e107steved $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 

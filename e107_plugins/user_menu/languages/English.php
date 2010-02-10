@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/languages/English.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define('UTHEME_MENU_L1', 'Set');

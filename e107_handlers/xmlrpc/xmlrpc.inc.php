@@ -1,7 +1,7 @@
 <?php
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
-// $Id: xmlrpc.inc.php,v 1.1 2009-11-17 09:25:55 marj_nl_fr Exp $
+// $Id$
 
 // Copyright (c) 1999,2000,2002 Edd Dumbill.
 // All rights reserved.

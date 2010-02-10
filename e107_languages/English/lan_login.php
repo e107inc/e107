@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-11-05 08:07:53 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define('LAN_LOGIN_1', 'User name');

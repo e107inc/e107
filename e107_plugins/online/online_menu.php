@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_menu.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-28 17:53:11 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }

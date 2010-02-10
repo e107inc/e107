@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes.php,v 1.3 2009-07-12 10:11:35 e107coders Exp $
+* $Id$
 *
 * Admin shortcode batch - registration
 */

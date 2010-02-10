@@ -9,9 +9,9 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvsroot/e107/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.13 $
- * $Date: 2009/11/28 15:34:46 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
 */
 
 //require_once(e_HANDLER.'admin_handler.php'); - autoloaded - see class2.php __autoload()

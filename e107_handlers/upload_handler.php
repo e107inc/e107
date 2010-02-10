@@ -9,9 +9,9 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.30 $
- * $Date: 2010-02-09 15:24:53 $
- * $Author: secretr $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package    e107
  *	@subpackage	e107_handlers
- *	@version 	$Id: upload_handler.php,v 1.30 2010-02-09 15:24:53 secretr Exp $;
+ *	@version 	$Id$;
  *
  *	@todo - option to restrict by total size irrespective of number of uploads
  */

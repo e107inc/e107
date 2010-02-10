@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2010-01-15 21:10:23 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -21,7 +21,7 @@
 /**
  *	@package    e107
  *	@subpackage	user
- *	@version 	$Id: comment.php,v 1.15 2010-01-15 21:10:23 e107steved Exp $;
+ *	@version 	$Id$;
  *
  *	Display comments
  */

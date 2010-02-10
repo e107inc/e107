@@ -10,9 +10,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/sitelinks_template.php,v $
- |     $Revision: 1.1 $
- |     $Date: 2009-11-26 09:02:46 $
- |     $Author: e107coders $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
  

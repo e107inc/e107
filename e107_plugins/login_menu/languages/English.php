@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/languages/English.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 define("LOGIN_MENU_L1", "Username: ");

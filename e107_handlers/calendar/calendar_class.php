@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/calendar/calendar_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2010-01-12 17:58:54 $
- * $Author: e107coders $
+ * $Revision$
+ * $Date$
+ * $Author$
  * 
 */
 

@@ -4,9 +4,9 @@
  |     e107 website system
  |
  |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/sitelinks_alt.php,v $
- |     $Revision: 1.3 $
- |     $Date: 2009-11-23 10:27:35 $
- |     $Author: e107coders $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
  

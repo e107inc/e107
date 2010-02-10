@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.38 $
- * $Date: 2010-02-07 19:42:02 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  *
 */
 
@@ -21,7 +21,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: userclass2.php,v 1.38 2010-02-07 19:42:02 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 require_once('../class2.php');

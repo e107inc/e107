@@ -9,9 +9,9 @@
  *	File Upload facility - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
- * $Revision: 1.14 $
- * $Date: 2010-01-11 21:31:58 $
- * $Author: e107steved $
+ * $Revision$
+ * $Date$
+ * $Author$
  */
 
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107
  *	@subpackage	admin
- *	@version 	$Id: upload.php,v 1.14 2010-01-11 21:31:58 e107steved Exp $;
+ *	@version 	$Id$;
  */
 
 require_once('../class2.php');
