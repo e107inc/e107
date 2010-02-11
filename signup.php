@@ -152,13 +152,11 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		</tr>
 		<tr>
 			<td class='forumheader3' style='text-align:right;width:30%'>".LAN_SIGNUP_50."</td>
-			<td class='forumheader3'><input type='text' name='resend_newemail' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
+			<td class='forumheader3'><input type='text' name='resend_newemail' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' /></td>
 		</tr>
 		<tr>
 			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_51."</td>
-			<td class='forumheader3'><input type='text' name='resend_password' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' />
-
-		</td>
+			<td class='forumheader3'><input type='text' name='resend_password' class='tbox' size='50' style='max-width:80%' value='' maxlength='80' /></td>
 		</tr>
 
 		";
