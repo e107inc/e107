@@ -859,9 +859,10 @@ class e_form
 			if (!varset($fld['forced']) && !vartrue($fld['nolist']) && vartrue($fld['type'])!='upload')
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+				$ttl = isset($fld['title']) ? defset($fld['title'], $fld['title']) : $key;
 				$text .= "
 					<div class='field-spacer'>
-						".$this->checkbox_label(varset($fld['title'], $key), 'e-columns[]', $key, $checked)."
+						".$this->checkbox_label($ttl, 'e-columns[]', $key, $checked)."
 					</div>
 				";
 			}
