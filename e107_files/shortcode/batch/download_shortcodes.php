@@ -144,7 +144,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY
 global $tp,$dl;
-$text = $tp -> toHTML($dl['download_category_name'], FALSE,'TITLE');
+return $tp -> toHTML($dl['download_category_name'], FALSE,'TITLE');
 SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY_ICON
