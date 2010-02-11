@@ -393,13 +393,17 @@ ul,ol       { list-style:none; }
 
 /* Core Icons */
 img.icon		{ border: 0px }
-img.icon.list	{ margin: 0px 5px 5px 0px }
-img.icon.action { vertical-align: middle }
-img.S16		{ width: 16px; height: 16px }
-img.S32		{ width: 32px; height: 32px }
-img.S64		{ width: 64px; height: 64px }
+img.icon.list, 
+input.action	{ margin: 0px 3px }
+img.icon.action, 
+input.action 	{ vertical-align: middle }
+img.S16			{ width: 16px; height: 16px }
+img.S32			{ width: 32px; height: 32px }
+img.S64			{ width: 64px; height: 64px }
 img.S128		{ width: 128px; height: 128px }
-img.edit	{ margin-right: 5px }
+img.edit, 
+img.delete, 
+input.delete 	{ }
 /*******************************************************************************************************************/
 
 /******** Decorate JS */
