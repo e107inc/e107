@@ -1099,7 +1099,7 @@ class e_form
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
 
-					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
+					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
 
 					if(varset($parms['deleteClass']))
 					{
