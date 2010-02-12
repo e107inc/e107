@@ -1269,6 +1269,8 @@ class e_admin_model extends e_model
     	$posted = $this->getPostedData((string) $key, null, $index);
 		if(null !== $posted)
 		{
+			// FIXED - double post_toFom() and toDB(post_toForm()) problems
+			// setPosted|setPostedData|addPostedData methods are storing RAW data now
 			return e107::getParser()->post_toForm($posted);
 		}
 		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
@@ -1283,17 +1285,10 @@ class e_admin_model extends e_model
      * @param string $key
      * @param mixed $value
      * @param boolean $strict update only
-     * @param boolean $toForm use post_toForm() on both key and data arguments
      * @return e_admin_model
      */
-    public function setPosted($key, $value, $strict = false, $toForm = true)
+    public function setPosted($key, $value, $strict = false)
     {
-    	if($toForm)
-		{
-			$tp = e107::getParser();
-			$key = $tp->post_toForm($key);
-			$value = $tp->post_toForm($value);
-		}
         return $this->_setDataSimple($key, $value, $strict, '_posted_data');
     }
 
@@ -1306,17 +1301,10 @@ class e_admin_model extends e_model
      * @param string|array $key
      * @param mixed $value
      * @param boolean $strict update only
-     * @param boolean $toForm use post_toForm() on both key and data arguments
      * @return e_admin_model
      */
-    public function setPostedData($key, $value = null, $strict = false, $toForm = true)
+    public function setPostedData($key, $value = null, $strict = false)
     {
-    	if($toForm)
-		{
-			$tp = e107::getParser();
-			$key = $tp->post_toForm($key);
-			$value = $tp->post_toForm($value);
-		}
         return $this->_setData($key, $value, $strict, '_posted_data');
     }
 
@@ -1330,17 +1318,10 @@ class e_admin_model extends e_model
      * @param string|array $key
      * @param mixed $value
      * @param boolean $override override existing data
-     * @param boolean $toForm use post_toForm() on both key and data arguments
      * @return e_admin_model
      */
-    public function addPostedData($key, $value = null, $override = true, $toForm = true)
+    public function addPostedData($key, $value = null, $override = true)
     {
-    	if($toForm)
-		{
-			$tp = e107::getParser();
-			$key = $tp->post_toForm($key);
-			$value = $tp->post_toForm($value);
-		}
     	return $this->_addData($key, $value, $override, '_posted_data');
     }
 
@@ -1476,8 +1457,7 @@ class e_admin_model extends e_model
 			}
 			else //no db field types, use toDB()
 			{
-				$tp = e107::getParser();
-				$data = $tp->toDB($data);
+				$data = e107::getParser()->toDB($data);
 			}
 		}
 
