@@ -8,10 +8,8 @@
 *
 * Text processing and parsing functions
 *
-* $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 
@@ -490,38 +488,39 @@ class e_parse
 				//Fix - sanitize keys as well
 				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $original_author)] = $this->toDB($var, $nostrip, $no_encode, $mod, $original_author);
 			}
+			return $ret;
+		}
+
+		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
+		{
+			$data = stripslashes($data);
+		}
+		if (isset($pref['post_html']) && check_class($pref['post_html']))
+		{
+			$no_encode = TRUE;
+		}
+		if (is_numeric($original_author) && !check_class($pref['post_html'], '', $original_author))
+		{
+			$no_encode = FALSE;
+		}
+		if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
+		{
+			$search = array('$', '"', "'", '\\', '<?');
+			$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
+			$ret = str_replace($search, $replace, $data);
 		}
 		else
 		{
-			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
-			{
-				$data = stripslashes($data);
-			}
-			if (isset($pref['post_html']) && check_class($pref['post_html']))
-			{
-				$no_encode = TRUE;
-			}
-			if (is_numeric($original_author) && !check_class($pref['post_html'], '', $original_author))
-			{
-				$no_encode = FALSE;
-			}
-			if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
-			{
-				$search = array('$', '"', "'", '\\', '<?');
-				$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
-				$ret = str_replace($search, $replace, $data);
-			}
-			else
-			{
-				$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-				$data = str_replace('\\', '&#092;', $data);
-				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
-			}
-			if (strpos($mod, 'no_php') !== FALSE)
-			{
-				$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
-			}
+			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+			$data = str_replace('\\', '&#092;', $data);
+
+			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
+		if (strpos($mod, 'no_php') !== FALSE)
+		{
+			$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
+		}
+				
 		return $ret;
 	}
 
