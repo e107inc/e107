@@ -2525,39 +2525,42 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		
 		$model = new e_model($data);
-		$data = $model->getData();
 		foreach ($this->getFields() as $key => $attributes)
 		{
-			$value = vartrue($attributes['dataPath']) ? $model->getData($attributes['dataPath'])  : $model->get($data[$key]);
-					
+			$value = vartrue($attributes['dataPath']) ? $model->getData($attributes['dataPath'])  : $model->get($key);
+
 			if(null === $value)
 			{
-				//FIXME - value appears to always be NULL. 
-				// continue;
+				continue;
 			}
 			switch($attributes['type'])
 			{
 				case 'datestamp':
-					$value = $data[$key]; //FIXME temporary fix so that dates are converted
-										
 					if(!is_numeric($value))
 					{
 						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0;						
 					}
-
-					$data[$key] = $value; //FIXME temporary fix so that date is actually saved. 
 				break;
 
 				case 'ip': // TODO - ask Steve if this check is required
-					if(strpos($value, '.') !== FALSE)
+					//if(strpos($value, '.') !== FALSE)
 					{
 						$value = trim($value) ? e107::getInstance()->ipEncode($value) : '';
 					}
 				break;
 			}
+			if(vartrue($attributes['dataPath']))
+			{
+				$model->setData($attributes['dataPath'], $value);
+			}
+			else
+			{
+				$model->set($key, $value);
+			}
 			
 		}
-
+		
+		$data = $model->getData();
 		unset($model);
 		$this->toData($data);
 	}
