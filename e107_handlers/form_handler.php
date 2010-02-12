@@ -109,6 +109,7 @@ class e_form
 
 	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
+		// XXX - $name ?!
 		$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
 		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
@@ -1161,7 +1162,7 @@ class e_form
 					if(is_string($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				}
 				$attributes['writeParms']['raw'] = true;
-				$tmp = $this->renderElement($key, '', $attributes);
+				$tmp = $this->renderElement($field, '', $attributes);
 				$value = $pre.vartrue($tmp[$value]).$post;
 			break;
 
@@ -1247,7 +1248,7 @@ class e_form
 				{
 					$value[] = $this->_uc->uc_get_classname($cid);
 				}
-				$value = implode(vartrue($parms['separator']), $pieces);
+				$value = implode(vartrue($parms['separator']), $value);
 			break;
 
 			/*case 'user_name':
@@ -1814,6 +1815,7 @@ class e_form
 						$model_required[$key][] = varset($att['error']);
 					}
 				}
+
 				$text .= "
 					<tr>
 						<td class='label'>
