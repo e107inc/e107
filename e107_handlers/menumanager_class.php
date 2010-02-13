@@ -871,145 +871,170 @@ class e_menuManager {
 		  return $text;
 	}
 
-	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function parseheader($LAYOUT, $check = FALSE)
 	{
 		//  $tmp = explode("\n", $LAYOUT);
 		// Split up using the same function as the shortcode handler
-		  $tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-		  for ($c = 0; $c < count($tmp); $c++)
-		  {
-			if (preg_match("/[\{|\}]/", $tmp[$c]))
+		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$str = array();
+		for($c = 0; $c < count($tmp); $c++)
+		{
+			if(preg_match("/[\{|\}]/", $tmp[$c]))
 			{
-			  if ($check)
-			  {
-					if (strstr($tmp[$c], "{MENU="))
+				if($check)
+				{
+					if(strstr($tmp[$c], "{MENU="))
 					{
-					  $str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
+						$matches = array();
+						// Match all menu areas, menu number is limited to tinyint(3)
+						preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $tmp[$c], $matches);
+						$this->menuSetCode($matches, $str);
 					}
-			  }
-			  else
-			  {
-				$this->checklayout($tmp[$c],$this->curLayout);
-			  }
+				}
+				else
+				{
+					$this->checklayout($tmp[$c]);
+				}
 			}
 			else
 			{
-			  if (!$check)
-			  {
-				echo $tmp[$c];
-			  }
+				if(!$check)
+				{
+					echo $tmp[$c];
+				}
 			}
-		  }
-		  if ($check)
-		  {
+		}
+		if($check)
+		{
 			return $str;
-		  }
+		}
+	}
+	
+	function menuSetCode($matches, &$ret)
+	{
+		if(!$matches || !varsettrue($matches[1]))
+		{
+			return;
+		}
+	
+		foreach ($matches[1] as $match) 
+		{
+			$ret[] = $match;
+		}
 	}
 
 	function checklayout($str)
-	{	// Displays a basic representation of the theme
+	{ // Displays a basic representation of the theme
 		global $pref, $ns, $PLUGINS_DIRECTORY, $rs, $sc_style, $tp, $menu_order;
-
-	    $menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
-
-		if (strstr($str, "LOGO"))
+		
+		$menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
+		
+		if(strstr($str, "LOGO"))
 		{
-		  echo $tp -> parseTemplate("{LOGO}");
+			echo $tp->parseTemplate("{LOGO}");
 		}
 		else if(strstr($str, "SITENAME"))
 		{
-		  echo "<div style='padding: 2px'>[SiteName]</div>";
+			echo "<div style='padding: 2px'>[SiteName]</div>";
 		}
-		else if (strstr($str, "SITETAG"))
+		else if(strstr($str, "SITETAG"))
 		{
-		  echo "<div style='padding: 2px'>[SiteTag]</div>";
+			echo "<div style='padding: 2px'>[SiteTag]</div>";
 		}
-		else if (strstr($str, "SITELINKS"))
+		else if(strstr($str, "SITELINKS"))
 		{
-		  echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
+			echo "<div style='padding: 2px; text-align: center'>[SiteLinks]</div>";
 		}
-		else if (strstr($str, "LANGUAGELINKS"))
+		else if(strstr($str, "LANGUAGELINKS"))
 		{
-		  echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";
+			echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";
 		}
-		else if (strstr($str, "CUSTOM"))
+		else if(strstr($str, "CUSTOM"))
 		{
-		  $cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-		  echo "<div style='padding: 2px'>[".$cust."]</div>";
+			$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+			echo "<div style='padding: 2px'>[" . $cust . "]</div>";
 		}
 		// Display embedded Plugin information.
-		else if (strstr($str, "PLUGIN"))
+		else if(strstr($str, "PLUGIN"))
 		{
 			$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
 			$plug = trim($plug);
-			if (file_exists((e_PLUGIN."{$plug}/{$plug}_config.php")))
+			if(file_exists((e_PLUGIN . "{$plug}/{$plug}_config.php")))
 			{
-			  $link = e_PLUGIN."{$plug}/{$plug}_config.php";
+				$link = e_PLUGIN . "{$plug}/{$plug}_config.php";
 			}
-
-			if(file_exists((e_PLUGIN.$plug."/config.php")))
+			
+			if(file_exists((e_PLUGIN . $plug . "/config.php")))
 			{
-			  $link = e_PLUGIN.$plug."/config.php";
+				$link = e_PLUGIN . $plug . "/config.php";
 			}
-
-			$plugtext = ($link) ? "(".MENLAN_34.":<a href='$link' title='".LAN_CONFIGURE."'>".LAN_CONFIGURE."</a>)" : "(".MENLAN_34.")" ;
+			
+			$plugtext = ($link) ? "(" . MENLAN_34 . ":<a href='$link' title='" . LAN_CONFIGURE . "'>" . LAN_CONFIGURE . "</a>)" : "(" . MENLAN_34 . ")";
 			echo "<br />";
-			$ns -> tablerender($plug, $plugtext);
+			$ns->tablerender($plug, $plugtext);
 		}
-		else if (strstr($str, "MENU"))
+		else if(strstr($str, "MENU"))
 		{
-		  //	$ns = new e107table;
-			$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
-			if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false)
+			$matches = array();
+			if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches))
 			{
-			  echo $sc_style['MENU']['pre'];
-			}
-			echo "
-	        <div class='portal-column' id='portal-column-".$menu."'>
-
-			<div style='text-align:center; font-size:14px' class='fborder'>
-
-			<div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
-			$text = "&nbsp;";
-			$sql9 = new db;
-			if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '".$this->dbLayout."' "))
-			{
-				unset($text);
-				echo $rs->form_open("post", e_SELF."?configure=".$this->curLayout, "frm_menu_".intval($menu));
-
-	            $MODE = 1;
-
-				$sql9->db_Select("menus", "*", "menu_location='$menu' AND menu_layout='".$this->dbLayout."' ORDER BY menu_order");
-				$menu_count = $sql9->db_Rows();
-				while ($row = $sql9->db_Fetch(MYSQL_ASSOC))
+				foreach($matches[1] as $menu)
 				{
-	                    	echo "\n\n\n <!-- Menu Start -->\n\n
-					<div class='block' id='block-".$row['menu_id']."--".$this->dbLayout."'>
-
-					<div class='content'>";
-
-						 echo $this->menuRenderMenu($row,$menu_count);
-
-	                echo "\n</div></div>";
-					echo "\n\n\n<!-- Menu end -->\n\n\n";
-					echo "<div><br /></div>";
-
-
+					$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
+					if(isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false)
+					{
+						echo $sc_style['MENU']['pre'];
+					}
+					echo "
+			        <div class='portal-column' id='portal-column-" . $menu . "'>
+		
+					<div style='text-align:center; font-size:14px' class='fborder'>
+		
+					<div class='forumheader'><b>" . MENLAN_14 . "  " . $menu . "</b></div></div><br />";
+					$text = "&nbsp;";
+					$sql9 = new db();
+					if($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+					{
+						unset($text);
+						echo $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
+						
+						$MODE = 1;
+						
+						$sql9->db_Select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
+						$menu_count = $sql9->db_Rows();
+						while($row = $sql9->db_Fetch(MYSQL_ASSOC))
+						{
+							echo "\n\n\n <!-- Menu Start -->\n\n
+							<div class='block' id='block-" . $row['menu_id'] . "--" . $this->dbLayout . "'>
+		
+							<div class='content'>";
+							
+							echo $this->menuRenderMenu($row, $menu_count);
+							
+							echo "\n</div></div>";
+							echo "\n\n\n<!-- Menu end -->\n\n\n";
+							echo "<div><br /></div>";
+						
+						}
+						
+						echo $rs->form_close();
+					}
+					echo "</div>";
+					if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false)
+					{
+						echo $sc_style['MENU']['post'];
+					}
 				}
-
-				echo $rs->form_close();
-			}
-			echo "</div>";
-			if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false) {
-				echo $sc_style['MENU']['post'];
 			}
 		}
-		else if (strstr($str, "SETSTYLE")) {
+		else if(strstr($str, "SETSTYLE"))
+		{
 			$tmp = explode("=", $str);
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
 		}
-		else if (strstr($str, "SITEDISCLAIMER")) {
+		else if(strstr($str, "SITEDISCLAIMER"))
+		{
 			echo "[Sitedisclaimer]";
 		}
 	}
