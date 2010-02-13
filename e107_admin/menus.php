@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -413,24 +413,52 @@ else
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parseheader($LAYOUT, $check = FALSE) {
-	$tmp = explode("\n", $LAYOUT);
-	for ($c = 0; $c < count($tmp); $c++) {
-		if (preg_match("/[\{|\}]/", $tmp[$c])) {
+	$tmp = explode("\n", $LAYOUT); 
+	$str = array();
+
+	for ($c = 0, $cnt = count($tmp); $c < $cnt; $c++) 
+	{
+		if (preg_match("/[\{|\}]/", $tmp[$c])) 
+		{
 			if ($check) {
-				if (strstr($tmp[$c], "{MENU=")) {
-					$str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
+				if (strstr($tmp[$c], "{MENU=")) 
+				{
+					$matches = array();
+					// Match all menu areas, menu number is limited to tinyint(3)
+					preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $tmp[$c], $matches);
+					menuSetCode($matches, $str);
+					//$str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
 				}
-			} else {
+			} 
+			else 
+			{
 				checklayout($tmp[$c]);
 			}
-		} else {
-			if (!$check) {
+		} 
+		else 
+		{
+			if (!$check) 
+			{
 				echo $tmp[$c];
 			}
 		}
 	}
-	if ($check) {
+	if ($check) 
+	{
 		return $str;
+	}
+}
+
+function menuSetCode($matches, &$ret)
+{
+	if(!$matches || !varsettrue($matches[1]))
+	{
+		return;
+	}
+
+	foreach ($matches[1] as $match) 
+	{
+		$ret[] = $match;
 	}
 }
 
@@ -485,77 +513,86 @@ function checklayout($str)
 	else if (strstr($str, "MENU")) 
 	{
 		$ns = new e107table;
-		$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
-		if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false) 
+		$matches = array();
+		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches))
 		{
-		  echo $sc_style['MENU']['pre'];
-		}
-		echo "<div style='text-align:center; font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
-		$text = "&nbsp;";
-		$sql9 = new db;
-		if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) 
-		{
-			unset($text);
-			echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "frm_menu_".intval($menu));
-
-			$sql9->db_Select("menus", "*", "menu_location='$menu' ORDER BY menu_order");
-			$menu_count = $sql9->db_Rows();
-			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
-				$menu_name = preg_replace("#_menu#i", "", $menu_name);
-				$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
-				"";
-				$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
-				$menu_info = "{$menu_location}.{$menu_order}";
-
-				$text = "";
-				$conf = '';
-				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu_config.php"))
+			foreach ($matches[1] as $menu) 
+			{
+				if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false) 
 				{
-				  $conf = "config.{$menu_path}.{$menu_name}_menu_config";
+					echo $sc_style['MENU']['pre'];
 				}
-
-				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
+				echo "<div style='text-align:center; font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
+				$text = "&nbsp;";
+				$sql9 = new db;
+				if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) 
 				{
-				  $conf = "config.{$menu_path}.config";
-				}
-
-				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
-				$text .= $frm->form_option(MENLAN_25, TRUE, " ");
-				$text .= $frm->form_option(MENLAN_15, "", "deac.{$menu_info}");
-
-				if ($conf) {
-					$text .= $frm->form_option(MENLAN_16, "", $conf);
-				}
-
-				if ($menu_order != 1) {
-					$text .= $frm->form_option(MENLAN_17, "", "inc.{$menu_info}");
-					$text .= $frm->form_option(MENLAN_24, "", "top.{$menu_info}");
-				}
-				if ($menu_count != $menu_order) {
-					$text .= $frm->form_option(MENLAN_18, "", "dec.{$menu_info}");
-					$text .= $frm->form_option(MENLAN_23, "", "bot.{$menu_info}");
-				}
-				foreach ($menu_areas as $menu_act) {
-					if ($menu != $menu_act) {
-						$text .= $frm->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
+					unset($text);
+					echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "frm_menu_".intval($menu));
+		
+					$sql9->db_Select("menus", "*", "menu_location='$menu' ORDER BY menu_order");
+					$menu_count = $sql9->db_Rows();
+					while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
+						$menu_name = preg_replace("#_menu#i", "", $menu_name);
+						$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
+						"";
+						$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
+						$menu_info = "{$menu_location}.{$menu_order}";
+		
+						$text = "";
+						$conf = '';
+						if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu_config.php"))
+						{
+						  $conf = "config.{$menu_path}.{$menu_name}_menu_config";
+						}
+		
+						if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
+						{
+						  $conf = "config.{$menu_path}.config";
+						}
+		
+						$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
+						$text .= $frm->form_option(MENLAN_25, TRUE, " ");
+						$text .= $frm->form_option(MENLAN_15, "", "deac.{$menu_info}");
+		
+						if ($conf) {
+							$text .= $frm->form_option(MENLAN_16, "", $conf);
+						}
+		
+						if ($menu_order != 1) {
+							$text .= $frm->form_option(MENLAN_17, "", "inc.{$menu_info}");
+							$text .= $frm->form_option(MENLAN_24, "", "top.{$menu_info}");
+						}
+						if ($menu_count != $menu_order) {
+							$text .= $frm->form_option(MENLAN_18, "", "dec.{$menu_info}");
+							$text .= $frm->form_option(MENLAN_23, "", "bot.{$menu_info}");
+						}
+						foreach ($menu_areas as $menu_act) {
+							if ($menu != $menu_act) {
+								$text .= $frm->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
+							}
+						}
+						$text .= $frm->form_option(MENLAN_20, "", "adv.{$menu_info}");
+						$text .= $frm->form_select_close();
+						$ns->tablerender($caption, $text);
+						echo "<div><br /></div>";
 					}
+					echo $frm->form_close();
 				}
-				$text .= $frm->form_option(MENLAN_20, "", "adv.{$menu_info}");
-				$text .= $frm->form_select_close();
-				$ns->tablerender($caption, $text);
-				echo "<div><br /></div>";
+				if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false) 
+				{
+					echo $sc_style['MENU']['post'];
+				}
 			}
-			echo $frm->form_close();
-		}
-		if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false) {
-			echo $sc_style['MENU']['post'];
 		}
 	}
-	else if (strstr($str, "SETSTYLE")) {
+	else if (strstr($str, "SETSTYLE")) 
+	{
 		$tmp = explode("=", $str);
 		$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
 	}
-	else if (strstr($str, "SITEDISCLAIMER")) {
+	else if (strstr($str, "SITEDISCLAIMER")) 
+	{
 		echo "[Sitedisclaimer]";
 	}
 }
