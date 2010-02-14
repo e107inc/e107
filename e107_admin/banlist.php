@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Ban List Management
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -575,7 +573,7 @@ switch($action)
 			{
 				$error = true;
 				if(varset($files[0]['message']))
-					$emessage->add($files[0]['message'], E_MESSAGE_ERROR); var_dump(empty($files), $files[0]['error']);
+					$emessage->add($files[0]['message'], E_MESSAGE_ERROR);
 			}
 			if(!$error)
 			{ // Got a file of some sort
@@ -619,7 +617,7 @@ switch($action)
 			<td>".select_box('ban_separator', $separator_char).' '.BANLAN_37."</td>
 		<td>".select_box('ban_quote', $quote_char).' '.BANLAN_38."</td></tr>";
 		$text .= "
-								
+
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>".$frm->admin_button('ban_export', BANLAN_39, 'export', BANLAN_39)."</div>
@@ -664,8 +662,8 @@ switch($action)
 								<div class='buttons-bar center'>
 								".$frm->admin_button('ban_import', BANLAN_45, 'import')."
 								</div>
-			
-					
+
+
 				</fieldset>
 			</form>
 		";
