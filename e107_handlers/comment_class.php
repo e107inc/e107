@@ -161,6 +161,11 @@ class comment
 			{
 				$text = $ns->tablerender($caption, $text, '', TRUE);
 			}
+		}
+		else
+		{ // Comment entry not allowed - point to signup link
+			$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
+		}
 			if ($return)
 			{
 				return $text;
@@ -169,11 +174,6 @@ class comment
 			{
 				echo $text;
 			}
-		}
-		else
-		{ // Comment entry not allowed - point to signup link
-			echo "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
-		}
 	}
 	/**
 	 * Enter description here...
