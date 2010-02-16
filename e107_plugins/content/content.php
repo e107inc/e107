@@ -1180,21 +1180,29 @@ function show_content_item(){
 		$validparent		= implode(",", array_keys($array));
 		$qry				= "content_id='".intval($qs[1])."' AND content_refer !='sa' AND  content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 
-		if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry)){
+		if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry))
+		{
 			header("location:".e_SELF."?recent.".$mainparent); exit;
-		}else{
+		}
+		else
+		{
 			$row = $sql -> db_Fetch();
 
 			//update refer count outside of cache (count visits ^ count unique ips)
-			if(isset($content_pref["content_log"]) && $content_pref["content_log"]){
+			if(isset($content_pref["content_log"]) && $content_pref["content_log"])
+			{
 				$ip			= $e107->getip();
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
-				if(strpos($self, "admin") === FALSE){
-					if(strpos($refertmp[1], $ip) === FALSE){
+				if(strpos($self, "admin") === FALSE)
+				{
+					if(strpos($refertmp[1], $ip) === FALSE)
+					{
 						$referiplist		= ($refertmp[1] ? $refertmp[1]."-".$ip : $ip );
 						$contentrefernew	= ($refertmp[0]+1)."^".$referiplist;
-					}else{
+					}
+					else
+					{
 						$contentrefernew	= ($refertmp[0]+1)."^".$refertmp[1];
 					}
 					$sql = new db;
@@ -1212,177 +1220,199 @@ function show_content_item(){
 			if(!isset($qs[2])){ $cacheid = 1; }else{ $cacheid = $qs[2]; }
 			$cachestr = "$plugintable.content.$qs[1].$cacheid";
 			$cachecheck = CachePre($cachestr);
-			if($cachecheck){
+			if($cachecheck)
+			{
 				echo $cachecheck;
-				return;
+//				return;
 			}
-			$content_pref["content_cat_icon_path_large"] = ($content_pref["content_cat_icon_path_large"] ? $content_pref["content_cat_icon_path_large"] : "{e_PLUGIN}content/images/cat/48/" );
-			$content_pref["content_cat_icon_path_small"] = ($content_pref["content_cat_icon_path_small"] ? $content_pref["content_cat_icon_path_small"] : "{e_PLUGIN}content/images/cat/16/" );
-			$content_pref["content_icon_path"] = ($content_pref["content_icon_path"] ? $content_pref["content_icon_path"] : "{e_PLUGIN}content/images/icon/" );
-			$content_pref["content_image_path"] = ($content_pref["content_image_path"] ? $content_pref["content_image_path"] : "{e_PLUGIN}content/images/image/" );
-			$content_pref["content_file_path"] = ($content_pref["content_file_path"] ? $content_pref["content_file_path"] : "{e_PLUGIN}content/images/file/" );
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-			$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
-			$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+			else
+			{
+				$content_pref["content_cat_icon_path_large"] = ($content_pref["content_cat_icon_path_large"] ? $content_pref["content_cat_icon_path_large"] : "{e_PLUGIN}content/images/cat/48/" );
+				$content_pref["content_cat_icon_path_small"] = ($content_pref["content_cat_icon_path_small"] ? $content_pref["content_cat_icon_path_small"] : "{e_PLUGIN}content/images/cat/16/" );
+				$content_pref["content_icon_path"] = ($content_pref["content_icon_path"] ? $content_pref["content_icon_path"] : "{e_PLUGIN}content/images/icon/" );
+				$content_pref["content_image_path"] = ($content_pref["content_image_path"] ? $content_pref["content_image_path"] : "{e_PLUGIN}content/images/image/" );
+				$content_pref["content_file_path"] = ($content_pref["content_file_path"] ? $content_pref["content_file_path"] : "{e_PLUGIN}content/images/file/" );
+				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+				$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+				$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
+				$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
+				$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
+				$number							= (isset($content_pref["content_nextprev_number"]) && $content_pref["content_nextprev_number"] ? $content_pref["content_nextprev_number"] : "5");
+				$nextprevquery					= (isset($content_pref["content_nextprev"]) && $content_pref["content_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 
-			$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
-			$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
+				$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
+				$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
 
-			$CONTENT_CONTENT_TABLE_PREV_PAGE = FALSE;
-			$CONTENT_CONTENT_TABLE_NEXT_PAGE = FALSE;
-			$lastpage = FALSE;		//boolean whether or not the current page is the last page
-			if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
-				//remove html bbcode (since we're splitting the text, the html bbcode would not be parsed)
-				$row['content_text'] = preg_replace("/\\[html\](.*?)\[\/html\]/si", '\1', $row['content_text']);
-				//split newpage
-				$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
-				$pages = array_values($pages);
+				$CONTENT_CONTENT_TABLE_PREV_PAGE = FALSE;
+				$CONTENT_CONTENT_TABLE_NEXT_PAGE = FALSE;
+				$lastpage = FALSE;		//boolean whether or not the current page is the last page
+				if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches))
+				{
+					//remove html bbcode (since we're splitting the text, the html bbcode would not be parsed)
+					$row['content_text'] = preg_replace("/\\[html\](.*?)\[\/html\]/si", '\1', $row['content_text']);
+					//split newpage
+					$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
+					$pages = array_values($pages);
 
-				//remove empty values
-				if(trim($pages[0]) == ""){
-					unset($pages[0]);
-				}
-				$pages = array_values($pages);
-
-				if(count($pages) == count($matches[0])){
-				}elseif(count($pages) > count($matches[0])){
-					$matches[0] = array_pad($matches[0], -count($pages), "[newpage]");
-				}elseif(count($pages) < count($matches[0])){
-				}
-
-				$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
-				$options = "";
-				for ($i=0; $i < count($pages); $i++) {
-					if(!isset($qs[2])){ $idp = 1; }else{ $idp = $qs[2]; }
-					if($idp == $i+1){ $pre = CONTENT_LAN_92; }else{ $pre = ""; }
-					if($matches[0][$i] == "[newpage]"){
-						$pagename[$i] = CONTENT_LAN_78;
-					}else{
-						$arrpagename = explode("[newpage=", $matches[0][$i]);
-						$pagename[$i] = substr($arrpagename[1],0,-1);
+					//remove empty values
+					if(trim($pages[0]) == ""){
+						unset($pages[0]);
 					}
-					if(isset($content_pref["content_content_pagenames_nextprev"]) && $content_pref["content_content_pagenames_nextprev"]){
-						if($idp>1){
-							if(isset($content_pref["content_content_pagenames_nextprev_prevhead"]) && $content_pref["content_content_pagenames_nextprev_prevhead"]){
-								$cap = $content_pref["content_content_pagenames_nextprev_prevhead"];
-								$cap = str_replace("{PAGETITLE}", $pagename[$idp-2], $cap);
-							}else{
-								$cap = CONTENT_LAN_90;
-							}
-							$CONTENT_CONTENT_TABLE_PREV_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp-1)."'>".$cap."</a>";
+					$pages = array_values($pages);
+
+					if(count($pages) == count($matches[0])){
+					}elseif(count($pages) > count($matches[0])){
+						$matches[0] = array_pad($matches[0], -count($pages), "[newpage]");
+					}elseif(count($pages) < count($matches[0])){
+					}
+
+					$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
+					$options = "";
+					for ($i=0; $i < count($pages); $i++) {
+						if(!isset($qs[2])){ $idp = 1; }else{ $idp = $qs[2]; }
+						if($idp == $i+1){ $pre = CONTENT_LAN_92; }else{ $pre = ""; }
+						if($matches[0][$i] == "[newpage]"){
+							$pagename[$i] = CONTENT_LAN_78;
 						}else{
-							$CONTENT_CONTENT_TABLE_PREV_PAGE = ' ';
+							$arrpagename = explode("[newpage=", $matches[0][$i]);
+							$pagename[$i] = substr($arrpagename[1],0,-1);
 						}
-						if($idp<count($pages)){
-							if(isset($content_pref["content_content_pagenames_nextprev_nexthead"]) && $content_pref["content_content_pagenames_nextprev_nexthead"]){
-								$cap = $content_pref["content_content_pagenames_nextprev_nexthead"];
-								$cap = str_replace("{PAGETITLE}", $pagename[$idp], $cap);
+						if(isset($content_pref["content_content_pagenames_nextprev"]) && $content_pref["content_content_pagenames_nextprev"]){
+							if($idp>1){
+								if(isset($content_pref["content_content_pagenames_nextprev_prevhead"]) && $content_pref["content_content_pagenames_nextprev_prevhead"]){
+									$cap = $content_pref["content_content_pagenames_nextprev_prevhead"];
+									$cap = str_replace("{PAGETITLE}", $pagename[$idp-2], $cap);
+								}else{
+									$cap = CONTENT_LAN_90;
+								}
+								$CONTENT_CONTENT_TABLE_PREV_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp-1)."'>".$cap."</a>";
 							}else{
-								$cap = CONTENT_LAN_91;
+								$CONTENT_CONTENT_TABLE_PREV_PAGE = ' ';
 							}
-							$CONTENT_CONTENT_TABLE_NEXT_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp+1)."'>".$cap."</a>";
+							if($idp<count($pages)){
+								if(isset($content_pref["content_content_pagenames_nextprev_nexthead"]) && $content_pref["content_content_pagenames_nextprev_nexthead"]){
+									$cap = $content_pref["content_content_pagenames_nextprev_nexthead"];
+									$cap = str_replace("{PAGETITLE}", $pagename[$idp], $cap);
+								}else{
+									$cap = CONTENT_LAN_91;
+								}
+								$CONTENT_CONTENT_TABLE_NEXT_PAGE = "<a href='".e_SELF."?".$qs[0].".".$qs[1].".".($idp+1)."'>".$cap."</a>";
+							}else{
+								$CONTENT_CONTENT_TABLE_NEXT_PAGE = ' ';
+							}
+						}
+						
+						//0:normal links, 1:selectbox
+						//$content_pref["content_content_pagenames_rendertype"] = "1";
+						if(isset($content_pref["content_content_pagenames_rendertype"]) && $content_pref["content_content_pagenames_rendertype"] == "1"){
+							$page = CONTENT_LAN_79." ".($i+1)." ".$pre." ".$pagename[$i];
+							$url = e_SELF."?".$qs[0].".".$qs[1].".".($i+1);
+							$options .= $rs -> form_option($page, ($idp == ($i+1) ? "1" : "0"), $url , "");
 						}else{
-							$CONTENT_CONTENT_TABLE_NEXT_PAGE = ' ';
+							$options .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$qs[0].".".$qs[1].".".($i+1)."'>".$pagename[$i]."</a><br />";
+						}
+
+						if($idp==1){
+							$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
+							$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
+						}else{
+							$CONTENT_CONTENT_TABLE_SUMMARY = "";
+						}
+						//render custom/preset on first page
+						if(isset($content_pref['content_content_multipage_preset']) && $content_pref['content_content_multipage_preset']){
+							if($idp == '1'){
+								$lastpage = TRUE;
+							}
+						//render custom/preset on last page
+						}else{
+							if($idp == count($pages)){
+								$lastpage = TRUE;
+							}
 						}
 					}
-					
-					//0:normal links, 1:selectbox
-					//$content_pref["content_content_pagenames_rendertype"] = "1";
-					if(isset($content_pref["content_content_pagenames_rendertype"]) && $content_pref["content_content_pagenames_rendertype"] == "1"){
-						$page = CONTENT_LAN_79." ".($i+1)." ".$pre." ".$pagename[$i];
-						$url = e_SELF."?".$qs[0].".".$qs[1].".".($i+1);
-						$options .= $rs -> form_option($page, ($idp == ($i+1) ? "1" : "0"), $url , "");
-					}else{
-						$options .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$qs[0].".".$qs[1].".".($i+1)."'>".$pagename[$i]."</a><br />";
+					if($content_pref["content_content_pagenames_rendertype"] == "1")
+					{
+						$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
+						$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option(CONTENT_LAN_89, "1", "none" , "").$options.$rs -> form_select_close();
+					}
+					else
+					{
+						$CONTENT_CONTENT_TABLE_PAGENAMES = $options;
 					}
 
-					if($idp==1){
-						$CONTENT_CONTENT_TABLE_SUMMARY = (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
-						$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
-					}else{
-						$CONTENT_CONTENT_TABLE_SUMMARY = "";
-					}
-					//render custom/preset on first page
-					if(isset($content_pref['content_content_multipage_preset']) && $content_pref['content_content_multipage_preset']){
-						if($idp == '1'){
-							$lastpage = TRUE;
-						}
-					//render custom/preset on last page
-					}else{
-						if($idp == count($pages)){
-							$lastpage = TRUE;
-						}
-					}
 				}
-				if($content_pref["content_content_pagenames_rendertype"] == "1"){
-					$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
-					$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option(CONTENT_LAN_89, "1", "none" , "").$options.$rs -> form_select_close();
-				}else{
-					$CONTENT_CONTENT_TABLE_PAGENAMES = $options;
+				else
+				{
+					$CONTENT_CONTENT_TABLE_SUMMARY	= (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
+					$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
+					$lastpage = TRUE;
 				}
 
-			}else{
-				$CONTENT_CONTENT_TABLE_SUMMARY	= (isset($content_pref["content_content_summary"]) && $content_pref["content_content_summary"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "SUMMARY") : "");
-				$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
-				$lastpage = TRUE;
-			}
+				$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
+				$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "BODY");
 
-			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
-			$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "BODY");
+				$custom							= $eArrayStorage->ReadArray($row['content_pref']);
 
-			$custom							= $eArrayStorage->ReadArray($row['content_pref']);
+				$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
+				$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+				$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+				$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+				$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+				$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}', FALSE, $content_shortcodes);
+				$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}', FALSE, $content_shortcodes);
+				$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}', FALSE, $content_shortcodes);
+				$ico	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_ICON}', FALSE, $content_shortcodes);
+				$sub	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SUBHEADING}', FALSE, $content_shortcodes);
+				$rat	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_RATING}', FALSE, $content_shortcodes);
+				$fil	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_FILE}', FALSE, $content_shortcodes);
 
-			$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
-			$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-			$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
-			$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
-			$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}', FALSE, $content_shortcodes);
-			$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}', FALSE, $content_shortcodes);
-			$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}', FALSE, $content_shortcodes);
-			$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}', FALSE, $content_shortcodes);
-			$ico	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_ICON}', FALSE, $content_shortcodes);
-			$sub	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SUBHEADING}', FALSE, $content_shortcodes);
-			$rat	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_RATING}', FALSE, $content_shortcodes);
-			$fil	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_FILE}', FALSE, $content_shortcodes);
+				$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = FALSE;
+				$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = FALSE;
+				$CONTENT_CONTENT_TABLE_INFO_PRE = FALSE;
+				$CONTENT_CONTENT_TABLE_INFO_POST = FALSE;
+				
+				//if any of these exist, pre/post activate the container table
+				if ($ico!="" || $date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $sub!="" || $rat!="" || $fil!="") 
+				{
+					$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
+					$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
+					$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = TRUE;
+					$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = TRUE;
+				}
 
-			$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = FALSE;
-			$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = FALSE;
-			$CONTENT_CONTENT_TABLE_INFO_PRE = FALSE;
-			$CONTENT_CONTENT_TABLE_INFO_POST = FALSE;
-			
-			//if any of these exist, pre/post activate the container table
-			if ($ico!="" || $date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $sub!="" || $rat!="" || $fil!="") {
-				$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
-				$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
-				$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = TRUE;
-				$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = TRUE;
-			}
+				if(!isset($CONTENT_CONTENT_TABLE))
+				{
+					//if no theme has been set, use default theme
+					if(!$content_pref["content_theme"])
+					{
 
-			if(!isset($CONTENT_CONTENT_TABLE)){
-				//if no theme has been set, use default theme
-				if(!$content_pref["content_theme"]){
-
-					//if custom layout is set
-					if($row['content_layout']){
-						//if custom layout file exists
-						if(is_readable($plugindir."templates/default/".$row['content_layout'])){
-							require_once($plugindir."templates/default/".$row['content_layout']);
+						//if custom layout is set
+						if($row['content_layout']){
+							//if custom layout file exists
+							if(is_readable($plugindir."templates/default/".$row['content_layout'])){
+								require_once($plugindir."templates/default/".$row['content_layout']);
+							}else{
+								require_once($plugindir."templates/default/content_content_template.php");
+							}
 						}else{
 							require_once($plugindir."templates/default/content_content_template.php");
 						}
 					}else{
-						require_once($plugindir."templates/default/content_content_template.php");
-					}
-				}else{
-					//if custom layout is set
-					if($row['content_layout']){
-						//if custom layout file exists
-						if(is_readable($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout'])){
-							require_once($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout']);
+						//if custom layout is set
+						if($row['content_layout']){
+							//if custom layout file exists
+							if(is_readable($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout'])){
+								require_once($tp->replaceConstants($content_pref["content_theme"]).$row['content_layout']);
+							}else{
+								//if default layout from the set theme exists
+								if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
+									require_once($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php");
+								//else use default theme, default layout
+								}else{
+									require_once($plugindir."templates/default/content_content_template.php");
+								}
+							}
+						//if no custom layout is set
 						}else{
 							//if default layout from the set theme exists
 							if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
@@ -1392,82 +1422,98 @@ function show_content_item(){
 								require_once($plugindir."templates/default/content_content_template.php");
 							}
 						}
-					//if no custom layout is set
-					}else{
-						//if default layout from the set theme exists
-						if(is_readable($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php")){
-							require_once($tp->replaceConstants($content_pref["content_theme"])."content_content_template.php");
-						//else use default theme, default layout
-						}else{
-							require_once($plugindir."templates/default/content_content_template.php");
-						}
 					}
 				}
-			}
 
-			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
+				$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
-			$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = "";
-			$CUSTOM_TAGS = FALSE;
-			if($lastpage === TRUE && !empty($custom)){
-				$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
 				$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = "";
-				//ksort($custom);
-				foreach($custom as $k => $v){
-					if($k == "content_custom_presettags"){
-						if(isset($content_pref["content_content_presettags"]) && $content_pref["content_content_presettags"]){
-							foreach($v as $ck => $cv){
-								if(is_array($cv)){	//date
-									if(!($cv['day']=="" && $cv['month']=="" && $cv['year']=="")){
-										$vv = $cv['day']." ".$months[($cv['month']-1)]." ".$cv['year'];
+				$CUSTOM_TAGS = FALSE;
+				if($lastpage === TRUE && !empty($custom))
+				{
+					$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
+					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = "";
+					//ksort($custom);
+					foreach($custom as $k => $v)
+					{
+						if($k == "content_custom_presettags")
+						{
+							if(isset($content_pref["content_content_presettags"]) && $content_pref["content_content_presettags"])
+							{
+								foreach($v as $ck => $cv)
+								{
+									if(is_array($cv))
+									{	//date
+										if(!($cv['day']=="" && $cv['month']=="" && $cv['year']==""))
+										{
+											$vv = $cv['day']." ".$months[($cv['month']-1)]." ".$cv['year'];
+										}
 									}
-								}else{
-									$vv = $cv;
+									else
+									{
+										$vv = $cv;
+									}
+									if( isset($ck) && $ck != "" && isset($vv) && $vv!="" )
+									{
+										$CUSTOM_TAGS = TRUE;
+										$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($ck, true);
+										$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($vv, true);
+										$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
+									}
 								}
-								if( isset($ck) && $ck != "" && isset($vv) && $vv!="" ){
+							}
+						}
+						else
+						{
+							if(isset($content_pref["content_content_customtags"]) && $content_pref["content_content_customtags"])
+							{
+								$key = substr($k,15);
+								if( isset($key) && $key != "" && isset($v) && $v!="" )
+								{
 									$CUSTOM_TAGS = TRUE;
-									$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($ck, true);
-									$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($vv, true);
+									$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($key, true);
+									$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($v, true);
 									$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
 								}
 							}
 						}
-					}else{
-						if(isset($content_pref["content_content_customtags"]) && $content_pref["content_content_customtags"]){
-							$key = substr($k,15);
-							if( isset($key) && $key != "" && isset($v) && $v!="" ){
-								$CUSTOM_TAGS = TRUE;
-								$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($key, true);
-								$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($v, true);
-								$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
-							}
-						}
+					}
+					if($CUSTOM_TAGS === TRUE)
+					{
+						$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = $CONTENT_CONTENT_TABLE_CUSTOM_START.$CONTENT_CONTENT_TABLE_CUSTOM_TAGS.$CONTENT_CONTENT_TABLE_CUSTOM_END;
 					}
 				}
-				if($CUSTOM_TAGS === TRUE){
-					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = $CONTENT_CONTENT_TABLE_CUSTOM_START.$CONTENT_CONTENT_TABLE_CUSTOM_TAGS.$CONTENT_CONTENT_TABLE_CUSTOM_END;
-				}
+				$text		= $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
+				$text		= $aa -> getCrumbPage("item", $array, $row['content_parent']).$text;
+				$caption	= $row['content_heading'];
+				$ns -> tablerender($caption, $text);
+				$cachecheck = CachePost($cachestr);
 			}
-			$text		= $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
-			$text		= $aa -> getCrumbPage("item", $array, $row['content_parent']).$text;
-			$caption	= $row['content_heading'];
-			$ns -> tablerender($caption, $text);
-			$cachecheck = CachePost($cachestr);
+
+
 
 			//recheck some thing when caching is enabled
 			$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
 			$pages = array_values($pages);
 			$cachestr = "comment.$plugintable.$qs[1].$cacheid";
-			if(count($pages) == 0){
+			if(count($pages) == 0)
+			{
 				$lastpage = TRUE;
-			}else{
-				if($cacheid == count($pages)){
+			}
+			else
+			{
+				if($cacheid == count($pages))
+				{
 					$lastpage = TRUE;
 				}
 			}
-			if($lastpage && ($row['content_comment'] || (isset($content_pref["content_content_comment_all"]) && $content_pref["content_content_comment_all"]))){
+
+
+			if($lastpage && ($row['content_comment'] || (isset($content_pref["content_content_comment_all"]) && $content_pref["content_content_comment_all"])))
+			{
 				$cachecheck = CachePre($cachestr);
-				if($cachecheck){
+				if($cachecheck)
+				{
 					echo $cachecheck;
 					return;
 				}
