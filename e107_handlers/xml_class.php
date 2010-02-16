@@ -614,7 +614,7 @@ class xmlClass
 	 */
 	function loadXMLfile($fname, $parse = false, $replace_constants = false)
 	{
-		global $tp;
+		$tp = e107::getParser();
 
 		if (empty($fname))
 		{
