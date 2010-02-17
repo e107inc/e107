@@ -3,43 +3,41 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2010-02-07 18:32:26 $
-|     $Author: e107steved $
+|     $URL$
+|     $Id$
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-if (!getperms("4")) 
+if (!getperms("4"))
 {
   header("location:".e_BASE."index.php");
   exit;
 }
 
 
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
 {
 	header('location:'.e_ADMIN."userinfo.php?".$tp -> toDB($_POST['userip']));
 	exit;
 }
 
 
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
 {
 	header('location:'.e_BASE."usersettings.php?".$tp -> toDB($_POST['userid']));
 	exit;
 }
 
 
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 {
 	header('location:'.e_ADMIN."userclass.php?".$tp -> toDB($_POST['userid'].".".e_QUERY));
 	exit;
@@ -55,7 +53,7 @@ require_once(e_HANDLER."userclass_class.php");
 
 $rs = new form;
 
-if (e_QUERY) 
+if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -89,7 +87,7 @@ if ($bounce_act)
 
 
 // ------- Resend Email. --------------
-if (isset($_POST['resend_mail'])) 
+if (isset($_POST['resend_mail']))
 {
 	$user->resend($_POST['resend_id'],$_POST['resend_key'],$_POST['resend_name'],$_POST['resend_email']);
 }
@@ -103,7 +101,7 @@ if(isset($_POST['resend_to_all']))
 
 
 // ------- Test Email. --------------
-if (isset($_POST['test_mail'])) 
+if (isset($_POST['test_mail']))
 {
 	require_once(e_HANDLER."mail_validation_class.php");
 	list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
@@ -138,7 +136,7 @@ if (isset($_POST['test_mail']))
 
 
 // ------- Update Options. --------------
-if (isset($_POST['update_options'])) 
+if (isset($_POST['update_options']))
 {
 	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$pref['im_width'] = $_POST['im_width'];
@@ -156,7 +154,7 @@ if (isset($_POST['update_options']))
 
 
 // ------- Prune Users. --------------
-if (isset($_POST['prune'])) 
+if (isset($_POST['prune']))
 {
 	$e107cache->clear("online_menu_totals");
 	$text = USRLAN_56." ";
@@ -174,6 +172,7 @@ if (isset($_POST['prune']))
 			$text .= $u['user_name']." ";
 			$sql->db_Delete("user", "user_id='{$u['user_id']}' ");
 		 	$sql->db_Delete("user_extended", "user_extended_id='{$u['user_id']}' ");
+		 	$e_event->trigger('userdel', intval($u['user_id']));
 		}
 	}
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
@@ -182,43 +181,43 @@ if (isset($_POST['prune']))
 
 
 // ------- Quick Add User --------------
-if (isset($_POST['adduser'])) 
+if (isset($_POST['adduser']))
 {
 	$e107cache->clear("online_menu_totals");
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE))
 	{
 		exit;
 	}
 
 	require_once(e_HANDLER."message_handler.php");
-	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=")) 
+	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "="))
 	{
 		message_handler("P_ALERT", USRLAN_92);
 		$error = TRUE;
 	}
 	$_POST['name'] = trim(str_replace("&nbsp;", "", $_POST['name']));
-	if ($_POST['name'] == "Anonymous") 
+	if ($_POST['name'] == "Anonymous")
 	{
 		message_handler("P_ALERT", USRLAN_65);
 		$error = TRUE;
 	}
-	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) 
+	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' "))
 	{
 		message_handler("P_ALERT", USRLAN_66);
 		$error = TRUE;
 	}
-	if ($sql->db_Select("user", "user_loginname", "user_loginname='".$_POST['loginname']."' ")) 
-	{    
-		message_handler("P_ALERT", USRLAN_75 );   
-		$error = TRUE; 
+	if ($sql->db_Select("user", "user_loginname", "user_loginname='".$_POST['loginname']."' "))
+	{
+		message_handler("P_ALERT", USRLAN_75 );
+		$error = TRUE;
 	}
-	if ($_POST['password1'] != $_POST['password2']) 
+	if ($_POST['password1'] != $_POST['password2'])
 	{
 		message_handler("P_ALERT", USRLAN_67);
 		$error = TRUE;
 	}
 
-	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] == "") 
+	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] == "")
 	{
 		message_handler("P_ALERT", USRLAN_68);
 		$error = TRUE;
@@ -227,29 +226,29 @@ if (isset($_POST['adduser']))
 	if (!varset($pref['disable_emailcheck'],FALSE))
 	{
 		// Email address checks
-		if (!check_email($_POST['email'])) 
+		if (!check_email($_POST['email']))
 		{
 			message_handler("P_ALERT", USRLAN_69);
 			$error = TRUE;
 		}
-		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' AND user_ban='1' ")) 
+		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' AND user_ban='1' "))
 		{	// Specifically identify banned users
 			message_handler("P_ALERT", USRLAN_147);
 			$error = TRUE;
 		}
-		elseif ($sql->db_Count("banlist", "(*)", "WHERE banlist_ip='".$_POST['email']."'")) 
+		elseif ($sql->db_Count("banlist", "(*)", "WHERE banlist_ip='".$_POST['email']."'"))
 		{	// ... and filter against the ban list
 			message_handler("P_ALERT", USRLAN_148);
 			$error = TRUE;
 		}
-		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' ")) 
+		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' "))
 		{	// Finally, email addresses are required to be unique anyway
 			message_handler("P_ALERT", USRLAN_156);
 			$error = TRUE;
 		}
 	}
 
-	if (!$error) 
+	if (!$error)
 	{
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
@@ -265,7 +264,7 @@ if (isset($_POST['adduser']))
 
 
 // ------- Bounce --> Unverified --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "reqverify") 
+if (isset($_POST['useraction']) && $_POST['useraction'] == "reqverify")
 {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
@@ -329,7 +328,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 }
 
 // ------- Resend Email Confirmation. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend')
 {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
@@ -353,7 +352,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend')
 
 
 // ------- TEst Email confirmation. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'test')
 {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
@@ -378,12 +377,13 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
 		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) {
 		   $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
+		   $e_event->trigger('userdel', intval($_POST['userid']));
 			$user->show_message(USRLAN_10);
 		}
 		if(!$sub_action){ $sub_action = "user_id"; }
 		if(!$id){ $id = "DESC"; }
-  } 
-  else 
+  }
+  else
   {	// Put up confirmation
 		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 			$row = $sql->db_Fetch();
@@ -419,16 +419,16 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('
 }
 
 // ------- Remove Admin --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3')) 
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3'))
 {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
-  if ($user_perms == "0") 
+  if ($user_perms == "0")
   {
 		$user->show_message(USRLAN_5);
-  } 
-  else 
+  }
+  else
   {
 		$sql->db_Update("user", "user_admin='0', user_perms='' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
@@ -475,13 +475,13 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 	}
 }
 
-if (isset($action) && $action == "uset") 
+if (isset($action) && $action == "uset")
 {
 	$user->show_message(USRLAN_87);
 	$action = "main";
 }
 
-if (isset($action) && $action == "cu") 
+if (isset($action) && $action == "cu")
 {
 	$user->show_message(USRLAN_88);
 	$action = "main";
@@ -529,7 +529,7 @@ require_once("footer.php");
 class users
 {
 
-	function show_existing_users($action, $sub_action, $id, $from, $amount) 
+	function show_existing_users($action, $sub_action, $id, $from, $amount)
 	{
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified;
 		// save the display choices.
@@ -740,13 +740,13 @@ class users
 					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>
 					<option selected='selected' value=''>&nbsp;</option>";
 
-				if ($user_perms != "0") 
+				if ($user_perms != "0")
 				{
 					$text .= "<option value='userinfo'>".USRLAN_80."</option>
 						<option value='usersettings'>".LAN_EDIT."</option>";
 				  switch ($user_ban)
 				  {
-					case 0 : 
+					case 0 :
 						$text .= "<option value='ban'>".USRLAN_30."</option>\n";
 					  break;
 				    case 1 :		// Banned user
@@ -766,26 +766,26 @@ class users
 					  break;
 					default :
 				  }
-					if (!$user_admin && !$user_ban && $user_ban != 2 && getperms('3')) 
+					if (!$user_admin && !$user_ban && $user_ban != 2 && getperms('3'))
 					{
 						$text .= "<option value='admin'>".USRLAN_35."</option>\n";
 					}
-					else if ($user_admin && $user_perms != "0" && getperms('3')) 
+					else if ($user_admin && $user_perms != "0" && getperms('3'))
 					{
 						$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
 					}
 
 				}
-				if ($user_perms == "0" && !getperms("0")) 
+				if ($user_perms == "0" && !getperms("0"))
 				{
 					$text .= "";
-				} 
-				elseif($user_id != USERID || getperms("0") ) 
+				}
+				elseif($user_id != USERID || getperms("0") )
 				{
 					$text .= "<option value='userclass'>".USRLAN_36."</option>\n";
 				}
 
-				if ($user_perms != "0") 
+				if ($user_perms != "0")
 				{
 					$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
 				}
@@ -831,7 +831,7 @@ class users
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");		// Returns a resource. Deprecated
 		$columns = mysql_num_fields($fields);			// Bug in PHP5.3 using mysql_num_fields() with mysql_list_fields()
 
-		for ($i = 0; $i < $columns; $i++) 
+		for ($i = 0; $i < $columns; $i++)
 		{
 			$fname[] = mysql_field_name($fields, $i);
 		}
@@ -1194,7 +1194,7 @@ class users
 		$obj->connect();
 		$tot=$obj->getTotalMails();
 		$del_array = explode(',',$bounce_arr);
-		for($i=1;$i<=$tot;$i++)	
+		for($i=1;$i<=$tot;$i++)
 		{	// Scan all emails; delete current one if meets the criteria
 		    $dodel = FALSE;
 		    switch ($bounce_act)
@@ -1243,13 +1243,13 @@ class users
 	  $tot=$obj->getTotalMails();
       $found = FALSE;
 	  $DEL = ($pref['mail_bounce_delete']) ? TRUE : FALSE;
-	  
+
       $text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr><td class='fcaption' style='width:5%'>#</td><td class='fcaption'>e107-id</td><td class='fcaption'>email</td><td class='fcaption'>Subject</td><td class='fcaption'>Bounce</td></tr>\n";
 
 
-		
-	  for($i=1;$i<=$tot;$i++)	
+
+	  for($i=1;$i<=$tot;$i++)
 	  {
 		$head=$obj->getHeaders($i);
         if($head['bounce'])
@@ -1262,7 +1262,7 @@ class users
 			  //	Try and pull out an email address from body - should be the one that failed
 			  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
 			  {
-				$emails[$i] = "'".$result[0]."'";						
+				$emails[$i] = "'".$result[0]."'";
 			  }
 			  $found = TRUE;
 			}
@@ -1282,7 +1282,7 @@ class users
 		  }
 		  if ($DEL && $found)
 		  { 	// Auto-delete bounced emails once noticed (if option set)
-		    $obj->deleteMails($i); 
+		    $obj->deleteMails($i);
 			$del_count++;
 		  }
 		}
@@ -1292,10 +1292,10 @@ class users
 //				Try and pull out an email address from body - should be the one that failed
 		  if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $obj->getBody($i), $result))
 		  {
-			$wmails[$i] = "'".$result[0]."'";						
+			$wmails[$i] = "'".$result[0]."'";
 		  }
 		}
-		
+
 		$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
 		$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
 	  }
@@ -1338,7 +1338,7 @@ class users
 
 
 
-function users_adminmenu() 
+function users_adminmenu()
 {
 	global $user;
 	global $action;
