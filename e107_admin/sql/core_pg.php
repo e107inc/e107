@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_pg.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-19 21:17:06 $
-|     $Author: mrpete $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");

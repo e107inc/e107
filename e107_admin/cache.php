@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cache.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-02-16 21:51:39 $
-|     $Author: whoisrich $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");

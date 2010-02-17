@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-23 10:39:53 $
-|     $Author: marj_nl_fr $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

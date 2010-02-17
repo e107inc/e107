@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.7/e107_themes/reline/theme.php,v $
-|	$Revision: 1.21 $
-|	$Date: 2009-07-18 15:53:42 $
-|	$Author: marj_nl_fr $
+|	$Revision$
+|	$Date$
+|	$Author$
 |
 +----------------------------------------------------------------------------+
 |	Photo Credits

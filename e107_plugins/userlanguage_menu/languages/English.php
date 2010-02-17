@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-11 13:07:22 $
-|     $Author: mcfly_e107 $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 	

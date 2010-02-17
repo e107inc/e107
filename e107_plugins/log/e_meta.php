@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/e_meta.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-12-19 12:14:41 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +-----------------------------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_newforumposts_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-05-27 19:25:00 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 	

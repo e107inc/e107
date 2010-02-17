@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-09-28 20:27:04 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | Event calendar class for gradual enhancement
 | (Some bits may be usefully transferred to common code later)

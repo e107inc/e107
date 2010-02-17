@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-28 14:50:24 $
-|     $Author: sweetas $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

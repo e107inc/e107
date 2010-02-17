@@ -1,4 +1,4 @@
-// $Id: banner.sc,v 1.18 2007-10-08 20:10:46 e107steved Exp $
+// $Id$
 global $sql, $tp, $ns, $menu_pref;
 $ret = "";
 

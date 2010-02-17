@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-05-16 20:24:33 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

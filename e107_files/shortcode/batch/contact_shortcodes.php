@@ -8,9 +8,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/contact_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-24 13:38:46 $
-|     $Author: mrpete $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

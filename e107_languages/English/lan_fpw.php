@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_fpw.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-12-13 00:44:06 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Password Reset");

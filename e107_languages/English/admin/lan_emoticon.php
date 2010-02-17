@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-05-29 19:45:31 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("EMOLAN_1", "Emote activation");

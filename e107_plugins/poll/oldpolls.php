@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
- |     $Revision: 1.17 $
- |     $Date: 2009-12-28 18:13:46 $
- |     $Author: e107steved $
+ |     $Revision$
+ |     $Date$
+ |     $Author$
  +----------------------------------------------------------------------------+
  */
 require_once("../../class2.php");

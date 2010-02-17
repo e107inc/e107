@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/index.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-22 23:14:28 $
-|     $Author: stevedunstan $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

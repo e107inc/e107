@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-02-15 03:23:43 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');

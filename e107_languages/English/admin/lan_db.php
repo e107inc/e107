@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-01-04 09:35:18 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Core settings backed up in database.");

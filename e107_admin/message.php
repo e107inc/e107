@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-24 13:34:38 $
-|     $Author: mrpete $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");

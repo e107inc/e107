@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-28 14:07:14 $
-|     $Author: lisa_ $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-07-04 17:30:39 $
-|     $Author: lisa_ $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

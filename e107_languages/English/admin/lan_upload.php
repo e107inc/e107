@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-09-22 12:40:20 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");

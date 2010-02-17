@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_userposts.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-30 19:36:50 $
-|     $Author: sweetas $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Posts");

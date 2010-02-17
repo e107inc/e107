@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-12-12 17:26:09 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | Various mods by steved:
 |	a) To reflect updates

@@ -1,4 +1,4 @@
-// $Id: link.bb,v 1.29 2010-01-29 16:29:41 secretr Exp $
+// $Id$
 global $pref;
 
 /*

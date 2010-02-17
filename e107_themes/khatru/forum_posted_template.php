@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_posted_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-24 13:51:15 $
-|     $Author: mrpete $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2010-01-30 21:23:05 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | Mods to show extended field categories
 +----------------------------------------------------------------------------+

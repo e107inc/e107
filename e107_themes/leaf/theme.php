@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-06-11 19:17:17 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +---------------------------------------------------------------+
 */
 

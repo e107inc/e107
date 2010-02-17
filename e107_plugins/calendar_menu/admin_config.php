@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-05-04 19:41:31 $
-|     $Author: bugrain $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | 02.11.06 - Cache clear option added
 | 10.11.06 - Support for updated templates etc

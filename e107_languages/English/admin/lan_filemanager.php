@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-14 23:35:15 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("FMLAN_1", "Uploaded");

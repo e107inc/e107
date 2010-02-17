@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-04 22:29:14 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Enable image display");

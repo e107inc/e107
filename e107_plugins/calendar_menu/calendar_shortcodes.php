@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-10-05 19:13:12 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | 10.11.06 - mods for next CVS release
 +----------------------------------------------------------------------------+

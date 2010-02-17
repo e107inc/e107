@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_lancheck.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-11-05 03:50:19 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6

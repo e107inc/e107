@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_modcomment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-30 14:18:21 $
-|     $Author: lisa_ $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("MDCLAN_1", "Moderated.");

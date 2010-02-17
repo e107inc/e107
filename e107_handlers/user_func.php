@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

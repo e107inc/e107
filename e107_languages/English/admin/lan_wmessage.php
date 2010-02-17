@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_wmessage.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-04-22 19:30:47 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 // define("WMGLAN_1", "Message for Guests");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user_extended.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-04-17 19:29:46 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "Text Box");

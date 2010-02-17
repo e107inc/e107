@@ -1,5 +1,5 @@
 <?php
-// $Id: online_template.php,v 1.4 2007-12-06 21:36:02 e107steved Exp $
+// $Id$
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:96%"); }

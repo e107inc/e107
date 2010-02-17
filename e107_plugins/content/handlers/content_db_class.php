@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.59 $
-|		$Date: 2008-11-10 20:12:39 $
-|		$Author: e107steved $
+|		$Revision$
+|		$Date$
+|		$Author$
 +---------------------------------------------------------------+
 */
 

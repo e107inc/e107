@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_message.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-08 21:33:07 $
-|     $Author: stevedunstan $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("MESSLAN_1", "Received messages");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2010-02-07 17:23:50 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -705,9 +705,9 @@ class file_inspector {
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
 		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision: 1.40 $\n";
-		$data .= "|     \$Date: 2010-02-07 17:23:50 $\n";
-		$data .= "|     \$Author: e107steved $\n";
+		$data .= "|     \$Revision$\n";
+		$data .= "|     \$Date$\n";
+		$data .= "|     \$Author$\n";
 		$data .= "+----------------------------------------------------------------------------+\n";
 		$data .= "*/\n\n";
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";

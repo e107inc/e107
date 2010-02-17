@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_new_menu.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2009-01-06 21:30:37 $
-|		$Author: e107steved $
+|		$Revision$
+|		$Date$
+|		$Author$
 +---------------------------------------------------------------+
 */
 

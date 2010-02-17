@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-22 18:20:52 $
-|     $Author: stevedunstan $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 	

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.65 $
-|		$Date: 2009-11-19 11:45:49 $
-|		$Author: marj_nl_fr $
+|		$Revision$
+|		$Date$
+|		$Author$
 +---------------------------------------------------------------+
 */
 

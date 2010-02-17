@@ -1,5 +1,5 @@
 <?php
-/* $Id: content_preset.php,v 1.11 2009-11-19 11:45:50 marj_nl_fr Exp $ */
+/* $Id$ */
 require_once("../../../class2.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

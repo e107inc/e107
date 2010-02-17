@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2010-02-09 04:12:18 $
-|     $Author: mcfly_e107 $	   ** Amended by Marj to re-order list line 818 - 851
+|     $Revision$
+|     $Date$
+|     $Author$	   ** Amended by Marj to re-order list line 818 - 851
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

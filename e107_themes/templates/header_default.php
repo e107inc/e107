@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2010-01-09 00:01:47 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +-----------------------------------------------------------------------------------------------+
 */
 

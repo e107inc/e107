@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/backend.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-27 01:45:02 $
-|     $Author: streaky $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");

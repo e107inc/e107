@@ -1,6 +1,6 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-// $Id: pop3_class.php,v 1.3 2006-07-12 07:41:44 e107coders Exp $
+// $Id$
 // Main ReciveMail Class File - Version 1.0 (01-03-2006)
 /*
  * File: recivemail.class.php

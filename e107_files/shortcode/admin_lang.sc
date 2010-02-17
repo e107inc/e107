@@ -1,4 +1,4 @@
-/* $Id: admin_lang.sc,v 1.22 2009-11-19 11:45:49 marj_nl_fr Exp $ */
+/* $Id$ */
 if(ADMIN)
 {
 	global $ns, $sql, $pref;

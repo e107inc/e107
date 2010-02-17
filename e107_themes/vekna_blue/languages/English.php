@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/vekna_blue/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-21 12:26:46 $
-|     $Author: stevedunstan $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 

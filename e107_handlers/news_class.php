@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.78 $
-| $Date: 2009-07-06 05:58:17 $
-| $Author: marj_nl_fr $
+| $Revision$
+| $Date$
+| $Author$
 +---------------------------------------------------------------+
 */
 

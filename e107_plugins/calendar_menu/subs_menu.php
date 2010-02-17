@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-06 22:30:22 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | 09.07.06 - Mods by steved:
 |	General restructuring to use common routines

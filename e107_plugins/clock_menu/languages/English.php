@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:38 $
-|     $Author: streaky $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 	

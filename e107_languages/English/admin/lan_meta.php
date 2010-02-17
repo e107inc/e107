@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_meta.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-06-07 05:04:58 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("METLAN_1", "Meta tags updated in database");

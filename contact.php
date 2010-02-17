@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-27 21:07:55 $
-|     $Author: bugrain $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");

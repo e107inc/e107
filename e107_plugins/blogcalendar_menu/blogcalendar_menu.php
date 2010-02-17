@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2010-01-09 12:01:38 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */

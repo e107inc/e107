@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.38 $
-|   $Date: 2009-12-18 21:35:15 $
-|   $Author: e107steved $
+|   $Revision$
+|   $Date$
+|   $Author$
 +---------------------------------------------------------------+
 */
 

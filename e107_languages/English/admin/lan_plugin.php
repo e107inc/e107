@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-11-23 20:48:13 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");

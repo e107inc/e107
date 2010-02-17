@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.23 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2009-11-19 11:45:49 $
-|     $Author: marj_nl_fr $
+|     $Revision$ - with mods to hopefully trigger upgrade to new version
+|     $Date$
+|     $Author$
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added

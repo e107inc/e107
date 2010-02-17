@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.123 $
-|     $Date: 2010-01-02 21:43:51 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +---------------------------------------------------------------+
 */
 

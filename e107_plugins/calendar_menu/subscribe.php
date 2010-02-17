@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subscribe.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-28 11:40:10 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 +----------------------------------------------------------------------------+
 */

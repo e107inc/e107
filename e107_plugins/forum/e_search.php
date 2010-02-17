@@ -1,5 +1,5 @@
 <?php
-/* $Id: e_search.php,v 1.7 2009-11-19 11:45:48 marj_nl_fr Exp $ */
+/* $Id$ */
 if (!defined('e107_INIT')) { exit(); }
 
 include_lan(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_search.php");

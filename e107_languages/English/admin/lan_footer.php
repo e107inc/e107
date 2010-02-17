@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_footer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-29 17:45:38 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("FOOTLAN_1", "Site");

@@ -1,5 +1,5 @@
 <?php
-/* $Id: e_help.php,v 1.2 2009-11-19 11:45:49 marj_nl_fr Exp $ */
+/* $Id$ */
 if (!defined('e107_INIT')) { exit; }
 
 global $plugindir;

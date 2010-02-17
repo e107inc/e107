@@ -10,9 +10,9 @@
 |       Released under the terms and conditions of the
 |       GNU General Public License (http://gnu.org).
 |     	$Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/plugin.php,v $
-|     	$Revision: 1.8 $
-|     	$Date: 2006-06-02 01:04:10 $
-|     	$Author: e107coders $
+|     	$Revision$
+|     	$Date$
+|     	$Author$
 +---------------------------------------------------------------+
 */
 

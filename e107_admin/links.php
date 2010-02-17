@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2009-04-29 02:06:10 $
-|     $Author: bugrain $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+

@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_defines.php,v $
-|    $Revision: 1.5 $
-|    $Date: 2006-07-12 16:14:55 $
-|    $Author: e107coders $
+|    $Revision$
+|    $Date$
+|    $Author$
 +----------------------------------------------------------------------------+
 */
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }

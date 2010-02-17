@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvsroot/e107/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2007/11/27 21:41:56 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |
 | 22.10.06 steved - Various tidying up, additional options supported
 | 24.10.06 steved - templated, various cleaning up

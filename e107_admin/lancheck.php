@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-01-04 19:57:13 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
 */

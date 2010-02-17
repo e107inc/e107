@@ -1,4 +1,4 @@
-//<? $Id: custom.sc,v 1.25 2009-08-03 21:54:02 marj_nl_fr Exp $
+//<? $Id$
 global $tp, $pref;
 $ret = "";
 $custom_query = explode('+', $parm);

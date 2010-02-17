@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/article.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-20 22:10:31 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 // This file is now deprecated and remains in core for backward compatibility reasons.

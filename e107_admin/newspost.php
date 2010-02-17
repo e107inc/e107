@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.150 $
-|   $Date: 2009-04-19 20:54:19 $
-|   $Author: e107steved $
+|   $Revision$
+|   $Date$
+|   $Author$
 +---------------------------------------------------------------+
 
 */

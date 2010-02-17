@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/popup_handler.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2006-11-09 09:37:11 $
-|		$Author: lisa_ $
+|		$Revision$
+|		$Date$
+|		$Author$
 +---------------------------------------------------------------+
 */
 

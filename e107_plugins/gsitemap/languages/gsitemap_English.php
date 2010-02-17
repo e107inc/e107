@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/languages/gsitemap_English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-15 17:43:12 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("GSLAN_Name", "Sitemap");

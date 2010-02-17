@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-10-21 17:23:39 $
-|     $Author: e107coders $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 $sc_style['LM_SIGNUP_LINK']['pre'] = "<br />[ ";

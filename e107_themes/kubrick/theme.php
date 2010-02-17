@@ -10,9 +10,9 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.24 $
-|   $Date: 2009-06-11 19:21:36 $
-|   $Author: e107steved $
+|   $Revision$
+|   $Date$
+|   $Author$
 +---------------------------------------------------------------+
 */
 

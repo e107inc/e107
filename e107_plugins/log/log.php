@@ -13,9 +13,9 @@
 | File locking, modified getip() 18.01.07
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-12-19 12:14:41 $
-|     $Author: e107steved $
+|     $Revision$
+|     $Date$
+|     $Author$
 +----------------------------------------------------------------------------+
 */
 
