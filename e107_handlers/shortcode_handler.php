@@ -340,11 +340,12 @@ class e_shortcode
 		return in_array($code, $this->scOverride);
 	}
 
-	function parseCodes($text, $useSCFiles = true, $extraCodes = '', &$eVars='')
+	function parseCodes($text, $useSCFiles = true, $extraCodes = '', $eVars = null)
 	{
 		$saveParseSCFiles = $this->parseSCFiles;		// In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 
+		$this->eVars = null;
 		if(is_object($eVars)) {
 			$this->eVars = $eVars;
 		}
@@ -379,7 +380,7 @@ class e_shortcode
 	{
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
 
-		if(is_object($this->eVars)) {
+		if($this->eVars) {
 			if($this->eVars->$matches[1]) {
 				return $this->eVars->$matches[1];
 			}
