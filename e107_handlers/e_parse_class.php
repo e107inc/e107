@@ -17,8 +17,8 @@
  * @package e107
  * @subpackage e107_handlers
  * @version $Id$
- * 
- * Text processing and parsing functions. 
+ *
+ * Text processing and parsing functions.
  * Simple parse data model.
  */
 
@@ -520,7 +520,7 @@ class e_parse
 		{
 			$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
 		}
-				
+
 		return $ret;
 	}
 
@@ -568,10 +568,10 @@ class e_parse
 	}
 
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
+	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = '', $eVars = null)
 	{
 		//$this->sch_load();
-		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
+		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
 	function simpleParse(&$template, &$vars, $replaceUnset=true)
@@ -580,12 +580,12 @@ class e_parse
 		$this->replaceUnset = $replaceUnset;
 		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
 	}
-	
+
 	protected function simpleReplace($tmp) {
 		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
 		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset);
 	}
-	
+
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
 	{
 		/*
@@ -1903,7 +1903,7 @@ class e_parse
 
 /**
  * Data model for e_parse::simpleParse()
- * 
+ *
  */
 class e_vars
 {
@@ -1911,20 +1911,20 @@ class e_vars
 	 * @var array
 	 */
 	private $vars;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param array $array [optional] initial data
 	 */
 	public function __construct($array = array())
 	{
 		$this->setVars($array);
 	}
-	
+
 	/**
 	 * Set array data
-	 * 
+	 *
 	 * @param array $array
 	 * @param boolean $empty true (default) override old data, false - merge with existing data
 	 * @return e_vars
@@ -1940,22 +1940,22 @@ class e_vars
 
 		return $this;
 	}
-	
+
 	/**
 	 * Add array data to the object (merge with existing)
 	 * Convenient proxy to setVars methods
-	 * 
+	 *
 	 * @param array $array
-	 * @return 
+	 * @return
 	 */
 	public function addVars(array $array)
 	{
 		$this->setVars($array, false);
 	}
-	
+
 	/**
 	 * Reset object data
-	 * 
+	 *
 	 * @return e_vars
 	 */
 	public function emptyVars()
@@ -1963,20 +1963,20 @@ class e_vars
 		$this->vars = array();
 		return $this;
 	}
-	
+
 	/**
 	 * Check if there is data available
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isEmpty()
 	{
 		return empty($this->vars);
 	}
-	
+
 	/**
 	 * Magic setter
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 */
@@ -1984,10 +1984,10 @@ class e_vars
 	{
 		$this->vars[$key] = $value;
 	}
-	
+
 	/**
 	 * Magic getter
-	 * 
+	 *
 	 * @param string $key
 	 * @return mixed value or null if key not found
 	 */
@@ -1997,15 +1997,15 @@ class e_vars
 		{
 			return $this->vars[$key];
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Magic method to check if given data key is set.
 	 * Triggered on <code><?php isset($e_vars->myKey); </code>
 	 * NOTE: works on PHP 5.1.0+
-	 * 
+	 *
 	 * @param string $key
 	 * @return boolean
 	 */
@@ -2013,12 +2013,12 @@ class e_vars
 	{
 		return isset($this->vars[$key]);
 	}
-	
+
 	/**
 	 * Magic method to unset given data key.
 	 * Triggered on <code><?php unset($e_vars->myKey); </code>
 	 * NOTE: works on PHP 5.1.0+
-	 * 
+	 *
 	 * @param string $key
 	 */
 	public function __unset($key)
