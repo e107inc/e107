@@ -62,7 +62,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
 
-class e_db_mysql 
+class e_db_mysql
 {
 	// TODO switch to protected vars where needed
 	public $mySQLserver;
@@ -74,11 +74,11 @@ class e_db_mysql
 	public $mySQLresult;
 	public $mySQLrows;
 	public $mySQLerror = '';			// Error reporting mode - TRUE shows messages
-	
-	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber() 
+
+	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
 	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
 	protected $mySQLlastQuery = '';
-	
+
 	public $mySQLcurTable;
 	public $mySQLlanguage;
 	public $mySQLinfo;
@@ -250,7 +250,7 @@ class e_db_mysql
 	{
 		global $db_time,$db_mySQLQueryCount,$queryinfo;
 		$db_mySQLQueryCount++;
-		
+
 		$this->mySQLlastQuery = $query;
 
 		if ($debug == 'now')
@@ -393,6 +393,7 @@ class e_db_mysql
 	{
 		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
+		$REPLACE = false; // kill any PHP notices
 		if(is_array($arg))
 		{
 			if(isset($arg['WHERE'])) // use same array for update and insert.
@@ -469,13 +470,13 @@ class e_db_mysql
 			global $db_ConnectionID;
 			$this->mySQLaccess = $db_ConnectionID;
 		}
-		
+
 		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
 		if ($this->mySQLresult)
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = mysql_affected_rows($this->mySQLaccess); 
+				$tmp = mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
 				if ($tmp == -1) { return false; } // mysql_affected_rows error
@@ -901,9 +902,9 @@ class e_db_mysql
 	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		global $db_mySQLQueryCount;
-				
+
 		$this->tabset = FALSE;
-	
+
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
 
 		if(strpos($query,'`#') !== FALSE)
@@ -916,7 +917,7 @@ class e_db_mysql
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
 
-		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys 
+		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys
 																// the point of requiring backticks round table names - wrecks &#039;, for example
 
 		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE)
@@ -1189,13 +1190,13 @@ class e_db_mysql
 		{
 			while ($row = mysql_fetch_assoc($result))
 			{
-				if ($retinfo) 
+				if ($retinfo)
 				{
 					$ret[$row['Field']] = $row['Field'];
 				}
 				else
 				{
-					$ret[] = $row['Field']; 
+					$ret[] = $row['Field'];
 				}
 			}
 		}
@@ -1483,7 +1484,7 @@ class e_db_mysql
 	{
 		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
 	}
-	
+
 	function getLastQuery()
 	{
 		return $this->mySQLlastQuery;
@@ -1580,7 +1581,7 @@ class e_db_mysql
 			else
 			{		// Need to try and find a table definition
 				$searchArray = array(e_ADMIN.'sql/db_field_defs.php');
-				$sqlFiles = e107::getPref('e_sql_list');
+				$sqlFiles = (array) e107::getPref('e_sql_list', array()); // kill any PHP notices
 				foreach ($sqlFiles as $p => $f)
 				{
 					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
@@ -1604,12 +1605,12 @@ class e_db_mysql
 		}
 		return $this->dbFieldDefs[$tableName];
 	}
-	
 
-	/* 
+
+	/*
 	 *	Search the specified file for a field type definition of the specified table.
 	 *
-	 *	If found, generate and save a cache file in the e_DB_CACHE directory, 
+	 *	If found, generate and save a cache file in the e_DB_CACHE directory,
 	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
 	 *
 	 *	@param	string $defFile - file name, including path
@@ -1641,7 +1642,7 @@ class e_db_mysql
 				$result = TRUE;
 			}
 		}
-		
+
 		if (!$result)
 		{
 			$this->dbFieldDefs[$tableName] = FALSE;
@@ -1653,7 +1654,7 @@ class e_db_mysql
 	/**
 	 *	Creates a field type definition from the structure of the table in the DB
 	 *
-	 *	Generate and save a cache file in the e_DB_CACHE directory, 
+	 *	Generate and save a cache file in the e_DB_CACHE directory,
 	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
 	 *
 	 *	@param	string $tableName - name of table sought
