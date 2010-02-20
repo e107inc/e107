@@ -3,17 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
+|     $URL$
+|     $Id$
 +----------------------------------------------------------------------------+
 */
 
@@ -291,7 +289,7 @@ $POLL = $pollstr;
 
 $FORUMJUMP = forumjump();
 
-$forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
+$forstr = $tp->simpleParse($FORUMSTART);
 
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
@@ -349,7 +347,7 @@ if (((check_class($forum_info['forum_postclass']) && check_class($forum_info['pa
 	}
 }
 
-$forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
+$forend = $tp->simpleParse($FORUMEND);
 $forumstring = $forstr.$forthr.$forrep.$forend;
 
 
