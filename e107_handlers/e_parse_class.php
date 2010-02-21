@@ -570,11 +570,10 @@ class e_parse
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = '', $eVars = null)
 	{
-		//$this->sch_load();
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
-	function simpleParse(&$template, &$vars, $replaceUnset=true)
+	function simpleParse($template, $vars, $replaceUnset=true)
 	{
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
