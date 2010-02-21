@@ -805,10 +805,10 @@ class e_model
     	e107::getMessage()->moveStack($this->_message_stack, 'default', false, $session);
 		return $this;
     }
-    
+
     /**
      * Reset model System messages
-     * 
+     *
      * @param boolean|string $type E_MESSAGE_INFO | E_MESSAGE_SUCCESS | E_MESSAGE_WARNING | E_MESSAGE_WARNING | E_MESSAGE_DEBUG | false (all)
      * @param boolean $session reset also session messages
      * @return e_model
@@ -874,16 +874,25 @@ class e_model
 		}
 		$id = intval($id);
 
+		$sql = e107::getDb();
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
-		if(!$qry)
+		if($qry)
 		{
-			$qry = '
-				SELECT * FROM #'.$this->getModelTable().' WHERE '.$this->getFieldIdName().'='.$id.'
-			';
+			$res = $sql->db_Select_gen($qry);
+		}
+		else
+		{
+			$res = $sql->db_Select(
+				$this->getModelTable(),
+				$this->getParam('db_fields', '*'),
+				$this->getFieldIdName().'='.$id.' '.$this->getParam('db_where', ''),
+				'default',
+				($this->getParam('db_debug') ? true : false)
+			);
 		}
 
-		$sql = e107::getDb();
-		if($sql->db_Select_gen($qry))
+
+		if($res)
 		{
 			$this->setData($sql->db_Fetch());
 		}
@@ -943,10 +952,13 @@ class e_model
 
 	/**
 	 * Set parameter array
-	 * Core parameters:
+	 * Core implemented:
 	 * - db_query: string db query to be passed to load() ($sql->db_Select_gen())
+	 * - db_query
+	 * - db_fields
+	 * - db_where
+	 * - db_debug
 	 * - model_class: e_tree_model class - string class name for creating nodes inside default load() method
-	 *
 	 * @param array $params
 	 * @return e_model
 	 */
@@ -1094,7 +1106,7 @@ class e_model
 	 */
 	public function __toString()
 	{
-		return $this->toString((func_num_args() && @func_get_arg(0) === true));
+		return $this->toString(false);
 	}
 
 	public function destroy()
@@ -1628,10 +1640,10 @@ class e_admin_model extends e_model
     	parent::setMessages($session);
 		return $this;
     }
-    
+
     /**
      * Reset model System messages
-     * 
+     *
      * @param boolean|string $type E_MESSAGE_INFO | E_MESSAGE_SUCCESS | E_MESSAGE_WARNING | E_MESSAGE_WARNING | E_MESSAGE_DEBUG | false (all)
      * @param boolean $session reset session messages
      * @param boolean $validation reset validation messages as well
@@ -2082,7 +2094,7 @@ class e_tree_model extends e_model
 	 */
 	function setTree($tree_data, $force = false)
 	{
-		if($force || !$this->is('__tree'))
+		if($force || !$this->isTree())
 		{
 			$this->set('__tree', $tree_data);
 		}
@@ -2097,8 +2109,8 @@ class e_tree_model extends e_model
 	 */
 	public function load($force = false)
 	{
-
-		if(!$force && !$this->isEmpty())
+		// XXX What would break if changed to the most proper isTree()?
+		if(!$force && $this->isTree()) //!$this->isEmpty()
 		{
 			return $this;
 		}
@@ -2199,6 +2211,26 @@ class e_tree_model extends e_model
 	function isEmpty()
 	{
 		return (!$this->has('__tree'));
+	}
+
+	/**
+	 * Check if collection is loaded (not null)
+	 *
+	 * @return boolean
+	 */
+	function isTree()
+	{
+		return $this->is('__tree');
+	}
+
+	/**
+	 * Same as isEmpty(), but with opposite boolean logic
+	 *
+	 * @return boolean
+	 */
+	function hasTree()
+	{
+		return $this->has('__tree');
 	}
 }
 
