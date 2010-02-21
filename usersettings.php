@@ -237,7 +237,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
   if (strpos($tmp,'.') === FALSE) return FALSE;
   $em = array_reverse(explode('.',$tmp));
   $line = '';
-  $out = array("='*@.{$tmp}'");		// First element looks for domain as email address
+  $out = array($fieldname."='*@{$tmp}'");		// First element looks for domain as email address
   foreach ($em as $e)
   {
     $line = '.'.$e.$line;
