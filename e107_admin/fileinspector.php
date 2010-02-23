@@ -228,9 +228,6 @@ class file_inspector {
 		return $list;
 	}
 
-
-
-
 	// Given a full path and filename, looks it up in the list to determine valid actions; returns:
 	//	  'check' - file is expected to be present, and validity is to be checked
 	//	  'ignore' - file may or may not be present - check its validity if found, but not an error if missing
@@ -238,25 +235,26 @@ class file_inspector {
 	//	  'nocalc' - file may be present, but its integrity cannot be checked. Not an error if missing
 	function check_action($dir, $name)
 	{
+
 	  global $coredir;
 	  
-	  if ($name == 'e_inspect.php') return 'nocalc';		// Special case for plugin integrity checking
+	  if ($name == 'e_inspect.php') { return 'nocalc'; }		// Special case for plugin integrity checking
 	  
 	  $filename = $dir.'/'.$name;
-	  $admin_dir = $this -> root_dir.'/'.$coredir['admin'].'/';
-	  $image_dir  = $this -> root_dir.'/'.$coredir['images'].'/';
-	  $test_list = array(
-			$admin_dir.'core_image.php' => 'uncalc',
-			$admin_dir.'filetypes.php' => 'uncalc',
-			$admin_dir.'filetypes_.php' => 'uncalc',
-			$admin_dir.'admin_filetypes.php' => 'uncalc',
-			$this -> root_dir.'/e107_config.php' => 'uncalc',
-			$this -> root_dir.'/.htaccess' => 'uncalc',
-			$this -> root_dir.'/robots.txt' => 'nocalc',
-			$this -> root_dir.'/e107.htaccess' => 'ignore',
-			$this -> root_dir.'/e107.robots.txt' => 'ignore',
-		);
-	  if (isset($test_list[$filename])) return $test_list[$filename];
+	  $admin_dir = $this->root_dir.'/'.$coredir['admin'].'/';
+	  $image_dir  = $this->root_dir.'/'.$coredir['images'].'/';
+	  $test_list = array();
+
+	  // Files that are unable to be checked
+	  $test_list[$admin_dir.'core_image.php'] = 'uncalc';
+	  $test_list[$this->root_dir.'/e107_config.php'] = 'uncalc';
+
+      // Files that are likely to be renamed by user
+	  $test_list[$admin_dir.'filetypes_.php'] = 'ignore';
+	  $test_list[$this->root_dir.'/e107.htaccess'] = 'ignore';
+	  $test_list[$this->root_dir.'/e107.robots.txt'] = 'ignore';
+	  
+	  if (isset($test_list[$filename])) { return $test_list[$filename]; }
 	  return 'check';
 	}
 
