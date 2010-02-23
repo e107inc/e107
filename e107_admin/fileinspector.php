@@ -102,7 +102,7 @@ Standalone file scan - checks for a valid set of E107 files<br />";
 
   // Strip trailing '/' off each directory name
   $maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
-  foreach ($maindirs as $maindirs_key => $maindirs_value) 
+  foreach ($maindirs as $maindirs_key => $maindirs_value)
   {
 	$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
 	if (!file_exists(e_BASE.$coredir[$maindirs_key]))
@@ -141,7 +141,7 @@ if (substr($HELP_DIRECTORY,-5,5) == 'help/')
 	$DOCS_DIRECTORY = substr($HELP_DIRECTORY,0,-5);		// Whatever $HELP_DIRECTORY is set to, assume docs are in a subdirectory called 'help' off it
 }
 $maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
-foreach ($maindirs as $maindirs_key => $maindirs_value) 
+foreach ($maindirs as $maindirs_key => $maindirs_value)
 {
   $coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
 }
@@ -187,7 +187,7 @@ class file_inspector {
 	var $alone = FALSE;
 	var $dotree = FALSE;
 	
-	function file_inspector($standalone = FALSE) 
+	function file_inspector($standalone = FALSE)
 	{
 	  global $PLUGINS_DIRECTORY, $THEMES_DIRECTORY;
 	  $this->dotree = ($_POST['type'] == 'tree');
@@ -218,21 +218,21 @@ class file_inspector {
 
 		global $e107;
 		$this -> root_dir = $e107 -> file_path;
-		if (substr($this -> root_dir, -1) == '/') 
+		if (substr($this -> root_dir, -1) == '/')
 		{
 		  $this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
-		if ($_POST['core'] == 'fail') 
+		if ($_POST['core'] == 'fail')
 		{
 		  $_POST['integrity'] = TRUE;
 		}
-		if (MAGIC_QUOTES_GPC && $_POST['regex']) 
+		if (MAGIC_QUOTES_GPC && $_POST['regex'])
 		{
 		  $_POST['regex'] = stripslashes($_POST['regex']);
 		}
-		if ($_POST['regex']) 
+		if ($_POST['regex'])
 		{
-		  if ($_POST['core'] == 'fail') 
+		  if ($_POST['core'] == 'fail')
 		  {
 			$_POST['core'] = 'all';
 		  }
@@ -245,7 +245,7 @@ class file_inspector {
 		if (substr($this->BASE_THEMES_DIR,-1) == '/') $this->BASE_THEMES_DIR = substr($this->BASE_THEMES_DIR,0,-1);
 	}
 	
-	function scan_config() 
+	function scan_config()
 	{
 		global $ns, $rs, $pref;
 
@@ -413,20 +413,23 @@ class file_inspector {
 	{
 	  global $coredir;
 	  
-	  if ($name == 'e_inspect.php') return 'nocalc';		// Special case for plugin integrity checking
+	  if ($name == 'e_inspect.php') { return 'nocalc'; }		// Special case for plugin integrity checking
 	  
 	  $filename = $dir.'/'.$name;
-	  $admin_dir = $this -> root_dir.'/'.$coredir['admin'].'/';
-	  $test_list = array(
-			$admin_dir.'core_image.php' => 'uncalc',
-			$admin_dir.'filetypes.php' => 'uncalc',
-			$admin_dir.'filetypes_.php' => 'ignore',
-			$admin_dir.'admin_filetypes.php' => 'nocalc',
-			$this -> root_dir.'/e107_config.php' => 'uncalc',
-			$this -> root_dir.'/e107.htaccess' => 'ignore',
-			$this -> root_dir.'/install.php' => 'ignore'
-		);
-	  if (isset($test_list[$filename])) return $test_list[$filename];
+	  $admin_dir = $this->root_dir.'/'.$coredir['admin'].'/';
+
+	  $test_list = array();
+
+	  // Files that are unable to be checked
+	  $test_list[$admin_dir.'core_image.php'] = 'uncalc';
+	  $test_list[$this->root_dir.'/e107_config.php'] = 'uncalc';
+
+      // Files that are likely to be renamed by user
+	  $test_list[$admin_dir.'filetypes_.php'] = 'ignore';
+	  $test_list[$this->root_dir.'/e107.htaccess'] = 'ignore';
+	  $test_list[$this->root_dir.'/e107.robots.txt'] = 'ignore';
+	  
+	  if (isset($test_list[$filename])) { return $test_list[$filename]; }
 	  return 'check';
 	}
 
@@ -438,14 +441,14 @@ class file_inspector {
 	//	$dir
 	//	&$tree_end
 	//	&$parent_expand
-	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) 
+	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand)
 	{
 	  global $coredir;
 
 	  unset ($childOut);
 	  $parent_expand = false;
 	  $sub_text = '';
-	  if (substr($dir, -1) == '/') 
+	  if (substr($dir, -1) == '/')
 	  {
 		$dir = substr($dir, 0, -1);
 	  }
@@ -456,10 +459,10 @@ class file_inspector {
 	  $directory = $level ? basename($dir) : SITENAME;
 	  $level++;
 		
-	  foreach ($list as $key => $value) 
+	  foreach ($list as $key => $value)
 	  {
 		$this -> parent = $dir_id;
-		if (is_array($value)) 
+		if (is_array($value))
 		{ // Entry is a subdirectory - recurse another level
 		  $path = $dir.'/'.$key;
 		  $child_open = false;
@@ -483,27 +486,27 @@ class file_inspector {
 			$sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
 		  }
 		  $tree_end = false;
-		  if ($child_expand) 
+		  if ($child_expand)
 		  {
 			$parent_expand = true;
 			$last_expand = true;
 		  }
-		} 
-		else 
+		}
+		else
 		{
 		  $path = $dir.'/'.$key;
 		  $fid = strtolower($key);
 		  $this -> files[$dir_id][$fid]['file'] = ($this->dotree) ? $key : $path;
-		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE)
 		  {	// We're checking a file here
-			if ($_POST['core'] != 'none') 
+			if ($_POST['core'] != 'none')
 			{		// Look at core files
 			  $this -> count['core']['num']++;
 			  $this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
-			  if ($_POST['regex']) 
+			  if ($_POST['regex'])
 			  {	// Developer prefs activated - search file contents according to regex
 				$file_content = file($path);		// Get contents of file
-				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) 
+				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE)
 				{
 				  if ($this -> files[$dir_id][$fid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content))
 				  {	// Search string found - add file to list
@@ -513,41 +516,41 @@ class file_inspector {
 					$parent_expand = TRUE;
 					$this -> results++;
 					$this -> line_results += count($this -> files[$dir_id][$fid]['lines']);
-				  } 
-				  else 
+				  }
+				  else
 				  {	// Search string not found - discard from list
 					unset($this -> files[$dir_id][$fid]);
 					$known[$dir_id][$fid] = true;
 					$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
 				  }
 				}
-			  } 
-			  else 
-			  {	
-				if ($_POST['integrity']) 
+			  }
+			  else
+			  {
+				if ($_POST['integrity'])
 				{	// Actually check file integrity
 				  switch ($this_action = $this->check_action($dir,$key))
 				  {
 					case 'ignore' :
 				    case 'check' :
-					  if ($this -> checksum($path) != $value) 
+					  if ($this -> checksum($path) != $value)
 					  {
 						$this -> count['fail']['num']++;
 						$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
 						$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
 						$dir_icon = 'folder_fail.png';
 						$parent_expand = TRUE;
-					  } 
-					  else 
+					  }
+					  else
 					  {
 						$this -> count['pass']['num']++;
 						$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
-						if ($_POST['core'] != 'fail') 
+						if ($_POST['core'] != 'fail')
 						{
 						  $this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
 						  $dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
-						} 
-						else 
+						}
+						else
 						{
 						  unset($this -> files[$dir_id][$fid]);
 						  $known[$dir_id][$fid] = true;
@@ -561,28 +564,28 @@ class file_inspector {
 					  if ($_POST['core'] != 'fail')
 					  {
 						$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
-					  } 
-					  else 
+					  }
+					  else
 					  {
 						unset($this -> files[$dir_id][$fid]);
 						$known[$dir_id][$fid] = true;
 					  }
 					  break;
 				  }
-				} 
-				else 
+				}
+				else
 				{	// Just identify as core file
 				  $this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 				}
 			  }
-			} 
-			else 
+			}
+			else
 			{
 			  unset ($this -> files[$dir_id][$fid]);
 			  $known[$dir_id][$fid] = true;
 			}
-		  } 
-		  elseif ($_POST['missing']) 
+		  }
+		  elseif ($_POST['missing'])
 		  {
 			switch ($this_action = $this->check_action($dir,$key))
 			{
@@ -600,8 +603,8 @@ class file_inspector {
 				$known[$dir_id][$fid] = true;
 			    break;
 			}
-		  } 
-		  else 
+		  }
+		  else
 		  {
 			unset ($this -> files[$dir_id][$fid]);
 		  }
@@ -701,12 +704,12 @@ class file_inspector {
 		return $text;
 	}
 
-	function scan_results() 
+	function scan_results()
 	{
 		global $ns, $rs, $core_image, $deprecated_image, $tp, $e107;
 		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
 
-//		if ($_POST['type'] == 'tree') 
+//		if ($_POST['type'] == 'tree')
 		if ($this->dotree)
 		{
 			$text = "<div style='text-align:center'>
@@ -723,9 +726,9 @@ class file_inspector {
 			".$scan_text."
 			</div>
 			</td>
-			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";	
-		} 
-		else 
+			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
+		}
+		else
 		{
 			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -739,15 +742,15 @@ class file_inspector {
 
 		$text .= "<table class='t' id='initial'>";
 		
-//		if ($_POST['type'] == 'tree') 
+//		if ($_POST['type'] == 'tree')
 		if ($this->dotree)
 		{
 			$text .= "<tr><td class='f' style='padding-left: 4px'>
 			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 			<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
 			<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
-		} 
-		else 
+		}
+		else
 		{
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
 			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
@@ -817,8 +820,8 @@ class file_inspector {
 			</td></tr>";
 		}
 		
-//		if ($_POST['type'] == 'tree' && !$this -> results && $_POST['regex']) 
-		if ($this->dotree && !$this -> results && $_POST['regex']) 
+//		if ($_POST['type'] == 'tree' && !$this -> results && $_POST['regex'])
+		if ($this->dotree && !$this -> results && $_POST['regex'])
 		{
 			$text .= "</td></tr>
 			<tr><td style='padding-right: 4px; text-align: center' colspan='2'><br />".FR_LAN_23."</td></tr>";
@@ -826,13 +829,13 @@ class file_inspector {
 
 		$text .= "</table>";
 		
-//		if ($_POST['type'] != 'tree') 
+//		if ($_POST['type'] != 'tree')
 		if (!$this->dotree)
 		{
 			$text .= "<br /></td></tr><tr>
 			<td class='forumheader3' colspan='2'>
 			<table class='t'>";
-			if (!$this -> results && $_POST['regex']) 
+			if (!$this -> results && $_POST['regex'])
 			{
 			  $text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
 			}
@@ -841,35 +844,35 @@ class file_inspector {
 
 
 
-		foreach ($this -> files as $dir_id => $fid) 
+		foreach ($this -> files as $dir_id => $fid)
 		{
 			ksort($fid);
 			$text .= ($this->dotree) ? "<table class='t' style='display: none' id='f_".$dir_id."'>" : "";
 			$initial = FALSE;
-			foreach ($fid as $key => $stext) 
+			foreach ($fid as $key => $stext)
 			{
-//				if ($_POST['type'] == 'tree') 
+//				if ($_POST['type'] == 'tree')
 				if ($this->dotree)
-//				if (!$initial) 
+//				if (!$initial)
 				{
-					if (!$initial) 
-//					if ($_POST['type'] == 'tree') 
+					if (!$initial)
+//					if ($_POST['type'] == 'tree')
 					{
 						$text .= "<tr><td class='f' style='padding-left: 4px' ".($stext['level'] ? "onclick=\"sh('f_".$stext['parent']."')\"" : "").">
 						<img src='".e_IMAGE."fileinspector/".($stext['level'] ? "folder_up.png" : "folder_root.png")."' class='i' alt='' />".($stext['level'] ? "&nbsp;.." : "")."</td>
 						<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('initial')\"><img src='".e_IMAGE."fileinspector/close.png' class='i' alt='' /></td></tr>";
 					}
-				} 
-				else 
+				}
+				else
 				{
-//					if ($_POST['type'] != 'tree') 
+//					if ($_POST['type'] != 'tree')
 					if (!$this->dotree)
 					{
 						$stext['file'] = str_replace($this -> root_dir."/", "", $stext['file']);
 					}
 					$text .= "<tr>
 					<td class='f'><img src='".e_IMAGE."fileinspector/".$stext['icon']."' class='i' alt='' />&nbsp;".$stext['file']."&nbsp;";
-					if ($_POST['regex']) 
+					if ($_POST['regex'])
 					{
 						if ($_POST['num'] || $_POST['line']) {
 							$text .= "<br />";
@@ -887,8 +890,8 @@ class file_inspector {
 							}
 						}
 						$text .= "<br />";
-					} 
-					else 
+					}
+					else
 					{
 						$text .= "</td>
 						<td class='s'>".$e107->parseMemorySize($stext['size']);
@@ -904,7 +907,7 @@ class file_inspector {
 
 
 		
-//		if ($_POST['type'] != 'tree') 
+//		if ($_POST['type'] != 'tree')
 		if (!$this->dotree)
 		{
 		  $text .= '</table>';
