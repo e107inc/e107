@@ -40,8 +40,6 @@ foreach ($maindirs as $maindirs_key => $maindirs_value) {
 }
 
 require_once('core_image.php');
-$core_image[$coredir['admin']]['filetypes.php'] = ' ';
-
 
 if (e_QUERY) {
 	$fi -> snapshot_interface();
