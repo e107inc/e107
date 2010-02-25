@@ -301,7 +301,7 @@ class e107
 			$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 
 			// set base path, SSL is auto-detected
-			$this->set_base_path(false);
+			$this->set_base_path();
 
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
@@ -333,7 +333,7 @@ class e107
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 
 		// set base path, SSL is auto-detected
-		$this->set_base_path(false);
+		$this->set_base_path();
 
 		// set some core URLs (e_LOGIN/SIGNUP)
 		$this->set_urls();
