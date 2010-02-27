@@ -15,7 +15,7 @@
 
 /**
  * @package e107
- * @subpackage e107_handlers
+ * @subpackage handlers
  * @version $Id$
  *
  * Text processing and parsing functions.
@@ -573,7 +573,15 @@ class e_parse
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
-	function simpleParse($template, $vars, $replaceUnset=true)
+	/**
+	 * Simple parser
+	 *
+	 * @param string $template
+	 * @param e_vars $vars
+	 * @param string $replaceUnset string to be used if replace variable is not set, false - don't replace
+	 * @return string parsed content
+	 */
+	function simpleParse($template, e_vars $vars, $replaceUnset='')
 	{
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
