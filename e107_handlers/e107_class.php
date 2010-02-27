@@ -1340,7 +1340,7 @@ class e107
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 *
-	 * @param string $plug_name
+	 * @param string $plug_name if null getCoreTemplate method will be called
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo()}
@@ -1350,6 +1350,10 @@ class e107
 	 */
 	public static function getTemplate($plug_name, $id, $key = null, $override = true, $merge = false, $info = false)
 	{
+		if(null === $plug_name)
+		{
+			return self::getCoreTemplate($id, $key, $override, $merge, $info);
+		}
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
 		$id = str_replace('/', '_', $id);
