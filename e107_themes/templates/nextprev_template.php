@@ -61,9 +61,9 @@ $NEXTPREV_TEMPLATE['dropdown_nav_first'] = '';
 $NEXTPREV_TEMPLATE['dropdown_nav_last'] = '';
 
 // 'tbox npbutton' classes are deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_nav_prev'] = '<a class="nextprev-item prev tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['dropdown_nav_prev'] = '<a class="nextprev-item prev tbox npbutton" href="{url}" title="{url_label}">{label}</a>&nbsp;';
 // 'tbox npbutton' classes are deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_nav_next'] = '<a class="nextprev-item next tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['dropdown_nav_next'] = '&nbsp;<a class="nextprev-item next tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
 
 // 'npdropdown' class is deprecated!!!
 $NEXTPREV_TEMPLATE['dropdown_items_start'] = '<select class="tbox npdropdown nextprev-select" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value">';
@@ -72,6 +72,6 @@ $NEXTPREV_TEMPLATE['dropdown_item_current'] = '<option value="{url}" selected="s
 $NEXTPREV_TEMPLATE['dropdown_items_end'] = '</select>';
 
 //$NEXTPREV_TEMPLATE['dropdown_separator'] = '<span class="nextprev-sep"><!-- --></span>';
-$NEXTPREV_TEMPLATE['dropdown_separator'] = '&nbsp;';
+$NEXTPREV_TEMPLATE['dropdown_separator'] = '';
 
 ?>
