@@ -1,7 +1,28 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration User Interface logic
+ *
+ * $URL$
+ * $Id$
+ */
+
+ /**
+ * @package e107
+ * @subpackage e107_handler
+ * @version $Id$
+ *
+ * Administration User Interface logic
+ */
+
 
 /**
- * TODO - core request handler (non-admin), core response
+ * @todo core request handler (non-admin), core response
  */
 class e_admin_request
 {
