@@ -70,7 +70,7 @@ class e_form
 	 * @var user_class
 	 */
 	protected $_uc;
-	
+
 	protected $_required_string;
 
 	function __construct($enable_tabindex = false)
@@ -79,7 +79,7 @@ class e_form
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
 	}
-	
+
 	/**
 	 * Get required field markup string
 	 * @return string
@@ -88,7 +88,7 @@ class e_form
 	{
 		return $this->_required_string;
 	}
-	
+
 	/**
 	 * Set required field markup string
 	 * @param string $string
@@ -147,13 +147,13 @@ class e_form
 		// Temporary Fix for using Media-Manager data
 
 		$sql = e107::getDb();
-		
-		// $sc_parameters is currently being used to select the media-category. 
+
+		// $sc_parameters is currently being used to select the media-category.
 
 		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : "";
 		$qry .= "ORDER BY media_name";
-		
+
 
 		if($sql->db_Select_gen($qry))
 		{
@@ -217,7 +217,7 @@ class e_form
 		{
 		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		}
-			
+
 		return $cal->make_input_field($cal_options, $cal_attrib);
 	}
 
@@ -1544,7 +1544,7 @@ class e_form
 
 			case 'upload': //TODO - from method
 				// TODO uploadfile SC is now processing uploads as well (add it to admin UI), write/readParms have to be added (see uploadfile.php parms)
-				return $tp->parseTemplate("{UPLOADFILE=".e_UPLOAD."}");
+				return $tp->parseTemplate("{UPLOADFILE=".(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles}");
 			break;
 
 			case 'hidden':
@@ -1747,9 +1747,9 @@ class e_form
 
 	/**
 	 * Create form fieldset, called internal by {@link renderCreateForm())
-	 * 
+	 *
 	 * @param string $id field id
-	 * @param array $fdata fieldset data 
+	 * @param array $fdata fieldset data
 	 * @param e_admin_model $model
 	 * @param boolean $nocontainer ???
 	 */
@@ -1769,7 +1769,7 @@ class e_form
 
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
-		$required_help = false; 
+		$required_help = false;
 		foreach($fdata['fields'] as $key => $att)
 		{
 			// convert aliases - not supported in edit mod
@@ -1794,7 +1794,7 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-				
+
 			// type null - system (special) fields
 			if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
@@ -1831,7 +1831,7 @@ class e_form
 			//if($bckp) $model->remove($bckp);
 
 		}
-		
+
 		if($required_help)
 		{
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
