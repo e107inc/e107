@@ -1299,19 +1299,19 @@ class e_admin_dispatcher
 						$k2 = $k;
 					break;
 				}
-							 
-				if($val['perm']!= null) // check perms 
+
+				if($val['perm']!= null) // check perms
 				{
 					if(getperms($val['perm']))
 					{
-						$var[$key][$k2] = $v;		
-					}	
+						$var[$key][$k2] = $v;
+					}
 				}
 				else
 				{
-					$var[$key][$k2] = $v;	
+					$var[$key][$k2] = $v;
 				}
-				
+
 			}
 			// TODO slide down menu options?
 			if(!vartrue($var[$key]['link']))
@@ -2523,7 +2523,6 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function convertToData(&$data)
 	{
-		
 		$model = new e_model($data);
 		foreach ($this->getFields() as $key => $attributes)
 		{
@@ -2538,7 +2537,7 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'datestamp':
 					if(!is_numeric($value))
 					{
-						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0;						
+						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0;
 					}
 				break;
 
@@ -2557,9 +2556,9 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				$model->set($key, $value);
 			}
-			
+
 		}
-		
+
 		$data = $model->getData();
 		unset($model);
 		$this->toData($data);
@@ -2616,7 +2615,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function renderAjaxFilterResponse($listQry = '')
 	{
-
+		$debug = false;
 		$srch = $this->getPosted('searchquery');
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
 
@@ -2631,7 +2630,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			// Make query
 			$sql = e107::getDb();
-			if($qry && $sql->db_Select_gen($qry))
+			if($qry && $sql->db_Select_gen($qry, $debug))
 			{
 				while ($res = $sql->db_Fetch())
 				{
@@ -2807,6 +2806,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath.'*';
 		}
 
+
 		$jwhere = array();
 		$joins = array();
 		//file_put_contents('e:/www/log', $tableSFields."\n\n", FILE_APPEND);
@@ -2846,7 +2846,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			//From
-			$qry .= ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom;
+			$qry .= $tableSJoinArr ? ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom : " FROM ".$tableFrom;
 
 			// Joins
 			if(count($joins) > 0)
