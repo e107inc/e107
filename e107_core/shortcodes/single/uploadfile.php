@@ -151,6 +151,7 @@ function uploadfile_shortcode($parm)
 					<div id='{$parms['up_row']}' class='nowrap'>
 						<input class='tbox file' type='file' name='{$name}' />
 			        </div>
+			        <div class='field-help'>Upload to: <strong>".str_replace('../', '', $path)."</strong></div>
 				</div>
 			</div>
 			<!-- End Upload Shortcode -->
