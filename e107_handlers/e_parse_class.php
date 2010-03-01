@@ -1777,7 +1777,8 @@ class e_parse
 					'{e_THEME}'		=> $e107->getFolder('themes'),
 					'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
 					'{e_ADMIN}'		=> $e107->getFolder('admin'),
-					'{e_HANDLER}'	=> $e107->getFolder('handlers')
+					'{e_HANDLER}'	=> $e107->getFolder('handlers'),
+					'{e_MEDIA}'		=> $e107->getFolder('media'),
 					);
 			break;
 
@@ -1789,7 +1790,8 @@ class e_parse
 					'{e_THEME}'		=> e_THEME,
 					'{e_DOWNLOAD}'	=> e_DOWNLOAD,
 					'{e_ADMIN}'		=> e_ADMIN,
-					'{e_HANDLER}'	=> e_HANDLER
+					'{e_HANDLER}'	=> e_HANDLER,
+					'{e_MEDIA}'		=> e_MEDIA,
 				);
 			break;
 
@@ -1801,7 +1803,8 @@ class e_parse
 					'{e_THEME}'		=> e_THEME_ABS,
 					'{e_DOWNLOAD}'	=> e_BASE.'request.php?',
 					'{e_ADMIN}'		=> e_ADMIN_ABS,
-					'{e_HANDLER}'	=> e_HANDLER_ABS
+					'{e_HANDLER}'	=> e_HANDLER_ABS,
+					'{e_MEDIA}'		=> e_MEDIA_ABS,
 				);
 			break;
 
@@ -1813,7 +1816,8 @@ class e_parse
 					'{e_THEME}'		=> SITEURL.$e107->getFolder('themes'),
 					'{e_DOWNLOAD}'	=> SITEURL.$e107->getFolder('downloads'),
 					'{e_ADMIN}'		=> SITEURL.$e107->getFolder('admin'),
-					'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers')
+					'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers'),
+					'{e_MEDIA}'		=> SITEURL.$e107->getFolder('media'),
 				);
 			break;
 

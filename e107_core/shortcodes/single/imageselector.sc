@@ -15,7 +15,7 @@ else
 
 $paths = explode("|",$path);
 
-if(trim($default[0])=="{")
+if(trim($default{0})=="{")
 {
 	$pvw_default = $tp->replaceConstants($default, 'abs');
 	$path = ""; // remove the default path if a constant is used.
@@ -37,7 +37,7 @@ if($scaction == 'select' || $scaction == 'all')
 
 	foreach($paths as $pths)
 	{
-		$imagelist[$tp->createConstants($pths, 1)]= $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
+		$imagelist[$tp->createConstants($pths, 'mix')]= $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
 	}
 
 
@@ -74,7 +74,7 @@ if($scaction == 'select' || $scaction == 'all')
 				if(!$filter || ($filter && ereg($filter,$dir.$icon['fname'])))
 				{
 
-					$pth = ($fullpath) ? $tp->createConstants($icon['path'],1) : $dir;
+					$pth = ($fullpath) ? $tp->createConstants($icon['path'],'rel') : $dir;
 					$selected = ($default == $pth.$icon['fname'] || $pth.$default == $pth.$icon['fname']) ? " selected='selected'" : "";
 					$text .= "<option value='{$pth}{$icon['fname']}'{$selected}>&nbsp;&nbsp;&nbsp;{$dir}{$icon['fname']}</option>\n";
 				}
@@ -108,7 +108,7 @@ if(!$pvw_default)
 			$pvw_default = $tp->replaceConstants($pvw_default, 'abs');
 		}
 	}
-	else 
+	else
 	{
 		$pvw_default = e_IMAGE_ABS."generic/blank.gif";
 		$hide = ' style="display: none;"';
