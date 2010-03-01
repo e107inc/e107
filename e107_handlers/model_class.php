@@ -1184,6 +1184,11 @@ class e_admin_model extends e_model
 	 */
 	protected $_db_errno = 0;
 
+	/**
+	 * @var string Last SQL error message
+	 */
+	protected $_db_errmsg = '';
+
     /**
      * Validator object
      *
@@ -1688,7 +1693,7 @@ class e_admin_model extends e_model
      */
     public function getSqlError()
     {
-    	return e107::getDb()->getLastErrorText();
+    	return $this->_db_errmsg;
     }
 
     /**
@@ -1709,6 +1714,7 @@ class e_admin_model extends e_model
 		parent::load($id, $force);
 
 		$this->_db_errno = e107::getDb()->getLastErrorNumber();
+		$this->_db_errmsg = $sql->getLastErrorText();
 		if($this->_db_errno)
 		{
 			$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
@@ -1765,15 +1771,17 @@ class e_admin_model extends e_model
     public function dbInsert($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
+    	$this->_db_errmsg = '';
 		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
 			return 0;
 		}
-
-		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
+		$sql = e107::getDb();
+		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
 		if(!$res)
 		{
-			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			return false;
@@ -1795,15 +1803,17 @@ class e_admin_model extends e_model
     public function dbReplace($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
+    	$this->_db_errmsg = '';
 		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
 			return 0;
 		}
-
-		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+		$sql = e107::getDb();
+		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
 		if(!$res)
 		{
-			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
@@ -1823,15 +1833,18 @@ class e_admin_model extends e_model
     public function dbUpdate($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
+		$this->_db_errmsg = '';
 		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
 		}
-		$res = e107::getDb()->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
+		$sql = e107::getDb();
+		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
 		if(!$res)
 		{
-			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
@@ -1855,6 +1868,7 @@ class e_admin_model extends e_model
     public function dbDelete($session_messages = false)
     {
     	$this->_db_errno = 0;
+		$this->_db_errmsg = '';
 		if($this->hasError())
 		{
 			return 0;
@@ -1865,10 +1879,12 @@ class e_admin_model extends e_model
 			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
 			return 0;
 		}
-		$res = e107::getDb()->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
+		$sql = e107::getDb();
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
 		if(!$res)
 		{
-			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
@@ -2237,6 +2253,48 @@ class e_tree_model extends e_model
 class e_admin_tree_model extends e_tree_model
 {
 	/**
+	 * @var integer Last SQL error number
+	 */
+	protected $_db_errno = 0;
+
+	/**
+	 * @var string Last SQL error message
+	 */
+	protected $_db_errmsg = '';
+
+    /**
+     * @return boolean
+     */
+    public function hasSqlError()
+    {
+    	return !empty($this->_db_errno);
+    }
+
+    /**
+     * @return integer last mysql error number
+     */
+    public function getSqlErrorNumber()
+    {
+    	return $this->_db_errno;
+    }
+
+    /**
+     * @return string last mysql error message
+     */
+    public function getSqlError()
+    {
+    	return $this->_db_errmsg;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasError()
+    {
+    	return $this->hasSqlError();
+    }
+
+	/**
 	 * Batch Delete records
 	 * @param mixed $ids
 	 * @param boolean $destroy [optional] destroy object instance after db delete
@@ -2250,7 +2308,6 @@ class e_admin_tree_model extends e_tree_model
 		if(!is_array($ids))
 		{
 			$ids = explode(',', $ids);
-
 		}
 
 		$ids = array_map('intval', $ids);
@@ -2258,6 +2315,8 @@ class e_admin_tree_model extends e_tree_model
 
 		$sql = e107::getDb();
 		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
+		$this->_db_errno = $sql->getLastErrorNumber();
+		$this->_db_errmsg = $sql->getLastErrorText();
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -2314,6 +2373,8 @@ class e_admin_tree_model extends e_tree_model
 		$idstr = implode(', ', $ids);
 
 		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')');
+		$this->_db_errno = $sql->getLastErrorNumber();
+		$this->_db_errmsg = $sql->getLastErrorText();
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
