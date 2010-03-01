@@ -58,102 +58,102 @@ class e_validator
 	 * @var integer Unknown error code
 	 */
 	const ERR_UNKNOWN = 0;
-	
+
 	/**
 	 * @var integer Value not found error code
 	 */
 	const ERR_MISSING_VALUE = 101;
-	
+
 	/**
 	 * @var integer Unexpected value type error code (bad rule)
 	 */
 	const ERR_UNEXPECTED_VALUE = 102;
-	
+
 	/**
 	 * @var integer Invalid characters error code
 	 */
 	const ERR_INVALID_CHARS = 103;
-	
+
 	/**
 	 * @var integer Invalid email error code
 	 */
 	const ERR_INVALID_EMAIL = 104;
-	
+
 	/**
-	 * @var integer Invalid email error code
+	 * @var integer Field doesn't match error code
 	 */
 	const ERR_FIELDS_MATCH = 105;
-	
+
 	/**
 	 * @var integer String too short error code
 	 */
 	const ERR_TOO_SHORT = 131;
-	
+
 	/**
 	 * @var integer String too long error code
 	 */
 	const ERR_TOO_LONG = 132;
-	
+
 	/**
 	 * @var integer Number too low error code
 	 */
 	const ERR_TOO_LOW = 133;
-	
+
 	/**
 	 * @var integer Number too high error code
 	 */
 	const ERR_TOO_HIGH = 134;
-	
+
 	/**
 	 * @var integer Array count too low error code
 	 */
 	const ERR_ARRCOUNT_LOW = 135;
-	
+
 	/**
 	 * @var integer Array count high error code
 	 */
 	const ERR_ARRCOUNT_HIGH = 136;
-	
+
 	/**
 	 * @var integer Type of integer expected error code
 	 */
 	const ERR_INT_EXPECTED = 151;
-	
+
 	/**
 	 * @var integer Type of float expected error code
 	 */
 	const ERR_FLOAT_EXPECTED = 152;
-	
+
 	/**
 	 * @var integer Instance type expected error code
 	 */
 	const ERR_INSTANCEOF_EXPECTED = 153;
-	
+
 	/**
 	 * @var integer Array type expected error code
 	 */
 	const ERR_ARRAY_EXPECTED = 154;
-	
+
 	/**
 	 * @var integer Generic (empty value) error code
 	 */
 	const ERR_GENERIC = 191;
-	
+
 	/**
 	 * @var integer File not exists or not a file error code
 	 */
 	const ERR_NOT_FILE = 201;
-	
+
 	/**
 	 * @var integer File not writable error code
 	 */
 	const ERR_WRITABLE_FILE = 202;
-	
+
 	/**
 	 * @var integer File exceeds allowed file size error code
 	 */
 	const ERR_SIZEMIN_FILE = 203;
-	
+
 	/**
 	 * @var integer File lower than minimal file size error code
 	 */
@@ -161,13 +161,13 @@ class e_validator
 
 	/**
 	 * Required rules - Used by validate method
-	 * 
+	 *
 	 * Structure: array(type, condition, field title LAN[, condition help, validation error message]);
-	 * 
+	 *
 	 * @example $_required_rules['download_category_id'] = array('int', '1', 'Download Category', 'choose category')
-	 * 
+	 *
 	 * Validation array structure:
-	 * - type | condition = 
+	 * - type | condition =
 	 * 		- regex | regex string
 	 * 		- email | no condition required
 	 * 		- int/integer | number range in format 'min:max'
@@ -176,55 +176,56 @@ class e_validator
 	 * 		- required | no condition required
 	 * 		- callback | string function name or array(class name|object, method) (static call)
 	 * 		- instanceof | string class name
+	 * 		- enum | (string) values separated by '#' e.g. 'match1#match2#match3'
 	 * 		- array | array count range in format 'min:max'
 	 * 		- compare | string field_name, value should be in format field_name => array('value1', 'value1')
 	 * 					if value1 === value1, field_name => value1 will be added to $_valid_data array
-	 * - field title LAN = 
+	 * - field title LAN =
 	 * 		human readable field (data key) name
-	 * - [optional] condition help = 
+	 * - [optional] condition help =
 	 * 		can be used for both inline field help and validation error message
-	 * - [optional] validation error message = 
+	 * - [optional] validation error message =
 	 * 		if empty condition help will be used
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_required_rules = array();
-	
+
 	/**
 	 * Check data only if exist/non-empty
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_optional_rules = array();
-	
+
 	/**
 	 * Contains validation error codes in format 'field=>error_code'
 	 * @var array
 	 */
 	protected $_validation_results = array();
-	
+
 	/**
 	 * Stores validated data (only after successful {@link validateField()} call
 	 * @var array
 	 */
 	protected $_valid_data = array();
-	
+
 	/**
 	 * Stores validate check result
 	 * @var boolean
 	 */
 	protected $_is_valid_data = true;
-	
+
 	/**
 	 * eMessage handler namespace
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_message_stack = 'validator';
-	
+
 	/**
-	 * Constructore 
-	 * @param string [optional] $message_stack [optional] eMessage handler namespace 
+	 * Constructore
+	 * @param string [optional] $message_stack [optional] eMessage handler namespace
 	 * @param array [optional] $rules validation rules
 	 * @param array [optional] $optrules optional validation rules
 	 */
@@ -234,10 +235,10 @@ class e_validator
 			->setRules($rules)
 			->setOptionalRules($optrules);
 	}
-	
+
 	/**
 	 * Set message stack
-	 * 
+	 *
 	 * @param string $mstack
 	 * @return e_validator
 	 */
@@ -247,7 +248,7 @@ class e_validator
 		$this->_message_stack = $mstack;
 		return $this;
 	}
-	
+
 	/**
 	 * @param array $rules
 	 * @return e_validator
@@ -257,7 +258,7 @@ class e_validator
 		$this->_required_rules = $rules;
 		return $this;
 	}
-	
+
 	/**
 	 * @param array $rules
 	 * @return e_validator
@@ -267,9 +268,9 @@ class e_validator
 		$this->_optional_rules = $rules;
 		return $this;
 	}
-	
+
 	/**
-	 * Add successfully validated data to the valid array 
+	 * Add successfully validated data to the valid array
 	 *
 	 * @param string $field_name
 	 * @param mixed $value
@@ -280,7 +281,7 @@ class e_validator
 		$this->_valid_data[$field_name] = $value;
 		return $this;
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -288,18 +289,18 @@ class e_validator
 	{
 		return $this->_valid_data;
 	}
-	
+
 	/**
 	 * Validate data
-	 * 
+	 *
 	 * @param array $data
 	 * @return boolean
 	 */
 	function validate($data)
 	{
 		$this->reset();
-		
-		$rules = array_merge(array_keys($this->_required_rules), array_keys($this->_optional_rules)); 
+
+		$rules = array_merge(array_keys($this->_required_rules), array_keys($this->_optional_rules));
 		// no rules, no check
 		if(!$rules)
 		{
@@ -307,14 +308,14 @@ class e_validator
 			$this->_valid_data = $data;
 			return true;
 		}
-		
+
 		foreach ($rules as $field_name)
 		{
 			$value = varset($data[$field_name], null);
 			$required = $this->isRequiredField($field_name);
 			if(($required || $this->isOptionalField($field_name)) && !$this->validateField($field_name, $value, $required))
 			{
-				$this->_is_valid_data = false; 
+				$this->_is_valid_data = false;
 				$this->addValidateMessage($this->getFieldName($field_name, $required), $this->getErrorCode($field_name), $this->getFieldMessage($field_name, $value, $required));
 				continue;
 			}
@@ -322,10 +323,10 @@ class e_validator
 
 		return $this->_is_valid_data;
 	}
-	
+
 	/**
 	 * Check if field is required
-	 * 
+	 *
 	 * @param string $name
 	 * @return boolean
 	 */
@@ -333,10 +334,10 @@ class e_validator
 	{
 		return isset($this->_required_rules[$name]);
 	}
-	
+
 	/**
 	 * Check if there is optional rule for this field
-	 * 
+	 *
 	 * @param string $name
 	 * @return boolean
 	 */
@@ -344,10 +345,10 @@ class e_validator
 	{
 		return isset($this->_optional_rules[$name]);
 	}
-	
+
 	/**
 	 * Retrieve help for the required field
-	 * 
+	 *
 	 * @param string $name
 	 * @return string
 	 */
@@ -361,13 +362,13 @@ class e_validator
 		{
 			$msg = (isset($this->_optional_rules[$name][3]) ? $this->_optional_rules[$name][3] : $default);
 		}
-		
+
 		return defset($msg, $msg);
 	}
-	
+
 	/**
 	 * Retrieve validation error message for the required field
-	 * 
+	 *
 	 * @param string $name
 	 * @param mixed $value
 	 * @return string
@@ -390,10 +391,10 @@ class e_validator
 			}
 			else $msg = $this->_optional_rules[$name][4];
 		}
-		
+
 		return ($msg ? defset($msg, $msg) : '');
 	}
-	
+
 	/**
 	 * @param string $name
 	 * @return string
@@ -408,10 +409,10 @@ class e_validator
 		{
 			$msg = (isset($this->_optional_rules[$name][2]) ? $this->_optional_rules[$name][2] : $name);
 		}
-		
+
 		return defset($msg, $msg);
 	}
-	
+
 	/**
 	 * Validate single field
 	 *
@@ -427,9 +428,9 @@ class e_validator
 			$type = $this->_required_rules[$name][0];
 			$cond = $this->_required_rules[$name][1];
 		}
-		else 
+		else
 		{
-			if(empty($value)) 
+			if(empty($value))
 			{
 				switch($this->_optional_rules[$name][0])
 				{
@@ -437,15 +438,15 @@ class e_validator
 					case 'integer':
 						$value = 0;
 					break;
-					
+
 					case 'float':
 						$value = floatval($value);
 					break;
-					
+
 					case 'array':
 						$value = array();
 					break;
-				
+
 					default:
 						$value = '';
 					break;
@@ -457,9 +458,9 @@ class e_validator
 			$cond = $this->_optional_rules[$name][1];
 		}
 
-		switch ($type) 
+		switch ($type)
 		{
-			case 'required': 
+			case 'required':
 				if(empty($value))
 				{
 					$this->addValidateResult($name, self::ERR_GENERIC);
@@ -468,7 +469,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'email':
 				if(!check_email($value))
 				{
@@ -478,7 +479,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'regex':
 				if(!preg_match($cond, $value))
 				{
@@ -488,7 +489,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'callback':
 				if(!call_user_func($cond, $value))
 				{
@@ -498,7 +499,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'instanceof':
 				if(!(is_object($value) && $value instanceof $cond))
 				{
@@ -508,7 +509,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-		
+
 			case 'int':
 			case 'integer':
 				if(!preg_match('/^-?[\d]+$/', $value)) // negative values support
@@ -531,7 +532,7 @@ class e_validator
 				$this->addValidData($name, intval($value));
 				return true;
 			break;
-			
+
 			case 'str':
 			case 'string':
 			case 'text':
@@ -543,14 +544,26 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_TOO_SHORT);
 					return false;
 				}
-				
+
 				if('varchar' == $type && !varset($tmp[1])) $tmp[1] = 255;
-				
+
 				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 					return false;
 				}
+				$this->addValidData($name, (string) $value);
+				return true;
+			break;
+
+			case 'enum':
+				$tmp = explode('#', $cond);
+				if(!$value || !in_array($value, $tmp))
+				{
+					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
+					return false;
+				}
+
 				$this->addValidData($name, (string) $value);
 				return true;
 			break;
@@ -575,7 +588,7 @@ class e_validator
 				$this->addValidData($name, (float) $value);
 				return true;
 			break;
-			
+
 			case 'array':
 				if(!is_array($value))
 				{
@@ -597,7 +610,7 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'file': // TODO - type image - validate dimensions?
 				parse_str($cond, $params);
 				$path = e107::getParser()->replaceConstants(varset($params['base']).$value);
@@ -615,7 +628,7 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$fs = filesize($path);
-					if(!$fs || (integer) $tmp[0] > $fs) 
+					if(!$fs || (integer) $tmp[0] > $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMIN_FILE);
 						return false;
@@ -634,28 +647,28 @@ class e_validator
 				$this->addValidData($name, $value);
 				return true;
 			break;
-			
+
 			case 'compare':
 				if(!is_array($value))
 				{
 					$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
 					return false;
 				}
-				
+
 				if('varchar' == $type && !varset($tmp[1])) $tmp[1] = 255;
-				
+
 				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 					return false;
 				}
-				
+
 				if(!($value[0] && $value[1] && $value[0] == $value[1]))
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
 					return false;
 				}
-				
+
 				// check length
 				if($cond)
 				{
@@ -675,7 +688,7 @@ class e_validator
 				$this->addValidData($name, $value[0]);
 				return true;
 			break;
-			
+
 			case 'compare_strict':
 				if(!is_array($value))
 				{
@@ -687,7 +700,7 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
 					return false;
 				}
-				
+
 				// check length
 				if($cond)
 				{
@@ -707,29 +720,29 @@ class e_validator
 				$this->addValidData($name, $value[0]);
 				return true;
 			break;
-			
+
 			default:
 				$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
 				return false;
 			break;
 		}
 	}
-	
+
 	protected function parseMinMax($string)
 	{
 		return explode(':', $this->_convertConditionBC($string), 2);
 	}
-	
+
 	private function _convertConditionBC($condition)
 	{
 		// BC! Will be removed after we replace '-' with ':' separator!
-		if(strpos($condition, ':') === false) 
-		{ 
+		if(strpos($condition, ':') === false)
+		{
 			return preg_replace('/^([0-9]+)-([0-9]+)$/', '$1:$2', $condition);
 		}
-		return $condition; 
+		return $condition;
 	}
-	
+
 	/**
 	 * Add validation error to validate result stack
 	 *
@@ -746,25 +759,25 @@ class e_validator
 			e107::getMessage()->addStack(sprintf($err_message, $err_code, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
 			return $this;
 		}
-		
+
 		//Core message
 		$msg = sprintf(
-			LAN_VALIDATE_FAILMSG, //'<strong>&quot;%s&quot;</strong> validation error: [#%d] %s. ' 
-			$field_title, 
+			LAN_VALIDATE_FAILMSG, //'<strong>&quot;%s&quot;</strong> validation error: [#%d] %s. '
+			$field_title,
 			$err_code,
 			$this->getErrorByCode($err_code)
 		);
-		
+
 		//Additional message
 		if($err_message)
 		{
 			$msg .= ' '.$err_message;
 		}
 		e107::getMessage()->addStack($msg, $this->_message_stack, E_MESSAGE_ERROR);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Get validate message array
 	 *
@@ -775,10 +788,10 @@ class e_validator
 	{
 		return e107::getMessage()->getAll($this->_message_stack, true, $clear);
 	}
-	
+
 	/**
 	 * Render validate messages
-	 * 
+	 *
 	 * @param boolean $session merge with session messages
 	 * @param boolean $clear
 	 * @return string
@@ -787,7 +800,7 @@ class e_validator
 	{
 		return e107::getMessage()->render($this->_message_stack, $session, $clear);
 	}
-	
+
 	/**
 	 * @param boolean $session clear session messages as well, default true
 	 * @return e_validator
@@ -797,7 +810,7 @@ class e_validator
 		e107::getMessage()->reset(false, $this->_message_stack, $session);
 		return $this;
 	}
-	
+
 	/**
 	 * Add validate error code for a field
 	 *
@@ -810,7 +823,7 @@ class e_validator
 		$this->_validation_results[$name] = $code;
 		return $this;
 	}
-	
+
 	/**
 	 * Get validate result array
 	 *
@@ -821,7 +834,7 @@ class e_validator
 	{
 		return $this->_validation_results;
 	}
-	
+
 	/**
 	 * Get validate result for a field
 	 *
@@ -833,7 +846,7 @@ class e_validator
 	{
 		return (isset($this->_validation_results[$field]) ? $this->_validation_results[$field] : $default);
 	}
-	
+
 	/**
 	 * Get error string by given error code
 	 *
@@ -845,7 +858,7 @@ class e_validator
 		$lan = 'LAN_VALIDATE_'.$error_code;
 		return defset($lan, $lan);
 	}
-	
+
 	/**
 	 * @return e_validator
 	 */
@@ -854,7 +867,7 @@ class e_validator
 		$this->_validation_results = array();
 		return $this;
 	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -862,7 +875,7 @@ class e_validator
 	{
 		return empty($this->_is_valid_data);
 	}
-	
+
 	/**
 	 * Reset object validate result data
 	 * @return e_validator
@@ -873,7 +886,7 @@ class e_validator
 		$this->_valid_data = array();
 		$this->clearValidateResults()
 			->clearValidateMessages();
-			
+
 		return $this;
 	}
 }
@@ -918,7 +931,7 @@ class validatorClass
 		foreach ($definitions as $dest => $defs)
 		{
 			$errNum = 0;			// Start with no error
-			
+
 			if(!is_array($defs)) //default rule - dbClean -> toDB
 			{
 				$defs = array('dbClean', ($defs ? $defs : 'toDB'));
@@ -972,7 +985,7 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['minLength']) && ($tp->ustrlen($value) < $defs['minLength']))
 				{
-					if ($value == '') 
+					if ($value == '')
 					{
 						if (!varsettrue($defs['fieldOptional']))
 						{
