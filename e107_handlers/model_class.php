@@ -1713,12 +1713,13 @@ class e_admin_model extends e_model
 	{
 		parent::load($id, $force);
 
-		$this->_db_errno = e107::getDb()->getLastErrorNumber();
+		$sql = e107::getDb();
+		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		if($this->_db_errno)
 		{
 			$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
 		return $this;
 	}
@@ -1783,7 +1784,7 @@ class e_admin_model extends e_model
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			return false;
 		}
 
@@ -1817,7 +1818,7 @@ class e_admin_model extends e_model
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
 
@@ -1848,7 +1849,7 @@ class e_admin_model extends e_model
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 				return false;
 			}
 
@@ -1888,7 +1889,7 @@ class e_admin_model extends e_model
 			if($this->_db_errno)
 			{
 				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
 
