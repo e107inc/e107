@@ -74,38 +74,38 @@ $cal_events = array();
 $cal_totev = 0;
 if ($cal_totev = $sql->db_Select_gen($cal_qry))
 {
-  while ($cal_row = $sql->db_Fetch())
-  {
-    if ($cal_row['event_rec_y'] == $cal_current_month)
-    {	// Recurring events
-	  $cal_start_day = $cal_row['event_rec_m'];
-    }
-    else
-    {	// 'normal' events
-      $cal_tmp = getdate($cal_row['event_start']);
-      if ($cal_tmp['mon'] == $cal_current_month)
-      {
-        $cal_start_day = $cal_tmp['mday'];
-      }
-      else
-      {
-        $cal_start_day = 1;
-      }
-    }
-    // Mark start day of each event
-	$cal_events[$cal_start_day][] = $cal_row['event_cat_icon'];	// Will be overwritten if several events on same day
-	if ((($ecal_class->max_recent_show != 0) && (time() - $cal_row['event_datestamp']) <= $ecal_class->max_recent_show)) $cal_events[$cal_start_day]['is_recent'] = TRUE;
-  }
+	while ($cal_row = $sql->db_Fetch())
+	{
+		if ($cal_row['event_rec_y'] == $cal_current_month)
+		{	// Recurring events
+			$cal_start_day = $cal_row['event_rec_m'];
+		}
+		else
+		{	// 'normal' events
+			$cal_tmp = getdate($cal_row['event_start']);
+			if ($cal_tmp['mon'] == $cal_current_month)
+			{
+				$cal_start_day = $cal_tmp['mday'];
+			}
+			else
+			{
+				$cal_start_day = 1;
+			}
+		}
+		// Mark start day of each event
+		$cal_events[$cal_start_day][] = $cal_row['event_cat_icon'];	// Will be overwritten if several events on same day
+		if ((($ecal_class->max_recent_show != 0) && (time() - $cal_row['event_datestamp']) <= $ecal_class->max_recent_show)) $cal_events[$cal_start_day]['is_recent'] = TRUE;
+	}
 }
 
 
 if ($pref['eventpost_weekstart'] == 'sun')
 {
-  $cal_week	= array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
+	$cal_week	= array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
 }
 else
 {
-  $cal_week	= array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
+	$cal_week	= array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
 }
 
 $cal_months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
@@ -114,11 +114,11 @@ $cal_months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, 
 $calendar_title = "<a class='forumlink' href='".e_PLUGIN."calendar_menu/";
 if ($pref['eventpost_menulink'] == 1)
 {
-  $calendar_title .= "calendar.php' >";
+	$calendar_title .= "calendar.php' >";
 }
 else
 {
-  $calendar_title .= "event.php' >";
+	$calendar_title .= "event.php' >";
 }
 if ($pref['eventpost_dateformat'] == 'my')
 {
@@ -195,32 +195,32 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 	$cal_css = 2;		// The default - not today, no events
     if ($cal_dayarray['mon'] == $cal_thismonth)
     {  // Dates match for this month
-      $cal_img = $cal_c;		// Default 'image' is the day of the month
-      $cal_event_count = 0;
-      $title = "";
-      if ($cal_thisday == $cal_c) $cal_css = 1;
+		$cal_img = $cal_c;		// Default 'image' is the day of the month
+		$cal_event_count = 0;
+		$title = "";
+		if ($cal_thisday == $cal_c) $cal_css = 1;
         $cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_c, $cal_datearray['year']).".one";  // ALways need "one"
         if (array_key_exists($cal_c, $cal_events))
-        {
+        {	// Events happening today
             $cal_event_icon = "calendar_menu/images/" . $cal_events[$cal_c]['0'];
             $cal_event_count = count($cal_events[$cal_c]);		// See how many events today
-            if (!empty($cal_events[$cal_c]) && is_readable(e_PLUGIN.$cal_event_icon))
+            if (!empty($cal_events[$cal_c]['0']) && is_readable(e_PLUGIN.$cal_event_icon))
             {   // Show icon if it exists
-			  $cal_css += 2;		// Gives 3 for today, 4 for other day
-			  if ($cal_event_count == 1)
-			  {
-                $title = " title='1 ".EC_LAN_135."' ";
-			  }
-			  else
-			  {
-                $title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
-			  }
-              $cal_img = "<img style='border:0' src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
+				$cal_css += 2;		// Gives 3 for today, 4 for other day
+				if ($cal_event_count == 1)
+				{
+					$title = " title='1 ".EC_LAN_135."' ";
+				}
+				else
+				{
+					$title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
+				}
+				$cal_img = "<img style='border:0' src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
 				//height='10' width='10'
-			  if (isset($cal_events[$cal_c]['is_recent']) && $cal_events[$cal_c]['is_recent'])
-			  {
-			    $cal_css += 2;
-			  }
+				if (isset($cal_events[$cal_c]['is_recent']) && $cal_events[$cal_c]['is_recent'])
+				{
+					$cal_css += 2;
+				}
             }
 		}
         $cal_text .= $CALENDAR_MENU_DAY_START[$cal_css]."<a {$title} href='" . e_PLUGIN_ABS."calendar_menu/event.php?{$cal_linkut}'>{$cal_img}</a>";
