@@ -184,7 +184,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 					$title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
 				}
 			}
-			if (is_file(e_PLUGIN.$cal_event_icon)) $cal_img = "<img src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
+			if (!empty($cal_events[$cal_c]['0']) && is_readable(e_PLUGIN.$cal_event_icon)) $cal_img = "<img src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
 					//height='10' width='10'
 			if (isset($cal_recent[$cal_c]) && $cal_recent[$cal_c])
 			{
