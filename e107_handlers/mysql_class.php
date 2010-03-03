@@ -29,7 +29,8 @@
 	Parameters related to auto-generation of field definitions on db_Insert() and db_Update()
 */
 	define('ALLOW_AUTO_FIELD_DEFS', TRUE);	// Temporary so new functionality can be disabled if it causes problems
-	define('e_DB_CACHE', e_CACHE);			// Use standard cache directory for now - should really be elsewhere
+	// Uses it's own cache directory now - see e_CACHE_DB
+	//define('e_DB_CACHE', e_CACHE);
 
 
 if(defined('MYSQL_LIGHT'))
@@ -1549,7 +1550,7 @@ class e_db_mysql
 	 *<code>
 	 *	The information is sought in a specific order:
 	 *		a) In our internal cache
-	 *		b) in the directory e_DB_CACHEDIR - file name $tableName.php
+	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
 	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
 	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
 	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
@@ -1567,9 +1568,9 @@ class e_db_mysql
 	{
 		if (!isset($this->dbFieldDefs[$tableName]))
 		{
-			if (is_readable(e_DB_CACHE.$tableName.'.php'))
+			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_DB_CACHE.$tableName.'.php', FILE_TEXT);
+				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php', FILE_TEXT);
 				if ($temp !== FALSE)
 				{
 					$array = e107::getArrayStorage();
@@ -1610,7 +1611,7 @@ class e_db_mysql
 	/*
 	 *	Search the specified file for a field type definition of the specified table.
 	 *
-	 *	If found, generate and save a cache file in the e_DB_CACHE directory,
+	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
 	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
 	 *
 	 *	@param	string $defFile - file name, including path
@@ -1636,7 +1637,7 @@ class e_db_mysql
 			{
 				$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
 				$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
-				if (FALSE === file_put_contents(e_DB_CACHE.$tableName.'.php', $fileData))
+				if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
 				{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 				}
 				$result = TRUE;
@@ -1654,7 +1655,7 @@ class e_db_mysql
 	/**
 	 *	Creates a field type definition from the structure of the table in the DB
 	 *
-	 *	Generate and save a cache file in the e_DB_CACHE directory,
+	 *	Generate and save a cache file in the e_CACHE_DB directory,
 	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
 	 *
 	 *	@param	string $tableName - name of table sought
@@ -1708,9 +1709,9 @@ class e_db_mysql
 		$array = e107::getArrayStorage();
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = $array->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
-		if (FALSE === file_put_contents(e_DB_CACHE.$tableName.'.php', $toSave))
+		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-			echo "Error writing file: ".e_DB_CACHE.$tableName.'.php'.'<br />';
+			echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
 		}
 	}
 
