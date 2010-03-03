@@ -228,9 +228,9 @@ class e107
 	 *
 	 * @return e107
 	 */
-	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info)
+	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info);
+		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array());
 	}
 
 	/**
@@ -238,7 +238,7 @@ class e107
 	 *
 	 * @return e107
 	 */
-	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info)
+	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
 
 		if(empty($this->e107_dirs))
@@ -246,49 +246,8 @@ class e107
 			// Do some security checks/cleanup, prepare the environment
 			$this->prepare_request();
 
-			// Set default paths if missing from e107_config.php
-			if(!vartrue($e107_paths['MEDIA_DIRECTORY']))
-			{
-				$e107_paths['MEDIA_DIRECTORY'] = 'e107_media/';
-			}
-
-			if(!vartrue($e107_paths['SYSTEM_DIRECTORY']))
-			{
-				$e107_paths['SYSTEM_DIRECTORY'] = 'e107_system/';
-			}
-
-			if(!vartrue($e107_paths['CORE_DIRECTORY']))
-			{
-				$e107_paths['CORE_DIRECTORY'] = 'e107_core/';
-			}
-
-			if(!vartrue($e107_paths['WEB_DIRECTORY']))
-			{
-				$e107_paths['WEB_DIRECTORY'] = 'e107_web/';
-			}
-
-			if(!vartrue($e107_paths['DOWNLOADS_DIRECTORY']))
-			{
-				$e107_paths['DOWNLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'files/';
-			}
-
-			if(!vartrue($e107_paths['UPLOADS_DIRECTORY']))
-			{
-				$e107_paths['UPLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'temp/';
-			}
-
-			if(!vartrue($e107_paths['CACHE_DIRECTORY']))
-			{
-				$e107_paths['CACHE_DIRECTORY'] = $e107_paths['SYSTEM_DIRECTORY'].'cache/';
-			}
-
-			if(!vartrue($e107_paths['LOGS_DIRECTORY']))
-			{
-				$e107_paths['LOGS_DIRECTORY'] = $e107_paths['SYSTEM_DIRECTORY'].'logs/';
-			}
-
-			// folder info
-			$this->e107_dirs = $e107_paths;
+			// Set default folder (and override paths) if missing from e107_config.php
+			$this->setDirs($e107_paths, $e107_config_override);
 
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
@@ -313,6 +272,81 @@ class e107
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Set system folders and override paths
+	 * $e107_paths is the 'compact' version of e107_config folder vars ($ADMIN_DIRECTORY, $IMAGES_DIRECTORY, etc)
+	 * $e107_config_override is the new override method - it can do it for all server and http paths via
+	 * the newly introduced $E107_CONFIG array.
+	 *
+	 * Overriding just replace _DIRECTORY with _SERVER or _HTTP:
+	 * - override server path example:
+	 * <code>$E107_CONFIG['SYSTEM_SERVER'] = '/home/user/system/';</code>
+	 *
+	 * - override http path example:
+	 * <code>$E107_CONFIG['MEDIA_VIDEOS_HTTP'] = 'http://static.mydomain.com/videos/';</code>
+	 *
+	 * @param array $e107_dirs Override folder instructions (*_DIRECTORY vars - e107_config.php)
+	 * @param array $e107_config_override Override path insructions ($E107_CONFIG array - e107_config.php)
+	 * @return e107
+	 */
+	public function setDirs($e107_dirs, $e107_config_override = array())
+	{
+		$this->e107_dirs = array_merge($this->defaultDirs($e107_dirs), (array) $e107_dirs, (array) $e107_config_override);
+		return $this;
+	}
+
+	/**
+	 * Get default e107 folders, root folders can be overridden by passed override array
+	 *
+	 * @param array $override_root
+	 * @param boolean $return_root
+	 * @return array
+	 */
+	public function defaultDirs($override_root = array(), $return_root = false)
+	{
+		$ret = array_merge(array(
+			'ADMIN_DIRECTORY' 		=> 'e107_admin/',
+			'IMAGES_DIRECTORY' 		=> 'e107_images/',
+			'THEMES_DIRECTORY' 		=> 'e107_themes/',
+			'PLUGINS_DIRECTORY' 	=> 'e107_plugins/',
+			'FILES_DIRECTORY' 		=> 'e107_files/', // DEPRECATED!!!
+			'HANDLERS_DIRECTORY' 	=> 'e107_handlers/',
+			'LANGUAGES_DIRECTORY' 	=> 'e107_languages/',
+			'DOCS_DIRECTORY' 		=> 'e107_docs/',
+			'MEDIA_DIRECTORY' 		=> 'e107_media/',
+			'SYSTEM_DIRECTORY' 		=> 'e107_system/',
+			'CORE_DIRECTORY' 		=> 'e107_core/',
+			'WEB_DIRECTORY' 		=> 'e107_web/',
+		), $override_root);
+
+		if($return_root) return $ret;
+
+		$ret['HELP_DIRECTORY'] 				= $ret['DOCS_DIRECTORY'].'help/';
+
+		$ret['MEDIA_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
+		$ret['MEDIA_ICONS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'icons/';
+		$ret['MEDIA_AVATARS_DIRECTORY'] 	= $ret['MEDIA_DIRECTORY'].'avatars/';
+		$ret['MEDIA_VIDEOS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'videos/';
+		$ret['MEDIA_FILES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'files/';
+		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'temp/';
+
+		$ret['WEB_JS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'js/';
+		$ret['WEB_CSS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'css/';
+		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
+
+		$ret['DOWNLOADS_DIRECTORY']			= $ret['MEDIA_FILES_DIRECTORY'];
+		$ret['UPLOADS_DIRECTORY'] 			= $ret['MEDIA_UPLOAD_DIRECTORY'];
+
+		$ret['CACHE_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'cache/';
+		$ret['CACHE_CONTENT_DIRECTORY'] 	= $ret['CACHE_DIRECTORY'].'content/';
+		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'image/';
+		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
+
+		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
+
+		return $ret;
 	}
 
 	/**
@@ -1699,6 +1733,34 @@ class e107
 	}
 
 	/**
+	 * Relaitve server path - set_path() helper
+	 * @param string $dir
+	 * @return string
+	 */
+	public function get_override_rel($dir)
+	{
+		if(isset($this->e107_dirs[$dir.'_SERVER']))
+		{
+			return $this->e107_dirs[$dir.'_SERVER'];
+		}
+		return e_BASE.$this->e107_dirs[$dir.'_DIRECTORY'];
+	}
+
+	/**
+	 * Absolute HTTP path - set_path() helper
+	 * @param string $dir
+	 * @return string
+	 */
+	public function get_override_http($dir)
+	{
+		if(isset($this->e107_dirs[$dir.'_HTTP']))
+		{
+			return $this->e107_dirs[$dir.'_HTTP'];
+		}
+		return e_HTTP.$this->e107_dirs[$dir.'_DIRECTORY'];
+	}
+
+	/**
 	 * Set all environment vars and constants
 	 * FIXME - remove globals
 	 * @return e107
@@ -1716,6 +1778,7 @@ class e107
 
 		$path = ""; $i = 0;
 
+		// FIXME - Again, what if someone moves handlers under the webroot?
 		if(!isset($_E107['cli']))
 		{
 			while (!file_exists("{$path}class2.php"))
@@ -1745,8 +1808,9 @@ class e107
 		}
 
 		// Absolute file-path of directory containing class2.php
-	//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
+		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
+		// TODO - We need new way to do this, this file could be located under the web root!
 		$e_ROOT = realpath(dirname(__FILE__)."/../"); // Works in Windows, fails on Linux.
 		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\'))
 		{
@@ -1767,71 +1831,91 @@ class e107
 			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
 			define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));
 
-//
-// HTTP relative paths
-//
-			define("e_ADMIN", e_BASE.$this->e107_dirs['ADMIN_DIRECTORY']);
-			define("e_IMAGE", e_BASE.$this->e107_dirs['IMAGES_DIRECTORY']);
-			define("e_THEME", e_BASE.$this->e107_dirs['THEMES_DIRECTORY']);
-			define("e_PLUGIN", e_BASE.$this->e107_dirs['PLUGINS_DIRECTORY']);
-			define("e_FILE", e_BASE.$this->e107_dirs['FILES_DIRECTORY']);
-			define("e_HANDLER", e_BASE.$this->e107_dirs['HANDLERS_DIRECTORY']);
-			define("e_LANGUAGEDIR", e_BASE.$this->e107_dirs['LANGUAGES_DIRECTORY']);
-			define("e_DOCS", e_BASE.$this->e107_dirs['HELP_DIRECTORY']);
-
-			define("e_MEDIA", e_BASE.$this->e107_dirs['MEDIA_DIRECTORY']);
-			define("e_CORE", e_BASE.$this->e107_dirs['CORE_DIRECTORY']);
-			define("e_SYSTEM", e_BASE.$this->e107_dirs['SYSTEM_DIRECTORY']);
-			define("e_WEB", e_BASE.$this->e107_dirs['WEB_DIRECTORY']);
-
-			define("e_CACHE", e_BASE.$this->e107_dirs['CACHE_DIRECTORY']);
-			define("e_LOG", e_BASE.$this->e107_dirs['LOGS_DIRECTORY']);
-
-//
-// HTTP absolute paths
-//
-			define("e_ADMIN_ABS", e_HTTP.$this->e107_dirs['ADMIN_DIRECTORY']);
-			define("e_IMAGE_ABS", e_HTTP.$this->e107_dirs['IMAGES_DIRECTORY']);
-			define("e_THEME_ABS", e_HTTP.$this->e107_dirs['THEMES_DIRECTORY']);
-			define("e_PLUGIN_ABS", e_HTTP.$this->e107_dirs['PLUGINS_DIRECTORY']);
-			define("e_FILE_ABS", e_HTTP.$this->e107_dirs['FILES_DIRECTORY']);
-			define("e_HANDLER_ABS", e_HTTP.$this->e107_dirs['HANDLERS_DIRECTORY']);
-			define("e_LANGUAGEDIR_ABS", e_HTTP.$this->e107_dirs['LANGUAGES_DIRECTORY']);
-			define("e_MEDIA_ABS", e_HTTP.$this->e107_dirs['MEDIA_DIRECTORY']);
-			define("e_LOG_ABS", e_HTTP.$this->e107_dirs['LOGS_DIRECTORY']);
-
 			if(isset($_SERVER['DOCUMENT_ROOT']))
 			{
-			  	define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
+			  	define('e_DOCROOT', $_SERVER['DOCUMENT_ROOT']."/");
 			}
 			else
 			{
-			  	define("e_DOCROOT", false);
+			  	define('e_DOCROOT', false);
 			}
 
-			define("e_DOCS_ABS", e_HTTP.$this->e107_dirs['HELP_DIRECTORY']);
-
-			$DOWNLOADS_DIRECTORY = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
-			$UPLOADS_DIRECTORY = $this->e107_dirs['UPLOADS_DIRECTORY'];
-
-			if ($DOWNLOADS_DIRECTORY{0} == "/")
+			//BC temporary fixes
+			if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY']{0} == "/")
 			{
-				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
+				$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
 			}
-			else
+			if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY']{0} == "/")
 			{
-				define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+				$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
 			}
 
-			if ($UPLOADS_DIRECTORY{0} == "/")
-			{
-				define("e_UPLOAD", $UPLOADS_DIRECTORY);
-			}
-			else
-			{
-				define("e_UPLOAD", e_BASE.$UPLOADS_DIRECTORY);
-				define("e_UPLOAD_ABS", e_HTTP.$UPLOADS_DIRECTORY);
-			}
+			//
+			// HTTP relative paths
+			//
+			define('e_ADMIN', $this->get_override_rel('ADMIN'));
+			define('e_IMAGE', $this->get_override_rel('IMAGES'));
+			define('e_THEME', $this->get_override_rel('THEMES'));
+			define('e_PLUGIN', $this->get_override_rel('PLUGINS'));
+			define('e_FILE', $this->get_override_rel('FILES'));
+			define('e_HANDLER', $this->get_override_rel('HANDLERS'));
+			define('e_LANGUAGEDIR', $this->get_override_rel('LANGUAGES'));
+
+			define('e_DOCS', $this->get_override_rel('HELP')); // WILL CHANGE SOON - $this->_get_override_rel('DOCS')
+			define('e_HELP', $this->get_override_rel('HELP'));
+
+			define('e_MEDIA', $this->get_override_rel('MEDIA'));
+			define('e_MEDIA_FILE', $this->get_override_rel('MEDIA_FILES'));
+			define('e_MEDIA_VIDEO', $this->get_override_rel('MEDIA_VIDEOS'));
+			define('e_MEDIA_IMAGE', $this->get_override_rel('MEDIA_IMAGES'));
+			define('e_MEDIA_ICON', $this->get_override_rel('MEDIA_ICONS'));
+			define('e_MEDIA_AVATAR', $this->get_override_rel('MEDIA_AVATARS'));
+
+			define('e_DOWNLOAD', $this->get_override_rel('DOWNLOADS'));
+			define('e_UPLOAD', $this->get_override_rel('UPLOADS'));
+
+			define('e_CORE', $this->get_override_rel('CORE'));
+			define('e_SYSTEM', $this->get_override_rel('SYSTEM'));
+
+			define('e_WEB', $this->get_override_rel('WEB'));
+			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
+			define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
+			define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
+
+			define('e_CACHE', $this->get_override_rel('CACHE'));
+			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));
+			define('e_CACHE_IMAGE', $this->get_override_rel('CACHE_IMAGE'));
+			define('e_CACHE_DB', $this->get_override_rel('CACHE_DB'));
+
+			define('e_LOG', $this->get_override_rel('LOGS'));
+
+			//
+			// HTTP absolute paths
+			//
+			define("e_ADMIN_ABS", $this->get_override_http('ADMIN'));
+			define("e_IMAGE_ABS", $this->get_override_http('IMAGES'));
+			define("e_THEME_ABS", $this->get_override_http('THEMES'));
+			define("e_PLUGIN_ABS", $this->get_override_http('PLUGINS'));
+			define("e_FILE_ABS", $this->get_override_http('FILES')); // Deprecated!
+			define("e_DOCS_ABS", $this->get_override_http('DOCS'));
+			define("e_HELP_ABS", $this->get_override_http('HELP'));
+
+			// DEPRECATED - not a legal http query now!
+			//define("e_HANDLER_ABS", $this->get_override_http('HANDLERS'));
+			//define("e_LANGUAGEDIR_ABS", $this->get_override_http('LANGUAGES'));
+			//define("e_LOG_ABS", $this->get_override_http('LOGS'));
+
+			define("e_MEDIA_ABS", $this->get_override_http('MEDIA'));
+			define('e_MEDIA_FILE_ABS', $this->get_override_http('MEDIA_FILES'));
+			define('e_MEDIA_VIDEO_ABS', $this->get_override_http('MEDIA_VIDEOS'));
+			define('e_MEDIA_IMAGE_ABS', $this->get_override_http('MEDIA_IMAGES'));
+			define('e_MEDIA_ICON_ABS', $this->get_override_http('MEDIA_ICONS'));
+			define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
+
+			define('e_WEB_ABS', $this->get_override_http('WEB'));
+			define('e_JS_ABS', $this->get_override_http('WEB_JS')); // XXX - could stay so?
+			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
+			define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
 		}
 		return $this;
 	}

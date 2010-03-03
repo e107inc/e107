@@ -21,7 +21,7 @@ define('CACHE_PREFIX','<?php exit;');
 /**
  * Class to cache data as files, improving site speed and throughput.
  * FIXME - pref independant cache handler, cache drivers
- * 
+ *
  * @package     e107
  * @category	e107_handlers
  * @version     $Revision$
@@ -29,10 +29,12 @@ define('CACHE_PREFIX','<?php exit;');
  */
 class ecache {
 
-	var $CachePageMD5;
-	var $CachenqMD5;
-	var $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
-	var $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
+	public $CachePageMD5;
+	public $CachenqMD5;
+	public $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
+	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
+
+	const CACHE_PREFIX = '<?php exit;';
 
 	function ecache()
 	{
@@ -50,48 +52,47 @@ class ecache {
 	*/
 	function cache_fname($CacheTag, $syscache = false)
 	{
-		global $FILES_DIRECTORY;
 		if(strpos($CacheTag, "nomd5_") === 0) {
 			// Add 'nomd5' to indicate we are not calculating an md5
 			$CheckTag = '_nomd5';
 		}
-		elseif (isset($this) && $this instanceof ecache) 
+		elseif (isset($this) && $this instanceof ecache)
 		{
-			if (defined("THEME")) 
+			if (defined("THEME"))
 			{
-				if (strpos($CacheTag, "nq_") === 0)	
+				if (strpos($CacheTag, "nq_") === 0)
 				{
 					// We do not care about e_QUERY, so don't use it in the md5 calculation
-					if (!$this->CachenqMD5) 
+					if (!$this->CachenqMD5)
 					{
 						$this->CachenqMD5 = md5(e_BASE.(defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
 					}
 					// Add 'nq' to indicate we are not using e_QUERY
 					$CheckTag = '_nq_'.$this->CachenqMD5;
-					
-				} 
-				else 
+
+				}
+				else
 				{
 					// It's a page - need the query in the hash
-					if (!$this->CachePageMD5) 
+					if (!$this->CachePageMD5)
 					{
 						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.e_QUERY.filemtime(THEME.'theme.php'));
 					}
 					$CheckTag = '_'.$this->CachePageMD5;
 				}
-			} 
-			else 
+			}
+			else
 			{
-				// Check if a custom CachePageMD5 is in use in e_module.php.  
+				// Check if a custom CachePageMD5 is in use in e_module.php.
 				$CheckTag = ($this->CachePageMD5) ? "_".$this->CachePageMD5 : "";
 			}
-		} 
-		else 
+		}
+		else
 		{
 			$CheckTag = '';
 		}
 		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);
-		$fname = e_CACHE.$q.$CheckTag.'.cache.php';
+		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
 		return $fname;
 	}
@@ -103,24 +104,24 @@ class ecache {
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
-	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) 
+	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
 		global $pref, $tp;
-		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
-			if (file_exists($cache_file)) 
+			if (file_exists($cache_file))
 			{
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
-				} 
-				else 
+				}
+				else
 				{
 					$ret = file_get_contents($cache_file);
-					if (substr($ret,0,strlen(CACHE_PREFIX)) == CACHE_PREFIX)
+					if (substr($ret,0,strlen(self::CACHE_PREFIX)) == self::CACHE_PREFIX)
 					{
-						$ret = substr($ret, strlen(CACHE_PREFIX));
+						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
 					else
 					{
@@ -156,7 +157,7 @@ class ecache {
 
 
 	/**
-	 * 
+	 *
 	 * @param string $CacheTag - name of tag for future retrieval
 	 * @param data $Data		- data to be cached
 	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled
@@ -164,13 +165,13 @@ class ecache {
 	 * @param boolean $syscache [optional]
 	 * @return none
 	 */
-	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) 
+	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false)
 	{
 		global $pref, $FILES_DIRECTORY, $tp;
-		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
+		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
-			file_put_contents($cache_file, ($bRaw? $Data : CACHE_PREFIX.$Data) );
+			file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
 			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
 		}
@@ -200,23 +201,23 @@ class ecache {
 
 	/**
 	 * Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
-	 * 
+	 *
 	 * @param string $CacheTag
 	 * @param boolean $syscache
-	 * @param boolean $related clear also 'nq_' and 'nomd5_' entries 
+	 * @param boolean $related clear also 'nq_' and 'nomd5_' entries
 	 * @return bool
-	 * 
+	 *
 	 */
 	function clear($CacheTag = '', $syscache = false, $related = false)
 	{
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
-		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");	
-		$ret = ecache::delete(e_CACHE, $file, $syscache);
-		
+		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
+		$ret = ecache::delete(e_CACHE_CONTENT, $file, $syscache);
+
 		if($CacheTag && $related) //TODO - too dirty - add it to the $file pattern above
 		{
-			ecache::delete(e_CACHE, 'nq_'.$file, $syscache);
-			ecache::delete(e_CACHE, 'nomd5_'.$file, $syscache);
+			ecache::delete(e_CACHE_CONTENT, 'nq_'.$file, $syscache);
+			ecache::delete(e_CACHE_CONTENT, 'nomd5_'.$file, $syscache);
 		}
 		return $ret;
 	}
