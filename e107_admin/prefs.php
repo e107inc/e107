@@ -238,7 +238,7 @@ $parms .= "&tabindex=".$frm->getNext();
 $text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 // $text .= "<div class='field-section'>".$frm->imagepicker('sitebutton',$pref['sitebutton'],'-- No Image --')."</div>";
 
-//TODO make the preview update when image-picker is used. 
+//TODO make the preview update when image-picker is used.
 $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 $text .= "
@@ -551,7 +551,7 @@ $text .= "
 						<td class='label'>".PRFLAN_45."</td>
 						<td class='control'>
 							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></div>
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
 						</td>
 					</tr>
 					<tr>
