@@ -296,8 +296,8 @@ function step4()
 						$tmp = array();
 						$tmp['track_userid'] = $userId;
 						$tmp['track_thread'] = $threadId;
-						$tmp['_FIELD_TYPES']['track_userid'] = 'int';
-						$tmp['_FIELD_TYPES']['track_thread'] = 'int';
+//						$tmp['_FIELD_TYPES']['track_userid'] = 'int';
+//						$tmp['_FIELD_TYPES']['track_thread'] = 'int';
 
 						$e107->sql->db_Insert('forum_track', $tmp);
 					}
@@ -339,6 +339,7 @@ function step5()
 		return;
 	}
 
+/*
 	$ftypes['_FIELD_TYPES']['forum_id'] = 'int';
 	$ftypes['_FIELD_TYPES']['forum_parent'] = 'int';
 	$ftypes['_FIELD_TYPES']['forum_sub'] = 'int';
@@ -351,7 +352,7 @@ function step5()
 	$ftypes['_FIELD_TYPES']['forum_order'] = 'int';
 	$ftypes['_FIELD_TYPES']['forum_postclass'] = 'int';
 	$ftypes['_FIELD_TYPES']['forum_threadclass'] = 'int';
-
+*/
 	$counts = array('parens' => 0, 'forums' => 0, 'subs' => 0);
 
 	if($e107->sql->db_Select('forum'))
@@ -375,7 +376,7 @@ function step5()
 			$tmp = $forum;
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
-			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
+//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
 			$e107->sql->db_Insert('forum_new', $tmp);
 		}
 
@@ -418,7 +419,7 @@ function step6()
 
 	if(!isset($_POST['move_thread_data']))
 	{
-		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
+		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0 AND thread_id > {$lastThread}");
 		$limitDropdown = createThreadLimitDropdown($count);
 		$text = "
 		<form method='post'>
@@ -426,7 +427,7 @@ function step6()
 		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
 		reduce the possibility of data loss and server timeouts.<br />
 		<br />
-		Your current timeout appears to be set at {$maxTime} seconds.  This routine will attempt to extend this time in order to process all threads, 
+		Your current timeout appears to be set at {$maxTime} seconds.  This routine will attempt to extend this time in order to process all threads,
 		success will depend on your server configuration.  If you get a timeout while performing this function, return to this page and select fewer threads
 		to process.
 		<br /><br />
@@ -439,7 +440,7 @@ function step6()
 		return;
 	}
 
-	$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
+	$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent=0 AND thread_id>{$lastThread}");
 	if($count === false)
 	{
 		echo "error: Unable to determine last thread id";
@@ -477,14 +478,15 @@ function step6()
 		$text .= '<br />Successfully converted '.count($threadList)." threads and {$postCount} replies.<br />";
 		$text .= "Last thread id = {$t['thread_id']}<br />";
 
+		
 		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
 		if($count)
 		{
 			$limitDropdown = createThreadLimitDropdown($count);
 			$text .= "
+			<form method='post'>
 			We still have {$count} threads remaining to convert, do them in steps of {$limitDropdown}
 			<br /><br />
-			<form method='post'>
 			<input class='button' type='submit' name='move_thread_data' value='Continue thread data move' />
 			</form>
 			";
@@ -627,7 +629,7 @@ function step9()
 				$tmp = array();
 				$tmp['thread_options'] = serialize($opts);
 				$tmp['WHERE'] = 'thread_id = '.$threadId;
-				$tmp['_FIELD_TYPES']['thread_options'] = 'escape';
+//				$tmp['_FIELD_TYPES']['thread_options'] = 'escape';
 				$e107->sql->db_Update('forum_thread', $tmp);
 			}
 		}
@@ -794,8 +796,13 @@ class forumUpgrade
 {
 	var	$newVersion = '2.0';
 	var $error = array();
-	var $updateInfo;
+	public $updateInfo;
 
+	public function __initialize()
+	{
+		$this->updateInfo['lastThread'] = 0;
+	}
+	
 	function forumUpgrade()
 	{
 		$this->getUpdateInfo();
@@ -908,10 +915,13 @@ class forumUpgrade
 			$thread['thread_active'] = 1;
 		}
 
-		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
-		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent double entities
+//		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
+//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent double entities
 
-		return $e107->sql->db_Insert('forum_thread', $thread);
+		$result =  $e107->sql->db_Insert('forum_thread', $thread);
+		return $result;
+		
+//		return $e107->sql->db_Insert('forum_thread', $thread);
 //		print_a($thread);
 	}
 
@@ -932,10 +942,14 @@ class forumUpgrade
 		$newPost['post_user_anon'] = $userInfo['anon_name'];
 		$newPost['post_ip'] = $userInfo['user_ip'];
 
-		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
-		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
+//		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
+//		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
 //		print_a($newPost);
-		return $e107->sql->db_Insert('forum_post', $newPost);
+//		exit;
+		$result =$e107->sql->db_Insert('forum_post', $newPost);
+//		exit;
+		return $result;
+		
 	}
 
 	function getUserInfo(&$info)
@@ -1031,7 +1045,7 @@ class forumUpgrade
 			$r = true;
 //		$r = unlink($old);
 		if(!$r)
-		{ 
+		{
 			$error = 'Was unable to delete old attachment: '.$old;
 			return false;
 		}
@@ -1040,7 +1054,7 @@ class forumUpgrade
 			$r = true;
 //			$r = unlink($oldThumb);
 			if(!$r)
-			{ 
+			{
 				$error = 'Was unable to delete old thumb: '.$oldThumb;
 				return false;
 			}
