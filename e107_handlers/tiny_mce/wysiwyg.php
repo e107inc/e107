@@ -44,7 +44,7 @@ if(!$tinylang[$lang])
 $mce_plugins = array();
 $mce_plugins[0]	= "table";
 $mce_plugins[1]	= "contextmenu";
-$mce_plugins[2]	= ($pref['smiley_activate']) ? ",emoticons" : "";
+$mce_plugins[2]	= ($pref['smiley_activate']) ? "emoticons" : "";
 $mce_plugins[4]	= (ADMIN) ? "ibrowser" : "image";
 $mce_plugins[5]	= "contextmenu";
 $mce_plugins[6]	= "iespell";
