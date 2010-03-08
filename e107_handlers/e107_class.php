@@ -341,7 +341,7 @@ class e107
 
 		$ret['CACHE_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'cache/';
 		$ret['CACHE_CONTENT_DIRECTORY'] 	= $ret['CACHE_DIRECTORY'].'content/';
-		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'image/';
+		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'images/';
 		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
 
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
