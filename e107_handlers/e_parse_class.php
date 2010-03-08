@@ -1779,6 +1779,7 @@ class e_parse
 					'{e_ADMIN}'		=> $e107->getFolder('admin'),
 					'{e_HANDLER}'	=> $e107->getFolder('handlers'),
 					'{e_MEDIA}'		=> $e107->getFolder('media'),
+					'{e_WEB}'		=> $e107->getFolder('web'),
 					);
 			break;
 
@@ -1792,6 +1793,7 @@ class e_parse
 					'{e_ADMIN}'		=> e_ADMIN,
 					'{e_HANDLER}'	=> e_HANDLER,
 					'{e_MEDIA}'		=> e_MEDIA,
+					'{e_WEB}'		=> e_WEB,
 				);
 			break;
 
@@ -1799,12 +1801,13 @@ class e_parse
 				$tmp = array(
 					'{e_IMAGE}'		=> e_IMAGE_ABS,
 					'{e_PLUGIN}'	=> e_PLUGIN_ABS,
-					'{e_FILE}'		=> e_FILE_ABS,
+					'{e_FILE}'		=> e_FILE_ABS, // deprecated
 					'{e_THEME}'		=> e_THEME_ABS,
-					'{e_DOWNLOAD}'	=> e_BASE.'request.php?',
+					'{e_DOWNLOAD}'	=> e_HTTP.'request.php?',// FIXME - we need solution!
 					'{e_ADMIN}'		=> e_ADMIN_ABS,
-					'{e_HANDLER}'	=> e_HANDLER_ABS,
+					//'{e_HANDLER}'	=> e_HANDLER_ABS, - no ABS path available
 					'{e_MEDIA}'		=> e_MEDIA_ABS,
+					'{e_WEB}'		=> e_WEB_ABS,
 				);
 			break;
 
@@ -1814,10 +1817,11 @@ class e_parse
 					'{e_PLUGIN}'	=> SITEURL.$e107->getFolder('plugins'),
 					'{e_FILE}'		=> SITEURL.$e107->getFolder('files'),
 					'{e_THEME}'		=> SITEURL.$e107->getFolder('themes'),
-					'{e_DOWNLOAD}'	=> SITEURL.$e107->getFolder('downloads'),
+					'{e_DOWNLOAD}'	=> SITEURL.$e107->getFolder('downloads'), // FIXME - we need solution!
 					'{e_ADMIN}'		=> SITEURL.$e107->getFolder('admin'),
-					'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers'),
+					//'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers') - no full path available
 					'{e_MEDIA}'		=> SITEURL.$e107->getFolder('media'),
+					'{e_WEB}'		=> SITEURL.$e107->getFolder('web'),
 				);
 			break;
 
