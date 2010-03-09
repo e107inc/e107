@@ -14,8 +14,9 @@
 
  /**
  * @package e107
- * @subpackage shortcodes|admin|user|e107_handler|bbcodes
+ * @subpackage e107_handler
  * @version $Id$
+ * @author secretr
  *
  * Simple, quick and efective way of testing performance of parts of your code
  * Example:
@@ -28,7 +29,7 @@
  * // Do something, e.g. loop 1000000 times
  *
  * // stop timer and check your e_LOG folder
- * $bench->end()->$bench->('myevent');
+ * $bench->end()->logResult('myevent');
  * //OR print out the result (don't forget to stop the timer if used without the above line!
  * $bench->printResult();
  * </code>

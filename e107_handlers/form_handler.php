@@ -1226,10 +1226,31 @@ class e_form
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
-					$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
-					$alt = $src; //basename($value);
-					$ttl = vartrue($parms['thumb']) ? '<img src="'.$src.'" alt="'.$alt.'" style="width: '.(is_numeric($parms['thumb']) ? $parms['thumb'] : 80).'px" />' : vartrue($parms['title'], 'LAN_PREVIEW');
-					$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.defset($ttl, $ttl).'</a>';
+					if(vartrue($parms['thumb']))
+					{
+						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
+						$thumb = $parms['thumb'];
+						$thparms = array();
+						if(is_numeric($thumb) && '1' != $thumb)
+						{
+							$thparms['w'] = intval($thumb);
+						}
+						elseif(vartrue($parms['thumb_aw']))
+						{
+							$thparms['aw'] = intval($parms['thumb_aw']);
+						}
+						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
+						$alt = $src;
+						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="e-thumb" />';
+						$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
+					}
+					else
+					{
+						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
+						$alt = $src; //basename($value);
+						$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
+						$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.defset($ttl, $ttl).'</a>';
+					}
 				}
 			break;
 

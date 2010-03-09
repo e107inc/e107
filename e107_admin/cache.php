@@ -8,10 +8,8 @@
  *
  * Cache Administration Area
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 require_once("../class2.php");

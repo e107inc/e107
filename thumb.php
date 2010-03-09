@@ -15,12 +15,20 @@
  /**
  * @package e107
  * @subpackage core
+ * @author secretr
  * @version $Id$
+ *
+ * @todo cache management - max age, max size, image cache manager (?), cron (?)
  *
  * On-the-fly thumbnail generator
  */
 
 define('e107_INIT', true);
+
+//error_reporting(E_ALL);
+//require_once './e107_handlers/benchmark.php';
+//$bench = new e_benchmark();
+//$bench->start();
 
 $thumbpage = new e_thumbpage();
 
@@ -30,16 +38,27 @@ if(!$thumbpage->checkSrc())
 }
 $thumbpage->sendImage();
 
-/**
- * Handle on-the-fly created thumbnails
- *
- * @author secretr
- *
- */
+// Check your e_LOG folder
+//$bench->end()->logResult('thumb.php', $_GET['src'].' - no cache');
+exit;
+
 class e_thumbpage
 {
+	/**
+	 * Page request
+	 * @var array
+	 */
 	protected $_request = array();
+
+	/**
+	 * @var string image source path (e107 path shortcode)
+	 */
 	protected $_src = null;
+
+	/**
+	 * @var string source path modified/sanitized
+	 */
+	protected $_src_path = null;
 
 	/**
 	 * Constructor - init paths
@@ -80,7 +99,14 @@ class e_thumbpage
 			'CORE_DIRECTORY'
 		);
 		$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
-		e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
+		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
+		$e107 = e107::getInstance();
+		$e107->setDirs($e107_paths, varset($e107_CONFIG, array()));
+		$e107->set_constants();
+		$e107->set_paths();
+		$e107->file_path = $e107->fix_windows_paths($self)."/";
+		$e107->set_base_path();
+		$e107->set_urls();
 		unset($tmp, $self);
 
 		// parse request
@@ -89,8 +115,9 @@ class e_thumbpage
 
 	function parseRequest()
 	{
-		parse_str(str_replace('&amp;', '&', e_QUERY), $request);
-		$this->_request = $request;
+		//parse_str(str_replace('&amp;', '&', e_QUERY), $this->_request);
+		parse_str($_SERVER['QUERY_STRING'], $this->_request);
+		return $this;
 	}
 
 	function checkSrc()
@@ -119,7 +146,8 @@ class e_thumbpage
 			return false;
 		}
 
-		$path = $tp->replaceConstants($this->_src);
+		// should be safe enough
+		$path = $tp->replaceConstants(str_replace('..', '', $this->_src));
 
 		if(is_file($path) && is_readable($path))
 		{
@@ -131,6 +159,7 @@ class e_thumbpage
 
 	function sendImage()
 	{
+		//global $bench;
 		if(!$this->_src_path)
 		{
 			return $this;
@@ -139,7 +168,7 @@ class e_thumbpage
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
 
-		$cache_str = md5(serialize($options).md5_file($this->_src_path));
+		$cache_str = md5(serialize($options).$this->_src_path);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
 		if(is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname))
@@ -152,6 +181,7 @@ class e_thumbpage
 			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
 			{
 				header('HTTP/1.1 304 Not Modified');
+				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
 				exit;
 			}
 
@@ -159,6 +189,7 @@ class e_thumbpage
 			$this->sendHeaders($thumbnfo);
 
 			@readfile(e_CACHE_IMAGE.$fname);
+			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
 			exit;
 		}
 
@@ -189,7 +220,6 @@ class e_thumbpage
 
 		// show thumb
 		$thumb->show();
-		exit;
 	}
 
 	function getRequestOptions()
@@ -243,3 +273,5 @@ class e_thumbpage
 		return null;
 	}
 }
+
+?>

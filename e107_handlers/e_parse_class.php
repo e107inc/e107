@@ -1612,6 +1612,28 @@ class e_parse
 		return $text;
 	}
 
+	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
+	{
+		if(!is_array($options))
+		{
+			parse_str($options, $options);
+		}
+
+		if($raw) $url = $this->createConstants($url, 'mix');
+
+		$thurl = ($full ? SITEURL : e_HTTP).'thumb.php?src='.$url.'&amp;';
+		if(vartrue($options['aw']))
+		{
+			$thurl .= 'aw='.intval($options['aw']).'&amp;ah='.(vartrue($options['ah']) ? intval($options['ah']) : intval($options['aw']));
+		}
+		else
+		{
+			if(!vartrue($options['w'])) $options['w'] = 100;
+			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.(vartrue($options['h']) ? intval($options['h']) : intval($options['w']));
+		}
+
+		return $thurl;
+	}
 
 	/**
 	 * Replace e107 path constants
@@ -1687,7 +1709,6 @@ class e_parse
 				 "{e_THEME}",
 				 //,"{e_DOWNLOAD}"
 				 "{e_HANDLER}",
-				 //FIXME need another name
 				 "{e_MEDIA}"
 			);
 
