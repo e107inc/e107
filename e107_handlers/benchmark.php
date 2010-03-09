@@ -22,7 +22,7 @@
  * <code> <?php
  * require_once e_HANDLER.'benchmark.php';
  *
- * $bench = new benchmark();
+ * $bench = new e_benchmark();
  * $bench->start();
  *
  * // Do something, e.g. loop 1000000 times
@@ -33,7 +33,7 @@
  * $bench->printResult();
  * </code>
  */
-class benchmark
+class e_benchmark
 {
 	protected $time_start;
 	protected $time_end;
