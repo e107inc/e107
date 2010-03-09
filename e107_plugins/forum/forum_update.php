@@ -228,12 +228,13 @@ function step3()
 
 function step4()
 {
+	global $pref;
 	$e107 = e107::getInstance();
-	$stepCaption = 'Step 4: Move user specific forum data';
+	$stepCaption = 'Step 4: Move user specific forum data and forum prefs';
 	if(!isset($_POST['move_user_data']))
 	{
 		$text = "
-		This step will move the user_viewed data from user table into the user extended table.<br />
+		This step will move the main forum preferences into its own table row.  It will also move all user_viewed data from user table into the user extended table.<br />
 		The user_forum field data will not be moved, as it will be recalculated later.<br />
 		<br />
 		Depending on the size of your user table, this step could take a while.
@@ -245,6 +246,22 @@ function step4()
 		$e107->ns->tablerender($stepCaption, $text);
 		return;
 	}
+	
+	/** Convert forum prefs to their own row **/
+	$fconf = e107::getPlugConfig('forum', '', false);
+	$coreConfig = e107::getConfig();
+	$old_prefs = array();
+	foreach($pref as $k => $v)
+	{
+		if(substr($key, 0, 6) == 'forum_')
+		{
+			$old_prefs[substr($key,6)] = $v;
+			$coreConfig->remove($key);
+		}
+	}
+	$fconf->setPref($old_prefs)->save(false, true);
+	$coreConfig->save(false, true);
+	
 	$result = array(
 	'usercount' => 0,
 	'viewcount' => 0,
