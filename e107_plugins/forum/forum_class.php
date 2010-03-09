@@ -1,33 +1,39 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Message Handler
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+* e107 website system
+*
+* Copyright (c) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Forum class
+*
+* $URL$
+* $Id$
+*
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 class e107forum
 {
-	var $permList = array();
-	var $fieldTypes = array();
-	var $userViewed = array();
-	var $modArray = array();
-	var $e107;
+//	var $fieldTypes = array();
+	private $userViewed, $permList;
+	protected $modArray, $prefs;
 
-	function e107forum()
+	public function __construct()
 	{
+		$this->e107 = e107::getInstance();
+		$this->userViewed = array();
+		$this->modArray = array();
 		$this->loadPermList();
+		$this->prefs = e107::getPlugConfig('forum');
+		if(!$this->prefs->get('postspage')) {
+			$this->setDefaults();
+		}
+//		var_dump($this->prefs);
+		
+/*
 		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
@@ -49,12 +55,12 @@ class e107forum
 		$this->fieldTypes['forum_thread']['thread_options'] 	= 'escape';
 
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
-		$this->e107 = e107::getInstance();
+*/
 	}
 
 	function loadPermList()
 	{
-		global $e107;
+		$e107 = e107::getInstance();
 		if($tmp = $e107->ecache->retrieve_sys('forum_perms'))
 		{
 			$this->permList = $e107->arrayStorage->ReadArray($tmp);
@@ -68,30 +74,44 @@ class e107forum
 		}
 		unset($tmp);
 	}
-
+	
+	private function setDefaults()
+	{
+		$this->prefs->set('show_topics', '1');
+		$this->prefs->set('postfix', '[more...]');
+		$this->prefs->set('poll', '255');
+		$this->prefs->set('popular', '10');
+		$this->prefs->set('track', '1');
+		$this->prefs->set('eprefix', '[forum]');
+		$this->prefs->set('enclose', '1');
+		$this->prefs->set('title', 'Forums');
+		$this->prefs->set('postspage', '10');
+		$this->prefs->set('threadspage', '25');
+		$this->prefs->set('highlightsticky', '1');
+	}
 
 	function getForumPermList()
 	{
-		global $e107;
-
+		$e107 = e107::getInstance();
+		
 		$this->permList = array();
 		$qryList = array();
 
-		$qryList[view] = "
+		$qryList['view'] = "
 		SELECT f.forum_id
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_class IN (".USERCLASS_LIST.")
 		WHERE f.forum_class IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
 		";
 
-		$qryList[post] = "
+		$qryList['post'] = "
 		SELECT f.forum_id
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_postclass IN (".USERCLASS_LIST.")
 		WHERE f.forum_postclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
 		";
 
-		$qryList[thread] = "
+		$qryList['thread'] = "
 		SELECT f.forum_id
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_threadclass IN (".USERCLASS_LIST.")
@@ -158,7 +178,7 @@ class e107forum
 
 		$e107 = e107::getInstance();
 		$info = array();
-		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+//		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['data'] = $postInfo;
 		$postId = $e107->sql->db_Insert('forum_post', $info);
 		$forumInfo = array();
@@ -186,8 +206,8 @@ class e107forum
 			$info = array();
 			$info['data'] = $threadInfo;
 			$info['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
-			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
+//			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+//			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
 			$result = $e107->sql->db_Update('forum_thread', $info);
 
@@ -208,7 +228,7 @@ class e107forum
 
 			$info = array();
 			//If we update the thread, then we assume it was a reply, otherwise we've added a reply only.
-			$info['_FIELD_TYPES'] = $this->fieldTypes['forum'];
+//			$info['_FIELD_TYPES'] = $this->fieldTypes['forum'];
 			if($updateThread)
 			{
 				$forumInfo['forum_replies'] = 'forum_replies+1';
@@ -241,7 +261,7 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$info = array();
-		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+//		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['data'] = $threadInfo;
 		if($newThreadId = $e107->sql->db_Insert('forum_thread', $info))
 		{
@@ -258,7 +278,7 @@ class e107forum
 		$e107 = e107::getInstance();
 		$info = array();
 		$info['data'] = $threadInfo;
-		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+//		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
 		$e107->sql->db_Update('forum_thread', $info);
 	}
@@ -268,14 +288,13 @@ class e107forum
 		$e107 = e107::getInstance();
 		$info = array();
 		$info['data'] = $postInfo;
-		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+//		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['WHERE'] = 'post_id = '.(int)$postId;
 		$e107->sql->db_Update('forum_post', $info);
 	}
 
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
-		global $pref;
 		$e107 = e107::getInstance();
 		$id = (int)$id;
 		$uid = (int)$uid;
@@ -493,7 +512,7 @@ class e107forum
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
 			$info = array();
 			$info['data'] = $tmp;
-			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+//			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$info['WHERE'] = 'thread_id = '.$id;
 			$sql->db_Update('forum_thread', $info);
 
@@ -790,9 +809,8 @@ class e107forum
 	function track($which, $uid, $threadId, $force=false)
 	{
 		$e107 = e107::getInstance();
-		global $pref;
 
-		if (!varsettrue($pref['forum_track']) && !$force) { return false; }
+		if ($this->prefs->get('track') != 1 && !$force) { return false; }
 
 		$threadId = (int)$threadId;
 		$uid = (int)$uid;
@@ -1282,7 +1300,6 @@ class e107forum
 */
 function img_path($filename)
 {
-	global $pref;
 
 	$multilang = array('reply.png','newthread.png','moderator.png','main_admin.png','admin.png');
 	$ML = (in_array($filename,$multilang)) ? TRUE : FALSE;
