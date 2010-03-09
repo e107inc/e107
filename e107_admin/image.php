@@ -8,10 +8,8 @@
  *
  * Image Administration Area
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 require_once("../class2.php");
@@ -39,7 +37,7 @@ $e_sub_cat = 'image';
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."message_handler.php");
 // $frm = new e_form(); //new form handler
-$emessage = &eMessage::getInstance();
+$emessage = eMessage::getInstance();
 
 class media_admin extends e_admin_dispatcher
 {
@@ -56,8 +54,8 @@ class media_admin extends e_admin_dispatcher
 			'path' 			=> null,
 			'ui' 			=> 'faq_cat_form_ui',
 			'uipath' 		=> null
-		)						
-	);	
+		)
+	);
 
 
 	protected $adminMenu = array(
@@ -68,11 +66,11 @@ class media_admin extends e_admin_dispatcher
 	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'),
 		'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
-		
-		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')		
+
+		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
 	);
-	
-/*	
+
+/*
 	$var['main']['text'] = IMALAN_7;
 	$var['main']['link'] = e_SELF;
 
@@ -85,38 +83,38 @@ class media_admin extends e_admin_dispatcher
 
 	$var['editor']['text'] = "Image Manipulation (future release)";
 	$var['editor']['link'] = e_SELF."?editor";*/
-	
+
 
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'				
-	);	
-	
+		'main/edit'	=> 'main/list'
+	);
+
 	protected $menuTitle = LAN_MEDIAMANAGER;
-		
+
 }
 
 class faq_cat_ui extends e_admin_ui
-{ 	 	 
+{
 		protected $pluginTitle	= 'Media Categories';
 		protected $pluginName	= 'core';
 		protected $table 		= "core_media_cat";
 		protected $pid			= "media_cat_id";
 		protected $perPage = 0; //no limit
 		protected $batchDelete = false;
-	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
+	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit.
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
-	 	 	
+
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),     		
-         	'media_cat_nick' 		=> array('title'=> "Nickname",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),         	
-			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE), 
+			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
+         	'media_cat_nick' 		=> array('title'=> "Nickname",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
+			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','readonly'=>TRUE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 		//	'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
-		);	
-		
+		);
+
 	/**
 	 * Get FAQ Category data
 	 *
@@ -128,14 +126,14 @@ class faq_cat_ui extends e_admin_ui
 	{
 		// TODO get faq category tree
 	}
-		
+
 }
 
-class faq_cat_form_ui extends e_admin_form_ui
+/*class faq_cat_form_ui extends e_admin_form_ui
 {
 	public function faq_info_parent($curVal,$mode)
 	{
-		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter 
+		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter
 		// Get UI instance
 		$controller = $this->getController();
 		switch($mode)
@@ -143,27 +141,27 @@ class faq_cat_form_ui extends e_admin_form_ui
 			case 'read':
 				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
 			break;
-			
+
 			case 'write':
 				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
 			break;
-			
+
 			case 'filter':
 			case 'batch':
 				return $controller->getFaqCategoryTree();
 			break;
 		}
 	}
-}
+}*/
 
 
 
 
 class media_form_ui extends e_admin_form_ui
 {
-	
+
 	private $cats = array();
-	
+
 	function init()
 	{
 		$sql = e107::getDb();
@@ -172,30 +170,30 @@ class media_form_ui extends e_admin_form_ui
 		while($row = $sql->db_Fetch())
 		{
 			$cat = $row['media_cat_nick'];
-			$this->cats[$cat] = $row['media_cat_title'];	
+			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);
 	}
-	
-	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
+
+	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
-					
+
 		if($mode == 'read')
 		{
 			return $this->cats[$curVal];
 		}
-		
+
 		if($mode == 'batch') // Custom Batch List for release_type
 		{
-			return $this->cats;	
+			return $this->cats;
 		}
-		
+
 		if($mode == 'filter') // Custom Filter List for release_type
 		{
-			return $this->cats;	
+			return $this->cats;
 		}
-		
-		
+
+
 		$text = "<select class='tbox>' name='media_category' >";
 		foreach($this->cats as $key=>$val)
 		{
@@ -209,51 +207,51 @@ class media_form_ui extends e_admin_form_ui
 
 class media_admin_ui extends e_admin_ui
 {
-		
-		protected $pluginTitle = LAN_MEDIAMANAGER; 
+
+		protected $pluginTitle = LAN_MEDIAMANAGER;
 		protected $pluginName = 'core';
 		protected $table = "core_media";
-		
-	//	protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit. 
-		
+
+	//	protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit.
+
 	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
-		
+
 	//	protected $tableJoin = array(
 	//		'u.user' => array('leftField' => 'media_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
 	//	);
-		
+
 		protected $pid = "media_id";
 		protected $perPage = 10;
 		protected $batchDelete = true;
-		
+
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	/*
-    	 * We need a column with a preview that is generated from the path of another field. 
-    	 * ie. the preview column should show a thumbnail which is generated from the media_url column. 
-    	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field. 
+    	 * We need a column with a preview that is generated from the path of another field.
+    	 * ie. the preview column should show a thumbnail which is generated from the media_url column.
+    	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field.
     	 */
-			
+
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=100',	'width' => 'auto','readonly'=>TRUE),	 
-		
-	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',			'data'=> null,		'width' => '10%'), 
-       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),  
+      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60',	'width' => '110px','readonly'=>TRUE),
+
+	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',			'data'=> null,		'width' => '10%'),
+       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'), 
-         	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,), 
-			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE), 
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
+         	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
+			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
 		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
-			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),	
+			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
-          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE), 
-			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE, 'class'=>'nowrap'), 
-			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),	 
-			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	
-			'media_usedby' 			=> array('title'=> '',		'type' => 'text',			'data'=> 'text', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),	
-			
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE, 'class'=>'nowrap'),
+			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
+			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
+			'media_usedby' 			=> array('title'=> '',		'type' => 'text',			'data'=> 'text', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
+
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 
@@ -267,34 +265,34 @@ class media_admin_ui extends e_admin_ui
 				'other'			=> 'files'
 		);
 	//	protected $fieldpref = array('checkboxes','media_url', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
-		
+
 
 
 
 		/*
-		protected $prefs = array( 
+		protected $prefs = array(
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')
 		);*/
 
 	protected $cats = array();
 
 	function init()
 	{
-		
-		//FIXME - would prefer not to have to read this twice on the same page. 
+
+		//FIXME - would prefer not to have to read this twice on the same page.
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
 		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
 		while($row = $sql->db_Fetch())
 		{
 			$cat = $row['media_cat_nick'];
-			$this->cats[$cat] = $row['media_cat_title'];	
+			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);
-		
-		
+
+
 		if(varset($_POST['batch_import_selected']))
 		{
 			$this->batchImport();
@@ -304,26 +302,26 @@ class media_admin_ui extends e_admin_ui
 
 	function importPage()
 	{
-		$this->batchImportForm();		
+		$this->batchImportForm();
 	}
-	
+
 	function settingsPage()
 	{
 		main_config();
 	}
-	
+
 	function avatarPage()
 	{
 		show_avatars();
 	}
-	
+
 	function iconsPage()
 	{
 		$this->icon_editor();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Invoked just before item create event
 	 * @return array
@@ -337,9 +335,9 @@ class media_admin_ui extends e_admin_ui
 		$this->getModel()->setDataFields($dataFields);
 		return $this->observeUploaded($new_data);
 	}
-	
+
 	/**
-	 * Same as beforeCreate() but invoked on edit  
+	 * Same as beforeCreate() but invoked on edit
 	 * @return TBD
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
@@ -347,122 +345,122 @@ class media_admin_ui extends e_admin_ui
 		// return data to be merged with posted model data
 		return $this->observeUploaded($new_data);
 	}
-	
+
 	// XXX - strict mysql error on Create without UPLOAD!
 	function observeUploaded($new_data)
 	{
 		$fl = e107::getFile();
-		
+
 		$mes = e107::getMessage();
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
-	
+
 		$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
 
 		foreach($uploaded as $upload)
 		{
 			if(vartrue($upload['error']))
-			{			
+			{
 				$mes->add($upload['message'], E_MESSAGE_ERROR);
 				return FALSE;
 			}
-						
+
 			if(!$typePath = $this->getPath($upload['type']))
 			{
 				return FALSE;
 			}
-					
+
 			$oldpath = 'temp/'.$upload['name'];
 			$newpath = $typePath.'/'.$upload['name'];
-			
+
 			$info = $fl->get_file_info(e_MEDIA.$oldpath);
-									
-			$upload_data = array( // not saved if 'noedit' is active. 
+
+			$upload_data = array( // not saved if 'noedit' is active.
 				'media_type'		=> $upload['type'],
-				'media_datestamp'	=> time(), 
-				'media_url'			=> "{e_MEDIA}".$newpath, 
+				'media_datestamp'	=> time(),
+				'media_url'			=> "{e_MEDIA}".$newpath,
 				'media_size'		=> $upload['size'],
-				'media_author'		=> USERID, 
-				'media_usedby'		=> '', 
+				'media_author'		=> USERID,
+				'media_usedby'		=> '',
 				'media_tags'		=> '',
 				'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
 			);
-			
+
 
 			if(!varset($new_data['media_name']))
 			{
 				$upload_data['media_name'] = $upload['name'];
 			}
-			
+
 			// only one upload? Not sure what's the idea here
 			// we are currently creating one media item
 			if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
 			{
 				$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
-				return FALSE;	
+				return FALSE;
 			};
 			return $upload_data;
 		}
-		
+
 	}
-	
+
 	function beforeDelete($data, $id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
 	{
 		return true;
 	}
-	
+
 	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
-		
+
 	}
-	
+
 	function getPath($mime)
 	{
 		$mes = e107::getMessage();
-		
+
 		list($pmime,$tmp) = explode('/',$mime);
-		
+
 		if(!vartrue($this->mimePaths[$pmime]))
-		{			
+		{
 			$mes->add("Couldn't detected mime-type($type). Upload failed.", E_MESSAGE_ERROR);
 			return FALSE;
 		}
-		
-		$dir = $this->mimePaths[$pmime]."/".date("Y-m"); 
+
+		$dir = $this->mimePaths[$pmime]."/".date("Y-m");
 
 		if(!is_dir(e_MEDIA.$dir))
 		{
 			if(!mkdir(e_MEDIA.$dir, 0755))
 			{
 				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
-				return FALSE;	
+				return FALSE;
 			};
 		}
-		return $dir;		
+		return $dir;
 	}
-	
+
 	function batchImportForm()
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$fl = e107::getFile();
-		
+
 		$fl->setFileInfo('all');
 		$files = $fl->get_files(e_MEDIA."temp/");
-		
+
 		//TODO Detect XML file, and if found - read that instead of the directory.
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning Media in folder:  ".e_MEDIA."temp/", E_MESSAGE_INFO); 			
+			$mes->add("Scanning Media in folder:  ".e_MEDIA."temp/", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
 		{
-			$mes->add("No media Found!", E_MESSAGE_INFO); 
-			return;		
+			$mes->add("No media Found!", E_MESSAGE_INFO);
+			return;
 		}
-				
+
 			$text = "
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='batch_import'>
 					<fieldset id='core-mediamanager-batch'>
@@ -479,7 +477,7 @@ class media_admin_ui extends e_admin_ui
 									<th class='center'>Checkbox</th>
 									<th class='center' style='width:50px'>Preview</th>
 									<th class='center'>".LAN_NAME."</th>
-									<th>Mime Type</th>	
+									<th>Mime Type</th>
 									<th>File Size</th>
 									<th>".LAN_DATESTAMP."</th>
 									<th class='center last'>Dimensions</th>
@@ -497,12 +495,12 @@ class media_admin_ui extends e_admin_ui
 				<td>".$f['mime']."</td>
 				<td>".$f['fsize']."</td>
 				<td>".e107::getDateConvert()->convert_date($f['modified'])."</td>
-				<td class='center last'>".$f['img-width']." x ".$f['img-height']."</td>				
+				<td class='center last'>".$f['img-width']." x ".$f['img-height']."</td>
 				</tr>";
-		}					
+		}
 
 
-														
+
 		$text .= "
 				</tbody>
 						</table>
@@ -514,63 +512,63 @@ class media_admin_ui extends e_admin_ui
 						</div>
 					</fieldset>
 				</form>
-	
-	
+
+
 			";
-			
-		
+
+
 		echo $mes->render().$text;
 	}
-	
-	
+
+
 	function batchImport()
 	{
 		$fl = e107::getFile();
 		$mes = e107::getMessage();
 		$sql = e107::getDb();
-		
-		
+
+
 		foreach($_POST['batch_selected'] as $file)
 		{
 			$oldpath = "temp/".$file;
 			$f = $fl->get_file_info(e_MEDIA.$oldpath);
 			$newpath = $this->getPath($f['mime']).'/'.$file;
-			
+
 			$f['fname'] = $file;
 
 			if(rename(e_MEDIA.$oldpath,e_MEDIA.$newpath))
 			{
 				$insert = array(
-					'media_caption'		=> $f['fname'], 
-					'media_description'	=> '', 
-					'media_category'	=> $_POST['batch_category'], 
-					'media_datestamp'	=> $f['modified'], 
-					'media_url'	=> 		"{e_MEDIA}".$newpath, 
-					'media_userclass'	=> 0, 
-					'media_name'	=> $f['fname'], 
-					'media_author'	=> USERID, 
-					'media_size'	=> $f['fsize'], 
-					'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
-					'media_usedby'	=> '', 
-					'media_tags'	=> '', 
+					'media_caption'		=> $f['fname'],
+					'media_description'	=> '',
+					'media_category'	=> $_POST['batch_category'],
+					'media_datestamp'	=> $f['modified'],
+					'media_url'	=> 		"{e_MEDIA}".$newpath,
+					'media_userclass'	=> 0,
+					'media_name'	=> $f['fname'],
+					'media_author'	=> USERID,
+					'media_size'	=> $f['fsize'],
+					'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],
+					'media_usedby'	=> '',
+					'media_tags'	=> '',
 					'media_type'	=> $f['mime']
 					);
-					
-				
+
+
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
 				}
 				else
 				{
-					rename(e_MEDIA.$newpath,e_MEDIA.$oldpath);	//move it back. 
+					rename(e_MEDIA.$newpath,e_MEDIA.$oldpath);	//move it back.
 				}
 			}
-		}	
+		}
 	}
-	
-	
-	
+
+
+
 	function preview($f)
 	{
 		list($type,$tmp) = explode("/",$f['mime']);
@@ -581,22 +579,22 @@ class media_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			return; //TODO generic icon/image for no preview. 
+			return; //TODO generic icon/image for no preview.
 		}
 	}
-	
-	
+
+
 	function icon_editor()
 	{
 		global $iconpool, $e107;
-		
+
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		
+
 		ksort($iconpool);
-	
+
 		$text = "
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='icon_edit'>
 					<fieldset id='core-imagemanager-icons'>
@@ -619,7 +617,7 @@ class media_admin_ui extends e_admin_ui
 							<tbody>
 			";
 	    $tmp = array(16, 32, 48, 64, 128);
-	
+
 		foreach($iconpool as $key => $val)
 		{
 				$tmp1 = array();
@@ -628,7 +626,7 @@ class media_admin_ui extends e_admin_ui
 		            $filepath = $icon;
 			 		$filepath_abs = $tp->replaceConstants($icon);
 					$icon_file = basename($filepath_abs);
-	
+
 					$str = "<img class='icon picker list%%size%%' src='{$filepath_abs}' alt='{$icon_file}' />";
 					foreach ($tmp as $isize)
 					{
@@ -640,12 +638,12 @@ class media_admin_ui extends e_admin_ui
 					}
 				   	$tmp1['other'] = varset($tmp1['other']).$str;//other
 	            }
-	
+
 				$ptext = "<div class='field-spacer iconeditor'>".str_replace('%%size%%', '', implode('</div><div class="field-spacer iconeditor">', $tmp1))."</div>";
-	
+
 	   //	$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, CHARSET);
 	   //		$ptext = $e107->tp->textclean($ptext, 80);
-	
+
 			$text .= "
 								<tr>
 									<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
@@ -655,7 +653,7 @@ class media_admin_ui extends e_admin_ui
 								</tr>
 				";
 		}
-	
+
 		$text .= "
 							</tbody>
 						</table>
@@ -664,15 +662,15 @@ class media_admin_ui extends e_admin_ui
 						</div>
 					</fieldset>
 				</form>
-	
-	
+
+
 			";
 		//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
 		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_71, $mes->render().$text);
-	
+
 		echo $mes->render().$text;
 	}
-		
+
 }
 
 
@@ -694,7 +692,7 @@ e107::getAdminUI()->runPage();
 
 // -----------------------------------------------------------------------
 
- 
+
 
 
 $action = e_QUERY;
@@ -900,7 +898,7 @@ if (isset($_POST['update_options']))
 function show_avatars()
 {
 	global $e107, $pref;
-	
+
 	$ns = e107::getRender();
 	$sql = e107::getDb();
 	$frm = e107::getForm();
@@ -1195,7 +1193,7 @@ if (isset($_POST['check_avatar_sizes']))
  function main_config()
  {
  	global $pref;
-	
+
 	$frm = e107::getForm();
 	$tp = e107::getParser();
 	$sql = e107::getDb();
