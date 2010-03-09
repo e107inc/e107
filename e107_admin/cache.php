@@ -32,7 +32,7 @@ require_once(e_HANDLER."message_handler.php");
 $ec = new ecache;
 $frm = new e_form();
 
-$emessage = &eMessage::getInstance();
+$emessage = eMessage::getInstance();
 
 if ($pref['cachestatus'] == '2')
 {
@@ -40,7 +40,7 @@ if ($pref['cachestatus'] == '2')
 	save_prefs();
 }
 
-if(!is_writable(e_CACHE))
+if(!is_writable(e_CACHE_CONTENT))
 {
 	$ns->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
 	require_once("footer.php");
@@ -84,8 +84,8 @@ if (isset($_POST['empty_cache']))
 
 
 
-$syscache_files = glob(e_CACHE."S_*.*");
-$cache_files = glob(e_CACHE."C_*.*");
+$syscache_files = glob(e_CACHE_CONTENT."S_*.*");
+$cache_files = glob(e_CACHE_CONTENT."C_*.*");
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);
