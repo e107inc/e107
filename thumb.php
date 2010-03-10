@@ -206,13 +206,13 @@ class e_thumbpage
 		     return $this;
 		}
 
-		if(isset($this->_request['w']))
+		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
-			$thumb->resize($this->_request['w'], varset($this->_request['h'], $this->_request['w']));
+			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
 		}
 		else
 		{
-			$thumb->adaptiveResize($this->_request['aw'], varset($this->_request['ah'], $this->_request['aw']));
+			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
 		}
 
 		// set cache
