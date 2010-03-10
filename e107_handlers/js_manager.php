@@ -586,7 +586,7 @@ class e_jsmanager
 			break;
 
 			case 'other_css':
-				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 4);
+				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 'mix');
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
@@ -599,7 +599,7 @@ class e_jsmanager
 			break;
 
 			case 'header':
-				$file_path = $tp->createConstants($file_path, 4);
+				$file_path = $tp->createConstants($file_path, 'mix');
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -614,7 +614,7 @@ class e_jsmanager
 			break;
 
 			case 'footer':
-				$file_path = $tp->createConstants($file_path, 4);
+				$file_path = $tp->createConstants($file_path, 'mix');
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
