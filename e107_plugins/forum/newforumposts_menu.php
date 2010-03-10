@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -25,13 +23,13 @@ include_once(e_PLUGIN.'forum/forum_class.php');
 $max_age = varset($menu_pref['newforumposts_maxage'], 0);
 $max_age = $max_age == 0 ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
-$forum = new e107forum; 
+$forum = new e107forum;
 $forumList = implode(',', $forum->permList['view']);
-
+//TODO: Use query from forum class to get thread list
 $qry = "
 SELECT
-	p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry, 
-	t.thread_id, t.thread_datestamp, t.thread_name, u.user_name 
+	p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
+	t.thread_id, t.thread_datestamp, t.thread_name, u.user_name
 FROM `#forum_post` as p
 LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 LEFT JOIN `#user` AS u ON u.user_id = p.post_user
@@ -82,7 +80,7 @@ if($results = $e107->sql->db_Select_gen($qry))
 }
 else
 {
-	$text = NFP_2;	
+	$text = NFP_2;
 
 }
 $e107->ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');

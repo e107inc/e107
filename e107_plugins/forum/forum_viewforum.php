@@ -30,13 +30,13 @@ if (!e_QUERY)
 	exit;
 }
 
-//$view = 25;
-$view = (varset($pref['forum_threadspage']) ? $pref['forum_threadspage'] : 25);
-$page = (varset($_GET['p']) ? $_GET['p'] : 0);
-$threadFrom = $page * $view;
-
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
+
+//$view = 25;
+$view = $forum->prefs->get('threadspage', 25);
+$page = (varset($_GET['p']) ? $_GET['p'] : 0);
+$threadFrom = $page * $view;
 
 global $forum_info, $FORUM_CRUMB;
 $fVars = new e_vars;
@@ -242,7 +242,7 @@ if (count($threadList) )
 		{
 			$sticky_threads ++;
 		}
-		if ($sticky_threads > 0 && !$stuck && $pref['forum_hilightsticky'])
+		if ($sticky_threads > 0 && !$stuck && $forum->prefs->get('hilightsticky'))
 		{
 			if($FORUM_IMPORTANT_ROW)
 			{
@@ -292,9 +292,9 @@ $forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
 $forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
 
 
-if ($pref['forum_enclose'])
+if ($forum->prefs->get('forum_enclose'))
 {
-	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
+	$ns->tablerender($forum->prefs->get('forum_title'), $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
 {
@@ -313,7 +313,7 @@ require_once(FOOTERF);
 
 function parse_thread($thread_info)
 {
-	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $menu_pref, $threadsViewed;
+	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
 	global $tp;
 	$tVars = new e_vars;
 	$e107 = e107::getInstance();
@@ -351,7 +351,7 @@ function parse_thread($thread_info)
 
 	$tVars->THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	$tVars->ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
-	if ($tVars->REPLIES >= $pref['forum_popular'])
+	if ($tVars->REPLIES >= $forum->prefs->get('popular', 10))
 	{
 	  $tVars->ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
@@ -381,10 +381,10 @@ function parse_thread($thread_info)
 //	{
 //		$thread_name = substr($thread_name, strlen($THREADTYPE));
 //	}
-	if ($pref['forum_tooltip'])
+	if ($forum->prefs->get('tooltip'))
 	{
 		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
-		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
+		$tip_length = $forum->prefs->get('tiplength', 400);
 		if (strlen($thread_thread) > $tip_length)
 		{
 			//$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
@@ -399,7 +399,7 @@ function parse_thread($thread_info)
 	}
 	$tVars->THREADNAME = "<a {$title} href='".$e107->url->getUrl('forum', 'thread', "func=view&id={$threadId}")."'>{$thread_name}</a>";
 
-	$pages = ceil(($tVars->REPLIES+1)/$pref['forum_postspage']);
+	$pages = ceil(($tVars->REPLIES+1)/$forum->prefs->get('postspage'));
 	if ($pages > 1)
 	{
 		if($pages > 6)

@@ -8,10 +8,8 @@
 *
 * Check for admin events being triggered
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_admin_events.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 function plugin_forum_admin_events($type, $parms)

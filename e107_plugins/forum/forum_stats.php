@@ -8,13 +8,13 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_stats.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 require_once('../../class2.php');
+
+//TODO: Investigate the queries used here
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
@@ -27,8 +27,8 @@ $bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_PLUGIN.
 
 require_once(HEADERF);
 
-$total_posts = $sql -> db_Count('forum_post');
-$total_topics = $sql -> db_Count('forum_thread');
+$total_posts = $sql->db_Count('forum_post');
+$total_topics = $sql->db_Count('forum_thread');
 $total_replies = $total_posts - $total_topics;
 $total_views = 0;
 $query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';

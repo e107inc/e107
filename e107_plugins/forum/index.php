@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/index.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 header("location: forum.php");

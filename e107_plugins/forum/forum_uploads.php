@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_uploads.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 require_once("../../class2.php");
@@ -95,7 +93,7 @@ if(is_array($fileList))
 				else
 				{
 					$txt .= "<td class='forumheader3'>".FRMUP_7.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}'>{$tinfo['thread_id']}</a></td>";
-				}	
+				}
 			
 			}
 			else

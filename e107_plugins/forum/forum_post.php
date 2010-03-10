@@ -8,10 +8,8 @@
  *
  * Forum Posting
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 require_once('../../class2.php');
@@ -96,7 +94,7 @@ define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'r
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if($pref['forum_attach'])
+if($forum->prefs->get('forum_attach'))
 {
 	global $allowed_filetypes, $max_upload_size;
 	include_once(e_HANDLER.'upload_handler.php');
@@ -146,7 +144,7 @@ if (isset($_POST['fpreview']))
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);
 	$tpost = $tp->post_toHTML($_POST['post'], true);
 
-	if ($_POST['poll_title'] != '' && check_class($pref['forum_poll']))
+	if ($_POST['poll_title'] != '' && check_class($forum->prefs->get('forum_poll')))
 	{
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;
@@ -322,7 +320,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$e107cache->clear('newforumposts');
 		$threadLink = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId));
 		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
-		if ($pref['forum_redirect'])
+		if ($forum->prefs->get('forum_redirect'))
 		{
 			header('location:'.$threadLink);
 			exit;
@@ -519,9 +517,9 @@ $text = $tp->parseTemplate($FORUMPOST, true);
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if ($pref['forum_enclose'])
+if ($forum->prefs->get('forum_enclose'))
 {
-	$ns->tablerender($pref['forum_title'], $text);
+	$ns->tablerender($forum->prefs->get('title'), $text);
 }
 else
 {
@@ -550,7 +548,7 @@ function forumjump()
 
 function process_upload()
 {
-	global $pref, $forumInfo, $thread_info, $admin_log;
+	global $forumInfo, $thread_info, $admin_log;
 
 	$postId = (int)$postId;
 	$ret = array();
@@ -576,17 +574,17 @@ function process_upload()
 				if(strstr($upload['type'], 'image'))
 				{
 					$_type = 'img';
-					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
+					if($forum->prefs->get('maxwidth', 0) > 0)
 					{
 						require_once(e_HANDLER.'resize_handler.php');
 						$orig_file = $upload['name'];
 						$new_file = 'th_'.$orig_file;
 
-						$resizeDir = ($pref['forum_linkimg'] ? 'thumb/' : '');
+						$resizeDir = ($forum->prefs->get('linkimg') ? 'thumb/' : '');
 
-						if(resize_image($attachmentDir.$orig_file, $attachmentDir.$resizeDir.$new_file, $pref['forum_maxwidth']))
+						if(resize_image($attachmentDir.$orig_file, $attachmentDir.$resizeDir.$new_file, $forum->prefs->get('maxwidth')))
 						{
-							if($pref['forum_linkimg'])
+							if($forum->prefs->get('linkimg'))
 							{
 								$parms = image_getsize($attachmentDir.$new_file);
 								$_txt = '[br][link='.$fpath.$orig_file."][img{$parms}]".$fpath.$new_file.'[/img][/link][br]';

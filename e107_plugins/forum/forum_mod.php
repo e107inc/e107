@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_mod.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit(); }
@@ -19,16 +17,12 @@ include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
 function forum_thread_moderate($p)
 {
-	//	var_dump($_POST);
-	//	return;
 	$e107 = e107::getInstance();
-	global $sql;
 	foreach ($p as $key => $val)
 	{
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
 		{
 			$act = $matches[1];
-			//			print_a($matches); return;
 			$id = (int)$matches[2];
 
 			switch ($act)
@@ -69,7 +63,7 @@ function forum_thread_moderate($p)
 function forumDeleteThread($threadId)
 {
 	require_once (e_PLUGIN.'forum/forum_class.php');
-	$f = &new e107forum;
+	$f = new e107forum;
 	$ret = $f->threadDelete($threadId);
 	return FORLAN_6.' and '.$ret.' '.FORLAN_7.'.';
 }
@@ -77,7 +71,7 @@ function forumDeleteThread($threadId)
 function forumDeletePost($postId)
 {
 	require_once (e_PLUGIN.'forum/forum_class.php');
-	$f = &new e107forum;
+	$f = new e107forum;
 	$ret = $f->postDelete($postId);
 	return FORLAN_6.' and '.$ret.' '.FORLAN_7.'.';
 }

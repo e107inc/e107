@@ -14,19 +14,18 @@
 	<siteLinks>
 		<link url="{e_PLUGIN}forum/forum.php" perm='everyone'>Forum</link>		
 	</siteLinks>
-	<mainPrefs>
-		<pref name="forum_show_topics">1</pref>
-		<pref name="forum_postfix">[more...]</pref>
-		<pref name="forum_poll">255</pref>
-		<pref name="forum_popular">10</pref>
-		<pref name="forum_track">1</pref>
-		<pref name="forum_eprefix">[forum]</pref>
-		<pref name="forum_enclose">1</pref>
-		<pref name="forum_title">Forums</pref>
-		<pref name="forum_postspage">10</pref>
-		<pref name="forum_threadspage">25</pref>
-		<pref name="forum_hilightsticky">1</pref>
-	</mainPrefs>
+	<pluginPrefs>
+		<pref name="show_topics">1</pref>
+		<pref name="postfix">[more...]</pref>
+		<pref name="poll">255</pref>
+		<pref name="popular">10</pref>
+		<pref name="track">1</pref>
+		<pref name="eprefix">[forum]</pref>
+		<pref name="enclose">1</pref>
+		<pref name="title">Forums</pref>
+		<pref name="postspage">10</pref>
+		<pref name="hilightsticky">1</pref>
+	</pluginPrefs>	
 	<userClasses>
 		<class name="forum_moderator" description="Moderator of all forums" />		
 	</userClasses>

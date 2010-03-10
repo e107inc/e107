@@ -135,7 +135,7 @@ $tVars->NEXTPREV = "&lt;&lt; <a href='" . $e107->url->getUrl('forum', 'thread', 
 $tVars->NEXTPREV .= ' | ';
 $tVars->NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'next', 'id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
 
-if ($pref['forum_track'] && USER)
+if ($forum->prefs->get('track') && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
 	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
@@ -264,7 +264,7 @@ if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->thread
 
 require_once (HEADERF);
 
-if ($pref['forum_enclose'])
+if ($forum->prefs->get('enclose'))
 {
 	$ns->tablerender(LAN_01, $forumstring, array('forum_viewtopic', 'main'));
 }
@@ -451,10 +451,10 @@ class e107ForumThread
 
 	function init()
 	{
-		global $pref, $forum;
+		global $forum;
 		$e107 = e107::getInstance();
 		$this->threadId = (int)varset($_GET['id']);
-		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $pref['forum_postspage']);
+		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $forum->prefs->get('postspage'));
 		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 0);
 
 		//If threadId doesn't exist, or not given, redirect to main forum page
@@ -499,7 +499,7 @@ class e107ForumThread
 
 	function processFunction()
 	{
-		global $forum, $thread, $pref;
+		global $forum, $thread;
 		$e107 = e107::getInstance();
 		if (!isset($_GET['f']))
 		{
@@ -513,7 +513,7 @@ class e107ForumThread
 				$postId = varset($_GET['id']);
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
-				$postPage = ceil($postNum / $pref['forum_postspage'])-1;
+				$postPage = ceil($postNum / $forum->prefs->get('postspage'))-1;
 				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage");
 				header('location: '.$url);
 				exit;
@@ -553,7 +553,7 @@ class e107ForumThread
 				if (isset($_POST['report_thread']))
 				{
 					$report_add = $e107->tp->toDB($_POST['report_add']);
-					if ($pref['reported_post_email'])
+					if ($forum->prefs->get('reported_post_email'))
 					{
 						require_once (e_HANDLER . 'mail.php');
 						$report = LAN_422 . SITENAME . " : " . (substr(SITEURL, -1) == "/" ? SITEURL : SITEURL . "/") . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $thread_id . ".post\n" . LAN_425 . USERNAME . "\n" . $report_add;
