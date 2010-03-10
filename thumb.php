@@ -128,11 +128,11 @@ class e_thumbpage
 		}
 
 		$tp = e107::getParser();
-		// FIXME - better way, maybe additional e_parse method, returning path SC array only
-		$search = array('e_BASE/', 'e_IMAGE/', 'e_MEDIA/', 'e_PLUGIN/', 'e_THEME/', 'e_WEB/');
-		$replace = array('{e_BASE}', '{e_IMAGE}', '{e_MEDIA}', '{e_PLUGIN}', '{e_THEME}', '{e_WEB}');
-		$this->_request['src'] = str_replace($search, $replace,$this->_request['src']);
 
+		// convert raw to SC path
+		$this->_request['src'] = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $this->_request['src']);
+
+		// convert absolute and full url to SC URL
 		$this->_src = $tp->createConstants($this->_request['src'], 'mix');
 
 		if(preg_match('#^(https?|ftps?|file)://#i', $this->_request['src']))
@@ -146,8 +146,8 @@ class e_thumbpage
 			return false;
 		}
 
-		// should be safe enough
-		$path = $tp->replaceConstants(str_replace('..', '', $this->_src));
+		// convert to relative server path
+		$path = $tp->replaceConstants(str_replace('..', '', $this->_src)); //should be safe enough
 
 		if(is_file($path) && is_readable($path))
 		{
