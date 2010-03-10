@@ -39,7 +39,7 @@ class e_file
 		}
 		if($omit == 'standard')
 		{
-			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','\.svn$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
+			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','^\.svn','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		}
 		else
 		{
@@ -56,7 +56,7 @@ class e_file
 		{
 			if(is_dir($path.'/'.$file))
 			{
-				if($file != '.' && $file != '..' && $file != 'CVS' && $recurse_level > 0 && $current_level < $recurse_level)
+				if($file != '.' && $file != '..' && $file != 'CVS' && ($file != '.svn') && $recurse_level > 0 && $current_level < $recurse_level)
 				{
 					$xx = $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level, $current_level+1);
 					$ret = array_merge($ret,$xx);
