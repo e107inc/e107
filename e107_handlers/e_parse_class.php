@@ -1645,7 +1645,18 @@ class e_parse
 	 */
 	public function getUrlConstants($type = 'sc')
 	{
+		// sub-folders first!
 		static $array = array(
+			'e_MEDIA_FILE/' 	=> '{e_MEDIA_FILE}',
+			'e_MEDIA_VIDEO/' 	=> '{e_MEDIA_VIDEO}',
+			'e_MEDIA_IMAGE/' 	=> '{e_MEDIA_IMAGE}',
+			'e_MEDIA_ICON/' 	=> '{e_MEDIA_ICON}',
+			'e_MEDIA_AVATAR/' 	=> '{e_MEDIA_AVATAR}',
+			'e_WEB_JS/' 		=> '{e_WEB_JS}',
+			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
+			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
+			'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
+
 			'e_BASE/' 			=> '{e_BASE}',
 			'e_ADMIN/' 			=> '{e_ADMIN}',
 			'e_IMAGE/' 			=> '{e_IMAGE}',
@@ -1653,16 +1664,7 @@ class e_parse
 			'e_PLUGIN/' 		=> '{e_PLUGIN}',
 			'e_HANDLER/' 		=> '{e_WEB_PACK}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
-			'e_MEDIA_FILE/' 	=> '{e_MEDIA_FILE}',
-			'e_MEDIA_VIDEO/' 	=> '{e_MEDIA_VIDEO}',
-			'e_MEDIA_IMAGE/' 	=> '{e_MEDIA_IMAGE}',
-			'e_MEDIA_ICON/' 	=> '{e_MEDIA_ICON}',
-			'e_MEDIA_AVATAR/' 	=> '{e_MEDIA_AVATAR}',
 			'e_WEB/' 			=> '{e_ADMIN}',
-			'e_WEB_JS/' 		=> '{e_WEB_JS}',
-			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
-			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
-			'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
 		);
 
 		switch ($type)
@@ -1706,7 +1708,15 @@ class e_parse
 			$e107 = e107::getInstance();
 
 			$replace_relative = array(
-				'',
+				$e107->getFolder('media_files'),
+				$e107->getFolder('media_video'),
+				$e107->getFolder('media_image'),
+				$e107->getFolder('media_icon'),
+				$e107->getFolder('media_avatar'),
+				$e107->getFolder('web_js'),
+				$e107->getFolder('web_css'),
+				$e107->getFolder('web_image'),
+				$e107->getFolder('web_pack'),
 				SITEURL.$e107->getFolder('images'),
 				SITEURL.$e107->getFolder('themes'),
 				$e107->getFolder('images'),
@@ -1715,14 +1725,24 @@ class e_parse
 				$e107->getFolder('themes'),
 			//	$e107->getFolder('downloads'),
 				$e107->getFolder('handlers'),
-				$e107->getFolder('media')
+				$e107->getFolder('media'),
+				$e107->getFolder('web'),
+				'',
 			);
 
 			switch ($mode)
 			{
 				case 'abs':
 					$replace_absolute = array(
-						$e107->server_path,
+						e_MEDIA_FILE_ABS,
+						e_MEDIA_VIDEO_ABS,
+						e_MEDIA_IMAGE_ABS,
+						e_MEDIA_ICON_ABS,
+						e_MEDIA_AVATAR_ABS,
+						e_JS_ABS,
+						e_CSS_ABS,
+						e_WEB_IMAGE_ABS,
+						e_PACK_ABS,
 						e_IMAGE_ABS,
 						e_THEME_ABS,
 						e_IMAGE_ABS,
@@ -1730,37 +1750,60 @@ class e_parse
 						e_FILE_ABS,
 						e_THEME_ABS,
 				//		e_DOWNLOAD_ABS, //impossible when download is done via php.
-						e_HANDLER_ABS,
-						e_MEDIA_ABS
+						'', //no ABS path available
+						e_MEDIA_ABS,
+						e_WEB_ABS,
+						$e107->server_path,
 					);
 				break;
 
 				case 'full':
 					$replace_absolute = array(
+						SITEURLBASE.e_MEDIA_FILE_ABS,
+						SITEURLBASE.e_MEDIA_VIDEO_ABS,
+						SITEURLBASE.e_MEDIA_IMAGE_ABS,
+						SITEURLBASE.e_MEDIA_ICON_ABS,
+						SITEURLBASE.e_MEDIA_AVATAR_ABS,
+						SITEURLBASE.e_JS_ABS,
+						SITEURLBASE.e_CSS_ABS,
+						SITEURLBASE.e_WEB_IMAGE_ABS,
+						SITEURLBASE.e_PACK_ABS,
+						SITEURLBASE.e_IMAGE_ABS,
+						SITEURLBASE.e_THEME_ABS,
+						SITEURLBASE.e_IMAGE_ABS,
+						SITEURLBASE.e_PLUGIN_ABS,
+						SITEURLBASE.e_FILE_ABS, // deprecated
+						SITEURLBASE.e_THEME_ABS,
+						//SITEURL.$e107->getFolder('downloads'),
+						'', //no ABS path available
+						SITEURLBASE.e_MEDIA_ABS,
+						SITEURLBASE.e_WEB_ABS,
 						SITEURL,
-						SITEURL.$e107->getFolder('images'),
-						SITEURL.$e107->getFolder('themes'),
-						SITEURL.$e107->getFolder('images'),
-						SITEURL.$e107->getFolder('plugins'),
-						SITEURL.$e107->getFolder('files'),
-						SITEURL.$e107->getFolder('themes'),
-					//	SITEURL.$e107->getFolder('downloads'),
-						SITEURL.$e107->getFolder('handlers'),
-						SITEURL.$e107->getFolder('media')
 					);
 				break;
 			}
-
-			$search = array("{e_BASE}",
-				 "{e_IMAGE_ABS}",
-				 "{e_THEME_ABS}",
-				 "{e_IMAGE}",
-				 "{e_PLUGIN}",
-				 "{e_FILE}",
-				 "{e_THEME}",
-				 //,"{e_DOWNLOAD}"
-				 "{e_HANDLER}",
-				 "{e_MEDIA}"
+			// sub-folders first!
+			$search = array(
+				'{e_MEDIA_FILE}',
+				'{e_MEDIA_VIDEO}',
+				'{e_MEDIA_IMAGE}',
+				'{e_MEDIA_ICON}',
+				'{e_MEDIA_AVATAR}',
+				'{e_WEB_JS}',
+				'{e_WEB_CSS}',
+				'{e_WEB_IMAGE}',
+				'{e_WEB_PACK}',
+				"{e_IMAGE_ABS}",
+				"{e_THEME_ABS}",
+				"{e_IMAGE}",
+				"{e_PLUGIN}",
+				"{e_FILE}",
+				"{e_THEME}",
+				//,"{e_DOWNLOAD}"
+				"{e_HANDLER}",
+				"{e_MEDIA}",
+				"{e_WEB}",
+				"{e_BASE}",
 			);
 
 			if (ADMIN)
@@ -1844,6 +1887,16 @@ class e_parse
 		{
 			case 0: // folder name only.
 				$tmp = array(
+					'{e_MEDIA_FILE}'	=> $e107->getFolder('media_files'),
+					'{e_MEDIA_VIDEO}'	=> $e107->getFolder('media_video'),
+					'{e_MEDIA_IMAGE}'	=> $e107->getFolder('media_image'),
+					'{e_MEDIA_ICON}'	=> $e107->getFolder('media_icon'),
+					'{e_MEDIA_AVATAR}'	=> $e107->getFolder('media_avatar'),
+					'{e_WEB_JS}'		=> $e107->getFolder('web_js'),
+					'{e_WEB_CSS}'		=> $e107->getFolder('web_css'),
+					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_image'),
+					'{e_WEB_PACK}'		=> $e107->getFolder('web_pack'),
+
 					'{e_IMAGE}' 	=> $e107->getFolder('images'),
 					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
 					'{e_FILE}'		=> $e107->getFolder('files'),
@@ -1858,6 +1911,16 @@ class e_parse
 
 			case 1: // relative path only
 				$tmp = array(
+					'{e_MEDIA_FILE}'	=> e_MEDIA_FILE,
+					'{e_MEDIA_VIDEO}'	=> e_MEDIA_VIDEO,
+					'{e_MEDIA_IMAGE}'	=> e_MEDIA_IMAGE,
+					'{e_MEDIA_ICON}'	=> e_MEDIA_ICON,
+					'{e_MEDIA_AVATAR}'	=> e_MEDIA_AVATAR,
+					'{e_WEB_JS}'		=> e_WEB_JS,
+					'{e_WEB_CSS}'		=> e_WEB_CSS,
+					'{e_WEB_IMAGE}'		=> e_WEB_IMAGE,
+					'{e_WEB_PACK}'		=> e_WEB_PACK,
+
 					'{e_IMAGE}'		=> e_IMAGE,
 					'{e_PLUGIN}'	=> e_PLUGIN,
 					'{e_FILE}'		=> e_FILE,
@@ -1872,6 +1935,16 @@ class e_parse
 
 			case 2: // absolute path only
 				$tmp = array(
+					'{e_MEDIA_FILE}'	=> e_MEDIA_FILE_ABS,
+					'{e_MEDIA_VIDEO}'	=> e_MEDIA_VIDEO_ABS,
+					'{e_MEDIA_IMAGE}'	=> e_MEDIA_IMAGE_ABS,
+					'{e_MEDIA_ICON}'	=> e_MEDIA_ICON_ABS,
+					'{e_MEDIA_AVATAR}'	=> e_MEDIA_AVATAR_ABS,
+					'{e_WEB_JS}'		=> e_JS_ABS,
+					'{e_WEB_CSS}'		=> e_CSS_ABS,
+					'{e_WEB_IMAGE}'		=> e_WEB_IMAGE_ABS,
+					'{e_WEB_PACK}'		=> e_PACK_ABS,
+
 					'{e_IMAGE}'		=> e_IMAGE_ABS,
 					'{e_PLUGIN}'	=> e_PLUGIN_ABS,
 					'{e_FILE}'		=> e_FILE_ABS, // deprecated
@@ -1886,15 +1959,25 @@ class e_parse
 
 			case 3: // full path (e.g http://domain.com/e107_images/)
 				$tmp = array(
-					'{e_IMAGE}' 	=> SITEURL.$e107->getFolder('images'),
-					'{e_PLUGIN}'	=> SITEURL.$e107->getFolder('plugins'),
-					'{e_FILE}'		=> SITEURL.$e107->getFolder('files'),
-					'{e_THEME}'		=> SITEURL.$e107->getFolder('themes'),
-					'{e_DOWNLOAD}'	=> SITEURL.$e107->getFolder('downloads'), // FIXME - we need solution!
-					'{e_ADMIN}'		=> SITEURL.$e107->getFolder('admin'),
-					//'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers') - no full path available
-					'{e_MEDIA}'		=> SITEURL.$e107->getFolder('media'),
-					'{e_WEB}'		=> SITEURL.$e107->getFolder('web'),
+					'{e_MEDIA_FILE}'	=> SITEURLBASE.e_MEDIA_FILE_ABS,
+					'{e_MEDIA_VIDEO}'	=> SITEURLBASE.e_MEDIA_VIDEO_ABS,
+					'{e_MEDIA_IMAGE}'	=> SITEURLBASE.e_MEDIA_IMAGE_ABS,
+					'{e_MEDIA_ICON}'	=> SITEURLBASE.e_MEDIA_ICON_ABS,
+					'{e_MEDIA_AVATAR}'	=> SITEURLBASE.e_MEDIA_AVATAR_ABS,
+					'{e_WEB_JS}'		=> SITEURLBASE.e_JS_ABS,
+					'{e_WEB_CSS}'		=> SITEURLBASE.e_CSS_ABS,
+					'{e_WEB_IMAGE}'		=> SITEURLBASE.e_WEB_IMAGE_ABS,
+					'{e_WEB_PACK}'		=> SITEURLBASE.e_PACK_ABS,
+
+					'{e_IMAGE}'		=> SITEURLBASE.e_IMAGE_ABS,
+					'{e_PLUGIN}'	=> SITEURLBASE.e_PLUGIN_ABS,
+					'{e_FILE}'		=> SITEURLBASE.e_FILE_ABS, // deprecated
+					'{e_THEME}'		=> SITEURLBASE.e_THEME_ABS,
+					'{e_DOWNLOAD}'	=> SITEURLBASE.e_HTTP.'request.php?',// FIXME - we need solution!
+					'{e_ADMIN}'		=> SITEURLBASE.e_ADMIN_ABS,
+					//'{e_HANDLER}'	=> e_HANDLER_ABS, - no ABS path available
+					'{e_MEDIA}'		=> SITEURLBASE.e_MEDIA_ABS,
+					'{e_WEB}'		=> SITEURLBASE.e_WEB_ABS,
 				);
 			break;
 
