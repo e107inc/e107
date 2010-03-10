@@ -371,36 +371,45 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	$ue_fields = "";
 	if($_POST['ue'])
 	{
-		if ($sql->db_Select('user_extended_struct', '*', 'user_extended_struct_type != 0'))		// Get field definitions, but not categories
+		if ($sql->db_Select('user_extended_struct', '*', 'order by user_extended_struct_type', 'order'))		// Get both field and category definitions
 		{
+			$skipCat = array();
 			while($row = $sql->db_Fetch())
 			{
-			  $extList["user_".$row['user_extended_struct_name']] = $row;
+				if($row['user_extended_struct_type']) 
+				{	// Its a field
+					$extList["user_".$row['user_extended_struct_name']] = $row;
+				}
+				// else its a category
+				elseif(!check_class($row['user_extended_struct_applicable']) || !check_class($row['user_extended_struct_write'])) 
+				{
+					$skipCat[] = $row['user_extended_struct_id'];
+				}
 			}
 		}
 
 		foreach ($extList as $key => $settings)
-		{
-			if ($settings['user_extended_struct_applicable'] != e_UC_NOBODY)
+		{	// Only process field if its in a category relevant to this user, and this user should be able to change it
+			if (!in_array($settings['user_extended_struct_parent'],$skipCat) && check_class($settings['user_extended_struct_applicable']) && check_class($settings['user_extended_struct_write']))
 			{
-			$val = '';
-			if (isset($_POST['ue'][$key])) $val = $_POST['ue'][$key]; 
-			$err = $ue->user_extended_validate_entry($val,$settings);
-			if($err === TRUE && !$_uid)
-			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-				$error .= LAN_SIGNUP_6.($tp->toHtml($settings['user_extended_struct_text'],FALSE,'defs')).' '.LAN_SIGNUP_7."\\n";
-			}
-			elseif ($err)
-			{	// Specific error message returned - usually regex fail
-				$error .= $err."\\n";
-				$err = TRUE;
-			}
-			if(!$err)
-			{
-				$val = $tp->toDB($val);
-				$ue_fields .= ($ue_fields) ? ", " : "";
-				$ue_fields .= $key."='".$val."'";
-			}
+				$val = '';
+				if (isset($_POST['ue'][$key])) $val = $_POST['ue'][$key]; 
+				$err = $ue->user_extended_validate_entry($val,$settings);
+				if($err === TRUE && !$_uid)
+				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+					$error .= LAN_SIGNUP_6.($tp->toHtml($settings['user_extended_struct_text'],FALSE,'defs')).' '.LAN_SIGNUP_7."\\n";
+				}
+				elseif ($err)
+				{	// Specific error message returned - usually regex fail
+					$error .= $err."\\n";
+					$err = TRUE;
+				}
+				if(!$err)
+				{
+					$val = $tp->toDB($val);
+					$ue_fields .= ($ue_fields) ? ", " : "";
+					$ue_fields .= $key."='".$val."'";
+				}
 			}
 		}
 
