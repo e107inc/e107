@@ -1636,6 +1636,57 @@ class e_parse
 	}
 
 	/**
+	 * Help for converting to more safe URLs
+	 * e.g. {e_MEDIA_FILE}path/to/video.flv => e_MEDIA_FILE/path/to/video.flv
+	 *
+	 * @todo support for ALL URL shortcodes (replacement methods)
+	 * @param string $type sc|raw|rev|all
+	 * @return array
+	 */
+	public function getUrlConstants($type = 'sc')
+	{
+		static $array = array(
+			'e_BASE/' 			=> '{e_BASE}',
+			'e_ADMIN/' 			=> '{e_ADMIN}',
+			'e_IMAGE/' 			=> '{e_IMAGE}',
+			'e_THEME/' 			=> '{e_THEME}',
+			'e_PLUGIN/' 		=> '{e_PLUGIN}',
+			'e_HANDLER/' 		=> '{e_WEB_PACK}', // BC
+			'e_MEDIA/' 			=> '{e_MEDIA}',
+			'e_MEDIA_FILE/' 	=> '{e_MEDIA_FILE}',
+			'e_MEDIA_VIDEO/' 	=> '{e_MEDIA_VIDEO}',
+			'e_MEDIA_IMAGE/' 	=> '{e_MEDIA_IMAGE}',
+			'e_MEDIA_ICON/' 	=> '{e_MEDIA_ICON}',
+			'e_MEDIA_AVATAR/' 	=> '{e_MEDIA_AVATAR}',
+			'e_WEB/' 			=> '{e_ADMIN}',
+			'e_WEB_JS/' 		=> '{e_WEB_JS}',
+			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
+			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
+			'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
+		);
+
+		switch ($type)
+		{
+			case 'sc':
+				return array_values($array);
+			break;
+
+			case 'raw':
+				return array_keys($array);
+			break;
+
+			case 'rev':
+				return array_reverse($array, true);
+			break;
+
+			case 'all':
+				return $array;
+			break;
+		}
+		return array();
+	}
+
+	/**
 	 * Replace e107 path constants
 	 * Note: only an ADMIN user can convert {e_ADMIN}
 	 *
@@ -1785,6 +1836,7 @@ class e_parse
 				case 'abs' : $mode = 2; break;
 				case 'full' : $mode = 3; break;
 				case 'mix' : $mode = 4; break;
+				case 'nice': $mode = 5; break;
 			}
 		}
 		$e107 = e107::getInstance();
@@ -1851,6 +1903,11 @@ class e_parse
 				$url = $this->createConstants($url, 2);
 				$url = $this->createConstants($url, 1);
 				return $url;
+			break;
+
+			case 5: // nice urls - e.g. e_MEDIA_VIDEO/mystream.flv
+				$url = $this->createConstants($url, 4);
+				return str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);
 			break;
 
 			default:

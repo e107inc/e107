@@ -8,10 +8,8 @@
  *
  * e107 Main
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -21,8 +19,8 @@ if (!defined('e107_INIT')) { exit; }
  *
  * @package     e107
  * @subpackage	e107_handlers
- * @version     $Revision$
- * @author      $Author$
+ * @version     $Id$
+ * @author      e107inc
  *
  *	e107_class - core class with many system-related methods
  */
@@ -335,6 +333,7 @@ class e107
 		$ret['WEB_JS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'js/';
 		$ret['WEB_CSS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'css/';
 		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
+		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'packages/';
 
 		$ret['DOWNLOADS_DIRECTORY']			= $ret['MEDIA_FILES_DIRECTORY'];
 		$ret['UPLOADS_DIRECTORY'] 			= $ret['MEDIA_UPLOAD_DIRECTORY'];
@@ -1881,6 +1880,7 @@ class e107
 			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
 			define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
 			define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
+			define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
 
 			define('e_CACHE', $this->get_override_rel('CACHE'));
 			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));
@@ -1912,10 +1912,14 @@ class e107
 			define('e_MEDIA_ICON_ABS', $this->get_override_http('MEDIA_ICONS'));
 			define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
 
+			// XXX DISCUSSS - e_JS_ABS, e_CSS_ABS etc is not following the naming standards but they're more usable.
+			// Example: e_JS_ABS vs e_WEB_JS_ABS
 			define('e_WEB_ABS', $this->get_override_http('WEB'));
-			define('e_JS_ABS', $this->get_override_http('WEB_JS')); // XXX - could stay so?
+			define('e_JS_ABS', $this->get_override_http('WEB_JS'));
 			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
+			define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
 			define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
+
 		}
 		return $this;
 	}
