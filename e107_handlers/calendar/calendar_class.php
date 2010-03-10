@@ -1,16 +1,14 @@
 <?php
 /*
  * e107 website system
- * 
+ *
  * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
- * 
- * $Source: /cvs_backup/e107_0.8/e107_handlers/calendar/calendar_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
- * 
+ *
+ * $URL$
+ * $Id$
+ *
 */
 
 /**
@@ -37,23 +35,23 @@ class DHTML_Calendar
 	{
 		if ($stripped)
 		{
-			$this->calendar_file = e_HANDLER_ABS.'calendar/calendar_stripped.js';
-			$this->calendar_setup_file = e_HANDLER_ABS.'calendar/calendar-setup_stripped.js';
+			$this->calendar_file = e_PACK_ABS.'calendar/calendar_stripped.js';
+			$this->calendar_setup_file = e_PACK_ABS.'calendar/calendar-setup_stripped.js';
 		}
 		else
 		{
-			$this->calendar_file = e_HANDLER_ABS.'calendar/calendar.js';
-			$this->calendar_setup_file = e_HANDLER_ABS.'calendar/calendar-setup.js';
+			$this->calendar_file = e_PACK_ABS.'calendar/calendar.js';
+			$this->calendar_setup_file = e_PACK_ABS.'calendar/calendar-setup.js';
 		}
 
 
-		if(file_exists(e_HANDLER.'calendar/language/'.e_LANGUAGE.'.js'))
+		if(file_exists(e_WEB_PACK.'calendar/languages/'.e_LANGUAGE.'.js'))
 		{
-			$this->calendar_lang_file = e_HANDLER_ABS.'calendar/language/'.e_LANGUAGE.'.js';
+			$this->calendar_lang_file = e_PACK_ABS.'calendar/languages/'.e_LANGUAGE.'.js';
 		}
 		else
 		{
-			$this->calendar_lang_file = e_HANDLER_ABS.'calendar/language/English.js';
+			$this->calendar_lang_file = e_PACK_ABS.'calendar/languages/English.js';
 		}
 
 		if(defined('CALENDAR_IMG'))
@@ -62,7 +60,7 @@ class DHTML_Calendar
 		}
 		else
 		{
-			$this->calendar_img = "<img style='vertical-align:middle;' src='".e_HANDLER_ABS."calendar/cal.gif'  alt='' />";
+			$this->calendar_img = "<img class='icon action' src='".e_PACK_ABS."calendar/images/cal.gif'  alt='' />";
 		}
 
 		if(file_exists(THEME."calendar.css"))
@@ -71,7 +69,7 @@ class DHTML_Calendar
 		}
 		else
 		{
-			$this->calendar_theme_file = e_HANDLER_ABS."calendar/calendar.css";
+			$this->calendar_theme_file = e_PACK_ABS."calendar/calendar.css";
 		}
 
 		$this->calendar_options = array('ifFormat' => '%Y/%m/%d', 'daFormat' => '%Y/%m/%d');
@@ -107,14 +105,14 @@ class DHTML_Calendar
 		$id = $this->_gen_id();
 		$attrstr = $this->_make_html_attr(array_merge($field_attributes, array('id' => $this->_field_id($id), 'type' => 'text')));
 		$ret .= '<input ' . $attrstr .'/> ';
-		
-		//TODO perhaps make an admin-pref option for this. Default should be without the trigger-image. 
+
+		//TODO perhaps make an admin-pref option for this. Default should be without the trigger-image.
 	//	$ret .= "<a href='#' id='".$this->_trigger_id($id)."'>".$this->calendar_img."</a>";
 	//	$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => $this->_trigger_id($id)));
-	
+
 		$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => null));
-	
-		e107::getJs()->footerInline($this->_make_calendar($options, false)); 
+
+		e107::getJs()->footerInline($this->_make_calendar($options, false));
 		//JS manager to send JS to header if possible, if not - footer
 		e107::getJs()
 			->tryHeaderFile($this->calendar_file)
