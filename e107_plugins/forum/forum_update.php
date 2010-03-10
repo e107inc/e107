@@ -259,6 +259,9 @@ function step4()
 			$coreConfig->remove($key);
 		}
 	}
+	$old_prefs['reported_post_email'] = $coreConfig->get('reported_post_email');
+	$coreConfig->remove('reported_post_email');
+	
 	$fconf->setPref($old_prefs)->save(false, true);
 	$coreConfig->save(false, true);
 	

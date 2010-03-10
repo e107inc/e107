@@ -8,19 +8,17 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 $eplug_admin = true;
-require_once("../../class2.php");
+require_once('../../class2.php');
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
-if (!getperms("P"))
+if (!getperms('P'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'forum';
@@ -316,15 +314,15 @@ if (isset($_POST['frsubmit']))
 	$adminrules = $e107->tp->toDB($_POST['adminrules']);
 	if(!$e107->sql->db_Update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
 	{
-		$e107->sql -> db_Insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+		$e107->sql->db_Insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
 	}
 	if(!$e107->sql->db_Update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
 	{
-		$e107->sql -> db_Insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+		$e107->sql->db_Insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
 	}
 	if(!$e107->sql->db_Update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
 	{
-		$e107->sql -> db_Insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+		$e107->sql->db_Insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
 	}
 }
 

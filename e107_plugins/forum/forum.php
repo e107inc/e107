@@ -75,7 +75,7 @@ $fVars->USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> |
 if(USER)
 {
 	$fVars->USERINFO .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>";
-	if($pref['forum_attach'] && (check_class($pref['upload_class']) || getperms('0')))
+	if($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 	{
 		$fVars->USERINFO .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".FORLAN_442."</a>";
 	}
@@ -193,7 +193,7 @@ if (USER && $allread != TRUE && $total_new_threads && $total_new_threads >= $tot
 	$fVars->INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : '');
 }
 
-if (USER && varsettrue($pref['forum_track']) && e_QUERY != 'track')
+if (USER && varsettrue($forum->prefs->get('track')) && e_QUERY != 'track')
 {
 	$fVars->INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393.'</a>';
 }
@@ -407,9 +407,9 @@ if (e_QUERY == 'track')
 		}
 		$forum_track_start = $e107->tp->simpleParse($FORUM_TRACK_START, $trackVars);
 		$forum_track_end = $e107->tp->simpleParse($FORUM_TRACK_END, $trackVars);
-		if ($pref['forum_enclose'])
+		if ($forum->prefs->get('enclose'))
 		{
-			$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
+			$ns->tablerender($forum->prefs->get('title'), $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
 		}
 		else
 		{
@@ -449,9 +449,9 @@ if (e_QUERY == 'new')
 	$forum_new_start = $e107->tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
 	$forum_new_end = $e107->tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
 	
-	if ($pref['forum_enclose'])
+	if ($forum->prefs->get('enclose'))
 	{
-		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end, array('forum', 'main2'));
+		$ns->tablerender($forum->prefs->get('title'), $forum_new_start.$forum_newstring.$forum_new_end, array('forum', 'main2'));
 	}
 	else
 	{
@@ -462,9 +462,9 @@ if (e_QUERY == 'new')
 $forum_main_start = $e107->tp->simpleParse($FORUM_MAIN_START, $fVars);
 $forum_main_end = $e107->tp->simpleParse($FORUM_MAIN_END, $fVars);
 
-if ($pref['forum_enclose'])
+if ($forum->prefs->get('enclose'))
 {
-	$ns->tablerender($pref['forum_title'], $forum_main_start.$forum_string.$forum_main_end, array('forum', 'main3'));
+	$ns->tablerender($forum->prefs->get('title'), $forum_main_start.$forum_string.$forum_main_end, array('forum', 'main3'));
 }
 else
 {

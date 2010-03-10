@@ -179,16 +179,15 @@ class forum_shortcodes
 	function sc_signature()
 	{
 		if(!USER) { return ''; }
-		global $pref;
+		global $forum;
 		static $forum_sig_shown;
-		if(varsettrue($pref['forum_sig_once']))
+		if($forum->prefs->get('sig_once'))
 		{
 			$_tmp = 'forum_sig_shown_'.$this->postInfo['post_user'];
 			if(getcachedvars($_tmp)) { return ''; }
 			cachevars($_tmp, 1);
 		}
 		return ($this->postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$this->e107->tp->toHTML($this->postInfo['user_signature'], true).'</span>' : '');
-
 	}
 
 	function sc_profileimg()
@@ -275,7 +274,6 @@ class forum_shortcodes
 
 	function sc_level($parm)
 	{
-		global $pref;
 		if (!$this->postInfo['post_user']) { return ''; }
 
 		$rankInfo = $this->e107->userRank->getRanks($this->postInfo['post_user']);

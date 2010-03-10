@@ -76,7 +76,7 @@ class forum_post_shortcodes
 	
 	function sc_postbox()
 	{
-		global $post, $pref;
+		global $post;
 		$rows = (e_WYSIWYG) ? 15 : 10;
 		$ret = "<textarea class='e-wysiwyg tbox' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 		if(!e_WYSIWYG)
@@ -103,9 +103,9 @@ class forum_post_shortcodes
 	
 	function sc_fileattach()
 	{
-		global $pref, $fileattach, $fileattach_alert;
+		global $forum, $pref, $fileattach, $fileattach_alert;
 
-		if ($pref['forum_attach'] && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
+		if ($forum->prefs->get('forum_attach') && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
 		{
 			if (is_writable(e_UPLOAD))
 			{
@@ -179,8 +179,8 @@ class forum_post_shortcodes
 	
 	function sc_poll()
 	{
-		global $poll_form, $action, $pref;
-		if ($action == 'nt' && check_class($pref['forum_poll']) && strpos(e_QUERY, 'edit') === false)
+		global $forum, $poll_form, $action;
+		if ($action == 'nt' && check_class($forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
 		{
 			return $poll_form;
 		}

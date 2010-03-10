@@ -19,7 +19,7 @@ class e107forum
 {
 //	var $fieldTypes = array();
 	private $userViewed, $permList;
-	protected $modArray, $prefs;
+	public $modArray, $prefs;
 
 	public function __construct()
 	{

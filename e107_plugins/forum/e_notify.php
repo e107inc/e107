@@ -8,10 +8,8 @@
  *
  * Forum plugin notify configuration
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_notify.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -22,7 +20,7 @@ if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
 	include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_notify.php');
 	$config_category = FORUM_NT_1;
 	$config_events = array(
-		'forum_nt' => FORUM_NT_NEWTHREAD, 
+		'forum_nt' => FORUM_NT_NEWTHREAD,
 		'forum_ntp' => FORUM_NT_NEWTHREAD_PROB,
 		'forum_thread_del' => FORUM_NT_THREAD_DELETED,
 		'forum_thread_split' => FORUM_NT_THREAD_SPLIT,
