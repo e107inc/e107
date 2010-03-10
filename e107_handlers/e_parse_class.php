@@ -1622,14 +1622,14 @@ class e_parse
 		if($raw) $url = $this->createConstants($url, 'mix');
 
 		$thurl = ($full ? SITEURL : e_HTTP).'thumb.php?src='.$url.'&amp;';
-		if(vartrue($options['aw']))
+		if(vartrue($options['aw']) || vartrue($options['ah']))
 		{
-			$thurl .= 'aw='.intval($options['aw']).'&amp;ah='.(vartrue($options['ah']) ? intval($options['ah']) : intval($options['aw']));
+			$thurl .= 'aw='.((integer) vartrue($options['aw'], 0)).'&amp;ah='.((integer) vartrue($options['ah'], 0));
 		}
 		else
 		{
-			if(!vartrue($options['w'])) $options['w'] = 100;
-			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.(vartrue($options['h']) ? intval($options['h']) : intval($options['w']));
+			if(!vartrue($options['w']) && !vartrue($options['h'])) $options['w'] = 100;
+			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
 		}
 
 		return $thurl;
