@@ -177,7 +177,7 @@ class e_form
 		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".$label." --";
 		$parms .= "&subdirs=".varset($sc_parameters['subdirs'], 1);
-		$parms .= '&width='.vartrue($sc_parameters['width'], 150).'px';
+		$parms .= '&width='.vartrue($sc_parameters['width'], 150);
 		if(vartrue($sc_parameters['height'])) $parms .= '&height='.$sc_parameters['height'].'px';
 		//$parms .= "&tabindex=".$this->getNext();
 		//$parms .= "&click_target=data";

@@ -1,7 +1,9 @@
 
 // $Id$
 //FIXME - full rewrite, backward compatible
-global $sql,$parm,$tp;
+
+$sql = e107::getDb();
+$tp = e107::getParser();
 
 if(strstr($parm,"="))
 {  // query style parms.
@@ -120,15 +122,16 @@ if(varset($click_target))
 {
    $pre		= varset($click_prefix);
    $post 	= varset($click_postfix);
-   $text .= "<a href='#'{$hide} onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name_id}\").value+\"{$post}\", true);document.getElementById(\"{$name_id}\").selectedIndex = -1;return false;'>";
+   $text .= "<a href='#'{$hide} title='Select' onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name_id}\").value+\"{$post}\", true);document.getElementById(\"{$name_id}\").selectedIndex = -1;return false;'>";
 }
 else
 {
-	$text .= "<a href='{$pvw_default}'{$hide} rel='external' class='e-image-preview'>";
+	$text .= "<a href='{$pvw_default}'{$hide} rel='external' title='Preview {$pvw_default}' class='e-image-preview'>";
 }
-if(vartrue($height)) $height = "height:{$height};";
-if(vartrue($width)) $width = "width:{$width}; ";
-$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}' /></a>";
+if(vartrue($height)) $height = intval($height);
+if(vartrue($width)) $width = intval($width);
+$thpath = isset($parms['nothumb']) ? $pvw_default : $tp->thumbUrl($pvw_default, 'w='.$width.'h='.$height, true);
+$text .= "<img src='{$thpath}' alt='$pvw_default' class='image-selector' /></a>";
 
 $text .= "</div>\n";
 
