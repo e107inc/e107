@@ -8,10 +8,8 @@
  *
  * Administration Language File
  *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_eurl.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Manage Site URLs"); }
 
@@ -31,7 +29,7 @@ define("LAN_EURL_CORE_NEWS", "News");
 define("LAN_EURL_CORE_DOWNLOADS", "Downloads");
 define("LAN_EURL_CORE_USERS", "Users");
 define("LAN_EURL_MODREWR_TITLE", "SEF URLs");
-define("LAN_EURL_MODREWR_DESCR", "You'll need mod_rewrite isntalled and running on your server (Apache Web Server). After enabling this profile go to your site root folder, rename htaccess.txt to .htaccess and uncomment the corresponding line.");
+define("LAN_EURL_MODREWR_DESCR", "You'll need mod_rewrite installed and running on your server (Apache Web Server). After enabling this profile go to your site root folder, rename htaccess.txt to .htaccess and uncomment the corresponding line.");
 define("LAN_EURL_CORE_MAIN", "Main");
 //define("LAN_EURL_", "");
 //define("LAN_EURL_", "");
