@@ -330,10 +330,10 @@ class e107
 		$ret['MEDIA_FILES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'files/';
 		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'temp/';
 
-		$ret['WEB_JS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'js/';
-		$ret['WEB_CSS_DIRECTORY'] 			= $ret['MEDIA_DIRECTORY'].'css/';
-		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
-		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'packages/';
+		$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
+		$ret['WEB_CSS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'css/';
+		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'images/';
+		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
 
 		$ret['DOWNLOADS_DIRECTORY']			= $ret['MEDIA_FILES_DIRECTORY'];
 		$ret['UPLOADS_DIRECTORY'] 			= $ret['MEDIA_UPLOAD_DIRECTORY'];
