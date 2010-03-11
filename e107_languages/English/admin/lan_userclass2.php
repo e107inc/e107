@@ -12,7 +12,7 @@
 define("UCSLAN_1", "Cleared all users from class.");
 define("UCSLAN_2", "Class users updated.");
 define("UCSLAN_3", "Class deleted.");
-define("UCSLAN_4", "Please tick the confirm box to delete this user class");
+// define("UCSLAN_4", "Please tick the confirm box to delete this user class"); currently not in use
 define("UCSLAN_5", "Class updated.");
 define("UCSLAN_6", "Class saved to database.");
 define("UCSLAN_7", "No user classes yet.");

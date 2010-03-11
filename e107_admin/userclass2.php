@@ -143,12 +143,13 @@ if(e_AJAX_REQUEST)
 	exit;
 }
 
+e107::getJs()->headerCore('core/admin.js');
+
 /*
  * Authorization should be done a bit later!
- * FIXME - should we call auth.php and header.php separate?
- * Definitely yes if AJAX is in the game.
  */
 require_once("auth.php");
+$emessage = e107::getMessage();
 
 //---------------------------------------------------
 //		Set Initial Classes
@@ -182,15 +183,16 @@ if (isset($_POST['set_initial_classes']))
 //---------------------------------------------------
 //		Delete existing class
 //---------------------------------------------------
-if (isset($_POST['delete']))
+if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 {
-	$class_id = intval($_POST['existing']);
+	$class_id = intval(array_shift(array_keys($_POST['etrigger_delete'])));
 	check_allowed($class_id);
+	/* done already by check_allowed()
 	if (($class_id >= e_UC_SPECIAL_BASE) && ($class_id <= e_UC_SPECIAL_END))
 	{
 	  $message = UCSLAN_29;
-	}
-	elseif ($_POST['confirm'])
+	}*/
+	//elseif ($_POST['confirm'])
 	{
 		if ($e_userclass->delete_class($class_id) !== FALSE)
 		{
@@ -203,22 +205,27 @@ if (isset($_POST['delete']))
 				}
 				$e_userclass->class_remove($class_id, $uidList);
 			}
-			if (isset($pref['frontpage'][$class_id]))
+			$e_pref = e107::getConfig();
+			if($e_pref->isData('frontpage/'.$class_id))
+			{
+				$e_pref->removePref('frontpage/'.$class_id)->save(false);
+			}
+			/*if (isset($pref['frontpage'][$class_id]))
 			{
 				unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
 				save_prefs();
-			}
-			$message = UCSLAN_3;
+			}*/
+			$emessage->add(UCSLAN_3, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$message = UCSLAN_10;
+			$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
 		}
 	}
-	else
+/*	else
 	{
 		$message = UCSLAN_4;
-	}
+	}*/
 }
 
 
@@ -253,12 +260,14 @@ if (isset($_POST['createclass']))		// Add or edit
 	$tempID = intval(varset($_POST['userclass_id'], -1));
 	if (($tempID < 0) && $e_userclass->ucGetClassIDFromName($class_record['userclass_name']))
 	{	// Duplicate name
-		$message = UCSLAN_63;
+		//$message = UCSLAN_63;
+		$emessage->add(UCSLAN_63, E_MESSAGE_WARNING);
 		$forwardVals = TRUE;
 	}
 	elseif ($e_userclass->checkAdminInfo($class_record, $tempID) === FALSE)
 	{
-		$message = UCSLAN_86;
+		//$message = UCSLAN_86;
+		$emessage->add(UCSLAN_86);
 	}
 
 	if (!$forwardVals)
@@ -270,7 +279,8 @@ if (isset($_POST['createclass']))		// Add or edit
 			$e_userclass->save_edited_class($class_record);
 			userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 			$do_tree = TRUE;
-			$message .= UCSLAN_5;
+			//$message .= UCSLAN_5;
+			$emessage->add(UCSLAN_5, E_MESSAGE_SUCCESS);
 		}
 		else
 		{	// Creating new class
@@ -281,8 +291,8 @@ if (isset($_POST['createclass']))		// Add or edit
 					$i = $e_userclass->findNewClassID();
 					if ($i === FALSE)
 					{
-						$message = UCSLAN_85;
-
+						//$message = UCSLAN_85;
+						$emessage->add(UCSLAN_85, E_MESSAGE_WARNING);
 					}
 					else
 					{
@@ -290,7 +300,8 @@ if (isset($_POST['createclass']))		// Add or edit
 						$e_userclass->add_new_class($class_record);
 						userclass2_adminlog("01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 						$do_tree = TRUE;
-						$message .= UCSLAN_6;
+						//$message .= UCSLAN_6;
+						$emessage->add(UCSLAN_6, E_MESSAGE_SUCCESS);
 					}
 				}
 				else
@@ -301,7 +312,9 @@ if (isset($_POST['createclass']))		// Add or edit
 			}
 			else
 			{
-				$message = UCSLAN_37;		// Class name required
+				// Class name required
+				//$message = UCSLAN_37;
+				$emessage->add(UCSLAN_37, E_MESSAGE_ERROR);
 				$forwardVals = TRUE;
 			}
 		}
@@ -318,9 +331,7 @@ if (isset($_POST['createclass']))		// Add or edit
 
 if ($message)
 {
-  // $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-	$emessage = &eMessage::getInstance();
-	$emessage->add($message, E_MESSAGE_SUCCESS);
+	$emessage->add($message);
 }
 
 class uclassFrm extends e_form
