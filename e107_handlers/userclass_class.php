@@ -55,17 +55,17 @@ define('UC_TYPE_GROUP', '1');
 
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
-// FIXME - get rid of deprecated 'var' declarations, decide what should be public and what protected
+
 class user_class
 {
-	public $class_tree;					// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
-	var $class_parents;					// Array of class IDs of 'parent' (i.e. top level) classes
+	public $class_tree;						// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
+	protected $class_parents;				// Array of class IDs of 'parent' (i.e. top level) classes
 
-	var  $fixed_classes = array();		// The 'predefined' core classes (constants beginning 'e_UC_')
-	var  $text_class_link = array();	// List of 'core' user classes and the related constants
+	public $fixed_classes = array();		// The 'predefined' core classes (constants beginning 'e_UC_')  (would be nice to have this R/O outside)
+	public $text_class_link = array();		// List of 'core' user classes and the related constants
 
-	var $sql_r;						// We'll use our own DB to avoid interactions
-	var $isAdmin;						// Set true if we're an instance of user_class_admin
+	protected $sql_r;						// We'll use our own DB to avoid interactions
+	protected $isAdmin;						// Set true if we're an instance of user_class_admin
 
 
 	// Constructor
@@ -1400,9 +1400,9 @@ class user_class_admin extends user_class
 	public function queryCanDeleteClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[$class_id])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
-		if (!isset($this->class_tree[$class_id])) return FALSE;
-		if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
+		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (!isset($this->class_tree[$classID])) return FALSE;
+		if (count($this->class_tree[$classID]['class_children'])) return FALSE;		// Can't delete class with descendants
 		foreach ($this->class_tree as $c)
 		{
 			if ($c['userclass_editclass'] == $classID) return FALSE;
