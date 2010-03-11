@@ -8,14 +8,12 @@
  *
  * User class functions
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 /**
- * 
+ *
  *	@package     e107
  *	@subpackage	e107_handlers
  *	@version 	$Id$;
@@ -49,7 +47,7 @@ define('e_UC_BOTS',246);					// Reserved to identify search bots
 define('e_UC_SPECIAL_BASE',243);			// Assign class IDs 243 and above for fixed/special purposes
 define('e_UC_SPECIAL_END',255);				// Highest 'special' class
 
-define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
+define('UC_ICON_DIR',e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
 
 define('e_UC_BLANK','-1');
 define('UC_TYPE_STD', '0');
@@ -57,9 +55,10 @@ define('UC_TYPE_GROUP', '1');
 
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
+// FIXME - get rid of deprecated 'var' declarations, decide what should be public and what protected
 class user_class
 {
-	var $class_tree;					// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
+	public $class_tree;					// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
 	var $class_parents;					// Array of class IDs of 'parent' (i.e. top level) classes
 
 	var  $fixed_classes = array();		// The 'predefined' core classes (constants beginning 'e_UC_')
@@ -238,7 +237,7 @@ class user_class
 
 
 
-	/** 
+	/**
 	 *	Combines the selected editable classes into the main class list for a user.
 	 *	@param array|string $combined - the complete list of current class memberships
 	 *	@param array|string $possible - the classes which are being edited
@@ -406,7 +405,7 @@ class user_class
 
 
 
-	/** 
+	/**
 	 *	Generate an ordered array  classid=>classname - used for dropdown and check box lists
 	 *
 	 *	@param string $optlist - comma-separated list of classes/class types to include (see uc_dropdown for details)
@@ -834,7 +833,7 @@ class user_class
 	 ********* NOT TESTED **********
 	 *
 	 ***** NOT SURE WHETHER THIS IS REALLY A USER OR A USER CLASS FUNCTION *****
-	 *	@param string $classList - comma separated list of classes 
+	 *	@param string $classList - comma separated list of classes
 	 *	@param string $fieldList - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
@@ -861,7 +860,7 @@ class user_class
 //========================================================================
 //			Functions from previous userclass_class handler
 //========================================================================
-// Implemented for backwards compatibility/convenience. 
+// Implemented for backwards compatibility/convenience.
 
 // ************** DEPRECATED - use new class-based functions
 // Refer to the corresponding class-based functions for full details
@@ -1020,7 +1019,7 @@ class user_class_admin extends user_class
 	}
 
 
-	/* 
+	/*
 	 *	Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
 	 *	If the permissions change, sets the 'change_flag' to force rewrite to DB (by other code)
 	 *	@param integer $parent is the class number being processed.
@@ -1187,7 +1186,18 @@ class user_class_admin extends user_class
 		if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
 		// Next (commented out) line gives a 'conventional' link
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
-		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_SELF."?action=edit&amp;id={$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
+		if($this->isEditableClass($this->class_tree[$listnum]['userclass_id']))
+		{
+			$url = e_SELF.'?action=edit&amp;id='.$this->class_tree[$listnum]['userclass_id'];
+			$onc = '';
+		}
+		else
+		{
+			$url = '#';
+			$onc = " onclick=\"alert('".str_replace("'", "\\'", (stripslashes(UCSLAN_90)))."'); return false;\"";
+		}
+
+		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit'{$onc} href='{$url}'>".$name_line."</a></div>";
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
 			//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
 		// vertical-align: middle doesn't work! Nor does text-top
@@ -1223,16 +1233,18 @@ class user_class_admin extends user_class
 
 
 
-	/** Create graphical class tree, including clickable liks to expand/contract branches.
-	 *	@param boolean $show_debug - TRUE to display additional information against each class
-	 *	@return string - text for display
+	/**
+	 * Create graphical class tree, including clickable links to expand/contract branches.
+	 * @param boolean $show_debug - TRUE to display additional information against each class
+	 * @return string - text for display
 	 */
 	public function show_graphical_tree($show_debug=FALSE)
 	{
 		$this->graph_debug = $show_debug;
 		$indent_images = array();
 
-		$ret = "<div class='uclass_tree' style='height:16px'>
+		$ret = "
+		<div class='uclass_tree' style='height:16px'>
 			<img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' />
 			<span style='top:3px'></span>
 		</div>";		// Just a generic icon here to provide a visual anchor
