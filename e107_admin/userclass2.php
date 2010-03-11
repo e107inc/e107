@@ -959,6 +959,7 @@ function headerjs()
 
 		                    //If link is clicked use it's href as a target
 		    				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
+		    				new Effect.ScrollTo('classForm');
 		                }
 		            }));
 	            });
