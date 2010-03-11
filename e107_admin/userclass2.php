@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - User classes
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -49,42 +47,52 @@ $uc = new uclass_manager;
 
 $message = '';
 
+/**
+ * @todo user_class::isEditableClass() thinks public (0) is editable?!
+ * @param integer $class_id
+ * @param boolean $redirect
+ * @return boolean
+ */
 function check_allowed($class_id, $redirect = true)
 {
-	$e107 = e107::getInstance();
-	if (!isset($e107->user_class->class_tree[$class_id]))
+	$uc = e107::getUserClass();
+	if (!isset($uc->class_tree[$class_id]) || (!getperms('0') && !check_class($uc->class_tree[$class_id]['userclass_editclass'])))
 	{
 		if(!$redirect) return false;
 		header('location:'.SITEURL);
 		exit;
 	}
-	if (!getperms('0') && !check_class($e107->user_class->class_tree[$class_id]['userclass_editclass']))
+
+	// fix public (0) case here for now
+	if(!$class_id || !$uc->isEditableClass($class_id))
 	{
 		if(!$redirect) return false;
-		header("location:".SITEURL);
+		e107::getMessage()->addSession('You can\'t edit system user classes!', E_MESSAGE_ERROR);
+		header('location:'.e_SELF);
 		exit;
 	}
+
 	return true;
 }
 
 if (e_QUERY)
 {
-  $uc_qs = explode(".", e_QUERY);
+	// BC - SO MUCH BAD, never do this at home!!!
+	if(isset($_GET['action']))
+	{
+		$uc_qs = array($_GET['action'], $_GET['id']);
+	}
+   else $uc_qs = explode(".", e_QUERY);
 }
 $action = varset($uc_qs[0]);
 $params = varset($uc_qs[1],'');
+e107::setRegistry('pageParams', $uc_qs);
 
 //AJAX request check is already  made by the API
 if(e_AJAX_REQUEST)
 {
-    $class_num = intval(varset($uc_qs[2],0));
-	if(!$class_num && isset($_POST['edit']))
-	{
-	  $params = 'edit';
-	  $class_num = intval(varset($_POST['existing'],0));
-	}
-
-	if ($params == 'edit')
+    $class_num = intval($params);
+	if ($action == 'edit')
 	{
 	    require_once(e_HANDLER.'js_helper.php');
 	    $jshelper = new e_jshelper();
@@ -93,7 +101,7 @@ if(e_AJAX_REQUEST)
 			//This will raise an error
 			//'Access denied' is the message which will be thrown
 			//by the JS AJAX handler
-			e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
+			e_jshelper::sendAjaxError('403', 'Access denied. '.UCSLAN_90);
 		}
 		elseif($sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' "))
 		{
@@ -121,24 +129,18 @@ if(e_AJAX_REQUEST)
 				$jshelper->addResponseAction('element-invoke-by-id', array('hide' => 'userclass_type_groups', 'show' => 'userclass_type_standard'));
 			}
 			unset($row['userclass_accum']);
-			$row['createclass'] = UCSLAN_14; //update the submit button value
-			$row['existing'] = $class_num; //required when user tree is clicked
-			//icon
-			$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif";
-			$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
 
-			//Send the prefered response type
-			//$jshelper->sendJSONResponse('fill-form', $row);
 			$jshelper->addResponseAction('fill-form', $row);
 			$jshelper->sendResponse('XML');
+			// $jshelper->sendResponse('JSON'); - another option (tested) - faster transfer!
 		}
 		else
 		{
 			e_jshelper::sendAjaxError('500', 'Database read error!');
 		}
 
-		exit;
 	}
+	exit;
 }
 
 /*
@@ -342,7 +344,7 @@ if(!e_QUERY || $action == 'list')
 	$uc->show_existing();
 
 }
-if(varset($_GET['id']) && varset($_GET['action'])=='edit')
+if(isset($_GET['id']) && $_GET['action'] == 'edit')
 {
 	$action = 'config';
     $_POST['existing'] = $_GET['id'];
@@ -494,10 +496,6 @@ if($params == 'edit')
  //	$text .= "&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
 		<input type='hidden' name='userclass_id' value='{$userclass_id}' />
-	    <script type='text/javascript'>
-	        //just in case...
-	        \$('updatecancel').show();
-	    </script>
 		";
 }
 else
@@ -809,12 +807,13 @@ function userclass2_adminlog($msg_num='00', $woffle='')
 
 function userclass2_adminmenu()
 {
-  if (e_QUERY)
-  {
-	$tmp = explode(".", e_QUERY);
-//	$action = $tmp[0];
-  }
-  $action = varsettrue($tmp[0],'list');
+	$tmp  = array();
+	if (e_QUERY)
+	{
+		$tmp = explode(".", e_QUERY);
+	}
+	$action = vartrue($tmp[0],'list');
+	if(isset($_GET['action']) && 'edit' == $_GET['action']) $action = 'config';
 
 	$var['list']['text'] = LAN_MANAGE;
 	$var['list']['link'] = 'userclass2.php';
@@ -832,24 +831,24 @@ function userclass2_adminmenu()
 	$var['initial']['text'] = UCSLAN_38;
 	$var['initial']['link'] ='userclass2.php?initial';
 
-  if (check_class(e_UC_MAINADMIN))
-  {
-	$var['options']['text'] = UCSLAN_50;
-	$var['options']['link'] ='userclass2.php?options';
-
-	if (defined('UC_DEBUG_OPTS'))
+	if (check_class(e_UC_MAINADMIN))
 	{
-		$var['debug']['text'] = UCSLAN_27;
-		$var['debug']['link'] ='userclass2.php?debug';
+		$var['options']['text'] = UCSLAN_50;
+		$var['options']['link'] ='userclass2.php?options';
 
-		$var['test']['text'] = 'Test functions';
-		$var['test']['link'] ="userclass2.php?test";
+		if (defined('UC_DEBUG_OPTS'))
+		{
+			$var['debug']['text'] = UCSLAN_27;
+			$var['debug']['link'] ='userclass2.php?debug';
 
-		$var['specials']['text'] = 'Special tests';
-		$var['specials']['link'] ="userclass2.php?special";
+			$var['test']['text'] = 'Test functions';
+			$var['test']['link'] ="userclass2.php?test";
+
+			$var['specials']['text'] = 'Special tests';
+			$var['specials']['link'] ="userclass2.php?special";
+		}
 	}
-  }
-  show_admin_menu(UCSLAN_51, $action, $var);
+	show_admin_menu(UCSLAN_51, $action, $var);
 }
 
 
@@ -935,6 +934,7 @@ require_once('footer.php');
 
 function headerjs()
 {
+	$params  = e107::getRegistry('pageParams');
    /*
 	* e107Ajax.fillForm demonstration
 	* Open Firebug console for Ajax transaction details
@@ -942,35 +942,62 @@ function headerjs()
 	*/
 	$script_js = "<script type=\"text/javascript\">
 		//<![CDATA[
+	";
 
-			//Click observer
-            document.observe('click', (function(event){
-                var target = (event.findElement('a.userclass_edit') || event.findElement('input#edit'));
-                if (target) {
-                    event.stop();
+	// Edit mode only
+	if($params[0] == 'edit')
+	{
+		$script_js .= "
+				e107.runOnLoad( function() {
+		            document.observe('click', (function(event){
+		                var target = event.findElement('a.userclass_edit');
+		                if (target) {
+		                    event.stop();
 
-                    //show cancel button in edit mod only
-                    \$('updatecancel').show();
+		                    // non-editable user class
+		                    if('#' == target.readAttribute('href')) return;
 
-                    //If link is clicked use it's href as a target
-    				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
-                }
-            }));
+		                    //If link is clicked use it's href as a target
+		    				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
+		                }
+		            }));
+	            });
+	    		//Observe fillForm errors
+	    		e107Event.register('ajax_fillForm_error', function(transport) {
+	    			//memo.error object contains the error message
+	    			//error handling will be extended in the near future
+					alert(transport.memo.error.message);
+	    		});
 
-            //run on e107 init finished (dom is loaded)
-    		e107.runOnLoad( function() {
-				\$('updatecancel').hide(); //hide cancel button onload
-			});
+				/*//Click observer
+	            document.observe('click', (function(event){
+	                var target = (event.findElement('a.userclass_edit') || event.findElement('input#edit'));
+	                if (target) {
+	                    event.stop();
 
-    		//Observe fillForm errors
-    		e107Event.register('ajax_fillForm_error', function(transport) {
-    			//memo.error object contains the error message
-    			//error handling will be extended in the near future
-				alert(transport.memo.error.message);
-    		});
+	                    //show cancel button in edit mod only
+	                    \$('updatecancel').show();
 
+	                    //If link is clicked use it's href as a target
+	    				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
+	                }
+	            }));
 
+	            //run on e107 init finished (dom is loaded)
+	    		e107.runOnLoad( function() {
+					\$('updatecancel').hide(); //hide cancel button onload
+				});
 
+	    		//Observe fillForm errors
+	    		e107Event.register('ajax_fillForm_error', function(transport) {
+	    			//memo.error object contains the error message
+	    			//error handling will be extended in the near future
+					alert(transport.memo.error.message);
+	    		});*/
+		";
+	}
+
+	$script_js .= "
 function setGroupStatus(dropdown)
 {
 	var temp1 = document.getElementById('userclass_type_standard');
@@ -990,12 +1017,11 @@ function setGroupStatus(dropdown)
 
 	//]]>
 	</script>\n";
-  if (!e_QUERY) return $script_js;
-  $qs = explode('.',e_QUERY);
-  if ($qs[0] != 'membs') return $script_js;
+
+  if ($params[0] != 'membs') return $script_js;
 
 // We only want this JS on the class membership selection page
-
+// XXX memebs action is deprecated now, remove this script?
 	$script_js .= "<script type=\"text/javascript\">
 		//<![CDATA[
 // Inspiration (and some of the code) from a script by Sean Geraty -  Web Site:  http://www.freewebs.com/sean_geraty/

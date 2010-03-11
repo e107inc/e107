@@ -98,7 +98,7 @@ define('UCSLAN_86', 'Some settings not allowed for admin classes - they have bee
 define('UCSLAN_87', 'Recently joined users');
 define('UCSLAN_88', 'Identified search bots');
 define('UCSLAN_89', 'Checked classes are members of the group');
-define('UCSLAN_90', '');
+define('UCSLAN_90', 'You can\'t edit system user classes!');
 define('UCSLAN_91', '');
 
 
