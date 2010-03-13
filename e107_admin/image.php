@@ -64,7 +64,7 @@ class media_admin extends e_admin_dispatcher
 		'main/import' 		=> array('caption'=> "Batch Media Import", 'perm' => 'A'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
 	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'),
-		'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
+	//	'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 
 		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
