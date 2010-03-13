@@ -155,6 +155,7 @@ class e107
 		'e_news_tree'					 => '{e_HANDLER}news_class.php',
 		'e_online'						 => '{e_HANDLER}online_class.php',
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
+		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
@@ -1066,6 +1067,15 @@ class e107
 	public static function getUserExt()
 	{
 		return self::getSingleton('e107_user_extended', true);
+	}
+
+	/**
+	 * Retrieve online users handler singleton object
+	 * @return e_online
+	 */
+	public static function getRank()
+	{
+		return self::getSingleton('e_ranks', true);
 	}
 
 	/**
