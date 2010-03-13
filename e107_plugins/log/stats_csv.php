@@ -17,28 +17,27 @@
 //define('CSV_DEBUG', TRUE);
 
 
-require_once("../../class2.php");
-if (!getperms("P")) 
+require_once('../../class2.php');
+if (!getperms('P')) 
 {
-	header("location:../index.php");
-	 exit;
+	header('Location: '.e_BASE.'index.php');
+	exit;
 }
 
 
 if (e_QUERY) 
 {
-  $sl_qs = explode(".", e_QUERY);
+  $sl_qs = explode('.', e_QUERY);
 }
 $action = varset($sl_qs[0],'config');
 $params = varset($sl_qs[1],'');
 if (($action != 'export') || $params) 
 {
-	header("location:../index.php");
-	 exit;
+	header('Location: '.e_BASE.'index.php');
+	exit;
 }
 
-define("LOGPATH", e_PLUGIN."log/");
-include_lan(LOGPATH."languages/admin/".e_LANGUAGE.".php");		// LANs may be needed for error messages
+include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin_log.php');		// LANs may be needed for error messages
 
 
 // List of the non-page-based info which is gathered - historically only 'all-time' stats, now we support monthly as well. (Here, only keys are used for validation)

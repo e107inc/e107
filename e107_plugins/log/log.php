@@ -8,7 +8,7 @@
  *
  * Administration Area - User classes
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/log/log.php,v $
+ * $Source: /cvsroot/e107/e107_0.8/e107_plugins/log/log.php,v $
  * $Revision$
  * $Date$
  * $Author$
@@ -23,15 +23,24 @@
 		res= res
 		err_direct - optional error flag
 		err_referer - referrer if came via error page
+		qry = 1 to log query part as well
 
 // Normally the file is 'silent' - if any errors occur, not sure where they'll appear - (file type now text/html instead of text/css)
 */
 define('log_INIT', TRUE);
 
+// Array of page names which should have individual query values recorded.
+// The top level array index is the page name.
+// If the top level value is an array, it must be an array of query string beginnings to match.
+$pageUnique = array('page' => 1, 'content' => array('content'));
+
+
 $logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
 parse_str($logVals, $vals);
 
-echo "\n";		// This is harmless data which seems to avoid intermittent problems.
+
+header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
 //$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
 //$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
@@ -40,8 +49,10 @@ $colour = strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
 $res = strip_tags((isset($vals['res']) ? $vals['res'] : ''));
 $self = strip_tags((isset($vals['eself']) ? $vals['eself'] : ''));
 $ref = addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')));
-$date = date("z.Y", time());
-$logPfile = "logs/logp_".$date.".php";
+$logQry = isset($vals['qry']) && $vals['qry'];
+
+$date = date('z.Y', time());
+$logPfile = 'logs/logp_'.$date.'.php';
 
 //$logString = "Colour: {$colour}  Res: {$res}  Self: {$self} Referrer: {$ref} ErrCode: {$vals['err_direct']}\n";
 //$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
@@ -98,17 +109,22 @@ $pageDisallow = "cache|file|eself|admin";
 $tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 $tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
-preg_match("#/(.*?)(\?|$)#si", $self, $match);
+preg_match("#/(.*?)(\?|$)(.*)#si", $self, $match);
 $match[1] = isset($match[1]) ? $match[1] : '';
 $pageName = substr($match[1], (strrpos($match[1], "/")+1));
 $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 if($pageName == "") $pageName = "index";
 
-$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
-
 if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
+
+if ($logQry)
+{
+	$pageName .= '+'.$match[3];			// All queries match
+}
+$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 
 $p_handle = fopen($logPfile, 'r+');
 if($p_handle && flock( $p_handle, LOCK_EX ) ) 
