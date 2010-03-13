@@ -59,8 +59,6 @@ if(isset($_GET['f']))
 	if($_GET['f'] != 'last') { $thread->init(); }
 }
 e107::getScParser();
-require_once (e_HANDLER . 'level_handler.php');
-if (!is_object($e107->userRank)) { $e107->userRank = new e107UserRank; }
 require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
 setScVar('forum_shortcodes', 'thread', $thread);
 

@@ -9,10 +9,8 @@
 *
 * Administration Area - Users
 *
-* $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 require_once ('../class2.php');
@@ -99,7 +97,7 @@ $from = varset($from,0);
 $amount = 30;
 if ($action == 'ranks')
 {
-	show_ranks();
+	showRanks();
 }
 // ------- Check for Bounces --------------
 $bounce_act = '';
@@ -284,14 +282,14 @@ if (isset ($_POST['adduser']))
 	$user_data = & $allData['data'];
 	if (!$error)
 	{
-		
+
 		if(varset($_POST['perms']))
 		{
 			$allData['data']['user_admin'] = 1;
 			$allData['data']['user_perms'] = implode('.',$_POST['perms']);
 		}
-		
-		
+
+
 		$message = '';
 		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$loginname);
 		$user_data['user_join'] = time();
@@ -439,12 +437,12 @@ if ((varset($_POST['useraction'])== "admin" || varset($_POST['useraction'])== "a
 {
 	$sql->db_Select("user","user_id, user_name, user_perms","user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	
+
 	if(varset($_POST['useraction'])== "admin")
 	{
 		$sql->db_Update("user","user_admin='1' WHERE user_id='".$_POST['userid']."' ");
 	}
-		
+
 	$admin_log->log_event('USET_08',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_164),E_LOG_INFORMATIVE);
 	$user->show_message($row['user_name']." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.{$row['user_id']}'>".USRLAN_4."</a>");
 	$action = "main";
@@ -456,16 +454,16 @@ if ((varset($_POST['useraction'])== "admin" || varset($_POST['useraction'])== "a
 	{
 		$id = "DESC";
 	}
-	
+
 
 	$prm->edit_administrator($row);
 	require_once ("footer.php");
 	exit;
 }
 
-if (varset($_POST['update_admin'])) // Update admin Perms. 
-{	
-	$prm->updatePerms($_POST['a_id'],$_POST['perms']);	
+if (varset($_POST['update_admin'])) // Update admin Perms.
+{
+	$prm->updatePerms($_POST['a_id'],$_POST['perms']);
 }
 
 
@@ -599,7 +597,7 @@ class users
 			'user_signature' 	=> array('title' => LAN_USER_09,'type' => 'text','width' => 'auto'),
 			'user_hideemail' 	=> array('title' => LAN_USER_10,'type' => 'boolean','width' => 'auto'),
 			'user_xup' 			=> array('title' => LAN_USER_11,'type' => 'text','width' => 'auto'),
-			'user_class' 		=> array('title' => LAN_USER_12,'type' => 'class'),			
+			'user_class' 		=> array('title' => LAN_USER_12,'type' => 'class'),
 			'user_join' 		=> array('title' => LAN_USER_14,'type' => 'date', 'width' => 'auto'),
 			'user_lastvisit' 	=> array('title' => LAN_USER_15,'type' => 'date', 'width' => 'auto'),
 			'user_currentvisit' => array('title' => LAN_USER_16,'type' => 'date', 'width' => 'auto'),
@@ -631,30 +629,30 @@ class users
 	{
 		list($type,$tmp,$uclass) = explode("_",$_POST['execute_batch']);
 		$method = "user_".$type;
-		
+
 		if($method == "user_remuserclass")
 		{
-			$method = "user_userclass";	
+			$method = "user_userclass";
 		}
 
 		if (method_exists($this,$method) && isset($_POST['user_selected']) )
 		{
 			foreach ($_POST['user_selected'] as $userid)
 			{
-				
+
             	if($type=='userclass' || $type=='remuserclass')
-				{													
+				{
 					switch($type)
 					{
 						case 'userclass':
 							$mode = 'append';
 						break;
-					
+
 						case 'remuserclass'	:
 							$mode = ($uclass != '0') ? 'remove' : 'clear';
 						break;
 					}
-					
+
                 	$this->$method($userid,array($uclass),$mode);
 				}
 				else
@@ -1065,13 +1063,13 @@ class users
 			}
 		}
 			// $user_total = db_Count($table, $fields = '(*)',
-			
+
 		if($_SESSION['filter']==e_UC_ADMIN)
 		{
 			$this->fieldpref[] = 'user_perms';
-		}	
-			
-			
+		}
+
+
 		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
 
         return ($query) ? $qry_insert." WHERE ".$query.$qry_order : $qry_insert.$qry_order;
@@ -1080,15 +1078,15 @@ class users
 	function show_existing_users($action,$sub_action,$id,$from,$amount)
 	{
 		global $mySQLdefaultdb,$pref,$unverified,$userMethods;
-		
+
 		$sql = e107::getDb();
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		$tp = e107::getParser();
-		
+
 		$e107 = e107 :: getInstance();
 		$qry = $this->get_search_query();
-		
+
 		$this->fieldpref = array_unique($this->fieldpref);
 
 		$text = "<div>".$this->show_search_filter();
@@ -1102,7 +1100,7 @@ class users
 						$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
 			"<tbody>\n";
-			
+
 			while ($row = $sql->db_Fetch())
 			{
 
@@ -1110,29 +1108,29 @@ class users
 				<tr>
 					<td class='center' >".$frm->checkbox('user_selected[]',$row['user_id'])."</td>
 					<td class='center' style='width:5%; text-align:center' >{$row['user_id']}</td>";
-								
+
 					foreach ($this->fieldpref as $disp)
 					{
-						$class = vartrue($this->fields[$disp]['thclass']) ? "class='".$this->fields[$disp]['thclass']."'" : "";		
+						$class = vartrue($this->fields[$disp]['thclass']) ? "class='".$this->fields[$disp]['thclass']."'" : "";
 						$text .= "<td ".$class." style='white-space:nowrap'>".$this->renderValue($disp,$row)."</td>\n";
 					}
-				
+
 				$text .= "
 				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>\n";
 			}
-			
+
 			$text .= "</tbody>
 			</table>
-			
+
 			<div class='buttons-bar center'>".$this->show_batch_options();
 			$users = (e_QUERY != "unverified") ? $sql->db_Count("user") : $unverified;
-			
+
 			if ($users > $amount && !$_GET['srch'])
 			{
 				$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
-			
+
 			if ($action == "unverified")
 			{
 				$qry = (e_QUERY) ? "?".e_QUERY : "";
@@ -1150,7 +1148,7 @@ class users
 		$text .= "</fieldset></form>
 
 		</div>";
-		
+
 		$emessage = & eMessage :: getInstance();
 
 		$total_cap = (isset ($_GET['srch'])) ? $user_total : $users;
@@ -1166,8 +1164,8 @@ class users
 		$type = $this->fields[$key]['type'];
 		$pref = e107::getConfig()->getPref();
 		$prm = e107::getUserPerms();
-		
-		switch($key) // switch based on field. 
+
+		switch($key) // switch based on field.
 		{
 			case 'user_class':
 				if ($row['user_class'])
@@ -1175,7 +1173,7 @@ class users
 					$tmp = explode(",",$row['user_class']);
 					while (list($key,$class_id) = each($tmp))
 					{
-						$text .= $frm->uc_label($class_id)."<br />\n"; 
+						$text .= $frm->uc_label($class_id)."<br />\n";
 					}
 					return $text;
 				}
@@ -1184,7 +1182,7 @@ class users
 					return "&nbsp;";
 				}
 			break;
-			
+
 			case 'user_ip':
 				return $e107->ipDecode($row['user_ip']);
 			break;
@@ -1193,28 +1191,28 @@ class users
 			case 'user_status':
 				return $this->showUserStatus($row);
 			break;
-			
+
 			case 'user_name':
-				return "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";			
+				return "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
 			break;
-			
-			case 'user_perms': //TODO display link to popup window with editable perms. 
-				// return $row[$key].'&nbsp;';	
+
+			case 'user_perms': //TODO display link to popup window with editable perms.
+				// return $row[$key].'&nbsp;';
 				return $prm->renderPerms($row[$key],$row['user_id']);
 			break;
-			
+
 			case 'user_ban' :
 				return ($row[$key] == 1) ? ADMIN_TRUE_ICON : '';	// We may want to show more of the status later
 				break;
-			
+
 		}
-				
-		switch($type) // switch based on type. 
+
+		switch($type) // switch based on type.
 		{
 			case 'date':
 				return ($row[$key]) ? strftime($pref['shortdate'],$row[$key]).'&nbsp;' : '&nbsp';
 			break;
-			
+
 			case 'boolean':
 				return ($row[$key] == 1) ? ADMIN_TRUE_ICON : '';
 			break;
@@ -1222,12 +1220,12 @@ class users
 
 			case 'user_status':
 				return $this->showUserStatus($row);
-			break;			
-			
+			break;
+
 		}
-		
+
 		return $row[$key].'&nbsp;';
-		
+
 	}
 
 
@@ -1238,7 +1236,7 @@ class users
 		$classObj = $e107->getUserClass();
 		$frm = new e_form();
 		$classes = $classObj->uc_get_classlist();
-		
+
 
 		$assignClasses = array(); // Userclass list of userclasses that can be assigned
 		foreach ($classes as $key => $val)
@@ -1249,12 +1247,12 @@ class users
 			}
 		}
 		unset($assignClasses[0]);
-		
-	
+
+
 		$removeClasses = $assignClasses; // Userclass list of userclasses that can be removed
 		$removeClasses[0] = array('userclass_name'=>array('userclass_id'=>0, 'userclass_name'=>USRLAN_220));
-	  
-	  
+
+
 		 if(count($assignClasses))
 		 {
 		 	 $uclasses = array(
@@ -1264,18 +1262,18 @@ class users
 		 }
 		 else
 		 {
-		 	$uclasses = FALSE;	
-		 }  
-	  
-	
+		 	$uclasses = FALSE;
+		 }
+
+
 		   return $frm->batchoptions(
 		      array(
 		         'ban_selected'       =>USRLAN_30,
 					'unban_selected'     =>USRLAN_33,
 					'activate_selected'  =>USRLAN_32,
 					'delete_selected'    =>LAN_DELETE
-	         ),$uclasses 
-		      
+	         ),$uclasses
+
 		   );
 	}
 
@@ -1305,8 +1303,8 @@ class users
 			$var ['unveri']['text'] = USRLAN_138." ($unverified)";
 			$var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
 		}
-		$var ['rank']['text'] = USRLAN_196;
-		$var ['rank']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['ranks']['text'] = USRLAN_196;
+		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
 		show_admin_menu(USRLAN_76,$action,$var);
@@ -1453,16 +1451,16 @@ class users
 	function user_add($user_data)
 	{
 		global $rs,$pref,$e_userclass;
-		
+
 		$prm = e107::getUserPerms();
 		$list = $prm->getPermList();
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		
-		//TODO Better Password generation. 
-		// ie. a "Generate" button, which will place the text into the text field automatically. 
-		
+
+		//TODO Better Password generation.
+		// ie. a "Generate" button, which will place the text into the text field automatically.
+
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
 		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
@@ -1500,14 +1498,14 @@ class users
 			".$frm->checkbox_label(USRLAN_171,'generatepassword', 1)."
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td>".USRLAN_63."</td>
 			<td>
 			".$rs->form_password("password2",40,"",20)."
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td>".USRLAN_64."</td>
 			<td>
@@ -1519,14 +1517,14 @@ class users
 			<td>Require Confirmation</td>
 			<td class='center'>".$frm->checkbox_label(USRLAN_181,'sendconfemail', 1)."</td>
 		</tr>";
-		
+
 		//FIXME check what this is doing exactly.. is it a confirmation email (activation link) or just a notification?
 		// Give drop-down option to: 1) Notify User and Activate. 2) Notify User and require activation. 3) Don't Notify
-		
+
 		if (!isset ($user_data['user_class']))
 			$user_data['user_class'] = varset($pref['initial_user_classes'],'');
 		$temp = $e_userclass->vetted_tree('class',array($e_userclass,'checkbox_desc'),$user_data['user_class'],'classes');
-		
+
 		if ($temp)
 		{
 			$text .= "<tr style='vertical-align:top'>
@@ -1539,32 +1537,32 @@ class users
 			</div></td>
 			</tr>\n";
 		}
-		
-		// Make Admin. 
+
+		// Make Admin.
 		$text .= "<tr>
 			<td>".USRLAN_35."</td>
 			<td>
 			<a href='#set_perms' class='e-expandit'>Set Permissions</a>
 			<div class='e-hideme' id='set_perms' >\n";
-			
+
 			$groupedList = $prm->getPermList('grouped');
-		
+
 			foreach($groupedList as $section=>$list)
 			{
-				$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General	
+				$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
 				foreach($list as $key=>$diz)
 				{
-					$text .= $prm->checkb($key, '', $diz);			
+					$text .= $prm->checkb($key, '', $diz);
 				}
 				$text .= "</div>";
 			}
 
 		$text .= "</div></td>
 		</tr>\n";
-		
-		
+
+
 		$text .= "
-		
+
 		</table>
 		<div class='buttons-bar center'>
 			<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
@@ -1965,7 +1963,7 @@ class users
 	{
 		global $admin_log, $e_userclass;
 		$sql = e107::getDb();
-		
+
 		$remuser = true;
         $emessage = &eMessage::getInstance();
 
@@ -1973,14 +1971,14 @@ class users
 		{
     		$sql->db_Select("user","*","user_id={$userid} ");
 			$row = $sql->db_Fetch();
-			$curClass = varset($row['user_class']) ? explode(",",$row['user_class']) : array();			
+			$curClass = varset($row['user_class']) ? explode(",",$row['user_class']) : array();
         }
 
     	foreach ($uclass as $a)
 		{
 			$a = intval($a);
 			$this->check_allowed($a);
-			if($a !=0) // if 0 - then do not add. 
+			if($a !=0) // if 0 - then do not add.
 			{
 				$curClass[] = $a;
 			}
@@ -1988,12 +1986,12 @@ class users
 
 		if($mode == "remove") // remove selected classes
 		{
-			$curClass = array_diff($curClass,$uclass); 
+			$curClass = array_diff($curClass,$uclass);
 		}
-		
+
 		if($mode == "clear") // clear all classes
 		{
-		//	$curClass = array(); 
+		//	$curClass = array();
 		}
 
         $curClass = array_unique($curClass);
@@ -2145,21 +2143,34 @@ function updateRanks()
 }
 
 
-function show_ranks()
+function showRanks()
 {
 	global $pref,$emessage;
-	$e107 = e107 :: getInstance();
+	$frm 	= new e_form;
+	$e107 = e107::getInstance();
+
 	include_once (e_HANDLER.'file_class.php');
-	include_once (e_HANDLER.'level_handler.php');
 	require_once (e_HANDLER.'message_handler.php');
-	require_once (e_HANDLER."form_handler.php");
-	$frm = new e_form(true);
-	//enable inner tabindex counter
-	$f = new e_file;
-	$ranks = new e107UserRank;
-	$imageList = $f->get_files(e_IMAGE.'ranks','.*?\.(png|gif|jpg)');
+
+/*
+	$daysregged = max(1, round((time() - $user_join) / 86400))."days";
+	$level = ceil((($user_forums * 5) + ($user_comments * 5) + ($user_chats * 2) + $user_visits)/4);
+*/
+
+	$ranks = e107::getRank()->getRankData();
+	$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+	foreach($tmp as $k => $v){
+		$imageList[] = $v['fname'];
+	}
+	unset($tmp);
+	natsort($imageList);
+
+	$text = "
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
+	";
+/*
 	$config = array();
-	if ($e107->sql->db_Select('generic','gen_chardata',"gen_type='user_rank_config'",'default'))
+	if ($e107->sql->db_Select('generic','gen_chardata', "gen_type='user_rank_config'", 'default'))
 	{
 		$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
 		$config = unserialize($row['gen_chardata']);
@@ -2173,17 +2184,21 @@ function show_ranks()
 			$fieldList['extended'][] = substr($field['Field'],5);
 		}
 	}
+	$fields = array(
+		'source' => array('title' => USRLAN_197, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'fieldName' => array('title' => USRLAN_198, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'operation' => array('title' => USRLAN_199, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'value' => array('title' => USRLAN_200, 'type' => 'int', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+	);
+
 	$opArray = array('*','+','-');
 	$text .= "
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<table style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='label'>".USRLAN_197."</td>
-	<td class='label'>".USRLAN_198."</td>
-	<td class='control'>".USRLAN_199."</td>
-	<td class='control'>".USRLAN_200."</td>
-	</tr>
-	";
+   <fieldset id='core-userranks-list'>
+
+	<table cellpadding='0' cellspacing='0' class='adminlist'>".
+	$frm->colGroup($fields, array_keys($fields)).
+	$frm->thead($fields, array_keys($fields));
 	foreach ($fieldList['core'] as $k => $f)
 	{
 		$text .= "
@@ -2242,19 +2257,25 @@ function show_ranks()
 							";
 	}
 	$text .= '</table>';
+*/
 	$e107->ns->tablerender('',$emessage->render());
-	$e107->ns->tablerender('Rank Calculation fields',$text);
-	$text = "
-	<table style='".ADMIN_WIDTH."'>
-	<tr>
-		<td class='label'>".USRLAN_207."</td>
-		<td class='label'>".USRLAN_208."</td>
-		<td class='label'>".USRLAN_209."</td>
-		<td class='label'>".USRLAN_210."</td>
-		<td class='label'>".USRLAN_211."</td>
-	</tr>
-	";
-	$info = $ranks->ranks['special'][1];
+//	$e107->ns->tablerender('Rank Calculation fields',$text);
+
+	$fields = array(
+		'type' => array('title' => USRLAN_207, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'rankName' => array('title' => USRLAN_208, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'lowThresh' => array('title' => USRLAN_209, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'langPrefix' => array('title' => USRLAN_210, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+		'rankImage' => array('title' => USRLAN_210, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+	);
+
+
+	$text .= "
+	<table cellpadding='0' cellspacing='0' class='adminlist'>".
+	$frm->colGroup($fields, array_keys($fields)).
+	$frm->thead($fields, array_keys($fields));
+
+	$info = $ranks['special'][1];
 	$val = $e107->tp->toForm($info['name']);
 	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	$text .= "
@@ -2268,7 +2289,7 @@ function show_ranks()
 		<td class='control'>".RankImageDropdown($imageList,'calc_img[main_admin]',$info['image'])."</td>
 	</tr>
 	";
-	$info = $ranks->ranks['special'][2];
+	$info = $ranks['special'][2];
 	$val = $e107->tp->toForm($info['name']);
 	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	$text .= "
@@ -2285,7 +2306,7 @@ function show_ranks()
 		<td colspan='5'>&nbsp;</td>
 	</tr>
 	";
-	foreach ($ranks->ranks['data'] as $k => $r)
+	foreach ($ranks['data'] as $k => $r)
 	{
 		$pfx_checked = ($r['lan_pfx'] ? "checked='checked'" : '');
 		$text .= "
@@ -2328,7 +2349,7 @@ function show_ranks()
 }
 
 
-function RankImageDropdown(& $imgList,$field,$curVal = '')
+function RankImageDropdown(&$imgList, $field, $curVal = '')
 {
 	$ret = "
 	<select class='tbox' name='{$field}'>
@@ -2336,8 +2357,8 @@ function RankImageDropdown(& $imgList,$field,$curVal = '')
 	";
 	foreach ($imgList as $img)
 	{
-		$sel = ($img['fname'] == $curVal ? "selected='selected'" : '');
-		$ret .= "\n<option {$sel}>{$img['fname']}</option>";
+		$sel = ($img == $curVal ? "selected='selected'" : '');
+		$ret .= "\n<option {$sel}>{$img}</option>";
 	}
 	$ret .= '</select>';
 	return $ret;

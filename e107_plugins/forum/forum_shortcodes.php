@@ -11,7 +11,7 @@ class forum_shortcodes
 	var $postInfo;
 	var $thread;
 	var $forum;
-	
+
 	function forum_shortcodes()
 	{
 		$this->e107 = e107::getInstance();
@@ -276,16 +276,17 @@ class forum_shortcodes
 	{
 		if (!$this->postInfo['post_user']) { return ''; }
 
-		$rankInfo = $this->e107->userRank->getRanks($this->postInfo['post_user']);
+		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
+
 		if(!$parm) { $parm = 'name'; }
-		
+
 		switch($parm)
 		{
-			
+
 			case 'userid' :
 				return $this->sc_memberid();
 				break;
-				
+
 			case 'special':
 				if(isset($rankInfo['special'])) { return $rankInfo['special']; }
 				if($this->forum->isModerator($this->postInfo['post_user']))
@@ -294,7 +295,7 @@ class forum_shortcodes
 				}
 				return '';
 				break;
-				
+
 			default:
 				return varset($rankInfo[$parm], '');
 				break;
