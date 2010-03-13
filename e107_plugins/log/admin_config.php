@@ -6,27 +6,37 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ *	Stats logging plugin - admin functions
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/log/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
-require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('log')) 
+/**
+ *	e107 Stats logging plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	log
+ *	@version 	$Id$;
+ *
+ *	@todo Change log directory to use new system log directory
+ */
+
+require_once('../../class2.php');
+if (!getperms('P') || !e107::isInstalled('log')) 
 {
-	header("Location: ".e_BASE."index.php");
+	header('Location: '.e_BASE.'index.php');
 	exit;
 }
 
-require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER."userclass_class.php");
+
+require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER.'userclass_class.php');
+
 
 define('LOGPATH', e_PLUGIN.'log/');
 
-include_lan(LOGPATH.'languages/'.e_LANGUAGE.'_admin_log.php');
+include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin_log.php');
 
 if (e_QUERY) 
 {
@@ -61,67 +71,67 @@ $export_stripurl = varset($_POST['export_stripurl'], 0);
 
 if (isset($_POST['create_export']) && (($action == 'export') || ($action == 'datasets')))
 {
-  $first_date = 0;
-  $last_date = 0;
-  $date_error = FALSE;
-  if ($export_type == 'page')
-  {
-    switch ($export_date)
-    {
-    case '1' :		//	Single day
-	  $first_date = gmmktime(0,0,0,$export_month,$export_day,$export_year);
-	  $last_date = $first_date+86399;
-	  $export_filter = " `log_id`='".date("Y-m-j",$first_date)."'";
-	  break;
-    case '2' :		// Daily for a month
-	  $first_date = gmmktime(0,0,0,$export_month,1,$export_year);
-	  $last_date = gmmktime(0,0,0,$export_month+1,1,$export_year) - 1;
-	  $export_filter = " LEFT(`log_id`,8)='".gmstrftime("%Y-%m-",$first_date)."'";
-	  break;
-    case '3' :		// Monthly for a Year
-	  $first_date = gmmktime(0,0,0,1,1,$export_year);
-	  $last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
-	  $export_filter = " LENGTH(`log_id`)=7 AND LEFT(`log_id`,5)='".gmstrftime("%Y-",$first_date)."'";
-	  break;
-    case '4' :		// Accumulated
-	case '5' :
-	  $export_filter = "`log_id`='pageTotal'";
-	  $date_error = 'ignore';
-	  break;
-    }
-  }
-  else
-  {  // Calculate strings for non-page sources
-	$prefix_len = 0;
-	$export_date = $export2_date;
-	if (isset($stats_list[$export_type]))
+	$first_date = 0;
+	$last_date = 0;
+	$date_error = FALSE;
+	if ($export_type == 'page')
 	{
-	  $prefix_len = strlen($export_type) + 1;
-      switch ($export2_date)
-      {
-      case '3' :		// Monthly for a Year
-		if ($prefix_len > 0)
+		switch ($export_date)
 		{
-	      $first_date = gmmktime(0,0,0,1,1,$export_year);
-	      $last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
-	      $export_filter = " LENGTH(`log_id`)='".($prefix_len + 7)."' AND LEFT(`log_id`,".($prefix_len + 5).")='".$export_type.":".gmstrftime("%Y-",$first_date)."'";
+			case '1' :		//	Single day
+				$first_date = gmmktime(0,0,0,$export_month,$export_day,$export_year);
+				$last_date = $first_date+86399;
+				$export_filter = " `log_id`='".date("Y-m-j",$first_date)."'";
+				break;
+			case '2' :		// Daily for a month
+				$first_date = gmmktime(0,0,0,$export_month,1,$export_year);
+				$last_date = gmmktime(0,0,0,$export_month+1,1,$export_year) - 1;
+				$export_filter = " LEFT(`log_id`,8)='".gmstrftime("%Y-%m-",$first_date)."'";
+				break;
+			case '3' :		// Monthly for a Year
+				$first_date = gmmktime(0,0,0,1,1,$export_year);
+				$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
+				$export_filter = " LENGTH(`log_id`)=7 AND LEFT(`log_id`,5)='".gmstrftime("%Y-",$first_date)."'";
+				break;
+			case '4' :		// Accumulated
+			case '5' :
+				$export_filter = "`log_id`='pageTotal'";
+				$date_error = 'ignore';
+				break;
 		}
-	    break;
-      case '4' :		// Accumulated
-	    $export_filter = " `log_id`='".$export_type."'";
-		$date_error = 'ignore';
-	    break;
-      }
 	}
 	else
-	{
-	  $message = ADSTAT_L54;
+	{  // Calculate strings for non-page sources
+		$prefix_len = 0;
+		$export_date = $export2_date;
+		if (isset($stats_list[$export_type]))
+		{
+			$prefix_len = strlen($export_type) + 1;
+			switch ($export2_date)
+			{
+				case '3' :		// Monthly for a Year
+					if ($prefix_len > 0)
+					{
+						$first_date = gmmktime(0,0,0,1,1,$export_year);
+						$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
+						$export_filter = " LENGTH(`log_id`)='".($prefix_len + 7)."' AND LEFT(`log_id`,".($prefix_len + 5).")='".$export_type.":".gmstrftime("%Y-",$first_date)."'";
+					}
+					break;
+				case '4' :		// Accumulated
+					$export_filter = " `log_id`='".$export_type."'";
+					$date_error = 'ignore';
+					break;
+			}
+		}
+		else
+		{
+			$message = ADSTAT_L54;
+		}
 	}
-  }
-  if (($date_error != 'ignore') && (($first_date == 0) || ($last_date == 0) || $date_error))
-  {
-    $message = ADSTAT_L47;
-  }
+	if (($date_error != 'ignore') && (($first_date == 0) || ($last_date == 0) || $date_error))
+	{
+		$message = ADSTAT_L47;
+	}
 }
 
 
