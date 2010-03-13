@@ -32,7 +32,7 @@ class e107forum
 			$this->setDefaults();
 		}
 //		var_dump($this->prefs);
-		
+
 /*
 		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
@@ -74,7 +74,7 @@ class e107forum
 		}
 		unset($tmp);
 	}
-	
+
 	private function setDefaults()
 	{
 		$this->prefs->set('show_topics', '1');
@@ -93,7 +93,7 @@ class e107forum
 	function getForumPermList()
 	{
 		$e107 = e107::getInstance();
-		
+
 		$this->permList = array();
 		$qryList = array();
 
@@ -271,6 +271,44 @@ class e107forum
 			return array('postid' => $newPostId, 'threadid' => $newThreadId);
 		}
 		return false;
+	}
+
+	function threadMove($threadId, $newForumId, $threadTitle= '', $titleType=0)
+	{
+		$sql = e107::getDb();
+		$threadInfo = $this->threadGet($threadId);
+		$oldForumId = $threadInfo['thread_forum_id'];
+
+		//Move thread to new forum, changing thread title if needed
+		if($threadTitle)
+		{
+
+			if($titleType == 0)
+			{
+				//prepend to existing title
+				$threadTitle = ", thread_name = CONCAT('{$threadTitle} ', thread_name)";
+			}
+			else
+			{
+				//Replace title
+				$threadTitle = ", thread_name = '{$threadTitle}'";
+			}
+		}
+		$sql->db_Update('forum_thread', "thread_forum_id={$newForumId} {$threadTitle} WHERE thread_id={$threadId}");
+
+		//Move all posts to new forum
+		$posts = $sql->db_Update('forum_post', "post_forum={$newForumId} WHERE post_thread={$threadId}");
+		$replies = $posts-1;
+		if($replies < 0) { $replies = 0; }
+
+		//change thread counts accordingly
+		$sql->db_Update('forum', "forum_threads=forum_threads-1, forum_replies=forum_replies-$replies WHERE forum_id={$oldForumId}");
+		$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_replies=forum_replies+$replies WHERE forum_id={$newForumId}");
+
+		// update lastpost information for old and new forums
+		$this->forumUpdateLastpost('forum', $oldForumId, false);
+		$this->forumUpdateLastpost('forum', $newForumId, false);
+
 	}
 
 	function threadUpdate($threadId, $threadInfo)
@@ -654,7 +692,7 @@ class e107forum
 		}
 		return $this->modArray;
 	}
-	
+
 	function isModerator($uid)
 	{
 		return ($uid && in_array($uid, array_keys($this->modArray)));

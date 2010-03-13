@@ -68,46 +68,25 @@ if (isset($_POST['move']))
 	require_once(e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum;
 
-	$postInfo = $forum->postGet($id, 0, 1);
-	$threadId = (int)$postInfo[0]['post_thread'];
-	$threadInfo = $forum->threadGet($threadId);
-
-//	print_a($postInfo);
-//	print_a($threadInfo);
-//	exit;
-
-	$oldForumId = (int)$threadInfo['thread_forum_id'];
-	$newForumId = (int)$_POST['forum_move'];
-	$newThreadName = $threadInfo['thread_name'];
-	$replyCount = $threadInfo['thread_total_replies'];
-
+	$newThreadTitle = '';
 	if($_POST['rename_thread'] == 'add')
 	{
-		$newThreadName = '['.FORCONF_27.'] '.$newThreadName;
+		$newThreadTitle = '['.FORCONF_27.']';
+		$newThreadTitleType = 0;
 	}
 	elseif($_POST['rename_thread'] == 'rename' && trim($_POST['newtitle']) != '')
 	{
-		$newThreadName = $e107->tp->toDB($_POST['newtitle']);
+		$newThreadTitle = $e107->tp->toDB($_POST['newtitle']);
+		$newThreadTitleType = 1;
 	}
 
-	//Move thread to new forum, changing thread title if needed
-	$sql->db_Update('forum_thread', "thread_forum_id={$newForumId}, thread_name='{$newThreadName}' WHERE thread_id={$threadId}", true);
+	$threadId = $_GET['id'];
+	$toForum = $_POST['forum_move'];
 
-	//Move all posts to new forum
-	$sql->db_Update('forum_post', "post_forum={$newForumId} WHERE post_thread={$threadId}", true);
-
-	//set the thread counts correctly
-	$sql->db_Update('forum', "forum_threads=forum_threads-1, forum_replies=forum_replies-$replyCount WHERE forum_id={$oldForumId}", true);
-	$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_replies=forum_replies+$replyCount WHERE forum_id={$newForumId}", true);
-
-	// update lastpost information for old and new forums
-	$forum->forumUpdateLastpost('forum', $oldForumId, false);
-	$forum->forumUpdateLastpost('forum', $newForumId, false);
+	$forum->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
 	$message = FORCONF_9;
-//	$url = e_PLUGIN."forum/forum_viewforum.php?".$new_forum;
-	$url = $e107->url->getUrl('forum', 'thread', 'func=view&id='.$id);
-
+	$url = $e107->url->getUrl('forum', 'thread', 'func=view&id='.$threadId);
 }
 
 if (isset($_POST['movecancel']))
