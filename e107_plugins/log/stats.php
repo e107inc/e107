@@ -41,14 +41,17 @@ $eplug_css[] = "<style type='text/css'>
 
 require_once(HEADERF);
 
-if(!check_class($pref['statUserclass'])) {
+if(!check_class(e107::getPref('statUserclass'))) 
+{
 	$text = "<div style='text-align: center;'>".ADSTAT_L4."</div>";
 	$ns->tablerender(ADSTAT_L6, $text);
 	require_once(FOOTERF);
 	exit;
 }
 
-if (!$pref['statActivate']) {
+
+if (!e107::getPref('statActivate')) 
+{
 	$text = (ADMIN ? "<div style='text-align:center'>".ADSTAT_L41."</div>" : "<div style='text-align:center'>".ADSTAT_L5."</div>");
 	$ns->tablerender(ADSTAT_L6, $text);
 	require_once(FOOTERF);
@@ -64,7 +67,7 @@ $order = varset($qs[1],0);				// Sort order
 $toremove = varset($qs[2],'');
 $order = intval($order);
 
-$stat = new siteStats();
+$stat = new siteStats($order);
 
 if($stat -> error) 
 {
@@ -73,84 +76,7 @@ if($stat -> error)
 	exit;
 }
 
-
-$oses_map = array (
-"Windows" => "windows",
-"Mac" => "mac",
-"Linux" => "linux",
-"BeOS" => "beos",
-"FreeBSD" => "freebsd",
-"NetBSD" => "netbsd",
-"Unspecified"=> "unspecified",
-"OpenBSD" => "openbsd",
-"Unix" => "unix",
-"Spiders" => "spiders",
-);
-
-$browser_map = array (
-'Netcaptor'         => "netcaptor",
-'Internet Explorer' => "explorer",
-'Firefox'           => "firefox",
-'Opera'             => "opera",
-'AOL'               => "aol",
-'Netscape'          => "netscape",
-'Mozilla'           => "mozilla",
-'Mosaic'            => "mosaic",
-'K-Meleon'          => "k-meleon",
-'Konqueror'         => "konqueror",
-'Avant Browser'     => "avantbrowser",
-'AvantGo'           => "avantgo",
-'Proxomitron'       => "proxomitron",
-'Safari'            => "safari",
-'Lynx'              => "lynx",
-'Links'             => "links",
-'Galeon'            => "galeon",
-'ABrowse'           => "abrowse",
-'Amaya'             => "amaya",
-'ANTFresco'         => "ant",
-'Aweb'              => "aweb",
-'Beonex'            => "beonex",
-'Blazer'            => "blazer",
-'Camino'            => "camino",
-'Chimera'           => "chimera",
-'Columbus'          => "columbus",
-'Crazy Browser'     => "crazybrowser",
-'Curl'              => "curl",
-'Deepnet Explorer'  => "deepnet",
-'Dillo'             => "dillo",
-'Doris'             => "doris",
-'ELinks'            => "elinks",
-'Epiphany'          => "epiphany",
-'Firebird'          => "firebird",
-'IBrowse'           => "ibrowse",
-'iCab'              => "icab",
-'ICEbrowser'        => "ice",
-'iSiloX'            => "isilox",
-'Lotus Notes'       => "lotus",
-'Lunascape'         => "lunascape",
-'Maxthon'           => "maxthon",
-'mBrowser'          => "mbrowser",
-'Multi-Browser'     => "multibrowser",
-'Nautilus'          => "nautilus",
-'NetFront'          => "netfront",
-'NetPositive'       => "netpositive",
-'OmniWeb'           => "omniweb",
-'Oregano'           => "oregano",
-'PhaseOut'          => "phaseout",
-'PLink'             => "plink",
-'Phoenix'           => "phoenix",
-'Proxomitron'       => "proxomitron",
-'Shiira'            => "shiira",
-'Sleipnir'          => "sleipnir",
-'SlimBrowser'       => "slimbrowser",
-'StarOffice'        => "staroffice",
-'Sunrise'           => "sunrise",
-'Voyager'           => "voyager",
-'w3m'               => "w3m",
-'Webtv'             => "webtv",
-'Xiino'             => "xiino",
-);
-
+/*
 $country["arpa"] = "ARPANet";
 $country["com"] = "Commercial Users";
 $country["edu"] = "Education";
@@ -402,6 +328,7 @@ $country["za"] = "South Africa";
 $country["zm"] = "Zambia";
 $country["zr"] = "Zaire";
 $country["zw"] = "Zimbabwe";
+*/
 
 
 /* stats displayed will depend on the query string. For example, ?1.2.4 will render today's stats, all time stats and browser stats */
@@ -425,129 +352,133 @@ $country["zw"] = "Zimbabwe";
 
 function display_pars($rec_pars, $disp_pars = '*')
 {
-  global $pref;
-  switch ($rec_pars)
-  {
-    case 1 : return array(1);
-    case 2 : if (varset($pref['statPrevMonth'],0)) return array(2,3,1); else return array(2,1);
-    case 3 : return array(2,3,1);
-	default : return array();
-  }
+	switch ($rec_pars)
+	{
+		case 1 : return array(1);
+		case 2 : if (e107::getPref('statPrevMonth')) return array(2,3,1); else return array(2,1);
+		case 3 : return array(2,3,1);
+		default : return array();
+	}
 }
 
 
 $text = '';
-if ((ADMIN == TRUE) && ($sec_action == "rem"))
+if ((ADMIN == TRUE) && ($sec_action == 'rem'))
 {
-  $toremove = rawurldecode($toremove);
-  if ($stat -> remove_entry($toremove))
-  {
-    $text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L45.$toremove."<br />".ADSTAT_L46."</div>";
-  }
-  else
-  {
-    $text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L47.$toremove."</div>";
-  }
+	$toremove = rawurldecode($toremove);
+	if ($stat -> remove_entry($toremove))
+	{
+		$text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L45.$toremove."<br />".ADSTAT_L46."</div>";
+	}
+	else
+	{
+		$text .= "<div style='text-align: center; font-weight: bold'>".ADSTAT_L47.$toremove."</div>";
+	}
 }
+
 
 $action = intval($action);
 
 switch($action) 
 {
 	case 1:
-	$text .= $stat -> renderTodaysVisits(FALSE);
-	break;
+		$text .= $stat -> renderTodaysVisits(FALSE);
+		break;
 	case 2:
-	$text .= $stat -> renderAlltimeVisits(FALSE);
-	break;
+		$text .= $stat -> renderAlltimeVisits($action, FALSE);
+		break;
 	case 12:
-	  if (ADMIN == TRUE)
-		$text .= $stat -> renderTodaysVisits(TRUE);
-	break;
+		if (ADMIN == TRUE)
+		{
+			$text .= $stat -> renderTodaysVisits(TRUE);
+		}
+		break;
 	case 13:
-	  if (ADMIN == TRUE)
-		$text .= $stat -> renderAlltimeVisits(TRUE);
-	break;
+		if (ADMIN == TRUE)
+		{
+			$text .= $stat -> renderAlltimeVisits($action, TRUE);
+		}
+		break;
 	case 3 :		// 'Normal' render
 	case 14 :		// 'Consolidated' render
-	  if($pref['statBrowser']) 
-	  {
-		$text .= $stat -> renderBrowsers(display_pars($pref['statBrowser']), $action==3);
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if(e107::getPref('statBrowser')) 
+		{
+			$text .= $stat -> renderBrowsers(display_pars(e107::getPref('statBrowser')), $action==3);
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 4:			// 'Normal' render
 	case 15 :		// 'Consolidated' render
-	  if($pref['statOs']) 
-	  {
-		$text .= $stat -> renderOses(display_pars($pref['statOs']), $action==4);
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if(e107::getPref('statOs')) 
+		{
+			$text .= $stat -> renderOses(display_pars(e107::getPref('statOs')), $action==4);
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 5:
-	  if($pref['statDomain']) 
-	  {
-		$text .= $stat -> renderDomains(display_pars($pref['statDomain']));
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if(e107::getPref('statDomain')) 
+		{
+			$text .= $stat -> renderDomains(display_pars(e107::getPref('statDomain')));
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 6:
-	  if($pref['statScreen']) 
-	  {
-		$text .= $stat -> renderScreens(display_pars($pref['statScreen']));
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if(e107::getPref('statScreen')) 
+		{
+			$text .= $stat -> renderScreens(display_pars(e107::getPref('statScreen')));
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 7:
-	  if ($pref['statRefer']) 
-	  {
-		$text .= $stat -> renderRefers(display_pars($pref['statRefer']));
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if (e107::getPref('statRefer')) 
+		{
+			$text .= $stat -> renderRefers(display_pars(e107::getPref('statRefer')));
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 8:
-	  if ($pref['statQuery']) 
-	  {
-		$text .= $stat -> renderQueries(display_pars($pref['statQuery']));
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if (e107::getPref('statQuery')) 
+		{
+			$text .= $stat -> renderQueries(display_pars(e107::getPref('statQuery')));
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 9:
-	  if ($pref['statRecent']) 
-	  {
-		$text .= $stat -> recentVisitors();
-	  } 
-	  else 
-	  {
-		$text .= ADSTAT_L7;
-	  }
-	  break;
+		if (e107::getPref('statRecent')) 
+		{
+			$text .= $stat -> recentVisitors();
+		} 
+		else 
+		{
+			$text .= ADSTAT_L7;
+		}
+		break;
 	case 10:
-	  $text .= $stat -> renderDaily();
-	  break;
+		$text .= $stat -> renderDaily();
+		break;
 	case 11:
-	  $text .= $stat -> renderMonthly();
-	  break;
+		$text .= $stat -> renderMonthly();
+		break;
 	default :
-	  $text .= $stat -> renderTodaysVisits(FALSE);
+		$text .= $stat -> renderTodaysVisits(FALSE);
 }
 
 
@@ -577,17 +508,19 @@ $links = "
 ($action != 2 ? "<a href='{$path}?2'>".ADSTAT_L9."</a>" : "<b>".ADSTAT_L9."</b>")." | ".
 ($action != 10 ? "<a href='{$path}?10'>".ADSTAT_L10."</a>" : "<b>".ADSTAT_L10."</b>")." | ".
 ($action != 11 ? "<a href='{$path}?11'>".ADSTAT_L11."</a>" : "<b>".ADSTAT_L11."</b>")." | ".
-($action != 3 && $pref['statBrowser'] ? "<a href='{$path}?3'>".ADSTAT_L12."</a> | " : ($pref['statBrowser'] ? "<b>".ADSTAT_L12."</b> | " : "")).
-($action != 4 && $pref['statOs'] ? "<a href='{$path}?4'>".ADSTAT_L13."</a> | " : ($pref['statOs'] ? "<b>".ADSTAT_L13."</b> | " : "")).
-($action != 5 && $pref['statDomain'] ? "<a href='{$path}?5'>".ADSTAT_L14."</a> | " : ($pref['statDomain'] ? "<b>".ADSTAT_L14."</b> | " : "")).
-($action != 6 && $pref['statScreen'] ? "<a href='{$path}?6'>".ADSTAT_L15."</a> | " : ($pref['statScreen'] ? "<b>".ADSTAT_L15."</b> | " : "")).
-($action != 7 && $pref['statRefer'] ? "<a href='{$path}?7'>".ADSTAT_L16."</a> | " : ($pref['statRefer'] ? "<b>".ADSTAT_L16."</b> | " : "")).
-($action != 8 && $pref['statQuery'] ? "<a href='{$path}?8'>".ADSTAT_L17."</a> | " : ($pref['statQuery'] ? "<b>".ADSTAT_L17."</b> | " : "")).
-($action != 9 && $pref['statRecent'] ? "<a href='{$path}?9'>".ADSTAT_L18."</a> | " : ($pref['statRecent'] ? "<b>".ADSTAT_L18."</b> | " : ""));
+($action != 3 && e107::getPref('statBrowser') ? "<a href='{$path}?3'>".ADSTAT_L12."</a> | " : (e107::getPref('statBrowser') ? "<b>".ADSTAT_L12."</b> | " : "")).
+($action != 4 && e107::getPref('statOs') ? "<a href='{$path}?4'>".ADSTAT_L13."</a> | " : (e107::getPref('statOs') ? "<b>".ADSTAT_L13."</b> | " : "")).
+($action != 5 && e107::getPref('statDomain') ? "<a href='{$path}?5'>".ADSTAT_L14."</a> | " : (e107::getPref('statDomain') ? "<b>".ADSTAT_L14."</b> | " : "")).
+($action != 6 && e107::getPref('statScreen') ? "<a href='{$path}?6'>".ADSTAT_L15."</a> | " : (e107::getPref('statScreen') ? "<b>".ADSTAT_L15."</b> | " : "")).
+($action != 7 && e107::getPref('statRefer') ? "<a href='{$path}?7'>".ADSTAT_L16."</a> | " : (e107::getPref('statRefer') ? "<b>".ADSTAT_L16."</b> | " : "")).
+($action != 8 && e107::getPref('statQuery') ? "<a href='{$path}?8'>".ADSTAT_L17."</a> | " : (e107::getPref('statQuery') ? "<b>".ADSTAT_L17."</b> | " : "")).
+($action != 9 && e107::getPref('statRecent') ? "<a href='{$path}?9'>".ADSTAT_L18."</a> | " : (e107::getPref('statRecent') ? "<b>".ADSTAT_L18."</b> | " : ""));
 if (ADMIN == TRUE)
-$links .= 
-($action != 12 ? "<a href='{$path}?12'>".ADSTAT_L43."</a>" : "<b>".ADSTAT_L43."</b>")." | ".
-($action != 13 ? "<a href='{$path}?13'>".ADSTAT_L44."</a>" : "<b>".ADSTAT_L44."</b>");
+{
+	$links .= 
+	($action != 12 ? "<a href='{$path}?12'>".ADSTAT_L43."</a>" : "<b>".ADSTAT_L43."</b>")." | ".
+	($action != 13 ? "<a href='{$path}?13'>".ADSTAT_L44."</a>" : "<b>".ADSTAT_L44."</b>");
+}
 $links .= "</div><br /><br />";
 
 
@@ -626,38 +559,377 @@ function make_bits($prefix, $act)
 }
 
 
+
+
 class siteStats 
 {
-	var $browser_headings = array(1 => ADSTAT_L50, 2 => ADSTAT_L51, 3 => ADSTAT_L52);
+	protected $browser_headings = array(1 => ADSTAT_L50, 2 => ADSTAT_L51, 3 => ADSTAT_L52);
 
-	var $dbPageInfo;
-	var $fileInfo;
-	var $fileBrowserInfo;
-	var $fileOsInfo;
-	var $fileScreenInfo;
-	var $fileDomainInfo;
-	var $fileReferInfo;
-	var $fileQueryInfo;
-	var $fileRecent;
-	var $error;
-	var $order;
-	var $bar;
+	protected $dbPageInfo;
+	protected $fileInfo;
+	protected $fileBrowserInfo;
+	protected $fileOsInfo;
+	protected $fileScreenInfo;
+	protected $fileDomainInfo;
+	protected $fileReferInfo;
+	protected $fileQueryInfo;
+	protected $fileRecent;
 
-	var $filesiteTotal;
-	var $filesiteUnique;
+	protected $order;
+	protected $bar;
 
-	function siteStats() 
+	protected $filesiteTotal;
+	protected $filesiteUnique;
+
+	public $error;		// Set if error
+
+
+
+	protected $oses_map = array (
+		"Windows" => "windows",
+		"Mac" => "mac",
+		"Linux" => "linux",
+		"BeOS" => "beos",
+		"FreeBSD" => "freebsd",
+		"NetBSD" => "netbsd",
+		"Unspecified"=> "unspecified",
+		"OpenBSD" => "openbsd",
+		"Unix" => "unix",
+		"Spiders" => "spiders",
+		);
+
+	protected $browser_map = array (
+		'Netcaptor'         => "netcaptor",
+		'Internet Explorer' => "explorer",
+		'Firefox'           => "firefox",
+		'Opera'             => "opera",
+		'AOL'               => "aol",
+		'Netscape'          => "netscape",
+		'Mozilla'           => "mozilla",
+		'Mosaic'            => "mosaic",
+		'K-Meleon'          => "k-meleon",
+		'Konqueror'         => "konqueror",
+		'Avant Browser'     => "avantbrowser",
+		'AvantGo'           => "avantgo",
+		'Proxomitron'       => "proxomitron",
+		'Safari'            => "safari",
+		'Lynx'              => "lynx",
+		'Links'             => "links",
+		'Galeon'            => "galeon",
+		'ABrowse'           => "abrowse",
+		'Amaya'             => "amaya",
+		'ANTFresco'         => "ant",
+		'Aweb'              => "aweb",
+		'Beonex'            => "beonex",
+		'Blazer'            => "blazer",
+		'Camino'            => "camino",
+		'Chimera'           => "chimera",
+		'Columbus'          => "columbus",
+		'Crazy Browser'     => "crazybrowser",
+		'Curl'              => "curl",
+		'Deepnet Explorer'  => "deepnet",
+		'Dillo'             => "dillo",
+		'Doris'             => "doris",
+		'ELinks'            => "elinks",
+		'Epiphany'          => "epiphany",
+		'Firebird'          => "firebird",
+		'IBrowse'           => "ibrowse",
+		'iCab'              => "icab",
+		'ICEbrowser'        => "ice",
+		'iSiloX'            => "isilox",
+		'Lotus Notes'       => "lotus",
+		'Lunascape'         => "lunascape",
+		'Maxthon'           => "maxthon",
+		'mBrowser'          => "mbrowser",
+		'Multi-Browser'     => "multibrowser",
+		'Nautilus'          => "nautilus",
+		'NetFront'          => "netfront",
+		'NetPositive'       => "netpositive",
+		'OmniWeb'           => "omniweb",
+		'Oregano'           => "oregano",
+		'PhaseOut'          => "phaseout",
+		'PLink'             => "plink",
+		'Phoenix'           => "phoenix",
+		'Proxomitron'       => "proxomitron",
+		'Shiira'            => "shiira",
+		'Sleipnir'          => "sleipnir",
+		'SlimBrowser'       => "slimbrowser",
+		'StarOffice'        => "staroffice",
+		'Sunrise'           => "sunrise",
+		'Voyager'           => "voyager",
+		'w3m'               => "w3m",
+		'Webtv'             => "webtv",
+		'Xiino'             => "xiino",
+		);
+
+
+	protected $country = array(
+		'arpa'	=> 'ARPANet',
+		'com'	=> 'Commercial Users',
+		'edu'	=> 'Education',
+		'gov'	=> 'Government',
+		'int' => 'Organisation established by an International Treaty',
+		'mil' => 'Military',
+		'net' => 'Network',
+		'org' => 'Organisation',
+		'ad' => 'Andorra',
+		'ae' => 'United Arab Emirates',
+		'af' => 'Afghanistan',
+		'ag' => 'Antigua & Barbuda',
+		'ai' => 'Anguilla',
+		'al' => 'Albania',
+		'am' => 'Armenia',
+		'an' => 'Netherland Antilles',
+		'ao' => 'Angola',
+		'aq' => 'Antarctica',
+		'ar' => 'Argentina',
+		'as' => 'American Samoa',
+		'at' => 'Austria',
+		'au' => 'Australia',
+		'aw' => 'Aruba',
+		'az' => 'Azerbaijan',
+		'ba' => 'Bosnia-Herzegovina',
+		'bb' => 'Barbados',
+		'bd' => 'Bangladesh',
+		'be' => 'Belgium',
+		'bf' => 'Burkina Faso',
+		'bg' => 'Bulgaria',
+		'bh' => 'Bahrain',
+		'bi' => 'Burundi',
+		'bj' => 'Benin',
+		'bm' => 'Bermuda',
+		'bn' => 'Brunei Darussalam',
+		'bo' => 'Bolivia',
+		'br' => 'Brasil',
+		'bs' => 'Bahamas',
+		'bt' => 'Bhutan',
+		'bv' => 'Bouvet Island',
+		'bw' => 'Botswana',
+		'by' => 'Belarus',
+		'bz' => 'Belize',
+		'ca' => 'Canada',
+		'cc' => 'Cocos (Keeling) Islands',
+		'cf' => 'Central African Republic',
+		'cg' => 'Congo',
+		'ch' => 'Switzerland',
+		'ci' => 'Ivory Coast',
+		'ck' => 'Cook Islands',
+		'cl' => 'Chile',
+		'cm' => 'Cameroon',
+		'cn' => 'China',
+		'co' => 'Colombia',
+		'cr' => 'Costa Rica',
+		'cs' => 'Czechoslovakia',
+		'cu' => 'Cuba',
+		'cv' => 'Cape Verde',
+		'cx' => 'Christmas Island',
+		'cy' => 'Cyprus',
+		'cz' => 'Czech Republic',
+		'de' => 'Germany',
+		'dj' => 'Djibouti',
+		'dk' => 'Denmark',
+		'dm' => 'Dominica',
+		'do' => 'Dominican Republic',
+		'dz' => 'Algeria',
+		'ec' => 'Ecuador',
+		'ee' => 'Estonia',
+		'eg' => 'Egypt',
+		'eh' => 'Western Sahara',
+		'er' => 'Eritrea',
+		'es' => 'Spain',
+		'et' => 'Ethiopia',
+		'fi' => 'Finland',
+		'fj' => 'Fiji',
+		'fk' => 'Falkland Islands (Malvibas)',
+		'fm' => 'Micronesia',
+		'fo' => 'Faroe Islands',
+		'fr' => 'France',
+		'fx' => 'France (European Territory)',
+		'ga' => 'Gabon',
+		'gb' => 'Great Britain',
+		'gd' => 'Grenada',
+		'ge' => 'Georgia',
+		'gf' => 'Guyana (French)',
+		'gh' => 'Ghana',
+		'gi' => 'Gibralta',
+		'gl' => 'Greenland',
+		'gm' => 'Gambia',
+		'gn' => 'Guinea',
+		'gp' => 'Guadeloupe (French)',
+		'gq' => 'Equatorial Guinea',
+		'gr' => 'Greece',
+		'gs' => 'South Georgia & South Sandwich Islands',
+		'gt' => 'Guatemala',
+		'gu' => 'Guam (US)',
+		'gw' => 'Guinea Bissau',
+		'gy' => 'Guyana',
+		'hk' => 'Hong Kong',
+		'hm' => 'Heard & McDonald Islands',
+		'hn' => 'Honduras',
+		'hr' => 'Croatia',
+		'ht' => 'Haiti',
+		'hu' => 'Hungary',
+		'id' => 'Indonesia',
+		'ie' => 'Ireland',
+		'il' => 'Israel',
+		'in' => 'India',
+		'io' => 'British Indian Ocean Territories',
+		'iq' => 'Iraq',
+		'ir' => 'Iran',
+		'is' => 'Iceland',
+		'it' => 'Italy',
+		'jm' => 'Jamaica',
+		'jo' => 'Jordan',
+		'jp' => 'Japan',
+		'ke' => 'Kenya',
+		'kg' => 'Kyrgyz Republic',
+		'kh' => 'Cambodia',
+		'ki' => 'Kiribati',
+		'km' => 'Comoros',
+		'kn' => 'Saint Kitts Nevis Anguilla',
+		'kp' => 'Korea (North)',
+		'kr' => 'Korea (South)',
+		'kw' => 'Kuwait',
+		'ky' => 'Cayman Islands',
+		'kz' => 'Kazachstan',
+		'la' => 'Laos',
+		'lb' => 'Lebanon',
+		'lc' => 'Saint Lucia',
+		'li' => 'Liechtenstein',
+		'lk' => 'Sri Lanka',
+		'lr' => 'Liberia',
+		'ls' => 'Lesotho',
+		'lt' => 'Lithuania',
+		'lu' => 'Luxembourg',
+		'lv' => 'Latvia',
+		'ly' => 'Libya',
+		'ma' => 'Morocco',
+		'mc' => 'Monaco',
+		'md' => 'Moldova',
+		'mg' => 'Madagascar',
+		'mh' => 'Marshall Islands',
+		'mk' => 'Macedonia',
+		'ml' => 'Mali',
+		'mm' => 'Myanmar',
+		'mn' => 'Mongolia',
+		'mo' => 'Macau',
+		'mp' => 'Northern Mariana Islands',
+		'mq' => 'Martinique (French)',
+		'mr' => 'Mauretania',
+		'ms' => 'Montserrat',
+		'mt' => 'Malta',
+		'mu' => 'Mauritius',
+		'mv' => 'Maldives',
+		'mw' => 'Malawi',
+		'mx' => 'Mexico',
+		'my' => 'Malaysia',
+		'mz' => 'Mozambique',
+		'na' => 'Namibia',
+		'nc' => 'New Caledonia (French)',
+		'ne' => 'Niger',
+		'nf' => 'Norfolk Island',
+		'ng' => 'Nigeria',
+		'ni' => 'Nicaragua',
+		'nl' => 'Netherlands',
+		'no' => 'Norway',
+		'np' => 'Nepal',
+		'nr' => 'Nauru',
+		'nt' => 'Saudiarab. Irak)',
+		'nu' => 'Niue',
+		'nz' => 'New Zealand',
+		'om' => 'Oman',
+		'pa' => 'Panama',
+		'pe' => 'Peru',
+		'pf' => 'Polynesia (French)',
+		'pg' => 'Papua New Guinea',
+		'ph' => 'Philippines',
+		'pk' => 'Pakistan',
+		'pl' => 'Poland',
+		'pm' => 'Saint Pierre & Miquelon',
+		'pn' => 'Pitcairn',
+		'pr' => 'Puerto Rico (US)',
+		'pt' => 'Portugal',
+		'pw' => 'Palau',
+		'py' => 'Paraguay',
+		'qa' => 'Qatar',
+		're' => 'Reunion (French)',
+		'ro' => 'Romania',
+		'ru' => 'Russian Federation',
+		'rw' => 'Rwanda',
+		'sa' => 'Saudi Arabia',
+		'sb' => 'Salomon Islands',
+		'sc' => 'Seychelles',
+		'sd' => 'Sudan',
+		'se' => 'Sweden',
+		'sg' => 'Singapore',
+		'sh' => 'Saint Helena',
+		'si' => 'Slovenia',
+		'sj' => 'Svalbard & Jan Mayen',
+		'sk' => 'Slovakia',
+		'sl' => 'Sierra Leone',
+		'sm' => 'San Marino',
+		'sn' => 'Senegal',
+		'so' => 'Somalia',
+		'sr' => 'Suriname',
+		'st' => 'Sao Tome & Principe',
+		'su' => 'Soviet Union',
+		'sv' => 'El Salvador',
+		'sy' => 'Syria',
+		'sz' => 'Swaziland',
+		'tc' => 'Turks & Caicos Islands',
+		'td' => 'Chad',
+		'tf' => 'French Southern Territories',
+		'tg' => 'Togo',
+		'th' => 'Thailand',
+		'tj' => 'Tadjikistan',
+		'tk' => 'Tokelau',
+		'tm' => 'Turkmenistan',
+		'tn' => 'Tunisia',
+		'to' => 'Tonga',
+		'tp' => 'East Timor',
+		'tr' => 'Turkey',
+		'tt' => 'Trinidad & Tobago',
+		'tv' => 'Tuvalu',
+		'tw' => 'Taiwan',
+		'tz' => 'Tanzania',
+		'ua' => 'Ukraine',
+		'ug' => 'Uganda',
+		'uk' => 'United Kingdom',
+		'um' => 'US Minor outlying Islands',
+		'us' => 'United States',
+		'uy' => 'Uruguay',
+		'uz' => 'Uzbekistan',
+		'va' => 'Vatican City State',
+		'vc' => 'St Vincent & Grenadines',
+		've' => 'Venezuela',
+		'vg' => 'Virgin Islands (British)',
+		'vi' => 'Virgin Islands (US)',
+		'vn' => 'Vietnam',
+		'vu' => 'Vanuatu',
+		'wf' => 'Wallis & Futuna Islands',
+		'ws' => 'Samoa',
+		'ye' => 'Yemen',
+		'yt' => 'Mayotte',
+		'yu' => 'Yugoslavia',
+		'za' => 'South Africa',
+		'zm' => 'Zambia',
+		'zr' => 'Zaire',
+		'zw' => 'Zimbabwe'
+	);
+
+
+	function __construct($order) 
 	{
 		/* constructor */
-		global $sql;
+		$sql = e107::getDB();
 
 		/* get today's logfile ... */
-		$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+		$logfile = e_PLUGIN.'log/logs/logp_'.date('z.Y', time()).'.php';
 		if(is_readable($logfile)) 
 		{
 			require($logfile);
 		}
-		$logfile = e_PLUGIN."log/logs/logi_".date("z.Y", time()).".php";
+		$logfile = e_PLUGIN.'log/logs/logi_'.date('z.Y', time()).'.php';
 		if(is_readable($logfile)) 
 		{
 			require($logfile);
@@ -667,7 +939,6 @@ class siteStats
 		$this -> filesiteUnique = $siteUnique;
 
 		/* set order var */
-		global $order;
 		$this -> order = $order;
 
 		$this -> fileInfo = $pageInfo;
@@ -680,21 +951,29 @@ class siteStats
 		$this -> fileRecent = $visitInfo;
 
 		/* get main stat info from database */
-		if($sql -> db_Select("logstats", "*", "log_id='pageTotal'")){
+		if($sql -> db_Select('logstats', 'log_data', "log_id='pageTotal'"))
+		{
 			$row = $sql -> db_Fetch();
-			$this -> dbPageInfo = unserialize($row[2]);
-		} else {
+			$this -> dbPageInfo = unserialize($row['log_data']);
+		} 
+		else 
+		{
 			$this -> dbPageInfo = array();
 		}
 
 		/* temp consolidate today's info (if it exists)... */
-		if(is_array($pageInfo)) {
-			foreach($pageInfo as $key => $info) {
+		if(is_array($pageInfo)) 
+		{
+			foreach($pageInfo as $key => $info) 
+			{
 				$key = preg_replace("/\?.*/", "", $key);
-				if(array_key_exists($key, $this -> dbPageInfo)) {
+				if(array_key_exists($key, $this -> dbPageInfo)) 
+				{
 					$this -> dbPageInfo[$key]['ttlv'] += $info['ttl'];
 					$this -> dbPageInfo[$key]['unqv'] += $info['unq'];
-				} else {
+				} 
+				else 
+				{
 					$this -> dbPageInfo[$key]['url'] = $info['url'];
 					$this -> dbPageInfo[$key]['ttlv'] = $info['ttl'];
 					$this -> dbPageInfo[$key]['unqv'] = $info['unq'];
@@ -702,17 +981,24 @@ class siteStats
 			}
 		}
 
-		$this -> bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
-
-
+		$this -> bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_IMAGE.'generic/bar.png');
 		/* end constructor */
 	}
 
+
+
+	/**
+	 *	sorts multi-dimentional array based on which field is passed 
+	 *
+	 *	@param array $array - the array to sort
+	 *	@param string $column - name of column to sort by
+	 *	@param string $order SORT_DESC|SORT_ASC - sort order
+	 */
 	function arraySort($array, $column, $order = SORT_DESC)
 	{
-		/* sorts multi-dimentional array based on which field is passed */
 		$i=0;
-		foreach($array as $info) {
+		foreach($array as $info) 
+		{
 			$sortarr[]=$info[$column];
 			$i++;
 		}
@@ -721,13 +1007,19 @@ class siteStats
 		/* end method */
 	}
 	
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+
+
+	/**
+	 *	renders information for today only 
+	 *
+	 *	@param boolean $do_errors - FALSE to show 'normal' accesses, TRUE to show error accesses (i.e. invalid pages)
+	 *
+	 *	@return string text for display
+	 */
 	function renderTodaysVisits($do_errors = FALSE) 
 	{
-		/* renders information for today only */
-
-		$do_errors = $do_errors && ADMIN && getperms("P");
+		$do_errors = $do_errors && ADMIN && getperms('P');		// Only admins can see page errors
 
 		// Now run through and keep either the non-error pages, or the error pages, according to $do_errors
 		$totalArray = array();
@@ -735,12 +1027,12 @@ class siteStats
 		$totalu = 0;
 		foreach ($this -> fileInfo as $k => $v)
 		{
-		  $found = (strpos($k,'error/') === 0);
-		  if ($do_errors XOR !$found) 
-		  {
-		    $totalArray[$k] = $v;
-			$total += $v['ttlv'];
-		  }
+			$found = (strpos($k,'error/') === 0);
+			if ($do_errors XOR !$found) 
+			{
+				$totalArray[$k] = $v;
+				$total += $v['ttlv'];
+			}
 		}
 		$totalArray = $this -> arraySort($totalArray, "ttl");
 
@@ -764,14 +1056,22 @@ class siteStats
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderAlltimeVisits($do_errors = FALSE) 
+
+
+	/**
+	 *	Renders information for alltime, total and unique 
+	 *
+	 *	@param string $action - value to incorporate in query part of clickable links
+	 *	@param boolean $do_errors - FALSE to show 'normal' accesses, TRUE to show error accesses (i.e. invalid pages)
+	 *
+	 *	@return string text for display
+	 */
+	function renderAlltimeVisits($action, $do_errors = FALSE) 
 	{
-		/* renders information for alltime, total and unique */
+		$sql = e107::getDB();
 
-		global $sql, $action;
-
+		$text = '';
 		$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
 		$row = $sql -> db_Fetch();
 		$pageTotal = unserialize($row['log_data']);
@@ -791,12 +1091,12 @@ class siteStats
 		$totalArray = array();
 		foreach ($pageTotal as $k => $v)
 		{
-		  $found = (strpos($k,'error/') === 0);
-		  if ($do_errors XOR !$found) 
-		  {
-		    $totalArray[$k] = $v;
-			$total += $v['ttlv'];
-		  }
+			$found = (strpos($k,'error/') === 0);
+			if ($do_errors XOR !$found) 
+			{
+				$totalArray[$k] = $v;
+				$total += $v['ttlv'];
+			}
 		}
 
 		$totalArray = $this -> arraySort($totalArray, "ttlv");
@@ -834,19 +1134,19 @@ class siteStats
 		$totalv = 0;
 		foreach ($this -> dbPageInfo as $k => $v)
 		{
-		  $found = (strpos($k,'error/') === 0);
-		  if ($do_errors XOR !$found) 
-		  {
-		    $uniqueArray[$k] = $v;
-			$totalv += $v['unqv'];
-		  }
+			$found = (strpos($k,'error/') === 0);
+			if ($do_errors XOR !$found) 
+			{
+				$uniqueArray[$k] = $v;
+				$totalv += $v['unqv'];
+			}
 		}
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($uniqueArray as $key => $info) 
 		{
-			if($info['ttlv'])
+			if ($info['ttlv'])
 			{
 			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['unqv']/$totalv) * 100, 2);
@@ -861,73 +1161,78 @@ class siteStats
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	// List browsers. $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
-	// If $show_version is FALSE, browsers are consolidated across versions - e.g. 1 line for Firefox using info from $browser_map
-	function renderBrowsers($selection, $show_version=TRUE) 
+
+	/**
+	 *	List browsers. 
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *	@param boolean $show_version - if FALSE, browsers are consolidated across versions - e.g. 1 line for Firefox using info from $browser_map
+	 *
+	 *	@return string text for display
+	 */
+	function renderBrowsers($selection = FALSE, $show_version=TRUE) 
 	{
-	  global $sql, $browser_map;
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
+		$sql = e107::getDB();
 
-//	  echo "Show browsers; expanded = ".($show_version ? 'TRUE' : 'FALSE')."<br />";
-	  foreach ($selection as $act)
-	  {
-	    unset($statBrowser);
-		$statBrowser = array();
-		
-		$pars = make_bits('statBrowser',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
 
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+		foreach ($selection as $act)
 		{
-			$row = $sql -> db_Fetch();
-			$statBrowser = unserialize($row['log_data']);
-		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
+			unset($statBrowser);
+			$statBrowser = array();
+			
+			$pars = make_bits('statBrowser',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach($this -> fileBrowserInfo as $name => $count) 
-		  {
-			$statBrowser[$name] += $count;
-		  }
-		}
-		
-		if ($show_version == FALSE)
-		{
-		  $temp_array = array();
-		  foreach ($statBrowser as $b_full=>$v)
-		  {
-		    $b_type = '';
-			foreach ($browser_map as $name => $file) 
+			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
 			{
-			  if(stripos($b_full, $name) === 0)
-			  {  // Match here
-			    $b_type = $name;
-			    break;
-			  }
-			}
-			if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
-
-			if (array_key_exists($b_type,$temp_array))
-			{
-			  $temp_array[$b_type] += $v;
+				$row = $sql -> db_Fetch();
+				$statBrowser = unserialize($row['log_data']);
 			}
 			else
 			{
-			  $temp_array[$b_type] = $v;		// New browser found
+				continue;		// No data - terminate this loop
 			}
-		  }
-		  $statBrowser = $temp_array;
-		  unset($temp_array);
-		}
+
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach($this->fileBrowserInfo as $name => $count) 
+				{
+					$statBrowser[$name] += $count;
+				}
+			}
+			
+			if ($show_version == FALSE)
+			{
+				$temp_array = array();
+				foreach ($statBrowser as $b_full=>$v)
+				{
+					$b_type = '';
+					foreach ($this->browser_map as $name => $file) 
+					{
+					  if(stripos($b_full, $name) === 0)
+					  {  // Match here
+						$b_type = $name;
+						break;
+					  }
+					}
+					if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
+
+					if (array_key_exists($b_type,$temp_array))
+					{
+					  $temp_array[$b_type] += $v;
+					}
+					else
+					{
+					  $temp_array[$b_type] = $v;		// New browser found
+					}
+				}
+				$statBrowser = $temp_array;
+				unset($temp_array);
+			}
 
 
 			if ($this -> order) 
@@ -952,480 +1257,525 @@ class siteStats
 
 			if (count($browserArray))
 			{
-			  foreach($browserArray as $key => $info) 
-			  {
-				$image = "";
-				foreach ($browser_map as $name => $file) 
+				foreach($browserArray as $key => $info) 
 				{
-					if(strstr($key, $name)) 
+					$image = "";
+					foreach ($this->browser_map as $name => $file) 
 					{
-						$image = "{$file}.png";
+						if(strstr($key, $name)) 
+						{
+							$image = "{$file}.png";
+							break;
+						}
+					}
+					if($image == "") 
+					{
+						$image = "unknown.png";
+					}
+					$percentage = round(($info/$total) * 100, 2);
+					$text .= "<tr>
+					<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
+					($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
+					<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+					</tr>\n";
+				}
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td>
+						<td class='forumheader'></td></tr>\n";
+			}
+			else
+			{
+				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+			}
+			$text .= "</table><br />";
+		}
+		return $text;
+	}
+
+
+
+
+	/**
+	 *	Show operating systems.
+	 *
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *	@param $show_version boolean - show different versions of the operating system if  TRUE
+	 *
+	 *	@return string text for display
+	 */
+	function renderOses($selection = FALSE, $show_version=TRUE) 
+	{
+		$sql = e107::getDB();
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
+
+
+		$statOs = array();
+		foreach ($selection as $act)
+		{
+			$pars = make_bits('statOs',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
+
+			if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+			{
+				$row = $sql -> db_Fetch();
+				$statOs = unserialize($row['log_data']);
+			}
+			else
+			{
+				continue;		// No data - terminate this loop
+			}
+
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach($this -> fileOsInfo as $name => $count) 
+				{
+					$statOs[$name] += $count;
+				}
+			}
+
+
+			if ($show_version == FALSE)
+			{
+				$temp_array = array();
+				foreach ($statOs as $b_full=>$v)
+				{
+					$b_type = '';
+					foreach ($this->oses_map as $name => $file) 
+					{
+					  if(stripos($b_full, $name) === 0)
+					  {  // Match here
+						$b_type = $name;
+						break;
+					  }
+					}
+					if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
+
+					if (array_key_exists($b_type,$temp_array))
+					{
+					  $temp_array[$b_type] += $v;
+					}
+					else
+					{
+					  $temp_array[$b_type] = $v;		// New browser found
+					}
+				}
+				$statOs = $temp_array;
+				unset($temp_array);
+			}
+
+
+
+			if($this -> order) 
+			{
+				ksort($statOs);
+				reset ($statOs);
+				$osArray = $statOs;
+			} 
+			else 
+			{
+				$osArray = $this->arraySort($statOs, 0);
+			}
+
+			$total = array_sum($osArray);
+			$text .= "<table class='fborder' style='width: 100%;'>\n
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
+			  <tr>\n<td class='fcaption' style='width: 20%;'>
+			  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
+			  <td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+			  
+			if (count($osArray))
+			{
+				foreach($osArray as $key => $info) 
+				{
+					$image = "";
+					if(strstr($key, "Windows")) {	$image = "windows.png"; }
+					if(strstr($key, "Mac")) {	$image = "mac.png"; }
+					if(strstr($key, "Linux")) {	$image = "linux.png"; }
+					if(strstr($key, "BeOS")) {	$image = "beos.png"; }
+					if(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
+					if(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
+					if(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
+					if(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
+					if(strstr($key, "Unix")) {	$image = "unix.png"; }
+					if(strstr($key, "Spiders")) {	$image = "spiders.png"; }
+
+					$percentage = round(($info/$total) * 100, 2);
+					$text .= "<tr>
+					<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
+					($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
+					<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+					</tr>\n";
+				}
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'>&nbsp;</td></tr>\n";
+			}
+			else
+			{
+				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+			}
+			$text .= "</table><br />";
+		}
+		return $text;
+	}
+
+
+
+	/**
+	 *	Show domains of users
+	 *
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *
+	 *	@return string text for display
+	 */
+	function renderDomains($selection = FALSE) 
+	{
+		$sql = e107::getDB();
+
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
+
+		$statDom = array();
+		foreach ($selection as $act)
+		{
+			$pars = make_bits('statDomain',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
+
+			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
+			{
+				$row = $sql -> db_Fetch();
+				$statDom = unserialize($row['log_data']);
+			}
+			else
+			{
+				continue;		// No data - terminate this loop
+			}
+
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach($this -> fileDomainInfo as $name => $count) 
+				{
+					$statDom[$name] += $count;
+				}
+			}
+
+			if($this -> order) 
+			{
+				ksort($statDom);
+				reset ($statDom);
+				$domArray = $statDom;
+			} 
+			else 
+			{
+				$domArray = $this -> arraySort($statDom, 0);
+			}
+
+			$total = array_sum($domArray);
+			$text .= "<table class='fborder' style='width: 100%;'>\n
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
+				<tr>\n<td class='fcaption' style='width: 20%;'>
+				<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?5".($this -> order ? "" : ".1" )."'>".ADSTAT_L28."</a></td>\n
+				<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+
+			if (count($domArray))
+			{
+				foreach($domArray as $key => $info) 
+				{
+					if($key = $this -> getcountry($key)) 
+					{
+						$percentage = round(($info/$total) * 100, 2);
+						$text .= "<tr>
+						<td class='forumheader3' style='width: 20%;'>".$key."</td>
+						<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>
+						<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+						</tr>\n";
+					}
+				}
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$total</td><td class='forumheader'></td></tr>\n";
+			}
+			else
+			{
+				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+			}
+			$text .= "</table><br />";
+		}
+		return $text;
+	}
+
+
+
+
+	/**
+	 *	Show screen resolutions
+	 *
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *
+	 *	@return string text for display
+	 */
+	function renderScreens($selection = FALSE) 
+	{
+		$sql = e107::getDB();
+
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
+
+		$statScreen = array();
+		foreach ($selection as $act)
+		{
+			$pars = make_bits('statScreen',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
+
+			if ($entries = $sql->db_Select('logstats', 'log_data', $pars['query'])) 
+			{
+				$row = $sql -> db_Fetch();
+				$statScreen = unserialize($row['log_data']);
+			}
+			else
+			{
+				continue;		// No data - terminate this loop
+			}
+
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach($this -> fileScreenInfo as $name => $count) 
+				{
+					$statScreen[$name] += $count;
+				}
+			}
+
+
+			if($this -> order) 
+			{
+				$nsarray = array();
+				foreach($statScreen as $key => $info) 
+				{
+					if(preg_match("/(\d+)x/", $key, $match)) 
+					{
+						$nsarray[$key] = array('width' => $match[1], 'info' => $info);
+					}
+				}
+				$nsarray = $this -> arraySort($nsarray, 'width', SORT_ASC);
+				reset($nsarray);
+				$screenArray = array();
+				foreach($nsarray as $key => $info) 
+				{
+					$screenArray[$key] = $info['info'];
+				}
+			} 
+			else 
+			{
+				$screenArray = $this -> arraySort($statScreen, 0);
+			}
+
+			$total = array_sum($screenArray);
+			$text .= "<table class='fborder' style='width: 100%;'>\n
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
+					<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+
+			if (count($screenArray))
+			{
+				foreach($screenArray as $key => $info) 
+				{
+					if(strstr($key, "@") && !strstr($key, "undefined") && preg_match("/(\d+)x(\d+)@(\d+)/", $key)) 
+					{
+						$percentage = round(($info/$total) * 100, 2);
+						$text .= "<tr>
+						<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>".
+						($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
+						<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+						</tr>\n";
+					}
+				}
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
+			}
+			else
+			{
+				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+			}
+			$text .= "</table><br />";
+		}
+		return $text;
+	}
+
+
+
+	/**
+	 *	Show referrers
+	 *
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *
+	 *	@return string text for display
+	 */
+	function renderRefers($selection = FALSE) 
+	{
+		$sql = e107::getDB();
+
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
+
+		$statRefer = array();
+		foreach ($selection as $act)
+		{
+			$pars = make_bits('statReferer',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
+
+			if ($entries = $sql -> db_Select('logstats', 'log_data', $pars['query'])) 
+			{
+				$row = $sql -> db_Fetch();
+				$statRefer = unserialize($row['log_data']);
+			}
+			else
+			{
+				continue;		// No data - terminate this loop
+			}
+
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach($this -> fileReferInfo as $name => $count) 
+				{
+					$statRefer[$name]['url'] = $count['url'];
+					$statRefer[$name]['ttl'] += $count['ttl'];
+				}
+			}
+
+			$statArray = $this -> arraySort($statRefer, 'ttl');
+			$total = 0;
+			foreach ($statArray as $key => $info) 
+			{
+				$total += $info['ttl'];
+			}
+
+			$text .= "<table class='fborder' style='width: 100%;'>\n
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
+				<tr>\n<td class='fcaption' style='width: 40%;'><a title='".($this -> order ? "show cropped url" : "show full url")."' href='".e_SELF."?7".($this -> order ? "" : ".1" )."'>".ADSTAT_L30."</a></td>\n<td class='fcaption' style='width: 50%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+			$count = 0;
+			if (count($statArray))
+			{
+				foreach($statArray as $key => $info) 
+				{
+					$percentage = round(($info['ttl']/$total) * 100, 2);
+					if (!$this -> order && strlen($key) > 50) 
+					{
+						$key = substr($key, 0, 50)." ...";
+					}
+					$text .= "<tr>
+					<td class='forumheader3'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
+					<td class='forumheader3'>".$this -> bar($percentage, $info['ttl'])."</td>
+					<td class='forumheader3' style='text-align: center;'>".$percentage."%</td>
+					</tr>\n";
+					$count++;
+					if($count == e107::getPref('statDisplayNumber')) 
+					{
 						break;
 					}
 				}
-				if($image == "") 
-				{
-					$image = "unknown.png";
-				}
-				$percentage = round(($info/$total) * 100, 2);
-				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
-				($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
-				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-				</tr>\n";
-			  }
-			  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td>
-						<td class='forumheader'></td></tr>\n";
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
 			}
 			else
 			{
 			  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
 			}
 			$text .= "</table><br />";
-	  }
-	  return $text;
-	}
-
-	/* -------------------------------------------------------
-	Show operating systems. Only show different versions of the operating system if $show_version == TRUE
-	Uses $oses_map
-	-----------------------------------------------------------*/
-	function renderOses($selection, $show_version=TRUE) 
-	{
-	  global $sql, $oses_map;
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
-
-//	  echo "Show OSes; expanded = ".($show_version ? 'TRUE' : 'FALSE')."<br />";
-
-	  $statOs = array();
-	  foreach ($selection as $act)
-	  {
-		$pars = make_bits('statOs',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
-
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
-		{
-			$row = $sql -> db_Fetch();
-			$statOs = unserialize($row['log_data']);
 		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
-
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach($this -> fileOsInfo as $name => $count) 
-		  {
-			$statOs[$name] += $count;
-		  }
-		}
-
-
-		if ($show_version == FALSE)
-		{
-		  $temp_array = array();
-		  foreach ($statOs as $b_full=>$v)
-		  {
-		    $b_type = '';
-			foreach ($oses_map as $name => $file) 
-			{
-			  if(stripos($b_full, $name) === 0)
-			  {  // Match here
-			    $b_type = $name;
-			    break;
-			  }
-			}
-			if (!$b_type) $b_type = $b_full;		// Default is an unsupported browser - use the whole name
-
-			if (array_key_exists($b_type,$temp_array))
-			{
-			  $temp_array[$b_type] += $v;
-			}
-			else
-			{
-			  $temp_array[$b_type] = $v;		// New browser found
-			}
-		  }
-		  $statOs = $temp_array;
-		  unset($temp_array);
-		}
-
-
-
-		if($this -> order) 
-		{
-			ksort($statOs);
-			reset ($statOs);
-			$osArray = $statOs;
-		} 
-		else 
-		{
-		  $osArray = $this -> arraySort($statOs, 0);
-		}
-
-		$total = array_sum($osArray);
-		$text .= "<table class='fborder' style='width: 100%;'>\n
-			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-		  <tr>\n<td class='fcaption' style='width: 20%;'>
-		  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
-		  <td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		  
-		if (count($osArray))
-		{
-		  foreach($osArray as $key => $info) 
-		  {
-			$image = "";
-			if(strstr($key, "Windows")) {	$image = "windows.png"; }
-			if(strstr($key, "Mac")) {	$image = "mac.png"; }
-			if(strstr($key, "Linux")) {	$image = "linux.png"; }
-			if(strstr($key, "BeOS")) {	$image = "beos.png"; }
-			if(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
-			if(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
-			if(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
-			if(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
-			if(strstr($key, "Unix")) {	$image = "unix.png"; }
-			if(strstr($key, "Spiders")) {	$image = "spiders.png"; }
-
-			$percentage = round(($info/$total) * 100, 2);
-			$text .= "<tr>
-			<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
-			($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
-			<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-			</tr>\n";
-		  }
-		  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'>&nbsp;</td></tr>\n";
-		}
-		else
-		{
-		  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
-		}
-		$text .= "</table><br />";
-	  }
-	  return $text;
-	}
-
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-	function renderDomains($selection) 
-	{
-		global $sql;
-
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
-
-	  $statDom = array();
-	  foreach ($selection as $act)
-	  {
-		$pars = make_bits('statDomain',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
-
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
-		{
-			$row = $sql -> db_Fetch();
-			$statDom = unserialize($row['log_data']);
-		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
-
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach($this -> fileDomainInfo as $name => $count) 
-		  {
-			$statDom[$name] += $count;
-		  }
-		}
-
-		if($this -> order) 
-		{
-			ksort($statDom);
-			reset ($statDom);
-			$domArray = $statDom;
-		} 
-		else 
-		{
-		  $domArray = $this -> arraySort($statDom, 0);
-		}
-
-		$total = array_sum($domArray);
-		$text .= "<table class='fborder' style='width: 100%;'>\n
-			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-			<tr>\n<td class='fcaption' style='width: 20%;'>
-			<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?5".($this -> order ? "" : ".1" )."'>".ADSTAT_L28."</a></td>\n
-			<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-
-		if (count($domArray))
-		{
-		  foreach($domArray as $key => $info) 
-		  {
-			if($key = $this -> getcountry($key)) 
-			{
-				$percentage = round(($info/$total) * 100, 2);
-				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'>".$key."</td>
-				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>
-				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-				</tr>\n";
-			}
-		  }
-		  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$total</td><td class='forumheader'></td></tr>\n";
-		}
-		else
-		{
-		  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
-		}
-		$text .= "</table><br />";
-	  }
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderScreens($selection) 
+
+
+	/**
+	 *	Show search queries
+	 *
+	 *	@param integer $selection is an array of the info required - '2' = current month's stats, '1' = all-time stats (default)
+	 *
+	 *	@return string - text for display
+	 */
+	function renderQueries($selection = FALSE) 
 	{
-		global $sql;
+		$sql = e107::getDB();
 
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
 
-	  $statScreen = array();
-	  foreach ($selection as $act)
-	  {
-		$pars = make_bits('statScreen',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
+		if (!$selection) $selection = array(1);
+		if (!is_array($selection)) $selection = array(1);
+		$text = '';
 
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+		$statQuery = array();
+		foreach ($selection as $act)
 		{
-			$row = $sql -> db_Fetch();
-			$statScreen = unserialize($row['log_data']);
-		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
+			$pars = make_bits('statQuery',$act);		// Get the query, plus maybe date for heading
+			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach($this -> fileScreenInfo as $name => $count) 
-		  {
-			$statScreen[$name] += $count;
-		  }
-		}
+			if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
+			{
+				$row = $sql -> db_Fetch();
+				$statQuery = unserialize($row['log_data']);
+			}
+			else
+			{
+				continue;		// No data - terminate this loop
+			}
 
-
-		if($this -> order) 
-		{
-			$nsarray = array();
-			foreach($statScreen as $key => $info) {
-				if(preg_match("/(\d+)x/", $key, $match)) {
-					$nsarray[$key] = array('width' => $match[1], 'info' => $info);
+			/* temp consolidate today's data ... */
+			if (($act == 1) || ($act == 2))
+			{
+				foreach ($this -> fileQueryInfo as $name => $count) 
+				{
+					$statQuery[$name] += $count;
 				}
 			}
-			$nsarray = $this -> arraySort($nsarray, 'width', SORT_ASC);
-			reset($nsarray);
-			$screenArray = array();
-			foreach($nsarray as $key => $info) {
-				$screenArray[$key] = $info['info'];
-			}
 
-		} 
-		else 
-		{
-			$screenArray = $this -> arraySort($statScreen, 0);
-		}
 
-		$total = array_sum($screenArray);
-		$text .= "<table class='fborder' style='width: 100%;'>\n
-			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-				<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-
-		if (count($screenArray))
-		{
-		  foreach($screenArray as $key => $info) 
-		  {
-			if(strstr($key, "@") && !strstr($key, "undefined") && preg_match("/(\d+)x(\d+)@(\d+)/", $key)) 
+			$queryArray = $this -> arraySort($statQuery, 0);
+			$total = array_sum($queryArray);
+			$text .= "<table class='fborder' style='width: 100%;'>\n
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
+				<tr>\n<td class='fcaption' style='width: 60%;'>".ADSTAT_L31."</td>\n<td class='fcaption' style='width: 30%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+			$count = 1;
+			if (count($queryArray))
 			{
-				$percentage = round(($info/$total) * 100, 2);
-				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>".
-				($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
-				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-				</tr>\n";
+				foreach ($queryArray as $key => $info) 
+				{
+					$percentage = round(($info/$total) * 100, 2);
+					$key = str_replace("%20", " ", $key);
+					$text .= "<tr>
+					<td class='forumheader3' style='width: 60%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
+					<td class='forumheader3' style='width: 30%;'>".$this -> bar($percentage, $info)."</td>
+					<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
+					</tr>\n";
+					$count ++;
+					if($count == e107::getPref('statDisplayNumber')) 
+					{
+						break;
+					}
+				}
+				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
 			}
-		  }
-		  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
+			else
+			{
+				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+			}
+			$text .= "</table><br />";
 		}
-		else
-		{
-		  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
-		}
-		$text .= "</table><br />";
-	  }
-	  return $text;
+		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-	function renderRefers($selection) 
-	{
-		global $sql, $pref;
-
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
-
-	  $statRefer = array();
-	  foreach ($selection as $act)
-	  {
-		$pars = make_bits('statReferer',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
-
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
-		{
-			$row = $sql -> db_Fetch();
-			$statRefer = unserialize($row['log_data']);
-		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
-
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach($this -> fileReferInfo as $name => $count) 
-		  {
-			$statRefer[$name]['url'] = $count['url'];
-			$statRefer[$name]['ttl'] += $count['ttl'];
-		  }
-		}
-
-		$statArray = $this -> arraySort($statRefer, 'ttl');
-		$total = 0;
-		foreach ($statArray as $key => $info) 
-		{
-			$total += $info['ttl'];
-		}
-
-		$text .= "<table class='fborder' style='width: 100%;'>\n
-			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-			<tr>\n<td class='fcaption' style='width: 40%;'><a title='".($this -> order ? "show cropped url" : "show full url")."' href='".e_SELF."?7".($this -> order ? "" : ".1" )."'>".ADSTAT_L30."</a></td>\n<td class='fcaption' style='width: 50%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		$count = 0;
-		if (count($statArray))
-		{
-		  foreach($statArray as $key => $info) 
-		  {
-			$percentage = round(($info['ttl']/$total) * 100, 2);
-			if (!$this -> order && strlen($key) > 50) 
-			{
-				$key = substr($key, 0, 50)." ...";
-			}
-			$text .= "<tr>
-			<td class='forumheader3'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
-			<td class='forumheader3'>".$this -> bar($percentage, $info['ttl'])."</td>
-			<td class='forumheader3' style='text-align: center;'>".$percentage."%</td>
-			</tr>\n";
-			$count++;
-			if($count == $pref['statDisplayNumber']) 
-			{
-			  break;
-			}
-		  }
-		  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
-		}
-		else
-		{
-		  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
-		}
-		$text .= "</table><br />";
-	  }
-	  return $text;
-	}
-
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-	function renderQueries($selection) 
-	{
-		global $sql;
-
-	  if (!$selection) $selection = array(1);
-	  if (!is_array($selection)) $selection = array(1);
-	  $text = '';
-
-	  $statQuery = array();
-	  foreach ($selection as $act)
-	  {
-		$pars = make_bits('statQuery',$act);		// Get the query, plus maybe date for heading
-		if (!is_array($pars)) return $pars;			// Return error if necessary
-
-		if ($entries = $sql -> db_Select("logstats", "*", $pars['query'])) 
-		{
-			$row = $sql -> db_Fetch();
-			$statQuery = unserialize($row['log_data']);
-		}
-		else
-		{
-		  continue;		// No data - terminate this loop
-		}
-
-		/* temp consolidate today's data ... */
-		if (($act == 1) || ($act == 2))
-		{
-		  foreach ($this -> fileQueryInfo as $name => $count) 
-		  {
-			$statQuery[$name] += $count;
-		  }
-		}
 
 
-		$queryArray = $this -> arraySort($statQuery, 0);
-		$total = array_sum($queryArray);
-		$text .= "<table class='fborder' style='width: 100%;'>\n
-			<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-			<tr>\n<td class='fcaption' style='width: 60%;'>".ADSTAT_L31."</td>\n<td class='fcaption' style='width: 30%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
-		$count = 1;
-		if (count($queryArray))
-		{
-		  foreach ($queryArray as $key => $info) 
-		  {
-			$percentage = round(($info/$total) * 100, 2);
-			$key = str_replace("%20", " ", $key);
-			$text .= "<tr>
-			<td class='forumheader3' style='width: 60%;'><img src='".e_PLUGIN_ABS."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
-			<td class='forumheader3' style='width: 30%;'>".$this -> bar($percentage, $info)."</td>
-			<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-			</tr>\n";
-			$count ++;
-			if($count == $pref['statDisplayNumber']) 
-			{
-				break;
-			}
-		  }
-		  $text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n";
-		}
-		else
-		{
-		  $text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
-		}
-		$text .= "</table><br />";
-	  }
-	  return $text;
-	}
-
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
+	/**
+	 *	Display list of recent visitors to site - essentially up to (currently 20) of the entries from today's stats
+	 *
+	 *	@return string - text for display
+	 */
 	function recentVisitors() 
 	{
-		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) {
+		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) 
+		{
 			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
 
@@ -1433,15 +1783,19 @@ class siteStats
 		$recentArray = array_reverse($this -> fileRecent, TRUE);
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
 
-		foreach($recentArray as $key => $info) {
-			if(is_array($info)) {
+		foreach($recentArray as $key => $info) 
+		{
+			if(is_array($info)) 
+			{
 				$host      = $info['host'];
 				$datestamp = $info['date'];
 				$os        = $info['os'];
 				$browser   = $info['browser'];
 				$screen    = $info['screen'];
 				$referer   = $info['referer'];
-			} else {
+			} 
+			else 
+			{
 				list($host, $datestamp, $os, $browser, $screen, $referer) = explode(chr(1), $info);
 			}
 			$datestamp = $gen -> convert_date($datestamp, "long");
@@ -1456,10 +1810,16 @@ class siteStats
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderDaily() {
-		global $sql, $siteTotal, $siteUnique;
+
+	/**
+	 *	Show the daily stats - total visits and unique visits
+	 *
+	 *	@return string - text for display
+	 */
+	function renderDaily() 
+	{
+		$sql = e107::getDB();
 
 		$td = date("Y-m-j", time());
 		$dayarray[$td] = array();
@@ -1471,13 +1831,15 @@ class siteStats
 		DESC LIMIT 0,14
 		";
 
-		if($amount = $sql -> db_Select_gen($qry)) {
+		if($amount = $sql -> db_Select_gen($qry)) 
+		{
 			$array = $sql -> db_getList();
 
 			$ttotal = 0;
 			$utotal = 0;
 
-			foreach($array as $key => $value) {
+			foreach($array as $key => $value) 
+			{
 				extract($value);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
@@ -1486,7 +1848,9 @@ class siteStats
 					$entries[3] = $log_data['browser'];
 					$entries[4] = $log_data['screen'];
 					$entries[5] = $log_data['referer'];
-				} else {
+				} 
+				else 
+				{
 					$entries = explode(chr(1), $log_data);
 				}
 
@@ -1496,15 +1860,22 @@ class siteStats
 				unset($entries[0]);
 				unset($entries[1]);
 				
-				foreach($entries as $entry) {
-					if($entry) {
+				foreach($entries as $entry) 
+				{
+					if($entry) 
+					{
 						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/")) {
+						if(strstr($url, "/")) 
+						{
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
-						} else {
+						} 
+						else 
+						{
 							$urlname = preg_replace("/\.php|\?.*/", "", $url);
 						}
 						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
+						if (!isset($pagearray[$urlname]['total'])) $pagearray[$urlname]['total'] = 0;
+						if (!isset($pagearray[$urlname]['unique'])) $pagearray[$urlname]['unique'] = 0;
 						$pagearray[$urlname]['total'] += $total;
 						$pagearray[$urlname]['unique'] += $unique;
 						$ttotal += $total;
@@ -1528,8 +1899,9 @@ class siteStats
 
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
-		foreach($dayarray as $date => $total) {
-
+		foreach($dayarray as $date => $total) 
+		{
+			if (!isset($total['daytotal'])) $total['daytotal'] = 0;
 			list($year, $month, $day) = explode("-", $date);
 			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
 			$barWidth = round(($total['daytotal']/$ttotal) * 100, 2);
@@ -1543,12 +1915,17 @@ class siteStats
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 
-		foreach($dayarray as $date => $total) {
+		if (!isset($total['dayunique'])) $total['dayunique'] = 0;
+		if (!isset($total['total'])) $total['total']= 0;
+
+		foreach($dayarray as $date => $total) 
+		{
+			if (!isset($total['dayunique'])) $total['dayunique'] = 0;
 			list($year, $month, $day) = explode("-", $date);
 			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
 			$barWidth = round(($total['dayunique']/$utotal) * 100, 2);
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 30%;'>$date</td>
+			<td class='forumheader3' style='width: 30%;'>{$date}</td>
 			<td class='forumheader3' style='width: 70%;'>".$this -> bar($barWidth, $total['dayunique'])."</td>
 			</tr>\n";
 		}
@@ -1557,7 +1934,8 @@ class siteStats
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		$newArray = $this -> arraySort($pagearray, "total");
-		foreach($newArray as $key => $total) {
+		foreach($newArray as $key => $total) 
+		{
 			$barWidth = round(($total['total']/$ttotal) * 100, 2);
 			$text .= "<tr>
 			<td class='forumheader3' style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> {$key}</td>
@@ -1580,16 +1958,24 @@ class siteStats
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+
+
+	/**
+	 *	Show monthly stats
+	 *
+	 *	@return string text for display
+	 */
 	function renderMonthly() 
 	{
-		global $sql;
+		$sql = e107::getDB();
 
-		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) {
+		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) 
+		{
 			return ADSTAT_L42;
 		}
 
+		$text = '';
 		$array = $sql -> db_getList();
 
 		$monthTotal = array();
@@ -1600,7 +1986,10 @@ class siteStats
 			$date = $info['log_id'];
 			$stats = unserialize($info['log_data']);
 
-			foreach($stats as $key => $total) {
+			foreach($stats as $key => $total) 
+			{
+				if (!isset($monthTotal[$date]['totalv'])) $monthTotal[$date]['totalv'] = 0;
+				if (!isset($monthTotal[$date]['uniquev'])) $monthTotal[$date]['uniquev'] = 0;
 				$monthTotal[$date]['totalv'] += $total['ttlv'];
 				$monthTotal[$date]['uniquev'] += $total['unqv'];
 				$mtotal += $total['ttlv'];
@@ -1641,7 +2030,8 @@ class siteStats
 		return $text;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
 
 	function getWidthRatio ($array, $column) 
 	{
@@ -1650,7 +2040,8 @@ class siteStats
 		$maxValue = $data[1]['totalv'];
 		echo "<b>maxValue</b> ".$maxValue." <br />";
 		$ratio = 0;
-		while($maxValue > 100) {
+		while($maxValue > 100) 
+		{
 			$maxValue = ($maxValue / 2);
 			$ratio ++;
 		}
@@ -1666,12 +2057,19 @@ class siteStats
 
 	function getcountry($dom) 
 	{
-		global $country;
-		return $country[$dom];
+		return $this->country[$dom];
 	}
 
 
 
+	/**
+	 *	Generate value including a bar of width (horizontal 'length')  as specified
+	 *
+	 *	@param float $percen - percentage of full width for the bar
+	 *	@param float $val - value to be displayed
+	 *
+	 *	@return string text to be displayed
+	 */
 	function bar($percen, $val)
 	{
 		return "<div class='b' style='width: ".intval($percen)."%'></div>
@@ -1681,20 +2079,26 @@ class siteStats
 
 
 
+	/**
+	 *	Clear page access from DB entry (doesn't modify today's stats)
+	 *
+	 *	@param string $toremove - the page name to remove
+	 *
+	 *	@return boolean TRUE for success, FALSE if no entry found
+	 */
 	function remove_entry($toremove) 
 	{	// Note - only removes info from the database - not from the current page file
-	  global $sql;
-	  if ($sql -> db_Select("logstats", "*", "log_id='pageTotal'"))
-	  {
-		$row = $sql -> db_Fetch();
-		$dbPageInfo = unserialize($row[2]);
-		unset($dbPageInfo[$toremove]);
-		$dbPageDone = serialize($dbPageInfo);
-		$sql -> db_Update("logstats", "log_data='{$dbPageDone}' WHERE log_id='pageTotal' ");
-//		$this -> renderAlltimeVisits();
-		return TRUE;
-	  }
-	  return FALSE;
+		$sql = e107::getDB();
+		if ($sql -> db_Select("logstats", "*", "log_id='pageTotal'"))
+		{
+			$row = $sql -> db_Fetch();
+			$dbPageInfo = unserialize($row[2]);
+			unset($dbPageInfo[$toremove]);
+			$dbPageDone = serialize($dbPageInfo);
+			$sql -> db_Update("logstats", "log_data='{$dbPageDone}' WHERE log_id='pageTotal' ");
+			return TRUE;
+		}
+		return FALSE;
 	}
 }
 
