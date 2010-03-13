@@ -151,7 +151,7 @@ class e_form
 		// $sc_parameters is currently being used to select the media-category.
 
 		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
-		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : "";
+		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 		$qry .= "ORDER BY media_name";
 
 
