@@ -905,8 +905,41 @@ function update_706_to_800($type='')
 	core_media_import('page',e_IMAGE.'custom');
 	core_media_import('download',e_FILE.'downloadimages');
 	core_media_import('downloadthumb',e_IMAGE.'downloadthumbs');
+	
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick='_icon_16' OR media_cat_nick='_icon_32' ");
+	
+	if(!$count)
+	{
+		if ($just_check) return update_needed('Add icons to media-manager');
+		
+		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
+		(0, '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253),
+		(0, '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253),
+		(0, '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253),
+		(0, '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253);";
+		
+		if(!mysql_query($query))
+		{
+			// echo "mysyql error";
+		 	// error or already exists.	
+		}
+		
+		$mes = e107::getMessage();
+		$mes->add("Icon category added", E_MESSAGE_DEBUG);
+		
+		$iconsrch = array(16,32,48,64);
 
-	// Any others should be done manually via Media Manager batch-import.
+		foreach($iconsrch as $size)
+		{
+			$types = "_".$size.".png|_".$size.".PNG";
+			
+			core_media_import('_icon_'.$size,e_PLUGIN, $types);
+			core_media_import('_icon_'.$size,e_IMAGE."icons/", $types);
+			core_media_import('_icon_'.$size,e_THEME.$pref['sitetheme']."/images/", $types);
+		}
+	}
+	
+	// Any other images should be imported manually via Media Manager batch-import.
 
 	// ------------------------------------------------------------------
 
@@ -925,7 +958,7 @@ function update_706_to_800($type='')
 	return $just_check;
 }
 
-function core_media_import($cat,$epath)
+function core_media_import($cat,$epath,$fmask='')
 {
 	if(!vartrue($cat)){ return;}
 
@@ -940,9 +973,12 @@ function core_media_import($cat,$epath)
 	$mes = e107::getMessage();
 
 	$fl->setFileInfo('all');
-	$img_array = $fl->get_files($epath,'','',2);
+	$img_array = $fl->get_files($epath,$fmask,'',2);
 
 	if(!count($img_array)){ return;}
+	
+	//print_a($img_array);
+	//return;
 
 	foreach($img_array as $f)
 	{
