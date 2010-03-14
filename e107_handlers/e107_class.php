@@ -168,6 +168,7 @@ class e107
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'e_media'						 => '{e_HANDLER}media_class.php',
 	);
 
 	/**
@@ -1104,6 +1105,15 @@ class e107
 	public static function getComment()
 	{
 		return self::getSingleton('comment', true);
+	}
+	
+	/**
+	 * Retrieve Media handler singleton object
+	 * @return comment
+	 */
+	public static function getMedia()
+	{
+		return self::getSingleton('e_media', true);
 	}
 
 	/**
