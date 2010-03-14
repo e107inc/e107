@@ -257,7 +257,7 @@ class forum_shortcodes
 	{
 		global $page;
 		if (USER) {
-			return "<a href='".$this->e107->url->getUrl('forum', 'thread', 'func=report&id='.$this->postInfo['post_thread'])."'>".IMAGE_report.'</a> ';
+			return "<a href='".$this->e107->url->getUrl('forum', 'thread', "func=report&id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".IMAGE_report.'</a> ';
 		}
 	}
 

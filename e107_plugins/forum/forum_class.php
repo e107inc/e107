@@ -1211,7 +1211,7 @@ class e107forum
 			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
 			if ($forum_href)
 			{
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$e107->tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
 			} else
 			{
 				$BREADCRUMB .= $tmpFname;
