@@ -29,9 +29,14 @@ require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'ren_help.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_PLUGIN.'forum/forum_admin_class.php');
+$emessage = eMessage::getInstance();
 $rs = new form;
 $for = new e107forum;
 $forum = new forumAdmin;
+
+$fPref = e107::getPlugConfig('forum', '', false);
+
+
 define('IMAGE_new', "<img src='".img_path('new.png')."' alt='' />");
 define('IMAGE_sub', "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
 define('IMAGE_nosub', "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
@@ -93,7 +98,7 @@ if(isset($_POST['tools']))
 	{
 		require_once(e_HANDLER.'user_extended_class.php');
 		$ue = new e107_user_extended;
-		
+
 		$list = $for->getUserCounts();
 		foreach($list as $uid => $cnt)
 		{
@@ -255,27 +260,28 @@ if (isset($_POST['update_order']))
 
 if (isset($_POST['updateoptions']))
 {
-	$pref['email_notify'] = $_POST['email_notify'];
-	$pref['email_notify_on'] = $_POST['email_notify_on'];
-	$pref['forum_poll'] = $_POST['forum_poll'];
-	$pref['forum_popular'] = $_POST['forum_popular'];
-	$pref['forum_track'] = $_POST['forum_track'];
-	$pref['forum_eprefix'] = $_POST['forum_eprefix'];
-	$pref['forum_enclose'] = $_POST['forum_enclose'];
-	$pref['forum_title'] = $_POST['forum_title'];
-	$pref['forum_postspage'] = $_POST['forum_postspage'];
-	$pref['forum_threadspage'] = $_POST['forum_threadspage'];
-	$pref['html_post'] = $_POST['html_post'];
-	$pref['forum_attach'] = $_POST['forum_attach'];
-	$pref['forum_redirect'] = $_POST['forum_redirect'];
-	$pref['reported_post_email'] = $_POST['reported_post_email'];
-	$pref['forum_tooltip'] = $_POST['forum_tooltip'];
-	$pref['forum_tiplength'] = $_POST['forum_tiplength'];
-	$pref['forum_hilightsticky'] = $_POST['forum_hilightsticky'];
-	$pref['forum_maxwidth'] = $_POST['forum_maxwidth'];
-	$pref['forum_linkimg'] = $_POST['forum_linkimg'];
-	save_prefs();
-	$forum->show_message(FORLAN_10);
+	$fPref->set('notify', $_POST['email_notify']);
+	$fPref->set('notify_on', $_POST['email_notify_on']);
+	$fPref->set('poll', $_POST['forum_poll']);
+	$fPref->set('popular', $_POST['forum_popular']);
+	$fPref->set('track', $_POST['forum_track']);
+	$fPref->set('eprefix', $_POST['forum_eprefix']);
+	$fPref->set('enclose', $_POST['forum_enclose']);
+	$fPref->set('title', $_POST['forum_title']);
+	$fPref->set('postspage', $_POST['forum_postspage']);
+	$fPref->set('threadspage', $_POST['forum_threadspage']);
+	$fPref->set('html_post', $_POST['html_post']);
+	$fPref->set('attach', $_POST['forum_attach']);
+	$fPref->set('redirect', $_POST['forum_redirect']);
+	$fPref->set('reported_post_email', $_POST['reported_post_email']);
+	$fPref->set('tooltip', $_POST['forum_tooltip']);
+	$fPref->set('tiplength',  $_POST['forum_tiplength']);
+	$fPref->set('hilightsticky', $_POST['forum_hilightsticky']);
+	$fPref->set('maxwidth', $_POST['forum_maxwidth']);
+	$fPref->set('linkimg', $_POST['forum_linkimg']);
+	$fPref->save(true, true);
+	$emessage->add(FORLAN_10, E_MESSAGE_SUCCESS);
+//	$forum->show_message(FORLAN_10);
 }
 
 if (isset($_POST['do_prune']))
@@ -283,28 +289,6 @@ if (isset($_POST['do_prune']))
 	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
 	$forum->show_message($msg);
 	$action = 'main';
-}
-
-if (isset($_POST['set_ranks']))
-{
-	extract($_POST);
-	for($a = 0; $a <= 9; $a++)
-	{
-		$r_names .= $e107->tp->toDB($rank_names[$a]).",";
-		$r_thresholds .= $e107->tp->toDB($rank_thresholds[$a]).",";
-		$r_images .= $e107->tp->toDB($rank_images[$a]).",";
-	}
-	$pref['rank_main_admin'] = $_POST['rank_main_admin'];
-	$pref['rank_main_admin_image'] = $_POST['rank_main_admin_image'];
-	$pref['rank_admin'] = $_POST['rank_admin'];
-	$pref['rank_admin_image'] = $_POST['rank_admin_image'];
-	$pref['rank_moderator'] = $_POST['rank_moderator'];
-	$pref['rank_moderator_image'] = $_POST['rank_moderator_image'];
-	$pref['forum_levels'] = $r_names;
-	$pref['forum_thresholds'] = $r_thresholds;
-	$pref['forum_images'] = $r_images;
-	save_prefs();
-	$forum->show_message(FORLAN_95);
 }
 
 if (isset($_POST['frsubmit']))
@@ -373,7 +357,7 @@ switch($action)
 	case 'opt':
 		$forum->show_prefs();
 		break;
-	
+
 	case 'mods':
 		$forum->show_mods();
 		break;
@@ -384,10 +368,6 @@ switch($action)
 
 	case 'prune':
 		$forum->show_prune();
-		break;
-	
-	case 'rank':
-		$forum->show_levels();
 		break;
 
 	case 'rules':

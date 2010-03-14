@@ -548,7 +548,7 @@ function forumjump()
 
 function process_upload()
 {
-	global $forumInfo, $thread_info, $admin_log;
+	global $forumInfo, $thread_info, $admin_log, $forum;
 
 	$postId = (int)$postId;
 	$ret = array();
