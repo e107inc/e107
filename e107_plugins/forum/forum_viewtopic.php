@@ -8,15 +8,12 @@
  *
  * Forum View Topic
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
 require_once ('../../class2.php');
-
 
 if (isset($_POST['fjsubmit']))
 {
@@ -51,7 +48,6 @@ if(isset($_POST['track_toggle']))
 	$thread->toggle_track();
 	exit;
 }
-//print_a($_POST);
 
 if(isset($_GET['f']))
 {

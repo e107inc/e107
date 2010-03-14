@@ -42,7 +42,7 @@ switch($action)
 		break;
 
 	case 'nt':
-		$forumInfo = $forum->forum_get($id);
+		$forumInfo = $forum->forumGet($id);
 		$forumId = $id;
 		break;
 
