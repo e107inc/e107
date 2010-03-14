@@ -8,12 +8,12 @@ class forum_post_shortcodes
 	var $e107;
 	var $threadInfo;
 	var $forum;
-	
+
 	function forum_post_shortcodes()
 	{
 		$this->e107 = e107::getInstance();
 	}
-	
+
 	function sc_latestposts($parm)
 	{
 		$parm = ($parm ? $parm : 10);
@@ -21,9 +21,9 @@ class forum_post_shortcodes
 		$txt = $this->e107->tp->parseTemplate($LATESTPOSTS_START, true);
 		$start = max($this->threadInfo['thread_total_replies'] - $parm, 0);
 		$num = min($this->threadInfo['thread_total_replies'], $parm);
-	
+
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], $start, $num);
-		
+
 		for($i = count($tmp)-1; $i > 0; $i--)
 		{
 			setScVar('forum_shortcodes', 'postInfo', $tmp[$i]);
@@ -45,7 +45,7 @@ class forum_post_shortcodes
 	{
 		return "<form enctype='multipart/form-data' method='post' action='".e_SELF.'?'.e_QUERY."' id='dataform'>";
 	}
-	
+
 	function sc_formend()
 	{
 	return '</form>';
@@ -55,25 +55,25 @@ class forum_post_shortcodes
 	{
 		return forumjump();
 	}
-	
+
 	function sc_userbox()
 	{
 		global $userbox;
 		return (USER == false ? $userbox : '');
 	}
-	
+
 	function sc_subjectbox()
 	{
 		global $subjectbox, $action;
 		return ($action == 'nt' ? $subjectbox : '');
 	}
-	
+
 	function sc_posttype()
 	{
 		global $action;
 		return ($action == 'nt' ? LAN_63 : LAN_73);
 	}
-	
+
 	function sc_postbox()
 	{
 		global $post;
@@ -85,7 +85,7 @@ class forum_post_shortcodes
 		}
 		return $ret;
 	}
-	
+
 	function sc_buttons()
 	{
 		global $action, $eaction;
@@ -100,14 +100,14 @@ class forum_post_shortcodes
 		}
 		return $ret;
 	}
-	
+
 	function sc_fileattach()
 	{
 		global $forum, $pref, $fileattach, $fileattach_alert;
 
-		if ($forum->prefs->get('forum_attach') && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
+		if ($forum->prefs->get('attach') && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
 		{
-			if (is_writable(e_UPLOAD))
+			if (is_writable(e_PLUGIN.'forum/attachments'))
 			{
 				return $fileattach;
 			}
@@ -125,7 +125,7 @@ class forum_post_shortcodes
 			}
 		}
 	}
-	
+
 	function sc_postthreadas()
 	{
 		global $action, $thread_info;
@@ -136,7 +136,7 @@ class forum_post_shortcodes
 		}
 		return '';
 	}
-	
+
 	function sc_backlink()
 	{
 		global $forum, $thread_info, $eaction, $action;
@@ -144,13 +144,13 @@ class forum_post_shortcodes
 		$forum->set_crumb(true, ($action == 'nt' ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406.' '.$thread_info['head']['thread_name'])), $_tmp);
 		return $_tmp->BREADCRUMB;
 	}
-	
+
 	function sc_noemotes()
 	{
 		if($eaction == true) { return ; }
 		return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUMPOST_EMOTES.'</span>';
 	}
-	
+
 	function sc_emailnotify()
 	{
 		global $pref, $thread_info, $action, $eaction;
@@ -176,7 +176,7 @@ class forum_post_shortcodes
 		}
 		return '';
 	}
-	
+
 	function sc_poll()
 	{
 		global $forum, $poll_form, $action;
