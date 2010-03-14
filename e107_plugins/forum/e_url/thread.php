@@ -28,7 +28,7 @@ function url_forum_thread($parms)
 
 		case 'report':
 			$page = (isset($parms['page']) ? (int)$parms['page'] : 0 );
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=report&id={$parms['id']}&p={$page}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=report&id={$parms['id']}&post={$parms['post']}&p={$page}";
 			break;
 
 		case 'edit':

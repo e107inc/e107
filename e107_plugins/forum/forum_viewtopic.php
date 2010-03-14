@@ -51,7 +51,13 @@ if(isset($_POST['track_toggle']))
 
 if(isset($_GET['f']))
 {
-	$thread->processFunction();
+	$ret = $thread->processFunction();
+	if($ret) {
+		require_once(HEADERF);
+		echo $ret;
+		require_once(FOOTERF);
+		exit;
+	}
 	if($_GET['f'] != 'last') { $thread->init(); }
 }
 e107::getScParser();
@@ -541,7 +547,8 @@ class e107ForumThread
 				break;
 
 			case 'report':
-				$postId = (int)$_GET['id'];
+				$threadId = (int)$_GET['id'];
+				$postId = (int)$_GET['post'];
 				$postInfo = $forum->postGet($postId, 'post');
 
 				if (isset($_POST['report_thread']))
@@ -556,17 +563,16 @@ class e107ForumThread
 					}
 					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$thread_info['head']['thread_name']}', " . intval($thread_id) . ", '{$report_add}'");
 					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
-					require_once (HEADERF);
-					$text = LAN_424 . "<br /><br /><a href='forum_viewtopic.php?" . $thread_id . ".post'>" . LAN_429 . '</a>';
-					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
+					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
+					$text = LAN_424 . "<br /><br /><a href='{$url}'>" . LAN_429 . '</a>';
+					return $e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'), true);
 				}
 				else
 				{
 					$thread_name = $e107->tp->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
 					define('e_PAGETITLE', LAN_01 . ' / ' . LAN_426 . ' ' . $thread_name);
-					require_once (HEADERF);
 					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
-					$actionUrl = $e107->url->getUrl('forum', 'thread', 'func=report&id='.$postId);
+					$actionUrl = $e107->url->getUrl('forum', 'thread', "func=report&id={$threadId}&post={$postId}");
 					$text = "<form action='".$actionUrl."' method='post'>
 					<table style='width:100%'>
 					<tr>
@@ -580,6 +586,8 @@ class e107ForumThread
 					<tr>
 					<td>" . LAN_417 . "<br />" . LAN_418 . "
 					</td>
+					</tr>
+					<tr>
 					<td style='text-align:center;'>
 					<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
 					</td>
@@ -590,9 +598,9 @@ class e107ForumThread
 					</td>
 					</tr>
 					</table>";
-					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
+					return $e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'), true);
 				}
-				require_once (FOOTERF);
+//				require_once (FOOTERF);
 				exit;
 				break;
 
