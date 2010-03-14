@@ -26,7 +26,7 @@ function iconpicker_shortcode($parm)
 
 		$str = "";
 		$size_section = array();
-		$lastsize = "";
+		$lastsize = "16";
 		
 		if($sql->db_Select_gen($qry))
 		{
@@ -34,17 +34,17 @@ function iconpicker_shortcode($parm)
 			{
 				list($tmp,$tmp2,$size) = explode("_",$row['media_category']);
 				
-				
-				if($lastsize!='' && ($size != $lastsize))
+								
+				if($str !='' && ($size != $lastsize))
 				{
 					$size_section[] = $str;
-					$str = "";	
+					$str = "";						
 				}
 				
-				
 				$str .= "<a href='#".$row['media_url']."' title='{$filepath}' onclick=\"e107Helper.insertText('{$row['media_url']}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='".$tp->replaceConstants($row['media_url'])."' alt='{$row['media_name']}' /></a>";			
-				
+								
 				$lastsize = $size;
+			
 			}
 
 			return '<div id="'.$name.'-iconpicker-ajax"><div class="field-spacer iconpicker">'.str_replace('%%size%%', '', implode('</div><div class="field-spacer iconpicker">', $size_section)).'</div></div>';

@@ -442,8 +442,6 @@ $pref = e107::getPref();
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
-//DEPRECATED, BC, call e107::getConfig('ipool')->get('pref_name') only when needed
-$iconpool = e107::getConfig('ipool')->getPref(); //extract iconpool
 
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
@@ -1438,18 +1436,13 @@ function get_user_data($uid, $extra = '')
 //SO MUCH DEPRECATED - use e107::getConfig(alias)->save() instead
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
-	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref, $iconpool;
+	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
 
 	switch($table)
 	{
 		case 'core':
 			//brute load, force update
 			return e107::getConfig()->loadData($pref, false)->save(false, true);
-			break;
-
-		case 'iconpool':
-			//brute load, force update
-			return e107::getConfig('ipool')->loadData($iconpool, true)->save(false, true);
 			break;
 
 		case 'theme':
@@ -1484,21 +1477,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			{
             	return false;
 			}
-		}
-  }
-  elseif($table == "iconpool")
-  {
-  	  //	$sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('IconPool_Backup', '".addslashes($PrefCache)."') ");
-	  	$_iconpool = $tp->toDB($iconpool, true, true);
-
-  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('IconPool', '".$eArrayStorage->WriteArray($_iconpool)."') "))
-		{
-	  		ecache::clear_sys('Config_ipool');
-			return true;
-		}
-		else
-		{
-           	return false;
 		}
   }
   elseif($table == "theme")

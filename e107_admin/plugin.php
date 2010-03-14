@@ -992,7 +992,10 @@ class pluginManager{
 				);
 			}
 
-			if(count($icons = e107::getConfig('ipool')->getPref('plugin-'.$plug['plugin_path']))>1)
+			$med = e107::getMedia();
+			$icons = $med->listIcons(e_PLUGIN.$plug['plugin_path']);
+			
+			if(count($icons)>0)
 			{
 				foreach($icons as $key=>$val)
 				{
@@ -1000,7 +1003,7 @@ class pluginManager{
 				}
 				
 				$opts['delete_ipool'] = array(
-					'label'			=>'Remove icons from icon-pool',
+					'label'			=>'Remove icons from Media-Manager',
 					'preview'		=> $iconText,
 					'helpText'		=> EPL_ADLAN_79,
 					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),

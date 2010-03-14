@@ -888,6 +888,9 @@ function update_706_to_800($type='')
 
 
 	//-- Media-manger import --------------------------------------------------
+	
+	$med = e107::getMedia();
+	
 	$count = $sql->db_Select('core_media_cat');
 	if($count < 5)
 	{
@@ -901,14 +904,16 @@ function update_706_to_800($type='')
 		mysql_query($query);
 	}
 
-	core_media_import('news',e_IMAGE.'newspost_images');
-	core_media_import('page',e_IMAGE.'custom');
-	core_media_import('download',e_FILE.'downloadimages');
-	core_media_import('downloadthumb',e_IMAGE.'downloadthumbs');
+	$med->import('news',e_IMAGE.'newspost_images');
+	$med->import('page',e_IMAGE.'custom');
+	$med->import('download',e_FILE.'downloadimages');
+	$med->import('downloadthumb',e_IMAGE.'downloadthumbs');
+	
+	
 	
 	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick='_icon_16' OR media_cat_nick='_icon_32' ");
 	
-	if(!$count)
+	if($count < 2)
 	{
 		if ($just_check) return update_needed('Add icons to media-manager');
 		
@@ -927,18 +932,12 @@ function update_706_to_800($type='')
 		$mes = e107::getMessage();
 		$mes->add("Icon category added", E_MESSAGE_DEBUG);
 		
-		$iconsrch = array(16,32,48,64);
-
-		foreach($iconsrch as $size)
-		{
-			$types = "_".$size.".png|_".$size.".PNG";
-			
-			core_media_import('_icon_'.$size,e_PLUGIN, $types);
-			core_media_import('_icon_'.$size,e_IMAGE."icons/", $types);
-			core_media_import('_icon_'.$size,e_THEME.$pref['sitetheme']."/images/", $types);
-		}
+		$med->importIcons(e_PLUGIN);
+		$med->importIcons(e_IMAGE."icons/");
+		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
 	}
 	
+
 	// Any other images should be imported manually via Media Manager batch-import.
 
 	// ------------------------------------------------------------------
@@ -956,58 +955,6 @@ function update_706_to_800($type='')
 	if ($just_check) return TRUE;
 	$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
-}
-
-function core_media_import($cat,$epath,$fmask='')
-{
-	if(!vartrue($cat)){ return;}
-
-	if(!is_readable($epath))
-	{
-		return;
-	}
-
-	$fl = e107::getFile();
-	$tp = e107::getParser();
-	$sql = e107::getDb();
-	$mes = e107::getMessage();
-
-	$fl->setFileInfo('all');
-	$img_array = $fl->get_files($epath,$fmask,'',2);
-
-	if(!count($img_array)){ return;}
-	
-	//print_a($img_array);
-	//return;
-
-	foreach($img_array as $f)
-	{
-		$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
-
-		$insert = array(
-		'media_caption'		=> $f['fname'],
-		'media_description'	=> '',
-		'media_category'	=> $cat,
-		'media_datestamp'	=> $f['modified'],
-		'media_url'	=> $fullpath,
-		'media_userclass'	=> 0,
-		'media_name'	=> $f['fname'],
-		'media_author'	=> USERID,
-		'media_size'	=> $f['fsize'],
-		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],
-		'media_usedby'	=> '',
-		'media_tags'	=> '',
-		'media_type'	=> $f['mime']
-		);
-
-		if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
-		{
-			if($sql->db_Insert("core_media",$insert))
-			{
-				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
-			}
-		}
-	}
 }
 
 

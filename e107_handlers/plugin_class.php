@@ -301,90 +301,33 @@ class e107plugin
 
     function manage_icons($plugin='',$function='')
 	{
-		global $iconpool,$pref;
+	
+		if($plugin == '')
+		{
+			return;
+		}
 
 		$mes = eMessage::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		$fl = e107::getFile();
-
-		if($plugin && ($function == 'uninstall') )
+		$med = e107::getMedia();
+		
+		if($function == 'install' || $function == 'upgrade')
 		{
-			if(vartrue($this->unInstallOpts['delete_ipool'], FALSE))
-			{
-				$ipool_entry = 'plugin-'.$plugin;
-				e107::getConfig('ipool')->remove($ipool_entry); 	// FIXME - ipool removal issue.
-	        	$status = (e107::getConfig('ipool')->save(FALSE)) ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add('Removing Icon-Pool entry: '.$ipool_entry, $status);
-			}
+        	$med->importIcons(e_PLUGIN.$plugin);
 			return;
 		}
+		
 
-
-
-         $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
-		$sql->db_Select_gen($query);
-		$list = $sql->db_getList();
-
-
-		$reject_core = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-		$reject_plugin = $reject_core;
-		foreach($list as $val) // reject uninstalled plugin folders.
+		if($function == 'uninstall')
 		{
-        	$reject_plugin[] = $val['plugin_path']."/images";
- 		}
-
-        $filesrch = implode("|",array("_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
-
-        if($plugin_icons = $fl->get_files(e_PLUGIN,$filesrch,$reject_plugin,2))
-        {
-        	sort($plugin_icons);
-        }
-
-		if($core_icons = $fl->get_files(e_IMAGE."icons/",$filesrch,$reject_core,2))
-        {
-        	sort($core_icons);
-        }
-
-		if($theme_icons = $fl->get_files(e_THEME.$pref['sitetheme']."/images/",$filesrch,$reject_core,2))
-        {
-        	sort($theme_icons);
-        }
-
-		$srch = array(e_IMAGE,"/");
-		$repl = array("","-");
-
-		$iconpool = array();
-
-		foreach($core_icons as $file)
-		{
-			$path = str_replace($srch,$repl,$file['path']);
-			$key = substr("core-".$path,0,-1);
-       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
-		}
-
- 		$srch = array(e_PLUGIN,"/images/","/icons/","/icon/");
-		$repl = array("","","");
-
-		foreach($plugin_icons as $file)
-		{
-			$path = str_replace($srch,$repl,$file['path']);
-			$key = "plugin-".$path;
-       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
-		}
-
-		$srch = array(e_THEME,"/images/","/icons/","/demo/");
-		$repl = array("","","");
-
-		foreach($theme_icons as $file)
-		{
-			$path = str_replace($srch,$repl,$file['path']);
-			$key = "theme-".$path;
-       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
-		}
-
-		e107::getConfig('ipool')->setPref($iconpool);
-        return (e107::getConfig('ipool')->save(FALSE)) ?  TRUE : FALSE;
+			if(vartrue($this->unInstallOpts['delete_ipool'], FALSE))
+			{	
+	        	$status = ($med->removePath(e_PLUGIN.$plugin,'icon')) ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$mes->add('Removing Icons from Media-Manager', $status);
+			}
+			return;
+		}	
 
 	}
 

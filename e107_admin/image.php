@@ -317,7 +317,7 @@ class media_admin_ui extends e_admin_ui
 
 	function iconsPage()
 	{
-		$this->icon_editor();
+		// $this->icon_editor();
 	}
 
 
@@ -584,92 +584,7 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-	function icon_editor()
-	{
-		global $iconpool, $e107;
-
-		$ns = e107::getRender();
-		$tp = e107::getParser();
-		$frm = e107::getForm();
-		$mes = e107::getMessage();
-
-		ksort($iconpool);
-
-		$text = "
-				<form method='post' action='".e_SELF."?".e_QUERY."' id='icon_edit'>
-					<fieldset id='core-imagemanager-icons'>
-						<legend class='e-hideme'>".DBLAN_20."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='4'>
-								<col style='width: 5%'></col>
-								<col style='width: 20%'></col>
-								<col style='width: 70%'></col>
-								<col style='width: 5%'></col>
-							</colgroup>
-							<thead>
-								<tr>
-									<th class='center'>".LAN_DELETE."</th>
-									<th>".LAN_CATEGORY."</th>
-									<th>".IMALAN_72."</th>
-									<th class='center last'>".LAN_OPTIONS."</th>
-								</tr>
-							</thead>
-							<tbody>
-			";
-	    $tmp = array(16, 32, 48, 64, 128);
-
-		foreach($iconpool as $key => $val)
-		{
-				$tmp1 = array();
-	            foreach($val as $icon)
-				{
-		            $filepath = $icon;
-			 		$filepath_abs = $tp->replaceConstants($icon);
-					$icon_file = basename($filepath_abs);
-
-					$str = "<img class='icon picker list%%size%%' src='{$filepath_abs}' alt='{$icon_file}' />";
-					foreach ($tmp as $isize)
-					{
-						if(strpos($icon_file, '_'.$isize.'.') !== false)
-						{
-							$tmp1[$isize] = varset($tmp1[$isize]).str_replace('%%size%%', ' S'.$isize, $str);
-							continue 2;
-						}
-					}
-				   	$tmp1['other'] = varset($tmp1['other']).$str;//other
-	            }
-
-				$ptext = "<div class='field-spacer iconeditor'>".str_replace('%%size%%', '', implode('</div><div class="field-spacer iconeditor">', $tmp1))."</div>";
-
-	   //	$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, CHARSET);
-	   //		$ptext = $e107->tp->textclean($ptext, 80);
-
-			$text .= "
-								<tr>
-									<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
-									<td>{$key}</td>
-									<td>{$ptext}</td>
-									<td class='center'>".$frm->submit_image("delpref[$key]", LAN_DELETE, 'delete', LAN_CONFIRMDEL." [$key]")."</td>
-								</tr>
-				";
-		}
-
-		$text .= "
-							</tbody>
-						</table>
-						<div class='buttons-bar center'>
-							".$frm->admin_button('delpref_checked', LAN_DELCHECKED, 'delete')."
-						</div>
-					</fieldset>
-				</form>
-
-
-			";
-		//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_71, $mes->render().$text);
-
-		echo $mes->render().$text;
-	}
+	
 
 }
 
@@ -697,11 +612,6 @@ e107::getAdminUI()->runPage();
 
 $action = e_QUERY;
 
-
-if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
-{
-	del_pref_val();
-}
 
 if(varset($_GET['action']) == "icons")
 {
@@ -1329,38 +1239,6 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 
 
 
-
-function del_pref_val()
-{
-	global $iconpool, $e107cache, $emessage;
-	$del = array_keys($_POST['delpref']);
-	$delpref = key($_POST['delpref']);
-
-	if($delpref)
-	{
-		unset($iconpool[$delpref]);
-		$deleted_list .= "<li>".$delpref."</li>";
-	}
-
-	if($_POST['delpref2'])
-	{
-
-		foreach($_POST['delpref2'] as $k => $v)
-		{
-			$deleted_list .= "<li>".$k."</li>";
-			unset($iconpool[$k]);
-		}
-	}
-
-	if(save_prefs('iconpool'))
-	{
-		$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
-		$e107cache->clear();
-	}
-	//$e107->ns->tablerender(LAN_DELETED,$message);
-
-
-}
 
 
 
