@@ -8,10 +8,8 @@
 *
 * View specific forums
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 
@@ -55,10 +53,8 @@ if (!$forum->checkPerm($forumId, 'view'))
 	exit;
 }
 
-$forumInfo = $forum->forum_get($forumId);
+$forumInfo = $forum->forumGet($forumId);
 $threadsViewed = $forum->threadGetUserViewed();
-
-//var_dump($forumInfo);
 
 if (!$FORUM_VIEW_START)
 {
@@ -471,22 +467,22 @@ function parse_thread($thread_info)
 		$tVars->REPLIES = LAN_317;		// 'None'
 		$tVars->LASTPOST = ' - ';
 	}
-	
+
 	switch($thread_info['thread_sticky'])
 	{
 		case 1:
 			$_TEMPLATE = ($FORUM_VIEW_FORUM_STICKY ? $FORUM_VIEW_FORUM_STICKY : $FORUM_VIEW_FORUM);
 			break;
-		
+
 		case 2:
 			$_TEMPLATE = ($FORUM_VIEW_FORUM_ANNOUNCE ? $FORUM_VIEW_FORUM_ANNOUNCE : $FORUM_VIEW_FORUM);
 			break;
-		
+
 		default:
 			$_TEMPLATE = $FORUM_VIEW_FORUM;
 			break;
 	}
-	
+
 	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
 
@@ -502,7 +498,7 @@ function parse_sub($subInfo)
 	$tVars->SUB_REPLIES = $subInfo['forum_replies'];
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
 	{
-		
+
 		$tVars->NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
 	}
 	else

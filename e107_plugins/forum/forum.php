@@ -1,20 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ?Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Forum main page
+ *
+ * $URL$
+ * $Id$
+ *
 */
 if(!defined('e107_INIT'))
 {
@@ -47,7 +43,7 @@ if(isset($_GET['f']))
 			header('location:'.e_SELF);
 			exit;
 			break;
-		
+
 		case 'rules':
 			include_once(HEADERF);
 			forum_rules('show');
@@ -225,62 +221,52 @@ $pVars = new e_vars;
 foreach ($forumList['parents'] as $parent)
 {
 	$status = parse_parent($parent);
-	$pVars->PARENTSTATUS = $status[0];
-	if ($status[1])
+	$pVars->PARENTSTATUS = $status;
+
+	$pVars->PARENTNAME = $parent['forum_name'];
+	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
+	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
-		$pVars->PARENTNAME = $parent['forum_name'];
-		$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
-		if (!count($forumList['forums'][$parent['forum_id']]))
+		$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_52."</td>";
+	}
+	else
+	{
+//TODO: Rework the restricted string
+		foreach($forumList['forums'][$parent['forum_id']] as $f)
 		{
-			$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_52."</td>";
+			if ($f['forum_class'] == e_UC_ADMIN && ADMIN)
+			{
+				$forum_string .= parse_forum($f, LAN_406);
+			}
+			elseif($f['forum_class'] == e_UC_MEMBER && USER)
+			{
+				$forum_string .= parse_forum($f, LAN_407);
+			}
+			elseif($f['forum_class'] == e_UC_READONLY)
+			{
+				$forum_string .= parse_forum($f, LAN_408);
+			}
+			elseif($f['forum_class'] && check_class($f['forum_class']))
+			{
+				$forum_string .= parse_forum($f, LAN_409);
+			}
+			elseif(!$f['forum_class'])
+			{
+				$forum_string .= parse_forum($f);
+			}
 		}
-		else
+		if (isset($FORUM_MAIN_PARENT_END))
 		{
-			foreach($forumList['forums'][$parent['forum_id']] as $f)
-			{
-				if ($f['forum_class'] == e_UC_ADMIN && ADMIN)
-				{
-					$forum_string .= parse_forum($f, LAN_406);
-				}
-				elseif($f['forum_class'] == e_UC_MEMBER && USER)
-				{
-					$forum_string .= parse_forum($f, LAN_407);
-				}
-				elseif($f['forum_class'] == e_UC_READONLY)
-				{
-					$forum_string .= parse_forum($f, LAN_408);
-				}
-				elseif($f['forum_class'] && check_class($f['forum_class']))
-				{
-					$forum_string .= parse_forum($f, LAN_409);
-				}
-				elseif(!$f['forum_class'])
-				{
-					$forum_string .= parse_forum($f);
-				}
-			}
-			if (isset($FORUM_MAIN_PARENT_END))
-			{
-				$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
-			}
+			$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
 		}
 	}
 }
 
 function parse_parent($parent)
 {
-	if(check_class($parent['forum_class']))
+	if(!check_class($parent['forum_postclass']))
 	{
-		$status[0] = '';
-		$status[1] = true;
-		if(!check_class($parent['forum_postclass']))
-		{
-			$status[0] = '( '.LAN_405.' )';
-		}
-	}
-	else
-	{
-		$status[1] = false;
+		$status = '( '.LAN_405.' )';
 	}
 	return $status;
 }
@@ -335,7 +321,7 @@ function parse_forum($f, $restricted_string = '')
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		if ($f['user_name'])
 		{
-			
+
 			$lastpost_name = "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$f['forum_lastpost_user'])."'>{$f['user_name']}</a>";
 		}
 		else
@@ -444,11 +430,11 @@ if (e_QUERY == 'new')
 	{
 		$nVars->NEWSPOSTNAME = LAN_198;
 		$forum_newstring = $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
-		
+
 	}
 	$forum_new_start = $e107->tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
 	$forum_new_end = $e107->tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
-	
+
 	if ($forum->prefs->get('enclose'))
 	{
 		$ns->tablerender($forum->prefs->get('title'), $forum_new_start.$forum_newstring.$forum_new_end, array('forum', 'main2'));

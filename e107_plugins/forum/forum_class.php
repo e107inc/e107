@@ -70,7 +70,6 @@ class e107forum
 			$this->getForumPermList();
 			$tmp = $e107->arrayStorage->WriteArray($this->permList, false);
 			$e107->ecache->set_sys('forum_perms', $tmp);
-
 		}
 		unset($tmp);
 	}
@@ -98,21 +97,21 @@ class e107forum
 		$qryList = array();
 
 		$qryList['view'] = "
-		SELECT f.forum_id
+		SELECT f.forum_id, f.forum_parent
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_class IN (".USERCLASS_LIST.")
 		WHERE f.forum_class IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
 		";
 
 		$qryList['post'] = "
-		SELECT f.forum_id
+		SELECT f.forum_id, f.forum_parent
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_postclass IN (".USERCLASS_LIST.")
 		WHERE f.forum_postclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
 		";
 
 		$qryList['thread'] = "
-		SELECT f.forum_id
+		SELECT f.forum_id, f.forum_parent
 		FROM `#forum` AS f
 		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_threadclass IN (".USERCLASS_LIST.")
 		WHERE f.forum_threadclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
@@ -122,10 +121,15 @@ class e107forum
 		{
 			if($e107->sql->db_Select_gen($qry))
 			{
-				while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				$tmp = array();
+				while($row = $e107->sql->db_Fetch())
 				{
-					$this->permList[$key][] = $row['forum_id'];
+					$tmp[$row['forum_id']] = 1;
+					$tmp[$row['forum_parent']] = 1;
 				}
+				ksort($tmp);
+				$this->permList[$key] = array_keys($tmp);
+				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 			}
 		}
 	}
@@ -698,18 +702,20 @@ class e107forum
 		return ($uid && in_array($uid, array_keys($this->modArray)));
 	}
 
-	function forumGetForumList()
+	function forumGetForumList($all=false)
 	{
 		$e107 = e107::getInstance();
+		$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
+
 		$qry = '
 		SELECT f.*, u.user_name FROM `#forum` AS f
 		LEFT JOIN `#user` AS u ON f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user
-		ORDER BY f.forum_order ASC
-		';
+		'.$where.
+		'ORDER BY f.forum_order ASC';
 		if ($e107->sql->db_Select_gen($qry))
 		{
 			$ret = array();
-			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $e107->sql->db_Fetch())
 			{
 				if(!$row['forum_parent'])
 				{
@@ -717,7 +723,6 @@ class e107forum
 				}
 				elseif($row['forum_sub'])
 				{
-//					$ret['subs'][$row['forum_parent']][$row['forum_sub']][] = $row;
 					$ret['subs'][$row['forum_sub']][] = $row;
 				}
 				else
@@ -875,8 +880,9 @@ class e107forum
 		return $result;
 	}
 
-	function forum_get($forum_id)
+	function forumGet($forum_id)
 	{
+		$sql = e107::getDb();
 		$forum_id = (int)$forum_id;
 		$qry = "
 		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name, fp.forum_id as parent_id, fp.forum_postclass as parent_postclass, sp.forum_name AS sub_parent FROM #forum AS f
@@ -884,7 +890,6 @@ class e107forum
 		LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id AND f.forum_sub > 0
 		WHERE f.forum_id = {$forum_id}
 		";
-		global $sql;
 		if ($sql->db_Select_gen($qry))
 		{
 			return $sql->db_Fetch(MYSQL_ASSOC);
