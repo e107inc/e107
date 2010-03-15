@@ -891,9 +891,10 @@ function update_706_to_800($type='')
 	
 	$med = e107::getMedia();
 	
-	$count = $sql->db_Select('core_media_cat');
-	if($count < 5)
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_nick` = '_common' ");
+	if($count != 1)
 	{
+		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
 		(1, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
 		(2, 'news', 'News', 'Will be available in the news area. ', 253),
@@ -902,15 +903,14 @@ function update_706_to_800($type='')
 		(5, 'downloadthumb', 'Download Thumbnails', '', 253);";
 
 		mysql_query($query);
+		
+		$med->import('news',e_IMAGE.'newspost_images');
+		$med->import('page',e_IMAGE.'custom');
+		$med->import('download',e_FILE.'downloadimages');
+		$med->import('downloadthumb',e_IMAGE.'downloadthumbs');
 	}
 
-	$med->import('news',e_IMAGE.'newspost_images');
-	$med->import('page',e_IMAGE.'custom');
-	$med->import('download',e_FILE.'downloadimages');
-	$med->import('downloadthumb',e_IMAGE.'downloadthumbs');
-	
-	
-	
+		
 	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick='_icon_16' OR media_cat_nick='_icon_32' ");
 	
 	if($count < 2)
