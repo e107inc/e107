@@ -9,9 +9,7 @@
  * Form Handler
  *
  * $URL$
- * $Revision$
- * $Date$
- * $Author$
+ * $Id$
  *
 */
 

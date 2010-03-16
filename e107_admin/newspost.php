@@ -1994,7 +1994,7 @@ class admin_newspost
 
 
 		//Send the prefered response type
-		$jshelper->sendResponse('fill-form');
+		$jshelper->sendResponse('XML');
 	}
 
 	function ajax_exec_cat_list_refresh()
