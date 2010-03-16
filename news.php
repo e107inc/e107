@@ -8,10 +8,8 @@
  *
  * News frontend
  *
- * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 /**
  *	@package    e107
