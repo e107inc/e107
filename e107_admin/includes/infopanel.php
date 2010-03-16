@@ -29,8 +29,12 @@ $frm = new e_form(true);
 if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 {
 	$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
-	$user_pref['core-infopanel-menus'] = $_POST['e-mymenus'];
+	
 	save_prefs('user');
+	
+	$pref['core-infopanel-menus'] = $_POST['e-mymenus'];
+	
+	save_prefs();
 }
 
 
@@ -104,7 +108,9 @@ $text .= "
 	<table cellspacing='0' cellpadding='0'>
 	<tr>
 	<td style='padding:0px'>";
+	
 	require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
+	
 	$text .= $tp->parseTemplate("{ADMIN_LATEST}");
 	$text .= "</td><td style='padding:0px'>";
 	$text .= $tp->parseTemplate("{ADMIN_STATUS}");
@@ -117,16 +123,18 @@ $text .= "
 // TODO Could use a new _menu item instead.
 $text .= "
 	<div id='core-infopanel_online' class='f-left' style='width:49%'>
-	<div style='border:1px solid silver;margin:10px'>
+	<div style='border:1px solid silver;margin:10px;'>
 	<div class='main_caption bevel left'><b>Who's Online</b></div>
 	<div class='left block-text'>
 
 
 		<table cellpadding='0' cellspacing='0' class='adminlist'>
-		<colgroup span='3'>
-			<col style='width: 5%'></col>
-            <col style='width: 35%'></col>
-			<col style='width: 45%'></col>
+		<colgroup span='5'>
+			<col style='width: 10%'></col>
+            <col style='width: 25%'></col>
+			<col style='width: 10%'></col>
+			<col style='width: 40%'></col>
+			<col style='width: auto'></col>
 		</colgroup>
 		<thead>
 			<tr>
@@ -144,11 +152,11 @@ $text .= "
 		foreach ($newsarray as $key=>$val)
 		{
 			$text .= "<tr>
-				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'short')."</td>
+				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'%H:%M:%S')."</td>
 					<td>".renderOnlineName($val['online_user_id'])."</td>
 					<td>".e107::ipDecode($val['online_ip'])."</td>
-					<td class='nowrap'><a href='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50)."</a></td>
-					<td class='nowrap'>".$tp->text_truncate($val['online_agent'],20,'...')."</td>
+					<td><a href='".$val['online_location']."' title='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50,'...')."</a></td>
+					<td>".$tp->text_truncate(str_replace("/"," / ",$val['online_agent']),20,'...')."</td>
 				</tr>
 				";
 		}
@@ -160,10 +168,10 @@ $text .= "
 	";
 // --------------------- User Selected Menus -------------------
 
-	if (varset($user_pref['core-infopanel-menus']))
+	if (varset($pref['core-infopanel-menus']))
 	{
 
-		foreach ($user_pref['core-infopanel-menus'] as $val)
+		foreach ($pref['core-infopanel-menus'] as $val)
 		{
 			$id = $frm->name2id('core-infopanel_'.$val);
 			$text .= "
@@ -266,17 +274,21 @@ function render_infopanel_icons()
 
 function render_infopanel_menu_options()
 {
-	global $user_pref;
+	if(!getperms('0'))
+	{
+		return;
+	}
+	global $pref;
 	$frm = e107::getSingleton('e_form');
 	$text = "";
 	$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
-	$settings = varset($user_pref['core-infopanel-menus'],array());
+	$settings = varset($pref['core-infopanel-menus'],array());
 
 	if (e107::getDb()->db_Select_gen($menu_qry))
 	{
 		while ($row = e107::getDb()->db_Fetch())
 		{
-			if(!is_numeric($row['menu_path']))
+			// if(!is_numeric($row['menu_path']))
 			{
 				$label = str_replace("_menu","",$row['menu_name']);
 				$path_to_menu = $row['menu_path'].$row['menu_name'];
