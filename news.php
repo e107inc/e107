@@ -311,10 +311,10 @@ if ($action == 'extend')
 		  }
 		  define("e_PAGETITLE",$news['news_title']);
 		}*/
-
+		/* FIXME - better implementation: cache, shortcodes, do it inside the model/shortcode class itself.
 		if (TRUE)
 		{
-			/* Added by nlStart - show links to previous and next news */
+			// Added by nlStart - show links to previous and next news
 			if (!isset($news['news_extended'])) $news['news_extended'] = '';
 			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 			$prev_query = "SELECT news_id, news_title FROM `#news`
@@ -338,7 +338,7 @@ if ($action == 'extend')
 				$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
 			}
 			$news['news_extended'].="<br /><br />";
-		}
+		}*/
 
 		require_once(HEADERF);
 
