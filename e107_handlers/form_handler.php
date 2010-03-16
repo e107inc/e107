@@ -145,7 +145,6 @@ class e_form
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
 		// Temporary Fix for using Media-Manager data
-
 		$sql = e107::getDb();
 
 		// $sc_parameters is currently being used to select the media-category.
@@ -163,7 +162,39 @@ class e_form
 			}
 
 			asort($opts);
-			return $this->selectbox($name,$opts,$default, array('default'=>'&nbsp;'));
+
+			$tp = e107::getParser();
+			$hide = $default_url = '';
+			$default_thumb = $default;
+			if($default)
+			{
+				if('{' != $default[0])
+				{
+					// convert to sc path
+					$default_thumb = $tp->createConstants($default, 'nice');
+					$default = $tp->createConstants($default, 'mix');
+				}
+				$default_url = $tp->replaceConstants($default, 'abs');
+			}
+			else
+			{
+				$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
+				$hide = ' style="display: none;"';
+			}
+
+			if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
+			$name_id = $this->name2id($name);
+			$width = intval(vartrue($sc_parameters['width'], 150));
+			$onchange = "onchange=\"replaceSC('imagepreview={$name}|{$width}',this.form,'{$name_id}_prev'); \"";
+
+			$ret = $this->selectbox($name, $opts, $default, array('default'=>'&nbsp;', 'other' => $onchange));
+			$ret .= "<div class='imgselector-container' id='{$name_id}_prev'>";
+			$ret .= "<a href='{$default_url}'{$hide} rel='external' title='Preview {$default_url}' class='e-image-preview'>";
+
+			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, 'w='.$width, true);
+			$ret .= "<img src='{$thpath}' alt='{$default_url}' class='image-selector' /></a>";
+			$ret .= "</div>\n";
+			return $ret;
 		}
 		// ----------------
 
@@ -184,6 +215,7 @@ class e_form
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
 		$tp = e107::getParser();
+
 		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 		return $ret;
