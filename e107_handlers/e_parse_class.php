@@ -1833,7 +1833,7 @@ class e_parse
 		}
 
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
-		$pattern = ($all ? '#\{([A-Za-z_0-9]*)\}#s' : '#\{(e_[A-Z]*(?:_ABS){0,1})\}#s');
+		$pattern = ($all ? '#\{([A-Za-z_0-9]*)\}#s' : '#\{(e_[A-Z]*(?:_IMAGE|_VIDEO|_FILE|_CONTENT|_ICON|_AVATAR|_JS|_CSS|_PACK|_DB|_ABS){0,1})\}#s');
 		$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
 
 		if(!defined('THEME'))
