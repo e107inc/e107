@@ -75,18 +75,8 @@ class news_shortcodes
 
 	function sc_newsicon($parm)
 	{
-		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
-		if ($category_icon && strstr('images', $category_icon))
-		{
-			$category_icon = THEME_ABS.$category_icon;
-		}
-		else
-		{
-			$category_icon = e_IMAGE_ABS.'icons/'.$category_icon;
-		}
-		if (!$category_icon) { return ''; }
 
-		return "<a href='".$this->e107->url->getUrl('core:news', 'main', 'action=list&id='.$this->news_item['news_category'].'&sef='.$this->news_item['news_category_rewrite_string'])."'><img style='".$this->param['caticon']."'  src='".$category_icon."' alt='' /></a>";
+		return $this->sc_newscaticon('url');
 	}
 
 	function sc_newsauthor($parm)
@@ -156,13 +146,7 @@ class news_shortcodes
 
 	function sc_newsheader($parm)
 	{
-		$category_icon = str_replace("../", "", trim($this->news_item['category_icon']));
-		if (!$category_icon) return '';
-		if ($category_icon && strstr("images", $category_icon)) {
-			return THEME_ABS.$category_icon;
-		} else {
-			return e_IMAGE_ABS."icons/".$category_icon;
-		}
+		return $this->sc_newscaticon('src');
 	}
 
 
@@ -297,38 +281,53 @@ class news_shortcodes
 		return ($this->news_item['news_summary']) ? $this->news_item['news_summary'].'<br />' : '';
 	}
 
+	// FIXME - REAL thumbnail - already possible on the fly
 	function sc_newsthumbnail($parm = '')
 	{
+		if(!$this->news_item['news_thumbnail'])
+		{
+			return '';
+		}
+		// We store SC path in DB now + BC
+		$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
 		switch($parm)
 		{
 			case 'src':
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'] : '');
+				return $src;
 			break;
 
 			case 'tag':
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? "<img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' />" : '');
+				return "<img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
 			break;
 
 			default:
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
+				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
 
 	function sc_newsimage($parm = '')
 	{
+		if(!$this->news_item['news_thumbnail'])
+		{
+			return '';
+		}
+		// We store SC path in DB now + BC
+		$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
+
 		switch($parm)
 		{
 			case 'src':
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS.$this->news_item['news_thumbnail'] : '');
+				return $src;
 			break;
 
 			case 'tag':
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? "<img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' />" : '');
+				return "<img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
 			break;
 
+			case 'url':
 			default:
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
+				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -351,16 +350,12 @@ class news_shortcodes
 
 	function sc_newscaticon($parm = '')
 	{
+		// BC
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if (!$category_icon) { return ''; }
-		if ($category_icon && strstr('images', $category_icon))
-		{
-			$category_icon = THEME_ABS.$category_icon;
-		}
-		else
-		{
-			$category_icon = e_IMAGE_ABS.'icons/'.$category_icon;
-		}
+
+		// We store SC path in DB now + BC
+		$src = $category_icon[0] == '{' ? e107::getParser()->replaceConstants($category_icon, 'abs') : e_IMAGE_ABS."newspost_images/".$category_icon;
 
 		//TODO - remove inline styles
 		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
@@ -372,11 +367,12 @@ class news_shortcodes
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='{$category_icon}' alt='' style='".$this->param['caticon']."' />";
+				return "<img class='news_image' src='{$src}' alt='' style='".$this->param['caticon']."' />";
 			break;
 
+			case 'url':
 			default:
-				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=list&id={$this->news_item['news_category']}&sef={$this->news_item['news_category_rewrite_string']}")."'><img style='".$this->param['caticon']."' src='".$category_icon."' alt='' /></a>";
+				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=list&id={$this->news_item['news_category']}&sef={$this->news_item['news_category_rewrite_string']}")."'><img style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
 			break;
 		}
 	}
