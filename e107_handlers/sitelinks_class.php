@@ -131,6 +131,7 @@ class sitelinks
 		{
 			$this->eLinkList['head_menu'] = array();
 		}
+		$render_link = array();
 
 		if ($style['linkdisplay'] != 3)	{
 			foreach ($this->eLinkList['head_menu'] as $key => $link){
