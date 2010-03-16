@@ -130,7 +130,7 @@ else
 }
 if(vartrue($height)) $height = intval($height);
 if(vartrue($width)) $width = intval($width);
-$thpath = isset($parms['nothumb']) ? $pvw_default : $tp->thumbUrl($pvw_default, 'w='.$width.'h='.$height, true);
+$thpath = isset($parms['nothumb']) || $hide ? $pvw_default : $tp->thumbUrl($pvw_default, 'w='.$width.'&h='.$height, true);
 $text .= "<img src='{$thpath}' alt='$pvw_default' class='image-selector' /></a>";
 
 $text .= "</div>\n";
