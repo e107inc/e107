@@ -69,30 +69,30 @@ function headerjs()
 				'Helper': true,
 				'AdminMenu': false
 			}
-			
+
             //custom expand
 			Element.addMethods( {
 				newsDescToggle: function(element) {
 					element = \$(element);
 					if(!element.visible())
 				    	element.fxToggle();
-				    	
+
 				    return element;
 				},
-				
+
 				newsScrollToMe: function(element) {
 					element = \$(element);
 					new Effect.ScrollTo(element);
 					return element;
 				},
-				
+
 				newsUpdateButtonSpan: function(element, str, swapClass) {
 					element = \$(element);
 					if(swapClass) {
 						var swapO = swapClass.split('::');
 						element.removeClassName(swapO[0]).addClassName(swapO[1]);
 					}
-					
+
 					if(element.down('span')) {
 						element.down('span').update(str);
 					}
@@ -124,7 +124,7 @@ function headerjs()
 				var id = element.name.gsub(/[^\d]/, ''),
 					cl = element.value,
 					url = '#{e_ADMIN}newspost.php?' + action + '.' + id + '.' + cl;
-					
+
 				element.startLoading();
 				new e107Ajax.Request(url.parsePath(), {
 					onComplete: function(transport) {
@@ -134,38 +134,38 @@ function headerjs()
 					}
 				});
 			}
-		
+
 			//e107 onload custom event
 	        e107.runOnLoad( function(event) {
 	        	var celement = event.memo['element'] ? \$(event.memo.element) : \$\$('body')[0];
-				
+
 	        	//Unobtrusive AJAX category list reload
 	        	if(\$('trigger-list-refresh')) {
 	            	\$('trigger-list-refresh').observe('click', function(event) {
 						event.stop();
 						\$('core-newspost-cat-list-form').submitForm(
-							'core-newspost-cat-list-cont', 
-							{ overlayPage: \$\$('body')[0]  }, 
+							'core-newspost-cat-list-cont',
+							{ overlayPage: \$\$('body')[0]  },
 							\$('core-newspost-cat-list-form').action + '_list_refresh'
 						);
 					});
 				}
-				
+
 				//Unobtrusive AJAX save category manage permissions
 				celement.select('select[name^=multi_category_manager]').invoke('observe', 'change', function(event) {
 					e_npadmin_ajaxsave('catmanager', event.element());
 				});
-				
+
 				//Category order fields - user convenience
 				celement.select('input[name^=multi_category_order]').invoke('observe', 'focus', function(event) {
 					event.element().select();
 				});
-				
+
 				//Unobtrusive AJAX save category order
 				celement.select('input[name^=multi_category_order]').invoke('observe', 'blur', function(event) {
 					e_npadmin_ajaxsave('catorder', event.element());
 				});
-				
+
 				//Fill form - click observer (Unobtrusive AJAX edit category)
             	\$\$('a.action[id^=core-news-catedit-]').each(function(element) {
 					element.observe('click', function(event) {
@@ -174,7 +174,7 @@ function headerjs()
 						$('core-newspost-cat-create-form').fillForm(\$\$('body')[0], { handler: el.readAttribute('href') });
 					});
 				});
-				
+
 			}, null, true);
     	</script>
 		";
@@ -184,7 +184,7 @@ function headerjs()
 		$ret .= "
 			<script type='text/javascript'>
 				document.observe('dom:loaded', function(){
-					\$('newsposts').observe('change', function(event) { 
+					\$('newsposts').observe('change', function(event) {
 						new e107Ajax.Updater(
 							'newsposts-archive-cont',
 							'".e_SELF."?pref_archnum.' + (event.element().selectedIndex + 1) + '.' + event.element().readAttribute('tabindex'),
@@ -243,7 +243,7 @@ class admin_newspost
 	var $fieldpref;
 	var $news_categories;
 	var $news_renderTypes = array();
-	
+
 	public $error = false;
 
 	function __construct($qry, $pstobj)
@@ -277,7 +277,7 @@ class admin_newspost
 				'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
 		);
-		
+
 /*		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
 		$r_array = array();
 		foreach($ren_type as $key=>$value)
@@ -309,7 +309,7 @@ class admin_newspost
 	{
 		return $this->_request[0];
 	}
-	
+
 	/**
 	 * @param string $action
 	 * @return admin_newspost
@@ -324,7 +324,7 @@ class admin_newspost
 	{
 		return $this->_request[1];
 	}
-	
+
 	/**
 	 * @param string $action
 	 * @return admin_newspost
@@ -339,7 +339,7 @@ class admin_newspost
 	{
 		return $this->_request[2];
 	}
-	
+
 	/**
 	 * @param integer $id
 	 * @return admin_newspost
@@ -364,26 +364,26 @@ class admin_newspost
 	{
 		$ecache = e107::getCache();
 		$ecache->clear("news.php"); //TODO change it to 'news_*' everywhere
-		
+
 		$ecache->clear("news_", false, true); //NEW global news cache prefix
 		//$ecache->clear("nq_news_"); - supported by cache::clear() now
 		//$ecache->clear("nomd5_news_"); supported by cache::clear() now
-		
+
 		$ecache->clear("othernews"); //TODO change it to 'news_othernews' everywhere
 		$ecache->clear("othernews2"); //TODO change it to 'news_othernews2' everywhere
 		return $this;
 	}
-	
+
 	function clear_rwcache($sefstr = '')
 	{
 		/*if($sefstr) $sefstr = md5($sefstr);
 		ecache::clear_sys("news_sefurl".$sefstr);*/
 		news::clearRewriteCache($sefstr);
 	}
-	
+
 	function set_rwcache($sefstr, $data)
 	{
-		/**$sefstr = md5($sefstr); 
+		/**$sefstr = md5($sefstr);
 		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
 		ecache::set_sys("news_sefurl".$sefstr, $data, true);*/
 		news::setRewriteCache($sefstr, $data);
@@ -409,7 +409,7 @@ class admin_newspost
 		{
 			$this->news_categories = e107::getDb()->db_getList('ALL', FALSE, FALSE, 'category_id');
 		}
-		
+
 		//Required on create & savepreset action triggers
 		if(isset($_POST['news_userclass']) && is_array($_POST['news_userclass']))
 		{
@@ -453,8 +453,8 @@ class admin_newspost
 		{
 			$this->_observe_newsCommentsRecalc();
 		}
-		
-		if(isset($_POST['etrigger_ecolumns'])) //elseif fails. 
+
+		if(isset($_POST['etrigger_ecolumns'])) //elseif fails.
 		{
         	$this->_observe_saveColumns();
 		}
@@ -551,7 +551,7 @@ class admin_newspost
 			case 'category':
 				//clear rewrite cache
 				if(!getperms('0|7')) $this->noPermissions();
-				
+
 				if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$del_id.' AND news_rewrite_type=2'))
 				{
 					$tmp = e107::getDb()->db_Fetch();
@@ -647,10 +647,10 @@ class admin_newspost
 			 $this->noPermissions();
 		}
 
-		if(isset($_POST['news_thumbnail']))
+		/*if(isset($_POST['news_thumbnail']))
 		{
 			$_POST['news_thumbnail'] = urldecode(basename($_POST['news_thumbnail']));
-		}
+		}*/
 
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
@@ -695,7 +695,7 @@ class admin_newspost
 			$this->show_message('Validation Error: Missing Category name', E_MESSAGE_ERROR);
 			$this->error = true;
 		}
-		
+
 		if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
 		{
 			$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
@@ -722,25 +722,25 @@ class admin_newspost
 			{
 				$inserta['category_icon'] = e107::getParser()->toDB($_POST['category_icon']);
 			}*/
-			
+
 			$inserta['data']['category_icon'] = $_POST['category_icon'];
 			$inserta['_FIELD_TYPES']['category_icon'] = 'todb';
-			
+
 			$inserta['data']['category_name'] = $_POST['category_name'];
 			$inserta['_FIELD_TYPES']['category_name'] = 'todb';
-			
+
 			$inserta['data']['category_meta_description'] = strip_tags($_POST['category_meta_description']);
 			$inserta['_FIELD_TYPES']['category_meta_description'] = 'str';
-			
+
 			$inserta['data']['category_meta_keywords'] = $_POST['category_meta_keywords'];
 			$inserta['_FIELD_TYPES']['category_meta_keywords'] = 'str';
-			
+
 			$inserta['data']['category_manager'] = $_POST['category_manager'];
 			$inserta['_FIELD_TYPES']['category_manager'] = 'int';
-						
+
 			$inserta['data']['category_order'] = $_POST['category_order'];
 			$inserta['_FIELD_TYPES']['category_order'] = 'int';
-			
+
 			//e107::getDb()->db_Insert('news_category', "'0', '{$_POST['category_name']}', '{$_POST['category_icon']}'");
 			$id = e107::getDb()->db_Insert('news_category', $inserta);
 			if($id)
@@ -752,13 +752,13 @@ class admin_newspost
 					$rwinserta = array();
 					$rwinserta['data']['news_rewrite_source'] = $id;
 					$rwinserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-					
+
 					$rwinserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
 					$rwinserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-					
+
 					$rwinserta['data']['news_rewrite_type'] = 2;
 					$rwinserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-					
+
 					$rid = e107::getDb()->db_Insert('news_rewrite', $rwinserta);
 					$rwinserta['data']['news_rewrite_id'] = $rid;
 					if(e107::getDb()->getLastErrorNumber())
@@ -772,18 +772,18 @@ class admin_newspost
 						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 						return;
 					}
-					
+
 					$this->set_rwcache($_POST['news_rewrite_string'], $rwinserta['data']);
-					e107::getAdminLog()->log_event('NEWS_10', $rwinserta, E_LOG_INFORMATIVE, ''); 
+					e107::getAdminLog()->log_event('NEWS_10', $rwinserta, E_LOG_INFORMATIVE, '');
 				}
-				
+
 				//admin log now supports DB array and method chaining
 				e107::getAdminLog()->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '');
-					
-					 
+
+
 				$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
 				$this->clear_cache();
-				
+
 				//TODO - add to WIKI docs
 				e107::getEvent()->trigger("newscatpost", array_merge($inserta['data'], $rwinserta['data']));
 			}
@@ -799,20 +799,20 @@ class admin_newspost
 			}
 		}
 	}
-	
+
 	function _observe_update_category()
-	{		
+	{
 		if(!getperms('0|7'))
 		{
 			 $this->noPermissions();
 		}
 		$this->setId(intval($_POST['category_id']));
-		
+
 		if(!$this->getId())
 		{
 			return;
 		}
-		
+
 		//FIXME - lan, e_model based news administration model
 		$this->error = false;
 		if(empty($_POST['category_name']))
@@ -820,28 +820,28 @@ class admin_newspost
 			$this->show_message('Validation Error: Missing Category name', E_MESSAGE_ERROR);
 			$this->error = true;
 		}
-		
+
 		if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
 		{
 			$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
 			$this->error = true;
 		}
-		
+
 		if (!$this->error)
 		{
 			$updatea = array();
 			$updatea['data']['category_icon'] = $_POST['category_icon'];
 			$updatea['_FIELD_TYPES']['category_icon'] = 'todb';
-			
+
 			$updatea['data']['category_name'] = $_POST['category_name'];
 			$updatea['_FIELD_TYPES']['category_name'] = 'todb';
-			
+
 			$updatea['data']['category_meta_description'] = strip_tags($_POST['category_meta_description']);
 			$updatea['_FIELD_TYPES']['category_meta_description'] = 'str';
-			
+
 			$updatea['data']['category_meta_keywords'] = $_POST['category_meta_keywords'];
 			$updatea['_FIELD_TYPES']['category_meta_keywords'] = 'str';
-			
+
 			$updatea['data']['category_manager'] = $_POST['category_manager'];
 			$updatea['_FIELD_TYPES']['category_manager'] = 'int';
 
@@ -849,22 +849,22 @@ class admin_newspost
 			$updatea['_FIELD_TYPES']['category_order'] = 'int';
 
 			$updatea['WHERE'] = 'category_id='.$this->getId();
-			
+
 			$inserta = array();
 			$rid = isset($_POST['news_rewrite_id']) ? $_POST['news_rewrite_id'] : 0;
-			
+
 			$inserta['data']['news_rewrite_id'] = $rid;
 			$inserta['_FIELD_TYPES']['news_rewrite_id'] = 'int';
-			
+
 			$inserta['data']['news_rewrite_source'] = $this->getId();
 			$inserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-			
+
 			$inserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
 			$inserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-			
+
 			$inserta['data']['news_rewrite_type'] = 2;
 			$inserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-			
+
 			$oldsef = array();
 			//'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=2'
 			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_id='.intval($rid)))
@@ -883,7 +883,7 @@ class admin_newspost
 						$inserta['WHERE'] = 'news_rewrite_id='.intval($rid);
 						$rwupcheck = e107::getDb()->db_Update('news_rewrite', $inserta);
 					}
-					else 
+					else
 					{
 						$rwupcheck = e107::getDb()->db_Insert('news_rewrite', $inserta);
 						$inserta['data']['news_rewrite_id'] = $rwupcheck;
@@ -912,30 +912,30 @@ class admin_newspost
 						$inserta = array( 'data' => array());
 						$rwupcheck = true;
 					}
-					
+
 				}
-				
-				if ($upcheck || $rwupcheck) 
-				{ 
+
+				if ($upcheck || $rwupcheck)
+				{
 					//admin log now supports DB array and method chaining
 					$updatea['data']['category_id'] = $this->getId();
 					if($upcheck) e107::getAdminLog()->log_event('NEWS_05', $updatea['data'], E_LOG_INFORMATIVE, '');
-					if($rwupcheck && $inserta['data']) e107::getAdminLog()->log_event('NEWS_10', $inserta['data'], E_LOG_INFORMATIVE, ''); 
-						
+					if($rwupcheck && $inserta['data']) e107::getAdminLog()->log_event('NEWS_10', $inserta['data'], E_LOG_INFORMATIVE, '');
+
 					$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
 					$this->clear_cache();
-					
+
 					//TODO - add to WIKI docs
 					e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data']));
 				}
-				else 
+				else
 				{
 					$this->show_message(LAN_NO_CHANGE);
 				}
-				
+
 				if(varset($oldsef['news_rewrite_string'])) $this->clear_rwcache($oldsef['news_rewrite_string']);
-				if($_POST['news_rewrite_string']) $this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']); 
-				
+				if($_POST['news_rewrite_string']) $this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']);
+
 				$this->setId(0);
 			}
 			else
@@ -948,7 +948,7 @@ class admin_newspost
 			}
 		}
 	}
-	
+
 	function _observe_multi_create_category()
 	{
 		if(!getperms('0|7'))
@@ -987,7 +987,7 @@ class admin_newspost
 		$temp['news_sefbase']			= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_sefbase']);
 
 		e107::getConfig()->updatePref($temp);
-		
+
 		if(e107::getConfig()->save(false))
 		{
 			e107::getAdminLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
@@ -1079,7 +1079,7 @@ class admin_newspost
 			LEFT JOIN #news_rewrite AS ncr ON n.news_category=ncr.news_rewrite_source AND nr.news_rewrite_type=2
 			LEFT JOIN #user AS u ON n.news_author=u.user_id
 		";
-		
+
 		$check_perms = !getperms('0') ? " nc.category_manager IN (".USERCLASS_LIST.") " : '';
 		if (vartrue($_POST['searchquery']))
 		{
@@ -1087,7 +1087,7 @@ class admin_newspost
 		}
 		else
 		{
-			$ordfield = 'n.news_datestamp'; 
+			$ordfield = 'n.news_datestamp';
 			if($this->getSubAction() == 'news_rewrite_string')
 			{
 				$ordfield = "nr.news_rewrite_string";
@@ -1104,10 +1104,10 @@ class admin_newspost
 			{
 				$ordfield = 'n.'.$this->getSubAction();
 			}
-			
+
 			$query .= ($check_perms ? "WHERE {$check_perms}" : '')."ORDER BY {$ordfield} ".strtoupper($this->_sort_order)." LIMIT ".$this->getFrom().", {$amount}";
 		}
-		
+
 
 		if ($e107->sql->db_Select_gen($query))
 		{
@@ -1138,11 +1138,11 @@ class admin_newspost
 												".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
 											";
 				$row['checkboxes'] 			= $row['news_id'];
-				if(!varset($row['news_rewrite_string']))  
+				if(!varset($row['news_rewrite_string']))
 				{
 					$row['news_rewrite_string'] = ''; //prevent 'Not found' message
 				}
-				
+
 				// AUTO RENDER
 				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'news_id');
 			}
@@ -1150,12 +1150,12 @@ class admin_newspost
 			$text .= "
 							</tbody>
 						</table>";
-			$text .= "<div class='buttons-bar center'>".$this->show_batch_options()."</div>";			
+			$text .= "<div class='buttons-bar center'>".$this->show_batch_options()."</div>";
 			$text .= "
 					</fieldset>
 				</form>
 			";
-			
+
 		}
 		else
 		{
@@ -1185,7 +1185,7 @@ class admin_newspost
 	function show_batch_options()
 	{
 		$classes = e107::getUserClass()->uc_get_classlist();
-		
+
 		// Grab news Category Names;
 		e107::getDb()->db_Select('news_category', '*');
         $newscatarray = e107::getDb()->db_getList();
@@ -1195,10 +1195,10 @@ class admin_newspost
         	$news_category[$val['category_id']] = $val['category_name'];
 			$news_manage[$val['category_id']] = $val['category_manager'];
 		}
-		
+
 		$comments_array = array('Allow Comments', 'Disable Comments', 'Reverse Allow/Disalow');
 		$sticky_array = array(1 => 'Sticky', 0 => 'Not Sticky', 2 => 'Reverse Them'); // more proper controls order
-		
+
 		return e107::getForm()->batchoptions(
 			array(
 					'delete_selected'		=> LAN_DELETE,
@@ -1223,7 +1223,7 @@ class admin_newspost
 		$sql = e107::getDb();
 		$count = $sql->db_Update("news","news_category = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
 	}
-	
+
 	function batch_comments($ids, $value)
 	{
 		$sql = e107::getDb();
@@ -1237,25 +1237,25 @@ class admin_newspost
 			$count = $sql->db_Update("news","news_allow_comments=".$value." WHERE news_id IN (".implode(",",$ids).") ");
 		}
 	}
-	
+
 	function batch_rendertype($ids, $value)
 	{
 		$sql = e107::getDb();
 		$count = $sql->db_Update("news","news_render_type = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
 	}
-	
+
 	function batch_userclass($ids, $value)
 	{
 		$sql = e107::getDb();
 		$count = $sql->db_Update("news","news_class = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
 	}
-	
+
 	function batch_delete($ids, $value)
 	{
 		$sql = e107::getDb();
 		$count = $sql->db_Delete("news","news_id IN (".implode(",",$ids).") ");
 	}
-	
+
 	function batch_sticky($ids, $value)
 	{
 		$sql = e107::getDb();
@@ -1286,7 +1286,6 @@ class admin_newspost
 
 	function _pre_create()
 	{
-		
 		if($this->getSubAction() == "edit" && !$_POST['preview'])
 		{
 			if(!isset($_POST['submit_news']))
@@ -1294,12 +1293,12 @@ class admin_newspost
 				if(e107::getDb()->db_Select('news', '*', 'news_id='.intval($this->getId())))
 				{
 					$row = e107::getDb()->db_Fetch();
-					
+
 					if(!isset($this->news_categories[$row['news_category']]))
 					{
 						$this->noPermissions();
 					}
-	
+
 					$_POST['news_title'] = $row['news_title'];
 					$_POST['news_body'] = $row['news_body'];
 					$_POST['news_author'] = $row['news_author'];
@@ -1309,7 +1308,7 @@ class admin_newspost
 					$_POST['news_summary'] = $row['news_summary'];
 					$_POST['news_sticky'] = $row['news_sticky'];
 					$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $row['news_datestamp'];
-	
+
 					$_POST['cat_id'] = $row['news_category'];
 					$_POST['news_start'] = $row['news_start'];
 					$_POST['news_end'] = $row['news_end'];
@@ -1320,13 +1319,13 @@ class admin_newspost
 					$_POST['news_meta_description'] = $row['news_meta_description'];
 				}
 			}
-			
+
 			$row = array();
 			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=1'))
 			{
 				$row = e107::getDb()->db_Fetch();
 			}
-				
+
 			$_POST['news_rewrite_id'] = varset($row['news_rewrite_id'], 0);
 			$_POST['news_rewrite_source'] = $this->getId();
 			$_POST['news_rewrite_string'] = isset($_POST['news_rewrite_string']) ? $_POST['news_rewrite_string'] : varset($row['news_rewrite_string'], '');
@@ -1367,7 +1366,7 @@ class admin_newspost
 				$_POST['news_title'] = $row['submitnews_title'];
 				$_POST['news_body'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
-				
+
 				if (defsettrue('e_WYSIWYG'))
 				{
 				  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
@@ -1418,7 +1417,7 @@ class admin_newspost
 								<td>".NWSLAN_6.": </td>
 								<td>
 		";
-		
+
 		if (!$this->news_categories)
 		{
 			$text .= NWSLAN_10;
@@ -1530,22 +1529,20 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_14.":</td>
 								<td>
-									<a href='#news-extended-cont' class='e-expandit' onclick=\"$ff_expand\">".NWSLAN_83."</a>
-									<div class='e-hideme' id='news-extended-cont'>
-										".$frm->bbarea('news_extended', $val, 'extended', 'helpc')."
-									</div>
+									".$frm->bbarea('news_extended', $val, 'extended', 'helpc')."
+									<!-- <div class='field-help'>".NWSLAN_83."</div> -->
 								</td>
 							</tr>
 							<tr>
 								<td>".NWSLAN_66.":</td>
 								<td>";
-			
-		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer. 					
-		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create'>".NWSLAN_69."</a>";						
-		
-		// e_NEWSIMAGE is deprecated. 
-		
-		// DEPRECATED METHOD below. 						
+
+		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer.
+		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create'>".NWSLAN_69."</a>";
+
+		// e_NEWSIMAGE is deprecated.
+
+		// DEPRECATED METHOD below.
 		/*$text .= "<a href='#news-upload-cont' class='e-expandit'>".NWSLAN_69."</a>
 									<div class='e-hideme' id='news-upload-cont'>
 		";
@@ -1601,19 +1598,17 @@ class admin_newspost
 		$text .= "
 									</div>";
 		*/
-		
-		
+
+
 		$text .= "
 								</td>
 							</tr>
 							<tr>
 								<td>".NWSLAN_67.":</td>
 								<td>
-									<a href='#news-images-cont' class='e-expandit'>".LAN_NEWS_23."</a>
-									<div class='e-hideme' id='news-images-cont'>
 		";
-		
-		
+
+
 /*
 		$parms = "name=news_thumbnail";
 		$parms .= "&path=".e_NEWSIMAGE;
@@ -1625,26 +1620,26 @@ class admin_newspost
 		$parms .= "&subdirs=0";
 		$parms .= "&tabindex=".$frm->getNext();
 		*/
-		
+
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
 
 
-		$text .= $frm->imagepicker('news_thumbnail', $default,'','news');
+		$text .= $frm->imagepicker('news_thumbnail', $_POST['news_thumbnail'],'','news');
 
 	//	$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 	//	$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 		$text .= "
-									</div>
+								<div class='field-help'>".LAN_NEWS_23."</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</fieldset>
 		";
-		
+
 		//BEGIN SEO block
 		$text .= "
 				<fieldset id='core-newspost-seo'>
@@ -1701,7 +1696,7 @@ class admin_newspost
 								<td class='control'>
 
 		";
-		
+
 
 		$text .= "
 										".$frm->radio_multi('news_rendertype', $this->news_renderTypes, $_POST['news_rendertype'], true)."
@@ -1973,9 +1968,9 @@ class admin_newspost
 		}
 		$jshelper = new e_jshelper();
 
-		
+
 		$jshelper->addResponseAction('fill-form', $category);
-		
+
 		//reset if required
 		$category_rewrite = array(
 			'news_rewrite_id' 		=> 0,
@@ -1985,7 +1980,7 @@ class admin_newspost
 		);
 		if ($e107->sql->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
 		{
-			$category_rewrite = $e107->sql->db_Fetch(); 
+			$category_rewrite = $e107->sql->db_Fetch();
 		}
 		$jshelper->addResponseAction('fill-form', $category_rewrite);
 
@@ -1996,12 +1991,12 @@ class admin_newspost
 			'hide' => 		'create-category',
 			'newsScrollToMe' => 'core-newspost-cat-create'
 		));
-		
+
 
 		//Send the prefered response type
 		$jshelper->sendResponse('fill-form');
 	}
-	
+
 	function ajax_exec_cat_list_refresh()
 	{
 		if(!getperms('0|7'))
@@ -2010,7 +2005,7 @@ class admin_newspost
 		}
 		echo $this->show_categoriy_list();
 	}
-	
+
 	function ajax_exec_catorder()
 	{
 		if(!getperms('0|7'))
@@ -2026,10 +2021,10 @@ class admin_newspost
 		}
 		if($check)
 		{
-			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_order='.intval($this->getId()), E_LOG_INFORMATIVE, ''); 
+			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_order='.intval($this->getId()), E_LOG_INFORMATIVE, '');
 		}
 	}
-	
+
 	function ajax_exec_catmanager()
 	{
 		if(!getperms('0|7'))
@@ -2046,7 +2041,7 @@ class admin_newspost
 		if($check)
 		{
 			$class_name = e107::getUserClass()->uc_get_classname($this->getId());
-			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_manager='.intval($this->getId()).' ('.$class_name.')', E_LOG_INFORMATIVE, ''); 
+			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_manager='.intval($this->getId()).' ('.$class_name.')', E_LOG_INFORMATIVE, '');
 		}
 	}
 
@@ -2068,7 +2063,7 @@ class admin_newspost
 				$category_rewrite = e107::getDb()->db_Fetch();
 			}
 		}
-		
+
 		if($this->error && (isset($_POST['update_category']) || isset($_POST['create_category'])))
 		{
 			foreach ($_POST as $k=>$v)
@@ -2078,7 +2073,7 @@ class admin_newspost
 					$category[$k] = e107::getParser()->post_toForm($v);
 					continue;
 				}
-				
+
 				if(strpos($k, 'news_rewrite_') === 0)
 				{
 					$category_rewrite[$k] = e107::getParser()->post_toForm($v);
@@ -2145,7 +2140,7 @@ class admin_newspost
 					</table>
 					<div class='buttons-bar center'>
 		";
-		
+
 		if($this->getId())
 		{
 			$text .= "
@@ -2173,18 +2168,18 @@ class admin_newspost
 			</div>
 		";
 
-		
-		
+
+
 		e107::getRender()->tablerender(NWSLAN_46a, e107::getMessage()->render().$text);
 	}
-	
+
 	function show_categoriy_list()
 	{
 		$frm = e107::getForm();
-		
+
 		//FIXME - lan
 		$text = "
-		
+
 			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
 					<legend>".NWSLAN_51."</legend>
@@ -2209,20 +2204,20 @@ class admin_newspost
 						</thead>
 						<tbody>
 		";
-		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.*, nrewr.news_rewrite_string FROM #news_category AS ncat LEFT JOIN #news_rewrite AS nrewr ON ncat.category_id=nrewr.news_rewrite_source AND nrewr.news_rewrite_type=2 ORDER BY ncat.category_order ASC")) 
+		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.*, nrewr.news_rewrite_string FROM #news_category AS ncat LEFT JOIN #news_rewrite AS nrewr ON ncat.category_id=nrewr.news_rewrite_source AND nrewr.news_rewrite_type=2 ORDER BY ncat.category_order ASC"))
 		{
 			$tindex = 100;
 			while ($category = e107::getDb()->db_Fetch()) {
 
 				$icon = '';
-				if ($category['category_icon']) 
+				if ($category['category_icon'])
 				{
 					$icon = (strstr($category['category_icon'], "images/") ? THEME_ABS.$category['category_icon'] : (strpos($category['category_icon'], '{') === 0 ? e107::getParser()->replaceConstants($category['category_icon'], 'abs') : e_IMAGE_ABS."icons/".$category['category_icon']));
 					$icon = "<img class='icon action' src='{$icon}' alt='' />";
 				}
-				
+
 				$sefstr = $category['news_rewrite_string'] ? "<br />SEF: <strong>{$category['news_rewrite_string']}</strong>" : '';
-				
+
 				$text .= "
 							<tr>
 								<td class='center middle'>{$category['category_id']}</td>
@@ -2238,7 +2233,7 @@ class admin_newspost
 				";
 				$tindex++;
 			}
-			
+
 			$text .= "
 						</tbody>
 					</table>
@@ -2247,8 +2242,8 @@ class admin_newspost
 						".$frm->admin_button('trigger_list_refresh', 'Refresh List', 'refresh')."
 					</div>
 			";
-			} 
-			else 
+			}
+			else
 			{
 				$text .= "<div class='center'>".NWSLAN_10."</div>";
 			}
@@ -2257,7 +2252,7 @@ class admin_newspost
 				</fieldset>
 			</form>
 		";
-		
+
 		return $text;
 	}
 
@@ -2548,7 +2543,7 @@ class admin_newspost
 		// ##### Display comfort ---------
 		e107::getMessage()->add($message, $type, $session);
 	}
-	
+
 	function noPermissions($qry = '')
 	{
 		$url = e_SELF.($qry ? '?'.$qry : '');
