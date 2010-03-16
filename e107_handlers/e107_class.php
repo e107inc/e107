@@ -355,13 +355,14 @@ class e107
 	 *
 	 * @return e107
 	 */
-	public function initInstall($e107_paths, $e107_root_path)
+	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
 	{
 		// Do some security checks/cleanup, prepare the environment
 		$this->prepare_request();
 
 		// folder info
-		$this->e107_dirs = $e107_paths;
+		//$this->e107_dirs = $e107_paths;
+		$this->setDirs($e107_paths, $e107_config_override);
 
 		// build all paths
 		$this->set_paths();
@@ -1106,7 +1107,7 @@ class e107
 	{
 		return self::getSingleton('comment', true);
 	}
-	
+
 	/**
 	 * Retrieve Media handler singleton object
 	 * @return comment

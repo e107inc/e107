@@ -8,10 +8,8 @@
 *
 * Installation file
 *
-* $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 
@@ -33,22 +31,24 @@ define('MAKE_INSTALL_LOG', TRUE);
 
 /* Default Options and Paths for Installer */
 $MySQLprefix	     = 'e107_';
+$HANDLERS_DIRECTORY  = "e107_handlers/"; // needed for e107 class init
 
-$ADMIN_DIRECTORY     = "e107_admin/";
-$FILES_DIRECTORY     = "e107_files/";
-$IMAGES_DIRECTORY    = "e107_images/";
-$MEDIA_DIRECTORY     = "e107_media/";
-$THEMES_DIRECTORY    = "e107_themes/";
-$PLUGINS_DIRECTORY   = "e107_plugins/";
-$HANDLERS_DIRECTORY  = "e107_handlers/";
-$LANGUAGES_DIRECTORY = "e107_languages/";
-$HELP_DIRECTORY      = "e107_docs/help/";
-$CACHE_DIRECTORY 	 = "e107_system/cache/";
-$DOWNLOADS_DIRECTORY = "e107_media/files/";
-$UPLOADS_DIRECTORY   = "e107_media/temp/";
-$LOGS_DIRECTORY		 = "e107_files/logs";
-$CORE_DIRECTORY		 = "e107_core/";
-$SYSTEM_DIRECTORY	 = "e107_system/";
+// Should be safe to disable this - done in e107 class
+//$ADMIN_DIRECTORY     = "e107_admin/";
+//$FILES_DIRECTORY     = "e107_files/";
+//$IMAGES_DIRECTORY    = "e107_images/";
+//$MEDIA_DIRECTORY     = "e107_media/";
+//$THEMES_DIRECTORY    = "e107_themes/";
+//$PLUGINS_DIRECTORY   = "e107_plugins/";
+//$HANDLERS_DIRECTORY  = "e107_handlers/";
+//$LANGUAGES_DIRECTORY = "e107_languages/";
+//$HELP_DIRECTORY      = "e107_docs/help/";
+//$CACHE_DIRECTORY 	 = "e107_system/cache/";
+//$DOWNLOADS_DIRECTORY = "e107_media/files/";
+//$UPLOADS_DIRECTORY   = "e107_media/temp/";
+//$LOGS_DIRECTORY		 = "e107_files/logs";
+//$CORE_DIRECTORY		 = "e107_core/";
+//$SYSTEM_DIRECTORY	 = "e107_system/";
 
 /* End configurable variables */
 
@@ -155,7 +155,8 @@ function check_class($whatever)
 }
 
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
+//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
+$e107_paths = array();
 $e107 = e107::getInstance();
 $e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
