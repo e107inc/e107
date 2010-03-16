@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,14 +22,14 @@ class sitelinks
 	var $eLinkList = array();
 
 	function getlinks($cat=1)
-	{	
+	{
 		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
-		
+
 		$sql = e107::getDb('sqlSiteLinks');
-		
+
 		$query = "SELECT * FROM #links WHERE link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
 		if($sql->db_Select_gen($query))
-		{		
+		{
 			while ($row = $sql->db_Fetch())
 			{
 			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
@@ -40,43 +38,43 @@ class sitelinks
 				if (isset($row['link_parent']) && $row['link_parent'] != 0)
 				{
 					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
-		
+
 				}
 				else
 				{
-				
+
 					$this->eLinkList['head_menu'][] = $row;
 					if(vartrue($row['link_function']))
-					{		
+					{
 						list($path,$method) = explode("::",$row['link_function']);
 						if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 						{
 							$class = $path."_sitelinks";
-							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it. 
+							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
 							if(vartrue($sublinkArray))
 							{
 								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
 							}
-						}						
+						}
 					}
 				}
 			}
 		}
-		
+
 	}
-	
+
 	function getLinkArray()
 	{
 		return $this->eLinkList;
 	}
-	
+
 
 	function get($cat=1, $style='', $css_class = false)
 	{
 		global $pref, $ns, $e107cache, $linkstyle;
 		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
 
-		if ($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY)))) 
+		if ($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY))))
 		{
 		  return $data;
 		}
@@ -127,6 +125,12 @@ class sitelinks
 		}
 
 		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
+
+		// php warnings
+		if(!vartrue($this->eLinkList['head_menu']))
+		{
+			$this->eLinkList['head_menu'] = array();
+		}
 
 		if ($style['linkdisplay'] != 3)	{
 			foreach ($this->eLinkList['head_menu'] as $key => $link){
@@ -207,7 +211,7 @@ class sitelinks
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
-		
+
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) {
 			if(substr($linkInfo['link_name'],0,8) == "submenu."){
@@ -237,7 +241,7 @@ class sitelinks
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
 		{
 			$href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
-		} 
+		}
 		elseif ($linkInfo['link_url'])
 		{
 			// Only add the e_BASE if it actually has an URL.
@@ -257,8 +261,8 @@ class sitelinks
 			{
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
 				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',{$dimen})\"";
-			} 
-			else 
+			}
+			else
 			{
 				$href = " href='".$linkInfo['link_url']."'";
 			}
@@ -292,9 +296,9 @@ class sitelinks
 		}
 
 		$_link = $linkstart.$indent.$_link;
-		
-		
-		
+
+
+
 		global $SITELINKSTYLE;
 		if(!$SITELINKSTYLE)
 		{
@@ -333,7 +337,7 @@ function hilite($link,$enabled = FALSE)
     $link_slf = (isset($tmp[0])) ? $tmp[0] : '';
 	$link_pge = basename($link_slf);
 	$link_match = (empty($tmp[0])) ? "": strpos(e_SELF,$tmp[0]);	// e_SELF is the actual displayed page
-	
+
     if(e_MENU == "debug" && getperms('0'))
 	{
 		echo "<br />link= ".$link;
