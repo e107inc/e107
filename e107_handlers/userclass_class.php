@@ -92,6 +92,13 @@ class user_class
 		$this->readTree(TRUE);			// Initialise the classes on entry
 	}
 
+	/**
+ 	*  Return value of isAdmin
+ 	*/
+	public function isAdmin()
+	{
+		return $this->isAdmin;
+	}
 
 	/**
 	 *	Ensure the tree of userclass data is stored in our object ($this->class_tree).
