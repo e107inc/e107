@@ -301,7 +301,7 @@ class e107plugin
 
     function manage_icons($plugin='',$function='')
 	{
-	
+
 		if($plugin == '')
 		{
 			return;
@@ -311,23 +311,23 @@ class e107plugin
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$med = e107::getMedia();
-		
+
 		if($function == 'install' || $function == 'upgrade')
 		{
         	$med->importIcons(e_PLUGIN.$plugin);
 			return;
 		}
-		
+
 
 		if($function == 'uninstall')
 		{
 			if(vartrue($this->unInstallOpts['delete_ipool'], FALSE))
-			{	
+			{
 	        	$status = ($med->removePath(e_PLUGIN.$plugin,'icon')) ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 				$mes->add('Removing Icons from Media-Manager', $status);
 			}
 			return;
-		}	
+		}
 
 	}
 
@@ -392,7 +392,7 @@ class e107plugin
 
 		$mes->add("Userclass: ".$action.": ".$class_name." : ".$class_description, E_MESSAGE_DEBUG);
 
-		if (!$e107->user_class->isAdmin)
+		if (!$e107->user_class->isAdmin())
 		{
 			$e107->user_class = new user_class_admin;			// We need the extra methods of the admin extension
 		}
