@@ -1970,6 +1970,7 @@ class siteStats
 	{
 		$sql = e107::getDB();
 
+		// Month format entries have log_id = yyyy-mm
 		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) 
 		{
 			return ADSTAT_L42;
@@ -1978,7 +1979,7 @@ class siteStats
 		$text = '';
 		$array = $sql -> db_getList();
 
-		$monthTotal = array();
+		$monthTotal = array();		// Array of totals, one per month, with 'totalv', 'uniquev' sub-indices
 		$mtotal = 0;
 		$utotal = 0;
 		foreach($array as $info) 
@@ -1986,6 +1987,8 @@ class siteStats
 			$date = $info['log_id'];
 			$stats = unserialize($info['log_data']);
 
+			/*
+			Used to have to calculate monthly stats by adding the individual page access fields
 			foreach($stats as $key => $total) 
 			{
 				if (!isset($monthTotal[$date]['totalv'])) $monthTotal[$date]['totalv'] = 0;
@@ -1995,6 +1998,12 @@ class siteStats
 				$mtotal += $total['ttlv'];
 				$utotal += $total['unqv'];
 			}
+			*/
+			// Now we store a total, so just use that
+			$monthTotal[$date]['totalv'] = varset($stats['TOTAL']['ttlv'], 0);
+			$monthTotal[$date]['uniquev'] = varset($stats['TOTAL']['unqv'], 0);
+			$mtotal += $monthTotal[$date]['totalv'];
+			$utotal += $monthTotal[$date]['uniquev'];
 		}
 
 		$tmpArray = $this -> arraySort($monthTotal, "totalv");
