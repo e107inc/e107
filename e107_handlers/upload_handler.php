@@ -245,10 +245,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
  
 	  if (!$first_error)
 	  {
-		$tpos = strrchr($files['name'][$key], ".");		// Require uploaded files to have an extension
+		$tpos = strrchr($name, ".");		// Require uploaded files to have an extension
 		if ($tpos !== FALSE) 
 		{
-		  $fileext = strtolower($tpos);
 		  $tpos = (($file_status = vet_file($uploadfile, $name, $allowed_filetypes, varset($options['extra_file_types'],FALSE))) === TRUE);
 		}
 		if ($tpos === FALSE)
