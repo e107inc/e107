@@ -246,7 +246,7 @@ function step4()
 		$e107->ns->tablerender($stepCaption, $text);
 		return;
 	}
-	
+
 	/** Convert forum prefs to their own row **/
 	$fconf = e107::getPlugConfig('forum', '', false);
 	$coreConfig = e107::getConfig();
@@ -261,10 +261,10 @@ function step4()
 	}
 	$old_prefs['reported_post_email'] = $coreConfig->get('reported_post_email');
 	$coreConfig->remove('reported_post_email');
-	
+
 	$fconf->setPref($old_prefs)->save(false, true);
 	$coreConfig->save(false, true);
-	
+
 	$result = array(
 	'usercount' => 0,
 	'viewcount' => 0,
@@ -498,7 +498,7 @@ function step6()
 		$text .= '<br />Successfully converted '.count($threadList)." threads and {$postCount} replies.<br />";
 		$text .= "Last thread id = {$t['thread_id']}<br />";
 
-		
+
 		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
 		if($count)
 		{
@@ -776,7 +776,7 @@ function step10()
 						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']}<br />{$error}<br />";
 					}
 				}
-				
+
 				// Did we make any changes at all?
 				if(count($newValues))
 				{
@@ -822,7 +822,7 @@ class forumUpgrade
 	{
 		$this->updateInfo['lastThread'] = 0;
 	}
-	
+
 	function forumUpgrade()
 	{
 		$this->getUpdateInfo();
@@ -940,7 +940,7 @@ class forumUpgrade
 
 		$result =  $e107->sql->db_Insert('forum_thread', $thread);
 		return $result;
-		
+
 //		return $e107->sql->db_Insert('forum_thread', $thread);
 //		print_a($thread);
 	}
@@ -969,7 +969,7 @@ class forumUpgrade
 		$result =$e107->sql->db_Insert('forum_post', $newPost);
 //		exit;
 		return $result;
-		
+
 	}
 
 	function getUserInfo(&$info)
@@ -1012,16 +1012,17 @@ class forumUpgrade
 		}
 		return $ret;
 	}
-	
+
 	function moveAttachment($attachment, &$error)
 	{
+		set_time_limit(30);
 		$tmp = split('/', $attachment['name']);
 		$old = str_replace('{e_FILE}', e_FILE, $attachment['name']);
 		$new = e_PLUGIN.'forum/attachments/'.$tmp[1];
 		if(!file_exists($new))
 		{
-//			$r = copy($old, $new);
-			$r = true;
+			$r = copy($old, $new);
+//			$r = true;
 		}
 		else
 		{
@@ -1044,8 +1045,8 @@ class forumUpgrade
 			$newThumb = e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];
 			if(!file_exists($new))
 			{
-//				$r = copy($oldThumb, $newThumb);
-				$r = true;
+				$r = copy($oldThumb, $newThumb);
+//				$r = true;
 			}
 			else
 			{
@@ -1060,10 +1061,10 @@ class forumUpgrade
 				return false;
 			}
 		}
-		
+
 		//Copy was successful, let's delete the original files now.
-			$r = true;
-//		$r = unlink($old);
+//		$r = true;
+		$r = unlink($old);
 		if(!$r)
 		{
 			$error = 'Was unable to delete old attachment: '.$old;
@@ -1071,8 +1072,8 @@ class forumUpgrade
 		}
 		if($oldThumb)
 		{
-			$r = true;
-//			$r = unlink($oldThumb);
+//			$r = true;
+			$r = unlink($oldThumb);
 			if(!$r)
 			{
 				$error = 'Was unable to delete old thumb: '.$oldThumb;
