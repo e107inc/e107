@@ -94,7 +94,7 @@ define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'r
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if($forum->prefs->get('forum_attach'))
+if($forum->prefs->get('attach'))
 {
 	global $allowed_filetypes, $max_upload_size;
 	include_once(e_HANDLER.'upload_handler.php');
