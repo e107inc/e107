@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update_check.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -29,6 +27,7 @@ function update_forum_08($type)
 			return;
 		}
 	}
-	return !version_compare($pref['plug_installed']['forum'], '3.0', '<');
+	$vc = !version_compare($pref['plug_installed']['forum'], '2.0', '<');
+	return $vc;
 }
 ?>

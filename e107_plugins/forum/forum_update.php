@@ -8,10 +8,8 @@
  *
  * Forum upgrade routines
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -41,6 +39,15 @@ $timestart = microtime();
 $f = new forumUpgrade;
 $e107 = e107::getInstance();
 
+$upgradeNeeded = $f->checkUpdateNeeded();
+if(!$upgradeNeeded)
+{
+	$text = "The forum is already at the most recent version, no upgrade is required";
+	$ns->tablerender('Forum Upgrade', $text);
+	require(e_ADMIN.'footer.php');
+	exit;
+}
+
 if(isset($_POST) && count($_POST))
 {
 	if(isset($_POST['skip_attach']))
@@ -50,7 +57,6 @@ if(isset($_POST) && count($_POST))
 		$f->setUpdateInfo();
 	}
 
-	var_dump($_POST);
 	if(isset($_POST['nextStep']))
 	{
 		$tmp = array_keys($_POST['nextStep']);
@@ -63,6 +69,7 @@ if(isset($_POST) && count($_POST))
 $currentStep = (isset($f->updateInfo['currentStep']) ? $f->updateInfo['currentStep'] : 1);
 $stepParms = (isset($stepParms) ? $stepParms : '');
 
+//echo "currentStep = $currentStep <br />";
 if(function_exists('step'.$currentStep))
 {
 	$result = call_user_func('step'.$currentStep, $stepParms);
@@ -685,7 +692,7 @@ function step10()
 {
 	$e107 = e107::getInstance();
 	global $f;
-	$stepCaption = 'Step 9: Migrate forum attachments';
+	$stepCaption = 'Step 10: Migrate forum attachments';
 	if(!isset($_POST['migrate_attachments']))
 	{
 		$text = "
@@ -837,17 +844,162 @@ function step10()
 	$e107->ns->tablerender($stepCaption, $text);
 }
 
+function step11()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 11: Delete old attachments';
+	if(!isset($_POST['delete_orphans']))
+	{
+		$text = "
+		The previous versions of the forum had difficulty deleting attachment files when posts or threads were deleted.
+		<br />
+		As a result of this, there is a potential for numerous files to exist that do not point to anything. In this step
+		we will try to identify these files and delete them.
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
 
+	global $forum;
+	require_once(e_HANDLER.'file_class.php');
+	$f = new e_file;
+
+	$flist = $f->get_files(e_FILE.'public', '_\d+_FT\d+_');
+	$numFiles = count($flist);
+
+	if($numFiles)
+	{
+		if($_POST['delete_orphans'] == 'Delete files')
+		{
+			//Do the deletion
+			$success = 0;
+			$failText = '';
+			foreach($flist as $file)
+			{
+				$fileName = e_FILE.'public/'.$file['fname'];
+				$r = unlink($fileName);
+				if($r) {
+					$success++;
+				}
+				else
+				{
+					$failText .= "Deletion failed: {$file['fname']}<br />";
+				}
+			}
+			if($failText)
+			{
+				$failText = "<br /><br />The following failures occured: <br />".$failText;
+			}
+			$text .= "
+				Successfully removed {$success} orphaned files <br />
+				{$failText}
+				<br /><br />
+				<form method='post'>
+				<input class='button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+				</form>
+			";
+			$e107->ns->tablerender($stepCaption, $text);
+			return;
+		}
+		$text = "There were {$numFiles} orphaned files found<br /><br />";
+		if($_POST['delete_orphans'] == 'Show files' || $numFiles < 31)
+		{
+			$i=1;
+			foreach($flist as $file)
+			{
+				$text .= $i++.') '.$file['fname'].'<br />';
+			}
+			$extra = '';
+		}
+		else
+		{
+			$extra = "<input class='button' type='submit' name='delete_orphans' value='Show files' />&nbsp; &nbsp; &nbsp; &nbsp;";
+		}
+		$text .= "
+			<br /><br />
+			<form method='post'>
+			{$extra}
+			<input class='button' type='submit' name='delete_orphans' value='Delete files' />
+			</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+	else
+	{
+		$text .= "
+			There were no orphaned files found <br />
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='nextStep[12]' value='Proceed to step 12' />
+			</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+}
+
+function step12()
+{
+	$e107 = e107::getInstance();
+	$f = new forumUpgrade;
+	$stepCaption = 'Step 12: Delete old forum data';
+	if(!isset($_POST['delete_old']))
+	{
+		$text = "
+		The forum upgrade should now be complete.<br />  During the upgrade process the old forum tables were
+		retained, it is now time to remove the tables.<br /><br />
+		We will also be marking the forum upgrade as completed!
+		<br /><br />
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='delete_old' value='Remove old forum tables' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	$qryArray = array(
+		"DROP TABLE `#forum_old`",
+		"DROP TABLE `#forum_t",
+		"DELETE * FROM `#generic` WHERE gen_type = 'forumUpgrade'"
+	);
+	foreach($qryArray as $qry)
+	{
+		$e107->sql->db_Select_gen($qry, true);
+	}
+	$ret = $f->setNewVersion();
+
+	$text = "
+	Congratulations, the forum upgrade is now completed!<br /><br />
+	{$ret}
+	<br /><br />
+	";
+	$e107->ns->tablerender($stepCaption, $text);
+	return;
+}
 
 class forumUpgrade
 {
-	var	$newVersion = '2.0';
+	var $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
 
 	public function __initialize()
 	{
 		$this->updateInfo['lastThread'] = 0;
+	}
+
+	public function checkUpdateNeeded()
+	{
+		include_once(e_PLUGIN.'forum/forum_update_check.php');
+		$needed = update_forum_08('check');
+		return !$needed;
 	}
 
 	function forumUpgrade()
@@ -907,8 +1059,11 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
+		global $pref;
 		$e107 = e107::getInstance();
-		$e107->sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
+		$e107->sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'", true);
+		$pref['plug_installed']['forum'] = $this->newVersion;
+		save_prefs();
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}
 
@@ -1172,8 +1327,11 @@ function forum_update_adminmenu()
 		$var[10]['text'] = '10 - Migrate any attachments';
 		$var[10]['link'] = '#';
 
-		$var[11]['text'] = '11 - Delete old forum data';
+		$var[11]['text'] = '11 - Delete old attachments';
 		$var[11]['link'] = '#';
+
+		$var[12]['text'] = '12 - Delete old forum data';
+		$var[12]['link'] = '#';
 
 
 		for($i=1; $i < $currentStep; $i++)
