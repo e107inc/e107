@@ -1275,7 +1275,7 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
-		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/';
+		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/|{$SYSTEM_DIRECTORY}cache/|{$SYSTEM_DIRECTORY}cache/content/|{$SYSTEM_DIRECTORY}cache/db/|{$SYSTEM_DIRECTORY}cache/images/';
 		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
 		foreach ($this->e107->e107_dirs as $dir_name => $value)
