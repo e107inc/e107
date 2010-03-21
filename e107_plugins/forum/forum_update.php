@@ -32,6 +32,7 @@ if (!getperms('P'))
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+error_reporting(E_ALL);
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_ADMIN.'auth.php');
 $forum = new e107forum;
@@ -253,10 +254,12 @@ function step4()
 	$old_prefs = array();
 	foreach($pref as $k => $v)
 	{
-		if(substr($key, 0, 6) == 'forum_')
+		if(substr($k, 0, 6) == 'forum_')
 		{
-			$old_prefs[substr($key,6)] = $v;
-			$coreConfig->remove($key);
+			$nk = substr($k, 6);
+			echo "Converting $k to $nk<br />";
+			$old_prefs[$nk] = $v;
+			$coreConfig->remove($k);
 		}
 	}
 	$old_prefs['reported_post_email'] = $coreConfig->get('reported_post_email');
@@ -466,6 +469,7 @@ function step6()
 		echo "error: Unable to determine last thread id";
 		exit;
 	}
+	$done = false;
 
 	$qry = "
 	SELECT thread_id FROM `#forum_t`
@@ -512,8 +516,16 @@ function step6()
 			";
 			$e107->ns->tablerender($stepCaption, $text);
 		}
+		else
+		{
+			$done = true;
+		}
 	}
 	else
+	{
+		$done = true;
+	}
+	if($done)
 	{
 		$text .= "
 		Thread migration is complete!!
@@ -701,22 +713,9 @@ function step10()
 		foreach($postList as $post)
 		{
 			$attachments = array();
-			//<div class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
-			//Check for attached full-size images
-			if(preg_match_all('#<div.*?>\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]</div>#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
-			{
-				foreach($matches as $match)
-				{
-					print_a($matches);
-					$att = array();
-					$att['thread_id'] = $post['thread_id'];
-					$att['type'] = 'img';
-					$att['html'] = $match[0];
-					$att['name'] = $match[1];
-					$att['thumb'] = '';
-					$attachments[] = $att;
-				}
-			}
+			$foundFiles = array();
+
+//			echo $post['post_entry']."<br /><br />";
 
 			//[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
 			//Check for images with thumbnails linking to full size
@@ -732,8 +731,32 @@ function step10()
 					$att['name'] = $match[1];
 					$att['thumb'] = $match[2];
 					$attachments[] = $att;
+					$foundFiles[] = $match[1];
+					$foundFiles[] = $match[2];
 				}
 			}
+
+			//<div class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
+			//Check for attached full-size images
+			if(preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+					//Ensure it hasn't already been handled above
+					if(!in_array($match[1], $foundFiles))
+					{
+//						print_a($matches);
+						$att = array();
+						$att['thread_id'] = $post['thread_id'];
+						$att['type'] = 'img';
+						$att['html'] = $match[0];
+						$att['name'] = $match[1];
+						$att['thumb'] = '';
+						$attachments[] = $att;
+					}
+				}
+			}
+
 
 			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
 			//Check for attached file (non-images)
@@ -751,12 +774,15 @@ function step10()
 					$attachments[] = $att;
 				}
 			}
+
 			if(count($attachments))
 			{
 				$newValues = array();
 				$info = array();
+				$info['post_entry'] = $post['post_entry'];
 				foreach($attachments as $attachment)
 				{
+//					var_dump($attachment);
 					$error = '';
 					if($f->moveAttachment($attachment, $error))
 					{
@@ -769,26 +795,27 @@ function step10()
 							$newval .= '*'.$_file[1];
 						}
 						$newValues[] = $newval;
-						$info['post_entry'] = str_replace($attachment['html'], '', $post['post_entry']);
+//						echo "Removing from post:".htmlentities($attachment['html'])."<br />";
+						$info['post_entry'] = str_replace($attachment['html'], '', $info['post_entry']);
 					}
 					else
 					{
 						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']}<br />{$error}<br />";
 					}
 				}
+				echo $errorText."<br />";
 
 				// Did we make any changes at all?
 				if(count($newValues))
 				{
 					$info['WHERE'] = 'post_id = '.$post['post_id'];
-					$infot['post_attachments'] = implode(',', $newValues);
-					$info['_FILE_TYPES']['post_attachments'] = 'escape';
-					$info['_FILE_TYPES']['post_entry'] = 'escape';
-					print_a($info);
+					$info['post_attachments'] = implode(',', $newValues);
+//					print_a($info);
 				}
-				echo $post['thread_thread']."<br />";
+//				echo $post['thread_thread']."<br />";
 //				print_a($newValues);
-				echo $info['newpost']."<br />--------------------------------------<br />";
+//				echo $info['newpost']."<br />--------------------------------------<br />";
+				$e107->sql->db_Update('forum_post', $info);
 //			Update db values now
 			}
 		}
@@ -1041,9 +1068,9 @@ class forumUpgrade
 		if($attachment['thumb'])
 		{
 			$tmp = split('/', $attachment['thumb']);
-			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachments['thumb']).$tmp[1];
+			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachment['thumb']);
 			$newThumb = e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];
-			if(!file_exists($new))
+			if(!file_exists($newThumb))
 			{
 				$r = copy($oldThumb, $newThumb);
 //				$r = true;
