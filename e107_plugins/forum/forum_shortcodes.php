@@ -76,11 +76,11 @@ class forum_shortcodes
 					//if image has a thumb, show it and link to main
 					if(isset($info[2]))
 					{
-						$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a>";
+						$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a><br />";
 					}
 					else
 					{
-						$txt .= "<img src='".e_PLUGIN_ABS."forum/attachments/{$info[1]}' alt='' />";
+						$txt .= "<img src='".e_PLUGIN_ABS."forum/attachments/{$info[1]}' alt='' /><br />";
 					}
 				}
 			}
