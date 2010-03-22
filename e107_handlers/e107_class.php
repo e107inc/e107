@@ -149,6 +149,7 @@ class e107
 		'e_file'						 => '{e_HANDLER}file_class.php',
 		'e_form'						 => '{e_HANDLER}form_handler.php',
 		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
+		'e_media'						 => '{e_HANDLER}media_class.php',
 		'e_menu'						 => '{e_HANDLER}menu_class.php',
 		'e_model'						 => '{e_HANDLER}model_class.php',
 		'e_news_item'					 => '{e_HANDLER}news_class.php',
@@ -157,6 +158,9 @@ class e107
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
 		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
+		'e_user_model'					 => '{e_HANDLER}user_model.php',
+		'e_user'					 	 => '{e_HANDLER}user_model.php',
+		'e_current_user'				 => '{e_HANDLER}user_model.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
 		'e_vars'						 => '{e_HANDLER}e_parse_class.php',
@@ -168,7 +172,6 @@ class e107
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'e_media'						 => '{e_HANDLER}media_class.php',
 	);
 
 	/**
@@ -885,7 +888,7 @@ class e107
 	}
 
 	/**
-	 * Retrieve user class singleton object
+	 * Retrieve userclass singleton object
 	 *
 	 * @return user_class
 	 */
@@ -894,6 +897,45 @@ class e107
 		return self::getSingleton('user_class', true);
 	}
 
+	/**
+	 * Retrieve [e_current_user] current or [e_user] target (cached) user model object.
+	 *
+	 * @param boolean $current true - current user; false - target user (previously cached)
+	 * @return e_current_user|e_user
+	 */
+	public static function getUser($current = true)
+	{
+		if($current)
+		{
+			return self::getSingleton('e_current_user', true);
+		}
+		return e107::getRegistry('targets/core/user');
+	}
+
+	/**
+	 * Load user data
+	 *
+	 * @param integer|array $user
+	 * @return e_user
+	 */
+	public static function loadUser($user = array())
+	{
+		if(is_numeric($user_id))
+		{
+			return $this->getObject('e_user', array(), true)->load($user);
+		}
+		return $this->getObject('e_user', $user, true);
+	}
+
+	/**
+	 * Retrieve user-session singleton object
+	 *
+	 * @return UserHandler
+	 */
+	public static function getSession()
+	{
+		return self::getSingleton('UserHandler', true);
+	}
 
 	/**
 	 * Retrieve redirection singleton object
@@ -904,7 +946,6 @@ class e107
 	{
 		return self::getSingleton('redirection', true);
 	}
-
 
 	/**
 	 * Retrieve sitelinks singleton object
@@ -945,16 +986,6 @@ class e107
 	public static function getEvent()
 	{
 		return self::getSingleton('e107_event', true);
-	}
-
-	/**
-	 * Retrieve user-session singleton object
-	 *
-	 * @return e107_event
-	 */
-	public static function getSession()
-	{
-		return self::getSingleton('UserHandler', true);
 	}
 
 	/**
