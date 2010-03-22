@@ -105,7 +105,7 @@ class forum_post_shortcodes
 	{
 		global $forum, $pref, $fileattach, $fileattach_alert;
 
-		if ($forum->prefs->get('attach') && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
+		if ($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 		{
 			if (is_writable(e_PLUGIN.'forum/attachments'))
 			{
