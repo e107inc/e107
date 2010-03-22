@@ -51,7 +51,7 @@ switch($action)
 		$postInfo = $forum->postGet($id, 'post');
 		$threadInfo = $postInfo;
 		$forumId = $postInfo['post_forum'];
-		$forumInfo = $forum->forum_get($forumId);
+		$forumInfo = $forum->forumGet($forumId);
 		break;
 
 	default:
@@ -246,6 +246,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				//$postInfo['post_entry'] .= $ur['txt'];
 				$_tmp = $ur['type'].'*'.$ur['file'];
 				if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+				if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
 				$attachments[] = $_tmp;
 			}
 			$postInfo['post_attachments'] = implode(',', $attachments);
@@ -365,6 +366,19 @@ if (isset($_POST['update_thread']))
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
 			require_once(FOOTERF);
 			exit;
+		}
+
+		if($uploadResult = process_upload($postInfo['post_id']))
+		{
+			$attachments = explode(',', $postInfo['post_attachments']);
+			foreach($uploadResult as $ur)
+			{
+				$_tmp = $ur['type'].'*'.$ur['file'];
+				if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+				if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+				$attachments[] = $_tmp;
+			}
+			$postVals['post_attachments'] = implode(',', $attachments);
 		}
 
 		$postVals['post_edit_datestamp'] = time();
@@ -552,7 +566,7 @@ function process_upload()
 
 	$postId = (int)$postId;
 	$ret = array();
-//	var_dump($_FILES);
+	var_dump($_FILES);
 
 	if (isset($_FILES['file_userfile']['error']))
 	{
@@ -570,6 +584,7 @@ function process_upload()
 				$_att = '';
 				$_file = '';
 				$_thumb = '';
+				$_fname = '';
 				$fpath = '{e_PLUGIN}forum/attachments/';
 				if(strstr($upload['type'], 'image'))
 				{
@@ -627,7 +642,7 @@ function process_upload()
 				}
 				if($_txt && $_file)
 				{
-					$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb);
+					$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $_fname);
 				}
 			  }
 			  else

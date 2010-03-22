@@ -789,19 +789,30 @@ function step10()
 				$info['post_entry'] = $post['post_entry'];
 				foreach($attachments as $attachment)
 				{
-//					var_dump($attachment);
 					$error = '';
 					if($f->moveAttachment($attachment, $error))
 					{
 						$_file = split('/', $attachment['name']);
-						$tmp = split('_', $_file[1], 4);
-						$newval = $attachment['type'].'*'.$_file[1].'*'.$tmp[3];
-						if($attachment['thumb'])
+						$newval = $attachment['type'].'*'.$_file[1];
+						switch($attachment['type'])
 						{
-							$_file = split('/', $attachment['thumb']);
-							$newval .= '*'.$_file[1];
+							//If file, add real name to entry
+							case 'file':
+								$tmp = split('_', $_file[1], 4);
+								$newval .= '*'.$tmp[3];
+								break;
+
+							//If image and it has a thumb, add thumb filename to entry
+							case 'img':
+								if($attachment['thumb'])
+								{
+									$_file = split('/', $attachment['thumb']);
+									$newval .= '*'.$_file[1];
+								}
+								break;
 						}
 						$newValues[] = $newval;
+						echo "Newval = $newval <br />";
 //						echo "Removing from post:".htmlentities($attachment['html'])."<br />";
 						$info['post_entry'] = str_replace($attachment['html'], '', $info['post_entry']);
 					}

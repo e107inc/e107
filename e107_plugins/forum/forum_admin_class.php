@@ -641,7 +641,7 @@ class forumAdmin
 
 		if(!$poll_installed)
 		{
-			if($fPref['poll'] == 1)
+			if($fPref->get('poll') == 1)
 			{
 				$fPref['forum_poll'] = e_UC_NOBODY;
 				$fPref->save(false, true);
