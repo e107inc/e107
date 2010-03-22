@@ -2,16 +2,14 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright 2008-2010 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
-* Custom forum install/uninstall/update routines
+* Forum plugin version tools
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_setup.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 
@@ -27,7 +25,7 @@ class forum_setup
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		
+
 		/*if($sql -> db_Update("user", "user_forums='0'")) // deprecated in 0.8
 		{
 			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);
@@ -38,22 +36,23 @@ class forum_setup
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		
+
 /*		if($sql -> db_Update("user", "user_forums='0'")) // deprecated in 0.8
 		{
-			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);	
+			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);
 		}*/
+	}
+
+	function upgrade_pre($var)
+	{
+		//Redirect upgrade to customized upgrade routine
+		header('Location: '.e_PLUGIN.'forum/forum_update.php');
+		exit;
 	}
 
 	function upgrade_post($var)
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		
-		if(version_compare($var['current_plug']['plugin_version'], "1.2", "<"))
-		{
-			$qry = "ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;";
-			$sql->db_Select_gen($qry);
-		}
 	}
 }
