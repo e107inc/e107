@@ -859,7 +859,7 @@ class e_model
     /**
      * Generic load data from DB
      * @param boolean $force
-     * @return e_admin
+     * @return e_model
      */
 	public function load($id, $force = false)
 	{
