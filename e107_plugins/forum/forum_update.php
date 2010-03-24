@@ -269,8 +269,15 @@ function step4()
 			$coreConfig->remove($k);
 		}
 	}
-	$old_prefs['reported_post_email'] = $coreConfig->get('reported_post_email');
-	$coreConfig->remove('reported_post_email');
+	$forumPrefList = array(
+		'reported_post_email', 'email_notify', 'email_notify_on'
+	);
+
+	foreach($forumPrefList as $_fp) {
+		echo "converting $_fp to $_fp<br />";
+		$old_prefs[$_fp] = $coreConfig->get($_fp);
+		$coreConfig->remove($_fp);
+	}
 
 	$fconf->setPref($old_prefs)->save(false, true);
 	$coreConfig->save(false, true);
@@ -298,7 +305,7 @@ function step4()
 
 
 			$realm = $row['user_realm'];
-			$realm - str_replace('USERREALM', '', $realm);
+			$realm = str_replace('USERREALM', '', $realm);
 			$realm = trim($realm, '-.');
 			$trackList = preg_split('#\D+#', $realm);
 
@@ -326,8 +333,6 @@ function step4()
 						$tmp = array();
 						$tmp['track_userid'] = $userId;
 						$tmp['track_thread'] = $threadId;
-//						$tmp['_FIELD_TYPES']['track_userid'] = 'int';
-//						$tmp['_FIELD_TYPES']['track_thread'] = 'int';
 
 						$e107->sql->db_Insert('forum_track', $tmp);
 					}
@@ -369,20 +374,6 @@ function step5()
 		return;
 	}
 
-/*
-	$ftypes['_FIELD_TYPES']['forum_id'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_parent'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_sub'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_datestamp'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_moderators'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_threads'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_replies'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_lastpost_user'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_class'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_order'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_postclass'] = 'int';
-	$ftypes['_FIELD_TYPES']['forum_threadclass'] = 'int';
-*/
 	$counts = array('parens' => 0, 'forums' => 0, 'subs' => 0);
 
 	if($e107->sql->db_Select('forum'))
@@ -653,7 +644,7 @@ function step9()
 		}
 		foreach($threadList as $threadId)
 		{
-			if($e107->sql->db_Select('forum_thread', 'thread_options', 'thread_id = '.$threadId, 'default', true))
+			if($e107->sql->db_Select('forum_thread', 'thread_options', 'thread_id = '.$threadId, 'default'))
 			{
 				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
 				if($row['thread_options'])
@@ -717,6 +708,7 @@ function step10()
 		{
 			$postList[] = $row;
 		}
+		$i = 0;
 		foreach($postList as $post)
 		{
 			$attachments = array();
@@ -812,13 +804,13 @@ function step10()
 								break;
 						}
 						$newValues[] = $newval;
-						echo "Newval = $newval <br />";
+//						echo "Newval = $newval <br />";
 //						echo "Removing from post:".htmlentities($attachment['html'])."<br />";
 						$info['post_entry'] = str_replace($attachment['html'], '', $info['post_entry']);
 					}
 					else
 					{
-						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']}<br />{$error}<br />";
+						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}<br />";
 					}
 				}
 				echo $errorText."<br />";
@@ -829,11 +821,11 @@ function step10()
 					$info['WHERE'] = 'post_id = '.$post['post_id'];
 					$info['post_attachments'] = implode(',', $newValues);
 //					print_a($info);
+					$e107->sql->db_Update('forum_post', $info);
 				}
 //				echo $post['thread_thread']."<br />";
 //				print_a($newValues);
 //				echo $info['newpost']."<br />--------------------------------------<br />";
-				$e107->sql->db_Update('forum_post', $info);
 //			Update db values now
 			}
 		}
