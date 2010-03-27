@@ -606,14 +606,10 @@ function get_allowed_filetypes($def_file = FALSE, $file_mask = '')
 	$a_filetypes = trim(file_get_contents(e_ADMIN.$def_file));
 	$a_filetypes = explode(',', $a_filetypes);
   }
-  else
-  { // Its an 'override' array
-	$a_filetypes = explode(',', $def_file);
-  }
   foreach ($a_filetypes as $ftype) 
   {
 	$ftype = strtolower(trim(str_replace('.', '', $ftype)));
-	if (!$file_mask || in_array($ftype, $file_array))
+	if ($ftype && (!$file_mask || in_array($ftype, $file_array)))
 	{
 	  $ret[] = $ftype;
 	}
