@@ -61,6 +61,7 @@ class forum_shortcodes
 	{
 		if($this->postInfo['post_attachments'])
 		{
+			$baseDir = e_MEDIA_ABS.'files/plugins/forum/attachments/';
 			$attachments = explode(',', $this->postInfo['post_attachments']);
 			$txt = '';
 			foreach($attachments as $a)
@@ -69,18 +70,18 @@ class forum_shortcodes
 				switch($info[0])
 				{
 					case 'file':
-					$txt .= IMAGE_attachment." <a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'>{$info[2]}</a><br />";
+					$txt .= IMAGE_attachment." <a href='{$baseDir}{$info[1]}'>{$info[2]}</a><br />";
 					break;
 
 					case 'img':
 					//if image has a thumb, show it and link to main
 					if(isset($info[2]))
 					{
-						$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a><br />";
+						$txt .= "<a href='{$baseDir}{$info[1]}'><img src='{$baseDir}thumb/{$info[2]}' alt='' /></a><br />";
 					}
 					else
 					{
-						$txt .= "<img src='".e_PLUGIN_ABS."forum/attachments/{$info[1]}' alt='' /><br />";
+						$txt .= "<img src='{$baseDir}{$info[1]}' alt='' /><br />";
 					}
 				}
 			}
