@@ -709,8 +709,13 @@ function step10()
 			$postList[] = $row;
 		}
 		$i = 0;
+		$pcount = 0;
+		$f->log("Found ".count($postList). " posts with attachments");
 		foreach($postList as $post)
 		{
+//			echo htmlentities($post['post_entry'])."<br />";
+			$i++;
+//			if($pcount++ > 10) { die('here 10'); }
 			$attachments = array();
 			$foundFiles = array();
 
@@ -722,7 +727,6 @@ function step10()
 			{
 				foreach($matches as $match)
 				{
-//					print_a($matches);
 					$att = array();
 					$att['thread_id'] = $post['thread_id'];
 					$att['type'] = 'img';
@@ -735,6 +739,23 @@ function step10()
 				}
 			}
 
+			if(preg_match_all('#\[link=(.*?)\]\[img.*?\](\.\./\.\./e107_files/public/.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+					$att = array();
+					$att['thread_id'] = $post['thread_id'];
+					$att['type'] = 'img';
+					$att['html'] = $match[0];
+					$att['name'] = $match[1];
+					$att['thumb'] = $match[2];
+					$attachments[] = $att;
+					$foundFiles[] = $match[1];
+					$foundFiles[] = $match[2];
+				}
+			}
+
+
 			//<div class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
 			//Check for attached full-size images
 			if(preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
@@ -744,7 +765,6 @@ function step10()
 					//Ensure it hasn't already been handled above
 					if(!in_array($match[1], $foundFiles))
 					{
-//						print_a($matches);
 						$att = array();
 						$att['thread_id'] = $post['thread_id'];
 						$att['type'] = 'img';
@@ -756,6 +776,23 @@ function step10()
 				}
 			}
 
+			if(preg_match_all('#\[img.*?\](\.\./\.\./e107_files/public/.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+					//Ensure it hasn't already been handled above
+					if(!in_array($match[1], $foundFiles))
+					{
+						$att = array();
+						$att['thread_id'] = $post['thread_id'];
+						$att['type'] = 'img';
+						$att['html'] = $match[0];
+						$att['name'] = $match[1];
+						$att['thumb'] = '';
+						$attachments[] = $att;
+					}
+				}
+			}
 
 			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
 			//Check for attached file (non-images)
@@ -763,7 +800,20 @@ function step10()
 			{
 				foreach($matches as $match)
 				{
-//					print_a($matches);
+					$att = array();
+					$att['thread_id'] = $post['thread_id'];
+					$att['type'] = 'file';
+					$att['html'] = $match[0];
+					$att['name'] = $match[1];
+					$att['thumb'] = '';
+					$attachments[] = $att;
+				}
+			}
+
+			if(preg_match_all('#\[file=(\.\./\.\./e107_files/public/.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
 					$att = array();
 					$att['thread_id'] = $post['thread_id'];
 					$att['type'] = 'file';
@@ -776,21 +826,24 @@ function step10()
 
 			if(count($attachments))
 			{
+				$f->log("found ".count($attachments)." attachments");
 				$newValues = array();
 				$info = array();
 				$info['post_entry'] = $post['post_entry'];
 				foreach($attachments as $attachment)
 				{
 					$error = '';
-					if($f->moveAttachment($attachment, $error))
+					$f->log($attachment['name']);
+					if($f->moveAttachment($attachment, $post['post_id'], $error))
 					{
-						$_file = split('/', $attachment['name']);
-						$newval = $attachment['type'].'*'.$_file[1];
+						$fInfo = pathinfo($attachment['name']);
+//						$_file = split('/', $attachment['name']);
+						$newval = $attachment['type'].'*'.$fInfo['basename'];
 						switch($attachment['type'])
 						{
 							//If file, add real name to entry
 							case 'file':
-								$tmp = split('_', $_file[1], 4);
+								$tmp = split('_', $fInfo['basename'], 4);
 								$newval .= '*'.$tmp[3];
 								break;
 
@@ -798,8 +851,8 @@ function step10()
 							case 'img':
 								if($attachment['thumb'])
 								{
-									$_file = split('/', $attachment['thumb']);
-									$newval .= '*'.$_file[1];
+									$fInfo = pathinfo($attachment['thumb']);
+									$newval .= '*'.$fInfo['basename'];
 								}
 								break;
 						}
@@ -811,9 +864,10 @@ function step10()
 					else
 					{
 						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}<br />";
+						$f->log("Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}");
 					}
 				}
-				echo $errorText."<br />";
+//				echo $errorText."<br />";
 
 				// Did we make any changes at all?
 				if(count($newValues))
@@ -992,10 +1046,24 @@ class forumUpgrade
 	var $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
+	private $attachmentData;
+	private $logf;
 
-	public function __initialize()
+	public function __construct()
 	{
 		$this->updateInfo['lastThread'] = 0;
+		$this->attachmentData = array();
+		$this->logf = e_MEDIA.'files/forum_upgrade.txt';
+		$this->getUpdateInfo();
+	}
+
+	public function log($msg, $append=true)
+	{
+//		echo "logf = ".$this->logf."<br />";
+		$txt = sprintf("%s - %s\n", date('m/d/Y H:i:s'), $msg);
+//		echo $txt."<br />";
+		$flag = ($append ? FILE_APPEND : '');
+		file_put_contents($this->logf, $txt, $flag);
 	}
 
 	public function checkUpdateNeeded()
@@ -1005,23 +1073,18 @@ class forumUpgrade
 		return !$needed;
 	}
 
-	function forumUpgrade()
-	{
-		$this->getUpdateInfo();
-	}
-
 	function checkAttachmentDirs()
 	{
 		$dirs = array(
-		e_PLUGIN.'forum/attachments/',
-		e_PLUGIN.'forum/attachments/thumb'
+		e_MEDIA.'files/plugins/forum/attachments/',
+		e_MEDIA.'files/plugins/forum/attachments/thumb'
 		);
 
 		foreach($dirs as $dir)
 		{
 			if(!file_exists($dir))
 			{
-				if(!mkdir($dir))
+				if(!mkdir($dir, 0777, true))
 				{
 					$this->error['attach'][] = "Directory '{$dir}' does not exist and I was unable to create it";
 				}
@@ -1198,21 +1261,45 @@ class forumUpgrade
 		return $ret;
 	}
 
-	function moveAttachment($attachment, &$error)
+	function moveAttachment($attachment, $post_id, &$error)
 	{
 		set_time_limit(30);
-		$tmp = split('/', $attachment['name']);
+//		$tmp = split('/', $attachment['name']);
+		$attachment['name'] = str_replace(array(' ', "\n", "\r"), '', $attachment['name']);
 		$old = str_replace('{e_FILE}', e_FILE, $attachment['name']);
-		$new = e_PLUGIN.'forum/attachments/'.$tmp[1];
+		$fileInfo = pathinfo($attachment['name']);
+		$new = e_MEDIA.'files/plugins/forum/attachments/'.$fileInfo['basename'];
+		$hash = md5($new);
+		if(!file_exists($old))
+		{
+			if(isset($this->attachmentData[$hash]))
+			{
+				$error = "Post {$post_id} - Attachment already migrated with post: ".$this->attachmentData[$hash];
+			}
+			else
+			{
+				$error = 'Original attachment not found (orphaned?)';
+			}
+			return false;
+		}
 		if(!file_exists($new))
 		{
+			$this->log("Copying [{$old}] -> [{$new}]");
 			$r = copy($old, $new);
+			$this->attachmentData[$hash] = $post_id;
 //			$r = true;
 		}
 		else
 		{
 			//File already exists, show some sort of error
-			$error = 'Attachment file already exists';
+			if(isset($this->attachmentData[$hash]))
+			{
+				$error = "Post {$post_id} - Attachment already migrated with post: ".$this->attachmentData[$hash];
+			}
+			else
+			{
+				$error = 'Attachment file already exists';
+			}
 			return false;
 		}
 		if(!$r)
@@ -1226,8 +1313,12 @@ class forumUpgrade
 		if($attachment['thumb'])
 		{
 			$tmp = split('/', $attachment['thumb']);
+			$fileInfo = pathinfo($attachment['thumb']);
+
 			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachment['thumb']);
-			$newThumb = e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];
+//			$newThumb = e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];
+			$newThumb = e_MEDIA.'files/plugins/forum/attachments/thumb/'.$fileInfo['basename'];
+			$hash = md5($newThumb);
 			if(!file_exists($newThumb))
 			{
 				$r = copy($oldThumb, $newThumb);
@@ -1236,7 +1327,14 @@ class forumUpgrade
 			else
 			{
 				//File already exists, show some sort of error
+				if(isset($this->attachmentData[$hash]))
+				{
+					$error = "Post {$post_id} - Thumb already migrated with post: ".$this->attachmentData[$hash];
+				}
+				else
+				{
 				$error = 'Thumb file already exists';
+				}
 				return false;
 			}
 			if(!$r)
