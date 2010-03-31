@@ -526,7 +526,7 @@ function parse_sub($subInfo)
 	{
 		$tVars->SUB_LASTPOST = '-';
 	}
-	return $tp->simpleParse($FORUM_VIEW_SUB, $fVars);
+	return $tp->simpleParse($FORUM_VIEW_SUB, $tVars);
 }
 
 function forumjump()
