@@ -225,7 +225,7 @@ if ($action == 'cat' || $action == 'all')
 	{
     	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-	$text .= "<div style='text-align:center;'><a href='".e_SELF."' alt=''>".LAN_NEWS_84."</a></div>";
+	$text .= "<div style='text-align:center;'><a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 	ob_start();
 	$ns->tablerender($NEWSLISTTITLE, $text);
 	$cache_data = ob_get_flush();
