@@ -34,7 +34,7 @@ define("LAN_NEWS_19", "Now");
 // define("LAN_NEWS_22", "Go to page: ");
 define("LAN_NEWS_23", "News Categories");
 define("LAN_NEWS_24", "create pdf of this news item");
-define("LAN_NEWS_25", "Edit");
+define("LAN_NEWS_25", 'Edit');
 define('LAN_NEWS_31', 'Sticky news item');					// Added
 define('LAN_NEWS_82', 'News - Category');
 define('LAN_NEWS_83', 'No news items at the moment - please check back soon.');
@@ -42,9 +42,11 @@ define('LAN_NEWS_84', 'Back to news overview');
 define('LAN_NEWS_85', 'Back to category overview');
 define('LAN_NEWS_86', 'Older News');
 define('LAN_NEWS_87', 'Newer News');
-define("LAN_NEWS_99", "Comments");
-//define("LAN_NEWS_100", "On");
-//define("LAN_NEWS_307", "Total posts in this category: ");
-define("LAN_NEWS_462", "No news items for specified month");
+define("LAN_NEWS_462", 'No news items for specified month');
+
+// Following used by alt_news
+define("LAN_NEWS_99", 'Comments');
+define("LAN_NEWS_100", 'On');
+define("LAN_NEWS_307", 'Total posts in this category: ');
 
 ?>
