@@ -37,4 +37,9 @@ define('LAN_NEWS_86', 'Older News');
 define('LAN_NEWS_87', 'Newer News');
 define("LAN_NEWS_462", "No news items for specified month");
 
+// Following used by alt_news
+define("LAN_99", 'Comments');
+define("LAN_100", 'On');
+define("LAN_307", 'Total posts in this category: ');
+
 ?>
