@@ -18,7 +18,13 @@
 +---------------------------------------------------------------+
 */
 
-require_once("../../class2.php");
+require_once('../../class2.php');
+if (!isset($pref['plug_installed']['content']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 $plugindir = e_PLUGIN."content/";
 require_once($plugindir."content_shortcodes.php");
 require_once(e_HANDLER."emailprint_class.php");
@@ -35,12 +41,16 @@ e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 include_lan($plugindir."languages/".e_LANGUAGE."/lan_content.php");
 
-if(e_QUERY){
+if(e_QUERY)
+{
 	$qs = explode(".", e_QUERY);
 
-	if(is_numeric($qs[0])){
+	if(is_numeric($qs[0]))
+	{
 		$from = array_shift($qs);
-	}else{
+	}
+	else
+	{
 		$from = "0";
 	}
 }
@@ -340,28 +350,12 @@ function show_content(){
 				}
 			}
 
-			if(USER){
-				$personalmanagercheck = FALSE;
-				$array = $aa -> getCategoryTree("", "", TRUE);
-				$catarray = array_keys($array);
-				$qry = "";
-				foreach($catarray as $catid){
-					$qry .= " content_id='".$catid."' || ";
-				}
-				$qry = substr($qry,0,-3);
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " ".$qry." ")){
-					while($row = $sql -> db_Fetch()){
-						if(isset($row['content_pref']) && $row['content_pref']){
-							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
-						}
-						if( (isset($content_pref["content_manager_approve"]) && check_class($content_pref["content_manager_approve"])) || (isset($content_pref["content_manager_personal"]) && check_class($content_pref["content_manager_personal"])) || (isset($content_pref["content_manager_category"]) && check_class($content_pref["content_manager_category"])) ){
-							$personalmanagercheck = TRUE;
-							break;
-						}
-					}
-				}
-				if($personalmanagercheck == TRUE){
-					if($SUBMIT_LINE != TRUE){
+			if(USER)
+			{
+				if ($aa->checkPersonalManager())
+				{
+					if($SUBMIT_LINE != TRUE)
+					{
 						$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
 					}
 					$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_MANAGER, FALSE, $content_shortcodes);

@@ -19,6 +19,11 @@
 */
 
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['content']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 
 $plugindir = e_PLUGIN."content/";
 require_once($plugindir."content_shortcodes.php");
@@ -50,7 +55,7 @@ if(e_QUERY)
 }
 
 
-if (!USER)
+if (!USER || !$aa->checkPersonalManager())
 {	// non-user can never manage content
 	header("location:".$plugindir."content.php"); 
 	exit;
