@@ -217,8 +217,8 @@ class e_parse
 				'defs_off'		=> array('defs' => FALSE),
 				'defs_on'		=> array('defs' => TRUE),
 
-				'dobreak'		=> array('nobreak' => TRUE),
-				'nobreak'		=> array('nobreak' => FALSE),
+				'dobreak'		=> array('nobreak' => FALSE),
+				'nobreak'		=> array('nobreak' => TRUE),
 				// Line break using \n
 				'lb_nl'			=> array('retain_nl' => TRUE),
 				// Line break using <br />
