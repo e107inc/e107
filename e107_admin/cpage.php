@@ -222,7 +222,8 @@ class page
 
 			foreach($pages as $pge)
 			{
-				$pge['page_title'] = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
+				$title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
+				$pge['page_title'] = "<a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a>";
 				$authorData = get_user_data($pge['page_author']);
 				$pge['page_author'] = varset($authorData['user_name'], '?');
 
