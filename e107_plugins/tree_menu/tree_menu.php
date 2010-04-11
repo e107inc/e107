@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ *  Tree menu
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/tree_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -32,7 +30,7 @@ if (!defined('e107_INIT')) { exit; }
  *	Provides alternative menu style
  *
  *	@package	e107_plugins
- *	@subpackage	online
+ *	@subpackage	tree_menu
  *	@version 	$Id$;
  *
  */
@@ -127,11 +125,19 @@ foreach($mainLinkArray as $links) {
 
 }
 
-function setlink($link_name, $link_url, $link_open, $link_description) {
+function setlink($link_name, $link_url, $link_open, $link_description) 
+{
 	global $tp;
-	switch ($link_open) {
+	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) 
+	{
+		$link_url = e_BASE.$link_url;
+	}
+	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
+    $href = " href='".$link_url."'";
+	switch ($link_open) 
+	{
 		case 1:
-		$link_append = "rel='external'";
+		$link_append = " rel='external'";
 		break;
 		case 2:
 		$link_append = "";
@@ -139,22 +145,20 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		case 3:
 		$link_append = "";
 		break;
+		case 4 :
+		case 5 :
+            $dimen = ($link_open == 4) ? '600,400' : '800,600';
+            $href = " href=\"javascript:open_window('".$link_url."',{$dimen})\"";
+			break;
 		default:
 		$link_append = '';
 	}
-	
-	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) {
-		$link_url = e_BASE.$link_url;
-	}
-	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
 
-	if ($link_open == 4) {
-		$link = "<a style='text-decoration:none' title='".$link_description."' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
-	} else {
-		$link = "<a style='text-decoration:none' title='".$link_description."' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
-	}
+	$link = "<a style='text-decoration:none' title='".$link_description."'{$link_append}{$href}')\">".$link_name."</a>\n";
 	return $link;
 }
+
+
 
 (isset($_COOKIE["treemenustatus"]) && $_COOKIE["treemenustatus"]) ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0";
 $text .= "
