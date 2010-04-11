@@ -49,8 +49,8 @@ $linkArray = $sql->db_getList();
 // all main links now held in array, we now need to loop through them and assign the sublinks to the correct parent links ...
 
 $mainLinkArray = array();
-foreach($linkArray as $links) {
-
+foreach($linkArray as $links) 
+{
 // Updated to stop using the deprecated method of splitting the link-name in 3.
 // Now uses uses the link parent to determine the 'tree'.
 
@@ -126,11 +126,19 @@ foreach($mainLinkArray as $links) {
 
 }
 
-function setlink($link_name, $link_url, $link_open, $link_description) {
+function setlink($link_name, $link_url, $link_open, $link_description) 
+{
 	global $tp;
-	switch ($link_open) {
+	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) 
+	{
+		$link_url = e_BASE.$link_url;
+	}
+	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
+    $href = " href='".$link_url."'";
+	switch ($link_open) 
+	{
 		case 1:
-		$link_append = "rel='external'";
+		$link_append = " rel='external'";
 		break;
 		case 2:
 		$link_append = "";
@@ -138,22 +146,20 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		case 3:
 		$link_append = "";
 		break;
+		case 4 :
+		case 5 :
+            $dimen = ($link_open == 4) ? '600,400' : '800,600';
+            $href = " href=\"javascript:open_window('".$link_url."',{$dimen})\"";
+			break;
 		default:
 		$link_append = '';
 	}
-	
-	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) {
-		$link_url = e_BASE.$link_url;
-	}
-	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
 
-	if ($link_open == 4) {
-		$link = "<a style='text-decoration:none' title='".$link_description."' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
-	} else {
-		$link = "<a style='text-decoration:none' title='".$link_description."' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
-	}
+	$link = "<a style='text-decoration:none' title='".$link_description."'{$link_append}{$href}')\">".$link_name."</a>\n";
 	return $link;
 }
+
+
 
 (isset($_COOKIE["treemenustatus"]) && $_COOKIE["treemenustatus"]) ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0";
 $text .= "
