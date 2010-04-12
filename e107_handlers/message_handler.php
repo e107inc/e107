@@ -18,11 +18,11 @@ if (!defined('e107_INIT')) { exit; }
 /*
  * Type defines
  */
-define('E_MESSAGE_INFO', 	'info');
-define('E_MESSAGE_SUCCESS', 'success');
-define('E_MESSAGE_WARNING', 'warning');
-define('E_MESSAGE_ERROR', 	'error');
-define('E_MESSAGE_DEBUG', 	'debug');
+define('E_MESSAGE_INFO', 		'info');
+define('E_MESSAGE_SUCCESS', 	'success');
+define('E_MESSAGE_WARNING', 	'warning');
+define('E_MESSAGE_ERROR', 		'error');
+define('E_MESSAGE_DEBUG', 		'debug');
 
 //FIXME - language file! new?
 

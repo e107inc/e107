@@ -499,14 +499,13 @@ class e_pref extends e_admin_model
 			return false;
 		}
 
-		//FIXME - switch to new model system messages (separate eMessage namespaces)
-		$emessage = e107::getMessage();
-
 		if(!$this->data_has_changed && !$force)
 		{
-			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
+			e107::getMessage()->addInfo('Settings not saved as no changes were made.', 'default', $session_messages);
 			return 0;
 		}
+		
+		$admin_log = e107::getAdminLog();
 
 		//Save to DB
 		if(!$this->hasError())
@@ -528,32 +527,40 @@ class e_pref extends e_admin_model
 				{
 					if($this->serial_bc)
 					{
-						$dbdata = serialize(e107::getArrayStorage()->ReadArray($this->pref_cache));
+						$old = e107::getArrayStorage()->ReadArray($this->pref_cache);
+						$dbdata = serialize($old);
 					}
 					else
 					{
-						$dbdata = $this->pref_cache;
+						$old = $dbdata = $this->pref_cache;
 					}
+				
+					// auto admin log
+					$new = $this->getPref();
+					$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME');
+					unset($new, $old);
+					
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
-						$emessage->add('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, $session_messages);
+						$admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						ecache::clear_sys('Config_'.$this->alias.'_backup');
 					}
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 
-				$emessage->add('Settings successfully saved.', E_MESSAGE_SUCCESS, $session_messages);
+				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages);
 				//BC
 				if($this->alias === 'core')
 				{
-					$pref = $this->getData();
+					$pref = $this->getPref();
 				}
 				return true;
 			}
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
-				$emessage->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_ERROR, $session_messages);
-				$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
+				$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
+					->logError('Settings not saved.', true, $session_messages)
+					->flushMessages('LAN_FIXME');
 				return false;
 			}
 		}
@@ -562,12 +569,14 @@ class e_pref extends e_admin_model
 		{
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
-			$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
+			$admin_log->logError('Settings not saved.', true, $session_messages)
+				->flushMessages('LAN_FIXME');
 			return false;
 		}
 		else
 		{
-			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
+			e107::getMessage()->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
+			$admin_log->flushMessages('LAN_FIXME');
 			return 0;
 		}
 	}
