@@ -1,26 +1,24 @@
 <?php 
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     ?Copyright (C) 2008-2010 e107 Inc (e107.org)
- |     http://e107.org
- |
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision$
- |     $Date$
- |     $Author$
- +----------------------------------------------------------------------------+
- */
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Log Handler
+ *
+ * $URL$
+ * $Id$
+ *
+*/
 
 if (!defined('e107_INIT'))
 {
 	exit;
 }
+
+define('LOG_MESSAGE_NODISPLAY', 	'nodisplay');
 
 /**
  *	Admin logging class.
@@ -28,6 +26,7 @@ if (!defined('e107_INIT'))
  *	@package	e107
  *	@subpackage	e107_handlers
  *	@version 	$Id$;
+ *  @author 	e107steved
  */
 class e_admin_log
 {
@@ -37,8 +36,14 @@ class e_admin_log
 	 *
 	 * @var array
 	 */
-	var $_options = array('log_level'=>2, 'backtrace'=>false, );
-	var $rldb = NULL; // Database used by logging routine
+	protected $_options = array('log_level'=>2, 'backtrace'=>false, );
+	public $rldb = NULL; // Database used by logging routine
+	
+	/**
+	 * Log messages
+	 * @var array
+	 */
+	protected $_messages;
 	
 	/**
 	 * Constructor. Sets up constants and overwrites default options where set.
@@ -81,6 +86,10 @@ class e_admin_log
 		define('USER_AUDIT_BANNED', 22); // User banned
 		define('USER_AUDIT_BOUNCE_RESET', 23); // User bounce reset
 		define('USER_AUDIT_TEMP_ACCOUNT', 24); // User temporary account
+		
+		// Init E_MESSAGE_* constants if not already done
+		e107::getMessage();
+		$this->_messages = array();
 	}
 	
 	/**
@@ -350,7 +359,8 @@ class e_admin_log
 		$changes = array();
 		foreach ($new as $k=>$v)
 		{
-			if ($v != varset($old[$k],''))
+			// FIXME - what about '' == '0'?
+			if ($v != varset($old[$k], ''))
 			{
 				$old[$k] = $v;
 				$changes[] = $k.'=>'.$v;
@@ -392,4 +402,93 @@ class e_admin_log
 		$this->log_event($event, $logString, E_LOG_INFORMATIVE, '');
 	}
 	
+	/**
+	 *	The next two routines accept and buffers messages which are destined for both admin log and message handler
+	 */
+
+	/**
+	 *	Add a message to the queue
+	 *
+	 *	@param string $text - the message text for logging/display
+	 *	@param int $type - the 'importance' of the message. E_MESSAGE_SUCCESS|E_MESSAGE_ERROR|E_MESSAGE_INFO|E_MESSAGE_DEBUG|E_MESSAGE_NODISPLAY
+	 *				(Values as used in message handler, apart from the last, which causes the message to not be passed to the message handler
+	 *	@param boolean|int $logLevel - TRUE to give same importance as for message display. FALSE to not log. 
+	 *										one of the values specified for $mesLevel to determine the prefix attached to the log message
+	 *  @param boolean $session add session message
+	 *  
+	 *	@return e_admin_log
+	 */
+	public function logMessage($text, $type = '', $logLevel = TRUE, $session = FALSE)
+	{
+		if(empty($text)) return;
+		if(!$type) $type = E_MESSAGE_INFO;
+		if($logLevel === TRUE) $logLevel = $type;
+		$this->_messages[] = array('message' => $text, 'dislevel' => $type, 'loglevel' => $logLevel, 'session' => $session);
+		return $this;
+	}
+	
+	/**
+	 * Log success
+	 * 
+	 * @param string $text
+	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $session add session message
+	 * @return e_admin_log
+	 */
+	public function logSuccess($text, $message = true, $session = false)
+	{
+		return $this->logMessage($text, ($message ? E_MESSAGE_SUCCESS : LOG_MESSAGE_NODISPLAY), E_MESSAGE_SUCCESS, $session);
+	}
+
+	/**
+	 * Log error
+	 * 
+	 * @param string $text
+	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $session add session message
+	 * @return e_admin_log
+	 */
+	public function logError($text, $message = true, $session = false)
+	{
+		return $this->logMessage($text, ($message ? E_MESSAGE_ERROR : LOG_MESSAGE_NODISPLAY), E_MESSAGE_ERROR, $session);
+	}
+
+	/**
+	 *	Empty the messages - pass to both admin log and message handler
+	 *
+	 *	@param string $logTitle - title for log entry
+	 *	@param int $logImportance - passed directly to admin log
+	 *	@param string $logEventCode - passed directly to admin log
+	 *
+	 *	@return e_admin_log
+	 */
+	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '')
+	{
+		$mes = e107::getMessage();
+
+		$resultTypes = array(E_MESSAGE_SUCCESS - 'Success', E_MESSAGE_ERROR => 'Fail');	// Add LANS here. Could add other codes
+		$separator = '';
+		$logString = '';
+		foreach ($this->_messages as $m)
+		{
+			if ($m['loglevel'] !== FALSE)
+			{
+				$logString .= $separator;
+				if ($m['loglevel'] == LOG_MESSAGE_NODISPLAY) { $logString .= '  '; }		// Indent supplementary messages
+				$logString .= $m['message'];
+				if (isset($resultTypes[$m['loglevel']]))
+				{
+					$logString .= ' - '.$resultTypes[$m['loglevel']];
+				}
+				$separator = '[!br!]';
+			}
+			if ($m['dislevel'] != LOG_MESSAGE_NODISPLAY)
+			{
+				$mes->add($m['message'], $m['dislevel'], $m['session']);
+			}
+		}
+		e107::getAdminLog()->log_event($logTitle, $logString, $logImportance, $logEventCode);
+		$this->_messages = array();		// Clear the memory for reuse
+		return $this;
+	}
 }
