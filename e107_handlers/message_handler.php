@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Message Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -33,9 +31,9 @@ define('E_MESSAGE_DEBUG', 	'debug');
  * 
  * @package e107
  * @category e107_handlers
- * @version 1.1
+ * @version $Id$
  * @author SecretR
- * @copyright Copyright (c) 2009, e107 Inc.
+ * @copyright Copyright (C) 2008-2010 e107 Inc (e107.org)
  */
 class eMessage
 {
@@ -171,7 +169,7 @@ class eMessage
 	 * @param boolean $sesion [optional]
 	 * @return eMessage
 	 */
-	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $sesion = false)
+	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $session = false)
 	{
 		if(!is_array($message))
 		{
@@ -179,9 +177,74 @@ class eMessage
 		}
 		foreach ($message as $m)
 		{
-			$this->add(array($m, $mstack), $type, $sesion);
+			$this->add(array($m, $mstack), $type, $session);
 		}
 		return $this;
+	}
+	
+	/**
+	 * Add success message
+	 * 
+	 * @param string $message
+	 * @param string $mstack message stack, default value is 'default'
+	 * @param boolean $session
+	 * @return eMessage
+	 */
+	public function addSuccess($message, $mstack = 'default', $session = false)
+	{
+		return $this->addStack($message, $mstack, E_MESSAGE_SUCCESS, $session);
+	}
+	
+	/**
+	 * Add error message
+	 * 
+	 * @param string $message
+	 * @param string $mstack message stack, default value is 'default'
+	 * @param boolean $session
+	 * @return eMessage
+	 */
+	public function addError($message, $mstack = 'default', $session = false)
+	{
+		return $this->addStack($message, $mstack, E_MESSAGE_ERROR, $session);
+	}
+	
+	/**
+	 * Add warning message
+	 * 
+	 * @param string $message
+	 * @param string $mstack message stack, default value is 'default'
+	 * @param boolean $session
+	 * @return eMessage
+	 */
+	public function addWarning($message, $mstack = 'default', $session = false)
+	{
+		return $this->addStack($message, $mstack, E_MESSAGE_WARNING, $session);
+	}
+	
+	/**
+	 * Add info message
+	 * 
+	 * @param string $message
+	 * @param string $mstack message stack, default value is 'default'
+	 * @param boolean $session
+	 * @return eMessage
+	 */
+	public function addInfo($message, $mstack = 'default', $session = false)
+	{
+		return $this->addStack($message, $mstack, E_MESSAGE_INFO, $session);
+	}
+	
+	/**
+	 * Add debug message
+	 * 
+	 * @param string $message
+	 * @param string $mstack message stack, default value is 'default'
+	 * @param boolean $session
+	 * @return eMessage
+	 */
+	public function addDebug($message, $mstack = 'default', $session = false)
+	{
+		return $this->addStack($message, $mstack, E_MESSAGE_DEBUG, $session);
 	}
 
 	/**
