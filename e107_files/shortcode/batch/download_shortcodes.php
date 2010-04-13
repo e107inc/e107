@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -88,6 +88,16 @@ SC_BEGIN DOWNLOAD_LIST_THUMB
 global $row;
 $img = ($row['download_thumb']) ? "<img src='".e_FILE."downloadthumbs/".$row['download_thumb']."' alt='' style='".DL_IMAGESTYLE."' />" : "";
 if($parm == "link" && $row['download_thumb']){
+	return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$img."</a>";
+}else{
+	return $img;
+}
+SC_END
+
+SC_BEGIN DOWNLOAD_LIST_IMAGEFULL
+global $row;
+$img = ($row['download_image']) ? "<img class='dl_image' src='".e_FILE."downloadimages/".$row['download_image']."' alt='' style='".DL_IMAGESTYLE."' />" : "";
+if($parm == "link" && $row['download_image']){
 	return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$img."</a>";
 }else{
 	return $img;
