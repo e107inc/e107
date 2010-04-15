@@ -1141,7 +1141,7 @@ class e107
 
 	/**
 	 * Retrieve Media handler singleton object
-	 * @return comment
+	 * @return e_media
 	 */
 	public static function getMedia()
 	{

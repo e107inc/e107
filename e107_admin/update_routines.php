@@ -896,11 +896,11 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
-		(1, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
-		(2, 'news', 'News', 'Will be available in the news area. ', 253),
-		(3, 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253),
-		(4, 'download', 'Download Images', '', 253),
-		(5, 'downloadthumb', 'Download Thumbnails', '', 253);";
+		(0, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
+		(0, 'news', 'News', 'Will be available in the news area. ', 253),
+		(0, 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253),
+		(0, 'download', 'Download Images', '', 253),
+		(0, 'downloadthumb', 'Download Thumbnails', '', 253);";
 
 		mysql_query($query);
 		
@@ -929,12 +929,10 @@ function update_706_to_800($type='')
 		 	// error or already exists.	
 		}
 		
-		$mes = e107::getMessage();
-		$mes->add("Icon category added", E_MESSAGE_DEBUG);
-		
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");
 		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
+		e107::getMessage()->addDebug("Icon category added");
 	}
 	
 
