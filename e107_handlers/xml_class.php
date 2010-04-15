@@ -563,7 +563,7 @@ class xmlClass
 
 		foreach($this->stringTags as $vl)
 		{
-			if(varset($vars[$vl][0]))
+			if(isset($vars[$vl]) && isset($vars[$vl][0]))
 			{
 				$vars[$vl] = $vars[$vl][0];
 			}
@@ -804,7 +804,7 @@ class xmlClass
 	{
 		if(!vartrue($XMLData['prefs'][$prefType]))
 		{
-			return;
+			return array();
 		}
 
 		$mes = eMessage::getInstance();
@@ -834,7 +834,7 @@ class xmlClass
 	public function e107Import($file,$mode='replace',$debug=FALSE)
 	{
 
-		$xmlArray = $this->loadXMLfile($file,'advanced');
+		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
 		if($debug)
 		{
@@ -844,20 +844,24 @@ class xmlClass
 		}
 
 		$ret = array();
-
 		//FIXME - doesn't work from install_.php.
 		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
 				$pArray = $this->e107ImportPrefs($xmlArray,$type);
+				
 				if($mode == 'replace')
 				{
 					e107::getConfig($type)->setPref($pArray);
 				}
-				else
+				else // 'add'
 				{
-					e107::getConfig($type)->addPref($pArray); // FIXME addPref() doesn't behave the same way as setPref() with arrays.
+					foreach ($pArray as $pname => $pval) 
+					{
+						e107::getConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+					// e107::getConfig($type)->addPref($pArray);  
 				}
 
 				if($debug == FALSE)
@@ -866,7 +870,7 @@ class xmlClass
 				}
 			}
 		}
-
+		
 		if(vartrue($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)
