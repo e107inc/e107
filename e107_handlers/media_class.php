@@ -25,15 +25,15 @@ class e_media
 	 * @param string $cat Category nickname
 	 * @param string $epath path to file.
 	 * @param string $fmask [optional] filetypes eg. .jpg|.gif
-	 * @return 
+	 * @return e_media
 	 */
 	public function import($cat,$epath,$fmask='')
 	{
-		if(!vartrue($cat)){ return;}
+		if(!vartrue($cat)){ return $this;}
 	
 		if(!is_readable($epath))
 		{
-			return;
+			return $this;
 		}
 	
 		$fl = e107::getFile();
@@ -42,9 +42,13 @@ class e_media
 		$mes = e107::getMessage();
 	
 		$fl->setFileInfo('all');
+		if(!$fmask)
+		{
+			$fmask = '[a-zA-z0-9_-]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$';
+		}
 		$img_array = $fl->get_files($epath,$fmask,'',2);
 	
-		if(!count($img_array)){ return;}
+		if(!count($img_array)){ return $this;}
 		
 		//print_a($img_array);
 		//return;
@@ -73,21 +77,22 @@ class e_media
 			{
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
+					$mes->addSuccess("Imported Media: ".$f['fname']);
 				}
 				else
 				{
-					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_ERROR);	
+					$mes->addError("Media not imported: ".$f['fname']);
 				}
 			}
 		}
+		return $this;
 	}	
 	
 	
 	/**
 	 * Import icons into media-manager from specified path.
 	 * @param string $path
-	 * @return 
+	 * @return e_media
 	 */
 	public function importIcons($path)
 	{
@@ -95,10 +100,11 @@ class e_media
 
 		foreach($iconsrch as $size)
 		{
-			$types = "_".$size.".png|_".$size.".PNG";
+			$types = '[a-zA-z0-9_-]+'.$size.'\.(png|PNG)$';
 			
 			$this->import('_icon_'.$size, $path, $types);
 		}
+		return $this;
 	}
 	
 	
@@ -175,10 +181,43 @@ class e_media
 		return $ret;	
 	}
 
+	/**
+	 * Create media category.
+	 * 'class' data is optional, 'id' key is ignored
+	 * 
+	 * @param array $data associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'nick', etc.
+	 * @return integer last inserted ID or false on error
+	 */
+	public function createCategory($data)
+	{
+		foreach ($data as $k => $v) 
+		{
+			$data['media_cat_'.$k] = $v;
+		}
+		$data['media_cat_id'] = 0;
+		if(!isset($data['media_cat_class']) || '' === $data['media_cat_class']) $data['media_cat_class'] = defset('e_UC_MEMBER', 253);
+		return e107::getDb()->db_Insert('core_media_cat', $data);
+	}
+	
+	/**
+	 * Create multiple media categories in once
+	 * @param array $data
+	 * @return integer number of successfully inserted records
+	 */
+	public function createCategories($multi_data)
+	{
+		$cnt = 0;
+		foreach ($multi_data as $cats) 
+		{
+			if($this->createCategory($cats)) $cnt++;
+		}
+		return $cnt;
+	}
+	
+	public function deleteCategory($id)
+	{
+		// TODO
+	}
 
 	
 }
-
-
-
-?>

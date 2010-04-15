@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -953,7 +953,7 @@ class e_install
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1066,6 +1066,7 @@ class e_install
 		$tp = e107::getParser();
 
 		define('PREVIEWTHEMENAME',""); // Notice Removal.
+		define('USERID', 1); // notice removal, required from media import routine
 
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
@@ -1075,7 +1076,11 @@ class e_install
 		e107::getSingleton('e107plugin')->update_plugins_table();
 		$this->logLine('Plugins table updated');
 
-
+		//should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
+		// [SecretR] should work now
+		e107::getXml()->e107Import($XMLImportfile, 'add'); // Add missing core pref values
+		$this->logLine('Core prefs written');
+		
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']))
 		{
@@ -1091,11 +1096,16 @@ class e_install
 				}
 			}
 		}
-
-
-		//FIXME - should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
-		e107::getXml()->e107Import($XMLImportfile,'replace'); // Add missing core pref values
-		$this->logLine('Core prefs written');
+		
+		// Media import
+		e107::getMedia()->import('news',e_IMAGE.'newspost_images/') //TODO remove when news are pluginized
+			->import('page',e_IMAGE.'custom/') //TODO remove when pages are pluginized
+			// ->importIcons(e_PLUGIN) - icons for plugins are imported on install
+			->importIcons(e_IMAGE."icons/")
+			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/images/")
+			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/icons/");
+		$this->logLine('Media imported to media manager');
+		
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
@@ -1127,7 +1137,6 @@ class e_install
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install.
 		$this->logLine('Core prefs set to install choices');
-
 
 		// Create the admin user - replacing any that may be been included in the XML.
 		$ip = $_SERVER['REMOTE_ADDR'];
