@@ -536,10 +536,12 @@ class e_pref extends e_admin_model
 					}
 				
 					// auto admin log
-					$new = $this->getPref();
-					$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME');
-					unset($new, $old);
-					
+					if(is_array($old)) // fix install problems - no old prefs available
+					{
+						$new = $this->getPref();
+						$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME');
+						unset($new, $old);
+					}
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
 						$admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
@@ -730,7 +732,7 @@ final class e_core_pref extends e_pref
 		'emote' 		=> 'emote_default', //TODO include other emote packs of the user.
 		'menu' 			=> 'menu_pref',
 		'search' 		=> 'search_prefs',
-		'notify' 		=> 'notify_prefs'
+		'notify' 		=> 'notify_prefs',
 	);
 
 	/**
