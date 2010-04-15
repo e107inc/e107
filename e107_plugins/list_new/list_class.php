@@ -65,7 +65,10 @@ class listclass {
 		return $list_pref;
 	}
 
-	function prepareSection($mode){
+
+
+	function prepareSection($mode)
+	{
 		global $list_pref;
 
 		$len = strlen($mode) + 9;
@@ -79,11 +82,15 @@ class listclass {
 		return $sections;
 	}
 
-	function prepareSectionArray($mode, $sections){
+
+
+	function prepareSectionArray($mode, $sections)
+	{
 		global $list_pref;
 
 		//section reference
-		for($i=0;$i<count($sections);$i++){
+		for($i=0;$i<count($sections);$i++)
+		{
 			if(isset($list_pref[$sections[$i]."_".$mode."_display"]) && $list_pref[$sections[$i]."_".$mode."_display"] == "1"){
 				$arr[$sections[$i]][0] = (isset($list_pref[$sections[$i]."_".$mode."_caption"]) ? $list_pref[$sections[$i]."_".$mode."_caption"] : "");
 				$arr[$sections[$i]][1] = (isset($list_pref[$sections[$i]."_".$mode."_display"]) ? $list_pref[$sections[$i]."_".$mode."_display"] : "");
@@ -103,7 +110,10 @@ class listclass {
 		return $arr;
 	}
 
-	function getDefaultSections(){
+
+
+	function getDefaultSections()
+	{
 		global $sql, $sections, $titles, $defaultarray;
 
 		//default always present sections
@@ -119,10 +129,9 @@ class listclass {
 	{
 		global $sql, $sections, $titles, $content_types, $content_name, $pref;
 
-//		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' "))
 		if (!$content_install = isset($pref['plug_installed']['content']))		
 		{
-		  return;
+			return;
 		}
 		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
@@ -141,9 +150,10 @@ class listclass {
 			}
 		}
 		$content_types = array_unique($content_types);
-
 		return;
 	}
+
+
 
 	function getSections()
 	{
@@ -161,7 +171,6 @@ class listclass {
 			$tmp = array_reverse($tmp);
 			$icon['fname'] = $tmp[1];
 
-//			if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' "))
 			if ($plugin_installed = isset($pref['plug_installed'][$icon['fname']]))
 			{
 				if($icon['fname'] == "content")
@@ -177,6 +186,8 @@ class listclass {
 		}
 		return;
 	}
+
+
 
 	function getDefaultPrefs()
 	{
@@ -304,9 +315,13 @@ class listclass {
 		return $list_pref;
 	}
 
+
+
+
+
 	function show_section_list($arr, $mode, $max="")
 	{
-		global $tp, $listplugindir, $list_shortcodes, $sql, $list_pref, $defaultarray, $content_types, $content_name;
+		global $pref, $tp, $listplugindir, $list_shortcodes, $sql, $list_pref, $defaultarray, $content_types, $content_name;
 		global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
 		global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
 		global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
