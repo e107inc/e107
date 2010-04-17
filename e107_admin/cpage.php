@@ -16,7 +16,7 @@
 */
 
 /**
- * 
+ *
  * @package     e107
  * @subpackage	admin
  * @version     $Revision$
@@ -83,13 +83,13 @@ if(isset($_POST['delete']) || varset($_POST['etrigger_delete']))
 {
 	if($_POST['etrigger_delete'])
 	{
-		$delArray = array_keys($_POST['etrigger_delete']);	
+		$delArray = array_keys($_POST['etrigger_delete']);
 	}
 	else
 	{
 		$delArray = array_keys($_POST['delete']);
 	}
-	
+
 	foreach($delArray as $pid)
 	{
 		$page->delete_page($pid);
@@ -120,11 +120,11 @@ elseif(varset($_GET['action'],'')=='edit')
 	$id = intval($_GET['id']);
 
 	$mod 	= (vartrue($_GET['menus'])) ? 'menus' : "";
-	$page->createPage($mod);		
+	$page->createPage($mod);
 }
 elseif(vartrue($_GET['menus']))
 {
-	$page->menusPage();	
+	$page->menusPage();
 }
 else
 {
@@ -155,11 +155,11 @@ class page
             'page_title'	   	=> array('title'=> CUSLAN_1, 		'type' => 'text', 'width'=>'auto'),
 			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 'width' => 'auto','nolist'=>true),
 			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 'width' => 'auto'),
-         	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), 
-			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 'width' => 'auto'),	
-            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'width' => 'auto'),	 	
-			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),	 
-			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),	
+         	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),
+			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 'width' => 'auto'),
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'width' => 'auto'),
+			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
+			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
 		//	'page_password' 	=> array('title'=> LAN_USER_05, 	'type' => 'text', 'width' => 'auto'),
 
 	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
@@ -262,11 +262,11 @@ class page
 		/* mode: FALSE == page, mode: TRUE == menu */
 
 		global $e107, $sub_action, $id, $e_userclass, $e_event;
-		
+
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 
 		$edit = ($sub_action == 'edit');
 		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
@@ -324,15 +324,15 @@ class page
 			";
 		}
 		else
-		{		
+		{
 			$templates = e107::getLayouts('page');
-				
+
 			$text .= "
 				<tr>
 					<td>Template</td>
 					<td>". $frm->selectbox('page_template',$templates,$row['page_template'])  ."</td>
 				</tr>
-			";	
+			";
 		}
 		$text .= "
 				<tr>
@@ -345,21 +345,21 @@ class page
 		";
 
 	//	require_once(e_HANDLER."ren_help.php");
-		
+
 	//	$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
-		
+
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-		
+
 		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
 	//	$text .= $frm->textarea('data', $textareaValue);
 		$text .= $frm->bbarea('data', $textareaValue, 'data', 'cpage-help');
-		
-		
-		
+
+
+
 	//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 	//			<br />".display_help('cpage-help', 'cpage')."
-	
-	
+
+
 				$text .= "</td>
 							</tr>
 							<tr>
@@ -454,7 +454,7 @@ class page
 					}
 				}
 			}
-			
+
 		}
 
 		$text .= "
@@ -485,20 +485,20 @@ class page
 
 		$page_title = $tp->toDB($_POST['page_title']);
 		$page_text = $tp->toDB($_POST['data']);
-	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end. 
+	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end.
 		$pauthor = USERID;
-	
+
 
 		if($mode)
 		{	// Saving existing page/menu after edit
 			// Don't think $_POST['page_ip_restrict'] is ever set.
-			
+
 			$menuname = ($type && vartrue($_POST['menu_name']) ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
 			$status = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'") ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			
+
 			$mes = e107::getMessage();
 			$mes->add($message, $status);
-			
+
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
@@ -513,14 +513,6 @@ class page
 				if ($sql->db_Select('menus', 'menu_name', "`menu_path` = '{$mode}'"))
 				{		// Updating existing entry
 					if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
-					{
-						$update++;
-					}
-				}
-				else
-				{
-                  	$sql -> db_Insert('menus', "0, '$menu_name', '0', '0', '0', '', '".$mode."' ");
-					if ($sql -> db_Insert('menus', $menuData))
 					{
 						$update++;
 					}
@@ -554,6 +546,7 @@ class page
 		else
 		{	// New page/menu
 			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
+			$addMsg = ($type ? CUSLAN_51 : CUSLAN_27);
 
 			$info = array(
 				'page_title' => $page_title,
@@ -568,12 +561,20 @@ class page
 				'page_theme' => $menuname,
 				'page_template' => varset($_POST['page_template'],'')
 				);
-			$pid = admin_update($sql->db_Insert('page', $info), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
+			$pid = admin_update($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
 			{
-				$sql->db_Insert("menus", "0, '{$menuname}', '0', '0', '0', '', '".$pid."' ");
+				$info = array(
+					'menu_name' => $menuname,
+					'menu_location' => 0,
+					'menu_order' => 0,
+					'menu_class' => '0',
+					'menu_pages' => '',
+					'menu_path' => $pid,
+				);
+				admin_update($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
 			}
 
 			if(vartrue($_POST['page_link']))
@@ -596,12 +597,13 @@ class page
 	{
 		global $sql, $e107cache, $admin_log, $e_event;
 		admin_update($sql->db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28, false, false);
-		$sql->db_Delete("menus", "menu_path='$del_id' ");
+		$sql->db_Delete('menus', "menu_path='$del_id'");
+		$e107cache->clear_sys('menus_');
 		$admin_log->log_event('CPAGE_03','ID: '.$del_id,E_LOG_INFORMATIVE,'');
-		if ($sql->db_Select("links", "link_id", "link_url='page.php?".$del_id."'"))
+		if ($sql->db_Select('links', 'link_id', "link_url='page.php?".$del_id."'"))
 		{
-			$sql->db_Delete("links", "link_url='page.php?".$del_id."'");
-			$e107cache->clear("sitelinks");
+			$sql->db_Delete('links', "link_url='page.php?".$del_id."'");
+			$e107cache->clear('sitelinks');
 		}
 
 		$data = array('method'=>'delete', 'table'=>'page', 'id'=>$del_id, 'plugin'=>'page', 'function'=>'delete_page');
@@ -674,12 +676,12 @@ class page
 		{
 			$action = (getperms('5')) ? "pages" : "menus";
 		}
-		
+
 		if(vartrue($_GET['menus']))
 		{
 			$action = "menus";
 		}
-		
+
 		$var['pages']['text'] = CUSLAN_48;
 		$var['pages']['link'] = e_SELF;
 		$var['pages']['perm'] = 5;
