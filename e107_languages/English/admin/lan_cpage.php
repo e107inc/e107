@@ -56,5 +56,7 @@ define('CUSLAN_47', 'General Information');
 define('CUSLAN_48', "Pages");
 define('CUSLAN_49', "Menus");
 define('CUSLAN_50', "Existing Menus");
+define("CUSLAN_51", "Menu saved to database.");
+define("CUSLAN_52", "Menu added to menus.");
 
 ?>
