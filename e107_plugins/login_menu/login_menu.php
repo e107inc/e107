@@ -1,22 +1,22 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (c) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* $URL$
+* $Id$
+*
 */
 
+/**
+*	@package e107
+*	@subpackage	login_menu
+*	@version $Id$;
+*
+*/
 if (!defined('e107_INIT')) { exit; }
 
 if(defined("FPW_ACTIVE"))
@@ -137,35 +137,48 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ Member Stats -----------
 
-		if (isset($menu_pref['login_menu']['new_members']) && $menu_pref['login_menu']['new_members'] == true) {
-			$new_users = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
+		if (isset($menu_pref['login_menu']['new_members']) && $menu_pref['login_menu']['new_members'] == true)
+		{
+			$new_users = $sql->db_Count('user', '(*)', "WHERE `user_join` > {$time} AND `user_ban` = 0");
 			$new_total += $new_users;
-			if (!$new_users) {
+			if (!$new_users)
+			{
 				$new_users = LOGIN_MENU_L26;
 			}
 			$NewItems[] = $new_users.' '.($new_users == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23);
 		}
-		if (isset($NewItems) && $NewItems) {
+		if (isset($NewItems) && $NewItems)
+		{
 			$text .= '<br /><br /><span class="smalltext">'.LOGIN_MENU_L25.'<br />'.implode(',<br />', $NewItems).'</span>';
-			if ($new_total) {
-				if ($sql -> db_Select("plugin", "plugin_installflag", "plugin_path='list_new' AND plugin_installflag='1'"))
+			if ($new_total)
+			{
+				if(isset($pref['plug_installed']['list_new']))
 				{
 					$text .= '<br /><a href="'.e_PLUGIN.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
 				}
 			}
 		}
 
-	if (file_exists(THEME.'images/login_menu.png')) {
+	if (file_exists(THEME.'images/login_menu.png'))
+	{
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
-	} else {
+	}
+	else
+	{
 		$caption = LOGIN_MENU_L5.' '.USERNAME;
 	}
 	$ns->tablerender($caption, $text, 'login');
-} else {
-	if (!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE) {
-		if (file_exists(THEME."login_menu_template.php")){
-	   		require_once(THEME."login_menu_template.php");
-		}else{
+}
+else
+{
+	if (!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE)
+	{
+		if (file_exists(THEME."login_menu_template.php"))
+		{
+	   	require_once(THEME."login_menu_template.php");
+		}
+		else
+		{
 			require_once(e_PLUGIN."login_menu/login_menu_template.php");
 		}
 	}
@@ -176,21 +189,27 @@ if (USER == TRUE || ADMIN == TRUE)
 	if (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE)
 	{
 
-		if (LOGINMESSAGE != '') {
+		if (LOGINMESSAGE != '')
+		{
 			$text = $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
 		}
 
 		$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
 		$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 		$text .= '</form>';
-	} else {
+	}
+	else
+	{
 		$text = $tp->parseTemplate("<div style='padding-top: 150px'>{LM_FPW_LINK}</div>", true, $login_menu_shortcodes);
 	}
 
 
-	if (file_exists(THEME.'images/login_menu.png')) {
+	if (file_exists(THEME.'images/login_menu.png'))
+	{
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
-	} else {
+	}
+	else
+	{
 		$caption = LOGIN_MENU_L5;
 	}
 	$ns->tablerender($caption, $text, 'login');
