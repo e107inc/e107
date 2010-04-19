@@ -525,21 +525,21 @@ class e_pref extends e_admin_model
 
 				if($this->set_backup === true && !empty($this->pref_cache))
 				{
+					$old = e107::getArrayStorage()->ReadArray($this->pref_cache);
 					if($this->serial_bc)
 					{
-						$old = e107::getArrayStorage()->ReadArray($this->pref_cache);
 						$dbdata = serialize($old);
 					}
 					else
 					{
-						$old = $dbdata = $this->pref_cache;
+						$dbdata = $this->pref_cache;
 					}
-				
+
 					// auto admin log
 					if(is_array($old)) // fix install problems - no old prefs available
 					{
-						$new = $this->getPref();
-						$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME');
+						$new = $this->getPref(); 
+						$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME', false);
 						unset($new, $old);
 					}
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
@@ -550,7 +550,7 @@ class e_pref extends e_admin_model
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 
-				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages);
+				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('LAN_FIXME');
 				//BC
 				if($this->alias === 'core')
 				{
