@@ -354,7 +354,7 @@ class e_admin_log
 	// Returns true if changes, false otherwise.
 	// Only makes log entry if changes detected.
 	// The $old array is updated with changes, but not saved anywhere
-	function logArrayDiffs(&$new, &$old, $event)
+	function logArrayDiffs(&$new, &$old, $event, $logNow = true)
 	{
 		$changes = array();
 		foreach ($new as $k=>$v)
@@ -368,7 +368,8 @@ class e_admin_log
 		}
 		if (count($changes))
 		{
-			$this->log_event($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
+			if($logNow) $this->log_event($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
+			else $this->logMessage(implode('[!br!]', $changes), LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 			return TRUE;
 		}
 		return FALSE;
@@ -475,7 +476,7 @@ class e_admin_log
 			{
 				$logString .= $separator;
 				if ($m['loglevel'] == LOG_MESSAGE_NODISPLAY) { $logString .= '  '; }		// Indent supplementary messages
-				$logString .= $m['message'];
+				$logString .= strip_tags(str_replace(array('<br>', '<br/>', '<br />'), '[!br!]', $m['message']));
 				if (isset($resultTypes[$m['loglevel']]))
 				{
 					$logString .= ' - '.$resultTypes[$m['loglevel']];

@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Site Preferences
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 require_once ("../class2.php");
@@ -29,31 +27,33 @@ if(! getperms("1"))
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
 $e_sub_cat = 'prefs';
-require_once (e_HANDLER."userclass_class.php");
-require_once (e_HANDLER."user_extended_class.php");
-$e_userclass = new user_class();
-$ue = new e107_user_extended();
+require_once (e_ADMIN."auth.php");
 
-if(! $pref['timezone'])
+$e_userclass = e107::getUserClass(); 
+require_once (e_HANDLER."user_extended_class.php");
+$ue = new e107_user_extended();
+$core_pref = e107::getConfig();
+
+if(!$core_pref->get('timezone'))
 {
-	$pref['timezone'] = "GMT";
+	$core_pref->set('timezone', 'GMT');
 }
 
-require_once (e_HANDLER."form_handler.php");
-require_once (e_HANDLER."message_handler.php");
-$rs = new form();
-$frm = new e_form(true); //enable inner tabindex counter
-$emessage = &eMessage::getInstance();
+$frm = e107::getForm(false, true); //enable inner tabindex counter
+$emessage = e107::getMessage();
+$tp = e107::getParser();
 
 /*	RESET DISPLAY NAMES	*/
 if(isset($_POST['submit_resetdisplaynames']))
 {
-	$e107->sql->db_Update('user', 'user_name=user_loginname');
+	e107::getDb()->db_Update('user', 'user_name=user_loginname');
 	$emessage->add(PRFLAN_157);
 }
 
+//echo '<pre>';
+//var_dump($core_pref->getPref());
+//echo '</pre>';
 /*	UPDATE PREFERENCES */
 if(isset($_POST['updateprefs']))
 {
@@ -83,6 +83,7 @@ if(isset($_POST['updateprefs']))
 	
 	$_POST['membersonly_exceptions'] = explode("\n",$_POST['membersonly_exceptions']);
 
+	// FIXME - automate - pref model & validation handler
 	$prefChanges = array();
 	foreach($_POST as $key => $value)
 	{
@@ -111,14 +112,15 @@ if(isset($_POST['updateprefs']))
 		{
 			$newValue = $tp->toDB($value);
 		}
-		if($newValue != $pref[$key])
+		$core_pref->update($key, $newValue);
+		/*if($newValue != $core_pref->get($key))
 		{ // Changed value
-			$pref[$key] = $newValue;
+			$core_pref->set($key, $newValue);
 			$prefChanges[$key] = $newValue;
-		}
+		}*/
 	}
-
-	if(count($prefChanges))
+	$core_pref->save(false);
+	/*if(count($prefChanges))
 	{ // Values have changed
 		$e107cache->clear('', TRUE);
 		$saved = save_prefs();
@@ -127,21 +129,21 @@ if(isset($_POST['updateprefs']))
 		{
 			$logStr .= "[!br!]{$k} => {$v}";
 		}
-		$admin_log->log_event('PREFS_01', PRFLAN_195.$logStr, '');
+		$admin_log->log_event('PREFS_01', PRFLAN_195.$logStr);
 		$e107->sql->db_Select_gen("TRUNCATE ".MPREFIX."online");
-	}
-	if($saved)
+	}*/
+	//if($saved)
 	{
 		/*$emessage->addSession(PRFLAN_106, E_MESSAGE_SUCCESS);
 		header("location:".e_ADMIN."prefs.php?u");
 		exit();*/
 		//no redirect, smarter form (remember last used tab
-		$emessage->add(PRFLAN_106, E_MESSAGE_SUCCESS);
+		//$emessage->add(PRFLAN_106, E_MESSAGE_SUCCESS);
 	}
-	else
+	//else
 	{
 // done in class2:		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-		$emessage->add(LAN_NO_CHANGE);
+		//$emessage->add(LAN_NO_CHANGE);
 	}
 }
 
@@ -158,9 +160,6 @@ if (plugInstalled('alt_auth'))
 	}
 }
 
-
-
-require_once (e_ADMIN."auth.php");
 /*
 if(isset($message))
 {
