@@ -539,7 +539,7 @@ class e_pref extends e_admin_model
 					if(is_array($old)) // fix install problems - no old prefs available
 					{
 						$new = $this->getPref(); 
-						$admin_log->logArrayDiffs($new, $old, 'LAN_FIXME', false);
+						$admin_log->logArrayDiffs($new, $old, 'PREFS_02', false);
 						unset($new, $old);
 					}
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
@@ -550,7 +550,7 @@ class e_pref extends e_admin_model
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 
-				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('LAN_FIXME');
+				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01');
 				//BC
 				if($this->alias === 'core')
 				{
@@ -562,7 +562,7 @@ class e_pref extends e_admin_model
 			{
 				$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
 					->logError('Settings not saved.', true, $session_messages)
-					->flushMessages('LAN_FIXME');
+					->flushMessages('PREFS_03');
 				return false;
 			}
 		}

@@ -110,6 +110,8 @@ define('LAN_ROLL_LOG_11','Admin login fail');
 // Prefs events
 //-------------
 define('LAN_AL_PREFS_01', 'Preferences changed');
+define('LAN_AL_PREFS_02', 'New Preferences created');
+define('LAN_AL_PREFS_03', 'Error saving prefs');
 
 
 // Front Page events
