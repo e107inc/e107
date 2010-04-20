@@ -36,9 +36,9 @@ class e_admin_log
 	 *
 	 * @var array
 	 */
-	protected $_options = array('log_level'=>2, 'backtrace'=>false, );
-	public $rldb = NULL; // Database used by logging routine
-	
+	protected	$_options = array('log_level'=>2, 'backtrace'=>false, );
+
+	protected	$rldb = NULL; // Database used by logging routine
 	/**
 	 * Log messages
 	 * @var array
@@ -49,9 +49,9 @@ class e_admin_log
 	 * Constructor. Sets up constants and overwrites default options where set.
 	 *
 	 * @param array $options
-	 * @return e_admin_log
+	 * @return none
 	 */
-	function __construct($options = array())
+	public function __construct($options = array())
 	{
 		foreach ($options as $key=>$val)
 		{
@@ -91,11 +91,18 @@ class e_admin_log
 		e107::getMessage();
 		$this->_messages = array();
 	}
-	
+
+
 	/**
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
 	 * We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
+	 *
+	 * For multi-lingual logging (where the event title is shown in the language of the current user), LAN defines may be used in the title
+	 *
+	 * For generic calls, leave $event_code as empty, and specify a constant string STRING_nn of less than 10 characters for the event title
+	 * Typically the 'STRING' part of the name defines the area originating the log event, and the 'nn' is a numeric code
+	 * This is stored as 'LAN_AL_STRING_NN', and must be defined in a language file which is loaded during log display.
 	 *
 	 * @param string $event_title
 	 * @param mixed $event_detail
@@ -103,7 +110,7 @@ class e_admin_log
 	 * @param unknown $event_code [optional]
 	 * @return e_admin_log
 	 */
-	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	public function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
 	{
 		if ($event_code == '')
 		{
@@ -142,36 +149,39 @@ class e_admin_log
 		return $this;
 	}
 	
-	/*
+	/**
 	 Generic log entry point
 	 -----------------------
 	 Example call: (Deliberately pick separators that shouldn't be in file names)
 	 e_log_event(E_LOG_NOTICE,__FILE__."|".__FUNCTION__."@".__LINE__,"ECODE","Event Title","explanatory message",FALSE,LOG_TO_ADMIN);
 	 or:
 	 e_log_event(E_LOG_NOTICE,debug_backtrace(),"ECODE","Event Title","explanatory message",TRUE,LOG_TO_ROLLING);
-	 
-	 Parameters:
-	 $importance - importance of event - 0..4 or so
-	 $source_call - either:	string identifying calling file/routine
-	 or:		a number 0..9 identifying info to log from debug_backtrace()
-	 or:		empty string, in which case first entry from debug_backtrace() logged
-	 or:		an array, assumed to be from passing debug_backtrace() as a parameter, in which case relevant
-	 information is extracted and the argument list from the first entry logged
-	 or:		-1, in which case no information logged
-	 $eventcode - abbreviation listing event type
-	 $event_title - title of event - pass standard 'LAN_ERROR_nn' defines to allow language translation
-	 $explain - detail of event
-	 $finished - if TRUE, aborts execution
-	 $target_logs - flags indicating which logs to update - if entry to be posted in several logs, add (or 'OR') their defines:
-	 LOG_TO_ADMIN		- admin log
-	 LOG_TO_AUDIT		- audit log
-	 LOG_TO_ROLLING		- rolling log
+	 * 
+	 *	@param int $importance - importance of event - 0..4 or so
+	 *	@param mixed $source_call - either:	string identifying calling file/routine
+	 *		or:		a number 0..9 identifying info to log from debug_backtrace()
+	 *		or:		empty string, in which case first entry from debug_backtrace() logged
+	 *		or:		an array, assumed to be from passing debug_backtrace() as a parameter, in which case relevant
+	 *				 information is extracted and the argument list from the first entry logged
+	 *		or:		-1, in which case no information logged
+	 *	@param string $eventcode - abbreviation listing event type
+	 *	@param string $event_title - title of event - pass standard 'LAN_ERROR_nn' defines to allow language translation
+	 *	@param string $explain - detail of event
+	 *	@param bool $finished - if TRUE, aborts execution
+	 *	@param int $target_logs - flags indicating which logs to update - if entry to be posted in several logs, add (or 'OR') their defines:
+	 *		 LOG_TO_ADMIN		- admin log
+	 *		 LOG_TO_AUDIT		- audit log
+	 *		 LOG_TO_ROLLING		- rolling log
+	 *
+	 *	@return none
+
+	 * @todo - check microtime() call 
 	 */
-	function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT )
+	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT )
 	{
 		global $pref,$e107,$tp;
 		
-		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
+		list($time_usec, $time_sec) = explode(" ", microtime(FALSE)); // Log event time immediately to minimise uncertainty
 		$time_usec = $time_usec * 1000000;
 		
 		if ($this->rldb == NULL)
@@ -279,13 +289,21 @@ class e_admin_log
 		if ($finished)
 			exit; // Optional abort for all logs
 	}
+
+
 	
-	//--------------------------------------
-	//		USER AUDIT ENTRY
-	//--------------------------------------
-	// $event_code is a defined constant (see above) which specifies the event
-	// $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
-	// $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
+	/**--------------------------------------
+	 *		USER AUDIT ENTRY
+	 *--------------------------------------
+	 *	Log user-related events
+	 *	@param int $event_code is a defined constant (see above) which specifies the event
+	 *	@param array $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
+	 *	@param int $id
+	 *	@param string $u_name 
+	 *		both $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
+	 *
+	 *	@return none
+	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
 		global $e107,$tp,$pref;
@@ -317,13 +335,18 @@ class e_admin_log
 		}
 		$this->rldb->db_Insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
 	}
-	
+
+
+	/* Legacy function probably not needed
 	function get_log_events($count = 15, $offset)
 	{
 		global $sql;
 		$count = intval($count);
 		return "Not implemented yet";
 	}
+	*/
+
+
 	
 	/**
 	 * Removes all events older than $days, or truncates the table if $days == false
@@ -331,7 +354,7 @@ class e_admin_log
 	 * @param integer|false $days
 	 * @return void
 	 */
-	function purge_log_events($days)
+	public function purge_log_events($days)
 	{
 		global $sql;
 		if ($days == false)
@@ -350,10 +373,15 @@ class e_admin_log
 	//--------------------------------------
 	//		HELPER ROUTINES
 	//--------------------------------------
-	// Generic routine to log changes to an array. Only elements in $new are checked
-	// Returns true if changes, false otherwise.
-	// Only makes log entry if changes detected.
-	// The $old array is updated with changes, but not saved anywhere
+	/**
+	 *	Generic routine to log changes to an array. Only elements in $new are checked
+	 *
+	 *	@param array $new - most recent data being saved
+	 *	@param array $old existing data - array is updated with changes, but not saved anywhere
+	 *	@param string $event - LAN define or string used as title in log
+	 *
+	 *	@return bool true if changes found and logged, false otherwise.
+	 */
 	function logArrayDiffs(&$new, &$old, $event, $logNow = true)
 	{
 		$changes = array();
@@ -374,12 +402,20 @@ class e_admin_log
 		}
 		return FALSE;
 	}
-	
-	// Logs an entry with all the data from an array, one field per line.
-	// If $extra is non-empty, it goes on the first line.
-	// Normally data is in the format keyname=>value, one per line.
-	// If the $niceName array exists and has a definition, the 'nice Name' is displayed instead of the key name
-	function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
+
+
+	/**
+	 *	Logs an entry with all the data from an array, one field per line.
+	 *
+	 *	@param string $event - LAN define or string used as title in log
+	 *	@param array $target - data to be logged
+	 *	@param string $extra - if non-empty, it goes on the first line.
+	 *	@param array $niceNames - Normally data is logged in the format keyname=>value, one per line.
+	 *		If the $niceName array exists and has a definition, the 'nice Name' is displayed instead of the key name
+	 *
+	 *	@return none
+	 */
+	public function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
 	{
 		$logString = '';
 		if ($extra)
@@ -476,6 +512,7 @@ class e_admin_log
 			{
 				$logString .= $separator;
 				if ($m['loglevel'] == LOG_MESSAGE_NODISPLAY) { $logString .= '  '; }		// Indent supplementary messages
+			// Not sure about next line - might want to log the <br /> as text, rather than it forcing a newline
 				$logString .= strip_tags(str_replace(array('<br>', '<br/>', '<br />'), '[!br!]', $m['message']));
 				if (isset($resultTypes[$m['loglevel']]))
 				{
