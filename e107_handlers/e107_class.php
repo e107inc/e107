@@ -156,6 +156,7 @@ class e107
 		'e_news_tree'					 => '{e_HANDLER}news_class.php',
 		'e_online'						 => '{e_HANDLER}online_class.php',
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
+		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
 		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'					 => '{e_HANDLER}user_model.php',
@@ -606,7 +607,7 @@ class e107
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
-
+		
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 
 		//singleton object found - overload not possible
@@ -843,26 +844,27 @@ class e107
 	 */
 	public static function getParser()
 	{
-
-		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
+		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php'); //WARNING - don't change this - inifinite loop!!!
 	}
-
-
 
 	/**
 	 * Retrieve sc parser singleton object
 	 *
-	 * @return e_shortcode
+	 * @return e_parse_shortcode
 	 */
 	public static function getScParser()
 	{
-		$sc = self::getSingleton('e_shortcode', e_HANDLER.'shortcode_handler.php');
-		if(!self::$_sc_core_loaded)
-		{
-			$sc->loadCoreShortcodes();
-			self::$_sc_core_loaded = true;
-		}
-		return $sc;
+		return self::getSingleton('e_parse_shortcode', true);
+	}
+	
+	/**
+	 * Retrieve registered sc object (batch) by class name
+	 *
+	 * @return e_shortcode
+	 */
+	public static function getScObject($className)
+	{
+		return self::getScParser($className);
 	}
 
 	/**
@@ -2092,8 +2094,8 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		  	define('e_LANCODE', '');
 		}
-
-		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
+		
+		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY)); 
 		define('e_QUERY', $e_QUERY);
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);

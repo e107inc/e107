@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
 * e107 website system
 *
@@ -446,24 +446,6 @@ class e_parse
 		}
 		return utf8_substr($str, $start, $length);
 	}
-
-
-	// Initialise the shortcode handler - has to be done when $prefs valid, so can't be done in constructor ATM
-	/*
-	function sch_load($noCore = FALSE)
-	{
-		if (!is_object($this->e_sc))
-		{
-			require_once(e_HANDLER."shortcode_handler.php");
-			$this->e_sc = new e_shortcode;
-			if(!$noCore)
-			{
-				$this->e_sc->loadCoreShortcodes();
-			}
-		}
-	}
-	*/
-
 
 	/**
 	 * Converts the supplied text (presumed to be from user input) to a format suitable for storing in a database table.

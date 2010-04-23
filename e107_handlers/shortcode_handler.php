@@ -2,166 +2,210 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Shortcode handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 /**
- * Register shortcode
- * $classFunc could be function name, class name or object
- * $code could be 'true' when class name/object is passed to automate the
- * registration of shortcode methods
- * XXX - maybe we could move this to the class?
- *
- * @param mixed $classFunc
- * @param mixed $codes
- * @param string $path
- * @param boolean $force
+ * FIXME: to be removed
  */
 function register_shortcode($classFunc, $codes, $path='', $force = false)
 {
-	$sc = e107::getScParser();
-
-	//If codes is set to true, let's go get a list of shortcode methods
-	if(/*is_bool($codes) && */$codes === true) //double check fix
-	{
-		$codes = array();
-		$tmp = get_class_methods($classFunc);
-		foreach($tmp as $c)
-		{
-			if(strpos($c, 'sc_') === 0)
-			{
-				$codes[] = substr($c, 3);
-			}
-		}
-		unset($tmp);
-	}
-
-	//Register object feature
-	$classObj = null;
-	if(is_object($classFunc))
-	{
-		$classObj = $classFunc;
-		$classFunc = get_class($classObj);
-
-	}
-
-	//We only register these shortcodes if they have not already been registered in some manner
-	//ie theme or other plugin .sc files
-	if(is_array($codes))
-	{
-		foreach($codes as $code)
-		{
-			$code = strtoupper($code);
-			if((!$sc->isRegistered($code) || $force == true) && !$sc->isOverride($code))
-			{
-				$sc->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
-			}
-		}
-
-		//register object if required
-		if(null !== $classObj && !isset($sc->scClasses[$classFunc]))
-		{
-			$sc->scClasses[$classFunc] = $classObj;
-		}
-	}
-	else
-	{
-		$codes = strtoupper($codes);
-		if((!$sc->isRegistered($code) || $force == true) && !$sc->isOverride($code))
-		{
-			$sc->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
-		}
-	}
+	return e107::getScParser()->registerShortcode($classFunc, $codes, $path, $force);
 }
 
 /**
- * Add value to already registered SC object
- *
- * @param string $className
- * @param string $scVarName
- * @param mixed $value
+ * FIXME: to be removed
  */
 function setScVar($className, $scVarName, $value)
 {
-	$sc = e107::getScParser();
-	if(isset($sc->scClasses[$className]))
-	{
-		$sc->scClasses[$className]->$scVarName = $value;
-	}
+	return e107::getScParser()->setScVar($className, $scVarName, $value);
 }
 
 
 /**
- * Call function on an already registered SC object
- *
- * @param string $className
- * @param string $scFuncName
- * @param mixed $param - passed to function
- *
- * @return mixed|boolean - FALSE if class doesn't exist; otherwise whatever the function returns.
+ * FIXME: to be removed
  */
-function callScFunc($className, $scFuncName, $param= '')
+function callScFunc($className, $scFuncName, $param = '')
 {
-	$sc = e107::getScParser();
-	if(isset($sc->scClasses[$className]))
-	{
-		return call_user_func(array($sc->scClasses[$className],$scFuncName), $param);
-	}
-	else
-	{
-		return FALSE;
-	}
+	return e107::getScParser()->callScFunc($className, $scFuncName, $param);
 }
 
 /**
- * Create shortcode object - DEPRECATED. use e_shortcode.php or
- *
- * @param string $class
- * @param boolean $force
+ * FIXME: to be removed
  */
-function initShortcodeClass($class, $force = false)
+function initShortcodeClass($class, $force = false, $eVars = null)
 {
-	$sc = e107::getScParser();
-	if(class_exists($class) && ($force || !isset($sc->scClasses[$class])))
-	{
-		$sc->scClasses[$class] = new $class();
-	}
+	return e107::getScParser()->initShortcodeClass($class, $eVars, $force);
 }
 
 
-
-class e_shortcode
+class e_parse_shortcode
 {
-	var $scList = array();						// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
-	var $parseSCFiles;								// True if individual shortcode files are to be used
-	var $addedCodes;									// Apparently not used
-	var $registered_codes = array();	// Shortcodes added by plugins
-	var $scClasses = array();					// Batch shortcode classes
-	var $scOverride = array();				// Array of codes found in override/ dir
-	private $eVars = '';
+	protected $scList = array();						// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
+	protected $parseSCFiles;							// True if individual shortcode files are to be used
+	protected $addedCodes;								// Apparently not used
+	protected $registered_codes = array();				// Shortcodes added by plugins TODO make it private
+	protected $scClasses = array();					// Batch shortcode classes - TODO make it private
+	protected $scOverride = array();						// Array of codes found in override/ dir
+	protected $eVars = '';
 
-	function e_shortcode($noload=false)
+	function __construct()
 	{
-		global $pref;
-
 		$this->parseSCFiles = true;	// Default probably never used, but make sure its defined.
 
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
-
+		$this->loadCoreShortcodes(); 
+	}
+	
+	/**
+	 * Register shortcode
+	 * $classFunc could be function name, class name or object
+	 * $code could be 'true' when class name/object is passed to automate the
+	 * registration of shortcode methods
+	 *
+	 * @param mixed $classFunc
+	 * @param mixed $codes
+	 * @param string $path
+	 * @param boolean $force override
+	 * @return e_parse_shortcode
+	 */
+	function registerShortcode($classFunc, $codes, $path = '', $force = false)
+	{
+		//If codes is set to true, let's go get a list of shortcode methods
+		if($codes === true) 
+		{
+			$codes = array();
+			$tmp = get_class_methods($classFunc);
+			foreach($tmp as $c)
+			{
+				if(strpos($c, 'sc_') === 0)
+				{
+					$codes[] = substr($c, 3);
+				}
+			}
+			unset($tmp);
+		}
+	
+		//Register object feature
+		$classObj = null;
+		if(is_object($classFunc))
+		{
+			$classObj = $classFunc;
+			$classFunc = get_class($classObj);
+	
+		}
+	
+		//We only register these shortcodes if they have not already been registered in some manner
+		//ie theme or other plugin .sc files
+		if(is_array($codes))
+		{
+			foreach($codes as $code)
+			{
+				$code = strtoupper($code);
+				if((!$this->isRegistered($code) || $force == true) && !$this->isOverride($code))
+				{
+					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
+				}
+			}
+	
+			//register object if required
+			if(null !== $classObj && (!isset($this->scClasses[$classFunc]) || $force == true))
+			{
+				$this->scClasses[$classFunc] = $classObj;
+			}
+		}
+		else
+		{
+			$codes = strtoupper($codes);
+			if((!$this->isRegistered($code) || $force == true) && !$this->isOverride($code))
+			{
+				$this->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
+			}
+		}
+		return $this;
+	}
+	
+	/**
+	 * Add value to already registered SC object
+	 *
+	 * @param string $className
+	 * @param string $scVarName
+	 * @param mixed $value
+	 * @return e_parse_shortcode
+	 */
+	public function setScVar($className, $scVarName, $value)
+	{
+		if(isset($this->scClasses[$className]))
+		{
+			$this->scClasses[$className]->$scVarName = $value;
+		}
+		return $this;
+	}
+	
+	/**
+	 * Call function on an already registered SC object
+	 *
+	 * @param string $className
+	 * @param string $scFuncName
+	 * @param mixed $param - passed to function
+	 *
+	 * @return mixed|boolean - FALSE if class doesn't exist; otherwise whatever the function returns.
+	 */
+	public function callScFunc($className, $scFuncName, $param = '')
+	{
+		if(isset($this->scClasses[$className]))
+		{
+			return call_user_func(array($this->scClasses[$className], $scFuncName), $param);
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	
+	/**
+	 * Create shortcode object - don't forget you still can use e_shortcode.php
+	 *
+	 * @param string $class
+	 * @param boolean $force
+	 * @return e_shortcode
+	 */
+	public function initShortcodeClass($class, $eVars = null, $force = false)
+	{
+		if(class_exists($class, false) && ($force || !isset($this->scClasses[$class])))
+		{
+			$this->scClasses[$class] = new $class($eVars);
+			return $this->scClasses[$class];
+		}
+		return null;
+	}
+	
+	/**
+	 * Get registered SC object
+	 *
+	 * @param string $className
+	 * @return e_shortcode
+	 */
+	public function getScObject($className)
+	{
+		if(isset($this->scClasses[$className]))
+		{
+			return call_user_func(array($this->scClasses[$className], $scFuncName), $param);
+		}
+		// TODO - throw exception?
+		return new e_shortcode();
 	}
 
 	/**
@@ -169,14 +213,11 @@ class e_shortcode
 	 *
 	 * @return void
 	 */
-
 	protected function loadOverrideShortcodes()
 	{
-		$pref = e107::getConfig('core')->getPref();
-
-		if(varset($pref['sc_override']))
+		if(e107::getPref('sc_override'))
 		{
-			$tmp = explode(',', $pref['sc_override']);
+			$tmp = explode(',', e107::getPref('sc_override'));
 			foreach($tmp as $code)
 			{
 				$code = strtoupper(trim($code));
@@ -276,26 +317,24 @@ class e_shortcode
 	 * Common Auto-Register function for class methods.
 	 *
 	 */
-	private function registerClassMethods($classFunc,$path)
+	private function registerClassMethods($classFunc, $path)
 	{
+		$this->scClasses[$classFunc] = new $classFunc;
 
-			$this->scClasses[$classFunc] = new $classFunc;
-
-			$tmp = get_class_methods($classFunc);
-			foreach($tmp as $c)
+		$tmp = get_class_methods($classFunc);
+		foreach($tmp as $c)
+		{
+			if(strpos($c, 'sc_') === 0)
 			{
-				if(strpos($c, 'sc_') === 0)
+				$sc_func = substr($c, 3);
+				$code = strtoupper($sc_func);
+				if(!$this->isRegistered($code))
 				{
-					$sc_func = substr($c, 3);
-					$code = strtoupper($sc_func);
-					if(!$this->isRegistered($code))
-					{
-						$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
-					}
+					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
 				}
 			}
+		}
 	}
-
 
 	/**
 	 * Register Core Shortcode Batches.
@@ -358,7 +397,7 @@ class e_shortcode
 			//register once
 			if(!$this->isScClass($classname))
 			{
-				register_shortcode($extraCodes, true);
+				$this->registerShortcode($extraCodes, true);
 			}
 
 			//always overwrite object
@@ -373,6 +412,7 @@ class e_shortcode
 		}
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles;		// Restore previous value
+		$this->eVars = null; // reset eVars
 		return $ret;
 	}
 
@@ -460,11 +500,13 @@ class e_shortcode
 								{
 									include_once($this->registered_codes[$code]['path']);
 								}
-								$this->scClasses[$_class] = new $_class;
+								$this->initShortcodeClass($_class, $this->eVars, false);
+								//$this->scClasses[$_class] = new $_class;
+								// make eVars available to the SC object members
+								//$this->scClasses[$_class]->eVars = $this->eVars; 
 							}
 							if(method_exists($this->scClasses[$_class], $_method))
 							{
-
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
 							}
 							else
@@ -649,4 +691,50 @@ class e_shortcode
 		return $cur_shortcodes;
 	}
 }
-?>
+
+class e_shortcode
+{
+	/**
+	 * Stores passed to shortcode handler simple parser object
+	 * @var e_vars
+	 */
+	protected $eVars = null; 
+	
+	/**
+	 * Storage for external values
+	 * @var e_vars
+	 */
+	protected $scVars = null;
+	
+	public function __construct($eVars = null)
+	{
+		$this->eVars = $eVars;
+		$this->scVars = new e_vars();
+	}
+	
+	/**
+	 * Add shortcode value
+	 * <code>e107::getScObject('class_name')->setScVar('some_property', $some_value);</code>
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @return e_parse_shortcode
+	 */
+	public function setScVar($name, $value)
+	{
+		$this->scVars->$name = $value;
+		return $this;
+	}
+	
+	/**
+	 * Retrieve shortcode value
+	 * code>$some_value = e107::getScObject('class_name')->getScVar('some_property');</code>
+	 *
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getScVar($name)
+	{
+		return $this->scVars->$name;
+	}
+}
