@@ -149,7 +149,15 @@ class e_parse_shortcode
 	{
 		if(isset($this->scClasses[$className]))
 		{
-			$this->scClasses[$className]->$scVarName = $value;
+			// new way - batch should extend e_shortcode class
+			if(method_exists($this->scClasses[$className], 'setScVar'))
+			{
+				$this->scClasses[$className]->setScVar($scVarName, $value);
+			}
+			else // Old - DEPRECATED
+			{
+				$this->scClasses[$className]->$scVarName = $value;
+			}
 		}
 		return $this;
 	}
@@ -161,7 +169,7 @@ class e_parse_shortcode
 	 * @param string $scFuncName
 	 * @param mixed $param - passed to function
 	 *
-	 * @return mixed|boolean - FALSE if class doesn't exist; otherwise whatever the function returns.
+	 * @return mixed|boolean - NULL if class doesn't exist; otherwise whatever the function returns.
 	 */
 	public function callScFunc($className, $scFuncName, $param = '')
 	{
@@ -169,10 +177,7 @@ class e_parse_shortcode
 		{
 			return call_user_func(array($this->scClasses[$className], $scFuncName), $param);
 		}
-		else
-		{
-			return FALSE;
-		}
+		return null;
 	}
 	
 	/**
@@ -205,13 +210,13 @@ class e_parse_shortcode
 			return call_user_func(array($this->scClasses[$className], $scFuncName), $param);
 		}
 		// TODO - throw exception?
-		return new e_shortcode();
+		return null;
 	}
 
 	/**
 	 * Register any shortcode from the override/shortcodes/ directory
 	 *
-	 * @return void
+	 * @return e_parse_shortcode
 	 */
 	protected function loadOverrideShortcodes()
 	{
@@ -225,13 +230,14 @@ class e_parse_shortcode
 				$this->scOverride[] = $code;
 			}
 		}
+		return $this;
 	}
 
 	/**
 	 * Register any shortcodes that were registered by the theme
 	 * $register_sc[] = 'MY_THEME_CODE'
 	 *
-	 * @return void
+	 * @return e_parse_shortcode
 	 */
 	protected function loadThemeShortcodes()
 	{
@@ -248,21 +254,22 @@ class e_parse_shortcode
 				}
 			}
 		}
+		return $this;
 	}
 
 
 	/**
 	 * Register all .sc files found in plugin directories (via pref)
 	 *
-	 * @return void
+	 * @return e_parse_shortcode
 	 */
 	protected function loadPluginSCFiles()
 	{
-		$pref = e107::getConfig('core')->getPref();
+		$pref = e107::getPref('shortcode_list');
 
-		if(varset($pref['shortcode_list'], '') != '')
+		if($pref)
 		{
-			foreach($pref['shortcode_list'] as $path => $namearray)
+			foreach($pref as $path => $namearray)
 			{
 				foreach($namearray as $code => $uclass)
 				{
@@ -277,49 +284,51 @@ class e_parse_shortcode
 						{
 							$this->registered_codes[$code]['type'] = 'plugin';
 							$this->registered_codes[$code]['path'] = $path;
-							$this->registered_codes[$code]['perms'] = $uclass;			// Add this in
+							$this->registered_codes[$code]['perms'] = $uclass; // XXX how we get this?
 						}
 					}
 				}
 			}
 		}
+		return $this;
 	}
 
 	/**
 	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide.
 	 * Equivalent to multiple .sc files in the plugin's folder.
 	 *
-	 * @return void
+	 * @return e_parse_shortcode
 	 */
 	protected function loadPluginShortcodes()
 	{
-		$pref = e107::getConfig('core')->getPref();
+		$pref = e107::getPref('e_shortcode_list');
 
-		if(!vartrue($pref['e_shortcode_list']))
+		if(!$pref)
 		{
-			return;
+			return $this;
 		}
 
-		foreach($pref['e_shortcode_list'] as $key=>$val)
+		foreach($pref as $key=>$val)
 		{
-			if(!include_once(e_PLUGIN.$key.'/e_shortcode.php'))
+			$path = e_PLUGIN.$key.'/e_shortcode.php';
+			$classFunc = $key.'_shortcodes';
+			if(!include_once($path))
 			{
 				continue;
 			}
-			$path = e_PLUGIN.$key.'/e_shortcode.php';
-			$classFunc = $key.'_shortcodes';
 
-			$this->registerClassMethods($classFunc,$path);
+			$this->registerClassMethods($classFunc, $path);
 		}
+		return $this;
 	}
 
 	/**
 	 * Common Auto-Register function for class methods.
 	 *
 	 */
-	private function registerClassMethods($classFunc, $path)
+	protected function registerClassMethods($classFunc, $path)
 	{
-		$this->scClasses[$classFunc] = new $classFunc;
+		//$this->scClasses[$classFunc] = new $classFunc;
 
 		$tmp = get_class_methods($classFunc);
 		foreach($tmp as $c)
@@ -351,7 +360,7 @@ class e_parse_shortcode
 			$path = e_CORE.'shortcodes/batch/'.$cb.".php";
 			if(include_once($path))
 			{
-				$this->registerClassMethods($cb,$path);
+				$this->registerClassMethods($cb, $path);
 			}
 		}
 	}
