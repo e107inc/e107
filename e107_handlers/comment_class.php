@@ -211,7 +211,8 @@ class comment
 				$rater = new rater;
 			}
 		}
-		require_once (e_HANDLER."level_handler.php");
+		//FIXME - new level handler, currently commented to avoid parse errors
+		//require_once (e_HANDLER."level_handler.php");
 		if (!$width)
 		{
 			$width = 0;
