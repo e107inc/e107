@@ -158,6 +158,7 @@ class e107
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
 		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
+		'e_shortcode'					 => '{e_HANDLER}shortcode_handler.php',
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'					 => '{e_HANDLER}user_model.php',
 		'e_user'					 	 => '{e_HANDLER}user_model.php',
@@ -168,6 +169,7 @@ class e107
 		'ecache'						 => '{e_HANDLER}cache_handler.php',
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
+		'override'						 => '{e_HANDLER}override_class.php',
 		'redirection'					 => '{e_HANDLER}redirection_class.php',
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
@@ -859,12 +861,14 @@ class e107
 	
 	/**
 	 * Retrieve registered sc object (batch) by class name
+	 * Note - '_shortcodes' part of the class is added by the method
+	 * <code><?php e107::getScObject('news');</code>
 	 *
 	 * @return e_shortcode
 	 */
-	public static function getScObject($className)
+	public static function getScBatch($className)
 	{
-		return self::getScParser($className);
+		return self::getScParser()->getScObject($className.'_shortcodes');
 	}
 
 	/**

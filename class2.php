@@ -717,7 +717,7 @@ $sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
 //DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
-$override = e107::getSingleton('override', e_HANDLER.'override_class.php'); //TODO - find & replace $override, $e107->override
+$override = e107::getSingleton('override', true); //TODO - find & replace $override, $e107->override
 
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class

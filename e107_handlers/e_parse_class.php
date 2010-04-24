@@ -2140,7 +2140,9 @@ class e_vars
 	 */
 	public function __set($key, $value)
 	{
-		$this->vars[$key] = $value;
+		// Unset workaround - PHP < 5.1.0
+		if(null === $value) unset($this->vars[$key]);
+		else $this->vars[$key] = $value;
 	}
 
 	/**
