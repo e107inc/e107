@@ -133,7 +133,8 @@ SC_END
 
 SC_BEGIN LEVEL
 global $LEVEL, $comrow, $pref;
-$ldata = get_level($comrow['user_id'], $comrow['user_forums'], $comrow['user_comments'], $comrow['user_chats'], $comrow['user_visits'], $comrow['user_join'], $comrow['user_admin'], $comrow['user_perms'], $pref);
+//FIXME - new level handler, currently commented to avoid parse errors
+//$ldata = get_level($comrow['user_id'], $comrow['user_forums'], $comrow['user_comments'], $comrow['user_chats'], $comrow['user_visits'], $comrow['user_join'], $comrow['user_admin'], $comrow['user_perms'], $pref);
 return ($comrow['user_admin'] ? $ldata[0] : $ldata[1]);
 SC_END
 

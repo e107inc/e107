@@ -2,17 +2,30 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * News handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
+
+/**
+ *
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Id$
+ * @author      e107inc
+ *
+ * Classes:
+ * news - old news class
+ * e_news_item - news data model - the future
+ * e_news_tree - news items collection
+ * e_news_category_item - news category data model
+ * e_news_category_tree - news category items collection
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
