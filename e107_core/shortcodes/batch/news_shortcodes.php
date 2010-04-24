@@ -14,47 +14,25 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-//include_once(e_HANDLER.'shortcode_handler.php');
 
-/*
-$codes = array(
-'newstitle', 'newsbody', 'newsicon','newsauthor', 'newscomments',
-'trackback', 'newsheader', 'newscategory', 'newsdate', 'newscommentlink',
-'newscommentcount', 'emailicon', 'printicon', 'pdficon', 'newsid', 'adminoptions',
-'extended', 'captionclass', 'admincaption', 'adminbody', 'newssummary',
-'newsthumbnail', 'newsimage', 'sticky_icon', 'newstitlelink', 'newscaticon', 'newsinfo'
-);
-*/
-
-$codes = array();
-/*
-$tmp = get_class_methods('news_shortcodes');
-foreach($tmp as $c)
-{
-	if(strpos($c, 'sc_') === 0)
-	{
-		$codes[] = substr($c, 3);
-	}
-}
-unset($tmp);
-*/
+/* DEPRECATED
 register_shortcode('news_shortcodes', TRUE);
 initShortcodeClass('news_shortcodes');
+*/
 
-class news_shortcodes
+e107::getScParser()->registerShortcode('news_shortcodes', true)
+	->initShortcodeClass('news_shortcodes');
+
+class news_shortcodes extends e_shortcode
 {
-	var $news_item, $param, $e107;
-
-	function news_shortcodes()
+	//protected $news_item; - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
+	protected $e107;
+	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
+	
+	function __construct($eVars = null)
 	{
+		parent::__construct($eVars);
 		$this->e107 = e107::getInstance();
-	}
-
-	function loadNewsItem()
-	{
-		$e107 = e107::getInstance();
-		$e107->tp->e_sc->scClasses['news_shortcodes']->news_item = getcachedvars('current_news_item');
-		$e107->tp->e_sc->scClasses['news_shortcodes']->param = getcachedvars('current_news_param');
 	}
 
 	function sc_newstitle()

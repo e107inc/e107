@@ -30,8 +30,7 @@ class news {
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		require_once (e_HANDLER."message_handler.php");
-		$emessage = eMessage::getInstance();
+		$emessage = e107::getMessage();
 
 		$error = false;
 		if(empty($news['news_title']))
@@ -498,15 +497,15 @@ class news {
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param = array())
 	{
-		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid;
-		if ($override_newsitem = $override -> override_check('render_newsitem')) {
+		global $NEWSSTYLE, $NEWSLISTSTYLE;
+		
+		if ($override_newsitem = e107::getSingleton('override', true)->override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
 			{
 				return;
 			}
 		}
-		if (!is_object($e107->tp)) $e107->tp = new e_parse;
 
 		if ($n_restrict == 'userclass')
 		{
@@ -587,12 +586,19 @@ class news {
 				}
 			}
 		}
-		$loop_uid = $news['news_author'];
+		//$loop_uid = $news['news_author']; - no references found
 
 		require_once(e_CORE.'shortcodes/batch/news_shortcodes.php');
+		/* DEPRECATED
 		setScVar('news_shortcodes', 'news_item', $news);
 		setScVar('news_shortcodes', 'param', $param);
-		$text = $e107->tp->parseTemplate($NEWS_PARSE, true);
+		*/
+		// Retrieve batch sc object, set required vars
+		e107::getScBatch('news')
+			->setScVar('news_item', $news)
+			->setScVar('param', $param);
+			
+		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true);
 
 		if ($mode == 'return')
 		{
@@ -608,9 +614,7 @@ class news {
 	//@TDODO deprecated?
 	function make_xml_compatible($original)
 	{
-		global $e107;
-		if (!is_object($e107->tp)) $e107->tp = new e_parse;
-		$original = $e107->tp->toHTML($original, TRUE);
+		$original = e107::getParser()->toHTML($original, TRUE);
 		$original = str_replace('&pound', '&amp;#163;', $original);
 		$original = str_replace('&copy;', '(c)', $original);
 		return htmlspecialchars($original, ENT_COMPAT, CHARSET);

@@ -15,6 +15,17 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
+ *
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Id$
+ * @author      e107inc
+ *
+ * e_parse_shortcode - shortcode parser/manager, former e_shortcode
+ * e_shortcode - abstract batch class
+ */
+
+/**
  * FIXME: to be removed
  */
 function register_shortcode($classFunc, $codes, $path='', $force = false)
@@ -207,7 +218,7 @@ class e_parse_shortcode
 	{
 		if(isset($this->scClasses[$className]))
 		{
-			return call_user_func(array($this->scClasses[$className], $scFuncName), $param);
+			return $this->scClasses[$className];
 		}
 		// TODO - throw exception?
 		return null;
@@ -349,7 +360,7 @@ class e_parse_shortcode
 	 * Register Core Shortcode Batches.
 	 * FIXME - currently loaded all the time (even on front-end)
 	 *
-	 * @return void
+	 * @return e_parse_shortcode
 	 */
 	function loadCoreShortcodes()
 	{
@@ -363,6 +374,7 @@ class e_parse_shortcode
 				$this->registerClassMethods($cb, $path);
 			}
 		}
+		return $this;
 	}
 
 	function isRegistered($code)
@@ -710,15 +722,38 @@ class e_shortcode
 	protected $eVars = null; 
 	
 	/**
-	 * Storage for external values
+	 * Storage for shortcode values
 	 * @var e_vars
 	 */
 	protected $scVars = null;
 	
 	public function __construct($eVars = null)
 	{
-		$this->eVars = $eVars;
+		$this->setVars($eVars);
 		$this->scVars = new e_vars();
+	}
+	
+	/**
+	 * Set external simple parser object
+	 * 
+	 * @param e_vars $eVars
+	 * @return e_shortcode
+	 */
+	public function setVars($eVars)
+	{
+		if(null === $eVars) $eVars = new e_vars();
+		$this->eVars = $eVars;
+		return $this;
+	}
+	
+	/**
+	 * Get external simple parser object
+	 * 
+	 * @return e_vars
+	 */
+	public function getVars()
+	{
+		return $this->eVars;
 	}
 	
 	/**
@@ -727,7 +762,7 @@ class e_shortcode
 	 *
 	 * @param string $name
 	 * @param mixed $value
-	 * @return e_parse_shortcode
+	 * @return e_shortcode
 	 */
 	public function setScVar($name, $value)
 	{
@@ -737,7 +772,7 @@ class e_shortcode
 	
 	/**
 	 * Retrieve shortcode value
-	 * code>$some_value = e107::getScObject('class_name')->getScVar('some_property');</code>
+	 * <code>$some_value = e107::getScObject('class_name')->getScVar('some_property');</code>
 	 *
 	 * @param string $name
 	 * @return mixed
@@ -745,5 +780,78 @@ class e_shortcode
 	public function getScVar($name)
 	{
 		return $this->scVars->$name;
+	}
+	
+	/**
+	 * Check if shortcode variable is set
+	 * <code>if(e107::getScObject('class_name')->issetScVar('some_property')) 
+	 * {  
+	 * 		//do something
+	 * }</code>
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function issetScVar($name)
+	{
+		return isset($this->scVars->$name);
+	}
+	
+	/**
+	 * Unset shortcode value
+	 * <code>e107::getScObject('class_name')->unsetScVar('some_property');</code>
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function unsetScVar($name)
+	{
+		$this->scVars->$name = null;
+		 unset($this->scVars->$name);
+	}
+	
+	/**
+	 * Magic setter - bind to eVars object
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function __set($name, $value)
+	{
+		$this->setScVar($name, $value);
+	}
+
+	/**
+	 * Magic getter - bind to eVars object
+	 *
+	 * @param string $name
+	 * @return mixed value or null if key not found
+	 */
+	public function __get($name)
+	{
+		return $this->getScVar($name);
+	}
+	
+	/**
+	 * Magic method - bind to eVars object
+	 * NOTE: works on PHP 5.1.0+
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	public function __isset($name)
+	{
+		return $this->issetScVar($name);
+	}
+	
+	/**
+	 * Magic method - bind to eVars object
+	 * NOTE: works on PHP 5.1.0+
+	 *
+	 * @param string $name
+	 */
+	public function __unset($name)
+	{
+		$this->unsetScVar($name);
 	}
 }
