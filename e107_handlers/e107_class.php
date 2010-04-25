@@ -861,14 +861,29 @@ class e107
 	
 	/**
 	 * Retrieve registered sc object (batch) by class name
-	 * Note - '_shortcodes' part of the class is added by the method
-	 * <code><?php e107::getScObject('news');</code>
-	 *
+	 * Note - '_shortcodes' part of the class/override is added by the method
+	 * Override is possible only if class is not already instantiated by shortcode parser
+	 * 
+	 * <code><?php 
+	 * // core news shortcodes
+	 * e107::getScObject('news'); 
+	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/core/shortcodes/batch/my_shortcodes.php
+	 * e107::getScObject('my', 'myplugin'); 
+	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/news_shortcodes.php
+	 * e107::getScObject('news', 'myplugin', true);
+	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/mynews_shortcodes.php
+	 * e107::getScObject('news', 'myplugin', 'mynews');
+	 * </code>
+	 * 
+	 * @param string $className
+	 * @param string $pluginName
+	 * @param string|true $overrideClass
 	 * @return e_shortcode
 	 */
-	public static function getScBatch($className)
+	public static function getScBatch($className, $pluginName = null, $overrideClass = null)
 	{
-		return self::getScParser()->getScObject($className.'_shortcodes');
+		if(is_string($overrideClass)) $overrideClass .= '_shortcodes';
+		return self::getScParser()->getScObject($className.'_shortcodes', $pluginName, $overrideClass);
 	}
 
 	/**

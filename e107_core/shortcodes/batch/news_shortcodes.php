@@ -20,8 +20,9 @@ register_shortcode('news_shortcodes', TRUE);
 initShortcodeClass('news_shortcodes');
 */
 
-e107::getScParser()->registerShortcode('news_shortcodes', true)
-	->initShortcodeClass('news_shortcodes');
+// Done via e107::getScBatch('news'); call - see news_class.php
+/*e107::getScParser()->registerShortcode('news_shortcodes', true)
+	->initShortcodeClass('news_shortcodes');*/
 
 class news_shortcodes extends e_shortcode
 {

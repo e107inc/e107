@@ -601,7 +601,7 @@ class news {
 		}
 		//$loop_uid = $news['news_author']; - no references found
 
-		require_once(e_CORE.'shortcodes/batch/news_shortcodes.php');
+		//require_once(e_CORE.'shortcodes/batch/news_shortcodes.php');
 		/* DEPRECATED
 		setScVar('news_shortcodes', 'news_item', $news);
 		setScVar('news_shortcodes', 'param', $param);
