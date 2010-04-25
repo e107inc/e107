@@ -1,43 +1,54 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Extended user field handler
+*
+* $URL$
+* $Id$
+*
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-/*
+/**
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id$;
+ *
+ *	Extended user field handler
+ *
+ *	@todo: - change some routines to access the cached variables rather than DB
+ *	@todo: Remove setting up of _FIELD_TYPES array (may be necessary, since UEF data structure not fixed)
+ *	@todo: Consider changing field type constants to class constants
+ *	@todo - cache field structure (already done in a different way in get_user_data() in class2.php line 1387 or so)
+ *	@todo - class variables - confirm whether public/protected assignments are correct
+ *	@todo - consider whether to split system and non-system fields
+
 Code uses two tables:
 	user_extended_struct - individual field definitions, one record per field
 	user_extended - actual field data, one record per user
 
-//TODO: Should user_extended_validate_entry() ckech DB for DB-type fields?
+@todo: Should user_extended_validate_entry() check DB for DB-type fields?
 
 */
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 
+
 class e107_user_extended
 {
-	var $user_extended_types;		// Text description corresponding to each field type
-	var $extended_xml;
-	var $typeArray;					// Cross-reference between names of field types, and numeric ID
-	var $reserved_names;			// List of field names used in main user DB - not allowed in extended DB
-	var	$fieldDefinitions;			// Array initialised from DB by constructor - currently non-system fields only
-	var $nameIndex;					// Array for field name lookup - initialised by constructor
+	public $user_extended_types;	// Text description corresponding to each field type
+	private $extended_xml = FALSE;
+	private $typeArray;				// Cross-reference between names of field types, and numeric ID
+	private $reserved_names;		// List of field names used in main user DB - not allowed in extended DB
+	public $fieldDefinitions;		// Array initialised from DB by constructor - currently all fields
+	public $catDefinitions;			// Categories
+	private $nameIndex;				// Array for field name lookup - initialised by constructor
 	public $systemCount = 0;		// Count of system fields - always zero ATM
 	public $userCount = 0;			// Count of non-system fields
 
@@ -91,29 +102,56 @@ class e107_user_extended
 		'xup'
 		);
 
-		// At present we only load non-system fields - may want to change this
-		$this->fieldDefinitions = $this->user_extended_get_fieldList();			// Assume that we'll need these if an object has been instantiated
-		$this->nameIndex = array();
+		$sql = e107::getDB();
+
+		// Read in all the field and category fields
+		// At present we load all fields into common array - may want to split system and non-system
+		$this ->catDefinitions = array();		// Categories array
+		$this->fieldDefinitions = array();		// Field definitions array
+		$this->nameIndex = array();				// Index of names => field IDs
 		$this->systemCount = 0;
 		$this->userCount = 0;
-		foreach ($this->fieldDefinitions as $k => $v)
+
+		if($sql->db_Select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
 		{
-			$this->nameIndex['user_'.$v['user_extended_struct_name']] = $k;			// Create name to ID index
-			if ($v['user_extended_struct_text'] == '_system_')
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
-				$this->systemCount++;
-			}
-			else
-			{
-				$this->userCount++;
+				if ($row['user_extended_struct_type'] == 0)
+				{	// Its a category
+					$this->catDefinitions[$row['user_extended_struct_id']] = $row;
+				}
+				else
+				{	// Its a field definition
+					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
+					$this->nameIndex['user_'.$row['user_extended_struct_name']] = $row['user_extended_struct_id'];			// Create name to ID index
+					if ($row['user_extended_struct_text'] == '_system_')
+					{
+						$this->systemCount++;
+					}
+					else
+					{
+						$this->userCount++;
+					}
+				}
 			}
 		}
 	}
 
-	function user_extended_reserved($name)
+
+
+	/**
+	 *	Check for reserved field names.
+	 *	(Names which clash with the 'normal' user table aren't allowed)
+	 *
+	 *	@param string $name - name of field bweing checked (no 'user_' prefix)
+	 *
+	 *	@return boolean TRUE if disallowed name
+	 */
+	public function user_extended_reserved($name)
 	{
-	  return (in_array($name, $this->reserved_names));
+		return (in_array($name, $this->reserved_names));
 	}
+
 
 
 	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
@@ -146,15 +184,20 @@ class e107_user_extended
 	}
 
 
-	// For all UEFs not in the target array, adds the default value
-	// Also updates the _FIELD_TYPES array, so call this last thing before writing to the DB
-	function addDefaultFields(&$target)
+
+	/**
+	 * For all UEFs not in the target array, adds the default value
+	 * Also updates the _FIELD_TYPES array, so call this last thing before writing to the DB
+	 *
+	 *	@param $target - pointer to data array
+	 */
+	public function addDefaultFields(&$target)
 	{
-		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
+		//$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
 		foreach ($this->fieldDefinitions as $k => $defs)
 		{
 			$f = 'user_'.$defs['user_extended_struct_name'];
-			if (!isset($target['data'][$f]))
+			if (!isset($target['data'][$f]) && $this->fieldDefinitions[$k]['user_extended_struct_default'])
 			{
 				switch ($this->fieldDefinitions[$k]['user_extended_struct_type'])
 				{
@@ -212,54 +255,74 @@ class e107_user_extended
 	}
 
 
-	// Validate all user-modifable extended user fields which are presented.
-	// $inArray is the input data (usually from $_POST or $_POST['ue'], although doesn't have to be) - may have 'surplus' values
-	// $hideArray is a set of possible 'hide' flags
-	// $isSignup TRUE causes required fields to be specifically checked, else only data passed is checked
-	function userExtendedValidateAll($inArray, $hideArray, $isSignup=FALSE)
+
+	/**
+	 * Validate all user-modifable extended user fields which are presented.
+	 *	Primarily intended to validate data entered by a user or admin
+	 *
+	 * @param array $inArray is the input data (usually from $_POST or $_POST['ue'], although doesn't have to be) - may have 'surplus' values
+	 * @param array $hideArray is a set of possible 'hide' flags
+	 * @param boolean $isSignup TRUE causes required fields to be specifically checked, else only data passed is checked
+	 *
+	 *	@return array with three potential subkeys:
+	 *		'data' - valid data values (key is field name)
+	 *			['data']['user_hidden_fields'] is the hidden fields
+	 *		'errors' - data values in error
+	 *		'errortext' - error message corresponding to erroneous value
+	 *
+	 *	@todo - does $hidden_fields need to be merged with values for fields not processed? (Probably not - should only relate to fields current user can see)
+	 *	@todo - make sure admin can edit fields of other users
+	 */
+	public function userExtendedValidateAll($inArray, $hideArray, $isSignup=FALSE)
 	{
 		global $tp;
 		$eufVals = array();		// 'Answer' array
 		$hideFlags = array();
 		foreach ($this->fieldDefinitions as $k => $defs)
 		{
-			if ($defs['user_extended_struct_applicable'] != e_UC_NOBODY)
-			{
-				$f = 'user_'.$defs['user_extended_struct_name'];
-				if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
-				{	// Only allow valid keys
-					$val = varset($inArray[$f], FALSE);
-					$err = $this->user_extended_validate_entry($val, $defs);
-					if ($err === true)
-					{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-						$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
-						$eufVals['errors'][$f] = ERR_GENERIC;
-					}
-					elseif ($err)
-					{	// Specific error message returned - usually regex fail
-						$eufVals['errortext'][$f] = $err;
-						$eufVals['errors'][$f] = ERR_GENERIC;
-					}
-					elseif (!$err)
-					{
-						$eufVals['data'][$f] = $tp->toDB($val);
-					}
-					if (isset($hideArray[$f]))
-					{
-						$hideFlags[] = $f;
+			$category = $defs['user_extended_struct_parent'];
+			if (($category == 0) || (check_class($this->catDefinitions[$category]['user_extended_struct_applicable']) && check_class($this->catDefinitions[$category]['user_extended_struct_write'])))
+			{	// Category applicable to user
+				if (check_class($defs['user_extended_struct_applicable']) && check_class($defs['user_extended_struct_write']))
+				{	// User can also update field
+					$f = 'user_'.$defs['user_extended_struct_name'];
+					if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
+					{	// Only allow valid keys
+						$val = varset($inArray[$f], FALSE);
+						$err = $this->user_extended_validate_entry($val, $defs);
+						if ($err === true)
+						{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+							$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
+							$eufVals['errors'][$f] = ERR_GENERIC;
+						}
+						elseif ($err)
+						{	// Specific error message returned - usually regex fail
+							$eufVals['errortext'][$f] = $err;
+							$eufVals['errors'][$f] = ERR_GENERIC;
+						}
+						elseif (!$err)
+						{
+							$eufVals['data'][$f] = $tp->toDB($val);
+						}
+						if (isset($hideArray[$f]))
+						{
+							$hideFlags[] = $f;
+						}
 					}
 				}
 			}
 		}
-		$hidden_fields = implode("^", $hideFlags);
-		if ($hidden_fields != "")
+		$hidden_fields = implode('^', $hideFlags);
+		if ($hidden_fields != '')
 		{
-			$hidden_fields = "^".$hidden_fields."^";
+			$hidden_fields = '^'.$hidden_fields.'^';
 		}
 		$eufVals['data']['user_hidden_fields'] = $hidden_fields;
 
 		return $eufVals;
 	}
+
+
 
 
 	function user_extended_get_categories($byID = TRUE)
