@@ -33,6 +33,7 @@ $forum = new e107forum;
 
 //$view = 25;
 $view = $forum->prefs->get('threadspage', 25);
+if(!$view) { $view = 25; }
 $page = (varset($_GET['p']) ? $_GET['p'] : 0);
 $threadFrom = $page * $view;
 
