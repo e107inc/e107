@@ -2124,7 +2124,7 @@ function __autoload($className)
 			// read the todo for e_shortcode.php related problems
 			if('shortcodes' == $end)
 			{
-				$filename = e_PLUGIN.$tmp[0].'/shortcodes/'; // plugname/shortcodes/
+				$filename = e_PLUGIN.$tmp[0].'/core/shortcodes/batch/'; // plugname/core/shortcodes/batch/
 				unset($tmp[0]);
 				$filename .= implode('_', $tmp).'_shortcodes.php'; // my_shortcodes.php
 				break;
@@ -2163,7 +2163,7 @@ function __autoload($className)
 
 // register __autoload if possible to prevent its override by
 // 3rd party spl_autoload_register calls
-if(function_exists('spl_autoload_register'))
+if(function_exists('spl_autoload_register') && !defset('E107_DISABLE_AUTOLOAD', false))
 {
 	spl_autoload_register('__autoload');
 }

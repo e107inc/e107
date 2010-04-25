@@ -2131,6 +2131,16 @@ class e_vars
 	{
 		return empty($this->vars);
 	}
+	
+	/**
+	 * Check if given data key is set
+	 * @param string $key
+	 * @return boolean
+	 */
+	public function isVar($key)
+	{
+		return isset($this->vars[$key]);
+	}
 
 	/**
 	 * Magic setter
@@ -2171,7 +2181,7 @@ class e_vars
 	 */
 	public function __isset($key)
 	{
-		return isset($this->vars[$key]);
+		return $this->isVar($key);
 	}
 
 	/**
