@@ -119,7 +119,7 @@ class pm_extended extends private_message
 		}
 		if($to_uid)
 		{
-			$sql2 =& new db;
+			$sql2 = new db;
 			if($sql2->db_Select('user', 'user_name', 'user_id = '.intval($to_uid)))
 			{
 				$row=$sql2->db_Fetch();
