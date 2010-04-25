@@ -1,20 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     (C)Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Private Messenger plugin - main user interface
+*
+* $URL$
+* $Id$
+*
 */
 
 $retrieve_prefs[] = 'pm_prefs';
@@ -53,7 +49,7 @@ if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	exit;
 }
 
-$pm =& new private_message;
+$pm = new private_message;
 $message = '';
 $pm_prefs['perpage'] = intval($pm_prefs['perpage']);
 if($pm_prefs['perpage'] == 0)
@@ -251,7 +247,7 @@ function show_send($to_uid)
 	$pm_outbox = pm_getInfo('outbox');
 	if($to_uid)
 	{
-		$sql2 =& new db;
+		$sql2 = new db;
 		if($sql2->db_Select('user', 'user_name', "user_id = '".intval($to_uid)."'"))
 		{
 			$row=$sql2->db_Fetch();
