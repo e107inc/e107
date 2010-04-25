@@ -291,7 +291,7 @@ class e_parse_shortcode
 		if (is_readable($path))
 		{
 			require_once($path); 
-			if (class_exists($_class, false)) // don't allow __autload()
+			if (class_exists($_class, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
 				$this->scClasses[$className] = new $_class(); 
@@ -485,7 +485,7 @@ class e_parse_shortcode
 		return in_array($code, $this->scOverride);
 	}
 
-	function parseCodes($text, $useSCFiles = true, $extraCodes = '', $eVars = null)
+	function parseCodes($text, $useSCFiles = true, $extraCodes = null, $eVars = null)
 	{
 		$saveParseSCFiles = $this->parseSCFiles; // In case of nested call
 		$this->parseSCFiles = $useSCFiles;
@@ -507,7 +507,7 @@ class e_parse_shortcode
 			$this->scClasses[$classname] = $extraCodes;
 			
 			// auto-register eVars if possible - call it manually?
-			// $this->callScFunc($classname, 'setVars', $this->eVars);
+			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
 		elseif (is_array($extraCodes))
 		{
@@ -621,13 +621,13 @@ class e_parse_shortcode
 								}
 								
 								// egister passed eVars object on init - call it manually?
-								// $this->callScFunc($_class, 'setVars', $this->eVars);
+								// $this->callScFunc($_class, 'setVars', $this->eParserVars);
 							}
 							
 							// FIXME - register passed eVars object - BAD solution - called on EVERY sc method call
 							// XXX - removal candidate - I really think it should be done manually (outside the parser)
-							// via e107::getScBatch(name)->setVars($eVars);
-							// $this->callScFunc($_class, 'setVars', $this->eVars);
+							// via e107::getScBatch(name)->setParserVars($eVars);
+							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
 							
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
 							/*if (method_exists($this->scClasses[$_class], $_method))
@@ -827,7 +827,7 @@ class e_shortcode
 	 * Stores passed to shortcode handler simple parser object
 	 * @var e_vars
 	 */
-	protected $eVars = null;
+	protected $eParserVars = null;
 
 	/**
 	 * Storage for shortcode values
@@ -846,11 +846,9 @@ class e_shortcode
 	 * @param e_vars $eVars
 	 * @return e_shortcode
 	 */
-	public function setVars($eVars)
+	public function setParserVars($eVars)
 	{
-		if (null === $eVars)
-			$eVars = new e_vars();
-		$this->eVars = $eVars;
+		$this->eParserVars = $eVars;
 		return $this;
 	}
 
@@ -859,9 +857,10 @@ class e_shortcode
 	 *
 	 * @return e_vars
 	 */
-	public function getVars()
+	public function getParserVars()
 	{
-		return $this->eVars;
+		if(null === $this->eParserVars) $this->eParserVars = new e_vars();
+		return $this->eParserVars;
 	}
 
 	/**

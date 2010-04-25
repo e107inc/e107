@@ -550,9 +550,9 @@ class e_parse
 	}
 
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = '', $eVars = null)
+	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = null, $eVars = null)
 	{
-		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
+		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
 	/**
