@@ -1,15 +1,11 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-register_shortcode('forum_post_shortcodes', true);
-initShortcodeClass('forum_post_shortcodes');
 
-class forum_post_shortcodes
+class forum_post_shortcodes extends e_shortcode
 {
-	var $e107;
-	var $threadInfo;
-	var $forum;
+	protected $e107;
 
-	function forum_post_shortcodes()
+	function __construct()
 	{
 		$this->e107 = e107::getInstance();
 	}

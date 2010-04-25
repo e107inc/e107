@@ -69,13 +69,12 @@ if (!$forum->checkPerm($forumId, 'post'))
 	exit;
 }
 define('MODERATOR', USER && $forum->isModerator(USERID));
-//require_once(e_HANDLER.'forum_include.php');
-e107::getScParser();
-require_once(e_PLUGIN.'forum/forum_post_shortcodes.php');
-require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 require_once(e_HANDLER.'ren_help.php');
-setScVar('forum_post_shortcodes', 'forum', $forum);
-setScVar('forum_post_shortcodes', 'threadInfo', $threadInfo);
+
+//require_once(e_HANDLER.'forum_include.php');
+e107::getScBatch('forum', 'forum');
+e107::getScBatch('forum_post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', $threadInfo);
+
 $gen = new convert;
 $fp = new floodprotect;
 $e107 = e107::getInstance();
@@ -566,7 +565,7 @@ function process_upload()
 
 	$postId = (int)$postId;
 	$ret = array();
-	var_dump($_FILES);
+//	var_dump($_FILES);
 
 	if (isset($_FILES['file_userfile']['error']))
 	{
