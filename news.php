@@ -204,7 +204,10 @@ if ($action == 'cat' || $action == 'all')
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 	$param['current_action'] = $action;
-
+	
+	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
+	e107::getEvent()->trigger('news_list_parse', $newsList);
+	
 	foreach($newsList as $row)
 	{
 	  $text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
