@@ -27,7 +27,7 @@ if (!e_QUERY)
 	exit;
 }
 
-$cobj =& new comment;
+$cobj = new comment;
 
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];			// Usually says 'comment' - may say 'reply'

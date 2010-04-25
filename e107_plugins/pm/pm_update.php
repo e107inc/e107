@@ -62,7 +62,7 @@ pm_convert();
 function pm_convert()
 {
 	global $sql, $uinfo;
-	$sql2 =& new db;
+	$sql2 = new db;
 	$count = 0;
 	if($sql->db_Select("pm_messages","*"))
 	{
@@ -84,7 +84,7 @@ function pm_convert()
 function pm_convert_uid($name)
 {
 	global $uinfo, $tp;
-	$sqlu =& new db;
+	$sqlu = new db;
 	$name = trim($name);
 	if(!array_key_exists($uinfo[$name]))
 	{

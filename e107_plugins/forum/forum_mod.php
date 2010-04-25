@@ -65,7 +65,7 @@ function forum_delete_thread($thread_id)
 	global $sql;
 	$thread_id = (int)$thread_id;
 	require_once(e_PLUGIN.'forum/forum_class.php');
-	$f =& new e107forum;
+	$f = new e107forum;
 	$qry = "
 	SELECT t.thread_forum_id, t.thread_parent, t.thread_user, f.forum_sub
 	FROM #forum_t AS t
