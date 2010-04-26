@@ -71,9 +71,8 @@ if (!$forum->checkPerm($forumId, 'post'))
 define('MODERATOR', USER && $forum->isModerator(USERID));
 require_once(e_HANDLER.'ren_help.php');
 
-//require_once(e_HANDLER.'forum_include.php');
-e107::getScBatch('forum', 'forum');
-e107::getScBatch('forum_post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', $threadInfo);
+e107::getScBatch('view', 'forum');
+e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', $threadInfo);
 
 $gen = new convert;
 $fp = new floodprotect;
@@ -490,42 +489,12 @@ if (!$FORUMPOST)
   }
 }
 
-/* check post access (bugtracker #1424) */
-//if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='{$id}'"))
-//{
-//	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-//	 require_once(FOOTERF);
-//	exit;
-//}
-//elseif($action == "nt")
-//{
-//  if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
-//  {
-//	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-//	require_once(FOOTERF);
-//	exit;
-//  }
-//}
-//else
-//{
-//  // DB access should pass - after all, the thread should exist
-//	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t
-//	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
-//	$fpr = $sql -> db_Fetch();
-//	if(!check_class($fpr['forum_postclass']))
-//	{
-//		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-//		require_once(FOOTERF);
-//		exit;
-//	}
-//}
 
 if($action == 'rp')
 {
 	$FORUMPOST = $FORUMPOST_REPLY;
 }
 $text = $tp->parseTemplate($FORUMPOST, true);
-//$text = $tp->parseTemplate($FORUMPOST, FALSE, $forum_post_shortcodes);
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -542,7 +511,6 @@ else
 function isAuthor()
 {
 	global $postInfo;
-//	print_a($postInfo);
 	return ((USERID === $postInfo['post_user']) || MODERATOR);
 }
 
