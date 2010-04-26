@@ -286,7 +286,7 @@ class e_parse_shortcode
 			$_class = 'plugin_'.$pluginName.'_'.$overrideClass;
 		}
 		
-		$path = ($pluginName ? e_PLUGIN.$pluginName.'/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
+		$path = ($pluginName ? e_PLUGIN.$pluginName.'/core/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
 		
 		if (is_readable($path))
 		{
