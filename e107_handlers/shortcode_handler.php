@@ -170,7 +170,7 @@ class e_parse_shortcode
 				$this->scClasses[$className]->setScVar($scVarName, $value);
 			}
 			else // Old - DEPRECATED
-			
+
 			{
 				$this->scClasses[$className]->$scVarName = $value;
 			}
@@ -195,9 +195,9 @@ class e_parse_shortcode
 		}
 		return null;
 	}
-	
+
 	/**
-	 * same as e_parse_shortcode::callScFunc(), but passes the last argument (array) 
+	 * same as e_parse_shortcode::callScFunc(), but passes the last argument (array)
 	 * to the called method as multiple arguments
 	 *
 	 * @param string $className
@@ -242,19 +242,19 @@ class e_parse_shortcode
 		// TODO - throw exception?
 		return null;
 	}*/
-	
+
 	/**
 	 * Get registered SC object
 	 * Normally you would use the proxy of this method - e107::getScBatch()
 	 * DRAFT!
-	 * 
-	 * <code><?php 
+	 *
+	 * <code><?php
 	 * // simple use
 	 * e107::getScParser()->getScObject('news_shortcodes');
-	 * 
+	 *
 	 * // plugin override - e107_plugins/myplug/core/shortcodes/batch/news_shortcodes.php -> class plugin_myplug_news_shortcodes
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', true);
-	 * 
+	 *
 	 * // more complex plugin override
 	 * // e107_plugins/myplug/core/shortcodes/batch/news2_shortcodes.php -> class plugin_myplug_news2_shortcodes
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', 'news2_shortcodes');
@@ -266,40 +266,37 @@ class e_parse_shortcode
 	 */
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
-		if ($this->isScClass($className))
-		{
-			return $this->scClasses[$className];
-		}
+		$_class_fname = $className;
 
-		// defaults
-		$_class = $_class_fname = $className;
-		
 		// plugin override
 		if($overrideClass)
 		{
 			if(true === $overrideClass)
 			{
 				$overrideClass = $className;
-			} 
+			}
 			// e.g. class plugin_myplug_news_shortcodes
 			$_class_fname = $overrideClass;
-			$_class = 'plugin_'.$pluginName.'_'.$overrideClass;
+			$className = 'plugin_'.$pluginName.'_'.$overrideClass;
 		}
 		elseif($pluginName)
 		{
-			$_class = 'plugin_'.$pluginName.'_'.$className;
-			$className = $_class;
+			$className = 'plugin_'.$pluginName.'_'.$className;
 		}
-		
+
+		if ($this->isScClass($className))
+		{
+			return $this->scClasses[$className];
+		}
+
 		$path = ($pluginName ? e_PLUGIN.$pluginName.'/core/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
-		
 		if (is_readable($path))
 		{
-			require_once($path); 
-			if (class_exists($_class, false)) // don't allow __autoload()
+			require_once($path);
+			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
-				$this->scClasses[$className] = new $_class(); 
+				$this->scClasses[$className] = new $className();
 				$this->registerClassMethods($className);
 				return $this->scClasses[$className];
 			}
@@ -425,7 +422,7 @@ class e_parse_shortcode
 	{
 		$tmp = get_class_methods($class);
 		$className = is_object($class) ? get_class($class) : $class;
-		
+
 		foreach ($tmp as $c)
 		{
 			if (strpos($c, 'sc_') === 0)
@@ -510,7 +507,7 @@ class e_parse_shortcode
 
 			//always overwrite object
 			$this->scClasses[$classname] = $extraCodes;
-			
+
 			// auto-register eVars if possible - call it manually?
 			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
@@ -624,16 +621,16 @@ class e_parse_shortcode
 								{
 									return '';
 								}
-								
+
 								// egister passed eVars object on init - call it manually?
 								// $this->callScFunc($_class, 'setVars', $this->eParserVars);
 							}
-							
+
 							// FIXME - register passed eVars object - BAD solution - called on EVERY sc method call
 							// XXX - removal candidate - I really think it should be done manually (outside the parser)
 							// via e107::getScBatch(name)->setParserVars($eVars);
 							// $this->callScFunc($_class, 'setParserVars', $this->eVars);
-							
+
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
 							/*if (method_exists($this->scClasses[$_class], $_method))
 							{
@@ -686,7 +683,7 @@ class e_parse_shortcode
 						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
 
 						if (class_exists($_class, false)) // prevent __autoload - performance
-						
+
 						{
 							$ret = call_user_func(array($_class, $_function), $parm);
 						}
