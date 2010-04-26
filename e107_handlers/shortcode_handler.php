@@ -288,6 +288,7 @@ class e_parse_shortcode
 		elseif($pluginName)
 		{
 			$_class = 'plugin_'.$pluginName.'_'.$className;
+			$className = $_class;
 		}
 		
 		$path = ($pluginName ? e_PLUGIN.$pluginName.'/core/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
