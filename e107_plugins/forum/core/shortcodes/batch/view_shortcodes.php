@@ -7,6 +7,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function __construct()
 	{
+		parent::__construct();
 		$this->e107 = e107::getInstance();
 	}
 

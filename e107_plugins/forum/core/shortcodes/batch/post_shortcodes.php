@@ -1,12 +1,13 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-class forum_post_shortcodes extends e_shortcode
+class plugin_forum_post_shortcodes extends e_shortcode
 {
 	protected $e107;
 
 	function __construct()
 	{
+		parent::__construct();
 		$this->e107 = e107::getInstance();
 	}
 
