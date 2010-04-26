@@ -64,7 +64,7 @@ if(isset($_GET['f']))
 //e107::getScParser();
 //require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
 //setScVar('forum_shortcodes', 'thread', $thread);
-e107::getScBatch('forum', 'forum')->setScVar('thread', $thread);
+e107::getScBatch('view', 'forum')->setScVar('thread', $thread);
 
 $pm_installed = plugInstalled('pm');
 
@@ -78,7 +78,7 @@ define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['fo
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && $forum->isModerator(USERID)));
 
-e107::getScBatch('forum', 'forum')->setScVar('forum', $forum);
+e107::getScBatch('view', 'forum')->setScVar('forum', $forum);
 //var_dump(e107::getScBatch('forum', 'forum'));
 
 //setScVar('forum_shortcodes', 'forum', $forum);
@@ -225,13 +225,13 @@ foreach ($postList as $postInfo)
 			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
 		}
 //		setScVar('forum_shortcodes', 'postInfo', $postInfo);
-		e107::getScBatch('forum', 'forum')->setScVar('postInfo', $postInfo);
+		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
 		$forrep .= $e107->tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
 	}
 	else
 	{
 		$postInfo['thread_start'] = true;
-		e107::getScBatch('forum', 'forum')->setScVar('postInfo', $postInfo);
+		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
 		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, $forum_shortcodes) . "\n";
 	}
 }
