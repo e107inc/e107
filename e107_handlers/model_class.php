@@ -83,6 +83,21 @@ class e_model
 	 * @var string
 	 */
 	protected $_message_stack = 'default';
+	
+	/**
+	 * Cache string to be used from _get/set/clearCacheData() methods
+	 *
+	 * @var string
+	 */
+	protected $_cache_string = null;
+	
+	/**
+	 * Force Cache even if system cahche is disabled
+	 * Default is false
+	 * 
+	 * @var boolean
+	 */
+	protected $_cache_force = false;
 
 	/**
 	 * Model parameters passed mostly from external sources
@@ -870,9 +885,21 @@ class e_model
 
 		if($force)
 		{
-			$this->setData(array());
+			$this->setData(array())
+				->_clearCacheData();
 		}
 		$id = intval($id);
+		if(!$id)
+		{
+			return $this;
+		}
+		
+		$cached = $this->_getCacheData();
+		if($cached !== false)
+		{
+			$this->setData($cached);
+			return $this;
+		}
 
 		$sql = e107::getDb();
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
@@ -901,8 +928,62 @@ class e_model
 		{
 			$this->addMessageDebug('SQL error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 		}
+		else
+		{
+			$this->_setCacheData();
+		}
 
 		return $this;
+	}
+	
+	protected function _getCacheData()
+	{
+		if(!$this->isCacheEnabled())
+		{
+			return false;
+		}
+		
+		$cached = e107::getCache()->retrieve_sys($this->getCacheString(true), false, $this->_cache_force);
+		if(false !== $cached) 
+		{
+			return e107::getArrayStorage()->ReadArray($cached);
+		}
+		
+		return false;
+	}
+	
+	protected function _setCacheData()
+	{
+		if(!$this->isCacheEnabled())
+		{
+			return $this;
+		}
+		e107::getCache()->set_sys($this->getCacheString(true), $this->toString(false), $this->_cache_force, false);
+		return $this;
+	}
+	
+	protected function _clearCacheData()
+	{
+		if(!$this->isCacheEnabled(false))
+		{
+			return $this;
+		}
+		e107::getCache()->clear_sys($this->getCacheString(true), false);
+	}
+	
+	public function isCacheEnabled($checkId = true)
+	{
+		return (null !== $this->getCacheString() && (!$checkId || $this->getId()));
+	}
+	
+	public function getCacheString($replace = false)
+	{
+		return ($replace ? str_replace('{ID}', $this->getId(), $this->_cache_string) : $this->_cache_string);
+	}
+	
+	public function setCacheString($str)
+	{
+		$this->_cache_string = $str;
 	}
 
     /**
@@ -1019,11 +1100,12 @@ class e_model
 	 *
 	 * @param string $template
 	 * @param boolean $parsesc parse external shortcodes, default is true
+	 * @param e_vars $eVars simple parser data
 	 * @return string parsed template
 	 */
-	public function toHTML($template, $parsesc = true)
+	public function toHTML($template, $parsesc = true, $eVars = null)
 	{
-		return e107::getParser()->parseTemplate($template, $parsesc, $this);
+		return e107::getParser()->parseTemplate($template, $parsesc, $this, $eVars);
 	}
 
 	public function toXML()
@@ -1091,7 +1173,7 @@ class e_model
 			}
 			return (string) $value;
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->getData(), $AddSlashes);
+		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
 	}
 
 	/**
@@ -2118,6 +2200,37 @@ class e_tree_model extends e_model
 
 		return $this;
 	}
+	
+	/**
+	 * Unset all current data
+	 * @return e_tree_model
+	 */
+	function unsetTree()
+	{
+		$this->remove('__tree');
+		return $this;
+	}
+	
+	public function isCacheEnabled()
+	{
+		return (null !== $this->getCacheString());
+	}
+	
+	public function getCacheString()
+	{
+		return $this->_cache_string;
+	}
+	
+	protected function _loadFromArray($array)
+	{
+		$class_name = $this->getParam('model_class', 'e_model');
+		$tree = array();
+		foreach ($array as $id => $data) 
+		{
+			$tree[$id] = new $class_name($data);
+		}
+		$this->setTree($tree, true);
+	}
 
 	/**
 	 * Default load method
@@ -2134,18 +2247,33 @@ class e_tree_model extends e_model
 
 		if ($force)
 		{
-			$this->setTree(array(), true);
+			$this->unsetTree()
+				->_clearCacheData();
+				
 			$this->_total = false;
 		}
+		
+		$cached = $this->_getCacheData();
+		if($cached !== false)
+		{
+			$this->_loadFromArray($cached);
+			return $this;
+		}
 
-		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
+		$class_name = $this->getParam('model_class', 'e_model');
+		// auto-load all
+		if(!$this->getParam('db_query') && $this->getModelTable())
+		{
+			$this->getParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM '.$this->getModelTable());
+		}
+		
+		if($this->getParam('db_query') && $class_name && class_exists($this->getParam('model_class')))
 		{
 			$sql = e107::getDb();
-			$class_name = $this->getParam('model_class', 'e_model');
 			$this->_total = $sql->total_results = false;
+
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
-				// TODO - $sql->total_results variable type!!!
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				while($tmp = $sql->db_Fetch())
 				{
@@ -2165,6 +2293,19 @@ class e_tree_model extends e_model
 
 				unset($tmp);
 			}
+			
+			if($sql->getLastErrorNumber())
+			{
+				// TODO - admin log?
+				$this->addMessageError('Application Error - DB query failed.') // TODO LAN
+					->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText())
+					->addMessageDebug($sql->getLastQuery());
+			}
+			else
+			{
+				$this->_setCacheData();
+			}
+			
 		}
 		return $this;
 	}
@@ -2248,6 +2389,65 @@ class e_tree_model extends e_model
 	function hasTree()
 	{
 		return $this->has('__tree');
+	}
+	
+	/**
+	 * Render model data, all 'sc_*' methods will be recongnized
+	 * as shortcodes.
+	 *
+	 * @param string $template
+	 * @param boolean $parsesc parse external shortcodes, default is true
+	 * @param e_vars $eVars simple parser data
+	 * @return string parsed template
+	 */
+	public function toHTML($template, $parsesc = true, $eVars = null)
+	{
+		$ret = '';
+		$i == 1;
+		foreach ($this->getTree() as $model) 
+		{
+			if($eVars) $eVars->treeCounter = $i;
+			$ret .= $model->toHTML($template, $parsesc, $eVars);
+			$i++;
+		}
+		return $ret;
+	}
+
+	public function toXML()
+	{
+		return '';
+		// UNDER CONSTRUCTION
+	}
+
+	/**
+	 * Convert model object to array
+	 * @return array object data
+	 */
+	public function toArray()
+	{
+		return $this->getData();
+		$ret = array();
+		foreach ($this->getTree() as $id => $model) 
+		{
+			$ret[$id] = $model->toArray();
+		}
+		return $ret;
+	}
+
+	/**
+	 * Convert object data to a string
+	 *
+	 * @param boolean $AddSlashes
+	 * @param string $key optional, if set method will return corresponding value as a string
+	 * @return string
+	 */
+	public function toString($AddSlashes = true, $node_id = null)
+	{
+		if (null !== $node_id && $this->isNode($node_id))
+		{
+			return $this->getNode($node_id)->toString($AddSlashes);
+		}
+		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
 	}
 }
 
