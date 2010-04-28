@@ -1485,6 +1485,12 @@ class e_db_mysql
 	{
 		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
 	}
+	
+	function resetLastError()
+	{
+		$this->mySQLlastErrNum = 0;
+		$this->mySQLlastErrText = '';
+	}
 
 	function getLastQuery()
 	{
