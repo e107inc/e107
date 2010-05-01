@@ -154,7 +154,7 @@ function setlink($link_name, $link_url, $link_open, $link_description)
 		$link_append = '';
 	}
 
-	$link = "<a style='text-decoration:none' title='".$link_description."'{$link_append}{$href}')\">".$link_name."</a>\n";
+	$link = "<a style='text-decoration:none' title='".$link_description."'{$link_append}{$href} >".$link_name."</a>\n";
 	return $link;
 }
 
