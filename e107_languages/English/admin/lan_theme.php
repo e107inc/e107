@@ -1,15 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* $URL$
+* $Id$
+*
+* Theme manager language file
 */
-
 
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
@@ -38,7 +34,7 @@ define("TPVLAN_21", "This is the currently selected site theme");
 define("TPVLAN_22", "Stylesheets");
 define("TPVLAN_23", "default stylesheet");
 define("TPVLAN_24", "no information");
-define("TPVLAN_25", "To choose which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.");
+//define("TPVLAN_25", "To choose which stylesheet to use, please go to <a href='".e_ADMIN_ABS."theme.php'>Theme Manager</a> and click on 'Theme'.");
 
 define("TPVLAN_26", "Theme Manager");
 define("TPVLAN_27", "Please select stylesheet to use");
