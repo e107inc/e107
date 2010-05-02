@@ -2300,7 +2300,7 @@ class e_tree_model extends e_model
 			$this->getParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM '.$this->getModelTable());
 		}
 		
-		if($this->getParam('db_query') && $class_name && class_exists($this->getParam('model_class')))
+		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb();
 			$this->_total = $sql->total_results = false;
