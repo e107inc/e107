@@ -2221,14 +2221,36 @@ class e_tree_model extends e_model
 		return $this->_cache_string;
 	}
 	
+	protected function _setCacheData()
+	{
+		if(!$this->isCacheEnabled())
+		{
+			return $this;
+		}
+		e107::getCache()->set_sys(
+			$this->getCacheString(true), 
+			$this->toString(false, null, $this->getParam('nocount') ? false : true), 
+			$this->_cache_force, 
+			false
+		);
+		return $this;
+	}
+	
 	protected function _loadFromArray($array)
 	{
+		if(isset($array['total'])) 
+		{
+			$this->setTotal((integer) $array['total']);
+			unset($array['total']);
+		}
 		$class_name = $this->getParam('model_class', 'e_model');
 		$tree = array();
 		foreach ($array as $id => $data) 
 		{
 			$tree[$id] = new $class_name($data);
+			$this->_onLoad($tree[$id]);
 		}
+		
 		$this->setTree($tree, true);
 	}
 	
@@ -2432,9 +2454,10 @@ class e_tree_model extends e_model
 
 	/**
 	 * Convert model object to array
+	 * @param boolean $total include total results property
 	 * @return array object data
 	 */
-	public function toArray()
+	public function toArray($total = false)
 	{
 		return $this->getData();
 		$ret = array();
@@ -2442,6 +2465,7 @@ class e_tree_model extends e_model
 		{
 			$ret[$id] = $model->toArray();
 		}
+		if($total) $ret['total'] = $this->getTotal();
 		return $ret;
 	}
 
@@ -2449,16 +2473,17 @@ class e_tree_model extends e_model
 	 * Convert object data to a string
 	 *
 	 * @param boolean $AddSlashes
-	 * @param string $key optional, if set method will return corresponding value as a string
+	 * @param string $node_id optional, if set method will return corresponding value as a string
+	 * @param boolean $total include total results property
 	 * @return string
 	 */
-	public function toString($AddSlashes = true, $node_id = null)
+	public function toString($AddSlashes = true, $node_id = null, $total = false)
 	{
 		if (null !== $node_id && $this->isNode($node_id))
 		{
 			return $this->getNode($node_id)->toString($AddSlashes);
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
 	}
 }
 
