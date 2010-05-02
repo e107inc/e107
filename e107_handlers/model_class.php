@@ -2231,6 +2231,17 @@ class e_tree_model extends e_model
 		}
 		$this->setTree($tree, true);
 	}
+	
+	/**
+	 * Additional on load logic to be set from subclasses
+	 * 
+	 * @param e_model $node
+	 * @return e_tree_model
+	 */
+	protected function _onLoad($node)
+	{
+		return $this;
+	}
 
 	/**
 	 * Default load method
@@ -2282,7 +2293,7 @@ class e_tree_model extends e_model
 					{
 						$tmp->setMessageStackName($this->getParam('model_message_stack'));
 					}
-					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
+					$this->_onLoad($tmp)->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
 
 				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
