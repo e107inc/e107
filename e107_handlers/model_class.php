@@ -2297,7 +2297,7 @@ class e_tree_model extends e_model
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
-			$this->getParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM '.$this->getModelTable());
+			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM '.$this->getModelTable());
 		}
 		
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
