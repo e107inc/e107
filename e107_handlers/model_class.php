@@ -76,6 +76,16 @@ class e_model
     * @var string
     */
     protected $_field_id;
+    
+    /**
+     * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
+     * for example
+     *
+     * This can/should be overwritten by extending the class
+     *
+     * @var array
+     */
+    protected $_FIELD_TYPES = array();
 
 	/**
 	 * Namespace to be used for model related system messages in {@link eMessage} handler
@@ -882,7 +892,7 @@ class e_model
 		{
 			return $this;
 		}
-
+		
 		if($force)
 		{
 			$this->setData(array())
@@ -927,6 +937,7 @@ class e_model
 		if($sql->getLastErrorNumber())
 		{
 			$this->addMessageDebug('SQL error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+			$this->addMessageDebug($sql->getLastQuery());
 		}
 		else
 		{
@@ -984,6 +995,55 @@ class e_model
 	public function setCacheString($str)
 	{
 		$this->_cache_string = $str;
+	}
+	
+
+    /**
+     * Predefined data fields types, passed to DB handler
+     * @return array
+     */
+    public function getFieldTypes()
+    {
+    	return $this->_FIELD_TYPES;
+    }
+
+    /**
+     * Predefined data fields types, passed to DB handler
+     *
+     * @param array $field_types
+     * @return e_model
+     */
+    public function setFieldTypes($field_types)
+    {
+    	$this->_FIELD_TYPES = $field_types;
+		return $this;
+    }
+	
+    /**
+     * Auto field type definitions
+     * 
+     * @param boolean $force
+     * @return boolean
+     */
+	public function setFieldTypeDefs($force = false)
+	{
+		if($force || !$this->getFieldTypes())
+		{
+			$ret = e107::getDb()->getFieldDefs($this->getModelTable());
+			if($ret)
+			{
+				foreach ($ret as $k => $v) 
+				{
+					if('todb' == $v)
+					{
+						$ret[$k] = 'string';
+					}
+				}
+				$this->setFieldTypes($ret);
+				return true;
+			}
+		}
+		return false;
 	}
 
     /**
@@ -1241,16 +1301,6 @@ class e_admin_model extends e_model
     protected $_posted_data = array();
 
     /**
-     * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
-     * for example
-     *
-     * This can/should be overwritten by extending the class
-     *
-     * @var array
-     */
-    protected $_FIELD_TYPES = array();
-
-    /**
      * Validation structure - see {@link e_validator::$_required_rules} for
      * more information about the array format.
      * Used in {@link validate()} method.
@@ -1299,27 +1349,6 @@ class e_admin_model extends e_model
     		$this->_validation_rules = $vrules;
     	}
     	return $this;
-    }
-
-    /**
-     * Predefined data fields types, passed to DB handler
-     * @return array
-     */
-    public function getFieldTypes()
-    {
-    	return $this->_FIELD_TYPES;
-    }
-
-    /**
-     * Predefined data fields types, passed to DB handler
-     *
-     * @param array $field_types
-     * @return e_admin_model
-     */
-    public function setFieldTypes($field_types)
-    {
-    	$this->_FIELD_TYPES = $field_types;
-		return $this;
     }
 
     /**
@@ -2227,6 +2256,7 @@ class e_tree_model extends e_model
 		{
 			return $this;
 		}
+		
 		e107::getCache()->set_sys(
 			$this->getCacheString(true), 
 			$this->toString(false, null, $this->getParam('nocount') ? false : true), 
@@ -2286,25 +2316,25 @@ class e_tree_model extends e_model
 			$this->_total = false;
 		}
 		
-		$cached = $this->_getCacheData();
+		$cached = $this->_getCacheData(); 
 		if($cached !== false)
 		{
 			$this->_loadFromArray($cached);
 			return $this;
 		}
-
+		
 		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
-			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM '.$this->getModelTable());
+			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable());
 		}
 		
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb();
 			$this->_total = $sql->total_results = false;
-
+			
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
@@ -2459,13 +2489,13 @@ class e_tree_model extends e_model
 	 */
 	public function toArray($total = false)
 	{
-		return $this->getData();
 		$ret = array();
 		foreach ($this->getTree() as $id => $model) 
 		{
 			$ret[$id] = $model->toArray();
 		}
 		if($total) $ret['total'] = $this->getTotal();
+		
 		return $ret;
 	}
 
