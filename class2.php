@@ -1260,9 +1260,9 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 		return FALSE;
 	}
 
-	$class_array = explode(',', $userclass);
+	$class_array = !is_array($userclass) ? explode(',', $userclass) : $userclass;
 
-	$varList = explode(',', $var);
+	$varList = !is_array($var) ? explode(',', $var) : $var;
 	$latchedAccess = FALSE;
 
 	foreach($varList as $v)
@@ -1323,6 +1323,7 @@ function getperms($arg, $ap = ADMINPERMS)
 	{
 		$sql = e107::getDb('psql');
 
+		// FIXME - cache it, avoid sql query here
 		if ($sql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
 			$row = $sql->db_Fetch();

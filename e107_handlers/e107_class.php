@@ -18,7 +18,7 @@ if (!defined('e107_INIT')) { exit; }
 /**
  *
  * @package     e107
- * @subpackage	e107_handlers
+ * @category	e107_handlers
  * @version     $Id$
  * @author      e107inc
  *
@@ -162,7 +162,8 @@ class e107
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'					 => '{e_HANDLER}user_model.php',
 		'e_user'					 	 => '{e_HANDLER}user_model.php',
-		'e_current_user'				 => '{e_HANDLER}user_model.php',
+		'e_system_user'					 => '{e_HANDLER}user_model.php',
+		'e_user_extended_structure_tree' => '{e_HANDLER}user_model.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
 		'e_vars'						 => '{e_HANDLER}e_parse_class.php',
@@ -909,46 +910,6 @@ class e107
 	}
 
 	/**
-	 * Retrieve userclass singleton object
-	 *
-	 * @return user_class
-	 */
-	public static function getUserClass()
-	{
-		return self::getSingleton('user_class', true);
-	}
-
-	/**
-	 * Retrieve [e_current_user] current or [e_user] target (cached) user model object.
-	 *
-	 * @param boolean $current true - current user; false - target user (previously cached)
-	 * @return e_current_user|e_user
-	 */
-	public static function getUser($current = true)
-	{
-		if($current)
-		{
-			return self::getSingleton('e_current_user', true);
-		}
-		return e107::getRegistry('targets/core/user');
-	}
-
-	/**
-	 * Load user data
-	 *
-	 * @param integer|array $user
-	 * @return e_user
-	 */
-	public static function loadUser($user = array())
-	{
-		if(is_numeric($user_id))
-		{
-			return $this->getObject('e_user', array(), true)->load($user);
-		}
-		return $this->getObject('e_user', $user, true);
-	}
-
-	/**
 	 * Retrieve user-session singleton object
 	 *
 	 * @return UserHandler
@@ -1115,12 +1076,69 @@ class e107
 	}
 
 	/**
+	 * Retrieve userclass singleton object
+	 *
+	 * @return user_class
+	 */
+	public static function getUserClass()
+	{
+		return self::getSingleton('user_class', true);
+	}
+
+	/**
+	 * Retrieve user model object.
+	 *
+	 * @param integer $user_id target user
+	 * @return e_system_user
+	 */
+	public static function getSystemUser($user_id)
+	{
+		$user = self::getRegistry('targets/core/user/'.$user_id);
+		if(null === $user)
+		{
+			$user = self::getObject('e_system_user'); 
+			if($user_id) $user->load($user_id); // self registered on load
+		}
+		return $user;
+	}
+	
+	/**
+	 * Retrieve current user model object.
+	 *
+	 * @return e_user
+	 */
+	public static function getUser()
+	{
+		return self::getSingleton('e_user', true, 'targets/core/current_user');
+	}
+	
+	/**
+	 * Retrieve user model object.
+	 *
+	 * @param integer $user_id target user
+	 * @return e_current_user
+	 */
+	public static function getUserStructure()
+	{
+		return self::getSingleton('e_user_extended_structure_tree', true);
+	}
+
+	/**
 	 * Retrieve User Extended handler singleton object
 	 * @return e107_user_extended
 	 */
 	public static function getUserExt()
 	{
 		return self::getSingleton('e107_user_extended', true);
+	}
+	
+	/**
+	 * Retrieve User Perms (admin perms) handler singleton object
+	 * @return comment
+	 */
+	public static function getUserPerms()
+	{
+		return self::getSingleton('e_userperms', true);
 	}
 
 	/**
@@ -1140,16 +1158,6 @@ class e107
 	{
 		return self::getSingleton('e_online', true);
 	}
-
-	/**
-	 * Retrieve User Perms (admin perms) handler singleton object
-	 * @return comment
-	 */
-	public static function getUserPerms()
-	{
-		return self::getSingleton('e_userperms', true);
-	}
-
 
 	/**
 	 * Retrieve comments handler singleton object
