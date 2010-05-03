@@ -1254,6 +1254,7 @@ function get_user_data($uid, $extra = "")
 			}
 		}
 	}
+	if ($var['user_perms'] == '0.') $var['user_perms'] = '0';		// Handle some legacy situations
 	cachevars("userdata_{$uid}", $var);
 	return $var;
 }
