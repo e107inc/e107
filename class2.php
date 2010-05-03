@@ -1422,6 +1422,7 @@ function get_user_data($uid, $extra = '')
 		}
 	}
 
+	if ($var['user_perms'] == '0.') $var['user_perms'] = '0';		// Handle some legacy situations
 	//===========================================================
 	$var['user_baseclasslist'] = $var['user_class'];			// Keep track of which base classes are in DB
 	// Now look up the 'inherited' user classes
