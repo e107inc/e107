@@ -1,21 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* User settings editing
+*
+* $URL$
+* $Id$
+*
 */
+
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");
@@ -30,7 +27,8 @@ if (!USER) {
     exit;
 }
 
-if (!ADMIN && e_QUERY && e_QUERY != "update") {
+if ((!ADMIN || !getperms('4')) && e_QUERY && e_QUERY != 'update' )
+{
     header("location:".e_BASE."usersettings.php");
     exit;
 }
