@@ -3547,7 +3547,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
 			->setValidationRules($this->validationRules)
-			->setFieldTypes($this->fieldTypes)
+			->setDbTypes($this->fieldTypes)
 			->setDataFields($this->dataFields)
 			->setMessageStackName('admin_ui_model_'.$this->table)
 			->setParam('db_query', $this->editQry);
