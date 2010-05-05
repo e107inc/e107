@@ -2,16 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Forthcoming events menu handler for event calendar
+ * Event calendar plugin - calendar menu display
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
+ *
  */
  
 /**
@@ -142,14 +141,13 @@ for ($cal_c = 0; $cal_c < $firstdayoffset; $cal_c++)
 $cal_loop = $firstdayoffset;
 // Now do the days of the month
 for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
-{   // Four cases to decode:
+{   // Six cases to decode:
 	//     	1 - Today, no events
 	//		2 - Some other day, no events
 	//		3 - Today with events
 	//		4 - Some other day with events
 	//		5 - Today with recently added events
 	//		6 - Some other day with recently added events
-//    $cal_dayarray = getdate($cal_start + (($cal_c-1) * 86400));
 	$cal_css = 2;		// The default - not today, no events
     $cal_img = $cal_c;		// Default 'image' is the day of the month
     $cal_event_count = 0;
@@ -158,7 +156,6 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
     $cal_linkut = gmmktime(0 , 0 , 0 , $cal_current_month, $cal_c, $cal_current_year).".one";  // Always need "one"
     if (array_key_exists($cal_c, $cal_events))
     {	// There are events today
-		$cal_event_icon = 'calendar_menu/images/'.$cal_events[$cal_c]['0'];		// Icon file could be NULL
 		$cal_event_count = count($cal_events[$cal_c]);		// See how many events today
 		if ($cal_event_count)
 		{   // Show icon if it exists
@@ -184,11 +181,18 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 					$title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
 				}
 			}
-			if (!empty($cal_events[$cal_c]['0']) && is_readable(e_PLUGIN.$cal_event_icon)) $cal_img = "<img src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
-					//height='10' width='10'
 			if (isset($cal_recent[$cal_c]) && $cal_recent[$cal_c])
 			{
 				$cal_css += 2;
+			}
+
+			if (!empty($cal_events[$cal_c]['0']))
+			{
+				$cal_event_icon = 'calendar_menu/images/'.$cal_events[$cal_c]['0'];		// Icon file could be NULL
+				if (is_readable(e_PLUGIN.$cal_event_icon)) 
+				{
+					$cal_img = "<img src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
+				}
 			}
 		}
 	}
