@@ -76,16 +76,6 @@ class e_model
     * @var string
     */
     protected $_field_id;
-    
-    /**
-     * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
-     * for example
-     *
-     * This can/should be overwritten by extending the class
-     *
-     * @var array
-     */
-    protected $_FIELD_TYPES = array();
 
 	/**
 	 * Namespace to be used for model related system messages in {@link eMessage} handler
@@ -93,18 +83,18 @@ class e_model
 	 * @var string
 	 */
 	protected $_message_stack = 'default';
-	
+
 	/**
 	 * Cache string to be used from _get/set/clearCacheData() methods
 	 *
 	 * @var string
 	 */
 	protected $_cache_string = null;
-	
+
 	/**
 	 * Force Cache even if system cahche is disabled
 	 * Default is false
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $_cache_force = false;
@@ -371,6 +361,19 @@ class e_model
     public function isData($key)
     {
     	return $this->_isData($key);
+    }
+
+    /**
+     * @param boolean $new_state new object state if set
+     * @return boolean
+     */
+    public function isModified($new_state = null)
+    {
+    	if(is_bool($new_state))
+    	{
+    		$this->data_has_changed = $new_state;
+    	}
+    	return $this->data_has_changed;
     }
 
     /**
@@ -892,7 +895,7 @@ class e_model
 		{
 			return $this;
 		}
-		
+
 		if($force)
 		{
 			$this->setData(array())
@@ -903,7 +906,7 @@ class e_model
 		{
 			return $this;
 		}
-		
+
 		$cached = $this->_getCacheData();
 		if($cached !== false)
 		{
@@ -946,23 +949,23 @@ class e_model
 
 		return $this;
 	}
-	
+
 	protected function _getCacheData()
 	{
 		if(!$this->isCacheEnabled())
 		{
 			return false;
 		}
-		
+
 		$cached = e107::getCache()->retrieve_sys($this->getCacheString(true), false, $this->_cache_force);
-		if(false !== $cached) 
+		if(false !== $cached)
 		{
 			return e107::getArrayStorage()->ReadArray($cached);
 		}
-		
+
 		return false;
 	}
-	
+
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -972,7 +975,7 @@ class e_model
 		e107::getCache()->set_sys($this->getCacheString(true), $this->toString(false), $this->_cache_force, false);
 		return $this;
 	}
-	
+
 	protected function _clearCacheData()
 	{
 		if(!$this->isCacheEnabled(false))
@@ -981,69 +984,20 @@ class e_model
 		}
 		e107::getCache()->clear_sys($this->getCacheString(true), false);
 	}
-	
+
 	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString() && (!$checkId || $this->getId()));
 	}
-	
+
 	public function getCacheString($replace = false)
 	{
 		return ($replace ? str_replace('{ID}', $this->getId(), $this->_cache_string) : $this->_cache_string);
 	}
-	
+
 	public function setCacheString($str)
 	{
 		$this->_cache_string = $str;
-	}
-	
-
-    /**
-     * Predefined data fields types, passed to DB handler
-     * @return array
-     */
-    public function getFieldTypes()
-    {
-    	return $this->_FIELD_TYPES;
-    }
-
-    /**
-     * Predefined data fields types, passed to DB handler
-     *
-     * @param array $field_types
-     * @return e_model
-     */
-    public function setFieldTypes($field_types)
-    {
-    	$this->_FIELD_TYPES = $field_types;
-		return $this;
-    }
-	
-    /**
-     * Auto field type definitions
-     * 
-     * @param boolean $force
-     * @return boolean
-     */
-	public function setFieldTypeDefs($force = false)
-	{
-		if($force || !$this->getFieldTypes())
-		{
-			$ret = e107::getDb()->getFieldDefs($this->getModelTable());
-			if($ret)
-			{
-				foreach ($ret as $k => $v) 
-				{
-					if('todb' == $v)
-					{
-						$ret[$k] = 'string';
-					}
-				}
-				$this->setFieldTypes($ret);
-				return true;
-			}
-		}
-		return false;
 	}
 
     /**
@@ -1056,11 +1010,29 @@ class e_model
     }
 
     /**
+     * Delete DB record
+     * Awaiting for child class implementation
+     * @see e_model_admin
+     */
+    public function delete()
+    {
+    }
+
+    /**
+     * Create new DB recorrd
+     * Awaiting for child class implementation
+     * @see e_model_admin
+     */
+    public function create()
+    {
+    }
+
+    /**
      * Insert data to DB
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function dbInsert()
+    protected function dbInsert()
     {
     }
 
@@ -1069,7 +1041,7 @@ class e_model
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function dbUpdate()
+    protected function dbUpdate()
     {
     }
 
@@ -1078,7 +1050,7 @@ class e_model
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function dbReplace()
+    protected function dbReplace()
     {
     }
 
@@ -1087,7 +1059,7 @@ class e_model
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function dbDelete()
+    protected function dbDelete()
     {
     }
 
@@ -1262,10 +1234,8 @@ class e_model
 	}
 }
 
-//FIXME - move e_model_admin to e_model_admin.php
-
 /**
- * Base e107 Admin Model class
+ * Base e107 Fron Model class interface
  *
  * Some important points:
  * - model data should be always in toDB() format:
@@ -1286,11 +1256,11 @@ class e_model
  *
  * @package e107
  * @category e107_handlers
- * @version 1.0
+ * @version $Id$
  * @author SecretR
- * @copyright Copyright (C) 2009, e107 Inc.
+ * @copyright Copyright (C) 2008-2010 e107 Inc.
  */
-class e_admin_model extends e_model
+class e_front_model extends e_model
 {
     /**
     * Posted data
@@ -1299,6 +1269,17 @@ class e_admin_model extends e_model
     * @var array
     */
     protected $_posted_data = array();
+
+
+    /**
+     * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
+     * for example
+     *
+     * This can/should be overwritten by extending the class
+     *
+     * @var array
+     */
+    protected $_FIELD_TYPES = array();
 
     /**
      * Validation structure - see {@link e_validator::$_required_rules} for
@@ -1310,6 +1291,8 @@ class e_admin_model extends e_model
      * @var array
      */
     protected $_validation_rules = array();
+
+    protected $_optional_rules = array();
 
 	/**
 	 * @var integer Last SQL error number
@@ -1340,16 +1323,99 @@ class e_admin_model extends e_model
      * Set object validation rules if $_validation_rules array is empty
      *
      * @param array $vrules
-     * @return e_admin_model
+     * @return e_front_model
      */
-    public function setValidationRules(array $vrules)
+    public function setValidationRules(array $vrules, $force = false)
     {
-    	if(empty($this->_validation_rules))
+    	if($force || empty($this->_validation_rules))
     	{
     		$this->_validation_rules = $vrules;
     	}
     	return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getOptionalRules()
+    {
+    	return $this->_optional_rules;
+    }
+
+    /**
+     * @param array $rules
+     * @return e_front_model
+     */
+    public function setOptionalRules(array $rules)
+    {
+    	$this->_optional_rules = $rules;
+    	return $this;
+    }
+
+    /**
+     * Set object validation rules if $_validation_rules array is empty
+     *
+     * @param string $field
+     * @param array $rule
+     * @param boolean $required
+     * @return e_front_model
+     */
+    public function setValidationRule($field, $rule, $required = true)
+    {
+    	$pname = $required ? '_validation_rules' : '_optional_rules';
+    	$rules = &$this->$pname;
+    	$rules[$field] = $rule;
+
+    	return $this;
+    }
+
+    /**
+     * Predefined data fields types, passed to DB handler
+     * @return array
+     */
+    public function getDbTypes()
+    {
+    	return ($this->_FIELD_TYPES ? $this->_FIELD_TYPES : $this->getDataFields());
+    }
+
+    /**
+     * Predefined data fields types, passed to DB handler
+     *
+     * @param array $field_types
+     * @return e_model
+     */
+    public function setDbTypes($field_types)
+    {
+    	$this->_FIELD_TYPES = $field_types;
+		return $this;
+    }
+
+    /**
+     * Auto field type definitions
+     * Disabled for now, it should auto-create _data_types
+     * @param boolean $force
+     * @return boolean
+     */
+//	public function setFieldTypeDefs($force = false)
+//	{
+//		if($force || !$this->getFieldTypes())
+//		{
+//			$ret = e107::getDb()->getFieldDefs($this->getModelTable());
+//			if($ret)
+//			{
+//				foreach ($ret as $k => $v)
+//				{
+//					if('todb' == $v)
+//					{
+//						$ret[$k] = 'string';
+//					}
+//				}
+//				$this->setFieldTypes($ret);
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
     /**
      * Retrieves data from the object ($_posted_data) without
@@ -1413,7 +1479,7 @@ class e_admin_model extends e_model
      * @param string $key
      * @param mixed $value
      * @param boolean $strict update only
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function setPosted($key, $value, $strict = false)
     {
@@ -1429,7 +1495,7 @@ class e_admin_model extends e_model
      * @param string|array $key
      * @param mixed $value
      * @param boolean $strict update only
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function setPostedData($key, $value = null, $strict = false)
     {
@@ -1446,7 +1512,7 @@ class e_admin_model extends e_model
      * @param string|array $key
      * @param mixed $value
      * @param boolean $override override existing data
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function addPostedData($key, $value = null, $override = true)
     {
@@ -1458,7 +1524,7 @@ class e_admin_model extends e_model
      * Public proxy of {@link _unsetDataSimple()}
      *
      * @param string $key
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function removePosted($key)
     {
@@ -1474,7 +1540,7 @@ class e_admin_model extends e_model
      * Public proxy of {@link _unsetData()}
      *
      * @param string|null $key
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function removePostedData($key = null)
     {
@@ -1555,7 +1621,7 @@ class e_admin_model extends e_model
      * @param boolean $strict
      * @param boolean $sanitize sanitize posted data before move it to the object data
      * @param boolean $validate perform validation check
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
@@ -1576,6 +1642,8 @@ class e_admin_model extends e_model
 		}*/
 
 		$data = $this->getPostedData();
+		$valid_data = $this->getValidator()->getValidData();
+
 		if($sanitize)
 		{
 			// search for db_field types
@@ -1591,6 +1659,10 @@ class e_admin_model extends e_model
 
     	foreach ($data as $field => $dt)
     	{
+    		// get values form validated array when possible
+    		// we need it because of advanced validation methods e.g. 'compare'
+    		if(isset($valid_data[$field])) $dt = $valid_data[$field];
+
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
     	}
@@ -1607,7 +1679,7 @@ class e_admin_model extends e_model
      * @param array $src_data
      * @param boolean $sanitize
      * @param boolean $validate perform validation check
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
     {
@@ -1684,7 +1756,9 @@ class e_admin_model extends e_model
 		if(null === $this->_validator)
 		{
 			$this->_validator = e107::getObject('e_validator');
-			$this->_validator->setRules($this->getValidationRules())->setMessageStack($this->_message_stack.'_validator');
+			$this->_validator->setRules($this->getValidationRules())
+				->setOptionalRules($this->getOptionalRules())
+				->setMessageStack($this->_message_stack.'_validator');
 			//TODO - optional check rules
 		}
 		return $this->_validator;
@@ -1745,7 +1819,7 @@ class e_admin_model extends e_model
      *
      * @param boolean $session store messages to session
      * @param boolean $validation move validation messages as well
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function setMessages($session = false, $validation = true)
     {
@@ -1763,7 +1837,7 @@ class e_admin_model extends e_model
      * @param boolean|string $type E_MESSAGE_INFO | E_MESSAGE_SUCCESS | E_MESSAGE_WARNING | E_MESSAGE_WARNING | E_MESSAGE_DEBUG | false (all)
      * @param boolean $session reset session messages
      * @param boolean $validation reset validation messages as well
-     * @return e_admin_model
+     * @return e_front_model
      */
     public function resetMessages($type = false, $session = false, $validation = false)
     {
@@ -1818,7 +1892,7 @@ class e_admin_model extends e_model
     /**
      * Generic load data from DB
      * @param boolean $force
-     * @return e_admin_model
+     * @return e_front_model
      */
 	public function load($id, $force = false)
 	{
@@ -1835,177 +1909,6 @@ class e_admin_model extends e_model
 		return $this;
 	}
 
-    /**
-     * Save data to DB
-     *
-     * @param boolen $from_post
-     */
-    public function save($from_post = true, $force = false, $session_messages = false)
-    {
-    	if(!$this->getFieldIdName())
-		{
-			return false;
-		}
-
-		if($from_post)
-		{
-			//no strict copy, validate & sanitize
-			$this->mergePostedData(false, true, true);
-		}
-
-		if($this->getId())
-		{
-			return $this->dbUpdate($force, $session_messages);
-		}
-
-		return $this->dbInsert($force, $session_messages);
-    }
-
-	public function delete($destroy = true, $session_messages = false)
-	{
-		$ret = $this->dbDelete();
-		if($ret)
-		{
-			if($destroy)
-			{
-				$this->setMessages($session_messages)->destroy();
-			}
-		}
-		return $ret;
-	}
-
-    /**
-     * Insert data to DB
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
-    public function dbInsert($force = false, $session_messages = false)
-    {
-    	$this->_db_errno = 0;
-    	$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
-		{
-			return 0;
-		}
-		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
-		if(!$res)
-		{
-			$this->_db_errno = $sql->getLastErrorNumber();
-			$this->_db_errmsg = $sql->getLastErrorText();
-			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
-			return false;
-		}
-
-		// Set the reutrned ID
-		$this->setId($res);
-		$this->addMessageSuccess(LAN_CREATED);
-
-		return $res;
-    }
-
-    /**
-     * Replace data in DB
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
-    public function dbReplace($force = false, $session_messages = false)
-    {
-    	$this->_db_errno = 0;
-    	$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
-		{
-			return 0;
-		}
-		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
-		if(!$res)
-		{
-			$this->_db_errno = $sql->getLastErrorNumber();
-			$this->_db_errmsg = $sql->getLastErrorText();
-			if($this->_db_errno)
-			{
-				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
-			}
-		}
-
-		return $res;
-    }
-
-    /**
-     * Update DB data
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
-    public function dbUpdate($force = false, $session_messages = false)
-    {
-    	$this->_db_errno = 0;
-		$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
-		{
-			$this->addMessageInfo(LAN_NO_CHANGE);
-			return 0;
-		}
-		$sql = e107::getDb();
-		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
-		if(!$res)
-		{
-			$this->_db_errno = $sql->getLastErrorNumber();
-			$this->_db_errmsg = $sql->getLastErrorText();
-			if($this->_db_errno)
-			{
-				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
-				return false;
-			}
-
-			$this->addMessageInfo(LAN_NO_CHANGE);
-			return 0;
-		}
-		$this->addMessageSuccess(LAN_UPDATED);
-		return $res;
-    }
-
-    /**
-     * Delete DB data
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
-    public function dbDelete($session_messages = false)
-    {
-    	$this->_db_errno = 0;
-		$this->_db_errmsg = '';
-		if($this->hasError())
-		{
-			return 0;
-		}
-
-		if(!$this->getId())
-		{
-			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
-			return 0;
-		}
-		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
-		if(!$res)
-		{
-			$this->_db_errno = $sql->getLastErrorNumber();
-			$this->_db_errmsg = $sql->getLastErrorText();
-			if($this->_db_errno)
-			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
-			}
-		}
-
-		return $res;
-    }
 
 	/**
 	 * Build query array to be used with db methods (db_Update, db_Insert, db_Replace)
@@ -2142,12 +2045,260 @@ class e_admin_model extends e_model
 		$this->data_has_changed = array();
 		$this->_FIELD_TYPES = array();
 	}
+
+
+    /**
+     * Update DB data
+     *
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    protected function dbUpdate($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		$this->_db_errmsg = '';
+		if($this->hasError() || (!$this->data_has_changed && !$force))
+		{
+			$this->addMessageInfo(LAN_NO_CHANGE);
+			return 0;
+		}
+		$sql = e107::getDb();
+		$res = $sql->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
+		if(!$res)
+		{
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+				return false;
+			}
+
+			$this->addMessageInfo(LAN_NO_CHANGE);
+			return 0;
+		}
+		$this->addMessageSuccess(LAN_UPDATED);
+		return $res;
+    }
+
+    /**
+     * Save data to DB
+     *
+     * @param boolen $from_post
+     * @return boolean|integer
+     */
+    public function save($from_post = true, $force = false, $session_messages = false)
+    {
+    	if(!$this->getFieldIdName())
+		{
+			return false;
+		}
+
+		if($from_post)
+		{
+			//no strict copy, validate & sanitize
+			$this->mergePostedData(false, true, true);
+		}
+
+		if($this->getId())
+		{
+			return $this->dbUpdate($force, $session_messages);
+		}
+
+		return false;
+    }
+
+    /**
+     * Exactly what it says - your debug helper
+     * @param boolean $retrun
+     * @param boolean $undo
+     * @return void
+     */
+	public function saveDebug($return = false, $undo = true)
+	{
+		$ret = array();
+
+		$ret['validation_rules'] = $this->getValidationRules();
+		$ret['optional_validation_rules'] = $this->getOptionalRules();
+		$ret['model_base_ismodfied'] = $this->isModified();
+		$ret['model_base_data'] = $this->getData();
+		$ret['posted_data'] = $this->getPostedData();
+
+		$this->mergePostedData(false, true, true);
+
+		$ret['model_modified_data'] = $this->getData();
+		$ret['model_modified_ismodfied'] = $this->isModified();
+		$ret['validator_valid_data'] = $this->getValidator()->getValidData();
+
+		// undo
+		if($undo)
+		{
+			$this->setData($ret['model_base_data'])
+				->isModified($ret['model_base_ismodfied'])
+				->setPostedData($ret['posted_data']);
+		}
+		if($return) return $ret;
+
+		print_a($ret);
+	}
+}
+
+//FIXME - move e_model_admin to e_model_admin.php
+
+/**
+ * Base e107 Admin Model class
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version $Id$
+ * @author SecretR
+ * @copyright Copyright (C) 2008-2010 e107 Inc.
+ */
+class e_admin_model extends e_front_model
+{
+    /**
+     * Save data to DB
+     *
+     * @param boolen $from_post
+     */
+    public function save($from_post = true, $force = false, $session_messages = false)
+    {
+    	if(!$this->getFieldIdName())
+		{
+			return false;
+		}
+
+		if($from_post)
+		{
+			//no strict copy, validate & sanitize
+			$this->mergePostedData(false, true, true);
+		}
+
+		if($this->getId())
+		{
+			return $this->dbUpdate($force, $session_messages);
+		}
+
+		return $this->dbInsert($force, $session_messages);
+    }
+
+	public function delete($destroy = true, $session_messages = false)
+	{
+		$ret = $this->dbDelete();
+		if($ret)
+		{
+			if($destroy)
+			{
+				$this->setMessages($session_messages)->destroy();
+			}
+		}
+		return $ret;
+	}
+
+    /**
+     * Insert data to DB
+     *
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    protected function dbInsert($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+    	$this->_db_errmsg = '';
+		if($this->hasError() || (!$this->data_has_changed && !$force))
+		{
+			return 0;
+		}
+		$sql = e107::getDb();
+		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
+		if(!$res)
+		{
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
+			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			return false;
+		}
+
+		// Set the reutrned ID
+		$this->setId($res);
+		$this->addMessageSuccess(LAN_CREATED);
+
+		return $res;
+    }
+
+    /**
+     * Replace data in DB
+     *
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    protected function dbReplace($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+    	$this->_db_errmsg = '';
+		if($this->hasError() || (!$this->data_has_changed && !$force))
+		{
+			return 0;
+		}
+		$sql = e107::getDb();
+		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+		if(!$res)
+		{
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			}
+		}
+
+		return $res;
+    }
+
+    /**
+     * Delete DB data
+     *
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    protected function dbDelete($session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		$this->_db_errmsg = '';
+		if($this->hasError())
+		{
+			return 0;
+		}
+
+		if(!$this->getId())
+		{
+			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
+			return 0;
+		}
+		$sql = e107::getDb();
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
+		if(!$res)
+		{
+			$this->_db_errno = $sql->getLastErrorNumber();
+			$this->_db_errmsg = $sql->getLastErrorText();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			}
+		}
+
+		return $res;
+    }
 }
 
 /**
  * Model collection handler
  */
-class e_tree_model extends e_model
+class e_tree_model extends e_front_model
 {
 	/**
 	 * Current model DB table, used in all db calls
@@ -2229,7 +2380,7 @@ class e_tree_model extends e_model
 
 		return $this;
 	}
-	
+
 	/**
 	 * Unset all current data
 	 * @return e_tree_model
@@ -2239,54 +2390,54 @@ class e_tree_model extends e_model
 		$this->remove('__tree');
 		return $this;
 	}
-	
+
 	public function isCacheEnabled()
 	{
 		return (null !== $this->getCacheString());
 	}
-	
+
 	public function getCacheString()
 	{
 		return $this->_cache_string;
 	}
-	
+
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
 		{
 			return $this;
 		}
-		
+
 		e107::getCache()->set_sys(
-			$this->getCacheString(true), 
-			$this->toString(false, null, $this->getParam('nocount') ? false : true), 
-			$this->_cache_force, 
+			$this->getCacheString(true),
+			$this->toString(false, null, $this->getParam('nocount') ? false : true),
+			$this->_cache_force,
 			false
 		);
 		return $this;
 	}
-	
+
 	protected function _loadFromArray($array)
 	{
-		if(isset($array['total'])) 
+		if(isset($array['total']))
 		{
 			$this->setTotal((integer) $array['total']);
 			unset($array['total']);
 		}
 		$class_name = $this->getParam('model_class', 'e_model');
 		$tree = array();
-		foreach ($array as $id => $data) 
+		foreach ($array as $id => $data)
 		{
 			$tree[$id] = new $class_name($data);
 			$this->_onLoad($tree[$id]);
 		}
-		
+
 		$this->setTree($tree, true);
 	}
-	
+
 	/**
 	 * Additional on load logic to be set from subclasses
-	 * 
+	 *
 	 * @param e_model $node
 	 * @return e_tree_model
 	 */
@@ -2312,29 +2463,29 @@ class e_tree_model extends e_model
 		{
 			$this->unsetTree()
 				->_clearCacheData();
-				
+
 			$this->_total = false;
 		}
-		
-		$cached = $this->_getCacheData(); 
+
+		$cached = $this->_getCacheData();
 		if($cached !== false)
 		{
 			$this->_loadFromArray($cached);
 			return $this;
 		}
-		
+
 		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
 			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable());
 		}
-		
+
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb();
 			$this->_total = $sql->total_results = false;
-			
+
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
@@ -2356,7 +2507,7 @@ class e_tree_model extends e_model
 
 				unset($tmp);
 			}
-			
+
 			if($sql->getLastErrorNumber())
 			{
 				// TODO - admin log?
@@ -2368,7 +2519,7 @@ class e_tree_model extends e_model
 			{
 				$this->_setCacheData();
 			}
-			
+
 		}
 		return $this;
 	}
@@ -2453,7 +2604,7 @@ class e_tree_model extends e_model
 	{
 		return $this->has('__tree');
 	}
-	
+
 	/**
 	 * Render model data, all 'sc_*' methods will be recongnized
 	 * as shortcodes.
@@ -2467,7 +2618,7 @@ class e_tree_model extends e_model
 	{
 		$ret = '';
 		$i == 1;
-		foreach ($this->getTree() as $model) 
+		foreach ($this->getTree() as $model)
 		{
 			if($eVars) $eVars->treeCounter = $i;
 			$ret .= $model->toHTML($template, $parsesc, $eVars);
@@ -2490,12 +2641,12 @@ class e_tree_model extends e_model
 	public function toArray($total = false)
 	{
 		$ret = array();
-		foreach ($this->getTree() as $id => $model) 
+		foreach ($this->getTree() as $id => $model)
 		{
 			$ret[$id] = $model->toArray();
 		}
 		if($total) $ret['total'] = $this->getTotal();
-		
+
 		return $ret;
 	}
 
@@ -2515,9 +2666,17 @@ class e_tree_model extends e_model
 		}
 		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
 	}
+
+	public function update()
+	{
+	}
+
+	public function delete()
+	{
+	}
 }
 
-class e_admin_tree_model extends e_tree_model
+class e_front_tree_model extends e_tree_model
 {
 	/**
 	 * @var integer Last SQL error number
@@ -2560,53 +2719,6 @@ class e_admin_tree_model extends e_tree_model
     {
     	return $this->hasSqlError();
     }
-
-	/**
-	 * Batch Delete records
-	 * @param mixed $ids
-	 * @param boolean $destroy [optional] destroy object instance after db delete
-	 * @param boolean $session_messages [optional]
-	 * @return integer deleted records number or false on DB error
-	 */
-	public function delete($ids, $destroy = true, $session_messages = false)
-	{
-		if(!$ids) return 0;
-
-		if(!is_array($ids))
-		{
-			$ids = explode(',', $ids);
-		}
-
-		$ids = array_map('intval', $ids);
-		$idstr = implode(', ', $ids);
-
-		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
-		$this->_db_errno = $sql->getLastErrorNumber();
-		$this->_db_errmsg = $sql->getLastErrorText();
-		if(!$res)
-		{
-			if($sql->getLastErrorNumber())
-			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
-				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
-			}
-		}
-		elseif($destroy)
-		{
-			foreach ($ids as $id)
-			{
-				if($this->hasNode($id))
-				{
-					$this->getNode($id)->setMessages($session_messages);
-					call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
-					$this->setNode($id, null);
-				}
-			}
-		}
-
-		return $res;
-	}
 
 	/**
 	 * Batch update tree records/nodes
@@ -2666,6 +2778,58 @@ class e_admin_tree_model extends e_tree_model
 					->setMessages($session_messages);
 			}
 		}
+		return $res;
+	}
+}
+
+class e_admin_tree_model extends e_front_tree_model
+{
+
+
+	/**
+	 * Batch Delete records
+	 * @param mixed $ids
+	 * @param boolean $destroy [optional] destroy object instance after db delete
+	 * @param boolean $session_messages [optional]
+	 * @return integer deleted records number or false on DB error
+	 */
+	public function delete($ids, $destroy = true, $session_messages = false)
+	{
+		if(!$ids) return 0;
+
+		if(!is_array($ids))
+		{
+			$ids = explode(',', $ids);
+		}
+
+		$ids = array_map('intval', $ids);
+		$idstr = implode(', ', $ids);
+
+		$sql = e107::getDb();
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
+		$this->_db_errno = $sql->getLastErrorNumber();
+		$this->_db_errmsg = $sql->getLastErrorText();
+		if(!$res)
+		{
+			if($sql->getLastErrorNumber())
+			{
+				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+			}
+		}
+		elseif($destroy)
+		{
+			foreach ($ids as $id)
+			{
+				if($this->hasNode($id))
+				{
+					$this->getNode($id)->setMessages($session_messages);
+					call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
+					$this->setNode($id, null);
+				}
+			}
+		}
+
 		return $res;
 	}
 }

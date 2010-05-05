@@ -655,14 +655,6 @@ class e_validator
 					return false;
 				}
 
-				if('varchar' == $type && !varset($tmp[1])) $tmp[1] = 255;
-
-				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
-				{
-					$this->addValidateResult($name, self::ERR_TOO_LONG);
-					return false;
-				}
-
 				if(!($value[0] && $value[1] && $value[0] == $value[1]))
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);

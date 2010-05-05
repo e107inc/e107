@@ -610,7 +610,7 @@ class e107
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
-		
+
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 
 		//singleton object found - overload not possible
@@ -859,23 +859,23 @@ class e107
 	{
 		return self::getSingleton('e_parse_shortcode', true);
 	}
-	
+
 	/**
 	 * Retrieve registered sc object (batch) by class name
 	 * Note - '_shortcodes' part of the class/override is added by the method
 	 * Override is possible only if class is not already instantiated by shortcode parser
-	 * 
-	 * <code><?php 
+	 *
+	 * <code><?php
 	 * // core news shortcodes
-	 * e107::getScObject('news'); 
+	 * e107::getScObject('news');
 	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/core/shortcodes/batch/my_shortcodes.php
-	 * e107::getScObject('my', 'myplugin'); 
+	 * e107::getScObject('my', 'myplugin');
 	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/news_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', true);
 	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/mynews_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', 'mynews');
 	 * </code>
-	 * 
+	 *
 	 * @param string $className
 	 * @param string $pluginName
 	 * @param string|true $overrideClass
@@ -1089,19 +1089,25 @@ class e107
 	 * Retrieve user model object.
 	 *
 	 * @param integer $user_id target user
+	 * @param boolean $checkIfCurrent if tru user_id will be compared to current user, if there is a match
+	 * 	current user object will be returned
 	 * @return e_system_user
 	 */
-	public static function getSystemUser($user_id)
+	public static function getSystemUser($user_id, $checkIfCurrent = true)
 	{
+		if($checkIfCurrent && $user_id && $user_id === self::getUser()->getId())
+		{
+			return self::getUser();
+		}
 		$user = self::getRegistry('targets/core/user/'.$user_id);
 		if(null === $user)
 		{
-			$user = self::getObject('e_system_user'); 
+			$user = self::getObject('e_system_user');
 			if($user_id) $user->load($user_id); // self registered on load
 		}
 		return $user;
 	}
-	
+
 	/**
 	 * Retrieve current user model object.
 	 *
@@ -1111,7 +1117,7 @@ class e107
 	{
 		return self::getSingleton('e_user', true, 'targets/core/current_user');
 	}
-	
+
 	/**
 	 * Retrieve user model object.
 	 *
@@ -1131,7 +1137,7 @@ class e107
 	{
 		return self::getSingleton('e107_user_extended', true);
 	}
-	
+
 	/**
 	 * Retrieve User Perms (admin perms) handler singleton object
 	 * @return comment
@@ -2121,8 +2127,8 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		  	define('e_LANCODE', '');
 		}
-		
-		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY)); 
+
+		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
 		define('e_QUERY', $e_QUERY);
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);

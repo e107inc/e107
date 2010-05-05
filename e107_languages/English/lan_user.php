@@ -117,6 +117,7 @@ define('LAN_USER_86', 'Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels');
 
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
+// FIXME - do we need this?
 if (!defined('USER_ERR_01')) { define('USER_ERR_01','Missing value');  }
 if (!defined('USER_ERR_02')) { define('USER_ERR_02','Unexpected value');  }
 if (!defined('USER_ERR_03')) { define('USER_ERR_03','Value contains invalid characters');  }
