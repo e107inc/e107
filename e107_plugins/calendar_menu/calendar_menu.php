@@ -1,25 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-|
-| 22.10.06 steved - Various tidying up, additional options supported
-| 24.10.06 steved - templated, various cleaning up
-| 06.11.06 steved - template file integrated with other calendar files
-| 09.11.06 steved - Caching added, other mods to templates etc
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2002-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Event calendar plugin - calendar menu display
+*
+* $URL$
+* $Id$
+*
 */
 
 
@@ -202,26 +193,29 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
         $cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_c, $cal_datearray['year']).".one";  // ALways need "one"
         if (array_key_exists($cal_c, $cal_events))
         {	// Events happening today
-            $cal_event_icon = "calendar_menu/images/" . $cal_events[$cal_c]['0'];
             $cal_event_count = count($cal_events[$cal_c]);		// See how many events today
-            if (!empty($cal_events[$cal_c]['0']) && is_readable(e_PLUGIN.$cal_event_icon))
-            {   // Show icon if it exists
-				$cal_css += 2;		// Gives 3 for today, 4 for other day
-				if ($cal_event_count == 1)
-				{
-					$title = " title='1 ".EC_LAN_135."' ";
+			$cal_css += 2;		// Gives 3 for today, 4 for other day
+			if ($cal_event_count == 1)
+			{
+				$title = " title='1 ".EC_LAN_135."' ";
+			}
+			else
+			{
+				$title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
+			}
+			if (isset($cal_events[$cal_c]['is_recent']) && $cal_events[$cal_c]['is_recent'])
+			{
+				$cal_css += 2;
+			}
+
+            if (!empty($cal_events[$cal_c]['0']))
+			{
+				$cal_event_icon = "calendar_menu/images/" . $cal_events[$cal_c]['0'];
+				if (is_readable(e_PLUGIN.$cal_event_icon))
+				{   // Show icon if it exists
+					$cal_img = "<img style='border:0' src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
 				}
-				else
-				{
-					$title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
-				}
-				$cal_img = "<img style='border:0' src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
-				//height='10' width='10'
-				if (isset($cal_events[$cal_c]['is_recent']) && $cal_events[$cal_c]['is_recent'])
-				{
-					$cal_css += 2;
-				}
-            }
+			}
 		}
         $cal_text .= $CALENDAR_MENU_DAY_START[$cal_css]."<a {$title} href='" . e_PLUGIN_ABS."calendar_menu/event.php?{$cal_linkut}'>{$cal_img}</a>";
         $cal_text .= $CALENDAR_MENU_DAY_END[$cal_css];
