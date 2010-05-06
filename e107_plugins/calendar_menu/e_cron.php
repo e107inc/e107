@@ -2,17 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Copyright (C) 2001-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Plugin configuration module - gsitemap
+ * Event calendar plugin - cron task
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_cron.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+ * $URL$
+ * $Id$
 */
 
 /**
@@ -348,7 +345,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 					// Now loop through adding users
 					while ($row = $this->ourDB->db_Fetch())
 					{
-						if ($ec_debug_level == 0)
+						if ($this->debugLevel == 0)
 						{
 							$recipient = array(
 								'mail_recipient_id' => $row['user_id'],
@@ -370,7 +367,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 						{
 							$send_result = " **DEBUG**";
 						}
-						if ($ec_log_requirement > 1)
+						if ($this->logRequirement > 1)
 						{
 							$this->logLine('      Send to '.$user_id.':'.$user_email.' Name: '.$user_name.' Result = '.$send_result);
 						}
