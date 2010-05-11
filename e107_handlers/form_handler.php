@@ -405,10 +405,11 @@ class e_form
 		return $this->checkbox($name, $value, $checked).$this->label($label ? $label : LAN_ENABLED, $name, $value);
 	}
 
-	function checkbox_toggle($name, $selector = 'multitoggle')
+	function checkbox_toggle($name, $selector = 'multitoggle', $id = false)
 	{
 		$selector = 'jstarget:'.$selector;
-		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
+		if($id) $id = $this->name2id($id);
+		return $this->checkbox($name, $selector, false, array('id' => $id,'class' => 'checkbox toggle-all'));
 	}
 
 	function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
