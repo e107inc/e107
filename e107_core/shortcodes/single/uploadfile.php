@@ -130,7 +130,7 @@ function uploadfile_shortcode($parm)
 			{
 				$emessage->addStack($finfo['message'], 'upload_shortcode', $finfo['error'] ? E_MESSAGE_ERROR : E_MESSAGE_SUCCESS);
 			}
-			return($parms['return_type'] == 'message' ? $emessage->render('upload_shortcode') : '');
+			if($parms['return_type'] == 'message') return $emessage->render('upload_shortcode');
 		}
 		return($parms['return_type'] == 'result' ? $uploaded : '');
 	}
@@ -151,8 +151,8 @@ function uploadfile_shortcode($parm)
 					<div id='{$parms['up_row']}' class='nowrap'>
 						<input class='tbox file' type='file' name='{$name}' />
 			        </div>
-			        <div class='field-help'>Upload to: <strong>".str_replace('../', '', $path)."</strong></div>
 				</div>
+				<div class='field-help'>Upload to: <strong>".str_replace('../', '', $path)."</strong></div>
 			</div>
 			<!-- End Upload Shortcode -->
 		";
