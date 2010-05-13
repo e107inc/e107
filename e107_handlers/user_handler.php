@@ -2,22 +2,20 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Handler - user-related functions
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
 
 /**
- * 
+ *
  *	@package     e107
  *	@subpackage	e107_handlers
  *	@version 	$Id$;
@@ -181,8 +179,8 @@ class UserHandler
 	 *	@param string $password - plaintext password as entered by user
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
-	 *	
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string 
+	 *
+	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
@@ -445,25 +443,27 @@ class UserHandler
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
 	 *
-	 *	@return none
+	 *	@return void
 	 */
 	public function makeUserCookie($lode,$autologin = FALSE)
 	{
 		global $pref;
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if ($pref['user_tracking'] == 'session')
+		if (e107::getPref('user_tracking') == 'session')
 		{
-			$_SESSION[$pref['cookie_name']] = $cookieval;
+			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
 		}
 		else
 		{
 			if ($autologin == 1)
 			{	// Cookie valid for up to 30 days
-				cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+				cookie(e107::getPref('cookie_name'), $cookieval, (time() + 3600 * 24 * 30));
+				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
 			}
 			else
 			{
-				cookie($pref['cookie_name'], $cookieval);
+				cookie(e107::getPref('cookie_name'), $cookieval);
+				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
 			}
 		}
 	}
@@ -833,7 +833,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_administrator.php");
 class e_userperms
 {
 	protected $core_perms = array(
-	
+
 		"1"=> ADMSLAN_19,
 		"2"=> ADMSLAN_20,
 		"3"=> ADMSLAN_21,
@@ -868,39 +868,39 @@ class e_userperms
 		"N"=> ADMSLAN_47,
 	//	"Z"=> ADMSLAN_62,
 	);
-	
+
 	protected $plugin_perms = array();
-	
+
 	protected $language_perms = array();
-	
+
 	protected $main_perms = array();
-	
+
 	protected $permSectionDiz = array(
 		'core'		=> ADMSLAN_74,
 		'plugin'	=> ADLAN_CL_7,
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
 	 );
-	
-	
+
+
 	function __construct()
 	{
-		
-		
+
+
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
-		
-		
+
+
 		$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 		while ($row2 = $sql->db_Fetch())
 		{
 			$this->plugin_perms[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
-		}	
-		
+		}
+
 		asort($this->plugin_perms);
-		
+
 		$this->plugin_perms = array("Z"=>ADMSLAN_62) + $this->plugin_perms;
-		
+
 		if(e107::getConfig()->getPref('multilanguage'))
 		{
 			$lanlist = explode(",",e_LANLIST);
@@ -910,20 +910,20 @@ class e_userperms
 				$this->language_perms[$langs] = $langs;
 			}
 		}
-		
+
 		if(getperms('0'))
 		{
 			$this->main_perms = array('0' => ADMSLAN_58);
 		}
-		
+
 	}
-	
+
 	function renderSectionDiz($key)
 	{
-		return $this->permSectionDiz[$key];	
+		return $this->permSectionDiz[$key];
 	}
-	
-	
+
+
 	function getPermList($type='all')
 	{
 		if($type == 'core')
@@ -942,34 +942,34 @@ class e_userperms
 		{
 			return $this->main_perms;
 		}
-		
+
 		if($type == 'grouped')
 		{
 			$ret = array();
 			$ret['core'] 		= $this->core_perms;
 			$ret['plugin']		= $this->plugin_perms;
-			
+
 			if(vartrue($this->language_perms))
 			{
 				$ret['language'] = $this->language_perms;
 			}
-			
+
 			if(vartrue($this->main_perms))
 			{
 				$ret['main'] = $this->main_perms;
 			}
-		
+
 			return $ret;
-				
+
 		}
-			
+
 		return array_merge($this->core_perms,$this->plugin_perms,$this->language_perms,$this->main_perms);
 	}
-	
+
 	function checkb($arg, $perms, $label='')
 	{
 		$frm = e107::getForm();
-		
+
 		$par = "<div class='field-spacer'>";
 		$par .= $frm->checkbox('perms[]', $arg, getperms($arg, $perms));
 		if ($label)
@@ -977,44 +977,44 @@ class e_userperms
 			$par .= $frm->label($label,'perms[]', $arg);
 		}
 		$par .= "</div>\n";
-	
+
 		return $par;
 	}
-	
+
 	function renderPerms($perms,$uniqueID='')
 	{
 		$tmp = explode(".",$perms);
 		$permdiz = $this->getPermList();
 		$ptext = array();
-		
+
 		foreach($tmp as $p)
 		{
 			$ptext[] = $permdiz[$p];
-		}		
-		
+		}
+
 		$id = "id_".$uniqueID;
-		
-		
+
+
 		$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$perms}</div>";
-		
+
 		if(varset($ptext))
 		{
 			$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
 		}
-		
+
 		/*
 		$text = "<a href='#".$id."' class='e-expandit' title='".ADMSLAN_71."'>{$perms}</a>";
-		
+
 		if(varset($ptext))
 		{
 			$text .= "<div class='e-hideme' id='".$id."' ><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
 		}
-			*/	
+			*/
 	    return $text;
 	}
-	
+
 	/**
-	 * Render edit admin perms form. 
+	 * Render edit admin perms form.
 	 *
 	 * @param array $row [optional] containing $row['user_id'], $row['user_name'], $row['user_perms'];
 	 * @return void
@@ -1028,12 +1028,12 @@ class e_userperms
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$frm = e107::getForm();
-		
-	
+
+
 		$a_id = $row['user_id'];
 		$ad_name = $row['user_name'];
 		$a_perms = $row['user_perms'];
-	
+
 		$text = "
 			<form method='post' action='".e_SELF."' id='myform'>
 				<fieldset id='core-administrator-edit'>
@@ -1054,21 +1054,21 @@ class e_userperms
 							<tr>
 								<td class='label'>".ADMSLAN_18."</td>
 								<td class='control'>
-	
+
 		";
-				
+
 		$groupedList = $prm->getPermList('grouped');
-			
+
 		foreach($groupedList as $section=>$list)
 		{
-			$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General	
+			$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
 			foreach($list as $key=>$diz)
 			{
-				$text .= $prm->checkb($key, $a_perms, $diz);			
+				$text .= $prm->checkb($key, $a_perms, $diz);
 			}
 			$text .= "</div>";
 		}
-	
+
 		$text .= "<div class='field-section'>
 			".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
 			".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
@@ -1085,37 +1085,37 @@ class e_userperms
 				</fieldset>
 			</form>
 		";
-	
+
 		$ns->tablerender(ADMSLAN_52, $text);
 	}
-	
+
 	/**
 	 * Update user (admin) permissions.
 	 * NOTE: exit if $uid is not an integer or is 0.
 	 *
 	 * @param integer $uid
 	 * @param array $permArray eg. array('A', 'K', '1');
-	 * @return void 
+	 * @return void
 	 */
 	function updatePerms($uid, $permArray)
 	{
 		global $admin_log;
-		
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		$modID = intval($uid);
 		if ($modID == 0)
 		{
 			exit();
 		}
-		
+
 		$sql->db_Select("user", "*", "user_id=".$modID);
 		$row = $sql->db_Fetch();
 		$a_name = $row['user_name'];
-	
+
 		$perm = "";
-	
+
 		foreach($permArray as $value)
 		{
 			$value = $tp->toDB($value);
@@ -1124,13 +1124,13 @@ class e_userperms
 				if (!getperms('0')) { $value = ""; break; }
 				$perm = "0"; break;
 			}
-	
+
 			if ($value)
 			{
 				$perm .= $value.".";
 			}
 	  }
-	
+
 		admin_update($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');

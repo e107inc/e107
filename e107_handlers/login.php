@@ -3,16 +3,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Main
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $Id$
+ * $URL$
 */
 
 
@@ -61,7 +59,7 @@ class userlogin
 	' @param string $response - response string returned by CHAP login (instead of password)
 	# @return  boolean - FALSE on login fail, TRUE on login successful
 	*/
-	public function __construct($username, $userpass, $autologin, $response = '')
+	public function __construct($username, $userpass, $autologin, $response = '', $noredirect = false)
 	{
 		global $pref, $e_event, $_E107;
 
@@ -72,7 +70,7 @@ class userlogin
 		{
 			return FALSE;
 		}
-		
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
@@ -102,7 +100,7 @@ class userlogin
 					{
 						if (varset($pref['auth_badpassword'], TRUE) || ($this->checkUserPassword($userpass, $response, $forceLogin) === TRUE))
 						{
-							$result = LOGIN_CONTINUE;		// Valid User exists in local DB 
+							$result = LOGIN_CONTINUE;		// Valid User exists in local DB
 						}
 					}
 				}
@@ -248,6 +246,8 @@ class userlogin
 			}
 		}
 
+		if($noredirect) return;
+
 		$redir = e_SELF;
 		if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
 		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
@@ -267,18 +267,23 @@ class userlogin
 				}
 			}
 		}
-		
-		$redirPrev = e107::getRedirect()->getPreviousUrl();  
-		
+
+		$redirPrev = e107::getRedirect()->getPreviousUrl();
+
 		if($redirPrev)
-		{		
-			e107::getRedirect()->redirect($redirPrev);	
+		{
+			e107::getRedirect()->redirect($redirPrev);
 		}
 
-		e107::getRedirect()->redirect($redir);	
+		e107::getRedirect()->redirect($redir);
 		exit();
 	}
 
+
+	public function getUserData()
+	{
+		return $this->userData;
+	}
 
 	/**
 	 * Look up a user in the e107 database, according to the options set (for login name/email address)
@@ -312,7 +317,7 @@ class userlogin
 		{	// Invalid user
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
-	
+
 		// User is in DB here
 		$this->userData = $this->e107->sql -> db_Fetch(MYSQL_ASSOC);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
@@ -432,7 +437,7 @@ class userlogin
 			  break;
 			case LOGIN_NOT_ACTIVATED :
 			  $srch = array("[","]");
-			  $repl = array("<a href='".e_BASE_ABS."signup.php?resend'>","</a>");					
+			  $repl = array("<a href='".e_BASE_ABS."signup.php?resend'>","</a>");
 			  define("LOGINMESSAGE", str_replace($srch,$repl,LAN_LOGIN_22)."<br /><br />");
 			  $this->logNote('LAN_ROLL_LOG_05', $username);
 			  $this->genNote($username, LAN_LOGIN_27);

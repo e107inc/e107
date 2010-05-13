@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Preference Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -23,11 +21,11 @@ require_once(e_HANDLER.'model_class.php');
  *
  * @package e107
  * @category e107_handlers
- * @version 1.0
+ * @version $Id$
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-class e_pref extends e_admin_model
+class e_pref extends e_front_model
 {
 	/**
 	 * Preference ID - DB row value
@@ -504,7 +502,7 @@ class e_pref extends e_admin_model
 			e107::getMessage()->addInfo('Settings not saved as no changes were made.', 'default', $session_messages);
 			return 0;
 		}
-		
+
 		$admin_log = e107::getAdminLog();
 
 		//Save to DB
@@ -538,7 +536,7 @@ class e_pref extends e_admin_model
 					// auto admin log
 					if(is_array($old)) // fix install problems - no old prefs available
 					{
-						$new = $this->getPref(); 
+						$new = $this->getPref();
 						$admin_log->logArrayDiffs($new, $old, 'PREFS_02', false);
 						unset($new, $old);
 					}
@@ -682,31 +680,16 @@ class e_pref extends e_admin_model
     /**
      * Override
      */
-    public function dbInsert()
+    public function delete()
     {
     }
 
     /**
      * Override
      */
-    public function dbUpdate()
+    protected function dbUpdate()
     {
     }
-
-    /**
-     * Override
-     */
-    public function dbReplace()
-    {
-    }
-
-    /**
-     * Override
-     */
-    public function dbDelete()
-    {
-    }
-
 }
 
 /**
@@ -860,6 +843,22 @@ class e_plugin_pref extends e_pref
 	public function getPluginId()
 	{
 		return $this->plugin_id;
+	}
+
+	/**
+	 * Delete plugin preferences
+	 * @see e107_handlers/e_pref#delete()
+	 * @return boolean
+	 */
+	public function delete()
+	{
+		$ret = false;
+		if($this->plugin_id)
+		{
+			$ret = e107::getDb($this->plugin_id)->db_Delete('core', "e107_name='{$this->plugin_id}'");
+			$this->destroy();
+		}
+		return $ret;
 	}
 }
 
@@ -1037,13 +1036,13 @@ class prefs
 	*
 	* all pref sets other than menu_pref get toDB()
 	*/
-	function setArray($name = '', $table = 'core', $uid = USERID) 
+	function setArray($name = '', $table = 'core', $uid = USERID)
 	{
 		$tp = e107::getParser();
 
-		if (!strlen($name)) 
+		if (!strlen($name))
 		{
-			switch ($table) 
+			switch ($table)
 			{
 				case 'core':
 				$name = 'pref';
@@ -1055,9 +1054,9 @@ class prefs
 		}
 
 		global $$name;
-		if ($name != 'menu_pref') 
+		if ($name != 'menu_pref')
 		{
-			foreach($$name as $key => $prefvalue) 
+			foreach($$name as $key => $prefvalue)
 			{
 				$$name[$key] = $tp->toDB($prefvalue);
 			}

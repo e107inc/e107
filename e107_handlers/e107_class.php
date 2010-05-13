@@ -52,6 +52,14 @@ class e107
 	public $site_theme;
 
 	/**
+	 * Contains reference to global $_E107 array
+	 * Assignment is done inside prepare_request() method
+	 *
+	 * @var array
+	 */
+	protected $_E107 = array();
+
+	/**
 	 * @var string Current request type (http or https)
 	 */
 	protected $HTTP_SCHEME;
@@ -175,6 +183,7 @@ class e107
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
+		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
 	);
 
@@ -475,6 +484,31 @@ class e107
 	{
 		$key = strtoupper($for).'_DIRECTORY';
 		return (isset($this->e107_dirs[$key]) ? $this->e107_dirs[$key] : '');
+	}
+
+	/**
+	 * Get value from $_E107 config array
+	 * Note: will always return false if called before prepare_request() method!
+	 *
+	 * @param string $key
+	 * @return boolean
+	 */
+	public static function getE107($key)
+	{
+		$self = self::getInstance();
+		return (isset($self->_E107[$key]) && $self->_E107[$key] ? true : false);
+	}
+
+	/**
+	 * Convenient proxy to $_E107 getter - check if
+	 * the system is currently running in cli mode
+	 * Note: will always return false if called before prepare_request() method!
+	 *
+	 * @return boolean
+	 */
+	public static function isCli()
+	{
+		return self::getE107('cli');
 	}
 
 	/**
@@ -1099,7 +1133,7 @@ class e107
 		{
 			return self::getUser();
 		}
-		$user = self::getRegistry('targets/core/user/'.$user_id);
+		$user = self::getRegistry('core/e107/user/'.$user_id);
 		if(null === $user)
 		{
 			$user = self::getObject('e_system_user');
@@ -1115,7 +1149,13 @@ class e107
 	 */
 	public static function getUser()
 	{
-		return self::getSingleton('e_user', true, 'targets/core/current_user');
+		$user = self::getRegistry('core/e107/current_user');
+		if(null === $user)
+		{
+			$user = self::getObject('e_user');
+			self::setRegistry('core/e107/current_user', $user);
+		}
+		return $user;
 	}
 
 	/**
@@ -1731,8 +1771,11 @@ class e107
 			}
 		}
 
+		// we can now start use $e107->_E107
+		if(isset($GLOBALS['_E107']) && is_array($GLOBALS['_E107'])) $this->_E107 = & $GLOBALS['_E107'];
+
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
-		$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
+		$_SERVER['QUERY_STRING'] = trim(str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']), '&');
 
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
@@ -1853,8 +1896,6 @@ class e107
 	 */
 	public function set_paths()
 	{
-		global $_E107;
-
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
 		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
@@ -1865,7 +1906,7 @@ class e107
 		$path = ""; $i = 0;
 
 		// FIXME - Again, what if someone moves handlers under the webroot?
-		if(!isset($_E107['cli']))
+		if(!self::isCli())
 		{
 			while (!file_exists("{$path}class2.php"))
 			{
@@ -1904,7 +1945,7 @@ class e107
 		}
 		define('e_ROOT', $e_ROOT);			// Specified format gives trailing slash already (at least on Windows)
 
-		$this->relative_base_path = (!isset($_E107['cli'])) ? $path : e_ROOT;
+		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
