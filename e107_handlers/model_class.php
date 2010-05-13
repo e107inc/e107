@@ -35,7 +35,7 @@ class e_model
     protected $_data = array();
 
     /**
-     * Data structure (types) array, required for {@link e_admin_model::sanitize()} method,
+     * Data structure (types) array, required for {@link e_front_model::sanitize()} method,
      * it also serves as a map (find data) for building DB queries,
      * copy/sanitize posted data to object data, etc.
      *
@@ -1382,7 +1382,7 @@ class e_front_model extends e_model
      * Predefined data fields types, passed to DB handler
      *
      * @param array $field_types
-     * @return e_model
+     * @return e_front_model
      */
     public function setDbTypes($field_types)
     {

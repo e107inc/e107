@@ -2,16 +2,14 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * General purpose file
 *
-* $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision$
-* $Date$
-* $Author$
+* $URL$
+* $Id$
 *
 */
 //
@@ -1556,10 +1554,11 @@ function init_session()
 	*/
 
 
-	global $pref, $user_pref, $currentUser, $e107, $_E107;
+	global $pref, $user_pref, $currentUser, $_E107;
 
 	$sql = e107::getDb();
 	$tp = e107::getParser();
+	$e107 = e107::getInstance();
 	$eArrayStorage = e107::getArrayStorage();
 
 
@@ -1596,7 +1595,7 @@ function init_session()
 		{
 			list($uid, $upw)=(isset($_COOKIE[e_COOKIE]) && $_COOKIE[e_COOKIE] ? explode(".", $_COOKIE[e_COOKIE]) : explode(".", $_SESSION[e_COOKIE]));
         }
-		else
+		else // FIXME - this will never happen - see above
 		{
         	list($uid, $upw)= explode('.', $cli_log);
 		}
