@@ -1642,7 +1642,7 @@ class e_front_model extends e_model
 		}*/
 
 		$data = $this->getPostedData();
-		$valid_data = $this->getValidator()->getValidData();
+		$valid_data = $validate ? $this->getValidator()->getValidData() : array();
 
 		if($sanitize)
 		{
@@ -2478,7 +2478,10 @@ class e_tree_model extends e_front_model
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
-			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable());
+			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable()
+				.($this->getParam('db_order') ? ' ORDER BY '.$this->getParam('db_order') : '')
+				.($this->getParam('db_limit') ? ' LIMIT '.$this->getParam('db_limit') : '')
+			);
 		}
 
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))

@@ -142,22 +142,22 @@ class e_user_model extends e_front_model
 
 	final public function getAdminName()
 	{
-		return ($this->isAdmin() ? $this->getValue('name') : '');
+		return ($this->isAdmin() ? $this->get('user_name') : false);
 	}
 
 	final public function getAdminEmail()
 	{
-		return ($this->isAdmin() ? $this->getValue('email') : '');
+		return ($this->isAdmin() ? $this->get('user_email') : false);
 	}
 
 	final public function getAdminPwchange()
 	{
-		return ($this->isAdmin() ? $this->getValue('pwchange') : '');
+		return ($this->isAdmin() ? $this->get('user_pwchange') : false);
 	}
 
 	final public function getAdminPerms()
 	{
-		return $this->getValue('perms');
+		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
 	public function isCurrent()
@@ -167,7 +167,7 @@ class e_user_model extends e_front_model
 
 	final public function isAdmin()
 	{
-		return ($this->getValue('admin') ? true : false);
+		return ($this->get('user_admin') ? true : false);
 	}
 
 	final public function isMainAdmin()
@@ -178,6 +178,21 @@ class e_user_model extends e_front_model
 	final public function isUser()
 	{
 		return ($this->getId() ? true : false);
+	}
+
+	final public function isGuest()
+	{
+		return ($this->getId() ? false : true);
+	}
+
+	final public function hasBan()
+	{
+		return ((integer)$this->get('user_ban') === 1 ? true : false);
+	}
+
+	final public function hasRestriction()
+	{
+		return ((integer)$this->get('user_ban') === 0 ? false : true);
 	}
 
 	public function hasEditor()
@@ -328,12 +343,12 @@ class e_user_model extends e_front_model
 	 * Get User extended value
 	 *
 	 * @param string$field
-	 * @param string $default
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
 	 * @return mixed
 	 */
-	public function getExtended($field)
+	public function getExtended($field, $short = true)
 	{
-		return $this->getExtendedModel()->getValue($field);
+		return $this->getExtendedModel()->getValue($field, $short);
 	}
 
 	/**
@@ -341,11 +356,12 @@ class e_user_model extends e_front_model
 	 *
 	 * @param string $field
 	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
 	 * @return e_user_model
 	 */
-	public function setExtended($field, $value)
+	public function setExtended($field, $value, $short = true)
 	{
-		$this->getExtendedModel()->setValue($field, $value);
+		$this->getExtendedModel()->setValue($field, $value, $short);
 		return $this;
 	}
 
@@ -547,9 +563,16 @@ class e_user_model extends e_front_model
 	{
 		$this->clearTarget()
 			->removeData();
+
+		$this->_class_list = array();
+		$this->_editor = null;
+		$this->_extended_structure = null;
+		$this->_user_config = null;
+
 		if (null !== $this->_extended_model)
 		{
 			$this->_extended_model->destroy();
+			 $this->_extended_model = null;
 		}
 	}
 }
@@ -638,22 +661,48 @@ class e_user extends e_user_model
 	 * @param string $upass_plain
 	 * @param boolean $uauto
 	 * @param string $uchallange
+	 * @param boolean $noredirect
 	 * @return boolean success
 	 */
-	final public function login($uname, $upass_plain, $uauto = false, $uchallange = false)
+	final public function login($uname, $upass_plain, $uauto = false, $uchallange = false, $noredirect = true)
 	{
 		if($this->isUser()) return false;
 
-		$userlogin = new userlogin($uname, $upass_plain, $uauto, $uchallange, true);
+		$userlogin = new userlogin($uname, $upass_plain, $uauto, $uchallange, $noredirect);
 		$this->setSessionData(true)
 			->setData($userlogin->getUserData());
 
 		return $this->isUser();
 	}
 
+	/**
+	 * Login as another user account
+	 * @param integer $user_id
+	 * @return boolean success
+	 */
 	final public function loginAs($user_id)
 	{
 		// TODO - set session data required for loadAs()
+		if($this->getParentId()
+			|| !$this->isMainAdmin()
+			|| empty($user_id)
+			|| $this->getSessionDataAs()
+			|| $user_id == $this->getId()
+		) return false;
+
+		$key = $this->_session_key.'_as';
+
+		if('session' == $this->_session_type)
+		{
+			$_SESSION[$key] = $user_id;
+		}
+		elseif('cookie' == $this->_session_type)
+		{
+			$_COOKIE[$key] = $user_id;
+			cookie($key, $user_id);
+		}
+		//$this->loadAs(); - shouldn't be called here - loginAs should be called in Admin area only, loadAs - front-end
+		return true;
 	}
 
 	/**
@@ -701,10 +750,10 @@ class e_user extends e_user_model
 			$this->setData($this->_parent_model->getData());
 
 			// cleanup
-			$this->_destroyAsSession();
 			$this->_parent_id = false;
 			$this->_parent_model = $this->_parent_extstruct = $this->_parent_extmodel = $this->_parent_config = null;
 		}
+		$this->_destroyAsSession();
 		return $this;
 	}
 
@@ -714,10 +763,9 @@ class e_user extends e_user_model
 	 */
 	final public function load($force = false, $denyAs = false)
 	{
-		// init_session() should come here
-		// $this->initConstants(); - called after data is loaded
-
 		if(!$force && $this->getId()) return $this;
+
+		if(deftrue('e_ADMIN_AREA')) $denyAs = true;
 
 		// always run cli as main admin
 		if(e107::isCli())
@@ -772,7 +820,7 @@ class e_user extends e_user_model
 	final public function loadAs()
 	{
 		// FIXME - option to avoid it when browsing Admin area
-		$loginAs = $this->_getSessionDataAs();
+		$loginAs = $this->getSessionDataAs();
 		if(!$this->getParentId() && false !== $loginAs && $loginAs !== $this->getId() && $loginAs !== 1 && $this->isMainAdmin())
 		{
 			$uasdata = $this->_load($loginAs);
@@ -780,7 +828,7 @@ class e_user extends e_user_model
 			{
 				// backup parent user data to prevent further db queries
 				$this->_parent_id = $this->getId();
-				$this->_parent_model = new e_system_user($this->getData());
+				$this->_parent_model = new e_user_model($this->getData());
 				$this->setData($uasdata);
 
 				// not allowed - revert back
@@ -806,6 +854,7 @@ class e_user extends e_user_model
 			$this->_parent_model = null;
 			$this->_parent_extstruct = $this->_parent_extmodel = null;
 		}
+		return $this;
 	}
 
 	final protected function _destroySession()
@@ -832,7 +881,7 @@ class e_user extends e_user_model
 		return $this->_destroySession();
 	}
 
-	final protected function _getSessionDataAs()
+	final public function getSessionDataAs()
 	{
 		$id = false;
 		$key = $this->_session_key.'_as';
@@ -1027,13 +1076,18 @@ class e_user_extended_model extends e_front_model
 	 * Returns NULL when field/default value not found or not enough permissions
 	 * @param string $field
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $raw don't retrieve db value
 	 * @return mixed
 	 */
-	public function getValue($field, $short = true)
+	public function getValue($field, $short = true, $raw = false)
 	{
 		if($short) $field = 'user_'.$field;
 		if (!$this->checkRead($field))
 			return null;
+		if(!$raw && vartrue($this->_struct_index[$field]['db']))
+		{
+			return $this->getDbValue($field);
+		}
 		return $this->get($field, $this->getDefault($field));
 	}
 
@@ -1052,6 +1106,26 @@ class e_user_extended_model extends e_front_model
 			return $this;
 		$this->set($field, $value, true);
 		return $this;
+	}
+
+	protected function getDbValue($field)
+	{
+		if(null !== $this->_struct_index[$field]['db_value'])
+		{
+			return $this->_struct_index[$field]['db_value'];
+		}
+
+		// retrieve db data
+		$value = $this->get($field);
+		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
+		$this->_struct_index[$field]['db_value'] = $value;
+		if($value && $table && $field_id && $field_name && e107::getDb()->db_Select($table, $field_name, "{$field_id}='{$value}'"))
+		{
+			$res = e107::getDb()->db_Fetch();
+			$this->_struct_index[$field]['db_value'] = $res[$field_name];
+		}
+
+		return $this->_struct_index[$field]['db_value'];
 	}
 
 	public function getReadData()
@@ -1157,6 +1231,8 @@ class e_user_extended_model extends e_front_model
 				if (!in_array($field->getValue('name'), $ignore))
 				{
 					$this->_struct_index['user_'.$field->getValue('name')] = array(
+						'db'		 => $field->getValue('type') == 4 ? $field->getValue('values') : '',
+						'db_value'	 => null, // used later for caching DB results
 						'read'		 => $field->getValue('read'),
 						'write'		 => $field->getValue('write'),
 						'signup'	 => $field->getValue('signup'),
@@ -1312,6 +1388,22 @@ class e_user_extended_structure_model extends e_model
 		return $this;
 	}
 
+	public function isCategory()
+	{
+		return ($this->getValue('type') ? false : true);
+	}
+
+	public function getCategoryId()
+	{
+		return $this->getValue('parent');
+	}
+
+	public function getLabel()
+	{
+		$label = $this->isCategory() ? $this->getValue('name') : $this->getValue('text');
+		return defset($label, $label);
+	}
+
 	/**
 	 * Loading of single structure row not allowed for front model
 	 */
@@ -1353,10 +1445,22 @@ class e_user_extended_structure_tree extends e_tree_model
 	protected $_cache_force = true;
 
 	/**
-	 * Force system cache (cache used even if disabled by site admin)
-	 * @var boolen
+	 * Index for speed up retrieving by name routine
+	 * @var array
 	 */
-	protected $_name_index = true;
+	protected $_name_index = array();
+
+	/**
+	 * Category Index - numerical array of id's
+	 * @var array
+	 */
+	protected $_category_index = array();
+
+	/**
+	 * Items by category list
+	 * @var array
+	 */
+	protected $_parent_index = array();
 
 	/**
 	 * Constructor - auto-load
@@ -1367,6 +1471,10 @@ class e_user_extended_structure_tree extends e_tree_model
 		$this->load();
 	}
 
+	/**
+	 * @param string $name name field value
+	 * @return e_user_extended_structure_model
+	 */
 	public function getNodeByName($name)
 	{
 		if ($this->isNodeName($name))
@@ -1376,14 +1484,44 @@ class e_user_extended_structure_tree extends e_tree_model
 		return null;
 	}
 
+	/**
+	 * Check if node exists by its name field value
+	 * @param string $name
+	 * @return boolean
+	 */
 	public function isNodeName($name)
 	{
 		return (isset($this->_name_index[$name]) && $this->isNode($this->_name_index[$name]));
 	}
 
+	/**
+	 * Get node ID by node name field
+	 * @param string $name
+	 * @return integer
+	 */
 	public function getNodeId($name)
 	{
-		return $this->_name_index[$name];
+		return (isset($this->_name_index[$name]) ? $this->_name_index[$name] : null);
+	}
+
+	/**
+	 * Get collection of nodes of type category
+	 * @return array
+	 */
+	public function getCategoryTree()
+	{
+		return $this->_array_intersect_key($this->getTree(), array_combine($this->_category_index, $this->_category_index));
+	}
+
+	/**
+	 * Get collection of nodes assigned to a specific category
+	 * @param integer $category_id
+	 * @return array
+	 */
+	public function getTreeByCategory($category_id)
+	{
+		if(!isset($this->_parent_index[$category_id]) || empty($this->_parent_index[$category_id])) return array();
+		return $this->_array_intersect_key($this->getTree(), array_combine($this->_parent_index[$category_id], $this->_parent_index[$category_id]));
 	}
 
 	/**
@@ -1394,24 +1532,57 @@ class e_user_extended_structure_tree extends e_tree_model
 	public function load($force = false)
 	{
 		$this->setParam('nocount', true)
-			->setParam('model_class', 'e_user_extended_structure_model');
+			->setParam('model_class', 'e_user_extended_structure_model')
+			->setParam('db_order', 'user_extended_struct_order ASC');
 		parent::load($force);
-
+		print_a($this->_category_index);
+		print_a($this->_parent_index);
+		print_a($this->_name_index);
+		print_a($this->getTreeByCategory(4));
 		return $this;
 	}
 
 	/**
-	 * Build name index on load
+	 * Build all indexes on load
+	 * (New) This method is auto-triggered by core load() method
 	 * @param e_user_extended_structure_model $model
 	 */
 	protected function _onLoad($model)
 	{
-		$this->_name_index['user_'.$model->getValue('name')] = $model->getId();
+		if($model->isCategory())
+		{
+			$this->_category_index[] = $model->getId();
+		}
+		else
+		{
+			$this->_name_index['user_'.$model->getValue('name')] = $model->getId();
+			$this->_parent_index[$model->getCategoryId()][] = $model->getId();
+		}
 		return $this;
+	}
+
+	/**
+	 * Compatibility - array_intersect_key() available since PHP 5.1
+	 *
+	 * @see http://php.net/manual/en/function.array-intersect-key.php
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	protected function _array_intersect_key($array1, $array2)
+	{
+		if(function_exists('array_intersect_key')) return array_intersect_key($array1, $array2);
+
+		$ret = array();
+		foreach ($array1 as $k => $v)
+		{
+			if(isset($array2[$k])) $ret[$k] = $v;
+		}
+		return $ret;
 	}
 }
 
-class e_user_pref extends e_model
+class e_user_pref extends e_front_model
 {
 	/**
 	 * @var e_user_model
@@ -1441,7 +1612,8 @@ class e_user_pref extends e_model
 			$data = $this->_user->get('user_prefs', '');
 			if(!empty($data))
 			{
-				$data = e107::getArrayStorage()->ReadArray($data);
+				// BC
+				$data = substr($data, 0, 5) == "array" ? e107::getArrayStorage()->ReadArray($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();
@@ -1465,10 +1637,14 @@ class e_user_pref extends e_model
 	 * Save and apply user preferences
 	 * @return boolean success
 	 */
-	public function save()
+	public function save($from_post = false)
 	{
 		if($this->_user->getId())
 		{
+			if($from_post)
+			{
+				$this->mergePostedData(false, true, false);
+			}
 			$data = $this->toString(true);
 			$this->apply();
 			return (e107::getDb('user_prefs')->db_Update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
