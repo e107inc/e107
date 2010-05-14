@@ -2,16 +2,21 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ * File/folder manipulation handler
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * @package     e107
+ * @subpackage	e107_handlers
+ * @version     $Id$
+ * @author      e107 Inc.
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -51,43 +56,64 @@ Note:
 
 class e_file
 {
-	public	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
-	public $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
-	
+	/**
+	 * Array of directory names to ignore (in addition to any set by caller)
+	 * @var array
+	 */
+	public	$dirFilter;
+
+	/**
+	 * Array of file names to ignore (in addition to any set by caller)
+	 * @var array
+	 */
+	public $fileFilter;
+
 	/**
 	 * Defines what array format should return get_files() method
 	 * If one of 'fname', 'path', 'full' - numerical array.
 	 * If default - associative array (depends on $finfo value).
-	 * 
+	 *
 	 * @see get_files()
 	 * @var string one of the following: default (BC) | fname | path | full
 	 */
 	public $mode = 'default';
-	
+
 	/**
 	 * Defines what info should gatter get_files method.
 	 * Works only in 'default' mode.
-	 * 
+	 *
 	 * @var string default (BC) | image | file | all
 	 */
 	public $finfo = 'default';
 
-	// Constructor
+	/**
+	 * Constructor
+	 */
 	function __construct()
 	{
 		$this->setDefaults();
 	}
 
-
+	/**
+	 * Set default parameters
+	 * @return e_file
+	 */
 	function setDefaults()
 	{
 		$this->dirFilter = array('/', 'CVS', '.svn'); // Default directory filter (exact matches only)
 		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+		return $this;
 	}
 
+	/**
+	 * Set fileinfo mode
+	 * @param string $val
+	 * @return e_file
+	 */
 	public function setFileInfo($val='default')
 	{
 		$this->finfo = $val;
+		return $this;
 	}
 
 	/**
@@ -162,7 +188,7 @@ class e_file
 					}
 					if($rejected == FALSE)
 					{
-						switch($this->mode) 
+						switch($this->mode)
 						{
 							case 'fname':
 								$ret[] = $file;
@@ -195,6 +221,12 @@ class e_file
 		return $ret;
 	}
 
+	/**
+	 * Collect file information
+	 * @param string $path_to_file
+	 * @param boolean $imgcheck
+	 * @return array
+	 */
 	function get_file_info($path_to_file, $imgcheck = true)
 	{
 		$finfo = array();
@@ -212,16 +244,21 @@ class e_file
 			$finfo['fsize'] = $tmp['size'];
 			$finfo['modified'] = $tmp['mtime'];
 		}
-		
+
 		// associative array elements: dirname, basename, extension, filename
 		$finfo['pathinfo'] = pathinfo($path_to_file);
 
 		return $finfo;
 	}
 
-
-	// Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()
-	// N.B. - no recursion - just looks in the specified directory.
+	/**
+	 * Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()
+	 * N.B. - no recursion - just looks in the specified directory.
+	 * @param string $path
+	 * @param strig $fmask
+	 * @param string $omit
+	 * @return array
+	 */
 	function get_dirs($path, $fmask = '', $omit='standard')
 	{
 		$ret = array();
@@ -256,9 +293,11 @@ class e_file
 		return $ret;
 	}
 
-
-
-	// Delete a complete directory tree
+	/**
+	 * Delete a complete directory tree
+	 * @param string $dir
+	 * @return boolean success
+	 */
 	function rmtree($dir)
 	{
 		if (substr($dir, -1) != '/')
@@ -298,7 +337,7 @@ class e_file
 		}
 		return false;
 	}
-	
+
 	/**
 	 *	Parse a file size string (e.g. 16M) and compute the simple numeric value.
 	 *
