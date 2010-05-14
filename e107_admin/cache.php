@@ -12,6 +12,16 @@
  * $Id$
  *
 */
+
+/**
+ *	Admin page - cache management
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id$;
+ *  @author 	e107 Inc
+ */
+
 require_once("../class2.php");
 if (!getperms("C"))
 {
@@ -24,72 +34,81 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'cache';
 
 require_once("auth.php");
-require_once(e_HANDLER."cache_handler.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
-$ec = new ecache;
-$frm = new e_form();
+$ec = e107::getCache();
+$frm = e107::getForm();
 
 $emessage = eMessage::getInstance();
 
-if ($pref['cachestatus'] == '2')
+if (e107::getPref('cachestatus') == '2')
 {
-	$pref['cachestatus'] = '1';
-	save_prefs();
+	e107::getConfig()->set('cachestatus', 1)
+		->save(false);
 }
 
 if(!is_writable(e_CACHE_CONTENT))
 {
-	$ns->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
+	e107::getRender()->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
 	require_once("footer.php");
 	exit;
 }
 
 if (isset($_POST['submit_cache']))
 {
-	if ($pref['cachestatus'] != $_POST['cachestatus'] || $pref['syscachestatus'] != $_POST['syscachestatus'])
-	{
-		$pref['cachestatus'] = $_POST['cachestatus'] ? '1' : '0';
-		$pref['syscachestatus'] = $_POST['syscachestatus'] ? '1' : '0';
-
-		save_prefs();
-		$admin_log->log_event('CACHE_01', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE,'');
-
-		$ec->clear();
-		$ec->clear_sys();
-
-		$emessage->add(CACLAN_4, E_MESSAGE_SUCCESS);
-	}
-	else
-	{
-		$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
-	}
+	e107::getConfig()->set('cachestatus', intval($_POST['cachestatus']))
+		->set('syscachestatus', intval($_POST['syscachestatus']))
+		->save(false);
 }
 
-if (isset($_POST['empty_syscache']))
+if (isset($_POST['trigger_empty_cache']))
 {
-	$ec->clear_sys();
-	$admin_log->log_event('CACHE_02', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
-	$emessage->add(CACLAN_15, E_MESSAGE_SUCCESS);
+	e107::getAdminLog()->logSuccess(CACLAN_6);
+	switch ($_POST['option_clear_cache'])
+	{
+		case 'empty_contentcache':
+			$ec->clear();
+			e107::getAdminLog()->flushMessages(CACLAN_5);
+		break;
+
+		case 'empty_syscache':
+			$ec->clear_sys();
+			e107::getAdminLog()->flushMessages(CACLAN_16);
+		break;
+
+		case 'empty_dbcache':
+			admin_page_cache_erase(e_CACHE_DB, '*.php');
+			e107::getAdminLog()->flushMessages(CACLAN_24);
+		break;
+
+		case 'empty_imgcache':
+			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
+			e107::getAdminLog()->flushMessages(CACLAN_25);
+		break;
+
+		// all
+		default:
+			$ec->clear();
+			$ec->clear_sys();
+			admin_page_cache_erase(e_CACHE_DB, '*.php');
+			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
+			e107::getAdminLog()->flushMessages(CACLAN_26);
+		break;
+	}
 }
 
-if (isset($_POST['empty_cache']))
-{
-	$ec->clear();
-	$admin_log->log_event('CACHE_03', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
-	$emessage->add(CACLAN_6, E_MESSAGE_SUCCESS);
-}
-
-
-
-$syscache_files = glob(e_CACHE_CONTENT."S_*.*");
-$cache_files = glob(e_CACHE_CONTENT."C_*.*");
+$syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
+$cache_files = glob(e_CACHE_CONTENT.'C_*.*');
+$imgcache_files = glob(e_CACHE_IMAGE.'*.cache.bin');
+$dbcache_files = glob(e_CACHE_DB.'*.php');
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);
+$imgcache_files_num = count($imgcache_files);
+$dbcache_files_num = count($dbcache_files);
 
-$sys_count = CACLAN_17." ".$syscache_files_num." ".($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
-$nonsys_count = CACLAN_17." ".$cache_files_num." ".($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$syscache_label = CACLAN_17.' <strong>'.$syscache_files_num.' '.($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
+$contentcache_label = CACLAN_17.' <strong>'.$cache_files_num.' '.($cache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
+$imgcache_label = CACLAN_17.' <strong>'.$imgcache_files_num.' '.($imgcache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
+$dbcache_label = CACLAN_17.' <strong>'.$dbcache_files_num.' '.($dbcache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
 
 $text = "
 	<form method='post' action='".e_SELF."'>
@@ -109,39 +128,76 @@ $text = "
 				<tbody>
 					<tr>
 						<td>
-							<strong>".CACLAN_11."</strong>: {$nonsys_count}
+							<strong>".CACLAN_11."</strong>: {$contentcache_label}
 							<div class='field-help'>".CACLAN_13."</div>
 						</td>
 						<td class='center middle'>
-							".$frm->radio('cachestatus', 1, ($pref['cachestatus']))."
-							".$frm->label(LAN_ENABLED, 'cachestatus', 1)."&nbsp;&nbsp;
-							".$frm->radio('cachestatus', 0, (!$pref['cachestatus']))."
-							".$frm->label(LAN_DISABLED, 'cachestatus', 0)."
+							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_12."</strong>: {$sys_count}
+							<strong>".CACLAN_12."</strong>: {$syscache_label}
 							<div class='field-help'>".CACLAN_14."</div>
 						</td>
 						<td class='center middle'>
-							".$frm->radio('syscachestatus', 1, ($pref['syscachestatus']))."
-							".$frm->label(LAN_ENABLED, 'syscachestatus', 1)."&nbsp;&nbsp;
-							".$frm->radio('syscachestatus', 0, (!$pref['syscachestatus']))."
-							".$frm->label(LAN_DISABLED, 'syscachestatus', 0)."
+							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>".CACLAN_20."</strong>: {$dbcache_label}
+							<div class='field-help'>".CACLAN_21."</div>
+						</td>
+						<td class='center middle'>
+							".LAN_ENABLED."
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>".CACLAN_22."</strong>: {$imgcache_label}
+							<div class='field-help'>".CACLAN_23."</div>
+						</td>
+						<td class='center middle'>
+							".LAN_ENABLED."
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar left'>
 				".$frm->admin_button('submit_cache', CACLAN_2, 'update f-right')."
-				".$frm->admin_button('empty_cache', CACLAN_5, 'delete')."
-				".$frm->admin_button('empty_syscache', CACLAN_16, 'delete')."
+				".$frm->selectbox('option_clear_cache', array(
+					'empty_all' => CACLAN_26,
+					'empty_contentcache' => CACLAN_5,
+					'empty_syscache' => CACLAN_16,
+					'empty_dbcache' => CACLAN_24,
+					'empty_imgcache' => CACLAN_25,
+				))."
+				".$frm->admin_button('trigger_empty_cache', LAN_DELETE, 'delete')."
 			</div>
 		</fieldset>
 	</form>";
 
-$ns->tablerender(CACLAN_3, $emessage->render().$text);
+e107::getRender()->tablerender(CACLAN_3, $emessage->render().$text);
 
 require_once("footer.php");
+
+/**
+ * @param string $path
+ * @param string $mask
+ * @return void
+ */
+function admin_page_cache_erase($path, $mask)
+{
+	$fl = e107::getFile(false);
+	$fl->mode = 'fname';
+	$files = $fl->get_files($path, $fmask);
+	if($files)
+	{
+		foreach ($files as $file)
+		{
+			unlink($path.$file);
+		}
+	}
+}
 ?>

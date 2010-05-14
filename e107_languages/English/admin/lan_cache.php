@@ -8,9 +8,9 @@
 */
 define("CACLAN_1", "Cache System Status");
 define("CACLAN_2", "Set cache status");
-define("CACLAN_3", "Cache System");
+define("CACLAN_3", "Cache Management");
 define("CACLAN_4", "Cache status set");
-define("CACLAN_5", "Empty Cache");
+define("CACLAN_5", "Empty Content Cache");
 define("CACLAN_6", "Cache Emptied");
 
 define("CACLAN_10", "The cache directory is not writable. Please ensure this directory is set CHMOD 0777");
@@ -25,5 +25,11 @@ define("CACLAN_17", "Currently contains");
 define("CACLAN_18", "file");
 define("CACLAN_19", "files");
 
-
+define("CACLAN_20", "DB Structure Cache");
+define("CACLAN_21", "Database Structure cache contains system information about database tables structure, needed by various core routines. No actual content will be contained here.");
+define("CACLAN_22", "Thumbnail cache");
+define("CACLAN_23", "Thumbnail cache files contains binary image data. They are there to save a lot of server CPU work.");
+define("CACLAN_24", "Empty DB Structure Cache");
+define("CACLAN_25", "Empty Thumbnail Cache");
+define("CACLAN_26", "Empty All Cache");
 ?>

@@ -8,10 +8,8 @@
  *
  * Cache handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -23,9 +21,9 @@ define('CACHE_PREFIX','<?php exit;');
  * FIXME - pref independant cache handler, cache drivers
  *
  * @package     e107
- * @category	e107_handlers
- * @version     $Revision$
- * @author      $Author$
+ * @subpackage	e107_handlers
+ * @version     $Id$
+ * @author      e107 Inc
  */
 class ecache {
 
