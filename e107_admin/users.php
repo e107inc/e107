@@ -3,7 +3,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -23,6 +23,7 @@ if (!getperms('4'))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
+
 if (varset($_POST['useraction']))
 {
 	foreach ($_POST['useraction'] as $key => $val)
@@ -36,11 +37,18 @@ if (varset($_POST['useraction']))
 		}
 	}
 }
-/*if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
+
+if (e_QUERY == 'logoutas' || varset($_POST['useraction']) == 'logoutas')
 {
-	header('location:'.e_ADMIN."userinfo.php?".$e107->tp->toDB($_POST['userip']));
+	$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
+  	if(e107::getUser()->logoutAs())
+  	{ // TODO - lan
+		e107::getMessage()->addSuccess('Successfully logged out from '.($asuser && $asuser->getValue('name') ? $asuser->getValue('name') : 'unknown').' account', 'default', true);
+  	}
+	header('location:'.e_ADMIN_ABS.'users.php');
 	exit;
-}*/
+}
+
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
 {
 	header('location:'.$e107->url->getUrl('core:user','main','func=settings&id='.(int) $_POST['userid']));
@@ -387,6 +395,21 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userclass')
   //	header('location:'.e_ADMIN.'userclass.php?'.$e107->tp->toDB($_POST['userid'].'.'.e_QUERY));
   //	exit;
   	$user->show_userclass($_POST['userid']);
+}
+
+// ---- Login as another user --------------------
+if (isset ($_POST['useraction']) && $_POST['useraction'] == 'loginas')
+{
+	if(e107::getUser()->getSessionDataAs())
+	{
+		e107::getMessage()->addWarning(USRLAN_AS_3);
+	}
+  	elseif(e107::getUser()->loginAs($_POST['userid']))
+  	{ // TODO - lan
+		e107::getMessage()->addSuccess('Successfully logged in as '.e107::getSystemUser($_POST['userid'])->getValue('name').' <a href="'.e_ADMIN_ABS.'users.php?logoutas">[logout]</a>')
+			->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
+  	}
+
 }
 
 // ------- Resend Email Confirmation. --------------
@@ -910,7 +933,14 @@ class users
 		if ($user_perms != "0")
 		{
 			$text .= "<option value='userinfo'>".USRLAN_80."</option>
-					<option value='usersettings'>".LAN_EDIT."</option>";
+					<option value='usersettings'>".LAN_EDIT."</option>
+					";
+			// login/logout As
+			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
+			{
+				if(e107::getUser()->getSessionDataAs() == $row['user_id']) $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
+				else $text .= "<option value='loginas'>".sprintf(USRLAN_AS_1, $row['user_name'])."</option>";
+			}
 			switch ($user_ban)
 			{
 				case 0 :
@@ -1149,7 +1179,7 @@ class users
 
 		</div>";
 
-		$emessage = & eMessage :: getInstance();
+		$emessage = eMessage :: getInstance();
 
 		$total_cap = (isset ($_GET['srch'])) ? $user_total : $users;
 		$caption = USRLAN_77."&nbsp;&nbsp;   (total: $total_cap)";

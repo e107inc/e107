@@ -949,8 +949,9 @@ $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
-	e107_require_once(e_HANDLER.'login.php');
-	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
+	e107::getUser()->login($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''), false);
+//	e107_require_once(e_HANDLER.'login.php');
+//	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
 
 
@@ -1543,6 +1544,10 @@ class floodprotect
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+/**
+ * The whole could happen inside e_user class
+ * @return void
+ */
 function init_session()
 {
 	/*
@@ -1554,17 +1559,17 @@ function init_session()
 	*/
 
 
-	global $pref, $user_pref, $currentUser, $_E107;
+	global $user_pref, $currentUser;
 
 	$sql = e107::getDb();
-	$tp = e107::getParser();
 	$e107 = e107::getInstance();
-	$eArrayStorage = e107::getArrayStorage();
 
+	// New user model
+	$user = e107::getUser();
 
 	define('USERIP', $e107->getip());
 
-    if(varset($_E107['cli']))
+    if(e107::isCli())
 	{
 		define('USER', true);
 		define('USERID', 1);
@@ -1579,7 +1584,14 @@ function init_session()
 		return;
 	}
 
-	if (!isset($_COOKIE[e_COOKIE]) && !isset($_SESSION[e_COOKIE]) && !isset($_E107['cli']))
+	if ($user->hasBan())
+	{
+		$msg = e107::findPref('ban_messages/6');
+		if($msg) echo e107::getParser()->toHTML($msg);
+		exit;
+	}
+
+	if (!$user->isUser())
 	{
 		define('USER', false);
 		define('USERID', 0);
@@ -1588,9 +1600,101 @@ function init_session()
 		define('GUEST', true);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
+
+		if($user->hasSessionError())
+		{
+			define('LOGINMESSAGE', CORE_LAN10);
+			define('CORRUPT_COOKIE', true);
+		}
 	}
 	else
 	{
+		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
+		define('USERID', $user->getId());
+		define('USERNAME', $user->get('user_name'));
+		// define('USERURL', $user->get('user_homepage', false)); OLD?
+		define('USEREMAIL', $user->get('user_email'));
+		define('USER', true);
+		define('USERCLASS', $user->get('user_class'));
+		define('USERIMAGE', $user->get('user_image'));
+		define('USERPHOTO', $user->get('user_sess'));
+
+		define('ADMIN', $user->isAdmin());
+		define('ADMINID', $user->getAdminId());
+		define('ADMINNAME', $user->getAdminName());
+		define('ADMINPERMS', $user->getAdminPerms());
+		define('ADMINEMAIL', $user->getAdminEmail());
+		define('ADMINPWCHANGE', $user->getAdminPwchange());
+		if(ADMIN) // XXX - why for admins only?
+		{
+			e107::getRedirect()->setPreviousUrl();
+		}
+
+		// DB
+		$update_ip = ($user->get('user_ip') != USERIP ? ", user_ip = '".USERIP."'" : "");
+		if($user->get('user_currentvisit') + 3600 < time() || !$user->get('user_lastvisit'))
+		{
+			$user->set('user_lastvisit', (integer) $user->get('user_currentvisit'));
+			$user->set('user_currentvisit', time());
+			$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = ".$user->get('user_lastvisit').", user_currentvisit = ".$user->get('user_currentvisit')."{$update_ip} WHERE user_id='".USERID."' ");
+		}
+		else
+		{
+			$user->set('user_currentvisit', time());
+			$sql->db_Update('user', "user_currentvisit = ".$user->get('user_currentvisit')."{$update_ip} WHERE user_id='".USERID."' ");
+		}
+		define('USERLV', $user->get('user_lastvisit'));
+
+		// BC - FIXME - get rid of them!
+		$currentUser = $user->getData();
+		$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
+		$e107->currentUser = &$currentUser;
+
+		if ($user->checkClass(e107::getPref('allow_theme_select', false), false))
+		{	// User can set own theme
+ 			if (isset($_POST['settheme']))
+			{
+				$uconfig = $user->getConfig();
+				if(e107::getPref('sitetheme') != $_POST['sitetheme'])
+				{
+                	require_once(e_HANDLER."theme_handler.php");
+					$utheme = new themeHandler;
+                    $ut = $utheme->themeArray[$_POST['sitetheme']];
+
+                    $uconfig->setPosted('sitetheme', $_POST['sitetheme'])
+                    	->setPosted('sitetheme_custompages', $ut['custompages'])
+                    	->setPosted('sitetheme_deflayout', $utheme->findDefault($_POST['sitetheme']));
+				}
+				else
+				{
+					$uconfig->remove('sitetheme')
+						->remove('sitetheme_custompages')
+						->remove('sitetheme_deflayout');
+				}
+
+				$uconfig->save(true);
+				unset($ut);
+			}
+   		}
+   		elseif ($user->getPref('sitetheme'))
+   		{
+   			$user->getConfig()
+   				->remove('sitetheme')
+   				->remove('sitetheme_custompages')
+   				->remove('sitetheme_deflayout')
+   				->save(false);
+		}
+
+		define('USERTHEME', ($user->getPref('sitetheme') && file_exists(e_THEME.$user->getPref('sitetheme')."/theme.php") ? $user->getPref('sitetheme') : false));
+
+		$user_pref = $user->getPref();
+	}
+
+	define('USERCLASS_LIST', $user->getClassList(true));
+	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
+	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
+
+		/* XXX - remove it after everything is working well!!
 		if(!isset($_E107['cli']))
 		{
 			list($uid, $upw)=(isset($_COOKIE[e_COOKIE]) && $_COOKIE[e_COOKIE] ? explode(".", $_COOKIE[e_COOKIE]) : explode(".", $_SESSION[e_COOKIE]));
@@ -1631,7 +1735,6 @@ function init_session()
 			define('USERPHOTO', $result['user_sess']);
 
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
-
 			if($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit'])
 			{
 				$result['user_lastvisit'] = $result['user_currentvisit'];
@@ -1715,8 +1818,8 @@ function init_session()
 
 			define('USERTHEME', (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : false));
 //			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-		}
-		else
+		}*/
+		/*else
 		{
 			define('USER', false);
 			define('USERID', 0);
@@ -1725,11 +1828,11 @@ function init_session()
 			define('CORRUPT_COOKIE', true);
 			define('USERCLASS', '');
 		}
-	}
+	}*/
 
-	define('USERCLASS_LIST', class_list());
+	/*define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
-	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
+	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');*/
 }
 
 
