@@ -100,6 +100,13 @@ class e_user_model extends e_front_model
 	protected $_message_stack = 'user';
 
 	/**
+	 * User class as set in user Adminsitration
+	 *
+	 * @var integer
+	 */
+	protected $_memberlist_access = null;
+
+	/**
 	 * Extended data
 	 *
 	 * @var e_user_extended_model
@@ -126,6 +133,17 @@ class e_user_model extends e_front_model
 	protected $_editor = null;
 
 	/**
+	 * Constructor
+	 * @param array $data
+	 * @return void
+	 */
+	public function __construct($data = array())
+	{
+		$this->_memberlist_access = e107::getPref('memberlist_access');
+		parent::__construct($data);
+	}
+
+	/**
 	 * Always return integer
 	 *
 	 * @see e107_handlers/e_model#getId()
@@ -133,6 +151,11 @@ class e_user_model extends e_front_model
 	public function getId()
 	{
 		return (integer) parent::getId();
+	}
+
+	final public function getName($anon = false)
+	{
+		return ($this->isUser() ? $this->get('user_name') : $anon);
 	}
 
 	final public function getAdminId()
@@ -205,9 +228,9 @@ class e_user_model extends e_front_model
 		$this->_class_list = array();
 		if ($this->isUser())
 		{
-			if ($this->getValue('class'))
+			if ($this->get('user_class'))
 			{
-				$this->_class_list = explode(',', $this->getValue('class'));
+				$this->_class_list = explode(',', $this->get('user_class'));
 			}
 			$this->_class_list[] = e_UC_MEMBER;
 			if ($this->isAdmin())
@@ -236,6 +259,11 @@ class e_user_model extends e_front_model
 			$this->_setClassList();
 		}
 		return ($toString ? implode(',', $this->_class_list) : $this->_class_list);
+	}
+
+	final public function getClassRegex()
+	{
+		return '(^|,)('.str_replace(',', '|', $this->getClassList(true)).')(,|$)';
 	}
 
 	final public function checkClass($class, $allowMain = true)
@@ -427,10 +455,10 @@ class e_user_model extends e_front_model
 	}
 
 	/**
-	 * Get current user editor model
+	 * Set current user editor model
 	 * @return e_user_model
 	 */
-	public function setEditor($user_model)
+	public function setEditor(e_user_model $user_model)
 	{
 		$this->_editor = $user_model;
 		return $this;
@@ -448,6 +476,20 @@ class e_user_model extends e_front_model
 		if($this->getId() === $editor->getId() || $editor->isMainAdmin() || $editor->checkAdminPerms('4'))
 			$perm = true;
 		return ($perm && !in_array($field, array($this->getFieldIdName(), 'user_admin', 'user_perms', 'user_prefs')));
+	}
+
+	/**
+	 * Check if passed field is readable by the Editor
+	 * @param string $field
+	 * @return boolean
+	 */
+	public function isReadable($field)
+	{
+		$perm = false;
+		$editor = $this->getEditor();
+		if($this->getId() === $editor->getId() || $editor->isMainAdmin() || $editor->checkAdminPerms('4'))
+			$perm = true;
+		return ($perm || (!in_array($field, array('user_admin', 'user_perms', 'user_prefs', 'user_password') && $editor->checkClass($this->_memberlist_access))));
 	}
 
 	/**
@@ -805,6 +847,10 @@ class e_user extends e_user_model
 				// NEW - try 'logged in as' feature
 				if(!$denyAs) $this->loadAs();
 
+				// update lastvisit field
+				$this->updateVisit();
+
+				// currently does nothing
 				$this->_initConstants();
 				return $this;
 			}
@@ -855,6 +901,34 @@ class e_user extends e_user_model
 			$this->_parent_extstruct = $this->_parent_extmodel = null;
 		}
 		return $this;
+	}
+
+	/**
+	 * Update user visit timestamp
+	 * @return void
+	 */
+	protected function updateVisit()
+	{
+		// Don't update if main admin is logged in as current (non main admin) user
+		if(!$this->getParentId())
+		{
+			$sql = e107::getDb();
+			$this->set('last_ip', $this->get('user_ip'));
+			$current_ip = e107::getInstance()->getip();
+			$update_ip = $this->get('user_ip' != $current_ip ? ", user_ip = '".$current_ip."'" : "");
+			$this->set('user_ip', $current_ip);
+			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))
+			{
+				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
+				$this->set('user_currentvisit', time());
+				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+			}
+			else
+			{
+				$this->set('user_currentvisit', time());
+				$sql->db_Update('user', "user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+			}
+		}
 	}
 
 	final protected function _destroySession()
@@ -990,6 +1064,13 @@ class e_user_extended_model extends e_front_model
 	protected $_message_stack = 'user';
 
 	/**
+	 * User class as set in user Adminsitration
+	 *
+	 * @var integer
+	 */
+	protected $_memberlist_access = null;
+
+	/**
 	 * @var e_user_extended_structure_tree
 	 */
 	protected $_structure = null;
@@ -999,12 +1080,6 @@ class e_user_extended_model extends e_front_model
 	 * @var e_user_model
 	 */
 	protected $_user = null;
-
-	/**
-	 * User model
-	 * @var e_user_model
-	 */
-	protected $_editor = null;
 
 	/**
 	 * Stores access classes and default value per custom field
@@ -1019,9 +1094,9 @@ class e_user_extended_model extends e_front_model
 	 */
 	public function __construct(e_user_model $user_model)
 	{
+		$this->_memberlist_access = e107::getPref('memberlist_access');
 		$this->setUser($user_model)
-			->setEditor(e107::getUser()) // current by default
-				->load();
+			->load();
 	}
 
 	/**
@@ -1058,17 +1133,7 @@ class e_user_extended_model extends e_front_model
 	 */
 	public function getEditor()
 	{
-		return $this->_editor;
-	}
-
-	/**
-	 * Get current user editor model
-	 * @return e_user_model
-	 */
-	public function setEditor($user_model)
-	{
-		$this->_editor = $user_model;
-		return $this;
+		return $this->getUser()->getEditor();
 	}
 
 	/**
@@ -1157,9 +1222,10 @@ class e_user_extended_model extends e_front_model
 	public function checkRead($field)
 	{
 		$hidden = $this->get('user_hidden_fields');
-		if($this->getId() !== $this->getEditor()->getId() && !empty($hidden) && strpos($hidden, $field) !== false) return false;
+		$editor = $this->getEditor();
+		if($this->getId() !== $editor->getId() && !empty($hidden) && strpos($hidden, $field) !== false) return false;
 
-		return ($this->checkApplicable($field) && $this->getEditor()->checkClass(varset($this->_struct_index[$field]['read'])));
+		return ($this->checkApplicable($field) && $editor->checkClass($this->_memberlist_access) && $editor->checkClass(varset($this->_struct_index[$field]['read'])));
 	}
 
 	/**
@@ -1635,9 +1701,11 @@ class e_user_pref extends e_front_model
 
 	/**
 	 * Save and apply user preferences
+	 * @param boolean $from_post
+	 * @param boolean $force
 	 * @return boolean success
 	 */
-	public function save($from_post = false)
+	public function save($from_post = false, $force = false)
 	{
 		if($this->_user->getId())
 		{
@@ -1645,9 +1713,13 @@ class e_user_pref extends e_front_model
 			{
 				$this->mergePostedData(false, true, false);
 			}
-			$data = $this->toString(true);
-			$this->apply();
-			return (e107::getDb('user_prefs')->db_Update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
+			if($force || $this->dataHasChanged())
+			{
+				$data = $this->toString(true);
+				$this->apply();
+				return (e107::getDb('user_prefs')->db_Update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
+			}
+			return 0;
 		}
 		return false;
 	}
