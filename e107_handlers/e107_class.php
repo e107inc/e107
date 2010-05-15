@@ -1760,6 +1760,10 @@ class e107
 		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST)
 		{
 			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
+
+			// lame but quick - allow online when ajax request only, additonal checks are made in e_online class
+			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal'])) unset($_e107vars[1]);
+
 			foreach($_e107vars as $v)
 			{
 				$noname = 'no_'.$v;

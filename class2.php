@@ -1561,7 +1561,6 @@ function init_session()
 
 	global $user_pref, $currentUser;
 
-	$sql = e107::getDb();
 	$e107 = e107::getInstance();
 
 	// New user model
@@ -1629,20 +1628,6 @@ function init_session()
 		{
 			e107::getRedirect()->setPreviousUrl();
 		}
-
-		// DB
-		$update_ip = ($user->get('user_ip') != USERIP ? ", user_ip = '".USERIP."'" : "");
-		if($user->get('user_currentvisit') + 3600 < time() || !$user->get('user_lastvisit'))
-		{
-			$user->set('user_lastvisit', (integer) $user->get('user_currentvisit'));
-			$user->set('user_currentvisit', time());
-			$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = ".$user->get('user_lastvisit').", user_currentvisit = ".$user->get('user_currentvisit')."{$update_ip} WHERE user_id='".USERID."' ");
-		}
-		else
-		{
-			$user->set('user_currentvisit', time());
-			$sql->db_Update('user', "user_currentvisit = ".$user->get('user_currentvisit')."{$update_ip} WHERE user_id='".USERID."' ");
-		}
 		define('USERLV', $user->get('user_lastvisit'));
 
 		// BC - FIXME - get rid of them!
@@ -1650,6 +1635,7 @@ function init_session()
 		$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 		$e107->currentUser = &$currentUser;
 
+		// XXX could go to e_user class as well
 		if ($user->checkClass(e107::getPref('allow_theme_select', false), false))
 		{	// User can set own theme
  			if (isset($_POST['settheme']))
@@ -1684,6 +1670,7 @@ function init_session()
    				->remove('sitetheme_deflayout')
    				->save(false);
 		}
+		// XXX could go to e_user class as well END
 
 		define('USERTHEME', ($user->getPref('sitetheme') && file_exists(e_THEME.$user->getPref('sitetheme')."/theme.php") ? $user->getPref('sitetheme') : false));
 
@@ -1691,7 +1678,7 @@ function init_session()
 	}
 
 	define('USERCLASS_LIST', $user->getClassList(true));
-	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
+	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 
 		/* XXX - remove it after everything is working well!!
@@ -1839,7 +1826,7 @@ function init_session()
 $sql->db_Mark_Time('Start: Go online');
 if(!isset($_E107['no_online']) && varset($pref['track_online']))
 {
-	e107::getOnline()->online($pref['track_online'], $pref['flood_protect']);
+	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
 }
 
 function cookie($name, $value, $expire=0, $path = '/', $domain = '', $secure = 0)
