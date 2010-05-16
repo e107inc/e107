@@ -204,6 +204,11 @@ class e_install
 //	public function __construct()
 	function e_install()
 	{
+		// notice removal, required from various core routines
+		define('USERID', 1);
+		define('USER', true);
+		define('ADMIN', true);
+
 		$this->logFile = '';
 		if (MAKE_INSTALL_LOG)
 		{
@@ -791,6 +796,10 @@ class e_install
 			return $this->stage_5();
 		}
 
+		// required for various core routines
+		define('USERNAME', $this->previous_steps['admin']['user']);
+		define('USEREMAIL', $this->previous_steps['admin']['email']);
+
 
 		// ------------- Step 6 Form --------------------------------
 
@@ -873,6 +882,10 @@ class e_install
 		$this->stage = 7;
 		$this->logLine('Stage 7 started');
 
+		// required for various core routines
+		define('USERNAME', $this->previous_steps['admin']['user']);
+		define('USEREMAIL', $this->previous_steps['admin']['email']);
+
 		if(varset($_POST['sitename']))
 		{
 			$this->previous_steps['prefs']['sitename'] = $_POST['sitename'];
@@ -940,6 +953,11 @@ class e_install
 	{
 
 		global $e_forms;
+
+		// required for various core routines
+		define('USERNAME', $this->previous_steps['admin']['user']);
+		define('USEREMAIL', $this->previous_steps['admin']['email']);
+
 		$this->stage = 8;
 		$this->logLine('Stage 8 started');
 
@@ -1029,6 +1047,7 @@ class e_install
 	{
 		$this->logLine('Starting configuration import');
 
+
 		// Basic stuff to get the handlers/classes to work.
 
 
@@ -1066,7 +1085,6 @@ class e_install
 		$tp = e107::getParser();
 
 		define('PREVIEWTHEMENAME',""); // Notice Removal.
-		define('USERID', 1); // notice removal, required from media import routine
 
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
@@ -1077,10 +1095,10 @@ class e_install
 		$this->logLine('Plugins table updated');
 
 		//should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
-		// [SecretR] should work now
-		e107::getXml()->e107Import($XMLImportfile, 'add'); // Add missing core pref values
+		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
+		e107::getXml()->e107Import($XMLImportfile, 'add', true); // Add missing core pref values
 		$this->logLine('Core prefs written');
-		
+
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']))
 		{
@@ -1096,7 +1114,7 @@ class e_install
 				}
 			}
 		}
-		
+
 		// Media import
 		e107::getMedia()->import('news',e_IMAGE.'newspost_images/') //TODO remove when news are pluginized
 			->import('page',e_IMAGE.'custom/') //TODO remove when pages are pluginized
@@ -1105,14 +1123,16 @@ class e_install
 			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/images/")
 			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/icons/");
 		$this->logLine('Media imported to media manager');
-		
+
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
 		$tm = e107::getSingleton('themeHandler');
-		$tm->noLog = TRUE;
+		$tm->noLog = true; // false to enable log
 		$tm->setTheme($this->previous_steps['prefs']['sitetheme']);
 
+		// Admin log fix - don't allow logs to be called inside pref handler
+		e107::getConfig('core')->setParam('nologs', false); // change to true to enable log
 		$pref = e107::getConfig('core')->getPref();
 
 		// Set Preferences defined during install - overwriting those that may exist in the XML.

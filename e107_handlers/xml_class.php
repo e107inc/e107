@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Simple XML Parser
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL $
+ * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -828,10 +826,11 @@ class xmlClass
 	 *
 	 * @param path $file - e107 XML file path
 	 * @param string $mode[optional] - add|replace
+	 * @param boolean $noLogs [optional] tells pref handler to disable admin logs when true (install issues)
 	 * @param boolean $debug [optional]
 	 * @return array with keys 'success' and 'failed' - DB table entry status.
 	 */
-	public function e107Import($file,$mode='replace',$debug=FALSE)
+	public function e107Import($file, $mode='replace', $noLogs = false, $debug=FALSE)
 	{
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
@@ -850,27 +849,29 @@ class xmlClass
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
 				$pArray = $this->e107ImportPrefs($xmlArray,$type);
-				
+
 				if($mode == 'replace')
 				{
 					e107::getConfig($type)->setPref($pArray);
 				}
 				else // 'add'
 				{
-					foreach ($pArray as $pname => $pval) 
+					foreach ($pArray as $pname => $pval)
 					{
 						e107::getConfig($type)->add($pname, $pval); // don't parse x/y/z
 					}
-					// e107::getConfig($type)->addPref($pArray);  
+					// e107::getConfig($type)->addPref($pArray);
 				}
 
 				if($debug == FALSE)
 				{
-					 e107::getConfig($type)->save(FALSE,TRUE);
+					 e107::getConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
 				}
 			}
 		}
-		
+
 		if(vartrue($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)

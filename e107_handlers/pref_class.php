@@ -504,6 +504,7 @@ class e_pref extends e_front_model
 		}
 
 		$admin_log = e107::getAdminLog();
+		$disallow_logs = $this->getParam('nologs', false);
 
 		//Save to DB
 		if(!$this->hasError())
@@ -534,7 +535,7 @@ class e_pref extends e_front_model
 					}
 
 					// auto admin log
-					if(is_array($old)) // fix install problems - no old prefs available
+					if(is_array($old) && !$disallow_logs) // fix install problems - no old prefs available
 					{
 						$new = $this->getPref();
 						$admin_log->logArrayDiffs($new, $old, 'PREFS_02', false);
@@ -542,13 +543,13 @@ class e_pref extends e_front_model
 					}
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
-						$admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
+						if(!$disallow_logs) $admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						ecache::clear_sys('Config_'.$this->alias.'_backup');
 					}
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 
-				$admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01');
+				if(!$disallow_logs) $admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01');
 				//BC
 				if($this->alias === 'core')
 				{
@@ -558,7 +559,8 @@ class e_pref extends e_front_model
 			}
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
-				$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
+				if(!$disallow_logs)
+					$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
 					->logError('Settings not saved.', true, $session_messages)
 					->flushMessages('PREFS_03');
 				return false;
@@ -569,14 +571,15 @@ class e_pref extends e_front_model
 		{
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
-			$admin_log->logError('Settings not saved.', true, $session_messages)
+			if(!$disallow_logs)
+				$admin_log->logError('Settings not saved.', true, $session_messages)
 				->flushMessages('LAN_FIXME');
 			return false;
 		}
 		else
 		{
 			e107::getMessage()->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
-			$admin_log->flushMessages('LAN_FIXME');
+			if(!$disallow_logs) $admin_log->flushMessages('LAN_FIXME');
 			return 0;
 		}
 	}

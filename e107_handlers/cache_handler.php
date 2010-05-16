@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -34,11 +34,10 @@ class ecache {
 
 	const CACHE_PREFIX = '<?php exit;';
 
-	function ecache()
+	function __construct()
 	{
-		global $pref;
-		$this->UserCacheActive = varsettrue($pref['cachestatus']);
-		$this->SystemCacheActive = varsettrue($pref['syscachestatus']);
+		$this->UserCacheActive = e107::getPref('cachestatus');
+		$this->SystemCacheActive = e107::getPref('syscachestatus');
 	}
 
 	/**
@@ -104,8 +103,7 @@ class ecache {
 	*/
 	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
-		global $pref, $tp;
-		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting())
+		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			if (file_exists($cache_file))
@@ -165,8 +163,7 @@ class ecache {
 	 */
 	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false)
 	{
-		global $pref, $FILES_DIRECTORY, $tp;
-		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting())
+		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
@@ -268,5 +265,3 @@ class ecache {
 		}
 	}
 }
-
-?>
