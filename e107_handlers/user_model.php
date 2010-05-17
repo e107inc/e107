@@ -295,6 +295,22 @@ class e_user_model extends e_front_model
 	}
 
 	/**
+	 * Bad but required (BC) method of retrieving all user data
+	 * It's here to be used from get_user_data() core function.
+	 * DON'T USE IT unless you have VERY good reason to do it.
+	 *
+	 * @return array
+	 */
+	public function getUserData()
+	{
+		$ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
+		if ($ret['user_perms'] == '0.') $ret['user_perms'] = '0';
+		$ret['user_baseclasslist'] = $ret['user_class'];
+		$ret['user_class'] = $this->getClassList(true);
+		return $ret;
+	}
+
+	/**
 	 * Get User value
 	 *
 	 * @param string$field
@@ -1143,6 +1159,30 @@ class e_user_extended_model extends e_front_model
 	}
 
 	/**
+	 * Bad but required (BC) method of retrieving all user data
+	 * It's here to be used from get_user_data() core function.
+	 * DON'T USE IT unless you have VERY good reason to do it.
+	 *
+	 * @return array
+	 */
+	public function getExtendedData()
+	{
+		$ret = array();
+
+		$fields = $this->getExtendedStructure()->getFieldTree();
+		foreach ($fields as $id => $field)
+		{
+			$value = $this->getValue($field->getValue('name'));
+			if(null !== $value) $ret[$field->getValue('name')] = $value;
+		}
+
+		$ret['user_extended_id'] = $this->getId();
+		$ret['user_hidden_fields'] = $this->get('user_hidden_fields');
+
+		return $ret;
+	}
+
+	/**
 	 * Get User extended field value
 	 * Returns NULL when field/default value not found or not enough permissions
 	 * @param string $field
@@ -1228,8 +1268,8 @@ class e_user_extended_model extends e_front_model
 	public function checkRead($field)
 	{
 		$hidden = $this->get('user_hidden_fields');
-		$editor = $this->getEditor();
-		if($this->getId() !== $editor->getId() && !empty($hidden) && strpos($hidden, $field) !== false) return false;
+		$editor = $this->getEditor();//var_dump($field, $this->_struct_index[$field], $this->getEditor()->getId(), $this->checkApplicable($field));
+		if(!empty($hidden) && $this->getId() !== $editor->getId() && strpos($hidden, '^'.$field.'^') !== false) return false;
 
 		return ($this->checkApplicable($field) && $editor->checkClass($this->_memberlist_access) && $editor->checkClass(varset($this->_struct_index[$field]['read'])));
 	}
@@ -1268,7 +1308,7 @@ class e_user_extended_model extends e_front_model
 	 */
 	public function checkApplicable($field)
 	{
-		return $this->getUser()->checkClass(varset($this->_struct_index[$field]['applicable']));
+		return $this->getUser()->checkClass(varset($this->_struct_index[$field]['apply']));
 	}
 
 	/**
@@ -1586,6 +1626,15 @@ class e_user_extended_structure_tree extends e_tree_model
 	}
 
 	/**
+	 * Get collection of nodes of type field
+	 * @return array
+	 */
+	public function getFieldTree()
+	{
+		return array_diff_key($this->getTree(), array_combine($this->_category_index, $this->_category_index));
+	}
+
+	/**
 	 * Get collection of nodes assigned to a specific category
 	 * @param integer $category_id
 	 * @return array
@@ -1607,10 +1656,7 @@ class e_user_extended_structure_tree extends e_tree_model
 			->setParam('model_class', 'e_user_extended_structure_model')
 			->setParam('db_order', 'user_extended_struct_order ASC');
 		parent::load($force);
-		print_a($this->_category_index);
-		print_a($this->_parent_index);
-		print_a($this->_name_index);
-		print_a($this->getTreeByCategory(4));
+
 		return $this;
 	}
 
