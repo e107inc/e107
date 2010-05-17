@@ -1355,12 +1355,34 @@ function getperms($arg, $ap = ADMINPERMS)
 
 /**
  * Get the user data from user and user_extended tables
+ * SO MUCH DEPRECATED!
+ *
  *
  * @return array
  */
 function get_user_data($uid, $extra = '')
 {
-	$e107 = e107::getInstance();
+	if(e107::getPref('developer'))
+	{
+		e107::getAdminLog()->log_event(
+			'Deprecated call - get_user_data()',
+			'Call to deprecated function get_user_data() (class2.php)',
+			E_LOG_INFORMATIVE,
+			'DEPRECATED'
+		);
+		// TODO - debug screen Deprecated Functions (e107)
+		e107::getMessage()->addDebug('Deprecated get_user_data() backtrace:<pre>'."\n".print_r(debug_backtrace(), true).'</pre>');
+	}
+
+	$var = array();
+	$user = e107::getSystemUser($uid, true);
+	if($user)
+	{
+		$var = $user->getUserData();
+	}
+	return $var;
+
+	/*$e107 = e107::getInstance();
 	$uid = (int)$uid;
 	$var = array();
 	if($uid == 0) { return $var; }
@@ -1421,6 +1443,7 @@ function get_user_data($uid, $extra = '')
 		}
 	}
 
+
 	if ($var['user_perms'] == '0.') $var['user_perms'] = '0';		// Handle some legacy situations
 	//===========================================================
 	$var['user_baseclasslist'] = $var['user_class'];			// Keep track of which base classes are in DB
@@ -1431,6 +1454,7 @@ function get_user_data($uid, $extra = '')
 
 	cachevars("userdata_{$uid}", $var);
 	return $var;
+	*/
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1438,6 +1462,18 @@ function get_user_data($uid, $extra = '')
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
 	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
+
+	if(e107::getPref('developer'))
+	{
+		e107::getAdminLog()->log_event(
+			'Deprecated call - save_prefs()',
+			'Call to deprecated function save_prefs() (class2.php)',
+			E_LOG_INFORMATIVE,
+			'DEPRECATED'
+		);
+		// TODO - debug screen Deprecated Functions (e107)
+		e107::getMessage()->addDebug('Deprecated save_prefs() backtrace:<pre>'."\n".print_r(debug_backtrace(), true).'</pre>');
+	}
 
 	switch($table)
 	{
