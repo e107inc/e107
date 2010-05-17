@@ -108,7 +108,7 @@ class user_class
 	 *	@param boolean $force - set to TRUE to force a re-read of the info regardless.
 	 *	@return none
 	*/
-	protected function readTree($force = FALSE)
+	public function readTree($force = FALSE)
 	{
 		if (isset($this->class_tree) && count($this->class_tree) && !$force) return;
 
