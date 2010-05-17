@@ -44,6 +44,7 @@ if (e_QUERY == 'logoutas' || varset($_POST['useraction']) == 'logoutas')
   	if(e107::getUser()->logoutAs())
   	{ // TODO - lan
 		e107::getMessage()->addSuccess('Successfully logged out from '.($asuser && $asuser->getValue('name') ? $asuser->getValue('name') : 'unknown').' account', 'default', true);
+		e107::getEvent()->trigger('logoutas', array('user_id' => $asuser, 'admin_id' => e107::getUser()->getId()));
   	}
 	header('location:'.e_ADMIN_ABS.'users.php');
 	exit;
@@ -408,6 +409,8 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == 'loginas')
   	{ // TODO - lan
 		e107::getMessage()->addSuccess('Successfully logged in as '.e107::getSystemUser($_POST['userid'])->getValue('name').' <a href="'.e_ADMIN_ABS.'users.php?logoutas">[logout]</a>')
 			->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
+
+		e107::getEvent()->trigger('loginas', array('user_id' => $_POST['userid'], 'admin_id' => e107::getUser()->getId()));
   	}
 
 }

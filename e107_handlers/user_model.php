@@ -223,14 +223,15 @@ class e_user_model extends e_front_model
 		return (null !== $this->_editor);
 	}
 
-	final protected function _setClassList($uid = '')
+	final protected function _setClassList()
 	{
 		$this->_class_list = array();
 		if ($this->isUser())
 		{
 			if ($this->get('user_class'))
 			{
-				$this->_class_list = explode(',', $this->get('user_class'));
+				// list of all 'inherited' user classes, convert elements to integer
+				$this->_class_list = array_map('intval', e107::getUserClass()->get_all_user_classes($this->get('user_class'), true));
 			}
 			$this->_class_list[] = e_UC_MEMBER;
 			if ($this->isAdmin())
@@ -249,6 +250,8 @@ class e_user_model extends e_front_model
 		$this->_class_list[] = e_UC_READONLY;
 		$this->_class_list[] = e_UC_PUBLIC;
 
+		// unique, rebuild indexes
+		$this->_class_list = array_merge(array_unique($this->_class_list));
 		return $this;
 	}
 
@@ -743,6 +746,9 @@ class e_user extends e_user_model
 			$_COOKIE[$key] = $user_id;
 			cookie($key, $user_id);
 		}
+
+		// TODO - lan
+		e107::getAdminLog()->log_event('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
 		//$this->loadAs(); - shouldn't be called here - loginAs should be called in Admin area only, loadAs - front-end
 		return true;
 	}

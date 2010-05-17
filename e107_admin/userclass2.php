@@ -489,7 +489,7 @@ switch ($action)
 		<tr>
 		<td>".UCSLAN_35."</td>
 		<td>";
-	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,classes,matchclass,member').'</select>';
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,public,classes,matchclass,member').'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
 	$text .= "<div class='field-help'>".UCSLAN_36."</div></td>
 		</tr></table>
@@ -620,7 +620,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	    $e_userclass->set_default_structure();
 		$e_userclass->calc_tree();
 		$e_userclass->save_tree();
-		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+		$e_userclass->readTree(TRUE);		// Need to re-read the tree to show correct info
 		$message .= UCSLAN_64;
 	}
 
@@ -630,7 +630,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $sql->db_Update("userclass_classes", "userclass_parent='0'");
 	  $e_userclass->calc_tree();
 	  $e_userclass->save_tree();
-	  $e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
+	  $e_userclass->readTree(TRUE);		// Need to re-read the tree to show correct info
 	  $message .= UCSLAN_64;
 	}
 
