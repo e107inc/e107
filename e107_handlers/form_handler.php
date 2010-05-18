@@ -1704,7 +1704,15 @@ class e_form
 
 			if($tree && $amount)
 			{
-				$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
+				// New nextprev SC parameters
+				$parms = 'total='.$total;
+				$parms .= '&amount='.$amount;
+				$parms .= '&current='.$from;
+				// NOTE - the whole url is double encoded - reason is to not break parms query string
+				// 'np_query' should be proper (urlencode'd) url query string
+				$url = rawurlencode($url.'?'.(varset($options['np_query']) ? str_replace(array('&amp;', '&'), array('&', '&amp;'),  $options['np_query']).'&amp;' : '').'from=[FROM]');
+				$parms .= '&url='.$url;
+				//$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
 		    	//$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 				$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
 				if ($nextprev)

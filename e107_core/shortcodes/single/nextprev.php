@@ -31,7 +31,11 @@
  * - amount (integer| string 'all') [required]: Records per page, always 1 when we counting pages (see 'type' parameter), ignored where tmpl_prefix is not set and 'old_np' pref is false
  * - current (integer)[required]: Current record/page
  * - type (string page|record) [optional]: What kind of navigation logic we need, default is 'record' (the old way)
- * - url (rawurlencode'd string) [required]: URL template, will be rawurldecode'd after parameters are parsed to array
+ *
+ * - url (rawurlencode'd string) [required]: URL template, will be rawurldecode'd after parameters are parsed to array, '--AMP--' strings will be replaced with '&amp;'
+ * 	NOTE: URL should be DOUBLE encoded, which means you need to encode the query only of passed URL (W3C standards) and rawurlencode the whole URL string
+ * The reason to do this is to not break the whole shortcode $parm string, shortcode itself is doing decode once, which means we'll end up with correct, W3C compliant URL string
+ *
  * Preffered 'FROM' template is now '--FROM--' (instead '[FROM]')
  * - caption (rawurlencode'd string) [optional]: Label, rawurldecode'd after parameters are parsed to array, language constants are supported
  * - pagetitle (rawurlencode'd string) [optional]: Page labels, rawurldecode'd after parameters are parsed to array,
@@ -60,30 +64,44 @@ function nextprev_shortcode($parm = '')
 	 */
 	if(strpos($parm, 'total=') !== false)
 	{
-		// Calculate
 		parse_str($parm, $parm);
 
+		// Calculate
 		$total_items = intval($parm['total']);
+		$check_render = true;
+
 		// search for template keys - default_start, default_end etc.
 		if(isset($parm['tmpl_prefix']))
 		{
 			// forced
 			$tprefix = vartrue($parm['tmpl_prefix'], 'default');
-			$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
+			//$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
 		}
 		// default, based on prefs
 		elseif($pref['old_np'])
 		{
 
 			$tprefix = 'default';
-			$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
+			//$perpage = $parm['amount'] !== 'all' ? intval($parm['amount']) : $total_items;
 		}
 		else
 		{
 			$tprefix = 'dropdown';
-			$perpage = $total_items; // amount is ignored
+			//$parm['amount'] = 'all';
 		}
 		$tprefix .= '_';
+
+		if($parm['amount'] === 'all')
+		{
+			$perpage = 1; // amount is ignored
+			$check_render = ($total_items > 1);
+		}
+		else
+		{
+			$perpage = intval($parm['amount']);
+		}
+		if(!$check_render) {	return ''; }
+
 		// TODO - rename old_np to something more meaningful
 
 		$current_start = intval($parm['current']);
@@ -112,8 +130,8 @@ function nextprev_shortcode($parm = '')
 
 		if($total_pages <= 1) {	return ''; }
 
-		// urldecoded by parse_str()
-		$url = str_replace('--FROM--', '[FROM]', $parm['url']);
+		// urldecoded once by parse_str()
+		$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
 
 		// Simple parser vars
 		$e_vars = new e_vars(array(
