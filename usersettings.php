@@ -175,17 +175,17 @@ if (isset($_POST['updatesettings']))
 // Login Name checks
 	if (isset($_POST['loginname']))
 	{  // Only check if its been edited
-	  $temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
-	  if ($temp_name != $_POST['loginname'])
-	  {
-		$error .= LAN_USET_13."\\n";
-	  }
-	  // Check if login name exceeds maximum allowed length
-	  if (strlen($temp_name) > varset($pref['loginname_maxlength'],30))
-	  {
-	    $error .= LAN_USET_14."\\n";
-	}
-	  $_POST['loginname'] = $temp_name;
+		$temp_name = trim(preg_replace('%*|/|&nbsp;|\#|\=|\$%', "", strip_tags($_POST['loginname'])));
+		if ($temp_name != $_POST['loginname'])
+		{
+			$error .= LAN_USET_13."\\n";
+		}
+		// Check if login name exceeds maximum allowed length
+		if (strlen($temp_name) > varset($pref['loginname_maxlength'],30))
+		{
+			$error .= LAN_USET_14."\\n";
+		}
+		$_POST['loginname'] = $temp_name;
 	}
 
 

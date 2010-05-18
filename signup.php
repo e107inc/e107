@@ -386,7 +386,7 @@ if (isset($_POST['register']))
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
 //	Strip most invalid characters now
-	$temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($_POST['loginname'])));
+	$temp_name = trim(preg_replace('%*|/|&nbsp;|\#|\=|\$%', "", strip_tags($_POST['loginname'])));
 	if ($temp_name != $_POST['loginname'])
 	{
 		$error_message .= LAN_409."\\n";
