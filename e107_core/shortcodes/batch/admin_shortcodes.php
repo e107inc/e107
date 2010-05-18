@@ -454,7 +454,7 @@ class admin_shortcodes
 			return '';
 		}
 		global $ns, $pref;
-		
+
 		// SecretR: NEW v0.8
 		$tmp = e107::getAdminUI();
 		if($tmp)
@@ -638,9 +638,9 @@ class admin_shortcodes
 							extract($rowplug);
 							if(varset($rowplug[1]))
 							{
-								$e107_plug[$rowplug[1]] = varset($rowplug[3]);	
+								$e107_plug[$rowplug[1]] = varset($rowplug[3]);
 							}
-							
+
 						}
 					}
 				}
@@ -818,13 +818,13 @@ class admin_shortcodes
 			".FOOTLAN_16.": ".$mySQLdefaultdb."
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
-			<br />utf-8 
+			<br />utf-8
 			<br /><br />
 			<b>".FOOTLAN_19."</b>
 			<br />
 			".date('r').
 			"<br />";
-			
+
 			return $ns->tablerender(FOOTLAN_13, $text, '', TRUE);
 		}
 	}
@@ -841,9 +841,9 @@ class admin_shortcodes
 					$members = $sql -> db_Count('user');
 					$unverified = $sql -> db_Count('user', '(*)', 'WHERE user_ban=2');
 					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
-					$comments = $sql -> db_Count('comments'); 
-					
-				
+					$comments = $sql -> db_Count('comments');
+
+
 					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?filter=unverified'>".ADLAN_111."</a>" : ADLAN_111);
 
 					$text = "
@@ -915,7 +915,7 @@ class admin_shortcodes
 		if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) { return ''; }
 
 		$xml = e107::getXml();
-		
+
 		require_once(e_HANDLER."magpie_rss.php");
 
 		$ftext = '';
@@ -982,7 +982,7 @@ class admin_shortcodes
 
 			function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='')
 			{
-				
+
 				$exit = "";
 				$text = "<a class='menuItem ".$cat_highlight."' href='".$cat_link."' ";
 				if ($cat_id)
@@ -1041,6 +1041,7 @@ class admin_shortcodes
 			$render_plugins = FALSE;
 			include_once(e_HANDLER.'plugin_class.php');
 			$plug = new e107plugin;
+			$plugin_array = array(); // kill php notices
 			if($sql -> db_Select('plugin', '*', 'plugin_installflag=1 ORDER BY plugin_path'))
 			{
 				while($row = $sql -> db_Fetch())
@@ -1133,7 +1134,7 @@ class admin_shortcodes
 
 	function sc_admin_navigation($parm)
 	{
-		
+
 		if (!ADMIN) return '';
 		global $admin_cat, $array_functions, $array_sub_functions, $pref;
 
@@ -1224,13 +1225,13 @@ class admin_shortcodes
 					$plug_vars = $plug->plug_vars;
 					e107::loadLanFiles($row['plugin_path'], 'admin');
 					if(varset($plug_vars['adminLinks']['link']))
-					{		
-						
+					{
+
 						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
 						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$id = 'plugnav-'.$row['plugin_path'];
-					
+
            	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
 						$tmp[$id]['description'] = $plug_vars['description'];
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
@@ -1253,12 +1254,12 @@ class admin_shortcodes
 								$predef_icons = array('add', 'manage', 'settings');
 								$title = $plugsub['@value'];
 								$plugsub = $plugsub['@attributes'];
-								
-								if(varset($plugsub['primary'])=='true') // remove primary links. 
+
+								if(varset($plugsub['primary'])=='true') // remove primary links.
 								{
 									continue;
 								}
-								
+
 								$icon_src = in_array($plugsub['icon'], $predef_icons) ? e_IMAGE_ABS."admin_images/{$plugsub['icon']}_16.png" : ( $plugsub['icon'] ? $plugpath.$plugsub['icon'] : '');
 
 
@@ -1309,7 +1310,7 @@ class admin_shortcodes
        //     print_a($menu_vars);
 		// ------------------------------------------------------------------
 
-		//added option to disable leave/logout (ll) - more flexibility for theme developers 
+		//added option to disable leave/logout (ll) - more flexibility for theme developers
 		if(!varsettrue($parms['disable_ll']))
 		{
 			$menu_vars['home']['text'] = ADLAN_53;
@@ -1317,7 +1318,7 @@ class admin_shortcodes
 			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['perm'] = '';
-	
+
 			$menu_vars['logout']['text'] = ADLAN_46;
 			$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1342,7 +1343,7 @@ class admin_shortcodes
 			{
 	           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
 	 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
-	
+
 			}
 		}
 
