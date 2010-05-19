@@ -608,6 +608,15 @@ class e_form
 		return "<input type='hidden' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
+	/**
+	 * Generate hidden security field
+	 * @return string
+	 */
+	function referer()
+	{
+		return "<input type='hidden' name='__referer' value='".defset('POST_REFERER', '')."' id='e-form-referer' />";
+	}
+
 	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
@@ -1667,6 +1676,7 @@ class e_form
 
 	        $text = "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
+				<div>".$this->referer()."
 					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
 						<legend class='e-hideme'>".$options['legend']."</legend>
@@ -1724,6 +1734,7 @@ class e_form
 			$text .= "
 					</fieldset>
 					".vartrue($options['fieldset_post'])."
+				</div>
 				</form>
 			";
 			if(!$nocontainer)
@@ -1785,6 +1796,8 @@ class e_form
 
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
+				<div>
+				".$this->referer()."
 			";
 
 			foreach ($form['fieldsets'] as $elid => $data)
@@ -1794,6 +1807,7 @@ class e_form
 			}
 
 			$text .= "
+			</div>
 			</form>
 			";
 			e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
@@ -2057,7 +2071,7 @@ class form {
 		$method = ($form_method ? "method='".$form_method."'" : "");
 		$target = ($form_target ? " target='".$form_target."'" : "");
 		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">";
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">".e107::getForm()->referer();
 	}
 
 	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {

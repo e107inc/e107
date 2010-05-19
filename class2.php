@@ -1603,6 +1603,15 @@ function init_session()
 	$user = e107::getUser();
 
 	define('USERIP', $e107->getip());
+	define('POST_REFERER', md5($user->getToken()));
+
+	// Check for intruders - outside the model for now
+	if((isset($_POST['__referer']) && !$user->checkToken($_POST['__referer']))
+		|| (isset($_GET['__referer']) && !$user->checkToken($_GET['__referer'])))
+	{
+		// Die, die, die! DIE!!!
+		die('Unauthorized access!');
+	}
 
     if(e107::isCli())
 	{
