@@ -183,6 +183,17 @@ class e_user_model extends e_front_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	public function getToken()
+	{
+		if($this->isUser()) return '';
+
+		if(null === $this->get('user_token'))
+		{
+			$this->set('user_token', md5($this->get('user_password').$this->get('user_lastvisit').$this->get('user_pwchange').$this->get('user_class')));
+		}
+		return $this->get('user_token');
+	}
+
 	public function isCurrent()
 	{
 		return false;
@@ -295,9 +306,20 @@ class e_user_model extends e_front_model
 	}
 
 	/**
+	 * Check passed value against current user token
+	 * @param string $token md5 sum of e.g. posted token
+	 * @return boolean
+	 */
+	final public function checkToken($token)
+	{
+		$utoken = $this->getToken();
+		return (null !== $utoken && $token === md5($utoken));
+	}
+
+	/**
 	 * Bad but required (BC) method of retrieving all user data
 	 * It's here to be used from get_user_data() core function.
-	 * DON'T USE IT unless you have VERY good reason to do it.
+	 * DON'T USE THEM BOTH unless you have VERY good reason to do it.
 	 *
 	 * @return array
 	 */
