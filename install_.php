@@ -1151,8 +1151,9 @@ class e_install
 		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];
 		$this->previous_steps['prefs']['replyto_email']		= $this->previous_steps['admin']['email'];
 
-		$cookiename 										= str_replace(" ","_",$this->previous_steps['prefs']['sitename']);
-		$this->previous_steps['prefs']['cookie_name']		= substr($cookiename,0,5)."cookie";
+		// Cookie name fix, ended up with 406 error when non-latin words used
+		$cookiename 										= preg_replace('/[^a-z0-9]/i', '', trim($this->previous_steps['prefs']['sitename']));
+		$this->previous_steps['prefs']['cookie_name']		= ($cookiename ? substr($cookiename, 0, 4).'_' : 'e_').'cookie';
 
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install.
