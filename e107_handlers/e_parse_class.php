@@ -187,7 +187,7 @@ class e_parse
 			$text = stripslashes($text);
 		}
 		//If user is not allowed to use [php] change to entities
-		if(!check_class($pref['php_bbcode']))
+		if ((!defined('USERCLASS')) ||(!check_class($pref['php_bbcode'])))
 		{
 			$text = preg_replace("#\[(php)#i", "&#91;\\1", $text);
 		}
