@@ -181,6 +181,7 @@ class e_parse
 
 	function post_toForm($text) 
 	{
+		global $pref;
 		if (defined("MAGIC_QUOTES_GPC") && (MAGIC_QUOTES_GPC == TRUE)) 
 		{
 			$text = stripslashes($text);
@@ -188,7 +189,7 @@ class e_parse
 		//If user is not allowed to use [php] change to entities
 		if(!check_class($pref['php_bbcode']))
 		{
-			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
+			$text = preg_replace("#\[(php)#i", "&#91;\\1", $text);
 		}
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
