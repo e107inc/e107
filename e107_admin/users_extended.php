@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -109,7 +109,7 @@ if (isset($_POST['add_field']))
 	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	
+
 // Check to see if its a reserved field name before adding to database
 	if($ue->user_extended_reserved($ue_field_name))
 	{  // Reserved field name
@@ -131,7 +131,7 @@ if (isset($_POST['add_field']))
 }
 
 
-if (isset($_POST['update_field'])) 
+if (isset($_POST['update_field']))
 {
 	if($_POST['user_type']==4){
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
@@ -299,7 +299,7 @@ class users_ext
 		  $i=0;
 		  if(count($extendedList))
 		  {	//	Show current extended fields
-			foreach($extendedList[$cn] as $ext)	
+			foreach($extendedList[$cn] as $ext)
 			{
 			  $fname = "user_".$ext['user_extended_struct_name'];
 			  $uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
@@ -331,6 +331,7 @@ class users_ext
 					<td class='forumheader3' style='width:50px;text-align:center;'>
 					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
 					<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
+					<input type='hidden' name='__referer' value='".POST_REFERER."' />
 					<input type='hidden' name='eu_action' value='delext' />
 					<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 					<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
@@ -792,9 +793,9 @@ class users_ext
 	}
 
 
-	function show_options($action) 
+	function show_options($action)
 	{
-		if ($action == "") 
+		if ($action == "")
 		{
 			$action = "main";
 		}

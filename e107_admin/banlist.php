@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -70,6 +70,8 @@ $text = "";
 
 $text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
+	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 
 	<tr>
@@ -89,6 +91,7 @@ $text .= "<div style='text-align:center'>
 	<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'>".
 ($action == "edit" ? "<input type='hidden' name='old_ip' value='$banlist_ip' /><input class='button' type='submit' name='update_ban' value='".LAN_UPDATE."' />" : "<input class='button' type='submit' name='add_ban' value='".BANLAN_8."' />")."
+	<input type='hidden' name='__referer' value='".POST_REFERER."' />
 
 	</td>
 	</tr>

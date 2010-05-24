@@ -369,9 +369,6 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test')
 	}
 }
 
-
-
-
 // ------- Delete User --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
@@ -531,7 +528,7 @@ class users
 
 	function show_existing_users($action, $sub_action, $id, $from, $amount)
 	{
-		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified;
+		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $currentUser;
 		// save the display choices.
 		if(isset($_POST['searchdisp']))
 		{
@@ -735,6 +732,7 @@ class users
 					<form method='post' action='".e_SELF.$qry."'>
 					<div>
 
+					<input type='hidden' name='__referer' value='".POST_REFERER."'/>
 					<input type='hidden' name='userid' value='{$user_id}' />
 					<input type='hidden' name='userip' value='{$user_ip}' />
 					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>

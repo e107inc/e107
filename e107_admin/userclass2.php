@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -87,7 +87,7 @@ if (isset($_POST['delete']))
 {
 	$class_id = intval($_POST['existing']);
 	check_allowed($class_id);
-	if ($_POST['confirm']) 
+	if ($_POST['confirm'])
 	{
 		$sql->db_Delete('userclass_classes', "userclass_id=".$class_id);
 		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
@@ -139,7 +139,7 @@ if (isset($_POST['createclass']))
 		$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
 
 		$editclass = intval(varset($_POST['userclass_editclass'], 0));
-		if ($editclass && (getperms('0') || check_class($editclass))) 
+		if ($editclass && (getperms('0') || check_class($editclass)))
 		{
 			$i = 1;
 			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
@@ -194,6 +194,7 @@ else
 		}
 	}
 	$text .= "</select>
+		<input type='hidden' name='__referer' value='".POST_REFERER."' />
 		<input class='button' type='submit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
@@ -244,7 +245,10 @@ else
 	";
 }
 
-$text .= "</td></tr></table>";
+$text .= "
+<input type='hidden' name='__referer' value='".POST_REFERER."' />
+</td></tr></table>
+";
 
 if(isset($_POST['edit']))
 {
@@ -330,7 +334,7 @@ $text .= "
 	<td class='fcaption'>".UCSLAN_13."</td>
 	</tr>
 	";
-	
+
 if ($class_total == "0")
 {
 	$text .= "<tr><td colspan='3'>".UCSLAN_7."</td></tr>";

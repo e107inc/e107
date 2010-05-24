@@ -157,6 +157,7 @@ $text = "<script type=\"text/javascript\">
 	<div style='text-align:center'>
 	<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
 	<form method='post' action='".e_SELF."'>
+	<input type='hidden' name='__referer' value='".POST_REFERER."' />
 	<div id='main' style='text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<colgroup>

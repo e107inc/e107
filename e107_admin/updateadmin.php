@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -56,6 +56,7 @@ if (isset($_POST['update_settings'])) {
 
 	<tr>
 	<td colspan='2' style ='text-align:center'  class='forumheader'>
+	<input type='hidden' name='__referer' value='".POST_REFERER."' />
 	<input class='button' type='submit' name='update_settings' value='".UDALAN_7."' />
 	<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 	</td>
