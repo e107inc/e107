@@ -1,18 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Id$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* User settings editing
+*
+* $URL$
+* $Id$
+*
 */
 require_once("../class2.php");
 
@@ -43,6 +41,11 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 	exit;
 }
 
+if(isset($_POST['useraction']) && !varset($_POST['__referer']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 
 $e_sub_cat = 'users';
 $user = new users;
@@ -732,7 +735,7 @@ class users
 					<form method='post' action='".e_SELF.$qry."'>
 					<div>
 
-					<input type='hidden' name='__referer' value='".POST_REFERER."'/>
+					<input type='hidden' name='__referer' value='".POST_REFERER."'>
 					<input type='hidden' name='userid' value='{$user_id}' />
 					<input type='hidden' name='userip' value='{$user_ip}' />
 					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>

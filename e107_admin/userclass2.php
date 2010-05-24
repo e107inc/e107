@@ -1,22 +1,23 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Userclass management
+*
+* $URL$
+* $Id$
+*
 */
 require_once("../class2.php");
+if(count($_POST) && !varset($_POST['__referer']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -85,6 +86,11 @@ elseif(e_QUERY)
 
 if (isset($_POST['delete']))
 {
+	if(isset($_POST['useraction']) && !varset($_POST['__referer']))
+	{
+		header('location:'.e_BASE.'index.php');
+		exit;
+	}
 	$class_id = intval($_POST['existing']);
 	check_allowed($class_id);
 	if ($_POST['confirm'])

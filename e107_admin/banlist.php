@@ -1,22 +1,23 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* User ban management
+*
+* $URL$
+* $Id$
+*
 */
 require_once("../class2.php");
+if(count($_POST) && !varset($_POST['__referer']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -122,7 +123,11 @@ if ($action != "edit") {
 			extract($row);
 			$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
 			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
-				<td style='width:30%; text-align:center' class='forumheader3'>".$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+				<td style='width:30%; text-align:center' class='forumheader3'>
+				<input type='hidden' name='__referer' value='".POST_REFERER."' />
+				".
+				$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").
+				$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
 			$count++;
 		}
 		$text .= "</table>\n";
