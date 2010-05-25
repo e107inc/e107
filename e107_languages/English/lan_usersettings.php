@@ -28,9 +28,9 @@ define("LAN_114", "This will prevent your email address from being displayed on 
 //define("LAN_117", "MSN Messenger: ");
 //define("LAN_118", "Birthday: ");
 //define("LAN_119", "Location: ");
-//define("LAN_120", "Signature: ");
+define("LAN_120", "Signature: ");
 //define("LAN_121", "Avatar: ");
-//define("LAN_122", "Timezone:");
+define("LAN_122", "Timezone:");
 //define("LAN_144", "Website URL: ");
 define("LAN_150", "Settings updated and saved into database.");
 define("LAN_151", "OK");
