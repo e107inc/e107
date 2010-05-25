@@ -1,21 +1,16 @@
 <?php
 /*
-+---------------------------------------------------------------+
-| e107 website system
-| /classes/news_class.php
-|
-| ©Steve Dunstan 2001-2002
-| http://jalist.com
-| stevedunstan@jalist.com
-|
-| Released under the terms and conditions of the
-| GNU General Public License (http://gnu.org).
-|
-| $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision$
-| $Date$
-| $Author$
-+---------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* News handler
+*
+* $URL$
+* $Id$
+*
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -34,7 +29,8 @@ class news {
 		$news['news_userid'] = ($news['news_userid']) ? $news['news_userid'] : USERID;
 		if(!isset($news['news_sticky'])) {$news['news_sticky'] = 0;}
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "";
-        $news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
+		$news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
+		$news['news_class'] = (varset($news['news_class'], '255'));
 
 		if ($news['news_id']) {
 			$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
@@ -129,7 +125,7 @@ class news {
 			$news['comment_total'] = 0;
 		}
 
-		if (!$param) 
+		if (!$param)
 		{
 			$param['caticon'] = ICONSTYLE;
 			$param['commentoffstring'] = COMMENTOFFSTRING;
@@ -152,10 +148,10 @@ class news {
 		  }
 		  $param['image_nonew_small'] = IMAGE_nonew_small;
 		}
-		
+
 		if (!isset($param['image_new_small']))
 		{
-		  if (!defined("IMAGE_new_small"))	
+		  if (!defined("IMAGE_new_small"))
 		  {
 			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
 		  }
