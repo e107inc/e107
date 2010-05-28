@@ -30,7 +30,7 @@ define('E_MESSAGE_DEBUG', 		'debug');
  * Handle system messages
  * 
  * @package e107
- * @category e107_handlers
+ *	@subpackage	e107_handlers
  * @version $Id$
  * @author SecretR
  * @copyright Copyright (C) 2008-2010 e107 Inc (e107.org)

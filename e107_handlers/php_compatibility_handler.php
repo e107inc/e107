@@ -1,12 +1,33 @@
 <?php 
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * e107 requires PHP >= 5 - implement functions only supported in later versions
+ *
+ * $URL$
+ * $Id$
+ *
+*/
 if (!defined('e107_INIT'))
 {
 	exit;
 }
 
-// e107 requires PHP > 4.3.0, all functions that are used in e107, introduced in newer
-// versions than that should be recreated in here for compatabilty reasons..
+/**
+ * Handle system messages
+ * 
+ * @package e107
+ *	@subpackage	e107_handlers
+ * @version $Id$
+ * @copyright Copyright (C) 2008-2010 e107 Inc (e107.org)
+ */
 
+
+/*
 // file_put_contents - introduced in PHP5
 if (!function_exists('file_put_contents'))
 {
@@ -15,7 +36,7 @@ if (!function_exists('file_put_contents'))
 	 * @param string $filename
 	 * @param mixed $data
 	 * @desc Write a string to a file
-	 */
+	 * /
 	define('FILE_APPEND', 1);
 	function file_put_contents($filename, $data, $flag = false)
 	{
@@ -34,7 +55,11 @@ if (!function_exists('file_put_contents'))
 		return $bytes;
 	}
 }
+*/
 
+
+/*
+// stripos - introduced in PHP5
 if (!function_exists('stripos'))
 {
 	function stripos($str, $needle, $offset = 0)
@@ -42,7 +67,11 @@ if (!function_exists('stripos'))
 		return strpos(strtolower($str), strtolower($needle), $offset);
 	}
 }
+*/
 
+
+/*
+// simplexml_load_string - introduced in PHP5
 if (!function_exists('simplexml_load_string'))
 {
 
@@ -132,6 +161,9 @@ if (!function_exists('simplexml_load_string'))
 	
 }
 
+*/
+
+
 /*
  * This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
  * Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
@@ -158,6 +190,7 @@ if (!function_exists('simplexml_load_string'))
  * @param string $sFormat strftime format used to create the date
  * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
  */
+// strptime - PHP 5 >= 5.1.0
 if (!function_exists('strptime'))
 {
 	define('STRPTIME_COMPAT', true);
