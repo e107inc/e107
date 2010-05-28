@@ -325,7 +325,9 @@ class e_user_model extends e_front_model
 	 */
 	public function getUserData()
 	{
-		$ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
+		// revised - don't call extended object, no permission checks, just return joined user data
+		$ret = $this->getData();
+		// $ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
 		if ($ret['user_perms'] == '0.') $ret['user_perms'] = '0';
 		$ret['user_baseclasslist'] = $ret['user_class'];
 		$ret['user_class'] = $this->getClassList(true);
@@ -333,21 +335,169 @@ class e_user_model extends e_front_model
 	}
 
 	/**
-	 * Get User value
+	 * Check if given field name is present in core user table structure
 	 *
-	 * @param string$field
-	 * @param string $default
-	 * @param boolean $short if true, 'user_' prefix will be added to field name
-	 * @return mixed
+	 * @param string $field
+	 * @param boolean $short
+	 * @return boolean
 	 */
-	public function getValue($field, $default = '', $short = true)
+	public function isCoreField($field, $short = true)
 	{
 		if($short) $field = 'user_'.$field;
-		return $this->get($field, $default);
+		return isset($this->_data_fields[$field]);
 	}
 
 	/**
-	 * Set User value - only when writable
+	 * Check if given field name is present in extended user table structure
+	 *
+	 * @param string $field
+	 * @param boolean $short
+	 * @return boolean
+	 */
+	public function isExtendedField($field, $short = true)
+	{
+		if($short) $field = 'user_'.$field;
+		if($this->isCoreField($field, false))
+		{
+			return false;
+		}
+		return $this->getExtendedModel()->isField($field, false);
+	}
+
+	/**
+	 * Get User value from core user table.
+	 * This method doesn't perform any read permission cheks.
+	 *
+	 * @param string $field
+	 * @param mixed $default
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @return mixed if field is not part of core user table returns null by default
+	 */
+	public function getCore($field, $default = null, $short = true)
+	{
+		if($short) $field = 'user_'.$field;
+		if($this->isCoreField($field, false)) return $this->get($field, $default);
+		return $default;
+	}
+
+	/**
+	 * Set User value (core user field).
+	 * This method doesn't perform any write permission cheks.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $strict if false no Applicable check will be made
+	 * @return e_user_model
+	 */
+	public function setCore($field, $value, $short = true, $strict = false)
+	{
+		if($short) $field = 'user_'.$field;
+		if($this->isCoreField($field, false)) $this->set($field, $value, $strict);
+		return $this;
+	}
+
+	/**
+	 * Get User extended value.
+	 * This method doesn't perform any read permission cheks.
+	 *
+	 * @param string $field
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $raw get raw DB values (no SQL query)
+	 * @return mixed
+	 */
+	public function getExtended($field, $short = true, $raw = true)
+	{
+		return $this->getExtendedModel()->getSystem($field, $short, $raw);
+	}
+
+	/**
+	 * Set User extended value.
+	 * This method doesn't perform any write permission cheks.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $strict if false no Applicable check will be made
+	 * @return e_user_model
+	 */
+	public function setExtended($field, $value, $short = true, $strict = false)
+	{
+		$this->getExtendedModel()->setSystem($field, $value, $short, $strict);
+		return $this;
+	}
+
+	/**
+	 * Get User extended value after checking read permissions against current Editor
+	 *
+	 * @param string $field
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $raw get raw DB values (no SQL query)
+	 * @return mixed
+	 */
+	public function getExtendedFront($field, $short = true, $raw = false)
+	{
+		return $this->getExtendedModel()->getValue($field, $short, $raw);
+	}
+
+	/**
+	 * Set User extended value after checking write permissions against current Editor.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @return e_user_model
+	 */
+	public function setExtendedFront($field, $value, $short = true)
+	{
+		$this->getExtendedModel()->setValue($field, $value, $short);
+		return $this;
+	}
+
+	/**
+	 * Transparent front-end getter. It performs all required read/applicable permission checks
+	 * against current editor/user. It doesn't distinguish core and extended fields.
+	 * It grants BC.
+	 * It's what you'd need in all front-end parsing code (e.g. shortcodes)
+	 *
+	 * @param string $field
+	 * @param mixed $default
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $rawExtended get raw DB values (no SQL query) - used only for extended fields
+	 * @return mixed if field is not readable returns null by default
+	 */
+	public function getValue($field, $default = null, $short = true, $rawExtended = false)
+	{
+		if($short)
+		{
+			$mfield = $field;
+			$field = 'user_'.$field;
+		}
+		else
+		{
+			$mfield = substr($field, 5);
+		}
+
+		// check for BC/override method first e.g. getSingatureValue($default, $system = false, $rawExtended);
+		$method = 'get'.ucfirst($mfield).'Value';
+		if(method_exists($this, $method)) return $this->$method($default, false, $rawExtended);
+
+		if($this->isCoreField($field, false))
+		{
+			if(!$this->isReadable($field)) return $default;
+			return $this->getCore($field, $default, false);
+		}
+
+		return $this->getExtendedFront($field, false, $rawExtended);
+	}
+
+	/**
+	 * Transparent front-end setter. It performs all required write/applicable permission checks
+	 * against current editor/user. It doesn't distinguish core and extended fields.
+	 * It grants BC.
+	 * It's what you'd need on all user front-end manipulation events (e.g. user settings page related code)
+	 * NOTE: untrusted data should be provided via setPosted() method!
+	 *
 	 * @param string $field
 	 * @param mixed $value
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
@@ -355,8 +505,147 @@ class e_user_model extends e_front_model
 	 */
 	public function setValue($field, $value, $short = true)
 	{
-		if($short) $field = 'user_'.$field;
-		if($this->isWritable($field)) $this->set($field, $value, true);
+		if($short)
+		{
+			$mfield = $field;
+			$field = 'user_'.$field;
+		}
+		else
+		{
+			$mfield = substr($field, 5);
+		}
+
+		// check for BC/override method first e.g. setSingatureValue($value, $system = false);
+		$method = 'set'.ucfirst($mfield).'Value';
+		if(method_exists($this, $method))
+		{
+			$this->$method($value, false);
+			return $this;
+		}
+
+		if($this->isCoreField($field, false))
+		{
+			if($this->isWritable($field)) $this->setCore($field, $value, false, true);
+		}
+		else
+		{
+			$this->setExtendedFront($field, $value, false);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Transparent system getter. It doesn't perform any read/applicable permission checks
+	 * against current editor/user. It doesn't distinguish core and extended fields.
+	 * It grants BC.
+	 * It's here to serve in your application logic.
+	 *
+	 * @param string $field
+	 * @param mixed $default
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $rawExtended get raw DB values (no SQL query) - used only for extended fields
+	 * @return mixed
+	 */
+	public function getSystem($field, $default = null, $short = true, $rawExtended = true)
+	{
+		if($short)
+		{
+			$mfield = $field;
+			$field = 'user_'.$field;
+		}
+		else
+		{
+			$mfield = substr($field, 5);
+		}
+
+		// check for BC/override method first e.g. getSingatureValue($default, $system = true, $rawExtended);
+		$method = 'get'.ucfirst($mfield).'Value';
+		if(method_exists($this, $method)) return $this->$method($default, true, $rawExtended);
+
+		if($this->isCoreField($field, false))
+		{
+			return $this->getCore($field, $default, false);
+		}
+
+		return $this->getExtended($field, false, $rawExtended);
+	}
+
+	/**
+	 * Transparent front-end setter. It doesn't perform any write/applicable permission checks
+	 * against current editor/user. It doesn't distinguish core and extended fields.
+	 * It's here to serve in your application logic.
+	 * NOTE: untrusted data should be provided via setPosted() method!
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $strict if false no Applicable check will be made
+	 * @return e_user_model
+	 */
+	public function setSystem($field, $value, $short = true, $strict = false)
+	{
+		if($short)
+		{
+			$mfield = $field;
+			$field = 'user_'.$field;
+		}
+		else
+		{
+			$mfield = substr($field, 5);
+		}
+
+		// check for BC/override method first e.g. setSingatureValue($value, $system = true);
+		$method = 'set'.ucfirst($mfield).'Value';
+		if(method_exists($this, $method))
+		{
+			$this->$method($value, true);
+			return $this;
+		}
+
+		if($this->isCoreField($field, false))
+		{
+			$this->setCore($field, $value, false, $strict);
+		}
+		else
+		{
+			$this->setExtended($field, $value, false, $strict);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Just an example override method. This method is auto-magically called by getValue/System
+	 * getters.
+	 * $rawExtended is not used (here for example purposes only)
+	 * If user_signature become extended field one day, we'd need this method
+	 * for real - it'll call extended getters to retrieve the required value.
+	 *
+	 * @param mixed $default optional
+	 * @param boolean $system optional
+	 * @param boolean $rawExtended optional
+	 * @return mixed value
+	 */
+	public function getSignatureValue($default = null, $system = false, $rawExtended = true)
+	{
+		if($system || $this->isReadable('user_signature')) return $this->getCore('signature', $default);
+		return $default;
+	}
+
+	/**
+	 * Just an example override method. This method is auto-magically called by setValue/System
+	 * setters.
+	 * If user_signature become extended field one day, we'd need this method
+	 * for real - it'll call extended setters to set the new signature value
+	 *
+	 * @param string $value
+	 * @param boolean $system
+	 * @return e_user_model
+	 */
+	public function setSignatureValue($value, $system = false)
+	{
+		if($system || $this->isWritable('user_signature')) $this->setCore('signature', $value);
 		return $this;
 	}
 
@@ -405,32 +694,6 @@ class e_user_model extends e_front_model
 	public function setPrefData($pref_path, $value = null)
 	{
 		$this->getConfig()->setData($pref_path, $value = null);
-		return $this;
-	}
-
-	/**
-	 * Get User extended value
-	 *
-	 * @param string$field
-	 * @param boolean $short if true, 'user_' prefix will be added to field name
-	 * @return mixed
-	 */
-	public function getExtended($field, $short = true)
-	{
-		return $this->getExtendedModel()->getValue($field, $short);
-	}
-
-	/**
-	 * Set User extended value
-	 *
-	 * @param string $field
-	 * @param mixed $value
-	 * @param boolean $short if true, 'user_' prefix will be added to field name
-	 * @return e_user_model
-	 */
-	public function setExtended($field, $value, $short = true)
-	{
-		$this->getExtendedModel()->setValue($field, $value, $short);
 		return $this;
 	}
 
@@ -560,6 +823,8 @@ class e_user_model extends e_front_model
 	 */
 	public function load($user_id = 0, $force = false)
 	{
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE user_id={ID}";
+		$this->setParam('db_query', $qry);
 		parent::load($user_id, $force);
 		if ($this->getId())
 		{
@@ -674,8 +939,8 @@ class e_system_user extends e_user_model
 		if ($user_data)
 		{
 			$this->_data = $user_data;
-			$this->setEditor(e107::getUser());
 		}
+		$this->setEditor(e107::getUser());
 	}
 
 	/**
@@ -1045,7 +1310,8 @@ class e_user extends e_user_model
 
 	final protected function _load($user_id)
 	{
-		if(e107::getDb()->db_Select('user', '*', 'user_id='.intval($user_id)))
+		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE user_id='.intval($user_id);
+		if(e107::getDb()->db_Select_gen($qry))
 		{
 			return e107::getDb()->db_Fetch();
 		}
@@ -1184,6 +1450,7 @@ class e_user_extended_model extends e_front_model
 	 * Bad but required (BC) method of retrieving all user data
 	 * It's here to be used from get_user_data() core function.
 	 * DON'T USE IT unless you have VERY good reason to do it.
+	 * TODO - revise this! Merge it to getSystemData, getApplicableData
 	 *
 	 * @return array
 	 */
@@ -1205,11 +1472,12 @@ class e_user_extended_model extends e_front_model
 	}
 
 	/**
-	 * Get User extended field value
+	 * Get User extended field value. It performs all required read/applicable permission checks
+	 * against current editor/user.
 	 * Returns NULL when field/default value not found or not enough permissions
 	 * @param string $field
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
-	 * @param boolean $raw don't retrieve db value
+	 * @param boolean $raw doesn't retrieve db value when true (no sql query)
 	 * @return mixed
 	 */
 	public function getValue($field, $short = true, $raw = false)
@@ -1225,7 +1493,8 @@ class e_user_extended_model extends e_front_model
 	}
 
 	/**
-	 * Set User extended field value, only if current editor has write permissions
+	 * Set User extended field value, only if current editor has write permissions and field
+	 * is applicable for the current user.
 	 * Note: Data is not sanitized!
 	 * @param string $field
 	 * @param mixed $value
@@ -1237,10 +1506,17 @@ class e_user_extended_model extends e_front_model
 		if($short) $field = 'user_'.$field;
 		if (!$this->checkWrite($field))
 			return $this;
+
 		$this->set($field, $value, true);
 		return $this;
 	}
 
+	/**
+	 * Retrieve value of a field of type 'db'. It does sql request only once.
+	 *
+	 * @param string $field field name
+	 * @return mixed db value
+	 */
 	protected function getDbValue($field)
 	{
 		if(null !== $this->_struct_index[$field]['db_value'])
@@ -1261,14 +1537,55 @@ class e_user_extended_model extends e_front_model
 		return $this->_struct_index[$field]['db_value'];
 	}
 
+	/**
+	 * System getter. It doesn't perform any read/applicable permission checks
+	 * against current editor/user.
+	 * It's here to serve in your application logic.
+	 *
+	 * @param string $field
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $raw don't retrieve db value
+	 * @return mixed
+	 */
+	public function getSystem($field, $short = true, $raw = true)
+	{
+		if($short) $field = 'user_'.$field;
+
+		if(!$raw && vartrue($this->_struct_index[$field]['db']))
+		{
+			return $this->getDbValue($field);
+		}
+		return $this->get($field, $this->getDefault($field));
+	}
+
+	/**
+	 * System setter. It doesn't perform any write/applicable permission checks
+	 * against current editor/user.
+	 * It's here to serve in your application logic.
+	 * NOTE: untrusted data should be provided via setPosted() method!
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param boolean $short if true, 'user_' prefix will be added to field name
+	 * @param boolean $strict if false no Applicable check will be made
+	 * @return e_user_model
+	 */
+	public function setSystem($field, $value, $short = true, $strict = true)
+	{
+		if($short) $field = 'user_'.$field;
+
+		$this->set($field, $value, $strict);
+		return $this;
+	}
+
 	public function getReadData()
 	{
-		// TODO array allowed profile page data (read mode)
+		// TODO array allowed user profile page data (read mode)
 	}
 
 	public function getWriteData()
 	{
-		// TODO array allowed settings page data (edit mode)
+		// TODO array allowed user settings page data (edit mode)
 	}
 
 	/**
@@ -1290,7 +1607,8 @@ class e_user_extended_model extends e_front_model
 	public function checkRead($field)
 	{
 		$hidden = $this->get('user_hidden_fields');
-		$editor = $this->getEditor();//var_dump($field, $this->_struct_index[$field], $this->getEditor()->getId(), $this->checkApplicable($field));
+		$editor = $this->getEditor();
+
 		if(!empty($hidden) && $this->getId() !== $editor->getId() && strpos($hidden, '^'.$field.'^') !== false) return false;
 
 		return ($this->checkApplicable($field) && $editor->checkClass($this->_memberlist_access) && $editor->checkClass(varset($this->_struct_index[$field]['read'])));
@@ -1342,29 +1660,50 @@ class e_user_extended_model extends e_front_model
 		if ($this->getId() && !$force)
 			return $this;
 
-		parent::load($this->getUser()->getId(), $force);
-		$this->_loadAccess();
+		$this->_loadDataAndAccess();
 		return $this;
+	}
+
+	/**
+	 * Check if given field name is present in extended user table structure
+	 *
+	 * @param string $field
+	 * @param boolean $short
+	 * @return boolean
+	 */
+	public function isField($field, $short = true)
+	{
+		if($short) $field = 'user_'.$field;
+		return (isset($this->_struct_index[$field]) || in_array($field, array($this->getFieldIdName(), 'user_hidden_fields')));
 	}
 
 	/**
 	 * Load extended fields permissions once (performance)
 	 * @return e_user_extended_model
 	 */
-	protected function _loadAccess()
+	protected function _loadDataAndAccess()
 	{
 		$struct_tree = $this->getExtendedStructure();
-		if (/*$this->getId() && */$struct_tree->hasTree())
+		$user = $this->getUser();
+		if ($user && $struct_tree->hasTree())
 		{
 			// load structure dependencies
-			$ignore = array($this->getFieldIdName(), 'user_hidden_fields'); // TODO - user_hidden_fields? Old?
+			$ignore = array($this->getFieldIdName(), 'user_hidden_fields');
+
+			// set ignored values
+			foreach ($ignore as $field_name)
+			{
+				$this->set($field_name, $user->get($field_name));
+			}
 
 			$fields = $struct_tree->getTree();
 			foreach ($fields as $id => $field)
 			{
+				$field_name = 'user_'.$field->getValue('name');
+				$this->set($field_name, $user->get($field_name));
 				if (!in_array($field->getValue('name'), $ignore))
 				{
-					$this->_struct_index['user_'.$field->getValue('name')] = array(
+					$this->_struct_index[$field_name] = array(
 						'db'		 => $field->getValue('type') == 4 ? $field->getValue('values') : '',
 						'db_value'	 => null, // used later for caching DB results
 						'read'		 => $field->getValue('read'),
