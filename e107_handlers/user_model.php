@@ -14,7 +14,7 @@
 
 /**
  * @package e107
- * @category user
+ * @subpackage	e107_handlers
  * @version $Id$
  * @author SecretR
  *

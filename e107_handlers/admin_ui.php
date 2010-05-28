@@ -14,7 +14,7 @@
 
  /**
  * @package e107
- * @subpackage e107_handler
+ * @subpackage e107_handlers
  * @version $Id$
  *
  * Administration User Interface logic
