@@ -38,8 +38,8 @@ define('LAN_NEWS_87', 'Newer News');
 define("LAN_NEWS_462", "No news items for specified month");
 
 // Following used by alt_news
-define("LAN_99", 'Comments');
-define("LAN_100", 'On');
-define("LAN_307", 'Total posts in this category: ');
+define('LAN_NEWS_99', 'Comments');
+define('LAN_NEWS_100', 'On');
+define('LAN_NEWS_307', 'Total posts in this category: ');
 
 ?>
