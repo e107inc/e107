@@ -373,23 +373,28 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test')
 }
 
 // ------- Delete User --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
-	if ($_POST['confirm']) {
-		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') 
+{
+	if ($_POST['confirm']) 
+	{
+		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) 
+		{
 		   $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
 		   $e_event->trigger('userdel', intval($_POST['userid']));
 			$user->show_message(USRLAN_10);
 		}
 		if(!$sub_action){ $sub_action = "user_id"; }
 		if(!$id){ $id = "DESC"; }
-  }
-  else
-  {	// Put up confirmation
-		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
+	}
+	else
+	{	// Put up confirmation
+		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) 
+		{
 			$row = $sql->db_Fetch();
 			$qry = (e_QUERY) ? "?".e_QUERY : "";
 			$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 			$text .= "<div>
+				<input type='hidden' name='__referer' value='".POST_REFERER."'>
 				<input type='hidden' name='useraction' value='deluser' />
 				<input type='hidden' name='userid' value='{$row['user_id']}' /></div>". USRLAN_13."
 				<br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
