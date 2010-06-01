@@ -63,13 +63,17 @@ else
 {
 	if(isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
 	{
+		$parms = array();
 		if(strstr($menu_pref['banner_campaign'], "|"))
 		{
 			$campaignlist = explode('|', $menu_pref['banner_campaign']);
 			$amount = ($menu_pref['banner_amount'] < 1 ? '1' : $menu_pref['banner_amount']);
 			$amount = ($amount > count($campaignlist) ? count($campaignlist) : $amount);
-			$keys = array_rand($campaignlist, $amount);
-			$parms = array();
+			$keys = array_rand($campaignlist, $amount);		// If one entry, returns a single value
+			if (!is_array($keys))
+			{
+				$keys = array($keys);
+			}
 			foreach ($keys as $k=>$v)
 			{
 				$parms[] = $campaignlist[$v];
