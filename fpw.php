@@ -142,7 +142,7 @@ if (isset($_POST['pwsubmit']))
 
 		if ($row['user_admin'] == 1 && $row['user_perms'] == "0") 
 		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
-			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".$e107->getip()." ".LAN_08);
+			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".$e107->ipDecode($e107->getip())." ".LAN_08);
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
@@ -160,7 +160,7 @@ if (isset($_POST['pwsubmit']))
 		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
 		$link = SITEURL."fpw.php?{$rcode}";
-		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".$e107->getip().".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
+		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".$e107->ipDecode($e107->getip()).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 		//  $message = LAN_FPW5."\n\n{$link}";
 
 		$deltime = time()+86400 * 2;
