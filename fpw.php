@@ -52,7 +52,7 @@ if ($pref['membersonly_enabled'])
 		} 
 		else 
 		{
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
+			require_once(e_THEME."templates/fpw_template.php");
 		}
 	}
 	$HEADER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_HEADER);
@@ -206,7 +206,7 @@ if (!$FPW_TABLE)
 	} 
 	else 
 	{
-		require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
+		require_once(e_THEME."templates/fpw_template.php");
 	}
 }
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE);
