@@ -213,7 +213,7 @@ if (!$FPW_TABLE)
 	} 
 	else 
 	{
-		require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
+		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template. 
 	}
 }
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE);
