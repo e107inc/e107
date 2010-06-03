@@ -82,7 +82,7 @@ if (e_QUERY)
 		{
 			$newpw .= chr(rand(97, 122));
 		}
-		list($loginName, $md5) = explode($fpw_sep, $tmp_info);
+		list($loginName, $md5) = explode($fpw_sep, $tmpinfo);
 //		$mdnewpw = md5($newpw);
 		$mdnewpw = $user_info->HashPassword($newpw,$username);
 
