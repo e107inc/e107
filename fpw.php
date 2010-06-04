@@ -94,7 +94,7 @@ if (e_QUERY)
 		}
 		$mdnewpw = md5($newpw);			// Generate new random password
 
-		list($loginName, $md5) = explode($fpw_sep, $tmpinfo);
+		list($loginName, $md5) = explode($fpw_sep, $tmp_info);
 		$sql->db_Update("user", "`user_password`='{$mdnewpw}', `user_viewed`='' WHERE `user_loginname`='".$tp -> toDB($loginName, true)."' ");
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
