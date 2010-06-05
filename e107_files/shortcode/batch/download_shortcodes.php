@@ -125,6 +125,10 @@ SC_END
 
 SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
+if($parm == "view")
+{
+	return "<a href='".e_BASE."download.php?view.".$row['download_id']."'>";	
+}
 $agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"));
 	if($row['download_mirror_type']){
 		return ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' >");
