@@ -25,7 +25,7 @@ define("LAN_CHECK_12", "A file is wrong...");
 define("LAN_CHECK_13", " files are wrong...");
 define("LAN_CHECK_14", "All existing files are valid !");
 
-define("LAN_CHECK_15", "Illegal characters found before '&lt;?php'");
+define("LAN_CHECK_15", "Illegal characters or spaces found before '&lt;?php' or after '?&gt;'");
 define("LAN_CHECK_16", "Original File");
 define("LAN_CHECK_17", "A write problem occured while trying to save the file.");
 define("LAN_CHECK_18", "Language files in the standard format are NOT available for this plugin/theme.");
