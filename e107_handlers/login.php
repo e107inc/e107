@@ -194,6 +194,7 @@ class userlogin
 		$user_id = $this->userData['user_id'];
 		$user_name = $this->userData['user_name'];
 		$user_xup = $this->userData['user_xup'];
+		$user_admin = $this->userData['user_admin'];
 
 		/* restrict more than one person logging in using same us/pw */
 		if($pref['disallowMultiLogin'])
@@ -225,8 +226,8 @@ class userlogin
 			$this->e107->admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
 		}
 
-		$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin);
-		$e_event->trigger("login", $edata_li);
+		$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin, 'user_admin'=>$user_admin);
+		e107::getEvent()->trigger("login", $edata_li);
 
 		if($_E107['cli'])
 		{
