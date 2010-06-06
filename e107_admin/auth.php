@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -68,6 +68,10 @@ else
             } else {
                 cookie($pref['cookie_name'], $cookieval, (time()+3600 * 24 * 30));
             }
+			
+			$edata_li = array("user_id" => $user_id, "user_name" => $user_name, "user_admin" => 1);
+			$e_event->trigger("login", $edata_li);
+			
             echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
         }
     }
