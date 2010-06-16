@@ -45,6 +45,12 @@
 $eTimingStart = microtime();					// preserve these when destroying globals in step C
 $oblev_before_start = ob_get_level();
 
+// Filter common bad agents / queries. 
+if(strpos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE)
+{
+	exit();
+}
+
 //
 // B: Remove all output buffering
 //
