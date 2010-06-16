@@ -222,18 +222,10 @@ if(isset($_POST['submit_forum']))
 
 if(isset($_POST['update_forum']))
 {
-	$tmp = $_POST;
-	unset($tmp['update_forum']);
-	$tmp['_FIELD_TYPES']['forum_name'] = 'todb';
-	$tmp['_FIELD_TYPES']['forum_description'] = 'todb';
-	$tmp['_FIELD_TYPES']['forum_parent'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_class'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
-	$tmp['_FIELD_TYPES']['forum_moderators'] = 'int';
+	unset($_POST['update_forum']);
+	$tmp['data'] = $_POST;
 	$tmp['WHERE'] = 'forum_id = '.(int)$id;
 
-	$tmp2['_FIELD_TYPES'] = $tmp['_FIELD_TYPES'];
 	$tmp2['forum_moderators'] = $tmp['forum_moderators'];
 	$tmp2['forum_class'] = $tmp['forum_class'];
 	$tmp2['forum_postclass'] = $tmp['forum_postclass'];
@@ -249,8 +241,7 @@ if(isset($_POST['update_forum']))
 
 if (isset($_POST['update_order']))
 {
-	extract($_POST);
-	while (list($key, $id) = each($forum_order))
+	while (list($key, $id) = each($_POST['forum_order']))
 	{
 		$tmp = explode('.', $id);
 		$e107->sql->db_Update('forum', "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
