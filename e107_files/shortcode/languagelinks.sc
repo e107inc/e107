@@ -32,7 +32,7 @@ foreach($languageList as $languageFolder)
 
 	if(varset($pref['multilanguage_subdomain']))
 	{
-		$code = ($languageFolder == $pref['sitelanguage']) ? 'www.' : $code;
+		$code = ($languageFolder == $pref['sitelanguage']) ? 'www' : $code;
 		$link = (e_QUERY)
 		        ? str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
 		        : str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_SELF);
