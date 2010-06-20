@@ -5,7 +5,7 @@ if (!defined('e107_INIT')) { exit; }
 
 function print_item($id)
 {
-		global $tp;
+		global $tp, $pref;
 		global $content_pref, $mainparent, $aa, $row, $content_image_path;
 		$con = new convert;
 
@@ -76,7 +76,7 @@ function email_item($id)
 
 
 function print_item_pdf($id){
-	global $tp, $content_shortcodes;
+	global $tp, $pref, $content_shortcodes;
 	global $CONTENT_PRINT_IMAGES, $row, $content_image_path, $content_pref, $mainparent, $eArrayStorage;
 
 	//in this section you decide what to needs to be output to the pdf file
