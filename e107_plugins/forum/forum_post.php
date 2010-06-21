@@ -511,7 +511,7 @@ else
 function isAuthor()
 {
 	global $postInfo;
-	return ((USERID === $postInfo['post_user']) || MODERATOR);
+	return ((USERID === (int)$postInfo['post_user']) || MODERATOR);
 }
 
 function forumjump()

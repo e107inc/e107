@@ -211,7 +211,7 @@ class e107forum
 			$info['data'] = $threadInfo;
 			$info['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
 //			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-//			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
+			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
 			$result = $e107->sql->db_Update('forum_thread', $info);
 
@@ -378,7 +378,7 @@ class e107forum
 		return false;
 	}
 
-	function postGet($id, $start, $num)
+	function postGet($id, $start, $num = NULL)
 	{
 		$id = (int)$id;
 		$ret = false;
