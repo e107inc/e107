@@ -18,7 +18,7 @@
 */
 
 require_once("../class2.php");
-if (!getperms("Z")) 
+if (!getperms("Z"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -92,7 +92,7 @@ class pluginManager{
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 		//		"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 				"options"				=> array("title" => LAN_OPTIONS, 'forced'=>TRUE, "width" => "15%", "thclass" => "middle center last", "url" => ""),
-				
+
 		);
 
 
@@ -120,7 +120,7 @@ class pluginManager{
 
     function pluginObserver()
 	{
-		
+
         global $user_pref,$admin_log;
     	if (isset($_POST['upload']))
 		{
@@ -179,19 +179,19 @@ class pluginManager{
 			}
       		$this -> action = "installed";
 		}
-		
+
         if($this->action != 'avail' && varset($this->fields['plugin_checkboxes']))
 		{
-		 	$this->fields['plugin_checkboxes'] = FALSE;  
+		 	$this->fields['plugin_checkboxes'] = FALSE;
 		}
 
 		if($this->action !='upload' && $this->action !='uninstall')
 		{
 			$this -> pluginRenderList();
 		}
-		
-		
-		
+
+
+
 	}
 
 	function pluginUninstall()
@@ -211,10 +211,10 @@ class pluginManager{
 			{
 				$eplug_folder = $plug['plugin_path'];
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
-	
+
 				if(file_exists($_path.'plugin.xml'))
-				{				
-					unset($_POST['uninstall_confirm']);							
+				{
+					unset($_POST['uninstall_confirm']);
 					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $_POST); //$_POST must be used.
 				}
 				else
@@ -288,10 +288,10 @@ class pluginManager{
 				}
 
 				$admin_log->log_event('PLUGMAN_03', $plug['plugin_path'], E_LOG_INFORMATIVE, '');
-    
+
 				if (isset($pref['plug_installed'][$plug['plugin_path']]))
 				{
-		
+
 					unset($pref['plug_installed'][$plug['plugin_path']]);
 					if(save_prefs())
 					{
@@ -453,9 +453,9 @@ class pluginManager{
    function pluginUpgrade()
    {
        global $plugin,$pref,$admin_log;
-	   
+
 	   $sql = e107::getDb();
-	   
+
 	   		$emessage = eMessage::getInstance();
 
 			$plug = $plugin->getinfo($this->id);
@@ -478,9 +478,11 @@ class pluginManager{
 				if (is_array($upgrade_alter_tables))
 				{
 					$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
-					if (!$result)
+					if (true !== $result)
 					{
-						$text .= EPL_ADLAN_9.'<br />';
+						//$text .= EPL_ADLAN_9.'<br />';
+						$emessage->addWarning(EPL_ADLAN_9)
+							->addDebug($result);
 					}
 					else
 					{
@@ -574,8 +576,8 @@ class pluginManager{
 				$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
 				save_prefs();
 			}
-			
-	
+
+
 			$emessage->add($text, E_MESSAGE_SUCCESS);
 			$plugin->save_addon_prefs();
 
@@ -669,7 +671,7 @@ class pluginManager{
 
 		global $plugin, $frm;
 		$e107 = e107::getInstance();
-		
+
 		if($this->action == "" || $this->action == "installed")
 		{
 			$installed = $plugin->getall(1);
@@ -701,12 +703,12 @@ class pluginManager{
 
 		if($pluginRenderPlugin)
 		{
-			$text .= $pluginRenderPlugin;	
+			$text .= $pluginRenderPlugin;
 		}
 		else
 		{
 			//TODO LANs
-			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins installed - <a href='".e_ADMIN."plugin.php?avail'>click here to install some</a>.</td></tr>";	
+			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins installed - <a href='".e_ADMIN."plugin.php?avail'>click here to install some</a>.</td></tr>";
 		}
 
 		$text .= "
@@ -735,18 +737,18 @@ class pluginManager{
 			global $plugin, $frm;
 
 			if (empty($pluginList)) return '';
-			
+
 			$tp = e107::getParser();
-			
+
 
 			$text = "";
 
 			foreach($pluginList as $plug)
-			{				
+			{
 				e107::loadLanFiles($plug['plugin_path'],'admin');
-				
+
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
-				
+
 				$plug_vars = false;
 				$plugin_config_icon = "";
 
@@ -754,12 +756,12 @@ class pluginManager{
 				{
 					$plug_vars = $plugin->plug_vars;
 				}
-				
-				if(varset($plug['plugin_category']) == "menu") // Hide "Menu Only" plugins. 
+
+				if(varset($plug['plugin_category']) == "menu") // Hide "Menu Only" plugins.
 				{
 					continue;
 				}
-				
+
 				if($plug_vars)
 				{
 
@@ -882,11 +884,11 @@ class pluginManager{
 		function pluginConfirmUninstall()
 		{
 			global $plugin;
-			
+
 			$frm 	= e107::getForm();
 			$tp 	= e107::getParser();
 			$mes 	= e107::getMessage();
-						
+
 			$plug = $plugin->getinfo($this->id);
 
 			if ($plug['plugin_installflag'] == true )
@@ -960,9 +962,9 @@ class pluginManager{
 				<td>".EPL_ADLAN_55."</td>
 				<td>".LAN_YES."</td>
 			</tr>";
-			
+
 			$opts = array();
-			
+
 			$opts['delete_tables'] = array(
 					'label'			=> EPL_ADLAN_57,
 					'helpText'		=> EPL_ADLAN_58,
@@ -971,7 +973,7 @@ class pluginManager{
 			);
 
 			if ($userclasses)
-			{			
+			{
 				$opts['delete_userclasses'] = array(
 					'label'			=> EPL_ADLAN_78,
 					'preview'		=> $userclasses,
@@ -994,14 +996,14 @@ class pluginManager{
 
 			$med = e107::getMedia();
 			$icons = $med->listIcons(e_PLUGIN.$plug['plugin_path']);
-			
+
 			if(count($icons)>0)
 			{
 				foreach($icons as $key=>$val)
 				{
-					$iconText .= "<img src='".$tp->replaceConstants($val)."' alt='' />";	
+					$iconText .= "<img src='".$tp->replaceConstants($val)."' alt='' />";
 				}
-				
+
 				$opts['delete_ipool'] = array(
 					'label'			=>'Remove icons from Media-Manager',
 					'preview'		=> $iconText,
@@ -1010,16 +1012,16 @@ class pluginManager{
 					'itemDefault' 	=> 1
 				);
 			}
-					
+
 			if(is_readable(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php"))
 			{
 				include_once(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php");
-				
-			
+
+
 				$mes->add("Loading ".e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php", E_MESSAGE_DEBUG);
-				
+
 				$class_name = $plug['plugin_path']."_setup";
-				
+
 				if(class_exists($class_name))
 				{
 					$obj = new $class_name;
@@ -1030,11 +1032,11 @@ class pluginManager{
 						{
 							$newkey = $plug['plugin_path']."_".$key;
 							$opts[$newkey] = $val;
-						}	
+						}
 					}
 				}
 			}
-			
+
 			foreach($opts as $key=>$val)
 			{
 				$text .= "<tr>\n<td class='top'>".$tp->toHTML($val['label'],FALSE,'TITLE');
@@ -1043,7 +1045,7 @@ class pluginManager{
 				$text .= varset($val['helpText']) ? "<div class='field-help'>".$val['helpText']."</div>" : "";
 				$text .= "</td>\n</tr>\n";
 			}
-			
+
 
 			$text .="<tr>
 			<td>".EPL_ADLAN_59."</td>
