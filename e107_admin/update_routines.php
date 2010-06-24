@@ -269,7 +269,7 @@ function update_706_to_800($type='')
 );
 
 	// List of DB tables not required (includes a few from 0.6xx)
-	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
+	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last', 'session');
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
