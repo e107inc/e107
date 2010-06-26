@@ -851,7 +851,7 @@ class user_class
 		$ret = array();
 		if ($includeAncestors) $classList = $this->get_all_user_classes($classList);
 		$class_regex = "(^|,)(".str_replace(' ','',str_replace(",", "|", $classList)).")(,|$)";
-		$qry = "SELECT 'user_id,{$fieldList}' FROM `user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
+		$qry = "SELECT 'user_id,{$fieldList}' FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
 		if ($this->sql_r->db_Select_gen($qry))
 		{
 			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
