@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     @Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -72,7 +72,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 
 // ----------create tables -----------------------------------------------------
 
-if (isset($_POST['create_tables']) && $_POST['language']) {
+if (isset($_POST['kreate_tbl']) && $_POST['language']) {
 
     $table_to_copy = array();
     $lang_to_create = array();
@@ -170,8 +170,8 @@ if ($_POST['edit_existing']) {
         <tr>
             <td colspan='2' style='width:100%; text-align: center;' class='forumheader' >";
 
-            $button_capt = LANG_LAN_06. " / ". LAN_UPDATE;
-            $text .="<input type='submit' class='button' name='create_tables' value=\"".$button_capt."\" />";
+            $button_capt = LAN_CREATE. " / ". LAN_UPDATE;
+            $text .="<input type='submit' class='button' name='kreate_tbl' value=\"".$button_capt."\" />";
 
        $text .="</td>
         </tr>
