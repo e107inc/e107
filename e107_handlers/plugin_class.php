@@ -240,11 +240,8 @@ class e107plugin
 					{
 
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($plug_info['@attributes']['name'], true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',
+						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($plug_info['@attributes']['name'], true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
 						{
-							$_installed}, '
-						{
-							$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' ")){
 								$mes->add("Added <b>".$plug_info['@attributes']['name']."</b> to the plugin table.", E_MESSAGE_DEBUG);
 							}
 							else
