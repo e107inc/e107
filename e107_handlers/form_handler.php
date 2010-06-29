@@ -511,7 +511,7 @@ class e_form
 		}
 		$text = $this->select_open($name, $options)."\n";
 
-		if(vartrue($options['default']))
+		if(isset($options['default']))
 		{
 			$text .= $this->option($options['default'], '');
 		}
