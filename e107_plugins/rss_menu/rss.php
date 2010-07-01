@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -369,7 +369,7 @@ class rssCreate {
 						}
 						$this -> rssItems[$k]['description'] = $row['description'];
 						if($row['enc_url']){
-							$this -> rssItems[$k]['enc_url'] = $e107->base_path.$PLUGINS_DIRECTORY.$enc_url.$row['item_id'];
+							$this -> rssItems[$k]['enc_url'] = $e107->base_path.$PLUGINS_DIRECTORY.$row['enc_url'].$row['item_id'];
 						}
 						if($row['enc_leng']){
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
@@ -392,6 +392,10 @@ class rssCreate {
 						if($row['datestamp']){
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
 						}
+						
+						if($row['custom']){
+							$this -> rssItems[$k]['custom'] = $row['custom'];
+						}
 					}
 				}
 			}
@@ -406,6 +410,8 @@ class rssCreate {
 		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : "";
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : "";
+		
+	
 		$time = time();
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
@@ -450,7 +456,7 @@ class rssCreate {
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>\n";
 
-				echo $tp->toRss($rss_custom_channel,TRUE)."\n";
+				echo $tp->toHtml($rss_custom_channel,FALSE)."\n"; // CDATA and toRss() must not be used for $rss_custom_channel. 
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
@@ -524,6 +530,14 @@ class rssCreate {
 
 					if($link){
 						echo "<guid isPermaLink=\"true\">".$link."</guid>\n";
+					}
+					
+					if(isset($value['custom'])) // custom tags. (podcasts etc)
+					{
+						foreach($value['custom'] as $cKey => $cVal)
+						{
+							echo "<".$cKey.">".$tp->toRss($cVal)."</".$cKey.">\n";	
+						}		
 					}
 
 					echo "</item>";
@@ -670,7 +684,7 @@ class rssCreate {
 						//	<id>http://example.org/</id>
 						//	<title>Fourty-Two</title>
 						//	<updated>2003-12-13T18:30:02Z</updated>
-						//	<rights>© 2005 Example, Inc.</rights>
+						//	<rights>ï¿½ 2005 Example, Inc.</rights>
 						//</source>
 						//<rights type='html'>&amp;copy; 2005 John Doe</rights>
 						echo "
