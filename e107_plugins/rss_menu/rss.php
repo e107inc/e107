@@ -342,7 +342,7 @@ class rssCreate
 						$this -> rssItems[$k]['description'] = $row['description'];
 						if($row['enc_url'])
 						{
-							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$enc_url.$row['item_id'];
+							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].$row['item_id'];
 						}
 						if($row['enc_leng'])
 						{
@@ -373,6 +373,10 @@ class rssCreate
 						if($row['datestamp'])
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
+						}
+						
+						if($row['custom']){
+							$this -> rssItems[$k]['custom'] = $row['custom'];
 						}
 					}
 				}
@@ -438,7 +442,7 @@ class rssCreate
 				<link>".$pref['siteurl']."</link>
 				<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>\n";
 
-				echo $this->e107->tp->toRss($rss_custom_channel,TRUE)."\n";
+				echo $this->e107->tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
@@ -523,6 +527,14 @@ class rssCreate
 					if($link)
 					{
 						echo "<guid isPermaLink=\"true\">".$link."</guid>\n";
+					}
+					
+					if(isset($value['custom'])) // custom tags. (podcasts etc)
+					{
+						foreach($value['custom'] as $cKey => $cVal)
+						{
+							echo "<".$cKey.">".$tp->toRss($cVal)."</".$cKey.">\n";	
+						}		
 					}
 
 					echo "</item>";
