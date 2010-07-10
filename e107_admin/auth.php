@@ -52,12 +52,14 @@ else
         }
 
         $row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass']);
-        if ($row[0] == "authfail") {
+        if ($authresult === FALSE) 
+		{
             echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
             header("location: ../index.php");
             exit;
-        } else {
-
+        } 
+		else 
+		{
             $userpass = md5($_POST['authpass']);
             $cookieval = $row['user_id'].".".md5($userpass);
 
@@ -175,7 +177,7 @@ class auth
                 return $row;
             }
         }
-        return array("authfail");
+        return FALSE;
     }
 }
 
