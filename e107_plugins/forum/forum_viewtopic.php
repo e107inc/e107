@@ -254,7 +254,7 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE,'no_ho
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 $forum->set_crumb(TRUE); // Set $BREADCRUMB (and BACKLINK)
-$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
+$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'TITLE');
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";
