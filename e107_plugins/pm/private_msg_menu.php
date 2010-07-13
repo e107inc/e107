@@ -19,6 +19,12 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $sysprefs, $pref, $pm_prefs;
+if (!isset($pref['plug_installed']['pm']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 if(!isset($pm_prefs['perpage']))
 {
 	$pm_prefs = $sysprefs->getArray('pm_prefs');

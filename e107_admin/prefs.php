@@ -98,7 +98,9 @@ if (isset($_POST['updateprefs']))
 	exit;
 }
 
-if($sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_path = 'alt_auth'"))
+
+
+if (isset($pref['plug_installed']['alt_auth']))
 {
 	$authlist[] = "e107";
 	$handle=opendir(e_PLUGIN."alt_auth");

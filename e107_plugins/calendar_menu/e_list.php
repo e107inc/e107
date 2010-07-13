@@ -2,16 +2,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-	if(!$calendar_install = $sql -> db_Select("plugin", "*", "plugin_path = 'calendar_menu' AND plugin_installflag = '1' "))
-	{
-		return;
-	}
 
-	$LIST_CAPTION = $arr[0];
-	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 require_once('ecal_class.php');
 $ecal_class = new ecal_class;
+
+$LIST_CAPTION = $arr[0];
+$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 $current_day	= $ecal_class->cal_date['mday'];
 $current_month	= $ecal_class->cal_date['mon'];

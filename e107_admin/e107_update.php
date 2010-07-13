@@ -70,24 +70,28 @@ function show_updates($dbupdate, $additional = false) {
 	$ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
 }
 
-if ($_POST) {
+if ($_POST) 
+{
 	$message = run_updates($dbupdate);
 }
 
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
+if (isset($pref['plug_installed']['forum']))
+{
 	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 	{
 		include_once(e_PLUGIN.'forum/forum_update_check.php');
 	}
 }
-if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
+
+if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && (isset($pref['plug_installed']['log']))) 
+{
 	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
 	{
 		include_once(e_PLUGIN.'log/log_update_check.php');
 	}
 }
 
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
+if (isset($pref['plug_installed']['content']))
 {
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
 	{
@@ -95,7 +99,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plug
 	}
 }
 
-if ($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_installflag='1' "))
+if (isset($pref['plug_installed']['pm']))
 {
 	if(file_exists(e_PLUGIN.'pm/pm_update_check.php'))
 	{

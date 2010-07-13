@@ -18,6 +18,12 @@
 */
 require_once('../../class2.php');
 
+if (!isset($pref['plug_installed']['links_page']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
 require_once(e_PLUGIN.'links_page/link_shortcodes.php');

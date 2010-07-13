@@ -2,9 +2,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-	if(!$links_install = $sql -> db_Select("plugin", "*", "plugin_path = 'links_page' AND plugin_installflag = '1' ")){
-		return;
-	}
+global $pref;
+if (!isset($pref['plug_installed']['links_page']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 
 	$LIST_CAPTION = $arr[0];
 	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");

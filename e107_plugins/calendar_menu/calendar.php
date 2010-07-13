@@ -25,15 +25,18 @@ require_once("../../class2.php");
 require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 if (isset($_POST['viewallevents']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
+    header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
+	exit;
 } 
 if (isset($_POST['doit']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
+    header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
+	exit;
 }
 if (isset($_POST['subs']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
+    header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
+	exit;
 } 
 
 include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");

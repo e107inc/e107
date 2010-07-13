@@ -1,6 +1,13 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
+global $pref;
+if (!isset($pref['plug_installed']['links_page']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 unset($text);
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();

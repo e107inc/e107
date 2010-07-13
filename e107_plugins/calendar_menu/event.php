@@ -23,17 +23,20 @@ require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 
 if (isset($_POST['viewallevents']))
 {  // Triggered from NAV_BUT_ALLEVENTS
-    Header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
+    header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
+	exit;
 }
 
 if (isset($_POST['doit']))
 {  // Triggered from NAV_BUT_ENTEREVENT
-    Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
+    header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
+	exit;
 }
 
 if (isset($_POST['subs']))
 {
-    Header("Location: ".e_PLUGIN."calendar_menu/subscribe.php");
+    header("Location: ".e_PLUGIN."calendar_menu/subscribe.php");
+	exit;
 }
 
 include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
@@ -121,6 +124,7 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super ||
 		// Now clear cache  - just do the lot for now - get clever later
 		$e107cache->clear('nq_event_cal');
 		header("location:event.php?".$ev_start.".".$qs.$report_msg);
+		exit;
 	}
 }
 
