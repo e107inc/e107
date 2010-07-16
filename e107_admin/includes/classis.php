@@ -52,9 +52,14 @@ if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 	}
 }
 
-ksort($plugin_array, SORT_STRING);
-foreach ($plugin_array as $plug_key => $plug_value) {
+
+if (is_array($plugin_array))
+{
+	ksort($plugin_array, SORT_STRING);
+	foreach ($plugin_array as $plug_key => $plug_value) 
+	{
 	$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], 'classis');
+	}
 }
 
 $text .= render_clean();
