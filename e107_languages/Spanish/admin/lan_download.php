@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-11-24 16:41:36 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("DOWLAN_1", "Descarga añadida a la base de datos.");
 define("DOWLAN_2", "Descarga actualizada en la base de datos.");
 define("DOWLAN_3", "Descarga borrada.");
@@ -74,7 +74,6 @@ define("DOWLAN_67", "ID");
 define("DOWLAN_68", "¡Archivo Perdido!");
 define("DOWLAN_69", "Descargas creadas por PHP");
 define("DOWLAN_70", "Enviar descargas a través de PHP.");
-
 define("DOWLAN_100", "Activar aceptación de licencia");
 define("DOWLAN_101", "Texto de licencia");
 define("DOWLAN_102", "¿Permitir comentarios?");

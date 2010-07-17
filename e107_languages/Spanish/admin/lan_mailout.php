@@ -1,18 +1,17 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-08-12 17:23:20 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-define("PRFLAN_52", "Guardar cambios");
 
+define("PRFLAN_52", "Guardar cambios");
 define("PRFLAN_63", "Enviar correo de prueba");
-define("PRFLAN_64", "Pulsando el botón enviará un correo de prueba al administrador principal");
+//define("PRFLAN_64", "Pulsando el botón enviará un correo de prueba al administrador principal");
 define("PRFLAN_65", "Click para enviar correo a");
 define("PRFLAN_66", "Correo de prueba de");
 define("PRFLAN_67", "¡Este es un correo de prueba, parece que su configuración de correo funciona bien!\n\nSaludos\ndesde e107.");
@@ -24,7 +23,6 @@ define("PRFLAN_72", "SMTP Servidor");
 define("PRFLAN_73", "SMTP Usuario");
 define("PRFLAN_74", "SMTP Contraseña");
 define("PRFLAN_75", "El correo no se pudo enviar. Compruebe su configuración SMTP, o desactive SMTP y pruebe de nuevo.");
-
 define("MAILAN_01","De (Nombre)");
 define("MAILAN_02","De (email)");
 define("MAILAN_03","A");
@@ -92,4 +90,5 @@ define("MAILAN_64", "Tiempototal utilizado:");
 define("MAILAN_65", "segundos"); 
 define("MAILAN_66", "Cancelación exitosa");
 define("MAILAN_67", "Usar autentificación 'POP antes que SMTP'"); 
+define('MAILAN_68', 'Dirección de prueba');
 ?>

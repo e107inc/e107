@@ -1,23 +1,20 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_frontpage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("FRTLAN_1", "Actualizados los ajustes de la página.");
 define("FRTLAN_2", "Mostrar");
-
 define("FRTLAN_6", "Enlaces");
 //define("FRTLAN_7", "Página de contenidos");
-
 define("FRTLAN_12", "Actualizar parámetros de la página");
 define("FRTLAN_13", "Parámetros de la página");
-
 define("FRTLAN_15", "Otro (escribe url):");
 define("FRTLAN_16", "Error: no hay contenido principal seleccionado");
 define("FRTLAN_17", "Error: no hay subcategoría de contenido seleccionado");

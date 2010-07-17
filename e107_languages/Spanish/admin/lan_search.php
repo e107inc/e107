@@ -1,21 +1,19 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("SEALAN_1", "Configuración de búsquedas");
 define("SEALAN_2", "Número de carácteres a mostrar en el resumen de búsquedas:");
 define("SEALAN_3", "Método corto de búsqueda:");
-
 define("SEALAN_6", "Comentarios");
 define("SEALAN_7", "Miembros reg.");
-
 define("SEALAN_10", "Mostrar valor de importancia:");
 define("SEALAN_11", "Permitir al usuario seleccionar áreas de búsqueda:");
 define("SEALAN_12", "Restringir el tiempo entre búsquedas (max 5 mins):");
@@ -33,7 +31,6 @@ define("SEALAN_23", "Otro:");
 define("SEALAN_24", "Tipo");
 define("SEALAN_25", "Clase de Usuario");
 define("SEALAN_26", "Texto pre-título");
-
 define("SEALAN_30", "Resaltar palabras referidas en la página:");
 define("SEALAN_31", "PHP limitado a");
 define("SEALAN_32", "resultados (dejar en blanco para no limitar)");
@@ -54,9 +51,7 @@ define("SEALAN_46", "Número de carácteres en el resultado de sumario");
 define("SEALAN_47", "Solo coincidencias de todas las palabras:"); 
 define("SEALAN_48", "Este ajuste solo se aplica cuando se busca utilizando PHP. Si su sitio incluye idiomas ideográficos como el Chino o Japonés, debe desactivar esta opción."); 
 define("SEALAN_49", "Si su sitio incluye idiomas ideográficos como el Chino o Japones, debe usar el método corto de PHP."); 
-
 define("LAN_SEARCH_98","Noticias");
-define("LAN_98", "Noticias");
 define("LAN_197", "Descargas");
 define("LAN_418", "Páginas personalizadas");
 ?>

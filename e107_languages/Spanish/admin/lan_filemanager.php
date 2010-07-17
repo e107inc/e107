@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_filemanager.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("FMLAN_1", "Actualizado");
 define("FMLAN_2", "A");
 define("FMLAN_3", "Directorio");
@@ -28,10 +28,8 @@ define("FMLAN_16", "Directorio raíz");
 define("FMLAN_17", "Nombre");
 define("FMLAN_18", "Tamaño");
 define("FMLAN_19", "Última modificación");
-
 define("FMLAN_21", "Transferir fichero a este directorio");
 define("FMLAN_22", "Transferir");
-
 define("FMLAN_26", "Borrado");
 define("FMLAN_27", "Completado");
 define("FMLAN_28", "No se pudo borrar");
@@ -47,9 +45,7 @@ define("FMLAN_37", "Directorio CustomPages");
 define("FMLAN_38", "Archivo/s movido/s con éxito a");
 define("FMLAN_39", "Imposible mover el/los archivo/s a");
 define("FMLAN_40", "Directorio Newspost-Images");
-
 define("FMLAN_43", "Eliminar archivos seleccionados");
-
 define("FMLAN_46", "Confirme que desea ELIMINAR los archivos seleccionados.");
 define("FMLAN_47", "Transferencias de usuario");
 define("FMLAN_48", "Mover los seleccionados a");

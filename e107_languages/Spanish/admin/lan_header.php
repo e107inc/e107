@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_header.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("LAN_head_1", "Menú Admin.");
@@ -15,4 +14,5 @@ define("LAN_head_3", "Su servidor está ejecutando una restricción en el direct
 define("LAN_head_4", "Area Admin.");
 define("LAN_head_5", "Idioma mostrado en el área del Admin: ");
 define("LAN_head_6", "Info de plugins");
+
 ?>

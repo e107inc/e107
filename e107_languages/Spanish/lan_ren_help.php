@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_ren_help.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-08 09:40:54 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("LANHELP_1", "Negro");
 define("LANHELP_2", "Azul");
 define("LANHELP_3", "Marrón");

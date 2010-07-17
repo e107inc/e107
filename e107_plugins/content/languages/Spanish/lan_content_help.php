@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-12-05 06:49:33 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("CONTENT_ADMIN_HELP_1", "Área de ayuda de la página de contenidos");

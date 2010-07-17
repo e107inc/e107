@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-11-10 19:17:11 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("ADMSLAN_0", "Nuevo usuario/administrador creado para");
 define("ADMSLAN_1", "Ahora como administrador.");
 define("ADMSLAN_2", "Actualizado en la base de datos.");
@@ -44,14 +44,13 @@ define("ADMSLAN_37", "Moderar comentarios");
 //define("ADMSLAN_38", "Moderar/configurar chatbox");
 define("ADMSLAN_39", "Añadir Noticias");
 define("ADMSLAN_40", "Añadir Enlaces");
-define("ADMSLAN_41", "Añadir Artículos");
-define("ADMSLAN_42", "Añadir Reseñas");
-define("ADMSLAN_43", "Añadir Contenidos");
+//obsolete 	define("ADMSLAN_41", "Post articles");
+//obsolete 	define("ADMSLAN_42", "Post reviews");
+//obsolete - use in v0.8: Configure URLs	 define("ADMSLAN_43", "Post content pages");
 define("ADMSLAN_44", "Añadir Descargas");
 define("ADMSLAN_45", "Añadir Encuestas");
 define("ADMSLAN_46", "Mensaje de Bienvenida");
 define("ADMSLAN_47", "Moderar noticias enviadas");
-
 define("ADMSLAN_49", "Seleccionar todo");
 define("ADMSLAN_51", "Quitar seleccion a todo");
 define("ADMSLAN_52", "Actualizar administrador");
@@ -59,13 +58,11 @@ define("ADMSLAN_53", "Añadir administradores");
 define("ADMSLAN_54", "Administradores");
 define("ADMSLAN_55", "Ha dejado campos en blanco");
 define("ADMSLAN_56", "Administrador");
-
 define("ADMSLAN_58", "Administrador principal");
 define("ADMSLAN_59", "Quitar estado de administrador");
 define("ADMSLAN_60", "¿Está seguro de querer quitar el estado de administrador?");
 define("ADMSLAN_61", "Administrador borrado");
 define("ADMSLAN_62", "Gestor de Plugins");
-
 define("ADMSLAN_64", "Limpiar la caché del sistema");
 define("ADMSLAN_65", "Configurar las opciones de Mail");
 define("ADMSLAN_66", "Configurar búsquedas");
@@ -74,5 +71,4 @@ define("ADMSLAN_68", "Configurar notificación email");
 define("ADMSLAN_69", "Es ya un Administrador y debe ser editado.");
 define("ADMSLAN_70", "Volver a la lista de Administradores"); 
 define("ADMSLAN_71", "Click aquí para ver los privilegios"); 
-
 ?>

@@ -1,52 +1,45 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_fpw.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-26 20:34:03 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Cambiar Contraseña");
-define("LAN_01", "La nueva contraseña ha sido enviada a ".$_POST['email'].", por favor siga las instrucciones en el email para validar su contraseña.");
-define("LAN_02", "Lo sentimos, no se puede enviar el email - por favor póngase en contacto con el administrador del sitio.");
-define("LAN_03", "Cambiar Contraseña");
-define("LAN_04", "Por favor escriba su dirección email");
-define("LAN_05", "Por favor escriba su dirección email ...");
-define("LAN_06", "Intento de Cambio de contraseña");
-define("LAN_07", "Alguien con la dirección IP ");
-define("LAN_08", "intentó cambiar la contraseña del administrador principal.");
-define("LAN_09", "Contraseña cambiada desde ");
 
-define("LAN_112", "Email: ");
-
-define("LAN_156", "Enviar");
-
-define("LAN_213", "La dirección email no se encuentra en la base de datos.");
-define("LAN_214", "No se puede cambiar la contraseña");
-define("LAN_215", "Su contraseña para ".SITENAME." ha sido cambiada. Su nueva contraseña es\n\n");
-define("LAN_216", "Para validar su nueva contraseña por favor vaya a la siguiente dirección web ...");
-define("LAN_217", "Su nueva contraseña ha sido validada, ahora solo tiene que iniciar sesión en el portal con su nueva contraseña.");
-define("LAN_218", "Su nombre de usuario es:");
-define("LAN_219", "La contraseña asociada a esta cuenta de email fué cambiada y no se puede volver a cambiar. Por favor póngase en contacto con el administrador del sitio.");
-
+define("PAGE_NAME","Restablecer la contraseña");
+define("LAN_02","Lo siento, no puede enviar correo electrónico - por favor, póngase en contacto con el administrador del sitio principal.");
+define("LAN_03","Restablecer la contraseña");
+define("LAN_05","Para restablecer su contraseña por favor ingrese la siguiente información");
+define("LAN_06","Tentativa de restablecimiento de contraseña");
+define("LAN_07","Alguien con una dirección IP");
+define("LAN_08","intento de restablecer la contraseña de administrador principal.");
+define("LAN_09","Cambiar contraseña");
+define("LAN_112","Dirección de correo electrónico utilizaste al registrarte");
+define("LAN_156","Enviar");
+define("LAN_213","Ese nombre de usuario / dirección de correo electrónico no se encuentra en la base de datos.");
+define("LAN_214","No se puede restablecer la contraseña");
+define("LAN_216","Para validar la nueva contraseña por favor vaya a la siguiente dirección URL ...");
+define("LAN_217","Tu nueva contraseña es ahora validado, ahora puede ingresar con su nueva contraseña.");
+define("LAN_218","Tu nombre de usuario es:");
+define("LAN_219","La contraseña asociada a esa dirección de correo electrónico ya se ha puesto a cero y no se puede restablecer de nuevo. Póngase en contacto con el administrador del sitio para más detalles.");
 define("LAN_FPW1","Usuario");
-define("LAN_FPW2","Código");
-define("LAN_FPW3","Código Incorrecto");
-define("LAN_FPW4","Se envió una solicitud para cambiar esta contraseña, si no ha recibido el email, por favor póngase en contacto con el administrador del sitio.");
-define("LAN_FPW5","Se ha solicitado el cambio de su contraseña en");
-define("LAN_FPW6","Se ha enviado un email a su cuenta de correo con un enlace que le permitirá cambiar su contraseña.");
-define("LAN_FPW7","Este no es un enlace válido para cambiar su contraseña.<br />Por favor póngase en contacto con el administrador del sitio.");
-define("LAN_FPW8","La contraseña se cambió correctamente");
+define("LAN_FPW2","Introduzca el código");
+define("LAN_FPW3","código es incorrecta");
+define("LAN_FPW4","A petición ya ha sido enviada para restablecer la contraseña, si usted no recibe el correo electrónico, póngase en contacto con el administrador del sitio para obtener ayuda.");
+define("LAN_FPW5","La solicitud para restablecer su contraseña de");
+define("LAN_FPW6","Un correo electrónico ha sido enviado a usted con un enlace que le permitirá restablecer su contraseña.");
+define("LAN_FPW7","Esto no es un enlace válido para restablecer la contraseña. <br /> Por favor, póngase en contacto con el administrador del sitio para más detalles.");
+define("LAN_FPW8","Su contraseña ha cambiado con éxito.");
 define("LAN_FPW9","La nueva contraseña es:");
-define("LAN_FPW10","Por favor inicie sesión y cambie su contraseña inmediatamente por seguridad.");
-define("LAN_FPW11","Inicie sesión");
-define("LAN_FPW12","e inmediatamente cambie su contraseña, por motivos de seguridad.");
-define("LAN_FPW13", "por favor siga las instrucciones del email para validar su contraseña.");
-define("LAN_FPW14", "Fué enviado por alguien con la IP");
-define("LAN_FPW15", "Esto no quiere decir que su contraseña haya sido cambiada.  Debe acceder al enlace proporcionado al final de este mensaje para completar el cambio de contraseña.");
-define("LAN_FPW16", "Si no solicitó resetear su contraseña y NO quiere resetearla, simplemente ignore este correo");
-define("LAN_FPW17", "El siguiente enlace será válido durante 48 horas.");
+define("LAN_FPW10","Si");
+define("LAN_FPW11","iniciar sesión ahora");
+define("LAN_FPW12","e inmediatamente cambiar su contraseña, por razones de seguridad.");
+define("LAN_FPW13","por favor, siga las instrucciones en el correo electrónico para validar la contraseña.");
+define("LAN_FPW14","ha sido presentada por alguien con la IP de");
+define("LAN_FPW15","Esto no significa que su contraseña ha sido restablecida. Usted debe ir a la dirección abajo indicada para completar el proceso de restablecimiento.");
+define("LAN_FPW16","Si usted no ha solicitado que su restablecimiento de contraseña y no desea cambiarla, simplemente puede ignorar este mensaje");
+define("LAN_FPW17","El enlace será válido durante 48 horas.");
 ?>

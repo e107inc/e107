@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_banner.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-17 10:47:07 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("PAGE_NAME", "Anuncio");
 define("BANNERLAN_16", "Usuario: ");
 define("BANNERLAN_17", "Contraseña: ");
@@ -34,9 +34,3 @@ define("BANNERLAN_36", "Activo:");
 define("BANNERLAN_37", "Comienzo:");
 define("BANNERLAN_38", "Error");
 ?>
-
-
-
-
-
-

@@ -1,17 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-11-10 19:17:11 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 
 define("NLLAN_MENU_CAPTION", "Boletín de noticias");
-
 define("NLLAN_01", "Boletín de noticias");
 define("NLLAN_02", "Permite una fácil y rápida configuración para el envío de boletines de noticias");
 define("NLLAN_03", "Configurar boletin de noticias");
@@ -66,4 +64,15 @@ define("NLLAN_51", "Eliminar suscripción");
 define("NLLAN_52", "Suscribirse");
 define("NLLAN_53", "¿Está seguro de suscribirse a este boletín?");
 define("NLLAN_54", "Enviando");
+define("NLLAN_55", "ID");
+define("NLLAN_56", "Boletín ID no disponible");
+define("NLLAN_57", "Volver a la página anterior");
+define("NLLAN_58", "Error");
+define("NLLAN_59", "Nombre");
+define("NLLAN_60", "Email");
+define("NLLAN_61", "Acciones");
+define("NLLAN_62", "Usuario está prohibido! (o no plenamente comprometidos)");
+define("NLLAN_63", "Total de abonados");
+define("NLLAN_64", "Volver a Inicio Noticias");
+define("NLLAN_65", "Suscriptores boletín de vista ID");
 ?>

@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_cache.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("CACLAN_1", "¿Activar Caché");
 define("CACLAN_2", "Cambiar estado de la caché");
 define("CACLAN_3", "Sistema de Caché");

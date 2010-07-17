@@ -1,14 +1,23 @@
 <?php
+
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2008-01-26 20:34:03 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
+
+
+
+
+
+
+
+
 define("PRFLAN_1", "Información del sitio");
 define("PRFLAN_2", "Nombre del sitio");
 define("PRFLAN_3", "URL del sitio");
@@ -26,9 +35,7 @@ define("PRFLAN_14", "¿Mostrar información del tema?");
 define("PRFLAN_15", "¿Mostrar tiempo de generación?");
 define("PRFLAN_16", "¿Mostrar secuencias SQL?");
 define("PRFLAN_17", "Comprimir Salida del sitio usando gzip");
-
 define("PRFLAN_19", "Campos en registro");
-
 define("PRFLAN_21", "Opciones de Fecha");
 define("PRFLAN_22", "Formato corto de fecha");
 define("PRFLAN_23", "Formato largo de fecha");
@@ -39,15 +46,13 @@ define("PRFLAN_27", "Ejemplo, si usted ajusta esto a +2, todas las horas en su s
 define("PRFLAN_28", "Registro de usuarios");
 define("PRFLAN_29", "¿Permitir registro de usuarios?");
 define("PRFLAN_30", "Permite a los visitantes registrarse en su sitio");
-define("PRFLAN_31", "Verificación correo");
+//define("PRFLAN_31", "Verificación correo");
 define("PRFLAN_32", "¿Permitir mensajes de anónimos?");
 define("PRFLAN_33", "<b>Off:</b> Desactívalo para permitir que solo los miembros registrados puedan enviar comentarios, etc");
-
 define("PRFLAN_35", "¿Activar protección contra Flood?");
 define("PRFLAN_36", "Tiempo Flood");
 define("PRFLAN_37", "Auto Baneo (expulsión)");
 define("PRFLAN_38", "Tiempo requerido entre dos acciones en áreas donde los usuarios actuan (chatbox, foros...). si un usuario envía demasiado rápido dos acciones, será redirigido a la página principal");
-
 define("PRFLAN_40", "¿Filtrar palabras?");
 define("PRFLAN_41", "Las palabras censuradas serán reemplazadas");
 define("PRFLAN_42", "Reemplazar por");
@@ -59,32 +64,40 @@ define("PRFLAN_47", "Rastreo de usuario");
 define("PRFLAN_48", "Método de rastreo");
 define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sesiones");
-define("PRFLAN_51", "Pulse aquí para visitar el sitio de e107");
 define("PRFLAN_52", "Guardar cambios");
 define("PRFLAN_53", "Preferencias del sitio");
-
 define("PRFLAN_55", "Nombre de la Cookie (si está seleccionado cookies)");
 define("PRFLAN_56", "Zona Horaria");
-
 define("PRFLAN_58", "Restringir el sitio solo para miembros");
 define("PRFLAN_59", "Esto restringirá el acceso a todas las areas menos la página principal y el registro a los usuarios no registrados");
 define("PRFLAN_60", "Permitir SSL");
 define("PRFLAN_61", "<b>¡Asegúrese de disponer de SSL!</b>");
-
 define("PRFLAN_76", "Activar Código de verificación durante el registro.");
 define("PRFLAN_77", "Opciones de Administrador ");
 define("PRFLAN_78", "Deje en blanco para desactivar");
-
 define("PRFLAN_80", "Pulse aquí para ver");
 define("PRFLAN_81", "Activar Código de verificación durante la conexión.");
-
 define("PRFLAN_83", "Ejemplo");
-
 define("PRFLAN_87", "Comentarios");
 define("PRFLAN_88", "Ver comentarios anindados (jerarquía)");
 define("PRFLAN_89", "Mostrar icono en nuevo comentario");
-define("PRFLAN_89", "Sitio:");
 define("PRFLAN_90", "Permitir editar sus propios comentarios");
+define("CUSTSIG_1", "¡Configuración Guardada!");
+define("CUSTSIG_2", "Nombre Real:");
+define("CUSTSIG_3", "Web:");
+define("CUSTSIG_4", "Cumpleaños:");
+define("CUSTSIG_5", "Localización:");
+define("CUSTSIG_6", "Firma:");
+define("CUSTSIG_7", "Avatar:");
+define("CUSTSIG_8", "Zona Horaria:");
+define("CUSTSIG_12", "Ocultar");
+define("CUSTSIG_13", "Campos");
+define("CUSTSIG_14", "Mostrar");
+define("CUSTSIG_15", "Obligatorio");
+define("CUSTSIG_16", "Caracteres mínimos para la contraseña");
+define("CUSTSIG_17", "Suscríbase a los contenidos por correo");
+define("CUSTSIG_18", "No permitir nombres de usuario");
+define("CUSTSIG_19", "Los usuarios con el siguiente texto serán rechazados, separado entre comas");
 define("PRFLAN_91", "Si alguien ataca su sitio mediante múltiples comandos a su servidor, ¡su IP será automáticamente baneada!");
 define("PRFLAN_92", "¿Ocultar contraseña en el email de confirmación?");
 define("PRFLAN_93", "Página de la función strftime en php.net");
@@ -93,7 +106,6 @@ define("PRFLAN_95", "Mostrar info de plugins:");
 define("PRFLAN_96", "Mostrará info en cada página del Admin para los plugins que soporten esta característica");
 define("PRFLAN_97", "Menú único 'Menú Plugins':");
 define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en un menú individual. <b>On:</b> Toda la información se mostrará en un menú");
-
 define("PRFLAN_101", "Renderizado texto");
 define("PRFLAN_102", "Reemplazar URLs clicables");
 define("PRFLAN_103", "Si está marcado junto con 'Hacer URLs clicables' (arriba), las URLs enviadas se mostrarán como hiperenlaces usando el texto de abajo. Esto permitirá tener URls largas sin romper el esquema de la página.");
@@ -107,7 +119,6 @@ define("PRFLAN_110", "Las palabras más largas de la longitud especificada se co
 define("PRFLAN_111", "Palabras largas cortadas en el texto principal");
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
-
 define("PRFLAN_116", "Permitir usar HTML");
 define("PRFLAN_117", "Esto permite a los usuarios usar HTML en el texto, selecciona la clase de usuario para permitirlo.");
 define("PRFLAN_118", "Usar Geshi para resaltar");
@@ -125,7 +136,6 @@ define("PRFLAN_129", "No permitir conexiones múltiples");
 define("PRFLAN_130", "On: Evitará que se hagan más de una conexión con el mismo usuario y contraseña (compartir detalle de conexión)");
 define("PRFLAN_131", "Activar el uso de bbcode [php]");
 define("PRFLAN_132", "Activándolo permitirá a los ususarios autorizados a enviar código [php] en ciertas áreas");
-define("PRFLAN_131", "Activar uso de bbcode [php]");
 define("PRFLAN_133", "Requerida extensión GD, no encontrada");
 define("PRFLAN_134", "Redirigir todas las peticiones a una URL");
 define("PRFLAN_135", "Por ejemplo, si su sitio de arriba es http://foo.com, cualquiera que consulte http://www.foo.com será redirigido a http://foo.com");
@@ -146,6 +156,7 @@ define("PRFLAN_149", "Opciones Avanzadas");
 define("PRFLAN_150", "Selecciona método de autentificación");
 define("PRFLAN_151", "e107 - No hay métodos de autententificación instalados");
 define("PRFLAN_152", "Sin verificación");
+define("PRFLAN_31", "Verificación por Email");
 define("PRFLAN_153", "Aprobación Admin");
 define("PRFLAN_154", "Nuevo método de verificación de usuario <br />Si selecciona 'Aprobación Admin', se recomienda que active la verificación por email en el registro <a href='".e_ADMIN."notify.php'>aquí</a>.");
 define("PRFLAN_155", "El nombre a mostrar y el nombre de conexión deben ser diferentes para");
@@ -171,22 +182,8 @@ define("PRFLAN_174", "Nombre para las respuestas de correo desde este sitio");
 define("PRFLAN_175", "Esto aparecerá en el campo 'De' del registro y otros correos desde aquí");
 define("PRFLAN_176", "Dirección de correo para correos del sitio"); 
 define("PRFLAN_177", "Dirección de correo para respuestas desde este sitio."); 
-
-define("CUSTSIG_1", "¡Configuración Guardada!");
-define("CUSTSIG_2", "Nombre Real:");
-define("CUSTSIG_3", "Web:");
-define("CUSTSIG_4", "Cumpleaños:");
-define("CUSTSIG_5", "Localización:");
-define("CUSTSIG_6", "Firma:");
-define("CUSTSIG_7", "Avatar:");
-define("CUSTSIG_8", "Zona Horaria:");
-
-define("CUSTSIG_12", "Ocultar");
-define("CUSTSIG_13", "Campos");
-define("CUSTSIG_14", "Mostrar");
-define("CUSTSIG_15", "Obligatorio");
-define("CUSTSIG_16", "Caracteres mínimos para la contraseña");
-define("CUSTSIG_17", "Suscríbase a los contenidos por correo");
-define("CUSTSIG_18", "No permitir nombres de usuario");
-define("CUSTSIG_19", "Los usuarios con el siguiente texto serán rechazados, separado entre comas");
+// Following numbers used for consistency with 0.8
+define('PRFLAN_208', 'Clase de usuarios que pueden enviar enalces a articulos en el sitio');
+define('PRFLAN_209', 'Otras características');
+define('PRFLAN_210', 'Comentarios/Envios');
 ?>

@@ -1,29 +1,24 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-12-01 21:56:48 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("CONTENT_EMAILPRINT_LAN_1", "Este contenido es de");
-
 define("POPUP_LAN_1", "Click para ampliar la imagen");
-
 define("CONTENT_NOTIFY_LAN_1", "Eventos de contenido"); 
 define("CONTENT_NOTIFY_LAN_2", "Contenido enviado por el usuario"); 
 define("CONTENT_NOTIFY_LAN_3", "Contenido enviado"); 
-
 define("CONTENT_TYPE_LAN_0", "categorias"); 
 define("CONTENT_TYPE_LAN_1", "autores"); 
 define("CONTENT_TYPE_LAN_2", "archivos"); 
 define("CONTENT_TYPE_LAN_3", "más valorado"); 
 define("CONTENT_TYPE_LAN_4", "más puntuado"); 
 define("CONTENT_TYPE_LAN_5", "reciente");
-
 define("CONTENT_ICON_LAN_0", "Editar");
 define("CONTENT_ICON_LAN_1", "Eliminar");
 define("CONTENT_ICON_LAN_2", "Opciones");
@@ -40,7 +35,6 @@ define("CONTENT_ICON_LAN_12", "Ordenar por categoría principal");
 define("CONTENT_ICON_LAN_13", "Admin personal");
 define("CONTENT_ICON_LAN_14", "Conf. contenidos personal");
 define("CONTENT_ICON_LAN_15", "Ver");
-
 define("CONTENT_ADMIN_DATE_LAN_0", "Enero");
 define("CONTENT_ADMIN_DATE_LAN_1", "Febrero");
 define("CONTENT_ADMIN_DATE_LAN_2", "Marzo");
@@ -60,7 +54,6 @@ define("CONTENT_ADMIN_DATE_LAN_15", "Fecha inicio");
 define("CONTENT_ADMIN_DATE_LAN_16", "Fecha fin");
 define("CONTENT_ADMIN_DATE_LAN_17", "Puede especificar una fecha de inicio para esta categoría. Si usa una fecha en el futuro, el contenido se mostrará desde ese punto. Si no necesita una fecha inicial, lo puede dejar en blanco.");
 define("CONTENT_ADMIN_DATE_LAN_18", "Puede especificar una fecha fín para el contenido. El contenido dejará de mostrarse a partir de la fecha indicada aquí. Si no desea finalizar el contenido, dejelo como está.");
-
 define("CONTENT_PAGETITLE_LAN_0", "Contenido");
 define("CONTENT_PAGETITLE_LAN_1", "Principal");
 define("CONTENT_PAGETITLE_LAN_2", "Reciente");
@@ -77,9 +70,7 @@ define("CONTENT_PAGETITLE_LAN_12", "Crear elementos");
 define("CONTENT_PAGETITLE_LAN_13", "Categorías");
 define("CONTENT_PAGETITLE_LAN_14", "ListaAutor");
 define("CONTENT_PAGETITLE_LAN_15", "Máxima puntuación");
-  	 
 define("CONTENT_SEARCH_LAN_0", "No se encontraron contenidos con esas palabras.");
-  	 
 define("CONTENT_ORDER_LAN_0", "Agrupar por ...");
 define("CONTENT_ORDER_LAN_1", "Cabecera (ASC)");
 define("CONTENT_ORDER_LAN_2", "Cabecera (DESC)");
@@ -93,7 +84,6 @@ define("CONTENT_ORDER_LAN_9", "Orden (ASC)");
 define("CONTENT_ORDER_LAN_10", "Orden (DESC)");
 define("CONTENT_ORDER_LAN_11", "Autor (ASC)");
 define("CONTENT_ORDER_LAN_12", "Autor (DESC)");
-
 define("CONTENT_LAN_0", "Contenido");
 define("CONTENT_LAN_1", "Lista recientes");
 define("CONTENT_LAN_2", "Lista categoría");
@@ -187,13 +177,12 @@ define("CONTENT_LAN_89", "Seleccione página");
 define("CONTENT_LAN_90", "página anterior"); 
 define("CONTENT_LAN_91", "página siguiente"); 
 define("CONTENT_LAN_92", " - actual"); 
-
 define("CONTENT_MENU_LAN_0", "Menú de contenido :");
 define("CONTENT_MENU_LAN_1", "No hay contenidos todavía");
 define("CONTENT_MENU_LAN_2", "Elementos recientes");
 define("CONTENT_MENU_LAN_3", "Categorías");
 define("CONTENT_MENU_LAN_4", "Enlaces de contenidos");
-define("CONTENT_MENU_LAN_5", "");
+define("CONTENT_MENU_LAN_5", "No hay elementos");
 define("CONTENT_MENU_LAN_6", "");
 define("CONTENT_MENU_LAN_7", "");
 define("CONTENT_MENU_LAN_8", "");
@@ -209,5 +198,5 @@ define("CONTENT_MENU_LAN_17", "");
 define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
-
+define('CONTENT_LAN_ALL', 'Todo');
 ?>

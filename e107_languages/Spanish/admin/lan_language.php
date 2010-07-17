@@ -1,24 +1,23 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_language.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-10-15 21:01:14 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
+
 define("LANG_LAN_00","No se puede crear (ya existe)");
 define("LANG_LAN_01","Fué borrado (si existía) y creado.");
 define("LANG_LAN_02","No puede eliminarse");
 define("LANG_LAN_03","Tablas");
-
 define("LANG_LAN_05","No instalado");
 define("LANG_LAN_06", "Crear tablas");
 define("LANG_LAN_07", "¿Eliminar tablas existentes?");
 define("LANG_LAN_08", "Reemplazar tablas existentes (los datos se perderán).");
-
 define("LANG_LAN_10", "Confirmar eliminación");
 define("LANG_LAN_11", "Eliminar tablas de arriba no marcadas (si existen).");
 define("LANG_LAN_12", "Activar tablas multi-idioma");

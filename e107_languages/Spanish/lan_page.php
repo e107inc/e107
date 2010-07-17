@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_page.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-10 19:17:11 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 
 define("LAN_PAGE_1", "Listado de página desactivado");
 define("LAN_PAGE_2", "No hay páginas");
@@ -23,4 +23,5 @@ define("LAN_PAGE_10", "Enviar");
 define("LAN_PAGE_11", "Lista de página");
 define("LAN_PAGE_12", "Página inválida");
 define("LAN_PAGE_13", "Página");
+
 ?>

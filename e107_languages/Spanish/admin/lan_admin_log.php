@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin_log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-17 10:47:07 $
-|     $Author: lisa_ 
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("LAN_ADMINLOG_0", "Registro del Admin");
@@ -23,4 +22,5 @@ define("LAN_ADMINLOG_10", "Icono de alarma");
 define("LAN_ADMINLOG_11", "Mensaje de alarma");
 define("LAN_ADMINLOG_12", "Icono Fatídico");
 define("LAN_ADMINLOG_13", "Mensaje de error fatídico");
+
 ?>

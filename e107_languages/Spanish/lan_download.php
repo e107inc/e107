@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_download.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("PAGE_NAME", "Descargas");
 define("LAN_dl_1", "(Limitado)");
 define("LAN_dl_2", "No hay descargas en este momento, por favor visite esta sección más tarde");
@@ -86,5 +86,6 @@ define("LAN_dl_73", "Descargas desde esta zona: ");
 define("LAN_dl_74", "Descargas totales desde esta zona: ");
 define("LAN_dl_75", "No hay imagen disponible");
 define("LAN_dl_76", "Ir a la página");
-define("LAN_dl_77","Descargas");
+define("LAN_dl_77", "Descargas");
+define('LAN_dl_78', 'Esa descarga ha sido deshabilitada o discontinuada. Por favor revise en la área de --LINK--descargas</a> para la version más reciente.'); 
 ?>

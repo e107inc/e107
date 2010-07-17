@@ -1,7 +1,7 @@
 // ** I18N
 
-// Calendar EN language
-// Author: Mihai Bazon, <mihai_bazon@yahoo.com>
+// Calendar ES language
+// Author: Josico <www.e107.es>
 // Encoding: any
 // Distributed under the same terms as the calendar itself.
 
@@ -79,7 +79,9 @@ Calendar._SMN = new Array
 
 // tooltips
 Calendar._TT = {};
-Calendar._TT["INFO"] = 
+Calendar._TT["INFO"] = "Acerca del calendario";
+
+Calendar._TT["ABOUT"] =
 "DHTML Selector de Fecha y Hora\n" +
 "(c) dynarch.com 2002-2005 / Autor: Mihai Bazon\n" + // don't translate this this ;-)
 "Para la última versión visite: http://www.dynarch.com/projects/calendar/\n" +
@@ -94,8 +96,6 @@ Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "- Click en alguna parte de la hora para incrementarla\n" +
 "- o Shift-click para bajarla\n" +
 "- o click y arrastre para una selección rápida.";
-Calendar._TT["ABOUT"] =
-"Calendario";
 
 Calendar._TT["PREV_YEAR"] = "Ant. año (mantener para menú)";
 Calendar._TT["PREV_MONTH"] = "Ant. mes (mantener para menú)";

@@ -1,17 +1,16 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db_verify.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2007-07-14 06:02:13 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("DBLAN_1", "Imposible leer fichero de datos sql<br /><br />Por favor, asegúrese de que el fichero <b>core_sql.php</b> existe en el directorio<b>/admin/sql</b>.");
 define("DBLAN_2", "Verificando todo");
-define("DBLAN_3", "para versión");
 define("DBLAN_4", "Tabla");
 define("DBLAN_5", "Campo");
 define("DBLAN_6", "Estado");
@@ -30,5 +29,4 @@ define("DBLAN_18", "Tablas");
 define("DBLAN_19", "Intento de reparación");
 define("DBLAN_20", "Intentando reparar tablas");
 define("DBLAN_21", "Reparar elementos seleccionados");
-define("DBLAN_22", " no es leíble");
-?>
+define("DBLAN_22", " no es leíble");?>

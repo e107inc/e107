@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-04-21 09:34:59 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("EXTLAN_1", "Nombre");
 define("EXTLAN_2", "Previsualizar");
 define("EXTLAN_3", "Valores");
@@ -86,7 +86,7 @@ define("EXTLAN_74", "es un campo reservado y no puede ser usado.");
 define("EXTLAN_75", "Error al añadir el campo en la base de datos.");
 define("EXTLAN_76", "Carácteres inválidos en el campo nombre - solo se permite A-Z, a-z, 0-9, '_'");
 define("EXTLAN_77", "Categoría no eliminada - primero elimine los campos de la categoría: ");
-
+define('EXTLAN_78', 'No se puede encontrar el archivo --FILE-- requerido para crear la tabla de datos');
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons

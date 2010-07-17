@@ -1,16 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_top.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Top usuarios");
-
 define("TOP_LAN_0", "Top foros");
 define("TOP_LAN_1", "Usuario");
 define("TOP_LAN_2", "Mensajes");
@@ -18,7 +16,6 @@ define("TOP_LAN_3", "Top comentarios");
 define("TOP_LAN_4", "Comentarios");
 define("TOP_LAN_5", "Top chatbox");
 define("TOP_LAN_6", "Puntuación del sitio");
-
 //v.616
 define("LAN_1", "Tema");
 define("LAN_2", "Autor");

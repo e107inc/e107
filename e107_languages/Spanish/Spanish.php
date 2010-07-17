@@ -1,21 +1,23 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-08-18 05:56:26 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'es_ES');
+setlocale(LC_ALL, 'es_ES.UTF-8', 'es_ES.utf8', 'esp_esp.utf8', 'es');
 define("CORE_LC", 'es');
 define("CORE_LC2", 'es');
-define("CHARSET", "utf-8");
+// define("TEXTDIRECTION","rtl");
+define("CHARSET", "utf-8");  // for a true multi-language site. :)
 define("CORE_LAN1","Error : tema no encontrado.\\n\\nCambie el tema usado en preferencias (administración) o copie los archivos del tema seleccionado al servidor.");
-define("CORE_LAN2"," \\1 escribió:");// "\\1" representa el nombre de usuario.
-define("CORE_LAN3","archivo adjunto desactivado");
+
+//v.616
+//obsolete define("CORE_LAN2"," \\1 wrote:");// "\\1" represents the username.
+//obsolete define("CORE_LAN3","file attachment disabled");
 
 //v0.7+
 define("CORE_LAN4", "Por favor, elimine install.php de su servidor");
@@ -32,6 +34,10 @@ define("CORE_LAN13", " de éstos para llamadas sql. ");
 define("CORE_LAN14", "");                       // Used in 0.8 
 define("CORE_LAN15", "Llamadas sql: "); 
 define("CORE_LAN16", "Uso memoria: "); 
+
+// img.bb
+define('CORE_LAN17', '[ imagen deshabilitada ]');
+define('CORE_LAN18', 'Imagen: ');
 
 define("CORE_LAN_B", "b"); 
 define("CORE_LAN_KB", "kb"); 

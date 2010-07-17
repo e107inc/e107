@@ -1,21 +1,20 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-10-15 21:01:14 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("NWSLAN_1", "Noticia borrada.");
 define("NWSLAN_2", "Por favor marque la casilla para borrar esta noticia.");
 define("NWSLAN_3", "No hay noticias aún.");
 define("NWSLAN_4", "Noticias");
 define("NWSLAN_5", "Abrir editor HTML");
 define("NWSLAN_6", "Categoría");
-
 define("NWSLAN_9", "Confirmar");
 define("NWSLAN_10", "No hay categorías tadavía.");
 define("NWSLAN_11", "Añadir/Editar Categorías");
@@ -27,17 +26,13 @@ define("NWSLAN_15", "Comentarios");
 //define("NWSLAN_17", "No permitir");
 define("NWSLAN_18", "Permitir añadir comentarios");
 define("NWSLAN_19", "Activación");
-
 define("NWSLAN_21", "Activar entre");
 define("NWSLAN_22", "Visibilidad");
-
 define("NWSLAN_24", "Previsualizar otra vez");
 define("NWSLAN_25", "Actualizar noticia");
 define("NWSLAN_26", "Añadir noticia");
 define("NWSLAN_27", "Previsualizar");
-
 define("NWSLAN_29", "Añadir noticia");
-
 define("NWSLAN_31", "Noticia");
 define("NWSLAN_32", "borrada");
 define("NWSLAN_33", "Categoría de noticias");
@@ -48,7 +43,6 @@ define("NWSLAN_37", "¿Está seguro de querer borrar esta categoría?");
 define("NWSLAN_38", "¿Está seguro de querer borrar esta noticia enviada?");
 define("NWSLAN_39", "¿Está seguro de querer borrar esta noticia?");
 define("NWSLAN_40", "Título");
-
 define("NWSLAN_42", "Sin título");
 define("NWSLAN_43", "No hay noticias");
 define("NWSLAN_44", "Página principal de noticias");
@@ -57,7 +51,6 @@ define("NWSLAN_46", "Categorías");
 define("NWSLAN_47", "Noticias enviadas");
 define("NWSLAN_48", "Opciones de noticias");
 define("NWSLAN_49", "Enviada por");
-
 define("NWSLAN_51", "Categorías de noticias");
 define("NWSLAN_52", "Nombre de la categoría");
 define("NWSLAN_53", "Icono de la categoría");
@@ -84,6 +77,7 @@ define("NWSLAN_74", "Seleccione como y donde se mostrará la noticia");
 define("NWSLAN_75", "Por defecto - envío a la página de noticias"); 
 define("NWSLAN_76", "Solo título - envío a la página de noticias");
 define("NWSLAN_77", "Enviar a menú - otras noticias");
+
 //define("NWSLAN_78", "Esta opción está desactivada porque su servidor no admite transferencia de archivos");
 define("NWSLAN_79","Limpiar");
 
@@ -130,7 +124,6 @@ define("LAN_NEWS_16", "b. Longitud extensión: ");
 define("LAN_NEWS_17", "b.");
 define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19",  "Ahora");
-
 define("LAN_NEWS_21", "Noticias actualizadas en la Base de Datos.");
 define("LAN_NEWS_22", "Miniatura");
 define("LAN_NEWS_23", "Escoja una imagen para esta noticia");
@@ -151,7 +144,6 @@ define("LAN_NEWS_37", "<b>URL's Trackback:</b> (una URL por linea)");
 define("LAN_NEWS_38", "Insertar imágenes");
 define("LAN_NEWS_39", "Click en archivo para insertar en la posición del cursor");
 define("LAN_NEWS_40", "Insertar enlaces de descargas");
-
 define("LAN_NEWS_42", "Archivos");
 //define("LAN_NEWS_43", "(no hay imágenes en /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback no activo.");
@@ -159,6 +151,10 @@ define("LAN_NEWS_45", "ID");
 define("LAN_NEWS_46", "Noticia no actualizada ya que no se han realizado cambios.");
 //define("LAN_NEWS_47", "Imagen");
 define("LAN_NEWS_48", "Sin imagen"); 
-define("LAN_NEWS_49", "Tipo renderizado"); 
-
+define("LAN_NEWS_49", "Tipo renderizado");
+define('LAN_NEWS_50', 'Mantenimiento');
+define('LAN_NEWS_51', 'Volver a calcular los recuentos de comentario');
+define('LAN_NEWS_52', 'Continuar');
+define('LAN_NEWS_53', 'Actualización completa');
+define('LAN_NEWS_54', 'Noticias de Mantenimiento');
 ?>

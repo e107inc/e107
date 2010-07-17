@@ -1,14 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_parser_functions.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-11-22 18:18:50 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("LAN_GUEST", "Invitado");
 define("LAN_WROTE", "escribió"); // as in John wrote.."  ";
+
+
 ?>

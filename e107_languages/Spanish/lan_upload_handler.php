@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_upload_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-08-06 21:48:50 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("LANUPLOAD_1", "El tipo de archivo");
@@ -28,4 +27,6 @@ define("LANUPLOAD_16", "Error desconocido");
 define("LANUPLOAD_17", "Nombre inválido para el archivo transferido"); 
 define("LANUPLOAD_18", "El archivo trasnferido excede los límites permitidos."); 
 define("LANUPLOAD_19", "Demasiados archivos trasnferidos - eliminados los excesos."); 
+
+
 ?>

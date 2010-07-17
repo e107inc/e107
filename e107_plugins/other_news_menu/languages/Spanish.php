@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/other_news_menu/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-11-26 09:15:55 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("TD_MENU_L1", "Otras noticias");

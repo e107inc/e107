@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2007-01-10 18:26:28 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 //if(!defined("PAGE_NAME")){define("PAGE_NAME", "Enlaces");}
@@ -140,7 +139,7 @@ define("LCLAN_ADMIN_12", "Categoría de enlace");
 define("LCLAN_ADMIN_13", "Enlace enviado eliminado");
 define("LCLAN_ADMIN_14", "Enlaces");
 define("LCLAN_ADMIN_15", "Esta categoría todavía contiene enlaces, por favor, eliminelos primero");
-
+define('LAN_LINKS_SCH_1','Publicado en respuesta al vínculo');
 
 define("LCLAN_SL_1", "Enlaces enviados");
 define("LCLAN_SL_2", "No hay enlaces enviados");

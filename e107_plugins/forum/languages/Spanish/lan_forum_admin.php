@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
 |     $Revision: 1.15 $
-|     $Date: 2007-04-21 09:34:59 $
+|     $Date: 2007/04/21 09:34:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */

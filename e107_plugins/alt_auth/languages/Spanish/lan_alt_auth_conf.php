@@ -1,4 +1,13 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     Sitio web e107 - Archivos del lenguaje.
+|
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
++----------------------------------------------------------------------------+
+*/
 define("LAN_ALT_1", "Tipo de autorización actual");
 define("LAN_ALT_2", "Actualizar ajustes");
 define("LAN_ALT_3", "Escoja tipo de autorización alternada");

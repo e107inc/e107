@@ -1,19 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/gsitemap/languages/gsitemap_Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-17 10:56:24 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("GSLAN_Name", "Mapa del sitio");

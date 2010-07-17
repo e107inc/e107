@@ -1,23 +1,20 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-11-24 16:41:36 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Registro");
 
+define("PAGE_NAME", "Registro");
 define("LAN_7", "Nombre a mostrar: ");
 define("LAN_8", "Este es el nombre que se mostrará en el sitio");
 define("LAN_9", "Nombre usuario: ");
 define("LAN_10", "Este es el nombre que se usará para conectarse al sitio");
-
 define("LAN_17", "Contraseña: ");
-
 define("LAN_103", "Este nombre de usuario no puede ser aceptado como válido, por favor elija otro nombre de usuario");
 define("LAN_104", "Este nombre de conexión ya existe en nuestra base de datos, por favor elija otro nombre de usuario");
 define("LAN_105", "Las dos contraseñas no coinciden");
@@ -31,20 +28,16 @@ define("LAN_112", "Dirección Email: ");
 define("LAN_113", "¿Ocultar Email?: ");
 define("LAN_114", "Esto previene que su dirección email sea mostrada en el portal");
 define("LAN_123", "Registro");
-
 define("LAN_185", "Ha dejado campos obligatorios en blanco");
-
 define("LAN_201", "Si");
 define("LAN_200", "No");
 define("LAN_202", "Ya dispone de una cuenta. Si olvidó el password, haga click en el enlace '¿Olvidó contraseña?'.");
-
 define("LAN_309", "Por favor rellene los detalles que se solicitan a continuación.<br> - <b>Recibirá un email de verificación, asegúrese de escribir una dirección de email válida.</b> -");
-
 define("LAN_399", "Continuar");
 define("LAN_400", "<br>");
-define("LAN_401", "Su cuenta ha sido activada, por favor inicie sesión en el portal.<br />Gracias por registrarse en ");
+define("LAN_401", "Su cuenta ha sido activada, por favor inicie sesión en el portal.<br /> ");
 define("LAN_402", "registro activado");
-define("LAN_403", "Bienvenid@ a ".SITENAME."\nSu registro ha sido recibido y creado con los siguientes datos ...\n\nNombre de Usuario: ".$_POST['name']."\nContraseña: ".$_POST['password1']."\n\nSu cuenta en este momento está inactiva, para activar su cuenta por favor vaya a la siguiente dirección web ...\n\n");
+define("LAN_403", "Bienvenido a ");
 define("LAN_404", "Detalles del registro para");
 define("LAN_405", "Esta parte del registro esta completada, recibirá un email de confirmación con sus datos de usuario, por favor use el enlace web que se incluye en el email para completar el registro y activar su cuenta.");
 define("LAN_406", "¡Gracias!");
@@ -53,7 +46,6 @@ define("LAN_408", "Ya existe un usuario con esta dirección email. por favor use
 define("LAN_409", "Caracteres no válidos en el nombre de usuario");
 define("LAN_410", "Código");
 define("LAN_411", "Ese nombre a mostrar ya existe en la base de datos, por favor, elija otro nombre a mostrar");
-
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "carac.");
 define("LAN_SIGNUP_3", "Código de verificación incorrecto.");
@@ -72,11 +64,11 @@ define("LAN_SIGNUP_15", "Por favor contacte con el administrador del sitio");
 define("LAN_SIGNUP_16", "si necesita asistencia.");
 define("LAN_SIGNUP_17", "Por favor certifique que es usted mayor de 13 años.");
 define("LAN_SIGNUP_18", "Su registro ha sido recibido y creado con los siguientes datos ...");
-define("LAN_SIGNUP_19", "Usuario:");
-define("LAN_SIGNUP_20", "Contraseña:");
+//define("LAN_SIGNUP_19", "Usuario:");
+//define("LAN_SIGNUP_20", "Contraseña:");
 define("LAN_SIGNUP_21", "Su cuenta de usuario está inactiva, para activarla pulse sobre el siguiente enlace ...");
-define("LAN_SIGNUP_22", "pulse aquí");
-define("LAN_SIGNUP_23", "para iniciar sesión.");
+define("LAN_SIGNUP_22", "Pincha aquí ");
+define("LAN_SIGNUP_23", "Para iniciar sesión.");
 define("LAN_SIGNUP_24", "Gracias por registrarse en");
 define("LAN_SIGNUP_25", "Envíe su avatar");
 define("LAN_SIGNUP_26", "Envíe su fotografía");
@@ -93,7 +85,6 @@ define("LAN_SIGNUP_36", "Ocurrió un error al crear la información de usuario, 
 define("LAN_SIGNUP_37", "Esta parte del registro está completa. El administrador necesitará aprobarle.  Una vez completado, recibirá un correo informándole que su registro ha sido aprobado.");
 define("LAN_SIGNUP_38", "Ha escrito dos correos diferentes. Por favor, escriba la misma dirección de correo en ambos campos");
 define("LAN_SIGNUP_39", "Re-escriba la dirección de correo:");
-
 define("LAN_LOGINNAME", "Nombre de conexión");
 define("LAN_PASSWORD", "Contraseña");
 define("LAN_USERNAME", "Nombre a mostrar");
@@ -101,7 +92,6 @@ define("LAN_EMAIL_01", "Sr.");
 define("LAN_EMAIL_04", "Por favor, guarde este email para su propia información.");
 define("LAN_EMAIL_05", "Su contraseña ha sido encriptada y no podrá ser recuperada si la pierde u olvida. Sin embargo, puede solicitar una nueva contraseña si esto ocurriese.");
 define("LAN_EMAIL_06", "Gracias por su registro.");
-
 // 0.7.6 
 define("LAN_SIGNUP_40", "Activación no necesaria"); 
 define("LAN_SIGNUP_41", "Su cuenta acaba de activarse."); 
@@ -122,4 +112,10 @@ define("LAN_SIGNUP_56", "El nombre a mostrar es demasiado corto. Por favor, esco
 define("LAN_SIGNUP_57", "Ese nombre de conexión es demasiado largo. Por favor, escoja otro");
 define("LAN_SIGNUP_58", "Previsualizar registro");
 define("LAN_SIGNUP_59","**** Si el enlace no funciona, por favor, compruebe que parte de él no ha sida desbordada en la siguiente línea. ****");
+define('LAN_SIGNUP_60', 'Error avatar externo');
+// 0.7.16
+define("LAN_SIGNUP_72", "Gracias por registrarte en [sitename]Acabamos de enviarte un mensaje de confirmación a [email]. Haga clic en el enlace de confirmación en el correo electrónico para completar su registrarse y activar su cuenta.");  	// LAN_405
+define("LAN_SIGNUP_98", "Confirm Your Email Address");
+define("LAN_SIGNUP_99", "problema encontrado");
+define("LAN_SIGNUP_100", "A la espera de la aprobación del administrador");
 ?>

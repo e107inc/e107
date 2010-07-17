@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_meta.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-17 10:47:07 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("METLAN_1", "Meta-tags actualizados en la base de datos");
 define("METLAN_2", "Añadir Meta-tags adicionales");
 define("METLAN_3", "Nueva configuración de Meta-tags");

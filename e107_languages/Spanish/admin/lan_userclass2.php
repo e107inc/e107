@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_userclass2.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-11 23:57:40 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("UCSLAN_1", "Borrados todos los usuarios de esta clase.");
 define("UCSLAN_2", "Usuarios de esta clase actualizados.");
 define("UCSLAN_3", "Clase borrada.");
@@ -33,5 +33,4 @@ define("UCSLAN_21", "Configuraciones para clase de usuario");
 define("UCSLAN_22", "Usuarios - pulse para mover ...");
 define("UCSLAN_23", "Usuarios en esta clase ...");
 define("UCSLAN_24", "¿Quién puede gestionar las clases?");
-
 ?>

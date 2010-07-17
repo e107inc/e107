@@ -1,14 +1,4 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-08-06 21:48:50 $
-|     $Author: natxocc $
-+----------------------------------------------------------------------------+
-*/
 define('LAN_PM', "Mensajería Privada");
 define('LAN_PM_1', "Enviar mensaje privado");
 define('LAN_PM_2', "A");
@@ -74,14 +64,20 @@ define('LAN_PM_62', "Archivo: [{FILENAME}] excede el límite de tamaño - No se 
 define('LAN_PM_63', "Clase:");
 define('LAN_PM_64', 'ERROR: No tiene permitido bloquear mensajes de los Administradores del sitio');
 define('LAN_PM_65', 'ERROR: Nada que enviar');
-
-define("LAN_PM_100", "Nuevo MP de "); 
+define('LAN_PM_66', 'Remitentes bloqueados');
+define('LAN_PM_67', 'Sin usuarios bloqueados');
+define('LAN_PM_68', 'Nombre de usuario');
+define('LAN_PM_69', 'Fecha bloqueado');
+define('LAN_PM_70', 'Eliminar bloqueo de usuario');
+define('LAN_PM_71', '--BIEN-- Adjunto(s) eliminado (s). --SIN-- fallo(s)');
+define('LAN_PM_72', 'Usuario eliminado');
+define("LAN_PM_100", "Nuevo mensaje privado de "); 
 define("LAN_PM_101", "Ha recibido un nuevo Mensaje Privado de "); 
-define("LAN_PM_102", "Mensaje enviado desde: "); 
+define("LAN_PM_102", "Mensaje enviado por: "); 
 define("LAN_PM_103", "Asunto mensaje: "); 
 define("LAN_PM_104", "Archivos adjuntos: "); 
 define("LAN_PM_105", "Puede ver el MP en: "); 
-define("LAN_PM_106", "MP listo por "); 
+define("LAN_PM_106", "Mensaje Privado visto por "); 
 define("LAN_PM_107", "El mensaje privado enviado a {UNAME} fué leído "); 
 define("LAN_PM_108", "Mensaje enviado el: ");
 define("LAN_PM_109", "Nuevo(s) Mensaje(s)");

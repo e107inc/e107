@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-18 21:03:00 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define('EC_ADLAN_1', "Calendario de eventos");
@@ -215,6 +214,9 @@ define('EC_LAN_134', "Necesita proporcionar un nombre de categoría");
 define('EC_LAN_135', "Evento"); 
 define('EC_LAN_136', "Descripción de la categoría"); 
 define('EC_LAN_137', "Eventos futuros");
+
+// Gap to maintain compatibility with 0.8
+define('EC_LAN_181', "No está autorizado a hacer eso!");
 
 // Added 12.07.06 for next_event_menu.php 
 define('EC_LAN_140', "Próximos eventos"); 

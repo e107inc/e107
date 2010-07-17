@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-07-14 06:02:13 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("NFP_1", "Todos los últimos envíos estan fuera de su clase de usuario. Imposible mostrar.");

@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("TPVLAN_1", "Viendo previsualización del tema <b>'".PREVIEWTHEMENAME."'</b>. No se ha fijado como tema principal de su página, solo ha sido activado para ver su apariencia.<br />Para ajustar como tema principal de su sitio, <a href='".e_ADMIN."theme.php'>vuelva al configurador de temas</a> y seleccione 'Fijar tema del sitio'.<br />Para ver más temas <a href='".e_ADMIN."theme.php'<pulse aquí</a>");
 define("TPVLAN_2", "Previsualizar tema");
 define("TPVLAN_3", "Tema principal fijado");
@@ -23,7 +23,7 @@ define("TPVLAN_11", "Versión");
 define("TPVLAN_12", "Sin previsualización");
 define("TPVLAN_13", "Transferir tema (formato .zip o .tar.gz)");
 define("TPVLAN_14", "Transferir tema");
-define("TPVLAN_15", "El archivo no se subió ya que la carpeta ".e_tema." no tiene los permisos correctos - CHMOD a 777 vuelva a intentarlo.");
+define("TPVLAN_15", "El archivo no se subió ya que la carpeta ".e_THEME." no tiene los permisos correctos - CHMOD a 777 vuelva a intentarlo.");
 define("TPVLAN_16", "Mensaje Admin");
 define("TPVLAN_17", "Este archivo no parece ser un .zip o .tar válido.");
 define("TPVLAN_18", "Ocurrió un error, imposible descomprimir el archivo");

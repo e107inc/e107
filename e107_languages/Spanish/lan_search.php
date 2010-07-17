@@ -1,20 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_search.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-07-14 06:02:13 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
+
 define("PAGE_NAME", "Buscador");
-
 define("LAN_140", "Miembros");
-
 define("LAN_180", "Buscar");
-
 define("LAN_192", "Todas las categorías");
 define("LAN_193", "Calendario");
 define("LAN_194", "Todas las categorías");
@@ -23,11 +21,9 @@ define("LAN_196", "Resultados");
 define("LAN_197", "Descargas");
 define("LAN_198", "Sin resultados");
 define("LAN_199", "Buscar por");
-
 define("LAN_416", "Debe iniciar sesión para acceder a esta página");
 define("LAN_417", "Para la búsqueda es necesario un mínimo de --CHARS-- carácteres.");
 define("LAN_418", "Otras páginas");
-
 define("LAN_SEARCH_1", "Marcar Todo");
 define("LAN_SEARCH_2", "Desmarcar Todo");
 define("LAN_SEARCH_3", "Enviado el ");
@@ -43,7 +39,6 @@ define("LAN_SEARCH_12", " de ");
 define("LAN_SEARCH_13", " en ");
 define("LAN_SEARCH_14", "Categoría:");
 define("LAN_SEARCH_15", "Autor:");
-
 define("LAN_SEARCH_17", "Lo siento, la búsqueda está restringida a una cada ");
 define("LAN_SEARCH_18", " segundos.");
 define("LAN_SEARCH_19", "Buscar en:");
@@ -107,7 +102,7 @@ define("LAN_SEARCH_76", "Enviado en la página");
 define("LAN_SEARCH_77", "Enviado en el perfil de página de"); 
 // Following formerly LAN_nnn - renamed to avoid clashes 
 define("LAN_SEARCH_98", "Noticias"); 
-define("LAN_SEARCH_99", "omentarios"); 
+define("LAN_SEARCH_99", "Comentarios"); 
 //define("LAN_SEARCH_200", "Categories:");                                              // Redundant LAN? 
-define("LAN_SEARCH_201", "Por favor, redefina la cadena de búsqueda"); 
+define("LAN_SEARCH_201", "Por favor, redefina la cadena de búsqueda");
 ?>

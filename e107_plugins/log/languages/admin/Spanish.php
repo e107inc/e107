@@ -1,12 +1,11 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 define("ADSTAT_ON", "On");
@@ -45,4 +44,7 @@ define("ADSTAT_L31", "Eliminar las páginas seleccionadas");
 define("ADSTAT_L32", "Página ordenada");
 define("ADSTAT_L33","Configure el registro de estadísticas");
 define("ADSTAT_L34","Estadísticas del sitio");
+
+define('ADSTAT_L38', "Usted debe establecer la e107_plugins/log/logs carpeta para tener permisos de escritura // Constant compatible con el 0,8");	// Constant compatible with 0.8
+
 ?>

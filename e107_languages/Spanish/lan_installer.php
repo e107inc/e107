@@ -1,16 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-04-21 09:34:59 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-
-define("LANINS_001", "Instalación e107");
+define("LANINS_001", "Instalación e107 (Traducido por e107.es)");
 
 
 define("LANINS_002", "Etapa ");
@@ -65,13 +63,13 @@ define("LANINS_044", "Base de datos creada con éxito.");
 define("LANINS_045", "Por favor, pulse el botón para pasar a la siguiente estapa.");
 define("LANINS_046", "5");
 define("LANINS_047", "Detalles del Administrador");
-define("LANINS_048", "Vuelva al útlima paso");
+define("LANINS_048", "Vuelva al útimo paso");
 define("LANINS_049", "Las dos contraseñas no coinciden. Por favor, vuelva e inténtelo de nuevo.");
 define("LANINS_050", "Extensión XML");
 define("LANINS_051", "Instalada");
 define("LANINS_052", "No instalada");
 define("LANINS_053", "e107 .700 requiere la extensión PHP XML para ser instalado. Por favor, contacte con su servidor o lea la información en ");
-define("LANINS_054", " antes de continuar");
+//define("LANINS_054", " antes de continuar");
 define("LANINS_055", "Confirmación de instalación");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 ahora tiene toda la información para completar la instalación.
@@ -85,20 +83,23 @@ define("LANINS_060", "Imposible leer el archivo de datos sql
 Por favor, asegúrese que <b>core_sql.php</b> existe en el directorio <b>/e107_admin/sql</b>.");
 define("LANINS_061", "e107 no pudo crear las tablas necesarias.
 Por favor, limpie la base de datos y rectifique cualquier problema antes de probar de nuevo.");
-define("LANINS_062", "¡Bienvenido a su nuevo sitio!");
+
 define("LANINS_062", "[b]¡Bienvenido a su nuevo sitio![/b]
 e107 se instaló correctamente y está preparado para aceptar contenidos.<br />
 Su sección de administración está [link=e107_admin/admin.php]aquí[/link], haga click para ir ahora. Necesitará conectarse con el usuario y contraseña utilizada en la instalación.
 [b]Soporte[/b]
-Página e107: [link=http://e107.org]http://e107.org[/link], entrará respuesta y documentación aquí.
-Foros: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
-  	 
-[b]Descargas[/b]
-Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
-Themas: [link=http://e107themes.org]http://e107themes.org[/link]
+Página e107 España: [link=http://www.e107.es]http://e107.es[/link], encontrará respuestas y documentación aquí.
+Foros del soporte español: [link=http://www.e107.es/e107_plugins/forum/forum.php]http://e107.es/e107_plugins/forum/forum.php[/link]
+
   	 
 Gracias por probar e107, esperamos que cubra sus necesidades.
 (Puede eliminar este mensaje desde la sección de administración.)");
+
+
+
+
+
+
 define("LANINS_063", "Bienvenido a e107.");
 
 define("LANINS_069", "¡e107 Se ha instalado con éxito!
@@ -117,8 +118,8 @@ define("LANINS_074", "Nombre Admin a mostrar");
 define("LANINS_075", "Este es el nombre que se mostrará en su perfil y en todo el sitio. Si desea mostrar el mismo nombre que el nombre de usuario, déjelo en blanco.");
 define("LANINS_076", "Contraseña Admin");
 define("LANINS_077", "Por favor, indique la contraseña que asignará al administrador");
-define("LANINS_078", "Admin Password Confirmation");
-define("LANINS_079", "Vuelva a escribir la contraseña para confrimarla");
+define("LANINS_078", "Confirmación de contraseña del administrador");
+define("LANINS_079", "Vuelva a escribir la contraseña para confirmarla");
 define("LANINS_080", "Email Admin");
 define("LANINS_081", "Escriba su dirección email");
 define("LANINS_082", "usuario@susitio.com");
@@ -138,13 +139,21 @@ define("LANINS_094", "Ejemplo de clase de foro privada");
 define("LANINS_095", "Comprobación integridad");
 define("LANINS_096", 'Últimos comentarios'); 
 define("LANINS_097", '[más ...]'); 
-define("LANINS_098", 'Artículos'); 
-define("LANINS_099", 'Artículos página inicial ...'); 
+//define("LANINS_098", 'Artículos'); 
+//define("LANINS_099", 'Artículos página inicial ...'); 
 define("LANINS_100", 'Últimos envíos del foro'); 
 define("LANINS_101", 'Actualizar ajustes de menú'); 
 define("LANINS_102", 'Fecha / Hora'); 
-define("LANINS_103", 'Revisiones'); 
-define("LANINS_104", 'Revisar página inicial ...'); 
-define("LANINS_105", ''); 
-define("LANINS_106", ''); 
+//define("LANINS_103", 'Revisiones'); 
+//define("LANINS_104", 'Revisar página inicial ...'); 
+define("LANINS_105", 'El nombre de la base de datos o prefijo que vengan con algunos dígitos seguidos de \'e\' o \'E\' no son aceptados');
+define("LANINS_106", 'ALERTA - E107 no puede escribir en los directorios y/o carpetas listados. Mientras esto no detenga la instalación de E107, significa que algunas características no están disponibles. 
+				Usted necesita cambiar los permisos de los archivos para usar estas características.');
+
+// for v0.7.16+ only
+define('LANINS_DB_UTF8_CAPTION', 'MySQL Charset:');
+define('LANINS_DB_UTF8_LABEL',   '¿Forzar la base de datos utf-8?');
+define('LANINS_DB_UTF8_TOOLTIP', 'Si la seleccionas, el script de instalación hará que la base de datos sea compatible si es posible con UTF-8.<br/>
+Para la próxima versión principal de e107, será necesario UTF-8 de la base de datos.');
+
 ?>

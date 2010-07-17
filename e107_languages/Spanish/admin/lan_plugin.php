@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("EPL_ADLAN_0", "Instalar");
 define("EPL_ADLAN_1", "Desinstalar");
 define("EPL_ADLAN_2", "¿Está seguro que quiere desinstalar esta aplicación?");
@@ -59,13 +59,10 @@ define("EPL_ADLAN_46","PCLZIP extracción error:");
 define("EPL_ADLAN_47", "PCLTAR extracción error: "); 
 define("EPL_ADLAN_48", "código:"); 
 define('EPL_ADLAN_49', "Las tablas no se eliminaron en la desinstalación por petición");
-
 define("EPL_ADLAN_50", "Comentarios eliminados con éxito");
-
 define("EPL_ADLAN_53", "Directorio no escribible"); 
 define("EPL_ADLAN_54", "Por favor, seleccione la opción para desinstalar el plugin:"); 
 define("EPL_ADLAN_55", "Desinstalar plugin"); 
-
 define("EPL_ADLAN_57", "Eliminar tablas del plugin"); 
 define("EPL_ADLAN_58", "Si no se eliminan las tablas, el plugin puede ser reinstalado sin perder la información contenida. La creación de tablas durante la instalación  fallará. Las tablas deberásn ser eliminadas manualmente."); 
 define("EPL_ADLAN_59", "Eliminar archivos del plugin"); 
@@ -73,7 +70,6 @@ define("EPL_ADLAN_60", "e107 intentará eliminar todos los archivos del plugin."
 //define("EPL_ADLAN_61", "Confirmar desinstalación"); 
 define("EPL_ADLAN_62", "Cancelar desinstalación"); 
 define("EPL_ADLAN_63", "Desinstalar:");
-
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "Email");
 define("EPL_WEBSITE", "Web");

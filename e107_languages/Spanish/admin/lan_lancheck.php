@@ -1,20 +1,19 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_lancheck.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-11-10 19:17:11 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("LAN_CHECK_1", "Editar/Verificar archivos de idioma"); // modified in 0.7.6
 define("LAN_CHECK_2", "Verificar");
 define("LAN_CHECK_3", "Verificación de");
 define("LAN_CHECK_4", "¡Archivo perdido!");
 define("LAN_CHECK_5", "¡Frase perdida!");
-
 define("LAN_CHECK_7", "Frase");
 define("LAN_CHECK_8", "Falta un archivo...");
 define("LAN_CHECK_9", " Faltan archivos...");

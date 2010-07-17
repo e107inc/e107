@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_wmessage.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-05-13 16:12:00 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 //define("WMGLAN_1", "Mensaje para invitados");
 //define("WMGLAN_2", "Mensaje para miembros");
 //define("WMGLAN_3", "Mensaje para Administradores");
@@ -16,7 +16,6 @@
 //define("WMGLAN_5", "Poner mensaje de bienvenida");
 //define("WMGLAN_6", "¿Activar?");
 //define("WMGLAN_7", "Ajustes de mensajes de bienvenida actualizado.");
-
 define("WMLAN_00","Mensajes de bienvenida");
 define("WMLAN_01","Crear nuevo mensaje");
 define("WMLAN_02","Mensaje");
@@ -27,6 +26,5 @@ define("WMLAN_06","<b>On:</b> El mensaje se renderizará en la caja");
 define("WMLAN_07","Invalidar el método abreviado {WMESSAGE}:");
 //define("WMLAN_08","Preferencias");
 define("WMLAN_09","No hay mensajes de bienvenida");
-define("WMLAN_10","Texto del mensaje");
-
+define("WMLAN_10","Texto del mensaje");   
 ?>

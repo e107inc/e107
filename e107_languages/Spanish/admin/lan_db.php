@@ -1,14 +1,14 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-08-10 19:04:02 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("DBLAN_1", "Configuración del nucleo guardada con backup en la base de datos.");
 define("DBLAN_2", "Backup BD");
 define("DBLAN_3", "Hacer Backup de base de datos SQL");
@@ -43,4 +43,6 @@ define("DBLAN_31","Acceso");
 define("DBLAN_32","Error");
 define("DBLAN_33","Inaccesible");
 define("DBLAN_34","Sin comprobar");
+define('DBLAN_35', 'Haga clic en el botón para comprobar la validez de la tabla user');
+define('DBLAN_36', 'Entradas de la tabla user');
 ?>

@@ -1,14 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     Sitio web e107 - Archivos del lenguaje.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/usertheme_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:19 $
-|     $Author: natxocc $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
-define("LAN_350", "Elegir Tema");
-define("LAN_351", "Seleccionar Tema");
+define('LAN_UMENU_THEME_1', 'Set Tema');
+define('LAN_UMENU_THEME_2', 'Seleccionar Tema ');
+define('LAN_UMENU_THEME_3', 'los usuarios:');
+define('LAN_UMENU_THEME_4', 'Activar los temas que los usuarios pueden seleccionar');
+define('LAN_UMENU_THEME_5', 'Actualizar');
+define('LAN_UMENU_THEME_6', 'Temas disponibles para los usuarios');
+define('LAN_UMENU_THEME_7', 'clase, que puede seleccionar los temas');
 ?>

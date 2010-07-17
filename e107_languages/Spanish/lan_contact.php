@@ -1,15 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_contact.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-08-12 17:23:20 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
 
+define('PAGE_NAME',     'Contactenos');
 define("LANCONTACT_01", "Detalles del contacto");
 define("LANCONTACT_02", "Formulario del contacto");
 define("LANCONTACT_03", "Escriba su nombre:");

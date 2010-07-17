@@ -1,14 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_credits.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-11-11 11:05:45 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
+
 define("PAGE_NAME", "Créditos e107");
 define("CRELAN_1", "Créditos");
 define("CRELAN_2", "Debajo está una lista de recursos y software de terceras personas para e107. Agradecemos su colaboración así como el permitir usar su software bajo licencia GPL");
@@ -31,7 +32,6 @@ define("CRELAN_17", "Calendario Popup calendar");
 define("CRELAN_18", "Soporte PDF"); 
 define("CRELAN_19", "Soporte UTF-8 PDF"); 
 // end third party scripts 
-
 // dev team 
 define("CRELAN_20", ""); // asperon 
 define("CRELAN_21", "Always a pressure..err..pleasure!"); // CaMer0n 

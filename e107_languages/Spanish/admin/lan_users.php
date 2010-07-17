@@ -1,16 +1,15 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2007-10-15 21:01:14 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("USRLAN_1", "Opciones Guardadas.");
-define("USRLAN_2", "Campos extendidos del usuario guardados.");
 define("USRLAN_3", "Administrador listado - para configurar permisos por favor ir a");
 define("USRLAN_4", "Página de administrador");
 define("USRLAN_5", "No puedes borrar el estado del administrador");
@@ -45,6 +44,7 @@ define("USRLAN_33", "No expulsar");
 define("USRLAN_34", "Quitar Admin");
 define("USRLAN_35", "Admin");
 define("USRLAN_36", "Clase");
+
 //define("USRLAN_37", "Miembros");
 //define("USRLAN_38", "Búsqueda reiniciada");
 //define("USRLAN_39", "resultado(s)");
@@ -66,7 +66,7 @@ define("USRLAN_57", "Borrando Miembros desactivados ...");
 define("USRLAN_58", "Transferencia de ficheros deshabilitada en php.ini");
 define("USRLAN_59", "Añadir usuario rápido");
 define("USRLAN_60", "Añadir Usuario");
-define("USRLAN_61", "Usuario");
+define("USRLAN_61", "Nombre de usuario a mostrar");
 define("USRLAN_62", "Contraseña");
 define("USRLAN_63", "Reescriba Contraseña");
 define("USRLAN_64", "Dirección Email");
@@ -76,20 +76,17 @@ define("USRLAN_67", "Las dos contraseñas no coinciden");
 define("USRLAN_68", "Ha dejado en blanco campos obligatorios");
 define("USRLAN_69", "Ésta no parece una dirección de email válida");
 define("USRLAN_70", "Usuario creado");
-
 define("USRLAN_71", "Página principal de usuarios");
 define("USRLAN_72", "Añadir usuario rápido");
 define("USRLAN_73", "Limpiar usuarios");
-
-//define("USRLAN_75", "Opciones");
+define("USRLAN_75", "Ese nombre de usuario ya existe en la base de datos, por favor, elija un nombre de usuario diferente");
 define("USRLAN_76", "Opciones de usuario");
 define("USRLAN_77", "Usuarios");
-define("USRLAN_78", "Nombre de usuario");
+define("USRLAN_78", "Usuario");
 define("USRLAN_79", "Estado");
 define("USRLAN_80", "Info.");
 
 //define("USRLAN_82", "¿Está seguro de querer borrar este usuario?");
-
 define("USRLAN_84", "Hay");
 define("USRLAN_85", "usuarios que no han activado su cuenta - pulse a continuación para borrarlos.");
 define("USRLAN_86", "Usuario verificado");
@@ -102,7 +99,6 @@ define("USRLAN_92", "Caracteres no válidos en el nombre de usuario");
 define("USRLAN_93", "Borrar usuarios sin verificar");
 define("USRLAN_94", "Borrar usuarios sin confirmar registro después de (tiempo especificado en minutos) - dejar en blanco para no usar esta opción<br />Esta opción será ignorada si los registros los modera el administrador");
 define("USRLAN_95", "minutos");
-
 define("USRLAN_112", "Re-enviar Email");
 define("USRLAN_113", "Detalles del registro para");
 define("USRLAN_114", "Estimado");
@@ -110,7 +106,6 @@ define("USRLAN_115", "Gracias por su registro.");
 define("USRLAN_116", "Confirme que desea re-enviar un email de confirmación a:");
 define("USRLAN_117", "Pulse el botón para probar el siguiente email:");
 define("USRLAN_118", "Probar email");
-
 define("USRLAN_120", "Elegir Clases");
 define("USRLAN_121", "Mailing");
 define("USRLAN_122", "Bienvenido a");
@@ -119,8 +114,7 @@ define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para ac
 define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
-define("USRLAN_128", "Nombre de usuario");
-
+define("USRLAN_128", "Nombre de acceso (Nombre con el que accedera a su cuenta)");
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
 define("USRLAN_132", "Activar");
@@ -147,14 +141,12 @@ define("USRLAN_152", "Limpiar saltos y activar");
 define("USRLAN_153", "Eliminar correos sin saltos");
 define("USRLAN_154", "Limiar marca de correo"); 
 define("USRLAN_155", "Total: {TOTAL} Correos encontrados. {DELCOUNT} eliminados a través de opciones.<br />{DELUSER} usuarios marcados como 'saltados' (fuera de {FOUND} correos)"); 
- 
-
+define("USRLAN_156", "Esta dirección de correo ya se encuentra en uso");
 define("LAN_BOUNCED","Saltado");
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 
 define("LAN_NOTVERIFIED","Sin verificar"); 
 define("LAN_BANNED","Expuldado");
-
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Nombre a mostrar");
 define("DUSRLAN_3", "Usuario");
@@ -192,4 +184,5 @@ define("DUSRLAN_34", "Permisos");
 define("DUSRLAN_35", "Foto");
 define("DUSRLAN_36", "Cambiar contraseña");
 define("DUSRLAN_37", "XUP");
+define('USRLAN_219', 'Más de 30 días');     
 ?>

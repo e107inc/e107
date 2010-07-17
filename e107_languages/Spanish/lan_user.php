@@ -1,27 +1,23 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-11-11 11:02:27 $
-|     $Author: natxocc $
+|     $Sitio web e107 - Archivos del lenguaje $
+|     $Versión: 0.7.16 $
+|     $Date: 2009/09/16 17:51:27 $
+|     $Author: E107 <www.e107.org> $
+|     $Traductor: Josico <www.e107.es> $
 +----------------------------------------------------------------------------+
 */
+
 define("PAGE_NAME", "Miembros");
-
 define("LAN_20", "Error");
-
 define("LAN_112", "Dirección email: ");
-
 define("LAN_115", "Número ICQ: ");
 define("LAN_116", "Dirección AIM: ");
 define("LAN_117", "MSN Messenger: ");
 define("LAN_118", "Cumpleaños: ");
 define("LAN_119", "Localización: ");
 define("LAN_120", "Firma: ");
-
 define("LAN_137", "No hay información para este usuario, no está registrado en");
 define("LAN_138", "Miembros: ");
 define("LAN_139", "Ordenar: ");
@@ -35,9 +31,7 @@ define("LAN_146", "Visitas desde su registro: ");
 define("LAN_147", "Envios al Chatbox: ");
 define("LAN_148", "Comentarios enviados: ");
 define("LAN_149", "Mensajes en el foro: ");
-
 define("LAN_308", "Nombre Real: ");
-
 define("LAN_400", "Este no es un usuario válido.");
 define("LAN_401", "No hay información");
 define("LAN_402", "Perfil del miembro");
@@ -65,7 +59,6 @@ define("LAN_423", "Ver los comentarios de este usuario");
 define("LAN_424", "Ver los mensajes en los foros de este usuario");
 define("LAN_425", "Enviar Mensaje Privado a");
 define("LAN_426", "hace");
-
 define("USERLAN_1", "Valoración del Peer");
 define("USERLAN_2", "No tiene permisos para ver esta página.");
 ?>
