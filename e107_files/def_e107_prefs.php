@@ -134,7 +134,7 @@ City, State, Country
   'make_clickable' => '0',
   'track_online' => '1',
   'emotepack' => 'default',
-  'xup_enabled' => '1',
+  'xup_enabled' => '0',
   'mailer' => 'php',
   'ue_upgrade' => '1',
   'search_highlight' => '1',
