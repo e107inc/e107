@@ -426,6 +426,12 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
 	foreach($keys as $k)
 	{
+		
+		if($k == 'bom')
+		{
+			continue;
+		}
+		
 		$lnk = $k;
 		//echo "klucz ".$k."<br />";
 		$k_check = str_replace("English",$target_lan,$k);
