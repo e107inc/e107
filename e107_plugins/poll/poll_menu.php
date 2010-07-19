@@ -59,6 +59,7 @@ WHERE  p.poll_type=1{$poll_to_show}
 ORDER BY p.poll_datestamp DESC LIMIT 0,1
 ";
 
-$poll->render_poll($query, $pollType, $pollMode);
+$poll->remove_poll_cookies();
 
+$poll->render_poll($query, $pollType, $pollMode);
 ?>
