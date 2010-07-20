@@ -66,7 +66,7 @@ elseif(!isset($NEWFORUMPOSTSTYLE_HEADER))
 }
 
 $results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, t.thread_s, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
 LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
@@ -83,6 +83,7 @@ if(!isset($gen) || !is_object($gen))
 	$gen = new convert;
 }
 
+/* // Deprecated method to indicate new forum posts
 if(is_readable(THEME."forum/new_small.png"))
 {
 	$ICON = "<img src='".THEME."forum/new_small.png' alt='' />";
@@ -91,6 +92,7 @@ else
 {
 	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
+*/
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
@@ -125,10 +127,71 @@ foreach ($forumArray as $forumInfo)
 	}
 	else
 	{
-		$LASTPOST = " - ";
-		$LASTPOSTDATE = "";
+		$LASTPOST = ' - ';
+		$LASTPOSTDATE = '';
+	}
+
+	$newflag = FALSE;
+	if (USER)
+	{
+		if ($forumInfo['thread_lastpost'] > USERLV && !preg_match("#\b".$forumInfo['thread_id']."\b#", USERVIEWED))
+		{
+			$newflag = TRUE;
+		}
 	}
 	
+	if ($newflag) 
+	{
+		if ($forumInfo['thread_total_replies'] >= $pref['forum_popular']) 
+		{
+			$iconfile = 'new_popular.png';
+			$iconalt = NFPM_L17;
+		}
+		else 
+		{
+			$iconfile = 'new.png';
+			$iconalt = NFPM_L18;
+		}
+	} 
+	else 
+	{
+		if ($forumInfo['thread_total_replies'] >= $pref['forum_popular']) 
+		{
+			$iconfile = 'nonew_popular.png';
+			$iconalt = NFPM_L19;
+		}
+		else 
+		{
+			$iconfile = 'nonew.png';
+			$iconalt = NFPM_L20;
+		}
+		
+		if ($forumInfo['thread_s'] == 1)
+		{
+			if ($forumInfo['thread_active']) 
+			{
+				$iconfile = 'sticky.png';
+				$iconalt = NFPM_L21;
+			}
+			else 
+			{
+				$iconfile = 'sticky_closed.png';
+				$iconalt = NFPM_L22;
+			}
+		}
+		elseif($forumInfo['thread_s'] == 2)
+		{
+			$iconfile = 'announce.png';
+			$iconalt = NFPM_L23;
+		}
+		elseif(!$forumInfo['thread_active'])
+		{
+			$iconfile = 'closed.png';
+			$iconalt = NFPM_L24;
+		}
+	}
+	
+	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/". $iconfile. "' alt='".$iconalt."' title='".$iconalt."' />";
 	$x = explode(chr(1), $thread_user);
 	$tmp = explode(".", $x[0], 2);
 	if($user_name)
@@ -161,6 +224,5 @@ $text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : au
 
 if($results)
 {
-	$ns->tablerender($pref["nfp_caption"], $text, "nfp");
+	$ns->tablerender($pref["nfp_caption"], $text, 'nfp');
 }
-
