@@ -18,22 +18,23 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."userclass_class.php");
-$query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
-include_lan(e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php");
+require_once(e_HANDLER.'userclass_class.php');
+$query = ($pref['nfp_posts'] ? 'thread_lastpost' : 'thread_datestamp');
+include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 
-$path = e_PLUGIN."forum/";
+$path = e_PLUGIN.'forum/';
 global $sql, $ns;
 // get template ...
 
-if (file_exists(THEME."newforumpost.php")) {
-	require_once(THEME."newforumpost.php");
+if (file_exists(THEME.'newforumpost.php')) {
+	require_once(THEME.'newforumpost.php');
 }
 else if(!isset($NEWFORUMPOSTSTYLE_HEADER)) {
 	// no template found - use default ...
 	$NEWFORUMPOSTSTYLE_HEADER = "
 		<!-- newforumposts -->
-		<div style='text-align:center'>\n<table style='width:auto' class='fborder'>
+		<div style='text-align:center'>
+		<table style='width:auto' class='fborder'>
 		<tr>
 		<td style='width:5%' class='forumheader'>&nbsp;</td>
 		<td style='width:45%' class='forumheader'>".NFPM_LAN_1."</td>
@@ -41,7 +42,7 @@ else if(!isset($NEWFORUMPOSTSTYLE_HEADER)) {
 		<td style='width:5%; text-align:center' class='forumheader'>".NFPM_LAN_3."</td>
 		<td style='width:5%; text-align:center' class='forumheader'>".NFPM_LAN_4."</td>
 		<td style='width:25%; text-align:center' class='forumheader'>".NFPM_LAN_5."</td>
-		</tr>\n";
+		</tr>";
 
 	$NEWFORUMPOSTSTYLE_MAIN = "
 		<tr>
@@ -51,15 +52,21 @@ else if(!isset($NEWFORUMPOSTSTYLE_HEADER)) {
 		<td style='width:5%; text-align:center' class='forumheader3'>{VIEWS}</td>
 		<td style='width:5%; text-align:center' class='forumheader3'>{REPLIES}</td>
 		<td style='width:25%; text-align:center' class='forumheader3'>{LASTPOST}<br /><span class='smalltext'>{LASTPOSTDATE}&nbsp;</span></td>
-		</tr>\n";
+		</tr>";
 
-	$NEWFORUMPOSTSTYLE_FOOTER = "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
-		<span class='smalltext'>".NFPM_LAN_6.": <b>{TOTAL_TOPICS}</b> | ".NFPM_LAN_4.": <b>{TOTAL_REPLIES}</b> | ".NFPM_LAN_3.": <b>{TOTAL_VIEWS}</b></span>\n</td>\n</tr>\n</table>\n</div>";
+	$NEWFORUMPOSTSTYLE_FOOTER = "
+		<tr>
+		<td colspan='6' style='text-align:center' class='forumheader2'>
+		<span class='smalltext'>".NFPM_LAN_6.": <b>{TOTAL_TOPICS}</b> | ".NFPM_LAN_4.": <b>{TOTAL_REPLIES}</b> | ".NFPM_LAN_3.": <b>{TOTAL_VIEWS}</b></span>
+		</td>
+		</tr>
+		</table>
+		</div>";
 
 }
 
 $results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, t.thread_s, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
 LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
@@ -71,10 +78,12 @@ ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 
 $forumArray = $sql->db_getList();
 
-if (!isset($gen) || !is_object($gen)) {
+if (!isset($gen) || !is_object($gen)) 
+{
 	$gen = new convert;
 }
 
+/* // Deprecated method to indicate new forum posts
 if (file_exists(THEME."forum/new_small.png")) 
 {
   $ICON = "<img src='".THEME."forum/new_small.png' alt='' />";
@@ -83,6 +92,7 @@ else
 {
   $ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
+*/
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
@@ -117,10 +127,71 @@ foreach($forumArray as $forumInfo)
 	}
 	else
 	{
-		$LASTPOST = " - ";
-		$LASTPOSTDATE = "";
+		$LASTPOST = ' - ';
+		$LASTPOSTDATE = '';
 	}
 
+	$newflag = FALSE;
+	if (USER)
+	{
+		if ($forumInfo['thread_lastpost'] > USERLV && !preg_match("#\b".$forumInfo['thread_id']."\b#", USERVIEWED))
+		{
+			$newflag = TRUE;
+		}
+	}
+	
+	if ($newflag) 
+	{
+		if ($forumInfo['thread_total_replies'] >= $pref['forum_popular']) 
+		{
+			$iconfile = 'new_popular.png';
+			$iconalt = NFPM_L17;
+		}
+		else 
+		{
+			$iconfile = 'new.png';
+			$iconalt = NFPM_L18;
+		}
+	} 
+	else 
+	{
+		if ($forumInfo['thread_total_replies'] >= $pref['forum_popular']) 
+		{
+			$iconfile = 'nonew_popular.png';
+			$iconalt = NFPM_L19;
+		}
+		else 
+		{
+			$iconfile = 'nonew.png';
+			$iconalt = NFPM_L20;
+		}
+		
+		if ($forumInfo['thread_s'] == 1)
+		{
+			if ($forumInfo['thread_active']) 
+			{
+				$iconfile = 'sticky.png';
+				$iconalt = NFPM_L21;
+			}
+			else 
+			{
+				$iconfile = 'sticky_closed.png';
+				$iconalt = NFPM_L22;
+			}
+		}
+		elseif($forumInfo['thread_s'] == 2)
+		{
+			$iconfile = 'announce.png';
+			$iconalt = NFPM_L23;
+		}
+		elseif(!$forumInfo['thread_active'])
+		{
+			$iconfile = 'closed.png';
+			$iconalt = NFPM_L24;
+		}
+	}
+	
+	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/". $iconfile. "' alt='".$iconalt."' title='".$iconalt."' />";
 	$x = explode(chr(1), $thread_user);
 	$tmp = explode(".", $x[0], 2);
 	if($user_name)
@@ -153,7 +224,7 @@ $text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : au
 
 if ($results)
 {
-	$ns->tablerender($pref['nfp_caption'], $text, "nfp");
+	$ns->tablerender($pref['nfp_caption'], $text, 'nfp');
 }
 
 ?>
