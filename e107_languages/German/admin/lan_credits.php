@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_credits.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-31 14:06:36 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_credits.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -41,15 +41,15 @@ define("CRELAN_19", "UTF-8 PDF Support");
 
 // dev team
 
-define("CRELAN_20", ""); // asperon
+define("CRELAN_20", "asperon"); // asperon
 define("CRELAN_21", "Always a pressure..err..pleasure!"); // CaMer0n
 define("CRELAN_22", "\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\""); // jalist
-define("CRELAN_23", ""); // lisa
-define("CRELAN_24", ""); // McFly
-define("CRELAN_25", ""); // que
-define("CRELAN_26", ""); // streaky
+define("CRELAN_23", "lisa"); // lisa
+define("CRELAN_24", "McFly"); // McFly
+define("CRELAN_25", "que"); // que
+define("CRELAN_26", "streaky"); // streaky
 define("CRELAN_27", "\"Wot? No tea?? 0_0\""); // SweetAs
-define("CRELAN_28", ""); // MrPete
+define("CRELAN_28", "MrPete"); // MrPete
 
 // end dev team
 

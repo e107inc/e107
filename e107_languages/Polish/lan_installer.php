@@ -7,12 +7,12 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.12 $
+|     $Date: 2010/01/31 18:39:07 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_strict_utf8/e107_languages/Polish/lan_installer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.26
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.27
 +-----------------------------------------------------------------------------+
 */
  
@@ -161,7 +161,7 @@ define("LANINS_102", 'Data / Czas');
 //define("LANINS_103", 'Recenzje');
 //define("LANINS_104", 'Strona główna recenzji ...');
 
-define("LANINS_105", 'Rozpoczynanie nazwy bazy danych lub prefiksu cyfrą, a następnie literą “e” or “E” jest zabronione');
+define("LANINS_105", 'Rozpoczynanie nazwy bazy danych lub prefiksu cyfrą, a następnie literą “e” lub “E” jest niedozwolone.<br />Nazwa bazy danych lub prefiks nie może być pusta.');
 define("LANINS_106", 'OSTRZEŻENIE - e107 nie może zapisywać do katalogów i/lub wylistować plików. Jeśli nie zatrzyma to procesu instalacji e107, będzie to oznaczało, że niektóre funkcje są niedostępne. 
 				Aby używać tych funkcji, należy zmienić uprawnienia plików.');
 

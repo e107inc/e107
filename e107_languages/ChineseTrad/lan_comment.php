@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:26 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_comment.php,v $
+|     $Revision: 1.14 $
+|     $Date: 2008/05/25 08:25:33 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 
@@ -30,10 +30,11 @@ define("COMLAN_102", "回覆給: ");
 define("COMLAN_103", "文章");
 define("COMLAN_104", "回顧");
 define("COMLAN_105", "內容");
-define("COMLAN_145", "已註冊: ");
+define("COMLAN_106", "下載");
+define("COMLAN_145", "完成註冊: ");
 define("COMLAN_194", "訪客");
-define("COMLAN_195", "已註冊會員");
-define("COMLAN_310", "無法接受已註冊會員名稱- 假如是您的帳號，請登入後發表.");
+define("COMLAN_195", "註冊會員");
+define("COMLAN_310", "無法接受此註冊會員名稱- 假如是您的帳號，請登入後發表.");
 define("COMLAN_312", "複製發表 - 本站無法接受此行為.");
 define("COMLAN_313", "來自於");
 define("COMLAN_314", "編輯評論");
@@ -43,17 +44,6 @@ define("COMLAN_317", "編輯引用回覆");
 define("COMLAN_318", "編輯評論");
 define("COMLAN_319", "編輯過");
 define("COMLAN_320", "更新編輯");
-/*
-define("COMLAN_1", "這裡");
-define("COMLAN_2", "登入");
-define("COMLAN_3", "錯誤!");
-define("COMLAN_4", '主題');
-define("COMLAN_5", '回覆:');
-define("COMLAN_6", '回覆該');
-define("COMLAN_7", '評分');
-define("COMLAN_8", '評論功能已關閉');
-define("COMLAN_9", '尚未認可');
-*/
 
 define("COMLAN_321", "這裡");
 define("COMLAN_322", "註冊");
@@ -74,5 +64,6 @@ define("COMLAN_TYPE_5", "文件");
 define("COMLAN_TYPE_6", "錯誤追蹤");
 define("COMLAN_TYPE_7", "主意");
 define("COMLAN_TYPE_8", "會員個人資料");
+define("COMLAN_TYPE_PAGE", "內容");		// Reall custom page, but use a 'non-technical' description
 
 ?>

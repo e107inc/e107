@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_fileinspector.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -23,6 +23,16 @@ define("FC_LAN_8", "Integrität der Core Files überprüfen");
 define("FC_LAN_9", "An");
 define("FC_LAN_10", "Aus");
 define("FC_LAN_11", "Jetzt scannen");
+define("FC_LAN_12", "Keine");
+define("FC_LAN_13", "Fehlende Core Files");
+define("FC_LAN_14", "Ergebnisse anzeigen als");
+define("FC_LAN_15", "Baum");
+define("FC_LAN_16", "Liste");
+define("FC_LAN_17", "String Matching");
+define("FC_LAN_18", "Regular expression");
+define("FC_LAN_19", "Zeilennummer anzeigen");
+define("FC_LAN_20", "Betreffende Zeilen anzeigen");
+define("FC_LAN_21", "Alte Core Files");
 
 define("FR_LAN_1", "Scannen");
 define("FR_LAN_2", "Scan Ergebnisse");
@@ -53,6 +63,12 @@ define("FR_LAN_19", "Files fehlerhaft");
 define("FR_LAN_20", "Alle Files durchlaufen");
 define("FR_LAN_21", "Keine");
 define("FR_LAN_22", "Fehlende Core-Files");
+define("FR_LAN_23", "Nichts gefunden.");
+define("FR_LAN_24", "Alte Core Files");
+define("FR_LAN_25", "Integritätscheck kann nicht kalkuliert werden");
 
+define("FR_LAN_26", "Warnung! Bekannter Unsicherheitsfaktor erkannt!");
+define("FR_LAN_27", "Es gibt Dateien auf Ihrem Server die ein Sicherheitsrisiko darstellen und sollten deshalb sofort gelöscht werden.");
+define("FR_LAN_28", "Unsichere Dateien");
 
 ?>

@@ -1,6 +1,17 @@
-<div class='forumheader4'>
-Q>	A quoi sert cette section ?
-A>	Vous pouvez écrire un texte particulier qui sera toujours affiché sur la page d'accueil 
-		au-dessus de vos actualités.  
-Vous pouvez saisir un message différent pour les invités,les membres et les administrateurs.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Message_de_bienvenue,v $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Que sont les messages de bienvenue?
+A>	Les messages de bienvenue sont du texte ou des images qui s’affichent dans votre page d’accueil, généralement en début du contenu.
+Vous pouvez saisir un message différent pour les visiteurs, les membres et les administrateurs ou autre groupe selon vos besoins.

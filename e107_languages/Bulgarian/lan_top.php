@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_top.php,v $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_top.php,v $
 |     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

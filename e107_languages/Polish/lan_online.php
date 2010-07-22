@@ -7,10 +7,10 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.2 $
+|     $Date: 2009/07/12 12:59:28 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_online.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_strict_utf8/e107_languages/Polish/lan_online.php,v $
 +-----------------------------------------------------------------------------+
 |     Zgodne z: /e107_languages/English/lan_online.php rev. 1.1
 +-----------------------------------------------------------------------------+

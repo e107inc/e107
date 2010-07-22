@@ -1,16 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_frontpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-19 05:55:59 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("CONT_FP_1", "Contentcategorie");
-define("CONT_FP_2", "Hoofdpagina");
+define('CONT_FP_1', 'Contentcategorie');
+define('CONT_FP_2', 'Hoofdpagina');
 
 ?>

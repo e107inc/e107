@@ -1,22 +1,17 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-02-27 01:57:03 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-if (!defined('e107_INIT')) { exit; }
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/language.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-$text = "L'activation d'un nouveau langage permet d'avoir une version de votre contenu dans cette langue sur votre site.<hr />
-Dans l'effort de vous fournir une traduction 100% francophone, tous les termes que vous retrouverez sur ce site seront uniquement en français.<br />
-Certains de ces termes ne sont encore que peu utilisé au travers du web francophone, si vous préférez les modifier pour accompagner vos usagers
-ou vos fantaisies, veuillez le faire depuis cette page :<form action='".e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_config.php' style='text-align:center'>
-<input type='submit' class='button' name='update_lan_French' value='Modifier les termes' /></form>
+if (!defined('e107_INIT')) { exit(); }
 
-";
-$ns -> tablerender("Aide Langages", $text);
-?>
+$text = 'L’activation d’une nouvelle langue permet d’avoir une version de votre contenu dans cette langue sur votre site.';
+$ns -> tablerender('Aide langues', $text);

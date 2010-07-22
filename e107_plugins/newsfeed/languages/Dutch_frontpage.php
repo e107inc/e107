@@ -1,16 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-19 06:45:26 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("NWSF_FP_1", "News Feeds");
-define("NWSF_FP_2", "hoofdpagina");
+define('NWSF_FP_1', 'Nieuws Feeds');
+define('NWSF_FP_2', 'hoofdpagina');
 
 ?>

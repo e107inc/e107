@@ -38,5 +38,12 @@ define("UE_LAN_HOMEPAGE", "דף הבית");
 define("UE_LAN_HOMEPAGE_DESC", "דף הבית של המשתמש - כתובת");
 define("UE_LAN_BIRTHDAY", "יום הולדת");
 define("UE_LAN_BIRTHDAY_DESC", "יום הולדת");
+define("UE_LAN_LANGUAGE", "שפה");
+define("UE_LAN_LANGUAGE_DESC", "משתמש שפה");
+define("UE_LAN_COUNTRY", "מדינה");
+define("UE_LAN_COUNTRY_DESC", "פרטי מדינה (כולל שולחן db)");
+
+define("LAN_UE_FAIL_HOMEPAGE", "ערך לא חוקי עבור לדף הבית הגדרת");
+
 
 ?>

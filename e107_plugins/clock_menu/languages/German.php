@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/German.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:00:34 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/clock_menu/languages/German.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:04 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -29,9 +29,9 @@ define('CLOCK_MENU_L8','Donnerstag,');
 define('CLOCK_MENU_L9','Freitag,');
 define('CLOCK_MENU_L10','Samstag,');
 define('CLOCK_MENU_L11','Sonntag,');
-define('CLOCK_MENU_L12','Jannuar');
+define('CLOCK_MENU_L12','Januar');
 define('CLOCK_MENU_L13','Februar');
-define('CLOCK_MENU_L14','MÃ¤rz');
+define('CLOCK_MENU_L14','März');
 define('CLOCK_MENU_L15','April');
 define('CLOCK_MENU_L16','Mai');
 define('CLOCK_MENU_L17','Juni');

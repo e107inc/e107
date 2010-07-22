@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_upload_handler.php,v $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_upload_handler.php,v $
 |     $Revision: 1.2 $
-|     $Date: 2005-07-19 19:46:15 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -26,4 +26,11 @@ define("LANUPLOAD_10", "Неуспешно качване [Дублиране н
 define("LANUPLOAD_11", "Файлът не беше качен. Име на файла: ");
 define("LANUPLOAD_12", "Грешка");
 
+define("LANUPLOAD_13", "Липсваща temp папка");
+define("LANUPLOAD_14", "Неуспешно записване на файл");
+define("LANUPLOAD_15", "Качване на файлове не е позволено");
+define("LANUPLOAD_16", "Непозната грешка");
+define("LANUPLOAD_17", "Невалидно име за качения файл");
+define("LANUPLOAD_18", "Каченият файл надвишава позволените лимити.");
+define("LANUPLOAD_19", "Качени са твърде много файлове - надвърлящите позволения брой са изтрити.");
 ?>

@@ -3,13 +3,13 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_sitelinks.php,v $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_sitelinks.php,v $
 |     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:31 $
-|     $Author: e107coders $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("LAN_SITELINKS_183", "網站選單");
-define("LAN_SITELINKS_502", "系統控制");
+define("LAN_SITELINKS_502", "管理控制台");
 
 ?>

@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_user_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_user_extended.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -42,8 +42,10 @@ define("UE_LAN_HOMEPAGE", "Лична страница");
 define("UE_LAN_HOMEPAGE_DESC", "Лична страница на потребителя (url)");
 define("UE_LAN_BIRTHDAY", "Рождена дата");
 define("UE_LAN_BIRTHDAY_DESC", "Рождена дата");
-define("UE_LAN_LANGUAGE", "Език");
+define("UE_LAN_LANGUAGE", "Езикови настройки");
 define("UE_LAN_LANGUAGE_DESC", "Потребителски език");
 define("UE_LAN_COUNTRY", "Страна");
 define("UE_LAN_COUNTRY_DESC", "Страна на потребителя (включва БД таблица)");
+
+define("LAN_UE_FAIL_HOMEPAGE", "Невалидна стойност за настройка на начална страница");
 ?>

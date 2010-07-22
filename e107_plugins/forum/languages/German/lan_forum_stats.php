@@ -3,18 +3,18 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:04:46 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_stats.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:05 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum Statistik");
 
 define("FSLAN_1", "Generell");
-define("FSLAN_2", "Forum geöffnet");
-define("FSLAN_3", "Geöffnet für");
+define("FSLAN_2", "Forum eröffnet");
+define("FSLAN_3", "Geöffnet seit");
 define("FSLAN_4", "Einträge insgesamt");
 define("FSLAN_5", "Forum Topics");
 define("FSLAN_6", "Forum Antworten");

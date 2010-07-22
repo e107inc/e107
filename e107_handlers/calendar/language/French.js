@@ -1,6 +1,17 @@
 // ** I18N
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_handlers/calendar/language/French.js,v $
+ * $Revision: 1.5 $
+ * $Date: 2008/06/16 13:04:58 $
+ * $Author: marj_nl_fr $
+ */
 
-// Calendar Fr language
+// Calendar FR language
 // Author: Mihai Bazon, <mihai_bazon@yahoo.com>
 // Encoding: any
 // Distributed under the same terms as the calendar itself.
@@ -45,37 +56,37 @@ Calendar._SDN = new Array
 
 // First day of the week. "0" means display Sunday first, "1" means display
 // Monday first, etc.
-Calendar._FD = 0;
+Calendar._FD = 1;
 
 // full month names
 Calendar._MN = new Array
 ("Janvier",
- "F&eacute;vrier",
+ "Février",
  "Mars",
  "Avril",
  "Mai",
  "Juin",
  "Juillet",
- "Ao&ucirc;t",
+ "Août",
  "Septembre",
  "Octobre",
  "Novembre",
- "D&eacute;cembre");
+ "Décembre");
 
 // short month names
 Calendar._SMN = new Array
 ("Jan",
- "F&eacute;v",
+ "Fév",
  "Mars",
  "Avr",
  "Mai",
  "Jui",
  "Juil",
- "Ao&ucirc;",
+ "Août",
  "Sep",
  "Oct",
  "Nov",
- "D&eacute;c");
+ "Déc");
 
 // tooltips
 Calendar._TT = {};
@@ -83,23 +94,23 @@ Calendar._TT["INFO"] = "A propos du calendrier";
 
 Calendar._TT["ABOUT"] =
 "Sélecteur Date/Heure DHTML\n" +
-"(c) dynarch.com 2002-2005 / Auteur: Mihai Bazon\n" + // don't translate this ;-)
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this ;-)
 "Pour obtenir la dernière version, visitez: http://www.dynarch.com/projects/calendar/\n" +
-"Distribué sous GNU LGPL.  Voir http://gnu.org/licenses/lgpl.html pour les détails." +
+"Distribué sous licence GNU LGPL.  Voir http://gnu.org/licenses/lgpl.html pour les détails." +
 "\n\n" +
 "Sélection de la date:\n" +
-"- Utiliser les boutons \xab, \xbb pour sélectionner l&#39;année\n" +
+"- Utiliser les boutons \xab, \xbb pour sélectionner l'année\n" +
 "- Utiliser les boutons " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " pour sélectionner le mois\n" +
-"- maintenir le bouton de la souris enfoncé ou appuyer n&#39;importe quel boutons ci-dessus pour une sélection rapide.";
+"- maintenir le bouton de la souris enfoncé ou appuyer n'importe quel boutons ci-dessus pour une sélection rapide.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
-"Sélection de l&#39;heure:\n" +
+"Sélection de l'heure:\n" +
 "- Cliquer sur heures ou minutes pour incrémenter\n" +
 "- ou Maj-clic pour décrémenter\n" +
 "- ou cliquer et glisser-déplacer pour une sélection plus rapide";
 
 Calendar._TT["PREV_YEAR"] = "Année précédente (maintenir pour le menu)";
 Calendar._TT["PREV_MONTH"] = "Mois précédent (maintenir pour le menu)";
-Calendar._TT["GO_TODAY"] = "Aller à aujourd&#39;hui";
+Calendar._TT["GO_TODAY"] = "Aller à aujourd'hui";
 Calendar._TT["NEXT_MONTH"] = "Mois suivant (maintenir pour le menu)";
 Calendar._TT["NEXT_YEAR"] = "Année suivante (maintenir pour le menu)";
 Calendar._TT["SEL_DATE"] = "Sélectionner la date";
@@ -116,7 +127,7 @@ Calendar._TT["DAY_FIRST"] = "Afficher %s en premier";
 Calendar._TT["WEEKEND"] = "0,6";
 
 Calendar._TT["CLOSE"] = "Fermer";
-Calendar._TT["TODAY"] = "Aujourd&#39hui";
+Calendar._TT["TODAY"] = "Aujourd'hui";
 Calendar._TT["TIME_PART"] = "(Maj-)Clic ou glisser pour changer la valeur";
 
 // date formats

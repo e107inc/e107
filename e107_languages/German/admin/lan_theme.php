@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_theme.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2010/06/07 21:17:49 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -31,13 +31,13 @@ define("TPVLAN_16", "Admin Nachricht");
 define("TPVLAN_17", "Die Datei scheint kein gültiges .zip oder .tar archive Format zu sein.");
 define("TPVLAN_18", "Ein Fehler ist aufgetreten, datei kann nicht entzippt werden");
 define("TPVLAN_19", "Ihr Theme wurde hochgeladen und entzippt, bitte scrollen Sie nach unten um es in der Liste zu sehen.");
-define("TPVLAN_20", "Auto Theme Upload und Extraction abgeschalten, bis Ihr Themes Verzeichnis die richtigen Rechte hat - bitte geben Sie dem e107_themes Verzeichnis 777 chmod Rechte.");
+define("TPVLAN_20", "Auto Theme Upload und Extraction abgeschaltet, bis Ihr Themes Verzeichnis die richtigen Rechte hat - bitte geben Sie dem e107_themes Verzeichnis 777 chmod Rechte.");
 
 define("TPVLAN_21", "Dies ist das momentan verwendete Seiten-Theme.");
 define("TPVLAN_22", "Dieses Theme hat mehrere Stylesheets");
 define("TPVLAN_23", "Gesetzer Stylesheet");
 define("TPVLAN_24", "Keine Information");
-define("TPVLAN_25", "Um auszuwählen, welchen Stylesheet sie verwenden möchten gehen Sie bitte zu Ihren <a href='".e_ADMIN."prefs.php'>Voreinstellungen</a> und klicken Sie auf 'Layout'.");
+//define("TPVLAN_25", "Um auszuwählen, welchen Stylesheet sie verwenden möchten gehen Sie bitte zu Ihren <a href='".e_ADMIN_ABS."theme.php'>Theme Manager</a> und klicken Sie auf 'Layout'.");
 
 define("TPVLAN_26", "Theme Manager");
 define("TPVLAN_27", "Bitte wählen Sie den Stylesheet den sie benutzen möchten");
@@ -60,5 +60,9 @@ define("TPVLAN_40", "Admin Theme gesetzt als");
 define("TPVLAN_41", "Bitte wählen Sie den Admin Layout Stil den Sie benutzen möchten");
 define("TPVLAN_42", "Admin optionen speichern");
 define("TPVLAN_43", "Admin Optionen gespeichert");
+
+define("TPVLAN_46", "PCLZIP Fehler beim Extrahieren:");
+define("TPVLAN_47", "PCLTAR Fehler beim Extrahieren: ");
+define("TPVLAN_48", "Code:");
 
 ?>

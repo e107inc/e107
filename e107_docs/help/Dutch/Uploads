@@ -1,4 +1,4 @@
-
+<!-- for Uploads $Id$ -->
 Q>	Ik wil gebruikers graag bestanden laten uploaden naar mijn site. Maar is dat wel veilig...
 A>	Je kunt verschillende dingen doen om de beveiliging te verhogen. Eerst, gebruik Binary opslag, het geuploade bestand wordt dan in de mySQL database opgeslagen en is niet toegankelijk voor wie dan ook, behalve voor download. Ten tweede, beperk het aantal toegestane bestandsformaten. Als iemand probeert een niet toegestaan bestandstype te uploaden, dan wordt dat onmiddellijk verwijderd van je server.
 

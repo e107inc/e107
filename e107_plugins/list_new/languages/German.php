@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/German.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-31 14:06:36 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/list_new/languages/German.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2010/01/07 04:40:11 $
+|     $Author: lars78 $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,8 +33,8 @@ define("LIST_ADMIN_3", "Einstellungen aktualisiert");
 define("LIST_ADMIN_4", "Bereich");
 define("LIST_ADMIN_5", "Menü");
 define("LIST_ADMIN_6", "Seite");
-define("LIST_ADMIN_7", "Freigeschalten");
-define("LIST_ADMIN_8", "nicht freigeschalten");
+define("LIST_ADMIN_7", "Aktiviert");
+define("LIST_ADMIN_8", "Deaktiviert");
 define("LIST_ADMIN_9", "Offen");
 define("LIST_ADMIN_10", "Geschlossen");
 define("LIST_ADMIN_11", "Aktualisierung");
@@ -89,7 +89,7 @@ define("LIST_ADMIN_OPT_5", "Menü zur Seite der neuen Einträge");
 define("LIST_ADMIN_OPT_6", "Optionen");
 
 define("LIST_ADMIN_MENU_2", "Icon : Gesetztes");
-define("LIST_ADMIN_MENU_3", "Benutzen Sie das gesetzte Theme-Bullet falls kein Icon zur Verfügung steht oder falls die Benutzung von Icons abgeschalten ist");
+define("LIST_ADMIN_MENU_3", "Benutzen Sie das gesetzte Theme-Bullet falls kein Icon zur Verfügung steht oder falls die Benutzung von Icons abgeschaltet ist");
 define("LIST_ADMIN_MENU_4", "");
 
 define("LIST_ADMIN_LAN_2", "Überschrift");
@@ -129,7 +129,7 @@ define("LIST_ADMIN_LAN_27", "Wählen Sie hier, ob eine Nachricht angezeigt werde
 define("LIST_ADMIN_LAN_28", "");
 
 define("LIST_ADMIN_LAN_29", "Icon : Gesetztes");
-define("LIST_ADMIN_LAN_30", "Benutzen Sie das gesetzte Theme-Bullet falls kein Icon zur Verfügung steht oder falls die Benutzung von Icons nicht freigeschalten ist");
+define("LIST_ADMIN_LAN_30", "Benutzen Sie das gesetzte Theme-Bullet falls kein Icon zur Verfügung steht oder falls die Benutzung von Icons deaktiviert ist");
 define("LIST_ADMIN_LAN_31", "");
 
 define("LIST_ADMIN_LAN_32", "Zeitspanne:Tage");

@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_page.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/English/lan_page.php,v $
+|     $Revision: 83 $
+|     $Date: 2006-11-27 14:47:49 +0200 (Mon, 27 Nov 2006) $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

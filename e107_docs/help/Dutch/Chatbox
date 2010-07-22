@@ -1,4 +1,4 @@
-
+<!-- for Chatbox $Id$ -->
 Q>	Waar dient de instelling Vervang links voor?
 A>	Je kunt alle in de chatbox ingevoerde links veranderen in andere tekst of een afbeelding. Hiermee kun je voorkomen dat de chatbox wordt overspoeld met lange website adressen. Om een plaatje te gebruiken, kruis je Vervang links aan en in het tekstvakje daaronder voer je in &lt;img src='pad_naar_je_plaatje' alt='' />. Nu wordt elke ingevoerde link weergegeven door het plaatje.
 

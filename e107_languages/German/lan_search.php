@@ -3,18 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/lan_search.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Suche");
 
-define("LAN_98", "News Einträge");
-define("LAN_99", "Kommentare");
+
 define("LAN_140", "Registrierte Mitglieder");
 define("LAN_180", "Suche");
 define("LAN_192", "Alle Kategorien");
@@ -25,10 +24,10 @@ define("LAN_196", "Übereinstimmungen");
 define("LAN_197", "Downloads");
 define("LAN_198", "Keine Übereinstimmungen gefunden");
 define("LAN_199", "Suche nach:");
-define("LAN_200", "Kategorien:");
-define("LAN_201", "Bitte formulieren Sie ihre Suchanfrage um");
+
+
 define("LAN_416", "Sie müssen eingelogged sein um Zugriff zu haben");
-define("LAN_417", "Suchanfragen müssen mindestens aus 3 Zeichen bestehen.");
+define("LAN_417", "Suchanfragen müssen mindestens aus -- Zeichen -- Charakteren bestehen.");
 define("LAN_418", "Andere Seiten");
 define("LAN_SEARCH_1", "Alle auswählen");
 define("LAN_SEARCH_2", "Auswahl aufheben");
@@ -107,6 +106,17 @@ define("LAN_SEARCH_71", "Geschrieben als Anwort zum Newseintrag");
 define("LAN_SEARCH_72", "Signatur");
 define("LAN_SEARCH_73", "Keine Signatur.");
 define("LAN_SEARCH_74", "Gewählt am");
-define("LAN_SEARCH_75", "Such Typus");
+
+define("LAN_SEARCH_75", "SUCH Typ");
+define("LAN_SEARCH_76", "Geschrieben auf Seite");
+define("LAN_SEARCH_77", "Geschrieben auf der Profilseite von");
+
+//Folgende ursprüngliche LAN_nnn wurden umbenannt um Konflikte zu vermeiden
+define("LAN_SEARCH_98", "News");
+define("LAN_SEARCH_99", "Kommentare");
+//define("LAN_SEARCH_200", "Kategorien:");
+//Redundant LAN?
+define("LAN_SEARCH_201", "Bitte formulieren sie ihre Suchparameter neu");
+
 
 ?>

@@ -3,11 +3,12 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_links.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2009/02/25 13:16:42 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
+|     $updated by: webmaster@e107cms.de [Jedi] (http://www.e107cms.de)$
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +54,7 @@ define("LCLAN_63", "Neuen Link erstellen");
 define("LCLAN_68", "Links Optionen");
 
 
-define("LCLAN_78", "Zeige Beschreibung bei Link<b>überfahren mit der Mouse");
+define("LCLAN_78", "Zeige Beschreibung als Tool-Tip");
 define("LCLAN_79", "Die Beschreibung wird angezeigt, wenn der Link mit der Mouse überfahren wird");
 define("LCLAN_80", "Aktiviere Expanding Sub-Menüs");
 define("LCLAN_81", "Sub-Menüs werden nur angezeigt wenn der Hauptlink geklickt wird. (Link Hauptkategorien sind abgestellt)");
@@ -63,7 +64,7 @@ define("LCLAN_83", "Submenus Generator");
 
 define("LCLAN_88", "Seiten Links Optionen");
 define("LCLAN_89", "Bild");
-define("LCLAN_90", "Link Name");
+
 define("LCLAN_91", "Verschieben");
 
 define("LCLAN_95", "Klasse");
@@ -79,5 +80,6 @@ define("LINKLAN_6", "Sublinks erstellen von:");
 define("LINKLAN_7", "Unter welchem Link soll ein Sublink erstellt werden?");
 define("LINKLAN_8", "News Kategorien");
 define("LINKLAN_9", "Download Kategorien");
+define("LINKLAN_10", "Sublink erstellen");
 
 ?>

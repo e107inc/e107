@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:32 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_user.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "會員");
@@ -20,9 +20,9 @@ define("LAN_118", "生日");
 define("LAN_119", "來自於");
 define("LAN_120", "簽名檔");
 define("LAN_137", "目前沒有未註冊會員任何資訊");
-define("LAN_138", "已註冊會員: ");
+define("LAN_138", "註冊會員: ");
 define("LAN_139", "排列: ");
-define("LAN_140", "已註冊會員");
+define("LAN_140", "註冊會員");
 define("LAN_141", "目前沒有註冊會員.");
 define("LAN_142", "會員");
 define("LAN_143", "[要求隱藏]");

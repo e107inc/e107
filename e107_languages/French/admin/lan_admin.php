@@ -1,239 +1,277 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-05-21 10:09:56 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-define("ADLAN_0", "".GLOBAL_LAN_NEWS_4."");
-define("ADLAN_1", "Ajouter/Éditer/Supprimer des ".GLOBAL_LAN_NEWS_3."");
-define("ADLAN_2", "Catégories des ".GLOBAL_LAN_NEWS_4."");
-define("ADLAN_3", "Ajouter/Éditer/Supprimer des catégories d".GLOBAL_LAN_D_PREFIX_NEWS.GLOBAL_LAN_NEWS_1."");
-define("ADLAN_4", "Préférences");
-define("ADLAN_5", "Éditer les préférences du site");
-define("ADLAN_6", "Menus");
-define("ADLAN_7", "Changer la position de vos menus");
-define("ADLAN_8", "Administrateurs");
-define("ADLAN_9", "Ajouter/supprimer des administrateurs");
-define("ADLAN_10", "Mot de passe Admin");
-define("ADLAN_11", "Changer votre mot de passe");
-define("ADLAN_12", "Forums");
-define("ADLAN_13", "Ajouter/Éditer des Forums");
-define("ADLAN_14", "Articles");
-define("ADLAN_15", "Ajouter/Éditer/Supprimer des articles");
-define("ADLAN_16", "Contenu");
-define("ADLAN_17", "Ajouter/Éditer/Supprimer des pages de contenu");
-define("ADLAN_18", "Chroniques");
-define("ADLAN_19", "Ajouter/Éditer/Supprimer des chroniques");
-define("ADLAN_22", "Catégories de liens");
-define("ADLAN_23", "Ajouter/Éditer/Supprimer des catégories de liens");
-define("ADLAN_24", "Téléchargements");
-define("ADLAN_25", "Gérer les téléchargements");
-define("ADLAN_26", "Catégories de téléchargements");
-define("ADLAN_27", "Ajouter/Éditer/Supprimer catégories de téléchargements");
-define("ADLAN_28", "Messages de Bienvenue");
-define("ADLAN_29", "Configurer les messages de bienvenue");
-define("ADLAN_30", "Gestionnaire de fichiers");
-define("ADLAN_31", "Gérer/Uploader des fichiers");
-define("ADLAN_32", "".GLOBAL_LAN_NEWS_4." proposées");
-define("ADLAN_33", "Voir les ".GLOBAL_LAN_NEWS_4." proposées");
-define("ADLAN_34", "Liste des bannis");
-define("ADLAN_35", "Bannir un visiteur");
-define("ADLAN_36", "Utilisateurs");
-define("ADLAN_37", "Gérer les utilisateurs du site");
-define("ADLAN_38", "Groupes");
-define("ADLAN_39", "Créer/Éditer un groupe d'utilisateur");
-define("ADLAN_40", "Maintenance");
-define("ADLAN_41", "Désactiver le site pour effectuer une maintenance");
-define("ADLAN_42", "Menus/Pages personnifiés");
-define("ADLAN_43", "Créer des menus/pages personnifiés");
-define("ADLAN_44", "Base de données");
-define("ADLAN_45", "Sauvegarder/Optimiser/Réparer votre base de données");
-define("ADLAN_46", "Déconnexion");
-define("ADLAN_47", "Bienvenue");
-define("ADLAN_48", "Connecté ");
-define("ADLAN_49", "Administrateur principal du site");
-define("ADLAN_50", "permissions");
-define("ADLAN_51", "Veuillez vous identifier pour accéder au panneau d'administration");
-define("ADLAN_52", "Accueil Administration");
-define("ADLAN_53", "Quitter");
-define("ADLAN_54", "Bannières");
-define("ADLAN_55", "Configurer des bannières");
-define("ADLAN_56", "".GLOBAL_LAN_CHATBOX_2."");
-define("ADLAN_57", "Configurer l".GLOBAL_LAN_L_PREFIX_CHATBOX.GLOBAL_LAN_CHATBOX_1."");
-define("ADLAN_58", "Emoticônes");
-define("ADLAN_59", "Configurer les émoticônes");
-define("ADLAN_60", "Page d'accueil");
-define("ADLAN_61", "Configurer la page Accueil en fonction des groupes");
-define("ADLAN_62", "".GLOBAL_LAN_NEWS_4." d'autres sites");
-define("ADLAN_63", "Configurer les ".GLOBAL_LAN_NEWS_3." d'autres sites");
-define("ADLAN_64", "Statistiques");
-define("ADLAN_65", "Activer/Désactiver/Configurer les statistiques");
-define("ADLAN_66", "Méta-Tags");
-define("ADLAN_67", "Ajouter/éditer les méta-tags");
-define("ADLAN_68", "Infos PHP");
-define("ADLAN_69", "Affiche de nombreuses informations sur la configuration PHP de votre serveur");
-define("ADLAN_70", "Sondages");
-define("ADLAN_71", "Ajouter/Éditer des sondages");
-define("ADLAN_72", "Uploads Public");
-define("ADLAN_73", "Configurer les uploads publics de fichiers");
-define("ADLAN_74", "Système de cache");
-define("ADLAN_75", "Gestion du système de cache");
-define("ADLAN_77", "Vous avez une ".GLOBAL_LAN_NEWS_1." en attente de validation - veuillez cliquer ici pour la vérifier.");
-define("ADLAN_78", "Champs étendus de profil");
-define("ADLAN_79", "Éditer les Champs étendus de profil");
-define("ADLAN_86", "Mot de passe incorrect ");
-define("ADLAN_87", "Ce nom d'administrateur est introuvable dans la base de données ");
-define("ADLAN_88", "Connexion impossible ");
-define("ADLAN_89", "Nom de l'admin ");
-define("ADLAN_90", "Mot de passe de l'admin ");
-define("ADLAN_91", "Se connecter");
-define("ADLAN_92", "Veuillez vous identifier pour accéder au panneau d'administration ...");
-define("ADLAN_93", "Voir toutes les fonctions");
-define("ADLAN_94", "Voir les extensions installés");
-define("ADLAN_95", "Gestion des extensions");
-define("ADLAN_96", "Aucun");
-define("ADLAN_97", "Cliquer ici pour lire la FAQ");
-define("ADLAN_98", "Gestionnaire des extensions");
-define("ADLAN_99", "Installer/Mettre à jour des extensions");
-define("ADLAN_100", "Thème");
-define("ADLAN_101", "Créateur de Template");
-define("ADLAN_102", "Cela fait plus de 30 jours que le mot de passe de l'administrateur principal n'a pas été changé! ");
-define("ADLAN_103", "Cliquer ici pour le changer maintenant");
-define("ADLAN_104", "Sécurité");
-define("ADLAN_105", "Images");
-define("ADLAN_106", "Paramètres des images");
-define("ADLAN_107", "".GLOBAL_LAN_NEWS_4." non vérifiées ");
-define("ADLAN_108", "Fichiers uploadés non vérifiés ");
-define("ADLAN_109", "Informations");
-define("ADLAN_110", "Utilisateurs inscrits ");
-define("ADLAN_111", "Utilisateurs inactivés ");
-define("ADLAN_112", "Internautes bannis ");
-define("ADLAN_113", "Messages sur le forum ");
-define("ADLAN_114", "Commentaires ");
-define("ADLAN_115", "Messages (".GLOBAL_LAN_CHATBOX_2.") ");
-define("ADLAN_116", "Log d'administration ...");
-define("ADLAN_117", "Voir toutes les entrées");
-define("ADLAN_118", "Effacer les entrées");
-define("ADLAN_119", "Liens proposés non vérifiés ");
-define("ADLAN_120", "Il y a une mise à jour de votre base de données disponible, veuillez cliquer sur le bouton 'Installer' ...");
-define("ADLAN_121", "Installer");
-define("ADLAN_123", "Articles proposés non vérifiés ");
-define("ADLAN_124", "Chroniques proposées non vérifiées ");
-define("ADLAN_125", "Messages rapportés du forum non vérifiés ");
-define("ADLAN_126", "Options Principales");
-define("ADLAN_127", "Utilisateurs");
-define("ADLAN_128", "Contenu");
-define("ADLAN_129", "Communication");
-define("ADLAN_130", "Gestion des Fichiers");
-define("ADLAN_131", "Autres Outils");
-define("ADLAN_132", "Langage");
-define("ADLAN_133", "Par défaut");
-define("ADLAN_134", "Statut");
-define("ADLAN_135", "Journal d'Admin");
-define("ADLAN_136", "Courriel");
-define("ADLAN_137", "PCourriel : Paramètres et Envoi");
-define("ADLAN_138", "Liens internes");
-define("ADLAN_139", "Ajouter/Éditer/Supprimer les liens");
-define("ADLAN_140", "Gestionnaire de Thème ");
-define("ADLAN_141", "Installer /Établir des thèmes, etc");
-define("ADLAN_142", "Recherches");
-define("ADLAN_143", "Configuration des types de recherches");
-define("ADLAN_144", "vous êtes en mode de vue simple, pour passer à la vue avancée");
-define("ADLAN_145", "cliquez ici");
-define("ADLAN_146", "Essais de connexions infructueux");
-define("ADLAN_147", "Inspecteur de fichiers");
-define("ADLAN_148", "Scanner les fichiers du site (noyau)");
-define("ADLAN_149", "Alertes Courriel");
-define("ADLAN_150", "Recevoir des alertes par courriel");
-define("ADLAN_151", "Page principale");
-define("ADLAN_152", "Entrer le Code");
-define("ADLAN_153", "Zone d'administration");
-define("ADLAN_154", "Erreur lors de la tentative de contact de Sourceforge pour vérifier les nouvelles versions");
-define("ADLAN_CL_1", "Paramètres");
-define("ADLAN_CL_2", "Utilisateurs");
-define("ADLAN_CL_3", "Contenus");
-define("ADLAN_CL_4", "Coms");
-define("ADLAN_CL_5", "Fichiers");
-define("ADLAN_CL_6", "Outils");
-define("ADLAN_CL_7", "Extensions");
-define("ADLAN_CL_8", "Docs");
-define("ADLAN_LAT_1", "À approuver");
-define("ADLAN_LAT_2", "".GLOBAL_LAN_NEWS_4." proposées ");
-define("ADLAN_LAT_3", "Articles proposés");
-define("ADLAN_LAT_4", "Chroniques proposées");
-define("ADLAN_LAT_5", "Liens proposés");
-define("ADLAN_LAT_6", "Forums à modérer");
-define("ADLAN_LAT_7", "Fichiers uploadés");
-define("ADLAN_LAT_8", "Il y a des messages non modérés par les administrateurs");
-define("ADLAN_ERR_1", "Avertissement!");
-define("ADLAN_ERR_2", "Il y a des fichiers présents sur votre serveur qui sont connus comme faille exploitable. Ils doivent être enlevés <strong>immédiatement</strong>. Les fichiers sont en relation avec le système WYSIWYG employé dans les anciennes versions 0.6xx de e107 - htmlarea. Veuillez effacer les répertoires suivants et tous leur contenus:");
-define("ADLAN_ERR_3", "Il y a un ou plusieurs fichiers dans vos dossiers d'upload qui ne sont pas d'un type que vous avez permis dans la liste filetypes. Ils peuvent avoir été mis là par un esprit malveillant et devraient en ce cas être enlevés <strong>immédiatement</strong>. Vous ne devriez <strong>pas</strong> ouvrir ces fichiers car ils pourraient exécuter du code dangereux s'ils en contiennent. Ne les ouvrez pas avec votre navigateur (IE, firefox, etc.).<br /><br />Si vous reconnaissez la légitimité de ces fichiers, il est probable que dû à de récents changements apportés à la liste des types de fichiers permis, le type de fichier que vous aviez permis ne soit désormais plus dans cette liste. Vous devez alors le rajouter (voir admin => uploads).<br /><br /> Vous ne devriez pas permettre l'upload de .html, .txt, etc..., car un intrus malveillant pourrait uploader un fichier de ce type contenant du javascript dangereux.  Évidemment, vous ne devriez pas permettre l'upload de fichier .php ou tout autre type de script exécutable.<br /><br />Voici une liste des types de fichiers potentiellement dangereux pour votre site:");
-define("ADLAN_ERR_4", "Des fichiers obsolètes d'extensions ont été trouvés");
-define("ADLAN_ERR_5", "Les fichiers suivants doivent être renommés en");
-define("ADLAN_ERR_6", "Cliquez ensuite ici pour scanner à nouveau vos répertoires d'extensions.");
-define("LAN_EDIT", "Éditer");
-define("LAN_DELETE", "Supprimer");
-define("LAN_CREATE", "Créer");
-define("LAN_UPDATE", "Mettre à jour");
-define("LAN_SAVE", "Sauvegarder");
-define("LAN_SAVED", "Sauvegardé(e)");
-define("LAN_SETSAVED", "Vos Paramètres ont été sauvegardés");
-define("LAN_CONFIRMDEL", "Veuillez confirmer que vous souhaitez supprimer");
-define("LAN_OPTIONS", "Options");
-define("LAN_PREFS", "Préférences");
-define("LAN_DELETED", "Supprimé(e) avec succès");
-define("LAN_UPDATED", "Mis(e) à jour avec succès");
-define("LAN_CREATED", "Créé(e) avec succès");
-define("LAN_CREATED_FAILED", "Échec lors de la création");
-define("LAN_DELETED_FAILED", "Échec lors de la suppression");
-define("LAN_UPDATED_FAILED", "Échec lors de la mise à jour");
-define("LAN_NO_CHANGE", "Mise à jour non effectuée car aucun changement n'a été effectué");
-define("LAN_TRY_AGAIN", "Essayez une nouvelle fois");
-define("LAN_RESET", "Réinitialisation");
-define("LAN_CLEAR", "Effacer");
-define("LAN_OK", "OK");
-define("LAN_PRESET", "Présélection");
-define("LAN_PRESET_SAVED", "Présélection sauvegardée avec succès");
-define("LAN_PRESET_DELETED", "Présélection supprimée avec succès");
-define("LAN_PRESET_CONFIRMDEL", "Êtes vous sûr de vouloir supprimer cette présélection?");
-define("LAN_NOTWRITABLE", " n'est pas accessible en écriture, vous devez d'abord CHMODer le dossier à 777.");
-define("LAN_DATE", "Date");
-define("LAN_TIME", "Heure");
-define("LAN_YES", "Oui");
-define("LAN_NO", "Non");
-define("LAN_EMPTY", "Il n'y pas encore d'entrée dans la base de données pour l'instant");
-define("LAN_EXISTING", "Entrées existantes");
-define("LAN_CANCEL", "Annuler");
-define("LAN_CONFDELETE", "Confirmer la suppression");
-define("LAN_PLUGIN", "Extension");
-define("LAN_ORDER", "Ordre");
-define("LAN_SELECT", "Sélectionner ...");
-define("LAN_ADMIN", "Admin");
-define("LAN_DISPLAYOPT", "Éditer les options d'affichage");
-define("LAN_GOPAGE", "allez à la page:");
-define("LAN_DATESTAMP", "Date de publication");
-define("LAN_OPTIONAL", "en option");
-define("LAN_INACTIVE", "Désactivé");
-define("LAN_BAN", "Bannir");
-define("LAN_RATING", "Évaluation");
-define("LAN_UPLOAD_IMAGES", "Uploader des images");
-define("LAN_UPLOAD_FILES", "Uploader des fichiers");
-define("LAN_UPLOAD_ADDFILE", "Ajouter un autre fichier");
-define("LAN_UPLOAD_CONFIRM", "Toutes les modifications non sauvegardées de cette page seront perdues. Continuer?");
-define("LAN_UPLOAD_777", "Dossier inexistant ou doté de droits d'accès trop restrictifs, veuillez le CHMODer à 777 avant d'uploader vos fichiers:");
-define("LAN_UPLOAD_SERVEROFF", "Option inactive puisque vous n'autorisez pas l'envoi de fichiers sur votre serveur ('upload')");
-define("LAN_DISABLED", "Désactivé(e)");
-define("LAN_ENABLED", "Activé(e)");
-define("LAN_PRESET_CONFIRMSAVE", "Sauvegarder par défaut les valeurs courantes des champs de cette page ?");
-define("LAN_CONFIGURE", "Configurer");
-define("LAN_BACK", "Retour");
-define("LAN_CREDITS", "Crédits");
-define("LAN_NEWVERSION", "Nouvelle version disponible");
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/lan_admin.php,v $
+ * $Revision: 1.25 $
+ * $Date: 2009/07/19 17:00:48 $
+ * $Author: marj_nl_fr $
+ */
+if (!defined('e107_INIT')) { exit(); }
+
+define('ADLAN_0', 'News');
+define('ADLAN_1', 'Ajouter, éditer et supprimer des news');
 
 
-?>
+define('ADLAN_4', 'Préférences');
+define('ADLAN_5', 'Éditer les préférences du site');
+define('ADLAN_6', 'Menus');
+define('ADLAN_7', 'Changer la position de vos menus');
+define('ADLAN_8', 'Administrateurs');
+define('ADLAN_9', 'Gérer les administrateurs'); //*** Manage administrators' permissions would be better than Add/delete site administrators IMHO
+define('ADLAN_10', 'Mot de passe admin');
+define('ADLAN_11', 'Changer votre mot de passe');
+
+define('ADLAN_24', 'Téléchargements');
+define('ADLAN_25', 'Gérer les téléchargements');
+
+
+define('ADLAN_28', 'Message de bienvenue');
+define('ADLAN_29', 'Configurer les messages de bienvenue');
+define('ADLAN_30', 'Gestionnaire de fichiers');
+define('ADLAN_31', 'Gérer et uploader des fichiers');
+
+
+define('ADLAN_34', 'Liste des bannis');
+define('ADLAN_35', 'Bannir un visiteur');
+define('ADLAN_36', 'Membres');
+define('ADLAN_37', 'Gérer les membres du site');
+define('ADLAN_38', 'Groupes');
+define('ADLAN_39', 'Créer et éditer les groupes de membres');
+define('ADLAN_40', 'Maintenance');
+define('ADLAN_41', 'Désactiver le site pour effectuer une maintenance');
+define('ADLAN_42', 'Menus et pages personnalisés');
+define('ADLAN_43', 'Créer des menus et des pages personnalisés');
+define('ADLAN_44', 'Base de données');
+define('ADLAN_45', 'Utilitaires de base de données');
+define('ADLAN_46', 'Déconnexion');
+define('ADLAN_47', 'Bienvenue');
+define('ADLAN_48', 'Connecté');
+define('ADLAN_49', 'Administrateur principal du site');
+
+define('ADLAN_51', 'Veuillez vous identifier pour accéder au panneau d’administration');
+define('ADLAN_52', 'Accueil administration');
+define('ADLAN_53', 'Quitter');
+define('ADLAN_54', 'Bannières');
+define('ADLAN_55', 'Configurer des bannières');
+
+
+define('ADLAN_58', 'Emoticônes');
+define('ADLAN_59', 'Configurer les émoticônes');
+define('ADLAN_60', 'Page d’accueil');
+define('ADLAN_61', 'Configurer la page Accueil en fonction des groupes');
+
+
+
+
+define('ADLAN_66', 'Méta-Tags');
+define('ADLAN_67', 'Ajouter et éditer des méta-tags');
+define('ADLAN_68', 'Infos PHP');
+define('ADLAN_69', 'Affiche de nombreuses informations sur la configuration PHP de votre serveur');
+
+
+define('ADLAN_72', 'Uploads');
+define('ADLAN_73', 'Configurer les uploads de fichiers');
+define('ADLAN_74', 'Système de cache');
+define('ADLAN_75', 'Gestion du système de cache');
+
+define('ADLAN_78', 'Champs étendus de profil');
+define('ADLAN_79', 'Éditer les champs étendus de profil');
+
+
+
+
+
+define('ADLAN_89', 'Nom administrateur ');
+define('ADLAN_90', 'Mot de passe administrateur ');
+define('ADLAN_91', 'Se connecter');
+define('ADLAN_92', 'Veuillez vous identifier pour accéder au panneau d’administration.');
+define('ADLAN_93', 'Voir toutes les fonctions');
+
+define('ADLAN_95', 'Gestion des plugins');
+
+
+define('ADLAN_98', 'Gestionnaire de plugins');
+define('ADLAN_99', 'Installer des plugins, en supprimer, etc..');
+
+
+define('ADLAN_102', 'Cela fait plus de 30 jours que le mot de passe d’administrateur principal n’a pas été changé!');
+define('ADLAN_103', 'Cliquer ici pour le changer maintenant');
+define('ADLAN_104', 'Sécurité');
+
+define('ADLAN_105', 'Images');
+define('ADLAN_106', 'Paramètres des images');
+
+
+
+
+define('ADLAN_110', 'Membres inscrits');
+define('ADLAN_111', 'Membres non activés');
+define('ADLAN_112', 'Internautes bannis');
+define('ADLAN_113', 'Messages sur le forum');
+define('ADLAN_114', 'Commentaires');
+define('ADLAN_115', 'Messages (Chatbox)');
+define('ADLAN_116', 'Log d’administration…');
+define('ADLAN_117', 'Voir toutes les entrées');
+define('ADLAN_118', 'Effacer les entrées');
+
+//define("ADLAN_119", "Unchecked submitted links");  // obsolete
+
+define('ADLAN_120', 'Une mise à jour de votre base de données est disponible. Cliquez sur le bouton pour l’installer.');
+define('ADLAN_121', 'Installer'); // obsolete - but I'm using it :)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+define('ADLAN_132', 'Langue');
+define('ADLAN_133', 'Par défaut');
+
+define('ADLAN_134', 'Statut');
+define('ADLAN_135', 'Journal d’admin');
+
+define('ADLAN_136', 'Email');
+define('ADLAN_137', 'Email: paramètres et envois');
+
+define('ADLAN_138', 'Liens du site');
+define('ADLAN_139', 'Ajouter, éditer, supprimer des liens (menu principal)');
+
+define('ADLAN_140', 'Gestionnaire de thème');
+define('ADLAN_141', 'Installer et paramètrer des thèmes');
+
+define('ADLAN_142', 'Recherches');
+define('ADLAN_143', 'Configuration des types de recherches');
+define('ADLAN_144', 'Vous êtes en mode de vue simple. Pour passer à la vue avancée');
+define('ADLAN_145', 'cliquez ici');
+
+define('ADLAN_146', 'Essais de connexions infructueux');
+define('ADLAN_147', 'Inspecteur de fichiers');
+define('ADLAN_148', 'Scanner les fichiers du site');
+
+define('ADLAN_149', 'Alertes email');
+define('ADLAN_150', 'Recevoir des alertes par email');
+
+define('ADLAN_151', 'Page principale');
+define('ADLAN_152', 'Saisissez le code de sécurité visible dans l’image');
+
+define('ADLAN_153', 'Zone administration');
+define('ADLAN_154', 'Erreur de contact avec E107.org lors de la vérification d’une nouvelle version.');
+
+define('ADLAN_155', 'Système de logs'); // v0.8
+define('ADLAN_156', 'Logs administration, audit utilisateur, logs circulaires'); // v0.8
+
+define('ADLAN_157', 'Gestionnaire de tâche'); // v0.8
+define('ADLAN_158', 'Cron Jobs et tâches automatisées'); // v0.8
+
+define('ADLAN_CL_1', 'Paramètres');
+define('ADLAN_CL_2', 'Utilisateurs');
+define('ADLAN_CL_3', 'Contenus');
+define('ADLAN_CL_4', 'Coms');
+define('ADLAN_CL_5', 'Fichiers');
+define('ADLAN_CL_6', 'Outils');
+define('ADLAN_CL_7', 'Plugins');
+define('ADLAN_CL_8', 'Docs');
+
+define('ADLAN_LAT_1', 'À approuver');
+
+define('ADLAN_LAT_2', 'News proposées');
+
+
+define('ADLAN_LAT_5', 'Liens proposés');
+define('ADLAN_LAT_6', 'Forums signalés');
+define('ADLAN_LAT_7', 'Fichiers uploadés');
+define('ADLAN_LAT_8', 'Il y a des messages non modérés par les administrateurs');
+
+//define('ADLAN_ERR_1', 'Avertissement!');
+define('ADLAN_ERR_2', 'Il y a des fichiers présents sur votre serveur qui sont connus comme faille exploitable. Ils doivent être enlevés <strong>immédiatement</strong>. Les fichiers sont en relation avec le système WYSIWYG (htmlarea) employé dans les anciennes versions 0.6xx de e107. Effacer les répertoires suivants ainsi que tous leurs contenus:');
+define('ADLAN_ERR_3', 'Il y a un ou plusieurs fichiers dans vos dossiers upload qui ne sont pas d’un type que vous avez autorisé dans la liste filetypes. Ils peuvent avoir été mis là par un pirate et devraient en ce cas être enlevés <strong>immédiatement</strong>. <strong>N’ouvrez pas ces fichiers</strong> car ils pourraient exécuter du code dangereux s’ils en contiennent. Ne les ouvrez pas avec votre navigateur (IE, firefox, etc.).<br /><br />Si vous reconnaissez la légitimité de ces fichiers, il est probable que dû à de récents changements apportés à la liste des types de fichiers permis, le type de fichier que vous aviez autorisé ne soit désormais plus dans cette liste. Vous devez alors le rajouter (voir admin => uploads).<br /><br /> Vous ne devriez pas permettre l’upload de .html, .txt, etc., car un intrus pourrait uploader un fichier de ce type contenant du javascript dangereux. Évidemment, vous ne devriez pas permettre l’upload de fichier .php ou tout autre type de script exécutable.<br /><br />Voici une liste des types de fichiers potentiellement dangereux pour le site:');
+define('ADLAN_ERR_4', 'Des fichiers obsolètes de plugins ont été détectés');
+define('ADLAN_ERR_5', 'Les fichiers suivants doivent être renommés en');
+define('ADLAN_ERR_6', 'Cliquez ensuite ici pour scanner à nouveau vos répertoires de plugins.');
+
+
+// Common Terms
+define('LAN_EDIT',                'Éditer');
+define('LAN_DELETE',              'Supprimer');
+define('LAN_CREATE',              'Créer');
+define('LAN_UPDATE',              'Mettre à jour');
+define('LAN_SAVE',                'Sauvegarder');
+define('LAN_SAVED',               'Sauvegardé(e)');
+define('LAN_SETSAVED',            'Vos paramètres ont été sauvegardés');
+define('LAN_CONFIRMDEL',          'Confirmer que vous souhaitez supprimer');
+define('LAN_OPTIONS',             'Options');
+define('LAN_PREFS',               'Préférences');
+define('LAN_DELETED',             'supprimé(e) avec succès'); // parfois utilisé au ceint d'une phrase (forum_admin, language, header, db, ...)
+define('LAN_UPDATED',             'mis(e) à jour avec succès'); // parfois utilisé au ceint d'une phrase (forum_admin)
+define('LAN_CREATED',             'Créé(e) avec succès');
+define('LAN_CREATED_FAILED',      'Échec lors de la création');
+define('LAN_DELETED_FAILED',      'Échec lors de la suppression');
+define('LAN_UPDATED_FAILED',      'Échec lors de la mise à jour');
+define('LAN_NO_CHANGE',           'Mise à jour non effectuée car aucun changement n’a été effectué');
+define('LAN_TRY_AGAIN',           'Essayez encore une fois');
+
+define('LAN_RESET',               'Réinitialisation');
+define('LAN_CLEAR',               'Effacer');
+define('LAN_OK',                  'OK');
+
+define('LAN_PRESET',              'Présélection');
+define('LAN_PRESET_SAVED',        'Présélection sauvegardée avec succès');
+
+define('LAN_PRESET_DELETED',      'Présélection supprimée avec succès');
+define('LAN_PRESET_CONFIRMDEL',   'Êtes-vous sûr de vouloir supprimer cette présélection?');
+define('LAN_NOTWRITABLE',         ' n’est pas accessible en écriture. Vous devez d’abord chmoder le dossier afin de le rendre accessible en écriture (souvent 777).');
+define('LAN_DATE',                'Date');
+define('LAN_TIME',                'Heure');
+define('LAN_YES',                 'Oui');
+define('LAN_NO',                  'Non');
+define('LAN_EMPTY',               'Il n’y pas d’entrée dans la base de données pour l’instant');
+define('LAN_EXISTING',            'Entrées existantes');
+
+define('LAN_CANCEL',              'Annuler');
+define('LAN_CONFDELETE',          'Confirmer la suppression');
+define('LAN_PLUGIN',              'Plugin');
+define('LAN_ORDER',               'Ordre');
+
+define('LAN_SELECT',              'Sélectionner…');
+define('LAN_ADMIN',               'Admin');
+define('LAN_DISPLAYOPT',          'Éditer les options d’affichage');
+define('LAN_GOPAGE',              'allez à la page:');
+define('LAN_DATESTAMP',           'Date de publication');
+define('LAN_OPTIONAL',            'en option');
+define('LAN_INACTIVE',            'Désactivé');
+
+define('LAN_BAN',                 'Bannir');
+define('LAN_RATING',              'Note');
+
+define('LAN_UPLOAD',              'Upload');
+define('LAN_UPLOAD_IMAGES',       'Uploader des images');
+define('LAN_UPLOAD_FILES',        'Uploader des fichiers');
+define('LAN_UPLOAD_ADDFILE',      'Ajouter un autre fichier');
+define('LAN_UPLOAD_CONFIRM',      'Toutes les modifications non sauvegardées de cette page seront perdues. Désirez vous continuer?');
+define('LAN_UPLOAD_777',          'Dossier manquant ou dotés de droits trop restrictifs. Veuillez le chmoder afin de le rendre accessible en écriture (souvent 777) avant d’uploader vos fichiers:');
+define('LAN_UPLOAD_SERVEROFF',    'Option inactive puisque vous n’autorisez pas l’import de fichiers sur votre serveur.');
+
+define('LAN_DISABLED',            'désactivé(e)');
+define('LAN_ENABLED',             'activé(e)');
+
+define('LAN_PRESET_CONFIRMSAVE',  'Enregistrer les modifications?');
+define('LAN_CONFIGURE',           'Configurer');
+
+define('LAN_BACK',                'Retour');
+
+define('LAN_CREDITS',             'Crédits');
+define('LAN_NEWVERSION',          'Nouvelle version disponible');
+define('LAN_NEWVERSION_MORE',     'En savoir plus');
+define('LAN_NEWVERSION_DLD',      'Télécharger à partir de sourceforge.net');

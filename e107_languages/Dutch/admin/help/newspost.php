@@ -1,6 +1,16 @@
 <?php
+/*
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 $caption = "Nieuwsberichten hulp";
 $text = "<b>Algemeen</b><br />
@@ -8,7 +18,7 @@ De tekst wordt getoond op de hoofdpagina, uitgebreide tekst wordt getoond door o
 <br />
 <br />
 <b>Shortcuts</b><br />
-Je kunt deze shortcuts gebruiken in plaats van het invoeren van de volledige tags, bij het verwerken van de berichten worden de shortcuts geconverteerd naar xhtml compliant code.
+Je kunt deze shortcuts gebruiken in plaats van het invoeren van de volledige tags, bij het verwerken van de berichten worden de shortcuts geconverteerd naar XHTML compliant code.
 <br /><br />
 <b>Links</b>
 <br />
@@ -27,4 +37,5 @@ Als je op de Deactiveren knop drukt, wordt het bericht niet getoond.
 Als je de start en/of einddatum invoert, wordt het bericht alleen tussen deze data weergegeven.
 ";
 $ns -> tablerender($caption, $text);
+
 ?>

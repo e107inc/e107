@@ -1,9 +1,20 @@
-<div class='forumheader4'>
-Q>	Qu'est-ce que les émoticônes?
-A>	Les émoticônes sont les caractères dactylographiés des images de smiley (frimousses) que vous voyez sur d'autres sites web.
-Si vous activez les émoticônes sur votre site, lorsque quelqu'un saisi une émoticône, par exemple :&#41;, elle sera remplacé par l'équivalent image :)
-</div>
-<div class='forumheader4'>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Emoticones,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Que sont les émoticônes?
+A>	Les émoticônes sont les caractères dactylographiés des images de smiley que vous voyez sur certains sites web.
+Si vous activez les émoticônes sur votre site, lorsque quelqu’un saisi une émoticône, par exemple [b]&#58;&#41;[/b], elle sera remplacée par son équivalent image :)
+
 Q>	Puis-je écrire de nouveaux codes émoticône?
 A>	Oui, depuis la zone admin Emoticônes vous pouvez entrer, éditer ou supprimer des émoticônes.
-</div>

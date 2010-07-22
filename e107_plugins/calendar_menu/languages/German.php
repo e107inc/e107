@@ -10,19 +10,22 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/German.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-10-31 14:06:36 $
-|     $Author: e107coders $
-|    $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/calendar_menu/languages/German.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2010/03/03 20:15:39 $
+|     $Author: lars78 $
+|     Various mods by steved:
+|	  a) To reflect updates
+|	  b) To reflect CVS update to version 1.14 made 29.10.06
+|     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
 
-define(EC_ADLAN_1,"Kalender");
-define(EC_ADLAN_2,"Kalender konfigurieren");
-define(EC_INSTALL,"Kalender installieren");
-define(EC_UNINSTALL,"Kalender deinstallieren");
-define('EC_LAN_TODAY', "today");
+define('EC_ADLAN_1', "Kalender");
+define('EC_ADLAN_2', "Kalender konfigurieren");
+define('EC_INSTALL', "Kalender installieren");
+define('EC_UNINSTALL', "Kalender deinstallieren");
+define('EC_LAN_TODAY', "Heute");
 
 define('EC_LAN_DAY_1', "1");
 define('EC_LAN_DAY_2', "2");
@@ -55,39 +58,7 @@ define('EC_LAN_DAY_28', "28");
 define('EC_LAN_DAY_29', "29");
 define('EC_LAN_DAY_30', "30");
 define('EC_LAN_DAY_31', "31");
-/*
-define('EC_LAN_DAY_1', "1st");
-define('EC_LAN_DAY_2', "2nd");
-define('EC_LAN_DAY_3', "3rd");
-define('EC_LAN_DAY_4', "4th");
-define('EC_LAN_DAY_5', "5th");
-define('EC_LAN_DAY_6', "6th");
-define('EC_LAN_DAY_7', "7th");
-define('EC_LAN_DAY_8', "8th");
-define('EC_LAN_DAY_9', "9th");
-define('EC_LAN_DAY_10', "10th");
-define('EC_LAN_DAY_11', "11th");
-define('EC_LAN_DAY_12', "12th");
-define('EC_LAN_DAY_13', "13th");
-define('EC_LAN_DAY_14', "14th");
-define('EC_LAN_DAY_15', "15th");
-define('EC_LAN_DAY_16', "16th");
-define('EC_LAN_DAY_17', "17th");
-define('EC_LAN_DAY_18', "18th");
-define('EC_LAN_DAY_19', "19th");
-define('EC_LAN_DAY_20', "20th");
-define('EC_LAN_DAY_21', "21st");
-define('EC_LAN_DAY_22', "22nd");
-define('EC_LAN_DAY_23', "23rd");
-define('EC_LAN_DAY_24', "24th");
-define('EC_LAN_DAY_25', "25th");
-define('EC_LAN_DAY_26', "26th");
-define('EC_LAN_DAY_27', "27th");
-define('EC_LAN_DAY_28', "28th");
-define('EC_LAN_DAY_29', "29th");
-define('EC_LAN_DAY_30', "30th");
-define('EC_LAN_DAY_31', "31st");
-*/
+
 
 
 define(EC_LAN_0, "Januar");
@@ -131,14 +102,14 @@ define(EC_LAN_25, "So");
 define(EC_LAN_26, "Ereignisse in diesem Monat");
 define(EC_LAN_27, "Keine Ereignisse in diesem Monat.");
 define(EC_LAN_28, "Neue Ereignisse eintragen");
-define(EC_LAN_29, "Wenn:");
+define(EC_LAN_29, "Wann:");
 define(EC_LAN_30, "Kategorie:");
 define(EC_LAN_31, "Eingetragen von:");
 define(EC_LAN_32, "Ort:");
 define(EC_LAN_33, "Kontakt:");
 define(EC_LAN_34, "Gehe zu");
 define(EC_LAN_35, "Bearbeiten");
-define(EC_LAN_36, "Läschen");
+define(EC_LAN_36, "Löschen");
 define(EC_LAN_37, "Keines aufgeführt.");
 define(EC_LAN_38, "Nicht spezifiziert");
 define(EC_LAN_39, "Hier klicken um im Forum darüber zu diskutieren");
@@ -171,23 +142,23 @@ define(EC_LAN_64, "Markieren Sie hier für ein Ganztagsereignis");
 define(EC_LAN_65, "Recurring:");
 define(EC_LAN_66, "Ereignis bearbeiten");
 define(EC_LAN_67, "Start:");
-define(EC_LAN_68, "Ganztagsereignis");
-define(EC_LAN_69, "Endet");
+define(EC_LAN_68, "Ganztagsereignis:");
+define(EC_LAN_69, "Endet:");
 define(EC_LAN_70, "Ereignis Titel:");
 define(EC_LAN_71, "Ereignis Zeit:");
 define(EC_LAN_72, "Ereignis Datum:");
 define(EC_LAN_73, "Ende:");
-define(edesc_LAN_0, "Zähle herunter");
-define(edesc_LAN_1, "Still ");
-define(edesc_LAN_2, "bis zuim Ereignis in ".SITENAME);
-define(edesc_LAN_3, "sek");
-define(edesc_LAN_4, "seks");
-define(edesc_LAN_5, "min");
-define(edesc_LAN_6, "mins");
-define(edesc_LAN_7, "h");
-define(edesc_LAN_8, "h");
-define(edesc_LAN_9, "Tag");
-define(edesc_LAN_10, "Tage");
+//define(edesc_LAN_0, "Zähle herunter");
+//define(edesc_LAN_1, "Still ");
+//define(edesc_LAN_2, "bis zuim Ereignis in ".SITENAME);
+//define(edesc_LAN_3, "sek");
+//define(edesc_LAN_4, "seks");
+//define(edesc_LAN_5, "min");
+//define(edesc_LAN_6, "mins");
+//define(edesc_LAN_7, "h");
+//define(edesc_LAN_8, "h");
+//define(edesc_LAN_9, "Tag");
+//define(edesc_LAN_10, "Tage");
 define(EC_LAN_VIEWCALENDAR, "Kalender ansehen");
 define(EC_LAN_VIEWALLEVENTS, "Alle Ereignisse ansehen");
 define(EC_LAN_ALLEVENTS, "Alle Ereignisse");
@@ -205,12 +176,12 @@ define('EC_LAN_82', "Zur Aktivierung des Kalendermenüs gehen Sie bitte in den M
 define('EC_LAN_83', "Kalender");
 	
 	
-define('EC_LAN_84', "Css Element für den Tag-Kopf");
-define('EC_LAN_85', "Gesetzt ist 'forumheader'");
-define('EC_LAN_86', "Css Element für die Tag-Liste");
-define('EC_LAN_87', "Gesetzt ist 'forumheader3'");
-define('EC_LAN_88', "Css Element für ausgewählte Tage");
-define('EC_LAN_89', "Gesetzt ist 'indent'");
+//define('EC_LAN_84', "Css Element für den Tag-Kopf");
+//define('EC_LAN_85', "Gesetzt ist 'forumheader'");
+//define('EC_LAN_86', "Css Element für die Tag-Liste");
+//define('EC_LAN_87', "Gesetzt ist 'forumheader3'");
+//define('EC_LAN_88', "Css Element für ausgewählte Tage");
+//define('EC_LAN_89', "Gesetzt ist 'indent'");
 
 define('EC_LAN_90', "Wähle");	
 define('EC_LAN_91', "Nichts definiert");	
@@ -222,15 +193,15 @@ define('EC_LAN_96', "Kalender ansehen");
 define('EC_LAN_97', "Alle");		
 define('EC_LAN_98', "Erforderliche Felder wurden frei gelassen");		
 define('EC_LAN_99', "das Ereignis muss entweder für alle Tage gelten, oder beendet werden wenn ein Startdatum eingetragen wurde");			
-define('EC_LAN_100', "Es können Kategorien hinzugefügt werden von");			
-define('EC_LAN_101', "Auf inaktiv setzen um es auf dem Formular für neue Ereignisse nicht anzuzeigen.");	
+//define('EC_LAN_100', "Es können Kategorien hinzugefügt werden von");			
+//define('EC_LAN_101', "Auf inaktiv setzen um es auf dem Formular für neue Ereignisse nicht anzuzeigen.");	
 define('EC_LAN_102', "Zeige einen Link zum Forum Eintrag");	
-define('EC_LAN_103', "beim Formular für neue Ereigniseinträge.");	
+//define('EC_LAN_103', "beim Formular für neue Ereigniseinträge.");	
 define('EC_LAN_104', "Kalender Administratoren Klasse");		
 define('EC_LAN_105', "* erforderliche Felder");		
 define('EC_LAN_106', "Ereignisse");		
 define('EC_LAN_107', "Dieses Plugin ist ein voll funktionsfähiges Kalenderplugin mit vielen Features und Menü.");		
-define('EC_LAN_108', "Ereigniskalender aktualisiert.  sehen Sie nun die neuen Optionen.");	
+define('EC_LAN_108', "Ereigniskalender aktualisiert. Bitte Readme pdf Datei lesen fÜr mehr Informationen.");		
 define('EC_LAN_109', "Dieses Event konnte nicht gelöscht werden.");	
 define('EC_LAN_110', "Event Nummer ");	
 define('EC_LAN_111', "Alle Events vom ");	
@@ -240,11 +211,11 @@ define('EC_LAN_114', "Woche startet mit:");
 define('EC_LAN_115', "Sonntag");
 define('EC_LAN_116', "Montag");
 define('EC_LAN_117', "Länge der Tagnamen (Zeichen)");
-define('EC_LAN_118', "Datumsformat im Kalenderkopf.");
+define('EC_LAN_118', "Datumsformat im Kalenderkopf:");
 define('EC_LAN_119', "Monat/Jahr");
 define('EC_LAN_120', "Jahr/Monat");
 define('EC_LAN_121', "Zeige Kalender");
-define('EC_LAN_122', "Css Elemente um Ereignisse dieses Tages anzuzeigen (Menü)");
+//define('EC_LAN_122', "Css Elemente um Ereignisse dieses Tages anzuzeigen (Menü)");
 define('EC_LAN_123', "Anmeldungen");
 define('EC_LAN_124', "Kalender Anmeldungen");
 define('EC_LAN_125', "Verfügbare Anmeldekategorien");
@@ -257,10 +228,20 @@ define('EC_LAN_131', "Zurück");
 define('EC_LAN_132', "Details aufklappen/anzeigen");
 define('EC_LAN_133', "[mehr]");
 define('EC_LAN_134', "Sie müssen einen Kategorienamen angeben");
+define('EC_LAN_135', "Ereignis");
+define('EC_LAN_136', "Kategorie Beschreibung");
+define('EC_LAN_137', "Zukünftige Ereignisse");
 
 // Added 12.07.06 for next_event_menu.php
 define('EC_LAN_140', "Bevorstehende Ereignisse");
 define('EC_LAN_141', "Keine bevorstehenden Ereignisse");
+define('EC_LAN_142', "Nur eingeloggte registrierte Mitglieder können sich für ein Ereignis anmelden");
+define('EC_LAN_143', "Möglichkeit nicht verfügbar");
+define('EC_LAN_144', " am ");
+
+// Gap to maintain compatibility with 0.8
+define('EC_LAN_181', "Es ist Ihnen nicht erlaubt das zu tun!");
+
 
 define('EC_ADLAN_A10', "Konfiguration");
 define('EC_ADLAN_A11', "Kategorien");
@@ -306,9 +287,9 @@ define('EC_ADLAN_A91', "E-mail Betreff");
 define('EC_ADLAN_A92', "E-mail von (Name)");
 define('EC_ADLAN_A93', "E-mail von E-mail Adresse");
 define('EC_ADLAN_A94', "Neue Ereignisklasse hinzufügen");
-define('EC_ADLAN_A95', "Anmeldung erlauben");
-define('EC_ADLAN_A96', "Hier , -- nicht erlaubt -- , wird der Anmeldebutton nicht angezeigt und die Kategorievoreinstellungen für die Anmeldungen werden überschrieben.");
-define('EC_ADLAN_A97', "Hier auf -- Anmeldungen erlaubt --- gesetzt, wird diese Kategorie nicht in den verfügbaren Anmeldelisten für die Benutzer angezeigt.");
+define('EC_ADLAN_A95', "Manuelle Anmeldung erlauben");
+define('EC_ADLAN_A96', "Hier , -- nicht erlaubt -- , wird der Anmeldebutton nicht angezeigt und die Kategorievoreinstellungen für die manuelle Anmeldungen werden überschrieben.");
+//define('EC_ADLAN_A97', "Hier auf -- Anmeldungen erlaubt --- gesetzt, wird diese Kategorie nicht in den verfügbaren Anmeldelisten für die Benutzer angezeigt.");
 
 // Added from here 12.07.06 for forthcoming events and mailout upgrades
 define('EC_ADLAN_A100', "Bevorstehende Ereignisse");
@@ -334,15 +315,72 @@ define('EC_ADLAN_A117', "Nachricht vom heutigen und vorherigen Tag");
 define('EC_ADLAN_A118', "Kategorien die angezeigt werden sollen");
 define('EC_ADLAN_A119', "Keine Kategorien angelegt bis jetzt, oder Fehler beim lesen der Datenbank");
 define('EC_ADLAN_A120', "Kategorie-Icon im Menü anzeigen");
-define('EC_ADLAN_A121', "e107 Webseite");
-define('EC_ADLAN_A122', "Kalender@ihreSeite.com");
+define('EC_ADLAN_A121', "Kategorie Beschreibung");
+define('EC_ADLAN_A122', "Kalenderzeit Referenz");
+define('EC_ADLAN_A123', "Kalenderzeit Format");
+define('EC_ADLAN_A124', "Jetzige Serverzeit: ");
+define('EC_ADLAN_A125', "Jetzige Seitenzeit: ");
+define('EC_ADLAN_A126', "Jetzige Benutzerzeit: ");
+define('EC_ADLAN_A127', "Legt das Zeitanzeigeformat für den Kalender fest.");
+define('EC_ADLAN_A128', "Benutzerzeiten werden im Format der rechten Box dargestellt");
+define('EC_ADLAN_A129', '"Seitenzeit" wird aus den Voreinstellungen generiert');
+define('EC_ADLAN_A130', "Ereignisname wird gelinkt auf:");
+define('EC_ADLAN_A131', "Kalender Ereignis");
+define('EC_ADLAN_A132', "Source Info URL");
+define('EC_ADLAN_A133', "Datumsformat für Ereigniseintrag: ");
+define('EC_ADLAN_A134', "Login-Level zum Hauptadminlog:");
+define('EC_ADLAN_A135', "Bearbeiten/Löschen");
+define('EC_ADLAN_A136', "Alle Änderungen");
+define('EC_ADLAN_A137', "Hinzufügungen, Aktualisierungen und Löschungen können von der Ereignistliste überschrieben werden");
+define('EC_ADLAN_A138', "Ereignisstart/end Zeiten im 5-Minuten-Takt");
+define('EC_ADLAN_A139', "(Anzahl an Ererignissen in der Drop-down Liste werden dadurch reduziert)");
+define('EC_ADLAN_A140', "Anzahl an Ereignissen für diesen Monat im Kalendermenü");
+define('EC_ADLAN_A141', "Wartung");
+define('EC_ADLAN_A142', "Abgeschlossene Ereignisse löschen die älter sind als x Monate");
+define('EC_ADLAN_A143', "zeitlich vom Anfang des jetzigen Monats");
+define('EC_ADLAN_A144', "Ereigniskalender Wartung");
+define('EC_ADLAN_A145', "Alte Einträge löschen");
+define('EC_ADLAN_A146', "Ereignisse älter als ");
+define('EC_ADLAN_A147', " gelöscht");
+define('EC_ADLAN_A148', "Parameterfehler - es wurde nichts gelöscht");
+define('EC_ADLAN_A149', "Es gibt keine alten Ereignisse zum löschen, oder das löschen alter Ereignisse ist fehlgeschlagen");
+define('EC_ADLAN_A150', "Bitte bestätigen Sie das Löschen von Ereignissen die älter sind als ");
 
-define('EC_ADLAN_A123', "Log Verzeichnis muss manuell erstellt werden - bitte erstellen Sie ein Unterverzeichnis 'log' im calendar plugin Verzeichnis, mit '666' Zugriffsrechten");
-define('EC_ADLAN_A124', "Log-Verzeichnis Berechtigungen können nicht geändert werden");
-define('EC_ADLAN_A125', "Log-Verzeichnis Berechtigungen scheinen manuell auf 0666 oder 0766 gesetzt werden zu müssen, abh&auml;ngig Ihrer Serverkonfiguration");
-define('EC_ADLAN_A126', "Datenbank aktualisiert");
-define('EC_ADLAN_A127', "dies ist der Rss Feed für den Kalendereintrag");
+define('EC_ADLAN_A151', "e107 Web Site");
+define('EC_ADLAN_A152', "Kalender@ihreSeite.com");
+define('EC_ADLAN_A153', "Das log-Verzeichnis muss manuell erstellt werden - bitte legen Sie ein Unterverzeichnis 'log' im Pluginverzeichnis des Kalenders mit 666 Chmod-Rechten an");
+define('EC_ADLAN_A154', "Logverzeichnisberechtigungen können nicht geändert werden");
+define('EC_ADLAN_A155', "Logverzeichnisberechtigungen müssen manuell auf 0666 oder 0766 gesetzt werden, abhängig Ihrer Serverkonfiguration");
+define('EC_ADLAN_A156', "Datenbank aktualisiert");
+define('EC_ADLAN_A157', "dies ist der Rss Feed fü;r die Kalendereinträge");
+define('EC_ADLAN_A158', "Logverzeichnis kann nicht erstellt werden");
 
+define('EC_ADLAN_A159', "Cache Management");
+define('EC_ADLAN_A160', "(Nur relevant wenn Sie den Cache eingeschaltet haben)");
+define('EC_ADLAN_A161', "Kalender Cache leeren");
+define('EC_ADLAN_A162', "Bestätigung für Kalender Cache Leerung");
+define('EC_ADLAN_A163', "Cache geleert");
+
+define('EC_ADLAN_A164', "Aktualisierung vervollständigt");
+define('EC_ADLAN_A165', "Kalendermenü-Kopf linkt auf:");
+define('EC_ADLAN_A166', "Datumsansicht in der Ereignisliste:");
+define('EC_ADLAN_A167', "Datumsansicht in der Liste der kommenden, nächsten Ereignisse:");
+define('EC_ADLAN_A168', "Benutzerdatum greift auf das Format in der rechten Box zu");
+define('EC_ADLAN_A169', "Legt das Datumsanzeigeformat für Ereignisauflistung fest");
+define('EC_ADLAN_A170', "Legt das Datumsformat für kommende, nächste Ereignisauflistung im Ereignismenü fest");
+define('EC_ADLAN_A171', "Markiere zuletzt hinzugefügte/aktualisierte Ereignisse");
+define('EC_ADLAN_A172', "Der Wert legt die Zeit von der Aktualisierung in Stunden fest; 0 um es auszuschalten");
+
+
+// Notify
+define("NT_LAN_EC_1", "Ereigniskalender Ereignisse");
+define("NT_LAN_EC_2", "Ereignis aktualisiert");
+define("NT_LAN_EC_3", "Aktualisiert durch");
+define("NT_LAN_EC_4", "IP Adresse");
+define("NT_LAN_EC_5", "Nachricht");
+define("NT_LAN_EC_6", "Ereigniskalender - Ereignis hinzugefügt");
+define("NT_LAN_EC_7", "Neues Ereignis eingetragen");
+define("NT_LAN_EC_8", "Ereigniskalender - Ereignis modifiziert");
 
 
 

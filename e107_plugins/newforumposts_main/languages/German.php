@@ -1,12 +1,12 @@
 <?php
 
-define("LAN_1", "Eintrag");
-define("LAN_2", "Schreiber");
-define("LAN_3", "Ansichten");
-define("LAN_4", "Antworten");
-define("LAN_5", "Letzter Eintrag");
-define("LAN_6", "Einträge");
-define("LAN_7", "von");
+define("NFPM_LAN_1", "Eintrag");
+define("NFPM_LAN_2", "Schreiber");
+define("NFPM_LAN_3", "Ansichten");
+define("NFPM_LAN_4", "Antworten");
+define("NFPM_LAN_5", "Letzter Eintrag");
+define("NFPM_LAN_6", "Einträge");
+define("NFPM_LAN_7", "von");
 
 define("NFPM_L1", "Dieses Plugin zeigt eine Liste von Neuen Forumseinträgen auf der Hauptseite");
 define("NFPM_L2", "Letzte Forumeinträge"); 

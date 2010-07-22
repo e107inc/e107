@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_notify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_notify.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */

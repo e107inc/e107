@@ -1,30 +1,23 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/Dutch.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-10-15 06:49:14 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("TREE_L1", "Configureren Tree Menu");
-define("TREE_L2", "Bijwerken Tree Menu instellingen");
-define("TREE_L3", "Tree Menu configuratie opgeslagen.");
-define("TREE_L4", "Aun");
-define("TREE_L5", "Uit");
-define("TREE_L6", "CSS klasse te gebruiken voor niet te openen links");
-define("TREE_L7", "CSS klasse te gebruiken voor te openen links");
-define("TREE_L8", "CSS klasse  te gebruiken voor geopende links");
-define("TREE_L9", "Gebruik spatiëringsklasse tussen hoofdlinks");
+define('TREE_L1', 'Configureren Tree Menu');
+define('TREE_L2', 'Bijwerken Tree Menu instellingen');
+define('TREE_L3', 'Tree Menu configuratie opgeslagen.');
+define('TREE_L4', 'Aan');
+define('TREE_L5', 'Uit');
+define('TREE_L6', 'CSS klasse te gebruiken voor niet te openen links');
+define('TREE_L7', 'CSS klasse te gebruiken voor te openen links');
+define('TREE_L8', 'CSS klasse te gebruiken voor geopende links');
+define('TREE_L9', 'Gebruik spatiëringsklasse tussen hoofdlinks');
 
 ?>

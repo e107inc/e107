@@ -7,10 +7,10 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.15 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.6 $
+|     $Date: 2010/05/08 16:29:47 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_usersettings.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_strict_utf8/e107_languages/Polish/lan_usersettings.php,v $
 +-----------------------------------------------------------------------------+
 |     Zgodne z: /e107_languages/English/lan_usersettings.php rev. 1.16
 +-----------------------------------------------------------------------------+
@@ -30,15 +30,15 @@ define("LAN_106", "Podany adres e-mail jest nieprawidłowy");
 define("LAN_112", "Adres e-mail: ");
 define("LAN_113", "Ukryć adres e-mail?: ");
 define("LAN_114", "Zablokuje wyświetlanie adresu e-mail na stronie");
-define("LAN_115", "Numer ICQ: ");
-define("LAN_116", "Adres AIM: ");
-define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Data urodzenia: ");
-define("LAN_119", "Miejscowość: ");
-define("LAN_120", "Sygnatura: ");
-define("LAN_121", "Awatar: ");
-define("LAN_122", "Strefa czasowa:");
-define("LAN_144", "Strona domowa: ");
+//define("LAN_115", "Numer ICQ: ");
+//define("LAN_116", "Adres AIM: ");
+//define("LAN_117", "MSN Messenger: ");
+//define("LAN_118", "Data urodzenia: ");
+//define("LAN_119", "Miejscowość: ");
+//define("LAN_120", "Sygnatura: ");
+//define("LAN_121", "Awatar: ");
+//define("LAN_122", "Strefa czasowa:");
+//define("LAN_144", "Strona domowa: ");
 define("LAN_150", "Ustawienia zaktualizowano i zapisano w bazie danych.");
 define("LAN_151", "OK");
 define("LAN_152", "Nowe hasło: ");
@@ -71,12 +71,12 @@ define("LAN_423", "Wpisz pełny adres do grafiki");
 define("LAN_424", "Kliknij przycisk, aby zobaczyć awatary dostępne na tej stronie");
 define("LAN_425", "Zdjęcie");
 define("LAN_426", "Zostanie wyświetlone na stronie Twojego profilu");
-define("LAN_427", "Dodaj ...");
-define("LAN_428", "Newsa");
-define("LAN_429", "Odsyłacz");
-define("LAN_430", "Plik do pobrania");
-define("LAN_431", "Artykuł");
-define("LAN_432", "Recenzję");
+//define("LAN_427", "Dodaj ...");
+//define("LAN_428", "Newsa");
+//define("LAN_429", "Odsyłacz");
+//define("LAN_430", "Plik do pobrania");
+//define("LAN_431", "Artykuł");
+//define("LAN_432", "Recenzję");
 
 define("LAN_433", "Adres URL do Twojego pliku XUP");
 define("LAN_434", "co to jest?");

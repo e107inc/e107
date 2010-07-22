@@ -7,12 +7,13 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.10 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.4 $
+|     $Date: 2009/07/12 15:08:58 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_adv_utf8/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.35
+|     Plik zawiera zmodyfikowane wpisy LAN_109 i LAN_SIGNUP_17, wpisy zostały zmienione w celu przestrzegania ustawy o ochronie danych osobowych
+|     Plik zmodyfikowany: /e107_languages/English/lan_signup.php rev. 1.35
 +-----------------------------------------------------------------------------+
 */
  
@@ -29,7 +30,9 @@ define("LAN_105", "Podane hasła nie są identyczne.");
 define("LAN_106", "Podany adres e-mail jest nieprawidłowy");
 define("LAN_107", "Dziękujemy! Jesteś teraz zarejestrowanym użytkownikiem ");
 define("LAN_108", "Proces rejestracji został ukończony");
-define("LAN_109", "Serwis ten przestrzega The Children's Online Privacy Protection Act (COPPA) z 1998 roku, w związku z czym nie może zaakceptować rejestracji użytkowników poniżej 13 roku życia bez pisemnego upoważnienia ich rodziców lub opiekunów. Aby uzyskać więcej informacji, możesz przeczytać akt prawny ");
+define("LAN_109", "Zgodnie z Dz.U. Nr 133, poz. 883 z dnia 29 sierpnia 1997 r. (zm.: Dz.U.2002.101.926, Dz.U.2002.153.1271, Dz.U.2004.25.219, Dz.U.2004.33.285 i późniejsze) stanowiącym o ochronie danych osobowych, w momencie rejestracji wyrażasz zgodę na przetwarzanie danych osobowych zawartych w formularzu na cele niniejszego serwisu. Równocześnie gwarantujemy Ci prawo do wglądu do swoich danych osobowych, możliwość ich poprawienia oraz w razie potrzeby możliwość zaprzestania przetwarzania danych na potrzeby serwisu (wiąże się z usunięciem konta).
+Dane osobowe podane w formularzu rejestracyjnym objęte są ochroną prawną oraz nie są one udostępniane osobom trzecim.
+Więcej na temat samej ustawy znajdziesz "); //Serwis ten przestrzega The Children's Online Privacy Protection Act (COPPA) z 1998 roku, w związku z czym nie może zaakceptować rejestracji użytkowników poniżej 13 roku życia bez pisemnego upoważnienia ich rodziców lub opiekunów. Aby uzyskać więcej informacji, możesz przeczytać akt prawny 
 define("LAN_110", "Rejestracja");
 define("LAN_111", "Powtórz hasło: ");
 define("LAN_112", "Adres e-mail: ");
@@ -72,7 +75,7 @@ define("LAN_SIGNUP_13", "Możesz się teraz zalogować za pomocą Menu Login lub
 define("LAN_SIGNUP_14", "tutaj");
 define("LAN_SIGNUP_15", "Proszę skontaktować się z głównym administratorem witryny");
 define("LAN_SIGNUP_16", ", jeśli wymagana jest pomoc."); //
-define("LAN_SIGNUP_17", "Zgadzam się z powyższymi warunkami i mam 13 lub więcej lat");
+define("LAN_SIGNUP_17", "Zgadzam się z powyższymi warunkami i jestem osobą pełnoletnią w mniemaniu polskiego prawa, lub posiadam zgodę opiekuna prawnego (w przypadku osób niepełnoletnich)"); //Zgadzam się z powyższymi warunkami i mam 13 lub więcej lat
 define("LAN_SIGNUP_18", "Twoje konto zostało zarejestrowane i utworzone według następujących informacji:");
 //define("LAN_SIGNUP_19", "Login:");
 //define("LAN_SIGNUP_20", "Hasło:");

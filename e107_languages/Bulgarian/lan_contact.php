@@ -3,12 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_contact.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/English/lan_contact.php,v $
+|     $Revision: 83 $
+|     $Date: 2006-11-27 14:47:49 +0200 (Mon, 27 Nov 2006) $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
+
+define('PAGE_NAME',     'Връзка с нас');
+
 
 define("LANCONTACT_01", "Данни за контакт");
 define("LANCONTACT_02", "Директна връзка");

@@ -1,16 +1,17 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:31 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-if (!defined('e107_INIT')) { exit; }
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/users_extended.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-$text = "Les champs étendus de profil vous permettent d'ajouter des compléments d'informations que les utilisateurs peuvent préciser dans leur profil.";
-$ns -> tablerender(" Aide des profil étendus", $text);
-?>
+if (!defined('e107_INIT')) { exit(); }
+
+$text = 'L’extension de champs utilisateur permet d’ajouter des types de données supplémentaires afin que le membre puisse les modifier dans sa page profil';
+$ns -> tablerender('Aide extension champs utilisateur', $text);

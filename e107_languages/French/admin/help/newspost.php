@@ -1,27 +1,22 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/newspost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-10 08:43:18 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-if (!defined('e107_INIT')) { exit; }
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/newspost.php,v $
+ * $Revision: 1.11 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-$text = "<strong>Général</strong><br />
-L".GLOBAL_LAN_L_PREFIX_NEWS.GLOBAL_LAN_NEWS_1." sera affichée sur la page principale, la suite sera lisible après avoir cliqué sur le lien 'Lire la suite'.
-<br />
-<br />
-<strong>Titre Seulement</strong>
-<br />
-Choisissez cela pour ne montrer que le titre sur la page d'accueil (sous forme de lien pour voir l".GLOBAL_LAN_L_PREFIX_NEWS.GLOBAL_LAN_NEWS_2." complète).
-<br /><br />
-<strong>Activation</strong>
-<br />
-Si vous configurez une date de début et/ou une date de fin, l".GLOBAL_LAN_L_PREFIX_NEWS.GLOBAL_LAN_NEWS_1." ne sera affichée qu'entre ces 2 dates.
-";
-$ns -> tablerender("Aide ".GLOBAL_LAN_NEWS_2."", $text);
-?>
+if (!defined('e107_INIT')) { exit(); }
+
+$text = '<strong>Général</strong><br />
+La news est affichée sur la page principale. La suite est lisible après avoir cliqué sur le lien “Lire la suite”.<br /><br />
+<strong>Titre uniquement</strong><br />
+Choisissez cette option pour ne montrer que le titre sur la page d’accueil (sous forme de lien pour voir la news complète).<br /><br />
+<strong>Activation</strong><br />
+Si vous configurez une date de début ou une date de fin, la news n\ est affichée qu’entre ces 2 dates.';
+$ns -> tablerender('Aide news', $text);

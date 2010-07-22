@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/lan_user.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2010/06/07 21:17:49 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -15,20 +15,21 @@ define("PAGE_NAME", "Mitglieder");
 
 define("LAN_20", "Fehler");
 define("LAN_112", "E-Mail Adresse: ");
-define("LAN_115", "ICQ Nummer: ");
-define("LAN_116", "AIM Adresse: ");
-define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Geburtstag: ");
-define("LAN_119", "Ort: ");
-define("LAN_120", "Signatur: ");
+// define("LAN_115", "ICQ Nummer: ");
+// define("LAN_116", "AIM Adresse: ");
+// define("LAN_117", "MSN Messenger: ");
+// define("LAN_118", "Geburtstag: ");
+// define("LAN_119", "Ort: ");
+// define("LAN_120", "Signatur: ");
 define("LAN_137", "Es gibt keine Information für diesen Benutzer - nicht registriert.");
 define("LAN_138", "Registrierte Benutzer: ");
 define("LAN_139", "Reihenfolge: ");
 define("LAN_140", "Registrierte Benutzer");
+
 define("LAN_141", "Bis jetzt keine registrierten Benutzer.");
 define("LAN_142", "Mitglied");
 define("LAN_143", "[wird nicht gezeigt]");
-define("LAN_144", "Webseiten URL: ");
+// define("LAN_144", "Webseiten URL: ");
 define("LAN_145", "Registriert: ");
 define("LAN_146", "Besuche auf dieser Seite seit der Registrierung: ");
 define("LAN_147", "Chatbox Einträge: ");
@@ -66,5 +67,6 @@ define("LAN_424", "Hier klicken um Forumeinträge zu lesen");
 define("LAN_425", "Private Nachricht senden");
 define("LAN_426", "her");
 define("USERLAN_1", "Peer Bewertung");
+define("USERLAN_2", "Sie haben keine Berechtigung diese Seite anzusehen.");
 
 ?>

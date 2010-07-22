@@ -3,12 +3,14 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_contact.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-09-09 07:18:33 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_contact.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2009/09/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
+
+define('PAGE_NAME',     '聯絡我們');
 
 define("LANCONTACT_01", "聯絡資料");
 define("LANCONTACT_02", "資料表格");

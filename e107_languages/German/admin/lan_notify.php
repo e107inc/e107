@@ -3,11 +3,12 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-16 16:03:17 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_notify.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2009/02/25 13:16:42 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
+|     $updated by: webmaster@e107cms.de [Jedi] (http://www.e107cms.de)$
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
@@ -33,5 +34,8 @@ define("NN_LAN_2", "News übermittelt von Benutzern");
 define("NN_LAN_3", "News geposted durch Admin");
 define("NN_LAN_4", "News bearbeitet durch Admin");
 define("NN_LAN_5", "News gelöscht durch Admin");
+
+define("NF_LAN_1", "Datei Ereignisse");
+define("NF_LAN_2", "Datei hochgeladen durch Benutzer");
 
 ?>

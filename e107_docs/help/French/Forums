@@ -1,22 +1,26 @@
-<div class='forumheader4'>
-Q>	Qu'est un forum parent?
-A>	Un forum parent est un titre sous lequel se regroupent d'autres forums , ceci facilite la navigation dans vos forums.
-</div>
-<div class='forumheader4'>
-Q>	Je veux donner à un certain administrateur le statut de modérateur de forum mais son nom n'apparaît pas dans la liste - Pour quelle raison?
-A>	Seuls sont listés les administrateurs qui ont une permission correctement établie pour être modérateur de forum.
-Accédez à la section d'administrateurs et éditez l'admin en question, et assurez-vous que la mention 'Modérer les forums' est cochée.
-</div>
-<div class='forumheader4'>
-Q>	Qu'est-ce que le marquage (tracking)?
-A>	Si vous autorisez le suivi, cela permettra à des utilisateurs de ne pas perdre le fil de la discussion des forums auxquels ils participent, ils recevront un courriel pour toute réponse aux ajouts qu'ils ont postés.
-</div>
-<div class='forumheader4'>
-Q>	Qu'est-ce que délester?
-A>	Cela vous permet d'enlever de vieux fils de discussion qui ne reçoivent plus de réponses depuis un certain temps. Veuillez faire attention avec cette fonction, la suppression est permanente. Les fils de discussion supprimés ne pourront plus faire l'objet de recherche.
-</div>
-<div class='forumheader4'>
-Q>	Que sont les messages rapportés?
-A>	Les utilisateurs ont la possibilités de soumettre aux modérateurs des messages ayant un contenu qu'ils considèrent comme litigieux.
-Vous pouvez ainsi accéder facilement à la discussion en question et la modérer à votre guise.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Forums,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Qu’est-ce qu’une catégorie?
+A>	Une catégorie regroupe un ensemble de forums. Elle facilite la navigation dans vos forums.
+
+Q>	Qu’est-ce que le suivi (tracking)?
+A>	Si vous autorisez le suivi, les utilisateurs peuvent suivre une discussion plus facilement en recevant un email pour chaque réponse au sujet suivi s’ils le désirent.
+
+Q>	Qu’est-ce que purger?
+A>	Une purge supprime les discussions ou réponses plus anciennes que la date indiquée. Attention, la suppression est permanente et les discussions supprimées ne peuvent être récupérées.
+
+Q>	Que sont les messages signalés?
+A>	Les utilisateurs ont la possibilités de signaler aux modérateurs des messages/postes ayant un contenu qu’ils considèrent comme litigieux.
+Vous pouvez ainsi facilement accéder à la discussion en question et la modérer à votre guise.

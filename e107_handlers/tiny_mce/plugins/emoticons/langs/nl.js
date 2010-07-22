@@ -1,4 +1,4 @@
-// NL lang variables
-
-tinyMCELang['lang_insert_emotions_title'] = 'Invoegen smiley';
-tinyMCELang['lang_emotions_desc'] = 'Smileys';
+// $Id$
+tinyMCE.addI18n('nl.emoticons',{
+	desc : 'Emoticon invoegen'
+});

@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:33 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_usersettings.php,v $
+|     $Revision: 1.16 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "會員設定");
@@ -108,5 +108,8 @@ define("LAN_USET_10","請更新您的設定.");
 define("LAN_USET_11", "此帳號不被接受, 請選擇其他帳號");
 define("LAN_USET_12", "顯示名稱太短，請選擇另外的名稱");
 define("LAN_USET_13", "無效的字元於登入名稱中，請選擇另外的名稱");
-
+define("LAN_USET_14", "登入名稱太長，請選擇另外的名稱");
+define("LAN_USET_15", "顯示名稱太長，請選擇另外的名稱");
+define("LAN_USET_16", "勾選刪除現有圖片並不需要上傳新的圖片");
+define("LAN_USET_17", "顯示名稱已經有人使用，請選擇另外的名稱");
 ?>

@@ -3,18 +3,18 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/lan_usersettings.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2010/06/07 21:17:49 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com)
+|     $updated by: webmaster@langenbach-service.com (http://www.langenbach-service.com)$
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Benutzer Einstellungen / Angaben");
 define("LAN_7", "Angezeigter Name: ");
 define("LAN_8", "der Name der auf der Seite angezeigt wird");
-define("LAN_9", "Login Name: ");
+define("LAN_9", "Benutzer Name: ");
 define("LAN_10", "der Name den Sie für das Login benutzen");
 define("LAN_11", "der Name den Sie für das Login benutzen - kann nicht geändert werden, bitte kontaktieren Sie den Administrator, falls es aus Sichertsgründen doch geändert werden soll.");
 define("LAN_20", "Fehler");
@@ -23,15 +23,15 @@ define("LAN_106", "Die Email Adresse scheint nicht gültig zu sein");
 define("LAN_112", "Email Adresse: ");
 define("LAN_113", "Verstecke Email Adresse?: ");
 define("LAN_114", "Dies verhindert die Anzeige Ihrer Email Adresse auf der Seite");
-define("LAN_115", "ICQ Nummer: ");
-define("LAN_116", "AIM Adresse: ");
-define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Geburtstag: ");
-define("LAN_119", "Ort: ");
+// define("LAN_115", "ICQ Nummer: ");
+// define("LAN_116", "AIM Adresse: ");
+// define("LAN_117", "MSN Messenger: ");
+// define("LAN_118", "Geburtstag: ");
+// define("LAN_119", "Ort: ");
 define("LAN_120", "Signatur: ");
-define("LAN_121", "Avatar: ");
+// define("LAN_121", "Avatar: ");
 define("LAN_122", "Zeitzone:");
-define("LAN_144", "Webseiten URL: ");
+// define("LAN_144", "Webseiten URL: ");
 define("LAN_150", "Einstellungen upgedatet und in der Datenbank gespeichert.");
 define("LAN_151", "OK");
 define("LAN_152", "Neues Passwort: ");
@@ -61,12 +61,12 @@ define("LAN_423", "Bitte geben Sie die komplette Adresse zum Bild an");
 define("LAN_424", "Klicken Sie den Button um die vorgegebenen Avatare anzusehen");
 define("LAN_425", "Foto");
 define("LAN_426", "Dies wird auf Ihrer Profil Seite angezeigt");
-define("LAN_427", "Übermittle ...");
-define("LAN_428", "News Eintrag");
-define("LAN_429", "Link");
-define("LAN_430", "Download");
-define("LAN_431", "Artikel");
-define("LAN_432", "Bericht");
+// define("LAN_427", "Übermittle ...");
+// define("LAN_428", "News Eintrag");
+// define("LAN_429", "Link");
+// define("LAN_430", "Download");
+// define("LAN_431", "Artikel");
+// define("LAN_432", "Bericht");
 define("LAN_433", "URL zu Ihrer XUP Datei");
 define("LAN_434", "Was ist das?");
 define("LAN_435", "XML Benutzer Protokoll Datei");
@@ -80,20 +80,24 @@ define("LAN_USET_1", "Die Avatarbreite ist zu gross");
 define("LAN_USET_2", "Maximal erlaubte Breite ist");
 define("LAN_USET_3", "Die Avatarhöhe ist zu gross");
 define("LAN_USET_4", "Maximal erlaubte Höhe ist");
-define("LAN_CUSTOMTITLE", "Custom Titel");
-define("LAN_ICQNUMBER", "Die ICQ Nummer darf nur aus Zahlen bestehen");
+define("LAN_CUSTOMTITLE", "Forum Titel");
 define("LAN_408", "Ein Benutzer mit der selben E-Mail Adresse existiert bereits.");
 define("MAX_AVWIDTH", "maximale Avatarbreite");
 define("MAX_AVHEIGHT", "maximale Avatarhöhe");
-define("GIF_RESIZE", "Bitte verkleinern Sie das gif-Image oder konvertieren Sie zu einem anderen Bildformat");
 define("RESIZE_NOT_SUPPORTED", "Bildverkleinerungsmethode wird durch ihren Server nicht unterstützt. Bitte verkleiner sie das Bild oder wählen sie ein anderes. Die Datei wurde gelöscht.");
-// v0.7
 define("LAN_USET_5", "Angemeldet für");
 define("LAN_USET_6", "Angemeldet für unsere Mailing-Liste(n) und/oder Bereiche dieser Seite.");
 define("LAN_USET_7", "Erweiterte Informationen");
 define("LAN_USET_8", "Signatur / Zeitzone");
 define("LAN_USET_9", "Einige erforderliche Felder (markiert mit einem *) fehlen in Ihren Einstellungen.");
-define("LAN_USET_10","Bitte aktualisieren Sie Ihre Einstellungen um fortfahren zu können.");
+define("LAN_USET_10", "Bitte aktualisieren Sie Ihre Einstellungen um fortfahren zu können.");
+define("LAN_USET_11", "Dieser Benutzername kann nicht als gültig akzeptiert werden, bitte wählen Sie einen andern Benutzernamen");
+define("LAN_USET_12", "Der Anzeigename ist zu kurz. Bitte wählen Sie einen anderen.");
+define("LAN_USET_13", "Ungültige Zeichen im Benutzer Namen. Bitte wählen Sie einen anderen.");
+define("LAN_USET_14", "Loginname zu lang. Bitte wählen Sie einen anderen");
+define("LAN_USET_15", "Anzeigename zu lang. Bitte wählen Sie einen anderen");
+define("LAN_USET_16", "Bitte hier markieren wenn sie bestehendes Foto löschen wollen ohne ein anderes hochzuladen");
+define("LAN_USET_17", "Der Anzeigename besteht bereits, bitte wählen Sie einen anderen.");
 
 
 ?>

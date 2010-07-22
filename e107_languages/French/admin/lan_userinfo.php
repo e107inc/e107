@@ -1,19 +1,21 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_userinfo.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-04 21:32:33 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-define("USFLAN_1", "Impossible de trouver l'Ip de cette personne - aucune information n'est disponible.");
-//define("USFLAN_2", "Erreur");
-define("USFLAN_3", "Messages postés depuis l'adresse IP");
-define("USFLAN_4", "Hôte");
-define("USFLAN_5", "Cliquer ici pour transférer l'adresse IP dans la liste de bannissements");
-define("USFLAN_6", "ID de l'utilisateur");
-define("USFLAN_7", "Informations sur l'utilisateur");
-?>
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/lan_userinfo.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2009/06/05 13:24:40 $
+ * $Author: marj_nl_fr $
+ */
+if (!defined('e107_INIT')) { exit(); }
+
+define('USFLAN_1', 'Impossible de trouver l’Ip de cette personne. Aucune information n’est disponible.');
+//define('USFLAN_2', 'Erreur');
+define('USFLAN_3', 'Messages postés depuis l’adresse IP');
+define('USFLAN_4', 'Hôte');
+define('USFLAN_5', 'Cliquer ici pour transférer l’adresse IP dans la liste de bannissements');
+define('USFLAN_6', 'ID du membre');
+define('USFLAN_7', 'Informations sur l’utilisateur');

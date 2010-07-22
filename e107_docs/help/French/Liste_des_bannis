@@ -1,8 +1,19 @@
-<div class='forumheader4'>
-Q>	 A quoi sert cette section  ?
-A> Cette page vous permet d'interdire l'accès à votre site à certains visiteurs , par le bannissement de leur adresse IP et/ou leur adresse courriel.  
-</div>
-<div class='forumheader4'>
-Q>	Pourquoi dois-je donner une raison?
-A>	Cela n'est pas obligatoire, mais permet aux autres administrateurs de prendre connaissance de la raison de l'interdiction. Ainsi ils ne lèveront pas l'interdiction par erreur.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Liste_des_bannis,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q> A quoi sert cette section?
+A> Cette page vous permet d’interdire l’accès de votre site à certains visiteurs par bannissement de leur adresse IP ou email.
+
+Q> Pourquoi dois-je donner une raison?
+A> Cela n’est pas obligatoire mais permet aux autres administrateurs de prendre connaissance de la raison de l’interdiction. Ainsi ils ne lèveront pas l’interdiction par erreur.

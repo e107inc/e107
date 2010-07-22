@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_user_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:32 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_user_extended.php,v $
+|     $Revision: 1.11 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "文字盒");
@@ -43,4 +43,5 @@ define("UE_LAN_LANGUAGE_DESC", "會員語言");
 define("UE_LAN_COUNTRY", "國家");
 define("UE_LAN_COUNTRY_DESC", "會員國家 (包含在 db table)");
 
+define("LAN_UE_FAIL_HOMEPAGE", "首頁有無效的連結");
 ?>

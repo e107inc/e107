@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_menu/languages/German.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:07:09 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/online_menu/languages/German.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:07 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("ONLINE_L3", "Auf dieser Seite: ");
 define("ONLINE_L4", "Online");
 define("ONLINE_L5", "Mitglieder");
 define("ONLINE_L6", "neueste");
-//define("TRACKING_MESSAGE", (ADMIN ? "<br /><br /><span style='font-weight: bold'>Online Benutzertracking ist momentan abgestellt, bitte schalten Sie es <a href='".e_ADMIN."users.php?options'>hier</a></span> frei<br />" : ""));
-define("TRACKING_MESSAGE", "Online Benutzertracking ist momentan abgestellt, bitte schalten Sie es  <a href='".e_ADMIN."users.php?options'>hier</a></span> frei<br />");
+
+define("TRACKING_MESSAGE", "Online Benutzertracking ist momentan abgestellt, bitte schalten Sie es  [link=".e_ADMIN."users.php?options]hier[/link][br]");
 
 ?>

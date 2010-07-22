@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_comment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_comment.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("COMLAN_7", "Администратор на сайта");
 define("COMLAN_8", "Коментар");
 define("COMLAN_9", "Пусни коментар");
 define("COMLAN_10", "Администратор");
-define("COMLAN_11", "Записването на коментара беше неуспешно - моля провбвайте отново, като премахнете всички нестандартни знаци.");
+define("COMLAN_11", "Записването на коментара беше неуспешно - моля пробвайте отново, като премахнете всички нестандартни знаци.");
 define("COMLAN_16", "Потребителско име: ");
 define("COMLAN_99", "Коментари");
 define("COMLAN_100", "Новини");
@@ -36,6 +36,7 @@ define("COMLAN_102", "Отговор на: ");
 define("COMLAN_103", "Статия");
 define("COMLAN_104", "Рецензия");
 define("COMLAN_105", "Съдържание");
+define("COMLAN_106", "Файлове");
 define("COMLAN_145", "Регистриран на: ");
 define("COMLAN_194", "Гост");
 define("COMLAN_195", "Регистриран потребител");
@@ -82,5 +83,5 @@ define("COMLAN_TYPE_5", "документи");
 define("COMLAN_TYPE_6", "бъгове");
 define("COMLAN_TYPE_7", "идеи");
 define("COMLAN_TYPE_8", "потребителски профил");
-
+define("COMLAN_TYPE_PAGE", "Съдържание");		// Reall custom page, but use a 'non-technical' description
 ?>

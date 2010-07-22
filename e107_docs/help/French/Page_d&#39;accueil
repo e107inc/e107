@@ -1,13 +1,19 @@
-<div class='forumheader4'>
-Q>	A quoi sert cette section ?
-A>	Cet écran vous permet d'installer l'interface que vous voulez voir s'afficher en tant que page d'accueil de votre site.
-La page des actualités s'affiche par défaut .
-</div>
-<div class='forumheader4'>
-Q>	Quel autre page puis-je utiliser? 
-A>	N'importe laquelle. Vous pouvez tout aussi bien sélectionner une des pages présentes sur le site (forum, téléchargements, etc...) qu'entrer l'adresse d'une page que vous souhaitez utiliser.
-</div>
-<div class='forumheader4'>
-Q>	Comment puis je installer un splashscreen?  
-A>	Entrez l'adresse de votre page splashscreen, cocher alors la case Splashscreen seulement, la page s'affichera pendant 10 secondes avant la réorientation vers votre page d'actualités.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Page_d&#39;accueil,v $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	A quoi sert cette section?
+A>	Cette page vous permet de changer la page d’accueil de votre site. News est sélectionné par défaut.
+
+Q>	Quelle autre page puis-je utiliser?
+A>	N’importe laquelle. Vous pouvez tout aussi bien sélectionner une des pages présélectionées (forum, téléchargements, etc.) qu’entrer l’adresse d’une page que vous souhaitez utiliser.

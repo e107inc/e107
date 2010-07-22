@@ -7,10 +7,10 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Bulgarian.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 22:15:09 $
-|     $Author: secretr $
+|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/links_page/languages/English.php,v $
+|     $Revision: 1.22 $
+|     $Date: 2005/07/14 13:30:26 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -309,9 +309,11 @@ define("LAN_LINKS_44", "id");
 define("LAN_LINKS_45", "Категории Линкове");
 define("LAN_LINKS_46", "Подкатегории Линкове");
 define("LAN_LINKS_47", "линк навигатор...");
-define("LAN_LINKS_48", "-- категория --");
+define("LAN_LINKS_48", "-- преглед на категорията --");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "Нямате достатъчно права за качване на линк");
+
+define('LAN_LINKS_SCH_1','В отговор на');
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 

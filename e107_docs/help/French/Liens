@@ -1,10 +1,21 @@
-<div class='forumheader4'>
-Q>	Comment puis-je insérer un lien de sorte qu'il apparaisse dans mon menu de navigation principale?
-A>	Tous les liens dans la catégorie principale (Main) apparaîtront dans votre menu de navigation principale.
-Toutes les autres catégories apparaissent dans la page de liens.
-</div>
-<div class='forumheader4'>
-Q>	Qu'est-ce que l'icône?
-A>	Ceci vous permet d'afficher l'icône prévue pour ce lien dans la page de liens.
-Si vous le laissez vide (pas d'icône) un bouton blanc sera affiché.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Liens,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q> Comment puis-je insérer un lien de sorte qu’il apparaisse dans mon menu de navigation principale?
+A> Rendez-vous dans “Liens du site” et créez/éditez/supprimez vos liens.
+Par défaut, le menu de navigation principal utilise la catégorie 1 (Main).
+Cependant il est possible d’afficher plusieurs menus différents (actuellement 4) en changeant la catégorie.
+
+Q> A quoi sert “Bouton/icône du lien”?
+A> Si sélectionné et si utilisé dans le shortcode de votre thème, l’icône sélectionnée est affichée avec le texte du lien.

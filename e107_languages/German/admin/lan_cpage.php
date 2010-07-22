@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_cpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_cpage.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -47,11 +47,13 @@ define("CUSLAN_34", "Konvertierung Beginn");
 define("CUSLAN_35", "Eigene Seiten Aktualisierung abgeschlossen - aktualisiert");
 define("CUSLAN_36", "Um Voreinstellungen für die Seiten zu setzen, gehen Sie zur ersten Seite zurück und bearbeiten Sie die gewünschte Seite.");
 define("CUSLAN_37", "Eigen Seiten Aktualisierung");
-
 define("CUSLAN_38", "an");
 define("CUSLAN_39", "aus");
 define("CUSLAN_40", "Optionen speichern");
 define("CUSLAN_41", "Autor, - und Datumsinformationen anzeigen");
 define("CUSLAN_42", "Keine Seiten definiert");
+define("CUSLAN_43", "Menü ohne Titel");
+define("CUSLAN_44", "Seite ohne Titel");
+
 
 ?>

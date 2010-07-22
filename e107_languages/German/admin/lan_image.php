@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_image.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_image.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -29,6 +29,7 @@ define("IMALAN_15", "Zeige nichts");
 define("IMALAN_16", "Zeige hochgeladene Avatare");
 define("IMALAN_17", "Hier klicken");
 define("IMALAN_18", "Hochgeladene Bilder");
+define("IMALAN_19", "'deaktivierte' Nachricht anzeigen");
 
 define("IMALAN_21", "Gebraucht von");
 define("IMALAN_22", "Bild ist nicht in Gebrauch");
@@ -45,5 +46,26 @@ define("IMALAN_32", "Nur Mitglieder");
 define("IMALAN_33", "Nur Admin");
 define("IMALAN_34", "Sleight freischalten");
 define("IMALAN_35", "TransparentE PNG-24's werden gefixt mit Alpha Transparenz im IE 5 / 6 (Wirkt sich auf der ganzen Seite aus)");
+
+define("IMALAN_36", "Avatargrösse und Zugriff validieren");
+define("IMALAN_37", "Avatar Validierung");
+define("IMALAN_38", "Maximal erlaubte Breite");
+define("IMALAN_39", "Maximal erlaubte Höhe");
+define("IMALAN_40", "zu breit");
+define("IMALAN_41", "zu hoch");
+define("IMALAN_42", "Nicht gefunden");
+define("IMALAN_43", "Hochgeladenen Avatar löschen");
+define("IMALAN_44", "Externe Referenz löschen");
+define("IMALAN_45", "Nicht gefunden");
+define("IMALAN_46", "Zu gross");
+define("IMALAN_47", "Alle hochgeladenen Avatare");
+define("IMALAN_48", "Alle externen Avatare");
+define("IMALAN_49", "Benutzer mit Avataren");
+define("IMALAN_50", "Insgesamt");
+define("IMALAN_51", "Avatar für ");
+define("IMALAN_52", "Der Pfad zu ImageMagick scheint nicht korrekt zu sein");
+define("IMALAN_53", "Der Pfad zu ImageMagick scheint korrekt zu sein, die konvertieerte Datei scheint aber nicht gültig zu sein");
+define("IMALAN_54", "GD Version installiert:");
+define('IMALAN_55', 'Nicht installiert');
 
 ?>

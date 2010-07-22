@@ -1,21 +1,21 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-04 21:32:31 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-if (!defined('e107_INIT')) { exit; }
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/notify.php,v $
+ * $Revision: 1.12 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-  $text = "Alerter par courriel lorsque des événements e107 se produisent.<br /><br />
-  Par exemple, mettre l'option 'IP bannis pour inondation de site' au groupe 'Admin' 
-  et tous les administrateurs recevront un courriel si votre site est inondé.<br /><br />
-  Vous pouvez également alerter vos utilisateurs lorsqu'une ".GLOBAL_LAN_NEWS_1." est ajoutée.<br /><br />
-  Si vous voulez que les alertes par courriel soient envoyées à une adresse électronique alternative - 
-  sélectionnez l'option 'Courriel' et remplissez le champ avec l'adresse électronique.";
-  $ns -> tablerender("Aide Alertes", $text);
-?>
+if (!defined('e107_INIT')) { exit(); }
+
+$text = 'Notifier par email quand des évènements e107 se produisent.<br /><br />
+Par exemple: mettre “IP bannie pour flood du site” sur groupe “Admin” et tous les administrateurs recevront un email quand le site est floodé.<br /><br />
+Vous pouvez également alerter vos membres lorsqu’une news a été postée.<br /><br />
+Si vous voulez que les alertes par email soient envoyées à une autre adresse email, sélectionnez l’option “Email” et remplissez le champ avec l’adresse email.';
+
+$ns -> tablerender('Aide alertes', $text);

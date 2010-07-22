@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Bulgarian.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 22:16:48 $
+|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/poll/languages/English.php,v $
+|     $Revision: 83 $
+|     $Date: 2006-11-27 14:47:49 +0200 (Mon, 27 Nov 2006) $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,10 @@ define("POLL_ADLAN01", "Анкета");
 define("POLL_ADLAN02", "Модула Анкета ви позволява да публикувате анкети на сайта ви.");
 define("POLL_ADLAN03", "Настройка на модул Анкети");
 define("POLL_ADLAN04", "Модула Анкета беше инсталиран успешно. За да добавите анкета, кликнете на иконата на Анкета в секцията модули на главната админ страница.");
+
+define("POLL_ADLAN05", "Основна анкета: ");
+define("POLL_ADLAN06", "Мнение от форума: ");
+define("POLL_ADLAN07", "Тип");
 
 define("POLLAN_MENU_CAPTION", "Анкета");
 
@@ -35,7 +39,7 @@ define("POLLAN_8", "Добави нов възможен отговор");
 define("POLLAN_9", "Разреши повече от един отговор?");
 define("POLLAN_10", "да");
 define("POLLAN_11", "не");
-define("POLLAN_12", "Покаване на резултатите");
+define("POLLAN_12", "Показване на резултатите");
 define("POLLAN_13", "след гласуването");
 define("POLLAN_14", "при кликане на линка за преглед на резултатите - коментарите трябва да са разрешени за да ползвате тази опция");
 define("POLLAN_15", "Позволено да се гласува от");

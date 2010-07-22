@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/lan_user.php,v $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Hebrew/lan_user.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2006-04-13 15:13:35 $
+|     $Date: 2006/04/13 15:13:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -62,5 +62,7 @@ define("LAN_425", "שלח הודעה פרטית");
 define("LAN_426", "לפני");
 
 define("USERLAN_1", "דירוג peer");
+define ("USERLAN_2", "אין לך גישה לצפות בעמוד זה.");
+
 
 ?>

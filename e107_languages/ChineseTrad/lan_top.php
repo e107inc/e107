@@ -3,14 +3,14 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_top.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:32 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_top.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 
-define("TOP_LAN_0", "論壇最多發表會員");
+define("TOP_LAN_0", "討論區最多發表會員");
 define("TOP_LAN_1", "會員名稱");
 define("TOP_LAN_2", "發表數");
 define("TOP_LAN_3", "最多評論會員");

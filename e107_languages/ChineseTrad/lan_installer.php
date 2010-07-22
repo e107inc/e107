@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_installer.php,v $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_installer.php,v $
 |     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:28 $
-|     $Author: e107coders $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("LANINS_001", "e107 安裝指引");
@@ -26,17 +26,17 @@ define("LANINS_011", "發生錯誤");
 define("LANINS_012", "MySQL 相關函數不存在. 通常是表示 MySQL PHP Extension尚未安裝或是您的 PHP installation 沒有支援 MySQL ."); // help for 012
 define("LANINS_013", "無法找出您的 MySQL 版本. 如繼續安裝,這可能會發生錯誤，系統 e107 需要 MySQL >= 3.23 .");
 define("LANINS_014", "檔案權限");
-define("LANINS_015", "PHP V版本");
+define("LANINS_015", "PHP 版本");
 define("LANINS_016", "MySQL");
-define("LANINS_017", "通過");
-define("LANINS_018", "請確定名單上得檔案存在並且是可以寫入的. 通常需要 CHMOD 為 777, 如果有問題請聯絡您的主機商.");
+define("LANINS_017", "檢查通過");
+define("LANINS_018", "請確定名單上的檔案是否檔案存在,並且相關權限是可以寫入的. 通常需要 CHMOD 為 777, 如果有問題請聯絡您的主機商.");
 define("LANINS_019", "您伺服器上的 PHP 版本無法執行 e107. e107 至少需要 PHP 版本於 4.3.0 以上. 請更新您的 PHP 版本, 或請您的主機商更新.");
 define("LANINS_020", "繼續安裝");
 define("LANINS_021", "2");
 define("LANINS_022", "MySQL 伺服器細節");
 define("LANINS_023", "請輸入 MySQL 設定.
 
-如果您有root的權限去新增資料庫請勾選此欄位, 假如您必須新增一個資料庫或是使用已存在的資料庫.
+如果您有root的權限去新增資料庫請勾選此欄位, 假如您必須新增一個資料庫或是使用現有的資料庫.
 
 假如您只有一個資料庫請使用前置文字，這樣就可以安裝其他程式於資料庫中.
 假如您不知道 MySQL 資訊請聯絡您的主機商.");
@@ -67,7 +67,7 @@ define("LANINS_047", "管理員細節");
 define("LANINS_048", "回到上一步");
 define("LANINS_049", "兩次密碼不一樣. 請重新輸入嘗試.");
 define("LANINS_050", "XML Extension");
-define("LANINS_051", "已安裝");
+define("LANINS_051", "已經安裝");
 define("LANINS_052", "尚未安裝");
 define("LANINS_053", "e107 .700 需要 PHP XML Extension 被安裝. 請聯絡您的主機商或是閱讀資訊 ");
 define("LANINS_054", " 之前繼續");
@@ -89,7 +89,7 @@ define("LANINS_062", "[b]歡迎來到您的新網站![/b]
 e107 已安裝完成並準備接受任何內容.<br />您的管理控制台 [link=e107_admin/admin.php]這裡[/link], 點選前往. 您將會登入使用安裝時所使用的帳號跟密碼.
 
 [b]相關支援[/b]
-e107 首頁: [link=http://e107.org]http://e107.org[/link],PHP黑店中文支援站：[link=http://www.phpbs.com]http://www.phpbs.com[/link]您將可以看到常見問題的文件.
+e107 首頁: [link=http://e107.org]http://e107.org[/link],e107中文支援：[link=http://e107.tw]http://e107.tw[/link][link=http://phpbs.com]PHP黑店[/link],您將可以看到常見問題的文件.
 討論區: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
 
 [b]下載[/b]
@@ -139,9 +139,23 @@ define("LANINS_092", "聯絡我們");
 define("LANINS_093", "給予進入私人選單項目權限");
 define("LANINS_094", "私人討論區權限範例");
 define("LANINS_095", "檢查完整性");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
+define("LANINS_096", '最新評論');
+define("LANINS_097", '[閱讀更多 ...]');
+define("LANINS_098", '文章');
+define("LANINS_099", '文章首頁 ...');
+define("LANINS_100", '討論區最新回覆');
+define("LANINS_101", '更新選單設定');
+define("LANINS_102", '日期 / 時間');
+define("LANINS_103", '回顧');
+define("LANINS_104", '回到首頁 ...');
+
+define("LANINS_105", '資料庫名稱或是前置文字發生錯誤例如： \'e\' 或是 \'E\' 大小寫的錯誤');
+define("LANINS_106", '警告 - E107無法寫入下面資料夾跟檔案. E107安裝將會繼續, 但是將會有部份功能無法使用. 
+				您必須變更相關的檔案權限');
+// for v0.7.16+ only
+define('LANINS_DB_UTF8_CAPTION', 'MySQL 編碼字元:');
+define('LANINS_DB_UTF8_LABEL',   '強制UTF-8連線?');
+define('LANINS_DB_UTF8_TOOLTIP', '如果選擇, 將會把資料庫中的編碼設定為 UTF-8. UTF-8 資料庫將會是下一e107版本必備選項.');
+
+
 ?>

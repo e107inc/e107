@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Bulgarian.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-03-04 22:15:40 $
-|     $Author: secretr $
+|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005/01/27 19:53:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ define("LOGIN_MENU_L15", "новини");
 define("LOGIN_MENU_L16", "съобщение в Разговори");
 define("LOGIN_MENU_L17", "съобщения в Разговори");
 define("LOGIN_MENU_L18", "коментар");
-define("LOGIN_MENU_L19", "коментари");
+define("LOGIN_MENU_L19", "коментара");
 define("LOGIN_MENU_L20", "мнение във форума");
 define("LOGIN_MENU_L21", "мнения във форума");
 define("LOGIN_MENU_L22", "нов регистриран");
@@ -60,7 +60,7 @@ define('LOGIN_MENU_L37', 'Обнови настройките');
 define('LOGIN_MENU_L38', 'Настройките са обновени');
 
 define('LOGIN_MENU_L39', 'Админ Изход');
-define("LOGIN_MENU_L40", "Повторна заявка за активиране");
+define("LOGIN_MENU_L40", "Aктивирай отново");
 define("LOGIN_MENU_L41", "Настройки на меню Вход");
 
 ?>

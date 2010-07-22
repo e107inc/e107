@@ -1,21 +1,30 @@
-<div class='forumheader4'>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Menus,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
 Q>	A quoi servent les menus?
-A>	Ce sont des cadres ou fenêtres qui apparaissent dans les zones de menu (ou des colonnes) de votre site.
-Ceux-ci peuvent contenir du texte, des liens, ou autre chose.
-</div>
-<div class='forumheader4'>
+A>	Les menus des cadres ou fenêtres qui apparaissent dans les zones de menus (ou des colonnes) de votre site.
+Ils peuvent contenir du texte, des liens, ou toute autre chose.
+
 Q> Comment activer un menu?
-A> Accédez à votre espace d'administration et cliquez sur Menus.
-Vous verrez le rendu général de votre site avec une liste des menus à leurs emplacements respectifs.
-Les menus au centre de la page sont inactifs, vous pouvez les déplacer dans un secteur actif en cliquant sur 'Activer ce menu'.
-Vous pouvez également déplacer le secteur où le menu est inséré et/ou le déplacer dans la colonne une fois qu'il est activé.
-</div>
-<div class='forumheader4'>
-Q>	Je désire mettre du texte dans un menu, comment puis-je y arriver?
-A>	Accédez à votre espace d'administration et cliquez sur Menus Personnels.
-De là vous pourrez écrire n'importe quel texte que vous désirez dans un menu. Il sera sauvegardé et disponible comme n'importe quel autre menu.
-</div>
-<div class='forumheader4'>
-Q>	Comment puis-je changer les options d'un menu?
-A>	Si un panneau de configuration est disponible vous verrez un lien (appelé 'configurer') dans la boîte de menu une fois activée.
-</div>
+A> Accédez à votre zone d’administration et cliquez sur Menus.
+Vous voyez le rendu général du site avec une liste des menus installés et positionnés à leur emplacement respectif.
+Les menus au centre de la page sont inactifs. Vous pouvez les installer dans une zone active en les sélectionnant puis en cliquant sur “Activer dans la Zone XX”, ou XX est le numéro de la zone désirée.
+Lorsqu’il est activé, vous pouvez également, en sélectionnant sa liste déroulante, déplacer un menu dans sa zone ou une autre, ainsi que configurer la visibilité et parfois ses paramètres.
+
+Q>	Je désire mettre du texte dans un menu. Comment faire?
+A>	Accédez à votre zone d’administration et cliquez sur Menus/pages personnalisés.
+Sélectionnez “Créer un menu”. Il suffit ensuite de saisir le texte désiré, de sauvegarder, et le menu est disponible comme tout autre menu dans la section Menus (voir ci-dessus).
+
+Q>	Comment changer les options d’un menu?
+A>	Si un panneau de configuration est disponible un lien nommé “Configurer” est disponible dans la liste déroulante du menu une fois activé.

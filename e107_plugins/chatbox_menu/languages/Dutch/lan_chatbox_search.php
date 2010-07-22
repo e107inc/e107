@@ -1,15 +1,15 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Dutch/lan_chatbox_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-03 05:59:15 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("CB_SCH_LAN_1", "Chatbox");
+define('CB_SCH_LAN_1', 'Chatbox');
 
 ?>

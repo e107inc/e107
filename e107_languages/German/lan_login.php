@@ -3,17 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/lan_login.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
 define("LAN_27", "Sie haben ein erforderliches Feld leer gelassen");
 define("LAN_300", "Fehlerhaftes Login. Die eingegebenen Daten passen zu keinem registrierten Benutzer. Bitte überprüfen Sie, ob sie die Grossbuchstaben LOCK-taste aktiviert haben.");
 
-define("LAN_302", "Sie haben Ihren Account nicht aktiviert. Sie sollten ein E-Mail mit Anweisungen erhalten haben wie Sie Ihren Account aktivieren müssen. Wenn nicht, kontaktieren Sie den Administrator.");
+define("LAN_302", "Sie haben Ihren Account nicht aktiviert. Sie sollten ein E-Mail mit Anweisungen erhalten haben wie Sie Ihren Account aktivieren müssen. Falls nicht, klicken Sie bitte <a href='".e_BASE."signup.php?resend'>hier</a> um das Passwort nochmals an Sie verschicken zu lassen.");
 define("LAN_303", "Falscher Code eingegeben.");
 define("LAN_304", "Die Kombination von Benutzername udn Passwort ist schon vergeben.");
 define("LAN_LOGIN_1", "User Name");

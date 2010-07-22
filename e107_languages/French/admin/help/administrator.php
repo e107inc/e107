@@ -1,18 +1,17 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté française e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-12-04 21:32:30 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/administrator.php,v $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
-$caption = "Aide Administrateurs";
-$text = "Utilisez cette page pour éditer ou supprimer des administrateurs.<br /><br />L'administrateur n'aura le droit d'accéder qu'aux fonctionnalités cochées.<br /><br />Pour créer un nouvel administrateur, rendez vous à la page de configuration des Membres et conférez le statut d'admin à l'utilisateur désiré.";
-$ns -> tablerender($caption, $text);
-?>
+$text = 'Utilisez cette page pour éditer ou supprimer des administrateurs.<br /><br />L’administrateur n’a le droit d’accéder qu’aux fonctionnalités cochées.<br /><br />Pour créer un nouvel administrateur, rendez vous à la page de configuration des membres et conférez le statut d’admin au membre désiré.';
+$ns -> tablerender('Aide administrateurs', $text);

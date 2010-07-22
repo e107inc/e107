@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:31 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_signup.php,v $
+|     $Revision: 1.29 $
+|     $Date: 2007/11/11 21:52:44 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "註冊");
@@ -115,4 +115,18 @@ define("LAN_SIGNUP_53", "欄位認證測試");
 define("LAN_SIGNUP_54", "點選填入註冊細節");
 define("LAN_SIGNUP_55", "顯示名稱過長，請選擇另外的名稱");
 define("LAN_SIGNUP_56", "顯示名稱太短，請選擇另外的名稱");
+define("LAN_SIGNUP_57", "登入名稱過長. 請選擇另外的名稱");
+define("LAN_SIGNUP_58", "註冊資訊預覽");
+define("LAN_SIGNUP_59","**** 假如連結無法正常使用, 請確認不會超過下一行. ****");
+define('LAN_SIGNUP_60', '使用外部頭像時發生錯誤');
+
+// 0.7.16
+
+define("LAN_SIGNUP_72", "感謝您註冊[sitename]! 我們已經寄出確認信件到 [email]. 請點選確認連結來啟動帳號.");  	// LAN_405
+
+define("LAN_SIGNUP_98", "確認您的電子信箱");
+define("LAN_SIGNUP_99", "所遇到的問題");
+define("LAN_SIGNUP_100", "等待管理員審核");
+
+define("LAN_SIGNUP_59","**** 此連結如果無法使用,請確認部分內容是否超過到下一行. ****");
 ?>

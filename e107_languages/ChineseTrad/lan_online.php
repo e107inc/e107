@@ -3,22 +3,22 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_online.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:30 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_online.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 
 //v.616
 define("ONLINE_EL1", "訪客: ");
 define("ONLINE_EL2", "會員: ");
-define("ONLINE_EL3", "於此頁面: ");
+define("ONLINE_EL3", "目前頁面: ");
 define("ONLINE_EL4", "線上");
 define("ONLINE_EL5", "會員");
 define("ONLINE_EL6", "最新註冊會員");
 define("ONLINE_EL7", "瀏覽中");
-define("ONLINE_EL8", "最多線上會員: ");
+define("ONLINE_EL8", "最多線上會員人數: ");
 define("ONLINE_EL9", "於");
 define("ONLINE_EL10", "會員名稱");
 define("ONLINE_EL11", "瀏覽頁面");
@@ -38,7 +38,7 @@ define("NEWS", "新聞");
 define("OLDPOLLS", "舊的投票");
 define("POLLCOMMENT", "投票");
 define("PRINTPAGE", "列印");
-define("LOGIN", "登入");
+define("LOGIN", "登入中");
 define("SEARCH", "搜尋中");
 define("STATS", "網站統計");
 define("SUBMITNEWS", "提供新聞");

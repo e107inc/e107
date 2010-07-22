@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_download.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ define("LAN_dl_14", "Гласувай");
 define("LAN_dl_15", "Благодарим за вашия глас");
 define("LAN_dl_16", "тегления от");
 define("LAN_dl_17", "файл");
-define("LAN_dl_18", "Файлове");
+define("LAN_dl_18", "Свалено");
 define("LAN_dl_19", "Категория");
 define("LAN_dl_20", "Файлове");
 define("LAN_dl_21", "Големина");
@@ -101,4 +101,7 @@ define("LAN_dl_74", "Общо файлове от този mirror: ");
 define("LAN_dl_75", "няма снимка ");
 define("LAN_dl_76", "Към страница");
 define("LAN_dl_77", "Свалено");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
+
+define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the --LINK--downloads</a> area for a more recent version.'); 
+
 ?>

@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/German.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:06:17 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/login_menu/languages/German.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:06 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,8 @@ define('LOGIN_MENU_L33', 'Zeige neue Chatboxeinträge');
 define('LOGIN_MENU_L34', 'Zeige neue Kommentare');
 define('LOGIN_MENU_L35', 'zeige neue Forumeinträge');
 define('LOGIN_MENU_L36', 'Zeige neue Mitglieder');
-define('LOGIN_MENU_L37', 'Einstellungen aktualisieren');
-define('LOGIN_MENU_L38', 'Einstellungen aktualisiert');
+define('LOGIN_MENU_L39', 'Adminbereich verlassen');
+define("LOGIN_MENU_L40", "Aktivierungs-Email nochmals versenden");
+define("LOGIN_MENU_L41", "Login Men&uuml; Einstellungen");
 
 ?>

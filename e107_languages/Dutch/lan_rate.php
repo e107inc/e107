@@ -1,19 +1,20 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/lan_rate.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-28 20:35:48 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("RATELAN_0", "stem");
-define("RATELAN_1", "stemmen");
-define("RATELAN_2", "hoe beoordeel je dit onderwerp?");
-define("RATELAN_3", "bedankt voor je stem");
-define("RATELAN_4", "niet beoordeeld");
-define("RATELAN_5", "Waardering");
+define('RATELAN_0', 'Stem');
+define('RATELAN_1', 'Stemmen');
+define('RATELAN_2', 'Hoe beoordeel je dit onderwerp?');
+define('RATELAN_3', 'Bedankt voor je stem');
+define('RATELAN_4', 'Niet beoordeeld');
+define('RATELAN_5', 'Waardering');
+
 ?>

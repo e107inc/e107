@@ -1,47 +1,67 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_error.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-12-04 21:32:25 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-define("PAGE_NAME", "Erreur");
-define("LAN_ERROR_1", "Erreur 401: Permission Refusée");
-define("LAN_ERROR_2", "Vous n'avez pas la permission d'accéder à cette URL ou au lien demandé.");
-define("LAN_ERROR_3", "Merci d'informer l'administrateur si vous pensez que l'erreur n'a pas lieu d'être.");
-define("LAN_ERROR_4", "Erreur 403: L'authentification a échouée");
-define("LAN_ERROR_5", "L'URL que vous avez demandée requiert un identifiant et un mot de passe corrects. Soit une des deux informations fournies est incorrecte, soit votre navigateur ne supporte pas cette fonctionnalité.");
-define("LAN_ERROR_6", "Merci d'informer l'administrateur si vous pensez que l'erreur n'a pas lieu d'être.");
-define("LAN_ERROR_7", "Erreur 404: Document non trouvé");
-define("LAN_ERROR_8", "L'URL demandée ne peut être trouvée sur ce serveur. Le lien ne doit pas être à jour, imprécis, ou bien le serveur ne vous permet pas d'y accéder.");
-define("LAN_ERROR_9", "Merci d'informer l'administrateur si vous pensez que l'erreur n'a pas lieu d'être.");
-define("LAN_ERROR_10", "Erreur 500: Entête mal formé");
-define("LAN_ERROR_11", "Le serveur a rencontré une erreur interne ou un problème de configuration, votre demande ne peut aboutir");
-define("LAN_ERROR_12", "Merci d'informer l'administrateur si vous pensez que l'erreur n'a pas lieu d'être.");
-define("LAN_ERROR_13", "Erreur inconnue");
-define("LAN_ERROR_14", "Le serveur a rencontré une erreur");
-define("LAN_ERROR_15", "Merci d'informer l'administrateur si vous pensez que l'erreur n'a pas lieu d'être.");
-define("LAN_ERROR_16", "Vous avez tenté sans succès d'accéder");
-define("LAN_ERROR_17", "à été enregistré.");
-define("LAN_ERROR_18", "Apparemment, vous avez été référé ici par");
-define("LAN_ERROR_19", "Malheureusement, ce lien est désormais obsolète.");
-define("LAN_ERROR_20", "Veuillez cliquer ici pour retourner à la page principale");
-define("LAN_ERROR_21", "L'URL demandée n'a pas pu être trouvée sur ce serveur. Le lien que vous avez suivi est probablement périmé.");
-define("LAN_ERROR_22", "Veuillez cliquer ici pour vous rendre à la page de recherche de ce site");
-define("LAN_ERROR_23", "Votre tentative d'accès à ");
-define("LAN_ERROR_24", " a échoué.");
-// 0.7.6
-define("LAN_ERROR_25", "[1]: Impossible de lire les réglages du noyau dans la base de données - Les réglages du noyau existent mais ne peuvent être désérialisés. Tentative de restauration de la sauvegarde du noyau ...");
-define("LAN_ERROR_26", "[2]: Impossible de lire les réglages du noyau dans la base de données - les réglages du noyau sont inexistants.");
-define("LAN_ERROR_27", "[3]: Réglages du noyau sauvegardés - la sauvegarde est active.");
-define("LAN_ERROR_28", "[4]: Pas de sauvegarde du noyau disponible. Veuillez lancer l'outil <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> afin de rétablir les paramètres par défaut. <br /> Après rétablissement de vos paramètres, veuillez effectuer une sauvegarde de ceux-ci via le panneau  admin > base de données.");
-define("LAN_ERROR_29", "[5]: Certains champs sont restés vide. Veuillez re-soumettre le formulaire en ayant renseignés tous les champs requis.");
-define("LAN_ERROR_30", "[6]: Impossible de former une connexion valide avec MySQL. Vérifiez que votre fichier e107_config.php contient les bonnes informations.");
-define("LAN_ERROR_31", "[7]:  MySQL est en service mais la base de données ({$mySQLdefaultdb}) n'a pas pû être connectée.<br />Vérifiez qu'elle existe et que votre fichier e107_config.php contient les bonnes informations.");
-define("LAN_ERROR_32", "Pour compléter la mise à jour, copiez le texte suivant dans votre fichier e107_config.php :");
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/lan_error.php,v $
+ * $Revision: 1.11 $
+ * $Date: 2009/06/05 13:24:40 $
+ * $Author: marj_nl_fr $
+ */
+if (!defined('e107_INIT')) { exit(); }
 
-?>
+define('PAGE_NAME', 'Erreur');
+
+define('LAN_ERROR_1', 'Erreur 401: Permission refusée.');
+define('LAN_ERROR_2', 'Vous n’avez pas la permission d’accéder à cette URL ou au lien demandé.');
+define('LAN_ERROR_3', 'Merci d’informer l’administrateur si vous pensez que l’erreur n’a pas lieu d’être.');
+define('LAN_ERROR_4', 'Erreur 403: L’authentification a échouée.');
+define('LAN_ERROR_5', 'L’URL que vous avez demandé(e) requiert un nom d’utilisateur et un mot de passe corrects. Soit une des deux informations fournies est incorrecte, soit votre navigateur ne supporte pas cette fonctionnalité.');
+define('LAN_ERROR_6', 'Merci d’informer l’administrateur si vous pensez que l’erreur n’a pas lieu d’être.');
+define('LAN_ERROR_7', 'Erreur 404: Document non trouvé');
+define('LAN_ERROR_9', 'Merci d’informer l’administrateur si vous pensez que l’erreur n’a pas lieu d’être.');
+define('LAN_ERROR_10', 'Erreur 500: Entête mal formé');
+define('LAN_ERROR_11', 'Le serveur a rencontré une erreur interne ou un problème de configuration, votre demande ne peut aboutir.');
+define('LAN_ERROR_12', 'Merci d’informer l’administrateur si vous pensez que l’erreur n’a pas lieu d’être.');
+define('LAN_ERROR_13', 'Erreur inconnue');
+define('LAN_ERROR_14', 'Le serveur a rencontré une erreur');
+define('LAN_ERROR_15', 'Merci d’informer l’administrateur si vous pensez que l’erreur n’a pas lieu d’être.');
+define('LAN_ERROR_16', 'Vous avez tenté sans succès d’accéder');
+define('LAN_ERROR_17', 'à été enregistré.');
+define('LAN_ERROR_18', 'Apparemment, vous avez été redirigé ici par');
+define('LAN_ERROR_19', 'Malheureusement, le lien vers cette adresse est périmé ou totalement erroné.');
+define('LAN_ERROR_20', 'Cliquez ici pour retourner à la page principale');
+
+define('LAN_ERROR_21', 'l’URL demandée n’a pas pu être trouvée sur ce serveur. le lien que vous avez suivi est probablement périmé.');
+define('LAN_ERROR_22', 'Cliquer ici pour aller à la page de recherche de ce site');
+define('LAN_ERROR_23', 'Votre tentative d’accès à ');
+define('LAN_ERROR_24', ' a échouée.');
+
+// 0.7.6
+define('LAN_ERROR_25', '[1]: Impossible de lire les paramètres du noyau depuis la base de données. Ces paramètres existent mais ne peuvent être désérialisés. Tentative de rétablissement par les paramètres en backup…');
+define('LAN_ERROR_26', '[2]: Impossible de lire les paramètres du noyau depuis la base de données. Paramètres inexistant.');
+define('LAN_ERROR_27', '[3]: Paramètres du noyau sauvegardés. Le backup est actif.');
+define('LAN_ERROR_28', '[4]: Pas de backup du noyau disponible. Vérififez que votre base de données n’est pas vide ni corrompue. Sinon lancez l’outil de <a href="'.e_FILE.'resetcore/resetcore.php">réinitialisation</a> afin de rétablir les paramètres par défaut.<br /> Après rétablissement de vos paramètres, veillez à en effectuer une sauvegarde via le panneau admin &gt; base de données.');
+define('LAN_ERROR_29', '[5]: Certains champs n’ont pas été saisis. Renseignés tous les champs requis puis ré-envoyez le formulaire.');
+define('LAN_ERROR_30', '[6]: Impossible de former une connexion valide avec MySQL. Vérifiez que votre fichier e107_config.php contient les bonnes informations.');
+define('LAN_ERROR_31', '[7]: MySQL est en service mais la base de données ('.$mySQLdefaultdb.') n’a pas pût être connectée.<br />Vérifiez si elle existe et si le fichier de configuration contient les bonnes informations.');
+define('LAN_ERROR_32', 'Afin de finaliser votre mise à jour, copiez le texte suivant dans votre fichier e107_config.php:');
+
+
+define('LAN_ERROR_33', 'Erreur de traitement! Vous deviez logiquement être redirigé vers la page d’accueil.');
+define('LAN_ERROR_34', 'Erreur inconnue! Merci d’informer l’administrateur du site que vous avez rencontré ceci:');
+
+define('LAN_ERROR_35', 'Erreur 400: requête incorrecte');
+define('LAN_ERROR_36', 'Suite à une erreur dans votre requête, le serveur ne peut vous fournir cette page.');
+define('LAN_ERROR_37', ''); // dans le genre inutile
+
+// v0.8
+define('LAN_ERROR_38', 'Désolé. Le site est temporairement inaccessible.');
+define('LAN_ERROR_39', 'Veuillez revenir dans quelque minutes.');
+define('LAN_ERROR_40', 'Si le problème persiste, merci de contacter un administrateur du site.');
+define('LAN_ERROR_41', 'L’erreur est:');
+define('LAN_ERROR_42', 'Informations complémentaires au sujet de l’erreur: ');
+define('LAN_ERROR_43', 'Site temporairement inaccessible.');
+define('LAN_ERROR_44', ''); // dans le genre inutile

@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:27 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_download.php,v $
+|     $Revision: 1.17 $
+|     $Date: 2008/07/04 20:23:11 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "下載管理");
@@ -70,7 +70,7 @@ define("LAN_dl_52", "訪客");
 define("LAN_dl_53", "點選這裡瀏覽下載");
 define("LAN_dl_54", "管理員發表錯誤的檔案, 請您留下重要訊息.");
 define("LAN_dl_55", "請<b>不要</b> 因其他理由聯絡管理員.");
-define("LAN_dl_56", "回報無效下載");
+//define("LAN_dl_56", "回報無效下載");
 define("LAN_dl_57", "回報");
 define("LAN_dl_58", "該回報來自於網站 ");
 define("LAN_dl_59", "回報於: ");
@@ -86,7 +86,7 @@ define("LAN_dl_66", "選擇下載的鏡像網站");
 
 define("LAN_dl_67", "請選擇下載的鏡像網站 ...");
 define("LAN_dl_68", "鏡像網站主機");
-define("LAN_dl_69", "下載次數");
+//define("LAN_dl_69", "下載次數");
 define("LAN_dl_70", "來自於");
 define("LAN_dl_71", "關於");
 
@@ -98,4 +98,5 @@ define("LAN_dl_75", "沒有有效的圖片 ");
 define("LAN_dl_76", "前往頁面");
 define("LAN_dl_77", "下載次數");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
 
+define('LAN_dl_78', '此檔案無法下載或是無法連結. 請確認 --連結--</a> 下載和最新的版本.'); 
 ?>

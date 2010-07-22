@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_print.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:30 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_print.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "友善列印"); }

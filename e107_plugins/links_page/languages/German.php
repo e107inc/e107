@@ -3,21 +3,19 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/German.php,v $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/links_page/languages/German.php,v $
 |     $Revision: 1.4 $
-|     $Date: 2006-10-31 14:06:36 $
-|     $Author: e107coders $
+|     $Date: 2010/01/07 04:40:11 $
+|     $Author: lars78 $
+|     $updated by: webmaster@e107cms.de (http://www.e107cms.de)
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
-
 define("LCLAN_PLUGIN_LAN_1", "Links Seite");
 define("LCLAN_PLUGIN_LAN_2", "Links Seite, Anzeige externer Weblinks");
 define("LCLAN_PLUGIN_LAN_3", "Links Seite konfigurieren");
 define("LCLAN_PLUGIN_LAN_4", "Links");
 define("LCLAN_PLUGIN_LAN_5", "Links Seite wurde erfolgreich installiert, zur Konfiguration, bitte auf der Administrationsseite auf  - Links Seite -  klicken.");
 define("LCLAN_PLUGIN_LAN_6", "Links Seite erfolgreich aktualisiert, - Sie nutzen nun Version");
-
 define("LCLAN_OPT_MENU_1", "Generelle Optionen");
 define("LCLAN_OPT_MENU_2", "Persönliche Linkmanager");
 define("LCLAN_OPT_MENU_3", "Kategorie Seite");
@@ -25,7 +23,6 @@ define("LCLAN_OPT_MENU_4", "Linkanzeige");
 define("LCLAN_OPT_MENU_5", "Refer Seite");
 define("LCLAN_OPT_MENU_6", "Bewertungs Seite");
 define("LCLAN_OPT_MENU_7", "Menü");
-
 define("LCLAN_PAGETITLE_1", "Links");
 define("LCLAN_PAGETITLE_2", "Alle Kategorien");
 define("LCLAN_PAGETITLE_3", "Alle Links");
@@ -36,11 +33,10 @@ define("LCLAN_PAGETITLE_7", "Persönlicher Linkmanager");
 define("LCLAN_PAGETITLE_8", "Link Kommentare");
 define("LCLAN_PAGETITLE_9", "Link übermitteln");
 define("LCLAN_PAGETITLE_10", "");
-
 define("LCLAN_OPT_1", "Generelle Optionen");
 define("LCLAN_OPT_2", "Link Seite Optionen");
-define("LCLAN_OPT_3", "freigeschalten");
-define("LCLAN_OPT_4", "nicht freigeschalten");
+define("LCLAN_OPT_3", "aktiviert");
+define("LCLAN_OPT_4", "deaktiviert");
 define("LCLAN_OPT_5", "px");
 define("LCLAN_OPT_6", "");
 define("LCLAN_OPT_7", "Kategorien in eigene Seiten teilen");
@@ -85,9 +81,9 @@ define("LCLAN_OPT_45", "Öffnet in einem 600x400 Fenster");
 define("LCLAN_OPT_46", "Wer kann Links managen");
 define("LCLAN_OPT_47", "Diese Benutzer können Ihre persönlichen Links bearbeiten oder welche hinzufügen");
 define("LCLAN_OPT_48", "Erlaube Direkteinträge");
-define("LCLAN_OPT_49", "Falls freigeschalten, werden Links direkt übermittelt, auch wenn sie eine Seitenadmin prüfen muss");
+define("LCLAN_OPT_49", "Falls aktiviert, werden Links direkt übermittelt, auch wenn sie eine Seitenadmin prüfen muß");
 define("LCLAN_OPT_50", "Erlaube Direktlöschungen");
-define("LCLAN_OPT_51", "Falls freigeschalten, können Links-Manager ihre eigenen Links löschen");
+define("LCLAN_OPT_51", "Falls aktiviert, können Links-Manager ihre eigenen Links löschen");
 define("LCLAN_OPT_52", "Persönlicher Linkmanager");
 define("LCLAN_OPT_53", "Datum");
 define("LCLAN_OPT_54", "Erlaube persönliche Links zu managen");
@@ -105,11 +101,10 @@ define("LCLAN_OPT_65", "Leere Kategorien anzeigen");
 define("LCLAN_OPT_66", "Link zu jeder Kategorie");
 define("LCLAN_OPT_67", "Link zu allen Links");
 define("LCLAN_OPT_68", "Alle Links ansehen");
-
 define("LCLAN_OPT_69", "Anzeigemodus Link-Navigation");
 define("LCLAN_OPT_70", "Kategorielinks anzeigen");
 define("LCLAN_OPT_71", "Anzeigemodus Kategorielinks");
-define("LCLAN_OPT_72", "Letzte Links anzeigen");
+define("LCLAN_OPT_72", "Neuste Links anzeigen");
 define("LCLAN_OPT_73", "Daten Anzeigen");
 define("LCLAN_OPT_74", "Wieviele Letzte Links werden angezeigt");
 define("LCLAN_OPT_75", "Hyperlinks");
@@ -118,14 +113,13 @@ define("LCLAN_OPT_77", "Kategorie");
 define("LCLAN_OPT_78", "Beschreibung");
 define("LCLAN_OPT_79", "Überschrift Navigation");
 define("LCLAN_OPT_80", "Überschrift Kategorien");
-define("LCLAN_OPT_81", "Überschrift- Letzte Linkliste");
+define("LCLAN_OPT_81", "Überschrift Neuste Links");
 define("LCLAN_OPT_82", "Navigation");
 define("LCLAN_OPT_83", "Kategorien");
-define("LCLAN_OPT_84", "Letzte Linkliste");
+define("LCLAN_OPT_84", "Neuste Links");
 define("LCLAN_OPT_85", "Überschrift Menü");
 define("LCLAN_OPT_86", "Link Menü");
 define("LCLAN_OPT_87", "Anzahl der Links anzeigen");
-
 define("LCLAN_ADMIN_1", "Aktualisierung");
 define("LCLAN_ADMIN_2", "Link in Datenbank gespeichert.");
 define("LCLAN_ADMIN_3", "Link in Datenbank aktualisiert.");
@@ -141,8 +135,6 @@ define("LCLAN_ADMIN_12", "Link Kategorie");
 define("LCLAN_ADMIN_13", "Übermittelter Link gelöscht");
 define("LCLAN_ADMIN_14", "Links");
 define("LCLAN_ADMIN_15", "Diese Kategorie beinhaltet noch links, bitte entfernen/verschieben Sie diese zuerst");
-
-
 define("LCLAN_SL_1", "Übermittelte Links");
 define("LCLAN_SL_2", "Keine übermittelten Links");
 define("LCLAN_SL_3", "Link");
@@ -161,7 +153,6 @@ define("LCLAN_SL_15", "Unterstrichene Felder sind erforderlich.");
 define("LCLAN_SL_16", "Link übermitteln");
 define("LCLAN_SL_17", "");
 define("LCLAN_SL_18", "");
-
 define("LCLAN_CAT_1", "Bild");
 define("LCLAN_CAT_2", "Kategorie");
 define("LCLAN_CAT_3", "Optionen");
@@ -178,7 +169,7 @@ define("LCLAN_CAT_13", "Name:");
 define("LCLAN_CAT_14", "Beschreibung:");
 define("LCLAN_CAT_15", "Neues Icon hochladen:");
 define("LCLAN_CAT_16", "Auto-Thumbnail Größe:");
-define("LCLAN_CAT_17", "Diese Option ist abgeschalten, wenn das Hochladen von Dateien auf ihrem Server nicht erlaubt ist");
+define("LCLAN_CAT_17", "Diese Option ist abgeschaltet, wenn das Hochladen von Dateien auf ihrem Server nicht erlaubt ist");
 define("LCLAN_CAT_18", "Das");
 define("LCLAN_CAT_19", "Verzeichnis ist nicht beschreibar, Sie müssen dem Ordner erst CHMOD 777 Rechte geben, bevor Sie etwas hochladen");
 define("LCLAN_CAT_20", "px");
@@ -191,7 +182,6 @@ define("LCLAN_CAT_26", "Link Kategorien aktualisieren");
 define("LCLAN_CAT_27", "Formular zurücksetzen");
 define("LCLAN_CAT_28", "Link Kategorie erstellen");
 define("LCLAN_CAT_29", "Link Kategorie");
-
 define("LCLAN_ITEM_1", "Übermittelt von");
 define("LCLAN_ITEM_2", "Kategorie:");
 define("LCLAN_ITEM_3", "Keine Kategorien bis jetzt");
@@ -200,7 +190,7 @@ define("LCLAN_ITEM_5", "Url:");
 define("LCLAN_ITEM_6", "Beschreibung:");
 define("LCLAN_ITEM_7", "Ein Icon hochladen:");
 define("LCLAN_ITEM_8", "Auto-Thumbnail Größe:");
-define("LCLAN_ITEM_9", "Diese Option ist abgeschalten, wenn das Hochladen von Dateien auf ihrem Server nicht erlaubt ist");
+define("LCLAN_ITEM_9", "Diese Option ist abgeschaltet, wenn das Hochladen von Dateien auf ihrem Server nicht erlaubt ist");
 define("LCLAN_ITEM_10", "Das");
 define("LCLAN_ITEM_11", "Verzeichnis ist nicht beschreibar, Sie müssen dem Ordner erst CHMOD 777 Rechte geben, bevor Sie etwas hochladen möchten");
 define("LCLAN_ITEM_12", "px");
@@ -230,9 +220,7 @@ define("LCLAN_ITEM_35", "Persönliche Links managen");
 define("LCLAN_ITEM_36", "gehe zu");
 define("LCLAN_ITEM_37", "Alle Links ansehen");
 define("LCLAN_ITEM_38", "Alle Links");
-define("LCLAN_ITEM_39", "Berwertung");
-
-
+define("LCLAN_ITEM_39", "Bewertung");
 define("LCLAN_ADMINMENU_1", "Link Optionen");
 define("LCLAN_ADMINMENU_2", "Link Kategorien managen");
 define("LCLAN_ADMINMENU_3", "Link Kategorie erstellen");
@@ -240,19 +228,13 @@ define("LCLAN_ADMINMENU_4", "Links managen");
 define("LCLAN_ADMINMENU_5", "Link erstellen");
 define("LCLAN_ADMINMENU_6", "Optionen");
 define("LCLAN_ADMINMENU_7", "Übermittelte Links");
-define("LCLAN_ADMINMENU_8", "Kategorien");	
-
-
+define("LCLAN_ADMINMENU_8", "Kategorien");
 define("NT_LAN_LP_1", "Links Seite Ereignisse");
 define("NT_LAN_LP_2", "Link übermittelt durch Benutzer");
 define("NT_LAN_LP_3", "Link übermittelt");
-
-
 define("LNK_SCH_LAN_2", "Alle Link Kategorien");
 define("LNK_SCH_LAN_3", "Alle Link Details");
-
 define("LAN_LINKS_MANAGER_0", "Icon");
-
 define("LAN_LINKS_MANAGER_1", "Link");
 define("LAN_LINKS_MANAGER_2", "Optionen");
 define("LAN_LINKS_MANAGER_3", "Neuen Link erstellen");
@@ -261,13 +243,10 @@ define("LAN_LINKS_MANAGER_5", "Kategorie");
 define("LAN_LINKS_MANAGER_6", "");
 define("LAN_LINKS_MANAGER_7", "");
 define("LAN_LINKS_MANAGER_8", "");
-define("LAN_LINKS_MANAGER_9", "");	
-
-	
-define("LAN_Links_1", "Links insgesamt");
-define("LAN_Links_2", "Insgesamt aktivierte Links");
+define("LAN_LINKS_MANAGER_9", "");
+define("LAN_LINKS_1", "Links insgesamt");
+define("LAN_LINKS_2", "Links insgesamt aktiv");
 define("LAN_LINKS_3", "Anonymous");
-
 define("LAN_LINKS_4", "Überschrift");
 define("LAN_LINKS_5", "Url");
 define("LAN_LINKS_6", "Anordnung");
@@ -280,7 +259,6 @@ define("LAN_LINKS_12", "Top Links ansehen nach Refer");
 define("LAN_LINKS_13", "Top Links ansehen nach Bewertung");
 define("LAN_LINKS_14", "Zurück zur Linkhauptseite");
 define("LAN_LINKS_15", "Sortiert nach");
-
 define("LAN_LINKS_16", "in dieser Kategorie");
 define("LAN_LINKS_17", "Link");
 define("LAN_LINKS_18", "Links");
@@ -314,51 +292,20 @@ define("LAN_LINKS_45", "Link Kategorie");
 define("LAN_LINKS_46", "Link Unterkategorien");
 define("LAN_LINKS_47", "Link Navigator");
 define("LAN_LINKS_48", "-- Kategorie ansehen --");
+define("LAN_LINKS_49", "");
+define("LAN_LINKS_50", "Sie haben im Moment keine Berechtigung Links zu übermitteln");
 
+define('LAN_LINKS_SCH_1','Gepostet als Antwort auf Link');
 
 define("LAN_ADMIN_HELP_0", "Linksseite Hilfebereich");
-
-define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the category<br /><br />
-".LINK_ICON_EDIT." : edit the category<br /><br />
-".LINK_ICON_DELETE." : delete the category<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the category item one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
-
-
+define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : edit the category<br /><br />".LINK_ICON_DELETE." : delete the category<br /><br />".LINK_ICON_ORDER_UP." : the up button allows you to move the category item one up in order.<br /><br />".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
 define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
 define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
-define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_EDIT." : post the submitted link to the link create form<br /><br />
-".LINK_ICON_DELETE." : delete the submitted link<br />
-");
-define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />
-general options<br />
-these options are generally used thoughout the link pages.<br /><br />
-personal link managers<br />
-the personal link managers are priviliged users who can manage their own personally added links.<br /><br />
-category page<br />
-here you can change options for the category page.<br /><br />
-links page<br />
-These options are used on the link pages.<br />
-");
-
-
-
+define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_EDIT." : post the submitted link to the link create form<br /><br />".LINK_ICON_DELETE." : delete the submitted link<br />");
+define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />general options<br />these options are generally used thoughout the link pages.<br /><br />personal link managers<br />the personal link managers are priviliged users who can manage their own personally added links.<br /><br />category page<br />here you can change options for the category page.<br /><br />links page<br />These options are used on the link pages.<br />");
 define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
-
-define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the website<br /><br />
-".LINK_ICON_EDIT." : edit the link<br /><br />
-".LINK_ICON_DELETE." : delete the link<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the link one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the link one down in order.<br />
-<br />
-<b>order</b><br />here you can manually set the order of all the links. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
-
+define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />".LINK_ICON_LINK." : link to the website<br /><br />".LINK_ICON_EDIT." : edit the link<br /><br />".LINK_ICON_DELETE." : delete the link<br /><br />".LINK_ICON_ORDER_UP." : the up button allows you to move the link one up in order.<br /><br />".LINK_ICON_ORDER_DOWN." : the down button allows you to move the link one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the links. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 define("LAN_ADMIN_HELP_10", "<i>the post submitted link page allows you to add a submitted link to the existing links</i><br /><br />A small submitted text is added into the description field.<br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 

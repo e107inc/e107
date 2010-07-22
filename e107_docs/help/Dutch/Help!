@@ -1,4 +1,4 @@
-
+<!-- for Help! $Id$ -->
 Q>	Ik heb een paar wijzigingen aan mijn site gemaakt en nu zie ik mySQL fouten en de site is niet te zien.
 A>	Het kan zijn dat je 'core' verminkt is. De core bevat de hoofdinstellingen en variabelen van e107. Om de core te herstellen, ga je naar http://jewebsite.com/e107_files/resetcore/resetcore.php. Maak eerst altijd een backup van je core (in het Database scherm) voordat je de wijzigingen aanbrengt, je kunt dan tenminste altijd de oude instellingen restoren als er iets fout ging (bij resetcore.php).
 

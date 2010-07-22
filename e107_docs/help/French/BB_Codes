@@ -1,17 +1,26 @@
-<div class='forumheader4'>
-Q>	Qu'est ce que le BBCode?
-A>	Un <strong><i>BBCode</i></strong> est un <strong><i>raccourci</i></strong> <strong><i>d'une étiquette HTML (Tag)</i></strong>, par exemple en entrant &#91;b] Je suis du texte en gras! [/b] dans n'importe laquelle de vos boîtes à texte d'admin cela affichera le texte entre &#91;b] et [/b] en gras, ainsi [b] Je suis du texte en gras! [/b] devrait être affiché en ce moment en gras à l'écran.
-</div>
-<div class='forumheader4'>
-Q>	Mais c'est pourquoi faire?
-A>	Il vous économise du temps lorsque vous entrer les étiquettes HTML (Tags). Vous pouvez employer les étiquettes HTML normales dans des vos boîtes de texte mais utiliser les BBCodes accélérera vraiment votre saisie de texte.
-</div>
-<div class='forumheader4'>
-Q>	Quand je clique sur un des boutons BBCode pour entrer le code, il se place à la fin de mon texte, et non pas à l'endroit où se trouve le curseur, pourquoi cela?
-A>	Il y a un bug dans Internet Explorer qui peut le faire cracher si e107 essaye de placer le code à la position du curseur, ainsi dans un intérêt de compatibilité le code est écrit à la fin de votre texte.
-</div>
-<div class='forumheader4'>
-Q>	Quels BBCodes puis-je utiliser?
-A>	Placer votre pointeur de souris au-dessus de n'importe laquelle de ces boîtes BBCodes, vous verrez une petite explication apparaître juste au-dessus des boutons.
-Il y a également des codes pour les liens &#91;URL] [/URL] et les courriels &#91;email] [/email], bien qu'utiliser les étiquettes HTML standards soit correct. Toutes les adresses web et email que vous écrirez seront automatiquement transformées en hyperliens cliquables.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/BB_Codes,v $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Qu’est ce qu’un bbcode?
+A>	Un bbcode est un <em>raccourci</em> d’une balise HTML (Tag). Par exemple en saisissant &#91;b]Je suis du texte en gras![/b] dans une zone de texte, le texte entre &#91;b] et [/b] sera affiché en gras. Ainsi [b]Je suis du texte en gras![/b] devrait être affiché en ce moment en gras à l’écran.
+
+Q>	Mais c’est pourquoi faire?
+A>	Il vous économise du temps pour saisir des balises HTML (Tags). Vous pouvez employer les balises HTML normales dans les zones de texte mais utiliser les bbcodes accélère sensiblement la saisie du texte.
+
+Q>	Quand je clique sur un des boutons bbcodes pour entrer le code il se place à la fin de mon texte et non pas à l’endroit où se trouve le curseur. Pourquoi?
+A>	Un bug d’Internet Explorer peut le faire cracher si e107 essaye de placer le code à la position du curseur. Dans un intérêt de compatibilité le code est donc écrit à la fin de votre texte.
+
+Q>	Quels bbcodes puis-je utiliser?
+A>	Placer votre pointeur de souris sur l’un des boutons bbcodes. Une petite explication apparait au-dessus des boutons.
+Il existe également des codes pour les liens &#91;url] [/url] et les emails &#91;email] [/email]. Toutes les adresses web et email que vous écrivez sont automatiquement transformées en hyperliens cliquables.

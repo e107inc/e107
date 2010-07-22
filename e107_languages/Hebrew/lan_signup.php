@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/lan_signup.php,v $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Hebrew/lan_signup.php,v $
 |     $Revision: 1.2 $
-|     $Date: 2006-08-14 16:02:45 $
+|     $Date: 2006/08/14 16:02:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,8 @@ define("LAN_105", "שתי הסיסמאות אינן תואמות");
 define("LAN_106", "כתובת אי-מייל זו אינה תקינה");
 define("LAN_107", "תודה לך! אתה רשום כעת כחבר באתר");
 define("LAN_108", "הרשמה הסתיימה");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
+define("LAN_109", "תוכן אתר זה תואם לחוק הגנת הפרטיות של ילדים במסגרת האינטרנט משנת 1998 (COPPA) ולכן אינו יכול לקבל רישום של משתמשים
+מתחת לגיל 13 ללא היתר בכתב מהוריהם או מהאפוטרופוס. למידע נוסף אתם יכולים לקרא את החוק.");
 define("LAN_110", "הרשמה");
 define("LAN_111", "רשום סיסמא בשנית: ");
 define("LAN_112", "כתובת אי-מייל: ");
@@ -43,6 +44,9 @@ define("LAN_405", "שלב הרשמה זה הושלם. בקרוב תקבל אי-�
 define("LAN_406", "תודה לך!");
 define("LAN_407", "שמור על אי-מייל זה למידע אישי שלך. סיסמתך מוצפנת ולא ניתן לשחזר אותה אם שכחת. למרות זאת, אם שכחת סיסמתך תוכל ליצור סיסמא חדשה.\n\nתודה לך על ההרשמה לאתר\n\nמ");
 define('LAN_408', 'משתמש עם כתובת אי-מייל זו כבר קיים. השתמש בדף ה"שכחתי סיסמא" כדי לשחזר סיסמתך.');
+define("LAN_409", "תוים שאינם תקינים בשם המשתמש");
+define("LAN_410", "הכנס קוד שנראה בתמונה");
+define("LAN_411", "שם זה קיים כבר בבסיס הנתונים, אנא בחרו שם אחר");
 
 define("LAN_SIGNUP_1", "מינימום.");
 define("LAN_SIGNUP_2", "תוים.");
@@ -55,46 +59,73 @@ define("LAN_SIGNUP_8", "תודה לך!");
 define("LAN_SIGNUP_9", "אין אפשרות להמשיך.");
 define("LAN_SIGNUP_10", "כן");
 define("LAN_SIGNUP_11", ".");
-
-define("LAN_409", "תוים שאינם תקינים בשם המשתמש");
-define("LAN_410", "הכנס קוד שנראה בתמונה");
-define("LAN_411", "That display name already exists in the database, please choose a different display name");
 define("LAN_SIGNUP_12", "אנא שמור את שם המשתמש והסיסמא שלך במקום בטוח, מאחר ולא ניתן לשחזר אותם במקרה ששכחת.");
-define('LAN_SIGNUP_13', 'אתה יכול עכשיו להתחבר מתפריט ההתחברות (תחת הכותרת "ברוך הבא") ,או מ <a href="".e_BASE."login.php">כאן</a>.');
+define("LAN_SIGNUP_13", "אתה יכול עכשיו להתחבר מתפריט ההתחברות (תחת הכותרת 'ברוך הבא') ,או מ <a href='".e_BASE."login.php'>כאן</a>.");
 define("LAN_SIGNUP_14", "כאן");
-define("LAN_SIGNUP_15", "Please contact the main site admin");
-define("LAN_SIGNUP_16", "if you require assistance.");
-define("LAN_SIGNUP_17", "Please certify you are 13 or over the age of 13.");
-define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information ...");
-define("LAN_SIGNUP_19", "Username:");
-define("LAN_SIGNUP_20", "Password:");
-define("LAN_SIGNUP_21", "Your account is currently marked as being inactive, to activate your account please go to the following link ...");
-define("LAN_SIGNUP_22", "click here");
-define("LAN_SIGNUP_23", "to login.");
-define("LAN_SIGNUP_24", "Thankyou for registering at");
-define("LAN_SIGNUP_25", "Upload your avatar");
-define("LAN_SIGNUP_26", "Upload your photograph");
-define("LAN_SIGNUP_27", "Show");
-define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
-define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
-define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
+define("LAN_SIGNUP_15", "אנא, צרו קשר עם מנהל האתר");
+define("LAN_SIGNUP_16", "אם אתם זקוקים לעזרה.");
+define("LAN_SIGNUP_17", "אנא, אשרו בבקשה כי גילכם הינו 13 או מעל גיל 13.");
+define("LAN_SIGNUP_18", "ההרשמך התקבלה עם המידע הבא ...");
+define("LAN_SIGNUP_19", "שם משתמש:");
+define("LAN_SIGNUP_20", "סיסמה:");
+define("LAN_SIGNUP_21", "חשבונכם מסומן כלא פעיל, להפעלת חשבונכם אנא היכנסו לקישור הבא ...");
+define("LAN_SIGNUP_22", "לחצו כאן");
+define("LAN_SIGNUP_23", "להיתחברות.");
+define("LAN_SIGNUP_24", "אנו מודים לך על הרשמתך");
+define("LAN_SIGNUP_25", "טען את האייקון הגרפי שלך");
+define("LAN_SIGNUP_26", "טען את תמונתך");
+define("LAN_SIGNUP_27", "הצג");
+define("LAN_SIGNUP_28", "בחירת תוכן/רשימת תפוצה");
+define("LAN_SIGNUP_29", "אישור ישלח לכתובת האימייל שרשמתם לכן האימייל חייב להיות בר-תוקף.");
+define("LAN_SIGNUP_30", "אם אינכם רוצים כי כתובת האימייל שלכם תוצג באתר, אנא סמנו את התא \"הסתר כתובת אימייל\".");
+define("LAN_SIGNUP_31", "URL לתוך קובץ XUP שלכם");
+define("LAN_SIGNUP_32", "מהו קובץ XUP ?");
+define("LAN_SIGNUP_33", "הקלד כתובת או בחר באייקון ");
+define("LAN_SIGNUP_34", "אנא זכור: כל תמונה שתועלה לשרת זה, ואשר תחשב ע\"י מנהל האתר כלא הולמת תימחק לאלתר.");
+define("LAN_SIGNUP_35", "לחצו כאן להרשמה לשימוש בקובץ XUP");
+define("LAN_SIGNUP_36", "שגיאה אירעה ביצירת קובץ המידע למשתמש שלכם");
+define("LAN_SIGNUP_37", "שלב ההרשמה הסתיים. מנהל האתר צריך לאשר הרשמה זו. ברגע שהרשמתכם תאושר, תקבלו אימייל המאשר כי הרשמתכם באתר אושרה.");
+define("LAN_SIGNUP_38", "היכנסתם שתי כתובות אימייל שונות. אנא הקלידו כתובת אימייל ברת תוקף בשני השדות המיועדים לכך");
+define("LAN_SIGNUP_39", "הקלידו מחדש את כתובת האימייל:");
+define ("LAN_SIGNUP_40", "הפעלת אין צורך");
+define ("LAN_SIGNUP_41", "החשבון שלך כבר הופעל.");
+define ("LAN_SIGNUP_42", "לא היתה בעיה, דואר אחת לא נשלח, אנא פנה למנהל האתר.");
+define ("LAN_SIGNUP_43", "דואר אלקטרוני שנשלחו");
+define ("LAN_SIGNUP_44", "הפעלת דואל שנשלח:");
+define ("LAN_SIGNUP_45", "אנא בדוק את תיבת הדואר הנכנס שלך.");
+define ("LAN_SIGNUP_47", "שלח מחדש הפעלה מייל");
+define ("LAN_SIGNUP_48", "שם משתמש או דואר אלקטרוני");
+define ("LAN_SIGNUP_49", "אם אתה רשום עם כתובת דואל שגויה, סוג חדש והסיסמה שלך כאן:");
+define ("LAN_SIGNUP_50", "ניו מייל");
+define ("LAN_SIGNUP_51", "סיסמה ישנה");
+define ("LAN_SIGNUP_52", "סיסמה שגויה");
 
-define("LAN_SIGNUP_31", "URL to your XUP file");
-define("LAN_SIGNUP_32", "What's an XUP file?");
-define("LAN_SIGNUP_33", "Type path or choose avatar");
-define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
-define("LAN_SIGNUP_35", "Click here to register using an XUP file");
-define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
+define ("LAN_SIGNUP_53", "שדה נכשל במבחן האימות");
+define ("LAN_SIGNUP_54", "לחץ כאן כדי למלא את הפרטים שלך כדי להירשם");
+define ("LAN_SIGNUP_55", "זה השם לתצוגה הוא ארוך מדי. נא לבחור אחרת");
+define ("LAN_SIGNUP_56", "זה השם לתצוגה הוא קצר מדי. נא לבחור אחרת");
+define ("LAN_SIGNUP_57", "זה שם המשתמש ארוך מדי. נא לבחור אחרת");
+define ("LAN_SIGNUP_58", "הרשמה תצוגה מקדימה");
+define ("LAN_SIGNUP_59", "**** אם הקישור לא עובד, אנא בדוק כי חלק זה לא גלשה אל השורה הבאה. ****");
+define ("LAN_SIGNUP_60", "שגיאה בגישה גלגול חיצוני ");
 
-define("LAN_LOGINNAME", "Login Name");
-define("LAN_PASSWORD", "Password");
-define("LAN_USERNAME", "Display Name");
-define("LAN_EMAIL_01", "Dear");
-define("LAN_EMAIL_04", "Please keep this email for your own information.");
-define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
-define("LAN_EMAIL_06", "Thanks for your registration.");
+// 0.7.16
 
-define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
-define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
-define("LAN_SIGNUP_39", "Re-type Email Address:");
+define ("LAN_SIGNUP_72", "תודה על שנרשמת ב] [sitename]! אנחנו פשוט נשלח לך דואל אישור ל [דואל]. אנא לחץ על הקישור אישור בדואל כדי להשלים את ההרשמה שלכם ולהפעיל את החשבון שלך."); // LAN_405
+
+define ("LAN_SIGNUP_98", "אישור כתובת האימייל שלך");
+define ("LAN_SIGNUP_99", "בעיה נתקלנו");
+define ("LAN_SIGNUP_100", "מנהל הממתין לאישור");
+
+
+
+
+define("LAN_LOGINNAME", "שם משתמש");
+define("LAN_PASSWORD", "סיסמה");
+define("LAN_USERNAME", "השם המוצג");
+define("LAN_EMAIL_01", "יקיריי");
+define("LAN_EMAIL_04", "אנא שימרו אימייל זה עם המידע האישי שלכם.");
+define("LAN_EMAIL_05", "סיסמתכם הוצפנה והיא איננה ניתנת לשיחזור במיקרה של שיכחה. אולם, במקרה כזה אתם יכולים לבקש סיסמה חדשה.");
+define("LAN_EMAIL_06", "תודה לכם על הרשמתכם.");
+
 ?>

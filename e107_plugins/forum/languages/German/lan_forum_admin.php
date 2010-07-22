@@ -3,14 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:04:46 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_admin.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2010/01/07 04:40:11 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
+|     $updated by: webmaster@e107cms.de [Jedi] (http://www.e107cms.de)$
+|     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
-
 define("FORLAN_1", "Sie müssen die Anzahl der Tage angeben ab wann gepruned wird.");
 define("FORLAN_2", "Bitte wählen Sie ob geprunede Einträge komplett gelöscht oder auf inaktiv gesetzt werden sollen (nicht gelöscht aber unsichtbar im Forum)");
 define("FORLAN_3", "Löschen");
@@ -76,6 +77,7 @@ define("FORLAN_62", "Forum Optionen");
 define("FORLAN_63", "Ränge");
 define("FORLAN_64", "Geben Sie hier die Userlevels ein, wenn sie das Feld frei lassen, werden Sterne generiert die die Userlevel anzeigen. Trennen Sie die Levels mit Komma. Maximal 10 Level, der niedrigste zu erst.");
 define("FORLAN_65", "Forum Titel");
+define("FORLAN_66", "Umfrage - Plugin ist nicht installiert");
 
 define("FORLAN_70", "Datei / Bilder Anhänge erlauben");
 define("FORLAN_71", "Usern erlauben Dateien oder Bilder mit Ihren Einträgen zu posten,");
@@ -95,16 +97,21 @@ define("FORLAN_84", "Nur Mitglieder");
 define("FORLAN_85", "Nur lesen");
 define("FORLAN_86", "Nur Admin");
 define("FORLAN_87", "Topics prunen mit keinen Antworten:");
+
 define("FORLAN_88", "Topics prunen mit keinen Antworten:");
+
 define("FORLAN_89", "Einträge komplett löschen");
 define("FORLAN_90", "Einträge inaktivieren");
+
 define("FORLAN_91", "Eintrag/Einträge inaktiviert");
 define("FORLAN_92", "Thread(s) gelöscht");
 define("FORLAN_93", "Antwort(en) gelöscht");
+
 define("FORLAN_94", "Ränge vergeben");
 define("FORLAN_95", "Ränge gespeichert");
 define("FORLAN_96", "Forum gelöscht");
 define("FORLAN_97", "Hauptkategorie gelöscht");
+
 define("FORLAN_98", "Rang Name");
 define("FORLAN_99", "Anzahl der Punkte zum nächsten Level");
 define("FORLAN_100", "Bild hochladen nach e107_themes/Your_Theme/forum/");
@@ -113,12 +120,14 @@ define("FORLAN_102", "Schwelle");
 define("FORLAN_103", "Seiten Admin");
 define("FORLAN_104", "Rang Bild");
 define("FORLAN_105", "Forum Moderator");
+
 define("FORLAN_106", "Prune Typ:");
 define("FORLAN_107", "Forum");
 define("FORLAN_108", " gelöscht");
 define("FORLAN_109", "Tage:");
 define("FORLAN_110", "Prune");
 define("FORLAN_111", "deaktivieren");
+
 define("FORLAN_112", "Weiterleitung erlauben");
 define("FORLAN_113", "Markieren Sie hier um die Weiterleitung zur Forums Page zu erlauben, nachdem Sie geantwortet haben");
 define("FORLAN_114", "User Benutzer Titel");
@@ -126,7 +135,7 @@ define("FORLAN_115", "markiere hier um es Usern zu erlauben die Benutzer Titel z
 define("FORLAN_116", "Übermittelte Einträge");
 define("FORLAN_117", "Dies löscht das Zälen übermittelter Einträge. Nicht die Einträge ansich.");
 define("FORLAN_118", "Übermittelte Einträge gelöscht");
-define("FORLAN_119", "Geklickte Links werden in einem neuen Fenster geöffnet.");
+// define("FORLAN_119", "Clicking links will open forum in a new window.");
 define("FORLAN_120", "Markieren Sie hier um es Usern zu erlauben ihre Benutzer Titel zu ändern");
 define("FORLAN_121", "Keine übermittelten Einträge");
 define("FORLAN_122", "Klicken Sie hier um den Admin eine E-mail zu schicken wenn jemand einen Forumeintrag übermittelt");
@@ -136,35 +145,27 @@ define("WMGLAN_2", "Anweisungen für Mitglieder");
 define("WMGLAN_3", "Anweisungen für Moderatoren");
 define("WMGLAN_4", "Übermitteln");
 define("WMGLAN_5", "Forum Anweisungen setzen");
-define("WMGLAN_6", "Activieren?");
-define("FORLAN_124", "Links im neune Fenster");
-define("FORLAN_125", "Markieren Sie hier um Links in einem neuen Fenster öffnen zu lassen (<i>gilt für die ganze Seite</i>). ");
+define("WMGLAN_6", "Aktivieren?");
 define("FORLAN_126", "Zeige die Tooltips");
 define("FORLAN_127", "Markieren Sie hier das Tooltip anzeigen zu lassen, wenn im ersten Eintrag eines Beitrags über den Beitragsnamen mit der Mouse gefahren wird.");
 define("FORLAN_128", "Länge des Tooltips");
 define("FORLAN_129", "Hier wird die Anzahl der Zeichen festgelegt die im Tooltip verwendet werden dürfen.");
 define("FORLAN_130", "bitte hier klicken");
-define("FORLAN_131", "um maximale Datengrö&szlig;e, erlaubte Dateitypen etc zu setzen");
+define("FORLAN_131", "um maximale Datengröße, erlaubte Dateitypen etc zu setzen");
 define("FORLAN_132", "Hervorhebung der Threads, die immer oben angezeigt werden sollen");
 define("FORLAN_133", "Extra Hervorhebungen für Threads setzen, die immer oben angezeigt werden sollen (Trenne Thread Beriche und Headers)");
-
 define("FORLAN_134", "Maximale Breite des hochgeladenen Bildes");
 define("FORLAN_135", "Bitte frei lassen um Auto-Verkleinerung des Bildes zu verhindern");
-	
 define("FORLAN_136", "Link erstellen zum Bild in voller Grösse");
-define("FORLAN_137", "Wenn dieses Feature freigeschalten wird, bedeutet dies, dass für grössere Bilder ein Vorschaubild erstellt und ein Link zum Orginalbild erstellt wird.  Falls es nicht freigeschalten ist, wird das Orginalbild angezeigt");
-
+define("FORLAN_137", "Wenn dieses Feature aktiviert wird, bedeutet dies, dass für grössere Bilder ein Vorschaubild erstellt und ein Link zum Orginalbild erstellt wird.  Falls es deaktiviert ist, wird das Orginalbild angezeigt");
 define("FORLAN_138", "Prune diese Foren");
 define("FORLAN_139", "Um diese Einstellung zu nutzen mössen Sie 'Erlaube Bilder zu posten' auf der <a href='".e_ADMIN."image.php'>Bilder</a> Seite markieren");
-
-define("FORLAN_140", "Ansicht");	
-define("FORLAN_141", "Eintrag");	
-
+define("FORLAN_140", "Ansicht");
+define("FORLAN_141", "Eintrag");
 define("FORLAN_142", "Eintrag Erlaubnis");
 define("FORLAN_143", "Legt fest, wer im Forum posten darf");
 define("FORLAN_144", "Moderatoren gesetzt");
 define("FORLAN_145", "Unterforen konfigurieren");
-
 define("FORLAN_146", "Keine Unterforen bis jetzt");
 define("FORLAN_147", "Unterforen aktualisieren");
 define("FORLAN_148", "Unterforen erstellen");
@@ -174,8 +175,8 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "Einträge");
 define("FORLAN_153", "Tools");
 define("FORLAN_154", "Antwort gelöscht");
-define("FORLAN_155", "Forum Kategorien");
 
+define("FORLAN_155", "Forum Kategorien");
 define("FORLAN_156", "Forum/Foren auswählen in denen gewünschtes ausgeführt werden soll");
 define("FORLAN_157", "Alle Foren");
 define("FORLAN_158", "Letzte Foreninfo neu kalkulieren");
@@ -190,9 +191,21 @@ define("FORLAN_166", "Forum Tools");
 define("FORLAN_167", "Zählung für Forum aktulisiert");
 define("FORLAN_168", "Letzte Eintragsinfo für Forum aktualisiert");
 define("FORLAN_169", "Benutzer Forumzählungen aktualisiert");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
+define("FORLAN_170", "Benachrichtigungen");
+define("FORLAN_171", "Benachrichtigung für Foreneintrag");
+define("FORLAN_172", "Diese Benachrichtigung löschen");
+define("FORLAN_173", "Thread Titel");
+define("FORLAN_174", "Gemeldet von Benutzer");
+define("FORLAN_175", "Benachrichtigung übermittelt");
+define("FORLAN_176", "Benachrichtigung");
 
+define("FORLAN_177", "Email Benachrichtigung - AN - (gesetzt)");
+define("FORLAN_178", "Bitte hier markieren umd die Email-Benachrichtigungs-Checkbox  auf - AN - zu setzen.");
+
+define("FORLAN_179", "(Hinzufügen eines * am Beginn des Forumnamen wird dieses Forum als Container für Unterforen machen.  Das Forumtheme muss diese Option erlauben.)");
+define("FORLAN_180", "Löschvorgang bestätigen");
+define("FORLAN_181", "Löschen bestätigen");
+define("FORLAN_182", "auch Antworten zu allen Threads des ausgewählten Forums rekalkulieren");
+define("FORLAN_183", "(diese Funktion ist nicht erlaubt wenn Sie 'alle Forumen' auswählen, - wegen der Anzahl der Abfragen die entstehen würden)");
 
 ?>

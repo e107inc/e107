@@ -1,4 +1,17 @@
-<div class='forumheader4'>
-Q>	J'obtiens quelques erreurs sur une page précise, que dois je faire?
-A>	Passez en revue le forum de problèmes chez e107.org et voyez si quelqu'un d'autre a (eu) le même problème. Si vous pensez alors que c'est un bogue, signalez l'erreur sur le bugtracker de e107.org.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Erreurs,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	J’ai des erreurs sur une page. Que dois je faire?
+A>	Cherchez dans les forums de http://e107.org et http://etalkers.tuxfamily.org/ et voyez si quelqu’un a eu le même problème.
+Si vous pensez que c’est un bug, signalez le dans le bugtracker de e107.org.

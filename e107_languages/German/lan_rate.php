@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_rate.php,v $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/lan_rate.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-08-16 16:03:17 $
-|     $Author: gatowlion $
+|     $Date: 2009/02/02 21:37:03 $
+|     $Author: lars78 $
 +----------------------------------------------------------------------------+
 */
 

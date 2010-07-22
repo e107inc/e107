@@ -3,17 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:31 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_search.php,v $
+|     $Revision: 1.14 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "搜尋");
 
-define("LAN_98", "新聞");
-define("LAN_99", "評論");
 define("LAN_140", "會員");
 define("LAN_180", "搜尋");
 define("LAN_192", "所有分區");
@@ -25,9 +23,7 @@ define("LAN_196", "吻合");
 define("LAN_197", "下載");
 define("LAN_198", "沒有吻合項目");
 define("LAN_199", "搜尋於:");
-define("LAN_200", "分區:");
 
-define("LAN_201", "您重新設定您的搜尋項目");
 define("LAN_416", "您必須登入後才能進入此頁面");
 define("LAN_417", "搜尋內容至少要三個字元.");
 
@@ -40,12 +36,12 @@ define("LAN_SEARCH_4", "找到的新聞標題");
 define("LAN_SEARCH_5", "找到的新聞內容");
 define("LAN_SEARCH_6", "找到的延伸的新聞內容");
 define("LAN_SEARCH_7", "發表於");
-define("LAN_SEARCH_8", " on ");
+define("LAN_SEARCH_8", " 時間 ");
 define("LAN_SEARCH_9", "無標題的");
 define("LAN_SEARCH_10", "前往頁面:");
-define("LAN_SEARCH_11", "結果");
-define("LAN_SEARCH_12", " of ");
-define("LAN_SEARCH_13", " in ");
+define("LAN_SEARCH_11", "搜尋結果");
+define("LAN_SEARCH_12", " 結果,總共有 ");
+define("LAN_SEARCH_13", " 位於區域- ");
 define("LAN_SEARCH_14", "分區:");
 define("LAN_SEARCH_15", "作者:");
 define("LAN_SEARCH_17", "抱歉, 每次搜尋至少間隔 ");
@@ -115,5 +111,10 @@ define("LAN_SEARCH_74", "加入於");
 define("LAN_SEARCH_75", "搜尋類型");
 define("LAN_SEARCH_76", "已發表於頁面");
 define("LAN_SEARCH_77", "發表個人資訊頁面於");
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "新聞");
+define("LAN_SEARCH_99", "評論");
+//define("LAN_SEARCH_200", "分區:");
+define("LAN_SEARCH_201", "您重新設定您的搜尋項目");
 
 ?>

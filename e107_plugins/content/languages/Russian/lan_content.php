@@ -2,27 +2,22 @@
 /*
 + ----------------------------------------------------------------------------+
 |     Russian Language Pack for e107 0.7
-|     $Revision: 1.10 $
-|     $Date: 2009-09-26 15:53:40 $
-|     $Author: yarodin $
+|     $Revision: 183 $
+|     $Date: 2010-06-01 10:39:13 +0600 (Вт, 1 июн 2010) $
+|     $Author: George $
 +----------------------------------------------------------------------------+
 */
-
 define("CONTENT_EMAILPRINT_LAN_1", "это контент от ");
-
 define("POPUP_LAN_1", "щелкните для увеличения");
-
 define("CONTENT_NOTIFY_LAN_1", "События контента");
 define("CONTENT_NOTIFY_LAN_2", "Пункт контента представлен пользователем");
 define("CONTENT_NOTIFY_LAN_3", "Контент отправлен");
-
 define("CONTENT_TYPE_LAN_0", "категории");
 define("CONTENT_TYPE_LAN_1", "авторы");
 define("CONTENT_TYPE_LAN_2", "архив");
 define("CONTENT_TYPE_LAN_3", "высший рейтинг");
 define("CONTENT_TYPE_LAN_4", "низший рейтинг");
 define("CONTENT_TYPE_LAN_5", "последние");
-
 define("CONTENT_ICON_LAN_0", "редактировать");
 define("CONTENT_ICON_LAN_1", "удалить");
 define("CONTENT_ICON_LAN_2", "опции");
@@ -39,7 +34,6 @@ define("CONTENT_ICON_LAN_12", "сортировать в родительско�
 define("CONTENT_ICON_LAN_13", "персональное администрирование");
 define("CONTENT_ICON_LAN_14", "персональный менеджер контента");
 define("CONTENT_ICON_LAN_15", "просмотр");
-
 define("CONTENT_ADMIN_DATE_LAN_0", "Январь");
 define("CONTENT_ADMIN_DATE_LAN_1", "Февраль");
 define("CONTENT_ADMIN_DATE_LAN_2", "Март");
@@ -59,7 +53,6 @@ define("CONTENT_ADMIN_DATE_LAN_15", "начальная дата");
 define("CONTENT_ADMIN_DATE_LAN_16", "конечная дата");
 define("CONTENT_ADMIN_DATE_LAN_17", "Вы можете указать начальную дату для этого элемента. Если вы укажете дату, элемент контента будет отображен только после этой даты. Если вам не нужна определенная стартовая дата, вы можете оставить эти поля пустыми.");
 define("CONTENT_ADMIN_DATE_LAN_18", "вы можете указать конечную дату этого элемента контента. Этой датой вы конкретизируете время, в течении которого элемент контента будет виден. Если вам не нужна определенная конечная дата, вы можете эти поля пустыми.");
-
 define("CONTENT_PAGETITLE_LAN_0", "Контент");
 define("CONTENT_PAGETITLE_LAN_1", "Главная");
 define("CONTENT_PAGETITLE_LAN_2", "Недавние");
@@ -76,9 +69,7 @@ define("CONTENT_PAGETITLE_LAN_12", "Создать");
 define("CONTENT_PAGETITLE_LAN_13", "Категории");
 define("CONTENT_PAGETITLE_LAN_14", "Список авторов");
 define("CONTENT_PAGETITLE_LAN_15", "Баллы");
-
 define("CONTENT_SEARCH_LAN_0", "нет элементов контента с таким ключевым словом.");
-
 define("CONTENT_ORDER_LAN_0", "сортировать по ...");
 define("CONTENT_ORDER_LAN_1", "заголовкам (ASC)");
 define("CONTENT_ORDER_LAN_2", "заголовкам (DESC)");
@@ -92,7 +83,6 @@ define("CONTENT_ORDER_LAN_9", "списку (ASC)");
 define("CONTENT_ORDER_LAN_10", "списку (DESC)");
 define("CONTENT_ORDER_LAN_11", "автору (ASC)");
 define("CONTENT_ORDER_LAN_12", "автору (DESC)");
-
 define("CONTENT_LAN_0", "Контент");
 define("CONTENT_LAN_1", "Список последних");
 define("CONTENT_LAN_2", "Список категорий");
@@ -103,13 +93,13 @@ define("CONTENT_LAN_6", "все категории");
 define("CONTENT_LAN_7", "все авторы");
 define("CONTENT_LAN_8", "лучшие по рейтингу");
 define("CONTENT_LAN_9", "категория ");
-define("CONTENT_LAN_10", "на"); //on
-define("CONTENT_LAN_11", "добавил: "); //by
+define("CONTENT_LAN_10", "на");
+define("CONTENT_LAN_11", "добавил: ");
 define("CONTENT_LAN_12", "лучшие по очкам");
 define("CONTENT_LAN_13", "список");
 define("CONTENT_LAN_14", "-- категории --");
 define("CONTENT_LAN_15", "пока нет авторов");
-define("CONTENT_LAN_16", "[читать далее]"); //[read more]
+define("CONTENT_LAN_16", "[читать далее]");
 define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "искать по ключевым словам");
 define("CONTENT_LAN_19", "поиск");
@@ -117,7 +107,7 @@ define("CONTENT_LAN_20", "результаты поиска");
 define("CONTENT_LAN_21", "контента еще нет.");
 define("CONTENT_LAN_22", "Категории");
 define("CONTENT_LAN_23", "Список недавних элементов контента");
-define("CONTENT_LAN_24", "навигационная цепочка"); //breadcrumb
+define("CONTENT_LAN_24", "навигационная цепочка");
 define("CONTENT_LAN_25", "Категории контента");
 define("CONTENT_LAN_26", "Категория контента");
 define("CONTENT_LAN_27", "подкатегории");
@@ -186,15 +176,13 @@ define("CONTENT_LAN_89", "выбрать страницу");
 define("CONTENT_LAN_90", "предыдущая страница");
 define("CONTENT_LAN_91", "следующая страница");
 define("CONTENT_LAN_92", " - текущая");
-
-define('CONTENT_LAN_ALL', 'все'); //all
-
+define("CONTENT_LAN_ALL", "все");
 define("CONTENT_MENU_LAN_0", "Меню контента :");
 define("CONTENT_MENU_LAN_1", "контента еще нет");
 define("CONTENT_MENU_LAN_2", "недавние элементы");
 define("CONTENT_MENU_LAN_3", "категории");
 define("CONTENT_MENU_LAN_4", "ссылки контента");
-define("CONTENT_MENU_LAN_5", "");
+define("CONTENT_MENU_LAN_5", "нет элементов в");
 define("CONTENT_MENU_LAN_6", "");
 define("CONTENT_MENU_LAN_7", "");
 define("CONTENT_MENU_LAN_8", "");
@@ -210,5 +198,6 @@ define("CONTENT_MENU_LAN_17", "");
 define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
+
 
 ?>

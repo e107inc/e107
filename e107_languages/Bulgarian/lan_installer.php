@@ -7,9 +7,9 @@
 |     http://www.e107bg.org
 |     Encoding: utf-8
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_installer.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_langpacks/e107_languages/Bulgarian/lan_installer.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005/07/19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ define("LANINS_049", "Двете пароли, които въведохте н�
 define("LANINS_050", "XML Модул");
 define("LANINS_051", "Инсталирано");
 define("LANINS_052", "Не е инсталирано");
-define("LANINS_053", "e107 .700 изисква инсталиран PHP XML модул. Моля свържете се с вашата хостинг компания или прочетете информацията на ");
+define("LANINS_053", "e107 0.7.х изисква инсталиран PHP XML модул. Моля свържете се с вашата хостинг компания или прочетете информацията на ");
 define("LANINS_054", " преди да продължите");
 define("LANINS_055", "Потвърждение за инсталиране");
 define("LANINS_056", "6");
@@ -96,6 +96,7 @@ e107 беше успешно инсталиран и е готов за запи
 е107 България: На [link=http://e107bg.org]http://e107bg.org[/link] можете да зададете въпроси относно ползването на е107, теми, модули и т.н.
 е107 DEV България: На [link=http://dev.e107bg.org]http://dev.e107bg.org[/link] можете да получите техническа информация и да се включите в разработката на е107 за България.
 e107 : [link=http://e107.org]http://e107.org[/link] - е107 на английски - оригиналната версия на английски.
+Общност на разработчиците на е107 модули: [link=http://www.e107coders.org]http://e107coders.org[/link]
 
 [b]Файлове[/b]
 Модули: [link=http://e107coders.org]http://e107coders.org[/link]
@@ -145,9 +146,23 @@ define("LANINS_092", "Контакт");
 define("LANINS_093", "Задаване права за лично меню");
 define("LANINS_094", "Примерен форум клас");
 define("LANINS_095", "Проверка на системата");
-define("LANINS_096", "");
-define("LANINS_097", "");
-define("LANINS_098", "");
-define("LANINS_099", "");
-define("LANINS_100", "");
+
+define("LANINS_096", 'Последни коментари');
+define("LANINS_097", '[още ...]');
+define("LANINS_098", 'Статии');
+define("LANINS_099", 'Страница коментари ...');
+define("LANINS_100", 'Последно от форумите');
+define("LANINS_101", 'Актуализиране настройките на менюта');
+define("LANINS_102", 'Дата / Време');
+define("LANINS_103", 'Преглед');
+define("LANINS_104", 'Преглед заглавна страница ...');
+
+define("LANINS_105", 'A database name or prefix beginning with some digits followed by “e” or “E” is not acceptable.  <br />A database name or prefix can not be empty.');
+define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or files listed. While this will not stop E107 installing, it will mean that certain features are not available. 
+				You will need to change the file permissions to use these features');
+
+// for v0.7.16+ only
+define('LANINS_DB_UTF8_CAPTION', 'MySQL Charset:');
+define('LANINS_DB_UTF8_LABEL',   'Force UTF-8 Database?');
+define('LANINS_DB_UTF8_TOOLTIP', 'If set, the installation script will make the database UTF-8 compatible if possible. UTF-8 Database are required for the next major e107 version.');
 ?>

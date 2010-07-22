@@ -7,10 +7,10 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.15 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.4 $
+|     $Date: 2010/05/08 16:29:47 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_user.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_strict_utf8/e107_languages/Polish/lan_user.php,v $
 +-----------------------------------------------------------------------------+
 |     Zgodne z: /e107_languages/English/lan_user.php rev. 1.5
 +-----------------------------------------------------------------------------+
@@ -20,12 +20,12 @@ define("PAGE_NAME", "Użytkownicy");
 
 define("LAN_20", "Błąd");
 define("LAN_112", "Adres e-mail");
-define("LAN_115", "Numer ICQ");
-define("LAN_116", "Adres AIM");
-define("LAN_117", "MSN Messenger");
-define("LAN_118", "Data urodzenia");
-define("LAN_119", "Miejscowość");
-define("LAN_120", "Sygnatura");
+//define("LAN_115", "Numer ICQ");
+//define("LAN_116", "Adres AIM");
+//define("LAN_117", "MSN Messenger");
+//define("LAN_118", "Data urodzenia");
+//define("LAN_119", "Miejscowość");
+//define("LAN_120", "Sygnatura");
 define("LAN_137", "Nie ma żadnych informacji o wskazanym użytkowniku, ponieważ nie jest on zarejestrowany w serwisie");
 define("LAN_138", "Zarejestrowani użytkownicy: ");
 define("LAN_139", "Sortuj: ");
@@ -33,7 +33,7 @@ define("LAN_140", "Zarejestrowani użytkownicy");
 define("LAN_141", "Nie ma jeszcze zarejestrowanych użytkowników.");
 define("LAN_142", "Użytkownik");
 define("LAN_143", "[ukryto na życzenie]");
-define("LAN_144", "Strona domowa");
+//define("LAN_144", "Strona domowa");
 define("LAN_145", "Data rejestracji");
 define("LAN_146", "Wizyt w serwisie od rejestracji");
 define("LAN_147", "Postów w chatbox'ie");

@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/ChineseTrad.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-09-09 07:18:55 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/links_page/languages/zhtw.php,v $
+|     $Revision: 11346 $
+|     $Date: 2010-02-17 13:56:14 -0500 (Wed, 17 Feb 2010) $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 // if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
@@ -81,7 +81,7 @@ define("LCLAN_OPT_37", "推薦");
 define("LCLAN_OPT_38", "");
 define("LCLAN_OPT_39", "");
 define("LCLAN_OPT_40", "名稱");
-define("LCLAN_OPT_41", "id");
+define("LCLAN_OPT_41", "編號");
 define("LCLAN_OPT_42", "使用分開的連結設定");
 define("LCLAN_OPT_43", "開啟於同一個視窗");
 define("LCLAN_OPT_44", "開啟於新的視窗");
@@ -142,11 +142,11 @@ define("LCLAN_ADMIN_9", "順序完成更新");
 define("LCLAN_ADMIN_10", "連結");
 define("LCLAN_ADMIN_11", "已刪除");
 define("LCLAN_ADMIN_12", "連結分區");
-define("LCLAN_ADMIN_13", "已送出的連結被刪除");
+define("LCLAN_ADMIN_13", "提供的連結被刪除");
 define("LCLAN_ADMIN_14", "連結");
 define("LCLAN_ADMIN_15", "該分區還有連結,請移除全部");
 
-define("LCLAN_SL_1", "已送出的連結");
+define("LCLAN_SL_1", "提供的連結");
 define("LCLAN_SL_2", "尚未送出的連結");
 define("LCLAN_SL_3", "連結");
 define("LCLAN_SL_4", "提供於");
@@ -176,14 +176,14 @@ define("LCLAN_CAT_8", "您確定要刪除該分區?");
 define("LCLAN_CAT_9", "瀏覽連結");
 define("LCLAN_CAT_10", "重新編排");
 define("LCLAN_CAT_11", "目前沒有連結分區");
-define("LCLAN_CAT_12", "已存在的連結分區");
+define("LCLAN_CAT_12", "現有的連結分區");
 define("LCLAN_CAT_13", "名稱:");
 define("LCLAN_CAT_14", "描述:");
 define("LCLAN_CAT_15", "上傳新圖標:");
 define("LCLAN_CAT_16", "自動縮圖大小:");
 define("LCLAN_CAT_17", "該選項關閉是因為您的伺服器不能上傳檔案");
 define("LCLAN_CAT_18", "該");
-define("LCLAN_CAT_19", "資料夾無法寫入, 您必須 CHMOD 777 該資料夾");
+define("LCLAN_CAT_19", "資料夾無法寫入, 您必須 CHMOD 777 資料夾");
 define("LCLAN_CAT_20", "px");
 define("LCLAN_CAT_21", "上傳");
 define("LCLAN_CAT_22", "選擇圖標:");
@@ -199,7 +199,7 @@ define("LCLAN_ITEM_1", "提供於");
 define("LCLAN_ITEM_2", "分區:");
 define("LCLAN_ITEM_3", "目前沒有分區");
 define("LCLAN_ITEM_4", "名稱:");
-define("LCLAN_ITEM_5", "Url:");
+define("LCLAN_ITEM_5", "網址:");
 define("LCLAN_ITEM_6", "描述:");
 define("LCLAN_ITEM_7", "上傳圖標:");
 define("LCLAN_ITEM_8", "自動縮圖大小:");
@@ -241,7 +241,7 @@ define("LCLAN_ADMINMENU_3", "新增連結分區");
 define("LCLAN_ADMINMENU_4", "管理連結");
 define("LCLAN_ADMINMENU_5", "新增連結");
 define("LCLAN_ADMINMENU_6", "基本選項");
-define("LCLAN_ADMINMENU_7", "已送出的連結");
+define("LCLAN_ADMINMENU_7", "提供的連結");
 define("LCLAN_ADMINMENU_8", "分區");
 
 define("NT_LAN_LP_1", "連結頁面事件");
@@ -305,13 +305,15 @@ define("LAN_LINKS_40", "分區");
 define("LAN_LINKS_41", "目前沒有分區");
 define("LAN_LINKS_42", "目前沒有推薦連結");
 define("LAN_LINKS_43", "瀏覽全部分區");
-define("LAN_LINKS_44", "id");
+define("LAN_LINKS_44", "ID");
 define("LAN_LINKS_45", "連結分區");
 define("LAN_LINKS_46", "連結子分區");
 define("LAN_LINKS_47", "連結導覽...");
 define("LAN_LINKS_48", "-- 瀏覽分區--");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "您沒有權限提供連結於此分區");
+
+define('LAN_LINKS_SCH_1','發表連結的回覆');
 
 define("LAN_ADMIN_HELP_0", "連結頁面說明");
 

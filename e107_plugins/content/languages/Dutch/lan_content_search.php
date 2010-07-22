@@ -1,17 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-09-25 13:37:59 $
-|     $Author: mijnheer $
-+----------------------------------------------------------------------------+
-*/
+ * Dutch Language File for the
+ *   e107 website system (http://e107.org).
+ * Released under the terms and conditions of the
+ *   GNU General Public License v3 (http://gnu.org).
+ * $HeadURL$
+ * $Revision$
+ * $Date$
+ * $Author$
+ */
 
-define("CONT_SCH_LAN_1", "Content");
-define("CONT_SCH_LAN_2", "Alle contentcategorieën");
-define("CONT_SCH_LAN_3", "Geplaatst als reactie op onderwerp");
-define("CONT_SCH_LAN_4", "in");
+define('CONT_SCH_LAN_1', 'Content');
+define('CONT_SCH_LAN_2', 'Alle contentcategorieën');
+define('CONT_SCH_LAN_3', 'Geplaatst als reactie op onderwerp');
+define('CONT_SCH_LAN_4', 'in');
+
 ?>

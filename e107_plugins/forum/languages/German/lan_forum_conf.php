@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:04:46 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_conf.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:05 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -34,6 +34,12 @@ define("FORLAN_24", "Verschiebe den Thread zum Forum");
 define("FORLAN_25", "Verschiebe den Thread");
 define("FORLAN_26", "Antwort gelöscht");
 define("FORLAN_27", "verschoben");
+
+define("FORLAN_28", "Threadnamen nicht umbenennen");
+define("FORLAN_29", "Hinzufügen");
+define("FORLAN_30", "zum Titel");
+define("FORLAN_31", "Umbenennen nach:");
+define("FORLAN_32", "Threadoptionen umbenennen:");
 
 
 ?>

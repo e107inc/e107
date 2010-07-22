@@ -1,7 +1,27 @@
-﻿<div class='forumheader4'>
-Q>	Qu'est que c'est que ces groupes d'utilisateurs que je vois continuellement?  à quoi servent-ils?
-A>	Les groupes d'utilisateurs (ou classes) limitent l'accès à certains secteurs ou fonctions de votre site.
-	Si vous définissez un groupe (ou classe), en lui ajoutant un certain nombre d'utilisateurs, vous pouvez rendre accessible certains aspects du site aux personnes de ce groupe seulement.
-	Par exemple, pour le groupe FORUMPRIVE déjà créé par défaut quand vous installez e107, vous pouvez en lui ajoutant des utilisateurs, créer un forum uniquement reservé aux membres de ce groupe.
-	Grâce aux définitions de groupes (classes) vous pourrez limiter l'accès à tout ou partie des informations, liens, téléchargements, etc...
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Groupes,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	A quoi servent les groupes d’utilisateurs?
+A>	Les groupes d’utilisateurs (ou classes) permettent de limiter l’accès de certaines zones ou fonctions du site.
+	Si vous définissez un groupe (ou classe), et lui ajoutez un certain nombre d’utilisateurs, vous pouvez rendre certaines parties du site uniquement accessible aux personnes de ce groupe.
+	Par exemple, pour le groupe PRIVATEFORUM déjà créé par défaut quand vous installez e107, vous pouvez en lui ajoutant des utilisateurs, créer un forum uniquement réservé aux membres de ce groupe.
+	Grâce aux définitions de groupes vous pouvez limiter l’accès à tout ou partie de news, liens, téléchargements, etc.
+
+Q>	Quelle est la fonction du champ “groupe père”?
+A>	Dans la version 0.8, vous pouvez spécifier une “hiérarchie de groupe” permettant aux membre d’un groupe d’hériter des droits du groupe père.
+Si vous ne désirez pas utiliser cette fonctionnalité, positionner le père sur “Tous le monde”.
+
+Q>	Je souhaite assigner les nouveaux membres à un groupe spécifique.
+A>	Il est désormais possible  d’assigner les droits via le menus “Groupes”.
+Il est également possible de préciser si ces droits doivent être assignés à l’inscription ou lors de la vérification du membre.

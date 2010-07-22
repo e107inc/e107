@@ -3,15 +3,16 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_post.php,v $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_post.php,v $
 |     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:04:46 $
-|     $Author: gatowlion $
-|     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
+|     $Date: 2010/01/30 15:57:16 $
+|     $Author: lars78 $
+|     $translated by: admin@cms-myway.vom (http://www.cms-myway.com) $
+|     $updated by: webmaster@e107cms.de (http://www.e107cms.de) $
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Forum");
+
 define("LAN_01", "Foren");
 define("LAN_02", "Antworten: ");
 define("LAN_03", "Neuer Thread");
@@ -68,26 +69,29 @@ define("LAN_383", "Bitte klicken Sie folgenden Link um den vollständigen Thread
 define("LAN_384", "Forum Antwort um ");
 define("LAN_385", "Eintrag: ");
 define("LAN_386", "wenn Sie keine Umfrage zu Ihrem Thread wollen, lassen Sie die Felder frei ");
-define("LAN_387", "Abschicken");
+define("LAN_387", "Wechseln");
 define("LAN_388", "Zurück nach oben");
 define("LAN_389", "Doppelter Eintrag, Weiterleitung ...");
-define("LAN_390", "File / Bild anhängen");
+define("LAN_390", "Datei / Bild anhängen");
 define("LAN_391", "Option");
-define("LAN_392", "File anzuhängen");
-define("LAN_393", "<b>Bitte beachten Sie</b><br />Erlaubte Filetypen:");
-define("LAN_394", "Andere upgeloadete Filetypen werden sofort gelöscht.");
-define("LAN_395", "Maximale Filegrösse");
+define("LAN_392", "Datei anzuhängen");
+define("LAN_393", "<b>Bitte beachten Sie</b><br />Erlaubte Dateitypen:");
+define("LAN_394", "Andere upgeloadete Dateitypen werden sofort gelöscht.");
+define("LAN_395", "Maximale Dateigrösse");
 define("LAN_396", "Bytes");
 define("LAN_397", "Dieser Thread ist gelocked.");
 define("LAN_398", "In diesem Forum kann man nur lesen");
 define("LAN_399", "Sie sind nicht autorisiert in diesem Forum zu posten.");
 define("LAN_400", "Thread posten als");
-define("LAN_401", "Gehe zu");
+define("LAN_401", "Forum");
+
 define("LAN_402", "Umfrage");
 define("LAN_403", "Ankündigung");
 define("LAN_404", "Wichtig, immer oben");
 define("LAN_405", "Foren");
 define("LAN_406", "Re:");
+
+//v.616
 define("LAN_407", "Weiterleitung");
 define("LAN_408", "Falls Sie nicht weitergeleitet werden, bitte hier klicken");
 define("LAN_409", "HIER");

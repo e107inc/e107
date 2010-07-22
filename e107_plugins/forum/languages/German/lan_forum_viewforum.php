@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_viewforum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:04:46 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_viewforum.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009/02/02 21:37:05 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,7 @@ define("LAN_79", "Neue Einträge");
 define("LAN_80", " Keine neuen Einträge");
 define("LAN_81", "Geschlossener Thread");
 define("LAN_180", "Suche");
+define("LAN_199", "Es gibt ungelesene Einträge");
 define("LAN_202", "Wichtig, immer oben");
 define("LAN_203", "Wichtig immer oben/Geschlossen");
 define("LAN_204", "Sie <b>können</b> neue Threads beginnen");
@@ -41,8 +42,8 @@ define("LAN_395", "[Öffentlich]");
 define("LAN_396", "Ankündigung");
 define("LAN_397", "In diesem Forum kann nur gelesen werden");
 define("LAN_398", "Thread nicht immer oben anzeigen");
-define("LAN_399", "Thread verfolgen");
-define("LAN_400", "Thread nicht verfolgen");
+define("LAN_399", "Thread schliessen");
+define("LAN_400", "Thread öffnen");
 define("LAN_401", "Thread immer oben anzeigen");
 define("LAN_402", "Verschiebe Thread");
 define("LAN_403", "Gehe zum Forum");

@@ -1,13 +1,23 @@
-<div class='forumheader4'>
-Q>	A quoi sert cette section ?
-A>	Activer le système de cache sauvegardera certaines parties du site dans votre base de données. Cela réduit les appels à MySQL, et accélère considérablement votre site.
-</div>
-<div class='forumheader4'>
-Q>	J'ai apporté quelques modification au thème du site que j'emploie mais elles n'ont pas été prises en compte, le thème reste inchangé - Est-ce parce qu'il fait partie du cache?
-A>	Très probablement. Quand vous changez un thème le cache se vide, mais modifier le code dans votre script theme.php ne vide pas le cache.
-Ne videz pas le cache mais désactivez le système de cache jusqu'à ce que vous ayez fini.
-</div>
-<div class='forumheader4'>
-Q>	Puis-je sauvegarder le cache en fichiers sur le disque dur du serveur ?
-A>	Oui. Assurez vous seulement que votre répertoire e107_files/cache soit accessible en écriture (chmod 777). Sélectionnez ensuite l'option 'Sauvegarder le cache dans un fichier du disque dur'.
-</div>
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Cache,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	A quoi sert le cache?
+A>	Activer le système de cache permet de sauvegarder certaines parties du site en fichiers sur disque ou en bdd. Cela réduit les appels MySQL et accélère considérablement le site.
+
+Q>	J’ai modifier mon thème mais les modifications n’apparaissent pas. Le thème reste inchangé. Fait-il parti du cache?
+A>	Très probablement. Lorsque vous changez de thème le cache se vide. Mais lorsque vous modifiez le code de votre theme.php le cache ne se vide pas.
+Désactivez le système de cache jusqu’à ce que vous ayez fini les modifications.
+
+Q>	Puis-je sauvegarder le cache en fichiers sur le disque dur?
+A>	Oui. Assurez vous seulement que votre répertoire e107_files/cache soit accessible en écriture (généralement chmod 777 ou 755). Sélectionnez ensuite l’option correspondante en zone admin et sauvegardez.

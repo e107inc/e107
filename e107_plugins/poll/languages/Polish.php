@@ -6,10 +6,10 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2009-09-13 10:26:31 $
+|     $Revision: 1.7 $
+|     $Date: 2008/01/08 18:40:59 $
 |     $Author: marcelis_pl $
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Polish.php,v $
+|     $Source: /cvsroot/e107pl/e107_main/0.7_PL_strict_utf8/e107_plugins/poll/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
 |     Zgodne z: /e107_plugins/poll/languages/English.php rev. 1.14
 +-----------------------------------------------------------------------------+

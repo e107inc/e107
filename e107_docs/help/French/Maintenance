@@ -1,10 +1,21 @@
-<div class='forumheader4'>
-Q>	 A quoi sert cette section? 
-A>	Cet écran vous permet de rendre votre site inaccessible aux visiteurs, employez-le quand vous voulez mettre à jour votre site ou lorsque vous avez besoin de le désactivé pour n'importe quelle raison.
-Seul l'administrateur principal peut accéder au site lorsqu'il est en mode de maintenance.
-Vous le verrez signalé par un message s'affichant sur chaque page.
-</div>
-<div class='forumheader4'>
-Q>	A l'aide! J'ai placé le drapeau de maintenance et accidentellement me suis déconnecté, comment est-ce que je peux revenir à la zone administration pour réactiver le site?
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Maintenance,v $
+ * $Revision: 1.5 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Qu’est-ce que la maintenance?
+A>	La maintenance permet de rendre le site inaccessible aux visiteurs. Employez-le lorsque vous souhaitez mettre votre site à jour ou lorsque vous avez besoin de le désactivé pour telle ou telle raison.
+Seul les administrateurs peuvent accéder au site lorsqu’il est en mode de maintenance.
+Un message le signal, généralement dans le menu login.
+
+Q>	A l’aide! J’ai placé le drapeau de maintenance puis me suis déconnecté. Comment puis-je me reconnecter?
 A>	Allez à la page http://votre-site.com/e107_admin/admin.php et connectez vous de là.
-</div>

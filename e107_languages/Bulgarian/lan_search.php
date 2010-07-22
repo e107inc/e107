@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-03-04 22:09:38 $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/English/lan_search.php,v $
+|     $Revision: 77 $
+|     $Date: 2006-11-27 12:07:06 +0200 (Mon, 27 Nov 2006) $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ define("LAN_SEARCH_8", " на ");
 define("LAN_SEARCH_9", "Без заглавие");
 define("LAN_SEARCH_10", "Иди на страница:");
 define("LAN_SEARCH_11", "Резултати");
-define("LAN_SEARCH_12", " на ");
+define("LAN_SEARCH_12", " от ");
 define("LAN_SEARCH_13", " в ");
 define("LAN_SEARCH_14", "Категория:");
 define("LAN_SEARCH_15", "Автор:");
@@ -116,4 +116,9 @@ define("LAN_SEARCH_75", "Вид търсене");
 define("LAN_SEARCH_76", "Публикувано на страница");
 define("LAN_SEARCH_77", "Публикувано на профил страницата на");
 
+// Following formerly LAN_nnn - renamed to avoid clashes
+define("LAN_SEARCH_98", "Новини");
+define("LAN_SEARCH_99", "Коментари");
+//define("LAN_SEARCH_200", "Categories:");						// Redundant LAN?
+define("LAN_SEARCH_201", "Моля предефинирайте заявката си за търсене");
 ?>

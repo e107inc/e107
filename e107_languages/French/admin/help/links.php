@@ -1,18 +1,18 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/help/links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-12-04 21:32:31 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-if (!defined('e107_INIT')) { exit; }
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_languages/French/admin/help/links.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2009/02/02 22:01:02 $
+ * $Author: marj_nl_fr $
+ */
 
-$caption = "Aide Liens";
-$text = "Entrez les liens internes du site ici. Ces liens seront affichés dans le menu de navigation principal du site (barre de navigation)<br /><br />
- Le générateur de sous-menus est à utiliser uniquement pour les menus DHTML e107 (TreeMenu, UltraTreeMenu, eDynamicMenu, ypSlideMenu...).<br /><br /> Pour les liens externes, veuillez utilisez l'extension 'Page de Liens'.";
-$ns -> tablerender($caption, $text);
-?>
+if (!defined('e107_INIT')) { exit(); }
+
+$text = 'Entrez les liens du site ici. Les liens sont affichés dans le menu de navigation principal du site (barre de navigation)<br /><br />
+Le générateur de sous-menus est à utiliser uniquement pour les menus DHTML e107 (TreeMenu, UltraTreeMenu, eDynamicMenu, ypSlideMenu…).<br /><br />Pour les autres liens, utilisez le plugin “Page de liens”.';
+$ns -> tablerender('Aide liens', $text);

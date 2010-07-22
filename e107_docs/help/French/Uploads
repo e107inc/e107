@@ -1,10 +1,21 @@
-<div class='forumheader4'>
-Q>	Je voudrais accorder à des personnes la possibilité de faire des envois de fichiers sur le serveur du site; mais je m'inquiète quant aux problèmes de sécurité que cela poserait...
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Uploads,v $
+ * $Revision: 1.6 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	Je souhaite accorder la possibilité d’uploader de fichiers sur le serveur du site, mais je m’inquiète quant aux problèmes de sécurité que cela entraine…
 A>	Il y a certaines choses à faire pour améliorer la sécurité.
-D'abord, employez le stockage binaire. Les fichiers uploadés sur le serveur seront alors stockés dans la base de données MySQL et ne seront accessibles que de la page "Téléchargement".
-De plus, définissez la liste des types de fichiers autorisés à être envoyer sur le serveur. Ainsi, si quelqu'un essaye d'uploader un type différent, ce fichier sera supprimé immédiatement de votre serveur.
-</div>
-<div class='forumheader4'>
-Q>	J'ai quelques fichiers uploadés. Que dois-je faire maintenant?
-A>	Vous avez la possibilité de copier le fichier vers votre section de Téléchargement, afin de permettre à d'autres de le télécharger, ainsi que de copier les informations jointes dans une actualité pour annoncer cette nouveauté.
-</div>
+En premier lieu, employez le stockage binaire. Les fichiers uploadés sur le serveur seront stockés dans la base de données MySQL et ne seront accessibles que de la page “Téléchargement”.
+De plus, définissez la liste des types de fichiers autorisés en upload. Ainsi, si quelqu’un essaye d’uploader un fichier de type différent, ce fichier est immédiatement supprimé de votre serveur.
+
+Q>	J’ai quelques fichiers uploadés. Que dois-je faire maintenant?
+A>	Vous avez la possibilité de copier le fichier vers votre zone de Téléchargement afin de permettre à d’autres de le télécharger, ainsi que de copier les informations jointes dans vos News pour l’annoncer automatiquement.

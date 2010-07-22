@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:28 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_error.php,v $
+|     $Revision: 1.8 $
+|     $Date: 2006/11/08 12:57:27 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "錯誤訊息");
@@ -45,4 +45,12 @@ define("LAN_ERROR_30", "[6]: 無法有效的連結 mySQL. 請檢查您的 e107_c
 define("LAN_ERROR_31", "[7]: mySQL 執行中但無法連線到資料庫 ({$mySQLdefaultdb}).<br />請檢查e107_config.php 裡面的資訊.");
 define("LAN_ERROR_32", "為了完成升級, 請複製下面文字到 e107_config.php 檔案裡面:");
 
+define("LAN_ERROR_33", "程序錯誤! 將會自動導向於首頁.");
+define("LAN_ERROR_34", "未知的錯誤! 請通知管理員您所看到的資料:");
+
+define('LAN_ERROR_35', '錯誤代碼 400 - 不好的請求');
+define('LAN_ERROR_36', '這是您嘗試進入的頁面格式錯誤.');
+define('LAN_ERROR_37', '錯誤圖標');
+define('LAN_ERROR_38', '');
+define('LAN_ERROR_39', '');
 ?>

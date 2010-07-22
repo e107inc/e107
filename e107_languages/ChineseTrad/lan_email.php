@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/ChineseTrad/lan_email.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 07:18:27 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_languages/ChineseTrad/lan_email.php,v $
+|     $Revision: 1.7 $
+|     $Date: 2007/04/12 22:51:34 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Email"); }

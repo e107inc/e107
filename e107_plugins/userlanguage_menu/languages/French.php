@@ -1,17 +1,17 @@
 <?php
-/*
-+---------------------------------------------------------------+
-| Fichiers de langage Français e107 CMS (utf-8). Licence GNU/GPL
-| Traducteurs: communauté francophone e107
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/userlanguage_menu/languages/French.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-12-04 21:44:53 $
-|     $Author: daddycool78 $
-+---------------------------------------------------------------+
-*/
-define("UTHEME_MENU_L1", "Choisir le langage");
-define("UTHEME_MENU_L2", "Choisir le langage");
-define("UTHEME_MENU_L3", "tables");
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.7.11
+ * à supprimer en 0.8
+ * déplacé en e107_plugins/user_menu/languages/
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_plugins/userlanguage_menu/languages/French.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2008/06/16 13:05:07 $
+ * $Author: marj_nl_fr $
+ */
 
-
-?>
+define('UTHEME_MENU_L1', 'Choisir la langue');
+define('UTHEME_MENU_L2', 'Sélectionner la langue');
+define('UTHEME_MENU_L3', 'tables');

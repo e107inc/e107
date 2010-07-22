@@ -14,6 +14,9 @@ define("NT_LAN_US_1", "רישום משתמש");
 
 define("NT_LAN_UV_1", "רישום משתמש אושר");
 define("NT_LAN_UV_2", "טבעת רישום משתמשים");
+define("NT_LAN_UV_3", "שם משתמש התחברות:");
+define("NT_LAN_UV_4", "פרטי ה-IP:");
+
 
 define("NT_LAN_LI_1", "משתמש מחובר לאתר");
 

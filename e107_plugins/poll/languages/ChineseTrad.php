@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/ChineseTrad.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-09-09 08:04:22 $
-|     $Author: e107coders $
+|     $Source: /cvsroot/e107/e107_0.7/e107_plugins/poll/languages/English.php,v $
+|     $Revision: 1.13 $
+|     $Date: 2005/10/05 09:51:26 $
+|     $Author: Hanklu-www.phpbs.com-正體中文製作$
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,9 @@ define("POLL_ADLAN01", "投票");
 define("POLL_ADLAN02", "該投票外掛允許您定義選單或是版面內的投票.");
 define("POLL_ADLAN03", "設定投票");
 define("POLL_ADLAN04", "該投票外掛已安裝完成. 新增投票, 點選投票圖標於控制台中, 並啟動於選單.");
+define("POLL_ADLAN05", "重要投票: ");
+define("POLL_ADLAN06", "討論區主題: ");
+define("POLL_ADLAN07", "類型");
 
 define("POLLAN_MENU_CAPTION", "投票");
 
@@ -72,6 +75,6 @@ define("POLLAN_43", "您沒有權限參與投票");
 define("POLLAN_44", "刪除該投票?");
 
 define("POLLAN_45", "投票已更新完成");
-define("POLLAN_46", "Field(s) left blank");
+define("POLLAN_46", "欄位保留空白");
 
 ?>

@@ -1,4 +1,4 @@
-
+<!-- for BBCode $Id$ -->
 Q>	Wat is BBCode?
 A>	Een BBCode is een versnelde invoer voor een HTML tag. Door bijvoorbeeld &#91;b] Ik ben vette tekst! &#91;/b] te typen in een beheertekstveld, wordt de tekst tussen de &#91;b] en &#91;/b] vet weergegeven, dus dan wordt [b]Ik ben vette tekst![/b] op het scherm getoond.
 

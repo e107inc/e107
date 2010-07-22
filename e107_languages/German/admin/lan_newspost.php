@@ -3,11 +3,12 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
-|     $Author: gatowlion $
+|     $Source: /cvsroot/e107german/e107_0.7/e107_langpacks/e107_languages/German/admin/lan_newspost.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2010/01/07 04:39:29 $
+|     $Author: lars78 $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
+|     $updated by: webmaster@e107cms.de (http://www.e107cms.de) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
@@ -25,8 +26,8 @@ define("NWSLAN_12", "Titel");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Erweitert");
 define("NWSLAN_15", "Kommentare");
-define("NWSLAN_16", "Freigeschalten");
-define("NWSLAN_17", "Nicht freigeschalten");
+//define("NWSLAN_16", "Freigeschaltet"); // deprecated see lan_admin.php
+//define("NWSLAN_17", "Nicht freigeschaltet"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Erlaube Kommentare zu diesem News Eintrag");
 define("NWSLAN_19", "Aktivierung");
 
@@ -69,25 +70,25 @@ define("NWSLAN_56", "News Kategorie erstellen");
 define("NWSLAN_57", "Eintrag");
 define("NWSLAN_58", "Eintrag");
 define("NWSLAN_59", "Keine übermittelten News");
-define("NWSLAN_60", "Übermittelte News");
+//define("NWSLAN_60", "Übermittelte News"); //already defined above.
 
 define("NWSLAN_62", "Gehe zur Seite: ");
 define("NWSLAN_63", "Durchsuche die Newseinträge");
-
 
 define("NWSLAN_66", "Hochladen");
 define("NWSLAN_67", "Bild");
 define("NWSLAN_68", "Datei");
 define("NWSLAN_69", "Laden Sie ein Bild oder eine File hoch um es in den News Einträgen zu verwenden");
-define("NWSLAN_70", "Der e107_files/downloads Ordner ist nicht beschreibbar, sie müssen dem Ordner die CHMOD - Rechte 777 geben, bevor sie etwas hochladen wollen");
-define("NWSLAN_71", "Der ");
+// define("NWSLAN_70", "Der ".e_FILE."download Ordner ist nicht beschreibbar, sie müssen dem Ordner die CHMOD - Rechte 777 geben, bevor sie etwas hochladen wollen"); // deprecated see lan_admin.php
+// define("NWSLAN_71", "Das ".e_IMAGE."newspost_images Verzeichnis ist nicht beschreibbar.  sie müssen dem Ordner die CHMOD - Rechte 777 geben, bevor sie etwas hochladen wollen"); // deprecated see lan_admin.php
 define("NWSLAN_72", "Zeige nur News Einträge eines bestimmten Zeitraums");
 define("NWSLAN_73", "Newsanzeige Option");
 define("NWSLAN_74", "Wählen Sie hier, wie und wo die News Einträge gepostet werden sollen");
 define("NWSLAN_75", "Vorgabe - zur ersten Seite posten");
 define("NWSLAN_76", "Nur Überschrift - zur ersten Seite Posten");
-define("NWSLAN_77", "Ins andere News - Menö posten");
-define("NWSLAN_78", "Diese Option ist abgeschalten, solange Ihr Server es nicht erlaubt Dateien hochzuladen");
+define("NWSLAN_77", "Ins andere News - Menü posten");
+
+//define("NWSLAN_78", "Diese Option ist abgeschaltet, solange Ihr Server es nicht erlaubt Dateien hochzuladen"); // deprecated see lan_admin.php
 define("NWSLAN_79", "Formular zurücksetzen");
 
 define("NWSLAN_83", "Erweiterter Newseintrag");
@@ -106,7 +107,7 @@ define("NWSLAN_104", "von");
 define("NWSLAN_105", "Markieren Sie die Box um den Datestamp der Newseintrüge zu aktualisieren auf die jetzige Zeit");
 define("NWSLAN_106", "Übermittle-News können genutzt werden von:");
 define("NWSLAN_107", "HtmlEditor erlauben auf den Übermittle-News Seiten.");
-
+define("NWSLAN_108", "an");
 
 define("NWSLAN_111", "Zeige den neuen News-Kopf");
 define("NWSLAN_112", "Falls hier markiert, erscheint über dem Newseintrag eine Box mit dem Datum des entsprechenden Newseintrags, bei Newseinträgen eines neuen Tages, - nützlich bei unterschiedlichen Einträgen an verschiedenen Tagen.");
@@ -117,9 +118,9 @@ define("NWSLAN_114", "falls das Theme welches Sie benutzen, ein News Template La
 define("NWSLAN_115", "Sollen die Newseinträge im Archiv angezeigt werden ?");
 define("NWSLAN_116", "Bitte zuerst die Voreinstellungen aktualisieren mit der geänderten Anzeige der Einstellungen pro Seite, danach bitte aktualisieren mit den geänderten Newsarchiv-Voreinstellungen. (0 ist nicht-aktiviert)");
 define("NWSLAN_117", "Titel für das Newsarchiv");
-define("NWSLAN_118", "Bilder ansehen");
+//define("NWSLAN_118", "Bilder ansehen"); already defined above.
 define("NWSLAN_119", "Einstellungen gespeichert");
-
+define("NWSLAN_120", "Text der oben auf der Übermittlungsseite für News angezeigt werden soll");
 
 define("LAN_NEWS_5", "Fehler! - Der News Eintrag konnte in der Datenbank nicht aktualisiert werden!");
 define("LAN_NEWS_6", "News in Datenbank eingetragen.");
@@ -136,6 +137,7 @@ define("LAN_NEWS_17", "b.");
 define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19",  "Jetzt");
 define("LAN_NEWS_21", "News in Datenbank aktualisiert.");
+
 define("LAN_NEWS_22", "Vorschaubild");
 define("LAN_NEWS_23", "Wählen Sie ein Vorschaubild für diesen Newseintrag.");
 define("LAN_NEWS_24", "Bild + Auto-Vorschaubild");
@@ -147,7 +149,6 @@ define("LAN_NEWS_28", "- immer oben -");
 define("LAN_NEWS_29", "Wählen Sie hier, wenn der Newseintrag immer oben angezeigt werden soll");   
 define("LAN_NEWS_30", "Falls ausgewählt, wird der Newseintrag immer über allen anderen Einträgen angezeigt.");   
 define("LAN_NEWS_31", "Dieser Newseintrag ist als <b>- immer oben -</b> gekennzeichnet (er wird immer über allen anderen Einträgen angezeigt werden). ");
-
 define("LAN_NEWS_32", "Datumsstempel");
 define("LAN_NEWS_33", "Setze den Datumsstempel für den jetzigen Newseintrag.");
 
@@ -160,12 +161,22 @@ define("LAN_NEWS_38", "Bilder einfügen");
 define("LAN_NEWS_39", "Klicken Sie auf eine Datei um sie an der Cursor Position einzufügen");
 define("LAN_NEWS_40", "Download Links einfügen");
 
-define("LAN_NEWS_41", "Klicken Sie auf ein Bild um es an der Cursor Position einzufügen");
 define("LAN_NEWS_42", "Bilder einfügen");
-define("LAN_NEWS_43", "(Keine Bilder in /e107_images/newspost_images)");
-define("LAN_NEWS_44", "Trackback nicht freigeschalten.");
+//define("LAN_NEWS_43", "(Keine Bilder in /e107_images/newspost_images)");  // deprecated see lan_admin.php
+define("LAN_NEWS_44", "Trackback nicht aktiviert.");
 
 define("LAN_NEWS_45", "ID");
 
+define("LAN_NEWS_46", "Newseintrag wurde nicht aktualisiert, da keine Veränderungen vorgenommen wurden.");
+//define("LAN_NEWS_47", "Bild");  // already defined above.
+define("LAN_NEWS_48", "Kein Bild");
+
+define("LAN_NEWS_49", "Anzeige-Modus");
+
+define('LAN_NEWS_50', 'Wartung');
+define('LAN_NEWS_51', 'Kommentar Anzahl neu berechnen');
+define('LAN_NEWS_52', 'Fortsetzen');
+define('LAN_NEWS_53', 'Update fertig');
+define('LAN_NEWS_54', 'News Wartung');
 
 ?>
