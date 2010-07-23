@@ -1098,7 +1098,7 @@ class file_inspector {
 	}
 }
 
-require_once('footer.php');
+require_once(e_ADMIN.'footer.php');
 
 function headerjs() {
 global $e107;
