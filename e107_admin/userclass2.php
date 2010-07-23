@@ -939,7 +939,7 @@ class uclass_manager
 	}
 }
 
-require_once('footer.php');
+require_once(e_ADMIN.'footer.php');
 
 
 

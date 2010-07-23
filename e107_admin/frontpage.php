@@ -576,7 +576,7 @@ class frontpage
 	}
 }
 
-require_once ('footer.php');
+require_once(e_ADMIN.'footer.php');
 
 /**
  *	Log event to admin log
