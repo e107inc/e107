@@ -590,6 +590,9 @@ function fill_phrases_array($data,$type) {
 	$retloc = array();
 
 	foreach($data as $line){
+		
+		$line = str_replace('define (',"define(",$line);
+		
 		//echo "line--> ".$line."<br />";
 		if (strpos($line,"define(") !== FALSE && strpos($line,");") === FALSE)
 		{

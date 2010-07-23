@@ -33,6 +33,9 @@ define("LANG_LAN_20", "Enter one domain per line. eg. mydomain.com etc. or leave
 
 define("LANG_LAN_21", "Language Tools");
 
+define("LANG_LAN_23", "Create Language-Pack (zip)");
+define("LANG_LAN_24", "Generate");
 
-
+define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
+define("LANG_LAN_EML", "Please email your language pack to:");
 ?>
