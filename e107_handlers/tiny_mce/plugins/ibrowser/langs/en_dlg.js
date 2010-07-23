@@ -1,0 +1,1 @@
+tinyMCE.addI18n('en.ibrowser_dlg',{ title:"Insert image", });
