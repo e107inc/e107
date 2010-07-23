@@ -500,6 +500,7 @@ CREATE TABLE user (
   user_xup varchar(100) NOT NULL default '',
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
+  UNIQUE KEY user_loginname (user_loginname),
   KEY user_ban_index (user_ban)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
