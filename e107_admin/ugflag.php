@@ -129,4 +129,4 @@ $text .= '
 ';
 
 $ns->tablerender(UGFLAN_4, $text);
-require_once ('footer.php');
+require_once(e_ADMIN.'footer.php');

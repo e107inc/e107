@@ -905,7 +905,7 @@ function show_predefined()
 	}
 	$txt .= "</table></form>";
 	$ns->tablerender(EXTLAN_56, $txt);
-	require_once('footer.php');
+	require_once(e_ADMIN.'footer.php');
 	exit;
 }
 

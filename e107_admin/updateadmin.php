@@ -70,6 +70,6 @@ if (isset($_POST['update_settings'])) {
 	$ns->tablerender(UDALAN_8." ".ADMINNAME, $text);
 }
 
-require_once('footer.php');
+require_once(e_ADMIN.'footer.php');
 
 ?>
