@@ -936,10 +936,7 @@ class e_system_user extends e_user_model
 	 */
 	public function __construct($user_data = array())
 	{
-		if ($user_data)
-		{
-			$this->_data = $user_data;
-		}
+		parent::__construct($user_data);
 		$this->setEditor(e107::getUser());
 	}
 
