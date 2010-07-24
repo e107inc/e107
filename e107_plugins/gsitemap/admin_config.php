@@ -481,14 +481,29 @@ class gsitemap
 	function instructions()
 	{
 		global $ns, $PLUGINS_DIRECTORY;
-
+		
+		$LINK_1 = "https://www.google.com/accounts/ServiceLogin?service=sitemaps";
+		$LINK_2 = "http://www.google.com/support/webmasters/?hl=en";
+		
+		$srch[0] = "[URL]";
+		$repl[0] = "<a href='".$LINK_1."'>".$LINK_1."</a>";
+		
+		$srch[1] = "[URL2]";
+		$repl[1] = "<blockquote><b>".SITEURL."gsitemap.php</b></blockquote>";
+		
+		$srch[2] = "[";
+		$repl[2] = "<a href='".e_ADMIN."prefs.php'>";
+		
+		$srch[3] = "]";
+		$repl[3] = "</a>";		
+		
 		$text = "<b>".GSLAN_33."</b><br /><br />
 		<ul>
 		<li>".GSLAN_34."</li>
 		<li>".GSLAN_35."</li>
 		<li>".GSLAN_36."</li>
-		<li>".GSLAN_37."</li>
-		<li>".GSLAN_38."</li>
+		<li>".str_replace($srch,$repl,GSLAN_37)."</li>
+		<li>".str_replace("[URL]","<a href='".$LINK_2."'>".$LINK_2."</a>",GSLAN_38)."</li>
 		<ul>
 		";
 
