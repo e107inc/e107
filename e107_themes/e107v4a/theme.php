@@ -298,7 +298,7 @@ $COMMENTSTYLE = "
 <table style='width:100%'>
 <tr>
 <td colspan='2' class='alttd'>
-{SUBJECT}
+{SUBJECT}&nbsp;
 <b>
 {USERNAME}
 </b>
