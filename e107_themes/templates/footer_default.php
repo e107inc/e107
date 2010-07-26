@@ -1,21 +1,17 @@
 <?php 
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (C) 2008-2009 e107 Inc (e107.org)
- |     http://e107.org
- |
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
- |     $Revision$
- |     $Date$
- |     $Author$
- +----------------------------------------------------------------------------+
- */
+* e107 website system
+*
+* Copyright 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Default footer for user pages
+*
+* $URL$
+* $Id$
+*
+*/
 if (!defined('e107_INIT'))
 {
 	exit;
@@ -297,28 +293,30 @@ header("Cache-Control: must-revalidate");
 header("ETag: {$etag}");
 
 $pref['compression_level'] = 6;
-if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
+$browser_support = FALSE;
+$server_support = FALSE;
+if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
 {
 	$browser_support = true;
 }
-if (ini_get("zlib.output_compression") == false && function_exists("gzencode"))
+if(ini_get("zlib.output_compression") == '' && function_exists("gzencode")) 
 {
 	$server_support = true;
 }
-if (varset($pref['compress_output'], false) && $server_support == true && $browser_support == true)
+if(varset($pref['compress_output'],false) && $server_support == true && $browser_support == true) 
 {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
-}
-else
+} 
+else 
 {
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
 }
 
 unset($In_e107_Footer);
-$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
+$e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
 ?>
