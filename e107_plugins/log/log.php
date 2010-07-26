@@ -1,22 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-| File locking, modified getip() 18.01.07
-|
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright 2001-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Site access logging - 'receiver'
+*
+* $URL$
+* $Id$
+*
 */
 
 /* File to log page accesses - called with
@@ -30,7 +24,8 @@
 */
 define('log_INIT', TRUE);
 
-$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+//$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+$logVals = urldecode(base64_decode($_GET['lv']));
 parse_str($logVals, $vals);
 
 
