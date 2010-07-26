@@ -1,18 +1,16 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Administration Area - User classes
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/log/e_meta.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+* e107 website system
+*
+* Copyright 2001-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Site access logging
+*
+* $URL$
+* $Id$
+*
 */
 if (!defined('e107_INIT')) { exit; }
 
@@ -26,7 +24,7 @@ if (isset($pref['statActivate']) && $pref['statActivate'])
 	// Page to log here
 	require_once(e_PLUGIN.'log/consolidate.php');
 	$err_flag = '';
-	if (defined("ERR_PAGE_ACTIVE"))
+	if (defined('ERR_PAGE_ACTIVE'))
 	{	// We've got an error - set a flag to log it
 		$err_flag = "&err_direct=".ERR_PAGE_ACTIVE;
 		if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
@@ -55,9 +53,9 @@ function rstr2b64(input)
 var ref=\"\"+escape(top.document.referrer);
 var colord = window.screen.colorDepth;
 var res = window.screen.width + \"x\" + window.screen.height;
-var logString = 'referer=' + ref + '&colour=' + colord + '&eself=' + document.location + '&res=' + res + '".$err_flag."';
+var logString = 'referer=' + ref + '&colour=' + colord + '&eself=' + eself + '&res=' + res + '".$err_flag."';
 logString = rstr2b64(logString);
-document.write( '<link rel=\"stylesheet\" type=\"text/html\" href=\"".e_PLUGIN_ABS."log/log.php?'+logString + '\">' );
+document.write('<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?lv='+logString + '\">' );
 ";
 	$e107 = e107::getInstance();
 	$e107->getJs()->headerInline($logJS, 5);
