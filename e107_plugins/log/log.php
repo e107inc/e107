@@ -1,18 +1,16 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Administration Area - User classes
- *
- * $Source: /cvsroot/e107/e107_0.8/e107_plugins/log/log.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+* e107 website system
+*
+* Copyright 2001-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Site access logging - 'receiver'
+*
+* $URL$
+* $Id$
+*
 */
 
 /* File to log page accesses - called with
@@ -35,7 +33,8 @@ define('log_INIT', TRUE);
 $pageUnique = array('page' => 1, 'content' => array('content'));
 
 
-$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+//$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+$logVals = urldecode(base64_decode($_GET['lv']));
 parse_str($logVals, $vals);
 
 
