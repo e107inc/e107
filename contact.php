@@ -30,7 +30,16 @@ require_once(HEADERF);
 if (!$CONTACT_FORM) {
 	if (file_exists(THEME."contact_template.php")) {
 		require_once(THEME."contact_template.php");
-	} else {
+	}
+	else
+	{		
+		// Redirect Page if no contact-form or contact-info is available. 
+		if(($pref['sitecontacts']== e_UC_NOBODY) && trim(SITECONTACTINFO) == "")
+		{
+			e107::getRedirect()->redirect(e_BASE."index.php");
+			exit;
+		}
+		
 		require_once(e_THEME."templates/contact_template.php");
 	}
 }
