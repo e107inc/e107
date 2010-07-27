@@ -332,7 +332,7 @@ class e_parse_shortcode
 	 *
 	 * @return e_parse_shortcode
 	 */
-	protected function loadThemeShortcodes()
+	public function loadThemeShortcodes()
 	{
 		global $register_sc;
 
