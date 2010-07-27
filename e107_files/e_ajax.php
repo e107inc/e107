@@ -32,12 +32,12 @@ ob_implicit_flush(0);
 
 	if(vartrue($_POST['ajax_sc']) && e_AJAX_REQUEST)
 	{
+		// temporary fix
+		global $register_sc;
 		if(isset($register_sc) && is_array($register_sc)) // Fix for missing THEME shortcodes.
 		{
-			foreach($register_sc as $code)
-			{
-				$this->registered_codes[$code]['type'] = 'theme';
-			}
+			 // parse errror fix from the previous commit
+			 e107::getScParser()->loadThemeShortcodes();
 		}
 		list($fld,$parm) = explode("=", $_POST['ajax_sc'], 2);
 		$prm = ($parm) ? "=".rawurldecode($parm) : ""; //var_dump($_GET);
