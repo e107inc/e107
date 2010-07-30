@@ -43,7 +43,8 @@ if (!$CONTACT_FORM)
 
 require_once(HEADERF);
 
-if(isset($_POST['send-contactus'])){
+if(isset($_POST['send-contactus']) && isset($_POST['e-token']))
+{
 
 	$error = "";
 

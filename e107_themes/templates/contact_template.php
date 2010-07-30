@@ -55,6 +55,7 @@ if(!isset($CONTACT_FORM))
 	{CONTACT_IMAGECODE_INPUT}
 	<tr><td>
 	<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='button' />
+	<input type='hidden' name='e-token' value=\"".e_TOKEN."\" />
 	</td></tr>
 	</table>
 	</form>";
