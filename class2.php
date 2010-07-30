@@ -1600,19 +1600,19 @@ function init_session() {
 
 	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
-
-	if(USER)
-	{
-		define('POST_REFERER', md5($currentUser['user_password'].$currentUser['user_lastvisit'].USERCLASS_LIST));
-	}
-	else
-	{
-		define('POST_REFERER', '');
-	}
-	if(isset($_POST['__referer']) && $_POST['__referer'] != POST_REFERER) {
-		header('location:'.e_BASE.'index.php');
-		exit;
-	}
+//
+//	if(USER)
+//	{
+//		define('POST_REFERER', md5($currentUser['user_password'].$currentUser['user_lastvisit'].USERCLASS_LIST));
+//	}
+//	else
+//	{
+//		define('POST_REFERER', '');
+//	}
+//	if(isset($_POST['__referer']) && $_POST['__referer'] != POST_REFERER) {
+//		header('location:'.e_BASE.'index.php');
+//		exit;
+//	}
 }
 
 $sql->db_Mark_Time('Start: Go online');
