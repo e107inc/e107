@@ -173,6 +173,23 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 	}
 }
 
+// Experimental Code Below.
+// e-Token START
+session_start();
+session_regenerate_id(true); // true don't work on php4 - so time to move on people!	
+
+$token_name = 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP);
+if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]))
+{
+	// prevent dead loop, save server resources
+	//header('location:'.e_BASE.'index.php');
+	die('Access denied');
+}	
+	
+define('e_TOKEN', uniqid(md5(rand()),true));
+$_SESSION[$token_name] = e_TOKEN;
+// e-Token END
+
 //
 // G: Retrieve Query data from URI
 //    (Until this point, we have no idea what the user wants to do)
@@ -418,24 +435,6 @@ if (!$pref['cookie_name']) {
 //{
 //	session_start(); // start the session, even if it won't be used for login-tracking. 
 //}
-	
-		
-// Experimental Code Below.
-// e-Token START
-session_start();
-session_regenerate_id(true); // true don't work on php4 - so time to move on people!	
-
-$token_name = $pref['cookie_name'].'_token';
-if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]))
-{
-	// prevent dead loop
-	//header('location:'.e_BASE.'index.php');
-	die('Access denied');
-}	
-	
-define('e_TOKEN', uniqid(md5(rand()),true));
-$_SESSION[$token_name] = e_TOKEN;
-// e-Token END
 
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
