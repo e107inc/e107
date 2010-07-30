@@ -415,9 +415,27 @@ if (!$pref['cookie_name']) {
 
 // start a session if session based login is enabled
 // if ($pref['user_tracking'] == "session")
+//{
+//	session_start(); // start the session, even if it won't be used for login-tracking. 
+//}
+	
+		
+// Experimental Code Below.
+// e-Token START
+session_start();
+session_regenerate_id(true); // true don't work on php4 - so time to move on people!	
+
+$token_name = $pref['cookie_name'].'_token';
+if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]))
 {
-	session_start(); // start the session, even if it won't be used for login-tracking. 
-}
+	// prevent dead loop
+	//header('location:'.e_BASE.'index.php');
+	die('Access denied');
+}	
+	
+define('e_TOKEN', uniqid(md5(rand()),true));
+$_SESSION[$token_name] = e_TOKEN;
+// e-Token END
 
 define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
@@ -819,8 +837,8 @@ if (e_QUERY == 'logout')
 
 	//if ($pref['user_tracking'] == 'session')
 	{
-		session_destroy();
 		$_SESSION[$pref['cookie_name']]='';
+		session_destroy();
 	}
 
 	cookie($pref['cookie_name'], '', (time() - 2592000));
@@ -1596,23 +1614,6 @@ function init_session() {
 		header('location:'.e_BASE.'index.php');
 		exit;
 	}
-		
-		
-	//Experimental Code Below. 
-		
-	session_regenerate_id();	
-	
-	// e-Token 
-	$token_name = $pref['cookie_name'].'_token';
-	
-	if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]))
-	{
-		header('location:'.e_BASE.'index.php');
-		exit;
-	}	
-		
-	define('e_TOKEN', uniqid(md5(rand()),true));
-	$_SESSION[$token_name] = e_TOKEN;		
 }
 
 $sql->db_Mark_Time('Start: Go online');
