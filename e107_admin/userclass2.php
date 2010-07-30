@@ -13,11 +13,11 @@
 *
 */
 require_once("../class2.php");
-if(count($_POST) && !varset($_POST['__referer']))
+if(count($_POST) && !varset($_POST['e-token']))
 {
-	header('location:'.e_BASE.'index.php');
-	exit;
+	die('Access denied');
 }
+
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -84,9 +84,9 @@ elseif(e_QUERY)
 	}
 }
 
-if (isset($_POST['delete']))
+if (isset($_POST['delete']) && varset($_POST['e-token']))
 {
-	if(isset($_POST['useraction']) && !varset($_POST['__referer']))
+	if(isset($_POST['useraction']))
 	{
 		header('location:'.e_BASE.'index.php');
 		exit;
@@ -200,7 +200,7 @@ else
 		}
 	}
 	$text .= "</select>
-		<input type='hidden' name='__referer' value='".POST_REFERER."' />
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input class='button' type='submit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
@@ -252,7 +252,7 @@ else
 }
 
 $text .= "
-<input type='hidden' name='__referer' value='".POST_REFERER."' />
+<input type='hidden' name='e-token' value='".e_TOKEN."' />
 </td></tr></table>
 ";
 

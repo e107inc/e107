@@ -13,10 +13,9 @@
 *
 */
 require_once("../class2.php");
-if(varset($_POST['eu_action']) && !varset($_POST['__referer']))
+if(varset($_POST['eu_action']) && !varset($_POST['e-token']))
 {
-	header('location:'.e_BASE.'index.php');
-	exit;
+	die('Access denied');
 }
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
@@ -332,7 +331,7 @@ class users_ext
 					<td class='forumheader3' style='width:50px;text-align:center;'>
 					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
 					<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-					<input type='hidden' name='__referer' value='".POST_REFERER."' />
+					<input type='hidden' name='e-token' value='".e_TOKEN."' />
 					<input type='hidden' name='eu_action' value='delext' />
 					<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 					<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />

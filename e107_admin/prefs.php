@@ -41,14 +41,8 @@ if ($_POST['submit_resetdisplaynames'])
 	$message = PRFLAN_157;
 }
 
-if (isset($_POST['updateprefs']))
+if (isset($_POST['updateprefs']) && varset($_POST['e-token']))
 {
-	if(!varset($_POST['__referer']))
-	{
-		header('location:'.e_BASE.'index.php');
-		exit;
-	}
-
 	unset($_POST['updateprefs'],$_POST['sitelanguage']);
 
 	$_POST['cookie_name'] = str_replace(array(" ","."), "_", $_POST['cookie_name']);
@@ -162,7 +156,7 @@ $text = "<script type=\"text/javascript\">
 	<div style='text-align:center'>
 	<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
 	<form method='post' action='".e_SELF."'>
-	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	<div id='main' style='text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<colgroup>

@@ -41,10 +41,9 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 	exit;
 }
 
-if(isset($_POST['useraction']) && !varset($_POST['__referer']))
+if(isset($_POST['useraction']) && !varset($_POST['e-token']))
 {
-	header('location:'.e_BASE.'index.php');
-	exit;
+	die('Access denied');
 }
 
 $e_sub_cat = 'users';
@@ -394,7 +393,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 			$qry = (e_QUERY) ? "?".e_QUERY : "";
 			$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 			$text .= "<div>
-				<input type='hidden' name='__referer' value='".POST_REFERER."'>
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				<input type='hidden' name='useraction' value='deluser' />
 				<input type='hidden' name='userid' value='{$row['user_id']}' /></div>". USRLAN_13."
 				<br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
@@ -740,7 +739,7 @@ class users
 					<form method='post' action='".e_SELF.$qry."'>
 					<div>
 
-					<input type='hidden' name='__referer' value='".POST_REFERER."'>
+					<input type='hidden' name='e-token' value='".e_TOKEN."' />
 					<input type='hidden' name='userid' value='{$user_id}' />
 					<input type='hidden' name='userip' value='{$user_ip}' />
 					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>

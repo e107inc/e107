@@ -101,14 +101,8 @@ function addCommonClasses($udata)
 //---------------------------------------------
 $error = "";
 
-if (isset($_POST['updatesettings']))
-{
-	if(!varset($_POST['__referer']))
-	{
-		header('location:'.e_BASE.'index.php');
-  		exit;
-	}
-	
+if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
+{	
 	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
 	{
 		$pref['auth_method'] = 'e107';
@@ -641,7 +635,7 @@ $text .= "<div>";
 
 $text .= "
 	<input type='hidden' name='_uid' value='{$uuid}' />
-	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	</div>
 	</form>
 	";

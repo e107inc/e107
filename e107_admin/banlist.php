@@ -13,10 +13,9 @@
 *
 */
 require_once("../class2.php");
-if(count($_POST) && !varset($_POST['__referer']))
+if(count($_POST) && !varset($_POST['e-token']))
 {
-	header('location:'.e_BASE.'index.php');
-	exit;
+	die('Access denied');
 }
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
@@ -71,7 +70,7 @@ $text = "";
 
 $text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
-	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 
@@ -92,7 +91,7 @@ $text .= "<div style='text-align:center'>
 	<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'>".
 ($action == "edit" ? "<input type='hidden' name='old_ip' value='$banlist_ip' /><input class='button' type='submit' name='update_ban' value='".LAN_UPDATE."' />" : "<input class='button' type='submit' name='add_ban' value='".BANLAN_8."' />")."
-	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 
 	</td>
 	</tr>
@@ -124,7 +123,7 @@ if ($action != "edit") {
 			$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
 			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
 				<td style='width:30%; text-align:center' class='forumheader3'>
-				<input type='hidden' name='__referer' value='".POST_REFERER."' />
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				".
 				$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").
 				$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";

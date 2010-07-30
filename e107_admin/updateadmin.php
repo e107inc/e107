@@ -16,12 +16,8 @@ require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
 require_once('auth.php');
 
-if (isset($_POST['update_settings'])) {
-	if(!varset($_POST['__referer']))
-	{
-		header('location:'.e_BASE.'index.php');
-		exit;
-	}
+if (isset($_POST['update_settings']) && varset($_POST['e-token']))
+{
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
 		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {
 			if (admin_update($sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."'"), 'update', UDALAN_3." ".ADMINNAME)) {
@@ -57,7 +53,7 @@ if (isset($_POST['update_settings'])) {
 
 	<tr>
 	<td colspan='2' style ='text-align:center'  class='forumheader'>
-	<input type='hidden' name='__referer' value='".POST_REFERER."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	<input class='button' type='submit' name='update_settings' value='".UDALAN_7."' />
 	<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 	</td>
