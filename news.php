@@ -362,7 +362,7 @@ switch ($action)
 		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate} 
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 
-	$news_total = $sql->db_Count("news", "(*)", "WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
+	$news_total = $sql->db_Count("news AS n", "(*)", "WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
 		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}");
 	break;
