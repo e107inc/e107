@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -192,7 +192,8 @@ $text .= "</select>\n
 
 	<tr style='vertical-align:top'>\n
 	<td colspan='2'  style='text-align:center' class='forumheader'>\n
-	<input class='button' type='submit' name='updateoptions' value='".FMLAN_33."' />\n
+	<input class='button' type='submit' name='updateoptions' value='".FMLAN_33."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
 	</td>\n
 	</tr>\n\n
 
@@ -247,6 +248,7 @@ while ($dirs[$c]) {
 			<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\" />
 			<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
 			<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\" />
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			</div>";
 	} else {
 		$text .= "&nbsp;";
@@ -325,7 +327,7 @@ while ($files[$c]) {
 		}
 		$text .= "</select>&nbsp;";
 		$text .="<input class=\"button\" type=\"submit\" name=\"movetodls\" value=\"".FMLAN_50."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_49)."') \" />
-		";
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 	}
 
 	$text .= "<input class=\"button\" type=\"submit\" name=\"deletefiles\" value=\"".FMLAN_43."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_46)."') \" />

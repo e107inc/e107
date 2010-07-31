@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -260,7 +260,8 @@ function edit_administrator($row){
 	<td colspan='2' style='text-align:center' class='forumheader'>";
 
 	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
-	<input type='hidden' name='a_id' value='$a_id' />";
+	<input type='hidden' name='a_id' value='$a_id' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 
 	$text .= "</td>
 	</tr>

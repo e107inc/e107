@@ -121,6 +121,7 @@ $text .= '
 			<tr>
 			<td colspan="2" style="text-align:center" class="forumheader">
 			<input class="button" type="submit" name="updatesettings" value="'.UGFLAN_3.'" />
+			<input type="hidden" name="e-token" value="'.e_TOKEN.'" />
 			</td>
 		</tr>
 	</table>

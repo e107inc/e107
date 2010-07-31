@@ -51,7 +51,7 @@ if (!USER)
 	}
 	$LOGIN_TABLE_AUTOLOGIN = "<input type='checkbox' name='autologin' value='1' />";
 	$LOGIN_TABLE_AUTOLOGIN_LAN = LAN_LOGIN_8;
-	$LOGIN_TABLE_SUBMIT = "<input class='button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
+	$LOGIN_TABLE_SUBMIT = "<input class='button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" /><input type='hidden' name='e-token' value='".e_TOKEN."' />";
 
 	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	if (!isset($LOGIN_TABLE) || !$LOGIN_TABLE)

@@ -102,7 +102,9 @@ if(is_array($fileList))
 			}
 			else
 			{
-				$txt .= "<td class='forumheader3'>".FRMUP_8." <input class='button' type='submit' name='delete[{$finfo['fname']}]' value='".FRMUP_10."' /></td>";
+				$txt .= "<td class='forumheader3'>".FRMUP_8." <input class='button' type='submit' name='delete[{$finfo['fname']}]' value='".FRMUP_10."' />
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
+				</td>";
 			}
 			$txt .= "</tr>";
 		}

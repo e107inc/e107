@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -90,6 +90,7 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 $text .= "
 <tr>
 <td><br /><input class='button' type='submit' name='delete_all' value='".MESSLAN_4."' />
+<input type='hidden' name='e-token' value='".e_TOKEN."' />
 <input type='checkbox' name='deleteconfirm' value='1' /> ".MESSLAN_5."
 </td>
 </tr>

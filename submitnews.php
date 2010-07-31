@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -241,6 +241,7 @@ $text .= "
       <tr>
         <td colspan='2' style='text-align:center' class='forumheader'>
           <input class='button' type='submit' name='submitnews_submit' value='".LAN_136."' />
+		  <input type='hidden' name='e-token' value='".e_TOKEN."' />
         </td>
       </tr>
     </table>

@@ -137,6 +137,7 @@ class auth
             <td colspan='2' style='text-align:center' class='forumheader'>
 
             <input class='button' type='submit' name='authsubmit' value='".ADLAN_91."' />
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
             </td>
             </tr>
             </table>

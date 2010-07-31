@@ -549,7 +549,7 @@ function loginf() {
 		<input class='button' type='submit' name='userlogin' value='".LAN_10."' />\n
 		<br />
 		<input type='checkbox' name='autologin' value='1' /> ".LAN_11."
-		<br /><br />
+		<input type='hidden' name='e-token' value='".e_TOKEN."' /><br /><br />
 		[ <a href='".e_SIGNUP."'>".LAN_174."</a> ]<br />[ <a href='".e_BASE."fpw.php'>".LAN_212."</a> ]
 		</p>
 		</form>

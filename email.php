@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -230,6 +230,7 @@ $text .= "
 	<td style='width:75%'>
 	<input class='button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
 	<input type='hidden' name='referer' value='".$referrer."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 </td>
 	</tr>
 	</table>

@@ -164,7 +164,8 @@ if ($action == "create" || $action == "edit")
 
 	$text .= ($sub_action == "edit") ? "<input class='button' type='submit' name='wm_update' value='".LAN_UPDATE."' />" :
 	 "<input class='button' type='submit' name='wm_insert' value='".LAN_CREATE."' />" ;
-	$text .= "<input type='hidden' name='wm_id' value='".$id."' />";
+	$text .= "<input type='hidden' name='wm_id' value='".$id."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 	$text .= "</td>
 		</tr>
 		</table>
@@ -200,6 +201,7 @@ if ($action == "opt") {
 		<tr style='vertical-align:top'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>
 		<input class='button' type='submit' name='updateoptions' value='".LAN_SAVE."' />
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		</td>
 		</tr>
 
