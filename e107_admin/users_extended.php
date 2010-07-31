@@ -12,11 +12,16 @@
 * $Id$
 *
 */
-require_once("../class2.php");
-if(varset($_POST['eu_action']) && !varset($_POST['e-token']))
+
+// Experimental e-token
+if(isset($_POST['eu_action']) && !isset($_POST['e-token']))
 {
-	die('Access denied');
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
 }
+
+require_once("../class2.php");
+
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit;

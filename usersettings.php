@@ -13,6 +13,13 @@
 *
 */
 
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");

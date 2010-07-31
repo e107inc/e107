@@ -16,6 +16,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../../class2.php");
 
 if(!USER)

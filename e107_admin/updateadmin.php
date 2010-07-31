@@ -12,11 +12,19 @@
 * $Id$
 *
 */
+
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
 require_once('auth.php');
 
-if (isset($_POST['update_settings']) && varset($_POST['e-token']))
+if (isset($_POST['update_settings']))
 {
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
 		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {

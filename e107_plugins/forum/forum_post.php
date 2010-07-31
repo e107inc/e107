@@ -17,6 +17,13 @@
 +----------------------------------------------------------------------------+
 */
 
+// Experimental e-token
+if(isset($_POST['userlogin']) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../../class2.php");
 $e_wysiwyg = "post";
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');

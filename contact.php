@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -16,6 +16,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// Experimental e-token
+if(isset($_POST['send-contactus']) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("class2.php");
 
     // security image may be disabled by removing the appropriate shortcodes from the template.
@@ -43,7 +51,7 @@ if (!$CONTACT_FORM)
 
 require_once(HEADERF);
 
-if(isset($_POST['send-contactus']) && isset($_POST['e-token']))
+if(isset($_POST['send-contactus'])/* && isset($_POST['e-token'])*/)
 {
 
 	$error = "";

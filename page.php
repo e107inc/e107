@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -17,6 +17,13 @@
 |
 +----------------------------------------------------------------------------+
 */
+
+// Experimental e-token
+if(isset($_POST['submit_page_pw']) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
 
 require_once("class2.php");
 $page = new pageClass();

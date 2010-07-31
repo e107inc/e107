@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -16,6 +16,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../class2.php");
 if (!getperms("B")) {
 	header("location:".e_BASE."index.php");
@@ -84,6 +92,7 @@ if (isset($message)) {
 $text = "
 <div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
+<input type='hidden' name='e-token' value='".e_TOKEN."' />
 <table class='fborder' style='".ADMIN_WIDTH."'>";
 
 if ($editid)
@@ -96,7 +105,7 @@ if ($editid)
 		$row = $sql->db_Fetch();
 		$text .= "<tr><td><textarea class='tbox' name='comment_comment' cols='1' rows='15' style='width:100%;'>".$row['comment_comment']."</textarea></td></tr>";
 		$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' />
-		<input type='hidden' name='e-token' value='".e_TOKEN."' /></td></tr>";
+		</td></tr>";
 	}
 
 	$text .= "</table></form></div>";

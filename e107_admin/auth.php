@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -16,6 +16,12 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+// Experimental e-token
+if(isset($_POST['authsubmit']) && !isset($_POST['e-token']))
+{
+	// die - it got through class2 check, it's a bad guy request!
+	die('Access denied!');
+}
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -37,7 +43,7 @@ else
         $sec_img = new secure_image;
     }
 
-    if ($_POST['authsubmit'])
+    if (isset($_POST['authsubmit']))
     {
         $obj = new auth;
 

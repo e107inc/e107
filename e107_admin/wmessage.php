@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -16,6 +16,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../class2.php");
 if (!getperms("M")) {
 	header("location:".e_BASE."index.php");
@@ -106,7 +114,7 @@ if ($action == "main" || $action == "") {
 		}
 
 		$text .= "</table></div>";
-		$text .= $rs->form_close();
+		$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' />".$rs->form_close();
 	} else {
 		$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
 	}

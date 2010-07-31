@@ -13,6 +13,13 @@
 *
 */
 
+// Experimental e-token
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../class2.php");
 include_once(e_HANDLER."userclass_class.php");
 include_once(e_HANDLER."user_extended_class.php");
@@ -41,7 +48,7 @@ if ($_POST['submit_resetdisplaynames'])
 	$message = PRFLAN_157;
 }
 
-if (isset($_POST['updateprefs']) && varset($_POST['e-token']))
+if (isset($_POST['updateprefs']))
 {
 	unset($_POST['updateprefs'],$_POST['sitelanguage']);
 

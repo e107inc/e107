@@ -12,6 +12,14 @@
 * $Id$
 *
 */
+
+// Experimental e-token
+if(isset($_POST['useraction']) || isset($_POST['adduser']) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../class2.php");
 
 if (!getperms("4"))
@@ -39,11 +47,6 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 {
 	header('location:'.e_ADMIN."userclass.php?".$tp -> toDB($_POST['userid'].".".e_QUERY));
 	exit;
-}
-
-if(isset($_POST['useraction']) && !varset($_POST['e-token']))
-{
-	die('Access denied');
 }
 
 $e_sub_cat = 'users';
@@ -1090,6 +1093,7 @@ class users
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 			</td>
 			</tr>
