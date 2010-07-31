@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |        e107 website system
 |
-|        ©Steve Dunstan 2001-2002
+|        ï¿½Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -725,7 +725,7 @@ class newspost
 
 		<a style='cursor: pointer' onclick='expandit(this);'>".NWSLAN_84."</a>
 		<div style='display: none;'>
-		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
+		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,main,classes,language")."
 		</div>
 		</td></tr>
 
@@ -1077,7 +1077,7 @@ class newspost
 		$text .= " <tr>
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_106."</span></td>
 		<td class='forumheader3' style='width:40%'>
-		".r_userclass("subnews_class", $pref['subnews_class'],"off","nobody,public,guest,member,admin,classes"). "</td></tr>";
+		".r_userclass("subnews_class", $pref['subnews_class'],"off","nobody,public,guest,member,admin,main,classes"). "</td></tr>";
 
 
 		$text .= "

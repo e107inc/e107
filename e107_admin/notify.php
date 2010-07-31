@@ -143,7 +143,7 @@ class notify_config {
 		<input type='radio' name='event[".$id."][type]' value='off' ".(($this -> notify_prefs['event'][$id]['type'] == 'off' || !$this -> notify_prefs['event'][$id]['type']) ? " checked='checked'" : "")." /> ".NT_LAN_3."
 		<input type='radio' name='event[".$id."][type]' value='main' ".($this -> notify_prefs['event'][$id]['type'] == 'main' ? " checked='checked'" : "")." /> ".NT_LAN_4."
 		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.":
-		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,classes')."
+		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,main,classes')."
 		<input type='radio' name='event[".$id."][type]' value='email' ".($this -> notify_prefs['event'][$id]['type'] == 'email' ? " checked='checked'" : "")." /> ".NT_LAN_6.":
 		".$rs -> form_text('event['.$id.'][email]', 40, $tp -> toForm($this -> notify_prefs['event'][$id]['email']), 150)."
 		</td>

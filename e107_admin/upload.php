@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -291,7 +291,7 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td style='width:70%' class='forumheader3'>".UPLLAN_37."<br />
 	<span class='smalltext'>".UPLLAN_38."</span></td>
-	<td style='width:30%' class='forumheader3'>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,classes")."
+	<td style='width:30%' class='forumheader3'>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,main,classes")."
 
 	</td>
 	</tr>

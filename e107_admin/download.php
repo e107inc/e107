@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -1103,13 +1103,13 @@ class download
 		$text .= "
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_145.":</td>
-			<td style='width:80%' class='forumheader3'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, classes, language')."</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, main, classes, language')."</td>
 			</tr>
 
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_106.":</td>
-			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, classes, language')."</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, main, classes, language')."</td>
 			</tr>
 			";
 
@@ -1633,7 +1633,7 @@ class download
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".DOWLAN_43.":<br /><span class='smalltext'>(".DOWLAN_44.")</span></td>
-			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes, language')."
+			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, main, classes, language')."
 
 			</td></tr>";
 

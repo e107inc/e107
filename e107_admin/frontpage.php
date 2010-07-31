@@ -108,7 +108,7 @@ class frontpage {
 		<td style='width: 50%' class='forumheader3'>
 		".$rs -> form_radio('type', 'all_users', (isset($pref['frontpage']['all']) ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
 		".$rs -> form_radio('type', 'user_class', (isset($pref['frontpage']['all']) ? FALSE : TRUE))." ".FRTLAN_32.":
-		".r_userclass('class', '', 'off', 'guest,member,admin,classes')."</td>
+		".r_userclass('class', '', 'off', 'guest,member,admin, main, classes')."</td>
 		</tr>";
 
 		$text .= "<tr style='vertical-align:top'>

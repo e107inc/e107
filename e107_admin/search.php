@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -154,7 +154,7 @@ if ($query[0] == 'settings') {
 	$text .= "<tr>
 	<td style='width:50%' class='forumheader3'>".SEALAN_15.": </td>
 	<td style='width:50%' class='forumheader3'>
-	".r_userclass("search_restrict", $pref['search_restrict'], "off", "public,guest,nobody,member,admin,classes")."
+	".r_userclass("search_restrict", $pref['search_restrict'], "off", "public,guest,nobody,member,admin,main,classes")."
 	</td>
 	</tr>";
 
@@ -251,7 +251,7 @@ if ($query[0] == 'settings') {
 	$text .= "<tr>
 	<td style='width:50%' class='forumheader3'>".SEALAN_44.":</td>
 	<td style='width:50%' class='forumheader3'>";
-	$text .= r_userclass("class", $search_prefs[$handler_type][$query[2]]['class'], "off", "public,guest,nobody,member,admin,classes");
+	$text .= r_userclass("class", $search_prefs[$handler_type][$query[2]]['class'], "off", "public,guest,nobody,member,admin,main,classes");
 	$text .= "</td>
 	</tr><tr>
 	<td style='width:50%' class='forumheader3'>".SEALAN_45.":</td>
@@ -319,7 +319,7 @@ if ($query[0] == 'settings') {
 		$text .= "<tr>
 		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
 		<td style='width:25%' class='forumheader3'>";
-		$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
+		$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,main,classes");
 		unset($search_info);
 		$text .= "</td>";
 		$text .= "<td style='width:10%; text-align:center' class='forumheader3'>";
@@ -339,7 +339,7 @@ if ($query[0] == 'settings') {
 	<td style='white-space:nowrap' class='forumheader3'>Google</td>
 	<td colspan='3' class='forumheader3'>";
 	$sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
-	$text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,classes");
+	$text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,main,classes");
 	$text .= "</td>
 	</tr>";
 
@@ -370,7 +370,7 @@ if ($query[0] == 'settings') {
 		$text .= "<tr>
 		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
 		<td style='width:45%' class='forumheader3'>";
-		$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
+		$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,main,classes");
 		$text .= "</td>
 		</tr>";
 		unset($comments_title);

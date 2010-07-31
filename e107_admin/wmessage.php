@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -156,7 +156,7 @@ if ($action == "create" || $action == "edit")
 		</td>
 		</tr>
 		<tr><td class='forumheader3'>".WMLAN_03."</td>
-		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
+		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,main,classes")."</td></tr>";
 
 	$text .= "
 		<tr style='vertical-align:top'>
