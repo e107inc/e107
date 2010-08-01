@@ -177,7 +177,10 @@ if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
 	if (isset($_POST['loginname']))
 	{  // Only check if its been edited %*|/|&nbsp;|\#|\=|\$%
 		// another option would be /[^\w\pL\.]/u (non latin words)
-		$temp_name = trim(preg_replace('#[^a-z0-9_\.]#i', "", strip_tags($_POST['loginname'])));
+	//	$temp_name = trim(preg_replace('#[^a-z0-9_\.]#i', "", strip_tags($_POST['loginname'])));
+	// The above preg_replace will break any non-latin login and should not be used. 
+	
+		$temp_name = htmlspecialchars($_POST['loginname'], ENT_QUOTES);
 		if ($temp_name != $_POST['loginname'])
 		{
 			$error .= LAN_USET_13."\\n";
