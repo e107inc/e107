@@ -17,7 +17,7 @@
 if(isset($_POST['useraction']) || isset($_POST['adduser']) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
-	$_POST['e-token'] = '';
+	unset($_POST['e-token']);
 }
 
 require_once("../class2.php");
