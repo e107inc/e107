@@ -175,14 +175,18 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 
 // Experimental Code Below.
 // e-Token START
+
 session_start();
 session_regenerate_id(true); // true don't work on php4 - so time to move on people!	
 
+
+
 $token_name = 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP);
-if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]))
+if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]) && $_POST['ajax_used']!=1)
 {
+	// echo "<br />Session token=".$_SESSION[$token_name];
 	// prevent dead loop, save server resources
-	//header('location:'.e_BASE.'index.php');
+	// echo "<pre>".print_r($_POST,TRUE)."</pre>";
 	die('Access denied');
 }	
 	
