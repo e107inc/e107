@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -37,6 +37,7 @@ else
 <input type='radio' name='coppa' value='1' /> ".LAN_201."<br />
 <br />
 <input class='button' type='submit' name='newver' value=\"".LAN_399."\" />
+<input type='hidden' name='e-token' value='".e_TOKEN."' />
 </div></form>
 ";
 }
