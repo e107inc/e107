@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -45,7 +45,7 @@ SC_END
 
 SC_BEGIN SIGNUP_FORM_OPEN
 global $rs;
-return $rs->form_open("post", e_SELF, "signupform");
+return $rs->form_open("post", e_SELF, "signupform")."<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 SC_END
 
 SC_BEGIN SIGNUP_SIGNUP_TEXT

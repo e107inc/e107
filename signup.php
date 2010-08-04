@@ -16,7 +16,7 @@
 */
 
 // Experimental e-token
-if(!empty($_POST) && !isset($_POST['e-token']))
+if((isset($_POST['newver']) || isset($_POST['register']) || isset($_POST['submit_resend'])) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
@@ -51,6 +51,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
+	$errmsg = '';
 	require_once(HEADERF);
 
     if(!$clean_email = check_email($tp -> toDB($_POST['resend_email'])))
@@ -84,8 +85,9 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 			}
 			else
 			{
-			   	require_once(e_HANDLER."message_handler.php");
-			   	message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+			   	//require_once(e_HANDLER."message_handler.php");
+			   	//message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+			   	$errmsg = LAN_SIGNUP_52;
 			}
 		}
 
@@ -124,11 +126,13 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
             }
          }
 
-		require_once(e_HANDLER."message_handler.php");
-		message_handler("ALERT",LAN_106); // email not valid.
-		exit;
+		//require_once(e_HANDLER."message_handler.php");
+		//message_handler("ALERT",LAN_106); // email not valid.
+		//message_handler("MESSAGE",LAN_106);
+		$errmsg = LAN_106;
+		//exit;
 	}
-	elseif(!$_POST['submit_resend'])
+	if(!$_POST['submit_resend'] || $errmsg)
 	{
 
 		$text .= "<div style='text-align:center'>
@@ -163,7 +167,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 		</table>
 		</form>
 		</div>";
-
+		if($errmsg) message_handler("MESSAGE",$errmsg);
 		$ns -> tablerender(LAN_SIGNUP_47, $text);
 		require_once(FOOTERF);
 		exit;
