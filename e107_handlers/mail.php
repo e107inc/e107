@@ -176,11 +176,16 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (isset($returnpath) && ($returnpath != ""))
 	{  // Passed parameter overrides any system default
-	$mail->Sender = $returnpath;
+		$mail->Sender = $returnpath;
 	}
-	elseif($pref['mail_bounce_email'] !=''){
+	elseif($pref['mail_bounce_email'] !='')
+	{
 		$mail->Sender = $pref['mail_bounce_email'];
     }
+	else
+	{
+		$mail->Sender = $send_from; 
+	}
 
 	if (!$mail->Send()) {
 		// echo "There has been a mail error sending to " . $row["email"] . "<br>";
