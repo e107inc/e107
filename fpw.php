@@ -1,39 +1,35 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright 2008-2010 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Interface for users who have forgotten their password
+*
+* $URL$
+* $Id$
+*
 */
-require_once("class2.php");
+require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-if(USER)
+if (USER)
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
-if($pref['fpwcode'] && extension_loaded("gd"))
+if($pref['fpwcode'] && extension_loaded('gd'))
 {
-	define("USE_IMAGECODE",TRUE);
-  require_once(e_HANDLER."secure_img_handler.php");
-  $sec_img = new secure_image;
+	define('USE_IMAGECODE',TRUE);
+	require_once(e_HANDLER.'secure_img_handler.php');
+	$sec_img = new secure_image;
 }
 else
 {
-	define("USE_IMAGECODE",FALSE);
+	define('USE_IMAGECODE',FALSE);
 }
 
 
@@ -48,7 +44,6 @@ if ($pref['membersonly_enabled'])
 	$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
 }
 
-// require_once(e_HANDLER.'user_handler.php');
 $user_info = e107::getSession();
 
 require_once(HEADERF);
@@ -61,42 +56,50 @@ function fpw_error($txt)
 	exit;
 }
 
+
+
 //the separator character used
-$fpw_sep = "#";
+define('FPW_SEPARATOR', '#');
+//$fpw_sep = '#';
 
 
 
 if (e_QUERY) 
 {	// User has clicked on the emailed link
-	define("FPW_ACTIVE","TRUE");
-	$tmp = explode($fpw_sep, e_QUERY);
-	$tmpinfo = preg_replace("#[\W_]#", "", $tp -> toDB($tmp[0], true));
-	if ($sql->db_Select("tmp", "*", "`tmp_info` LIKE '%{$fpw_sep}{$tmpinfo}' ")) 
+	define('FPW_ACTIVE','TRUE');
+	$tmpinfo = preg_replace("#[\W_]#", "", e107::getParser()->toDB(e_QUERY, true));			// query part is a 'random' number
+	if ($tmpinfo != e_QUERY)
+	{
+		die();			// Shouldn't be any characters that toDB() changes
+	}
+	if ($sql->db_Select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' ")) 
 	{
 		$row = $sql->db_Fetch();
-		extract($row);
-		$sql->db_Delete("tmp", "`tmp_info` LIKE '%{$fpw_sep}{$tmpinfo}' ");
-		$newpw = "";
-		$pwlen = rand(8, 12);
-		for($a = 0; $a <= $pwlen; $a++) 
+		$sql->db_Delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+
+		list($loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
+		$loginName = $tp -> toDB($loginName, true);
+
+		if ($md5 != $tmpinfo)
 		{
-			$newpw .= chr(rand(97, 122));
+			die('Random mismatch!');			// This should never happen!
 		}
-		list($loginName, $md5) = explode($fpw_sep, $tmp_info);
-//		$mdnewpw = md5($newpw);
-		$mdnewpw = $user_info->HashPassword($newpw,$username);
+
+		$newpw = $user_info->generateRandomString(str_repeat('*', rand(8, 12)));		// Generate new temporary password
+		$mdnewpw = $user_info->HashPassword($newpw,$loginName);
 
 		// Details for admin log
 		$do_log['password_action'] = LAN_FPW21;
-		$do_log['user_name'] = $tp -> toDB($username, true);
+		//$do_log['user_name'] = $tp -> toDB($username, true);
+		$do_log['user_loginname'] = $loginName;
 		$do_log['activation_code'] = $tmpinfo;
 		$do_log['user_password'] = $mdnewpw;
 		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
 
-		$sql->db_Update("user", "`user_password`='{$mdnewpw}', `user_viewed`='' WHERE `user_loginname`='".$tp -> toDB($loginName, true)."' ");
+		$sql->db_Update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
 
-		cookie($pref['cookie_name'], "", (time()-2592000));
-		$_SESSION[$pref['cookie_name']] = "";
+		cookie($pref['cookie_name'], '', (time()-2592000));
+		$_SESSION[$pref['cookie_name']] = '';
 
 		$txt = "<div>".LAN_FPW8."<br /><br />
 		<table style='width:70%'>
@@ -109,7 +112,7 @@ if (e_QUERY)
 	} 
 	else 
 	{
-		fpw_error(LAN_FPW7);
+		fpw_error(LAN_FPW7);		// No 'forgot password' entry found
 	}
 }
 
@@ -118,10 +121,10 @@ if (e_QUERY)
 //--------------------------
 if (isset($_POST['pwsubmit'])) 
 {	// Request for password reset submitted
-	require_once(e_HANDLER."mail.php");
+	require_once(e_HANDLER.'mail.php');
 	$email = $_POST['email'];
 
-	if ($pref['fpwcode'] && extension_loaded("gd")) 
+	if ($pref['fpwcode'] && extension_loaded('gd')) 
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) 
 		{
@@ -130,42 +133,50 @@ if (isset($_POST['pwsubmit']))
 	}
 
 	$clean_email = check_email($tp -> toDB($_POST['email']));
-	$clean_username = $tp -> toDB($_POST['username']);
+	$clean_username = $tp -> toDB(varset($_POST['username'], ''));
  	$query = "`user_email`='{$clean_email}' ";
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
-	if ($sql->db_Select("user", "*", $query)) 
+	if ($sql->db_Select('user', '*', $query)) 
 	{	// Found user in DB
 		$row = $sql->db_Fetch();
-		extract($row);
-
-		if ($row['user_admin'] == 1 && $row['user_perms'] == "0") 
+		
+		if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
 		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
-			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".$e107->ipDecode($e107->getip())." ".LAN_08);
+			sendemail($pref['siteadminemail'], LAN_06, LAN_07.' '.$e107->getip().' '.LAN_08);
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
 
-		if ($result = $sql->db_Select("tmp", "*", "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '{$row['user_loginname']}{$fpw_sep}%'")) 
+		switch ($row['user_ban'])
+		{	// Banned user, or not validated
+			case USER_BANNED :
+				die();
+			case USER_VALIDATED :
+				break;
+			default :
+				fpw_error(LAN_FPW22.':'.$row['user_ban']);		// Intentionally rather a vague message
+				exit;
+		}
+
+		if ($result = $sql->db_Select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'")) 
 		{
-		  fpw_error(LAN_FPW4);
-		  exit;
+			fpw_error(LAN_FPW4);		// Password reset already requested
+			exit;
 		}
 
 		mt_srand ((double)microtime() * 1000000);
 		$maxran = 1000000;
 		$rand_num = mt_rand(0, $maxran);
-		$datekey = date("r");
+		$datekey = date('r');
 		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
-		$link = SITEURL."fpw.php?{$rcode}";
-		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".$e107->ipDecode($e107->getip()).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
-		//  $message = LAN_FPW5."\n\n{$link}";
+		$link = SITEURL.'fpw.php?'.$rcode;
+		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.' : '.$e107->getip().".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
-		$deltime = time()+86400 * 2;
-		//Set timestamp two days ahead so it doesn't get auto-deleted
-		$sql->db_Insert("tmp", "'pwreset',{$deltime},'{$row['user_loginname']}{$fpw_sep}{$rcode}'");
+		$deltime = time()+86400 * 2;			//Set timestamp two days ahead so it doesn't get auto-deleted
+		$sql->db_Insert('tmp', "'pwreset',{$deltime},'".$row['user_loginname'].FPW_SEPARATOR.$rcode."'");
 
 		$do_log['password_action'] = LAN_FPW18;
 		$do_log['user_id'] = $row['user_id'];
@@ -207,13 +218,13 @@ if (USE_IMAGECODE)
 
 if (!$FPW_TABLE) 
 {
-	if (file_exists(THEME."fpw_template.php")) 
+	if (file_exists(THEME.'fpw_template.php')) 
 	{
-		require_once(THEME."fpw_template.php");
+		require_once(THEME.'fpw_template.php');
 	} 
 	else 
 	{
-		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template. 
+		require_once(e_THEME.'templates/fpw_template.php');
 	}
 }
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE);
