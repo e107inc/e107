@@ -125,14 +125,22 @@ class e_parse
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
 		global $pref;
-		if (is_array($data)) {
+		if (is_array($data)) 
+		{
 			// recursively run toDB (for arrays)
 			foreach ($data as $key => $var) {
 				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod);
 			}
-		} else {
-			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) {
+		} 
+		else 
+		{
+			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) 
+			{
 				$data = stripslashes($data);
+			}
+			if (!ADMIN)
+			{
+				$data = $this->dataFilter($data);
 			}
 			if(isset($pref['post_html']) && check_class($pref['post_html']))
 			{
@@ -155,6 +163,45 @@ class e_parse
 			}
 		}
 		return $ret;
+	}
+
+
+
+	function dataFilter($data)
+	{
+		$ret = array();
+		$ans = '';
+		while (strlen($data))
+		{
+			$temp = strpos($data, '[code');
+			if ($temp !== FALSE)
+			{
+				$ret[] = substr($data, 0, $temp);		// Segment before the [code] 
+				$data = substr($data, $temp);
+				$temp = strpos($data, '[/code]');
+				if ($temp !== FALSE)
+				{
+					$temp += strlen('[/code]');
+					$ret[] = substr($data, 0, $temp);		// Segment containing [code] ... [/code]
+					$data = substr($data, $temp);
+				}
+			}
+			else
+			{
+				$ret[] = $data;
+				$data = '';
+			}
+		}
+		foreach ($ret as $s)
+		{
+			if (strpos($s, '[code') === FALSE)
+			{
+				$s = str_replace('<script', '<!-- script', $s);
+				$s = str_replace('</script', '<!-- /script', $s);
+			}
+			$ans .= $s;
+		}
+		return $ans;
 	}
 
 
