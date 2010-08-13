@@ -169,35 +169,39 @@ class e_parse
 
 	function dataFilter($data)
 	{
-		$ret = array();
 		$ans = '';
-		while (strlen($data))
-		{
-			$temp = strpos($data, '[code');
-			if ($temp !== FALSE)
-			{
-				$ret[] = substr($data, 0, $temp);		// Segment before the [code] 
-				$data = substr($data, $temp);
-				$temp = strpos($data, '[/code]');
-				if ($temp !== FALSE)
-				{
-					$temp += strlen('[/code]');
-					$ret[] = substr($data, 0, $temp);		// Segment containing [code] ... [/code]
-					$data = substr($data, $temp);
-				}
-			}
-			else
-			{
-				$ret[] = $data;
-				$data = '';
-			}
-		}
+		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
+					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', 'javascript:');
+		$vl = array();
+
+		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+
 		foreach ($ret as $s)
 		{
 			if (strpos($s, '[code') === FALSE)
 			{
-				$s = str_replace('<script', '<!-- script', $s);
-				$s = str_replace('</script', '<!-- /script', $s);
+				$t = rawurldecode($s);
+				$t1 = strtolower($t);
+				foreach ($vetWords as $vw)
+				{
+					if (strpos($t1, $vw) !== FALSE)
+					{
+						$vl[] = $vw;		// Add to list of words found
+					}
+					if (substr($vw, 0, 1) == '<')
+					{
+						$vw = '</'.substr($vw, 1);
+						if (strpos($t1, $vw) !== FALSE)
+						{
+							$vl[] = $vw;		// Add to list of words found
+						}
+					}
+				}
+				// More checks here
+				if (count($vl))
+				{	// Do something
+					$s = preg_replace('#('.implode('|', $vl).')#mis', '<span class=\'dodgy\'>!!<!-- \\1 -->!!</span>', $t);
+				}
 			}
 			$ans .= $s;
 		}
