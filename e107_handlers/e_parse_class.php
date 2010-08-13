@@ -128,7 +128,8 @@ class e_parse
 		if (is_array($data)) 
 		{
 			// recursively run toDB (for arrays)
-			foreach ($data as $key => $var) {
+			foreach ($data as $key => $var) 
+			{
 				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod);
 			}
 		} 
@@ -138,11 +139,11 @@ class e_parse
 			{
 				$data = stripslashes($data);
 			}
-			if (!ADMIN)
+			if (!isset($pref['post_html']) || !check_class($pref['post_html']) || !isset($pref['post_script']) || !check_class($pref['post_script']))
 			{
 				$data = $this->dataFilter($data);
 			}
-			if(isset($pref['post_html']) && check_class($pref['post_html']))
+			if (isset($pref['post_html']) && check_class($pref['post_html']))
 			{
 				$no_encode = TRUE;
 			}
@@ -151,7 +152,9 @@ class e_parse
 				$search = array('$', '"', "'", '\\', '<?');
 				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt;?');
 				$ret = str_replace($search, $replace, $data);
-			} else {
+			} 
+			else 
+			{
 				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);

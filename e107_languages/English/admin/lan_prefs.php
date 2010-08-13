@@ -121,8 +121,8 @@ define("PRFLAN_110", "words longer than the length entered will be wrapped onto 
 define("PRFLAN_111", "Wrap long words in menu text");
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
-define("PRFLAN_116", "Allow HTML posting");
-define("PRFLAN_117", "This will allow users to post HTML code anywhere on the site, select the userclass to allow this.");
+define("PRFLAN_116", "Class which can post HTML");
+define("PRFLAN_117", "This will allow users to post most HTML code anywhere on the site.");
 define("PRFLAN_118", "Use Geshi for syntax highlighting");
 define("PRFLAN_119", "Geshi is an open source multi-language syntax highlighter, see http://qbnz.com/highlighter/ for more information");
 define("PRFLAN_120", "Default Geshi syntax language");
@@ -197,6 +197,8 @@ define("PRFLAN_177", "Address specified for replies to emails from this site.");
 define('PRFLAN_208', 'User class which can email links to items on site');
 define('PRFLAN_209', 'Other Features');
 define('PRFLAN_210', 'Comments/Posting');
+define('PRFLAN_215', 'Class which can post &lt;script&gt; and similar tags');
+define('PRFLAN_216', '(Requires HTML posting rights as well)');
 
 
 ?>

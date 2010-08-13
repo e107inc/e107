@@ -535,7 +535,7 @@ class e107forum
 	function thread_get($thread_id, $start = 0, $limit = 10)
 	{
 		$thread_id = intval($thread_id);
-		global $sql;
+		global $sql, $tp;
 		$ftab = MPREFIX.'forum_t';
 		$utab = MPREFIX.'user';
 
@@ -571,6 +571,8 @@ class e107forum
 			$i = $array_start;
 			while ($row = $sql->db_Fetch())
 			{
+				$row['thread_name'] = $tp->dataFilter($row['thread_name']);
+				$row['thread_thread'] = $tp->dataFilter($row['thread_thread']);
 				$ret[$i] = $row;
 				$i++;
 			}
@@ -590,6 +592,8 @@ class e107forum
 			$ret['head'] = $row;
 			if (!array_key_exists(0, $ret))
 			{
+				$row['thread_name'] = $tp->dataFilter($row['thread_name']);
+				$row['thread_thread'] = $tp->dataFilter($row['thread_thread']);
 				$ret[0] = $row;
 			}
 		}
