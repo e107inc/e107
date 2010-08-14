@@ -175,7 +175,6 @@ class e_parse
 		$ans = '';
 		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
 					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', 'javascript:', 'vbscript:');
-		$vl = array();
 
 		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
@@ -183,6 +182,7 @@ class e_parse
 		{
 			if (strpos($s, '[code') === FALSE)
 			{
+				$vl = array();
 				$t = html_entity_decode(rawurldecode($s));
 				$t = str_replace(array("\r", "\n", "\t", "\v", "\f", "\0"), '', $t);
 				$t1 = strtolower($t);

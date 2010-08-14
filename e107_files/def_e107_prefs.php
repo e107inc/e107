@@ -144,6 +144,7 @@ City, State, Country
   'plug_sc' => ':featurebox',
   'auth_method' => '',
   'post_html' => '254',
+  'post_script' => '254',
   'redirectsiteurl' => '0',
   'admin_alerts_uniquemenu' => '0',
   'null' => '',
