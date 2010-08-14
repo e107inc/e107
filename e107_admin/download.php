@@ -3,9 +3,8 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Copyright (c) e107 Inc. 2008-2010
 |     http://e107.org
-|     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
@@ -163,6 +162,7 @@ if (isset($_POST['updateoptions']))
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
 	$pref['download_email'] = $_POST['download_email'];
+	$pref['download_nomultiple'] = $_POST['download_nomultiple'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
 	$pref['download_reportbroken'] = $_POST['download_reportbroken'];
@@ -373,6 +373,11 @@ if ($action == "opt")
 		<tr>
 		<td class='forumheader3'>".DOWLAN_100."</td>
 		<td class='forumheader3' style='text-align:left'>". ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
+		</tr>
+		
+		<tr>
+		<td class='forumheader3'>".DOWLAN_160."</td>
+		<td class='forumheader3' style='text-align:left'>". ($pref['download_nomultiple'] ? "<input type='checkbox' name='download_nomultiple' value='1' checked='checked' />" : "<input type='checkbox' name='download_nomultiple' value='1' />")."</td>
 		</tr>
 
 

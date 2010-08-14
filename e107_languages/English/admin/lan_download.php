@@ -144,4 +144,6 @@ define("DOWLAN_157", "use random mirror - no user choice");
 define("DOWLAN_158", "Show sub-sub-categories on main download page");
 define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
 
+define("DOWLAN_160", "Delay multiple downloads");
+
 ?>

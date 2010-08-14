@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     @e107Inc 2008-2010
+|     Copyright (c) e107 Inc. 2008-2010
 |     http://e107.org
 |
 |     Released under the terms and conditions of the

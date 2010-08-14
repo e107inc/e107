@@ -4,9 +4,8 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Copyright (c) e107 Inc. 2008-2010
 |     http://e107.org
-|     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
@@ -20,6 +19,8 @@
 
 // ********************************** SEE HIGHLIGHTED AND NUMBERED QUERIES *****************************
 
+
+
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
 
@@ -28,6 +29,36 @@ if (!e_QUERY || isset($_POST['userlogin']))
 	header("location: {$e107->base_path}");
 	exit();
 }
+
+// ---------------------- Experimental ----------
+
+$req_cookie = 'e-request_'.md5($_SERVER['SERVER_ADDR']);
+
+if(isset($_COOKIE[$req_cookie]))
+{
+	require_once(HEADERF);
+	$text = "Please wait a few moments before <a href='".$_SERVER['REQUEST_URI']."'>downloading again</a>.";
+	$ns->tablerender("Please wait",$text);
+	require_once(FOOTERF);
+	exit();
+}
+
+if($pref['download_nomultiple']==1)
+{
+	if(!setcookie($req_cookie, 1, time() + 60, "/"))
+	{
+		require_once(HEADERF);
+		$text = "Please enable cookies and <a href='".$_SERVER['REQUEST_URI']."'>try again</a>.";
+		$ns->tablerender("Cookie Support is Required", $text);
+		require_once(FOOTERF);
+		exit();
+	}
+}
+
+// ----------------------
+
+
+
 
 $id = FALSE;
 if (!is_numeric(e_QUERY)) 
