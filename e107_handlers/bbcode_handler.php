@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -34,7 +34,7 @@ class e_bbcode
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
-		'spoiler', 'hide'
+		'spoiler', 'hide', 'youtube', 'sanitised'
 		);
 
 		foreach($core_bb as $c)

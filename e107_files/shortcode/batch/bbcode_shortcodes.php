@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -64,6 +64,8 @@ $bbcode['code'] = array($bbcode_func,"[code][/code]", LANHELP_32,"code.png");
 $bbcode['list'] = array($bbcode_func,"[list][/list]", LANHELP_36,"list.png");
 $bbcode['img'] = array($bbcode_func,"[img][/img]", LANHELP_27,"image.png");
 $bbcode['flash'] = array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
+$bbcode['youtube'] = array($bbcode_func,"[youtube][/youtube]", LANHELP_48,"youtube.png");
+$bbcode['sanitised'] = array('', '', '');
 
 $bbcode['fontsize'] = array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
 $bbcode['fontcol'] = array("expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
@@ -81,6 +83,7 @@ if (!empty($register_bb))
 {
   foreach($register_bb as $key=>$val) // allow themes to plug in to it.
   {
+  	if($key == 'sanitised') continue; // don't allow override
 	if($val[0]=="")
 	{
     	$val[0] = $bbcode_func;

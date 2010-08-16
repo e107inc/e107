@@ -55,4 +55,6 @@ define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
 define("LAN_EMAIL_SUBS", "-email-");
 
+// 0.7.23
+define("LAN_SANITISED", "SANITISED");
 ?>

@@ -204,12 +204,30 @@ class e_parse
 				// More checks here
 				if (count($vl))
 				{	// Do something
-					$s = preg_replace('#('.implode('|', $vl).')#mis', '<span class=\'dodgy\'>!!<!-- \\1 -->!!</span>', $t);
+//					$s = preg_replace('#('.implode('|', $vl).')#mis', '<span class=\'dodgy\'>!!<!-- \\1 -->!!</span>', $t);
+					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
 				}
 			}
 			$ans .= $s;
 		}
 		return $ans;
+	}
+
+
+	function modTag($match)
+	{
+		$ans = '';
+		if (isset($match[1]))
+		{
+			$chop = intval(strlen($match[1]) / 2);
+			$ans = substr($match[1], 0, $chop).'##xss##'.substr($match[1], $chop);
+		}
+		else
+		{
+			$ans = '?????';
+		}
+		return '[sanitised]'.$ans.'[/sanitised]';
+		
 	}
 
 

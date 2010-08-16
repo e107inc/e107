@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -35,7 +35,7 @@ $BBCODE_TEMPLATE = "
 $BBCODE_TEMPLATE_SUBMITNEWS = "
 	{BB_HELP}<br />
     {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 ";
 
 
@@ -46,7 +46,7 @@ $BBCODE_TEMPLATE_ADMIN = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
 	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 ";
 
 // $BBCODE_TEMPLATE_ADMIN .= "{BB=blank}";
@@ -56,7 +56,7 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
 	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 ";
 
 $BBCODE_TEMPLATE_CPAGE = "
@@ -65,7 +65,7 @@ $BBCODE_TEMPLATE_CPAGE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."custom/}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 ";
 
 

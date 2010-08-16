@@ -63,4 +63,6 @@ define("LANHELP_45", "Insert image from directory: ");
 define("LANHELP_46", "* No files found in: ");
 
 define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
+// 0.7.23
+define("LANHELP_48", "YouTube video: [youtube=tiny|small|medium|big|huge|width,height]6kYjxJmk0wc[/youtube]");
 ?>
