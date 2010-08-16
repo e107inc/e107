@@ -183,7 +183,7 @@ class e_parse
 			if (strpos($s, '[code') === FALSE)
 			{
 				$vl = array();
-				$t = html_entity_decode(rawurldecode($s));
+				$t = html_entity_decode(rawurldecode($s), ENT_QUOTES, CHARSET);
 				$t = str_replace(array("\r", "\n", "\t", "\v", "\f", "\0"), '', $t);
 				$t1 = strtolower($t);
 				foreach ($vetWords as $vw)
