@@ -37,19 +37,24 @@ $req_cookie = 'e-request_'.md5($_SERVER['SERVER_ADDR']);
 if(isset($_COOKIE[$req_cookie]))
 {
 	require_once(HEADERF);
-	$text = "Please wait a few moments before <a href='".$_SERVER['REQUEST_URI']."'>downloading again</a>.";
-	$ns->tablerender("Please wait",$text);
+	$srch = array("[", "]");
+	$repl = array("<a href='".$_SERVER['REQUEST_URI']."'>", "</a>");
+	$text = str_replace($srch,$repl,LAN_dl_79);
+	
+	$ns->tablerender(LAN_dl_82,$text);
 	require_once(FOOTERF);
 	exit();
 }
 
-if($pref['download_nomultiple']==1)
+if(varset($pref['download_nomultiple'])==1)
 {
 	if(!setcookie($req_cookie, 1, time() + 60, "/"))
 	{
 		require_once(HEADERF);
-		$text = "Please enable cookies and <a href='".$_SERVER['REQUEST_URI']."'>try again</a>.";
-		$ns->tablerender("Cookie Support is Required", $text);
+		$srch = array("[", "]");
+		$repl = array("<a href='".$_SERVER['REQUEST_URI']."'>", "</a>");
+		$text = str_replace($srch,$repl,LAN_dl_80);
+		$ns->tablerender(LAN_dl_81, $text);
 		require_once(FOOTERF);
 		exit();
 	}
@@ -173,7 +178,11 @@ if ($type == "file")
 			if ($row['download_active'] == 0)
 			{  // Inactive download - don't allow
 				require_once(HEADERF);
-				$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
+				
+				$srch = array('--LINK--','[',']');
+				$repl = array("<a href='".e_HTTP.'download.php'."'>","<a href='".e_HTTP.'download.php'."'>","</a>");
+								
+				$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace($srch,$repl,LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}

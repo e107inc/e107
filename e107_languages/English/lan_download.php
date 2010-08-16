@@ -98,6 +98,12 @@ define("LAN_dl_75", "no image available ");
 define("LAN_dl_76", "Go to page");
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
-define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the --LINK--downloads</a> area for a more recent version.'); 
+//0.7.23
+define("LAN_dl_78", "That download has been disabled or discontinued. Please check in the [downloads] area for a more recent version."); 
+define("LAN_dl_79", "Please wait a few moments before [downloading again].");
+define("LAN_dl_80", "Please enable cookies and [try again].");
+define("LAN_dl_81", "Cookies Required");
+define("LAN_dl_82", "Please Wait");
+
 
 ?>
