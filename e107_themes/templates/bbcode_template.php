@@ -23,7 +23,7 @@
 
 $BBCODE_TEMPLATE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
 ";
 
 // $BBCODE_TEMPLATE .= "{BB=blank}";
