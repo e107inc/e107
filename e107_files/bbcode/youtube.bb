@@ -47,7 +47,7 @@ switch ($parms[0])
 	break;
 }
 
-$yID = preg_replace('/[^0-9a-z\-]/i', '', $code_text);
+$yID = preg_replace('/[^0-9a-z\-_]/i', '', $code_text);
 
 $url = isset($params['privacy']) ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
 $url .= $yID.'?fs=1';
