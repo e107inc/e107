@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|	  Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|	  Steve Dunstan 2001-2002 (jalist@e107.org)
+|
+|	  Copyright (C) 2008-2010 e107 Inc. (e107.org)
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
@@ -150,6 +150,13 @@ unset($inc_path);
 // F: Grab e107_config, get directory paths and create $e107 object
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
+
+if(isset($ZBBLOCK) && ($ZBBLOCK == TRUE))
+{
+	require_once(realpath(dirname(__FILE__).'/zbblock/zbblock.php'));	
+}
+
+
 if(!isset($ADMIN_DIRECTORY))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
