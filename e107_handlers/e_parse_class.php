@@ -139,6 +139,7 @@ class e_parse
 			{
 				$data = stripslashes($data);
 			}
+			$data = $this->preFilter($data);
 			if (!isset($pref['post_html']) || !check_class($pref['post_html']) || !isset($pref['post_script']) || !check_class($pref['post_script']))
 			{
 				$data = $this->dataFilter($data);
@@ -204,7 +205,6 @@ class e_parse
 				// More checks here
 				if (count($vl))
 				{	// Do something
-//					$s = preg_replace('#('.implode('|', $vl).')#mis', '<span class=\'dodgy\'>!!<!-- \\1 -->!!</span>', $t);
 					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
 				}
 			}
@@ -229,6 +229,140 @@ class e_parse
 		return '[sanitised]'.$ans.'[/sanitised]';
 		
 	}
+
+
+	function preFilter($data)
+	{
+		$ret = preg_replace_callback('#\[(\w+?)(?:([\=\s])(.*?)){0,1}\](.*?)\[\/\\1(.*?)\]#is', array($this, 'filtTag'), $data);
+		return $ret;
+	}
+
+
+	/**
+	 *
+	 *	@param array $matches:
+	 *		[0] - complete string
+	 *		[1] - bbcode word
+	 *		[2] - '=' or space if parameters passed in bbcode, else empty string
+	 *		[3] - parameters if passed
+	 *		[4] - text between opening and closing bbcode tags
+	 *		[5] - text after the closing tag but before the closing bracket (if any)
+	 *		[6] -
+	 */
+	function filtTag($matches)
+	{
+		switch (strtolower($matches[1]))
+		{
+			case 'youtube' :
+				return $this->checkYoutube($matches);
+			default :
+				return $matches[0];
+		}
+	}
+
+
+
+	function checkYoutube(&$matches)
+	{
+		$bbpars = array();
+		$widthString = '';
+		$matches[3] = trim($matches[3]);
+		if ($matches[3])
+		{
+			if (strpos($matches[3], '|') !== FALSE)
+			{
+				list($widthString, $matches[3]) = explode('|', $matches[3]);
+			}
+			elseif (in_array($matches[3], array('tiny', 'small', 'medium', 'big', 'huge')) || (strpos($matches[3], ',') !== FALSE))
+			{	// Assume we're just setting a width
+				$widthString = $matches[3];
+				$matches[3] = '';
+			}
+			if ($matches[3])
+			{
+				$bbpars = explode('&', $matches[3]);
+			}
+		}
+		$params = array();										// Accumulator for parameters from youtube code
+		$ok = 0;
+		if (strpos($matches[4], '<') === FALSE)
+		{	// 'Properly defined' bbcode (we hope)
+			$picRef = $matches[4];
+		}
+		else
+		{
+			//libxml_use_internal_errors(TRUE);
+			if (FALSE === ($info = simplexml_load_string($matches[4])))
+			{
+				//print_a($matches);
+				//$xmlErrs = libxml_get_errors();
+				//print_a($xmlErrs);
+				$ok = 1;
+			}
+			else
+			{
+				$info1 = (array)$info;
+				if (!isset($info1['embed']))
+				{
+					$ok = 2;
+				}
+				else
+				{
+					$info2 = (array)$info1['embed'];
+					if (!isset($info2['@attributes']))
+					{
+						$ok = 3;
+					}
+				}
+			}
+			if ($ok != 0)
+			{
+				print_a($info);
+				return '[sanitised]'.$ok.'B'.htmlspecialchars($matches[0]).'B[/sanitised]';
+			}
+			$target =  $info2['@attributes'];
+			unset($info);
+			$ws = varset($target['width'], 0);
+			$hs = varset($target['height'], 0);
+			if (($ws == 0) || ($hs == 0) || !isset($target['src'])) return  '[sanitised]A'.htmlspecialchars($matches[0]).'A[/sanitised]';
+			if (!$widthString)
+			{
+				$widthString = $ws.','.$hs;			// Set size of window
+			}
+			list($url, $query) = explode('?', $target['src']);
+			if (strpos($url, 'youtube-nocookie.com') !== FALSE)
+			{
+				$params[] = 'privacy';
+			}
+			parse_str($query, $vals);		// Various options set here
+			if (varset($vals['allowfullscreen'], 'true') != 'true')
+			{
+				$params[] = 'nofull';
+			}
+			if (varset($vals['border'], 0) != 0)
+			{
+				$params[] = 'border';
+			}
+			if (varset($vals['rel'], 1) == 0)
+			{
+				$params[] = 'norel';
+			}
+			$picRef = substr($url, strrpos($url, '/') + 1);
+		}
+
+
+		$yID = preg_replace('/[^0-9a-z]/i', '', $picRef);
+		if (($yID != $picRef) || (strlen($yID) > 20))
+		{	// Possible hack attempt
+		}
+		$params = array_merge($params, $bbpars);			// Any parameters set in bbcode override those in HTML
+		// Could check for valid array indices here
+		$paramString = implode('&', $params);
+		if ($paramString) $widthString .= '|'.$paramString;
+		$ans = '['.$matches[1].'='.$widthString.']'.$picRef.'[/'.$matches[1].']';
+		return $ans;
+	}
+
 
 
 
