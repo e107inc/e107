@@ -1,22 +1,17 @@
 <?php
 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2002-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Site preferences - language file
+ *
+ * $URL$
+ * $Id$
+ */
 
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
@@ -199,6 +194,8 @@ define('PRFLAN_209', 'Other Features');
 define('PRFLAN_210', 'Comments/Posting');
 define('PRFLAN_215', 'Class which can post &lt;script&gt; and similar tags');
 define('PRFLAN_216', '(Requires HTML posting rights as well)');
+define('PRFLAN_217', 'Filter HTML content');
+define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
 
 
 ?>
