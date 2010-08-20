@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -157,6 +157,14 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 		$c = (in_array(e_UC_ADMIN, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_ADMIN."]' value='1' {$c} /> ".UC_LAN_5."</label><br />";
 	}
+
+	if (strpos($optlist, "main") !== FALSE)
+	{
+		$c = (in_array(e_UC_MAINADMIN, $curArray)) ? " checked='checked' " : "";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_MAINADMIN."]' value='1' {$c} /> ".UC_LAN_6."</label><br />";
+	}	
+	
+	
 
 	if (!$optlist || strpos($optlist, "readonly") !== FALSE)
 	{
