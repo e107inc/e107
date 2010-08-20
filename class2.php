@@ -195,6 +195,11 @@ else
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 
+if(isset($ZBBLOCK) && ($ZBBLOCK == TRUE))
+{
+	require_once(realpath(dirname(__FILE__).'/zbblock/zbblock.php'));	
+}
+
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
 if(!isset($ADMIN_DIRECTORY))
