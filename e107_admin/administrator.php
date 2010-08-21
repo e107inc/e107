@@ -120,6 +120,7 @@ function show_admins(){
 	<form action='".e_SELF."' method='post' id='del_administrator'>
 	<div>
 	<input type='hidden' name='del_administrator_confirm' id='del_administrator_confirm' value='1' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	<table class='fborder' style='width:99%'>
 	<tr>
 	<td style='width:5%' class='fcaption'>ID</td>
@@ -151,7 +152,6 @@ function show_admins(){
 
 		</tr>";
 	}
-
 	$text .= "</table></div>\n</form></div>\n</div>";
 
 	$ns->tablerender(ADMSLAN_13, $text);
