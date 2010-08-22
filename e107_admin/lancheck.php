@@ -189,6 +189,7 @@ $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
 
 if(isset($_POST['language_sel']) && isset($_POST['language'])){
 
+	$_SESSION['lancheck_'.$_POST['language']] = array();
 	$_SESSION['lancheck_'.$_POST['language']]['file']	= 0;
 	$_SESSION['lancheck_'.$_POST['language']]['def']	= 0;
 	$_SESSION['lancheck_'.$_POST['language']]['bom']	= 0;
@@ -250,9 +251,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	</span>
     </form>
 	</div>";
-	
-	
-	
+		
 	$ns -> tablerender("Summary: ".$_POST['language'],$message);
 
 	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language'], $core_text);
