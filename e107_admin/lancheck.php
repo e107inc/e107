@@ -69,9 +69,9 @@ if(isset($_POST['submit']))
 		$diz .= "|        Released under the terms and conditions of the\n";
 		$diz .= "|        GNU General Public License (http://gnu.org).\n";
 		$diz .= "|\n";
-		$diz .= "|        ".chr(36)."Source: $writeit ".chr(36)."\n";
+		$diz .= "|        ".chr(36)."URL: $writeit ".chr(36)."\n";
 		$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
-		$diz .= "|        ".chr(36)."Date: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
+		$diz .= "|        ".chr(36)."Id: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
 		$diz .= "|        ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
 		$diz .= "+---------------------------------------------------------------+\n";
 		$diz .= "*".chr(47)."\n\n";
@@ -245,6 +245,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 	$keys = array_keys($English);
 
 	sort($keys);
+	$er = "";
 
 	foreach($keys as $k)
 	{
@@ -273,13 +274,8 @@ function check_core_lanfiles($checklan,$subdir=''){
 					if($sk == "LC_ALL"){
 						$check[$k][$sk] = str_replace(chr(34).chr(34),"",$check[$k][$sk]);
 					}
-
-					if((!array_key_exists($sk,$check[$k]) && $English[$k][$sk] != "") || (trim($check[$k][$sk]) == "" && $English[$k][$sk] != ""))
-					{
-
-						$er .= ($er) ? "<br />" : "";
-						$er .= $sk." ".LAN_CHECK_5;
-					}
+				
+					$er .= check_lan_errors($English[$k],$check[$k],$sk);
 				}
 
 				$style = ($er) ? "forumheader2" : "forumheader3";
@@ -304,6 +300,58 @@ function check_core_lanfiles($checklan,$subdir=''){
 	$text .= "</table>";
 
 	return $text;
+}
+
+function check_lan_errors($english,$translation,$def)
+{
+	$eng_line = $english[$def];
+	$trans_line = $translation[$def];
+	
+// return $eng_line."<br />".$trans_line."<br /><br />";
+		
+	$error = array();
+	
+	// LANS? If you can't understand English, you shouldn't be translating! ;-)
+	
+	if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
+	{
+		return $def.": ".LAN_CHECK_5."<br />";
+	}
+	
+	if((strpos($eng_line,"[link=")!==FALSE && strpos($trans_line,"[link=")===FALSE) || (strpos($eng_line,"[b]")!==FALSE && strpos($trans_line,"[b]")===FALSE))
+	{
+		$error[] = $def. ": Missing bbcodes";
+	}
+	elseif((strpos($eng_line,"[")!==FALSE && strpos($trans_line,"[")===FALSE) || (strpos($eng_line,"]")!==FALSE && strpos($trans_line, "]")===FALSE))
+	{
+		$error[] = $def. ": Missing [ and/or ] character(s)";
+	}
+	
+	if((strpos($eng_line,"--LINK--")!==FALSE && strpos($trans_line,"--LINK--")==FALSE))
+	{
+		$error[] = $def. ": Missing --LINK--";
+	}
+	
+	if((strpos($eng_line,"e107.org")!==FALSE && strpos($trans_line,"e107.org")==FALSE))
+	{
+		$error[] = $def. ": Missing e107.org URL";
+	}
+	
+	if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")==FALSE))
+	{
+		$error[] = $def. ": Missing e107coders.org URL";
+	}
+	
+	if(strlen(strip_tags($eng_line))!= strlen($eng_line))
+	{
+		if(strpos($trans_line,"<")===FALSE)
+		{
+			$error[] = $def. ": Missing HTML tags"; // Line:".htmlentities($trans_line);		
+		}
+	}
+
+	return ($error) ? implode("<br />",$error)."<br />" : "";
+	
 }
 
 
@@ -447,19 +495,22 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
 			$bomkey = str_replace(".php","",$k_check);
 			$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
-
+		
 			foreach($subkeys as $sk)
 			{
 				if($utf_error == "" && !is_utf8($check[$k_check][$sk]))
 				{
 					$utf_error = "<i>".LAN_CHECK_19."</i><br />";
 				}
-
+				
+				/*
 				if(!array_key_exists($sk,$check[$k_check]) || (trim($check[$k_check][$sk]) == "" && $baselang[$k][$sk] != ""))
 				{
 					$er .= ($er) ? "<br />" : "";
 					$er .= $sk." ".LAN_CHECK_5;
 				}
+				*/
+				$er .= check_lan_errors($baselang[$k],$check[$k_check],$sk);
 			}
 
 			$style = ($er) ? "forumheader2" : "forumheader3";

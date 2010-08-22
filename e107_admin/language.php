@@ -561,10 +561,10 @@ function zip_up_lang($language)
 	$newfile = e_FILE."public/e107_".$ver."_".$language."_utf8.zip";
 	$archive = new PclZip($newfile);
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language);
-	$plugs = grab_lans(e_PLUGIN, $language, $core_plugins);
-	$theme = grab_lans(e_THEME, $language, $core_themes);
-	$docs = grab_lans(e_DOCS,$language);
-	$handlers = grab_lans(e_HANDLER,$language);
+	$plugs = grab_lans(e_BASE."e107_plugins/", $language, $core_plugins); // standardized path. 
+	$theme = grab_lans(e_BASE."e107_themes/", $language, $core_themes);
+	$docs = grab_lans(e_BASE."e107_docs/",$language);
+	$handlers = grab_lans(e_BASE."e107_handlers/",$language); // standardized path. 
 	
 	$file = array_merge($core, $plugs, $theme, $docs, $handlers);
 		
