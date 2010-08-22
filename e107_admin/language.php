@@ -152,9 +152,18 @@ function share($newfile)
 	$email_message = "<br />Site: <a href='".SITEURL."'>".SITENAME."</a>
 	<br />User: ".USERNAME."\n
 	<br />Email: ".USEREMAIL."\n
+	<br />Language: ".$_POST['language']."\n
 	<br />IP:".USERIP."
-	<br />...would like to contribute the following language pack for e107. (see attached):
-	";
+	<br />...would like to contribute the following language pack for e107. (see attached)<br />:
+		
+	
+	<br />Missing Files: ".$_SESSION['lancheck_'.$_POST['language']]['file']."
+	<br />Bom Errors : ".$_SESSION['lancheck_'.$_POST['language']]['bom']."
+	<br />UTF Errors : ".$_SESSION['lancheck_'.$_POST['language']]['utf']."
+	<br />Definition Errors : ".$_SESSION['lancheck_'.$_POST['language']]['def']."
+	<br />Total Errors: ".$_SESSION['lancheck_'.$_POST['language']]['total'];
+	
+	
 	
 	require_once(e_HANDLER."mail.php");
 	
@@ -171,7 +180,7 @@ function share($newfile)
 
 		$text = "<div style='padding:40px'>";
 		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>Please email your verified language pack to:</b>";
-		$text .= " <a href='mailto:".$send_to."'>".$send_to."</a>";
+		$text .= " <a href='mailto:".$send_to."?subject=[0.7 LanguagePack] ".$subject."'>".$send_to."</a>";
 		$text .= "</div>";
 		
 		return $text;
@@ -484,7 +493,8 @@ function show_tools()
     {
         if($lang != "English")
         {
-            $text .= "<option value='{$lang}' >{$lang}</option>\n";
+        	
+            $text .= "<option value='{$lang}'>{$lang}</option>\n";
         }
     }
 
@@ -509,7 +519,8 @@ function show_tools()
     {
         if($lang != "English")
         {
-            $text .= "<option value='{$lang}' >{$lang}</option>\n";
+        	$sel = ($_POST['language']==$lang) ? "selected='selected'" : "";
+            $text .= "<option value='{$lang}' {$sel}>{$lang}</option>\n";
         }
     }
 
@@ -530,6 +541,15 @@ function show_tools()
 function zip_up_lang($language)
 {
 	global $tp;
+	
+	if(!isset($_SESSION['lancheck_'.$language]))
+	{
+		$ret = array();
+		$ret['error'] = TRUE;
+		$ret['message'] = "Please verify your language files ('Begin Verify') then try again.";
+		return $ret;	
+	}
+	
 		
 	if(!is_writable(e_FILE."public"))
 	{

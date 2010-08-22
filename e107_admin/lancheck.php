@@ -189,8 +189,15 @@ $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
 
 if(isset($_POST['language_sel']) && isset($_POST['language'])){
 
-	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language'],check_core_lanfiles($_POST['language']));
-	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language']."/admin",check_core_lanfiles($_POST['language'],"admin/"));
+	$_SESSION['lancheck_'.$_POST['language']]['file']	= 0;
+	$_SESSION['lancheck_'.$_POST['language']]['def']	= 0;
+	$_SESSION['lancheck_'.$_POST['language']]['bom']	= 0;
+	$_SESSION['lancheck_'.$_POST['language']]['utf']	= 0;
+	$_SESSION['lancheck_'.$_POST['language']]['total']	= 0;
+
+
+	$core_text = check_core_lanfiles($_POST['language']);
+	$core_admin = check_core_lanfiles($_POST['language'],"admin/");
 
 	$plug_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
@@ -207,7 +214,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 		}
 	}
 	$plug_text .= "</table>";
-	$ns -> tablerender(ADLAN_CL_7,$plug_text);
+
 
 	$theme_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
@@ -224,7 +231,35 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	}
 	$theme_text .= "</table>";
 
-	$ns -> tablerender("Themes",$theme_text);
+	$message .= "<div style='".ADMIN_WIDTH.";text-align:center;padding:20px'>
+	<form name='lancheck' method='post' action='".e_ADMIN."language.php?tools'>";
+	
+	$icon = ($_SESSION['lancheck_'.$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
+	
+	$message .= "<div>".$icon." Errors Found: ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
+	$message .= "<span>
+	<br /><br />
+	<input type='hidden' name='language' value='".$_POST['language']."' />
+    <input type='submit' name='ziplang' value=\"Generate Language Pack\" class='button' />
+	</span>
+    </form>
+	<form name='refresh' method='post' action='".e_SELF."'>
+	<span>
+	<input type='hidden' name='language' value='".$_POST['language']."' />
+    <input type='submit' name='language_sel' value=\"Verify Again\" class='button' />
+	</span>
+    </form>
+	</div>";
+	
+	
+	
+	$ns -> tablerender("Summary: ".$_POST['language'],$message);
+
+	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language'], $core_text);
+	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language']."/admin", $core_admin);
+	$ns -> tablerender(ADLAN_CL_7, $plug_text);
+	$ns -> tablerender("Themes", $theme_text);
+	
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
@@ -262,13 +297,24 @@ function check_core_lanfiles($checklan,$subdir=''){
 				$utf_error = "";
 
 				$bomkey = str_replace(".php","",$k_check);
-				$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
+			//	$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
+
+				if($check['bom'][$bomkey])
+				{
+					$bom_error = "<i>".LAN_CHECK_15."</i><br />";
+					checkLog('bom',1);;	
+				}
+				else
+				{
+					$bom_error = "";	
+				}
 
 				foreach($subkeys as $sk)
 				{
 					if($utf_error == "" && !is_utf8($check[$k][$sk]))
 					{
 						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+						checkLog('utf',1);
 					}
 
 					if($sk == "LC_ALL"){
@@ -286,6 +332,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 			}
 			else
 			{
+				checkLog('file',1);
 				$text .= "<tr>
 				<td class='forumheader3' style='width:45%'>{$lnk}</td>
 				<td class='forumheader' style='width:50%'>".LAN_CHECK_4."</td>"; // file missing.
@@ -315,6 +362,7 @@ function check_lan_errors($english,$translation,$def)
 	
 	if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
 	{
+		checkLog('def',1);
 		return $def.": ".LAN_CHECK_5."<br />";
 	}
 	
@@ -349,11 +397,19 @@ function check_lan_errors($english,$translation,$def)
 			$error[] = $def. ": Missing HTML tags"; // Line:".htmlentities($trans_line);		
 		}
 	}
+	
+	checkLog('def',count($error));
 
 	return ($error) ? implode("<br />",$error)."<br />" : "";
 	
 }
 
+
+function checkLog($type='error',$count)
+{
+	$_SESSION['lancheck_'.$_POST['language']][$type] += $count;
+	$_SESSION['lancheck_'.$_POST['language']]['total'] += $count;
+}
 
 function get_lan_file_phrases($dir1,$dir2,$file1,$file2){
 
@@ -494,13 +550,23 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 			$utf_error = "";
 
 			$bomkey = str_replace(".php","",$k_check);
-			$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
+			if($check['bom'][$bomkey])
+			{
+				$bom_error = "<i>".LAN_CHECK_15."</i><br />";
+				checkLog('bom',1); 
+			}
+			else
+			{
+				$bom_error = "";	
+			}
+		// 	$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
 		
 			foreach($subkeys as $sk)
 			{
 				if($utf_error == "" && !is_utf8($check[$k_check][$sk]))
 				{
 					$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+					checkLog('utf',1);
 				}
 				
 				/*
@@ -521,6 +587,7 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 		}
 		else
 		{
+			checkLog('file',1);
 			$text .= "<tr>
 			<td class='forumheader3' style='width:20%'>".$comp_name."</td>
 			<td class='forumheader3' style='width:25%'>".str_replace("English/","",$lnk)."</td>
