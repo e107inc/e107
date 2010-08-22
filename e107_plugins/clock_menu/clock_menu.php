@@ -16,9 +16,9 @@
 | Released under the terms and conditions of the
 | GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
+|     $URL$
 |     $Revision$
-|     $Date$
+|     $Id$
 |     $Author$
 +---------------------------------------------------------------+
 */

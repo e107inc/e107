@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Tiny MCE controller file.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
+|     $URL$
 |     $Revision$
-|     $Date$
+|     $Id$
 |     $Author$
 +----------------------------------------------------------------------------+
 */

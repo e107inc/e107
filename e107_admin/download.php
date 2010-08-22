@@ -4,14 +4,14 @@
 |     e107 website system
 |
 |     Copyright (c) e107 Inc. 2008-2010
-|     http://e107.org
+|     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
+|     $URL$
 |     $Revision$
-|     $Date$
+|     $Id$
 |     $Author$
 +----------------------------------------------------------------------------+
 */

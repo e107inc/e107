@@ -21,7 +21,7 @@ $ytChanged = FALSE;
  *	@param string $idField - the field which identifies a particular record in the table (usually the autoincrement field)
  *	@param string $fieldList - comma separated list of fields to check
  */
-function checkTable($tableName, $idField, $fieldList)
+function checkTable($tableName, $idField, $fieldList,$test = TRUE)
 {
 	global $sql, $sql2, $ytChanged;
 	echo 'Checking table: '.$tableName.'...';
@@ -59,8 +59,16 @@ function checkTable($tableName, $idField, $fieldList)
 				$new_data .= $spacer."`{$fn}`='{$fv}'";
 				$spacer = ', ';
 			}
-			$sql2->db_Update($tableName,  $new_data." WHERE `{$idField}`='{$row[$idField]}'");
-			echo '<br />'.$tableName.": Row ID {$row[$idField]} changed";
+			if($test == FALSE)
+			{
+				$sql2->db_Update($tableName,  $new_data." WHERE `{$idField}`='{$row[$idField]}'");
+				echo '<br />'.$tableName.": Row ID {$row[$idField]} changed";	
+			}
+			else
+			{
+				echo "<br />Test: ".$new_data;
+			}
+			
 		}
 	}
 	echo '...Done<br />';

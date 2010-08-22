@@ -5,9 +5,6 @@ if (!defined('e107_INIT')) { exit; }
 /* Manuel Lemos's PHP E-mail validation class
  * http://freshmeat.net/projects/emailaddressvalidationcomponent/
  * email_validation.php
- *
- * @(#) $Header: /cvs_backup/e107_0.7/e107_handlers/mail_validation_class.php,v 1.1 2006-03-14 17:29:08 e107coders Exp $
- *
  */
 
 class email_validation_class

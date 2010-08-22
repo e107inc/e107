@@ -3,16 +3,16 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     (C)Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
+|     Copyright (C) 2008-2010 e107 Inc (e107.org)
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
+|     $URL$
 |     $Revision$ - with mods to hopefully trigger upgrade to new version
-|     $Date$
+|     $Id$
 |     $Author$
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory

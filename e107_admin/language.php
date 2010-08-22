@@ -4,14 +4,14 @@
 |     e107 website system
 |
 |     Copyright (c) e107 Inc. 2008-2010
-|     http://e107.org
+|     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
+|     $URL$
 |     $Revision$
-|     $Date$
+|     $Id$
 |     $Author$
 +----------------------------------------------------------------------------+
 */
@@ -27,12 +27,18 @@ $e_sub_cat = 'language';
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
+require_once(e_HANDLER."language_class.php");
+$ln = new language;
 $fl = new e_file;
 $rs = new form;
 
 $tabs = table_list(); // array("news","content","links");
-$lanlist = explode(",",e_LANLIST);
+
+$lanlist = getLanlist();
 $message = "";
+
+
+
 
 if (e_QUERY) {
     $tmp = explode('.', e_QUERY);
@@ -161,17 +167,15 @@ function share($newfile)
 	$inline ="";
 	$subject = basename($newfile);
 	
-	if(!sendemail($send_to, $subject, $email_message, $to_name, "", "", $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
-	{
+	@sendemail($send_to, $subject, $email_message, $to_name, "", "", $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline);
+
 		$text = "<div style='padding:40px'>";
-		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>Please email your language pack to:</b>";
+		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>Please email your verified language pack to:</b>";
 		$text .= " <a href='mailto:".$send_to."'>".$send_to."</a>";
 		$text .= "</div>";
 		
 		return $text;
-	} 
-	
-	return "";
+
 }
 
 unset($text);
@@ -474,8 +478,7 @@ function show_tools()
     <select name='language' class='tbox'>
     <option value=''>".LAN_SELECT."</option>";
 
-    $languages = explode(",",e_LANLIST);
-    sort($languages);
+    $languages = getLanList();
 
     foreach($languages as $lang)
     {
@@ -500,8 +503,7 @@ function show_tools()
     <select name='language' class='tbox'>
     <option value=''>".LAN_SELECT."</option>";
 
-    $languages = explode(",",e_LANLIST);
-    sort($languages);
+  
 
     foreach($languages as $lang)
     {
@@ -561,7 +563,11 @@ function zip_up_lang($language)
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language);
 	$plugs = grab_lans(e_PLUGIN, $language, $core_plugins);
 	$theme = grab_lans(e_THEME, $language, $core_themes);
-	$file = array_merge($core, $plugs, $theme);
+	$docs = grab_lans(e_DOCS,$language);
+	$handlers = grab_lans(e_HANDLER,$language);
+	
+	$file = array_merge($core, $plugs, $theme, $docs, $handlers);
+		
 	$data = implode(",", $file);
 	
 	$ret = array();
@@ -583,10 +589,29 @@ function zip_up_lang($language)
 	}
 }
 
+function getLanList()
+{
+	global $ln;
+	
+	$lst = explode(",",e_LANLIST);
+	$valid_langs = $ln->list;
+	$list = array();
+	
+	foreach($lst as $lang)
+	{
+		if(in_array($lang,$valid_langs))
+		{
+			$list[] = $lang;
+		}
+	}
+	
+	sort($list);
+	return $list;	
+}
 
 function grab_lans($path, $language, $filter = "")
 {
-	global $fl;
+	global $fl,$ln;
 	
 	if ($lanlist = $fl->get_files($path, "", "standard", 4))
 	{
@@ -598,6 +623,7 @@ function grab_lans($path, $language, $filter = "")
 	}
 	$pzip = array();
 	
+	$isocode = $ln->convert($language);
 	
 	foreach ($lanlist as $p)
 	{	
@@ -608,7 +634,12 @@ function grab_lans($path, $language, $filter = "")
 			continue;
 		}
 		
-		if (strpos($fullpath, $language) !== FALSE)
+		$phpmailer = "phpmailer.lang-".$isocode.".php";
+		$tinyMce1 = "/langs/".$isocode.".js";
+		$tinyMce2 = "/langs/".$isocode."_dlg.js";
+		
+		
+		if (strpos($fullpath, $language) !== FALSE || strpos($fullpath,$phpmailer)!==FALSE || strpos($fullpath,$tinyMce1)!==FALSE || strpos($fullpath,$tinyMce2)!==FALSE)
 		{
 			if(is_array($filter))
 			{

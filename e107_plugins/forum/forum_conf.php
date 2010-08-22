@@ -1,20 +1,19 @@
 <?php
 /*
-+---------------------------------------------------------------+
-| e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-| ©Steve Dunstan 2001-2002
-| http://e107.org
-| jalist@e107.org
+|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
+|     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |
-| Released under the terms and conditions of the
-| GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-| $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision$
-| $Date$
-| $Author$
-+---------------------------------------------------------------+
+|     $URL$
+|     $Revision$
+|     $Id$
+|     $Author$
++----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
