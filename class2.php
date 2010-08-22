@@ -195,9 +195,12 @@ if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]) && 
 	// echo "<pre>".print_r($_POST,TRUE)."</pre>";
 	die('Access denied');
 }	
+
+
 	
 define('e_TOKEN', uniqid(md5(rand()),true));
 $_SESSION[$token_name] = e_TOKEN;
+
 // e-Token END
 
 //
@@ -932,6 +935,15 @@ if	(
 	$inAdminDir = TRUE;
 	// Load admin phrases ASAP
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+}
+
+
+if($inAdminDir) // Experimental fix for e-token admin login issue. 
+{
+    header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
+    header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
+    header( "Cache-Control: no-cache, must-revalidate" );
+    header( "Pragma: no-cache" );
 }
 
 
