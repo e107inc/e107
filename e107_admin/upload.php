@@ -22,6 +22,7 @@ if (!getperms("V")) {
 	exit;
 }
 $e_sub_cat = 'upload';
+$action = '';
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -253,7 +254,9 @@ $ns->tablerender(UPLLAN_43, $text);
 
 // options -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if (is_readable(e_ADMIN.'filetypes.php')) {
+$allowed_filetypes = '';
+if (is_readable(e_ADMIN.'filetypes.php')) 
+{
 	$allowed_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
 }
 

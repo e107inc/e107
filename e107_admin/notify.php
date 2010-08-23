@@ -29,7 +29,8 @@ require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $nc = new notify_config;
-if (isset($_POST['update'])) {
+if (isset($_POST['update'])) 
+{
 	$nc -> update();
 }
 $nc -> config();
@@ -38,11 +39,13 @@ class notify_config {
 
 	var $notify_prefs;
 
-	function notify_config() {
+	function notify_config() 
+	{
 		global $sysprefs, $eArrayStorage, $tp, $sql,$pref;
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
+		$recalibrate = FALSE;
 		// load every e_notify.php file.
         foreach($pref['e_notify_list'] as $val)
 		{
@@ -133,9 +136,10 @@ class notify_config {
 		$ns -> tablerender(NT_LAN_1, $text);
 	}
 
-	function render_event($id, $description) {
+	function render_event($id, $description) 
+	{
 		global $rs, $tp;
-		$text .= "<tr>
+		$text = "<tr>
 		<td class='forumheader3' style='width: 30%'>
 		".$description.":
 		</td>

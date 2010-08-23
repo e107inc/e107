@@ -33,6 +33,8 @@ if (!getperms('3'))
 $e_sub_cat = 'admin';
 require_once('auth.php');
 
+$action = '';
+
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
@@ -68,7 +70,7 @@ if (isset($_POST['update_admin']))
 	unset($ad_name, $a_perms);
 }
 
-if ($_POST['edit_admin'] || $action == "edit")
+if (isset($_POST['edit_admin']) || $action == "edit")
 {
 	$edid = array_keys($_POST['edit_admin']);
     $theid = ($edid[0]) ? $edid[0] : $sub_action;
@@ -105,9 +107,12 @@ if (isset($_POST['del_admin']))
 	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$delid[0]), 'update', ADMSLAN_61, LAN_DELETED_FAILED);
 }
 
-if($_POST['edit_admin'] || $action == "edit"){
+if(isset($_POST['edit_admin']) || $action == "edit")
+{
 	edit_administrator($row);
-}else{
+}
+else
+{
    show_admins();
 }
 
