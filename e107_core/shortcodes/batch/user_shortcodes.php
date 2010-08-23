@@ -8,12 +8,10 @@
  *
  * User information - shortcodes
  *
- * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
-*/
+ */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $user_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
@@ -471,9 +469,9 @@ if($pref['profile_comments'])
 	$cobj = new comment;
 	$qry = "
 	SELECT c.*, u.*, ue.* FROM #comments AS c
-	LEFT JOIN #user AS u ON c.comment_author = u.user_id
-	LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-	WHERE c.comment_item_id='".intval($user['user_id'])."'
+	LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+	LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+	WHERE c.comment_item_id=".intval($user['user_id'])."
 	AND c.comment_type='profile'
 	AND c.comment_pid='0'
 	ORDER BY c.comment_datestamp
@@ -502,7 +500,7 @@ if($pref['profile_comments'])
 	{
 		$ret .= "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$user['user_id']}'>".COMLAN_314."</a><br /><br />";
 	}
-	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], "", "", TRUE);
+	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], $user['user_name'], "", TRUE);
 	return $ret;
 }
 SC_END
