@@ -2,18 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User information
  *
- * $Source: /cvs_backup/e107_0.8/user.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
-*/
+ */
 //HCL define('PAGE_NAME', 'Members');
 
 require_once("class2.php");
@@ -126,16 +124,16 @@ if (isset($id))
 		exit;
 	}
 
-	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
-	{
-		require_once(e_HANDLER."comment_class.php");
-		$cobj = new comment;
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
-	}
-
 	if($pref['profile_comments'])
 	{
-		include_once(e_HANDLER."comment_class.php");
+		require_once(e_HANDLER."comment_class.php");
+		$comment_edit_query = 'comment.user.'.$id;
+	}
+
+	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
+	{
+		$cobj = new comment;
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
 	}
 
 	if($text = renderuser($id))

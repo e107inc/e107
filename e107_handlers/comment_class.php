@@ -1,21 +1,17 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (C) 2008-2009 e107 Inc (e107.org)
- |     http://e107.org
- |
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision$
- |     $Date$
- |     $Author$
- +----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2002-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Comment handler class
+ *
+ * $URL$
+ * $Id$
  */
+
 if (!defined('e107_INIT'))
 {
 	exit;
@@ -24,8 +20,12 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 global $comment_shortcodes;
 require_once (e_CORE."shortcodes/batch/comment_shortcodes.php");
 /**
- * Enter description here...
  *
+ *	@package     e107
+ *	@subpackage	e107_handlers
+ *	@version 	$Id$;
+ *
+ *	This class handles all comment-related functions.
  */
 
 
@@ -53,8 +53,6 @@ class comment
 	 * @param unknown_type $rating
 	 * @return unknown
 	 */
-
-
 	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE)
 	{
 		//rating	: boolean, to show rating system in comment

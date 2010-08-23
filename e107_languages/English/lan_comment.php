@@ -22,6 +22,7 @@ define("COMLAN_8", "Comment");
 define("COMLAN_9", "Submit comment");
 define("COMLAN_10", "Administrator");
 define("COMLAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
+define('COMLAN_12', 'User');
 define("COMLAN_16", "Username: ");
 define("COMLAN_99", "Comments");
 define("COMLAN_100", "News");
@@ -63,6 +64,6 @@ define("COMLAN_TYPE_5", "docs");
 define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
-define("COMLAN_TYPE_PAGE", "Content");		// Reall custom page, but use a 'non-technical' description
+define("COMLAN_TYPE_PAGE", "Content");		// Really custom page, but use a 'non-technical' description
 
 ?>
