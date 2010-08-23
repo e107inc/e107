@@ -29,6 +29,15 @@ class parseXml {
 	var $counterArray = array();
 	var $data;
 	var $xmlFileContents;
+	var $Url = FALSE;
+
+	function setUrl($feed)
+	{
+		if($feed)
+		{
+			$this->Url = $feed;
+		}	
+	}
 
 
     function getRemoteXmlFile($address, $timeout = 10)
@@ -36,12 +45,24 @@ class parseXml {
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
 		$timeout = max($timeout, 3);
-		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea
-		// ... and there shouldn't be unprintable characters in the URL anyway
+		
+		if($this->Url) // override option for use when part of the address needs to be encoded. 
+		{
+			$address = $this->Url;	
+		}
+		else
+		{
+			$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
+			// ... and there shouldn't be unprintable characters in the URL anyway
+		}
+				
 		if (function_exists('file_get_contents'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents(urldecode($address));
+			
+			$address = ($this->Url) ? $this->Url : urldecode($address);
+
+			$data = file_get_contents($address);
 
 			// $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
