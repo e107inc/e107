@@ -127,6 +127,8 @@ function get_current($tab, $prefix = "")
   }
 }
 
+
+
 function check_tables($what) 
 {
 	global $tablines;
@@ -164,18 +166,26 @@ function check_tables($what)
 				$fieldnum++;
 				$ffound = 0;
 				list($fname, $fparams) = explode(" ", $x, 2);
-				if ($fname == "KEY") 
+				switch ($fname)
 				{
-					list($key, $keyname, $keyparms) = explode(" ", $x, 3);
-					$fname = $key." ".$keyname;
-					$fparams = $keyparms;
-				}
-				elseif ($fname == 'PRIMARY')
-		  		{	// Nothing to do ATM
-		  		}
-				else
-				{		// Must be a field name
-					$fname = str_replace('`','',$fname);		// Just remove back ticks if present
+					case 'KEY' :
+						list($key, $keyname, $keyparms) = explode(" ", $x, 3);
+						$fname = $key." ".$keyname;
+						$fparams = $keyparms;
+						break;
+					case 'PRIMARY' :
+						// Nothing to do ATM
+						break;
+					case 'UNIQUE' :
+						list($keyword, $key, $keyname, $keyparms) = explode(" ", $x, 4);
+						$fname = 'UNIQUE '.$key.' '.$keyname;
+						$fparams = $keyparms;
+						break;
+						echo 'Unique field entry: '.$x.'<br />';
+						break;
+					default :
+						// Must be a field name
+						$fname = str_replace('`','',$fname);		// Just remove back ticks if present
 				}
 				$fields[$fname] = 1;
 				$fparams = ltrim(rtrim($fparams));
@@ -206,6 +216,16 @@ function check_tables($what)
 					$xl = str_replace('  ',' ',$xl);				// Remove double spaces
 					list($xfname, $xfparams) = explode(" ", $xl, 2);	// Field name and the rest
 
+					if ($xfname == 'UNIQUE') 
+					{
+						list($keyword, $key, $keyname, $keyparms) = explode(" ", $xl, 4);
+						if ($key != 'KEY')
+						{
+							echo 'Invalid parameters to line beginning \'UNIQUE\': '.$xl.'<br />';
+						}
+						$xfname = 'UNIQUE '.$key.' '.$keyname;
+						$xfparams = $keyparms;
+					}
 					if ($xfname == "KEY") 
 					{
 						list($key, $keyname, $keyparms) = explode(" ", $xl, 3);
@@ -220,7 +240,7 @@ function check_tables($what)
 					$xfparams = preg_replace("/,$/", "", $xfparams);
 					$fparams = preg_replace("/,$/", "", $fparams);
 					if ($xfname == $fname) 
-					{  // Field names match - or it could be the word 'KEY' and its name which matches
+					{  // Field names match - or it could be the word 'KEY' or 'UNIQUE KEY' and its name which matches
 						$ffound = 1;
 						//	echo "Field: ".$xfname."   Actuals: ".$xfparams."   Expected: ".$fparams."<br />";
 						$xfsplit = explode(' ',$xfparams);
@@ -321,18 +341,26 @@ function check_tables($what)
 
 global $table_list;
 
-// -------------------- Table Fixing ------------------------------
 
-if(isset($_POST['do_fix'])){
+
+
+/**
+ *		Fix tables as selected
+ */
+if(isset($_POST['do_fix']))
+{
 	$text = "<div><table class='fborder' style='".ADMIN_WIDTH."'>";
-	foreach( $_POST['fix_active'] as $key=>$val){
-
-		if (MAGIC_QUOTES_GPC == TRUE) {
+	foreach( $_POST['fix_active'] as $key=>$val)
+	{
+		if (MAGIC_QUOTES_GPC == TRUE) 
+		{
 			$table = stripslashes($_POST['fix_table'][$key][0]);
 			$newval = stripslashes($_POST['fix_newval'][$key][0]);
 			$mode = stripslashes($_POST['fix_mode'][$key][0]);
 			$after = stripslashes($_POST['fix_after'][$key][0]);
-		} else {
+		} 
+		else 
+		{
 			$table = $_POST['fix_table'][$key][0];
 			$newval = $_POST['fix_newval'][$key][0];
 			$mode = $_POST['fix_mode'][$key][0];
@@ -342,23 +370,33 @@ if(isset($_POST['do_fix'])){
 
 		$field= $key;
 
-		if($mode == "alter"){
+		if($mode == "alter")
+		{
 			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
 		}
 
-		if($mode == "insert"){
+		if($mode == "insert")
+		{
 			$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
 		}
 
-		if($mode == "drop"){
+		if($mode == "drop")
+		{
 			$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
 		}
 
-		if($mode == "index"){
+		if($mode == "index")
+		{
 			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` (`$newval`)";
 		}
 
-		if($mode == "indexdrop"){
+		if($mode == "indexunique")
+		{
+			$query = "ALTER TABLE `".MPREFIX.$table."` ADD UNIQUE INDEX `$field` (`$newval`)";
+		}
+
+		if($mode == "indexdrop")
+		{
 			$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
 		}
 
@@ -392,7 +430,8 @@ if(isset($_POST['do_fix'])){
 
 
 // ---------------------- Main Form and Submit. ------------------------
-if (!$_POST['db_verify'] && !$_POST['do_fix']) {
+if (!$_POST['db_verify'] && !$_POST['do_fix']) 
+{
 	$text = "
 		<form method='post' action='".e_SELF."'>
 		<table border=0 align='center'>
@@ -404,9 +443,13 @@ if (!$_POST['db_verify'] && !$_POST['do_fix']) {
 		<br /><input class='button' name='db_verify' type='submit' value='".DBLAN_15."' />
 		</td></tr></table></form>";
 	$ns->tablerender(DBLAN_16, $text);
-} else {
-	foreach(array_keys($_POST) as $k) {
-		if (preg_match("/table_(.*)/", $k, $match)) {
+} 
+else 
+{
+	foreach(array_keys($_POST) as $k) 
+	{
+		if (preg_match("/table_(.*)/", $k, $match)) 
+		{
 			$xx = $match[1];
 			$str = "<br />
 				<div style='text-align:center'>
@@ -421,17 +464,27 @@ if (!$_POST['db_verify'] && !$_POST['do_fix']) {
 
 
 
-// --------------------------------------------------------------
-function fix_form($table,$field, $newvalue, $mode, $after ='')
+/**
+ *	Generate the display code and hidden values needed for the fix
+ */
+function fix_form($table, $field, $newvalue, $mode, $after ='')
 {
+	//echo "fix_form: {$mode} => {$table}, {$field}, {$newvalue}, {$after}<br />";
 	if($mode == "create")
 	{
 		$newvalue = implode("\n",$newvalue);
 		$field = $table;		// Value for $field may be rubbish!
 	}
+	elseif (substr($field, 0, 7) == 'UNIQUE ')
+	{
+		$field = trim(str_replace("UNIQUE KEY ","",$field));
+		$mode = ($mode == "drop") ? "indexdrop" : "indexunique";
+		$search = array("(",")");
+		$newvalue = str_replace($search,'',$newvalue);
+	}
 	elseif(stristr($field, "KEY ") !== FALSE)
 	{
-		$field = chop(str_replace("KEY ","",$field));
+		$field = trim(str_replace("KEY ","",$field));
 		$mode = ($mode == "drop") ? "indexdrop" : "index";
 		$search = array("(",")");
 		$newvalue = str_replace($search,"",$newvalue);
