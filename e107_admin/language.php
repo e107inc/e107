@@ -580,18 +580,19 @@ function zip_up_lang($language)
 	list($ver, $tmp) = explode(" ", $e107info['e107_version']);
 	$newfile = e_FILE."public/e107_".$ver."_".$language."_utf8.zip";
 	$archive = new PclZip($newfile);
-	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language);
+	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language,'',0);
+	$core_admin = grab_lans(e_LANGUAGEDIR.$language."/admin/", $language,'',2);
 	$plugs = grab_lans(e_BASE."e107_plugins/", $language, $core_plugins); // standardized path. 
 	$theme = grab_lans(e_BASE."e107_themes/", $language, $core_themes);
 	$docs = grab_lans(e_BASE."e107_docs/",$language);
 	$handlers = grab_lans(e_BASE."e107_handlers/",$language); // standardized path. 
 	
-	$file = array_merge($core, $plugs, $theme, $docs, $handlers);
+	$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
 		
 	$data = implode(",", $file);
 	
 	$ret = array();
-	
+			
 	if ($archive->create($data) == 0)
 	{
 		
@@ -629,11 +630,11 @@ function getLanList()
 	return $list;	
 }
 
-function grab_lans($path, $language, $filter = "")
+function grab_lans($path, $language, $filter = "",$depth=5)
 {
 	global $fl,$ln;
 	
-	if ($lanlist = $fl->get_files($path, "", "standard", 4))
+	if ($lanlist = $fl->get_files($path, "", "standard", $depth))
 	{
 		sort($lanlist);
 	}
@@ -644,6 +645,8 @@ function grab_lans($path, $language, $filter = "")
 	$pzip = array();
 	
 	$isocode = $ln->convert($language);
+	
+
 	
 	foreach ($lanlist as $p)
 	{	
@@ -663,12 +666,15 @@ function grab_lans($path, $language, $filter = "")
 		{
 			if(is_array($filter))
 			{
-				$dir =  basename(dirname($p['path']));	
-
-				if(in_array($dir,$filter))
+				$dir =  basename(dirname($p['path']));
+				foreach($filter as $val)
 				{
-					$pzip[] = $fullpath;
-				}			
+					if(strpos($fullpath,$val)!==FALSE)
+					{
+						$pzip[] = $fullpath;	
+					}
+				}
+		
 			}
 			else
 			{
