@@ -496,7 +496,7 @@ if($pref['profile_comments'])
 	{
 		$ret .= "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$user['user_id']}'>".COMLAN_314."</a><br /><br />";
 	}
-	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], "", "", TRUE);
+	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], $user['user_name'], "", TRUE);
 	return $ret;
 }
 SC_END

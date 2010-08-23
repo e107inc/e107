@@ -31,7 +31,7 @@ $cobj = new comment;
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];			// Usually says 'comment' - may say 'reply'
 $table = $temp_query[1];			// Table containing item associated with comment(s)
-$id  = intval(varset($temp_query[2], ""));	// ID of item associated with comments (e.g. news ID)
+$id  = intval(varset($temp_query[2], 0));	// ID of item associated with comments (e.g. news ID)
 											// For reply with nested comments, its the ID of the comment
 $nid = intval(varset($temp_query[3], ""));	// Action - e.g. 'edit'. Or news ID for reply with nested comments
 $xid = intval(varset($temp_query[4], ""));	// ID of target comment
@@ -48,21 +48,27 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 	  exit;
 	}
 
-	if($table == "poll") 
+	switch ($table)
 	{
-	  if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
-	  {
-		header("location: ".e_BASE."index.php");
-		exit;
-	  }
-	} 
-	elseif($table == "news") 
-	{
-	  if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
-	  {
-		header("location: ".e_BASE."index.php");
-		exit;
-	  }
+		case 'poll' :
+			if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
+			{
+				header("location: ".e_BASE."index.php");
+				exit;
+			}
+			break;
+		case 'news' :
+			if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
+			{
+				header("location: ".e_BASE."index.php");
+				exit;
+			}
+		case 'user' :
+			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id)) 
+			{
+				header("location: ".e_BASE."index.php");
+				exit;
+			}
 	}
 
 	$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
@@ -85,8 +91,8 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 
 	if($editpid) 
 	{
-	  $redirectFlag = $id;
-/*		$redir = preg_replace("#\.edit.*#si", "", e_QUERY);
+		$redirectFlag = $id;
+		/*		$redir = preg_replace("#\.edit.*#si", "", e_QUERY);
 		header("Location: ".e_SELF."?{$redir}");
 		exit;  */
 	}
@@ -122,39 +128,40 @@ if (isset($_POST['replysubmit']))
 if ($redirectFlag)
 {	// Need to go back to original page
 
-// Check plugin e_comment.php files
-  $plugin_redir = false;
-  $e_comment = $cobj->get_e_comment();
-  if ($table == $e_comment[$table]['eplug_comment_ids'])
-  {
-	$plugin_redir = TRUE;
-	$reply_location = str_replace("{NID}", $redirectFlag, $e_comment[$table]['reply_location']);
-  }
-
-  if ($plugin_redir)
-  {
-	echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
-	exit;
-  } 
-  else
-  {
+	// Check for core tables first
 	switch ($table)
 	{
-	  case "news" :
-	  case "poll" :
-		echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
-		exit;
-		break;
-	  case "download" :
-		echo "<script type='text/javascript'>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
-		exit;
-		break;
-	  case "page" :
-		echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
-		exit;
-		break;
+		case "news" :
+		case "poll" :
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
+			exit;
+		case "download" :
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
+			exit;
+		case "page" :
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
+			exit;
+		case 'user' :
+			echo "<script type='text/javascript'>document.location.href='".e_HTTP."user.php?id.{$redirectFlag}'</script>\n";
+			exit;
 	}
-  }
+
+	// Check plugin e_comment.php files
+	$plugin_redir = false;
+	$e_comment = $cobj->get_e_comment();
+	if ($table == $e_comment[$table]['eplug_comment_ids'])
+	{
+		$plugin_redir = TRUE;
+		$reply_location = str_replace('{NID}', $redirectFlag, $e_comment[$table]['reply_location']);
+	}
+
+	if ($plugin_redir)
+	{
+		echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
+		exit;
+	} 
+	
+	// No redirect found if we get here.
 }
 
 $comment_ob_start = FALSE;
@@ -169,54 +176,67 @@ if ($action == "reply")
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
 	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'")) 
 	{
-		list($comments['comment_subject']) = $sql->db_Fetch();
+		$comments = $sql->db_Fetch();
 		$subject = $comments['comment_subject'];
 		$subject_header = $tp->toHTML($comments['comment_subject']);
 	}
 	
 	if ($subject == "") 
 	{
-	  switch ($table)
-	  {
-		case "news" :
-		  if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' ")) 
-		  {
-			header("location: ".e_BASE."index.php");
-			exit;
-		  } 
-		  else 
-		  {
-			list($news['news_title']) = $sql->db_Fetch();
-			$subject = $news['news_title'];
-			$title = COMLAN_100;
-		  }
-		case "poll" :
-		  if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' ")) 
-		  {
-			header("location:".e_BASE."index.php");
-			exit;
-		  } 
-		  else 
-		  {
-			list($poll['poll_title']) = $sql->db_Fetch();
-			$subject = $poll['poll_title'];
-			$title = COMLAN_101;
-		  }
-		  break;
-		case 'download' :
-		  if ($sql->db_Select('download','download_name',"download_id={$nid} "))
-		  {
-			$row = $sql->db_Fetch();
-			$subject = $row['download_name'];
-			$title = COMLAN_106;
-		  }
-		  else
-		  {
-			header("location:".e_BASE."index.php");
-			exit;
-		  }
-		  break;
-	  }
+		switch ($table)
+		{
+			case "news" :
+			  if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' ")) 
+			  {
+				header("location: ".e_BASE."index.php");
+				exit;
+			  } 
+			  else 
+			  {
+					$news = $sql->db_Fetch();
+				$subject = $news['news_title'];
+				$title = COMLAN_100;
+			  }
+			case "poll" :
+			  if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' ")) 
+			  {
+				header("location:".e_BASE."index.php");
+				exit;
+			  } 
+			  else 
+			  {
+					$poll = $sql->db_Fetch();
+				$subject = $poll['poll_title'];
+				$title = COMLAN_101;
+			  }
+			  break;
+			case 'download' :
+			  if ($sql->db_Select('download','download_name',"download_id={$nid} "))
+			  {
+				$row = $sql->db_Fetch();
+				$subject = $row['download_name'];
+				$title = COMLAN_106;
+			  }
+			  else
+			  {
+				header("location:".e_BASE."index.php");
+				exit;
+			  }
+			  break;
+			case 'user' :
+				if ($sql->db_Select('user','user_name',"user_id={$nid} "))
+				{
+					$row = $sql->db_Fetch();
+					$subject = $row['user_name'];
+					$title = COMLAN_12;
+				}
+				else
+				{
+					header("location:".e_BASE."index.php");
+					exit;
+				}
+				break;
+		}
 	}
 	define('e_PAGETITLE', $title." / ".COMLAN_99." / ".COMLAN_102.$subject."");
 	require_once(HEADERF);
@@ -300,20 +320,35 @@ elseif ($action == 'comment')
 		  }
 		  break;
 		case 'download' :
-		  if ($sql->db_Select('download','download_name',"download_id={$id} "))
-		  {
-			$row = $sql->db_Fetch();
-			$subject = $row['download_name'];
-			$title = COMLAN_106;
-			$field = $id;
-			require_once(HEADERF);
-		  }
-		  else
-		  {
-			header("location:".e_BASE."index.php");
-			exit;
-		  }
-		  break;
+			if ($sql->db_Select('download','download_name',"download_id={$id} "))
+			{
+				$row = $sql->db_Fetch();
+				$subject = $row['download_name'];
+				//$title = COMLAN_106;
+				$field = $id;
+				require_once(HEADERF);
+			}
+			else
+			{
+				header("location:".e_BASE."index.php");
+				exit;
+			}
+			break;
+		case 'user' :
+			if ($sql->db_Select('user','user_name',"user_id={$id} "))
+			{
+				$row = $sql->db_Fetch();
+				$subject = $row['user_name'];
+				//$title = 'Edit comment about user';
+				$field = $id;
+				require_once(HEADERF);
+			}
+			else
+			{
+				header("location:".e_BASE."index.php");
+				exit;
+			}
+			break;
 		default :		// Hope its a plugin table
 			$e_comment = $cobj->get_e_comment();
 			if ($table == $e_comment[$table]['eplug_comment_ids'])

@@ -124,16 +124,16 @@ if (isset($id))
 		exit;
 	}
 
-	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
-	{
-		require_once(e_HANDLER."comment_class.php");
-		$cobj = new comment;
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
-	}
-
 	if($pref['profile_comments'])
 	{
-		include_once(e_HANDLER."comment_class.php");
+		require_once(e_HANDLER."comment_class.php");
+		$comment_edit_query = 'comment.user.'.$id;
+	}
+
+	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
+	{
+		$cobj = new comment;
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
 	}
 
 	if($text = renderuser($id))

@@ -1,14 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2002-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Comment handling - language files
+ *
+ * $URL$
+ * $Id$
+ */
 
 define("COMLAN_0", "[blocked by admin]");
 define("COMLAN_1", "Unblock");
@@ -22,6 +24,7 @@ define("COMLAN_8", "Comment");
 define("COMLAN_9", "Submit comment");
 define("COMLAN_10", "Administrator");
 define("COMLAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
+define('COMLAN_12', 'User');
 define("COMLAN_16", "Username: ");
 define("COMLAN_99", "Comments");
 define("COMLAN_100", "News");
@@ -63,6 +66,6 @@ define("COMLAN_TYPE_5", "docs");
 define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
-define("COMLAN_TYPE_PAGE", "Content");		// Reall custom page, but use a 'non-technical' description
+define("COMLAN_TYPE_PAGE", "Content");		// Really custom page, but use a 'non-technical' description
 
 ?>
