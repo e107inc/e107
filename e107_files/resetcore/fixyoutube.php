@@ -96,11 +96,18 @@ function youtubeConvert($matches)
 }
 
 
+
+function quoteQuery($matches)
+{
+	return $matches[1].'?';
+}
+
+
 checkTable('forum_t', 'thread_id', 'thread_thread');
 checkTable('submitnews', 'submitnews_id', 'submitnews_item');
 checkTable('news', 'news_id', 'news_body,news_extended');
 checkTable('pcontent', 'content_id', 'content_text');
-checkTable('faq_info', 'faq_id', 'faq_answer');
+checkTable('faq', 'faq_id', 'faq_answer');
 
 echo 'Complete<br />';
 
