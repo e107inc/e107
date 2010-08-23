@@ -8,6 +8,10 @@ if (!ADMIN)
 	exit();
 }
 
+// Comment out whichever isn't required
+define('YT_TEST_MODE', FALSE);
+//define('YT_TEST_MODE', TRUE);
+
 
 echo "Youtube tag conversion<br /><br />";
 
@@ -103,11 +107,11 @@ function quoteQuery($matches)
 }
 
 
-checkTable('forum_t', 'thread_id', 'thread_thread');
-checkTable('submitnews', 'submitnews_id', 'submitnews_item');
-checkTable('news', 'news_id', 'news_body,news_extended');
-checkTable('pcontent', 'content_id', 'content_text');
-checkTable('faq', 'faq_id', 'faq_answer');
+checkTable('forum_t', 'thread_id', 'thread_thread', YT_TEST_MODE);
+checkTable('submitnews', 'submitnews_id', 'submitnews_item', YT_TEST_MODE);
+checkTable('news', 'news_id', 'news_body,news_extended', YT_TEST_MODE);
+checkTable('pcontent', 'content_id', 'content_text', YT_TEST_MODE);
+checkTable('faq', 'faq_id', 'faq_answer', YT_TEST_MODE);
 
 echo 'Complete<br />';
 
