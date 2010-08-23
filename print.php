@@ -72,7 +72,7 @@ else
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<b>".LAN_PRINT_135.": ".$news_title."</b>
+	<b>".LAN_PRINT_135.$news_title."</b>
 	<br />
 	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
