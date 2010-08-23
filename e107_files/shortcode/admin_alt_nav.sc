@@ -6,14 +6,16 @@ if (ADMIN) {
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		$cat_link = ($cat_link ? $cat_link : "javascript:void(0);");
 		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
-		if ($cat_id) {
+		if ($cat_id) 
+		{
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
 		}
 		$text .= ">".$cat_title."</a>";
 		return $text;
 	}
 
-	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='') {
+	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='') 
+	{
 		$text = "<a class='menuItem ".$cat_highlight."' href='".$cat_link."' ";
 		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
@@ -58,11 +60,15 @@ if (ADMIN) {
 	}
 
 	$render_plugins = FALSE;
-	if($sql -> db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path")){
-		while($row = $sql -> db_Fetch()){
-			if(getperms('P'.$row['plugin_id'])){
+	if($sql -> db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path"))
+	{
+		while($row = $sql -> db_Fetch())
+		{
+			if(getperms('P'.$row['plugin_id']))
+			{
 				include_once(e_PLUGIN.$row['plugin_path']."/plugin.php");
-				if($eplug_conffile){
+				if(varset($eplug_conffile, ''))
+				{
 					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs");
 					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN_ABS.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
 					$plugin_array[ucfirst($eplug_name)] = adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $plugin_icon);
@@ -74,7 +80,8 @@ if (ADMIN) {
 		}
 		ksort($plugin_array, SORT_STRING);
 		$plugs_text = '';
-		foreach ($plugin_array as $plugin_compile) {
+		foreach ($plugin_array as $plugin_compile) 
+		{
 			$plugs_text .= $plugin_compile;
 		}
 	}
@@ -111,7 +118,8 @@ if (ADMIN) {
 	$text .= "</div>
 	</td>";
 
-	if ($exit != 'off') {
+	if (varset($exit, '') != 'off') 
+	{
 		$text .= "<td style='width: 160px; white-space: nowrap'>
 		<div class='menuBar' style='width: 100%'>";
 

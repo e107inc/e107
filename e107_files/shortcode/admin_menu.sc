@@ -4,10 +4,15 @@ if (ADMIN) {
 	//Show upper_right menu if the function exists
 	$tmp = explode(".",e_PAGE);
 	$adminmenu_func = $tmp[0]."_adminmenu";
-	if(function_exists($adminmenu_func)){
-		if (!$parm) {
-			call_user_func($adminmenu_func,$adminmenu_parms);
-		} else {
+	if(function_exists($adminmenu_func))
+	{
+		if (!$parm) 
+		{
+			isset($adminmenu_parms) ? call_user_func($adminmenu_func, $adminmenu_parms) : call_user_func($adminmenu_func);
+			
+		} 
+		else 
+		{
 			ob_end_clean();
 			return 'pre';
 		}
