@@ -37,7 +37,7 @@ global $pref;
 		$parm .= ']';
 	}
 
-	list($link,$extras) = explode(" ",$parm);
+	list($link,$extras) = explode(' ',$parm.' ');
 	if(!$parm) $link = $code_text;
 
 	if($link == "external" && $extras == "")

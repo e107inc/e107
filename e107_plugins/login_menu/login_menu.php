@@ -74,7 +74,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ News Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_news'] == true)
+		if (isset($menu_pref['login_menu']) && isset($menu_pref['login_menu']['new_news']) && ($menu_pref['login_menu']['new_news'] == true))
 		{
 			$new_news = $sql->db_Count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."'");
 			$new_total += $new_news;
