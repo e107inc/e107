@@ -535,12 +535,40 @@ function show_tools()
     $ns->tablerender(LANG_LAN_21, $text);
 }
 
-
+function find_locale($language)
+{
+	$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
+	$tmp = explode("\n",$code);
+	
+	$srch = array("define","'",'"',"(",")",";","CORE_LC2","CORE_LC",",");
+		
+	foreach($tmp as $line)
+	{
+		if(strpos($line,"CORE_LC") !== FALSE && (strpos($line,"CORE_LC2") === FALSE))
+		{
+			$lc = trim(str_replace($srch,"",$line));
+		}
+		elseif(strpos($line,"CORE_LC2") !== FALSE)
+		{
+			$lc2 = trim(str_replace($srch,"",$line));
+		}		
+			
+	}
+	
+	if(!isset($lc) || !isset($lc2) || $lc=="" || $lc2=="")
+	{
+		return FALSE;	
+	}
+		
+	 return substr($lc,0,2)."_".strtoupper(substr($lc2,0,2)); 
+	// 
+}
 // ----------------------------------------------------------------------------
 
 function zip_up_lang($language)
 {
 	global $tp;
+	$ret = array();
 	
 	if(!isset($_SESSION['lancheck_'.$language]))
 	{
@@ -562,7 +590,7 @@ function zip_up_lang($language)
 	{
 		include (e_ADMIN."ver.php");
 	}
-	 
+	
 	 $core_plugins = array(
 	"alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
 	"clock_menu","comment_menu","compliance_menu","content","counter_menu",
@@ -578,24 +606,28 @@ function zip_up_lang($language)
 
 	require_once (e_HANDLER.'pclzip.lib.php');
 	list($ver, $tmp) = explode(" ", $e107info['e107_version']);
-	$newfile = e_FILE."public/e107_".$ver."_".$language."_utf8.zip";
+	if(!$locale =  find_locale($language))
+	{
+		$ret['error'] = TRUE;
+		$ret['message'] = "Please check that CORE_LC and CORE_LC2 have values in e107_languages/{$language}/{$language}.php and try again.";
+		return $ret;	
+	};
+		
+	$newfile = e_FILE."public/e107_".$ver."_".$language."_".$locale.".utf8.zip";
+	
 	$archive = new PclZip($newfile);
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language,'',0);
 	$core_admin = grab_lans(e_LANGUAGEDIR.$language."/admin/", $language,'',2);
 	$plugs = grab_lans(e_BASE."e107_plugins/", $language, $core_plugins); // standardized path. 
-	$theme = grab_lans(e_BASE."e107_themes/", $language, $core_themes);
+	$theme  = grab_lans(e_BASE."e107_themes/", $language, $core_themes);
 	$docs = grab_lans(e_BASE."e107_docs/",$language);
 	$handlers = grab_lans(e_BASE."e107_handlers/",$language); // standardized path. 
-	
+		
 	$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
-		
 	$data = implode(",", $file);
-	
-	$ret = array();
-			
+				
 	if ($archive->create($data) == 0)
-	{
-		
+	{		
 		$ret['error'] = TRUE;
 		$ret['message'] = $archive->errorInfo(true);
 		return $ret;
@@ -640,8 +672,10 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	}
 	else
 	{
-		return;
+		return array();
 	}
+	
+	
 	$pzip = array();
 	
 	$isocode = $ln->convert($language);
@@ -651,7 +685,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	foreach ($lanlist as $p)
 	{	
 		$fullpath = $p['path'].$p['fname'];
-		
+				
 		if($p['fname'] == ($language."_custom.php"))
 		{
 			continue;
