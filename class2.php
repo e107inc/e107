@@ -182,9 +182,17 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 // Experimental Code Below.
 // e-Token START
 
+// Copy data between old and new session
 session_start();
-session_regenerate_id(true); // true don't work on php4 - so time to move on people!	
+$odlS = session_id(); // old ID
+session_regenerate_id(false); // true don't work on php4 - so time to move on people!	
+$newS = session_id(); // new ID
+session_write_close(); // close both sessions
 
+// set new ID, reopen the session
+session_id($newS);
+session_start();
+unset($oldS, $newS);
 
 
 $token_name = 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP);
