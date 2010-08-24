@@ -613,7 +613,7 @@ function zip_up_lang($language)
 		return $ret;	
 	};
 		
-	$newfile = e_FILE."public/e107_".$ver."_".$language."_".$locale.".utf8.zip";
+	$newfile = e_FILE."public/e107_".$ver."_".$language."_".$locale."-utf8.zip";
 	
 	$archive = new PclZip($newfile);
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language,'',0);
