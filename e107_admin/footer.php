@@ -366,7 +366,7 @@ unset($tmp1, $tmp1);
 
 $etag = md5($page);
 header("Cache-Control: must-revalidate");
-header("ETag: {$etag}");
+header("ETag: \"{$etag}\"");
 
 $pref['compression_level'] = 6;
 if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
