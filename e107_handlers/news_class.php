@@ -32,7 +32,7 @@ class news {
 		$news['news_userid'] = ($news['news_userid']) ? $news['news_userid'] : USERID;
 		if(!isset($news['news_sticky'])) {$news['news_sticky'] = 0;}
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "";
-		$news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
+		$author_insert = (isset($news['news_author'])) ?  "news_author = '".$news['news_author']."'," : "";
 		$news['news_class'] = (varset($news['news_class'], '255'));
 
 		if ($news['news_id']) {
