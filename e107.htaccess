@@ -1,5 +1,11 @@
 ErrorDocument 400 /error.php?400
 ErrorDocument 401 /error.php?401
 ErrorDocument 403 /error.php?403
-ErrorDocument 404 /error.php?404
+
+#ErrorDocument 404 /error.php?404
+# Custom 404 error page for php scripts only
+<FilesMatch \.php$> 
+	ErrorDocument 404 /error.php?404 
+</FilesMatch>
+
 ErrorDocument 500 /error.php?500

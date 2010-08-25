@@ -65,7 +65,7 @@ if (ADMIN) {
     if (file_exists(THEME.'admin_nav.js')) {
         $ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
     } else {
-        $ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+        $ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."nav_menu.js'></script>";
     }
 
     $ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
