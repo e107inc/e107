@@ -204,7 +204,7 @@ $page = ob_get_clean();
 
 $etag = md5($page);
 header("Cache-Control: must-revalidate");
-header("ETag: {$etag}");
+header("ETag: \"{$etag}\"");
 
 $pref['compression_level'] = 6;
 $browser_support = FALSE;
