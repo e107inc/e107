@@ -19,7 +19,8 @@
 
 // ********************************** SEE HIGHLIGHTED AND NUMBERED QUERIES *****************************
 
-
+// Prevent token re-generation
+define('e_TOKEN_FREEZE', true);
 
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");

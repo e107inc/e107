@@ -16,6 +16,37 @@
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
+// simple SESSION Fixation
+	if(!session_id()) // someone closed the session?
+	{
+		session_start(); // restart
+	}
+	
+	// regenerate SID
+	$oldSID = session_id(); // old SID
+	$oldSData = $_SESSION; // old session data
+	session_regenerate_id(false); // true don't work on php4 - so time to move on people!	
+	$newSID = session_id(); // new SID
+	
+	// Clean
+	session_id($oldSID); // switch to the old session
+	session_destroy(); // destroy it
+	
+	// set new ID, reopen the session, set saved data
+	session_id($newSID);
+	session_start();
+	$_SESSION = $oldSData;
+	// give 3rd party code a way to prevent token re-generation
+	if(!defsettrue('e_TOKEN_FREEZE'))
+	{
+		$_SESSION['regenerate_'.e_TOKEN_NAME] = time(); // class2 have to re-create token on the next request
+	}
+	unset($oldSID, $newSID, $oldSData);
+	
+	// write session data
+	session_write_close();
+// SESSION End
+
 global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107, $e107ParseHeaderFlag, $e107CustomFooter;
 global $pref;
 //

@@ -182,32 +182,34 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 // Experimental Code Below.
 // e-Token START
 
-// Copy data between old and new session
+// Start session asap
 session_start();
-$odlS = session_id(); // old ID
-session_regenerate_id(false); // true don't work on php4 - so time to move on people!	
-$newS = session_id(); // new ID
-session_write_close(); // close both sessions
 
-// set new ID, reopen the session
-session_id($newS);
-session_start();
-unset($oldS, $newS);
+// TODO - maybe add IP as well?
+define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
-
-$token_name = 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP);
-if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[$token_name]) && $_POST['ajax_used']!=1)
+if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
 {
-	// echo "<br />Session token=".$_SESSION[$token_name];
-	// prevent dead loop, save server resources
-	// echo "<pre>".print_r($_POST,TRUE)."</pre>";
+	// do not redirect, prevent dead loop, save server resources
 	die('Access denied');
 }	
 
+// Create new token only if not exists or session id is regenerated (footer.php)
+if(!isset($_SESSION[e_TOKEN_NAME]) || (isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
+{
+	// we should not break ajax calls this way
+	$_SESSION[e_TOKEN_NAME] = uniqid(md5(rand()), true);
+	// this will be reset in the end of the script (footer) if needed
+	unset($_SESSION['regenerate_'.e_TOKEN_NAME]);
+}
 
-	
-define('e_TOKEN', uniqid(md5(rand()),true));
-$_SESSION[$token_name] = e_TOKEN;
+// use it now
+define('e_TOKEN', $_SESSION[e_TOKEN_NAME]);
+
+// Debug
+//header('X-etoken-name: '.e_TOKEN_NAME);
+//header('X-etoken-value: '.e_TOKEN);
+//header('X-etoken-freeze: '.(defsettrue('e_TOKEN_FREEZE') ? 1 : 0));
 
 // e-Token END
 
