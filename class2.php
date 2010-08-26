@@ -948,12 +948,13 @@ if	(
 }
 
 
-if($inAdminDir) // Experimental fix for e-token admin login issue. 
+if($inAdminDir || defined("e_NOCACHE")) // Experimental fix for e-token admin 'access denied' issues. 
 {
-    header( "Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
-    header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-    header( "Cache-Control: no-cache, must-revalidate" );
-    header( "Pragma: no-cache" );
+    header("Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
+  	header("Cache-Control: no-store, no-cache, must-revalidate"); 
+	header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache" );
 }
 
 

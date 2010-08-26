@@ -22,7 +22,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
 }
-
+define("e_NOCACHE",TRUE);
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");
@@ -648,7 +648,7 @@ $text .= "<div>";
 
 $text .= "
 	<input type='hidden' name='_uid' value='{$uuid}' />
-	<input type='hidden' name='e-token' value='".e_TOKEN."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' style='width:100%' />
 	</div>
 	</form>
 	";
