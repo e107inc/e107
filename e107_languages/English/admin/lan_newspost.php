@@ -175,5 +175,6 @@ define('LAN_NEWS_51', 'Recalculate comment counts');
 define('LAN_NEWS_52', 'Proceed');
 define('LAN_NEWS_53', 'Update complete');
 define('LAN_NEWS_54', 'News Maintenance');
+define('LAN_NEWS_55', 'Author (Posted by)');
 
 ?>
