@@ -18,11 +18,17 @@
 */
 
 // Experimental e-token
-if((isset($_POST['sqltext']) || isset($_POST['delpref_checked'])) && !isset($_POST['e-token']))
+if((isset($_POST['sqltext']) || isset($_POST['delpref_checked']))  )
 {
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
 }
+
+// No e-token for simple redirect. 
+if(isset($_POST['verify_sql']) || isset($_POST['db_update']) || isset($_POST['check_user']))
+{
+	unset($_POST['e-token']);
+}	
 
 require_once("../class2.php");
 if (!getperms('0')) 
@@ -138,8 +144,6 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_8."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
-	<input type='hidden' name='sqltext' value='{$sqltext}' />
-	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	</td></tr>
 	</table>
 	</form>
@@ -243,7 +247,7 @@ function plugin_viewscan()
 			$previous = $row['plugin_path'];
 		}
 //		$text .= "<tr><td colspan='4' class='forumheader3'>".DBLAN_30."</td></tr>";
-        $text .= "</table></div></form>";
+        $text .= "</table></div><input type='hidden' name='e-token' value='".e_TOKEN."' /></form>";
         $ns -> tablerender(ADLAN_CL_7, $text);
 
 }
