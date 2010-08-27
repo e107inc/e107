@@ -1,7 +1,10 @@
+// $Id$
 if (getperms('0') || getperms('4')) 
 {
-	if (!function_exists('admin_status')) {
-		function admin_status() {
+	if (!function_exists('admin_status')) 
+	{
+		function admin_status() 
+		{
 			global $sql, $ns, $pref;
 			$members = $sql -> db_Count("user");
 			$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
@@ -14,11 +17,14 @@ if (getperms('0') || getperms('4'))
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": ".$banned."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": ".$comments."</div>";
 
-			foreach($pref['e_status_list'] as $val)
+			if (isset($pref['e_status_list']) && is_array($pref['e_status_list']))
 			{
-				if (is_readable(e_PLUGIN.$val."/e_status.php"))
+				foreach($pref['e_status_list'] as $val)
 				{
-				   		include_once(e_PLUGIN.$val."/e_status.php");
+					if (is_readable(e_PLUGIN.$val."/e_status.php"))
+					{
+							include_once(e_PLUGIN.$val."/e_status.php");
+					}
 				}
 			}
 
@@ -28,18 +34,22 @@ if (getperms('0') || getperms('4'))
 				$text .= "<img src='".e_IMAGE_ABS."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a>";
 			}
 
-
 			return $ns -> tablerender(ADLAN_134, $text, '', TRUE);
 		}
 	}
 
-	if ($parm == 'request') {
-		if (function_exists('status_request')) {
-			if (status_request()) {
+	if ($parm == 'request') 
+	{
+		if (function_exists('status_request')) 
+		{
+			if (status_request()) 
+			{
 				return admin_status();
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		return admin_status();
 	}
 }

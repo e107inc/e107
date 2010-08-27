@@ -1,6 +1,10 @@
-if (ADMIN) {
-	if (!function_exists('admin_latest')) {
-		function admin_latest() {
+// $Id$
+if (ADMIN) 
+{
+	if (!function_exists('admin_latest')) 
+	{
+		function admin_latest() 
+		{
 			global $sql, $ns, $pref;
 
 	   		$active_uploads = $sql -> db_Count("upload", "(*)", "WHERE upload_active = '0' ");
@@ -9,11 +13,14 @@ if (ADMIN) {
 			$text = "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN_ABS."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : " ".ADLAN_LAT_2.": 0")."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN_ABS."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : " ".ADLAN_LAT_7.": ".$active_uploads)."</div>";
 
-			foreach($pref['e_latest_list'] as $val)
+			if (isset($pref['e_latest_list']) && is_array($pref['e_latest_list']))
 			{
-				if (is_readable(e_PLUGIN.$val."/e_latest.php"))
+				foreach($pref['e_latest_list'] as $val)
 				{
-				   		include_once(e_PLUGIN.$val."/e_latest.php");
+					if (is_readable(e_PLUGIN.$val."/e_latest.php"))
+					{
+							include_once(e_PLUGIN.$val."/e_latest.php");
+					}
 				}
 			}
 
@@ -24,7 +31,8 @@ if (ADMIN) {
 			}
 			$queryString = substr($queryString, 0, -3);
 
-			if($amount = $sql -> db_Select("generic", "*", $queryString)) {
+			if($amount = $sql -> db_Select("generic", "*", $queryString)) 
+			{
 				$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 			}
 
@@ -32,13 +40,18 @@ if (ADMIN) {
 		}
 	}
 
-	if ($parm == 'request') {
-		if (function_exists('latest_request')) {
-			if (latest_request()) {
+	if ($parm == 'request') 
+	{
+		if (function_exists('latest_request')) 
+		{
+			if (latest_request()) 
+			{
 				return admin_latest();
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		return admin_latest();
 	}
 }
