@@ -71,12 +71,14 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 				header("location: ".e_BASE."index.php");
 				exit;
 			}
+			break;
 		case 'user' :
 			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id)) 
 			{
 				header("location: ".e_BASE."index.php");
 				exit;
 			}
+			break;
 	}
 
 	$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
@@ -207,6 +209,7 @@ if ($action == "reply")
 					$subject = $news['news_title'];
 					$title = COMLAN_100;
 				}
+				break;
 			case "poll" :
 				if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' "))
 				{
