@@ -18,7 +18,7 @@
 */
 
 // Experimental e-token
-if((isset($_POST['sqltext']) || isset($_POST['delpref_checked']))  )
+if(isset($_POST['delpref_checked']) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
