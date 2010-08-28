@@ -144,6 +144,8 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_8."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
+	<input type='hidden' name='sqltext' value='{$sqltext}' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	</td></tr>
 	</table>
 	</form>
