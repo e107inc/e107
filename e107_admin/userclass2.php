@@ -91,7 +91,7 @@ elseif(e_QUERY)
 	}
 }
 
-if (isset($_POST['delete']) && varset($_POST['e-token']))
+if (isset($_POST['delete']))
 {
 	if(isset($_POST['useraction']))
 	{
@@ -151,8 +151,9 @@ if (isset($_POST['createclass']))
 		$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
 		$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
 
-		$editclass = intval(varset($_POST['userclass_editclass'], 0));
-		if ($editclass && (getperms('0') || check_class($editclass)))
+		$editclass_check = varset($_POST['userclass_editclass'], false);
+		$editclass = intval($editclass_check);
+		if (false !== $editclass_check && (getperms('0') || check_class($editclass)))
 		{
 			$i = 1;
 			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
