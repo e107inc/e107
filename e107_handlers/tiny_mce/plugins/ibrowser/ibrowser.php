@@ -18,6 +18,10 @@
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
 
+if(!defined('e_TOKEN_FREEZE'))
+{
+	define('e_TOKEN_FREEZE', true);
+}
 
 // unset $tinyMCE_imglib_include
 require_once("../../../../class2.php");
