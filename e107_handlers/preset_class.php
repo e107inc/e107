@@ -8,10 +8,9 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/preset_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ *  $URL$
+ *	$Revision$
+ *  $Id$
  */
 
 if(!defined('e107_INIT')) { exit(); }
@@ -50,27 +49,24 @@ class e_preset
 
 		if($_POST && $qry[0] == "savepreset")
 		{
-			$exclude_array = explode(',', $exclude_fields);
-
+			$exclude_array = explode(',',$exclude_fields);
+			$existing = $sql->db_Count("preset", "(*)", " WHERE preset_name='".$saveID."'  ") ? TRUE : FALSE;
 			foreach($_POST as $key => $value)
-			{	//TODO -  array values disabled for now, handle them in the future
-				if(!in_array($key, $exclude_array) && !is_array($value))
+			{
+				if (in_array($key,$exclude_array) || ($tp->toDB($key) != $key))
 				{
-					$value = $tp->toDB($value);
-					if($sql->db_Update("preset", "preset_value='$value'  WHERE preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
-					{
-
-					}
-					elseif($value != "" && !$sql->db_Select("preset", "*", "preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
-					{
-						$sql->db_Insert("preset", "0, '".$unique_id[$uid]."', '$key', '$value' ");
-					}
-
-					if($value == "")
-					{
-						$sql->db_Delete("preset", "preset_field ='".$key."' ");
-					}
+					unset($_POST[$key]);		// Remove any fields excluded from preset, and those with potentially dubious key names
 				}
+				$_POST[$key] = $tp->toDB($value);
+				
+			}
+			if ($existing)
+			{		// Delete any existing entries for this preset (else checkbox settings not updated)
+				$sql -> db_Delete("preset", "preset_name ='".$saveID."' ");
+			}
+			foreach($_POST as $key => $value)
+			{
+				$sql -> db_Insert("preset", "0, '".$saveID."', '$key', '$value' ");
 			}
 			if(!$output)
 			{
