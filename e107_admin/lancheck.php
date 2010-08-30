@@ -241,13 +241,13 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	$message .= "<span>
 	<br /><br />
 	<input type='hidden' name='language' value='".$_POST['language']."' />
-    <input type='submit' name='ziplang' value=\"Generate Language Pack\" class='button' />
+    <input type='submit' name='ziplang' value=\"".LAN_CHECK_20."\" class='button' />
 	</span>
     </form>
 	<form name='refresh' method='post' action='".e_SELF."'>
 	<span>
 	<input type='hidden' name='language' value='".$_POST['language']."' />
-    <input type='submit' name='language_sel' value=\"Verify Again\" class='button' />
+    <input type='submit' name='language_sel' value=\"".LAN_CHECK_21."\" class='button' />
 	</span>
     </form>
 	</div>";
