@@ -39,7 +39,7 @@ define("LAN_ERROR_24", " was unsuccessful.");
 define("LAN_ERROR_25", "[1]: Unable to read core settings from database - Core settings exist but cannot be unserialized. Attempting to restore core backup ...");
 define("LAN_ERROR_26", "[2]: Unable to read core settings from database - non-existent core settings.");
 define("LAN_ERROR_27", "[3]: Core settings saved - backup made active.");
-define("LAN_ERROR_28", "[4]: No core backup found. Check that your database has valid content. If not, please run the <a href='".e_FILE."resetcore/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.");
+define("LAN_ERROR_28", "[4]: No core backup found. Check that your database has valid content. If not, please run the <a href='".e_FILE_ABS."resetcore/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.");
 define("LAN_ERROR_29", "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.");
 define("LAN_ERROR_30", "[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.");
 define("LAN_ERROR_31", "[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.");
