@@ -54,8 +54,8 @@ define("FR_LAN_16", "If you have edited this file in any way it will not pass th
 intentionally edited this file then you need not worry and can ignore this integrity check fail. If however
 the file was edited by someone else without authorisation you may want to re-upload the proper version of
 this file from the e107 zip.");
-define("FR_LAN_17", "If you are a CVS user");
-define("FR_LAN_18", "If you run checkouts of the e107 CVS on your site instead of the official e107 stable 
+define("FR_LAN_17", "If you are an SVN user");
+define("FR_LAN_18", "If you run checkouts of the e107 SVN on your site instead of the official e107 stable 
 releases, then you will discover files have failed integrity check because they have been edited by a dev 
 after the latest core image snapshot was created.");
 define("FR_LAN_19", "files failed");
