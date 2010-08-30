@@ -181,7 +181,7 @@ class e_parse
 
 		foreach ($ret as $s)
 		{
-			if (strpos($s, '[code') === FALSE)
+			if (substr($s, 0, 5) != '[code')
 			{
 				$vl = array();
 				$t = html_entity_decode(rawurldecode($s), ENT_QUOTES, CHARSET);
