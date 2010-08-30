@@ -353,11 +353,9 @@ function check_lan_errors($english,$translation,$def)
 	$eng_line = $english[$def];
 	$trans_line = $translation[$def];
 	
-// return $eng_line."<br />".$trans_line."<br /><br />";
+	// return $eng_line."<br />".$trans_line."<br /><br />";
 		
 	$error = array();
-	
-	// LANS? If you can't understand English, you shouldn't be translating! ;-)
 	
 	if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
 	{
@@ -389,11 +387,14 @@ function check_lan_errors($english,$translation,$def)
 		$error[] = $def. ": Missing e107coders.org URL";
 	}
 	
-	if(strlen(strip_tags($eng_line))!= strlen($eng_line))
+	if(strip_tags($eng_line) != $eng_line)
 	{
-		if(strpos($trans_line,"<")===FALSE)
-		{
-			$error[] = $def. ": Missing HTML tags"; // Line:".htmlentities($trans_line);		
+		$stripped = strip_tags($trans_line);
+				
+		if(($stripped == $trans_line))
+		{					
+			// echo "<br /><br />".$def. "<br />".$stripped."<br />".$trans_line;
+			$error[] = $def. ": Missing HTML tags" ; 		
 		}
 	}
 	
@@ -522,6 +523,8 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 
 	$baselang = get_comp_lan_phrases($comp_dir."/languages/","English",1);
 	$check = get_comp_lan_phrases($comp_dir."/languages/",$target_lan,1);
+
+	
 
 	$text = "";
 	$keys = array_keys($baselang);
@@ -702,85 +705,53 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 
 }
 
-function fill_phrases_array($data,$type) {
+function fill_phrases_array($data,$type)
+{
+
+	$inComment = FALSE;
 
 	$retloc = array();
-
-	foreach($data as $line){
+	
+	foreach($data as $line)
+	{
+		$line = trim($line);
 		
-		$line = str_replace('define (',"define(",$line);
+		if(strpos($line,"/*")!==FALSE )
+		{
+			$inComment = TRUE;
+		}
 		
-		//echo "line--> ".$line."<br />";
-		if (strpos($line,"define(") !== FALSE && strpos($line,");") === FALSE)
+		if(strpos($line,"*/")!==FALSE )
 		{
-			$indef=1;
-			$bigline="";
-			// echo "big1 -->".$line."<br />";
+			$inComment = FALSE;
 		}
-		if ($indef)
+				
+		if (strlen($line) == 0 || substr($line,0,2) == "//" || $inComment==TRUE )
 		{
-			$bigline.=str_replace("\n","",$line);
-			// echo "big2 -->".$line."<br />";
-		}
-		if (strpos($line,"define(") === FALSE && strpos($line,");") !== FALSE)
-		{
-			$indef=0;
-			$we_have_bigline=1;
-			// echo "big3 -->".$line."<br />";
-		}
-
+			continue;	
+		} 
+		
 		if(strpos($line,"setlocale(") !== FALSE)
 		{
-			$indef=1;
-			$we_have_bigline=0;
+			$pos = substr(strstr($line,","),1);
+			$rep = array(");","\n",'""');
+			$val = str_replace($rep,"",$pos);
+			$retloc[$type]['LC_ALL']= $val;
+			continue;
 		}
-
-		if ((strpos($line,"define(") !== FALSE && strpos($line,");") !== FALSE && substr(ltrim($line),0,2) != "//") || $we_have_bigline || strpos($line,"setlocale(") !== FALSE)
+			
+		// Steve's magic. 			
+		if(preg_match('~^DEFINE\s*\(\s*(\'|\")(.+?)(?:\\1)\s*\,\s*(\'|\")(.+?)(?:\\3\)\s*;)~i', $line, $matches))
 		{
-
-			if ($we_have_bigline)
+			if(!isset($retloc[$type][$matches[2]]))
 			{
-				$we_have_bigline=0;
-				$line=$bigline;
-				// echo "big -->".$line."<br />";
-			}
-			$ndef = "";
-			//echo "_ndefline -->".$line."<br />";
-			if (strpos($line,"defined(") !== FALSE )
-			{
-				$ndef = "ndef++";
-				$line = substr($line,strpos($line,"define("));
-			}
-
-			if(strpos($line,"setlocale(") !== FALSE)
-			{
-				$pos = substr(strstr($line,","),1);
-				$rep = array(");","\n",'""');
-				$val = str_replace($rep,"",$pos);
-				$retloc[$type]['LC_ALL']= $val;
-//				$retloc['orig']['LC_ALL']= "'en'";
-			}
-			else
-			{
-
-				//echo "ndefline: ".$line."<br />";
-				if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$matches) ||
-				preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$matches) ||
-				preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$matches) ||
-				preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$matches) ||
-				preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$matches) ||
-				preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$matches))
-				{
-					//echo "get_lan -->".$matches[1]." :: ".$ndef.$matches[2]."<br />";
-					if(!isset($retloc[$type][$matches[1]]))
-					{
-						$retloc[$type][$matches[1]]= $ndef.$matches[2];
-					}
-				}
-			}
-		}
+				$retloc[$type][$matches[2]]= $ndef.$matches[4];
+				// echo "get_lan -->".$matches[2]." :: ".$ndef.$matches[4]."<br />";
+			}	
+		}	
+	
 	}
-
+	
 	return $retloc;
 }
 
