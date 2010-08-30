@@ -18,7 +18,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class e_preset {
+class e_preset 
+{
 
 	var $form;
 	var $page;
@@ -26,38 +27,38 @@ class e_preset {
 
 	function save_preset($exclude_fields = '')    // Comma separated list of fields not to save
 	{
-	global $sql,$tp,$ns;
-	$qry = explode(".",e_QUERY);
-	$unique_id = is_array($this->id) ? $this->id : array($this->id);
-	$uid = $qry[1];
+		global $sql, $ns, $tp;
+		$qry = explode(".", e_QUERY);
+		$unique_id = is_array($this->id) ? $this->id : array($this->id);
+		$uid = $qry[1];
 
-	if($_POST && $qry[0] =="savepreset")
-	{
-	  $exclude_array = explode(',',$exclude_fields);
-	  foreach($_POST as $key => $value)
-	  {
-	    if (!in_array($key,$exclude_array))
+		if($_POST && $qry[0] == "savepreset")
 		{
-		  $value = $tp->toDB($value);
-		  if ($sql -> db_Update("preset", "preset_value='$value'  WHERE preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
-		  {
-
-		  } 
-		  elseif ($value !="" && !$sql -> db_Select("preset","*","preset_name ='".$unique_id[$uid]."' AND preset_field ='$key' "))
-		  {
-			$sql -> db_Insert("preset", "0, '".$unique_id[$uid]."', '$key', '$value' ");
-		  }
-
-		  if($value == "")
-		  {
-			$sql -> db_Delete("preset", "preset_field ='".$key."' ");
-		  }
+			$saveID = $tp -> toDB($unique_id[$uid], true);
+			$exclude_array = explode(',',$exclude_fields);
+			$existing = $sql->db_Count("preset", "(*)", " WHERE preset_name='".$saveID."'  ") ? TRUE : FALSE;
+			foreach($_POST as $key => $value)
+			{
+				if (in_array($key,$exclude_array) || ($tp->toDB($key) != $key))
+				{
+					unset($_POST[$key]);		// Remove any fields excluded from preset, and those with potentially dubious key names
+				}
+				$_POST[$key] = $tp->toDB($value);
+				
+			}
+			if ($existing)
+			{		// Delete any existing entries for this preset (else checkbox settings not updated)
+				$sql -> db_Delete("preset", "preset_name ='".$saveID."' ");
+			}
+			foreach($_POST as $key => $value)
+			{
+				$sql -> db_Insert("preset", "0, '".$saveID."', '$key', '$value' ");
+			}
+			$ns -> tablerender(LAN_SAVED, LAN_PRESET_SAVED);
 		}
-	  }
-	  $ns -> tablerender(LAN_SAVED, LAN_PRESET_SAVED);
-	}
 
-		if ($_POST['delete_preset'] && e_QUERY=="clr_preset"){
+		if ($_POST['delete_preset'] && e_QUERY=="clr_preset")
+		{
 			$del = $_POST['del_id'];
 			$text = ($sql -> db_Delete("preset", "preset_name ='".$unique_id[$del]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED;
 			$ns -> tablerender($text, LAN_PRESET_DELETED);
@@ -67,11 +68,15 @@ class e_preset {
 
 // ------------------------------------------------------------------------
 
-	function read_preset($unique_id){
+	function read_preset($unique_id)
+	{
 		global $sql,$tp;
-		if (!$_POST){
-			if ($sql -> db_Select("preset", "*", "preset_name ='$unique_id' ")){
-				while ($row = $sql-> db_Fetch()){
+		if (!$_POST)
+		{
+			if ($sql -> db_Select("preset", "*", "preset_name ='$unique_id' "))
+			{
+				while ($row = $sql-> db_Fetch())
+				{
 					extract($row);
 					$val[$preset_field] = $tp->toForm($preset_value);
 					$_POST[$preset_field] = $tp->toForm($preset_value);

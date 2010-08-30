@@ -51,14 +51,8 @@ $pst->id = array("admin_downloads","admin_dl_cat");
 
 $download = new download;
 require_once("auth.php");
-$pst->save_preset();  // unique name(s) for the presets - comma separated.
+$pst->save_preset('download_datestamp'); // save and render result using unique name. Don't save item datestamp
 
- /*
-One form example (no arrays needed)
-$pst->form = "myform"; // form id of the form that will have it's values saved.
-$pst->page = "download.php?create"; // display preset options on which page.
-$pst->save_preset("admin_downloads");  // unique name for the preset
-*/
 
 $rs = new form;
 $action = '';
@@ -779,6 +773,7 @@ class download
 		$download_status[2] = DOWLAN_124;
 		$preset = $pst->read_preset("admin_downloads");  // read preset values into array
 		extract($preset);
+		$download_datestamp = time();					// This isn't preset
 
 		if (!$sql->db_Select("download_category"))
 		{
@@ -1050,7 +1045,8 @@ class download
 		<td style='width:20%' class='forumheader3'>".LAN_DATESTAMP.":</td>
 		<td style='width:80%' class='forumheader3'>
 		";
-        if(!$download_datestamp){
+        if(!$download_datestamp)
+		{
         	$download_datestamp = time();
 	   	}
 		$cal_options['showsTime'] = false;
