@@ -127,19 +127,21 @@ class contentform{
 			$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
 			//start date
-			if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day']!='0' && $_POST['ne_day'] != "none" 
-			&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month']!='0' && $_POST['ne_month'] != "none" 
-			&& isset($_POST['ne_year']) && $_POST['ne_year']!='' && $_POST['ne_year']!='0' && $_POST['ne_year'] != "none" ){
-				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
-			}else{
+			if(isset($_POST['startdate']) && $_POST['startdate'] != "0" && $_POST['startdate'] != "")
+			{
+				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['startdate'].$TDPOST.$TRPOST;
+			}
+			else
+			{
 				$CONTENT_CONTENT_PREVIEW_STARTDATE='';
 			}
 			//end date
-			if( isset($_POST['end_day']) && $_POST['end_day']!='' && $_POST['end_day']!='0' && $_POST['end_day'] != "none" 
-			&& isset($_POST['end_month']) && $_POST['end_month']!='' && $_POST['end_month']!='0' && $_POST['end_month'] != "none" 
-			&& isset($_POST['end_year']) && $_POST['end_year']!='' && $_POST['end_year']!='0' && $_POST['end_year'] != "none" ){
-				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
-			}else{
+			if(isset($_POST['enddate']) && $_POST['enddate'] != "0" && $_POST['enddate'] != "")
+			{
+				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['enddate'].$TDPOST.$TRPOST;
+			}
+			else
+			{
 				$CONTENT_CONTENT_PREVIEW_ENDDATE='';
 			}
 			$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
@@ -209,7 +211,14 @@ class contentform{
 		}
 
 		function show_create_content($mode, $userid="", $username=""){
-			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage, $message, $row, $show, $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id, $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist, $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON, $e_event;
+			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage;
+			global $message, $row, $show;
+			global $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id;
+//			global $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year;
+			global $startdate, $enddate;
+			global $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist;
+			global $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON, $e_event;
+			global $cal;
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
@@ -505,12 +514,10 @@ class contentform{
 				$authordetails[0]					= $_POST['content_author_id'];
 				$authordetails[1]					= $_POST['content_author_name'];
 				$authordetails[2]					= $_POST['content_author_email'];
-				$ne_day								= $_POST['ne_day'];
-				$ne_month							= $_POST['ne_month'];
-				$ne_year							= $_POST['ne_year'];
-				$end_day							= $_POST['end_day'];
-				$end_month							= $_POST['end_month'];
-				$end_year							= $_POST['end_year'];
+
+				$startdate = $_POST['startdate'];
+				$enddate = $_POST['enddate'];
+
 				$row['content_comment']				= $_POST['content_comment'];
 				$row['content_rate']				= $_POST['content_rate'];
 				$row['content_pe']					= $_POST['content_pe'];
@@ -544,28 +551,24 @@ class contentform{
 			}
 
 			//prepare date variables
-			if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != ""){
-				$startdate	= getdate($row['content_datestamp']);
-				$ne_day		= $startdate['mday'];
-				$ne_month	= $startdate['mon'];
-				$ne_year	= $startdate['year'];
-			}else{
-				$ne_day		= (isset($ne_day) ? $ne_day : "0");
-				$ne_month	= (isset($ne_month) ? $ne_month : "0");
-				$ne_year	= (isset($ne_year) ? $ne_year : "0");
+			if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != "")
+			{
+				$startdate = strftime("%Y-%m-%d %H:%M", $row['content_datestamp']);
 			}
-			if(isset($row['content_enddate']) && $row['content_enddate'] != "0" && $row['content_enddate'] != ""){
-				$enddate	= getdate($row['content_enddate']);
-				$end_day	= $enddate['mday'];
-				$end_month	= $enddate['mon'];
-				$end_year	= $enddate['year'];
-			}else{
-				$end_day	= (isset($end_day) ? $end_day : "0");
-				$end_month	= (isset($end_month) ? $end_month : "0");
-				$end_year	= (isset($end_year) ? $end_year : "0");
+			else
+			{
+				$startdate = isset($startdate) ? $startdate : 0;
 			}
-			$smarray = getdate();
-			$current_year = $smarray['year'];
+			if(isset($row['content_enddate']) && $row['content_enddate'] != "0" && $row['content_enddate'] != "")
+			{
+				$enddate = strftime("%Y-%m-%d %H:%M", $row['content_datestamp']);
+			}
+			else
+			{
+				$enddate = isset($enddate) ? $enddate : 0;
+			}
+//			$smarray = getdate();
+//			$current_year = $smarray['year'];
 
 			//check which areas should be visible (dependent on options in admin:create category)
 			$hidden = '';
@@ -584,19 +587,20 @@ class contentform{
 			}
 			if($checkstartdate){
 				$show['startdate'] = true;
-			}else{
-				$show['startdate'] = false;
-				$hidden .= $rs -> form_hidden("ne_day", $ne_day);
-				$hidden .= $rs -> form_hidden("ne_month", $ne_month);
-				$hidden .= $rs -> form_hidden("ne_year", $ne_year);
 			}
-			if($checkenddate){
+			else
+			{
+				$show['startdate'] = false;
+				$hidden .= $rs -> form_hidden("startdate", $startdate);
+			}
+			if($checkenddate)
+			{
 				$show['enddate'] = true;
-			}else{
+			}
+			else
+			{
 				$show['enddate'] = false;
-				$hidden .= $rs -> form_hidden("end_day", $end_day);
-				$hidden .= $rs -> form_hidden("end_month", $end_month);
-				$hidden .= $rs -> form_hidden("end_year", $end_year);
+				$hidden .= $rs -> form_hidden("enddate", $enddate);
 			}
 			if( $checkicon || $checkattach || $checkimages ){
 				//prepare file lists
@@ -680,18 +684,26 @@ class contentform{
 
 			//category field (we only need to show the 'category selector' dropdownbox on the admin create page)
 			$CONTENTFORM_CATEGORY = '';
-			if($mode == "contentmanager"){
+			if($mode == "contentmanager")
+			{
 				if($qs[1] == "edit"){
 					$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
-				}else{
+				}
+				else
+				{
 					$hidden .= $rs -> form_hidden("parent1", intval($qs[2]));
 				}
 			}else{
-				if($mode == "submit"){
+				if($mode == "submit")
+				{
 					$hidden .= $rs -> form_hidden("parent1", intval($qs[2]));
-				}elseif($mode=='sa' && e_PAGE=='content_manager.php'){
+				}
+				elseif($mode=='sa' && e_PAGE=='content_manager.php')
+				{
 					$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
-				}else{
+				}
+				else
+				{
 					$parent = (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($row['content_parent']) ? $row['content_parent'] : "") );
 					$CONTENTFORM_CATEGORY = $aa -> ShowOption($parent, "createcontent");
 				}
@@ -708,8 +720,10 @@ class contentform{
 			$content_author_email_js	= ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
 
 			//retrieve the custom/preset data tags
-			if(!(isset($_POST['preview_content']) || isset($message))){
-				if( varsettrue($row['content_pref']) ){
+			if(!(isset($_POST['preview_content']) || isset($message)))
+			{
+				if( varsettrue($row['content_pref']) )
+				{
 					$custom = $eArrayStorage->ReadArray($row['content_pref']);
 				}
 			}
@@ -2021,6 +2035,14 @@ class contentform{
 			".$rs -> form_option(CONTENT_ORDER_LAN_9, ($content_pref['content_defaultorder'] == "orderaorder" ? "1" : "0"), "orderaorder")."
 			".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref['content_defaultorder'] == "orderdorder" ? "1" : "0"), "orderdorder")."
 			".$rs -> form_select_close();
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_allow_display_times
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_178;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_allow_display_times", "1", ($content_pref['content_allow_display_times'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_allow_display_times", "0", ($content_pref['content_allow_display_times'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."
+			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			//content_upload_image_size_
