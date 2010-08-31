@@ -27,9 +27,15 @@ include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
 
 include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+
+
+
 require_once(e_HANDLER."userclass_class.php");
 require_once($plugindir."handlers/content_class.php");
 $aa = new content;
@@ -558,5 +564,12 @@ function admin_content_config_adminmenu(){
 // ##### End --------------------------------------------------------------------------------------
 
 require_once(e_ADMIN."footer.php");
+
+function headerjs()
+{
+	global $cal;
+	return $cal->load_files();
+}
+
 
 ?>

@@ -704,4 +704,9 @@ define("CONTENT_ADMIN_OPT_LAN_171", "amount of levels");
 define("CONTENT_ADMIN_OPT_LAN_172", "numeric value to show that amount of levels of subcategories of the category tree. leave blank to show all levels.");
 define("CONTENT_ADMIN_OPT_LAN_173", "include 'home' in the breadcrumb");
 define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the breadcrumb");
+
+// Gap for compatibility with 0.8
+
+define('CONTENT_ADMIN_OPT_LAN_178', 'Start times for items');
+
 ?>

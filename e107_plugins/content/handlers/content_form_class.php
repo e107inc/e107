@@ -144,16 +144,22 @@ class contentform
 		$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
 		//start date
-		if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-		$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
-		}else{
-		$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
+		if(isset($_POST['startdate']) && $_POST['startdate'] != "0" && $_POST['startdate'] != "")
+		{
+			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['startdate'].$TDPOST.$TRPOST;
+		}
+		else
+		{
+			$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
 		}
 		//end date
-		if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-		$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
-		}else{
-		$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
+		if(isset($_POST['enddate']) && $_POST['enddate'] != "0" && $_POST['enddate'] != "")
+		{
+			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['enddate'].$TDPOST.$TRPOST;
+		}
+		else
+		{
+			$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
 		}
 		$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
 
@@ -226,6 +232,7 @@ class contentform
 	{
 		global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $plugintable, $plugindir, $pref, $eArrayStorage;
 		global $message, $stylespacer, $TOPIC_ROW_SPACER, $TOPIC_ROW, $TOPIC_ROW_NOEXPAND;
+		global $cal;
 
 		$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
@@ -532,12 +539,10 @@ class contentform
 			$authordetails[0]					= $_POST['content_author_id'];
 			$authordetails[1]					= $_POST['content_author_name'];
 			$authordetails[2]					= $_POST['content_author_email'];
-			$ne_day								= $_POST['ne_day'];
-			$ne_month							= $_POST['ne_month'];
-			$ne_year							= $_POST['ne_year'];
-			$end_day							= $_POST['end_day'];
-			$end_month							= $_POST['end_month'];
-			$end_year							= $_POST['end_year'];
+
+			$startdate = $_POST['startdate'];
+			$enddate = $_POST['enddate'];
+
 			$row['content_comment']				= $_POST['content_comment'];
 			$row['content_rate']				= $_POST['content_rate'];
 			$row['content_pe']					= $_POST['content_pe'];
@@ -639,7 +644,8 @@ class contentform
 		}
 
 		//text
-		if(e_WYSIWYG){
+		if(e_WYSIWYG)
+		{
 			$row['content_text'] = $tp->replaceConstants($row['content_text'], true);
 		}
 		require_once(e_HANDLER."ren_help.php");
@@ -664,15 +670,13 @@ class contentform
 			</td></tr></table>";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
-		if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != ""){
-			$startdate	= getdate($row['content_datestamp']);
-			$ne_day		= $startdate['mday'];
-			$ne_month	= $startdate['mon'];
-			$ne_year	= $startdate['year'];
-		}else{
-			$ne_day		= (isset($ne_day) ? $ne_day : "0");
-			$ne_month	= (isset($ne_month) ? $ne_month : "0");
-			$ne_year	= (isset($ne_year) ? $ne_year : "0");
+		if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != "")
+		{
+			$startdate = strftime("%Y-%m-%d %H:%M", $row['content_datestamp']);
+		}
+		else
+		{
+			$startdate = (isset($startdate) ? $startdate : "");
 		}
 
 		$smarray = getdate();
@@ -684,43 +688,33 @@ class contentform
 			$TOPIC_TOPIC = CONTENT_ADMIN_DATE_LAN_15;
 			$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_73;
 			$TOPIC_HELP = CONTENT_ADMIN_DATE_LAN_17;
-			$TOPIC_FIELD = "
-				".$rs -> form_select_open("ne_day")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
-				for($count=1; $count<=31; $count++){
-					$TOPIC_FIELD .= $rs -> form_option($count, (isset($ne_day) && $ne_day == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-				".$rs -> form_select_open("ne_month")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
-				for($count=1; $count<=12; $count++){
-					$TOPIC_FIELD .= $rs -> form_option($months[($count-1)], (isset($ne_month) && $ne_month == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-				".$rs -> form_select_open("ne_year")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
-				for($count=($current_year-5); $count<=($current_year+1); $count++){
-					$TOPIC_FIELD .= $rs -> form_option($count, (isset($ne_year) && $ne_year == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-			";
+			unset($cal_options);
+			unset($cal_attrib);
+			$cal_options['firstDay'] = 1; // pierwszy dzien tygodnia -> first day of the week 
+			$cal_options['showsTime'] = varset($content_pref['content_allow_display_times'], false); //pokazac czas -> show time
+			$cal_options['showOthers'] = false;
+			$cal_options['weekNumbers'] = true;
+			$cal_options['ifFormat'] = "%Y-%m-%d %H:%M";//opcje strftime() -> option strftime()
+			$cal_attrib['class'] = "tbox";
+			$cal_attrib['name'] = 'startdate';
+			$cal_attrib['value'] = $startdate;
+			$cal_attrib['size'] = 25;
+			$TOPIC_FIELD = $cal->make_input_field($cal_options, $cal_attrib);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-		}else{
-			$hidden .= $rs -> form_hidden("ne_day", $ne_day);
-			$hidden .= $rs -> form_hidden("ne_month", $ne_month);
-			$hidden .= $rs -> form_hidden("ne_year", $ne_year);
+		}
+		else
+		{
+			$hidden .= $rs -> form_hidden("startdate", $startdate);
 		}
 
 
-		if(isset($row['content_enddate']) && $row['content_enddate'] != "0" && $row['content_enddate'] != ""){
-			$enddate	= getdate($row['content_enddate']);
-			$end_day	= $enddate['mday'];
-			$end_month	= $enddate['mon'];
-			$end_year	= $enddate['year'];
-		}else{
-			$end_day	= (isset($end_day) ? $end_day : "0");
-			$end_month	= (isset($end_month) ? $end_month : "0");
-			$end_year	= (isset($end_year) ? $end_year : "0");
+		if(isset($row['content_enddate']) && $row['content_enddate'] != "0" && $row['content_enddate'] != "")
+		{
+			$enddate = strftime("%Y-%m-%d %H:%M", $row['content_datestamp']);
+		}
+		else
+		{
+			$enddate = (isset($enddate) ? $enddate : "");
 		}
 
 		if($checkenddate)
@@ -729,35 +723,28 @@ class contentform
 			$TOPIC_TOPIC = CONTENT_ADMIN_DATE_LAN_16;
 			$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_74;
 			$TOPIC_HELP = CONTENT_ADMIN_DATE_LAN_18;
-			$TOPIC_FIELD = "
-				".$rs -> form_select_open("end_day")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
-				for($count=1; $count<=31; $count++){
-					$TOPIC_FIELD .= $rs -> form_option($count, (isset($end_day) && $end_day == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-				".$rs -> form_select_open("end_month")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
-				for($count=1; $count<=12; $count++){
-					$TOPIC_FIELD .= $rs -> form_option($months[($count-1)], (isset($end_month) && $end_month == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-				".$rs -> form_select_open("end_year")."
-				".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
-				for($count=($current_year-5); $count<=($current_year+1); $count++){
-					$TOPIC_FIELD .= $rs -> form_option($count, (isset($end_year) && $end_year == $count ? "1" : "0"), $count);
-				}
-				$TOPIC_FIELD .= $rs -> form_select_close()."
-			";
+			unset($cal_options);
+			unset($cal_attrib);
+			$cal_options['firstDay'] = 1; //pierwszy dzien tygodnia
+			$cal_options['showsTime'] = varset($content_pref['content_allow_display_times'], false); //pokazac czas
+			$cal_options['showOthers'] = false;
+			$cal_options['weekNumbers'] = true;
+			$cal_options['ifFormat'] = "%Y-%m-%d %H:%M"; //strftime
+			$cal_attrib['class'] = "tbox";
+			$cal_attrib['name'] = 'enddate';
+			$cal_attrib['value'] = $enddate;
+			$cal_attrib['size'] = 25;
+			$TOPIC_FIELD = $cal->make_input_field($cal_options, $cal_attrib);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-		}else{
-			$hidden .= $rs -> form_hidden("end_day", $end_day);
-			$hidden .= $rs -> form_hidden("end_month", $end_month);
-			$hidden .= $rs -> form_hidden("end_year", $end_year);
+		}
+		else
+		{
+			$hidden .= $rs -> form_hidden("enddate", $enddate);
 		}
 
 		//$text .= $TOPIC_ROW_SPACER;
-		if( $checkicon || $checkattach || $checkimages ){
+		if( $checkicon || $checkattach || $checkimages )
+		{
 			//$text .= $TOPIC_ROW_SPACER;
 
 			//upload icon
@@ -2976,6 +2963,14 @@ class contentform
 			".$rs -> form_option(CONTENT_ORDER_LAN_9, ($content_pref['content_defaultorder'] == "orderaorder" ? "1" : "0"), "orderaorder")."
 			".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref['content_defaultorder'] == "orderdorder" ? "1" : "0"), "orderdorder")."
 			".$rs -> form_select_close()."
+			";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			//content_allow_display_times
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_178;
+			$TOPIC_FIELD = "
+			".$rs -> form_radio("content_allow_display_times", "1", ($content_pref['content_allow_display_times'] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_30."
+			".$rs -> form_radio("content_allow_display_times", "0", ($content_pref['content_allow_display_times'] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_SECTION_31."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 

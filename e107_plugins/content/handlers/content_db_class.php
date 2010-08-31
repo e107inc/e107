@@ -265,32 +265,48 @@ class contentdb
 				}
 			}
 
-			if($_POST['update_datestamp']){
+			$zam = array("-", ":", " ");
+			if($_POST['update_datestamp'])
+			{
 				$starttime = time();
-			}else{
-				if( isset($_POST['ne_day']) && $_POST['ne_day']!='' && $_POST['ne_day']!='0' && $_POST['ne_day'] != "none" 
-				&& isset($_POST['ne_month']) && $_POST['ne_month']!='' && $_POST['ne_month']!='0' && $_POST['ne_month'] != "none" 
-				&& isset($_POST['ne_year']) && $_POST['ne_year']!='' && $_POST['ne_year']!='0' && $_POST['ne_year'] != "none" ){
-					$newstarttime = mktime( 0, 0, 0, intval($_POST['ne_month']), intval($_POST['ne_day']), intval($_POST['ne_year']));
-				}else{
+			}
+			else
+			{
+				if(isset($_POST['startdate']) && $_POST['startdate'] != "0" && $_POST['startdate'] != "")
+				{
+					$newstarttime = str_replace($zam, "*", $_POST['startdate']);
+					$newstarttime = explode("*", $newstarttime);
+					$newstarttime = mktime($newstarttime[3], $newstarttime[4], 0, $newstarttime[1], $newstarttime[2], $newstarttime[0]);
+				}
+				else
+				{
 					$newstarttime = time();
 				}
-				if(isset($_POST['content_datestamp']) && $_POST['content_datestamp'] != "" && $_POST['content_datestamp'] != "0"){
-					if($newstarttime != $starttime){
+				if(isset($_POST['content_datestamp']) && $_POST['content_datestamp'] != "" && $_POST['content_datestamp'] != "0")
+				{
+					if($newstarttime != $starttime)
+					{
 						$starttime = $newstarttime;
-					}else{
+					}
+					else
+					{
 						$starttime = intval($_POST['content_datestamp']);
 					}
-				}else{
+				}
+				else
+				{
 					$starttime = time();
 				}
 			}
 
-			if( isset($_POST['end_day']) && $_POST['end_day']!='' && $_POST['end_day']!='0' && $_POST['end_day'] != "none" 
-				&& isset($_POST['end_month']) && $_POST['end_month']!='' && $_POST['end_month']!='0' && $_POST['end_month'] != "none" 
-				&& isset($_POST['end_year']) && $_POST['end_year']!='' && $_POST['end_year']!='0' && $_POST['end_year'] != "none" ){
-				$endtime = mktime( 0, 0, 0, intval($_POST['end_month']), intval($_POST['end_day']), intval($_POST['end_year']));
-			}else{
+			if(isset($_POST['enddate']) && $_POST['enddate'] != "0" && $_POST['enddate'] != "")
+			{
+					$endtime = str_replace($zam, "*", $_POST['enddate']);
+					$endtime = explode("*", $endtime);
+					$endtime = mktime($endtime[3], $endtime[4], 0, $endtime[1], $endtime[2], $endtime[0]);
+			}
+			else
+			{
 				$endtime = "0";
 			}
 

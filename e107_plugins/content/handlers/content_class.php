@@ -151,6 +151,7 @@ class content{
 			$content_pref['content_nextprev'] = "1";						//use nextprev buttons
 			$content_pref['content_nextprev_number'] = "10";				//how many items on a page
 			$content_pref['content_defaultorder'] = "orderddate";			//default sort and order method
+			$content_pref['content_allow_display_times'] = '0';				// Option to display times with start/end dates
 			//upload icon/image size handling
 			$content_pref['content_upload_image_size'] = "500";				//resize size of uploaded image
 			$content_pref['content_upload_image_size_thumb'] = "100";		//resize size of created thumb on uploaded image
@@ -450,9 +451,9 @@ class content{
 
 			//insert default preferences into core
 			if($id == "0"){
-				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+				$num_rows = $sql -> db_Select("core", "*", "e107_name='{$plugintable}' ");
 				if ($num_rows == 0) {
-					$sql -> db_Insert("core", "'$plugintable', '' ");
+					$sql -> db_Insert("core", "'{$plugintable}', '' ");
 				}else{
 					$row = $sql -> db_Fetch();
 				}
