@@ -27,5 +27,6 @@ define("FOOTLAN_15", "Documentation");
 define("FOOTLAN_16", "Database");
 define("FOOTLAN_17", "Charset");
 define("FOOTLAN_18", "Site Theme");
+define("FOOTLAN_19", "Current Server Time");
 
 ?>

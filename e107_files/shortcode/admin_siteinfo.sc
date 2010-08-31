@@ -36,6 +36,10 @@ if (ADMIN)
 	<br />
 	".$install_date."
 	<br /><br />
+	<b>".FOOTLAN_19."</b>
+	<br />
+	".date('r')."
+	<br /><br />
 	<b>".FOOTLAN_9."</b>
 	<br />".
 	 preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
