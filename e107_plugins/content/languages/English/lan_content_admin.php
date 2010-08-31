@@ -693,4 +693,7 @@ define("CONTENT_ADMIN_OPT_LAN_174", "include the content start page in the bread
 define("CONTENT_ADMIN_OPT_LAN_175", "show menu only on content pages of this top level category?");
 define("CONTENT_ADMIN_OPT_LAN_176", "when assigning an icons, load all icons ? (default is disabled = only load tmp icons) useful if you want to reuse the same icons");
 define("CONTENT_ADMIN_OPT_LAN_177", "when assigning an attachment, load all ? (default is disabled = only load tmp attachments) useful if you want to reuse the same attachments");
+
+define('CONTENT_ADMIN_OPT_LAN_178', 'Start times for items');
+
 ?>

@@ -122,6 +122,7 @@ class content{
 		$cp['content_nextprev'] = '1';						//use nextprev buttons
 		$cp['content_nextprev_number'] = '10';				//how many items on a page
 		$cp['content_defaultorder'] = 'orderddate';			//default sort and order method
+		$cp['content_allow_display_times'] = '0';			// Option to display times with start/end dates
 		//upload icon/image size handling
 		$cp['content_upload_image_size'] = '500';			//resize size of uploaded image
 		$cp['content_upload_image_size_thumb'] = '100';		//resize size of created thumb on uploaded image

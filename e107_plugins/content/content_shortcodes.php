@@ -1454,53 +1454,41 @@ return $text;
 SC_END
 
 SC_BEGIN CONTENTFORM_DATESTART
-global $row, $rs, $show, $months, $ne_day, $ne_month, $ne_year, $current_year;
-if($show['startdate']===true){
-	$text = "
-	".$rs -> form_select_open("ne_day")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
-	for($count=1; $count<=31; $count++){
-		$text .= $rs -> form_option($count, (isset($ne_day) && $ne_day == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close()."
-	".$rs -> form_select_open("ne_month")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
-	for($count=1; $count<=12; $count++){
-		$text .= $rs -> form_option($months[($count-1)], (isset($ne_month) && $ne_month == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close()."
-	".$rs -> form_select_open("ne_year")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
-	for($count=($current_year-5); $count<=($current_year+1); $count++){
-		$text .= $rs -> form_option($count, (isset($ne_year) && $ne_year == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close();
+global $row, $rs, $show, $startdate, $cal, $content_pref;
+if($show['startdate']===true)
+{
+	unset($cal_options);
+	unset($cal_attrib);
+	$cal_options['firstDay'] = 1; // pierwszy dzien tygodnia -> first day of the week 
+	$cal_options['showsTime'] = varset($content_pref['content_allow_display_times'], false); //pokazac czas -> show time
+	$cal_options['showOthers'] = false;
+	$cal_options['weekNumbers'] = true;
+	$cal_options['ifFormat'] = "%Y-%m-%d %H:%M";//opcje strftime() -> option strftime()
+	$cal_attrib['class'] = "tbox";
+	$cal_attrib['name'] = 'startdate';
+	$cal_attrib['value'] = $startdate;
+	$cal_attrib['size'] = 25;
+	$text = $cal->make_input_field($cal_options, $cal_attrib);
 	return $text;
 }
 SC_END
 
 SC_BEGIN CONTENTFORM_DATEEND
-global $row, $rs, $show, $months, $end_day, $end_month, $end_year, $current_year;
-if($show['enddate']===true){
-	$text = "
-	".$rs -> form_select_open("end_day")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
-	for($count=1; $count<=31; $count++){
-		$text .= $rs -> form_option($count, (isset($end_day) && $end_day == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close()."
-	".$rs -> form_select_open("end_month")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
-	for($count=1; $count<=12; $count++){
-		$text .= $rs -> form_option($months[($count-1)], (isset($end_month) && $end_month == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close()."
-	".$rs -> form_select_open("end_year")."
-	".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
-	for($count=($current_year-5); $count<=($current_year+1); $count++){
-		$text .= $rs -> form_option($count, (isset($end_year) && $end_year == $count ? "1" : "0"), $count);
-	}
-	$text .= $rs -> form_select_close();
+global $row, $rs, $show, $enddate, $cal, $content_pref;
+if($show['enddate']===true)
+{
+	unset($cal_options);
+	unset($cal_attrib);
+	$cal_options['firstDay'] = 1; // pierwszy dzien tygodnia -> first day of the week 
+	$cal_options['showsTime'] = varset($content_pref['content_allow_display_times'], false); //pokazac czas -> show time
+	$cal_options['showOthers'] = false;
+	$cal_options['weekNumbers'] = true;
+	$cal_options['ifFormat'] = "%Y-%m-%d %H:%M";//opcje strftime() -> option strftime()
+	$cal_attrib['class'] = "tbox";
+	$cal_attrib['name'] = 'enddate';
+	$cal_attrib['value'] = $enddate;
+	$cal_attrib['size'] = 25;
+	$text = $cal->make_input_field($cal_options, $cal_attrib);
 	return $text;
 }
 SC_END

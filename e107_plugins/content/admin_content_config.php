@@ -16,7 +16,11 @@
 
 require_once("../../class2.php");
 
-if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
+if(!getperms("P"))
+{
+	header("location:".e_BASE."index.php"); 
+	exit(); 
+}
 $e_sub_cat = 'content';
 
 $plugindir = e_PLUGIN."content/";
@@ -24,6 +28,9 @@ require_once($plugindir."content_shortcodes.php");
 
 include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
 include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
+
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
@@ -547,5 +554,12 @@ function admin_content_config_adminmenu(){
 // ##### End --------------------------------------------------------------------------------------
 
 require_once(e_ADMIN."footer.php");
+
+function headerjs()
+{
+	global $cal;
+	return $cal->load_files();
+}
+
 
 ?>
