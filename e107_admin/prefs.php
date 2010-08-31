@@ -689,7 +689,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_215.":  <div class='smalltext'>".PRFLAN_216."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('post_script',$pref['post_script'],'off','nobody,admin,main,classes')."
+	".r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')."
 	</td>
 	</tr>\n
 
