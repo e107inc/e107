@@ -24,6 +24,8 @@
 */
 define('log_INIT', TRUE);
 
+//define('STATS_LOG_DEBUG', TRUE);			// Enables separate logging of first reference of each page to a separate file
+
 //$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
 $logVals = urldecode(base64_decode($_GET['lv']));
 parse_str($logVals, $vals);
@@ -68,7 +70,7 @@ if ($err_code = strip_tags((isset($vals['err_direct']) ? $vals['err_direct'] : '
 	$ref = addslashes(strip_tags(isset($vals['err_referer']) ? $vals['err_referer'] : ''));
 // Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
 //	$log_string = $err_code.",".$self.",".$ref;
-//  $logfp = fopen("logs/errpages.csv", 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+//  $logfp = fopen("logs/errpages.csv", 'a+'); fwrite($logfp, $log_string."\n"); fclose($logfp);
 	$err_code .= ':';
 }
 
@@ -136,6 +138,16 @@ else
 	if(preg_match("/".$pageDisallow."/i", $url)) return;
 	$pageInfo[$pageName] = array('url' => $url, 'ttl' => 1, 'unq' => 1);
 	$flag = TRUE;
+
+	if (defined('STATS_LOG_DEBUG'))
+	{	// log first access of each page (each day)
+		preg_match("#//(?:.*?)(/.*?)(\?|$)#si", $self, $match);
+		$longPage = isset($match[1]) ? $match[1] : 'blankpage';
+
+		//$log_string = $ip.",".$pageName.",".$longPage.",".$ref.",".$_SERVER['PHP_SELF'].",".$agent;
+		$log_string = $ip.",".$pageName.",".$longPage.",".$ref.",".$agent;
+		$logfp = fopen("logs/firstpages.log", 'a+'); fwrite($logfp, $log_string."\n"); fclose($logfp);
+	}
 }
 
 if(!strstr($ipAddresses, $ip)) 
