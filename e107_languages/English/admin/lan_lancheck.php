@@ -32,5 +32,10 @@ define("LAN_CHECK_18", "Language files in the standard format are NOT available 
 define("LAN_CHECK_19", "Non-UTF-8 characters found!");
 define("LAN_CHECK_20", "Generate Language Pack");
 define("LAN_CHECK_21", "Verify Again");
+define("LAN_CHECK_22", "Theme");
+define("LAN_CHECK_23", "Errors Found");
+define("LAN_CHECK_24", "Summary");
+define("LAN_CHECK_25", "Themes");
+define("LAN_CHECK_26", "File");
 
 ?>

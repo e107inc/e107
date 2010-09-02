@@ -219,7 +219,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 
 	$theme_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='fcaption'>Theme</td>
+	<td class='fcaption'>".LAN_CHECK_22."</td>
 	<td class='fcaption'>".LAN_CHECK_16."</td>
 	<td class='fcaption'>".$_POST['language']."</td>
 	<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
@@ -237,7 +237,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	
 	$icon = ($_SESSION['lancheck_'.$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
 	
-	$message .= "<div>".$icon." Errors Found: ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
+	$message .= "<div>".$icon." ".LAN_CHECK_23.": ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
 	$message .= "<span>
 	<br /><br />
 	<input type='hidden' name='language' value='".$_POST['language']."' />
@@ -252,12 +252,12 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
     </form>
 	</div>";
 		
-	$ns -> tablerender("Summary: ".$_POST['language'],$message);
+	$ns -> tablerender(LAN_CHECK_24.": ".$_POST['language'],$message);
 
 	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language'], $core_text);
 	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language']."/admin", $core_admin);
 	$ns -> tablerender(ADLAN_CL_7, $plug_text);
-	$ns -> tablerender("Themes", $theme_text);
+	$ns -> tablerender(LAN_CHECK_25, $theme_text);
 	
 	require_once(e_ADMIN."footer.php");
 	exit;
@@ -273,7 +273,7 @@ function check_core_lanfiles($checklan,$subdir=''){
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption'>".LAN_CHECK_16."</td>
-	<td class='fcaption'>".$_POST['language']." File</td>
+	<td class='fcaption'>".$_POST['language']." ".LAN_CHECK_26."</td>
 	<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
 
 	$keys = array_keys($English);
@@ -522,9 +522,7 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 	$comp_dir = $folder[$mode];
 
 	$baselang = get_comp_lan_phrases($comp_dir."/languages/","English",1);
-	$check = get_comp_lan_phrases($comp_dir."/languages/",$target_lan,1);
-
-	
+	$check = get_comp_lan_phrases($comp_dir."/languages/",$target_lan,1);	
 
 	$text = "";
 	$keys = array_keys($baselang);
