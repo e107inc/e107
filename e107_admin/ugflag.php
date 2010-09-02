@@ -14,17 +14,19 @@
  * $Author$
  *
  */
-require_once ("../class2.php");
-if(!getperms("9"))
+require_once ('../class2.php');
+if(!getperms('9'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit();
 }
 
+$e_sub_cat = 'maintain';
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-require_once (e_HANDLER."form_handler.php");
-require_once (e_HANDLER."message_handler.php");
+require_once (e_HANDLER.'form_handler.php');
+require_once (e_HANDLER.'message_handler.php');
 $emessage = eMessage::getInstance();
 $emessage_method = e_AJAX_REQUEST ? 'add' : 'addSession';
 
