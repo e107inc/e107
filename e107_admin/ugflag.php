@@ -31,6 +31,8 @@ if(!getperms('9'))
 	exit();
 }
 
+$e_sub_cat = 'maintain';
+
 if(isset($_POST['updatesettings']))
 {
 	$pref['maintainance_flag'] = intval($_POST['maintainance_flag']);
@@ -106,7 +108,7 @@ $text .= '
 			<br />
 ';
 
-$text .= '
+$text .= '</td>
 		</tr>
 ';
 

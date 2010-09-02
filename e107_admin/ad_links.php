@@ -376,6 +376,7 @@ $e_icon_array = array(
 	'language' => E_32_LANGUAGE,
 	'links' => E_32_LINKS,
 	'mail' => E_32_MAIL,
+	'maintain' => E_32_MAINTAIN,
 	'menus' => E_32_MENUS,
 	'meta' => E_32_META,
 	'newsfeed' => E_32_NEWSFEED,
