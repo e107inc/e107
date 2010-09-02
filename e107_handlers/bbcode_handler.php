@@ -23,6 +23,7 @@ class e_bbcode
 {
 	var $bbList;			// Caches the file contents for each bbcode processed
 	var $bbLocation;		// Location for each file - 'core' or a plugin name
+	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
 
 	function e_bbcode()
 	{
@@ -59,26 +60,42 @@ class e_bbcode
 		krsort($this->bbLocation);
 	}
 
-	// If $bb_strip is TRUE, all bbcodes are stripped. If FALSE, none are stripped.
+	// If $bbStrip is TRUE (boolean or word), all bbcodes are stripped. If FALSE, none are stripped.
 	// If a comma separated (lower case) list is passed, only the listed codes are stripped (and the rest are processed)
-	function parseBBCodes($value, $p_ID, $force_lower = 'default', $bb_strip = FALSE)
+	// If the first word of $bbStrip is 'PRE', sets pre-save mode. Any other parameters follow, comma separated
+	function parseBBCodes($value, $p_ID, $force_lower = 'default', $bbStrip = FALSE)
 	{
 		global $postID;
 		$postID = $p_ID;
 
 
-		if (strlen($value) <= 6) return $value;     // Don't waste time on trivia!
-		if ($force_lower == 'default') $force_lower = TRUE;	// Set the default behaviour if not overridden
-		$code_stack = array();				// Stack for unprocessed bbcodes and text
-		$unmatch_stack = array();				// Stack for unmatched bbcodes
-		$result = '';							// Accumulates fully processed text
-		$stacktext = '';						// Accumulates text which might be subject to one or more bbcodes
-		$nopro = FALSE;						// Blocks processing within [code]...[/code] tags
+		if (strlen($value) <= 6) return $value;   				// Don't waste time on trivia!
+		if ($force_lower == 'default') $force_lower = TRUE;		// Set the default behaviour if not overridden
+		$code_stack = array();									// Stack for unprocessed bbcodes and text
+		$unmatch_stack = array();								// Stack for unmatched bbcodes
+		$result = '';											// Accumulates fully processed text
+		$stacktext = '';										// Accumulates text which might be subject to one or more bbcodes
+		$nopro = FALSE;											// Blocks processing within [code]...[/code] tags
+		$this->preProcess = FALSE;
 
 		$strip_array = array();
-		if (!is_bool($bb_strip))
+		if (!is_bool($bbStrip))
 		{
-			$strip_array = explode(',',$bb_strip);
+			$strip_array = explode(',',$bbStrip);
+			if ($strip_array[0] == 'PRE')
+			{
+				$this->preProcess = TRUE;
+				unset($strip_array[0]);
+				if (count($strip_array) == 0) 
+				{
+					$bbStrip = FALSE;
+				}
+				elseif (in_array('TRUE', $strip_array))
+				{
+					$bbStrip = TRUE;
+				}
+				
+			}
 		}
 		$pattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 		// $matches[0] - same as the input text
@@ -110,7 +127,7 @@ class e_bbcode
 					if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
 					if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
 					{  // Got a code to process here
-						if (($bb_strip === TRUE) || in_array($bbword,$strip_array))
+						if (($bbStrip === TRUE) || in_array($bbword,$strip_array))
 						{
 							$is_proc = TRUE;		// Just discard this bbcode
 						}
@@ -198,7 +215,6 @@ class e_bbcode
 									$is_proc = TRUE;
 								}
 							}
-
 						}
 					}
 					// Next lines could be deleted - but gives better rejection of 'stray' opening brackets
@@ -272,15 +288,22 @@ class e_bbcode
 		{	// Find the file
 			if ($this->bbLocation[$code] == 'core')
 			{
-				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $code)).'.bb';
+				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $code));
 			}
 			else
 			{	// Add code to check for plugin bbcode addition
-				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code).'.bb';
+				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code);
 			}
-			if (file_exists($bbFile))
+			if (file_exists($bbFile.'.php'))
+			{	// Its a bbcode class file
+				require_once($bbFile.'.php');
+				//echo "Load: {$bbFile}.php<br />";
+				$className = 'bb_'.$code;
+				$this->bbList[$code] = new $className();
+			}
+			elseif (file_exists($bbFile.'.bb'))
 			{
-				$bbcode = file_get_contents($bbFile);
+				$bbcode = file_get_contents($bbFile.'.bb');
 				$this->bbList[$code] = $bbcode;
 			}
 			else
@@ -291,7 +314,19 @@ class e_bbcode
 		}
 		global $e107_debug;
 
+		if (is_object($this->bbList[$code]))
+		{
+			if ($this->preProcess)
+			{
+				return $this->bbList[$code]->bbPreSave($code_text, $param1);
+			}
+			return $this->bbList[$code]->bbPreDisplay($code_text, $param1);
+		}
+		if ($this->preProcess) return $full_text;		// No change
 
+		/**
+		 *	@todo - capturing output deprecated
+		 */
 		ob_start();
 		$bbcode_return = eval($bbcode);
 		$bbcode_output = ob_get_contents();
@@ -305,6 +340,55 @@ class e_bbcode
 			$bbcode_return = str_replace($exp_search, $exp_replace, $bbcode_return);
 		}
 		return $bbcode_output.$bbcode_return;
+	}
+}
+
+
+
+/**
+ *	Base class for bbcode handlers
+ *
+ *	Contains core routines for entry, security, logging....
+ */
+class e_bb_base
+{
+	/**
+	 *	Constructor
+	 */
+	public function e_bb_base()
+	{
+	}
+
+
+
+	/**
+	 *	Called prior to save of user-entered text
+	 *
+	 *	Allows initial parsing of bbcode, including the possibility of removing or transforming the enclosed text (as is done by the youtube processing)
+	 *
+	 *	This is the 'new' facility
+	 *
+	 *	@todo - make 'final' for PHP5
+	 */
+	public function bbPreSave(&$code_text, &$parm)
+	{
+		// Could add logging, security in here
+		return $this->toDB($code_text, $parm);
+	}
+
+
+
+	/**
+	 *	Process bbcode prior to display
+	 *
+	 *	Functionally this routine does exactly the same as the existing bbcodes
+	 *
+	 *	@todo - make 'final' for PHP5
+	 */
+	public function bbPreDisplay(&$code_text, &$parm)
+	{
+		// Could add logging, security in here
+		return $this->toHTML($code_text, $parm);
 	}
 }
 

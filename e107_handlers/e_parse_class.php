@@ -107,6 +107,8 @@ class e_parse
 
 	var $replaceVars = array();
 
+
+
 	function e_parse()
 	{
 		// Preprocess the supermods to be useful default arrays with all values
@@ -119,8 +121,9 @@ class e_parse
 		{
 			$this->e_modSet[$key] = TRUE;
 		}
-
 	}
+
+
 
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
@@ -233,7 +236,12 @@ class e_parse
 
 	function preFilter($data)
 	{
-		$ret = preg_replace_callback('#\[(\w+?)(?:([\=\s])(.*?)){0,1}\](.*?)\[\/\\1(.*?)\]#is', array($this, 'filtTag'), $data);
+		if (!is_object($this->e_bb)) 
+		{
+			require_once(e_HANDLER.'bbcode_handler.php');
+			$this->e_bb = new e_bbcode;
+		}
+		$ret = $this->e_bb->parseBBCodes($data, 0, 'default', 'PRE');			// $postID zero for now - probably doesn't mater
 		return $ret;
 	}
 
@@ -249,7 +257,7 @@ class e_parse
 	 *		[5] - text after the closing tag but before the closing bracket (if any)
 	 *		[6] -
 	 */
-	function filtTag($matches)
+/*	function filtTag($matches)
 	{
 		switch (strtolower($matches[1]))
 		{
@@ -259,9 +267,10 @@ class e_parse
 				return $matches[0];
 		}
 	}
+*/
 
 
-
+	/* Deprecated function - leave in for now for the use of fixyoutube.php */
 	function checkYoutube(&$matches)
 	{
 		$bbpars = array();
@@ -990,7 +999,8 @@ class e_parse
         // Start parse [bb][/bb] codes
         if ($parseBB === TRUE)
 		{
-            if (!is_object($this->e_bb)) {
+			if (!is_object($this->e_bb)) 
+			{
                 require_once(e_HANDLER.'bbcode_handler.php');
                 $this->e_bb = new e_bbcode;
             }

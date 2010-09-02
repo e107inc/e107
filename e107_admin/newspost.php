@@ -432,8 +432,8 @@ class newspost
 				}
 				else
 				{
-					$_POST['data'] .= '\n[[b]'.NWSLAN_49.' '.$submitnews_name.'[/b]]';
-					$_POST['data'] .= ($submitnews_file)?'\n\n[img]{e_IMAGE}newspost_images/'.$submitnews_file.'[/img]': '';
+					$_POST['data'] .= "\n[[b]".NWSLAN_49.' '.$submitnews_name.'[/b]]';
+					$_POST['data'] .= ($submitnews_file)?"\n\n[img]{e_IMAGE}newspost_images/".$submitnews_file.'[/img]': '';
 				}
 				$_POST['cat_id'] = $submitnews_category;
 				$_POST['data'] = $tp->dataFilter($_POST['data']);		// Filter any nasties
