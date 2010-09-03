@@ -234,7 +234,11 @@ echo "</body></html>";
 $page = ob_get_clean();
 
 $etag = md5($page);
-header("Cache-Control: must-revalidate");
+if(!defined('e_NOCACHE'))
+{
+	header("Cache-Control: must-revalidate");	
+}
+
 header("ETag: \"{$etag}\"");
 
 $pref['compression_level'] = 6;
