@@ -269,6 +269,10 @@ function check_core_lanfiles($checklan,$subdir=''){
 
 	$English = get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
 	$check = get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
+	
+	//print_a($check);
+	//return;
+	
 
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
@@ -714,21 +718,30 @@ function fill_phrases_array($data,$type)
 	{
 		$line = trim($line);
 		
-		if(strpos($line,"/*")!==FALSE )
+		if(strpos($line,"/*")!==FALSE && strpos($line,"*/")!==FALSE ) // ie. /* and */ on the same line. 
+		{
+			preg_match('#\/\*(.+?)\*\/#s', $line, $match);
+			$srch = "/*".$match[1]."*/";
+			$line = trim(str_replace($srch,'',$line));
+		}
+				
+		if(strpos($line,"/*")!==FALSE ) // grab any text prior to /*
 		{
 			$inComment = TRUE;
+			$line = trim(strstr($line,"/*",TRUE));
 		}
 		
-		if(strpos($line,"*/")!==FALSE )
+		if(strpos($line,"*/")!==FALSE ) // grab any text after */
 		{
 			$inComment = FALSE;
+			$line =  trim(substr(strstr($line,"*/"),2));	
 		}
 				
 		if (strlen($line) == 0 || substr($line,0,2) == "//" || $inComment==TRUE )
 		{
 			continue;	
 		} 
-		
+						
 		if(strpos($line,"setlocale(") !== FALSE)
 		{
 			$pos = substr(strstr($line,","),1);
