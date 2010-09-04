@@ -62,12 +62,12 @@ function forum_thread_moderate($p)
 
 function forum_delete_thread($thread_id)
 {
-	global $sql;
+	global $sql, $e_event;
 	$thread_id = (int)$thread_id;
 	require_once(e_PLUGIN.'forum/forum_class.php');
 	$f = new e107forum;
 	$qry = "
-	SELECT t.thread_forum_id, t.thread_parent, t.thread_user, f.forum_sub
+	SELECT t.thread_forum_id, t.thread_parent, t.thread_user, t.thread_thread, t.thread_name, f.forum_sub, f.forum_name
 	FROM #forum_t AS t
 	LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
 	WHERE t.thread_id = ".$thread_id;
@@ -95,6 +95,15 @@ function forum_delete_thread($thread_id)
 			// update lastpost info
 			$f->update_lastpost('thread', $row['thread_parent']);
 			$f->update_lastpost('forum', $row['thread_forum_id']);
+			
+			// fire event 'forumpostdelete'
+			$edata_fo = array(
+				"post"				=> $row['thread_thread'],
+				"poster"			=> (intval($tmp[0]) ? $tmp[1] : "Anonymous"),
+				"forum_name"	=> $row['forum_name'],
+				"deleter"			=> USERNAME);
+			$e_event -> trigger("forumpostdelete", $edata_fo);
+			
 			$ret = FORLAN_154;
 		}
 		else
@@ -113,6 +122,17 @@ function forum_delete_thread($thread_id)
 
 			// update lastpost info
 			$f->update_lastpost('forum', $row['thread_forum_id']);
+			
+			// fire event 'forumthreaddelete'
+			$tmp = explode(".", $row['thread_user']);
+			$edata_fo = array(
+				"subject"			=> $row['thread_name'],
+				"post"				=> $row['thread_thread'],
+				"poster"			=> (intval($tmp[0]) ? $tmp[1] : "Anonymous"),
+				"forum_name"	=> $row['forum_name'],
+				"deleter"			=> USERNAME);
+			$e_event -> trigger("forumthreaddelete", $edata_fo);
+
 			$ret = FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 		}
 

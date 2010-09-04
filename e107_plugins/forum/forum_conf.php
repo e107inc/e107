@@ -65,7 +65,7 @@ if (isset($_POST['move']))
 	$forum = new e107forum;
 	$new_forum = intval($_POST['forum_move']);
 	$replies = $sql->db_Select("forum_t", "*", "thread_parent='$thread_id' ");
-	$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_id ='".$thread_id."' ");
+	$sql->db_Select("forum_t", "thread_name, thread_user, thread_forum_id", "thread_id ='".$thread_id."' ");
 	$row = $sql->db_Fetch();
 	$old_forum = $row['thread_forum_id'];
 	$new_thread_name = $row['thread_name'];
@@ -88,6 +88,21 @@ if (isset($_POST['move']))
 
 	$forum->update_lastpost('forum', $old_forum, FALSE);
 	$forum->update_lastpost('forum', $new_forum, FALSE);
+	
+	// fire event 'forumthreadmove'
+	$tmp = explode(".", $row['thread_user']);
+	$sql->db_Select("forum", "forum_name", "forum_id='$old_forum' ");
+	$forum_old_row = 	$sql->db_Fetch();
+	$sql->db_Select("forum", "forum_name", "forum_id='$new_forum' ");
+	$forum_new_row = 	$sql->db_Fetch();
+	$edata_fo = array(
+		"old_thread_name"	=> $row['thread_name'],
+		"new_thread_name"	=> $new_thread_name,
+		"old_forum"				=> $forum_old_row['forum_name'],
+		"new_forum"				=> $forum_new_row['forum_name'],
+		"poster"			=> (intval($tmp[0]) ? $tmp[1] : "Anonymous"),
+		"mover"			=> USERNAME);
+	$e_event -> trigger("forumthreadmove", $edata_fo);
 	 
 	$message = FORLAN_9;
 	$url = e_PLUGIN."forum/forum_viewforum.php?".$new_forum;

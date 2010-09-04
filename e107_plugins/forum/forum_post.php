@@ -87,7 +87,7 @@ require_once(e_PLUGIN."forum/forum_shortcodes.php");
 require_once(e_HANDLER."ren_help.php");
 $gen = new convert;
 $fp = new floodprotect;
-global $tp;
+global $tp, $e_event;
 
 if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
 	$row = $sql->db_Fetch();
@@ -283,6 +283,21 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		}
 
 		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype, $forum_info['forum_sub']);
+
+		//fire event forumthreadcreate
+		if (isset($_POST['newthread']))
+		{
+			$edata_fo = array("subject" => $subject, "post" => $post, "poster" => $poster, "forum_name" => $forum_info['forum_name']);
+			$e_event -> trigger("forumthreadcreate", $edata_fo);
+		}
+		
+		// fire event 'forumpostcreate
+		if (isset($_POST['reply']))
+		{
+			$edata_fo = array("post" => $post, "poster" => $poster, "forum_name" => $forum_info['forum_name']);
+			$e_event -> trigger("forumpostcreate", $edata_fo);
+		}		
+		
 		if($iid === -1)
 		{
 			require_once(HEADERF);
@@ -291,6 +306,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			exit;
 		}
 		if (isset($_POST['reply'])) {
+			$reply = $iid;
 			$iid = $parent;
 		}
 
