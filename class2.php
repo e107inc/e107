@@ -179,39 +179,9 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 	}
 }
 
-// Experimental Code Below.
-// e-Token START
 
-// Start session asap
-session_start();
 
-// TODO - maybe add IP as well?
-define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
-if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
-{
-	// do not redirect, prevent dead loop, save server resources
-	die('Access denied');
-}	
-
-// Create new token only if not exists or session id is regenerated (footer.php)
-if(!isset($_SESSION[e_TOKEN_NAME]) || (isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
-{
-	// we should not break ajax calls this way
-	$_SESSION[e_TOKEN_NAME] = uniqid(md5(rand()), true);
-	// this will be reset in the end of the script (footer) if needed
-	unset($_SESSION['regenerate_'.e_TOKEN_NAME]);
-}
-
-// use it now
-define('e_TOKEN', $_SESSION[e_TOKEN_NAME]);
-
-// Debug
-//header('X-etoken-name: '.e_TOKEN_NAME);
-//header('X-etoken-value: '.e_TOKEN);
-//header('X-etoken-freeze: '.(defsettrue('e_TOKEN_FREEZE') ? 1 : 0));
-
-// e-Token END
 
 //
 // G: Retrieve Query data from URI
@@ -453,6 +423,42 @@ if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
 }
 
+
+// Experimental Code Below.
+// e-Token START
+
+// Start session asap
+session_start(); // Needs to be started after session.cookie_domain to avoid multi-language 'access-denied' issues. 
+
+// TODO - maybe add IP as well?
+define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
+
+if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
+{
+	// do not redirect, prevent dead loop, save server resources
+	die('Access denied');
+}	
+
+// Create new token only if not exists or session id is regenerated (footer.php)
+if(!isset($_SESSION[e_TOKEN_NAME]) || (isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
+{
+	// we should not break ajax calls this way
+	$_SESSION[e_TOKEN_NAME] = uniqid(md5(rand()), true);
+	// this will be reset in the end of the script (footer) if needed
+	unset($_SESSION['regenerate_'.e_TOKEN_NAME]);
+}
+
+// use it now
+define('e_TOKEN', $_SESSION[e_TOKEN_NAME]);
+
+// Debug
+//header('X-etoken-name: '.e_TOKEN_NAME);
+//header('X-etoken-value: '.e_TOKEN);
+//header('X-etoken-freeze: '.(defsettrue('e_TOKEN_FREEZE') ? 1 : 0));
+
+// e-Token END
+
+
 // start a session if session based login is enabled
 // if ($pref['user_tracking'] == "session")
 //{
@@ -535,7 +541,8 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	}
 	else
 	{
-		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
+		$cookieDom = ($domain_active) ? ".".e_DOMAIN : "";
+		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/", $cookieDom);
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE)
 		{
