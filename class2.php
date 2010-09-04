@@ -390,7 +390,7 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 // Ensure $pref['sitelanguage'] is set if upgrading from 0.6
 $pref['sitelanguage'] = (isset($pref['sitelanguage']) ? $pref['sitelanguage'] : 'English');
 
-if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)
+if(varset($pref['multilanguage_subdomain']) && e_DOMAIN && defset('MULTILANG_SUBDOMAIN') !== FALSE)
 {
 		$mtmp = explode("\n", $pref['multilanguage_subdomain']);
         foreach($mtmp as $val)
@@ -403,6 +403,7 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 
 		if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
 		{
+			define('MULTILANG_SUBDOMAIN',TRUE);
 			e107_ini_set("session.cookie_domain", ".".e_DOMAIN);
 			require_once(e_HANDLER."language_class.php");
 			$slng = new language;
@@ -523,7 +524,7 @@ define("e_PAGE", $page);
 if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
 {
 	// query support, for language selection splash pages. etc
-	if($_GET['elan'])
+	if(varsettrue($_GET['elan']))
 	{
 		$_POST['sitelanguage'] = str_replace(array(".", "/", "%"), "", $_GET['elan']);
 	}
@@ -535,14 +536,13 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
 	$sql2->mySQLlanguage = $_POST['sitelanguage'];
 
-	if ($pref['user_tracking'] == "session")
+	if(defset('MULTILANG_SUBDOMAIN')==TRUE || ($pref['user_tracking'] == "session"))
 	{
-		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-	}
+		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage']; 
+	} 
 	else
 	{
-		$cookieDom = ($domain_active) ? ".".e_DOMAIN : "";
-		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/", $cookieDom);
+		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE)
 		{
@@ -580,7 +580,8 @@ $language = $pref['sitelanguage'];
 // Get user language choice
 /// Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
 {
-	if ($pref['user_tracking'] == 'session')
+	
+	if(defset('MULTILANG_SUBDOMAIN')==TRUE || ($pref['user_tracking'] == "session"))
 	{
 		$user_language = (array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : '');
 	}
@@ -588,12 +589,14 @@ $language = $pref['sitelanguage'];
 	{
 		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
 	}
+		
 	// Strip $user_language
 	//TODO allow [a-z][A-Z][0-9]_
+	
 	$user_language = preg_replace('#\W#', '', $user_language);
 
 	// Is user language choice available?
-	if( ! in_array($user_language, $lanlist))
+	if(!in_array($user_language, $lanlist))
 	{
 		// Reset session
 		if(isset($_SESSION))
@@ -619,6 +622,7 @@ $language = $pref['sitelanguage'];
 		$sql2->mySQLlanguage = $user_language;
 	}
 }
+
 // We should have the language by now
 define('e_LANGUAGE', $language);
 
@@ -1660,7 +1664,12 @@ if(isset($pref['track_online']) && $pref['track_online']) {
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 
-function cookie($name, $value, $expire=0, $path = "/", $domain = "", $secure = 0) {
+function cookie($name, $value, $expire=0, $path = "/", $domain = "", $secure = 0)
+{
+	if(defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE)
+	{
+		$domain = e_DOMAIN;
+	}
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 
