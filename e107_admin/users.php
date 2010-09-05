@@ -300,7 +300,7 @@ if (isset ($_POST['adduser']))
 
 
 		$message = '';
-		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$loginname);
+		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$user_data['user_login']);
 		$user_data['user_join'] = time();
 		if ($userMethods->needEmailPassword())
 		{
@@ -325,7 +325,7 @@ if (isset ($_POST['adduser']))
 			{
 			// Send confirmation email to user
 				require_once (e_HANDLER.'mail.php');
-				$e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$loginname,$savePassword),USRLAN_185).USRLAN_186;
+				$e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$user_data['user_login'],$savePassword),USRLAN_185).USRLAN_186;
 				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
 				{
 					$message = USRLAN_188.'<br /><br />';
@@ -337,7 +337,7 @@ if (isset ($_POST['adduser']))
 			}
 			$message .= str_replace('--NAME--',$user_data['user_name'],USRLAN_174);
 			if (isset ($_POST['generateloginname']))
-				$message .= '<br /><br />'.USRLAN_173.': '.$loginname;
+				$message .= '<br /><br />'.USRLAN_173.': '.$user_data['user_login'];
 			if (isset ($_POST['generatepassword']))
 				$message .= '<br /><br />'.USRLAN_172.': '.$savePassword;
 			unset ($user_data);
