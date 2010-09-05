@@ -46,7 +46,7 @@ class bb_youtube extends e_bb_base
 	 *
 	 *	If user has posted the complete youtube 'copy and paste' text between the tags, parse it and generate the relevant bbcode
 	 */
-	protected function toDB($code_text, $parm)
+	function toDB($code_text, $parm)
 	{
 		$bbpars = array();
 		$widthString = '';
@@ -152,7 +152,7 @@ class bb_youtube extends e_bb_base
 	/**
 	 *	Translate youtube bbcode into the appropriate <EMBED> object
 	 */
-	protected function toHTML($code_text, $parm)
+	function toHTML($code_text, $parm)
 	{
 		if(empty($code_text)) return '';
 

@@ -120,7 +120,6 @@ class e_bbcode
 					$bbword = (isset($matches[2])) ? $matches[2] : '';
 					if($cont[1] != '/')
 					{ 
-						$bbstart = $cont;
 						$bbsep = varset($matches[4]);
 					}
 					if ($force_lower) $bbword = strtolower($bbword);
@@ -166,7 +165,7 @@ class e_bbcode
 											case 'bbcode' :
 												if (($code_stack[0]['code'] == $bbword) && ($code_stack[0]['numbers'] == $matches[3]))
 												{
-													$stacktext = $this->proc_bbcode($bbword,$code_stack[0]['param'],$stacktext,$bbparam, $bbsep, $bbstart.$stacktext.$cont);
+													$stacktext = $this->proc_bbcode($bbword,$code_stack[0]['param'],$stacktext,$bbparam, $code_stack[0]['bbsep'], $code_stack[0]['block'].$stacktext.$cont);
 													array_shift($code_stack);
 													// Intentionally don't terminate here - may be some text we can clean up
 													$bbword='';    // Necessary to make sure we don't double process if several instances on stack
@@ -195,11 +194,11 @@ class e_bbcode
 								{  // Single code to process
 									if (count($code_stack) == 0)
 									{
-										$result .= $this->proc_bbcode('_'.$bbword,$bbparam);
+										$result .= $this->proc_bbcode('_'.$bbword,$bbparam,'','','',$cont);
 									}
 									else
 									{
-										$stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam);
+										$stacktext .= $this->proc_bbcode('_'.$bbword,$bbparam,'','','',$cont);
 									}
 									$is_proc = TRUE;
 								}
@@ -210,7 +209,7 @@ class e_bbcode
 										array_unshift($code_stack,array('type' => 'text','code' => $stacktext));
 										$stacktext = '';
 									}
-									array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam));
+									array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam, 'bbsep' => $bbsep, 'block' => $cont));
 									if ($bbword == 'code') $nopro = TRUE;
 									$is_proc = TRUE;
 								}
@@ -268,6 +267,8 @@ class e_bbcode
 	// $param1 - any text after '=' in the opening code
 	// $code_text_par - text between the opening and closing codes
 	// $param2 - any text after '=' for the closing code
+	// $sep - character separating bbcode name and any parameters
+	// $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
 	{
 		global $tp, $postID, $code_text, $parm;
 		$parm = $param1;
@@ -355,7 +356,7 @@ class e_bb_base
 	/**
 	 *	Constructor
 	 */
-	public function e_bb_base()
+	function e_bb_base()
 	{
 	}
 
@@ -370,7 +371,7 @@ class e_bb_base
 	 *
 	 *	@todo - make 'final' for PHP5
 	 */
-	public function bbPreSave(&$code_text, &$parm)
+	function bbPreSave(&$code_text, &$parm)
 	{
 		// Could add logging, security in here
 		return $this->toDB($code_text, $parm);
@@ -385,7 +386,7 @@ class e_bb_base
 	 *
 	 *	@todo - make 'final' for PHP5
 	 */
-	public function bbPreDisplay(&$code_text, &$parm)
+	function bbPreDisplay(&$code_text, &$parm)
 	{
 		// Could add logging, security in here
 		return $this->toHTML($code_text, $parm);
