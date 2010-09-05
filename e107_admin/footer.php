@@ -365,8 +365,30 @@ unset($tmp1, $tmp1);
 
 
 $etag = md5($page);
-header("Cache-Control: must-revalidate");
-header("ETag: \"{$etag}\"");
+
+if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+{
+	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+	
+	$data = "IF_NON_MATCH = ".$IF_NONE_MATCH;
+	$data .= "\nEtag = ".$etag;
+	file_put_contents(e_ADMIN."etag_log.txt",$data);
+
+	
+	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
+	{
+		header('HTTP/1.1 304 Not Modified');
+		exit();	
+	}
+}
+
+
+
+if(!defined('e_NOCACHE'))
+{
+	header("Cache-Control: must-revalidate");	
+}
+
 
 $pref['compression_level'] = 6;
 if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
@@ -380,6 +402,7 @@ if (ini_get("zlib.output_compression") == false && function_exists("gzencode"))
 if (varset($pref['compress_output'], false) && $server_support == true && $browser_support == true)
 {
 	$level = intval($pref['compression_level']);
+	header("ETag: \"{$etag}-gzip\"");
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
 	header("Content-Length: ".strlen($page), true);
@@ -387,6 +410,15 @@ if (varset($pref['compress_output'], false) && $server_support == true && $brows
 }
 else
 {
+	if($browser_support==TRUE) 
+	{
+		header("ETag: \"{$etag}-gzip\"");	
+	}
+	else
+	{
+		header("ETag: \"{$etag}\"");	
+	}
+	
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
 }
