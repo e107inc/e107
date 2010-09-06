@@ -1277,7 +1277,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 	  // Now save the updated values
 	  // traverse the pref array, with toDB on everything
-	  $_pref = $tp -> toDB($pref, true, true);
+	  $_pref = $tp -> toDB($pref, true, true, 'pReFs');
 	  // Create the data to be stored
 	  $sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') ");
 	  ecache::clear('SitePrefs');

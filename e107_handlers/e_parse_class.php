@@ -125,6 +125,11 @@ class e_parse
 
 
 
+	/**
+	 *
+	 *	@param boolean|'no_html'|'pReFs' $mod [optional]. 
+	 *			The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
+	 */
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
 		global $pref;
@@ -142,10 +147,13 @@ class e_parse
 			{
 				$data = stripslashes($data);
 			}
-			$data = $this->preFilter($data);
-			if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+			if ($mod != 'pReFs')
 			{
-				$data = $this->dataFilter($data);
+				$data = $this->preFilter($data);
+				if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+				{
+					$data = $this->dataFilter($data);
+				}
 			}
 			if (isset($pref['post_html']) && check_class($pref['post_html']))
 			{
