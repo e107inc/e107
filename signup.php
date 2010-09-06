@@ -21,7 +21,7 @@ if((isset($_POST['newver']) || isset($_POST['register']) || isset($_POST['submit
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
 }
-
+define("e_NOCACHE",TRUE);
 require_once("class2.php");
 $qs = explode(".", e_QUERY);
 //@TODO what fix?

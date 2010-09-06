@@ -275,10 +275,6 @@ if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
 	}
 }
 
-if(!defined('e_NOCACHE'))
-{
-	header("Cache-Control: must-revalidate");	
-}
 
 $pref['compression_level'] = 6;
 if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip"))

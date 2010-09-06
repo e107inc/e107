@@ -182,27 +182,19 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 
 // Session start. 
 
+/**
+ * G: Retrieve Query data from URI
+ * (Until this point, we have no idea what the user wants to do)
+ */
 
-//
-// G: Retrieve Query data from URI
-//    (Until this point, we have no idea what the user wants to do)
-//
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	$e_QUERY = $matches[2];
-/*
-	if(strlen(e_MENU) == 2) // language code ie. [fr]
-	{
-        require_once(e_HANDLER."language_class.php");
-		$slng = new language;
-		define("e_LANCODE",TRUE);
-		$_GET['elan'] = $slng->convert(e_MENU);
-	}*/
-
-}else {
+}
+else
+{
 	define("e_MENU", "");
 	$e_QUERY = $_SERVER['QUERY_STRING'];
-  //	define("e_LANCODE", "");
 }
 
 //
@@ -239,14 +231,15 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
-//
-// H: Initialize debug handling
-// (NO E107 DEBUG CONSTANTS OR CODE ARE AVAILABLE BEFORE THIS POINT)
-// All debug objects and constants are defined in the debug handler
-// i.e. from here on you can use E107_DEBUG_LEVEL or any
-// E107_DBG_* constant for debug testing.
-//
-	require_once(e_HANDLER.'debug_handler.php');
+/**
+ * H: Initialize debug handling
+ * (NO E107 DEBUG CONSTANTS OR CODE ARE AVAILABLE BEFORE THIS POINT)
+ * All debug objects and constants are defined in the debug handler
+ * i.e. from here on you can use E107_DEBUG_LEVEL or any
+ * E107_DBG_* constant for debug testing.
+ */
+
+require_once(e_HANDLER.'debug_handler.php');
 
 if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug)) {
 	$db_debug->Mark_Time('Start: Init ErrHandler');
@@ -384,6 +377,31 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 //
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
+define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+define("e_PAGE", $page);
+	  
+/**
+ * Detect if we are in the Admin Area. 
+ * The following files are assumed to be admin areas:
+ * 1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
+ * 2. any plugin file starting with 'admin_'
+ * 3. any plugin file in a folder called admin/
+ * 4. any file that specifies $eplug_admin = TRUE before class2.php is included.
+ */
+$inAdminDir = FALSE;
+$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+$e107Path = str_replace($e107->base_path, "", e_SELF);				// Knock off the initial bits
+if	(
+		 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 								// Core admin directory
+	  || ($isPluginDir && (strpos(e_PAGE,"admin_") === 0 || strpos($e107Path, "admin/") !== FALSE)) // Plugin admin file or directory
+	  || (varsettrue($eplug_admin))																	// Admin forced
+	)
+{
+	$inAdminDir = TRUE;
+}
+
+// -----------------------------------------
 
 // Ensure $pref['sitelanguage'] is set if upgrading from 0.6
 $pref['sitelanguage'] = (isset($pref['sitelanguage']) ? $pref['sitelanguage'] : 'English');
@@ -403,9 +421,25 @@ $detect_language = $lng->isChanged(); // Must be before session_start(). Require
 // e-Token START
 $sql->db_Mark_Time('Start: e-Token creation');
 
+/**
+ * Set Cache Headers
+ * Must be set before session_start()
+ */
+if($inAdminDir || defined('e_NOCACHE'))
+{
+	 session_cache_limiter('nocache'); // don't cache the html. (Should fix back-button issues)
+}
+else
+{
+	header("Expires: Sat, 01 Jan 2000 00:00:00 GMT");
+	header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+	header("Cache-Control: post-check=0, pre-check=0",false);
+	session_cache_limiter("must-revalidate");	
+}
+
 // Start session after $prefs are available.
 session_start(); // Needs to be started after session.cookie_domain to avoid multi-language 'access-denied' issues. 
-
+header("Cache-Control: must-revalidate");	
 // TODO - maybe add IP as well?
 define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
@@ -440,7 +474,6 @@ define('e_TOKEN', $_SESSION[e_TOKEN_NAME]);
 //	session_start(); // start the session, even if it won't be used for login-tracking. 
 //}
 
-define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
@@ -492,8 +525,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl'])
 	}
 }
 
-$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
-define("e_PAGE", $page);
+
 
 $sql->db_Mark_Time('Start: Language Selection');
 
@@ -869,40 +901,11 @@ if(!is_array($menu_data)) {
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-
-// Work out which theme to use
-//----------------------------
-// The following files are assumed to use admin theme:
-//	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
-// 	  2. any plugin file starting with 'admin_'
-// 	  3. any plugin file in a folder called admin/
-// 	  4. any file that specifies $eplug_admin = TRUE;
-//
-// e_SELF has the full HTML path
-$inAdminDir = FALSE;
-$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
-$e107Path = str_replace($e107->base_path, "", e_SELF);				// Knock off the initial bits
-if	(
-		 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 								// Core admin directory
-	  || ($isPluginDir && (strpos(e_PAGE,"admin_") === 0 || strpos($e107Path, "admin/") !== FALSE)) // Plugin admin file or directory
-	  || (varsettrue($eplug_admin))																	// Admin forced
-	)
+// Load admin Language File. 
+if($inAdminDir == TRUE)
 {
-	$inAdminDir = TRUE;
-	// Load admin phrases ASAP
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');	
 }
-
-
-if($inAdminDir || defined("e_NOCACHE")) // Experimental fix for e-token admin 'access denied' issues. 
-{
-    header("Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-  	header("Cache-Control: no-store, no-cache"); 
-	header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache" );
-}
-
 
 if(!defined("THEME"))
 {

@@ -238,17 +238,17 @@ $etag = md5($page);
 if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
 {
 	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+	/*
+	$data = "IF_NON_MATCH = ".$IF_NONE_MATCH;
+	$data .= "\nEtag = ".$etag;
+	file_put_contents(e_THEME."templates/etag_log.txt",$data);
+	*/
 	
 	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
 	{
 		header('HTTP/1.1 304 Not Modified');
 		exit();	
 	}
-}
-
-if(!defined('e_NOCACHE'))
-{
-	header("Cache-Control: must-revalidate");	
 }
 
 $pref['compression_level'] = 6;
