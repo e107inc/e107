@@ -1493,7 +1493,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			break;
 
 		default:
-			$_user_pref = $tp->toDB($user_pref, true, true);
+			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
 			$tmp = $eArrayStorage->WriteArray($_user_pref);
 			$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 			return $tmp;

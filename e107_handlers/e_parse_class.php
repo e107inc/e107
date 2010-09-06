@@ -456,6 +456,7 @@ class e_parse
 	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
 	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
 	 * @param boolean $mod [optional] The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
+	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
 	 * @param boolean $original_author [optional]
 	 * @return string
 	 * @todo complete the documentation of this essential method
@@ -478,10 +479,13 @@ class e_parse
 			$data = stripslashes($data);
 		}
 
-		$data = $this->preFilter($data);
-		if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+		if ($mod != 'pReFs')
 		{
-			$data = $this->dataFilter($data);
+			$data = $this->preFilter($data);
+			if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+			{
+				$data = $this->dataFilter($data);
+			}
 		}
 
 		if (isset($pref['post_html']) && check_class($pref['post_html']))
@@ -505,9 +509,9 @@ class e_parse
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
-		if (strpos($mod, 'no_php') !== FALSE)
+		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($pref['php_bbcode']))
 		{
-			$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
+			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}
 
 		return $ret;
