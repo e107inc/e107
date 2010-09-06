@@ -9,9 +9,10 @@
  * Administration - Site Preferences
  *
  * $URL$
+ * $Revision$
  * $Id$
- *
-*/
+ * $Author$
+ */
 require_once ("../class2.php");
 
 if(isset($_POST['newver']))
@@ -763,6 +764,21 @@ $text .= "
 						<td class='control'>
 							".$e_userclass->uc_dropdown('post_html', $pref['post_html'], 'nobody,public,member,admin,main,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_117."</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td class='label'>".PRFLAN_215.":</td>
+						<td class='control'>
+							".r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')."
+							<div class='smalltext field-help'>".PRFLAN_216."</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_217.":</td>
+						<td class='control'>
+							".$frm->radio_switch('filter_script', varset($pref['filter_script'], 1))."
+							<div class='smalltext field-help'>".PRFLAN_218."</div>
 						</td>
 					</tr>
 					<tr>

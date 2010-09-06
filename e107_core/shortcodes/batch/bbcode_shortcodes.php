@@ -65,6 +65,8 @@ class bbcode_shortcodes
 		$bbcode['list'] = array($bbcode_func,"[list][/list]", LANHELP_36,"list.png");
 		$bbcode['img'] = array($bbcode_func,"[img][/img]", LANHELP_27,"image.png");
 		$bbcode['flash'] = array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
+		$bbcode['youtube'] = array($bbcode_func,"[youtube][/youtube]", LANHELP_48,"youtube.png");
+		$bbcode['sanitised'] = array('', '', '');
 
 		$bbcode['fontsize'] = array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
 		$bbcode['fontcol'] = array("expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);

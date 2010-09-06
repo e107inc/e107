@@ -21,7 +21,7 @@
 
 $BBCODE_TEMPLATE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -36,7 +36,7 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 	{BB_HELP}
 	<div class='field-spacer'><!-- --></div>
     {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -49,7 +49,7 @@ $BBCODE_TEMPLATE_ADMIN = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
 	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -71,7 +71,7 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
 	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -82,7 +82,7 @@ $BBCODE_TEMPLATE_CPAGE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."custom/}
-	{BB=preimage}{BB=prefile}{BB=flash}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 ?>

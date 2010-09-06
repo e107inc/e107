@@ -1,22 +1,19 @@
 <?php
 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration - Language file for Site Preferences
+ *
+ * $URL$
+ * $Revision$
+ * $Id$
+ * $Author$
+ */
 
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
@@ -72,11 +69,11 @@ define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
 define("PRFLAN_61", "Only enable SSL if <span class='error'>you are sure you know what you are doing!</span>");
-define("PRFLAN_76", "Enable Image-code verification during signup");
+define("PRFLAN_76", "Enable Image-code verification during signup.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_80", "Click here to view");
-define("PRFLAN_81", "Enable Image-code verification during login");
+define("PRFLAN_81", "Enable Image-code verification during login.");
 define("PRFLAN_83", "example");
 define("PRFLAN_87", "Comments/Posting");
 define("PRFLAN_88", "Turn on nested comments");
@@ -122,8 +119,8 @@ define("PRFLAN_110", "words longer than the length entered will be wrapped onto 
 define("PRFLAN_111", "Wrap long words in menu text");
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
-define("PRFLAN_116", "Allow HTML posting");
-define("PRFLAN_117", "This will allow users to post HTML code anywhere on the site, select the userclass to allow this.");
+define("PRFLAN_116", "Class which can post HTML");
+define("PRFLAN_117", "This will allow users to post most HTML code anywhere on the site, select the userclass to allow this.");
 define("PRFLAN_118", "Use Geshi for syntax highlighting");
 define("PRFLAN_119", "Geshi is an open source multi-language syntax highlighter, see http://qbnz.com/highlighter/ for more information");
 define("PRFLAN_120", "Default Geshi syntax language");
@@ -229,5 +226,10 @@ define('PRFLAN_211', 'Cannot make email address optional if required for validat
 define('PRFLAN_212', 'Value for --FIELD-- too high - changed to --VALUE--');
 define('PRFLAN_213', 'Value for --FIELD-- too low - changed to --VALUE--');
 define('PRFLAN_214', "Site Logo");
+define('PRFLAN_215', 'Class which can post &lt;script&gt; and similar tags');
+define('PRFLAN_216', '(Requires HTML posting rights as well)');
+define('PRFLAN_217', 'Filter HTML content');
+define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
+
 
 ?>
