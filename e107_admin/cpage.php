@@ -487,6 +487,7 @@ class page
 		$page_text = $tp->toDB($_POST['data']);
 	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end.
 		$pauthor = USERID;
+		$update = 0;			// Make sure some updates happen
 
 
 		if($mode)
@@ -495,6 +496,7 @@ class page
 
 			$menuname = ($type && vartrue($_POST['menu_name']) ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
 			$status = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'") ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			if ($status == E_MESSAGE_SUCCESS) $update++;
 
 			$mes = e107::getMessage();
 			$mes->add($message, $status);
@@ -541,7 +543,7 @@ class page
 					$e107cache->clear("sitelinks");
 				}
 			}
-			admin_update($update, 'update', LAN_UPDATED, false, false);
+			admin_update($update, 'update', LAN_UPDATED, false, false);		// Display result of update
 		}
 		else
 		{	// New page/menu

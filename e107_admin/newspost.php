@@ -1379,7 +1379,8 @@ class admin_newspost
 					$_POST['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
 					$_POST['news_body'] .= ($row['submitnews_file'])?"\n\n[img]{e_NEWSIMAGE}{$row['submitnews_file']}[/img]": "";
 				}
-
+				$_POST['data'] = $tp->dataFilter($_POST['data']);		// Filter any nasties
+				$_POST['news_title'] = $tp->dataFilter($_POST['news_title']);
 			}
 		}
 

@@ -477,6 +477,13 @@ class e_parse
 		{
 			$data = stripslashes($data);
 		}
+
+		$data = $this->preFilter($data);
+		if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+		{
+			$data = $this->dataFilter($data);
+		}
+
 		if (isset($pref['post_html']) && check_class($pref['post_html']))
 		{
 			$no_encode = TRUE;
@@ -505,6 +512,94 @@ class e_parse
 
 		return $ret;
 	}
+
+
+
+
+	/**
+	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
+	 *
+	 */
+	public function dataFilter($data)
+	{
+		$ans = '';
+		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
+					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', 'javascript:', 'vbscript:');
+
+		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+
+		foreach ($ret as $s)
+		{
+			if (substr($s, 0, 5) != '[code')
+			{
+				$vl = array();
+				$t = html_entity_decode(rawurldecode($s), ENT_QUOTES, CHARSET);
+				$t = str_replace(array("\r", "\n", "\t", "\v", "\f", "\0"), '', $t);
+				$t1 = strtolower($t);
+				foreach ($vetWords as $vw)
+				{
+					if (strpos($t1, $vw) !== FALSE)
+					{
+						$vl[] = $vw;		// Add to list of words found
+					}
+					if (substr($vw, 0, 1) == '<')
+					{
+						$vw = '</'.substr($vw, 1);
+						if (strpos($t1, $vw) !== FALSE)
+						{
+							$vl[] = $vw;		// Add to list of words found
+						}
+					}
+				}
+				// More checks here
+				if (count($vl))
+				{	// Do something
+					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
+				}
+			}
+			$ans .= $s;
+		}
+		return $ans;
+	}
+
+
+	private function modTag($match)
+	{
+		$ans = '';
+		if (isset($match[1]))
+		{
+			$chop = intval(strlen($match[1]) / 2);
+			$ans = substr($match[1], 0, $chop).'##xss##'.substr($match[1], $chop);
+		}
+		else
+		{
+			$ans = '?????';
+		}
+		return '[sanitised]'.$ans.'[/sanitised]';
+		
+	}
+
+
+
+	/**
+	 *	Processes data as needed before its written to the DB.
+	 *	Currently gives bbcodes the opportunity to do something
+	 *
+	 *	@param $data string - data about to be written to DB
+	 *	@return string - modified data
+	 */
+	public function preFilter($data)
+	{
+		if (!is_object($this->e_bb)) 
+		{
+			require_once(e_HANDLER.'bbcode_handler.php');
+			$this->e_bb = new e_bbcode;
+		}
+		$ret = $this->e_bb->parseBBCodes($data, USERID, 'default', 'PRE');			// $postID = logged in user here
+		return $ret;
+	}
+
+
 
 
 	function toForm($text)
@@ -1244,6 +1339,7 @@ class e_parse
 
 						default :		// Most bbcodes will just execute their normal file
 							// Just read in the code file and execute it
+							/// @todo Handle class-based bbcodes
 							$bbcode = file_get_contents($bbFile);
 					}   // end - switch ($matches[2])
 

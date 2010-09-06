@@ -375,7 +375,7 @@ if (empty($order))
 {
   $order = 'news_datestamp';
 }
-$order = $tp -> toDB($order, true);
+$order = $tp -> toDB($order, true);			/// @todo - try not to use toDB() - triggers prefilter
 
 $interval = $pref['newsposts'];
 

@@ -91,7 +91,7 @@ class e_online
 			$page = (strpos(e_SELF, 'forum_') !== FALSE) ? e_SELF.'.'.e_QUERY : e_SELF;
 			$page = (strpos(e_SELF, 'comment') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
 			$page = (strpos(e_SELF, 'content') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
-			$page = $e107->tp->toDB($page, true);
+			$page = $e107->tp->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
 			$ip = $e107->getip();
 			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
