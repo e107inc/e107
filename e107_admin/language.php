@@ -574,7 +574,7 @@ function zip_up_lang($language)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
-		$ret['message'] = "Please verify your language files ('Begin Verify') then try again.";
+		$ret['message'] = LANG_LAN_27; // "Please verify your language files ('Verify') then try again.";
 		return $ret;	
 	}
 	
@@ -609,19 +609,30 @@ function zip_up_lang($language)
 	if(!$locale =  find_locale($language))
 	{
 		$ret['error'] = TRUE;
-		$ret['message'] = "Please check that CORE_LC and CORE_LC2 have values in e107_languages/{$language}/{$language}.php and try again.";
+		$file = "e107_languages/{$language}/{$language}.php";
+		
+		$ret['message'] = str_replace("[lcpath]",$file,LANG_LAN_25); // "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.";
 		return $ret;	
 	};
+		
+	global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY;
+		
+	if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
+	{
+		$ret['error'] = TRUE;
+		$ret['message'] = LANG_LAN_26; // "Please make sure you are using default folder names in e107_config.php (eg. e107_language/, e107_plugins/ etc.) and try again.";
+		return $ret;	
+	}	
 		
 	$newfile = e_FILE."public/e107_".$ver."_".$language."_".$locale."-utf8.zip";
 	
 	$archive = new PclZip($newfile);
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language,'',0);
-	$core_admin = grab_lans(e_LANGUAGEDIR.$language."/admin/", $language,'',2);
-	$plugs = grab_lans(e_BASE."e107_plugins/", $language, $core_plugins); // standardized path. 
-	$theme  = grab_lans(e_BASE."e107_themes/", $language, $core_themes);
-	$docs = grab_lans(e_BASE."e107_docs/",$language);
-	$handlers = grab_lans(e_BASE."e107_handlers/",$language); // standardized path. 
+	$core_admin = grab_lans(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'',2);
+	$plugs = grab_lans(e_BASE.$PLUGINS_DIRECTORY, $language, $core_plugins); // standardized path. 
+	$theme  = grab_lans(e_BASE.$THEMES_DIRECTORY, $language, $core_themes);
+	$docs = grab_lans(e_BASE.$HELP_DIRECTORY,$language);
+	$handlers = grab_lans(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path. 
 		
 	$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
 	$data = implode(",", $file);

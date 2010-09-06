@@ -10,7 +10,7 @@
 +----------------------------------------------------------------------------+
 */
 define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6
-define("LAN_CHECK_2", "Begin Verify");
+define("LAN_CHECK_2", "Verify");
 define("LAN_CHECK_3", "Verification of");
 define("LAN_CHECK_4", "File missing!");
 define("LAN_CHECK_5", "Phrase missing!");

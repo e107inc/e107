@@ -38,4 +38,10 @@ define("LANG_LAN_24", "Generate");
 
 define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
 define("LANG_LAN_EML", "Please email your language pack to:");
+
+define("LANG_LAN_25", "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.");
+define("LANG_LAN_26", "Please make sure you are using default folder names in e107_config.php (eg. 'e107_language/', 'e107_plugins/' etc.) and try again.");
+define("LANG_LAN_27", "Please verify your language files ('Verify') then try again.");
+
+
 ?>
