@@ -1,4 +1,5 @@
 /* $Id$ */
+//<?
 if(ADMIN)
 {
 	global $ns, $sql, $pref;
@@ -22,18 +23,15 @@ if(ADMIN)
 		if(!getperms($sql->mySQLlanguage) && $lanperms)
 		{
 			$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
-			if($pref['user_tracking'] == "session")
+			if(defset('MULTILANG_SUBDOMAIN')==TRUE)
 			{
-				$_SESSION['e107language_'.$pref['cookie_name']] = $lanperms[0];
-				if($pref['multilanguage_subdomain'])
-				{
-					header("Location:".$slng->subdomainUrl($lanperms[0]));
-				}
+				$_SESSION['e_language'] = $lanperms[0];
+				header("Location:".$slng->subdomainUrl($lanperms[0]));
 			}
 			else
 			{
-				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
-				$_COOKIE['e107language_'.$pref['cookie_name']] = $lanperms[0];
+				setcookie('e107_language', $lanperms[0], time() + 86400, '/');
+				$_COOKIE['e107_language'] = $lanperms[0];
 			}
 		}
 		
@@ -52,7 +50,7 @@ if(ADMIN)
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= " (".$slng->convert($sql->mySQLlanguage).")
-			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none;white-space:nowrap' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode("<br />", $aff);

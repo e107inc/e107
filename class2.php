@@ -180,7 +180,7 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 }
 
 
-
+// Session start. 
 
 
 //
@@ -190,19 +190,19 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	$e_QUERY = $matches[2];
-
+/*
 	if(strlen(e_MENU) == 2) // language code ie. [fr]
 	{
         require_once(e_HANDLER."language_class.php");
 		$slng = new language;
 		define("e_LANCODE",TRUE);
 		$_GET['elan'] = $slng->convert(e_MENU);
-	}
+	}*/
 
 }else {
 	define("e_MENU", "");
 	$e_QUERY = $_SERVER['QUERY_STRING'];
-  	define("e_LANCODE", "");
+  //	define("e_LANCODE", "");
 }
 
 //
@@ -385,50 +385,25 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
 
-// let the subdomain determine the language (when enabled).
-
 // Ensure $pref['sitelanguage'] is set if upgrading from 0.6
 $pref['sitelanguage'] = (isset($pref['sitelanguage']) ? $pref['sitelanguage'] : 'English');
-
-if(varset($pref['multilanguage_subdomain']) && e_DOMAIN && defset('MULTILANG_SUBDOMAIN') !== FALSE)
-{
-		$mtmp = explode("\n", $pref['multilanguage_subdomain']);
-        foreach($mtmp as $val)
-		{
-        	if(e_DOMAIN == trim($val))
-			{
-            	$domain_active = TRUE;
-			}
-		}
-
-		if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
-		{
-			define('MULTILANG_SUBDOMAIN',TRUE);
-			e107_ini_set("session.cookie_domain", ".".e_DOMAIN);
-			require_once(e_HANDLER."language_class.php");
-			$slng = new language;
-	        if(!e_SUBDOMAIN)
-			{
-	        	$GLOBALS['elan'] = $pref['sitelanguage'];
-			}
-			elseif($eln = $slng->convert(e_SUBDOMAIN))
-			{
-	          	$GLOBALS['elan'] = $eln;
-			}
-		}
-}
-
 
 // if a cookie name pref isn't set, make one :)
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
 }
+$sql->db_Mark_Time('Start: Detect a Language Change');
 
 
-// Experimental Code Below.
+// Start Language Checking.
+require_once(e_HANDLER."language_class.php");
+$lng = new language;
+$detect_language = $lng->isChanged(); // Must be before session_start(). Requires $pref, e_DOMAIN, e_MENU;
+
 // e-Token START
+$sql->db_Mark_Time('Start: e-Token creation');
 
-// Start session asap
+// Start session after $prefs are available.
 session_start(); // Needs to be started after session.cookie_domain to avoid multi-language 'access-denied' issues. 
 
 // TODO - maybe add IP as well?
@@ -458,9 +433,8 @@ define('e_TOKEN', $_SESSION[e_TOKEN_NAME]);
 //header('X-etoken-freeze: '.(defsettrue('e_TOKEN_FREEZE') ? 1 : 0));
 
 // e-Token END
-
-
 // start a session if session based login is enabled
+
 // if ($pref['user_tracking'] == "session")
 //{
 //	session_start(); // start the session, even if it won't be used for login-tracking. 
@@ -471,7 +445,8 @@ define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST']
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
 // And, this is robust against hack attacks. Malignant users can put **anything** in HTTP_HOST!
-if($pref['redirectsiteurl'] && $pref['siteurl']) {
+if($pref['redirectsiteurl'] && $pref['siteurl'])
+{
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
@@ -520,120 +495,80 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
-// sort out the users language selection
-if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
+$sql->db_Mark_Time('Start: Language Selection');
+
+/**
+ * Set the User's Language
+ */
+if($detect_language) // Language-Change Trigger Detected. 
 {
-	// query support, for language selection splash pages. etc
-	if(varsettrue($_GET['elan']))
+	if(varset($_SESSION['e_language']) != $detect_language && ($lng->isValid($_SESSION['e_language'])))
 	{
-		$_POST['sitelanguage'] = str_replace(array(".", "/", "%"), "", $_GET['elan']);
+		$_SESSION['e_language'] = $detect_language;	
+		// echo "Assigning Session Language";	
 	}
-	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
-	{
-		$_POST['sitelanguage'] = $GLOBALS['elan'];
-	}
-
-	$sql->mySQLlanguage = $_POST['sitelanguage'];
-	$sql2->mySQLlanguage = $_POST['sitelanguage'];
-
-	if(defset('MULTILANG_SUBDOMAIN')==TRUE || ($pref['user_tracking'] == "session"))
-	{
-		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage']; 
-	} 
-	else
-	{
-		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
-		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-		if (strpos(e_SELF, ADMINDIR) === FALSE)
-		{
-			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
-			header("Location:".$locat);
-			exit();
-		}
-	}
-}
-
-// Multi-language options.
-
-// Get language list for rights checking.
-if( ! $tmplan = getcachedvars('language-list'))
-{
-	$handle = opendir(e_LANGUAGEDIR);
-	while ($file = readdir($handle))
-	{
-		// add only if e_LANGUAGEDIR.e_LANGUAGE/e_LANGUAGE
-		if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
-		{
-			$lanlist[] = $file;
-		}
-	}
-	closedir($handle);
-	$tmplan = implode(',', $lanlist);
-	cachevars('language-list', $tmplan);
-}
-// Save language flat list
-define('e_LANLIST', $tmplan);
-
-// Set $language fallback to $pref['sitelanguage'] for the time being
-$language = $pref['sitelanguage'];
-
-// Get user language choice
-/// Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
-{
 	
-	if(defset('MULTILANG_SUBDOMAIN')==TRUE || ($pref['user_tracking'] == "session"))
+	if(varset($_COOKIE['e_language'])!=$detect_language && (defset('MULTILANG_SUBDOMAIN') != TRUE))
 	{
-		$user_language = (array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : '');
+		setcookie('e107_language', $detect_language, time() + 86400, "/");
+		$_COOKIE['e107_language'] = $detect_language; // Used only when a user returns to the site. Not used during this session. 
+	}
+	else // Multi-lang SubDomains should ignore cookies and remove old ones if they exist. 
+	{
+		if(isset($_COOKIE['e107_language']))
+		{
+			unset($_COOKIE['e107_language']);
+		}
+	}
+	
+	$user_language = $detect_language;		
+}
+else // No Language-change Trigger Detected. 
+{	
+	if(isset($_SESSION['e_language']))
+	{
+		$user_language = $_SESSION['e_language'];
+	}
+	elseif(isset($_COOKIE['e107_language']) && ($user_language = $lng->isValid($_COOKIE['e107_language']))) 
+	{
+		$_SESSION['e_language'] = $user_language; 		
 	}
 	else
-	{
-		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
-	}
+	{	
+		$user_language = $pref['sitelanguage'];	
 		
-	// Strip $user_language
-	//TODO allow [a-z][A-Z][0-9]_
+		if(isset($_SESSION['e_language']))
+		{
+			unset($_SESSION['e_language']);
+		}
 	
-	$user_language = preg_replace('#\W#', '', $user_language);
-
-	// Is user language choice available?
-	if(!in_array($user_language, $lanlist))
-	{
-		// Reset session
-		if(isset($_SESSION))
+		if(isset($_COOKIE['e107_language']))
 		{
-			unset($_SESSION['e107language_'.$pref['cookie_name']]);
-		}
-		// Reset cookie
-		if(isset($_COOKIE['e107language_'.$pref['cookie_name']]))
-		{
-			unset($_COOKIE['e107language_'.$pref['cookie_name']]);
-		}
-		$user_language = '';
-	}
-	else
-	{
-		$language = $user_language;
-	}
-
-	// Ensure db got the proper language - default is empty
-	if (varset($pref['multilanguage']))
-	{
-		$sql->mySQLlanguage  = $user_language;
-		$sql2->mySQLlanguage = $user_language;
-	}
+			unset($_COOKIE['e107_language']);
+		}	
+	}	
 }
 
-// We should have the language by now
-define('e_LANGUAGE', $language);
+if(varset($pref['multilanguage']))
+{
+	$sql->mySQLlanguage  = $user_language;
+	$sql2->mySQLlanguage = $user_language;
+}
 
-// Keep USERLAN for backward compatibility
-define('USERLAN', e_LANGUAGE);
+if(!isset($_SESSION['language-list']))
+{
+	$_SESSION['language-list'] = implode(',',$lng->installed());
+}
+
+define('e_LANLIST', $_SESSION['language-list']);
+define('e_LANGUAGE', $user_language);
+define('USERLAN', e_LANGUAGE); // Keep USERLAN for backward compatibility
 
 //TODO do it only once and with the proper function
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
-if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pref['multilanguage_subdomain'])
+if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && (e_LANCODE == TRUE))
 {
 	list($clc) = explode("_",CORE_LC);
 	define("e_LAN", strtolower($clc));
@@ -645,7 +580,7 @@ else
     define("e_LAN", FALSE);
 	define("e_LANQRY", FALSE);
 }
-$sql->db_Mark_Time('(Start: Pref/multilang done)');
+
 
 //
 // N: misc setups: online user tracking, cache
@@ -963,7 +898,7 @@ if($inAdminDir || defined("e_NOCACHE")) // Experimental fix for e-token admin 'a
 {
     header("Expires: Mon, 20 Dec 1998 01:00:00 GMT" );
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-  	header("Cache-Control: no-store, no-cache, must-revalidate"); 
+  	header("Cache-Control: no-store, no-cache"); 
 	header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache" );
 }

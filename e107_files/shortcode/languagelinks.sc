@@ -1,13 +1,10 @@
 //<? $Id$
-global $pref;
+global $pref,$lng;
 if( ! defined('LANGLINKS_SEPARATOR'))
 {
 	define('LANGLINKS_SEPARATOR', '&nbsp;|&nbsp;');
 }
 //$cursub = explode('.', $_SERVER['HTTP_HOST']);
-
-require_once(e_HANDLER.'language_class.php');
-$slng = new language;
 
 if($parm)
 {
@@ -26,16 +23,16 @@ if(count($languageList) < 2)
 
 foreach($languageList as $languageFolder)
 {
-	$code = $slng->convert($languageFolder);
-	$name = $slng->toNative($languageFolder);
+	$code = $lng->convert($languageFolder);
+	$name = $lng->toNative($languageFolder);
 	//$subdom = (isset($cursub[2])) ? $cursub[0] : '';
 
-	if(varset($pref['multilanguage_subdomain']))
+	
+
+	if(defset('MULTILANG_SUBDOMAIN')==TRUE)
 	{
-		$code = ($languageFolder == $pref['sitelanguage']) ? 'www' : $code;
-		$link = (e_QUERY)
-		        ? str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
-		        : str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_SELF);
+		$code = ($languageFolder == $pref['sitelanguage']) ? 'www' : $code;		
+		$link = $lng->subdomainUrl($languageFolder);
 	}
 	else
 	{

@@ -210,36 +210,185 @@ class language{
 			"Turkish"		=> "Türkçe"
 		);
 
-// ---  Converts iso to language-name and visa-versa. ----------------
 
+	/**
+	 * Converts iso to language-name and visa-versa.
+	 * @param object $data
+	 * @return 
+	 */
 	function convert($data){
 
 		if(strlen($data) > 2)
 		{
         	$tmp = array_flip($this->list);
-			return $tmp[$data];
+			return isset($tmp[$data]) ? $tmp[$data] : FALSE;
 		}
 		else
 		{
-			return $this->list[$data];
+			return (isset($this->list[$data])) ? $this->list[$data] : FALSE;
 		}
 	}
 
 // -------------------------------------------------------------------
+	/**
+	 * Check if a Language is installed and valid
+	 * @param object $lang - Language to check. eg. 'es' or 'Spanish'
+	 * @return FALSE or the name of the valid Language
+	 */
+	function isValid($lang='')
+	{
+		if(!$lang)
+		{
+			return FALSE;
+		}
+		
+		if(strlen($lang)== 2)
+		{
+			$iso = $lang;
+			$lang = $this->convert($lang);	
+		}
+		else
+		{
+			$iso = $this->convert($lang);
+		}
+		
+		if($iso==FALSE || $lang==FALSE)
+		{
+			return FALSE;
+		}
+		
+		if(is_readable(e_LANGUAGEDIR.$lang.'/'.$lang.'.php'))
+		{
+			return $lang;	
+		}	
+	}
+	
+	/**
+	 * Check if the specified domain has multi-language subdomains enabled.
+	 * @return 
+	 */
+	function isLangDomain($domain='')
+	{
+		if(!$domain)
+		{
+			return FALSE;
+		}
+		
+		global $pref;
+		$mtmp = explode("\n", $pref['multilanguage_subdomain']);
+        foreach($mtmp as $val)
+		{
+        	if($domain == trim($val))
+			{
+            	return TRUE;
+			}
+		}
+		
+		return FALSE;
+		
+	}
+	
 
+	/**
+	 * Return a list of Installed Language Packs
+	 * @return array
+	 */
+	function installed()
+	{
+		$handle = opendir(e_LANGUAGEDIR);
+		$lanlist = array();
+		while ($file = readdir($handle))
+		{
+			if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
+			{
+				$lanlist[] = $file;
+			}
+		}
+		closedir($handle);
+		
+		$filtered = array_intersect($lanlist,$this->list);
+		
+		return $filtered;
+	}
+	
+	
+	/**
+	 * Convert a Language to its Native title. eg. 'Spanish' becomes 'Español'
+	 * @param string $lang
+	 * @return string
+	 */
 	function toNative($lang)
 	{
 		return ($this->names[$lang]) ? $this->names[$lang] : $lang;
 	}
 
-
+	/**
+	 * Convert the current URL to a multi-lang for the specified language. 
+	 * eg. 'http://www.mydomain.com' becomes 'http://es.mydomain.com'
+	 * @param string $language eg. 'Spanish'
+	 * @return URL
+	 */
 	function subdomainUrl($language)
 	{
 		global $pref;
 		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $this->convert($language);
-        $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.".".e_DOMAIN,e_SELF);
+		
+      //  $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.".".e_DOMAIN,e_SELF);
+		
+		$urlval = (e_QUERY)
+		        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
+		        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
+		
         return $urlval;
 	}
+	
+	
+	
+	/**
+ 	* Detect a Language Change
+ 	* 1. Parked (sub)Domain		eg. http://es.mydomain.com (Preferred for SEO)
+ 	* 2. e_MENU Query			eg. /index.php?[es]
+ 	* 3. $_GET['elan']			eg. /index.php?elan=es
+ 	* 4. $_POST['setlanguage']	eg. <input type='hidden' name='setlanguage' value='Spanish' /> 
+ 	* 5. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated) 
+ 	*/
+	function isChanged()
+	{
+		global $pref;
+		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
+		{
+			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : FALSE;
+			e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			define('MULTILANG_SUBDOMAIN',TRUE);
+			define("e_LANCODE", "");	
+		}
+		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
+		{
+			define("e_LANCODE",TRUE);	
+		}
+		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
+		{
+			define("e_LANCODE", "");	
+		}
+		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['setlanguage'])))
+		{
+			define("e_LANCODE", "");		
+		}
+		
+		elseif(isset($GLOBALS['elan']) && ($detect_language = $this->isValid($GLOBALS['elan'])))
+		{
+			define("e_LANCODE", "");		
+		}
+		else
+		{
+			$detect_language = FALSE; // ie. No Change. 
+		}
+		
+		return $detect_language;
+	}
+	
+	
+	
 
 }
 
