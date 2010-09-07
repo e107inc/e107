@@ -45,8 +45,8 @@ if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
+	$sub_action = varset($tmp[1], '');
+	$id = varset($tmp[2], 0);
 	unset($tmp);
 }
 
@@ -110,7 +110,7 @@ if ($action == "main" || $action == "")
 	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
 	{
 		$wmList = $sql->db_getList();
-		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
+		$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
 		$text .= "<div style='text-align:center'>
             <table cellpadding='0' cellspacing='0' class='adminlist'>
 			<colgroup span='4'>
@@ -164,7 +164,10 @@ if ($action == "create" || $action == "edit")
 	if ($sub_action != 'edit')
 	{
 		$preset = $pst->read_preset("admin_wmessage");
-		extract($preset);
+		if (is_array($preset))
+		{
+			extract($preset);
+		}
 	}
 
 	$text = "
@@ -239,7 +242,7 @@ if ($action == "opt") {
 		".WMLAN_05."<br />
 		<span class='smalltext'>".WMLAN_06."</span>
 		</td>
-		<td>". ($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
+		<td>". (varset($pref['wm_enclose'], 0) ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
 		</td>
 		</tr>
 		<tr>
@@ -247,7 +250,7 @@ if ($action == "opt") {
 		<td>
 		".WMLAN_07."
 		</td>
-		<td>". ($pref['wmessage_sc'] ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
+		<td>". (varset($pref['wmessage_sc'], 0) ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
 		</td>
 		</tr>
 		</table>
