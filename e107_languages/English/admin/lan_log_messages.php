@@ -62,6 +62,7 @@ define('LAN_AL_USET_11', 'Resend validation email');
 define('LAN_AL_USET_12', 'Resend all validation emails');
 define('LAN_AL_USET_13', 'Bounced emails deleted');
 define('LAN_AL_USET_14', 'Class membership updated');
+define('LAN_AL_USET_15', 'Signup refused');				// Too many users at same IP address
 
 // Userclass events
 //------------------

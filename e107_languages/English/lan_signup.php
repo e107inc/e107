@@ -140,6 +140,8 @@ define("LAN_SIGNUP_98", "Confirm Your Email Address");
 define("LAN_SIGNUP_99", "Problem Encountered");
 define("LAN_SIGNUP_100", "Admin Approval Pending");
 define('LAN_SIGNUP_101', 'Update of records failed - please contact the site administrator');
+//define('LAN_SIGNUP_102', 'Signup refused');
+define('LAN_SIGNUP_103', 'Too many users already using IP address: ');
 
 
 define("LAN_LOGINNAME", "Username");

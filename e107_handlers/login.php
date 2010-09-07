@@ -193,7 +193,6 @@ class userlogin
 		// Trigger events happy as well
 		$user_id = $this->userData['user_id'];
 		$user_name = $this->userData['user_name'];
-		$user_xup = $this->userData['user_xup'];
 		$user_admin = $this->userData['user_admin'];
 
 		/* restrict more than one person logging in using same us/pw */
@@ -207,11 +206,6 @@ class userlogin
 
 
 		// User login definitely accepted here
-		if($user_xup)
-		{
-			$this->update_xup($user_id, $user_xup);
-		}
-
 
 		$cookieval = $this->userMethods->makeUserCookie($this->userData,$autologin);
 
@@ -508,88 +502,4 @@ class userlogin
 	}
 
 
-
-	/**
-	 * called to update user settings from a XUP file - usually because the file name has changed.
-	 * @param string $user_id - integer user ID
-	 * @param string $user_xup - file name/location for XUP file
-	 * @return none
-	 */
-	public function update_xup($user_id, $user_xup = "")
-	{
-		$e107 = &e107::getInstance();
-		$user_id = intval($user_id);		// Should already be an integer - but just in case...
-		$user_xup = trim($user_xup);
-		if($user_xup)
-		{
-			$xml = e107::getXml();
-			$xupData = array();
-			if($rawData = $xml -> getRemoteFile($user_xup))
-			{
-				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
-				$count = 0;
-				foreach($match[1] as $value)
-				{	// Process all the data into an array
-					$xupData[$value] = $e107->tp -> toDB($match[2][$count]);
-					$count++;
-				}
-
-				// List of fields in main user record, and their corresponding XUP fields
-				$main_fields = array('user_realname' => 'FN',
-									'user_hideemail'=>'EMAILHIDE',
-									'user_signature'=>'SIG',
-									'user_sess'=>'PHOTO',
-									'user_image'=>'AV');
-
-				$new_values = array();
-				foreach ($main_fields as $f => $v)
-				{
-					if (isset($xupData[$v]) && $xupData[$v])
-					{
-						$new_values['data'][$f] = $xupData[$v];
-					}
-				}
-
-				if (count($new_values['data']))
-				{
-					if (!is_object($this->userMethods))
-					{
-						$this->userMethods = new userHandler;
-					}
-					require_once(e_HANDLER.'validator_class.php');
-					$this->userMethods($new_values);
-					$new_values['WHERE'] = 'user_id='.$user_id;
-					validatorClass::addFieldTypes($this->userMethods->userVettingInfo,$new_values);
-					$e107->sql -> db_Update('user', $new_values);
-				}
-
-				$ueList = array();
-				$fields = array('URL' => 'user_homepage',
-							'ICQ' 	=> 'user_icq',
-							'AIM' 	=> 'user_aim',
-							'MSN' 	=> 'user_msn',
-							'YAHOO' => 'user_yahoo',
-							'GEO' 	=> 'user_location',
-							'TZ' 	=> 'user_timezone',
-							'BDAY' 	=> 'user_birthday');
-				include_once(e_HANDLER.'user_extended_class.php');
-				$usere = new e107_user_extended;
-				$extName = array();
-				foreach ($fields as $keyxup => $keydb)
-				{
-					if (in_array($keydb, $usere->nameIndex) && in_array($keyxup,$xupData))
-					{
-						$ueList['data'][$keydb] = $e107->tp->toDB($xupData[$keyxup]);
-					}
-				}
-				if (count($ueList['data']))
-				{
-					$usere->addFieldTypes($ueList);
-					$ueList['WHERE'] = 'user_extended_id = '.$user_id;
-					$e107->sql -> db_Select_gen('INSERT INTO #user_extended (user_extended_id) values ('.$user_id.')');
-					$e107->sql -> db_Update('user_extended', $ueList);
-				}
-			}
-		}
-	}
 }
