@@ -21,7 +21,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'links_page/languages/'.e_LANGUAGE.'.php');
+include_lan(e_PLUGIN.'links_page/languages/'.e_LANGUAGE.'_help.php');
 
 if(!e_QUERY){
 	$text = LAN_ADMIN_HELP_1;
