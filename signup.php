@@ -483,6 +483,7 @@ global $db_debug;
 		{
 			$error_message .= LAN_202."\\n";
 			$error = TRUE;
+			$admin_log->log_event(LAN_SIGNUP_102,LAN_SIGNUP_103.$e107->getip(),4);
 		}
 	}
 

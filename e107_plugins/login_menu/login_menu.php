@@ -176,7 +176,7 @@ if (USER == TRUE || ADMIN == TRUE)
 }
 else
 {
-	if (!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE)
+	if (!isset($LOGIN_MENU_FORM) || !isset($LOGIN_MENU_MESSAGE))
 	{
 		if (file_exists(THEME."login_menu_template.php"))
 		{
@@ -187,7 +187,8 @@ else
 			require_once(e_PLUGIN."login_menu/login_menu_template.php");
 		}
 	}
-	if(!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE){
+	if(!isset($LOGIN_MENU_FORM) || !isset($LOGIN_MENU_MESSAGE))
+	{
     	require(e_PLUGIN."login_menu/login_menu_template.php");
 	}
 

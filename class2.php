@@ -1081,7 +1081,7 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 		$_admin = $peer['user_admin'] === 1;
 		$peer = false;
 	} else {
-		$_adminperms = ADMINPERMS;
+		$_adminperms = defined('ADMINPERMS') ? ADMINPERMS : '';
 		$_user = USER;
 		$_admin = ADMIN;
 	}
