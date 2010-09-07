@@ -46,11 +46,13 @@ require_once(e_HANDLER."ren_help.php");
 
 $rs = new form;
 
-if (e_QUERY) {
+$action = '';
+if (e_QUERY) 
+{
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
+	$sub_action = varset($tmp[1], '');
+	$id = varset($tmp[2], 0);
 	unset($tmp);
 }
 
@@ -59,39 +61,46 @@ if($_POST)
 	$e107cache->clear("wmessage");
 }
 
-if (isset($_POST['wm_update'])) {
+if (isset($_POST['wm_update'])) 
+{
 	$data = $tp->toDB($_POST['data']);
 	$wm_title = $tp->toDB($_POST['wm_caption']);
 	$message = ($sql->db_Update("generic", "gen_chardata ='$data',gen_ip ='$wm_title', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
-if (isset($_POST['wm_insert'])) {
+if (isset($_POST['wm_insert'])) 
+{
 	$wmtext = $tp->toDB($_POST['data']);
 	$wmtitle = $tp->toDB($_POST['wm_caption']);
 	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
 
-if (isset($_POST['updateoptions'])) {
+if (isset($_POST['updateoptions'])) 
+{
 	$pref['wm_enclose'] = $_POST['wm_enclose'];
 	$pref['wmessage_sc'] = $_POST['wmessage_sc'];
 	save_prefs();
 	$message = LAN_SETSAVED;
 }
 
-if (isset($_POST['main_delete'])) {
+if (isset($_POST['main_delete'])) 
+{
 	$del_id = array_keys($_POST['main_delete']);
 	$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 // Show Existing -------
-if ($action == "main" || $action == "") {
-	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) {
+if ($action == "main" || $action == "") 
+{
+	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
+	{
 		$wmList = $sql->db_getList();
-		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
+		$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
 		$text .= "<div style='text-align:center'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
@@ -100,7 +109,8 @@ if ($action == "main" || $action == "") {
 			<td class='fcaption' style='width:20%'>".WMLAN_03."</td>
 			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
-		foreach($wmList as $row) {
+		foreach($wmList as $row) 
+		{
 			$text .= "
 			<tr>
 				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
@@ -134,7 +144,10 @@ if ($action == "create" || $action == "edit")
 	if ($sub_action != 'edit')
 	{
 		$preset = $pst->read_preset("admin_wmessage");
-		extract($preset);
+		if (is_array($preset))
+		{
+			extract($preset);
+		}
 	}
 
 	$text = "
@@ -194,7 +207,7 @@ if ($action == "opt") {
 		".WMLAN_05."<br />
 		<span class='smalltext'>".WMLAN_06."</span>
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
+		<td class='forumheader3' style='width:30%;text-align:center'>". (varset($pref['wm_enclose'], 0) ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
 		</td>
 		</tr>
 		<tr>
@@ -202,7 +215,7 @@ if ($action == "opt") {
 		<td style='width:70%' class='forumheader3'>
 		".WMLAN_07."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wmessage_sc'] ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
+		<td class='forumheader3' style='width:30%;text-align:center'>". (varset($pref['wmessage_sc'], 0) ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
 		</td>
 		</tr>
 

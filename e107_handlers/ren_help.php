@@ -182,7 +182,8 @@ function Color_Select($formid='col_selector') {
 }
 
 
-function PreImage_Select($formid) {
+function PreImage_Select($formid) 
+{
 	global $fl, $tp, $bbcode_imagedir;
 
 	$path = ($bbcode_imagedir) ?  $bbcode_imagedir : e_IMAGE."newspost_images/";
@@ -194,8 +195,7 @@ function PreImage_Select($formid) {
 		$fl = new e_file;
 	}
 
-	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-	$imagelist = $fl->get_files($path,"",$rejecthumb,2);
+	$imagelist = $fl->get_files($path,"",'standard',2);
     sort($imagelist);
 
 	$text ="<!-- Start of PreImage selector -->
@@ -205,71 +205,71 @@ function PreImage_Select($formid) {
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
 	if(!count($imagelist))
-			{
+	{
 
-				$text .= LANHELP_46."<b>".str_replace("../","",$path)."</b>";
+		$text .= LANHELP_46."<b>".str_replace("../","",$path)."</b>";
+	}
+	else
+	{
+		$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
+		<option value=''>".LANHELP_42."</option>";
+		foreach($imagelist as $image)
+		{
+			$e_path = $tp->createConstants($image['path'],1);
+			$showpath = str_replace($path,"",$image['path']);
+			if(strstr($image['fname'], "thumb"))
+			{
+				$fi = str_replace("thumb_", "", $image['fname']);
+				if(file_exists($path.$fi))
+				{
+					// thumb and main image found
+					$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$showpath.$image['fname']." (".LANHELP_38.")</option>\n
+					";
+				}
+				else
+				{
+					$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n
+					";
+				}
 			}
 			else
 			{
-				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
-				<option value=''>".LANHELP_42."</option>";
-				foreach($imagelist as $image)
-				{
-					$e_path = $tp->createConstants($image['path'],1);
-					$showpath = str_replace($path,"",$image['path']);
-					if(strstr($image['fname'], "thumb"))
-					{
-						$fi = str_replace("thumb_", "", $image['fname']);
-						if(file_exists($path.$fi))
-						{
-							// thumb and main image found
-							$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$showpath.$image['fname']." (".LANHELP_38.")</option>\n
-							";
-						}
-						else
-						{
-							$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n
-							";
-						}
-					}
-					else
-					{
-						$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
-					}
-				}
-				$text .="</select>";
+				$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
 			}
+		}
+		$text .="</select>";
+	}
 	$text .="</td></tr>	\n </table></div>
 	</div>\n<!-- End of PreImage selector -->\n";
 	return $text;
 }
 
-function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
+function PreFile_Select($formid='prefile_selector',$bbcode_filedir = '') 
+{
 	require_once(e_HANDLER."userclass_class.php");
 	global $IMAGES_DIRECTORY, $fl, $sql;
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 
-		$filelist = array();
-		$downloadList = array();
+	$filelist = array();
+	$downloadList = array();
 
-		$sql->db_Select("download", "*", "download_class != ".e_UC_NOBODY);
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			if($download_url)
-			{
-				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url, "class" => $download_class);
-				$downloadList[] = $download_url;
-			}
-		}
-
-		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
-		foreach($tmp as $value)
+	$sql->db_Select("download", "*", "download_class != ".e_UC_NOBODY);
+	while ($row = $sql->db_Fetch()) {
+		extract($row);
+		if($download_url)
 		{
-			if(!in_array($value['fname'], $downloadList))
-			{
-				$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
-			}
+			$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url, "class" => $download_class);
+			$downloadList[] = $download_url;
 		}
+	}
+
+	$tmp = $fl->get_files(e_FILE."downloads/");
+	foreach($tmp as $value)
+	{
+		if(!in_array($value['fname'], $downloadList))
+		{
+			$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
+		}
+	}
 	$text ="<!-- Start of PreFile selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
@@ -316,7 +316,8 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 	return $text;
 }
 
-function Emoticon_Select($formid='emoticon_selector') {
+function Emoticon_Select($formid='emoticon_selector') 
+{
 	require_once(e_HANDLER."emote.php");
 	$text ="<!-- Start of Emoticon selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}' onclick=\"this.style.display='none'\" >

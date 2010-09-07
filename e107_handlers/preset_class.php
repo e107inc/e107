@@ -30,7 +30,7 @@ class e_preset
 		global $sql, $ns, $tp;
 		$qry = explode(".", e_QUERY);
 		$unique_id = is_array($this->id) ? $this->id : array($this->id);
-		$uid = $qry[1];
+		$uid = varset($qry[1], 0);
 
 		if($_POST && $qry[0] == "savepreset")
 		{
@@ -57,7 +57,7 @@ class e_preset
 			$ns -> tablerender(LAN_SAVED, LAN_PRESET_SAVED);
 		}
 
-		if ($_POST['delete_preset'] && e_QUERY=="clr_preset")
+		if (isset($_POST['delete_preset']) && e_QUERY=="clr_preset")
 		{
 			$del = $_POST['del_id'];
 			$text = ($sql -> db_Delete("preset", "preset_name ='".$unique_id[$del]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED;
