@@ -529,13 +529,6 @@ if ($dataToSave && !$promptPassword)
 
 
 
-		// Update XUP data if file name changed.
-	if (isset($changedUserData['user_xup']))
-	{
-		require_once (e_HANDLER."login.php");
-		userlogin::update_xup($inp, $changedUserData['user_xup']);
-	}
-
 
 	$e_event->trigger('postuserset', $_POST);
 	if (count($triggerData))

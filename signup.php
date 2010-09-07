@@ -347,11 +347,9 @@ if (e_QUERY)
 //----------------------------------------
 if (isset($_POST['register']))
 {
-	$_POST['user_xup'] = trim(varset($_POST['user_xup'],''));
-	$readXUP = varsettrue($pref['xup_enabled']) && varsettrue($_POST['user_xup']);
 	$e107cache->clear("online_menu_totals");
 	require_once(e_HANDLER."message_handler.php");
-	if (isset($_POST['rand_num']) && $signup_imagecode && !$readXUP )
+	if (isset($_POST['rand_num']) && $signup_imagecode)
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
@@ -366,48 +364,6 @@ if (isset($_POST['register']))
         $error = TRUE;
 	}
 
-	if (!$error && $readXUP)
-	{
-		require_once(e_HANDLER."xml_class.php");
-		$xml = new parseXml; // old parser
-		if(!$rawData = $xml -> getRemoteXmlFile($_POST['user_xup']))
-		{
-			$extraErrors[] = LAN_SIGNUP_68."\\n";
-			$error = TRUE;
-		}
-		else
-		{
-			preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
-			$count = 0;
-			foreach($match[1] as $value)
-			{
-				$xup[$value] = $match[2][$count];
-				$count++;
-			}
-
-			$_POST['name'] = $xup['NICKNAME'];
-			$_POST['email'] = $xup['EMAIL'];
-			$_POST['email_confirm'] = $xup['EMAIL'];
-			$_POST['signature'] = $xup['SIG'];
-			$_POST['hideemail'] = $xup['EMAILHIDE'];
-			$_POST['realname'] = $xup['FN'];
-			$_POST['image'] = $xup['AV'];
-
-			$_POST['ue']['user_timezone'] = $xup['TZ'];
-			$_POST['ue']['user_homepage'] = $xup['URL'];
-			$_POST['ue']['user_icq'] = $xup['ICQ'];
-			$_POST['ue']['user_aim'] = $xup['AIM'];
-			$_POST['ue']['user_msn'] = $xup['MSN'];
-			$_POST['ue']['user_yahoo'] = $xup['YAHOO'];
-			$_POST['ue']['user_location'] = $xup['GEO'];
-			$_POST['ue']['user_birthday'] = $xup['BDAY'];
-
-			unset($xup);
-			if($_POST['loginnamexup']) $_POST['loginname'] = $_POST['loginnamexup'];
-			if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
-			if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
-		}
-	}
 
 	if (!$error)
 	{
@@ -447,6 +403,7 @@ if (isset($_POST['register']))
 				{
 					$allData['errors']['user_email'] = ERR_GENERIC;
 					$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
+					$admin_log->log_event('USET_15',LAN_SIGNUP_103.$e107->getip(),4);
 				}
 			}
 		}
