@@ -220,7 +220,7 @@ if(function_exists('core_head')){ echo core_head(); }
 echo "<!-- *META* -->\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
-if (is_array($pref['e_meta_list']))
+if (varset($pref['e_meta_list']) && is_array($pref['e_meta_list']))
 {
 	foreach($pref['e_meta_list'] as $val)
 	{
