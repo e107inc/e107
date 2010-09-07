@@ -14,6 +14,8 @@ class language{
 
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
+// Valid Language Pack Names are shown directly below on the right. 
+
 	var $list = array(
             "aa" => "Afar",
 			"ab" => "Abkhazian",
@@ -242,6 +244,11 @@ class language{
 			return FALSE;
 		}
 		
+		if(strpos($lang,"debug")!==FALSE)
+		{
+			 return;			
+		}
+		
 		if(strlen($lang)== 2)
 		{
 			$iso = $lang;
@@ -252,15 +259,26 @@ class language{
 			$iso = $this->convert($lang);
 		}
 		
+
+		
 		if($iso==FALSE || $lang==FALSE)
 		{
+			$diz = ($lang) ? $lang : $iso;
+			trigger_error("The selected language (".$diz.") is invalid. See e107_handlers/language_class.php for a list of valid languages. ", E_USER_ERROR);
 			return FALSE;
 		}
 		
 		if(is_readable(e_LANGUAGEDIR.$lang.'/'.$lang.'.php'))
 		{
 			return $lang;	
-		}	
+		}
+		else
+		{
+			trigger_error("The selected language (".$lang.") was not found.", E_USER_ERROR);
+			return FALSE;	
+		}
+		
+		return FALSE;	
 	}
 	
 	/**
