@@ -41,7 +41,9 @@ if (!defined('e107_INIT')) { exit; }
 // If debugging enabled, set it all up
 // If no debugging, then E107_DEBUG_LEVEL will be zero
 //
-if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
+
+
+if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level']) || defined('e_DEBUG')) {
 	$e107_debug = new e107_debug;
 	require_once(e_HANDLER.'db_debug_class.php');
 	$db_debug = new e107_db_debug;
@@ -109,15 +111,25 @@ class e107_debug {
 		                        // (but shortcode paths removed: inline debug breaks pages!
 	);
 
-	function e107_debug() {
-		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
+	function e107_debug()
+	{
+		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level']) || defined('e_DEBUG'))
+		{
 			$dVals=0;
+			
+			if(defined('e_DEBUG')) // manual debug via e107_config 
+			{
+				$dVals = e_DEBUG;	
+			}
+			
 			if (isset($_COOKIE['e107_debug_level'])) {
 				$dVals = substr($_COOKIE['e107_debug_level'],6);
 			}
 			if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) {
 				$dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
 			}
+
+
 			
 			$aDVal = explode('.',$dVals); // support multiple values, OR'd together
 			$dVal = 0;
@@ -143,10 +155,11 @@ class e107_debug {
 			}
 
 				$this->debug_level = $dVal;
-			}
 		}
+	}
 
-	function set_error_reporting() {
+	function set_error_reporting()
+	{
 	}
 }
 ?>

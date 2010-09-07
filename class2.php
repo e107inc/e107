@@ -150,11 +150,17 @@ unset($inc_path);
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 
+// set debug mode in e107_config.php when admin access is unavailable
+if(defset('e_DEBUG')==TRUE) 
+{
+	$error_handler->debug = true;
+	error_reporting(E_ALL);	
+}
+
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
 { 
 	 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE)); 
 }
-
 
 if(!isset($ADMIN_DIRECTORY))
 {

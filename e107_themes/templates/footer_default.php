@@ -108,7 +108,7 @@ if(varset($e107_popup)!=1){
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 
 
-	if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL) {
+	if ((ADMIN || $pref['developer'] || defined('e_DEBUG')) && E107_DEBUG_LEVEL) {
 		global $db_debug;
 		echo "\n<!-- DEBUG -->\n";
 		$db_debug->Show_All();
@@ -173,7 +173,8 @@ if ($pref['developer']) {
 	}
 }
 
-if((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $error_handler->debug == true) 
+
+if((ADMIN == true || $pref['developer'] || defined('e_DEBUG')) && count($error_handler->errors) && $error_handler->debug == true) 
 {
 	echo "
 	<div class='e107_debug php_err block-text'>
