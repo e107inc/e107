@@ -238,7 +238,7 @@ class language{
 	 * @return FALSE or the name of the valid Language
 	 */
 	function isValid($lang='')
-	{
+	{	
 		global $pref;
 				
 		if(!$lang)
@@ -388,7 +388,7 @@ class language{
 		{
 			define("e_LANCODE", "");	
 		}
-		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['setlanguage'])))
+		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['sitelanguage'])))
 		{
 			define("e_LANCODE", "");		
 		}
