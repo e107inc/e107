@@ -239,14 +239,16 @@ class language{
 	 */
 	function isValid($lang='')
 	{
+		global $pref;
+				
 		if(!$lang)
 		{
-			return FALSE;
+			return $pref['sitelanguage'];
 		}
 		
 		if(strpos($lang,"debug")!==FALSE)
 		{
-			 return;			
+			 return FALSE;			
 		}
 		
 		if(strlen($lang)== 2)
@@ -258,9 +260,7 @@ class language{
 		{
 			$iso = $this->convert($lang);
 		}
-		
-
-		
+			
 		if($iso==FALSE || $lang==FALSE)
 		{
 			$diz = ($lang) ? $lang : $iso;
@@ -375,7 +375,7 @@ class language{
 		global $pref;
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
 		{
-			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : FALSE;
+			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			define('MULTILANG_SUBDOMAIN',TRUE);
 			define("e_LANCODE", "");	

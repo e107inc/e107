@@ -574,7 +574,7 @@ function zip_up_lang($language)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
-		$ret['message'] = LANG_LAN_27; // "Please verify your language files ('Verify') then try again.";
+		$ret['message'] = (defined('LANG_LAN_27')) ? LANG_LAN_27 : "Please verify your language files ('Verify') then try again.";
 		return $ret;	
 	}
 	
@@ -610,8 +610,8 @@ function zip_up_lang($language)
 	{
 		$ret['error'] = TRUE;
 		$file = "e107_languages/{$language}/{$language}.php";
-		
-		$ret['message'] = str_replace("[lcpath]",$file,LANG_LAN_25); // "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.";
+		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.";
+		$ret['message'] = str_replace("[lcpath]",$file,$def); // 
 		return $ret;	
 	};
 		
@@ -620,7 +620,7 @@ function zip_up_lang($language)
 	if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
 	{
 		$ret['error'] = TRUE;
-		$ret['message'] = LANG_LAN_26; // "Please make sure you are using default folder names in e107_config.php (eg. e107_language/, e107_plugins/ etc.) and try again.";
+		$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : "Please make sure you are using default folder names in e107_config.php (eg. e107_language/, e107_plugins/ etc.) and try again.";
 		return $ret;	
 	}	
 		
