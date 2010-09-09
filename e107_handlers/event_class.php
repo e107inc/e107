@@ -50,7 +50,16 @@ class e107_event
 	 */
 	function register($eventname, $function, $include='')
 	{
-		// 
+		if(!isset($_SESSION['e_EVENT_functions'][$eventname])) // Notice removal
+		{
+			$_SESSION['e_EVENT_functions'][$eventname] = array();		
+		}
+		
+		if(!isset($_SESSION['e_EVENT_includes'][$eventname])) // Notice removal
+		{
+			$_SESSION['e_EVENT_includes'][$eventname] = array();		
+		}  
+		
 		if ($include!='')
 		{
 			// $this->includes[$eventname][] = $include;
