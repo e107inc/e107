@@ -15,6 +15,8 @@ class language{
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 // Valid Language Pack Names are shown directly below on the right. 
+	var $detect = FALSE;
+	var $e_language = 'English'; // replaced later with $pref
 
 	var $list = array(
             "aa" => "Afar",
@@ -367,10 +369,10 @@ class language{
  	* 1. Parked (sub)Domain		eg. http://es.mydomain.com (Preferred for SEO)
  	* 2. e_MENU Query			eg. /index.php?[es]
  	* 3. $_GET['elan']			eg. /index.php?elan=es
- 	* 4. $_POST['setlanguage']	eg. <input type='hidden' name='setlanguage' value='Spanish' /> 
+ 	* 4. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' /> 
  	* 5. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated) 
  	*/
-	function isChanged()
+	function detect()
 	{
 		global $pref;
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
@@ -378,34 +380,134 @@ class language{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			define('MULTILANG_SUBDOMAIN',TRUE);
-			define("e_LANCODE", "");	
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
 		{
 			define("e_LANCODE",TRUE);	
+
 		}
 		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
 		{
-			define("e_LANCODE", "");	
+			// Do nothing			
 		}
 		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['sitelanguage'])))
 		{
-			define("e_LANCODE", "");		
+			// Do nothing	
 		}
 		
 		elseif(isset($GLOBALS['elan']) && ($detect_language = $this->isValid($GLOBALS['elan'])))
 		{
-			define("e_LANCODE", "");		
+			// Do nothing		
 		}
 		else
 		{
 			$detect_language = FALSE; // ie. No Change. 
 		}
 		
+		$this->detect = $detect_language;	
 		return $detect_language;
 	}
+
+
+
+	/**
+	 * Set the Language (Constants, $_SESSION and $_COOKIE) for the current page. 
+	 * @return 
+	 */
+	function set()
+	{
+		global $pref;
+				
+		if($this->detect) // Language-Change Trigger Detected. 
+		{
+			if(!varset($_SESSION['e_language']) || (($_SESSION['e_language'] != $this->detect) && $this->isValid($_SESSION['e_language'])))
+			{
+				$_SESSION['e_language'] = $this->detect;	
+				// echo "Assigning Session Language";	
+			}
+			
+			if(varset($_COOKIE['e107_language'])!=$this->detect && (defset('MULTILANG_SUBDOMAIN') != TRUE))
+			{
+				setcookie('e107_language', $this->detect, time() + 86400, "/");
+				$_COOKIE['e107_language'] = $this->detect; // Used only when a user returns to the site. Not used during this session. 
+			}
+			else // Multi-lang SubDomains should ignore cookies and remove old ones if they exist. 
+			{
+				if(isset($_COOKIE['e107_language']))
+				{
+					unset($_COOKIE['e107_language']);
+				}
+			}
+			
+			$user_language = $this->detect;		
+		}
+		else // No Language-change Trigger Detected. 
+		{	
+			if(varset($_SESSION['e_language'])!='')
+			{
+				$user_language = $_SESSION['e_language'];
+			}
+			elseif(isset($_COOKIE['e107_language']) && ($user_language = $this->isValid($_COOKIE['e107_language']))) 
+			{
+				$_SESSION['e_language'] = $user_language;	 		
+			}
+			else
+			{	
+				$user_language = $pref['sitelanguage'];	
+				
+				if(isset($_SESSION['e_language']))
+				{
+					unset($_SESSION['e_language']);
+				}
+			
+				if(isset($_COOKIE['e107_language']))
+				{
+					unset($_COOKIE['e107_language']);
+				}	
+			}	
+		}
+		
+		$this->e_language = $user_language;
+		$this->setDefs();
+		return;
+	}
+
+
 	
-	
+	/**
+	 * Set Language-specific Constants
+	 * @param string $language
+	 * @return 
+	 */
+	function setDefs()
+	{
+		global $pref;
+		
+		$language = $this->e_language;
+		
+		if(!isset($_SESSION['language-list']))
+		{
+			$_SESSION['language-list'] = implode(',',$this->installed());
+		}
+		
+		define('e_LANLIST', $_SESSION['language-list']);
+		define('e_LANGUAGE', $language);
+		define('USERLAN', $language); // Keep USERLAN for backward compatibility
+		
+		// Below is for BC
+		if(defined('e_LANCODE') && varset($pref['multilanguage']) && ($language != $pref['sitelanguage']))
+		{
+			$iso = $this->convert($language);	
+			define("e_LAN", $iso);
+			define("e_LANQRY", "[".$iso."]");
+		}
+		else
+		{
+			define("e_LANCODE", '');		
+			define("e_LAN", FALSE);
+			define("e_LANQRY", FALSE);	
+		} 	
+	}
 	
 
 }

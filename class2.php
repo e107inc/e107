@@ -416,13 +416,11 @@ $pref['sitelanguage'] = (isset($pref['sitelanguage']) ? $pref['sitelanguage'] : 
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
 }
-$sql->db_Mark_Time('Start: Detect a Language Change');
 
-
-// Start Language Checking.
+$sql->db_Mark_Time('Start: Init Language and detect changes');
 require_once(e_HANDLER."language_class.php");
 $lng = new language;
-$detect_language = $lng->isChanged(); // Must be before session_start(). Requires $pref, e_DOMAIN, e_MENU;
+$lng->detect(); // Must be before session_start(). Requires $pref, e_DOMAIN, e_MENU;
 
 // e-Token START
 $sql->db_Mark_Time('Start: e-Token creation');
@@ -444,12 +442,12 @@ else
 }
 
 // Start session after $prefs are available.
-session_start(); // Needs to be started after session.cookie_domain to avoid multi-language 'access-denied' issues. 
+session_start(); // Needs to be started after language detection (session.cookie_domain) to avoid multi-language 'access-denied' issues. 
 header("Cache-Control: must-revalidate");	
 // TODO - maybe add IP as well?
 define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
-if(isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
+if(isset($_SESSION) && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
 {
 	// do not redirect, prevent dead loop, save server resources
 	die('Access denied');
@@ -531,94 +529,22 @@ if($pref['redirectsiteurl'] && $pref['siteurl'])
 	}
 }
 
-
-
-$sql->db_Mark_Time('Start: Language Selection');
-
 /**
  * Set the User's Language
  */
-if($detect_language) // Language-Change Trigger Detected. 
-{
-	if(varset($_SESSION['e_language']) != $detect_language && ($lng->isValid($_SESSION['e_language'])))
-	{
-		$_SESSION['e_language'] = $detect_language;	
-		// echo "Assigning Session Language";	
-	}
-	
-	if(varset($_COOKIE['e_language'])!=$detect_language && (defset('MULTILANG_SUBDOMAIN') != TRUE))
-	{
-		setcookie('e107_language', $detect_language, time() + 86400, "/");
-		$_COOKIE['e107_language'] = $detect_language; // Used only when a user returns to the site. Not used during this session. 
-	}
-	else // Multi-lang SubDomains should ignore cookies and remove old ones if they exist. 
-	{
-		if(isset($_COOKIE['e107_language']))
-		{
-			unset($_COOKIE['e107_language']);
-		}
-	}
-	
-	$user_language = $detect_language;		
-}
-else // No Language-change Trigger Detected. 
-{	
-	if(isset($_SESSION['e_language']))
-	{
-		$user_language = $_SESSION['e_language'];
-	}
-	elseif(isset($_COOKIE['e107_language']) && ($user_language = $lng->isValid($_COOKIE['e107_language']))) 
-	{
-		$_SESSION['e_language'] = $user_language; 		
-	}
-	else
-	{	
-		$user_language = $pref['sitelanguage'];	
-		
-		if(isset($_SESSION['e_language']))
-		{
-			unset($_SESSION['e_language']);
-		}
-	
-		if(isset($_COOKIE['e107_language']))
-		{
-			unset($_COOKIE['e107_language']);
-		}	
-	}	
-}
+$sql->db_Mark_Time('Start: Set User Language');
 
-if(varset($pref['multilanguage']))
-{
-	$sql->mySQLlanguage  = $user_language;
-	$sql2->mySQLlanguage = $user_language;
-}
+$lng->set(); // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref; 
 
-if(!isset($_SESSION['language-list']))
+if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 {
-	$_SESSION['language-list'] = implode(',',$lng->installed());
+	$sql->mySQLlanguage  = e_LANGUAGE;
+	$sql2->mySQLlanguage = e_LANGUAGE;
 }
-
-define('e_LANLIST', $_SESSION['language-list']);
-define('e_LANGUAGE', $user_language);
-define('USERLAN', e_LANGUAGE); // Keep USERLAN for backward compatibility
 
 //TODO do it only once and with the proper function
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
-
-if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && (e_LANCODE == TRUE))
-{
-	list($clc) = explode("_",CORE_LC);
-	define("e_LAN", strtolower($clc));
-	define("e_LANQRY", "[".e_LAN."]");
-	unset($clc);
-}
-else
-{
-    define("e_LAN", FALSE);
-	define("e_LANQRY", FALSE);
-}
-
 
 //
 // N: misc setups: online user tracking, cache
