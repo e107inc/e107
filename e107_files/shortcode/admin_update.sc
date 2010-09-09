@@ -1,8 +1,9 @@
 // $Id$
-global $tp;
+//<?
+
 	if (!ADMIN) return "";
 
-	global $e107cache,$ns, $pref;
+	global $tp, $e107cache,$ns, $pref;
 	
   	if (!varset($pref['check_updates'], FALSE)) return "";
 	
@@ -13,13 +14,15 @@ global $tp;
 
 	$feed = "http://www.e107.org/releases.php";
 	
-	$e107cache->CachePageMD5 = md5($e107info['e107_version']);
+	$e107cache->CachePageMD5 = e_LANGUAGE;
 
-    if($cacheData = $e107cache->retrieve("updatecheck",3600, TRUE))
+	$cacheData = $e107cache->retrieve("releasecheck",3600, TRUE);
+	
+    if($cacheData)
     {
-   	  	return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
+   	  	return ($cacheData !='up-to-date') ? $ns -> tablerender(LAN_NEWVERSION, $cacheData) : "";
     }
-
+	
 	// Keep commented out to be sure it continues to work under all circumstances.
 
 	//if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) return '';
@@ -65,11 +68,14 @@ global $tp;
 	  $ftext = ADLAN_154;
 	}
 
-	$e107cache->set("updatecheck", $ftext, TRUE);
-	
 	if($ftext)
 	{
+		$e107cache->set("releasecheck", $ftext, TRUE);
 		return $ns -> tablerender(LAN_NEWVERSION, $ftext);
+	}
+	else
+	{
+		$e107cache->set("releasecheck", 'up-to-date', TRUE);
 	}
 
 
