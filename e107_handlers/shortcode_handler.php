@@ -102,11 +102,12 @@ class e_shortcode
 		}
 		$parm = trim($parm);
 
-		if (E107_DBG_BBSC || E107_DBG_SC)
+		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
 			global $db_debug;
 			$sql->db_Mark_Time("SC $code");
 			$db_debug->logCode(2, $code, $parm, "");
+			
 		}
 
 		if (is_array($this->scList) && array_key_exists($code, $this->scList))
@@ -185,8 +186,8 @@ class e_shortcode
 				}
 			}
 		}
-		if (E107_DBG_SC) {
-			$sql->db_Mark_Time("(SC $code Done)");
+		if (E107_DBG_SC || E107_DBG_TIMEDETAILS) {
+			$sql->db_Mark_Time("(After SC $code)");
 		}
 		return $ret;
 	}
