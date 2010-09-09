@@ -493,18 +493,17 @@ class language{
 		define('e_LANLIST', $_SESSION['language-list']);
 		define('e_LANGUAGE', $language);
 		define('USERLAN', $language); // Keep USERLAN for backward compatibility
+		$iso = $this->convert($language);	
+		define("e_LAN", $iso);
 		
 		// Below is for BC
 		if(defined('e_LANCODE') && varset($pref['multilanguage']) && ($language != $pref['sitelanguage']))
-		{
-			$iso = $this->convert($language);	
-			define("e_LAN", $iso);
+		{			
 			define("e_LANQRY", "[".$iso."]");
 		}
 		else
 		{
 			define("e_LANCODE", '');		
-			define("e_LAN", FALSE);
 			define("e_LANQRY", FALSE);	
 		} 	
 	}
