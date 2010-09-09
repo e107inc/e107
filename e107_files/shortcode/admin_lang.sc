@@ -2,7 +2,7 @@
 //<?
 if(ADMIN)
 {
-	global $ns, $sql, $pref;
+	global $ns, $sql, $pref, $lng;
 	if($pref['multilanguage'])
 	{
 		include_lan(e_PLUGIN.'userlanguage_menu/languages/'.e_LANGUAGE.'.php');
@@ -15,21 +15,18 @@ if(ADMIN)
 				$lanperms[] = $langval;
 			}
 		}
-		
-		require_once (e_HANDLER.'language_class.php');
-		$slng = new language;
-
-		
+			
 		if(!getperms($sql->mySQLlanguage) && $lanperms)
 		{
 			$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
 			if(defset('MULTILANG_SUBDOMAIN')==TRUE)
 			{
 				$_SESSION['e_language'] = $lanperms[0];
-				header("Location:".$slng->subdomainUrl($lanperms[0]));
+				header("Location:".$lng->subdomainUrl($lanperms[0]));
 			}
 			else
 			{
+				$_SESSION['e_language'] = $lanperms[0];
 				setcookie('e107_language', $lanperms[0], time() + 86400, '/');
 				$_COOKIE['e107_language'] = $lanperms[0];
 			}
@@ -49,7 +46,7 @@ if(ADMIN)
 		if(isset($aff))
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$slng->convert($sql->mySQLlanguage).")
+			$text .= " (".$lng->convert($sql->mySQLlanguage).")
 			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none;white-space:nowrap' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
@@ -59,7 +56,7 @@ if(ADMIN)
 		elseif($sql->mySQLlanguage && ($sql->mySQLlanguage != $pref['sitelanguage']))
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$slng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
+			$text .= " (".$lng->convert($sql->mySQLlanguage)."): ".LAN_INACTIVE;
 		}
 		else
 		{
@@ -67,16 +64,15 @@ if(ADMIN)
 		}
 		$text .= "<br /><br /></div>";
 
-		
-		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
+		if($lng->isLangDomain(e_DOMAIN))
 		{
 			$text .= "<div style='text-align:center'>
 			<select class='tbox' name='lang_select' style='width:95%' onchange=\"location.href=this.options[selectedIndex].value\">";
-			foreach ($lanperms as $lng)
+			foreach ($lanperms as $olng)
 			{
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
-				$urlval = $slng->subdomainUrl($lng);
-				$text .= "<option value='".$urlval."' $selected>$lng</option>\n";
+				$selected = ($olng == $sql->mySQLlanguage || ($olng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
+				$urlval = $lng->subdomainUrl($olng);
+				$text .= "<option value='".$urlval."' $selected>$olng</option>\n";
 			}
 			$text .= "</select></div>";
 			
@@ -89,11 +85,11 @@ if(ADMIN)
 			<div>
 			<select name='sitelanguage' class='tbox'>";
 			
-			foreach ($lanperms as $lng)
+			foreach ($lanperms as $olng)
 			{
-				$langval = ($lng == $pref['sitelanguage'] && $lng == 'English') ? "" : $lng;
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
-				$text .= "<option value='".$langval."' $selected>$lng</option>\n";
+				$langval = ($olng == $pref['sitelanguage'] && $olng == 'English') ? "" : $olng;
+				$selected = ($olng == $sql->mySQLlanguage || ($olng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? "selected='selected'" : "";
+				$text .= "<option value='".$langval."' $selected>$olng</option>\n";
 			}
 			$text .= "</select>
 			<br /><br />
