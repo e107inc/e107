@@ -108,6 +108,7 @@ if (isset($potential))
 // More visible update check
 echo $tp->parseTemplate('{ADMIN_UPDATE}', true);
 
+
 // update users using old layout names to their new names
 $update_prefs = FALSE;
 if (!$pref['adminstyle'] || $pref['adminstyle'] == 'default') {
@@ -153,11 +154,13 @@ if ($update_prefs == true) {
 // auto db update
 if ('0' == ADMINPERMS) 
 {
-  $dont_check_update = TRUE;		// This reduces frequency of checks
-  require_once(e_ADMIN.'update_routines.php');
-  update_check();
+	$sql->db_Mark_Time("Start: Db Update Check");
+	$dont_check_update = TRUE;		// This reduces frequency of checks
+	require_once(e_ADMIN.'update_routines.php');
+	update_check();
 }
 // end auto db update
+$sql->db_Mark_Time("Start: Render Admin Panel");
 
 if (e_QUERY == 'purge' && getperms('0')) {
 	$admin_log->purge_log_events(false);
@@ -274,7 +277,7 @@ function log_request() {
 		return FALSE;
 	}
 }
-
+$sql->db_Mark_Time("Start: Render Admin Footer");
 require_once("footer.php");
 
 ?>
