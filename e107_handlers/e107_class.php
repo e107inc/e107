@@ -185,6 +185,7 @@ class e107
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'language'						 => '{e_HANDLER}language_class.php'
 	);
 
 	/**
@@ -1093,6 +1094,16 @@ class e107
 	public static function getNotify()
 	{
 		return self::getSingleton('notify', true);
+	}
+	
+	/**
+	 * Retrieve Language handler singleton object
+	 *
+	 * @return language
+	 */
+	public static function getLanguage()
+	{
+		return self::getSingleton('language', true);
 	}
 
 	/**
@@ -2158,19 +2169,11 @@ class e107
 		{
 			define('e_MENU', $matches[1]);
 			$e_QUERY = $matches[2];
-			if(strlen(e_MENU) == 2) // language code ie. [fr]
-			{
-		        require_once(e_HANDLER."language_class.php");
-				$slng = new language;
-				define('e_LANCODE', true);
-				$_GET['elan'] = $slng->convert(e_MENU);
-			}
 		}
 		else
 		{
 			define('e_MENU', '');
 			$e_QUERY = $_SERVER['QUERY_STRING'];
-		  	define('e_LANCODE', '');
 		}
 
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));

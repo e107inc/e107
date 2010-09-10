@@ -223,6 +223,7 @@ $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info, varset($E107_CONFIG, array()));
 
+
 // MOVED TO $e107->set_request()
 //$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
 //if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
@@ -236,40 +237,7 @@ $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), 
 //	}
 //}
 
-/**
- * set CHARSET for backward compatibility
- */
-//define('CHARSET', 'utf-8'); moved to e107->set_constants()
 
-// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
-// MOVED TO $e107->prepare_request()
-//$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
-
-//
-// G: Retrieve Query data from URI
-//    (Until this point, we have no idea what the user wants to do)
-//
-
-// MOVED TO $e107->set_request()
-//if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
-//{
-//	define('e_MENU', $matches[1]);
-//	$e_QUERY = $matches[2];
-//	if(strlen(e_MENU) == 2) // language code ie. [fr]
-//	{
-//        require_once(e_HANDLER."language_class.php");
-//		$slng = new language;
-//		define('e_LANCODE', true);
-//		$_GET['elan'] = $slng->convert(e_MENU);
-//	}
-//
-//}
-//else
-//{
-//	define('e_MENU', '');
-//	$e_QUERY = $_SERVER['QUERY_STRING'];
-//  	define('e_LANCODE', '');
-//}
 
 //
 // Start the parser; use it to grab the full query string
@@ -447,7 +415,11 @@ $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
 
 
-$sql->db_Mark_Time('(Extracting Core Prefs Done)');
+// $sql->db_Mark_Time('(Extracting Core Prefs Done)');
+
+$sql->db_Mark_Time('Start: Init Language and detect changes');
+
+e107::getLanguage()->detect();
 
 //
 // M: Subdomain and Language Selection
@@ -462,44 +434,15 @@ define('e_COOKIE', $pref['cookie_name']);
 //define('SITEURLBASE', ($pref['ssl_enabled'] == '1' ? 'https://' : 'http://').$_SERVER['HTTP_HOST']);
 //define('SITEURL', SITEURLBASE.e_HTTP);
 
-/*
- *  FIXME - pack all Language related code below to Language handler (new or extend the existing one)
- */
-
-// let the subdomain determine the language (when enabled).
-if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == 'session') && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)
-{
-	$mtmp = explode("\n", $pref['multilanguage_subdomain']);
-	foreach($mtmp as $val)
-	{
-		if(e_DOMAIN == trim($val))
-		{
-			$domain_active = TRUE;
-			break;
-		}
-	}
-
-	if($domain_active || ($pref['multilanguage_subdomain'] == '1'))
-	{
-		e107_ini_set('session.cookie_domain', '.'.e_DOMAIN);
-		require_once(e_HANDLER.'language_class.php');
-		$slng = new language;
-	    if(!e_SUBDOMAIN)
-		{
-			$GLOBALS['elan'] = $pref['sitelanguage'];
-		}
-		elseif($eln = $slng->convert(e_SUBDOMAIN))
-		{
-			$GLOBALS['elan'] = $eln;
-		}
-	}
-}
 
 
 // start a session if session based login is enabled
-if ($pref['user_tracking'] == 'session')
+// if ($pref['user_tracking'] == 'session')
 {
 	session_start();
+	
+	
+	
   if (!isset($_SESSION['challenge']))
   {	// New session
 	// Create a unique challenge string for CHAP login
@@ -564,152 +507,21 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	}
 }
 
-// $page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-// define('e_PAGE', $page);
+/**
+ * Set the User's Language
+ */
+$sql->db_Mark_Time('Start: Set User Language');
+e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref; 
 
-// sort out the users language selection
-if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
+if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 {
-	// query support, for language selection splash pages. etc
-	if($_GET['elan'])
-	{
-		$_POST['sitelanguage'] = str_replace(array(".", "/", "%"), "", $_GET['elan']);
-	}
-	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
-	{
-   		$_POST['sitelanguage'] = $GLOBALS['elan'];
-	}
-
-	$sql->mySQLlanguage = $_POST['sitelanguage'];
-    $sql2->mySQLlanguage = $_POST['sitelanguage'];
-
-    session_set('e107language_'.e_COOKIE, $_POST['sitelanguage'], time() + 86400);
-	if ($pref['user_tracking'] != 'session' && (strpos(e_SELF, ADMINDIR) === false))
-	{
-		$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF.'?'.e_QUERY : e_SELF;
-		header('Location:'.$locat);
-		exit();
-	}
-
+	$sql->mySQLlanguage  = e_LANGUAGE;
+	$sql2->mySQLlanguage = e_LANGUAGE;
 }
-
-$user_language='';
-// Multi-language options.
-if (isset($pref['multilanguage']) && $pref['multilanguage'])
-{
-	if ($pref['user_tracking'] == 'session')
-	{
-		$user_language = (array_key_exists('e107language_'.e_COOKIE, $_SESSION) ? $_SESSION['e107language_'.e_COOKIE] : '');
-		$sql->mySQLlanguage = ($user_language) ? $user_language : "";
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;
-	}
-	else
-	{
-		$user_language = (isset($_COOKIE['e107language_'.e_COOKIE]) ? $_COOKIE['e107language_'.e_COOKIE] : '');
-		$sql->mySQLlanguage = ($user_language ? $user_language : '');
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;
-	}
-}
-
-// Get Language List for rights checking.
-if( ! $tmplan = getcachedvars('language-list'))
-{
-	$handle = opendir(e_LANGUAGEDIR);
-	while ($file = readdir($handle))
-	{
-		// add only if e_LANGUAGEDIR.e_LANGUAGE/e_LANGUAGE
-		if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
-		{
-				$lanlist[] = $file;
-		}
-	}
-	closedir($handle);
-	$tmplan = implode(',', $lanlist);
-	cachevars('language-list', $tmplan);
-}
-// Save language flat list
-define('e_LANLIST', $tmplan);
-
-// Set $language fallback to $pref['sitelanguage'] for the time being
-$language = $pref['sitelanguage'];
-
-// Get user language choice
-//TODO Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
-//{
-	if ($pref['user_tracking'] == 'session')
-	{
-		$user_language = (array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : '');
-	}
-	else
-	{
-		$_SESSION = array(); //remove PHP notice
-		$user_language = (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
-	}
-	// Strip $user_language
-	//allow [a-z][A-Z][0-9]_
-	$user_language = preg_replace('#[^\w]#', '', $user_language);
-
-	// Is user language choice available?
-	if( ! in_array($user_language, $lanlist))
-	{
-		// Reset session
-		if(isset($_SESSION))
-		{
-			unset($_SESSION['e107language_'.$pref['cookie_name']]);
-		}
-		// Reset cookie
-		if(isset($_COOKIE['e107language_'.$pref['cookie_name']]))
-		{
-			unset($_COOKIE['e107language_'.$pref['cookie_name']]);
-		}
-		$user_language = '';
-	}
-	else
-	{
-		$language = $user_language;
-	}
-
-	// Ensure db got the proper language - default is empty
-	if (varset($pref['multilanguage']))
-	{
-		$sql->mySQLlanguage  = $user_language;
-		$sql2->mySQLlanguage = $user_language;
-	}
-//}
-
-// We should have the language by now
-define('e_LANGUAGE', $language);
-
-// Keep USERLAN for backward compatibility
-define('USERLAN', e_LANGUAGE);
 
 //TODO do it only once and with the proper function
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.'_custom.php');
-
-// Now we know the site CHARSET, define how to handle utf-8 as necessary
-// CHARSET is UTF-8, thus initCharset() is used in e_parse() constructor
-// $tp->initCharset();
-
-if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pref['multilanguage_subdomain'])
-{
-	list($clc) = explode("_",CORE_LC);
-	define('e_LAN', strtolower($clc));
-	define('e_LANQRY', '['.e_LAN.']');
-	unset($clc);
-}
-else
-{
-	/**
-	 * @ignore
-	 */
-	define('e_LAN', false);
-	/**
-	 * @ignore
-	 */
-	define('e_LANQRY', false);
-}
-$sql->db_Mark_Time('(Start: Pref/multilang done)');
 
 //
 // N: misc setups: online user tracking, cache
@@ -1879,7 +1691,7 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
 	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
 }
 
-function cookie($name, $value, $expire=0, $path = '/', $domain = '', $secure = 0)
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
 {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
