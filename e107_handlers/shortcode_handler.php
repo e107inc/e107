@@ -563,7 +563,7 @@ class e_parse_shortcode
 		$parm = trim($parm);
 		$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 
-		if (E107_DBG_BBSC || E107_DBG_SC)
+		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
 			global $db_debug;
 			$sql->db_Mark_Time("SC $code");
@@ -744,9 +744,9 @@ class e_parse_shortcode
 				}
 			}
 		}
-		if (E107_DBG_SC)
+		if (E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			$sql->db_Mark_Time("(SC {$code} Done)");
+			$sql->db_Mark_Time("(After SC {$code})");
 		}
 		return isset($ret) ? $ret : '';
 	}
