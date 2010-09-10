@@ -107,6 +107,7 @@ e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
 
 
+
 if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 	foreach ($retrieve_prefs as $key => $pref_name) {
 		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
@@ -1534,7 +1535,7 @@ if(isset($pref['track_online']) && $pref['track_online']) {
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 
-function cookie($name, $value, $expire=0, $path = "/", $domain = "", $secure = 0)
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = "", $secure = 0)
 {
 	if(defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE)
 	{

@@ -393,8 +393,7 @@ class language{
 		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['sitelanguage'])))
 		{
 			// Do nothing	
-		}
-		
+		}		
 		elseif(isset($GLOBALS['elan']) && ($detect_language = $this->isValid($GLOBALS['elan'])))
 		{
 			// Do nothing		
@@ -403,6 +402,9 @@ class language{
 		{
 			$detect_language = FALSE; // ie. No Change. 
 		}
+		
+		e107_ini_set("session.cookie_path", e_HTTP);
+
 		
 		$this->detect = $detect_language;	
 		return $detect_language;
@@ -428,7 +430,7 @@ class language{
 			
 			if(varset($_COOKIE['e107_language'])!=$this->detect && (defset('MULTILANG_SUBDOMAIN') != TRUE))
 			{
-				setcookie('e107_language', $this->detect, time() + 86400, "/");
+				setcookie('e107_language', $this->detect, time() + 86400, e_HTTP);
 				$_COOKIE['e107_language'] = $this->detect; // Used only when a user returns to the site. Not used during this session. 
 			}
 			else // Multi-lang SubDomains should ignore cookies and remove old ones if they exist. 
