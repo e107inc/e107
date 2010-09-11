@@ -119,23 +119,35 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 // Define the domain name and subdomain name.
-if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST']))){
-	$srvtmp = "";  // Host is an IP address.
-}else{
-	$srvtmp = explode(".",str_replace("www.","",$_SERVER['HTTP_HOST']));
-}
-
-define("e_SUBDOMAIN", (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : FALSE)); // needs to be available to e107_config.
-
-if(e_SUBDOMAIN)
+if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 {
-   	unset($srvtmp[0]);
+	$domain = FALSE;
+	$subdomain = FALSE;
+}
+else
+{	
+	if(preg_match("/\.?([a-z0-9-]+)(\.(com|net|org|co|me|ltd|plc|gov)\.[a-z]{2})$/i",$_SERVER['HTTP_HOST'],$m)) //eg. mysite.co.uk
+	{
+        $domain = $m[1].$m[2];
+    }
+	elseif(preg_match("/\.?([a-z0-9-]+)(\.[a-z]{2,})$/i",$_SERVER['HTTP_HOST'],$m))//  eg. .com/net/org/ws/biz/info
+	{       
+        $domain = $m[1].$m[2];		
+    }
+	else
+	{
+		$domain = FALSE; //invalid domain
+	}
+	
+	$replace = array(".".$domain,"www.","www");
+	$subdomain = str_replace($replace,'',$_SERVER['HTTP_HOST']);
 }
 
-define("e_DOMAIN",(count($srvtmp) > 1 ? (implode(".",$srvtmp)) : FALSE)); // if it's an IP it must be set to FALSE.
+define("e_DOMAIN",$domain);
+define("e_SUBDOMAIN",($subdomain) ? $subdomain : FALSE);
+unset($domain,$subdomain,$replace);
 
-unset($srvtmp);
-
+// ---------------------------
 
 //  Ensure thet '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
