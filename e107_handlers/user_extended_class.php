@@ -44,7 +44,7 @@ class e107_user_extended
 {
 	public $user_extended_types;	// Text description corresponding to each field type
 	private $extended_xml = FALSE;
-	private $typeArray;				// Cross-reference between names of field types, and numeric ID
+	public $typeArray;				// Cross-reference between names of field types, and numeric ID (must be public)
 	private $reserved_names;		// List of field names used in main user DB - not allowed in extended DB
 	public $fieldDefinitions;		// Array initialised from DB by constructor - currently all fields
 	public $catDefinitions;			// Categories
