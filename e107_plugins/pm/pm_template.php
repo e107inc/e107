@@ -27,8 +27,8 @@ if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;		// Needed for the PM_REPLY shortcode!
 
-if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
-if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
+if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
+if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
