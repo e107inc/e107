@@ -6,7 +6,6 @@
 |     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
 |     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |
-|
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
@@ -20,8 +19,8 @@ if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;
 
-define("PM_READ_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/read.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_111."' />");
-define("PM_UNREAD_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_27."' />");
+define("PM_READ_ICON", "<img src='".e_PLUGIN_ABS."pm/images/read.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_111."' />");
+define("PM_UNREAD_ICON", "<img src='".e_PLUGIN_ABS."pm/images/unread.png' style='height:16px; width:16px; border:0px' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
