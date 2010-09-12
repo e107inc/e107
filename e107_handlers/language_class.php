@@ -14,9 +14,10 @@ class language{
 
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
+	var $detect 		= FALSE;
+	var $e_language 	= 'English'; // replaced later with $pref
+
 // Valid Language Pack Names are shown directly below on the right. 
-	var $detect = FALSE;
-	var $e_language = 'English'; // replaced later with $pref
 
 	var $list = array(
             "aa" => "Afar",
@@ -181,6 +182,7 @@ class language{
 
 		var $names = array(
 			"Arabic" 		=> "العربية",
+			"Bengali"		=> "বাংলা",
 			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
 			"Croatian"		=> "Hrvatski",
@@ -188,6 +190,7 @@ class language{
 			"ChineseSimp"  	=> "简体中文",
 			"Dutch"			=> "Nederlands",
 			"English"		=> "English",
+			"Finnish"		=> "Suomi",
 			"French"		=> "Français",
 			"German"		=> "Deutsch",
 			"Greek"			=> "Ελληνικά",
@@ -199,10 +202,11 @@ class language{
 			"Lithuanian"	=> "Lietuvių",
 			"Mongolian"		=> "монгол",
 			"Nepali"		=> "नेपाली",
+			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
 			"Polish"		=> "Polski",
-			"Romanian"		=> "Romanesc",
+			"Romanian"		=> "Română",
 			"Russian"		=> "Pусский",
 			"Serbian"		=> "Srpski",
 			"Spanish"		=> "Español",

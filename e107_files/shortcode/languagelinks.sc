@@ -1,19 +1,19 @@
-//<? $Id$
+// $Id$
+//<?
 global $pref,$lng;
-if( ! defined('LANGLINKS_SEPARATOR'))
+if(!defined('LANGLINKS_SEPARATOR'))
 {
 	define('LANGLINKS_SEPARATOR', '&nbsp;|&nbsp;');
 }
-//$cursub = explode('.', $_SERVER['HTTP_HOST']);
 
-if($parm)
-{
-	$languageList = explode(',', $parm);
-}
-else
+if($parm == "dropdown" || !$parm)
 {
 	$languageList = explode(',', e_LANLIST);
-	sort($languageList);
+	sort($languageList);		
+}
+elseif($parm)
+{
+	$languageList = explode(',', $parm);
 }
 
 if(count($languageList) < 2)
@@ -21,13 +21,13 @@ if(count($languageList) < 2)
 	return;
 }
 
+$option = array();
+$href = array();
+
 foreach($languageList as $languageFolder)
 {
 	$code = $lng->convert($languageFolder);
 	$name = $lng->toNative($languageFolder);
-	//$subdom = (isset($cursub[2])) ? $cursub[0] : '';
-
-	
 
 	if(defset('MULTILANG_SUBDOMAIN')==TRUE)
 	{
@@ -39,7 +39,17 @@ foreach($languageList as $languageFolder)
 		$link = (e_QUERY) ? e_SELF.'?['.$code.']'.e_QUERY : e_SELF.'?['.$code.']';
 	}
 	$class = ($languageFolder == e_LANGUAGE) ? 'languagelink_active' : 'languagelink';
-	$ret[] =  "\n<a class='{$class}' href='{$link}'>{$name}</a>";
+	$sel = ($languageFolder == e_LANGUAGE) ? "selected='selected'" : '';
+	$href[] =  "\n<a class='{$class}' href='{$link}'>{$name}</a>";
+	$option[] =  "\n<option class='{$class}' value='{$link}' class='{$class}' {$sel}>{$name}</option>";
 }
 
-return implode(LANGLINKS_SEPARATOR, $ret);
+if($parm == "dropdown")
+{
+	return "<select class='languagelink_dropdown' onchange=\"location.href=this.options[selectedIndex].value\">".implode("\n",$option)."</select>";		
+}
+else
+{
+	return implode(LANGLINKS_SEPARATOR, $href);	
+}
+
