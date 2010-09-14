@@ -549,6 +549,8 @@ $sql->db_Mark_Time('Start: Set User Language');
 
 $lng->set(); // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref; 
 
+header('Content-Language: '.e_LAN);
+
 if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 {
 	$sql->mySQLlanguage  = e_LANGUAGE;
