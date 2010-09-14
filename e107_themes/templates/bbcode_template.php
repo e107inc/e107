@@ -22,7 +22,7 @@
 // $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."generic/bbcode/template.png");
 
 $BBCODE_TEMPLATE = "
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=justify}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
 ";
 
@@ -34,7 +34,7 @@ $BBCODE_TEMPLATE = "
 
 $BBCODE_TEMPLATE_SUBMITNEWS = "
 	{BB_HELP}<br />
-    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=justify}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 ";
 
@@ -43,8 +43,8 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 
 $BBCODE_TEMPLATE_ADMIN = "
 	{BB_HELP=admin}<br />
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=justify}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 ";
@@ -53,8 +53,8 @@ $BBCODE_TEMPLATE_ADMIN = "
 
 $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB_HELP=$mode}<br />
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=justify}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 ";
@@ -62,7 +62,7 @@ $BBCODE_TEMPLATE_NEWSPOST = "
 $BBCODE_TEMPLATE_CPAGE = "
 	{BB_HELP}<br />
 	{BB=newpage}
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}{BB=justify}
 	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."custom/}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}

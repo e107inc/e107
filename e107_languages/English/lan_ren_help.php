@@ -65,4 +65,6 @@ define("LANHELP_46", "* No files found in: ");
 define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
 // 0.7.23
 define("LANHELP_48", "YouTube video: [youtube=tiny|small|medium|big|huge|width,height]6kYjxJmk0wc[/youtube]");
+// 0.7.24
+define("LANHELP_49", "Justify align: [justify]This text will be justified[/justify]")
 ?>
