@@ -86,7 +86,7 @@ if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URL
 }
 // If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 $_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
-
+unset($pos);
 //
 // D: Setup PHP error handling
 //    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
@@ -145,7 +145,7 @@ else
 
 define("e_DOMAIN",$domain);
 define("e_SUBDOMAIN",($subdomain) ? $subdomain : FALSE);
-unset($domain,$subdomain,$replace);
+unset($domain,$subdomain,$replace,$m);
 
 // ---------------------------
 
@@ -197,7 +197,7 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 		}
 	}
 }
-
+unset($inArray);
 
 // Session start. 
 
@@ -209,6 +209,7 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	$e_QUERY = $matches[2];
+	unset($matches);
 }
 else
 {

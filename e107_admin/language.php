@@ -174,16 +174,22 @@ function share($newfile)
 	$returnpath='';
 	$returnreceipt='';
 	$inline ="";
-	$subject = basename($newfile);
 	
-	@sendemail($send_to, $subject, $email_message, $to_name, "", "", $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline);
-
+	$subject = (!$_POST['contribute_pack']) ? "[0.7 LanguagePack] " : "[0.7 Certified LanguagePack] ";		
+	$subject .= basename($newfile);
+	
+	if(!@sendemail($send_to, $subject, $email_message, $to_name, "", "", $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+	{
 		$text = "<div style='padding:40px'>";
-		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>Please email your verified language pack to:</b>";
-		$text .= " <a href='mailto:".$send_to."?subject=[0.7 LanguagePack] ".$subject."'>".$send_to."</a>";
+		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>There was a problem sending the language-pack. Please email your verified language pack to:</b>";
+		$text .= " <a href='mailto:".$send_to."?subject=".$subject."'>".$send_to."</a>";
 		$text .= "</div>";
 		
-		return $text;
+		return $text;	
+	}
+
+
+	
 
 }
 
@@ -482,8 +488,8 @@ function show_tools()
     <form name='lancheck' method='post' action='".e_ADMIN."lancheck.php'>
     <table class='fborder' style='".ADMIN_WIDTH."'>
     <tr>
-    <td class='fcaption' style='width:40%'>".LAN_CHECK_1."</td>
-    <td class='forumheader3' style='text-align:center'>
+    <td class='fcaption' style='width:30%'>".LAN_CHECK_1."</td>
+    <td class='forumheader3'>
     <select name='language' class='tbox'>
     <option value=''>".LAN_SELECT."</option>";
 
@@ -508,8 +514,8 @@ function show_tools()
     <form name='lancheck' method='post' action='".e_SELF."?tools'>
     <table class='fborder' style='".ADMIN_WIDTH."'>
     <tr>
-    <td class='fcaption' style='width:40%'>".LANG_LAN_23."</td>
-    <td class='forumheader3' style='text-align:center'>
+    <td class='fcaption' style='width:30%'>".LANG_LAN_23."</td>
+    <td class='forumheader3' >
     <select name='language' class='tbox'>
     <option value=''>".LAN_SELECT."</option>";
 
@@ -526,7 +532,15 @@ function show_tools()
 
     $text .= "
     </select>
-    <input type='submit' name='ziplang' value=\"".LANG_LAN_24."\" class='button' />
+    <input type='submit' name='ziplang' value=\"".LANG_LAN_24."\" class='button' />";
+	
+	$srch = array("[","]");
+	$repl = array("<a rel='external' href='http://e107.org/news.php?extend.876.1'>","</a>");
+	$diz = (defined("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+	
+	$text .= " <input type='checkbox' name='contribute_pack' value='1' />".str_replace($srch,$repl,$diz);
+	
+	$text .= "
     </td></tr>
     </table></form>";
 	
