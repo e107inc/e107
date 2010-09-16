@@ -634,7 +634,7 @@ function zip_up_lang($language)
 	if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
 	{
 		$ret['error'] = TRUE;
-		$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : "Please make sure you are using default folder names in e107_config.php (eg. e107_language/, e107_plugins/ etc.) and try again.";
+		$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.";
 		return $ret;	
 	}	
 		
@@ -691,7 +691,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 {
 	global $fl,$ln;
 	
-	if ($lanlist = $fl->get_files($path, "", "standard", $depth))
+	if ($lanlist = $fl->get_files($path, "^[\w]+(\.php|\.js){0,1}$", "standard", $depth))
 	{
 		sort($lanlist);
 	}
@@ -710,8 +710,8 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	foreach ($lanlist as $p)
 	{	
 		$fullpath = $p['path'].$p['fname'];
-				
-		if($p['fname'] == ($language."_custom.php"))
+						
+		if($p['fname'] == ($language."_custom.php") || ($p['fname'] == ($language."_config.php")))
 		{
 			continue;
 		}
@@ -742,6 +742,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 			
 		}
 	}
+	
 	return $pzip;
 }
 
