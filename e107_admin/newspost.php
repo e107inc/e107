@@ -738,7 +738,7 @@ class newspost
 				<td class='forumheader3'><a style='cursor: pointer' onclick='expandit(this);'>".$user['user_name']."</a>
 					<div style='display: none;'>
 						<select class='tbox' name='news_author'>";
-		$query = "SELECT * FROM #user WHERE (user_admin = '1' AND user_perms = '0') OR (user_perms REGEXP 'H.') ORDER BY user_id";
+		$query = "SELECT * FROM #user WHERE (user_admin = '1' AND ((user_perms  = '0') OR (user_perms  = '0.'))) OR (user_perms REGEXP 'H.') ORDER BY user_id";
 		$sql->db_Select_Gen($query);
 		while (list($user_id,$user_name) = $sql->db_Fetch())
 		{
