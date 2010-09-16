@@ -25,7 +25,8 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 }
 
 require_once("../class2.php");
-if (!getperms("6")) {
+if (!getperms("6")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -35,6 +36,7 @@ require_once("auth.php");
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
 
 $imagedir = e_IMAGE."filemanager/";
+$message = '';
 
 	$dir_options[0] = FMLAN_47;
 	$dir_options[1] = FMLAN_35;
@@ -83,13 +85,16 @@ if (isset($_POST['deleteconfirm']))
 	$newfile = str_replace($path,"",$delfile);
 
 	// Move file to whatever folder.
-		if (isset($_POST['movetodls'])){
-
+		if (isset($_POST['movetodls']))
+		{
 			$newpath = $_POST['movepath'];
 
-			if (rename(e_BASE.$delfile,$newpath.$newfile)){
+			if (rename(e_BASE.$delfile,$newpath.$newfile))
+			{
 				$message .= FMLAN_38." ".$newpath.$newfile."<br />";
-			} else {
+			} 
+			else 
+			{
 				$message .= FMLAN_39." ".$newpath.$newfile."<br />";
 				$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
 			}
@@ -100,21 +105,51 @@ if (isset($_POST['deleteconfirm']))
 
 
 
-if (isset($_POST['upload'])) {
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
+if (isset($_POST['upload'])) 
+{
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	{
 		exit;
 	}
 	$pref['upload_storagetype'] = "1";
-	require_once(e_HANDLER."upload_handler.php");
+	require_once(e_HANDLER.'upload_handler.php');
 	$files = $_FILES['file_userfile'];
-	foreach($files['name'] as $key => $name) {
-		if ($files['size'][$key]) {
-			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
+	$spacer = '';
+	foreach($files['name'] as $key => $name) 
+	{
+		if ($name)
+		{
+			if ($files['error'][$key])
+			{
+				$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name;
+			}
+			elseif ($files['size'][$key]) 
+			{
+				$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
+				if (($uploaded === FALSE) || !is_array($uploaded))
+				{
+					$message .= $spacer.FMLAN_51.$name;
+					$spacer = '<br />';
+				}
+				else
+				{
+					foreach ($uploaded as $k => $inf)
+					{
+						if ($inf['error'] != 0)
+						{	// Most likely errors trapped earlier.
+							$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname'];
+						}
+						$spacer = '<br />';
+					}
+				}
+			}
 		}
 	}
 }
 
-if (isset($message)) {
+
+if ($message)
+{
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
@@ -213,7 +248,7 @@ $ns->tablerender(FMLAN_34, $text);
 
 $text = "<form enctype=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
 	<div style=\"text-align:center\">
-	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />
+	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"2000000\" />
 	<table class='fborder' style=\"".ADMIN_WIDTH."\">";
 
 $text .= "<tr>
