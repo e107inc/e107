@@ -37,6 +37,7 @@ $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_UPLOAD)) ?
 
 
 $imagedir = e_IMAGE."filemanager/";
+$message = '';
 
 	$dir_options[0] = FMLAN_47;
 	$dir_options[1] = FMLAN_35;
@@ -130,15 +131,41 @@ if (isset($_POST['upload']))
 		exit;
 	}
 	$uploadList = array();
-	$pref['upload_storagetype'] = "1";
-	require_once(e_HANDLER."upload_handler.php");
+	require_once(e_HANDLER.'upload_handler.php');
 	$files = $_FILES['file_userfile'];
-	foreach($files['name'] as $key => $name)
+	$spacer = '';
+	foreach($files['name'] as $key => $name) 
 	{
-		if ($files['size'][$key])
+		if ($name)
 		{
-			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
-			$uploadList[] = $_POST['upload_dir'][$key].$uploaded[0]['name'];
+			if ($files['error'][$key])
+			{
+				$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name;
+			}
+			elseif ($files['size'][$key]) 
+			{
+				$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
+				if (($uploaded === FALSE) || !is_array($uploaded))
+				{
+					$message .= $spacer.FMLAN_51.$name;
+					$spacer = '<br />';
+				}
+				else
+				{
+					foreach ($uploaded as $k => $inf)
+					{
+						if ($inf['error'] == 0)
+						{
+							$uploadList[] = $_POST['upload_dir'][$key].$uploaded[0]['name'];
+						}
+						else
+						{	// Most likely errors trapped earlier.
+							$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname'];
+						}
+						$spacer = '<br />';
+					}
+				}
+			}
 		}
 	}
 	if (count($uploadList))
@@ -149,7 +176,7 @@ if (isset($_POST['upload']))
 
 
 
-if (isset($message))
+if ($message)
 {
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
