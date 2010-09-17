@@ -369,7 +369,8 @@ else
 			<tr>
 			<td class='forumheader3'>{$row['userclass_name']}</td>
 			<td class='forumheader3'>".r_userclass_name($rEditClass)."</td>
-			<td class='forumheader3'>{$row['userclass_description']}</td>";
+			<td class='forumheader3'>{$row['userclass_description']}</td>
+			</tr>";
 		}
 	}
 }
