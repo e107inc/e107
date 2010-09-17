@@ -48,16 +48,16 @@
 			$link = varsettrue($val['attributes']['url']);
 			$compat = varsettrue($val['attributes']['compatibility']);
 	
-		 	if(($compat == '0.7') && version_compare($version,$cur_version)==1)
+		 	if(($compat == '0.7') && version_compare($version,$cur_version)==1 || (($compat == '0.7') && version_compare($version,$cur_version)==0 && ($tag =='svn')))
 			{
-	        	$ftext = "<a rel='external' href='".$link."' >".sprintf(LAN_NEWVERSION_DLD, "e107 v".$version)."</a><br />\n";
+	        	$ftext = "<a rel='external' href='".$link."' >".sprintf(LAN_NEWVERSION_DLD, "e107 v".$version)."</a>\n";
 	        	if(varsettrue($val['description']))
 	        	{
-	        		$ftext .= '<br />'.$tp->toHTML(trim($val['description']), true, 'BODY').'<br />';
+	        		$ftext .= '<br />'.$tp->toHTML(trim($val['description']), true, 'BODY');
 	        	}
 	        	if(varsettrue($val['attributes']['infourl']))
 	        	{
-	        		$ftext .= "<a rel='external' href='".$val['attributes']['infourl']."' >".LAN_NEWVERSION_MORE."</a>\n";
+	        		$ftext .= "<br /><a rel='external' href='".$val['attributes']['infourl']."' >".LAN_NEWVERSION_MORE."</a>\n";
 	        	}
 				break;
 			}
