@@ -485,7 +485,7 @@ function show_tools()
     include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 
     $text .= "
-    <form name='lancheck' method='post' action='".e_ADMIN."lancheck.php'>
+    <form id='lancheck' method='post' action='".e_ADMIN."lancheck.php'>
     <table class='fborder' style='".ADMIN_WIDTH."'>
     <tr>
     <td class='fcaption' style='width:30%'>".LAN_CHECK_1."</td>
@@ -511,7 +511,7 @@ function show_tools()
     </table></form>";
 	
 	  $text .= "
-    <form name='lancheck' method='post' action='".e_SELF."?tools'>
+    <form id='tools' method='post' action='".e_SELF."?tools'>
     <table class='fborder' style='".ADMIN_WIDTH."'>
     <tr>
     <td class='fcaption' style='width:30%'>".LANG_LAN_23."</td>

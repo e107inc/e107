@@ -166,7 +166,7 @@ $text = "<script type=\"text/javascript\">
 	<div style='text-align:center'>
 	<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
 	<form method='post' action='".e_SELF."'>
-	<input type='hidden' name='e-token' value='".e_TOKEN."' />
+	
 	<div id='main' style='text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<colgroup>
@@ -1041,25 +1041,13 @@ require_once("footer.php");
 
 function pref_submit() {
 	$text = "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>";
+		<td colspan='2' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 
-	// ML
-	/* if(e_MLANG == 1){
-	//$text .="<input class='fcaption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
-	$but_typ = array(""); // empty = submit
-	$but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
-	$but_val = array("updateprefs"); // empty = Submit
-	$but_class = array("caption"); // empty = button
-	$butjs = array(""); // empty = ""
-	$buttitle = array(""); // empty = ""
-	$text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
-	}else{*/
-	$text .= "<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
-	// }
 	$text .= "</td>
 		</tr>";
 
-	// END ML
 	return $text;
 }
 

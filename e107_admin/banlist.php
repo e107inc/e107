@@ -81,8 +81,6 @@ $text = "";
 
 $text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
-	<input type='hidden' name='e-token' value='".e_TOKEN."' />
-
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 
 	<tr>

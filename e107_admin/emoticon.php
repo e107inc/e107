@@ -149,6 +149,7 @@ class emotec
 		<td class='forumheader' style='width: 50%;'>".EMOLAN_3."</td>
 		<td class='forumheader' style='width: 10%; text-align: center;'>".EMOLAN_8."</td>
 		<td class='forumheader' style='width: 20%;'>".EMOLAN_9."</td>
+		</tr>
 		";
 
 		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '\.bak$');

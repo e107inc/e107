@@ -348,7 +348,7 @@ if ($action == "opt")
 		<tr><td class='forumheader3'>
 		".LAN_ORDER."
 		</td>
-		<td class='forumheader3' text-align:left'>
+		<td class='forumheader3' style='text-align:left'>
 		<select name='download_sort' class='tbox'>". ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>"). ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
 		</select>
 		</td>
@@ -657,7 +657,7 @@ class download
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
-		<table class='forumheader3' style='width:95%'><tr>";
+		<table class='forumheader3' style='width:95%'>";
 
 /*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
@@ -670,18 +670,31 @@ class download
 
         $m = 0;
 		$replacechar = array("download_","_");
-	foreach($fname as $fcol)
-	{
-        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+		
+		foreach($fname as $fcol)
+		{
+			if($m == 0)
+			{
+				$text .= "<tr>\n";	
+			}
+			
+	        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+			
 			$text .= "<td style='text-align:left; padding:0px'>";
 			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace($replacechar," ",$fcol) . "</td>\n";
 			$m++;
-	  if($m == 5)
-	  {
-				$text .= "</tr><tr>";
+				
+		  	if($m == 5)
+		  	{
+				$text .= "</tr>";
 				$m = 0;
-			 }
-        }
+			}
+		}
+		
+		if($m != 0)
+		{
+			$text .= "</tr>";
+		}
 
 		$text .= "</table></div>
 		</form>\n
@@ -899,6 +912,7 @@ class download
       <option value='MB'>".CORE_LAN_MB."</option>
       <option value='GB'>".CORE_LAN_GB."</option>
       <option value='TB'>".CORE_LAN_TB."</option>
+	  </select>
       </div>
 
 			</td>
@@ -912,7 +926,7 @@ class download
 		// See if any mirrors to display
 		if(!$sql -> db_Select("download_mirror"))
 		{	// No mirrors defined here
-			$text .= DOWLAN_144."</tr>";
+			$text .= DOWLAN_144."</td></tr>";
 		}
 		else
 		{
