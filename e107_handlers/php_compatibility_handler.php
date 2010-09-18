@@ -5,7 +5,12 @@ if (!defined('e107_INIT')) { exit; }
 // e107 requires PHP > 4.3.0, all functions that are used in e107, introduced in newer
 // versions than that should be recreated in here for compatabilty reasons..
 
-if (!function_exists('file_put_contents')) {
+
+/**
+ *	file_put_contents - introduced in PHP5
+ */
+if (!function_exists('file_put_contents')) 
+{
 	/**
 	* @return int
 	* @param string $filename
@@ -32,7 +37,11 @@ if (!function_exists('file_put_contents')) {
 
 
 
-if (!function_exists('stripos')) {
+/**
+ *	stripos() - introduced in PHP5
+ */
+if (!function_exists('stripos')) 
+{
  	function stripos($str,$needle,$offset=0)
 	{
 		return strpos(strtolower($str), strtolower($needle), $offset);
@@ -41,9 +50,35 @@ if (!function_exists('stripos')) {
 
 
 
-if(!function_exists("mime_content_type")){
-	function mime_content_type($filename){
+/**
+ *	simplexml_load_string - introduced in PHP5
+ *
+ *	Copied from 0.8 compatibility file
+ */
+if (!function_exists('simplexml_load_string'))
+{
+	function simplexml_load_string($xml)
+	{
+		require_once(e_HANDLER.'xml_class.php');
+		$xmlClass = new CXml;
+		$xmlClass->Set_xml_data($xml);
+		$data = (array) $xmlClass->obj_data;
+		$tmp = array_keys($data);
+		$data = $data[$tmp[0]][0];
+		return $data;
+	}
+}
 
+
+/**
+ *	mime_content_type - introduced PHP4.3, present in PHP5
+ *	Deprecated PHP function
+ */
+/*
+if(!function_exists("mime_content_type"))
+{
+	function mime_content_type($filename)
+	{
 		$filename = basename($filename);
 
 		$mime[".zip"] = "application/x-zip-compressed";
@@ -81,4 +116,5 @@ if(!function_exists("mime_content_type")){
 		return $mime[$ext];
 	}
 }
+*/
 ?>
