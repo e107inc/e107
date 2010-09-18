@@ -322,22 +322,24 @@ class e_bbcode
 		{	// Find the file
 			if ($this->bbLocation[$code] == 'core')
 			{
-				$bbFile = e_CORE.'bbcodes/'.strtolower(str_replace('_', '', $code));
+				$bbPath = e_CORE.'bbcodes/';
+				$bbFile = strtolower(str_replace('_', '', $code));
 			}
 			else
 			{	// Add code to check for plugin bbcode addition
-				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code);
+				$bbPath = e_PLUGIN.$this->bbLocation[$code].'/';
+				$bbFile = strtolower($code);
 			}
-			if (file_exists($bbFile.'.php'))
+			if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
 			{	// Its a bbcode class file
-				require_once($bbFile.'.php');
-				//echo "Load: {$bbFile}.php -->".$code_text.'<br />';
+				require_once($bbPath.'bb_'.$bbFile.'.php');
+				//echo "Load: {$bbFile}.php<br />";
 				$className = 'bb_'.$code;
 				$this->bbList[$code] = new $className();
 			}
-			elseif (file_exists($bbFile.'.bb'))
+			elseif (file_exists($bbPath.$bbFile.'.bb'))
 			{
-				$bbcode = file_get_contents($bbFile.'.bb');
+				$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 				$this->bbList[$code] = $bbcode;
 			}
 			else
