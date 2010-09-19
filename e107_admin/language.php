@@ -141,6 +141,8 @@ if (varset($_POST['ziplang']) && varset($_POST['language']))
  */
 function share($newfile)
 {
+	global $pref;
+	
 	if(!$newfile)
 	{
 		return;
@@ -167,18 +169,18 @@ function share($newfile)
 	
 	require_once(e_HANDLER."mail.php");
 	
-	$send_to = "languagepacks@e107inc.org"; 
+	$send_to = (!$_POST['contribute_pack']) ? "languagepacks@e107inc.org" : "certifiedpack@e107inc.org"; 
 	$to_name = "e107 Inc.";
 	$Cc = "";
 	$Bcc = "";
 	$returnpath='';
 	$returnreceipt='';
 	$inline ="";
-	
+		
 	$subject = (!$_POST['contribute_pack']) ? "[0.7 LanguagePack] " : "[0.7 Certified LanguagePack] ";		
 	$subject .= basename($newfile);
 	
-	if(!@sendemail($send_to, $subject, $email_message, $to_name, "", "", $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+	if(!@sendemail($send_to, $subject, $email_message, $to_name, '', '', $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
 	{
 		$text = "<div style='padding:40px'>";
 		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>There was a problem sending the language-pack. Please email your verified language pack to:</b>";
@@ -187,7 +189,10 @@ function share($newfile)
 		
 		return $text;	
 	}
-
+	elseif($_POST['contribute_pack'])
+	{
+		return "<div style='padding:40px'>Pack Sent to e107 Inc. A confirmation email will be sent to ".$pref['siteadminemail']." once it is received.<br />Please also make sure that email coming from ".$send_to." is not blocked by your spam filter.</div>";
+	}
 
 	
 
@@ -583,6 +588,7 @@ function zip_up_lang($language)
 {
 	global $tp;
 	$ret = array();
+	$ret['file'] = "";
 	
 	if(!isset($_SESSION['lancheck_'.$language]))
 	{
