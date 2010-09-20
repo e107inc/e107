@@ -308,7 +308,6 @@ class e_parse
 		}
 		else
 		{
-			//libxml_use_internal_errors(TRUE);
 			if (FALSE === ($info = simplexml_load_string($matches[4])))
 			{
 				//print_a($matches);
@@ -326,7 +325,7 @@ class e_parse
 				else
 				{
 					$info2 = (array)$info1['embed'];
-					if (!isset($info2['@attributes']))
+					if (!isset($info2['@attributes']) && !isset($info2[0]))
 					{
 						$ok = 3;
 					}
@@ -337,7 +336,7 @@ class e_parse
 				print_a($info);
 				return '[sanitised]'.$ok.'B'.htmlspecialchars($matches[0]).'B[/sanitised]';
 			}
-			$target =  $info2['@attributes'];
+			$target =  isset($info2['@attributes']) ? $info2['@attributes'] : (array)$info2[0];		// Handle our not quite compatible PHP4 implementation of simplexml_load_string
 			unset($info);
 			$ws = varset($target['width'], 0);
 			$hs = varset($target['height'], 0);
