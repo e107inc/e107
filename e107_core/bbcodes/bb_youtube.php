@@ -105,7 +105,7 @@ class bb_youtube extends e_bb_base
 				print_a($info);
 				return '[sanitised]'.$ok.'B'.htmlspecialchars($matches[0]).'B[/sanitised]';
 			}
-			$target =  $info2['@attributes'];
+			$target =  (array)$info2['@attributes'];
 			unset($info);
 			$ws = varset($target['width'], 0);
 			$hs = varset($target['height'], 0);
