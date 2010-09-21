@@ -64,7 +64,7 @@ if (e_QUERY)
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
 	$sub_action = varset($tmp[1],'');
-	$id = varset($tmp[2],'');
+	$id = intval(varset($tmp[2],''));
 	$from = varset($tmp[3], 0);
 	unset($tmp);
 }
@@ -76,7 +76,7 @@ if(isset($_POST['delete']))
 	unset($_POST['searchquery']);
 }
 
-$from = varset($from, 0);
+$from = intval(varset($from, 0));
 $amount = 50;
 
 
@@ -198,6 +198,7 @@ if(isset($_POST['updatelimits']))
 	}
 	foreach(array_keys($_POST['count_num']) as $id)
 	{
+		$id = intval($id);
 		if(!$_POST['count_num'][$id] && !$_POST['count_days'][$id] && !$_POST['bw_num'][$id] && !$_POST['bw_days'][$id])
 		{
 			//All entries empty - Remove record
@@ -234,7 +235,7 @@ if($action == "mirror")
 if ($action == "dlm")
 {
 	$action = "create";
-	$id = $sub_action;
+	$id = intval($sub_action);
 	$sub_action = "dlm";
 }
 
@@ -1161,7 +1162,7 @@ class download
 				<td style='width:30%' class='forumheader3'>".DOWLAN_103.":<br /></td>
 				<td style='width:70%' class='forumheader3'>
 				<input type='checkbox' name='remove_upload' value='1' />
-				<input type='hidden' name='remove_id' value='$id' />
+				<input type='hidden' name='remove_id' value='{$id}' />
 				</td>
 			</tr>
             ";
@@ -1172,9 +1173,12 @@ class download
 			<td colspan='2' style='text-align:center' class='forumheader'>";
 
 
-		if ($id && $sub_action == "edit") {
+		if ($id && $sub_action == "edit") 
+		{
 			$text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_24."' /> ";
-		} else {
+		} 
+		else 
+		{
 			$text .= "<input class='button' type='submit' name='submit_download' value='".DOWLAN_25."' />";
 		}
 
