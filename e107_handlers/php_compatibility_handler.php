@@ -60,12 +60,8 @@ if (!function_exists('simplexml_load_string'))
 	function simplexml_load_string($xml)
 	{
 		require_once(e_HANDLER.'xml_class.php');
-		$xmlClass = new CXml;
-		$xmlClass->Set_xml_data($xml);
-		$data = (array) $xmlClass->obj_data;
-		$tmp = array_keys($data);
-		$data = $data[$tmp[0]][0];
-		return $data;
+		$xmlClass = new simplexml;
+		return $xmlClass->xml_load_string($xml);
 	}
 }
 
