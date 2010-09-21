@@ -94,7 +94,7 @@ if (isset($_POST['emailsubmit']))
 
 	if ($comments == '')
 	{
-		$message = LAN_EMAIL_188.' '.SITENAME.' ('.SITEURL.')';
+		$message = LAN_EMAIL_6.' '.SITENAME.' ('.SITEURL.')';
 		if (USER == TRUE)
 		{
 			$message .= "\n\n".LAN_EMAIL_1." ".USERNAME;
@@ -106,7 +106,7 @@ if (isset($_POST['emailsubmit']))
 	}
 	else
 	{
-		$message .= $comments."\n";
+//		$message .= $comments."\n";		// Added into message later
 	}
 	$ip = $e107->getip();
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
