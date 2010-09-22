@@ -541,7 +541,7 @@ function show_tools()
 	
 	$srch = array("[","]");
 	$repl = array("<a rel='external' href='http://e107.org/news.php?extend.876.1'>","</a>");
-	$diz = (defined("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+	$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
 	
 	$text .= " <input type='checkbox' name='contribute_pack' value='1' />".str_replace($srch,$repl,$diz);
 	
@@ -556,6 +556,11 @@ function show_tools()
 
 function find_locale($language)
 {
+	if(!is_readable(e_LANGUAGEDIR.$language."/".$language.".php"))
+	{
+		return FALSE;		
+	}
+		
 	$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 	$tmp = explode("\n",$code);
 	
@@ -606,9 +611,9 @@ function zip_up_lang($language)
 		return $ret;		
 	}
 	
-	if (is_readable(e_ADMIN."ver.php"))
+	if(is_readable(e_ADMIN."ver.php"))
 	{
-		include (e_ADMIN."ver.php");
+		include(e_ADMIN."ver.php");
 	}
 	
 	 $core_plugins = array(
@@ -624,16 +629,16 @@ function zip_up_lang($language)
 	 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
 	 "khatru","kubrick","lamb","leaf","newsroom","reline","sebes","vekna_blue");
 
-	require_once (e_HANDLER.'pclzip.lib.php');
+	require_once(e_HANDLER.'pclzip.lib.php');
 	list($ver, $tmp) = explode(" ", $e107info['e107_version']);
-	if(!$locale =  find_locale($language))
+	if(!$locale = find_locale($language))
 	{
 		$ret['error'] = TRUE;
 		$file = "e107_languages/{$language}/{$language}.php";
 		$def = (defined('LANG_LAN_25')) ? LANG_LAN_25 : "Please check that CORE_LC and CORE_LC2 have values in [lcpath] and try again.";
 		$ret['message'] = str_replace("[lcpath]",$file,$def); // 
 		return $ret;	
-	};
+	}
 		
 	global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY;
 		

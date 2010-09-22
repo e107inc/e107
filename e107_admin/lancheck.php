@@ -237,17 +237,24 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
 	
 	$icon = ($_SESSION['lancheck_'.$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
 	
-	$message .= "<div>".$icon." ".LAN_CHECK_23.": ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
+	
+	$errors_diz = (defsettrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
+	
+	$message .= "<div>".$icon." ".$errors_diz.": ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
+
+	$just_go_diz = (defsettrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
+	$lang_sel_diz = (defsettrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
+	
 	$message .= "<span>
 	<br /><br />
 	<input type='hidden' name='language' value='".$_POST['language']."' />
-    <input type='submit' name='just_go' value=\"".LAN_CHECK_20."\" class='button' />
+    <input type='submit' name='just_go' value=\"".$just_go_diz."\" class='button' />
 	</span>
     </form>
 	<form name='refresh' method='post' action='".e_SELF."'>
 	<span>
 	<input type='hidden' name='language' value='".$_POST['language']."' />
-    <input type='submit' name='language_sel' value=\"".LAN_CHECK_21."\" class='button' />
+    <input type='submit' name='language_sel' value=\"".$lang_sel_diz."\" class='button' />
 	</span>
     </form>
 	</div>";
