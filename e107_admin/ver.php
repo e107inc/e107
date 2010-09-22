@@ -9,5 +9,5 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$e107info['e107_version'] = "0.7.24";
+$e107info['e107_version'] = "0.7.25 svn";
 ?>
