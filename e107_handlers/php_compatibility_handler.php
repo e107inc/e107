@@ -67,10 +67,10 @@ if (!function_exists('simplexml_load_string'))
 
 
 /**
- *	mime_content_type - introduced PHP4.3, present in PHP5
- *	Deprecated PHP function
+ *	mime_content_type - introduced PHP4.3, present in PHP5.3
+ *	Deprecated PHP function - yet needed until alternative found. 
  */
-/*
+
 if(!function_exists("mime_content_type"))
 {
 	function mime_content_type($filename)
@@ -112,5 +112,5 @@ if(!function_exists("mime_content_type"))
 		return $mime[$ext];
 	}
 }
-*/
+
 ?>
