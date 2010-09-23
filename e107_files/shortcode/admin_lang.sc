@@ -94,6 +94,7 @@ if(ADMIN)
 			$text .= "</select>
 			<br /><br />
 	   		<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
+			<input type='hidden' name='e-token' value='".e_TOKEN."' /> 
 			</div>
 				</form>
 			</div>";
