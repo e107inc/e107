@@ -52,7 +52,7 @@ if (e_QUERY)
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
 	$sub_action = varset($tmp[1], '');
-	$id = varset($tmp[2], 0);
+	$id = intval(varset($tmp[2], 0));
 	unset($tmp);
 }
 
