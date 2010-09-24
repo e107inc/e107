@@ -99,7 +99,7 @@ class e_file
 		}
 		if($omit == 'standard')
 		{
-			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$');
+			$rejectArray = array('^\.$','^\.\.$','^\/$','^\.svn','^CVS$','thumbs\.db','.*\._$');
 		}
 		else
 		{
