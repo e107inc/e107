@@ -23,6 +23,7 @@ if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 {
 	if(isset($_POST['chat_submit']))
 	{
+		define('e_TOKEN_FREEZE', true);
 		include_once("../../class2.php");
 
 		//Normally the menu.sc file will auto-load the language file, this is needed in case
