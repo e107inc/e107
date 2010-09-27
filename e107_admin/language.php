@@ -702,7 +702,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 {
 	global $fl,$ln;
 	
-	if ($lanlist = $fl->get_files($path, "^[\w]+(\.php|\.js){0,1}$", "standard", $depth))
+	if ($lanlist = $fl->get_files($path, "^[\w-\.]+(\.php|\.js){0,1}$", "standard", $depth))
 	{
 		sort($lanlist);
 	}
@@ -716,7 +716,9 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	
 	$isocode = $ln->convert($language);
 	
-
+	$phpmailer = "phpmailer.lang-".$isocode.".php";
+	$tinyMce1 = "/langs/".$isocode.".js";
+	$tinyMce2 = "/langs/".$isocode."_dlg.js";
 	
 	foreach ($lanlist as $p)
 	{	
@@ -725,15 +727,11 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 		if($p['fname'] == ($language."_custom.php") || ($p['fname'] == ($language."_config.php")))
 		{
 			continue;
-		}
-		
-		$phpmailer = "phpmailer.lang-".$isocode.".php";
-		$tinyMce1 = "/langs/".$isocode.".js";
-		$tinyMce2 = "/langs/".$isocode."_dlg.js";
-		
-		
+		}		
+
 		if (strpos($fullpath, $language) !== FALSE || strpos($fullpath,$phpmailer)!==FALSE || strpos($fullpath,$tinyMce1)!==FALSE || strpos($fullpath,$tinyMce2)!==FALSE)
 		{
+						
 			if(is_array($filter))
 			{
 				$dir =  basename(dirname($p['path']));
@@ -753,6 +751,8 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 			
 		}
 	}
+
+	// print_a($pzip);
 	
 	return $pzip;
 }
