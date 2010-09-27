@@ -49,6 +49,9 @@ $TOPIC_ROW = "
 //$TOPIC_ROW_SPACER = "<tr><td $stylespacer colspan='2'></td></tr>";
 $TOPIC_ROW_SPACER = "";
 
+require_once(e_HANDLER."calendar/calendar_class.php");		// Make sure this is loaded
+
+
 class contentform{
 
 		function ContentItemPreview(){
