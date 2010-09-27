@@ -26,6 +26,10 @@ e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
+
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
+
 require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 require_once($plugindir."handlers/content_db_class.php");
