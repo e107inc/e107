@@ -11,11 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
+
+if(in_array('thread_action', $_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
 
 require_once("../../class2.php");
 if (isset($_POST['fjsubmit'])) {
@@ -419,6 +423,7 @@ function parse_thread($thread_info)
 		$thread_id = $thread_info['thread_id'];
 		$ADMIN_ICONS = "
 			<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}' style='margin:0;'><div>
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			";
 
 		$ADMIN_ICONS .= "<input type='image' ".IMAGE_admin_delete." name='delete_$thread_id' value='thread_action' onclick=\"return confirm_($thread_id)\" /> \n";

@@ -15,6 +15,12 @@
 +----------------------------------------------------------------------------+
 */
 
+if((isset($_POST['report_thread']) || in_array('thread_action', $_POST)) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once('../../class2.php');
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
@@ -162,6 +168,7 @@ if ($action == "report") {
 			</tr>
 			<tr>
 			<td colspan='2' style='text-align:center;'><br />
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			<input class='button' type='submit' name='report_thread' value='".LAN_419."' />
 			</td>
 			</tr>
@@ -397,6 +404,7 @@ function showmodoptions()
 		<div>
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$topic_from}'>".IMAGE_admin_edit."</a>
 		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('{$type}', {$forum_id}, {$thread_id}, '{$post_info['user_name']}')\" />
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		";
 	if ($type == 'thread')
 	{

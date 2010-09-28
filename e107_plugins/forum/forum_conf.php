@@ -10,11 +10,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
+
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../../class2.php");
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 
@@ -131,6 +136,7 @@ if ($action == "delete_poll")
 		".FORLAN_13."
 		<br /><br />
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input class='button' type='submit' name='deletecancel' value='".FORLAN_14."' />
 		<input class='button' type='submit' name='deletepollconfirm' value='".FORLAN_15."' />
 		</form>
@@ -189,6 +195,7 @@ if ($action == "move")
 		</tr>
 		<tr style='vertical-align: top;'>
 		<td colspan='2'  style='text-align:center'><br />
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input class='button' type='submit' name='move' value='".FORLAN_25."' />
 		<input class='button' type='submit' name='movecancel' value='".FORLAN_14."' />
 		</td>
