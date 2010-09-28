@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = ''; 
+}
 require_once("../class2.php");
 if (!getperms("D")) 
 {
@@ -109,6 +112,7 @@ if ($action == "delete" && $sub_action) {
 		<b>".BNRLAN_2."</b>
 		<br /><br />
 		<form method='post' action='".e_SELF."'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input class='button' type='submit' name='cancel' value='".LAN_CANCEL."' />
 		<input class='button' type='submit' name='confirm' value='".LAN_CONFDELETE."' />
 		<input type='hidden' name='id' value='".$sub_action."' />
@@ -446,7 +450,8 @@ if ($action == "create") {
 
 
 
-		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
+		<tr><td colspan='2' style='text-align:center' class='forumheader'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 	$text .= ($sub_action == "edit" && $id ? "<input class='button' type='submit' name='updatebanner' value='".BNRLAN_40."' /><input type='hidden' name='eid' value='".$id."' />" : "<input class='button' type='submit' name='createbanner' value='".BNRLAN_41."' />");
 
 	$text .= "</td></tr></table>
@@ -549,7 +554,10 @@ if ($action == "menu")
 	</tr>
 
 	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' /></td>
+	<td colspan='2' class='forumheader' style='text-align:center'>
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
+	<input class='button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' />
+	</td>
 	</tr>
 
 	</table>
