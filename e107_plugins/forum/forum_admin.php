@@ -49,8 +49,8 @@ if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
+	$sub_action = varset($tmp[1]);
+	$id = intval(varset($tmp[2], 0));
 	unset($tmp);
 }
 
@@ -58,12 +58,14 @@ if(isset($_POST['delete']))
 {
 	$tmp = array_pop(array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);
+	$del_id = intval($del_id);
 }
 
 if(isset($_POST['setMods']))
 {
 	foreach($_POST['mods'] as $fid => $modid)
 	{
+		$fid = intval($fid); $modid = intval($modid);
 		$sql->db_Update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}");
 	}
 	$forum->show_message(FORLAN_144);
@@ -205,7 +207,7 @@ if (isset($_POST['update_order']))
 	while (list($key, $id) = each($forum_order))
 	{
 		$tmp = explode(".", $id);
-		$sql->db_Update("forum", "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
+		$sql->db_Update("forum", "forum_order=".intval($tmp[1])." WHERE forum_id=".intval($tmp[0]));
 	}
 	$forum->show_message(FORLAN_73);
 }
