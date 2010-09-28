@@ -461,7 +461,8 @@ header("Cache-Control: must-revalidate");
 // TODO - maybe add IP as well?
 define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
-if(isset($_SESSION) && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME]) && $_POST['ajax_used']!=1)
+// Ajax calls should be handled manual at this time (set e_TOKEN_FREEZE in Ajax scripts before the API is loaded)
+if(session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME])/* && $_POST['ajax_used']!=1*/)
 {
 	// do not redirect, prevent dead loop, save server resources
 	die('Access denied');
