@@ -1466,15 +1466,15 @@ function init_session() {
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
 
 			if($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit'])
-			{
+			{	// New visit
 				$result['user_lastvisit'] = $result['user_currentvisit'];
 				$result['user_currentvisit'] = time();
-				$sql->db_Update("user", "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = ''{$update_ip} WHERE user_id='".USERID."' ");
+				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = ''{$update_ip} WHERE user_id=".USERID);
 			}
 			else
 			{
 				$result['user_currentvisit'] = time();
-				$sql->db_Update("user", "user_currentvisit = '{$result['user_currentvisit']}'{$update_ip} WHERE user_id='".USERID."' ");
+				$sql->db_Update('user', "user_currentvisit = '{$result['user_currentvisit']}'{$update_ip} WHERE user_id=".USERID);
 			}
 
 			$currentUser = $result;
