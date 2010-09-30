@@ -382,7 +382,10 @@ class language{
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
-			e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			if(e_DOMAIN)
+			{
+				e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			}
 			define('MULTILANG_SUBDOMAIN',TRUE);
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
@@ -407,7 +410,10 @@ class language{
 			$detect_language = FALSE; // ie. No Change. 
 		}
 		
-		e107_ini_set("session.cookie_path", e_HTTP);
+		if(e_HTTP)
+		{
+			e107_ini_set("session.cookie_path", e_HTTP);	
+		}
 
 		
 		$this->detect = $detect_language;	
