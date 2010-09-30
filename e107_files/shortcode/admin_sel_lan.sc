@@ -1,4 +1,5 @@
-//<? $Id$
+// $Id$
+//<? 
 if (ADMIN && $pref['multilanguage'])
 {
 	$language = ($pref['sitelanguage'] == e_LANGUAGE) ? ADLAN_133 : e_LANGUAGE;

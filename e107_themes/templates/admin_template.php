@@ -28,7 +28,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
 <td style='width:17%; vertical-align: top;'>
-".(e_PAGE != 'admin.php' ? '{ADMIN_UPDATE} ' : '')."
+{ADMIN_UPDATE=notadminpanel}
 {ADMIN_NAV}
 {ADMIN_LANG}
 {ADMIN_PWORD}
@@ -40,7 +40,8 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_PLUGINS}
 </td>
 <td style='width:62%; vertical-align: top;'>
-";
+{ADMIN_UPDATE=adminpanel}";
+
 
 $ADMIN_FOOTER = "</td>
 <td style='width:17%; vertical-align:top'>

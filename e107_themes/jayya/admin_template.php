@@ -88,7 +88,7 @@ if(ADMIN)
     <tr>
     <td>
     {SETSTYLE=leftmenu}
-	".(e_PAGE != 'admin.php' ? '{ADMIN_UPDATE} ' : '')."
+	{ADMIN_UPDATE=notadminpanel}
     {ADMIN_LANG}
     {ADMIN_PWORD}
     {ADMIN_MSG}
@@ -116,7 +116,9 @@ if(ADMIN)
     </td>";
 }
 $ADMIN_HEADER .= "
+
 <td class='default_menu'>
+{ADMIN_UPDATE=adminpanel}
 {SETSTYLE=default}
 ";
 

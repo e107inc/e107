@@ -1,4 +1,5 @@
 // $Id$
+//<?
 if (ADMIN) 
 {
 	if (!function_exists('admin_latest')) 
@@ -36,7 +37,7 @@ if (ADMIN)
 				$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 			}
 
-			return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);
+			return $ns -> tablerender(ADLAN_LAT_1, $text, 'admin_latest', TRUE);
 		}
 	}
 

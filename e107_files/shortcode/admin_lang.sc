@@ -100,6 +100,6 @@ if(ADMIN)
 			</div>";
 		}
 		
-		return $ns->tablerender(UTHEME_MENU_L2, $text, '', TRUE);
+		return $ns->tablerender(UTHEME_MENU_L2, $text, 'admin_lang', TRUE);
 	}
 }

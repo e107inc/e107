@@ -7,6 +7,16 @@
 	
   	if (!varset($pref['check_updates'], FALSE)) return "";
 	
+	if($parm == "adminpanel" && (strpos(e_SELF,e_ADMIN_ABS."admin.php")===FALSE))
+	{ 
+		return;
+	}
+	if(($parm == "notadminpanel") && (strpos(e_SELF,e_ADMIN_ABS."admin.php")!==FALSE))
+	{
+		return;
+	}
+	
+	
 	if (is_readable(e_ADMIN."ver.php"))
 	{
 		include(e_ADMIN."ver.php");
@@ -20,7 +30,7 @@
 	
     if($cacheData)
     {
-   	  	return ($cacheData !='up-to-date') ? $ns -> tablerender(LAN_NEWVERSION, $cacheData) : "";
+   	  	return ($cacheData !='up-to-date') ? $ns -> tablerender(LAN_NEWVERSION, $cacheData,'admin_update') : "";
     }
 	
 	// Keep commented out to be sure it continues to work under all circumstances.
@@ -71,7 +81,7 @@
 	if($ftext)
 	{
 		$e107cache->set("releasecheck", $ftext, TRUE);
-		return $ns -> tablerender(LAN_NEWVERSION, $ftext);
+		return $ns -> tablerender(LAN_NEWVERSION, $ftext,'admin_update');
 	}
 	else
 	{

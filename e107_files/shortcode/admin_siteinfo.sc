@@ -1,3 +1,5 @@
+// $Id$
+//<?
 if (ADMIN) 
 {
 	global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
@@ -6,6 +8,14 @@ if (ADMIN)
 	{ 
 		include(e_ADMIN."ver.php"); 
 	}
+	
+	if($parm == "version")
+	{
+		return $e107info['e107_version'];
+	}
+	
+	
+	
 
 	$obj = new convert;
 	$install_date = $obj->convert_date($pref['install_date'], "long");
@@ -56,5 +66,5 @@ if (ADMIN)
 	<br /><br />
 	<b>".FOOTLAN_17."</b>
 	<br />".CHARSET;
-	return $ns -> tablerender(FOOTLAN_13, $text, '', TRUE);
+	return $ns -> tablerender(FOOTLAN_13, $text, 'admin_siteinfo', TRUE);
 }

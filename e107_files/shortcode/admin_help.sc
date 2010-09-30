@@ -1,3 +1,5 @@
+/* $Id$ */
+//<?
 if (!ADMIN) return '';
 
   $helpfile = '';

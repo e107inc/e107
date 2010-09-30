@@ -105,8 +105,8 @@ if (isset($potential))
 	$ns -> tablerender(LAN_WARNING, $text);
 }
 
-// More visible update check
-echo $tp->parseTemplate('{ADMIN_UPDATE}', true);
+// Moved to admin_template
+//echo $tp->parseTemplate('{ADMIN_UPDATE}', true);
 
 
 // update users using old layout names to their new names
