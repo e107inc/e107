@@ -169,7 +169,7 @@ if (isset($_POST['updateoptions']))
 
 if(isset($_POST['addlimit']))
 {
-	if($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
+	if($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = ".intval($_POST['newlimit_class'])))
 	{
 		$message = DOWLAN_116;
 	}
