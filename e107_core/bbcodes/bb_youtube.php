@@ -24,8 +24,6 @@ if (!defined('e107_INIT')) { exit; }
  *
  * [youtube=tiny|small|medium|big|huge or width,height|nofull&norel&border&privacy&hd]ID[/youtube]
  * Youtube ID is the only required data!
- * BBcode 'pre-save' processes youtube's 'copy and paste' HTML code to generate an appropriate bbcode
- * TODO - more: http://code.google.com/apis/youtube/player_parameters.html
  * TODO - use swfobject JS - XHTML validation
  */
 
@@ -47,7 +45,7 @@ class bb_youtube extends e_bb_base
 	 *
 	 *	If user has posted the complete youtube 'copy and paste' text between the tags, parse it and generate the relevant bbcode
 	 */
-	protected function toDB($code_text, $parm)
+	function toDB($code_text, $parm)
 	{
 		$bbpars = array();
 		$widthString = '';
@@ -132,6 +130,22 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'norel';
 			}
+			if (varset($vals['hd'], 1) != 0)
+			{
+				$params[] = 'hd';
+			}
+			if (varset($vals['hl'], 1) != 0)
+			{
+				$params[] = 'hl='.$vals['hl'];
+			}
+			if (varset($vals['color1'], 1) != 0)
+			{
+				$params[] = 'color1='.$vals['color1'];
+			}
+			if (varset($vals['color2'], 1) != 0)
+			{
+				$params[] = 'color2='.$vals['color2'];
+			}
 			$picRef = substr($url, strrpos($url, '/') + 1);
 		}
 
@@ -153,7 +167,7 @@ class bb_youtube extends e_bb_base
 	/**
 	 *	Translate youtube bbcode into the appropriate <EMBED> object
 	 */
-	protected function toHTML($code_text, $parm)
+	function toHTML($code_text, $parm)
 	{
 		if(empty($code_text)) return '';
 
@@ -217,6 +231,21 @@ class bb_youtube extends e_bb_base
 		if(isset($params['border'])) $url = $url.'&amp;border=1';
 		if(isset($params['norel'])) $url = $url.'&amp;rel=0';
 		if(isset($params['hd'])) $url = $url.'&amp;hd=1';
+		$hl = 'en_US';
+		if(isset($params['hl'])) {
+			$params['hl'] = preg_replace('/[^0-9a-z\-_]/i', '', $params['hl']);
+			if(strlen($params['hl']) == 5) {
+				$hl = $params['hl'];
+			}
+		}
+		$url = $url.'&amp;hl='.$hl;
+		if(isset($params['color1'])) $color[1] = $params['color1'];
+		if(isset($params['color2'])) $color[2] = $params['color2'];
+		foreach ($color as $key => $value) {
+			if (ctype_xdigit($value) && strlen($value) == 6) {
+				$url = $url.'&amp;color'.$key.'='.$value;
+			}
+		}
 
 		$ret = ' 
 		<object width="'.$params['w'].'" height="'.$params['h'].'">
