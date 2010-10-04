@@ -112,9 +112,8 @@ function headerjs()
 				}
 			});
 		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-
 	";
+	e107::getJs()->requireCoreLib('core/admin.js');
 
 	if($newspost->getAction() == 'cat')
 	{
@@ -1538,9 +1537,27 @@ class admin_newspost
 								<td>".NWSLAN_66.":</td>
 								<td>";
 
-		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer.
-		$text .= "<a rel='external' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create'>".NWSLAN_69."</a>";
-
+		$text .= $frm->mediaUrl('news', NWSLAN_69);
+/*		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer.
+		$text .= "<a rel='external' class='e-dialog' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create&amp;for=news'>".NWSLAN_69."</a>";
+		// FIXME - make it system wide available
+		e107::getJs()->requireCoreLib('core/admin.js')
+			->requireCoreLib('core/dialog.js')
+			->requireCoreLib('core/draggable.js')
+			->coreCSS('core/dialog/dialog.css')
+			->coreCSS('core/dialog/e107/e107.css')
+			->footerInline('
+			$$("a.e-dialog").invoke("observe", "click", function(ev) {
+				var element = ev.findElement("a");
+				ev.stop();
+				new e107Widgets.URLDialog(element.href + "&iframe=1", {
+					id: element["id"] || "e-dialog",
+					width: 800,
+					height: 600,
+					title: "Media Manager"
+				}).center().activate().show();
+			});
+		');*/
 		// e_NEWSIMAGE is deprecated.
 
 		// DEPRECATED METHOD below.

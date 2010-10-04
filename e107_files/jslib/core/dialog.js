@@ -56,7 +56,10 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 		this.events = new e107EventManager(this);
 		
 		this.initMod('core-dialog', options);
+		if(!e107Widgets['DialogManagerDefault']) e107Widgets.DialogManagerDefault  = new e107Widgets.DialogManager();
+
 		this.dialogManager = this.options.dialogManager || e107Widgets.DialogManagerDefault;
+		
 		if(this.options.id && this.dialogManager.getWindow($(this.options.id))) return;
 		
 		this.setMethodChains();

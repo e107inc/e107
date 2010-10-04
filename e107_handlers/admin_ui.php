@@ -411,7 +411,7 @@ class e_admin_request
 		//special case - exclude all current
 		if(true === $exclude_from_query)
 		{
-			$exclude_from_query = $ret;
+			$exclude_from_query = array_keys($ret);
 		}
 		// to array
 		if(is_string($exclude_from_query))
@@ -1834,7 +1834,7 @@ class e_admin_controller
 		if($mode) $request->setMode($mode);
 		if($action) $request->setAction($action);
 		if(!$path) $path = e_SELF;
-
+		
 		$url = $path.'?'.$request->buildQueryString($merge_query, false, $exclude_query);
 		// Transfer all messages to session
 		e107::getMessage()->moveToSession();
