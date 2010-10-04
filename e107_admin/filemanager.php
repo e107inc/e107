@@ -249,6 +249,7 @@ $ns->tablerender(FMLAN_34, $text);
 $text = "<form enctype=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
 	<div style=\"text-align:center\">
 	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"2000000\" />
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
 	<table class='fborder' style=\"".ADMIN_WIDTH."\">";
 
 $text .= "<tr>
