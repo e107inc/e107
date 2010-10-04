@@ -34,8 +34,8 @@ $e_sub_cat = 'image';
 
 // require_once("auth.php");
 // require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."message_handler.php");
+//require_once(e_HANDLER."userclass_class.php");
+//require_once(e_HANDLER."message_handler.php");
 // $frm = new e_form(); //new form handler
 $emessage = eMessage::getInstance();
 
@@ -50,9 +50,9 @@ class media_admin extends e_admin_dispatcher
 			'uipath' 		=> null
 		),
 		'cat'		=> array(
-			'controller' 	=> 'faq_cat_ui',
+			'controller' 	=> 'media_cat_ui',
 			'path' 			=> null,
-			'ui' 			=> 'faq_cat_form_ui',
+			'ui' 			=> 'media_cat_form_ui',
 			'uipath' 		=> null
 		)
 	);
@@ -94,7 +94,7 @@ class media_admin extends e_admin_dispatcher
 
 }
 
-class faq_cat_ui extends e_admin_ui
+class media_cat_ui extends e_admin_ui
 {
 		protected $pluginTitle	= 'Media Categories';
 		protected $pluginName	= 'core';
@@ -122,16 +122,16 @@ class faq_cat_ui extends e_admin_ui
 	 * @param mixed $default [optional] default value if not found (default 'n/a')
 	 * @return TBD
 	 */
-	function getFaqCategoryTree($id = false, $default = 'n/a')
+	function getMediaCategoryTree($id = false, $default = 'n/a')
 	{
 		// TODO get faq category tree
 	}
 
 }
 
-/*class faq_cat_form_ui extends e_admin_form_ui
+class faq_cat_form_ui extends e_admin_form_ui
 {
-	public function faq_info_parent($curVal,$mode)
+	/*public function faq_info_parent($curVal,$mode)
 	{
 		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter
 		// Get UI instance
@@ -151,8 +151,8 @@ class faq_cat_ui extends e_admin_ui
 				return $controller->getFaqCategoryTree();
 			break;
 		}
-	}
-}*/
+	}*/
+}
 
 
 
@@ -160,11 +160,11 @@ class faq_cat_ui extends e_admin_ui
 class media_form_ui extends e_admin_form_ui
 {
 
-	private $cats = array();
+	//private $cats = array();
 
 	function init()
 	{
-		$sql = e107::getDb();
+		/*$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
 		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
 		while($row = $sql->db_Fetch())
@@ -172,7 +172,7 @@ class media_form_ui extends e_admin_form_ui
 			$cat = $row['media_cat_nick'];
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
-		asort($this->cats);
+		asort($this->cats);*/
 	}
 
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
@@ -180,22 +180,24 @@ class media_form_ui extends e_admin_form_ui
 
 		if($mode == 'read')
 		{
-			return $this->cats[$curVal];
+			return $this->getController()->getMediaCategory($curVal);
+			//return $this->cats[$curVal];
 		}
 
 		if($mode == 'batch') // Custom Batch List for release_type
 		{
-			return $this->cats;
+			return $this->getController()->getMediaCategory();
 		}
 
 		if($mode == 'filter') // Custom Filter List for release_type
 		{
-			return $this->cats;
+			return $this->getController()->getMediaCategory();
 		}
 
 
 		$text = "<select class='tbox>' name='media_category' >";
-		foreach($this->cats as $key=>$val)
+		$cats = $this->getController()->getMediaCategory();
+		foreach($cats as $key => $val)
 		{
 			$selected = ($curVal == $key) ? "selected='selected'" : "";
 			$text .= "<option value='{$key}' {$selected}>".$val."</option>\n";
@@ -234,13 +236,13 @@ class media_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60',	'width' => '110px','readonly'=>TRUE),
+      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60', 'writeParams' => 'path={e_MEDIA}',	'width' => '110px','readonly'=>false),
 
-	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',			'data'=> null,		'width' => '10%'),
+	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',		'data'=> null,		'width' => '10%'),
        		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
          	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
 			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
 		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
@@ -250,7 +252,7 @@ class media_admin_ui extends e_admin_ui
 			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE, 'class'=>'nowrap'),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
-			'media_usedby' 			=> array('title'=> '',		'type' => 'text',			'data'=> 'text', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
+			'media_usedby' 			=> array('title'=> '',				'type' => 'text',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
 
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
@@ -281,7 +283,7 @@ class media_admin_ui extends e_admin_ui
 	function init()
 	{
 
-		//FIXME - would prefer not to have to read this twice on the same page.
+		
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
 		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
@@ -332,7 +334,7 @@ class media_admin_ui extends e_admin_ui
 		$this->getRequest()->setPosted('media_upload', null);
 		//$dataFields = $this->getModel()->getDataFields();
 		//unset($dataFields['media_upload']);
-		$this->getModel()->setDataFields($dataFields);
+		//$this->getModel()->setDataFields($dataFields);
 		return $this->observeUploaded($new_data);
 	}
 
@@ -345,6 +347,23 @@ class media_admin_ui extends e_admin_ui
 		// return data to be merged with posted model data
 		return $this->observeUploaded($new_data);
 	}
+	
+	public function mediaData($sc_path)
+	{
+		if(!$sc_path) return array();
+		$path = e107::getParser()->replaceConstants($sc_path);
+		$info = e107::getFile()->get_file_info($path);
+		return array( 
+			'media_type'		=> $info['mime'],
+			'media_datestamp'	=> time(),
+			'media_url'			=> e107::getParser()->createConstants($path, 'rel'),
+			'media_size'		=> filesize($path),
+			'media_author'		=> USERID,
+			'media_usedby'		=> '',
+			'media_tags'		=> '',
+			'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
+		);
+	}
 
 	// XXX - strict mysql error on Create without UPLOAD!
 	function observeUploaded($new_data)
@@ -352,56 +371,84 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 
 		$mes = e107::getMessage();
-		$pref['upload_storagetype'] = "1";
-		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
 
-		$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
-
-		foreach($uploaded as $upload)
+		if(vartrue($_POST['file_userfile']))
 		{
+			$pref['upload_storagetype'] = "1";
+			require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
+			$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
+			$upload = array_shift($uploaded);
 			if(vartrue($upload['error']))
 			{
-				$mes->add($upload['message'], E_MESSAGE_ERROR);
-				return FALSE;
-			}
-
-			if(!$typePath = $this->getPath($upload['type']))
+				{
+					$mes->add($upload['message'], E_MESSAGE_ERROR);
+					return FALSE;
+				}
+	
+				if(!$typePath = $this->getPath($upload['type']))
+				{
+					return FALSE;
+				}
+	
+				$oldpath = 'temp/'.$upload['name'];
+				$newpath = $typePath.'/'.$upload['name'];
+	
+				//$info = $fl->get_file_info(e_MEDIA.$oldpath);
+	
+				/*$upload_data = array( // not saved if 'noedit' is active.
+					'media_type'		=> $upload['type'],
+					'media_datestamp'	=> time(),
+					'media_url'			=> "{e_MEDIA}".$newpath,
+					'media_size'		=> $upload['size'],
+					'media_author'		=> USERID,
+					'media_usedby'		=> '',
+					'media_tags'		=> '',
+					'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
+				);*/
+	
+				// only one upload? Not sure what's the idea here
+				// we are currently creating one media item
+				if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
+				{
+					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+					return FALSE;
+				};
+				
+				$img_data = $this->mediaData('{e_MEDIA}'.$newpath);
+				if(!varset($new_data['media_name']))
+				{
+					$img_data['media_name'] = $upload['name'];
+				}
+			}	
+		}
+		else
+		{
+			$img_data = $this->mediaData($new_data['media_url']);
+			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
 				return FALSE;
 			}
-
-			$oldpath = 'temp/'.$upload['name'];
-			$newpath = $typePath.'/'.$upload['name'];
-
-			$info = $fl->get_file_info(e_MEDIA.$oldpath);
-
-			$upload_data = array( // not saved if 'noedit' is active.
-				'media_type'		=> $upload['type'],
-				'media_datestamp'	=> time(),
-				'media_url'			=> "{e_MEDIA}".$newpath,
-				'media_size'		=> $upload['size'],
-				'media_author'		=> USERID,
-				'media_usedby'		=> '',
-				'media_tags'		=> '',
-				'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
-			);
-
-
+			$fname = basename($new_data['media_url']);
+			// move to the required place
+			if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
+			{
+				$tp = e107::getParser();
+				$oldpath = $tp->replaceConstants($new_data['media_url']);
+				$newpath = e_MEDIA.$typePath.'/'.$fname;
+				if(!rename($oldpath, $newpath))
+				{
+					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
+					return FALSE;
+				}
+				$img_data['media_url'] = $tp->createConstants($newpath, 'rel');
+			}
+			
 			if(!varset($new_data['media_name']))
 			{
-				$upload_data['media_name'] = $upload['name'];
+				$img_data['media_name'] = basename($new_data['media_url']);
 			}
-
-			// only one upload? Not sure what's the idea here
-			// we are currently creating one media item
-			if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
-			{
-				$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
-				return FALSE;
-			};
-			return $upload_data;
 		}
-
+		return $img_data;
 	}
 
 	function beforeDelete($data, $id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
@@ -447,6 +494,7 @@ class media_admin_ui extends e_admin_ui
 
 		$fl->setFileInfo('all');
 		$files = $fl->get_files(e_MEDIA."temp/");
+		e107::getJs()->requireCoreLib('core/admin.js');
 
 		//TODO Detect XML file, and if found - read that instead of the directory.
 
@@ -474,7 +522,7 @@ class media_admin_ui extends e_admin_ui
 							</colgroup>
 							<thead>
 								<tr>
-									<th class='center'>Checkbox</th>
+									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
 									<th class='center' style='width:50px'>Preview</th>
 									<th class='center'>".LAN_NAME."</th>
 									<th>Mime Type</th>
@@ -575,7 +623,9 @@ class media_admin_ui extends e_admin_ui
 
 		if($type == 'image')
 		{
-			return "<img src='".$f['path'].$f['fname']."' alt=\"".$f['name']."\" width='50px' />";
+			$url = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=100', true);
+			//echo $url;
+			return "<img src='".$url."' alt=\"".$f['name']."\" width='50px' />";
 		}
 		else
 		{
@@ -583,9 +633,12 @@ class media_admin_ui extends e_admin_ui
 		}
 	}
 
-
+	public function getMediaCategory($id = false)
+	{
+		if($id) return (isset($this->cats[$id]) ? $this->cats[$id] : 0);
+		return $this->cats;
+	}
 	
-
 }
 
 
