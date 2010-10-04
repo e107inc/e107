@@ -26,9 +26,9 @@ $e_sub_cat = 'language';
 require_once("auth.php");
 
 $qry = explode("|",e_QUERY);
-$f = $qry[0];
-$lan = $qry[1];
-$mode = $qry[2];
+$f = varset($qry[0]);
+$lan = varset($qry[1]);
+$mode = varset($qry[2]);
 
 if($f == "tools" || $f == "db" || $f == "modify")
 {
