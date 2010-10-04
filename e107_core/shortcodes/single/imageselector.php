@@ -29,18 +29,17 @@ function imageselector_shortcode($parm = '', $mod = '')
 	$scaction = varsettrue($scaction, 'all');
 	$text = '';
 	$name_id = e107::getForm()->name2id($name);
-		
+	$imagelist = array();
+	
 	//Get Select Box Only!
 	if ($scaction == 'select' || $scaction == 'all')
 	{
-		$imagelist = array();
-		
 		// Media manager support
 		if(vartrue($parms['media']))
 		{
 			$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 			$qry .= vartrue($parms['media']) && $parms['media'] !== 'all' ? " AND media_category='".$tp->toDB($parms['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-			$qry .= " AND media_category REGEX '.jpg|.png|.gif' ORDER BY media_name";
+			$qry .= " AND media_url REGEXP '.jpg|.png|.gif|.JPG|.PNG|.GIF' ORDER BY media_name";
 			// FIXME - media_type=image?
 			if($sql->db_Select_gen($qry))
 			{
@@ -76,6 +75,11 @@ function imageselector_shortcode($parm = '', $mod = '')
 		$label = ($label) ? $label : " -- -- ";
 		$tabindex = varset($tabindex) ? " tabindex='{$tabindex}'" : '';
 		$class = varset($class) ? " class='{$class}'" : " class='tbox imgselector'";
+		
+		if(!e_AJAX_REQUEST)
+		{
+			$text .= '<div id="'.$name_id.'_cont">';
+		}
 
 		$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
 		<option value=''>".$label."</option>\n";
@@ -99,16 +103,32 @@ function imageselector_shortcode($parm = '', $mod = '')
 						$pth = $dir;
 						if($fullpath)
 						{
-							$pth = !vartrue($parms['media']) ? $tp->createConstants($icon['path'], 'rel') : $icon['path'];
+							if(!vartrue($parms['media']))
+							{
+								$pth = $tp->createConstants($icon['path'], 'rel');
+								$_value = $pth.$icon['fname'];
+								$_label = $dir.$icon['fname'];
+								$selected = ($default == $_value || $pth.$default == $_value) ? " selected='selected'" : "";
+							}
+							else
+							{
+								// convert e.g. {e_MEDIA}images/ to {e_MEDIA_IMAGES}
+								$pth = $tp->createConstants($tp->replaceConstants($icon['path']), 'rel');
+								$_value = $pth;
+								$_label = $icon['fname'];
+								$selected = ($default == $_value) ? " selected='selected'" : "";
+							}
 						}
-						$selected = ($default == $pth.$icon['fname'] || $pth.$default == $pth.$icon['fname']) ? " selected='selected'" : "";
-						$text .= "<option value='{$pth}{$icon['fname']}'{$selected}>&nbsp;&nbsp;&nbsp;{$dir}{$icon['fname']}</option>\n";
+						
+						$text .= "<option value='{$_value}'{$selected}>&nbsp;&nbsp;&nbsp;{$_label}</option>\n";
 					}
 				}
 			}
 			$text .= '</optgroup>';
 		}
 		$text .= "</select>";
+		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
+		if(!e_AJAX_REQUEST) $text .= '</div>';
 
 		if ($scaction == 'select') return $text;
 	}
@@ -149,7 +169,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 	}
 	else
 	{
-		$text .= "<a href='{$pvw_default}'{$hide} rel='external' title='Preview {$pvw_default}' class='e-image-preview'>";
+		$text .= "<a href='{$pvw_default}'{$hide} rel='external shadowbox' title='Preview {$pvw_default}' class='e-image-preview'>";
 	}
 	if (vartrue($height)) $height = intval($height);
 	if (vartrue($width)) $width = intval($width);

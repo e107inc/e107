@@ -137,6 +137,35 @@ class e_form
 
 		return $ret;
 	}
+	
+	public function mediaUrl($category = '', $label = '')
+	{
+		if($category) $category = '&amp;for='.$category;
+		if(!$label) $label = ' Upload an image or file';
+		$ret = "<a rel='external' class='e-dialog' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create{$category}'>".$label."</a>";
+		
+		if(!e107::getRegistry('core/form/mediaurl'))
+		{
+			e107::getJs()->requireCoreLib('core/admin.js')
+				->requireCoreLib('core/dialog.js')
+				->requireCoreLib('core/draggable.js')
+				->coreCSS('core/dialog/dialog.css')
+				->coreCSS('core/dialog/e107/e107.css')
+				->footerInline('
+				$$("a.e-dialog").invoke("observe", "click", function(ev) {
+					var element = ev.findElement("a");
+					ev.stop();
+					new e107Widgets.URLDialog(element.href + "&iframe=1", {
+						id: element["id"] || "e-dialog",
+						width: 900,
+						height: 550
+					}).center().activate().show();
+				});
+			');
+			e107::setRegistry('core/form/mediaurl', true);
+		}
+		return $ret;
+	}
 
 	/**
 	 * FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
@@ -166,7 +195,7 @@ class e_form
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
-		
+
 /*		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 		$qry .= vartrue($sc_parameters['media']) ? " AND media_category = '".$tp->toDB($sc_parameters['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 		$qry .= "ORDER BY media_name";
@@ -218,6 +247,7 @@ class e_form
 		
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
+		$parms .= '&media='.varset($sc_parameters['media']);
 		$parms .= "&path=".rawurlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_MEDIA}images/|{e_MEDIA}temp/')));
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";

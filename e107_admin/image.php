@@ -282,8 +282,6 @@ class media_admin_ui extends e_admin_ui
 
 	function init()
 	{
-
-		
 		$sql = e107::getDb();
 	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
 		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
@@ -299,8 +297,21 @@ class media_admin_ui extends e_admin_ui
 		{
 			$this->batchImport();
 		}
-	}
+		
+		if($this->getQuery('iframe'))
+		{
+			$this->getResponse()->setIframeMod();
+		}
 
+		if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
+		{
+			$this->setPosted('media_category', $this->getQuery('for'));
+			if(!$this->getId())
+			{
+				$this->getModel()->set('media_category', $this->getQuery('for'));
+			}
+		}
+	}
 
 	function importPage()
 	{
@@ -335,6 +346,10 @@ class media_admin_ui extends e_admin_ui
 		//$dataFields = $this->getModel()->getDataFields();
 		//unset($dataFields['media_upload']);
 		//$this->getModel()->setDataFields($dataFields);
+		if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
+		{
+			$new_data['media_category'] = $this->getQuery('for');
+		}
 		return $this->observeUploaded($new_data);
 	}
 
