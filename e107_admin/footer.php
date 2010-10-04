@@ -372,7 +372,7 @@ if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
 	
 	$data = "IF_NON_MATCH = ".$IF_NONE_MATCH;
 	$data .= "\nEtag = ".$etag;
-	file_put_contents(e_ADMIN."etag_log.txt",$data);
+	//file_put_contents(e_ADMIN."etag_log.txt",$data);
 
 	
 	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
