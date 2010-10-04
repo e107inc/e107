@@ -127,9 +127,16 @@ class cron
 		$mes = e107::getMessage();
 		$ago = (time() - $lastload); 
 		
-		$active = ($ago < 125) ? TRUE : FALSE;
+		$active = ($ago < 901) ? TRUE : FALSE;
 		$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
-		$lastRefresh = ($ago < 10000) ? $ago.' seconds ago.' : 'Never';
+		
+		$mins = floor ($ago / 60);
+        $secs = $ago % 60;
+		
+		$lastRun = ($mins)	? $mins." minutes and ".$secs." seconds ago."  : $secs." seconds ago.";
+		
+		
+		$lastRefresh = ($ago < 10000) ? $lastRun : 'Never';
 		
 		$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
 		
@@ -260,7 +267,7 @@ function cronName($classname,$method)
 			$pwd = $this->setCronPwd();
 		
 			$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pwd."</b><br />
-			This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
+			This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute (or 15 minutes) of every day.";
 			$mes->add($setpwd_message, E_MESSAGE_WARNING);
 		}
 		
@@ -411,7 +418,8 @@ function setCronPwd()
 					"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58" => LAN_CRON_12,
 					"0,5,10,15,20,25,30,35,40,45,50,55" => LAN_CRON_13,
 					"0,10,20,30,40,50" => LAN_CRON_14,
-					"0,15,30,45" => LAN_CRON_15
+					"0,15,30,45" => LAN_CRON_10,
+					"0,30"	=> LAN_CRON_15
 				);
 
 				$hour_options = array(
