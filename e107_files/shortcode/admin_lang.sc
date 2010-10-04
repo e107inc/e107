@@ -19,16 +19,16 @@ if(ADMIN)
 		if(!getperms($sql->mySQLlanguage) && $lanperms)
 		{
 			$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
-			if(defset('MULTILANG_SUBDOMAIN')==TRUE)
+			if(defset('MULTILANG_SUBDOMAIN')==TRUE && !in_array(e_LANGUAGE,$lanperms))
 			{
 				$_SESSION['e_language'] = $lanperms[0];
 				header("Location:".$lng->subdomainUrl($lanperms[0]));
 			}
 			else
 			{
-				$_SESSION['e_language'] = $lanperms[0];
-				setcookie('e107_language', $lanperms[0], time() + 86400, '/');
-				$_COOKIE['e107_language'] = $lanperms[0];
+			//	$_SESSION['e_language'] = $lanperms[0];
+			//	setcookie('e107_language', $lanperms[0], time() + 86400, '/');
+			//	$_COOKIE['e107_language'] = $lanperms[0];
 			}
 		}
 		
