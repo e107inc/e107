@@ -15,7 +15,7 @@ define("LANG_LAN_01","was deleted(if existing) and created.");
 define("LANG_LAN_02","couldn't be deleted");
 define("LANG_LAN_03","Tables");
 
-define("LANG_LAN_05","Not Installed");
+define("LANG_LAN_05", "Not Installed");
 define("LANG_LAN_06", "Create tables");
 define("LANG_LAN_07", "Drop existing tables?");
 define("LANG_LAN_08", "Replace existing tables (data will be lost).");
@@ -31,10 +31,10 @@ define("LANG_LAN_18", "Use Parked Subdomains with these domains to set site Lang
 define("LANG_LAN_19", "e.g. The domain fr.mydomain.com would set the language to French.");
 define("LANG_LAN_20", "Enter one domain per line. eg. mydomain.com etc. or leave blank to disable.");
 
-define("LANG_LAN_21", "Language Tools");
+define("LANG_LAN_21", "Language-Packs");
 
 define("LANG_LAN_23", "Create Language-Pack (zip)");
-define("LANG_LAN_24", "Generate");
+define("LANG_LAN_24", "Create Pack");
 
 define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
 define("LANG_LAN_EML", "Please email your language pack to:");
@@ -44,5 +44,9 @@ define("LANG_LAN_26", "Please make sure you are using default folder names in e1
 define("LANG_LAN_27", "Please verify your language files ('Verify') then try again.");
 define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
 
+define("LANG_LAN_29", "You should correct the remaining errors before contributing your language pack.");
+define("LANG_LAN_30", "Release Date");
+define("LANG_LAN_31", "Compatibility");
+define("LANG_LAN_32", "Installed Languages");
 
 ?>

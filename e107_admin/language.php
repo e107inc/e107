@@ -25,9 +25,12 @@ if (!getperms('0'))
 $e_sub_cat = 'language';
 
 require_once("auth.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
+require_once(e_ADMIN."lancheck.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."language_class.php");
+
 $ln = new language;
 $fl = new e_file;
 $rs = new form;
@@ -43,8 +46,8 @@ $message = "";
 if (e_QUERY) {
     $tmp = explode('.', e_QUERY);
     $action = $tmp[0];
-    $sub_action = $tmp[1];
-    $id = $tmp[2];
+    $sub_action = varset($tmp[1]);
+    $id = varset($tmp[2]);
     unset($tmp);
 }
 
@@ -113,8 +116,21 @@ if (isset($_POST['kreate_tbl']) && $_POST['language']) {
 
 
 
-if (varset($_POST['ziplang']) && varset($_POST['language']))
+if (varset($_POST['ziplang']))
 {
+	$certVal = isset($_POST['contribute_pack']) ? 1 : 0;
+	if(!varset($_COOKIE['e107_certified']))
+	{
+		cookie('e107_certified',$certVal,(time() + 3600 * 24 * 30));	
+	}
+	else
+	{
+		$_COOKIE['e107_certified'] = $certVal; 	
+	}
+		
+		
+	$_POST['language'] = key($_POST['ziplang']);
+	
 		$status = zip_up_lang($_POST['language']);
 		if($status['error']==FALSE)
 		{	
@@ -210,16 +226,15 @@ if ($action == 'db') {
 }
 
 
+
 if($action == "tools"){
     show_tools();
 }
 
 
-
-
-
 // Grab Language configuration. ---
-if ($_POST['edit_existing']) {
+if (isset($_POST['edit_existing']))
+{
 
     $text .= "
     <form method='post' action='".e_SELF."?db' >
@@ -334,6 +349,104 @@ function multilang_prefs() {
     $caption = LANG_LAN_13; // "Language Preferences";
     $ns->tablerender($caption, $text);
 }
+
+/**
+ * List the installed language packs. 
+ * @return 
+ */
+function show_tools()
+{
+	global $ns,$tp;
+	
+	if(is_readable(e_ADMIN."ver.php"))
+	{
+		include(e_ADMIN."ver.php");
+		list($ver, $tmp) = explode(" ", $e107info['e107_version']);
+	}
+		
+	$lans = explode(",",e_LANLIST);
+	
+	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
+	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
+	
+	$text = "<form id='lancheck' method='post' action='".e_SELF."?tools'>
+			<table class='fborder' style='".ADMIN_WIDTH."'>";
+	$text .= "
+		<tr>
+		<td class='fcaption'>".ADLAN_132."</td>
+		<td class='fcaption'>".$release_diz."</td>		
+		<td class='fcaption'>".$compat_diz."</td>
+		<td class='fcaption' style='text-align:center'>".ADLAN_134."</td>
+		<td class='fcaption' style='text-align:center;width:25%;white-space:nowrap'>".LAN_OPTIONS."</td>
+		</tr>
+		";
+	
+	require_once(e_HANDLER."xml_class.php");
+	$xm = new XMLParse();
+	
+	foreach($lans as $language)
+	{
+		if($language == "English")
+		{
+			continue;
+		}
+		$metaFile = e_LANGUAGEDIR.$language."/".$language.".xml";
+		
+		if(is_readable($metaFile))
+		{
+			$rawData = file_get_contents($metaFile);
+			if($rawData)
+			{
+				$array = $xm->parse($rawData);
+				$value = $array['e107Language']['attributes'];	
+			}
+			else
+			{
+				$value = array(
+				'date' 			=> "&nbsp;",
+				'compatibility' => '&nbsp;'
+			);		
+			}			
+		}
+		else
+		{
+			$value = array(
+				'date' 			=> "&nbsp;",
+				'compatibility' => '&nbsp;'
+			);	
+		}
+						
+		$text .= "<tr>
+			<td class='forumheader3' >".$language."</td>
+			<td class='forumheader3' >".$value['date']."</td>
+			<td class='forumheader3' >".$value['compatibility']."</td>
+			<td class='forumheader3' style='text-align:center' >".($ver == $value['compatibility'] || varset($_SESSION['lancheck_'.$language]['total']) =='0' ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td>
+			<td class='forumheader3' style='text-align:center'><input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='button' />
+			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='button' /></td>	
+			</tr>";
+		}
+		
+		$srch = array("[","]");
+		$repl = array("<a rel='external' href='http://e107.org/news.php?extend.876.1'>","</a>");
+		$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+	
+		$checked = varset($_COOKIE['e107_certified']) == 1 ? "checked='checked'" : "";
+		$text .= "<tr><td class='forumheader' colspan='5' style='text-align:center'>
+		 <input type='checkbox' name='contribute_pack' value='1' {$checked} />".str_replace($srch,$repl,$diz);
+				
+		$text .= "</td></tr></table>";
+		
+		
+		$text .= "</form>";
+		
+	$text .= "<div class='smalltext' style='padding-top:50px;text-align:center'>".LANG_LAN_AGR."</div>";	
+	$ns->tablerender(LANG_LAN_32, $text);		
+	return;
+		
+}
+
+
+
 
 // ----------------------------------------------------------------------------
 
@@ -483,76 +596,6 @@ function multilang_db(){
 
 // ----------------------------------------------------------------------------
 
-function show_tools()
-{
-    global $ns;
-
-    include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
-
-    $text .= "
-    <form id='lancheck' method='post' action='".e_ADMIN."lancheck.php'>
-    <table class='fborder' style='".ADMIN_WIDTH."'>
-    <tr>
-    <td class='fcaption' style='width:30%'>".LAN_CHECK_1."</td>
-    <td class='forumheader3'>
-    <select name='language' class='tbox'>
-    <option value=''>".LAN_SELECT."</option>";
-
-    $languages = getLanList();
-
-    foreach($languages as $lang)
-    {
-        if($lang != "English")
-        {
-        	
-            $text .= "<option value='{$lang}'>{$lang}</option>\n";
-        }
-    }
-
-    $text .= "
-    </select>
-    <input type='submit' name='language_sel' value=\"".LAN_CHECK_2."\" class='button' />
-    </td></tr>
-    </table></form>";
-	
-	  $text .= "
-    <form id='tools' method='post' action='".e_SELF."?tools'>
-    <table class='fborder' style='".ADMIN_WIDTH."'>
-    <tr>
-    <td class='fcaption' style='width:30%'>".LANG_LAN_23."</td>
-    <td class='forumheader3' >
-    <select name='language' class='tbox'>
-    <option value=''>".LAN_SELECT."</option>";
-
-  
-
-    foreach($languages as $lang)
-    {
-        if($lang != "English")
-        {
-        	$sel = ($_POST['language']==$lang) ? "selected='selected'" : "";
-            $text .= "<option value='{$lang}' {$sel}>{$lang}</option>\n";
-        }
-    }
-
-    $text .= "
-    </select>
-    <input type='submit' name='ziplang' value=\"".LANG_LAN_24."\" class='button' />";
-	
-	$srch = array("[","]");
-	$repl = array("<a rel='external' href='http://e107.org/news.php?extend.876.1'>","</a>");
-	$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
-	
-	$text .= " <input type='checkbox' name='contribute_pack' value='1' />".str_replace($srch,$repl,$diz);
-	
-	$text .= "
-    </td></tr>
-    </table></form>";
-	
-	$text .= "<div class='smalltext' style='padding-top:50px;text-align:center'>".LANG_LAN_AGR."</div>";
-
-    $ns->tablerender(LANG_LAN_21, $text);
-}
 
 function find_locale($language)
 {
@@ -601,6 +644,15 @@ function zip_up_lang($language)
 		$ret['error'] = TRUE;
 		$ret['message'] = (defined('LANG_LAN_27')) ? LANG_LAN_27 : "Please verify your language files ('Verify') then try again.";
 		return $ret;	
+	}
+	
+	if(varset($_POST['contribute_pack']) && varset($_SESSION['lancheck_'.$language]['total']) !='0')
+	{
+		$ret['error'] = TRUE;
+		$ret['message'] = (defined("LANG_LAN_29")) ? LANG_LAN_29 : "You should correct the remaining errors before contributing your language pack.";	
+		$ret['message']	 .= "<br />";
+		$ret['message']	 .= (defined('LANG_LAN_27')) ? LANG_LAN_27 : "Please verify your language files ('Verify') then try again.";
+		return $ret;
 	}
 	
 		
@@ -652,6 +704,7 @@ function zip_up_lang($language)
 	$newfile = e_FILE."public/e107_".$ver."_".$language."_".$locale."-utf8.zip";
 	
 	$archive = new PclZip($newfile);
+ 
 	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language,'',0);
 	$core_admin = grab_lans(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'',2);
 	$plugs = grab_lans(e_BASE.$PLUGINS_DIRECTORY, $language, $core_plugins); // standardized path. 
@@ -662,7 +715,7 @@ function zip_up_lang($language)
 	$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
 	$data = implode(",", $file);
 				
-	if ($archive->create($data) == 0)
+	if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
 	{		
 		$ret['error'] = TRUE;
 		$ret['message'] = $archive->errorInfo(true);
@@ -670,13 +723,30 @@ function zip_up_lang($language)
 	}
 	else
 	{
-	
+		if($_POST['contribute_pack'])
+		{
+			
+			$fileName = e_FILE."public/".$language.".xml";
+			@unlink($fileName);
+		$fileData = '<?xml version="1.0" encoding="utf-8"?>
+<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" />';
+			file_put_contents($fileName,$fileData);
+			$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
+			@unlink($fileName);	
+		}
+		else
+		{
+			// echo "NO CONTRIBUTE";
+		}
+
+		
 		$ret['file']  = $newfile; 
 		$ret['message'] = str_replace("../", "", e_FILE.'public/')."<a href='".$newfile."' >".basename($newfile)."</a>"; 
 		$ret['error'] = FALSE;
 		return $ret;
 	}
 }
+
 
 function getLanList()
 {
@@ -702,7 +772,11 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 {
 	global $fl,$ln;
 	
-	if ($lanlist = $fl->get_files($path, "^[\w-\.]+(\.php|\.js){0,1}$", "standard", $depth))
+	$isocode = $ln->convert($language);
+	
+	$regexp = "^[\w]+(\.lang-".$isocode.")?+(\.php|\.js){0,1}$";
+	
+	if ($lanlist = $fl->get_files($path, $regexp, "standard", $depth))
 	{
 		sort($lanlist);
 	}
@@ -714,7 +788,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	
 	$pzip = array();
 	
-	$isocode = $ln->convert($language);
+	
 	
 	$phpmailer = "phpmailer.lang-".$isocode.".php";
 	$tinyMce1 = "/langs/".$isocode.".js";
@@ -751,8 +825,6 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 			
 		}
 	}
-
-	// print_a($pzip);
 	
 	return $pzip;
 }
@@ -778,11 +850,12 @@ function language_adminmenu() {
         $var['db']['text'] = LANG_LAN_03;
         $var['db']['link'] = e_SELF."?db";
     }
+	
 
     $lcnt = explode(",",e_LANLIST);
     if(count($lcnt) > 1)
     {
-        $var['tools']['text'] = ADLAN_CL_6;
+        $var['tools']['text'] = LANG_LAN_21;
         $var['tools']['link'] = e_SELF."?tools";
     }
 

@@ -30,6 +30,12 @@ $f = $qry[0];
 $lan = $qry[1];
 $mode = $qry[2];
 
+if($f == "tools" || $f == "db" || $f == "modify")
+{
+	$f = "";
+	
+}
+
 // Write the language file.
 if(isset($_POST['submit']))
 {
@@ -187,7 +193,9 @@ $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
 "khatru","kubrick","lamb","leaf","reline","sebes","vekna_blue");
 
 
-if(isset($_POST['language_sel']) && isset($_POST['language'])){
+if(isset($_POST['language_sel'])){
+	
+	$_POST['language'] = key($_POST['language_sel']);
 
 	$_SESSION['lancheck_'.$_POST['language']] = array();
 	$_SESSION['lancheck_'.$_POST['language']]['file']	= 0;
@@ -251,10 +259,10 @@ if(isset($_POST['language_sel']) && isset($_POST['language'])){
     <input type='submit' name='just_go' value=\"".$just_go_diz."\" class='button' />
 	</span>
     </form>
-	<form name='refresh' method='post' action='".e_SELF."'>
+	<form name='refresh' method='post' action='".e_SELF."?tools'>
 	<span>
 	<input type='hidden' name='language' value='".$_POST['language']."' />
-    <input type='submit' name='language_sel' value=\"".$lang_sel_diz."\" class='button' />
+    <input type='submit' name='language_sel[".$_POST['language']."]' value=\"".$lang_sel_diz."\" class='button' />
 	</span>
     </form>
 	</div>";
@@ -788,7 +796,7 @@ function is_utf8($str) {
 	return (preg_match('/^.{1}/us',$str,$ar) == 1);
 }
 
-
+/*
 function lancheck_adminmenu() {
 
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_language.php");
@@ -814,4 +822,4 @@ function lancheck_adminmenu() {
 
 
 	show_admin_menu(ADLAN_132, $action, $var);
-}
+}*/
