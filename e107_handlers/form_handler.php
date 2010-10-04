@@ -138,17 +138,37 @@ class e_form
 		return $ret;
 	}
 
-	// FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
-	//FIXME - use the media-manager as an image selector.
+	/**
+	 * FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
+	 * FIXME - use the media-manager as an image selector.
+	 * SC Parameter list:
+	 * - media: if present - load from media table
+	 * - path: server pats to be listed (separated by |) - only if 'media' param is not present
+	 * - subdirs: folder search depth (default is 10)
+	 * - width: preview width in pixels
+	 * - height: preview height in pixels
+	 * Additional usage is <code>$sc_parameters = 'news'</code>
+	 * where
+	 * Full list can be found in shortcodes/imageselector.php 
+	 * @param string $name input name
+	 * @param string $default default value
+	 * @param string $label custom label
+	 * @param string $sc_parameters shortcode parameters
+	 * @return string html output
+	 */
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
-		// Temporary Fix for using Media-Manager data
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 
-		// $sc_parameters is currently being used to select the media-category.
-
-		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
-		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
+		if(is_string($sc_parameters)) 
+		{
+			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
+			parse_str($sc_parameters, $sc_parameters);
+		}
+		
+/*		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
+		$qry .= vartrue($sc_parameters['media']) ? " AND media_category = '".$tp->toDB($sc_parameters['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 		$qry .= "ORDER BY media_name";
 
 
@@ -161,7 +181,6 @@ class e_form
 
 			asort($opts);
 
-			$tp = e107::getParser();
 			$hide = $default_url = '';
 			$default_thumb = $default;
 			if($default)
@@ -193,26 +212,25 @@ class e_form
 			$ret .= "<img src='{$thpath}' alt='{$default_url}' class='image-selector' /></a>";
 			$ret .= "</div>\n";
 			return $ret;
-		}
+		}*/
 		// ----------------
 
-		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
+		
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
-		$parms .= "&path=".rawurlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_FILE}images/')));
+		$parms .= "&path=".rawurlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_MEDIA}images/|{e_MEDIA}temp/')));
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";
 		$parms .= "&default=".rawurlencode($default);
 		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".$label." --";
-		$parms .= "&subdirs=".varset($sc_parameters['subdirs'], 1);
+		$parms .= "&subdirs=".varset($sc_parameters['subdirs'], 10);
 		$parms .= '&width='.vartrue($sc_parameters['width'], 150);
 		if(vartrue($sc_parameters['height'])) $parms .= '&height='.$sc_parameters['height'].'px';
 		//$parms .= "&tabindex=".$this->getNext();
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
-		$tp = e107::getParser();
 
 		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
@@ -1851,7 +1869,7 @@ class e_form
 			{
 				$key = $att['field'];
 			}
-
+			
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
 			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
@@ -1889,7 +1907,7 @@ class e_form
 						$model_required[$key][] = varset($att['error']);
 					}
 				}
-
+				
 				$text .= "
 					<tr>
 						<td class='label'>
