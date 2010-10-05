@@ -573,18 +573,20 @@ $e_online = new e_online();
 $e107cache = new ecache;
 
 
-if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) {
-	$threshold=(time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) 
+{
+	$threshold = intval(time() - ($pref['del_unv'] * 60));
+	$sql->db_Delete('user', "user_ban = 2 AND user_join < ".$threshold);
 }
 
-e107_require_once(e_HANDLER."override_class.php");
+e107_require_once(e_HANDLER.'override_class.php');
 $override=new override;
 
-e107_require_once(e_HANDLER."event_class.php");
+e107_require_once(e_HANDLER.'event_class.php');
 $e_event=new e107_event;
 
-if (isset($pref['notify']) && $pref['notify'] == true) {
+if (isset($pref['notify']) && $pref['notify'] == true) 
+{
 	e107_require_once(e_HANDLER.'notify_class.php');
 }
 
