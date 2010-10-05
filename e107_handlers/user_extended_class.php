@@ -324,11 +324,12 @@ class e107_user_extended
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
-	  if(strpos($include, 'class') === FALSE)	
-	  {
+		if(strpos($include, 'class') === FALSE)	
+		{
 			$include .= " class='tbox' ";
 		}
 
+		$ret = '';
 		switch($struct['user_extended_struct_type'])
 		{
 			case 1:  //textbox
@@ -342,7 +343,7 @@ class e107_user_extended
 				{
 					$choice = trim($choice);
 					$chk = ($curval == $choice)? " checked='checked' " : "";
-					$ret = "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
+					$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
 				}
 				return $ret;
 				break;
