@@ -355,8 +355,9 @@ CREATE TABLE online (
   online_location text NOT NULL,        
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
-  online_agent varchar(255) NOT NULL default ''
-) TYPE=MyISAM;
+  online_agent varchar(255) NOT NULL default '',
+  KEY online_ip (online_ip)
+) TYPE=InnoDB;
 # --------------------------------------------------------
 
 #

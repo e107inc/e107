@@ -91,7 +91,7 @@ function read_tables($tab)
 				}
 			}
 
-			if (strpos($line, "TYPE=") !== FALSE)
+			if ((strpos($line, "TYPE=") !== FALSE) || (strpos($line, "ENGINE=") !== FALSE))
 			{
 				$current_table = "";
 			}
