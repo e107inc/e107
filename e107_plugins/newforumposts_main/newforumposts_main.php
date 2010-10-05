@@ -74,7 +74,7 @@ LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
 WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.")
 AND fp.forum_class IN (".USERCLASS_LIST.")
-ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
+ORDER BY t.{$query} DESC LIMIT 0, ".intval($pref['nfp_amount']));
 
 $forumArray = $sql->db_getList();
 
@@ -93,8 +93,8 @@ else
   $ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
 */
-$TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
-$TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
+$TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent=0 ");
+$TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!=0 ");
 $sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
 $tmp = $sql->db_Fetch();
 $TOTAL_VIEWS = $tmp[0];
