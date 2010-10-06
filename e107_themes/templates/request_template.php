@@ -25,7 +25,7 @@ $REQUEST_TEMPLATE = "<div style='padding:40px;width:75%;margin-right:auto;margin
 	<h2>{REQUEST_MESSAGE}</h2>
 </div>
 <div style='padding:40px'>
-	<a href='".e_BASE."download.php'>".LAN_dl_64."</a>
+	<h2><a href='".e_BASE."download.php'>".LAN_dl_64."</a></h2>
 </div>
 </div>";
 
