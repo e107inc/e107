@@ -157,6 +157,8 @@ if (isset($_POST['updateoptions']))
 	$pref['agree_flag'] = $_POST['agree_flag'];
 	$pref['download_email'] = $_POST['download_email'];
 	$pref['download_nomultiple'] = $_POST['download_nomultiple'];
+	$pref['download_splashdelay'] = $_POST['download_splashdelay'];
+
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
 	$pref['download_reportbroken'] = $_POST['download_reportbroken'];
@@ -373,6 +375,11 @@ if ($action == "opt")
 		<tr>
 		<td class='forumheader3'>".DOWLAN_160."</td>
 		<td class='forumheader3' style='text-align:left'>". ($pref['download_nomultiple'] ? "<input type='checkbox' name='download_nomultiple' value='1' checked='checked' />" : "<input type='checkbox' name='download_nomultiple' value='1' />")."</td>
+		</tr>
+
+		<tr>
+		<td class='forumheader3'>".DOWLAN_161."</td>
+		<td class='forumheader3' style='text-align:left'>". ($pref['download_splashdelay'] ? "<input type='checkbox' name='download_splashdelay' value='1' checked='checked' />" : "<input type='checkbox' name='download_splashdelay' value='1' />")."</td>
 		</tr>
 
 

@@ -21,6 +21,10 @@
 
 // Prevent token re-generation
 define('e_TOKEN_FREEZE', true);
+if($_SESSION['download_splash'])
+{
+	define('e_NOCACHE',TRUE);
+}
 
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
@@ -33,10 +37,12 @@ if (!e_QUERY || isset($_POST['userlogin']))
 
 // ---------------------- Experimental ----------
 
+
 $req_cookie = 'e-request_'.md5($_SERVER['SERVER_ADDR']);
 
-if(isset($_COOKIE[$req_cookie]))
+if(isset($_COOKIE[$req_cookie]) && $_SESSION['download_splash'] !==TRUE) // if cookie found, suggest to try later
 {
+	$_SESSION['download_splash'] = FALSE;
 	require_once(HEADERF);
 	$srch = array("[", "]");
 	$repl = array("<a href='".$_SERVER['REQUEST_URI']."'>", "</a>");
@@ -44,13 +50,15 @@ if(isset($_COOKIE[$req_cookie]))
 	
 	$ns->tablerender(LAN_dl_82,$text);
 	require_once(FOOTERF);
+	
 	exit();
 }
 
-if(varset($pref['download_nomultiple'])==1)
+if(varset($pref['download_nomultiple'])==1 )
 {
-	if(!setcookie($req_cookie, 1, time() + 60, "/"))
+	if(!setcookie($req_cookie, 1, time() + 60, "/")) // set the cookie and if it fails, request cookies be enabled
 	{
+		$_SESSION['download_splash'] = FALSE;
 		require_once(HEADERF);
 		$srch = array("[", "]");
 		$repl = array("<a href='".$_SERVER['REQUEST_URI']."'>", "</a>");
@@ -144,6 +152,51 @@ else
 	$id = intval($tmp[1]);
 	$type = "image";
 }
+
+
+if(varset($pref['download_splashdelay'])==1)
+{
+	if($type == 'file' && !varsettrue($_SESSION['download_splash'])) // just received request, so show page and refresh after a pause. 
+	{	
+		$_SESSION['download_splash'] = TRUE;
+		$HEADER = "";
+		$FOOTER = "";
+		$CUSTOMHEADER = "";
+		$CUSTOMFOOTER = "";
+		
+		header("Refresh: 6; url=\"".$_SERVER['REQUEST_URI']."\"");	
+		require_once(HEADERF);
+	
+		$template_name = "request_template.php";
+		if(is_readable(THEME."templates/".$template_name))
+		{
+			require_once(THEME."templates/".$template_name);
+		}
+		elseif(is_readable(THEME.$template_name))
+		{
+			require_once(THEME.$template_name);
+		}
+		else
+		{
+			require_once(e_THEME."templates/".$template_name);
+		}
+		
+		$srch = "{REQUEST_MESSAGE}";
+		$repl = LAN_dl_83; // "Your download will begin in a moment...";	
+		$text = str_replace($srch,$repl,$REQUEST_TEMPLATE);
+		
+		echo $tp->parseTemplate($text,TRUE);
+		
+		require_once(FOOTERF);		
+		exit;		
+	} 
+	else // redirected, so continue.
+	{
+		$_SESSION['download_splash'] = FALSE;
+	}	
+		
+}
+
 
 
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 

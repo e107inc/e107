@@ -105,5 +105,9 @@ define("LAN_dl_80", "Please enable cookies and [try again].");
 define("LAN_dl_81", "Cookies Required");
 define("LAN_dl_82", "Please Wait");
 
+//0.7.25
+
+define("LAN_dl_83", "Your download will begin in a moment...");
+
 
 ?>
