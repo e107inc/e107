@@ -7,6 +7,11 @@ function print_item($thread_id)
 	$gen = new convert;
 	include_once(e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum;
+	if (!$forum->thread_get_allowed($thread_id))
+	{
+		echo "Insufficient permissions";
+		exit;
+	}
 	$thread_info = $forum->thread_get($thread_id,0,999);
 	$thread_name = $tp -> toHTML($thread_info[0]['thread_name'], TRUE);
 	$text = "<b>".$thread_name."</b><br />
@@ -35,6 +40,11 @@ function email_item($thread_id)
 	$gen = new convert;
 	include_once(e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum;
+	if (!$forum->thread_get_allowed($thread_id))
+	{
+		echo "Insufficient permissions";
+		exit;
+	}
 	$thread_info = $forum->thread_get($thread_id,0,999);
 
 	$thread_name = $tp -> toHTML($thread_info[0]['thread_name'], TRUE);

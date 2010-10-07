@@ -610,6 +610,37 @@ class e107forum
 		return $ret;
 	}
 
+
+	/**
+	 *	Determine whether current user has access to the specified thread.
+	 *
+	 *	@param int $thread_id
+	 *
+	 *	@return boolean TRUE if access allowed, FALSE if denied
+	 */
+	function thread_get_allowed($thread_id)
+	{
+		global $sql;
+		$thread_id = intval($thread_id);
+		$qry = "
+		SELECT t.thread_id from #forum_t as t
+		JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+		WHERE t.thread_id = {$thread_id}
+		AND f.forum_parent != 0
+		AND fp.forum_class IN (".USERCLASS_LIST.")
+		AND f.forum_class IN (".USERCLASS_LIST.")
+		LIMIT 0,1
+		";
+		
+		if ($sql->db_Select_gen($qry))
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+
 	function thread_count($thread_id)
 	{
 		$thread_id = intval($thread_id);
