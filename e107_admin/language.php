@@ -364,7 +364,7 @@ function show_tools()
 		list($ver, $tmp) = explode(" ", $e107info['e107_version']);
 	}
 		
-	$lans = explode(",",e_LANLIST);
+	$lans = getLanList();
 	
 	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
 	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
@@ -798,7 +798,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 	{	
 		$fullpath = $p['path'].$p['fname'];
 						
-		if($p['fname'] == ($language."_custom.php") || ($p['fname'] == ($language."_config.php")))
+		if($p['fname'] == ($language."_custom.php") || ($fullpath == e_LANGUAGEDIR.$language."/".$language."_config.php"))
 		{
 			continue;
 		}		
@@ -825,7 +825,6 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 			
 		}
 	}
-	
 	return $pzip;
 }
 
