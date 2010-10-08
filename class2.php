@@ -139,7 +139,7 @@ else
 		$domain = FALSE; //invalid domain
 	}
 	
-	$replace = array(".".$domain,"www.","www");
+	$replace = array(".".$domain,"www.","www",$domain);
 	$subdomain = str_replace($replace,'',$_SERVER['HTTP_HOST']);
 }
 
@@ -465,6 +465,15 @@ define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 if(session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME])/* && $_POST['ajax_used']!=1*/)
 {
 	// do not redirect, prevent dead loop, save server resources
+	if(defsettrue('e_DEBUG'))
+	{
+		echo "<h2>Session</h2>";
+		echo "<pre>".print_r($_SESSION,true)."</pre>";
+		echo "<h2>Post</h2>";
+		echo "<pre>".print_r($_POST,true)."</pre>";
+		echo "<br />";	
+		echo "e_HTTP=".e_HTTP;
+	}
 	die('Access denied');
 }	
 
@@ -563,6 +572,7 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
+define('e_LOCALE',(strtolower(CORE_LC)."-".strtoupper(CORE_LC2)));
 //
 // N: misc setups: online user tracking, cache
 //
