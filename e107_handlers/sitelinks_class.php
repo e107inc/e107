@@ -93,6 +93,11 @@ class sitelinks
             $style['linkend'] = defined('LINKEND') ? LINKEND : '';
             $style['linkseparator'] = defined('LINKSEPARATOR') ? LINKSEPARATOR : '';
         }
+		
+		if(!varset($style['linkseparator']))
+		{
+			$style['linkseparator'] = "";
+		}
 
     // Sublink styles.- replacing the tree-menu.
         if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink'])){
@@ -110,7 +115,7 @@ class sitelinks
             foreach ($this->eLinkList['head_menu'] as $key => $link){
                 $main_linkid = "sub_".$link['link_id'];
 
-                $link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !$style['linkmainonly'] && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
+                $link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 
                 $render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
@@ -139,6 +144,9 @@ class sitelinks
                     }
                 }
             }
+			
+
+			
             $text .= implode($style['linkseparator'], $render_link);
             $text .= $style['postlink'];
             if ($style['linkdisplay'] == 2) {
@@ -185,6 +193,16 @@ class sitelinks
         // Start with an empty link
         $linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
         $highlighted = FALSE;
+		
+		if(!isset($style['linkstart_hilite'])) // Notice removal
+		{
+			$style['linkstart_hilite'] = "";	
+		}
+		
+		if(!isset($style['linkclass_hilite']))
+		{
+			$style['linkclass_hilite'] = "";	
+		}
 
         // If submenu: Fix Name, Add Indentation.
         if ($submenu == TRUE) {
@@ -192,7 +210,7 @@ class sitelinks
                 $tmp = explode('.', $linkInfo['link_name'], 3);
                 $linkInfo['link_name'] = $tmp[2];
             }
-            $indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
+            $indent = (varset($style['linkdisplay']) != 3) ? varset($style['subindent']) : "";
         }
 
         // Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
