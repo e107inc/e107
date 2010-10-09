@@ -529,7 +529,7 @@ $text = "
 	<tr>
 	<td style='width:30%' class='forumheader3'>".PRFLAN_63."<br /></td>
 	<td style='width:70%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65."\" />
-	<input name='testaddress' class='tbox' type='text' value=\"".SITEADMINEMAIL."\" />
+	<input name='testaddress' class='tbox' size='40' type='text' value=\"".SITEADMINEMAIL."\" />
 	</td>
 	</tr>
 

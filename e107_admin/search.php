@@ -287,10 +287,10 @@ if ($query[0] == 'settings') {
 	</tr>";
 
 	$text .= "<tr>
-	<td class='forumheader'>".SEALAN_24."</td>
-	<td class='forumheader'>".SEALAN_25."</td>
-	<td class='forumheader'>".LAN_ORDER."</td>
-	<td class='forumheader'>".LAN_EDIT."</td>
+	<td class='fcaption'>".SEALAN_24."</td>
+	<td class='fcaption'>".SEALAN_25."</td>
+	<td class='fcaption'>".LAN_ORDER."</td>
+	<td class='fcaption'>".LAN_EDIT."</td>
 	</tr>";
 
 	foreach($search_handlers as $key => $value) {
@@ -358,8 +358,8 @@ if ($query[0] == 'settings') {
 	</tr>";
 
 	$text .= "<tr>
-	<td class='forumheader'>".SEALAN_24."</td>
-	<td class='forumheader'>".SEALAN_25."</td>
+	<td class='fcaption'>".SEALAN_24."</td>
+	<td class='fcaption'>".SEALAN_25."</td>
 	</tr>";
 
 	foreach ($search_prefs['comments_handlers'] as $key => $value) {

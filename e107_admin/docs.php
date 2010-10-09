@@ -31,8 +31,9 @@ if (!$handle = opendir(e_DOCS.e_LANGUAGE."/")) {
 	$handle = opendir(e_DOCS."English/");
 }
 	
-while ($file = readdir($handle)) {
-	if ($file != "." && $file != ".." && $file != "CVS") {
+while ($file = readdir($handle))
+{
+	if ($file != "." && $file != ".." && $file != "CVS" && $file != ".svn") {
 		$helplist[$i] = $file;
 		$i++;
 	}
