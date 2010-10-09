@@ -34,7 +34,7 @@ class wysiwyg
 		$mce_plugins[4]	= "media";
 		$mce_plugins[5]	= (ADMIN) ? "ibrowser" : "image";				// Third party plugins - 'image' may not be a valid plugin name
 		//$mce_plugins[6]	= "compat2x";					// May well not be needed - mostly for if we have our own code
-
+		$mce_plugins[7]	= "paste";
 
 		if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip") && (ini_get("zlib.output_compression") == false) && file_exists(e_HANDLER."tiny_mce/tiny_mce_gzip.php"))
 		{
@@ -68,11 +68,11 @@ class wysiwyg
 		
 
 
-		$text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
+		$text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste,pastetext,pasteword'";
 		
 		$text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink";
 		$text .= ($pref['smiley_activate']) ? ",emoticons" : "";
-		$text .= ",charmap,iespell,media,paste";
+		$text .= ",charmap,iespell,media";
 		$text .= (ADMIN) ? ",ibrowser" : ",image";
 		$text .= (ADMIN) ? ",code" : "";
 		$text .= "',"; // end of buttons 2
@@ -178,7 +178,7 @@ class wysiwyg
 			'extended_valid_elements' 			=> '',
 			//'invalid_elements' 				=> 'p,font,align,script,applet,iframe',
 			'invalid_elements' 					=> 'font,align,script,applet,iframe',
-			'auto_cleanup_word'					=> 'true',
+		//	'auto_cleanup_word'					=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
@@ -199,6 +199,7 @@ class wysiwyg
 		);
 		
 		// Paste Plugin
+		
 		$this->config += array(
 			
 			'remove_linebreaks'						=> 'false', // remove line break stripping by tinyMCE so that we can read the HTML
