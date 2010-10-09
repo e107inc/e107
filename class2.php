@@ -464,18 +464,22 @@ define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 // Ajax calls should be handled manual at this time (set e_TOKEN_FREEZE in Ajax scripts before the API is loaded)
 if(session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME])/* && $_POST['ajax_used']!=1*/)
 {
-	// do not redirect, prevent dead loop, save server resources
 	if(defsettrue('e_DEBUG'))
-	{
-		echo "<h2>Session</h2>";
-		echo "<pre>".print_r($_SESSION,true)."</pre>";
-		echo "<h2>Post</h2>";
-		echo "<pre>".print_r($_POST,true)."</pre>";
-		echo "<br />";	
-		echo "e_HTTP=".e_HTTP;
-	}
+	{		
+		$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
+		$details = "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";		
+		$details .= "_SESSION:\n";
+		$details .= print_r($_SESSION,true);
+		$details .= "\n_POST:\n";
+		$details .= print_r($_POST,true);
+		$details .= "\nPlugins:\n";
+		$details .= print_r($pref['plug_installed'],true);
+			
+		$admin_log->log_event("Access denied", $details, E_LOG_WARNING);				
+	}	
+		// do not redirect, prevent dead loop, save server resources
 	die('Access denied');
-}	
+}
 
 // Create new token only if not exists or session id is regenerated (footer.php)
 if(!isset($_SESSION[e_TOKEN_NAME]) || (isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
