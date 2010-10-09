@@ -573,7 +573,7 @@ class e107_db_debug {
 
 function e107_debug_shutdown()
 {
-global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
+	global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 	if (isset($e107_Clean_Exit)) return;
 
 	if (!isset($In_e107_Footer))
@@ -581,11 +581,24 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 		if (defset('ADMIN_AREA'))
 		{
 			$filewanted=realpath(dirname(__FILE__)).'/../'.$ADMIN_DIRECTORY.'footer.php';
-			require_once($filewanted);
-		} else if (defset('USER_AREA'))
+			
+		}
+		elseif(defset('USER_AREA'))
 		{
-			$filewanted=realpath(dirname(__FILE__)).'/../'.FOOTERF;
-			require_once($filewanted);
+			// $filewanted=realpath(dirname(__FILE__)).'/../'.FOOTERF;	(fails when in plugin dir)
+			$filewanted=realpath(FOOTERF);		
+		}
+		
+		if($filewanted)
+		{
+			if(is_readable($filewanted))
+			{
+				require_once($filewanted);	
+			}
+			else
+			{
+				trigger_error("Couldn't load ".$filewanted, E_USER_ERROR);
+			}
 		}
 	}
 // 
