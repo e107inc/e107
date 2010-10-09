@@ -24,6 +24,15 @@ if (!getperms('0'))
 
 $e_sub_cat = 'language';
 
+if (e_QUERY) 
+{ 
+    $tmp = explode('.', e_QUERY);
+    $action = $tmp[0]; // must be set before auth.php is loaded. 
+    $sub_action = varset($tmp[1]);
+    $id = varset($tmp[2]);
+    unset($tmp);
+}
+
 require_once("auth.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 require_once(e_ADMIN."lancheck.php");
@@ -43,13 +52,7 @@ $message = "";
 
 
 
-if (e_QUERY) {
-    $tmp = explode('.', e_QUERY);
-    $action = $tmp[0];
-    $sub_action = varset($tmp[1]);
-    $id = varset($tmp[2]);
-    unset($tmp);
-}
+
 
 if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 

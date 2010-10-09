@@ -54,6 +54,17 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 
 $e_sub_cat = 'users';
 $user = new users;
+
+if (e_QUERY)
+{
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0]; // must be set before auth.php is loaded. 
+	$sub_action = varset($tmp[1],'');
+	$id = varset($tmp[2],0);
+	$from = varset($tmp[3],0);
+	unset($tmp);
+}
+
 require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
@@ -61,15 +72,7 @@ require_once(e_HANDLER."userclass_class.php");
 
 $rs = new form;
 
-if (e_QUERY)
-{
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-  $sub_action = varset($tmp[1],'');
-  $id = varset($tmp[2],0);
-  $from = varset($tmp[3],0);
-	unset($tmp);
-}
+
 
 $from = varset($from, 0);
 $amount = 30;

@@ -36,6 +36,17 @@ $pst = new e_preset;
 $pst->form = "linkform";
 $pst->page = "links.php?create";
 $pst->id = "admin_links";
+
+$action = '';
+if (e_QUERY)
+{
+  $tmp = explode('.', e_QUERY);
+  $action = $tmp[0]; // must be set before auth.php is loaded. 
+  $sub_action = $tmp[1];
+  $id = $tmp[2];
+  unset($tmp);
+}
+
 require_once('auth.php');
 // --------------------
 $pst->save_preset();
@@ -46,15 +57,7 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $linkpost = new links;
 
-$action = '';
-if (e_QUERY)
-{
-  $tmp = explode('.', e_QUERY);
-  $action = $tmp[0];
-  $sub_action = $tmp[1];
-  $id = $tmp[2];
-  unset($tmp);
-}
+
 
 define("URL_SEPARATOR",'X');		// Used in names of 'inc' and 'dec' fields
 
@@ -837,8 +840,8 @@ function links_adminmenu()
 	$var['opt']['text'] = LAN_OPTIONS;
 	$var['opt']['link'] = e_SELF."?opt";
 
-	$var['sub']['text'] = LINKLAN_4;
-	$var['sub']['link'] = e_SELF."?sublinks";
+	$var['sublinks']['text'] = LINKLAN_4;
+	$var['sublinks']['link'] = e_SELF."?sublinks";
 
 //	$var['debug']['text'] = "List DB";
 //	$var['debug']['link'] = e_SELF."?debug";

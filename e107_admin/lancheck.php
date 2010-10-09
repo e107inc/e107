@@ -777,30 +777,4 @@ function is_utf8($str) {
 	return (preg_match('/^.{1}/us',$str,$ar) == 1);
 }
 
-/*
-function lancheck_adminmenu() {
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_language.php");
-
-	global $action,$pref;
-	if ($action == "") {
-		$action = "tools";
-	}
-
-	if($action == "modify"){
-		$action = "db";
-	}
-	$var['main']['text'] = LAN_PREFS;
-	$var['main']['link'] = e_ADMIN."language.php";
-
-	if(isset($pref['multilanguage']) && $pref['multilanguage']){
-		$var['db']['text'] = LANG_LAN_03;
-		$var['db']['link'] = e_ADMIN."language.php?db";
-	}
-
-	$var['tools']['text'] = ADLAN_CL_6;
-	$var['tools']['link'] = e_ADMIN."language.php?tools";
-
-
-	show_admin_menu(ADLAN_132, $action, $var);
-}*/

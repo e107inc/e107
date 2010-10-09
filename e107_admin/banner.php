@@ -27,6 +27,13 @@ if (!getperms("D"))
 }
 
 $e_sub_cat = 'banner';
+
+if(e_QUERY) // must be before auth.php
+{
+	list($action, $sub_action, $id) = explode(".", e_QUERY);
+	$id = intval($id);
+}
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -39,11 +46,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 
 
-if(e_QUERY)
-{
-	list($action, $sub_action, $id) = explode(".", e_QUERY);
-	$id = intval($id);
-}
+
 
 //$reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_Store');
 //$images = $fl->get_files(e_IMAGE."banners/","",$reject);

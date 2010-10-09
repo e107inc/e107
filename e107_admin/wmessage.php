@@ -37,6 +37,18 @@ $pst = new e_preset;
 $pst->form = "wmform";
 $pst->page = "wmessage.php?create";
 $pst->id = "admin_wmessage";
+
+$action = '';
+if (e_QUERY) 
+{
+	$tmp = explode('.', e_QUERY);
+	$action = $tmp[0]; // must be set before auth.php is loaded. 
+	$sub_action = varset($tmp[1], '');
+	$id = intval(varset($tmp[2], 0));
+	unset($tmp);
+}
+
+
 require_once("auth.php");
 $pst->save_preset();  // save and render result
 
@@ -46,15 +58,7 @@ require_once(e_HANDLER."ren_help.php");
 
 $rs = new form;
 
-$action = '';
-if (e_QUERY) 
-{
-	$tmp = explode('.', e_QUERY);
-	$action = $tmp[0];
-	$sub_action = varset($tmp[1], '');
-	$id = intval(varset($tmp[2], 0));
-	unset($tmp);
-}
+
 
 if($_POST)
 {

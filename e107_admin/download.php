@@ -1909,7 +1909,7 @@ class download
 
 function download_adminmenu($parms) {
 	global $download;
-	global $action;
+	list($action) = explode('.',e_QUERY);
 	$download->show_options($action);
 }
 

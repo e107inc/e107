@@ -25,18 +25,20 @@ $e_sub_cat = 'custom';
 $e_wysiwyg = "data";
 $page = new page;
 
-require_once("auth.php");
-// require_once(e_HANDLER."ren_help.php");
-require_once(e_HANDLER."userclass_class.php");
-
-if (e_QUERY)
+if (e_QUERY) 
 {
 	$tmp        = explode(".", e_QUERY);
-	$action     = $tmp[0];
+	$action     = $tmp[0]; // must be set before auth.php is loaded. 
 	$sub_action = $tmp[1];
 	$id         = $tmp[2];
 	$from       = varset($tmp[3],0);
 }
+
+require_once("auth.php");
+// require_once(e_HANDLER."ren_help.php");
+require_once(e_HANDLER."userclass_class.php");
+
+
 
 if(isset($_POST['submitPage']))
 {

@@ -42,6 +42,18 @@ $pst->id   = 'admin_newspost';
 // ------------------------------
 
 $newspost = new newspost;
+
+if (e_QUERY) 
+{
+	$tmp 		= explode('.', e_QUERY);
+	$action 	= $tmp[0]; // must be set before auth.php is loaded. 
+	$sub_action = varset($tmp[1],'');
+	$id 		= intval(varset($tmp[2],0));
+	$sort_order = varset($tmp[2],'desc');
+	$from 		= intval(varset($tmp[3],0));
+	unset($tmp);
+}
+
 require_once('auth.php');
 $pst->save_preset('news_datestamp'); // save and render result using unique name. Don't save item datestamp
 require_once(e_HANDLER.'userclass_class.php');
@@ -54,16 +66,7 @@ $fl = new e_file;
 $rs = new form;
 $ix = new news;
 
-if (e_QUERY) 
-{
-	$tmp 		= explode('.', e_QUERY);
-	$action 	= $tmp[0];
-	$sub_action = varset($tmp[1],'');
-	$id 		= intval(varset($tmp[2],0));
-	$sort_order = varset($tmp[2],'desc');
-	$from 		= intval(varset($tmp[3],0));
-	unset($tmp);
-}
+
 $from = ($from ? $from : 0);
 $amount = 10;
 
@@ -379,8 +382,8 @@ class newspost
 
 	function show_options($action) 
 	{
-		global $sql;
-
+		global $sql,$action;
+				
 		if ($action == '') {
 			$action = 'main';
 		}

@@ -301,6 +301,7 @@ if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE) {
 		global $ns, $BUTTON, $BUTTON_OVER, $BUTTONS_START, $BUTTONS_END, $SUB_BUTTON, $SUB_BUTTON_OVER, $SUB_BUTTONS_START, $SUB_BUTTONS_END;
 		$id_title = "yop_".str_replace(" ", "", $title);
+						
 		if (!isset($BUTTONS_START)) {
 			$BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
 		}

@@ -23,10 +23,13 @@ if (!getperms('X')) {
 	exit;
 }
 $e_sub_cat = 'search';
+
+$query = explode('.', e_QUERY); // must be set before auth.php is loaded. 
+
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 
-$query = explode('.', e_QUERY);
+
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
