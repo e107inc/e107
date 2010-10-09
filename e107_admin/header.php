@@ -127,7 +127,9 @@ echo "<!-- *JS* -->\n";
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
-	echo wysiwyg($e_wysiwyg);
+	$wy = new wysiwyg($e_wysiwyg);
+	$wy->render();
+	// echo wysiwyg($e_wysiwyg);
 }else{
 	define("e_WYSIWYG",FALSE);
 }
