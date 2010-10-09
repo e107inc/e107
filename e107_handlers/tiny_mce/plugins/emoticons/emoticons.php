@@ -10,13 +10,22 @@ require_once(HEADERF);
 
 	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
 	$str = "<div class='spacer' style='padding:10px;white-space:wrap;width:180px;text-align:center'>";
-    foreach($emotes as $key => $value){
-		$key = str_replace("!", ".", $key);
-		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
-		$value2 = substr($value, 0, strpos($value, " "));
-		$value = ($value2 ? $value2 : $value);
-		$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
+	if($emotes)
+	{
+		foreach($emotes as $key => $value)
+		{
+			$key = str_replace("!", ".", $key);
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+			$value2 = substr($value, 0, strpos($value, " "));
+			$value = ($value2 ? $value2 : $value);
+			$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
+		}	
 	}
+	else
+	{
+		$str .= "Are emoticons enabled in your preferences?";
+	}
+
 
 	$str .= "</div>";
 
