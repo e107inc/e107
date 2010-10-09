@@ -33,6 +33,16 @@ if (!getperms("P"))
 $e_sub_cat = 'forum';
 
 $forum = new forum;
+
+if (e_QUERY)
+{
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0]; //needed by auth.php
+	$sub_action = varset($tmp[1]);
+	$id = intval(varset($tmp[2], 0));
+	unset($tmp);
+}
+
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -45,14 +55,7 @@ define("IMAGE_sub", "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FO
 define("IMAGE_nosub", "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
 
 $deltest = array_flip($_POST);
-if (e_QUERY)
-{
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-	$sub_action = varset($tmp[1]);
-	$id = intval(varset($tmp[2], 0));
-	unset($tmp);
-}
+
 
 if(isset($_POST['delete']))
 {

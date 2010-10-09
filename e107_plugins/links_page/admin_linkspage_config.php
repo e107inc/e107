@@ -22,6 +22,16 @@ if (!getperms("P")) {
 }
 require_once(e_PLUGIN.'links_page/link_shortcodes.php');
 require_once(e_PLUGIN.'links_page/link_defines.php');
+if(e_QUERY){
+	$qs = explode(".", e_QUERY);
+
+	if(is_numeric($qs[0])){
+		$from = array_shift($qs);
+	}else{
+		$from = "0";
+	}
+}
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -42,15 +52,7 @@ $deltest = array_flip($_POST);
 //if (e_QUERY) {
 //	$qs = explode(".", e_QUERY);
 //}
-if(e_QUERY){
-	$qs = explode(".", e_QUERY);
 
-	if(is_numeric($qs[0])){
-		$from = array_shift($qs);
-	}else{
-		$from = "0";
-	}
-}
 if(isset($_POST['delete'])){
 	$tmp = array_pop($tmp = array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);

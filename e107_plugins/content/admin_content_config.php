@@ -30,6 +30,10 @@ include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
+if(e_QUERY){
+	$qs = explode(".", e_QUERY);
+}
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -52,9 +56,7 @@ global $tp;
 $deltest = array_flip($_POST);
 
 // check query
-if(e_QUERY){
-	$qs = explode(".", e_QUERY);
-}
+
 
 if(isset($_POST['delete']))
 {
