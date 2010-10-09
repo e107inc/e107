@@ -280,13 +280,17 @@ if(isset($_POST['language_sel'])){
 
 
 function check_core_lanfiles($checklan,$subdir=''){
-	global $lanfiles,$_POST;
+	global $lanfiles,$_POST,$sql;
 
+//	$sql->db_Mark_Time('Start Get Core Lan Phrases English');
 	$English = get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
+	
+//	$sql->db_Mark_Time('End Get Core Lan Phrases English');
+	
 	$check = get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
 	
-	//print_a($check);
-	//return;
+//	print_a($check);
+//	return;
 	
 
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -375,7 +379,7 @@ function check_lan_errors($english,$translation,$def)
 	// return $eng_line."<br />".$trans_line."<br /><br />";
 		
 	$error = array();
-	
+		
 	if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
 	{
 		checkLog('def',1);
@@ -438,9 +442,9 @@ function get_lan_file_phrases($dir1,$dir2,$file1,$file2){
 
 	if(is_file($fname))
 	{
-		$data = file($fname);
-		$ret=$ret + fill_phrases_array($data,$type);
-		if(substr($data[0],0,5) != "<?php")
+		$data = file_get_contents($fname);
+		$ret= $ret + fill_phrases_array($data,$type);
+		if(substr($data,0,5) != "<?php")
 		{
 			$key = str_replace(".php","",$fname);
 			$ret['bom'][$key] = $fname;
@@ -452,9 +456,9 @@ function get_lan_file_phrases($dir1,$dir2,$file1,$file2){
 
 	if(is_file($fname))
 	{
-		$data = file($fname);
+		$data = file_get_contents($fname);
 		$ret=$ret + fill_phrases_array($data,$type);
-		if(substr($data[0],0,5) != "<?php")
+		if(substr($data,0,5) != "<?php")
 		{
 			$key = str_replace(".php","",$fname);
 			$ret['bom'][$key] = $fname;
@@ -523,7 +527,7 @@ function get_comp_lan_phrases($comp_dir,$lang,$depth=0)
 				$f['fname'] = "English_custom.php";  // change the key for the main language file.
 			}
 
-			$ret=$ret + fill_phrases_array($data,$relpath.$f['fname']);
+			$ret=$ret + fill_phrases_array($allData,$relpath.$f['fname']);
 
 		}
 	}
@@ -711,8 +715,8 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 	$text .= "<form method='post' action='".e_SELF."' id='select_lang'>
 	<div style='text-align:center'><br />";
 	$text .= (!$writable) ? "<br />".$dir2.$f2.LAN_NOTWRITABLE : "";
-	$text .= "<br /><br /><input class='button' type='submit' name='language_sel' value=\"".LAN_BACK."\" />
-	<input type='hidden' name='language' value='$lan' /></div></form>";
+	$text .= "<br /><br /><input class='button' type='submit' name='language_sel[{$lan}]' value=\"".LAN_BACK."\" />
+	</div></form>";
 
 
 	$caption = LAN_CHECK_3." <b>".$dir2.$f2."</b> -> <b>".$lan."</b>";
@@ -723,62 +727,39 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 }
 
 function fill_phrases_array($data,$type)
-{
-
-	$inComment = FALSE;
-
+{	
 	$retloc = array();
 	
-	foreach($data as $line)
+	if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
 	{
-		$line = trim($line);
-		
-		if(strpos($line,"/*")!==FALSE && strpos($line,"*/")!==FALSE ) // ie. /* and */ on the same line. 
-		{
-			preg_match('#\/\*(.+?)\*\/#s', $line, $match);
-			$srch = "/*".$match[1]."*/";
-			$line = trim(str_replace($srch,'',$line));
-		}
-				
-		if(strpos($line,"/*")!==FALSE ) // grab any text prior to /*
-		{
-			$inComment = TRUE;
-			$line = trim(strstr($line,"/*",TRUE));
-		}
-		
-		if(strpos($line,"*/")!==FALSE ) // grab any text after */
-		{
-			$inComment = FALSE;
-			$line =  trim(substr(strstr($line,"*/"),2));	
-		}
-				
-		if (strlen($line) == 0 || substr($line,0,2) == "//" || $inComment==TRUE )
-		{
-			continue;	
-		} 
-						
-		if(strpos($line,"setlocale(") !== FALSE)
-		{
-			$pos = substr(strstr($line,","),1);
-			$rep = array(");","\n",'""');
-			$val = str_replace($rep,"",$pos);
-			$retloc[$type]['LC_ALL']= $val;
-			continue;
-		}
-			
-		// Steve's magic. 			
-		if(preg_match('~^DEFINE\s*\(\s*(\'|\")(.+?)(?:\\1)\s*\,\s*(\'|\")(.+?)(?:\\3\)\s*;)~i', $line, $matches))
-		{
-			if(!isset($retloc[$type][$matches[2]]))
-			{
-				$retloc[$type][$matches[2]]= $ndef.$matches[4];
-				// echo "get_lan -->".$matches[2]." :: ".$ndef.$matches[4]."<br />";
-			}	
-		}	
-	
+		$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
 	}
-	
+				
+	if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
+	{
+		$retloc[$type][$locale[1]]= $locale[2];	
+	}
+			
+	if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/im',$data,$matches))
+	{
+		$def = $matches[2];
+		$values = $matches[5];	
+
+		foreach($def as $k=>$d)
+		{
+			$retloc[$type][$d]= $values[$k];
+		}	
+	}
+		
 	return $retloc;
+	
+	/*
+	echo "<h2>Raw Data ".$type."</h2><pre>";
+	echo htmlentities($data);
+	echo "</pre>";	
+
+	*/
+		
 }
 
 //--------------------------------------------------------------------

@@ -729,7 +729,9 @@ function zip_up_lang($language)
 			$fileName = e_FILE."public/".$language.".xml";
 			@unlink($fileName);
 		$fileData = '<?xml version="1.0" encoding="utf-8"?>
-<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" />';
+<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
+<author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
+</e107Language>';
 			file_put_contents($fileName,$fileData);
 			$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
 			@unlink($fileName);	
