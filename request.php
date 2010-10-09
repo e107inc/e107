@@ -56,7 +56,7 @@ if(isset($_COOKIE[$req_cookie]) && $_SESSION['download_splash'] !==TRUE) // if c
 
 if(varset($pref['download_nomultiple'])==1 )
 {
-	if(!setcookie($req_cookie, 1, time() + 60, "/")) // set the cookie and if it fails, request cookies be enabled
+	if(!setcookie($req_cookie, 1, time() + 30, "/")) // set the cookie and if it fails, request cookies be enabled
 	{
 		$_SESSION['download_splash'] = FALSE;
 		require_once(HEADERF);
