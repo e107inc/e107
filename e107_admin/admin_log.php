@@ -60,7 +60,7 @@ while ($row = $sql -> db_Fetch()) {
 	$text .= "    <td style='width: 16px;'>{$image}</td>\n";
 	$text .= "    <td>{$datestamp}</td>\n";
 	$text .= "    <td>".$tp->toHtml($row['dblog_title'],FALSE,"defs")."</td>\n";
-	$text .= "    <td>".$tp->toHtml($row['dblog_remarks'],FALSE,"defs")."</td>\n";
+	$text .= "    <td><pre>".$tp->toHtml($row['dblog_remarks'],TRUE,"defs")."</pre></td>\n";
 	$text .= "    <td>{$row['dblog_ip']}</td>\n";
 	$text .= ($row['user_name']) ? "    <td><a href='".e_BASE."user.php?id.{$row['dblog_user_id']}'>{$row['user_name']}</a></td>\n" : "    <td>{$row['dblog_user_id']}</td>\n";
 	$text .= "  </tr>\n";
