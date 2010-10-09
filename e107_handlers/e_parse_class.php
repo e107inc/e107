@@ -1141,18 +1141,18 @@ class e_parse
 		return $text;
 	}
 
-//
-// $nonrelative:
-//   "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
-//   TRUE = produce truncated URL path, e.g. e107plugins/etc
-//   "" (default) = URL's get relative path e.g. ../e107_plugins/etc
-//
-// $all - if TRUE, then
-//		when $nonrelative is "full" or TRUE, USERID is also replaced...
-//		when $nonrelative is "" (default), ALL other e107 constants are replaced
-//
-// only an ADMIN user can convert {e_ADMIN}
-//
+	/**
+	 * Convert e107 Path Constants (eg. {e_PLUGIN}) to real paths
+	 * @param object $text
+	 * @param object $nonrelative [optional] 
+	 * "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
+	 * TRUE = produce truncated URL path, e.g. e107plugins/etc
+	 * '' (default) = URL's get relative path e.g. ../e107_plugins/etc
+	 * @param object $all [optional] if TRUE, then
+	 * when $nonrelative is "full" or TRUE, USERID is also replaced...
+	 * when $nonrelative is "" (default), ALL other e107 constants are replaced
+	 * @return string
+	 */
 	function replaceConstants($text, $nonrelative = "", $all = false)
 	{
 		if($nonrelative != "")
