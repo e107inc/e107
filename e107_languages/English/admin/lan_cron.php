@@ -20,7 +20,7 @@ define("LAN_CRON_6", "Month(s)");
 define("LAN_CRON_7", "Weekday(s)");
 define("LAN_CRON_8", "Active");
 // define("LAN_CRON_9", "Description");
-// define("LAN_CRON_10", "Description");
+define("LAN_CRON_10", "Every 15 minutes");
 
 define("LAN_CRON_11", "Every Minute");
 define("LAN_CRON_12", "Every Other Minute");

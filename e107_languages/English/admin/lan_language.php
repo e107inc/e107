@@ -36,7 +36,8 @@ define("LANG_LAN_25", "Language-Pack Creation Status");
 define('LANG_LAN_26', "Load language files only for current language");
 define('LANG_LAN_27', "If checked, and a required language can't be found, there will be an error");
 
-//0.8
+//FIXME - LAN conflict. 
+//0.8 - in conflict with 0.7. 
 define('LANG_LAN_PAGE_TITLE', 'Languages');
 define('LANG_LAN_28', '%s deleted.');
 define('LANG_LAN_29', '%s couldn\'t be deleted.');
