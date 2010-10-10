@@ -15,7 +15,7 @@ global $sql,$parm;
 
   //	$paths = explode("|",$path);
     $recurse = ($subdirs) ? $subdirs : 0;
-	if($imagelist = $fl->get_files($path,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG|\.jpeg|\.JPEG|\.tif|\.TIF|\.tiff|\.TIFF', 'standard', $recurse))
+	if($imagelist = $fl->get_files($path,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG|\.jpeg|\.JPEG|\.svg|\.SVG', 'standard', $recurse))
 	{
 		sort($imagelist);
 	}
