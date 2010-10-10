@@ -27,6 +27,9 @@
  *
  */
 
+//TODO before release. - replace majority of code with admin_gui class setup. 
+
+
 require_once ("../class2.php");
 if(! getperms("S"))
 {
@@ -98,7 +101,8 @@ if(e_QUERY)
 
 $action = varset($qs[0], 'adminlog');
 
-// Delete comments if appropriate
+// Deprecated by Comments Manager
+/*
 if(isset($_POST['deleteitems']) && ($action == 'comments'))
 {
 	$c_list = array();
@@ -121,7 +125,7 @@ if(isset($_POST['deleteitems']) && ($action == 'comments'))
 	//$ns -> tablerender(LAN_DELETE, "<div style='text-align:center'><b>".$text."</b></div>");
 	unset($c_list);
 }
-
+*/
 
 // ****************** MAINTENANCE ******************
 unset($back_count);
@@ -236,9 +240,9 @@ if(($action == "confdel") || ($action == "auditdel"))
 }
 
 // Arrays of options for the various logs - the $page_title array is used to determine the allowable values for $action ('options' is a special case)
-$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog', 'downlog' => 'download_requests', 'comments' => 'comments', 'online' => 'online');
-$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']), 1), 'downlog' => 60, 'detailed' => 20, 'comments' => 30, 'online' => 30);
-$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002, 'downlog' => RL_LAN_067, 'detailed' => RL_LAN_094, 'comments' => RL_LAN_099, 'online' => RL_LAN_120);
+$log_db_table = array('adminlog' => 'admin_log', 'auditlog' => 'audit_log', 'rolllog' => 'dblog', 'downlog' => 'download_requests', 'online' => 'online');
+$back_day_count = array('adminlog' => 30, 'auditlog' => 30, 'rolllog' => max(intval($pref['roll_log_days']), 1), 'downlog' => 60, 'detailed' => 20, 'online' => 30);
+$page_title = array('adminlog' => RL_LAN_030, 'auditlog' => RL_LAN_062, 'rolllog' => RL_LAN_002, 'downlog' => RL_LAN_067, 'detailed' => RL_LAN_094, 'online' => RL_LAN_120);
 
 // Set all the defaults for the data filter
 $start_enabled = FALSE;
@@ -520,17 +524,16 @@ if(isset($page_title[$action]))
 
 
 	// Array decides which filters are active for each log. There are 4 columns total. All but 'datetimes' occupy 2. Must specify multiple of 4 columns - add 'blank' if necessary
-	$active_filters = array('adminlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0), 'auditlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'rolllog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0, 'callerfilter' => 0, 'blank' => 2), 'downlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'downloadidfilter' => 0, 'blank' => 2), 'detailed' => array('datestart' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'comments' => array('datetimes' => 1, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'online' => array('ipfilter' => 0, 'userfilter' => 0));
+	$active_filters = array('adminlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0), 'auditlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'rolllog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0, 'callerfilter' => 0, 'blank' => 2), 'downlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'downloadidfilter' => 0, 'blank' => 2), 'detailed' => array('datestart' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'online' => array('ipfilter' => 0, 'userfilter' => 0));
 
 	// Arrays determine column widths, headings, displayed fields for each log
-	$col_fields = array('adminlog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'auditlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'rolllog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_caller', 'dblog_title', 'dblog_remarks'), 'downlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'download_request_download_id', 'download_name'), 'detailed' => array('cf_microtime', 'cf_microtimediff', 'source', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'comments' => array('cf_datestring', 'comment_id', 'comment_pid', 'comment_item_id', 'comment_subject', 'comment_author_id', 'comment_author_name', 'comment_ip', 'comment_type', 'comment_comment', 'comment_blocked', 'comment_lock', 'del_check'), 'online' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'online_location', 'online_pagecount', 'online_flag', 'online_active'));
+	$col_fields = array('adminlog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'auditlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'rolllog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_caller', 'dblog_title', 'dblog_remarks'), 'downlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'download_request_download_id', 'download_name'), 'detailed' => array('cf_microtime', 'cf_microtimediff', 'source', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'online' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'online_location', 'online_pagecount', 'online_flag', 'online_active'));
 	$col_widths = array('adminlog' => array(18, 4, 14, 7, 15, 8, 14, 20), // Date - Pri - IP - UID - User - Code - Event - Info
 'auditlog' => array(18, 14, 7, 15, 8, 14, 24), 'rolllog' => array(15, 4, 12, 6, 12, 7, 13, 13, 18), // Date - Pri - IP - UID - User - Code - Caller - Event - Info
 'downlog' => array(18, 14, 7, 15, 8, 38), 'detailed' => array(10, 8, 6, 4, 14, 6, 17, 7, 17, 21), 'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
-	$col_titles = array('adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'comments' => array(RL_LAN_019, RL_LAN_100, RL_LAN_101, RL_LAN_102, RL_LAN_103, RL_LAN_104, LAN_AUTHOR, RL_LAN_020, RL_LAN_106, RL_LAN_107, RL_LAN_108, RL_LAN_109, RL_LAN_110), 'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
+	$col_titles = array('adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033),  'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
-	// For DB where the delete option is available, specifies the ID field
-	$delete_field = array('comments' => 'comment_id');
+
 
 	// Only need to define entries in this array if the base DB query is non-standard (i.e. different field names and/or joins)
 	$base_query = array('downlog' => "SELECT SQL_CALC_FOUND_ROWS
@@ -1033,9 +1036,11 @@ function admin_log_adminmenu()
 	$var['detailed']['text'] = RL_LAN_091;
 	$var['detailed']['link'] = "admin_log.php?detailed";
 
+// Deprecated by Comments Manager.
+/*
 	$var['comments']['text'] = 'Comments';
 	$var['comments']['link'] = "admin_log.php?comments";
-
+*/
 	$var['config']['text'] = LAN_OPTIONS;
 	$var['config']['link'] = "admin_log.php?config";
 
