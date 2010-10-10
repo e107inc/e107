@@ -39,7 +39,7 @@ if($scaction == 'select' || $scaction == 'all')
 
 	foreach($paths as $pths)
 	{
-		$imagelist[$tp->createConstants($pths, 'mix')]= $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
+		$imagelist[$tp->createConstants($pths, 'mix')]= $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG|\.jpeg|\.JPEG|\.tif|\.TIF|\.tiff|\.TIFF', 'standard', $recurse);
 	}
 
 
