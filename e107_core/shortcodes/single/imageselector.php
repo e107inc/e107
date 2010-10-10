@@ -39,7 +39,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 		{
 			$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 			$qry .= vartrue($parms['media']) && $parms['media'] !== 'all' ? " AND media_category='".$tp->toDB($parms['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-			$qry .= " AND media_url REGEXP '.jpg|.png|.gif|.JPG|.PNG|.GIF' ORDER BY media_name";
+			$qry .= " AND media_url REGEXP '\.jpg$|\.png$|\.gif$|\.jpeg$|\.svn$|\.JPG$|\.PNG$|\.GIF$|\.jpeg$|\.SVN$' ORDER BY media_name";
 			// FIXME - media_type=image?
 			if($sql->db_Select_gen($qry))
 			{
