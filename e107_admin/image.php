@@ -386,8 +386,8 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 
 		$mes = e107::getMessage();
-
-		if(vartrue($_POST['file_userfile']))
+				
+		if(vartrue($_FILES['file_userfile']))
 		{
 			$pref['upload_storagetype'] = "1";
 			require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
@@ -484,7 +484,7 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
-			$mes->add("Couldn't detected mime-type($type). Upload failed.", E_MESSAGE_ERROR);
+			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -594,7 +594,15 @@ class media_admin_ui extends e_admin_ui
 		foreach($_POST['batch_selected'] as $file)
 		{
 			$oldpath = "temp/".$file;
+					
 			$f = $fl->get_file_info(e_MEDIA.$oldpath);
+			
+			if(!$f['mime'])
+			{
+				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);	
+			}
+			
+			
 			$newpath = $this->getPath($f['mime']).'/'.$file;
 
 			$f['fname'] = $file;
