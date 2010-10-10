@@ -11,12 +11,14 @@
 */
 define("PAGE_NAME", "Error");
 
-define("LAN_ERROR_1", "Error 401 - Permission Denied");
-define("LAN_ERROR_2", "You do not have permission to retrieve the URL or link you requested.");
+define("LAN_ERROR_1", "Error 401 - Authentication Failed");
+define("LAN_ERROR_2", "The URL you've requested requires a correct username and password. Either you entered an incorrect username/password, or your browser doesn't support this feature.");
 define("LAN_ERROR_3", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_ERROR_4", "Error 403 - Authentication Failed");
-define("LAN_ERROR_5", "The URL you've requested requires a correct username and password. Either you entered an incorrect username/password, or your browser doesn't support this feature.");
+
+define("LAN_ERROR_4", "Error 403 - Access forbidden");
+define("LAN_ERROR_5", "You are not permitted to retrieve the URL or link you requested.");
 define("LAN_ERROR_6", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
+
 define("LAN_ERROR_7", "Error 404 - Document Not Found");
 define("LAN_ERROR_9", "Please inform the administrator of the referring page if you think this error message has been shown by mistake.");
 define("LAN_ERROR_10", "Error 500 - Malformed Header");
