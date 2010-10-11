@@ -8,10 +8,7 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $Id$
  */
 
 /**
@@ -596,6 +593,8 @@ class siteStats
 		"OpenBSD" => "openbsd",
 		"Unix" => "unix",
 		"Spiders" => "spiders",
+		"Android" => "android",
+		"Symbian" => "symbian",
 		);
 
 	protected $browser_map = array (
@@ -660,6 +659,8 @@ class siteStats
 		'w3m'               => "w3m",
 		'Webtv'             => "webtv",
 		'Xiino'             => "xiino",
+		'Nokia S60 OSS Browser' => "nokia",
+		'Nokia Browser'     => "nokia",
 		);
 
 
@@ -1391,15 +1392,16 @@ class siteStats
 				{
 					$image = "";
 					if(strstr($key, "Windows")) {	$image = "windows.png"; }
-					if(strstr($key, "Mac")) {	$image = "mac.png"; }
-					if(strstr($key, "Linux")) {	$image = "linux.png"; }
-					if(strstr($key, "BeOS")) {	$image = "beos.png"; }
-					if(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
-					if(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
-					if(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
-					if(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
-					if(strstr($key, "Unix")) {	$image = "unix.png"; }
-					if(strstr($key, "Spiders")) {	$image = "spiders.png"; }
+					elseif(strstr($key, "Mac")) {	$image = "mac.png"; }
+					elseif(strstr($key, "Linux")) {	$image = "linux.png"; }
+					elseif(strstr($key, "BeOS")) {	$image = "beos.png"; }
+					elseif(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
+					elseif(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
+					elseif(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
+					elseif(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
+					elseif(strstr($key, "Unix")) {	$image = "unix.png"; }
+					elseif(strstr($key, "Spiders")) {	$image = "spiders.png"; }
+					elseif(stristr($key, "Android")) {	$image = "android.png"; }
 
 					$percentage = round(($info/$total) * 100, 2);
 					$text .= "<tr>
