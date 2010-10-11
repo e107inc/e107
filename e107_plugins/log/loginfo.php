@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |
 |
@@ -216,13 +216,14 @@ function getBrowser($agent) {
 		"nokia"        => array('name' => 'Nokia Browser',     'rule' => 'Nokia([^/]+)/([^ SP]+)'),
 	);
 	$browser = "";
-	foreach($browsers as $key => $info) {
+	foreach($browsers as $key => $info) 
+	{
 		if (preg_match("#".$info['rule']."#i", $agent, $results)) 
 		{
 			switch ($key) 
 			{
 				case 'nokia':
-					if(strpos(strtolower($agent), 'Series60') !== false || strpos($this->_agent,'S60') !== false ) 
+					if(strpos(strtolower($agent), 'series60') !== false || strpos($agent, 'S60') !== false ) 
 					{
 						$info['name'] = 'Nokia S60 OSS Browser';
 					}
