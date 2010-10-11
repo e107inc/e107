@@ -395,9 +395,13 @@ if (isset($_POST['register']))
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
-//	Strip most invalid characters now %*|/|&nbsp;|\#|\=|\$%
-// another option would be /[^\w\pL\.]/u (non latin words)
-	$temp_name = trim(preg_replace('#[^a-z0-9_\.]#i', "", strip_tags($_POST['loginname'])));
+	//	Strip most invalid characters now %*|/|&nbsp;|\#|\=|\$%
+	// another option would be /[^\w\pL\.]/u (non latin words)
+
+	// /[\^\*\|\/;:#=\$'!#`\s\(\)%\?<>\\{}~@] // check for invalid characters
+	// [^a-z0-9_\.] this is not multi-language compatible
+	
+	$temp_name = trim(preg_replace("/[\^\*\|\/;:#=\$'!#`\s\(\)%\?<>\\{}~@]/", "", strip_tags($_POST['loginname'])));
 	if ($temp_name != $_POST['loginname'])
 	{
 		$error_message .= LAN_409."\\n";
