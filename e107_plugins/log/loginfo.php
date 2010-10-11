@@ -1,23 +1,12 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ?Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/loginfo.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-|
-| File locking added
-|
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * $Id$
 */
 
 if (!defined('log_INIT')) { exit; }
@@ -205,6 +194,7 @@ function getBrowser($agent) {
 		"w3m"          => array('name' => 'w3m',               'rule' => 'w3m/([0-9.]{1,10})'),
 		"webtv"        => array('name' => 'Webtv',             'rule' => 'webtv[ /]([0-9.]{1,10})'),
 		"xiino"        => array('name' => 'Xiino',             'rule' => '^Xiino[ /]([0-9a-z.]{1,10})'),
+		"chrome"       => array('name' => 'Chrome',            'rule' => 'Chrome[ /]([0-9.+]{1,10})'),
 		"explorer"     => array('name' => 'Internet Explorer', 'rule' => '\(compatible; MSIE[ /]([0-9.]{1,10})'),
 		"firefox"      => array('name' => 'Firefox',           'rule' => 'Firefox/([0-9.+]{1,10})'),
 		"netscape"     => array('name' => 'Netscape',          'rule' => 'netscape[0-9]?/([0-9.]{1,10})'),
@@ -212,18 +202,40 @@ function getBrowser($agent) {
 		"mozilla"      => array('name' => 'Mozilla',           'rule' => '^mozilla/[5-9]\.[0-9.]{1,10}.+rv:([0-9a-z.+]{1,10})'),
 		"mozilla2"     => array('name' => 'Mozilla',           'rule' => '^mozilla/([5-9]\.[0-9a-z.]{1,10})'),
 		"firebird"     => array('name' => 'Firebird',          'rule' => 'Firebird/([0-9.+]{1,10})'),
+		"nokia"        => array('name' => 'Nokia Browser',     'rule' => 'Nokia([^/]+)/([^ SP]+)'),
 	);
 	$browser = "";
-	foreach($browsers as $info) {
-		if (preg_match("#".$info['rule']."#i", $agent, $results)) {
-			return ($info['name']." v".$results[1]);
+	foreach($browsers as $key => $info) 
+	{
+		if (preg_match("#".$info['rule']."#i", $agent, $results)) 
+		{
+			switch ($key) 
+			{
+				case 'nokia':
+					if(strpos(strtolower($agent), 'series60') !== false || strpos($agent, 'S60') !== false ) 
+					{
+						$info['name'] = 'Nokia S60 OSS Browser';
+					}
+					return ($info['name']." v".$results[2]);
+				break;
+				
+				default:
+					return ($info['name']." v".$results[1]);
+				break;
+			}
 		}
 	}
 	return ("Unknown");
 }
 
 function getOs($agent) {
+	// http://www.zytrax.com/tech/web/browser_ids.htm
 	$os = array(
+		// mobile come first - latest rules could break the check
+		"android"     => array('name' => 'Android',   	 'rule' => 'Android\s([0-9.]{1,10})'),
+		"symbian"     => array('name' => 'Symbian',   	 'rule' => 'symbianOS[ /]?([0-9.]{1,10})'),
+		"symbian1"    => array('name' => 'Symbian',   	 'rule' => 'series[6-9]0[ /]'),
+		"symbian2"    => array('name' => 'Symbian',   	 'rule' => 'Symbian OS Series'),
 		"windows7" 		=> array('name' => 'Windows 7', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.1'),
 		"windowsvista" => array('name' => 'Windows Vista', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.0'),
 		"windows2003" => array('name' => 'Windows 2003', 'rule' => 'wi(n|ndows)[ \-]?(2003|nt[ /]?5\.2)'),
@@ -274,5 +286,3 @@ function getOs($agent) {
 	}
 	return ("Unspecified");
 }
-
-?>
