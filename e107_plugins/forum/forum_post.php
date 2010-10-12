@@ -56,12 +56,12 @@ if ($action == 'rp')
 	}
 	else
 	{
-	  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 	}
 }
 elseif ($action == 'nt')
 {
-	// New post
+	// New thread
 	$forum_info = $forum->forum_get($id);
 }
 elseif ($action == 'quote' || $action == 'edit')
@@ -433,18 +433,24 @@ if ($action == 'edit' || $action == 'quote')
 	}
 	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 
-	if ($action == 'quote') {
+	if ($action == 'quote') 
+	{
 		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
 		$tmp = explode(chr(1), $thread_info[0]['user_name']);
 		$timeStamp = time();
 		$post = "[quote{$timeStamp}={$tmp[0]}]\n".$post."\n[/quote{$timeStamp}]\n";
 		$eaction = FALSE;
 		$action = 'reply';
-	} else {
+	} 
+	else 
+	{
 		$eaction = TRUE;
-		if ($thread_info['0']['thread_parent']) {
+		if ($thread_info['0']['thread_parent']) 
+		{
 			$action = "reply";
-		} else {
+		} 
+		else 
+		{
 			$action = "nt";
 			$sact = "canc";	// added to override the bugtracker query below
 		}
@@ -456,31 +462,31 @@ if ($action == 'edit' || $action == 'quote')
 
 if (!$FORUMPOST)
 {
-  if (is_readable(THEME."forum_post_template.php"))
-  {
-    include_once(THEME."forum_post_template.php");
-  }
-  else
-  {
-  include_once(e_PLUGIN."forum/templates/forum_post_template.php");
-  }
+	if (is_readable(THEME."forum_post_template.php"))
+	{
+		include_once(THEME."forum_post_template.php");
+	}
+	else
+	{
+		include_once(e_PLUGIN."forum/templates/forum_post_template.php");
+	}
 }
 /* check post access (bugtracker #1424) */
 
 if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='{$id}'"))
 {
 	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	 require_once(FOOTERF);
+	require_once(FOOTERF);
 	exit;
 }
 elseif($action == "nt")
 {
-  if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
-  {
-	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	require_once(FOOTERF);
-	exit;
-  }
+	if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
+	{
+		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+		require_once(FOOTERF);
+		exit;
+	}
 }
 else
 {
@@ -512,6 +518,8 @@ else
 {
 	echo $text;
 }
+
+
 
 function isAuthor()
 {

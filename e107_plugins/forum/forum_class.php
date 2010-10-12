@@ -596,14 +596,14 @@ class e107forum
 		if ($sql->db_Select_gen($qry))
 		{
 			$row = $sql->db_Fetch();
+			if ($this->filterNasties)
+			{
+				$row['thread_name'] = $tp->dataFilter($row['thread_name']);
+				$row['thread_thread'] = $tp->dataFilter($row['thread_thread']);
+			}
 			$ret['head'] = $row;
 			if (!array_key_exists(0, $ret))
 			{
-				if ($this->filterNasties)
-				{
-					$row['thread_name'] = $tp->dataFilter($row['thread_name']);
-					$row['thread_thread'] = $tp->dataFilter($row['thread_thread']);
-				}
 				$ret[0] = $row;
 			}
 		}
