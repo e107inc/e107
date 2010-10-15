@@ -135,10 +135,16 @@ function getBrowser($agent) {
 	// All "root" browsers must come at the end of the list, unfortunately.
 	// Otherwise, browsers based on them will never be seen.
 	//(But #1997)
-	//
+	// http://www.zytrax.com/tech/web/browser_ids.htm
 	$browsers = array(
 		"netcaptor"    => array('name' => 'Netcaptor',         'rule' => 'netcaptor[ /]([0-9.]{1,10})'),
-		"opera"        => array('name' => 'Opera',             'rule' => 'opera[ /]([0-9.]{1,10})'),
+		"opera"        => array('name' => 'Opera Mini',        'rule' => 'Opera[ /]([0-9.]{1,10})(.*)Opera Mini'),
+		"opera1"       => array('name' => 'Opera Mobile',      'rule' => 'Opera[ /]([0-9.]{1,10})(.*)Opera Mobi'),
+		"opera2"       => array('name' => 'Opera',             'rule' => 'opera[ /]([0-9.]{1,10})'),
+		"chrome"       => array('name' => 'Chrome',            'rule' => 'Chrome[ /]([0-9.+]{1,10})'),
+		"nokia"        => array('name' => 'Nokia Browser',     'rule' => 'Nokia([^/]+)/([^ SP]+)'),
+		"nokia1"       => array('name' => 'Nokia Browser',     'rule' => 'Series60|S60/([0-9.]{1,10})'),
+		"nokia2"       => array('name' => 'Nokia Browser',     'rule' => 'Mozilla(.*)SymbianOS(.*)AppleWebKit'), // catch it or it'll become a safari hit!
 		"aol"          => array('name' => 'AOL',               'rule' => 'aol[ /\-]([0-9.]{1,10})'),
 		"aol2"         => array('name' => 'AOL',               'rule' => 'aol[ /\-]?browser'),
 		"mosaic"       => array('name' => 'Mosaic',            'rule' => 'mosaic[ /]([0-9.]{1,10})'),
@@ -147,7 +153,6 @@ function getBrowser($agent) {
 		"avantbrowser" => array('name' => 'Avant Browser',     'rule' => 'Avant[ ]?Browser'),
 		"avantgo"      => array('name' => 'AvantGo',           'rule' => 'AvantGo[ /]([0-9.]{1,10})'),
 		"proxomitron"  => array('name' => 'Proxomitron',       'rule' => 'Space[ ]?Bison/[0-9.]{1,10}'),
-		"safari"       => array('name' => 'Safari',            'rule' => 'safari/([0-9.]{1,10})'),
 		"lynx"         => array('name' => 'Lynx',              'rule' => 'lynx/([0-9a-z.]{1,10})'),
 		"links"        => array('name' => 'Links',             'rule' => 'Links[ /]\(([0-9.]{1,10})'),
 		"galeon"       => array('name' => 'Galeon',            'rule' => 'galeon/([0-9.]{1,10})'),
@@ -194,15 +199,14 @@ function getBrowser($agent) {
 		"w3m"          => array('name' => 'w3m',               'rule' => 'w3m/([0-9.]{1,10})'),
 		"webtv"        => array('name' => 'Webtv',             'rule' => 'webtv[ /]([0-9.]{1,10})'),
 		"xiino"        => array('name' => 'Xiino',             'rule' => '^Xiino[ /]([0-9a-z.]{1,10})'),
-		"chrome"       => array('name' => 'Chrome',            'rule' => 'Chrome[ /]([0-9.+]{1,10})'),
 		"explorer"     => array('name' => 'Internet Explorer', 'rule' => '\(compatible; MSIE[ /]([0-9.]{1,10})'),
+		"safari"       => array('name' => 'Safari',            'rule' => 'safari/([0-9.]{1,10})'),
 		"firefox"      => array('name' => 'Firefox',           'rule' => 'Firefox/([0-9.+]{1,10})'),
 		"netscape"     => array('name' => 'Netscape',          'rule' => 'netscape[0-9]?/([0-9.]{1,10})'),
 		"netscape2"    => array('name' => 'Netscape',          'rule' => '^mozilla/([0-4]\.[0-9.]{1,10})'),
 		"mozilla"      => array('name' => 'Mozilla',           'rule' => '^mozilla/[5-9]\.[0-9.]{1,10}.+rv:([0-9a-z.+]{1,10})'),
 		"mozilla2"     => array('name' => 'Mozilla',           'rule' => '^mozilla/([5-9]\.[0-9a-z.]{1,10})'),
 		"firebird"     => array('name' => 'Firebird',          'rule' => 'Firebird/([0-9.+]{1,10})'),
-		"nokia"        => array('name' => 'Nokia Browser',     'rule' => 'Nokia([^/]+)/([^ SP]+)'),
 	);
 	$browser = "";
 	foreach($browsers as $key => $info) 
@@ -212,15 +216,17 @@ function getBrowser($agent) {
 			switch ($key) 
 			{
 				case 'nokia':
+				case 'nokia1':
+				case 'nokia2':
 					if(strpos(strtolower($agent), 'series60') !== false || strpos($agent, 'S60') !== false ) 
 					{
 						$info['name'] = 'Nokia S60 OSS Browser';
 					}
-					return ($info['name']." v".$results[2]);
+					return ($info['name'].(isset($results[2]) && $results[2] ? ' v'.$results[2] : ''));
 				break;
 				
 				default:
-					return ($info['name']." v".$results[1]);
+					return ($info['name'].(isset($results[1]) && $results[1] ? ' v'.$results[1] : ''));
 				break;
 			}
 		}
@@ -234,9 +240,9 @@ function getOs($agent) {
 		// mobile come first - latest rules could break the check
 		"android"     => array('name' => 'Android',   	 'rule' => 'Android\s([0-9.]{1,10})'),
 		"symbian"     => array('name' => 'Symbian',   	 'rule' => 'symbianOS[ /]?([0-9.]{1,10})'),
-		"symbian1"    => array('name' => 'Symbian',   	 'rule' => 'series[6-9]0[ /]'),
+		"symbian1"    => array('name' => 'Symbian',   	 'rule' => 'series60[ /]'),
 		"symbian2"    => array('name' => 'Symbian',   	 'rule' => 'Symbian OS Series'),
-		"windows7" 		=> array('name' => 'Windows 7', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.1'),
+		"windows7" 	  => array('name' => 'Windows 7', 	 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.1'),
 		"windowsvista" => array('name' => 'Windows Vista', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?6\.0'),
 		"windows2003" => array('name' => 'Windows 2003', 'rule' => 'wi(n|ndows)[ \-]?(2003|nt[ /]?5\.2)'),
 		"windowsxp"   => array('name' => 'Windows XP',   'rule' => 'Windows XP'),
