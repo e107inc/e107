@@ -458,7 +458,7 @@ class rssCreate {
 				echo $tp->toHtml($rss_custom_channel,FALSE)."\n"; // CDATA and toRss() must not be used for $rss_custom_channel. 
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
-				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
+				<copyright>".$tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
 				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
