@@ -386,7 +386,7 @@ class rssCreate
 
 	function buildRss($rss_title) 
 	{
-		global $sql, $pref;
+		global $pref;
 		header('Content-type: application/xml', TRUE);
 
 		$rss_title = $this->e107->tp->toRss($pref['sitename']." : ".$rss_title);
@@ -445,7 +445,7 @@ class rssCreate
 				echo $this->e107->tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
-				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
+				<copyright>".$this->e107->tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
 				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
