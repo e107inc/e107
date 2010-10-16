@@ -95,7 +95,7 @@ define("USRLAN_88", "User classes updated");
 
 define("USRLAN_90", "Search/Refresh");
 define("USRLAN_91", "Class");
-define("USRLAN_92", "Invalid characters in username");
+define("USRLAN_92", "Invalid characters in display name");
 
 define("USRLAN_93", "Delete unverified users");
 define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option <br />This option is ignored if user signups are admin moderated");
@@ -157,9 +157,10 @@ define("USRLAN_153", "Delete non-bounce emails");
 define("USRLAN_154", "Clear email for checked");
 define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
 define("USRLAN_156", "Email address is already in use");
+define('USRLAN_157', 'Invalid characters in login name');
 
 define("LAN_MAINADMIN","Main Admin");
-define("LAN_ADMIN","Admin");
+//define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Not Verified");
 define("LAN_BANNED","Banned");
 define("LAN_BOUNCED","Bounced");

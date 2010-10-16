@@ -1,6 +1,6 @@
 //USAGE:  {EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
 //EXAMPLE: {EXTENDED=gender.value.5}  will show the value of the extended field user_gender for user #5
-include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
 global $currentUser, $tp, $loop_uid, $e107, $sc_style;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }

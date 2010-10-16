@@ -132,7 +132,7 @@ define("LAN_SIGNUP_100", "Admin Approval Pending");
 
 define('LAN_SIGNUP_102', 'Signup refused');
 define('LAN_SIGNUP_103', 'Too many users already using IP address: ');
-
+define('LAN_SIGNUP_104', 'Invalid avatar name');
 
 
 ?>

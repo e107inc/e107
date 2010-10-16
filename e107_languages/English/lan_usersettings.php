@@ -89,13 +89,11 @@ define("LAN_USET_4", "Maximum allowable height is");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Custom Title");
-//define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
 
 //v.617
 define("LAN_408", "A user with that email address already exists. ");
 define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
 define("MAX_AVHEIGHT", " x ");
-// define("GIF_RESIZE", "Please resize gif image or convert to different format");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
 // v0.7
@@ -112,5 +110,7 @@ define("LAN_USET_14", "Login name too long. Please choose another");
 define("LAN_USET_15", "Display name too long. Please choose another");
 define("LAN_USET_16", "Tick box to delete existing photo without uploading another");
 define("LAN_USET_17", "Display name already used. Please choose another");
+define('LAN_USET_18', 'Invalid name for avatar');
+define('LAN_USET_19', 'Avatar cannot be accessed');
 
 ?>

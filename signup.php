@@ -401,7 +401,8 @@ if (isset($_POST['register']))
 	// /[\^\*\|\/;:#=\$'!#`\s\(\)%\?<>\\{}~@] // check for invalid characters
 	// [^a-z0-9_\.] this is not multi-language compatible
 	
-	$temp_name = trim(preg_replace("/[\^\*\|\/;:#=\$'!#`\s\(\)%\?<>\\{}~@]/", "", strip_tags($_POST['loginname'])));
+	//$temp_name = trim(preg_replace("/[\^\*\|\/;:#=\$'!#`\s\(\)%\?<>\\{}~@]/", "", strip_tags($_POST['loginname'])));
+	$temp_name = str_replace('--', '', trim(preg_replace("/[\^\*\|\/;:#=\$'\"!#`\s\(\)%\?<>\\{}]/", '', strip_tags($_POST['loginname']))));
 	if ($temp_name != $_POST['loginname'])
 	{
 		$error_message .= LAN_409."\\n";
@@ -409,7 +410,7 @@ if (isset($_POST['register']))
 	}
 	$_POST['loginname'] = $temp_name;
 
-	if (strcasecmp($_POST['loginname'],"Anonymous") == 0)
+	if ((strcasecmp($_POST['loginname'],"Anonymous") == 0) || (strcasecmp($_POST['loginname'],LAN_ANONYMOUS) == 0))
 	{
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
@@ -644,16 +645,58 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	}
 
 
-	// Avatar validation (already checked if compulsory field not filled in)
-	if ((varset($pref['signup_option_image'],0) > 0) && $_POST['image'])
+
+
+/**
+ *	Does some basic checks on a string claiming to represent an off-site image
+ *
+ *	@param string $imageName
+ *
+ *	@return boolean|string FALSE for unacceptable, potentially modified string if acceptable
+ */
+function checkRemoteImage($imageName)
+{
+	$newImageName = trim(str_replace(array('\'', '"', '(', ')'), '', $imageName));		// Strip invalid characters
+	if ($imageName != $newImageName)
 	{
-		$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
-		$avName = e_IMAGE.'avatars/'.$tp -> toDB($_POST['image']);
-		if ($size = getimagesize($avName))
+		return FALSE;
+	}
+	if (!preg_match('#(?:localhost|\..{2,6})\/.+\.(?:jpg|jpeg|png|svg|gif)$#i', $newImageName))
+	{
+		return FALSE;
+	}
+	return $newImageName;
+}
+
+
+	// Avatar validation (already checked if compulsory field not filled in)
+	$avName = varset($_POST['image'], '');
+	$_POST['image'] = '';
+	if ((varset($pref['signup_option_image'],0) > 0) && $avName)
+	{
+		$avmsg = '';
+		$avName = str_replace(array('\'', '"', '(', ')'), '', $avName);   // these are invalid anyway, so why allow them? (XSS Fix)
+		if (strpos($avName, '/') !== FALSE)
+		{	// Assume an off-site image
+			$avFullName = $avName = checkRemoteImage($avName);
+			if ($avName === FALSE)
+			{
+				$avmsg = LAN_SIGNUP_104;
+			}
+		}
+		else
+		{	// Its one of the standard choices
+			$avName = $tp -> toDB($avName);
+			$avFullName = e_IMAGE.'avatars/'.$avName;
+			if (!is_readable($avFullName))
+			{
+				$avmsg = LAN_SIGNUP_60;			// Error accessing avatar
+			}
+		}
+		if (!$avmsg && ($size = getimagesize($avFullName)))
 		{
 			$avwidth = $size[0];
 			$avheight = $size[1];
-			$avmsg = "";
 	
 			$pref['im_width'] = varset($pref['im_width'], 120);
 			$pref['im_height'] = varset($pref['im_height'], 100);
@@ -672,14 +715,13 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		}
 		if ($avmsg) 
 		{
-			$_POST['image'] = "";
 			$error_message .= $avmsg;
 			$error = TRUE;
 		}
-	}
-	else
-	{
-		$_POST['image'] = "";
+		else
+		{
+			$_POST['image'] = $avName;
+		}
 	}
 
 
