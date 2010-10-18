@@ -25,7 +25,7 @@ $eplug_author = "cameron / jalist";
 
 $eplug_url = "http://e107coders.org";
 $eplug_email = "cameron@e107coders.org";
-$eplug_description = "Google Sitemap. For more information on the Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>";
+$eplug_description = "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>";
 $eplug_compatible = "e107 v0.7";
 $eplug_readme = "";        // leave blank if no readme file
 
@@ -82,17 +82,11 @@ $eplug_uninstall_done = "You should delete gsitemap.php from your root directory
 
 // upgrading ... //
 
-$upgrade_add_prefs = "";
+$upgrade_add_prefs = '';
 
-$upgrade_remove_prefs = "";
+$upgrade_remove_prefs = '';
 
-$upgrade_alter_tables = "";
+$upgrade_alter_tables = '';
 
-$eplug_upgrade_done = "";
-
-
-
-
-
-
+$eplug_upgrade_done = '';
 ?>
