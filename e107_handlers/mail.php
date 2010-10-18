@@ -19,6 +19,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+/*
+Mustn't load this here - it can provoke loading of the shortcode handler before the theme and its shortcodes have been loaded.
 	if(is_readable(THEME."email_template.php"))
 	{
     	require(THEME."email_template.php");
@@ -32,6 +34,8 @@ if (!defined('e107_INIT')) { exit; }
 		$EMAIL_HEADER = $tp->parseTemplate($EMAIL_HEADER);
 		$EMAIL_FOOTER = $tp->parseTemplate($EMAIL_FOOTER);
 	}
+*/
+
 /*
 Please note that mailed attachments have been found to be corrupted using php 4.3.3
 php 4.3.6 does NOT have this problem.

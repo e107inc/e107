@@ -162,9 +162,27 @@ if (isset($_POST['emailsubmit']))
 	{
 	    // Load Mail Handler and Email Template.
 		require_once(e_HANDLER.'mail.php');
-	    $email_body = $EMAIL_HEADER;
+		if (file_exists(THEME.'email_template.php'))
+		{
+			require_once(THEME.'email_template.php');
+		}
+		else
+		{
+			require_once(e_THEME.'templates/email_template.php');
+		}
+
+		$email_body = '';
+		if(isset($EMAIL_HEADER)
+		{
+			$email_body = $tp->parseTemplate($EMAIL_HEADER);
+		}
+
 		$email_body .= (trim($comments) != '') ? $tp->toEmail($comments).'<hr />' : '';
-		$email_body .= $tp->toEmail($message).$EMAIL_FOOTER;
+		$email_body .= $tp->toEmail($message);
+		if (isset($EMAIL_FOOTER))
+		{
+			$email_body .= $tp->parseTemplate($EMAIL_FOOTER);
+		}
 
 		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
 		{
