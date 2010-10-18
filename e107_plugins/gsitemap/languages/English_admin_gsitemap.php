@@ -55,7 +55,7 @@ define("GSLAN_37", "Once you have some entries, go to [URL] and enter the follow
 define("GSLAN_38", "For more information on Google Sitemap protocol, go to [URL].");
 define("GSLAN_39", "No links in sitemap - import sitelinks?");
 define("GSLAN_40", "Google Sitemap Entries");
-define('GSLAN_41', "Google Sitemap. For more information on the Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>");
+define('GSLAN_41', "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>");
 define('GSLAN_42', 'Installation Successful..');
 
 // Admin log messages
@@ -65,6 +65,4 @@ define('LAN_AL_GSMAP_02', 'Sitemap link deleted');
 define('LAN_AL_GSMAP_03', 'Sitemap link added');
 define('LAN_AL_GSMAP_04', 'Sitemap link updated');
 define('LAN_AL_GSMAP_05', '');
-
-
 ?>
