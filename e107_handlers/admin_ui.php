@@ -2806,7 +2806,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'user'); //method?
+			$searchable_types = array('text', 'textarea', 'bbarea', 'user', 'email'); //method?
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types))
 			{
 				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";
