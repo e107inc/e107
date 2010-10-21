@@ -343,7 +343,6 @@ class pluginManager{
 			else
 			{
 				/* e_PLUGIN is writable - continue */
-				$pref['upload_storagetype'] = "1";
 				require_once(e_HANDLER."upload_handler.php");
 				$fileName = $file_userfile['name'][0];
 				$fileSize = $file_userfile['size'][0];
@@ -367,12 +366,7 @@ class pluginManager{
 
 				if ($fileSize)
 				{
-
-					$opref = $pref['upload_storagetype'];
-					$pref['upload_storagetype'] = 1;		/* temporarily set upload type pref to flatfile */
 					$uploaded = file_upload(e_PLUGIN);
-					$pref['upload_storagetype'] = $opref;
-
 					$archiveName = $uploaded[0]['name'];
 
 					/* attempt to unarchive ... */
@@ -407,7 +401,7 @@ class pluginManager{
 
 					/* ok it looks like the unarc succeeded - continue */
 
-					/* get folder name ... */
+					/* get folder name ...  */
 					$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
 
 					if(file_exists(e_PLUGIN.$folderName."/plugin.php") || file_exists(e_PLUGIN.$folderName."/plugin.xml"))
@@ -415,10 +409,15 @@ class pluginManager{
 						/* upload is a plugin */
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
 					}
-					else
+					elseif(file_exists(e_PLUGIN.$folderName."/theme.php") || file_exists(e_PLUGIN.$folderName."/theme.xml"))
 					{
 						/* upload is a menu */
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
+					}
+					else
+					{
+						/* upload is unlocatable */
+						e107::getRender()->tablerender(EPL_ADLAN_40, 'Unknown file: '.$fileList[0]['stored_filename']);
 					}
 
 					/* attempt to delete uploaded archive */
@@ -648,7 +647,6 @@ class pluginManager{
 				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 				<input class='tbox' type='file' name='file_userfile[]' size='50' />
 				</td>
-				</tr>
                 </tr>
 				</table>
 
