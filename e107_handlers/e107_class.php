@@ -2358,29 +2358,23 @@ class e107
 	{
 		if(!$this->_ip_cache)
 		{
-			if(getenv('HTTP_X_FORWARDED_FOR'))
+			$ip=$_SERVER['REMOTE_ADDR'];
+			if (getenv('HTTP_X_FORWARDED_FOR')) 
 			{
-				$ip = $_SERVER['REMOTE_ADDR'];
-				$ip3 = array();
-				if(preg_match('/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/', getenv('HTTP_X_FORWARDED_FOR'), $ip3))
+				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
 				{
-					$ip2 = array(
-						'#^0\..*#' , '#^127\..*#' , // Local loopbacks
-						'#^192\.168\..*#' , // RFC1918 - Private Network
-						'#^172\.(?:1[6789]|2\d|3[01])\..*#' , // RFC1918 - Private network
-						'#^10\..*#' , // RFC1918 - Private Network
-						'#^169\.254\..*#' , // RFC3330 - Link-local, auto-DHCP
-						'#^2(?:2[456789]|[345][0-9])\..*#'
-					); // Single check for Class D and Class E
-
-					$ip = preg_replace($ip2, $ip, $ip3[1]);
+					$ip2 = array('#^0\..*#', 
+							'#^127\..*#', 							// Local loopbacks
+							'#^192\.168\..*#', 						// RFC1918 - Private Network
+							'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+							'#^10\..*#', 							// RFC1918 - Private Network
+							'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+							'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+							);
+					$ip = preg_replace($ip2, $ip3[1], $ip);
 				}
-			}
-			else
-			{
-				$ip = $_SERVER['REMOTE_ADDR'];
-			}
-			if($ip == "")
+			} 
+			if ($ip == "") 
 			{
 				$ip = "x.x.x.x";
 			}
