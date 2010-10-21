@@ -3,16 +3,16 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
+|     Copyright (C) 2008-2010 e107 Inc (e107.org)
 |     http://e107.org
 |
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
+|     $URL$
 |     $Revision$
-|     $Date$
+|     $Id$
 |     $Author$
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 //		- keeping check and update code together should improve clarity/reduce mis-types etc
 
 
-// TODO: how do we handle update of multi-language tables?
+// @todo: how do we handle update of multi-language tables?
 
 // If following line uncommented, enables a test routine
 // define('TEST_UPDATE',TRUE);
@@ -257,10 +257,15 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 function update_706_to_800($type='')
 {
-	global $sql,$ns, $pref, $e107info;
+	global $ns, $pref, $e107info;
+	global $sysprefs, $eArrayStorage;
+
 	//$mes = new messageLog;		// Combined logging and message displaying handler
 	//$mes = e107::getMessage();
 	$mes = e107::getAdminLog();		// Used for combined logging and message displaying
+	$sql = e107::getDb();
+	$sql2 = e107::getDb('sql2');
+	$tp = e107::getParser();
 
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
@@ -273,7 +278,7 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
-	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite', 'core_media', 'mail_recipients', 'mail_content');
+	$new_tables = array('admin_log', 'audit_log', 'dblog', 'news_rewrite', 'core_media', 'mail_recipients', 'mail_content');
 
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage.
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
@@ -281,8 +286,8 @@ function update_706_to_800($type='')
 
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus',
-							 'plugin', 'news', 'news_category','online', 'page', 'links', 'comments');
+	$changed_tables = array('user', 'dblog', 'admin_log', 'userclass_classes', 'banlist', 'menus',
+							 'plugin', 'news', 'news_category', 'online', 'page', 'links', 'comments');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
@@ -365,7 +370,6 @@ function update_706_to_800($type='')
 
 
 	// Check notify prefs
-	global $sysprefs, $eArrayStorage, $tp;
 	$notify_prefs = $sysprefs -> get('notify_prefs');
 	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
 
@@ -431,7 +435,7 @@ function update_706_to_800($type='')
 			}	
 		}	
 	
-	//TODO de-serialize the user_prefs also. 
+	//@TODO de-serialize the user_prefs also. 
 	
 
 
@@ -886,6 +890,36 @@ function update_706_to_800($type='')
 	  }
 	}
 
+
+
+	// Saved emails - copy across
+	if ($sql->db_Select('generic', '*', "gen_type='massmail'"))
+	{
+		if ($just_check) return update_needed('Copy across saved emails');
+		require_once(e_HANDLER.'mail_manager_class.php');
+		$mailHandler = new e107MailManager;
+		$i = 0;
+		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		{
+			$mailRecord = array(
+				'mail_create_date' => $row['gen_datestamp'],
+				'mail_creator' => $row['gen_user_id'],
+				'mail_title' => $row['gen_ip'],
+				'mail_subject' => $row['gen_ip'],
+				'mail_body' => $row['gen_chardata'],
+				'mail_content_status' => MAIL_STATUS_SAVED
+			);
+			$mailHandler->mailtoDb($mailRecord, TRUE);
+			$mailHandler->saveEmail($mailRecord, TRUE);
+			$sql2->db_Delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
+			$i++;
+		}
+		unset($mailHandler);
+		$mes->logMessage(str_replace('--COUNT--', $i, LAN_UPDATE_28));
+	}
+
+
+
 	// Obsolete prefs (list at top)
 	// Intentionally do this last - we may check some of them during the update
 	$accum = array();
@@ -1107,30 +1141,37 @@ function update_70x_to_706($type='')
 
 
 
-// Carries out the copy of timezone data from the user record to an extended user field
-// Return TRUE on success, FALSE on failure
+/**
+ *	Carries out the copy of timezone data from the user record to an extended user field
+ *	@return boolean TRUE on success, FALSE on failure
+ */
 function copy_user_timezone()
 {
-  global $sql, $sql2, $tp;
-  require_once(e_HANDLER.'user_extended_class.php');
-  $ue = new e107_user_extended;
-  $tmp = $ue->parse_extended_xml('getfile');
-  $tmp['timezone']['parms'] = $tp->toDB($tmp['timezone']['parms']);
-  if(!$ue->user_extended_add($tmp['timezone']))
-  {
-	return FALSE;
-  }
+	$sql = e107::getDb();
+	$sql2 = e107::getDb('sql2');
+	$tp = e107::getParser();
 
-// Created the field - now copy existing data
-  if ($sql->db_Select('user','user_id, user_timezone'))
-  {
-	while ($row = $sql->db_Fetch())
+	require_once(e_HANDLER.'user_extended_class.php');
+	$ue = new e107_user_extended;
+	$tmp = $ue->parse_extended_xml('getfile');
+	$tmp['timezone']['parms'] = $tp->toDB($tmp['timezone']['parms']);
+	if(!$ue->user_extended_add($tmp['timezone']))
 	{
-	  $sql2->db_Update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+		return FALSE;
 	}
-  }
-  return TRUE;		// All done!
+
+	// Created the field - now copy existing data
+	if ($sql->db_Select('user','user_id, user_timezone'))
+	{
+		while ($row = $sql->db_Fetch())
+		{
+			$sql2->db_Update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+		}
+	}
+	return TRUE;		// All done!
 }
+
+
 
 
 function update_needed($message='')
@@ -1149,15 +1190,6 @@ function update_needed($message='')
 	return FALSE;
 }
 
-
-/*
-function mysql_table_exists($table)
-{
-  $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
-  if ($exists) return TRUE;
-  return FALSE;
-}
-*/
 
 
 

@@ -29,6 +29,7 @@ define('LAN_UPDATE_24', "Deleting Deprecated Table Field: ");
 define('LAN_UPDATE_25', 'Deleting obsolete table: ');
 define('LAN_UPDATE_26', 'Extending IP address field: ');
 define('LAN_UPDATE_27',	'Adding Table: ');
+define('LAN_UPDATE_28', '--COUNT-- saved emails moved');
 
 // Everything below here needs reviewing. 
 
