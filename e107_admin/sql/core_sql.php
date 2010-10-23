@@ -311,7 +311,7 @@ CREATE TABLE online (
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   KEY online_ip (online_ip)
-) ENGINE=InnoDB;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
