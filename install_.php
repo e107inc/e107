@@ -1357,7 +1357,7 @@ class e_install
 			return nl2br(LANINS_060)."<br /><br />";
 		}
 
-		preg_match_all("/create(.*?)myisam;/si", $sql_data, $result );
+		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
 
 		// Force UTF-8 again
 		$this->dbqry('SET NAMES `utf8`');
