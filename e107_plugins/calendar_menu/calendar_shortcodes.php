@@ -167,18 +167,11 @@ SC_BEGIN SHOWEVENT_HEADING
 	}
 	if($ev['startofevent'])
 	{
-	  if (isset($ev['is_recent']))
-	  {
-	    return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
-	  }
-	  else
-	  {
-	    return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
-	  }
+	    return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN_ABS."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
 	}
 	else
 	{
-	  return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
+	  return "<a title='{$ev['event_title']}' href='".e_PLUGIN_ABS."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
 	}
 SC_END
 
@@ -210,17 +203,17 @@ SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_TODAY_HEADING
 	global $CALENDAR_CALENDAR_DAY_TODAY_HEADING, $startt, $c, $days;
-	return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
+	return "<b><a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EVENT_HEADING
 	global $CALENDAR_CALENDAR_DAY_EVENT_HEADING, $startt, $c, $days;
-	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
+	return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EMPTY_HEADING
 	global $CALENDAR_CALENDAR_DAY_EMPTY_HEADING, $startt, $c, $days;
-	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
+	return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
 SC_END
 
 
