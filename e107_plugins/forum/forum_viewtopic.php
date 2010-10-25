@@ -147,7 +147,7 @@ if ($action == "report") {
 		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
 		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
 	} else {
-		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
+		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE, 'USER_TITLE');
 		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
 		require_once(HEADERF);
 		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
@@ -206,7 +206,7 @@ if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent
 
 $forum->thread_incview($thread_id);
 
-define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook, emotes_off')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off'));
+define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE, 'USER_TITLE')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE, 'USER_TITLE'));
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
@@ -256,12 +256,12 @@ if (!$FORUMSTART) {
 	}
 }
 
-$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE,'no_hook,emotes_off');
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE,'USER_TITLE');
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 $forum->set_crumb(TRUE); // Set $BREADCRUMB (and BACKLINK)
-$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'TITLE');
+$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE, 'USER_TITLE');
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";
