@@ -660,9 +660,9 @@ class e_form
 	 * Generate hidden security field
 	 * @return string
 	 */
-	function referer()
+	function token()
 	{
-		return "<input type='hidden' name='__referer' value='".defset('POST_REFERER', '')."' id='e-form-referer' />";
+		return "<input type='hidden' name='e-token' value='".defset('e_TOKEN', '')."' />";
 	}
 
 	function submit($name, $value, $options = array())
@@ -1724,7 +1724,7 @@ class e_form
 
 	        $text = "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				<div>".$this->referer()."
+				<div>".$this->token()."
 					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
 						<legend class='e-hideme'>".$options['legend']."</legend>
@@ -1845,7 +1845,7 @@ class e_form
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 				<div>
-				".$this->referer()."
+				".$this->token()."
 			";
 
 			foreach ($form['fieldsets'] as $elid => $data)
@@ -2119,7 +2119,7 @@ class form {
 		$method = ($form_method ? "method='".$form_method."'" : "");
 		$target = ($form_target ? " target='".$form_target."'" : "");
 		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">".e107::getForm()->referer();
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">".e107::getForm()->token();
 	}
 
 	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {

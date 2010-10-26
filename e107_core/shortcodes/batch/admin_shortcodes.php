@@ -776,7 +776,7 @@ class admin_shortcodes
 
 			$obj = e107::getDateConvert();
 			$install_date = $obj->convert_date($pref['install_date'], 'long');
-
+			
 			$text = "<b>".FOOTLAN_1."</b>
 			<br />".
 			SITENAME."
@@ -789,6 +789,10 @@ class admin_shortcodes
 			<b>e107</b>
 			<br />
 			".FOOTLAN_3." ".$e107info['e107_version']."
+			<br /><br />
+			<b>".FOOTLAN_20."</b>
+			<br />
+			[".e_SECURITY_LEVEL."] ".defset('LAN_SECURITYL_'.e_SECURITY_LEVEL, 'n/a')." 
 			<br /><br />
 			<b>".FOOTLAN_18."</b>
 			<br />".$pref['sitetheme']."<br /><br />

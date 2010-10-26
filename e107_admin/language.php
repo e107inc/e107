@@ -25,10 +25,10 @@ $e_sub_cat = 'language';
 require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
 require_once (e_HANDLER."message_handler.php");
-$frm = new e_form();
-$emessage = &eMessage::getInstance();
+$frm = e107::getForm();
+$emessage = e107::getMessage();
 $tabs = table_list(); // array("news","content","links");
-$lanlist = explode(",", e_LANLIST);
+$lanlist = e107::getLanguage()->installed();// Bugfix - don't use e_LANLIST as it's cached (SESSION)
 $message = '';
 if (e_QUERY)
 {

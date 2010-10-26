@@ -36,7 +36,7 @@ require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'validator_class.php');
 // require_once(e_HANDLER.'user_handler.php');
-$userMethods = e107::getSession();
+$userMethods = e107::getUserSession();
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
 require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.

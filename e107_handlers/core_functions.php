@@ -152,6 +152,26 @@ function print_a($var, $return = FALSE)
 	}
 }
 
+function e_print($expr = null)
+{
+	$args = func_get_args();
+	if(!$args) return;
+	foreach ($args as $arg) 
+	{
+		print_a($arg);
+	}
+}
+
+function e_dump($expr = null)
+{
+	$args = func_get_args();
+	if(!$args) return;
+	
+	echo '<pre>';
+	call_user_func_array('var_dump', $args);
+	echo '</pre>';
+}
+
 /**
  * Strips slashes from a var if magic_quotes_gqc is enabled
  *

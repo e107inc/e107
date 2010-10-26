@@ -48,9 +48,9 @@ if (!USER)
 	$LOGIN_TABLE_LOGINMESSAGE = LOGINMESSAGE;
 	$LOGIN_TABLE_USERNAME = "<input class='tbox' type='text' name='username' id='username' size='40' maxlength='100' />";
 	$LOGIN_TABLE_PASSWORD = "<input class='tbox' type='password' name='userpass' id='userpass' size='40' maxlength='100' />";
-	if (!USER && isset($_SESSION['challenge']) && varset($pref['password_CHAP'],0)) 
+	if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
 	{
-	  $LOGIN_TABLE_PASSWORD .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
+	  $LOGIN_TABLE_PASSWORD .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
 	}
 	if ($use_imagecode)
 	{

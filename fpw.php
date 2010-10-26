@@ -44,7 +44,7 @@ if ($pref['membersonly_enabled'])
 	$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
 }
 
-$user_info = e107::getSession();
+$user_info = e107::getUserSession();
 
 require_once(HEADERF);
 

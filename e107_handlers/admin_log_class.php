@@ -88,7 +88,9 @@ class e_admin_log
 		define('USER_AUDIT_TEMP_ACCOUNT', 24); // User temporary account
 
 		// Init E_MESSAGE_* constants if not already done
-		e107::getMessage();
+		// e107::getMessage(); - just include, message handler is creating session in construct
+		// it breaks stuff (see class2 - language detection and comments)
+		require_once(e_HANDLER.'message_handler.php');
 		$this->_messages = array();
 	}
 
@@ -138,6 +140,11 @@ class e_admin_log
 			}
 			$event_detail = implode("[!br!]\n", $tmp);
 			unset($tmp);
+		}
+		else
+		{
+			// auto-format long details - TODO - shrink details on administration log page, expand/show in DHTML window full details.  
+			$event_detail = str_replace("\n", "[!br!]", $event_detail);
 		}
 
 		if ($this->_options['backtrace'] == true)

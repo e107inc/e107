@@ -291,7 +291,7 @@ function setCronPwd()
 {
 		global $pref;
 	
-		$userMethods = e107::getSession();
+		$userMethods = e107::getUserSession();
 		$newpwd = $userMethods->generateRandomString('*^*#.**^*');
 		$newpwd = sha1($newpwd.time());			
 		$pref['e_cron_pwd'] = $newpwd; 

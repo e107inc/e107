@@ -315,7 +315,8 @@ define("LAN_DESCRIPTION", "Description");
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
 
-
-
-
-
+define("LAN_SECURITYL_0", "Looking for troubles (none)");
+define("LAN_SECURITYL_5", "Balanced");
+define("LAN_SECURITYL_7", "High");
+define("LAN_SECURITYL_9", "Paranoid");
+define("LAN_SECURITYL_10", "Insane");

@@ -2989,6 +2989,7 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				$this->$callbackAfter($model->getData(), $old_data, $model->getId());
 			}
+			$model->setMessages(true); //FIX - move messages (and session messages) to the default stack
 			$this->doAfterSubmit($model->getId(), $noredirectAction);
 			return true;
 		}

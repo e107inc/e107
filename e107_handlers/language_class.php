@@ -1,14 +1,22 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language Class.
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language handler
+ *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ * @package e107
+ * @subpackage	e107_handlers
+ * @version $Id$
+ */
 
 class language{
 
@@ -370,14 +378,21 @@ class language{
  	* 3. $_GET['elan']			eg. /index.php?elan=es
  	* 4. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' /> 
  	* 5. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated) 
+ 	* 
+ 	* @param boolean $force force detection, don't use cached value
  	*/
-	function detect()
+	function detect($force = false)
 	{
 		global $pref;
+		
+		
+		if(false !== $this->detect && !$foce) return $this->detect;
+		
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
-			e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
+			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			define('MULTILANG_SUBDOMAIN',TRUE);
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
@@ -403,7 +418,8 @@ class language{
 			$detect_language = FALSE; // ie. No Change. 
 		}
 		
-		e107_ini_set("session.cookie_path", e_HTTP);
+		// Done in session handler now
+		// e107_ini_set("session.cookie_path", e_HTTP);
 		
 		$this->detect = $detect_language;	
 		return $detect_language;
@@ -417,14 +433,15 @@ class language{
 	 */
 	function set()
 	{
-		global $pref;
+		$pref = e107::getPref();
+		$session = e107::getSession(); // default core session namespace
 				
 		if($this->detect) // Language-Change Trigger Detected. 
 		{
-			if(!varset($_SESSION['e_language']) || (($_SESSION['e_language'] != $this->detect) && $this->isValid($_SESSION['e_language'])))
+			// new - e_language moved to e107 namespace - $_SESSION['e107']['e_language']
+			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($session->get('e_language'))))
 			{
-				$_SESSION['e_language'] = $this->detect;	
-				// echo "Assigning Session Language";	
+				$session->set('e_language', $this->detect);	
 			}
 			
 			if(varset($_COOKIE['e107_language'])!=$this->detect && (defset('MULTILANG_SUBDOMAIN') != TRUE))
@@ -444,21 +461,21 @@ class language{
 		}
 		else // No Language-change Trigger Detected. 
 		{	
-			if(varset($_SESSION['e_language'])!='')
+			if($session->has('e_language'))
 			{
-				$user_language = $_SESSION['e_language'];
+				$user_language = $session->get('e_language');
 			}
 			elseif(isset($_COOKIE['e107_language']) && ($user_language = $this->isValid($_COOKIE['e107_language']))) 
 			{
-				$_SESSION['e_language'] = $user_language;	 		
+				$session->set('e_language', $user_language);	 		
 			}
 			else
 			{	
 				$user_language = $pref['sitelanguage'];	
 				
-				if(isset($_SESSION['e_language']))
+				if($session->is('e_language'))
 				{
-					unset($_SESSION['e_language']);
+					$session->clear('e_language');
 				}
 			
 				if(isset($_COOKIE['e107_language']))
@@ -485,13 +502,14 @@ class language{
 		global $pref;
 		
 		$language = $this->e_language;
+		$session = e107::getSession();
 		
-		if(!isset($_SESSION['language-list']))
+		if(!$session->is('language-list'))
 		{
-			$_SESSION['language-list'] = implode(',',$this->installed());
+			$session->set('language-list', implode(',',$this->installed()));
 		}
 		
-		define('e_LANLIST', $_SESSION['language-list']);
+		define('e_LANLIST', $session->get('language-list'));
 		define('e_LANGUAGE', $language);
 		define('USERLAN', $language); // Keep USERLAN for backward compatibility
 		$iso = $this->convert($language);	
@@ -511,8 +529,3 @@ class language{
 	
 
 }
-
-
-
-
-?>

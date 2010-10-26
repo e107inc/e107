@@ -21,6 +21,9 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 
 global $error_handler,$db_time,$ADMIN_FOOTER;
 
+// Clean session shutdown
+e107::getSession()->shutdown();
+
 //
 // SHUTDOWN SEQUENCE
 //
@@ -287,6 +290,8 @@ e107::getJs()->renderJs('footer_inline', true);
 // This must be done as late as possible in page processing.
 $_serverTime = time();
 $lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
+$_serverPath = e_HTTP;
+$_serverDomain = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
 if (abs($_serverTime - $lastSet) > 120)
 {
 	/* update time delay every couple of minutes.
@@ -294,7 +299,7 @@ if (abs($_serverTime - $lastSet) > 120)
 	 * Drawback: each update may cause all server times to display a bit different
 	 */
 	echo "<script type='text/javascript'>\n";
-	echo "SyncWithServerTime('{$_serverTime}');
+	echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
        </script>\n";
 }
 

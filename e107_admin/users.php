@@ -89,7 +89,7 @@ require_once (e_HANDLER.'validator_class.php');
 //      $userMethods = new UserHandler;
 //    	$colList = $userMethods->getNiceNames(TRUE);
 $ue = new e107_user_extended;
-$userMethods = e107::getSession();
+$userMethods = e107::getUserSession();
 $user_data = array();
 $frm = new e_form;
 $rs = new form;

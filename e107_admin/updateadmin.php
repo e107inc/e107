@@ -23,10 +23,10 @@ $e_sub_cat = 'admin_pass';
 
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'message_handler.php');
-// require_once(e_HANDLER.'user_handler.php'); //use e107::getSession() instead. 
+// require_once(e_HANDLER.'user_handler.php'); //use e107::getUserSession() instead. 
 require_once(e_HANDLER.'validator_class.php');
-$userMethods = e107::getSession();
-$emessage = &eMessage::getInstance();
+$userMethods = e107::getUserSession();
+$emessage = e107::getMessage();
 
 if (isset($_POST['update_settings'])) 
 {
