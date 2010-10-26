@@ -223,6 +223,23 @@ $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info, varset($E107_CONFIG, array()));
 
+/**
+ * NEW - system security levels
+ * Could be overridden by e107_config.php OR $CLASS2_INCLUDE script (if not set earlier)
+ * 
+ * 0 disabled
+ * 5 safe mode (balanced)
+ * 7 high
+ * 9 paranoid 
+ * 10 insane
+ * for more detailed info see e_session SECURITY_LEVEL_* constants
+ * default is e_session::SECURITY_LEVEL_BALANCED (5)
+ */
+if(!defined('e_SECURITY_LEVEL')) 
+{
+	require_once(e_HANDLER.'session_handler.php');
+	define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_BALANCED);
+}
 
 // MOVED TO $e107->set_request()
 //$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
@@ -281,6 +298,7 @@ $tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 // All debug objects and constants are defined in the debug handler
 // i.e. from here on you can use E107_DEBUG_LEVEL or any
 // E107_DBG_* constant for debug testing.
+// TODO - rewrite the debug init phase, add e107 class getters
 //
 require_once(e_HANDLER.'debug_handler.php');
 
@@ -292,6 +310,7 @@ if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug))
 //
 // I: Sanity check on e107_config.php
 //     e107_config.php upgrade check
+// FIXME - obsolete check, rewrite it
 if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 {
 	message_handler('CRITICAL_ERROR', 8, ': generic, ', 'e107_config.php');
@@ -304,7 +323,7 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 //$eTraffic->Calibrate($eTraffic);
 
-e107_require_once(e_HANDLER.'mysql_class.php');
+// e107_require_once(e_HANDLER.'mysql_class.php');
 
 //DEPRECATED, BC, $e107->sql caught by __get()
 $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
@@ -317,8 +336,7 @@ $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefault
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 
-$sql->db_Mark_Time('Start: Prefs, misc tables');
-
+$sql->db_Mark_Time('Start: Prefs, misc tables'); 
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
 $admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
@@ -403,7 +421,7 @@ if(!e107::getConfig()->hasData())
 
 }
 
-//DEPRECATED, BC, call e107::getPref() instead
+//DEPRECATED, BC, call e107::getPref/findPref() instead
 $pref = e107::getPref();
 
 //this could be part of e107->init() method now, prefs will be auto-initialized
@@ -426,35 +444,13 @@ e107::getLanguage()->detect();
 //
 
 // if a cookie name pref isn't set, make one :)
-// TODO - do we really need this? e107 method could do the job.
+// e_COOKIE used as unique session cookie name now (see session handler)
 if (!$pref['cookie_name']) { $pref['cookie_name'] = 'e107cookie'; }
 define('e_COOKIE', $pref['cookie_name']);
 
 // MOVED TO $e107->set_urls()
 //define('SITEURLBASE', ($pref['ssl_enabled'] == '1' ? 'https://' : 'http://').$_SERVER['HTTP_HOST']);
 //define('SITEURL', SITEURLBASE.e_HTTP);
-
-
-
-// start a session if session based login is enabled
-// if ($pref['user_tracking'] == 'session')
-{
-	session_start();
-	
-	
-	
-  if (!isset($_SESSION['challenge']))
-  {	// New session
-	// Create a unique challenge string for CHAP login
-	$_SESSION['challenge'] = sha1(time().session_id());
-  }
-  $ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
-  if (!isset($_SESSION['ubrowser']))
-  {
-    $_SESSION['ubrowser'] = $ubrowser;
-  }
-}
-
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
@@ -511,6 +507,12 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
  * Set the User's Language
  */
 $sql->db_Mark_Time('Start: Set User Language');
+// SESSION Needs to be started after: 
+// - Site preferences are available 
+// - Language detection (because of session.cookie_domain) 
+// to avoid multi-language 'access-denied' issues.
+//session_start(); see e107::getSession() above
+e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
 e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref; 
 
 if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
@@ -523,10 +525,14 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.'_custom.php');
 
+e107::getSession()
+	->challenge() // Create a unique challenge string for CHAP login
+	->check(); // Token protection
+// echo e_print($_SESSION, e107::getSession()->getSessionId(), e107::getSession()->getSessionName());
 //
 // N: misc setups: online user tracking, cache
 //
-$sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
+$sql->db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 
 //DEPRECATED, BC, call the method only when needed, $e107->ecache caught by __get()
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
@@ -771,8 +777,8 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
 
-
-if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser)))
+// $_SESSION['ubrowser'] check not needed anymore - see session handler
+if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
 {
 	if (USER)
 	{
@@ -784,6 +790,8 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 
 	$ip = $e107->getip();
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
+	
+	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
 	if ($pref['user_tracking'] == 'session')
@@ -1423,6 +1431,7 @@ function init_session()
 	define('POST_REFERER', md5($user->getToken()));
 
 	// Check for intruders - outside the model for now
+	// TODO replace __referer with e-token, remove the above
 	if((isset($_POST['__referer']) && !$user->checkToken($_POST['__referer']))
 		|| (isset($_GET['__referer']) && !$user->checkToken($_GET['__referer'])))
 	{
@@ -1691,6 +1700,16 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
 	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
 }
 
+/**
+ * Set Cookie
+ * @param string $name
+ * @param string $value
+ * @param integer $expire seconds
+ * @param string $path
+ * @param string $domain
+ * @param boolean $secure
+ * @return void
+ */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
 {
 	setcookie($name, $value, $expire, $path, $domain, $secure);

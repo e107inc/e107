@@ -345,7 +345,7 @@ class userlogin
 		}
 
 		// Now check password
-		$this->userMethods = e107::getSession();
+		$this->userMethods = e107::getUserSession();
 		if ($forceLogin)
 		{
 			if (md5($this->userData['user_name'].$this->userData['user_password'].$this->userData['user_join']) != $userpass)
@@ -355,17 +355,18 @@ class userlogin
 		}
 		else
 		{
-			if ((($pref['password_CHAP'] > 0) && ($response && isset($_SESSION['challenge'])) && ($response != $_SESSION['challenge'])) || ($pref['password_CHAP'] == 2))
+			$session = e107::getSession();
+			if ((($pref['password_CHAP'] > 0) && ($response && $session->is('challenge')) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
-	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login","U: {$username}, P: {$userpass}, C: {$_SESSION['challenge']} R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
-				if (($pass_result = $this->userMethods->CheckCHAP($_SESSION['challenge'], $response, $username, $requiredPassword)) === PASSWORD_INVALID)
+	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login","U: {$username}, P: {$userpass}, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
+				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
 				}
 			}
 			else
 			{	// Plaintext password
-	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login","U: {$username}, P: {$userpass}, C: {$_SESSION['challenge']} R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
+	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login","U: {$username}, P: {$userpass}, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_BAD_PW);

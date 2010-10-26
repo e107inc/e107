@@ -1,21 +1,25 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Site navigation administration
+ *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ * @package e107
+ * @subpackage	admin
+ * @version $Id$
+ *
+ * Manage site navigation links
+ */
+
 require_once("../class2.php");
 if (!getperms("I"))
 {
@@ -66,9 +70,9 @@ class links_admin_ui extends e_admin_ui
 			'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
 			'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
 			'link_id'			=> array('title'=> ID, 			'nolist'=>TRUE),
-			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'method'),
+			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'method', 'validate' => true),
 			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-			'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text'),
+			'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text', 'validate' => true),
 			'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 			'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
 			'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),

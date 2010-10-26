@@ -160,7 +160,13 @@ $e107_paths = array();
 $e107 = e107::getInstance();
 $e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
-session_start();
+
+// NEW - session handler
+require_once(e_HANDLER.'session_handler.php');
+define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_NONE);
+define('e_COOKIE', 'e107install');
+e107::getSession(); // starts session, creates default namespace
+// session_start();
 
 function include_lan($path, $force = false)
 {
@@ -199,7 +205,7 @@ class e_install
 	var $required = ""; 		//TODO - use for highlighting required fields with css/js.
 	var $logFile;			// Name of log file, empty string if logging disabled
 	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
-
+	var $session = null;
 
 //	public function __construct()
 	function e_install()
@@ -208,6 +214,9 @@ class e_install
 		define('USERID', 1);
 		define('USER', true);
 		define('ADMIN', true);
+		
+		// session instance
+		$this->session = e107::getSession();
 
 		$this->logFile = '';
 		if (MAKE_INSTALL_LOG)

@@ -31,21 +31,24 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  * The value calculated in SyncWithServerTime is not known until after the
  * entire page has been processed.
  */
-function SyncWithServerTime(serverTime)
+function SyncWithServerTime(serverTime, path, domain)
 {
-	if (serverTime)
+	if (serverTime) 
 	{
 	  	/* update time difference cookie */
 		var serverDelta=Math.floor(localTime-serverTime);
-	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path=/';
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path=/'; /* server time when set */
+		if(!path) path = '/';
+		if(!domain) domain = '';
+		else domain = '; domain=' + domain;
+	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain; /* server time when set */
 	}
 
 	var tzCookie = 'e107_tzOffset=';
 //	if (document.cookie.indexOf(tzCookie) < 0) {
 		/* set if not already set */
 		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path=/';
+		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain;
 //	}
 }
 

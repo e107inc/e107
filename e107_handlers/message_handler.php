@@ -30,7 +30,7 @@ define('E_MESSAGE_DEBUG', 		'debug');
  * Handle system messages
  * 
  * @package e107
- *	@subpackage	e107_handlers
+ * @subpackage	e107_handlers
  * @version $Id$
  * @author SecretR
  * @copyright Copyright (C) 2008-2010 e107 Inc (e107.org)
@@ -53,6 +53,11 @@ class eMessage
 	protected $_session_id;
 	
 	/**
+	 * @var e_core_session
+	 */
+	protected $_session_handler = null;
+	
+	/**
 	 * Singleton instance
 	 * 
 	 * @var eMessage
@@ -69,26 +74,10 @@ class eMessage
 	 */
 	protected function __construct()
 	{
-		if(!session_id()) session_start();
+		//if(!session_id()) session_start();
 		
 		require_once(e_HANDLER.'e107_class.php');
-		$this->_session_id = e107::getPref('cookie_name', 'e107').'_system_messages';
-		
-		//clean up old not used sessions
-		$tmp = array_keys($_SESSION);
-		foreach ($tmp as $key)
-		{
-			if($key != $this->_session_id && strpos($key, '_system_messages'))
-			{
-				unset($_SESSION[$key]);
-			}
-		}
-		unset($tmp);
-		
-		if(!isset($_SESSION[$this->_session_id]))
-		{
-			$_SESSION[$this->_session_id] = array();
-		}
+		$this->_session_id = '_system_messages';
 		
 		$this->reset()->mergeWithSession();
 	}
@@ -120,10 +109,35 @@ class eMessage
 	 * @param string $name 
 	 * @return object $this
 	 */
-	public function setSessionId($name)
+	public function setSessionId($name = '')
 	{
-		$this->_session_id = $name.'_system_messages';
+		$sid = $name.'_system_messages';
+		if($this->_session_id != $sid)
+		{
+			if(session_id())
+			{
+				$session = $this->getSessionHandler();
+				$session->set($sid, $session->get($this->_session_id, true)); // move
+				if(!$session->has($sid)) $session->set($sid, array()); // be sure it's array
+			}
+			$this->_session_id = $sid;
+		}
 		return $this;
+	}
+	
+	/**
+	 * Get session handler
+	 * @return unknown_type
+	 */
+	public function getSessionHandler()
+	{
+		if(null === $this->_session_handler)
+		{
+			$session = e107::getSession();
+			if(!$session->has($this->_session_id)) $session->set($this->_session_id, array());
+			$this->_session_handler = $session;
+		}
+		return $this->_session_handler;
 	}
 
 	/**
@@ -258,7 +272,7 @@ class eMessage
 	 */
 	public function addSession($message, $type = E_MESSAGE_INFO)
 	{
-		if(empty($message)) return $this;
+		if(empty($message) || !session_id()) return $this;
 		
 		$mstack = 'default';
 		if(is_array($message))
@@ -266,8 +280,13 @@ class eMessage
 			$mstack = $message[1];
 			$message = $message[0];
 		}
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
 
-		if($this->isType($type)) $_SESSION[$this->_session_id][$type][$mstack][] = $message;
+		if($this->isType($type)) 
+		{
+			$SESSION[$type][$mstack][] = $message;
+			$this->getSessionHandler()->set($this->_session_id, $SESSION);
+		}
 		return $this;
 	}
 	
@@ -362,7 +381,9 @@ class eMessage
 	 */
 	public function getSession($type, $mstack = 'default', $raw = false, $reset = true)
 	{
-		$message = isset($_SESSION[$this->_session_id][$type][$mstack]) ? $_SESSION[$this->_session_id][$type][$mstack] : '';
+		if(!session_id()) return null;
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$message = isset($SESSION[$type][$mstack]) ? $SESSION[$type][$mstack] : '';
 		if($reset) $this->resetSession($type, $mstack);
 
 		return (true === $raw ? $message : self::formatMessage($mstack, $type, $message));
@@ -378,6 +399,7 @@ class eMessage
 	 */
 	public function getAllSession($mstack = 'default', $raw = false, $reset = true)
 	{	
+		if(!session_id()) return array();
 		$ret = array();
 		foreach ($this->_get_types() as $type)
 		{
@@ -511,35 +533,37 @@ class eMessage
 	 */
 	public function resetSession($type = false, $mstack = false)
 	{
+		if(!session_id()) return $this;
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
 		if(false === $type) 
 		{
 			if(false === $mstack)
 			{
-				$_SESSION[$this->_session_id] = $this->_type_map();
+				$SESSION = $this->_type_map();
 			}
-			elseif($_SESSION[$this->_session_id])
+			elseif($SESSION)
 			{
-				foreach ($_SESSION[$this->_session_id] as $t => $_mstack) 
+				foreach ($SESSION as $t => $_mstack) 
 				{
 					if(is_array($_mstack))
 					{
-						unset($_SESSION[$this->_session_id][$t][$mstack]);
+						unset($SESSION[$t][$mstack]);
 					}
 				}
 			}
 		}
-		elseif(isset($_SESSION[$this->_session_id][$type])) 
+		elseif(isset($SESSION[$type])) 
 		{
 			if(false === $mstack)
 			{
-				$_SESSION[$this->_session_id][$type] = array();
+				$SESSION[$type] = array();
 			}
-			elseif(is_array($_SESSION[$this->_session_id][$type])) 
+			elseif(is_array($SESSION[$type])) 
 			{
-				unset($_SESSION[$this->_session_id][$type][$mstack]);
+				unset($SESSION[$type][$mstack]);
 			}
 		}
-
+		$this->getSessionHandler()->set($this->_session_id, $SESSION);
 		return $this;
 	}
 
@@ -551,27 +575,31 @@ class eMessage
 	 */
 	public function mergeWithSession($reset = true, $mstack = false)
 	{
-		if(is_array($_SESSION[$this->_session_id]))
+		// do nothing if there is still no session
+		if(!session_id()) return $this;
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		
+		if(!empty($SESSION))
 		{
-			foreach (array_keys($_SESSION[$this->_session_id]) as $type)
+			foreach (array_keys($SESSION) as $type)
 			{
 				if(!$this->isType($type)) 
 				{ 
-					unset($_SESSION[$this->_session_id][$type]);
+					unset($SESSION[$type]);
 					continue;
 				}
 				if(false === $mstack)
 				{
-					$this->_sysmsg[$type] = array_merge_recursive($this->_sysmsg[$type], $_SESSION[$this->_session_id][$type]);
+					$this->_sysmsg[$type] = array_merge_recursive($this->_sysmsg[$type], $SESSION[$type]);
 					continue;
 				}
 				
-				if(isset($_SESSION[$this->_session_id][$type][$mstack]))
+				if(isset($SESSION[$type][$mstack]))
 				{
-					$this->_sysmsg[$type][$mstack] = $_SESSION[$this->_session_id][$type][$mstack];
+					$this->_sysmsg[$type][$mstack] = $SESSION[$type][$mstack];
 				}
-				
 			}
+			$this->getSessionHandler()->set($this->_session_id, $SESSION);
 		}
 		if($reset) $this->resetSession(false, $mstack);
 		return $this;
@@ -586,6 +614,10 @@ class eMessage
 	 */
 	public function moveToSession($mstack = false, $message_type = false)
 	{
+		// do nothing if there is still no session
+		if(!session_id()) return $this;
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		
 		foreach (array_keys($this->_sysmsg) as $type)
 		{
 			if(!$this->isType($type) || ($message_type && $message_type !== $type)) 
@@ -595,16 +627,16 @@ class eMessage
 			}
 			if(false === $mstack)
 			{
-				$_SESSION[$this->_session_id][$type] = array_merge_recursive( $_SESSION[$this->_session_id][$type], $this->_sysmsg[$type]);
+				$SESSION[$type] = array_merge_recursive($SESSION[$type], $this->_sysmsg[$type]);
 				continue;
 			}
 			
 			if(isset($this->_sysmsg[$type][$mstack]))
 			{
-				$_SESSION[$this->_session_id][$type][$mstack] = $this->_sysmsg[$type][$mstack];
+				$SESSION[$type][$mstack] = $this->_sysmsg[$type][$mstack];
 			}
 		}
-
+		$this->getSessionHandler()->set($this->_session_id, $SESSION);
 		$this->reset($message_type, $mstack, false);
 		return $this;
 	}
@@ -656,8 +688,11 @@ class eMessage
 	 */
 	public function moveSessionStack($from_stack, $to_stack = 'default', $type = false)
 	{
-		if($from_stack == $to_stack) return $this;
-		foreach ($_SESSION[$this->_session_id] as $_type => $stacks)
+		// do nothing if there is still no session
+		if(!session_id() || $from_stack == $to_stack) return $this;
+		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		
+		foreach ($SESSION as $_type => $stacks)
 		{
 			if($type && $type !== $_type)
 			{
@@ -665,14 +700,15 @@ class eMessage
 			}
 			if(isset($stacks[$from_stack]))
 			{
-				if(!isset($_SESSION[$this->_session_id][$_type][$to_stack]))
+				if(!isset($SESSION[$_type][$to_stack]))
 				{
-					$_SESSION[$this->_session_id][$_type][$to_stack] = array();
+					$SESSION[$_type][$to_stack] = array();
 				}
-				$_SESSION[$this->_session_id][$_type][$to_stack] = array_merge($_SESSION[$this->_session_id][$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
-				unset($_SESSION[$this->_session_id][$_type][$from_stack]);
+				$SESSION[$_type][$to_stack] = array_merge($SESSION[$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
+				unset($SESSION[$_type][$from_stack]);
 			}
 		}
+		$this->getSessionHandler()->set($this->_session_id, $SESSION);
 		
 		return $this;
 	}

@@ -115,11 +115,13 @@ else
 			}
 
 			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
-
-			e107::getEvent()->trigger("login", $edata_li);
-
+			
+			// Fix - set cookie before login trigger
 			session_set(e_COOKIE, $cookieval, (time() + 3600 * 24 * 30));
-			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
+			
+			e107::getEvent()->trigger("login", $edata_li);
+			e107::getRedirect()->redirect(e_ADMIN_ABS.'admin.php');
+			//echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}
 	}
 
@@ -166,9 +168,10 @@ class auth
 			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
 			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password' name='authpass' id='userpass' size='30' value='' maxlength='30' />\n";
 
-		if (isset($_SESSION['challenge']) && varset($pref['password_CHAP'], 0))
+		$session = e107::getSession();
+		if ($session->is('challenge') && varset($pref['password_CHAP'], 0))
 
-		$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
+		$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".$session->get('challenge')."' />\n\n";
 		$text .= "</td></tr>\n";
 
 		if ($use_imagecode)
@@ -210,7 +213,7 @@ class auth
 
 		$tp 		= e107::getParser();
 		$sql_auth 	= e107::getDb('sql_auth');
-		$user_info 	= e107::getSession();
+		$user_info 	= e107::getUserSession();
 		$reason = '';
 
 		$authname = $tp->toDB(preg_replace("/\sOR\s|\=|\#/", "", trim($authname)));
@@ -239,9 +242,10 @@ class auth
 		}
 		if (!$reason && ($row['user_id'])) // Can validate password
 		{
-			if (($authresponse && isset($_SESSION['challenge'])) && ($authresponse != $_SESSION['challenge']))
+			$session = e107::getSession();
+			if (($authresponse && $session->is('challenge')) && ($authresponse != $session->get('challenge')))
 			{ // Verify using CHAP (can't handle login by email address - only loginname - although with this code it does still work if the password is stored unsalted)
-				if (($pass_result = $user_info->CheckCHAP($_SESSION['challenge'], $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
+				if (($pass_result = $user_info->CheckCHAP($session->get('challenge'), $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
 				{
 					return $$row;
 				}

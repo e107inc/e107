@@ -53,7 +53,7 @@ require_once (e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'validator_class.php');
 $ue = new e107_user_extended;
 
-$userMethods = e107::getSession();
+$userMethods = e107::getUserSession();
 
 require_once (e_HANDLER.'ren_help.php');
 include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.

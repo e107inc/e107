@@ -183,13 +183,16 @@ class e_user_model extends e_front_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	/**
+	 * DEPRECATED - will be removed or changed soon (see e_session)
+	 * @return string
+	 */
 	public function getToken()
 	{
-		if($this->isUser()) return '';
-
 		if(null === $this->get('user_token'))
 		{
-			$this->set('user_token', md5($this->get('user_password').$this->get('user_lastvisit').$this->get('user_pwchange').$this->get('user_class')));
+			//$this->set('user_token', md5($this->get('user_password').$this->get('user_lastvisit').$this->get('user_pwchange').$this->get('user_class')));
+			$this->set('user_token', e107::getSession()->getFormToken(false));
 		}
 		return $this->get('user_token');
 	}
@@ -307,6 +310,7 @@ class e_user_model extends e_front_model
 
 	/**
 	 * Check passed value against current user token
+	 * DEPRECATED - will be removed or changed soon (see e_core_session)
 	 * @param string $token md5 sum of e.g. posted token
 	 * @return boolean
 	 */
@@ -1286,6 +1290,7 @@ class e_user extends e_user_model
 		{
 			$this->_session_key = e107::getPref('cookie_name', 'e107cookie');
 			$this->_session_type = e107::getPref('user_tracking', 'cookie');
+			
 			if('session' == $this->_session_type && isset($_SESSION[$this->_session_key]) && !empty($_SESSION[$this->_session_key]))
 			{
 				$this->_session_data = &$_SESSION[$this->_session_key];

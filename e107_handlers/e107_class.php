@@ -144,6 +144,7 @@ class e107
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
 		'eURL'							 => '{e_HANDLER}e107Url.php',
+		'e_core_session'				 => '{e_HANDLER}session_handler.php',
 		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
@@ -949,9 +950,26 @@ class e107
 	 *
 	 * @return UserHandler
 	 */
-	public static function getSession()
+	public static function getUserSession()
 	{
 		return self::getSingleton('UserHandler', true);
+	}
+	
+	/**
+	 * Retrieve core session singleton object(s)
+	 *
+	 * @return e_core_session
+	 */
+	public static function getSession($namespace = null)
+	{
+		$id = 'core/e107/session/'.(null === $namespace ? 'e107' : $namespace);
+		if(self::getRegistry($id))
+		{
+			return self::getRegistry($id);
+		}
+		$session = self::getObject('e_core_session', array('namespace' => $namespace), true);
+		self::setRegistry($id, $session);
+		return $session;
 	}
 
 	/**

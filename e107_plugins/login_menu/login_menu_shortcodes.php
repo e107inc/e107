@@ -55,7 +55,7 @@ SC_END
 SC_BEGIN LM_PASSWORD_INPUT
 global $pref;
 $t_password = "<input class='tbox login pass' type='password' name='userpass' id='userpass' size='15' value='' maxlength='30' />\n";
-if (!USER && isset($_SESSION['challenge']) && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
+if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
 return $t_password;
 SC_END
 
