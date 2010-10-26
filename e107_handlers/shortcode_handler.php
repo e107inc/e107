@@ -297,7 +297,7 @@ class e_parse_shortcode
 			{
 				// register instance directly to allow override
 				$this->scClasses[$className] = new $className();
-				$this->registerClassMethods($className);
+				$this->registerClassMethods($className, $path);
 				return $this->scClasses[$className];
 			}
 		}
