@@ -190,7 +190,20 @@ $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
 $e_install->renderPage();
 
-
+/**
+ * Set Cookie
+ * @param string $name
+ * @param string $value
+ * @param integer $expire seconds
+ * @param string $path
+ * @param string $domain
+ * @param boolean $secure
+ * @return void
+ */
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
+{
+	setcookie($name, $value, $expire, $path, $domain, $secure);
+}
 
 class e_install
 {
