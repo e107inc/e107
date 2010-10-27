@@ -25,7 +25,7 @@ require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
 
 require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$emessage = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'classis';		// Shouldn't be needed - but just in case
 
