@@ -1,20 +1,15 @@
 <?php 
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (C) 2008-2009 e107 Inc
- |     http://e107.org
- |
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision$
- |     $Date$
- |     $Author$
- +----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Redirection handler
+ *
+ * $URL$
+ * $Id$
  */
 
 /**
@@ -24,7 +19,7 @@
  * @category e107_handlers
  * @version 1.0
  * @author Cameron
- * @copyright Copyright (C) 2009, e107 Inc.
+ * @copyright Copyright (C) 2008-2010 e107 Inc.
  */
 class redirection
 {
@@ -42,7 +37,10 @@ class redirection
 	 */
 	protected $page_exceptions = array();
 	
-	
+	/**
+	 * List of queries to not check against e_QUERY
+	 * @var array
+	 */
 	protected $query_exceptions = array();
 	
 	/**
@@ -59,53 +57,127 @@ class redirection
 	
 	/**
 	 * Store the current URL in a cookie for 5 minutes so we can return to it after being logged out. 
-	 * @return none
+	 * @param string $url if empty self url will be used
+	 * @param boolean $forceNoSef if false REQUEST_URI will be used (mod_rewrite support)
+	 * @return redirection
 	 */
-	function setPreviousUrl()
+	function setPreviousUrl($url = null, $forceNoSef = false, $forceCookie = false)
 	{
-		if(in_array(e_SELF, $this->self_exceptions))
+		if(!$url)
 		{
-			return;
-		}
-		if(in_array(e_PAGE, $this->page_exceptions))
-		{
-			return;
-		}
-		if(in_array(e_QUERY, $this->query_exceptions))
-		{
-			return;
+			if(in_array(e_SELF, $this->self_exceptions))
+			{
+				return;
+			}
+			if(in_array(e_PAGE, $this->page_exceptions))
+			{
+				return;
+			}
+			if(in_array(e_QUERY, $this->query_exceptions))
+			{
+				return;
+			}
+			$url = $this->getSelf($forceNoSef);
 		}
 		
-		$self = (e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+		$this->setCookie('_previousUrl', $url, 300, $forceCookie);
+		//session_set(e_COOKIE.'_previousUrl',$self ,(time()+300));	
 		
-		session_set(e_COOKIE.'_previousUrl',$self ,(time()+300));	
+		return $this;
+	}
+	
+	public function getSelf($forceNoSef = false)
+	{
+		if($forceNoSef)
+		{
+			$url = (e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+		}
+		else
+		{
+			// TODO - e107::requestUri() - sanitize, add support for various HTTP servers
+			$url = SITEURLBASE.strip_tags($_SERVER['REQUEST_URI']);
+		}
+		return $url;
 	}
 
-	
 	/**
 	 * Return the URL the admin was on, prior to being logged-out. 
 	 * @return string 
 	 */
 	public function getPreviousUrl()
-	{		
-		return $this->getCookie('previousUrl');
+	{
+		return $this->getCookie('_previousUrl');
 	}
 		
-	
-	private function getCookie($name) //TODO move to e107_class or a new user l class. 
+	/**
+	 * Get value stored with self::setCookie()
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getCookie($name) //TODO move to e107_class or a new user l class. 
 	{	
 		$cookiename = e_COOKIE."_".$name;
+		$session = e107::getSession();
 		
-		if(vartrue($_SESSION[$cookiename]))
+		if($session->has($name))
 		{
-			return $_SESSION[$cookiename];
+			// expired - cookie like session implementation
+			if((integer) $session->get($name.'_expire') < time())
+			{
+				$session->clear($name.'_expire')
+					->clear($name);
+				return false;
+			}
+			return $session->get($name);
 		}
-		elseif(vartrue($_COOKIE[$cookiename]))
+		// fix - prevent null values
+		elseif(isset($_COOKIE[$cookiename]) && $_COOKIE[$cookiename])
 		{
 			return $_COOKIE[$cookiename];	
 		}
 
-		return FALSE;	
+		return false;	
+	}
+	
+	/**
+	 * Register url in current session
+	 * @param string $name
+	 * @param string $value
+	 * @param integer $expire expire after value in seconds, null (default) - ignore
+	 * @return redirection
+	 */
+	public function setCookie($name, $value, $expire = null, $forceCookie = false)
+	{
+		$cookiename = e_COOKIE."_".$name;
+		$session = e107::getSession();
+		
+		if(!$forceCookie && e107::getPref('cookie_name') != 'cookie')
+		{
+			// expired - cookie like session implementation
+			if(null !== $expire) $session->set($name.'_expire', time() + (integer) $expire); 
+			$session->set($name, $value);
+		}
+		else
+		{
+			cookie($cookiename, $value, time() + (integer) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
+		}
+
+		return $this;
+	}
+	
+	/**
+	 * Clear data set via self::setCookie()
+	 * @param string $name
+	 * @return redirection
+	 */
+	public function clearCookie($name)
+	{
+		$cookiename = e_COOKIE."_".$name;
+		$session = e107::getSession();
+		$session->clear($name)
+			->clear($name.'_expire');
+		cookie($cookiename, null, null, e_HTTP, e107::getLanguage()->getCookieDomain());
+		return $this;
 	}
 	
 	
@@ -193,12 +265,12 @@ class redirection
 	 *
 	 * @return void
 	 */
-	private function saveMembersOnlyUrl()
+	private function saveMembersOnlyUrl($forceNoSef = false)
 	{
 		// remember the url for after-login.
-		$afterlogin = e_COOKIE.'_afterlogin';
-		$url = (e_QUERY ? e_SELF.'?'.e_QUERY : e_SELF);
-		session_set($afterlogin, $url, time() + 300);
+		//$afterlogin = e_COOKIE.'_afterlogin';
+		$this->setCookie('_afterlogin', $this->getSelf($forceNoSef), 300);
+		//session_set($afterlogin, $url, time() + 300);
 	}
 
 	
@@ -209,11 +281,20 @@ class redirection
 	 */
 	private function restoreMembersOnlyUrl()
 	{
-		if(USER && ($_SESSION[e_COOKIE.'_afterlogin'] || $_COOKIE[e_COOKIE.'_afterlogin']))
+		$url = $this->getCookie('_afterlogin');
+		if(USER && $url)
 		{
-			$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE.'_afterlogin'];
-			session_set(e_COOKIE.'_afterlogin', FALSE, -1000);
+			//session_set(e_COOKIE.'_afterlogin', FALSE, -1000);
+			$this->clearCookie('_afterlogin');
 			$this->redirect($url);
+		}
+	}
+	
+	public function redirectPrevious()
+	{
+		if($this->getPreviousUrl())
+		{
+			$this->redirect($this->getPreviousUrl());
 		}
 	}
 

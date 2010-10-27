@@ -86,6 +86,7 @@ if(isset($_POST['updateprefs']))
 
 	// FIXME - automate - pref model & validation handler
 	$prefChanges = array();
+	$sessionRegenerate = false;
 	foreach($_POST as $key => $value)
 	{
 		if(isset($pref_limits[$key]))
@@ -95,12 +96,12 @@ if(isset($_POST['updateprefs']))
 				if($value < $pref_limits[$key]['min'])
 				{
 					$value = $pref_limits[$key]['min'];
-					$emessage->add(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213), E_MESSAGE_WARNING);
+					$emessage->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
 				}
 				if($value > $pref_limits[$key]['max'])
 				{
 					$value = $pref_limits[$key]['max'];
-					$emessage->add(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212), E_MESSAGE_WARNING);
+					$emessage->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
 				}
 			}
 			else
@@ -108,6 +109,20 @@ if(isset($_POST['updateprefs']))
 				$value = $pref_limits[$key]['default'];
 			}
 			$newValue = $value;
+		}
+		elseif('cookie_name' == $key && $core_pref->get($key) != $value)
+		{
+			// special case
+			if(!preg_match('/^[\w\-]+$/', $value))
+			{
+				$newValue = e_COOKIE;
+				$emessage->addWarning(PRFLAN_219);
+			}
+			else 
+			{
+				$newValue = $value;
+				$sessionRegenerate = true;
+			}
 		}
 		else
 		{
@@ -121,30 +136,18 @@ if(isset($_POST['updateprefs']))
 		}*/
 	}
 	$core_pref->save(false);
-	/*if(count($prefChanges))
-	{ // Values have changed
-		$e107cache->clear('', TRUE);
-		$saved = save_prefs();
-		$logStr = '';
-		foreach($prefChanges as $k => $v)
-		{
-			$logStr .= "[!br!]{$k} => {$v}";
-		}
-		$admin_log->log_event('PREFS_01', PRFLAN_195.$logStr);
-		$e107->sql->db_Select_gen("TRUNCATE ".MPREFIX."online");
-	}*/
-	//if($saved)
+	// special case, do session cleanup, logout, redirect to login screen
+	if($sessionRegenerate)
 	{
-		/*$emessage->addSession(PRFLAN_106, E_MESSAGE_SUCCESS);
-		header("location:".e_ADMIN."prefs.php?u");
-		exit();*/
-		//no redirect, smarter form (remember last used tab
-		//$emessage->add(PRFLAN_106, E_MESSAGE_SUCCESS);
-	}
-	//else
-	{
-// done in class2:		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-		//$emessage->add(LAN_NO_CHANGE);
+		// reset cookie
+		cookie($core_pref->get('cookie_name'), $_COOKIE[e_COOKIE], (time() + 3600 * 24 * 30), e_HTTP, e107::getLanguage()->getCookieDomain());
+		cookie(e_COOKIE, null, null);
+		
+		// regenerate session
+		$s = $_SESSION;
+		e107::getSession()->destroy();
+		$session = new e_core_session(array('name' => $core_pref->get('cookie_name')));
+		$_SESSION = $s;
 	}
 }
 
