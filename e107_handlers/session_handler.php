@@ -322,6 +322,15 @@ class e_session
 		}
 		return $this;
 	}
+	
+	/**
+	 * Get registered namespace key
+	 * @return string
+	 */
+	public function getNamespaceKey()
+	{
+		return $this->_namespace;
+	}
 
 	/**
 	 * Reset session options
@@ -714,6 +723,11 @@ class e_session
 		session_destroy();
 		return $this;
 	}
+	
+	public function replaceRegistry()
+	{
+		e107::setRegistry('core/e107/session/'.$this->_namespace, $this, true);
+	}
 }
 
 class e_core_session extends e_session
@@ -724,15 +738,17 @@ class e_core_session extends e_session
 	 * able to extend the base e_session class and 
 	 * add more or override the implemented functionality, has their own
 	 * namespace, add more session security etc.
-	 * @param array $config session config data
+	 * @param array $data session config data
 	 */
 	public function __construct($data = array())
 	{	
 		// default system configuration
 		$this->setDefaultSystemConfig();
 		
+		// TODO $data[config] and $data[options] to override default settings
+		
 		$namespace = 'e107';
-		$name = deftrue('e_COOKIE', 'e107').'SID';
+		$name = (isset($data['name']) && !empty($data['name']) ? $data['name'] : deftrue('e_COOKIE', 'e107')).'SID';
 		if(isset($data['namespace']) && !empty($data['namespace'])) $namespace = $data['namespace'];
 		// create $_SESSION['e107'] namespace by default
 		$this->init($namespace, $name);

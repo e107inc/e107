@@ -1081,7 +1081,8 @@ class e_user extends e_user_model
 			->_destroySession();
 
 		parent::destroy();
-		if(session_id()) session_destroy();
+		//if(session_id()) session_destroy();
+		e107::getSession()->destroy();
 
 		e107::setRegistry('core/e107/current_user', null);
 		return $this;
@@ -1244,7 +1245,7 @@ class e_user extends e_user_model
 	final protected function _destroySession()
 	{
 		cookie($this->_session_key, '', (time() - 2592000));
-		$_SESSION[$this->_session_key] = '';
+		unset($_SESSION[$this->_session_key]);
 
 		return $this;
 	}

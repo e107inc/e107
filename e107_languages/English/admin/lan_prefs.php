@@ -231,5 +231,5 @@ define('PRFLAN_216', '(Requires HTML posting rights as well)');
 define('PRFLAN_217', 'Filter HTML content');
 define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
 
-
+define('PRFLAN_219', 'Not allowed characters found in Cookie name (alphanumeric characters allowed only). Cookie name not saved.');
 ?>

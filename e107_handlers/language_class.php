@@ -25,6 +25,7 @@ class language{
 // Valid Language Pack Names are shown directly below on the right. 
 	var $detect = FALSE;
 	var $e_language = 'English'; // replaced later with $pref
+	var $_cookie_domain = '';
 
 	var $list = array(
             "aa" => "Afar",
@@ -369,8 +370,6 @@ class language{
         return $urlval;
 	}
 	
-	
-	
 	/**
  	* Detect a Language Change
  	* 1. Parked (sub)Domain		eg. http://es.mydomain.com (Preferred for SEO)
@@ -387,12 +386,13 @@ class language{
 		
 		
 		if(false !== $this->detect && !$foce) return $this->detect;
-		
+		$this->_cookie_domain = '';
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
 			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			$this->_cookie_domain = ".".e_DOMAIN;
 			define('MULTILANG_SUBDOMAIN',TRUE);
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
@@ -425,7 +425,16 @@ class language{
 		return $detect_language;
 	}
 
-
+	/**
+	 * Get domain to be used in cookeis (e.g. .domain.com), or empty
+	 * if multi-language subdomain settings not enabled
+	 * Available after self::detect() 
+	 * @return string
+	 */
+	public function getCookieDomain()
+	{
+		return $this->_cookie_domain;
+	}
 
 	/**
 	 * Set the Language (Constants, $_SESSION and $_COOKIE) for the current page. 
