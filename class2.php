@@ -738,6 +738,8 @@ if (!class_exists('e107table', false))
 //DEPRECATED, BC, call the method only when needed, $e107->ns caught by __get()
 $ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 
+// EONE-134 - bad e_module could destroy e107 instance
+$e107 = e107::getInstance();
 $e107->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
