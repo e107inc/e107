@@ -463,7 +463,7 @@ class e_parse
 	 */
 	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
-		global $pref;
+		$core_pref = e107::getConfig();
 		if (is_array($data))
 		{
 			foreach ($data as $key => $var)
@@ -482,17 +482,17 @@ class e_parse
 		if ($mod != 'pReFs')
 		{
 			$data = $this->preFilter($data);
-			if (!check_class(varset($pref['post_html'], e_UC_MAINADMIN)) || !check_class(varset($pref['post_script'], e_UC_MAINADMIN)))
+			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)) || !check_class($core_pref->get('post_script', e_UC_MAINADMIN)))
 			{
 				$data = $this->dataFilter($data);
 			}
 		}
 
-		if (isset($pref['post_html']) && check_class($pref['post_html']))
+		if (/*$core_pref->is('post_html') && */check_class($core_pref->get('post_html')))
 		{
 			$no_encode = TRUE;
 		}
-		if (is_numeric($original_author) && !check_class($pref['post_html'], '', $original_author))
+		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
 			$no_encode = FALSE;
 		}
@@ -509,7 +509,8 @@ class e_parse
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
-		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($pref['php_bbcode']))
+		// XXX - php_bbcode pref missing?
+		if ((strpos($mod, 'no_php') !== FALSE) || !check_class($core_pref->get('php_bbcode')))
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}
