@@ -317,7 +317,7 @@ class e_session
 	{
 		foreach ($config as $k => $v)
 		{
-			$key = '_session'.$key;
+			$key = '_session'.$k;
 			if (isset($this->$key)) $this->$key = $v;
 		}
 		return $this;
