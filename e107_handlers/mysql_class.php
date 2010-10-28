@@ -1010,8 +1010,9 @@ class e_db_mysql
 		global $pref;
 
 		//When running a multi-language site with english included. English must be the main site language.
-
-		if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE)
+		$core_pref = e107::getConfig();
+		//if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE)
+		if ((!$this->mySQLlanguage || !$core_pref->get('multilanguage') || !$core_pref->get('sitelanguage') /*|| $this->mySQLlanguage==$core_pref->get('sitelanguage')*/) && $multiple==FALSE)
 		{
 		  	return $table;
 		}
@@ -1042,7 +1043,7 @@ class e_db_mysql
 			   		$lng = $tmp[0];
                     foreach($table as $t)
 					{
-                    	if(eregi($t."$",$tab))
+                    	if(preg_match('/'.$t.'$/i', $tab)) // some str*() check instead?
 						{
 							$lanlist[$lng][$this->mySQLPrefix.$t] = $tab;
 						}
