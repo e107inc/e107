@@ -83,7 +83,7 @@ if(isset($_POST['send-contactus'])){
 	if ($pref['signup_remote_emailcheck'] && $error == '')
 	{
 		require_once(e_HANDLER."mail_validation_class.php");
-		list($adminuser,$adminhost) = split ('@', SITEADMINEMAIL);
+		list($adminuser,$adminhost) = explode('@', SITEADMINEMAIL, 2);
 		$validator = new email_validation_class;
 		$validator->localuser= $adminuser;
 		$validator->localhost= $adminhost;
