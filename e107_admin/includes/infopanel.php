@@ -1,29 +1,25 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (C) 2008-2009 e107 Inc (e107.org)
- |     http://e107.org
- |
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision$
- |     $Date$
- |     $Author$
- +----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Info panel admin view
+ *
+ * $URL$
+ * $Id$
  */
+
 if (!defined('e107_INIT'))
 {
 	exit;
 }
-require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
-require_once (e_HANDLER."form_handler.php");
-$frm = new e_form(true);
+//require_once (e_HANDLER."message_handler.php");
+$emessage = e107::getMessage();
+// require_once (e_HANDLER."form_handler.php");
+$frm = e107::getForm();
 //enable inner tabindex counter
 
 if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))

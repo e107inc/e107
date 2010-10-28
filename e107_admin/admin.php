@@ -327,6 +327,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	global $sql, $tp;
 	
 	$plug_id = array();
+	$plugin_array = array();
 	e107::getDb()->db_Select("plugin", "*", "plugin_installflag = 1"); // Grab plugin IDs. 
 	while ($row = e107::getDb()->db_Fetch())
 	{
