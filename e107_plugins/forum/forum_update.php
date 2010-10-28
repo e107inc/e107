@@ -843,7 +843,7 @@ function step10()
 						{
 							//If file, add real name to entry
 							case 'file':
-								$tmp = split('_', $fInfo['basename'], 4);
+								$tmp = explode('_', $fInfo['basename'], 4);
 								$newval .= '*'.$tmp[3];
 								break;
 
@@ -1264,7 +1264,7 @@ class forumUpgrade
 	function moveAttachment($attachment, $post_id, &$error)
 	{
 		set_time_limit(30);
-//		$tmp = split('/', $attachment['name']);
+//		$tmp = explode('/', $attachment['name']);
 		$attachment['name'] = str_replace(array(' ', "\n", "\r"), '', $attachment['name']);
 		$old = str_replace('{e_FILE}', e_FILE, $attachment['name']);
 		$fileInfo = pathinfo($attachment['name']);
@@ -1312,7 +1312,7 @@ class forumUpgrade
 		$oldThumb = '';
 		if($attachment['thumb'])
 		{
-			$tmp = split('/', $attachment['thumb']);
+			$tmp = explode('/', $attachment['thumb']);
 			$fileInfo = pathinfo($attachment['thumb']);
 
 			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachment['thumb']);

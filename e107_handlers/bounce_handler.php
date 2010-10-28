@@ -397,7 +397,7 @@ class BounceHandler{
 		// parse the email into data structures
 		$boundary = $head_hash['Content-type']['boundary'];
 		$mime_sections = BounceHandler::parse_body_into_mime_sections($body, $boundary);
-		$arrBody = split("\r\n", $body);
+		$arrBody = explode("\r\n", $body);
 
 		// now we try all our weird text parsing methods
 		if (preg_match("/auto.{0,20}reply|vacation|(out|away|on holiday).*office/i", $head_hash['Subject'])){
@@ -417,7 +417,7 @@ class BounceHandler{
 			//  Busted Exim MTA
 			//  Up to 50 email addresses can be listed on each header.
 			//  There can be multiple X-Failed-Recipients: headers. - (not supported)
-			$arrFailed = split(',', $head_hash['X-failed-recipients']);
+			$arrFailed = explode(',', $head_hash['X-failed-recipients']);
 			for($j=0; $j<count($arrFailed); $j++){
 				$output[$j]['recipient'] = trim($arrFailed[$j]);
 				$output[$j]['status'] = BounceHandler::get_status_code_from_text($output[$j]['recipient'], $arrBody,0);
