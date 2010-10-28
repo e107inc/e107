@@ -30,7 +30,7 @@ if (USER_AREA == TRUE)
 	 *
 	 */
 	
-	if (((e_PAGE == "comment.php") || (eregi('extend', e_QUERY))) && ($fb->fb_uid))
+	if (((e_PAGE == "comment.php") || (stripos(e_QUERY, 'extend') !== FALSE)) && ($fb->fb_uid))
 	{
 		
 		echo '<script type="text/javascript">

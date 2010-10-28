@@ -1831,7 +1831,7 @@ class users
 			if ($head['bounce'])
 			{
 			// Its a 'bounce' email
-				if (ereg('.*X-e107-id:(.*)MIME',$obj->getBody($i),$result))
+				if (preg_match('/.*X-e107-id:(.*)MIME/',$obj->getBody($i),$result))
 				{
 					if ($result[1])
 					{

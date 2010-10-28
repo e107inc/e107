@@ -98,7 +98,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 				{
 					$dir = str_replace($paths, "", $icon['path']);
 
-					if (!$filter || ($filter && ereg($filter, $dir.$icon['fname'])))
+					if (!$filter || ($filter && preg_match('~'.$filter.'~', $dir.$icon['fname'])))
 					{
 						$pth = $dir;
 						if($fullpath)
