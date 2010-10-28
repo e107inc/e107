@@ -379,6 +379,7 @@ $sysprefs = new prefs;
 
 // Check core preferences
 //FIXME - message_handler is dying after message_handler(CRITICAL_ERROR) call
+e107::getConfig()->load(); // extra load, required if mysql handler already called e107::getConfig()
 if(!e107::getConfig()->hasData())
 {
 	// Core prefs error - admin log
