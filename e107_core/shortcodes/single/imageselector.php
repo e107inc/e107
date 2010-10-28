@@ -60,7 +60,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$recurse = ($subdirs) ? $subdirs : 0;
 			foreach ($paths as $pths)
 			{
-				$imagelist[$tp->createConstants($pths, 'mix')] = $fl->get_files($pths, '\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
+				$imagelist[$tp->createConstants($pths, 'mix')] = $fl->get_files($pths, '\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG|\.jpeg|\.JPEG|\.svn|\.SVN', 'standard', $recurse);
 			}
 	
 			if (!$fullpath && (count($paths) > 1))
