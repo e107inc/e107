@@ -330,7 +330,7 @@ class rssCreate
 						$this -> rssItems[$k]['title'] = $row['title'];
 						if($row['link'])
 						{
-							if(eregi("http",$row['link']))
+							if(stripos($row['link'], 'http') !== FALSE)
 							{
 								$this -> rssItems[$k]['link'] = $row['link'];
 							}
@@ -361,7 +361,7 @@ class rssCreate
 						$this -> rssItems[$k]['category_name'] = $row['category_name'];
 						if($row['category_link'])
 						{
-							if(eregi("http",$row['category_link']))
+							if(stripos($row['category_link'], 'http') !== FALSE)
 							{
 								$this -> rssItems[$k]['category_link'] = $row['category_link'];
 							}

@@ -913,7 +913,7 @@ function unused($lanfile,$script)
 		{
 			if(trim($line) !="")
 			{	    		
-		   		$disabled = (eregi("^//",$line)) ? " (disabled)" : FALSE;
+		   		$disabled = (preg_match("#^//#i",$line)) ? " (disabled)" : FALSE;
 				if($match = getDefined($line))
 				{
 					$text .= compareit($match['define'],$compare,$match['value'],$disabled);					
