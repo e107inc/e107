@@ -1069,6 +1069,20 @@ class e_install
 	{
 		$this->logLine('Starting configuration import');
 
+		// PRE-CONFIG start - create and register blank config instances - do not load!
+		$config_aliases = array(
+			'core',
+			'core_backup',
+			'emote', 
+			'menu',
+			'search',
+			'notify',
+		);
+		foreach ($config_aliases as $alias) 
+		{
+			e107::getConfig($alias, false);
+		}
+		// PRE-CONFIG end		
 
 		// Basic stuff to get the handlers/classes to work.
 
