@@ -745,12 +745,12 @@ class e107
 	 * @param string $name core|core_backup|emote|menu|search|notify|ipool
 	 * @return e_core_pref
 	 */
-	public static function getConfig($name = 'core')
+	public static function getConfig($name = 'core', $load = true)
 	{
 		if(!isset(self::$_core_config_arr[$name]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
-			self::$_core_config_arr[$name] = new e_core_pref($name, true);
+			self::$_core_config_arr[$name] = new e_core_pref($name, $load);
 		}
 
 		return self::$_core_config_arr[$name];
