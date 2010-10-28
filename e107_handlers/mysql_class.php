@@ -21,8 +21,13 @@
  *	@package    e107
  *	@subpackage	e107_handlers
  *	@version 	$Id$;
- *
  *	@todo separate cache for db type tables
+ *
+ * WARNING!!! System config  should be DIRECTLY called inside db handler like this:
+ * e107::getConfig('core', false); 
+ * FALSE (don't load) is critical important - if missed, expect dead loop (preference handler is calling db handler as well 
+ * when data is initally loaded)
+ * Always use $this->getConfig() method to avoid issues pointed above
  */
 
 /*
@@ -191,6 +196,14 @@ class e_db_mysql
 		return TRUE;
 	}
 
+	/**
+	 * Get system config
+	 * @return e_core_pref
+	 */
+	public function getConfig()
+	{
+		return e107::getConfig('core', false);
+	}
 
 	/**
 	* @return void
@@ -1010,7 +1023,9 @@ class e_db_mysql
 		global $pref;
 
 		//When running a multi-language site with english included. English must be the main site language.
-		$core_pref = e107::getConfig();
+		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
+		// Temporary solution, better one is needed
+		$core_pref = $this->getConfig(); 
 		//if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE)
 		if ((!$this->mySQLlanguage || !$core_pref->get('multilanguage') || !$core_pref->get('sitelanguage') /*|| $this->mySQLlanguage==$core_pref->get('sitelanguage')*/) && $multiple==FALSE)
 		{
@@ -1589,7 +1604,8 @@ class e_db_mysql
 			else
 			{		// Need to try and find a table definition
 				$searchArray = array(e_ADMIN.'sql/db_field_defs.php');
-				$sqlFiles = (array) e107::getPref('e_sql_list', array()); // kill any PHP notices
+				// e107::getPref() shouldn't be used inside db handler! See db_IsLang() comments
+				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
 				foreach ($sqlFiles as $p => $f)
 				{
 					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
