@@ -69,7 +69,7 @@ class DHTML_Calendar
 		}
 		else
 		{
-			$this->calendar_theme_file = e_PACK_ABS."calendar/calendar.css";
+			$this->calendar_theme_file = e_PACK_ABS."calendar/css/calendar.css";
 		}
 
 		$this->calendar_options = array('ifFormat' => '%Y/%m/%d', 'daFormat' => '%Y/%m/%d');
