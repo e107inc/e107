@@ -609,9 +609,9 @@ class e_parse
 
 	function toForm($text)
 	{
-		if($text == '')
+		if(empty($text)) // fix - handle proper 0, Space etc values.
 		{
-			return '';
+			return $text;
 		}
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');

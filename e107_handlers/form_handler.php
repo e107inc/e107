@@ -1845,6 +1845,7 @@ class e_form
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 				<div>
+				".vartrue($form['header'])."
 				".$this->token()."
 			";
 
@@ -1855,6 +1856,7 @@ class e_form
 			}
 
 			$text .= "
+			".vartrue($form['footer'])."
 			</div>
 			</form>
 			";

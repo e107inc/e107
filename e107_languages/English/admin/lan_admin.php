@@ -278,6 +278,7 @@ define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not
 
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
+define("LAN_BOOL_REVERSE", "Invert");
 
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
