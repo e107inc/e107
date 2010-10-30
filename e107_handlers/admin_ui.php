@@ -1309,6 +1309,7 @@ class e_admin_dispatcher
 				{
 					case 'caption':
 						$k2 = 'text';
+						$v = defset($v, $v);
 					break;
 
 					case 'url':
@@ -3021,6 +3022,43 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $pid;
 	protected $listQry;
 	protected $editQry;
+	
+	
+	/**
+	 * Markup to be auto-inserted before List filter
+	 * @var string
+	 */
+	public $preFiliterMarkup = '';
+	
+	/**
+	 * Markup to be auto-inserted after List filter
+	 * @var string
+	 */
+	public $postFiliterMarkup = '';
+	
+	/**
+	 * Markup to be auto-inserted at the top of Create form
+	 * @var string
+	 */
+	public $headerCreateMarkup = '';
+	
+	/**
+	 * Markup to be auto-inserted at the bottom of Create form
+	 * @var string
+	 */
+	public $footerCreateMarkup = '';
+	
+	/**
+	 * Markup to be auto-inserted at the top of Update form
+	 * @var string
+	 */
+	public $headerUpdateMarkup = '';
+	
+	/**
+	 * Markup to be auto-inserted at the bottom of Update form
+	 * @var string
+	 */
+	public $footerUpdateMarkup = '';
 
 	/**
 	 * Constructor
@@ -3659,11 +3697,17 @@ class e_admin_form_ui extends e_form
 		if($controller->getId())
 		{
 			$legend = LAN_UPDATE.' record #'.$controller->getId();
+			$form_start = vartrue($controller->headerUpdateMarkup);
+			$form_end = vartrue($controller->footerUpdateMarkup);
 		}
 		else
 		{
 			$legend = 'New record';
+			$form_start = vartrue($controller->headerCreateMarkup);
+			$form_end = vartrue($controller->footerCreateMarkup);
 		}
+
+		
 		$forms = $models = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
@@ -3674,6 +3718,8 @@ class e_admin_form_ui extends e_form
 					'create' => array(
 						'legend' => $legend,
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
+						'header' => $form_start,
+						'footer' => $form_end,
 						'after_submit_options' => true, // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
 						'triggers' => 'auto', // standard create/update-cancel triggers
@@ -3770,10 +3816,14 @@ class e_admin_form_ui extends e_form
 		}
 		$input_options['id'] = false;
 		$input_options['class'] = 'tbox input-text filter';
+		$controller = $this->getController();
+		$filter_pre = vartrue($controller->preFiliterMarkup);
+		$filter_post = vartrue($controller->postFiliterMarkup);
 		$text = "
 			<form method='get' action='".e_SELF."'>
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>Filter</legend>
+					".$filter_pre."
 					<div class='left'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."
 						".$this->select_open('filter_options', array('class' => 'tbox select filter', 'id' => false))."
@@ -3789,6 +3839,7 @@ class e_admin_form_ui extends e_form
 							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='Loding...' />
 						</span>
 					</div>
+					".$filter_post."
 				</fieldset>
 			</form>
 		";
@@ -3876,6 +3927,7 @@ class e_admin_form_ui extends e_form
 
 			switch($val['type'])
 			{
+					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
 						$option['bool__'.$key.'__1'] = LAN_YES;
 						$option['bool__'.$key.'__0'] = LAN_NO;

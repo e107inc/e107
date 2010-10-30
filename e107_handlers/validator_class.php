@@ -751,20 +751,34 @@ class e_validator
 			e107::getMessage()->addStack(sprintf($err_message, $err_code, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
 			return $this;
 		}
-
+	
+		//Additional message
+		$lan = LAN_VALIDATE_FAILMSG;
+		$dbgmsg = false;
+		if($err_message)
+		{
+			$lan = (strpos($err_message, '%1$s') !== false ? '' : '<strong>&quot;%1$s&quot;</strong> - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
+			$dbgmsg = LAN_VALIDATE_FAILMSG;
+		}
+		
 		//Core message
 		$msg = sprintf(
-			LAN_VALIDATE_FAILMSG, //'<strong>&quot;%s&quot;</strong> validation error: [#%d] %s. '
+			$lan, // default '<strong>&quot;%1$s&quot;</strong> validation error: [#%2$d] %3$s. '
 			$field_title,
 			$err_code,
 			$this->getErrorByCode($err_code)
 		);
 
-		//Additional message
-		if($err_message)
+		if($dbgmsg && defset('e107_DEBUG_LEVEL'))
 		{
-			$msg .= ' '.$err_message;
+			e107::getMessage()->addDebug(sprintf(
+				$dbgmsg, 
+				$field_title,
+				$err_code,
+				$this->getErrorByCode($err_code)
+			));
 		}
+
 		e107::getMessage()->addStack($msg, $this->_message_stack, E_MESSAGE_ERROR);
 
 		return $this;

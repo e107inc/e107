@@ -92,6 +92,7 @@ class e_db_mysql
 	public $mySQLtableList = array(); // list of all Db tables.
 
 	public $mySQLtableListLanguage = array(); // Db table list for the currently selected language
+	public $mySQLtablelist = array();
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	/**
