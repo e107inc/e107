@@ -13,28 +13,24 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 
 class sitelinks
 {
-
 	var $eLinkList = array();
 
 	function getlinks($cat=1)
 	{
 		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
-
 		$sql = e107::getDb('sqlSiteLinks');
-
 		$query = "SELECT * FROM #links WHERE link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
 		if($sql->db_Select_gen($query))
 		{
 			while ($row = $sql->db_Fetch())
 			{
-			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
-			//		$tmp=explode('.', $row['link_name'], 3);
-			 //		$this->eLinkList[$tmp[1]][]=$row;
+				//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
+				//		$tmp=explode('.', $row['link_name'], 3);
+				//		$this->eLinkList[$tmp[1]][]=$row;
 				if (isset($row['link_parent']) && $row['link_parent'] != 0)
 				{
 					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
@@ -42,7 +38,6 @@ class sitelinks
 				}
 				else
 				{
-
 					$this->eLinkList['head_menu'][] = $row;
 					if(vartrue($row['link_function']))
 					{
@@ -68,18 +63,17 @@ class sitelinks
 		return $this->eLinkList;
 	}
 
-
 	function get($cat=1, $style='', $css_class = false)
 	{
 		global $pref, $ns, $e107cache, $linkstyle;
 		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
-
 		if ($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY))))
 		{
 		  return $data;
 		}
 
-		if (LINKDISPLAY == 4) {
+		if (LINKDISPLAY == 4) 
+		{
 			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
 			return;
 		}
@@ -87,11 +81,12 @@ class sitelinks
 		$this->getlinks($cat);
 
 		// are these defines used at all ?
-
-		if(!defined('PRELINKTITLE')){
+		if(!defined('PRELINKTITLE'))
+		{
 			define('PRELINKTITLE', '');
 		}
-		if(!defined('PRELINKTITLE')){
+		if(!defined('PRELINKTITLE'))
+		{
 			define('POSTLINKTITLE', '');
 		}
 		// -----------------------------
@@ -99,7 +94,8 @@ class sitelinks
 		// where did link alignment go?
 		if (!defined('LINKALIGN')) { define(LINKALIGN, ''); }
 
-		if(!$style){
+		if(!$style)
+		{
 			$style['prelink'] = defined('PRELINK') ? PRELINK : '';
 			$style['postlink'] = defined('POSTLINK') ? POSTLINK : '';
 			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
@@ -114,16 +110,19 @@ class sitelinks
 			$style['sublinkclass'] = defined('SUBLINKCLASS') ? SUBLINKCLASS : '';
 		}
 
-    // Sublink styles.- replacing the tree-menu.
-        if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink'])){
-			foreach($style as $key=>$val){
+		// Sublink styles.- replacing the tree-menu.
+        if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink']))
+		{
+			foreach($style as $key=>$val)
+			{
 			  	$aSubStyle[$key] = vartrue($style["sub".$key]) ? $style["sub".$key] : $style[$key];
 			}
-        }else{
-				$style['subindent'] = "&nbsp;&nbsp;";
-				$aSubStyle = $style;
+        }
+		else
+		{
+			$style['subindent'] = "&nbsp;&nbsp;";
+			$aSubStyle = $style;
 		}
-
 		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
 
 		// php warnings
@@ -133,24 +132,23 @@ class sitelinks
 		}
 		$render_link = array();
 
-		if ($style['linkdisplay'] != 3)	{
-			foreach ($this->eLinkList['head_menu'] as $key => $link){
+		if ($style['linkdisplay'] != 3)	
+		{
+			foreach ($this->eLinkList['head_menu'] as $key => $link)
+			{
 				$main_linkid = "sub_".$link['link_id'];
-
 				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
-
 				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
 				if(!defined("LINKSRENDERONLYMAIN") && !varset($style['linkmainonly']))	/* if this is defined in theme.php only main links will be rendered */
-				{
-
-					// if there's a submenu. :
-					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
+				{	// if there's a submenu. :
+					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]))
+					{
                         foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
                         {
                             if($this->hilite($val['link_url'],TRUE)== TRUE || $link['link_expand'] == FALSE)
                             {
-                                $substyle = "compact";
+                                $substyle = "block"; // previously (non-W3C compliant): compact
                                 break;
                             }
                             else
@@ -159,7 +157,8 @@ class sitelinks
                             }
                         }
                         $render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
-						foreach ($this->eLinkList[$main_linkid] as $sub){
+						foreach ($this->eLinkList[$main_linkid] as $sub)
+						{
 							$render_link[$key] .= $this->makeLink($sub, TRUE, $aSubStyle, $css_class);
 						}
 						$render_link[$key] .= "\n</div>\n\n";
@@ -168,7 +167,8 @@ class sitelinks
 			}
 			$text .= implode($style['linkseparator'], $render_link);
 			$text .= $style['postlink'];
-			if ($style['linkdisplay'] == 2)	{
+			if ($style['linkdisplay'] == 2)	
+			{
 				$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks', TRUE);
 			}
 		}
@@ -214,8 +214,10 @@ class sitelinks
 		$highlighted = FALSE;
 
 		// If submenu: Fix Name, Add Indentation.
-		if ($submenu == TRUE) {
-			if(substr($linkInfo['link_name'],0,8) == "submenu."){
+		if ($submenu == TRUE) 
+		{
+			if(substr($linkInfo['link_name'],0,8) == "submenu.")
+			{
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
@@ -225,7 +227,8 @@ class sitelinks
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
 		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
 
-		if(strpos($linkInfo['link_url'],"{") !== FALSE){
+		if(strpos($linkInfo['link_url'],"{") !== FALSE)
+		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
 		// By default links are not highlighted.
@@ -234,7 +237,8 @@ class sitelinks
 		$linkadd = ($css_class) ? " class='".$css_class."'" : $linkadd;
 
 		// Check for screentip regardless of URL.
-		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
+		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
+		{
 			$screentip = " title = \"".$tp->toHTML($linkInfo['link_description'],"","value, emotes_off, defs, no_hook")."\"";
 		}
 
@@ -249,11 +253,13 @@ class sitelinks
 			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
-			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
+			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
+			{
 				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
 				$highlighted = TRUE;
 			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
+			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) 
+			{
 				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
 			}
@@ -286,19 +292,20 @@ class sitelinks
 		// If its a link.. make a link
 		$_link = "";
 		$_link .= $accessdigit;
-		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE)){
+		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE))
+		{
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</a>";
-		// If its not a link, but has a class or screentip do span:
-		}elseif (!empty($linkadd) || !empty($screentip)){
+		}
+		elseif (!empty($linkadd) || !empty($screentip))
+		{	// If its not a link, but has a class or screentip do span:
 			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</span>";
-			// Else just the name:
-		}else {
+		}
+		else 
+		{	// Else just the name:
 			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook");
 		}
 
 		$_link = $linkstart.$indent.$_link;
-
-
 
 		global $SITELINKSTYLE;
 		if(!$SITELINKSTYLE)
@@ -312,92 +319,86 @@ class sitelinks
 		$replace[1] = $tp -> toHTML($linkInfo['link_description'], true);
 
 		$text = preg_replace($search, $replace, $SITELINKSTYLE);
-
 		return $text;
 	}
 
-
-
-
-/**
- *	Determine whether link highlighting needs to be active
- *
- *	@param string $link - the full link as stored in the DB
- *	@param boolean $enabled - TRUE if the link is enabled
- *
- *	@return boolean TRUE if link to be highlighted, FALSE if not
- */
-function hilite($link,$enabled = FALSE)
-{
-	global $PLUGINS_DIRECTORY,$tp,$pref;
-    if(!$enabled){ return FALSE; }
-
-    $link = $tp->replaceConstants($link, '', TRUE);			// The link saved in the DB
-  	$tmp = explode('?',$link);
-    $link_qry = (isset($tmp[1])) ? $tmp[1] : '';
-    $link_slf = (isset($tmp[0])) ? $tmp[0] : '';
-	$link_pge = basename($link_slf);
-	$link_match = (empty($tmp[0])) ? "": strpos(e_SELF,$tmp[0]);	// e_SELF is the actual displayed page
-
-    if(e_MENU == "debug" && getperms('0'))
+	/**
+	 *	Determine whether link highlighting needs to be active
+	 *
+	 *	@param string $link - the full link as stored in the DB
+	 *	@param boolean $enabled - TRUE if the link is enabled
+	 *
+	 *	@return boolean TRUE if link to be highlighted, FALSE if not
+	 */
+	function hilite($link,$enabled = FALSE)
 	{
-		echo "<br />link= ".$link;
-		echo "<br />link_q= ".$link_qry;
-		echo "<br />url= ".e_PAGE;
-		echo "<br />self= ".e_SELF;
-		echo "<br />url_query= ".e_QUERY."<br />";
-	}
+		global $PLUGINS_DIRECTORY,$tp,$pref;
+		if(!$enabled){ return FALSE; }
 
+		$link = $tp->replaceConstants($link, '', TRUE);			// The link saved in the DB
+		$tmp = explode('?',$link);
+		$link_qry = (isset($tmp[1])) ? $tmp[1] : '';
+		$link_slf = (isset($tmp[0])) ? $tmp[0] : '';
+		$link_pge = basename($link_slf);
+		$link_match = (empty($tmp[0])) ? "": strpos(e_SELF,$tmp[0]);	// e_SELF is the actual displayed page
 
-// ----------- highlight overriding - set the link matching in the page itself.
-	if(defined('HILITE'))
-	{
-		if(strpos($link,HILITE))
+		if(e_MENU == "debug" && getperms('0'))
 		{
-        	return TRUE;
+			echo "<br />link= ".$link;
+			echo "<br />link_q= ".$link_qry;
+			echo "<br />url= ".e_PAGE;
+			echo "<br />self= ".e_SELF;
+			echo "<br />url_query= ".e_QUERY."<br />";
 		}
-	}
 
-
-// --------------- highlighting for 'HOME'. ----------------
-	// See if we're on whatever is set as 'home' page for this user
-
-	// Although should be just 'index.php', allow for the possibility that there might be a query part
-	global $pref;
-	if (($link_slf == e_HTTP."index.php") && count($pref['frontpage']))
-	{	// Only interested if the displayed page is index.php - see whether its the user's home (front) page
-      $full_url = 'news.php';					// Set a default in case
-	  $uc_array = explode(',', USERCLASS_LIST);
-		foreach ($pref['frontpage'] as $fk=>$fp)
+		// ----------- highlight overriding - set the link matching in the page itself.
+		if(defined('HILITE'))
 		{
-	      if (in_array($fk,$uc_array))
-	      {
-	        $full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
-			break;
-	      }
-	    }
-	    list($fp,$fp_q) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
-		if (e_MENU == "debug" && getperms('0'))
-	{
-		  echo "\$fp = ".$fp."<br />";
-		  echo "\$fp_q = ".$fp_q."<br />";
+			if(strpos($link,HILITE))
+			{
+				return TRUE;
+			}
 		}
-		$tmp = str_replace("../", "", e_SELF);
-	    if ((strpos($fp, $tmp) !== FALSE) && ($fp_q == $link_qry))
-	  {
-	  	return TRUE;
-	  }
-	}
 
-// --------------- highlighting for plugins. ----------------
+		// --------------- highlighting for 'HOME'. ----------------
+		// See if we're on whatever is set as 'home' page for this user
+
+		// Although should be just 'index.php', allow for the possibility that there might be a query part
+		global $pref;
+		if (($link_slf == e_HTTP."index.php") && count($pref['frontpage']))
+		{	// Only interested if the displayed page is index.php - see whether its the user's home (front) page
+			$full_url = 'news.php';					// Set a default in case
+			$uc_array = explode(',', USERCLASS_LIST);
+			foreach ($pref['frontpage'] as $fk=>$fp)
+			{
+				if (in_array($fk,$uc_array))
+				{
+					$full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
+					break;
+				}
+			}
+			list($fp,$fp_q) = explode("?",$full_url."?"); // extra '?' ensure the array is filled
+			if (e_MENU == "debug" && getperms('0'))
+			{
+				echo "\$fp = ".$fp."<br />";
+				echo "\$fp_q = ".$fp_q."<br />";
+			}
+			$tmp = str_replace("../", "", e_SELF);
+			if ((strpos($fp, $tmp) !== FALSE) && ($fp_q == $link_qry))
+			{
+				return TRUE;
+			}
+		}
+
+		// --------------- highlighting for plugins. ----------------
 		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE)
 		{
 			if($link_qry)
-			{  // plugin links with queries
+			{	// plugin links with queries
 				return (strpos(e_SELF,$link_slf) && e_QUERY == $link_qry) ? TRUE : FALSE;
 			}
 			else
-			{  // plugin links without queries
+			{	// plugin links without queries
 				$link = str_replace("../", "", $link);
 		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE)
 				{
@@ -407,47 +408,44 @@ function hilite($link,$enabled = FALSE)
             return FALSE;
 		}
 
-// --------------- highlight for news items.----------------
-// eg. news.php, news.php?list.1 or news.php?cat.2 etc
-	if(substr(basename($link),0,8) == "news.php")
-	{
-
-		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) {
-
-			$lnk = explode(".",$link_qry); // link queries.
-			$qry = explode(".",e_QUERY); // current page queries.
-
-			if($qry[0] == "item")
-			{
-				return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
-     		}
-
-			if($qry[0] == "all" && $lnk[0] == "all")
-			{
-            	return TRUE;
-     		}
-
-			if($lnk[0] == $qry[0] && $lnk[1] == $qry[1])
-			{
-            	return TRUE;
-			}
-
-			if($qry[1] == "list" && $lnk[0] == "list" && $lnk[1] == $qry[2])
-			{
-            	return TRUE;
-			}
-
-		}
-		elseif (!e_QUERY && e_PAGE == "news.php")
+		// --------------- highlight for news items.----------------
+		// eg. news.php, news.php?list.1 or news.php?cat.2 etc
+		if(substr(basename($link),0,8) == "news.php")
 		{
+			if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) 
+			{
+				$lnk = explode(".",$link_qry); // link queries.
+				$qry = explode(".",e_QUERY); // current page queries.
 
-		   	return TRUE;
-		}
+				if($qry[0] == "item")
+				{
+					return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
+				}
+
+				if($qry[0] == "all" && $lnk[0] == "all")
+				{
+					return TRUE;
+				}
+
+				if($lnk[0] == $qry[0] && $lnk[1] == $qry[1])
+				{
+					return TRUE;
+				}
+
+				if($qry[1] == "list" && $lnk[0] == "list" && $lnk[1] == $qry[2])
+				{
+					return TRUE;
+				}
+			}
+			elseif (!e_QUERY && e_PAGE == "news.php")
+			{
+				return TRUE;
+			}
 			return FALSE;
+		}
 
-	}
-// --------------- highlight for Custom Pages.----------------
-// eg. page.php?1, or page.php?5.7	[2nd parameter is page # within item]
+		// --------------- highlight for Custom Pages.----------------
+		// eg. page.php?1, or page.php?5.7	[2nd parameter is page # within item]
 
 		//echo "Link: {$link}, link query: {$link_qry}, e_SELF: ".e_SELF.", link_slf: {$link_slf}, link_pge: {$link_pge}, e_PAGE: ".e_PAGE."<br />";
 		if (($link_slf == e_HTTP.'page.php') && (e_PAGE == 'page.php'))
@@ -464,11 +462,12 @@ function hilite($link,$enabled = FALSE)
 			}
 		}
 
-// --------------- highlight default ----------------
+		// --------------- highlight default ----------------
 		if(strpos($link, '?') !== FALSE)
 		{
 			$thelink = str_replace("../", "", $link);
-			if(!preg_match("/all|item|cat|list/", e_QUERY) && (empty($link) == false) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
+			if(!preg_match("/all|item|cat|list/", e_QUERY) && (empty($link) == false) && (strpos(e_SELF, str_replace("../", "",$link)) !== false))
+			{
 		   		return true;
 			}
 		}
@@ -486,7 +485,6 @@ function hilite($link,$enabled = FALSE)
 		{
           	return TRUE;
 		}
-
 	   	return FALSE;
 	}
 }
