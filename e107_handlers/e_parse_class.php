@@ -186,7 +186,7 @@ class e_parse
 	{
 		$ans = '';
 		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
-					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', 'javascript:', 'vbscript:');
+					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', '<plaintext', 'javascript:', 'vbscript:');
 
 		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
