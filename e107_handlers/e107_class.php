@@ -1704,6 +1704,68 @@ class e107
 		$ret = ($force) ? include($path) : include_once($path);
 		return (isset($ret)) ? $ret : "";
 	}
+	
+	/**
+	 * Simplify importing of core Language files.
+	 * All inputs are sanitized.
+	 * Core Exceptions as e_LANGUAGE.'.php' and e_LANGUAGE.'_custom.php' are manually loaded. (see class2.php)
+	 *  
+	 * Examples:
+	 * <code><?php
+	 * 	// import defeinitions from /e107_languages/[CurrentLanguage]/lan_comment.php</code>
+	 * 	e107::coreLan('comment'); 
+	 * 
+	 * 	// import defeinitions from /e107_languages/[CurrentLanguage]/admin/lan_banlist.php
+	 * 	e107::coreLan('banlist', true);
+	 * </code> 
+	 * 
+	 * @param string $fname filename without the extension part (e.g. 'comment')
+	 * @param boolean $admin true if it's an administration language file
+	 * @return void
+	 */
+	public static function coreLan($fname, $admin = false)
+	{
+		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', $fname).'.php';
+		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
+		
+		self::includeLan($path, false);
+	}
+	
+	/**
+	 * Simplify importing of plugin Language files (following e107 plugin structure standards).
+	 * All inputs are sanitized.
+	 * 
+	 * Examples:
+	 * <code><?php
+	 * 	// import defeinitions from /e107_plugins/forum/languages/[CurrentLanguage]/lan_forum.php</code>
+	 * 	e107::plugLan('forum', 'lan_forum'); 
+	 * 
+	 * 	// import defeinitions from /e107_plugins/featurebox/languages/[CurrentLanguage]_admin_featurebox.php</code>
+	 * 	e107::plugLan('featurebox', 'admin_featurebox', true); 
+	 * 
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	e107::plugLan('myplug'); 
+	 * 
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	e107::plugLan('myplug', 'admin/common'); 
+	 * </code> 
+	 * 
+	 * @param string $plugin plugin name
+	 * @param string $fname filename without the extension part (e.g. 'common')
+	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name 
+	 * @return void
+	 */
+	public static function plugLan($plugin, $fname = '', $flat = false)
+	{
+		$plugin = preg_replace('/[^\w]/', '', $plugin);
+		
+		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		else $fname = e_LANGUAGE;
+		
+		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
+		
+		self::includeLan($path, false);
+	}
 
 	/**
 	 * Routine looks in standard paths for language files associated with a plugin or

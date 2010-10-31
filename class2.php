@@ -522,14 +522,21 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 	$sql2->mySQLlanguage = e_LANGUAGE;
 }
 
-//TODO do it only once and with the proper function
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.'_custom.php');
+//do it only once and with the proper function
+// e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
+// e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
+include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
+$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
+if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
+{
+	include($customLan); 
+}
+unset($customLan);
 
 e107::getSession()
 	->challenge() // Create a unique challenge string for CHAP login
 	->check(); // Token protection
-// echo e_print($_SESSION, e107::getSession()->getSessionId(), e107::getSession()->getSessionName());
+
 //
 // N: misc setups: online user tracking, cache
 //
