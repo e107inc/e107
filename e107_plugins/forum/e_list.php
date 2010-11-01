@@ -79,7 +79,8 @@ else
 		$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
 		$thread_user = $u_id;
 
-		if ($thread_anon) {
+		if (isset($thread_anon)) 
+		{
 			$tmp = explode(chr(1), $thread_anon);
 			$thread_user = $tmp[0];
 			$thread_user_ip = $tmp[1];

@@ -465,28 +465,30 @@ class listclass {
 	function getlvisit()
 	{
 		global $qs, $list_pref;
+		
+		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
 
 		if(isset($qs[0]) && $qs[0] == "new")
 		{
-			if(isset($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse']){
-				if(isset($list_pref['new_page_timelapse_days']) && is_numeric($list_pref['new_page_timelapse_days']) && $list_pref['new_page_timelapse_days']){
+			if(isset($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse'])
+			{
+				if(isset($list_pref['new_page_timelapse_days']) && is_numeric($list_pref['new_page_timelapse_days']) && $list_pref['new_page_timelapse_days'])
+				{
 					$days = $list_pref['new_page_timelapse_days'];
-				}else{
+				}
+				else
+				{
 					$days = "30";
 				}
-				if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days){
+				if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days)
+				{
 					$lvisit = time()-$qs[1]*86400;
-				}else{
-					$lvisit = USERLV;
 				}
-			}else{
-				$lvisit = USERLV;
 			}
-		}else{
-			$lvisit = USERLV;
 		}
 		return $lvisit;
 	}
+
 
 	function getBullet($sectionicon, $mode)
 	{

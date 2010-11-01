@@ -77,7 +77,7 @@ class sitelinks
         // -----------------------------
 
         // where did link alignment go?
-        if (!defined('LINKALIGN')) { define(LINKALIGN, ''); }
+        if (!defined('LINKALIGN')) { define('LINKALIGN', ''); }
 
         if(!$style)
 		{
