@@ -292,7 +292,7 @@ SC_END
 
 SC_BEGIN LINK_URL
 global $LINK_URL, $linkspage_pref, $rowl;
-if(!$linkspage_pref['link_url'])
+if(!isset($linkspage_pref['link_url']))
 {
 	return "";
 }

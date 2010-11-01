@@ -46,17 +46,17 @@ if (isset($_POST['highlight_search']))
 
 if (!e_QUERY)
 {
-	//No paramters given, redirect to forum home
+	//No paramaters given, redirect to forum home
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
 else
 {
 	$tmp = explode(".", e_QUERY);
-	$thread_id = varset($tmp[0]);
+	$thread_id = intval(varset($tmp[0], 0));
 	$topic_from = varset($tmp[1], 0);
 	$action = varset($tmp[2]);
-	if (!$thread_id || !is_numeric($thread_id))
+	if (!$thread_id)
 	{
 		header("Location:".e_PLUGIN."forum/forum.php");
 		exit;

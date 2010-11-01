@@ -45,7 +45,7 @@ if (!$pref['timezone']) {
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-if ($_POST['submit_resetdisplaynames'])
+if (isset($_POST['submit_resetdisplaynames']))
 {
     $sql -> db_Update("user", "user_name=user_loginname");
 	$message = PRFLAN_157;
@@ -117,7 +117,8 @@ if (isset($pref['plug_installed']['alt_auth']))
 	}
 }
 
-if ($authlist) {
+if (isset($authlist)  && is_array($authlist))
+{
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
 	foreach($authlist as $a) {
 		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
@@ -1062,6 +1063,6 @@ function prefs_adminmenu() {
 	$var['security']['text'] = PRFLAN_47;
 	$var['comments']['text'] = PRFLAN_210;
 	$var['advanced']['text'] = PRFLAN_149;
-	show_admin_menu(LAN_OPTIONS, $action, $var, TRUE);
+	show_admin_menu(LAN_OPTIONS, '', $var, TRUE);
 }
 ?>
