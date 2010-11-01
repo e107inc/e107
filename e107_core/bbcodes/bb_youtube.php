@@ -239,6 +239,7 @@ class bb_youtube extends e_bb_base
 			}
 		}
 		$url = $url.'&amp;hl='.$hl;
+		$color = array();
 		if(isset($params['color1'])) $color[1] = $params['color1'];
 		if(isset($params['color2'])) $color[2] = $params['color2'];
 		foreach ($color as $key => $value) {
