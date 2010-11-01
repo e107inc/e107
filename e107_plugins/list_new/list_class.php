@@ -576,7 +576,7 @@ class listclass
 	{
 		global $qs;
 
-		$lvisit = USERLV;
+		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
 		if(varsettrue($qs[0]) == "new")
 		{
 			if(varsettrue($this->list_pref['new_page_timelapse']))

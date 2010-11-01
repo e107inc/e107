@@ -519,7 +519,7 @@ function nextprev_shortcode($parm = '')
 				$link = str_replace('[FROM]', $newstart, $url);
 			}
 	        $c = $i-1 + $index_add;
-	        $title = ($pagetitle[$c]) ? $pagetitle[$c] : $i;
+	        $title = (isset($pagetitle[$c]) && $pagetitle[$c]) ? $pagetitle[$c] : $i;
 	        $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
 		}
 		$dropdown .= '</select>';

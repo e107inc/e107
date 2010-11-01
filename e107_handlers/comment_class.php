@@ -963,7 +963,7 @@ class comment
 									}
 								}
 						} // End Switch
-						if ($ret['comment_title'])
+						if (varset($ret['comment_title']))
 						{
 							$reta[] = $ret;
 							$valid++;
