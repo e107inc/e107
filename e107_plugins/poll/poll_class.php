@@ -427,7 +427,7 @@ class poll
 					foreach ($optionArray as $option)
 					{
 						$OPTION = $tp->toHTML($option, TRUE);
-						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
+						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($percentage[$count]), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
 						$PERCENTAGE = $percentage[$count]."%";
 						$VOTES = POLLAN_31.": ".$voteArray[$count];
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
