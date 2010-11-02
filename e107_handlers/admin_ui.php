@@ -2181,8 +2181,9 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getUserPref()
 	{
-		global $user_pref;
-		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
+		//global $user_pref;
+		// return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
+		return e107::getUser()->getPref('admin_cols_'.$this->getTableName(), array());
 	}
 
 	/**
@@ -2191,10 +2192,15 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function setUserPref($new)
 	{
-		global $user_pref;
-		$user_pref['admin_cols_'.$this->getTableName()] = $new;
+		//global $user_pref;
+		//e107::getUser()->getConfig()->setData($new);
+		//$user_pref['admin_cols_'.$this->getTableName()] = $new;
+		//$this->fieldpref = $new;
+		//return save_prefs('user');
 		$this->fieldpref = $new;
-		return save_prefs('user');
+		return e107::getUser()->getConfig()
+			->set('admin_cols_'.$this->getTableName(), $new)
+			->save();
 	}
 
 	/**
