@@ -172,7 +172,7 @@ if (isset($_POST['emailsubmit']))
 		}
 
 		$email_body = '';
-		if(isset($EMAIL_HEADER)
+		if(isset($EMAIL_HEADER))
 		{
 			$email_body = $tp->parseTemplate($EMAIL_HEADER);
 		}
