@@ -925,7 +925,7 @@ class e_model
 			$res = $sql->db_Select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
-				$this->getFieldIdName().'='.$id.' '.$this->getParam('db_where', ''),
+				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
 				'default',
 				($this->getParam('db_debug') ? true : false)
 			);
@@ -950,6 +950,10 @@ class e_model
 		return $this;
 	}
 
+	/**
+	 * Retrieve system cache (if any)
+	 * @return array|false
+	 */
 	protected function _getCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -966,6 +970,10 @@ class e_model
 		return false;
 	}
 
+	/**
+	 * Set system cache if enabled for the model
+	 * @return e_model
+	 */
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -976,6 +984,10 @@ class e_model
 		return $this;
 	}
 
+	/**
+	 * Clrear system cache if enabled for the model
+	 * @return e_model
+	 */
 	protected function _clearCacheData()
 	{
 		if(!$this->isCacheEnabled(false))
@@ -983,21 +995,47 @@ class e_model
 			return $this;
 		}
 		e107::getCache()->clear_sys($this->getCacheString(true), false);
+		return $this;
+	}
+	
+	/**
+	 * Clrear system cache (public proxy) if enabled for the model
+	 * @return e_model
+	 */
+	public function clearCache()
+	{
+		return $this->_clearCacheData();
 	}
 
+	/**
+	 * Check if cache is enabled for the current model
+	 * @param boolean $checkId check if there is model ID
+	 * @return boolean
+	 */
 	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString() && (!$checkId || $this->getId()));
 	}
 
+	/**
+	 * Get model cache string
+	 * @param boolean $replace try to add current model ID (replace destination is {ID})
+	 * @return string
+	 */
 	public function getCacheString($replace = false)
 	{
 		return ($replace ? str_replace('{ID}', $this->getId(), $this->_cache_string) : $this->_cache_string);
 	}
 
+	/**
+	 * Set model cache string
+	 * @param string $str
+	 * @return e_model
+	 */
 	public function setCacheString($str)
 	{
 		$this->_cache_string = $str;
+		return $this;
 	}
 
     /**
@@ -1071,7 +1109,9 @@ class e_model
 	 * - db_fields
 	 * - db_where
 	 * - db_debug
-	 * - model_class: e_tree_model class - string class name for creating nodes inside default load() method
+	 * - model_class: e_tree_model class/subclasses - string class name for creating nodes inside default load() method
+	 * - clearModelCache: e_tree_model class/subclasses - clear cache per node after successful DB operation
+	 * - noCacheStringModify: e_tree_model class/subclasses - do not add additional md5 sum to tree cache string
 	 * @param array $params
 	 * @return e_model
 	 */
@@ -2078,7 +2118,7 @@ class e_front_model extends e_model
 			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
 		}
-		$this->addMessageSuccess(LAN_UPDATED);
+		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
 		return $res;
     }
 
@@ -2223,7 +2263,7 @@ class e_admin_model extends e_front_model
 
 		// Set the reutrned ID
 		$this->setId($res);
-		$this->addMessageSuccess(LAN_CREATED);
+		$this->clearCache()->addMessageSuccess(LAN_CREATED);
 
 		return $res;
     }
@@ -2254,7 +2294,10 @@ class e_admin_model extends e_front_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
-
+		else
+		{
+			$this->clearCache();
+		}
 		return $res;
     }
 
@@ -2290,7 +2333,10 @@ class e_admin_model extends e_front_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
-
+    	else
+		{
+			$this->clearCache();
+		}
 		return $res;
     }
 }
@@ -2407,7 +2453,7 @@ class e_tree_model extends e_front_model
 		{
 			return $this;
 		}
-
+		
 		e107::getCache()->set_sys(
 			$this->getCacheString(true),
 			$this->toString(false, null, $this->getParam('nocount') ? false : true),
@@ -2466,6 +2512,21 @@ class e_tree_model extends e_front_model
 
 			$this->_total = false;
 		}
+		
+		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		{
+			$str = !$this->getParam('db_query') 
+				? 
+					$this->getModelTable()
+					.$this->getParam('nocount')
+					.$this->getParam('db_where')
+					.$this->getParam('db_order')
+					.$this->getParam('db_limit')
+				:
+					$this->getParam('db_query');
+				
+			$this->setCacheString($this->getCacheString().'_'.md5($str));
+		}
 
 		$cached = $this->_getCacheData();
 		if($cached !== false)
@@ -2473,12 +2534,13 @@ class e_tree_model extends e_front_model
 			$this->_loadFromArray($cached);
 			return $this;
 		}
-
+		
 		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
 			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable()
+				.($this->getParam('db_where') ? ' WHERE '.$this->getParam('db_where') : '')
 				.($this->getParam('db_order') ? ' ORDER BY '.$this->getParam('db_order') : '')
 				.($this->getParam('db_limit') ? ' LIMIT '.$this->getParam('db_limit') : '')
 			);
@@ -2769,17 +2831,25 @@ class e_front_tree_model extends e_tree_model
 				$this->addMessageInfo(LAN_NO_CHANGE, $session_messages);
 			}
 		}
+		else
+		{
+			$this->clearCache();
+		}
 
-		if(null === $syncvalue) return $res;
+		$modelCacheCheck = $this->getParam('clearModelCache');
+		if(null === $syncvalue && !$modelCacheCheck) return $res;
 
 		foreach ($ids as $id)
 		{
-			if($this->hasNode($id))
+			$node = $this->getNode($id);
+			if(!$node) continue;
+			
+			if(null !== $syncvalue)
 			{
-				$this->getNode($id)
-					->set($field, $syncvalue)
+				$node->set($field, $syncvalue)
 					->setMessages($session_messages);
 			}
+			if($modelCacheCheck) $this->clearCache();
 		}
 		return $res;
 	}
@@ -2812,6 +2882,7 @@ class e_admin_tree_model extends e_front_tree_model
 		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
+		$modelCacheCheck = $this->getParam('clearModelCache');
 		if(!$res)
 		{
 			if($sql->getLastErrorNumber())
@@ -2820,15 +2891,18 @@ class e_admin_tree_model extends e_front_tree_model
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}
 		}
-		elseif($destroy)
+		elseif($destroy || $modelCacheCheck)
 		{
 			foreach ($ids as $id)
 			{
 				if($this->hasNode($id))
 				{
-					$this->getNode($id)->setMessages($session_messages);
-					call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
-					$this->setNode($id, null);
+					$this->getNode($id)->clearCache()->setMessages($session_messages);
+					if($destroy)
+					{
+						call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
+						$this->setNode($id, null);
+					}
 				}
 			}
 		}
