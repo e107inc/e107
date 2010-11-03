@@ -24,7 +24,11 @@
 
 require_once('../../class2.php');
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
+if (!$e107->isInstalled('calendar_menu'))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit();
+}
 
 if (isset($_POST['viewallevents']))
 {  // Triggered from NAV_BUT_ALLEVENTS
@@ -928,12 +932,13 @@ unset($tim_arr);
 require_once(FOOTERF);
 
 
-
+/*
 function headerjs()
 {
   global $cal;
   $script = $cal->load_files();
   return $script;
 }
+*/
 
 ?>
