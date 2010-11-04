@@ -315,9 +315,38 @@ define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
+define("LAN_LOADING", "Loading...");
 
 define("LAN_SECURITYL_0", "Looking for troubles (none)");
 define("LAN_SECURITYL_5", "Balanced");
 define("LAN_SECURITYL_7", "High");
 define("LAN_SECURITYL_9", "Paranoid");
 define("LAN_SECURITYL_10", "Insane");
+
+// XXX - move Admin UI related LANS below, add new lan_form.php file (for both front/back-end)
+define('LAN_BATCH_LABEL_SELECTED', 'With selected...'); // Batch dropdown default option
+define('LAN_BATCH_LABEL_PREFIX', 'Modify');
+define('LAN_LABEL_LABEL_SELECTED', 'Filter'); // Filter dropdown default option
+define('LAN_FILTER_LABEL_PREFIX', 'Filter by');
+define('LAN_FILTER_LABEL_DISPLAYALL', 'Display All');
+define('LAN_FILTER_LABEL_CLEAR', 'Clear Filter');
+define('LAN_FILTER_LABEL_TYPED', '(typed)');
+
+define('LAN_UI_NOPID_ERROR', 'There is no <strong>Primary ID</strong> set');
+define('LAN_UI_BATCHDEL_ERROR', 'Batch delete not allowed!');
+define('LAN_UI_404_BODY_ERROR', 'Requested page was not found!');
+define('LAN_UI_404_TITLE_ERROR', 'Page Not Found');
+define('LAN_UI_404_METHOD_ERROR', 'Action <strong>%1$s</strong> not found!');
+define('LAN_UI_FORM_METHOD_ERROR', 'FATAL ERROR: The field name <strong>%1$s</strong> is not allowed. Please rename the key <strong>%1$s</strong> to something else in your fields array and database table (if required).');
+
+define('LAN_UI_BATCH_UPDATE_SUCCESS', '<strong>%1$s</strong> set for <strong>%2$d</strong> record(s).');
+define('LAN_UI_BATCH_REVERSED_SUCCESS', '<strong>%1$d</strong> records successfully reversed.');
+define('LAN_UI_BATCH_BOOL_SUCCESS', '<strong>%1$d</strong> records successfully updated.');
+
+define('LAN_UI_EDIT_LABEL', 'Update record #%1$s');
+define('LAN_UI_CREATE_LABEL', 'Create new record');
+define('LAN_UI_PREF_LABEL', 'Settings');
+define('LAN_UI_DELETE_LABEL', 'Confirm Delete');
+define('LAN_UI_DELETE_WARNING', 'You are about to delete <strong>%1$d</strong> records. Please confirm to continue.');
+
+// TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

@@ -674,15 +674,16 @@ class e_form
 	function submit_image($name, $value, $image, $title='', $options = array())
 	{
 		$options = $this->format_options('submit_image', $name, $options);
-		switch ($image) {
+		switch ($image) 
+		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
-				$options['class'] = 'action edit';
+				$options['class'] = vartrue($options['class'] , 'action edit');
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
-				$options['class'] = 'action delete';
+				$options['class'] = vartrue($options['class'] , 'action delete');
 			break;
 		}
 		$options['title'] = $title;//shorthand
@@ -1191,17 +1192,18 @@ class e_form
 
 					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
 
+					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']))
 					{
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
 						{
-							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
+							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
 						}
 					}
 					else
 					{
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
 					}
 
 
@@ -1748,9 +1750,10 @@ class e_form
 
 				foreach($tree as $model)
 				{
+					e107::setRegistry('core/adminUI/currentListModel', $model);
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
-
+				e107::setRegistry('core/adminUI/currentListModel', null);
 			}
 
 			$text .= "
@@ -1852,7 +1855,7 @@ class e_form
 			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
-				$text .= $this->renderCreateFieldset($elid, $data, $model, $nocontainer);
+				$text .= $this->renderCreateFieldset($elid, $data, $model);
 			}
 
 			$text .= "
@@ -1875,9 +1878,8 @@ class e_form
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
 	 * @param e_admin_model $model
-	 * @param boolean $nocontainer ???
 	 */
-	function renderCreateFieldset($id, $fdata, $model, $nocontainer = false)
+	function renderCreateFieldset($id, $fdata, $model)
 	{
 		$text = vartrue($fdata['fieldset_pre'])."
 			<fieldset id='{$id}'>
@@ -2012,6 +2014,142 @@ class e_form
 
 		$text .= "
 				</div>
+			</fieldset>
+			".vartrue($fdata['fieldset_post'])."
+		";
+		return $text;
+	}
+	
+	// JUST A DRAFT - generic renderForm solution
+	function renderForm($forms, $nocontainer = false)
+	{
+		$text = '';
+		foreach ($forms as $fid => $form)
+		{
+			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
+			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
+
+			$text .= "
+				".vartrue($form['form_pre'])."
+				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
+				<div>
+				".vartrue($form['header'])."
+				".$this->token()."
+			";
+
+			foreach ($form['fieldsets'] as $elid => $fieldset_data)
+			{
+				$elid = $form['id'].'-'.$elid;
+				$text .= $this->renderFieldset($elid, $fieldset_data);
+			}
+
+			$text .= "
+			".vartrue($form['footer'])."
+			</div>
+			</form>
+			".vartrue($form['form_post'])."
+			";
+		}
+		if(!$nocontainer)
+		{
+			$text = '<div class="e-container">'.$text.'</div>';
+		}
+		return $text;
+	}
+	
+	// JUST A DRAFT - generic renderFieldset solution, will be split to renderTable, renderCol/Row/Box etc
+	function renderFieldset($id, $fdata)
+	{
+		$colgroup = '';
+		if(vartrue($fdata['table_colgroup']))
+		{
+			$colgroup = "
+				<colgroup span='".count($fdata['table_colgroup'])."'>
+			";
+			foreach ($fdata['table_colgroup'] as $i => $colgr) 
+			{
+				$colgroup .= "<col ";
+				foreach ($colgr as $attr => $v) 
+				{
+					$colgroup .= "{$attr}='{$v}'";
+				}
+				$colgroup .= " />
+				";
+			}
+
+			$colgroup = "</colgroup>
+			";
+		}
+		$text = vartrue($fdata['fieldset_pre'])."
+			<fieldset id='{$id}'>
+				<legend>".vartrue($fdata['legend'])."</legend>
+				".vartrue($fdata['table_pre'])."
+
+		";
+					
+		if(vartrue($fdata['table_rows']) || vartrue($fdata['table_body']))
+		{
+			$text .= "
+				<table cellpadding='0' cellspacing='0' class='adminform'>
+					{$colgroup}
+					<thead>
+						".vartrue($fdata['table_head'])."
+					</thead>
+					<tbody>
+			";
+		
+			if(vartrue($fdata['table_rows']))
+			{
+				foreach($fdata['table_rows'] as $index => $row)
+				{
+					$text .= "
+						<tr id='{$id}-{$index}'>
+							$row
+						</tr>
+					";
+				}
+			}
+			elseif(vartrue($fdata['table_body']))
+			{
+				$text .= $fdata['table_body'];
+			}
+			
+			if(vartrue($fdata['table_note']))
+			{
+				$note = '<div class="form-note">'.$fdata['table_note'].'</div>';
+			}
+	
+			$text .= "
+						</tbody>
+					</table>
+					".$note."
+					".vartrue($fdata['table_post'])."
+			";
+		}
+		
+		$triggers = vartrue($fdata['triggers'], array());
+		if($triggers)
+		{
+			$text .= "<div class='buttons-bar center'>
+				".vartrue($fdata['pre_triggers'], '')."
+			";
+			foreach ($triggers as $trigger => $tdata)
+			{
+				if(is_string($tdata)) 
+				{ 
+					$text .= $tdata; 
+					continue;
+				}
+				$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+				if(isset($tdata[2]))
+				{
+					$text .= $this->hidden($trigger.'_value', $tdata[2]);
+				}
+			}
+			$text .= "</div>";
+		}
+
+		$text .= "
 			</fieldset>
 			".vartrue($fdata['fieldset_post'])."
 		";

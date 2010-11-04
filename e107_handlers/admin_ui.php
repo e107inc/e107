@@ -217,6 +217,11 @@ class e_admin_request
 	{
 		if(is_array($key))
 		{
+			if(empty($key))
+			{
+				$this->_posted_qry = array(); //POST reset
+				return $this;
+			}
 			foreach ($key as $k=>$v)
 			{
 				$this->setPosted($k, $v);
@@ -1642,7 +1647,7 @@ class e_admin_controller
 		if(!method_exists($this, $method))
 		{
 			$this->getRequest()->setAction('e404');
-			e107::getMessage()->add('Action <strong>'.$method.'</strong> not found!', E_MESSAGE_ERROR);
+			e107::getMessage()->add(sprintf(LAN_UI_404_METHOD_ERROR, $method), E_MESSAGE_ERROR);
 		}
 	}
 
@@ -1758,7 +1763,7 @@ class e_admin_controller
 		{
 			$action = $request->getActionName();
 		}
-
+		
 		// check for observer
 		$actionName = $this->toMethodName($action, 'page');
 		$ret = '';
@@ -1802,12 +1807,12 @@ class e_admin_controller
 
 	public function E404Observer()
 	{
-		$this->getResponse()->setTitle('Page Not Found');
+		$this->getResponse()->setTitle(LAN_UI_404_TITLE_ERROR);
 	}
 
 	public function E404Page()
 	{
-		return '<div class="center">Requested page was not found!</div>'; // TODO - lan
+		return '<div class="center">'.LAN_UI_404_BODY_ERROR.'</div>'; // TODO - lan
 	}
 
 
@@ -1899,14 +1904,15 @@ class e_admin_controller
 
 	/**
 	 * Check if there is a trigger available in the posted data
+	 * @param array $exclude
 	 * @return boolean
 	 */
-	public function hasTrigger()
+	public function hasTrigger($exclude = array())
 	{
 		$posted = array_keys($this->getPosted());
 		foreach ($posted as $key)
 		{
-			if(strpos($key, 'etrigger_') === 0)
+			if(!in_array($key, $exclude) && strpos($key, 'etrigger_') === 0)
 			{
 				return true;
 			}
@@ -2310,7 +2316,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Get current tree model
-	 * @return e_admin_tree
+	 * @return e_admin_tree_model
 	 */
 	public function getTreeModel()
 	{
@@ -2324,13 +2330,24 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Set controller tree model
-	 * @param e_admin_tree $tree_model
+	 * @param e_admin_tree_model $tree_model
 	 * @return e_admin_controller_ui
 	 */
 	public function setTreeModel($tree_model)
 	{
 		$this->_tree_model = $tree_model;
 		return $this;
+	}
+	
+	/**
+	 * Get currently parsed model while in list mode
+	 * Model instance is registered by e_form::renderListForm()
+	 *
+	 * @return e_admin_model
+	 */
+	public function getListModel()
+	{
+		return e107::getRegistry('core/adminUI/currentListModel');
 	}
 
 	/**
@@ -2444,8 +2461,9 @@ class e_admin_controller_ui extends e_admin_controller
 		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
 		$selected = array_values($this->getPosted($multi_name, array()));
 
-		if(empty($selected)) return $this;
-
+		//if(empty($selected)) return $this; - allow empty (no selected) submit for custom batch handlers - e.g. Export CSV
+		// requires writeParams['batchNoCheck'] == true!!!
+		
 		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
@@ -2454,7 +2472,9 @@ class e_admin_controller_ui extends e_admin_controller
 		switch($trigger[0])
 		{
 			case 'delete': //FIXME - confirmation screen
-				//something like handleListDeleteBatch(); for custom handling of 'delete' batch
+				//method handleListDeleteBatch(); for custom handling of 'delete' batch
+				// if(empty($selected)) return $this;
+				// don't check selected data - subclass need to check additional post variables(confirm screen)
 				$method = 'handle'.$this->getRequest()->getActionName().'DeleteBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -2463,6 +2483,7 @@ class e_admin_controller_ui extends e_admin_controller
 			break;
 
 			case 'bool':
+				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				$value = $trigger[2] ? 1 : 0;
 				//something like handleListBoolBatch(); for custom handling of 'bool' batch
@@ -2475,6 +2496,7 @@ class e_admin_controller_ui extends e_admin_controller
 			break;
 
 			case 'boolreverse':
+				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
 				$method = 'handle'.$this->getRequest()->getActionName().'BoolreverseBatch';
@@ -2487,7 +2509,15 @@ class e_admin_controller_ui extends e_admin_controller
 
 			default:
 				$field = $trigger[0];
-				$value = $trigger[1]; //TODO - errors
+				$value = $trigger[1];
+				$params = $this->getFieldAttr($field, 'writeParms', array());
+				if(!is_array($params)) parse_str($params, $params);
+
+				if(!vartrue($params['batchNoCheck']) && empty($selected))
+				{
+					return $this;
+				}
+				
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($field).'Batch';
 				if(method_exists($this, $method)) // callback handling
@@ -2495,7 +2525,9 @@ class e_admin_controller_ui extends e_admin_controller
 					$this->$method($selected, $value);
 					break;
 				}
+				
 				//handleListBatch(); for custom handling of all field names
+				if(empty($selected)) return $this;
 				$method = 'handle'.$this->getRequest()->getActionName().'Batch';
 				if(method_exists($this, $method))
 				{
@@ -2648,14 +2680,15 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
 
 		$ret = '<ul>';
-		$ret .= '<li>'.$srch.'<span class="informal warning"> (typed)</span></li>'; // fix Enter - search for typed word only
+		$ret .= '<li>'.$srch.'<span class="informal warning"> '.LAN_FILTER_LABEL_TYPED.'</span></li>'; // fix Enter - search for typed word only
 
 		$reswords = array();
 		if(trim($srch) !== '')
 		{
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
-
+			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
+			
 			// Make query
 			$sql = e107::getDb();
 			if($qry && $sql->db_Select_gen($qry, $debug))
@@ -2685,7 +2718,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 
-		$ret .= '<li><span class="informal warning"> clear filter </span></li>'; // clear filter option
+		$ret .= '<li><span class="informal warning"> '.LAN_FILTER_LABEL_CLEAR.' </span></li>'; // clear filter option
 		$ret .= '</ul>';
 		return $ret;
 	}
@@ -2801,7 +2834,7 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			if(vartrue($var['nolist']) || null === $var['type'])
+			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === $var['type'])
 			{
 				continue;
 			}
@@ -2837,7 +2870,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$jwhere = array();
 		$joins = array();
-		//file_put_contents('e:/www/log', $tableSFields."\n\n", FILE_APPEND);
+		//file_put_contents(e_LOG.'uiAjaxResponseSFields.log', $tableSFields."\n\n", FILE_APPEND);
+		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
 		if($this->getJoinData())
 		{
 			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
@@ -3065,6 +3099,12 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @var string
 	 */
 	public $footerUpdateMarkup = '';
+	
+	/**
+	 * Show confirm screen before (batch/single) delete
+	 * @var boolean
+	 */
+	public $deleteConfirmScreen = false;
 
 	/**
 	 * Constructor
@@ -3095,7 +3135,6 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Catch fieldpref submit
-	 * @param string $batch_trigger
 	 * @return none
 	 */
 	public function ListEcolumnsTrigger()
@@ -3112,8 +3151,16 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListBatchTrigger($batch_trigger)
 	{
 		$this->setPosted('etrigger_batch', null);
-		// proceed ONLY if there is no other trigger
-		if($batch_trigger && !$this->hasTrigger()) $this->_handleListBatch($batch_trigger);
+ 
+		if($this->getPosted('etrigger_cancel')) 
+		{ 
+			$this->setPosted(array());
+			return; // always break on cancel!
+		}
+		$this->deleteConfirmScreen = true; // Confirm screen ALWAYS enabled when multi-deleting!
+		
+		// proceed ONLY if there is no other trigger, except delete confirmation
+		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
 	}
 
 	/**
@@ -3125,9 +3172,24 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		if(!$this->getBatchDelete())
 		{
-			e107::getMessage()->add('Batch delete not allowed!', E_MESSAGE_WARNING);
+			e107::getMessage()->add(LAN_UI_BATCHDEL_ERROR, E_MESSAGE_WARNING);
 			return;
 		}
+		if($this->deleteConfirmScreen)
+		{
+			if(!$this->getPosted('etrigger_delete_confirm'))
+			{
+				// ListPage will show up confirmation screen
+				$this->setPosted('delete_confirm_value', implode(',', $selected));
+				return;
+			}
+			else
+			{
+				// already confirmed, resurrect selected values
+				$selected = array_map('intval', explode(',', $this->getPosted('delete_confirm_value')));
+			}
+		}
+		
 		// delete one by one - more control, less performance
 		// TODO - pass  afterDelete() callback to tree delete method?
 		$set_messages = true;
@@ -3151,6 +3213,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		//$this->getTreeModel()->delete($selected);
 		if($set_messages) $this->getTreeModel()->setMessages();
+		$this->redirect();
 	}
 
 	/**
@@ -3163,7 +3226,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
 		if($cnt)
 		{
-			$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.');
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_BOOL_SUCCESS, $cnt));
 		}
 		$this->getTreeModel()->setMessages();
 	}
@@ -3179,7 +3242,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
 		if($cnt)
 		{
-			$tree->addMessageSuccess($cnt.' records successfully reversed.');
+			$tree->addMessageSuccess(sprintf(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt));
 			//sync models
 			$tree->load(true);
 		}
@@ -3197,7 +3260,7 @@ class e_admin_ui extends e_admin_controller_ui
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> record(s).');
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
 		}
 		$this->getTreeModel()->setMessages();
 	}
@@ -3209,8 +3272,20 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListDeleteTrigger($posted)
 	{
-		$this->setTriggersEnabled(false);
+		if($this->getPosted('etrigger_cancel')) 
+		{ 
+			$this->setPosted(array());
+			return; // always break on cancel!
+		}
 		$id = intval(array_shift($posted));
+		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm'))
+		{
+			// forward data to delete confirm screen
+			$this->setPosted('delete_confirm_value', $id);
+			return; // User confirmation expected
+		}
+		
+		$this->setTriggersEnabled(false);
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id);
 		if($model)
@@ -3282,6 +3357,11 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListPage()
 	{
+		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm') && $this->getPosted('delete_confirm_value'))
+		{
+			// 'edelete_confirm_data' set by single/batch delete trigger
+			return $this->getUI()->getConfirmDelete($this->getPosted('delete_confirm_value')); // User confirmation expected
+		}
 		return $this->getUI()->getList();
 	}
 
@@ -3471,9 +3551,10 @@ class e_admin_ui extends e_admin_controller_ui
 
 	public function getPrimaryName()
 	{
-		if(!varset($this->pid) && vartrue($this->fields))
+		// Option for working with tables having no PID
+		if(!varset($this->pid) && vartrue($this->fields) && false !== $this->pid)
 		{
-			e107::getMessage()->add("There is no <strong>pid</strong> set.", E_MESSAGE_WARNING);
+			e107::getMessage()->add(LAN_UI_NOPID_ERROR, E_MESSAGE_WARNING);
 		}
 
 		return $this->pid;
@@ -3663,23 +3744,23 @@ class e_admin_form_ui extends e_form
 
 	protected function preventConflict()
 	{
-		$err = "";
-		$fields = array_keys($this->getController()->getFields());
-
-		foreach($fields as $val)
+		$err = false;
+		$fields = $this->getController()->getFields();
+		foreach($fields as $field => $foptions)
 		{
-			if(method_exists('e_form',$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
+			// check form custom methods
+			if($foptions['type'] === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
 			{
-				$err .= "<h2>ERROR: The field name (".$val.") is not allowed.</h2>";
-				$err .= "Please rename the key (".$val.") to something else in your fields array and database table.<br /><br />";
+				e107::getMessage()->addError(sprintf(LAN_UI_FORM_METHOD_ERROR, $field));
+				$err = true;
 			}
 		}
-
-		if($err)
+	
+		/*if($err)
 		{
-			echo $err;
-			exit;
-		}
+			//echo $err;
+			//exit;
+		}*/
 	}
 
 
@@ -3702,13 +3783,13 @@ class e_admin_form_ui extends e_form
 		$request = $controller->getRequest();
 		if($controller->getId())
 		{
-			$legend = LAN_UPDATE.' record #'.$controller->getId();
+			$legend = sprintf(LAN_UI_EDIT_LABEL, $controller->getId());
 			$form_start = vartrue($controller->headerUpdateMarkup);
 			$form_end = vartrue($controller->footerUpdateMarkup);
 		}
 		else
 		{
-			$legend = 'New record';
+			$legend = LAN_UI_CREATE_LABEL;
 			$form_start = vartrue($controller->headerCreateMarkup);
 			$form_end = vartrue($controller->footerCreateMarkup);
 		}
@@ -3746,7 +3827,7 @@ class e_admin_form_ui extends e_form
 	{
 		$controller = $this->getController();
 		$request = $controller->getRequest();
-		$legend = 'Settings';
+		$legend = LAN_UI_PREF_LABEL;
 		$forms = $models = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
@@ -3784,6 +3865,10 @@ class e_admin_form_ui extends e_form
 		$id = $this->getElementId();
 		$tree = $options = array();
 		$tree[$id] = $controller->getTreeModel();
+		
+		// if going through confirm screen - no JS confirm
+		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
+
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
@@ -3807,6 +3892,49 @@ class e_admin_form_ui extends e_form
 		);
 		return $this->renderListForm($options, $tree, $ajax);
 	}
+	
+	public function getConfirmDelete($ids, $ajax = false)
+	{
+		$controller = $this->getController();
+		$request = $controller->getRequest();
+		$fieldsets = array();
+		$forms = array();
+		$id_array = explode(',', $ids);
+		$delcount = count($id_array);
+		
+		e107::getMessage()->addWarning(sprintf(LAN_UI_DELETE_WARNING, $delcount));
+		
+		$fieldsets['confirm'] = array(
+			'fieldset_pre' => '', // markup to be added before opening fieldset element
+			'fieldset_post' => '', // markup to be added after closing fieldset element
+			'table_head' => '', // markup between <thead> tag
+			// Colgroup Example: array(0 => array('class' => 'label', 'style' => 'text-align: left'), 1 => array('class' => 'control', 'style' => 'text-align: left'));
+			'table_colgroup' => '', // array to be used for creating markup between  <colgroup> tag (<col> list)
+			'table_pre' => '', // markup to be added before opening table element
+			'table_post' => '', // markup to be added after closing table element
+			'table_rows' => '', // rows array (<td> tags)
+			'table_body' => '', // string body - used only if rows empty 
+			'pre_triggers' => '',
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'submit', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+		);
+		if($delcount > 1)
+		{
+			$fieldsets['confirm']['triggers']['hidden'] = $this->hidden('etrigger_batch', 'delete');
+		}
+		
+		$forms[$id] = array(
+			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
+			'url' => e_SELF, // default
+			'query' => $request->buildQueryString(array(), true, 'ajax_used'), // - ajax_used is now removed from QUERY_STRING - class2
+			'legend' => $controller->addTitle(LAN_UI_DELETE_LABEL), // hidden by default
+			'form_pre' => '',  // markup to be added before opening form element
+			'form_post' => '', // markup to be added after closing form element
+			'header' => '', // markup to be added after opening form element
+			'footer' => '', // markup to be added before closing form element
+			'fieldsets' => $fieldsets,
+		);
+		return $this->renderForm($forms, $ajax);
+	}
 
 	function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
@@ -3828,13 +3956,13 @@ class e_admin_form_ui extends e_form
 		$text = "
 			<form method='get' action='".e_SELF."'>
 				<fieldset class='e-filter'>
-					<legend class='e-hideme'>Filter</legend>
+					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
 					<div class='left'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."
 						".$this->select_open('filter_options', array('class' => 'tbox select filter', 'id' => false))."
-							".$this->option('Display All', '')."
-							".$this->option('Clear Filter', '___reset___')."
+							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
+							".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 							".$this->renderBatchFilter('filter', $current_query[1])."
 						".$this->select_close()."
 						<div class='e-autocomplete'></div>
@@ -3842,7 +3970,7 @@ class e_admin_form_ui extends e_form
 						".$this->hidden('action', $l[1])."
 						".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
 						<span class='indicator' style='display: none;'>
-							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='Loding...' />
+							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 						</span>
 					</div>
 					".$filter_post."
@@ -3897,25 +4025,26 @@ class e_admin_form_ui extends e_form
 		{
 			return '';
 		}
-
+		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
 		$text = "
 			<div class='buttons-bar left'>
          		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
-					".$this->option('With selected...', '')."
-					".($allow_delete ? $this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.LAN_DELETE, 'delete') : '')."
+				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
+					".$this->option(LAN_BATCH_LABEL_SELECTED, '')."
+					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', 'Execute', array('id' => false))."
 			</div>
 		";
+		
 		return $text;
 	}
 
 	// TODO - do more
 	function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
 	{
-		$optdiz = array('batch' => 'Modify ', 'filter'=> 'Filter by ');
+		$optdiz = array('batch' => LAN_BATCH_LABEL_PREFIX.'&nbsp;', 'filter'=> LAN_FILTER_LABEL_PREFIX.'&nbsp;');
 		$table = $this->getController()->getTableName();
 		$text = '';
 		$textsingle = '';
@@ -3980,7 +4109,7 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'method':
-						$method = $key;
+						$method = $key; 
 						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
 
 						if(is_array($list))
