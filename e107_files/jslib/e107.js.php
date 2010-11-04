@@ -896,6 +896,7 @@ Object.extend(e107Helper, {
 			}
 			frm.submit();
 		}
+		if(el.hasClassName('reset')) el.selectedIndex = 0; 
     },
 
     /**

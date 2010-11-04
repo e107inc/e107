@@ -1943,7 +1943,7 @@ class e_front_model extends e_model
 		$this->_db_errmsg = $sql->getLastErrorText();
 		if($this->_db_errno)
 		{
-			$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
+			$this->addMessageError('SQL Select Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
 		return $this;
