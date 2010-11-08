@@ -2100,7 +2100,16 @@ function __autoload($className)
 			array_shift($tmp); // remove 'plugin'
 			$end = array_pop($tmp); // check for 'shortcodes' end phrase
 
-			if (!isset($tmp[0]) || !$tmp[0]) return; // In case we get an empty class part
+			if (!isset($tmp[0]) || !$tmp[0]) 
+			{
+				if($end) 
+				{
+					// plugin root - e.g. plugin_myplug -> plugins/myplug/myplug.php, class plugin_myplug
+					$filename = e_PLUGIN.$end.'/'.$end.'.php';
+					break;
+				}
+				return; // In case we get an empty class part
+			}
 
 			// Currently only batches inside shortcodes/ folder are auto-detected,
 			// read the todo for e_shortcode.php related problems
