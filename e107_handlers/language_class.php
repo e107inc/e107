@@ -536,5 +536,17 @@ class language{
 		} 	
 	}
 	
-
+	public function getLanSelectArray($force = false)
+	{
+		if($force ||null === $this->_select_array)
+		{
+			$lanlist = explode(',', e_LANLIST);
+			$this->_select_array = array();
+			foreach ($lanlist as $lan) 
+			{
+				$this->_select_array[$this->convert($lan)] = $this->toNative($lan);
+			}
+		}
+		return $this->_select_array;
+	}
 }
