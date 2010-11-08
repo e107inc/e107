@@ -2349,6 +2349,12 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return e107::getRegistry('core/adminUI/currentListModel');
 	}
+	
+	public function setListModel($model)
+	{
+		e107::setRegistry('core/adminUI/currentListModel', $model);
+		return $this;
+	}
 
 	/**
 	 * User defined tree model setter
@@ -2607,6 +2613,17 @@ class e_admin_controller_ui extends e_admin_controller
 						$value = trim($value) ? e107::getInstance()->ipEncode($value) : '';
 					}
 				break;
+				
+				case 'dropdown': // TODO - ask Steve if this check is required
+				case 'lanlist':
+					if(is_array($value))
+					{
+						// no sanitize here - data is added to model posted stack 
+						// and validated & sanitized before sent to db
+						//$value = array_map(array(e107::getParser(), 'toDB'), $value); 
+						$value = implode(',', $value); 
+					}
+				break;
 			}
 			if(vartrue($attributes['dataPath']))
 			{
@@ -2729,6 +2746,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function parseAliases()
 	{
+		if($this->_alias_parsed) return $this; // already parsed!!!
 		if($this->getJoinData())
 		{
 			foreach ($this->getJoinData() as $table => $att)
@@ -2741,7 +2759,7 @@ class e_admin_controller_ui extends e_admin_controller
 					$att['table'] = $tmp[1];
 					$att['__tablePath'] = $att['alias'].'.';
 					$att['__tableFrom'] = '`#'.$att['table'].'` AS '.$att['alias'];
-					$this->setJoinData($att['alias'], $att);
+					$this->setJoinData($att['alias'], $att); 
 					unset($tmp);
 					continue;
 				}
@@ -2752,7 +2770,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$this->setJoinData($table, $att);
 			}
 		}
-
+		
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
@@ -2803,7 +2821,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}*/
 		}
 		$this->fields = $fields;
-
+		$this->_alias_parsed = true;
 		return $this;
 	}
 
@@ -2923,7 +2941,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($raw)
 		{
-			$rawData = array('joinWhere' => $jwhere, 'filter' => $filter, 'filterFrom' => $filterFrom, 'search' => $searchQry, 'tableFrom' => $tableFrom);
+			$rawData = array('joinWhere' => $jwhere, 'filter' => $filter, 'filterFrom' => $filterFrom, 'search' => $searchQry, 'tableFromName' => $tableFrom);
 			$rawData['tableFrom'] = $tableSFieldsArr;
 			$rawData['joinsFrom'] = $tableSJoinArr;
 			$rawData['joins'] = $joins;
@@ -4084,10 +4102,32 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'dropdown': // use the array $parm;
+						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						$opts = $parms['__options'];
+						if(vartrue($opts['multiple'])) 
+						{
+							// no batch support for multiple, should have some for filters soon
+							continue; 
+						}
 						unset($parms['__options']); //remove element options if any
 						foreach($parms as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
+						}
+					break;
+					
+					case 'lanlist': // use the array $parm;
+						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						$opts = $parms['__options'];
+						if(vartrue($opts['multiple'])) 
+						{
+							// no batch support for multiple, should have some for filters soon
+							continue; 
+						}
+						$options = e107::getLanguage()->getLanSelectArray();
+						foreach($options as $code => $name)
+						{
+							$option[$key.'__'.$code] = $name;
 						}
 					break;
 

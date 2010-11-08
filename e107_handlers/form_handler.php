@@ -536,7 +536,7 @@ class e_form
 
 	function select_open($name, $options = array())
 	{
-		$options = $this->format_options('select', $name, $options);
+		$options = $this->format_options('select', $name, $options); 
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
@@ -557,11 +557,16 @@ class e_form
 		{
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
+			
+		if($options['multiple'] && strpos($name, '[') === false)
+		{
+			$name = $name.'[]';
+		}
 		$text = $this->select_open($name, $options)."\n";
 
 		if(isset($options['default']))
 		{
-			$text .= $this->option($options['default'], '');
+			$text .= $this->option($options['default'], varset($options['defaultValue']));
 		}
 		elseif($defaultBlank)
 		{
@@ -612,7 +617,7 @@ class e_form
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
-		return "<option value='{$value}'".$this->get_attributes($options).">{$option_title}</option>";
+		return "<option value='{$value}'".$this->get_attributes($options).">".defset($option_title, $option_title)."</option>";
 	}
 
 	function option_multi($option_array, $selected = false, $options = array())
@@ -627,13 +632,13 @@ class e_form
 				$text .= $this->optgroup_open($value);
 				foreach($label as $val => $lab)
 				{
-					$text .= $this->option($lab, $val, ($selected == $val), $options)."\n";
+					$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
 				}
 				$text .= $this->optgroup_close();
 			}
 			else
 			{
-				$text .= $this->option($label, $value, $selected == $value, $options)."\n";
+				$text .= $this->option($label, $value, (is_array($selected) ? in_array($value, $selected) : $selected == $value), $options)."\n";
 			}
 		}
 
@@ -772,6 +777,10 @@ class e_form
 				case 'readonly':
 					if($optval) $ret .= " readonly='readonly'";
 					break;
+					
+				case 'multiple':
+					if($optval) $ret .= " multiple='multiple'";
+					break;
 
 				case 'selected':
 					if($optval) $ret .= " selected='selected'";
@@ -868,6 +877,7 @@ class e_form
 			'selected' => false,
 			'checked' => false,
 			'disabled' => false,
+		//	'multiple' => false, - see case 'select'
 			'tabindex' => 0,
 			'label' => '',
 			'other' => ''
@@ -895,7 +905,8 @@ class e_form
 
 			case 'select':
 				$def_options['class'] = 'tbox select';
-				unset($def_options['checked'],  $def_options['checked']);
+				$def_options['multiple'] = false;
+				unset($def_options['checked']);
 				break;
 
 			case 'option':
@@ -1173,7 +1184,7 @@ class e_form
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
-			if(is_string($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
+			if(!is_array($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
 			$parms = $attributes['readParms'];
 		}
 		$tp = e107::getParser();
@@ -1256,11 +1267,40 @@ class e_form
 				$value = $pre.vartrue($tmp[$value]).$post;
 			break;
 
-			case 'dropdown':
+			case 'dropdown': 
+				// XXX - should we use readParams at all here? see writeParms check below
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
+					break;
 				}
+			
+				// NEW - multiple (array values) support
+				// FIXME - add support for multi-level arrays (option groups)
+				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
+				$wparms = $attributes['writeParms'];
+				if(!is_array(varset($wparms['__options']))) parse_str($wparms['__options'], $wparms['__options']);
+				
+				$opts = $wparms['__options'];
+				unset($wparms['__options']);
+				
+				if($opts['multiple'])
+				{
+					$ret = array();
+					$value = is_array($value) ? $value : explode(',', $value);
+					foreach ($value as $v) 
+					{
+						if(isset($wparms[$v])) $ret[] = $wparms[$v];
+					}
+					$value = implode(', ', $ret);
+				}
+				else
+				{
+					$ret = '';
+					if(isset($wparms[$value])) $ret = $wparms[$value];
+					$value = $ret;
+				}
+				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 			break;
 
 			case 'text':
@@ -1440,6 +1480,39 @@ class e_form
 			case 'hidden':
 				return (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 			break;
+			
+			case 'lanlist':
+				$options = e107::getLanguage()->getLanSelectArray();
+				
+				if($options) // FIXME - add support for multi-level arrays (option groups)
+				{
+					if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
+					$wparms = $attributes['writeParms'];
+					if(!is_array(varset($wparms['__options']))) parse_str($wparms['__options'], $wparms['__options']);
+					$opts = $wparms['__options'];
+					if($opts['multiple'])
+					{
+						$ret = array();
+						$value = is_array($value) ? $value : explode(',', $value);
+						foreach ($value as $v) 
+						{
+							if(isset($options[$v])) $ret[] = $options[$v];
+						}
+						$value = implode(', ', $ret);
+					}
+					else
+					{
+						$ret = '';
+						if(isset($options[$value])) $ret = $options[$value];
+						$value = $ret;
+					}
+					$value = ($value ? vartrue($parms['pre']).$value.vartrue($parms['post']) : '');
+				}
+				else
+				{
+					$value = '';
+				}
+			break;
 
 			//TODO - order
 
@@ -1594,8 +1667,9 @@ class e_form
 
 			case 'dropdown':
 				$eloptions  = vartrue($parms['__options'], array());
-				if(is_string($eloptions)) parse_str($eloptions);
+				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
+				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 				return vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
@@ -1663,6 +1737,16 @@ class e_form
 				return $ret.$this->hidden($key, $value);
 			break;
 
+			case 'lanlist':
+				$options = e107::getLanguage()->getLanSelectArray();
+				
+				$eloptions  = vartrue($parms['__options'], array());
+				if(!is_array($eloptions)) parse_str($eloptions, $eloptions);
+				unset($parms['__options']);
+				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
+				return vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
+			break;
+			
 			default:
 				return $value;
 			break;
