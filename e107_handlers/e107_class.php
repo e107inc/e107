@@ -1725,9 +1725,13 @@ class e107
 	 */
 	public static function coreLan($fname, $admin = false)
 	{
+		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
+		if(e107::getRegistry($cstring)) return;
+		
 		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', $fname).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 		
+		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
 	}
 	
@@ -1757,6 +1761,9 @@ class e107
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false)
 	{
+		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
+		if(e107::getRegistry($cstring)) return;
+		
 		$plugin = preg_replace('/[^\w]/', '', $plugin);
 		
 		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
@@ -1764,6 +1771,7 @@ class e107
 		
 		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
 		
+		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
 	}
 
