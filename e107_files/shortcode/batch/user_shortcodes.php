@@ -136,7 +136,7 @@ SC_END
 SC_BEGIN USER_LASTVISIT_LAPSE
 global $user;
 $gen = new convert;
-return $user['user_currentvisit'] ? "( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_426." )" : "<i>".LAN_401."</i>";
+return $user['user_currentvisit'] ? "( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_426." )" : '';
 SC_END
 
 SC_BEGIN USER_VISITS
