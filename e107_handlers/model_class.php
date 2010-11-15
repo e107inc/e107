@@ -2220,7 +2220,7 @@ class e_admin_model extends e_front_model
 			return $this->dbUpdate($force, $session_messages);
 		}
 
-		return $this->dbInsert($force, $session_messages);
+		return $this->dbInsert($session_messages);
     }
 
 	public function delete($destroy = true, $session_messages = false)
@@ -2238,15 +2238,14 @@ class e_admin_model extends e_front_model
 
     /**
      * Insert data to DB
-     *
-     * @param boolean $force force query even if $data_has_changed is false
      * @param boolean $session_messages to use or not session to store system messages
+     * @return integer
      */
-    protected function dbInsert($force = false, $session_messages = false)
+    protected function dbInsert($session_messages = false)
     {
     	$this->_db_errno = 0;
     	$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
+		if($this->hasError()/* || (!$this->data_has_changed && !$force)*/) // not appropriate here!
 		{
 			return 0;
 		}
