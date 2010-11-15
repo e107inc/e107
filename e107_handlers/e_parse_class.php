@@ -15,7 +15,7 @@
 
 /**
  * @package e107
- * @subpackage handlers
+ * @subpackage e107_handlers
  * @version $Id$
  *
  * Text processing and parsing functions.
