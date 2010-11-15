@@ -685,7 +685,7 @@ class e_parse
 		*/
 
 		//TODO handle htmlwrap somehow
-		return $str;
+		//return $str;
 
 		// Don't wrap if non-numeric width
 		$width = intval($width);
