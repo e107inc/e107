@@ -1313,6 +1313,10 @@ class e_form
 				{
 					$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
 				}
+				if(vartrue($parms['wrap']))
+				{
+					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
+				}
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;
 
