@@ -2969,7 +2969,8 @@ class e_admin_controller_ui extends e_admin_controller
 			$qry .= " WHERE ".implode(" AND ", $searchQry);
 		}
 
-		if(null !== $this->listOrder && $this->listOrder)
+		// only when no custom order is required
+		if($this->listOrder && !$request->getQuery('field') && !$request->getQuery('asc'))
 		{
 			$qry .= ' ORDER BY '.$this->listOrder;
 		}
