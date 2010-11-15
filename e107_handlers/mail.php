@@ -282,6 +282,32 @@ class e107Email extends PHPMailer
 		}
 	}
 
+	/**
+	 * Set log level
+	 * @param int $level 0|1|2
+	 * @param int $emailDetails 0|1
+	 * @return e107Email
+	 */
+	public function logEnable($level, $emailDetails = null)
+	{
+		$this->logEnable = (int) $level;
+		if(null !== $this->add_email)
+		{
+			$this->add_email = (int) $emailDetails;
+		}
+		return $this;
+	}
+	
+	/**
+	 * Disable log completely
+	 * @return e107Email
+	 */
+	public function logDisable()
+	{
+		$this->logEnable = 0;
+		$this->add_email = 0;
+		return $this;
+	}
 
 
 	/**
