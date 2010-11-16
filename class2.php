@@ -812,7 +812,7 @@ if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($
 
 	cookie(e_COOKIE, '', (time() - 2592000));
 	e107::getEvent()->trigger('logout');
-	e107::getRedirect()->redirect(e_BASE.'index.php');
+	e107::getRedirect()->redirect(SITEURL.'index.php');
 	// header('location:'.e_BASE.'index.php');
 	exit();
 }
