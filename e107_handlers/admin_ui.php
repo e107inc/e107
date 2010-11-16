@@ -2938,6 +2938,14 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$qry = $listQry ? $listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 		}
+		
+		// group field - currently auto-added only if there are joins
+		// TODO - groupField property  
+		$groupField = '';
+		if($joins && $this->getPrimaryName())
+		{
+			$groupField = $tablePath.$this->getPrimaryName();
+		}
 
 		if($raw)
 		{
@@ -2945,6 +2953,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['tableFrom'] = $tableSFieldsArr;
 			$rawData['joinsFrom'] = $tableSJoinArr;
 			$rawData['joins'] = $joins;
+			$rawData['groupField'] = $groupField;
 			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
 			$rawData['orderType'] = $request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom'] = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
@@ -2967,6 +2976,12 @@ class e_admin_controller_ui extends e_admin_controller
 		if(count($searchQry) > 0)
 		{
 			$qry .= " WHERE ".implode(" AND ", $searchQry);
+		}
+		
+		// GROUP BY if needed
+		if($groupField)
+		{
+			$qry .= ' GROUP BY '.$groupField;
 		}
 
 		// only when no custom order is required
