@@ -20,6 +20,8 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	 * - no_fill_empty (boolean): don't fill last column with empty items (if required), default 0
 	 * - tablestyle (string): mode to be used with <code>tablerender()</code>, default 'featurebox'
 	 * - notablestyle (null): if isset - disable <code>tablerender()</code>
+	 * - force (boolean): force category model load , default false
+	 * - ids (string): comma separated id list - load specific featurebox items, default empty 
 	 * 
 	 * @param string $parm parameters
 	 * @param string $mod category template
@@ -43,7 +45,19 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		
 		parse_str($parm, $parm);
 		
-		$category = $this->getCategoryModel($ctemplate);
+		$category = $this->getCategoryModel($ctemplate, (vartrue($parm['force']) ? true : false));
+		$defopt = array(
+			'force' => 0,
+			'no_fill_empty' => 0,
+			'tablestyle' => 'featurebox',
+			'cols' => 1,	
+			'ids' => '',
+			'notablestyle' => null
+		);
+		// reset to default, update current
+		$category->setParams($defopt)
+			->updateParams($parm);
+			
 		if(!$category->hasData())
 		{
 			return '';
@@ -51,7 +65,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		
 		$tmpl = $this->getFboxTemplate($ctemplate);
 		$tp = e107::getParser();
-		$category->updateParams($parm);
+		
 
 		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$this->render($category, $ctemplate, $parm).$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
