@@ -1117,7 +1117,8 @@ class e_model
 	 */
 	public function setParams(array $params)
 	{
-		$this->_params = $params;
+		$this->_params = array();
+		$this->updateParams($params);
 		return $this;
 	}
 
@@ -1128,7 +1129,11 @@ class e_model
 	 */
 	public function updateParams(array $params)
 	{
-		$this->_params = array_merge($this->_params, $params);
+		foreach ($params as $k => $v) 
+		{
+			$this->setParam($k, $v);
+		}
+		
 		return $this;
 	}
 
@@ -1151,7 +1156,12 @@ class e_model
 	 */
 	public function setParam($key, $value)
 	{
-		$this->_params[$key] = $value;
+		if(null == $value)
+		{
+			unset($this->_params[$key]);
+		}
+		else $this->_params[$key] = $value;
+		
 		return $this;
 	}
 
