@@ -153,7 +153,8 @@ class plugin_featurebox_category extends e_model
 			$options = array(
 				'limit' => $this->getParam('limit', $this->get('fb_category_limit')),
 				'from' => $this->getParam('from', 0),
-				'random' => $this->getParam('random', $this->get('fb_category_random'))
+				'random' => $this->getParam('random', $this->get('fb_category_random')),
+				'ids' => $this->getParam('ids', '')
 			);
 			$this->_tree->load($this->getId(), $options, $force);
 		}
