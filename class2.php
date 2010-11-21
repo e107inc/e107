@@ -432,7 +432,19 @@ $pref = e107::getPref();
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
-
+// NEW - force ssl
+if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
+{
+	// NOTE: e_SSL_DISABLE check is here to help webmasters fix 'ssl_enabled'
+	// if set by accident on site with no SSL support - just define it in e107_config.php
+	if(strpos(e_REQUEST_URL, 'http://') === 0)
+	{
+		// e_REQUEST_URL and e_REQUEST_URI introduced
+		$url = 'https://'.substr(e_REQUEST_URL, 7); 
+		header('Location: '.$url);
+		exit;
+	}
+}
 
 // $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
