@@ -311,7 +311,7 @@ class e107
 	 */
 	public function setDirs($e107_dirs, $e107_config_override = array())
 	{
-		$this->e107_dirs = array_merge($this->defaultDirs($e107_dirs), (array) $e107_dirs, (array) $e107_config_override);
+		$this->e107_dirs = array_merge($this->defaultDirs($e107_dirs)/*, (array) $e107_dirs*/, (array) $e107_config_override);
 		return $this;
 	}
 
@@ -337,7 +337,7 @@ class e107
 			'SYSTEM_DIRECTORY' 		=> 'e107_system/',
 			'CORE_DIRECTORY' 		=> 'e107_core/',
 			'WEB_DIRECTORY' 		=> 'e107_web/',
-		), $override_root);
+		), (array) $override_root);
 
 		if($return_root) return $ret;
 
@@ -2188,12 +2188,52 @@ class e107
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
 		define('e_PAGE', $page);
-		define('e_SELF', $this->HTTP_SCHEME . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+		
+		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
+		define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);
 
+		// START New - request uri/url detection, XSS protection
+		$requestUri = $requestUrl = '';
+		if (isset($_SERVER['HTTP_X_REWRITE_URL']))
+		{ 
+			// check this first so IIS will catch
+			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
+			// fix request uri
+			$_SERVER['REQUEST_URI'] = $requestUri;
+		}
+		elseif (isset($_SERVER['REQUEST_URI']))
+		{
+			$requestUri = $_SERVER['REQUEST_URI'];
+			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
+		}
+		else
+		{ 
+			// go back to e_SELF
+			$requestUri = $eSelf;
+			$requestUrl = e_SELF;
+			if (e_QUERY)
+			{
+				$requestUri .= '?'.e_QUERY;
+				$requestUrl .= '?'.e_QUERY;
+			}
+		}
+		// FIXME - basic security - add url sanitize method to e_parse
+		$check = rawurldecode($requestUri); // urlencoded by default
+		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
+		if(preg_match('/[<>]/', $check))
+		{
+			header('HTTP/1.1 403 Forbidden');
+			exit;
+		}
+		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
+		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl));
+		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri));
+		unset($requestUrl, $requestUri);
+		// END request uri/url detection, XSS protection
+		
 		define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
 		define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
-
-
 
 		// e_SELF has the full HTML path
 		$inAdminDir = FALSE;
