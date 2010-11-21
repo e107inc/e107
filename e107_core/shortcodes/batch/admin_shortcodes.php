@@ -139,7 +139,7 @@ class admin_shortcodes
 
 	function sc_admin_lang($parm)
 	{
-		if (!ADMIN || !$pref['multilanguage']) { return ''; }
+		if (!ADMIN || !e107::getPref('multilanguage')) { return ''; }
 		
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
