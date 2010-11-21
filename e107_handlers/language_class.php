@@ -438,13 +438,17 @@ class language{
 
 	/**
 	 * Set the Language (Constants, $_SESSION and $_COOKIE) for the current page. 
-	 * @return 
+	 * @param string $language force set
+	 * @return void
 	 */
-	function set()
+	function set($language = null)
 	{
 		$pref = e107::getPref();
 		$session = e107::getSession(); // default core session namespace
-				
+		if($language && ($language = $this->isValid($language))) // force set
+		{
+			$this->detect = $language;
+		}
 		if($this->detect) // Language-Change Trigger Detected. 
 		{
 			// new - e_language moved to e107 namespace - $_SESSION['e107']['e_language']

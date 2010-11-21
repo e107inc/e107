@@ -309,6 +309,10 @@ class redirection
 	 */
 	public function redirect($url, $replace = TRUE, $http_response_code = NULL)
 	{
+		if(session_id())
+		{
+			e107::getSession()->end();
+		}
 		if(NULL == $http_response_code)
 		{
 			header('Location: '.$url, $replace);
