@@ -139,11 +139,14 @@ class admin_shortcodes
 
 	function sc_admin_lang($parm)
 	{
-		global $e107, $sql, $pref;
-
 		if (!ADMIN || !$pref['multilanguage']) { return ''; }
-
-		include_lan(e_PLUGIN.'user_menu/languages/'.e_LANGUAGE.'.php');
+		
+		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+		$pref = e107::getPref();
+		
+		e107::plugLan('user_menu', '', true);
+		
 		$params = array();
 		parse_str($parm, $params);
 
@@ -159,13 +162,16 @@ class admin_shortcodes
 			}
 		}
 
-		require_once(e_HANDLER.'language_class.php');
-		$slng = new language;
-
+		$slng = e107::getLanguage();
 
 		if(!getperms($sql->mySQLlanguage) && $lanperms)
 		{
-			$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
+			$slng->set($lanperms[0]);
+			if ($pref['user_tracking'] == "session" && $pref['multilanguage_subdomain'])
+			{
+				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
+			}
+			/*$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
 			if ($pref['user_tracking'] == "session")
 			{
 				$_SESSION['e107language_'.$pref['cookie_name']] = $lanperms[0];
@@ -177,19 +183,19 @@ class admin_shortcodes
 			{
 				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
 				$_COOKIE['e107language_'.$pref['cookie_name']]= $lanperms[0];
-			}
+			}*/
 		}
 
 		if(varset($GLOBALS['mySQLtablelist']))
 		{
-		foreach($GLOBALS['mySQLtablelist'] as $tabs)
-		{
-			$clang = strtolower($sql->mySQLlanguage);
-			if(strpos($tabs,"lan_".$clang) && $clang !="")
+			foreach($GLOBALS['mySQLtablelist'] as $tabs)
 			{
-				$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
+				$clang = strtolower($sql->mySQLlanguage);
+				if(strpos($tabs,"lan_".$clang) && $clang !="")
+				{
+					$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
+				}
 			}
-		}
         }
 
 		$text .= "
@@ -220,6 +226,7 @@ class admin_shortcodes
 		$select = '';
 		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 		{
+			// TODO - JS independent
 			$select .= "
 			<select class='tbox' name='lang_select' id='sitelanguage' onchange=\"location.href=this.options[selectedIndex].value\">";
 			foreach($lanperms as $lng)
@@ -231,7 +238,7 @@ class admin_shortcodes
 			$select .= "</select>";
 
 		}
-		elseif(isset($params['nobutton']))
+		/*elseif(isset($params['nobutton']))
 		{
 			$select .= "
 			<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>
@@ -247,7 +254,7 @@ class admin_shortcodes
 			</div>
 			</form>
 			";
-		}
+		}*/
 		else
 		{
 			$select .= "
