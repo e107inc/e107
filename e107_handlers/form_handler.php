@@ -1533,10 +1533,10 @@ class e_form
 	 * @param string $key
 	 * @param mixed $value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
-	 * #param array $required_data required array as defined in e_model/validator
+	 * #param array (under construction) $required_data required array as defined in e_model/validator
 	 * @return string
 	 */
-	function renderElement($key, $value, $attributes, $required_data)
+	function renderElement($key, $value, $attributes, $required_data = array())
 	{
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
