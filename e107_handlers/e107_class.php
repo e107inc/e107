@@ -248,7 +248,7 @@ class e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array());
+		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
 	}
 
 	/**
@@ -311,7 +311,9 @@ class e107
 	 */
 	public function setDirs($e107_dirs, $e107_config_override = array())
 	{
-		$this->e107_dirs = array_merge($this->defaultDirs($e107_dirs)/*, (array) $e107_dirs*/, (array) $e107_config_override);
+		$override = array_merge((array) $e107_dirs, (array) $e107_config_override);
+		// override all
+		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
 		return $this;
 	}
 
