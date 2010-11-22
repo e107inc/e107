@@ -97,9 +97,10 @@ class bbcode_shortcodes
 
 		if (!empty($eplug_bb))
 		{
-			foreach($eplug_bb as $key=>$val)  // allow plugins to plug into it.
+			foreach($eplug_bb as $val)  // allow plugins to plug into it.
 			{
-				extract($val);
+				if(!$val) continue;
+				extract($val); 
 				//	echo "$onclick $onclick_var $helptext $icon <br />";
 				$bbcode[$name] = array($onclick,$onclick_var,$helptext,$icon,$function,$function_var);
 				$iconpath[$name] = $icon;
