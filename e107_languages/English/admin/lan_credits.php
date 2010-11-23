@@ -47,7 +47,11 @@ define("CRELAN_24", ""); // McFly
 define("CRELAN_25", ""); // que
 define("CRELAN_26", ""); // streaky
 define("CRELAN_27", "\"Wot? No tea?? 0_0\""); // SweetAs
-
+define("CRELAN_28", ""); // MrPete
+define("CRELAN_29", "Up and forward!"); // SecretR
+define("CRELAN_30", ""); // steved
+//define("CRELAN_31", "");
+//define("CRELAN_32", "");
 
 // end dev team
 
