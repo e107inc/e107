@@ -11,9 +11,7 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -85,17 +83,19 @@ $creditsArray = array(
 			),
 	);
 
-$contentA = array(
+$contentA = array( // ORDER BY FirstName ASC ;)
 	"<h3>".CRELAN_6."<\/h3>",
-	"<h1>Carl Cedergren<\/h1>[ asperon ]<br /><br /><br />".CRELAN_20,
 	"<h1>Cameron Hanly<\/h1>[ CaMer0n ]<br /><br /><br />".CRELAN_21,
-	"<h1>Steve Dunstan<\/h1>[ jalist ]<br /><br /><br />".CRELAN_22,
+	"<h1>Carl Cedergren<\/h1>[ asperon ]<br /><br /><br />".CRELAN_20,
 	"<h1>Eric Vanderfeesten<\/h1> [ lisa ]<br /><br /><br />".CRELAN_23,
+	"<h1>James Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
+	"<h1>Martin Nicholls<\/h1>[ streaky ]<br /><br /><br />".CRELAN_26,
+	"<h1>Miroslav Yovchev<\/h1>[ SecretR ]<br /><br /><br />".defset('CRELAN_29'),
+	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28,
+	"<h1>Steve Dunstan<\/h1>[ jalist ]<br /><br /><br />".CRELAN_22,
+	"<h1>Steven Davies<\/h1>[ steved ]<br /><br /><br />".defset('CRELAN_30'),
 	"<h1>Thom Michelbrink<\/h1>[ McFly ]<br /><br /><br />".CRELAN_24,
 	"<h1>William Moffett<\/h1>[ que ]<br /><br /><br />".CRELAN_25,
-	"<h1>Martin Nicholls<\/h1>[ streaky ]<br /><br /><br />".CRELAN_26,
-	"<h1>James Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
-	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28
 );
 
 echo "<?xml version='1.0' encoding='".CHARSET."' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
