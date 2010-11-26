@@ -117,7 +117,11 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'privacy';
 			}
+			
 			parse_str($query, $vals);		// Various options set here
+						
+			print_a($vals);
+						
 			if (varset($vals['allowfullscreen'], 'true') != 'true')
 			{
 				$params[] = 'nofull';
@@ -146,6 +150,15 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'color2='.$vals['color2'];
 			}
+			if (varset($vals['cc_load_policy'], 1) != 0)
+			{
+				$params[] = 'cc_load_policy='.intval($vals['cc_load_policy']);
+			}
+			if (varset($vals['autoplay'], 1) != 0)
+			{
+				$params[] = 'autoplay='.intval($vals['autoplay']);
+			}
+
 			$picRef = substr($url, strrpos($url, '/') + 1);
 		}
 
@@ -228,6 +241,9 @@ class bb_youtube extends e_bb_base
 			$fscr = 'true';
 			$url = $url.'fs=1';
 		}
+		
+
+		
 		if(isset($params['border'])) $url = $url.'&amp;border=1';
 		if(isset($params['norel'])) $url = $url.'&amp;rel=0';
 		if(isset($params['hd'])) $url = $url.'&amp;hd=1';
@@ -247,7 +263,17 @@ class bb_youtube extends e_bb_base
 				$url = $url.'&amp;color'.$key.'='.$value;
 			}
 		}
-
+		
+		if(isset($params['cc_load_policy']))
+		{
+			$url .= "&amp;cc_load_policy=".$params['cc_load_policy'];
+		}
+		
+		if(isset($params['autoplay']))
+		{
+			$url .= "&amp;autoplay=".$params['autoplay'];
+		}
+		
 		$ret = ' 
 		<object width="'.$params['w'].'" height="'.$params['h'].'">
 			<param name="movie" value="'.$url.'"></param>
