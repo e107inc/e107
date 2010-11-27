@@ -119,9 +119,7 @@ class bb_youtube extends e_bb_base
 			}
 			
 			parse_str($query, $vals);		// Various options set here
-						
-			print_a($vals);
-						
+												
 			if (varset($vals['allowfullscreen'], 'true') != 'true')
 			{
 				$params[] = 'nofull';
@@ -154,7 +152,7 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'cc_load_policy='.intval($vals['cc_load_policy']);
 			}
-			if (varset($vals['autoplay'], 1) != 0)
+			if (ADMIN && varset($vals['autoplay'], 1) != 0)
 			{
 				$params[] = 'autoplay='.intval($vals['autoplay']);
 			}
