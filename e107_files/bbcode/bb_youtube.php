@@ -128,13 +128,13 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'border';
 			}
-			if (varset($vals['rel'], 1) == 0)
+			if (varset($vals['rel'], 1) != 1)
 			{
-				$params[] = 'norel';
+				$params[] = 'rel='.($vals['rel']);
 			}
 			if (varset($vals['hd'], 1) != 0)
 			{
-				$params[] = 'hd';
+				$params[] = 'hd='.intval($vals['hd']);
 			}
 			if (varset($vals['hl'], 1) != 0)
 			{
@@ -243,7 +243,15 @@ class bb_youtube extends e_bb_base
 
 		
 		if(isset($params['border'])) $url = $url.'&amp;border=1';
-		if(isset($params['norel'])) $url = $url.'&amp;rel=0';
+		if(isset($params['norel'])) // BC non-standard val. 
+		{
+			$url = $url.'&amp;rel=0';	
+		} 
+		elseif(isset($params['rel']))
+		{
+			$url = $url.'&amp;rel='.intval($params['rel']);	
+		}
+		
 		if(isset($params['hd'])) $url = $url.'&amp;hd=1';
 		
 		$hl = 'en_US';
