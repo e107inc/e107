@@ -245,19 +245,26 @@ class bb_youtube extends e_bb_base
 		if(isset($params['border'])) $url = $url.'&amp;border=1';
 		if(isset($params['norel'])) $url = $url.'&amp;rel=0';
 		if(isset($params['hd'])) $url = $url.'&amp;hd=1';
+		
 		$hl = 'en_US';
-		if(isset($params['hl'])) {
+		
+		if(isset($params['hl']))
+		{
 			$params['hl'] = preg_replace('/[^0-9a-z\-_]/i', '', $params['hl']);
-			if(strlen($params['hl']) == 5) {
+			if(strlen($params['hl']) == 2 || strlen($params['hl']) == 5)
+			{
 				$hl = $params['hl'];
 			}
 		}
+		
 		$url = $url.'&amp;hl='.$hl;
 		$color = array();
 		if(isset($params['color1'])) $color[1] = $params['color1'];
 		if(isset($params['color2'])) $color[2] = $params['color2'];
-		foreach ($color as $key => $value) {
-			if (ctype_xdigit($value) && strlen($value) == 6) {
+		foreach ($color as $key => $value)
+		{
+			if (ctype_xdigit($value) && strlen($value) == 6)
+			{
 				$url = $url.'&amp;color'.$key.'='.$value;
 			}
 		}
