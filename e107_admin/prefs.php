@@ -299,7 +299,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_168."</td>
 						<td class='control'>
-							".$e_userclass->uc_dropdown('sitecontacts', $pref['sitecontacts'], 'nobody,main,admin,userclasses', "tabindex='".$frm->getNext()."'")."
+							".$e_userclass->uc_dropdown('sitecontacts', $pref['sitecontacts'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_169."</div>
 						</td>
 					</tr>
