@@ -101,7 +101,7 @@ class e_thumbpage
 		$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
 		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
 		$e107 = e107::getInstance();
-		$e107->setDirs($e107_paths, varset($e107_CONFIG, array()));
+		$e107->setDirs($e107_paths, varset($E107_CONFIG, array()));
 		$e107->set_constants();
 		$e107->set_paths();
 		$e107->file_path = $e107->fix_windows_paths($self)."/";
