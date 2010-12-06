@@ -1459,6 +1459,10 @@ class e_form
 			case 'url':
 				if(!$value) break;
 				$ttl = $value;
+				if(vartrue($parms['href']))
+				{
+					return $tp->replaceConstants(vartrue($parms['pre']).$value, varset($parms['replace_mod'],'abs'));
+				}
 				if(vartrue($parms['truncate']))
 				{
 					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
