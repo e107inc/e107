@@ -277,11 +277,11 @@ class e_parse_shortcode
 			}
 			// e.g. class plugin_myplug_news_shortcodes
 			$_class_fname = $overrideClass;
-			$className = 'plugin_'.$pluginName.'_'.$overrideClass;
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $overrideClass);
 		}
 		elseif($pluginName)
 		{
-			$className = 'plugin_'.$pluginName.'_'.$className;
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
 
 		if ($this->isScClass($className))
@@ -867,7 +867,7 @@ class e_shortcode
 
 	/**
 	 * Add shortcode value
-	 * <code>e107::getScObject('class_name')->setScVar('some_property', $some_value);</code>
+	 * <code>e107::getScBatch('class_name')->setScVar('some_property', $some_value);</code>
 	 *
 	 * @param string $name
 	 * @param mixed $value
@@ -878,10 +878,23 @@ class e_shortcode
 		$this->scVars->$name = $value;
 		return $this;
 	}
+	
+	/**
+	 * Add shortcode values
+	 * <code>e107::getScBatch('class_name')->addScVars(array('some_property', $some_value));</code>
+	 *
+	 * @param array $vars
+	 * @return e_shortcode
+	 */
+	public function addScVars($vars)
+	{
+		$this->scVars->addVars($vars);
+		return $this;
+	}
 
 	/**
 	 * Retrieve shortcode value
-	 * <code>$some_value = e107::getScObject('class_name')->getScVar('some_property');</code>
+	 * <code>$some_value = e107::getScBatch('class_name')->getScVar('some_property');</code>
 	 *
 	 * @param string $name
 	 * @return mixed
@@ -890,10 +903,21 @@ class e_shortcode
 	{
 		return $this->scVars->$name;
 	}
+	
+	/**
+	 * Retrieve all shortcode values
+	 * <code>$some_value = e107::getScBatch('class_name')->getScVars();</code>
+	 *
+	 * @return mixed
+	 */
+	public function getScVars()
+	{
+		return $this->scVars->getVars();
+	}
 
 	/**
 	 * Check if shortcode variable is set
-	 * <code>if(e107::getScObject('class_name')->issetScVar('some_property'))
+	 * <code>if(e107::getScBatch('class_name')->issetScVar('some_property'))
 	 * {
 	 * 		//do something
 	 * }</code>
@@ -908,15 +932,26 @@ class e_shortcode
 
 	/**
 	 * Unset shortcode value
-	 * <code>e107::getScObject('class_name')->unsetScVar('some_property');</code>
+	 * <code>e107::getScBatch('class_name')->unsetScVar('some_property');</code>
 	 *
 	 * @param string $name
-	 * @return void
+	 * @return e_shortcode
 	 */
 	public function unsetScVar($name)
 	{
 		$this->scVars->$name = null;
 		unset($this->scVars->$name);
+		return $this;
+	}
+	
+	/**
+	 * Empty scvar object data
+	 * @return e_shortcode
+	 */
+	public function emptyScVars()
+	{
+		$this->scVars->emptyVars();
+		return $this;
 	}
 
 	/**
