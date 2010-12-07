@@ -2180,6 +2180,16 @@ class e_vars
 	{
 		$this->setVars($array);
 	}
+	
+	/**
+	 * Get data array
+	 *
+	 * @return array
+	 */
+	public function getVars()
+	{
+		return $this->vars;
+	}
 
 	/**
 	 * Set array data
