@@ -2162,25 +2162,10 @@ class e_parse
 
 /**
  * Data model for e_parse::simpleParse()
- *
+ * NEW - not inherits core e_object
  */
-class e_vars
+class e_vars extends e_object
 {
-	/**
-	 * @var array
-	 */
-	private $vars;
-
-	/**
-	 * Constructor
-	 *
-	 * @param array $array [optional] initial data
-	 */
-	public function __construct($array = array())
-	{
-		$this->setVars($array);
-	}
-	
 	/**
 	 * Get data array
 	 *
@@ -2188,38 +2173,30 @@ class e_vars
 	 */
 	public function getVars()
 	{
-		return $this->vars;
+		return $this->getData();
 	}
 
 	/**
 	 * Set array data
 	 *
 	 * @param array $array
-	 * @param boolean $empty true (default) override old data, false - merge with existing data
 	 * @return e_vars
 	 */
-	public function setVars(array $array, $empty = true)
+	public function setVars(array $array)
 	{
-		if($empty) { $this->emptyVars(); }
-
-		foreach($array as $key => $val)
-		{
-			$this->vars[$key] = $val;
-		}
-
+		$this->setData($array);
 		return $this;
 	}
 
 	/**
 	 * Add array data to the object (merge with existing)
-	 * Convenient proxy to setVars methods
 	 *
 	 * @param array $array
-	 * @return
+	 * @return e_vars
 	 */
 	public function addVars(array $array)
 	{
-		$this->setVars($array, false);
+		$this->addData($array);
 	}
 
 	/**
@@ -2229,7 +2206,7 @@ class e_vars
 	 */
 	public function emptyVars()
 	{
-		$this->vars = array();
+		$this->removeData();
 		return $this;
 	}
 
@@ -2240,7 +2217,7 @@ class e_vars
 	 */
 	public function isEmpty()
 	{
-		return empty($this->vars);
+		return $this->hasData();
 	}
 	
 	/**
@@ -2250,60 +2227,17 @@ class e_vars
 	 */
 	public function isVar($key)
 	{
-		return isset($this->vars[$key]);
+		return $this->is($key);
 	}
-
+	
 	/**
-	 * Magic setter
-	 *
-	 * @param string $key
-	 * @param mixed $value
+	 * No need of object conversion, optional cloning
+	 * @param boolean $clone return current object clone
+	 * @return e_vars
 	 */
-	public function __set($key, $value)
+	public function toSc($clone = false)
 	{
-		// Unset workaround - PHP < 5.1.0
-		if(null === $value) unset($this->vars[$key]);
-		else $this->vars[$key] = $value;
-	}
-
-	/**
-	 * Magic getter
-	 *
-	 * @param string $key
-	 * @return mixed value or null if key not found
-	 */
-	public function __get($key)
-	{
-		if(isset($this->vars[$key]))
-		{
-			return $this->vars[$key];
-		}
-
-		return null;
-	}
-
-	/**
-	 * Magic method to check if given data key is set.
-	 * Triggered on <code><?php isset($e_vars->myKey); </code>
-	 * NOTE: works on PHP 5.1.0+
-	 *
-	 * @param string $key
-	 * @return boolean
-	 */
-	public function __isset($key)
-	{
-		return $this->isVar($key);
-	}
-
-	/**
-	 * Magic method to unset given data key.
-	 * Triggered on <code><?php unset($e_vars->myKey); </code>
-	 * NOTE: works on PHP 5.1.0+
-	 *
-	 * @param string $key
-	 */
-	public function __unset($key)
-	{
-		unset($this->vars[$key]);
+		if($clone) return clone $this;
+		return $this;
 	}
 }

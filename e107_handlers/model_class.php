@@ -129,6 +129,15 @@ class e_object
     }
     
     /**
+     * Get object data
+     * @return array
+     */
+	public function getData()
+    {
+    	return $this->_data;
+    }
+    
+    /**
      * Overwrite data in the object for a single field.
      *
      * @param string $key
@@ -138,6 +147,53 @@ class e_object
 	public function set($key, $value)
     {
     	$this->_data[$key] = $value;
+    	return $this;
+    }
+    
+    /**
+     * Set object data
+     * @return e_object
+     */
+	public function setData($data)
+    {
+    	$this->_data = $data;
+    	return $this;
+    }
+    
+    /**
+     * Update object data
+     * @return e_object
+     */
+	public function addData($data)
+    {
+    	foreach($data as $key => $val)
+		{
+			$this->set($key, $val);
+		}
+    	return $this;
+    }
+    
+    /**
+     * Remove object data key
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return e_object
+     */
+	public function remove($key, $value)
+    {
+    	unset($this->_data[$key]);
+    	return $this;
+    }
+    
+    /**
+     * Reset  object data key
+     *
+     * @return e_object
+     */
+	public function removeData()
+    {
+    	$this->_data = array();
     	return $this;
     }
 
@@ -159,6 +215,15 @@ class e_object
     public function has($key)
     {
     	return (isset($this->_data[$key]) && !empty($this->_data[$key]));
+    }
+    
+    /**
+     * Check if object has data
+     * @return boolean
+     */
+    public function hasData()
+    {
+    	return !empty($this->_data);
     }
     
 	/**
@@ -227,6 +292,15 @@ class e_object
 	}
 	
 	/**
+	 * Convert object data to simple shortcodes (e_vars object)
+	 * @return string
+	 */
+	public function toSc()
+	{
+		return new e_vars($this->_data);
+	}	
+	
+	/**
 	 * Convert object data to array
 	 * @return string
 	 */
@@ -277,6 +351,61 @@ class e_object
 	public function __toString()
 	{
 		return $this->toString(false);
+	}
+
+	/**
+	 * Magic setter
+	 * Triggered on e.g. <code><?php $e_object->myKey = 'someValue'; </code>
+	 * 
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function __set($key, $value)
+	{
+		// Unset workaround - PHP < 5.1.0
+		if(null === $value) $this->remove($key);
+		else $this->set($key, $value);
+	}
+
+	/**
+	 * Magic getter
+	 * Triggered on e.g. <code><?php print($e_object->myKey); </code>
+	 * @param string $key
+	 * @return mixed value or null if key not found
+	 */
+	public function __get($key)
+	{
+		if($this->is($key))
+		{
+			return $this->get($key);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Magic method to check if given data key is set.
+	 * Triggered on <code><?php isset($e_object->myKey); </code>
+	 * NOTE: works on PHP 5.1.0+
+	 *
+	 * @param string $key
+	 * @return boolean
+	 */
+	public function __isset($key)
+	{
+		return $this->is($key);
+	}
+
+	/**
+	 * Magic method to unset given data key.
+	 * Triggered on <code><?php unset($e_object->myKey); </code>
+	 * NOTE: works on PHP 5.1.0+
+	 *
+	 * @param string $key
+	 */
+	public function __unset($key)
+	{
+		$this->remove($key);
 	}
 }
 
