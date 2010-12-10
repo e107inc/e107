@@ -15,23 +15,6 @@
  *
 */
 
-//PHP < 5.2 compatibility
-if (!function_exists('json_encode'))
-{
-    require_once(e_HANDLER.'json_compat_handler.php');
-    function json_encode($array)
-    {
-        $json = new Services_JSON();
-        return $json->encode($array);
-    }
-
-    function json_decode($json_obj)
-    {
-        $json = new Services_JSON();
-        return $json->decode($json_obj);
-    }
-}
-
 class e_jshelper
 {
     /**
