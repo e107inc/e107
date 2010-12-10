@@ -17,15 +17,15 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
- * Base e107 Model class
+ * Base e107 Object class
  *
  * @package e107
  * @category e107_handlers
  * @version 1.0
  * @author SecretR
- * @copyright Copyright (C) 2009, e107 Inc.
+ * @copyright Copyright (C) 2010, e107 Inc.
  */
-class e_model
+class e_object
 {
     /**
      * Object data
@@ -34,6 +34,263 @@ class e_model
      */
     protected $_data = array();
 
+	/**
+	 * Model parameters passed mostly from external sources
+	 *
+	 * @var array
+	 */
+	protected $_params = array();
+	
+
+    /**
+    * Name of object id field
+    * Required for {@link getId()()} method
+    *
+    * @var string
+    */
+    protected $_field_id;
+
+    /**
+     * Constructor - set data on initialization
+     *
+     * @param array $data
+     */
+	function __construct($data = array())
+	{
+		if(is_array($data)) $this->_data = $data;
+	}
+
+    /**
+     * Set name of object's field id
+     *
+     * @see getId()
+     *
+     * @param   string $name
+     * @return  e_object
+     */
+    public function setFieldIdName($name)
+    {
+        $this->_field_id = $name;
+        return $this;
+    }
+
+    /**
+     * Retrieve name of object's field id
+     *
+     * @see getId()
+     *
+     * @param   string $name
+     * @return  string
+     */
+    public function getFieldIdName()
+    {
+        return $this->_field_id;
+    }
+    
+    /**
+     * Retrieve object primary id field value
+     *
+     * @return mixed
+     */
+    public function getId()
+    {
+        if ($this->getFieldIdName())
+        {
+            return $this->get($this->getFieldIdName(), 0);
+        }
+        return $this->get('id', 0);
+    }
+
+    /**
+     * Set object primary id field value
+     *
+     * @return e_object
+     */
+    public function setId($id)
+    {
+        if ($this->getFieldIdName())
+        {
+            return $this->set($this->getFieldIdName(), intval($id));
+        }
+        return $this;
+    }
+
+    /**
+     * Retrieves data from the object ($_data) without
+     * key parsing (performance wise, prefered when possible)
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+	public function get($key, $default = null)
+    {
+    	return (isset($this->_data[$key]) ? $this->_data[$key] : $default);
+    }
+    
+    /**
+     * Overwrite data in the object for a single field.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return e_object
+     */
+	public function set($key, $value)
+    {
+    	$this->_data[$key] = $value;
+    	return $this;
+    }
+
+    /**
+     * Check if key is set
+     * @param string $key
+     * @return boolean
+     */
+    public function is($key)
+    {
+    	return (isset($this->_data[$key]));
+    }
+    
+    /**
+     * Check if key is set and not empty
+     * @param string $key
+     * @return boolean
+     */
+    public function has($key)
+    {
+    	return (isset($this->_data[$key]) && !empty($this->_data[$key]));
+    }
+    
+	/**
+	 * Set parameter array
+	 * @param array $params
+	 * @return e_object
+	 */
+	public function setParams(array $params)
+	{
+		$this->_params = $params;
+		return $this;
+	}
+    
+	/**
+	 * Update parameter array
+	 * @param array $params
+	 * @return e_object
+	 */
+	public function updateParams(array $params)
+	{
+		foreach ($params as $k => $v) 
+		{
+			$this->setParam($k, $v);
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Get parameter array
+	 *
+	 * @return array parameters
+	 */
+	public function getParams()
+	{
+		return $this->_params;
+	}
+
+	/**
+	 * Set parameter
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return e_object
+	 */
+	public function setParam($key, $value)
+	{
+		if(null == $value)
+		{
+			unset($this->_params[$key]);
+		}
+		else $this->_params[$key] = $value;
+		
+		return $this;
+	}
+
+	/**
+	 * Get parameter
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 */
+	public function getParam($key, $default = null)
+	{
+		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
+	}
+	
+	/**
+	 * Convert object data to array
+	 * @return string
+	 */
+	public function toJson()
+	{
+		return json_encode($this->_data);
+	}
+
+	/**
+	 * Convert object to array
+	 * @return array object data
+	 */
+	public function toArray()
+	{
+		return $this->_data;
+	}
+	
+	/**
+	 * Magic method - convert object data to an array
+	 *
+	 * @return array
+	 */
+	public function __toArray()
+	{
+		return $this->toArray();
+	}
+
+	/**
+	 * Convert object data to a string
+	 *
+	 * @param boolean $AddSlashes
+	 * @return string
+	 */
+	public function toString($AddSlashes = false)
+	{
+		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+	}
+
+	/**
+	 * Magic method - convert object data to a string
+	 * NOTE: before PHP 5.2.0 the __toString method was only
+	 * called when it was directly combined with echo() or print()
+	 *
+	 * NOTE: PHP 5.3+ is throwing parse error if __toString has optional arguments.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->toString(false);
+	}
+}
+
+/**
+ * Base e107 Model class
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (C) 2010, e107 Inc.
+ */
+class e_model extends e_object
+{
     /**
      * Data structure (types) array, required for {@link e_front_model::sanitize()} method,
      * it also serves as a map (find data) for building DB queries,
@@ -69,14 +326,6 @@ class e_model
      */
     protected $data_has_changed = false;
 
-    /**
-    * Name of object id field
-    * Required for {@link getId()()} method
-    *
-    * @var string
-    */
-    protected $_field_id;
-
 	/**
 	 * Namespace to be used for model related system messages in {@link eMessage} handler
 	 *
@@ -99,13 +348,6 @@ class e_model
 	 */
 	protected $_cache_force = false;
 
-	/**
-	 * Model parameters passed mostly from external sources
-	 *
-	 * @var array
-	 */
-	protected $_params = array();
-
     /**
      * Constructor - set data on initialization
      *
@@ -115,7 +357,7 @@ class e_model
 	{
 		$this->setData($data);
 	}
-
+	
 	/**
 	 * Optional DB table - used for auto-load data from the DB
 	 * @param string $table
@@ -164,61 +406,6 @@ class e_model
     {
     	$this->_data_fields[$field] = $type;
 		return $this;
-    }
-
-    /**
-     * Set name of object's field id
-     *
-     * @see getId()
-     *
-     * @param   string $name
-     * @return  e_model
-     */
-    public function setFieldIdName($name)
-    {
-        $this->_field_id = $name;
-        return $this;
-    }
-
-    /**
-     * Retrieve name of object's field id
-     *
-     * @see getId()
-     *
-     * @param   string $name
-     * @return  string
-     */
-    public function getFieldIdName()
-    {
-        return $this->_field_id;
-    }
-
-    /**
-     * Retrieve object primary id field value
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        if ($this->getFieldIdName())
-        {
-            return $this->get($this->getFieldIdName(), 0);
-        }
-        return $this->get('id', 0);
-    }
-
-    /**
-     * Set object primary id field value
-     *
-     * @return e_model
-     */
-    public function setId($id)
-    {
-        if ($this->getFieldIdName())
-        {
-            return $this->set($this->getFieldIdName(), intval($id));
-        }
-        return $this;
     }
 
     /**
@@ -343,15 +530,6 @@ class e_model
     public function hasData($key = '')
     {
     	return $this->_hasData($key);
-    }
-
-    /**
-     * @param string $key
-     * @return boolean
-     */
-    public function is($key)
-    {
-    	return (isset($this->_data[$key]));
     }
 
     /**
@@ -1117,64 +1295,11 @@ class e_model
 	 */
 	public function setParams(array $params)
 	{
-		$this->_params = array();
-		$this->updateParams($params);
+		parent::setParams($params);
 		return $this;
 	}
 
-	/**
-	 * Update parameter array
-	 * @param array $params
-	 * @return e_model
-	 */
-	public function updateParams(array $params)
-	{
-		foreach ($params as $k => $v) 
-		{
-			$this->setParam($k, $v);
-		}
-		
-		return $this;
-	}
 
-	/**
-	 * Get parameter array
-	 *
-	 * @return array parameters
-	 */
-	public function getParams()
-	{
-		return $this->_params;
-	}
-
-	/**
-	 * Set parameter
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @return e_model
-	 */
-	public function setParam($key, $value)
-	{
-		if(null == $value)
-		{
-			unset($this->_params[$key]);
-		}
-		else $this->_params[$key] = $value;
-		
-		return $this;
-	}
-
-	/**
-	 * Get parameter
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 */
-	public function getParam($key, $default = null)
-	{
-		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
-	}
 
 	/**
 	 * Render model data, all 'sc_*' methods will be recongnized
@@ -1229,15 +1354,6 @@ class e_model
 	}
 
 	/**
-	 * Convert model object to array
-	 * @return array object data
-	 */
-	public function toArray()
-	{
-		return $this->getData();
-	}
-
-	/**
 	 * Convert object data to a string
 	 *
 	 * @param boolean $AddSlashes
@@ -1256,21 +1372,6 @@ class e_model
 			return (string) $value;
 		}
 		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
-	}
-
-	/**
-	 * Magic method - convert object data to a string
-	 * NOTE: before PHP 5.2.0 the __toString method was only
-	 * called when it was directly combined with echo() or print()
-	 *
-	 * NOTE: PHP 5.3+ is throwing parse error if __toString has optional arguments.
-	 *
-	 * @param boolean $AddSlashes
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->toString(false);
 	}
 
 	public function destroy()
