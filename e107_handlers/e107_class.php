@@ -176,7 +176,7 @@ class e107
 		'e_user_extended_structure_tree' => '{e_HANDLER}user_model.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
-		'e_vars'						 => '{e_HANDLER}e_parse_class.php',
+		'e_vars'						 => '{e_HANDLER}model_class.php',
 		'ecache'						 => '{e_HANDLER}cache_handler.php',
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
