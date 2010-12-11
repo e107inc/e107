@@ -57,7 +57,7 @@ class e_object
      */
 	function __construct($data = array())
 	{
-		if(is_array($data)) $this->_data = $data;
+		if(is_array($data)) $this->setData($data);
 	}
 
     /**
@@ -477,15 +477,6 @@ class e_model extends e_object
 	 */
 	protected $_cache_force = false;
 
-    /**
-     * Constructor - set data on initialization
-     *
-     * @param array $data
-     */
-	function __construct($data = array())
-	{
-		$this->setData($data);
-	}
 	
 	/**
 	 * Optional DB table - used for auto-load data from the DB
@@ -1511,6 +1502,34 @@ class e_model extends e_object
 		$this->_parsed_keys = array();
 		$this->_db_table = $this->_field_id = '';
 		$this->data_has_changed = false;
+	}
+
+	/**
+	 * Disable Magic setter
+	 */
+	public function __set($key, $value)
+	{
+	}
+
+	/**
+	 * Disable Magic getter
+	 */
+	public function __get($key)
+	{
+	}
+
+	/**
+	 * Disable
+	 */
+	public function __isset($key)
+	{
+	}
+
+	/**
+	 * Disable
+	 */
+	public function __unset($key)
+	{
 	}
 }
 

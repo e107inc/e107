@@ -131,6 +131,8 @@ class e_user_model extends e_front_model
 	 * @var e_user_model
 	 */
 	protected $_editor = null;
+	
+	protected $_class_list;
 
 	/**
 	 * Constructor
