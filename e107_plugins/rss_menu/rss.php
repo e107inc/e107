@@ -406,7 +406,7 @@ class rssCreate {
 		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY,$topic_id ;
 		header('Content-type: application/xml', TRUE);
 
-		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
+		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$rss_title);
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : "";
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : "";
 		
