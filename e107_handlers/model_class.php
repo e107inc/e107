@@ -177,10 +177,9 @@ class e_object
      * Remove object data key
      *
      * @param string $key
-     * @param mixed $value
      * @return e_object
      */
-	public function remove($key, $value)
+	public function remove($key)
     {
     	unset($this->_data[$key]);
     	return $this;
