@@ -253,6 +253,36 @@ class e107
 	}
 
 	/**
+	 * Initialize environment path constants while installing e107
+	 *
+	 * @return e107
+	 */
+	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
+	{
+		// Do some security checks/cleanup, prepare the environment
+		$this->prepare_request();
+
+		// folder info
+		//$this->e107_dirs = $e107_paths;
+		$this->setDirs($e107_paths, $e107_config_override);
+
+		// build all paths
+		$this->set_paths();
+		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+
+		// set base path, SSL is auto-detected
+		$this->set_base_path();
+
+		// cleanup QUERY_STRING and friends, set  related constants
+		$this->set_request();
+
+		// set some core URLs (e_LOGIN/SIGNUP)
+		$this->set_urls();
+
+		return $this;
+	}
+
+	/**
 	 * Resolve paths, will run only once
 	 *
 	 * @return e107
@@ -280,14 +310,12 @@ class e107
 
 			// set base path, SSL is auto-detected
 			$this->set_base_path();
+			
+			// cleanup QUERY_STRING and friends, set  related constants
+			$this->set_request();
 
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
-
-			// cleanup QUERY_STRING and friends, set  related constants
-
-			$this->set_request();
-
 		}
 
 		return $this;
@@ -369,36 +397,6 @@ class e107
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 
 		return $ret;
-	}
-
-	/**
-	 * Initialize environment path constants while installing e107
-	 *
-	 * @return e107
-	 */
-	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
-	{
-		// Do some security checks/cleanup, prepare the environment
-		$this->prepare_request();
-
-		// folder info
-		//$this->e107_dirs = $e107_paths;
-		$this->setDirs($e107_paths, $e107_config_override);
-
-		// build all paths
-		$this->set_paths();
-		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
-
-		// set base path, SSL is auto-detected
-		$this->set_base_path();
-
-		// set some core URLs (e_LOGIN/SIGNUP)
-		$this->set_urls();
-
-		// cleanup QUERY_STRING and friends, set  related constants
-		$this->set_request();
-
-		return $this;
 	}
 
 	/**
@@ -1850,10 +1848,18 @@ class e107
 	/**
 	 * Prepare e107 environment
 	 * This is done before e107_dirs initilization and [TODO] config include
+	 * @param bool $checkS basic security check (0.7 like), will be extended in the future
 	 * @return e107
 	 */
-	public function prepare_request()
+	public function prepare_request($checkS = true)
 	{
+	
+		// Quick security - Filter common bad agents / queries. (TODO - better!)
+		if($checkS && (strpos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE))
+		{
+			exit();
+		}
+		
 		// TODO - better ajax detection method (headers when possible)
 		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
 		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
@@ -2179,9 +2185,11 @@ class e107
 	 * 3. any plugin file in a folder called admin/
 	 * 4. any file that specifies $eplug_admin = TRUE; or ADMIN_AREA = TRUE;
 	 * NOTE: USER_AREA = true; will force e_ADMIN_AREA to FALSE
+	 * 
+	 * @param boolean $no_cbrace remove curly brackets from the url
 	 * @return e107
 	 */
-	public function set_urls()
+	public function set_urls($no_cbrace = true)
 	{
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
@@ -2224,7 +2232,8 @@ class e107
 		// FIXME - basic security - add url sanitize method to e_parse
 		$check = rawurldecode($requestUri); // urlencoded by default
 		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
-		if(preg_match('/[<>]/', $check))
+		$checkregx = $no_cbrace ? '[<>\{\}]' : '[<>]';
+		if(preg_match('/'.$checkregx.'/', $check))
 		{
 			header('HTTP/1.1 403 Forbidden');
 			exit;
@@ -2279,9 +2288,10 @@ class e107
 
 	/**
 	 * Set request related constants
+	 * @param boolean $no_cbrace remove curly brackets from the url
 	 * @return e107
 	 */
-	public function set_request()
+	public function set_request($no_cbrace = true)
 	{
 
 		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
@@ -2307,6 +2317,7 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		}
 
+		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
 		define('e_QUERY', $e_QUERY);
 
