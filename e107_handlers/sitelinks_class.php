@@ -28,6 +28,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 class sitelinks
 {
     var $eLinkList;
+	var $eSubLinkLevel=0;
+	
     function getlinks($cat=1)
     {
         global $sql;
@@ -64,6 +66,7 @@ class sitelinks
             return;
         }
         $this->getlinks($cat);
+		
         // are these defines used at all ?
 
         if(!defined('PRELINKTITLE'))
@@ -111,6 +114,7 @@ class sitelinks
 			$aSubStyle = $style;
         }
 
+
         $text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
 
         if ($style['linkdisplay'] != 3) 
@@ -123,28 +127,7 @@ class sitelinks
 
                 if(!defined("LINKSRENDERONLYMAIN") && !varset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
                 {
-                    // if there's a submenu. :
-                    if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]))
-					{
-                        foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
-                        {
-                            if($this->hilite($val['link_url'],TRUE)== TRUE || $link['link_expand'] == FALSE)
-                            {
-                                $substyle = "block"; // previously (non-W3C compliant): compact
-                                break;
-                            }
-                            else
-                            {
-                                $substyle = "none";
-                            }
-                        }
-                        $render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
-                        foreach ($this->eLinkList[$main_linkid] as $sub)
-						{
-                            $render_link[$key] .= $this->makeLink($sub, TRUE, $aSubStyle, $css_class);
-                        }
-                        $render_link[$key] .= "\n</div>\n\n";
-                    }
+					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
                 }
             }
             $text .= implode($style['linkseparator'], $render_link);
@@ -186,6 +169,53 @@ class sitelinks
         }
         return $text;
     }
+	
+	/**
+	 * Manage Sublink Rendering
+	 * @param object $main_linkid
+	 * @param object $aSubStyle
+	 * @param object $css_class
+	 * @param object $level [optional]
+	 * @return 
+	 */
+	function subLink($main_linkid,$aSubStyle,$css_class='',$level=0)
+	{
+		global $pref;
+		if(!isset($this->eLinkList[$main_linkid]) || !is_array($this->eLinkList[$main_linkid]))
+		{
+			return;
+		}
+		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;              		
+						
+		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
+ 		{
+			if($this->hilite($val['link_url'],TRUE)== TRUE || $sub['link_expand'] == FALSE)
+         	{
+         		$substyle = "block"; // previously (non-W3C compliant): compact
+          		break;
+        	}
+			else
+			{
+				$substyle = "none";
+			}
+		}
+
+		$text = "";
+		$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
+		foreach ($this->eLinkList[$main_linkid] as $sub)
+		{
+			$id = "sub_".$sub['link_id'];
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;              		
+			$class = "sublink-level-".($level+1);
+			$class .= ($css_class) ? " ".$css_class : "";
+			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
+			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
+		}
+		$text .= "\n</div>\n\n";
+		return $text;	
+	}
+	
+	
 
     function makeLink($linkInfo, $submenu = FALSE, $style='', $css_class = false)
     {
@@ -440,6 +470,12 @@ class sitelinks
 		{
             return TRUE;
         }
+		
+		if($link_pge == basename($_SERVER['REQUEST_URI'])) // mod_rewrite support
+		{
+			return TRUE;
+		}
+		
         return FALSE;
     }
 }
