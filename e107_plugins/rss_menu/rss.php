@@ -387,9 +387,12 @@ class rssCreate
 	function buildRss($rss_title) 
 	{
 		global $pref;
-		header('Content-type: application/xml', TRUE);
+		
+		$tp = e107::getParser();
 
-		$rss_title = $this->e107->tp->toRss($pref['sitename']." : ".$rss_title);
+		header('Content-type: application/xml', TRUE);
+		   
+		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$tp->toHtml($rss_title,'','defs'));
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : '';
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : '';
 		$time = time();
