@@ -200,9 +200,10 @@ class rssCreate {
 				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,".$this -> limit;
+				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
+				
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
@@ -406,7 +407,7 @@ class rssCreate {
 		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY,$topic_id ;
 		header('Content-type: application/xml', TRUE);
 
-		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$rss_title);
+		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$tp->toHtml($rss_title,'','defs'));
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : "";
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : "";
 		
