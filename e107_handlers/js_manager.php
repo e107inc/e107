@@ -670,7 +670,7 @@ class e_jsmanager
 	 *
 	 * @param string $mod core|plugin|theme|header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css
 	 * @param integer $zone 1-5 - only used when in 'header','footer','header_inline' and 'footer_inline' render mod
-	 * @param boolean $external exrernal file calls, only used when NOT in 'header_inline' and 'footer_inline' render mod
+	 * @param boolean $external external file calls, only used when NOT in 'header_inline' and 'footer_inline' render mod
 	 * @param boolean $return
 	 * @return string JS content - only if $return is true
 	 */
@@ -1080,6 +1080,40 @@ class e_jsmanager
 		}
 
 		$core->setPref($key, $libs);
+		return $this;
+	}
+	
+	/**
+	 * Get current object data
+	 * @return array
+	 */
+	public function getData()
+	{
+		$data = get_class_vars(__CLASS__);
+		unset($data['_instance'], $data['_in_admin']);
+		$kdata = array_keys($data);
+		$instance = self::getInstance();
+		$data = array();
+		foreach ($kdata as $prop) 
+		{
+			$data[$prop] = $this->$prop;
+		}
+		return $data;
+	}
+	
+	/**
+	 * Set all current object data
+	 * @param $data
+	 * @return e_jsmanager
+	 */
+	public function setData($data)
+	{
+		if(!is_array($data)) return $this;
+		foreach ($data as $prop => $val) 
+		{
+			if('_instance' == $prop || '_in_admin' == $prop) continue;
+			$this->$prop = $val;
+		}
 		return $this;
 	}
 

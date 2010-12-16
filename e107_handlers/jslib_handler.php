@@ -12,7 +12,7 @@
  * $Author$
  * 
 */
-global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
+global $pref, $eplug_admin;
 
 class e_jslib
 {
@@ -20,6 +20,36 @@ class e_jslib
     function __construct()
     {
 
+    }
+    
+    /**
+     * Called from HEADERF
+     * @return string
+     */
+    public function renderHeader($where = 'front', $return = false)
+    {
+    	// FIXME: convert e107.js.php to pure e107.js file
+    	// FIXME: 'e_jslib_browser_cache' used by js_manager - add it together with all new prefs (JS management tab, Site preferences area)
+		// FIXME: option to use external sources (e.g. google) even if JS is combined (script tags for external sources)
+		if(!e107::getPref('e_jslib_nocombine'))
+		{
+			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
+			// TODO disable cache in debug mod 
+			$hash .= (e107::getPref('e_jslib_nocache') ? '_nocache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
+			$ret = "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+			if($return) $ret;
+			echo $ret;
+			return;
+		}
+		
+		$e_jsmanager = e107::getJs();
+		
+		// script tags
+		$ret = $e_jsmanager->renderJs('core', null, true, $return);
+		$ret .= $e_jsmanager->renderJs('plugin', null, true, $return);
+		$ret .= $e_jsmanager->renderJs('theme', null, true, $return);
+		
+		return $ret;
     }
     
     /**
@@ -57,34 +87,41 @@ class e_jslib
 		
 		// last modification time for loaded files
 		$lmodified = max($lmodified);
+				
+		// send content type
+		header('Content-type: text/javascript', true);
+		
+		if(deftrue('e_NOCACHE'))
+		{
+			$this->content_out($lmodified);
+		}
 		
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
 		}
+		
+
+		// send last modified date
+		header('Cache-Control: must-revalidate', true);
+		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);
+		//if($lmodified) header('Last-modified: '.gmdate('r', $lmodified), true);
+		
+		// Expire header - 1 year
+		$time = time()+ 365 * 86400;
+		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 
 		// If-Modified check only if cache disabled
 		// if cache is enabled, cache file modification date is set to $lmodified
-		/*if(!e107::getPref('syscachestatus'))
+		if(!e107::getPref('syscachestatus'))
 		{
 			// not modified - send 304 and exit
-			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
+			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $lmodified && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
 			{
 			    header("HTTP/1.1 304 Not Modified", true);
 			    exit;
 			}
-		}*/
-
-		// send last modified date
-		header('Cache-Control: must-revalidate');
-		header('Last-modified: '.gmdate('r', $lmodified), true);
-		
-		// send content type
-		header('Content-type: text/javascript', true);
-		
-		// Expire header - 1 year
-		$time = time()+ 365 * 86400;
-		header('Expires: '.gmdate('r', $time), true);
+		}
 
         //Output
         $this->content_out($lmodified);
@@ -197,6 +234,21 @@ class e_jslib
         $contents = ob_get_contents();
         ob_end_clean();
         
+        $etag = md5($page).($encoding ? '-'.$encoding : '');
+    	header('ETag: '.$etag, true);
+    	if($encoding) header('Content-Encoding: ' . $encoding);
+		
+		if (!deftrue('e_NOCACHE') && isset($_SERVER['HTTP_IF_NONE_MATCH']))
+		{
+			$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+			
+			if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag.'-'.$encoding)))
+			{
+				header('HTTP/1.1 304 Not Modified');
+				exit();	
+			}
+		}
+        
         if ($encoding)
         {
             $gzdata = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
@@ -210,8 +262,7 @@ class e_jslib
             $gsize = strlen($gzdata);
             $this->set_cache($gzdata, $encoding, $lmodified);
             
-            header('Content-Encoding: ' . $encoding);
-            //header('Content-Length: '.$gsize);
+            header('Content-Length: '.$gsize);
             header('X-Content-size: ' . $size);
             print($gzdata);
             //TODO - log/debug
@@ -221,6 +272,7 @@ class e_jslib
         {
             //header('Content-Length: '.strlen($contents));
             $this->set_cache($contents, '', $lmodified);
+            header('Content-Length: '.strlen($contents));
             print($contents);
             //TODO - log/debug
             //@file_put_contents('cache/e_jslib_log', "----------\nno cache used - raw\n\n", FILE_APPEND);
@@ -238,13 +290,13 @@ class e_jslib
      */
     function set_cache($contents, $encoding = '', $lmodified = 0)
     {
-        if (e107::getPref('syscachestatus'))
+        if (!deftrue('e_NOCACHE') && e107::getPref('syscachestatus'))
         {
             $cacheFile = $this->cache_filename($encoding);
 			if(!$lmodified) $lmodified = time(); 
             @file_put_contents($cacheFile, $contents);
             @chmod($cacheFile, 0775);
-            @touch($cacheFile, $lmodified);
+            if($lmodified) @touch($cacheFile, $lmodified);
         }
     }
     

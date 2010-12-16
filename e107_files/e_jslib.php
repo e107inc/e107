@@ -18,12 +18,7 @@
 // prevent notices/warnings to break JS source
 error_reporting(0);
 
-//output cache if available before calling the api
-e_jslib_cache_out();
-
-//v0.8 - we need THEME defines here (do we?) - WE DON'T
-//$_E107 = array('no_forceuserupdate' => 1, 'no_online' => 1, 'no_menus' => 1, 'no_prunetmp' => 1);
-$_E107['minimal'] = true;
+session_cache_limiter('private');
 
 //admin or front-end call
 if (strpos($_SERVER['QUERY_STRING'], '_admin') !== FALSE)
@@ -34,11 +29,31 @@ else
 {
 	define('USER_AREA', true); //force user area
 }
+// no-cache check
+if (strpos($_SERVER['QUERY_STRING'], '_nocache') !== FALSE)
+{
+	define('e_NOCACHE', true); //force admin area
+}
+else
+{
+	define('e_NOCACHE', false); //force user area
+}
+
+if(!e_NOCACHE) session_cache_limiter('private');
+else  session_cache_limiter('nocache');
+
+//output cache if available before calling the api
+e_jslib_cache_out();
+
+//v0.8 - we need THEME defines here (do we?) - WE DON'T
+//$_E107 = array('no_forceuserupdate' => 1, 'no_online' => 1, 'no_menus' => 1, 'no_prunetmp' => 1);
+$_E107['minimal'] = true;
 
 //call jslib handler, render content
 require_once ("../class2.php");
-require_once (e_HANDLER.'jslib_handler.php');
-$jslib = new e_jslib();
+//require_once (e_HANDLER.'jslib_handler.php');
+//$jslib = new e_jslib();
+$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
 $jslib->getContent();
 
 exit;
@@ -54,11 +69,15 @@ exit;
  */
 function e_jslib_cache_out()
 {
+	if(e_NOCACHE) return;
 	$encoding = e_jslib_browser_enc(); //NOTE - should be called first
 	$cacheFile = e_jslib_is_cache($encoding);
 	
 	if ($cacheFile)
 	{
+		//kill any output buffering - better performance and 304 not modified requirement
+		while (@ob_end_clean()); 
+		
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
@@ -67,16 +86,11 @@ function e_jslib_cache_out()
 		// last modification time
 		$lmodified = filemtime($cacheFile);
 		
-		// not modified - send 304 and exit
-		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
-		{
-		    header("HTTP/1.1 304 Not Modified", true);
-		    exit;
-		}
-		
 		// send last modified date
-		header('Cache-Control: must-revalidate');
-		header('Last-modified: '.gmdate('r', $lmodified), true);
+		//header('Cache-Control: must-revalidate');
+		//header('Last-modified: '.gmdate('r', $lmodified), true);
+		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);
+		
 		
 		// send content type and encoding
 		header('Content-type: text/javascript', true);
@@ -87,12 +101,37 @@ function e_jslib_cache_out()
 		
 		// Expire header - 1 year
 		$time = time()+ 365 * 86400;
-		header('Expires: '.gmdate('r', $time), true);
+		//header('Expires: '.gmdate('r', $time), true);
+		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 		
-		//kill any output buffering - better performance
-		while (@ob_end_clean()); 
+		header('Cache-Control: must-revalidate', true);
 		
-		echo @file_get_contents($cacheFile);
+		// not modified check by last modified time - send 304 and exit
+		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
+		{
+		    header("HTTP/1.1 304 Not Modified", true);
+		    exit;
+		}
+		
+		$page = @file_get_contents($cacheFile);
+		$etag = md5($page).($encoding ? '-'.$encoding : '');
+		
+		header('Content-Length: '.strlen($page), true);
+		header('ETag: '.$etag, true);
+		
+		// not modified check by Etag
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+		{
+			$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+			
+			if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag.'-'.$encoding)))
+			{
+				header('HTTP/1.1 304 Not Modified');
+				exit();	
+			}
+		}
+		
+		echo $page;
 		//TODO - debug
 		//@file_put_contents('cache/e_jslib_log', "----------\ncache used - ".$cacheFile."\n\n", FILE_APPEND);
 		exit;
