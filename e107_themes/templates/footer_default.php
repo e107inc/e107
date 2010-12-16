@@ -279,8 +279,10 @@ if (abs($_serverTime - $lastSet) > 120)
 	 * Drawback: each update may cause all server times to display a bit different
 	 */
 	echo "<script type='text/javascript'>\n";
-	echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
-       </script>\n";
+	echo "	SyncWithServerTime('', '{$_serverPath}', '{$_serverDomain}');\n";
+	//tdOffset disabled as it can't live together with HTTP_IF_NONE_MATCH (page load speed)
+	//echo "	SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');\n";
+    echo "</script>\n";
 }
 
 //
@@ -295,21 +297,16 @@ $page = ob_get_clean();
 
 $etag = md5($page);
 
-
-if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+// previously disabled or there is posted data
+if(!deftrue('e_NOCACHE') && empty($_POST))
 {
-	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
-	
-	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
+	header("Cache-Control: must-revalidate", true);	
+	if (function_exists('date_default_timezone_set')) 
 	{
-		header('HTTP/1.1 304 Not Modified');
-		exit();	
+	    date_default_timezone_set('UTC');
 	}
-}
-
-if(!defined('e_NOCACHE'))
-{
-	header("Cache-Control: must-revalidate");	
+	$time = time()+ 365 * 86400;
+	header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 }
 
 $pref['compression_level'] = 6;
@@ -330,7 +327,6 @@ if(varset($pref['compress_output'],false) && $server_support == true && $browser
 	$page = gzencode($page, $level);
 	header("Content-Encoding: gzip", true);
 	header("Content-Length: ".strlen($page), true);
-	echo $page;
 } 
 else 
 {
@@ -344,8 +340,22 @@ else
 	}
 	
 	header("Content-Length: ".strlen($page), true);
-	echo $page;
 }
+
+// should come after the Etag header
+if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+{
+	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
+	
+	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
+	{
+		header('HTTP/1.1 304 Not Modified');
+		exit();	
+	}
+}
+
+// real output
+echo $page;
 
 unset($In_e107_Footer);
 $e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!

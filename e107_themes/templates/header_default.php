@@ -143,6 +143,24 @@ unset($e_headers);
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
 
+// --- Load plugin Meta files - now possible to add to all zones!  --------
+$e_meta_content = '';
+if (is_array($pref['e_meta_list']))
+{
+	ob_start();
+	foreach($pref['e_meta_list'] as $val)
+	{
+		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+		{
+			require_once(e_PLUGIN.$val."/e_meta.php");
+		}
+	}
+	// content will be added later
+	// NOTE: not wise to do e_meta output, use JS Manager!  
+	$e_meta_content = ob_get_contents();
+	ob_end_clean();
+}
+
 // Register Plugin specific CSS 
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
 if (isset($eplug_css) && $eplug_css)
@@ -246,13 +264,6 @@ echo "\n<!-- footer_theme_css -->\n";
 $e_js->renderJs('inline_css', false, 'css', false);
 echo "\n<!-- footer_inline_css -->\n";
 
-	
-/*
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
-{
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
-}
-*/
 //IEpngfix - visible by IE6 only
 // FIXME - disable this style block via JS for all GOOD browsers.
 if($e_pref->get('enable_png_image_fix') || (isset($sleight) && $sleight == true)) // FIXME - KILL this GLOBAL!
@@ -275,8 +286,8 @@ if($e_pref->get('enable_png_image_fix') || (isset($sleight) && $sleight == true)
 //
 // E: Send JS all in once
 // Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
-// TODO - more work (zones, eplug_js, headerjs etc order)
-//
+// TODO - more work (zones, eplug_js, headerjs etc order, external JS/CSS)
+// TODO - mobile support
 
 
 // [JSManager] Load JS Includes - Zone 1 - Before Library
@@ -284,9 +295,8 @@ e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
 
 // Send Javascript Libraries ALWAYS (for now)
-//FIXME: [JS Manager] - build URL, disable core JS, option to use external sources (google)
-$hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_front';
-echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
+$jslib->renderHeader('front', false);
 
 // [JSManager] Load JS Includes - Zone 2 - After Library
 e107::getJs()->renderJs('header', 2);
@@ -329,13 +339,13 @@ else
 // TODO - convert it to e107::getJs()->header/footerFile() call
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
-  if ($pref['password_CHAP'] == 2)
-  {
+	if ($pref['password_CHAP'] == 2)
+  	{
 		// *** Add in the code to swap the display tags
-	$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
-  }
-  echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
-  $js_body_onload[] = "getChallenge();";
+		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+  	}
+  	echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
+  	$js_body_onload[] = "getChallenge();";
 }
 
 //headerjs moved below
@@ -343,15 +353,15 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
 // Deprecated function finally removed
 //if(function_exists('core_head')){ echo core_head(); }
 
-// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before e_meta and headerjs()
+// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before headerjs()
 e107::getJs()->renderJs('header', 3);
 e107::getJs()->renderJs('header_inline', 3);
 
-// [JSManager] Load JS Includes - Zone 4 - Just before e_meta, after headerjs
+// [JSManager] Load JS Includes - Zone 4 - After headerjs
 e107::getJs()->renderJs('header', 4);
 e107::getJs()->renderJs('header_inline', 4);
 
-// [JSManager] Load JS Includes - Zone 5 - After headerjs, just before e_meta, e107:loaded trigger
+// [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
 e107::getJs()->renderJs('header', 5);
 e107::getJs()->renderJs('header_inline', 5);
 
@@ -359,17 +369,8 @@ e107::getJs()->renderJs('header_inline', 5);
 // F: Send Meta Tags, Icon links
 //
 
-// --- Load plugin Meta files  --------
-if (is_array($pref['e_meta_list']))
-{
-	foreach($pref['e_meta_list'] as $val)
-	{
-		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
-		{
-			require_once(e_PLUGIN.$val."/e_meta.php");
-		}
-	}
-}
+// --- Send plugin Meta  --------
+echo $e_meta_content; // e_meta already loaded
 
 //
 // G: Send Theme Headers
