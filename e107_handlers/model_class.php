@@ -782,7 +782,8 @@ class e_model extends e_object
             return $this->$data_src;
         }
 
-        if (strpos($key, '/'))
+        // Fix - check if _data[path/to/value] really doesn't exist
+        if (!isset($this->{$data_src}[$key]) && strpos($key, '/'))
         {
         	if(isset($this->_parsed_keys[$data_src.'/'.$key]))
         	{
@@ -790,16 +791,29 @@ class e_model extends e_object
         	}
             $keyArr = explode('/', $key);
             $data = $this->$data_src;
-            foreach ($keyArr as $k)
+            foreach ($keyArr as $i => $k)
             {
                 if ('' === $k)
                 {
                     return $default;
                 }
+                unset($keyArr[$i]);
                 if (is_array($data))
                 {
                     if (!isset($data[$k]))
                     {
+                    	if($keyArr)
+                    	{
+                    		// fix for 'key' => array('some/key1' => 'someValue)
+                    		// NOTE: works only if 'key' => array('some' => array('key1' => 'someValue))
+                    		// doesn't exist!!!
+                    		$k1 = implode('/', $keyArr);
+                    		if(isset($data[$k1]))
+                    		{
+                    			$this->_parsed_keys[$data_src.'/'.$key] = $data[$k1];
+                    			return $data[$k1];
+                    		}
+                    	}
                         return $default;
                     }
                     $data = $data[$k];
