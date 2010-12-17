@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 /**
  *	Youtube handling
  *
- * [youtube=tiny|small|medium|big|huge or width,height]ID{&query options}[/youtube]
+ * [youtube=tiny|small|medium|large|huge or width,height]ID{&query options}[/youtube]
  * 
  * examples: 
  * [youtube=560,340]N2wivHYCRho?hd=1&color1=&color2=&cc_load_policy=0&autoplay=0[/youtube]
@@ -70,7 +70,7 @@ class bb_youtube extends e_bb_base
 			{
 				list($widthString, $parm) = explode('|', $parm);
 			}
-			elseif (in_array($parm, array('tiny', 'small', 'medium', 'big', 'huge')) || (strpos($parm, ',') !== FALSE))
+			elseif (in_array($parm, array('tiny', 'small', 'medium','large', 'big', 'huge')) || (strpos($parm, ',') !== FALSE))
 			{	// Assume we're just setting a width
 				$widthString = $parm;
 				$parm = '';
@@ -255,6 +255,7 @@ class bb_youtube extends e_bb_base
 			break;
 			
 			case 'big':
+			case 'large':
 				$params['w'] = 853; // 660;
 				$params['h'] = 505; // 525;
 			break;
