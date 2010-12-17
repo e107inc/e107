@@ -178,6 +178,9 @@ class e_thumbpage
 			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
 			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
 			$thumbnfo['fsize'] = filesize(e_CACHE_IMAGE.$fname);
+			
+			// Send required headers
+			$this->sendHeaders($thumbnfo);
 
 			// check browser cache
 			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
@@ -188,7 +191,7 @@ class e_thumbpage
 			}
 
 			// Send required headers
-			$this->sendHeaders($thumbnfo);
+			//$this->sendHeaders($thumbnfo);
 
 			@readfile(e_CACHE_IMAGE.$fname);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
@@ -241,7 +244,11 @@ class e_thumbpage
 			echo 'Headers already sent! ';
 			exit;
 		}
-
+		if (function_exists('date_default_timezone_set')) 
+		{
+		    date_default_timezone_set('UTC');
+		}
+		//header('Pragma:');
 		header('Cache-Control: must-revalidate');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
 		header('Content-Length: '.$thumbnfo['fsize']);
