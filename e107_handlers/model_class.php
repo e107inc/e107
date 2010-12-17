@@ -767,7 +767,14 @@ class e_model extends e_object
      *
      * If $index is specified it will assume that attribute data is an array
      * and retrieve corresponding member.
-     *
+     * 
+     * NEW: '/' supported in keys now, just use double slashes '//' as key separator
+     * Examples:
+     * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
+     * - '//some/key' -> [some/key] - starting with // means - don't parse!
+     * - '///some/key/' -> [/some/key/]
+     * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
+     * 
      * @param string $key
      * @param mixed $default
      * @param integer $index
@@ -776,20 +783,38 @@ class e_model extends e_object
      */
     protected function _getData($key = '', $default = null, $index = null, $data_src = '_data')
     {
-    	$key = trim($key, '/');
         if ('' === $key)
         {
             return $this->$data_src;
         }
+        
+        $simple = false;
+        if(strpos($key, '//') === 0)
+        {
+        	$key = substr($key, 2);
+        	$simple = true;
+        }
+        /*elseif($key[0] == '/')
+        {
+        	// just use it!
+        	$simple = true; 
+        }*/
+        else
+        {
+        	$simple = strpos($key, '/') === false; 
+        }
 
         // Fix - check if _data[path/to/value] really doesn't exist
-        if (!isset($this->{$data_src}[$key]) && strpos($key, '/'))
+        if (!$simple)
         {
+        	//$key = trim($key, '/');
         	if(isset($this->_parsed_keys[$data_src.'/'.$key]))
         	{
         		return $this->_parsed_keys[$data_src.'/'.$key];
         	}
-            $keyArr = explode('/', $key);
+        	// new feature (double slash) - when searched key string is key//some/key/with/slashes//more 
+        	// -> search for 'key' => array('some/key/with/slashes', array('more' => value));
+            $keyArr = explode(strpos($key, '//') ? '//' : '/', $key);
             $data = $this->$data_src;
             foreach ($keyArr as $i => $k)
             {
@@ -797,23 +822,11 @@ class e_model extends e_object
                 {
                     return $default;
                 }
-                unset($keyArr[$i]);
+
                 if (is_array($data))
                 {
                     if (!isset($data[$k]))
                     {
-                    	if($keyArr)
-                    	{
-                    		// fix for 'key' => array('some/key1' => 'someValue)
-                    		// NOTE: works only if 'key' => array('some' => array('key1' => 'someValue))
-                    		// doesn't exist!!!
-                    		$k1 = implode('/', $keyArr);
-                    		if(isset($data[$k1]))
-                    		{
-                    			$this->_parsed_keys[$data_src.'/'.$key] = $data[$k1];
-                    			return $data[$k1];
-                    		}
-                    	}
                         return $default;
                     }
                     $data = $data[$k];
@@ -878,6 +891,14 @@ class e_model extends e_object
      *
      * If $strict is true and $data_src is '_data', data will be updated only (no new data will be added)
      *
+     * NEW: '/' supported in keys now, just use double slashes '//' as key separator
+     * Examples:
+     * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
+     * - '//some/key' -> [some/key] - starting with // means - don't parse!
+     * - '///some/key/' -> [/some/key/]
+     * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
+     * 
+     *
      * @param string|array $key
      * @param mixed $value
      * @param boolean $strict
@@ -890,9 +911,9 @@ class e_model extends e_object
         {
             if($strict)
 	    	{
-				foreach(array_keys($key) as $k)
+				foreach($key as $k => $v)
 		        {
-		        	$this->_setData($k, $key[$k], true, $data_src);
+		        	$this->_setData($k, $v, true, $data_src);
 		        }
 		        return $this;
 	    	}
@@ -906,22 +927,46 @@ class e_model extends e_object
        	{
 			foreach($value as $k => $v)
 			{
-			    $this->_setData($key.'/'.$k, $v, true, $data_src);
+				// new - $k couldn't be a path - e.g. 'key' 'value/value1' 
+				// will result in 'key' => 'value/value1' and NOT 'key' => array('value' => value1)
+			    $this->_setData($key.'//'.$k, $v, true, $data_src);
 			}
 			return $this;
        	}
-
-        //multidimensional array support - parse key
-        $key = trim($key, '/');
-        if(strpos($key,'/'))
+       	
+        $simple = false;
+        if(strpos($key, '//') === 0)
         {
+        	// NEW - leading '//' means set 'some/key' without parsing it
+        	// Example: '//some/key'; NOTE: '//some/key//more/depth' is NOT parsed
+        	// if you wish to have array('some/key' => array('more/depth' => value))
+        	// right syntax is 'some/key//more/depth'
+        	$key = substr($key, 2);
+        	$simple = true;
+        }
+        /*elseif($key[0] == '/')
+        {
+        	$simple = true; 
+        }*/
+        else
+        {
+        	$simple = strpos($key, '/') === false; 
+        }
+
+        //multidimensional array support - parse key      
+        if(!$simple)
+        {
+        	//$key = trim($key, '/');
         	//if strict - update only
 	        if($strict && !$this->isData($key))
 	        {
 	        	return $this;
 	        }
-
-        	$keyArr = explode('/', $key);
+	        
+        	// new feature (double slash) - when parsing key: key//some/key/with/slashes//more 
+        	// -> result is 'key' => array('some/key/with/slashes', array('more' => value));
+	        $keyArr = explode(strpos($key, '//') ? '//' : '/', $key);
+        	//$keyArr = explode('/', $key);
         	$data = &$this->{$data_src};
             for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
