@@ -212,9 +212,12 @@ class rssCreate {
                     if($value['news_summary'])
                     {
                         	$this -> rssItems[$loop]['description'] = $value['news_summary'];
-					}else{
-						$this -> rssItems[$loop]['description'] = $value['news_body'];
+					}
+					else
+					{
+						$this -> rssItems[$loop]['description'] = ($value['news_body']."<br />".$value['news_extended']);
                     }
+					
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
                     $this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
