@@ -1674,9 +1674,9 @@ class users
 			}
 			else
 			{
-				if ($sql->db_Count("user","(*)","WHERE user_ip = '{$row['user_ip']}'") > 1)
+				if ($sql->db_Count("user","(*)","WHERE user_ip = '{$row['user_ip']}' AND user_ban='0'") > 1)
 				{
-				// Multiple users have same IP address
+				// Multiple unbanned users have same IP address
 					$this->show_message(str_replace("{IP}",$row['user_ip'],USRLAN_136));
 				}
 				else
