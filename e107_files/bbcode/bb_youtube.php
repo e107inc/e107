@@ -185,42 +185,43 @@ class bb_youtube extends e_bb_base
 		$parms = explode('|', $parm, 2);
 		parse_str(varset($parms[1], ''), $params);
 
-		if(empty($parms[0])) $parms[0] = 'small';
+		if(empty($parms[0])) $parms[0] = 'medium'; // (default as per YouTube spec)
+		// formula: width x (height+25px)
 
 		switch ($parms[0]) 
 		{
 			case 'tiny':
-				$params['w'] = 200;
-				$params['h'] = 180;
+				$params['w'] = 320; // 200;
+				$params['h'] = 205; // 180;
 			break;
 			
 			case 'small':
-				$params['w'] = 445;
-				$params['h'] = 364;
+				$params['w'] = 560; // 445;
+				$params['h'] = 340; // 364;
 			break;
 			
 			case 'medium':
-				$params['w'] = 500;
-				$params['h'] = 405;
+				$params['w'] = 640; // 500;
+				$params['h'] = 385; // 405;
 			break;
 			
 			case 'big':
-				$params['w'] = 660;
-				$params['h'] = 525;
+				$params['w'] = 853; // 660;
+				$params['h'] = 505; // 525;
 			break;
 			
 			case 'huge':
-				$params['w'] = 980;
-				$params['h'] = 765;
+				$params['w'] = 1280; // 980;
+				$params['h'] = 745; // 765;
 			break;
 			
-			default:
+			default: // maximum 1920 x 1080 (+25)
 				$dim = explode(',', $parms[0], 2);
 				$params['w'] = (integer) varset($dim[0], 445);
-				if($params['w'] > 980 || $params['w'] < 200) $params['w'] = 445;
+				if($params['w'] > 1920 || $params['w'] < 200) $params['w'] = 640;
 				
 				$params['h'] = (integer) varset($dim[1], 364);
-				if($params['h'] > 765 || $params['h'] < 180) $params['h'] = 364;
+				if($params['h'] > 1105 || $params['h'] < 137) $params['h'] = 385;
 			break;
 		}
 
@@ -288,13 +289,15 @@ class bb_youtube extends e_bb_base
 		}
 		
 		$ret = ' 
-		<object width="'.$params['w'].'" height="'.$params['h'].'">
+		<object width="'.$params['w'].'" height="'.$params['h'].'" >
 			<param name="movie" value="'.$url.'"></param>
 			<param name="allowFullScreen" value="'.$fscr.'"></param>
 			<param name="allowscriptaccess" value="always"></param>
 			<param name="wmode" value="transparent"></param>
-			<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>
-		</object>
+		';		
+	// Not XHTML - but needed for compatibility. 
+		$ret .= '<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
+		$ret .= '</object>
 		';
 
 		return $ret;
