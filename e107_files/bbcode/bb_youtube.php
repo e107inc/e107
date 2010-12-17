@@ -55,8 +55,14 @@ class bb_youtube extends e_bb_base
 		$bbpars = array();
 		$widthString = '';
 		$parm = trim($parm);
-
 		
+		if(substr($code_text,"http://www.youtube.com/watch?v=")!==FALSE || substr($code_text,"http://www.youtube.com/watch#!v=")!==FALSE )
+		{
+			$validUrls = array("http://www.youtube.com/watch?v=","http://www.youtube.com/watch#!v=");
+			$tmp = str_replace($validUrls,'',$code_text);	
+			list($code_text,$void) = explode("&",$tmp,2);
+		}
+			
 		if ($parm)
 		{
 			if (strpos($parm, '|') !== FALSE)
