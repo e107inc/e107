@@ -56,11 +56,12 @@ class bb_youtube extends e_bb_base
 		$widthString = '';
 		$parm = trim($parm);
 		
-		if(substr($code_text,"http://www.youtube.com/watch?v=")!==FALSE || substr($code_text,"http://www.youtube.com/watch#!v=")!==FALSE )
+		// Convert Simple URLs. 
+		if(strpos($code_text,"http://www.youtube.com/watch?v=")!==FALSE || strpos($code_text,"http://www.youtube.com/watch#!v=")!==FALSE )
 		{
 			$validUrls = array("http://www.youtube.com/watch?v=","http://www.youtube.com/watch#!v=");
-			$tmp = str_replace($validUrls,'',$code_text);	
-			list($code_text,$void) = explode("&",$tmp,2);
+			$tmp = str_replace($validUrls,'',$code_text);
+			list($code_text,$void) = explode("&",$tmp,1);			
 		}
 			
 		if ($parm)
