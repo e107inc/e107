@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -83,6 +83,12 @@ if (isset($_POST['trigger_empty_cache']))
 			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
 			e107::getAdminLog()->flushMessages(CACLAN_25);
 		break;
+		
+		// used in standard page output and internal JS includes
+		case 'empty_browsercache':
+			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			e107::getAdminLog()->flushMessages(CACLAN_25);
+		break;
 
 		// all
 		default:
@@ -90,6 +96,7 @@ if (isset($_POST['trigger_empty_cache']))
 			$ec->clear_sys();
 			admin_page_cache_erase(e_CACHE_DB, '*.php');
 			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
+			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
 			e107::getAdminLog()->flushMessages(CACLAN_26);
 		break;
 	}
@@ -172,6 +179,7 @@ $text = "
 					'empty_syscache' => CACLAN_16,
 					'empty_dbcache' => CACLAN_24,
 					'empty_imgcache' => CACLAN_25,
+					'empty_browsercache' => CACLAN_27,
 				))."
 				".$frm->admin_button('trigger_empty_cache', LAN_DELETE, 'delete')."
 			</div>

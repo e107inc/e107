@@ -174,7 +174,7 @@ class e_jsmanager
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
 
 		// Try to load browser cache id from core preferences
-		$this->setCacheId(e107::getPref('e_jslib_browser_cache', 0));
+		$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
 
 		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
 		$core_libs = e107::getPref('e_jslib_core');

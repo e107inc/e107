@@ -32,4 +32,5 @@ define("CACLAN_23", "Thumbnail cache files contains binary image data. They are 
 define("CACLAN_24", "Empty DB Structure Cache");
 define("CACLAN_25", "Empty Thumbnail Cache");
 define("CACLAN_26", "Empty All Cache");
+define("CACLAN_27", "Empty Browser Cache");
 ?>

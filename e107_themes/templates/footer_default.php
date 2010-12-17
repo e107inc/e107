@@ -288,6 +288,8 @@ if (abs($_serverTime - $lastSet) > 120)
 //
 // H Final HTML
 //
+// browser cache control
+echo "\n<!-- ".md5(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'))." -->\n";
 echo "</body></html>";
 
 //
@@ -297,6 +299,7 @@ $page = ob_get_clean();
 
 $etag = md5($page);
 
+//header('Pragma:');
 // previously disabled or there is posted data
 if(!deftrue('e_NOCACHE') && empty($_POST))
 {
