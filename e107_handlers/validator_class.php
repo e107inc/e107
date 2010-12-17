@@ -480,6 +480,7 @@ class e_validator
 				return true;
 			break;
 
+			case 'regexp':
 			case 'regex':
 				if(!preg_match($cond, $value))
 				{
