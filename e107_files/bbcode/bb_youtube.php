@@ -28,6 +28,7 @@ if (!defined('e107_INIT')) { exit; }
  * [youtube=560,340]N2wivHYCRho?hd=1&color1=&color2=&cc_load_policy=0&autoplay=0[/youtube]
  * [youtube=big|privacy]N2wivHYCRho?hd=1&hl=en[/youtube]
  * 
+ * Will also convert Youtube embed code, and youtube 'watch' urls. (http://www.youtube.com/watch?v=)
  * Youtube ID is the only required data!
  * TODO - use swfobject JS - XHTML validation
  */
@@ -57,11 +58,13 @@ class bb_youtube extends e_bb_base
 		$parm = trim($parm);
 		
 		// Convert Simple URLs. 
-		if(strpos($code_text,"http://www.youtube.com/watch?v=")!==FALSE || strpos($code_text,"http://www.youtube.com/watch#!v=")!==FALSE )
+		if(strpos($code_text,"youtube.com/watch?v=")!==FALSE || strpos($code_text,"youtube.com/watch#!v=")!==FALSE )
 		{
-			$validUrls = array("http://www.youtube.com/watch?v=","http://www.youtube.com/watch#!v=");
+			$validUrls = array("http://","www.","youtube.com/watch?v=","youtube.com/watch#!v=");
 			$tmp = str_replace($validUrls,'',$code_text);
-			list($code_text,$void) = explode("&",$tmp,1);			
+			$qrs = explode("&",$tmp);		
+			$code_text = $qrs[0];
+			unset($qrs);		
 		}
 			
 		if ($parm)
