@@ -1889,6 +1889,7 @@ class e107
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
 		$_SERVER['QUERY_STRING'] = trim(str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']), '&');
 
+		/* PathInfo doesn't break anything, URLs should be always absolute. Disabling the below forever.
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
 		{
@@ -1897,6 +1898,8 @@ class e107
 			header('Location: '.$new_loc);
 			exit();
 		}
+		*/
+		
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 		$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
