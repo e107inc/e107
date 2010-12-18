@@ -80,20 +80,20 @@ else
 		$bullet = '';
 		if(defined('BULLET'))
 		{
-			$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+			$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+			$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 		}
 
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= $bullet." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
+			$text .= $bullet." <a href='".e_PLUGIN_ABS."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
 		}
 		else
 		{
-			$text .= $bullet." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
+			$text .= $bullet." <a href='".e_PLUGIN_ABS."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
 		}
 	}
 }

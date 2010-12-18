@@ -107,11 +107,11 @@ if(ADMIN)
 {
 	if(defined('BULLET'))
 	{
-		$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+		$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
 	}
 	elseif(file_exists(THEME.'images/bullet2.gif'))
 	{
-		$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+		$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 	}
 }
 return $bullet;
@@ -140,11 +140,11 @@ SC_BEGIN LM_BULLET
 $bullet = '';
 if(defined('BULLET'))
 {
-	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+	$bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
 }
 elseif(file_exists(THEME.'images/bullet2.gif'))
 {
-	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+	$bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 }
 return $bullet;
 SC_END
