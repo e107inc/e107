@@ -492,6 +492,10 @@ class e_parse
 		{
 			$no_encode = TRUE;
 		}
+		if ($core_pref->get('html_abuse'))
+		{
+			if ($this->htmlAbuseFilter($data)) $no_encode = FALSE;
+		}
 		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
 		{
 			$no_encode = FALSE;
@@ -516,6 +520,41 @@ class e_parse
 		}
 
 		return $ret;
+	}
+
+
+
+	/**
+	 *	Check for HTML closing tag for input elements, without corresponding opening tag
+	 *
+	 *	@param string $data
+	 *	@param string $tagList - if empty, uses default list of input tags. Otherwise a CSV list of tags to check (any type)
+	 *
+	 *	@return boolean TRUE if an unopened closing tag found
+	 *					FALSE if nothing found
+	 */
+	function htmlAbuseFilter($data, $tagList = '')
+	{
+		if ($tagList == '')
+		{
+			$checkTags = array('textarea', 'input', 'td', 'tr', 'table');
+		}
+		else
+		{
+			$checkTags = explode(',', $tagList);
+		}
+		$data = preg_replace('#\[code\].*?\[\/code\]#i', '', $data);		// Ignore code blocks
+		foreach ($checkTags as $tag)
+		{
+			if (($pos = stripos($data, '</'.$tag)) !== FALSE)
+			{
+				if ((($bPos = stripos($data, '<'.$tag )) === FALSE) || ($bPos > $pos))
+				{
+					return TRUE;		// Potentially abusive HTML found
+				}
+			}
+		}
+		return FALSE;		// Nothing detected
 	}
 
 
