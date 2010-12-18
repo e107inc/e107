@@ -232,4 +232,7 @@ define('PRFLAN_217', 'Filter HTML content');
 define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
 
 define('PRFLAN_219', 'Not allowed characters found in Cookie name (alphanumeric characters allowed only). Cookie name not saved.');
+define('PRFLAN_220', 'HTML Abuse filter (experimental)');
+define('PRFLAN_221', 'Blocks some unmatched tags for those allowed to post HTML');
+
 ?>

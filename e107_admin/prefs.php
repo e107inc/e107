@@ -785,6 +785,13 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
+						<td class='label'>".PRFLAN_220.":</td>
+						<td class='control'>
+							".$frm->radio_switch('html_abuse', varset($pref['html_abuse'], 1))."
+							<div class='smalltext field-help'>".PRFLAN_221."</div>
+						</td>
+					</tr>
+					<tr>
 						<td class='label'>".PRFLAN_122.":</td>
 						<td class='control'>
 							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'])."
