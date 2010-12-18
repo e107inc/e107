@@ -22,6 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 class notify {
 
 	var $notify_prefs;
+	var $debug = FALSE;
 
 	function notify() {
 		global $sysprefs, $e_event, $eArrayStorage;
@@ -39,11 +40,21 @@ class notify {
 	function send($id, $subject, $message) 
 	{
 		global $sql, $tp;
+				
+		$this->logData("Initiate Send - ".$id. " :: Subject: ".$tp->toEmail($subject));
+		
 		e107_require_once(e_HANDLER.'mail.php');
 		$subject = SITENAME.': '.$subject;
 		if ($this -> notify_prefs['event'][$id]['type'] == 'main')
 		{
-			sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message));
+			if(!sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message)))
+			{
+				$this->logData("Error - ".SITEADMINEMAIL. " :: Subject: ".$tp->toEmail($subject));
+			}
+			else
+			{
+				$this->logData("Success - ".SITEADMINEMAIL. " :: Subject: ".$tp->toEmail($subject));	
+			}
 		}
 		elseif ($this -> notify_prefs['event'][$id]['type'] == 'class')
 		{
@@ -61,13 +72,44 @@ class notify {
 			}
 			while ($email = $sql -> db_Fetch())
 			{
-				sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message));
+				if(!sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message)))
+				{
+					$this->logData("Error - ".$email['user_email']. " :: Subject: ".$tp->toEmail($subject));
+				}
+				else
+				{
+					$this->logData("Success - ".$email['user_email']. " :: Subject: ".$tp->toEmail($subject));	
+				}
 			}
 		}
 		elseif ($this -> notify_prefs['event'][$id]['type'] == 'email')
 		{
-			sendemail($this -> notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message));
+			if(!sendemail($this -> notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message)))
+			{
+				$this->logData("Error - ".$this -> notify_prefs['event'][$id]['email']. " subject: ".$tp->toEmail($subject));	
+			}
+			else
+			{
+				$this->logData("Success - ".$this -> notify_prefs['event'][$id]['email']. " :: Subject: ".$tp->toEmail($subject));	
+			}
 		}
+	}
+	
+	
+	
+	/**
+	 * Log Notify Info for debugging
+	 * @param object $message
+	 * @return 
+	 */
+	function logData($message)
+	{
+		if($this->debug == FALSE){ return; }
+		if($fp = @fopen(e_HANDLER."notify.log","a+"))
+		{	
+			$contents = @fwrite($fp, date('r')." :: ".$message ." \n");
+			@fclose($fp);
+		}			
 	}
 }
 
@@ -106,9 +148,25 @@ function notify_userveri($data) {
 
 function notify_login($data) {
 	global $nt;
+	
+	$theIP = $_SERVER["REMOTE_ADDR"]." (". gethostbyaddr($_SERVER['REMOTE_ADDR']).")";
+	
+	$message = "<br /><br /><table style='width:70%'>
+	<tr><td>User ID:</td><td>".$data['user_id']."</td></tr>
+	<tr><td>Username:</td><td>".$data['user_name']."</td></tr>
+	<tr><td>Admin:</td><td>".($data['user_admin'] ? "Yes" : "No")."</td></tr>
+    <tr><td>IP:</td><td>".$theIP."</td></tr>
+	<tr><td>URL:</td><td>".$_SERVER["SCRIPT_NAME"]."</td></tr>
+	<tr><td>Referer:</td><td>".$_SERVER["HTTP_REFERER"]."</td></tr>
+	<tr><td>UserAgent:</td><td>".$_SERVER["HTTP_USER_AGENT"]."</td></tr>
+    <tr><td>Time:</td><td>".date("r")."</td></tr>";
+	
+	/*	
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
+	*/
+	
 	$nt -> send('login', NT_LAN_LI_1, $message);
 }
 
@@ -165,6 +223,8 @@ function notify_fileupload($data) {
 	$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
 	$nt -> send('fileupload', $data['upload_name'], $message);
 }
+
+
 
 if (isset($nt -> notify_prefs['plugins'])) {
 	foreach ($nt -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
