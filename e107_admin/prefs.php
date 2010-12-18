@@ -703,6 +703,14 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	</tr>\n
 
     <tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_220.":  <div class='smalltext'>".PRFLAN_221."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	<input type='radio' name='html_abuse' value='1'".(varset($pref['html_abuse'], 1) ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='html_abuse' value='0'".(!varset($pref['html_abuse'], 1) ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>\n
+
+    <tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_122.":  <div class='smalltext'>".PRFLAN_123."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
 	<input type='radio' name='wysiwyg' value='1'".($pref['wysiwyg'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;

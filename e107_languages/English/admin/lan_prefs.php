@@ -196,6 +196,9 @@ define('PRFLAN_215', 'Class which can post &lt;script&gt; and similar tags');
 define('PRFLAN_216', '(Requires HTML posting rights as well)');
 define('PRFLAN_217', 'Filter HTML content');
 define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits posted by members of the above class, or prior to 0.7.24');
+// Gap for 0.8 compatibility
+define('PRFLAN_220', 'HTML Abuse filter (experimental)');
+define('PRFLAN_221', 'Blocks some unmatched tags for those allowed to post HTML');
 
 
 ?>

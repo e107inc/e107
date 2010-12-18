@@ -146,6 +146,7 @@ City, State, Country
   'post_html' => '250',
   'post_script' => '250',
   'filter_script' => '1',
+  'html_abuse' => '1',
   'redirectsiteurl' => '0',
   'admin_alerts_uniquemenu' => '0',
   'null' => '',
