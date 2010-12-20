@@ -1,3 +1,12 @@
+# Custom error pages for php scripts only
+<FilesMatch \.php$> 
+	ErrorDocument 400 /error.php?400
+	ErrorDocument 401 /error.php?401
+	ErrorDocument 403 /error.php?403
+	ErrorDocument 404 /error.php?404 
+	ErrorDocument 500 /error.php?500
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
 ### enable rewrites
 	Options +FollowSymLinks 
@@ -31,9 +40,3 @@
 
 
 </IfModule>
-
-#ErrorDocument 400 /error.php?400
-#ErrorDocument 401 /error.php?401
-#ErrorDocument 403 /error.php?403
-#ErrorDocument 404 /error.php?404
-#ErrorDocument 500 /error.php?500
