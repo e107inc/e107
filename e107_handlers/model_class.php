@@ -468,7 +468,7 @@ class e_vars extends e_object
 	 */
 	public function isEmpty()
 	{
-		return $this->hasData();
+		return (!$this->hasData());
 	}
 	
 	/**
