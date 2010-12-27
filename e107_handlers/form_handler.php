@@ -312,11 +312,14 @@ class e_form
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
+		
+		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
 
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
 		$ret = '
 		<div class="e-autocomplete-c">
 			'.$this->text($name_fld, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
+			<span id="'.$label_fld.'" class="'.($default_id ? 'success' : 'warning').'">Id #'.((int) $default_id).'</span>
 			'.$this->hidden($id_fld, $default_id, array('id' => false)).'
 				<span class="indicator" style="display: none;">
 					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
@@ -343,10 +346,17 @@ class e_form
 					  frequency: 0.5,
 					  afterUpdateElement: function(txt, li) {
 					  	if(!\$(li)) return;
+					  	var elnext = el.next('input[name={$id_fld}]'),
+					  		ellab = \$('{$label_fld}');
 					  	if(\$(li).id) {
-							el.next('input[name={$id_fld}]').value = parseInt(\$(li).id);
+							elnext.value = parseInt(\$(li).id);
 						} else {
-							el.next('input[name={$id_fld}]').value = 0
+							elnext.value = 0
+						}
+						if(ellab)
+						{
+							ellab.removeClassName('warning').removeClassName('success');
+							ellab.addClassName((elnext.value ? 'success' : 'warning')).update('Id #' + elnext.value);
 						}
 					  },
 					  indicator:  el.next('span.indicator'),
@@ -519,6 +529,7 @@ class e_form
 
 		foreach ($elements as $value => $label)
 		{
+			$label = defset($label, $label);
 			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value).(isset($help[$value]) ? "<div class='field-help'>".$help[$value]."</div>" : '');
 		}
 		if(!$multi_line)
@@ -1230,10 +1241,11 @@ class e_form
 				return $value;
 			break;
 		}
-
+		
 		switch($attributes['type'])
 		{
 			case 'number':
+				if(!$value) $value = '0';
 				if($parms)
 				{
 					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
@@ -1301,6 +1313,17 @@ class e_form
 					$value = $ret;
 				}
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
+			break;
+			
+			case 'radio':
+				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
+				{
+					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
+					break;
+				}
+				
+				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
+				$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 			break;
 
 			case 'text':
@@ -1429,6 +1452,7 @@ class e_form
 				$ttl = '';
 				if(vartrue($parms['link']))
 				{
+					// previously set - real parameters are idField && nameField
 					$id = vartrue($parms['__idval']);
 					if($value && !is_numeric($value))
 					{
@@ -1551,7 +1575,7 @@ class e_form
 		{
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
-
+		
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1559,6 +1583,7 @@ class e_form
 				unset($parms['maxlength']);
 				if(!vartrue($parms['size'])) $parms['size'] = 15;
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
+				if(!$value) $value = '0';
 				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
 
@@ -1681,6 +1706,14 @@ class e_form
 				return vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
+			case 'radio':
+				// TODO - more options (multi-line, help)
+				/*$eloptions  = vartrue($parms['__options'], array());
+				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
+				unset($parms['__options']);*/
+				return vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, false).vartrue($eloptions['post']);
+			break;
+
 			case 'userclass':
 			case 'userclasses':
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,classes,admin,main'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
@@ -1711,7 +1744,7 @@ class e_form
 
 				if(!is_array($value))
 				{
-					$value = get_user_data($value);
+					$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// get_user_data($value);
 				}
 
 				$colname = vartrue($parms['nameType'], 'user_name');
@@ -1988,6 +2021,7 @@ class e_form
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
 		$required_help = false;
+		$hidden_fields = array();
 		foreach($fdata['fields'] as $key => $att)
 		{
 			// convert aliases - not supported in edit mod
@@ -2034,6 +2068,11 @@ class e_form
 					}
 				}
 				
+				if('hidden' === $att['type'])
+				{
+					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+					continue;
+				}
 				$text .= "
 					<tr>
 						<td class='label'>
@@ -2058,6 +2097,7 @@ class e_form
 		$text .= "
 					</tbody>
 				</table>
+				".implode("\n", $hidden_fields)."
 				".$required_help."
 				".vartrue($fdata['table_post'])."
 				<div class='buttons-bar center'>
