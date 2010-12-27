@@ -21,6 +21,7 @@ if (!getperms("4"))
 	exit;
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'failed_login';
 require_once("auth.php");
 
