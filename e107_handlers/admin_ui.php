@@ -1035,7 +1035,7 @@ class e_admin_dispatcher
 		if($this->adminMenu)
 		{
 			reset($this->adminMenu);
-			list($mode, $action) = explode('/', key($this->adminMenu), 2);
+			list($mode, $action) = explode('/', key($this->adminMenu), 3);
 		}
 		else
 		{
@@ -1303,11 +1303,14 @@ class e_admin_dispatcher
 	{
 		$tp = e107::getParser();
 		$var = array();
-
+		$selected = false;
 		foreach($this->adminMenu as $key => $val)
 		{
-			$tmp = explode('/', trim($key, '/'), 2);
-
+			$tmp = explode('/', trim($key, '/'), 3);
+			
+			// custom 'selected' check
+			if(isset($val['selected']) && $val['selected']) $selected = $val['selected'] === true ? $key : $val['selected'];
+			
 			foreach ($val as $k=>$v)
 			{
 				switch($k)
@@ -1320,6 +1323,11 @@ class e_admin_dispatcher
 					case 'url':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs').'?mode='.$tmp[0].'&amp;action='.$tmp[1];
+					break;
+					
+					case 'uri':
+						$k2 = 'link';
+						$v = $tp->replaceConstants($v, 'abs');
 					break;
 
 					default:
@@ -1352,7 +1360,7 @@ class e_admin_dispatcher
 		}
 
 		$request = $this->getRequest();
-		$selected = $request->getMode().'/'.$request->getAction();
+		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 		return e_admin_menu($this->menuTitle, $selected, $var);
 	}
@@ -2009,6 +2017,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string SQL order, false to disable order, null is default order
 	 */
 	protected $listOrder = null;
+	
+	/**
+	 * Structure same as TreeModel parameters used for building the load() SQL
+	 * @var additional SQL to be applied when auto-building the list query
+	 */
+	protected $listQrySql = array();
 
 	/**
 	 * @var boolean
@@ -2949,7 +2963,14 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($raw)
 		{
-			$rawData = array('joinWhere' => $jwhere, 'filter' => $filter, 'filterFrom' => $filterFrom, 'search' => $searchQry, 'tableFromName' => $tableFrom);
+			$rawData = array(
+				'joinWhere' => $jwhere, 
+				'filter' => $filter, 
+				'listQrySql' => $this->listQrySql,
+				'filterFrom' => $filterFrom, 
+				'search' => $searchQry, 
+				'tableFromName' => $tableFrom,
+			);
 			$rawData['tableFrom'] = $tableSFieldsArr;
 			$rawData['joinsFrom'] = $tableSJoinArr;
 			$rawData['joins'] = $joins;
@@ -2970,6 +2991,19 @@ class e_admin_controller_ui extends e_admin_controller
 		if(count($filter) > 0)
 		{
 			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
+		}
+		
+		// more user added sql
+		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
+		{
+			if(is_array($this->listQrySql['db_where']))
+			{
+				$searchQry[] = implode(" AND ", $this->listQrySql['db_where']);
+			}
+			else
+			{
+				$searchQry[] = $this->listQrySql['db_where'];
+			}
 		}
 
 		// where query
@@ -3701,7 +3735,10 @@ class e_admin_ui extends e_admin_controller_ui
 				}*/
 			}
 		}
-
+		
+		// don't touch it if already exists
+		if($this->_model) return $this;
+		
 		// default model
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
@@ -4093,7 +4130,7 @@ class e_admin_form_ui extends e_form
 			$option = array();
 			$parms = vartrue($val['writeParms'], array());
 			if(is_string($parms)) parse_str($parms, $parms);
-
+			
 			switch($val['type'])
 			{
 					case 'bool':
@@ -4167,7 +4204,7 @@ class e_admin_form_ui extends e_form
 					case 'method':
 						$method = $key; 
 						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
-
+						
 						if(is_array($list))
 						{
 							//check for single option

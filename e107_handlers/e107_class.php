@@ -2246,9 +2246,6 @@ class e107
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri));
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
-		
-		define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
-		define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
 
 		// e_SELF has the full HTML path
 		$inAdminDir = FALSE;
@@ -2285,6 +2282,10 @@ class e107
 
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 		define('SITEURL', SITEURLBASE.e_HTTP);
+		
+		// login/signup
+		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
+		define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
 
 		return $this;
 	}

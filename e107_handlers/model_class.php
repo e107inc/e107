@@ -2099,11 +2099,13 @@ class e_front_model extends e_model
 			}
 		}
 
+		$tp = e107::getParser();
     	foreach ($data as $field => $dt)
     	{
     		// get values form validated array when possible
     		// we need it because of advanced validation methods e.g. 'compare'
-    		if(isset($valid_data[$field])) $dt = $valid_data[$field];
+    		// FIX - security issue, toDb required
+    		if(isset($valid_data[$field])) $dt = $tp->toDb($valid_data[$field]);
 
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
@@ -2433,7 +2435,7 @@ class e_front_model extends e_model
 			}
 			return $ret;
 		}
-
+		
 		if(!isset($this->_data_fields[$key]))
 		{
 			return null;
