@@ -1774,7 +1774,7 @@ class e_form
 			break;
 
 			case 'hidden':
-				$ret = (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
+				$ret = (vartrue($parms['show']) ? ($value ? $value : varset($parms['empty'], $value)) : '');
 				return $ret.$this->hidden($key, $value);
 			break;
 
@@ -2070,8 +2070,14 @@ class e_form
 				
 				if('hidden' === $att['type'])
 				{
-					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
-					continue;
+					parse_str(varset($att['writeParms']), $tmp);
+					if(!vartrue($tmp['show']))
+					{
+						$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+						unset($tmp);
+						continue;
+					}
+					unset($tmp);
 				}
 				$text .= "
 					<tr>
