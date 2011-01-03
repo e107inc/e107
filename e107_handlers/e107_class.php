@@ -49,7 +49,8 @@ class e107
 	public $_ip_cache;
 	public $_host_name_cache;
 
-	public $site_theme;
+	public $site_theme; // class2 -> check valid theme
+	public $http_theme_dir; // class2 -> check valid theme
 
 	/**
 	 * Contains reference to global $_E107 array

@@ -630,8 +630,11 @@ if (!function_exists('checkvalidtheme'))
 	function checkvalidtheme($theme_check)
 	{
 		// arg1 = theme to check
-		global $ADMIN_DIRECTORY, $tp, $e107;
-
+		//global $ADMIN_DIRECTORY, $tp, $e107;
+		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+		$ADMIN_DIRECTORY = $e107->getFolder('admin');
+		
 		if (ADMIN && strpos(e_QUERY, 'themepreview') !== false)
 		{
 			list($action, $id) = explode('.', e_QUERY);
@@ -659,7 +662,7 @@ if (!function_exists('checkvalidtheme'))
 		{
 			function search_validtheme()
 			{
-				global $e107;
+				$e107 = e107::getInstance();
 				$th = substr(e_THEME, 0, -1);
 				$handle = opendir($th);
 				while ($file = readdir($handle))
@@ -681,7 +684,7 @@ if (!function_exists('checkvalidtheme'))
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
 		}
-		$themes_dir = $e107->e107_dirs['THEMES_DIRECTORY'];
+		$themes_dir = $e107->getFolder('themes');
 		$e107->http_theme_dir = "{$e107->server_path}{$themes_dir}{$e107->site_theme}/";
 	}
 }

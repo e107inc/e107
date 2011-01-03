@@ -1813,7 +1813,7 @@ class e_parse
 	/**
 	 * Replace e107 path constants
 	 * Note: only an ADMIN user can convert {e_ADMIN}
-	 *
+	 * TODO - runtime cache of search/replace arrays (object property) when $mode !== ''
 	 * @param string $text
 	 * @param string $mode [optional]	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
@@ -1839,8 +1839,8 @@ class e_parse
 				$e107->getFolder('web_css'),
 				$e107->getFolder('web_image'),
 				$e107->getFolder('web_pack'),
-				SITEURL.$e107->getFolder('images'),
-				SITEURL.$e107->getFolder('themes'),
+				e_IMAGE_ABS,
+				e_THEME_ABS,
 				$e107->getFolder('images'),
 				$e107->getFolder('plugins'),
 				$e107->getFolder('files'),
@@ -1849,7 +1849,10 @@ class e_parse
 				$e107->getFolder('handlers'),
 				$e107->getFolder('media'),
 				$e107->getFolder('web'),
-				'',
+				$e107->site_theme ? $e107->getFolder('themes').$e107->site_theme.'/' : '',
+				defset('THEME_ABS'),
+				(ADMIN ? $e107->getFolder('admin') : ''),
+				''
 			);
 
 			switch ($mode)
@@ -1875,7 +1878,10 @@ class e_parse
 						'', //no ABS path available
 						e_MEDIA_ABS,
 						e_WEB_ABS,
-						$e107->server_path,
+						defset('THEME_ABS'),
+						defset('THEME_ABS'),
+						(ADMIN ? e_ADMIN_ABS : ''),
+						$e107->server_path
 					);
 				break;
 
@@ -1900,7 +1906,10 @@ class e_parse
 						'', //no ABS path available
 						SITEURLBASE.e_MEDIA_ABS,
 						SITEURLBASE.e_WEB_ABS,
-						SITEURL,
+						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',
+						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',
+						(ADMIN ? SITEURLBASE.e_ADMIN_ABS : ''),
+						SITEURL
 					);
 				break;
 			}
@@ -1925,15 +1934,18 @@ class e_parse
 				"{e_HANDLER}",
 				"{e_MEDIA}",
 				"{e_WEB}",
+				"{THEME}",
+				"{THEME_ABS}",
+				"{e_ADMIN}",
 				"{e_BASE}",
 			);
 
-			if (ADMIN)
+			/*if (ADMIN)
 			{
 				$replace_relative[] = $e107->getFolder('admin');
 				$replace_absolute[] = SITEURL.$e107->getFolder('admin');
 				$search[] = "{e_ADMIN}";
-			}
+			}*/
 
 			if ($all)
 			{
@@ -1949,6 +1961,22 @@ class e_parse
 				}
 				$search[] = "{USERID}";
 			}
+			
+			// current THEME
+			/*if(!defined('THEME'))
+			{
+				//if not already parsed by doReplace
+				$text = str_replace(array('{THEME}', '{THEME_ABS}'), '', $text);
+			}
+			else
+			{
+				$replace_relative[] = THEME;
+				$replace_absolute[] = THEME_ABS;
+				$search[] = "{THEME}";
+				$replace_relative[] = THEME;
+				$replace_absolute[] = THEME_ABS;
+				$search[] = "{THEME_ABS}";
+			}*/
 
 			$replace = ((string)$mode == "full" || (string)$mode=='abs' ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
@@ -1976,7 +2004,7 @@ class e_parse
 
 	function doReplace($matches)
 	{
-		if(defined($matches[1]) && ($matches[1] != 'e_ADMIN' || ADMIN))
+		if(defined($matches[1]) && (ADMIN || strpos($matches[1], 'ADMIN') === FALSE))
 		{
 			return constant($matches[1]);
 		}
