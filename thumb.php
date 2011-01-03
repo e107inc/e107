@@ -111,6 +111,9 @@ class e_thumbpage
 		$e107->set_urls(false);
 		unset($tmp, $self);
 
+		// basic Admin area detection - required for proper path parsing
+		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
+		
 		// parse request
 		$this->parseRequest();
 	}
