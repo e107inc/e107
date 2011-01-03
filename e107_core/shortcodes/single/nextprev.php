@@ -40,7 +40,7 @@
  * - caption (rawurlencode'd string) [optional]: Label, rawurldecode'd after parameters are parsed to array, language constants are supported
  * - pagetitle (rawurlencode'd string) [optional]: Page labels, rawurldecode'd after parameters are parsed to array,
  * separated by '|', if present they will be used as lablels instead page numbers; language constants are supported
- * - plugins (string) [optional]: plugin name used for template loading
+ * - plugin (string) [optional]: plugin name used for template loading
  * - tmpl_prefix (string) [optional]: template keys prefix; core supported are 'default' and 'dropdown', default depends on 'old_np' pref
  * - navcount (integer) [optional]: number of navigation items to be shown, minimal allowed value is 4, default is 10
  *
@@ -55,7 +55,7 @@ function nextprev_shortcode($parm = '')
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_np.php');
+	e107::coreLan('np');
 
 	/**
 	 * The NEW way.
