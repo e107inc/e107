@@ -1604,14 +1604,18 @@ class e_model extends e_object
 	 */
 	public function toNumber($value)
 	{
-		if(!is_numeric($value))
-		{
-			$larr = localeconv();
-			$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-			$replace = array('.', '.', '', '', '', '');
-			$value = str_replace($search, $replace, $value);
-		}
-		return (0 + $value);
+		$larr = localeconv();
+		$search = array(
+			$larr['decimal_point'], 
+			$larr['mon_decimal_point'], 
+			$larr['thousands_sep'], 
+			$larr['mon_thousands_sep'], 
+			$larr['currency_symbol'], 
+			$larr['int_curr_symbol']
+		);
+		$replace = array('.', '.', '', '', '', '');
+			
+		return str_replace($search, $replace, $value);
 	}
 
 	/**

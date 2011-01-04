@@ -653,7 +653,12 @@ class e_db_mysql
 				break;
 
 			case 'float':
-				return (float) $fieldValue;
+				// fix - convert localized float numbers
+				$larr = localeconv();
+				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				$replace = array('.', '.', '', '', '', '');
+
+				return str_replace($search, $replace, floatval($fieldValue));
 			break;
 
 			case 'null':
