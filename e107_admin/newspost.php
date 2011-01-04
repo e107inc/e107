@@ -1254,6 +1254,22 @@ class admin_newspost
 		$sql = e107::getDb();
 		$count = $sql->db_Delete("news","news_id IN (".implode(",",$ids).") ");
 	}
+	
+	function batch_subdelete($ids, $value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Delete("submitnews","submitnews_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_subcategory($ids, $value)
+	{
+		if(!isset($this->news_categories[$value]))
+		{
+			 $this->noPermissions();
+		}
+		$sql = e107::getDb();
+		$count = $sql->db_Update("submitnews","submitnews_category = ".$value." WHERE submitnews_id IN (".implode(",",$ids).") ");
+	}
 
 	function batch_sticky($ids, $value)
 	{
@@ -2429,12 +2445,24 @@ class admin_newspost
 
 
 	function show_submitted_news()
-	{
-
+	{	
+	
+	//TODO - image upload path should be e_MEDIA and using generic upload handler on submitnews.php. 
+	
 		$e107 = e107::getInstance();
 		$frm = e107::getForm();
-
-		if ($e107->sql->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
+		$newsCat = array();
+		$sql->db_Select('news_category');
+		while($row = $sql->db_Fetch())
+		{
+			$newsCat[$row['category_id']] = $tp->toHTML($row['category_name'],FALSE,'TITLE');
+		}
+		
+		
+		if ($sql->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
 			$text .= "
 			<form action='".e_SELF."?sn' method='post'>
@@ -2442,20 +2470,30 @@ class admin_newspost
 					<legend class='e-hideme'>".NWSLAN_47."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminlist'>
 						<colgroup span='6'>
+							<col style='width: 2%'></col>
 							<col style='width: 5%'></col>
-							<col style='width: 75%'></col>
+							<col style='width: 60%'></col>
+							<col style='width: auto'></col>
+							<col style='width: auto'></col>
+							<col style='width: auto'></col>
+							<col style='width: auto'></col>
 							<col style='width: 20%'></col>
 						</colgroup>
 						<thead>
 							<tr>
+								<th class='center'>&nbsp;</th>
 								<th class='center'>ID</th>
 								<th>".NWSLAN_57."</th>
-								<th class='center last'>".LAN_OPTIONS."</th>
+								<th>".LAN_DATE."</th>
+								<th>".LAN_AUTHOR."</th>
+								<th>".NWSLAN_6."</th>
+								<th>".NWSLAN_123."</th>
+								<th class='center last'>".LAN_OPTIONS."</th>							
 							</tr>
 						</thead>
 						<tbody>
 			";
-			while ($row = $e107->sql->db_Fetch())
+			while ($row = $sql->db_Fetch())
 			{
 				$buttext = ($row['submitnews_auth'] == 0)? NWSLAN_58 :	NWSLAN_103;
 
@@ -2464,18 +2502,30 @@ class admin_newspost
 
 				$text .= "
 					<tr>
+						<td class='center'><input type='checkbox' name='news_selected[".$row['submitnews_id']."]' value='".$row['submitnews_id']."' /></td>
 						<td class='center'>{$row['submitnews_id']}</td>
 						<td>
-							<strong>".$e107->tp->toHTML($row['submitnews_title'], FALSE, "TITLE")."</strong><br/>".$e107->tp->toHTML($row['submitnews_item'])."
-						</td>
+					
+						<a href=\"javascript:expandit('submitted_".$row['submitnews_id']."')\">";
+				$text .= $tp->toHTML($row['submitnews_title'],FALSE,'TITLE');
+				$text .= '</a>';
+			//	$text .=  [ '.NWSLAN_104.' '.$submitnews_name.' '.NWSLAN_108.' '.date('D dS M y, g:ia', $submitnews_datestamp).']<br />';
+				$text .= "<div id='submitted_".$row['submitnews_id']."' style='display:none'>".$tp->toHTML($row['submitnews_item'],TRUE);
+				$text .= ($row['submitnews_file']) ? "<br /><img src='".e_IMAGE_ABS."newspost_images/".$row['submitnews_file']."' alt=\"".$row['submitnews_file']."\" />" : "";
+				$text .= "
+				</div>
+						
+						</td>";
+						
+				$text .= "<td class='nowrap'>".date('D jS M, Y, g:ia', $row['submitnews_datestamp'])."</td>
+				<td><a href=\"mailto:".$row['submitnews_email']."?subject=[".SITENAME."] ".trim($row['submitnews_title'])."\" title='".$row['submitnews_email']." - ".$e107->ipDecode($row['submitnews_ip'])."'>".$row['submitnews_name']."</a></td>
+				<td>".$newsCat[$row['submitnews_category']]."</td>
+				<td class='center'>".($row['submitnews_auth'] == 0 ?  "-" : ADMIN_TRUE_ICON)."</td>		
+						
+				
 						<td>
-							<div class='field-spacer'><strong>".NWSLAN_123.":</strong> ".(($row['submitnews_auth'] == 0) ? LAN_NO : LAN_YES)."</div>
-							<div class='field-spacer'><strong>".LAN_DATE.":</strong> ".date("D dS M y, g:ia", $row['submitnews_datestamp'])."</div>
-							<div class='field-spacer'><strong>".NWSLAN_124.":</strong> {$row['submitnews_name']}</div>
-							<div class='field-spacer'><strong>".NWSLAN_125.":</strong> {$row['submitnews_email']}</div>
-							<div class='field-spacer'><strong>".NWSLAN_126.":</strong> ".$e107->ipDecode($row['submitnews_ip'])."</div>
-							<br/>
-							<div class='field-spacer center'>
+							<div class='field-spacer center nowrap'>
+								".$frm->admin_button("category_view_{$row['submitnews_id']}", NWSLAN_27, 'action', '', array('id'=>false, 'other'=>"onclick=\"expandit('submitted_".$row['submitnews_id']."')\""))."
 								".$frm->admin_button("category_edit_{$row['submitnews_id']}", $buttext, 'action', '', array('id'=>false, 'other'=>"onclick=\"document.location='".e_SELF."?create.sn.{$row['submitnews_id']}'\""))."
 								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$e107->tp->toJS(NWSLAN_38." [".LAN_NEWS_45.": {$row['submitnews_id']} ]")))."
 							</div>
@@ -2483,10 +2533,23 @@ class admin_newspost
 					</tr>
 				";
 			}
+			
+			
 			$text .= "
 						</tbody>
-					</table>
+					</table>";
+			$text .= "<div class='buttons-bar center'>";
+			$text .= e107::getForm()->batchoptions(array(
+				'subdelete_selected'		=> LAN_DELETE,
+				'subcategory' 				=> array('Modify Category', $newsCat)
+				));
+				
+			
+			$text .= "</div>
+			
+			
 				</fieldset>
+				
 			</form>
 			";
 		}
