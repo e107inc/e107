@@ -1144,7 +1144,16 @@ class newspost
 	function submitted_news($sub_action, $id) 
 	{
 		global $rs, $ns, $tp;
+		
+				
 		$sql2 = new db;
+		
+		$sql2->db_Select('news_category');
+		while($row = $sql2->db_Fetch())
+		{
+			$newsCat[$row['category_id']] = $row['category_name'];
+		}
+		
 		$text = "<div style='text-align: center'>";
 		if ($category_total = $sql2->db_Select('submitnews', '*', "submitnews_id !='' ORDER BY submitnews_id DESC")) 
 		{
@@ -1152,8 +1161,13 @@ class newspost
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr>
 					<td style='width:5%' class='fcaption'>ID</td>
-					<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
-					<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
+					<td style='width:60%' class='fcaption'>".NWSLAN_57."</td>
+					<td style='width:15%' class='fcaption'>".LAN_DATE."</td>
+					<td style='width:10%' class='fcaption'>".LAN_NEWS_55."</td>
+					<td class='fcaption'>".NWSLAN_6."</td>
+					<td class='fcaption'>".LAN_NEWS_56."</td>
+					
+					<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 			while ($row = $sql2->db_Fetch()) 
 			{
@@ -1165,14 +1179,29 @@ class newspost
 				$text .= "
 				<tr>
 					<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
-					<td style='width:70%' class='forumheader3'>";
-				$text .= ($submitnews_auth == 0)? '<b>'.$tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable').'</b>': $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');
-				$text .= ' [ '.NWSLAN_104.' '.$submitnews_name.' '.NWSLAN_108.' '.date('D dS M y, g:ia', $submitnews_datestamp).']<br />'.$tp->toHTML($submitnews_item).
-				"</td><td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
+					<td style='width:60%' class='forumheader3'><a href=\"javascript:expandit('submitted_".$submitnews_id."')\">";
+				$text .= $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');
+				$text .= '</a>';
+			//	$text .=  [ '.NWSLAN_104.' '.$submitnews_name.' '.NWSLAN_108.' '.date('D dS M y, g:ia', $submitnews_datestamp).']<br />';
+				$text .= "<div id='submitted_".$submitnews_id."' style='display:none'>".$tp->toHTML($submitnews_item,TRUE);
+				$text .= ($submitnews_file) ? "<br /><img src='".e_IMAGE_ABS."newspost_images/".$submitnews_file."' alt='".$submitnews_file."' />" : "";
+				$text .= "
+				</div>";
+				
+				
+				$text .= "</td>";
+				
+				$text .= "<td style='vertical-align:top' class='forumheader3'>".date('D jS M, Y, g:ia', $submitnews_datestamp)."</td>
+				<td style='vertical-align:top' class='forumheader3'><a href=\"mailto:".$submitnews_email."?subject=[".SITENAME."] ".trim($submitnews_title)."\" title='".$submitnews_email."'>".$submitnews_name."</a></td>
+				<td style='vertical-align:top' class='forumheader3'>".$tp->toHTML($newsCat[$submitnews_category],TRUE,'defs')."</td>
+				<td style='text-align:center; vertical-align:top' class='forumheader3'>".($submitnews_auth == 0 ?  "&nbsp;" : ADMIN_TRUE_ICON)."</td>
+				<td style='width:20%;  text-align:right; vertical-align:top' class='forumheader3'>";
 				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;
-				$text .= $rs->form_open('post', e_SELF.'?sn', 'myform__{$submitnews_id}', '', '', " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: {$submitnews_id} ]")."')\"   ")
-				."<div>".$rs->form_button('button', 'category_edit_'.$submitnews_id, $buttext, "onclick=\"document.location='".e_SELF."?create.sn.{$submitnews_id}'\"")."
-				".$rs->form_button('submit', 'delete[sn_'.$submitnews_id.']', LAN_DELETE)."
+				$text .= $rs->form_open('post', e_SELF.'?sn', 'myform__'.$submitnews_id, '', '', " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: {$submitnews_id} ]")."')\"   ")
+				."<div style='white-space:nowrap'>".
+				$rs->form_button('button', 'category_view_'.$submitnews_id, NWSLAN_27, "onclick=\"expandit('submitted_".$submitnews_id."')\"").
+				$rs->form_button('button', 'category_edit_'.$submitnews_id, $buttext, "onclick=\"document.location='".e_SELF."?create.sn.{$submitnews_id}'\"")."
+				<input type='submit' class='button' name='delete[sn_".$submitnews_id."]' value=\"".LAN_DELETE."\" />
 				</div>".$rs->form_close()."
 				</td>
 				</tr>\n";
