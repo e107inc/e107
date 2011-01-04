@@ -440,7 +440,7 @@ class e_validator
 					break;
 
 					case 'float':
-						$value = floatval($value);
+						$value = 0.00;
 					break;
 
 					case 'array':
@@ -570,6 +570,7 @@ class e_validator
 			break;
 
 			case 'float':
+				$value = $this->toNumber($value);
 				if(!is_numeric($value))
 				{
 					$this->addValidateResult($name, self::ERR_FLOAT_EXPECTED);
@@ -586,7 +587,7 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_TOO_HIGH);
 					return false;
 				}
-				$this->addValidData($name, (float) $value);
+				$this->addValidData($name, $value);
 				return true;
 			break;
 
@@ -719,6 +720,22 @@ class e_validator
 				return false;
 			break;
 		}
+	}
+	
+	public function toNumber($value)
+	{
+		$larr = localeconv();
+		$search = array(
+			$larr['decimal_point'], 
+			$larr['mon_decimal_point'], 
+			$larr['thousands_sep'], 
+			$larr['mon_thousands_sep'], 
+			$larr['currency_symbol'], 
+			$larr['int_curr_symbol']
+		);
+		$replace = array('.', '.', '', '', '', '');
+			
+		return str_replace($search, $replace, $value);
 	}
 
 	protected function parseMinMax($string)
