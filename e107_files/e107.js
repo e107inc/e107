@@ -236,7 +236,7 @@ function addtext(text, emote) {
 	if (!window.e107_selectedInputArea) {
 		return; //[SecretR] TODO - alert the user 
 	}
-		
+
 	var eField = e107_selectedInputArea;	
 	var eSelection 	= false;  
 	var tagOpen = '';
@@ -257,6 +257,7 @@ function addtext(text, emote) {
 
 	// Windows user  
 	if (document.selection) {
+	
 		eSelection = document.selection.createRange().text;
 		eField.focus();
 		if (eSelection) {
@@ -277,9 +278,11 @@ function addtext(text, emote) {
 	var selLength = eField.textLength;
 	var selStart = eField.selectionStart;
 	var selEnd = eField.selectionEnd; 
-	if (selEnd <= 2 && typeof(selLength) != 'undefined') {
+	
+	if (selEnd <= 2 && typeof(selLength) != 'undefined' && (selStart != selEnd)) {
 		selEnd = selLength;
 	}
+	
 	var sel1 = (eField.value).substring(0,selStart);
 	var sel2 = (eField.value).substring(selStart, selEnd);
 	var sel3 = (eField.value).substring(selEnd, selLength);
