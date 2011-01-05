@@ -246,26 +246,33 @@ if ($action == 'extend')
 		{
 			/* Added by nlStart - show links to previous and next news */
 			if (!isset($news['news_extended'])) $news['news_extended'] = '';
-			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+			
+			$news['news_extended'].="<div style='text-align:center;'><a class='news-extended-category-link' href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a class='news-extended-overview-link' href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+			
 			$prev_query = "SELECT news_id, news_title FROM `#news`
 				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
 				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
 				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
+			
 			$sql->db_Select_gen($prev_query);
 			$prev_news = $sql->db_Fetch();
+			
 			if ($prev_news)
 			{
-				$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
+				$news['news_extended'].="<div class='news-extended-older' style='float:left;'><a class='news-extended-older' href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
 			}
+			
 			$next_query = "SELECT news_id, news_title FROM `#news` AS n
 				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."' 
 				AND NOT (`news_class` REGEXP ".$nobody_regexp.") 
 				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
+			
 			$sql->db_Select_gen($next_query);
 			$next_news = $sql->db_Fetch();
+			
 			if ($next_news)
 			{
-				$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
+				$news['news_extended'].="<div class='news-extended-newer' style='float:right;'><a class='news-extended-newer' href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
 			}
 			$news['news_extended'].="<br /><br />";
 		}

@@ -182,10 +182,15 @@ function notify_flood($data) {
 
 function notify_subnews($data) {
 	global $nt,$tp;
-	foreach ($data as $key => $value) {
+	foreach ($data as $key => $value)
+	{
 		$message .= $key.': '.$value.'<br />';
 	}
-	$nt -> send('subnews', NT_LAN_SN_1, $message);
+	
+	$message .= "<br /><img src='{e_IMAGE}newspost_images/".$data['image']."' alt='' /><br />";
+	$message .= "src: {e_IMAGE}newspost_images/".$data['image'];
+	
+	$nt -> send('subnews', NT_LAN_SN_1." : ".$data['itemtitle'], $message);
 }
 
 function notify_newspost($data) {
