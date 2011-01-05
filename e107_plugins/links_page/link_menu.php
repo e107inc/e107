@@ -105,7 +105,7 @@ if(isset($linkspage_pref['link_menu_category']) && $linkspage_pref['link_menu_ca
 	$mains = "";
 	$cap = (isset($linkspage_pref['link_menu_category_caption']) && $linkspage_pref['link_menu_category_caption'] ? $linkspage_pref['link_menu_category_caption'] : LCLAN_OPT_83);
 	$sqlc = new db; $sql2 = new db;
-	if ($sqlc->db_Select("links_page_cat", "link_category_id, link_category_name", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_name")){
+	if ($sqlc->db_Select("links_page_cat", "link_category_id, link_category_name", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_order")){
 		while ($rowc = $sqlc->db_Fetch()){
 			if(isset($linkspage_pref['link_menu_category_amount']) && $linkspage_pref['link_menu_category_amount']){
 				$amount = $sql2 -> db_Count("links_page", "(*)", "WHERE link_category = '".$rowc['link_category_id']."' AND link_class REGEXP '".e_CLASS_REGEXP."' ");
