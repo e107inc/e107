@@ -1236,16 +1236,16 @@ e107Helper.BB = {
 	    }
 	    var eField = this.__selectedInputArea,
 	    	tags = this.parse(text, emote),
-	    	scrollPos, sel, newStart;
+	    	scrollPos, sel, newStart, newEnd = '';
         if(this.insertIE(eField, text, tags)) return;
 
 	    scrollPos = eField.scrollTop, sel = (eField.value).substring(eField.selectionStart, eField.selectionEnd);
-	    if (eField.selectionEnd <= 2 && typeof(eField.textLength) != 'undefined') {
-	        eField.selectionEnd = eField.textLength;
-	    }
 
 	    newStart = eField.selectionStart + tags.start.length + sel.length + tags.end.length;
-	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + ( eField.selectionStart ? (eField.value).substring(eField.selectionEnd, eField.textLength) : eField.value );
+	    if(eField.selectionStart || (!eField.selectionStart && eField.selectionEnd != eField.textLength)) {
+	    	newEnd = (eField.value).substring(eField.selectionEnd, eField.textLength);
+	    } 
+	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + newEnd;
 	    eField.focus(); eField.selectionStart = newStart; eField.selectionEnd = newStart; eField.scrollTop = scrollPos;
 	    return;
 
@@ -1277,6 +1277,7 @@ e107Helper.BB = {
 
 	//TODO VERY BAD - make it right ASAP!
 	help_old: function(help, tagid, nohtml){
+		if(!tagid || !$(tagid)) return;
 		if(nohtml) { help = help.escapeHTML(); }
 		if($(tagid)) { $(tagid).value = help; }
 		else if($('helpb')) {
@@ -1287,7 +1288,7 @@ e107Helper.BB = {
 	//FIXME - The new BB help system
 	help: function(help, tagid, nohtml){
 		if(nohtml) { help = help.escapeHTML(); }
-		if(!$(tagid)) return;
+		if(!tagid || !$(tagid)) return;
 		if(help) {
 			var wrapper = new Element('div', {'style': 'position: relative'}).update(help);
 			$(tagid).update(wrapper).fxToggle();
