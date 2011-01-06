@@ -30,7 +30,7 @@ $creditsArray = array(
 	array(	"name" => "PCLZip",
 				"url" => "http://www.phpconcept.net/pclzip/",
 				"description" => CRELAN_11,
-				"version" => "2.3",
+				"version" => "2.8.2",
 				"licence" => "GPL"
 			),
 	array(	"name" => "PCLTar",
@@ -42,7 +42,7 @@ $creditsArray = array(
 	array(	"name" => "TinyMCE",
 				"url" => "http://tinymce.moxiecode.com/",
 				"description" => CRELAN_13,
-				"version" => "2.08",
+				"version" => "3.3.9.2",
 				"licence" => "GPL"
 			),
 	array(	"name" => "Nuvolo Icons",
@@ -54,7 +54,7 @@ $creditsArray = array(
 	array(	"name" => "PHPMailer",
 				"url" => "http://phpmailer.sourceforge.net/",
 				"description" => CRELAN_15,
-				"version" => "1.72",
+				"version" => "2.0.4",
 				"licence" => "GPL"
 			),
 	array(	"name" => "Brainjar DHTML Menu",
