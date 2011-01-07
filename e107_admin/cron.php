@@ -145,7 +145,7 @@ class cron
 		{
 			$mes->add("Please CHMOD /cron.php to 755", E_MESSAGE_WARNING);
 		}
-		elseif (!$active)
+		//elseif (!$active) - always show instructions
 		{
 			$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
 				Using your server control panel (eg. cPanel,Plesk etc.) please create a crontab to run this command on your server every minute.";
