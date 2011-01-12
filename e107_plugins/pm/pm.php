@@ -504,7 +504,7 @@ if(count($del_qry) > 0)
 		$delList = $sql->db_getList();
 		foreach($delList as $p)
 		{
-			$pm->del($p['pm_id']);
+			$pm->del($p['pm_id'], TRUE);
 		}
 	}
 }

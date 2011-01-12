@@ -107,11 +107,11 @@ class pm_handler_shortcodes
 		$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
 		if(check_class($this->pmPrefs['multi_class']))
 		{
-			$ret = $us->select_form($type, 'textarea.pm_to');
+			$ret = $us->select_form($type, 'textarea.pm_to', '', $this->pmPrefs['pm_class']);
 		}
 		else
 		{
-			$ret = $us->select_form($type, 'pm_to');
+			$ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
 		}
 		return $ret;
 	}
