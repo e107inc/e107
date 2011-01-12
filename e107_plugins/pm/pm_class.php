@@ -274,32 +274,32 @@ class private_message
 	 *	When physically deleted, any attachments are deleted as well
 	 *
 	 *	@param integer $pmid - ID of the PM
+	 *	@param boolean $force - set to TRUE to force deletion of unread PMs
 	 *	@return boolean|string - FALSE if PM not found, or other DB error. String if successful
 	 */
-	function del($pmid)
+	function del($pmid, $force = FALSE)
 	{
 		$pmid = (int)$pmid;
 		$ret = '';
-		$del_pm = FALSE;
 		$newvals = '';
 		if($this->e107->sql->db_Select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
 			$row = $this->e107->sql->db_Fetch();
-			if($row['pm_to'] == USERID)
+			if (!$force && ($row['pm_to'] == USERID))
 			{
 				$newvals = 'pm_read_del = 1';
 				$ret .= LAN_PM_42.'<br />';
-				if($row['pm_sent_del'] == 1) { $del_pm = TRUE; }
+				if($row['pm_sent_del'] == 1) { $force = TRUE; }
 			}
-			if($row['pm_from'] == USERID)
+			if (!$force && ($row['pm_from'] == USERID))
 			{
-				if($newvals != '') { $del_pm = TRUE; }
+				if($newvals != '') { $force = TRUE; }
 				$newvals = 'pm_sent_del = 1';
 				$ret .= LAN_PM_43."<br />";
-				if($row['pm_read_del'] == 1) { $del_pm = TRUE; }
+				if($row['pm_read_del'] == 1) { $force = TRUE; }
 			}
 
-			if($del_pm == TRUE)
+			if($force == TRUE)
 			{
 				// Delete any attachments and remove PM from db
 				$attachments = explode(chr(0), $row['pm_attachments']);
