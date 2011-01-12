@@ -33,11 +33,11 @@ $us = new user_select;
 $type = ($pm_prefs['dropdown'] == TRUE ? 'list' : 'popup');
 if(check_class($pm_prefs['multi_class']))
 {
-	$ret = $us->select_form($type, 'textarea.pm_to');
+	$ret = $us->select_form($type, 'textarea.pm_to', '', $pm_prefs['pm_class']);
 }
 else
 {
-	$ret = $us->select_form($type, 'pm_to');
+	$ret = $us->select_form($type, 'pm_to', '', $pm_prefs['pm_class']);
 }
 return $ret;
 SC_END
