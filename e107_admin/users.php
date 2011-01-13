@@ -340,7 +340,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 		}
 		else
 		{
-			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}' AND user_ban='0' AND user_id <> '".$_POST['userid']."' ") > 0)
+			if($sql->db_Count('user', '(*)', "WHERE user_ip = '{$row['user_ip']}' AND user_ban=0 AND user_id <> {$_POST['userid']}") > 0)
 			{	// Other unbanned users have same IP address
 				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
 			}
