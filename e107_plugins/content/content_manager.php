@@ -81,6 +81,8 @@ $e_wysiwyg	= "content_text";
 function headerjs()
 {
 	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
+	global $cal;
+	return $cal->load_files();
 }
 // ##### DB ---------------------------------------------------------------------------------------
 
