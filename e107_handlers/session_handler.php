@@ -441,7 +441,11 @@ class e_session
 		{
 			session_cache_limiter((string) $this->_sessionCacheLimiter);
 		}
-
+		elseif(!defined('e_NOCACHE') || !e_NOCACHE)
+		{
+			session_cache_limiter('private'); 
+		}
+		
 		session_start();
 
 		return $this;

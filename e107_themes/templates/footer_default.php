@@ -301,7 +301,7 @@ $etag = md5($page);
 
 //header('Pragma:');
 // previously disabled or there is posted data
-if(!deftrue('e_NOCACHE') && empty($_POST))
+if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET')
 {
 	header("Cache-Control: must-revalidate", true);	
 	if (function_exists('date_default_timezone_set')) 

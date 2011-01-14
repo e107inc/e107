@@ -18,8 +18,6 @@
 // prevent notices/warnings to break JS source
 error_reporting(0);
 
-session_cache_limiter('private');
-
 //admin or front-end call
 if (strpos($_SERVER['QUERY_STRING'], '_admin') !== FALSE)
 {
@@ -40,7 +38,6 @@ else
 }
 
 if(!e_NOCACHE) session_cache_limiter('private');
-else  session_cache_limiter('nocache');
 
 //output cache if available before calling the api
 e_jslib_cache_out();
@@ -69,7 +66,6 @@ exit;
  */
 function e_jslib_cache_out()
 {
-	if(e_NOCACHE) return;
 	$encoding = e_jslib_browser_enc(); //NOTE - should be called first
 	$cacheFile = e_jslib_is_cache($encoding);
 	
@@ -78,6 +74,7 @@ function e_jslib_cache_out()
 		//kill any output buffering - better performance and 304 not modified requirement
 		while (@ob_end_clean()); 
 		
+		/* IT CAUSES GREAT TROUBLES ON SOME BROWSERS!
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
@@ -89,8 +86,7 @@ function e_jslib_cache_out()
 		// send last modified date
 		//header('Cache-Control: must-revalidate');
 		//header('Last-modified: '.gmdate('r', $lmodified), true);
-		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);
-		
+		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);*/
 		
 		// send content type and encoding
 		header('Content-type: text/javascript', true);
@@ -99,7 +95,9 @@ function e_jslib_cache_out()
 			header('Content-Encoding: '.$encoding, true);
 		}
 		
-		// Expire header - 1 year
+		if (!e_NOCACHE) header("Cache-Control: must-revalidate", true);	
+		
+		/*// Expire header - 1 year
 		$time = time()+ 365 * 86400;
 		//header('Expires: '.gmdate('r', $time), true);
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
@@ -111,8 +109,8 @@ function e_jslib_cache_out()
 		{
 		    header("HTTP/1.1 304 Not Modified", true);
 		    exit;
-		}
-		
+		}*/
+			
 		$page = @file_get_contents($cacheFile);
 		$etag = md5($page).($encoding ? '-'.$encoding : '');
 		
@@ -120,7 +118,7 @@ function e_jslib_cache_out()
 		header('ETag: '.$etag, true);
 		
 		// not modified check by Etag
-		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+		if (!e_NOCACHE && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 		{
 			$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
 			
