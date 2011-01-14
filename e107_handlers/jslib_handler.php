@@ -35,7 +35,7 @@ class e_jslib
 		{
 			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
 			// TODO disable cache in debug mod 
-			$hash .= (e107::getPref('e_jslib_nocache') ? '_nocache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
+			$hash .= (e107::getPref('e_jslib_nocache') || deftrue('e_NOCACHE') ? '_nocache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
 			$ret = "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
 			if($return) $ret;
 			echo $ret;
@@ -90,12 +90,10 @@ class e_jslib
 				
 		// send content type
 		header('Content-type: text/javascript', true);
+		$this->content_out($lmodified);
 		
-		if(deftrue('e_NOCACHE'))
-		{
-			$this->content_out($lmodified);
-		}
-		
+		// IT CAUSES GREAT TROUBLES ON SOME BROWSERS!
+		/*
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
@@ -103,7 +101,7 @@ class e_jslib
 		
 
 		// send last modified date
-		header('Cache-Control: must-revalidate', true);
+		if(deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
 		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);
 		//if($lmodified) header('Last-modified: '.gmdate('r', $lmodified), true);
 		
@@ -124,101 +122,7 @@ class e_jslib
 		}
 
         //Output
-        $this->content_out($lmodified);
- /*       
-        //array - uses the same format as $core_jslib
-        if (!isset($THEME_CORE_JSLIB) || ! is_array($THEME_CORE_JSLIB))
-            $THEME_CORE_JSLIB = array();
-            
-        //array - uses the same format as $core_jslib
-        if (!isset($THEME_JSLIB) || ! is_array($THEME_JSLIB))
-            $THEME_JSLIB = array();
-            
-        //available values - admin,front,all,none
-        $core_jslib = array( //FIXME - core jslib prefs, debug options
-            'jslib/prototype/prototype.js' => 'all' , 
-            'jslib/scriptaculous/scriptaculous.js' => 'all',
-        	'jslib/scriptaculous/effects.js' => 'all',
-        	'jslib/e107.js.php' => 'all'
-            //'jslib/core/decorate.js' => 'all'
-        );
-        
-        $core_jslib = array_merge($core_jslib, $THEME_CORE_JSLIB, varsettrue($pref['e_jslib_core'], array()));
-        $where_now = $eplug_admin ? 'admin' : 'front';
-        
-        //1. Core libs - prototype + scriptaculous effects
-        echo "// Prototype/Scriptaculous/Core libraries \n";
-        foreach ($core_jslib as $core_path => $where)
-        {
-            if ($where != 'all' && $where != $where_now)
-                continue;
-            
-            if (substr($core_path, - 4) == '.php')
-            {
-                include_once (e_FILE . '/' . trim($core_path, '/'));
-                echo "\n\n";
-            }
-            else
-            {
-                echo file_get_contents(e_FILE . '/' . trim($core_path, '/'));
-                echo "\n\n";
-            }
-        }
-        
-        //2. Plugins output - all 3-rd party libs
-        if (varsettrue($pref['e_jslib_plugin']))
-        {
-            foreach ($pref['e_jslib_plugin'] as $plugin_name => $plugin_libs)
-            {
-                if ($plugin_libs)
-                {
-                    foreach ($plugin_libs as $plugin_lib => $where)
-                    {
-                        //available values - admin,front,all
-                        if ($where != 'all' && $where != $where_now)
-                            continue;
-                        
-                        $lib_path = $plugin_name . '/' . trim($plugin_lib, '/');
-                        
-                        echo "// $plugin_name libraries \n\n";
-                        
-                        if (substr($plugin_lib, - 4) == '.php')
-                        {
-                            include_once (e_PLUGIN . $lib_path);
-                            echo "\n\n";
-                        }
-                        else
-                        {
-                            echo file_get_contents(e_PLUGIN . $lib_path);
-                            echo "\n\n";
-                        }
-                    }
-                }
-            }
-        }
-        
-        //3. Theme libs
-        if (varset($THEME_JSLIB) && is_array($THEME_JSLIB))
-        {
-            echo "// Theme libraries \n\n";
-            foreach ($THEME_JSLIB as $lib_path => $where)
-            {
-                if ($where != 'all' && $where != $where_now)
-                    continue;
-                
-                if (substr($lib_path, - 4) == '.php')
-                {
-                    include_once (THEME . '/' . trim($lib_path, '/'));
-                    echo "\n\n";
-                }
-                else
-                {
-                    echo file_get_contents(THEME . '/' . trim($lib_path, '/'));
-                    echo "\n\n";
-                }
-            }
-        }
-*/   
+        $this->content_out($lmodified);*/
     }
     
     /**
@@ -227,12 +131,14 @@ class e_jslib
      */
     function content_out($lmodified)
     {
-        global $pref, $admin_log;
-        
+        global $admin_log;
+        $pref = e107::getPref();
         $encoding = $this->browser_enc();
         
         $contents = ob_get_contents();
         ob_end_clean();
+        
+        if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
         
         $etag = md5($page).($encoding ? '-'.$encoding : '');
     	header('ETag: '.$etag, true);
@@ -290,7 +196,7 @@ class e_jslib
      */
     function set_cache($contents, $encoding = '', $lmodified = 0)
     {
-        if (!deftrue('e_NOCACHE') && e107::getPref('syscachestatus'))
+        if (e107::getPref('syscachestatus'))
         {
             $cacheFile = $this->cache_filename($encoding);
 			if(!$lmodified) $lmodified = time(); 
