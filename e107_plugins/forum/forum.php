@@ -4,7 +4,7 @@
 |     e107 website system
 |
 |     ?Steve Dunstan 2001-2002
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
+|     Copyright (C) 2008-2011 e107 Inc (e107.org)
 |
 |
 |     Released under the terms and conditions of the
@@ -16,8 +16,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-if(!defined("e107_INIT")) {
+if(!defined("e107_INIT")) 
+{
 	require_once("../../class2.php");
+}
+if (!isset($pref['plug_installed']['forum']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
 }
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');

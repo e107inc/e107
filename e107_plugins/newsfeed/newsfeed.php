@@ -11,12 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
+require_once('../../class2.php');
+if (!isset($pref['plug_installed']['newsfeed']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 include_lan(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
 

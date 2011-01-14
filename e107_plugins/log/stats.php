@@ -17,6 +17,11 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['log']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 

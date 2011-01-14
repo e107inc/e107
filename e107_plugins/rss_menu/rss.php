@@ -27,6 +27,11 @@ Plugins should use an e_rss.php file in their plugin folder
 */
 
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['rss_menu']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 global $tp;
 

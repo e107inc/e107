@@ -4,7 +4,7 @@
 |     e107 website system
 |
 |     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
+|     Copyright (C) 2008-2011 e107 Inc (e107.org)
 |
 |
 |     Released under the terms and conditions of the
@@ -17,6 +17,12 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['chatbox_menu']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
+
 include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 
 require_once(HEADERF);
