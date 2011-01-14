@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -14,6 +14,12 @@
 */
 
 require_once ('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('forum')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 if (isset($_POST['fjsubmit']))
 {

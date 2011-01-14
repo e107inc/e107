@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,6 +15,12 @@
 if(!defined('e107_INIT'))
 {
 	require_once('../../class2.php');
+}
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('forum')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
 }
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');

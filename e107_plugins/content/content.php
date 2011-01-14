@@ -1,20 +1,26 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
+* e107 website system
+*
+* Copyright (C) 2008-2011 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Content management main file
+*
+* $URL$
+* $Id$
+*
+*/
 
-require_once("../../class2.php");
+require_once('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('content')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
+
 $plugindir = e_PLUGIN."content/";
 require_once($plugindir."content_shortcodes.php");
 require_once(e_HANDLER."emailprint_class.php");
