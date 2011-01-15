@@ -288,7 +288,7 @@ if (abs($_serverTime - $lastSet) > 120)
 //
 // H Final HTML
 //
-// browser cache control
+// browser cache control - FIXME - use this value as AJAX requests cache control!
 echo "\n<!-- ".md5(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'))." -->\n";
 echo "</body></html>";
 
@@ -304,12 +304,15 @@ $etag = md5($page);
 if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET')
 {
 	header("Cache-Control: must-revalidate", true);	
-	if (function_exists('date_default_timezone_set')) 
+	if(e107::getPref('site_page_expires')) // TODO - allow per page
 	{
-	    date_default_timezone_set('UTC');
+		if (function_exists('date_default_timezone_set')) 
+		{
+		    date_default_timezone_set('UTC');
+		}
+		$time = time()+ 365 * 86400;
+		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 	}
-	$time = time()+ 365 * 86400;
-	header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 }
 
 $pref['compression_level'] = 6;
