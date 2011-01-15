@@ -310,7 +310,7 @@ if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET')
 		{
 		    date_default_timezone_set('UTC');
 		}
-		$time = time()+ 365 * 86400;
+		$time = time()+ (integer) e107::getPref('site_page_expires');
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 	}
 }
