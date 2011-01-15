@@ -217,15 +217,25 @@ class rssCreate {
                     if($value['news_summary'])
                     {
                         	$this -> rssItems[$loop]['description'] = $value['news_summary'];
+							$this -> rssItems[$loop]['content_encoded'] = ($value['news_body']."<br />".$value['news_extended']);
 					}
 					else
 					{
 						$this -> rssItems[$loop]['description'] = ($value['news_body']."<br />".$value['news_extended']);
+						$this -> rssItems[$loop]['content_encoded'] = ($value['news_body']."<br />".$value['news_extended']);
                     }
+					
+					if($value['news_thumbnail'])
+					{
+						$this -> rssItems[$loop]['media_content_url'][] = "http://".$_SERVER['HTTP_HOST'].e_HTTP.e_IMAGE."newspost_images/".$news_item['news_thumbnail'];
+						$this -> rssItems[$loop]['media_content_type'][] = "image";
+					}
 					
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
                     $this -> rssItems[$loop]['author_email'] = $value['user_email'];
-					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
+
+					$this -> rssItems[$loop]['category_name'] = $tp->toHTML($value['category_name'],TRUE,'defs');
+                    $this -> rssItems[$loop]['category_link'] = $e107->base_path."news.php?cat.".$value['news_category'];
 
 					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1){
 						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
@@ -412,7 +422,7 @@ class rssCreate {
 	}
 
 	function buildRss($rss_title) {
-		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY,$topic_id ;
+		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY,$topic_id,$content_type ;
 		header('Content-type: application/xml', TRUE);
 
 		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$tp->toHtml($rss_title,'','defs'));
@@ -458,7 +468,7 @@ class rssCreate {
 				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
-				<rss {$rss_namespace} version=\"2.0\">
+				<rss {$rss_namespace} version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
@@ -474,7 +484,9 @@ class rssCreate {
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
-				<ttl>60</ttl>";
+				<ttl>60</ttl>\n";
+				
+				echo "<atom:link href=\"".e_SELF."?".$content_type.".4.".$this->topicid."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
 				if (trim(SITEBUTTON))
 				{
@@ -486,7 +498,7 @@ class rssCreate {
 					<width>88</width>
 					<height>31</height>
 					<description>".$tp->toRss($pref['sitedescription'])."</description>
-					</image>";
+					</image>\n";
 				}
 
 				// Generally Ignored by 99% of readers.
@@ -506,16 +518,29 @@ class rssCreate {
 					$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
                     $catlink	= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
 
-					echo "
-						<item>
-						<title>".$tp->toRss($value['title'])."</title>\n";
+					echo "<item>\n";
+					echo "<title>".$tp->toRss($value['title'])."</title>\n";
 
 					if($link){
 						echo "<link>".$link."</link>\n";
 					}
 
 					echo "<description>".$tp->toRss($value['description'],TRUE)."</description>\n";
-
+					
+					if($value['content_encoded'])
+					{
+						echo "<content:encoded>".$tp->toRss($value['content_encoded'],TRUE)."</content:encoded>\n";	
+					}
+					
+					/*if($value['media_content_url'])
+					{
+						foreach($value['media_content_url'] as $k=>$mcu)
+						{
+							echo "<media:content url=\"".$tp->toRss($mcu)."\" medium=\"".$value['media_content_type'][$k]."\">";	
+						}
+					}*/
+					
+					
 					if($value['category_name'] && $catlink){
 						echo "<category domain='".$catlink."'>".$tp -> toRss($value['category_name'])."</category>\n";
 					}
@@ -548,7 +573,7 @@ class rssCreate {
 						}		
 					}
 
-					echo "</item>";
+					echo "</item>\n\n";
 				}
 		   //		echo "<atom:link href=\"".e_SELF."?".($this -> contentType).".4.".$this -> topicId ."\" rel=\"self\" type=\"application/rss+xml\" />";
 				echo "
@@ -678,7 +703,7 @@ class rssCreate {
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$tp->toRss($value['description'])."</summary>\n";
+						<summary type='text'>".strip_tags($tp->toRss($value['description'],FALSE))."</summary>\n";
 
 						//optional
 						if($value['category_name']){
