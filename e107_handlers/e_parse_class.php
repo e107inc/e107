@@ -2004,7 +2004,7 @@ class e_parse
 
 	function doReplace($matches)
 	{
-		if(defined($matches[1]) && (ADMIN || strpos($matches[1], 'ADMIN') === FALSE))
+		if(defined($matches[1]) && (deftrue('ADMIN') || strpos($matches[1], 'ADMIN') === FALSE))
 		{
 			return constant($matches[1]);
 		}
