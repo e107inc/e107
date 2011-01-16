@@ -222,11 +222,13 @@ class rssCreate
 					}
 					else
 					{
-						$this -> rssItems[$loop]['description'] = $value['news_body'];
+						$this -> rssItems[$loop]['description'] = ($value['news_body']."<br />".$value['news_extended']);
 					}
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
 					$this -> rssItems[$loop]['author_email'] = $value['user_email'];
-					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
+				//	$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
+					$this -> rssItems[$loop]['category_name'] = $tp->toHTML($value['category_name'],TRUE,'defs');
+                    $this -> rssItems[$loop]['category_link'] = $e107->base_path."news.php?cat.".$value['news_category'];
 
 					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
 					{
@@ -438,7 +440,12 @@ class rssCreate
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
-				<rss {$rss_namespace} version=\"2.0\">
+				<rss {$rss_namespace} version=\"2.0\" 
+					xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" 
+					xmlns:atom=\"http://www.w3.org/2005/Atom\"
+					xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+					xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\"
+				>
 				<channel>
 				<title>".$this->e107->tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
@@ -454,7 +461,11 @@ class rssCreate
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
-				<ttl>60</ttl>";
+				<sy:updatePeriod>hourly</sy:updatePeriod>
+				<sy:updateFrequency>1</sy:updateFrequency>
+				<ttl>60</ttl>\n";
+				
+				echo "<atom:link href=\"".e_SELF."?".$content_type.".4.".$this->topicid."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
 				if (trim(SITEBUTTON))
 				{
@@ -466,7 +477,7 @@ class rssCreate
 					<width>88</width>
 					<height>31</height>
 					<description>".$this->e107->tp->toRss($pref['sitedescription'])."</description>
-					</image>";
+					</image>\n";
 				}
 
 				// Generally Ignored by 99% of readers.
@@ -495,13 +506,18 @@ class rssCreate
 					}
 
 					echo "<description>".$this->e107->tp->toRss($value['description'],TRUE);
-					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) //FIXME - Fixed path and height?
 					{
 						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$this->e107->tp->toRss($value['news_thumbnail']);
 						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
 						unset($news_thumbail);
 					}					
 					echo "</description>\n";
+
+					if($value['content_encoded'])
+					{
+						echo "<content:encoded>".$tp->toRss($value['content_encoded'],TRUE)."</content:encoded>\n";	
+					}
 					
 					if($value['category_name'] && $catlink)
 					{
@@ -515,7 +531,7 @@ class rssCreate
 
 					if($value['author'])
 					{
-						echo "<author>".$this->nospam($value['author_email'])." (".$value['author'].")</author>\n";
+						echo "<dc:creator>".$value['author']."</dc:creator>\n"; // correct tag for author without email. 
 					}
 
 					// Enclosure support for podcasting etc.
@@ -539,7 +555,7 @@ class rssCreate
 						}		
 					}
 
-					echo "</item>";
+					echo "</item>\n\n";
 				}
 				// echo "<atom:link href=\"".e_SELF."?".($this -> contentType).".4.".$this -> topicId ."\" rel=\"self\" type=\"application/rss+xml\" />";
 				echo "
