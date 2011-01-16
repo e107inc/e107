@@ -468,7 +468,13 @@ class rssCreate {
 				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
-				<rss {$rss_namespace} version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
+				<rss {$rss_namespace} version=\"2.0\" 
+					xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" 
+					xmlns:atom=\"http://www.w3.org/2005/Atom\"
+					xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+					xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\"
+
+				>
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
@@ -484,6 +490,9 @@ class rssCreate {
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
+				<sy:updatePeriod>hourly</sy:updatePeriod>
+				<sy:updateFrequency>1</sy:updateFrequency>
+
 				<ttl>60</ttl>\n";
 				
 				echo "<atom:link href=\"".e_SELF."?".$content_type.".4.".$this->topicid."\" rel=\"self\" type=\"application/rss+xml\" />\n";
@@ -550,8 +559,9 @@ class rssCreate {
 						echo "<comments>".$value['comment']."</comments>\n";
 					}
 
-					if($value['author']){
-						echo "<author>".$this->nospam($value['author_email'])." (".$value['author'].")</author>\n";
+					if($value['author'])
+					{
+						echo "<dc:creator>".$value['author']."</dc:creator>\n"; // correct tag for author without email. 
 					}
 
 					// enclosure support for podcasting etc.
