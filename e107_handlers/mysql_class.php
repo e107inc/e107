@@ -333,6 +333,7 @@ class db {
 		{
 			$keyList= "`".implode("`,`", array_keys($arg))."`";
 			$valList= "'".implode("','", $arg)."'";
+			$valList = str_replace(",'NULL'",",NULL",$valList); // Handle NULL correctly. 
 			$query = "INSERT INTO `".MPREFIX."{$table}` ({$keyList}) VALUES ({$valList})";
 		}
 		else
