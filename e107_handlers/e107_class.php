@@ -1917,7 +1917,7 @@ class e107
 		{
 			array_unshift($inc_path, '.');
 			$inc_path = implode(PATH_SEPARATOR, $inc_path);
-			e107_ini_set('include_path', $inc_path);
+			e107::ini_set('include_path', $inc_path);
 		}
 		unset($inc_path);
 
