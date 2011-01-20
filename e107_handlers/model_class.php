@@ -2953,7 +2953,7 @@ class e_tree_model extends e_front_model
 
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
-			$sql = e107::getDb();
+			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
 			if($sql->db_Select_gen($this->getParam('db_query')))
