@@ -17,7 +17,7 @@ class e107forum
 {
 	var $filterNasties = TRUE;
 
-	
+
 	function e107forum()
 	{
 		global $pref;
@@ -141,7 +141,7 @@ class e107forum
 			}
 		}
 	}
-	
+
 	function forum_markasread($forum_id)
 	{
 	  global $sql;
@@ -632,7 +632,7 @@ class e107forum
 		AND f.forum_class IN (".USERCLASS_LIST.")
 		LIMIT 0,1
 		";
-		
+
 		if ($sql->db_Select_gen($qry))
 		{
 			return TRUE;
@@ -738,7 +738,7 @@ class e107forum
 	{
 		global $sql, $tp, $pref, $e107;
 		global $PLUGINS_DIRECTORY;
-		
+
 		$forum_info = '';
 		$post_time = time();
 		$forum_sub = intval($forum_sub);
@@ -802,7 +802,7 @@ class e107forum
 				$sql->db_Select('user', 'user_admin, user_perms, user_class, user_ban', 'user_id = '.$parent_thread[0]['user_id']);
 				$thread_owner = $sql->db_Fetch(MYSQL_ASSOC);
 				$forum_info = $this->forum_get($parent_thread[0]['thread_forum_id']);
-				
+
 				//Ensure owner is not banned and has permissions to view forum and forum parent
 				if(
 					$thread_owner['user_ban'] == 0 &&
@@ -887,7 +887,7 @@ class e107forum
 		}
 		return $ret;
 	}
-	
+
 	//*** added by marj
         function postGetOldestNew($count = 50, $userviewed = USERVIEWED)
         {
@@ -982,14 +982,14 @@ class e107forum
 		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id=".$forumID);
 		if($recalc_threads == true)
 		{
-			$sql->db_Select("forum_t", "thread_parent, count(*) as replies", "thread_forum_id = $forumID GROUP BY thread_parent");
-			$tlist = $sql->db_getList();
-			foreach($tlist as $t)
-			{
-				$tid = $t['thread_parent'];
-				$replies = intval($t['replies']);
-				$sql->db_Update("forum_t", "thread_total_replies='$replies' WHERE thread_id=".$tid);
+			$sql->db_Select('forum_t', 'thread_id', "thread_forum_id = {$forumID} AND thread_parent=0");
+			$tList = $sql->db_getList();
+			foreach($tList as $t) {
+				$sql->db_Select('forum_t', 'count(*) as replies', "thread_parent = {$t['thread_id']}");
+				$row = $sql->db_Fetch(MYSQL_ASSOC);
+				$sql->db_Update('forum_t', "thread_total_replies={$row['replies']} WHERE thread_id={$t['thread_id']}");
 			}
+			die();
 		}
 	}
 
@@ -1014,7 +1014,7 @@ class e107forum
 		}
 		return FALSE;
 	}
-	
+
 	/*
 	 * set bread crumb
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
@@ -1024,17 +1024,17 @@ class e107forum
 	{
 		global $FORUM_CRUMB,$forum_info,$thread_info,$tp;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
-		
+
 		if(is_array($FORUM_CRUMB))
 		{
 			$search 	= array("{SITENAME}", "{SITENAME_HREF}");
 			$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
-		
+
 			$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
 			$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
-		
+
 			$search 	= "{PARENT_TITLE}";
 			$replace 	= $tp->toHTML($forum_info['parent_name']);
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
@@ -1081,7 +1081,7 @@ class e107forum
 				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
-			
+
 			$tmpFname = $forum_info['forum_name'];
 			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
 			if ($forum_href)
