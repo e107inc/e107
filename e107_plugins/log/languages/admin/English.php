@@ -53,8 +53,7 @@ define("ADSTAT_L31", "Remove selected pages");
 define("ADSTAT_L32", "Page Tidy");
 define("ADSTAT_L33", "Configure Statistics Logging");
 define("ADSTAT_L34", "Site Stats");
+define("ADSTAT_L35", "View compact browser info in stats");
 
 define('ADSTAT_L38', "You must set the e107_plugins/log/logs folder to be writable");	// Constant compatible with 0.8
-
-
 ?>

@@ -434,7 +434,7 @@ switch($action)
 	break;
 	case 3:
 	if($pref['statBrowser']) {
-		$text .= $stat -> renderBrowsers();
+		$text .= $stat -> renderBrowsers($pref['statBrowserDispCompr']);
 	} else {
 		$text .= ADSTAT_L7;
 	}
@@ -528,8 +528,6 @@ $links .=
 ($action != 12 ? "<a href='{$path}?12'>".ADSTAT_L43."</a>" : "<b>".ADSTAT_L43."</b>")." | ".
 ($action != 13 ? "<a href='{$path}?13'>".ADSTAT_L44."</a>" : "<b>".ADSTAT_L44."</b>");
 $links .= "</div><br /><br />";
-
-
 
 $ns->tablerender(ADSTAT_L6, $links.$text);
 require_once(FOOTERF);
@@ -765,7 +763,7 @@ class siteStats {
 
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	function renderBrowsers() {
+	function renderBrowsers($compress = FALSE) {
 		global $sql, $browser_map;
 
 		if($entries = $sql -> db_Select("logstats", "*", "log_id='statBrowser'")) {
@@ -780,6 +778,24 @@ class siteStats {
 
 		if(!is_array($statBrowser)) {
 			return "<div style='text-align: center;'>".ADSTAT_L25."</div>";
+		}
+
+		if($compress) {
+			$tempArray = array();
+			foreach($statBrowser as $k => $v) {
+				$found = false;
+				foreach(array_keys($browser_map) as $br) {
+					if(stripos($k, $br) === 0) {
+						$tempArray[$br] = (isset($tempArray[$br]) ? $tempArray[$br]+$v : $v);
+						$found = true;
+						break;  //We found what we wanted, break from foreach
+					}
+				}
+				if(!$found) {
+					$tempArray[$k] = $v;
+				}
+			}
+			$statBrowser = $tempArray;
 		}
 
 		if(is_array($statBrowser)) {
@@ -815,7 +831,7 @@ class siteStats {
 		}
 		return $text;
 	}
-
+	
 	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderOses() {
