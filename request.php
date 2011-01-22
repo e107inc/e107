@@ -60,8 +60,8 @@ if(varset($pref['download_nomultiple'])==1 )
 	{
 		$_SESSION['download_splash'] = FALSE;
 		require_once(HEADERF);
-		$srch = array("[", "]");
-		$repl = array("<a href='".$_SERVER['REQUEST_URI']."'>", "</a>");
+		$srch = array("]","[");
+		$repl = array("</a>","<a href='".$_SERVER['REQUEST_URI']."'>");
 		$text = str_replace($srch,$repl,LAN_dl_80);
 		$ns->tablerender(LAN_dl_81, $text);
 		require_once(FOOTERF);
