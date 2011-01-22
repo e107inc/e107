@@ -1,5 +1,5 @@
 // $Id$
-
+// <?
 global $sql,$parm;
 
 	if(strstr($parm,"=")){  // query style parms.
@@ -25,7 +25,7 @@ global $sql,$parm;
     $height = ($height) ? $height : "*";
     $label = ($label) ? $label : " -- -- ";
 
-	$text .= "<select {$multi} class='tbox' name='$name' id='$name' onchange=\"preview_image('$name','$path','".e_IMAGE_ABS."generic/blank.gif');\">
+	$text .= "<select {$multi} class='tbox sc-imageselector' name='$name' id='$name' onchange=\"preview_image('$name','$path','".e_IMAGE_ABS."generic/blank.gif');\">
 	<option value=''>".$label."</option>\n";
 	foreach($imagelist as $icon)
 	{

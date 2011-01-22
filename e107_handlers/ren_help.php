@@ -99,7 +99,7 @@ function Size_Select($formid='size_selector') {
 	$text .="<div style='position:absolute; bottom:30px; right:125px'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
-	<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
+	<select class='tbox bb-sizeselect' name='sizeselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
 	<option value=''>".LANHELP_41."</option>";
 
 	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
@@ -199,9 +199,9 @@ function PreImage_Select($formid)
     sort($imagelist);
 
 	$text ="<!-- Start of PreImage selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
+	<div class='bb-preimageselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:999;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
-	$text .= "<table class='fborder' style='background-color: #fff'>
+	$text .= "<table class='fborder bb-preimageselect' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
 	if(!count($imagelist))
@@ -211,7 +211,7 @@ function PreImage_Select($formid)
 	}
 	else
 	{
-		$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
+		$text .= "<select class='tbox bb-preimageselect' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
 		<option value=''>".LANHELP_42."</option>";
 		foreach($imagelist as $image)
 		{
@@ -223,21 +223,23 @@ function PreImage_Select($formid)
 				if(file_exists($path.$fi))
 				{
 					// thumb and main image found
-					$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$showpath.$image['fname']." (".LANHELP_38.")</option>\n
+					$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$tp->text_truncate($showpath.$image['fname'],50)." **</option>\n
 					";
 				}
 				else
 				{
-					$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n
+					$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$tp->text_truncate($showpath.$image['fname'],50)."</option>\n
 					";
 				}
 			}
 			else
 			{
-				$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
+				$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$tp->text_truncate($showpath.$image['fname'],50)."</option>\n";
 			}
 		}
 		$text .="</select>";
+		$text .= "<div style='padding:5px;text-align:center'>** = ".LANHELP_38."
+		<a style='float:right' href=\"javascript:expandit('{$formid}')\">X</a></div>";
 	}
 	$text .="</td></tr>	\n </table></div>
 	</div>\n<!-- End of PreImage selector -->\n";
@@ -271,9 +273,9 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir = '')
 		}
 	}
 	$text ="<!-- Start of PreFile selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
+	<div class='bb-prefileselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
-	$text .= "<table class='fborder' style='background-color: #fff'>
+	$text .= "<table class='fborder bb-prefileselect' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
 
@@ -283,7 +285,7 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir = '')
 	}
 	else
 	{
-		$text .= "<select class='tbox' name='prefileselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
+		$text .= "<select class='tbox bb-prefileselect' name='prefileselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
 				<option value=''>".LANHELP_43."</option>";
 		foreach($filelist as $file)
 		{
@@ -308,7 +310,8 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir = '')
 			}
 
 		}
-		$text .="</select>";
+		$text .="</select><br />";
+		$text .= "<a style='float:right' href=\"javascript:expandit('{$formid}')\">X</a>";
 	}
 
 	$text .="</td></tr>	\n </table></div>
