@@ -154,15 +154,11 @@ else
 }
 
 
-if(varset($pref['download_splashdelay'])==1)
+if(varset($pref['download_splashdelay'])==1 )
 {
-	if($type == 'file' && !varsettrue($_SESSION['download_splash'])) // just received request, so show page and refresh after a pause. 
+	if($type == 'file' && !varsettrue($_SESSION['download_splash']) && (e_MENU != "nosplash")) // just received request, so show page and refresh after a pause. 
 	{	
 		$_SESSION['download_splash'] = TRUE;
-		$HEADER = "";
-		$FOOTER = "";
-		$CUSTOMHEADER = "";
-		$CUSTOMFOOTER = "";
 		
 		header("Refresh: 6; url=\"".$_SERVER['REQUEST_URI']."\"");	
 		require_once(HEADERF);
@@ -181,11 +177,26 @@ if(varset($pref['download_splashdelay'])==1)
 			require_once(e_THEME."templates/".$template_name);
 		}
 		
-		$srch = "{REQUEST_MESSAGE}";
-		$repl = LAN_dl_83; // "Your download will begin in a moment...";	
-		$text = str_replace($srch,$repl,$REQUEST_TEMPLATE);
+		$srch = array();
+		$repl = array();
 		
-		echo $tp->parseTemplate($text,TRUE);
+		$srch[0] = "{REQUEST_MESSAGE}";
+		$repl[0] = defined("LAN_dl_83") ? LAN_dl_83 : "Your download will begin in a moment..."; 
+			
+		$srch[1] = "{REQUEST_CLICKLINK}";
+		$repl[1] = defined("LAN_dl_84") ? LAN_dl_84 : "If your download doesn't start within a few seconds, please [click here]."; 
+			
+		$srch[2] = "]";
+		$repl[2] = "</a>";
+		
+		$srch[3] = "[";
+		$repl[3] = "<a class='request-splash-clicklink' href='".e_SELF."?[nosplash]".e_QUERY."'>";
+		
+		$text = str_replace($srch,$repl,$REQUEST_TEMPLATE);
+				
+		$final_text = $tp->parseTemplate($text,TRUE);
+		
+		$ns->tablerender(LAN_dl_82,$final_text,'request-splash');
 		
 		require_once(FOOTERF);		
 		exit;		

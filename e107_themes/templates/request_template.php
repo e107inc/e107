@@ -18,14 +18,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$REQUEST_TEMPLATE = "<div style='padding:40px;width:75%;margin-right:auto;margin-left:auto;text-align:center'>
-<div class='forumheader3' style='padding:20px'>
-<div style='padding:40px'>{LOGO}</div>
+$REQUEST_TEMPLATE = "<div class='request-splash'>
 
-	<h2>{REQUEST_MESSAGE}</h2>
-</div>
-<div style='padding:40px'>
-	<h2><a href='".e_BASE."download.php'>".LAN_dl_64."</a></h2>
+	<h2 class='request-splash-message'>{REQUEST_MESSAGE}</h2>
+	<div class='request-splash-clicklink'>{REQUEST_CLICKLINK}</div>
+		
+<div class='request-splash-footer'>
+	<h2 class='request-splash-back'><a class='request-splash-back' href='".e_BASE."download.php'>".LAN_dl_64."</a></h2>
 </div>
 </div>";
 
