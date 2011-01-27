@@ -989,7 +989,6 @@ class e107forum
 				$row = $sql->db_Fetch(MYSQL_ASSOC);
 				$sql->db_Update('forum_t', "thread_total_replies={$row['replies']} WHERE thread_id={$t['thread_id']}");
 			}
-			die();
 		}
 	}
 
