@@ -431,12 +431,28 @@ class newspost
 					if (substr($_POST['data'],-7,7) == '[/html]') $_POST['data'] = substr($_POST['data'],0,-7);
 					if (substr($_POST['data'],0,6) == '[html]') $_POST['data'] = substr($_POST['data'],6);
 					$_POST['data'] .= '<br /><b>'.NWSLAN_49.' '.$submitnews_name.'</b>';
-					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='{e_IMAGE}newspost_images/".$submitnews_file."' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":'';
+					if($submitnews_file)
+					{
+						$tmp = explode(',',$submitnews_file);
+						foreach($tmp as $imgfile)
+						{
+							$_POST['data'] .= ($imgfile)? "<br /><br /><img src='{e_IMAGE}newspost_images/".$imgfile."' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' alt='".$imgfile."' />":'';
+						}
+					}
+					
 				}
 				else
 				{
 					$_POST['data'] .= "\n[[b]".NWSLAN_49.' '.$submitnews_name.'[/b]]';
-					$_POST['data'] .= ($submitnews_file)?"\n\n[img]{e_IMAGE}newspost_images/".$submitnews_file.'[/img]': '';
+					if($submitnews_file)
+					{
+						$tmp = explode(',',$submitnews_file);
+						foreach($tmp as $imgfile)
+						{
+							$_POST['data'] .= "\n\n[img]{e_IMAGE}newspost_images/".$imgfile.'[/img]';				
+						}
+					}
+					
 				}
 				$_POST['cat_id'] = $submitnews_category;
 				$_POST['data'] = $tp->dataFilter($_POST['data']);		// Filter any nasties
@@ -1184,7 +1200,16 @@ class newspost
 				$text .= '</a>';
 			//	$text .=  [ '.NWSLAN_104.' '.$submitnews_name.' '.NWSLAN_108.' '.date('D dS M y, g:ia', $submitnews_datestamp).']<br />';
 				$text .= "<div id='submitted_".$submitnews_id."' style='display:none'>".$tp->toHTML($submitnews_item,TRUE);
-				$text .= ($submitnews_file) ? "<br /><img src='".e_IMAGE_ABS."newspost_images/".$submitnews_file."' alt='".$submitnews_file."' />" : "";
+				
+				if($submitnews_file)
+				{
+					$tmp = explode(',',$submitnews_file);
+					$text .= "<br />";
+					foreach($tmp as $imgfile)
+					{
+						$text .= "<br /><img src='".e_IMAGE_ABS."newspost_images/".$imgfile."' alt='".$imgfile."' />";					
+					}
+				}
 				$text .= "
 				</div>";
 				

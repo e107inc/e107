@@ -187,9 +187,16 @@ function notify_subnews($data) {
 		$message .= $key.': '.$value.'<br />';
 	}
 	
-	$message .= "<br /><img src='{e_IMAGE}newspost_images/".$data['image']."' alt='' /><br />";
-	$message .= "src: {e_IMAGE}newspost_images/".$data['image'];
-	
+	if($data['image'])
+	{
+		$tmp = explode(",",$data['image']);
+		foreach($tmp as $image)
+		{
+			$message .= "<br /><img src='{e_IMAGE}newspost_images/".$image."' alt='' /><br />";
+			$message .= "src: {e_IMAGE}newspost_images/".$image;	
+		}
+	}
+		
 	$nt -> send('subnews', NT_LAN_SN_1." : ".$data['itemtitle'], $message);
 }
 
