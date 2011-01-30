@@ -199,7 +199,20 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
 }
 unset($inArray);
 
-// Session start. 
+/**
+ * NEW - system security levels
+ * Could be overridden by e107_config.php OR $CLASS2_INCLUDE script (if not set earlier)
+ * 
+ * 0 (disabled)
+ * 5 (balanced) - token value once per session
+ * 8 (high) - token value regenerated on every page load
+ * 10 (insane) - #8 + regenerate SID on every page load
+ * default is 5
+ */
+if(!defined('e_SECURITY_LEVEL')) 
+{
+	define('e_SECURITY_LEVEL', 5);
+}
 
 /**
  * G: Retrieve Query data from URI
@@ -462,12 +475,12 @@ header("Cache-Control: must-revalidate");
 define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 
 // Ajax calls should be handled manual at this time (set e_TOKEN_FREEZE in Ajax scripts before the API is loaded)
-if(session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e_TOKEN_NAME])/* && $_POST['ajax_used']!=1*/)
+if(e_SECURITY_LEVEL > 0 && session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != varset($_SESSION[e_TOKEN_NAME]))/* && $_POST['ajax_used']!=1*/)
 {
 	if(defsettrue('e_DEBUG'))
 	{		
 		$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
-		$details = "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";		
+		$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";		
 		$details .= "_SESSION:\n";
 		$details .= print_r($_SESSION,true);
 		$details .= "\n_POST:\n";
@@ -481,8 +494,8 @@ if(session_id() && isset($_POST['e-token']) && ($_POST['e-token'] != $_SESSION[e
 	die('Access denied');
 }
 
-// Create new token only if not exists or session id is regenerated (footer.php)
-if(!isset($_SESSION[e_TOKEN_NAME]) || (isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
+// Create new token only if not exists or session id is regenerated (footer.php), respect security level
+if(!isset($_SESSION[e_TOKEN_NAME]) || (e_SECURITY_LEVEL >= 8 && isset($_SESSION['regenerate_'.e_TOKEN_NAME]) && !defsettrue('e_TOKEN_FREEZE')))
 {
 	// we should not break ajax calls this way
 	$_SESSION[e_TOKEN_NAME] = uniqid(md5(rand()), true);

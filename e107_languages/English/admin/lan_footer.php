@@ -28,5 +28,5 @@ define("FOOTLAN_16", "Database");
 define("FOOTLAN_17", "Charset");
 define("FOOTLAN_18", "Site Theme");
 define("FOOTLAN_19", "Current Server Time");
-
+define("FOOTLAN_20", "Security level");
 ?>

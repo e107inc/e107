@@ -33,6 +33,10 @@ if (ADMIN)
 	<br />
 	".FOOTLAN_3." ".$e107info['e107_version']."
 	<br /><br />
+	<b>".FOOTLAN_20."</b>
+	<br />
+	[".e_SECURITY_LEVEL."] ".defset('LAN_SECURITYL_'.e_SECURITY_LEVEL, 'n/a')." 
+	<br /><br />
 	<b>".FOOTLAN_18."</b>
 	<br />".$pref['sitetheme']."<br /><br />
 	<b>".FOOTLAN_5."</b>
