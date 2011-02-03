@@ -50,6 +50,11 @@ class e107_event
 	 */
 	function register($eventname, $function, $include='')
 	{
+		if(!$_SESSION) 
+		{
+			$this->logData("There is no _SESSION");
+		}
+				
 		if(!isset($_SESSION['e_EVENT_functions'][$eventname])) // Notice removal
 		{
 			$_SESSION['e_EVENT_functions'][$eventname] = array();		
@@ -62,6 +67,7 @@ class e107_event
 		
 		if ($include!='')
 		{
+			$include = realpath($include); // make paths consistent to avoid duplicates
 			// $this->includes[$eventname][] = $include;
 			if(!in_array($include,$_SESSION['e_EVENT_includes'][$eventname]))
 			{
@@ -90,8 +96,20 @@ class e107_event
 			{
 				if (file_exists($evt_inc))
 				{
-					include_once($evt_inc);
+					if(!include_once($evt_inc))
+					{
+						$this->logData("Couldn't Include file: ".$evt_inc);		
+					}
+					else
+					{
+						$this->logData("Included file: ".$evt_inc);		
+					}
 				}
+				else
+				{
+					$this->logData("Couldn't find file: ".$evt_inc);	
+				}
+				
 			}
 		}
 		if (isset($this -> functions[$eventname]))
@@ -104,6 +122,7 @@ class e107_event
 					$this->logData($evt_func);
 					if ($ret!='')
 					{
+						$this->logData("Stopped Processing during: ".$evt_func ."(".$ret.")");
 						break;
 					}
 				}
