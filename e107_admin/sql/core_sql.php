@@ -47,7 +47,7 @@ CREATE TABLE admin_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -65,7 +65,7 @@ CREATE TABLE audit_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 
@@ -84,7 +84,7 @@ CREATE TABLE banlist (
   PRIMARY KEY  (banlist_ip),
   KEY banlist_datestamp (banlist_datestamp),
   KEY banlist_banexpires (banlist_banexpires)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -106,7 +106,7 @@ CREATE TABLE comments (
   comment_type varchar(20) NOT NULL default '0',
   comment_lock tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -116,7 +116,7 @@ CREATE TABLE core (
   e107_name varchar(100) NOT NULL default '',
   e107_value text NOT NULL,
   PRIMARY KEY  (e107_name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -140,7 +140,7 @@ CREATE TABLE core_media (
   media_tags text NOT NULL,
   PRIMARY KEY (media_id),
   UNIQUE KEY media_url (media_url)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE core_media_cat (
   media_cat_id int(10) unsigned NOT NULL auto_increment,
@@ -150,7 +150,7 @@ CREATE TABLE core_media_cat (
   media_cat_class int(5) default '0',
   PRIMARY KEY  (media_cat_id),
   UNIQUE KEY media_cat_nick (media_cat_nick)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 
 
@@ -174,7 +174,7 @@ CREATE TABLE dblog (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -191,7 +191,7 @@ CREATE TABLE generic (
   gen_chardata text NOT NULL,
   PRIMARY KEY  (gen_id),
   KEY gen_type (gen_type)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -211,7 +211,7 @@ CREATE TABLE links (
   link_class varchar(255) NOT NULL default '0',
   link_function varchar(100) NOT NULL default '',
   PRIMARY KEY  (link_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -232,7 +232,7 @@ CREATE TABLE mail_recipients (
 	PRIMARY KEY (mail_target_id),
 	KEY mail_status (mail_status),
 	KEY mail_detail_id (mail_detail_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE mail_content (
 	mail_source_id int(10) unsigned NOT NULL auto_increment,
@@ -255,7 +255,7 @@ CREATE TABLE mail_content (
 	mail_other text,
 	PRIMARY KEY (mail_source_id),
 	KEY mail_content_status (mail_content_status)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 
 #
@@ -273,7 +273,7 @@ CREATE TABLE menus (
   menu_layout varchar(100) NOT NULL default '',
   menu_parms text NOT NULL,
   PRIMARY KEY  (menu_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -306,7 +306,7 @@ CREATE TABLE news (
   KEY news_sticky  (news_sticky),
   KEY news_render_type  (news_render_type),
   KEY news_class (news_class)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 
 # --------------------------------------------------------
@@ -325,7 +325,7 @@ CREATE TABLE news_category (
   category_order tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (category_id),
   KEY category_order (category_order)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -340,7 +340,7 @@ CREATE TABLE news_rewrite (
   PRIMARY KEY  (news_rewrite_id),
   UNIQUE KEY news_rewrite_string (news_rewrite_string),
   UNIQUE KEY news_rewrite_source_type (news_rewrite_source,news_rewrite_type)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -357,7 +357,7 @@ CREATE TABLE online (
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
   KEY online_ip (online_ip)
-) TYPE=InnoDB;
+) ENGINE=InnoDB;
 # --------------------------------------------------------
 
 #
@@ -378,7 +378,7 @@ CREATE TABLE page (
   page_theme varchar(50) NOT NULL default '',
   page_template varchar(50) NOT NULL default '',
   PRIMARY KEY  (page_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -396,7 +396,7 @@ CREATE TABLE plugin (
   plugin_releaseUrl varchar(255) NOT NULL default '',
   PRIMARY KEY  (plugin_id),
   UNIQUE KEY plugin_path (plugin_path)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -410,7 +410,7 @@ CREATE TABLE preset (
   preset_field varchar(80) NOT NULL default '',
   preset_value varchar(255) NOT NULL default '',
   PRIMARY KEY  (preset_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -426,7 +426,7 @@ CREATE TABLE rate (
   rate_votes int(10) unsigned NOT NULL default '0',
   rate_voters text NOT NULL,
   PRIMARY KEY  (rate_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -445,7 +445,7 @@ CREATE TABLE submitnews (
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
   submitnews_file varchar(100) NOT NULL default '',
   PRIMARY KEY  (submitnews_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -458,7 +458,7 @@ CREATE TABLE tmp (
   tmp_info text NOT NULL,
   KEY tmp_ip (tmp_ip),
   KEY tmp_time (tmp_time)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -482,7 +482,7 @@ CREATE TABLE upload (
   upload_category tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (upload_id),
   KEY upload_active (upload_active)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -522,7 +522,7 @@ CREATE TABLE user (
   UNIQUE KEY user_name (user_name),
   UNIQUE KEY user_loginname (user_loginname),
   KEY join_ban_index (user_join,user_ban)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -539,7 +539,7 @@ CREATE TABLE userclass_classes (
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
   PRIMARY KEY  (userclass_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -550,7 +550,7 @@ CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
   user_hidden_fields text NOT NULL,
   PRIMARY KEY  (user_extended_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 
@@ -574,6 +574,6 @@ CREATE TABLE user_extended_struct (
   user_extended_struct_order int(10) unsigned NOT NULL default '0',
   user_extended_struct_parent int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_extended_struct_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
