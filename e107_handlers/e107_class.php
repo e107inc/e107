@@ -1856,7 +1856,7 @@ class e107
 	{
 	
 		// Quick security - Filter common bad agents / queries. (TODO - better!)
-		if($checkS && (strpos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE))
+		if($checkS && (stripos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE))
 		{
 			exit();
 		}
@@ -1902,7 +1902,7 @@ class e107
 		*/
 		
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
 		// setup some php options
 		e107::ini_set('magic_quotes_runtime',     0);
@@ -2198,6 +2198,14 @@ class e107
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
+		
+		list($requestUrl,$requestQry) = explode("?",$_SERVER['REQUEST_URI']); 
+		
+		if($requestUrl != $_SERVER['PHP_SELF'])
+		{
+			$_SERVER['PHP_SELF'] = $requestUrl;
+		}	
+		
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
