@@ -45,7 +45,7 @@ $eTimingStart = microtime();					// preserve these when destroying globals in st
 $oblev_before_start = ob_get_level();
 
 // Filter common bad agents / queries. 
-if(strpos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE)
+if(stripos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE)
 {
 	exit();
 }
@@ -77,7 +77,7 @@ if($register_globals == true){
 }
 
 
-if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URLs to the correct one.
+if(($pos = stripos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URLs to the correct one.
 {
 	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
 	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url."?".$_SERVER['QUERY_STRING'] : $new_url;
@@ -85,7 +85,7 @@ if(($pos = strpos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URL
 	exit();
 }
 // If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 unset($pos);
 //
 // D: Setup PHP error handling
@@ -1205,7 +1205,7 @@ function get_user_data($uid, $extra = "")
 		}
 	}
 
-	$var = $sql->db_Fetch();
+	$var = $sql->db_Fetch(MYSQL_ASSOC);
 	$extended_struct = getcachedvars("extended_struct");
 	if(!$extended_struct)
 	{
@@ -1213,7 +1213,7 @@ function get_user_data($uid, $extra = "")
 		$qry = "SHOW COLUMNS FROM #user_extended ";
 		if($sql->db_Select_gen($qry))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				if($row['Default'] != "")
 				{
