@@ -41,7 +41,8 @@ if($total_pages > 1)
         $NP_POST_ACTIVE = "";
         $NP_STYLE = "";
 
-        if(!defined("NEXTPREV_NOSTYLE") || NEXTPREV_NOSTYLE==FALSE){
+        if(!defined("NEXTPREV_NOSTYLE") || NEXTPREV_NOSTYLE==FALSE)
+		{
             $NP_PRE_ACTIVE = "[";
             $NP_POST_ACTIVE = "] ";
             $NP_STYLE = "style='text-decoration:underline'";
@@ -145,7 +146,7 @@ if($total_pages > 1)
     }
 
     // Use NEW nextprev method
-    $np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+    $np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";		// Default template
     $np_parms['prev'] = "&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;";
     $np_parms['next'] = "&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;";
     $np_parms['np_class'] = 'tbox npbutton';
@@ -189,7 +190,11 @@ if($total_pages > 1)
         $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
     }
     $dropdown .= "</select>";
-    $ret = $np_parm['template'];
+    $ret = $np_parm['template'];		// Set default
+	if (isset($np_parms['template']) && $np_parms['template'])
+	{
+		$ret = $np_parms['template'];				// Use override
+	}
     $ret = str_replace('[DROPDOWN]', $dropdown, $ret);
     $ret = str_replace('[PREV]', $prev, $ret);
     $ret = str_replace('[NEXT]', $next, $ret);
