@@ -523,7 +523,11 @@ function nextprev_shortcode($parm = '')
 	        $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
 		}
 		$dropdown .= '</select>';
-		$ret = $np_parm['template'];
+		$ret = $np_parm['template'];		// Set default
+		if (isset($np_parms['template']) && $np_parms['template'])
+		{
+			$ret = $np_parms['template'];				// Use override
+		}
 		$ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 		$ret = str_replace('[PREV]', $prev, $ret);
 		$ret = str_replace('[NEXT]', $next, $ret);
