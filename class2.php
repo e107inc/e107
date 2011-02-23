@@ -44,11 +44,12 @@
 $eTimingStart = microtime();					// preserve these when destroying globals in step C
 $oblev_before_start = ob_get_level();
 
-// Filter common bad agents / queries. 
-if(stripos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE)
-{
-	exit();
-}
+// Block common bad agents / queries / php issues. 
+array_walk($_SERVER,  'e107_filter', '_SERVER');
+array_walk($_GET,     'e107_filter', '_GET');
+array_walk($_POST,    'e107_filter', '_POST');
+array_walk($_COOKIE,  'e107_filter', '_COOKIE');
+array_walk($_REQUEST, 'e107_filter', '_REQUEST'); 
 
 //
 // B: Remove all output buffering
@@ -410,7 +411,12 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 //
 define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEURL", SITEURLBASE.e_HTTP);
-define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+
+if(!defined('e_SELF')) // user override option 
+{
+	define("e_SELF", ($pref['ssl_enabled'] == '1' ? "https://".$_SERVER['HTTP_HOST'] : "http://".$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));	
+}
+
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 	  
@@ -1701,6 +1707,33 @@ function e107_require($fname) {
 	global $e107_debug;
 	$ret = ($e107_debug ? require($fname) : @require($fname));
 	return $ret;
+}
+
+function e107_filter($input,$key,$type)
+{	
+	if (is_array($input))
+	{
+		return array_walk($input, 'e107_filter',$type);	
+	} 
+	
+	if($type == "_SERVER")
+	{	
+		if(($key == "QUERY_STRING") && stripos($input,"=http")!==FALSE)
+		{
+			exit();
+		}
+		
+		if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
+		{
+			exit();	
+		}			
+	}
+		
+	if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
+	{
+		exit();
+	} 
+	
 }
 
 function include_lan($path, $force = false)
