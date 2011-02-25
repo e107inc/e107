@@ -1718,7 +1718,7 @@ function e107_filter($input,$key,$type)
 	
 	if($type == "_SERVER")
 	{	
-		if(($key == "QUERY_STRING") && stripos($input,"=http")!==FALSE)
+		if(($key == "QUERY_STRING") && strpos(strtolower($input),"=http")!==FALSE)
 		{
 			exit();
 		}
