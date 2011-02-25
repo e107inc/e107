@@ -453,8 +453,8 @@ class rssCreate {
 						echo "
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
-							<description>".substr($tp->toRss($value['description']),0,150)."</description>
-							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
+							<description>".substr($tp->toRss($value['description']),0,160)."</description>
+							<author>".$this->nospam($value['author_email'])." (".$value['author'].")</author>
 							<link>".$link."</link>
 							</item>";
 					}
@@ -495,7 +495,7 @@ class rssCreate {
 
 				<ttl>60</ttl>\n";
 				
-				echo "<atom:link href=\"".e_SELF."?".$content_type.".4.".$this->topicid."\" rel=\"self\" type=\"application/rss+xml\" />\n";
+				echo "<atom:link href=\"".e_SELF."?".e_QUERY."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
 				if (trim(SITEBUTTON))
 				{
