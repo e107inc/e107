@@ -35,6 +35,10 @@ class e_profanityFilter
 			if($word != "")
 			{
 				$word_array[] = $word;
+				if (strpos($word, '&#036;') !== FALSE)
+				{
+					$word_array[] = str_replace('&#036;', '\$', $word);		// Special case - '$' may be 'in clear' or as entity
+				}
 			}
 		}
 		if(count($word_array))
