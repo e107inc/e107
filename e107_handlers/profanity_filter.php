@@ -2,16 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/profanity_filter.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ *  $URL$
+ *	$Revision$
+ *  $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -32,6 +31,10 @@ class e_profanityFilter
 			if($word != "")
 			{
 				$word_array[] = $word;
+				if (strpos($word, '&#036;') !== FALSE)
+				{
+					$word_array[] = str_replace('&#036;', '\$', $word);		// Special case - '$' may be 'in clear' or as entity
+				}
 			}
 		}
 		if(count($word_array))
