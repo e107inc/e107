@@ -190,12 +190,14 @@ class language{
 			"ChineseSimp"  	=> "简体中文",
 			"Dutch"			=> "Nederlands",
 			"English"		=> "English",
+			"Estonian"		=> "Eesti",
 			"Finnish"		=> "Suomi",
 			"French"		=> "Français",
 			"German"		=> "Deutsch",
 			"Greek"			=> "Ελληνικά",
 			"Hebrew"		=> "עִבְרִית",
 			"Hungarian"		=> "Magyar",
+			"Indonesian"	=> "Bahasa Indonesia",
 			"Italian"		=> "Italiano",
 			"Japanese"		=> "日本語",
 			"Korean"		=> "한국어",
@@ -215,7 +217,8 @@ class language{
 			"Slovak"		=> "Slovensky",
 			"Swedish"		=> "Svenska",
 			"Thai"			=> "ภาษาไทย",
-			"Turkish"		=> "Türkçe"
+			"Turkish"		=> "Türkçe",
+			"Vietnamese"	=> "Tiếng Việt"
 		);
 
 
