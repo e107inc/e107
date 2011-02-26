@@ -106,7 +106,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 	if (preg_match('/<(font|br|a|img|b)/i', $message)) {
 		$Html = $message; // Assume html if it begins with one of these tags
 	} else {
-		$Html = htmlspecialchars($message);
+		$Html = htmlspecialchars($message,ENT_QUOTES,CHARSET);
 		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
 		$Html = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $Html);
 		$Html = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $Html);
