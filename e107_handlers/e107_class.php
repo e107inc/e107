@@ -1855,11 +1855,12 @@ class e107
 	public function prepare_request($checkS = true)
 	{
 	
-		// Quick security - Filter common bad agents / queries. (TODO - better!)
-		if($checkS && (stripos($_SERVER['QUERY_STRING'],"=http")!==FALSE || strpos($_SERVER["HTTP_USER_AGENT"],"libwww-perl")!==FALSE))
-		{
-			exit();
-		}
+		// Block common bad agents / queries / php issues. 
+		array_walk($_SERVER,  array('self', 'filter_request'), '_SERVER');
+		array_walk($_GET,     array('self', 'filter_request'), '_GET');
+		array_walk($_POST,    array('self', 'filter_request'), '_POST');
+		array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
+		array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST'); 
 		
 		// TODO - better ajax detection method (headers when possible)
 		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
@@ -1923,6 +1924,41 @@ class e107
 
 		return $this;
 	}
+	
+	/**
+	 * Filter User Input - used by array_walk in prepare_request method above. 
+	 * @param string $input array value
+	 * @param string $key	array key
+	 * @param string $type	array type _SESSION, _GET etc. 
+	 * @return 
+	 */
+	public function filter_request($input,$key,$type)
+	{
+		if (is_array($input))
+		{
+			return array_walk($input, 'e107_filter',$type);	
+		} 
+		
+		if($type == "_SERVER")
+		{	
+			if(($key == "QUERY_STRING") && strpos(strtolower($input),"=http")!==FALSE)
+			{
+				exit();
+			}
+			
+			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
+			{
+				exit();	
+			}			
+		}
+			
+		if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
+		{
+			exit();
+		} 	
+	}
+	
+	
 
 	/**
 	 * Set base system path
