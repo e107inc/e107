@@ -99,24 +99,8 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 		$cam = ($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 	}
 
-	$clickURL = $_POST['click_url'];
+	$clickURL = $tp->toDB($_POST['click_url']);
 	unset($_POST['click_url']);
-	if (strpos($clickURL, '://' ) !== FALSE)
-	{
-		$clickBits = explode('://', $clickURL, 2);
-		if (($clickBits[0] == 'http') || ($clickBits[0] == 'https'))
-		{
-			$clickURL = $clickBits[0].'://'.rawurlencode($clickBits[1]);
-		}
-		else
-		{
-			$clickURL = rawurlencode($clickURL);
-		}
-	}
-	else
-	{
-		$clickURL = rawurlencode($clickURL);
-	}
 	if ($_POST['createbanner']) 
 	{
 		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$tp->toDB($_POST['client_login'])."', '".$tp->toDB($_POST['client_password'])."', '".rawurlencode($_POST['banner_image'])."', '".$clickURL."', '".intval($_POST['impressions_purchased'])."', '$start_date', '$end_date', '".intval($_POST['banner_class'])."', 0, 0, '', '".$tp->toDB($cam)."'"), 'insert', BNRLAN_63);
