@@ -108,22 +108,6 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 	$banImage = $e107->tp->toDB($_POST['banner_image']);
 
 	$banURL = $e107->tp->toDB($_POST['click_url']);
-	if (strpos($banURL, '://' ) !== FALSE)
-	{
-		$clickBits = explode('://', $banURL, 2);
-		if (($clickBits[0] == 'http') || ($clickBits[0] == 'https'))
-		{
-			$banURL = $clickBits[0].'://'.rawurlencode($clickBits[1]);
-		}
-		else
-		{
-			$banURL = rawurlencode($banURL);
-		}
-	}
-	else
-	{
-		$banURL = rawurlencode($banURL);
-	}
 
 	if ($_POST['banner_pages'])
 	{	// Section redundant?
