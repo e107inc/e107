@@ -60,7 +60,10 @@ for($i = 0;$i < count($arr);$i++)
 }
 
 $caption = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : LIST_MENU_1);
+$caption = $tp->toHtml($caption, FALSE, 'USER_TITLE');
+$text = $tp->toHtml($caption, TRUE, 'USER_BODY');
 $ns->tablerender($caption, $text, 'list_new');
+unset($caption);
 unset($text);
 
 ?>
