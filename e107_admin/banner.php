@@ -99,12 +99,33 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 		$cam = ($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 	}
 
-	if ($_POST['createbanner']) {
-		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$tp->toDB($_POST['client_login'])."', '".$tp->toDB($_POST['client_password'])."', '".rawurlencode($_POST['banner_image'])."', '".rawurlencode($_POST['click_url'])."', '".intval($_POST['impressions_purchased'])."', '$start_date', '$end_date', '".intval($_POST['banner_class'])."', 0, 0, '', '".$tp->toDB($cam)."'"), 'insert', BNRLAN_63);
-	} else {
-		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$tp->toDB($_POST['client_login'])."', banner_clientpassword='".$tp->toDB($_POST['client_password'])."', banner_image='".rawurlencode($_POST['banner_image'])."', banner_clickurl='".rawurlencode($_POST['click_url'])."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$tp->toDB($cam)."' WHERE banner_id='".intval($_POST['eid'])."'"), 'update', BNRLAN_64);
+	$clickURL = $_POST['click_url'];
+	unset($_POST['click_url']);
+	if (strpos($clickURL, '://' ) !== FALSE)
+	{
+		$clickBits = explode('://', $clickURL, 2);
+		if (($clickBits[0] == 'http') || ($clickBits[0] == 'https'))
+		{
+			$clickURL = $clickBits[0].'://'.rawurlencode($clickBits[1]);
+		}
+		else
+		{
+			$clickURL = rawurlencode($clickURL);
+		}
 	}
-	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
+	else
+	{
+		$clickURL = rawurlencode($clickURL);
+	}
+	if ($_POST['createbanner']) 
+	{
+		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$tp->toDB($_POST['client_login'])."', '".$tp->toDB($_POST['client_password'])."', '".rawurlencode($_POST['banner_image'])."', '".$clickURL."', '".intval($_POST['impressions_purchased'])."', '$start_date', '$end_date', '".intval($_POST['banner_class'])."', 0, 0, '', '".$tp->toDB($cam)."'"), 'insert', BNRLAN_63);
+	} 
+	else 
+	{
+		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$tp->toDB($_POST['client_login'])."', banner_clientpassword='".$tp->toDB($_POST['client_password'])."', banner_image='".rawurlencode($_POST['banner_image'])."', banner_clickurl='".$clickURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$tp->toDB($cam)."' WHERE banner_id='".intval($_POST['eid'])."'"), 'update', BNRLAN_64);
+	}
+	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
 }
 
 if (isset($_POST['confirm'])) {
