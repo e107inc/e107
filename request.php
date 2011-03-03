@@ -156,11 +156,17 @@ else
 
 if(varset($pref['download_splashdelay'])==1 )
 {
+	
 	if($type == 'file' && !varsettrue($_SESSION['download_splash']) && (e_MENU != "nosplash")) // just received request, so show page and refresh after a pause. 
 	{	
-		$_SESSION['download_splash'] = TRUE;
+		$SPLASH_PREVIEW = ((e_QUERY == "preview") && getperms('0')) ? TRUE : FALSE;
 		
-		header("Refresh: 6; url=\"".$_SERVER['REQUEST_URI']."\"");	
+		if(!$SPLASH_PREVIEW)
+		{
+			$_SESSION['download_splash'] = TRUE;
+			header("Refresh: 3; url=\"".$_SERVER['REQUEST_URI']."\"");		
+		}
+		
 		require_once(HEADERF);
 	
 		$template_name = "request_template.php";
