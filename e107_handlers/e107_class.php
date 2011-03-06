@@ -1932,11 +1932,11 @@ class e107
 	 * @param string $type	array type _SESSION, _GET etc. 
 	 * @return 
 	 */
-	public function filter_request($input,$key,$type)
+	public static function filter_request($input,$key,$type)
 	{
 		if (is_array($input))
 		{
-			return array_walk($input, 'e107_filter',$type);	
+			return array_walk($input, array('self', 'filter_request'), $type);	
 		} 
 		
 		if($type == "_SERVER")
