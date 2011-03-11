@@ -64,7 +64,7 @@ $eplug_tables = array(
   newsfeed_active tinyint(1) unsigned NOT NULL default '0',
   newsfeed_updateint int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (newsfeed_id)
-) TYPE=MyISAM;");
+) ENGINE=MyISAM;");
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;

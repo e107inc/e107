@@ -66,7 +66,7 @@ $eplug_tables = array(
   newsletter_flag tinyint(4) NOT NULL,
   newsletter_issue varchar(100) NOT NULL,
   PRIMARY KEY  (newsletter_id)
-  ) TYPE=MyISAM;");
+  ) ENGINE=MyISAM;");
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------

@@ -67,7 +67,7 @@ $eplug_tables = array(
   trackback_blogname varchar(150) NOT NULL default '',
   PRIMARY KEY  (trackback_id),
   KEY trackback_pid (trackback_pid)
-) TYPE=MyISAM;");
+) ENGINE=MyISAM;");
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;

@@ -12,7 +12,7 @@ CREATE TABLE private_msg (
   pm_option varchar(250) NOT NULL default '',
   pm_size int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (pm_id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE private_msg_block (
   pm_block_id int(10) unsigned NOT NULL auto_increment,
@@ -21,4 +21,4 @@ CREATE TABLE private_msg_block (
   pm_block_datestamp int(10) unsigned NOT NULL default '0',
   pm_block_count int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (pm_block_id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;

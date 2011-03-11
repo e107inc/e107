@@ -14,7 +14,7 @@ CREATE TABLE forum (
 	forum_order int(10) unsigned NOT NULL default '0',
 	forum_postclass tinyint(3) unsigned NOT NULL default '0',
 	PRIMARY KEY  (forum_id)
-	) TYPE=MyISAM AUTO_INCREMENT=1
+	) ENGINE=MyISAM AUTO_INCREMENT=1
 
 CREATE TABLE forum_t (
 	thread_id int(10) unsigned NOT NULL auto_increment,
@@ -35,5 +35,5 @@ CREATE TABLE forum_t (
 	KEY thread_parent (thread_parent),
 	KEY thread_datestamp (thread_datestamp),
 	KEY thread_forum_id (thread_forum_id)
-	) TYPE=MyISAM AUTO_INCREMENT=1;
+	) ENGINE=MyISAM AUTO_INCREMENT=1;
 

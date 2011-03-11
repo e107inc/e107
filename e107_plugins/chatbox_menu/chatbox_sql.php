@@ -6,4 +6,4 @@ CREATE TABLE chatbox (
 	cb_blocked tinyint(3) unsigned NOT NULL default '0',
 	cb_ip varchar(15) NOT NULL default '',
 	PRIMARY KEY  (cb_id)
-	) TYPE=MyISAM;
+	) ENGINE=MyISAM;

@@ -15,7 +15,7 @@ CREATE TABLE event (
 	event_rec_m tinyint(2) unsigned NOT NULL default '0',
 	event_rec_y tinyint(2) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_id)
-	) TYPE=MyISAM;,
+	) ENGINE=MyISAM;,
 	CREATE TABLE event_cat (
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
 	event_cat_name varchar(100) NOT NULL default '',
@@ -33,10 +33,10 @@ CREATE TABLE event (
 	event_cat_description text,
 	event_cat_force_class int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
-	) TYPE=MyISAM;,
+	) ENGINE=MyISAM;,
 	CREATE TABLE event_subs (
 	event_subid int(10) unsigned NOT NULL auto_increment,
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;
+	) ENGINE=MyISAM;

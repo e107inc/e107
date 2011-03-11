@@ -72,7 +72,7 @@ $eplug_tables = array(
   log_data longtext NOT NULL,
   PRIMARY KEY  (log_uniqueid),
   UNIQUE KEY log_id (log_id)
-) TYPE=MyISAM ");
+) ENGINE=MyISAM ");
 	
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------

@@ -46,6 +46,6 @@ CREATE TABLE pcontent (
   content_meta text NOT NULL,
   content_layout varchar(255) NOT NULL default '',
   PRIMARY KEY  (content_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
