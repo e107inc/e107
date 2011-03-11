@@ -10,4 +10,4 @@ CREATE TABLE gsitemap (
 	gsitemap_img varchar(50) NOT NULL default '',
 	gsitemap_active int(3) NOT NULL default '0',
 	PRIMARY KEY  (gsitemap_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

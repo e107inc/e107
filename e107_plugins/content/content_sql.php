@@ -54,6 +54,6 @@ CREATE TABLE pcontent (
   content_layout varchar(255) NOT NULL default '',
   PRIMARY KEY  (content_id),
   KEY content_parent (content_parent)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 

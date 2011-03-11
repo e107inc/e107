@@ -7,4 +7,4 @@ linkword_tooltip text NOT NULL,
 linkword_tip_id int(10) UNSIGNED NOT NULL Default '0',
 linkword_newwindow tinyint(1) unsigned NOT NULL default '1',
 PRIMARY KEY  (linkword_id)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;

@@ -7,4 +7,4 @@ CREATE TABLE trackback (
   `trackback_blogname` varchar(150) NOT NULL default '',
    PRIMARY KEY  (`trackback_id`),
    KEY `trackback_pid` (`trackback_pid`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;

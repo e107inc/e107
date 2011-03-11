@@ -5,4 +5,4 @@ CREATE TABLE tagwords (
 	`tag_word` varchar(255) NOT NULL default '',
 	PRIMARY KEY (`tag_id`),
 	KEY `tag_word` (`tag_word`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;

@@ -13,7 +13,7 @@ CREATE TABLE featurebox (
   `fb_category` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`fb_id`),
   KEY `fb_category` (`fb_category`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE featurebox_category (
   `fb_category_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
@@ -25,4 +25,4 @@ CREATE TABLE featurebox_category (
   `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`fb_category_id`),
   UNIQUE KEY `fb_category_template` (`fb_category_template`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

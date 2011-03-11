@@ -10,4 +10,4 @@ CREATE TABLE rss (
 	rss_limit tinyint(3) unsigned NOT NULL default '0',
 	PRIMARY KEY  (rss_id),
 	KEY rss_name (rss_name)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

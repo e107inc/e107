@@ -10,6 +10,6 @@ CREATE TABLE tinymce (
   `tinymce_custom` text NOT NULL,
   `tinymce_prefs` text NOT NULL,
   PRIMARY KEY (`tinymce_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 

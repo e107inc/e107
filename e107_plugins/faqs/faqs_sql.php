@@ -8,7 +8,7 @@ CREATE TABLE faqs (
   faq_author int(10) unsigned default NULL,
   faq_order int(6) unsigned NOT NULL default '0',
   PRIMARY KEY  (faq_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE faqs_info (
   faq_info_id int(10) unsigned NOT NULL auto_increment,
@@ -19,5 +19,5 @@ CREATE TABLE faqs_info (
   faq_info_order tinyint(3) unsigned NOT NULL default '0',
   faq_info_icon varchar(255) NOT NULL,
   PRIMARY KEY  (faq_info_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
