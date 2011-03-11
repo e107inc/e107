@@ -10,4 +10,4 @@ CREATE TABLE newsletter (
   newsletter_flag tinyint(4) NOT NULL,
   newsletter_issue varchar(100) NOT NULL,
   PRIMARY KEY  (newsletter_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

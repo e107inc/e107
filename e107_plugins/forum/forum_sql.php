@@ -19,7 +19,7 @@ CREATE TABLE forum (
   PRIMARY KEY  (`forum_id`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)
-) Type=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;
 
 CREATE TABLE forum_thread (
   `thread_id` int(10) unsigned NOT NULL auto_increment,
@@ -40,7 +40,7 @@ CREATE TABLE forum_thread (
   KEY `thread_forum_id` (`thread_forum_id`),
   KEY `thread_sticky` (`thread_sticky`),
   KEY `thread_lastpost` (`thread_lastpost`)
-) Type=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE forum_post (
   `post_id` int(10) unsigned NOT NULL auto_increment,
@@ -62,7 +62,7 @@ CREATE TABLE forum_post (
   KEY `post_forum` (`post_forum`),
   KEY `post_datestamp` (`post_datestamp`),
   KEY `post_user` (`post_user`)
-) Type=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE forum_track (
   `track_userid` int(10) unsigned NOT NULL,
@@ -70,5 +70,5 @@ CREATE TABLE forum_track (
   PRIMARY KEY  (`track_userid`,`track_thread`),
   KEY `track_userid` (`track_userid`),
   KEY `track_thread` (`track_thread`)
-) Type=MyISAM;
+) ENGINE=MyISAM;
 

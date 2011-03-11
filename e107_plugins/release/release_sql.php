@@ -10,4 +10,4 @@ CREATE TABLE release (
   `release_compatibility` varchar(5) NOT NULL,
   `release_url` varchar(255) NOT NULL,
   PRIMARY KEY (`release_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

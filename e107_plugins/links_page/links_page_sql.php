@@ -28,7 +28,7 @@ CREATE TABLE links_page_cat (
   link_category_class varchar(100) NOT NULL default '0',
   link_category_datestamp int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (link_category_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 # Table structure for table `links_page`
@@ -47,5 +47,5 @@ CREATE TABLE links_page (
   link_datestamp int(10) unsigned NOT NULL default '0',
   link_author varchar(255) NOT NULL default '',
   PRIMARY KEY  (link_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------

@@ -14,4 +14,4 @@ CREATE TABLE banner (
   banner_ip text NOT NULL,
   banner_campaign varchar(150) NOT NULL default '',
   PRIMARY KEY  (banner_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

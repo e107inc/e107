@@ -24,7 +24,7 @@ CREATE TABLE download (
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name),
   KEY download_category (download_category)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -39,7 +39,7 @@ CREATE TABLE download_category (
   download_category_class varchar(255) NOT NULL default '0',
   download_category_order int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_category_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -54,7 +54,7 @@ CREATE TABLE download_mirror (
   mirror_description text NOT NULL,
   mirror_count int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (mirror_id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -70,5 +70,5 @@ CREATE TABLE download_requests (
   KEY download_request_userid (download_request_userid),
   KEY download_request_download_id (download_request_download_id),
   KEY download_request_datestamp (download_request_datestamp)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
