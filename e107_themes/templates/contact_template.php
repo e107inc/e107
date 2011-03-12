@@ -37,19 +37,19 @@ if(!isset($CONTACT_FORM))
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	{CONTACT_PERSON}
 	<tr><td>".LANCONTACT_03."<br />
-	<input type='text' name='author_name' size='30' class='tbox' value=\"".$_POST['author_name']."\" />
+	<input type='text' name='author_name' size='30' class='tbox' value=\"".varset($_POST['author_name'], '')."\" />
 	</td></tr>
 	<tr><td>".LANCONTACT_04."<br />
-	<input type='text' name='email_send' size='30' class='tbox' value='".($_POST['email_send'] ? $_POST['email_send'] : USEREMAIL)."' />
+	<input type='text' name='email_send' size='30' class='tbox' value='".(varset($_POST['email_send'], FALSE) ? $_POST['email_send'] : USEREMAIL)."' />
 	</td></tr>
 	<tr><td>
 	".LANCONTACT_05."<br />
-	<input type='text' name='subject' size='30' class='tbox' value=\"".$_POST['subject']."\" />
+	<input type='text' name='subject' size='30' class='tbox' value=\"".varset($_POST['subject'], '')."\" />
 	</td></tr>
 	{CONTACT_EMAIL_COPY}
 	<tr><td>
     ".LANCONTACT_06."<br />
-	<textarea cols='50' rows='10' name='body' class='tbox'>".stripslashes($_POST['body'])."</textarea>
+	<textarea cols='50' rows='10' name='body' class='tbox'>".stripslashes(varset($_POST['body'], ''))."</textarea>
 	</td></tr>
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}

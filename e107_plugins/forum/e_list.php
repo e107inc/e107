@@ -119,7 +119,7 @@ else
 			$parent_name = $thread_name;
 		}
 		$rowheading	= $this -> parse_heading($parent_name, $mode);
-		if($parent_id)
+		if (isset($parent_id) && $parent_id)
 		{
 			$lnk = $thread_id.".post";
 		}

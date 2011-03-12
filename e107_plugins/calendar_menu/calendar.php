@@ -123,6 +123,8 @@ $nowmonth	= $ecal_class->cal_date['mon'];
 $nowyear	= $ecal_class->cal_date['year'];
 $nowday		= $ecal_class->cal_date['mday'];
 
+$events = array();
+
 // time switch buttons
 $cal_text = $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
 

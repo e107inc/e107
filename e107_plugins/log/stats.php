@@ -637,12 +637,12 @@ class siteStats {
 		$totalu = 0;
 		foreach ($this -> fileInfo as $k => $v)
 		{
-		  $found = (strpos($k,'error/') === 0);
-		  if ($do_errors XOR !$found) 
-		  {
-		    $totalArray[$k] = $v;
-			$total += $v['ttlv'];
-		  }
+			$found = (strpos($k,'error/') === 0);
+			if ($do_errors XOR !$found) 
+			{
+				$totalArray[$k] = $v;
+				if (isset($v['ttlv'])) $total += $v['ttlv'];
+			}
 		}
 		$totalArray = $this -> arraySort($totalArray, "ttl");
 
@@ -678,6 +678,7 @@ class siteStats {
 		$row = $sql -> db_Fetch();
 		$pageTotal = unserialize($row['log_data']);
 		$total = 0;
+		$text = '';
 
 		$can_delete = ADMIN && getperms("P");
 		$do_errors = $do_errors && $can_delete;
