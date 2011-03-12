@@ -98,7 +98,7 @@ echo "<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("P
 echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") 
+if (((varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) || defsettrue('e_WYSIWYG')) && varset($e_wysiwyg) != "") 
 {
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
