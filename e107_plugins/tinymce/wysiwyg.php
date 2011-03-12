@@ -186,7 +186,11 @@ class wysiwyg
 		tinyMCE.init({ \n\n";
 		
 		foreach($this->config as $key=>$val)
-		{
+		{			
+			if($val != 'true' && $val !='false')
+			{
+				$val = "'".$val."'";
+			}
 			$text .= "\t\t  ".$key." : '".$val."',\n";
 		}
 	/*
