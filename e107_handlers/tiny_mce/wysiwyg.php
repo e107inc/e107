@@ -85,7 +85,7 @@ class wysiwyg
 			});
 		
 		function tinymce_html_bbcode_control(type, source) {
-		
+					
 		    switch (type) {
 		
 		        case 'get_from_editor':
@@ -162,7 +162,11 @@ class wysiwyg
 		
 		foreach($this->config as $key=>$val)
 		{
-			$text .= "\t\t  ".$key." : '".$val."',\n";
+			if($val != 'true' && $val !='false')
+			{
+				$val = "'".$val."'";
+			}
+			$text .= "\t\t  ".$key." : ".$val.",\n";
 		}
 		
 		return $text;
