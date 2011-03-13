@@ -13,6 +13,12 @@
  */
 
 require_once('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('forum')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
