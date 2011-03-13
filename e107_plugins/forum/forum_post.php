@@ -13,6 +13,12 @@
 */
 
 require_once('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('forum')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
