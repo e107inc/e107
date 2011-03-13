@@ -25,6 +25,11 @@ if(isset($_POST['userlogin']) && !isset($_POST['e-token']))
 }
 
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['forum']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 $e_wysiwyg = "post";
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 

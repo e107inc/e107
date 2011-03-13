@@ -18,6 +18,11 @@
 */
 
 require_once('../../class2.php');
+if (!isset($pref['plug_installed']['forum']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
 @require_once(e_PLUGIN.'forum/forum_class.php');

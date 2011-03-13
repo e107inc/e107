@@ -22,6 +22,11 @@ if((isset($_POST['report_thread']) || in_array('thread_action', $_POST)) && !iss
 }
 
 require_once('../../class2.php');
+if (!isset($pref['plug_installed']['forum']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
 include_once(e_PLUGIN.'forum/forum_class.php');

@@ -22,7 +22,13 @@ if(in_array('thread_action', $_POST) && !isset($_POST['e-token']))
 }
 
 require_once("../../class2.php");
-if (isset($_POST['fjsubmit'])) {
+if (!isset($pref['plug_installed']['forum']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
+if (isset($_POST['fjsubmit'])) 
+{
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit();
 }
