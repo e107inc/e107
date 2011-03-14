@@ -60,6 +60,7 @@ if (e_QUERY)
 	$opts = varset($tmp[2],'upsize');
 	if(!resize_image($source, 'stdout', $newsize, $opts))
 	{
+		$source = $tp->toDB($source);
 		echo "Couldn't find: {$source}<br />";
 	} 
 } 
