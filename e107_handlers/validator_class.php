@@ -1104,11 +1104,15 @@ class validatorClass
 								{
 									if (strpos('-upload-', $value) === 0)
 									{
-										$img = e_UPLOAD.'avatars/'.$value;		// Its a server-stored image
+										$img = e_UPLOAD.'avatars/'.str_replace('-upload-', '', $value);		// Its a user-uploaded image
+									}
+									elseif (strpos($avName, '/') !== FALSE)
+									{
+										$img = $value;			// Its a remote image
 									}
 									else
 									{
-										$img = $value;			// Its a remote image
+										$img = e_MEDIA.'avatars/'.$value;		// Its a server-stored image
 									}
 								}
 												// Deliberately fall through into normal image processing
