@@ -185,10 +185,17 @@ if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
 		else
 		{	// Its one of the standard choices
 			$avName = $tp -> toDB($avName);
-			$avFullName = e_IMAGE.'avatars/'.$avName;
+			if (strpos($avName, '-upload-') === 0)
+			{	// Uploaded avatar
+				$avFullName = e_FILE.'public/avatars/'.str_replace('-upload-', '', $avName);
+			}
+			else
+			{	// Site-provided avatar
+				$avFullName = e_IMAGE.'avatars/'.$avName;
+			}
 			if (!is_readable($avFullName))
 			{
-				$avmsg = LAN_USET_19;			// Error accessing avatar
+				$avmsg = LAN_USET_19.': '.$avFullName;			// Error accessing avatar
 				$avName = FALSE;
 			}
 		}
