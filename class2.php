@@ -909,7 +909,7 @@ if(!defined("THEME_LAYOUT"))
 	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 	{
 	    //e_SELF.(e_QUERY ? '?'.e_QUERY : ''); 
-		$c_url = e_REQUEST_URL;// mod_rewrite support
+		$c_url = e_REQUEST_URL.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
 			if(!is_array($cusPageArray)) { continue; }
