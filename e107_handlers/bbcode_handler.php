@@ -259,19 +259,38 @@ class e_bbcode
 		return $result;
 	}
 
+	/**
+	 * Filter bbcode Input
+	 * @param string $input [optional]
+	 * @return string
+	 */
+	function filter($input='')
+	{
+		if(!$input)
+		{
+			return;
+		}
+			
+		$input = strtolower($input);
+		$search = array('document.cookie','location.href','onload');
+		return str_replace($search,"",$input);
+	}
+	
 
-
+	/**
+	 * Invoke the actual bbcode handler
+	 * @param string $code - textual value of the bbcode (already begins with '_' if a single code)
+	 * @param string $param1 - any text after '=' in the opening code
+	 * @param string $code_text_par - text between the opening and closing codes
+	 * @param string $param2 - any text after '=' for the closing code
+	 * @param string $sep - character separating bbcode name and any parameters
+	 * @param string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
+	 * @return 
+	 */
 	function proc_bbcode($code, $param1='',$code_text_par='', $param2='', $sep='', $full_text='')
-	// Invoke an actual bbcode handler
-	// $code - textual value of the bbcode (already begins with '_' if a single code)
-	// $param1 - any text after '=' in the opening code
-	// $code_text_par - text between the opening and closing codes
-	// $param2 - any text after '=' for the closing code
-	// $sep - character separating bbcode name and any parameters
-	// $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
 	{
 		global $tp, $postID, $code_text, $parm;
-		$parm = $param1;
+		$parm = $this->filter($param1);
 
 		$code_text = $code_text_par;
 
