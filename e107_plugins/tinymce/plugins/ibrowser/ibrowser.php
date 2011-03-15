@@ -32,7 +32,7 @@ unset($tinyMCE_imglib_include);
 include 'config.php';
 
 
-$request_uri = urldecode(empty($_POST['request_uri'])?(empty($_GET['request_uri'])?'':$_GET['request_uri']):$_POST['request_uri']);
+//$request_uri = urldecode(empty($_POST['request_uri'])?(empty($_GET['request_uri'])?'':$_GET['request_uri']):$_POST['request_uri']);
 
 // if set include file specified in $tinyMCE_imglib_include
 if (!empty($tinyMCE_imglib_include))
@@ -223,7 +223,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 			formObj.size.value = 'n/a';
 			owidth = eval(formObj.width.value);
 			oheight = eval(formObj.height.value);
-			document.getElementById('imgpreview').src = '<?php echo $_root ?>' + formObj.src.value;
+			document.getElementById('imgpreview').src = formObj.src.value;
 
 			updateStyle();
 		}
@@ -290,9 +290,8 @@ echo "</head>
     window.name = 'imglibrary';
 </script>
 
-<form id=\"libbrowser\" method=\"post\" action=\"ibrowser.php?request_uri=".$_GET['request_uri']."\" enctype=\"multipart/form-data\" target=\"imglibrary\">
+<form id=\"libbrowser\" method=\"post\" action=\"ibrowser.php\" enctype=\"multipart/form-data\" target=\"imglibrary\">
   <div>
-  <input type=\"hidden\" name=\"request_uri\" value=\"". urlencode($request_uri)."\" />
   <input type=\"hidden\" name=\"lib_action\" value=\"\" />
   <fieldset style= \"padding: 5px; margin-top: -5px;\">
   <legend>".$lang_ibrowser_img_sel."</legend>
