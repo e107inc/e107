@@ -2237,16 +2237,16 @@ class e107
 		
 		list($requestUrl,$requestQry) = explode("?",$_SERVER['REQUEST_URI']); 
 		
-		if($requestUrl != $_SERVER['PHP_SELF'])
-		{
-			$_SERVER['PHP_SELF'] = $requestUrl;
-		}	
-		
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-
 		define('e_PAGE', $page);
+		
+		// moved after page check - e_PAGE is important for BC
+		if($requestUrl && $requestUrl != $_SERVER['PHP_SELF'])
+		{
+			$_SERVER['PHP_SELF'] = $requestUrl;
+		}	
 		
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);
