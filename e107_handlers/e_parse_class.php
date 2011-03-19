@@ -1,8 +1,8 @@
-<?php 
+<?php
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Copyright (C) 2008-2011 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -567,7 +567,7 @@ class e_parse
 	public function dataFilter($data)
 	{
 		$ans = '';
-		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
+		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe',
 					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', '<plaintext', 'javascript:', 'vbscript:');
 
 		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
@@ -620,7 +620,7 @@ class e_parse
 			$ans = '?????';
 		}
 		return '[sanitised]'.$ans.'[/sanitised]';
-		
+
 	}
 
 
@@ -634,7 +634,7 @@ class e_parse
 	 */
 	public function preFilter($data)
 	{
-		if (!is_object($this->e_bb)) 
+		if (!is_object($this->e_bb))
 		{
 			require_once(e_HANDLER.'bbcode_handler.php');
 			$this->e_bb = new e_bbcode;
@@ -1367,9 +1367,11 @@ class e_parse
 							// Not sure whether checks are necessary now we've reorganised
 			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
+							// [SecretR] - avoid php code injections, missing php.bb will completely disable user posted php blocks
+							$bbcode = file_get_contents($bbFile);
 							if (!$matches[3])
 							{
-								$bbcode = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
+								$code_text = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
 							}
 							break;
 
@@ -1408,7 +1410,7 @@ class e_parse
 
 
 			// Do the 'normal' processing - in principle, as previously - but think about the order.
-			if ($proc_funcs)
+			if ($proc_funcs && !empty($full_text)) // some more speed
 			{
 
 				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
@@ -1961,7 +1963,7 @@ class e_parse
 				}
 				$search[] = "{USERID}";
 			}
-			
+
 			// current THEME
 			/*if(!defined('THEME'))
 			{
@@ -2179,9 +2181,13 @@ class e_parse
 
 	public function toEmail($text, $posted = "", $mods = "parse_sc, no_make_clickable")
 	{
-		if($posted === TRUE && MAGIC_QUOTES_GPC)
+		if ($posted === TRUE)
 		{
-			$text = stripslashes($text);
+			if (MAGIC_QUOTES_GPC)
+			{
+				$text = stripslashes($text);
+			}
+			$text = preg_replace('#\[(php)#i', '&#91;\\1', $text);
 		}
 
 		$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text, "full") : $text;
