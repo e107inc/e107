@@ -86,7 +86,7 @@ class e_bbcode
 			{
 				$this->preProcess = TRUE;
 				unset($strip_array[0]);
-				if (count($strip_array) == 0) 
+				if (count($strip_array) == 0)
 				{
 					$bbStrip = FALSE;
 				}
@@ -94,7 +94,7 @@ class e_bbcode
 				{
 					$bbStrip = TRUE;
 				}
-				
+
 			}
 		}
 		$pattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
@@ -119,7 +119,7 @@ class e_bbcode
 					$bbparam = (isset($matches[5])) ? $matches[5] : '';
 					$bbword = (isset($matches[2])) ? $matches[2] : '';
 					if($cont[1] != '/')
-					{ 
+					{
 						$bbsep = varset($matches[4]);
 					}
 					if ($force_lower) $bbword = strtolower($bbword);
@@ -270,12 +270,16 @@ class e_bbcode
 		{
 			return;
 		}
-			
-		$input = strtolower($input);
-		$search = array('document.cookie','location.href','onload');
-		return str_replace($search,"",$input);
+
+		// filter is breaking bbcodes with - input is modified with strtolower()
+		//$input = strtolower($input);
+		//$search = array('document.cookie','location.href','onload');
+		//return str_replace($search,"",$input);
+
+		// a quick fix attempt - basic filtering
+		return preg_replace('/(document\.cookie|location\.href|onload)/i', '', $input);
 	}
-	
+
 
 	/**
 	 * Invoke the actual bbcode handler
@@ -285,7 +289,7 @@ class e_bbcode
 	 * @param string $param2 - any text after '=' for the closing code
 	 * @param string $sep - character separating bbcode name and any parameters
 	 * @param string $full_text - the 'raw' text between, and including, the opening and closing bbcode tags
-	 * @return 
+	 * @return
 	 */
 	function proc_bbcode($code, $param1='',$code_text_par='', $param2='', $sep='', $full_text='')
 	{
