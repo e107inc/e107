@@ -28,13 +28,14 @@ TODO:
 	1.	Good way of reading categories
 	2. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
 	3. Check whether $prop should be calculated better
+	4. Get rid of global on $pref
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');	
-register_shortcode('event_calendar_shortcodes', true);
-initShortcodeClass('event_calendar_shortcodes');
+//register_shortcode('event_calendar_shortcodes', true);
+//initShortcodeClass('event_calendar_shortcodes');
 
 /*
 Navigation Shortcodes
@@ -157,17 +158,17 @@ class event_calendar_shortcodes
 {
 	protected $e107;
 
-	public 	$event;			// Current event being displayed
-	public 	$ecalClass;		// Pointer to event calendar class
-	public	$headerDay = 0;	// Day number for header
-	public	$todayStart;	// Start of current day
-	public	$curDay;		// Current day of month (1..31)
-	public	$numEvents = 0;	// Number of events to be expected in certain list formats
-	public	$catFilter = '*';	// Event category filter
+	public 	$event;						// Current event being displayed
+	public 	$ecalClass;					// Pointer to event calendar class
+	public	$headerDay = 0;				// Day number for header
+	public	$todayStart;				// Start of current day
+	public	$curDay;					// Current day of month (1..31)
+	public	$numEvents = 0;				// Number of events to be expected in certain list formats
+	public	$catFilter = '*';			// Event category filter
 	public	$eventDisplayCodes = '';	// Set to be an array of options
-	public	$ecOutputType = '';	// Used by printing routines
-	public	$changeFlags = array();	// Used by printing routines
-	public	$printVars = array();	// USed by printing routine
+	public	$ecOutputType = '';			// Used by printing routines
+	public	$changeFlags = array();		// Used by printing routines
+	public	$printVars = array();		// USed by printing routine
 
 	private $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, 
 						EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);		// 'Long' month names
@@ -371,7 +372,7 @@ class event_calendar_shortcodes
 		global $pref;
 		if ($this->ourDB == NULL)
 		{
-			$this->ourDB = new db;
+			$this->ourDB = new db;			// @todo use new method
 		}
 		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
 		$ret = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
@@ -409,14 +410,14 @@ class event_calendar_shortcodes
 	{
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_allday($parm= '')
 	{
 		if ($this->event['event_allday']) return '';
 		if (trim($parm) == '') return '';
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_sameday($parm= '')
@@ -424,7 +425,7 @@ class event_calendar_shortcodes
 		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_sameday($parm= '')
@@ -432,7 +433,7 @@ class event_calendar_shortcodes
 		if (intval($this->event['event_end']/86400) != intval($this->event['event_start']/86400)) return '';
 		if (!$this->event['event_allday']) return '';
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 
@@ -845,7 +846,7 @@ class event_calendar_shortcodes
 		if ($this->event['event_allday']) $et += 2;
 		if (is_array($this->eventDisplayCodes))
 		{
-			return $this->e107->tp->parseTemplate($this->eventDisplayCodes[$et]);
+			return $this->e107->tp->parseTemplate($this->eventDisplayCodes[$et], FALSE, $this);
 		}
 		return '--** No template set **--';
 	}
@@ -1063,42 +1064,42 @@ class event_calendar_shortcodes
 	{
 		if ($this->printVars['ot'] != 'print') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_print($parm = '')
 	{
 		if ($this->printVars['ot'] == 'print') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_display($parm = '')
 	{
 		if ($this->printVars['ot'] != 'display') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_display($parm = '')
 	{
 		if ($this->printVars['ot'] == 'display') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_if_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] != 'pdf') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 	public function sc_ec_ifnot_pdf($parm = '')
 	{
 		if ($this->printVars['ot'] == 'pdf') return;
 		if (trim($parm) == '') return;
-		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+		return $this->e107->tp->parseTemplate('{'.$parm.'}', FALSE, $this);
 	}
 
 }	// END - shortcode class

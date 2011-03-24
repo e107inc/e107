@@ -62,8 +62,11 @@ global $ecal_class;
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 $cal_super = $ecal_class->cal_super;
 
-e107::getScParser();
+
+//e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+$calSc = new event_calendar_shortcodes();
+
 require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 
@@ -71,8 +74,6 @@ $cat_filter = intval(varset($_POST['event_cat_ids'],-1));
 if ($cat_filter == -1) $cat_filter = '*';
 $mult_count = 0;
 
-
-// $e_wysiwyg = $pref['eventpost_editmode'] == 2 ? 'ne_event' : '';
 
 
 // Array links db field names to internal variables
@@ -759,7 +760,7 @@ if ($action == 'ne' || $action == 'ed')
     }
     else
     {
-        header("location:".e_PLUGIN."calendar_menu/event.php");
+        header('location:'.e_PLUGIN.'calendar_menu/event.php');
         exit;
     }
 }   // End of "Enter New Event"
@@ -771,17 +772,17 @@ if ($action == 'ne' || $action == 'ed')
 //-----------------------------------------------
 if (is_readable(THEME.'calendar_template.php')) 
 {  // Has to be require
-  require(THEME.'calendar_template.php');
+	require(THEME.'calendar_template.php');
 }
 else 
 {
-  require(e_PLUGIN.'calendar_menu/calendar_template.php');
+	require(e_PLUGIN.'calendar_menu/calendar_template.php');
 }
 
-setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);					// Give shortcodes a pointer to calendar class
-callScFunc('event_calendar_shortcodes','setCalDate', $dateArray);					// Tell shortcodes the date to display
-setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);					// Category filter
-setScVar('event_calendar_shortcodes', 'eventDisplayCodes', $EVENT_EVENT_DATETIME);	// Templates for different event types
+$calSc->ecalClass = &$ecal_class;					// Give shortcodes a pointer to calendar class
+$calSc->setCalDate($dateArray);					// Tell shortcodes the date to display
+$calSc->catFilter = $cat_filter;					// Category filter
+$calSc->eventDisplayCodes = $EVENT_EVENT_DATETIME;	// Templates for different event types
 
 $monthstart		= mktime(0, 0, 0, $month, 1, $year);
 $monthend		= mktime(0, 0, 0, $month + 1, 1, $year) -1 ;
@@ -792,10 +793,10 @@ $nowyear	= $ecal_class->cal_date['year'];
 
 $text2 = "";
 // time switch buttons
-$text2 .= $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, TRUE);
+$text2 .= $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
 
 // navigation buttons
-$text2 .= $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, TRUE);
+$text2 .= $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
 
 
 // ****** CAUTION - the category dropdown also used $sql object - take care to avoid interference!
@@ -830,10 +831,10 @@ if ($ds == 'event')
 		}
     }
     $next10_start = $thisEvent['event_start'] +1;
-	setScVar('event_calendar_shortcodes', 'event', $thisEvent);			// Give shortcodes the event data
-	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_START, TRUE);
-	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, TRUE);
-	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_END, TRUE);
+	$calSc->event = $thisEvent;			// Give shortcodes the event data
+	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_START, FALSE, $calSc);
+	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
+	$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calSc);
 }
 else
 {
@@ -881,16 +882,14 @@ else
 	// display event list for current month
 	if(count($tim_arr))
 	{
-		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_START, TRUE);
+		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calSc);
 		foreach ($tim_arr as $tim => $ptr)
 		{
 			$ev_list[$ptr]['event_start'] = $tim;
-			//	  $text2 .= show_event($ev_list[$ptr]);
-			//$thisevent = $ev_list[$ptr];
-			setScVar('event_calendar_shortcodes', 'event', $ev_list[$ptr]);			// Give shortcodes the event data
-			$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, TRUE);
+			$calSc->event = $ev_list[$ptr];			// Give shortcodes the event data
+			$text2 .= $e107->tp->parseTemplate($EVENT_EVENT_TABLE, FALSE, $calSc);
 		}
-		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_END, TRUE);
+		$text2 .= $e107->tp->parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calSc);
 	}
 }
 
@@ -904,25 +903,25 @@ $ev_list = $ecal_class->get_n_events(10, $next10_start, $next10_start+86400000, 
 $num = count($ev_list);
 if ($num != 0)
 {
-	setScVar('event_calendar_shortcodes', 'numEvents', $num);			// Give shortcodes the number of events to expect
+	$calSc->numEvents = $num;			// Give shortcodes the number of events to expect
 	$archive_events = '';
 	foreach ($ev_list as $thisEvent)
 	{
-		setScVar('event_calendar_shortcodes', 'event', $thisEvent);			// Give shortcodes the event data
-		$archive_events .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE, TRUE);
+		$calSc->event = $thisEvent;			// Give shortcodes the event data
+		$archive_events .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calSc);
 	}
 }
 else
 {
-	$archive_events = $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, TRUE);
+	$archive_events = $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calSc);
 }
 
-$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_START, TRUE);
+$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calSc);
 $text2 .= $archive_events;
-$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_END, TRUE);
+$text2 .= $e107->tp->parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calSc);
 
 
-$e107->ns->tablerender($e107->tp->ParseTemplate('{EC_EVENT_PAGE_TITLE}'), $text2);
+$e107->ns->tablerender($e107->tp->ParseTemplate('{EC_EVENT_PAGE_TITLE}', FALSE, $calSc), $text2);
 
 // Claim back memory no longer required
 unset($ev_list);

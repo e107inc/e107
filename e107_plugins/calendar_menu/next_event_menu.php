@@ -28,7 +28,7 @@ $e107 = e107::getInstance();
 if (!$e107->isInstalled('calendar_menu')) return '';
 
 
-if (!isset($scal_class) || !is_object($ecal_class)) 
+if (!isset($ecal_class) || !is_object($ecal_class)) 
 {
 	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 	$ecal_class = new ecal_class;
@@ -45,8 +45,9 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 
-e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+$calSc = new event_calendar_shortcodes();
+
 if (is_readable(THEME.'calendar_template.php')) 
 {  // Has to be require
 	require(THEME.'calendar_template.php');
@@ -72,9 +73,7 @@ $end_time = $start_time + (86400 * $days_ahead) - 1;
 
 $cal_text = '';
 
-setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
-//callScFunc('event_calendar_shortcodes','setCalDate', $dateArray);			// Tell shortcodes the date to display
-//setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
+$calSc->ecalClass = &$ecal_class;			// Give shortcodes a pointer to calendar class
 
 $ev_list = $ecal_class->get_n_events($show_count, $start_time, $end_time, varset($pref['eventpost_fe_set'],FALSE), $show_recurring, 
 						'event_id,event_start, event_thread, event_title, event_recurring, event_allday, event_category', 'event_cat_icon');
@@ -85,9 +84,9 @@ if ($cal_totev > 0)
 	foreach ($ev_list as $thisEvent)
 	{
 		$cal_totev --;    // Can use this to modify inter-event gap
-		setScVar('event_calendar_shortcodes', 'numEvents', $cal_totev);				// Number of events to display
-		setScVar('event_calendar_shortcodes', 'event', $thisEvent);					// Give shortcodes the event data
-		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_FE_LINE,TRUE);
+		$calSc->numEvents = $cal_totev;				// Number of events to display
+		$calSc->event = $thisEvent;					// Give shortcodes the event data
+		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_FE_LINE,FALSE, $calSc);
 	}
 }
 else

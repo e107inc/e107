@@ -45,7 +45,7 @@ function setScVar($className, $scVarName, $value)
 }
 
 /**
- * FIXME: to be removed
+ * FIXME: to be removed (once event calendar changed)
  */
 function callScFunc($className, $scFuncName, $param = '')
 {
@@ -64,7 +64,7 @@ class e_parse_shortcode
 {
 	protected $scList = array(); // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
 	protected $parseSCFiles; // True if individual shortcode files are to be used
-	protected $addedCodes; // Apparently not used
+	protected $addedCodes = NULL; 		// Pointer to a class or array to be used on a single call
 	protected $registered_codes = array(); // Shortcodes added by plugins TODO make it private
 	protected $scClasses = array(); // Batch shortcode classes - TODO make it private
 	protected $scOverride = array(); // Array of codes found in override/ dir
@@ -487,43 +487,71 @@ class e_parse_shortcode
 		return in_array($code, $this->scOverride);
 	}
 
+
+
+
+	/**
+	 *	Parse the shortcodes in some text
+	 *
+	 *	@param string $text - the text containing the shortcodes
+	 *	@param boolean $useSCFiles - if TRUE, all currently registered shortcodes can be used.
+	 *								- if FALSE, only those passed are used.
+	 *	@param array|object|null $extraCodes - if passed, defines additional shortcodes:
+	 *			- if an object or an array, the shortcodes defined by the class of the object are available for this parsing only.
+	 *	@param array|null $eVars - if defined, details values to be substituted for shortcodes. Array key (lower case) is shortcode name (upper case)
+	 *
+	 *	@return string with shortcodes substituted
+	 */
 	function parseCodes($text, $useSCFiles = true, $extraCodes = null, $eVars = null)
 	{
 		$saveParseSCFiles = $this->parseSCFiles; // In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 		$saveVars = $this->eVars; // In case of nested call
+		$saveCodes = $this->addedCodes;
 		$this->eVars = $eVars;
+		$this->addedCodes = NULL;
 
 		//object support
 		if (is_object($extraCodes))
 		{
+			$this->addedCodes = &$extraCodes;
+			/*
 			$classname = get_class($extraCodes);
 
 			//register once
 			if (!$this->isScClass($classname))
 			{
-				$this->registerShortcode($extraCodes, true);
+				$this->registerShortcode($extraCodes, true);		// Register class if not already registered
 			}
 
 			//always overwrite object
 			$this->scClasses[$classname] = $extraCodes;
+			*/
 
 			// auto-register eVars if possible - call it manually?
 			// $this->callScFunc($classname, 'setParserVars', $this->eVars);
 		}
 		elseif (is_array($extraCodes))
 		{
+			$this->addedCodes = &$extraCodes;
+			/*
 			foreach ($extraCodes as $sc => $code)
 			{
 				$this->scList[$sc] = $code;
 			}
+			*/
 		}
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
+		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
 		return $ret;
 	}
 
+
+	/**
+	 *		Callback looks up and substitutes a shortcode
+	 */
 	function doCode($matches)
 	{
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm, $sql;
@@ -583,8 +611,20 @@ class e_parse_shortcode
 
 		$scCode = '';
 		$scFile = '';
+		$ret = '';
+		$_method = 'sc_'.strtolower($code);
+		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method))
+		{
+			//It is class-based batch shortcode.  Class already loaded; call the method
+			$ret = $this->addedCodes->$_method($parm, $sc_mode);
+		}
+		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes))
+		{
+			// Its array-based shortcode. Load the code for evaluation later.
+			$scCode = $this->addedCodes[$code];
+		}
 		// Check to see if we've already loaded the .sc file contents
-		if (array_key_exists($code, $this->scList))
+		elseif (array_key_exists($code, $this->scList))
 		{
 			$scCode = $this->scList[$code];
 		}
@@ -717,7 +757,7 @@ class e_parse_shortcode
 			{
 				//	echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_CORE.'shortcodes/single/', '', $scFile).'<br />' : '';
 				//	echo "<br />sc= <b>$code</b>";
-				}
+			}
 		}
 
 		if ($scCode)
