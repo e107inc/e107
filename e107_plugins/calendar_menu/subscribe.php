@@ -25,7 +25,12 @@
 require_once('../../class2.php');
 $e107 = e107::getInstance();
 
-if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
+if (!$e107->isInstalled('calendar_menu'))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit();
+}
+
 include_lan(e_PLUGIN .'calendar_menu/languages/'.e_LANGUAGE.'.php');
 global $pref;
 define('PAGE_NAME', EC_LAN_80);

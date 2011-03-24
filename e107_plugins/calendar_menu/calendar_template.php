@@ -145,20 +145,20 @@ $sc_style['EC_EVENT_THREAD']['post'] = "</span></td></tr>\n";
 $sc_style['EC_EVENT_CATEGORY']['pre'] = "<b>".EC_LAN_30."</b> ";
 $sc_style['EC_EVENT_CATEGORY']['post'] = "&nbsp;";
 
-$sc_style['EC_EVENT_DATE_START']['pre'] = "";
-$sc_style['EC_EVENT_DATE_START']['post'] = "";
+$sc_style['EC_EVENT_DATE_START']['pre'] = '';
+$sc_style['EC_EVENT_DATE_START']['post'] = '';
 
-$sc_style['EC_EVENT_TIME_START']['pre'] = "";
-$sc_style['EC_EVENT_TIME_START']['post'] = "";
+$sc_style['EC_EVENT_TIME_START']['pre'] = '';
+$sc_style['EC_EVENT_TIME_START']['post'] = '';
 
-$sc_style['EC_EVENT_DATE_END']['pre'] = "";
-$sc_style['EC_EVENT_DATE_END']['post'] = "";
+$sc_style['EC_EVENT_DATE_END']['pre'] = '';
+$sc_style['EC_EVENT_DATE_END']['post'] = '';
 
-$sc_style['EC_EVENT_TIME_END']['pre'] = "";
-$sc_style['EC_EVENT_TIME_END']['post'] = "";
+$sc_style['EC_EVENT_TIME_END']['pre'] = '';
+$sc_style['EC_EVENT_TIME_END']['post'] = '';
 
 $sc_style['EC_EVENT_EVENT_DATE_TIME']['pre'] =  "<b>".EC_LAN_29."</b> ";
-$sc_style['EC_EVENT_EVENT_DATE_TIME']['post'] = "";
+$sc_style['EC_EVENT_EVENT_DATE_TIME']['post'] = '';
 
 $sc_style['EC_IFNOT_ALLDAY']['pre'] = EC_LAN_144;
 $sc_style['EC_IFNOT_ALLDAY']['post'] = "";

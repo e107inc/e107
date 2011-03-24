@@ -47,8 +47,9 @@ if (isset($_POST['printlists']))
 	exit();
 } 
 
-e107::getScParser();
+//e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+$calSc = new event_calendar_shortcodes();
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 define('PAGE_NAME', EC_LAN_121);
@@ -96,9 +97,14 @@ $nowday		= $ecal_class->cal_date['mday'];
 $monthstart	= mktime(0, 0, 0, $month, 1, $year);			// Start of month to be shown
 $monthend	= mktime(0, 0, 0, $month + 1, 1, $year) - 1;	// End of month to be shown
 
-setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
-callScFunc('event_calendar_shortcodes','setCalDate', $dateArray);			// Tell shortcodes the date to display
-setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
+
+$calSc->ecalClass = &$ecal_class;
+$calSc->setCalDate($dateArray);
+$calSc->catFilter = $cat_filter;
+
+//setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
+//callScFunc('event_calendar_shortcodes','setCalDate', $dateArray);			// Tell shortcodes the date to display
+//setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
 
 
 //-------------------------------------------------
@@ -106,10 +112,10 @@ setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category f
 //-------------------------------------------------
 
 // time switch buttons
-$cal_text = $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, TRUE);
+$cal_text = $e107->tp->parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calSc);
 
 // navigation buttons
-$nav_text = $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, TRUE);
+$nav_text = $e107->tp->parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calSc);
 
 // We'll need virtually all of the event-related fields, so get them regardless. Just cut back on category fields
 $ev_list = $ecal_class->get_events($monthstart, $monthend, FALSE, $cat_filter, TRUE, '*', 'event_cat_name,event_cat_icon');
@@ -172,16 +178,17 @@ $start		= $monthstart;
 $numberdays	= date('t', $start); // number of days in this month
 
 $text = "";
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_START, TRUE);
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_START, TRUE);
+$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calSc);
+$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calSc);
 
 // Display the column headers
 for ($i = 0; $i < 7; $i++)
 {
-	setScVar('event_calendar_shortcodes', 'headerDay', $ecal_class->day_offset_string($i));
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER, TRUE);
+	$calSc->headerDay = $ecal_class->day_offset_string($i);
+	//setScVar('event_calendar_shortcodes', 'headerDay', $ecal_class->day_offset_string($i));
+	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER, FALSE, $calSc);
 } 
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, TRUE);
+$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calSc);
 
 
 // Calculate number of days to skip before 'real' days on first line of calendar
@@ -190,30 +197,32 @@ if ($firstdayoffset < 0) $firstdayoffset+= 7;
 
 for ($i=0; $i<$firstdayoffset; $i++) 
 {
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, TRUE);
+	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
 }
 
 $loop = $firstdayoffset;
 
 for ($c = 1; $c <= $numberdays; $c++)
 {	// Loop through the number of days in this month
-	setScVar('event_calendar_shortcodes', 'todayStart', $start);			// Start of current day
-	setScVar('event_calendar_shortcodes', 'curDay', $c);					// Current day of month
+	$calSc->todayStart = $start;			// Start of current day
+	$calSc->curDay = $c;					// Current day of month
+	//setScVar('event_calendar_shortcodes', 'todayStart', $start);			// Start of current day
+	//setScVar('event_calendar_shortcodes', 'curDay', $c);					// Current day of month
 
 	$got_ev = array_key_exists($c, $events) && is_array($events[$c]) && count($events[$c]) > 0;		// Flag set if events on this day
   
    // Highlight the current day.
     if ($nowday == $c && $month == $nowmonth && $year == $nowyear)
     {      	//today
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, TRUE);
+		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, FALSE, $calSc);
 	}
 	elseif ($got_ev)
 	{	//day has events
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, TRUE);
+		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, FALSE, $calSc);
     } 
     else
     {   // no events and not today
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EMPTY, TRUE);
+		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_EMPTY, FALSE, $calSc);
     } 
 	if ($got_ev)
 	{
@@ -231,11 +240,12 @@ for ($c = 1; $c <= $numberdays; $c++)
 		  $ev['imagesize'] = '4';
 		  $ev['fulltopic'] = FALSE;
 		}
-		setScVar('event_calendar_shortcodes', 'event', $ev);			// Give shortcodes the event data
-		$text .= $e107->tp->parseTemplate($CALENDAR_SHOWEVENT, TRUE);
+		//setScVar('event_calendar_shortcodes', 'event', $ev);			// Give shortcodes the event data
+		$calSc->event = $ev;
+		$text .= $e107->tp->parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calSc);
 	  } 
 	}
-	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_END, TRUE);
+	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calSc);
 
 	$loop++;
 	if ($loop == 7)
@@ -243,7 +253,7 @@ for ($c = 1; $c <= $numberdays; $c++)
 		$loop = 0;
 		if($c != $numberdays)
 		{
-			$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, TRUE);
+			$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calSc);
 		}
 	}
 	$start += 86400;
@@ -254,10 +264,10 @@ if($loop!=0)
 {
 	for ($c=$loop; $c<7; $c++) 
 	{
-		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, TRUE);
+		$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calSc);
 	}
 }
-$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_END, TRUE);
+$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calSc);
 
 $e107->ns->tablerender(EC_LAN_79, $cal_text . $nav_text . $text);
 
