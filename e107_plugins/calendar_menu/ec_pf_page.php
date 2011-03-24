@@ -47,9 +47,9 @@ require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 $ecal_class = new ecal_class;
 
 
-e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
-setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
+$calSc = new event_calendar_shortcodes();
+$calSc->ecalClass = &$ecal_class;			// Give shortcodes a pointer to calendar class
 
 $message = '';
 unset($ec_qs);
@@ -125,7 +125,7 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_155."</td>
 	<td class='forumheader3' style='text_align:center'>";
-	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}',TRUE);
+	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}', FALSE, $calSc);
 	$cal_text .= "</td>
 	</tr>";
 	if (isset($EVENT_CAL_PDF_NAMES) && is_array($EVENT_CAL_PDF_NAMES) && (count($EVENT_CAL_PDF_NAMES) > 1))
@@ -188,8 +188,7 @@ if ($message !== "")
   exit;
 }
 
-setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
-setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
+$calSc->catFilter = $cat_filter;			// Category filter
 
 $ec_output_type = $ec_qs[4];
 if (isset($ec_qs[5])) $ec_list_title = $ec_qs[5]; else $ec_list_title = EC_LAN_163;
@@ -266,8 +265,8 @@ global $ec_start_date, $ec_end_date, $ec_pdf_options;
 global $ec_current_month, $thisevent_start_date, $thisevent_end_date ;
 */
 
-setScVar('event_calendar_shortcodes', 'printVars', array('lt' => $ec_list_title, 'cat' => $ec_category_list, 'ot' => $ec_output_type,
-				'sd' => $ec_start_date, 'ed' => $ec_end_date));					// Give shortcodes the event data
+$calSc->printVars = array('lt' => $ec_list_title, 'cat' => $ec_category_list, 'ot' => $ec_output_type,
+				'sd' => $ec_start_date, 'ed' => $ec_end_date);					// Give shortcodes the event data
 
 $ec_last_year = 0;
 $ec_last_month = 0;
@@ -286,7 +285,7 @@ if ($cal_totev > 0)
 	// If printing, wrap in a form so the button works 
 	if ($ec_output_type == 'print') $cal_text .= "<form action=''>\n";
 	// Add header
-	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template],TRUE);
+	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template], FALSE, $calSc);
 	// Debug code
 	//  echo "Start date: ".strftime("%d-%m-%Y %H:%M:%S",$ec_start_date)."<br />";
 	//  echo "End date:   ".strftime("%d-%m-%Y %H:%M:%S",$ec_end_date)."<br />";
@@ -308,10 +307,10 @@ if ($cal_totev > 0)
 		$ec_day_change   = ($ec_last_day != $thisevent_start_date['mday']);
 
 		$cal_totev --;    // Can use this to modify inter-event gap
-		setScVar('event_calendar_shortcodes', 'numEvents', $cal_totev);				// Number of events to display
-		setScVar('event_calendar_shortcodes', 'event', $thisevent);					// Give shortcodes the event data
-		setScVar('event_calendar_shortcodes', 'changeFlags', array('yc' => $ec_year_change, 'mc' => $ec_month_change, 'dc' => $ec_day_change));					// Give shortcodes the event data
-		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template],TRUE);
+		$calSc->numEvents = $cal_totev;				// Number of events to display
+		$calSc->event = $thisevent;					// Give shortcodes the event data
+		$calSc->changeFlags = array('yc' => $ec_year_change, 'mc' => $ec_month_change, 'dc' => $ec_day_change);					// Give shortcodes the event data
+		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template], FALSE, $calSc);
 		  
 		$ec_last_year = $thisevent_start_date['year'];
 		$ec_last_month = $thisevent_start_date['mon'];
@@ -319,7 +318,7 @@ if ($cal_totev > 0)
 	}
 
 // Add footer
-  $cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template],TRUE);
+  $cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template], FALSE, $calSc);
   if ($ec_output_type == 'print') $cal_text .= "</form>\n";
 }
 else
