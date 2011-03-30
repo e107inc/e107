@@ -17,43 +17,66 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("4")) {
+if (!getperms("4")) 
+{
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit();
 }
 
-if (!e_QUERY) {
-  	header("location:".e_ADMIN."admin.php");
-	exit;
-} else {
+$id = 0;
+if (e_QUERY) 
+{
     $qs = explode(".", e_QUERY);
-	$id = $qs[0];
+	$id = intval($qs[0]);
+}
+if ($id == 0) 
+{
+  	header("location:".e_ADMIN."admin.php");
+	exit();
 }
 
-$sql->db_Select("userclass_classes");
+$e_sub_cat = 'userclass';
+
+require_once('auth.php');
+
+// Get class membership for user now - we may need to udpate it
+$sql->db_Select('user', '*', 'user_id='.$id);
+$row = $sql->db_Fetch();
+$currentClasses = array_flip(explode(',', $row['user_class']));			// Current class membership for user (class ID as key)
+
+
+$sql->db_Select('userclass_classes');
 $c = 0;
-while ($row = $sql->db_Fetch()) {
-	if (getperms("0") || check_class($row['userclass_editclass'])) {
-		$class[$c][0] = $row['userclass_id'];
-		$class[$c][1] = $row['userclass_name'];
-		$class[$c][2] = $row['userclass_description'];
+$class = array();
+while ($crow = $sql->db_Fetch()) 
+{
+	if (getperms("0") || check_class($crow['userclass_editclass'])) 
+	{
+		$class[$c][0] = $crow['userclass_id'];
+		$class[$c][1] = $crow['userclass_name'];
+		$class[$c][2] = $crow['userclass_description'];
 		$c++;
+		if (isset($currentClasses[$crow['userclass_id']])) unset($currentClasses[$crow['userclass_id']]);
 	}
 }
+
 
 if (isset($_POST['updateclass'])) 
 {
 	$remuser = TRUE;
 	$classcount = count($_POST['userclass'])-1;
-	for($a = 0; $a <= $classcount; $a++) {
-		check_allowed($_POST['userclass'][$a]);
-		$svar .= $_POST['userclass'][$a];
-		$svar .= ($a < $classcount ) ? "," : "";
+	$currentClasses = array_flip($currentClasses);		// Back to having class number in data value
+	for($a = 0; $a <= $classcount; $a++) 
+	{
+		$tmp = intval($_POST['userclass'][$a]);
+		check_allowed($tmp);
+		$currentClasses[] = $tmp;
 	}
+	$svar = implode(',', $currentClasses);
+	$row['user_class'] = $svar;					// Get updated list back into user data
 	$sql->db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
-        $message = UCSLAN_9;
-	$sql->db_Select("user", "*", "user_id='$id' ");
-	$row = $sql->db_Fetch();
+	$message = UCSLAN_9;
+
 	if ($_POST['notifyuser']) 
 	{
 		$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
@@ -74,19 +97,13 @@ if (isset($_POST['updateclass']))
 	}
 
 
-	 header("location: ".$_POST['adminreturn']);
-	 echo "location redirect failed.";
-     exit;
+	header("location: ".$_POST['adminreturn']);
+	echo "location redirect failed.";
+	exit();
 }
 
 
-$e_sub_cat = 'userclass';
-require_once("auth.php");
 
-
-
-$sql->db_Select("user", "*", "user_id='$id' ");
-$row = $sql->db_Fetch();
 
 $caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
 
@@ -128,15 +145,18 @@ require_once("footer.php");
 
 // ----------------------------------------------------------
 
-function check_allowed($class_id) {
+function check_allowed($class_id) 
+{
 	global $sql;
-	if (!$sql->db_Select("userclass_classes", "*", "userclass_id = {$class_id}")) {
+	if (!$sql->db_Select("userclass_classes", "*", "userclass_id = {$class_id}")) 
+	{
 		header("location:".SITEURL);
 		exit;
 	}
 	$row = $sql->db_Fetch();
 	extract($row);
-	if (!getperms("0") && !check_class($userclass_editclass)) {
+	if (!getperms("0") && !check_class($userclass_editclass)) 
+	{
 		header("location:".SITEURL);
 		exit;
 	}
