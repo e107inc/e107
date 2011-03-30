@@ -187,7 +187,7 @@ class wysiwyg
 			'inline_styles'						=> 'true',
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'false',
-			'forced_root_block'					=> '',
+			'forced_root_block'					=> 'div', // div required for styling. 
 			'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
 			'convert_fonts_to_styles'			=> 'true',
