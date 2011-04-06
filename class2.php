@@ -78,7 +78,7 @@ if($register_globals == true){
 }
 
 
-if(($pos = stripos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad URLs to the correct one.
+if(($pos = strpos(strtolower($_SERVER['PHP_SELF']), ".php/")) !== false) // redirect bad URLs to the correct one.
 {
 	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
 	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url."?".$_SERVER['QUERY_STRING'] : $new_url;
@@ -86,7 +86,7 @@ if(($pos = stripos($_SERVER['PHP_SELF'], ".php/")) !== false) // redirect bad UR
 	exit();
 }
 // If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+$_SERVER['PHP_SELF'] = (($pos = strpos(strtolower($_SERVER['PHP_SELF']), ".php")) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 unset($pos);
 //
 // D: Setup PHP error handling
