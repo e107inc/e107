@@ -182,7 +182,9 @@ function share($newfile)
 	<br />Bom Errors : ".$_SESSION['lancheck_'.$_POST['language']]['bom']."
 	<br />UTF Errors : ".$_SESSION['lancheck_'.$_POST['language']]['utf']."
 	<br />Definition Errors : ".$_SESSION['lancheck_'.$_POST['language']]['def']."
-	<br />Total Errors: ".$_SESSION['lancheck_'.$_POST['language']]['total'];
+	<br />Total Errors: ".$_SESSION['lancheck_'.$_POST['language']]['total']."
+	<br />
+	<br />XML file: ".$_SESSION['lancheck_'.$_POST['language']]['xml'];
 	
 	
 	
@@ -735,12 +737,17 @@ function zip_up_lang($language)
 <e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
 <author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
 </e107Language>';
-			file_put_contents($fileName,$fileData);
-			$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
+
+			if(file_put_contents($fileName,$fileData))
+			{
+				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');				
+				$_SESSION['lancheck_'.$language]['xml'] = "Yes";
+			}
 			@unlink($fileName);	
 		}
 		else
 		{
+			$_SESSION['lancheck_'.$language]['xml'] = "No";
 			// echo "NO CONTRIBUTE";
 		}
 
