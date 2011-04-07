@@ -1,1 +1,3 @@
-mod_gzip_on Off
+<FilesMatch \.php$>
+    SetEnv no-gzip 1
+</FilesMatch>
