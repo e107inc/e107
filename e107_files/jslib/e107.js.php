@@ -1707,6 +1707,21 @@ var addtext = function(text, emote) {
     e107Helper.BB.insert(text, emote); return;
 }
 
+// Prompt for user input value
+var addinput = function(text) {
+
+	var rep = text.match(/=([a-z0-9, ]*)]/);	
+	var val = prompt(rep[1]);
+			
+	if(!val)
+	{
+		return;
+	}
+	var newtext = text.replace(rep[1], val);
+	emote = '';
+    e107Helper.BB.insert(newtext, emote); return;
+}
+
 //@see e107Helper.BB#help
 var help = function(help,tagid) {
     e107Helper.BB.help_old(help, tagid, true);

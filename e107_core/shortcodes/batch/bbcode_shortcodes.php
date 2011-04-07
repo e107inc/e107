@@ -53,7 +53,7 @@ class bbcode_shortcodes
 		// Format: $bbcode['UNIQUE_NAME'] = array(ONCLICK_FUNC, ONCLICK_VAR, HELPTEXT, ICON, INCLUDE_FUNC, INCLUDE_FUNCTION_VAR);
 
 		$bbcode['newpage'] = array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
-		$bbcode['link'] = array($bbcode_func,"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
+		$bbcode['link'] = array('addinput',"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
 		$bbcode['b'] = array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
 		$bbcode['i'] = array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
 		$bbcode['u'] = array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
