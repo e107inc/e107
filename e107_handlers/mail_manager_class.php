@@ -733,6 +733,7 @@ class e107MailManager
 			}
 			if ($email['mail_notify_complete'] & 2)
 			{	// Do e107 notify
+				require_once(e_HANDLER."notify_class.php");
 				notify_maildone($message);
 			}
 			e107::getEvent()->trigger('maildone', $email);

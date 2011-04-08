@@ -132,6 +132,7 @@ class mailoutAdminClass extends e107MailManager
 			'maildelete' => LAN_DELETE
 			),
 		'pending' => array(
+			'mailsendimmediately' => "Send Immediately",
 			'mailhold' => LAN_MAILOUT_159,
 			'mailcancel' => LAN_MAILOUT_160,
 			'mailtargets' => LAN_MAILOUT_181
@@ -928,8 +929,9 @@ class mailoutAdminClass extends e107MailManager
 		{
 			$text .= $frm->admin_button('save_email',LAN_SAVE);
 		}
-
-		$text .= $frm->admin_button('send_email',LAN_MAILOUT_08);
+	
+		
+		$text .= $frm->admin_button('send_email',LAN_MAILOUT_08); // 
 
 		$text .= "</div>
 
@@ -1171,6 +1173,7 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$frm = e107::getForm();
 	
 		
 		if ($fromHold)
@@ -1271,12 +1274,19 @@ class mailoutAdminClass extends e107MailManager
 
 		$text .= $this->makeAdvancedOptions(TRUE);			// Show the table of advanced options
 
-		$text .= "<div class='buttons-bar center'>
-			<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />";
+		$text .= "<div class='buttons-bar center'>";
+		
+		$text .= $frm->admin_button('email_sendnow',"Send Now");
+		$text .= $frm->admin_button('email_send',"Send Later");
+		
+		// $text .= "<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />";
+		
 		if (!$fromHold)
 		{
-			$text .= "&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />
-			&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
+			$text .= $frm->admin_button('email_hold',LAN_HOLD);
+			$text .= $frm->admin_button('email_cancel',LAN_CANCEL);
+			// $text .= "&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />";
+			// $text .= "&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
 		}
 		$text .= "</div>
 		</form>

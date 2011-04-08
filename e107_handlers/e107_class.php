@@ -487,7 +487,8 @@ class e107
 	function getFolder($for)
 	{
 		$key = strtoupper($for).'_DIRECTORY';
-		return (isset($this->e107_dirs[$key]) ? $this->e107_dirs[$key] : '');
+		$self = self::getInstance();
+		return (isset($self->e107_dirs[$key]) ? $self->e107_dirs[$key] : '');
 	}
 
 	/**

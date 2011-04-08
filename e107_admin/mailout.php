@@ -72,7 +72,7 @@ Valid subparameters (where required):
 	$_GET['m'] - id of mail info in db
 	$_GET['t'] - id of target info in db
 */
-
+header('Content-Encoding: none'); // turn off gzip. 
 require_once('../class2.php');
 
 if (!getperms('W'))
@@ -83,6 +83,12 @@ if (!getperms('W'))
 
 $e_sub_cat = 'mail';
 
+if($_GET['mode']=="progress")
+{
+	session_write_close();
+	sendProgress();
+	exit;
+}
 
 require_once(e_HANDLER.'ren_help.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
@@ -93,6 +99,25 @@ require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage :: getInstance();
+
+if($_GET['mode']=="process")
+{
+	session_write_close(); // allow other scripts to run in parallel. 
+	header('Content-Encoding: none');
+	ignore_user_abort(true);
+	set_time_limit(0);
+
+	header("Content-Length: $size");
+	header('Connection: close');
+	
+	$mailManager = new e107MailManager();
+	$mailManager->doEmailTask(999999);	
+	echo "Completed Mailout ID: ".$_GET['id'];
+	exit;
+}
+
+
+
 
 $action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 $pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
@@ -155,6 +180,9 @@ if (isset($_POST['targetaction']))
 
 //echo "Action: {$action}  MailId: {$mailId}  Target: {$targetId}<br />";
 // ----------------- Actions ------------------->
+
+//TODO - replace code sections with class/functions. 
+
 switch ($action)
 {
 	case 'prefs' :
@@ -334,6 +362,12 @@ switch ($action)
 			$midAction = 'midMoveToSend';
 			$action = 'pending';
 		}
+	
+		if(isset($_POST['email_sendnow']))
+		{
+			$midAction = 'midMoveToSend';
+			//$action = 'pending';
+		}
 		break;
 
 	case 'mailsendnow' :			// Send mail previously on 'held' list. Need to give opportunity to change time/date etc
@@ -382,6 +416,15 @@ switch ($action)
 			$errors[] = LAN_MAILOUT_183;
 		}
 		break;
+
+	// Send Emails Immediately using Ajax
+	case 'mailsendimmediately' : 
+	
+		$id = array_keys($_POST['mailaction']);
+		sendImmediately($id[0]);
+							
+	break;
+
 
 	default :
 		$emessage->add('Code malfunction 23! ('.$action.')', E_MESSAGE_ERROR);
@@ -455,7 +498,10 @@ switch ($midAction)
 		break;
 }
 
-
+if(isset($_POST['email_sendnow']))
+{
+	sendImmediately($mailId);
+}
 
 // --------------------- Display errors and results ------------------------
 if (is_array($errors) && (count($errors) > 0))
@@ -534,7 +580,93 @@ switch ($action)
 
 require_once(e_ADMIN.'footer.php');
 
+/**
+ * Real-time Immediate Mail-out. Browser may be closed and will continue. 
+ * @param integer $id (mailing id)
+ * @return 
+ */
+function sendImmediately($id)
+{
+	global $emessage;
+	
+	$text = "<div id='mstatus'>Processing Mailout ID: ".$id."</div>";
+	$text .= "<div id='progress' style='margin-bottom:30px'>&nbsp;</div>";
 
+	//Initiate the Function in the Background. 
+
+	$text .= "
+	<script type='text/javascript'>
+	
+	//<![CDATA[
+		new Ajax.Updater('mstatus', '".e_SELF."?mode=process&id=".intval($id)."', {
+			method: 'get',
+			evalScripts: true
+		});
+	// ]]>
+	</script>";
+	
+	// Update the Progress in real-time. 
+	$text .= "
+	<script type='text/javascript'>
+	//<![CDATA[
+
+		x = new Ajax.PeriodicalUpdater('progress', '".e_SELF."?mode=progress&id=".intval($id)."',
+		{
+			method: 'post',
+			frequency: 3,
+			decay: 1,
+			evalScripts: true		
+			
+		});
+
+	// ]]>
+	</script>";
+	
+	
+	$emessage->add($text, E_MESSAGE_SUCCESS);
+	
+	e107::getRender()->tablerender("Sending...", $emessage->render());
+
+}
+
+/**
+ * Display Progress-bar of real-time mail-out. 
+ * @return 
+ */
+function sendProgress()
+{
+	$sqld = e107::getDb();
+	
+	$sqld->db_Select("mail_content","mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($_GET['id']) );
+    $row = $sqld -> db_Fetch();
+  
+ 	$rand = $row['mail_sent_count'] + $row['mail_fail_count'];
+	
+	$total = $row['mail_togo_count'] + $row['mail_sent_count'] + $row['mail_fail_count'];
+
+	// $rand = rand(1,20);
+	//$total = 20;
+
+	$inc = round(($rand / $total) * 100);
+	
+	if($rand >= $total && $total !=0)
+	{
+    	echo "<script type='text/javascript'>x.stop();</script>";
+		echo "<div style='background-image:url(".THEME."images/bar.jpg);color:black;margin-left:auto;margin-right:auto;border:2px inset black;height:16px;width:500px;overflow:hidden;text-align:center'>
+		Complete </div>";
+		echo "<div style='text-align:center'>".$rand." / ".$total." </div>";
+		return;
+	}
+
+    echo "<div style='margin-left:auto;margin-right:auto;border:2px inset black;height:16px;width:500px;overflow:hidden;text-align:left'>";
+    for($j=1;$j<=$inc;$j++)
+	{
+		echo "<img src='".THEME."images/bar.jpg' style='width:5px;height:16px;vertical-align:top'>";
+	}
+    echo " $inc % </div>";
+	echo "<div style='text-align:center'>".$rand." / ".$total." </div>";
+	return;
+}
 
 
 // Update Preferences. (security handled elsewhere)
@@ -719,7 +851,7 @@ function show_prefs($mailAdmin)
 		</tr>
 		</table></div>";
 
-
+/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 // Sendmail. -------------->
 	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
 	$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
@@ -732,7 +864,7 @@ function show_prefs($mailAdmin)
 	</tr>
 
 	</table></div>";
-
+*/
 
 	$text .="</td>
 	</tr>
@@ -828,8 +960,9 @@ function show_prefs($mailAdmin)
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email2' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 	
 	<tr>
-		<td>".LAN_MAILOUT_233."</td><td><b>".(e_DOCROOT ? substr(e_DOCROOT, 0, -1) : '/').e_HANDLER_ABS."bounce_handler.php</b>";
-		
+		<td>".LAN_MAILOUT_233."</td><td><b>".(e_DOCROOT).e107::getFolder('handlers')."bounce_handler.php</b>";
+	
+
 	if(!is_readable(e_HANDLER.'bounce_handler.php'))
 	{
 		$text .= "<br /><span class='required'>".LAN_MAILOUT_161.'</span>';
@@ -965,6 +1098,7 @@ function headerjs()
 
 	$text = "
 	<script type='text/javascript'>
+		
 	function disp(type) 
 	{
 		if(type == 'smtp')
