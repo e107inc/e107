@@ -823,7 +823,7 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 				$dir =  basename(dirname($p['path']));
 				foreach($filter as $val)
 				{
-					if(strpos($fullpath,$val)!==FALSE)
+					if(strpos($fullpath,'/'.$val.'/')!==FALSE)
 					{
 						$pzip[] = $fullpath;	
 					}
