@@ -206,12 +206,14 @@ class sitelinks
 		{
 			$id = "sub_".$sub['link_id'];
 			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !varsettrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;              		
-			$class = "sublink-level-".($level+1);
+			$class = "sublink-level-".($level+1); // preferred class to use. 
 			$class .= ($css_class) ? " ".$css_class : "";
+			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
 			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
 			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
 		}
 		$text .= "\n</div>\n\n";
+
 		return $text;	
 	}
 	
