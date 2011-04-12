@@ -78,7 +78,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		{	// Account already activated
 			$ns -> tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			require_once(FOOTERF);
-			exit;
+			exit();
 		}
 
 
@@ -87,7 +87,8 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		{
 			require_once(e_HANDLER."message_handler.php");
 			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
-			exit;
+			require_once(FOOTERF);
+			exit();
 		}
 		$row = $sql -> db_Fetch();
 		// We should have a user record here
@@ -96,6 +97,13 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 		{  // Need to change the email address - check password to make sure
 			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
 			{
+				if ($sql->db_select('user', 'user_id, user_email', "user_email='".$new_email."'"))
+				{	// Email address already used by someone
+					require_once(e_HANDLER."message_handler.php");
+					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
+					require_once(FOOTERF);
+					exit();
+				}
 				if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
 					$row['user_email'] = $new_email;
@@ -105,7 +113,8 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 			{
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
-				exit;
+				require_once(FOOTERF);
+				exit();
 			}
 		}
 
