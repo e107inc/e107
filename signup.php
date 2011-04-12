@@ -77,18 +77,23 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 		{
         	if (($count = $sql->db_Select("user", "user_id", "user_password = \"".md5($_POST['resend_password'])."\" AND user_ban=2 AND user_sess !=''")) === 1)
 			{
-			// TODO: Check for duplicate email
+			//  Check for duplicate email
 				$row = $sql -> db_Fetch();
-            	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
+				if ($sql->db_select('user', 'user_id, user_email', "user_email='".$new_email."'"))
+				{	// Email address already used by someone
+					$ns -> tablerender(LAN_ERROR,LAN_SIGNUP_106);
+					require_once(FOOTERF);
+					exit;
+				}
+            	elseif($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
                 	$clean_email = $new_email;
 				}
 			}
 			else
 			{
-				// Incorrect password, or users with same password
-				//message_handler('ALERT', 'Error with count: '.$count);
-                $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_52);
+				// Incorrect password, or multiple users with same password
+                $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_105);
                 require_once(FOOTERF);
                 exit;
 			}
