@@ -116,7 +116,7 @@ define("DOWLAN_136", "image");
 define("DOWLAN_137", "Are you sure you want to delete this mirror?");
 define("DOWLAN_138", "Existing Mirrors");
 define("DOWLAN_139", "Address");
-define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show them here, or enter full address if image is remote");
+define("DOWLAN_140", "Upload local images to ".e_FILE."downloadimages to show them here, or enter full address if image is remote");
 define("DOWLAN_141", "Location");
 define("DOWLAN_142", "Update Mirror");
 define("DOWLAN_143", "Create Mirror");
