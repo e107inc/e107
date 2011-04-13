@@ -42,8 +42,12 @@ require_once('auth.php');
 // Get class membership for user now - we may need to udpate it
 $sql->db_Select('user', '*', 'user_id='.$id);
 $row = $sql->db_Fetch();
-$currentClasses = array_flip(explode(',', $row['user_class']));			// Current class membership for user (class ID as key)
-
+$row['user_class'] = trim($row['user_class']);
+$currentClasses = array();
+if ($row['user_class'])
+{
+	$currentClasses = array_flip(explode(',', $row['user_class']));			// Current class membership for user (class ID as key)
+}
 
 $sql->db_Select('userclass_classes');
 $c = 0;
