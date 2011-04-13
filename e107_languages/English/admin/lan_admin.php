@@ -275,6 +275,7 @@ define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","New Version Available");
 define("LAN_NEWVERSION_MORE","learn more");
 define("LAN_NEWVERSION_DLD","Download %s from SF.net");
+define('LAN_NEWVERSION_CHECK_ERROR', 'Version check error');
 
 define("LAN_SECURITYL_0", "Looking for troubles (none)");
 define("LAN_SECURITYL_5", "Balanced");
