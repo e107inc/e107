@@ -32,7 +32,7 @@ class wysiwyg
 		$mce_plugins[2]	= ($pref['smiley_activate']) ? "emoticons" : "";		// 'emotions' for the tinyMCE plugin, 'emoticons' for ours
 		$mce_plugins[3]	= "iespell";
 		$mce_plugins[4]	= "media";
-		$mce_plugins[5]	= (ADMIN) ? "ibrowser" : "image";				// Third party plugins - 'image' may not be a valid plugin name
+		$mce_plugins[5]	= (ADMIN) ? "ibrowser" : "";				// Third party plugins - 'image' may not be a valid plugin name
 		//$mce_plugins[6]	= "compat2x";					// May well not be needed - mostly for if we have our own code
 		$mce_plugins[7]	= "paste";
 
