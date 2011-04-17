@@ -46,10 +46,10 @@ $oblev_before_start = ob_get_level();
 
 // Block common bad agents / queries / php issues. 
 array_walk($_SERVER,  'e107_filter', '_SERVER');
-array_walk($_GET,     'e107_filter', '_GET');
-array_walk($_POST,    'e107_filter', '_POST');
-array_walk($_COOKIE,  'e107_filter', '_COOKIE');
-array_walk($_REQUEST, 'e107_filter', '_REQUEST'); 
+if (isset($_GET)) array_walk($_GET,     'e107_filter', '_GET');
+if (isset($_POST)) array_walk($_POST,    'e107_filter', '_POST');
+if (isset($_COOKIE)) array_walk($_COOKIE,  'e107_filter', '_COOKIE');
+if (isset($_REQUEST)) array_walk($_REQUEST, 'e107_filter', '_REQUEST'); 
 
 //
 // B: Remove all output buffering
