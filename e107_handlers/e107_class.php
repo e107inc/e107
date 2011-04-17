@@ -1858,10 +1858,10 @@ class e107
 	
 		// Block common bad agents / queries / php issues. 
 		array_walk($_SERVER,  array('self', 'filter_request'), '_SERVER');
-		array_walk($_GET,     array('self', 'filter_request'), '_GET');
-		array_walk($_POST,    array('self', 'filter_request'), '_POST');
-		array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
-		array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST'); 
+		if (isset($_GET)) array_walk($_GET,     array('self', 'filter_request'), '_GET');
+		if (isset($_POST)) array_walk($_POST,    array('self', 'filter_request'), '_POST');
+		if (isset($_COOKIE)) array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
+		if (isset($_REQUEST)) array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST'); 
 		
 		// TODO - better ajax detection method (headers when possible)
 		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
