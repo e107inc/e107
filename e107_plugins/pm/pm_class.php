@@ -515,8 +515,9 @@ class private_message
 	 */
 	function pm_getuid($var)
 	{
-		$var = trim($var);
-		if($this->e107->sql->db_Select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$this->e107->sql -> escape(trim($var), TRUE)."'"))
+		$var = strip_if_magic($var);
+		$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
+		if($this->e107->sql->db_Select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$this->e107->sql -> escape($var, FALSE)."'"))
 		{
 			$row = $this->e107->sql->db_Fetch();
 			return $row;
