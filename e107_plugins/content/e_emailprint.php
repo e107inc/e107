@@ -26,7 +26,7 @@ function print_item($id)
 		$row['content_heading']		= $tp -> toHTML($row['content_heading']);
 		$row['content_subheading']	= $tp -> toHTML($row['content_subheading']);
 		$row['content_text']		= $tp -> replaceConstants($row['content_text']);
-		$row['content_text']		= preg_replace("/\{EMAILPRINT\}|\[newpage\]/", "", $tp -> toHTML($row['content_text'], TRUE));
+		$row['content_text']		= preg_replace("/\{EMAILPRINT\}|\[newpage(?:\=.*?){0,1}\]/", "", $tp -> toHTML($row['content_text'], TRUE));
 		$authordetails				= $aa -> getAuthor($row['content_author']);
 		$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
 
