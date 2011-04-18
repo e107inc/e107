@@ -337,8 +337,9 @@ class private_message
 	function pm_getuid($var)
 	{
 		global $sql, $tp;
-		$var = trim($var);
-		$result = $sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$sql -> escape($var, TRUE)."'");
+		$var = strip_if_magic($var);
+		$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
+		$result = $sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$sql -> escape($var, FALSE)."'");
 		if ($result === FALSE) return FALSE;
 		$firstRow = $sql->db_Fetch();
 		if (($result == 1) || ($firstRow['user_name'] == $var))
