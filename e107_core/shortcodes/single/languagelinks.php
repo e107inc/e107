@@ -24,7 +24,7 @@
  * Example usage:
  * <code>
  * <?php 
- * $SOME_TEMPLATE = '{LANGUAGELINKS}'; // render custom lan list, include current query string
+ * $SOME_TEMPLATE = '{LANGUAGELINKS}'; // render default (available) lan list, include current query string
  * </code>
  * 
  * <code>
