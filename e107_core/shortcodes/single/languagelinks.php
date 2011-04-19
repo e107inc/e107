@@ -110,7 +110,7 @@ function languagelinks_shortcode($parm = '')
 			else 
 				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.e_QUERY : e_REQUEST_SELF.'?elan='.$languageFolder;
 		}
-		$class = ($languageFolder == e_LANGUAGE) ? 'languagelink_active' : 'languagelink'; e_dump($languageFolder, $class);
+		$class = ($languageFolder == e_LANGUAGE) ? 'languagelink_active' : 'languagelink'; 
 		$ret[] =  "\n<a class='{$class}' href='{$link}'>{$name}</a>";
 	}
 	
