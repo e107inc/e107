@@ -2236,21 +2236,23 @@ class e107
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
 		
-		$requestQry = '';
+		// Outdated
+		/*$requestQry = '';
 		$requestUrl = $_SERVER['REQUEST_URI'];
 		if(strpos($_SERVER['REQUEST_URI'], '?') !== FALSE)
-			list($requestUrl, $requestQry) = explode("?", $_SERVER['REQUEST_URI'], 2); 
+			list($requestUrl, $requestQry) = explode("?", $_SERVER['REQUEST_URI'], 2); */
 		
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 		define('e_PAGE', $page);
 		
-		// moved after page check - e_PAGE is important for BC
+		// Leave e_SELF BC, use e_REQUEST_SELF instead
+		/*// moved after page check - e_PAGE is important for BC
 		if($requestUrl && $requestUrl != $_SERVER['PHP_SELF'])
 		{
 			$_SERVER['PHP_SELF'] = $requestUrl;
-		}	
+		}*/	
 		
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);
@@ -2290,9 +2292,19 @@ class e107
 			header('HTTP/1.1 403 Forbidden');
 			exit;
 		}
+		
+		// e_MENU fix
+		if(e_MENU)
+		{
+			str_replace('['.e_MENU.']', '', $requestUri);
+			str_replace('['.e_MENU.']', '', $requestUrl);
+		}
+		
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
-		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl));
-		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri));
+		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
+		define('e_REQUEST_SELF', array_shift(explode('?', e_REQUEST_URL))); // full URL without the QUERY string
+		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
+		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
 
