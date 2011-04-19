@@ -434,7 +434,7 @@ class page
 		$pref['listPages'] = $_POST['listPages'];
 		$pref['pageCookieExpire'] = $_POST['pageCookieExpire'];
 		save_prefs();
-		$this -> message = CUSLAN_45;
+		$this -> message = LAN_SETSAVED;
 	}
 
 	function show_options($action)

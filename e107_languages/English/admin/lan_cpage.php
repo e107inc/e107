@@ -53,6 +53,6 @@ define("CUSLAN_41", "Display author and date information");
 define("CUSLAN_42", "No pages defined yet");
 define('CUSLAN_43', 'untitled menu: ');
 define('CUSLAN_44', 'untitled page');
-define('CUSLAN_45', 'Settings saved');
+
 
 ?>
