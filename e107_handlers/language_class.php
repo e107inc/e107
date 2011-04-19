@@ -23,11 +23,17 @@ class language{
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 // Valid Language Pack Names are shown directly below on the right. 
-	var $detect = FALSE;
-	var $e_language = 'English'; // replaced later with $pref
-	var $_cookie_domain = '';
+	public $detect = FALSE;
+	public $e_language = 'English'; // replaced later with $pref
+	public $_cookie_domain = '';
+	
+	/**
+	 * Cached list of Installed Language Packs
+	 * @var array
+	 */
+	protected $lanlist = null; // null is important!!!
 
-	var $list = array(
+	protected $list = array(
             "aa" => "Afar",
             "ab" => "Abkhazian",
             "af" => "Afrikaans",
@@ -188,7 +194,7 @@ class language{
             "zu" => "Zulu"
         );
 
-		var $names = array(
+		protected $names = array(
 			"Arabic" 		=> "العربية",
 			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
@@ -322,24 +328,28 @@ class language{
 
 	/**
 	 * Return a list of Installed Language Packs
+	 * 
 	 * @return array
 	 */
 	function installed()
 	{
-		$handle = opendir(e_LANGUAGEDIR);
-		$lanlist = array();
-		while ($file = readdir($handle))
+		if(null == $this->lanlist)
 		{
-			if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
+			$handle = opendir(e_LANGUAGEDIR);
+			$lanlist = array();
+			while ($file = readdir($handle))
 			{
-				$lanlist[] = $file;
+				if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
+				{
+					$lanlist[] = $file;
+				}
 			}
+			closedir($handle);
+			
+			$this->lanlist = array_intersect($lanlist,$this->list);
 		}
-		closedir($handle);
 		
-		$filtered = array_intersect($lanlist,$this->list);
-		
-		return $filtered;
+		return $this->lanlist;
 	}
 	
 	
@@ -388,7 +398,7 @@ class language{
 		global $pref;
 		
 		
-		if(false !== $this->detect && !$foce) return $this->detect;
+		if(false !== $this->detect && !$force) return $this->detect;
 		$this->_cookie_domain = '';
 		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
 		{
@@ -510,6 +520,8 @@ class language{
 	
 	/**
 	 * Set Language-specific Constants
+	 * FIXME - language detection is a mess - db handler, mysql handler, session handler and language handler + constants invlolved,
+	 * SIMPLIFY, test, get feedback
 	 * @param string $language
 	 * @return 
 	 */
@@ -518,14 +530,18 @@ class language{
 		global $pref;
 		
 		$language = $this->e_language;
-		$session = e107::getSession();
+		//$session = e107::getSession();
+
+		// SecretR - don't register lanlist in session, confusions, save it as class property (lan class is singleton) 
+		e107::getSession()->set('language-list', null); // cleanup test installs, will be removed soon
 		
-		if(!$session->is('language-list'))
+		/*if(!$session->is('language-list'))
 		{
 			$session->set('language-list', implode(',',$this->installed()));
-		}
+		}*/
 		
-		define('e_LANLIST', $session->get('language-list'));
+		//define('e_LANLIST', $session->get('language-list'));
+		define('e_LANLIST',  implode(',', $this->installed()));
 		define('e_LANGUAGE', $language);
 		define('USERLAN', $language); // Keep USERLAN for backward compatibility
 		$iso = $this->convert($language);	
