@@ -2236,7 +2236,10 @@ class e107
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
 		
-		list($requestUrl,$requestQry) = explode("?",$_SERVER['REQUEST_URI']); 
+		$requestQry = '';
+		$requestUrl = $_SERVER['REQUEST_URI'];
+		if(strpos($_SERVER['REQUEST_URI'], '?') !== FALSE)
+			list($requestUrl, $requestQry) = explode("?", $_SERVER['REQUEST_URI'], 2); 
 		
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
@@ -2356,7 +2359,7 @@ class e107
 			}
 		}
 
-		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
+		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match('#\[(.*?)](.*)#', $_SERVER['QUERY_STRING'], $matches))
 		{
 			define('e_MENU', $matches[1]);
 			$e_QUERY = $matches[2];
@@ -2553,7 +2556,7 @@ class e107
 			$ip=$_SERVER['REMOTE_ADDR'];
 			if (getenv('HTTP_X_FORWARDED_FOR')) 
 			{
-				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+				if (preg_match('/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/', getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
 				{
 					$ip2 = array('#^0\..*#', 
 							'#^127\..*#', 							// Local loopbacks
