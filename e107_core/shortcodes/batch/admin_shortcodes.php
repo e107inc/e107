@@ -150,7 +150,7 @@ class admin_shortcodes
 		$params = array();
 		parse_str($parm, $params);
 
-		$lanlist = explode(',',e_LANLIST);
+		$lanlist = explode(',',e_LANLIST); 
 		sort($lanlist);
 		$text = '';
 
@@ -263,9 +263,14 @@ class admin_shortcodes
 			<select name='sitelanguage' id='sitelanguage' class='tbox' onchange='this.form.submit()'>";
 			foreach($lanperms as $lng)
 			{
-				$langval = ($lng == $pref['sitelanguage'] && $lng == 'English') ? "" : $lng;
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
-				$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
+				// FIXME - language detection is a mess - db handler, mysql handler, session handler and language handler + constants invlolved
+				// Too complex, doesn't work!!! SIMPLIFY!!!
+				//$langval = ($lng == $pref['sitelanguage'] && $lng == 'English') ? "" : $lng;
+				//$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
+				//$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
+				$selected = ($lng == e_LANGUAGE) ? " selected='selected'" : "";
+				$select .= "<option value='".$lng."'{$selected}>$lng</option>\n";
+				
 			}
 			$select .= "</select> ".(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1."</span></button>" : '')."
 			".e107::getForm()->hidden('setlanguage', '1')."
