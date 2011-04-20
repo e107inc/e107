@@ -160,16 +160,18 @@ class wysiwyg
 		
 		$this->getConfig();
 		
+		$newConfig = array();
+		
 		foreach($this->config as $key=>$val)
 		{
 			if($val != 'true' && $val !='false')
 			{
 				$val = "'".$val."'";
 			}
-			$text .= "\t\t  ".$key." : ".$val.",\n";
+			$newConfig[] = "\t\t  ".$key." : ".$val;
 		}
 		
-		return $text;
+		return implode(",\n",$newConfig);
 		
 	}
 	
