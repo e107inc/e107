@@ -182,7 +182,7 @@ if ($pref['statBrowser'] == 1)
 {	// Only display option to show browser stats in a compact way if stats on browser is actived
 $text .= "
 	<tr>
-	<td style='width:50%' class='forumheader3'>".ADSTAT_L35."</span></td>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L35."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
 	<input type='radio' name='statBrowserDispCompr' value='1'".($pref['statBrowserDispCompr'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statBrowserDispCompr' value='0'".(!$pref['statBrowserDispCompr'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."<br />
