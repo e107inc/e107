@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -46,6 +46,8 @@
  *
  * WARNING: You have to do rawuldecode() on url, caption and title parameter values (before passing them to the shortcode)
  * or you'll break the whole script
+ *
+ * TODO - add create URL support when new URL handler is ready
  *
  * @param string $parm
  * @return string page navigation bar HTML
@@ -274,7 +276,7 @@ function nextprev_shortcode($parm = '')
 
 			if($show_last && !empty($tmpl[$tprefix.'nav_last']))
 			{
-				$e_vars->url = str_replace('[FROM]', $last_page, $url);
+				$e_vars->url = str_replace('[FROM]', $total_pages, $url);//$last_page
 				$e_vars->label = LAN_NP_LAST;
 				$e_vars->url_label = LAN_NP_URLLAST;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_last'], $e_vars);

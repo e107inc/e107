@@ -664,12 +664,12 @@ class forumAdmin
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_47."<br /><span class='smalltext'>".FORLAN_48."</span></td>
-		<td style='width:25%;text-align:center' class='forumheader3' >".($fPref->get('email_notify') ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."</td>
+		<td style='width:25%;text-align:center' class='forumheader3' >".($fPref->get('notify') ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_177."<br /><span class='smalltext'>".FORLAN_178."</span></td>
-		<td style='width:25%;text-align:center' class='forumheader3' >".($fPref->get('email_notify_on') ? "<input type='checkbox' name='email_notify_on' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify_on' value='1' />")."</td>
+		<td style='width:25%;text-align:center' class='forumheader3' >".($fPref->get('notify_on') ? "<input type='checkbox' name='email_notify_on' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify_on' value='1' />")."</td>
 		</tr>
 
 		<tr>

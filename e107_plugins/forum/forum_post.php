@@ -14,7 +14,7 @@
 
 require_once('../../class2.php');
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+if (!$e107->isInstalled('forum'))
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
@@ -29,7 +29,7 @@ if (isset($_POST['fjsubmit']))
 }
 
 require_once(e_PLUGIN.'forum/forum_class.php');
-$forum = new e107forum;
+$forum = new e107forum();
 
 if (!e_QUERY || !isset($_GET['id']))
 {
@@ -325,7 +325,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$e107cache->clear('newforumposts');
 		$threadLink = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId));
 		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
-		if ($forum->prefs->get('forum_redirect'))
+		if ($forum->prefs->get('redirect'))
 		{
 			header('location:'.$threadLink);
 			exit;

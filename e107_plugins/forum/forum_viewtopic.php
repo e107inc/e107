@@ -15,7 +15,9 @@
 
 require_once ('../../class2.php');
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+$tp = e107::getParser();
+
+if (!$e107->isInstalled('forum'))
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
@@ -178,8 +180,13 @@ $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
 if ($thread->pages > 1)
 {
-	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
+	if(!$thread->page) $thread->page = 1;
+	$url = rawurlencode(e107::getUrl()->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId, 'page' => '[FROM]')));
+	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off";
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+/*
+	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
+	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
 }
 
 $tVars->BUTTONS = '';

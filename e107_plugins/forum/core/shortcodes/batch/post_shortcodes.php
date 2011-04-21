@@ -100,7 +100,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_fileattach()
 	{
-		global $forum, $pref, $fileattach, $fileattach_alert;
+		global $forum, $fileattach, $fileattach_alert;
 
 		if ($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 		{
@@ -115,7 +115,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 				{
 					if(!$fileattach_alert)
 					{
-						$fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr><tr><td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td></tr>\n";
+						$fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".(e107::getPref('image_post') ? LAN_390 : LAN_416)."</td></tr><tr><td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td></tr>\n";
 					}
 					return $fileattach_alert;
 				}
@@ -126,6 +126,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_postthreadas()
 	{
 		global $action, $thread_info;
+		e_dump(MODERATOR);
 		if (MODERATOR && $action == "nt")
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_sticky']);
@@ -150,13 +151,16 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_emailnotify()
 	{
-		global $pref, $thread_info, $action, $eaction;
+		global $thread_info, $action, $eaction;
+
+		$pref = e107::getPlugPref('forum');
+
 		if($eaction == true) { return ; }
-		if ($pref['email_notify'] && $action == 'nt' && USER)
+		if ($pref['notify'] && $action == 'nt' && USER)
 		{
 			if(isset($_POST['fpreview']))
 			{
-				$chk = ($_POST['email_notify'] ? "checked = 'checked'" : '');
+				$chk = ($_POST['notify'] ? "checked = 'checked'" : '');
 			}
 			else
 			{
@@ -166,10 +170,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 				}
 				else
 				{
-					$chk = ($pref['email_notify_on'] ? "checked='checked'" : '');
+					$chk = ($pref['notify_on'] ? "checked='checked'" : '');
 				}
 			}
-			return "<br /><input type='checkbox' name='email_notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_380."</span>";
+			return "<br /><input type='checkbox' name='notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_380."</span>";
 		}
 		return '';
 	}
