@@ -126,7 +126,6 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_postthreadas()
 	{
 		global $action, $thread_info;
-		e_dump(MODERATOR);
 		if (MODERATOR && $action == "nt")
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_sticky']);
