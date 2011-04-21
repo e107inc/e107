@@ -663,11 +663,11 @@ class page
 		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
 		{
 			save_prefs();		// Only save if changes
-			$emessage->add(CUSLAN_45, E_MESSAGE_SUCCESS);
+			$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$emessage->add(CUSLAN_46);
+			$emessage->add(LAN_NOCHANGE_NOTSAVED);
 		}
 	}
 
