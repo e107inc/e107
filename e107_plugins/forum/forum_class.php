@@ -699,7 +699,7 @@ class e107forum
 
 	function isModerator($uid)
 	{
-		return ($uid && in_array($uid, array_keys($this->modArray)));
+		return ($uid && in_array($uid, array_keys($this->forumGetMods())));
 	}
 
 	function forumGetForumList($all=false)

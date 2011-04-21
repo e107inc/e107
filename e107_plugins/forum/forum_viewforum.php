@@ -15,7 +15,7 @@
 
 require_once('../../class2.php');
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+if (!$e107->isInstalled('forum'))
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
@@ -129,7 +129,9 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		$parms = "{$pages},1,{$page},url::forum::forum::func=view&id={$forumId}&page=[FROM], off";
+		if(!$page) $page = 1;
+		$url = rawurlencode(e107::getUrl()->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId, 'page' => '[FROM]')));
+		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
