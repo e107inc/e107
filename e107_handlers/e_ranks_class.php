@@ -16,17 +16,20 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_ranks
 {
-	private $ranks;
+	public $ranks;
 	private $userRanks;
+	private $imageFolder;
 
-	public function __construct($force=true)
+	public function __construct($force = false)
 	{
 		$this->ranks = array();
 		$this->userRanks = array();
+		$this->imageFolder = is_dir(THEME.'images/ranks') ? THEME_ABS.'images/ranks/' : e_IMAGE_ABS.'ranks/';
+
 
 		$e107 = e107::getInstance();
 		//Check to see if we can get it from cache
-		if($force == false && ($this->ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
+		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
 			$this->ranks = $e107->arrayStorage->ReadArray($ranks);
 		}
@@ -57,6 +60,111 @@ class e_ranks
 			}
 			$e107->ecache->set_sys('nomd5_user_ranks', $e107->arrayStorage->WriteArray($this->ranks, false));
 		}
+
+		// defaults
+		if(empty($this->ranks))
+		{
+			$this->setDefaultRankData();
+		}
+	}
+
+	protected function setDefaultRankData()
+	{
+		e107::coreLan('userclass');
+
+			$this->ranks = array('data' => array(), 'special' => array());
+			$this->ranks['data'][1] = array(
+				'name' => '',
+				'thresh' => 20,
+				'image' => 'lev1.png',
+				'lan_pfx' => '',
+				'id' => 1,
+			);
+			$this->ranks['data'][2] = array(
+				'name' => '',
+				'thresh' => 100,
+				'image' => 'lev2.png',
+				'lan_pfx' => '',
+				'id' => 2,
+			);
+			$this->ranks['data'][3] = array(
+				'name' => '',
+				'thresh' => 250,
+				'image' => 'lev3.png',
+				'lan_pfx' => '',
+				'id' => 3,
+			);
+			$this->ranks['data'][4] = array(
+				'name' => '',
+				'thresh' => 410,
+				'image' => 'lev4.png',
+				'lan_pfx' => '',
+				'id' => 4,
+			);
+			$this->ranks['data'][5] = array(
+				'name' => '',
+				'thresh' => 580,
+				'image' => 'lev5.png',
+				'lan_pfx' => '',
+				'id' => 5,
+			);
+			$this->ranks['data'][6] = array(
+				'name' => '',
+				'thresh' => 760,
+				'image' => 'lev6.png',
+				'lan_pfx' => '',
+				'id' => 6,
+			);
+			$this->ranks['data'][7] = array(
+				'name' => '',
+				'thresh' => 950,
+				'image' => 'lev7.png',
+				'lan_pfx' => '',
+				'id' => 7,
+			);
+			$this->ranks['data'][8] = array(
+				'name' => '',
+				'thresh' => 1150,
+				'image' => 'lev8.png',
+				'lan_pfx' => '',
+				'id' => 8,
+			);
+			$this->ranks['data'][9] = array(
+				'name' => '',
+				'thresh' => 1370,
+				'image' => 'lev9.png',
+				'lan_pfx' => '',
+				'id' => 9,
+			);
+			$this->ranks['data'][10] = array(
+				'name' => '',
+				'thresh' => 1371,
+				'image' => 'lev10.png',
+				'lan_pfx' => '',
+				'id' => 10,
+			);
+			// special
+			$this->ranks['special'][1] = array(
+				'name' => UC_LAN_6,
+				'thresh' => 1,
+				'image' => 'English_main_admin.png',
+				'lan_pfx' => '1',
+				'id' => 11,
+			);
+			$this->ranks['special'][2] = array(
+				'name' => UC_LAN_5,
+				'thresh' => 2,
+				'image' => 'English_admin.png',
+				'lan_pfx' => '1',
+				'id' => 12,
+			);
+			$this->ranks['special'][3] = array(
+				'name' => UC_LAN_7,
+				'thresh' => 3,
+				'image' => 'English_moderator.png',
+				'lan_pfx' => '1',
+				'id' => 13,
+			);
 	}
 
 
@@ -73,10 +181,18 @@ class e_ranks
 			$_tmp = explode('_', $info['image'], 2);
 			$img = e_LANGUAGE.'_'.$_tmp[1];
 		}
-		return e_IMAGE_ABS.'ranks/'.$img;
+		return $this->imageFolder.$img;
 	}
 
-	function getRanks($userId)
+
+	private function _getName(&$info)
+	{
+		if(!isset($info['name_parsed'])) $info['name_parsed'] = e107::getParser()->toHTML($info['name'], FALSE, 'defs');
+		return $info['name_parsed'];
+	}
+
+	// TODO - custom ranks (e.g. forum moderator)
+	function getRanks($userId, $moderator = false)
 	{
 		$e107 = e107::getInstance();
 		if(!$userId && USER) { $userId = USERID; }
@@ -86,29 +202,34 @@ class e_ranks
 		}
 
 		$ret = array();
-		$userData = get_user_data($userId);
+		$userData = e107::getSystemUser($userId)->getData(); //get_user_data($userId);
+
 		if($userData['user_admin'])
 		{
 			if($userData['user_perms'] == '0')
 			{
 				//Main Site Admin
-				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' alt='".$this->_getName($this->ranks['special'][1])."' /><br />";
 			}
 			else
 			{
 				//Site Admin
-				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' alt='".$this->_getName($this->ranks['special'][2])."' /><br />";
 			}
+		}
+		elseif($moderator)
+		{
+			$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][3])."' alt='".$this->_getName($this->ranks['special'][3])."' /><br />";
 		}
 
 		$userData['user_daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
 		$level = $this->_calcLevel($userData);
 
-		$lastRank = count($this->ranks['data']) - 1;
+		$lastRank = count($this->ranks['data']);
 		$rank = false;
 		if($level <= $this->ranks['data'][0]['thresh'])
 		{
-			$rank = 0;
+			$rank = 1;
 		}
 		elseif($level >= $this->ranks['data'][$lastRank]['thresh'])
 		{
@@ -127,11 +248,12 @@ class e_ranks
 		}
 		if($rank !== false)
 		{
-			$data['name'] = '[ '.$e107->tp->toHTML($this->ranks['data'][$rank]['name'], FALSE, 'defs').' ]';
-			$img_title = ($this->ranks['data'][$rank]['name'] ? "title='".$this->ranks['data'][$rank]['name']."'" : '');
+			$data['name'] = $this->_getName($this->ranks['data'][$rank]);
+			$img_title = ($this->ranks['data'][$rank]['name'] ? "alt='{$data['name']}' title='{$data['name']}'" : '');
 			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."' /><br />";
 		}
 		$this->userRanks[$userId] = $data;
+
 		return $data;
 	}
 
