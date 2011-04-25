@@ -46,6 +46,11 @@ include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 $forum = new e107forum();
 $thread = new e107ForumThread();
 
+if (isset($_GET['last']))
+{
+	$_GET['f'] = 'last';
+}
+
 if(isset($_GET['f']) && $_GET['f'] == 'post')
 {
 	$thread->processFunction();
@@ -523,6 +528,7 @@ class e107ForumThread
 	{
 		global $forum, $thread;
 		$e107 = e107::getInstance();
+
 		if (!isset($_GET['f']))
 		{
 			return;
@@ -543,7 +549,7 @@ class e107ForumThread
 
 			case 'last':
 				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
-				$thread->page = ($pages - 1);
+				$thread->page = ($pages);
 				break;
 
 			case 'next':
