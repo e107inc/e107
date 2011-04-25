@@ -17,7 +17,7 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+if (!$e107->isInstalled('forum'))
 {
 	header('Location: '.e_BASE.'index.php');
 	exit;
@@ -86,8 +86,8 @@ if($rules_text != '')
 {
 	$fVars->USERINFO .= " | <a href='".$e107->url->getUrl('forum', 'forum', "func=rules")."'>".LAN_433.'</a>';
 }
-$total_topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
-$total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
+$total_topics = $sql->db_Count("forum_thread", "(*)");
+$total_replies = $sql->db_Count("forum_post", "(*)");
 $total_members = $sql->db_Count("user");
 $newest_member = $sql->db_Select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
@@ -136,7 +136,7 @@ $fVars->PERMS = (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_
 $fVars->INFO = "";
 if (USER == TRUE)
 {
-	$total_new_threads = $sql->db_Count('forum_t', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
+	$total_new_threads = $sql->db_Count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 	if (USERVIEWED != "")
 	{
 		$tmp = explode(".", USERVIEWED);		// List of numbers, separated by single period

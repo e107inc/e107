@@ -20,7 +20,7 @@ $ns = e107::getRender();
 
 if (!$e107->isInstalled('forum'))
 {
-	header('Location: '.e_BASE.'index.php');
+	header('Location: '.SITEURL.'index.php');
 	exit;
 }
 
@@ -28,7 +28,7 @@ include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
 if (isset($_POST['fjsubmit']))
 {
-	header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id'=>$_POST['forumjump'])));
+	header('Location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id'=>$_POST['forumjump'], 'raw' => true)));
 	exit;
 }
 
@@ -37,7 +37,7 @@ $forum = new e107forum();
 
 if (!e_QUERY || !isset($_GET['id']))
 {
-	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main', 'raw' => true)));
 	exit;
 }
 
@@ -66,7 +66,7 @@ switch($action)
 		break;
 
 	default:
-		header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+		header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main', 'raw' => true)));
 		exit;
 
 }
@@ -332,7 +332,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
 		if ($forum->prefs->get('redirect'))
 		{
-			header('location:'.$threadLink);
+			header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId, 'raw' => true)));
 			exit;
 		}
 		else

@@ -2,10 +2,11 @@
 // $Id$
 function url_forum_forum($parms)
 {
+	$amp = isset($parms['raw']) ? '&' : '&amp;';
 	switch($parms['func'])
 	{
 		case 'view':
-			$page = (varset($parms['page']) ? '&amp;p='.$parms['page'] : '');
+			$page = (varset($parms['page']) ? $amp.'p='.$parms['page'] : '');
 			return e_PLUGIN_ABS."forum/forum_viewforum.php?id={$parms['id']}{$page}";
 			break;
 
@@ -26,7 +27,7 @@ function url_forum_forum($parms)
 			break;
 
 		case 'mfar':
-			return e_PLUGIN_ABS.'forum/forum.php?f=mfar&amp;id='.$parms['id'];
+			return e_PLUGIN_ABS.'forum/forum.php?f=mfar'.$amp.'id='.$parms['id'];
 			break;
 
 	}
