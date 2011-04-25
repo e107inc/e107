@@ -129,7 +129,7 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		if(!$page) $page = 1;
+		//if(!$page) $page = 1;
 		$url = rawurlencode(e107::getUrl()->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId, 'page' => '[FROM]')));
 		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -404,7 +404,7 @@ function parse_thread($thread_info)
 	}
 	$tVars->THREADNAME = "<a {$title} href='".$e107->url->getUrl('forum', 'thread', "func=view&id={$threadId}")."'>{$thread_name}</a>";
 
-	$pages = ceil(($tVars->REPLIES+1)/$forum->prefs->get('postspage'));
+	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
 	if ($pages > 1)
 	{
 		if($pages > 6)
