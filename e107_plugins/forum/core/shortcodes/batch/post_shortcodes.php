@@ -15,15 +15,18 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		$parm = ($parm ? $parm : 10);
 		global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
+
 		$txt = $this->e107->tp->parseTemplate($LATESTPOSTS_START, true);
 		$start = max($this->threadInfo['thread_total_replies'] - $parm, 0);
 		$num = min($this->threadInfo['thread_total_replies'], $parm);
 
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], $start, $num);
 
-		for($i = count($tmp)-1; $i > 0; $i--)
+		$bach = e107::getScBatch('view', 'forum');
+		for($i = count($tmp); $i > 0; $i--)
 		{
-			setScVar('forum_shortcodes', 'postInfo', $tmp[$i]);
+			$bach->setScVar('postInfo', $tmp[$i-1]);
+			//setScVar('forum_shortcodes', 'postInfo', $tmp[$i]);
 			$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_POST, true);
 		}
 		$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_END, true);
@@ -34,7 +37,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		global $THREADTOPIC_REPLY;
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], 0, 1);
-		setScVar('forum_shortcodes', 'postInfo', $tmp[0]);
+		e107::getScBatch('view', 'forum')->setScVar('postInfo', $tmp[0]);
 		return $this->e107->tp->parseTemplate($THREADTOPIC_REPLY, true);
 	}
 
@@ -125,10 +128,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_postthreadas()
 	{
-		global $action, $thread_info;
+		global $action, $threadInfo;
 		if (MODERATOR && $action == "nt")
 		{
-			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_sticky']);
+			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $threadInfo['thread_sticky']); // no reference of 'head' $threadInfo['head']['thread_sticky']
 			return "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 		}
 		return '';
@@ -136,9 +139,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_backlink()
 	{
-		global $forum, $thread_info, $eaction, $action;
-		$_tmp = '';
-		$forum->set_crumb(true, ($action == 'nt' ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406.' '.$thread_info['head']['thread_name'])), $_tmp);
+		global $forum, $threadInfo, $eaction, $action;
+		$_tmp = new e_vars();
+		// no reference of 'head' $threadInfo['head']['thread_name']
+		$forum->set_crumb(true, ($action == 'nt' ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406.' '.$threadInfo['thread_name'])), $_tmp);
 		return $_tmp->BREADCRUMB;
 	}
 
@@ -150,7 +154,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_emailnotify()
 	{
-		global $thread_info, $action, $eaction;
+		global $threadInfo, $action, $eaction;
 
 		$pref = e107::getPlugPref('forum');
 
@@ -163,9 +167,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			}
 			else
 			{
-				if(isset($thread_info))
+				if(isset($threadInfo))
 				{
-					$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : '');
+					// no reference of 'head' $threadInfo['head']['thread_active']
+					$chk = ($threadInfo['thread_active'] == 99 ? "checked='checked'" : '');
 				}
 				else
 				{

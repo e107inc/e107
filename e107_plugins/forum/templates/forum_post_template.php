@@ -227,21 +227,21 @@ $THREADTOPIC_REPLY = "
 ";
 }
 
-$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";
 
-$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
 $FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
-$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
 $FORUM_CRUMB['subparent']['sep'] = " :: ";
 
-$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
+$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORUM_TITLE}</a>";
 $FORUM_CRUMB['forum']['sep'] = " :: ";
 
-$FORUM_CRUMB['thread']['value'] = "{THREAD_TITLE}";
+$FORUM_CRUMB['thread']['value'] = "<a class='forumlink' href='{THREAD_HREF}'>{THREAD_TITLE}</a>";
 
 ?>

@@ -14,8 +14,10 @@
 */
 
 require_once ('../../class2.php');
+
 $e107 = e107::getInstance();
 $tp = e107::getParser();
+$ns = e107::getRender();
 
 if (!$e107->isInstalled('forum'))
 {
@@ -41,8 +43,8 @@ include_lan(e_PLUGIN . 'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php')
 include_once (e_PLUGIN . 'forum/forum_class.php');
 include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
-$forum = new e107forum;
-$thread = new e107ForumThread;
+$forum = new e107forum();
+$thread = new e107ForumThread();
 
 if(isset($_GET['f']) && $_GET['f'] == 'post')
 {
@@ -82,7 +84,7 @@ if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo
 	$forum->threadIncview($threadId);
 }
 
-define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
+define('e_PAGETITLE', $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off').' / '.$e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && $forum->isModerator(USERID)));
 
@@ -98,7 +100,7 @@ if (MODERATOR && isset($_POST['mod']))
 	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
+$postList = $forum->PostGet($thread->threadId, ($thread->page - 1) * $thread->perPage, $thread->perPage);
 
 $gen = new convert;
 if ($thread->message)
@@ -117,7 +119,7 @@ if (isset($thread->threadInfo['thread_options']['poll']))
 	$pollstr = "<div class='spacer'>" . $poll->render_poll($_qry, 'forum', 'query', true) . '</div>';
 }
 //Load forum templates
-
+// FIXME - new template paths!
 if (file_exists(THEME . 'forum_design.php'))
 {
 	include_once (THEME . 'forum_design.php');
@@ -321,7 +323,7 @@ function showmodoptions()
 	else
 	{
 		$type = 'Post';
-		$ret = "<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		$ret = "<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='frmMod_{$postInfo['post_thread']}_{$postInfo['post_id']}'>";
 		$delId = $postInfo['post_id'];
 	}
 
@@ -475,7 +477,7 @@ class e107ForumThread
 		$e107 = e107::getInstance();
 		$this->threadId = (int)varset($_GET['id']);
 		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $forum->prefs->get('postspage'));
-		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 0);
+		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 1);
 
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
@@ -577,11 +579,12 @@ class e107ForumThread
 					if ($forum->prefs->get('reported_post_email'))
 					{
 						require_once (e_HANDLER . 'mail.php');
-						$report = LAN_422 . SITENAME . " : " . (substr(SITEURL, -1) == "/" ? SITEURL : SITEURL . "/") . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $thread_id . ".post\n" . LAN_425 . USERNAME . "\n" . $report_add;
+						$report = LAN_422 . SITENAME . " : " . (substr(SITEURL, -1) == "/" ? SITEURL : SITEURL . "/") . $e107->getFolder('plugins') . "forum/forum_viewtopic.php?" . $this->threadId . ".post\n" . LAN_425 . USERNAME . "\n" . $report_add;
 						$subject = LAN_421 . " " . SITENAME;
 						sendemail(SITEADMINEMAIL, $subject, $report);
 					}
-					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$thread_info['head']['thread_name']}', " . intval($thread_id) . ", '{$report_add}'");
+					// no reference of 'head' $threadInfo['head']['thread_name']
+					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$this->threadInfo['thread_name']}', " . intval($this->threadId) . ", '{$report_add}'");
 					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
 					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
 					$text = LAN_424 . "<br /><br /><a href='{$url}'>" . LAN_429 . '</a>';
