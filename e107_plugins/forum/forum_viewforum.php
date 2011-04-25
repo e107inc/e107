@@ -40,8 +40,8 @@ $forum = new e107forum;
 //$view = 25;
 $view = $forum->prefs->get('threadspage', 25);
 if(!$view) { $view = 25; }
-$page = (varset($_GET['p']) ? $_GET['p'] : 0);
-$threadFrom = $page * $view;
+$page = (varset($_GET['p']) ? $_GET['p'] : 1);
+$threadFrom = ($page - 1) * $view;
 
 global $forum_info, $FORUM_CRUMB;
 $fVars = new e_vars;
@@ -83,7 +83,7 @@ $forumInfo['forum_name'] = $e107->tp->toHTML($forumInfo['forum_name'], true, 'no
 $forumInfo['forum_description'] = $e107->tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
 $_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
-define('e_PAGETITLE', LAN_01.' / '.$_forum_name);
+define('e_PAGETITLE', $_forum_name.' / '.LAN_01);
 //define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 //$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
@@ -411,25 +411,28 @@ function parse_thread($thread_info)
 		{
 			for($a = 0; $a <= 2; $a++)
 			{
+				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
-				$tVars->PAGES .= "<a href='{$url}'>".($a+1).'</a>';
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 			$tVars->PAGES .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
 			{
+				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
-				$tVars->PAGES .= "<a href='{$url}'>".($a+1).'</a>';
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 		}
 		else
 		{
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
+				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
-				$tVars->PAGES .= "<a href='{$url}'>".($a+1).'</a>';
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 		}
 		$tVars->PAGES = LAN_316.' [&nbsp;'.$tVars->PAGES.'&nbsp;]';

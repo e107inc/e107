@@ -13,7 +13,11 @@
 */
 
 require_once('../../class2.php');
+
 $e107 = e107::getInstance();
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 if (!$e107->isInstalled('forum'))
 {
 	header('Location: '.e_BASE.'index.php');
@@ -45,6 +49,7 @@ switch($action)
 	case 'rp':
 		$threadInfo = $forum->threadGet($id, false);
 		$forumId = $threadInfo['thread_forum_id'];
+		$forumInfo = $forum->forumGet($forumId);
 		break;
 
 	case 'nt':
@@ -94,7 +99,7 @@ if ($action != 'nt' && !$threadInfo['thread_active'] && !MODERATOR)
 }
 
 $forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true);
-define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'rp' ? LAN_02.$threadInfo['thread_name'] : LAN_03));
+define('e_PAGETITLE', ($action == 'rp' ? LAN_02.$threadInfo['thread_name'] : LAN_03).' / '.$forumInfo['forum_name'].' / '.LAN_01);
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

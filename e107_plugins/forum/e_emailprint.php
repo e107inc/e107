@@ -15,7 +15,7 @@ function print_item($thread_id)
 
 
 	$count = 1;
-	
+
 	unset($thread_info[0], $thread_info['head']);
 	foreach($thread_info as $reply)
 	{

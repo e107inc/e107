@@ -27,8 +27,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_threaddatestamp()
 	{
-		global $gen;
-		return "<a id='post_{$this->post_info['post_id']}' href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'post', 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
+		$gen = e107::getDateConvert();
+		return "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'post', 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
 	}
 
 	function sc_post()
@@ -271,6 +271,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		if (!$this->postInfo['post_user']) { return ''; }
 
 		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
+		// FIXME - level handler!!!
 
 		if(!$parm) { $parm = 'name'; }
 

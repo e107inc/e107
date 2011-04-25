@@ -1154,31 +1154,29 @@ class e107forum
 	function set_crumb($forum_href=false, $thread_title='', &$templateVar)
 	{
 		$e107 = e107::getInstance();
-		global $FORUM_CRUMB, $forumInfo, $thread;
+		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
 
-		if(!$forumInfo) { $forumInfo = $thread->threadInfo; }
-//		var_dump($forumInfo);
-//		var_dump($thread);
+		if(!$forumInfo && $thread) { $forumInfo = $thread->threadInfo; }
 
 		if(is_array($FORUM_CRUMB))
 		{
 			$search 	= array('{SITENAME}', '{SITENAME_HREF}');
-			$replace 	= array(SITENAME, "href='".$e107->url->getUrl('core:core', 'main', 'action=index')."'");
+			$replace 	= array(SITENAME, $e107->url->getUrl('core:core', 'main', 'action=index'));
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_01, "href='".$e107->url->getUrl('forum', 'forum', 'func=main')."'");
+			$replace 	= array(LAN_01, $e107->url->getUrl('forum', 'forum', 'func=main'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= '{PARENT_TITLE}';
 			$replace 	= $e107->tp->toHTML($forumInfo['parent_name']);
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
-			if($forum_info['forum_sub'])
+			if($forumInfo['forum_sub'])
 			{
 				$search 	= array('{SUBPARENT_TITLE}', '{SUBPARENT_HREF}');
-				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), "href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_sub']}")."'");
+				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), $e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_sub']}"));
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
@@ -1187,11 +1185,13 @@ class e107forum
 			}
 
 			$search 	= array('{FORUM_TITLE}', '{FORUM_HREF}');
-			$replace 	= array(ltrim($forumInfo['forum_name'], '*'),"href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_id']}")."'");
+			// TODO - remove 'href=' from the return value
+			$replace 	= array(ltrim($forumInfo['forum_name'], '*'), $e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_id']}"));
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
-			$search 	= array('{THREAD_TITLE}');
-			$replace 	= array($thread->threadInfo['thread_name']);
+			$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
+			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
+			$replace 	= array($threadInfo['thread_name'], $e107->url->getUrl('forum', 'thread', "func=view&id={$threadInfo['thread_id']}")); // $thread->threadInfo - no reference found
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
@@ -1201,17 +1201,17 @@ class e107forum
 		{
 			$dfltsep = ' :: ';
 			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>".$dfltsep;
-			if($forum_info['sub_parent'])
+			if($forumInfo['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == '*' ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
-			$tmpFname = $forum_info['forum_name'];
+			$tmpFname = $forumInfo['forum_name'];
 			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
 			if ($forum_href)
 			{
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$e107->tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forumInfo['forum_id']}'>".$e107->tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
 			} else
 			{
 				$BREADCRUMB .= $tmpFname;

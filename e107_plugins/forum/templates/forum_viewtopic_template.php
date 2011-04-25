@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -162,7 +160,7 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 
 	<table style='".USER_WIDTH."'>
 	<tr>
-	<td style='width:80%'><span class='mediumtext'>{GOTOPAGES}&nbsp;</span>
+	<td style='width:80%'>{GOTOPAGES}
 	</td>
 	<td style='width:20%; text-align: right; white-space: nowrap'>
 	{BUTTONS}
@@ -287,18 +285,18 @@ $FORUMDELETEDSTYLE = "<tr>
 	</tr>";
 
 
-$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";
 
-$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
 $FORUM_CRUMB['parent']['value'] = "{PARENT_TITLE}";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
-$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
 $FORUM_CRUMB['subparent']['sep'] = " :: ";
 
-$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
+$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORUM_TITLE}</a>";
 
 ?>
