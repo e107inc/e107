@@ -497,7 +497,7 @@ class e107ForumThread
 			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 			exit;
 		}
-		$this->pages = ceil(($this->threadInfo['thread_total_replies'] + 1) / $this->perPage);
+		$this->pages = ceil(($this->threadInfo['thread_total_replies']) / $this->perPage);
 		$this->noInc = false;
 	}
 
@@ -541,33 +541,33 @@ class e107ForumThread
 				$postId = varset($_GET['id']);
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
-				$postPage = ceil($postNum / $forum->prefs->get('postspage'))-1;
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage");
+				$postPage = ceil($postNum / $forum->prefs->get('postspage'));
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage&raw");
 				header('location: '.$url);
 				exit;
 				break;
 
 			case 'last':
 				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
-				$thread->page = ($pages);
+				$thread->page = ($pages - 1);
 				break;
 
-			case 'next':
+			case 'next': // FIXME - nextprev thread detection not working
 				$next = $forum->threadGetNextPrev('next', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($next)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $next));
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $next, 'raw' => true));
 					header("location: {$url}");
 					exit;
 				}
 				$this->message = LAN_405;
 				break;
 
-			case 'prev':
+			case 'prev': // FIXME - nextprev thread detection not working
 				$prev = $forum->threadGetNextPrev('prev', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($prev)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $prev));
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $prev, 'raw' => true));
 					header("location: {$url}");
 					exit;
 				}
