@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * e107 website system
  *
@@ -15,6 +15,13 @@
  */
 
 require_once ('class2.php');
+
+
+if($_GET['elan'])
+{
+	header('location: '.SITEURL);
+	exit;
+}
 
 if (file_exists('index_include.php'))
 {
@@ -87,7 +94,7 @@ if (!$location)
 
 if (!trim($location))
 	$location = 'news.php';
-	
+
 list($page, $str) = explode("?", $location."?"); // required to prevent infinite looping when queries are used on index.php.
 if ($page == "index.php") // Welcome Message is the front-page.
 {
