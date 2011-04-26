@@ -202,24 +202,32 @@ class e_ranks
 		}
 
 		$ret = array();
-		$userData = e107::getSystemUser($userId)->getData(); //get_user_data($userId);
+		if(is_array($userId))
+		{
+			$userData = $userId;
+			$userId = $userData['user_id'];
+		}
+		else
+		{
+			$userData = e107::getSystemUser($userId)->getData(); //get_user_data($userId);
+		}
 
 		if($userData['user_admin'])
 		{
 			if($userData['user_perms'] == '0')
 			{
 				//Main Site Admin
-				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' alt='".$this->_getName($this->ranks['special'][1])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' alt='".$this->_getName($this->ranks['special'][1])."' title='".$this->_getName($this->ranks['special'][1])."' />";
 			}
 			else
 			{
 				//Site Admin
-				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' alt='".$this->_getName($this->ranks['special'][2])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' alt='".$this->_getName($this->ranks['special'][2])."' title='".$this->_getName($this->ranks['special'][2])."' />";
 			}
 		}
 		elseif($moderator)
 		{
-			$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][3])."' alt='".$this->_getName($this->ranks['special'][3])."' /><br />";
+			$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][3])."' alt='".$this->_getName($this->ranks['special'][3])."' title='".$this->_getName($this->ranks['special'][3])."' />";
 		}
 
 		$userData['user_daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
@@ -241,7 +249,7 @@ class e_ranks
 			{
 				if($level >= $this->ranks['data'][$i]['thresh'] && $level < $this->ranks['data'][($i+1)]['thresh'])
 				{
-					$rank = $i;
+					$rank = $i + 1;
 					break;
 				}
 			}
@@ -249,14 +257,15 @@ class e_ranks
 		if($rank !== false)
 		{
 			$data['name'] = $this->_getName($this->ranks['data'][$rank]);
-			$img_title = ($this->ranks['data'][$rank]['name'] ? "alt='{$data['name']}' title='{$data['name']}'" : '');
-			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."' /><br />";
+			$img_title = ($this->ranks['data'][$rank]['name'] ? " alt='{$data['name']}' title='{$data['name']}'" : ' alt = ""');
+			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."'{$img_title} />";
 		}
 		$this->userRanks[$userId] = $data;
 
 		return $data;
 	}
 
+	// TODO - custom ranking by array key - e.g. user_comments only
 	private function _calcLevel(&$userData)
 	{
 		$forumCount = varset($userData['user_plugin_forum_posts'], 0) * 5;

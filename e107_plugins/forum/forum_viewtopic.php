@@ -86,7 +86,7 @@ $pm_installed = plugInstalled('pm');
 //Only increment thread views if not being viewed by thread starter
 if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo['thread_total_replies'] > 0) || !$thread->noInc)
 {
-	$forum->threadIncview($threadId);
+	$forum->threadIncview($thread->threadInfo['thread_id']);
 }
 
 define('e_PAGETITLE', $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off').' / '.$e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
@@ -474,7 +474,12 @@ function rpg($user_join, $user_forums)
 class e107ForumThread
 {
 
-	var $message, $threadId, $forumId, $perPage, $noInc, $pages;
+	public $message;
+	public $threadId;
+	public $forumId;
+	public $perPage;
+	public $noInc;
+	public $pages;
 
 	function init()
 	{
