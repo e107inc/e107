@@ -1,23 +1,26 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/top.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Top page
+ *
+ * $URL$
+ * $Id$
+ *
 */
 require_once ('class2.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
+$ns = e107::getRender();
+$pref = e107::getPref();
+$sql = e107::getDb();
+
+if(!defined('IMODE')) define('IMODE', 'lite'); // BC
+
+e107::coreLan('top');
 
 if (!e_QUERY)
 {
@@ -36,10 +39,10 @@ else
 }
 if ($action == 'top')
 {
-	define('e_PAGETITLE', ': '.LAN_8);
+	define('e_PAGETITLE', LAN_8);
 } elseif ($action == 'active')
 {
-	define('e_PAGETITLE', ': '.LAN_7);
+	define('e_PAGETITLE', LAN_7);
 }
 
 
@@ -48,9 +51,9 @@ if ($action == 'active')
 {
 	require_once (e_HANDLER.'userclass_class.php');
 	require_once (e_PLUGIN.'forum/forum_class.php');
-	$forum = new e107forum;
+	$forum = new e107forum();
 
-	$forumList = implode(',', $forum->permList['view']);
+	$forumList = implode(',', $forum->getForumPermList('view'));
 
 	$qry = "
 	SELECT
@@ -68,10 +71,7 @@ if ($action == 'active')
 	if ($sql->db_Select_gen($qry))
 	{
 		$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
-		if (!is_object($gen))
-		{
-			$gen = new convert;
-		}
+		$gen = e107::getDateConvert();
 
 		$text .= "<tr>
 			<td style='width:5%' class='forumheader'>&nbsp;</td>
@@ -126,13 +126,18 @@ if ($action == 'active')
 }
 if ($action == 'top')
 {
-	require_once (e_HANDLER.'level_handler.php');
+	//require_once (e_HANDLER.'level_handler.php');
+	$rank = e107::getRank();
+
 	define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
 	define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
 	define('IMAGE_rank_moderator_image', ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
 
 	if ($subaction == 'forum' || $subaction == 'all')
 	{
+		require_once (e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+
 		$qry = "
 		SELECT ue.*, u.* FROM `#user_extended` AS ue
 		LEFT JOIN `#user` AS u ON u.user_id = ue.user_extended_id
@@ -150,16 +155,28 @@ if ($action == 'top')
 			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
 			</tr>\n";
 		$counter = 1 + $from;
-		if ($e107->sql->db_Select_gen($qry))
+		$sql2 = e107::getDb('sql2');
+		if ($sql2->db_Select_gen($qry))
 		{
-			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
 			{
-				$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
+				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
+				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
+
+				if(vartrue($ldata['special']))
+				{
+					$r = $ldata['special'];
+				}
+				else
+				{
+					$r = $ldata['pic'] ? $ldata['pic'] : defset($ldata['name'], $ldata['name']);
+				}
+				if(!$r) $r = 'n/a';
 				$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$row['user_id']}'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
-					<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
+					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";
 				$counter++;
 			}
@@ -188,17 +205,36 @@ if ($action == 'top')
 			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
 			</tr>\n";
 		$counter = 1;
-		while ($row = $sql->db_Fetch())
+		if($top_forum_posters)
 		{
-			extract($row);
-			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-			$text .= "<tr>
-				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a></td>
-				<td style='width:10%; text-align:center' class='forumheader3'>{$user_comments}</td>
-				<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
+			while ($row = $sql->db_Fetch())
+			{
+				// TODO - Custom ranking (comments), LANs
+				$ldata = $rank->getRanks($row);
+				if(vartrue($ldata['special']))
+				{
+					$r = $ldata['special'];
+				}
+				else
+				{
+					$r = $ldata['pic'] ? $ldata['pic'] : defset($ldata['name'], $ldata['name']);
+				}
+				if(!$r) $r = 'n/a';
+				$text .= "<tr>
+					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
+					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_comments']}</td>
+					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
+					</tr>";
+				$counter++;
+			}
+		}
+		else
+		{
+			$text .= "
+				<tr>
+					<td class='forumheader3' colspan='4'>No results</td>
 				</tr>";
-			$counter++;
 		}
 		$text .= "</table>\n</div>";
 		$ns->tablerender(TOP_LAN_3, $text);
@@ -217,17 +253,37 @@ if ($action == 'top')
 			<td style='width:30%; text-align:center' class='forumheader3'>".TOP_LAN_6."</td>
 			</tr>\n";
 		$counter = 1;
-		while ($row = $sql->db_Fetch())
+		if($top_forum_posters)
 		{
-			extract($row);
-			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-			$text .= "<tr>
-				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a></td>
-				<td style='width:10%; text-align:center' class='forumheader3'>{$user_chats}</td>
-				<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
+			while ($row = $sql->db_Fetch())
+			{
+				// TODO - Custom ranking (chat), LANs
+				$ldata = $rank->getRanks($row);
+				if(vartrue($ldata['special']))
+				{
+					$r = $ldata['special'];
+				}
+				else
+				{
+					$r = $ldata['pic'] ? $ldata['pic'] : defset($ldata['name'], $ldata['name']);
+				}
+				if(!$r) $r = 'n/a';
+				$text .= "<tr>
+					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
+					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_chats']}</td>
+					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
+					</tr>";
+				$counter++;
+			}
+
+		}
+		else
+		{
+			$text .= "
+				<tr>
+					<td class='forumheader3' colspan='4'>No results</td>
 				</tr>";
-			$counter++;
 		}
 		$text .= "</table>\n</div>";
 		$ns->tablerender(TOP_LAN_5, $text);
