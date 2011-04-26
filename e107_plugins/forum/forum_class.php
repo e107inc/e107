@@ -58,7 +58,7 @@ class e107forum
 */
 	}
 
-	function loadPermList()
+	private function loadPermList()
 	{
 		$e107 = e107::getInstance();
 		if($tmp = $e107->ecache->retrieve_sys('forum_perms'))
@@ -67,11 +67,17 @@ class e107forum
 		}
 		else
 		{
-			$this->getForumPermList();
+			$this->_getForumPermList();
 			$tmp = $e107->arrayStorage->WriteArray($this->permList, false);
 			$e107->ecache->set_sys('forum_perms', $tmp);
 		}
 		unset($tmp);
+	}
+
+	public function getForumPermList($what = null)
+	{
+		if(null !== $what) return (isset($this->permList[$what]) ? $this->permList[$what] : null);
+		return $this->permList;
 	}
 
 	private function setDefaults()
@@ -89,7 +95,7 @@ class e107forum
 		$this->prefs->set('highlightsticky', '1');
 	}
 
-	function getForumPermList()
+	private function _getForumPermList()
 	{
 		$e107 = e107::getInstance();
 
@@ -1003,14 +1009,13 @@ class e107forum
 
 	function threadIncView($id)
 	{
-		$e107 = e107::getInstance();
 		$id = (int)$id;
-		return $e107->sql->db_Update('forum_thread', 'thread_views=thread_views+1 WHERE thread_id='.$id);
+		return e107::getDb()->db_Update('forum_thread', 'thread_views=thread_views+1 WHERE thread_id='.$id);
 	}
 
 	function _forum_lp_update($lp_type, $lp_user, $lp_info, $lp_forum_id, $lp_forum_sub)
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$sql->db_Update('forum', "{$lp_type}={$lp_type}+1, forum_lastpost_user='{$lp_user}', forum_lastpost_info = '{$lp_info}' WHERE forum_id='".intval($lp_forum_id)."' ");
 		if($lp_forum_sub)
 		{
