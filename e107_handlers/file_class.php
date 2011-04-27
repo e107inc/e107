@@ -144,7 +144,7 @@ class e_file
 			$path = substr($path, 0, -1);
 		}
 
-		if(!$handle = opendir($path))
+		if(!is_dir($path) || !$handle = opendir($path))
 		{
 			return $ret;
 		}
