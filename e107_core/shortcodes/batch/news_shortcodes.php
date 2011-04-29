@@ -29,7 +29,7 @@ class news_shortcodes extends e_shortcode
 	//protected $news_item; - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 	protected $e107;
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
-	
+
 	function __construct($eVars = null)
 	{
 		parent::__construct($eVars);
@@ -225,7 +225,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$es2 = POST_EXTENDEDSTRING;
 			}
-			if (isset($_POST['preview']))
+			if (deftrue('ADMIN_AREA') && isset($_POST['preview']))
 			{
 				return $es1.EXTENDEDSTRING.$es2."<br />".$this->news_item['news_extended'];
 			}
