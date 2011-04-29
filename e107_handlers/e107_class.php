@@ -988,7 +988,7 @@ class e107
 	/**
 	 * Retrieve sitelinks singleton object
 	 *
-	 * @return user_class
+	 * @return sitelinks
 	 */
 	public static function getSitelinks()
 	{
