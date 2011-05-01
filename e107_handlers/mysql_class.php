@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * mySQL Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 
@@ -24,8 +22,8 @@
  *	@todo separate cache for db type tables
  *
  * WARNING!!! System config  should be DIRECTLY called inside db handler like this:
- * e107::getConfig('core', false); 
- * FALSE (don't load) is critical important - if missed, expect dead loop (preference handler is calling db handler as well 
+ * e107::getConfig('core', false);
+ * FALSE (don't load) is critical important - if missed, expect dead loop (preference handler is calling db handler as well
  * when data is initally loaded)
  * Always use $this->getConfig() method to avoid issues pointed above
  */
@@ -117,7 +115,7 @@ class e_db_mysql
 
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
 
-		$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
+		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
 		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
 		{
 			if (!isset($_SESSION[$langid])) { return; }
@@ -127,7 +125,9 @@ class e_db_mysql
 		{
 			if (!isset($_COOKIE[$langid])) { return; }
 			$this->mySQLlanguage = $_COOKIE[$langid];
-		}
+		}*/
+		// Detect is already done in language handler, use it if not too early
+		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
 	}
 
 	/**
@@ -929,8 +929,9 @@ class e_db_mysql
 
 		if(strpos($query,'`#') !== FALSE)
 		{
-			$query = str_replace('`#','`'.$this->mySQLPrefix,$query);	// This simple substitution should be OK when backticks used
-			//$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
+			//$query = str_replace('`#','`'.$this->mySQLPrefix,$query);	// This simple substitution should be OK when backticks used
+			// SecretR - reverted back - breaks multi-language
+			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
 		{	// Deprecated scenario - caused problems when '#' appeared in data - hence use of backticks
@@ -1031,7 +1032,7 @@ class e_db_mysql
 		//When running a multi-language site with english included. English must be the main site language.
 		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
 		// Temporary solution, better one is needed
-		$core_pref = $this->getConfig(); 
+		$core_pref = $this->getConfig();
 		//if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE)
 		if ((!$this->mySQLlanguage || !$core_pref->get('multilanguage') || !$core_pref->get('sitelanguage') /*|| $this->mySQLlanguage==$core_pref->get('sitelanguage')*/) && $multiple==FALSE)
 		{
@@ -1047,7 +1048,7 @@ class e_db_mysql
 		if($multiple == FALSE)
 		{
 			$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
-			return ($this->db_Table_exists($table,$this->mySQLlanguage)) ? $mltable : $table;
+			return ($this->db_Table_exists($table,$this->mySQLlanguage) ? $mltable : $table);
 		}
 		else // return an array of all matching language tables. eg [french]->e107_lan_news
 		{
@@ -1319,9 +1320,11 @@ class e_db_mysql
 	{
 		global $pref;
 		$table = strtolower($table); // precaution for multilanguage
-
-		if($language && ($language != $pref['sitelanguage']))
+		// it's lan table check
+		if($language)
 		{
+			// TODO - discuss this!!! Smells like mislogic - we ignore e.g. bulgarian_news when default language is Bulgarian!
+			if($language == $pref['sitelanguage']) return false;
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$this->mySQLtableListLanguage = $this->db_mySQLtableList($language);
@@ -1341,7 +1344,8 @@ class e_db_mysql
 
 
 	/**
-	 * Populate $this->mySQLtableList;
+	 * Populate mySQLtableList and mySQLtableListLanguage
+	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
 	 * @return array
 	 */
 	private function db_mySQLtableList($language='')
@@ -1507,7 +1511,7 @@ class e_db_mysql
 	{
 		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
 	}
-	
+
 	function resetLastError()
 	{
 		$this->mySQLlastErrNum = 0;
