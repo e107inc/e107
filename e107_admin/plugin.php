@@ -270,7 +270,7 @@ if ($action == 'uninstall')
 			include_once(e_HANDLER."file_class.php");
 			$fi = new e_file;
 			$result = $fi->rmtree(e_PLUGIN.$eplug_folder);
-			$text .= ($result ? "<br />All files removed from ".e_PLUGIN.$eplug_folder : '<br />File deletion failed<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+			$text .= '<br />'.($result ? EPL_ADLAN_64.e_PLUGIN.$eplug_folder : EPL_ADLAN_65.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
 		}
 		else
 		{

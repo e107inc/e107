@@ -84,6 +84,8 @@ define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
+define('EPL_ADLAN_64', 'All files removed from ');
+define('EPL_ADLAN_65', 'File deletion failed');
 
 define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
 define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
