@@ -61,9 +61,9 @@ class links_admin_ui extends e_admin_ui
 		protected $pluginTitle 	= "Site links";
 		protected $pluginName 	= 'core';
 		protected $table 		= "links";
-		protected $listQry 		= "SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit.
+		protected $listQry 		= '';//"SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit.
 		protected $pid 			= "link_id";
-		protected $perPage 		= 15;
+		protected $perPage 		= 0;
 		protected $batchDelete 	= true;
 
 		protected $fields = array(
@@ -391,7 +391,7 @@ class links_admin_form_ui extends e_admin_form_ui
 		}
 
 		if($mode == 'write')
-		{					
+		{
 			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
 		}
 
