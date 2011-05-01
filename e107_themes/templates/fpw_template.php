@@ -15,15 +15,21 @@ if(!isset($FPW_TABLE))
 
 		<tr>
 		<td class='fcaption' colspan='2'>".LAN_05."</td>
-		</tr>
+		</tr>";
+		
+		if($pref['allowEmailLogin']==0)
+		{
+			$FPW_TABLE .= "
+			<tr>
+			<td class='forumheader3' style='width:70%'>".LAN_FPW1.":</td>
+			<td class='forumheader3' style='width:30%;text-align:center'>
+			<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />
+			</td>
+			</tr>";	
+		}
 
-		<tr>
-		<td class='forumheader3' style='width:70%'>".LAN_FPW1.":</td>
-		<td class='forumheader3' style='width:30%;text-align:center'>
-		<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />
-		</td>
-		</tr>
-
+		
+		$FPW_TABLE .="
 		<tr>
 		<td class='forumheader3' style='width:70%'>".LAN_112.":</td>
 		<td class='forumheader3' style='width:30%; text-align:center'>
