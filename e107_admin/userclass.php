@@ -128,7 +128,11 @@ for($a = 0; $a <= (count($class)-1); $a++) {
 $adminreturn = e_ADMIN.'users.php?cu';
 if (isset($qs[1]))
 {
-	$adminreturn .= '.'.$qs[1].(isset($qs[2]) ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : "");
+	if ($qs[1] != 'main')
+	{
+		$adminreturn .= '.'.$qs[1];
+	}
+	$adminreturn .= (isset($qs[2]) ? ".{$qs[2]}.{$qs[3]}.{$qs[4]}" : '');
 }
 
 $text .= "	<tr><td class='forumheader' colspan='2' style='text-align:center'>
