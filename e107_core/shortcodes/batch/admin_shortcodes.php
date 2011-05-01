@@ -776,7 +776,7 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_siteinfo()
+	function sc_admin_siteinfo($parm='')
 	{
 		if (ADMIN)
 		{
@@ -785,6 +785,11 @@ class admin_shortcodes
 			if (file_exists(e_ADMIN.'ver.php'))
 			{
 				include(e_ADMIN.'ver.php');
+			}
+			
+			if($parm == "version")
+			{
+				return $e107info['e107_version'];
 			}
 
 			$obj = e107::getDateConvert();
