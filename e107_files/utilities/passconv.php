@@ -106,7 +106,7 @@ if (isset($_POST['GetOnWithIt']))
   user_prefs text NOT NULL,
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name)
-) TYPE=MyISAM;";			// If not exists, of course
+) ENGINE=MyISAM;";			// If not exists, of course
 
 	if (!$pc_db->db_Select_gen($qry))
 	{

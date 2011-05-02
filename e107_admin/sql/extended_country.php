@@ -26,7 +26,7 @@ CREATE TABLE user_extended_country (
   country_iso char(2) NOT NULL default '',
   PRIMARY KEY  (country_code),
   KEY country_iso (country_iso)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 INSERT INTO user_extended_country VALUES('AFG', 'Afghanistan', 'Asia', 'Southern and Central Asia', 'AF');
 INSERT INTO user_extended_country VALUES('NLD', 'Netherlands', 'Europe', 'Western Europe', 'NL');

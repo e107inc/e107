@@ -554,7 +554,7 @@ if(isset($_POST['do_fix']))
 			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
 			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
 			{
-				$query .= ') TYPE=MyISAM;';
+				$query .= ') ENGINE=MyISAM;';
 			}
 			break;
 		}
