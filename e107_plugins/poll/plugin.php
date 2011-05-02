@@ -74,7 +74,7 @@ $eplug_tables = array(
   poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
   poll_storage_method tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (poll_id)
-) TYPE=MyISAM;");
+) ENGINE=MyISAM;");
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;

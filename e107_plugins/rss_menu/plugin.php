@@ -66,7 +66,7 @@ $eplug_tables = array(
 	rss_class tinyint(1) unsigned NOT NULL default '0',
 	rss_limit tinyint(3) unsigned NOT NULL default '0',
 	PRIMARY KEY (rss_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
 	(0, '".RSS_NEWS."', 'news', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),
@@ -97,7 +97,7 @@ $upgrade_alter_tables	= array(
 	rss_class tinyint(1) unsigned NOT NULL default '0',
 	rss_limit tinyint(3) unsigned NOT NULL default '0',
 	PRIMARY KEY (rss_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 
 	"INSERT INTO ".MPREFIX."rss VALUES
 	(0, '".RSS_NEWS."', 'news', '', 'news', '".RSS_PLUGIN_LAN_7."', '".time()."', 0, 9),

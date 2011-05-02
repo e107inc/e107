@@ -43,7 +43,7 @@ pm_attachments text NOT NULL,
 pm_option varchar(250) NOT NULL default '',
 pm_size int(10) unsigned NOT NULL default '0',
 PRIMARY KEY  (pm_id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;");
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;");
 			
 $sql -> db_Select_gen("
 CREATE TABLE ".MPREFIX."private_msg_block (
@@ -53,7 +53,7 @@ pm_block_to int(10) unsigned NOT NULL default '0',
 pm_block_datestamp int(10) unsigned NOT NULL default '0',
 pm_block_count int(10) unsigned NOT NULL default '0',
 PRIMARY KEY  (pm_block_id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;");
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;");
 
 $plugin -> manage_plugin_prefs('add', 'plug_sc', 'pm', 'SENDPM');
 

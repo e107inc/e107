@@ -66,7 +66,7 @@ if(!$sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."pcontent")) {
 	content_meta text NOT NULL,
 	content_layout varchar(255) NOT NULL default '',
 	PRIMARY KEY  (content_id)
-	) TYPE=MyISAM;";
+	) ENGINE=MyISAM;";
 	
 	$sql->db_Select_gen($query);
 }

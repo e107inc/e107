@@ -79,7 +79,7 @@ $eplug_tables = array(
 	linkword_word varchar(100) NOT NULL default '',
 	linkword_link varchar(150) NOT NULL default '',
 	PRIMARY KEY ( linkword_id )
-	) TYPE=MyISAM AUTO_INCREMENT=1;"
+	) ENGINE=MyISAM AUTO_INCREMENT=1;"
 );
 
 

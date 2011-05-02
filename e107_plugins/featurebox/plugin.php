@@ -63,7 +63,7 @@ $eplug_tables = array(
   fb_rendertype tinyint(1) unsigned NOT NULL default '0',
   fb_template varchar(50) NOT NULL default '',
   PRIMARY KEY  (fb_id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;");
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;");
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;

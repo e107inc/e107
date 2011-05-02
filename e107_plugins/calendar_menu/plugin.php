@@ -117,7 +117,7 @@ $eplug_tables = array(
 	event_rec_m tinyint(2) unsigned NOT NULL default '0',
 	event_rec_y tinyint(2) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 	"CREATE TABLE ".MPREFIX."event_cat (
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
 	event_cat_name varchar(100) NOT NULL default '',
@@ -135,14 +135,14 @@ $eplug_tables = array(
 	event_cat_description text,
 	event_cat_force_class int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
-	) TYPE=MyISAM;"
+	) ENGINE=MyISAM;"
 	,
 	"CREATE TABLE ".MPREFIX."event_subs (
 	event_subid int(10) unsigned NOT NULL auto_increment,
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;");
+	) ENGINE=MyISAM;");
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
@@ -224,7 +224,7 @@ $upgrade_alter_tables = array(
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;"
+	) ENGINE=MyISAM;"
 );
 $version_notes .= "<u>3.5</u><br />".EC_ADLAN_A156."<br />";
 }

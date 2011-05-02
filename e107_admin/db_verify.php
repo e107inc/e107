@@ -403,11 +403,11 @@ if(isset($_POST['do_fix']))
 
 		if($mode == "create")
 		{
-			//$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
+			//$query = "CREATE TABLE ".MPREFIX.$table." ($newval) ENGINE=MyISAM;";
 			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
 			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
 			{
-				$query .= ') TYPE=MyISAM;';
+				$query .= ') ENGINE=MyISAM;';
 			}
 		}
 

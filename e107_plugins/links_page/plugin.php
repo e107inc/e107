@@ -67,7 +67,7 @@ $eplug_tables = array(
 	link_category_class varchar(100) NOT NULL default '0',
 	link_category_datestamp int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (link_category_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 
 	"CREATE TABLE ".MPREFIX."links_page (
 	link_id int(10) unsigned NOT NULL auto_increment,
@@ -83,7 +83,7 @@ $eplug_tables = array(
 	link_datestamp int(10) unsigned NOT NULL default '0',
 	link_author varchar(255) NOT NULL default '',
 	PRIMARY KEY  (link_id)
-	) TYPE=MyISAM;" );
+	) ENGINE=MyISAM;" );
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;

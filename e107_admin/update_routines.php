@@ -345,7 +345,7 @@ function update_617_to_700($type='') {
 			poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
 			poll_storage_method tinyint(1) unsigned NOT NULL default '0',
 			PRIMARY KEY  (poll_id)
-			) TYPE=MyISAM;";
+			) ENGINE=MyISAM;";
 			$sql->db_Select_gen($query);
 			catch_error();
 			if($sql -> db_Select("poll"))
@@ -397,7 +397,7 @@ function update_617_to_700($type='') {
 			newsfeed_active tinyint(1) unsigned NOT NULL default '0',
 			newsfeed_updateint int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (newsfeed_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 		}
 
@@ -433,7 +433,7 @@ function update_617_to_700($type='') {
 			mirror_description text NOT NULL,
 			mirror_count int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (mirror_id)
-			) TYPE=MyISAM;";
+			) ENGINE=MyISAM;";
 			$sql->db_Select_gen($query);
 			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
@@ -470,7 +470,7 @@ function update_617_to_700($type='') {
 		  	page_ip_restrict text NOT NULL,
 		  	page_theme varchar(50) NOT NULL default '',
 		  	PRIMARY KEY  (page_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class varchar(250) NOT NULL default ''");
 			catch_error();
@@ -488,7 +488,7 @@ function update_617_to_700($type='') {
 				link_category_description varchar(250) NOT NULL default '',
 				link_category_icon varchar(100) NOT NULL default '',
 				PRIMARY KEY  (link_category_id)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 				catch_error();
 				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page (
 				link_id int(10) unsigned NOT NULL auto_increment,
@@ -502,7 +502,7 @@ function update_617_to_700($type='') {
 				link_open tinyint(1) unsigned NOT NULL default '0',
 				link_class tinyint(3) unsigned NOT NULL default '0',
 				PRIMARY KEY  (link_id)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 				catch_error();
 				$new_cat_id = 1;
 				$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
@@ -585,7 +585,7 @@ function update_617_to_700($type='') {
 			dblog_query text NOT NULL,
 			dblog_remarks varchar(255) NOT NULL default '',
 			PRIMARY KEY  (dblog_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 		}
 
@@ -600,7 +600,7 @@ function update_617_to_700($type='') {
 			gen_intdata int(10) unsigned NOT NULL default '0',
 			gen_chardata text NOT NULL,
 			PRIMARY KEY  (gen_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 		}
 
@@ -608,7 +608,7 @@ function update_617_to_700($type='') {
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."user_extended (
 			user_extended_id int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (user_extended_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."user_extended_struct (
@@ -624,7 +624,7 @@ function update_617_to_700($type='') {
 			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
 			user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
 			PRIMARY KEY  (user_extended_struct_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0'");
@@ -806,7 +806,7 @@ function update_617_to_700($type='') {
 			preset_field varchar(80) NOT NULL default '',
 			preset_value varchar(255) NOT NULL default '',
 			PRIMARY KEY  (preset_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 		}
 
@@ -835,7 +835,7 @@ function update_617_to_700($type='') {
 			download_request_download_id int(10) unsigned NOT NULL default '0',
 			download_request_datestamp int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (download_request_id)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			catch_error();
 		}
 
@@ -913,7 +913,7 @@ function update_617_to_700($type='') {
 				log_data longtext NOT NULL,
 				PRIMARY KEY  (log_uniqueid),
 				UNIQUE KEY log_id (log_id)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 				catch_error();
 			}
 
@@ -1374,7 +1374,7 @@ function update_617_to_700($type='') {
 					event_userid int(10) unsigned NOT NULL default '0',
 					event_cat int(10) unsigned NOT NULL default '0',
 					PRIMARY KEY (event_subid)
-					) TYPE=MyISAM;");
+					) ENGINE=MyISAM;");
 
 				$row = $sql->db_Fetch();
 				if($row['plugin_version'] != '3.5'){

@@ -83,7 +83,7 @@ $eplug_tables = array(
 	content_meta text NOT NULL,
 	content_layout varchar(255) NOT NULL default '',
 	PRIMARY KEY  (content_id)
-	) TYPE=MyISAM;",
+	) ENGINE=MyISAM;",
 	"INSERT INTO ".MPREFIX."pcontent VALUES (1, 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1', '0', '', '')",
 	"INSERT INTO ".MPREFIX."pcontent VALUES (2, 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '2', '0', '', '')",
 	"INSERT INTO ".MPREFIX."pcontent VALUES (3, 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '3', '0', '', '')"
