@@ -321,7 +321,7 @@ class listclass {
 	function show_section_list($arr, $mode, $max="")
 	{
 		global $pref, $tp, $listplugindir, $list_shortcodes, $sql, $list_pref, $defaultarray, $content_types, $content_name;
-		global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
+		global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO, $LIST_RECENT_ID;
 		global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
 		global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
 
@@ -362,6 +362,8 @@ class listclass {
 		$start = "";
 		$end = "";
 
+		$LIST_RECENT_ID = 'list_'.$mode.'_'.$arr[9];
+
 		$LIST_ICON = "";
 		$LIST_DATE = "";
 		$LIST_HEADING = "";
@@ -372,8 +374,9 @@ class listclass {
 		//$LIST_CAPTION = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : "");
 		//echo $list_pref["$arr_{$mode}_caption"];
 
-		if(is_array($LIST_DATA)){			//if it is an array, data exists and data is not empty
-			for($i=0;$i<count($LIST_DATA[$mode]);$i++)
+		if(is_array($LIST_DATA))
+		{			//if it is an array, data exists and data is not empty
+			for($i=0; $i<count($LIST_DATA[$mode]); $i++)
 			{
 				$LIST_ICON		= $LIST_DATA[$mode][$i][0];
 				$LIST_HEADING	= $LIST_DATA[$mode][$i][1];
@@ -382,26 +385,35 @@ class listclass {
 				$LIST_DATE		= $LIST_DATA[$mode][$i][4];
 				$LIST_INFO		= $LIST_DATA[$mode][$i][5];
 
-				if($mode == "recent_menu"){
+				if($mode == "recent_menu")
+				{
 					global $sc_style;
 					$LIST_AUTHOR	= ($LIST_AUTHOR ? $sc_style['LIST_AUTHOR']['pre'].$LIST_AUTHOR.$sc_style['LIST_AUTHOR']['post'] : "");
 					$LIST_CATEGORY	= ($LIST_CATEGORY ? $sc_style['LIST_CATEGORY']['pre'].$LIST_CATEGORY.$sc_style['LIST_CATEGORY']['post'] : "");
 					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT);
 
-				}elseif($mode == "new_menu"){
+				}
+				elseif($mode == "new_menu")
+				{
 					global $sc_style;
 					$LIST_AUTHOR	= ($LIST_AUTHOR ? $sc_style['LIST_AUTHOR']['pre'].$LIST_AUTHOR.$sc_style['LIST_AUTHOR']['post'] : "");
 					$LIST_CATEGORY	= ($LIST_CATEGORY ? $sc_style['LIST_CATEGORY']['pre'].$LIST_CATEGORY.$sc_style['LIST_CATEGORY']['post'] : "");
 					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_NEW);
 
-				}elseif($mode == "recent_page"){
+				}
+				elseif($mode == "recent_page")
+				{
 					$menutext .= $tp -> parseTemplate($LIST_PAGE_RECENT, FALSE, $list_shortcodes);
 
-				}elseif($mode == "new_page"){
+				}
+				elseif($mode == "new_page")
+				{
 					$menutext .= $tp -> parseTemplate($LIST_PAGE_NEW, FALSE, $list_shortcodes);
 				}
 			}
-		}elseif(!is_array($LIST_DATA) && $LIST_DATA != ""){
+		}
+		elseif(!is_array($LIST_DATA) && $LIST_DATA != "")
+		{
 			$LIST_HEADING = $LIST_DATA;
 			if($mode == "recent_menu"){
 				if($list_pref[$mode."_showempty"]){

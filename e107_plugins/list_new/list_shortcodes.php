@@ -34,5 +34,10 @@ return $LIST_INFO;
 SC_END
 
 
+SC_BEGIN LIST_RECENT_ID
+global $LIST_RECENT_ID;
+return $LIST_RECENT_ID;
+SC_END
+
 */
 ?>
