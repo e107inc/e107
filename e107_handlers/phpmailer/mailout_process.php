@@ -212,8 +212,8 @@ if($_POST['cancel_emails']){
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'] : SITEURL."/signup.php?activate.".$row['user_id'].".".$row['user_sess']);
         $signup_link = ($row['user_sess']) ? "<a href='$activator'>$activator</a>" : "";
 
-		$search = array("|USERNAME|","|USERID|","|SIGNUP_LINK|");
-		$replace = array($row['user_name'],$row['user_id'],$signup_link);
+		$search = array("|USERNAME|","|USERID|","|SIGNUP_LINK|","|USER_LOGIN|","|USER_EMAIL|");
+		$replace = array($row['user_name'],$row['user_id'],$signup_link,$row['user_loginname'],$row['user_email']);
 
         $mes_body = str_replace($search,$replace,$message_body);
 		$alt_body = str_replace($search,$replace,stripslashes($tp->toText($_POST['email_body'])));

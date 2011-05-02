@@ -95,9 +95,8 @@ define("MAILAN_65", "seconds");
 define("MAILAN_66", "Cancelled Successfully");
 define("MAILAN_67", "Use 'POP before SMTP' authentication"); 
 define('MAILAN_68', 'Test address');
-
-
-
+define("MAILAN_69","user login");
+define("MAILAN_70","user email");
 
 
 
