@@ -107,7 +107,9 @@ function uploadfile_shortcode($parm)
 		'return_type'	=> 'message',
 	), $parms);
 
-	// PROCESS UPLOADED FILES
+
+// Processing is done by Media Manager. 
+/*	// PROCESS UPLOADED FILES
 	if($parms['process'])
 	{
 		e107_require_once(e_HANDLER.'upload_handler.php');
@@ -122,7 +124,7 @@ function uploadfile_shortcode($parm)
 			'overwrite' => $parms['upload_overwrite'] ? true : false,
 		);
 
-		$uploaded = process_uploaded_files($path, false, $options);
+	//	$uploaded = process_uploaded_files($path, false, $options);
 		if($uploaded)
 		{
 			$emessage = e107::getMessage();
@@ -134,7 +136,7 @@ function uploadfile_shortcode($parm)
 		}
 		return($parms['return_type'] == 'result' ? $uploaded : '');
 	}
-
+*/
 	// RENDER FORM
 	$onclickt = !isset($parms['nowarn']) ? " onclick=\"return jsconfirm('".LAN_UPLOAD_CONFIRM."')\"" : '';
 	$onclickd = " onclick=\"duplicateHTML('{$parms['up_row']}','{$parms['up_container']}');\"";
@@ -144,8 +146,12 @@ function uploadfile_shortcode($parm)
 	        <!-- Upload Shortcode -->
 			<div>
 				<div class='field-spacer'>
-					<button class='action duplicate' type='button' value='no-value'{$onclickd}><span>".LAN_UPLOAD_ADDFILE."</span></button>
-					<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value'{$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>
+					<button class='action duplicate' type='button' value='no-value'{$onclickd}><span>".LAN_UPLOAD_ADDFILE."</span></button>";
+		
+	// Media Manager does the submit, not the shortcode. 			
+	// $text .= "<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value'{$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>";
+	
+	$text .= "			
 				</div>
 				<div id='{$parms['up_container']}'>
 					<div id='{$parms['up_row']}' class='nowrap'>

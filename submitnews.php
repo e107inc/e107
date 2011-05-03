@@ -68,21 +68,28 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 			$submitnews_error = TRUE;
 			$message = SUBNEWSLAN_8;
 		}
-		elseif (varset($uploaded[0]['error'],0) != 0)
+		else
 		{
+			$submitnews_filearray = array();
+			
+			foreach($uploaded as $c=>$v)
+			{
+				if (varset($uploaded[$c]['error'],0) != 0)
+				{
 			$submitnews_error = TRUE;
 			$message = handle_upload_messages($uploaded);
 		}
 		else
 		{
-			if (isset($uploaded[0]['name']) && isset($uploaded[0]['type']) && isset($uploaded[0]['size']))
+					if (isset($uploaded[$c]['name']) && isset($uploaded[$c]['type']) && isset($uploaded[$c]['size']))
 			{
-				$filename = $uploaded[0]['name'];
-				$filetype = $uploaded[0]['type'];
-				$filesize = $uploaded[0]['size'];
+						$filename = $uploaded[$c]['name'];
+						$filetype = $uploaded[$c]['type'];
+						$filesize = $uploaded[$c]['size'];
 				$fileext  = substr(strrchr($filename, "."), 1);
 				$today = getdate();
-				$submitnews_file = USERID."_".$today[0]."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
+						$submitnews_file = USERID."_".$today[0]."_".$c."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
+						
 				if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
 				{
 					require_once(e_HANDLER.'resize_handler.php');
@@ -99,16 +106,20 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 			}
 		}
 	
-		if ($filename && !file_exists(e_IMAGE."newspost_images/".$submitnews_file))
+				if ($filename && file_exists(e_IMAGE."newspost_images/".$submitnews_file))
 		{
-			$submitnews_file = "";
+					$submitnews_filearray[] = $submitnews_file;	
 		}
+				
+	}
+		}
+		
 	}
 
 	if ($submitnews_error === FALSE)
 	{
 		$sql->db_Insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '$submitnews_file' ");
-		$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "ip" => $ip, "newname" => $submitnews_file);
+		$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "image" => $submitnews_file, "ip" => $ip);
 		$e_event->trigger("subnews", $edata_sn);
 		$ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
 		require_once(FOOTERF);
@@ -215,7 +226,7 @@ if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upl
   <tr>
     <td style='width:20%' class='forumheader3'>".SUBNEWSLAN_5."<br /><span class='smalltext'>".SUBNEWSLAN_6."</span></td>
     <td style='width:80%' class='forumheader3'>
-      <input class='tbox' type='file' name='file_userfile[]' style='width:90%' />
+      <input class='tbox' type='file' name='file_userfile[]' style='width:90%' multiple='multiple' />
     </td>
   </tr>";
 }
