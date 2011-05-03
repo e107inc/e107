@@ -540,8 +540,19 @@ if ($dataToSave && !$promptPassword)
 	{
 		header('Location: index.php');
 	}
-	$message = "<div style='text-align:center'>".$message.'</div>';
-	$caption = LAN_OK;
+	
+	if(isset($USERSETTINGS_MESSAGE))
+	{
+		$message = str_replace("{MESSAGE}",$message,$USERSETTINGS_MESSAGE);			
+	}
+	else // backwards compatible
+	{
+		$message = "<div style='text-align:center'>".$message.'</div>';
+		
+	}
+	
+	$caption = (isset($USERSETTINGS_MESSAGE_CAPTION)) ? $USERSETTINGS_MESSAGE_CAPTION : LAN_OK;	
+	
 }	// End - if (!$error)...
 
 
@@ -661,24 +672,25 @@ if (e_QUERY == "update")
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
-$text .= $tp->parseTemplate($USERSETTINGS_EDIT, true, $usersettings_shortcodes);
-$text .= "<div>";
+$text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 
-$text .= "
-	<input type='hidden' name='_uid' value='{$uuid}' />
-	</div>
+
+$text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
 	</form>
 	";
 
-$ns->tablerender(LAN_USET_39, $text);
-			if(!$adminEdit)
-			{
-				require_once (FOOTERF);
-			}
-			else
-			{
-            	require_once(e_ADMIN."footer.php");
-			}
+$caption = (isset($USERSETTINGS_EDIT_CAPTION)) ? $USERSETTINGS_EDIT_CAPTION : LAN_USET_39; // 'Update User Settings'	
+
+$ns->tablerender($caption, $text);
+
+if(!$adminEdit)
+{
+	require_once (FOOTERF);
+}
+else
+{
+   	require_once(e_ADMIN."footer.php");
+}
 
 
 

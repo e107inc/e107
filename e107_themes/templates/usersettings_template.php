@@ -96,6 +96,12 @@ $USEREXTENDED_FIELD = "
 ";
 $REQUIRED_FIELD = "{FIELDNAME}<span class='required'> *</span>";
 
+// After Saving has occurred. 
+$USERSETTINGS_MESSAGE = "<div style='text-align:center'>{MESSAGE}</div>";
+$USERSETTINGS_MESSAGE_CAPTION = LAN_OK;
+
+$USERSETTINGS_EDIT_CAPTION = LAN_USET_39; 	// 'Update User Settings'	
+
 $USERSETTINGS_EDIT = "
 <div style='text-align:center'>
 	<table style='".USER_WIDTH."' class='fborder adminform'>
