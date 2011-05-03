@@ -393,4 +393,48 @@ class e_file
 		return 0;
 	}
 
+	/**
+	 * Parse bytes to human readable format
+	 * Former Download page function
+	 * @param mixed $size file size in bytes or file path if $retrieve is true
+	 * @param boolean $retrieve defines the type of $size
+	 *
+	 * @return string formatted size
+	 */
+	function file_size_encode($size, $retrieve = false)
+	{
+		if($retrieve)
+		{
+			$size = filesize($size);
+		}
+		$kb = 1024;
+		$mb = 1024 * $kb;
+		$gb = 1024 * $mb;
+		$tb = 1024 * $gb;
+		if(!$size)
+		{
+			return '0&nbsp;'.CORE_LAN_B;
+		}
+		if ($size < $kb)
+		{
+			return $size."&nbsp;".CORE_LAN_B;
+		}
+		else if($size < $mb)
+		{
+			return round($size/$kb, 2)."&nbsp;".CORE_LAN_KB;
+		}
+		else if($size < $gb)
+		{
+			return round($size/$mb, 2)."&nbsp;".CORE_LAN_MB;
+		}
+		else if($size < $tb)
+		{
+			return round($size/$gb, 2)."&nbsp;".CORE_LAN_GB;
+		}
+		else
+		{
+			return round($size/$tb, 2)."&nbsp;".CORE_LAN_TB;
+		}
+	}
+
 }
