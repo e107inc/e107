@@ -49,7 +49,8 @@ class e107
 	public $_ip_cache;
 	public $_host_name_cache;
 
-	public $site_theme;
+	public $site_theme; // class2 -> check valid theme
+	public $http_theme_dir; // class2 -> check valid theme
 
 	/**
 	 * Contains reference to global $_E107 array
@@ -144,6 +145,7 @@ class e107
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
 		'eURL'							 => '{e_HANDLER}e107Url.php',
+		'e_core_session'				 => '{e_HANDLER}session_handler.php',
 		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
@@ -162,6 +164,7 @@ class e107
 		'e_model'						 => '{e_HANDLER}model_class.php',
 		'e_news_item'					 => '{e_HANDLER}news_class.php',
 		'e_news_tree'					 => '{e_HANDLER}news_class.php',
+		'e_object'						 => '{e_HANDLER}model_class.php',
 		'e_online'						 => '{e_HANDLER}online_class.php',
 		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
@@ -174,7 +177,7 @@ class e107
 		'e_user_extended_structure_tree' => '{e_HANDLER}user_model.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
-		'e_vars'						 => '{e_HANDLER}e_parse_class.php',
+		'e_vars'						 => '{e_HANDLER}model_class.php',
 		'ecache'						 => '{e_HANDLER}cache_handler.php',
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
@@ -247,7 +250,37 @@ class e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array());
+		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
+	}
+
+	/**
+	 * Initialize environment path constants while installing e107
+	 *
+	 * @return e107
+	 */
+	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
+	{
+		// Do some security checks/cleanup, prepare the environment
+		$this->prepare_request();
+
+		// folder info
+		//$this->e107_dirs = $e107_paths;
+		$this->setDirs($e107_paths, $e107_config_override);
+
+		// build all paths
+		$this->set_paths();
+		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+
+		// set base path, SSL is auto-detected
+		$this->set_base_path();
+
+		// cleanup QUERY_STRING and friends, set  related constants
+		$this->set_request();
+
+		// set some core URLs (e_LOGIN/SIGNUP)
+		$this->set_urls();
+
+		return $this;
 	}
 
 	/**
@@ -279,13 +312,11 @@ class e107
 			// set base path, SSL is auto-detected
 			$this->set_base_path();
 
-			// set some core URLs (e_LOGIN/SIGNUP)
-			$this->set_urls();
-
 			// cleanup QUERY_STRING and friends, set  related constants
-
 			$this->set_request();
 
+			// set some core URLs (e_LOGIN/SIGNUP)
+			$this->set_urls();
 		}
 
 		return $this;
@@ -310,7 +341,9 @@ class e107
 	 */
 	public function setDirs($e107_dirs, $e107_config_override = array())
 	{
-		$this->e107_dirs = array_merge($this->defaultDirs($e107_dirs), (array) $e107_dirs, (array) $e107_config_override);
+		$override = array_merge((array) $e107_dirs, (array) $e107_config_override);
+		// override all
+		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
 		return $this;
 	}
 
@@ -336,7 +369,7 @@ class e107
 			'SYSTEM_DIRECTORY' 		=> 'e107_system/',
 			'CORE_DIRECTORY' 		=> 'e107_core/',
 			'WEB_DIRECTORY' 		=> 'e107_web/',
-		), $override_root);
+		), (array) $override_root);
 
 		if($return_root) return $ret;
 
@@ -365,36 +398,6 @@ class e107
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 
 		return $ret;
-	}
-
-	/**
-	 * Initialize environment path constants while installing e107
-	 *
-	 * @return e107
-	 */
-	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
-	{
-		// Do some security checks/cleanup, prepare the environment
-		$this->prepare_request();
-
-		// folder info
-		//$this->e107_dirs = $e107_paths;
-		$this->setDirs($e107_paths, $e107_config_override);
-
-		// build all paths
-		$this->set_paths();
-		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
-
-		// set base path, SSL is auto-detected
-		$this->set_base_path();
-
-		// set some core URLs (e_LOGIN/SIGNUP)
-		$this->set_urls();
-
-		// cleanup QUERY_STRING and friends, set  related constants
-		$this->set_request();
-
-		return $this;
 	}
 
 	/**
@@ -484,7 +487,8 @@ class e107
 	function getFolder($for)
 	{
 		$key = strtoupper($for).'_DIRECTORY';
-		return (isset($this->e107_dirs[$key]) ? $this->e107_dirs[$key] : '');
+		$self = self::getInstance();
+		return (isset($self->e107_dirs[$key]) ? $self->e107_dirs[$key] : '');
 	}
 
 	/**
@@ -744,12 +748,12 @@ class e107
 	 * @param string $name core|core_backup|emote|menu|search|notify|ipool
 	 * @return e_core_pref
 	 */
-	public static function getConfig($name = 'core')
+	public static function getConfig($name = 'core', $load = true)
 	{
 		if(!isset(self::$_core_config_arr[$name]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
-			self::$_core_config_arr[$name] = new e_core_pref($name, true);
+			self::$_core_config_arr[$name] = new e_core_pref($name, $load);
 		}
 
 		return self::$_core_config_arr[$name];
@@ -949,9 +953,26 @@ class e107
 	 *
 	 * @return UserHandler
 	 */
-	public static function getSession()
+	public static function getUserSession()
 	{
 		return self::getSingleton('UserHandler', true);
+	}
+
+	/**
+	 * Retrieve core session singleton object(s)
+	 *
+	 * @return e_core_session
+	 */
+	public static function getSession($namespace = null)
+	{
+		$id = 'core/e107/session/'.(null === $namespace ? 'e107' : $namespace);
+		if(self::getRegistry($id))
+		{
+			return self::getRegistry($id);
+		}
+		$session = self::getObject('e_core_session', array('namespace' => $namespace), true);
+		self::setRegistry($id, $session);
+		return $session;
 	}
 
 	/**
@@ -967,7 +988,7 @@ class e107
 	/**
 	 * Retrieve sitelinks singleton object
 	 *
-	 * @return user_class
+	 * @return sitelinks
 	 */
 	public static function getSitelinks()
 	{
@@ -1095,7 +1116,7 @@ class e107
 	{
 		return self::getSingleton('notify', true);
 	}
-	
+
 	/**
 	 * Retrieve Language handler singleton object
 	 *
@@ -1200,7 +1221,7 @@ class e107
 
 	/**
 	 * Retrieve online users handler singleton object
-	 * @return e_online
+	 * @return e_ranks
 	 */
 	public static function getRank()
 	{
@@ -1688,6 +1709,76 @@ class e107
 	}
 
 	/**
+	 * Simplify importing of core Language files.
+	 * All inputs are sanitized.
+	 * Core Exceptions as e_LANGUAGE.'.php' and e_LANGUAGE.'_custom.php' are manually loaded. (see class2.php)
+	 *
+	 * Examples:
+	 * <code><?php
+	 * 	// import defeinitions from /e107_languages/[CurrentLanguage]/lan_comment.php</code>
+	 * 	e107::coreLan('comment');
+	 *
+	 * 	// import defeinitions from /e107_languages/[CurrentLanguage]/admin/lan_banlist.php
+	 * 	e107::coreLan('banlist', true);
+	 * </code>
+	 *
+	 * @param string $fname filename without the extension part (e.g. 'comment')
+	 * @param boolean $admin true if it's an administration language file
+	 * @return void
+	 */
+	public static function coreLan($fname, $admin = false)
+	{
+		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
+		if(e107::getRegistry($cstring)) return;
+
+		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', $fname).'.php';
+		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
+
+		e107::setRegistry($cstring, true);
+		self::includeLan($path, false);
+	}
+
+	/**
+	 * Simplify importing of plugin Language files (following e107 plugin structure standards).
+	 * All inputs are sanitized.
+	 *
+	 * Examples:
+	 * <code><?php
+	 * 	// import defeinitions from /e107_plugins/forum/languages/[CurrentLanguage]/lan_forum.php</code>
+	 * 	e107::plugLan('forum', 'lan_forum');
+	 *
+	 * 	// import defeinitions from /e107_plugins/featurebox/languages/[CurrentLanguage]_admin_featurebox.php</code>
+	 * 	e107::plugLan('featurebox', 'admin_featurebox', true);
+	 *
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	e107::plugLan('myplug');
+	 *
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	e107::plugLan('myplug', 'admin/common');
+	 * </code>
+	 *
+	 * @param string $plugin plugin name
+	 * @param string $fname filename without the extension part (e.g. 'common')
+	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
+	 * @return void
+	 */
+	public static function plugLan($plugin, $fname = '', $flat = false)
+	{
+		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
+		if(e107::getRegistry($cstring)) return;
+
+		$plugin = preg_replace('/[^\w]/', '', $plugin);
+
+		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		else $fname = e_LANGUAGE;
+
+		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
+
+		e107::setRegistry($cstring, true);
+		self::includeLan($path, false);
+	}
+
+	/**
 	 * Routine looks in standard paths for language files associated with a plugin or
 	 * theme - primarily for core routines, which won't know for sure where the author has put them.
 	 * $unitName is the name (directory path) of the plugin or theme
@@ -1759,10 +1850,19 @@ class e107
 	/**
 	 * Prepare e107 environment
 	 * This is done before e107_dirs initilization and [TODO] config include
+	 * @param bool $checkS basic security check (0.7 like), will be extended in the future
 	 * @return e107
 	 */
-	public function prepare_request()
+	public function prepare_request($checkS = true)
 	{
+
+		// Block common bad agents / queries / php issues.
+		array_walk($_SERVER,  array('self', 'filter_request'), '_SERVER');
+		if (isset($_GET)) array_walk($_GET,     array('self', 'filter_request'), '_GET');
+		if (isset($_POST)) array_walk($_POST,    array('self', 'filter_request'), '_POST');
+		if (isset($_COOKIE)) array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
+		if (isset($_REQUEST)) array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
+
 		// TODO - better ajax detection method (headers when possible)
 		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
 		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
@@ -1792,6 +1892,7 @@ class e107
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
 		$_SERVER['QUERY_STRING'] = trim(str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']), '&');
 
+		/* PathInfo doesn't break anything, URLs should be always absolute. Disabling the below forever.
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
 		{
@@ -1800,8 +1901,10 @@ class e107
 			header('Location: '.$new_loc);
 			exit();
 		}
+		*/
+
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
 		// setup some php options
 		e107::ini_set('magic_quotes_runtime',     0);
@@ -1816,12 +1919,47 @@ class e107
 		{
 			array_unshift($inc_path, '.');
 			$inc_path = implode(PATH_SEPARATOR, $inc_path);
-			e107_ini_set('include_path', $inc_path);
+			e107::ini_set('include_path', $inc_path);
 		}
 		unset($inc_path);
 
 		return $this;
 	}
+
+	/**
+	 * Filter User Input - used by array_walk in prepare_request method above.
+	 * @param string $input array value
+	 * @param string $key	array key
+	 * @param string $type	array type _SESSION, _GET etc.
+	 * @return
+	 */
+	public static function filter_request($input,$key,$type)
+	{
+		if (is_array($input))
+		{
+			return array_walk($input, array('self', 'filter_request'), $type);
+		}
+
+		if($type == "_SERVER")
+		{
+			if(($key == "QUERY_STRING") && strpos(strtolower($input),"=http")!==FALSE)
+			{
+				exit();
+			}
+
+			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
+			{
+				exit();
+			}
+		}
+
+		if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
+		{
+			exit();
+		}
+	}
+
+
 
 	/**
 	 * Set base system path
@@ -2088,24 +2226,87 @@ class e107
 	 * 3. any plugin file in a folder called admin/
 	 * 4. any file that specifies $eplug_admin = TRUE; or ADMIN_AREA = TRUE;
 	 * NOTE: USER_AREA = true; will force e_ADMIN_AREA to FALSE
+	 *
+	 * @param boolean $no_cbrace remove curly brackets from the url
 	 * @return e107
 	 */
-	public function set_urls()
+	public function set_urls($no_cbrace = true)
 	{
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
+
+		// Outdated
+		/*$requestQry = '';
+		$requestUrl = $_SERVER['REQUEST_URI'];
+		if(strpos($_SERVER['REQUEST_URI'], '?') !== FALSE)
+			list($requestUrl, $requestQry) = explode("?", $_SERVER['REQUEST_URI'], 2); */
+
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-
 		define('e_PAGE', $page);
-		define('e_SELF', $this->HTTP_SCHEME . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
-		define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
-		define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
+		// Leave e_SELF BC, use e_REQUEST_SELF instead
+		/*// moved after page check - e_PAGE is important for BC
+		if($requestUrl && $requestUrl != $_SERVER['PHP_SELF'])
+		{
+			$_SERVER['PHP_SELF'] = $requestUrl;
+		}*/
 
+		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
+		define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);
 
+		// START New - request uri/url detection, XSS protection
+		$requestUri = $requestUrl = '';
+		if (isset($_SERVER['HTTP_X_REWRITE_URL']))
+		{
+			// check this first so IIS will catch
+			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
+			// fix request uri
+			$_SERVER['REQUEST_URI'] = $requestUri;
+		}
+		elseif (isset($_SERVER['REQUEST_URI']))
+		{
+			$requestUri = $_SERVER['REQUEST_URI'];
+			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
+		}
+		else
+		{
+			// go back to e_SELF
+			$requestUri = $eSelf;
+			$requestUrl = e_SELF;
+			if (e_QUERY)
+			{
+				$requestUri .= '?'.e_QUERY;
+				$requestUrl .= '?'.e_QUERY;
+			}
+		}
+		// FIXME - basic security - add url sanitize method to e_parse
+		$check = rawurldecode($requestUri); // urlencoded by default
+		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
+		$checkregx = $no_cbrace ? '[<>\{\}]' : '[<>]';
+		if(preg_match('/'.$checkregx.'/', $check))
+		{
+			header('HTTP/1.1 403 Forbidden');
+			exit;
+		}
+
+		// e_MENU fix
+		if(e_MENU)
+		{
+			str_replace('['.e_MENU.']', '', $requestUri);
+			str_replace('['.e_MENU.']', '', $requestUrl);
+		}
+
+		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
+		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
+		define('e_REQUEST_SELF', array_shift(explode('?', e_REQUEST_URL))); // full URL without the QUERY string
+		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
+		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
+		unset($requestUrl, $requestUri);
+		// END request uri/url detection, XSS protection
 
 		// e_SELF has the full HTML path
 		$inAdminDir = FALSE;
@@ -2143,14 +2344,19 @@ class e107
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 		define('SITEURL', SITEURLBASE.e_HTTP);
 
+		// login/signup
+		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
+		define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
+
 		return $this;
 	}
 
 	/**
 	 * Set request related constants
+	 * @param boolean $no_cbrace remove curly brackets from the url
 	 * @return e107
 	 */
-	public function set_request()
+	public function set_request($no_cbrace = true)
 	{
 
 		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
@@ -2165,7 +2371,7 @@ class e107
 			}
 		}
 
-		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
+		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match('#\[(.*?)](.*)#', $_SERVER['QUERY_STRING'], $matches))
 		{
 			define('e_MENU', $matches[1]);
 			$e_QUERY = $matches[2];
@@ -2176,6 +2382,7 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		}
 
+		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
 		define('e_QUERY', $e_QUERY);
 
@@ -2358,29 +2565,23 @@ class e107
 	{
 		if(!$this->_ip_cache)
 		{
-			if(getenv('HTTP_X_FORWARDED_FOR'))
+			$ip=$_SERVER['REMOTE_ADDR'];
+			if (getenv('HTTP_X_FORWARDED_FOR'))
 			{
-				$ip = $_SERVER['REMOTE_ADDR'];
-				$ip3 = array();
-				if(preg_match('/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/', getenv('HTTP_X_FORWARDED_FOR'), $ip3))
+				if (preg_match('/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/', getenv('HTTP_X_FORWARDED_FOR'), $ip3))
 				{
-					$ip2 = array(
-						'#^0\..*#' , '#^127\..*#' , // Local loopbacks
-						'#^192\.168\..*#' , // RFC1918 - Private Network
-						'#^172\.(?:1[6789]|2\d|3[01])\..*#' , // RFC1918 - Private network
-						'#^10\..*#' , // RFC1918 - Private Network
-						'#^169\.254\..*#' , // RFC3330 - Link-local, auto-DHCP
-						'#^2(?:2[456789]|[345][0-9])\..*#'
-					); // Single check for Class D and Class E
-
-					$ip = preg_replace($ip2, $ip, $ip3[1]);
+					$ip2 = array('#^0\..*#',
+							'#^127\..*#', 							// Local loopbacks
+							'#^192\.168\..*#', 						// RFC1918 - Private Network
+							'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+							'#^10\..*#', 							// RFC1918 - Private Network
+							'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP
+							'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+							);
+					$ip = preg_replace($ip2, $ip3[1], $ip);
 				}
 			}
-			else
-			{
-				$ip = $_SERVER['REMOTE_ADDR'];
-			}
-			if($ip == "")
+			if ($ip == "")
 			{
 				$ip = "x.x.x.x";
 			}
