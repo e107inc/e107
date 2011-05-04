@@ -266,6 +266,7 @@ class page
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$ns = e107::getRender();
 
 
 		$edit = ($sub_action == 'edit');
@@ -472,7 +473,7 @@ class page
 			</form>
 		";
 
-		$e107->ns->tablerender($caption, $text);
+		$ns->tablerender($caption, $text);
 	}
 
 
@@ -485,8 +486,7 @@ class page
 
 		$page_title = $tp->toDB($_POST['page_title']);
 		$page_text = $tp->toDB($_POST['data']);
-	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end.
-		$pauthor = USERID;
+		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
 		$update = 0;			// Make sure some updates happen
 
 
@@ -615,6 +615,8 @@ class page
 	function optionsPage()
 	{
 		global $e107, $pref, $frm, $emessage;
+		
+		$ns = e107::getRender();
 
 		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
 
@@ -651,7 +653,7 @@ class page
 			</form>
 		";
 
-		$e107->ns->tablerender(LAN_OPTIONS, $emessage->render().$text);
+		$ns->tablerender(LAN_OPTIONS, $emessage->render().$text);
 	}
 
 
