@@ -49,7 +49,8 @@ class e107plugin
 		'e_url',
 		'e_cron',
 		'e_mailout',
-		'e_sitelink'
+		'e_sitelink',
+		'e_tohtml'
 	);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
