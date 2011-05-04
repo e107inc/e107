@@ -751,7 +751,7 @@ class e_core_session extends e_session
 		
 		// TODO $data[config] and $data[options] to override default settings
 		
-		$namespace = 'e107';
+		$namespace = 'e107sess'; // Quick Fix for Fatal Error "Cannot use object of type e107 as array" on line 550
 		$name = (isset($data['name']) && !empty($data['name']) ? $data['name'] : deftrue('e_COOKIE', 'e107')).'SID';
 		if(isset($data['namespace']) && !empty($data['namespace'])) $namespace = $data['namespace'];
 		// create $_SESSION['e107'] namespace by default
