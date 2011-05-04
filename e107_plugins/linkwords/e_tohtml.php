@@ -32,6 +32,7 @@ if (!defined('e107_INIT')) { exit; }
 
 define('LW_CACHE_ENABLE', TRUE);
 
+
 class e_tohtml_linkwords
 {
 	var $lw_enabled = FALSE;		// Default to disabled to start
@@ -49,6 +50,7 @@ class e_tohtml_linkwords
 	/* constructor */
 	function e_tohtml_linkwords()
 	{
+	
 		global $pref, $tp, $e107;
 		// See whether they should be active on this page - if not, no point doing anything!
 		if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
@@ -74,7 +76,7 @@ class e_tohtml_linkwords
 
 		// Will probably need linkwords on this page - so get the info
 		define('LW_CACHE_TAG', 'nomd5_linkwords');		// Put it here to avoid conflict on admin pages
-		if (LW_CACHE_ENABLE && ($temp = $e107->ecache->retrieve_sys(LW_CACHE_TAG)))
+		if (LW_CACHE_ENABLE && ($temp = e107::getCache()->retrieve_sys(LW_CACHE_TAG)))
 		{
 			$ret = eval($temp);
 			if ($ret)
@@ -141,8 +143,9 @@ class e_tohtml_linkwords
 
 	function to_html($text,$area = 'olddefault')
 	{
+			
 		if (!$this->lw_enabled || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
-
+	
 // Split up by HTML tags and process the odd bits here
 		$ptext = "";
 		$lflag = FALSE;
