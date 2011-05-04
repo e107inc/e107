@@ -44,19 +44,22 @@ $EMAIL_OVERRIDES = array(
 );
 */
 
-// Not used in signup email
+/**
+ * Default HEADER for all emails 
+ */ 
 $EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml' >
 <head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-{STYLESHEET}
 </head>
 <body>
 <div style='padding:10px'>
 ";
 
 
-// Not used in signup email
+/**
+ * Default FOOTER for all emails 
+ */ 
 $EMAIL_FOOTER = "
 <br /><br />
 {SITENAME=link}
@@ -65,18 +68,22 @@ $EMAIL_FOOTER = "
 </html>";
 
 
-//TODO - integrate into mailout routine
+/**
+ * Mass-Mailing HEADER (admin->mailout)
+ */ 
 
 $MAILOUT_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml' >
 <head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-{STYLESHEET}
 </head>
 <body>
 <div style='padding:10px'>
 ";
 
+/**
+ * Mass-Mailing FOOTER (admin->mailout)
+ */ 
 $MAILOUT_FOOTER = "
 <br /><br />
 {SITENAME=link}
@@ -85,17 +92,22 @@ $MAILOUT_FOOTER = "
 </html>";
 
 
+/**
+ * Notification Email HEADER (admin->notify)
+ */ 
 //TODO - integrate into notification routine
 $NOTIFY_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml' >
 <head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-{STYLESHEET}
 </head>
 <body>
 <div style='padding:10px'>
 ";
 
+/**
+ * Notification Email FOOTER (admin->notify)
+ */ 
 $NOTIFY_FOOTER = "
 <br /><br />
 {SITENAME=link}
@@ -104,7 +116,9 @@ $NOTIFY_FOOTER = "
 </html>";
 
 
-
+/*
+ *  SIGNUP EMAIL TEMPLATE - BODY. 
+*/
 $SIGNUPEMAIL_TEMPLATE = "
 <div style='padding:10px'>
 <div style='text-align:left; width:90%'>
@@ -133,6 +147,17 @@ LAN_SIGNUP_97." {SITENAME}<br />
 </div>
 </div>
 ";
+
+
+/*
+ * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
+ * This is the email that is sent when an admin creates a user account in admin. "Quick Add User"
+ 	USRLAN_185 = A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />
+	USRLAN_186 = Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
+						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
+*/
+
+$QUICKADDUSER_TEMPLATE = "<div style='padding:10px'>".USRLAN_185.USRLAN_186."</div>"; 
 
 
 ?>

@@ -302,30 +302,43 @@ if (isset ($_POST['adduser']))
 		$message = '';
 		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$user_data['user_login']);
 		$user_data['user_join'] = time();
+		
 		if ($userMethods->needEmailPassword())
 		{
 		// Save separate password encryption for use with email address
 			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword,$user_data['user_email'])));
 		}
+		
 		$userMethods->userClassUpdate($allData['data'],'userall');
 		// Set any initial classes
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass :: addFieldTypes($userMethods->userVettingInfo,$allData);
 		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mode - user_realm is to be deleted from DB later)
 		$allData['data']['user_realm'] = '';
+		
 		if ($sql->db_Insert('user',$allData))
 		{
-		// Add to admin log
+			// Add to admin log
 			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);
+			
 			// Add to user audit trail
 			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN,$user_data,0,$user_data['user_loginname']);
 			$e_event->trigger('userfull',$user_data);
+			
 			// send everything available for user data - bit sparse compared with user-generated signup
 			if (isset ($_POST['sendconfemail']))
 			{
 			// Send confirmation email to user
-				require_once (e_HANDLER.'mail.php');
-				$e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$user_data['user_login'],$savePassword),USRLAN_185).USRLAN_186;
+				require_once(e_HANDLER.'mail.php');
+				include_once(e107::coreTemplatePath('email','front')); //correct way to load a core template.
+				
+				if(!isset($QUICKADDUSER_TEMPLATE))
+				{
+					$QUICKADDUSER_TEMPLATE = USRLAN_185.USRLAN_186; 	
+				}
+				
+				$e_message = str_replace(array('{SITEURL}','{LOGIN}','{USERNAME}','{PASSWORD}'),array(SITEURL,$user_data['user_name'],$user_data['user_login'],$savePassword),$QUICKADDUSER_TEMPLATE);
+				
 				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
 				{
 					$message = USRLAN_188.'<br /><br />';
@@ -335,17 +348,29 @@ if (isset ($_POST['adduser']))
 					$message = USRLAN_189.'<br /><br />';
 				}
 			}
+			
 			$message .= str_replace('--NAME--',$user_data['user_name'],USRLAN_174);
+			
 			if (isset ($_POST['generateloginname']))
-				$message .= '<br /><br />'.USRLAN_173.': '.$user_data['user_login'];
+			{
+				$message .= '<br /><br />'.USRLAN_173.': '.$user_data['user_login'];	
+			}
+				
 			if (isset ($_POST['generatepassword']))
-				$message .= '<br /><br />'.USRLAN_172.': '.$savePassword;
+			{
+				$message .= '<br /><br />'.USRLAN_172.': '.$savePassword;	
+			}
+				
 			unset ($user_data);
 			// Don't recycle the data once the user's been accepted without error
 		}
 	}
+
 	if (isset ($message))
-		$user->show_message($message);
+	{
+		$user->show_message($message);	
+	}
+		
 }
 // ------- Bounce --> Unverified --------------
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "reqverify")

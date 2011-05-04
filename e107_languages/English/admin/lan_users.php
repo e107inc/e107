@@ -185,7 +185,7 @@ define('USRLAN_181', 'Send confirmation email with password to new user');
 define('USRLAN_182', 'Invalid characters in login name');
 define('USRLAN_183', 'That login name already in use');
 define('USRLAN_184', 'Length of login name outside limits');
-define('USRLAN_185', 'A user account has been created for you at --SITE-- with the following login:<br />Login Name: --LOGIN--<br />Password: --PASSWORD--<br/><br />');
+define('USRLAN_185', 'A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />');
 define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
 						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
 define('USRLAN_187', 'Access to website: ');
