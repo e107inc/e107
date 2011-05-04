@@ -172,6 +172,7 @@ if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
 	$_POST['image'] = '';
 	if ($avName)
 	{
+		$avName = strip_if_magic($avName);
 		$avName = str_replace(array('\'', '"', '(', ')'), '', $avName);   // these are invalid anyway, so why allow them? (XSS Fix)
 		if (strpos($avName, '/') !== FALSE)
 		{	// Assume an off-site image
@@ -203,7 +204,7 @@ if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
 		{
 			$error = $avmsg;
 		}
-		elseif ($size = getimagesize($avFullName)) 
+		elseif (FALSE !== ($size = getimagesize($avFullName)))
 		{
 			$avwidth = $size[0];
 			$avheight = $size[1];
@@ -231,7 +232,7 @@ if (isset($_POST['updatesettings']) && varset($_POST['e-token']))
 		}
 		else
 		{
-			$error = LAN_USET_19.': '.$avFullName;
+			$error = LAN_USET_20.': '.$avFullName;
 			$avName = FALSE;
 		}
 	}

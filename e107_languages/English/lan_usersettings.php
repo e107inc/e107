@@ -112,5 +112,6 @@ define("LAN_USET_16", "Tick box to delete existing photo without uploading anoth
 define("LAN_USET_17", "Display name already used. Please choose another");
 define('LAN_USET_18', 'Invalid name for avatar');
 define('LAN_USET_19', 'Avatar cannot be accessed');
+define('LAN_USET_20', 'Cannot get image information');
 
 ?>
