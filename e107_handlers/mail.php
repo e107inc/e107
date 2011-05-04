@@ -152,10 +152,11 @@ class e107Email extends PHPMailer
 	private $TotalErrors = 0;			// Count errors in sending emails
 	private $pause_amount = 10;			// Number of emails to send before pausing/resetting (or closing if SMTPkeepAlive set)
 	private $pause_time = 1;			// Time to pause after sending a block of emails
-
+	private	$templateOption = array();
 	public	$legacyBody = FALSE;		// TRUE enables legacy conversion of plain text body to HTML in HTML emails
-
-	/**
+	public	$template = "email";		// Choice of email, notify or mailout
+		
+/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
 	 * 
 	 * @var array $overrides - array of values which override mail-related prefs. Key is the same as the corresponding pref.
@@ -167,7 +168,13 @@ class e107Email extends PHPMailer
 
 		$e107 = e107::getInstance();
 		global $pref;
-
+		
+		//Load up Email Templates
+		include(e107::coreTemplatePath('email','front')); 
+		$this->templateOption['email'] = array('header'=>$EMAIL_HEADER,'footer'=>$EMAIL_FOOTER);
+		$this->templateOption['notify'] = array('header'=>$NOTIFY_HEADER,'footer'=>$NOTIFY_FOOTER);
+		$this->templateOption['mailout'] = array('header'=>$MAILOUT_HEADER,'footer'=>$MAILOUT_FOOTER);
+		
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
 
@@ -709,6 +716,16 @@ class e107Email extends PHPMailer
    */
 	public function MsgHTML($message, $basedir = '') 
 	{
+		
+		$tp = e107::getParser();
+		
+		$EMAIL_HEADER = $tp->parseTemplate($this->templateOption[$this->template]['header']);
+		$EMAIL_FOOTER = $tp->parseTemplate($this->templateOption[$this->template]['footer']);	
+		
+		$message = $EMAIL_HEADER.$message.$EMAIL_FOOTER;
+		
+		
+		
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3])) 
 		{
@@ -745,8 +762,11 @@ class e107Email extends PHPMailer
 				}
 			}
 		}
+
+		
 		$this->IsHTML(true);
 		$this->Body = $message;
+		
 		// print_a($message);
 		$textMsg = str_replace(array('<br />', '<br>'), "\n", $message);		// Modified to make sure newlines carried through
 		$textMsg = trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s','',$textMsg)));
