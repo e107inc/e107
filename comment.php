@@ -356,7 +356,7 @@ elseif ($action == 'comment')
 			$e_comment = $cobj->get_e_comment();
 			if ($table == $e_comment[$table]['eplug_comment_ids'])
 			{
-				if ($sql->db_Select($table,$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
+				if ($sql->db_Select($e_comment[$table]['db_table'],$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
 				{
 				  $row = $sql->db_Fetch();
 				  $subject = $row[$e_comment[$table]['db_title']];
