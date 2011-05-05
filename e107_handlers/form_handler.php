@@ -402,6 +402,9 @@ class e_form
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>".(false !== $counter ? $this->hidden('__'.$name.'autoheight_opt', $counter) : '');
 	}
 
+	/**
+	 * Bbcode Area. Name, value, help_mode, form-id, size, counter
+	 */
 	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
 	{
 		//size - large|medium|small

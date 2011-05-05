@@ -20,6 +20,8 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_media
 {
+	var $imagelist = array();
+	
 	/**
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
@@ -217,6 +219,46 @@ class e_media
 	public function deleteCategory($id)
 	{
 		// TODO
+	}
+	
+		
+	/**
+	 * Generate Simple Thumbnail window for image-selection 
+	 * TODO Use Whole-page popup window
+	 * TODO Add an upload Tab?. 
+	 * TODO Real-time ajax filter by keyword
+	 */
+	public function imageSelect($cat,$formid='imageSel')
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		$text .= "<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
+		$text .="<div style='-moz-box-shadow: 3px 3px 3px #808080;
+			-webkit-box-shadow: 3px 3px 3px #808080;
+			box-shadow: 3px 3px 3px #808080;
+			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
+		
+		$total = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;		
+		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href=\"javascript:expandit('{$formid}')\" >x</div>";
+			
+		while ($row = $sql->db_Fetch())
+		{
+			$image	= $row['media_url'];
+			$diz	= $row['media_name']." : ". $row['media_dimensions'];
+			$insert	= "[img]".$image."[/img]";
+			
+			$text .= "
+			<div style='border:1px solid silver;margin:5px;width:50px;height:50px;overflow:hidden;float:left'>
+			<a title=\"".$diz."\" href=\"javascript:addtext('".$insert."', true); expandit('{$formid}')\" >
+			<img src='".e107::getParser()->thumbUrl($image, 'w=100', true)."' alt=\"".$diz."\" width='50px' />
+			</a>
+			</div>";
+		}
+				
+		$text .= "</div></div>";
+		
+		return $text;	
 	}
 
 	
