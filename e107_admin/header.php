@@ -439,7 +439,7 @@ if ($e107_popup != 1)
 	 */
 	function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 	{
-		global $E_ADMIN_MENU,$e107;
+		global $E_ADMIN_MENU;
 		if (!$tmpl)
 			$tmpl = $E_ADMIN_MENU;
 			
@@ -555,7 +555,8 @@ if ($e107_popup != 1)
 		if ($sub_link || empty($title))
 			return $text;
 			
-		$e107->ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
+		$ns = e107::getRender();
+		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
 		return '';
 	}
 	

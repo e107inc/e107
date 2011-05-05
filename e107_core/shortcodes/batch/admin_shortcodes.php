@@ -982,14 +982,21 @@ class admin_shortcodes
 		*/
 	}
 
+	/**
+	 * Legacy Admin Menu Routine. 
+	 * Currently Used by Jayya admin. 
+	 */
 	function sc_admin_alt_nav($parm)
 	{
+		
 		if (ADMIN)
 		{
 			global $sql, $pref, $tp;
 			parse_str($parm);
 			require(e_ADMIN.'ad_links.php');
 			require_once(e_HANDLER.'admin_handler.php');
+			
+			
 			function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE)
 			{
 				$cat_link = ($cat_link ? $cat_link : "javascript:void(0);");
@@ -1001,6 +1008,8 @@ class admin_shortcodes
 				$text .= ">".$cat_title."</a>";
 				return $text;
 			}
+			
+			
 
 			function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='')
 			{
@@ -1019,6 +1028,8 @@ class admin_shortcodes
 				$text .= "</a>";
 				return $text;
 			}
+			
+	
 			if (file_exists(THEME.'nav_menu.js'))
 			{
 				$text = "<script type='text/javascript' src='".THEME_ABS."nav_menu.js'></script>";
@@ -1032,9 +1043,10 @@ class admin_shortcodes
 			<tr><td>
 			<div class='menuBar' style='width: 100%'>";
 
-			$text .= adnav_cat(ADLAN_151, e_ADMIN.'admin.php', E_16_NAV_MAIN);
+			$text .= adnav_cat(ADLAN_151, e_ADMIN.'admin.php', E_16_NAV_MAIN); // Main Link. 
 
-	   		for ($i = 1; $i < 6; $i++)
+			// Render Settings, Users, Content, Tools, Manage. 
+	   		for ($i = 1; $i < 7; $i++)
 	   		{
 
 				$ad_tmpi = 0;
@@ -1108,27 +1120,35 @@ class admin_shortcodes
 				$text .= varset($plugin_text).varset($plugs_text);
 				$text .= "</div>";
 			}
+			
 
-			$text .= adnav_cat(ADLAN_CL_8, '', E_16_CAT_ABOUT, 'docsMenu'); //E_16_NAV_DOCS
-			$text .= "<div id='docsMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
-			if (!is_readable(e_DOCS.e_LANGUAGE."/")) // warning killed
-			{
-				$handle=opendir(e_DOCS.'English/');
+			// Render the "About" Menu - Phpinfo, Credits and Docs. 
+			$text .= adnav_cat(ADLAN_CL_20, '', E_16_CAT_ABOUT, $admin_cat['id'][20]); //E_16_NAV_DOCS
+			$text .= "<div id='".$admin_cat['id'][20]."' class='menu' onmouseover=\"menuMouseover(event)\">";
+			foreach($ad_links_array as $key=>$nav_extract)
+			{					
+				$text .= ($nav_extract[4]==20) ? adnav_main($nav_extract[1], $nav_extract[0], $nav_extract[5]) : "";
 			}
-			$i=1;
-			if(varset($handle))
-			{
-				while ($file = readdir($handle))
-				{
-					if ($file != '.' && $file != '..' && $file != 'CVS')
-					{
-						$text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN_ABS.'docs.php?'.$i, E_16_DOCS);
-						$i++;
-					}
-				}
-				closedir($handle);
-			}
-			$text .= '</div>';
+				
+		
+			// if (!is_readable(e_DOCS.e_LANGUAGE."/")) // warning killed
+			// {
+				// $handle=opendir(e_DOCS.'English/');
+			// }
+			// $i=1;
+			// if(varset($handle))
+			// {
+				// while ($file = readdir($handle))
+				// {
+					// if ($file != '.' && $file != '..' && $file != 'CVS')
+					// {
+						// $text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN_ABS.'docs.php?'.$i, E_16_DOCS);
+						// $i++;
+					// }
+				// }
+				// closedir($handle);
+			// }
+			 $text .= '</div>';
 
 
 			$text .= '</div>
@@ -1154,14 +1174,18 @@ class admin_shortcodes
 		}
 	}
 
+	/**
+	 * New Admin Navigation Routine. 
+	 */
 	function sc_admin_navigation($parm)
 	{
-
+	
 		if (!ADMIN) return '';
 		global $admin_cat, $array_functions, $array_sub_functions, $pref;
 
-		$e107 = &e107::getInstance();
-		$sql = &$e107->sql;
+		$tp 	= e107::getParser();
+		$e107	= e107::getInstance();
+		$sql	= e107::getDb();
 
 		parse_str($parm, $parms);
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
@@ -1232,6 +1256,7 @@ class admin_shortcodes
 
 				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
 		}
+
 
 		//PLUGINS
 		require_once(e_HANDLER.'plugin_class.php');
@@ -1340,7 +1365,35 @@ class admin_shortcodes
 			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['perm'] = '';
+			$menu_vars['home']['sort'] = 1;
+			$menu_vars['home']['sub_class'] = 'sub';
+			
+			// Sub Links for 'home'. 
+			require_once(e_HANDLER."sitelinks_class.php");
+			$slinks = new sitelinks;
+			$slinks->getlinks(1);
+			$tmp = array();	
+			$c= 0;
+			foreach($slinks->eLinkList['head_menu'] as $k=>$lk)
+			{
+				$subid = 'home_'.$k;
+				$subid = $c;
+				$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
+								
+				$tmp[$c]['text'] = $tp->toHtml($lk['link_name'],'','defs');
+				$tmp[$c]['description'] = $tp->toHtml($lk['link_description'],'','defs');
+				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
+				$tmp[$c]['image'] = "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='' />"; ;
+				$tmp[$c]['image_large'] = '';
+				$tmp[$c]['image_src'] = '';
+				$tmp[$c]['image_large_src'] = '';
+				$tmp[$c]['perm'] = '';
+				$c++;
+			}
 
+			$menu_vars['home']['sub'] = $tmp;
+			// --------------------
+			
 			$menu_vars['logout']['text'] = ADLAN_46;
 			$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
 			$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1348,8 +1401,11 @@ class admin_shortcodes
 			$menu_vars['logout']['perm'] = '';
 		}
 
-		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
+		// print_a($menu_vars);
+		return e_admin_menu('', '', $menu_vars, $$tmpl, FALSE, FALSE);
 	}
+
+
 
 	function sc_admin_menumanager()  // List all menu-configs for easy-navigation
 	{
