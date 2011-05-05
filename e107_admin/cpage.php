@@ -353,7 +353,7 @@ class page
 
 		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
 	//	$text .= $frm->textarea('data', $textareaValue);
-		$text .= $frm->bbarea('data', $textareaValue, 'data', 'cpage-help');
+		$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
 
 
 
