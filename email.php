@@ -155,9 +155,9 @@ if (isset($_POST['emailsubmit']))
 	{
 		// Load Mail Handler and Email Template.
 		require_once(e_HANDLER.'mail.php');
-		$email_body = $EMAIL_HEADER;
-		$email_body .= (trim($comments) != '') ? $tp->toEmail($comments).'<hr />' : '';
-		$email_body .= $tp->toEmail($message).$EMAIL_FOOTER;
+
+		$email_body = (trim($comments) != '') ? $tp->toEmail($comments).'<hr />' : '';
+		$email_body .= $tp->toEmail($message);
 
 		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
 		{
