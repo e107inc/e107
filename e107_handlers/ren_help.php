@@ -71,7 +71,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
 	$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
 	$temp['mailout']	= $BBCODE_TEMPLATE_MAILOUT;
-	$temp['cpage']		= $BBCODE_TEMPLATE_CPAGE;
+	$temp['page']		= $BBCODE_TEMPLATE_CPAGE;
 	$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 	$temp['comment'] 	= "{BB_HELP}<br />".$BBCODE_TEMPLATE;
 
@@ -182,25 +182,24 @@ function Color_Select($formid='col_selector') {
 }
 
 
-function PreImage_Select($formid) {
-	global $fl, $tp, $bbcode_imagedir;
-
-	$path = ($bbcode_imagedir) ?  $bbcode_imagedir : e_IMAGE."newspost_images/";
-	$formid = ($formid) ? ($formid) : "preimage_selector";
-
-
-	if(!is_object($fl)){
-        require_once(e_HANDLER."file_class.php");
-		$fl = new e_file;
-	}
-
-//	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-	$imagelist = $fl->get_files($path,'','standard',2);
-    sort($imagelist);
-
-	$text ="<!-- Start of PreImage selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
-	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
+function PreImage_Select($formid='preimage_selector')
+{
+	global $bbcode_imagedir;
+		
+	$med = e107::getMedia();
+	
+	$text ="<!-- Start of PreImage selector -->";
+	
+	$text .= $med->imageSelect($bbcode_imagedir,$formid);
+	
+	return $text; 
+	
+	
+	/*
+	 $fl = e107::getFile();
+	 $imagelist = $fl->get_files($path,'','standard',2);
+	sort($imagelist);
+	
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
@@ -224,6 +223,7 @@ function PreImage_Select($formid) {
 	$text .="</td></tr>	\n </table></div>
 	</div>\n<!-- End of PreImage selector -->\n";
 	return $text;
+	*/
 }
 
 
@@ -236,6 +236,8 @@ function PreFile_Select($formid='prefile_selector')
 	global $IMAGES_DIRECTORY, $fl;
 
 	$sql = e107::getDb();
+	$fl = e107::getFile();
+	
 	$filelist = array();
 	$downloadList = array();
 
