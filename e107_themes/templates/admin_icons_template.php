@@ -58,3 +58,6 @@
 
 	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' />");
 	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_16.png");
+	
+	define("ADMIN_EXECUTE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/execute_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_16.png");

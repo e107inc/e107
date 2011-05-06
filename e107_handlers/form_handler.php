@@ -704,6 +704,16 @@ class e_form
 				$image = ADMIN_DELETE_ICON_PATH;
 				$options['class'] = vartrue($options['class'] , 'action delete');
 			break;
+			
+			case 'execute':
+				$image = ADMIN_EXECUTE_ICON_PATH;
+				$options['class'] = vartrue($options['class'] , 'action delete');
+			break;
+			
+			case 'view':
+				$image = ADMIN_VIEW_ICON_PATH;
+				$options['class'] = vartrue($options['class'] , 'action delete');
+			break;
 		}
 		$options['title'] = $title;//shorthand
 
@@ -1205,12 +1215,23 @@ class e_form
 		switch($field) // special fields
 		{
 			case 'options':
+				
+				if($attributes['type']=='method') // Allow override with 'options' function. 
+				{
+					
+					$attributes['mode'] = "read";
+					return $this->options($field, $value, $attributes, $id);
+				
+				}
+				
 				if(!$value)
 				{
 					parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 					// keep other vars in tact
 					$query['action'] = 'edit';
 					$query['id'] = $id;
+					
+	
 
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
@@ -1569,13 +1590,15 @@ class e_form
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array())
 	{
+		
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
-		if(vartrue($attributes['readonly']) && vartrue($value)) // quick fix (maybe 'noedit'=>'readonly'?)
-		{
+		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless. 
+		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])==2)) // quick fix (maybe 'noedit'=>'readonly'?)
+		{			
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 		
