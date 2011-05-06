@@ -174,7 +174,7 @@ define('ADLAN_154', "Error contacting Sourceforge to check for new version");
 define('ADLAN_155', 'System Logs');
 define('ADLAN_156', 'Admin log, user audit, rolling log');
 
-define("ADLAN_157", "Schedule Maintenance");
+define("ADLAN_157", "Schedule Tasks");
 define("ADLAN_158", "Cron Jobs and Automated Maintenance");
 
 define("ADLAN_159", "URL Configuration");
