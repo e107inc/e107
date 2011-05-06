@@ -101,7 +101,6 @@ class cron_admin_ui extends e_admin_ui
 				$this->cronExecute($executeID);
 			}
 
-		//	unset($this->_data_fields['options']); // FIX ME - this should be done automatically. 
 			
 			if (!vartrue(e107::getPref('e_cron_pwd')))
 			{
@@ -390,7 +389,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 	{ 
 		if($mode == 'read')
 		{
-			return $curVal;
+			return $curVal; // TODO - Convert to more readable form. 
 		}
 		
 		if($mode == 'write')
