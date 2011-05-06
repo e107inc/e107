@@ -51,22 +51,40 @@ e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
 // from the plugin directory:
 // realpath(dirname(__FILE__)."/../../")."/";
 
+	$list = array();
 
-if($pref['e_cron_pref']) // grab cron
-{
-	foreach($pref['e_cron_pref'] as $func=>$cron)
+	$sql = e107::getDb();
+	if($sql->db_Select("cron",'cron_function,cron_tab','cron_active =1'))
 	{
-    	if($cron['active']==1)
+		while($row = $sql->db_Fetch(MYSQL_ASSOC))
 		{
-        	$list[$func] = $cron;
-		}
+			list($class,$function) = explode("::",$row['cron_function'],2);			
+			$key = $class."__".$function;
+			
+			$list[$key] = array(
+				'path'		=> $class,
+				'active'	=> 1,	
+				'tab'		=> $row['cron_tab'],
+				'function' 	=> $function,
+				'class'		=> $class				
+			);				
+		}	
 	}
-}
+	
+	
+	// foreach($pref['e_cron_pref'] as $func=>$cron)
+	// {
+    	// if($cron['active']==1)
+		// {
+        	// $list[$func] = $cron;
+		// }
+	// }
+
 
 
 if($_E107['debug'] && $_SERVER['QUERY_STRING'])
 {
-	echo "<h1>Cron List</h1>";
+	echo "<h1>Cron Lists</h1>";
 	print_a($list);
 }
 
