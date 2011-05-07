@@ -106,7 +106,7 @@ class media_cat_ui extends e_admin_ui
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 
 		protected $fields = array(
-			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_nick' 		=> array('title'=> "Nickname",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
@@ -214,7 +214,7 @@ class media_admin_ui extends e_admin_ui
 		protected $pluginName = 'core';
 		protected $table = "core_media";
 
-	//	protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit.
+		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id "; // without any Order or Limit.
 
 	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 
@@ -236,20 +236,19 @@ class media_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60', 'writeParams' => 'path={e_MEDIA}',	'width' => '110px','readonly'=>false),
+      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParams' => 'path={e_MEDIA}',	'width' => '110px','readonly'=>false),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
 
-	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',		'data'=> null,		'width' => '10%'),
-       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
+		// Upload should be managed completely separately via upload-handler. 
+       	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
-         	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
-			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
-		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
-			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
+         	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
+			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
           	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
-			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE, 'class'=>'nowrap'),
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap'),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
 			'media_usedby' 			=> array('title'=> '',				'type' => 'text',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
@@ -257,14 +256,15 @@ class media_admin_ui extends e_admin_ui
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 
+
 		protected $mimePaths = array(
-				'text'			=> 'files',
-				'multipart'		=> 'files',
-				'application'	=> 'files',
-				'audio'			=> 'audio',
-				'image'			=> 'images',
-				'video'			=> 'video',
-				'other'			=> 'files'
+				'text'			=> e_MEDIA_FILE,
+				'multipart'		=> e_MEDIA_FILE,
+				'application'	=> e_MEDIA_FILE,
+				'audio'			=> e_MEDIA_AUDIO,
+				'image'			=> e_MEDIA_IMAGE,
+				'video'			=> e_MEDIA_VIDEO,
+				'other'			=> e_MEDIA_FILE
 		);
 	//	protected $fieldpref = array('checkboxes','media_url', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
 
@@ -386,7 +386,7 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 
 		$mes = e107::getMessage();
-				
+			
 		if(vartrue($_FILES['file_userfile']))
 		{
 			$pref['upload_storagetype'] = "1";
@@ -438,18 +438,22 @@ class media_admin_ui extends e_admin_ui
 		}
 		else
 		{
+				
 			$img_data = $this->mediaData($new_data['media_url']);
+	
+		
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
 				return FALSE;
 			}
+			
 			$fname = basename($new_data['media_url']);
 			// move to the required place
 			if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
 			{
 				$tp = e107::getParser();
 				$oldpath = $tp->replaceConstants($new_data['media_url']);
-				$newpath = e_MEDIA.$typePath.'/'.$fname;
+				$newpath = $typePath.'/'.$fname;
 				if(!rename($oldpath, $newpath))
 				{
 					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
@@ -463,6 +467,7 @@ class media_admin_ui extends e_admin_ui
 				$img_data['media_name'] = basename($new_data['media_url']);
 			}
 		}
+		
 		return $img_data;
 	}
 
@@ -488,11 +493,11 @@ class media_admin_ui extends e_admin_ui
 			return FALSE;
 		}
 
-		$dir = $this->mimePaths[$pmime]."/".date("Y-m");
+		$dir = $this->mimePaths[$pmime].date("Y-m");
 
-		if(!is_dir(e_MEDIA.$dir))
+		if(!is_dir($dir))
 		{
-			if(!mkdir(e_MEDIA.$dir, 0755))
+			if(!mkdir($dir, 0755))
 			{
 				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
 				return FALSE;
@@ -539,7 +544,7 @@ class media_admin_ui extends e_admin_ui
 								<tr>
 									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
 									<th class='center' style='width:50px'>Preview</th>
-									<th class='center'>".LAN_NAME."</th>
+									<th class='center'>".LAN_FILE."</th>
 									<th>Mime Type</th>
 									<th>File Size</th>
 									<th>".LAN_DATESTAMP."</th>
@@ -589,13 +594,13 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 		$mes = e107::getMessage();
 		$sql = e107::getDb();
-
+		$tp = e107::getParser();
 
 		foreach($_POST['batch_selected'] as $file)
 		{
-			$oldpath = "temp/".$file;
+			$oldpath = e_MEDIA."temp/".$file;
 					
-			$f = $fl->get_file_info(e_MEDIA.$oldpath);
+			$f = $fl->get_file_info($oldpath);
 			
 			if(!$f['mime'])
 			{
@@ -604,25 +609,29 @@ class media_admin_ui extends e_admin_ui
 			
 			
 			$newpath = $this->getPath($f['mime']).'/'.$file;
-
+			
+			// echo "oldpath=".$file;
+// 			
+			// echo "<br />newpath=".$tp->createConstants($newpath,'rel');
+			// continue;
 			$f['fname'] = $file;
 
-			if(rename(e_MEDIA.$oldpath,e_MEDIA.$newpath))
+			if(rename($oldpath,$newpath))
 			{
 				$insert = array(
 					'media_caption'		=> $f['fname'],
 					'media_description'	=> '',
 					'media_category'	=> $_POST['batch_category'],
 					'media_datestamp'	=> $f['modified'],
-					'media_url'	=> 		"{e_MEDIA}".$newpath,
+					'media_url'			=> $tp->createConstants($newpath,'rel'),
 					'media_userclass'	=> 0,
-					'media_name'	=> $f['fname'],
-					'media_author'	=> USERID,
-					'media_size'	=> $f['fsize'],
+					'media_name'		=> $f['fname'],
+					'media_author'		=> USERID,
+					'media_size'		=> $f['fsize'],
 					'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],
-					'media_usedby'	=> '',
-					'media_tags'	=> '',
-					'media_type'	=> $f['mime']
+					'media_usedby'		=> '',
+					'media_tags'		=> '',
+					'media_type'		=> $f['mime']
 					);
 
 
@@ -632,7 +641,7 @@ class media_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					rename(e_MEDIA.$newpath,e_MEDIA.$oldpath);	//move it back.
+					rename($newpath,$oldpath);	//move it back.
 				}
 			}
 		}

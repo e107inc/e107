@@ -1216,12 +1216,14 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
+		
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
 			if(!is_array($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
 			$parms = $attributes['readParms'];
 		}
+
 		$tp = e107::getParser();
 		switch($field) // special fields
 		{

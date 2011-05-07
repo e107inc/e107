@@ -1991,6 +1991,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array
 	 */
 	protected $tableJoin = array();
+	
+	/**
+	 * Array of table names and their aliases. (detected from listQry)
+	 * db query building
+	 * @var array
+	 */
+	protected $joinAlias = array();
 
 	/**
 	 * Main model table alias
@@ -2761,6 +2768,9 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function parseAliases()
 	{
 		if($this->_alias_parsed) return $this; // already parsed!!!
+		
+		
+		
 		if($this->getJoinData())
 		{
 			foreach ($this->getJoinData() as $table => $att)
@@ -2785,12 +2795,16 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
+		
+		
+		$this->joinAlias(); // generate Table Aliases from listQry
+		
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
 		{
 			// tableAlias.fieldName.fieldAlias
-			if(strpos($field, '.') !== false)
+			if(strpos($field, '.') !== false) // manually entered alias. 
 			{
 				$tmp = explode('.', $field, 3);
 				$att['table'] = $tmp[0] ? $tmp[0] : $this->getIfTableAlias(false);
@@ -2802,8 +2816,16 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			else
 			{
+				
 				$att['table'] = $this->getIfTableAlias(false);
-				$att['alias'] = '';
+				if(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
+				{
+					$att['alias'] = $this->joinAlias[$this->table].".".$field; 	
+				}
+				else
+				{
+					$att['alias'] = "";	
+				}
 				$att['field'] = $field;
 				$fields[$field] = $att;
 			}
@@ -2834,10 +2856,38 @@ class e_admin_controller_ui extends e_admin_controller
 				$fields[$field]['__tableField'] = '`'.$this->getTableName(false, true).'`.'.$field;
 			}*/
 		}
+
 		$this->fields = $fields;
 		$this->_alias_parsed = true;
 		return $this;
 	}
+
+	/**
+	 *  Intuitive LEFT JOIN Qry support. (preferred)
+	 *  Generate array of table names and their alias - auto-detected from listQry;
+	 *  eg. $listQry = "SELECT m.*, u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id"; 
+	 */
+	protected function joinAlias()
+	{
+		//TODO - editQry
+		// TODO - auto-detect fields that belong to other tables. eg. u.user_id,u.user_name and adjust query to suit. 
+		if($this->listQry) 
+		{
+			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
+			
+			foreach($matches[1] AS $k=>$v)
+			{
+				if(varset($matches[3][$k]))
+				{
+					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
+				}			
+			}
+		}
+		
+	}
+
+
+
 
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
@@ -2851,7 +2901,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSFieldsArr = array(); // FROM for main table
 		$tableSJoinArr = array(); // FROM for join tables
 		$filter = array();
-
+		
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		list($filterField, $filterValue) = $searchFilter;
@@ -2860,6 +2910,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
 		}
+
 
 		// main table should select everything
 		$tableSFieldsArr[] = $tablePath.'*';
@@ -2885,10 +2936,13 @@ class e_admin_controller_ui extends e_admin_controller
 				if($isfilter)
 				{
 					$filterFrom[] = $var['__tableField'];
+				
 				}
 			}
 		}
 
+
+		
 		if($isfilter)
 		{
 			if(!$filterFrom) return false;
@@ -3039,7 +3093,10 @@ class e_admin_controller_ui extends e_admin_controller
 			if(false === $forceTo) $forceTo = $this->getPerPage();
 			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
 		}
-
+		
+		// Debug Filter Query. 	
+		// echo $qry;
+	
 		return $qry;
 	}
 
@@ -4224,6 +4281,10 @@ class e_admin_form_ui extends e_form
 							$text .= $list;
 							continue;
 						}
+					break;
+					
+					case 'user': // TODO - User Filter				
+						//$option[$key.'__'.$k] = $name;	
 					break;
 			}
 
