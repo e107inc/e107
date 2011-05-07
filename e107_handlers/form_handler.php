@@ -1164,10 +1164,21 @@ class e_form
 				{
 					$data['readParms']['__idval'] = $fieldvalues[$data['readParms']['idField']];
 				}
+				elseif(isset($fieldvalues['user_id'])) // Default
+				{
+					$data['readParms']['__idval'] = $fieldvalues['user_id'];	
+				}
+
 				if(isset($data['readParms']['nameField']))
 				{
 					$data['readParms']['__nameval'] = $fieldvalues[$data['readParms']['nameField']];
 				}
+				elseif(isset($fieldvalues['user_name'])) // Default
+				{
+					$data['readParms']['__nameval'] = $fieldvalues['user_name'];	
+				}
+				
+			
 			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
@@ -1474,22 +1485,25 @@ class e_form
 				// Dirty, but the only way for now
 				$id = 0;
 				$ttl = '';
-				if(vartrue($parms['link']))
+				
+				//Defaults to user_id and user_name (when present) and when idField and nameField are not present. 
+				
+				
+				// previously set - real parameters are idField && nameField
+				$id = vartrue($parms['__idval']);
+				if($value && !is_numeric($value))
 				{
-					// previously set - real parameters are idField && nameField
 					$id = vartrue($parms['__idval']);
-					if($value && !is_numeric($value))
-					{
-						$id = vartrue($parms['__idval']);
-						$ttl = $value;
-					}
-					elseif($value && is_numeric($value))
-					{
-						$id = $value;
-						$ttl = vartrue($parms['__nameval']);
-					}
+					$ttl = $value;
 				}
-				if($id && $ttl && is_numeric($id))
+				elseif($value && is_numeric($value))
+				{
+					$id = $value;
+					$ttl = vartrue($parms['__nameval']);
+				}
+				
+				
+				if(vartrue($parms['link']) && $id && $ttl && is_numeric($id))
 				{
 					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($id)).'" title="Go to user profile">'.$ttl.'</a>';
 				}
