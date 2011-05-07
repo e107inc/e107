@@ -60,10 +60,10 @@ class media_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
-		'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'),
-		'main/import' 		=> array('caption'=> "Batch Media Import", 'perm' => 'A'),
+	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import. 
+		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
-	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'),
+	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic. 
 	//	'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 
@@ -110,7 +110,7 @@ class media_cat_ui extends e_admin_ui
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_nick' 		=> array('title'=> "Nickname",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
-         	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','readonly'=>TRUE), // Display name
+         	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>TRUE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 		//	'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);
@@ -243,7 +243,8 @@ class media_admin_ui extends e_admin_ui
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
+         	// media_description is type = textarea until bbarea can be reduced to not include youtube etc 
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
          	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
@@ -520,12 +521,12 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning Media in folder:  ".e_MEDIA."temp/", E_MESSAGE_INFO);
+			$mes->add("Scanning for new media (images, videos, files) in folder:  ".e_MEDIA."temp/", E_MESSAGE_INFO);
 		}
 
 		if(!count($files))
 		{
-			$mes->add("No media Found!", E_MESSAGE_INFO);
+			$mes->add("No media Found! Please upload some files and then refresh this page.", E_MESSAGE_INFO);
 			return;
 		}
 

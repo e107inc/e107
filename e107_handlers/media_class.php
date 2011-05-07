@@ -233,7 +233,7 @@ class e_media
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		$text .= "<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
+		$text .= "<div style='margin-left:500px;text-align:center; position:relative;z-index:1000;float:left;display:none' id='{$formid}'>";
 		$text .="<div style='-moz-box-shadow: 3px 3px 3px #808080;
 			-webkit-box-shadow: 3px 3px 3px #808080;
 			box-shadow: 3px 3px 3px #808080;
@@ -246,7 +246,7 @@ class e_media
 		{
 			$image	= $row['media_url'];
 			$diz	= $row['media_name']." : ". $row['media_dimensions'];
-			$insert	= "[img]".$image."[/img]";
+			$insert = "[img]".$image."[/img]";
 			
 			$text .= "
 			<div style='border:1px solid silver;margin:5px;width:50px;height:50px;overflow:hidden;float:left'>

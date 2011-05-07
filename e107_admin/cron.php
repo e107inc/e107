@@ -303,10 +303,11 @@ class cron_admin_ui extends e_admin_ui
 	
 			//FIXME: for Windows, the is_executable() function only checks the file
 			// extensions of exe, com, bat and cmd.
-	
-			if (!is_executable(e_BASE."cron.php"))
+			
+			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
+			if ($actualPerm != 755) // is_executable() is not reliable. 
 			{
-				$mes->add("Please CHMOD /cron.php to 755", E_MESSAGE_WARNING);
+				$mes->add("Please CHMOD /cron.php to 755 ", E_MESSAGE_WARNING);
 			}
 			//elseif (!$active) - always show instructions
 			{
@@ -591,7 +592,7 @@ $frm = e107::getForm();
 
 require_once(e_ADMIN.'footer.php');
 exit;
-
+/*
 class cron
 {
 	protected $coreCrons = array();
@@ -693,10 +694,13 @@ class cron
 
 		//FIXME: for Windows, the is_executable() function only checks the file
 		// extensions of exe, com, bat and cmd.
-
-		if (!is_executable(e_BASE."cron.php"))
+		
+		
+		$actualPerms = fileperms(e_BASE."cron.php");
+	
+		if (!is_executable(realpath(e_BASE."cron.php")))
 		{
-			$mes->add("Please CHMOD /cron.php to 755", E_MESSAGE_WARNING);
+			$mes->add("Please CHMOD /cron.php to 755 ", E_MESSAGE_WARNING);
 		}
 		//elseif (!$active) - always show instructions
 		{
@@ -1098,12 +1102,12 @@ class cron
 
 		$var['main']['text'] = PAGE_NAME;
 		$var['main']['link'] = e_SELF;
-		/*
-		 $var['pref']['text'] = LAN_PREFS;
-		 $var['pref']['link'] = e_SELF."?pref";
-		 $var['pref']['perm'] = "N";
 		
-		 */ $action = ($this->cronAction) ? $this->cronAction : 'main';
+		 // $var['pref']['text'] = LAN_PREFS;
+		 // $var['pref']['link'] = e_SELF."?pref";
+		 // $var['pref']['perm'] = "N";
+		
+		  $action = ($this->cronAction) ? $this->cronAction : 'main';
 
 		e_admin_menu(PAGE_NAME, $action, $var);
 	}
@@ -1142,5 +1146,7 @@ function cron_adminmenu()
 	global $cron;
 	$cron->cronOptions();
 }
+  */
+
 
 ?>
