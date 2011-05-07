@@ -18,6 +18,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 		list($name, $path, $default, $width, $height, $multiple, $label, $subdirs, $filter, $fullpath, $click_target, $click_prefix, $click_postfix, $tabindex, $class) = explode(",", $parm);
 	}
 
+	
 	$paths = explode("|", $path);
 
 	if (trim($default[0]) == "{")
@@ -81,14 +82,14 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$text .= '<div id="'.$name_id.'_cont">';
 		}
 
-		$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
+		$text .= "\n<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
 		<option value=''>".$label."</option>\n";
 
 		require_once(e_HANDLER.'admin_handler.php');
 		foreach ($imagelist as $imagedirlabel => $icons)
 		{
 			if(!vartrue($parms['media'])) $imagedirlabel = str_replace('../', '', $tp->replaceConstants($imagedirlabel));
-			$text .= "<optgroup label='".$imagedirlabel."'>";
+			$text .= "<optgroup label='".$imagedirlabel."'>\n";
 			if (empty($icons)) $text .= "<option value=''>Empty</option>\n";
 			else
 			{
@@ -124,7 +125,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 					}
 				}
 			}
-			$text .= '</optgroup>';
+			$text .= '</optgroup>\n';
 		}
 		$text .= "</select>";
 		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
