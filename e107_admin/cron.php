@@ -385,11 +385,44 @@ class cron_admin_ui extends e_admin_ui
 class cron_admin_form_ui extends e_admin_form_ui
 {
 	
+	var $min_options = array(
+						"*"																						 => LAN_CRON_11,
+						"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58"	 => LAN_CRON_12,
+						"0,5,10,15,20,25,30,35,40,45,50,55"														 => LAN_CRON_13,
+						"0,10,20,30,40,50"																		 => LAN_CRON_14,
+						"0,15,30,45"																			 => LAN_CRON_10,
+						"0,30"																					 => LAN_CRON_15
+		);
+
+	var	$hour_options = array(
+						"*"								 => LAN_CRON_16,
+						"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_17,
+						"0,3,6,9,12,15,18,21"			 => LAN_CRON_18,
+						"0,6,12,18"						 => LAN_CRON_19
+	);
+	
+	
+	
+	
+	/**
+	 * Render cron_tab field
+	 */
 	function cron_tab($curVal,$mode) 
 	{ 
 		if($mode == 'read')
 		{
-			return $curVal; // TODO - Convert to more readable form. 
+			$sep = array();
+			list($min, $hour, $day, $month, $weekday) = explode(" ", $curVal);
+			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_3.$min;	
+			$text .= "<br />";
+			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_4.$hour;			
+			$text .= "<br />";
+			$text .= ($day != '*') ? LAN_CRON_5.$day : LAN_CRON_20;
+			$text .= "<br />";
+			$text .= ($month != '*') ? strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_21;
+			$text .= "<br />";		
+			$text .= ($weekday != '*') ? strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_22;
+			return $text; 
 		}
 		
 		if($mode == 'write')
@@ -398,17 +431,13 @@ class cron_admin_form_ui extends e_admin_form_ui
 		}
 		
 		if($mode == 'filter') // Custom Filter List 
-		{
-			$list = array();
-			return $list;
+		{		
+			return;
 		}
 		
 		if($mode == 'batch')
 		{
-			$types = array();
-			asort($types);
-			
-			return $types;	
+			return;
 		}
 	}
 	
@@ -444,27 +473,13 @@ class cron_admin_form_ui extends e_admin_form_ui
 		$month = explode(",", $sep['month']);
 		$weekday = explode(",", $sep['weekday']);
 
-		$min_options = array(
-						"*"																						 => LAN_CRON_11,
-						"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58"	 => LAN_CRON_12,
-						"0,5,10,15,20,25,30,35,40,45,50,55"														 => LAN_CRON_13,
-						"0,10,20,30,40,50"																		 => LAN_CRON_14,
-						"0,15,30,45"																			 => LAN_CRON_10,
-						"0,30"																					 => LAN_CRON_15
-		);
-
-		$hour_options = array(
-						"*"								 => LAN_CRON_16,
-						"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_17,
-						"0,3,6,9,12,15,18,21"			 => LAN_CRON_18,
-						"0,6,12,18"=> LAN_CRON_19
-		);
+		
 
 		$text = "
 		<select class='tbox' style='height:90px' multiple='multiple' name='tab[minute]'>
 		\n";
 
-		foreach ($min_options as $key => $val)
+		foreach ($this->min_options as $key => $val)
 		{
 			if ($sep['minute'] == $key)
 			{
@@ -492,7 +507,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		<select class='tbox' style='height:90px' multiple='multiple' name='tab[hour]'>
 		\n";
 
-		foreach ($hour_options as $key => $val)
+		foreach ($this->hour_options as $key => $val)
 		{
 			if ($sep['hour'] == $key)
 			{
@@ -543,12 +558,12 @@ class cron_admin_form_ui extends e_admin_form_ui
 
 					$sel_weekday = ($weekday[0] == "*") ? "selected='selected'" : "";
 					$text .= "<option value='*' $sel_weekday>".LAN_CRON_22."</option>\n"; // Every Week Day.
-					$days = array(LAN_SUN, LAN_MON, LAN_TUE, LAN_WED, LAN_THU, LAN_FRI, LAN_SAT);
+				
 
 					for ($i = 0; $i <= 6; $i++)
 					{
 						$sel = (in_array(strval($i), $weekday)) ? "selected='selected'" : "";
-						$text .= "<option value='$i' $sel>".$days[$i]."</option>\n";
+						$text .= "<option value='$i' $sel>".strftime("%A", mktime(00, 00, 00, 5, $i, 2000))."</option>\n";
 					}
 					$text .= "</select>
 				";
