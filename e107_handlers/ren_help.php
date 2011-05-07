@@ -193,37 +193,6 @@ function PreImage_Select($formid='preimage_selector')
 	$text .= $med->imageSelect($bbcode_imagedir,$formid);
 	
 	return $text; 
-	
-	
-	/*
-	 $fl = e107::getFile();
-	 $imagelist = $fl->get_files($path,'','standard',2);
-	sort($imagelist);
-	
-	$text .= "<table class='fborder' style='background-color: #fff'>
-	<tr><td class='forumheader3' style='white-space: nowrap'>";
-
-	if(!count($imagelist))
-			{
-
-				$text .= LANHELP_46."<b>".str_replace("../","",$path)."</b>";
-			}
-			else
-			{
-				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
-				<option value=''>".LANHELP_42."</option>";
-				foreach($imagelist as $image)
-				{
-					$e_path = $tp->createConstants($image['path'],1);
-					$showpath = str_replace($path,'',$image['path']);
-					$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
-				}
-				$text .="</select>";
-			}
-	$text .="</td></tr>	\n </table></div>
-	</div>\n<!-- End of PreImage selector -->\n";
-	return $text;
-	*/
 }
 
 
