@@ -29,7 +29,7 @@ function core_head() {
 	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 	return "<style type='text/css'>
 <!--
-.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font-size: 0px }
+.b { background-image: url('".$bar."'); border: 1px solid #999; height: 10px; font-size: 0px }
 -->
 </style>";
 }
