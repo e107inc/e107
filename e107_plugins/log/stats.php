@@ -31,7 +31,7 @@ include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 $bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
 $eplug_css[] = "<style type='text/css'>
 <!--
-.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font-size: 0px }
+.b { background-image: url('".$bar."'); border: 1px solid #999; height: 10px; font-size: 0px }
 -->
 </style>";
 
