@@ -24,7 +24,7 @@ class wysiwyg
 		$this->getConfig($config);
 		
 		
-		global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
+		global $pref;
 	
 
 	
@@ -62,64 +62,55 @@ class wysiwyg
 	
 	$text .= "\t\t start_tinyMce(); \n
 	
-	function tinymce_html_bbcode_control(type, source) {
+	function tinymce_e107Paths(type, source) {
+	";
 	
-
+	$tp = e107::getParser();
+	
+	$paths = array(
+		e107::getFolder('images'),
+		e107::getFolder('plugins'),
+		e107::getFolder('media_images'),
+		e107::getFolder('media_files'),
+		e107::getFolder('media_videos')
+	);
+	
+		 
+	 $text .= "
 	    switch (type) {
 	
 	        case 'get_from_editor':
 	            // Convert HTML to e107-BBcode
 	            source = source.replace(/target=\"_blank\"/, 'rel=\"external\"');
 	            source = source.replace(/^\s*|\s*$/g,'');
-	            if(source != '')
-	            {
-	                source = '[html]\\n' + source + '\\n[/html]';
-	/*
-					source = source.replace(/<\/strong>/gi,'[/b]');
-	                source = source.replace(/<strong>/gi,'[b]');
-	                source = source.replace(/<\/em>/gi,'[/i]');
-	                source = source.replace(/<em>/gi,'[i]');
-	                source = source.replace(/<\/u>/gi,'[/u]');
-	                source = source.replace(/<u>/gi,'[u]');
-	                source = source.replace(/<\/strong>/gi,'[/b]');
-	                source = source.replace(/<img/gi,'[img');
-	                source = source.replace(/<\/strong>/gi,'[/b]');
-					source = source.replace(/<a href=\"(.*?)\"(.*?)>(.*?)<\/a>/gi,'[link=$1 $2]$3[/link]');
-	*/
+			
+			";
+			
+			// Convert TinyMce Paths to  e107 paths.
+			foreach($paths as $k=>$path)
+			{
+				//echo "<br />$path = ".$tp->createConstants($path);
+				$text .=  "\t\tsource = source.replace(/(\"|])".str_replace("/","\/",$path)."/g,'$1".$tp->createConstants($path)."');\n";	
+			}			
+			
+			$text .= "
+            break;
 	
-	            }
-	
-			// Convert e107 paths.
-	                source = source.replace(/\"".str_replace("/","\/",$IMAGES_DIRECTORY)."/g,'\"{e_IMAGE}');
-					source = source.replace(/\"".str_replace("/","\/",$PLUGINS_DIRECTORY)."/g,'\"{e_PLUGIN}');
-					source = source.replace(/\'".str_replace("/","\/",$IMAGES_DIRECTORY)."/g,'\'{e_IMAGE}');
-					source = source.replace(/\'".str_replace("/","\/",$PLUGINS_DIRECTORY)."/g,'\'{e_PLUGIN}');
-	
-	            break;
-	
-	        case 'insert_to_editor':
-			// Convert e107-BBcode to HTML
+	        case 'insert_to_editor': // Convert e107Paths for TinyMce
+						
 	            source = source.replace(/rel=\"external\"/, 'target=\"_blank\"');
-	
-	            html_bbcode_check = source.slice(0,6);
-	
-	            if (html_bbcode_check == '[html]') {
-	                source = source.slice(6);
-	            }
-	
-	            html_bbcode_check = source.slice(-7);
-	
-	            if (html_bbcode_check == '[/html]') {
-	                source = source.slice(0, -7);
-	            }
-	/*
-				source = source.replace(/\[b\]/gi,'<strong>');
-				source = source.replace(/\[\/b\]/gi,'<\/strong>');
-	*/
-				source = source.replace(/\{e_IMAGE\}/gi,'".$IMAGES_DIRECTORY."');
-				source = source.replace(/\{e_PLUGIN\}/gi,'".$PLUGINS_DIRECTORY."');
-	
-	            break;
+
+			";
+			
+			// Convert e107 paths to TinyMce Paths.
+			foreach($paths as $k=>$path)
+			{
+				$const = str_replace("}","\}",$tp->createConstants($path));
+				$text .= "\t\tsource = source.replace(/".$const."/gi,'".$path."');\n";	
+			}
+			
+			$text .= "
+	        break;
 	    }
 	
 	    return source;
@@ -185,14 +176,28 @@ class wysiwyg
 		
 		tinyMCE.init({ \n\n";
 		
+		$newConfig = array();
+		
 		foreach($this->config as $key=>$val)
-		{			
+		{
 			if($val != 'true' && $val !='false')
 			{
 				$val = "'".$val."'";
 			}
-			$text .= "\t\t  ".$key." : '".$val."',\n";
+			$newConfig[] = "\t\t  ".$key." : ".$val;
 		}
+		
+		// foreach($this->config as $key=>$val)
+		// {			
+			// if($val != 'true' && $val !='false')
+			// {
+				// $val = "'".$val."'";
+			// }
+			// $text .= "\t\t  ".$key." : '".$val."',\n";
+		// }
+		
+		$text .= implode(",\n",$newConfig);
+		
 	/*
 		if($tinyMcePrefs['customjs'])
 		{
@@ -268,7 +273,7 @@ class wysiwyg
 			'inline_styles'						=> 'true',
 			'auto_resize'						=> 'true',
 			'debug'								=> 'false',
-			'force_br_newlines'					=> 'true',
+			'force_br_newlines'					=> 'false',
 			'forced_root_block'					=> '',
 			'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
@@ -281,9 +286,9 @@ class wysiwyg
 
 		);
 		
-		if(!in_array('e107bbcode',$plug_array))
+	//	if(!in_array('e107bbcode',$plug_array))
 		{
-			$this->config['cleanup_callback'] = 'tinymce_html_bbcode_control';		
+			$this->config['cleanup_callback'] = 'tinymce_e107Paths';		
 		}
 		
 		$paste_plugin = (strpos($config['tinymce_plugins'],'paste')!==FALSE) ? TRUE : FALSE;
