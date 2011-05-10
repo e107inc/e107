@@ -290,6 +290,7 @@ if (isset($_POST['adduser']))
 			'user_join' => $now,
 			'user_lastvisit' => $now,
 			'user_currentvisit' => $now,
+			'user_prefs' => '',
 			'user_new' => '',
 			'user_viewed' => '',
 			//'user_login' => $_POST['realname'],
@@ -298,7 +299,6 @@ if (isset($_POST['adduser']))
 			'user_realm' => '',
 			'user_pwchange' => $now
 		);
-		//admin_update($sql -> db_Insert("user", "0, '{$username}', '{$loginname}',  '', '".md5($_POST['password1'])."', '{$key}', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '".time()."', '".time()."', '0', '0', '0', '0', '0', '0', '0', '', '', '0', '0', '".$_POST['realname']."', '".$svar."', '', '', '".time()."', ''"), 'insert', USRLAN_70);
 		admin_update($sql -> db_Insert("user", $newUserData), 'insert', USRLAN_70);
 	}
 }
