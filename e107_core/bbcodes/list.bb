@@ -1,7 +1,8 @@
-/* Tag: unordered list [list][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
-/* Tag: ordered list [list=<list type>][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
-/* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list]  - legacy*/
-/* Tag: ordered list [list=<list type>]*line 1*line2*line 3*line 4*line5 etc[/list] - legacy */
+//<?php
+/* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list] */
+/* Tag: ordered list [list=<list type>]*line 1*line2*line 3*line 4*line5 etc[/list]  */
+/* Tag: unordered list [list][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - not compatible with TinyMce */
+/* Tag: ordered list [list=<list type>][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - not compatible with TinyMce */
 /* valid list types: 
 				disc
 				circle

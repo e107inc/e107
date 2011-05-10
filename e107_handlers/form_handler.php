@@ -430,16 +430,20 @@ class e_form
 	   	$options = array('class' => 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
 		// FIXME - see ren_help.php
-		if(!deftrue('e_WYSIWYG'))
+	//	if(!deftrue('e_WYSIWYG'))
 		{
 			require_once(e_HANDLER."ren_help.php");
 			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
 			$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
 		}
-
+		
+		$toggleID = "bbcode-panel-".$help_tagid;
+		$tinyMceID = str_replace("_","-",$name);
+		
 		$ret = "
 		<div class='bbarea {$size}'>
 			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
+			<div><a href='#' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
 			<div class='field-spacer'><!-- --></div>
 			{$bbbar}
 		</div>
@@ -1821,6 +1825,7 @@ class e_form
 			break;
 
 			case 'lanlist':
+			case 'language':
 				$options = e107::getLanguage()->getLanSelectArray();
 				
 				$eloptions  = vartrue($parms['__options'], array());

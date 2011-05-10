@@ -43,10 +43,21 @@
 				s = s.replace(re, str);
 			};
 			
-	
+			
+			rep(/<div style="text-align: center;">([\s\S]*)<\/div>/gi,"[center]$1[/center]"); // verified
+			
+			
+			rep(/<li>/gi,"*"); // verified
+			rep(/<\/li>/gi,""); // verified
+			rep(/<ul>([\s\S]*?)<\/ul>/gim,"[list]$1[/list]\n"); // verified
+			rep(/<ol .* style=\'list-style-type:\s*([\w]*).*\'>([\s\S]*)<\/ol>/gim,"[list=$1]$2[/list]\n"); // verified
+			rep(/<ol>([\s\S]*?)<\/ol>/gim,"[list=decimal]$1[/list]\n"); // verified
+			rep(/<span style="color: (#?.*?);">([\s\S]*)<\/span>/gi,"[color=$1]$2[/color]"); // verified
+		
+		
 
 			// example: <strong> to [b]
-			rep(/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/gi,"[url=$1]$2[/url]");
+			rep(/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/gi,"[link=$1]$2[/link]");
 			rep(/<font.*?color=\"(.*?)\".*?class=\"codeStyle\".*?>(.*?)<\/font>/gi,"[code][color=$1]$2[/color][/code]");
 			rep(/<font.*?color=\"(.*?)\".*?class=\"quoteStyle\".*?>(.*?)<\/font>/gi,"[quote][color=$1]$2[/color][/quote]");
 			rep(/<font.*?class=\"codeStyle\".*?color=\"(.*?)\".*?>(.*?)<\/font>/gi,"[code][color=$1]$2[/color][/code]");
@@ -55,10 +66,11 @@
 			rep(/<font.*?color=\"(.*?)\".*?>(.*?)<\/font>/gi,"[color=$1]$2[/color]");
 			rep(/<span style=\"font-size:(.*?);\">(.*?)<\/span>/gi,"[size=$1]$2[/size]");
 			rep(/<font>(.*?)<\/font>/gi,"$1");
-		//	rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
-		//	rep(/<img.*?style=\"color: ?(.*?);\".*?>(.*?)\/>/gi,"[img style=$1]$2[/img]");
+		
+			rep(/<img.*?style=\"(.*?)\".*?src=\"(.*?)\".*?\/>/gi,"[img style=$1]$2[/img]");
+			rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
+	//		rep(/<img.*?style=\"(.*?)\".*?src=\"(.*?)\" alt=\"(.*?)\" .*?width=\"(.*?)\".*? .*?height=\"(.*?)\" .*?\/>/gi,"[img style=$1;width:$4px; height:$5;]$2[/img]");
 			
-			rep(/<img.*?style=\"?(.*?);\".*? src=\"(.*?)\" alt=\"(.*?)\" .*?width=\"(.*?)\".*? .*?height=\"(.*?)\" .*?\/>/gi,"[img style=$1;width:$4px; height:$5;]$2[/img]");
 			rep(/<span class=\"codeStyle\">(.*?)<\/span>/gi,"[code]$1[/code]");
 			rep(/<span class=\"quoteStyle\">(.*?)<\/span>/gi,"[quote]$1[/quote]");
 			rep(/<strong class=\"codeStyle\">(.*?)<\/strong>/gi,"[code][b]$1[/b][/code]");
@@ -88,12 +100,8 @@
 			rep(/&amp;/gi,"&");
 			
 			// e107
-			rep(/<ul>/gi,"[list]");
-			rep(/<\/ul>/gi,"[/list]");
-			rep(/<ol>/gi,"[list=decimal]");
-			rep(/<\/ol>/gi,"[/list]");
-			rep(/<li>/gi,"[*]");
-			rep(/<\/li>/gi,"\n");
+		
+			
 			return s; 
 		},
 
@@ -106,28 +114,39 @@
 			};
 
 			// example: [b] to <strong>
-			rep(/\n/gi,"<br />");
+			
+			
+			rep(/(\[list=.*\])\\*([\s\S]*)(\[\/list])/gim,"<ol>$2</ol>"); // verified
+			rep(/(\[list\])\\*([\s\S]*)(\[\/list])/gim,"<ul>$2</ul>");// verified
+			rep(/^ *?\*(.*)/gim,"<li>$1</li>"); 
+			rep(/\[center\]([\s\S]*)\[\/center\]/gi,"<div style=\"text-align:center\">$1</div>"); // verified
+			rep(/\[color=(.*?)\]([\s\S]*)\[\/color\]/gi,"<span style=\"color: $1;\">$2<\/span>"); // verified
+			
+		//	rep(/\n/gi,"<br \/>"); // breaks lists.. need a regex to exclude everything between [list]...[/list]
+		
 			rep(/\[b\]/gi,"<strong>");
 			rep(/\[\/b\]/gi,"</strong>");
 			rep(/\[i\]/gi,"<em>");
 			rep(/\[\/i\]/gi,"</em>");
 			rep(/\[u\]/gi,"<u>");
 			rep(/\[\/u\]/gi,"</u>");
-			rep(/\[url=([^\]]+)\](.*?)\[\/url\]/gi,"<a href=\"$1\">$2</a>");
+			rep(/\[link=([^\]]+)\](.*?)\[\/link\]/gi,"<a href=\"$1\">$2</a>");
 			rep(/\[url\](.*?)\[\/url\]/gi,"<a href=\"$1\">$1</a>");
+			rep(/\[img.*?style=(.*?).*?\](.*?)\[\/img\]/gi,"<img style=\"$1\" src=\"$2\" />");
 			rep(/\[img.*?\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
-			rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
+		//	rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
 			rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
 			rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
 
 			// e107 FIXME!
-		//	rep("/\[list\](.+?)\[\/list\]/is", '<ul class="listbullet">$1</ul>'); 
-			rep(/\[list\]/gi,"<ul>");
-			rep(/\[\/list\]/gi,"</ul>");
+		
+			
+			//	rep("/\[list\](.+?)\[\/list\]/is", '<ul class="listbullet">$1</ul>'); 
+		
 
-			rep(/\[list=decimal\]/gi,"<ol>");
-			rep(/\[\/list\]/gi,"</ol>");
-
+		
+		
+//
 
 			return s; 
 		}
