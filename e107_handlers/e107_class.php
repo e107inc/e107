@@ -1361,7 +1361,7 @@ class e107
 	 * @param string $method_name
 	 * @return boolean FALSE
 	 */
-	public function callMethod($class_name, $method_name)
+	public function callMethod($class_name, $method_name, $param='')
 	{
 		$mes = e107::getMessage();
 
@@ -1371,7 +1371,7 @@ class e107
 			if(method_exists($obj, $method_name))
 			{
 				$mes->debug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
-				return call_user_func(array($obj, $method_name));
+				return call_user_func(array($obj, $method_name),$param);
 			}
 			else
 			{
@@ -2255,7 +2255,11 @@ class e107
 		}*/
 
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
-		define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);
+		if(!deftrue('e_SELF_DISABLE'))
+		{
+			define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);	
+		}
+		
 
 		// START New - request uri/url detection, XSS protection
 		$requestUri = $requestUrl = '';
@@ -2384,7 +2388,12 @@ class e107
 
 		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
-		define('e_QUERY', $e_QUERY);
+		
+		if(!deftrue("e_QUERY_DISABLE"))
+		{
+			define('e_QUERY', $e_QUERY);	
+		}
+		
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING'] = e_QUERY;

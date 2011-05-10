@@ -30,7 +30,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 // FIXME - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
-    if(defsettrue('e_WYSIWYG')) { return; }
+  //  if(defsettrue('e_WYSIWYG')) { return; }
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $bbcode_helpsize;
 	$bbcode_helpsize = $helpsize;
 
@@ -80,10 +80,12 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
         $BBCODE_TEMPLATE = $temp[$mode];
 	}
 
+	$visible = deftrue('e_WYSIWYG') ? "style='display:none'" : "";
+
     if(is_readable(e_CORE."shortcodes/batch/bbcode_shortcodes.php"))
 	{
   		require_once(e_CORE."shortcodes/batch/bbcode_shortcodes.php");
-  		return $tp->parseTemplate($BBCODE_TEMPLATE);
+  		return "<div id='bbcode-panel-".$tagid."' class='bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE)."</div>";
 	}
 	else
 	{

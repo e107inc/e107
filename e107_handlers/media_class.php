@@ -221,6 +221,39 @@ class e_media
 		// TODO
 	}
 	
+	/**
+	 * Return an Array of Media Categories
+	 */
+	public function getCategories()
+	{
+		$ret = array();
+		e107::getDb()->db_Select_gen("SELECT * FROM #core_media_cat ORDER BY media_cat_title");
+		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		{
+			$id = $row['media_cat_nick'];
+			$ret[$id] = $row['media_cat_title'];
+		}
+		return $ret;	
+	}
+	
+	
+	
+	/**
+	 * Return an array of Images in a particular category
+	 */
+	public function getImages($cat = '')
+	{
+		if(!$cat) return;
+		// TODO check the category is valid. 
+		$ret = array();
+		e107::getDb()->db_Select_gen("SELECT * FROM #core_media WHERE media_category = '".$cat."' ORDER BY media_name");
+		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		{
+			$id = $row['media_id'];
+			$ret[$id] = $row;
+		}
+		return $ret;	
+	}
 		
 	/**
 	 * Generate Simple Thumbnail window for image-selection 

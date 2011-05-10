@@ -29,7 +29,7 @@ class bbcode_shortcodes
 		//FIXME - cachevars/getcachedvars!
 		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
-		if(defsettrue('e_WYSIWYG')){ return; }
+	//	if(defsettrue('e_WYSIWYG')){ return; }
 
 		$bbcode_func = ($bbcode_func) ? $bbcode_func : "addtext";
 		$bbcode_help  = ($bbcode_help) ? $bbcode_help : "help";
@@ -133,7 +133,7 @@ class bbcode_shortcodes
 
 	function sc_bb_help($parm)
 	{
-		if(defsettrue('e_WYSIWYG')) { return; }
+		// if(defsettrue('e_WYSIWYG')) { return; }
 		global $bbcode_helpactive,$bbcode_helptag, $bbcode_helpsize;
 		if($parm) $bbcode_helptag = $parm;
 		elseif(!varset($bbcode_helptag))  $bbcode_helptag = 'helpb';
