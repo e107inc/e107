@@ -154,21 +154,18 @@ CREATE TABLE core_media_cat (
 
 
 CREATE TABLE cron (
- cron_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
- cron_name VARCHAR( 50 ) NOT NULL ,
- cron_description VARCHAR( 255 ) NOT NULL ,
- cron_function VARCHAR( 50 ) NOT NULL ,
- cron_tab VARCHAR( 255 ) NOT NULL ,
- cron_lastrun INT( 13 ) UNSIGNED NOT NULL ,
- cron_active INT( 1 ) UNSIGNED NOT NULL ,
+ cron_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+ cron_name VARCHAR(50) NOT NULL,
+ cron_description VARCHAR(255) NOT NULL,
+ cron_function VARCHAR(50) NOT NULL,
+ cron_tab VARCHAR(255) NOT NULL,
+ cron_lastrun INT(13) UNSIGNED NOT NULL,
+ cron_active INT(1) UNSIGNED NOT NULL,
  PRIMARY KEY (cron_id),
  UNIQUE KEY cron_function (cron_function)
-) ENGINE = MYISAM ;
+) ENGINE = MYISAM;
 
 
-
-
-#
 # Table structure for table `dblog` - db/debug/rolling
 #
 
