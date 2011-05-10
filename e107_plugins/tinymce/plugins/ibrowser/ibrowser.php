@@ -41,11 +41,15 @@ if (!empty($tinyMCE_imglib_include))
 }
 
 
-$imglib = isset($_POST['lib'])?$_POST['lib']:'';
+$imglib = isset($_POST['lib'])? $_POST['lib'] : '';
 if (empty($imglib) && isset($_GET['lib'])) $imglib = $_GET['lib'];
+
 
 $value_found = false;
 // callback function for preventing listing of non-library directory
+/*
+
+
 function is_array_value($value, $key, $_imglib)
 {
   global $value_found;
@@ -60,6 +64,8 @@ if (!$value_found || empty($imglib))
 {
   $imglib = $tinyMCE_imglibs[0]['value'];
 }
+
+ */
 $lib_options = liboptions($tinyMCE_imglibs,'',$imglib);
 
 
@@ -117,8 +123,9 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 		  		var cssfloat = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
 				var css_style = "";
 
-               	css_style = 'width:' + width + 'px; height:' + height + 'px; border:' + border + 'px solid black; ';
-                css_style = (cssfloat) ? css_style + 'float: ' + cssfloat + '; ' : css_style;
+               	css_style = 'width:' + width + 'px; height:' + height + 'px;';
+               	css_style = (border !=0) ? css_style + ' border:' + border + 'px solid black; ' : css_style;
+                css_style = (cssfloat && cssfloat !='none') ? css_style + 'float: ' + cssfloat + '; ' : css_style;
 				css_style = (margleft != 0) ? css_style + 'margin-left:' + margleft + 'px; ' : css_style;
 				css_style = (margright != 0) ? css_style + 'margin-right:' + margright + 'px; ' : css_style;
 				css_style = (margtop != 0) ? css_style + 'margin-top:' + margtop + 'px; ' : css_style;
@@ -186,7 +193,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 		var formObj = document.forms[0];
 
 		var splitvar 			= obj.options[obj.selectedIndex].value.split("|");
-		formObj.src.value 		= '<?php echo $tinyMCE_base_url.$imglib?>'+splitvar[3];
+		formObj.src.value 		= splitvar[3];
 		formObj.width.value 	= splitvar[0];
 		formObj.height.value 	= splitvar[1];
 		formObj.size.value 		= splitvar[2];
@@ -274,8 +281,8 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 		var formObj = document.forms[0];
 		var splitvar = obj.options[obj.selectedIndex].value.split("|");
 		formObj.src.value = splitvar[3];
-	  // 	alert('<?php echo $tinyMCE_base_url.$imglib?>' + formObj.src.value);
-		if (splitvar[3]) imgpreview.location.href = '<?php echo $tinyMCE_base_url.$imglib?>' + formObj.src.value;
+	  //	alert('<?php echo $imglib?>' + formObj.src.value);
+		if (splitvar[3]) imgpreview.location.href = formObj.src.value;
 	}
 
       // ]]>
@@ -308,7 +315,8 @@ echo "</head>
                 ".$lib_options."
               </select></td>
             <td>&nbsp;</td>
-            <td style='border:0px;text-align:left;vertical-align:top' rowspan=\"3\"><iframe name=\"imgpreview\" id=\"imgpreview\" class=\"previewWindow\" src=\"".$preview."\" style=\"border:0px;width: 100%; height: 220px;overflow:auto\" ></iframe>
+            <td style='border:0px;text-align:left;vertical-align:top' rowspan=\"3\">
+            <iframe name=\"imgpreview\" id=\"imgpreview\" class=\"previewWindow\" src=\"".$preview."\" style=\"border:0px;width: 100%; height: 220px;overflow:auto\" ></iframe>
             </td>
           </tr>
           <tr>
@@ -316,41 +324,34 @@ echo "</head>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>
+            <td>";
+		
+	$mediaCat = ($_POST['lib']) ? $_POST['lib'] : "_common";		
+	$array = e107::getMedia()->getImages($mediaCat);
 
-
- 	<select name=\"imglist\" size=\"15\" style=\"width: 100%;\"
+			
+	echo "
+ 	".$d."<select name=\"imglist\" size=\"15\" style=\"width: 100%;\"
     onchange=\"show_image(this);selectChange(this);\" ondblclick=\"selectClick();\">\n";
 
-	if ($d)
-	{
-		  $i = 0;
-	      while (false !== ($entry = $d->read()))
-		  {
-	        $ext = strtolower(substr(strrchr($entry,'.'), 1));
-	        if (is_file($_root.$imglib.$entry) && in_array($ext,$tinyMCE_valid_imgs))
-	        {
-				$arr_tinyMCE_image_files[$i][file_name] = $entry;
-				$i++;
-	        }
-	      }
-	      $d->close();
-		  // sort the list of image filenames alphabetically.
-		  sort($arr_tinyMCE_image_files);
-		  for($k=0; $k<count($arr_tinyMCE_image_files); $k++)
-		  {
-		      	$entry = $arr_tinyMCE_image_files[$k][file_name];
-			  	$size = getimagesize($_root.$imglib.$entry);
-			  	$fsize = filesize($_root.$imglib.$entry);
-  			  	$sel =  ($entry == $img)? "selected='selected'" : "";
 
-				echo "<option  value='".$size[0]."|".$size[1]."|". filesize_h($fsize,2)."|". $entry."'  $sel >". $entry ."</option>\n";
-		  }
-    }
-    else
-    {
-      $errors[] = '{$lang_ibrowser_errornodir}';
-    }
+	if($mediaCat)
+	{
+		$array = e107::getMedia()->getImages($mediaCat);
+		foreach($array as $images)
+		{
+			$entry = $images['media_name'];
+			list($width,$height) = explode(" x ",$images['media_dimensions']);
+			$fsize = filesize_h($images['media_size'],2);
+  			 $sel =  ($entry == $img)? "selected='selected'" : "";
+
+				echo "<option  value='".$width."|".$height."|". $fsize."|". $tp->replaceConstants($images['media_url'],'full')."'  $sel >". $entry ."</option>\n";	
+		}
+	}
+	
+	
+	
+
 
  echo "  </select></td>
             <td>&nbsp;</td>
@@ -482,12 +483,22 @@ echo "</head>
 
 function liboptions($arr, $prefix = '', $sel = '')
 {
-  $buf = '';
-  foreach($arr as $lib)
-  {
-    $buf .= '<option value="'.$lib['value'].'"'.(($lib['value'] == $sel)?' selected="selected"':'').'>'.$prefix.$lib['text'].'</option>'."\n";
-  }
-  return $buf;
+	$buf = "";
+	$array = e107::getMedia()->getCategories();
+	foreach($array as $value => $text)
+	{
+		$selected = ($value == $_POST['lib']) ? "selected='selected'" : "";
+		$buf .= "<option value='".$value."' {$selected}>".$text.'</option>'."\n";
+	}
+	
+	return $buf;
+	
+  // $buf = '';
+  // foreach($arr as $lib)
+  // {
+    // $buf .= '<option value="'.$lib['value'].'"'.(($lib['value'] == $sel)?' selected="selected"':'').'>'.$prefix.$lib['text'].'</option>'."\n";
+  // }
+  // return $buf;
 }
 
 
