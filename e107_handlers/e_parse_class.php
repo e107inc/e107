@@ -2022,6 +2022,7 @@ class e_parse
 	 */
 	public function createConstants($url, $mode = 0)
 	{
+		
 		//FIXME - create constants for absolute paths and site URL's
 		if (!is_numeric($mode))
 		{
@@ -2040,14 +2041,14 @@ class e_parse
 			case 0: // folder name only.
 				$tmp = array(
 					'{e_MEDIA_FILE}'	=> $e107->getFolder('media_files'),
-					'{e_MEDIA_VIDEO}'	=> $e107->getFolder('media_video'),
-					'{e_MEDIA_IMAGE}'	=> $e107->getFolder('media_image'),
-					'{e_MEDIA_ICON}'	=> $e107->getFolder('media_icon'),
-					'{e_MEDIA_AVATAR}'	=> $e107->getFolder('media_avatar'),
+					'{e_MEDIA_VIDEO}'	=> $e107->getFolder('media_videos'),
+					'{e_MEDIA_IMAGE}'	=> $e107->getFolder('media_images'),
+					'{e_MEDIA_ICON}'	=> $e107->getFolder('media_icons'),
+					'{e_MEDIA_AVATAR}'	=> $e107->getFolder('media_avatars'),
 					'{e_WEB_JS}'		=> $e107->getFolder('web_js'),
 					'{e_WEB_CSS}'		=> $e107->getFolder('web_css'),
-					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_image'),
-					'{e_WEB_PACK}'		=> $e107->getFolder('web_pack'),
+					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_images'),
+					'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
 
 					'{e_IMAGE}' 	=> $e107->getFolder('images'),
 					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
@@ -2059,8 +2060,11 @@ class e_parse
 					'{e_MEDIA}'		=> $e107->getFolder('media'),
 					'{e_WEB}'		=> $e107->getFolder('web'),
 					);
+					
 			break;
 
+
+			
 			case 1: // relative path only
 				$tmp = array(
 					'{e_MEDIA_FILE}'	=> e_MEDIA_FILE,
