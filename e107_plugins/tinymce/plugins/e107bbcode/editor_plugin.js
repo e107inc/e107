@@ -43,11 +43,18 @@
 				s = s.replace(re, str);
 			};
 			
+		//	rep(/<td>([\s\S]*?)<\/td>/gim,"[td]$1[/td]\n"); // verified
+		//	rep(/<tr>([\s\S]*?)<\/tr>/gim,"[tr]$1[/tr]\n"); // verified
+		//	rep(/<table>([\s\S]*?)<\/table>/gim,"[table]$1[/table]\n"); // verified
+			
+			
+			
+			return s;
 			
 			rep(/<div style="text-align: center;">([\s\S]*)<\/div>/gi,"[center]$1[/center]"); // verified
 			
 			
-			rep(/<li>/gi,"*"); // verified
+			rep(/<li>/gi,"[*]"); // verified
 			rep(/<\/li>/gi,""); // verified
 			rep(/<ul>([\s\S]*?)<\/ul>/gim,"[list]$1[/list]\n"); // verified
 			rep(/<ol .* style=\'list-style-type:\s*([\w]*).*\'>([\s\S]*)<\/ol>/gim,"[list=$1]$2[/list]\n"); // verified
@@ -118,7 +125,7 @@
 			
 			rep(/(\[list=.*\])\\*([\s\S]*)(\[\/list])/gim,"<ol>$2</ol>"); // verified
 			rep(/(\[list\])\\*([\s\S]*)(\[\/list])/gim,"<ul>$2</ul>");// verified
-			rep(/^ *?\*(.*)/gim,"<li>$1</li>"); 
+			rep(/^ *?\[\*\](.*)/gim,"<li>$1</li>"); 
 			rep(/\[center\]([\s\S]*)\[\/center\]/gi,"<div style=\"text-align:center\">$1</div>"); // verified
 			rep(/\[color=(.*?)\]([\s\S]*)\[\/color\]/gi,"<span style=\"color: $1;\">$2<\/span>"); // verified
 			
