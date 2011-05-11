@@ -58,7 +58,12 @@ class pm_cron // include plugin-folder in the name.
 	public function config()
 	{
 		$cron = array();
-		$cron[] = array('name' => LAN_EC_PM_04, 'function' => 'processPM', 'description' => LAN_EC_PM_05);
+		$cron[] = array(
+			'name' 			=> LAN_EC_PM_04,
+			'category'		=> 'log',
+			'function' 		=> 'processPM',
+			'description' 	=> LAN_EC_PM_05
+			);
 		return $cron;
 	}
 	

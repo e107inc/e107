@@ -841,42 +841,43 @@ class e_userperms
 		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
 		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
 		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
-		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),		// Meta tags
+		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),			// Meta tags
 		
 		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
-		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),	// Search
+		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),		// Search
 		"I"	=> array(ADMSLAN_40,E_16_LINKS, E_32_LINKS),		// Post SiteLinks 
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
-		"L"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),		// Configure URLs
+		"L"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),			// Configure URLs
 				
 		// Users 
 		"3"	=> array(ADMSLAN_21,E_16_ADMIN, E_32_ADMIN),		// Modify Admin perms
-		"4"	=> array(ADMSLAN_22,E_16_USER, E_32_USER),		// Moderate users/bans etc
-		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER), // USRLAN_72, // "User: Quick Add User",
-		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),
-		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),
-		"W"	=> array(ADMSLAN_65,E_16_MAIL, E_32_MAIL),	// Configure mail settings and mailout		
+		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
+		"U0" => array(ADMSLAN_22,E_16_USER, E_32_USER), 		// moderate users/bans but not userclasses or extended fields,
+		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
+		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
+		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
+		"W"	=> array(ADMSLAN_65,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
 		
-		// Content 
-			
-		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),	// create/edit custom PAGES
-		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),	// create/edit custom MENUS
-		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),	// Post News
-		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),	// Moderate submitted news
+		
+		// Content 			
+		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
+		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
+		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News
+		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),			// Moderate submitted news
 		"V"	=> array(ADMSLAN_35,E_16_UPLOADS, E_32_UPLOADS),	// Configure public file uploads
 		"M"	=> array(ADMSLAN_46,E_16_WELCOME, E_32_WELCOME),	// Welcome Messages
 				
 		// Tools 
 		"Y"	=> array(ADMSLAN_67,E_16_INSPECT, E_32_INSPECT),	// File inspector
 		"9"	=> array(ADMSLAN_28,E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
-		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),	// Notify
-		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),	// Schedule Tasks
+		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),		// Notify
+		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),			// Schedule Tasks
 		"S"	=> array(ADMSLAN_33,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
 		
 		// Manage
 		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
-		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),	// File-Manager  - Upload /manage files - 
-		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),	// Media-Manager and Image Settings
+		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),			// File-Manager  - Upload /manage files - 
+		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager and Image Settings
 		
 		
 		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus
