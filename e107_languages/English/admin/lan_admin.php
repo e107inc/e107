@@ -352,4 +352,12 @@ define('LAN_UI_PREF_LABEL', 'Settings');
 define('LAN_UI_DELETE_LABEL', 'Confirm Delete');
 define('LAN_UI_DELETE_WARNING', 'You are about to delete <strong>%1$d</strong> records. Please confirm to continue.');
 
+define("LAN_USER_LIST", "User List");
+define("LAN_USER_QUICKADD","Quick Add User");
+define("LAN_USER_PRUNE", "Prune Users");
+define("LAN_USER_OPTIONS", "User Options");
+define("LAN_USER_RANKS", "User Ranks");
+
+
+
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)

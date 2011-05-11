@@ -745,27 +745,29 @@ function headerjs()
 
 function usersettings_adminmenu()
 {
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+		
 		if ($action == '')
 		{
 			$action = 'main';
 		}
 		// ##### Display options
-		$var ['main']['text'] = USRLAN_71;
+		$var = array();
+		$var ['main']['text'] = LAN_USER_LIST;
 		$var ['main']['link'] = e_ADMIN.'users.php';
-		$var ['create']['text'] = USRLAN_72;
+		$var ['main']['perm'] = '4';
+		$var ['create']['text'] = LAN_USER_QUICKADD;
 		$var ['create']['link'] = e_ADMIN.'users.php?create';
-		$var ['prune']['text'] = USRLAN_73;
-		$var ['prune']['link'] = e_ADMIN.'users.php?prune';
+		$var ['create']['perm'] = '4|U1';
+		$var ['prune']['text'] = LAN_USER_PRUNE;
+		$var ['prune']['link'] = e_ADMIN.'users.php?prune';// Will be moved to "Schedule tasks"
+		$var ['prune']['perm'] = '4';
 		$var ['options']['text'] = LAN_OPTIONS;
 		$var ['options']['link'] = e_ADMIN.'users.php?options';
-		if ($unverified)
-		{
-			$var ['unveri']['text'] = USRLAN_138." ($unverified)";
-			$var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
-		}
-		$var ['rank']['text'] = USRLAN_196;
-		$var ['rank']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['options']['perm'] = '4|U2';	
+		$var ['ranks']['text'] = LAN_USER_RANKS;
+		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['ranks']['perm'] = '4|U3';	
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
 		show_admin_menu(USRLAN_76,$action,$var);

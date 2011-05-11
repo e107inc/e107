@@ -14,8 +14,9 @@
 *
 */
 require_once ('../class2.php');
-if (!getperms('4'))
-{
+
+if (!getperms('4|U1|U2|U3') )
+{	
 	header('location:'.$e107->url->getUrl('core:core','main','action=index'));
 	exit;
 }
@@ -104,10 +105,7 @@ if (e_QUERY)
 }
 $from = varset($from,0);
 $amount = 30;
-if ($action == 'ranks')
-{
-	showRanks();
-}
+
 // ------- Check for Bounces --------------
 $bounce_act = '';
 if (isset ($_POST['check_bounces']))
@@ -568,27 +566,61 @@ echo "id= ".$id."<br />";
 echo "from= ".$from."<br />";
 echo "amount= ".$amount."<br />";
 */
-$unverified = $sql->db_Count("user","(*)","WHERE user_ban = 2");
+// $unverified = $sql->db_Count("user","(*)","WHERE user_ban = 2");
 if (!e_QUERY)
-	$action = "main";
+{
+	// Determine the default based on perms. 
+	foreach($user->menuOptions as $act=>$arr)
+	{
+		if(getperms($arr['perm']))
+		{
+			$action = $act;
+			break;	
+		}
+	}
+	
+}
+	
 switch ($action)
 {
 	case "unverified" :
 		$user->show_existing_users($action,$sub_action,$id,$from,$amount);
-		break;
+	break;
+		
 	case "options" :
-		$user->show_prefs();
-		break;
+		if(getperms('4|U2'))
+		{
+			$user->show_prefs();	
+		}
+	break;
+		
 	case "prune" :
 		$user->show_prune();
-		break;
+	break;
+		
 	case "create" :
-		$userMethods->deleteExpired();
-		// Remove time-expired users
-		$user->user_add($user_data);
-		break;
+		if(getperms(('4|U1')))
+		{
+			$userMethods->deleteExpired(); // Remove time-expired users			
+			$user->user_add($user_data);	
+		}
+		
+	break;
+	
+	case "ranks" :
+		if(getperms(('4|U3')))
+		{
+			showRanks();
+		}
+		
+	break;
+		
 	default :
-		$user->show_existing_users($action,$sub_action,$id,$from,$amount);
+		if(getperms('4|U1'))
+		{
+			$user->show_existing_users($action,$sub_action,$id,$from,$amount);	
+		}
+		
 }
 require_once ("footer.php");
 
@@ -601,10 +633,38 @@ class users
 	var $sortorderrev = "desc";
 	var $sortfield = "user_id";
 	var $from = 0;
-
+	var $menuOptions = array();
+	 
 
 	function users()
 	{
+		// Any changed need to be duplicated in /usersettings.php (end of the script)
+		
+		$var = array();
+		$var ['main']['text'] = LAN_USER_LIST;
+		$var ['main']['link'] = e_ADMIN.'users.php';
+		$var ['main']['perm'] = '4|U1';
+		$var ['create']['text'] = LAN_USER_QUICKADD;
+		$var ['create']['link'] = e_ADMIN.'users.php?create';
+		$var ['create']['perm'] = '4|U1';
+		$var ['prune']['text'] = LAN_USER_PRUNE;
+		$var ['prune']['link'] = e_ADMIN.'users.php?prune';// Will be moved to "Schedule tasks"
+		$var ['prune']['perm'] = '4';
+		$var ['options']['text'] = LAN_OPTIONS;
+		$var ['options']['link'] = e_ADMIN.'users.php?options';
+		$var ['options']['perm'] = '4|U2';	
+		$var ['ranks']['text'] = LAN_USER_RANKS;
+		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['ranks']['perm'] = '4|U3';				
+				
+			// if ($unverified) // No longer needed - done with 'filter'. 
+		// {
+			// $var ['unveri']['text'] = USRLAN_138." ($unverified)";
+			// $var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
+		// }			
+				
+		$this->menuOptions = $var;	
+		
 		global $pref,$user_pref,$sql,$tp;
 		if (isset ($pref['admin_user_disp']))
 		{
@@ -673,6 +733,13 @@ class users
 			}
 		}
 		$this->fields['options'] = array('title' => LAN_OPTIONS,'width' => '10%',"thclass" => "center last",'forced' => true);
+	
+		if(!getperms('4'))
+		{
+			unset($this->fields['checkboxes']);
+			unset($this->fields['options']);
+		}
+		// print_a($this->fields);
 	}
 
 
@@ -951,6 +1018,12 @@ class users
 
 	function showUserOptions($row)
 	{
+		if(!getperms('4'))
+		{
+		//	return; 
+		}
+	
+		
 		extract($row);
 		$text .= "<div>
 
@@ -1142,7 +1215,7 @@ class users
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 
-		$e107 = e107 :: getInstance();
+		$e107 = e107::getInstance();
 		$qry = $this->get_search_query();
 
 		$this->fieldpref = array_unique($this->fieldpref);
@@ -1162,10 +1235,11 @@ class users
 			while ($row = $sql->db_Fetch())
 			{
 
-				$text .= "
-				<tr>
-					<td class='center' >".$frm->checkbox('user_selected[]',$row['user_id'])."</td>
-					<td class='center' style='width:5%; text-align:center' >{$row['user_id']}</td>";
+				$text .= "<tr>";
+				
+				$text .= (isset($this->fields['checkboxes'])) ? "<td class='center' >".$frm->checkbox('user_selected[]',$row['user_id'])."</td>" : "";
+					
+				$text .= "<td class='center' style='width:5%; text-align:center' >{$row['user_id']}</td>";
 
 					foreach ($this->fieldpref as $disp)
 					{
@@ -1173,8 +1247,8 @@ class users
 						$text .= "<td ".$class." style='white-space:nowrap'>".$this->renderValue($disp,$row)."</td>\n";
 					}
 
-				$text .= "
-				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>\n";
+				$text .= (isset($this->fields['checkboxes'])) ? "<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td>" : "";
+				$text .= "</tr>\n";
 			}
 
 			$text .= "</tbody>
@@ -1210,7 +1284,7 @@ class users
 		$emessage = eMessage :: getInstance();
 
 		$total_cap = (isset ($_GET['srch'])) ? $user_total : $users;
-		$caption = USRLAN_77."&nbsp;&nbsp;   (total: $total_cap)";
+		$caption = LAN_USER_LIST."&nbsp;&nbsp;   (total: $total_cap)";
 		$ns->tablerender($caption,$emessage->render().$text);
 	}
 
@@ -1290,6 +1364,11 @@ class users
 
 	function show_batch_options()
 	{
+		if(!getperms('4'))
+		{
+			return;
+		}
+		
 		$e107 = e107::getInstance();
 		$classObj = $e107->getUserClass();
 		$frm = new e_form();
@@ -1341,31 +1420,13 @@ class users
 
     	// Please duplicate any changes to this function also in /usersettings.php. (at the end of the script)
 
-		global $unverified;
 		// ##### Display options
 		if ($action == '')
 		{
 			$action = 'main';
 		}
-		// ##### Display options
-		$var ['main']['text'] = USRLAN_71;
-		$var ['main']['link'] = e_ADMIN.'users.php';
-		$var ['create']['text'] = USRLAN_72;
-		$var ['create']['link'] = e_ADMIN.'users.php?create';
-		$var ['prune']['text'] = USRLAN_73;
-		$var ['prune']['link'] = e_ADMIN.'users.php?prune';
-		$var ['options']['text'] = LAN_OPTIONS;
-		$var ['options']['link'] = e_ADMIN.'users.php?options';
-		if ($unverified)
-		{
-			$var ['unveri']['text'] = USRLAN_138." ($unverified)";
-			$var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
-		}
-		$var ['ranks']['text'] = USRLAN_196;
-		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
-		//  $var['mailing']['text']= USRLAN_121;
-		//   $var['mailing']['link']="mailout.php";
-		show_admin_menu(USRLAN_76,$action,$var);
+
+		show_admin_menu(LAN_USER_OPTIONS,$action,$this->menuOptions);
 	}
 
 
@@ -1602,18 +1663,8 @@ class users
 			<td>
 			<a href='#set_perms' class='e-expandit'>Set Permissions</a>
 			<div class='e-hideme' id='set_perms' >\n";
-
-			$groupedList = $prm->getPermList('grouped');
-
-			foreach($groupedList as $section=>$list)
-			{
-				$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
-				foreach($list as $key=>$diz)
-				{
-					$text .= $prm->checkb($key, '', $diz);
-				}
-				$text .= "</div>";
-			}
+			
+		$text .= $prm->renderPermTable('grouped');
 
 		$text .= "</div></td>
 		</tr>\n";
@@ -2204,10 +2255,12 @@ function updateRanks()
 function showRanks()
 {
 	global $pref,$emessage;
-	$frm 	= new e_form;
+
+	$frm = e107::getForm();
+	$ns = e107::getRender();
 	$e107 = e107::getInstance();
 
-	include_once (e_HANDLER.'file_class.php');
+	
 	require_once (e_HANDLER.'message_handler.php');
 
 /*
@@ -2316,7 +2369,7 @@ function showRanks()
 	}
 	$text .= '</table>';
 */
-	$e107->ns->tablerender('',$emessage->render());
+	
 //	$e107->ns->tablerender('Rank Calculation fields',$text);
 
 	$fields = array(
@@ -2376,7 +2429,8 @@ function showRanks()
 			</td>
 			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
 			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked} /></td>
-			<td class='control'>".RankImageDropdown($imageList,"calc_img[$k]",$r['image'])."&nbsp;".$frm->submit_image("delete_rank[{$r['id']}]",LAN_DELETE,'delete',USRLAN_213.": [{$r['name']}]?")."
+			<td class='control'>".RankImageDropdown($imageList,"calc_img[$k]",$r['image'])."&nbsp;".
+			$frm->submit_image("delete_rank[{$r['id']}]",LAN_DELETE,'delete',LAN_CONFIRMDEL.": [{$r['name']}]?")."
 			</td>
 		</tr>
 		";
@@ -2401,7 +2455,9 @@ function showRanks()
 	</tr>
 	";
 	$text .= '</table></form>';
-	$e107->ns->tablerender('Ranks',$text);
+	
+	
+	$ns->tablerender(LAN_USER_RANKS,$emessage->render().$text);
 	include (e_ADMIN.'footer.php');
 	exit;
 }

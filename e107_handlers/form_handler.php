@@ -452,6 +452,14 @@ class e_form
 		return $ret;
 	}
 
+	/**
+	* checkbox
+	* parm $name
+	* parm $value
+	* parm $checked
+	* @return void
+	* @author  
+	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
 		$options = $this->format_options('checkbox', $name, $options);

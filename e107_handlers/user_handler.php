@@ -832,41 +832,67 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_administrator.php");
 
 class e_userperms
 {
+
 	protected $core_perms = array(
 
-		"1"=> ADMSLAN_19,
-		"2"=> ADMSLAN_20,
-		"3"=> ADMSLAN_21,
-		"4"=> ADMSLAN_22,	// Moderate users/bans etc
-		"5"=> ADMSLAN_23,	// create/edit custom pages
-        "J"=> ADMSLAN_41,	// create/edit custom menus
-		"Q"=> ADMSLAN_24,	// Manage download categories
-		"6"=> ADMSLAN_25,	// Upload /manage files
-		"Y"=> ADMSLAN_67,	// file inspector
-		"O"=> ADMSLAN_68,	// notify
-		"7"=> ADMSLAN_26,
-		"8"=> ADMSLAN_27,
-		"C"=> ADMSLAN_64,
-		"9"=> ADMSLAN_28,
-		"W"=> ADMSLAN_65,
-    	"D"=> ADMSLAN_29,
-		"E"=> ADMSLAN_30,
-		"F"=> ADMSLAN_31,
-		"G"=> ADMSLAN_32,
-		"S"=> ADMSLAN_33,
-		"T"=> ADMSLAN_34,
-		"V"=> ADMSLAN_35,
-		"X"=> ADMSLAN_66,
-		"A"=> ADMSLAN_36,	// Configure Image Settings
-		"B"=> ADMSLAN_37,
-		"H"=> ADMSLAN_39,
-		"I"=> ADMSLAN_40,
-		"L"=> ADMSLAN_43,
-		"R"=> ADMSLAN_44,
-		"U"=> ADMSLAN_45,
-		"M"=> ADMSLAN_46,
-		"N"=> ADMSLAN_47,
-	//	"Z"=> ADMSLAN_62,
+		// In the same order as admin navigation! 
+		
+		// Settings
+		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
+		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
+		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
+		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),		// Meta tags
+		
+		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
+		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),	// Search
+		"I"	=> array(ADMSLAN_40,E_16_LINKS, E_32_LINKS),		// Post SiteLinks 
+		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
+		"L"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),		// Configure URLs
+				
+		// Users 
+		"3"	=> array(ADMSLAN_21,E_16_ADMIN, E_32_ADMIN),		// Modify Admin perms
+		"4"	=> array(ADMSLAN_22,E_16_USER, E_32_USER),		// Moderate users/bans etc
+		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER), // USRLAN_72, // "User: Quick Add User",
+		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),
+		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),
+		"W"	=> array(ADMSLAN_65,E_16_MAIL, E_32_MAIL),	// Configure mail settings and mailout		
+		
+		// Content 
+			
+		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),	// create/edit custom PAGES
+		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),	// create/edit custom MENUS
+		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),	// Post News
+		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),	// Moderate submitted news
+		"V"	=> array(ADMSLAN_35,E_16_UPLOADS, E_32_UPLOADS),	// Configure public file uploads
+		"M"	=> array(ADMSLAN_46,E_16_WELCOME, E_32_WELCOME),	// Welcome Messages
+				
+		// Tools 
+		"Y"	=> array(ADMSLAN_67,E_16_INSPECT, E_32_INSPECT),	// File inspector
+		"9"	=> array(ADMSLAN_28,E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
+		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),	// Notify
+		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),	// Schedule Tasks
+		"S"	=> array(ADMSLAN_33,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
+		
+		// Manage
+		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
+		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),	// File-Manager  - Upload /manage files - 
+		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),	// Media-Manager and Image Settings
+		
+		
+		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus
+		
+		
+	//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
+	//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)	
+	// "K"=>
+		
+	// "P" 				// Reserved for Plugins
+		
+	//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
+	//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)	
+		
+	
+	//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category. 
 	);
 
 	protected $plugin_perms = array();
@@ -894,7 +920,7 @@ class e_userperms
 		$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 		while ($row2 = $sql->db_Fetch())
 		{
-			$this->plugin_perms[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
+			$this->plugin_perms[("P".$row2['plugin_id'])] = $tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
 		}
 
 		asort($this->plugin_perms);
@@ -966,17 +992,28 @@ class e_userperms
 		return array_merge($this->core_perms,$this->plugin_perms,$this->language_perms,$this->main_perms);
 	}
 
-	function checkb($arg, $perms, $label='')
+	function checkb($arg, $perms, $info='')
 	{
 		$frm = e107::getForm();
-
-		$par = "<div class='field-spacer'>";
-		$par .= $frm->checkbox('perms[]', $arg, getperms($arg, $perms));
-		if ($label)
+	
+		if(is_array($info))
 		{
-			$par .= $frm->label($label,'perms[]', $arg);
+			$label		= $info[0];
+			$icon_16	= $info[1];
+			$icon_32	= $info[2];
 		}
-		$par .= "</div>\n";
+		elseif($info)
+		{
+			$label		= $info;
+			$icon_16	= "";
+			$icon_32	= "";
+		}
+		
+		$par = "<tr>
+			<td style='text-align:center'>".$icon_16."</td>
+			<td style='text-align:center'>".$frm->checkbox('perms[]', $arg, getperms($arg, $perms))."</td>
+			<td>".$frm->label($label,'perms[]', $arg)."</td>
+			</tr>";
 
 		return $par;
 	}
@@ -989,7 +1026,7 @@ class e_userperms
 
 		foreach($tmp as $p)
 		{
-			$ptext[] = $permdiz[$p];
+			$ptext[] = is_array($permdiz[$p]) ? $permdiz[$p][0] : $permdiz[$p];
 		}
 
 		$id = "id_".$uniqueID;
@@ -1054,25 +1091,19 @@ class e_userperms
 							<tr>
 								<td class='label'>".ADMSLAN_18."</td>
 								<td class='control'>
+								
 
 		";
 
-		$groupedList = $prm->getPermList('grouped');
-
-		foreach($groupedList as $section=>$list)
-		{
-			$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
-			foreach($list as $key=>$diz)
-			{
-				$text .= $prm->checkb($key, $a_perms, $diz);
-			}
-			$text .= "</div>";
-		}
+		$text .= $this->renderPermTable('grouped',$a_perms);
+		
+		
 
 		$text .= "<div class='field-section'>
 			".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
 			".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
 			</div>
+			
 		</td>
 		</tr>
 				</tbody>
@@ -1089,6 +1120,33 @@ class e_userperms
 		$ns->tablerender(ADMSLAN_52, $text);
 	}
 
+	
+	function renderPermTable($type,$a_perms='')
+	{
+		$groupedList = $this->getPermList($type);
+		$text = "";
+		
+		foreach($groupedList as $section=>$list)
+		{
+			$text .= "\t\t<table class='adminlist'>
+			<colgroup span='3'>
+							<col class='center' style='width:50px' />
+							<col style='width:50px' />
+							<col  />
+			</colgroup>
+			<tbody><tr><td class='field-section' colspan='3'><h4>".$this->renderSectionDiz($section)."</h4></td></tr>"; //XXX Lan - General
+		//	$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
+			foreach($list as $key=>$diz)
+			{
+				$text .= $this->checkb($key, $a_perms, $diz);
+			}
+			$text .= "</tbody>
+			</table>";
+		}
+		
+		return $text;	
+	}
+	
 	/**
 	 * Update user (admin) permissions.
 	 * NOTE: exit if $uid is not an integer or is 0.
