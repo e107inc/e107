@@ -66,13 +66,17 @@ class cron_admin_ui extends e_admin_ui
 		protected $pluginName	= 'core';
 		protected $table		= "cron";
 		protected $pid			= "cron_id";
+		protected $listOrder	= 'cron_category';
 		protected $perPage		= 10;
 		protected $batchDelete	= TRUE;
 			   	
     	protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> TRUE),
+			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
+       		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+			
        		'cron_name'			=> array('title'=> "Name",			'type' => 'text',			'width' => 'auto',	'readonly' => 1),
+         	
          	'cron_description'	=> array('title'=> "Description",	'type' => 'text',			'width' => '35%',	'readonly' => 1),
          	
          	'cron_function'		=> array('title'=> "Function",		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
@@ -121,9 +125,24 @@ class cron_admin_ui extends e_admin_ui
 			// Import Core and Plugin e_cron data 
 			
 			$cronDefaults['_system'] = array(
-				0 => array('name' => 'Test Email', 'function' => 'sendEmail', 'description' => 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'),
-				1 => array('name' => 'Mail Queue', 'function' => 'procEmailQueue', 'description' => 'Process mail queue'),
-				2 => array('name' => 'Mail Bounce Check', 'function' => 'procEmailBounce', 'description' => 'Check for bounced emails', 'available' => vartrue($pref['mail_bounce_auto'])),
+				0 => array(
+					'name' 			=> 'Test Email',
+					'function' 		=> 'sendEmail',
+					'category'		=> 'mail',
+					'description' 	=> 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'
+					),
+				1 => array(
+					'name' 			=> 'Mail Queue',
+					'category'		=> 'mail',
+					'function' 		=> 'procEmailQueue',
+					'description' 	=> 'Process mail queue'),
+				2 => array(
+					'name' 			=> 'Mail Bounce Check',
+					'category'		=> 'mail',
+					'function' 		=> 'procEmailBounce',
+					'description' 	=> 'Check for bounced emails',
+				//	'available' 	=> vartrue($pref['mail_bounce_auto'])
+				),
 			);
 	
 			if(!$_GET['action'])
@@ -155,6 +174,7 @@ class cron_admin_ui extends e_admin_ui
 					$insert = array(
 						'cron_id'			=> 0,
 						'cron_name'			=> $val['name'],
+						'cron_category'		=> $val['category'],
 						'cron_description' 	=> $val['description'],
 						'cron_function'		=> $class."::".$val['function'],
 						'cron_tab'			=> '* * * * *',
@@ -403,7 +423,14 @@ class cron_admin_form_ui extends e_admin_form_ui
 	);
 	
 	
-	
+	var $cronCategories = array(					
+						'backup'	=> "Backup",
+						'content'	=> ADLAN_CL_3,
+						'log'		=> "Logging",
+						'mail'		=> ADLAN_136,				
+						'notify'	=> ADLAN_149, 
+						'user'		=> LAN_USER,
+	);
 	
 	/**
 	 * Render cron_tab field
@@ -436,6 +463,29 @@ class cron_admin_form_ui extends e_admin_form_ui
 			return;
 		}
 		
+		if($mode == 'batch')
+		{
+			return;
+		}
+	}
+	
+	
+	function cron_category($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return isset($this->cronCategories[$curVal]) ? 	$this->cronCategories[$curVal] : "";
+		}
+		
+		if($mode == 'write')
+		{
+			return isset($this->cronCategories[$curVal]) ? 	$this->cronCategories[$curVal] : "";	
+		}
+		
+		if($mode == 'filter')
+		{
+			return $this->cronCategories;	
+		}
 		if($mode == 'batch')
 		{
 			return;

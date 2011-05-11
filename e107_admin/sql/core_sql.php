@@ -156,6 +156,7 @@ CREATE TABLE core_media_cat (
 CREATE TABLE cron (
  cron_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
  cron_name VARCHAR(50) NOT NULL,
+ cron_category VARCHAR(20) NOT NULL,
  cron_description VARCHAR(255) NOT NULL,
  cron_function VARCHAR(50) NOT NULL,
  cron_tab VARCHAR(255) NOT NULL,

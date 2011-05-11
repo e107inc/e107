@@ -103,7 +103,6 @@ class plugin_release_admin_ui extends e_admin_ui
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
 		 * Write your list query without any Order or Limit.
-		 * NOTE: $tableJoin array is recommended join method
 		 *
 		 * @var string [optional]
 		 */
@@ -111,7 +110,6 @@ class plugin_release_admin_ui extends e_admin_ui
 		//
 
 		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
-		// NOT NEEDED ANYMORE!!!
 		//protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
 
 		// required - if no custom model is set in init() (primary id)

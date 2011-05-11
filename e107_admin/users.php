@@ -15,7 +15,7 @@
 */
 require_once ('../class2.php');
 
-if (!getperms('4|U1|U2|U3') )
+if (!getperms('4|U0|U1|U2|U3') )
 {	
 	header('location:'.$e107->url->getUrl('core:core','main','action=index'));
 	exit;
@@ -599,7 +599,7 @@ switch ($action)
 	break;
 		
 	case "create" :
-		if(getperms(('4|U1')))
+		if(getperms(('4|U1|U0')))
 		{
 			$userMethods->deleteExpired(); // Remove time-expired users			
 			$user->user_add($user_data);	
@@ -616,7 +616,7 @@ switch ($action)
 	break;
 		
 	default :
-		if(getperms('4|U1'))
+		if(getperms('4|U1|U0'))
 		{
 			$user->show_existing_users($action,$sub_action,$id,$from,$amount);	
 		}
@@ -643,10 +643,10 @@ class users
 		$var = array();
 		$var ['main']['text'] = LAN_USER_LIST;
 		$var ['main']['link'] = e_ADMIN.'users.php';
-		$var ['main']['perm'] = '4|U1';
+		$var ['main']['perm'] = '4|U0|U1';
 		$var ['create']['text'] = LAN_USER_QUICKADD;
 		$var ['create']['link'] = e_ADMIN.'users.php?create';
-		$var ['create']['perm'] = '4|U1';
+		$var ['create']['perm'] = '4|U0|U1';
 		$var ['prune']['text'] = LAN_USER_PRUNE;
 		$var ['prune']['link'] = e_ADMIN.'users.php?prune';// Will be moved to "Schedule tasks"
 		$var ['prune']['perm'] = '4';
@@ -734,10 +734,12 @@ class users
 		}
 		$this->fields['options'] = array('title' => LAN_OPTIONS,'width' => '10%',"thclass" => "center last",'forced' => true);
 	
-		if(!getperms('4'))
+		if(!getperms('4|U0')) // Quick Add User Access Only. 
 		{
 			unset($this->fields['checkboxes']);
 			unset($this->fields['options']);
+			$this->fieldpref = array('user_name','user_loginname','user_login','user_email','user_class','user_ban','user_admin');
+			
 		}
 		// print_a($this->fields);
 	}
@@ -1219,7 +1221,7 @@ class users
 		$qry = $this->get_search_query();
 
 		$this->fieldpref = array_unique($this->fieldpref);
-
+		
 		$text = "<div>".$this->show_search_filter();
 
 		if ($user_total = $sql->db_Select_gen($qry))
@@ -1364,7 +1366,7 @@ class users
 
 	function show_batch_options()
 	{
-		if(!getperms('4'))
+		if(!getperms('4|U0')) 
 		{
 			return;
 		}

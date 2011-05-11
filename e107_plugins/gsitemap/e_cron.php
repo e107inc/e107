@@ -33,12 +33,14 @@ class gsitemap_cron // include plugin-folder in the name.
 		$cron[] = array(
 			'name'			=> "Update Records",
 			'function'		=> "myfunction",
+			'category'		=> '',
 			'description' 	=> "Dummy example."
 		);	
 	
 		$cron[] = array(
 			'name'			=> "Test Email",
 			'function'		=> "sendEmail",
+			'category'		=> 'mail', // mail, user, content, notify, backup
 			'description' 	=> "Sends a test email to ".$pref['siteadminemail']
 		);		
 		
