@@ -69,7 +69,7 @@ define("USRLAN_55", "Prune");
 define("USRLAN_56", "Deleted");
 define("USRLAN_57", "Deleting un-activated members ...");
 define("USRLAN_58", "file uploads are disabled in php.ini");
-define("USRLAN_59", "Quick add user");
+define("USRLAN_59", "Quick add user"); // FIXME duplicate?
 define("USRLAN_60", "Add user");
 define("USRLAN_61", "Display name");
 define("USRLAN_62", "Password");
@@ -80,13 +80,13 @@ define("USRLAN_66", "That display name already exists in the database, please ch
 define("USRLAN_67", "The two passwords do not match");
 define("USRLAN_68", "You left required field(s) blank");
 define("USRLAN_69", "That doesn't appear to be a valid email address");
-//define("USRLAN_70", "User created");
-define("USRLAN_71", "Users Front Page");
-define("USRLAN_72", "Quick Add User");
-define("USRLAN_73", "Prune Users");
-// define("USRLAN_75", "Options");
-define("USRLAN_76", "User Options");
-define("USRLAN_77", "Existing Users");
+// define("USRLAN_70", "User created");
+// define("USRLAN_71", "Users Front Page"); // Moved to lan_admin.php and renamed 'User List'
+// define("USRLAN_72", "Quick Add User"); // Use: LAN_USER_QUICKADD
+// define("USRLAN_73", "Prune Users"); // Use: LAN_USER_PRUNE
+// define("USRLAN_75", "Options"); // Use: LAN_OPTIONS
+// define("USRLAN_76", "User Options"); // Use: LAN_USER_OPTIONS
+// define("USRLAN_77", "Existing Users"); // Use: LAN_USER_LIST;
 define("USRLAN_78", "User Name");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
@@ -169,6 +169,8 @@ define('USRLAN_163', 'User ID --UID-- deleted');
 define('USRLAN_164', 'User ID --UID-- name --NAME-- made admin');
 define('USRLAN_165', 'User ID --UID-- name --NAME-- admin status revoked');
 define('USRLAN_166', 'User ID --UID-- name --NAME-- approved');
+//FIX ME USERLAN_160 - USERLAN_166 need to be reworked avoid duplication. 
+
 define('USRLAN_167', 'Validation email ID --ID-- resent to --NAME-- at --EMAIL--');
 define('USRLAN_168', 'Re-send --COUNT-- validation emails');
 define('USRLAN_169', 'Total --COUNT-- bounced emails deleted');
@@ -200,7 +202,7 @@ define('USRLAN_194', '');
 define('USRLAN_195', '');
 
 //User Ranks phrases
-define('USRLAN_196', 'User ranks');
+// define('USRLAN_196', 'User ranks'); // use LAN_USER_RANKS
 define('USRLAN_197', 'Source');
 define('USRLAN_198', 'Field Name');
 define('USRLAN_199', 'Operation');
@@ -209,15 +211,15 @@ define('USRLAN_201', 'Number of comments');
 define('USRLAN_202', 'Number of site visits');
 define('USRLAN_203', 'Number of days member');
 define('USRLAN_204', 'Core');
-define('USRLAN_205', 'Plugin');
+// define('USRLAN_205', 'Plugin'); // Use LAN_PLUGIN
 define('USRLAN_206', 'Current Calculation');
 define('USRLAN_207', 'Type');
 define('USRLAN_208', 'Rank Name');
 define('USRLAN_209', 'Lower Threshold');
 define('USRLAN_210', 'Lang Prefix');
 define('USRLAN_211', 'Rank Image');
-define('USRLAN_212', 'User Rank');
-define('USRLAN_213', 'Are you sure you want to delete this rank');
+define('USRLAN_212', 'User Rank'); 
+// define('USRLAN_213', 'Are you sure you want to delete this rank'); // use LAN_CONFIRMDEL
 define('USRLAN_214', 'Add New Rank');
 define('USRLAN_215', 'Update Ranks');
 define('USRLAN_216', '--select image--');
@@ -264,4 +266,5 @@ define('USRLAN_AS_1', 'Login as %s');
 define('USRLAN_AS_2', 'Logout from %s account');
 define('USRLAN_AS_3', 'You are already logged in as another user account. Please logout first.');
 
+// Always search lan_admin.php before adding more. 
 

@@ -44,11 +44,11 @@ define("ADMSLAN_32", "Configure front page content");
 define("ADMSLAN_33", "Configure system logging");
 define("ADMSLAN_34", "Configure meta tags");
 define("ADMSLAN_35", "Configure public file uploads");
-define("ADMSLAN_36", "Configure Image Settings");
+define("ADMSLAN_36", "Media-Manager and image settings");
 define("ADMSLAN_37", "Moderate comments");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "Post news");
-define("ADMSLAN_40", "Post links");
+define("ADMSLAN_40", "Manage Sitelinks");
 define("ADMSLAN_41", "Create/edit custom menus");  
 define("ADMSLAN_42", "Post reviews"); // - NOW PLUGIN
 define("ADMSLAN_43", "Configure URLs");
