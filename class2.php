@@ -1159,14 +1159,21 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 function getperms($arg, $ap = ADMINPERMS)
 {
-	if( ! ADMIN || trim($ap) === '')
+	// $ap = "4"; // Just for testing. 
+	
+	if(!ADMIN || trim($ap) === '')
 	{
-		return false;
+		return FALSE;
+	}
+	
+	if($arg === 0) // Common-error avoidance with getperms(0)
+	{
+		$arg = '0';
 	}
 
 	if ($ap === '0' || $ap === '0.') // BC fix.
 	{
-		return true;
+		return TRUE;
 	}
 
 	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
@@ -1183,24 +1190,24 @@ function getperms($arg, $ap = ADMINPERMS)
 
 	$ap_array = explode('.',$ap);
 
-	if(in_array($arg,$ap_array))
+	if(in_array($arg,$ap_array,FALSE))
 	{
-		return true;
+		return TRUE;
 	}
     elseif(strpos($arg, "|")) // check for multiple perms - separated by '|'.
 	{
     	$tmp = explode("|", $arg);
 		foreach($tmp as $val)
 		{
-		   	if(in_array($arg,$ap_array))
+		   	if(in_array($val,$ap_array))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 	}
 	else
 	{
-		return false;
+		return FALSE;
 	}
 }
 
