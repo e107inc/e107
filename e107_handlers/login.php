@@ -292,9 +292,16 @@ class userlogin
 	protected function lookupUser($username, $forceLogin)
 	{
 		global $pref;
+		
+		$maxLength = varset($pref['loginname_maxlength'],30);
+
+		if(varset($pref['allowEmailLogin'])==1) // Email login only
+		{
+			$maxLength = 254; // Maximum email length	
+		}
 
 		// Check username general format
-		if (!$forceLogin && (strlen($username) > varset($pref['loginname_maxlength'],30)))
+		if (!$forceLogin && (strlen($username) > $maxLength))
 		{  // Error - invalid username
 			$this->invalidLogin($username,LOGIN_BAD_USERNAME);
 			return FALSE;
