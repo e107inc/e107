@@ -1227,7 +1227,15 @@ class e107
 	{
 		return self::getSingleton('e_ranks', true);
 	}
-
+	
+	/**
+	 * Retrieve plugin handler singleton object
+	 * @return e_ranks
+	 */
+	public static function getPlugin()
+	{
+		return self::getSingleton('e107plugin', true);
+	}
 	/**
 	 * Retrieve online users handler singleton object
 	 * @return e_online

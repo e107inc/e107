@@ -335,7 +335,22 @@ if (isset ($_POST['adduser']))
 					$QUICKADDUSER_TEMPLATE = USRLAN_185.USRLAN_186; 	
 				}
 				
-				$e_message = str_replace(array('{SITEURL}','{LOGIN}','{USERNAME}','{PASSWORD}'),array(SITEURL,$user_data['user_name'],$user_data['user_login'],$savePassword),$QUICKADDUSER_TEMPLATE);
+				$var_search = array(
+					'{SITEURL}',
+					'{LOGIN}',
+					'{USERNAME}',
+					'{PASSWORD}',
+					'{EMAIL}'
+				);
+				$var_replace = array(
+					SITEURL,
+					$user_data['user_name'],
+					$user_data['user_login'],
+					$savePassword,
+					$user_data['user_email']
+				);
+							
+				$e_message = str_replace($var_search,$var_replace,$QUICKADDUSER_TEMPLATE);
 				
 				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
 				{
