@@ -28,19 +28,13 @@ $e_sub_cat = 'database';
 
 require_once("auth.php");
 
-require_once(e_HANDLER."form_handler.php");
-$frm = new e_form();
 
-require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
-
-$sql_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
 if (!$sql_data)
 {
-	exit(DBLAN_1);
+	// exit(DBLAN_1);
 }
 
-$tables['core'] = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip any comments as we copy
+
 
 if (!getperms("0"))
 {
@@ -48,6 +42,700 @@ if (!getperms("0"))
 	exit;
 }
 
+
+$dbv = new db_verify;
+// print_a($dbv->tables);
+
+
+
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+class db_verify
+{
+	
+	var $tables = array();
+	var $sqlTables = array();
+	var $results = array();
+	var $indices = array(0);
+	
+	function __construct()
+	{
+		
+		
+		$ns = e107::getRender();
+		
+		$pref = e107::getPref();
+			
+		$core_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
+		$this->tables['core'] = $this->getTables($core_data);
+		
+		foreach($pref['e_sql_list'] as $path => $file)
+		{
+			$filename = e_PLUGIN.$path.'/'.$file.'.php';
+			if(is_readable($filename))
+			{
+				$id = str_replace('_sql','',$file);
+				$data = file_get_contents($filename);
+				$this->tables[$id] = $this->getTables($data);
+		      	unset($data);				
+			}
+			else
+			{
+		      	$emessage->add($filename.DBLAN_22, E_MESSAGE_WARNING);
+			}
+		}
+		
+		if($_POST['verify_table'])
+		{
+			foreach($_POST['verify_table'] as $tab)
+			{			
+				$this->compare($tab);				
+			}
+				
+			if(count($this->errors))
+			{
+				$this->renderResults();	
+			}
+			else
+			{
+				$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS);
+				$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBLAN_17, 'back')."</div>";
+				$ns->tablerender("Okay",$mes->render().$text);
+			}
+			
+			
+		}
+		else
+		{
+			$this->runFix();
+			$this->renderTableSelect();	
+		}
+		
+	//	$this->sqlTables = $this->sqlTableList();
+		
+	//	print_a($this->tables);
+		// $this->renderTableSelect();
+			
+	//	print_a($field);
+	//	print_a($match[2]);
+		// echo "<pre>".$sql_data."</pre>";
+	}
+	
+	function compare($selection)
+	{
+		
+	
+		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
+		{
+			//$this->errors[$tbl]['_status'] = 'ok'; // default table status
+			$rawSqlData = $this->getSqlData($tbl);
+			if($rawSqlData === FALSE)
+			{
+				$this->errors[$tbl]['_status'] = 'missing_table';
+				$this->results[$tbl]['_file'] = $selection;
+				// echo "missing table: $tbl";
+				continue;
+			}
+			
+			$sqlDataArr     = $this->getTables($rawSqlData);
+			
+			$fileFieldData	= $this->getFields($this->tables[$selection]['data'][$key]);
+			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
+			
+			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
+			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
+						
+			// echo "<h2>".$field."</h2><table border='1'><tr><td><pre>".print_r($fileIndexData,TRUE)."</pre></td>
+			  // <td><pre>".print_r($sqlIndexData,TRUE)."</pre></td></tr></table>";
+			
+			
+			// Check Field Data. 
+			foreach($fileFieldData as $field => $info )
+			{
+				 
+					
+				$this->results[$tbl][$field]['_status'] = 'ok';	
+				
+				if(!is_array($sqlFieldData[$field]))
+				{
+					// echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
+				 // <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
+					$this->errors[$tbl]['_status'] = 'error'; // table status
+					$this->results[$tbl][$field]['_status'] = 'missing_field';	 // field status					
+					$this->results[$tbl][$field]['_valid'] = $info;
+					$this->results[$tbl][$field]['_file'] = $selection;
+				}
+				elseif(count($off = array_diff_assoc($info,$sqlFieldData[$field])))
+				{
+					$this->errors[$tbl]['_status'] = 'mismatch';
+					$this->results[$tbl][$field]['_status'] = 'mismatch';
+					$this->results[$tbl][$field]['_diff'] = $off;	
+					$this->results[$tbl][$field]['_valid'] = $info;
+					$this->results[$tbl][$field]['_invalid'] = $sqlFieldData[$field];
+					$this->results[$tbl][$field]['_file'] = $selection;
+					 
+				}
+				
+				
+			}
+
+			// print_a($fileIndexData);
+		//	print_a($sqlIndexData);
+			// Check Index data
+			foreach($fileIndexData as $field => $info )
+			{
+				  					
+				if(!is_array($sqlIndexData[$field])) // missing index. 
+				{
+					// print_a($info);
+					// print_a($sqlIndexData[$field]);
+					
+					$this->errors[$tbl]['_status'] = 'error'; // table status
+					$this->indices[$tbl][$field]['_status'] = 'missing_index';	 // index status					
+					$this->indices[$tbl][$field]['_valid'] = $info;
+					$this->indices[$tbl][$field]['_file'] = $selection;
+				}
+				elseif(count($offin = array_diff_assoc($info,$sqlIndexData[$field]))) // missmatch data
+				{
+					// print_a($info);
+					// print_a($sqlIndexData[$field]);
+					
+					$this->errors[$tbl]['_status'] = 'mismatch_index';
+					$this->indices[$tbl][$field]['_status'] = 'mismatch';
+					$this->indices[$tbl][$field]['_diff'] = $offin;	
+					$this->indices[$tbl][$field]['_valid'] = $info;
+					$this->indices[$tbl][$field]['_invalid'] = $sqlIndexData[$field];
+					$this->indices[$tbl][$field]['_file'] = $selection;
+					 
+				}
+				
+				// TODO Check for additional fields in SQL that should be removed. 
+				// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+
+			}
+
+
+			unset($data);
+			
+		}
+		
+		
+	//	print_a($this->results);
+		//echo "<h2>Missing</h2>";
+		//print_a($this->missing);
+	//	print_a($this->tables);
+		
+	}
+	
+	
+	function renderResults()
+	{
+		
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		$text = "
+		<form method='post' action='".e_SELF."'>
+			<fieldset id='core-db-verify-{$selection}'>
+				<legend id='core-db-verify-{$selection}-legend'>".DBLAN_16." - $what ".DBLAN_18."</legend>
+
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='4'>
+						<col style='width: 25%'></col>
+						<col style='width: 25%'></col>
+						<col style='width: 10%'></col>
+						<col style='width: 30%'></col>
+						<col style='width: 10%'></col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th>".DBLAN_4.": {$k}</th>
+							<th>".DBLAN_5."</th>
+							<th class='center'>".DBLAN_6."</th>
+							<th>".DBLAN_7."</th>
+							<th class='center last'>".DBLAN_19."</th>
+						</tr>
+					</thead>
+					<tbody>
+		";
+		
+		$info = array(
+			'missing_table'	=> DBLAN_13,
+			'mismatch'		=> DBLAN_8,
+			'missing_field'	=> DBLAN_11,
+			'ok'		    => ADMIN_TRUE_ICON,
+			'missing_index'	=> DBLAN_25,
+		);
+		
+		$modes = array(
+			'missing_table'		=> 'create',
+			'mismatch' 			=> 'alter',
+			'missing_field'		=> 'insert',
+			'missing_index' 	=> 'index',
+			'mismatch_index' 	=> '', // TODO
+		);
+		
+		foreach($this->results as $tabs => $field)
+		{
+					
+			if($this->errors[$tabs]['_status'] == 'missing_table')
+			{
+				$text .= "
+					<tr>
+						<td>{$tabs}</td>
+						<td>&nbsp;</td>
+						<td class='center middle error'>".$info[$this->errors[$tabs]['_status']]."</td>
+						<td>&nbsp;</td>
+						<td class='center middle autocheck e-pointer'>".$this->fixForm($this->results[$tabs]['_file'],$tabs, 'all', '', 'create') . "</td>
+					</tr>
+					";		
+			}					
+			elseif($this->errors[$tabs] != 'ok')
+			{
+				foreach($field as $k=>$f)
+				{
+					if($f['_status']=='ok') continue;
+					
+					$fstat = $info[$f['_status']];
+				
+					$text .= "
+					<tr>
+						<td>{$tabs}</td>
+						<td>".$k."&nbsp;</td>
+						<td class='center middle error'>".$fstat."</td>
+						<td>".$this->renderNotes($f)."&nbsp;</td>
+						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
+					</tr>
+					";	
+				}	
+			}
+			
+		}
+
+
+		// Indices
+		
+		foreach($this->indices as $tabs => $field)
+		{
+					
+			if($this->errors[$tabs] != 'ok')
+			{
+				foreach($field as $k=>$f)
+				{
+					if($f['_status']=='ok') continue;
+					
+					$fstat = $info[$f['_status']];
+				
+					$text .= "
+					<tr>
+						<td>{$tabs}</td>
+						<td>".$k."&nbsp;</td>
+						<td class='center middle error'>".$fstat."</td>
+						<td>".$this->renderNotes($f,'index')."&nbsp;</td>
+						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
+					</tr>
+					";	
+				}	
+			}
+			
+		}
+		
+
+		
+		$text .= "
+					</tbody>
+				</table>
+				<br/>
+		";
+		$text .= "
+			<div class='buttons-bar right'>
+				".$frm->admin_button('runfix', DBLAN_21, 'execute', '', array('id'=>false))."
+				".$frm->admin_button('check_all', 'jstarget:fix_active', 'action', LAN_CHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:fix_active', 'action', LAN_UNCHECKALL, array('id'=>false))."
+			</div>
+			
+			</fieldset>
+			</form>
+		";
+	
+		
+		$ns->tablerender(DBLAN_23.' - '.DBLAN_16, $mes->render().$text);
+		
+	}
+
+
+	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
+	{
+		$frm = e107::getForm();
+		$text .= $frm->checkbox("fix[$file][$table][$field]", $mode, false, array('id'=>false));
+		
+		return $text;
+	}
+	
+	
+	function renderNotes($data,$mode='field')
+	{
+		// return "<pre>".print_r($data,TRUE)."</pre>";
+		
+		$v = $data['_valid'];
+		$i = $data['_invalid'];
+		
+		$valid = $this->toMysql($v,$mode);
+        $invalid = $this->toMysql($i,$mode);
+        
+		$text = "";
+		if($invalid)
+		{
+			$text .= "<strong>".DBLAN_9."</strong>
+				<div class='indent'>".$invalid."</div>";
+		}
+		
+		$text .= "<strong>".DBLAN_10."</strong>
+			<div class='indent'>".$valid."</div>";
+			
+		return $text;
+	}
+	
+	
+	
+	function toMysql($data,$mode = 'field')
+	{
+		
+		if(!$data) return;
+		
+		if($mode == 'index')
+		{
+			// print_a($data);
+			if($data['type'])
+			{
+				return $data['type']." (".$data['field'].");";	
+			}
+			else
+			{
+				return "INDEX `".$data['keyname']."` (".$data['field'].");";
+			}
+			
+		}
+		
+		
+		if($data['type'] != 'TEXT')
+		{
+			return $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];	
+		}
+		else
+		{
+			return $data['type']." ".$data['attributes']." ".$data['null']." ".$data['default'];
+		}
+           
+	}
+	
+	
+	
+	function runFix()
+	{
+		$mes  = e107::getMessage();
+		
+		if(!isset($_POST['runfix']))
+		{
+			//print_a($_POST);
+			return;
+			
+		} 
+		// print_a($_POST);
+				
+		
+		// $table = 
+	//	print_a($_POST['fix']);
+	//	echo "<h2>Select</h2>";
+		
+			
+		foreach($_POST['fix'] as $j=>$file)
+		{
+			
+			//print_a($this->tables[$j]);
+					
+			foreach($file as $table=>$val)
+			{		
+				foreach($val as $field=>$mode)
+				{
+						
+					$key = array_flip($this->tables[$j]['tables']);
+					$id = $key[$table];
+					
+					if(substr($mode,0,5)== 'index')
+					{
+						$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
+						$newval = $this->toMysql($fdata[$field],'index');	
+					}
+					else
+					{
+						$fdata = $this->getFields($this->tables[$j]['data'][$id]);
+						$newval = $this->toMysql($fdata[$field]);	
+					}
+					
+					
+					switch($mode)
+					{
+						case 'alter':
+							$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+						break;
+			
+						case 'insert':
+							if($after) $after = " AFTER {$after}";
+							$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+						break;
+						
+						case 'drop':
+							$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+						break;
+						
+						case 'index':
+							$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
+						break;
+						
+						case 'indexdrop':
+							$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+						break;
+						
+						case 'create':
+							$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->tables[$j]['data'][$id].") ENGINE=MyISAM;";
+						break;
+					}
+					
+			
+					//echo "QUery=".$query;
+					// continue;	
+					if(mysql_query($query))
+					{
+						$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);	
+					} 
+					else 
+					{
+						$mes->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
+						if(mysql_errno())
+						{
+							$mes->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+						}
+					}	
+				}
+		
+			}	// 
+		}
+				
+	}	
+	
+	
+	
+	
+	function getTables($sql_data)
+	{
+		if(!$sql_data)
+		{
+			return;
+		}
+		
+		$ret = array();
+		
+		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
+		
+		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\sa-z0-9_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+
+		$table = preg_match_all($regex,$sql_data,$match);
+				
+		$ret['tables'] = $match[1];
+		$ret['data'] = $match[2];
+		
+		return $ret;
+	}
+
+
+	function getFields($data)
+	{
+		
+		$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
+		preg_match_all($regex,$data,$m);	
+		
+		$ret = array();
+			
+		foreach($m[1] as $k=>$val)
+		{
+			$ret[$val] = array(
+				'type'			=> strtoupper($m[2][$k]),
+				'value'			=> $m[3][$k],
+				'attributes'	=> strtoupper($m[4][$k]),
+				'null'			=> strtoupper($m[5][$k]),
+				'default'		=> strtoupper($m[6][$k])
+			);
+		}
+		
+		return $ret;
+	}
+	
+	
+	function getIndex($data)
+	{
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w]*[\s]?)`?\))?,?/i";
+		preg_match_all($regex,$data,$m);
+		
+		$ret = array();
+		
+	//	print_a($m);
+		
+		foreach($m[3] as $k=>$val)
+		{
+			$ret[$val] = array(
+				'type'		=> strtoupper($m[1][$k]),
+				'keyname'	=> (vartrue($m[2][$k])) ? $m[2][$k] : $m[3][$k],
+				'field'		=> $m[3][$k]
+			);
+		}
+		
+		return $ret;
+		//print_a($ret);
+	}
+	
+	
+	
+	function getSqlData($tbl,$prefix='')
+	{
+		$mes = e107::getMessage();
+		if(!$prefix)
+		{
+			$prefix = MPREFIX;
+		}
+		mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
+		$z = mysql_query($qry);
+		if($z)
+		{
+			$row = mysql_fetch_row($z);
+			return str_replace("`", "", stripslashes($row[1])).';';
+		}
+		else
+		{
+			$mes->addDebug('Failed: '.$qry);
+			// echo "Failed".$qry;
+			return FALSE;
+		}
+	
+	}
+	
+	
+	
+	
+	function renderTableSelect()
+	{
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		
+		$text = "
+		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
+			<fieldset id='core-db-verify-sql-tables'>
+				<legend>".DBLAN_14."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='1'>
+						<col style='width: 100%'></col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'table_').LAN_CHECKALL.' | '.LAN_UNCHECKALL."</th>
+						</tr>
+					</thead>
+					<tbody>
+		";
+	
+		foreach(array_keys($this->tables) as $x)
+		{
+			$text .= "
+				<tr>
+					<td>".$frm->checkbox('verify_table[]', $x).$frm->label($x, 'table_'.$x, $x)."</td>
+				</tr>
+			";
+		}
+		
+		$text .= "
+					</tbody>
+					</table>
+						<div class='buttons-bar center'>
+							".$frm->admin_button('db_verify', DBLAN_15)."
+							".$frm->admin_button('db_tools_back', DBLAN_17, 'back')."
+						</div>
+					</fieldset>
+				</form>
+		";
+	
+		$ns->tablerender(DBLAN_23.' - '.DBLAN_16, $mes->render().$text);
+	}
+	
+	
+	
+	function sqlTableList()
+	{
+
+		// grab default language lists.
+		global $mySQLdefaultdb;
+	
+		$exclude[] = "banlist";		$exclude[] = "banner";
+		$exclude[] = "cache";		$exclude[] = "core";
+		$exclude[] = "online";		$exclude[] = "parser";
+		$exclude[] = "plugin";		$exclude[] = "user";
+		$exclude[] = "upload";		$exclude[] = "userclass_classes";
+		$exclude[] = "rbinary";		$exclude[] = "session";
+		$exclude[] = "tmp";	 		$exclude[] = "flood";
+		$exclude[] = "stat_info";	$exclude[] = "stat_last";
+		$exclude[] = "submit_news";	$exclude[] = "rate";
+		$exclude[] = "stat_counter";$exclude[] = "user_extended";
+		$exclude[] = "user_extended_struct";
+		$exclude[] = "pm_messages";
+		$exclude[] = "pm_blocks";
+		
+		$replace = array();
+		
+		$lanlist = explode(",",e_LANLIST);
+		foreach($lanlist as $lang)
+		{
+			if($lang != $pref['sitelanguage'])
+			{
+				$replace[] = "lan_".strtolower($lang)."_";
+			}
+		}
+	
+		$tables = mysql_list_tables($mySQLdefaultdb);
+		
+		while (list($temp) = mysql_fetch_array($tables))
+		{
+			
+			$prefix = MPREFIX."lan_";
+			$match = array();
+			if(strpos($temp,$prefix)!==FALSE)
+			{
+				$e107tab = str_replace(MPREFIX, "", $temp);	
+				$core = str_replace($replace,"",$e107tab);
+				if (str_replace($exclude, "", $e107tab))
+				{
+					$tabs[$core] = $e107tab;
+					
+				}		
+			}
+		}
+	
+		
+		return $tabs;
+	}
+	
+	
+	// ([\w]*)\s*(int|varchar|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))? (unsigned)?[\s]*(NOT NULL|NULL)[\s]*(auto_increment|default .*)?[\s]?,
+}
+
+
+
+
+/*
 //Get any plugin _sql.php files
 foreach($pref['e_sql_list'] as $path => $file)
 {
@@ -346,18 +1034,18 @@ function check_tables($what)
 
 							";
 						}
-						*/
 						
-						/* DISABLED for now (show only errors), could be page setting
-						else
-						{
-							$body_txt .= "
-								<td class='center'>OK</td>
-								<td>&nbsp;</td>
-								<td class='center middle'>&nbsp;</td>
-							";
-						}
-						*/
+						
+						// DISABLED for now (show only errors), could be page setting
+						// else
+						// {
+							// $body_txt .= "
+								// <td class='center'>OK</td>
+								// <td>&nbsp;</td>
+								// <td class='center middle'>&nbsp;</td>
+							// ";
+						// }
+// 						
 					}
 				}	// Finished checking one field
 
@@ -370,7 +1058,7 @@ function check_tables($what)
 									<strong>".DBLAN_10."</strong>
 									<div class='indent'>{$fparams}</div>
 								</td>
-								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "insert"/*, $prev_fname*/)."</td>
+								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "insert", $prev_fname)."</td>
 					";
 					$fix_active = TRUE;
 					$xfield_errors++;
@@ -554,11 +1242,12 @@ if(isset($_POST['do_fix']))
 			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
 			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
 			{
-				$query .= ') ENGINE=MyISAM;';
+				$query .= ') TYPE=MyISAM;';
 			}
 			break;
 		}
 
+		return $query;
 		//FIXME - db handler!!!
 		if(mysql_query($query)) $emessage->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);
 		else 
@@ -573,29 +1262,7 @@ if(isset($_POST['do_fix']))
 }
 
 
-// ---------------------- Main Form and Submit. ------------------------
-if (varset($_POST['db_verify']) || varset($_POST['do_fix']))
-{
-	$text = '';
-	foreach(array_keys($_POST) as $k)
-	{
-		$match = array();
-		if (preg_match("/table_(.*)/", $k, $match))
-		{
-			$xx = $match[1];
-			$text .= check_tables($xx);
 
-		}
-	}
-
-	if(!$text) $emessage->add(DBLAN_24, E_MESSAGE_WARNING);
-	else
-	{
-		$e107->ns->tablerender(DBLAN_23.' - '.DBLAN_16, $emessage->render().$text);
-		require_once(e_ADMIN."footer.php");
-		exit;
-	}
-}
 
 $text = "
 	<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
@@ -670,11 +1337,13 @@ function fix_form($table,$field, $newvalue,$mode,$after ='')
 		$field = trim($field, '`');
 	}
 
+	$text .= "\n\n";
 	$text .= $frm->checkbox("fix_active[$field][]", 1, false, array('id'=>false));
 	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
 	$text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" />\n";
 	$text .= "<input type='hidden'  name=\"fix_mode[$field][]\" value=\"$mode\" />\n";
 	$text .= ($after) ? "<input type='hidden'  name=\"fix_after[$field][]\" value=\"$after\" />\n" : "";
+	$text .= "\n\n";
 
 	return $text;
 }
@@ -727,7 +1396,7 @@ function table_list()
 
 	return $tabs;
 }
-
+*/
 /**
  * Handle page DOM within the page header
  *
