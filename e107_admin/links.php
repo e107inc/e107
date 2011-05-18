@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -27,7 +27,7 @@ if (!getperms("I"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_links.php');
+e107::coreLan('links', true);
 
 
 class links_admin extends e_admin_dispatcher
@@ -58,60 +58,51 @@ class links_admin extends e_admin_dispatcher
 
 class links_admin_ui extends e_admin_ui
 {
-		protected $pluginTitle 	= "Site links";
-		protected $pluginName 	= 'core';
-		protected $table 		= "links";
-		protected $listQry 		= '';//"SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit.
-		protected $pid 			= "link_id";
-		protected $perPage 		= 0;
-		protected $batchDelete 	= true;
+	protected $pluginTitle 	= "Site links";
+	protected $pluginName 	= 'core';
+	protected $table 		= "links";
+	protected $listQry 		= '';
+	protected $pid 			= "link_id";
+	protected $perPage 		= 0;
+	protected $batchDelete 	= true;
+	protected $listOrder = 'link_order ASC';
 
-		protected $fields = array(
-			'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
-			'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
-			'link_id'			=> array('title'=> ID, 			'nolist'=>TRUE),
-			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'method', 'validate' => true),
-			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-			'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text', 'validate' => true),
-			'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-			'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
-			'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-			'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
-			'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-			'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		//	'increment' 		=> array('title'=> LCLAN_91,			'width' => '3%','forced' => true,'thclass' => 'center'),
-			'options' 			=> array('title'=> LAN_OPTIONS, 		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
-		);
+	public $current_parent = 0;
+	public $sublink_data = null;
 
-		protected $fieldpref =  array('checkboxes','link_id','link_name','link_class','link_order','options');
+	protected $fields = array(
+		'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
+		'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
+		'link_id'			=> array('title'=> ID, 			'noedit'=>TRUE),
+		'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'text', 'validate' => true),
+		'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text', 'validate' => true),
+		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+		'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
+		'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
+		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
+		'options' 			=> array('title'=> LAN_OPTIONS, 		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
+	);
 
-		protected $prefs = array(
-			'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
-			'sitelinks_expandsub'	=> array('title'=>LCLAN_80,	'type'=>'boolean', 'help'=>LCLAN_81)
-		);
+	protected $fieldpref =  array('checkboxes','link_id','link_name','link_class','link_order','options');
+
+	protected $prefs = array(
+		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
+		'sitelinks_expandsub'	=> array('title'=>LCLAN_80,	'type'=>'boolean', 'help'=>LCLAN_81)
+	);
 
 
-		//FIXME - need to use linkArray data instead of $listQry-returned data
-		protected $linkArray = array();
-
+	/**
+	 * Runtime cache of all links array
+	 * @var array
+	 */
+	protected $_link_array	= null;
 
 	function init()
 	{
-		$sql = e107::getDb();
-		$mes = e107::getMessage();
-
-		$this->getLinks();
-
-		$query = "SELECT link_id,link_name FROM #links ORDER BY link_name";
-		$this->linkParent[0] = '-';
-		$sql->db_Select_gen($query);
-		while($row = $sql->db_Fetch())
-		{
-			$id = $row['link_id'];
-			$this->linkParent[$id] = $row['link_name'];
-		}
-
-		$this->linkCategory = array(
+		$this->fields['link_category']['writeParms'] = array(
 			1	=> "1 - Main",
 			2	=> "2 - Alt",
 			3	=> "3 - Alt",
@@ -124,68 +115,82 @@ class links_admin_ui extends e_admin_ui
 			10	=> "10 - Alt"
 		);
 
-		$this->linkOpen = array(
+		$this->fields['link_open']['writeParms'] = array(
 			0 => LCLAN_20, // 0 = same window
 			1 => LCLAN_23, // new window
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
-
-		$sitelinksTemplates = e107::getLayouts(null, 'sitelinks');
-
-		//TODO review.
-		$this->setDropDown('link_parent',$this->linkParent);
-		$this->setDropDown('link_category',$this->linkCategory);
-		$this->setDropDown('link_open',$this->linkOpen);
-		//$this->setDropDown('link_function',$this->linkFunctions);
-		// $this->setDropDown('link_template',$sitelinksTemplates);
-
-
-		if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] != "")
-		{
-			$this->generateSublinks();
-		}
 	}
 
-
-
-
-
-
-	/**
-	 * Get linklist in it's proper order.
-	 * @return none
-	 */
-	function getLinks()
+	public function handleListCategoryParentIdBatch($selected, $value)
 	{
-		$sql = e107::getDb();
-
-		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_category,link_order, link_id ASC", "nowhere"))
+		$field = 'link_parent';
+		$ui = $this->getUI();
+		foreach ($selected as $k => $id)
 		{
-			while($row = $sql->db_Fetch())
+			if($ui->_has_parent($id, $value, $this->getLinkArray()))
 			{
-				$ret[$row['link_parent']][] = $row;
+				unset($selected[$k]);
 			}
 		}
-
-		$this->linkArray = $ret;
-
-		// print_a($this->linkArray);
+		if(!$selected) return;
+		if(parent::handleListBatch($selected, $field, $value))
+		{
+			$this->_link_array = null; // reset batch/filters
+			return true;
+		}
+		return false;
 	}
 
-
-
-
-
-
-	function sublinksPage()
+	public function ListObserver()
 	{
-		global $e107, $sql, $emessage;
+		$searchFilter = $this->_parseFilterRequest($this->getRequest()->getQuery('filter_options', ''));
 
-		$sublinks = $this->sublink_list();
+		if($searchFilter && in_array('link_parent', $searchFilter))
+		{
+			$this->getTreeModel()->current_id = intval($searchFilter[1]);
+			$this->current_parent = intval($searchFilter[1]);
+		}
+		parent::ListObserver();
 
+	}
+	public function ListAjaxObserver()
+	{
+		$searchFilter = $this->_parseFilterRequest($this->getRequest()->getQuery('filter_options', ''));
+
+		if($searchFilter && in_array('link_parent', $searchFilter))
+		{
+			$this->getTreeModel()->current_id = intval($searchFilter[1]);
+			$this->current_parent = intval($searchFilter[1]);
+		}
+		parent::ListAjaxObserver();
+	}
+
+	/**
+	 * Form submitted - 'etrigger_generate_sublinks' POST variable caught
+	 */
+	public function SublinksGenerateSublinksTrigger()
+	{
+		$this->generateSublinks();
+	}
+
+	public function sublinksObserver()
+	{
+		$this->getTreeModel()->load();
+	}
+
+	/**
+	 * Sublinks generator
+	 */
+	public function sublinksPage()
+	{
+		$sublinks = $this->sublink_data();
+		$ui = $this->getUI();
+		// TODO - use UI create form
+		$sql = e107::getDb();
 		$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<form method='post' action='".e_REQUEST_URL."'>
 			<fieldset id='core-links-generator'>
 				<legend class='e-hideme'>".LINKLAN_4."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminform'>
@@ -197,49 +202,47 @@ class links_admin_ui extends e_admin_ui
 						<tr>
 							<td class='label'>".LINKLAN_6."</td>
 							<td class='control'>
-								<select name='sublink_type' class='tbox select'>
-									<option value=''></option>";
+		";
+
 		foreach($sublinks as $key => $type)
 		{
-			$text .= "
-									<option value='$key'>".$type['title']."</option>
-		";
+			$optarrayp[$key] = $type['title'];
+			//$selected = $this->getPosted('sublink_type') == $key ? ' selected="selected"' : '';
+			/*$text .= "
+									<option value='{$key}'{$selected}>".$type['title']."</option>
+					";*/
 		}
+		$text .= $ui->selectbox('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
+
 		$text .= "
-								</select>
 							</td>
 						</tr>
 						<tr>
 							<td class='label'>".LINKLAN_7."</td>
 							<td class='control'>
-								<select name='sublink_parent' class='tbox select'>
-								<option value=''></option>";
-		$sql->db_Select("links", "*", "link_parent='0' ORDER BY link_name ASC");
-		while($row = $sql->db_Fetch())
-		{
-			$text .= "
-								<option value='".$row['link_id']."'>".$row['link_name']."</option>
-		";
-		}
+								";
+		$text .= $ui->link_parent($this->getPosted('link_parent'), 'write');
 		$text .= "
-								</select>
+
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='create' type='submit' name='generate_sublinks' value='no-value'><span>".LINKLAN_5."</span></button>
+					".$ui->admin_button('etrigger_generate_sublinks', 'no-value', 'submit', LINKLAN_5)."
 				</div>
 			</fieldset>
 		</form>
 		";
 		//$e107->ns->tablerender(LINKLAN_4, $emessage->render().$text);
-		echo  $emessage->render().$text;
+		$this->addTitle(LINKLAN_4);
+		return $text;
 	}
 
-	function sublink_list($name = "")
+	function sublink_data($name = "")
 	{
-		global $sql, $PLUGINS_DIRECTORY;
+		if(null !== $this->sublink_data) return ($name ? $this->sublink_data[$name] : $this->sublink_data);
+		$sublink_type = array();
 		$sublink_type['news']['title'] = LINKLAN_8; // "News Categories";
 		$sublink_type['news']['table'] = "news_category";
 		$sublink_type['news']['query'] = "category_id !='-2' ORDER BY category_name ASC";
@@ -256,45 +259,91 @@ class links_admin_ui extends e_admin_ui
 		$sublink_type['downloads']['fieldname'] = "download_category_name";
 		$sublink_type['downloads']['fieldicon'] = "download_category_icon";
 
-		if($sql->db_Select("plugin", "plugin_path", "plugin_installflag = '1'"))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$sublink_plugs[] = $row['plugin_path'];
-			}
-		}
+		// fixed - sql query not needed
+		$plugins = array_keys(e107::getConfig()->get('plug_installed'));
 
-		foreach($sublink_plugs as $plugin_id)
+		foreach ($plugins as $plugin)
 		{
-			if(is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php'))
+			if(is_readable(e_PLUGIN.$plugin.'/e_linkgen.php'))
 			{
-				require_once (e_PLUGIN.$plugin_id.'/e_linkgen.php');
+				require_once (e_PLUGIN.$plugin.'/e_linkgen.php');
 			}
 		}
+		$this->sublink_data = $sublink_type;
 		if($name)
 		{
 			return $sublink_type[$name];
 		}
 
 		return $sublink_type;
-
 	}
 
-
-
-
-
-	function generateSublinks()
+	function generateSublinks($sublink)
 	{
-		$subtype = $_POST['sublink_type'];
-			$sublink = $this->sublink_list($subtype);
 
-			$sql2 = e107::getDb('sql2');
+		$mes = e107::getMessage();
+		$subtype = $this->getPosted('sublink_type');//$_POST['sublink_type'];
+		$pid = intval($this->getPosted('link_parent'));
+		$sublink = $this->sublink_data($subtype);
 
-			$sql->db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
-			$par = $sql->db_Fetch();
-			extract($par);
+		if(!$pid)
+		{
+			$mes->warning('Please choose a parent');
+			return;
+		}
+		if(!$subtype)
+		{
+			$mes->warning('Please choose a generator module');
+			return;
+		}
+		if(!$sublink)
+		{
+			$mes->error('Not valid generator module data');
+			return;
+		}
 
+		$sublink = $this->sublink_data($subtype);
+
+
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('sql2');
+
+
+		$sql->db_Select("links", "*", "link_id=".$pid);
+		$par = $sql->db_Fetch();
+
+		//extract($par);
+		// Added option for passing of result array
+		if(vartrue($sublink['result']))
+		{
+			$count = 1;
+			foreach ($sublink['result'] as $row)
+			{
+				$subcat = $row[($sublink['fieldid'])];
+				$name = $row[($sublink['fieldname'])];
+				$subname = $name; // eliminate old embedded hierarchy from names. (e.g. 'submenu.TopName.name')
+				$suburl = str_replace("#", $subcat, $sublink['url']);
+				$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $par['link_button'];
+				$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $par['link_description'];
+				$subparent = $pid;
+
+				$insert_array = array(
+						'link_name'			=> $subname,
+						'link_url'			=> $suburl,
+						'link_description'	=> $subdiz,
+						'link_button'		=> $subicon,
+						'link_category'		=> $par['link_category'],
+						'link_order'		=> $count,
+						'link_parent'		=> $subparent,
+						'link_open'			=> $par['link_open'],
+						'link_class'		=> $par['link_class'],
+						'link_function'		=> ''
+				);
+				$count++;
+			}
+		}
+		else
+		{
 			$sql->db_Select($sublink['table'], "*", $sublink['query']);
 			$count = 1;
 			while($row = $sql->db_Fetch())
@@ -303,105 +352,288 @@ class links_admin_ui extends e_admin_ui
 				$name = $row[($sublink['fieldname'])];
 				$subname = $name; // eliminate old embedded hierarchy from names. (e.g. 'submenu.TopName.name')
 				$suburl = str_replace("#", $subcat, $sublink['url']);
-				$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
-				$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
-				$subparent = $_POST['sublink_parent'];
-
+				$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $par['link_button'];
+				$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $par['link_description'];
+				$subparent = $pid;
 
 				$insert_array = array(
 						'link_name'			=> $subname,
 						'link_url'			=> $suburl,
 						'link_description'	=> $subdiz,
 						'link_button'		=> $subicon,
-						'link_category'		=> $link_category,
+						'link_category'		=> $par['link_category'],
 						'link_order'		=> $count,
 						'link_parent'		=> $subparent,
-						'link_open'			=> $link_open,
-						'link_class'		=> $link_class,
+						'link_open'			=> $par['link_open'],
+						'link_class'		=> $par['link_class'],
 						'link_function'		=> ''
 				);
 
 				if($sql2->db_Insert("links",$insert_array))
 				{
 					$message .= LAN_CREATED." ({$name})[!br!]";
-					$mes->add(LAN_CREATED." ({$name})", E_MESSAGE_SUCCESS);
+					$mes->success(LAN_CREATED." ({$name})");
 				} else
 				{
 					$message .= LAN_CREATED_FAILED." ({$name})[!br!]";
-					$mes->add(LAN_CREATED_FAILED." ({$name})", E_MESSAGE_ERROR);
+					$mes->error(LAN_CREATED_FAILED." ({$name})");
 				}
 				$count++;
 			}
+		}
 
-			if($message)
+		if($message) // TODO admin log
+		{
+			// sitelinks_adminlog('01', $message); // 'Sublinks generated'
+		}
+	}
+
+	/**
+	 * Product tree model
+	 * @return links_model_admin_tree
+	 */
+	public function _setTreeModel()
+	{
+		$this->_tree_model = new links_model_admin_tree();
+		return $this;
+	}
+
+	/**
+	 * Link ordered array
+	 * @return array
+	 */
+	public function getLinkArray($current_id = 0)
+	{
+		if(null === $this->_link_array)
+		{
+			if($this->getAction() != 'list')
 			{
-				// sitelinks_adminlog('01', $message); // 'Sublinks generated'
+				$this->getTreeModel()->setParam('order', 'ORDER BY '.$this->listOrder)->load();
 			}
+			$tree = $this->getTreeModel()->getTree();
+			$this->_link_array = array();
+			foreach ($tree as $id => $model)
+			{
+				if($current_id == $id) continue;
+				$this->_link_array[$model->get('link_parent')][$id] = $model->get('link_name');
+			}
+			asort($this->_link_array);
+		}
+
+		return $this->_link_array;
+	}
+}
+
+class links_model_admin_tree extends e_admin_tree_model
+{
+	public $modify = false;
+	public $current_id = 0;
+
+	protected $_db_table = 'links';
+	protected $_link_array	= null;
+	protected $_link_array_modified	= null;
+
+	protected $_field_id = 'link_id';
+
+
+	/**
+	 * Get array of models
+	 * Custom tree order
+	 * @return array
+	 */
+	function getTree($force = false)
+	{
+		return $this->getOrderedTree($this->modify);
+	}
+
+	/**
+	 * Get ordered by their parents models
+	 * @return array
+	 */
+	function getOrderedTree($modified = false)
+	{
+		$var = !$modified ? '_link_array' : '_link_array_modified';
+		if(null === $this->$var)
+		{
+			$tree = $this->get('__tree', array());
+
+			$this->$var = array();
+			$search = array();
+			foreach ($tree as $id => $model)
+			{
+				$search[$model->get('link_parent')][$id] = $model;
+			}
+
+			asort($search);
+			$this->_tree_order($this->current_id, $search, $this->$var, 0, $modified);
+		}
+		//$this->buildTreeIndex();
+		return $this->$var;
+	}
+
+	/**
+	 * Reorder current tree
+	 * @param $parent_id
+	 * @param $search
+	 * @param $src
+	 * @param $level
+	 * @return void
+	 */
+	function _tree_order($parent_id, $search, &$src, $level = 0, $modified = false)
+	{
+		if(!isset($search[$parent_id]))
+		{
+			return;
+		}
+
+		$level_image = $level ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
+		foreach ($search[$parent_id] as $model)
+		{
+			$id = $model->get('link_id');
+			$src[$id] = $model;
+			if($modified)
+			{
+				$model->set('link_name', $level_image.$model->get('link_name'));
+			}
+			$this->_tree_order($id, $search, $src, $level + 1, $modified);
+		}
 	}
 }
 
 
 class links_admin_form_ui extends e_admin_form_ui
 {
-
-	private $linkFunctions;
-
-	function init()
+	protected $current_parent = null;
+	function link_parent($value, $mode)
 	{
-		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
-
-		foreach($tmp as $cat=> $array)
+		switch($mode)
 		{
-			$func = array();
-			foreach($array as $val)
+			case 'read':
+				$current = $this->getController()->current_parent;
+				if($current) // show only one parent
+				{
+					if(null === $this->current_parent)
+					{
+						if(e107::getDb()->db_Select('links', 'link_name', 'link_id='.$current))
+						{
+							$tmp = e107::getDb()->db_Fetch();
+							$this->current_parent = $tmp['link_name'];
+						}
+					}
+				}
+				$cats	= $this->getController()->getLinkArray();
+				$ret	= array();
+				$this->_parents($value, $cats, $ret);
+				if($this->current_parent) array_unshift($ret, $this->current_parent);
+				return ($ret ? implode('&nbsp;&raquo;&nbsp;', $ret) : '-');
+			break;
+
+			case 'write':
+				$catid	= $this->getController()->getId();
+				$cats	= $this->getController()->getLinkArray($catid);
+				$ret	= array();
+				$this->_parent_select_array(0, $cats, $ret);
+				return $this->selectbox('link_parent', $ret, $value, array('default' => LAN_SELECT));
+			break;
+
+			case 'batch':
+			case 'filter':
+				$cats	= $this->getController()->getLinkArray();
+
+				$ret[0]	= $mode == 'batch' ? 'REMOVE PARENT' : 'Main Only';
+				$this->_parent_select_array(0, $cats, $ret);
+				return $ret;
+			break;
+		}
+	}
+
+	/**
+	 *
+	 * @param integer $category_id
+	 * @param array $search
+	 * @param array $src
+	 * @param boolean $titles
+	 * @return array
+	 */
+	function _parents($link_id, $search, &$src, $titles = true)
+	{
+		foreach ($search as $parent => $cat)
+		{
+			if($cat && array_key_exists($link_id, $cat))
 			{
-				$newkey = $cat.'::'.$val['function'];
-				$func[$newkey] = $val['name'];
+				array_unshift($src, ($titles ? $cat[$link_id] : $link_id));
+				if($parent > 0)
+				{
+					$this->_parents($parent, $search, $src, $titles);
+				}
 			}
-			$this->linkFunctions[$cat] = $func;
 		}
 	}
 
-
-	function link_name($curVal,$mode,$parm)
+	function _parent_select_array($parent_id, $search, &$src, $strpad = '&nbsp;&nbsp;&nbsp;', $level = 0)
 	{
-		//FIXME - I need access to the full array of $row, so I can check for the value of $link_parent;
-		if($mode == "read")
+		if(!isset($search[$parent_id]))
 		{
-			return "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />".$curVal;
-		}
-		else if($mode == 'write')
-		{
-			return $this->text('link_name',$curVal,100,array('default'=> "(".LAN_OPTIONAL.")"));
-		}
-		else
-		{
-			return $curVal;
+			return;
 		}
 
+		foreach ($search[$parent_id] as $id => $title)
+		{
+			$src[$id] = str_repeat($strpad, $level).($level != 0 ? '-&nbsp;' : '').$title;
+			$this->_parent_select_array($id, $search, $src, $strpad, $level + 1);
+		}
 	}
 
-
-
-	function link_function($curVal,$mode)
+	function _has_parent($link_id, $parent_id, $cats)
 	{
-		if($mode == 'read')
-		{
-			return $curVal; //  $this->linkFunctions[$curVal];
-		}
-
-		if($mode == 'write')
-		{
-			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
-		}
-
-		else
-		{
-			return $this->linkFunctions;
-		}
+		$path = array();
+		$this->_parents($link_id, $cats, $path, false);
+		return in_array($parent_id, $path);
 	}
 
+	/**
+	 * Override Create list view
+	 *
+	 * @return string
+	 */
+	public function getList($ajax = false)
+	{
+		$tp = e107::getParser();
+		$controller = $this->getController();
 
+		$request = $controller->getRequest();
+		$id = $this->getElementId();
+		$tree = $options = array();
+		$tree[$id] = clone $controller->getTreeModel();
+		$tree[$id]->modify = true;
+
+		// if going through confirm screen - no JS confirm
+		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
+
+		$options[$id] = array(
+			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
+			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
+			//'url' => e_SELF, default
+			//'query' => $request->buildQueryString(array(), true, 'ajax_used'), - ajax_used is now removed from QUERY_STRING - class2
+			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
+			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
+			'legend' => $controller->getPluginTitle(), // hidden by default
+			'form_pre' => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
+			'form_post' => '', // markup to be added after closing form element
+			'fields' => $controller->getFields(), // see e_admin_ui::$fields
+			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
+			'table_pre' => '', // markup to be added before opening table element
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete()) : '',
+			'fieldset_pre' => '', // markup to be added before opening fieldset element
+			'fieldset_post' => '', // markup to be added after closing fieldset element
+			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
+			'from' => $controller->getQuery('from', 0), // current page, default 0
+			'field' => $controller->getQuery('field'), //current order field name, default - primary field
+			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
+		);
+		//$tree[$id]->modify = false;
+		return $this->renderListForm($options, $tree, $ajax);
+	}
 }
 
 new links_admin();
