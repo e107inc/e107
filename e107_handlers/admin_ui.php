@@ -1307,10 +1307,10 @@ class e_admin_dispatcher
 		foreach($this->adminMenu as $key => $val)
 		{
 			$tmp = explode('/', trim($key, '/'), 3);
-			
+
 			// custom 'selected' check
 			if(isset($val['selected']) && $val['selected']) $selected = $val['selected'] === true ? $key : $val['selected'];
-			
+
 			foreach ($val as $k=>$v)
 			{
 				switch($k)
@@ -1324,7 +1324,7 @@ class e_admin_dispatcher
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs').'?mode='.$tmp[0].'&amp;action='.$tmp[1];
 					break;
-					
+
 					case 'uri':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs');
@@ -1771,7 +1771,7 @@ class e_admin_controller
 		{
 			$action = $request->getActionName();
 		}
-		
+
 		// check for observer
 		$actionName = $this->toMethodName($action, 'page');
 		$ret = '';
@@ -1848,7 +1848,7 @@ class e_admin_controller
 		if($mode) $request->setMode($mode);
 		if($action) $request->setAction($action);
 		if(!$path) $path = e_SELF;
-		
+
 		$url = $path.'?'.$request->buildQueryString($merge_query, false, $exclude_query);
 		// Transfer all messages to session
 		e107::getMessage()->moveToSession();
@@ -1991,7 +1991,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array
 	 */
 	protected $tableJoin = array();
-	
+
 	/**
 	 * Array of table names and their aliases. (detected from listQry)
 	 * db query building
@@ -2024,7 +2024,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string SQL order, false to disable order, null is default order
 	 */
 	protected $listOrder = null;
-	
+
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
 	 * @var additional SQL to be applied when auto-building the list query
@@ -2359,7 +2359,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$this->_tree_model = $tree_model;
 		return $this;
 	}
-	
+
 	/**
 	 * Get currently parsed model while in list mode
 	 * Model instance is registered by e_form::renderListForm()
@@ -2370,7 +2370,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return e107::getRegistry('core/adminUI/currentListModel');
 	}
-	
+
 	public function setListModel($model)
 	{
 		e107::setRegistry('core/adminUI/currentListModel', $model);
@@ -2490,7 +2490,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		//if(empty($selected)) return $this; - allow empty (no selected) submit for custom batch handlers - e.g. Export CSV
 		// requires writeParams['batchNoCheck'] == true!!!
-		
+
 		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
@@ -2544,7 +2544,7 @@ class e_admin_controller_ui extends e_admin_controller
 				{
 					return $this;
 				}
-				
+
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($field).'Batch';
 				if(method_exists($this, $method)) // callback handling
@@ -2552,7 +2552,7 @@ class e_admin_controller_ui extends e_admin_controller
 					$this->$method($selected, $value);
 					break;
 				}
-				
+
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected)) return $this;
 				$method = 'handle'.$this->getRequest()->getActionName().'Batch';
@@ -2634,15 +2634,15 @@ class e_admin_controller_ui extends e_admin_controller
 						$value = trim($value) ? e107::getInstance()->ipEncode($value) : '';
 					}
 				break;
-				
+
 				case 'dropdown': // TODO - ask Steve if this check is required
 				case 'lanlist':
 					if(is_array($value))
 					{
-						// no sanitize here - data is added to model posted stack 
+						// no sanitize here - data is added to model posted stack
 						// and validated & sanitized before sent to db
-						//$value = array_map(array(e107::getParser(), 'toDB'), $value); 
-						$value = implode(',', $value); 
+						//$value = array_map(array(e107::getParser(), 'toDB'), $value);
+						$value = implode(',', $value);
 					}
 				break;
 			}
@@ -2726,7 +2726,7 @@ class e_admin_controller_ui extends e_admin_controller
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
-			
+
 			// Make query
 			$sql = e107::getDb();
 			if($qry && $sql->db_Select_gen($qry, $debug))
@@ -2768,9 +2768,9 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function parseAliases()
 	{
 		if($this->_alias_parsed) return $this; // already parsed!!!
-		
-		
-		
+
+
+
 		if($this->getJoinData())
 		{
 			foreach ($this->getJoinData() as $table => $att)
@@ -2783,7 +2783,7 @@ class e_admin_controller_ui extends e_admin_controller
 					$att['table'] = $tmp[1];
 					$att['__tablePath'] = $att['alias'].'.';
 					$att['__tableFrom'] = '`#'.$att['table'].'` AS '.$att['alias'];
-					$this->setJoinData($att['alias'], $att); 
+					$this->setJoinData($att['alias'], $att);
 					unset($tmp);
 					continue;
 				}
@@ -2794,17 +2794,17 @@ class e_admin_controller_ui extends e_admin_controller
 				$this->setJoinData($table, $att);
 			}
 		}
-		
-		
-		
+
+
+
 		$this->joinAlias(); // generate Table Aliases from listQry
-		
+
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
 		{
 			// tableAlias.fieldName.fieldAlias
-			if(strpos($field, '.') !== false) // manually entered alias. 
+			if(strpos($field, '.') !== false) // manually entered alias.
 			{
 				$tmp = explode('.', $field, 3);
 				$att['table'] = $tmp[0] ? $tmp[0] : $this->getIfTableAlias(false);
@@ -2816,15 +2816,15 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			else
 			{
-				
+
 				$att['table'] = $this->getIfTableAlias(false);
 				if(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
 				{
-					$att['alias'] = $this->joinAlias[$this->table].".".$field; 	
+					$att['alias'] = $this->joinAlias[$this->table].".".$field;
 				}
 				else
 				{
-					$att['alias'] = "";	
+					$att['alias'] = "";
 				}
 				$att['field'] = $field;
 				$fields[$field] = $att;
@@ -2865,25 +2865,25 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 *  Intuitive LEFT JOIN Qry support. (preferred)
 	 *  Generate array of table names and their alias - auto-detected from listQry;
-	 *  eg. $listQry = "SELECT m.*, u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id"; 
+	 *  eg. $listQry = "SELECT m.*, u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id";
 	 */
 	protected function joinAlias()
 	{
 		//TODO - editQry
-		// TODO - auto-detect fields that belong to other tables. eg. u.user_id,u.user_name and adjust query to suit. 
-		if($this->listQry) 
+		// TODO - auto-detect fields that belong to other tables. eg. u.user_id,u.user_name and adjust query to suit.
+		if($this->listQry)
 		{
 			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
-			
+
 			foreach($matches[1] AS $k=>$v)
 			{
 				if(varset($matches[3][$k]))
 				{
 					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
-				}			
+				}
 			}
 		}
-		
+
 	}
 
 
@@ -2901,7 +2901,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSFieldsArr = array(); // FROM for main table
 		$tableSJoinArr = array(); // FROM for join tables
 		$filter = array();
-		
+
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		list($filterField, $filterValue) = $searchFilter;
@@ -2936,13 +2936,13 @@ class e_admin_controller_ui extends e_admin_controller
 				if($isfilter)
 				{
 					$filterFrom[] = $var['__tableField'];
-				
+
 				}
 			}
 		}
 
 
-		
+
 		if($isfilter)
 		{
 			if(!$filterFrom) return false;
@@ -3006,9 +3006,9 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$qry = $listQry ? $listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 		}
-		
+
 		// group field - currently auto-added only if there are joins
-		// TODO - groupField property  
+		// TODO - groupField property
 		$groupField = '';
 		if($joins && $this->getPrimaryName())
 		{
@@ -3018,11 +3018,11 @@ class e_admin_controller_ui extends e_admin_controller
 		if($raw)
 		{
 			$rawData = array(
-				'joinWhere' => $jwhere, 
-				'filter' => $filter, 
+				'joinWhere' => $jwhere,
+				'filter' => $filter,
 				'listQrySql' => $this->listQrySql,
-				'filterFrom' => $filterFrom, 
-				'search' => $searchQry, 
+				'filterFrom' => $filterFrom,
+				'search' => $searchQry,
 				'tableFromName' => $tableFrom,
 			);
 			$rawData['tableFrom'] = $tableSFieldsArr;
@@ -3046,7 +3046,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
 		}
-		
+
 		// more user added sql
 		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
 		{
@@ -3065,7 +3065,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$qry .= " WHERE ".implode(" AND ", $searchQry);
 		}
-		
+
 		// GROUP BY if needed
 		if($groupField)
 		{
@@ -3093,10 +3093,10 @@ class e_admin_controller_ui extends e_admin_controller
 			if(false === $forceTo) $forceTo = $this->getPerPage();
 			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
 		}
-		
-		// Debug Filter Query. 	
+
+		// Debug Filter Query.
 		// echo $qry;
-	
+
 		return $qry;
 	}
 
@@ -3187,44 +3187,44 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $pid;
 	protected $listQry;
 	protected $editQry;
-	
-	
+
+
 	/**
 	 * Markup to be auto-inserted before List filter
 	 * @var string
 	 */
 	public $preFiliterMarkup = '';
-	
+
 	/**
 	 * Markup to be auto-inserted after List filter
 	 * @var string
 	 */
 	public $postFiliterMarkup = '';
-	
+
 	/**
 	 * Markup to be auto-inserted at the top of Create form
 	 * @var string
 	 */
 	public $headerCreateMarkup = '';
-	
+
 	/**
 	 * Markup to be auto-inserted at the bottom of Create form
 	 * @var string
 	 */
 	public $footerCreateMarkup = '';
-	
+
 	/**
 	 * Markup to be auto-inserted at the top of Update form
 	 * @var string
 	 */
 	public $headerUpdateMarkup = '';
-	
+
 	/**
 	 * Markup to be auto-inserted at the bottom of Update form
 	 * @var string
 	 */
 	public $footerUpdateMarkup = '';
-	
+
 	/**
 	 * Show confirm screen before (batch/single) delete
 	 * @var boolean
@@ -3276,14 +3276,14 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListBatchTrigger($batch_trigger)
 	{
 		$this->setPosted('etrigger_batch', null);
- 
-		if($this->getPosted('etrigger_cancel')) 
-		{ 
+
+		if($this->getPosted('etrigger_cancel'))
+		{
 			$this->setPosted(array());
 			return; // always break on cancel!
 		}
 		$this->deleteConfirmScreen = true; // Confirm screen ALWAYS enabled when multi-deleting!
-		
+
 		// proceed ONLY if there is no other trigger, except delete confirmation
 		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
 	}
@@ -3314,7 +3314,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$selected = array_map('intval', explode(',', $this->getPosted('delete_confirm_value')));
 			}
 		}
-		
+
 		// delete one by one - more control, less performance
 		// TODO - pass  afterDelete() callback to tree delete method?
 		$set_messages = true;
@@ -3397,19 +3397,21 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListDeleteTrigger($posted)
 	{
-		if($this->getPosted('etrigger_cancel')) 
-		{ 
+		if($this->getPosted('etrigger_cancel'))
+		{
 			$this->setPosted(array());
 			return; // always break on cancel!
 		}
-		$id = intval(array_shift($posted));
+		// TODO - investigate - strange post vale of delete triggers, switched to key
+		// for quick fix
+		$id = intval(key($posted));//intval(array_shift($posted));
 		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm'))
 		{
 			// forward data to delete confirm screen
 			$this->setPosted('delete_confirm_value', $id);
 			return; // User confirmation expected
 		}
-		
+
 		$this->setTriggersEnabled(false);
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id);
@@ -3792,10 +3794,10 @@ class e_admin_ui extends e_admin_controller_ui
 				}*/
 			}
 		}
-		
+
 		// don't touch it if already exists
 		if($this->_model) return $this;
-		
+
 		// default model
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
@@ -3818,7 +3820,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// default tree model
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
-			->setFieldIdName($this->pid)
+			->getFieldIdName($this->pid)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
 
@@ -3883,7 +3885,7 @@ class e_admin_form_ui extends e_form
 				$err = true;
 			}
 		}
-	
+
 		/*if($err)
 		{
 			//echo $err;
@@ -3922,7 +3924,7 @@ class e_admin_form_ui extends e_form
 			$form_end = vartrue($controller->footerCreateMarkup);
 		}
 
-		
+
 		$forms = $models = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
@@ -3993,7 +3995,7 @@ class e_admin_form_ui extends e_form
 		$id = $this->getElementId();
 		$tree = $options = array();
 		$tree[$id] = $controller->getTreeModel();
-		
+
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
@@ -4020,7 +4022,7 @@ class e_admin_form_ui extends e_form
 		);
 		return $this->renderListForm($options, $tree, $ajax);
 	}
-	
+
 	public function getConfirmDelete($ids, $ajax = false)
 	{
 		$controller = $this->getController();
@@ -4029,9 +4031,9 @@ class e_admin_form_ui extends e_form
 		$forms = array();
 		$id_array = explode(',', $ids);
 		$delcount = count($id_array);
-		
+
 		e107::getMessage()->addWarning(sprintf(LAN_UI_DELETE_WARNING, $delcount));
-		
+
 		$fieldsets['confirm'] = array(
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
@@ -4041,7 +4043,7 @@ class e_admin_form_ui extends e_form
 			'table_pre' => '', // markup to be added before opening table element
 			'table_post' => '', // markup to be added after closing table element
 			'table_rows' => '', // rows array (<td> tags)
-			'table_body' => '', // string body - used only if rows empty 
+			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
 			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'submit', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
@@ -4049,7 +4051,7 @@ class e_admin_form_ui extends e_form
 		{
 			$fieldsets['confirm']['triggers']['hidden'] = $this->hidden('etrigger_batch', 'delete');
 		}
-		
+
 		$forms[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'url' => e_SELF, // default
@@ -4165,7 +4167,7 @@ class e_admin_form_ui extends e_form
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', 'Execute', array('id' => false))."
 			</div>
 		";
-		
+
 		return $text;
 	}
 
@@ -4187,7 +4189,7 @@ class e_admin_form_ui extends e_form
 			$option = array();
 			$parms = vartrue($val['writeParms'], array());
 			if(is_string($parms)) parse_str($parms, $parms);
-			
+
 			switch($val['type'])
 			{
 					case 'bool':
@@ -4214,10 +4216,10 @@ class e_admin_form_ui extends e_form
 					case 'dropdown': // use the array $parm;
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple'])) 
+						if(vartrue($opts['multiple']))
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue; 
+							continue;
 						}
 						unset($parms['__options']); //remove element options if any
 						foreach($parms as $k => $name)
@@ -4225,14 +4227,14 @@ class e_admin_form_ui extends e_form
 							$option[$key.'__'.$k] = $name;
 						}
 					break;
-					
+
 					case 'lanlist': // use the array $parm;
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple'])) 
+						if(vartrue($opts['multiple']))
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue; 
+							continue;
 						}
 						$options = e107::getLanguage()->getLanSelectArray();
 						foreach($options as $code => $name)
@@ -4259,9 +4261,9 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'method':
-						$method = $key; 
+						$method = $key;
 						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
-						
+
 						if(is_array($list))
 						{
 							//check for single option
@@ -4282,9 +4284,9 @@ class e_admin_form_ui extends e_form
 							continue;
 						}
 					break;
-					
-					case 'user': // TODO - User Filter				
-						//$option[$key.'__'.$k] = $name;	
+
+					case 'user': // TODO - User Filter
+						//$option[$key.'__'.$k] = $name;
 					break;
 			}
 
