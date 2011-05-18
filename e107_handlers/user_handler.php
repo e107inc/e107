@@ -917,11 +917,28 @@ class e_userperms
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
 
-
+		$plg = e107::getPlugin();
+		$installed = $plg->getall(1);
+		
+	//	print_a($installed);
+		foreach($installed as $k=>$row2)
+		{
+			if($plg->parse_plugin($row2['plugin_path']))
+			{
+				$plug_vars = $plg->plug_vars;
+				$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs'));
+				$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon($row2['plugin_path'],16);
+				$this->plugin_perms[("P".$row2['plugin_id'])][2] = $plg->getIcon($row2['plugin_path'],32);
+			}
+		}
+		
+	//	echo $plg->getIcon('forum');
+		
 		$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 		while ($row2 = $sql->db_Fetch())
 		{
-			$this->plugin_perms[("P".$row2['plugin_id'])] = $tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
+	//		$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs'));
+		//	$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon('forum')
 		}
 
 		asort($this->plugin_perms);

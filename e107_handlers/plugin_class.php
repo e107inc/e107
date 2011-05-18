@@ -1876,6 +1876,39 @@ class e107plugin
 
 		return $ret;
 	}
+	
+	// return the Icon of the 
+	function getIcon($plugName='',$size=32)
+	{
+		if(!$plugName) return;
+		
+		if(!isset($this->parsed_plugin[$plugName]))
+		{
+			$plug_vars = $this->parse_plugin($plugName);	
+		}
+		else
+		{
+			$plug_vars = $this->parsed_plugin[$plugName];	
+		}
+			
+		//return print_r($plug_vars,TRUE);	
+			
+		$sizeArray = array(32=>'icon', 16=>'iconSmall');
+		$default = ($size == 32) ? E_32_CAT_PLUG : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
+		$sz = $sizeArray[$size];
+		
+		$icon_src = (isset($plug_vars['plugin_php'])) ? e_PLUGIN  : e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
+		$plugin_icon = $plug_vars['administration'][$sz] ? "<img src='{$icon_src}' alt='' class='icon S".intval($size)."' />" : $default;
+     	
+		if(!$plugin_icon)
+		{
+		//	
+		}
+		
+     	return $plugin_icon;
+	}
+	
+	
 
 	// Called to parse the (deprecated) plugin.php file
 	function parse_plugin_php($plugName)
