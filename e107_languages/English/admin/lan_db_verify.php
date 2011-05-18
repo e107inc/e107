@@ -19,7 +19,7 @@ define("DBLAN_7", "Notes");
 define("DBLAN_8", "Mismatch");
 define("DBLAN_9", "Currently");
 define("DBLAN_10", "should be");
-define("DBLAN_11", "Field missing");
+define("DBLAN_11", "Field missing!");
 define("DBLAN_12", "Extra Field!");
 define("DBLAN_13", "Table missing!");
 define("DBLAN_14", "Choose table(s) to validate");
@@ -33,4 +33,5 @@ define("DBLAN_21", "Fix Selected Items");
 define("DBLAN_22", " is not readable");
 define("DBLAN_23", "Database Utilities");
 define("DBLAN_24", "Please select action.");
+define("DBLAN_25", "Index missing!");
 ?>

@@ -352,7 +352,7 @@ define('LAN_UI_PREF_LABEL', 'Settings');
 define('LAN_UI_DELETE_LABEL', 'Confirm Delete');
 define('LAN_UI_DELETE_WARNING', 'You are about to delete <strong>%1$d</strong> records. Please confirm to continue.');
 
-define("LAN_USER_MANAGEALL", "Manage all user access and settings");
+define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
 define("LAN_USER_QUICKADD","Quick Add User");
 define("LAN_USER_PRUNE", "Prune Users");
