@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * e107 website system
  *
@@ -102,7 +102,7 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 <meta http-equiv='content-style-type' content='text/css' />
 ";
 echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-echo "<title>".LAN_head_4.(defined("e_PAGETITLE") ? " - ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))." :: ".SITENAME."</title>\n";
+echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 
 //
 // D: Send CSS
@@ -117,7 +117,7 @@ if (!isset($no_core_css) || !$no_core_css)
 	$e_js->otherCSS('{e_FILE}e107.css');
 }
 
-// Register Plugin specific CSS 
+// Register Plugin specific CSS
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
 if (isset($eplug_css) && $eplug_css)
 {
@@ -402,18 +402,18 @@ if ($e107_popup != 1)
 	//
 	// L: (optional) Body JS to disable right clicks [reserved; user mode]
 	//
-	
+
 	//
 	// M: Send top of body for custom pages and for news [user mode only]
 	//
-	
+
 	//
 	// N: Send other top-of-body HTML
 	//
-	
+
 	$ns = new e107table;
 	$e107_var = array();
-	
+
 	/**
 	 * Build admin menus - addmin menus are now supporting unlimitted number of submenus
 	 * TODO - add this to a handler for use on front-end as well (tree, sitelinks.sc replacement)
@@ -442,16 +442,16 @@ if ($e107_popup != 1)
 		global $E_ADMIN_MENU;
 		if (!$tmpl)
 			$tmpl = $E_ADMIN_MENU;
-			
+
 		/*
 		 * Search for id
 		 */
 		$temp = explode('--id--', $title, 2);
 		$title = $temp[0];
 		$id = str_replace(array(' ', '_'), '-', varset($temp[1]));
-		
+
 		unset($temp);
-		
+
 		/*
 		 * SORT
 		 */
@@ -464,9 +464,9 @@ if ($e107_popup != 1)
 			{
 				$func_list[] = $temp[$key]['text'];
 			}
-			
+
 			usort($func_list, 'strcoll');
-			
+
 			foreach ($func_list as $func_text)
 			{
 				foreach (array_keys($temp) as $key)
@@ -479,7 +479,7 @@ if ($e107_popup != 1)
 			}
 			unset($temp);
 		}
-		
+
 		$kpost = '';
 		$text = '';
 		if ($sub_link)
@@ -487,7 +487,7 @@ if ($e107_popup != 1)
 			$kpost = '_sub';
 		}
 		else $text = $tmpl['start'];
-		
+
 		//FIXME - e_parse::array2sc()
 		$search = array();
 		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
@@ -506,9 +506,9 @@ if ($e107_popup != 1)
 			{
 				continue;
 			}
-			
+
 			//  print_a($e107_vars[$act]);
-			
+
 			$replace = array();
 			if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
 			{
@@ -518,7 +518,7 @@ if ($e107_popup != 1)
 			{
 				$temp = $tmpl['button'.$kpost];
 			}
-			
+
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			// valid URLs
 			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
@@ -530,14 +530,14 @@ if ($e107_popup != 1)
 			}
 			$replace[3] = $title;
 			$replace[4] = '';
-			
+
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
 			$replace[6] = '';
 			$replace[7] = varset($e107_vars[$act]['link_class']);
 			$replace[8] = '';
 			$replace[9] = varset($e107_vars[$act]['image']);
-			
+
 			if (varsettrue($e107_vars[$act]['sub']))
 			{
 				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
@@ -547,19 +547,19 @@ if ($e107_popup != 1)
 				$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 				$replace[4] .= $tmpl['end_sub'];
 			}
-			
+
 			$text .= preg_replace($search, $replace, $temp);
 		}
-		
+
 		$text .= !$sub_link ? $tmpl['end'] : '';
 		if ($sub_link || empty($title))
 			return $text;
-			
+
 		$ns = e107::getRender();
 		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
 		return '';
 	}
-	
+
 	/*
 	 *  DEPRECATED - use e_admin_menu()
 	 */
@@ -567,11 +567,11 @@ if ($e107_popup != 1)
 	{
 		function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
 		{
-		
+
 			//return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
-			
+
 			global $ns,$BUTTON,$BUTTON_OVER,$BUTTONS_START,$BUTTONS_END,$SUB_BUTTON,$SUB_BUTTON_OVER,$SUB_BUTTONS_START,$SUB_BUTTONS_END;
-			
+
 			$id_title = "yop_".str_replace(" ", "", $title);
 			if (!isset($BUTTONS_START))
 			{
@@ -608,7 +608,7 @@ if ($e107_popup != 1)
 			{
 				$SUB_BUTTONS_END = "</td></tr></table></div>";
 			}
-			
+
 			if ($sortlist == TRUE)
 			{
 				$temp = $e107_vars;
@@ -617,9 +617,9 @@ if ($e107_popup != 1)
 				{
 					$func_list[] = $temp[$key]['text'];
 				}
-				
+
 				usort($func_list, 'strcoll');
-				
+
 				foreach ($func_list as $func_text)
 				{
 					foreach (array_keys($temp) as $key)
@@ -631,13 +631,13 @@ if ($e107_popup != 1)
 					}
 				}
 			}
-			
+
 			$search[0] = "/\{LINK_TEXT\}(.*?)/si";
 			$search[1] = "/\{LINK_URL\}(.*?)/si";
 			$search[2] = "/\{ONCLICK\}(.*?)/si";
 			$search[3] = "/\{SUB_HEAD\}(.*?)/si";
 			$search[4] = "/\{SUB_HEAD_ID\}(.*?)/si";
-			
+
 			if ($sub_link)
 			{
 				$replace[0] = '';
@@ -651,7 +651,7 @@ if ($e107_popup != 1)
 			{
 				$text = $BUTTONS_START.'';
 			}
-			
+
 			foreach (array_keys($e107_vars) as $act)
 			{
 				if (!isset($e107_vars[$act]['perm']) || !$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm']))
@@ -680,7 +680,7 @@ if ($e107_popup != 1)
 				}
 			}
 			$text .= $sub_link ? $SUB_BUTTONS_END : ''.$BUTTONS_END;
-			
+
 			if ($title == "" || $sub_link)
 			{
 				return $text;
@@ -691,7 +691,7 @@ if ($e107_popup != 1)
 			}
 		}
 	}
-	
+
 	if (file_exists(THEME.'admin_template.php'))
 	{
 		require_once (THEME.'admin_template.php');
@@ -700,7 +700,7 @@ if ($e107_popup != 1)
 	{
 		require_once (e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 	}
-	
+
 	if (!function_exists("parse_admin"))
 	{
 		function parse_admin($ADMINLAYOUT)
@@ -720,7 +720,7 @@ if ($e107_popup != 1)
 			}
 		}
 	}
-	
+
 	/**
 	 * Automate DB system messages
 	 * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
@@ -736,7 +736,7 @@ if ($e107_popup != 1)
 	{
 		require_once (e_HANDLER."message_handler.php");
 		$emessage = &eMessage::getInstance();
-		
+
 		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
 		{
 			$emessage->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
@@ -770,21 +770,21 @@ if ($e107_popup != 1)
 					$msg = LAN_UPDATED_FAILED;
 				break;
 			}
-			
+
 			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 			$emessage->add($text, E_MESSAGE_ERROR);
 		}
-		
+
 		if ($output) echo $emessage->render();
 		return $update;
 	}
-	
+
 	function admin_purge_related($table, $id)
 	{
 		global $ns,$tp;
 		$msg = "";
 		$tp->parseTemplate("");
-		
+
 		// Delete any related comments
 		require_once (e_HANDLER."comment_class.php");
 		$_com = new comment;
@@ -793,7 +793,7 @@ if ($e107_popup != 1)
 		{
 			$msg .= $num." ".ADLAN_114." ".LAN_DELETED."<br />";
 		}
-		
+
 		// Delete any related ratings
 		require_once (e_HANDLER."rate_class.php");
 		$_rate = new rater;
@@ -802,26 +802,26 @@ if ($e107_popup != 1)
 		{
 			$msg .= LAN_RATING." ".LAN_DELETED."<br />";
 		}
-		
+
 		if ($msg)
 		{
 			$ns->tablerender(LAN_DELETE, $msg);
 		}
 	}
-	
+
 	$sql->db_Mark_Time('Parse Admin Header');
-	
+
 	//NEW - Iframe mod
 	if (!defsettrue('e_IFRAME'))
 	{
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
 		parse_admin($ADMIN_HEADER);
 	}
-	
+
 	$sql->db_Mark_Time('(End: Parse Admin Header)');
 }
 
-// XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it 
+// XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it
 if (!varset($emessage) && !is_object($emessage))
 {
 	require_once (e_HANDLER."message_handler.php");
