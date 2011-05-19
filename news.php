@@ -66,9 +66,9 @@ if (is_numeric($action) && isset($tmp[1]) && (($tmp[1] == 'list') || ($tmp[1] ==
 
 if ($action == 'all' || $action == 'cat') 
 {
-  $sub_action = intval(varset($tmp[1],0));
+	$sub_action = intval(varset($tmp[1],0));
 }
-
+unset($tmp);
 /*
 Variables Used:
 	$action - the basic display format/filter
@@ -515,6 +515,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
 
 	require_once(HEADERF);
+	$sub_action = intval($sub_action);
 	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
     $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
     $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
@@ -558,6 +559,7 @@ else
 		$ix->render_newsitem($news);
 		$i++;
 	}
+	$sub_action = intval($sub_action);
 	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
  	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
@@ -634,8 +636,10 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive'])
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 
-if ($action != "item") {
-	if (is_numeric($action)){
+if ($action != "item") 
+{
+	if (is_numeric($action))
+	{
 		$action = "";
 	}
  //	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");

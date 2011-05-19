@@ -17,6 +17,13 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+
+if (!isset($pref['plug_installed']['trackback']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 header('Content-Type: text/xml');
 include(e_PLUGIN."trackback/trackbackClass.php");
 $trackback = trackbackClass :: respondTrackback();
