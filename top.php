@@ -75,14 +75,14 @@ if ($action == "active") {
 		 
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
-			if (check_class($forum_class)) {
-
+			if (check_class($forum_class)) 
+			{
 				if($user_name)
 				{
 					$POSTER = "<a href='".e_HTTP."user.php?id.{$thread_user}'>{$user_name}</a>";
-				} else {
-					list($anonposter, $ipaddress) = explode(chr(1), $thread_anon);
-					$POSTER = $anonposter;
+				} else 
+				{
+					$POSTER = LAN_ANONYMOUS;
 				}
 
 				$LINKTOTHREAD = e_PLUGIN_ABS."forum/forum_viewtopic.php?".$thread_id;
