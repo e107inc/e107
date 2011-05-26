@@ -72,7 +72,7 @@ if (!function_exists("parseheader")) {
 
 // send the charset to the browser - overrides spurious server settings with the lan pack settings.
 // Would like to set the MIME type appropriately - but it broke other things
-//if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) 
+//if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml"))
 //  header("Content-type: application/xhtml+xml; charset=".CHARSET, true);
 //else
   header("Content-type: text/html; charset=".CHARSET, true);
@@ -89,7 +89,7 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 <meta http-equiv='content-style-type' content='text/css' />
 ";
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-echo "<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).SITENAME."</title>\n";
 
 
 //
@@ -98,7 +98,7 @@ echo "<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("P
 echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
-if (((varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) || defsettrue('e_WYSIWYG')) && varset($e_wysiwyg) != "") 
+if (((varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) || defsettrue('e_WYSIWYG')) && varset($e_wysiwyg) != "")
 {
 	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	define("e_WYSIWYG",TRUE);
@@ -113,18 +113,18 @@ else
 
 
 echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
-if (isset($theme_js_php) && $theme_js_php) 
+if (isset($theme_js_php) && $theme_js_php)
 {
 	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
-} 
-else 
+}
+else
 {
 	if (is_readable(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 
 
-if (isset($eplug_js) && $eplug_js) 
+if (isset($eplug_js) && $eplug_js)
 {
 	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
@@ -341,7 +341,7 @@ if(!isset($e107_popup))
 	$e107_popup = 0;
 }
 if ($e107_popup != 1) {
-	
+
 //
 // L: (optional) Body JS to disable right clicks
 //
@@ -394,26 +394,26 @@ if ($e107_popup != 1) {
 	}
 
 	$e107ParseHeaderFlag = FALSE;				// Deliberately choose a distinct Name! (Its got to reach the footer)
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER)) 
+	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
 	{
 		parseheader($NEWSHEADER);
-	} 
-	else 
+	}
+	else
 	{
 		$full_query = e_SELF."?".e_QUERY."!";
-		foreach ($custompage as $key_extract => $cust_extract) 
+		foreach ($custompage as $key_extract => $cust_extract)
 		{
-			foreach ($cust_extract as $key => $kpage) 
+			foreach ($cust_extract as $key => $kpage)
 			{
-				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage))) 
+				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage)))
 				{
 					$e107ParseHeaderFlag = TRUE;
-					if ($key_extract=='no_array') 
+					if ($key_extract=='no_array')
 					{
 						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
 						$e107CustomFooter = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
-					} 
-					else 
+					}
+					else
 					{
 						$cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
 						$e107CustomFooter = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;	// Another intentionally distinct name

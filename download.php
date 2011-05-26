@@ -101,7 +101,7 @@ else
 				extract($row);
 				$type = $download_category_name;
 				$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
-				define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
+				define("e_PAGETITLE", $download_category_name." / ".PAGE_NAME);
 			}
 			else
 			{  // No access to this category
@@ -199,7 +199,7 @@ switch ($action)
 
 //	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 	$download_cat_table_start = $tp->simpleParse($DOWNLOAD_CAT_TABLE_START);
-	
+
 	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 	$DOWNLOAD_CAT_SEARCH = "
 		<form method='get' action='".e_BASE."search.php'>
@@ -212,7 +212,7 @@ switch ($action)
 
 //	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 	$download_cat_table_end = $tp->simpleParse($DOWNLOAD_CAT_TABLE_END);
-	
+
 	$dl_text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 
 	ob_start();
@@ -265,7 +265,17 @@ if ($action == "list")
 {
 	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
+	// Auto-meta descr.
+	if(!empty($row['download_category_description']))
+	{
+		define("META_DESCRIPTION", $tp->text_truncate(
+			str_replace(
+				array('"', "'"), '', strip_tags($tp->toHTML($row['download_category_description']))
+		), 250, '...'));
+	}
+
 	require_once(HEADERF);
+
 	$text = '';
 
 	/* SHOW SUBCATS ... */
@@ -364,7 +374,7 @@ if ($action == "list")
 
 //	$download_list_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_START);
 	$download_list_table_start = $tp->simpleParse($DOWNLOAD_LIST_TABLE_START);
-	
+
 //	$download_list_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_END);
 	$download_list_table_end = $tp->simpleParse($DOWNLOAD_LIST_TABLE_END);
 	$text .= $download_list_table_start.$download_list_table_string.$download_list_table_end;
@@ -437,12 +447,19 @@ $comment_edit_query = 'comment.download.'.$id;
 	if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
     if(!isset($DL_VIEW_PAGETITLE))
 	{
-    	$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+    	$DL_VIEW_PAGETITLE = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".PAGE_NAME;
 	}
 
     $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $download_shortcodes);
 
 	define("e_PAGETITLE", $DL_TITLE);
+	// Auto-meta descr.
+	if($dl['download_description'])
+	define("META_DESCRIPTION", $tp->text_truncate(
+		str_replace(
+			array('"', "'"), '', strip_tags($tp->parseTemplate('{DOWNLOAD_VIEW_DESCRIPTION}', TRUE, $download_shortcodes))
+		), 250, '...')
+	);
 
 	require_once(HEADERF);
 	$DL_TEMPLATE = varset($DOWNLOAD_VIEW_TABLE_START, '').$DOWNLOAD_VIEW_TABLE.varset($DOWNLOAD_VIEW_TABLE_END, '');
@@ -521,14 +538,14 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 
 		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$id}, '{$report_add}'");
 
-		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
+		define("e_PAGETITLE", LAN_dl_47." / ".PAGE_NAME);
 		require_once(HEADERF);
 
 		$text = LAN_dl_48."<br /><br /><a href='".e_BASE."download.php?view.".$download_id."'>".LAN_dl_49."</a";
 		$ns->tablerender(LAN_dl_50, $text);
 
 	} else {
-		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_51." ".$download_name);
+		define("e_PAGETITLE", LAN_dl_51." ".$download_name." / ".PAGE_NAME);
 		require_once(HEADERF);
 
 		$text = "<form action='".e_SELF."?report.{$download_id}' method='post'>
@@ -612,7 +629,7 @@ if($action == "mirror")
 		$download_mirror_start = $tp->simpleParse($DOWNLOAD_MIRROR_START);
 //		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
 		$download_mirror_end = $tp->simpleParse($DOWNLOAD_MIRROR_END);
-		
+
 		$text = $download_mirror_start.$download_mirror.$download_mirror_end;
 
 		if($DOWNLOAD_MIRROR_RENDERPLAIN) {
@@ -688,6 +705,7 @@ function parse_download_cat_parent_table($row)
 
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_PARENT_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_PARENT_TABLE);
 
+	$tVars['DOWNLOAD_CAT_MAIN_ID'] = '';
 	$tVars['DOWNLOAD_CAT_MAIN_ICON'] = '';
 	$tVars['DOWNLOAD_CAT_MAIN_NAME'] = '';
 	$tVars['DOWNLOAD_CAT_MAIN_DESCRIPTION'] = '';
@@ -698,6 +716,7 @@ function parse_download_cat_parent_table($row)
 		{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 		}
+		$tVars['DOWNLOAD_CAT_MAIN_ID'] = $row['download_category_id'];
 		$tVars['DOWNLOAD_CAT_MAIN_ICON'] = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float: left' />" : "&nbsp;");
 		$tVars['DOWNLOAD_CAT_MAIN_NAME'] = $tp->toHTML($download_category_name,FALSE,'TITLE');
 		$tVars['DOWNLOAD_CAT_MAIN_DESCRIPTION'] = $tp->toHTML($row['download_category_description'],TRUE,'DESCRIPTION');
@@ -735,6 +754,7 @@ function parse_download_cat_child_table($row)
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_CHILD_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_CHILD_TABLE);
 
+	$tVars['DOWNLOAD_CAT_SUB_ID'] = $row['download_category_id'];
 	$tVars['DOWNLOAD_CAT_SUB_ICON'] = get_cat_icons($row['download_category_icon'],$row['d_count']);
 	$tVars['DOWNLOAD_CAT_SUB_NEW_ICON'] = check_new_download($row['d_last_subs']);
 	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,'TITLE');

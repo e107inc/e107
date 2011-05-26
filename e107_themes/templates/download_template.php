@@ -213,7 +213,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 
 // ##### VIEW TABLE -------------------------------------------------------------------------------
 
-$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+$DL_VIEW_PAGETITLE = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".PAGE_NAME;
 $DL_VIEW_CAPTION = "{DOWNLOAD_VIEW_CAPTION}";
 
 if(!isset($DL_VIEW_NEXTPREV))
