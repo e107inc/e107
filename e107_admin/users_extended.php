@@ -49,7 +49,7 @@ $cal = new DHTML_Calendar(true);
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0]; // must be set before auth.php is loaded. 
+	$action = $tmp[0]; // must be set before auth.php is loaded.
 	$sub_action = varset($tmp[1],'');
 	$id = varset($tmp[2],0);
 	unset($tmp);
@@ -156,14 +156,14 @@ if (isset($_POST['update_field']))
 
 if (isset($_POST['update_category']))
 {
-	$name = trim($tp->toHTML($_POST['user_field']));
+	$name = trim($tp->toDB($_POST['user_field']));
 	admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
 }
 
 
 if (isset($_POST['add_category']))
 {
-	$name = $tp->toHTML($_POST['user_field']);
+	$name = $tp->toDB($_POST['user_field']);
 	admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
 }
 
