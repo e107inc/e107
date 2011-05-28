@@ -31,6 +31,14 @@ $logVals = urldecode(base64_decode($_GET['lv']));
 parse_str($logVals, $vals);
 
 
+// We MUST have a timezone set in PHP >= 5.3. This should work for PHP >= 5.1:
+if (function_exists('date_default_timezone_get'))
+{
+// Just set a default - it should default to UTC if no timezone set
+	date_default_timezone_set(@date_default_timezone_get());
+}
+
+
 header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
