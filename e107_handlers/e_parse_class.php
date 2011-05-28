@@ -601,10 +601,23 @@ class e_parse
 					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
 				}
 			}
+			$s = preg_replace('#(?:onmouse.+?|onclick)\s*?\=#', '[sanitised]$0[/sanitised]', $s);
+			$s = preg_replace_callback('#base64([,\(])(.+?)([\)\'\"])#mis', array($this, 'proc64'), $s);
 			$ans .= $s;
 		}
 		return $ans;
 	}
+
+
+	/**
+	 * Check base-64 encoded code
+	 */
+	private function proc64($match)
+	{
+		$decode = base64_decode($match[2]);
+		return 'base64'.$match[1].base64_encode($this->dataFilter($decode)).$match[3];
+	}
+
 
 
 	private function modTag($match)
