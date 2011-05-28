@@ -1139,14 +1139,15 @@ function show_content_score(){
 }
 
 // ##### CONTENT ITEM ------------------------------------------
-function show_content_item(){
+function show_content_item()
+{
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 		global $CONTENT_CONTENT_TABLE_PREV_PAGE, $CONTENT_CONTENT_TABLE_NEXT_PAGE;
 
 		//if we get here through the rated auto-redirect
 		//we need to delete cache and redirect to the normal item url
-		if($qs[2]=='rated' || (is_numeric($qs[2]) && $qs[3]=='rated') )
+		if (isset($qs[2]) && ($qs[2]=='rated' || (is_numeric($qs[2]) && $qs[3]=='rated') ))
 		{
 			$e107cache->clear("$plugintable.content.$qs[1]");
 			$e107cache->clear("comment.$plugintable.$qs[1]");
@@ -1209,7 +1210,15 @@ function show_content_item(){
 				}
 			}
 
-			if(!isset($qs[2])){ $cacheid = 1; }else{ $cacheid = $qs[2]; }
+			if(!isset($qs[2]) || ($qs[2] = intval($qs[2])) <= 0)
+			{ 
+				$cacheid = 1; 
+				$qs[2] = 1;			// Force first page
+			}
+			else
+			{ 
+				$cacheid = $qs[2]; 
+			}
 			$cachestr = "$plugintable.content.$qs[1].$cacheid";
 			$cachecheck = CachePre($cachestr);
 			if($cachecheck)
@@ -1260,8 +1269,16 @@ function show_content_item(){
 
 					$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
 					$options = "";
-					for ($i=0; $i < count($pages); $i++) {
-						if(!isset($qs[2])){ $idp = 1; }else{ $idp = $qs[2]; }
+					for ($i=0; $i < count($pages); $i++) 
+					{
+						if(!isset($qs[2]))
+						{ 
+							$idp = 1; 
+						}
+						else
+						{ 
+							$idp = $qs[2]; 
+						}
 						if($idp == $i+1){ $pre = CONTENT_LAN_92; }else{ $pre = ""; }
 						if($matches[0][$i] == "[newpage]"){
 							$pagename[$i] = CONTENT_LAN_78;
