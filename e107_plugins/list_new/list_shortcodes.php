@@ -24,8 +24,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-register_shortcode('list_shortcodes', true);
-initShortcodeClass('list_shortcodes');
+//register_shortcode('list_shortcodes', true);
+//initShortcodeClass('list_shortcodes');
 
 class list_shortcodes
 {
@@ -37,16 +37,19 @@ class list_shortcodes
 	function list_shortcodes()
 	{
 		$this->e107 = e107::getInstance();
+		$this->rc = '';
 	}
 
+/*
 	function load_globals()
 	{
 		global $rc;
 		$e107 = e107::getInstance();
-		$e107->tp->e_sc->scClasses['list_shortcodes']->rc = $rc;
-		$e107->tp->e_sc->scClasses['list_shortcodes']->row = $rc->row;
-		$e107->tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
+//		$e107->tp->e_sc->scClasses['list_shortcodes']->rc = $rc;
+//		$e107->tp->e_sc->scClasses['list_shortcodes']->row = $rc->row;
+//		$e107->tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
 	}
+*/
 
 	function sc_list_date()
 	{

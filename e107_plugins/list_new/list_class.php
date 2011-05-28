@@ -36,6 +36,7 @@ class listclass
 	var $content_name;
 	var $list_pref;
 	var $mode;
+	var $shortcodes = FALSE;
 
 	/**
 	 * constructor
@@ -67,7 +68,9 @@ class listclass
 
 		//shortcodes
 		require_once($this->plugin_dir."list_shortcodes.php");
-		$this->shortcodes = $list_shortcodes;
+//		$this->shortcodes = $list_shortcodes;
+		$this->shortcodes = new list_shortcodes();
+		$this->shortcodes->rc = $this;
 
 		if($mode=='admin')
 		{
@@ -89,7 +92,7 @@ class listclass
 	function parseTemplate($template)
 	{
 		//for each call to the template, provide the correct data set through load_globals
-		list_shortcodes::load_globals();
+		//list_shortcodes::load_globals();
 		return $this->e107->tp->parseTemplate($this->template[$template], true, $this->shortcodes);
 	}
 
@@ -415,6 +418,8 @@ class listclass
 
 		//load e_list file
 		$this->data = $this->load_elist();
+		
+		//$this->shortcodes->rc->data = $this->data;
 
 		//set record variables
 		$this->row = array();
@@ -467,6 +472,7 @@ class listclass
 		{
 			foreach($this->data['records'] as $this->row)
 			{
+				$this->shortcodes->row = $this->row;
 				//echo "parse: ".$area."<br />";
 				$text .= $this->parseTemplate($area);
 			}
@@ -475,7 +481,8 @@ class listclass
 		{
 			if($this->list_pref[$this->mode."_showempty"])
 			{
-				$this->row['heading'] = $this->data['records'];
+//				$this->row['heading'] = $this->data['records'];
+				$this->shortcodes->row['heading'] = $this->data['records'];
 				//echo "parse: ".$area."<br />";
 				$text .= $this->parseTemplate($area);
 			}
@@ -561,6 +568,22 @@ class listclass
 			else
 			{
 				$listArray = $class->getListData();
+				if (e107::getPref('profanity_filter'))
+				{
+					$parser = e107::getParser();
+					if (!is_object($parser->e_pf))
+					{
+						require_once(e_HANDLER.'profanity_filter.php');
+						$parser->e_pf = new e_profanityFilter;
+					}
+					foreach ($listArray as $k => $v)
+					{
+						if (isset($v['heading']))
+						{
+							$listArray[$k]['heading'] = $parser->e_pf->filterProfanities($v['heading']);
+						}
+					}
+				}
 			}
 		}
 		return $listArray;
@@ -749,6 +772,7 @@ class listclass
 		if(!isset($this->list_pref))
 		{
 			$this->list_pref = $this->getListPrefs();
+			$this->shortcodes->list_pref = $this->list_pref;
 		}
 
 		//get sections
@@ -806,11 +830,13 @@ class listclass
 		if(!isset($this->list_pref))
 		{
 			$this->list_pref = $this->getListPrefs();
+			$this->shortcodes->list_pref = $this->list_pref;
 		}
 
 		//get sections
 		$this->sections = $this->prepareSection($this->mode);
 		$arr = $this->prepareSectionArray($this->mode);
+		
 
 		//display the sections
 		$text = '';
