@@ -362,6 +362,16 @@ class listclass {
 		$start = "";
 		$end = "";
 
+		// profanity filter
+        if ($pref['profanity_filter']) 
+		{
+            if (!is_object($tp->e_pf)) 
+			{
+                require_once(e_HANDLER.'profanity_filter.php');
+                $tp->e_pf = new e_profanityFilter;
+            }
+        }
+
 		$LIST_RECENT_ID = 'list_'.$mode.'_'.$arr[9];
 
 		$LIST_ICON = "";
@@ -376,10 +386,18 @@ class listclass {
 
 		if(is_array($LIST_DATA))
 		{			//if it is an array, data exists and data is not empty
+		//print_a($LIST_DATA);
 			for($i=0; $i<count($LIST_DATA[$mode]); $i++)
 			{
 				$LIST_ICON		= $LIST_DATA[$mode][$i][0];
-				$LIST_HEADING	= $LIST_DATA[$mode][$i][1];
+				if ($pref['profanity_filter']) 
+				{
+					$LIST_HEADING = $tp->e_pf->filterProfanities($LIST_DATA[$mode][$i][1]);
+				}
+				else
+				{
+					$LIST_HEADING	= $LIST_DATA[$mode][$i][1];
+				}
 				$LIST_AUTHOR	= $LIST_DATA[$mode][$i][2];
 				$LIST_CATEGORY	= $LIST_DATA[$mode][$i][3];
 				$LIST_DATE		= $LIST_DATA[$mode][$i][4];
