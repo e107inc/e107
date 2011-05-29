@@ -34,8 +34,8 @@ if($mode == "new_page" || $mode == "new_menu" )
 	FROM #forum_t AS t
 	LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 	LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-	LEFT JOIN #user AS u ON t.thread_user = u.user_id
-	LEFT JOIN #user AS lp ON tp.thread_lastuser = lp.user_id
+	LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+	LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
 	WHERE f.forum_class REGEXP '".e_CLASS_REGEXP."'
 	AND t.thread_datestamp > $lvisit
 	ORDER BY t.thread_datestamp DESC LIMIT 0,".intval($arr[7]);
@@ -46,8 +46,8 @@ else
 	SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
 	FROM #forum_t AS t
 	LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-	LEFT JOIN #user AS u ON t.thread_user = u.user_id
-	LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
+	LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+	LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
 	WHERE t.thread_parent=0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."'
 	ORDER BY t.thread_lastpost DESC LIMIT 0,".intval($arr[7]);
 }
@@ -65,10 +65,11 @@ else
 	{
 		extract($forumInfo);
 
-		//last user
+		//last poster
 		$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 		$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
-		if (strstr($thread_lastuser, chr(1))) {
+		if (strstr($thread_lastuser, chr(1))) 
+		{
 			$tmp = explode(chr(1), $thread_lastuser);
 			$r_name = $tmp[0];
 		}
@@ -79,25 +80,19 @@ else
 		$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
 		$thread_user = $u_id;
 
-		if (isset($thread_anon)) 
-		{
-			$tmp = explode(chr(1), $thread_anon);
-			$thread_user = $tmp[0];
-			$thread_user_ip = $tmp[1];
-		}
 
 		$gen = new convert;
 		$r_datestamp = $gen->convert_date($thread_lastpost, "short");
 		if($thread_total_replies)
 		{
-			$LASTPOST = "";
-			if($lp_name)
+			$LASTPOST = '';
+			if($r_name)
 			{
-				$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+				$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$r_name</a>";
 			}
 			else
 			{
-				if($thread_lastuser{0} == "0")
+				if (substr($thread_lastuser, 0, 1) == '0')
 				{
 					$LASTPOST = substr($thread_lastuser, 2);
 				}
@@ -111,7 +106,7 @@ else
 		else
 		{
 			$LASTPOST		= " - ";
-			$LASTPOSTDATE	= "";
+			$LASTPOSTDATE	= '';
 		}
 
 		if($parent_name == "")
@@ -128,11 +123,11 @@ else
 			$lnk = $thread_id;
 		}
 		$HEADING	= "<a href='".$path."forum_viewtopic.php?$lnk' title='".$parent_name."'>".$rowheading."</a>";
-		$AUTHOR		= ($arr[3] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
+		$AUTHOR		= ($arr[3] ? ( "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
 		$CATEGORY	= ($arr[4] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 		$DATE		= ($arr[5] ? $this -> getListDate($thread_datestamp, $mode) : "");
 		$ICON		= $bullet;
-		$VIEWS		= $thread_views;
+		$VIEWS		= $thread_views ? $thread_views : $tviews;		// Cound seems to vary depending on whether there's been a reply to thread
 		$REPLIES	= $thread_total_replies;
 		if($thread_total_replies)
 		{
