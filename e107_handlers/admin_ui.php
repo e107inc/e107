@@ -3820,7 +3820,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// default tree model
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
-			->getFieldIdName($this->pid)
+			->setFieldIdName($this->pid)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
 
