@@ -47,7 +47,7 @@ $eplug_icon_small = $eplug_folder."/images/stats_16.png";
 $eplug_caption = ADSTAT_L33;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
-$eplug_prefTable = "menu_pref";
+//$eplug_prefTable = "menu_pref";
 $eplug_prefs = array(
 		"statActivate" => 0, 
 		"statUserclass" => "", 
