@@ -601,7 +601,7 @@ class e_parse
 					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
 				}
 			}
-			$s = preg_replace('#(?:onmouse.+?|onclick)\s*?\=#', '[sanitised]$0[/sanitised]', $s);
+			$s = preg_replace('#(?:onmouse.+?|onclick|onfocus)\s*?\=#', '[sanitised]$0[/sanitised]', $s);
 			$s = preg_replace_callback('#base64([,\(])(.+?)([\)\'\"])#mis', array($this, 'proc64'), $s);
 			$ans .= $s;
 		}
