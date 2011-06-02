@@ -236,6 +236,8 @@ if (isset($_POST['updateoptions']))
 	$pref['forum_hilightsticky'] = $_POST['forum_hilightsticky'];
 	$pref['forum_maxwidth'] = $_POST['forum_maxwidth'];
 	$pref['forum_linkimg'] = $_POST['forum_linkimg'];
+	$pref['forum_posts_sig'] = $_POST['forum_posts_sig'];
+	$pref['forum_class_sig'] = $_POST['forum_class_sig'];
 	save_prefs();
 	$forum->show_message(FORLAN_10);
 }
@@ -1126,6 +1128,16 @@ class forum
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_132."<br /><span class='smalltext'>".FORLAN_133."</span></td>
 		<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_hilightsticky'] ? "<input type='checkbox' name='forum_hilightsticky' value='1' checked='checked' />" : "<input type='checkbox' name='forum_hilightsticky' value='1' />")."</td>
+		</tr>
+
+		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_67."<br /><span class='smalltext'>".FORLAN_68."</span></td>
+		<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' name='forum_posts_sig' size='3' value='".$pref['forum_posts_sig']."' maxlength='3' /></td>
+		</tr>
+
+		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_69."<br /></td>
+		<td style='width:25%;text-align:center' class='forumheader3' >" . r_userclass("forum_class_sig", $pref['forum_class_sig'], 'off', 'nobody,member,admin,classes') . "</td>
 		</tr>
 
 		<tr>

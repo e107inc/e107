@@ -75,6 +75,9 @@ define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
 define("FORLAN_66", "Poll plugin not installed");
+define("FORLAN_67", "Posts to activate signature:");
+define("FORLAN_68", "The number of posts needed to allow someone's signature to show on the forums. (0 means none)");
+define("FORLAN_69", "Class whose signature is displayed in forums:");
 
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
