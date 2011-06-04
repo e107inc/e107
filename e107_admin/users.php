@@ -20,15 +20,15 @@
 if(isset($_POST['useraction']) || isset($_POST['adduser']) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
-	unset($_POST['e-token']);
+	$_POST['e-token'] = '';
 }
 
 require_once("../class2.php");
 
-if (!getperms("4"))
+if (!getperms('4'))
 {
-  header("location:".e_BASE."index.php");
-  exit;
+	header("location:".e_BASE."index.php");
+	exit;
 }
 
 
