@@ -37,5 +37,8 @@ define("UCSLAN_23", "Users in this class ...");
 
 define("UCSLAN_24", "Who can manage class");
 
+define("UCSLAN_25", "ID");
+define("UCSLAN_26", "Username");
+define("UCSLAN_27", "Return");
 
 ?>

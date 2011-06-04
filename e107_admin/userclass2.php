@@ -50,6 +50,37 @@ function check_allowed($class_id)
 	}
 }
 
+if (isset($_POST['disp']))
+{
+	$class_id = intval($_POST['userclass_id']);
+	check_allowed($class_id);
+	$class_name = $tp->toDB($_POST['userclass_name']);
+	$text = "<br />
+		<div style='text-align:center'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<tr>
+			<td class='fcaption'>".UCSLAN_25."</td>
+			<td class='fcaption'>".UCSLAN_26."</td>
+		</tr>";
+	if ($sql->db_Select('user', 'user_id, user_name', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$') ORDER BY user_id"))
+	{
+		while ($row = $sql->db_Fetch())
+		{
+			$text .= "
+		<tr>
+			<td class='forumheader3'><a href='".SITEURL."user.php?id.".$row['user_id']."' alt=''>".$row['user_id']."</a></td>
+			<td class='forumheader3'>".$row['user_name']."</td>
+		</tr>";
+		}
+	}
+	$text .= "
+		</table>
+		<br /><a href='".e_ADMIN."userclass2.php' alt=''><span class='button'>&nbsp;".UCSLAN_27."&nbsp;</span></a>
+		</div>";
+	$ns->tablerender($class_name, $text);
+	exit;
+}
+
 if (strstr(e_QUERY, 'clear'))
 {
 	$tmp = explode('.', e_QUERY);
@@ -346,9 +377,17 @@ $text .= "
 	<td class='fcaption'>".UCSLAN_12."</td>
 	<td class='fcaption'>".UCSLAN_24."</td>
 	<td class='fcaption'>".UCSLAN_13."</td>
+	<td class='fcaption' style='text-align:center;'>#</td>
 	</tr>
 	";
 
+function users_in_class($p_class_list)
+{
+	$sql_tmp = new db;
+	$class_count = $sql_tmp->db_Count("user", "(*)", "WHERE user_class = '{$p_class_list}' OR user_class REGEXP('^{$p_class_list},') OR user_class REGEXP(',{$p_class_list},') OR user_class REGEXP(',{$p_class_list}$')");	
+	return $class_count;
+}
+	
 if ($class_total == "0")
 {
 	$text .= "<tr><td colspan='3'>".UCSLAN_7."</td></tr>";
@@ -364,12 +403,23 @@ else
 			{
 				$rEditClass = e_UC_ADMIN;
 			}
-
+			$users_in_class = users_in_class($row['userclass_id']);
+			$disp_form = 0;
+			if($users_in_class > 0)
+			{	// Only display a link if there is something to show
+				$disp_form = "<form method='post' action='".e_SELF."' id='classdisp'>
+								<input type='hidden' name='userclass_id' value='".$row['userclass_id']."' />
+								<input type='hidden' name='userclass_name' value='".$row['userclass_name']."' />
+								<input class='button' type='submit' name='disp' value='".$users_in_class."' />
+								<input type='hidden' name='e-token' value='".e_TOKEN."' />
+							  </form>";
+			}
 			$text .= "
 			<tr>
 			<td class='forumheader3'>{$row['userclass_name']}</td>
 			<td class='forumheader3'>".r_userclass_name($rEditClass)."</td>
 			<td class='forumheader3'>{$row['userclass_description']}</td>
+			<td class='forumheader3' style='text-align:center;'>".$disp_form."</td>
 			</tr>";
 		}
 	}
