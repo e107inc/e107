@@ -227,7 +227,7 @@ if (isset($_POST['submit'])) {
 
 		$text .="
  		<tr>
-			<td class='forumheader3' colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
+			<td class='forumheader3' colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE, 'E_BODY', '', FALSE))."</td>
 		</tr>
 
 	</table>

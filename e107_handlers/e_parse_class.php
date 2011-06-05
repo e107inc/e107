@@ -93,6 +93,17 @@ class e_parse
 						'constants'=>TRUE
 						),
 
+				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				'e_body' =>
+					array(
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE,'emotes_off'=>TRUE, 'link_click' => FALSE
+						),
+				// text is text-only 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				'e_body_plain' =>
+					array(
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE,'emotes_off'=>TRUE, 'link_click' => FALSE, 'retain_nl' => TRUE, 'no_tags' => TRUE
+						),
+
 				'linktext' =>			// text is the 'content' of a link (A tag, etc)
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'no_make_clickable'=>TRUE,'emotes_off'=>TRUE,'no_hook'=>TRUE,
@@ -888,7 +899,18 @@ class e_parse
 	}
 
 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) {
+
+
+
+	/**
+	 *		HTML Parser function - converts DB-stored text for display
+	 *
+	 *	@param integer|boolean $wrap - if false, no word wrap is performed
+	 *				- if numeric, value used as maximum length of a word
+	 *				- if non-boolean evaluating to false, set to configured value of word wrap for pages
+	 */
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) 
+	{
 		if ($text == '')
 		{
 			return $text;
@@ -977,7 +999,7 @@ class e_parse
 		}
 
 
-		if(!$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
+		if (($wrap !== FALSE) && !$wrap && $pref['main_wordwrap']) $wrap = $pref['main_wordwrap'];
         $text = " ".$text;
 
 
@@ -1071,7 +1093,7 @@ class e_parse
 		// replace all {e_XXX} constants with their e107 value AFTER the bbcodes have been parsed.
 		if ($opts['constants'])
 		{
-		   	$text = $this->replaceConstants($text);
+		   	$text = $this->replaceConstants($text, $opts['constants']);
 		}
 
 		// profanity filter
@@ -1202,12 +1224,12 @@ class e_parse
 	 * '' (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param object $all [optional] if TRUE, then
 	 * when $nonrelative is "full" or TRUE, USERID is also replaced...
-	 * when $nonrelative is "" (default), ALL other e107 constants are replaced
+	 * when $nonrelative is "" (default) or FALSE, ALL other e107 constants are replaced
 	 * @return string
 	 */
 	function replaceConstants($text, $nonrelative = "", $all = false)
 	{
-		if($nonrelative != "")
+		if (($nonrelative != "") && ($nonrelative !== FALSE))
 		{
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
 			$replace_relative = array("",
