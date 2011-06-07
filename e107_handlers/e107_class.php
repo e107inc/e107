@@ -2358,8 +2358,12 @@ class e107
 
 		// login/signup
 		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
-		define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
-
+		
+		if(!defined('e_LOGIN'))
+		{
+			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));	
+		}
+		
 		return $this;
 	}
 

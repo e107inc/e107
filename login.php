@@ -20,7 +20,7 @@
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-if (USER)
+if (USER || e_LOGIN !='login.php') // Disable page if user logged in, or some custom e_LOGIN value is used. 
 {
 	header('location:'.e_BASE.'index.php');      
 	exit();
