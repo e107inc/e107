@@ -62,11 +62,11 @@ class db_verify
 	
 	function __construct()
 	{
-		
-		
+				
 		$ns = e107::getRender();
-		
 		$pref = e107::getPref();
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
 			
 		$core_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
 		$this->tables['core'] = $this->getTables($core_data);
@@ -147,8 +147,27 @@ class db_verify
 			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
 						
-			// echo "<h2>".$field."</h2><table border='1'><tr><td><pre>".print_r($fileIndexData,TRUE)."</pre></td>
-			  // <td><pre>".print_r($sqlIndexData,TRUE)."</pre></td></tr></table>";
+		//	$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
+		//	$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
+			
+			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Field Text
+			$debugB = $sqlDataArr['data'][0];	// Extracted Field Text	
+						
+			$debug = "<table border='1'>
+			<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl."</td>
+			<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
+			</tr>
+			<tr><td><pre>".$debugA."</pre></td>
+			  <td><pre>".$debugB."</pre></td></tr></table>";
+			  
+			  
+			  
+			
+			$mes = e107::getMessage();
+			$mes->add($debug,E_MESSAGE_DEBUG);
+			
+			
+			
 			
 			
 			// Check Field Data. 
@@ -162,6 +181,7 @@ class db_verify
 				{
 					// echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
 				 // <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
+					
 					$this->errors[$tbl]['_status'] = 'error'; // table status
 					$this->results[$tbl][$field]['_status'] = 'missing_field';	 // field status					
 					$this->results[$tbl][$field]['_valid'] = $info;
@@ -554,8 +574,8 @@ class db_verify
 
 	function getFields($data)
 	{
-		
-		$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
+		$regex = "/`?([\w]*)`?\s?(int|varchar|tinyint|smallint|text|char|tinyint)\s?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?,/i";
+	//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
 		preg_match_all($regex,$data,$m);	
 		
 		$ret = array();
@@ -577,7 +597,7 @@ class db_verify
 	
 	function getIndex($data)
 	{
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
 		
 		$ret = array();
