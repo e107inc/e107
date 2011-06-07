@@ -60,10 +60,10 @@ class media_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
-	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import. 
+		'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
 		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
-	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic. 
+	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
 	//	'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 
@@ -239,11 +239,11 @@ class media_admin_ui extends e_admin_ui
       		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParams' => 'path={e_MEDIA}',	'width' => '110px','readonly'=>false),
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
 
-		// Upload should be managed completely separately via upload-handler. 
-       	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),
+		// Upload should be managed completely separately via upload-handler.
+       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
-         	// media_description is type = textarea until bbarea can be reduced to not include youtube etc 
+         	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
          	'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
@@ -298,7 +298,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			$this->batchImport();
 		}
-		
+
 		if($this->getQuery('iframe'))
 		{
 			$this->getResponse()->setIframeMod();
@@ -363,13 +363,13 @@ class media_admin_ui extends e_admin_ui
 		// return data to be merged with posted model data
 		return $this->observeUploaded($new_data);
 	}
-	
+
 	public function mediaData($sc_path)
 	{
 		if(!$sc_path) return array();
 		$path = e107::getParser()->replaceConstants($sc_path);
 		$info = e107::getFile()->get_file_info($path);
-		return array( 
+		return array(
 			'media_type'		=> $info['mime'],
 			'media_datestamp'	=> time(),
 			'media_url'			=> e107::getParser()->createConstants($path, 'rel'),
@@ -387,7 +387,7 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 
 		$mes = e107::getMessage();
-			
+
 		if(vartrue($_FILES['file_userfile']))
 		{
 			$pref['upload_storagetype'] = "1";
@@ -400,17 +400,17 @@ class media_admin_ui extends e_admin_ui
 					$mes->add($upload['message'], E_MESSAGE_ERROR);
 					return FALSE;
 				}
-	
+
 				if(!$typePath = $this->getPath($upload['type']))
 				{
 					return FALSE;
 				}
-	
+
 				$oldpath = 'temp/'.$upload['name'];
 				$newpath = $typePath.'/'.$upload['name'];
-	
+
 				//$info = $fl->get_file_info(e_MEDIA.$oldpath);
-	
+
 				/*$upload_data = array( // not saved if 'noedit' is active.
 					'media_type'		=> $upload['type'],
 					'media_datestamp'	=> time(),
@@ -421,7 +421,7 @@ class media_admin_ui extends e_admin_ui
 					'media_tags'		=> '',
 					'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
 				);*/
-	
+
 				// only one upload? Not sure what's the idea here
 				// we are currently creating one media item
 				if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
@@ -429,25 +429,25 @@ class media_admin_ui extends e_admin_ui
 					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 					return FALSE;
 				};
-				
+
 				$img_data = $this->mediaData('{e_MEDIA}'.$newpath);
 				if(!varset($new_data['media_name']))
 				{
 					$img_data['media_name'] = $upload['name'];
 				}
-			}	
+			}
 		}
 		else
 		{
-				
+
 			$img_data = $this->mediaData($new_data['media_url']);
-	
-		
+
+
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
 				return FALSE;
 			}
-			
+
 			$fname = basename($new_data['media_url']);
 			// move to the required place
 			if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
@@ -462,13 +462,13 @@ class media_admin_ui extends e_admin_ui
 				}
 				$img_data['media_url'] = $tp->createConstants($newpath, 'rel');
 			}
-			
+
 			if(!varset($new_data['media_name']))
 			{
 				$img_data['media_name'] = basename($new_data['media_url']);
 			}
 		}
-		
+
 		return $img_data;
 	}
 
@@ -600,19 +600,19 @@ class media_admin_ui extends e_admin_ui
 		foreach($_POST['batch_selected'] as $file)
 		{
 			$oldpath = e_MEDIA."temp/".$file;
-					
+
 			$f = $fl->get_file_info($oldpath);
-			
+
 			if(!$f['mime'])
 			{
-				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);	
+				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);
 			}
-			
-			
+
+
 			$newpath = $this->getPath($f['mime']).'/'.$file;
-			
+
 			// echo "oldpath=".$file;
-// 			
+//
 			// echo "<br />newpath=".$tp->createConstants($newpath,'rel');
 			// continue;
 			$f['fname'] = $file;
@@ -671,7 +671,7 @@ class media_admin_ui extends e_admin_ui
 		if($id) return (isset($this->cats[$id]) ? $this->cats[$id] : 0);
 		return $this->cats;
 	}
-	
+
 }
 
 

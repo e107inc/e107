@@ -137,13 +137,13 @@ class e_form
 
 		return $ret;
 	}
-	
+
 	public function mediaUrl($category = '', $label = '')
 	{
 		if($category) $category = '&amp;for='.$category;
 		if(!$label) $label = ' Upload an image or file';
 		$ret = "<a rel='external' class='e-dialog' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create{$category}'>".$label."</a>";
-		
+
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
 			e107::getJs()->requireCoreLib('core/admin.js')
@@ -178,7 +178,7 @@ class e_form
 	 * - height: preview height in pixels
 	 * Additional usage is <code>$sc_parameters = 'news'</code>
 	 * where
-	 * Full list can be found in shortcodes/imageselector.php 
+	 * Full list can be found in shortcodes/imageselector.php
 	 * @param string $name input name
 	 * @param string $default default value
 	 * @param string $label custom label
@@ -190,7 +190,7 @@ class e_form
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if(is_string($sc_parameters)) 
+		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
@@ -244,7 +244,7 @@ class e_form
 		}*/
 		// ----------------
 
-		
+
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
 		$parms .= '&media='.varset($sc_parameters['media']);
@@ -312,7 +312,7 @@ class e_form
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
-		
+
 		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
 
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
@@ -436,18 +436,25 @@ class e_form
 			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
 			$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
 		}
-		
+
 		$toggleID = "bbcode-panel-".$help_tagid;
 		$tinyMceID = str_replace("_","-",$name);
-		
+
 		$ret = "
 		<div class='bbarea {$size}'>
 			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
-			<div><a href='#' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
+			<div><a href='#' class='e-wysiwyg-switch' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
 			<div class='field-spacer'><!-- --></div>
 			{$bbbar}
 		</div>
 		";
+		// Quick fix - hide TinyMCE links if not installed, dups are handled by JS handler
+		e107::getJs()->footerInline("
+				if(typeof tinyMCE === 'undefined')
+				{
+					\$$('a.e-wysiwyg-switch').invoke('hide');
+				}
+		");
 
 		return $ret;
 	}
@@ -458,7 +465,7 @@ class e_form
 	* parm $value
 	* parm $checked
 	* @return void
-	* @author  
+	* @author
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
@@ -562,7 +569,7 @@ class e_form
 
 	function select_open($name, $options = array())
 	{
-		$options = $this->format_options('select', $name, $options); 
+		$options = $this->format_options('select', $name, $options);
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
@@ -583,7 +590,7 @@ class e_form
 		{
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
-			
+
 		if($options['multiple'] && strpos($name, '[') === false)
 		{
 			$name = $name.'[]';
@@ -705,7 +712,7 @@ class e_form
 	function submit_image($name, $value, $image, $title='', $options = array())
 	{
 		$options = $this->format_options('submit_image', $name, $options);
-		switch ($image) 
+		switch ($image)
 		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
@@ -716,12 +723,12 @@ class e_form
 				$image = ADMIN_DELETE_ICON_PATH;
 				$options['class'] = vartrue($options['class'] , 'action delete');
 			break;
-			
+
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
 				$options['class'] = vartrue($options['class'] , 'action delete');
 			break;
-			
+
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
 				$options['class'] = vartrue($options['class'] , 'action delete');
@@ -813,7 +820,7 @@ class e_form
 				case 'readonly':
 					if($optval) $ret .= " readonly='readonly'";
 					break;
-					
+
 				case 'multiple':
 					if($optval) $ret .= " multiple='multiple'";
 					break;
@@ -1178,7 +1185,7 @@ class e_form
 				}
 				elseif(isset($fieldvalues['user_id'])) // Default
 				{
-					$data['readParms']['__idval'] = $fieldvalues['user_id'];	
+					$data['readParms']['__idval'] = $fieldvalues['user_id'];
 				}
 
 				if(isset($data['readParms']['nameField']))
@@ -1187,10 +1194,10 @@ class e_form
 				}
 				elseif(isset($fieldvalues['user_name'])) // Default
 				{
-					$data['readParms']['__nameval'] = $fieldvalues['user_name'];	
+					$data['readParms']['__nameval'] = $fieldvalues['user_name'];
 				}
-				
-			
+
+
 			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
@@ -1228,7 +1235,7 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
-		
+
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
@@ -1240,23 +1247,23 @@ class e_form
 		switch($field) // special fields
 		{
 			case 'options':
-				
-				if($attributes['type']=='method') // Allow override with 'options' function. 
+
+				if($attributes['type']=='method') // Allow override with 'options' function.
 				{
-					
+
 					$attributes['mode'] = "read";
 					return $this->options($field, $value, $attributes, $id);
-				
+
 				}
-				
+
 				if(!$value)
 				{
 					parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 					// keep other vars in tact
 					$query['action'] = 'edit';
 					$query['id'] = $id;
-					
-	
+
+
 
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
@@ -1290,7 +1297,7 @@ class e_form
 				return $value;
 			break;
 		}
-		
+
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1328,28 +1335,28 @@ class e_form
 				$value = $pre.vartrue($tmp[$value]).$post;
 			break;
 
-			case 'dropdown': 
+			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 					break;
 				}
-			
+
 				// NEW - multiple (array values) support
 				// FIXME - add support for multi-level arrays (option groups)
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				$wparms = $attributes['writeParms'];
 				if(!is_array(varset($wparms['__options']))) parse_str($wparms['__options'], $wparms['__options']);
-				
+
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
-				
+
 				if($opts['multiple'])
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
-					foreach ($value as $v) 
+					foreach ($value as $v)
 					{
 						if(isset($wparms[$v])) $ret[] = $wparms[$v];
 					}
@@ -1363,14 +1370,14 @@ class e_form
 				}
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 			break;
-			
+
 			case 'radio':
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 					break;
 				}
-				
+
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 			break;
@@ -1389,6 +1396,7 @@ class e_form
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
+
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;
 
@@ -1499,10 +1507,10 @@ class e_form
 				// Dirty, but the only way for now
 				$id = 0;
 				$ttl = '';
-				
-				//Defaults to user_id and user_name (when present) and when idField and nameField are not present. 
-				
-				
+
+				//Defaults to user_id and user_name (when present) and when idField and nameField are not present.
+
+
 				// previously set - real parameters are idField && nameField
 				$id = vartrue($parms['__idval']);
 				if($value && !is_numeric($value))
@@ -1515,8 +1523,8 @@ class e_form
 					$id = $value;
 					$ttl = vartrue($parms['__nameval']);
 				}
-				
-				
+
+
 				if(vartrue($parms['link']) && $id && $ttl && is_numeric($id))
 				{
 					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($id)).'" title="Go to user profile">'.$ttl.'</a>';
@@ -1564,10 +1572,10 @@ class e_form
 			case 'hidden':
 				return (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 			break;
-			
+
 			case 'lanlist':
 				$options = e107::getLanguage()->getLanSelectArray();
-				
+
 				if($options) // FIXME - add support for multi-level arrays (option groups)
 				{
 					if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
@@ -1578,7 +1586,7 @@ class e_form
 					{
 						$ret = array();
 						$value = is_array($value) ? $value : explode(',', $value);
-						foreach ($value as $v) 
+						foreach ($value as $v)
 						{
 							if(isset($options[$v])) $ret[] = $options[$v];
 						}
@@ -1618,18 +1626,18 @@ class e_form
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array())
 	{
-		
+
 		$parms = vartrue($attributes['writeParms'], array());
 		$tp = e107::getParser();
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
-		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless. 
+		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
 		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])==2)) // quick fix (maybe 'noedit'=>'readonly'?)
-		{			
+		{
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
-		
+
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1824,7 +1832,8 @@ class e_form
 
 			case 'upload': //TODO - from method
 				// TODO uploadfile SC is now processing uploads as well (add it to admin UI), write/readParms have to be added (see uploadfile.php parms)
-				return $tp->parseTemplate("{UPLOADFILE=".(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles}");
+				$disbut = varset($parms['disable_button'], '0');
+				return $tp->parseTemplate("{UPLOADFILE=".(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles&disable_button={$disbut}}");
 			break;
 
 			case 'hidden':
@@ -1835,14 +1844,14 @@ class e_form
 			case 'lanlist':
 			case 'language':
 				$options = e107::getLanguage()->getLanSelectArray();
-				
+
 				$eloptions  = vartrue($parms['__options'], array());
 				if(!is_array($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 				return vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
 			break;
-			
+
 			default:
 				return $value;
 			break;
@@ -2084,7 +2093,7 @@ class e_form
 			{
 				$key = $att['field'];
 			}
-			
+
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
 			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
@@ -2122,7 +2131,7 @@ class e_form
 						$model_required[$key][] = varset($att['error']);
 					}
 				}
-				
+
 				if('hidden' === $att['type'])
 				{
 					parse_str(varset($att['writeParms']), $tmp);
@@ -2212,7 +2221,7 @@ class e_form
 		";
 		return $text;
 	}
-	
+
 	// JUST A DRAFT - generic renderForm solution
 	function renderForm($forms, $nocontainer = false)
 	{
@@ -2249,7 +2258,7 @@ class e_form
 		}
 		return $text;
 	}
-	
+
 	// JUST A DRAFT - generic renderFieldset solution, will be split to renderTable, renderCol/Row/Box etc
 	function renderFieldset($id, $fdata)
 	{
@@ -2259,10 +2268,10 @@ class e_form
 			$colgroup = "
 				<colgroup span='".count($fdata['table_colgroup'])."'>
 			";
-			foreach ($fdata['table_colgroup'] as $i => $colgr) 
+			foreach ($fdata['table_colgroup'] as $i => $colgr)
 			{
 				$colgroup .= "<col ";
-				foreach ($colgr as $attr => $v) 
+				foreach ($colgr as $attr => $v)
 				{
 					$colgroup .= "{$attr}='{$v}'";
 				}
@@ -2279,7 +2288,7 @@ class e_form
 				".vartrue($fdata['table_pre'])."
 
 		";
-					
+
 		if(vartrue($fdata['table_rows']) || vartrue($fdata['table_body']))
 		{
 			$text .= "
@@ -2290,7 +2299,7 @@ class e_form
 					</thead>
 					<tbody>
 			";
-		
+
 			if(vartrue($fdata['table_rows']))
 			{
 				foreach($fdata['table_rows'] as $index => $row)
@@ -2306,12 +2315,12 @@ class e_form
 			{
 				$text .= $fdata['table_body'];
 			}
-			
+
 			if(vartrue($fdata['table_note']))
 			{
 				$note = '<div class="form-note">'.$fdata['table_note'].'</div>';
 			}
-	
+
 			$text .= "
 						</tbody>
 					</table>
@@ -2319,7 +2328,7 @@ class e_form
 					".vartrue($fdata['table_post'])."
 			";
 		}
-		
+
 		$triggers = vartrue($fdata['triggers'], array());
 		if($triggers)
 		{
@@ -2328,9 +2337,9 @@ class e_form
 			";
 			foreach ($triggers as $trigger => $tdata)
 			{
-				if(is_string($tdata)) 
-				{ 
-					$text .= $tdata; 
+				if(is_string($tdata))
+				{
+					$text .= $tdata;
 					continue;
 				}
 				$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
