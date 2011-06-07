@@ -196,8 +196,8 @@ else
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
-{ 
-	 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE)); 
+{
+	 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
 }
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
@@ -226,16 +226,16 @@ $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), 
 /**
  * NEW - system security levels
  * Could be overridden by e107_config.php OR $CLASS2_INCLUDE script (if not set earlier)
- * 
+ *
  * 0 disabled
  * 5 safe mode (balanced)
  * 7 high
- * 9 paranoid 
+ * 9 paranoid
  * 10 insane
  * for more detailed info see e_session SECURITY_LEVEL_* constants
  * default is e_session::SECURITY_LEVEL_BALANCED (5)
  */
-if(!defined('e_SECURITY_LEVEL')) 
+if(!defined('e_SECURITY_LEVEL'))
 {
 	require_once(e_HANDLER.'session_handler.php');
 	define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_BALANCED);
@@ -336,7 +336,7 @@ $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefault
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 
-$sql->db_Mark_Time('Start: Prefs, misc tables'); 
+$sql->db_Mark_Time('Start: Prefs, misc tables');
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
 $admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
@@ -440,7 +440,7 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
 	if(strpos(e_REQUEST_URL, 'http://') === 0)
 	{
 		// e_REQUEST_URL and e_REQUEST_URI introduced
-		$url = 'https://'.substr(e_REQUEST_URL, 7); 
+		$url = 'https://'.substr(e_REQUEST_URL, 7);
 		header('Location: '.$url);
 		exit;
 	}
@@ -520,13 +520,13 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
  * Set the User's Language
  */
 $sql->db_Mark_Time('Start: Set User Language');
-// SESSION Needs to be started after: 
-// - Site preferences are available 
-// - Language detection (because of session.cookie_domain) 
+// SESSION Needs to be started after:
+// - Site preferences are available
+// - Language detection (because of session.cookie_domain)
 // to avoid multi-language 'access-denied' issues.
 //session_start(); see e107::getSession() above
 e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
-e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref; 
+e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
 
 if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 {
@@ -541,7 +541,7 @@ include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS loa
 $customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
 if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
 {
-	include($customLan); 
+	include($customLan);
 }
 unset($customLan);
 
@@ -634,7 +634,7 @@ if (!function_exists('checkvalidtheme'))
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$ADMIN_DIRECTORY = $e107->getFolder('admin');
-		
+
 		if (ADMIN && strpos(e_QUERY, 'themepreview') !== false)
 		{
 			list($action, $id) = explode('.', e_QUERY);
@@ -815,7 +815,7 @@ if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($
 
 	$ip = $e107->getip();
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
-	
+
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
@@ -908,7 +908,7 @@ if(!defined("THEME_LAYOUT"))
 
 	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 	{
-	    //e_SELF.(e_QUERY ? '?'.e_QUERY : ''); 
+	    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
 		$c_url = e_REQUEST_URL.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
@@ -1159,13 +1159,13 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 function getperms($arg, $ap = ADMINPERMS)
 {
-	// $ap = "4"; // Just for testing. 
-	
+	// $ap = "4"; // Just for testing.
+
 	if(!ADMIN || trim($ap) === '')
 	{
 		return FALSE;
 	}
-	
+
 	if($arg === 0) // Common-error avoidance with getperms(0)
 	{
 		$arg = '0';
@@ -1749,7 +1749,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 }
 
 // generic function for retaining values across pages. ie. cookies or sessions.
-function session_set($name, $value, $expire='', $path = '/', $domain = '', $secure = 0)
+function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $secure = 0)
 {
 	global $pref;
 	if ($pref['user_tracking'] == 'session')
@@ -2123,9 +2123,9 @@ function __autoload($className)
 			array_shift($tmp); // remove 'plugin'
 			$end = array_pop($tmp); // check for 'shortcodes' end phrase
 
-			if (!isset($tmp[0]) || !$tmp[0]) 
+			if (!isset($tmp[0]) || !$tmp[0])
 			{
-				if($end) 
+				if($end)
 				{
 					// plugin root - e.g. plugin_myplug -> plugins/myplug/myplug.php, class plugin_myplug
 					$filename = e_PLUGIN.$end.'/'.$end.'.php';
