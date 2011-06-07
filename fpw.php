@@ -105,7 +105,7 @@ if (e_QUERY)
 		<tr><td>".LAN_218."</td><td style='font-weight:bold'>{$loginName}</td></tr>
 		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
 		</table>
-		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12."</div>";
+		<br /><br />".LAN_FPW10." <a href=\"".e_LOGIN."\">".LAN_FPW11."</a> ".LAN_FPW12."</div>";
 		fpw_error($txt);
 
 	} 
