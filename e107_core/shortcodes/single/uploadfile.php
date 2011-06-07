@@ -105,10 +105,11 @@ function uploadfile_shortcode($parm)
 		'upload_max_file_count' => '0',
 		'upload_overwrite'	=> '0',
 		'return_type'	=> 'message',
+		'disable_button' => '0',
 	), $parms);
 
 
-// Processing is done by Media Manager. 
+// Processing is done by Media Manager.
 /*	// PROCESS UPLOADED FILES
 	if($parms['process'])
 	{
@@ -147,11 +148,12 @@ function uploadfile_shortcode($parm)
 			<div>
 				<div class='field-spacer'>
 					<button class='action duplicate' type='button' value='no-value'{$onclickd}><span>".LAN_UPLOAD_ADDFILE."</span></button>";
-		
-	// Media Manager does the submit, not the shortcode. 			
-	// $text .= "<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value'{$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>";
-	
-	$text .= "			
+
+	// Media Manager does the submit, not the shortcode.
+	if(!$parms['disable_button'])
+		$text .= "<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value'{$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>";
+
+	$text .= "
 				</div>
 				<div id='{$parms['up_container']}'>
 					<div id='{$parms['up_row']}' class='nowrap'>
