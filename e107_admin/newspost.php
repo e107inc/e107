@@ -1683,7 +1683,11 @@ class admin_newspost
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
-						<tbody>
+						<tbody>";
+						
+						// news_rewrite table Deprecated.  e_url.php standard to be established. 
+						/*
+						$text .= "
 							<tr>
 								<td class='label'>Friendly URL string: </td>
 								<td class='control'>
@@ -1691,7 +1695,11 @@ class admin_newspost
 									".$frm->hidden('news_rewrite_id', intval($_POST['news_rewrite_id']))."
 									<div class='field-help'>To make this work, you need to enable 'SEF URLs' config profile from <a href='".e_ADMIN_ABS."eurl.php'>URL Configuration area</a></div>
 								</td>
-							</tr>
+							</tr>";
+						 
+						 */
+							
+						$text .= "
 							<tr>
 								<td class='label'>Meta keywords: </td>
 								<td class='control'>".$frm->text('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."</td>

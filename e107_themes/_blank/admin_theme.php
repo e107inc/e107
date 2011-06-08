@@ -68,7 +68,7 @@ $no_core_css = TRUE;
 	define("ADMIN_DOWN_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/down_32.png' alt='' title='".LAN_DELETE."' />");
 	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_32.png");
 	
-	define("ADMIN_EXECUTE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/execute_32.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_EXECUTE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/execute_32.png' alt='' title='".LAN_EXECUTE."' />");
 	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_32.png");
 
 
