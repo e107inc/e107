@@ -109,8 +109,7 @@ function uploadfile_shortcode($parm)
 	), $parms);
 
 
-// Processing is done by Media Manager.
-/*	// PROCESS UPLOADED FILES
+	// PROCESS UPLOADED FILES, optional usage by external code
 	if($parms['process'])
 	{
 		e107_require_once(e_HANDLER.'upload_handler.php');
@@ -125,7 +124,7 @@ function uploadfile_shortcode($parm)
 			'overwrite' => $parms['upload_overwrite'] ? true : false,
 		);
 
-	//	$uploaded = process_uploaded_files($path, false, $options);
+		$uploaded = process_uploaded_files($path, false, $options);
 		if($uploaded)
 		{
 			$emessage = e107::getMessage();
@@ -137,7 +136,7 @@ function uploadfile_shortcode($parm)
 		}
 		return($parms['return_type'] == 'result' ? $uploaded : '');
 	}
-*/
+
 	// RENDER FORM
 	$onclickt = !isset($parms['nowarn']) ? " onclick=\"return jsconfirm('".LAN_UPLOAD_CONFIRM."')\"" : '';
 	$onclickd = " onclick=\"duplicateHTML('{$parms['up_row']}','{$parms['up_container']}');\"";
