@@ -318,6 +318,7 @@ define("LAN_VISIBILITY", "Visibility");
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
 define("LAN_FILE", "File");
+define("LAN_EXECUTE","Execute");
 
 
 define("LAN_SECURITYL_0", "Looking for troubles (none)");

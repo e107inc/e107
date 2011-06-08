@@ -6,48 +6,18 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - DB Verify
+ * Administration - DB Verify Class
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
+ * $Revision: 12255 $
+ * $Id: 2011-06-07 17:16:42 -0700 (Tue, 07 Jun 2011) $
+ * $Author: e107coders $
  *
 */
-require_once("../class2.php");
 
-if(varset($_POST['db_tools_back']))
-{
-	header("Location:".e_ADMIN_ABS."db.php");
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-$e_sub_cat = 'database';
-
-require_once("auth.php");
-
-
-if (!$sql_data)
-{
-	// exit(DBLAN_1);
-}
-
-
-
-if (!getperms("0"))
-{
-	header("Location:".SITEURL."index.php");
-	exit;
-}
-
-
-$dbv = new db_verify;
-// print_a($dbv->tables);
-
-require_once(e_ADMIN."footer.php");
-exit;
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
 class db_verify
 {
@@ -83,7 +53,7 @@ class db_verify
 			}
 			else
 			{
-		      	$emessage->add($filename.DBLAN_22, E_MESSAGE_WARNING);
+		      	$emessage->add($filename.DBVLAN_22, E_MESSAGE_WARNING);
 			}
 		}
 		
@@ -104,8 +74,8 @@ class db_verify
 			}
 			else
 			{
-				$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS);
-				$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBLAN_17, 'back')."</div>";
+				$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
+				//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
 				$ns->tablerender("Okay",$mes->render().$text);
 			}
 			
@@ -155,11 +125,15 @@ class db_verify
 			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
 						
-		//	$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
-		//	$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
+			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
+			$debugA .= "<h2>Index</h2>";
+			$debugA .= print_r($fileIndexData,TRUE);
+			$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
+			$debugB .= "<h2>Index</h2>";
+			$debugB .= print_r($sqlIndexData,TRUE);
 			
-			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
-			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
+		//	$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
 			if($debugA)
 			{
@@ -266,9 +240,9 @@ class db_verify
 		$mes = e107::getMessage();
 		
 		$text = "
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-db-verify-{$selection}'>
-				<legend id='core-db-verify-{$selection}-legend'>".DBLAN_16." - $what ".DBLAN_18."</legend>
+				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16." - $what ".DBVLAN_18."</legend>
 
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='4'>
@@ -280,22 +254,22 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".DBLAN_4.": {$k}</th>
-							<th>".DBLAN_5."</th>
-							<th class='center'>".DBLAN_6."</th>
-							<th>".DBLAN_7."</th>
-							<th class='center last'>".DBLAN_19."</th>
+							<th>".DBVLAN_4.": {$k}</th>
+							<th>".DBVLAN_5."</th>
+							<th class='center'>".DBVLAN_6."</th>
+							<th>".DBVLAN_7."</th>
+							<th class='center last'>".DBVLAN_19."</th>
 						</tr>
 					</thead>
 					<tbody>
 		";
 		
 		$info = array(
-			'missing_table'	=> DBLAN_13,
-			'mismatch'		=> DBLAN_8,
-			'missing_field'	=> DBLAN_11,
+			'missing_table'	=> DBVLAN_13,
+			'mismatch'		=> DBVLAN_8,
+			'missing_field'	=> DBVLAN_11,
 			'ok'		    => ADMIN_TRUE_ICON,
-			'missing_index'	=> DBLAN_25,
+			'missing_index'	=> DBVLAN_25,
 		);
 		
 		$modes = array(
@@ -383,9 +357,9 @@ class db_verify
 		";
 		$text .= "
 			<div class='buttons-bar right'>
-				".$frm->admin_button('runfix', DBLAN_21, 'execute', '', array('id'=>false))."
-				".$frm->admin_button('check_all', 'jstarget:fix_active', 'action', LAN_CHECKALL, array('id'=>false))."
-				".$frm->admin_button('uncheck_all', 'jstarget:fix_active', 'action', LAN_UNCHECKALL, array('id'=>false))."
+				".$frm->admin_button('runfix', DBVLAN_21, 'execute', '', array('id'=>false))."
+				".$frm->admin_button('check_all', 'jstarget:fix', 'action', LAN_CHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false))."
 			</div>
 			
 			</fieldset>
@@ -393,7 +367,7 @@ class db_verify
 		";
 	
 		
-		$ns->tablerender(DBLAN_23.' - '.DBLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
 		
 	}
 
@@ -431,11 +405,11 @@ class db_verify
 		$text = "";
 		if($invalid)
 		{
-			$text .= "<strong>".DBLAN_9."</strong>
+			$text .= "<strong>".DBVLAN_9."</strong>
 				<div class='indent'>".$invalid."</div>";
 		}
 		
-		$text .= "<strong>".DBLAN_10."</strong>
+		$text .= "<strong>".DBVLAN_10."</strong>
 			<div class='indent'>".$valid."</div>";
 			
 		return $text;
@@ -653,7 +627,8 @@ class db_verify
 	
 	function getIndex($data)
 	{
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
+		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w,`]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
 		
 		$ret = array();
@@ -662,10 +637,11 @@ class db_verify
 		
 		foreach($m[3] as $k=>$val)
 		{
+			$val = str_replace("`","",$val);
 			$ret[$val] = array(
 				'type'		=> strtoupper($m[1][$k]),
-				'keyname'	=> (vartrue($m[2][$k])) ? $m[2][$k] : $m[3][$k],
-				'field'		=> $m[3][$k]
+				'keyname'	=> (vartrue($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
+				'field'		=> str_replace("`","",$m[3][$k])
 			);
 		}
 		
@@ -738,14 +714,14 @@ class db_verify
 		$text = "
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
-				<legend>".DBLAN_14."</legend>
+				<legend>".DBVLAN_14."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='1'>
 						<col style='width: 100%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'table_').LAN_CHECKALL.' | '.LAN_UNCHECKALL."</th>
+							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table').LAN_CHECKALL.' | '.LAN_UNCHECKALL."</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -764,14 +740,14 @@ class db_verify
 					</tbody>
 					</table>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('db_verify', DBLAN_15)."
-							".$frm->admin_button('db_tools_back', DBLAN_17, 'back')."
+							".$frm->admin_button('db_verify', DBVLAN_15)."
+							".$frm->admin_button('db_tools_back', DBVLAN_17, 'back')."
 						</div>
 					</fieldset>
 				</form>
 		";
 	
-		$ns->tablerender(DBLAN_23.' - '.DBLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
 	}
 	
 	
@@ -798,7 +774,7 @@ function check_tables($what)
 	$text = "
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='core-db-verify-{$what}'>
-				<legend id='core-db-verify-{$what}-legend'>".DBLAN_16." - $what ".DBLAN_18."</legend>
+				<legend id='core-db-verify-{$what}-legend'>".DBVLAN_16." - $what ".DBVLAN_18."</legend>
 	";
 	foreach(array_keys($table_list) as $k)
 	{	// $k is the DB table name (less prefix)
@@ -814,11 +790,11 @@ function check_tables($what)
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".DBLAN_4.": {$k}</th>
-							<th>".DBLAN_5."</th>
-							<th class='center'>".DBLAN_6."</th>
-							<th>".DBLAN_7."</th>
-							<th class='center last'>".DBLAN_19."</th>
+							<th>".DBVLAN_4.": {$k}</th>
+							<th>".DBVLAN_5."</th>
+							<th class='center'>".DBVLAN_6."</th>
+							<th>".DBVLAN_7."</th>
+							<th class='center last'>".DBVLAN_19."</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -954,11 +930,11 @@ function check_tables($what)
 						if ($fld_err)
 						{
 							$body_txt .= "
-								<td class='center middle error'>".DBLAN_8."</td>
+								<td class='center middle error'>".DBVLAN_8."</td>
 								<td>
-									<strong>".DBLAN_9."</strong>
+									<strong>".DBVLAN_9."</strong>
 									<div class='indent'>{$xfparams}</div>
-									<strong>".DBLAN_10."</strong>
+									<strong>".DBVLAN_10."</strong>
 									<div class='indent'>{$fparams}</div>
 								</td>
 								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "alter")."</td>
@@ -970,11 +946,11 @@ function check_tables($what)
 						elseif ($fieldnum != $xfieldnum)
 						{  // Field numbers different - missing field?
 							$body_txt .= "
-								<td class='center middle error'>".DBLAN_5." ".DBLAN_8."</td>
+								<td class='center middle error'>".DBVLAN_5." ".DBVLAN_8."</td>
 								<td>
-									<strong>".DBLAN_9.": </strong>#{$xfieldnum}
+									<strong>".DBVLAN_9.": </strong>#{$xfieldnum}
 									<br />
-									<strong>".DBLAN_10.": </strong>#{$fieldnum}
+									<strong>".DBVLAN_10.": </strong>#{$fieldnum}
 								</td>
 								<td class='center middle'>&nbsp;</td>
 
@@ -999,9 +975,9 @@ function check_tables($what)
 				{
 					$prev_fname = $fname; //FIXME - wrong $prev_fname!
 					$body_txt .= "
-								<td class='center middle error'>".DBLAN_11."</td>
+								<td class='center middle error'>".DBVLAN_11."</td>
 								<td>
-									<strong>".DBLAN_10."</strong>
+									<strong>".DBVLAN_10."</strong>
 									<div class='indent'>{$fparams}</div>
 								</td>
 								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "insert", $prev_fname)."</td>
@@ -1030,7 +1006,7 @@ function check_tables($what)
 					<tr>
 						<td>$k</td>
 						<td>$tf</td>
-						<td class='center middle'>".DBLAN_12."</td>
+						<td class='center middle'>".DBVLAN_12."</td>
 						<td>&nbsp;</td>
 						<td class='center middle autocheck e-pointer'>".fix_form($k, $tf, $fparams, "drop")."</td>
 					</tr>
@@ -1046,7 +1022,7 @@ function check_tables($what)
 					<tr>
 						<td>{$k}</td>
 						<td>&nbsp;</td>
-						<td class='center middle error'>".DBLAN_13."</td>
+						<td class='center middle error'>".DBVLAN_13."</td>
 						<td>&nbsp;</td>
 						<td class='center middle autocheck e-pointer'>".fix_form($k, $tf, $tablines[$k], "create") . "</td>
 					</tr>
@@ -1100,7 +1076,7 @@ function check_tables($what)
 	{
 		$text .= "
 			<div class='buttons-bar right'>
-				".$frm->admin_button('do_fix', DBLAN_21, 'execute', '', array('id'=>false))."
+				".$frm->admin_button('do_fix', DBVLAN_21, 'execute', '', array('id'=>false))."
 				".$frm->admin_button('check_all', 'jstarget:fix_active', 'action', LAN_CHECKALL, array('id'=>false))."
 				".$frm->admin_button('uncheck_all', 'jstarget:fix_active', 'action', LAN_UNCHECKALL, array('id'=>false))."
 			</div>
@@ -1120,7 +1096,7 @@ function check_tables($what)
 	$text .= "
 		</fieldset>
 		<div class='buttons-bar center'>
-			".$frm->admin_button('back', DBLAN_17, 'back')."
+			".$frm->admin_button('back', DBVLAN_17, 'back')."
 		</div>
 	</form>
 
@@ -1135,7 +1111,7 @@ global $table_list;
 
 if(isset($_POST['do_fix']))
 {
-	//$emessage->add(DBLAN_20);
+	//$emessage->add(DBVLAN_20);
 	foreach( $_POST['fix_active'] as $key=>$val)
 	{
 
@@ -1213,7 +1189,7 @@ if(isset($_POST['do_fix']))
 $text = "
 	<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 		<fieldset id='core-db-verify-sql-tables'>
-			<legend>".DBLAN_14."</legend>
+			<legend>".DBVLAN_14."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
 				<colgroup span='1'>
 					<col style='width: 100%'></col>
@@ -1240,14 +1216,14 @@ $text .= "
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					".$frm->admin_button('db_verify', DBLAN_15)."
-					".$frm->admin_button('db_tools_back', DBLAN_17, 'back')."
+					".$frm->admin_button('db_verify', DBVLAN_15)."
+					".$frm->admin_button('db_tools_back', DBVLAN_17, 'back')."
 				</div>
 			</fieldset>
 		</form>
 ";
 
-$e107->ns->tablerender(DBLAN_23.' - '.DBLAN_16, $emessage->render().$text);
+$e107->ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $emessage->render().$text);
 require_once(e_ADMIN."footer.php");
 exit;
 
@@ -1343,29 +1319,6 @@ function table_list()
 	return $tabs;
 }
 */
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once (e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
-			/**
-			 * OnLoad Init Control
-			 */
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
 
-	return $ret;
-}
 ?>
