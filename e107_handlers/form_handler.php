@@ -726,12 +726,12 @@ class e_form
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action delete');
+				$options['class'] = vartrue($options['class'] , 'action execute');
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action delete');
+				$options['class'] = vartrue($options['class'] , 'action view');
 			break;
 		}
 		$options['title'] = $title;//shorthand

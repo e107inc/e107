@@ -582,7 +582,8 @@ $array_functions = array(
 	29 => array(e_ADMIN.'fileinspector.php', ADLAN_147, ADLAN_148,	'Y', 4, E_16_INSPECT, E_32_INSPECT),
 	30 => array(e_ADMIN.'notify.php', 		ADLAN_149,	ADLAN_150,	'O', 4, E_16_NOTIFY, E_32_NOTIFY),
 	31 => array(e_ADMIN.'cron.php', 		ADLAN_157,	ADLAN_158,	'U', 4, E_16_CRON, E_32_CRON),
-	32 => array(e_ADMIN.'eurl.php', 		ADLAN_159,	ADLAN_160,	'L', 1, E_16_EURL, E_32_EURL),
+	// Deprecated until e_url.php standard is established. 
+	// 32 => array(e_ADMIN.'eurl.php', 		ADLAN_159,	ADLAN_160,	'L', 1, E_16_EURL, E_32_EURL),
 	33 => array(e_ADMIN.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
 	34 => array(e_ADMIN.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
 // TODO System Info.

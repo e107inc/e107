@@ -23,16 +23,16 @@ $e_sub_cat = 'database';
 require_once ("auth.php");
 require_once ("update_routines.php");
 
-require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
+$frm = e107::getForm();
 
-require_once (e_HANDLER."form_handler.php");
-$frm = new e_form();
+
+// FIX ME - Should be a class so it can be called any where.  
 
 // Carry out core updates
 function run_updates($dbupdate)
 {
-	global $emessage;
+	global $mes;
 	foreach($dbupdate as $func => $rmks)
 	{
 		$installed = call_user_func("update_".$func);
@@ -45,10 +45,10 @@ function run_updates($dbupdate)
 				$error = call_user_func("update_".$func, "do");
 				if($error != '')
 				{
-					$emessage->add($message, E_MESSAGE_ERROR);
-					$emessage->add($error, E_MESSAGE_ERROR);
+					$mes->add($message, E_MESSAGE_ERROR);
+					$mes->add($error, E_MESSAGE_ERROR);
 				}
-				else $emessage->add($message, E_MESSAGE_SUCCESS);
+				else $mes->add($message, E_MESSAGE_SUCCESS);
 			}
 		}
 	}
@@ -139,7 +139,7 @@ ob_start();
 	$text = ob_get_contents();
 ob_end_clean();
 
-$e107->ns->tablerender(LAN_UPDATE_56, $emessage->render().$text);
+$e107->ns->tablerender(LAN_UPDATE_56, $mes->render().$text);
 
 if($total_updates == 0)
 { // No updates needed - clear the cache to be sure

@@ -73,7 +73,12 @@ class admin_eurl_config {
 
 	function renderPage()
 	{
-		$emessage = e107::getMessage();
+			
+		$mes = e107::getMessage();
+		$mes->addInfo("Deprecated for now"); // SEF URLs not to be used until e_url.php standard established. 
+		return e107::getRender()->tablerender(PAGE_NAME, $mes->render());
+		
+			
 		$empty = "
 							<tr>
 								<td colspan='2'>".LAN_EURL_EMPTY."</td>
