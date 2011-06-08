@@ -46,9 +46,6 @@ if (!getperms("0"))
 $dbv = new db_verify;
 // print_a($dbv->tables);
 
-
-
-
 require_once(e_ADMIN."footer.php");
 exit;
 
@@ -57,8 +54,9 @@ class db_verify
 	
 	var $tables = array();
 	var $sqlTables = array();
+	var $sqlLanguageTables = array();
 	var $results = array();
-	var $indices = array(0);
+	var $indices = array(); // array(0) - Issue?
 	
 	function __construct()
 	{
@@ -70,6 +68,8 @@ class db_verify
 			
 		$core_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
 		$this->tables['core'] = $this->getTables($core_data);
+		
+		$this->sqlLanguageTables = $this->getSqlLanguages();
 		
 		foreach($pref['e_sql_list'] as $path => $file)
 		{
@@ -91,7 +91,11 @@ class db_verify
 		{
 			foreach($_POST['verify_table'] as $tab)
 			{			
-				$this->compare($tab);				
+				$this->compare($tab);	
+				foreach($this->sqlLanguageTables as $lng=>$lantab)
+				{
+					$this->compare($tab,$lng);
+				}			
 			}
 				
 			if(count($this->errors))
@@ -123,16 +127,20 @@ class db_verify
 		// echo "<pre>".$sql_data."</pre>";
 	}
 	
-	function compare($selection)
+	function compare($selection,$language='')
 	{
 		
 	
 		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
 		{
 			//$this->errors[$tbl]['_status'] = 'ok'; // default table status
-			$rawSqlData = $this->getSqlData($tbl);
+					
+			$rawSqlData = $this->getSqlData($tbl,$language);
+			
 			if($rawSqlData === FALSE)
 			{
+				if($language) continue;
+				
 				$this->errors[$tbl]['_status'] = 'missing_table';
 				$this->results[$tbl]['_file'] = $selection;
 				// echo "missing table: $tbl";
@@ -150,24 +158,27 @@ class db_verify
 		//	$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 		//	$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
 			
-			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Field Text
-			$debugB = $sqlDataArr['data'][0];	// Extracted Field Text	
-						
-			$debug = "<table border='1'>
-			<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl."</td>
-			<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
-			</tr>
-			<tr><td><pre>".$debugA."</pre></td>
-			  <td><pre>".$debugB."</pre></td></tr></table>";
-			  
-			  
-			  
+			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
-			$mes = e107::getMessage();
-			$mes->add($debug,E_MESSAGE_DEBUG);
+			if($debugA)
+			{
+									
+				$debug = "<table border='1'>
+				<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl." (key=".$key.")</td>
+				<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
+				</tr>
+				<tr><td style='width:50%'><pre>".$debugA."</pre></td>
+				  <td style='width:50%'><pre>".$debugB."</pre></td></tr></table>";
+				  		
+				$mes = e107::getMessage();
+				$mes->add($debug,E_MESSAGE_DEBUG);
+			}
 			
-			
-			
+			if($language)
+			{
+			 	$tbl = "lan_".$language."_".$tbl;
+			}
 			
 			
 			// Check Field Data. 
@@ -201,7 +212,7 @@ class db_verify
 				
 			}
 
-			// print_a($fileIndexData);
+		//	 print_a($fileIndexData);
 		//	print_a($sqlIndexData);
 			// Check Index data
 			foreach($fileIndexData as $field => $info )
@@ -237,15 +248,12 @@ class db_verify
 			}
 
 
+			
+
 			unset($data);
 			
 		}
 		
-		
-	//	print_a($this->results);
-		//echo "<h2>Missing</h2>";
-		//print_a($this->missing);
-	//	print_a($this->tables);
 		
 	}
 	
@@ -305,7 +313,7 @@ class db_verify
 			{
 				$text .= "
 					<tr>
-						<td>{$tabs}</td>
+						<td>".$this->renderTableName($tabs)."</td>
 						<td>&nbsp;</td>
 						<td class='center middle error'>".$info[$this->errors[$tabs]['_status']]."</td>
 						<td>&nbsp;</td>
@@ -323,7 +331,7 @@ class db_verify
 				
 					$text .= "
 					<tr>
-						<td>{$tabs}</td>
+						<td>".$this->renderTableName($tabs)."</td>
 						<td>".$k."&nbsp;</td>
 						<td class='center middle error'>".$fstat."</td>
 						<td>".$this->renderNotes($f)."&nbsp;</td>
@@ -338,33 +346,36 @@ class db_verify
 
 		// Indices
 		
-		foreach($this->indices as $tabs => $field)
+	
+		if(count($this->indices))
 		{
-					
-			if($this->errors[$tabs] != 'ok')
+			foreach($this->indices as $tabs => $field)
 			{
-				foreach($field as $k=>$f)
+						
+				if($this->errors[$tabs] != 'ok')
 				{
-					if($f['_status']=='ok') continue;
+					foreach($field as $k=>$f)
+					{
+						if($f['_status']=='ok') continue;
+						
+						$fstat = $info[$f['_status']];
 					
-					$fstat = $info[$f['_status']];
+						$text .= "
+						<tr>
+							<td>".$this->renderTableName($tabs)."</td>
+							<td>".$k."&nbsp;</td>
+							<td class='center middle error'>".$fstat."</td>
+							<td>".$this->renderNotes($f,'index')."&nbsp;</td>
+							<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
+						</tr>
+						";	
+					}	
+				}
 				
-					$text .= "
-					<tr>
-						<td>{$tabs}</td>
-						<td>".$k."&nbsp;</td>
-						<td class='center middle error'>".$fstat."</td>
-						<td>".$this->renderNotes($f,'index')."&nbsp;</td>
-						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
-					</tr>
-					";	
-				}	
-			}
-			
+			}		
 		}
 		
-
-		
+	
 		$text .= "
 					</tbody>
 				</table>
@@ -384,6 +395,17 @@ class db_verify
 		
 		$ns->tablerender(DBLAN_23.' - '.DBLAN_16, $mes->render().$text);
 		
+	}
+
+	function renderTableName($tabs)
+	{
+		
+		if(substr($tabs,0,4)=="lan_")
+		{
+			list($tmp,$lang,$table) = explode("_",$tabs,3);
+			return $table. " (".ucfirst($lang).")";
+		}
+		return $tabs;
 	}
 
 
@@ -452,8 +474,45 @@ class db_verify
            
 	}
 	
+	// returns the previous Field
+	function getPrevious($array,$cur)
+	{
+		$fkeys = array_keys($array);
+		
+		foreach($fkeys as $fields)
+		{
+			if($fields == $cur)
+			{
+				$current = prev($fkeys); // required. 
+				$previous = prev($fkeys);
+				return $previous;
+			}
+		}
+						
+	}
 	
+	/**
+	* get the key ID for the current table which is being Fixed. 
+	*/ 
+	function getId($tabl,$cur)
+	{
+		$key = array_flip($tabl);
+		
+		if(substr($cur,0,4)=="lan_") // language table adjustment. 
+		{
+			list($tmp,$lang,$cur) = explode("_",$cur,3);
+		}
+		
+		if(isset($key[$cur]))
+		{
+			return $key[$cur];
+		} 
+
+	}
 	
+	/**
+	 * Fix tables
+	 */
 	function runFix()
 	{
 		$mes  = e107::getMessage();
@@ -464,27 +523,20 @@ class db_verify
 			return;
 			
 		} 
-		// print_a($_POST);
-				
-		
-		// $table = 
-	//	print_a($_POST['fix']);
-	//	echo "<h2>Select</h2>";
+
 		
 			
 		foreach($_POST['fix'] as $j=>$file)
 		{
-			
-			//print_a($this->tables[$j]);
-					
+						
 			foreach($file as $table=>$val)
-			{		
+			{
+				
+				$id = $this->getId($this->tables[$j]['tables'],$table); 
+						
 				foreach($val as $field=>$mode)
 				{
-						
-					$key = array_flip($this->tables[$j]['tables']);
-					$id = $key[$table];
-					
+									
 					if(substr($mode,0,5)== 'index')
 					{
 						$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
@@ -492,7 +544,8 @@ class db_verify
 					}
 					else
 					{
-						$fdata = $this->getFields($this->tables[$j]['data'][$id]);
+						
+						$fdata = $this->getFields($this->tables[$j]['data'][$id]);											
 						$newval = $this->toMysql($fdata[$field]);	
 					}
 					
@@ -504,7 +557,7 @@ class db_verify
 						break;
 			
 						case 'insert':
-							if($after) $after = " AFTER {$after}";
+							$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
 							$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
 						break;
 						
@@ -526,8 +579,10 @@ class db_verify
 					}
 					
 			
-					//echo "QUery=".$query;
+					// $mes->addDebug("Query: ".$query);		
 					// continue;	
+					 
+					 
 					if(mysql_query($query))
 					{
 						$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);	
@@ -561,8 +616,9 @@ class db_verify
 		
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
 		
-		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\sa-z0-9_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-
+	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\sa-z0-9_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+ 			
 		$table = preg_match_all($regex,$sql_data,$match);
 				
 		$ret['tables'] = $match[1];
@@ -574,7 +630,7 @@ class db_verify
 
 	function getFields($data)
 	{
-		$regex = "/`?([\w]*)`?\s?(int|varchar|tinyint|smallint|text|char|tinyint)\s?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?,/i";
+		$regex = "/`?([\w]*)`?\s*?(int|varchar|tinyint|smallint|text|char|tinyint)\s?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?,/i";
 	//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
 		preg_match_all($regex,$data,$m);	
 		
@@ -619,13 +675,25 @@ class db_verify
 	
 	
 	
-	function getSqlData($tbl,$prefix='')
+	function getSqlData($tbl,$language='')
 	{
+		
+		
 		$mes = e107::getMessage();
-		if(!$prefix)
+		
+		$prefix = MPREFIX;
+		
+		if($language)
 		{
-			$prefix = MPREFIX;
+			if(!in_array($tbl,$this->sqlLanguageTables[$language]))
+			{
+				return FALSE;
+			}
+			
+			$prefix .= "lan_".$language."_";
+			$mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}
+			
 		mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
 		$z = mysql_query($qry);
@@ -637,13 +705,27 @@ class db_verify
 		else
 		{
 			$mes->addDebug('Failed: '.$qry);
-			// echo "Failed".$qry;
 			return FALSE;
 		}
 	
 	}
 	
-	
+	function getSqlLanguages()
+	{
+		$sql = e107::getDb();
+		$list = $sql->db_TableList('lan');
+		
+		$array = array();
+		
+		foreach($list as $tb)
+		{
+			list($tmp,$lang,$table) = explode("_",$tb,3);
+			$array[$lang][] = $table;
+		}
+		
+		return $array;
+
+	}
 	
 	
 	function renderTableSelect()
@@ -673,7 +755,7 @@ class db_verify
 		{
 			$text .= "
 				<tr>
-					<td>".$frm->checkbox('verify_table[]', $x).$frm->label($x, 'table_'.$x, $x)."</td>
+					<td>".$frm->checkbox('verify_table[]', $x).$frm->label($x, "verify_table".$x, $x)."</td>
 				</tr>
 			";
 		}
@@ -693,171 +775,15 @@ class db_verify
 	}
 	
 	
-	
-	function sqlTableList()
-	{
-
-		// grab default language lists.
-		global $mySQLdefaultdb;
-	
-		$exclude[] = "banlist";		$exclude[] = "banner";
-		$exclude[] = "cache";		$exclude[] = "core";
-		$exclude[] = "online";		$exclude[] = "parser";
-		$exclude[] = "plugin";		$exclude[] = "user";
-		$exclude[] = "upload";		$exclude[] = "userclass_classes";
-		$exclude[] = "rbinary";		$exclude[] = "session";
-		$exclude[] = "tmp";	 		$exclude[] = "flood";
-		$exclude[] = "stat_info";	$exclude[] = "stat_last";
-		$exclude[] = "submit_news";	$exclude[] = "rate";
-		$exclude[] = "stat_counter";$exclude[] = "user_extended";
-		$exclude[] = "user_extended_struct";
-		$exclude[] = "pm_messages";
-		$exclude[] = "pm_blocks";
-		
-		$replace = array();
-		
-		$lanlist = explode(",",e_LANLIST);
-		foreach($lanlist as $lang)
-		{
-			if($lang != $pref['sitelanguage'])
-			{
-				$replace[] = "lan_".strtolower($lang)."_";
-			}
-		}
-	
-		$tables = mysql_list_tables($mySQLdefaultdb);
-		
-		while (list($temp) = mysql_fetch_array($tables))
-		{
-			
-			$prefix = MPREFIX."lan_";
-			$match = array();
-			if(strpos($temp,$prefix)!==FALSE)
-			{
-				$e107tab = str_replace(MPREFIX, "", $temp);	
-				$core = str_replace($replace,"",$e107tab);
-				if (str_replace($exclude, "", $e107tab))
-				{
-					$tabs[$core] = $e107tab;
-					
-				}		
-			}
-		}
-	
-		
-		return $tabs;
-	}
-	
-	
-	// ([\w]*)\s*(int|varchar|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))? (unsigned)?[\s]*(NOT NULL|NULL)[\s]*(auto_increment|default .*)?[\s]?,
 }
 
 
 
 
 /*
-//Get any plugin _sql.php files
-foreach($pref['e_sql_list'] as $path => $file)
-{
-	$filename = e_PLUGIN.$path.'/'.$file.'.php';
-	if(is_readable($filename))
-	{
-		$id = str_replace('_sql','',$file);
-      	$temp = file_get_contents($filename);
-		$tables[$id] = preg_replace("#\/\*.*?\*\/#mis", '', $temp);		// Strip comments as we copy
-		unset($temp);
-	}
-	else
-	{
-      	$emessage->add($filename.DBLAN_22, E_MESSAGE_WARNING);
-	}
-}
 
 
 
-function read_tables($tab)
-{
-	global $tablines, $table_list, $tables, $pref;
-
-	$mes = e107::getMessage();
-
-	$file = explode("\n", $tables[$tab]);
-	foreach($file as $line)
-	{
-		$line = ltrim(stripslashes($line));
-		if ($line)
-		{
-			$match = array();
-			if (preg_match('/CREATE TABLE (.*) /', $line, $match))
-			{
-				if($match[1] != "user_extended")
-				{
-					$table_list[$match[1]]  = 1;
-					$current_table = $match[1];
-					$x = 0;
-					$cnt = 0;
-				}
-			}
-
-			if ((strpos($line, "TYPE=") !== FALSE) || (strpos($line, "ENGINE=") !== FALSE))
-			{
-				$current_table = "";
-			}
-
-			if ($current_table && $x)
-			{
-				$tablines[$current_table][$cnt++] = $line;
-			}
-
-			$x = 1;
-		}
-	}
-
-// Get multi-language tables as well
-	if($pref['multilanguage'])
-	{
-		$langs = table_list();
-		$mes->add(print_a($langs,TRUE), E_MESSAGE_DEBUG);
-		foreach(array_keys($table_list) as $name)
-		{
-			if($langs[$name])
-			{
-				$ltab = $langs[$name];
-				$table_list[$ltab] = 1;
-				$tablines[$ltab] = $tablines[$name];
-			}
-		}
-		
-		
-	}
-	
-	$mes->add(print_a($table_list,TRUE), E_MESSAGE_DEBUG);
-	
-	
-
-}
-
-
-// Get list of fields and keys for a table
-function get_current($tab, $prefix = "")
-{
-	if(! $prefix)
-	{
-		$prefix = MPREFIX;
-	}
-	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
-	$qry = 'SHOW CREATE TABLE `' . $prefix . $tab . "`";
-	$z = mysql_query($qry);
-	if($z)
-	{
-		$row = mysql_fetch_row($z);
-		return str_replace("`", "", stripslashes($row[1]));
-	}
-	else
-	{
-		return FALSE;
-	}
-}
 
 function check_tables($what)
 {
