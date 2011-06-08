@@ -8,9 +8,9 @@
  *
  * Administration - Database Utilities
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
+ * $URL$
  * $Revision$
- * $Date$
+ * $Id$
  * $Author$
  *
 */
@@ -31,30 +31,29 @@ if(isset($_POST['back']))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);		
+
+
 
 $e_sub_cat = 'database';
 
-require_once (e_HANDLER."form_handler.php");
-$frm = new e_form();
-
-
-
-require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$frm = e107::getForm();
+$mes = e107::getMessage();
 
 /*
  * Execute trigger
  */
-if(isset($_POST['trigger_db_execute']))
+if(isset($_POST['db_execute']))
 {
+	$type = key($_POST['db_execute']);
+	
 	if(!varset($_POST['db_execute']))
 	{
-		$emessage->add(DBLAN_53, E_MESSAGE_WARNING);
+		$mes->add(DBLAN_53, E_MESSAGE_WARNING);
 	}
 	else
 	{
-		$_POST[$_POST['db_execute']] = true;
+		$_POST[$type] = true;
 	}
 }
 
@@ -64,25 +63,20 @@ if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update')
 	exit();
 }
 
-if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
-{
-	header("location: ".e_ADMIN."db_verify.php");
-	exit();
-}
+
 
 if(isset($_POST['exportXmlFile']))
 {
 	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['package_images']))
 	{
-		$emessage = eMessage::getInstance();
-		$emessage->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
+		$mes = eMessage::getInstance();
+		$mes->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
 	}
 
 }
 
 require_once ("auth.php");
-require_once (e_HANDLER."form_handler.php");
-$frm = new e_form();
+
 $st = new system_tools;
 
 
@@ -136,7 +130,6 @@ class system_tools
 		//TODO Merge db_verify.php into db.php
 
 
-
 		if(isset($_POST['delplug']))
 		{
 			$this->delete_plugin_entry($_POST['pref_type']);
@@ -151,10 +144,18 @@ class system_tools
 		{
 			$this->del_pref_val($_POST['pref_type']);
 		}
-
+		
+		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
+		{
+			require_once(e_HANDLER."db_verify_class.php");
+			$dbv = new db_verify;
+			return;
+		}
+		
 		if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 		{
-			// $this->verify_sql_record();  - currently performed in db_verify.php
+		
+			 //$this->verify_sql_record(); // - currently performed in db_verify_class.php
 		}
 
 		if(isset($_POST['importForm']) ||  $_GET['mode']=='importForm')
@@ -197,9 +198,10 @@ class system_tools
 		if(vartrue($_POST['perform_utf8_convert']))
 		{
 			$this->perform_utf8_convert();
+			return;
 		}
 
-		if(!vartrue($_GET['mode']))
+		if(!vartrue($_GET['mode']) && !isset($_POST['db_execute']))
 		{
 			$this->render_options();
 		}
@@ -427,7 +429,7 @@ class system_tools
 	 */
 	private function render_options()
 	{
-		$frm = e107::getSingleton('e_form');
+		$frm = e107::getForm();
 
 		$text = "
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
@@ -445,7 +447,11 @@ class system_tools
 			$text .= "<tr>
 						<td>".$val['diz']."</td>
 						<td>
-							".$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key)."
+						<a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+							".
+					//		$frm->submit_image('db_execute['.$key.']', '1', 'execute', $val['label']).
+						//	$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key).
+							"
 						</td>
 					</tr>\n";
 
@@ -454,16 +460,17 @@ class system_tools
 		$text .= "
 
 				</tbody>
-				</table>
-				<div class='buttons-bar center'>
-					".$frm->admin_button('trigger_db_execute', DBLAN_51, 'execute')."
-				</div>
+				</table>";
+		// $text .= "<div class='buttons-bar center'>
+					// ".$frm->admin_button('trigger_db_execute', DBLAN_51, 'execute')."
+				// </div>";
+		$text .= "
 			</fieldset>
 		</form>
 		";
 
-		$emessage = eMessage::getInstance();
-		e107::getRender()->tablerender(DBLAN_10, $emessage->render().$text);
+		$mes = e107::getMessage(); 
+		e107::getRender()->tablerender(DBLAN_10, $mes->render().$text);
 	}
 
 
