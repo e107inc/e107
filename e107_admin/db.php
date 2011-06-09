@@ -149,6 +149,8 @@ class system_tools
 		{
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
+			$dbv->backUrl = e_SELF."?mode=verify_sql";
+			$dbv->verify();
 			return;
 		}
 		

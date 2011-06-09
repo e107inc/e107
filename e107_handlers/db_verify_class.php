@@ -21,13 +21,22 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
 class db_verify
 {
-	
+	var $backUrl = "";
 	var $tables = array();
 	var $sqlTables = array();
 	var $sqlLanguageTables = array();
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
 	
+	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+							
+	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
+		'real','double','float','decimal','numeric','varchar','char','binary','varbinary','enum','set');
+	
+	/**
+	 * Setup
+	 */
 	function __construct()
 	{
 				
@@ -35,6 +44,8 @@ class db_verify
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
+			
+		$this->backUrl = e_SELF;	
 			
 		$core_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
 		$this->tables['core'] = $this->getTables($core_data);
@@ -53,39 +64,73 @@ class db_verify
 			}
 			else
 			{
-		      	$emessage->add($filename.DBVLAN_22, E_MESSAGE_WARNING);
+				$message = str_replace("[x]",$filename,DBVLAN_22);
+		      	$emessage->add($message, E_MESSAGE_WARNING);
 			}
 		}
 		
+	}
+
+	
+	
+	/**
+	 * Main Routine for checking and rendering results. 
+	 */
+	function verify()
+	{
+					
 		if($_POST['verify_table'])
-		{
-			foreach($_POST['verify_table'] as $tab)
-			{			
-				$this->compare($tab);	
-				foreach($this->sqlLanguageTables as $lng=>$lantab)
-				{
-					$this->compare($tab,$lng);
-				}			
-			}
-				
-			if(count($this->errors))
-			{
-				$this->renderResults();	
-			}
-			else
-			{
-				$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
-				//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
-				$ns->tablerender("Okay",$mes->render().$text);
-			}
-			
+		{			
+			$this->runComparison($_POST['verify_table']);
 			
 		}
 		else
 		{
-			$this->runFix();
+			if(isset($_POST['runfix']))
+			{
+				$this->runFix();
+			
+			} 
+			
 			$this->renderTableSelect();	
+		}	
+
+	}
+		
+		
+	function runComparison($fileArray)
+	{
+		
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
+		
+		foreach($fileArray as $tab)
+		{			
+			$this->compare($tab);	
+			foreach($this->sqlLanguageTables as $lng=>$lantab)
+			{
+				$this->compare($tab,$lng);
+			}			
 		}
+				
+		if($cnt = count($this->errors))
+		{
+			$message = str_replace("[x]",$cnt,DBVLAN_26); // Found [x] issues.
+			$mes->add($message, E_MESSAGE_WARNING); 
+			$this->renderResults();	
+		}
+		else
+		{
+			$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
+			$mes->add("<a href='".$this->backUrl."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
+			$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
+			$mes->add($debug,E_MESSAGE_DEBUG);	
+			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
+			$ns->tablerender("Okay",$mes->render().$text);
+		}	
+			
+	}	
 		
 	//	$this->sqlTables = $this->sqlTableList();
 		
@@ -95,7 +140,7 @@ class db_verify
 	//	print_a($field);
 	//	print_a($match[2]);
 		// echo "<pre>".$sql_data."</pre>";
-	}
+	
 	
 	function compare($selection,$language='')
 	{
@@ -124,14 +169,14 @@ class db_verify
 			
 			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
-						
+		/*				
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
 			$debugA .= print_r($fileIndexData,TRUE);
 			$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
 			$debugB .= "<h2>Index</h2>";
 			$debugB .= print_r($sqlIndexData,TRUE);
-			
+		*/	
 		//	$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
 		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
@@ -164,8 +209,8 @@ class db_verify
 				
 				if(!is_array($sqlFieldData[$field]))
 				{
-					// echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
-				 // <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
+				//	 echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
+				// <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
 					
 					$this->errors[$tbl]['_status'] = 'error'; // table status
 					$this->results[$tbl][$field]['_status'] = 'missing_field';	 // field status					
@@ -242,7 +287,7 @@ class db_verify
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-db-verify-{$selection}'>
-				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16." - $what ".DBVLAN_18."</legend>
+				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16."</legend>
 
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='4'>
@@ -283,7 +328,7 @@ class db_verify
 		foreach($this->results as $tabs => $field)
 		{
 					
-			if($this->errors[$tabs]['_status'] == 'missing_table')
+			if($this->errors[$tabs]['_status'] == 'missing_table') // Missing Table
 			{
 				$text .= "
 					<tr>
@@ -295,7 +340,7 @@ class db_verify
 					</tr>
 					";		
 			}					
-			elseif($this->errors[$tabs] != 'ok')
+			elseif($this->errors[$tabs] != 'ok') // All Other Issues.. 
 			{
 				foreach($field as $k=>$f)
 				{
@@ -436,8 +481,7 @@ class db_verify
 			
 		}
 		
-		
-		if($data['type'] != 'TEXT')
+		if(!in_array(strtolower($data['type']), $this->fieldTypes))
 		{
 			return $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];	
 		}
@@ -491,12 +535,7 @@ class db_verify
 	{
 		$mes  = e107::getMessage();
 		
-		if(!isset($_POST['runfix']))
-		{
-			//print_a($_POST);
-			return;
-			
-		} 
+		
 
 		
 			
@@ -602,13 +641,29 @@ class db_verify
 	}
 
 
+
+
 	function getFields($data)
 	{
-		$regex = "/`?([\w]*)`?\s*?(int|varchar|tinyint|smallint|text|char|tinyint)\s?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?,/i";
+		$mes = e107::getMessage();
+			
+		$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+		$regex = "/^ *?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+	
+	
 	//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
+		
+	//	$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
+	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|tinyblob|blob|mediumblob|longblob|tinytext|mediumtext|longtext|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
+	//	$mes->addDebug($regex);
+	
+	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/i";
+		
 		preg_match_all($regex,$data,$m);	
 		
 		$ret = array();
+		
+	
 			
 		foreach($m[1] as $k=>$val)
 		{
@@ -633,10 +688,10 @@ class db_verify
 		
 		$ret = array();
 		
-	//	print_a($m);
-		
+		// Standard Detection Method. 
 		foreach($m[3] as $k=>$val)
 		{
+			if(!$val) continue;
 			$val = str_replace("`","",$val);
 			$ret[$val] = array(
 				'type'		=> strtoupper($m[1][$k]),
@@ -645,8 +700,25 @@ class db_verify
 			);
 		}
 		
+		//Alternate Index detection method. 
+		// eg.  `table_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		
+		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT)\s?KEY\s?,/i";
+		preg_match_all($regex,$data,$m);
+		
+		foreach($m[1] as $k=>$val)
+		{
+			if(!$val) continue;
+			
+		    $ret[$val] = array(
+				'type'		=> strtoupper($m[3][$k]),
+				'keyname'	=> $m[1][$k],
+				'field'		=> str_replace("`","",$m[1][$k])
+			);	
+		}
+
 		return $ret;
-		//print_a($ret);
+
 	}
 	
 	
@@ -741,7 +813,7 @@ class db_verify
 					</table>
 						<div class='buttons-bar center'>
 							".$frm->admin_button('db_verify', DBVLAN_15)."
-							".$frm->admin_button('db_tools_back', DBVLAN_17, 'back')."
+							".$frm->admin_button('db_tools_back', LAN_BACK, 'back')."
 						</div>
 					</fieldset>
 				</form>
