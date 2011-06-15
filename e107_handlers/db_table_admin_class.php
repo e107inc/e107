@@ -25,6 +25,9 @@
  Note: there are some uncommented 'echo' statements which are intentional to highlight that something's gone wrong! (not that it should, of course)
  */
 
+ 
+// DEPRECATED - USE db_verify_class where possible. 
+
 class db_table_admin
 {
 	var $file_buffer = ''; // Contents of a file

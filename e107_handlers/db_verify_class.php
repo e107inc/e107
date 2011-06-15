@@ -27,12 +27,21 @@ class db_verify
 	var $sqlLanguageTables = array();
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
+	var $fixList = array();
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 							
 	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
 		'real','double','float','decimal','numeric','varchar','char','binary','varbinary','enum','set');
+	
+	var $modes = array(
+			'missing_table'		=> 'create',
+			'mismatch' 			=> 'alter',
+			'missing_field'		=> 'insert',
+			'missing_index' 	=> 'index',
+			'mismatch_index' 	=> '', // TODO
+		);
 	
 	/**
 	 * Setup
@@ -88,7 +97,7 @@ class db_verify
 		{
 			if(isset($_POST['runfix']))
 			{
-				$this->runFix();
+				$this->runFix($_POST['fix']);
 			
 			} 
 			
@@ -140,6 +149,30 @@ class db_verify
 	//	print_a($field);
 	//	print_a($match[2]);
 		// echo "<pre>".$sql_data."</pre>";
+	
+	/**
+	 * Check core tables and installed plugin tables
+	 */
+	function compareAll()
+	{
+		$dtables = array_keys($this->tables);
+
+		foreach($dtables as $tb)
+		{
+			$this->compare($tb);	
+		}
+			
+		foreach($this->sqlLanguageTables as $lng=>$lantab) // language tables. 
+		{
+			foreach($dtables as $tb)
+			{
+				$this->compare($tb,$lng);	
+			}			
+		}
+	}
+	
+	
+	
 	
 	
 	function compare($selection,$language='')
@@ -273,7 +306,47 @@ class db_verify
 			
 		}
 		
+
+	}
+	
+	/**
+	 * Compile Results into a complete list of Fixes that could be run without the need of a form selection. 
+	 */
+	function compileResults()
+	{
+		foreach($this->results as $tabs => $field)
+		{
+			$file = $this->results[$tabs]['_file'];		
+			if($this->errors[$tabs]['_status'] == 'missing_table') // Missing Table
+			{				
+				$this->fixList[$file][$tabs]['all'][] = 'create';
+			}					
+			elseif($this->errors[$tabs] != 'ok') // All Other Issues.. 
+			{
+				foreach($field as $k=>$f)
+				{
+					if($f['_status']=='ok') continue;
+					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
+				}	
+			}
+		}
 		
+		// Index
+		if(count($this->indices))
+		{
+			foreach($this->indices as $tabs => $field)
+			{
+				if($this->errors[$tabs] != 'ok')
+				{
+					foreach($field as $k=>$f)
+					{
+						if($f['_status']=='ok') continue;
+						$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
+					}	
+				}				
+			}		
+		}
+	
 	}
 	
 	
@@ -317,13 +390,6 @@ class db_verify
 			'missing_index'	=> DBVLAN_25,
 		);
 		
-		$modes = array(
-			'missing_table'		=> 'create',
-			'mismatch' 			=> 'alter',
-			'missing_field'		=> 'insert',
-			'missing_index' 	=> 'index',
-			'mismatch_index' 	=> '', // TODO
-		);
 		
 		foreach($this->results as $tabs => $field)
 		{
@@ -354,7 +420,7 @@ class db_verify
 						<td>".$k."&nbsp;</td>
 						<td class='center middle error'>".$fstat."</td>
 						<td>".$this->renderNotes($f)."&nbsp;</td>
-						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
+						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $this->modes[$f['_status']]) . "</td>
 					</tr>
 					";	
 				}	
@@ -385,7 +451,7 @@ class db_verify
 							<td>".$k."&nbsp;</td>
 							<td class='center middle error'>".$fstat."</td>
 							<td>".$this->renderNotes($f,'index')."&nbsp;</td>
-							<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $modes[$f['_status']]) . "</td>
+							<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $this->modes[$f['_status']]) . "</td>
 						</tr>
 						";	
 					}	
@@ -431,7 +497,7 @@ class db_verify
 	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
 	{
 		$frm = e107::getForm();
-		$text .= $frm->checkbox("fix[$file][$table][$field]", $mode, false, array('id'=>false));
+		$text .= $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}
@@ -530,16 +596,19 @@ class db_verify
 	
 	/**
 	 * Fix tables
+	 * FixArray eg. [core][table][field] = alter|create|index| etc. 
 	 */
-	function runFix()
+	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
 		
-		
-
-		
+		if(!is_array($fixArray))
+		{
+			$fixArray = $this->fixList;	// Fix All	
+		}
+				
 			
-		foreach($_POST['fix'] as $j=>$file)
+		foreach($fixArray as $j=>$file)
 		{
 						
 			foreach($file as $table=>$val)
@@ -547,65 +616,67 @@ class db_verify
 				
 				$id = $this->getId($this->tables[$j]['tables'],$table); 
 						
-				foreach($val as $field=>$mode)
+				foreach($val as $field=>$fixes)
 				{
-									
-					if(substr($mode,0,5)== 'index')
-					{
-						$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
-						$newval = $this->toMysql($fdata[$field],'index');	
-					}
-					else
-					{
-						
-						$fdata = $this->getFields($this->tables[$j]['data'][$id]);											
-						$newval = $this->toMysql($fdata[$field]);	
-					}
-					
-					
-					switch($mode)
-					{
-						case 'alter':
-							$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
-						break;
-			
-						case 'insert':
-							$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
-							$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
-						break;
-						
-						case 'drop':
-							$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
-						break;
-						
-						case 'index':
-							$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
-						break;
-						
-						case 'indexdrop':
-							$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
-						break;
-						
-						case 'create':
-							$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->tables[$j]['data'][$id].") ENGINE=MyISAM;";
-						break;
-					}
-					
-			
-					// $mes->addDebug("Query: ".$query);		
-					// continue;	
-					 
-					 
-					if(mysql_query($query))
-					{
-						$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);	
-					} 
-					else 
-					{
-						$mes->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
-						if(mysql_errno())
+					foreach($fixes as $mode)
+					{				
+						if(substr($mode,0,5)== 'index')
 						{
-							$mes->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+							$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
+							$newval = $this->toMysql($fdata[$field],'index');	
+						}
+						else
+						{
+							
+							$fdata = $this->getFields($this->tables[$j]['data'][$id]);											
+							$newval = $this->toMysql($fdata[$field]);	
+						}
+						
+						
+						switch($mode)
+						{
+							case 'alter':
+								$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+							break;
+				
+							case 'insert':
+								$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
+								$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+							break;
+							
+							case 'drop':
+								$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+							break;
+							
+							case 'index':
+								$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
+							break;
+							
+							case 'indexdrop':
+								$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+							break;
+							
+							case 'create':
+								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->tables[$j]['data'][$id].") ENGINE=MyISAM;";
+							break;
+						}
+						
+				
+						// $mes->addDebug("Query: ".$query);		
+						// continue;	
+						 
+						 
+						if(mysql_query($query))
+						{
+							$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);	
+						} 
+						else 
+						{
+							$mes->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
+							if(mysql_errno())
+							{
+								$mes->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+							}
 						}
 					}	
 				}
@@ -739,7 +810,7 @@ class db_verify
 			}
 			
 			$prefix .= "lan_".$language."_";
-			$mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
+			// $mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}
 			
 		mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
