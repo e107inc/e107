@@ -278,27 +278,32 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
-	$new_tables = array('admin_log', 'audit_log', 'dblog', 'news_rewrite', 'core_media', 'mail_recipients', 'mail_content');
+	// No Longer required. - automatically checked against core_sql.php. 
+//	$new_tables = array('audit_log', 'dblog', 'news_rewrite', 'core_media', 'core_media_cat','cron', 'mail_recipients', 'mail_content');
 
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage.
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
 
 
 	// List of changed DB tables (defined in core_sql.php)
+	// No Longer required. - automatically checked against core_sql.php. 
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('user', 'dblog', 'admin_log', 'userclass_classes', 'banlist', 'menus',
-							 'plugin', 'news', 'news_category', 'online', 'page', 'links', 'comments');
+	// $changed_tables = array('user', 'dblog', 'admin_log', 'userclass_classes', 'banlist', 'menus',
+							 // 'plugin', 'news', 'news_category', 'online', 'page', 'links', 'comments');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
 	// key = plugin directory name. Data = comma-separated list of tables to check
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$pluginChangedTables = array('linkwords' => 'linkwords',
+	// No Longer required. - automatically checked by db-verify 
+	/* $pluginChangedTables = array('linkwords' => 'linkwords',
 								'featurebox' => 'featurebox',
 								'links_page' => 'links_page',
 								'poll' => 'polls',
 								'content' => 'pcontent'
 								);
+	 
+	 */
 
 	$setCorePrefs = array( //modified prefs during upgrade.
 		'adminstyle' => 'infopanel',
@@ -337,9 +342,9 @@ function update_706_to_800($type='')
 
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
 	$ip_upgrade = array('download_requests' => 'download_request_ip',
-						'submitnews' => 'submitnews_ip',
-						'tmp' => 'tmp_ip',
-						'chatbox' => 'cb_ip'
+						'submitnews' 		=> 'submitnews_ip',
+						'tmp' 				=> 'tmp_ip',
+						'chatbox' 			=> 'cb_ip'
 						);
 
 	$db_parser = new db_table_admin;				// Class to read table defs and process them
@@ -573,31 +578,34 @@ function update_706_to_800($type='')
 
 
 	//	Add index to download history
-	if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, $updateMessages)))
-	{
-		if ($just_check)
-		{
-			return update_needed($temp);
-		}
-	}
+	// Deprecated by db-verify-class
+	// if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, $updateMessages)))
+	// {
+		// if ($just_check)
+		// {
+			// return update_needed($temp);
+		// }
+	// }
 
 	// Extra index to tmp table
-	if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, $updateMessages)))
-	{
-		if ($just_check)
-		{
-			return update_needed($temp);
-		}
-	}
+	// Deprecated by db-verify-class
+	// if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, $updateMessages)))
+	// {
+		// if ($just_check)
+		// {
+			// return update_needed($temp);
+		// }
+	// }
 
 	// Extra index to rss table (if used)
-	if (FALSE !== ($temp = addIndexToTable('rss', 'rss_name', $just_check, $updateMessages, TRUE)))
-	{
-		if ($just_check)
-		{
-			return update_needed($temp);
-		}
-	}
+	// Deprecated by db-verify-class
+	// if (FALSE !== ($temp = addIndexToTable('rss', 'rss_name', $just_check, $updateMessages, TRUE)))
+	// {
+		// if ($just_check)
+		// {
+			// return update_needed($temp);
+		// }
+	// }
 
 	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force']))
@@ -610,7 +618,10 @@ function update_706_to_800($type='')
 		$do_save = TRUE;
 	}
 
-
+/*
+ * Deprecated by db-verify-class
+ * 
+ 
 	if ($sql->db_Table_exists('newsfeed'))
 	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
 		if ($sql->db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
@@ -626,7 +637,6 @@ function update_706_to_800($type='')
 			}
 		}
 	}
-
 
 	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download'))
@@ -662,7 +672,7 @@ function update_706_to_800($type='')
 		}
 	}
 
-
+*/
 	// Check need for user timezone before we delete the field
 	if (varsettrue($pref['signup_option_timezone']))
 	{
@@ -681,7 +691,7 @@ function update_706_to_800($type='')
 	}
 
 
-	// Tables defined in core_sql.php
+	// Tables defined in core_sql.php to be RENAMED. 
 	//---------------------------------
 	if ($sql->db_Table_exists('dblog') && !$sql->db_Table_exists('admin_log'))
 	{
@@ -704,6 +714,8 @@ function update_706_to_800($type='')
 	}
 	  
 	// New tables required (list at top. Definitions in core_sql.php)
+	// ALL DEPRECATED by db_verify class.. see below. 
+	/*
 	foreach ($new_tables as $nt)
 	{
 		if (!$sql->db_Table_exists($nt))
@@ -726,7 +738,8 @@ function update_706_to_800($type='')
 		}
 	}
 
-
+	
+	
 	// Tables whose definition needs changing significantly
      $debugLevel = E107_DBG_SQLDETAILS;
 
@@ -843,16 +856,7 @@ function update_706_to_800($type='')
 		}
 	}
 
-	// This has to be done after the table is upgraded
-	if($sql->db_Select('plugin', 'plugin_category', "plugin_category = ''"))
-	{
-		if ($just_check) return update_needed('Update plugin table');
-		require_once(e_HANDLER.'plugin_class.php');
-		$ep = new e107plugin;
-		$ep -> update_plugins_table();
-	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
-	 //	catch_error($sql);
-	}
+*/	
 
 
 	// Obsolete tables (list at top)
@@ -935,6 +939,40 @@ function update_706_to_800($type='')
 	}
 
 
+
+	/* -------------- Upgrade Entire Table Structure - Multi-Language Supported ----------------- */
+	
+	require_once(e_HANDLER."db_verify_class.php");
+	$dbv = new db_verify;
+	$dbv->compareAll(); // core & plugins
+	
+	if(count($dbv->errors))
+	{
+		if ($just_check) return update_needed("Database Tables require updating.");
+	}
+
+	$dbv->compileResults();
+	// print_a($dbv->results);
+	// print_a($dbv->fixList);	
+	$dbv->runFix(); // Fix entire core database structure. 
+
+	//TODO - send notification messages to Log. 
+
+
+	// -------------------  Populate Plugin Table With Changes ------------------ 
+	
+	// This has to be done after the table is upgraded
+	if($sql->db_Select('plugin', 'plugin_category', "plugin_category = ''"))
+	{
+		if ($just_check) return update_needed('Update plugin table');
+		require_once(e_HANDLER.'plugin_class.php');
+		$ep = new e107plugin;
+		$ep -> update_plugins_table();
+	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
+	 //	catch_error($sql);
+	}
+	
+
 	//-- Media-manger import --------------------------------------------------
 	
 	$med = e107::getMedia();
@@ -1005,6 +1043,7 @@ function update_706_to_800($type='')
 	return $just_check;
 }
 
+/* No Longed Used I think 
 function core_media_import($cat,$epath)
 {
 	if(!vartrue($cat)){ return;}
@@ -1053,7 +1092,7 @@ function core_media_import($cat,$epath)
 		}
 	}	
 }
-
+*/
 
 function update_70x_to_706($type='')
 {
