@@ -528,8 +528,7 @@ class admin_newspost
 
 		switch ($delete) {
 			case 'main':
-				//clear rewrite cache
-				
+							
 				if ($e107->sql->db_Count('news','(*)',"WHERE news_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newsdel", $del_id);
@@ -548,7 +547,7 @@ class admin_newspost
 			break;
 
 			case 'category':
-				//clear rewrite cache
+				
 				if(!getperms('0|7')) $this->noPermissions();
 
 				
@@ -689,10 +688,10 @@ class admin_newspost
 			$this->error = true;
 		}
 
-		if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
+	//	if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
 		{
-			$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
-			$this->error = true;
+		//	$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
+		//	$this->error = true;
 		}
 
 		if (!$this->error)
@@ -2074,17 +2073,14 @@ class admin_newspost
 		$frm = e107::getForm(false, true);
 
 		$category = array();
-		$category_rewrite = array();
+		
 		if ($this->getSubAction() == "edit" && !isset($_POST['update_category']))
 		{
 			if (e107::getDb()->db_Select("news_category", "*", "category_id=".$this->getId()))
 			{
 				$category = e107::getDb()->db_Fetch();
 			}
-			if($category && e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
-			{
-				$category_rewrite = e107::getDb()->db_Fetch();
-			}
+			
 		}
 
 		if($this->error && (isset($_POST['update_category']) || isset($_POST['create_category'])))
@@ -2122,14 +2118,19 @@ class admin_newspost
 									".$frm->text('category_name', $category['category_name'], 200)."
 									<div class='field-help'>Required field</div>
 								</td>
-							</tr>
-							<tr>
-								<td class='label'>Category friendly URL string</td>
-								<td class='control'>
-									".$frm->text('news_rewrite_string', varset($category_rewrite['news_rewrite_string']), 255)."
-									<div class='field-help'>To make this work, you need to enable 'SEF URLs' config profile from <a href='".e_ADMIN_ABS."eurl.php'>URL Configuration area</a></div>
-								</td>
-							</tr>
+							</tr>";
+							
+							// Disabled until e_url is complete. 
+							// $text .= "
+							// <tr>
+								// <td class='label'>Category friendly URL string</td>
+								// <td class='control'>
+									// ".$frm->text('category_sefurl', $category['category_sefurl'], 255)."
+									// <div class='field-help'></div>
+								// </td>
+							// </tr>";
+							
+							$text .= "
 							<tr>
 								<td class='label'>Category meta keywords</td>
 								<td class='control'>
@@ -2156,7 +2157,7 @@ class admin_newspost
 								<td class='control'>
 									".$frm->iconpicker('category_icon', $category['category_icon'], NWSLAN_54)."
 									".$frm->hidden('category_order', $category['category_order'])."
-									".$frm->hidden('news_rewrite_id', $category_rewrite['news_rewrite_id'])."
+									
 								</td>
 							</tr>
 						</tbody>
@@ -2227,7 +2228,7 @@ class admin_newspost
 						</thead>
 						<tbody>
 		";
-		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.*, nrewr.news_rewrite_string FROM #news_category AS ncat LEFT JOIN #news_rewrite AS nrewr ON ncat.category_id=nrewr.news_rewrite_source AND nrewr.news_rewrite_type=2 ORDER BY ncat.category_order ASC"))
+		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.* FROM #news_category AS ncat  ORDER BY ncat.category_order ASC"))
 		{
 			$tindex = 100;
 			while ($category = e107::getDb()->db_Fetch()) {
@@ -2239,7 +2240,7 @@ class admin_newspost
 					$icon = "<img class='icon action' src='{$icon}' alt='' />";
 				}
 
-				$sefstr = $category['news_rewrite_string'] ? "<br />SEF: <strong>{$category['news_rewrite_string']}</strong>" : '';
+				//$sefstr = $category['news_rewrite_string'] ? "<br />SEF: <strong>{$category['news_rewrite_string']}</strong>" : '';
 
 				$text .= "
 							<tr>
