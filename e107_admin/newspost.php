@@ -248,6 +248,9 @@ class admin_newspost
 	function __construct($qry, $pstobj)
 	{
 		global $user_pref;
+		
+		
+		
 		$this->parseRequest($qry);
 
 		require_once(e_HANDLER."cache_handler.php");
@@ -377,7 +380,7 @@ class admin_newspost
 	{
 		/*if($sefstr) $sefstr = md5($sefstr);
 		ecache::clear_sys("news_sefurl".$sefstr);*/
-		news::clearRewriteCache($sefstr);
+		// news::clearRewriteCache($sefstr);
 	}
 
 	function set_rwcache($sefstr, $data)
@@ -385,7 +388,7 @@ class admin_newspost
 		/**$sefstr = md5($sefstr);
 		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
 		ecache::set_sys("news_sefurl".$sefstr, $data, true);*/
-		news::setRewriteCache($sefstr, $data);
+		// news::setRewriteCache($sefstr, $data);
 	}
 
 	function ajax_observer()
@@ -461,6 +464,9 @@ class admin_newspost
 
 	function show_page()
 	{
+		
+		print_a($POST);
+		
 		switch ($this->getAction()) {
 			case 'savepreset':
 			case 'clr_preset':
@@ -523,13 +529,7 @@ class admin_newspost
 		switch ($delete) {
 			case 'main':
 				//clear rewrite cache
-				if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$del_id.' AND news_rewrite_type=1'))
-				{
-					$tmp = e107::getDb()->db_Fetch();
-					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
-					$this->clear_rwcache($tmp['news_rewrite_string']);
-					unset($tmp);
-				}
+				
 				if ($e107->sql->db_Count('news','(*)',"WHERE news_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newsdel", $del_id);
@@ -551,13 +551,7 @@ class admin_newspost
 				//clear rewrite cache
 				if(!getperms('0|7')) $this->noPermissions();
 
-				if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$del_id.' AND news_rewrite_type=2'))
-				{
-					$tmp = e107::getDb()->db_Fetch();
-					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
-					$this->clear_rwcache($tmp['news_rewrite_string']);
-					unset($tmp);
-				}
+				
 				if ($e107->sql->db_Count('news_category','(*)',"WHERE category_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newscatdel", $del_id);
@@ -1072,10 +1066,8 @@ class admin_newspost
         // --------------------------------------------
 
 		$query = "
-			SELECT n.*, nc.*, nr.news_rewrite_string, ncr.news_rewrite_string AS news_category_rewrite_string, u.user_name FROM #news AS n
+			SELECT n.*, nc.*, u.user_name FROM #news AS n
 			LEFT JOIN #news_category AS nc ON n.news_category=nc.category_id
-			LEFT JOIN #news_rewrite AS nr ON n.news_id=nr.news_rewrite_source AND nr.news_rewrite_type=1
-			LEFT JOIN #news_rewrite AS ncr ON n.news_category=ncr.news_rewrite_source AND nr.news_rewrite_type=2
 			LEFT JOIN #user AS u ON n.news_author=u.user_id
 		";
 
@@ -1334,17 +1326,6 @@ class admin_newspost
 					$_POST['news_meta_description'] = $row['news_meta_description'];
 				}
 			}
-
-			$row = array();
-			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=1'))
-			{
-				$row = e107::getDb()->db_Fetch();
-			}
-
-			$_POST['news_rewrite_id'] = varset($row['news_rewrite_id'], 0);
-			$_POST['news_rewrite_source'] = $this->getId();
-			$_POST['news_rewrite_string'] = isset($_POST['news_rewrite_string']) ? $_POST['news_rewrite_string'] : varset($row['news_rewrite_string'], '');
-			$_POST['news_rewrite_type'] = 1;
 		}
 	}
 
@@ -2020,9 +2001,9 @@ class admin_newspost
 			'news_rewrite_string' 	=> '',
 			'news_rewrite_type' 	=> 0
 		);
-		if ($e107->sql->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
+	//	if ($e107->sql->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
 		{
-			$category_rewrite = $e107->sql->db_Fetch();
+		//	$category_rewrite = $e107->sql->db_Fetch();
 		}
 		$jshelper->addResponseAction('fill-form', $category_rewrite);
 
