@@ -14,7 +14,10 @@
  * $Author$
 */
 
+
 if (!defined('e107_INIT')) { exit; }
+
+// IMPORTANT: This class is deprecated in it's current form and should not be utilized. 
 
 class eURL
 {
@@ -24,6 +27,7 @@ class eURL
 	protected $_link_handlers = array();
 
 	/**
+	 *
 	 * Create site url
 	 * Example: 
 	 * <code>e107::getUrl()->create('core::news', 'main', 'action=extend&id=1&sef=Item-SEF-URL');</code>
@@ -233,3 +237,4 @@ class eURL
 		throw new Exception('Method '.$method.' does not exist!');//FIXME - e107Exception handler
 	}
 }
+

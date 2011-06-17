@@ -2263,9 +2263,10 @@ class e107
 		}*/
 
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
+		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
 		if(!deftrue('e_SELF_DISABLE'))
 		{
-			define('e_SELF', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf);	
+			define('e_SELF', $_self);	
 		}
 		
 
@@ -2322,8 +2323,8 @@ class e107
 
 		// e_SELF has the full HTML path
 		$inAdminDir = FALSE;
-		$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
-		$e107Path = str_replace($this->base_path, '', e_SELF);				// Knock off the initial bits
+		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
 
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
@@ -2408,7 +2409,11 @@ class e107
 		
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
-		$_SERVER['QUERY_STRING'] = e_QUERY;
+		if(defined('e_QUERY'))
+		{
+			$_SERVER['QUERY_STRING'] = e_QUERY;	
+		}
+		
 
 	}
 

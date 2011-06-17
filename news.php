@@ -48,7 +48,8 @@ if (!defined('ITEMVIEW'))
 
 if (e_QUERY)
 {
-  $tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
+ 
+  $tmp = explode(".",e_QUERY);
   $action = $tmp[0];						// At least one parameter here
 	$sub_action = varset($tmp[1],'');			// Usually a numeric category, or numeric news item number, but don't presume yet
 //	$id = varset($tmp[2],'');					// ID of specific news item where required
@@ -87,19 +88,6 @@ Variables Used:
 $ix = new news;
 $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
-//Add rewrite search to db queries only if needed
-$rewrite_join = $rewrite_cols = $rewrite_join_cat = $rewrite_cols_cat = '';
-if(NEWS_REWRITE)
-{
-	//item
-	$rewrite_join = 'LEFT JOIN #news_rewrite AS nr ON n.news_id=nr.news_rewrite_source AND nr.news_rewrite_type=1';
-	$rewrite_cols = ', nr.*';
-
-	//category
-	$rewrite_join_cat = 'LEFT JOIN #news_rewrite AS ncr ON n.news_category=ncr.news_rewrite_source AND ncr.news_rewrite_type=2';
-	$rewrite_cols_cat = ', ncr.news_rewrite_id AS news_category_rewrite_id, ncr.news_rewrite_string AS news_category_rewrite_string ';
-}
-
 //------------------------------------------------------
 //		DISPLAY NEWS IN 'CATEGORY' FORMAT HERE
 //------------------------------------------------------
@@ -133,8 +121,6 @@ if ($action == 'cat' || $action == 'all')
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
@@ -152,8 +138,6 @@ if ($action == 'cat' || $action == 'all')
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_category=".intval($sub_action)."
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
@@ -217,7 +201,10 @@ if ($action == 'cat' || $action == 'all')
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
-	$parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
+	// Deprecated. 
+	// $parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
+	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
+	
 	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE)
@@ -260,8 +247,6 @@ if ($action == 'extend')
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."'
 		AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
@@ -275,8 +260,6 @@ if ($action == 'extend')
 	  	FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
 		AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()."
@@ -390,8 +373,6 @@ switch ($action)
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_category={$sub_action}
@@ -411,8 +392,6 @@ switch ($action)
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		GROUP by n.news_id";
@@ -425,8 +404,6 @@ switch ($action)
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
 	}
@@ -455,8 +432,6 @@ switch ($action)
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
@@ -485,8 +460,6 @@ switch ($action)
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
@@ -501,8 +474,6 @@ switch ($action)
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		{$rewrite_join}
-		{$rewrite_join_cat}
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
@@ -633,7 +604,11 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
 
 	require_once(HEADERF);
-	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
+	// Deprecated
+	// $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
+    
+    $sub_action = intval($sub_action);
+    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
     $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
     $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 //    $text=''.$text.'<center>'.$nextprev.'</center>';
@@ -679,7 +654,8 @@ else
 		$i++;
 	}
 
-	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
+	$sub_action = intval($sub_action);
+	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
  	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 

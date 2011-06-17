@@ -71,22 +71,24 @@ class links_admin_ui extends e_admin_ui
 	public $sublink_data = null;
 
 	protected $fields = array(
-		'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
-		'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
-		'link_id'			=> array('title'=> ID, 			'noedit'=>TRUE),
-		'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'text', 'validate' => true),
-		'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text', 'validate' => true),
+		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
+		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
+		'link_id'			=> array('title'=> ID, 				'noedit'=>TRUE),
+		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'validate' => true),
+		'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'link_url'	   		=> array('title'=> LCLAN_93, 		'width'=>'auto', 'type'=>'text', 'validate' => true),
+		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'width' => 'auto'),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
 		'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		'options' 			=> array('title'=> LAN_OPTIONS, 		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
+		
+		'options' 			=> array('title'=> LAN_OPTIONS, 	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
 	);
 
-	protected $fieldpref =  array('checkboxes','link_id','link_name','link_class','link_order','options');
+	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','link_order','options');
 
 	protected $prefs = array(
 		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
@@ -504,6 +506,27 @@ class links_model_admin_tree extends e_admin_tree_model
 class links_admin_form_ui extends e_admin_form_ui
 {
 	protected $current_parent = null;
+	
+	private $linkFunctions;
+
+	function init()
+	{
+		
+
+		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
+			
+		foreach($tmp as $cat=> $array)
+		{
+			$func = array();
+			foreach($array as $val)
+			{
+				$newkey = $cat.'::'.$val['function'];
+				$func[$newkey] = $val['name'];
+			}
+			$this->linkFunctions[$cat] = $func;
+		}
+	}
+	
 	function link_parent($value, $mode)
 	{
 		switch($mode)
@@ -544,6 +567,24 @@ class links_admin_form_ui extends e_admin_form_ui
 				$this->_parent_select_array(0, $cats, $ret);
 				return $ret;
 			break;
+		}
+	}
+
+	function link_function($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $curVal; //  $this->linkFunctions[$curVal];
+		}
+
+		if($mode == 'write')
+		{			
+			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
+		}
+
+		else
+		{
+			return $this->linkFunctions;
 		}
 	}
 

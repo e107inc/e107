@@ -18,16 +18,23 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 class sitelinks
 {
 	var $eLinkList = array();
+	var $sefList = array();
 
 	function getlinks($cat=1)
-	{
+	{	
 		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
 		$sql = e107::getDb('sqlSiteLinks');
-		$query = "SELECT * FROM #links WHERE link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
+		$ins = ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
+		$query = "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
 		if($sql->db_Select_gen($query))
 		{
 			while ($row = $sql->db_Fetch())
 			{
+				if($row['link_sefurl'])
+				{
+					$this->sefList[$row['link_sefurl']]	= $row['link_url'];	
+				}
+				
 				//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
 				//		$tmp=explode('.', $row['link_name'], 3);
 				//		$this->eLinkList[$tmp[1]][]=$row;
@@ -239,6 +246,11 @@ class sitelinks
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
+		
+		if(vartrue($linkInfo['link_sefurl'])) 
+		{
+			$linkInfo['link_url'] = $linkInfo['link_sefurl'];
+		}
 
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) 

@@ -319,9 +319,10 @@ define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
 define("LAN_FILE", "File");
 define("LAN_EXECUTE","Execute");
+define("LAN_SEFURL","SEF URL");
 
 
-define("LAN_SECURITYL_0", "Looking for troubles (none)");
+define("LAN_SECURITYL_0", "Looking for trouble (none)");
 define("LAN_SECURITYL_5", "Balanced");
 define("LAN_SECURITYL_7", "High");
 define("LAN_SECURITYL_9", "Paranoid");

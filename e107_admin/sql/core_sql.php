@@ -220,6 +220,7 @@ CREATE TABLE links (
   link_open tinyint(1) unsigned NOT NULL default '0',
   link_class varchar(255) NOT NULL default '0',
   link_function varchar(100) NOT NULL default '',
+  link_sefurl varchar(255) NOT NULL,
   PRIMARY KEY  (link_id)
 ) ENGINE=MyISAM;
 
@@ -335,21 +336,6 @@ CREATE TABLE news_category (
   category_order tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (category_id),
   KEY category_order (category_order)
-) ENGINE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `news_rewrite`
-#
-
-CREATE TABLE news_rewrite (
-  news_rewrite_id int(10) unsigned NOT NULL auto_increment,
-  news_rewrite_source int(10) unsigned NOT NULL,
-  news_rewrite_string varchar(255) NOT NULL default '',
-  news_rewrite_type tinyint(1) unsigned NOT NULL  default '1',
-  PRIMARY KEY  (news_rewrite_id),
-  UNIQUE KEY news_rewrite_string (news_rewrite_string),
-  UNIQUE KEY news_rewrite_source_type (news_rewrite_source,news_rewrite_type)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
