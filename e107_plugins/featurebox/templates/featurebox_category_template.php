@@ -90,7 +90,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = 'new Featurebox(\'featur
 
 
 
-//TODO - tabs template. 
+//TODO - tabs template.
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_start'] = '
 <div class="box featurebox admintabs" id="featurebox-tab-container">
 	{FEATUREBOX_NAVIGATION|tabs=loop&uselimit}
@@ -116,7 +116,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_separator'] = '<div class="clear"><!
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_empty'] = '';
 
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_start'] = '<div class="tabs"><ul class="e-tabs clear" id="front-tabs">';
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_item'] = '<li id="featurebox-tab-{FEATUREBOX_NAV_COUNTER}"><a href="#tab-{FEATUREBOX_NAV_COUNTER}-activate"><span>{FEATUREBOX_TITLE}</span></a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_item'] = '<li id="featurebox-tab-{FEATUREBOX_COUNTER}"><a href="#tab-{FEATUREBOX_COUNTER}-activate"><span>{FEATUREBOX_TITLE}</span></a></li>';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_end'] = '</ul></div>';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_separator'] = '';
 
@@ -126,12 +126,12 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js'] = '{e_FILE}jslib/core/tabs.js';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_inline'] = 'new e107Widgets.Tabs("featurebox-tab-container", { bookmarkFix: false });';
 
 /**
- * Template information. 
+ * Template information.
  * Allowed keys:
  * - title: Dropdown title (language constants are accepted e.g. 'MY_LAN')
  * - [optional] description: Template description (language constants are accepted e.g. 'MY_LAN') - UNDER CONSTRUCTION
  * - [optional] image: Template image preview (path constants are accepted e.g. '{e_PLUGIN}myplug/images/mytemplate_preview.png') - UNDER CONSTRUCTION
- * 
+ *
  * @var array
  */
 $FEATUREBOX_CATEGORY_INFO = array(

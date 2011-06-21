@@ -41,6 +41,7 @@ class plugin_featurebox_item extends e_model
 	 * Parameter list (GET string format):
 	 * - alt: return title as tag attribute text
 	 * - url: add url tag to the output (only if 'fb_imageurl' is available)
+	 * - rel: rel tag attribute
 	 *
 	 * @param string $parm
 	 * @return string
@@ -57,10 +58,36 @@ class plugin_featurebox_item extends e_model
 		$ret = $tp->toHTML($this->get('fb_title'), false, 'TITLE');
 		if(isset($parm['url']) && $this->get('fb_imageurl'))
 		{
-			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$ret.'</a>';
+			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$ret.'</a>';
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * Parameter list (GET string format):
+	 * - text: used if href is true
+	 * - href (1/0): return only URL if false, else return tag
+	 * - rel: rel tag attribute
+	 *
+	 * @param string $parm
+	 * @return string
+	 */
+	public function sc_featurebox_url($parm = '')
+	{
+		$tp = e107::getParser();
+		$url = $tp->replaceConstants($this->get('fb_imageurl'), 'full');
+		if(empty($url)) return '';
+
+		parse_str($parm, $parm);
+		if(!vartrue($parm['href']))
+		{
+			return $tp->replaceConstants($url);
+		}
+
+		$title = vartrue($parm['text']) ? defset($parm['text']) : FBLAN_02;
+		$alt = $tp->toAttribute($this->get('fb_title'), false, 'TITLE');
+		return '<a id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
 	}
 
 	public function sc_featurebox_text()
