@@ -25,13 +25,13 @@ class plugin_featurebox_item extends e_model
 	 * @var string
 	 */
 	protected $_field_id = 'fb_id';
-	
+
 	/**
 	 * @see e_model::_db_table
 	 * @var string
 	 */
 	protected $_db_table = 'featurebox';
-	
+
 	/**
 	 * @var plugin_featurebox_category
 	 */
@@ -41,7 +41,7 @@ class plugin_featurebox_item extends e_model
 	 * Parameter list (GET string format):
 	 * - alt: return title as tag attribute text
 	 * - url: add url tag to the output (only if 'fb_imageurl' is available)
-	 * 
+	 *
 	 * @param string $parm
 	 * @return string
 	 */
@@ -53,26 +53,26 @@ class plugin_featurebox_item extends e_model
 		{
 			return $tp->toAttribute($this->get('fb_title'));
 		}
-		
+
 		$ret = $tp->toHTML($this->get('fb_title'), false, 'TITLE');
 		if(isset($parm['url']) && $this->get('fb_imageurl'))
 		{
-			return '<a id="featurebox-titleurl-"'.$this->getId().' href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$ret.'</a>';
+			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$ret.'</a>';
 		}
-		
+
 		return $ret;
 	}
-	
+
 	public function sc_featurebox_text()
 	{
 		return e107::getParser()->toHTML($this->get('fb_text'), true, 'BODY');
 	}
-	
+
 	/**
 	 * Parameter list (GET string format):
 	 * - src: return image src URL only
 	 * - nourl: force no url tag
-	 * 
+	 *
 	 * @param string $parm
 	 * @return string
 	 */
@@ -84,7 +84,7 @@ class plugin_featurebox_item extends e_model
 		}
 		parse_str($parm, $parm);
 		$tp = e107::getParser();
-		
+
 		$src = $tp->replaceConstants($this->get('fb_image'), 'full');
 
 		if(isset($parm['src']))
@@ -98,7 +98,7 @@ class plugin_featurebox_item extends e_model
 		}
 		return '<a id="featurebox-imageurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$tag.'</a>';
 	}
-	
+
 	/**
 	 * Item counter number (starting from 1)
 	 */
@@ -106,7 +106,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('counter', 1);
 	}
-	
+
 	/**
 	 * Item limit number
 	 */
@@ -114,7 +114,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('limit', 0);
 	}
-	
+
 	/**
 	 * Number of items (real) currently loaded
 	 */
@@ -122,7 +122,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('total', 0);
 	}
-	
+
 	/**
 	 * Total Number of items (no matter of the limit)
 	 */
@@ -130,7 +130,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getCategory()->sc_featurebox_category_all();
 	}
-	
+
 	/**
 	 * Number of items per column
 	 */
@@ -138,7 +138,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('cols', 1);
 	}
-	
+
 	/**
 	 * Item counter number inside a column (1 to sc_featurebox_cols)
 	 */
@@ -146,7 +146,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('col_counter', 1);
 	}
-	
+
 	/**
 	 * Column counter
 	 */
@@ -154,7 +154,7 @@ class plugin_featurebox_item extends e_model
 	{
 		return $this->getParam('cols_counter', 1);
 	}
-	
+
 	/**
 	 * Set current category
 	 * @param plugin_featurebox_category $category
@@ -162,7 +162,7 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function setCategory($category)
 	{
-		$this->_category = $category; 
+		$this->_category = $category;
 		return $this;
 	}
 
@@ -179,10 +179,10 @@ class plugin_featurebox_item extends e_model
 		}
 		return $this->_category;
 	}
-	
+
 	/**
 	 * Magic call - category shortcodes
-	 * 
+	 *
 	 * @param string $method
 	 * @param array $arguments
 	 */
