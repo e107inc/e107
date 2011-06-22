@@ -672,8 +672,7 @@ class e_db_mysql
 			case 'todb':
 			default:
 				if($fieldValue == '') { return "''"; }
-				$e107 = e107::getInstance();
-				return "'".$e107->tp->toDB($fieldValue)."'";
+				return "'".e107::getParser()->toDB($fieldValue)."'";
 				break;
 	  	}
 	}
