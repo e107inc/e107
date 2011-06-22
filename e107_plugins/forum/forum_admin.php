@@ -194,7 +194,12 @@ if(isset($_POST['update_parent']))
 	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
 	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
 	$tmp['WHERE'] = 'forum_id = '.(int)$id;
-	$e107->sql->db_Update('forum', $tmp);
+	$tmp['data']['forum_name'] = $_POST['forum_name'];
+	$tmp['data']['forum_datestamp'] = time();
+	$tmp['data']['forum_class'] = $_POST['forum_class'];
+	$tmp['data']['forum_postclass'] = $_POST['forum_postclass'];
+	$tmp['data']['forum_threadclass'] = $_POST['forum_threadclass'];
+	e107::getDb()->db_Update('forum', $tmp);
 	$forum->show_message(FORLAN_14);
 	$action = 'main';
 }
