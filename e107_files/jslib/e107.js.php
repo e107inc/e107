@@ -33,7 +33,7 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  */
 function SyncWithServerTime(serverTime, path, domain)
 {
-	if (serverTime) 
+	if (serverTime)
 	{
 	  	/* update time difference cookie */
 		var serverDelta=Math.floor(localTime-serverTime);
@@ -534,7 +534,7 @@ var e107Base = {
         return data;
     },
 
-    parseLan: function(str) { 
+    parseLan: function(str) {
         return String(str).interpolate(this.getLanVars());
     },
 
@@ -885,7 +885,7 @@ Object.extend(e107Helper, {
 			e107Helper.selectAutoSubmit(e.element());
 		});
     },
-	
+
     selectAutoSubmit: function(el) {
 		var frm = el.up('form');
 		if (frm) {
@@ -896,7 +896,7 @@ Object.extend(e107Helper, {
 			}
 			frm.submit();
 		}
-		if(el.hasClassName('reset')) el.selectedIndex = 0; 
+		if(el.hasClassName('reset')) el.selectedIndex = 0;
     },
 
     /**
@@ -1149,7 +1149,7 @@ Element.addMethods( {
 	downShow: e107Helper.downShow,
 	downToggle: e107Helper.downToggle,
 	downExternalLinks: e107Helper.downExternalLinks,
-	
+
 	// -- more useful extensions - taken from Prototype UI --
 	getScrollDimensions: function(element) {
 	    element = $(element);
@@ -1191,11 +1191,11 @@ Element.addMethods( {
 Object.extend(document.viewport, {
 	// Alias this method for consistency
 	getScrollOffset: document.viewport.getScrollOffsets,
-	
+
 	setScrollOffset: function(offset) {
 		Element.setScrollOffset(Prototype.Browser.WebKit ? document.body : document.documentElement, offset);
 	},
-	
+
 	getScrollDimensions: function() {
 		return Element.getScrollDimensions(Prototype.Browser.WebKit ? document.body : document.documentElement);
 	}
@@ -1244,7 +1244,7 @@ e107Helper.BB = {
 	    newStart = eField.selectionStart + tags.start.length + sel.length + tags.end.length;
 	    if(eField.selectionStart || (!eField.selectionStart && eField.selectionEnd != eField.textLength)) {
 	    	newEnd = (eField.value).substring(eField.selectionEnd, eField.textLength);
-	    } 
+	    }
 	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + newEnd;
 	    eField.focus(); eField.selectionStart = newStart; eField.selectionEnd = newStart; eField.scrollTop = scrollPos;
 	    return;
@@ -1710,9 +1710,10 @@ var addtext = function(text, emote) {
 // Prompt for user input value
 var addinput = function(text) {
 
-	var rep = text.match(/=([a-z0-9, ]*)]/);	
-	var val = prompt(rep[1]);
-			
+// quick fix to prevent JS errors - proper match was done only for latin words
+	var rep = text.match(/\=([^\]]*)\]/);
+	var val = rep ? prompt(rep[1]) : prompt('http://');
+
 	if(!val)
 	{
 		return;
@@ -2326,7 +2327,7 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 
 				onException: function(request, e) {
 					//TODO handle exceptions
-					alert('e107Ajax Exception: ' + e); 
+					alert('e107Ajax Exception: ' + e);
 				}
 		}
 
@@ -2607,7 +2608,7 @@ Object.extend(e107Ajax, {
 		Object.extend(opt.parameters, parm || {});
 		if ($(form).hasAttribute('method') && !opt.method) opt.method = $(form).method;
 		if(!opt.method) opt.method = 'post';
-		
+
 		if(container)
 			return new e107Ajax.Updater(container, url, opt);
 
