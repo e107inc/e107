@@ -1716,15 +1716,37 @@ function e107_require($fname) {
 }
 
 function e107_filter($input,$key,$type)
-{	
-	if (is_array($input))
+{
+		
+	if(is_array($input))
 	{
-		return array_walk($input, 'e107_filter',$type);	
+		return array_walk($input, 'e107_filter', $type);	
 	} 
+	
+	$input64 = base64_decode($input);
+	
+	if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
+	{
+		$regex = "/(chr|fwrite|fopen|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|leak|apache_child_terminate|wget|curl -o|fetch|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) ?\(?(.*) ?\;?/i";
+		if(preg_match($regex,$input))
+		{
+			exit();
+		}
+		if(preg_match($regex,$input64))
+		{
+			exit();
+		}			
+	}
+	
 	
 	if($type == "_SERVER")
 	{	
-		if(($key == "QUERY_STRING") && strpos(strtolower($input),"=http")!==FALSE)
+		if(($key == "QUERY_STRING") && (strpos(strtolower($input),"=http")!==FALSE || strpos(strtolower($input),"http%3A%2F%2F")!==FALSE))
+		{
+			exit();
+		}
+		
+		if(($key == "QUERY_STRING") && (strpos(strtolower($input64),"=http")!==FALSE || strpos(strtolower($input64),"http%3A%2F%2F")!==FALSE))
 		{
 			exit();
 		}
