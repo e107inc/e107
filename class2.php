@@ -1715,16 +1715,14 @@ function e107_require($fname) {
 	return $ret;
 }
 
-function e107_filter($input,$key,$type)
+function e107_filter($input,$key,$type,$base64=FALSE)
 {
 		
 	if(is_array($input))
 	{
 		return array_walk($input, 'e107_filter', $type);	
 	} 
-	
-	$input64 = base64_decode($input);
-	
+		
 	if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 	{
 		$regex = "/(chr|fwrite|fopen|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|leak|apache_child_terminate|wget|curl -o|fetch|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) ?\(?(.*) ?\;?/i";
@@ -1732,12 +1730,8 @@ function e107_filter($input,$key,$type)
 		{
 			exit();
 		}
-		if(preg_match($regex,$input64))
-		{
-			exit();
-		}			
-	}
 	
+	}
 	
 	if($type == "_SERVER")
 	{	
@@ -1745,12 +1739,7 @@ function e107_filter($input,$key,$type)
 		{
 			exit();
 		}
-		
-		if(($key == "QUERY_STRING") && (strpos(strtolower($input64),"=http")!==FALSE || strpos(strtolower($input64),"http%3A%2F%2F")!==FALSE))
-		{
-			exit();
-		}
-		
+				
 		if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 		{
 			exit();	
@@ -1762,9 +1751,14 @@ function e107_filter($input,$key,$type)
 		exit();
 	} 
 	
+	if($base64 != TRUE)
+	{
+		e107_filter(base64_decode($input),$key,$type,TRUE);
+	}
+	
 }
 
-function include_lan($path, $force = false)
+function include_lan($path, $force = FALSE)
 {
 	if ( ! is_readable($path))
 	{
