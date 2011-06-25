@@ -474,6 +474,10 @@ else
 	session_cache_limiter("must-revalidate");	
 }
 
+$SESS_NAME = strtoupper(preg_replace("/[\W_]/","",$pref['cookie_name'])); // clean-up characters.  
+session_name($SESS_NAME); // avoid session conflicts with separate sites within subdomains
+unset($SESS_NAME);
+
 // Start session after $prefs are available.
 session_start(); // Needs to be started after language detection (session.cookie_domain) to avoid multi-language 'access-denied' issues. 
 header("Cache-Control: must-revalidate");	
@@ -1722,7 +1726,7 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 	{
 		return array_walk($input, 'e107_filter', $type);	
 	} 
-		
+			
 	if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 	{
 		$regex = "/(chr|fwrite|fopen|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|leak|apache_child_terminate|wget|curl -o|fetch|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) ?\(?(.*) ?\;?/i";
@@ -1757,6 +1761,9 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 	}
 	
 }
+
+
+
 
 function include_lan($path, $force = FALSE)
 {

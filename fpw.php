@@ -17,6 +17,10 @@
 +----------------------------------------------------------------------------+
 */
 define('e_NOCACHE',TRUE);
+if(isset($_POST['pwsubmit']) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once("class2.php");
 
 if(USER)

@@ -45,6 +45,7 @@ if(!isset($FPW_TABLE))
 		<tr style='vertical-align:top'>
 		<td class='forumheader' colspan='2' style='text-align:center'>
 		<input class='button' type='submit' name='pwsubmit' value='".LAN_156."' />
+		<input type='hidden' name='e-token' value=\"".e_TOKEN."\" />
 		</td>
 		</tr>
 		</table>
