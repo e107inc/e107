@@ -805,7 +805,7 @@ $sql->db_Delete("tmp", "tmp_time < ".(time() - 300)." AND tmp_ip!='data' AND tmp
 
 
 if (varset($pref['maintainance_flag'])
- && strpos(e_SELF, 'admin.php') === FALSE && strpos(e_SELF, 'sitedown.php') === FALSE)
+ && strpos(e_SELF, 'admin.php') === FALSE && strpos(e_SELF, 'sitedown.php') === FALSE && strpos(e_SELF, '/secure_img_render.php') === FALSE)
 {
 	if(!ADMIN || ($pref['maintainance_flag'] == e_UC_MAINADMIN && !getperms('0')))
 	{
