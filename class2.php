@@ -49,7 +49,6 @@ array_walk($_SERVER,  'e107_filter', '_SERVER');
 if (isset($_GET)) array_walk($_GET,     'e107_filter', '_GET');
 if (isset($_POST)) array_walk($_POST,    'e107_filter', '_POST');
 if (isset($_COOKIE)) array_walk($_COOKIE,  'e107_filter', '_COOKIE');
-if (isset($_REQUEST)) array_walk($_REQUEST, 'e107_filter', '_REQUEST'); 
 
 //
 // B: Remove all output buffering
@@ -1719,7 +1718,7 @@ function e107_require($fname) {
 	return $ret;
 }
 
-function e107_filter($input='',$key,$type,$base64=FALSE)
+function e107_filter($input,$key,$type,$base64=FALSE)
 {
 	if(is_string($input) && trim($input)=="")
 	{
@@ -1738,7 +1737,7 @@ function e107_filter($input='',$key,$type,$base64=FALSE)
 			$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 		}
 		
-		$regex = " /(base64_decode|chr|fwrite|fopen|fputs|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
+		$regex = " /(base64_decode|chr|php_uname|fwrite|fopen|fputs|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
