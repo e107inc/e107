@@ -194,7 +194,7 @@ class redirection
 			return;
 		}
 		
-		if(e107::getPref('maintainance_flag'))
+		if(e107::getPref('maintainance_flag') && e_PAGE != 'secure_img_render.php')
 		{
 			// if not admin
 			if(!ADMIN 
