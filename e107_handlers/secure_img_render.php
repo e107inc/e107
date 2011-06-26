@@ -16,7 +16,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-require_once(realpath(dirname(__FILE__).'../../class2.php'));
+require_once(realpath(dirname(__FILE__).'/../class2.php'));
 
 require_once(e_HANDLER."secure_img_handler.php");
 
