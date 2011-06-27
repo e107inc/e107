@@ -43,7 +43,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_formstart()
 	{
-		return "<form enctype='multipart/form-data' method='post' action='".e_SELF.'?'.e_QUERY."' id='dataform'>";
+		return "<form enctype='multipart/form-data' method='post' action='".e_REQUEST_URL."' id='dataform'>";
 	}
 
 	function sc_formend()
