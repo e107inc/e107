@@ -399,7 +399,7 @@ if (isset($_POST['update_thread']))
 		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
-		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}");
+		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}&raw=1");
 		header('location:'.$url);
 		exit;
 	}
