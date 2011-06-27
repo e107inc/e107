@@ -224,14 +224,16 @@ foreach ($postList as $postInfo)
 		$postInfo['post_options'] = unserialize($postInfo['post_options']);
 	}
 	$loop_uid = (int)$postInfo['post_user'];
+	$tnum = $i;
 	$i++;
 
 	//TODO: Look into fixing this, to limit to a single query per pageload
+	$threadId = $thread->threadInfo['thread_id'];
 	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= " . USERID . ' LIMIT 1';
 	$e_hide_hidden = FORLAN_HIDDEN;
 	$e_hide_allowed = USER;
 
-	if ($i > 1)
+	if ($tnum > 1)
 	{
 		$postInfo['thread_start'] = false;
 		$alt = !$alt;
