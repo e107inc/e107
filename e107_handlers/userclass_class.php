@@ -201,9 +201,13 @@ class user_class
 		$start_array = explode(',', $startList);
 		foreach ($start_array as $sa)
 		{	// Merge in latest values - should eliminate duplicates as it goes
+			$is[] = $sa; // add parent to the flat list first
 			if (isset($this->class_tree[$sa]))
 			{
-				$is = array_merge($is,explode(',',$this->class_tree[$sa]['userclass_accum']));
+				if($this->class_tree[$sa]['userclass_accum'])
+				{
+					$is = array_merge($is,explode(',',$this->class_tree[$sa]['userclass_accum']));
+				}
 			}
 		}
 		if ($asArray)
@@ -849,9 +853,10 @@ class user_class
 	public function get_users_in_class($classList, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
 	{
 		$ret = array();
+		$classList = str_replace(' ','', $classList); // clean up white spaces
 		if ($includeAncestors) $classList = $this->get_all_user_classes($classList);
-		$class_regex = "(^|,)(".str_replace(' ','',str_replace(",", "|", $classList)).")(,|$)";
-		$qry = "SELECT 'user_id,{$fieldList}' FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
+		$class_regex = "(^|,)(".str_replace(",", "|", $classList).")(,|$)";
+		$qry = "SELECT user_id,{$fieldList} FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
 		if ($this->sql_r->db_Select_gen($qry))
 		{
 			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
