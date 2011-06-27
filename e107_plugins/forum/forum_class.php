@@ -1247,7 +1247,7 @@ class e107forum
 			{
 				foreach ($postCount as $k => $v)
 				{
-					$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_id='.$k);
+					$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_extended_id='.$k);
 				}
 			}
 
@@ -1308,7 +1308,7 @@ class e107forum
 			//decrement user post counts
 			if ($row['post_user'])
 			{
-				$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_id='.$row['post_user']);
+				$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
 			}
 
 			// update thread with correct reply counts
