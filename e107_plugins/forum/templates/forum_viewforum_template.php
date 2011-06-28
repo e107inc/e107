@@ -7,7 +7,6 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
- *
  * $URL$
  * $Id$
  */
@@ -43,7 +42,8 @@ $FORUM_VIEW_START = "
 	</td>
 	</tr>
 	</table>
-
+	<div class='spacer'>
+	{MESSAGE}
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder'>
 	<tr>
