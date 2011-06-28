@@ -17,7 +17,7 @@
 */
 
 // Experimental e-token
-if(isset($_POST['useraction']) || isset($_POST['adduser']) && !isset($_POST['e-token']))
+if((isset($_POST['useraction']) || isset($_POST['adduser'])) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
@@ -61,7 +61,7 @@ $sub_action = '';
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0]; // must be set before auth.php is loaded. 
+	$action = $tmp[0]; // must be set before auth.php is loaded.
 	$sub_action = varset($tmp[1],'');
 	$id = varset($tmp[2],0);
 	$from = varset($tmp[3],0);
@@ -411,11 +411,11 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test')
 }
 
 // ------- Delete User --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') 
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 {
-	if ($_POST['confirm']) 
+	if ($_POST['confirm'])
 	{
-		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'")) 
+		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'"))
 		{
 		   $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
 		   $e_event->trigger('userdel', intval($_POST['userid']));
@@ -426,7 +426,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 	}
 	else
 	{	// Put up confirmation
-		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) 
+		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' "))
 		{
 			$row = $sql->db_Fetch();
 			$qry = (e_QUERY) ? "?".e_QUERY : "";
@@ -895,7 +895,7 @@ class users
 		{
 			if($m == 0)
 			{
-				$text .= "<tr>";	
+				$text .= "<tr>";
 			}
 			$checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
@@ -1076,10 +1076,10 @@ class users
 		$ns->tablerender(USRLAN_55, $text);
 	}
 
-	function add_user() 
+	function add_user()
 	{
 		global $rs, $ns, $pref,$tp;
-		
+
 		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.'?create', "adduserform")."
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
