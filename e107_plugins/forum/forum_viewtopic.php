@@ -555,8 +555,8 @@ class e107ForumThread
 				break;
 
 			case 'last':
-				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
-				$thread->page = ($pages - 1);
+				$pages = ceil(($thread->threadInfo['thread_total_replies']) / $thread->perPage);
+				$thread->page = $_GET['p'] = $pages;
 				break;
 
 			case 'next': // FIXME - nextprev thread detection not working
