@@ -109,9 +109,12 @@ if(varset($pref['track_online']))
 
 require_once(HEADERF);
 $text='';
+// TODO - message batch shortcode
 if ($message)
 {
-	$ns->tablerender('', $message, array('forum_viewforum', 'msg'));
+	//$ns->tablerender('', $message, array('forum_viewforum', 'msg'));
+	//e107::getMessage()->add($thread->message);
+	$fVars->MESSAGE = $message;
 }
 
 $threadCount = $forumInfo['forum_threads'];

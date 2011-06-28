@@ -105,12 +105,14 @@ if (MODERATOR && isset($_POST['mod']))
 	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$postList = $forum->PostGet($thread->threadId, ($thread->page - 1) * $thread->perPage, $thread->perPage);
+$num = $thread->page ? $thread->page - 1 : 0;
+$postList = $forum->PostGet($thread->threadId, $num * $thread->perPage, $thread->perPage);
 
 $gen = new convert;
 if ($thread->message)
 {
-	$ns->tablerender('', $thread->message, array('forum_viewtopic', 'msg'));
+	//$ns->tablerender('', $thread->message, array('forum_viewtopic', 'msg'));
+	e107::getMessage()->add($thread->message);
 }
 
 if (isset($thread->threadInfo['thread_options']['poll']))
@@ -209,6 +211,8 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 $tVars->POLL = $pollstr;
 
 $tVars->FORUMJUMP = forumjump();
+
+$tVars->MESSAGE = $thread->message;
 
 $forstr = $tp->simpleParse($FORUMSTART, $tVars);
 
