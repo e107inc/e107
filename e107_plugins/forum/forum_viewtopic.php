@@ -89,7 +89,7 @@ if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo
 	$forum->threadIncview($thread->threadInfo['thread_id']);
 }
 
-define('e_PAGETITLE', $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off').' / '.$e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
+define('e_PAGETITLE', strip_tags($tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off')).' / '.$e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_01);
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && $forum->isModerator(USERID)));
 
@@ -107,6 +107,15 @@ if (MODERATOR && isset($_POST['mod']))
 
 $num = $thread->page ? $thread->page - 1 : 0;
 $postList = $forum->PostGet($thread->threadId, $num * $thread->perPage, $thread->perPage);
+
+// SEO - meta description (auto)
+if(count($postList))
+{
+	define("META_DESCRIPTION", $tp->text_truncate(
+		str_replace(
+			array('"', "'"), '', strip_tags($tp->toHTML($postList[0]['post_entry']))
+	), 250, '...'));
+}
 
 $gen = new convert;
 if ($thread->message)

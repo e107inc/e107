@@ -84,6 +84,16 @@ $forumInfo['forum_description'] = $e107->tp->toHTML($forumInfo['forum_descriptio
 
 $_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
 define('e_PAGETITLE', $_forum_name.' / '.LAN_01);
+
+// SEO - meta description (auto)
+if(!empty($forumInfo['forum_description']))
+{
+	define("META_DESCRIPTION", $tp->text_truncate(
+		str_replace(
+			array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
+	), 250, '...'));
+}
+
 //define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 //$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
