@@ -8,10 +8,8 @@
  *
  * Forum icons template - default
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_icons_template.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if ( ! defined('e107_INIT')) { exit(); }
