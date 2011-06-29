@@ -25,6 +25,7 @@ $FOOTER = "";
 define("e_PAGETITLE",MAILAN_60);
 require_once(HEADERF);
 set_time_limit(18000);
+ignore_user_abort(true);
 session_write_close();
 
 

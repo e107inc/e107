@@ -203,6 +203,14 @@ class pageClass
 		{
 			$ptitle = "<div class='cpage_title'>".$this -> title."</div>";
 		}
+		
+
+		if(ADMIN && getperms("5"))
+		{
+ 			$text .= "<a href='".e_ADMIN_ABS."cpage.php?create.edit.".$this -> pageID."'>
+			<img src='".e_IMAGE_ABS."/admin_images/edit_16.png' alt='edit' title='Edit' style='border: 0px none; height: 16px; width: 16px;'>
+			</a><br />";
+		}
 
 		$text .= $this -> pageToRender;
 		$text .= $this -> pageIndex();
