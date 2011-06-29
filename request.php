@@ -164,7 +164,14 @@ if(varset($pref['download_splashdelay'])==1 )
 		if(!$SPLASH_PREVIEW)
 		{
 			$_SESSION['download_splash'] = TRUE;
-			header("Refresh: 3; url=\"".$_SERVER['REQUEST_URI']."\"");		
+			
+			header("Refresh: 3; url=\"request.php?".intval(e_QUERY)."\"");
+
+			function core_head() // deprecated function in 0.8
+			{
+				return '<meta http-equiv="refresh" content="5; URL=request.php?'.intval(e_QUERY).'" />';	// in case the header fails. 
+			}
+				
 		}
 		
 		require_once(HEADERF);
@@ -196,7 +203,7 @@ if(varset($pref['download_splashdelay'])==1 )
 		$repl[2] = "</a>";
 		
 		$srch[3] = "[";
-		$repl[3] = "<a class='request-splash-clicklink' href='".e_SELF."?[nosplash]".e_QUERY."'>";
+		$repl[3] = "<a class='request-splash-clicklink' href='request.php?[nosplash]".$id."'>";
 		
 		$text = str_replace($srch,$repl,$REQUEST_TEMPLATE);
 				
