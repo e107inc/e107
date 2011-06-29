@@ -39,5 +39,5 @@ $MEMBERSONLY_TABLE = "
 </div>
 ";
 
-$MEMBERSONLY_END = "<div>";
+$MEMBERSONLY_END = "</div>";
 ?>

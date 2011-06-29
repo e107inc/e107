@@ -91,7 +91,9 @@ if (!USER)
 	echo $tp->simpleParse($LOGIN_TABLE_FOOTER, $tVars, false);
 }
 
-echo "</body></html>";
+$FOOTER = "";
+require_once(FOOTERF);
+//echo "</body></html>";
 
 $sql->db_Close();
 

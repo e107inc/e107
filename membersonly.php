@@ -38,4 +38,5 @@ echo $MEMBERSONLY_BEGIN;
 $ns->tablerender($MEMBERSONLY_CAPTION, $MEMBERSONLY_TABLE); 
 echo $MEMBERSONLY_END;
 
+require_once(FOOTERF);
 ?>
