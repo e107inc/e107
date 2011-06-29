@@ -725,15 +725,16 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<input type='radio' name='old_np' value='0'".(!$pref['old_np'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-
-	<tr>
-	<td class='forumheader3' style='width:50%;'>".PRFLAN_131.":  <div class='smalltext'>".PRFLAN_132."</div></td>
-	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody,admin,main,classes')."
-	</td>
-	</tr>\n
-
 ";
+	// Deprecated as of 0.7.16
+	// <tr>
+	// <td class='forumheader3' style='width:50%;'>".PRFLAN_131.":  <div class='smalltext'>".PRFLAN_132."</div></td>
+	// <td class='forumheader3' style='width:50%; text-align: right;'>
+	// ".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody,admin,main,classes')."
+	// </td>
+	// </tr>\n
+
+
 
 	if(file_exists(e_PLUGIN."geshi/geshi.php")) {
 		$text .= "<tr>

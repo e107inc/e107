@@ -1,8 +1,8 @@
-global $pref;
-if($pref['php_bbcode'] == e_UC_NOBODY) return '';
-
-if($sep != '' || $parm != '') { return $full_text; }
-$search = array("&quot;", "&#039;", "&#036;", '<br />', E_NL, "-&gt;");
-$replace = array('"', "'", "$", "\n", "\n", "->");
-$code_text = str_replace($search, $replace, $code_text);
-return eval($code_text);
+//<?php
+/*
+ * This bbcode has been removed for increased security within e107. 
+ * If you know PHP, it is recommended that instead of using a php bbcode, you write your own bbcode, shortcode or .php script.
+ * For more details, please see the documentation (wiki) at www.e107.org
+ * 
+ */
+return "No Longer Supported";
