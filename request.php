@@ -203,7 +203,7 @@ if(varset($pref['download_splashdelay'])==1 )
 		$repl[2] = "</a>";
 		
 		$srch[3] = "[";
-		$repl[3] = "<a class='request-splash-clicklink' href='request.php?[nosplash]".$id."'>";
+		$repl[3] = "<a class='request-splash-clicklink' href='request.php?[nosplash]".intval(e_QUERY)."'>";
 		
 		$text = str_replace($srch,$repl,$REQUEST_TEMPLATE);
 				
