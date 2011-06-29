@@ -75,7 +75,7 @@ class parseXml {
 				return $data;
 			}
 		}
-		if (function_exists("curl_init"))
+		if (function_exists("curl_init") && function_exists("curl_exec"))
 		{
 			$cu = curl_init();
 			curl_setopt($cu, CURLOPT_URL, $address);

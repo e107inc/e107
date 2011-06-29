@@ -17,6 +17,11 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
+if (!isset($pref['plug_installed']['content']))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
