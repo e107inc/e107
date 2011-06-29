@@ -132,7 +132,6 @@
 		<core name="old_np">0</core>
 		<core name="passwordEncoding">0</core>
 		<core name="password_CHAP">0</core>
-		<core name="php_bbcode">255</core>
 		<core name="post_html">254</core>
 		<core name="post_script">250</core>
 		<core name="filter_script">1</core>
