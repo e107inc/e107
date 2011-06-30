@@ -16,7 +16,7 @@
 
 /*   Example Custom secure_image_custom.php file:
 	<?php
-	 
+
 	$secureimg['image'] = "code_bg_custom";  // filename excluding the .ext
 	$secureimg['size']	= "15";
 	$secureimg['angle']	= "0";
@@ -24,16 +24,16 @@
 	$secureimg['y']		= "22";
 	$secureimg['font'] 	= "imagecode.ttf";
 	$secureimg['color'] = "90,90,90"; // red,green,blue
-	
+
 	 ?>
 */
 
-require_once(realpath(dirname(__FILE__).'/../class2.php'));
+define('e107_INIT', true);
+require_once(realpath(dirname(__FILE__)."/secure_img_handler.php"));
 
-require_once(e_HANDLER."secure_img_handler.php");
-
-$sim = new secure_image;
-$sim->render();
+$sim = new secure_image();
+$sim->render($_SERVER['QUERY_STRING']);
 
 exit;
+
 ?>
