@@ -16,12 +16,12 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-require_once(realpath(dirname(__FILE__).'/../class2.php'));
 
-require_once(e_HANDLER."secure_img_handler.php");
+define('e107_INIT', true);
+require_once(realpath(dirname(__FILE__)."/secure_img_handler.php"));
 
-$sim = new secure_image;
-$sim->render();
+$sim = new secure_image();
+$sim->render($_SERVER['QUERY_STRING']);
 
 exit;
 
