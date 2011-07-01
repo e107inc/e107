@@ -7,11 +7,8 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/avatar_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT'))
@@ -36,7 +33,7 @@ function avatar($avatar)
 	}
 	elseif (strpos($avatar, 'http://') === false)
 	{
-		return e_IMAGE."avatars/".$avatar;
+		return SITEURLBASE.e_IMAGE_ABS."avatars/".$avatar;
 	}
 	else
 	{
