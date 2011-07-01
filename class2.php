@@ -108,6 +108,7 @@ e107_ini_set('session.use_trans_sid',    0);
 
 
 
+
 if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 	foreach ($retrieve_prefs as $key => $pref_name) {
 		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
@@ -1736,15 +1737,15 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 		{
 			$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 		}
-		
-		$regex = " /(base64_decode|chr|php_uname|fwrite|fopen|fputs|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
+	
+		$regex = "/(document\.write|base64_decode|chr|php_uname|fwrite|fopen|fputs|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();
 		}
 		
-		$regex = " /(wget |curl -o |fetch |lwp-download )/i";
+		$regex = " /(wget |curl -o |fetch |lwp-download|onmouse)/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
