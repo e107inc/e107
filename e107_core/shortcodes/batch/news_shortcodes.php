@@ -334,7 +334,17 @@ class news_shortcodes extends e_shortcode
 		if (!$category_icon) { return ''; }
 
 		// We store SC path in DB now + BC
-		$src = $category_icon[0] == '{' ? e107::getParser()->replaceConstants($category_icon, 'abs') : e_IMAGE_ABS."newspost_images/".$category_icon;
+		if($category_icon[0] == '{')
+		{
+			$src =  e107::getParser()->replaceConstants($category_icon, 'abs');	
+		}
+		else
+		{
+			//Backwards Compatible Link.
+			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
+		}
+		
+		
 
 		//TODO - remove inline styles
 		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
