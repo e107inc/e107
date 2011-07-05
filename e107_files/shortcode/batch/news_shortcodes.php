@@ -36,7 +36,7 @@ $news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'BODY, fromadmin', $ne
 if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend")
 {
     $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-    $news_body .= "<br /><br />".$news_extended;
+    $news_body .= '<div class="e-news-extend">'.$news_extended.'</div>';
 }
 return $news_body;
 SC_END
