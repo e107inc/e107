@@ -271,7 +271,7 @@ class admin_newspost
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                 'category_name'			=> array('title' => NWSLAN_6, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
   				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false),
+				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'number', 		'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false),
 			   	'news_thumbnail'		=> array('title' => LAN_NEWS_22, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		  		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
@@ -465,7 +465,7 @@ class admin_newspost
 	function show_page()
 	{
 		
-		print_a($POST);
+	//	print_a($POST);
 		
 		switch ($this->getAction()) {
 			case 'savepreset':
@@ -582,7 +582,7 @@ class admin_newspost
 	function _observe_submit_item($sub_action, $id)
 	{
 		// ##### Format and submit item to DB
-
+		
 		$ix = new news;
 
 		if($_POST['news_start'])
@@ -646,6 +646,9 @@ class admin_newspost
 
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
+		
+		
+		
 
         $ret = $ix->submit_item($_POST, !vartrue($_POST['create_edit_stay']));
 		if($ret['error'])
@@ -738,36 +741,7 @@ class admin_newspost
 			if($id)
 			{
 				$inserta['data']['category_id'] = $id;
-				//Manage rewrite
-				if(!empty($_POST['news_rewrite_string']))
-				{
-					$rwinserta = array();
-					$rwinserta['data']['news_rewrite_source'] = $id;
-					$rwinserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-
-					$rwinserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
-					$rwinserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-
-					$rwinserta['data']['news_rewrite_type'] = 2;
-					$rwinserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-
-					$rid = e107::getDb()->db_Insert('news_rewrite', $rwinserta);
-					$rwinserta['data']['news_rewrite_id'] = $rid;
-					if(e107::getDb()->getLastErrorNumber())
-					{
-						$this->error = true;
-						$this->show_message('Category friendly URL string related problem detected!', E_MESSAGE_ERROR);
-						if(1052 == e107::getDb()->getLastErrorNumber())
-						{
-							$this->show_message('Category friendly URL string should be unique! ', E_MESSAGE_ERROR);
-						}
-						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
-						return;
-					}
-
-					$this->set_rwcache($_POST['news_rewrite_string'], $rwinserta['data']);
-					e107::getAdminLog()->log_event('NEWS_10', $rwinserta, E_LOG_INFORMATIVE, '');
-				}
+				
 
 				//admin log now supports DB array and method chaining
 				e107::getAdminLog()->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '');
@@ -813,11 +787,6 @@ class admin_newspost
 			$this->error = true;
 		}
 
-		if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
-		{
-			$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
-			$this->error = true;
-		}
 
 		if (!$this->error)
 		{
@@ -843,70 +812,14 @@ class admin_newspost
 			$updatea['WHERE'] = 'category_id='.$this->getId();
 
 			$inserta = array();
-			$rid = isset($_POST['news_rewrite_id']) ? $_POST['news_rewrite_id'] : 0;
+			$rid = 0;
 
-			$inserta['data']['news_rewrite_id'] = $rid;
-			$inserta['_FIELD_TYPES']['news_rewrite_id'] = 'int';
 
-			$inserta['data']['news_rewrite_source'] = $this->getId();
-			$inserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-
-			$inserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
-			$inserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-
-			$inserta['data']['news_rewrite_type'] = 2;
-			$inserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-
-			$oldsef = array();
-			//'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=2'
-			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_id='.intval($rid)))
-			{
-				$oldsef = e107::getDb()->db_Fetch();
-			}
 			$upcheck = e107::getDb()->db_Update("news_category", $updatea);
 			$rwupcheck = false;
 			if($upcheck || !e107::getDb()->getLastErrorNumber())
 			{
-				//Manage rewrite
-				if(!empty($_POST['news_rewrite_string']))
-				{
-					if($rid)
-					{
-						$inserta['WHERE'] = 'news_rewrite_id='.intval($rid);
-						$rwupcheck = e107::getDb()->db_Update('news_rewrite', $inserta);
-					}
-					else
-					{
-						$rwupcheck = e107::getDb()->db_Insert('news_rewrite', $inserta);
-						$inserta['data']['news_rewrite_id'] = $rwupcheck;
-					}
-					if(e107::getDb()->getLastErrorNumber())
-					{
-						$this->error = true;
-						$this->setSubAction('edit');
-						$this->show_message('Category friendly URL string related problem detected!', E_MESSAGE_ERROR);
-						if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
-						{
-							$this->show_message('Category friendly URL string should be unique! ', E_MESSAGE_ERROR);
-						}
-						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
-						return;
-					}
-				}
-				else
-				{
-					//remove SEF if required
-					if($oldsef)
-					{
-						$this->clear_rwcache($oldsef['news_rewrite_string']);
-						e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$oldsef['news_rewrite_id']);
-						e107::getAdminLog()->log_event('NEWS_11', $oldsef, E_LOG_INFORMATIVE, '');
-						$inserta = array( 'data' => array());
-						$rwupcheck = true;
-					}
-
-				}
-
+		
 				if ($upcheck || $rwupcheck)
 				{
 					//admin log now supports DB array and method chaining
@@ -925,9 +838,7 @@ class admin_newspost
 					$this->show_message(LAN_NO_CHANGE);
 				}
 
-				if(varset($oldsef['news_rewrite_string'])) $this->clear_rwcache($oldsef['news_rewrite_string']);
-				if($_POST['news_rewrite_string']) $this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']);
-
+				
 				$this->setId(0);
 			}
 			else
@@ -1078,11 +989,8 @@ class admin_newspost
 		else
 		{
 			$ordfield = 'n.news_datestamp';
-			if($this->getSubAction() == 'news_rewrite_string')
-			{
-				$ordfield = "nr.news_rewrite_string";
-			}
-			elseif($this->getSubAction() == 'user_name')
+
+			if($this->getSubAction() == 'user_name')
 			{
 				$ordfield = "u.user_name";
 			}
@@ -1112,8 +1020,8 @@ class admin_newspost
 							".$frm->thead($this->fields, $this->fieldpref, 'main.[FIELD].[ASC].[FROM]')."
 							<tbody>";
 
-			$ren_type = array("default","title","other-news","other-news 2");
-
+			$ren_type = array("default","title","other-news","other-news 2"); // Shortened
+			
 			foreach($newsarray as $row)
 			{
 				// PREPARE SOME DATA
@@ -1122,16 +1030,13 @@ class admin_newspost
 				$row['news_title'] 			= "<a href='".e107::getUrl()->createCoreNews("action=extend&id={$row['news_id']}&sef={$row['news_rewrite_string']}")."'>".$e107->tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
 				$row['category_name'] 		= "<a href='".e107::getUrl()->createCoreNews('action=list&id='.$row['category_id'].'&sef='.$row['news_category_rewrite_string'])."'>".$row['category_name']."</a>";
 				$row['news_render_type'] 	= $ren_type[$row['news_render_type']];
+	
 				$row['news_allow_comments'] = !$row['news_allow_comments'] ? true : false; // old reverse logic
 				$row['options'] 			= "
 												<a class='action' href='".e_SELF."?create.edit.{$row['news_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
 												".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
 											";
 				$row['checkboxes'] 			= $row['news_id'];
-				if(!varset($row['news_rewrite_string']))
-				{
-					$row['news_rewrite_string'] = ''; //prevent 'Not found' message
-				}
 
 				// AUTO RENDER
 				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'news_id');
@@ -1319,7 +1224,7 @@ class admin_newspost
 					$_POST['news_start'] = $row['news_start'];
 					$_POST['news_end'] = $row['news_end'];
 					$_POST['comment_total'] = e107::getDb()->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
-					$_POST['news_rendertype'] = $row['news_render_type'];
+					$_POST['news_render_type'] = $row['news_render_type'];
 					$_POST['news_thumbnail'] = $row['news_thumbnail'];
 					$_POST['news_meta_keywords'] = $row['news_meta_keywords'];
 					$_POST['news_meta_description'] = $row['news_meta_description'];
@@ -1721,7 +1626,7 @@ class admin_newspost
 
 
 		$text .= "
-										".$frm->radio_multi('news_rendertype', $this->news_renderTypes, $_POST['news_rendertype'], true)."
+										".$frm->radio_multi('news_render_type', $this->news_renderTypes, $_POST['news_render_type'], true)."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
