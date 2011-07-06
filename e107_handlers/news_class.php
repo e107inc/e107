@@ -38,6 +38,7 @@ class news {
 	//TODO - synch WIKI docs, add rewrite data to the event data
 	function submit_item($news, $smessages = false)
 	{
+		
 		global $e107cache, $e_event, $pref, $admin_log;
 
 		$tp = e107::getParser();
@@ -140,15 +141,13 @@ class news {
 			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
 			if ($sql->db_Update('news', $data))
 			{
+				
+			
 				e107::getAdminLog()->logArrayAll('NEWS_09', $logData);
 
-				//manage rewrites
+		
 				$data['data']['news_id'] = $news['news_id'];
-				if('error' === $this->handleRewriteSubmit('update', $data['data'], $datarw, $smessages))
-				{
-					$error = true;
-				}
-
+	
 				e107::getEvent()->trigger('newsupd', $data['data']);
 				$message = LAN_NEWS_21;
 				$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
@@ -171,21 +170,10 @@ class news {
 				else
 				{
 					$data['data']['news_id'] = $news['news_id'];
-					$check = $this->handleRewriteSubmit('update', $data['data'], $datarw, $smessages);
-					if ($check === true)
-					{
-						$message = LAN_NEWS_21;
-						$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
-					}
-					elseif ($check === 'error')
-					{
-						$error = true;
-					}
-					else
-					{
-						$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
-						$message = "<strong>".LAN_NEWS_46."</strong>";
-					}
+	
+					$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
+					$message = "<strong>".LAN_NEWS_46."</strong>";
+					
 
 					//FIXME - triggerHook should return array(message, message_type)
 					$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
@@ -209,13 +197,6 @@ class news {
 
 				//moved down - prevent wrong mysql_insert_id
 				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
-
-				//manage rewrites
-				if('error' === $this->handleRewriteSubmit('insert', $data['data'], $datarw, $smessages))
-				{
-					$error = true;
-				}
-
 				e107::getEvent()->trigger('newspost', $data['data']);
 
 				//XXX - triggerHook after trigger?
@@ -295,8 +276,11 @@ class news {
 		return $data;
 	}
 
+
+	// DEPRECATED - NOT TO BE USED. Way too many changes required to make it work. 
+
 	/**
-	 * Manage SEF URL string for current news
+	 * Manage SEF URL string for current news // Deprecated. 
 	 * FIXME - news rewrites should go to different handler
 	 *
 	 * @param string $action insert|update
@@ -305,8 +289,13 @@ class news {
 	 * @param boolean $session_message [optional] default false
 	 * @return mixed true|false for data has been[not] changed; 'error' for DB error
 	 */
+	/*
 	function handleRewriteSubmit($action, $news_data, $rewrite_data, $session_message = false)
 	{
+		return TRUE; 
+		
+		// Deprecated. 
+		
 		$rewrite_data['data']['news_rewrite_source'] = $news_data['news_id'];
 		$rewrite_data['_FIELD_TYPES']['news_rewrite_source'] = 'int';
 
@@ -400,10 +389,13 @@ class news {
 				return 'error';
 			break;
 		}
+		 
 
 		return false;
 	}
+*/
 
+	/*
 	public static function retrieveRewriteString($news_id, $type = 1)
 	{
 		//XXX - Best way we have now, discuss
@@ -447,7 +439,8 @@ class news {
 
 		return (isset(self::$_rewrite_map[$type][$news_id]) ? self::$_rewrite_map[$type][$news_id] : '');
 	}
-
+	
+	
 	public static function retrieveRewriteData($sefstr, $force = true)
 	{
 		//check runtime cache
@@ -481,7 +474,8 @@ class news {
 
 		return self::$_rewrite_data[$sefstr];
 	}
-
+*/
+	/*
 	public static function getRewriteCache($sefstr, $toArray = true)
 	{
 		$sefstr = md5($sefstr);
@@ -507,7 +501,8 @@ class news {
 		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
 		ecache::set_sys("news_sefurl".$sefstr, $data, true);
 	}
-
+	*/
+	
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param = array())
 	{
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
@@ -1143,20 +1138,8 @@ class e_news_category_tree extends e_model
 			return $this;
 		}
 
-		$sef = (e107::getUrl()->getProfileId('news') !== 'main');
-		if($sef)
-		{
-			$qry = "
-			SELECT nc.*, ncr.news_rewrite_string AS category_rewrite_string, ncr.news_rewrite_id AS category_rewrite_id FROM #news_category AS nc
-			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
-			ORDER BY nc.category_order ASC
-			";
-		}
-		else
-		{
-			$qry = "SELECT * FROM #news_category ORDER BY category_order ASC";
-		}
-
+		$qry = "SELECT * FROM #news_category ORDER BY category_order ASC";
+	
 		$tree = array();
 		$sql = e107::getDb();
 		$sql->db_Mark_Time('news_category_tree');
@@ -1186,23 +1169,9 @@ class e_news_category_tree extends e_model
 			return $this;
 		}
 
-		$sef = (e107::getUrl()->getProfileId('news') !== 'main');
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$time = time();
-		if($sef)
-		{
-			$qry = "
-			SELECT COUNT(n.news_id) AS category_news_count, nc.*, ncr.news_rewrite_string AS category_rewrite_string, ncr.news_rewrite_id AS category_rewrite_id FROM #news_category AS nc
-			LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
-			LEFT JOIN #news AS n ON n.news_category=nc.category_id
-			WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
-				AND n.news_start < ".$time." AND (n.news_end=0 || n.news_end>".$time.")
-			GROUP BY nc.category_id
-			ORDER BY nc.category_order ASC
-			";
-		}
-		else
-		{
+
 			$qry = "
 			SELECT COUNT(n.news_id) AS category_news_count, nc.* FROM #news_category AS nc
 			LEFT JOIN #news AS n ON n.news_category=nc.category_id
@@ -1211,7 +1180,7 @@ class e_news_category_tree extends e_model
 			GROUP BY nc.category_id
 			ORDER BY nc.category_order ASC
 			";
-		}
+
 
 		$tree = array();
 		$sql = e107::getDb();
