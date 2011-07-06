@@ -869,7 +869,7 @@ class e_userperms
 				
 		// Tools 
 		"Y"	=> array(ADMSLAN_67,E_16_INSPECT, E_32_INSPECT),	// File inspector
-		"9"	=> array(ADMSLAN_28,E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
+		"9"	=> array(ADMSLAN_28, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
 		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),		// Notify
 		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),			// Schedule Tasks
 		"S"	=> array(ADMSLAN_33,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
@@ -901,6 +901,8 @@ class e_userperms
 	protected $language_perms = array();
 
 	protected $main_perms = array();
+	
+	protected $full_perms = array();
 
 	protected $permSectionDiz = array(
 		'core'		=> ADMSLAN_74,
@@ -934,16 +936,16 @@ class e_userperms
 		
 	//	echo $plg->getIcon('forum');
 		
-		$sql->db_Select("plugin", "*", "plugin_installflag='1'");
-		while ($row2 = $sql->db_Fetch())
-		{
+	//	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
+	//	while ($row2 = $sql->db_Fetch())
+	//	{
 	//		$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs'));
 		//	$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon('forum')
-		}
+	//	}
 
 		asort($this->plugin_perms);
 
-		$this->plugin_perms = array("Z"=>ADMSLAN_62) + $this->plugin_perms;
+		$this->plugin_perms = array("Z"=> array('0'=>ADMSLAN_62)) + $this->plugin_perms;
 
 		if(e107::getConfig()->getPref('multilanguage'))
 		{
@@ -951,14 +953,17 @@ class e_userperms
 			sort($lanlist);
 			foreach($lanlist as $langs)
 			{
-				$this->language_perms[$langs] = $langs;
+				$this->language_perms[$langs] = array("0"=>$langs);
 			}
 		}
 
 		if(getperms('0'))
 		{
-			$this->main_perms = array('0' => ADMSLAN_58);
+			$this->main_perms = array('0' => array('0'=>ADMSLAN_58));
 		}
+
+		// Note: Using array_merge or array_merge_recursive will corrupt the array. 
+		$this->full_perms = $this->core_perms + $this->plugin_perms + $this->language_perms + $this->main_perms;
 
 	}
 
@@ -1007,7 +1012,7 @@ class e_userperms
 
 		}
 
-		return array_merge($this->core_perms,$this->plugin_perms,$this->language_perms,$this->main_perms);
+		return $this->full_perms;
 	}
 
 	function checkb($arg, $perms, $info='')
@@ -1041,7 +1046,7 @@ class e_userperms
 		$tmp = explode(".",$perms);
 		$permdiz = $this->getPermList();
 		$ptext = array();
-
+		
 		foreach($tmp as $p)
 		{
 			$ptext[] = is_array($permdiz[$p]) ? $permdiz[$p][0] : $permdiz[$p];
@@ -1050,11 +1055,11 @@ class e_userperms
 		$id = "id_".$uniqueID;
 
 
-		$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$perms}</div>";
+		$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$perms}</div>\n";
 
 		if(varset($ptext))
 		{
-			$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
+			$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li>\n<li>",$ptext)."</li></ul></div>\n";
 		}
 
 		/*

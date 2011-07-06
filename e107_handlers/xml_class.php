@@ -272,7 +272,7 @@ class xmlClass
 		$timeout = max($timeout, 3);
 		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea
 		// ... and there shouldn't be unprintable characters in the URL anyway
-		if (function_exists('file_get_contents'))
+		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
 			$data = file_get_contents(urldecode($address));
