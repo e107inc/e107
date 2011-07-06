@@ -550,6 +550,8 @@ attribute 7 = 32 x 32 image
 //TODO find out where is used $array_functions elsewhere, refactor it
 
 
+// DO NOT EDIT without first checking user_handler.php
+
 $array_functions = array(
 	0 => array(e_ADMIN.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	'', 2, E_16_ADPASS, E_32_ADPASS),
