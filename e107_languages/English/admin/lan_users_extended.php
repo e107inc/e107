@@ -4,9 +4,7 @@
 |     e107 website system - Language File.
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -91,6 +89,7 @@ define("EXTLAN_75", "Error adding field to database.");
 define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
 define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
 define('EXTLAN_78', 'Cannot find file --FILE-- needed to create data table');
+define('EXTLAN_79', 'Validation error - aborted.');
 
 
 //textbox

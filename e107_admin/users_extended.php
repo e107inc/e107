@@ -10,14 +10,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $URL$
-|     $Revision$
 |     $Id$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 
 // Experimental e-token
-if(isset($_POST['eu_action']) && !isset($_POST['e-token']))
+if(!empty($_POST) && !isset($_POST['e-token']))
 {
 	// set e-token so it can be processed by class2
 	$_POST['e-token'] = '';
@@ -62,8 +60,21 @@ require_once(e_HANDLER."userclass_class.php");
 
 
 $ue = new e107_user_extended;
-$message = '';
+$message = $user->prepare($_POST);
+if($message)
+{
+	if(defsettrue('E107_DEBUG_LEVEL'))
+	{
+		$message[] = EXTLAN_79;
+		$message = implode('<br />', $message);
+	}
+	else $message = EXTLAN_79;
 
+	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$user->show_extended();
+	require_once("footer.php");
+	exit;
+}
 
 
 
@@ -71,9 +82,9 @@ $message = '';
 if (isset($_POST['up_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$_parent = $qs[2];
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	$_parent = intval($qs[2]);
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
@@ -82,9 +93,9 @@ if (isset($_POST['up_x']))
 if (isset($_POST['down_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$_parent = $qs[2];
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	$_parent = intval($qs[2]);
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
@@ -93,8 +104,8 @@ if (isset($_POST['down_x']))
 if (isset($_POST['catup_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
@@ -103,8 +114,8 @@ if (isset($_POST['catup_x']))
 if (isset($_POST['catdown_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
@@ -112,8 +123,8 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
-  $ue_field_name = str_replace(' ','_',trim($_POST['user_field']));		// Replace space with underscore - better security
-  if (preg_match('#^\w+$#',$ue_field_name) === 1)						// Check for allowed characters, finite field length
+  $ue_field_name = str_replace(' ','_',trim($_POST['user_field'])); // Replace space with underscore - better security
+  if (preg_match('#^\w+$#',$ue_field_name) === 1)					// Check for allowed characters, finite field length
   {
 	if($_POST['user_type']==4)
 	{
@@ -145,26 +156,47 @@ if (isset($_POST['add_field']))
 
 if (isset($_POST['update_field']))
 {
-	if($_POST['user_type']==4){
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+	if (preg_match('#^\w+$#',$_POST['user_field']))
+	{
+		if($_POST['user_type']==4){
+	    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+		}
+		$upd_values = make_delimited($_POST['user_values']);
+		$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
+		admin_update($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']), 'update', EXTLAN_29);
 	}
-	$upd_values = make_delimited($_POST['user_values']);
-	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	admin_update($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']), 'update', EXTLAN_29);
+	else
+	{
+		$message = EXTLAN_76." : ".$tp->toHTML($ue_field_name);
+	}
 }
 
 
 if (isset($_POST['update_category']))
 {
-	$name = trim($tp->toDB($_POST['user_field']));
-	admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
+	if (preg_match('#^\w+$#', $_POST['user_field']) === 1) // Check for allowed characters, finite field length
+  	{
+		$name = trim($tp->toDB($_POST['user_field']));
+		admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
+  	}
+  	else
+  	{
+  		$message = EXTLAN_79;
+  	}
 }
 
 
 if (isset($_POST['add_category']))
 {
-	$name = $tp->toDB($_POST['user_field']);
-	admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+	if (preg_match('#^\w+$#', $_POST['user_field']) === 1) // Check for allowed characters, finite field length
+  	{
+		$name = $tp->toDB($_POST['user_field']);
+		admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+  	}
+  	else
+  	{
+  		$message = EXTLAN_79;
+  	}
 }
 
 
@@ -224,7 +256,8 @@ if($message)
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field']){
+if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
+{
 	$action = "continue";
 	$current['user_extended_struct_name'] = $_POST['user_field'];
     $current['user_extended_struct_parms'] = $_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide'];
@@ -325,6 +358,7 @@ class users_ext
 					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 					<td class='forumheader3' style='width:5px'>
 					<form method='post' action='".e_SELF."'>
+					<input type='hidden' name='e-token' value='".e_TOKEN."' />
 					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 					";
 			  if($i > 0)
@@ -639,7 +673,9 @@ class users_ext
 			";
 
 			$text .= "<tr>
-			<td colspan='4' style='text-align:center' class='forumheader'>";
+			<td colspan='4' style='text-align:center' class='forumheader'>
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
+			";
 
 //			if ((!is_array($current) || $action == "continue") && $sub_action == "")
 			if ((($mode == 'new') || $action == "continue") && $sub_action == "")
@@ -706,6 +742,7 @@ class users_ext
 				<td class='forumheader3'>
 				<form method='post' action='".e_SELF."?cat'>
 				<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				";
 				if($i > 0)
 				{
@@ -726,6 +763,7 @@ class users_ext
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 				<a style='text-decoration:none' href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				</form>
 				</td>
 				</tr>
@@ -781,7 +819,8 @@ class users_ext
 
 
 		$text .= "<tr>
-		<td colspan='4' style='text-align:center' class='forumheader'>";
+		<td colspan='4' style='text-align:center' class='forumheader'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 
 		if (!is_array($current))
 		{
@@ -802,6 +841,58 @@ class users_ext
 
 		</table></form></div>";
 		$ns->tablerender(EXTLAN_9, $text);
+	}
+
+	function prepare(&$vars)
+	{
+		if(empty($vars)) return '';
+		$messages = array();
+		// input extra check, user_field is checked outside
+		foreach ($vars as $key => $value)
+		{
+			$value = trim($value);
+			if(empty($value)) continue;
+			switch ($key)
+			{
+				case 'user_include':
+					if(preg_match('/<|&gt;|\(|\)/', $value)) //tags/js not allowed
+					{
+						$vars['user_include'] = '';
+						$messages[] = 'user_include Validation error';
+					}
+				break;
+
+				case 'user_regexfail':
+					if(preg_match('/<|&gt;/', $value)) //tags/js not allowed
+					{
+						$vars['user_regexfail'] = '';
+						$messages[] = 'user_regexfail Validation error';
+					}
+				break;
+
+				case 'user_values':
+					$values = make_delimited($value);
+					if(preg_match('/<|&gt;/', $values)) //tags/js not allowed
+					{
+						$vars['user_values'] = array();
+						$messages[] = 'user_values Validation error';
+					}
+				break;
+
+				case 'table_db':
+				case 'field_id':
+				case 'field_value':
+				case 'field_order':
+					if(!preg_match('/^\w+$/', $value)) //tags/js not allowed
+					{
+						$vars[$key] = '';
+						$messages[] = $key.' Validation error';
+					}
+				break;
+			}
+		}
+
+		return $messages;
 	}
 
 
@@ -907,7 +998,10 @@ function show_predefined()
 
 	$txt .= "
 	<tr>
-	<td class='fcaption' colspan='4'>".EXTLAN_58."</td>
+	<td class='fcaption' colspan='4'>
+		".EXTLAN_58."
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
+	</td>
 	</tr>
 	";
 	foreach($inactive as $a)
