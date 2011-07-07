@@ -49,7 +49,7 @@ class secure_image
 
 		$this->THIS_DIR 			= $imgp;
 		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		$this->HANDLERS_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $HANDLERS_DIRECTORY);
+		$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
 		$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
 		$this->MYSQL_INFO = array('db' => $mySQLdefaultdb, 'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword, 'prefix' => $mySQLprefix);
 	}
@@ -86,9 +86,10 @@ class secure_image
 
 		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'"))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
 			$sql->db_Delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
-			list($code, $path) = explode(",", $row[0]);
+			//list($code, $path) = explode(",", $row['tmp_ip']);
+			$code = intval($row['tmp_ip']);
 			return ($checkstr == $code);
 		}
 		return FALSE;
@@ -102,7 +103,7 @@ class secure_image
 	function r_image()
 	{
 		$code = $this->create_code();
-		return "<img src='".e_BASE.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />";
+		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />";
 	}
 
 
