@@ -7,11 +7,8 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/secure_img_render.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 /*   Example Custom secure_image_custom.php file:
