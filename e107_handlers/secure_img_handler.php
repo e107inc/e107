@@ -45,7 +45,7 @@ class secure_image
 
 		$this->THIS_DIR 			= $imgp;
 		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		$this->HANDLERS_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $HANDLERS_DIRECTORY);
+		$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
 		$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
 		$this->MYSQL_INFO = array('db' => $mySQLdefaultdb, 'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword, 'prefix' => $mySQLprefix);
 	}
