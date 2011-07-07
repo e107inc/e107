@@ -1738,11 +1738,17 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 			$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 		}
 	
-		$regex = "/(document\.write|base64_decode|chr|php_uname|fwrite|fopen|fputs|system|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
+		$regex = "/(document\.write|base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();
+		}
+		
+		if(preg_match("/system *?\((.*);.*\)/i",$input))
+		{
+			header('HTTP/1.0 400 Bad Request', true, 400);
+			exit();	
 		}
 		
 		$regex = " /(wget |curl -o |fetch |lwp-download|onmouse)/i";
