@@ -1,5 +1,4 @@
 <!--
-
 /*
 + ----------------------------------------------------------------------------+
 |	e107 website system - Javascript File.
@@ -11,7 +10,7 @@
 */
 
 /*
- * NOTE: KEEP THIS AT THE TOP OF E107.JS!
+ * NOTE: KEEP THIS AT THE TOP OF E107.JS !!
  * localTime is recorded ASAP after page load; SyncWithServerTime is called at the END
  * of page processing. We want localTime and serverTime set in close chronological order.
  * Page Processing order is as follows:

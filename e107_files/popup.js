@@ -1,6 +1,6 @@
 window.defaultStatus = "";
 
-//get reference object for popup
+//get reference object for popup!
 function getRefToDivMod( divID, oDoc ) {
 	if( !oDoc ) { oDoc = document; }
 	if( document.layers ) {
