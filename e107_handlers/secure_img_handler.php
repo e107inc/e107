@@ -83,18 +83,18 @@ class secure_image
 		{
 			return FALSE;
 		}
-
+		
 		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'"))
 		{
 			$row = $sql->db_Fetch(MYSQL_ASSOC);
 			$sql->db_Delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
 			//list($code, $path) = explode(",", $row['tmp_ip']);
-			$code = intval($row['tmp_ip']);
+			$code = intval($row['tmp_info']);
 			return ($checkstr == $code);
 		}
+
 		return FALSE;
 	}
-
 
 
 	/**
@@ -163,13 +163,13 @@ class secure_image
 			*/
 			$bg_file = $secureimg['image'];
 
-			if(!is_readable(e_IMAGE.$secureimg['font']))
+			if(!is_readable($path.$secureimg['font']))
 			{
 				echo "Font missing"; // for debug only. translation not necessary.
 				exit;
 			}
 
-			if(!is_readable(e_IMAGE.$secureimg['image'].$ext))
+			if(!is_readable($path.$secureimg['image'].$ext))
 			{
 				echo "Missing Background-Image: ".$secureimg['image'].$ext; // for debug only. translation not necessary.
 				exit;
