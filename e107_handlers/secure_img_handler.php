@@ -124,8 +124,8 @@ class secure_image
 		$result = mysql_query("SELECT tmp_info FROM {$this->MYSQL_INFO['prefix']}tmp WHERE tmp_ip = '{$recnum}'");
 		if(!$result || !($row = mysql_fetch_array($result, MYSQL_ASSOC)))
 		{
-			echo "Render Failed";
-			echo "SELECT tmp_info FROM {$this->MYSQL_INFO['prefix']}tmp WHERE tmp_ip = '{$recnum}'";
+			// echo "Render Failed";
+			// echo "SELECT tmp_info FROM {$this->MYSQL_INFO['prefix']}tmp WHERE tmp_ip = '{$recnum}'";
 			exit;
 		}
 
