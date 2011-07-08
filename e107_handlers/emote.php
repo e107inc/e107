@@ -38,7 +38,8 @@ function r_emote()
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
 		$value = ($value == '&|') ? ':((' : $value;
-		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' style='border:0; padding-top:2px;' alt='' /></a> ";
+
+		$str .= "\n<a href=\"javascript:addtext(' $value ',true)\"><img src='$key' style='border:0; padding-top:2px;' alt='' /></a> ";
 	}
 
 	return "<div class='spacer'>".$str."</div>";
