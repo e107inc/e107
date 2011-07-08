@@ -24,10 +24,45 @@ require_once(e_HANDLER.'admin_handler.php');
 // --- check for htmlarea.
 if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 {
-	$text = ADLAN_ERR_2."<br /><br />
-	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
-	$ns -> tablerender(LAN_WARNING, $text);
+	$text = "<table class='admin-warning' style='margin-left:0px;border:0px'>
+	<tr>
+	<td style='width:40px;vertical-align:top'>".ADMIN_WARNING_ICON."</td>
+	<td>".ADLAN_ERR_2."<br /><br /><ul><li>".
+	$HANDLERS_DIRECTORY."htmlarea/</li><li>".$ADMIN_DIRECTORY."htmlarea/</li></ul>
+	</td>
+	</tr></table>";
+	$ns ->tablerender(LAN_WARNING, $text);
 }
+
+// --- check for Malware/Trojans -----------
+
+$mal_paths = array(e_FILE."thumbs.php",e_FILE.'ok.txt',e_FILE."css.php",e_PLUGIN."css.php");
+$mal_list = array();
+foreach($mal_paths as $pth)
+{
+	if(file_exists($pth))
+	{
+		$mal_list[] = str_replace("../","",$pth);		
+	}
+}
+
+	$insp_srch = array('[',']');
+	$insp_repl = array("<a href='".e_ADMIN."fileinspector.php'>","</a>");
+
+if(count($mal_list))
+{
+
+	$text = "<table class='admin-warning' style='margin-left:0px;border:0px'>
+	<tr>
+	<td style='width:40px;vertical-align:top'>".ADMIN_WARNING_ICON."</td>
+	<td>".$tp->toHtml(ADLAN_ERR_7,TRUE)."<br /><br /><ul><li>".implode("</li><li>",$mal_list)."</li></ul>
+	<br />".str_replace($insp_srch,$insp_repl,ADLAN_ERR_8)."</td>
+	</tr></table>";
+	$ns -> tablerender(LAN_WARNING, $text);	
+}
+
+
+
 
 // check for old modules.
 if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Field("plugin",5) == "plugin_addons"){
@@ -45,7 +80,8 @@ if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Fiel
 	if($mod_found)
 	{
     	$text = ADLAN_ERR_5." <b>".$thef."</b>:<br /><br /><ul>";
-		foreach($mod_found as $val){
+		foreach($mod_found as $val)
+		{
 			$text .= "<li>".str_replace("../","",$val)."</li>\n";
 		}
 		$text .="</ul><br />
@@ -95,16 +131,17 @@ foreach ($public as $dir) {
 
 if (isset($potential))
 {
-	$text = ADLAN_ERR_3."<br /><br />";
-
-	foreach ($potential as $p_file)
-	{
-		$text .= $p_file.'<br />';
-	}
+	$text = "<table class='admin-warning' style='margin-left:0px;border:0px'>
+	<tr>
+	<td style='width:40px;vertical-align:top'>".ADMIN_WARNING_ICON."</td>
+	<td>".$tp->toHtml(ADLAN_ERR_3,TRUE)."<br /><br /><ul><li>".implode("</li><li>",$potential)."</li></ul>
+	<br />".str_replace($insp_srch,$insp_repl,ADLAN_ERR_8)."</td>
+	</tr></table>";
 
 	$ns -> tablerender(LAN_WARNING, $text);
 }
 
+unset($insp_srch,$insp_repl,$text);
 // Moved to admin_template
 //echo $tp->parseTemplate('{ADMIN_UPDATE}', true);
 

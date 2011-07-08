@@ -105,6 +105,12 @@ if (!defined('ADMIN_DELETE_ICON'))
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
+if (!defined('ADMIN_WARNING_ICON'))
+{
+	define("ADMIN_WARNING_ICON", "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' alt='' title='".LAN_WARNING."' style='border:0px' />");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/nopreview.png");
+}
+
 //
 // C: Send start of HTML
 //

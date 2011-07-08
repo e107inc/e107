@@ -200,7 +200,8 @@ define("ADLAN_ERR_3", "There are one or more files in your public upload directo
 define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
 define("ADLAN_ERR_5", "The following files need to be renamed to");
 define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
-
+define("ADLAN_ERR_7", "Malicious files have been detected on your server. They should be deleted [b]immediately[/b].");
+define("ADLAN_ERR_8", "Please run [File inspector] to check for core files that may have been modified.");
 
 // Common Terms
 define("LAN_EDIT","Edit");

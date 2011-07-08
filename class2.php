@@ -1751,7 +1751,7 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 			exit();	
 		}
 		
-		$regex = " /(wget |curl -o |fetch |lwp-download|onmouse)/i";
+		$regex = "/(wget |curl -o |fetch |lwp-download|onmouse)/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
@@ -1767,12 +1767,20 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();
 		}
-				
+		
+		if(($key == "QUERY_STRING") && (strpos(strtolower($input),"../../")!==FALSE || strpos(strtolower($input),"php://")!==FALSE))
+		{
+			header('HTTP/1.0 400 Bad Request', true, 400);
+			exit();
+		}
+					
 		if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();	
-		}			
+		}
+		
+						
 	}
 		
 	if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
