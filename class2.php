@@ -1762,13 +1762,14 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 	
 	if($type == "_SERVER")
 	{	
-		if(($key == "QUERY_STRING") && (strpos(strtolower($input),"=http")!==FALSE || strpos(strtolower($input),"http%3A%2F%2F")!==FALSE))
-		{
-			header('HTTP/1.0 400 Bad Request', true, 400);
-			exit();
-		}
-		
-		if(($key == "QUERY_STRING") && (strpos(strtolower($input),"../../")!==FALSE || strpos(strtolower($input),"php://")!==FALSE))
+
+		if(($key == "QUERY_STRING") && (
+			strpos(strtolower($input),"../../")!==FALSE 
+			|| strpos(strtolower($input),"=http")!==FALSE 
+			|| strpos(strtolower($input),"http%3A%2F%2F")!==FALSE
+			|| strpos(strtolower($input),"php://")!==FALSE  
+			|| strpos(strtolower($input),"data://")!==FALSE
+			))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();

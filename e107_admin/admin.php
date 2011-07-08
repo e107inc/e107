@@ -51,12 +51,15 @@ foreach($mal_paths as $pth)
 
 if(count($mal_list))
 {
+	// Too important to rely on translations. ;-)
+	$ADLAN_ERR_7 = (defined("ADLAN_ERR_7")) ? ADLAN_ERR_7 : "Malicious files have been detected on your server. They should be deleted [b]immediately[/b].";
+	$ADLAN_ERR_8 = (defined("ADLAN_ERR_8")) ? ADLAN_ERR_8 : "Please run [File inspector] to check for core files that may have been modified.";
 
 	$text = "<table class='admin-warning' style='margin-left:0px;border:0px'>
 	<tr>
 	<td style='width:40px;vertical-align:top'>".ADMIN_WARNING_ICON."</td>
-	<td>".$tp->toHtml(ADLAN_ERR_7,TRUE)."<br /><br /><ul><li>".implode("</li><li>",$mal_list)."</li></ul>
-	<br />".str_replace($insp_srch,$insp_repl,ADLAN_ERR_8)."</td>
+	<td>".$tp->toHtml($ADLAN_ERR_7,TRUE)."<br /><br /><ul><li>".implode("</li><li>",$mal_list)."</li></ul>
+	<br />".str_replace($insp_srch, $insp_repl, $ADLAN_ERR_8)."</td>
 	</tr></table>";
 	$ns -> tablerender(LAN_WARNING, $text);	
 }
