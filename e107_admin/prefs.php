@@ -805,13 +805,7 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_125."</div>
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_131.":</td>
-						<td class='control'>
-							".$e_userclass->uc_dropdown('php_bbcode', $pref['php_bbcode'], 'nobody,admin,main,classes', "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>".PRFLAN_132."</div>
-						</td>
-					</tr>
+					
 ";
 
 if(file_exists(e_PLUGIN."geshi/geshi.php"))

@@ -94,15 +94,17 @@ function imageselector_shortcode($parm = '', $mod = '')
 			else
 			{
 				$icons = multiarray_sort($icons, 'fname');
-
+				
 				foreach ($icons as $icon)
 				{
-					$dir = str_replace($paths, "", $icon['path']);
+					$dir = str_replace($paths, "", $icon['path']); 
+					// echo "dir=".$icon['path'];
 
 					if (!$filter || ($filter && preg_match('~'.$filter.'~', $dir.$icon['fname'])))
 					{
 						$pth = $dir;
-						if($fullpath)
+						
+					//	if($fullpath) // returns nothing if fullpath is FALSE;
 						{
 							if(!vartrue($parms['media']))
 							{
@@ -110,6 +112,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 								$_value = $pth.$icon['fname'];
 								$_label = $dir.$icon['fname'];
 								$selected = ($default == $_value || $pth.$default == $_value) ? " selected='selected'" : "";
+								
 							}
 							else
 							{
