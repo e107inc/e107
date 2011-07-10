@@ -74,7 +74,7 @@ class db_verify
 			else
 			{
 				$message = str_replace("[x]",$filename,DBVLAN_22);
-		      	$emessage->add($message, E_MESSAGE_WARNING);
+		      	$mes->add($message, E_MESSAGE_WARNING);
 			}
 		}
 		

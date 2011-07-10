@@ -196,7 +196,7 @@ class e_form
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-/*		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
+		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 		$qry .= vartrue($sc_parameters['media']) ? " AND media_category = '".$tp->toDB($sc_parameters['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 		$qry .= "ORDER BY media_name";
 
@@ -241,30 +241,9 @@ class e_form
 			$ret .= "<img src='{$thpath}' alt='{$default_url}' class='image-selector' /></a>";
 			$ret .= "</div>\n";
 			return $ret;
-		}*/
+		}
 		// ----------------
 
-
-		if(!$label) $label = LAN_SELECT;
-		$parms = "name={$name}";
-		$parms .= '&media='.varset($sc_parameters['media']);
-		$parms .= "&path=".rawurlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_MEDIA}images/|{e_MEDIA}temp/')));
-		$parms .= "&filter=0";
-		$parms .= "&fullpath=1";
-		$parms .= "&default=".rawurlencode($default);
-		$parms .= "&multiple=FALSE";
-		$parms .= "&label=-- ".$label." --";
-		$parms .= "&subdirs=".varset($sc_parameters['subdirs'], 10);
-		$parms .= '&width='.vartrue($sc_parameters['width'], 150);
-		if(vartrue($sc_parameters['height'])) $parms .= '&height='.$sc_parameters['height'].'px';
-		//$parms .= "&tabindex=".$this->getNext();
-		//$parms .= "&click_target=data";
-		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
-		//$parms .= "&click_postfix=[/img]";
-
-		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
-		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
-		return $ret;
 	}
 
 	/**
@@ -1337,6 +1316,7 @@ class e_form
 
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
+			
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);

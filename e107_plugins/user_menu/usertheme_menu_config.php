@@ -118,7 +118,9 @@ $text .= "
 	</fieldset>
 	</form>
 	";
-$ns->tablerender(LAN_UMENU_THEME_6, $text);
+	$mes = e107::getMessage();
+	
+$ns->tablerender(LAN_UMENU_THEME_6,$mes->render().$text);
 	
 require_once(e_ADMIN."footer.php");
 

@@ -596,6 +596,13 @@ class media_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		
+		if(!count($_POST['batch_selected']))
+		{
+			$mes->addError("Please check at least one image.");
+			return;
+		}
+		
 
 		foreach($_POST['batch_selected'] as $file)
 		{
