@@ -86,11 +86,12 @@ class e_parse
 				'body' =>					// text is 'body' or 'bulk' text (e.g. custom page body, content body)
 					array(
 						// no changes to default-on items
-						'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
+						//'defs'=>TRUE, 'constants'=>TRUE, 'parse_sc'=>TRUE),
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE),
 
 				'user_body' =>					// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 					array(
-						'constants'=>TRUE
+						'constants'=>'full'
 						),
 
 				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
