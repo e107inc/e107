@@ -463,7 +463,7 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
 		require_once(HEADERF);
 
-		$text = LAN_dl_48."<br /><br /><a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".LAN_dl_49."</a";
+		$text = LAN_dl_48."<br /><br /><a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".LAN_dl_49."</a>";
       $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $dlrow['download_category_name']=>e_SELF."?list.".$dlrow['download_category_id'], $dlrow['download_name']=>e_SELF."?view.".$dlrow['download_id'], LAN_dl_50));
       $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 		$ns->tablerender($dl_title, $text);
