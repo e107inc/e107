@@ -541,7 +541,7 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 		define("e_PAGETITLE", LAN_dl_47." / ".PAGE_NAME);
 		require_once(HEADERF);
 
-		$text = LAN_dl_48."<br /><br /><a href='".e_BASE."download.php?view.".$download_id."'>".LAN_dl_49."</a";
+		$text = LAN_dl_48."<br /><br /><a href='".e_BASE."download.php?view.".$download_id."'>".LAN_dl_49."</a>";
 		$ns->tablerender(LAN_dl_50, $text);
 
 	} else {
