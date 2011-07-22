@@ -10,13 +10,13 @@ if(!isset($FPW_TABLE))
 {
 		$FPW_TABLE = "
 		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".SITEURL."fpw.php'>
 		<table style='".USER_WIDTH."' class='fborder'>
 
 		<tr>
 		<td class='fcaption' colspan='2'>".LAN_05."</td>
 		</tr>";
-		
+
 		if($pref['allowEmailLogin']==0)
 		{
 			$FPW_TABLE .= "
@@ -25,10 +25,10 @@ if(!isset($FPW_TABLE))
 			<td class='forumheader3' style='width:30%;text-align:center'>
 			<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />
 			</td>
-			</tr>";	
+			</tr>";
 		}
 
-		
+
 		$FPW_TABLE .="
 		<tr>
 		<td class='forumheader3' style='width:70%'>".LAN_112.":</td>
@@ -37,7 +37,8 @@ if(!isset($FPW_TABLE))
 		</td>
 		</tr>";
 
-		if($FPW_TABLE_SECIMG_SECIMG){
+		if(deftrue('USE_IMAGECODE'))
+		{
 				$FPW_TABLE .= "
 				<tr>
 					<td class='forumheader3' style='width:25%'>{FPW_TABLE_SECIMG_LAN}</td>
@@ -65,7 +66,7 @@ if(!isset($FPW_TABLE_HEADER))
 		$FPW_TABLE_HEADER = "
 		<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
 			<div style='width:70%;margin-left:auto;margin-right:auto;text-align:center;'><br />
-			".(file_exists(THEME."images/login_logo.png") ? "<img src='".THEME."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE."logo.png' alt='' />\n")."
+			{FPW_LOGIN_LOGO}
 			<br />";
 }
 // ##### ------------------------------------------------------------------------------------------

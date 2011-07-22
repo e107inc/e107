@@ -14,6 +14,7 @@
 */
 require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+$tp = e107::getParser();
 
 if (USER)
 {
@@ -34,14 +35,17 @@ else
 
 
 
-if ($pref['membersonly_enabled']) 
+if ($pref['membersonly_enabled'])
 {
-	if (!$FPW_TABLE_HEADER) 
+	$sc = array (
+		'FPW_LOGIN_LOGO' => file_exists(THEME."images/login_logo.png") ? "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE_ABS."logo.png' alt='' />\n"
+	);
+	//if (!$FPW_TABLE_HEADER)
 	{
-		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template. 
+		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 	}
-	$HEADER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_HEADER);
-	$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
+	$HEADER = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
+	$FOOTER = $tp->simpleParse($FPW_TABLE_FOOTER, $sc);
 }
 
 $user_info = e107::getUserSession();
@@ -64,7 +68,7 @@ define('FPW_SEPARATOR', '#');
 
 
 
-if (e_QUERY) 
+if (e_QUERY)
 {	// User has clicked on the emailed link
 	define('FPW_ACTIVE','TRUE');
 	$tmpinfo = preg_replace("#[\W_]#", "", e107::getParser()->toDB(e_QUERY, true));			// query part is a 'random' number
@@ -72,7 +76,7 @@ if (e_QUERY)
 	{
 		die();			// Shouldn't be any characters that toDB() changes
 	}
-	if ($sql->db_Select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' ")) 
+	if ($sql->db_Select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' "))
 	{
 		$row = $sql->db_Fetch();
 		$sql->db_Delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
@@ -109,8 +113,8 @@ if (e_QUERY)
 		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12."</div>";
 		fpw_error($txt);
 
-	} 
-	else 
+	}
+	else
 	{
 		fpw_error(LAN_FPW7);		// No 'forgot password' entry found
 	}
@@ -119,14 +123,14 @@ if (e_QUERY)
 
 // Request to reset password
 //--------------------------
-if (isset($_POST['pwsubmit'])) 
+if (isset($_POST['pwsubmit']))
 {	// Request for password reset submitted
 	require_once(e_HANDLER.'mail.php');
 	$email = $_POST['email'];
 
-	if ($pref['fpwcode'] && extension_loaded('gd')) 
+	if ($pref['fpwcode'] && extension_loaded('gd'))
 	{
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) 
+		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
 			fpw_error(LAN_FPW3);
 		}
@@ -138,10 +142,10 @@ if (isset($_POST['pwsubmit']))
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
-	if ($sql->db_Select('user', '*', $query)) 
+	if ($sql->db_Select('user', '*', $query))
 	{	// Found user in DB
 		$row = $sql->db_Fetch();
-		
+
 		if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
 		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
 			sendemail($pref['siteadminemail'], LAN_06, LAN_07.' '.$e107->getip().' '.LAN_08);
@@ -160,7 +164,7 @@ if (isset($_POST['pwsubmit']))
 				exit;
 		}
 
-		if ($result = $sql->db_Select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'")) 
+		if ($result = $sql->db_Select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
 		{
 			fpw_error(LAN_FPW4);		// Password reset already requested
 			exit;
@@ -184,12 +188,12 @@ if (isset($_POST['pwsubmit']))
 		$do_log['user_loginname'] = $row['user_loginname'];
 		$do_log['activation_code'] = $rcode;
 
-		if (sendemail($_POST['email'], "".LAN_09."".SITENAME, $message)) 
+		if (sendemail($_POST['email'], "".LAN_09."".SITENAME, $message))
 		{
 		  $text = "<div style='text-align:center'>".LAN_FPW6."</div>";
 		  $do_log['password_result'] = LAN_FPW20;
-		} 
-		else 
+		}
+		else
 		{
 		  $text = "<div style='text-align:center'>".LAN_02."</div>";
 		  $do_log['password_result'] = LAN_FPW19;
@@ -199,8 +203,8 @@ if (isset($_POST['pwsubmit']))
 		$ns->tablerender(LAN_03, $text);
 		require_once(FOOTERF);
 		exit;
-	} 
-	else 
+	}
+	else
 	{
 		$text = LAN_213;
 		$ns->tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
@@ -208,26 +212,22 @@ if (isset($_POST['pwsubmit']))
 }
 
 
-if (USE_IMAGECODE) 
+$sc = array();
+if (USE_IMAGECODE)
 {
-	$FPW_TABLE_SECIMG_LAN = LAN_FPW2;
-	$FPW_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />";
-	$FPW_TABLE_SECIMG_SECIMG = $sec_img->r_image();
-	$FPW_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";
+	$sc = array (
+		'FPW_TABLE_SECIMG_LAN' => LAN_FPW2,
+		'FPW_TABLE_SECIMG_HIDDEN' => "<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />",
+		'FPW_TABLE_SECIMG_SECIMG' => $sec_img->r_image(),
+		'FPW_TABLE_SECIMG_TEXTBOC' => "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />"
+	);
 }
 
-if (!$FPW_TABLE) 
+if (!$FPW_TABLE)
 {
-	if (file_exists(THEME.'fpw_template.php')) 
-	{
-		require_once(THEME.'fpw_template.php');
-	} 
-	else 
-	{
-		require_once(e_THEME.'templates/fpw_template.php');
-	}
+	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 }
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE);
+$text = $tp->simpleParse($FPW_TABLE, $sc);
 
 $ns->tablerender(LAN_03, $text);
 require_once(FOOTERF);
