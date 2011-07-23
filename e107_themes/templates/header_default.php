@@ -241,14 +241,32 @@ function render_meta($type)
 {
 	global $pref,$tp;
 
-	if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
-	if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
+	// if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
+	// if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
 
-	if($type == "tag")
+	if($type == "tag" && defset($pref['meta_tag'][e_LANGUAGE]))
 	{
 		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
 	}
-	else
+	elseif($type == 'og')
+	{
+		if(!defined("META_OG") || !defined("XMLNS"))
+		{
+			return;
+		}
+		
+		$ret = '';
+		$tmp = unserialize(META_OG);
+		
+		// FB will still utilize 'name' instead of 'property' (which is not valid XHTML)
+		foreach($tmp as $k=>$v)
+		{
+			$ret .= '<meta name="og:'.$k.'" content="'.$v.'" />'."\n";
+		}
+
+		return $ret;		
+	}
+	elseif(defset($pref['meta_'.$type][e_LANGUAGE]))
 	{
 		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
 	}
@@ -260,6 +278,8 @@ echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merg
 echo render_meta('copyright');
 echo render_meta('author');
 echo render_meta('tag');
+echo render_meta('og');
+
 
 unset($key_merge,$diz_merge);
 

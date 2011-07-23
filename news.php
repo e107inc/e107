@@ -237,8 +237,9 @@ if ($action == 'extend')
 		{
 		  if($pref['meta_news_summary'] && $news['news_title'])
 		  {
-			define('META_DESCRIPTION',SITENAME.': '.$news['news_title'].' - '.$news['news_summary']);
+				setNewsMeta('extend',$news);
 		  }
+		  
 		  define("e_PAGETITLE",$news['news_title']);
 		}
 
@@ -462,7 +463,8 @@ if($action != "" && !is_numeric($action))
 {
     if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_title'])
 	{
-	  define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
+		setNewsMeta('item',$newsAr[1]);
+		// define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
 	}
 	define("e_PAGETITLE", $p_title);
 }
@@ -676,6 +678,34 @@ function setNewsCache($cache_tag, $cache_data) {
 	$e107cache->set($cache_tag, $cache_data);
 	$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
 	$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
+	$e107cache->set($cache_tag."_og", defined("META_OG") ? META_OG : '');
+}
+
+/**
+ * Mode: extend or item
+ */
+function setNewsMeta($mode,$news)
+{
+	if($news['news_thumbnail'])
+	{
+		$image = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail']) : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
+	}
+	else
+	{
+		$image = "";
+	}
+		
+	$og_array = array(
+		'title'			=> $news['news_title'],
+		'type'			=> 'article',		  		
+		'url'			=> e_SELF."?".$mode.".".$news['news_id'],
+		'image'			=> ($image) ? $image : '',
+		'description' 	=> $news['news_summary'],
+		'site_name'		=> SITENAME
+	);
+		  	
+	define('META_OG',serialize($og_array));
+	define('META_DESCRIPTION',SITENAME.': '.$news['news_title'].' - '.$news['news_summary']);
 }
 
 function checkCache($cacheString){
@@ -683,14 +713,27 @@ function checkCache($cacheString){
 	$cache_data = $e107cache->retrieve($cacheString);
 	$cache_title = $e107cache->retrieve($cacheString."_title");
 	$cache_diz = $e107cache->retrieve($cacheString."_diz");
+	$cache_og = $e107cache->retrieve($cacheString."_og");
+	
 	$etitle = ($cache_title != "e_PAGETITLE") ? $cache_title : "";
-	$ediz = ($cache_diz != "META_DESCRIPTION") ? $cache_diz : "";
-	if($etitle){
+	$ediz	= ($cache_diz != "META_DESCRIPTION") ? $cache_diz : "";
+	$og		= ($cache_og != "META_OG") ? $cache_og : "";
+	
+	if($etitle)
+	{
 		define(e_PAGETITLE,$etitle);
 	}
-	if($ediz){
+	
+	if($ediz)
+	{
     	define("META_DESCRIPTION",$ediz);
 	}
+	
+	if($og)
+	{
+		define("META_OG",$og);
+	}	
+
 	if ($cache_data) {
 		return $cache_data;
 	} else {
