@@ -835,7 +835,7 @@ class linkclass
         ".$rs -> form_close()."
         </div>";
 
-        $ns->tablerender(LCLAN_ITEM_24, $text);
+        $ns->tablerender(LCLAN_PAGETITLE_1, $text);
     }
 
     function show_links() 

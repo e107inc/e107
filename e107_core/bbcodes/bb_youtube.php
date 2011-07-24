@@ -179,37 +179,38 @@ class bb_youtube extends e_bb_base
 		switch ($parms[0]) 
 		{
 			case 'tiny':
-				$params['w'] = 200;
-				$params['h'] = 180;
+				$params['w'] = 320; // 200;
+				$params['h'] = 205; // 180;
 			break;
 			
 			case 'small':
-				$params['w'] = 445;
-				$params['h'] = 364;
+				$params['w'] = 560; // 445;
+				$params['h'] = 340; // 364;
 			break;
 			
 			case 'medium':
-				$params['w'] = 500;
-				$params['h'] = 405;
+				$params['w'] = 640; // 500;
+				$params['h'] = 385; // 405;
 			break;
 			
 			case 'big':
-				$params['w'] = 660;
-				$params['h'] = 525;
+			case 'large':
+				$params['w'] = 853; // 660;
+				$params['h'] = 505; // 525;
 			break;
 			
 			case 'huge':
-				$params['w'] = 980;
-				$params['h'] = 765;
+				$params['w'] = 1280; // 980;
+				$params['h'] = 745; // 765;
 			break;
 			
-			default:
-				$dim = explode(',', $parms[0], 2);
+			default: // maximum 1920 x 1080 (+25)
+				$dim = explode(',', $dimensions, 2);
 				$params['w'] = (integer) varset($dim[0], 445);
-				if($params['w'] > 980 || $params['w'] < 200) $params['w'] = 445;
+				if($params['w'] > 1920 || $params['w'] < 200) $params['w'] = 640;
 				
 				$params['h'] = (integer) varset($dim[1], 364);
-				if($params['h'] > 765 || $params['h'] < 180) $params['h'] = 364;
+				if($params['h'] > 1105 || $params['h'] < 137) $params['h'] = 385;
 			break;
 		}
 

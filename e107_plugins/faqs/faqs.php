@@ -106,13 +106,13 @@ if (isset($_POST['commentsubmit']))
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
-			$tmp = $faq->show_existing_parents($action, $sub_action, $id, $from, $amount);
+			$ftmp = $faq->show_existing_parents($action, $sub_action, $id, $from, $amount);
 			$caption = FAQLAN_41;
 		}
 		else
 		{
-			$tmp = $faq->view_all();
-			$caption = FAQLAN_FAQ;
+			$ftmp = $faq->view_all();
+			$caption = FAQLAN_FAQ;			
 		}
 
 		if (vartrue($faqpref['faq_title']))
@@ -123,25 +123,28 @@ if (isset($_POST['commentsubmit']))
 		{
 			define("e_PAGETITLE", FAQLAN_23);
 		}
+
 		require_once (HEADERF);
-		$ns->tablerender($caption, $tmp['text']);
+				
+		$ns->tablerender($caption, $ftmp['text']);
+		
 	}
 
 	if($action == "cat" && $idx)
 	{
-		 $tmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",FAQLAN_FAQ." - ". $tmp['title']);
+		 $ftmp = $faq->view_faq($idx) ;
+		 define("e_PAGETITLE",FAQLAN_FAQ." - ". $ftmp['title']);
 		 require_once(HEADERF);
-		 $ns -> tablerender($tmp['caption'], $tmp['text']);
+		 $ns -> tablerender($ftmp['caption'], $ftmp['text']);
 	}
 
 	if ($action == "cat")
 	{
-		$tmp = $faq->view_cat_list($action, $id);
+		$ftmp = $faq->view_cat_list($action, $id);
 
-		define("e_PAGETITLE", strip_tags($tmp['title'].$tmp['caption']));
+		define("e_PAGETITLE", strip_tags($ftmp['title'].$ftmp['caption']));
 		require_once (HEADERF);
-		$ns->tablerender($tmp['caption'], $tmp['text']);
+		$ns->tablerender($ftmp['caption'], $ftmp['text']);
 	}
 
 
@@ -172,6 +175,7 @@ class faq
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$ret = array();
 
 		global $FAQ_START, $FAQ_END, $FAQ_LISTALL_START,$FAQ_LISTALL_LOOP,$FAQ_LISTALL_END;
 
@@ -206,6 +210,7 @@ class faq
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
 		$ret['caption'] = $caption;
+		
 		return $ret;
 	}
 
