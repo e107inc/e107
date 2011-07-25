@@ -1434,6 +1434,33 @@ class e_db_mysql
 		}
 
 	}
+	
+	/**
+	 * Duplicate a Table Row in a table. 
+	 */
+	function db_CopyRow($table,$fields = '*', $args='')
+	{
+		if(!$table || !$args )
+		{
+			return;
+		}
+			
+		if($fields == '*')
+		{
+			$fields = $this->db_FieldList($table);	
+			unset($fields[0]); // Remove primary_id. 
+			$fieldList = implode(",",$fields);
+		}
+		else
+		{
+			$fieldList = $fields;
+		}
+			
+		return $this->db_Select_gen("INSERT INTO #".$table."(".$fieldList.") SELECT ".$fieldList." FROM #".$table." WHERE ".$args);
+				
+	}
+	
+	
 
 	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{

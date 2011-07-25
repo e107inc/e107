@@ -3314,4 +3314,32 @@ class e_admin_tree_model extends e_front_tree_model
 
 		return $res;
 	}
+
+	/**
+	 * Batch Copy Table Rows. 
+	 */
+	public function copy($ids)
+	{
+		$ids = array_map('intval', $ids);
+		$idstr = implode(', ', $ids);
+
+		$sql = e107::getDb();
+		
+		if($res = $sql->db_CopyRow($this->getModelTable(), "*", $this->getFieldIdName().' IN ('.$idstr.')'))
+		{
+			$this->addMessageSuccess('Copied #'.$idstr);
+		}
+		else
+		{
+			if($sql->getLastErrorNumber())
+			{
+				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+			}	
+		}
+		$this->_db_errno = $sql->getLastErrorNumber();
+		$this->_db_errmsg = $sql->getLastErrorText();
+		return $res;	
+	}
+
 }
