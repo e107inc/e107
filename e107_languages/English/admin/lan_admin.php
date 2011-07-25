@@ -320,6 +320,7 @@ define("LAN_LOADING", "Loading...");
 define("LAN_FILE", "File");
 define("LAN_EXECUTE","Execute");
 define("LAN_SEFURL","SEF URL");
+define("LAN_COPY","Copy");
 
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");

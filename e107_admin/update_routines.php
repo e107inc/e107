@@ -981,15 +981,18 @@ function update_706_to_800($type='')
 	if($count != 1)
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
+		
 		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
 		(0, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
 		(0, 'news', 'News', 'Will be available in the news area. ', 253),
 		(0, 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253),
 		(0, 'download', 'Download Images', '', 253),
-		(0, 'downloadthumb', 'Download Thumbnails', '', 253);";
+		(0, 'downloadthumb', 'Download Thumbnails (legacy)', '', 253),
+		(0, 'newsthumb', 'News Thumbnails (legacy)', '', 253);";
 
 		mysql_query($query);
 		
+		$med->import('newsthumb',e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');
 		$med->import('download',e_FILE.'downloadimages');

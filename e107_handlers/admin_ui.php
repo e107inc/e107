@@ -2035,6 +2035,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var boolean
 	 */
 	protected $batchDelete = true;
+	
+	/**
+	 * @var boolean
+	 */
+	protected $batchCopy = false;
+	
 
 	/**
 	 * Could be LAN constant (mulit-language support)
@@ -2072,6 +2078,11 @@ class e_admin_controller_ui extends e_admin_controller
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
+	}
+	
+	public function getBatchCopy()
+	{
+		return $this->batchCopy;
 	}
 
 	/**
@@ -3341,6 +3352,21 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->redirect();
 	}
 
+	/** TODO
+	 * Batch copy trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListCopyBatch($selected)
+	{
+		// Batch Copy 
+		$set_messages = true;
+		$this->getTreeModel()->copy($selected);
+		if($set_messages) $this->getTreeModel()->setMessages();
+		$this->redirect();	
+	}
+
+
 	/**
 	 * Batch boolean trigger
 	 * @param array $selected
@@ -4012,7 +4038,7 @@ class e_admin_form_ui extends e_form
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete()) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -4148,8 +4174,11 @@ class e_admin_form_ui extends e_form
 	}
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
-	function renderBatch($allow_delete = false)
+	function renderBatch($allow_delete = false,$allow_copy= false)
 	{
+		
+		// $allow_copy = TRUE;
+		
 		$fields = $this->getController()->getFields();
 		if(!varset($fields['checkboxes']))
 		{
@@ -4161,7 +4190,8 @@ class e_admin_form_ui extends e_form
          		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
 					".$this->option(LAN_BATCH_LABEL_SELECTED, '')."
-					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."
+					".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
+					".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', 'Execute', array('id' => false))."
