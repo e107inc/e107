@@ -40,7 +40,7 @@ if (!e_QUERY || isset($_POST['userlogin']))
 
 $req_cookie = 'e-request_'.md5($_SERVER['SERVER_ADDR']);
 
-if(isset($_COOKIE[$req_cookie]) && $_SESSION['download_splash'] !==TRUE) // if cookie found, suggest to try later
+if(isset($_COOKIE[$req_cookie]) && ($_COOKIE[$req_cookie]!= intval(e_QUERY)) && $_SESSION['download_splash'] !==TRUE) // if cookie found, suggest to try later
 {
 	$_SESSION['download_splash'] = FALSE;
 	require_once(HEADERF);
@@ -56,7 +56,7 @@ if(isset($_COOKIE[$req_cookie]) && $_SESSION['download_splash'] !==TRUE) // if c
 
 if(varset($pref['download_nomultiple'])==1 )
 {
-	if(!setcookie($req_cookie, 1, time() + 30, "/")) // set the cookie and if it fails, request cookies be enabled
+	if(!setcookie($req_cookie, intval(e_QUERY), time() + 30, "/")) // set the cookie and if it fails, request cookies be enabled
 	{
 		$_SESSION['download_splash'] = FALSE;
 		require_once(HEADERF);
@@ -165,7 +165,8 @@ if(varset($pref['download_splashdelay'])==1 )
 		{
 			$_SESSION['download_splash'] = TRUE;
 			
-			header("Refresh: 3; url=\"request.php?".intval(e_QUERY)."\"");
+			$theLink = SITEURL."request.php?".intval(e_QUERY);
+			header("Refresh: 3; url=\"".$theLink."\"");
 
 			function core_head() // deprecated function in 0.8
 			{
