@@ -817,7 +817,10 @@ if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
 
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
-	$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+	if (isset($pref['track_online']) && $pref['track_online'])
+	{
+		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+	}
 
 	if ($pref['user_tracking'] == 'session')
 	{
