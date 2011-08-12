@@ -256,8 +256,7 @@ class poll
 				}
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
-
-				$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
+				$sql->db_Update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip.$userid."^'" : '')." WHERE poll_id=".$poll_id);
 				echo "
 				<script type='text/javascript'>
 				<!--
