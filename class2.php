@@ -827,7 +827,10 @@ if (e_QUERY == 'logout')
 {
 	$ip = $e107->getip();
 	$udata=(USER === TRUE) ? USERID.".".USERNAME : "0";
-	$sql->db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+	if (isset($pref['track_online']) && $pref['track_online'])
+	{
+		$sql->db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+	}
 
 	//if ($pref['user_tracking'] == 'session')
 	{
