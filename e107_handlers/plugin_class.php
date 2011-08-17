@@ -1897,7 +1897,7 @@ class e107plugin
 		$default = ($size == 32) ? E_32_CAT_PLUG : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
 		$sz = $sizeArray[$size];
 		
-		$icon_src = (isset($plug_vars['plugin_php'])) ? e_PLUGIN  : e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
+		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
 		$plugin_icon = $plug_vars['administration'][$sz] ? "<img src='{$icon_src}' alt='' class='icon S".intval($size)."' />" : $default;
      	
 		if(!$plugin_icon)
@@ -1954,17 +1954,17 @@ class e107plugin
 		}
 
 		// For BC.
-		$ret['administration']['icon'] = varset($eplug_icon);
+		$ret['administration']['icon'] = varset(str_replace($plugName."/","",$eplug_icon));
 		$ret['administration']['caption'] = varset($eplug_caption);
-		$ret['administration']['iconSmall'] = varset($eplug_icon_small);
+		$ret['administration']['iconSmall'] = varset(str_replace($plugName."/","",$eplug_icon_small));
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
 		if (varset($eplug_conffile))
 		{
 			$ret['adminLinks']['link'][0]['@attributes']['url'] = varset($eplug_conffile);
 			$ret['adminLinks']['link'][0]['@attributes']['description'] = LAN_CONFIGURE;
-			$ret['adminLinks']['link'][0]['@attributes']['icon'] = varset($eplug_icon);
-			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = varset($eplug_icon_small);
+			$ret['adminLinks']['link'][0]['@attributes']['icon'] = varset(str_replace($plugName."/","",$eplug_icon));
+			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = varset(str_replace($plugName."/","",$eplug_icon_small));
 			$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
 		}
 		if (vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
@@ -1981,7 +1981,7 @@ class e107plugin
 		}
 
 		// Set this key so we know the vars came from a plugin.php file
-		$ret['plugin_php'] = true;
+		// $ret['plugin_php'] = true; // Should no longer be needed. 
 		$this->plug_vars = $ret;
 
 		return true;
