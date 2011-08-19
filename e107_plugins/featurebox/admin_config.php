@@ -65,6 +65,7 @@ class fb_category_ui extends e_admin_ui
 	protected $table 		= "featurebox_category";
 	protected $pid			= "fb_category_id";
 	protected $perPage 		= 0; //no limit
+
  	 	 	
 	protected $fields = array(
 		'checkboxes'			=> array('title'=> '',					'type' => null, 							'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center first'),
@@ -167,6 +168,7 @@ class fb_main_ui extends e_admin_ui
 	protected $pid 				= "fb_id";
 	protected $perPage 			= 10;
 	protected $batchDelete 		= true;
+	protected $batchCopy 	= true;
 	
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',					'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center first', 'class'=>'center'),
