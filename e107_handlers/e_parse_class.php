@@ -1755,6 +1755,11 @@ class e_parse
 
 	public function thumbUrl($url, $options = array(), $raw = false, $full = false)
 	{
+		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc. 
+		{
+			$url = $this->replaceConstants($url);
+		}
+				
 		if(!is_array($options))
 		{
 			parse_str($options, $options);
@@ -1763,6 +1768,7 @@ class e_parse
 		if($raw) $url = $this->createConstants($url, 'mix');
 
 		$thurl = ($full ? SITEURL : e_HTTP).'thumb.php?src='.$url.'&amp;';
+				
 		if(vartrue($options['aw']) || vartrue($options['ah']))
 		{
 			$thurl .= 'aw='.((integer) vartrue($options['aw'], 0)).'&amp;ah='.((integer) vartrue($options['ah'], 0));
