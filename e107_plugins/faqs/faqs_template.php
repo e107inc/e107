@@ -26,8 +26,8 @@ if(!defined("USER_WIDTH"))
 					<div class='faq-search'>{FAQ_SEARCH}</div>
 					</div>";
 
-	$FAQ_LISTALL_START = "<div><h2 class='faq-listall-category'>{FAQ_CATEGORY}</h2><ul class='faq-listall-container'>\n";
-	$FAQ_LISTALL_LOOP = "<li class='faq-listall-loop'>{FAQ_QUESTION=expand}</li>\n";
+	$FAQ_LISTALL_START = "<div><h2 class='faq-listall'>{FAQ_CATEGORY}</h2><ul class='faq-listall'>\n";
+	$FAQ_LISTALL_LOOP = "<li class='faq-listall'>{FAQ_QUESTION=expand}</li>\n";
 	$FAQ_LISTALL_END = "</ul></div>\n";
 
 
