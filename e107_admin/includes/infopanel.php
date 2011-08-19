@@ -117,10 +117,13 @@ $text .= "
 
 // ---------------------- Who's Online  ------------------------
 // TODO Could use a new _menu item instead.
+
+	$nOnline = e107::getDB()->db_Select('online', '*');
+
 $text .= "
 	<div id='core-infopanel_online' class='f-left' style='width:49%'>
 	<div style='border:1px solid silver;margin:10px;'>
-	<div class='main_caption bevel left'><b>Who's Online</b></div>
+	<div class='main_caption bevel left'><b>Visitors Online : ".$nOnline."</b></div>
 	<div class='left block-text'>
 
 
@@ -142,7 +145,11 @@ $text .= "
 			</tr>
 		</thead>
 		<tbody>";
-	if (e107::getDB()->db_Select('online', '*'))
+	
+	
+		
+		
+	if (e107::getDB()->db_Select('online', '*',"online_ip !='' LIMIT 20"))
 	{
 		$newsarray = $e107->sql->db_getList();
 		foreach ($newsarray as $key=>$val)
@@ -240,6 +247,7 @@ function render_infopanel_icons()
 {
 	$frm = e107::getSingleton('e_form');
 	global $iconlist,$pluglist, $user_pref;
+		
 	$text = "";
 
 
