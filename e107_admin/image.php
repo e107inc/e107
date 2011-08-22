@@ -225,6 +225,8 @@ class media_admin_ui extends e_admin_ui
 		protected $pid = "media_id";
 		protected $perPage = 10;
 		protected $batchDelete = true;
+	//	protected $defaultOrder = 'desc';
+		protected $listOrder = 'm.media_id desc'; // show newest images first. 
 
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	/*
@@ -596,6 +598,7 @@ class media_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+	
 		
 		if(!count($_POST['batch_selected']))
 		{
@@ -603,10 +606,32 @@ class media_admin_ui extends e_admin_ui
 			return;
 		}
 		
+		
+		require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
+		list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
 
 		foreach($_POST['batch_selected'] as $file)
 		{
+								
 			$oldpath = e_MEDIA."temp/".$file;
+			
+			// Resize on Import Routine ------------------------
+			if(vartrue($img_import_w) && vartrue($img_import_h))
+			{
+				try
+				{
+				    $thumb = PhpThumbFactory::create($oldpath);
+				    $thumb->setOptions(array('correctPermissions' => true));
+				}
+				catch (Exception $e)
+				{
+				     $mes->addError($e->getMessage());
+				    // return $this;
+				}
+				$thumb->resize($img_import_w,$img_import_h)->save($oldpath);
+			
+			}
+			// End Resize routine. ---------------------
 
 			$f = $fl->get_file_info($oldpath);
 
@@ -883,6 +908,11 @@ if (isset($_POST['update_options']))
 	$tmp['image_post_class'] = intval($_POST['image_post_class']);
 	$tmp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
 	$tmp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
+	
+	if($_POST['img_import_resize_w'] && $_POST['img_import_resize_h'])
+	{
+		$tmp['img_import_resize'] = intval($_POST['img_import_resize_w'])."x".intval($_POST['img_import_resize_h']);		
+	} 
 
 	if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
 	{
@@ -1233,7 +1263,7 @@ if (isset($_POST['check_avatar_sizes']))
 	}
 
 	$text = "
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-image-settings'>
 				<legend class='e-hideme'>".IMALAN_7."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminform'>
@@ -1274,6 +1304,18 @@ if (isset($_POST['check_avatar_sizes']))
 								".$frm->select_close()."
 								<div class='field-help'>".IMALAN_13."</div>
 							</td>
+						</tr>";
+						
+						list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
+						
+						//TODO LANS
+						$text .= "						
+						<tr>
+							<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+							<td class='control'>
+								".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
+								<div class='field-help'>".IMALAN_6."</div>
+							</td>
 						</tr>
 
 						<tr>
@@ -1294,7 +1336,8 @@ if (isset($_POST['check_avatar_sizes']))
 								".$frm->text('im_path', $pref['im_path'])."
 								<div class='field-help'>".IMALAN_6."</div>
 							</td>
-						</tr>
+						</tr>					
+						
 
 						<tr>
 							<td class='label'>".IMALAN_34."
