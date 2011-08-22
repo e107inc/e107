@@ -1757,7 +1757,7 @@ class e_parse
 	{
 		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc. 
 		{
-			$url = $this->replaceConstants($url);
+			$url = $this->replaceConstants($url,'abs');			
 		}
 				
 		if(!is_array($options))
@@ -1766,6 +1766,8 @@ class e_parse
 		}
 
 		if($raw) $url = $this->createConstants($url, 'mix');
+		
+		// echo "<br />".$url;
 
 		$thurl = ($full ? SITEURL : e_HTTP).'thumb.php?src='.$url.'&amp;';
 				
