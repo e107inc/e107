@@ -576,10 +576,24 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats)."
+						Import into Category: ".$frm->selectbox('batch_category',$this->cats);
+			
+			$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";				
+					
+			if(is_readable($waterMarkPath))
+			{
+				$text .= $frm->checkbox_label("Add Watermark", 'batch_import_watermark',1);
+			}
+						
+						$text .= "
 						</div>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import')."
+							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import');
+							
+			
+		
+							
+			$text .= "
 						</div>
 					</fieldset>
 				</form>
@@ -609,6 +623,17 @@ class media_admin_ui extends e_admin_ui
 		
 		require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 		list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
+		
+		if(vartrue($_POST['batch_import_watermark']))
+		{
+			$WM = TRUE;
+			$watermarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";	
+			$watermark = PhpThumbFactory::create($watermarkPath);
+		}
+		else 
+		{
+		 	$WM = FALSE; 
+		}	
 
 		foreach($_POST['batch_selected'] as $file)
 		{
@@ -626,9 +651,19 @@ class media_admin_ui extends e_admin_ui
 				catch (Exception $e)
 				{
 				     $mes->addError($e->getMessage());
+				     continue;
 				    // return $this;
 				}
-				$thumb->resize($img_import_w,$img_import_h)->save($oldpath);
+				if($WM) // TODO Add watermark prefs for alpha and position. 
+				{
+					$thumb->resize($img_import_w,$img_import_h)->addWatermark($watermark, 'rightBottom', 30, 0, 0)->save($oldpath); 
+			
+				}
+				else
+				{
+				 	$thumb->resize($img_import_w,$img_import_h)->save($oldpath); 
+				}
+				
 			
 			}
 			// End Resize routine. ---------------------
