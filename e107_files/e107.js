@@ -58,10 +58,10 @@ function expandit(curobj, hide) {
 	if(document.getElementById(curobj)) {
   		folder=document.getElementById(curobj).style;
 	} else {
-		if(ns6==1||operaaa==true) {
-			folder=curobj.nextSibling.nextSibling.style;
+		if(ns6==1||operaaa==true || typeof curobj['nextSibling'] != 'undefined' ) {
+			folder= typeof curobj.nextSibling.tagName != 'undefined' ? curobj.nextSibling.style : curobj.nextSibling.nextSibling.style;
 		} else {
-			folder=document.all[curobj.sourceIndex+1].style;
+			folder=document.all[curobj.sourceIndex+1].style; 
 		}
    }
 	if(folder.display=="none")
