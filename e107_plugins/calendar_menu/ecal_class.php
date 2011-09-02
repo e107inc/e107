@@ -208,8 +208,7 @@ Preferences used:
 	   //	2 - edit event
 	   //	3 - delete event
 	   // 	4 - Bulk delete
-	  global $pref, $admin_log, $e_event;
-	  
+	  global $pref, $admin_log, $e_event, $e107;
 	  $log_titles = array(	'1' => 'Event Calendar - add event',
 							'2' => 'Event Calendar - edit event',
 							'3' => 'Event Calendar - delete event',
@@ -221,7 +220,7 @@ Preferences used:
 	    $cmessage .= "Event Start: ".strftime("%d-%B-%Y",$event_start)."<br />";
 	  else
 	    $cmessage .= "Event Start unknown<br />";
-	  $edata_ec = array("cmessage" => $cmessage, "ip" => getip());
+	  $edata_ec = array("cmessage" => $cmessage, "ip" => $e107->getip());
 	  switch ($event_type)
 	  {
 	    case 1 : $e_event -> trigger("ecalnew", $edata_ec);

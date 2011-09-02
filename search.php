@@ -180,7 +180,7 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 	elseif ($search_prefs['time_restrict']) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($full_query);
-		$ip = getip();
+		$ip = $e107->getip();
 		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
