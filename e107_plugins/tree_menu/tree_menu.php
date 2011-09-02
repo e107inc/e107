@@ -127,9 +127,9 @@ foreach($mainLinkArray as $links) {
 function setlink($link_name, $link_url, $link_open, $link_description) 
 {
 	global $tp;
-	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) 
+	if (strpos($link_url, '://') === FALSE && strpos($link_url, 'mailto:') !== 0 && !strstr($link_url, "void")) 
 	{
-		$link_url = e_BASE.$link_url;
+		$link_url = SITEURL.$link_url;
 	}
 	$link_url =	$tp->replaceConstants($link_url, $nonrelative = TRUE, $all = false);
     $href = " href='".$link_url."'";
