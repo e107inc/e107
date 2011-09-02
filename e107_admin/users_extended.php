@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 require_once('../class2.php');
@@ -51,6 +49,7 @@ $ue = new e107_user_extended;
 
 
 $message = '';
+$message_type = E_MESSAGE_SUCCESS;
 
 if (e_QUERY)
 {
@@ -145,6 +144,7 @@ if (isset($_POST['add_field']))
 		if ($ue->user_extended_reserved($ue_field_name))
 		{  // Reserved field name
 			$message = "[user_".$tp->toHTML($ue_field_name)."] ".EXTLAN_74;
+			$message_type = E_MESSAGE_ERROR;
 		}
 		else
 		{
@@ -152,6 +152,7 @@ if (isset($_POST['add_field']))
 			if(!$result)
 			{
 				$message = EXTLAN_75;
+				$message_type = E_MESSAGE_INFO;
 			}
 			else
 			{
@@ -163,6 +164,7 @@ if (isset($_POST['add_field']))
 	else
 	{
 		$message = EXTLAN_76." : ".$tp->toHTML($ue_field_name);
+		$message_type = E_MESSAGE_ERROR;
 	}
 }
 
@@ -186,24 +188,40 @@ if (isset($_POST['update_field']))
 
 if (isset($_POST['update_category']))
 {
-	$name = trim($tp->toDB($_POST['user_field']));
-	$result = admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
-	if($result)
+	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
+  	{
+		$name = trim($tp->toDB($_POST['user_field']));
+		$result = admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
+		if($result)
+		{
+			$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
+			e107::getCache()->clear_sys('user_extended_struct', true);
+		}
+	}
+	else 
 	{
-		$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
-		e107::getCache()->clear_sys('user_extended_struct', true);
+		$message = EXTLAN_80;
+		$message_type = E_MESSAGE_ERROR;
 	}
 }
 
 
 if (isset($_POST['add_category']))
 {
-	$name = $tp->toDB($_POST['user_field']);
-	$result = admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
-	if($result)
+	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
+  	{
+		$name = $tp->toDB($_POST['user_field']);
+		$result = admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+		if($result)
+		{
+			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
+			e107::getCache()->clear_sys('user_extended_struct', true);
+		}
+	}
+	else 
 	{
-		$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
-		e107::getCache()->clear_sys('user_extended_struct', true);
+		$message = EXTLAN_80;
+		$message_type = E_MESSAGE_ERROR;
 	}
 }
 
@@ -215,6 +233,7 @@ if (varset($_POST['eu_action'],'') == "delcat")
 	if (count($ue->user_extended_get_fields($_id)) > 0)
 	{
 	  $message = EXTLAN_77;
+	  $message_type = E_MESSAGE_INFO;
 	}
 	elseif($ue->user_extended_remove($_id, $_name))
 	{
@@ -258,8 +277,9 @@ if(isset($_POST['deactivate']))
 if($message)
 {
     $emessage = eMessage::getInstance();
-	$emessage->add($message, E_MESSAGE_SUCCESS);
+	$emessage->add($message, $message_type);
   //	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	echo $emessage->render();
 }
 
 
