@@ -25,16 +25,16 @@ SC_END
 
 SC_BEGIN RSS_TYPES
 global $row, $tp;
-$url1 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".1".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url2 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url3 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".3".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
-$url4 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".4".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url1 = e_PLUGIN_ABS."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".1".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url2 = e_PLUGIN_ABS."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url3 = e_PLUGIN_ABS."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".3".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
+$url4 = e_PLUGIN_ABS."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".4".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
 
 $text = "
-<a href='".$url1."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' alt='RSS 0.92' /></a>
-<a href='".$url2."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' alt='RSS 2.0' /></a>
-<a href='".$url3."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' alt='RDF' /></a>
-<a href='".$url4."'><img src='".e_PLUGIN_ABS."rss_menu/images/rss4.png' alt='ATOM' /></a>
+<a href='".$url1."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' class='rss-img' alt='RSS 0.92' /></a>
+<a href='".$url2."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' class='rss-img' alt='RSS 2.0' /></a>
+<a href='".$url3."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' class='rss-img' alt='RDF' /></a>
+<a href='".$url4."' class='rss'><img src='".e_PLUGIN_ABS."rss_menu/images/rss4.png' class='rss-img' alt='ATOM' /></a>
 ";
 return $text;
 SC_END
