@@ -93,6 +93,7 @@ define("EXTLAN_77", "Category not deleted - must delete fields in category first
 define('EXTLAN_78', 'Cannot find file --FILE-- needed to create data table');
 
 define('EXTLAN_79', 'Label');
+define('EXTLAN_80', 'Validation error - aborted.');
 
 
 //textbox
