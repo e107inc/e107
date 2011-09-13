@@ -8,10 +8,8 @@
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/extended_password_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id $
  */
 
 /*
@@ -61,11 +59,12 @@ class ExtendedPasswordHandler extends UserHandler
 
 
   // Constructor
-  function ExtendedPasswordHandler()
+  function __construct()
   {
 	// Lookup string ready for base64 conversions
 	  $this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-	  $this->UserHandler();				// Ancestor constructor
+	// Ancestor constructor
+	  parent::__construct();
   }
 
 
