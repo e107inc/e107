@@ -42,6 +42,7 @@ require_once(e_HANDLER.'user_handler.php');
   define('PASSWORD_PLAINTEXT',6);
   define('PASSWORD_GENERAL_SHA1',7);
   define('PASSWORD_WORDPRESS_SALT', 8);
+  define('PASSWORD_MAGENTO_SALT', 9);
 
   // Supported formats:
   define('PASSWORD_PHPBB_ID','$H$');			// PHPBB salted
@@ -189,7 +190,8 @@ class ExtendedPasswordHandler extends UserHandler
 			'smf_sha1'		=> IMPORTDB_LAN_5,
 			'sha1'			=> IMPORTDB_LAN_6,
 			'phpbb3_salt'	=> IMPORTDB_LAN_12,
-			'wordpress_salt'	=> IMPORTDB_LAN_13
+			'wordpress_salt'	=> IMPORTDB_LAN_13,
+			'wordpress_salt'	=> IMPORTDB_LAN_14,
 			));
 		}
 		return $vals;
@@ -212,7 +214,8 @@ class ExtendedPasswordHandler extends UserHandler
 				'e107_salt'		=> PASSWORD_E107_SALT,
 				'phpbb2_salt'	=> PASSWORD_PHPBB_SALT,
 				'phpbb3_salt'	=> PASSWORD_PHPBB_SALT,
-				'wordpress_salt'	=> PASSWORD_WORDPRESS_SALT
+				'wordpress_salt'	=> PASSWORD_WORDPRESS_SALT,
+				'magento_salt'	=> PASSWORD_MAGENTO_SALT,
 				);
 		if (isset($maps[$ptype])) return $maps[$ptype];
 		return FALSE;
@@ -235,15 +238,33 @@ class ExtendedPasswordHandler extends UserHandler
 				break;
 
 			case PASSWORD_JOOMLA_SALT :
-			case PASSWORD_MAMBO_SALT :
-				if ((strpos($row['user_password'], ':') === false) || (strlen($row[0]) < 40))
+			case PASSWORD_MAMBO_SALT :var_dump($stored_hash, strlen($stored_hash));
+				if ((strpos($stored_hash, ':') === false) || (strlen($stored_hash) < 40))
 				{
 					return PASSWORD_INVALID;
 				}
 				// Mambo/Joomla salted hash - should be 32-character md5 hash, ':', 16-character salt (but could be 8-char salt, maybe)
-				list($hash, $salt) = explode(':', $stored_hash);
+				list($hash, $salt) = explode(':', $stored_hash); var_dump($hash, $salt, md5($pword.$salt));
 				$pwHash = md5($pword.$salt);
 				$stored_hash = $hash;
+				break;
+				
+
+			case PASSWORD_MAGENTO_SALT :
+				if ((strpos($stored_hash, ':') === false))
+				{
+					return PASSWORD_INVALID;
+				}
+				// Magento salted hash - should be 32-character md5 hash, ':', 2-character salt
+				list($hash, $salt) = explode(':', $stored_hash); 
+				if(strlen($hash) !== 32) 
+				{
+					return PASSWORD_INVALID;
+				}
+				
+				$pwHash = md5($salt.$pword);
+				$stored_hash = $hash;
+				
 				break;
 
 			case PASSWORD_E107_SALT :
