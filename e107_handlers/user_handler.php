@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -63,7 +63,7 @@ class UserHandler
 	// Constructor
 	public function __construct()
 	{
-		global $pref;
+		$pref = e107::getPref();
 
 /**
 	Table of vetting methods for user data - lists every field whose value could be set manually.
@@ -447,7 +447,6 @@ class UserHandler
 	 */
 	public function makeUserCookie($lode,$autologin = FALSE)
 	{
-		global $pref;
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if (e107::getPref('user_tracking') == 'session')
 		{
@@ -588,8 +587,7 @@ Following fields auto-filled in code as required:
 	 */
 	public function userValidation(&$targetData)
 	{
-		global $e107, $pref;
-		$u_sql = new db;
+		$u_sql = e107::getDb('u');
 		$ret = TRUE;
 		$errMsg = '';
 		if (isset($targetData['data']['user_email']))
@@ -597,7 +595,7 @@ Following fields auto-filled in code as required:
 			$v = trim($targetData['data']['user_email']);		// Always check email address if its entered
 			if ($v == '')
 			{
-				if (!varsettrue($pref['disable_emailcheck']))
+				if (!e107::getPref('disable_emailcheck'))
 				{
 					$errMsg = ERR_MISSING_VALUE;
 				}
@@ -614,7 +612,7 @@ Following fields auto-filled in code as required:
 			{	// See if email address banned
 				$wc = $this->make_email_query($v);		// Generate the query for the ban list
 				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
-				if (($wc === FALSE) || !$e107->check_ban($wc, FALSE, TRUE))
+				if (($wc === FALSE) || e107::getInstance()->check_ban($wc, FALSE, TRUE))
 				{
 //					echo "Email banned<br />";
 					$errMsg = ERR_BANNED_EMAIL;
@@ -627,7 +625,7 @@ Following fields auto-filled in code as required:
 		}
 		else
 		{
-			if (!isset($targetData['errors']['user_email']) && !varset($pref['disable_emailcheck'],FALSE))
+			if (!isset($targetData['errors']['user_email']) && !e107::getPref('disable_emailcheck'))
 			{	// We may have already picked up an error on the email address - or it may be allowed to be empty
 				$errMsg = ERR_MISSING_VALUE;
 			}
@@ -679,7 +677,9 @@ Following fields auto-filled in code as required:
 	 */
 	public function deleteExpired($force = FALSE)
 	{
-		global $pref, $sql;
+		$pref = e107::getPref();
+		$sql = e107::getDb();
+		
 		$temp1 = 0;
 		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 		{
@@ -706,8 +706,7 @@ Following fields auto-filled in code as required:
 	 */
 	public function userClassUpdate(&$user, $event='userveri')
 	{
-		global $pref;
-
+		$pref = e107::getPref();
 		$tp = e107::getParser();
 
 		$initClasses = array();
