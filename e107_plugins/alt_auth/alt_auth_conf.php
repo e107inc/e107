@@ -2,16 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_conf.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
+ * 
  */
 
 $eplug_admin = true;
@@ -36,6 +33,7 @@ if(isset($_POST['updateprefs']))
 	$temp['auth_method'] = $tp->toDB($_POST['auth_method']);
 	$temp['auth_noconn'] = intval($_POST['auth_noconn']);
 	$temp['auth_method2'] = $tp->toDB($_POST['auth_method2']);
+	$temp['auth_badpassword'] = intval($_POST['auth_badpassword']);
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
 		save_prefs();		// Only save if changes
@@ -114,7 +112,7 @@ alt_auth_get_dropdown('auth_method', $pref['auth_method'], 'e107')."
 <tr>
 <td>".LAN_ALT_78.":<br /></td>
 <td>
-<select class='tbox' name='auth_noconn'>";
+<select class='tbox' name='auth_badpassword'>";
 $sel = (!$pref['auth_badpassword'] ? "" : " selected = 'selected' ");
 $text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
 $sel = ($pref['auth_badpassword'] ? " selected = 'selected' " : "");

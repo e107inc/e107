@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * Id$
  *
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
