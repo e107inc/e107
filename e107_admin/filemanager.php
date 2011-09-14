@@ -306,9 +306,11 @@ while ($dirs[$c]) {
 }
 
 $c = 0;
-while ($files[$c]) {
-	$img = substr(strrchr($files[$c], "."), 1, 3);
-	if (!$img || !preg_match("/css|exe|gif|htm|jpg|js|php|png|txt|xml|zip/i", $img)) {
+while ($files[$c]) 
+{
+	$img = strtolower(substr(strrchr($files[$c], "."), 1, 3));
+	if (!$img || !preg_match("/css|exe|gif|htm|jpg|js|php|png|txt|xml|zip/i", $img)) 
+	{
 		$img = "def";
 	}
 	$size = parsesize(filesize(e_BASE.$path."/".$files[$c]));
