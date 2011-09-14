@@ -2,18 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User signup
  *
- * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
-*/
+ * $URL$
+ * $Id$
+ * 
+ */
 
 
 require_once("class2.php");
@@ -333,7 +331,8 @@ if (e_QUERY)
 				if (varset($pref['autologinpostsignup']))
 				{
 					require_once(e_HANDLER.'login.php');
-					$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+					$usr = new userlogin();
+					$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
 				}
 				require_once(HEADERF);
 				$text = LAN_SIGNUP_74." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;

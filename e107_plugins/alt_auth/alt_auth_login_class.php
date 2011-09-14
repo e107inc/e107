@@ -2,38 +2,42 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ * Alternate login
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
+ * 
  */
 
 define('AA_DEBUG',FALSE);
 define('AA_DEBUG1',FALSE);
 
+
+//TODO convert to class constants
+define('AUTH_SUCCESS', -1);
+define('AUTH_NOUSER', 1);
+define('AUTH_BADPASSWORD', 2);
+define('AUTH_NOCONNECT', 3);
+
 class alt_login
 {
 	protected $e107;
+	public $loginResult = false;
 
 	public function __construct($method, &$username, &$userpass)
 	{
 		global $pref;
 		$this->e107 = e107::getInstance();
 		$newvals=array();
-		define('AUTH_SUCCESS', -1);
-		define('AUTH_NOUSER', 1);
-		define('AUTH_BADPASSWORD', 2);
-		define('AUTH_NOCONNECT', 3);
 
 		if ($method == 'none')
 		{
-			return AUTH_NOCONNECT;
+			$this->loginResult = AUTH_NOCONNECT;
+			return;
 		}
 
 		require_once(e_PLUGIN.'alt_auth/'.$method.'_auth.php');
@@ -41,7 +45,8 @@ class alt_login
 
 		if(isset($_login->Available) && ($_login->Available === FALSE))
 		{	// Relevant auth method not available (e.g. PHP extension not loaded)
-			return AUTH_NOCONNECT;
+			$this->loginResult = AUTH_NOCONNECT;
+			return;
 		}
 
 		$login_result = $_login -> login($username, $userpass, $newvals, FALSE);
@@ -58,7 +63,7 @@ class alt_login
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$username = substr($username, 0, varset($pref['loginname_maxlength'],30));
 
-			$aa_sql = new db;
+			$aa_sql = e107::getDb('aa');
 			$userMethods = new UserHandler;
 			$db_vals = array('user_password' => $aa_sql->escape($userMethods->HashPassword($userpass,$username)));
 			$xFields = array();					// Possible extended user fields
@@ -88,18 +93,20 @@ class alt_login
 					$db_vals[$k] = $v;
 				}
 			}
+			$ulogin = new userlogin();
 			if (count($xFields))
 			{	// We're going to have to do something with extended fields as well - make sure there's an object
 				require_once (e_HANDLER.'user_extended_class.php');
 				$ue = new e107_user_extended;
+				$q = 
 				$qry = "SELECT u.user_id,u.".implode(',u.',array_keys($db_vals)).", ue.user_extended_id, ue.".implode(',ue.',array_keys($xFields))." FROM `#user` AS u
 						LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
-						WHERE u.user_loginname='{$username}' ";
+						WHERE ".$ulogin->getLookupQuery($username, FALSE, 'u.');
 				if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qry}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 			}
 			else
 			{
-				$qry = "SELECT * FROM `#user` WHERE `user_loginname`='{$username}'";
+				$qry = "SELECT * FROM `#user` WHERE ".$ulogin->getLookupQuery($username, FALSE);
 			}
 			if($aa_sql -> db_Select_gen($qry))
 			{ // Existing user - get current data, see if any changes
@@ -145,6 +152,7 @@ class alt_login
 			}
 			else
 			{  // Just add a new user
+				
 				if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Add new user: ".print_r($db_vals,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 				if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
 				if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
@@ -173,11 +181,13 @@ class alt_login
 				}
 				else
 				{	// Error adding user to database - possibly a conflict on unique fields
-					$this->e107->admin_log->e_log_event(10,__FILE__.'|'.__FUNCTION__.'@'.__LINE__,'ALT_AUTH','Alt auth login','Add user fail: DB Error '.$aa_sql->mySQLlastErrText."[!br!]".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
-					return LOGIN_DB_ERROR;
+					$this->e107->admin_log->e_log_event(10,__FILE__.'|'.__FUNCTION__.'@'.__LINE__,'ALT_AUTH','Alt auth login','Add user fail: DB Error '.$aa_sql->getLastErrorText()."[!br!]".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
+					$this->loginResult = LOGIN_DB_ERROR;
+					return;
 				}
 			}
-			return LOGIN_CONTINUE;
+			$this->loginResult = LOGIN_CONTINUE;
+			return;
 		}
 		else
 		{	// Failure modes
@@ -195,22 +205,27 @@ class alt_login
 				case AUTH_NOCONNECT:
 					if(varset($pref['auth_noconn'], TRUE))
 					{
-						return LOGIN_TRY_OTHER;
+						$this->loginResult = LOGIN_TRY_OTHER;
+						return;
 					}
 					$username=md5('xx_noconn_xx');
-					return LOGIN_ABORT;
+					$this->loginResult = LOGIN_ABORT;
+					return;
 					break;
 				case AUTH_BADPASSWORD:
 					if(varset($pref['auth_badpassword'], TRUE))
 					{
-						return LOGIN_TRY_OTHER;
+						$this->loginResult = LOGIN_TRY_OTHER;
+						return;
 					}
 					$userpass=md5('xx_badpassword_xx');
-					return LOGIN_ABORT;					// Not going to magically be able to log in!
+					$this->loginResult = LOGIN_ABORT;					// Not going to magically be able to log in!
+					return;
 					break;
 			}
 		}
-		return LOGIN_ABORT;			// catch-all just in case
+		$this->loginResult = LOGIN_ABORT;			// catch-all just in case
+		return;
 	}
 
 

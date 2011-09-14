@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1019,7 +1019,9 @@ class e_user extends e_user_model
 	{
 		if($this->isUser()) return false;
 
-		$userlogin = new userlogin($uname, $upass_plain, $uauto, $uchallange, $noredirect);
+		$userlogin = new userlogin();
+		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
+		
 		$this->setSessionData(true)
 			->setData($userlogin->getUserData());
 

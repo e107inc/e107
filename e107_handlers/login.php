@@ -3,7 +3,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -22,6 +22,7 @@ error_reporting(E_ALL);
 // require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
 
+// TODO - class constants
 define ('LOGIN_TRY_OTHER', 2);		// Try some other authentication method
 define ('LOGIN_CONTINUE',1);		// Not rejected (which is not exactly the same as 'accepted') by alt_auth
 define ('LOGIN_ABORT',-1);			// Rejected by alt_auth
@@ -37,7 +38,9 @@ define ('LOGIN_BANNED', -10);		// Banned user attempting login
 define ('LOGIN_CHAP_FAIL', -11);	// CHAP login failed
 define ('LOGIN_DB_ERROR', -12);		// Error adding user to main DB
 
-
+/**
+ * TODO - use new user model, compact everything in max 2 classes
+ */
 class userlogin
 {
 	protected $e107;
@@ -48,7 +51,14 @@ class userlogin
 	protected $passResult = FALSE;	// USed to determine if stored password needs update
 
 
-	/** Constructor
+	public function __construct()
+	{
+		$this->e107 = e107::getInstance();
+		$this->userIP = $this->e107->getip();
+		$this->userMethods = e107::getUserSession();
+	}
+
+	/**
 	# Class called when user attempts to log in
 	#
 	# @param string $username, $_POSTED user name
@@ -59,7 +69,7 @@ class userlogin
 	' @param string $response - response string returned by CHAP login (instead of password)
 	# @return  boolean - FALSE on login fail, TRUE on login successful
 	*/
-	public function __construct($username, $userpass, $autologin, $response = '', $noredirect = false)
+	public function login($username, $userpass, $autologin, $response = '', $noredirect = false)
 	{
 		global $pref, $e_event, $_E107;
 
@@ -74,9 +84,6 @@ class userlogin
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		$this->e107 = e107::getInstance();
-		$this->userIP = $this->e107->getip();
-
 		if($username == "" || (($userpass == "") && ($response == '')))
 		{	// Required fields blank
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
@@ -87,20 +94,31 @@ class userlogin
 
 		$forceLogin = ($autologin == 'signup');
 		$autologin = intval($autologin);		// Will decode to zero if forced login
-
+		$authorized = false;
 		if (!$forceLogin && $this->e107->isInstalled('alt_auth'))
 		{
 			$authMethod[0] = varset($pref['auth_method'], 'e107');		// Primary authentication method
 			$authMethod[1] = varset($pref['auth_method2'], 'none');		// Secondary authentication method (if defined)
+			$result = false;
 			foreach ($authMethod as $method)
 			{
 				if ($method == 'e107')
 				{
 					if ($this->lookupUser($username, $forceLogin))
 					{
-						if (varset($pref['auth_badpassword'], TRUE) || ($this->checkUserPassword($userpass, $response, $forceLogin) === TRUE))
+						if ($this->checkUserPassword($userpass, $response, $forceLogin) === TRUE)
 						{
+							$authorized = true;
 							$result = LOGIN_CONTINUE;		// Valid User exists in local DB
+						}
+						elseif(varset($pref['auth_badpassword'], TRUE))
+						{
+							$result = LOGIN_TRY_OTHER;
+							continue; // Should use alternate method for password auth
+						}
+						else 
+						{
+							return $this->invalidLogin($username,LOGIN_ABORT);
 						}
 					}
 				}
@@ -112,18 +130,27 @@ class userlogin
 						if (file_exists($auth_file))
 						{
 							require_once(e_PLUGIN.'alt_auth/alt_auth_login_class.php');
-							$result = new alt_login($method, $username, $userpass);
+							$al = new alt_login($method, $username, $userpass); 
+							$result = $al->loginResult; 
 							switch ($result)
 							{
 								case LOGIN_ABORT :
 									return $this->invalidLogin($username,LOGIN_ABORT);
+								break;
 								case LOGIN_DB_ERROR :
 									return $this->invalidLogin($username,LOGIN_DB_ERROR);
+								break;
+								case AUTH_SUCCESS:
+									$authorized = true;
+								break;
+								case LOGIN_TRY_OTHER:
+									continue;
+								break;
 							}
 						}
 					}
 				}
-				if ($result == LOGIN_CONTINUE)
+				if ($result === LOGIN_CONTINUE)
 				{
 					break;
 				}
@@ -151,10 +178,9 @@ class userlogin
 			}
 		}
 
-
-		if ($this->checkUserPassword($userpass, $response, $forceLogin) !== TRUE)
+		if ($authorized !== true && $this->checkUserPassword($userpass, $response, $forceLogin) !== true)
 		{
-			return FALSE;
+			return $this->invalidLogin($username,LOGIN_BAD_PW);
 		}
 
 
@@ -242,7 +268,7 @@ class userlogin
 			}
 		}
 
-		if($noredirect) return;
+		if($noredirect) return true;
 
 		$redir = e_SELF;
 		if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
@@ -291,8 +317,7 @@ class userlogin
 	 */
 	protected function lookupUser($username, $forceLogin)
 	{
-		global $pref;
-		
+		$pref = e107::getPref();
 		$maxLength = varset($pref['loginname_maxlength'],30);
 
 		if(varset($pref['allowEmailLogin'])==1) // Email login only
@@ -307,14 +332,7 @@ class userlogin
 			return FALSE;
 		}
 
-		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-
-        $qry[0] = "`user_loginname`= '".$this->e107->tp->toDB($username)."'";  // username only  (default)
-		$qry[1] = "`user_email` = '".$this->e107->tp->toDB($username)."'";   // email only
-		$qry[2] = (strpos($username,'@') !== FALSE ) ? "`user_loginname`= '".$this->e107->tp->toDB($username)."'  OR `user_email` = '".$this->e107->tp -> toDB($username)."'" : $qry[0];  //username or email
-
-		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
-        $query = (!$forceLogin && varset($pref['allowEmailLogin'],0)) ? $qry[$pref['allowEmailLogin']] : $qry[0];
+		$query = $this->getLookupQuery($username, $forceLogin);
 
 		if ($this->e107->sql->db_Select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
 		{	// Invalid user
@@ -325,7 +343,24 @@ class userlogin
 		$this->userData = $this->e107->sql -> db_Fetch(MYSQL_ASSOC);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
+		
 		return TRUE;
+	}
+
+	public function getLookupQuery($username, $forceLogin, $dbAlias = '')
+	{
+		$pref = e107::getPref();
+
+		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+
+        $qry[0] = "{$dbAlias}`user_loginname`= '".$this->e107->tp->toDB($username)."'";  // username only  (default)
+		$qry[1] = "{$dbAlias}`user_email` = '".$this->e107->tp->toDB($username)."'";   // email only
+		$qry[2] = (strpos($username,'@') !== FALSE ) ? "{$dbAlias}`user_loginname`= '".$this->e107->tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$this->e107->tp -> toDB($username)."'" : $qry[0];  //username or email
+		
+
+		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
+        $query = (!$forceLogin && varset($pref['allowEmailLogin'],0)) ? $qry[$pref['allowEmailLogin']] : $qry[0];
+		return $query;
 	}
 
 
@@ -340,7 +375,7 @@ class userlogin
 	 */
 	protected function checkUserPassword($userpass, $response, $forceLogin)
 	{
-		global $pref;
+		$pref = e107::getPref();
 		if ($this->lookEmail && varsettrue($pref['passwordEncoding']))
 		{
 			$tmp = unserialize($this->userData['user_prefs']);
@@ -352,8 +387,9 @@ class userlogin
 			$requiredPassword = $this->userData['user_password'];
 		}
 
+		// FIXME - [SecretR] $username is not set and I really can't get the idea.
+		
 		// Now check password
-		$this->userMethods = e107::getUserSession();
 		if ($forceLogin)
 		{
 			if (md5($this->userData['user_name'].$this->userData['user_password'].$this->userData['user_join']) != $userpass)

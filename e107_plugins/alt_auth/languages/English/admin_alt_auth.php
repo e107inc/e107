@@ -1,21 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/admin_alt_auth.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file
+ *
+ * $URL$
+ * $Id$
+ * 
+ */
 define('LAN_ALT_1', 'Primary authorisation type');
 define('LAN_ALT_2', 'Update settings');
 define('LAN_ALT_3', 'Choose Alternate Authorisation Type');
@@ -72,7 +68,7 @@ define('LAN_ALT_50', 'Password = ');
 define('LAN_ALT_51', '(blank)');
 define('LAN_ALT_52', 'Authentication failed - ');
 define('LAN_ALT_53', 'unknown cause');
-define('LAN_ALT_54', 'could not connect to DB');
+define('LAN_ALT_54', 'could not connect to DB / service provider');
 define('LAN_ALT_55', 'invalid user');
 define('LAN_ALT_56', 'bad password');
 define('LAN_ALT_57', 'method not available');
