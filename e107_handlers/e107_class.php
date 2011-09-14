@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1809,7 +1809,7 @@ class e107
 	 */
 	public static function loadLanFiles($unitName, $type='runtime')
 	{
-		global $pref;
+		//global $pref;
 		switch ($type)
 		{
 			case 'runtime' :
@@ -1838,7 +1838,7 @@ class e107
 				return (isset($ret)) ? $ret : "";
 			}
 		}
-		if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+		if (e107::getPref('noLanguageSubs') || (e_LANGUAGE == 'English'))
 		{
 			return FALSE;		// No point looking for the English files twice
 		}
@@ -2436,7 +2436,7 @@ class e107
 	 */
 	public function ban()
 	{
-		global $sql, $pref;
+		$sql = e107::getDb();
 		$ban_count = $sql->db_Count('banlist');
 		if($ban_count)
 		{
@@ -2458,7 +2458,7 @@ class e107
 					$vals[] = substr($ip, 0, -14).'*';
 				}
 			}
-			if(varsettrue($pref['enable_rdns']))
+			if(e107::getPref('enable_rdns'))
 			{
 				$tmp = array_reverse(explode('.', $this->get_host_name(getenv('REMOTE_ADDR'))));
 				$line = '';
@@ -2494,7 +2494,11 @@ class e107
 	 */
 	public function check_ban($query, $show_error = TRUE, $do_return = FALSE)
 	{
-		global $sql, $tp, $pref, $admin_log;
+		$sql = e107::getDb();
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+		$admin_log = e107::getAdminLog();
+		
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
 		if($sql->db_Select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
 		{
@@ -2552,7 +2556,10 @@ class e107
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
 		global $sql, $pref, $e107, $admin_log;
-
+		$sql = e107::getDb();
+		$pref = e107::getPref();
+		$e107 = e107::getInstance();
+		$admin_log = e107::getAdminLog();
 		if(!$ban_message)
 		{
 			$ban_message = 'No explanation given';
@@ -2932,4 +2939,3 @@ class e107
 		return $ret;
 	}
 }
-?>
