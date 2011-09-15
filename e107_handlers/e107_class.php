@@ -2522,16 +2522,19 @@ class e107
 				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
 			//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+			
 			if($show_error)
 				header("HTTP/1.1 403 Forbidden", true);
 			if(isset($pref['ban_messages']))
 			{ // May want to display a message
 				// Ban still current here
-				if($do_return)
-					return FALSE;
+
 				echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']])); // Show message if one set
 			}
-			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+			if($do_return)
+				return FALSE;
+			
 			exit();
 		}
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);

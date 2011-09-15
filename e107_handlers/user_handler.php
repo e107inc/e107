@@ -606,13 +606,13 @@ Following fields auto-filled in code as required:
 			}
 			elseif ($u_sql->db_Count('user', '(*)', "WHERE `user_email`='".$v."' AND `user_ban`=1 "))
 			{
-				$errMsg = ERR_BANNED_USER;
+				$errMsg = ERR_BANNED_USER; 
 			}
 			else
 			{	// See if email address banned
 				$wc = $this->make_email_query($v);		// Generate the query for the ban list
 				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
-				if (($wc === FALSE) || e107::getInstance()->check_ban($wc, FALSE, TRUE))
+				if (($wc === FALSE) || !e107::getInstance()->check_ban($wc, FALSE, TRUE))
 				{
 //					echo "Email banned<br />";
 					$errMsg = ERR_BANNED_EMAIL;
