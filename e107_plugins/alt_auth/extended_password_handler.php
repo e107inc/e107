@@ -251,18 +251,22 @@ class ExtendedPasswordHandler extends UserHandler
 				
 
 			case PASSWORD_MAGENTO_SALT :
-				if ((strpos($stored_hash, ':') === false))
+				$hash = $salt = '';
+				if ((strpos($stored_hash, ':') !== false))
 				{
-					return PASSWORD_INVALID;
+					list($hash, $salt) = explode(':', $stored_hash); 
 				}
-				// Magento salted hash - should be 32-character md5 hash, ':', 2-character salt
-				list($hash, $salt) = explode(':', $stored_hash); 
+				// Magento salted hash - should be 32-character md5 hash, ':', 2-character salt, but could be also only md5 hash
+				else 
+				{
+					$hash = $stored_hash;
+				} 
 				if(strlen($hash) !== 32) 
 				{
-					return PASSWORD_INVALID;
+					//return PASSWORD_INVALID;
 				}
 				
-				$pwHash = md5($salt.$pword);
+				$pwHash = $salt ? md5($salt.$pword) : md5($pword);
 				$stored_hash = $hash;
 				
 				break;
