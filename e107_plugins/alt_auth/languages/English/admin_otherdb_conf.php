@@ -24,6 +24,7 @@ define("IMPORTDB_LAN_6", 'Generic SHA1');
 define("IMPORTDB_LAN_7", 'MD5 (E107 original)');
 define("IMPORTDB_LAN_8", 'E107 salted (option 0.8 on)');
 define("IMPORTDB_LAN_12", 'PHPBB2/PHPBB3 salted');
+define("IMPORTDB_LAN_14", 'Magento salted');
 
 
 define('SHOW_COPY_HELP', TRUE);
