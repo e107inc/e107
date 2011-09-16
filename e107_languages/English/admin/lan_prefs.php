@@ -163,7 +163,7 @@ define("PRFLAN_154", "New user verification method");
 define("PRFLAN_155", "Display name and login name may be different for");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Username");
-define("PRFLAN_158", "Display Name maximum length (5..30)");
+define("PRFLAN_158", "Display Name maximum length (5..100)");
 define("PRFLAN_159", "viewing this page with");
 define("PRFLAN_160", "Check remote servers when validating email addresses.");
 define("PRFLAN_161", "Disable all comments on the site");

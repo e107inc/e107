@@ -75,7 +75,7 @@ if(isset($_POST['updateprefs']))
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
-					'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15),
+					'displayname_maxlength' => array('min' => 5, 'max' => 100, 'default' => 15),
 					'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10),
 					'signup_pass_len' => array('min' => 2, 'max' => 100, 'default' => 4)
 					);
