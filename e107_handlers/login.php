@@ -388,6 +388,7 @@ class userlogin
 		}
 
 		// FIXME - [SecretR] $username is not set and I really can't get the idea.
+		$username = $this->userData['user_loginname']; // TODO for Steve - temporary fix, where $username comes from?
 		
 		// Now check password
 		if ($forceLogin)
@@ -409,7 +410,8 @@ class userlogin
 				}
 			}
 			else
-			{	// Plaintext password
+			{
+				// Plaintext password
 	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login","U: {$username}, P: {$userpass}, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
