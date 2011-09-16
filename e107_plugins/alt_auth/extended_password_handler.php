@@ -272,7 +272,7 @@ class ExtendedPasswordHandler extends UserHandler
 				break;
 
 			case PASSWORD_E107_SALT :
-				return UserHandler::CheckPassword($password, $login_name, $stored_hash);
+				return e107::getUserSession()->CheckPassword($password, $login_name, $stored_hash);
 				break;
 
 			case PASSWORD_PHPBB_SALT :
