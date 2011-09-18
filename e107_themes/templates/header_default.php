@@ -244,7 +244,7 @@ function render_meta($type)
 	// if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
 	// if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
 
-	if($type == "tag" && defset($pref['meta_tag'][e_LANGUAGE]))
+	if($type == "tag" && !empty($pref['meta_tag'][e_LANGUAGE]))
 	{
 		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
 	}
@@ -266,7 +266,7 @@ function render_meta($type)
 
 		return $ret;		
 	}
-	elseif(defset($pref['meta_'.$type][e_LANGUAGE]))
+	elseif(!empty($pref['meta_'.$type][e_LANGUAGE]))
 	{
 		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
 	}
