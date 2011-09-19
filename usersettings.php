@@ -736,12 +736,12 @@ function delete_file($fname, $dir = 'avatars/')
 function headerjs()
 {
 	//global $cal;
-	$script = "<script type=\"text/javascript\">
+	$script = "
 		function addtext_us(sc)
 		{
 			document.getElementById('dataform').image.value = sc;
 		}
-		</script>\n";
+	";
 
 	//$script .= $cal->load_files();
 	return $script;
