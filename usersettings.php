@@ -62,6 +62,10 @@ include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
 require_once (e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 
+// include JS, headerjs not called in header anymore
+$js = e107::getJs();
+$js->footerInline(headerjs());
+
 $photo_to_delete = '';
 $avatar_to_delete = '';
 $ue_fields = '';
