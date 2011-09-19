@@ -735,7 +735,7 @@ function delete_file($fname, $dir = 'avatars/')
 
 function headerjs()
 {
-	global $cal;
+	//global $cal;
 	$script = "<script type=\"text/javascript\">
 		function addtext_us(sc)
 		{
@@ -743,7 +743,7 @@ function headerjs()
 		}
 		</script>\n";
 
-	$script .= $cal->load_files();
+	//$script .= $cal->load_files();
 	return $script;
 }
 
