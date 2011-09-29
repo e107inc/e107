@@ -1,8 +1,8 @@
-// script.aculo.us controls.js v1.8.3, Thu Oct 08 11:23:33 +0200 2009
+// script.aculo.us controls.js v1.9.0, Thu Dec 23 16:54:48 -0500 2010
 
-// Copyright (c) 2005-2009 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
-//           (c) 2005-2009 Ivan Krstic (http://blogs.law.harvard.edu/ivan)
-//           (c) 2005-2009 Jon Tirsen (http://www.tirsen.com)
+// Copyright (c) 2005-2010 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
+//           (c) 2005-2010 Ivan Krstic (http://blogs.law.harvard.edu/ivan)
+//           (c) 2005-2010 Jon Tirsen (http://www.tirsen.com)
 // Contributors:
 //  Richard Livsey
 //  Rahul Bhargava
@@ -268,10 +268,8 @@ Autocompleter.Base = Class.create({
     if(!this.changed && this.hasFocus) {
       this.update.innerHTML = choices;
       Element.cleanWhitespace(this.update);
+      Element.cleanWhitespace(this.update.down());
 
-	  if (this.update.down()) { //SecretR: quick fix
-	  	Element.cleanWhitespace(this.update.down());
-	  }
       if(this.update.firstChild && this.update.down().childNodes) {
         this.entryCount =
           this.update.down().childNodes.length;
@@ -350,7 +348,7 @@ Ajax.Autocompleter = Class.create(Autocompleter.Base, {
     this.options.asynchronous  = true;
     this.options.onComplete    = this.onComplete.bind(this);
     this.options.defaultParams = this.options.parameters || null;
-    this.url                   = url; 
+    this.url                   = url;
   },
 
   getUpdatedChoices: function() {
@@ -364,14 +362,10 @@ Ajax.Autocompleter = Class.create(Autocompleter.Base, {
 
     if(this.options.defaultParams)
       this.options.parameters += '&' + this.options.defaultParams;
-	
+
     new Ajax.Request(this.url, this.options);
   },
-  
-  onException: function (request, e) {
-  	console.log(request, e);
-  },
-  
+
   onComplete: function(request) {
     this.updateChoices(request.responseText);
   }
