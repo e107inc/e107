@@ -4,7 +4,7 @@
 |     e107 website system
 |
 |     Steve Dunstan 2001-2002
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
+|     Copyright (C) 2008-2011 e107 Inc (e107.org)
 |
 |
 |     Released under the terms and conditions of the
@@ -69,11 +69,13 @@ class parseXml {
 			{
 				e107_ini_set('default_socket_timeout', $old_timeout);
 			}
-			if ($data)
+			if ($data !== FALSE)
 			{
 				$this->xmlFileContents = $data;
 				return $data;
 			}
+			$this->error = "File_get_contents() error";		// Fill in more info later
+			return FALSE;
 		}
 		if (function_exists("curl_init") && function_exists("curl_exec"))
 		{
