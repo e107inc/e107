@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -282,11 +282,13 @@ class xmlClass
 			{
 				e107_ini_set('default_socket_timeout', $old_timeout);
 			}
-			if ($data)
+			if ($data !== FALSE)
 			{
 				$this->xmlFileContents = $data;
 				return $data;
 			}
+			$this->error = "File_get_contents(XML) error";		// Fill in more info later
+			return FALSE;
 		}
 		if (function_exists("curl_init"))
 		{
