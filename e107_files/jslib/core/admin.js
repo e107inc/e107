@@ -275,7 +275,7 @@ e107Admin.AdminMenu = {
 		show = $(show);
 		if(!show) return false;
 		if(this.activeTab && this.activeTab.identify() != show.identify()) {
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
+			if(container) $(container).select('a.link-active[href^=#]').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			this.activeTab.hide();
 			this.activeTab = show;
 			this.activeTab.removeClassName('e-hideme').show();
@@ -284,13 +284,13 @@ e107Admin.AdminMenu = {
 			this.activeBar.up().addClassName('active');
 			return true;
 		} else if(!this.activeTab) { //init
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
+			if(container) $(container).select('a.link-active[href^=#]').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			this.activeTab = show.removeClassName('e-hideme').show();
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
 			this.activeBar.up().addClassName('active');
 			return true;
 		} else if(!this.activeBar && this.activeTab) {//only bar is unknown
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
+			if(container) $(container).select('a.link-active[href^=#]').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
 			this.activeBar.up().addClassName('active');
 			return true;
