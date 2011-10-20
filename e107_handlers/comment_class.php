@@ -56,13 +56,14 @@ class comment
 	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE)
 	{
 		//rating	: boolean, to show rating system in comment
-		global $pref,$sql,$tp;
-		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		global $pref, $sql, $tp;
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
 			return;
 		}
-		require_once (e_HANDLER."ren_help.php");
-		if (ANON == TRUE || USER == TRUE)
+
+		require_once(e_HANDLER."ren_help.php");
+		if ($this->getCommentPermissions() == 'rw')
 		{
 			$itemid = $id;
 			$ns = new e107table;
@@ -84,6 +85,7 @@ class comment
 			{
 				$text2 = "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n";
 			}
+
 			if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
 			{
 				$eaction = 'edit';
@@ -94,6 +96,7 @@ class comment
 				$eaction = 'edit';
 				$tmp = explode(".", e_QUERY);
 				$count = 0;
+
 				foreach ($tmp as $t)
 				{
 					if ($t == "edit")
@@ -121,7 +124,7 @@ class comment
 				if ($prid != USERID || !USER)
 				{ // Editing not allowed
 					echo "<div style='text-align: center;'>".COMLAN_329."</div>";
-					require_once (FOOTERF);
+					require_once(FOOTERF);
 					exit;
 				}
 				$caption = COMLAN_318;
@@ -133,12 +136,13 @@ class comment
 				$caption = COMLAN_9;
 				$comval = "";
 			}
+
 			//add the rating select box/result ?
 			$rate = "";
 			if ($rating == TRUE && !(ANON == TRUE && USER == FALSE))
 			{
 				global $rater;
-				require_once (e_HANDLER."rate_class.php");
+				require_once(e_HANDLER."rate_class.php");
 				if (!is_object($rater))
 				{
 					$rater = new rater;
@@ -146,6 +150,7 @@ class comment
 				$rate = $rater->composerating($table, $itemid, $enter = TRUE, USERID, TRUE);
 				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
 			} //end rating area
+
 			if (ANON == TRUE && USER == FALSE)
 			{ // Box for author name (anonymous comments - if allowed)
 				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox comment author' type='text' name='author_name' size='61' value='{$author_name}' maxlength='100' />\n</td>\n</tr>";
@@ -164,15 +169,16 @@ class comment
 		{ // Comment entry not allowed - point to signup link
 			$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
 		}
-			if ($return)
-			{
-				return $text;
-			}
-			else
-			{
-				echo $text;
-			}
+		if ($return)
+		{
+			return $text;
+		}
+		else
+		{
+			echo $text;
+		}
 	}
+
 	/**
 	 * Enter description here...
 	 *
@@ -190,8 +196,8 @@ class comment
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sql,$sc_style,$comment_shortcodes,$COMMENTSTYLE,$rater,$gen;
-		global $pref,$comrow,$tp,$NEWIMAGE,$USERNAME,$RATING,$datestamp;
+		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
+		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction,$thistable,$thisid,$e107;
 		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
@@ -203,7 +209,7 @@ class comment
 		$thisaction = $action;
 		if ($addrating === TRUE)
 		{
-			require_once (e_HANDLER."rate_class.php");
+			require_once(e_HANDLER."rate_class.php");
 			if (!$rater || !is_object($rater))
 			{
 				$rater = new rater;
@@ -331,13 +337,14 @@ class comment
 		} // End (nested comment handling)
 		return $text;
 	}
+
 	/**
-	 * Enter description here...
+	 * Add a comment to an item
 	 *
 	 * @param unknown_type $author_name
 	 * @param unknown_type $comment
 	 * @param unknown_type $table
-	 * @param unknown_type $id
+	 * @param integer $id - reference of item in source table to which comment is linked
 	 * @param unknown_type $pid
 	 * @param unknown_type $subject
 	 * @param unknown_type $rateindex
@@ -354,11 +361,8 @@ class comment
 		$tp 		= e107::getParser();
 		$e107cache 	= e107::getCache();
 
+		if ($this->getCommentPermissions() != 'rw') return;
 
-		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
-		{
-			return;
-		}
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
 		{
 			$eaction = 'edit';
@@ -522,6 +526,7 @@ class comment
 		}
 		return false;
 	}
+
 	/**
 	 * Enter description here...
 	 *
@@ -558,13 +563,13 @@ class comment
 			case "bugtrack":
 				$type = 6;
 				break;
-			default:
+			default :
 				$type = $table;
 				break;
 				/****************************************
-				 Add your comment type here in same format as above, ie ...
-				 case "your_comment_type"; $type = your_type_id; break;
-				 ****************************************/
+				Add your comment type here in same format as above, ie ...
+				case "your_comment_type"; $type = your_type_id; break;
+				****************************************/
 		}
 		return $type;
 	}
@@ -589,122 +594,158 @@ class comment
 		}
 	}
 
-		/**
-		 * Enter description here...
-		 *
-		 * @param unknown_type $table
-		 * @param unknown_type $id
-		 * @return unknown
-		 */
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $table
+	 * @param unknown_type $id
+	 * @return unknown
+	 */
+	function count_comments($table, $id)
+	{
+		global $sql, $tp;
+		$type = $this->getCommentType($table);
+		$count_comments = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' ");
+		return $count_comments;
+	}
 
+	/**
+	 *	Get comment permissions; may be:
+	 *		- FALSE - no permission
+	 *		- 'ro' - read-only (Can't create)
+	 *		- 'rw' - can create and see
+	 *
+	 *	This is an embryonic routine which is expected to evolve
+	 */
+	function getCommentPermissions()
+	{
+		global $pref;
 
-		function count_comments($table, $id)
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
-			global $sql,$tp;
-			$type = $this->getCommentType($table);
-			$count_comments = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' ");
-			return $count_comments;
+        	return FALSE;
 		}
-		/**
-		 * Enter description here...
-		 *
-		 * @param unknown_type $table - the source table for the associated item
-		 * @param unknown_type $action - usually 'comment' or 'reply'
-		 * @param unknown_type $id - ID of item associated with comments (e.g. news ID)
-		 * @param unknown_type $width - appears to not be used
-		 * @param unknown_type $subject
-		 * @param unknown_type $rate
-		 */
-
-
-		function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
+		if (isset($pref['comments_class']))
 		{
-			//compose comment	: single call function will render the existing comments and show the form_comment
-			//rate				: boolean, to show/hide rating system in comment, default FALSE
-			global $pref,$ns,$e107cache,$tp,$totcc;
-			if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+			if (!check_class($pref['comments_class']))
 			{
-				return;
+				return FALSE;
 			}
-			$sql = e107::getDb();
-			//		Query no longer used
-			//		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
-			$type = $this->getCommentType($table);
-			$query = $pref['nested_comments'] ?
-				"SELECT c.*, u.*, ue.* FROM #comments AS c
-				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
-					:
-				"SELECT c.*, u.*, ue.* FROM #comments AS c
-				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
+			return 'rw';
+		}
+		else
+		{
+			if (USER) return 'rw';			// Only allow anonymous comments if specifically enabled.
+			if (ANON) return 'rw';
+		}
+		return 'ro';
+	}
 
-			$text = "";
-			$comment = '';
-			$modcomment = '';
-			$lock = '';
-			$ret['comment'] = '';
-			if ($comment_total = $sql->db_Select_gen($query))
+
+	/**
+	 * Displays existing comments, and a comment entry form
+	 *
+	 * @param unknown_type $table - the source table for the associated item
+	 * @param unknown_type $action - usually 'comment' or 'reply'
+	 * @param unknown_type $id - ID of item associated with comments (e.g. news ID)
+	 * @param unknown_type $width - appears to not be used
+	 * @param unknown_type $subject
+	 * @param unknown_type $rate
+	 */
+
+
+	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
+	{
+		//compose comment	: single call function will render the existing comments and show the form_comment
+		//rate				: boolean, to show/hide rating system in comment, default FALSE
+		global $pref, $ns, $e107cache, $tp, $totcc;
+		if ($this->getCommentPermissions() === FALSE) return;
+
+		$sql = e107::getDb();
+		$type = $this->getCommentType($table);
+		$query = $pref['nested_comments'] ?
+			"SELECT c.*, u.*, ue.* FROM #comments AS c
+			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
+			:
+			"SELECT c.*, u.*, ue.* FROM #comments AS c
+			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
+
+		$text = "";
+		$comment = '';
+		$modcomment = '';
+		$lock = '';
+		$ret['comment'] = '';
+
+		if ($comment_total = $sql->db_Select_gen($query))
+		{
+			$width = 0;
+			//Shortcodes could use $sql, so just grab all results
+			$rows = $sql->db_getList();
+
+			//while ($row = $sql->db_Fetch())
+			foreach ($rows as $row)
 			{
-				$width = 0;
-				//Shortcodes could use $sql, so just grab all results
-				$rows = $sql->db_getList();
-
-				//while ($row = $sql->db_Fetch())
-				foreach ($rows as $row)
+				$lock = $row['comment_lock'];
+				// $subject = $tp->toHTML($subject);
+				if ($pref['nested_comments'])
 				{
-					$lock = $row['comment_lock'];
-					// $subject = $tp->toHTML($subject);
-					if ($pref['nested_comments'])
-					{
-						$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-					}
-					else
-					{
-						$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-					}
-				}
-				if ($tablerender)
-				{
-					$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
-				}
-				if (!$return)
-				{
-					echo $text;
+					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
 				}
 				else
 				{
-					$ret['comment'] = $text;
-				}
-				if (ADMIN && getperms("B"))
-				{
-					$modcomment = "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a></div><br />";
+					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
 				}
 			}
-			if ($lock != "1")
+
+			if ($tablerender)
 			{
-				$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
+				$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
+			}
+
+			if (!$return)
+			{
+				echo $text;
 			}
 			else
 			{
-				$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+				$ret['comment'] = $text;
 			}
-			if (!$return)
+
+			if (ADMIN && getperms("B"))
 			{
-				echo $modcomment.$comment;
+				$modcomment = "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a></div><br />";
 			}
-			$ret['comment'] .= $modcomment;
-			$ret['comment_form'] = $comment;
-			$ret['caption'] = COMLAN_99;
-			return (!$return) ? "" : $ret;
 		}
 
-
-		function recalc_user_comments($id)
+		if (($lock != '1') && ($this->getCommentPermissions() === 'rw'))
 		{
-			global $sql;
+			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
+		}
+		else
+		{
+			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+		}
+
+		if (!$return)
+		{
+			echo $modcomment.$comment;
+		}
+
+		$ret['comment'] .= $modcomment;
+		$ret['comment_form'] = $comment;
+		$ret['caption'] = COMLAN_99;
+
+		return (!$return) ? "" : $ret;
+	}
+
+
+	function recalc_user_comments($id)
+	{
+		global $sql;
 			if (is_array($id))
 			{
 				foreach ($id as $_id)
@@ -963,22 +1004,22 @@ class comment
 									}
 								}
 						} // End Switch
-						if (varset($ret['comment_title']))
-						{
-							$reta[] = $ret;
-							$valid++;
-						}
-						if ($amount && $valid >= $amount)
-						{
-							return $reta;
-						}
-					}
-					//loop if less records found than given $amount - probably because we discarded some
-					if ($amount && ($valid < $amount))
-					{
-						$reta = $this->getCommentData($amount, $from + $amount, $qry, $valid, $reta);
-					}
+				if (varset($ret['comment_title']))
+				{
+					$reta[] = $ret;
+					$valid++;
 				}
-				return $reta;
+				if ($amount && $valid >= $amount)
+				{
+					return $reta;
+				}
 			}
-		} //end class
+			//loop if less records found than given $amount - probably because we discarded some
+			if ($amount && ($valid < $amount))
+			{
+				$reta = $this->getCommentData($amount, $from + $amount, $qry, $valid, $reta);
+			}
+		}
+		return $reta;
+	}
+} //end class
