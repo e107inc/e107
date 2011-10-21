@@ -331,6 +331,11 @@ class comment {
 
 		if ($this->getCommentPermissions() != 'rw') return;
 
+		if(e_SECURITY_LEVEL > 0 && session_id() && !isset($_POST['e-token']))
+		{
+			return;		// Security issue - e-token should match
+		}
+
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
 		{
 			$eaction = 'edit';
