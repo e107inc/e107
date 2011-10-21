@@ -176,5 +176,7 @@ define("LANINS_117", "Website Preferences");
 define("LANINS_118", "Install Plugins");
 define("LANINS_119", "Install all plugins that the theme may require.");
 define("LANINS_120", "8");
+define('LANINS_121', 'e107_config.php is not an empty file');
+define('LANINS_122', 'Possibly you have an existing installation');
 
 				
