@@ -456,6 +456,10 @@ class e_install
 		$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
 		$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
 		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
+		if ($success)
+		{
+			$success = $this->checkDbFields($this->previous_steps['mysql']);		// Check for invalid characters
+		}
 		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "")
 		{
 			$this->stage = 3;
@@ -602,6 +606,12 @@ class e_install
 				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_106;
+		}
+		elseif (filesize('e107_config.php') > 1)
+		{	// Must start from an empty e107_config.php
+			$perms_pass = FALSE;
+			$perms_errors = LANINS_121;
+			$perms_notes = LANINS_122;
 		}
 		else
 		{
@@ -1236,6 +1246,30 @@ class e_install
 			return $blank_ok;
 		if (preg_match("#^\d+[e|E]#", $str))
 			return FALSE;
+		return TRUE;
+	}
+
+
+
+
+	/**
+	 *	Check an array of db-related fields for illegal characters
+	 *
+	 * @return boolean TRUE for OK, FALSE for invalid character
+	 */
+	function checkDbFields($fields)
+	{
+		if (!is_array($fields)) return FALSE;
+		foreach (array('server', 'user', 'db', 'prefix') as $key)
+		{
+			if (isset($fields[$key]))
+			{
+				if (strtr($fields[$key],"';", '    ') != $fields[$key])
+				{
+					return FALSE;		// Invalid character found
+				}
+			}
+		}
 		return TRUE;
 	}
 
