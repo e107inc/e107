@@ -363,6 +363,8 @@ class comment
 
 		if ($this->getCommentPermissions() != 'rw') return;
 
+		e107::getSession()->check();			// This will abort on error
+
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
 		{
 			$eaction = 'edit';
