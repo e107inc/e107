@@ -798,15 +798,16 @@ class e_core_session extends e_session
 	/**
 	 * Core CSF protection, see class2.php
 	 * Could be adopted by plugins for their own (different) protection logic
-	 * @return e_core_session
+	 * @param boolean $die
+	 * @return boolean
 	 */
-	public function check()
+	public function check($die = true)
 	{
 		// define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 		// TODO e-token required for all system forms?
 		
 		// only if not disabled and not in 'cli' mod
-		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_BALANCED || e107::getE107('cli')) return $this;
+		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_BALANCED || e107::getE107('cli')) return true;
 		
 		if($this->getSessionId())
 		{
@@ -829,7 +830,8 @@ class e_core_session extends e_session
 					e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
 				}	
 				// do not redirect, prevent dead loop, save server resources
-				die('Unauthorized access!');
+				if($die) die('Unauthorized access!');
+				return false;
 			}
 		}
 		
@@ -849,7 +851,7 @@ class e_core_session extends e_session
 			}
 			define('e_TOKEN', $this->getFormToken());
 		}
-		return $this;
+		return true;
 	}
 	
 	/**
