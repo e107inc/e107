@@ -340,6 +340,7 @@ class comment
 
 	/**
 	 * Add a comment to an item
+	 * e-token POST value should be always valid when using this method.
 	 *
 	 * @param unknown_type $author_name
 	 * @param unknown_type $comment
@@ -363,7 +364,8 @@ class comment
 
 		if ($this->getCommentPermissions() != 'rw') return;
 
-		e107::getSession()->check();			// This will abort on error
+		if(!isset($_POST['e-token'])) $_POST['e-token'] = '';		// check posted token
+		if(!e107::getSession()->check(false)) return false;			// This will return false on error
 
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
 		{
