@@ -79,19 +79,35 @@ if(isset($_POST['news_userclass']))
 if (isset($_POST['news_comments_recalc']))
 {
 	$qry = "SELECT 
-			COUNT(`comment_id`) AS c_count,
-			`comment_item_id`
-			FROM `#comments`
-			WHERE (`comment_type`='0') OR (`comment_type`='news')
-			GROUP BY `comment_item_id`";
-	if ($sql->db_Select_gen($qry))
+		COUNT(`comment_id`) AS c_count,
+		`news_id`, `news_comment_total`, `news_allow_comments`
+		FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` GROUP BY `comment_item_id`";
+
+	$deleteCount = 0;
+	$updateCount = 0;
+	$canDelete = isset($_POST['newsdeletecomments']);
+	if ($result = $sql->db_Select_gen($qry))
 	{
 		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 		{
-			$sql2->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['comment_item_id']);
+			if ($canDelete && ($row['news_allow_comments'] != 0) && ($row['c_count'] > 0))	// N.B. sense of 'news_allow_comments' is 0 = allow!!!
+			{		// Delete comments
+				$sql2->db_Delete('comments', 'comment_item_id='.$row['news_id']);
+				$deleteCount = $deleteCount + $row['c_count'];
+				$row['c_count'] = 0;		// Forces update of news table if necessary
+			}
+			if ($row['news_comment_total'] != $row['c_count'])
+			{
+				$sql2->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['news_id']);
+				$updateCount++;
+			}
 		}
+		$newspost->show_message(str_replace(array('--UPDATE--', '--DELETED--'), array($updateCount, $deleteCount), LAN_NEWS_53));
 	}
-	$newspost->show_message(LAN_NEWS_53);
+	else
+	{
+		$newspost->show_message(LAN_NEWS_62);
+	}
 }
 
 if(isset($_POST['delete']))
@@ -1149,7 +1165,7 @@ class newspost
 		$text = "<div style='text-align:center;'>
 		".$rs->form_open('post', e_SELF.'?maint', 'dataform')."
 		<table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr><td class='forumheader3'>".LAN_NEWS_51."</td><td style='text-align:center;' class='forumheader3'>";
+		<tr><td class='forumheader3'>".LAN_NEWS_51."</td><td class='forumheader3'><input type='checkbox' name='newsdeletecomments' value='1'>".LAN_NEWS_61."</td><td style='text-align:center;' class='forumheader3'>";
 		$text .= "<input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_52."' /></td></tr>";
 		$text .= "</table>
 		".$rs->form_close()."

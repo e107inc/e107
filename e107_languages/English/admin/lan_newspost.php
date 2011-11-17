@@ -173,9 +173,14 @@ define("LAN_NEWS_49", "Render-type");
 define('LAN_NEWS_50', 'Maintenance');
 define('LAN_NEWS_51', 'Recalculate comment counts');
 define('LAN_NEWS_52', 'Proceed');
-define('LAN_NEWS_53', 'Update complete');
+define('LAN_NEWS_53', 'Update complete - --UPDATE-- comment counts updated, --DELETED-- disallowed comments deleted');
 define('LAN_NEWS_54', 'News Maintenance');
 define('LAN_NEWS_55', 'Author (Posted by)');
 define('LAN_NEWS_56', 'Posted');
+
+// Gap to bring messages into sync with 0.8
+define('LAN_NEWS_61', 'Also delete disallowed comments');
+define('LAN_NEWS_62', 'Error accessing database, or no news items found');
+
 
 ?>
