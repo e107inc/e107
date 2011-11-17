@@ -2468,13 +2468,17 @@ class admin_newspost
 				<fieldset id='core-newspost-maintenance'>
 					<legend class='e-hideme'>".LAN_NEWS_59."</legend>
 					<table class='adminform' cellpadding='0' cellspacing='0'>
-					<colgroup span='2'>
+					<colgroup span='3'>
 						<col class='col-label'></col>
+						<col class='col-control'></col>
 						<col class='col-control'></col>
 					</colgroup>
 					<tbody>
 						<tr>
 							<td class='label'>".LAN_NEWS_56."</td>
+							<td class='control'>
+								".$frm->checkbox('newsdeletecomments', '1', '0').LAN_NEWS_61."
+							</td>
 							<td class='control'>
 								".$frm->admin_button('news_comments_recalc', LAN_NEWS_57, 'update')."
 							</td>
@@ -2495,21 +2499,37 @@ class admin_newspost
 		{
 			$this->noPermissions();
 		}
-		$qry = "SELECT
-			COUNT(`comment_id`) AS c_count,
-			`comment_item_id`
-			FROM `#comments`
-			WHERE (`comment_type`='0') OR (`comment_type`='news')
-			GROUP BY `comment_item_id`";
 
-		if (e107::getDb()->db_Select_gen($qry))
+		$qry = "SELECT 
+			COUNT(`comment_id`) AS c_count,
+			`news_id`, `news_comment_total`, `news_allow_comments`
+			FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` GROUP BY `comment_item_id`";
+
+		$deleteCount = 0;
+		$updateCount = 0;
+		$canDelete = isset($_POST['newsdeletecomments']);
+		if ($result = e107::getDb()->db_Select_gen($qry))
 		{
 			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 			{
-				e107::getDb('sql2')->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['comment_item_id']);
+				if ($canDelete && ($row['news_allow_comments'] != 0) && ($row['c_count'] > 0))	// N.B. sense of 'news_allow_comments' is 0 = allow!!!
+				{		// Delete comments
+					e107::getDb('sql2')->db_Delete('comments', 'comment_item_id='.$row['news_id']);
+					$deleteCount = $deleteCount + $row['c_count'];
+					$row['c_count'] = 0;		// Forces update of news table if necessary
+				}
+				if ($row['news_comment_total'] != $row['c_count'])
+				{
+					e107::getDb('sql2')->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['news_id']);
+					$updateCount++;
+				}
 			}
+			$this->show_message(str_replace(array('--UPDATE--', '--DELETED--'), array($updateCount, $deleteCount), LAN_NEWS_58), E_MESSAGE_SUCCESS);
 		}
-		$this->show_message(LAN_NEWS_58, E_MESSAGE_SUCCESS);
+		else
+		{
+			$this->show_message(LAN_NEWS_62, E_MESSAGE_SUCCESS);
+		}
 	}
 
 
