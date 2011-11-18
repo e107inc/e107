@@ -2503,7 +2503,9 @@ class admin_newspost
 		$qry = "SELECT 
 			COUNT(`comment_id`) AS c_count,
 			`news_id`, `news_comment_total`, `news_allow_comments`
-			FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` GROUP BY `comment_item_id`";
+			FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` 
+			WHERE (`comment_type`='0') OR (`comment_type`='news')
+			GROUP BY `comment_item_id`";
 
 		$deleteCount = 0;
 		$updateCount = 0;
@@ -2528,7 +2530,7 @@ class admin_newspost
 		}
 		else
 		{
-			$this->show_message(LAN_NEWS_62, E_MESSAGE_SUCCESS);
+			$this->show_message(LAN_NEWS_62, E_MESSAGE_WARNING);
 		}
 	}
 
