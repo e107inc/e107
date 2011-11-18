@@ -81,7 +81,9 @@ if (isset($_POST['news_comments_recalc']))
 	$qry = "SELECT 
 		COUNT(`comment_id`) AS c_count,
 		`news_id`, `news_comment_total`, `news_allow_comments`
-		FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` GROUP BY `comment_item_id`";
+		FROM `#news` LEFT JOIN `#comments` ON `news_id`=`comment_item_id` 
+		WHERE (`comment_type`='0') OR (`comment_type`='news')
+		GROUP BY `comment_item_id`";
 
 	$deleteCount = 0;
 	$updateCount = 0;
