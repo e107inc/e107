@@ -65,15 +65,16 @@ class redirection
 	{
 		if(!$url)
 		{
-			if(in_array(e_SELF, $this->self_exceptions))
+			// e_SELF, e_PAGE and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
+			if(defset('e_SELF') && in_array(e_SELF, $this->self_exceptions))
 			{
 				return;
 			}
-			if(in_array(e_PAGE, $this->page_exceptions))
+			if(defset('e_PAGE') && in_array(e_PAGE, $this->page_exceptions))
 			{
 				return;
 			}
-			if(in_array(e_QUERY, $this->query_exceptions))
+			if(in_array($_SERVER['QUERY_STRING'], $this->query_exceptions))
 			{
 				return;
 			}
@@ -95,7 +96,7 @@ class redirection
 		else
 		{
 			// TODO - e107::requestUri() - sanitize, add support for various HTTP servers
-			$url = SITEURLBASE.strip_tags($_SERVER['REQUEST_URI']);
+			$url = e_REQUEST_URI;
 		}
 		return $url;
 	}
