@@ -225,7 +225,7 @@ class e_parse_shortcode
 	 */
 	public function initShortcodeClass($class, $force = false)
 	{
-		if (class_exists($class, false) && ($force || !$this->isScClass($className)))
+		if (class_exists($class, false) && ($force || !$this->isScClass($class)))
 		{
 			$this->scClasses[$class] = new $class();
 			return $this->scClasses[$class];
