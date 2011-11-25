@@ -68,7 +68,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return "<a href='".$this->e107->url->getUrl('core:user', 'main', 'func=profile&id='.$this->news_item['user_id'])."'>".$this->news_item['user_name']."{$parm}</a>";
+				return "<a href='".$this->e107->url->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
 			}
 		}
 		return "<a href='http://e107.org'>e107</a>";
@@ -113,7 +113,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$NEWIMAGE = $param['image_nonew_small'];
 		}
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$news_item['news_id'].'&sef='.$news_item['news_rewrite_string'])."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
 	}
 
 	function sc_trackback($parm)
@@ -132,7 +132,7 @@ class news_shortcodes extends e_shortcode
 	function sc_newscategory($parm)
 	{
 		$category_name = $this->e107->tp->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->getUrl('core:news', 'main', 'action=list&id='.$this->news_item['news_category'].'&sef='.$this->news_item['news_category_rewrite_string'])."'>".$category_name."</a>";
+		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->create('news/list/category', $this->news_item)."'>".$category_name."</a>";
 	}
 
 	function sc_newsdate($parm)
@@ -162,7 +162,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newscommentlink($parm)
 	{
-		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$this->param['commentlink'].'</a>');
+		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
 	}
 
 	function sc_newscommentcount($parm)
@@ -231,7 +231,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return $es1."<a href='".$this->e107->url->getUrl('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".EXTENDEDSTRING."</a>".$es2;
+				return $es1."<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'>".EXTENDEDSTRING."</a>".$es2;
 			}
 		}
 		return '';
@@ -240,13 +240,13 @@ class news_shortcodes extends e_shortcode
 	function sc_captionclass()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
-		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
+		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_admincaption()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'TITLE');
-		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
+		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_adminbody($parm)
@@ -280,7 +280,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -306,7 +306,7 @@ class news_shortcodes extends e_shortcode
 
 			case 'url':
 			default:
-				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".$this->e107->url->create('news/view/item', $this->news_item)."'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 		}
 	}
@@ -319,7 +319,7 @@ class news_shortcodes extends e_shortcode
 	function sc_newstitlelink($parm = '')
 	{
 		parse_str($parm, $parms);
-		$url = $this->e107->url->getUrl('core:news', 'main', "action=".vartrue($parms['action'], 'extend')."&id={$this->news_item['news_id']}&sef={$this->news_item['news_rewrite_string']}");
+		$url = $this->e107->url->create('news/view/item', $this->news_item);
 		if(isset($parms['href']))
 		{
 			return $url;
@@ -361,7 +361,7 @@ class news_shortcodes extends e_shortcode
 
 			case 'url':
 			default:
-				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=list&id={$this->news_item['news_category']}&sef={$this->news_item['news_category_rewrite_string']}")."'><img style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
+				return "<a href='".$this->e107->url->create('news/list/category', $this->news_item)."'><img style='".$this->param['caticon']."' src='".$src."' alt='' /></a>";
 			break;
 		}
 	}
