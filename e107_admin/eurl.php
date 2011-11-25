@@ -2,92 +2,152 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * URL Management
+ * URL and front controller Management
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 require_once('../class2.php');
-if (!getperms('L'))
+if (!ADMIN || !getperms('L'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
+e107::coreLan('eurl', true);
+// TODO - admin interface support, remove it from globals
 $e_sub_cat = 'eurl';
-require_once(e_ADMIN.'auth.php');
 
-$urlc = new admin_eurl_config();
 
-if (isset($_POST['update']))
+class eurl_admin extends e_admin_dispatcher
 {
-	if($urlc->update())
-	{
-		e107::getAdminLog()->logArrayDiffs(e107::getConfig('core')->getPref('url_config'), e107::getConfig('core_backup')->getPref('url_config'), 'EURL_01');
-	}
+	protected $modes = array(
+		'main' => array(
+			'controller' 	=> 'eurl_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'eurl_admin_form_ui',
+			'uipath' 		=> null
+		)
+	);
+
+	protected $adminMenu = array(
+		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
+		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
+		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
+		'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
+	);
+
+	protected $adminMenuAliases = array();
+	
+	protected $defaultAction = 'config';
+
+	protected $menuTitle = LAN_EURL_MENU;
 }
 
-//var_dump($pref['url_config'], $e107->url->getUrl('pm', 'main', array('f'=>'box', 'box'=>2)));
-
-$urlc->renderPage();
-require_once(e_ADMIN.'footer.php');
-
-class admin_eurl_config {
-
-	/**
-	 * @var e_form
-	 */
-	protected $_frm;
+class eurl_admin_ui extends e_admin_controller_ui
+{
+	public $api;
 	
-	/**
-	 * @var e107plugin
-	 */
-	protected $_plug;
+	protected $prefs = array(
+		'url_disable_pathinfo'	=> array('title'=>LAN_EURL_SETTINGS_PATHINFO,	'type'=>'boolean', 'help'=>LAN_EURL_MODREWR_DESCR),
+		'url_main_module'	=> array('title'=>LAN_EURL_SETTINGS_MAINMODULE,	'type'=>'dropdown', 'data' => 'string','help'=>LAN_EURL_SETTINGS_MAINMODULE_HELP),
+		'url_error_redirect'	=> array('title'=>LAN_EURL_SETTINGS_REDIRECT,	'type'=>'boolean', 'help'=>LAN_EURL_SETTINGS_REDIRECT_HELP),
+	);
 	
-	/**
-	 * @var e_file
-	 */
-	protected $_fl;
-	
-	/**
-	 * @var e107
-	 */
-	protected $_api;
-
-	function __construct()
+	public function init()
 	{
-		$this->_api = e107::getInstance();
-		$this->_frm = e107::getObject('e_form');
-		$this->_plug = e107::getObject('e107Plugin');
-		$this->_fl = e107::getFile();
-	}
-
-	function renderPage()
-	{
-			
-		$mes = e107::getMessage();
-		$mes->addInfo("Deprecated for now"); // SEF URLs not to be used until e_url.php standard established. 
-		return e107::getRender()->tablerender(PAGE_NAME, $mes->render());
+		$this->api = e107::getInstance();
+		$this->addTitle(LAN_EURL_NAME);
 		
-			
-		$empty = "
-							<tr>
-								<td colspan='2'>".LAN_EURL_EMPTY."</td>
-							</tr>
-		";
+		if($this->getAction() != 'settings') return;
+		
+
+	}
+	
+	public function HelpObserver()
+	{
+		
+	}
+	
+	public function HelpPage()
+	{
+		$this->addTitle(LAN_EURL_NAME_HELP);
+		return LAN_EURL_UC;
+	}
+	
+	public function SettingsObserver()
+	{
+		$this->prefs['url_main_module']['writeParms'][''] = 'None';
+		$modules = e107::getPref('url_config', array());
+		ksort($modules);
+		foreach ($modules as $module => $location) 
+		{
+			$labels = array();
+			$obj = eDispatcher::getConfigObject($module, $location); 
+			if($obj) 
+			{
+				$admin = $obj->admin();
+				$labels = vartrue($admin['labels'], array());
+			} 
+			$this->prefs['url_main_module']['writeParms'][$module] = vartrue($section['name'], eHelper::labelize($module));
+		}
+		
+		if(isset($_POST['etrigger_save']))
+		{
+			$this->getConfig()
+						->setPostedData($this->getPosted(), null, false, false)
+						//->setPosted('not_existing_pref_test', 1)
+						->save(true);
+		
+			$this->getConfig()->setMessages();
+		}
+	}
+	
+	public function SettingsPage()
+	{
+		$this->addTitle(LAN_EURL_NAME_SETTINGS);
+		return $this->getUI()->urlSettings();
+	}
+	
+	public function AliasObserver()
+	{
+		if(isset($_POST['update']))
+		{
+			$posted = is_array($_POST['eurl_aliases']) ? e107::getParser()->post_toForm($_POST['eurl_aliases']) : '';
+			$aliases = array();
+			foreach ($posted as $lan => $als) 
+			{
+				foreach ($als as $module => $alias) 
+				{
+					$alias = trim($alias);
+					$module = trim($module);
+					if($module !== $alias) 
+					{
+						// TODO - basic validation
+						$aliases[$lan][$alias] = $module;
+					}
+				}
+			}
+			e107::getConfig()->set('url_aliases', e107::getParser()->post_toForm($aliases))->save(false);
+		}
+	}
+	
+	public function AliasPage()
+	{
+		$this->addTitle(LAN_EURL_NAME_ALIASES);
+		
+		$aliases = e107::getPref('url_aliases', array());
+		
+		$form = $this->getUI();
 		$text = "
-			<form action='".e_SELF."' method='post' id='urlconfig-form'>
+			<form action='".e_SELF."?mode=main&action=alias' method='post' id='urlconfig-form'>
 				<fieldset id='core-eurl-core'>
-					<legend>".LAN_EURL_CORECONFIG."</legend>
+					<legend>".LAN_EURL_LEGEND_ALIASES."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminlist'>
 						<colgroup span='2'>
 							<col class='col-label' />
@@ -95,233 +155,352 @@ class admin_eurl_config {
 						</colgroup>
 						<tbody>
 		";
-
-		$tmp = $this->render_sections('core');
-
-		if($tmp) $text .= $tmp;
-		else $text .= $empty;
-
-		$text .= "
-						</tbody>
-					</table>
-				</fieldset>
-				<fieldset id='core-eurl-plugin'>
-					<legend>".LAN_EURL_PLUGCONFIG."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-		";
-
-		$tmp = $this->render_sections('plugin');
-
-		if($tmp) $text .= $tmp;
-		else $text .= $empty;
-
+		
+		$text .= $this->renderAliases($aliases);
+		
 		$text .= "
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>
-						".$this->_frm->admin_button('update', LAN_UPDATE, 'update')."
+						".$form->admin_button('update', LAN_UPDATE, 'update')."
 					</div>
 				</fieldset>
 			</form>
 		";
-
-		e107::getRender()->tablerender(PAGE_NAME, $emessage->render().$text);
+		
+		return $text;
 	}
-
-	function render_sections($id)
+	
+	public function ConfigObserver()
 	{
-
-		if($id == 'core')
+		if(isset($_POST['update']))
 		{
-			$sections = $this->get_core_sections();
-		} else
-		{
-			$sections = $this->_plug->getall(1);
+			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
+			$modules = eRouter::adminReadModules();
+			$locations = eRouter::adminBuildLocations($modules);
+			
+			$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config);
+			
+			e107::getConfig()
+				->set('url_aliases', $aliases)
+				->set('url_config', $config)
+				->set('url_modules', $modules)
+				->set('url_locations', $locations)
+				->save();
+				
+			eRouter::clearCache();
 		}
-
-		$ret = '';
-		foreach ($sections as $section)
-		{
-			if($id == 'core' && !is_readable(e_FILE.'e_url/core/'.$section['core_path'])) continue;
-			elseif($id == 'plugin' && !is_readable(e_PLUGIN.$section['plugin_path'].'/e_url')) continue;
-			$ret .= $this->render_section($id, $section);
-		}
-
-		return $ret;
 	}
-
-	function render_section($id, $section)
+	
+	public function ConfigPage()
 	{
-		$this->normalize($id, $section);
-
-		$text .= "
-			<tr>
-				<td class='label'>{$section['name']}</td>
-				<td class='control'>
-					".$this->render_section_radio($id, $section)."
+		$this->addTitle(LAN_EURL_NAME_CONFIG);
+		$active = e107::getPref('url_config');
+		//echo(e107::getUrl()->create('system/error/notfound', '', 'full=1'));
+		
+		$set = array();
+		// all available URL modules
+		$set['url_modules'] = eRouter::adminReadModules();
+		// set by user URL config locations
+		$set['url_config'] = eRouter::adminBuildConfig($active, $set['url_modules']);
+		// all available URL config locations
+		$set['url_locations'] = eRouter::adminBuildLocations($set['url_modules']);
+		
+		$form = $this->getUI();
+		$text = "
+			<form action='".e_SELF."?mode=main&action=config' method='post' id='urlconfig-form'>
+				<fieldset id='core-eurl-core'>
+					<legend>".LAN_EURL_LEGEND_CONFIG."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='3'>
+							<col class='col-label' />
+							<col class='col-control' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
 		";
+		
+		$text .= $this->renderConfig($set['url_config'], $set['url_locations']);
+		
 		$text .= "
-				</td>
-			</tr>
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$form->admin_button('update', LAN_UPDATE, 'update')."
+					</div>
+				</fieldset>
+			</form>
 		";
+		
 		return $text;
 	}
 
-	function render_section_radio($id, $section)
+	public function renderConfig($current, $locations)
 	{
-		global $pref;
-		//DEFAULT
-		$checked_def = e107::findPref('url_config/'.$section['path']) ? '' : ' checked="checked"';
-		$def = "
-			<div class='field-spacer'>
-				<input type='radio' class='radio' id='{$section['path']}-default' name='cprofile[{$section['path']}]' value='0'{$checked_def} /><label for='{$section['path']}-default'>".LAN_EURL_DEFAULT."</label>
-			</div>
-		";
 
-		//CUSTOM - CENTRAL REPOSITORY
-		$udefined_id = $id.'-custom:'.$section['path'];
-		$udefined_path = e_FILE."e_url/custom/{$id}/{$section['path']}/";
-		$need_save = false; $checked = false;
-		$custom = '';
-		if(is_readable($udefined_path))
-		{
-			//Search the central url config repository - one config to rull them all
-			if($pref['url_config'][$section['path']])
-			{
-				$pref['url_config'][$section['path']] = $udefined_id;
-				$need_save = true;
-			}
-
-			$checked = $pref['url_config'][$section['path']] == $udefined_id ? ' checked="checked"' : '';
-			$custom = "
-				<input type='radio' class='radio' id='{$section['path']}-custom' name='cprofile[{$section['path']}]' value='{$udefined_id}'{$checked} /><label for='{$section['path']}-custom'>".LAN_EURL_UDEFINED."</label>
-				<a href='#{$section['path']}-custom-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' /></a>
-				<div class='e-hideme' id='{$section['path']}-custom-info'>
-				<div class='indent'>
-					".LAN_EURL_UDEFINED_INFO."<br />
-					<strong>".LAN_EURL_LOCATION."</strong> ".e_FILE_ABS."e_url/custom/{$id}/{$section['path']}/"."
-				</div>
-				</div>
-			";
-		}
-
-
-		//CUSTOM PROFILES - PLUGINS ONLY
-		$config_profiles = ''; $profile_id = '';
-		if($id == 'plugin')
-			$profile_path = e_PLUGIN."{$section['path']}/e_url/";
-		else
-			$profile_path = e_FILE."e_url/core/{$section['path']}/";
-
-		$config_profiles_array = $this->get_plug_profiles($profile_path);
-		//Search for custom url config released with the plugin
-		if($config_profiles_array)
-		{
-			foreach ($config_profiles_array as $config_profile => $profile_info) {
-				$profile_id = $id.'-profile:'.$config_profile;
-				$checked_profile = $pref['url_config'][$section['path']] == $profile_id ? ' checked="checked"' : '';
-				if($custom) $checked_profile = ' disabled="disabled"';
-				$config_profiles .= "
-					<input type='radio' class='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} /><label for='{$section['path']}-profile-{$config_profile}'>".LAN_EURL_PROFILE." [".varsettrue($profile_info['title'], $config_profile)."]</label>
-					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img class='icon action' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' /></a>
-					<div class='e-hideme' id='{$section['path']}-profile-{$config_profile}-info'>
-						<div class='indent'>
-							".(varsettrue($profile_info['title']) ? '<strong>'.$profile_info['title'].'</strong><br /><br />' : '')."
-							".varsettrue($profile_info['description'], LAN_EURL_PROFILE_INFO)."<br /><br />
-							<strong>".LAN_EURL_LOCATION."</strong> ".str_replace(array(e_PLUGIN, e_FILE), array(e_PLUGIN_ABS, e_FILE_ABS), $profile_path)."{$config_profile}/
-						</div>
-					</div>
-				";
-			}
-
-		}
-
-		$this->render_shutdown($need_save);
-
-		return $def.$config_profiles.$custom;
-	}
-
-	function get_plug_profiles($path)
-	{
-		$tmp = $this->_fl->get_dirs($path, '', array('CVS', '.svn'));
 		$ret = array();
-		foreach ($tmp as $s) {
-			$ret[$s] = $this->parse_config_xml($path.$s.'/profile.xml');
-		}
-
-		return $ret;
-	}
-
-	function parse_config_xml($path)
-	{
-		$xml = e107::getXml();
-		$parsed = $xml->loadXMLfile($path, true, true);
-
-		//Load Lan file if required
-		if($parsed && varsettrue($parsed['adminLan'])) {
-			include_lan($parsed['adminLan']);
-		}
-		return $parsed;
-	}
-
-	function render_shutdown($save)
-	{
-		global $pref;
-		if($save && !isset($_POST['update']))
+		$url = e107::getUrl();
+		
+		
+		ksort($locations);
+		foreach ($locations as $module => $l) 
 		{
-			if(save_prefs())
+			$data = new e_vars(array(
+				'current' => $current,
+			));
+			$obj = eDispatcher::getConfigObject($module, $l[0]);
+			if(null === $obj) $obj = new eurlAdminEmptyConfig;
+
+			$data->module = $module;
+			$data->locations = $l;
+			$data->defaultLocation = $l[0];
+			$data->config = $obj;
+			
+			$ret[] = $data;
+		}
+		
+		return $this->getUI()->moduleRows($ret);
+	}
+	
+
+	public function renderAliases($aliases)
+	{
+
+		$ret = array();
+		$lans = array();
+		
+		$lng = e107::getLanguage();
+		$lanList = $lng->installed();
+		sort($lanList);
+		
+		$lanDef = e107::getPref('sitelanguage') ? e107::getPref('sitelanguage') : e_LANGUAGE;
+		$lanDef = array($lng->convert($lanDef), $lanDef);
+		
+		foreach ($lanList as $index => $lan) 
+		{
+			$lanCode = $lng->convert($lan);
+			if($lanDef[0] == $lanCode) continue;
+			$lans[$lanCode] = $lan;
+		}
+		
+		$modules = e107::getPref('url_config');
+		if(!$modules)
+		{
+			$modules = array();
+			e107::getConfig()->set('url_aliases', array())->save(false);
+			// do not output message
+			e107::getMessage()->reset(false, 'default');
+		}
+		
+		foreach ($modules as $module => $location) 
+		{
+			$data = new e_vars();
+			$obj = eDispatcher::getConfigObject($module, $location);
+			if(null === $obj) $obj = new eurlAdminEmptyConfig;
+
+			$data->module = $module;
+			$data->location = $location;
+			$data->config = $obj;
+			$modules[$module] = $data;
+		}
+		
+		return $this->getUI()->aliasesRows($aliases, $modules, $lanDef, $lans);
+	}
+	
+	
+	/**
+	 * Set extended (UI) Form instance
+	 * @return e_admin_ui
+	 */
+	public function _setUI()
+	{
+		$this->_ui = $this->getParam('ui');
+		$this->setParam('ui', null);
+		
+		return $this;
+	}
+	
+	/**
+	 * Set Config object
+	 * @return e_admin_ui
+	 */
+	protected function _setConfig()
+	{
+		$this->_pref = e107::getConfig();
+
+		$dataFields = $validateRules = array();
+		foreach ($this->prefs as $key => $att)
+		{
+			// create dataFields array
+			$dataFields[$key] = vartrue($att['data'], 'string');
+
+			// create validation array
+			if(vartrue($att['validate']))
 			{
-				e107::getMessage()->add(LAN_EURL_AUTOSAVE);
+				$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 			}
-
+			/* Not implemented in e_model yet
+			elseif(vartrue($att['check']))
+			{
+				$validateRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+			}*/
 		}
-	}
+		$this->_pref->setDataFields($dataFields)->setValidationRules($validateRules);
 
-	function get_core_sections()
-	{
-		$core_def = array(
-			'core' => 		array("core_name" => LAN_EURL_CORE_MAIN, 'core_path' => 'core'),
-			'news' => 		array("core_name" => LAN_EURL_CORE_NEWS, 'core_path' => 'news'),
-			'download' => 	array("core_name" => LAN_EURL_CORE_DOWNLOADS, 'core_path' => 'download'),
-			'user' => 		array("core_name" => LAN_EURL_CORE_USERS, 'core_path' => 'user')
-		);
-
-		return $core_def;
-	}
-
-	function normalize($id, &$section)
-	{
-		$tmp = $section;
-		foreach ($tmp as $k => $v)
-		{
-			$section[str_replace($id.'_', '', $k)] = $v;
-			unset($section[$k]);
-		}
-	}
-
-	function update()
-	{
-		$core = e107::getConfig();
-		$core->setPosted('url_config', $_POST['cprofile']);
-		return $core->save();
+		return $this;
 	}
 }
 
-/*
-function headerjs()
+class eurl_admin_form_ui extends e_admin_form_ui
 {
+	public function urlSettings()
+	{
+		return $this->getSettings();
+	}
+	
+	public function moduleRows($data)
+	{
+		$text = '';
+		$tp = e107::getParser();
+		if(empty($data))
+		{
+			return "
+				<tr>
+					<td colspan='2'>".LAN_EURL_EMPTY."</td>
+				</tr>
+			";
+		}
+		
+		foreach ($data as $obj) 
+		{
+			$admin = $obj->config->admin();
+			$section = vartrue($admin['labels'], array());
+			$text .= "
+				<tr>
+					<td class='label'>".vartrue($section['name'], eHelper::labelize($obj->module))."</td>
+					<td class='control'>
+			";
+			
+			foreach ($obj->locations as $index => $location) 
+			{
+				$objSub = $obj->defaultLocation != $location ? eDispatcher::getConfigObject($obj->module, $location) : false; 
+				if($objSub) 
+				{
+					$admin = $objSub->admin();
+					$section = vartrue($admin['labels'], array());
+				} 
+				elseif($obj->defaultLocation != $location) $section = array();
+				
+				$id = 'eurl-'.str_replace('_', '-', $obj->module).'-'.$index;
+				$module = $obj->module;
+				$checked = varset($obj->current[$module]) == $location ? ' checked="checked"' : '';
+				
+				$path = eDispatcher::getConfigPath($module, $location, false);
+				if(!is_readable($path)) $path = str_replace('/e_url.php', '/', $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true)).' <em>('.LAN_EURL_LOCATION_NONE.')</em>';
+				else $path = $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true);
+				
+				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
+				$cssClass = $checked ? 'e-showme' : 'e-hideme';
+				// XXX use e_form
+				$text .= "
+				
+					<a href='#{$id}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' class='icon' alt='' /></a>
+					<input type='radio' class='radio' id='{$id}' name='eurl_config[$module]' value='{$location}'{$checked} /><label for='{$id}'>".$label."</label>
+					<div class='{$cssClass}' id='{$id}-info'>
+						<div class='indent'>
+							<strong>".LAN_EURL_LOCATION."</strong> ".$path."
+							<p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p>
+						</div>
+					</div>
+					<div class='spacer'><!-- --></div>
+				";
+			}
+			$text .= "
+					</td>
+				</tr>
+			";
+		}
+		return $text;
+	}
 
-	$js = "
-	<script type='text/javascript'>
+	public function aliasesRows($currentAliases, $modules, $lanDef, $lans)
+	{
+		if(empty($modules))
+		{
+			return "
+				<tr>
+					<td colspan='3'>".LAN_EURL_EMPTY."</td>
+				</tr>
+			";
+		}
+		
+		$text = '';
+		$tp = e107::getParser();
+		
+		foreach ($modules as $module => $obj) 
+		{
+			$help = array();
+			$admin = $obj->config->admin();
+			$lan = $lanDef[0];
+			$url = e107::getUrl()->create($module, '', array('full' => 1));
+			$defVal = isset($currentAliases[$lan]) && in_array($module, $currentAliases[$lan]) ? array_search($module, $currentAliases[$lan]) : $module; 
+			$section = vartrue($admin['labels'], array());
+			$text .= "
+				<tr>
+					<td class='label'>
+						".vartrue($section['name'], ucfirst(str_replace('_', ' ', $obj->module)))."
+						<div class='label-note'>
+						".LAN_EURL_FORM_HELP_ALIAS_0." <strong>{$module}</strong><br />
+						</div>
+					</td>
+					<td class='control'>
+			";
+			
+			// default language
 
-	</script>";
+			
+			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal).' ['.$lanDef[1].']'.$this->help(LAN_EURL_FORM_HELP_DEFAULT);
+			$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
+			
+			if($lans)
+			{
+				foreach ($lans as $code => $lan) 
+				{
+					$url = e107::getUrl()->create($module, '', array('lan' => $code, 'full' => 1)); 
+					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module; 
+					$text .= "<div class='spacer'><!-- --></div>";
+					$text .= $this->text('eurl_aliases['.$code.']['.$module.']', $defVal).' ['.$lan.']'.$this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
+					$help[] = '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
+				}
+			}
+			
+			$text .= "
+					</td>
+					<td class='control'>
+						".implode("<div class='spacer'><!-- --></div>", $help)."
+					</td>
+				</tr>
+			";
+		}
 
-	return $js;
+		return $text;
+	}
+}
 
-}*/
-?>
+class eurlAdminEmptyConfig extends eUrlConfig
+{
+	public function config()
+	{
+		return array();
+	}
+}
+
+new eurl_admin();
+
+require_once(e_ADMIN.'auth.php');
+
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN.'footer.php');
+
+
