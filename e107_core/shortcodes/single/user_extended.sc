@@ -87,7 +87,7 @@ if ($parms[1] == 'text')
 	}
 	else
 	{
-		return TRUE;
+		return FALSE;
 	}
 }
 
@@ -105,7 +105,8 @@ if ($parms[1] == 'icon')
 	{
 		return "<img src='".e_IMAGE_ABS."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
 	}
-	return '';
+	//return '';
+	return FALSE;
 }
 
 if ($parms[1] == 'value')
@@ -142,4 +143,5 @@ if ($parms[1] == 'value')
 	}
 	return FALSE;
 }
-return TRUE;
+// return TRUE;
+return FALSE;

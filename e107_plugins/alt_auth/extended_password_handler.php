@@ -238,13 +238,13 @@ class ExtendedPasswordHandler extends UserHandler
 				break;
 
 			case PASSWORD_JOOMLA_SALT :
-			case PASSWORD_MAMBO_SALT :var_dump($stored_hash, strlen($stored_hash));
+			case PASSWORD_MAMBO_SALT :
 				if ((strpos($stored_hash, ':') === false) || (strlen($stored_hash) < 40))
 				{
 					return PASSWORD_INVALID;
 				}
 				// Mambo/Joomla salted hash - should be 32-character md5 hash, ':', 16-character salt (but could be 8-char salt, maybe)
-				list($hash, $salt) = explode(':', $stored_hash); var_dump($hash, $salt, md5($pword.$salt));
+				list($hash, $salt) = explode(':', $stored_hash); 
 				$pwHash = md5($pword.$salt);
 				$stored_hash = $hash;
 				break;
