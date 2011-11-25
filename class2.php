@@ -223,6 +223,19 @@ $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info, varset($E107_CONFIG, array()));
 
+### NEW Register Autoload - do it asap
+if(!function_exists('spl_autoload_register'))
+{
+	// PHP >= 5.1.2 required
+	die('Fatal exception - spl_autoload_* required.');
+}
+
+// allow disable of autoloading - may be removed as e107::autoload_register() is flexible enough
+if(!defset('E107_DISABLE_AUTOLOAD', false))
+{
+	e107::autoload_register(array('e107', 'autoload'));
+}
+
 /**
  * NEW - system security levels
  * Could be overridden by e107_config.php OR $CLASS2_INCLUDE script (if not set earlier)
@@ -634,8 +647,9 @@ if (!function_exists('checkvalidtheme'))
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$ADMIN_DIRECTORY = $e107->getFolder('admin');
-
-		if (ADMIN && strpos(e_QUERY, 'themepreview') !== false)
+		
+		// e_QUERY not set when in single entry mod
+		if (ADMIN && strpos($_SERVER['QUERY_STRING'], 'themepreview') !== false)
 		{
 			list($action, $id) = explode('.', e_QUERY);
 
@@ -803,7 +817,8 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 }
 
 // $_SESSION['ubrowser'] check not needed anymore - see session handler
-if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
+// e_QUERY not defined in single entry mod
+if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
 {
 	if (USER)
 	{
@@ -832,7 +847,7 @@ if ((e_QUERY == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($
 	e107::getUser()->logout();
 	
 	e107::getEvent()->trigger('logout');
-	e107::getRedirect()->redirect(SITEURL.'index.php');
+	e107::getRedirect()->redirect(SITEURL);
 	// header('location:'.e_BASE.'index.php');
 	exit();
 }
@@ -1541,7 +1556,7 @@ function init_session()
 
 		// BC - FIXME - get rid of them!
 		$currentUser = $user->getData();
-		$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
+		$currentUser['user_realname'] = $user->get('user_login'); // Used by force_userupdate
 		$e107->currentUser = &$currentUser;
 
 		// XXX could go to e_user class as well
@@ -2080,109 +2095,4 @@ function plugInstalled($plugname)
 	/*global $pref;
 	// Could add more checks here later if appropriate
 	return isset($pref['plug_installed'][$plugname]);*/
-}
-
-/**
- * Magic class autoload.
- * We are raising plugin structure standard here - plugin auto-loading works ONLY if
- * classes live inside 'includes' folder.
- * Example: plugin_myplug_admin_ui ->
- * <code>
- * <?php
- * // __autoload() will look in e_PLUGIN.'myplug/includes/admin/ui.php for this class
- * // e_admin_ui is core handler, so it'll be autoloaded as well
- * class plugin_myplug_admin_ui extends e_admin_ui
- * {
- *
- * }
- *
- * // __autoload() will look in e_PLUGIN.'myplug/shortcodes/my_shortcodes.php for this class
- * // e_admin_ui is core handler, so it'll be autoloaded as well
- * class plugin_myplug_my_shortcodes extends e_admin_ui
- * {
- *
- * }
- * </code>
- * TODO - use spl_autoload[_*] for core autoloading some day (PHP5 > 5.1.2)
- * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
- *
- * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to
- * distinguish them from the core batches
- *
- * @param string $className
- * @return void
- */
-function __autoload($className)
-{
-	//Security...
-    if (strpos($className, '/') !== false)
-	{
-        return;
-    }
-	$tmp = explode('_', $className);
-	$filename = '';
-
-	switch($tmp[0])
-	{
-		case 'plugin': // plugin handlers/shortcode batches
-			array_shift($tmp); // remove 'plugin'
-			$end = array_pop($tmp); // check for 'shortcodes' end phrase
-
-			if (!isset($tmp[0]) || !$tmp[0])
-			{
-				if($end)
-				{
-					// plugin root - e.g. plugin_myplug -> plugins/myplug/myplug.php, class plugin_myplug
-					$filename = e_PLUGIN.$end.'/'.$end.'.php';
-					break;
-				}
-				return; // In case we get an empty class part
-			}
-
-			// Currently only batches inside shortcodes/ folder are auto-detected,
-			// read the todo for e_shortcode.php related problems
-			if('shortcodes' == $end)
-			{
-				$filename = e_PLUGIN.$tmp[0].'/core/shortcodes/batch/'; // plugname/core/shortcodes/batch/
-				unset($tmp[0]);
-				$filename .= implode('_', $tmp).'_shortcodes.php'; // my_shortcodes.php
-				break;
-			}
-			if($end)
-			{
-				$tmp[] = $end; // not a shortcode batch - append the end phrase again
-			}
-
-			// Handler check
-			$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name
-			$filename = e_PLUGIN.implode('/', $tmp).'.php';
-			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
-		break;
-
-		default: //core libraries, core shortcode batches
-			// core SC batch check
-			$end = array_pop($tmp);
-			if('shortcodes' == $end)
-			{
-				$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
-				break;
-			}
-
-			$filename = e107::getHandlerPath($className, true);
-			//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
-		break;
-	}
-
-	if($filename)
-	{
-		// autoload doesn't REQUIRE files, because this will break things like call_user_func()
-		include($filename);
-	}
-}
-
-// register __autoload if possible to prevent its override by
-// 3rd party spl_autoload_register calls
-if(function_exists('spl_autoload_register') && !defset('E107_DISABLE_AUTOLOAD', false))
-{
-	spl_autoload_register('__autoload');
 }
