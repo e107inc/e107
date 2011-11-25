@@ -10,15 +10,14 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
+|     $URL$
+|     $Id$
 +----------------------------------------------------------------------------+
 */
 
 require_once('class2.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('search');
 
 if (!check_class($pref['search_restrict'])) {
 	require_once(HEADERF);
@@ -309,7 +308,7 @@ if ($search_prefs['selector'] == 1)
 
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 
-$ENHANCED_ICON = "<img src='".e_IMAGE."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
+$ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';

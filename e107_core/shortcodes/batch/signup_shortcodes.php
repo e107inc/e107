@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 // Mods to show extended field categories
@@ -207,7 +205,9 @@ foreach($catList as $cat)
    	{
       if(!$done_heading  && ($cat['user_extended_struct_id'] > 0))
       {	// Add in a heading
-		$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($cat['user_extended_struct_name'], FALSE, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
+		$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
+		if(defined($catName)) $catName = constant($catName);
+		$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, FALSE, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
 		$done_heading = TRUE;
 	  }
   	  $replace = array(

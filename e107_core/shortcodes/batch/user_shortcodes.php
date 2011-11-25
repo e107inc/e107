@@ -423,11 +423,11 @@ require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
 $ueFieldList = $ue->user_extended_get_fields();
-$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44);
+$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44, 'user_extended_struct_text' => '');
 $ret = "";
 foreach($ueCatList as $catnum => $cat)
 {
-	$key = $cat[0]['user_extended_struct_name'];
+	$key = $cat[0]['user_extended_struct_text'] ? $cat[0]['user_extended_struct_text'] : $cat[0]['user_extended_struct_name'];
 	$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$user['user_id']}}", TRUE);
 	if($cat_name != FALSE && count($ueFieldList[$catnum]))
 	{

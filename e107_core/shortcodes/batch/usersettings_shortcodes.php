@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -271,7 +269,9 @@ if($catInfo)
 
 if($ret)
 {
-	$ret = str_replace("{CATNAME}", $catInfo['user_extended_struct_name'], $USER_EXTENDED_CAT).$ret;
+	$catName = $catInfo['user_extended_struct_text'] ? $catInfo['user_extended_struct_text'] : $catInfo['user_extended_struct_name'];
+	if(defined($catName)) $catName = constant($catName);
+	$ret = str_replace("{CATNAME}", $tp->toHTML($catName, FALSE, 'emotes_off,defs'), $USER_EXTENDED_CAT).$ret;
 }
 
 $extended_showed['cat'][$parm] = 1;
@@ -303,7 +303,10 @@ if(!$fInfo)
 
 if($fInfo)
 {
-	$fname = $tp->toHTML($fInfo['user_extended_struct_text'], "", "emotes_off, defs");
+	$fname = $fInfo['user_extended_struct_text'];
+	if(defined($fname)) $fname = constant($fname);
+	$fname = $tp->toHTML($fname, "", "emotes_off, defs");
+	
 	if($fInfo['user_extended_struct_required'] == 1)
 	{
 		$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
