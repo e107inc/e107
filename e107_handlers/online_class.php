@@ -88,9 +88,11 @@ class e_online
 
 			$online_warncount = $online_bancount * 0.9;		// Set warning threshold at 90% of ban threshold
 			//TODO Add support for all queries.
-			$page = (strpos(e_SELF, 'forum_') !== FALSE) ? e_SELF.'.'.e_QUERY : e_SELF;
-			$page = (strpos(e_SELF, 'comment') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
-			$page = (strpos(e_SELF, 'content') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
+			// $page = (strpos(e_SELF, 'forum_') !== FALSE) ? e_SELF.'.'.e_QUERY : e_SELF;
+			// $page = (strpos(e_SELF, 'comment') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
+			// $page = (strpos(e_SELF, 'content') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
+			$page = e_REQUEST_URI; // mod rewrite & single entry support
+			// FIXME parse url, trigger registered e_online callbacks
 			$page = $e107->tp->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
 			$ip = $e107->getip();
 			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
