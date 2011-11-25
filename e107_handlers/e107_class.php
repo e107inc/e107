@@ -144,7 +144,6 @@ class e107
 		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
 		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
 		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
-		'eURL'							 => '{e_HANDLER}e107Url.php',
 		'e_core_session'				 => '{e_HANDLER}session_handler.php',
 		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
@@ -161,6 +160,7 @@ class e107
 		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
 		'e_media'						 => '{e_HANDLER}media_class.php',
 		'e_menu'						 => '{e_HANDLER}menu_class.php',
+		'eMessage'						 =>	'{e_HANDLER}message_handler.php',
 		'e_model'						 => '{e_HANDLER}model_class.php',
 		'e_news_item'					 => '{e_HANDLER}news_class.php',
 		'e_news_tree'					 => '{e_HANDLER}news_class.php',
@@ -170,15 +170,27 @@ class e107
 		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
 		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'					 => '{e_HANDLER}shortcode_handler.php',
+		'e_system_user'					 => '{e_HANDLER}user_model.php',
 		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'					 => '{e_HANDLER}user_model.php',
 		'e_user'					 	 => '{e_HANDLER}user_model.php',
-		'e_system_user'					 => '{e_HANDLER}user_model.php',
 		'e_user_extended_structure_tree' => '{e_HANDLER}user_model.php',
 		'e_userperms'					 => '{e_HANDLER}user_handler.php',
 		'e_validator'					 => '{e_HANDLER}validator_class.php',
 		'e_vars'						 => '{e_HANDLER}model_class.php',
 		'ecache'						 => '{e_HANDLER}cache_handler.php',
+		'eController'					 => '{e_HANDLER}application.php',
+		'eDispatcher'					 => '{e_HANDLER}application.php',
+		'eException'					 => '{e_HANDLER}application.php',
+		'eFront'						 => '{e_HANDLER}application.php',
+		'eHelper'						 => '{e_HANDLER}application.php',
+		'eRequest'						 => '{e_HANDLER}application.php',
+		'eResponse'						 => '{e_HANDLER}application.php',
+		'eRouter'						 => '{e_HANDLER}application.php',
+		'eUrl'							 => '{e_HANDLER}e107Url.php',
+		'eUrlConfig'					 => '{e_HANDLER}application.php',
+		'eUrlRule'						 => '{e_HANDLER}application.php',
+		'language'						 => '{e_HANDLER}language_class.php',
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
 		'override'						 => '{e_HANDLER}override_class.php',
@@ -188,7 +200,7 @@ class e107
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'language'						 => '{e_HANDLER}language_class.php'
+		
 	);
 
 	/**
@@ -1053,7 +1065,7 @@ class e107
 	 */
 	public static function getUrl()
 	{
-		return self::getSingleton('eURL', true);
+		return self::getSingleton('eUrl', true);
 	}
 
 	/**
@@ -1269,13 +1281,14 @@ class e107
 	 */
 	public static function getMessage()
 	{
-		static $included = false;
-		if(!$included)
-		{
-			e107_require_once(e_HANDLER.'message_handler.php');
-			$included = true;
-		}
-		return eMessage::getInstance();
+		// static $included = false;
+		// if(!$included)
+		// {
+			// e107_require_once(e_HANDLER.'message_handler.php');
+			// $included = true;
+		// }
+		// return eMessage::getInstance();
+		return self::getSingleton('eMessage', true);
 	}
 
 	/**
@@ -1369,7 +1382,7 @@ class e107
 	 * @param string $method_name
 	 * @return boolean FALSE
 	 */
-	public function callMethod($class_name, $method_name, $param='')
+	public static function callMethod($class_name, $method_name, $param='')
 	{
 		$mes = e107::getMessage();
 
@@ -2252,9 +2265,6 @@ class e107
 
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 
-		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-		define('e_PAGE', $page);
-
 		// Leave e_SELF BC, use e_REQUEST_SELF instead
 		/*// moved after page check - e_PAGE is important for BC
 		if($requestUrl && $requestUrl != $_SERVER['PHP_SELF'])
@@ -2264,8 +2274,10 @@ class e107
 
 		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
-		if(!deftrue('e_SELF_DISABLE'))
+		if(!deftrue('e_SINGLE_ENTRY'))
 		{
+			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+			define('e_PAGE', $page);
 			define('e_SELF', $_self);	
 		}
 		
@@ -2402,19 +2414,14 @@ class e107
 		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
 		
-		if(!deftrue("e_QUERY_DISABLE"))
+		if(!deftrue("e_SINGLE_ENTRY"))
 		{
 			define('e_QUERY', $e_QUERY);	
-		}
-		
-
-		define('e_TBQS', $_SERVER['QUERY_STRING']);
-		if(defined('e_QUERY'))
-		{
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
 		}
 		
 
+		define('e_TBQS', $_SERVER['QUERY_STRING']);
 	}
 
 	/**
@@ -2431,7 +2438,7 @@ class e107
 	 *
 	 * Generates the queries to interrogate the ban list, then calls $this->check_ban().
 	 * If the user is banned, $check_ban() never returns - so a return from this routine indicates a non-banned user.
-	 *
+	 * FIXME - create eBanHelper, move it there
 	 * @return void
 	 */
 	public function ban()
@@ -2486,6 +2493,8 @@ class e107
 	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
 	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
 	 * XXX - clean up
+	 * FIXME - create eBanHelper, move it there
+	 * 
 	 *
 	 * @param string $query
 	 * @param boolean $show_error
@@ -2547,7 +2556,7 @@ class e107
 	 * Returns TRUE if ban accepted.
 	 * Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
 	 * FIXME - remove $admin_log global, add admin_log method getter instead
-	 *
+	 * FIXME - create eBanHelper, move it there
 	 * @param string $bantype
 	 * @param string $ban_message
 	 * @param string $ban_ip
@@ -2594,7 +2603,7 @@ class e107
 	/**
 	 * Get the current user's IP address
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
-	 *
+	 * FIXME - move to eHelper
 	 * @return string
 	 */
 	public function getip()
@@ -2629,7 +2638,7 @@ class e107
 	/**
 	 * Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	 * Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
-	 *
+	 * FIXME - move to eHelper
 	 * @param string $ip
 	 * @param string $div divider
 	 * @return string encoded IP
@@ -2683,7 +2692,7 @@ class e107
 	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format,
 	 * FALSE to display in standard IPV6 format
 	 * Should handle most things that can be thrown at it.
-	 *
+	 * FIXME - move to eHelper
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
 	 * @return string decoded IP
@@ -2751,7 +2760,7 @@ class e107
 
 	/**
 	 * Given a string which may be IP address, email address etc, tries to work out what it is
-	 *
+	 * FIXME - move to eHelper
 	 * @param string $string
 	 * @return string ip|email|url|ftp|unknown
 	 */
@@ -2784,6 +2793,8 @@ class e107
 	}
 
 	/**
+	 * MOVED TO eHelper::parseMemorySize()
+	 * FIXME - find all calls, replace with eHelper::parseMemorySize() (once eHelper lives in a separate file)
 	 * Return a memory value formatted helpfully
 	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
 	 * FIXME e107->parseMemorySize() START
@@ -2827,10 +2838,11 @@ class e107
 			$memunit = CORE_LAN_TB;
 		}
 		return (number_format($size, $dp).$memunit);
-}
+	}
 
 
 	/**
+	 * FIXME - move to eHelper
 	 * Get the current memory usage of the code
 	 * If $separator argument is null, raw data (array) will be returned
 	 *
@@ -2878,6 +2890,130 @@ class e107
 			return ini_set($var, $value);
 		}
 		return false;
+	}
+	
+	/**
+	 * Register autoload function (string) or static class method - array('ClassName', 'MethodName')
+	 * @param string|array $function
+	 */
+	public static function autoload_register($function, $prepend = false)
+	{
+		if(!$prepend || false === ($registered = spl_autoload_functions()))
+		{
+			return spl_autoload_register($function);
+		}
+		
+		foreach ($registered as $r) 
+		{
+			spl_autoload_unregister($r);
+		}
+		
+		$result = spl_autoload_register($function);
+		foreach ($registered as $r) 
+		{
+			if(!spl_autoload_register($r)) $result = false;
+		}
+		return $result;
+	}
+
+	/**
+	 * Former __autoload, generic core autoload logic
+	 * 
+	 * Magic class autoload.
+	 * We are raising plugin structure standard here - plugin auto-loading works ONLY if
+	 * classes live inside 'includes' folder.
+	 * Example: plugin_myplug_admin_ui ->
+	 * <code>
+	 * <?php
+	 * // __autoload() will look in e_PLUGIN.'myplug/includes/admin/ui.php for this class
+	 * // e_admin_ui is core handler, so it'll be autoloaded as well
+	 * class plugin_myplug_admin_ui extends e_admin_ui
+	 * {
+	 *
+	 * }
+	 *
+	 * // __autoload() will look in e_PLUGIN.'myplug/shortcodes/my_shortcodes.php for this class
+	 * // e_admin_ui is core handler, so it'll be autoloaded as well
+	 * class plugin_myplug_my_shortcodes extends e_admin_ui
+	 * {
+	 *
+	 * }
+	 * </code>
+	 * We use now spl_autoload[_*] for core autoloading (PHP5 > 5.1.2)
+	 * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
+	 *
+	 * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to
+	 * distinguish them from the core batches
+	 *
+	 * @param string $className
+	 * @return void
+	 */
+	public static function autoload($className)
+	{
+		//Security...
+	    if (strpos($className, '/') !== false)
+		{
+	        return;
+	    }
+		$tmp = explode('_', $className);
+		$filename = '';
+		//echo 'autoloding...'.$className.'<br />';
+		switch($tmp[0])
+		{
+			case 'plugin': // plugin handlers/shortcode batches
+				array_shift($tmp); // remove 'plugin'
+				$end = array_pop($tmp); // check for 'shortcodes' end phrase
+	
+				if (!isset($tmp[0]) || !$tmp[0])
+				{
+					if($end)
+					{
+						// plugin root - e.g. plugin_myplug -> plugins/myplug/myplug.php, class plugin_myplug
+						$filename = e_PLUGIN.$end.'/'.$end.'.php';
+						break;
+					}
+					return; // In case we get an empty class part
+				}
+	
+				// Currently only batches inside shortcodes/ folder are auto-detected,
+				// read the todo for e_shortcode.php related problems
+				if('shortcodes' == $end)
+				{
+					$filename = e_PLUGIN.$tmp[0].'/core/shortcodes/batch/'; // plugname/core/shortcodes/batch/
+					unset($tmp[0]);
+					$filename .= implode('_', $tmp).'_shortcodes.php'; // my_shortcodes.php
+					break;
+				}
+				if($end)
+				{
+					$tmp[] = $end; // not a shortcode batch - append the end phrase again
+				}
+	
+				// Handler check
+				$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name
+				$filename = e_PLUGIN.implode('/', $tmp).'.php';
+				//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
+			break;
+	
+			default: //core libraries, core shortcode batches
+				// core SC batch check
+				$end = array_pop($tmp);
+				if('shortcodes' == $end)
+				{
+					$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
+					break;
+				}
+	
+				$filename = e107::getHandlerPath($className, true);
+				//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
+			break;
+		}
+	
+		if($filename)
+		{
+			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
+			include($filename);
+		}
 	}
 
 	public function __get($name)
