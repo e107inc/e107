@@ -23,20 +23,7 @@
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-l 
 	
-### TAGWORDS ###
-	RewriteRule ^tagwords/?(.*)$ e107_plugins/tagwords/tagwords.php?q=$1 [L]
-	
-### NEWS SEF URLs - set 'news' to the 'URL identifier' value (news Administration area) ###
-	RewriteRule ^news/?$ news.php [L]
-	RewriteRule ^news/(.*)$ news.php?rewrite=$1 [L]
-	
-	## Use this on your own risk.
-	## Quick & dirty solution for news rewrite without (empty) 'URL identifier', 
-	## extremely useful for blog site owners
-	## Keep in mind it should be your last RewriteRule!
-	## You also might want to change your Front page (administration) to your site root, e.g. '/'
-	#DirectoryIndex news.php index.php index.html
-	#RewriteRule ^(.*)$ news.php?rewrite=$1 [L]
-
+### Single entry point ###
+	RewriteRule .* rewrite.php [L]
 
 </IfModule>
