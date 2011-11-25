@@ -8,10 +8,8 @@
  *
  * Administration - Site Maintenance
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
  */
 
@@ -358,28 +356,278 @@ class e107plugin
 		}
 		return $getinfo_results[$id];
 	}
-
-	function manage_extended_field($action, $field_name, $field_type, $field_default = '', $field_source = '')
+	
+	public function setUe()
 	{
-		$mes = e107::getMessage();
-
-		$mes->add("Extended Field: ".$action.": ".$field_name." : ".$field_type, E_MESSAGE_DEBUG);
-
 		if (!isset($this->module['ue']))
 		{
 			include_once(e_HANDLER.'user_extended_class.php');
 			$this->module['ue'] = new e107_user_extended;
 		}
+	}
+	
+	/**
+	 * User field name, based on its type
+	 * @param string $folder plugin folder
+	 * @param int $type normalized field type
+	 * @param string $name field name
+	 * @return string  field name
+	 */
+	public function ue_field_name($folder, $type, $name)
+	{
+		if($type == EUF_PREFIELD || $type == EUF_CATEGORY)
+		{
+			return $name; // no plugin_plugname_ prefix
+		}
+		return 'plugin_'.$folder.'_'.$name;
+	}
+	
+	/**
+	 * Normalize type
+	 * @param array $attrib parsed from XML user field definitions
+	 * @return integer type ID
+	 */
+	public function ue_field_type($attrib)
+	{
+		$field_type = $attrib['type'];
 		$type = defined($field_type) ? constant($field_type) : $field_type;
+		if(!is_numeric($type))
+		{
+			// normalize further
+			$this->setUe();
+			$type = $this->module['ue']->typeArray[$type];
+		}
+		return $type;
+	}
+	
+	/**
+	 * Type number to type name
+	 * @param integer $typeId
+	 * @return string type name
+	 */
+	public function ue_field_type_name($typeId)
+	{
+		if(is_numeric($typeId))
+		{
+			$this->setUe();
+			return array_search($typeId, $this->module['ue']->typeArray);
+		}
+		return $typeId;
+	}
+	
+	/**
+	 * Field atributes ($field_attrib array) as they have to be defined in plugin.xml:
+	 * name - REQUIRED string
+	 * text -  (string|constant name) field label 
+	 * type - REQUIRED (constant name) see EUF_* constants in e107_user_extended class
+	 * regex - regex validation string
+	 * required - 0-not requried, don't show on signup; 1 - required, show on signup; 2-not required, show on signup
+	 * allow_hide (0|1) - allow user to hide this field on profile page
+	 * read, write, applicable - classes, see e_UC_* defines
+	 * values - comma separated values (if required)
+	 * default - default value
+	 * order - (number)
+	 * parent - (string) category name for this field
+	 * system - (0|1) - field wont be shown if it's system, NOTE - default value if system is not set is 1!
+	 * 
+	 * @param string $action - add|remove
+	 * @param string $field_name normalized field name (see self::ue_field_name())
+	 * @param array $field_attrib
+	 * @param string $field_source used for system user fields 
+	 * @return boolean success
+	 */
+	function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
+	{
+		$mes = e107::getMessage();
+		$this->setUe();
+
+		$type = $this->ue_field_type($field_attrib);
+		$type_name = $this->ue_field_type_name($type);
+		
+		$mes->add("Extended Field: ".$action.": ".$field_name." : ".$type_name, E_MESSAGE_DEBUG);
+		
+		// predefined
+		if($type == EUF_PREFIELD)
+		{
+			
+			$preList = $this->module['ue']->parse_extended_xml(''); // passed value currently not used at all, could be file path in the near future
+			if($preList && isset($preList[$field_name]))
+			{
+				$preField = $preList[$field_name];
+				if($preField)
+				{
+					$field_attrib = array_merge($preField, $field_attrib); // merge
+					// predefined type - numeric value, constant or as defined in user_extended_class::typeArray
+					$field_attrib['type'] = $type = $this->ue_field_type($preField); // override type
+				}
+				else 
+				{
+					return false;
+				}
+			}
+			
+		}
+		// not allowed for categories
+		elseif($type == EUF_CATEGORY) 
+		{
+			$field_attrib['parent'] = 0;
+		}
 
 		if ($action == 'add')
 		{
-			return $this->module['ue']->user_extended_add_system($field_name, $type, $field_default, $field_source);
+			// system field
+			if($field_attrib['system'])
+			{
+				return $this->module['ue']->user_extended_add_system($field_name, $type, varset($field_attrib['default'], ''), $field_source);
+			}
+			
+			// new - add non-system extended field
+
+			// classes
+			$field_attrib['read'] = varset($field_attrib['read'], 'e_UC_MEMBER');
+			$field_attrib['write'] = varset($field_attrib['read'], 'e_UC_MEMBER');
+			$field_attrib['applicable'] = varset($field_attrib['applicable'], 'e_UC_MEMBER');
+			
+			// manage parent
+			if(vartrue($field_attrib['parent']))
+			{
+				foreach ($this->module['ue']->catDefinitions as $key => $value) 
+				{
+					if($value['user_extended_struct_name'] == $field_attrib['parent'])
+					{
+						$field_attrib['parent'] = $key;
+						break;
+					}
+				}
+				if(!is_numeric($field_attrib['parent'])) $field_attrib['parent'] = 0;
+			} 
+			else $field_attrib['parent'] = 0;
+
+			
+			// manage required (0, 1, 2)
+			if(!isset($field_attrib['required']))
+			{
+				$field_attrib['required'] = 0;
+			}
+			
+			// manage params
+			$field_attrib['parms'] = '';
+			
+			// validation and parms
+			$include = varset($field_attrib['include_text']);
+			$regex = varset($field_attrib['regex']);
+			$hide = vartrue($field_attrib['allow_hide']) ? 1 : 0;
+			$failmsg = '';
+			if($regex || hide)
+			{
+				// failmsg only when required
+				if($field_attrib['required'] == 1 || $regex)
+					$failmsg = vartrue($field_attrib['error']) ? $field_attrib['error'] : 'LAN_UE_FAIL_'.strtoupper($field_name);
+				
+				$field_attrib['parms'] = $include."^,^".$regex."^,^".$failmsg.'^,^'.$hide;
+			}
+			
+			//var_dump($field_attrib, $field_name, $type);
+			
+			$status = $this->module['ue']->user_extended_add(
+				$field_name, 
+				varset($field_attrib['text'], "LAN_UE_".strtoupper($field_name)), 
+				$type, 
+				$field_attrib['parms'], 
+				varset($field_attrib['values'], ''), 
+				varset($field_attrib['default'], ''),
+				$field_attrib['required'],
+				defset($field_attrib['read'], e_UC_MEMBER),
+				defset($field_attrib['write'], e_UC_MEMBER),
+				defset($field_attrib['applicable'], e_UC_MEMBER),
+				varset($field_attrib['order'], ''),
+				$field_attrib['parent']
+			);
+			
+			// db fields handling
+			if($status && $type == EUF_DB_FIELD)
+			{
+				// handle DB, use original non-modified name value
+				$status = !$this->manage_extended_field_sql('add', $field_attrib['name']); // reverse logic - sql method do a error check
+			}
+			
+			// refresh categories - sadly the best way so far... need improvement (inside ue class)
+			if($status && $type == EUF_CATEGORY)
+			{
+				$cats = $this->module['ue']->user_extended_get_categories(false);
+				foreach ($cats as $cat) 
+				{
+					$this->module['ue']->catDefinitions[$cat['user_extended_struct_id']] = $cat;
+				}
+			}
+			
+			return $status;
 		}
 
 		if ($action == 'remove')
 		{
-			return $this->module['ue']->user_extended_remove($field_name, $field_name);
+			//var_dump($field_attrib, $field_name, $type);
+			$status = $this->module['ue']->user_extended_remove($field_name, $field_name);
+			if($status && $type == EUF_DB_FIELD)
+			{
+				$status = $this->manage_extended_field_sql('remove', $field_attrib['name']);
+			}
+			
+			return $status;
+		}
+
+		return false;
+	}
+
+	function manage_extended_field_sql($action, $field_name)
+	{
+		$f = e_ADMIN.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
+		
+		if(!is_readable($f)) return false;
+		
+		// TODO - taken from user_extended Administration, need to be refined :/
+		// FIXME - use sql parse handler
+		$error = FALSE;
+		$count = 0;
+		if($action == 'add')
+		{
+			$sql_data = file_get_contents($f);
+	
+			$search[0] = "CREATE TABLE ";	$replace[0] = "CREATE TABLE ".MPREFIX;
+			$search[1] = "INSERT INTO ";	$replace[1] = "INSERT INTO ".MPREFIX;
+	
+		    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
+		    foreach($creation[0] as $tab)
+		    {
+				$query = str_replace($search,$replace,$tab);
+		      	if(!mysql_query($query))
+		      	{
+		        	$error = TRUE;
+				}
+				$count++;
+			}
+	
+		    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
+			foreach($inserts[0] as $ins)
+			{
+				$qry = str_replace($search,$replace,$ins);
+				if(!mysql_query($qry))
+				{
+				  	$error = TRUE;
+				}
+				$count++;
+		    }
+			
+			if(!$count) $error = TRUE;
+			
+			return $error;
+		}
+		
+		//remove
+		if($action == 'remove')
+		{
+			// executed only if the sql file exists!
+			return mysql_query("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
 		}
 	}
 
@@ -1321,15 +1569,22 @@ class e107plugin
 	function XmlExtendedFields($function, $array)
 	{
 		$mes = e107::getMessage();
+		$this->setUe();
 
 		foreach ($array['field'] as $efield)
 		{
 			$attrib = $efield['@attributes'];
 			$attrib['default'] = varset($attrib['default']);
-			$name = 'plugin_'.$this->plugFolder.'_'.$attrib['name'];
+			
+			$type = $this->ue_field_type($attrib);
+			$name = $this->ue_field_name($this->plugFolder, $type, $attrib['name']);
+			
+			//$name = 'plugin_'.$this->plugFolder.'_'.$attrib['name'];
 			$source = 'plugin_'.$this->plugFolder;
 			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
-			$type = $attrib['type'];
+
+			if(!isset($attrib['system'])) $attrib['system'] = true; // default true
+			else $attrib['system'] = $attrib['system'] === 'true' ? true : false;
 
 			switch ($function)
 			{
@@ -1338,14 +1593,16 @@ class e107plugin
 
 					if (!$remove)
 					{
-						$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						//$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+						$status = $this->manage_extended_field('add', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add('Adding Extended Field: '.$name.' ... ', $status);
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 
 					{
-						$status = $this->manage_extended_field('remove', $name, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						$status = $this->manage_extended_field('remove', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
 					}
 					break;
@@ -1354,7 +1611,7 @@ class e107plugin
 
 					if (varsettrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
-						$status = ($this->manage_extended_field('remove', $name, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
 					}
 					else
