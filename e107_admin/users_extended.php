@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -68,7 +68,7 @@ if ($tmp)
 	$qs = explode(".", $tmp[0]);
 	$_id = intval($qs[0]);
 	$_order = intval($qs[1]);
-	$_parent = intval($qs[2]); var_dump($_id, $_order, $_parent);
+	$_parent = intval($qs[2]); 
 	if (($_id > 0) && ($_order > 0) /*&& ($_parent > 0)*/)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
@@ -341,9 +341,9 @@ class users_ext
 
         if (varset($_POST['eudel'],''))
 		{
-			foreach($_POST['eudel'] as $id=>$name)
+			foreach(array_keys($_POST['eudel']) as $name)
 			{
-            	$this->delete_extended($id,$name);
+            	$this->delete_extended($name);
 			}
 		}
 
@@ -393,14 +393,14 @@ class users_ext
 
 
 
-	function delete_extended($_id,$_name)
+	function delete_extended($_name)
 	{
 		global $ue,$admin_log;
         $emessage = eMessage::getInstance();
-
-		if ($ue->user_extended_remove($_id, $_name))
+		
+		if ($ue->user_extended_remove($_name, $_name))
 		{
-			$admin_log->log_event('EUF_07',$_id.', '.$_name, E_LOG_INFORMATIVE,'');
+			$admin_log->log_event('EUF_07',$_name, E_LOG_INFORMATIVE,'');
 			$emessage->add(EXTLAN_30." [".$_name."]", E_MESSAGE_SUCCESS);
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
@@ -487,7 +487,7 @@ class users_ext
 							<td class='center' style='width:10%'>
 
 							<a style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
-		 					<input type='image' title='".LAN_DELETE."' name='eudel[".$id."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$name."' onclick='return confirm(\"".EXTLAN_27."\")' />
+		 					<input type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
 							</td>
 							</tr>
 							";
