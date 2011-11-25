@@ -17,6 +17,7 @@ if (!defined('e107_INIT')) { exit; }
 
 /*
  * Type defines
+ * XXX - convert to eMessage class constants
  */
 define('E_MESSAGE_INFO', 		'info');
 define('E_MESSAGE_SUCCESS', 	'success');
@@ -62,7 +63,7 @@ class eMessage
 	 * 
 	 * @var eMessage
 	 */
-	protected static $_instance = null;
+	//protected static $_instance = null;
 	
 	/**
 	 * Constructor
@@ -72,11 +73,11 @@ class eMessage
 	 *
 	 * @return void
 	 */
-	protected function __construct()
+	public function __construct()
 	{
 		//if(!session_id()) session_start();
 		
-		require_once(e_HANDLER.'e107_class.php');
+		// require_once(e_HANDLER.'e107_class.php');
 		$this->_session_id = '_system_messages';
 		
 		$this->reset()->mergeWithSession();
@@ -86,22 +87,21 @@ class eMessage
 	 * Cloning is not allowed
 	 *
 	 */
-	private function __clone()
-	{
-	}
+	// private function __clone()
+	// {
+	// }
 	
 	/**
-	 * Get singleton instance (php4 no more supported)
-	 *
+	 * Singleton is not required, we go for factory instead
 	 * @return eMessage
 	 */
 	public static function getInstance()
 	{
-		if(null == self::$_instance)
-		{
-		    self::$_instance = new self();
-		}
-	  	return self::$_instance;
+		// if(null == self::$_instance)
+		// {
+		    // self::$_instance = new self();
+		// }
+	  	return e107::getMessage();
 	}
 	
 	/**

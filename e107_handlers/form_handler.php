@@ -545,6 +545,11 @@ class e_form
 		$for_id = $this->_format_id('', $name, $value, 'for');
 		return "<label$for_id>{$text}</label>";
 	}
+	
+	function help($text)
+	{
+		return !empty($text) ? '<div class="field-help">'.$text.'</div>' : '';
+	}
 
 	function select_open($name, $options = array())
 	{

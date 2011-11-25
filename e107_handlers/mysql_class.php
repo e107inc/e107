@@ -272,7 +272,7 @@ class e_db_mysql
 		{
 			echo "** $query<br />\n";
 		}
-		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
+		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
 			$queryinfo[] = "<b>{$qry_from}</b>: $query";
 		}

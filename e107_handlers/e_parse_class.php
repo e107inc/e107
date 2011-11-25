@@ -1879,7 +1879,9 @@ class e_parse
 				$e107->site_theme ? $e107->getFolder('themes').$e107->site_theme.'/' : '',
 				defset('THEME_ABS'),
 				(ADMIN ? $e107->getFolder('admin') : ''),
-				''
+				'',
+				$e107->getFolder('core'),
+				$e107->getFolder('system'),
 			);
 
 			switch ($mode)
@@ -1908,7 +1910,9 @@ class e_parse
 						defset('THEME_ABS'),
 						defset('THEME_ABS'),
 						(ADMIN ? e_ADMIN_ABS : ''),
-						$e107->server_path
+						$e107->server_path,
+						'', // no e_CORE absolute path
+						'', // no e_SYSTEM absolute path
 					);
 				break;
 
@@ -1936,7 +1940,9 @@ class e_parse
 						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',
 						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',
 						(ADMIN ? SITEURLBASE.e_ADMIN_ABS : ''),
-						SITEURL
+						SITEURL,
+						'', // no e_CORE absolute path
+						'', // no e_SYSTEM absolute path
 					);
 				break;
 			}
@@ -1965,6 +1971,8 @@ class e_parse
 				"{THEME_ABS}",
 				"{e_ADMIN}",
 				"{e_BASE}",
+				"{e_CORE}",
+				"{e_SYSTEM}",
 			);
 
 			/*if (ADMIN)
