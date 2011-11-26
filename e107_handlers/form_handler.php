@@ -196,8 +196,8 @@ class e_form
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
-		$qry .= vartrue($sc_parameters['media']) ? " AND media_category = '".$tp->toDB($sc_parameters['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
+		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.")  ";
+		$qry .= vartrue($sc_parameters['media']) ? " AND (`media_category` = '".$tp->toDB($sc_parameters['media'])."' OR `media_category` = '_common' )" : " AND `media_category` = '_common' "; // " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 		$qry .= "ORDER BY media_name";
 
 
