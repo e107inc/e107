@@ -147,7 +147,7 @@ function show_admins()
 		$text .= "
 					<tr>
 						<td>".$row['user_id']."</td>
-						<td><a href='".e107::getUrl()->getUrl('core:user', 'main', "func=profile&id={$row['user_id']}")."'>".$row['user_name']."</a></td>
+						<td><a href='".e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']))."'>".$row['user_name']."</a></td>
 						<td>
 							".$prm->renderperms($row['user_perms'],$row['user_id'],"words")."
 						</td>

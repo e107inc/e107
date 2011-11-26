@@ -42,8 +42,9 @@ if(false === $cached)
 	list($cur_year, $cur_month, $cur_day) = explode(" ", date("Y n j"));
 	if (e_PAGE == 'news.php' && strstr(e_QUERY, "day")) 
 	{
-		//$tmp = explode(".", e_QUERY);
-		$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
+		$tmp = explode(".", e_QUERY);
+		// Core now support legacy queries - use just the old way
+		//$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
 		$item = $tmp[1];
 		$req_year = intval(substr($item, 0, 4));
 		$req_month = intval(substr($item, 4, 2));
@@ -63,8 +64,9 @@ if(false === $cached)
 	}
 	elseif(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
 	{
-		//$tmp = explode(".", e_QUERY);
-		$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
+		$tmp = explode(".", e_QUERY);
+		// Core now support legacy queries - use just the old way
+		//$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
 		$item = $tmp[1];
 		$req_year = intval(substr($item, 0, 4));
 		$req_month = intval(substr($item, 4, 2));
@@ -107,14 +109,14 @@ if(false === $cached)
 		$xmonth = date("n", $news['news_datestamp']);
 		if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 		{
-			$month_links[$xmonth] = e107::getUrl()->create('core:news', 'main', 'action=month&value='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
+			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'idv='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
 		if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
 		{
 			$xday = date("j", $news['news_datestamp']);
 			if (!isset($day_links[$xday]) || !$day_links[$xday])
 			{
-				$day_links[$xday] = e107::getUrl()->create('core:news', 'main', 'action=day&value='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 			}
 		}
 	}
@@ -122,7 +124,7 @@ if(false === $cached)
 	// if we're listing the current year, add the current month to the list regardless of posts
 	if ($req_year == $cur_year) 
 	{
-		$month_links[$cur_month] = e107::getUrl()->create('core:news', 'main', 'action=month&value='.formatDate($cur_year, $cur_month));//e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
+		$month_links[$cur_month] = e107::getUrl()->create('news/list/month', 'id='.formatDate($cur_year, $cur_month));//e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
 	}
 		
 	// go over the link array and create the option fields

@@ -91,7 +91,7 @@ for($i = $start_year; $i <= $end_year; $i++)
 					list($xmonth, $xday) = explode(" ", date("n j", $news['news_datestamp']));
 					if (!$day_links[$xmonth][$xday]) 
 					{
-						$day_links[$xmonth][$xday] = e107::getUrl()->create('core:news', 'main', 'action=day&value='.formatDate($req_year, $xmonth, $xday));
+						$day_links[$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));
 					}
 				}
 			}
@@ -122,7 +122,7 @@ for($i = 1; $i <= 12; $i++)
 	// href the current month regardless of newsposts or any month with news
 	if (($req_year == $cur_year && $i == $cur_month) || $day_links[$i]) 
 	{
-		$archive .= "<a class='forumlink' href='".e107::getUrl()->create('core:news', 'main', 'action=month&value='.formatDate($req_year, $i))."'>".$marray[$i-1]."</a>";
+		$archive .= "<a class='forumlink' href='".e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $i))."'>".$marray[$i-1]."</a>";
 	} 
 	else 
 	{

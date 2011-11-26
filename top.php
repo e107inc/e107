@@ -86,7 +86,7 @@ if ($action == 'active')
 		{
 			if ($row['user_name'])
 			{
-				$POSTER = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
+				$POSTER = "<a href='".$e107->url->create('user/profile/view', 'main', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
 			}
 			else
 			{
@@ -99,7 +99,7 @@ if ($action == 'active')
 			$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 			if ($row['user_last'])
 			{
-				$LASTPOST = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+				$LASTPOST = "<a href='".$e107->url->create('user/profile/view', 'main', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 			}
 			else
 			{
@@ -174,7 +174,7 @@ if ($action == 'top')
 				if(!$r) $r = 'n/a';
 				$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";
@@ -222,7 +222,7 @@ if ($action == 'top')
 				if(!$r) $r = 'n/a';
 				$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_comments']}</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";
@@ -270,7 +270,7 @@ if ($action == 'top')
 				if(!$r) $r = 'n/a';
 				$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_chats']}</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";

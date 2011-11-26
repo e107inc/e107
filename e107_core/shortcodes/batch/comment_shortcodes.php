@@ -33,7 +33,7 @@ SC_BEGIN USERNAME
 global $USERNAME, $comrow;
 if (isset($comrow['user_id']) && $comrow['user_id']) 
 {
-  $USERNAME = $parm == 'raw' ? $comrow['user_name'] : "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comrow['user_id'])."'>".$comrow['user_name']."</a>\n";
+  $USERNAME = $parm == 'raw' ? $comrow['user_name'] : "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $comrow['user_id'], 'name' => $comrow['user_name']))."'>".$comrow['user_name']."</a>\n";
 }
 else
 {

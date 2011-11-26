@@ -978,7 +978,7 @@ class e_news_category_item extends e_model
 	public function sc_news_category_url($parm = '')
 	{
 
-		$url = e107::getUrl()->create('core:news', 'main', 'action=list&id='.$this->getId().'&sef='.$this->get('rewrite_string'));
+		$url = e107::getUrl()->create('news/list/items', $this->getData());
 		switch($parm)
 		{
 			case 'link':
