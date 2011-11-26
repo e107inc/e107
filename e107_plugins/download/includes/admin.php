@@ -112,6 +112,8 @@ class download_cat_ui extends e_admin_ui
 		protected $table 		= "download_category";
 		protected $pid			= "download_category_id";
 		protected $perPage 		= 0; //no limit
+		protected $listOrder = 'download_category_order';
+		// protected $defaultOrderField = 'download_category_parent,download_category_order';
 	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
@@ -121,9 +123,9 @@ class download_cat_ui extends e_admin_ui
 			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
          	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left'), 
          	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%'),		
-			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
-			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'left' ),					
+		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
+			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
+			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),					
 			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);	
 		
@@ -134,7 +136,7 @@ class download_cat_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$sql -> db_Select_gen('SELECT * FROM #download_category ORDER BY download_category_order');
 		$cats = array();
-		$cats[0] = 'n/a';
+		$cats[0] = $default;
 		while($row = $sql->db_Fetch())
 		{
 			$cats[$row['download_category_id']] = $row['download_category_name'];
@@ -342,10 +344,10 @@ class download_main_admin_ui extends e_admin_ui
          	'download_author_website' 	=> array('title'=> DOWLAN_17, 			'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
             'download_description' 		=> array('title'=> LAN_DESCRIPTION,		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	
-		 	'download_filesize' 		=> array('title'=> DOWLAN_66,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right'),			
-		 	'download_requested' 		=> array('title'=> DOWLAN_29, 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'center'),
-			'download_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'method',			'width' => '5%'),		
-			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+		 	'download_filesize' 		=> array('title'=> DOWLAN_66,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),			
+		 	'download_requested' 		=> array('title'=> DOWLAN_29, 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),
+			'download_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => '5%',	'batch' => TRUE, 'filter'=>TRUE),		
+			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'download_datestamp' 		=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),
 			
 			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
@@ -410,6 +412,26 @@ $columnInfo = array(
 		// optional
 		public function init()
 		{
+			$categories = array();
+			if(e107::getDb()->db_Select('download_category'))
+			{
+				//$categories[0] = LAN_SELECT;
+				while ($row = e107::getDb()->db_Fetch())
+				{
+					$id = $row['download_category_id'];
+					$categories[$id] = $row['download_category_name'];
+				}
+			}
+	
+			$this->fields['download_category']['writeParms'] 		= $categories;
+			// DEPRECATED
+			//$this->fields['fb_rendertype']['writeParms'] 	= array(FBLAN_23,FBLAN_24);
+			//$this->fields['fb_mode']['writeParms'] 			= array(FBLAN_13,FBLAN_14);
+			
+			$this->fields['download_category']['readParms'] 		= $categories;
+				
+				
+			
 		}
 
 	function createPage()
@@ -478,13 +500,14 @@ class download_main_admin_form_ui extends e_admin_form_ui
 	
 	function download_active($curVal,$mode)
 	{
-		$download_status[0] = DOWLAN_122;
-      	$download_status[1] = DOWLAN_123;
+		$download_status[0] = DOWLAN_122; // Inactive; 
+      	$download_status[1] = DOWLAN_123; // Active
       	$download_status[2] = DOWLAN_124;
 		
 		if($mode == 'read')
 		{
-			return $download_status[$curVal];
+			$status = array(ADMIN_FALSE_ICON,ADMIN_TRUE_ICON,ADMIN_WARNING_ICON);		
+			return $status[$curVal];
 		}
 
 		if($mode == 'batch' || $mode == 'filter') // Custom Batch List for download_active
@@ -492,7 +515,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 			return $download_status;
 		}
 		 
-		return "active?";
+		return "&nbsp;";
 	}
 	
 	function download_mirror_type($curVal,$mode)

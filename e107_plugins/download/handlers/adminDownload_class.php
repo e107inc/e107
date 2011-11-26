@@ -522,7 +522,7 @@ class adminDownload extends download
 
 
 
-   function create_download($subAction, $id)
+   function create_download($subAction='', $id='')
    {
       global $download, $e107, $cal, $tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array, $pst;
       require_once(e_PLUGIN.'download/download_shortcodes.php');
@@ -572,9 +572,9 @@ class adminDownload extends download
          return;
       }
       $download_active = 1;
-      if ($subAction == "edit" && !$_POST['submit'])
+      if ($_GET['action'] == "edit" && !$_POST['submit'])
       {
-         if ($sql->db_Select("download", "*", "download_id=".$id))
+         if ($sql->db_Select("download", "*", "download_id=".intval($_GET['id'])))
          {
             $row = $sql->db_Fetch();
             extract($row);
@@ -686,7 +686,7 @@ class adminDownload extends download
       // See if any mirrors to display
       if (!$sql -> db_Select("download_mirror"))
       {   // No mirrors defined here
-         $text .= DOWLAN_144."</tr>";
+         $text .= DOWLAN_144."</td></tr>";
       }
       else
       {
@@ -1986,7 +1986,7 @@ class adminDownload extends download
       <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 
 
-      <br/><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
+      <br /><input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
       <div id='imagefile' style='display:none;{head}'>";
 
       $text .= DOWLAN_140."<br/>";
