@@ -17,7 +17,7 @@ require_once ('../class2.php');
 
 if (!getperms('4|U0|U1|U2|U3') )
 {	
-	header('location:'.$e107->url->getUrl('core:core','main','action=index'));
+	header('location:'.$e107->url->create('/'));
 	exit;
 }
 
@@ -53,7 +53,8 @@ if (e_QUERY == 'logoutas' || varset($_POST['useraction']) == 'logoutas')
 
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
 {
-	header('location:'.$e107->url->getUrl('core:user','main','func=settings&id='.(int) $_POST['userid']));
+	// __URLFIX__ - user name
+	header('location:'.$e107->url->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
 	exit;
 }
 
@@ -1342,7 +1343,7 @@ class users
 			break;
 
 			case 'user_name':
-				return "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
+				return "<a href='".$e107->url->getUrl('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a>";
 			break;
 
 			case 'user_perms': //TODO display link to popup window with editable perms.

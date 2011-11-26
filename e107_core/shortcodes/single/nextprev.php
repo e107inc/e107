@@ -477,8 +477,8 @@ function nextprev_shortcode($parm = '')
 			if(substr($url, 0, 5) == 'url::')
 			{
 				$urlParms = explode('::', $url);
-				$urlParms[3] = str_replace('[FROM]', $prevstart, $urlParms[3]);
-				$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+				$urlParms[2] = str_replace('[FROM]', $prevstart, $urlParms[2]);
+				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
 			}
 			else
 			{
@@ -492,8 +492,8 @@ function nextprev_shortcode($parm = '')
 			if(substr($url, 0, 5) == 'url::')
 			{
 				$urlParms = explode('::', $url);
-				$urlParms[3] = str_replace('[FROM]', $nextstart, $urlParms[3]);
-				$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+				$urlParms[2] = str_replace('[FROM]', $nextstart, $urlParms[2]);
+				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
 			}
 			else
 			{
@@ -513,8 +513,8 @@ function nextprev_shortcode($parm = '')
 			if(substr($url, 0, 5) == 'url::')
 			{
 				$urlParms = explode('::', $url);
-				$urlParms[3] = str_replace('[FROM]', $newstart, $urlParms[3]);
-				$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+				$urlParms[2] = str_replace('[FROM]', $newstart, $urlParms[2]);
+				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
 			}
 			else
 			{

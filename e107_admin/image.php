@@ -1008,7 +1008,7 @@ function show_avatars()
 			{
 				$row = $sql->db_Fetch();
 				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
-				$users .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
+				$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
 			}
 			else
 			{

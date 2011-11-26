@@ -75,6 +75,13 @@ class core_user_rewrite_url extends eUrlConfig
 		$name = $request->getRequestParam('name');
 		if(!$name) return;
 		
+		// if id only is passed, don't do DB query 
+		if(is_numeric($name))
+		{
+			$request->setRequestParam('id', $name)->setRequestParam('name', null);
+			return;
+		}
+		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
 		if($sql->db_Select('user', 'user_id', "user_name='{$name}'")) // XXX - new user_sef field? Discuss.

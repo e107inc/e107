@@ -976,7 +976,7 @@ class admin_newspost
         // --------------------------------------------
 
 		$query = "
-			SELECT n.*, nc.*, u.user_name FROM #news AS n
+			SELECT n.*, nc.*, u.user_name, u.user_id FROM #news AS n
 			LEFT JOIN #news_category AS nc ON n.news_category=nc.category_id
 			LEFT JOIN #user AS u ON n.news_author=u.user_id
 		";
@@ -1025,10 +1025,11 @@ class admin_newspost
 			foreach($newsarray as $row)
 			{
 				// PREPARE SOME DATA
-				$row['user_name'] 			= "<a href='".e107::getUrl()->createCoreUser('func=profile&id='.$row['news_author'])."' title='{$row['user_name']}'>{$row['user_name']}</a>";
+				// safe to pass $row as it contains username and id only (no sensitive data), user_id and user_name will be internal converted to 'id', 'name' vars 
+				$row['user_name'] 			= "<a href='".e107::getUrl()->create('user/profile/view', $row)."' title='{$row['user_name']}'>{$row['user_name']}</a>";
 				$row['news_thumbnail'] 		= ($row['news_thumbnail'] && is_readable(e_NEWSIMAGE.$row['news_thumbnail'])) ? "<a href='".e_NEWSIMAGE_ABS.$row['news_thumbnail']."' title='{$row['news_thumbnail']}' rel='external' class='e-image-preview'>".e107::getParser()->text_truncate($row['news_thumbnail'], 20, '...')."</a>" : "";
-				$row['news_title'] 			= "<a href='".e107::getUrl()->createCoreNews("action=extend&id={$row['news_id']}&sef={$row['news_rewrite_string']}")."'>".$e107->tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
-				$row['category_name'] 		= "<a href='".e107::getUrl()->createCoreNews('action=list&id='.$row['category_id'].'&sef='.$row['news_category_rewrite_string'])."'>".$row['category_name']."</a>";
+				$row['news_title'] 			= "<a href='".e107::getUrl()->create('news/view/item', $row)."'>".$e107->tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
+				$row['category_name'] 		= "<a href='".e107::getUrl()->create('news/list/items', $row)."'>".$row['category_name']."</a>";
 				$row['news_render_type'] 	= $ren_type[$row['news_render_type']];
 	
 				$row['news_allow_comments'] = !$row['news_allow_comments'] ? true : false; // old reverse logic
@@ -1294,7 +1295,7 @@ class admin_newspost
 				//XXX DB UPLOADS STILL SUPPORTED?
 				$upload_file = "pub_" . (preg_match('#Binary\s(.*?)\/#', $row['upload_file'], $match) ? $match[1] : $row['upload_file']);
 				$_POST['news_title'] = LAN_UPLOAD.": ".$row['upload_name'];
-				$_POST['news_body'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->getUrl('core:user', 'main', 'id='.$post_author_id)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
+				$_POST['news_body'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->create('user/profile/view', 'id='.$post_author_id.'&name='.$post_author_name)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
 			}
 		}
 
@@ -1369,7 +1370,7 @@ class admin_newspost
 			$e107->sql->db_Select("user", "user_name", "user_id={$auth} LIMIT 1");
            	$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
-			$text .= "<a href='".$e107->url->getUrl('core:user', 'main', 'id='.$_POST['news_author'])."'>".$row['user_name']."</a>";
+			$text .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$_POST['news_author'])."'>".$row['user_name']."</a>";
 		}
         else // allow master admin to
 		{

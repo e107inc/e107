@@ -142,7 +142,7 @@ if ($redirectFlag)
 	switch ($table)
 	{
 		case "news" :
-			header('Location: '.e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$redirectFlag));
+			header('Location: '.e107::getUrl()->create('news/view/item', 'id='.$redirectFlag));
 			exit;
 		case "poll" :
 			echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
@@ -154,7 +154,7 @@ if ($redirectFlag)
 			echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
 			exit;
 		case 'user' :
-			echo "<script type='text/javascript'>document.location.href='".e_HTTP."user.php?id.{$redirectFlag}'</script>\n";
+			echo "<script type='text/javascript'>document.location.href='".e107::getUrl()->create('user/profile/view', 'id='.$redirectFlag)</script>\n";
 			exit;
 	}
 

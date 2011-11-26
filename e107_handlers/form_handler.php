@@ -1512,7 +1512,7 @@ class e_form
 
 				if(vartrue($parms['link']) && $id && $ttl && is_numeric($id))
 				{
-					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($id)).'" title="Go to user profile">'.$ttl.'</a>';
+					$value = '<a href="'.e107::getUrl()->create('user/profile/view', array('id' => $id, 'name' => $ttl)).'" title="Go to user profile">'.$ttl.'</a>';
 				}
 				else
 				{

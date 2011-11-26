@@ -41,8 +41,8 @@ class core_user_url extends eUrlConfig
 		if(!varset($route[1])) $route[1] = 'index';
 		
 		## aliases as retrieved from the DB, map vars to proper values
+		if(isset($params['user_name']) && !empty($params['user_name'])) $params['id'] = $params['user_name'];
 		if(isset($params['user_id']) && !empty($params['user_id'])) $params['id'] = $params['user_id'];
-		//if(isset($params['user_name']) && !empty($params['user_name'])) $params['id'] = $params['user_name'];
 		
 		$url = 'user.php';
 		$page = $params['page'] ? intval($params['page']) : '0';

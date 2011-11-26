@@ -910,7 +910,7 @@ class comment
 					$comment_author_id = $row['comment_author_id'];
 					$ret['comment_author_id'] = $comment_author_id ;
 					$comment_author_name = $row['comment_author_name'];
-					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comment_author_id)."'>".$comment_author_name."</a>" : $comment_author_name);
+					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $comment_author_id, 'name' => $comment_author_name))."'>".$comment_author_name."</a>" : $comment_author_name);
 					//comment text
 					$comment = strip_tags(preg_replace("/\[.*?\]/", "", $row['comment_comment'])); // remove bbcode - but leave text in between
 					$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
@@ -925,9 +925,9 @@ class comment
 								require_once(e_HANDLER.'news_class.php');
 								$ret['comment_type'] = COMLAN_TYPE_1;
 								$ret['comment_title'] = $tp->toHTML($row2['news_title'], TRUE, 'emotes_off, no_make_clickable');
-								$ret['comment_url'] = e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$row['comment_item_id']);//e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('news/view/item', $row2);//e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
 								$ret['comment_category_heading'] = COMLAN_TYPE_1;
-								$ret['comment_category_url'] = e107::getUrl()->create('core:news', 'main', '');//e_HTTP."news.php";
+								$ret['comment_category_url'] = e107::getUrl()->create('news');//e_HTTP."news.php";
 							}
 							break;
 						case '1': //	article, review or content page - defunct category, but filter them out
@@ -963,7 +963,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['comment_item_id']);//e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('user/pofile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page
