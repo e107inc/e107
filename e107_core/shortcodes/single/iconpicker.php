@@ -41,7 +41,7 @@ function iconpicker_shortcode($parm)
 					$str = "";						
 				}
 				
-				$str .= "<a href='#".$row['media_url']."' title='{$filepath}' onclick=\"e107Helper.insertText('{$row['media_url']}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='".$tp->replaceConstants($row['media_url'])."' alt='{$row['media_name']}' /></a>";			
+				$str .= "<a href='#".$row['media_url']."' title='{$filepath}' onclick=\"e107Helper.insertText('{$row['media_url']}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='".$tp->replaceConstants($row['media_url'],'abs')."' alt='{$row['media_name']}' /></a>";			
 								
 				$lastsize = $size;
 			
