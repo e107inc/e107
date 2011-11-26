@@ -81,7 +81,7 @@ if (count($allowed_types) == 0)
 //echo "Allowed filetypes = ".implode(', ',array_keys($allowed_types)).'<br />';
 // avatar check.
 $public = array(e_UPLOAD, e_UPLOAD.'avatars');
-$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".htaccess","php.ini",".cvsignore",'e107.htaccess');
+$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".ftpquota",".htaccess","php.ini",".cvsignore",'e107.htaccess');
 
 //TODO use $file-class to grab list and perform this check. 
 foreach ($public as $dir)
@@ -340,10 +340,13 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
 
 	$plugs = e107::getObject('e107plugin');
+	
 
 	foreach($pref['plug_installed'] as $plug=>$vers)
 	{
+
 		$plugs->parse_plugin($plug);
+		
 
 		$plugin_path = $plug;
 		$name = $plugs->plug_vars['@attributes']['name'];
