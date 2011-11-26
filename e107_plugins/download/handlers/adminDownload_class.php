@@ -44,13 +44,14 @@ class adminDownload extends download
          $this->advancedSearchFields = $_POST['download_advanced_search'];
       }
    }
+   
    function show_filter_form($action, $subAction, $id, $from, $amount)
    {
       global $e107, $mySQLdefaultdb, $pref, $user_pref;
       $frm = new e_form();
 
       $filterColumns = ($user_pref['admin_download_disp'] ? $user_pref['admin_download_disp'] : array("download_name","download_class"));
-	   $url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => 123));
+	//   $url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => 123));
 	   $url = "admin_download.php";
 
       // Search field
@@ -2158,14 +2159,17 @@ class adminDownload extends download
 //		}
 		if(isset($_POST['etrigger_ecolumns']))
 		{
-        	$this->_observe_saveColumns();
+       // 	$this->_observe_saveColumns();
 		}
 	}
+/*
 	function _observe_saveColumns()
 	{
 		global $user_pref,$admin_log;
 		$user_pref['admin_download_disp'] = $_POST['e-columns'];
 		save_prefs('user');
 	}
+ */
+ 
 }
 ?>

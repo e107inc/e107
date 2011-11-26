@@ -56,7 +56,16 @@ $pst->id = array("admin_downloads","admin_dl_cat");
 
 $download = new download();
 $adminDownload = new adminDownload();
+
+new plugin_download_admin();
 require_once(e_ADMIN."auth.php");
+
+
+
+
+
+
+
 $pst->save_preset();  // unique name(s) for the presets - comma separated.
 
  /*
@@ -87,13 +96,13 @@ $emessage = &eMessage::getInstance();
 
 if(isset($_POST['filter_list']))
 {
-	echo $adminDownload->show_existing_items($action, $subAction, $id, 0, 10);
-	exit;
+	//echo $adminDownload->show_existing_items($action, $subAction, $id, 0, 10);
+	// exit;
 }
 
 if(isset($_POST['execute_batch']))
 {
-	$adminDownload->_observe_processBatch();
+	// $adminDownload->_observe_processBatch();
 }
 
 if (isset($_POST['delete']))
@@ -114,7 +123,7 @@ if (isset($_POST))
 
 if (isset($_POST['add_category']))
 {
-	$adminDownload->create_category($subAction, $id);
+	// $adminDownload->create_category($subAction, $id);
 }
 
 
@@ -139,8 +148,7 @@ if (isset($_POST['update_catorder']))
 	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 
-
-if (isset($_POST['updatedownloadoptions']))
+if (isset($_POST['updatedownlaodoptions']))
 {
 	unset($temp);
 	$temp['download_php'] = $_POST['download_php'];
@@ -159,11 +167,13 @@ if (isset($_POST['updatedownloadoptions']))
 	if ($admin_log->logArrayDiffs($temp, $pref, 'DOWNL_01'))
 	{
 		save_prefs();
-		$message = DOWLAN_65;
+
+		// e107::getMessage()->add(DOWLAN_65);
+
 	}
 	else
 	{
-		$message = DOWLAN_8;
+		// e107::getMessage()->add(DOWLAN_8);
 	}
 }
 
@@ -322,6 +332,7 @@ if (isset($delete) && $delete == 'main')
 
 if (isset($message))
 {
+
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -331,6 +342,9 @@ if ($from === "maint" && isset($_POST['submit_download']))
    $action = $from;
    $subAction = $maintPage;
 }
+
+ e107::getAdminUI()->runPage();
+
 
 if (!e_QUERY || $action == "main")
 {
@@ -348,9 +362,136 @@ if ($action == "opt")
 	$adminDownload->show_download_options();
 }
 
-if ($action == 'maint')
+
+
+
+if ($action == "ulist")
 {
-	global $pref, $ns;
+	$adminDownload->show_upload_list();
+}
+
+if ($action == "filetypes")
+{
+	$adminDownload->show_upload_filetypes();
+}
+
+if ($action == "uopt")
+{
+	$adminDownload->show_upload_options();
+}
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+function showLimits()
+{
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+	global $pref;
+	
+	if ($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
+	{
+		$classList = $sql->db_getList();
+	}
+	if ($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$limitList[$row['limit_classnum']] = $row;
+		}
+	}
+	$txt = "
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<table class='adminlist'>
+		<tr>
+			<td colspan='4' style='text-align:left'>
+		";
+		if ($pref['download_limits'] == 1)
+		{
+			$chk = "checked = 'checked'";
+		}
+		else
+		{
+			$chk = "";
+		}
+
+		$txt .= "
+			<input type='checkbox' name='download_limits' {$chk}/> ".DOWLAN_125."
+			</td>
+		</tr>
+		<tr>
+			<td class='fcaption'>".DOWLAN_67."</td>
+			<td class='fcaption'>".DOWLAN_113."</td>
+			<td class='fcaption'>".DOWLAN_107."</td>
+			<td class='fcaption'>".DOWLAN_108."</td>
+		</tr>
+	";
+
+	if(is_array($limitList))
+	{
+		foreach($limitList as $row)
+		{
+			$txt .= "
+			<tr>
+			<td>".$row['limit_id']."</td>
+			<td>".r_userclass_name($row['limit_classnum'])."</td>
+			<td>
+				<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
+				<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
+			</td>
+			<td>
+				<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
+				<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
+			</td>
+			</tr>
+			";
+		}
+	}
+	$txt .= "
+	</table>
+	<div class='buttons-bar center'>
+	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."'/>
+	</div>
+	
+	<table class='adminlist'>
+	<tr>
+	<td colspan='4'><br/><br/></td>
+	</tr>
+	<tr>
+	<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
+	<td>
+		<input type='text' class='tbox' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
+		<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
+	</td>
+	<td>
+		<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
+		<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
+	</td>
+	</tr>
+	<tr>
+	
+	";
+
+	$txt .= "</table>
+	<div class='buttons-bar center'>
+	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."'/>
+	</div></form>";
+	echo $txt;
+
+//	$ns->tablerender(DOWLAN_112, $txt);
+	// require_once(e_ADMIN.'footer.php');
+	// exit;
+}
+
+
+function showMaint()
+{
+	
+	global $pref;
+	$ns = e107::getRender();
+	$sql = e107::getDb();
+	
    if (isset($_POST['dl_maint'])) {
       switch ($_POST['dl_maint'])
       {
@@ -410,7 +551,7 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_172;
+				e107::getMessage()->addInfo(DOWLAN_172);
             }
             break;
          }
@@ -453,7 +594,8 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_174;
+            	e107::getMessage()->addInfo(DOWLAN_174);
+  
             }
             break;
          }
@@ -497,7 +639,8 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_172;
+            	e107::getMessage()->addInfo(DOWLAN_172);
+              //  $text = DOWLAN_172;
             }
             break;
          }
@@ -548,7 +691,8 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_172;
+            	e107::getMessage()->addInfo(DOWLAN_172);
+               // $text = DOWLAN_172;
             }
             break;
          }
@@ -597,7 +741,8 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_172;
+            	e107::getMessage()->addInfo(DOWLAN_172);
+              // $text = DOWLAN_172;
             }
             break;
          }
@@ -648,7 +793,8 @@ if ($action == 'maint')
             }
             else
             {
-               $text = DOWLAN_172;
+            	e107::getMessage()->addInfo(DOWLAN_172);
+              // $text = DOWLAN_172;
             }
             break;
          }
@@ -666,7 +812,7 @@ if ($action == 'maint')
       $text = DOWLAN_179;
       $eform = new e_form();
       $text = "
-      	<form method='post' action='".e_SELF."?maint' id='core-db-main-form'>
+      	<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-main-form'>
       		<fieldset id='core-db-plugin-scan'>
       		<legend class='e-hideme'>".DOWLAN_10."</legend>
       			<table cellpadding='0' cellspacing='0' class='adminlist'>
@@ -727,119 +873,11 @@ if ($action == 'maint')
       	</form>
       	";
    }
-	$ns->tablerender(DOWLAN_165.$title, $text);
+   
+   echo $text;
+   // 	$ns->tablerender(DOWLAN_165.$title, $text);
 }
 
-
-if ($action == 'limits')
-{
-	if ($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
-	{
-		$classList = $sql->db_getList();
-	}
-	if ($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
-	{
-		while($row = $sql->db_Fetch())
-		{
-			$limitList[$row['limit_classnum']] = $row;
-		}
-	}
-	$txt = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='adminlist'>
-		<tr>
-			<td colspan='4' style='text-align:left'>
-		";
-		if ($pref['download_limits'] == 1)
-		{
-			$chk = "checked = 'checked'";
-		}
-		else
-		{
-			$chk = "";
-		}
-
-		$txt .= "
-			<input type='checkbox' name='download_limits' {$chk}/> ".DOWLAN_125."
-			</td>
-		</tr>
-		<tr>
-			<td class='fcaption'>".DOWLAN_67."</td>
-			<td class='fcaption'>".DOWLAN_113."</td>
-			<td class='fcaption'>".DOWLAN_107."</td>
-			<td class='fcaption'>".DOWLAN_108."</td>
-		</tr>
-	";
-
-	foreach($limitList as $row)
-	{
-		$txt .= "
-		<tr>
-		<td>".$row['limit_id']."</td>
-		<td>".r_userclass_name($row['limit_classnum'])."</td>
-		<td>
-			<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
-			<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
-		</td>
-		<td>
-			<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
-			<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
-		</td>
-		</tr>
-		";
-	}
-
-	$txt .= "
-	<tr>
-	<td class='forumheader' colspan='4' style='text-align:center'>
-	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."'/>
-	</td>
-	</tr>
-	<tr>
-	<td colspan='4'><br/><br/></td>
-	</tr>
-	<tr>
-	<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
-	<td>
-		<input type='text' class='tbox' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
-		<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
-	</td>
-	<td>
-		<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
-		<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
-	</td>
-	</tr>
-	<tr>
-	<td class='forumheader' colspan='4' style='text-align:center'>
-	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."'/>
-	</td>
-	</tr>
-	";
-
-	$txt .= "</table></form>";
-
-	$ns->tablerender(DOWLAN_112, $txt);
-	require_once(e_ADMIN.'footer.php');
-	exit;
-}
-
-if ($action == "ulist")
-{
-	$adminDownload->show_upload_list();
-}
-
-if ($action == "filetypes")
-{
-	$adminDownload->show_upload_filetypes();
-}
-
-if ($action == "uopt")
-{
-	$adminDownload->show_upload_options();
-}
-
-require_once(e_ADMIN."footer.php");
-exit;
 
 function admin_download_adminmenu($parms)
 {
