@@ -88,24 +88,6 @@ require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage::getInstance();
 
 
-if(isset($_POST['filter_list']))
-{
-	//echo $adminDownload->show_existing_items($action, $subAction, $id, 0, 10);
-	// exit;
-}
-
-if(isset($_POST['execute_batch']))
-{
-	// $adminDownload->_observe_processBatch();
-}
-
-if (isset($_POST['delete']))
-{
-	$tmp = array_keys($_POST['delete']);
-	list($delete, $del_id) = explode("_", $tmp[0]);
-	$del_id = intval($del_id);
-	unset($_POST['searchquery']);
-}
 
 $from = ($from ? $from : 0);
 $amount = varset($pref['download_view'], 50);
@@ -115,10 +97,6 @@ if (isset($_POST))
 	$e107cache->clear("download_cat");
 }
 
-if (isset($_POST['add_category']))
-{
-	// $adminDownload->create_category($subAction, $id);
-}
 
 
 if (isset($_POST['submit_download']))
@@ -311,7 +289,7 @@ if (!e_QUERY || $action == "main")
 
 if ($action == "opt")
 {
-	$adminDownload->show_download_options();
+	// $adminDownload->show_download_options();
 }
 
 
@@ -439,8 +417,10 @@ function showLimits()
 }
 
 
-function showMaint()
+function showMaint() // Deprecated. 
 {
+	$mes = e107::getMessage();
+	$mes->addInfo("Deprecated Area - please use filter instead under 'Manage' ");
 	
 	global $pref;
 	$ns = e107::getRender();
