@@ -359,6 +359,7 @@ class download_main_admin_ui extends e_admin_ui
 			
 			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 		//	'download_order' 	=> array('title'=> LAN_ORDER,	'type' => 'text',			'width' => '5%', 'thclass' => 'left' ),					
+			'issue' 					=> array('title'=> 'Issue', 		'type' => 'method', 		'data' => null,	'nolist'=>TRUE, 'noedit'=>TRUE, 'filter'=>TRUE),
 			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => null, 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 		
@@ -429,47 +430,149 @@ $columnInfo = array(
 			//$this->fields['fb_mode']['writeParms'] 			= array(FBLAN_13,FBLAN_14);
 			
 			$this->fields['download_category']['readParms'] 		= $categories;
+			
+			// Custom filter queries 
+			if($_GET['filter_options'])
+			{
+				list($filter,$mode) = explode("__",$_GET['filter_options']);
 				
+				if($mode == 'missing')
+				{
+					$this->filterQry = $this->missingFiles();
+				}
 				
+				if($mode == 'nocategory')
+				{
+					$this->filterQry = "SELECT * FROM `#download` WHERE download_category=0";
+				}
+      
+	  			if($mode == 'duplicates')
+				{
+					$this->filterQry = "SELECT GROUP_CONCAT(d.download_id SEPARATOR ',') as gc, d.download_id, d.download_name, d.download_url, dc.download_category_name
+                      FROM #download as d
+                      LEFT JOIN #download_category AS dc ON dc.download_category_id=d.download_category
+                      GROUP BY d.download_url
+                      HAVING COUNT(d.download_id) > 1";
+				}
+				
+				if($mode == "filesize")
+				{
+					$this->filterQry = $this->missingFiles('filesize');	
+				}
+
+			}	
 			
 		}
 
-	function createPage()
-	{
-		global $adminDownload;
-		$adminDownload->create_download();
-	}
+
+		/*
+		 * Return a query for Missing Files and Filesize mismatch 
+		 */
+		public function missingFiles($mode='missing')
+		{
+			
+			$sql = e107::getDb();
+			$count = array();
+			
+            if ($sql->db_Select_gen("SELECT * FROM `#download` ORDER BY download_id"))
+            {
+               while($row = $sql->db_Fetch())
+			   {
+               		if (!is_readable(e_DOWNLOAD.$row['download_url']))
+					{		 
+					 	$count[] = $row['download_id']; 				 
+					}
+					elseif($mode == 'filesize')
+					{
+					 	$filesize = filesize(e_DOWNLOAD.$row['download_url']);
+                     	if ($filesize <> $row['download_filesize'])
+						{
+							$count[] = $row['download_id'];	
+						}
+					}
+					 
+               }
+            }
+            
+			if($count > 0)
+			{
+				return "SELECT * FROM `#download` WHERE download_id IN (".implode(",",$count).")";
+			}
+			
+		}
 		
-	function importPage()
-	{
-		$this->batchImportForm();
-	}
+		
+		
+		function orphanFiles() //TODO
+		{
+			
+			$files = e107::getFile()->get_files(e_DOWNLOAD);
+            $foundSome = false;
+            foreach($files as $file)
+			{
+               if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+                  if (!$foundSome) {
+   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+                     <table class="adminlist">';
+                     $text .= '<tr>';
+                     $text .= '<th>'.DOWLAN_13.'</th>';
+                     $text .= '<th>'.DOWLAN_182.'</th>';
+                     $text .= '<th>'.DOWLAN_66.'</th>';
+                     $text .= '<th>'.LAN_OPTIONS.'</th>';
+                     $text .= '</tr>';
+                     $foundSome = true;
+                  }
+                  $filesize = (is_readable(e_DOWNLOAD.$row['download_url']) ? $e107->parseMemorySize(filesize(e_DOWNLOAD.$file['fname'])) : DOWLAN_181);
+                  $filets   = (is_readable(e_DOWNLOAD.$row['download_url']) ? $gen->convert_date(filectime(e_DOWNLOAD.$file['fname']), "long") : DOWLAN_181);
+                  $text .= '<tr>';
+                  $text .= '<td>'.$tp->toHTML($file['fname']).'</td>';
+                  $text .= '<td>'.$filets.'</td>';
+                  $text .= '<td>'.$filesize.'</td>';
 
-	function settingsPage()
-	{
-		global $adminDownload;
-		$adminDownload->show_download_options();
-	}
-	
-	function limitsPage()
-	{
-		showLimits();
-	}
-	
-	function maintPage()
-	{
-		showMaint();	
-	}
+               }
+            }
+		}
+		
+		
 
-	function mirrorPage()
-	{
-		global $adminDownload;
-		$adminDownload->show_existing_mirrors();
-	}
+		function createPage()
+		{
+			global $adminDownload;
+			$adminDownload->create_download();
+		}
+			
+		function importPage()
+		{
+			$this->batchImportForm();
+		}
+	
+		function settingsPage()
+		{
+			global $adminDownload;
+			$adminDownload->show_download_options();
+		}
+		
+		function limitsPage()
+		{
+			showLimits();
+		}
+		
+		function maintPage()
+		{
+			showMaint();	
+		}
+	
+		function mirrorPage()
+		{
+			global $adminDownload;
+			$adminDownload->show_existing_mirrors();
+		}
 }
 
 class download_main_admin_form_ui extends e_admin_form_ui
 {
+	
 	function download_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
 		if($mode == 'read')
@@ -498,6 +601,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 		return $text;
 	}
 	
+	
 	function download_active($curVal,$mode)
 	{
 		$download_status[0] = DOWLAN_122; // Inactive; 
@@ -517,6 +621,27 @@ class download_main_admin_form_ui extends e_admin_form_ui
 		 
 		return "&nbsp;";
 	}
+	
+	
+	// Filter List for 'Issues' 
+	function issue($curVal,$mode)
+	{	
+		if($mode == 'filter') 
+		{
+			return array(
+				'duplicates'	=> DOWLAN_166,
+				'orphans'		=> DOWLAN_167, // TODO
+				'missing'		=> DOWLAN_168,
+				'nocategory' 	=> DOWLAN_178,
+				'filesize'		=> DOWLAN_66,
+				'log'			=> DOWLAN_171
+			);
+			
+		}
+		 
+		return "&nbsp;";
+	}
+	
 	
 	function download_mirror_type($curVal,$mode)
 	{

@@ -2030,6 +2030,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var additional SQL to be applied when auto-building the list query
 	 */
 	protected $listQrySql = array();
+	
+	/**
+	 * @var Custom Filter SQL Query override.
+	 */
+	protected $filterQry = null;
 
 	/**
 	 * @var boolean
@@ -3098,6 +3103,12 @@ class e_admin_controller_ui extends e_admin_controller
 				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) == 'desc' ? 'DESC' : 'ASC');
 			}
 		}
+		
+		if(isset($this->filterQry)) // custom query on filter. (see downloads plugin)
+		{
+			$qry = $this->filterQry;
+		}
+		
 		if($this->getPerPage() || false !== $forceTo)
 		{
 			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
@@ -3106,7 +3117,9 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-		// echo $qry;
+
+		// echo $qry.'<br />';
+		// print_a($_GET);
 
 		return $qry;
 	}
