@@ -210,6 +210,8 @@ SC_END
 
 SC_BEGIN USER_ICON_LINK
 global $user;
+$uparams = array('id' => $user['user_id'], 'name' => $user['user_name']);
+$url = e107::getUrl();
 if(defined("USER_ICON"))
 {
 	$icon = USER_ICON;
@@ -222,7 +224,7 @@ else
 {
 	$icon = "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
+return "<a href='".$url->create('user/profile/view', $uparams)."'>{$icon}</a>";
 SC_END
 
 SC_BEGIN USER_ID
@@ -237,7 +239,9 @@ SC_END
 
 SC_BEGIN USER_NAME_LINK
 global $user;
-return "<a href='".e_SELF."?id.{$user['user_id']}'>".$user['user_name']."</a>";
+$uparams = array('id' => $user['user_id'], 'name' => $user['user_name']);
+$url = e107::getUrl();
+return "<a href='".$url->create('user/profile/view', $uparams)."'>".$user['user_name']."</a>";
 SC_END
 
 SC_BEGIN USER_LOGINNAME
@@ -322,19 +326,21 @@ SC_END
 
 SC_BEGIN USER_UPDATE_LINK
 global $user;
+$url = e107::getUrl();
 if (USERID == $user['user_id']) 
 {
-	return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>";
+	return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
 }
 else if(ADMIN && getperms("4") && !$user['user_admin']) 
 {
-	return "<a href='".e_HTTP."usersettings.php?".$user['user_id']."'>".LAN_USER_39."</a>";
+	return "<a href='".$url->create('user/profile/edit', array('id' => $user['user_id'], 'name' => $user['user_name']))."'>".LAN_USER_39."</a>";
 }
 SC_END
 
 SC_BEGIN USER_JUMP_LINK
 global $sql, $user, $full_perms;
 if (!$full_perms) return;
+$url = e107::getUrl();
 if(!$userjump = getcachedvars('userjump'))
 {
 //  $sql->db_Select("user", "user_id, user_name", "`user_id` > ".intval($user['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
@@ -355,11 +361,11 @@ if(!$userjump = getcachedvars('userjump'))
 }
 if($parm == 'prev')
 {
-	return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".e_SELF."?id.".$userjump['prev']['id']."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+	return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
 }
 else
 {
-	return isset($userjump['next']['id']) ? "[ <a href='".e_SELF."?id.".$userjump['next']['id']."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
+	return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 }
 SC_END
 
