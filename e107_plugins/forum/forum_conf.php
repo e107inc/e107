@@ -28,7 +28,7 @@ $e_sub_cat = 'forum';
 
 if(!USER || !isset($_GET['f']) || !isset($_GET['id']))
 {
-	header('location:'.$e107->url->getUrl('core:core', 'main', 'action=index'));
+	header('location:'.$e107->url->create('/'), array(), array('encode' => false, 'full' => 1));
 	exit;
 }
 
@@ -51,7 +51,7 @@ $modList = $forum->forumGetMods($threadInfo->forum_moderators);
 //If user is not a moderator of indicated forum, redirect to index page
 if(!in_array(USERID, array_keys($modList)))
 {
-	header('location:'.$e107->url->getUrl('core:core', 'main', 'action=index'));
+	header('location:'.$e107->url->create('/'), array(), array('encode' => false, 'full' => 1));
 	exit;
 }
 
@@ -91,8 +91,8 @@ if (isset($_POST['move']))
 
 	$forum->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
-	$message = FORCONF_9;
-	$url = $e107->url->getUrl('forum', 'thread', 'func=view&id='.$threadId);
+	$message = FORCONF_9;// XXX _URL_ thread name
+	$url = $e107->url->create('forum/thread/view', 'id='.$threadId);
 }
 
 if (isset($_POST['movecancel']))
@@ -103,7 +103,7 @@ if (isset($_POST['movecancel']))
 
 	$message = FORCONF_10;
 //	$url = e_PLUGIN."forum/forum_viewforum.php?".$info['forum_id'];
-	$url = $e107->url->getUrl('forum', 'forum', 'func=view&id='.$postInfo[0]['post_forum']);
+	$url = $e107->url->create('forum/forum/view', 'id='.$postInfo[0]['post_forum']);// XXX _URL_ thread name
 }
 
 if ($message)

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -28,7 +28,7 @@ include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
 if (isset($_POST['fjsubmit']))
 {
-	header('Location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id'=>$_POST['forumjump'], 'raw' => true)));
+	header('Location:'.$e107->url->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
 	exit;
 }
 
@@ -37,7 +37,7 @@ $forum = new e107forum();
 
 if (!e_QUERY || !isset($_GET['id']))
 {
-	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main', 'raw' => true)));
+	header('Location:'.$e107->url->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -66,7 +66,7 @@ switch($action)
 		break;
 
 	default:
-		header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main', 'raw' => true)));
+		header("Location:".$e107->url->create('forum/forum/main', array(), 'full=1&encode=0'));
 		exit;
 
 }
@@ -328,11 +328,14 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		}
 
 		$e107cache->clear('newforumposts');
-		$threadLink = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId));
-		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
+		$postInfo = $forum->postGet($newPostId, 'post');
+		$forumInfo = $forum->forumGet($postInfo['post_forum']);
+		
+		$threadLink = $e107->url->create('forum/thread/last', $postInfo);
+		$forumLink = $e107->url->create('forum/forum/view', $forumInfo);
 		if ($forum->prefs->get('redirect'))
 		{
-			header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId, 'raw' => true)));
+			header('location:'.$e107->url->create('forum/thread/last', $postInfo, array('encode' => false, 'full' => true)));
 			exit;
 		}
 		else
@@ -399,7 +402,7 @@ if (isset($_POST['update_thread']))
 		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
-		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}&raw=1");
+		$url = $e107->url->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $postInfo['post_id'], 'thread' => $postInfo['post_thread']));
 		header('location:'.$url);
 		exit;
 	}
@@ -426,7 +429,7 @@ if (isset($_POST['update_reply']))
 
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
-		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}&raw=1");
+		$url = $e107->url->create('forum/thread/post', "id={$postInfo['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 		header('location:'.$url);
 		exit;
 	}

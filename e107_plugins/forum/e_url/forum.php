@@ -1,5 +1,6 @@
 <?php
 // $Id$
+// DEPRECATED - subject of removal
 function url_forum_forum($parms)
 {
 	$amp = isset($parms['raw']) ? '&' : '&amp;';
