@@ -347,7 +347,7 @@ class forumAdmin
 					{
 						$text .= "
 						<tr>
-						<td style='width:5%; text-align:center' class='forumheader3'>".IMAGE_new."</td>\n<td style='width:55%' class='forumheader3'><a href='".$e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id'=>$forum['forum_id']))."'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
+						<td style='width:5%; text-align:center' class='forumheader3'>".IMAGE_new."</td>\n<td style='width:55%' class='forumheader3'><a href='".$e107->url->create('forum/forum/view', $forum)."'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
 //						<td style='width:5%; text-align:center' class='forumheader3'>".IMAGE_new."</td>\n<td style='width:55%' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewforum.php?{$forum['forum_id']}'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
 
 						$text .= "

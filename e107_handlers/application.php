@@ -1723,7 +1723,7 @@ class eRouter
 		$format = isset($config['format']) && $config['format'] ? $config['format'] : self::FORMAT_GET;
 		
 		// Fix base url for legacy links
-		if($config['noSingleEntry']) $base = $options['full'] ? SITEURLBASE : SITEURL;
+		if($config['noSingleEntry']) $base = $options['full'] ? SITEURL : e_HTTP;
 		
 		// TODO - main module - don't include it in the return URL
 		
@@ -1850,8 +1850,8 @@ class eRouter
 	{
 		$pairs = array();
 		$equal = $options['equal'];
-		$ampersand = $options['amp'];
 		$encode = $options['encode'];
+		$ampersand = !$encode && $options['amp'] == '&amp;' ? '&' : $options['amp'];
 		foreach ($params as $k => $v)
 		{
 			if (null !== $key) $k = $key.'['.$k.']';

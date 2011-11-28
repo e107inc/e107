@@ -27,7 +27,7 @@ if (!$e107->isInstalled('forum'))
 
 if (isset($_POST['fjsubmit']))
 {
-	header('location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $_POST['forumjump'])));
+	header('location:' . $e107->url->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), 'full=1&encode=0'));
 	exit;
 }
 $highlight_search = isset($_POST['highlight_search']);
@@ -35,7 +35,7 @@ $highlight_search = isset($_POST['highlight_search']);
 if (!e_QUERY)
 {
 	//No parameters given, redirect to forum home
-	header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:' . $e107->url->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -163,14 +163,14 @@ $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
 $tVars->THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
-$tVars->NEXTPREV = "&lt;&lt; <a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'prev', 'id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
+$tVars->NEXTPREV = "&lt;&lt; <a href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
 $tVars->NEXTPREV .= ' | ';
-$tVars->NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'next', 'id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
+$tVars->NEXTPREV .= "<a href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
 
 if ($forum->prefs->get('track') && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
-	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
+	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
 	$tVars->TRACK .= "
 			<span id='forum-track-trigger-container'>
 			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
@@ -199,7 +199,7 @@ $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 if ($thread->pages > 1)
 {
 	if(!$thread->page) $thread->page = 1;
-	$url = rawurlencode(e107::getUrl()->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId, 'page' => '[FROM]')));
+	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
 	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".$url."&caption=off";
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 /*
@@ -210,11 +210,11 @@ if ($thread->pages > 1)
 $tVars->BUTTONS = '';
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
-	$tVars->BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
+	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
 }
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 {
-	$tVars->BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
+	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
 }
 
 $tVars->POLL = $pollstr;
@@ -277,7 +277,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 	if (!$forum_quickreply)
 	{
 		$tVars->QUICKREPLY = "
-		<form action='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "' method='post'>
+		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
 		<p>" . LAN_393 . ":<br />
 		<textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		<br />
@@ -337,7 +337,8 @@ function showmodoptions()
 	if ($postInfo['thread_start'])
 	{
 		$type = 'Thread';
-		$ret = "<form method='post' action='" . $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $postInfo['post_thread']))."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		// XXX _URL_ thread name?
+		$ret = "<form method='post' action='" . $e107->url->create('forum/thread/view', array('id' => $postInfo['post_thread']))."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
 		$delId = $postInfo['post_thread'];
 	}
 	else
@@ -349,17 +350,17 @@ function showmodoptions()
 
 	$ret .= "
 		<div>
-		<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_edit . "</a>
+		<a href='" . $e107->url->create('forum/thread/edit', array('id' => $postInfo['post_id']))."'>" . IMAGE_admin_edit . "</a>
 		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
 		<input type='hidden' name='mod' value='1'/>
 		";
 	if ($type == 'Thread')
 	{
-		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'move', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+		$ret .= "<a href='" . $e107->url->create('forum/thread/move', array('id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
 	}
 	else
 	{
-		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'split', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_split . '</a>';
+		$ret .= "<a href='" . $e107->url->create('forum/thread/split', array('id' => $postInfo['post_id']))."'>" . IMAGE_admin_split . '</a>';
 
 	}
 	$ret .= "
@@ -507,14 +508,14 @@ class e107ForumThread
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
 		{
-			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+			header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
 			exit;
 		}
 
 		//If not permitted to view forum, redirect to main forum page
 		if (!$forum->checkPerm($this->threadInfo['thread_forum_id'], 'view'))
 		{
-			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+			header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
 			exit;
 		}
 		$this->pages = ceil(($this->threadInfo['thread_total_replies']) / $this->perPage);
@@ -538,7 +539,7 @@ class e107ForumThread
 		}
 		if(e_AJAX_REQUEST)
 		{
-			$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
+			$url = $e107->url->create('forum/thread/view', array('name' => $this->threadInfo['thread_name'], 'id' => $thread->threadId));
 			echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
 			exit();
 		}
@@ -562,7 +563,7 @@ class e107ForumThread
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
 				$postPage = ceil($postNum / $forum->prefs->get('postspage'));
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage&raw");
+				$url = $e107->url->create('forum/thread/view', array('id' => $postInfo['post_thread'], 'name' => $postInfo['thread_name'], 'page' => $postPage), 'full=1&encode=0');
 				header('location: '.$url);
 				exit;
 				break;
@@ -576,7 +577,7 @@ class e107ForumThread
 				$next = $forum->threadGetNextPrev('next', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($next)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $next, 'raw' => true));
+					$url = $e107->url->create('forum/thread/view', array('id' => $next), array('encode' => false, 'full' => 1)); // no thread name info at this time
 					header("location: {$url}");
 					exit;
 				}
@@ -587,7 +588,7 @@ class e107ForumThread
 				$prev = $forum->threadGetNextPrev('prev', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
 				if ($prev)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $prev, 'raw' => true));
+					$url = $e107->url->create('forum/thread/view', array('id' => $prev), array('encode' => false, 'full' => 1));// no thread name info at this time
 					header("location: {$url}");
 					exit;
 				}
@@ -612,7 +613,7 @@ class e107ForumThread
 					// no reference of 'head' $threadInfo['head']['thread_name']
 					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$this->threadInfo['thread_name']}', " . intval($this->threadId) . ", '{$report_add}'");
 					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
-					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
+					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
 					$text = LAN_424 . "<br /><br /><a href='{$url}'>" . LAN_429 . '</a>';
 					return $e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'), true);
 				}
@@ -620,8 +621,8 @@ class e107ForumThread
 				{
 					$thread_name = $e107->tp->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
 					define('e_PAGETITLE', LAN_01 . ' / ' . LAN_426 . ' ' . $thread_name);
-					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
-					$actionUrl = $e107->url->getUrl('forum', 'thread', "func=report&id={$threadId}&post={$postId}");
+					$url = $e107->url->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
+					$actionUrl = $e107->url->create('forum/thread/report', "id={$threadId}&post={$postId}");
 					$text = "<form action='".$actionUrl."' method='post'>
 					<table style='width:100%'>
 					<tr>

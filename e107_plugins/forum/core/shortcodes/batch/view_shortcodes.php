@@ -27,8 +27,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_threaddatestamp()
 	{
-		$gen = e107::getDateConvert();
-		return "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'post', 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
+		$gen = e107::getDateConvert(); // XXX _URL_ check if all required info is there
+		return "<a id='post_{$this->postInfo['post_id']}' href='".$this->e107->url->create('forum/thread/post', array('name' => $this->postInfo['thread_name'], 'thread' => $this->postInfo['post_thread'], 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
 	}
 
 	function sc_post()
@@ -135,7 +135,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['user_name'])
 		{
-			return "<a href='".$this->e107->url->getUrl('core:user', 'main', array('func' => 'profile', 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
+			return "<a href='".$this->e107->url->create('user/profile/view', array('name' => $this->postInfo['user_name'], 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
 		}
 		else
 		{
@@ -235,7 +235,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active'])
 		{
-			return "<a href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $this->postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
+			return "<a href='".$this->e107->url->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
 		}
 	}
 
@@ -243,7 +243,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			return "<a href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'quote', 'id' => $this->postInfo['post_id']))."'>".IMAGE_quote.'</a> ';
+			return "<a href='".$this->e107->url->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".IMAGE_quote.'</a> ';
 		}
 	}
 
@@ -251,7 +251,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		global $page;
 		if (USER) {
-			return "<a href='".$this->e107->url->getUrl('forum', 'thread', "func=report&id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".IMAGE_report.'</a> ';
+			return "<a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".IMAGE_report.'</a> ';
 		}
 	}
 
@@ -321,7 +321,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			if($parm == 'link')
 			{
 				$e107 = e107::getInstance();
-				$url = $e107->url->getUrl('core:user', 'main', 'func=profile&id='.$this->postInfo['post_edit_user']);
+				$url = $e107->url->create('user/profile/view', array('name' => $this->postInfo['edit_name'], 'id' => $this->postInfo['post_edit_user']));
 				return "<a href='{$url}'>{$this->postInfo['edit_name']}</a>";
 			}
 			return $this->postInfo['edit_name'];

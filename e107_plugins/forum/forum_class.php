@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2010 e107 Inc (e107.org)
+* Copyright (c) 2008-2011 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -392,7 +392,7 @@ class e107forum
 		if('post' === $start)
 		{
 			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, p.* FROM `#forum_post` AS p
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_id, p.* FROM `#forum_post` AS p
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 			WHERE p.post_id = '.$id;
@@ -403,11 +403,13 @@ class e107forum
 				SELECT p.*,
 				u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
 				u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
-				eu.user_name AS edit_name
+				eu.user_name AS edit_name,
+				t.thread_name
 				FROM `#forum_post` AS p
 				LEFT JOIN `#user` AS u ON p.post_user = u.user_id
 				LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
 				LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
+				LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 				WHERE p.post_thread = {$id}
 				ORDER BY p.post_datestamp ASC
 				LIMIT {$start}, {$num}
@@ -1167,11 +1169,11 @@ class e107forum
 		if(is_array($FORUM_CRUMB))
 		{
 			$search 	= array('{SITENAME}', '{SITENAME_HREF}');
-			$replace 	= array(SITENAME, $e107->url->getUrl('core:core', 'main', 'action=index'));
+			$replace 	= array(SITENAME, $e107->url->create('/'));
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_01, $e107->url->getUrl('forum', 'forum', 'func=main'));
+			$replace 	= array(LAN_01, $e107->url->create('forum/forum/main'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= '{PARENT_TITLE}';
@@ -1181,7 +1183,7 @@ class e107forum
 			if($forumInfo['forum_sub'])
 			{
 				$search 	= array('{SUBPARENT_TITLE}', '{SUBPARENT_HREF}');
-				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), $e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_sub']}"));
+				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), $e107->url->create('forum/forum/view', "id={$forumInfo['forum_sub']}")); // XXX forum sub name
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
@@ -1191,12 +1193,12 @@ class e107forum
 
 			$search 	= array('{FORUM_TITLE}', '{FORUM_HREF}');
 			// TODO - remove 'href=' from the return value
-			$replace 	= array(ltrim($forumInfo['forum_name'], '*'), $e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_id']}"));
+			$replace 	= array(ltrim($forumInfo['forum_name'], '*'), $e107->url->create('forum/forum/view', $forumInfo));
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
 			$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
 			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
-			$replace 	= array($threadInfo['thread_name'], $e107->url->getUrl('forum', 'thread', "func=view&id={$threadInfo['thread_id']}")); // $thread->threadInfo - no reference found
+			$replace 	= array($threadInfo['thread_name'], $e107->url->create('forum/thread/view', $threadInfo)); // $thread->threadInfo - no reference found
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';

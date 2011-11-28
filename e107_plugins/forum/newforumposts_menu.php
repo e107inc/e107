@@ -52,7 +52,7 @@ if($results = $e107->sql->db_Select_gen($qry))
 		{
 			if($row['user_name'])
 			{
-				$poster = "<a href='".$e107->url->getUrl('core:user', 'main', array('func' => 'profile', 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
+				$poster = "<a href='".$e107->url->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
 			}
 			else
 			{
@@ -63,7 +63,7 @@ if($results = $e107->sql->db_Select_gen($qry))
 		$post = strip_tags($e107->tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
 		$post = $e107->tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
-		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $id));
+		$url = $e107->url->create('forum/thread/last', $row);
 		//TODO legacy bullet is not use here anymore
 		//$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
 		

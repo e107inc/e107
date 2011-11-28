@@ -19,7 +19,8 @@ if(!defined('e107_INIT'))
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum'))
 {
-	header('Location: '.e_BASE.'index.php');
+	// FIXME GLOBAL - get rid of all e_BASE|e_HTTP|Whatever/index.php - just point to SITEURL
+	header('Location: '.SITEURL);
 	exit;
 }
 
@@ -31,7 +32,7 @@ $forum = new e107forum;
 if ($untrackId = varset($_REQUEST['untrack']))
 {
 	$forum->track('del', USERID, $untrackId);
-	header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'track')));
+	header('location:'.$e107->url->create('forum/thread/track', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -84,7 +85,7 @@ if(USER)
 }
 if($rules_text != '')
 {
-	$fVars->USERINFO .= " | <a href='".$e107->url->getUrl('forum', 'forum', "func=rules")."'>".LAN_433.'</a>';
+	$fVars->USERINFO .= " | <a href='".$e107->url->create('forum/forum/rules')."'>".LAN_433.'</a>';
 }
 $total_topics = $sql->db_Count("forum_thread", "(*)");
 $total_replies = $sql->db_Count("forum_post", "(*)");
@@ -286,7 +287,7 @@ function parse_forum($f, $restricted_string = '')
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
 
-		$fVars->NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$f['forum_id'])."'>".IMAGE_new.'</a>';
+		$fVars->NEWFLAG = "<a href='".$e107->url->create('forum/forum/mfar', $f)."'>".IMAGE_new.'</a>';
 	}
 	else
 	{
@@ -299,8 +300,8 @@ function parse_forum($f, $restricted_string = '')
 	}
 	$f['forum_name'] = $e107->tp->toHTML($f['forum_name'], true, 'no_hook');
 	$f['forum_description'] = $e107->tp->toHTML($f['forum_description'], true, 'no_hook');
-
-	$fVars->FORUMNAME = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$f['forum_id']}")."'>{$f['forum_name']}</a>";
+	
+	$fVars->FORUMNAME = "<a href='".$e107->url->create('forum/forum/view', $f)."'>{$f['forum_name']}</a>";
 	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
@@ -328,14 +329,14 @@ function parse_forum($f, $restricted_string = '')
 		if ($f['user_name'])
 		{
 
-			$lastpost_name = "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$f['forum_lastpost_user'])."'>{$f['user_name']}</a>";
+			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
 		}
 		else
 		{
 			$lastpost_name = $e107->tp->toHTML($f['forum_lastpost_user_anon']);
 		}
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 	}
 	else
 	{
@@ -352,7 +353,7 @@ function parse_subs($subList, $lastpost_datestamp)
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
-		$suburl = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $sub['forum_id']));
+		$suburl = $e107->url->create('forum/forum/view', $sub);
 		$ret['text'] .= "<a href='{$suburl}'>".$e107->tp->toHTML($sub['forum_name']).'</a>';
 		$ret['threads'] += $sub['forum_threads'];
 		$ret['replies'] += $sub['forum_replies'];
@@ -391,7 +392,7 @@ if (e_QUERY == 'track')
 					$trackVars->NEWIMAGE = IMAGE_new_small;
 				}
 
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+				$url = $e107->url->create('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
 				$trackVars->TRACKPOSTNAME = "<a href='{$url}'>".$e107->tp->toHTML($row['thread_name']).'</a>';
 				$trackVars->UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_392."</a>";
 				$forum_trackstring .= $e107->tp->simpleParse($FORUM_TRACK_MAIN, $trackVars);
@@ -425,9 +426,9 @@ if (e_QUERY == 'new')
 		}
 		else
 		{
-			$nVars->STARTERTITLE = "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$thread['thread_lastuser'])."'>{$author_name}</a><br />".$datestamp;
+			$nVars->STARTERTITLE = "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp;
 		}
-		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->getUrl('forum', 'thread', 'func=last&id='.$thread['thread_id'])."'>".$e107->tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$e107->tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 
 		$forum_newstring .= $e107->tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 	}

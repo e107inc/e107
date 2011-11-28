@@ -17,20 +17,21 @@ require_once('../../class2.php');
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum'))
 {
-	header('Location: '.e_BASE.'index.php');
+	header('Location: '.SITEURL);
 	exit;
 }
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 
 if (isset($_POST['fjsubmit']))
 {
-	header('location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id'=>$_POST['forumjump'])));
+	// TODO - load from DB and find forum_name
+	header('location:'.$e107->url->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
 	exit;
 }
 
 if (!e_QUERY)
 {
-	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:'.$e107->url->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
@@ -56,7 +57,7 @@ $forumId = (int)$_REQUEST['id'];
 
 if (!$forum->checkPerm($forumId, 'view'))
 {
-	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:'.$e107->url->create('forum/forum/main'));
 	exit;
 }
 
@@ -143,17 +144,18 @@ if ($pages)
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
 		//if(!$page) $page = 1;
-		
-		// __FIX URL__ - forum urls - fixed only parse error
-		$url = rawurlencode(e107::getUrl()->create('forum', 'forum', array('func' => 'view', 'id' => $forumId, 'page' => '[FROM]')));
+		$urlparms = $forumInfo;
+		$urlparms['page'] = '[FROM]';
+		$url = rawurlencode(e107::getUrl()->create('forum/forum/view', $urlparms));
 		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+		unset($urlparms);
 	}
 }
 
 if($forum->checkPerm($forumId, 'post'))
 {
-	$fVars->NEWTHREADBUTTON = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forumId))."'>".IMAGE_newthread.'</a>';
+	$fVars->NEWTHREADBUTTON = "<a href='".$e107->url->create('forum/thread/new', array('id' => $forumId))."'>".IMAGE_newthread.'</a>';
 }
 
 if(substr($forumInfo['forum_name'], 0, 1) == '*')
@@ -350,7 +352,8 @@ function parse_thread($thread_info)
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
 		if($thread_info['lastpost_username'])
 		{
-			$url = $e107->url->getUrl('core:user', 'main', "func=profile&id={$thread_info['thread_lastuser']}");
+			// XXX hopefully & is not allowed in user name - it would break parsing of url parameters, change to array if something wrong happens
+			$url = $e107->url->create('user/profile/view', "name={$thread_info['lastpost_username']}&id={$thread_info['thread_lastuser']}");
 			$tVars->LASTPOST = "<a href='{$url}'>".$thread_info['lastpost_username']."</a>";
 		}
 		else
@@ -417,9 +420,10 @@ function parse_thread($thread_info)
 	{
 		$title = '';
 	}
-	$tVars->THREADNAME = "<a {$title} href='".$e107->url->getUrl('forum', 'thread', "func=view&id={$threadId}")."'>{$thread_name}</a>";
-
+	$tVars->THREADNAME = "<a {$title} href='".$e107->url->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name))."'>{$thread_name}</a>";
+	// FIXME - pages -> convert to nextprev shortcode
 	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
+	$urlparms = $thread_info;
 	if ($pages > 1)
 	{
 		if($pages > 6)
@@ -428,7 +432,8 @@ function parse_thread($thread_info)
 			{
 				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$urlparms['page'] = $aa;
+				$url = $e107->url->create('forum/thread/view', $urlparms);
 				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 			$tVars->PAGES .= ' ... ';
@@ -436,7 +441,8 @@ function parse_thread($thread_info)
 			{
 				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$urlparms['page'] = $aa;
+				$url = $e107->url->create('forum/thread/view', $urlparms);
 				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 		}
@@ -446,7 +452,8 @@ function parse_thread($thread_info)
 			{
 				$aa = $a + 1;
 				$tVars->PAGES .= $tVars->PAGES ? ' ' : '';
-				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$aa}");
+				$urlparms['page'] = $aa;
+				$url = $e107->url->create('forum/thread/view', $urlparms);
 				$tVars->PAGES .= "<a href='{$url}'>{$aa}</a>";
 			}
 		}
@@ -459,12 +466,15 @@ function parse_thread($thread_info)
 
 	if (MODERATOR)
 	{
+		// FIXME _URL_ thread name
+		// $e107->url->create('forum/forum/view', "id={$thread_info['thread_forum_id']}")
+		// USED self instead
 		$tVars->ADMIN_ICONS = "
-		<form method='post' action='".$e107->url->getUrl('forum', 'forum', "func=view&id={$thread_info['thread_forum_id']}")."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
+		<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
 		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".$e107->url->getUrl('forum', 'thread', "func=move&id={$threadId}")."'>".IMAGE_admin_move.'</a>
+		<a href='".$e107->url->create('forum/thread/move', "id={$threadId}")."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
 	}
@@ -475,7 +485,7 @@ function parse_thread($thread_info)
 
 	if($thread_info['user_name'])
 	{
-		$tVars->POSTER = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$thread_info['thread_user']}")."'>".$thread_info['user_name']."</a>";
+		$tVars->POSTER = "<a href='".$e107->url->create('user/profile/view', array('id' => $thread_info['thread_user'], 'name' => $thread_info['user_name']))."'>".$thread_info['user_name']."</a>";
 	}
 	else
 	{
@@ -519,14 +529,14 @@ function parse_sub($subInfo)
 	$tVars = new e_vars;
 	$e107 = e107::getInstance();
 	$forumName = $e107->tp->toHTML($subInfo['forum_name'], true);
-	$tVars->SUB_FORUMTITLE = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$subInfo['forum_id']}")."'>{$forumName}</a>";
+	$tVars->SUB_FORUMTITLE = "<a href='".$e107->url->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
 	$tVars->SUB_DESCRIPTION = $e107->tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$tVars->SUB_THREADS = $subInfo['forum_threads'];
 	$tVars->SUB_REPLIES = $subInfo['forum_replies'];
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
 	{
 
-		$tVars->NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
+		$tVars->NEWFLAG = "<a href='".$e107->url->create('forum/forum/mfar', 'id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
 	}
 	else
 	{
@@ -536,12 +546,12 @@ function parse_sub($subInfo)
 	if($subInfo['forum_lastpost_info'])
 	{
 		$tmp = explode('.', $subInfo['forum_lastpost_info']);
-		$lp_thread = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
+		$lp_thread = "<a href='".$e107->url->create('forum/thread/last', array('id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
 		$lp_date = $gen->convert_date($tmp[0], 'forum');
 
 		if($subInfo['user_name'])
 		{
-			$lp_name = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$subInfo['forum_lastpost_user']}")."'>{$subInfo['user_name']}</a>";
+			$lp_name = "<a href='".$e107->url->create('user/profile/view', array('id' => $subInfo['forum_lastpost_user'], 'name' => $subInfo['user_name']))."'>{$subInfo['user_name']}</a>";
 		}
 		else
 		{
