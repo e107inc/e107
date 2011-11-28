@@ -314,7 +314,7 @@ class redirection
 		{
 			e107::getSession()->end();
 		}
-		if(NULL == $http_response_code)
+		if(null === $http_response_code)
 		{
 			header('Location: '.$url, $replace);
 		}

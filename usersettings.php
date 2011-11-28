@@ -560,7 +560,18 @@ if ($dataToSave && !$promptPassword)
 }	// End - if (!$error)...
 
 
-if (!$error && !$promptPassword) { unset($_POST); }
+if (!$error && !$promptPassword) 
+{
+	if(isset($_POST) && $changedUserData['user_name'])
+	{
+		$redirect = e107::getRedirect();
+		$url = e107::getUrl();
+		$to = $_uid ? $url->create('user/profile/edit', array('id' => $_uid, 'name' => $changedUserData['user_name'])) : $url->create('user/myprofile/edit');
+		if($message) e107::getMessage()->addSuccess($message, 'default', true);
+		$redirect->redirect($to);
+	}
+	unset($_POST);
+}
 
 
 if ($error)
@@ -585,6 +596,8 @@ if ($error)
 
 
 // --- User data has been updated here if appropriate ---
+$testSessionMessage = e107::getMessage()->get(E_MESSAGE_SUCCESS, 'default', true); // only success in the session
+if($testSessionMessage) $message = implode('<br />', $testSessionMessage); // we got raw message - array
 if (isset($message))
 {
 	$ns->tablerender($caption, $message);
