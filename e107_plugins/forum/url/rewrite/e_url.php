@@ -36,7 +36,7 @@ class plugin_forum_rewrite_url extends eUrlConfig
 	{
 		$amp = varset($options['encode']) ? '&amp;' : '&';
 		if(is_string($route)) $route = explode('/', $route, 2);
-		if(!varset($route[0])) $route[0] = 'forum';
+		if(!varset($route[0]) || 'index' == $route[0]) $route[0] = 'forum';
 		if(!varset($route[1])) $route[1] = 'main';
 		$base = e107::getInstance()->getFolder('plugins').'forum/';
 		//var_dump($options, $route, $params);
@@ -54,7 +54,8 @@ class plugin_forum_rewrite_url extends eUrlConfig
 				case 'track':
 					return $base.'forum.php?track';
 					break;
-		
+					
+				case 'index':
 				case 'main':
 					return $base.'forum.php';
 					break;
