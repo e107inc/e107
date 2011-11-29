@@ -232,12 +232,16 @@ class e_parse
 	}
 
 
-
-	function dataFilter($data)
+	/*
+	 * Filter User Input
+	*/
+	function dataFilter($data,$mode='bbcode')
 	{
 		$ans = '';
-		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe', 
-					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', '<plaintext', 'javascript:', 'vbscript:');
+		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
+						 '<frameset', '<html', '<iframe', '<style', '<layer', '<link',
+						 '<ilayer', '<meta', '<object', '<plaintext', 'javascript:',
+						 'vbscript:','data:text/html');
 
 		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
@@ -270,10 +274,17 @@ class e_parse
 					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
 				}
 			}
+					
 			$s = preg_replace('#(?:onmouse.+?|onclick|onfocus)\s*?\=#i', '[sanitised]$0[/sanitised]', $s);
 			$s = preg_replace_callback('#base64([,\(])(.+?)([\)\'\"])#mis', array($this, 'proc64'), $s);
 			$ans .= $s;
 		}
+		
+		if($mode == 'link' && count($vl))
+		{
+			return "#sanitized";
+		}
+			
 		return $ans;
 	}
 

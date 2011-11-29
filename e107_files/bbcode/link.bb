@@ -1,5 +1,6 @@
 // $Id$
-global $pref;
+//<?
+global $pref,$tp;
 
 /*
 	[link=$parm $extras]$code_text[/link]
@@ -14,7 +15,7 @@ global $pref;
 */
 
 
-	$parm = trim($parm);
+	$parm = $tp->dataFilter(trim($parm),'link');
 
 	/* Fix for people using link=external= */
 	if(strpos($parm,"external=") !== FALSE)

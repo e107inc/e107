@@ -103,7 +103,8 @@ if ($bounce_act)
 // ------- Resend Email. --------------
 if (isset($_POST['resend_mail']))
 {
-	$user->resend($_POST['resend_id'],$_POST['resend_key'],$_POST['resend_name'],$_POST['resend_email']);
+	$temp_name = str_replace('--', '', trim(preg_replace("/[\^\*\|\/;:#=\$'\"!#`\s\(\)%\?<>\\{}]/", '', strip_tags($_POST['resend_name']))));
+	$user->resend($_POST['resend_id'],$_POST['resend_key'],$temp_name,$_POST['resend_email']);
 }
 
 // ------- Resend Email. --------------
@@ -372,12 +373,12 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend')
 {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
-	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
+	if ($sql->db_Select("user", "*", "user_id='".intval($_POST['userid'])."' ")) {
 		$resend = $sql->db_Fetch();
 		$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 		$text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
 
-			<input type='hidden' name='resend_id' value='".$_POST['userid']."' />\n
+			<input type='hidden' name='resend_id' value='".intval($_POST['userid'])."' />\n
 			<input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
 			<input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
 			<input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
