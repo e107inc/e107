@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -28,9 +28,9 @@ require_once(e_HANDLER."news_class.php");
 
 if (isset($NEWSHEADER))
 {
-  require_once(HEADERF);
-  require_once(FOOTERF);
-  exit;
+	require_once(HEADERF);
+	require_once(FOOTERF);
+	exit;
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
@@ -43,18 +43,18 @@ $newsfrom = 0;
 
 if (!defined('ITEMVIEW'))
 {
-  define('ITEMVIEW', varset($pref['newsposts'],15));
+	define('ITEMVIEW', varset($pref['newsposts'],15));
 }
 
 if (e_QUERY)
 {
- 
-  $tmp = explode(".",e_QUERY);
-  $action = $tmp[0];						// At least one parameter here
+
+	$tmp = explode(".",e_QUERY);
+	$action = $tmp[0];						// At least one parameter here
 	$sub_action = varset($tmp[1],'');			// Usually a numeric category, or numeric news item number, but don't presume yet
-//	$id = varset($tmp[2],'');					// ID of specific news item where required
-  $newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
-  $cacheString = 'news.php_'.e_QUERY;
+	//	$id = varset($tmp[2],'');					// ID of specific news item where required
+	$newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
+	$cacheString = 'news.php_'.e_QUERY;
 }
 
 //$newsfrom = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
@@ -73,20 +73,45 @@ if (is_numeric($action) && isset($tmp[1]) && (($tmp[1] == 'list') || ($tmp[1] ==
 
 if ($action == 'all' || $action == 'cat')
 {
-  $sub_action = intval(varset($tmp[1],0));
+	$sub_action = intval(varset($tmp[1],0));
 }
 
 /*
 Variables Used:
-	$action - the basic display format/filter
-	$sub_action - category number or news item number
-	$newsfrom - first item number in list (default 0) - derived from nextprev
-	$order - sets the listing order for 'list' format
+$action - the basic display format/filter
+$sub_action - category number or news item number
+$newsfrom - first item number in list (default 0) - derived from nextprev
+$order - sets the listing order for 'list' format
 */
 
 
 $ix = new news;
 $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+
+// URL settings (nextprev)
+	$newsUrlparms = array('page' => '--FROM--');
+	if($sub_action)
+	{
+		
+		switch ($action) 
+		{
+			case 'list':
+				$newsUrlparms['id'] = $sub_action;
+				$newsRoute = 'list/category';
+			break;
+			
+			case 'cat':	
+				$newsUrlparms['id'] = $sub_action;
+				$newsRoute = 'list/short';
+			break;
+			
+			default:
+				$newsRoute = 'list/items';
+			break;
+		}
+	}
+	else $newsRoute = 'list/items';
+	$newsRoute = 'news/'.$newsRoute;
 
 //------------------------------------------------------
 //		DISPLAY NEWS IN 'CATEGORY' FORMAT HERE
@@ -190,32 +215,35 @@ if ($action == 'cat' || $action == 'all')
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 	$param['current_action'] = $action;
-	
+
 	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 	e107::getEvent()->trigger('news_list_parse', $newsList);
-	
+
 	foreach($newsList as $row)
 	{
-	  $text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
+		$text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
 	}
-
-	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
-	// Deprecated. 
+	// Deprecated.
 	// $parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
-	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
-	
-	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+	//	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
+	//
+	//	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
+	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
+	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
+	$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+	$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
-    if(!$NEWSLISTTITLE)
+	if(!$NEWSLISTTITLE)
 	{
 		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,'TITLE')."'";
 	}
 	else
 	{
-    	$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
+		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
 	$text .= "<div style='text-align:center;'><a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 	ob_start();
@@ -235,14 +263,14 @@ if ($action == 'extend')
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
-	  require_once(HEADERF);
+		require_once(HEADERF);
 		renderCache($newsCachedPage, TRUE);		// This exits if cache used
 	}
 	// <-- Cache
 
 	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
 	{
-	  $query = "
+		$query = "
 	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 	  	FROM #news AS n
@@ -256,7 +284,7 @@ if ($action == 'extend')
 	}
 	else
 	{
-	  $query = "
+		$query = "
 	  	SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 	  	FROM #news AS n
@@ -291,39 +319,39 @@ if ($action == 'extend')
 		/*
 		if($news['news_title'])
 		{
-		  if($pref['meta_news_summary'] && $news['news_title'])
-		  {
-			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
-		  }
-		  define("e_PAGETITLE",$news['news_title']);
+		if($pref['meta_news_summary'] && $news['news_title'])
+		{
+		define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
+		}
+		define("e_PAGETITLE",$news['news_title']);
 		}*/
 		/* FIXME - better implementation: cache, shortcodes, do it inside the model/shortcode class itself.
 		if (TRUE)
 		{
-			// Added by nlStart - show links to previous and next news
-			if (!isset($news['news_extended'])) $news['news_extended'] = '';
-			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
-			$prev_query = "SELECT news_id, news_title FROM `#news`
-				WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-				AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
-			$sql->db_Select_gen($prev_query);
-			$prev_news = $sql->db_Fetch();
-			if ($prev_news)
-			{
-				$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
-			}
-			$next_query = "SELECT news_id, news_title FROM `#news` AS n
-				WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-				AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-				AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
-			$sql->db_Select_gen($next_query);
-			$next_news = $sql->db_Fetch();
-			if ($next_news)
-			{
-				$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
-			}
-			$news['news_extended'].="<br /><br />";
+		// Added by nlStart - show links to previous and next news
+		if (!isset($news['news_extended'])) $news['news_extended'] = '';
+		$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
+		$prev_query = "SELECT news_id, news_title FROM `#news`
+		WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
+		AND NOT (`news_class` REGEXP ".$nobody_regexp.")
+		AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
+		$sql->db_Select_gen($prev_query);
+		$prev_news = $sql->db_Fetch();
+		if ($prev_news)
+		{
+		$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
+		}
+		$next_query = "SELECT news_id, news_title FROM `#news` AS n
+		WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
+		AND NOT (`news_class` REGEXP ".$nobody_regexp.")
+		AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
+		$sql->db_Select_gen($next_query);
+		$next_news = $sql->db_Fetch();
+		if ($next_news)
+		{
+		$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
+		}
+		$news['news_extended'].="<br /><br />";
 		}*/
 
 		$currentNewsAction = $action;
@@ -360,7 +388,7 @@ if ($action == 'extend')
 // Show title, author, first part of news item...
 if (empty($order))
 {
-  $order = 'news_datestamp';
+	$order = 'news_datestamp';
 }
 $order = $tp -> toDB($order, true);			/// @todo - try not to use toDB() - triggers prefilter
 
@@ -368,10 +396,10 @@ $interval = $pref['newsposts'];
 
 switch ($action)
 {
-  case "list" :
-	$sub_action = intval($sub_action);
-//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
-	$query = "
+	case "list" :
+		$sub_action = intval($sub_action);
+		//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
+		$query = "
 		SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
@@ -381,15 +409,15 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_category={$sub_action}
 		ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
-	break;
+		break;
 
 
-  case "item" :
-	$sub_action = intval($sub_action);
-	$news_total = 1;
-	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
-	{
-	  $query = "
+	case "item" :
+		$sub_action = intval($sub_action);
+		$news_total = 1;
+		if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
+		{
+			$query = "
 	  	SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
@@ -399,10 +427,10 @@ switch ($action)
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		GROUP by n.news_id";
-	}
-	else
-	{
-	  $query = "
+		}
+		else
+		{
+			$query = "
 	  	SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
@@ -410,27 +438,27 @@ switch ($action)
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
-	}
-	break;
+		}
+		break;
 
-  case "month" :
-  case "day" :
-	$item = $tp -> toDB($sub_action).'20000101';
-	$year = substr($item, 0, 4);
-	$month = substr($item, 4,2);
-	if ($action == 'day')
-	{
-	  $day = substr($item, 6, 2);
-	  $lastday = $day;
-	}
-	else
-	{	// A month's worth
-	  $day = 1;
-	  $lastday = date("t", $startdate);
-	}
-	$startdate = mktime(0, 0, 0, $month, $day, $year);
-	$enddate = mktime(23, 59, 59, $month, $lastday, $year);
-	$query = "
+	case "month" :
+	case "day" :
+		$item = $tp -> toDB($sub_action).'20000101';
+		$year = substr($item, 0, 4);
+		$month = substr($item, 4,2);
+		if ($action == 'day')
+		{
+			$day = substr($item, 6, 2);
+			$lastday = $day;
+		}
+		else
+		{	// A month's worth
+			$day = 1;
+			$lastday = date("t", $startdate);
+		}
+		$startdate = mktime(0, 0, 0, $month, $day, $year);
+		$enddate = mktime(23, 59, 59, $month, $lastday, $year);
+		$query = "
 		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name,
 		nc.category_icon, nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
@@ -440,23 +468,23 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
-	break;
+		break;
 
-  case 'default' :
-  default :
-    $action = '';
-	$cacheString = 'news.php_default_';		// Make sure its sensible
-//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type<2" );
+	case 'default' :
+	default :
+		$action = '';
+		$cacheString = 'news.php_default_';		// Make sure its sensible
+		//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type<2" );
 
-	if(!isset($pref['newsposts_archive']))
-	{
-		$pref['newsposts_archive'] = 0;
-	}
-	$interval = $pref['newsposts']-$pref['newsposts_archive'];		// Number of 'full' posts to show
+		if(!isset($pref['newsposts_archive']))
+		{
+			$pref['newsposts_archive'] = 0;
+		}
+		$interval = $pref['newsposts']-$pref['newsposts_archive'];		// Number of 'full' posts to show
 
-	// Get number of news item to show
-	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
-		$query = "
+		// Get number of news item to show
+		if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
+			$query = "
 		SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle,
 		nc.category_name, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
 		COUNT(*) AS tbcount{$rewrite_cols_cat}{$rewrite_cols}
@@ -469,10 +497,10 @@ switch ($action)
 		AND n.news_render_type<2
 		GROUP by n.news_id
 		ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
-	}
-	else
-	{
-		$query = "
+		}
+		else
+		{
+			$query = "
 		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
 		FROM #news AS n
@@ -482,7 +510,7 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
 		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
-	}
+		}
 }	// END - switch($action)
 
 
@@ -493,10 +521,10 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 	if(!$action)
 	{
 		// Removed, themes should use {FEATUREBOX} shortcode instead
-//		if (isset($pref['fb_active']))
-//		{
-//			require_once(e_PLUGIN."featurebox/featurebox.php");
-//		}
+		//		if (isset($pref['fb_active']))
+		//		{
+		//			require_once(e_PLUGIN."featurebox/featurebox.php");
+		//		}
 		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
 		{
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
@@ -521,10 +549,10 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 
 if (!($news_total = $sql->db_Select_gen($query)))
 {  // No news items
-  require_once(HEADERF);
-  echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
-  require_once(FOOTERF);
-  exit;
+	require_once(HEADERF);
+	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
+	require_once(FOOTERF);
+	exit;
 }
 
 $newsAr = $sql -> db_getList();
@@ -542,19 +570,19 @@ switch($action)
 {
 	case 'item':
 		setNewsFrontMeta($newsAr[1]);
-	break;
+		break;
 	case 'list':
 		setNewsFrontMeta($newsAr[1], 'category');
-	break;
+		break;
 }
 
 /*if($action != "" && !is_numeric($action))
 {
-    if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_title'])
-	{
-	  define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
-	}
-	define("e_PAGETITLE", $p_title);
+if($action == "item" && $pref['meta_news_summary'] && $newsAr[1]['news_title'])
+{
+define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
+}
+define("e_PAGETITLE", $p_title);
 }*/
 
 $currentNewsAction = $action;
@@ -564,9 +592,9 @@ $action = $currentNewsAction;
 if(!$action)
 {
 	// Removed, themes should use {FEATUREBOX} shortcode instead
-//	if (isset($pref['fb_active'])){   // --->feature box
-//		require_once(e_PLUGIN."featurebox/featurebox.php");
-//	}
+	//	if (isset($pref['fb_active'])){   // --->feature box
+	//		require_once(e_PLUGIN."featurebox/featurebox.php");
+	//	}
 
 	if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
@@ -580,7 +608,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 
 	if($ALTERNATECLASS1)
 	{
-	  return TRUE;
+		return TRUE;
 	}
 
 	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
@@ -613,15 +641,23 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	require_once(HEADERF);
 	// Deprecated
 	// $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
-    
-    $sub_action = intval($sub_action);
-    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-    $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-    $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
-//    $text=''.$text.'<center>'.$nextprev.'</center>';
 
-    echo $text;
-    setNewsCache($cacheString, $text);
+	$sub_action = intval($sub_action);
+	//    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
+
+	$amount = ITEMVIEW;
+	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
+	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
+	$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+
+	$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+
+	//    $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	//    $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+	//    $text=''.$text.'<center>'.$nextprev.'</center>';
+
+	echo $text;
+	setNewsCache($cacheString, $text);
 }
 else
 {
@@ -648,23 +684,29 @@ else
 		$thispostday = strftime("%j", $news['news_datestamp']);
 		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader']))
 		{
-		  echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+			echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 		}
 		$newpostday = $thispostday;
 		$news['category_id'] = $news['news_category'];
 		if ($action == "item")
 		{
-		  unset($news['news_render_type']);
+			unset($news['news_render_type']);
 		}
 
 		$ix->render_newsitem($news, 'default', '', '', $param);
 		$i++;
 	}
 
-	$sub_action = intval($sub_action);
-	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
- 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+	$amount = ITEMVIEW;
+	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
+	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
+	$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+
+	echo $tp->parseTemplate("{NEXTPREV={$parms}}");
+
+	//	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
+	//	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	// 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 
 	$cache_data = ob_get_clean();
 	require_once(HEADERF);
@@ -734,7 +776,7 @@ function show_newsarchive($newsAr, $i = 1)
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list' && $pref['newsposts_archive'])
 {
-  show_newsarchive($newsAr,$interval);
+	show_newsarchive($newsAr,$interval);
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 
@@ -742,16 +784,16 @@ if ($action != "item") {
 	if (is_numeric($action)){
 		$action = "";
 	}
- //	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
- //	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
- //	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+	//	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
+	//	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	//	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
 
 if(is_dir("remotefile")) {
 	require_once(e_HANDLER."file_class.php");
 	$file = new e_file;
-//	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-//	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
+	//	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+	//	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
 	$crem = $file -> get_files(e_BASE."remotefile", '~Readme\.txt');
 	if(count($crem)) {
 		foreach($crem as $loadrem) {
@@ -790,7 +832,7 @@ function checkCache($cacheString){
 		define(e_PAGETITLE,$etitle);
 	}
 	if($ediz){
-    	define("META_DESCRIPTION",$ediz);
+		define("META_DESCRIPTION",$ediz);
 	}
 	if ($cache_data) {
 		return $cache_data;
