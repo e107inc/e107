@@ -39,7 +39,9 @@ class core_news_rewrite_url extends eUrlConfig
 	 */
 	public function create($route, $params = array(), $options = array())
 	{
-		$page = $params['page'] ? intval($params['page']) : '0';
+		
+		if('--FROM--' != $params['page']) $page = $params['page'] ? intval($params['page']) : '0';
+		else $page = '--FROM--';
 		if(!$route) $route = 'item/default';
 		
 		if(is_string($route)) $route = explode('/', $route, 2);
@@ -75,7 +77,7 @@ class core_news_rewrite_url extends eUrlConfig
 				break;
 				
 				case 'category':
-				case 'list':
+				case 'short':
 					if(!vartrue($params['id']))
 					{
 						$r[0] = '';
@@ -95,20 +97,6 @@ class core_news_rewrite_url extends eUrlConfig
 				case 'month':
 				case 'year':
 					$r[0] = $route[1].'-'.$params['id'];
-				break;
-				
-				case 'nextprev':
-					$route = $params['route'];
-					unset($params['route']);
-					// prevent dead loop
-					if($route != 'list/nextprev')
-					{
-						$tmp = $this->create($route, $params);
-						$r = $tmp[0];
-						$parm = $tmp[1];
-						$parm['page'] = '[FROM]';
-						unset($tmp);
-					}
 				break;
 				
 				default:
