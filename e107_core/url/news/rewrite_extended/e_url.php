@@ -33,6 +33,7 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				
 				## URL with ID and Title - no DB call, balanced performance!
 				'Category/<id:[\d]+>/<name:[\w\pL.\-\s]+>' => array('list/items', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_title' => 'name'), 'legacyQuery' => 'list.{id}.{page}'),
+				
 				## URL with ID only - best performance!
 				// 'Category/<id:[\d]+>' 		=> array('list/items', 'allowVars' => array('page'), 'legacyQuery' => 'list.{id}.{page}', 'mapVars' => array('category_id' => 'id')),
 				## URL with Title only - prettiest and slowest!
@@ -44,7 +45,9 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				// to be noted here - value 'name' is replaced by item id within the callback method; TODO replace news_title with news_sef field
 				// 'View/<name:[\w\pL.\-\s]+>' 			=> array('view/item', 'mapVars' => array('news_title' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// 'View/<id:[\d]+>' 					=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
-				
+
+				## URL with ID and Title - no DB call, balanced performance!
+				'Short/<id:[\d]+>/<name:[\w\pL.\-\s]+>' => array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_title' => 'name'), 'legacyQuery' => 'list.{id}.{page}'),				
 				
 				// less used after
 				'Brief/<id:[\d]+>' 			=> array('list/short', 'allowVars' => array('page'), 'legacyQuery' => 'cat.{id}.{page}', 'mapVars' => array('news_id' => 'id')),
