@@ -247,7 +247,7 @@ if ($action == 'cat' || $action == 'all')
 	}
 	$text .= "<div style='text-align:center;'><a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
 	ob_start();
-	$ns->tablerender($NEWSLISTTITLE, $text);
+	$ns->tablerender($NEWSLISTTITLE, $text, 'news');
 	$cache_data = ob_get_flush();
 	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
@@ -525,10 +525,11 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 		//		{
 		//			require_once(e_PLUGIN."featurebox/featurebox.php");
 		//		}
-		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
-		{
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-		}
+		// Removed, legacy
+		// if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
+		// {
+			// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+		// }
 
 	}
 
@@ -596,9 +597,10 @@ if(!$action)
 	//		require_once(e_PLUGIN."featurebox/featurebox.php");
 	//	}
 
-	if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
-		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-	}
+	// Removed, legacy
+	// if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+		// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+	// }
 }
 
 if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
@@ -676,6 +678,21 @@ else
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 	$param = array();
 	$param['current_action'] = $action;
+	
+	// NEW - news category title when in list
+	if($sub_action && vartrue($newsAr[1]['category_name']))
+	{
+		$category_name = $newsAr[1]['category_name'];
+		if(!isset($NEWSLISTCATTITLE))
+		{
+			$NEWSLISTCATTITLE = "<h1 class='newscatlist-title'>".$tp->toHTML($category_name,FALSE,'TITLE')."</h1>";
+		}
+		else
+		{
+			$NEWSLISTCATTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTCATTITLE);
+		}
+		echo $NEWSLISTCATTITLE;
+	}
 
 	$i= 1;
 	while(isset($newsAr[$i]) && $i <= $interval) {

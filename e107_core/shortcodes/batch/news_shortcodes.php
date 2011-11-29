@@ -260,16 +260,32 @@ class news_shortcodes extends e_shortcode
 		return ($this->news_item['news_summary']) ? $this->news_item['news_summary'].'<br />' : '';
 	}
 
-	// FIXME - REAL thumbnail - already possible on the fly
+	/**
+	 * Auto-thumbnailing now allowed.
+	 * New sc parameter standards
+	 * Exampes: 
+	 * - {NEWSTHUMBNAIL=link|w=200} render link with thumbnail max width 200px
+	 * - {NEWSTHUMBNAIL=|w=200} same as above
+	 * - {NEWSTHUMBNAIL=src|aw=200&ah=200} return thumb link only, size forced to 200px X 200px (smart thumbnailing close to how Facebook is doing it)
+	 * 
+	 * First parameter values: link|src|tag
+	 * Second parameter format: aw|w=xxx&ah|ah=xxx
+	 * 
+	 * @see eHelper::scDualParams()
+	 * @see eHelper::scParams()
+	 */
 	function sc_newsthumbnail($parm = '')
 	{
 		if(!$this->news_item['news_thumbnail'])
 		{
 			return '';
 		}
+		
+		$parms = eHelper::scDualParams($parm);
 		// We store SC path in DB now + BC
-		$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
-		switch($parm)
+		$_src = $src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
+		if($parms[2])  $src = e107::getParser()->thumbUrl($src, $parms[2]);
+		switch($parms[1])
 		{
 			case 'src':
 				return $src;
@@ -277,6 +293,10 @@ class news_shortcodes extends e_shortcode
 
 			case 'tag':
 				return "<img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+			break;
+
+			case 'img':
+				return "<a href='".$_src."' rel='external image'><img class='news_image' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
 			break;
 
 			default:
