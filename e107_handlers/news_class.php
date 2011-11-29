@@ -507,7 +507,8 @@ class news {
 	{
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
 		
-		if ($override_newsitem = e107::getSingleton('override', true)->override_check('render_newsitem')) {
+		if ($override_newsitem = e107::getSingleton('override', true)->override_check('render_newsitem')) 
+		{
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
 			{
@@ -587,8 +588,10 @@ class news {
 			if ($NEWS_TEMPLATE) {
 				$NEWS_PARSE = $NEWS_TEMPLATE;
 			} else {
-				if (function_exists("news_style")) {
-					$NEWS_PARSE = news_style($news);
+				if (function_exists("news_style")) 
+				{
+					$action = varset($param['current_action'], 'default');
+					$NEWS_PARSE = news_style($news, $action, $param);
 				} else {
 					$NEWS_PARSE = $NEWSSTYLE;
 				}

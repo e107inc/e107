@@ -157,7 +157,9 @@ if ($action == 'cat' || $action == 'all')
 		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
 	}
 
+	$currentNewsAction = $action;
 	require_once(HEADERF);
+	$action = $currentNewsAction;
 
 	if(!$NEWSLISTSTYLE)
 	{
@@ -324,7 +326,9 @@ if ($action == 'extend')
 			$news['news_extended'].="<br /><br />";
 		}*/
 
+		$currentNewsAction = $action;
 		require_once(HEADERF);
+		$action = $currentNewsAction;
 
 		$param = array();
 		$param['current_action'] = $action;
@@ -553,7 +557,10 @@ switch($action)
 	define("e_PAGETITLE", $p_title);
 }*/
 
+$currentNewsAction = $action;
 require_once(HEADERF);
+$action = $currentNewsAction;
+
 if(!$action)
 {
 	// Removed, themes should use {FEATUREBOX} shortcode instead
@@ -585,7 +592,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	foreach($newsAr as $news) {
 
 		if(is_array($ALTERNATECLASSES)) {
-			$newsdata[$loop] .= "<div class='{$ALTERNATECLASSES[0]}'>".$ix->render_newsitem($news, "return")."</div>";
+			$newsdata[$loop] .= "<div class='{$ALTERNATECLASSES[0]}'>".$ix->render_newsitem($news, "return", '', '', $param)."</div>";
 			$ALTERNATECLASSES = array_reverse($ALTERNATECLASSES);
 		} else {
 			$newsdata[$loop] .= $ix->render_newsitem($news, 'return', '', '', $param);
