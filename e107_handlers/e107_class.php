@@ -2013,29 +2013,82 @@ class e107
 	 * @param string $type	array type _SESSION, _GET etc.
 	 * @return
 	 */
-	public static function filter_request($input,$key,$type)
+	public static function filter_request($input,$key,$type,$base64=FALSE)
 	{
+		if(is_string($input) && trim($input)=="")
+		{
+			return;
+		}
+		
 		if (is_array($input))
 		{
 			return array_walk($input, array('self', 'filter_request'), $type);
 		}
 
+				
+		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
+		{
+			if($type == "_POST" && ($base64 == FALSE))
+			{
+				$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
+			}
+		
+			$regex = "/(document\.location|document\.write|base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
+			if(preg_match($regex,$input))
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				exit();
+			}
+			
+			if(preg_match("/system *?\((.*);.*\)/i",$input))
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				exit();	
+			}
+			
+			$regex = "/(wget |curl -o |fetch |lwp-download|onmouse)/i";
+			if(preg_match($regex,$input))
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				exit();
+			}
+		
+		}
+		
 		if($type == "_SERVER")
 		{
-			if(($key == "QUERY_STRING") && strpos(strtolower($input),"=http")!==FALSE)
+			if(($key == "QUERY_STRING") && (
+				strpos(strtolower($input),"../../")!==FALSE 
+				|| strpos(strtolower($input),"=http")!==FALSE 
+				|| strpos(strtolower($input),strtolower("http%3A%2F%2F"))!==FALSE
+				|| strpos(strtolower($input),"php:")!==FALSE  
+				|| strpos(strtolower($input),"data:")!==FALSE
+				|| strpos(strtolower($input),strtolower("%3Cscript"))!==FALSE
+				))
 			{
+	
+				header('HTTP/1.0 400 Bad Request', true, 400);
 				exit();
 			}
-
+						
 			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 			{
-				exit();
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				exit();	
 			}
+			
+							
 		}
-
+			
 		if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
 		{
+			header('HTTP/1.0 400 Bad Request', true, 400);
 			exit();
+		} 
+		
+		if($base64 != TRUE)
+		{
+			self::filter_request(base64_decode($input),$key,$type,TRUE);
 		}
 	}
 

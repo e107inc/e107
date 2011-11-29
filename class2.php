@@ -724,6 +724,7 @@ if (!class_exists('e107table', false))
 
 		function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
+		
 			/*
 			# Render style table
 			# - parameter #1:                string $caption, caption text
@@ -1559,6 +1560,12 @@ function init_session()
 		$currentUser['user_realname'] = $user->get('user_login'); // Used by force_userupdate
 		$e107->currentUser = &$currentUser;
 
+		// if(defined('SETTHEME')) //override - within e_module for example. 
+		// {
+			// $_POST['sitetheme'] = SETTHEME;
+			// $_POST['settheme'] = 1;
+		// }
+
 		// XXX could go to e_user class as well
 		if ($user->checkClass(e107::getPref('allow_theme_select', false), false))
 		{	// User can set own theme
@@ -1595,9 +1602,11 @@ function init_session()
    				->save(false);
 		}
 		// XXX could go to e_user class as well END
-
-		define('USERTHEME', ($user->getPref('sitetheme') && file_exists(e_THEME.$user->getPref('sitetheme')."/theme.php") ? $user->getPref('sitetheme') : false));
-
+		if(!defined("USERTHEME"	))
+		{
+			define('USERTHEME', ($user->getPref('sitetheme') && file_exists(e_THEME.$user->getPref('sitetheme')."/theme.php") ? $user->getPref('sitetheme') : false));				
+		}
+		
 		$user_pref = $user->getPref();
 	}
 
