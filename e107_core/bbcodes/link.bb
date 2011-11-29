@@ -1,4 +1,5 @@
 // $Id$
+//<?
 global $pref;
 
 /**
@@ -23,8 +24,8 @@ global $pref;
 	[link=external=http://mysite.com]My text[/link]
 */
 
-
-	$parm = trim($parm);
+	$tp = e107::getParser();
+	$parm =  $tp->dataFilter(trim($parm),'link');
 
 	/* Fix for people using link=external= */
 	if(strpos($parm,"external=") !== FALSE)

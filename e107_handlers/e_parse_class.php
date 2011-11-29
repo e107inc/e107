@@ -564,12 +564,14 @@ class e_parse
 	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
 	 *
 	 */
-	public function dataFilter($data)
+	public function dataFilter($data,$mode='bbcode')
 	{
 		$ans = '';
-		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script', '<frameset', '<html', '<iframe',
-					'<style', '<layer', '<link', '<ilayer', '<meta', '<object', '<plaintext', 'javascript:', 'vbscript:');
-
+		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
+						 '<frameset', '<html', '<iframe', '<style', '<layer', '<link',
+						 '<ilayer', '<meta', '<object', '<plaintext', 'javascript:',
+						 'vbscript:','data:text/html');
+		
 		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
 		foreach ($ret as $s)
@@ -605,6 +607,12 @@ class e_parse
 			$s = preg_replace_callback('#base64([,\(])(.+?)([\)\'\"])#mis', array($this, 'proc64'), $s);
 			$ans .= $s;
 		}
+		
+		if($mode == 'link' && count($vl))
+		{
+			return "#sanitized";
+		}
+		
 		return $ans;
 	}
 
