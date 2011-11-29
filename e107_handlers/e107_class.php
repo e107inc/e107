@@ -888,7 +888,22 @@ class e107
 	 */
 	public static function getThemePref($pref_name = '', $default = null, $index = null)
 	{
-		return e107::getConfig()->getPref('sitetheme_pref/'.$pref_name, $default, $index);
+		if($pref_name) $pref_name = '/'.$pref_name;
+		return e107::getConfig()->getPref('sitetheme_pref'.$pref_name, $default, $index);
+	}
+	
+	/**
+	 * Set current theme preference. $pref_name is parsed,
+	 * so that $pref_name = 'x/y/z' will set value pref_data[x][y][z]
+	 * 
+	 * @param string|array $pref_name
+	 * @param mixed $pref_value
+	 * @return e_pref
+	 */
+	public static function setThemePref($pref_name, $pref_value = null)
+	{
+		if(is_array($pref_name)) return e107::getConfig()->set('sitetheme_pref', $pref_name);
+		return e107::getConfig()->updatePref('sitetheme_pref/'.$pref_name, $pref_value, false);
 	}
 
 	/**
@@ -1765,16 +1780,16 @@ class e107
 	 *
 	 * Examples:
 	 * <code><?php
-	 * 	// import defeinitions from /e107_plugins/forum/languages/[CurrentLanguage]/lan_forum.php</code>
+	 * 	// import defeinitions from /e107_plugins/forum/languages/[CurrentLanguage]/lan_forum.php
 	 * 	e107::plugLan('forum', 'lan_forum');
 	 *
-	 * 	// import defeinitions from /e107_plugins/featurebox/languages/[CurrentLanguage]_admin_featurebox.php</code>
+	 * 	// import defeinitions from /e107_plugins/featurebox/languages/[CurrentLanguage]_admin_featurebox.php
 	 * 	e107::plugLan('featurebox', 'admin_featurebox', true);
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
 	 * 	e107::plugLan('myplug');
 	 *
-	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/admin/common.php
 	 * 	e107::plugLan('myplug', 'admin/common');
 	 * </code>
 	 *
@@ -1794,6 +1809,50 @@ class e107
 		else $fname = e_LANGUAGE;
 
 		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
+
+		e107::setRegistry($cstring, true);
+		self::includeLan($path, false);
+	}
+	
+	/**
+	 * Simplify importing of theme Language files (following e107 plugin structure standards).
+	 * All inputs are sanitized.
+	 *
+	 * Examples:
+	 * <code><?php
+	 * 	// import defeinitions from /e107_themes/[CurrentTheme]/languages/[CurrentLanguage]/lan.php
+	 * 	e107::themeLan('lan');
+	 *
+	 * 	// import defeinitions from /e107_themes/[currentTheme]/languages/[CurrentLanguage].php
+	 * 	e107::themeLan();
+	 *
+	 * 	// import defeinitions from /e107_themes/[currentTheme]/languages/[CurrentLanguage]_lan.php
+	 * 	e107::themeLan('lan', null, true);
+	 *
+	 * 	// import defeinitions from /e107_themes/[currentTheme]/languages/[CurrentLanguage]/admin/lan.php
+	 * 	e107::themeLan('admin/lan');
+	 * 
+	 * 	// import defeinitions from /e107_themes/some_theme/languages/[CurrentLanguage].php
+	 * 	e107::themeLan('', 'some_theme');
+	 * </code>
+	 *
+	 * @param string $fname filename without the extension part (e.g. 'common' for common.php)
+	 * @param string $theme theme name, if null current theme will be used
+	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
+	 * @return void
+	 */
+	public static function themeLan($fname = '', $theme = null, $flat = false)
+	{
+		if(null === $theme) $theme = THEME.'/languages/';
+		else $theme = e_THEME.preg_replace('#[^\w/]#', '', $theme).'/languages/';
+		
+		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
+		if(e107::getRegistry($cstring)) return;
+
+		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		else $fname = e_LANGUAGE;
+
+		$path = $theme.$fname.'.php';
 
 		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
