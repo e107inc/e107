@@ -49,8 +49,9 @@ class core_news_url extends eUrlConfig
 		if(isset($params['category_name']) && !empty($params['category_name'])) $params['category'] = $params['category_name'];
 		
 		$url = 'news.php?';
-		$page = $params['page'] ? intval($params['page']) : '0';
-		
+		if('--FROM--' != $params['page']) $page = $params['page'] ? intval($params['page']) : '0';
+		else $page = '--FROM--';
+
 		if($route[0] == 'view')
 		{
 			switch ($route[1]) 
@@ -70,7 +71,7 @@ class core_news_url extends eUrlConfig
 			{
 				case '':
 				case 'items':
-					if($page) $url = 'news.php';
+					if(!$page) $url = 'news.php';
 					else $url .= 'default.0.'.$page; //item.* view is deprecated
 				break;
 				
