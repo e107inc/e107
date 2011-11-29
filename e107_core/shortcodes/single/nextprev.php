@@ -116,15 +116,16 @@ function nextprev_shortcode($parm = '')
 				$first_page = 1;
 				$next_page = $current_page + 1;
 				$prev_page = $current_page - 1;
-				$total_pages = $total_items;
+				$total_pages = $last_page = $total_items;
 				$index_add = 1;
 			break;
 
 			default:
 				$total_pages = ceil($total_items/$perpage);
+				$last_page = ceil($total_pages*$perpage)-$perpage;
 				$current_page = ($current_start/$perpage) + 1;
 				$next_page = $current_page*$perpage;
-				$prev_page = $current_start/$perpage;
+				$prev_page = $current_start-$perpage;
 				$first_page = 0;
 				$index_add = 0;
 			break;
@@ -153,7 +154,7 @@ function nextprev_shortcode($parm = '')
 		$pagetitle = explode('|',$parm['pagetitle']);
 
 		// navigation number settings
-		$navcount = abs(intval(varset($parm['navcount'], 10))); // prevent infinite loop!
+		$navcount = abs(intval(vartrue($parm['navcount'], 10))); // prevent infinite loop!
 		if($navcount < 4) $navcount = 4;
 		$navmid = floor($navcount/2);
 
@@ -276,7 +277,7 @@ function nextprev_shortcode($parm = '')
 
 			if($show_last && !empty($tmpl[$tprefix.'nav_last']))
 			{
-				$e_vars->url = str_replace('[FROM]', $total_pages, $url);//$last_page
+				$e_vars->url = str_replace('[FROM]', $last_page, $url);//$last_page
 				$e_vars->label = LAN_NP_LAST;
 				$e_vars->url_label = LAN_NP_URLLAST;
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_last'], $e_vars);
