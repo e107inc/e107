@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ * 
+ * Search routing config
+ */
 class core_search_rewrite_url extends eUrlConfig
 {
 	public function config()

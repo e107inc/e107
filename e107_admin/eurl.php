@@ -89,11 +89,13 @@ class eurl_admin_ui extends e_admin_controller_ui
 		{
 			$labels = array();
 			$obj = eDispatcher::getConfigObject($module, $location); 
-			if($obj) 
-			{
-				$admin = $obj->admin();
-				$labels = vartrue($admin['labels'], array());
-			} 
+			if(!$obj) continue;
+			$config = $obj->config();
+			if(!$config || !vartrue($config['config']['allowMain'])) continue;
+			$admin = $obj->admin();
+			$labels = vartrue($admin['labels'], array());
+			
+			
 			$this->prefs['url_main_module']['writeParms'][$module] = vartrue($section['name'], eHelper::labelize($module));
 		}
 		

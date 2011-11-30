@@ -1,7 +1,12 @@
 <?php
-
 /**
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * 
+ * $Id$
+ * 
  * Default config - create ONLY - old legacy URLs
+ * All possible config options added here - to be used as a reference.
+ * A good programming practice is to remove all non-used options.
  */
 class core_news_url extends eUrlConfig
 {
@@ -9,17 +14,47 @@ class core_news_url extends eUrlConfig
 	{
 		return array(
 			'config' => array(
+				'allowMain' 	=> false,	// [optional] default false; disallow this module (while using this config) to be set as site main URL namespace
 				'noSingleEntry' => true,	// [optional] default false; disallow this module to be shown via single entry point when this config is used
 				'legacy' 		=> '{e_BASE}news.php', // [optional] default empty; if it's a legacy module (no single entry point support) - URL to the entry point script
 				'format'		=> 'get', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
 				'selfParse' 	=> true,	// [optional] default false; use only this->parse() method, no core routine URL parsing
 				'selfCreate' 	=> true,	// [optional] default false; use only this->create() method, no core routine URL creating
-				'defaultRoute'	=> '', 		// [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
+				'defaultRoute'	=> 'list/new',// [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
 				'errorRoute'	=> '', 		// [optional] default empty; route (no leading module) used when module is found but no inner route is matched, leave empty to force error 404 page
-				'urlSuffix' 	=> '',		// [optional] default empty; string to append to the URL (e.g. .html)
+				'urlSuffix' 	=> '',		// [optional] default empty; string to append to the URL (e.g. .html), not used when format is 'get' or legacy non-empty
 			),
 			
-			'rules' => array() // rule set array
+			'rules' => array(), // rule set array - can't be used with format 'get' and noSingleEntry true
+			
+			### [optional] vars mapping (create URL routine), override per rule is allowed
+			### Keys of this array will be used as a map for finding values from the provided parameters array.
+			### Those values will be assigned to new keys - corresponding values of mapVars array
+			### It gives extremely flexibility when used with allowVars. For example we pass $news item array as 
+			### it's retrieved from the DB, with no modifications. This gives us the freedom to create any variations of news
+			### URLs using the DB data with a single line URL rule. Another aspect of this feature is the simplified code
+			### for URL assembling - we just do eRouter::create($theRoute, $newsDbArray)
+			### Not used when in selfCreate mod (create url)
+			'mapVars' 		=> array(  
+				//'news_id' => 'id', 
+				//'news_sef' => 'name', 
+			),
+			
+			### [optional] allowed vars definition (create URL routine), override per rule is allowed
+			### This numerical array serves as a filter for passed vars when creating URLs
+			### Everything outside this scope is ignored while assembling URLs. Exception are route variables.
+			### For example: when <id:[\d]+> is present in the route string, there is no need to extra allow 'id'
+			### To disallow everything but route variables, set allowVars to false
+			### When format is get, false value will disallow everything (no params) and default preserved variables
+			### will be extracted from mapVars (if available)
+			### Default value is empty array
+			### Not used when in selfCreate mod (create url)
+			'allowVars' 		=> array(/*'page', 'name'*/),
+			
+			### Those are regex templates, allowing us to avoid the repeating regex patterns writing in your rules.
+			### varTemplates are merged with the core predefined templates. Full list with core regex templates and examples can be found
+			### in rewrite_extended news URL config
+			'varTemplates' => array(/*'testIt' => '[\d]+'*/),
 		);
 	}
 	
@@ -87,20 +122,9 @@ class core_news_url extends eUrlConfig
 				case 'day':
 				case 'month':
 				case 'year':
-					$url .= $route[1].'-'.$params['id'];
-				break;
-				
-				case 'nextprev':
-					$route = $params['route'];
-					unset($params['route']);
-					if($route != 'list/nextprev')
-					{
-						$params['page'] = '[FROM]';
-						$url = $this->create($route, $params);
-						unset($tmp);
-					}
-				break;
-				
+					if($page) $page = '.'.$page;
+					$url .= $route[1].'.'.$params['id'].$page;
+				break;	
 				
 				default:
 					$url = 'news.php';
