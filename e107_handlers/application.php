@@ -724,9 +724,10 @@ class eRouter
 	protected function _init()
 	{
 		// Gather all rules, add-on info, cache, module for main namespace etc 
-		$this->setMainModule(e107::getPref('url_main_module', ''));
 		$this->_loadConfig()
 			->setAliases();
+		// we need config first as setter does some checks if module can be set as main
+		$this->setMainModule(e107::getPref('url_main_module', ''));
 	}
 	
 	/**
@@ -736,14 +737,14 @@ class eRouter
 	 */
 	public function setMainModule($module)
 	{
-		if(!$module) return $this;
-		
+		if(!$module || !$this->isModule($module) || !$this->getConfigValue($module, 'allowMain')) return $this;
 		$this->_mainNsModule = $module;
 		return $this;
 	}
 	
 	/**
 	 * Get main url namespace module
+	 * @return string
 	 */
 	public function getMainModule()
 	{
@@ -752,6 +753,8 @@ class eRouter
 	
 	/**
 	 * Check if given module is the main module
+	 * @param string $module
+	 * @return boolean
 	 */
 	public function isMainModule($module)
 	{
@@ -1170,6 +1173,16 @@ class eRouter
 	}
 	
 	/**
+	 * Retrieve single value from a module global configuration array
+	 * @param string $module system module
+	 * @return array configuration
+	 */
+	public function getConfigValue($module, $key, $default = null)
+	{
+		return isset($this->_globalConfig[$module]) && isset($this->_globalConfig[$module][$key]) ? $this->_globalConfig[$module][$key] : $default;	
+	}
+	
+	/**
 	 * Get system name of a module by its alias
 	 * Returns null if $alias is not an existing alias
 	 * @param string $alias
@@ -1462,7 +1475,7 @@ class eRouter
 			if(vartrue($config['selfParse']))
 			{
 				// controller/action[/additional/parms]
-				
+				if(vartrue($config['urlSuffix'])) $rawPathInfo = $this->removeUrlSuffix($rawPathInfo, $config['urlSuffix']);
 				$route = $this->configCallback($module, 'parse', array($rawPathInfo, $_GET, $request, $this, $config), $config['location']);
 			}
 			// default module route
@@ -1495,12 +1508,12 @@ class eRouter
 							$vars->action = $request->getAction();
 							if($rule->allowVars)
 							{
-								foreach ($rule->allowVars as $key => $value) 
+								foreach ($rule->allowVars as $key) 
 								{
 									if(isset($_GET[$key]) && !$request->isRequestParam($key))
 									{
 										// sanitize
-										$vars->$key = preg_replace('/[^\d\w]/', '', $_GET[$key]); 
+										$vars->$key = preg_replace('/[^\d\w\-]/', '', $_GET[$key]); 
 									}
 								}
 							}
@@ -1722,9 +1735,15 @@ class eRouter
 		
 		$format = isset($config['format']) && $config['format'] ? $config['format'] : self::FORMAT_GET;
 		
+		$urlSuffix = '';
+		
 		// Fix base url for legacy links
 		if($config['noSingleEntry']) $base = $options['full'] ? SITEURL : e_HTTP;
-		
+		elseif(self::FORMAT_GET !== $config['format'])
+		{
+			$urlSuffix = $this->urlSuffix;
+			if(isset($config['urlSuffix'])) $urlSuffix = $config['urlSuffix'];
+		} 
 		// TODO - main module - don't include it in the return URL
 		
 		// Create by config callback
@@ -1756,12 +1775,11 @@ class eRouter
 			}
 			if($params) 
 			{
-
 				$params = $this->createPathInfo($params, $options);
-				return $base.implode('/', $route).'?'.$params.$anc;
+				return $base.implode('/', $route).$urlSuffix.'?'.$params.$anc;
 			}
-			
-			return $base.implode('/', $route).$anc;
+			if(!$route) $urlSuffix = '';
+			return $base.implode('/', $route).$urlSuffix.$anc;
 		}
 		
 		
@@ -1798,19 +1816,25 @@ class eRouter
 				}	
 			}
 			
-			if($config['allowVars'])
+			// false means - no vars are allowed, nothing to preserve here
+			if($config['allowVars'] === false) $params = array();
+			// default empty array value - try to guess what's allowed - mapVars is the best possible candidate
+			elseif(empty($config['allowVars']) && !empty($config['mapVars'])) $params = array_unique(array_values($config['mapVars']));
+			// disallow everything but valid URL parameters
+			if(!empty($config['allowVars']))
 			{
 				$copy = $params;
 				$params = array();
 				foreach ($config['allowVars'] as $key)
 				{
-					$params[$key] = $copy[$key];
+					if(isset($copy[$key])) $params[$key] = $copy[$key];
 				}
 				unset($copy);
 			}
 			
 			if($format === self::FORMAT_GET)
 			{
+				$urlSuffix = '';
 				$copy = $params;
 				$params = array();
 				$params[$this->routeVar] = implode('/', $route);
@@ -1822,10 +1846,11 @@ class eRouter
 				$route = array();
 			}
 			$params = $this->createPathInfo($params, $options);
-			return $base.implode('/', $route).'?'.$params.$anc;
+			if(!$route) $urlSuffix = '';
+			return $base.implode('/', $route).$urlSuffix.'?'.$params.$anc;
 		}
-		
-		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.implode('/', $route).$anc : $base.implode('/', $route).$anc;
+		if(!$route) $urlSuffix = '';
+		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.implode('/', $route).$anc : $base.implode('/', $route).$urlSuffix.$anc;
 	}
 	
 	/**
@@ -1873,7 +1898,7 @@ class eRouter
 	/**
 	 * Parses a path info into URL segments
 	 * Be sure to not use non-unique chars for equal and ampersand signs, or you'll break your URLs
-	 *
+	 * XXX - maybe we can switch to http_build_query(), should be able to do everything we need in a much better way
 	 * @param eRequest $request
 	 * @param string $pathInfo path info
 	 * @param string $equal
@@ -2021,6 +2046,39 @@ class eUrlRule
 	 * @var string
 	 */
 	public $legacyQuery;
+	
+	/**
+	 * Core regex templates
+	 * Example usage - route <var:{number}> will result in 
+	 * @var array
+	 */
+	public $regexTemplates = array(
+		'az'					=> '[A-Za-z]+', // NOTE - it won't match non-latin word characters!
+		'alphanum'  			=> '[\w\pL]+',
+		'sefsecure' 			=> '[\w\pL.\-\s!,]+',
+		'secure' 				=> '[^\/\'"\\<%]+',
+		'number' 				=> '[\d]+',
+		'username' 				=> '[\w\pL.\-\s!,]+', // TODO - should equal to username pattern, sync it
+		'azOptional'			=> '[A-Za-z]{0,}',
+		'alphanumOptional'  	=> '[\w\pL]{0,}',
+		'sefsecureOptional' 	=> '[\w\pL.\-\s!,]{0,}',
+		'secureOptional' 		=> '[^\/\'"\\<%]{0,}',
+		'numberOptional' 		=> '[\d]{0,}',
+		'usernameOptional' 		=> '[\w\pL.\-\s!,]{0,}', // TODO - should equal to username pattern, sync it
+	);
+	
+	/**
+	 * User defined regex templates
+	 * @var array
+	 */
+	public $varTemplates = array(); 
+	
+	/**
+	 * All regex templates
+	 * @var e_var
+	 */
+	protected $_regexTemplates;
+	
 
 	/**
 	 * Constructor.
@@ -2034,6 +2092,7 @@ class eUrlRule
 			if ($fromCache && !$pattern)
 			{
 				$this->setData($route);
+				$this->_regexTemplates = new e_vars($this->regexTemplates);
 				return;
 			}
 			
@@ -2052,13 +2111,26 @@ class eUrlRule
 		{
 			foreach ($matches2[1] as $name) $this->references[$name] = "<$name>";
 		}
+		
+		if($this->varTemplates)
+		{
+			// don't override core regex templates
+			$this->regexTemplates = array_merge($this->varTemplates, $this->regexTemplates); 
+			$this->varTemplates = array();
+		}
+		$this->_regexTemplates = new e_vars($this->regexTemplates);
 
 		if (preg_match_all('/<(\w+):?(.*?)?>/', $pattern, $matches))
 		{
 			$tokens = array_combine($matches[1], $matches[2]);
+			$tp = e107::getParser();
 			foreach ($tokens as $name => $value)
 			{
 				if ($value === '') $value = '[^\/]+';
+				elseif($value[0] == '{')
+				{
+					$value = $tp->simpleParse($value, $this->_regexTemplates, '[^\/]+');
+				}
 				$tr["<$name>"] = "(?P<$name>$value)";
 				if (isset($this->references[$name])) $tr2["<$name>"] = $tr["<$name>"];
 				else $this->params[$name] = $value;
@@ -2127,6 +2199,7 @@ class eUrlRule
 			else return false;
 		}
 		
+		// map vars first
 		foreach ($this->mapVars as $srcKey => $dstKey)
 		{
 			if (isset($params[$srcKey])/* && !isset($params[$dstKey])*/)
@@ -2136,17 +2209,19 @@ class eUrlRule
 			}
 		}	
 		
-		// disallow everything but valid URL parameters
+		// false means - no vars are allowed, preserve only route vars
 		if($this->allowVars === false) $this->allowVars = array_keys($this->params);
+		// empty array (default) - everything is allowed
 		
-		if($this->allowVars)
+		// disallow everything but valid URL parameters
+		if(!empty($this->allowVars))
 		{
 			$copy = $params;
 			$params = array();
-			$this->allowVars = array_merge($this->allowVars, array_keys($this->params));
+			$this->allowVars = array_unique(array_merge($this->allowVars, array_keys($this->params)));
 			foreach ($this->allowVars as $key)
 			{
-				$params[$key] = $copy[$key];
+				if(isset($copy[$key])) $params[$key] = $copy[$key];
 			}
 			unset($copy);
 		}
@@ -2161,7 +2236,7 @@ class eUrlRule
 		}
 
 		foreach ($this->params as $key => $value) if (!isset($params[$key])) return false;
-
+		
 		foreach ($this->params as $key => $value)
 		{
 			$tr["<$key>"] = $params[$key];
@@ -2225,7 +2300,6 @@ class eUrlRule
 			{
 				$manager->parsePathInfo($request, ltrim(substr($pathInfo, strlen($matches[0])), '/'));
 			}
-			
 			return (null !== $this->routePattern ? strtr($this->route, $tr) : $this->route);
 		}
 		else return false;

@@ -1,7 +1,10 @@
 <?php
-
 /**
- * Mod rewrite & SEF URLs support, manually (rules-less) created/parsed urls
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * 
+ * $Id$
+ * 
+ * Mod rewrite & SEF URLs support, example of manually (rules-less) created/parsed urls
  */
 class core_news_rewrite_url extends eUrlConfig
 {
@@ -9,17 +12,15 @@ class core_news_rewrite_url extends eUrlConfig
 	{
 		return array(
 			'config' => array(
+				'allowMain' 	=> true,
 				'noSingleEntry' => false,	// [optional] default false; disallow this module to be shown via single entry point when this config is used
 				'legacy' 		=> '{e_BASE}news.php', // [optional] default empty; if it's a legacy module (no single entry point support) - URL to the entry point script
 				'format'		=> 'path', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
 				'selfParse' 	=> true,	// [optional] default false; use only this->parse() method, no core routine URL parsing
 				'selfCreate' 	=> true,	// [optional] default false; use only this->create() method, no core routine URL creating
 				'defaultRoute'	=> 'list/items', // [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
-				'errorRoute'	=> '', 		// [optional] default empty; route (no leading module) used when module is found but no inner route is matched, leave empty to force error 404 page
-				'urlSuffix' 	=> '',		// [optional] default empty; string to append to the URL (e.g. .html)
+				'urlSuffix' 	=> '.html',		// [optional] default empty; string to append to the URL (e.g. .html)
 			),
-			
-			'rules' => array() // rule set array
 		);
 	}
 	
@@ -42,7 +43,7 @@ class core_news_rewrite_url extends eUrlConfig
 		
 		if('--FROM--' != $params['page']) $page = $params['page'] ? intval($params['page']) : '0';
 		else $page = '--FROM--';
-		if(!$route) $route = 'item/default';
+		if(!$route) $route = 'list/items';
 		
 		if(is_string($route)) $route = explode('/', $route, 2);
 		$r = array();
@@ -88,7 +89,7 @@ class core_news_rewrite_url extends eUrlConfig
 						// news/Category/Category-Name?page=xxx
 						// news/Short/Category-Name?page=xxx
 						$r[0] = $route[1] == 'category' ? 'Short' : 'Category';
-						$r[1] = $params['id'];
+						$r[1] = $params['name'] ? $params['name'] : $params['id'];
 						if($page) $parm = array('page' => $page);  
 					}
 				break;
@@ -96,7 +97,8 @@ class core_news_rewrite_url extends eUrlConfig
 				case 'day':
 				case 'month':
 				case 'year':
-					$r[0] = $route[1].'-'.$params['id'];
+					$r = array($route[1], intval($params['id']));
+					if($page) $parm = array('page' => $page);
 				break;
 				
 				default:
@@ -179,7 +181,8 @@ class core_news_rewrite_url extends eUrlConfig
 				if(!vartrue($parts[1])) $id = 0;
 				else $id = intval($parts[1]);
 				
-				$this->legacyQueryString = 'day-'.$id;
+				$this->legacyQueryString = 'day.'.$id.'.'.$page;
+				return 'list/day';
 			break;
 			
 			# could be pref or LAN constant
@@ -187,15 +190,17 @@ class core_news_rewrite_url extends eUrlConfig
 				if(!vartrue($parts[1])) $id = 0;
 				else $id = intval($parts[1]);
 				
-				$this->legacyQueryString = 'month-'.$id;
+				$this->legacyQueryString = 'month.'.$id.'.'.$page;
+				return 'list/month';
 			break;
 			
-			# could be pref or LAN constant
+			# could be pref or LAN constant - not supported yet
 			case 'year':
 				if(!vartrue($parts[1])) $id = 0;
 				else $id = intval($parts[1]);
 				
-				$this->legacyQueryString = 'year-'.$id;
+				$this->legacyQueryString = 'year.'.$id.'.'.$page;
+				//return 'list/year';
 			break;
 			
 			# force not found

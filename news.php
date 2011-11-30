@@ -105,6 +105,12 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 				$newsRoute = 'list/short';
 			break;
 			
+			case 'day':	
+			case 'month':
+				$newsUrlparms['id'] = $sub_action;
+				$newsRoute = 'list/'.$action;
+			break;
+			
 			default:
 				$newsRoute = 'list/items';
 			break;
@@ -680,9 +686,10 @@ else
 	$param['current_action'] = $action;
 	
 	// NEW - news category title when in list
-	if($sub_action && vartrue($newsAr[1]['category_name']))
+	if($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name']))
 	{
-		$category_name = $newsAr[1]['category_name'];
+		// we know category name - pass it to the nexprev url
+		$category_name = $newsUrlparms['name'] = $newsAr[1]['category_name'];
 		if(!isset($NEWSLISTCATTITLE))
 		{
 			$NEWSLISTCATTITLE = "<h1 class='newscatlist-title'>".$tp->toHTML($category_name,FALSE,'TITLE')."</h1>";
@@ -717,6 +724,8 @@ else
 	$amount = ITEMVIEW;
 	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
+	// Example of passing route data instead building the URL outside the shortcode - for a reference only
+	// $url = rawurlencode('url::'.$newsRoute.'::'.http_build_query($newsUrlparms, null, '&'));
 	$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
 
 	echo $tp->parseTemplate("{NEXTPREV={$parms}}");

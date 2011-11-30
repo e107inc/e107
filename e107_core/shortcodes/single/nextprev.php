@@ -134,7 +134,16 @@ function nextprev_shortcode($parm = '')
 		if($total_pages <= 1) {	return ''; }
 
 		// urldecoded once by parse_str()
-		$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
+		if(substr($parm['url'], 0, 5) == 'url::')
+		{
+			// New - use URL assembling engine
+			// Format is: url::route::params::options
+			// Example: url::news/list/category::id=xxx&name=yyy&page=--PAGE--::full=1
+			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
+			$urlParms = explode('::', $parm['url']);
+			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
+		}
+		else $url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
 
 		// Simple parser vars
 		$e_vars = new e_vars(array(

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ * 
+ * System routing config
+ */
 class core_system_rewrite_url extends eUrlConfig
 {
 	public function config()
@@ -7,14 +12,17 @@ class core_system_rewrite_url extends eUrlConfig
 		return array(
 		
 			'config' => array(
-				'format'		=> 'path', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
-				'defaultRoute'	=> 'error/notfound', // [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
+				'allowMain' 	=> true,
+				'format'		=> 'path', 	
+				'defaultRoute'	=> 'error/notfound', 
+				'errorRoute'	=> 'error/notfound', 
 
 			),
 			
 			// rule set array
 			'rules' => array(
-				'error404'			=> 'error/notfound',
+				'error404'		=> 'error/notfound',
+				'hello'			=> 'error/hello-world',
 			) 
 		);
 	}
