@@ -16,11 +16,13 @@ if(false === $cached)
 	$sc_style['NEWS_CATEGORY_NEWS_COUNT']['post'] = ')';
 
 	$template = array();
+	$template['start'] = '';
 	$template['item'] = '
-		<img src="'.THEME_ABS.'images/bullet2.gif" alt="bullet" class="icon" /> <a class="e-menu-link newscats'.$active.'" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE} {NEWS_CATEGORY_NEWS_COUNT}</a>
+		<img src="'.THEME_ABS.'images/bullet2.gif" alt="bullet" class="icon" /> <a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE} {NEWS_CATEGORY_NEWS_COUNT}</a>
 	';
 	$template['separator'] = '<br />';
-
+	$template['end'] = '';
+	
 	//always return
 	$parms['return'] = true;
 
