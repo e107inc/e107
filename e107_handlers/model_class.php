@@ -1357,7 +1357,7 @@ class e_model extends e_object
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
 		if($qry)
 		{
-			$res = $sql->db_Select_gen($qry);
+			$res = $sql->db_Select_gen($qry, $this->getParam('db_debug') ? true : false);
 		}
 		else
 		{
@@ -2350,7 +2350,8 @@ class e_front_model extends e_model
 		if($this->_db_errno)
 		{
 			$this->addMessageError('SQL Select Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			// already done by the parent
+			//$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
 		return $this;
 	}
@@ -2956,7 +2957,7 @@ class e_tree_model extends e_front_model
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
-			if($sql->db_Select_gen($this->getParam('db_query')))
+			if($sql->db_Select_gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				while($tmp = $sql->db_Fetch())

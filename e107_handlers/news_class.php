@@ -958,8 +958,11 @@ class e_news_tree extends e_model
 	}
 }
 
-class e_news_category_item extends e_model
+class e_news_category_item extends e_front_model
 {
+	protected $_db_table = 'news_category';
+	protected $_field_id = 'category_id';
+	
 	/**
 	 * Shorthand getter for news category fields
 	 *
@@ -967,21 +970,21 @@ class e_news_category_item extends e_model
 	 * @param mixed $default
 	 * @return mixed data
 	 */
-	public function get($category_field, $default = null)
+	public function cat($category_field, $default = null)
 	{
 		return parent::get('category_'.$category_field, $default);
 	}
 
 	public function sc_news_category_title($parm = '')
 	{
-		if('attribute' == $parm) return e107::getParser()->toAttribute($this->get('name'));
-		return $this->get('name');
+		if('attribute' == $parm) return e107::getParser()->toAttribute($this->cat('name'));
+		return $this->cat('name');
 	}
 
 	public function sc_news_category_url($parm = '')
 	{
 
-		$url = e107::getUrl()->create('news/list/items', $this->getData());
+		$url = e107::getUrl()->create('news/list/category', array('id' => $this->getId(), 'name' => $this->cat('name')));
 		switch($parm)
 		{
 			case 'link':
@@ -1005,17 +1008,17 @@ class e_news_category_item extends e_model
 
 	public function sc_news_category_icon($parm = '')
 	{
-		if(!$this->get('icon'))
+		if(!$this->cat('icon'))
 		{
 			return '';
 		}
-		if(strpos($this->get('icon'), '{') === 0)
+		if(strpos($this->cat('icon'), '{') === 0)
 		{
-			$src = e107::getParser()->replaceConstants($this->get('icon'));
+			$src = e107::getParser()->replaceConstants($this->cat('icon'));
 		}
 		else
 		{
-			$src = e_IMAGE_ABS.'icons/'.$this->get('icon');
+			$src = e_IMAGE_ABS.'icons/'.$this->cat('icon');
 		}
 		switch($parm)
 		{
@@ -1038,95 +1041,14 @@ class e_news_category_item extends e_model
 		{
 			return '';
 		}
-		return (string) $this->get('news_count');
+		return (string) $this->cat('news_count');
 	}
 }
 
 
-class e_news_category_tree extends e_model
+class e_news_category_tree extends e_front_tree_model
 {
-	/**
-	 * @var array
-	 */
-	protected $_tree_db_total = array();
-
-	/**
-	 * Get category news item object from the tree
-	 * If $force_empty is true and corresponding category object can't be found,
-	 * empty object will be set/returned if
-	 *
-	 * @param integer $category_id
-	 * @param boolean $force_empty
-	 * @return e_news_category_item
-	 */
-	function getNode($category_id, $force_empty = false)
-	{
-		$default = null;
-		if($force_empty && $this->isData('__tree/'.$category_id))
-		{
-			$default = new e_news_category();
-			$this->setNode($category_id, $default);
-		}
-
-		return $this->getData('__tree/'.$category_id, $default);
-	}
-
-	/**
-	 * Set category news item object
-	 *
-	 * @param integer $category_id
-	 * @param e_news_category_item $category_object
-	 * @return e_news_category_tree
-	 */
-	function setNode($category_id, $category_object)
-	{
-		if(!$category_id || !($category_object instanceof e_news_category_item))
-		{
-			return $this;
-		}
-		$this->_tree_total = null;
-		$this->setData('__tree/'.$category_id, $category_object);
-
-		return $this;
-	}
-
-	/**
-	 * Set news category tree array
-	 *
-	 * @param array $tree
-	 * @return e_news_category_tree
-	 */
-	public function setTree(array $tree)
-	{
-		$this->_tree_total = null;
-		$this->setData('__tree', $tree);
-
-		return $this;
-	}
-
-	/**
-	 * Get news category tree array
-	 *
-	 * @return array
-	 */
-	public function getTree()
-	{
-		return $this->getData('__tree', array());
-	}
-
-	/**
-	 * Total records found (DB)
-	 *
-	 * @return integer
-	 */
-	function getTreeTotal()
-	{
-		if(null === $this->_tree_total)
-		{
-			$this->_tree_total = count($this->getTree());
-		}
-		return $this->_tree_total;
-	}
+	protected $_field_id = 'category_id';
 
 	/**
 	 * Load category data from the DB
@@ -1136,27 +1058,31 @@ class e_news_category_tree extends e_model
 	 */
 	public function load($force = false)
 	{
-		if(!$force && $this->is($key))
-		{
-			return $this;
-		}
+		$this->setParam('model_class', 'e_news_category_item')
+			->setParam('nocount', true)
+			->setParam('db_order', 'category_order ASC')
+			->setParam('noCacheStringModify', true)
+			->setCacheString('news_category_tree')
+			->setModelTable('news_category');
+		
+		return parent::load($force);
 
-		$qry = "SELECT * FROM #news_category ORDER BY category_order ASC";
-	
-		$tree = array();
-		$sql = e107::getDb();
-		$sql->db_Mark_Time('news_category_tree');
+		// $qry = "SELECT * FROM #news_category ORDER BY category_order ASC";
 
-		if($sql->db_Select_gen($qry))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$tree[$row['category_id']] = new e_news_category_item($row);
-			}
-		}
-		$this->setTree($tree);
+		// $tree = array();
+		// $sql = e107::getDb();
+		// $sql->db_Mark_Time('news_category_tree');
 
-		return $this;
+		// if($sql->db_Select_gen($qry))
+		// {
+			// while($row = $sql->db_Fetch())
+			// {
+				// $tree[$row['category_id']] = new e_news_category_item($row);
+			// }
+		// }
+		// $this->setTree($tree);
+
+		// return $this;
 	}
 
 	/**
@@ -1167,11 +1093,7 @@ class e_news_category_tree extends e_model
 	 */
 	public function loadActive($force = false)
 	{
-		if(!$force && $this->is($key))
-		{
-			return $this;
-		}
-
+		
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$time = time();
 
@@ -1183,22 +1105,33 @@ class e_news_category_tree extends e_model
 			GROUP BY nc.category_id
 			ORDER BY nc.category_order ASC
 			";
+			
+			
+		$this->setParam('model_class', 'e_news_category_item')
+			->setParam('db_query', $qry)
+			->setParam('nocount', true)
+			->setParam('db_debug', false)
+			->setCacheString(true)
+			->setModelTable('news_category');
+		
+		$this->setModelTable('news_category');
+		
+		return parent::load($force);
 
+		// $tree = array();
+		// $sql = e107::getDb();
+		// $sql->db_Mark_Time('news_category_tree');
 
-		$tree = array();
-		$sql = e107::getDb();
-		$sql->db_Mark_Time('news_category_tree');
-
-		if($sql->db_Select_gen($qry))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$tree[$row['category_id']] = new e_news_category_item($row);
-			}
-		}
-		$this->setTree($tree);
-
-		return $this;
+		// if($sql->db_Select_gen($qry))
+		// {
+			// while($row = $sql->db_Fetch())
+			// {
+				// $tree[$row['category_id']] = new e_news_category_item($row);
+			// }
+		// }
+		// $this->setTree($tree);
+ 
+		// return $this;
 	}
 
 	/**
@@ -1211,7 +1144,7 @@ class e_news_category_tree extends e_model
 	 */
 	function render($parms = array(), $tablerender = true, $force_template = array())
 	{
-		if(!$this->getTreeTotal())
+		if(!$this->hasTree())
 		{
 			return '';
 		}
@@ -1222,10 +1155,24 @@ class e_news_category_tree extends e_model
 
 		if(!isset($parms['parsesc'])) $parms['parsesc'] = true;
 		$parsesc = $parms['parsesc'] ? true : false;
-
+		
+		$active = '';
+		if(e_PAGE == 'news.php')
+		{
+			$tmp = explode('.', e_QUERY);
+			if(vartrue($tmp[1])) $active = $tmp[1];	
+		}
+		
+		
 		foreach ($this->getTree() as $cat)
 		{
-			$ret[] = $tp->parseTemplate($template['item'], $parsesc, $cat);
+			$obj = null;
+			if($active && $active == $cat->getId())
+			{
+				$obj = new e_vars(array('active' => ' active'));
+			}
+			
+			$ret[] = $cat->toHTML($template['item'], $parsesc, $obj);
 		}
 
 		if($ret)
