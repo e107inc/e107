@@ -79,14 +79,50 @@ class eFront
 	/**
 	 * Dispatch
 	 */
-	public function dispatch(eRequest $request, eResponse $response, eDispatcher $dispatcher)
+	public function dispatch(eRequest $request = null, eResponse $response = null, eDispatcher $dispatcher = null)
 	{
+		if(null === $request)
+		{
+			if(null === $this->getRequest()) 
+			{
+				$request = new eRequest();
+				$this->setRequest($request);
+			}
+			else $request = $this->getRequest();
+		}
+		elseif(null === $this->getRequest()) $this->setRequest($request);
 		
-		// set dispatched status false
-		$request->setDispatched(false);
+		if(null === $response)
+		{
+			if(null === $this->getResponse()) 
+			{
+				$response = new eResponse();
+				$this->setResponse($response);
+			}
+			else $response = $this->getResponse();
+		}
+		elseif(null === $this->getRequest()) $this->setRequest($request);
+		
+		
+		if(null === $dispatcher)
+		{
+			if(null === $this->getDispatcher()) 
+			{
+				$dispatcher = new eDispatcher();
+				$this->setDispatcher($dispatcher);
+			}
+			else $dispatcher = $this->getDispatcher();
+		}
+		elseif(null === $this->getDispatcher()) $this->setDispatcher($dispatcher);
+		
+		
+		// set dispatched status true, required for checkLegacy()
+		$request->setDispatched(true);
 
 		$router = $this->getRouter();
-		$router->route($request); // route current request
+		
+		// If current request not already routed outside the dispatch method, route it
+		if(!$request->routed) $router->route($request); 
 
 		$c = 0;
 		// dispatch loop
@@ -98,23 +134,27 @@ class eFront
 				throw new eException("Too much dispatch loops", 1);
 			}
 			
-			$request->setDispatched(true);
-			if((bool) self::isLegacy()) return; 
+			// dispatched status true on first loop
+			$router->checkLegacy($request);
 			
+			// dispatched by default - don't allow legacy to alter dsiaptch status
+			$request->setDispatched(true);
+			
+			// legacy mod - return control to the bootstrap
+			if(self::isLegacy()) 
+			{
+				return; 
+			}
+			
+			// for the good players - dispatch loop - no more BC!
 			try 
 			{
 				$dispatcher->dispatch($request, $response);
 			}
 			catch(eException $e)
 			{
-				echo /*$request->getRoute().' - '.*/$e->getMessage();
+				echo $request->getRoute().' - '.$e->getMessage();
 				exit;
-			}
-			
-			// check forward to legacy module
-			if(!$request->isDispatched())
-			{
-				$router->checkLegacy($request);
 			}
 
 			
@@ -122,9 +162,10 @@ class eFront
 	}
 	
 	/**
-	 * Dispatch
+	 * Init all objects required for request dispatching
+	 * @return eFront
 	 */
-	public function run()
+	public function init()
 	{
 		$request = new eRequest();
 		$this->setRequest($request);
@@ -138,7 +179,30 @@ class eFront
 		$response = new eResponse();
 		$this->setResponse($response);
 		
-		$this->dispatch($request, $response, $dispatcher);
+		return $this;
+	}
+	
+	/**
+	 * Dispatch
+	 * @param string|eRequest $route
+	 */
+	public function run($route = null)
+	{
+		if($route) 
+		{
+			if(is_object($route) && ($route instanceof eRequest)) $this->setRequest($route);
+			elseif(null !== $route && null !== $this->getRequest()) $this->getRequest()->setRoute($route);
+		}
+		try 
+		{
+			$this->dispatch();
+		}
+		catch(eException $e)
+		{
+			echo $e->getMessage();
+			exit;
+		}
+		
 	}
 	
 	/**
@@ -695,7 +759,7 @@ class eRouter
 	/**
 	 * @var string
 	 */
-	private $_urlFormat = self::FORMAT_GET;
+	private $_urlFormat = self::FORMAT_PATH;
 	
 	/**
 	 * Not found route
@@ -825,7 +889,7 @@ class eRouter
 			$_config['config']['location'] = $location;
 			if(!isset($_config['config']['format']) || !in_array($_config['config']['format'], array(self::FORMAT_GET, self::FORMAT_PATH)))
 			{
-				$_config['config']['format'] = self::FORMAT_GET;
+				$_config['config']['format'] = $this->getUrlFormat();
 			}
 
 			if(!isset($_config['rules'])) $_config['rules'] = array();
@@ -1409,16 +1473,19 @@ class eRouter
 		else 
 		{
 			$rawPathInfo = rawurldecode($request->getPathInfo());
-			$this->_urlFormat = self::FORMAT_PATH;
+			//$this->_urlFormat = self::FORMAT_PATH;
 		}
 		
-		// Switch to main url namespace
-		if(!$rawPathInfo)
+		// Route to front page - index/index/index route
+		if(!$rawPathInfo && (!$this->getMainModule() || empty($_GET)))
 		{
-			// XXX show site index page possible only when rewrite.php is moved to index.php
-			// most probably we'll route to system/index/index where front page settings will be detected and front page will be rendered
+			// front page settings will be detected and front page will be rendered
+			$request->setRoute('index/index/index');
+			$request->addRouteHistory($rawPathInfo);
+			$request->routed = true;
+			return true;
 		}
-		
+
 		// max number of parts is actually 4 - module/controller/action/[additional/pathinfo/vars], here for reference only
 		$parts = $rawPathInfo ? explode('/', $rawPathInfo, 4) : array();
 		
@@ -1443,19 +1510,25 @@ class eRouter
 			// we have valid module
 			$config = $this->getConfig($module); 
 			
+			// set legacy state
+			eFront::isLegacy(varset($config['legacy']));
+			
 			// Don't allow single entry if required by module config
 			if(vartrue($config['noSingleEntry']))
 			{
-				$request->setRoute($this->notFoundRoute); 
+				$request->routed = true;
+				if(!eFront::isLegacy())
+				{
+					$request->setRoute($this->notFoundRoute); 
+					return false;
+				}
+				// legacy entry point - include it later in the bootstrap, legacy query string will be set to current
 				$request->addRouteHistory($rawPathInfo);
-				return false;
+				return true;
 			}
 			
 			// URL format - the one set by current config overrides the auto-detection
 			$format = isset($config['format']) && $config['format'] ? $config['format'] : $this->getUrlFormat();
-			
-			// set legacy state
-			eFront::isLegacy(varset($config['legacy']));
 			
 			//remove leading module, unnecessary overhead while matching
 			array_shift($parts);
@@ -1528,7 +1601,7 @@ class eRouter
 			// append module to be registered in the request object
 			if(false !== $route)
 			{
-				// don't modify  - request directly modified by config callback
+				// don't modify if true - request directly modified by config callback
 				if(!$request->routed) 
 				{
 					if(eFront::isLegacy()) $this->configCallback($module, 'legacy', array($route, $request), $config['location']);
@@ -1555,6 +1628,7 @@ class eRouter
 			{
 				$route = $this->notFoundRoute;
 				eFront::isLegacy(''); // reset legacy - not found route isn't legacy call
+				$request->routed = true;
 				if($checkOnly) return false;
 				## Global redirect on error option
 				if(e107::getPref('url_error_redirect', false) && $this->notFoundUrl)
@@ -1568,6 +1642,7 @@ class eRouter
 		
 		$request->setRoute($route);
 		$request->addRouteHistory($route);
+		$request->routed = true;
 		return true;
 	}
 
@@ -1580,50 +1655,20 @@ class eRouter
 	public function checkLegacy(eRequest $request)
 	{
 		$module = $request->getModule();
-		$rules = $this->getRules($module);
 		
-		// Simple match current request
-		if($rules)
+		// forward from controller to a legacy module - bad stuff
+		if(!$request->isDispatched() && $this->getConfigValue($module, 'legacy'))
 		{
-			foreach ($rules as $value) 
-			{
-				$route = $rules->route;
-				if($route == $request->getController().'/'.$request->getAction())
-				{
-					$config = $rules->getData();
-				}
-			}
-		}
-		else $config = $module ? $router->getConfig() : array();
-		
-		// Modify legacy query string. NOTE - parseCallback not called here - forwarding controller should set all request parameters proper!
-		if(isset($config['legacyQuery']))
-		{
-			$obj = eDispatcher::getConfigObject($module, $config['location']);
-			// eUrlConfig::legacyQueryString set as legacy string by default in eUrlConfig::legacy() method
-			$vars = new e_vars($request->getRequestParams());
-			$vars->module = $module;
-			$vars->controller = $request->getController();
-			$vars->action = $request->getAction();
-			if(vartrue($config['allowVars']))
-			{
-				foreach ($config['allowVars'] as $key => $value) 
-				{
-					if(isset($_GET[$key]) && !$request->isRequestParam($key))
-					{
-						// sanitize
-						$vars->$key = preg_replace('/[^\d\w]/', '', $_GET[$key]); 
-					}
-				}
-			}
-			$obj->legacyQueryString = e107::getParser()->simpleParse($config['legacyQuery'], $vars, '0');
-			unset($vars, $obj);
-		}
-		
-		if(vartrue($config['legacy'])) 
-		{
-			eFront::isLegacy($config['legacy']);
-			$this->configCallback($module, 'legacy', array($request->getController().'/'.$request->getAction(), $request, 'dispatch'), $config['location']);
+			eFront::isLegacy($this->getConfigValue($module, 'legacy'));
+			
+			$url = $this->assemble($request->getRoute(), $request->getRequestParams());
+			$request->setRequestInfo($url)->setPathInfo(null)->setRoute(null);
+
+			$_GET = $request->getRequestParams();
+			$_SERVER['QUERY_STRING'] = http_build_query($request->getRequestParams(), null, '&');
+			
+			// Infinite loop impossible, as dispatcher will break because of the registered legacy path
+			$this->route($request);
 		}
 	}
 
@@ -1714,7 +1759,7 @@ class eRouter
 			return $base.implode('/', $route);
 		}
 		
-		# fill in index when needed
+		# fill in index when needed - XXX not needed, may be removed soon
 		switch (count($route)) 
 		{
 			case 1:
@@ -1773,13 +1818,15 @@ class eRouter
 				$params[$this->routeVar] = implode('/', $route);
 				$route = array();
 			}
+			$route = implode('/', $route);
+			if(!$route || $route == $alias) $urlSuffix = '';
 			if($params) 
 			{
 				$params = $this->createPathInfo($params, $options);
-				return $base.implode('/', $route).$urlSuffix.'?'.$params.$anc;
+				return $base.$route.$urlSuffix.'?'.$params.$anc;
 			}
-			if(!$route) $urlSuffix = '';
-			return $base.implode('/', $route).$urlSuffix.$anc;
+
+			return $base.$route.$urlSuffix.$anc;
 		}
 		
 		
@@ -1846,11 +1893,13 @@ class eRouter
 				$route = array();
 			}
 			$params = $this->createPathInfo($params, $options);
-			if(!$route) $urlSuffix = '';
-			return $base.implode('/', $route).$urlSuffix.'?'.$params.$anc;
+			$route = implode('/', $route);
+			if(!$route || $route == $alias) $urlSuffix = '';
+			return $base.$route.$urlSuffix.'?'.$params.$anc;
 		}
-		if(!$route) $urlSuffix = '';
-		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.implode('/', $route).$anc : $base.implode('/', $route).$urlSuffix.$anc;
+		$route = implode('/', $route);
+		if(!$route || $route == $alias) $urlSuffix = '';
+		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.implode('/', $route).$anc : $base.$route.$urlSuffix.$anc;
 	}
 	
 	/**
@@ -1863,10 +1912,10 @@ class eRouter
 	
 	/**
 	 * Creates a path info based on the given parameters.
+	 * XXX - maybe we can switch to http_build_query(), should be able to do everything we need in a much better way
+	 * 
 	 * @param array $params list of GET parameters
-	 * @param string $equal the separator between name and value
-	 * @param string $ampersand the separator between name-value pairs
-	 * @param boolean $encode apply rawurlencode to the key/value pairs
+	 * @param array $options rawurlencode, equal, encode and amp settings
 	 * @param string $key this is used internally for recursive calls
 	 *
 	 * @return string the created path info
@@ -1884,6 +1933,15 @@ class eRouter
 			if (is_array($v)) $pairs[] = $this->createPathInfo($v, $options, $k);
 			else 
 			{
+				if(null === $v)
+				{
+					if($encode)
+					{
+						$k = rawurlencode($k);
+					}
+					$pairs[] = $k;
+					continue;
+				}
 				if($encode)
 				{
 					$k = rawurlencode($k);
@@ -1898,7 +1956,7 @@ class eRouter
 	/**
 	 * Parses a path info into URL segments
 	 * Be sure to not use non-unique chars for equal and ampersand signs, or you'll break your URLs
-	 * XXX - maybe we can switch to http_build_query(), should be able to do everything we need in a much better way
+	 * 
 	 * @param eRequest $request
 	 * @param string $pathInfo path info
 	 * @param string $equal
@@ -2500,11 +2558,7 @@ class eController
 		$request = $this->getRequest();
 		
 		if($request->isDispatched())
-		{
-			// more legacy :/
-			$request->setLegacyQstring();
-			$request->setLegacyPage();
-			
+		{		
 			if(method_exists($this, $actionMethodName)) 
 			{
 				$this->$actionMethodName();
@@ -2542,13 +2596,18 @@ class eController
 		{
 			$url = eFront::instance()->getRouter()->assemble($url, '', 'encode=0');
 		}
-		if(strpos($url, 'http://') !== 0 && strpos($url, 'http://') !== 0)
+		if(strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
 		{
 			$url = $url[0] == '/' ? SITEURLBASE.$url : SITEURL.$url;
 		}
 		$redirect->redirect($url, true, $code);
 	}
 	
+	/**
+	 * System forward
+	 * @param string $route
+	 * @param array $params
+	 */
 	protected function _forward($route, $params = array())
 	{
 		$request = $this->getRequest();
@@ -2563,14 +2622,14 @@ class eController
 		
 		switch (count($route)) {
 			case 3:
-				if($route[2] !== '*') $request->setModule($route[2]);
+				if($route[2] !== '*') $request->setModule($route[0]);
 				if($route[1] !== '*') $request->setController($route[1]);
-				$request->setAction($route[0]);
+				$request->setAction($route[2]);
 			break;
 			
 			case 2:
-				if($route[1] !== '*') $request->setController($route[1]);
-				$request->setAction($route[0]);
+				if($route[1] !== '*') $request->setController($route[0]);
+				$request->setAction($route[1]);
 			break;
 			
 			case 1:
@@ -2584,7 +2643,7 @@ class eController
 		
 		$request->addRouteHistory($oldRoute);
 		
-		if($params) $request->setRequestParams($params);
+		if(false !== $params) $request->setRequestParams($params);
 		$request->setDispatched(false);
 	}
 	
@@ -2648,6 +2707,12 @@ class eRequest
 	 */
 	protected $_pathInfo;
 	
+	
+	/**
+	 * @var string
+	 */
+	protected $_requestInfo;
+	
 	/**
 	 * Pathinfo string used for initial system routing
 	 */
@@ -2667,7 +2732,7 @@ class eRequest
 	 * Name of the bootstrap file
 	 * @var string
 	 */
-	public $singleEntry = 'rewrite.php';
+	public $singleEntry = 'index.php';
 
 	/**
 	 * Request constructor
@@ -2716,12 +2781,13 @@ class eRequest
 	{
 		if(null == $this->_pathInfo)
 		{
-
-			if($this->getBasePath() == e_REQUEST_HTTP) 
+			if($this->getBasePath() == $this->getRequestInfo()) 
 				$this->_pathInfo = ''; // map to indexRoute
 				
 			else 
-				$this->_pathInfo = substr(e_REQUEST_HTTP, strlen($this->getBasePath()));
+				$this->_pathInfo = substr($this->getRequestInfo(), strlen($this->getBasePath()));
+			
+			if($this->_pathInfo && trim($this->_pathInfo, '/') == trim($this->singleEntry, '/')) $this->_pathInfo = '';
 		}
 		
 		return $this->_pathInfo;
@@ -2736,6 +2802,41 @@ class eRequest
 	{
 		$this->_pathInfo = $pathInfo;
 		return $this;
+	}
+	
+	/**
+	 * @return string request info
+	 */
+	public function getRequestInfo()
+	{
+		if(null === $this->_requestInfo)
+		{
+			$this->_requestInfo = e_REQUEST_HTTP;
+		}
+		return $this->_requestInfo;
+	}
+	
+	
+	/**
+	 * Override request info
+	 * @param string $pathInfo
+	 * @return eRequest
+	 */
+	public function setRequestInfo($requestInfo)
+	{
+		$this->_requestInfo = $requestInfo;
+		return $this;
+	}
+	
+	/**
+	 * Quick front page check 
+	 */
+	public static function isFrontPage($entryScript = 'index.php', $currentPathInfo = e_REQUEST_HTTP)
+	{
+		$basePath = e_HTTP;
+		if(!e107::getPref('url_disable_pathinfo')) $basePath .= $entryScript.'/';
+		
+		return ($basePath == $currentPathInfo);
 	}
 	
 	/**
@@ -2873,16 +2974,24 @@ class eRequest
 	 */
 	public function setRoute($route)
 	{
+		if(null === $route) 
+		{
+			$this->_module = null;
+			$this->_controller = null;
+			$this->_action = null;
+		}
 		return $this->initFromRoute($route);
 	}
 	
 	/**
 	 * System routing track, used in controllers forwarder
 	 * @param string $route
+	 * @return eRequest
 	 */
 	public function addRouteHistory($route)
 	{
 		$this->_routeHistory[] = $route;
+		return $this;
 	}
 	
 	/**
@@ -2943,7 +3052,7 @@ class eRequest
 			->setController(vartrue($parts[1], 'index'))
 			->setAction(vartrue($parts[2], 'index'));
 			
-		return $this->getRoute(true);
+		return $this;//->getRoute(true);
 	}
 
 	/**
@@ -3015,10 +3124,12 @@ class eRequest
 	
 	/**
 	 * More BC
+	 * @param string $qstring
+	 * @return eRequest
 	 */
 	public function setLegacyQstring($qstring = null)
 	{
-		if(defined('e_QUERY')) return;
+		if(defined('e_QUERY')) return $this;;
 		
 		if(null === $qstring)
 		{
@@ -3028,27 +3139,32 @@ class eRequest
 		define("e_SELF", e_REQUEST_SELF);
 		define("e_QUERY", $qstring);
 		$_SERVER['QUERY_STRING'] = e_QUERY;	
+		return $this;
 	}
 	
 	/**
 	 * And More BC :/
+	 * @param string $page
+	 * @return eRequest
 	 */
 	public function setLegacyPage($page = null)
 	{
-		if(defined('e_PAGE')) return;
+		if(defined('e_PAGE')) return $this;
 		if(null === $page)
 		{
 			$page = eFront::isLegacy();
 		}
 		if(!$page) 
 		{
-			define('e_PAGE', 'rewrite.php');
+			define('e_PAGE', $this->singleEntry);
 		}
 		else define('e_PAGE', basename(str_replace(array('{', '}'), '/', $page)));
+		return $this;
 	}
 	
 	/**
 	 * And More from the same - BC :/
+	 * @return string
 	 */
 	public static function getQueryString()
 	{

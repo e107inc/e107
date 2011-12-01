@@ -56,7 +56,7 @@ define("LAN_EURL_MENU_HELP", "Help");
 define("LAN_EURL_UC", "Under Construction");
 
 
-// define("LAN_EURL_CORE_MAIN", "Main");
+define("LAN_EURL_CORE_MAIN", "Site Root Namespace - alias not in use.");
 
 // News
 define("LAN_EURL_CORE_NEWS", "News");
@@ -90,4 +90,7 @@ define("LAN_EURL_SYSTEM_DEFAULT_DESCR", "URLs for pages like Not Found, Acess de
 define("LAN_EURL_SYSTEM_REWRITE_LABEL", "User Friendly URL (mod_rewrite)");
 define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Acess denied, etc.<br />Example: http://yoursite.com/system/error404");
 
+// System
+define("LAN_EURL_CORE_INDEX", "Front Page");
+define("LAN_EURL_CORE_INDEX_INFO", "Front Page can't have an alias.");
 //define("LAN_EURL_", "");

@@ -24,6 +24,6 @@
 	RewriteCond %{REQUEST_FILENAME} !-l 
 	
 ### Single entry point ###
-	RewriteRule .* rewrite.php [L]
+	RewriteRule .* index.php [L]
 
 </IfModule>
