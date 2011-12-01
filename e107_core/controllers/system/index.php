@@ -1,10 +1,20 @@
 <?php
-
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * System index controller
+ *
+ * $URL$
+ * $Id$
+*/
 class core_system_index_controller extends eController
 {
 	/**
-	 * Temporary redirect to site Index
-	 * XXX - move the index.php Front page detection to index/index/index, make index.php the entry point and _forward here
+	 * Redirect to site Index
 	 */
 	public function actionIndex()
 	{

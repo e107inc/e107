@@ -14,99 +14,51 @@
  * $Author$
  */
 
-require_once ('class2.php');
+ // BOOTSTRAP START
 
 
-if($_GET['elan'])
-{
-	header('location: '.SITEURL);
-	exit;
-}
-
-if (file_exists('index_include.php'))
-{
-	include ('index_include.php');
-}
-
-$query = (e_QUERY && e_QUERY != '' && !$_GET['elan']) ? '?'.e_QUERY : '';
-$location = '';
-
-if ($pref['membersonly_enabled'] && !USER)
-{
-	header('location: '.e_LOGIN);
-	exit;
-}
-
-$class_list = explode(',', USERCLASS_LIST);
-
-if (isset($pref['frontpage']['all']) && $pref['frontpage']['all'])
-{ // 0.7 method
-	$location = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['all'].$query;
-}
-else
-{ // This is the 'new' method - assumes $pref['frontpage'] is an ordered list of rules
-	if(vartrue($pref['frontpage']))
+	define('e_SINGLE_ENTRY', TRUE);
+	
+	$_E107['single_entry'] = true; // TODO - notify class2.php
+	
+	define('ROOT', dirname(__FILE__));
+	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
+	
+	require_once("class2.php");
+	
+	$front = eFront::instance();
+	$front->init()
+		->run();
+	
+	$inc = $front->isLegacy(); 
+	if($inc)
 	{
-		foreach ($pref['frontpage'] as $fk=>$fp)
+		// last chance to set legacy env
+		$request = $front->getRequest();
+		$request->setLegacyQstring();
+		$request->setLegacyPage();
+		if(!is_file($inc) || !is_readable($inc))
 		{
-			if (in_array($fk, $class_list))
-			{
-				// Debateable whether we should append $query - we may be redirecting to a custom page, for example
-				if (strpos($fp, '{') !== FALSE)
-				{
-					$location = $tp->replaceConstants($fp).$query;
-				}
-				else
-				{
-					$location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
-				}
-			break;
-			}
+			echo 'Bad request - destination unreachable - '.$inc;
 		}
+		include($inc);
+		exit;
 	}
-}
-
-if (!$location)
-{ // Try and use the 'old' method (this bit can go later)
-	if (ADMIN)
+	
+	$response = $front->getResponse();
+	if(e_AJAX_REQUEST)
 	{
-		$location = ((strpos($pref['frontpage'][e_UC_ADMIN], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][e_UC_ADMIN].$query;
+		$response->setParam('meta', false)
+			->setParam('render', false)
+			->send('default', false, true);
+		exit;
 	}
-	elseif (USER)
-	{ // This is the key bit - what to do for a 'normal' logged in user
-		// We have USERCLASS_LIST - comma separated. Also e_CLASS_REGEXP
-		foreach ($class_list as $fp_class)
-		{
-			$inclass = false;
-			if (!$inclass && check_class($fp_class['userclass_id']))
-			{
-				$location = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][$fp_class['userclass_id']].$query;
-				$inclass = true;
-			}
-		}
-		$location = $location ? $location : ((strpos($pref['frontpage'][e_UC_MEMBER], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][e_UC_MEMBER].$query;
-	}
-	else
-	{
-		$location = ((strpos($pref['frontpage'][e_UC_GUEST], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][e_UC_GUEST].$query;
-	}
-}
-
-if (!trim($location))
-	$location = 'news.php';
-
-list($page, $str) = explode("?", $location."?"); // required to prevent infinite looping when queries are used on index.php.
-if ($page == "index.php") // Welcome Message is the front-page.
-{
-	require_once (HEADERF);
-	require_once (FOOTERF);
+	$response->sendMeta();
+	
+	include_once(HEADERF);
+		eFront::instance()->getResponse()->send('default', false, true);
+	include_once(FOOTERF);
 	exit;
-}
-else
-{ // redirect to different frontpage.
-	header("Location: {$location}");
-}
-exit();
 
+ // BOOTSTRAP END
 
-?>

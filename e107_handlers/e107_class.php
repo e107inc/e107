@@ -2395,6 +2395,7 @@ class e107
 		
 
 		// START New - request uri/url detection, XSS protection
+		// TODO - move it to a separate method
 		$requestUri = $requestUrl = '';
 		if (isset($_SERVER['HTTP_X_REWRITE_URL']))
 		{
@@ -2413,10 +2414,10 @@ class e107
 		{
 			// go back to e_SELF
 			$requestUri = $eSelf;
-			$requestUrl = e_SELF;
+			$requestUrl = $_self;
 			if (e_QUERY)
 			{
-				$requestUri .= '?'.e_QUERY;
+				$requestUri .= '?'.e_QUERY; // TODO e_SINGLE_ENTRY check, separate static method for cleaning QUERY_STRING
 				$requestUrl .= '?'.e_QUERY;
 			}
 		}

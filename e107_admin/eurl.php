@@ -441,12 +441,33 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		
 		foreach ($modules as $module => $obj) 
 		{
+			$cfg = $obj->config->config();
+			if(isset($cfg['config']['noSingleEntry']) && $cfg['config']['noSingleEntry']) continue;
+			
+			if($module == 'index')
+			{
+			$text .= "
+				<tr>
+					<td class='label'>
+						".LAN_EURL_CORE_INDEX."
+					</td>
+					<td class='control'>
+						".LAN_EURL_CORE_INDEX_INFO."
+					</td>
+					<td class='control'>
+						".LAN_EURL_FORM_HELP_EXAMPLE." <br /><strong>".e107::getUrl()->create('/', '', array('full' => 1))."</strong>
+					</td>
+				</tr>
+				";
+				continue;
+			}
 			$help = array();
 			$admin = $obj->config->admin();
 			$lan = $lanDef[0];
 			$url = e107::getUrl()->create($module, '', array('full' => 1));
 			$defVal = isset($currentAliases[$lan]) && in_array($module, $currentAliases[$lan]) ? array_search($module, $currentAliases[$lan]) : $module; 
 			$section = vartrue($admin['labels'], array());
+			
 			$text .= "
 				<tr>
 					<td class='label'>
@@ -458,9 +479,9 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					<td class='control'>
 			";
 			
-			// default language
-
 			
+			
+			// default language		
 			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal).' ['.$lanDef[1].']'.$this->help(LAN_EURL_FORM_HELP_DEFAULT);
 			$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
 			
@@ -468,12 +489,18 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			{
 				foreach ($lans as $code => $lan) 
 				{
+
 					$url = e107::getUrl()->create($module, '', array('lan' => $code, 'full' => 1)); 
 					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module; 
 					$text .= "<div class='spacer'><!-- --></div>";
 					$text .= $this->text('eurl_aliases['.$code.']['.$module.']', $defVal).' ['.$lan.']'.$this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
 					$help[] = '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.'<br /><strong>'.$url.'</strong>';
 				}
+			}
+			
+			if(e107::getUrl()->router()->isMainModule($module))
+			{
+				$help = array(LAN_EURL_CORE_MAIN);
 			}
 			
 			$text .= "
