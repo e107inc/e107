@@ -91,6 +91,7 @@ class core_index_index_controller extends eController
 		// Former Welcome Message front-page. Should be handled by current theme layout
 		elseif($location == 'index.php' || $location == 'url:/' || $location == 'route:/' || $location == '/') 
 		{
+			define('e_FRONTPAGE', true);
 			$this->_forward('front'); 
 			return;
 		}
@@ -112,6 +113,7 @@ class core_index_index_controller extends eController
 				{
 					throw new eException('Infinite loop detected while dispatching front page.', 2);
 				}
+				define('e_FRONTPAGE', true);
 				$this->_forward($request->getRoute());
 				return;
 			}
@@ -132,7 +134,7 @@ class core_index_index_controller extends eController
 			{
 				throw new eException('Infinite loop detected while dispatching front page.', 2);
 			}
-			
+			define('e_FRONTPAGE', true);
 			$this->_forward($request->getRoute(), $qstr);
 			
 			return;
@@ -155,7 +157,7 @@ class core_index_index_controller extends eController
 				->setLegacyQstring($qstr);
 				
 			$request->routed = true;
-			
+			define('e_FRONTPAGE', true);
 			eFront::isLegacy('{e_BASE}'.$page);
 			return $this;
 		}

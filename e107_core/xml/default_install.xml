@@ -53,7 +53,7 @@
 		<core name="displayname_maxlength">15</core>
 		<core name="displayrendertime">0</core>
 		<core name="displaysql">0</core>
-		<core name="displaythemeinfo">0</core>
+		<core name="displaythemeinfo">1</core>
 		<core name="download_email">0</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
