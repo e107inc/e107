@@ -76,7 +76,9 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newscomments($parm)
 	{
-		global $pref, $sql;
+		$pref = e107::getPref();
+		$sql = e107::getDb();
+		
 		if($pref['comments_disabled'] == 1)
 		{
 			return;
@@ -86,7 +88,7 @@ class news_shortcodes extends e_shortcode
 
 		if($param['current_action'] == 'extend')
 		{
-			return '';
+			return LAN_NEWS_99.' ('.$news_item['news_comment_total'].')';
 		}
 
 		if (vartrue($pref['multilanguage']))
@@ -120,7 +122,10 @@ class news_shortcodes extends e_shortcode
 	{
 		global $pref;
 		if(!varsettrue($pref['trackbackEnabled'])) { return ''; }
-		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."#track'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');
+		$news_item = $this->news_item;
+		$news_item['#'] = 'track';
+		
+		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');
 	}
 
 	function sc_newsheader($parm)
@@ -172,7 +177,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_emailicon($parm)
 	{
-		global $pref;
+		$pref = e107::getPref();
 		if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 		{
 			return '';
@@ -189,7 +194,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_pdficon()
 	{
-		global $pref;
+		$pref = e107::getPref();
 		if (!$pref['plug_installed']['pdf']) { return ''; }
 		return $this->e107->tp->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
@@ -345,6 +350,11 @@ class news_shortcodes extends e_shortcode
 			return $url;
 		}
 		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$this->news_item['news_title'].'</a>';
+	}
+
+	function sc_newsurl()
+	{
+		return $this->e107->url->create('news/view/item', $this->news_item);
 	}
 
 	function sc_newscaticon($parm = '')
