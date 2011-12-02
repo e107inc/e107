@@ -422,7 +422,48 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				</tr>
 			";
 		}
-		return $text;
+
+		/*
+		For Miro - intuitive interface example. All configs are contained within one e_url.php file. 
+		Root namespacing automatically calculated based on selection. 
+		ie. choosing option 1 below will set root namespacing for news. 
+		Known bug (example): 
+		  News title: Nothing's Gonna Change my World!
+		  Currently becomes: /Nothing%26%23039%3Bs%20Gonna%20Change%20my%20World%21
+		 Should become: /nothings-gonna-change-my-world
+		 Good SEF reference: http://davidwalsh.name/generate-search-engine-friendly-urls-php-function
+		 
+		 */
+		// FIXME TODO XXX
+		
+		// Global On/Off Switch Example
+		$example = "
+		<tr><td>Enable Search-Engine-Friendly URLs</td>
+		<td><input type='checkbox' name='SEF-active' value='1' />
+		</td></tr>";
+		
+		//Entry Example (Hidden unless the above global switch is active)
+		$example .= "
+		
+		<tr><td>News</td>
+					<td><select class='tbox' name='example'>
+						<option value='0'>/news.php?item.1 (default)</option>
+						<option value='1'>/news-item-title</option>
+						<option value='2'>/news/news-item-title</option>
+						<option value='3'>/2011/news-item-title</option>
+						<option value='4'>/2011/08/news-item-title</option>
+						<option value='4'>/2011/08/27/news-item-title</option>				
+						<option value='5'>/news-category/news-item-title</option>
+						<option value='6'>/news-category/2011/news-item-title</option>
+					</select>";
+					
+		// $example .= "<br />Custom <input class='tbox' type='text' name='custom-news' value='' />"; For Beta. 
+				
+		$example .= "</td>
+					</tr>";
+
+		return $example.$text;
+		
 	}
 
 	public function aliasesRows($currentAliases, $modules, $lanDef, $lans)
