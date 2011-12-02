@@ -870,7 +870,7 @@ Object.extend(e107Helper, {
     scrollToObserver: function(event) {
     	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
 		Element.select(element, 'a[href^=#].scroll-to:not([href=#])').invoke('observe', 'click', function(e) {
-			new Effect.ScrollTo(e.element('a').hash.substr(1));
+			new Effect.ScrollTo(e.findElement('a').hash.substr(1));
 			e.stop();
 		});
     },
