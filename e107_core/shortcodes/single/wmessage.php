@@ -4,37 +4,41 @@
 
 function wmessage_shortcode($parm)
 {
-
-	global $e107, $e107cache, $pref;
+	$e107 = e107::getInstance();
+	$e107cache = e107::getCache();
+	$pref = e107::getPref();
+	
 	$prefwmsc = varset($pref['wmessage_sc'], FALSE);
 	if (($prefwmsc && $parm == 'header') || (!$prefwmsc && ($parm !='header')) )
 	{	// Two places it might be invoked - allow one or the other
 		return;
 	}
 
+	
 	if ($parm != 'force')
-	{
-		$full_url = 'news.php';					// Set a default in case
-		$front_qry = '';
-		$uc_array = explode(',', USERCLASS_LIST);
-		if(varset($pref['frontpage']))
 		{
-			foreach ($pref['frontpage'] as $fk => $fp)
+			$full_url = 'news.php';					// Set a default in case
+			$front_qry = '';
+			$uc_array = explode(',', USERCLASS_LIST);
+			if(varset($pref['frontpage']))
 			{
-				if (in_array($fk,$uc_array))
+				foreach ($pref['frontpage'] as $fk => $fp)
 				{
-					$full_url = $fp;
-					break;
+					if (in_array($fk,$uc_array))
+					{
+						$full_url = $fp;
+						break;
+					}
 				}
+				list($front_url, $front_qry) = explode('?', $full_url.'?'); // extra '?' ensure the array is filled
 			}
-			list($front_url, $front_qry) = explode('?', $full_url.'?'); // extra '?' ensure the array is filled
 		}
-	}
+	
 
 	if (strpos($front_url, 'http') === FALSE) $front_url = SITEURL.$front_url;
 
 
-	if (($parm == 'force') || ((e_SELF == $front_url) && (($parm == 'ignore_query') || (e_QUERY == $front_qry))))
+	if (deftrue('e_FRONTPAGE') || ($parm == 'force') || ((e_SELF == $front_url) && (($parm == 'ignore_query') || (e_QUERY == $front_qry))))
 	{
 		// Actually want to display a welcome message here
 		global $ns;
