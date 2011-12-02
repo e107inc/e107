@@ -1899,7 +1899,7 @@ class eRouter
 		}
 		$route = implode('/', $route);
 		if(!$route || $route == $alias) $urlSuffix = '';
-		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.implode('/', $route).$anc : $base.$route.$urlSuffix.$anc;
+		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.$route.$anc : $base.$route.$urlSuffix.$anc;
 	}
 	
 	/**
@@ -2561,6 +2561,8 @@ class eController
 		{		
 			if(method_exists($this, $actionMethodName)) 
 			{
+				// TODO request userParams() to store private data - check for noPopulat param here
+				$request->populateRequestParams();
 				$this->$actionMethodName();
 				$this->postAction();
 			}
