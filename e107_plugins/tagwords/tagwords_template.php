@@ -54,10 +54,10 @@ $TEMPLATE_TAGWORDS['link_end'] = "</ul></div>";
 //##### options --------------------------------------------------
 
 $TEMPLATE_TAGWORDS['options'] = "
-<form id='plugin-tagwords-form' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
+<form id='plugin-tagwords-form' method='get' action='{TAG_URL}'>
 	{TAG_SEARCH}
 </form>
-<form id='dataform' name='dataform' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
+<form id='dataform' name='dataform' method='get' action='{TAG_URL}'>
 	<div style='line-height:150%; padding-bottom:10px;'>
 		{TAG_TYPE} {TAG_SORT} {TAG_AREA} {TAG_BUTTON}
 	</div>

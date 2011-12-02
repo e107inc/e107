@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Tagwords Shortcodes
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -108,10 +106,10 @@ class tagwords_shortcodes
 		switch($sc_mode)
 		{
 			case 'menu':
-				return "<a href='".e107::getUrl()->createTagwords()."'>".LAN_TAG_MENU_1."</a>";
+				return "<a href='".e107::getUrl()->create('tagwords')."'>".LAN_TAG_MENU_1."</a>";
 				break;
 			case 'home':
-				return "<a href='".e107::getUrl()->createTagwords()."'>".LAN_TAG_7."</a>";
+				return "<a href='".e107::getUrl()->create('tagwords')."'>".LAN_TAG_7."</a>";
 				break;
 			default:
 				if(method_exists($tag->area, 'getLink'))
@@ -265,7 +263,9 @@ class tagwords_shortcodes
 
 	function sc_tag_button()
 	{
-		return "<input class='button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
+		if(varsettrue($tag->pref['tagwords_view_sort']) || varsettrue($tag->pref['tagwords_view_style']) || varsettrue($tag->pref['tagwords_view_area']))
+			return "<input class='button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
+		return '';
 	}
 
 	function sc_tag_options()
@@ -277,6 +277,10 @@ class tagwords_shortcodes
 		}
 	}
 
+	function sc_tag_url($parm)
+	{
+		return e107::getUrl()->create('tagwords', $parm);
+	}
 	//##### ADMIN OPTIONS -------------------------
 
 	function sc_tag_opt_min($parm, $sc_mode)
