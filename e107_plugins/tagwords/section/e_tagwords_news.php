@@ -23,7 +23,7 @@ class e_tagwords_news
 			$this->row = $this->getRecord($id);
 		}
 		//$url = e_BASE."news.php?item.".$this->row['news_id'];
-		$url = e107::getUrl()->createCoreNews('action=extend&id='.$this->row['news_id'].'&sef='.$this->row['news_rewrite_string']);
+		$url = e107::getUrl()->create('news/view/item', $this->row);
 		return "<a href='".$url."'>".$this->e107->tp->toHTML($this->row['news_title'], TRUE, '')."</a>";
 	}
 
@@ -31,9 +31,9 @@ class e_tagwords_news
 	{
 		$this->row = '';
 		//FIXME - only if news mod rewrite is on
-		$qry = "SELECT n.*, nr.* 
+		$qry = "SELECT n.*, nc.* 
 		FROM #news as n
-		LEFT JOIN #news_rewrite AS nr ON n.news_id=nr.news_rewrite_source AND nr.news_rewrite_type=1
+		LEFT JOIN #news_category AS nc ON n.news_category=nc.category_id
 		WHERE n.news_id='{$id}' 
 		AND n.news_start < ".time()." 
 		AND (n.news_end=0 || n.news_end>".time().") 

@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Tagwords Class
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -272,7 +270,7 @@ class tagwords
 		$word = trim($word);
 		/*$qry = $this->e107->tp->toDB($word);
 		$qry = str_replace(' ', '+', $qry);*/
-		$url = e107::getUrl()->createTagwords('q='.$word);
+		$url = e107::getUrl()->create('tagwords/search', 'q='.$word);
 		$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 		$class = ($class ? "class='tag".intval($class)."'" : "");
 		return "<a href='".$url."' ".$class." title=''>".$word."</a>";

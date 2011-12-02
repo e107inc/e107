@@ -15,16 +15,15 @@
  *
 */
 
-require_once('../../class2.php');
-if (!defined('e107_INIT')) { exit; }
+if(!defined('e107_INIT')) require_once('../../class2.php');
 
-$_GET = e107::getUrl()->parseRequest('tagwords', 'main', e_QUERY);
+//$_GET = e107::getUrl()->parseRequest('tagwords', 'main', e_QUERY);
 
 require_once(HEADERF);
 
 require_once(e_PLUGIN."tagwords/tagwords_class.php");
 $tag = new tagwords();
-
+//echo e107::getUrl()->create('tagwords/search/area', 'area=news&q=something');
 if(varsettrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords_class']) )
 {
 	header("location:".SITEURL); exit;
