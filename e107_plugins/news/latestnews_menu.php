@@ -1,31 +1,30 @@
 <?php
-
+/**
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ * 
+ * Latest news menu
+ */
 if (!defined('e107_INIT')) { exit; }
 
-//require_once(e_HANDLER.'news_class.php');
-
-parse_str($parm, $parm);
-$nitem = e107::getObject('e_news_item');
-$nitem->load(1);
-
-$template = '
-{NEWS_FIELD=title|format=html&arg=0,TITLE}<br />
-<em>{NEWS_FIELD=datestamp|format=date}</em><br /><br />
-{NEWS_FIELD=body|format=html_truncate&arg=100,...}
-';
-
-//New way of parsing batches - pass object, all sc_* methods will be auto-registered
-$ret = e107::getParser()->parseTemplate($template, true, $nitem);
-e107::getRender()->tablerender('Latest News', $ret, 'latest_news');
-
-
-//print_a $nitem->getData();
-/*
-$ret .= '<br /><br />Render Tree<br />';
-$ntree = new e_news_tree();
-foreach ($ntree->load(1)->getTree() as $nitem) 
+$cacheString = 'nq_news_latest_menu_'.md5($parm);
+$cached = e107::getCache()->retrieve($cacheString);
+if(false === $cached)
 {
-	$ret .= ' - '.$nitem->get('title').'<br/>';
-	//print_a $nitem->getData();
+	e107::plugLan('news');
+
+	parse_str($parm, $parms);
+	$ntree = e107::getObject('e_news_tree', null, e_HANDLER.'news_class.php');
+
+	$template = e107::getTemplate('news', vartrue($parms['tmpl'], 'news_menu'), vartrue($parms['tmpl_key'], 'latest'));
+
+	$treeparm = array();
+	if($parms['count']) $treeparm['db_limit'] = '0, '.intval($parms['count']);
+	if($parms['order']) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
+	$parms['return'] = true;
+	
+	$cached = $ntree->loadJoinActive(vartrue($parms['category'], 0), false, $treeparm)->render($template, $parms, true);
+	e107::getCache()->set($cacheString, $cached);
 }
-*/
+
+echo $cached;
