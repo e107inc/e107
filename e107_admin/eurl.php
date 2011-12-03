@@ -446,19 +446,36 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		$example .= "
 		
 		<tr><td>News</td>
-					<td><select class='tbox' name='example'>
-						<option value='0'>/news.php?item.1 (default)</option>
-						<option value='1'>/news-item-title</option>
-						<option value='2'>/news/news-item-title</option>
-						<option value='3'>/2011/news-item-title</option>
-						<option value='4'>/2011/08/news-item-title</option>
-						<option value='4'>/2011/08/27/news-item-title</option>				
-						<option value='5'>/news-category/news-item-title</option>
-						<option value='6'>/news-category/2011/news-item-title</option>
-					</select>";
+					<td style='padding:0px'>
+					<table style='width:600px;margin-left:0px'>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />Default</td><td>/news.php?item.1</td>
+					</tr>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />News Namespace and News Title</td><td>/news/news-item-title</td>
+					</tr>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />Year and News Title</td><td>/2011/news-item-title</td>
+					</tr>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />Year/Month and News Title</td><td>/2011/08/news-item-title</td>
+					</tr>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />Year/Month/Day and News Title</td><td>/2011/08/27/news-item-title</td>
+					</tr>
+					<tr>
+						<td><input type='radio' class='radio' name='example' />News Category and News Title</td><td>/news-category/news-item-title</td>
+					</tr>
+					";
 					
-		// $example .= "<br />Custom <input class='tbox' type='text' name='custom-news' value='' />"; For Beta. 
-				
+			// For 0.8 Beta 
+			$example .= "
+					<tr>
+						<td><input type='radio' class='radio' name='example' />Custom</td><td><input class='tbox' type='text' name='custom-news' value='' /></td>
+						</tr>";
+		
+			$example .= "</table>";
+					
 		$example .= "</td>
 					</tr>";
 
