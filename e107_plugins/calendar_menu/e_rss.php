@@ -1,8 +1,21 @@
 <?php
-
-// Reflects updates to CVS version 1.3 made 29.10.2006
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2002-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Event calendar - RSS feed
+ *
+ * $URL$
+ * $Id$
+ */
 
 if (!defined('e107_INIT')) { exit; }
+
+if (isset($pref['plug_installed'])  && !isset($pref['plug_installed']['calendar_menu'])) return;
+
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 $feed['name']		= EC_ADLAN_A12;
