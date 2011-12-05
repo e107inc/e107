@@ -403,6 +403,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				
 				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
 				$cssClass = $checked ? 'e-showme' : 'e-hideme';
+				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 				// XXX use e_form
 				$text .= "
 				
@@ -433,10 +434,13 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		 Should become: /nothings-gonna-change-my-world
 		 Good SEF reference: http://davidwalsh.name/generate-search-engine-friendly-urls-php-function
 		 
+		 [Miro] Solution comes from the module itself, not related with URL assembling in anyway (as per latest Skype discussion)
 		 */
 		// FIXME TODO XXX
 		
 		// Global On/Off Switch Example
+		// [Miro] there is no reason of switch, everything could go through single entry point at any time, without a need of .htaccess (path info)
+		// Control is coming per configuration file.
 		$example = "
 		<tr><td>Enable Search-Engine-Friendly URLs</td>
 		<td><input type='checkbox' name='SEF-active' value='1' />
@@ -478,8 +482,9 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					
 		$example .= "</td>
 					</tr>";
+					
 
-		return $example.$text;
+		return $text;
 		
 	}
 
