@@ -49,13 +49,12 @@ class core_news_rewrite_url extends eUrlConfig
 		$r = array();
 		$parm = array();
 		
-		## news are passing array as it is retrieved from the DB, map vars to proper values
-		if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
-		if(isset($params['news_title']) && !empty($params['news_title'])) $params['id'] = $params['news_title']; // TODO - news_sef
-		if(isset($params['category_name']) && !empty($params['category_name'])) $params['category'] = $params['category_name'];
-		
 		if($route[0] == 'view')
 		{
+			## news are passing array as it is retrieved from the DB, map vars to proper values
+			if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
+			if(isset($params['news_title']) && !empty($params['news_title'])) $params['id'] = $params['news_title']; // TODO - news_sef
+			
 			switch ($route[1]) 
 			{
 				case 'item':
@@ -69,6 +68,10 @@ class core_news_rewrite_url extends eUrlConfig
 		}
 		elseif($route[0] == 'list')
 		{
+			## news are passing array as it is retrieved from the DB, map vars to proper values
+			if(isset($params['category_id']) && !empty($params['category_id'])) $params['id'] = $params['category_id'];
+			if(isset($params['category_name']) && !empty($params['category_name'])) $params['name'] = $params['category_name']; // TODO - news_sef
+			
 			switch ($route[1]) 
 			{
 				
