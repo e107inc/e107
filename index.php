@@ -28,13 +28,18 @@
 	$front->init()
 		->run();
 	
+	$request = $front->getRequest();
+	
+	// If not already done - define legacy constants
+	$request->setLegacyQstring();
+	$request->setLegacyPage(); 
+	
 	$inc = $front->isLegacy(); 
 	if($inc)
 	{
 		// last chance to set legacy env
-		$request = $front->getRequest();
-		$request->setLegacyQstring();
-		$request->setLegacyPage();
+
+		$request->populateRequestParams();
 		if(!is_file($inc) || !is_readable($inc))
 		{
 			echo 'Bad request - destination unreachable - '.$inc;

@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* Copyright (c) e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 * $Id$
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
@@ -57,7 +57,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		// reset to default, update current
 		$category->setParams($defopt)
 			->updateParams($parm);
-			
+
 		if(!$category->hasData())
 		{
 			return '';
@@ -66,8 +66,11 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		$tmpl = $this->getFboxTemplate($ctemplate);
 		$tp = e107::getParser();
 		
+		// Fix - don't use tablerender if no result (category could contain hidden items)
+		$ret = $this->render($category, $ctemplate, $parm);
+		if(empty($ret)) return '';
 
-		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$this->render($category, $ctemplate, $parm).$tp->parseTemplate($tmpl['list_end'], true, $category);
+		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$ret.$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
 		{
 			return $ret;
