@@ -179,5 +179,7 @@ class core_index_index_controller extends eController
 	public function actionFront()
 	{
 		// we could notify current theme we are in front page controlled by the theme layout only...
+		// switch off tablerender
+		$this->getResponse()->setParam('render', false);
 	}
 }
