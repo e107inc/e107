@@ -19,8 +19,8 @@ if(false === $cached)
 	$template = e107::getTemplate('news', vartrue($parms['tmpl'], 'news_menu'), vartrue($parms['tmpl_key'], 'latest'));
 
 	$treeparm = array();
-	if($parms['count']) $treeparm['db_limit'] = '0, '.intval($parms['count']);
-	if($parms['order']) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
+	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);
+	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
 	
 	$cached = $ntree->loadJoinActive(vartrue($parms['category'], 0), false, $treeparm)->render($template, $parms, true);

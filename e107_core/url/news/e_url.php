@@ -84,7 +84,7 @@ class core_news_url extends eUrlConfig
 		if(isset($params['category_name']) && !empty($params['category_name'])) $params['category'] = $params['category_name'];
 		
 		$url = 'news.php?';
-		if('--FROM--' != $params['page']) $page = $params['page'] ? intval($params['page']) : '0';
+		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';
 		else $page = '--FROM--';
 
 		if($route[0] == 'view')

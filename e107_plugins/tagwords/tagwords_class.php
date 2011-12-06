@@ -75,9 +75,10 @@ class tagwords
 	function loadPlugin()
 	{
 		global $pref;
-		if(is_array($pref['e_tagwords_list']))
+		$list = e107::getPref('e_tagwords_list');
+		if($list && is_array($list))
 		{
-			foreach($pref['e_tagwords_list'] as $e_tag)
+			foreach($list as $e_tag)
 			{
 				if(is_readable(e_PLUGIN.$e_tag."/e_tagwords.php"))
 				{

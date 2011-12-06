@@ -19,7 +19,7 @@ class plugin_tagwords_url extends eUrlConfig
 			),
 			
 			'allowVars' => array(
-				'q', 'page','type', 'sort', 'area', 's', 'so',
+				'q', 'page','type', 'sort', 'area',/* 's', 'so',*/
 			),
 			
 			// rule set array
