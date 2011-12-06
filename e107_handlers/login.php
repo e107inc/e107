@@ -71,8 +71,10 @@ class userlogin
 	*/
 	public function login($username, $userpass, $autologin, $response = '', $noredirect = false)
 	{
-		global $pref, $e_event, $_E107;
-
+		$pref = e107::getPref();
+		$e_event = e107::getEvent();
+		$_E107 = e107::getE107();
+		
 		$username = trim($username);
 		$userpass = trim($userpass);
 
@@ -269,9 +271,9 @@ class userlogin
 		}
 
 		if($noredirect) return true;
-
-		$redir = e_SELF;
-		if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
+		$redir = e_REQUEST_URL;
+		//$redir = e_SELF;
+		//if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
 		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
 		{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
 //		  $log_info = "New user: ".$this->userData['user_name']."  Class: ".$this->userData['user_class']."  Admin: ".$this->userData['user_admin']."  Perms: ".$this->userData['user_perms'];

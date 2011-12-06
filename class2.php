@@ -485,10 +485,10 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
-   		if(substr(e_SELF, 7, 4)=='www.' || substr(e_SELF, 8, 4)=='www.')
+   		if(substr(e_REQUEST_URL, 7, 4)=='www.' || substr(e_REQUEST_URL, 8, 4)=='www.')
 		{
-			$self = e_SELF;
-			if(e_QUERY){ $self .= '?'.e_QUERY; }
+			$self = e_REQUEST_URL;
+			//if(e_QUERY){ $self .= '?'.e_QUERY; }
 			$location = str_replace('://www.', '://', $self);
 			header("Location: {$location}", true, 301); // send 301 header, not 302
 			exit();
@@ -514,13 +514,13 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 			// -- ports do not match (http <==> https)
 			// -- base domain does not match (case-insensitive)
 			// -- NOT admin area
-			if (($urlport != $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false) && strpos(e_SELF, ADMINDIR) === false)
+			if (($urlport != $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false) && strpos(e_REQUEST_SELF, ADMINDIR) === false)
 			{
-				$aeSELF = explode('/', e_SELF, 4);
+				$aeSELF = explode('/', e_REQUEST_SELF, 4);
 				$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
 				$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
 				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
-				$location = implode('/',$aeSELF).(e_QUERY ? '?'.e_QUERY : '');
+				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
 
 			header("Location: {$location}", true, 301); // send 301 header, not 302
 			exit();
@@ -837,6 +837,9 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	{
 		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 	}
+	
+	// earlier event trigger with user data still available 
+	e107::getEvent()->trigger('logout');
 
 	if ($pref['user_tracking'] == 'session')
 	{
@@ -847,12 +850,10 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	cookie(e_COOKIE, '', (time() - 2592000));
 	e107::getUser()->logout();
 	
-	e107::getEvent()->trigger('logout');
 	e107::getRedirect()->redirect(SITEURL);
 	// header('location:'.e_BASE.'index.php');
 	exit();
 }
-
 
 /*
 * Calculate time zone offset, based on session cookie set in e107.js.

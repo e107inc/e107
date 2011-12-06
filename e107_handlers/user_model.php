@@ -1293,6 +1293,7 @@ class e_user extends e_user_model
 	{
 		if($force || null === $this->_session_data)
 		{
+			$this->_session_data = null;
 			$this->_session_key = e107::getPref('cookie_name', 'e107cookie');
 			$this->_session_type = e107::getPref('user_tracking', 'cookie');
 			
