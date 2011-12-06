@@ -40,12 +40,13 @@ class plugin_tagwords_url extends eUrlConfig
 	public function admin()
 	{
 		// static may be used for performance
-		e107::plugLan('pm', 'url', true);
+		e107::plugLan('tagwords');
+		
 		static $admin = array(
 			'labels' => array(
-				'name' => TAGW_LAN_URL_NAME, // Module name
-				'label' => TAGW_LAN_URL_DEFAULT_LABEL, // Current profile name
-				'description' => TAGW_LAN_URL_DEFAULT_DESCR, //
+				'name' => LAN_TAG_URL_NAME, // Module name
+				'label' => LAN_TAG_URL_DEFAULT_LABEL, // Current profile name
+				'description' => LAN_TAG_URL_DEFAULT_DESCR, //
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
