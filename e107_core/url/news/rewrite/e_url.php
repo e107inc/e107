@@ -41,7 +41,7 @@ class core_news_rewrite_url extends eUrlConfig
 	public function create($route, $params = array(), $options = array())
 	{
 		
-		if('--FROM--' != $params['page']) $page = $params['page'] ? intval($params['page']) : '0';
+		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';
 		else $page = '--FROM--';
 		if(!$route) $route = 'list/items';
 		

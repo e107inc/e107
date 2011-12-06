@@ -956,7 +956,7 @@ if(!defined("THEME_LAYOUT"))
 					continue;
 				}
 
-				if ($kpage && ($kpage == e_PAGE || strpos($c_url, $kpage) !== false))
+				if ($kpage && ($kpage == defset('e_PAGE') || strpos($c_url, $kpage) !== false))
 				{
             	 //	$def = ($lyout) ? $lyout : "legacyCustom";
 					$def =  $lyout;
@@ -1078,7 +1078,8 @@ define('INIT', true);
 if(isset($_SERVER['HTTP_REFERER']))
 {
 	$tmp = explode("?", $_SERVER['HTTP_REFERER']);
-	define('e_REFERER_SELF',($tmp[0] == e_SELF));
+	define('e_REFERER_SELF',($tmp[0] == e_REQUEST_SELF));
+	unset($tmp);
 }
 else
 {

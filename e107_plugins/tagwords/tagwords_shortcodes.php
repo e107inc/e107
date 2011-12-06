@@ -263,6 +263,7 @@ class tagwords_shortcodes
 
 	function sc_tag_button()
 	{
+		global $tag;
 		if(varsettrue($tag->pref['tagwords_view_sort']) || varsettrue($tag->pref['tagwords_view_style']) || varsettrue($tag->pref['tagwords_view_area']))
 			return "<input class='button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
 		return '';
@@ -317,7 +318,7 @@ class tagwords_shortcodes
 	{
 		global $tag;
 		$id = 'tagwords_view_sort';
-		$sel = ($tag->pref[$id] ? "checked='checked'" : "");
+		$sel = (isset($tag->pref[$id]) && $tag->pref[$id] ? "checked='checked'" : "");
 		return "
 		<label for='".$id."'>
 			<input type='checkbox' name='".$id."' id='".$id."' value='1' ".$sel." /> ".LAN_TAG_OPT_12."
@@ -328,7 +329,7 @@ class tagwords_shortcodes
 	{
 		global $tag;
 		$id = 'tagwords_view_style';
-		$sel = ($tag->pref[$id] ? "checked='checked'" : "");
+		$sel = (isset($tag->pref[$id]) && $tag->pref[$id] ? "checked='checked'" : "");
 		return "
 		<label for='".$id."'>
 			<input type='checkbox' name='".$id."' id='".$id."' value='1' ".$sel." /> ".LAN_TAG_OPT_13."
@@ -339,7 +340,7 @@ class tagwords_shortcodes
 	{
 		global $tag;
 		$id = 'tagwords_view_area';
-		$sel = ($tag->pref[$id] ? "checked='checked'" : "");
+		$sel = (isset($tag->pref[$id]) && $tag->pref[$id] ? "checked='checked'" : "");
 		return "
 		<label for='".$id."'>
 			<input type='checkbox' name='".$id."' id='".$id."' value='1' ".$sel." /> ".LAN_TAG_OPT_14."
@@ -350,7 +351,7 @@ class tagwords_shortcodes
 	{
 		global $tag;
 		$id = ($sc_mode=='menu' ? 'tagwords_menu_view_search' : 'tagwords_view_search');
-		$sel = ($tag->pref[$id] ? "checked='checked'" : "");
+		$sel = (isset($tag->pref[$id]) && $tag->pref[$id] ? "checked='checked'" : "");
 		return "
 		<label for='".$id."'>
 			<input type='checkbox' name='".$id."' id='".$id."' value='1' ".$sel." /> ".LAN_TAG_OPT_19."
@@ -368,7 +369,7 @@ class tagwords_shortcodes
 		{
 			$id = 'tagwords_view_freq';
 		}
-		$sel = ($tag->pref[$id] ? "checked='checked'" : "");
+		$sel = (isset($tag->pref[$id]) && $tag->pref[$id] ? "checked='checked'" : "");
 		return "
 		<label for='".$id."'>
 			<input type='checkbox' name='".$id."' id='".$id."' value='1' ".$sel." /> ".LAN_TAG_OPT_20."

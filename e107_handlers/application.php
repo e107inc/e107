@@ -1783,7 +1783,7 @@ class eRouter
 		$urlSuffix = '';
 		
 		// Fix base url for legacy links
-		if($config['noSingleEntry']) $base = $options['full'] ? SITEURL : e_HTTP;
+		if(vartrue($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
 		elseif(self::FORMAT_GET !== $config['format'])
 		{
 			$urlSuffix = $this->urlSuffix;

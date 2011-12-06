@@ -675,7 +675,7 @@ class e_news_tree extends e_front_tree_model
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
-			$ret[] = $parser->parseTemplate($template['item'], true, $obj, $vars);
+			$ret[] = $parser->parseTemplate($template['item'], true, $batch, $vars);
 			$i++;
 		}
 
@@ -888,7 +888,7 @@ class e_news_category_tree extends e_front_tree_model
 		if($ret)
 		{
 			$separator = varset($template['separator'], '');
-			$ret = $template['start'].implode($separator, $ret).$templatep['end'];
+			$ret = $template['start'].implode($separator, $ret).$template['end'];
 			$return = isset($parms['return']) ? true : false;
 
 			if($tablerender)

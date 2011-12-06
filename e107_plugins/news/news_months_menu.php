@@ -36,12 +36,11 @@ if(false === $cached)
 	$marray = array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,
 		BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,
 		BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
-	$pref['blogcal_ws'] = "monday";
 		
 	
 	// TODO parms
 	//$parms['year'] = "2011 0";
-	if($parms['year'])
+	if(vartrue($parms['year']))
 	{
 		$date = $parms['year'];
 		list($cur_year, $cur_month) = explode(" ", date($date));
