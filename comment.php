@@ -137,7 +137,7 @@ if (isset($_POST['replysubmit']))
 
 if ($redirectFlag)
 {	// Need to go back to original page
-	
+
 	// Check for core tables first
 	switch ($table)
 	{
@@ -154,7 +154,7 @@ if ($redirectFlag)
 			echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
 			exit;
 		case 'user' :
-			echo "<script type='text/javascript'>document.location.href='".e107::getUrl()->create('user/profile/view', 'id='.$redirectFlag)</script>\n";
+			echo "<script type='text/javascript'>document.location.href='".e107::getUrl()->create('user/profile/view', 'id='.$redirectFlag)."'</script>\n";
 			exit;
 	}
 
