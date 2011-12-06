@@ -45,10 +45,11 @@ class e_preset
 		global $sql, $ns, $tp;
 		$qry = explode(".", e_QUERY);
 		$unique_id = is_array($this->id) ? $this->id : array($this->id);
-		$uid = $qry[1];
+		$uid = $tp->toDB(varset($qry[1], 0));
 
 		if($_POST && $qry[0] == "savepreset")
 		{
+			$saveID = $tp -> toDB($unique_id[$uid], true);
 			$exclude_array = explode(',',$exclude_fields);
 			$existing = $sql->db_Count("preset", "(*)", " WHERE preset_name='".$saveID."'  ") ? TRUE : FALSE;
 			foreach($_POST as $key => $value)
@@ -57,7 +58,10 @@ class e_preset
 				{
 					unset($_POST[$key]);		// Remove any fields excluded from preset, and those with potentially dubious key names
 				}
-				$_POST[$key] = $tp->toDB($value);
+				else
+				{
+					$_POST[$key] = $tp->toDB($value);
+				}
 				
 			}
 			if ($existing)
@@ -81,7 +85,7 @@ class e_preset
 
 		if($_POST['delete_preset'] && e_QUERY == "clr_preset")
 		{
-			$del = $_POST['del_id'];
+			$del = $tp->toDB($_POST['del_id']);
 			$check = $sql->db_Delete("preset", "preset_name ='".$unique_id[$del]."' ");
 
 			if($output)
