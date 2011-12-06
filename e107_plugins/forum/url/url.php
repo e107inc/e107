@@ -1,11 +1,11 @@
 <?php
 
 /*
-* Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
-*
-* Forum Default URL configuration
-* TODO - SEF URL configuration
+ * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ *
+ * Forum Default URL configuration
+ * TODO - SEF URL configuration
 */
 class plugin_forum_url extends eUrlConfig
 {
