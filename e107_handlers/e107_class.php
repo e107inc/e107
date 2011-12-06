@@ -510,9 +510,10 @@ class e107
 	 * @param string $key
 	 * @return boolean
 	 */
-	public static function getE107($key)
+	public static function getE107($key = null)
 	{
 		$self = self::getInstance();
+		if(null === $key) return $self->_E107;
 		return (isset($self->_E107[$key]) && $self->_E107[$key] ? true : false);
 	}
 

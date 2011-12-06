@@ -50,12 +50,13 @@ class redirection
 	 */
 	function __construct()
 	{
-		$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
+		$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
 		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php');
 		$this->query_exceptions = array('logout');
 	}
 	
 	/**
+	 * FIXME - build self_exceptions dynamically - use URL assembling to match the proper URLs later
 	 * Store the current URL in a cookie for 5 minutes so we can return to it after being logged out. 
 	 * @param string $url if empty self url will be used
 	 * @param boolean $forceNoSef if false REQUEST_URI will be used (mod_rewrite support)
@@ -70,6 +71,11 @@ class redirection
 			{
 				return;
 			}
+			elseif(in_array(e_REQUEST_URI, $this->self_exceptions))
+			{
+				return;
+			}
+			
 			if(defset('e_PAGE') && in_array(e_PAGE, $this->page_exceptions))
 			{
 				return;
@@ -87,11 +93,11 @@ class redirection
 		return $this;
 	}
 	
-	public function getSelf($forceNoSef = false)
+	public function getSelf($full = false)
 	{
-		if($forceNoSef)
+		if($full)
 		{
-			$url = (e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+			$url = e_REQUEST_URL;//(e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
 		}
 		else
 		{
@@ -325,6 +331,10 @@ class redirection
 		
 		// Safari endless loop fix.
 		header('Content-Length: 0');
+		
+		// write session if needed
+		if(session_id()) session_write_close();
+		
 		exit();
 	}
 }

@@ -23,6 +23,15 @@ global $error_handler,$db_time,$FOOTER;
 // Clean session shutdown
 e107::getSession()->shutdown();
 
+
+// System browser CACHE control - defaults to no cache; override in e107_config or on the fly
+// This is temporary solution, we'll implement more flexible way for cache control override
+// per page, more investigation needed about cache related headers, browser quirks etc
+if(!defined('e_NOCACHE'))
+{
+	define('e_NOCACHE', true);
+}
+
 //
 // SHUTDOWN SEQUENCE
 //
@@ -301,11 +310,13 @@ $etag = md5($page);
 
 //header('Pragma:');
 // previously disabled or there is posted data
-if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET')
+$canCache = false;
+if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
 {
+	$canCache = true;
 	header("Cache-Control: must-revalidate", true);	
 	if(e107::getPref('site_page_expires')) // TODO - allow per page
-	{
+	{ 
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
@@ -349,7 +360,7 @@ else
 }
 
 // should come after the Etag header
-if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 {
 	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
 	
