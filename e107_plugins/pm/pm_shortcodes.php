@@ -8,10 +8,8 @@
  *
  *	PM plugin - shortcodes
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 
@@ -223,7 +221,8 @@ class pm_handler_shortcodes
 			foreach($attachments as $a)
 			{
 				list($timestamp, $fromid, $rand, $filename) = explode("_", $a, 4);
-				$ret .= "<a href='".e_SELF."?get.{$this->pmInfo['pm_id']}.{$i}'>{$filename}</a><br />";
+				$url = $this->url('action/get', array('id' => $this->pmInfo['pm_id'], 'index' => $i));
+				$ret .= "<a href='".$url."'>{$filename}</a><br />";
 				$i++;
 			}
 			$ret = substr($ret, 0, -3);
@@ -345,8 +344,13 @@ class pm_handler_shortcodes
 		if('link' == $prm[0])
 		{
 			$extra = '';
+			// TODO - go with only one route version - view/message ???
 			if (isset($prm[1])) $extra = '.'.$prm[1];
-			$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$this->pmInfo['pm_id']}{$extra}'>".$ret."</a>";
+			if($extra == 'inbox') $url = $this->url('message', 'id='.$this->pmInfo['pm_id']);
+			elseif($extra == 'outbox') $url = $this->url('sent', 'id='.$this->pmInfo['pm_id']);
+			else $url = $this->url('show', 'id='.$this->pmInfo['pm_id']);
+			
+			$ret = "<a href='".$ret."'>".$ret."</a>";
 		}
 		return $ret;
 	}
@@ -356,7 +360,7 @@ class pm_handler_shortcodes
 	{
 		if('link' == $parm)
 		{
-			return "<a href='".e_HTTP."user.php?id.{$this->pmInfo['pm_from']}'>{$this->pmInfo['user_name']}</a>";
+			return "<a href='".$this->e107->url->create('user/profile/view', array('id' => $this->pmInfo['pm_from'], 'name' => $this->pmInfo['user_name']))."'>{$this->pmInfo['user_name']}</a>";
 		}
 		else
 		{
@@ -394,11 +398,11 @@ class pm_handler_shortcodes
 	{
 		if(in_array($this->pmInfo['pm_from'], $this->pmBlocks))
 		{
-			return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$this->pmInfo['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' class='icon S16' /></a>";
+			return "<a href='".$this->url('action/unblock', 'id='.$this->pmInfo['pm_from'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' class='icon S16' /></a>";
 		}
 		else
 		{
-			return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$this->pmInfo['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' class='icon S16' /></a>";
+			return "<a href='".$this->url('action/block', 'id='.$this->pmInfo['pm_from'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' class='icon S16' /></a>";
 		}
 	}
 
@@ -413,7 +417,9 @@ class pm_handler_shortcodes
 		{
 			$extra = '.'.($this->pmInfo['pm_from'] == USERID ? 'outbox' : 'inbox');
 		}
-		return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$this->pmInfo['pm_id']}{$extra}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+		if($extra !== 'inbox' && $extra !== 'outbox') return '';
+		$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
+		return "<a href='".$this->url('action/'.$action, 'id='.$this->pmInfo['pm_id'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
 	}
 
 
@@ -429,7 +435,7 @@ class pm_handler_shortcodes
 		{
 			if('link' == $parm)
 			{
-				return "<a href='".e_HTTP."user.php?id.{$this->pmInfo['pm_to']}'>{$this->pmInfo['user_name']}</a>";
+				return "<a href='".$this->e107->url->create('user/profile/view', array('id' => $this->pmInfo['pm_to'], 'name' => $this->pmInfo['user_name']))."'>{$this->pmInfo['user_name']}</a>";
 			}
 			else
 			{
@@ -453,8 +459,9 @@ class pm_handler_shortcodes
 	{
 		if($this->pmInfo['pm_to'] == USERID)
 		{
+			// pm_id is mapped insisde the config to id key
 			$ret = "
-			<form method='post' action='".e_SELF."?reply.{$this->pmInfo['pm_id']}'>
+			<form method='post' action='".$this->url('reply', $this->pmInfo)."'>
 			<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='button' type='submit' name='reply' value='".LAN_PM_55."' />
 			</form>
 			";
@@ -468,7 +475,7 @@ class pm_handler_shortcodes
 		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		if($pm_outbox['outbox']['filled'] < 100)
 		{
-			$link = $this->e107->url->getUrl('pm','main',array('f' => 'send'));
+			$link = $this->url('new');
 			return "<a href='{$link}'>".PM_SEND_LINK."</a>";
 		}
 		return '';
@@ -517,7 +524,7 @@ class pm_handler_shortcodes
 		}
 		if('link' == $parm)
 		{
-			return "<a href='".e_HTTP."user.php?id.{$this->pmBlocked['pm_block_from']}'>{$this->pmBlocked['user_name']}</a>";
+			return "<a href='".$this->e107->url->create('user/profile/view', array('id' => $this->pmBlocked['pm_block_from'], 'name' => $this->pmBlocked['user_name']))."'>{$this->pmBlocked['user_name']}</a>";
 		}
 		else
 		{
@@ -535,13 +542,22 @@ class pm_handler_shortcodes
 
 	public	function sc_pm_blocked_delete()
 	{
-		return "<a href='".e_PLUGIN_ABS."pm/pm.php?delblocked.{$this->pmBlocked['pm_block_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+		return "<a href='".$this->url('action/delete-blocked', array('id' => $this->pmBlocked['pm_block_from']))."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
 	}
 
 
 	public	function sc_pm_delete_blocked_selected()
 	{
 		return "<input type='submit' name='pm_delete_blocked_selected' class='button' value='".LAN_PM_53."' />";
+	}
+	
+	/**
+	 * Convinient url assembling shortcut
+	 */
+	public function url($action, $params = array(), $options = array())
+	{
+		if(strpos($action, '/') === false) $action = 'view/'.$action;
+		$this->e107->url->create('pm/'.$action, $params, $options);
 	}
 }
 
