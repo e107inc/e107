@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	PM plugin - base class API
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 
@@ -328,7 +326,14 @@ class private_message
 		return FALSE;
 	}
 
-
+	/**
+	 * Convinient url assembling shortcut
+	 */
+	public function url($action, $params = array(), $options = array())
+	{
+		if(strpos($action, '/') === false) $action = 'view/'.$action;
+		$this->e107->url->create('pm/'.$action, $params, $options);
+	}
 
 	/**
 	 *	Send an email to notify of a PM
@@ -344,7 +349,7 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_100.SITENAME;
-		$pmlink = SITEURLBASE.e_PLUGIN_ABS.'pm/pm.php?show.'.$pmid;
+		$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0');
 		$txt = LAN_PM_101.SITENAME."\n\n";
 		$txt .= LAN_PM_102.USERNAME."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
@@ -368,7 +373,7 @@ class private_message
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
-		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.{$pmInfo['pm_id']}";
+		$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
 		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
@@ -698,4 +703,3 @@ class private_message
 		}
 	}
 }
-?>
