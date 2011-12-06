@@ -199,7 +199,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');
 		//echo(e107::getUrl()->create('system/error/notfound', '', 'full=1'));
-		
+		//eRouter::adminReadConfigs(e_CORE.'url/news', 'core');
 		$set = array();
 		// all available URL modules
 		$set['url_modules'] = eRouter::adminReadModules();
@@ -398,7 +398,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				$checked = varset($obj->current[$module]) == $location ? ' checked="checked"' : '';
 				
 				$path = eDispatcher::getConfigPath($module, $location, false);
-				if(!is_readable($path)) $path = str_replace('/e_url.php', '/', $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true)).' <em>('.LAN_EURL_LOCATION_NONE.')</em>';
+				if(!is_readable($path)) $path = str_replace('/url.php', '/', $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true)).' <em>('.LAN_EURL_LOCATION_NONE.')</em>';
 				else $path = $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true);
 				
 				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
@@ -527,7 +527,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$help = array();
 			$admin = $obj->config->admin();
 			$lan = $lanDef[0];
-			$url = e107::getUrl()->create($module, '', array('full' => 1));
+			$url = e107::getUrl()->create($module, '', array('full' => 1, 'encode' => 0));
 			$defVal = isset($currentAliases[$lan]) && in_array($module, $currentAliases[$lan]) ? array_search($module, $currentAliases[$lan]) : $module; 
 			$section = vartrue($admin['labels'], array());
 			
@@ -553,7 +553,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				foreach ($lans as $code => $lan) 
 				{
 
-					$url = e107::getUrl()->create($module, '', array('lan' => $code, 'full' => 1)); 
+					$url = e107::getUrl()->create($module, '', array('lan' => $code, 'full' => 1, 'encode' => 0)); 
 					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module; 
 					$text .= "<div class='spacer'><!-- --></div>";
 					$text .= $this->text('eurl_aliases['.$code.']['.$module.']', $defVal).' ['.$lan.']'.$this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');

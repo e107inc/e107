@@ -75,8 +75,17 @@ class core_news_url extends eUrlConfig
 	{
 		if(!$params) return 'news.php';
 		
+		if(!$route) $route = 'list/items';
 		if(is_string($route)) $route = explode('/', $route, 2);
-		if(!varset($route[1])) $route[1] = '';
+		if('index' == $route[0])
+		{
+			$route[0] = 'list';
+			$route[1] = 'items';
+		}
+		elseif('index' == $route[1])
+		{
+			$route[1] = 'items';
+		}
 		
 		## news are passing array as it is retrieved from the DB, map vars to proper values
 		if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];

@@ -326,7 +326,6 @@ class eDispatcher
 		$moduleName = $request->getModuleName();
 		$className = $this->isDispatchable($request, false);
 		
-		
 		// dispatch based on rule settings
 		if(!$className)
 		{
@@ -368,7 +367,7 @@ class eDispatcher
 		$location = $tmp[0];
 		if(isset($tmp[1]) && !empty($tmp[1])) 
 		{
-			$custom = $tmp[1].'/';
+			$custom = $tmp[1].'_';
 		}
 		unset($tmp);
 		if($module !== '*') $module .= '/';
@@ -376,20 +375,18 @@ class eDispatcher
 		switch ($location) 
 		{
 			case 'plugin':
-				if($custom) $custom = 'url/'.$custom;
-				return $sc ? '{e_PLUGIN}'.$module.$custom.'e_url.php' : e_PLUGIN.$module.$custom.'e_url.php';
+				//if($custom) $custom = 'url/'.$custom;
+				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;
-			
-			//TODO - discuss
+
 			case 'core':
 				if($module === '*') return $sc ? '{e_CORE}url/' : e_CORE.'url/';
-				return $sc ? '{e_CORE}url/'.$module.$custom.'e_url.php' : e_CORE.'url/'.$module.$custom.'e_url.php';
+				return $sc ? '{e_CORE}url/'.$module.$custom.'url.php' : e_CORE.'url/'.$module.$custom.'url.php';
 			break;
-			
-			// TODO - discuss
+
 			case 'override':
 				if($module === '*') return $sc ? '{e_CORE}override/url/'  : e_CORE.'override/url/' ;
-				return $sc ? '{e_CORE}override/url/'.$module.$custom.'url.php'  : e_CORE.'override/url/'.$module.$custom.'e_url.php' ;
+				return $sc ? '{e_CORE}override/url/'.$module.$custom.'url.php'  : e_CORE.'override/url/'.$module.$custom.'url.php' ;
 			break;
 			
 			default:
@@ -412,13 +409,11 @@ class eDispatcher
 			case 'plugin':
 				return $sc ? '{e_PLUGIN}'.$module.'/url/' : e_PLUGIN.$module.'/url/';
 			break;
-			
-			//TODO - discuss
+
 			case 'core':
 				return $sc ? '{e_CORE}url/'.$module.'/' : e_CORE.'url/'.$module.'/';
 			break;
-			
-			// TODO - discuss
+
 			case 'override':
 				return $sc ? '{e_CORE}override/url/'.$module.'/'  : e_CORE.'override/url/'.$module.'/';
 			break;
@@ -546,13 +541,21 @@ class eDispatcher
 	 */
 	public function isDispatchableModule($module, $controllerName, $location, $checkOverride = false)
 	{
-		$path = self::getControllerPath($module, $controllerName, 'override', false); 
 		if($checkOverride || $location == 'override')
 		{
-			$class_name = self::getControllerClass($module, $controllerName, $location);
+			$path = self::getControllerPath($module, $controllerName, 'override', false); 
+			
+			$class_name = self::getControllerClass($module, $controllerName, 'override');
 			if($class_name && !class_exists($class_name, false) && is_readable($path)) include_once($path);
 			
 			if($class_name && class_exists($class_name, false)) return $class_name;
+		}
+		
+		// fallback to original dispatch location if any
+		if($location === 'override')
+		{
+			// check for real location
+			if(($location = eDispatcher::getModuleRealLocation($module)) === null) return false;
 		}
 		
 		if($location !== 'override')
@@ -578,24 +581,26 @@ class eDispatcher
 	 */
 	public function isDispatchable(eRequest $request, $checkReflection = false, $checkOverride = true)
 	{
-		$location = self::getDispatchLocation($request->getModule());
+		$location = self::getDispatchLocation($request->getModuleName());
 		
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
+		$className = false;
 		
-		// dispatch based on rule settings
+		// dispatch based on url_config preference value, if config location is override and there is no
+		// override controller, additional check against real controller location will be made
 		if($location)
 		{
 			$className = $this->isDispatchableModule($moduleName, $controllerName, $location, $checkOverride);
 		}
-		else 
-		{
+		//else 
+		//{
 			# Disable plugin check for routes with no config info - prevent calling of non-installed plugins
 			# We may allow this for plugins which don't have plugin.xml in the future 
 			// $className = $this->isDispatchableModule($moduleName, $controllerName, 'plugin', $checkOverride);
 			// if(!$className)  
-			$className = $this->isDispatchableModule($moduleName, $controllerName, 'core', $checkOverride);
-		}
+			//$className = $this->isDispatchableModule($moduleName, $controllerName, 'core', $checkOverride);
+		//}
 		
 		if(empty($className)) return false;
 		elseif(!$checkReflection) return $className;
@@ -642,7 +647,7 @@ class eDispatcher
 	{
 		if(null === $location)
 		{
-			$location = self::getModuleLocation($module);
+			$location = self::getModuleConfigLocation($module);
 			if(!$location) return null;
 		}
 		$reg = $module.'/'.$location;
@@ -668,10 +673,9 @@ class eDispatcher
 	 * Auto discover module location from stored in core prefs data
 	 * @param string $module
 	 */
-	public static function getModuleLocation($module)
+	public static function getModuleConfigLocation($module)
 	{
-		// FIXME - based on url_module detection - real location, not override!!!
-		//retrieve from prefs
+		//retrieve from config prefs
 		return e107::findPref('url_config/'.$module, '');
 	}
 	
@@ -682,7 +686,7 @@ class eDispatcher
 	public static function getDispatchLocation($module)
 	{
 		//retrieve from prefs
-		$location = self::getModuleLocation($module);
+		$location = self::getModuleConfigLocation($module);
 		if(!$location) return null;
 		
 		if(($pos = strpos($location, '/'))) //can't be 0
@@ -690,6 +694,27 @@ class eDispatcher
 			return substr($location, 0, $pos);
 		}
 		return $location;
+	}
+	
+	
+	/**
+	 * Auto discover module real location (and not currently set from url adminsitration) from stored in core prefs data
+	 * @param string $module
+	 */
+	public static function getModuleRealLocation($module)
+	{
+		//retrieve from prefs
+		$searchArray = e107::findPref('url_modules');
+		if(!$searchArray) return null;
+		
+		$search = array('core', 'plugin', 'override');
+		
+		foreach ($search as $location) 
+		{
+			$_searchArray = vartrue($searchArray[$location], array());
+			if(in_array($module, $_searchArray)) return $location;
+		}
+		return null;
 	}
 }
 
@@ -915,6 +940,45 @@ class eRouter
 		return $config;
 	}
 
+	/**
+	 * Retrieve config array from a given system path
+	 * @param string $path
+	 * @param string $location core|plugin|override
+	 */
+	public static function adminReadConfigs($path, $location = null)
+	{
+		$file = e107::getFile(false);
+		$ret = array();
+		
+		$file->mode = 'fname';
+		$files = $file->setFileInfo('fname')
+			->get_files($path, '^([a-z_]{1,}_)?url\.php$');
+			
+		
+		foreach ($files as $file) 
+		{
+			if(null === $location)
+			{
+				$c = eRouter::file2config($file, $location);
+				if($c) $ret[] = $c;
+				continue;
+			}
+			$ret[] = eRouter::file2config($file, $location);
+		}
+		return $ret;
+	}
+
+	/**
+	 * Convert filename to configuration string
+	 * @param string $filename
+	 * @param string $location core|plugin|override
+	 */
+	public static function file2config($filename, $location = '')
+	{
+		if($filename == 'url.php') return $location;
+		if($location) $location .= '/';
+		return $location.substr($filename, 0, strrpos($filename, '_'));
+	}
 	
 	/**
 	 * Detect all available system url modules, used as a map on administration configuration path
@@ -1109,8 +1173,9 @@ class eRouter
 			$ret[$module] = array('core');
 			
 			// read sub-locations
-			$path = eDispatcher::getConfigLocationPath($module, 'core');
-			$sub = $fl->get_dirs($path);
+			$path = eDispatcher::getConfigLocationPath($module, 'core'); 
+			//$sub = $fl->get_dirs($path);
+			$sub = eRouter::adminReadConfigs($path);
 			
 			if($sub)
 			{
@@ -1139,7 +1204,8 @@ class eRouter
 			
 			// read sub-locations
 			$path = eDispatcher::getConfigLocationPath($module, 'plugin');
-			$sub = $fl->get_dirs($path);
+			//$sub = $fl->get_dirs($path);
+			$sub = eRouter::adminReadConfigs($path);
 			
 			if($sub)
 			{
@@ -1173,7 +1239,8 @@ class eRouter
 			
 			// read sub-locations
 			$path = eDispatcher::getConfigLocationPath($module, 'override');
-			$sub = $fl->get_dirs($path);
+			//$sub = $fl->get_dirs($path);
+			$sub = eRouter::adminReadConfigs($path);
 			
 			if($sub)
 			{
@@ -1677,7 +1744,7 @@ class eRouter
 	 */
 	public function configCallback($module, $callBack, $params, $location)
 	{
-		if(null == $location) $location = eDispatcher::getModuleLocation($module);
+		if(null == $location) $location = eDispatcher::getModuleConfigLocation($module);
 		if(!$module || !($obj = eDispatcher::getConfigObject($module, $location))) return false;
 		
 		return call_user_func_array(array($obj, $callBack), $params);
@@ -1771,12 +1838,15 @@ class eRouter
 			break;
 		}
 		
+		
+		
 		# aliases
 		$module = $route[0];
 		$config = $this->getConfig($module);
 
 		$alias = $this->hasAlias($module, vartrue($options['lan'], null)) ? $this->getAliasFromModule($module, vartrue($options['lan'], null)) : $module;
 		$route[0] = $alias;
+		if($options['encode']) $alias = rawurlencode($alias);
 		
 		$format = isset($config['format']) && $config['format'] ? $config['format'] : self::FORMAT_GET;
 		
@@ -1802,9 +1872,20 @@ class eRouter
 			{
 				$route = $tmp[0];
 				$params = $tmp[1];
-			
-				if(!$this->isMainModule($module)) array_unshift($route, $alias);
+				
 				if($options['encode']) $route = array_map('rawurlencode', $route);
+				$route = implode('/', $route);
+			
+				if(!$route) 
+				{
+					$urlSuffix = '';
+					if(!$this->isMainModule($module)) $route = $alias;
+				}
+				elseif (!$this->isMainModule($module)) 
+				{
+					$route = $alias.'/'.$route;
+				}
+				
 			}
 			else 
 			{	
@@ -1815,11 +1896,10 @@ class eRouter
 			
 			if($format === self::FORMAT_GET)
 			{
-				$params[$this->routeVar] = implode('/', $route);
-				$route = array();
+				$params[$this->routeVar] = $route;
+				$route = '';
 			}
-			$route = implode('/', $route);
-			if(!$route || $route == $alias) $urlSuffix = '';
+			
 			if($params) 
 			{
 				$params = $this->createPathInfo($params, $options);
@@ -1836,7 +1916,7 @@ class eRouter
 		{
 			foreach ($rules as $rule)
 			{
-				if (($url = $rule->createUrl($this, array($route[1], $route[2]), $params, $options)) !== false) return $base.($this->isMainModule($module) ? '' : $alias.'/').$url.$anc;
+				if (($url = $rule->createUrl($this, array($route[1], $route[2]), $params, $options)) !== false) return $base.rtrim(($this->isMainModule($module) ? '' : $alias.'/').$url, '/').$anc;
 			}
 		}
 
@@ -2304,7 +2384,7 @@ class eUrlRule
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 
 		$url = strtr($this->template, $tr);
-
+		
 		if (empty($params)) return $url !== '' ? $url.$suffix : $url;
 
 		// apppend not supported, maybe in the future...?
@@ -2317,7 +2397,7 @@ class eUrlRule
 			$url .= '?'.$manager->createPathInfo($params, $options);
 		}
 
-		return $url;
+		return rtrim($url, '/');
 	}
 
 	/**
@@ -2561,7 +2641,7 @@ class eController
 		{		
 			if(method_exists($this, $actionMethodName)) 
 			{
-				// TODO request userParams() to store private data - check for noPopulat param here
+				// TODO request userParams() to store private data - check for noPopulate param here
 				$request->populateRequestParams();
 				$this->$actionMethodName();
 				$this->postAction();
