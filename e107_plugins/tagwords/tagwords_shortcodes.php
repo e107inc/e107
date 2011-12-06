@@ -251,7 +251,7 @@ class tagwords_shortcodes
 					{
 						$name = "e_tagwords_{$area}";
 						$selected = (varsettrue($_GET['area'])==$area ? "selected=selected" : '');
-						$text .= "<option value='".$area."' ".$selected." >".$tag->$name->settings['caption']."</option>";
+						$text .= "<option value='".$area."' ".$selected." >".defset($tag->$name->settings['caption'], $tag->$name->settings['caption'])."</option>";
 					}
 				}
 			$text .= "
@@ -401,9 +401,9 @@ class tagwords_shortcodes
 			$name = "e_tagwords_{$area}";
 
 			$text .= "
-			<label for='".$id."[".$area."]'>
-			<input type='checkbox' name='".$id."[".$area."]' id='".$id."[".$area."]' value='1' ".$sel." />
-			".$tag->$name->settings['caption']."
+			<label for='".$id."-".$area."'>
+			<input type='checkbox' name='".$id."[".$area."]' id='".$id."-".$area."' value='1' ".$sel." />
+			".defset($tag->$name->settings['caption'], $tag->$name->settings['caption'])."
 			</label><br />";
 
 		}

@@ -65,4 +65,7 @@ define("LAN_TAG_MENU_2", "Tagwords");
 
 define("LAN_TAG_CORE_NEWS_1", "News");
 define("LAN_TAG_CORE_CPAGES_1", "Pages");
-?>
+
+define("LAN_TAG_URL_NAME", "Tagwords");
+define("LAN_TAG_URL_DEFAULT_LABEL", "Default");
+define("LAN_TAG_URL_DEFAULT_DESCR", "Example: http://yoursite.com/tagwords/some-tag");
