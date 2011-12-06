@@ -575,7 +575,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
-	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
+	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' /></form>";
 	return $text;
 }
 

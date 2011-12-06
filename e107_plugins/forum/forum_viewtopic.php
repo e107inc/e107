@@ -378,7 +378,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='" . $key . "'>" . $val . "</option>";
 	}
-	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='" . LAN_03 . "' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='" . e_SELF . "?" . e_QUERY . "#top' onclick=\"window.scrollTo(0,0);\">" . LAN_10 . "</a></p></form>";
+	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='" . LAN_03 . "' /></form>";
 	return $text;
 }
 
