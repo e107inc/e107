@@ -142,12 +142,12 @@ class plugin_pm_url extends eUrlConfig
 	public function admin()
 	{
 		// static may be used for performance
-		e107::plugLan('pm', 'url', true);
+		e107::plugLan('pm', 'admin_pm', true);
 		static $admin = array(
 			'labels' => array(
-				'name' => PM_LAN_URL_NAME, // Module name
-				'label' => PM_LAN_URL_DEFAULT_LABEL, // Current profile name
-				'description' => PM_LAN_URL_DEFAULT_DESCR, //
+				'name' => ADLAN_PM, // Module name
+				'label' => ADLAN_PM_URL_DEFAULT_LABEL, // Current profile name
+				'description' => ADLAN_PM_URL_DEFAULT_DESCR, //
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

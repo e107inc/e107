@@ -75,6 +75,6 @@ define('ADLAN_PM_79', '--ORPHANS-- unused attachments deleted. --MISSING-- missi
 define('ADLAN_PM_80', 'Preference formats updated');
 define('ADLAN_PM_81', 'Maximum number of PMs to send immediately');
 define('ADLAN_PM_82', 'If sending more than this, they are added to a queue, and sent out using the cron task');
-define('ADLAN_PM_83', '');
 
-?>
+define('ADLAN_PM_URL_DEFAULT_LABEL', 'Default');
+define('ADLAN_PM_URL_DEFAULT_DESCR', 'Example: http://yoursite.com/e107_plugins/pm/pm.php');
