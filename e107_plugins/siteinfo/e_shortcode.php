@@ -90,7 +90,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 	function sc_theme_disclaimer($parm)
 	{
-		global $pref;
+		$pref = e107::getPref();
 		return (defined('THEME_DISCLAIMER') && $pref['displaythemeinfo'] ? THEME_DISCLAIMER : '');
 	}
 

@@ -43,6 +43,8 @@
  * - plugin (string) [optional]: plugin name used for template loading
  * - tmpl_prefix (string) [optional]: template keys prefix; core supported are 'default' and 'dropdown', default depends on 'old_np' pref
  * - navcount (integer) [optional]: number of navigation items to be shown, minimal allowed value is 4, default is 10
+ * - nonavcount (no value) [optional]: if is set it'll disable navigation counting (navcount will be ignored)
+ * - bullet (string) [optional]: currently it should contain the markup to be prepended to the navigation item title
  *
  * WARNING: You have to do rawuldecode() on url, caption and title parameter values (before passing them to the shortcode)
  * or you'll break the whole script
@@ -134,15 +136,24 @@ function nextprev_shortcode($parm = '')
 		if($total_pages <= 1) {	return ''; }
 
 		// urldecoded once by parse_str()
-		if(substr($parm['url'], 0, 5) == 'url::')
+		if(substr($parm['url'], 0, 7) == 'route::')
 		{
 			// New - use URL assembling engine
-			// Format is: url::route::params::options
+			// Format is: route::module/controller/action::urlParams::urlOptions
 			// Example: url::news/list/category::id=xxx&name=yyy&page=--PAGE--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
 			$urlParms = explode('::', $parm['url']);
 			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 		}
+		elseif(substr($parm['url'], 0, 5) == 'url::')
+		{
+			// New - use URL assembling engine
+			// Format is: url::module/controller/action?id=xxx&name=yyy&page=--PAGE--::full=1
+			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
+			$urlParms = explode('::', $parm['url']);
+			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $e107->url->create($urlParms[1], array(), varset($urlParms[2])));
+		}
+		// just regular full or absolute URL
 		else $url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
 
 		// Simple parser vars
@@ -161,11 +172,24 @@ function nextprev_shortcode($parm = '')
 
 		// urldecoded by parse_str()
 		$pagetitle = explode('|',$parm['pagetitle']);
+		
+		// new - bullet support
+		$bullet = vartrue($parm['bullet'], '');
 
-		// navigation number settings
-		$navcount = abs(intval(vartrue($parm['navcount'], 10))); // prevent infinite loop!
-		if($navcount < 4) $navcount = 4;
-		$navmid = floor($navcount/2);
+		// no navigation counter
+		if(isset($parm['nonavcount']))
+		{
+			$navcount = $total_pages;
+			$navmid = 0;
+		}
+		else
+		{
+			// navigation number settings
+			$navcount = abs(intval(vartrue($parm['navcount'], 10))); // prevent infinite loop!
+			if($navcount < 4) $navcount = 4;
+			$navmid = floor($navcount/2);
+		}
+		
 
 		// get template - nextprev_template.php, support for plugin template locations - myplug/templates/nextprev_template.php
 		$tmpl = e107::getTemplate(varset($parm['plugin'], null), 'nextprev');
@@ -173,9 +197,9 @@ function nextprev_shortcode($parm = '')
 		// init advanced navigation visibility
 		$show_first = $show_prev = ($current_page != 1);
 		$show_last = $show_next = ($current_page != $total_pages);
-
+		
 		// Render
-		// XXX - parseTemplate vs simpleParse ??? Currently can't find a reason why we should parse via parseTemplate
+		// Parse via simpleParse()
 		$tp = e107::getParser();
 
 		// Nextprev navigation start
@@ -248,6 +272,7 @@ function nextprev_shortcode($parm = '')
 		}
 
 		$e_vars_loop = new e_vars();
+		$e_vars_loop->bullet = $bullet;
 		$ret_items = array();
 		for($c = $loop_start; $c < $loop_end; $c++)
 		{

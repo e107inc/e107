@@ -2151,6 +2151,7 @@ class e_parse
 					//'{e_HANDLER}'	=> e_HANDLER_ABS, - no ABS path available
 					'{e_MEDIA}'		=> e_MEDIA_ABS,
 					'{e_WEB}'		=> e_WEB_ABS,
+					'{e_BASE}'		=> e_HTTP,
 				);
 			break;
 
@@ -2175,6 +2176,7 @@ class e_parse
 					//'{e_HANDLER}'	=> e_HANDLER_ABS, - no ABS path available
 					'{e_MEDIA}'		=> SITEURLBASE.e_MEDIA_ABS,
 					'{e_WEB}'		=> SITEURLBASE.e_WEB_ABS,
+					'{e_BASE}'		=> SITEURL,
 				);
 			break;
 

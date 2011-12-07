@@ -90,9 +90,9 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				
 				### View news item - kinda catch all - very bad performance when News is chosen as default namespace - two additional DB queries on every site call!
 				## Leading category name - uncomment to enable
-				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('news_title' => 'name', 'mapVars' => array('category_name' => 'category', 'news_title' => 'name', 'news_id' => 'id'), 'category_name' => 'category'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_name' => 'category', 'news_title' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// Base location as item view - fallback if category sef is missing
-				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_title' => 'name'), 'mapVars' => array('news_id' => 'id', 'news_title' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_title' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// fallback if news sef is missing
 				'View/<id:{number}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 				

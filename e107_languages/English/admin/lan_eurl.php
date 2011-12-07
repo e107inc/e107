@@ -76,6 +76,13 @@ define("LAN_EURL_USER_DEFAULT_DESCR", "Legacy direct URLs. Example: http://yours
 define("LAN_EURL_USER_REWRITE_LABEL", "User Friendly URLs (mod_rewrite)");
 define("LAN_EURL_USER_REWRITE_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/user/UserDisplayName");
 
+// Users
+define("LAN_EURL_CORE_PAGE", "Custom Pages");
+define("LAN_EURL_PAGE_DEFAULT_LABEL", "Default");
+define("LAN_EURL_PAGE_DEFAULT_DESCR", "Legacy direct URLs. Example: http://yoursite.com/page.php?1");
+define("LAN_EURL_PAGE_SEF_LABEL", "User Friendly URLs");
+define("LAN_EURL_PAGE_SEF_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/Page-Name");
+
 // Search
 define("LAN_EURL_CORE_SEARCH", "Search");
 define("LAN_EURL_SEARCH_DEFAULT_LABEL", "Default Search URL");
