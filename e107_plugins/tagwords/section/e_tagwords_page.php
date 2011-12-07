@@ -23,6 +23,7 @@ class e_tagwords_page
 			$this->row = $this->getRecord($id);
 		}
 		$url = e_BASE."page.php?".$this->row['page_id'];
+		$url = e107::getUrl()->create('page/view', $this->row, 'allow=page_id,page_title,page_sef');
 		return "<a href='".$url."'>".$this->e107->tp->toHTML($this->row['page_title'], TRUE, '')."</a>";
 	}
 

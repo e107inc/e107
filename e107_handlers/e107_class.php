@@ -1631,6 +1631,9 @@ class e107
 
 	/**
 	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['my_id'] -> array('id' => 'My Id'))
+	 * 
+	 * FIXME - the format of $allinfo=true array is not usable at all, convert it so that it's compatible with e_form::selectbox() method
+	 * 
 	 * @param string $plugin_name
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme

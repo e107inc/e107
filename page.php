@@ -1,230 +1,335 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-|
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * URL and front controller Management
+ *
+ * $URL$
+ * $Id$
 */
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('page');
 
-$page = new pageClass();
-if(isset($_POST['enterpw']))
-{
-	$page -> setPageCookie();
-}
+$e107CorePage = new pageClass(false);
+
 
 if(!e_QUERY)
 {
 	require_once(HEADERF);
-	$tmp = $page -> listPages();
+	$tmp = $e107CorePage->listPages();
 	if(is_array($tmp))
 	{
-		$ns -> tablerender($tmp['title'], $tmp['text']);
+		$ns->tablerender($tmp['title'], $tmp['text']);
 		require_once(FOOTERF);
 		exit;
 	}
 }
 else
 {
-
-	$cacheString = 'page_'.$page->pageID;
-	$cachePageTitle = 'page-t_'.$page->pageID;
-
-	if($cacheData = $e107cache->retrieve($cacheString))
-	{
-
-		list($pagetitle,$comment_flag) = explode("^",$e107cache->retrieve($cachePageTitle));
-		define("e_PAGETITLE", $pagetitle);
-		require_once(HEADERF);
-		echo $cacheData;
-
-	}
-	else
-	{
-		$e107_core_custom_pages = $page -> showPage();
-		define("e_PAGETITLE", $e107_core_custom_pages['title']);
-		require_once(HEADERF);
-		
-		if ($e107_core_custom_pages['err'])		// Need to display error block after header defined
-		{
-            $ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
-			require_once(FOOTERF);
-			exit;
-		}
-		
-		if ($e107_core_custom_pages['cachecontrol'] == TRUE)
-		{
-			ob_start();
-			$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
-			$cache_data = ob_get_flush();
-			$e107cache->set($cacheString, $cache_data);
-			$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
-			$comment_flag = $e107_core_custom_pages['comment_flag'];
-		}
-		else
-		{
-          	$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
-		  	$comment_flag = $e107_core_custom_pages['comment_flag'];
-		}
-	}
-
-    $page -> title = $e107_core_custom_pages['title'];
-	if($com = $page -> pageComment($comment_flag))
-	{
-		echo $com['comment'].$com['comment_form'];
-	}
+	
+	$e107CorePage->processViewPage();
+	
+	require_once(HEADERF);
+	
+	echo $e107CorePage->showPage();
+	
+	require_once(FOOTERF);
+	exit;
 }
-
-require_once(FOOTERF);
 
 /* EOF */
 
 class pageClass
 {
 
-	var $bullet;						/* bullet image */
-	var $pageText;						/* main text of selected page, not parsed */
-	var $multipageFlag;					/* flag - true if multiple page page, false if not */
-	var $pageTitles;					/* array containing page titles */
-	var $pageID;						/* id number of page to be displayed */
-	var $pageSelected;					/* selected page of multiple page page */
-	var $pageToRender;					/* parsed page to be sent to screen */
-	var $debug;							/* temp debug flag */
-	var $title;							/* title of page, it if has one (as defined in [newpage=title] tag */
-
-
-	function pageClass($debug=FALSE)
+	public $bullet;						/* bullet image */
+	public $pageText;					/* main text of selected page, not parsed */
+	public $multipageFlag;				/* flag - true if multiple page page, false if not */
+	public $pageTitles;					/* array containing page titles */
+	public $pageID;						/* id number of page to be displayed */
+	public $pageSelected;				/* selected page of multiple page page */
+	public $pageToRender;				/* parsed page to be sent to screen */
+	public $debug;						/* temp debug flag */
+	public $title;						/* title of page, it if has one (as defined in [newpage=title] tag */
+	public $page;						/* page DB data */
+	public $batch;						/* shortcode batch object */
+	public $template;					/* current template array */
+	protected $authorized;				/* authorized status */
+	public $cacheString;				/* current page cache string */
+	public $cacheTitleString;			/* current page title and comment flag cache string */
+	public $cacheData = null;			/* cache data */
+	
+	function __construct($debug=FALSE)
 	{
 		/* constructor */
 
 		$tmp = explode(".", e_QUERY);
-		$this -> pageID = intval($tmp[0]);
-		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
-		$this -> pageTitles = array();
+		$this->pageID = intval($tmp[0]);
+		$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+		$this->pageTitles = array();
 		$this->bullet = '';
+		
+		// TODO nq_ (no query) cache string
+		$this->cacheString = 'page_'.$this->pageID.'_'.$this->pageSelected;
+		$this->cacheTitleString = 'page-t_'.$this->pageID.'_'.$this->pageSelected;
+	
 		if(defined('BULLET'))
 		{
-			$this->bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+			$this->bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$this->bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+			$this->bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
 		}
 
-		$this -> debug = $debug;
+		$this->debug = $debug;
 
-		if($this -> debug)
+		if($this->debug)
 		{
-			$this -> debug = "<b>PageID</b> ".$this -> pageID." <br />";
-			$this -> debug .= "<b>pageSelected</b> ".$this -> pageSelected." <br />";
+			$this->debug = "<b>PageID</b> ".$this->pageID." <br />";
+			$this->debug .= "<b>pageSelected</b> ".$this->pageSelected." <br />";
 		}
+		
+		
 	}
 
+	// TODO template for page list
 	function listPages()
 	{
-		global $pref, $sql, $ns;
-
-		if(!isset($pref['listPages']) || !$pref['listPages'])
+		$sql = e107::getDb();
+		if(!e107::getPref('listPages', false))
 		{
 			message_handler("MESSAGE", LAN_PAGE_1);
 		}
 		else
 		{
-			if(!$sql -> db_Select("page", "*", "page_theme='' AND page_class IN (".USERCLASS_LIST.") "))
+			if(!$sql->db_Select("page", "*", "page_theme='' AND page_class IN (".USERCLASS_LIST.") "))
 			{
 				$text = LAN_PAGE_2;
 			}
 			else
 			{
-				$pageArray = $sql -> db_getList();
+				$pageArray = $sql->db_getList();
 				foreach($pageArray as $page)
 				{
-					extract($page);
-					$text .= $this -> bullet." <a href='".e_BASE."page.php?".$page_id."'>".$page_title."</a><br />";
+					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_title,page_sef');
+					$text .= $this->bullet." <a href='".$url."'>".$page['page_title']."</a><br />";
 				}
-				$ns -> tablerender(LAN_PAGE_11, $text,"cpage_list");
+				e107::getParser()->tablerender(LAN_PAGE_11, $text,"cpage_list");
 			}
 		}
 	}
 
-
-	function showPage()
+	
+	function processViewPage()
 	{
-		global $sql, $ns;
-		$query = "SELECT p.*, u.user_id, u.user_name FROM #page AS p
-		LEFT JOIN #user AS u ON p.page_author = u.user_id
-		WHERE p.page_id='".intval($this -> pageID)."' AND p.page_class IN (".USERCLASS_LIST.") ";
+		if($this->checkCache())
+		{
+			return;
+		}
+		
+		$sql = e107::getDb();
 
-		if(!$sql -> db_Select_gen($query) && !$_GET['elan'])
+		$query = "SELECT p.*, u.user_id, u.user_name, user_login FROM #page AS p
+		LEFT JOIN #user AS u ON p.page_author = u.user_id
+		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
+
+		if(!$sql->db_Select_gen($query))
 		{
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
+			$ret['sub_title'] = '';
 			$ret['text'] = LAN_PAGE_3;
-			$ret['comment_flag'] = '';
+			$ret['comments'] = '';
+			$ret['rating'] = '';
+			$ret['np'] = '';
 			$ret['err'] = TRUE;
-			return $ret;
+			$ret['cachecontrol'] = false;
+			$this->authorized = 'nf';
+			$this->template = e107::getCoreTemplate('page', 'default');
+			$this->batch = e107::getScBatch('page')->setParserVars(new e_vars($ret))->setScVar('page', array());
+			
+			define("e_PAGETITLE", $ret['title']);
+			return;
 		}
 
-		extract($sql -> db_Fetch());
+		$this->page = $sql->db_Fetch();
 
-		$this -> pageText = $page_text;
+		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'));
+		if(empty($this->template)) $this->template = e107::getCoreTemplate('page', 'default');
+		
+		$this->batch = e107::getScBatch('page');
 
-		$this -> pageCheckPerms($page_class, $page_password, $page_title);
+		$this->pageText = $this->page['page_text'];
 
-		if($this -> debug)
+		$this->pageCheckPerms($this->page['page_class'], $this->page['page_password'], $this->page['page_title']);
+
+		if($this->debug)
 		{
-			echo "<b>pageText</b> ".$this -> pageText." <br />";
+			echo "<b>pageText</b> ".$this->pageText." <br />";
 		}
 
-		$this -> parsePage();
+		$this->parsePage();
 
-		$gen = new convert;
-
-		$text = '';    // Notice removal
-        $ptitle = "";
-
-		if($page_author)
+		$pagenav = $rating = $comments = '';
+		if($this->authorized === true)
 		{
-            $text .= "<div class='smalltext cpage_author' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
+			$pagenav = $this->pageIndex();
+			$rating = $this->pageRating($this->page['page_rating_flag']);
+			$comments = $this->pageComment($this->page['page_comment_flag']);
 		}
 
-		if($this -> title)
-		{
-            $ptitle = "<div class='cpage_title'>".$this -> title."</div>";
-		}
-
-		$text .= $this -> pageToRender;
-		$text .= $this -> pageIndex();
-		$text .= $this -> pageRating($page_rating_flag);
-
-		$ret['title'] = $page_title;
-        $ret['text'] = $ptitle."<div class='cpage_body'>".$text."</div>";
-		$ret['comment_flag'] = $page_comment_flag;
+		$ret['title'] = $this->page['page_title'];
+		$ret['sub_title'] = $this->title;
+        $ret['text'] = $this->pageToRender;
+		$ret['np'] = $pagenav;
+		$ret['rating'] = $rating;
+		$ret['comments'] = $comments;
 		$ret['err'] = FALSE;
-		$ret['cachecontrol'] = (isset($page_password) && !$page_password);		// Don't cache password protected pages
-
-		return $ret;
+		$ret['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);		// Don't cache password protected pages
+		
+		$this->batch->setParserVars(new e_vars($ret))->setScVar('page', $this->page);
+		
+		define('e_PAGETITLE', $ret['title']);
+		
+		//return $ret;
 	}
 
-	function parsePage()
+	public function checkCache()
 	{
-		global $tp;
-		$this -> pageTitles = array();		// Notice removal
+		$e107cache = e107::getCache();
+		$cacheData = $e107cache->retrieve($this->cacheString);
+		if(false !== $cacheData)
+		{
+			$this->cacheData = array();
+			$this->cacheData['PAGE'] = $cacheData;
+			list($pagetitle, $comment_flag) = explode("^",$e107cache->retrieve($this->cacheTitleString));
+			$this->cacheData['TITLE'] = $pagetitle;
+			$this->cacheData['COMMENT_FLAG'] = $comment_flag;
+		}
+	}
+	
+	public function setCache($data, $title, $comment_flag)
+	{
+		$e107cache = e107::getCache();
+		$e107cache->set($this->cacheString, $data);
+		$e107cache->set($this->cacheTitleString, $title."^".$this->page['page_comment_flag']);
+	}
 
-		if(preg_match_all("/\[newpage.*?\]/si", $this -> pageText, $pt))
+	
+	public function renderCache()
+	{
+		$comments = '';
+		if($this->cacheData['COMMENT_FLAG'])
+		{
+			$vars = new e_vars(array('comments' => $this->pageComment(true)));
+			$comments = e107::getScBatch('page')->setParserVars($vars)->cpagecomments();
+		} 
+		define('e_PAGETITLE', $this->cacheData['TITLE']);
+		if($this->debug)
+		{
+			echo "<b>Reading page from cache</b><br />";
+		}
+		return str_replace('[[PAGECOMMENTS]]', $comments, $this->cacheData['PAGE']);
+	}
+
+	public function showPage()
+	{
+		if(null !== $this->cacheData)
+		{
+			return $this->renderCache();
+		}
+		if(true === $this->authorized)
+		{
+			$vars = $this->batch->getParserVars();
+			
+			$template = str_replace('{PAGECOMMENTS}', '[[PAGECOMMENTS]]', $this->template['start'].$this->template['body'].$this->template['end']);
+			$ret = $this->renderPage($template);
+			
+			if(!empty($this->template['page']))
+			{
+				$ret = str_replace(array('{PAGE}', '{PAGECOMMENTS}'), array($ret, '[[PAGECOMMENTS]]'), $this->template['page']);
+			}
+			$ret = e107::getParser()->parseTemplate($ret, true, $this->batch);
+
+			if($vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
+			
+			return str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret);
+		}
+		
+		$extend = new e_vars;
+		$vars = $this->batch->getParserVars();
+		
+		// reset batch data
+		$this->batch->setParserVars(null)->setScVar('page', array());
+		
+		// copy some data
+		$extend->title = $vars->title;
+		$extend->message = e107::getMessage()->render();
+		
+		switch ($this->authorized) 
+		{
+			case 'class':
+				$extend->text = LAN_PAGE_6;
+				$template = $this->template['start'].$this->template['restricted'].$this->template['end'];
+			break;
+			
+			case 'pw':
+				$frm = e107::getForm();
+				$extend->caption = LAN_PAGE_8;
+				$extend->label = LAN_PAGE_9;
+				$extend->password = $frm->password('page_pw');
+				$extend->icon = e_IMAGE_ABS.'generic/password.png';
+				$extend->submit = $frm->submit('submit_page_pw', LAN_PAGE_10);
+				// FIXME - add form open/close e_form methods
+				$extend->form_open = '<form method="post" action="'.e_REQUEST_URI.'" id="pwform">';
+				$extend->form_close = '</form>';
+				$template = $this->template['start'].$this->template['authorize'].$this->template['end'];
+			break;
+				
+			case 'nf':
+			default:
+				$extend->text = $vars->text;
+				$template = $this->template['start'].$this->template['notfound'].$this->template['end'];
+			break;
+		}
+		
+		return $this->renderPage($template, $extend);
+	}
+	
+	public function renderPage($template, $vars = null)
+	{
+		if(null === $vars) 
+		{
+			$ret = e107::getParser()->parseTemplate($template, true, $this->batch);
+			$vars = $this->batch->getParserVars();
+		}
+		else 
+		{
+			$ret = e107::getParser()->simpleParse($template, $vars);
+		}
+		
+		if(vartrue($this->template['noTableRender']))
+		{
+			return $ret;
+		}
+		
+		$mode = vartrue($this->template['tableRender'], 'cpage');
+		$title = $vars->title;
+		
+		return e107::getRender()->tablerender($title, $ret, $mode, true);
+	}
+
+	public function parsePage()
+	{
+		$tp = e107::getParser();
+		$this->pageTitles = array();		// Notice removal
+
+		if(preg_match_all("/\[newpage.*?\]/si", $this->pageText, $pt))
 		{
 			if (substr($this->pageText, 0, 6) == '[html]')
 			{	// Need to strip html bbcode from wysiwyg on multi-page docs (handled automatically on single pages)
@@ -237,18 +342,18 @@ class pageClass
 					$this->pageText = substr($this->pageText, 6);
 				}
 			}
-			$pages = preg_split("/\[newpage.*?\]/si", $this -> pageText, -1, PREG_SPLIT_NO_EMPTY);
-			$this -> multipageFlag = TRUE;
+			$pages = preg_split("/\[newpage.*?\]/si", $this->pageText, -1, PREG_SPLIT_NO_EMPTY);
+			$this->multipageFlag = TRUE;
 		}
 		else
 		{
-			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'BODY');
+			$this->pageToRender = $tp->toHTML($this->pageText, TRUE, 'BODY');
 			return;
 		}
 
 		foreach($pt[0] as $title)
 		{
-			$this -> pageTitles[] = $title;
+			$this->pageTitles[] = $title;
 		}
 
 
@@ -264,64 +369,58 @@ class pageClass
 		}
 
 		$pageCount = count($pages);
-		$titleCount = count($this -> pageTitles);
+		$titleCount = count($this->pageTitles);
 		/* if the vars above don't match, page 1 has no [newpage] tag, so we need to create one ... */
 
 		if($pageCount != $titleCount)
 		{
-			array_unshift($this -> pageTitles, "[newpage]");
+			array_unshift($this->pageTitles, "[newpage]");
 		}
 
 		/* ok, titles now match pages, rename the titles if needed ... */
 
 		$count =0;
-		foreach($this -> pageTitles as $title)
+		foreach($this->pageTitles as $title)
 		{
 			$titlep = preg_replace("/\[newpage=(.*?)\]/", "\\1", $title);
-			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'TITLE'));
+			$this->pageTitles[$count] = ($titlep == "[newpage]" ? LAN_PAGE_13." ".($count+1) : $tp->toHTML($titlep, TRUE, 'TITLE'));
 			$count++;
 		}
 
-		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'BODY');
-		$this -> title = (substr($this -> pageTitles[$this -> pageSelected], -1) == ";" ? "" : $this -> pageTitles[$this -> pageSelected]);
+		$this->pageToRender = $tp->toHTML($pages[$this->pageSelected], TRUE, 'BODY');
+		$this->title = (substr($this->pageTitles[$this->pageSelected], -1) == ";" ? "" : $this->pageTitles[$this->pageSelected]);
 
-		if($this -> debug)
+		if($this->debug)
 		{
-			echo "<b>multipageFlag</b> ".$this -> multipageFlag." <br />";
-			if($this -> multipageFlag)
+			echo "<b>multipageFlag</b> ".$this->multipageFlag." <br />";
+			if($this->multipageFlag)
 			{
 				echo "<pre>"; print_r($pages); echo "</pre>";
 				echo "<b>pageCount</b> ".$pageCount." <br />";
 				echo "<b>titleCount</b> ".$titleCount." <br />";
-				echo "<pre>"; print_r($this -> pageTitles); echo "</pre>";
+				echo "<pre>"; print_r($this->pageTitles); echo "</pre>";
 			}
 		}
 	}
 
 	function pageIndex()
 	{
-        global $tp,$pref;
-        $itext = '';
-        if(isset($pref['old_np']) && $pref['old_np'])
-        {
-		$count = 0;
-		foreach($this -> pageTitles as $title)
-		{
-			if (!$count) { $itext = "<br /><br />"; }
-			$itext .= $this -> bullet." ".($count == $this -> pageSelected ? $title : "<a href='".e_SELF."?".$this -> pageID.".".$count."'>".$title."</a>")."<br />\n";
-			$count++;
-		}
-        }
-        else
-        {
-            $titles = implode("|",$this -> pageTitles);
-            $total_items = count($this -> pageTitles);
-            $parms = $total_items.",1,".$this -> pageSelected.",".e_SELF."?".$this -> pageID.".[FROM],,$titles";
-            $itext = ($total_items) ? "<div class='nextprev nextprev_custom'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
-        }
+    	// Use always nextprev shortcode (with a special default 'page' tempalte)
+        $titles = implode("|",$this->pageTitles);
+        $total_items = count($this->pageTitles);
+        //$parms = $total_items.",1,".$this->pageSelected.",".e_SELF."?".$this->pageID.".[FROM],,$titles";
+        
+		$row = $this->page;
+		$row['page'] = '--FROM--';
+		$url = rawurlencode(e107::getUrl()->create('page/view', $row, 'allow=page_id,page_title,page_sef,page'));
+		
+		$parms = 'nonavcount&bullet='.rawurlencode($this->bullet.' ').'&caption=<!-- Empty -->&'.'pagetitle='.rawurlencode($titles).'&tmpl_prefix='.deftrue('PAGE_NEXTPREV_TMPL', 'page').'&total='.$total_items.'&amount=1&current='.$this->pageSelected.'&url='.$url;
+        $itext = ($total_items) ? e107::getParser()->parseTemplate("{NEXTPREV={$parms}}") : "";
+        
 		return $itext;
 	}
 
+	// FIXME most probably will fail when cache enabled
 	function pageRating($page_rating_flag)
 	{
 		$rate_text = '';      // Notice removal
@@ -331,13 +430,13 @@ class pageClass
 			$rater = new rater;
 			$rate_text = "<br /><table style='width:100%'><tr><td style='width:50%'>";
 
-			if ($ratearray = $rater->getrating("page", $this -> pageID))
+			if ($ratearray = $rater->getrating("page", $this->pageID))
 			{
 				if ($ratearray[2] == "")
 				{
 					$ratearray[2] = 0;
 				}
-				$rate_text .= "<img src='".e_IMAGE."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
+				$rate_text .= "<img src='".e_IMAGE_ABS."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
 				$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
 				$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
 			}
@@ -347,9 +446,9 @@ class pageClass
 			}
 			$rate_text .= "</td><td style='width:50%; text-align:right'>";
 
-			if (!$rater->checkrated("page", $this -> pageID) && USER)
+			if (!$rater->checkrated("page", $this->pageID) && USER)
 			{
-				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this -> pageID);
+				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this->pageID);
 			}
 			else if(!USER)
 			{
@@ -366,8 +465,6 @@ class pageClass
 
 	function pageComment($page_comment_flag)
 	{
-		global $sql, $ns, $e107cache, $tp, $comment_shortcodes,$cacheString;
-
 		if($page_comment_flag)
 		{
 			require_once(e_HANDLER."comment_class.php");
@@ -375,11 +472,12 @@ class pageClass
 
 			if (isset($_POST['commentsubmit']))
 			{
-				$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this -> pageID, $pid, $_POST['subject']);
-				$e107cache->clear("comment.page.".$this -> pageID);
-				$e107cache->clear($cacheString);
+				$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this->pageID, $pid, $_POST['subject']);
+				$e107cache = e107::getCache();
+				$e107cache->clear("comment.page.".$this->pageID);
+				$e107cache->clear($this->cacheString);
 			}
-            return $cobj->compose_comment("page", "comment", $this -> pageID, 0, $this -> title);
+            return $cobj->compose_comment("page", "comment", $this->pageID, 0, $this->title, false, true);
 		}
 	}
 
@@ -390,80 +488,64 @@ class pageClass
 
 		if (!check_class($page_class))
 		{
-		define("e_PAGETITLE", $page_title);
-		// HEADERF requires that $tp is defined - hence declared as global above.
-		require_once(HEADERF);		// Do header now in case wrong password was entered
-			message_handler("MESSAGE", LAN_PAGE_6);
-			require_once(FOOTERF); exit;
+			$this->authorized = 'class';
+			return false;
 		}
 
 		if (!$page_password)
 		{
-			return TRUE;
+			$this->authorized = true;
+			$cookiename = $this->getCookieName();
+			if(isset($_COOKIE[$cookiename])) cookie($cookiename, '', (time() - 2592000));
+			return true;
 		}
 
 		if(isset($_POST['submit_page_pw']))
 		{
 			if($_POST['page_pw'] == $page_password)
 			{
-				$this -> setPageCookie();
+				$this->setPageCookie();
+				$this->authorized = true;
+				return true;
+			}
+			else
+			{
+				e107::getMessage()->addError(LAN_PAGE_7);
 			}
 		}
 		else
 		{
-			$cookiename = "e107page_".$this -> pageID;
+			// TODO - e_COOKIE
+			$cookiename = $this->getCookieName();
 
 			if(isset($_COOKIE[$cookiename]) && ($_COOKIE[$cookiename] == md5($page_password.USERID)))
 			{
+				$this->authorized = true;
 				return TRUE;
 			}
 			// Invalid/empty password here
 		}
+		
+		$this->authorized = 'pw';
+		return false;
+	}
 
-		define("e_PAGETITLE", $page_title);
-		// HEADERF requires that $tp is defined - hence declared as global above.
-		require_once(HEADERF);		// Do header now in case wrong password was entered
-
-		// Need to prompt for password here
-		if (isset($_POST['submit_page_pw']))
-		{
-			message_handler("MESSAGE", LAN_PAGE_7);		// Invalid password
-		}
-
-		$pw_entry_text = "
-		<div style='text-align:center; margin-left:auto; margin-right: auto;'>
-		<form method='post' action='".e_SELF."?".e_QUERY."' id='pwform'>
-		<table style='width:100%;' class='fborder'>
-		<tr>
-		<td class='forumheader' colspan='3' style='text-align:center; white-space:nowrap'>".LAN_PAGE_8."</td>
-		</tr>
-		<tr>
-		<td class='forumheader3' style='width:20%;'>".LAN_PAGE_9.":</td>
-		<td class='forumheader3' style='width: 60%;'><input type='password' id='page_pw' name='page_pw' style='width: 90%;'/></td>
-		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/password.png' alt='' /></td>
-		</tr>
-		<tr>
-		<td class='forumheader' colspan='3' style='text-align:center;'><input class='button' type='submit' name='submit_page_pw' value='".LAN_PAGE_10."' /></td>
-		</tr>
-		</table>
-		</form>
-		</div>
-		";
-		// Mustn't return to higher level code here
-
-        $ns->tablerender($page_title, $pw_entry_text,"cpage_pw");       // HEADERF also clears $text - hence different variable
-		require_once(FOOTERF);
-		exit;
+	function getCookieName()
+	{
+		return e_COOKIE.'_page_'.$this->pageID;
 	}
 
 	function setPageCookie()
 	{
-		global $pref;
+		if(!$this->pageID || !vartrue($_POST['page_pw'])) return;
+		$pref = e107::getPref();
+		
 		$pref['pageCookieExpire'] = max($pref['pageCookieExpire'], 120);
 		$hash = md5($_POST['page_pw'].USERID);
-		cookie("e107page_".e_QUERY, $hash, (time() + $pref['pageCookieExpire']));
-		header("location:".e_SELF."?".e_QUERY);
-		exit;
+		
+		cookie($this->getCookieName(), $hash, (time() + $pref['pageCookieExpire']));
+		//header("location:".e_SELF."?".e_QUERY);
+		//exit;
 	}
 }
 

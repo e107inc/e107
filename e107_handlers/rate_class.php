@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/rate_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -25,16 +21,17 @@ class rater {
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
-		$self = $_SERVER['PHP_SELF'];
-		if ($_SERVER['QUERY_STRING']) {
-			$self .= "?".$_SERVER['QUERY_STRING'];
-		}
+		// $self = $_SERVER['PHP_SELF'];
+		// if ($_SERVER['QUERY_STRING']) {
+			// $self .= "?".$_SERVER['QUERY_STRING'];
+		// }
+		$self = e_REQUEST_URI;
 
 		$jump = "";
 		$url = "";
 		if($mode==FALSE){
 			$jump = "onchange='urljump(this.options[selectedIndex].value)'";
-			$url = e_BASE."rate.php?";
+			$url = e_HTTP."rate.php?";
 		}
 
 		$str = $text."
@@ -177,14 +174,14 @@ class rater {
 		if($ratearray = $this -> getrating($table, $id, $userid)){
 			if($ratearray[1] > 0){
 				for($c=1; $c<= $ratearray[1]; $c++){
-					$rate .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+					$rate .= "<img src='".e_IMAGE_ABS."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 				}
 				if($ratearray[1] < 10){
 					for($c=9; $c>=$ratearray[1]; $c--){
-						$rate .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+						$rate .= "<img src='".e_IMAGE_ABS."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
 					}
 				}
-				$rate .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+				$rate .= "<img src='".e_IMAGE_ABS."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
 				if($ratearray[2] == ""){ $ratearray[2] = 0; }
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){
@@ -221,4 +218,3 @@ class rater {
 		return $sql -> db_Delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
 	}
 }
-?>

@@ -46,6 +46,11 @@ class eUrl
 		return $this->router()->assemble($route, $params, $options);
 	}
 	
+	public function sc($route, $params = array(), $options = array())
+	{
+		return $this->router()->assembleSc($route, $params, $options);
+	}
+	
 	/**
 	 * @return eRouter
 	 */

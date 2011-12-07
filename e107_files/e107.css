@@ -10,6 +10,7 @@
 .left { text-align: left }
 .right { text-align: right }
 .center { text-align: center }
+.justify { text-align: justify }
 .f-left { float: left }
 .f-right { float: right }
 .top { vertical-align: top }
@@ -60,3 +61,57 @@ ul.e-tabs li.active a:visited  { background-color: #EEEEEE; border: 1px solid #8
 #e-debug-console-controls a { text-decoration: none; color: #000; background-color: #f5f5f5; border: 1px solid #f0f0f0; padding: 5px; margin: 2px 5px; }
 #e-debug-console-input { width: 480px; border: 1px solid #f5f5f5; }
 #e-debug-console .console-output { border-bottom: 1px solid #f5f5f5; padding: 5px }
+
+/** Custom Pages Front-end **/
+.cpage-nav { padding: 5px; margin: 0px 5px 10px 10px; }
+a.cpage-np { font-size: 14px; }
+a.cpage-np.current { text-decoration: none; }
+
+/******** SyS Messages / Message text formatting */
+/* message boxes */
+.s-message { }
+
+.s-message div.info,
+.s-message div.error,
+.s-message div.success,
+.s-message div.debug,
+.s-message div.warning { padding: 5px; margin-bottom: 10px; }
+
+
+.s-message div.info 	{ background-color:#C1E0FF; border: 1px solid #3399FF; }
+.s-message div.error 	{ background-color:#FFCECE; border: 1px solid #CC0000; }
+.s-message div.success  { background-color:#DFFFDF; border: 1px solid #009900; }
+.s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+.s-message div.debug 	{ background-color:#FFFFFF; border: 1px solid #EAEAEA; }
+
+.s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
+
+.s-message div.info 		.s-message-title 	{ background-image: url(images/messagebox_info.png); }
+.s-message div.error 	.s-message-title 	{ background-image: url(images/messagebox_critical.png); } 
+.s-message div.success 	.s-message-title 	{ background-image: url(images/ok.png); }
+.s-message div.warning 	.s-message-title	{ background-image: url(images/messagebox_warning.png); }
+.s-message div.debug 	.s-message-title	{ background-image: url(images/messagebox_info.png); }
+
+.s-message-body { padding-left: 42px; }
+.s-message-item {}
+
+/* validate result inline message */
+.validate-result {}
+
+/* message text (overall) */
+.warning { color: #FF6600 }
+.success { color: green; }
+.error { color: #FF0000 }
+.info {}
+.required { color:red }
+
+/******** Tooltip info */
+.e-info {}
+
+/******** Prepare for Image Preview JS */
+.image-preview {}
+
+/* BBcode textareas */
+div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
+div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }

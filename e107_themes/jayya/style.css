@@ -815,3 +815,8 @@ h2.caption {  font-size: 200%; font-weight:bold; }
 #core-frontpage-edit select.tbox { width: 50%;} 
 #core-frontpage-edit .buttons-bar select.tbox { width: 140px; }
 #core-frontpage-edit .buttons-bar 	{ clear: both; }
+
+/** Custom Pages Front-end **/
+.cpage-nav { padding: 5px; margin: 0px 5px 10px 10px; }
+a.cpage-np { font-size: 14px; }
+a.cpage-np.current { text-decoration: none; }

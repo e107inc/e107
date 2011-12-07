@@ -1751,6 +1751,20 @@ class eRouter
 	}
 	
 	/**
+	 * Convert assembled url to shortcode
+	 * 
+	 * @param string $route
+	 * @param array $params
+	 * @param array $options {@see eRouter::$_defaultAssembleOptions}
+	 */
+	public function assembleSc($route, $params = array(), $options = array())
+	{
+		//if(is_string($options)) parse_str($options, $options);
+		$url = $this->assemble($route, $params, $options);
+		return e107::getParser()->createConstants($url, 'mix');
+	}
+	
+	/**
 	 * Assemble system URL 
 	 * Examples:
 	 * <?php
@@ -1772,7 +1786,7 @@ class eRouter
 		if(is_string($options)) parse_str($options, $options);
 		$options = array_merge($this->_defaultAssembleOptions, $options);
 		$base = ($options['full'] ? SITEURLBASE : '').$request->getBasePath();
-		
+
 		$anc = '';
 		
 		if(is_string($params)) parse_str($params, $params);
@@ -1780,6 +1794,30 @@ class eRouter
 		{
 			$anc = '#'.$params['#'];
 			usnet($params['#']);
+		}
+		
+		// Config independent - Deny parameter keys, useful for directly denying sensitive data e.g. password db fields
+		if(isset($options['deny']))
+		{
+			$list = array_map('trim', explode(',', $options['deny']));
+			foreach ($list as $value) 
+			{
+				unset($params[$value]);
+			}
+			unset($list);
+		}
+		
+		// Config independent - allow parameter keys, useful to directly allow data (and not to rely on config allowVars) e.g. when retrieved from db
+		if(isset($options['allow']))
+		{
+			$list = array_map('trim', explode(',', $options['allow']));
+			$_params = $params;
+			$params = array();
+			foreach ($list as $value) 
+			{
+				if(isset($_params[$value])) $params[$value] = $_params[$value];
+			}
+			unset($list, $_params);
 		}
 		
 		# Optional convenient masks for creating system URL's

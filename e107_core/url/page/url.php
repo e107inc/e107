@@ -1,11 +1,11 @@
 <?php
-/*
- * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+/**
+ * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
  * 
- * User routing config
+ * Page routing config
  */
-class core_user_url extends eUrlConfig
+class core_page_url extends eUrlConfig
 {
 	public function config()
 	{
@@ -13,7 +13,7 @@ class core_user_url extends eUrlConfig
 		
 			'config' => array(
 				'noSingleEntry' => true,	// [optional] default false; disallow this module to be shown via single entry point when this config is used
-				'legacy' 		=> '{e_BASE}user.php', // [optional] default empty; if it's a legacy module (no single entry point support) - URL to the entry point script
+				'legacy' 		=> '{e_BASE}page.php', // [optional] default empty; if it's a legacy module (no single entry point support) - URL to the entry point script
 				'format'		=> 'get', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored
 				'selfParse' 	=> true,	// [optional] default false; use only this->parse() method, no core routine URL parsing
 				'selfCreate' 	=> true,	// [optional] default false; use only this->create() method, no core routine URL creating
@@ -29,67 +29,24 @@ class core_user_url extends eUrlConfig
 	}
 	
 	/**
-	 * Query mapping in format route?params:
-	 * - profile/view?id=xxx -> user.php?id.xxx
-	 * - profile/list?page=xxx -> user.php?xxx
-	 * - myprofile/view -> user.php
-	 * - profile/edit?id=xxx -> usersettings.php?xxx
-	 * - myprofile/edit -> usersettings.php
-	 * - login/index (or just 'login') -> login.php
-	 * - register/index (or just 'register') -> signup.php
+	 * 
 	 */
 	public function create($route, $params = array())
 	{
-		if(!$params) return 'user.php';
+		if(!$params) return 'page.php';
 		
 		if(is_string($route)) $route = explode('/', $route, 2);
 		if(!varset($route[1])) $route[1] = 'index';
 		
 		## aliases as retrieved from the DB, map vars to proper values
-		if(isset($params['user_name']) && !empty($params['user_name'])) $params['id'] = $params['user_name'];
-		if(isset($params['user_id']) && !empty($params['user_id'])) $params['id'] = $params['user_id'];
+		if(isset($params['page_title']) && !empty($params['page_title'])) $params['name'] = $params['page_title'];
+		if(isset($params['page_id']) && !empty($params['page_id'])) $params['id'] = $params['page_id'];
 		
-		$url = 'user.php';
-		$page = $params['page'] ? intval($params['page']) : '0';
+		$url = 'page.php?';
+		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';
+		else $page = '--FROM--';
 		
-		if($route[0] == 'profile')
-		{
-			switch ($route[1]) 
-			{
-				case '':
-				case 'view':
-					$url .= '?id.'.$params['id']; 
-				break;
-				
-				case 'list':
-					$url .= $page ? '?'.$page : '';
-				break;
-				
-				case 'edit':
-					$url = 'usersettings.php?'.$params['id'];
-				break;
-			}
-		}
-		elseif($route[0] == 'myprofile')
-		{
-			switch ($route[1]) 
-			{
-				case '':
-				case 'view':
-					// user.php
-				break;
-				
-				case 'edit':
-					$url = 'usersettings.php';
-				break;
-			}
-		}
-		elseif($route[0] == 'login')
-		{
-			$url = 'login.php';
-		}
-		elseif($route[0] == 'register') $url = 'signup.php'; // XXX signup URL parameters
-		
+		$url .= intval($params['id']).($page ? '.'.$page : '');
 		return $url;
 	}
 
@@ -102,9 +59,9 @@ class core_user_url extends eUrlConfig
 		// static may be used for performance
 		static $admin = array(
 			'labels' => array(
-				'name' => LAN_EURL_CORE_USER, // Module name
-				'label' => LAN_EURL_USER_DEFAULT_LABEL, // Current profile name
-				'description' => LAN_EURL_USER_DEFAULT_DESCR, //
+				'name' => LAN_EURL_CORE_PAGE, // Module name
+				'label' => LAN_EURL_PAGE_DEFAULT_LABEL, // Current profile name
+				'description' => LAN_EURL_PAGE_DEFAULT_DESCR, //
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
