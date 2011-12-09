@@ -5,7 +5,7 @@
  * 
  * Custom page routing config
  */
-class core_page_sef_url extends eUrlConfig
+class core_page_sef_noid_url extends eUrlConfig
 {
 	public function config()
 	{
@@ -24,14 +24,15 @@ class core_page_sef_url extends eUrlConfig
 				),
 				
 				'allowVars' 		=> array(  
-					'page', 
+					'page',
 				),
 			),
 
 			'rules' => array(
-				### using only title for pages is risky enough (non-unique title, possible bad characters)
-				'<id:{number}>/<name:{sefsecureOptional}>' => array('view/index', 'legacyQuery' => '{id}.{page}', ),
-				
+			
+				### using only title for pages is risky enough (empty sef for old DB's)
+				'<name:{secure}>' => array('view/index', 'allowVars' => false, 'legacyQuery' => '{name}.{page}', 'parseCallback' => 'itemIdByTitle'),
+
 				### page list
 				'/' => array('list/index', 'legacyQuery' => '', ),
 			) // rule set array
@@ -48,13 +49,39 @@ class core_page_sef_url extends eUrlConfig
 		static $admin = array(
 			'labels' => array(
 				'name' => LAN_EURL_CORE_PAGE, // Module name
-				'label' => LAN_EURL_PAGE_SEF_LABEL, // Current profile name
-				'description' => LAN_EURL_PAGE_SEF_DESCR, //
+				'label' => LAN_EURL_PAGE_SEFNOID_LABEL, // Current profile name
+				'description' => LAN_EURL_PAGE_SEFNOID_DESCR, //
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
 		
 		return $admin;
+	}
+	
+	### CUSTOM METHODS ###
+	
+	/**
+	 * view/item by name callback
+	 * @param eRequest $request
+	 */
+	public function itemIdByTitle(eRequest $request)
+	{
+		$name = $request->getRequestParam('name');
+		if(($id = $request->getRequestParam('id'))) 
+		{
+			$request->setRequestParam('name', $id);
+			return;
+		}
+		elseif(!$name || is_numeric($name)) return;
+		
+		$sql = e107::getDb('url');
+		$name = e107::getParser()->toDB($name);
+		if($sql->db_Select('page', 'page_id', "page_theme='' AND page_sef='{$name}'")) 
+		{
+			$name = $sql->db_Fetch();
+			$request->setRequestParam('name', $name['page_id']);
+		}
+		else $request->setRequestParam('name', 0);
 	}
 }

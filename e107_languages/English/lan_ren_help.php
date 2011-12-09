@@ -1,14 +1,11 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_ren_help.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+/**
+ * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ * 
+ * BBcode language file
+ * 
+ */
 define("LANHELP_1", "Black");
 define("LANHELP_2", "Blue");
 define("LANHELP_3", "Brown");
@@ -64,5 +61,9 @@ define("LANHELP_46", "* No files found in: ");
 
 define("LANHELP_47", "Insert flash: [flash=width,height]http://www.example.com/file.swf[/flash]");
 define("LANHELP_48", "YouTube video: [youtube=tiny|small|medium|big|huge|width,height]6kYjxJmk0wc[/youtube]");
-
-?>
+define("LANHELP_49", "Paragraph: [p=class name]Paragraph text[/p]");
+define("LANHELP_50", "Heading: for H2 [h]Heading text[/h] or [h=2]Heading text[/h]");
+define("LANHELP_51", "Disable HTML new lines for enclosed text: [nobr]text[/nobr]");
+define("LANHELP_52", "New line (HTML): [br]");
+define("LANHELP_53", "Justify align: [justify]This text will be justified[/justify]");
+define("LANHELP_54", "HTML block (div tag): [block]Your content[/block]");

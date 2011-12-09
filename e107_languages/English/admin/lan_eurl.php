@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -80,8 +80,10 @@ define("LAN_EURL_USER_REWRITE_DESCR", "Search engine and user friendly URLs. <br
 define("LAN_EURL_CORE_PAGE", "Custom Pages");
 define("LAN_EURL_PAGE_DEFAULT_LABEL", "Default");
 define("LAN_EURL_PAGE_DEFAULT_DESCR", "Legacy direct URLs. Example: http://yoursite.com/page.php?1");
-define("LAN_EURL_PAGE_SEF_LABEL", "User Friendly URLs");
-define("LAN_EURL_PAGE_SEF_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/Page-Name");
+define("LAN_EURL_PAGE_SEF_LABEL", "User Friendly URLs with ID (safe)");
+define("LAN_EURL_PAGE_SEF_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/1/Page-Name");
+define("LAN_EURL_PAGE_SEFNOID_LABEL", "User Friendly URLs without ID (not suitable for old DB's)");
+define("LAN_EURL_PAGE_SEFNOID_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/Page-Name");
 
 // Search
 define("LAN_EURL_CORE_SEARCH", "Search");

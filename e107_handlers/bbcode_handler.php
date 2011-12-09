@@ -45,7 +45,8 @@ class e_bbcode
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
-		'spoiler', 'hide', 'youtube', 'sanitised'
+		'spoiler', 'hide', 'youtube', 'sanitised', 
+		'p', 'h', 'nobr', 'block',
 		);
 
 		foreach($core_bb as $c)

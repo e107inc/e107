@@ -17,7 +17,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 include_once(e_HANDLER.'shortcode_handler.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_ren_help.php');
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_ren_help.php');
+e107::coreLan('ren_help');
 
 $codes = array('bb', 'bb_help', 'bb_preimagedir');
 register_shortcode('bbcode_shortcodes', $codes);
@@ -54,9 +55,12 @@ class bbcode_shortcodes
 
 		$bbcode['newpage'] = array($bbcode_func,"[newpage]", LANHELP_34, "newpage.png");
 		$bbcode['link'] = array('addinput',"[link=".LANHELP_35."][/link]", LANHELP_23,"link.png");
+		$bbcode['h'] = array($bbcode_func,"[h][/h]", LANHELP_50,"heading.png"); // FIXME bbcode icon
+		$bbcode['p'] = array($bbcode_func,"[p][/p]", LANHELP_49,"paragraph.png"); // FIXME bbcode icon
 		$bbcode['b'] = array($bbcode_func,"[b][/b]", LANHELP_24,"bold.png");
 		$bbcode['i'] = array($bbcode_func,"[i][/i]", LANHELP_25,"italic.png");
 		$bbcode['u'] = array($bbcode_func,"[u][/u]", LANHELP_26,"underline.png");
+		$bbcode['justify'] = array($bbcode_func,"[justify][/justify]", LANHELP_53,"center.png"); // FIXME bbcode icon
 		$bbcode['center'] = array($bbcode_func,"[center][/center]", LANHELP_28,"center.png");
 		$bbcode['left'] = array($bbcode_func,"[left][/left]", LANHELP_29,"left.png");
 		$bbcode['right'] = array($bbcode_func,"[right][/right]", LANHELP_30,"right.png");
@@ -67,6 +71,10 @@ class bbcode_shortcodes
 		$bbcode['flash'] = array($bbcode_func,"[flash=width,height][/flash]", LANHELP_47,"flash.png");
 		$bbcode['youtube'] = array($bbcode_func,"[youtube][/youtube]", LANHELP_48,"youtube.png");
 		$bbcode['sanitised'] = array('', '', '');
+		
+		$bbcode['nobr'] = array($bbcode_func,"[nobr][/nobr]", LANHELP_51, "nobr.png"); // FIXME bbcode icon
+		$bbcode['br'] = array($bbcode_func,"[br]", LANHELP_52, "br.png"); // FIXME bbcode icon
+		$bbcode['block'] = array($bbcode_func,"[block][/block]", LANHELP_54,"block.png"); // FIXME bbcode icon, interactive interface, theme hooks
 
 		$bbcode['fontsize'] = array("expandit","size_selector_".$rand, LANHELP_22,"fontsize.png","Size_Select",'size_selector_'.$rand);
 		$bbcode['fontcol'] = array("expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);

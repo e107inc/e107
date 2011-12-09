@@ -1897,7 +1897,6 @@ class eRouter
 			$urlSuffix = $this->urlSuffix;
 			if(isset($config['urlSuffix'])) $urlSuffix = $config['urlSuffix'];
 		} 
-		// TODO - main module - don't include it in the return URL
 		
 		// Create by config callback
 		if(vartrue($config['selfCreate']))
@@ -1952,7 +1951,7 @@ class eRouter
 		$rules = $this->getRules($module);
 		if($format !== self::FORMAT_GET && !empty($rules))
 		{
-			foreach ($rules as $rule)
+			foreach ($rules as $k => $rule)
 			{
 				if (($url = $rule->createUrl($this, array($route[1], $route[2]), $params, $options)) !== false) return $base.rtrim(($this->isMainModule($module) ? '' : $alias.'/').$url, '/').$anc;
 			}
@@ -2231,13 +2230,13 @@ class eUrlRule
 	public $regexTemplates = array(
 		'az'					=> '[A-Za-z]+', // NOTE - it won't match non-latin word characters!
 		'alphanum'  			=> '[\w\pL]+',
-		'sefsecure' 			=> '[\w\pL.\-\s!,]+',
+		'sefsecure' 			=> '[\w\pL\s\-+.,]+',
 		'secure' 				=> '[^\/\'"\\<%]+',
 		'number' 				=> '[\d]+',
 		'username' 				=> '[\w\pL.\-\s!,]+', // TODO - should equal to username pattern, sync it
 		'azOptional'			=> '[A-Za-z]{0,}',
 		'alphanumOptional'  	=> '[\w\pL]{0,}',
-		'sefsecureOptional' 	=> '[\w\pL.\-\s!,]{0,}',
+		'sefsecureOptional' 	=> '[\w\pL\s\-+.,]{0,}',
 		'secureOptional' 		=> '[^\/\'"\\<%]{0,}',
 		'numberOptional' 		=> '[\d]{0,}',
 		'usernameOptional' 		=> '[\w\pL.\-\s!,]{0,}', // TODO - should equal to username pattern, sync it
@@ -3758,6 +3757,114 @@ class eResponse
  */
 class eHelper
 {
+	protected static $_classRegEx = '#[^\w\s\-]#';
+	protected static $_idRegEx = '#[^\w\-]#';
+	protected static $_styleRegEx = '#[^\w\s\-\.;:!]#';
+	
+	public static function secureClassAttr($string)
+	{
+		return preg_replace(self::$_classRegEx, '', $string);
+	}
+	
+	public static function secureIdAttr($string)
+	{
+		return preg_replace(self::$_idRegEx, '', $string);
+	}
+	
+	public static function secureStyleAttr($string)
+	{
+		return preg_replace(self::$_styleRegEx, '', $string);
+	}
+	
+	public static function buildAttr($safeArray)
+	{
+		return http_build_query($safeArray, null, '&');
+	}
+	
+	public static function formatMetaTitle($title)
+	{
+		$title = trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($title, TRUE))));
+		return trim(preg_replace('/[\s,]+/', ',', str_replace('_', ' ', $title)));
+	}
+	
+	public static function secureSef($sef)
+	{
+		return trim(preg_replace('/[^\w\pL\s\-+.,]+/u', '', strip_tags(e107::getParser()->toHTML($sef, TRUE))));
+	}
+	
+	public static function formatMetaKeys($keywordString)
+	{
+		$keywordString = preg_replace('/[^\w\pL\s\-.,+]/u', '', strip_tags(e107::getParser()->toHTML($keywordString, TRUE)));
+		return trim(preg_replace('/[\s,]+/', ',', str_replace('_', ' ', $keywordString)));
+	}
+	
+	public static function formatMetaDescription($descrString)
+	{
+		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
+		return trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $descrString)));
+	}
+	
+	/**
+	 * Convert title to valid SEF URL string
+	 * Type ending with 'l' stands for 'to lowercase', ending with 'c' - 'to camel case'
+	 * @param string $title
+	 * @param string $type dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus|none
+	 */
+	public static function title2sef($title, $type = null)
+	{
+		$title = preg_replace('/[^\w\pL\s.,]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
+		
+		if(null === $type)
+		{
+			$type = 'none'; // FIXME - site preference
+		}
+		$tp = e107::getParser();
+		switch ($type) 
+		{
+			case 'dashl': //dasherize, to lower case
+				return self::dasherize($tp->ustrtolower($title));
+			break;
+			
+			case 'dashc': //dasherize, camel case
+				return self::dasherize(self::camelize($title, true, ' '));
+			break;
+			
+			case 'dash': //dasherize
+				return self::dasherize($title);
+			break;
+			
+			case 'underscorel': ///underscore, to lower case
+				return self::underscore($tp->ustrtolower($title));
+			break;
+			
+			case 'underscorec': ///underscore, camel case
+				return self::underscore(self::camelize($title, true, ' '));
+			break;
+			
+			case 'underscore': ///underscore
+				return self::underscore($title);
+			break;
+			
+			case 'plusl': ///plus separator, to lower case
+				return str_replace(' ', '+', $tp->ustrtolower($title));
+			break;
+			
+			case 'plusc': ///plus separator, to lower case
+				return str_replace(' ', '+', self::camelize($title, true, ' '));
+			break;
+			
+			case 'plus': ///plus separator
+				return str_replace(' ', '+', $title);
+			break;
+			
+			case 'none':
+			default:
+				return $title;
+			break;
+		}
+	}
+	
 	/**
 	 * Return a memory value formatted helpfully
 	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
@@ -3807,7 +3914,7 @@ class eHelper
 		// clever recursion o.O
 		if($all) return self::camelize('-'.$str, false, $space);
 		
-		$tmp = explode('-', str_replace('_', '-', strtolower($str)));
+		$tmp = explode('-', str_replace(array('_', ' '), '-', e107::getParser()->ustrtolower($str)));
 		return trim(implode($space, array_map('ucfirst', $tmp)), $space);
 	}
 	
