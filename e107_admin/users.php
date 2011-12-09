@@ -1343,7 +1343,7 @@ class users
 			break;
 
 			case 'user_name':
-				return "<a href='".$e107->url->getUrl('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a>";
+				return "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a>";
 			break;
 
 			case 'user_perms': //TODO display link to popup window with editable perms.

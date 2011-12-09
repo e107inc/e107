@@ -462,6 +462,7 @@ label { cursor: pointer; }
 div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+.remainingCharacters { margin: 0px; padding: 0px; }
 
 
 .check-block { /* see administration newspost.php */
@@ -820,3 +821,17 @@ h2.caption {  font-size: 200%; font-weight:bold; }
 .cpage-nav { padding: 5px; margin: 0px 5px 10px 10px; }
 a.cpage-np { font-size: 14px; }
 a.cpage-np.current { text-decoration: none; }
+
+/******** bbcodes && typgoraphy */
+p {  }
+p.bbcode { margin: 10px 0px; text-indent: 15px; } /* override if requried */
+p.bbcode:first-letter  { font-weight: bold; text-transform: uppercase }
+
+h1, h2, h3, h4, h5, h6 { margin: 10px 0px; text-indent: 15px; }
+h1 {  margin: 15px 0px; font-size: 16px; }
+h2 {  font-size: 14px; }
+h3 {  font-size: 12px; }
+
+h1.bbcode, h2.bbcode, h3.bbcode, h4.bbcode, h5.bbcode, h6.bbcode {  }/* override if requried */
+
+div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */

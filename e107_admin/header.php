@@ -735,7 +735,7 @@ if ($e107_popup != 1)
 	function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
 	{
 		require_once (e_HANDLER."message_handler.php");
-		$emessage = &eMessage::getInstance();
+		$emessage = e107::getMessage();
 
 		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
 		{

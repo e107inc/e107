@@ -117,10 +117,10 @@ class pageClass
 				$pageArray = $sql->db_getList();
 				foreach($pageArray as $page)
 				{
-					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_title,page_sef');
+					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
 					$text .= $this->bullet." <a href='".$url."'>".$page['page_title']."</a><br />";
 				}
-				e107::getParser()->tablerender(LAN_PAGE_11, $text,"cpage_list");
+				e107::getRender()->tablerender(LAN_PAGE_11, $text,"cpage_list");
 			}
 		}
 	}
@@ -194,8 +194,9 @@ class pageClass
 		
 		$this->batch->setParserVars(new e_vars($ret))->setScVar('page', $this->page);
 		
-		define('e_PAGETITLE', $ret['title']);
-		
+		define('e_PAGETITLE', eHelper::formatMetaTitle($ret['title']));
+		define('META_DESCRIPTION', $this->page['page_metadscr']);
+		define('META_KEYWORDS', $this->page['page_metakeys']);
 		//return $ret;
 	}
 
@@ -207,9 +208,11 @@ class pageClass
 		{
 			$this->cacheData = array();
 			$this->cacheData['PAGE'] = $cacheData;
-			list($pagetitle, $comment_flag) = explode("^",$e107cache->retrieve($this->cacheTitleString));
+			list($pagetitle, $comment_flag, $meta_keys, $meta_dscr) = explode("^^^",$e107cache->retrieve($this->cacheTitleString), 4);
 			$this->cacheData['TITLE'] = $pagetitle;
 			$this->cacheData['COMMENT_FLAG'] = $comment_flag;
+			$this->cacheData['META_KEYS'] = $meta_keys;
+			$this->cacheData['META_DSCR'] = $meta_dscr;
 		}
 	}
 	
@@ -217,7 +220,7 @@ class pageClass
 	{
 		$e107cache = e107::getCache();
 		$e107cache->set($this->cacheString, $data);
-		$e107cache->set($this->cacheTitleString, $title."^".$this->page['page_comment_flag']);
+		$e107cache->set($this->cacheTitleString, $title."^^^".$this->page['page_comment_flag']."^^^".$this->page['page_metakeys']."^^^".$this->page['page_metadscr']);
 	}
 
 	
@@ -229,7 +232,9 @@ class pageClass
 			$vars = new e_vars(array('comments' => $this->pageComment(true)));
 			$comments = e107::getScBatch('page')->setParserVars($vars)->cpagecomments();
 		} 
-		define('e_PAGETITLE', $this->cacheData['TITLE']);
+		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
+		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
+		define('META_KEYWORDS', $this->cacheData['META_KEYS']);
 		if($this->debug)
 		{
 			echo "<b>Reading page from cache</b><br />";
