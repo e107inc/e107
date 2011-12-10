@@ -1971,12 +1971,18 @@ class e107plugin
 							}
 					}
 
-					if ($is_installed && (substr($adds, -3) == ".bb"))
-					{
-						$bb_name = substr($adds, 0, -3); // remove the .bb
-						$bb_array[$bb_name] = "0"; // default userclass.
-
-					}
+						if(substr($adds,-3) == ".bb")
+						{
+							$bb_name = substr($adds, 0,-3); // remove the .bb
+	                    	$bb_array[$bb_name] = "0"; // default userclass.
+						}
+						// bbcode class
+						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -3) == ".bb") 
+						{
+							$bb_name = substr($adds, 0,-3); // remove the .bb
+							$bb_name = substr($bb_name, 0, 3);
+	                    	$bb_array[$bb_name] = "0"; // default userclass. TODO - instance and getPermissions() method
+						}
 
 					if ($is_installed && (substr($adds, -4) == "_sql"))
 					{
@@ -2052,9 +2058,13 @@ class e107plugin
 		}
 
 		// Grab List of Shortcodes & BBcodes
-		$shortcodeList = $fl->get_files(e_PLUGIN.$plugin_path, ".sc$", "standard", 1);
-		$bbcodeList = $fl->get_files(e_PLUGIN.$plugin_path, ".bb$", "standard", 1);
-		$sqlList = $fl->get_files(e_PLUGIN.$plugin_path, "_sql.php$", "standard", 1);
+		$shortcodeList = $fl->get_files(e_PLUGIN.$plugin_path, '\.sc$', "standard", 1);
+		
+		$bbcodeList		= $fl->get_files(e_PLUGIN.$plugin_path, '\.bb$', "standard", 1);
+		$bbcodeClassList= $fl->get_files(e_PLUGIN.$plugin_path, '^bb_(.*)\.php$', "standard", 1);
+		$bbcodeList = array_merge($bbcodeList, $bbcodeClassList);
+		
+		$sqlList = $fl->get_files(e_PLUGIN.$plugin_path, '_sql\.php$', "standard", 1);
 
 		// Search Shortcodes
 		foreach ($shortcodeList as $sc)
