@@ -13,7 +13,8 @@
 	RewriteEngine On
 
 ### Set this to your e107 site root, path relative to web root
-	RewriteBase /
+### Uncomment it in case your server isn't able to rewrite proper 
+	#RewriteBase /
 
 ### send 404 on missing files in these folders 
 	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
