@@ -4,12 +4,12 @@
  * 
  * $Id$
  * 
- * Mod rewrite & SEF URLs support, managed entirely by the core router (rules)
+ * Most balanced config - performance and friendly URLs
  * It contains a lot of examples (mostly complex), use them to play around and learn things :/
  * Generally, things are much more simpler...
  * 
  */
-class core_news_rewrite_extended_url extends eUrlConfig
+class core_news_sef_url extends eUrlConfig
 {
 	public function config()
 	{
@@ -24,8 +24,11 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				### default vars mapping (create URL), override per rule is allowed
 				'mapVars' 		=> array(  
 					'news_id' => 'id', 
-					'news_title' => 'name', 
+					'news_sef' => 'name', 
 				),
+				
+				### match will only check if parameter is empty to invalidate the assembling vs current rule
+				'matchValue' => 'empty',	 
 				
 				### Numerical array containing allowed vars by default (create URL, used for legacyQuery parsing in parse routine as well), 
 				### false means - disallow all vars beside those required by the rules
@@ -62,23 +65,23 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				
 				## URL with ID and Title - no DB call, balanced performance, name optional
 				## Demonstrating the usage of custom user defined regex template defined above - 'testIt' 
-				'Category/<id:{testIt}>/<name:{sefsecure}>' => array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_name' => 'name'), 'legacyQuery' => 'list.{id}.{page}'),
+				'Category/<id:{testIt}>/<name:{sefsecure}>' => array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_sef' => 'name'), 'legacyQuery' => 'list.{id}.{page}'),
 				
 				## URL with Title only - prettiest and slowest! Example with direct regex - no templates
-				//'Category/<name:{sefsecure}>' => array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_name' => 'name'), 'legacyQuery' => 'list.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
+				//'Category/<name:{sefsecure}>' => array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'list.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
 				
 				## URL with ID only - best performance, fallback when no sef name provided
 				'Category/<id:{number}>' 		=> array('list/category', 'allowVars' => array('page'), 'legacyQuery' => 'list.{id}.{page}', 'mapVars' => array('category_id' => 'id')),
 
 				### View item requested by id or string, if you remove the catch ALL example, uncomment at least on row from this block
 				### leading category name example - could be enabled together with the next example to handle creating of URLs without knowing the category title
-				// 'View/<category:[\w\pL.\-\s]+>/<name:[\w\pL.\-\s]+>' => array('view/item', 'mapVars' => array('news_title' => 'name', 'category_name' => 'category'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
-				// to be noted here - value 'name' is replaced by item id within the callback method; TODO replace news_title with news_sef field
-				// 'View/<name:{sefsecure}>' 			=> array('view/item', 'mapVars' => array('news_title' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				// 'View/<category:[\w\pL.\-\s]+>/<name:[\w\pL.\-\s]+>' => array('view/item', 'mapVars' => array('news_sef' => 'name', 'category_sef' => 'category'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				// to be noted here - value 'name' is replaced by item id within the callback method; TODO replace news_sef with news_sef field
+				// 'View/<name:{sefsecure}>' 			=> array('view/item', 'mapVars' => array('news_sef' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// 'View/<id:{number}>' 				=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 
 				## URL with ID and Title - no DB call, balanced performance!
-				'Short/<id:{number}>/<name:{sefsecure}>' => array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_name' => 'name'), 'legacyQuery' => 'cat.{id}.{page}'),
+				'Short/<id:{number}>/<name:{sefsecure}>' => array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_sef' => 'name'), 'legacyQuery' => 'cat.{id}.{page}'),
 				## fallback when name is not provided	
 				'Short/<id:{number}>' => array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
 				
@@ -90,10 +93,13 @@ class core_news_rewrite_extended_url extends eUrlConfig
 				
 				### View news item - kinda catch all - very bad performance when News is chosen as default namespace - two additional DB queries on every site call!
 				## Leading category name - uncomment to enable
-				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_name' => 'category', 'news_title' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				//'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_sef' => 'category', 'news_sef' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				'View/<id:{number}>/<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_sef' => 'category', 'news_sef' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 				// Base location as item view - fallback if category sef is missing
-				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_title' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
+				//'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// fallback if news sef is missing
+				'View/<id:{number}>/<name:{sefsecure}>' 		=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{id}'),
+				
 				'View/<id:{number}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 				
 			) 
@@ -140,7 +146,7 @@ class core_news_rewrite_extended_url extends eUrlConfig
 	 * view/item by name callback
 	 * @param eRequest $request
 	 */
-	public function itemIdByTitle(eRequest $request)
+	/*public function itemIdByTitle(eRequest $request)
 	{
 		$name = $request->getRequestParam('name');
 		if(($id = $request->getRequestParam('id'))) 
@@ -156,19 +162,19 @@ class core_news_rewrite_extended_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('news', 'news_id', "news_title='{$name}'")) // TODO - it'll be news_sef (new) field
+		if($sql->db_Select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
 		{
 			$name = $sql->db_Fetch();
 			$request->setRequestParam('name', $name['news_id']);
 		}
 		else $request->setRequestParam('name', 0);
-	}
+	}*/
 	
 	/**
 	 * list/items by name callback
 	 * @param eRequest $request
 	 */
-	public function categoryIdByTitle(eRequest $request)
+	/*public function categoryIdByTitle(eRequest $request)
 	{
 		$name = $request->getRequestParam('name');
 		if(($id = $request->getRequestParam('id'))) 
@@ -184,11 +190,11 @@ class core_news_rewrite_extended_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$id = e107::getParser()->toDB($name);
-		if($sql->db_Select('news_category', 'category_id', "category_name='{$name}'")) // TODO - it'll be category_sef (new) field
+		if($sql->db_Select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
 		{
 			$name = $sql->db_Fetch();
 			$request->setRequestParam('name', $name['category_id']);
 		}
 		else $request->setRequestParam('name', 0);
-	}
+	}*/
 }

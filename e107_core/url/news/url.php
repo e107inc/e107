@@ -23,38 +23,44 @@ class core_news_url extends eUrlConfig
 				'defaultRoute'	=> 'list/new',// [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
 				'errorRoute'	=> '', 		// [optional] default empty; route (no leading module) used when module is found but no inner route is matched, leave empty to force error 404 page
 				'urlSuffix' 	=> '',		// [optional] default empty; string to append to the URL (e.g. .html), not used when format is 'get' or legacy non-empty
+				
+				###  [optional] used only when assembling URLs via rules(); 
+				### if 'empty' - check if the required parameter is empty (results in assemble fail), 
+				### if 1 or true - it uses the route pattern to match every parameter - EXTREMELY SLOW, be warned
+				'matchValue' => false,	 
+				
+			
+				### [optional] vars mapping (create URL routine), override per rule is allowed
+				### Keys of this array will be used as a map for finding values from the provided parameters array.
+				### Those values will be assigned to new keys - corresponding values of mapVars array
+				### It gives extremely flexibility when used with allowVars. For example we pass $news item array as 
+				### it's retrieved from the DB, with no modifications. This gives us the freedom to create any variations of news
+				### URLs using the DB data with a single line URL rule. Another aspect of this feature is the simplified code
+				### for URL assembling - we just do eRouter::create($theRoute, $newsDbArray)
+				### Not used when in selfCreate mod (create url)
+				'mapVars' 		=> array(  
+					//'news_id' => 'id', 
+					//'news_sef' => 'name', 
+				),
+				
+				### [optional] allowed vars definition (create URL routine), override per rule is allowed
+				### This numerical array serves as a filter for passed vars when creating URLs
+				### Everything outside this scope is ignored while assembling URLs. Exception are route variables.
+				### For example: when <id:[\d]+> is present in the route string, there is no need to extra allow 'id'
+				### To disallow everything but route variables, set allowVars to false
+				### When format is get, false value will disallow everything (no params) and default preserved variables
+				### will be extracted from mapVars (if available)
+				### Default value is empty array
+				### Not used when in selfCreate mod (create url)
+				'allowVars' 		=> array(/*'page', 'name'*/),
+				
+				### Those are regex templates, allowing us to avoid the repeating regex patterns writing in your rules.
+				### varTemplates are merged with the core predefined templates. Full list with core regex templates and examples can be found
+				### in rewrite_extended news URL config
+				'varTemplates' => array(/*'testIt' => '[\d]+'*/),
 			),
 			
 			'rules' => array(), // rule set array - can't be used with format 'get' and noSingleEntry true
-			
-			### [optional] vars mapping (create URL routine), override per rule is allowed
-			### Keys of this array will be used as a map for finding values from the provided parameters array.
-			### Those values will be assigned to new keys - corresponding values of mapVars array
-			### It gives extremely flexibility when used with allowVars. For example we pass $news item array as 
-			### it's retrieved from the DB, with no modifications. This gives us the freedom to create any variations of news
-			### URLs using the DB data with a single line URL rule. Another aspect of this feature is the simplified code
-			### for URL assembling - we just do eRouter::create($theRoute, $newsDbArray)
-			### Not used when in selfCreate mod (create url)
-			'mapVars' 		=> array(  
-				//'news_id' => 'id', 
-				//'news_sef' => 'name', 
-			),
-			
-			### [optional] allowed vars definition (create URL routine), override per rule is allowed
-			### This numerical array serves as a filter for passed vars when creating URLs
-			### Everything outside this scope is ignored while assembling URLs. Exception are route variables.
-			### For example: when <id:[\d]+> is present in the route string, there is no need to extra allow 'id'
-			### To disallow everything but route variables, set allowVars to false
-			### When format is get, false value will disallow everything (no params) and default preserved variables
-			### will be extracted from mapVars (if available)
-			### Default value is empty array
-			### Not used when in selfCreate mod (create url)
-			'allowVars' 		=> array(/*'page', 'name'*/),
-			
-			### Those are regex templates, allowing us to avoid the repeating regex patterns writing in your rules.
-			### varTemplates are merged with the core predefined templates. Full list with core regex templates and examples can be found
-			### in rewrite_extended news URL config
-			'varTemplates' => array(/*'testIt' => '[\d]+'*/),
 		);
 	}
 	
@@ -89,8 +95,8 @@ class core_news_url extends eUrlConfig
 		
 		## news are passing array as it is retrieved from the DB, map vars to proper values
 		if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
-		if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef'];
-		if(isset($params['category_name']) && !empty($params['category_name'])) $params['category'] = $params['category_name'];
+		//if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef'];
+		//if(isset($params['category_sef']) && !empty($params['category_sef'])) $params['category'] = $params['category_sef'];
 		
 		$url = 'news.php?';
 		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';

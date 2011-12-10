@@ -559,7 +559,7 @@ class page
 			e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
 		}
 		
-		if(!$type && $sql->db_Count('page', 'page_id', ($mode ? "page_id<>{$mode} AND " : '')."page_sef!={$page_sef}"))
+		if(!$type && $sql->db_Count('page', '(page_id)', ($mode ? "page_id<>{$mode} AND " : '')."page_sef!={$page_sef}"))
 		{
 			e107::getMessage()->addError(CUSLAN_34, 'default', true);
 			e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');

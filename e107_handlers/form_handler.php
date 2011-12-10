@@ -138,6 +138,7 @@ class e_form
 		return $ret;
 	}
 
+	// FIXME - Dialog JS no more working, investigate
 	public function mediaUrl($category = '', $label = '')
 	{
 		if($category) $category = '&amp;for='.$category;
@@ -700,22 +701,22 @@ class e_form
 		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action edit');
+				$options['class'] = $options['class'] == 'action' ? 'action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action delete');
+				$options['class'] = $options['class'] == 'action' ? 'action delete' : $options['class'];
 			break;
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action execute');
+				$options['class'] = $options['class'] == 'action' ? 'action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
-				$options['class'] = vartrue($options['class'] , 'action view');
+				$options['class'] = $options['class'] == 'action' ? 'action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand

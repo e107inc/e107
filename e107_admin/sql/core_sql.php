@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Core SQL
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 header("location:../index.php");
@@ -294,6 +292,7 @@ CREATE TABLE menus (
 CREATE TABLE news (
   news_id int(10) unsigned NOT NULL auto_increment,
   news_title varchar(200) NOT NULL default '',
+  news_sef varchar(200) NOT NULL default '',
   news_body text NOT NULL,
   news_extended text NOT NULL,
   news_meta_keywords  varchar(255) NOT NULL default '',
@@ -329,6 +328,7 @@ CREATE TABLE news (
 CREATE TABLE news_category (
   category_id tinyint(3) unsigned NOT NULL auto_increment,
   category_name varchar(200) NOT NULL default '',
+  category_sef varchar(200) NOT NULL default '',
   category_meta_description text NOT NULL,
   category_meta_keywords  varchar(255) NOT NULL default '',
   category_manager tinyint(3) unsigned NOT NULL default '254',

@@ -4,9 +4,9 @@
  * 
  * $Id$
  * 
- * Mod rewrite & SEF URLs support, example of manually (rules-less) created/parsed urls
+ * SEF URLs support, example of manually (rules-less) created/parsed urls
  */
-class core_news_rewrite_url extends eUrlConfig
+class core_news_sef_noid_url extends eUrlConfig
 {
 	public function config()
 	{
@@ -63,7 +63,7 @@ class core_news_rewrite_url extends eUrlConfig
 		{
 			## news are passing array as it is retrieved from the DB, map vars to proper values
 			if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
-			if(isset($params['news_title']) && !empty($params['news_title'])) $params['id'] = $params['news_title']; // TODO - news_sef
+			if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef']; // TODO - news_sef
 			
 			switch ($route[1]) 
 			{
@@ -80,7 +80,7 @@ class core_news_rewrite_url extends eUrlConfig
 		{
 			## news are passing array as it is retrieved from the DB, map vars to proper values
 			if(isset($params['category_id']) && !empty($params['category_id'])) $params['id'] = $params['category_id'];
-			if(isset($params['category_name']) && !empty($params['category_name'])) $params['name'] = $params['category_name']; // TODO - news_sef
+			if(isset($params['category_sef']) && !empty($params['category_sef'])) $params['name'] = $params['category_sef']; // TODO - news_sef
 			
 			switch ($route[1]) 
 			{
@@ -162,8 +162,8 @@ class core_news_rewrite_url extends eUrlConfig
 		}
 		
 		$parts = explode('/', $pathInfo, 2);
-		
-		switch (strtolower($parts[0])) 
+		$parts[0] = strtolower($parts[0]);
+		switch ($parts[0]) 
 		{
 			# map to list.xxx.xxx
 			case 'short':
@@ -247,13 +247,13 @@ class core_news_rewrite_url extends eUrlConfig
 	
 	### CUSTOM METHODS ###
 	
-	//retrieve news_id by Title (XXX - news_sef column, equals to news_title if not set explicit)
+	//retrieve news_id by news_sef (
 	public function itemIdByTitle($id)
 	{
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news', 'news_id', "news_title='{$id}'")) // TODO - it'll be news_url (new) field
+		if($sql->db_Select('news', 'news_id', "news_sef='{$id}'")) 
 		{
 			$id = $sql->db_Fetch();
 			return $id['news_id'];
@@ -261,13 +261,13 @@ class core_news_rewrite_url extends eUrlConfig
 		return false;
 	}
 	
-	//retrieve category_id by Title (XXX - category_sef column, equals to category_name if not set explicit)
+	//retrieve category_id by Title (XXX - category_sef column, equals to category_sef if not set explicit)
 	public function categoryIdByTitle($id)
 	{
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news_category', 'category_id', "category_name='{$id}'")) // TODO - it'll be category_url (new) field
+		if($sql->db_Select('news_category', 'category_id', "category_sef='{$id}'")) 
 		{
 			$id = $sql->db_Fetch();
 			return $id['category_id'];

@@ -1401,14 +1401,6 @@ class eRouter
 			$lanCode = e107::getLanguage()->convert(e_LANGUAGE); 
 			
 			$aliases = e107::findPref('url_aliases/'.$lanCode, array());
-			// __REMOVE__ Temporary test data
-			/*
-			$aliases = array(
-							'Blog' => 'news',
-							'People' => 'user',
-							'Myplug' => 'test'
-						);*/
-			
 		}
 		$this->_aliases = $aliases;
 		
@@ -1493,7 +1485,7 @@ class eRouter
 			$rules = $this->getRuleSet($module);
 			$config = $this->getConfig($module);
 			$this->_parsedRules[$module] = array();
-			$map = array('urlSuffix' => 'urlSuffix', 'legacy' => 'legacy', 'legacyQuery' => 'legacyQuery', 'mapVars' => 'mapVars', 'allowVars' => 'allowVars');
+			$map = array('urlSuffix' => 'urlSuffix', 'legacy' => 'legacy', 'legacyQuery' => 'legacyQuery', 'mapVars' => 'mapVars', 'allowVars' => 'allowVars', 'matchValue' => 'matchValue');
 			foreach ($rules as $pattern => $set) 
 			{
 				foreach ($map as $key => $value) 
@@ -2205,6 +2197,13 @@ class eUrlRule
 	public $allowVars = array();
 	
 	/**
+	 * Should be values matched vs route patterns when assembling URLs
+	 * Warning SLOW when true!!!
+	 * @var mixed true or 1 for preg_match (extremely slower), or 'empty' for only empty check (better) 
+	 */
+	public $matchValue;
+	
+	/**
 	 * Method member of module config object, to be called after successful request parsing
 	 * @var string
 	 */
@@ -2409,15 +2408,36 @@ class eUrlRule
 				else return false;
 			}
 		}
-
+		
 		foreach ($this->params as $key => $value) if (!isset($params[$key])) return false;
+		
+		if($this->matchValue)
+		{
+			
+			if('empty' !== $this->matchValue)
+			{
+				foreach($this->params as $key=>$value)
+				{
+					if(!preg_match('/'.$value.'/'.$case,$params[$key]))
+						return false;
+				}
+			}
+			else
+			{
+				foreach($this->params as $key=>$value)
+				{
+					if(empty($params[$key]) )
+						return false;
+				}
+			}
+		}
 		
 		foreach ($this->params as $key => $value)
 		{
 			$tr["<$key>"] = $params[$key];
 			unset($params[$key]);
 		}
-
+		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 
 		$url = strtr($this->template, $tr);
@@ -3817,7 +3837,7 @@ class eHelper
 		
 		if(null === $type)
 		{
-			$type = 'none'; // FIXME - site preference
+			$type = e107::getPref('url_sef_translate'); // FIXME - site preference
 		}
 		$tp = e107::getParser();
 		switch ($type) 
