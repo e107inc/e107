@@ -1968,21 +1968,25 @@ class e107plugin
 						else
 						{
 							$sc_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
-							}
+						}
 					}
-
+					
+					if($is_installed)
+					{
+						// simple bbcode
 						if(substr($adds,-3) == ".bb")
 						{
 							$bb_name = substr($adds, 0,-3); // remove the .bb
 	                    	$bb_array[$bb_name] = "0"; // default userclass.
 						}
 						// bbcode class
-						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -3) == ".bb") 
+						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -4) == ".php") 
 						{
-							$bb_name = substr($adds, 0,-3); // remove the .bb
-							$bb_name = substr($bb_name, 0, 3);
-	                    	$bb_array[$bb_name] = "0"; // default userclass. TODO - instance and getPermissions() method
+							$bb_name = substr($adds, 0,-4); // remove the .php
+							$bb_name = substr($bb_name, 3);
+	                    	$bb_array[$bb_name] = "0"; // TODO - instance and getPermissions() method
 						}
+					}
 
 					if ($is_installed && (substr($adds, -4) == "_sql"))
 					{
