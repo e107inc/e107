@@ -687,10 +687,10 @@ class e107plugin
 	                    	$bb_array[$bb_name] = "0"; // default userclass.
 						}
 						// bbcode class
-						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -3) == ".bb") 
+						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -4) == ".php") 
 						{
-							$bb_name = substr($adds, 0,-3); // remove the .bb
-							$bb_name = substr($bb_name, 0, 3);
+							$bb_name = substr($adds, 0,-4); // remove the .php
+							$bb_name = substr($bb_name, 3);
 	                    	$bb_array[$bb_name] = "0"; // TODO - instance and getPermissions() method
 						}
 					}
