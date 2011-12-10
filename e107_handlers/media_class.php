@@ -2,25 +2,26 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Media Management Class
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
- * $Revision: 11315 $
- * $Date: 2010-02-10 10:18:01 -0800 (Wed, 10 Feb 2010) $
- * $Author: secretr $
+ * $URL$
+ * $Id$
  *
 */
 
 
 if (!defined('e107_INIT')) { exit; }
 
+/**
+ * Subject of rewrite/rethinking after the pre-alpha
+ */
 class e_media
 {
-	var $imagelist = array();
+	public $imagelist = array();
 	
 	/**
 	 * Import files from specified path into media database. 
@@ -273,7 +274,7 @@ class e_media
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
 		$total = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;		
-		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href=\"javascript:expandit('{$formid}')\" >x</div>";
+		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
 		{
@@ -283,8 +284,8 @@ class e_media
 			
 			$text .= "
 			<div style='border:1px solid silver;margin:5px;width:50px;height:50px;overflow:hidden;float:left'>
-			<a title=\"".$diz."\" href=\"javascript:addtext('".$insert."', true); expandit('{$formid}')\" >
-			<img src='".e107::getParser()->thumbUrl($image, 'w=100', true)."' alt=\"".$diz."\" width='50px' />
+			<a title=\"".$diz."\" href='#' onclick=\"addtext('".$insert."', true); expandit('{$formid}'); return false;\" >
+			<img src='".e107::getParser()->thumbUrl($image, 'w=100', true)."' alt=\"".$diz."\" style='width: 50px' />
 			</a>
 			</div>";
 		}

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -689,7 +689,8 @@ else
 	if($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name']))
 	{
 		// we know category name - pass it to the nexprev url
-		$category_name = $newsUrlparms['name'] = $newsAr[1]['category_name'];
+		$category_name = $newsAr[1]['category_name'];
+		if(vartrue($newsAr[1]['category_sef'])) $newsUrlparms['name'] = $newsAr[1]['category_sef'];
 		if(!isset($NEWSLISTCATTITLE))
 		{
 			$NEWSLISTCATTITLE = "<h1 class='newscatlist-title'>".$tp->toHTML($category_name,FALSE,'TITLE')."</h1>";

@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
  * $URL$
- * $Revision$
  * $Id$
- * $Author$
  */
 
 /**
@@ -37,7 +33,8 @@ class e_bbcode
 
 	function __construct()
 	{
-		global $pref;
+		$pref = e107::getPref();
+		
 		$core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
 		'_br', 'color', 'size', 'code',

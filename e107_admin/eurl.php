@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -55,8 +55,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	protected $prefs = array(
 		'url_disable_pathinfo'	=> array('title'=>LAN_EURL_SETTINGS_PATHINFO,	'type'=>'boolean', 'help'=>LAN_EURL_MODREWR_DESCR),
-		'url_main_module'	=> array('title'=>LAN_EURL_SETTINGS_MAINMODULE,	'type'=>'dropdown', 'data' => 'string','help'=>LAN_EURL_SETTINGS_MAINMODULE_HELP),
+		'url_main_module'	=> array('title'=>LAN_EURL_SETTINGS_MAINMODULE,	'type'=>'dropdown', 'data' => 'string', 'help'=>LAN_EURL_SETTINGS_MAINMODULE_HELP),
 		'url_error_redirect'	=> array('title'=>LAN_EURL_SETTINGS_REDIRECT,	'type'=>'boolean', 'help'=>LAN_EURL_SETTINGS_REDIRECT_HELP),
+		'url_sef_translate'	=> array('title'=>LAN_EURL_SETTINGS_SEFTRANSLATE,	'type'=>'dropdown', 'data' => 'string', 'help'=>LAN_EURL_SETTINGS_SEFTRANSLATE_HELP),
 	);
 	
 	public function init()
@@ -82,6 +83,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function SettingsObserver()
 	{
+		// main module pref dropdown
 		$this->prefs['url_main_module']['writeParms'][''] = 'None';
 		$modules = e107::getPref('url_config', array());
 		ksort($modules);
@@ -97,6 +99,14 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 			
 			$this->prefs['url_main_module']['writeParms'][$module] = vartrue($section['name'], eHelper::labelize($module));
+		}
+		
+		// title2sef transform type pref  
+		$types = explode('|', 'none|dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus');
+		$this->prefs['url_sef_translate']['writeParms'] = array();
+		foreach ($types as $type) 
+		{
+			$this->prefs['url_sef_translate']['writeParms'][$type] = deftrue('LAN_EURL_SETTINGS_SEFTRTYPE_'.strtoupper($type), ucfirst($type));
 		}
 		
 		if(isset($_POST['etrigger_save']))
@@ -121,7 +131,10 @@ class eurl_admin_ui extends e_admin_controller_ui
 		if(isset($_POST['update']))
 		{
 			$posted = is_array($_POST['eurl_aliases']) ? e107::getParser()->post_toForm($_POST['eurl_aliases']) : '';
+			$locations = array_keys(e107::getPref('url_locations', array()));
 			$aliases = array();
+			$message = e107::getMessage();
+			
 			foreach ($posted as $lan => $als) 
 			{
 				foreach ($als as $module => $alias) 
@@ -130,8 +143,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 					$module = trim($module);
 					if($module !== $alias) 
 					{
-						// TODO - basic validation
-						$aliases[$lan][$alias] = $module;
+						$cindex = array_search($module, $locations);
+						$sarray = $locations;
+						unset($sarray[$cindex]);
+						
+						if(!in_array(strtolower($alias), $sarray)) $aliases[$lan][$alias] = $module;
+						else $message->addError(sprintf(LAN_EURL_ERR_ALIAS_MODULE, $alias, $module));
 					}
 				}
 			}
@@ -198,8 +215,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 		$this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');
-		//echo(e107::getUrl()->create('system/error/notfound', '', 'full=1'));
-		//eRouter::adminReadConfigs(e_CORE.'url/news', 'core');
+
 		$set = array();
 		// all available URL modules
 		$set['url_modules'] = eRouter::adminReadModules();

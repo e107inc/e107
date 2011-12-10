@@ -38,19 +38,48 @@ class news {
 	//TODO - synch WIKI docs, add rewrite data to the event data
 	function submit_item($news, $smessages = false)
 	{
-		
-		global $e107cache, $e_event, $pref, $admin_log;
-
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-
+		$admin_log = e107::getAdminLog();
+		$pref = e107::getPref();
+		$e_event = e107::getEvent();
+		$e107cache = e107::getCache();
 		$emessage = e107::getMessage();
+		
 
 		$error = false;
 		if(empty($news['news_title']))
 		{
 			$error = true;
 			$emessage->add('Validation error: News title can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			if(!empty($news['news_sef']))
+			{
+				$news['news_sef'] = eHelper::secureSef($news['news_sef']);
+			}
+		}
+		else
+		{
+			// first format sef...
+			if(empty($news['news_sef']))
+			{
+				$news['news_sef'] = eHelper::title2sef($news['news_title']);
+			}
+			else 
+			{
+				$news['news_sef'] = eHelper::secureSef($news['news_sef']);
+			}
+		}
+		
+		// ...then check it
+		if(empty($news['news_sef']))
+		{
+			$error = true;
+			$emessage->add('Validation error: News SEF URL value is required field and can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+		}
+		elseif($sql->db_Count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
+		{
+			$error = true;
+			$emessage->add('Validation error: News SEF URL is unique field - current value already in use! Please choose another SEF URL value.', E_MESSAGE_ERROR, $smessages);
 		}
 
 		if(empty($news['news_category']))
@@ -64,6 +93,9 @@ class news {
 		//DB Array
 		$data['data']['news_title'] = $news['news_title'];
 		$data['_FIELD_TYPES']['news_title'] = 'todb';
+		
+		$data['data']['news_sef'] = $news['news_sef'];
+		$data['_FIELD_TYPES']['news_sef'] = 'todb';
 
 		$data['data']['news_body'] = $news['news_body'];
 		$data['_FIELD_TYPES']['news_body'] = 'todb';
@@ -107,19 +139,11 @@ class news {
 		$data['data']['news_sticky'] = $news['news_sticky'];
 		$data['_FIELD_TYPES']['news_sticky'] = 'int';
 
-		$data['data']['news_meta_keywords'] = $news['news_meta_keywords'];
+		$data['data']['news_meta_keywords'] = eHelper::formatMetaKeys($news['news_meta_keywords']);
 		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
 
-		$data['data']['news_meta_description'] = strip_tags($tp->toHTML($news['news_meta_description'], true)); //handle bbcodes
+		$data['data']['news_meta_description'] = eHelper::formatMetaDescription($news['news_meta_description']); //handle bbcodes
 		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
-
-		$datarw = array();
-		$datarw['data']['news_rewrite_id'] = $news['news_rewrite_id'];
-		$datarw['_FIELD_TYPES']['news_rewrite_id'] = 'int';
-		$datarw['data']['news_rewrite_string'] = trim($news['news_rewrite_string']);
-		$datarw['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-		$datarw['data']['news_rewrite_type'] = 1;
-		$datarw['_FIELD_TYPES']['news_rewrite_type'] = 'int';
 
 		if($error)
 		{
@@ -510,7 +534,7 @@ class e_news_item extends e_front_model
 		$id = intval($id);
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
-	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
@@ -726,7 +750,7 @@ class e_news_category_item extends e_front_model
 	public function sc_news_category_url($parm = '')
 	{
 
-		$url = e107::getUrl()->create('news/list/category', array('id' => $this->getId(), 'name' => $this->cat('name')));
+		$url = e107::getUrl()->create('news/list/category', array('id' => $this->getId(), 'name' => $this->cat('sef')));
 		switch($parm)
 		{
 			case 'link':

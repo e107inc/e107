@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * News Administration
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL $
+ * $Id$
 */
 
 require_once('../class2.php');
@@ -36,8 +34,12 @@ $newspost = new admin_newspost(e_QUERY, $pst);
 e107::setRegistry('_newspost_admin', $newspost);
 $gen = new convert();
 
+
 //Handle Ajax Calls
 if($newspost->ajax_observer()) exit;
+
+e107::getJs()->requireCoreLib('core/admin.js');
+
 
 function headerjs()
 {
@@ -113,7 +115,6 @@ function headerjs()
 			});
 		</script>
 	";
-	e107::getJs()->requireCoreLib('core/admin.js');
 
 	if($newspost->getAction() == 'cat')
 	{
@@ -228,7 +229,7 @@ require_once("footer.php");
 exit;
 
 
-// FIXME - advanced filter, ready to be chunked, cleaned up and pluginized some day...
+// FIXME - news2plugin! Full rewrite.
 
 
 class admin_newspost
@@ -266,7 +267,7 @@ class admin_newspost
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_rewrite_string'	=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
     			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                 'category_name'			=> array('title' => NWSLAN_6, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -378,17 +379,12 @@ class admin_newspost
 
 	function clear_rwcache($sefstr = '')
 	{
-		/*if($sefstr) $sefstr = md5($sefstr);
-		ecache::clear_sys("news_sefurl".$sefstr);*/
-		// news::clearRewriteCache($sefstr);
+		// obsolete
 	}
 
 	function set_rwcache($sefstr, $data)
 	{
-		/**$sefstr = md5($sefstr);
-		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
-		ecache::set_sys("news_sefurl".$sefstr, $data, true);*/
-		// news::setRewriteCache($sefstr, $data);
+		// obsolete
 	}
 
 	function ajax_observer()
@@ -516,7 +512,7 @@ class admin_newspost
 
 	function _observe_delete()
 	{
-		global $admin_log;
+		$admin_log = e107::getAdminLog();
 		//FIXME - SEF URL cache
 		$tmp = array_keys($_POST['delete']);
 		list($delete, $del_id) = explode("_", $tmp[0]);
@@ -529,7 +525,7 @@ class admin_newspost
 		switch ($delete) {
 			case 'main':
 							
-				if ($e107->sql->db_Count('news','(*)',"WHERE news_id={$del_id}"))
+				if ($e107->sql->db_Count('news','(*)',"news_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newsdel", $del_id);
 					if($e107->sql->db_Delete("news", "news_id={$del_id}"))
@@ -550,8 +546,13 @@ class admin_newspost
 				
 				if(!getperms('0|7')) $this->noPermissions();
 
+				if (($count = $e107->sql->db_Count('news','(news_id)',"news_category={$del_id}")) === false || $count > 0)
+				{
+					$this->show_message('Category is in used in <strong>'.$count.'</strong> news items and cannot be deleted.', E_MESSAGE_ERROR);
+					return false;
+				}
 				
-				if ($e107->sql->db_Count('news_category','(*)',"WHERE category_id={$del_id}"))
+				if ($e107->sql->db_Count('news_category','(*)',"category_id={$del_id}"))
 				{
 					e107::getEvent()->trigger("newscatdel", $del_id);
 					if ($e107->sql->db_Delete("news_category", "category_id={$del_id}"))
@@ -647,14 +648,13 @@ class admin_newspost
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 		
-		
-		
-
         $ret = $ix->submit_item($_POST, !vartrue($_POST['create_edit_stay']));
 		if($ret['error'])
 		{
-			eMessage::getInstance()->mergeWithSession(); //merge with session messages
-			eMessage::getInstance()->add(($id ? LAN_UPDATED_FAILED : LAN_CREATED_FAILED), E_MESSAGE_ERROR);
+			e107::getMessage()->mergeWithSession() //merge with session messages
+				->add(($id ? LAN_UPDATED_FAILED : LAN_CREATED_FAILED), E_MESSAGE_ERROR);
+				
+			$_POST['news_sef'] = $ret['data']['news_sef']; 
 			return false;
 		}
         $this->clear_cache();
@@ -689,46 +689,54 @@ class admin_newspost
 		{
 			$this->show_message('Validation Error: Missing Category name', E_MESSAGE_ERROR);
 			$this->error = true;
+			if(!empty($_POST['category_sef']))
+			{
+				$_POST['category_sef'] = eHelper::secureSef($_POST['category_sef']);
+			}
 		}
-
-	//	if(!empty($_POST['news_rewrite_string']) && preg_match('#[^\w\pL\-]#u', $_POST['news_rewrite_string']))
+		else
 		{
-		//	$this->show_message('Validation Error: Bad value for Category friendly URL', E_MESSAGE_ERROR);
-		//	$this->error = true;
+			// first format sef...
+			if(empty($_POST['category_sef']))
+			{
+				$_POST['category_sef'] = eHelper::title2sef($_POST['category_name']);
+			}
+			else 
+			{
+				$_POST['category_sef'] = eHelper::secureSef($_POST['category_sef']);
+			}
+		}
+		
+		// ...then check it
+		if(empty($_POST['category_sef']))
+		{
+			$this->error = true;
+			$this->show_message('Validation error: News Category SEF URL value is required field and can\'t be empty!', E_MESSAGE_ERROR);
+		}
+		elseif(e107::getDb()->db_Count('news_category', '(category_id)', "category_sef='".e107::getParser()->toDB($_POST['category_sef'])."'"))
+		{
+			$this->error = true;
+			$this->show_message('Validation error: News Category SEF URL is unique field - current value already in use! Please choose another SEF URL value.', E_MESSAGE_ERROR);
 		}
 
 		if (!$this->error)
 		{
 			$inserta = array();
-			/* Why? Categoty Icon is not required field
-			if (empty($_POST['category_icon']))
-			{
-				$handle = opendir(e_IMAGE."icons");
-				while ($file = readdir($handle))
-				{
-					if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
-						$iconlist[] = $file;
-					}
-				}
-				closedir($handle);
-				$inserta['category_icon'] = $iconlist[0];
-			}
-			else
-			{
-				$inserta['category_icon'] = e107::getParser()->toDB($_POST['category_icon']);
-			}*/
 
 			$inserta['data']['category_icon'] = $_POST['category_icon'];
 			$inserta['_FIELD_TYPES']['category_icon'] = 'todb';
 
 			$inserta['data']['category_name'] = $_POST['category_name'];
 			$inserta['_FIELD_TYPES']['category_name'] = 'todb';
+			
+			$inserta['data']['category_sef'] = $_POST['category_sef'];
+			$inserta['_FIELD_TYPES']['category_sef'] = 'todb';
 
-			$inserta['data']['category_meta_description'] = strip_tags($_POST['category_meta_description']);
-			$inserta['_FIELD_TYPES']['category_meta_description'] = 'str';
+			$inserta['data']['category_meta_description'] = eHelper::formatMetaDescription($_POST['category_meta_description']);
+			$inserta['_FIELD_TYPES']['category_meta_description'] = 'todb';
 
-			$inserta['data']['category_meta_keywords'] = $_POST['category_meta_keywords'];
-			$inserta['_FIELD_TYPES']['category_meta_keywords'] = 'str';
+			$inserta['data']['category_meta_keywords'] = eHelper::formatMetaKeys($_POST['category_meta_keywords']);
+			$inserta['_FIELD_TYPES']['category_meta_keywords'] = 'todb';
 
 			$inserta['data']['category_manager'] = $_POST['category_manager'];
 			$inserta['_FIELD_TYPES']['category_manager'] = 'int';
@@ -736,16 +744,13 @@ class admin_newspost
 			$inserta['data']['category_order'] = $_POST['category_order'];
 			$inserta['_FIELD_TYPES']['category_order'] = 'int';
 
-			//e107::getDb()->db_Insert('news_category', "'0', '{$_POST['category_name']}', '{$_POST['category_icon']}'");
 			$id = e107::getDb()->db_Insert('news_category', $inserta);
 			if($id)
 			{
 				$inserta['data']['category_id'] = $id;
 				
-
 				//admin log now supports DB array and method chaining
 				e107::getAdminLog()->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '');
-
 
 				$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
 				$this->clear_cache();
@@ -785,8 +790,35 @@ class admin_newspost
 		{
 			$this->show_message('Validation Error: Missing Category name', E_MESSAGE_ERROR);
 			$this->error = true;
+			if(!empty($_POST['category_sef']))
+			{
+				$_POST['category_sef'] = eHelper::secureSef($_POST['category_sef']);
+			}
 		}
-
+		else
+		{
+			// first format sef...
+			if(empty($_POST['category_sef']))
+			{
+				$_POST['category_sef'] = eHelper::title2sef($_POST['category_name']);
+			}
+			else 
+			{
+				$_POST['category_sef'] = eHelper::secureSef($_POST['category_sef']);
+			}
+		}
+		
+		// ...then check it
+		if(empty($_POST['category_sef']))
+		{
+			$this->error = true;
+			$this->show_message('Validation error: News Category SEF URL value is required field and can\'t be empty!', E_MESSAGE_ERROR);
+		}
+		elseif(e107::getDb()->db_Count('news_category', '(category_id)', "category_id<>".$this->getId()." AND category_sef='".(e107::getParser()->toDB($_POST['category_sef'])."'")))
+		{
+			$this->error = true;
+			$this->show_message('Validation error: News Category SEF URL is unique field - current value already in use! Please choose another SEF URL value.', E_MESSAGE_ERROR);
+		}
 
 		if (!$this->error)
 		{
@@ -796,7 +828,10 @@ class admin_newspost
 
 			$updatea['data']['category_name'] = $_POST['category_name'];
 			$updatea['_FIELD_TYPES']['category_name'] = 'todb';
-
+			
+			$updatea['data']['category_sef'] = $_POST['category_sef'];
+			$updatea['_FIELD_TYPES']['category_sef'] = 'todb';
+			
 			$updatea['data']['category_meta_description'] = strip_tags($_POST['category_meta_description']);
 			$updatea['_FIELD_TYPES']['category_meta_description'] = 'str';
 
@@ -813,7 +848,6 @@ class admin_newspost
 
 			$inserta = array();
 			$rid = 0;
-
 
 			$upcheck = e107::getDb()->db_Update("news_category", $updatea);
 			$rwupcheck = false;
@@ -937,15 +971,14 @@ class admin_newspost
 
 	function show_existing_items()
 	{
-		global $user_pref,$gen;
-
+		$user_pref = e107::getUser()->getPref(); 
 		if(!getperms('H'))
 		{
         	return;
 		}
 
-		require_once(e_HANDLER."form_handler.php");
-		$frm = new e_form(true); //enable inner tabindex counter
+		//require_once(e_HANDLER."form_handler.php");
+		$frm = e107::getForm(true); //enable inner tabindex counter
 
 	   	// Effectively toggle setting for headings
 
@@ -1212,6 +1245,7 @@ class admin_newspost
 					}
 
 					$_POST['news_title'] = $row['news_title'];
+					$_POST['news_sef'] = $row['news_sef'];
 					$_POST['news_body'] = $row['news_body'];
 					$_POST['news_author'] = $row['news_author'];
 					$_POST['news_extended'] = $row['news_extended'];
@@ -1236,8 +1270,7 @@ class admin_newspost
 
 	function show_create_item()
 	{
-		global $pref;
-
+		$pref = e107::getPref();
 		$this->_pre_create();
 
 		require_once(e_HANDLER."userclass_class.php");
@@ -1440,85 +1473,6 @@ class admin_newspost
 								<td>";
 
 		$text .= $frm->mediaUrl('news', NWSLAN_69);
-/*		//FIXME  - below is a quick fix for media-manager upload. Requires popup window without header/footer.
-		$text .= "<a rel='external' class='e-dialog' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create&amp;for=news'>".NWSLAN_69."</a>";
-		// FIXME - make it system wide available
-		e107::getJs()->requireCoreLib('core/admin.js')
-			->requireCoreLib('core/dialog.js')
-			->requireCoreLib('core/draggable.js')
-			->coreCSS('core/dialog/dialog.css')
-			->coreCSS('core/dialog/e107/e107.css')
-			->footerInline('
-			$$("a.e-dialog").invoke("observe", "click", function(ev) {
-				var element = ev.findElement("a");
-				ev.stop();
-				new e107Widgets.URLDialog(element.href + "&iframe=1", {
-					id: element["id"] || "e-dialog",
-					width: 800,
-					height: 600,
-					title: "Media Manager"
-				}).center().activate().show();
-			});
-		');*/
-		// e_NEWSIMAGE is deprecated.
-
-		// DEPRECATED METHOD below.
-		/*$text .= "<a href='#news-upload-cont' class='e-expandit'>".NWSLAN_69."</a>
-									<div class='e-hideme' id='news-upload-cont'>
-		";
-
-		if (!FILE_UPLOADS)
-		{
-			$text .= "<b>".LAN_UPLOAD_SERVEROFF."</b>";
-		}
-		else
-		{
-			if (!is_writable(e_DOWNLOAD))
-			{
-				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_DOWNLOAD)."</b><br /><br />";
-			}
-			if (!is_writable(e_NEWSIMAGE))
-			{
-				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_NEWSIMAGE)."</b><br /><br />";
-			}
-
-			$up_name = array(LAN_NEWS_24, NWSLAN_67, LAN_NEWS_22, NWSLAN_68);
-			$up_value = array("resize", "image", "thumb", "file");
-
-			$text .= "
-										<div class='field-spacer'>
-											".$frm->admin_button('dupfield', LAN_NEWS_26, 'action', '', array('other' => 'onclick="duplicateHTML(\'upline\',\'up_container\');"'))."
-										</div>
-										<div id='up_container' class='field-spacer'>
-											<div id='upline' class='left nowrap'>
-												".$frm->file('file_userfile[]')."
-												".$frm->select_open('uploadtype[]')."
-			";
-
-			for ($i=0; $i<count($up_value); $i++)
-			{
-				$text .= $frm->option($up_name[$i], $up_value[$i], varset($_POST['uploadtype']) == $up_value[$i]);
-			}
-			//FIXME - upload shortcode, flexible enough to be used everywhere
-			// Note from Cameron: should include iframe and use ajax as to not require a full refresh of the page.
-
-			$text .= "
-												</select>
-											</div>
-										</div>
-										<div class='field-spacer'>
-											<span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;".$frm->text('resize_value', ($_POST['resize_value'] ? $_POST['resize_value'] : '100'), 4, 'size=3&class=tbox')."&nbsp;px
-										</div>
-										<div class='field-spacer'>
-											".$frm->admin_button('submitupload', NWSLAN_66, 'upload')."
-										</div>
-			";
-
-		}
-		$text .= "
-									</div>";
-		*/
-
 
 		$text .= "
 								</td>
@@ -1528,28 +1482,7 @@ class admin_newspost
 								<td>
 		";
 
-
-/*
-		$parms = "name=news_thumbnail";
-		$parms .= "&path=".e_NEWSIMAGE;
-		$parms .= "&filter=0";
-		$parms .= "&fullpath=1";
-		$parms .= "&default=".urlencode(basename($_POST['news_thumbnail']));
-		$parms .= "&multiple=FALSE";
-		$parms .= "&label=-- ".LAN_NEWS_48." --";
-		$parms .= "&subdirs=0";
-		$parms .= "&tabindex=".$frm->getNext();
-		*/
-
-		//$parms .= "&click_target=data";
-		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
-		//$parms .= "&click_postfix=[/img]";
-
-
 		$text .= $frm->imagepicker('news_thumbnail', $_POST['news_thumbnail'],'','news');
-
-	//	$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
-	//	$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 		$text .= "
 								<div class='field-help'>".LAN_NEWS_23."</div>
@@ -1569,23 +1502,16 @@ class admin_newspost
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
-						<tbody>";
+						<tbody>
 						
-						// news_rewrite table Deprecated.  e_url.php standard to be established. 
-						/*
-						$text .= "
 							<tr>
 								<td class='label'>Friendly URL string: </td>
 								<td class='control'>
-									".$frm->text('news_rewrite_string', $tp->post_toForm($_POST['news_rewrite_string']), 255)."
-									".$frm->hidden('news_rewrite_id', intval($_POST['news_rewrite_id']))."
-									<div class='field-help'>To make this work, you need to enable 'SEF URLs' config profile from <a href='".e_ADMIN_ABS."eurl.php'>URL Configuration area</a></div>
+									".$frm->text('news_sef', $tp->post_toForm($_POST['news_sef']), 255)."
+									<div class='field-help'>If left empty will be automatically created from current News Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
 								</td>
-							</tr>";
-						 
-						 */
-							
-						$text .= "
+							</tr>
+
 							<tr>
 								<td class='label'>Meta keywords: </td>
 								<td class='control'>".$frm->text('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."</td>
@@ -1881,8 +1807,8 @@ class admin_newspost
 		{
 			exit;
 		}
-		require_once (e_HANDLER.'js_helper.php');
-		$e107 = &e107::getInstance();
+		//require_once (e_HANDLER.'js_helper.php');
+		$e107 = e107::getInstance();
 
 		$category = array();
 		if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId()))
@@ -1896,21 +1822,7 @@ class admin_newspost
 		}
 		$jshelper = new e_jshelper();
 
-
 		$jshelper->addResponseAction('fill-form', $category);
-
-		//reset if required
-		$category_rewrite = array(
-			'news_rewrite_id' 		=> 0,
-			'news_rewrite_source' 	=> 0,
-			'news_rewrite_string' 	=> '',
-			'news_rewrite_type' 	=> 0
-		);
-	//	if ($e107->sql->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
-		{
-		//	$category_rewrite = $e107->sql->db_Fetch();
-		}
-		$jshelper->addResponseAction('fill-form', $category_rewrite);
 
 		//show cancel and update, hide create buttons; disable create button (just in case)
 		$jshelper->addResponseAction('element-invoke-by-id', array(
@@ -2024,19 +1936,14 @@ class admin_newspost
 									".$frm->text('category_name', $category['category_name'], 200)."
 									<div class='field-help'>Required field</div>
 								</td>
-							</tr>";
-							
-							// Disabled until e_url is complete. 
-							// $text .= "
-							// <tr>
-								// <td class='label'>Category friendly URL string</td>
-								// <td class='control'>
-									// ".$frm->text('category_sefurl', $category['category_sefurl'], 255)."
-									// <div class='field-help'></div>
-								// </td>
-							// </tr>";
-							
-							$text .= "
+							</tr>
+							<tr>
+								<td class='label'>Category friendly URL string</td>
+								<td class='control'>
+									".$frm->text('category_sef', $category['category_sef'], 200)."
+									<div class='field-help'>If left empty will be automatically created from current Category Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
+								</td>
+							</tr>
 							<tr>
 								<td class='label'>Category meta keywords</td>
 								<td class='control'>
@@ -2126,7 +2033,7 @@ class admin_newspost
 							<tr>
 								<th class='center'>".LAN_NEWS_45."</th>
 								<th class='center'>".NWSLAN_122."</th>
-								<th>".NWSLAN_6." / SEF String</th>
+								<th>".NWSLAN_6."</th>
 								<th>Manage Permissions</th>
 								<th class='center last'>".LAN_OPTIONS."</th>
 								<th class='center'>Order</th>
@@ -2146,16 +2053,15 @@ class admin_newspost
 					$icon = "<img class='icon action' src='{$icon}' alt='' />";
 				}
 
-				//$sefstr = $category['news_rewrite_string'] ? "<br />SEF: <strong>{$category['news_rewrite_string']}</strong>" : '';
-
+				$url = '<a href="'.e107::getUrl()->create('news/list/category', $category).'" title="'.$category['category_name'].'" rel="external">'.$category['category_name'].'</a>';
 				$text .= "
 							<tr>
 								<td class='center middle'>{$category['category_id']}</td>
 								<td class='center middle'>{$icon}</td>
-								<td class='middle'>{$category['category_name']}{$sefstr}</td>
+								<td class='middle'>{$url}</td>
 								<td class='middle'>".$frm->uc_select('multi_category_manager['.$category['category_id'].']',  vartrue($category['category_manager'], e_UC_ADMIN), 'main,admin,classes')."</td>
 								<td class='center middle'>
-									<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
+									<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".defset('ADMIN_EDIT_ICON', '<img src="'.e_IMAGE_ABS.'admin_images/edit_16.png" alt="Edit" />')."</a>
 									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', e107::getParser()->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
 								</td>
 								<td class='middle center'>".$frm->text('multi_category_order['.$category['category_id'].']', $category['category_order'], 3, 'size=2&tabindex='.$tindex)."</td>
