@@ -462,9 +462,14 @@ class e107_db_debug {
 
 		$text .= "e_HTTP: '".e_HTTP."'<br />";
 		$text .= "e_BASE: '".e_BASE."'<br />";
+		$text .= "e_PLUGIN: '".e_PLUGIN."'<br />";
+		$text .= "e_THEME: '".e_THEME."'<br />";
+		$text .= "e_MENU: '".e_MENU."'<br />";
+		$text .= "THEME: '".THEME."'<br />";
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
 		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
 		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
+		$text .= "\$_SERVER['REQUEST_URI']: '".$_SERVER['REQUEST_URI']."'<br />";
 
 
   	  	$text .= "<pre>";
