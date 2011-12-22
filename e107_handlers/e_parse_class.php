@@ -543,7 +543,7 @@ class e_parse
 		{
 			$checkTags = explode(',', $tagList);
 		}
-		$data = preg_replace('#\[code\].*?\[\/code\]#i', '', $data);		// Ignore code blocks
+		$data = preg_replace('#\[code.*?\[\/code\]#i', '', $data);		// Ignore code blocks
 		foreach ($checkTags as $tag)
 		{
 			if (($pos = stripos($data, '</'.$tag)) !== FALSE)
