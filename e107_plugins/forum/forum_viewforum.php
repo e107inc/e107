@@ -311,10 +311,19 @@ require_once(FOOTERF);
 
 function parse_thread($thread_info)
 {
-	global $forum, $tp, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
+	global $forum, $tp, $current_row, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
 	$text = "";
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
+
+	$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
+	$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 200);
+	if (strlen($thread_thread) > $tip_length) 
+	{
+		//$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
+		$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);	// Doesn't split entities
+	}
+	$thread_thread = str_replace("'", "&#39;", $thread_thread);
 
 
 	if ($REPLIES)
@@ -376,14 +385,7 @@ function parse_thread($thread_info)
 		$thread_name = substr($thread_name, strlen($THREADTYPE));
 	}
 	if ($pref['forum_tooltip']) {
-		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
-		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
-		if (strlen($thread_thread) > $tip_length) 
-		{
-			//$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
-			$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);	// Doesn't split entities
-		}
-		$thread_thread = str_replace("'", "&#39;", $thread_thread);
+		
 		$title = "title='".$thread_thread."'";
 	} 
 	else 
@@ -465,14 +467,23 @@ function parse_thread($thread_info)
 		}
 	}
 
-	if ($thread_info['thread_s'] == 1 && $FORUM_VIEW_FORUM_STICKY)
+
+	$POSTSUMMARY = $thread_thread;
+	
+	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
+
+	$F_VIEW_FORUM_STICKY = ($current_row == 1) ? $FORUM_VIEW_FORUM_STICKY : str_replace("forumheader3","forumheader3 forumheader3_alt",$FORUM_VIEW_FORUM_STICKY);
+	$F_VIEW_FORUM_ANNOUNCE = ($current_row == 1) ? $FORUM_VIEW_FORUM_ANNOUNCE : str_replace("forumheader3","forumheader3 forumheader3_alt",$FORUM_VIEW_FORUM_ANNOUNCE);
+	$F_VIEW_FORUM = ($current_row == 1) ? $FORUM_VIEW_FORUM : str_replace("forumheader3","forumheader3 forumheader3_alt",$FORUM_VIEW_FORUM);
+
+	if ($thread_info['thread_s'] == 1 && $F_VIEW_FORUM_STICKY)
 	{
-		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_STICKY));
+		return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM_STICKY));
 	}
 
-	if ($thread_info['thread_s'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
+	if ($thread_info['thread_s'] == 2 && $F_VIEW_FORUM_ANNOUNCE)
 	{
-		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_ANNOUNCE));
+		return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM_ANNOUNCE));
 	}
 
 	if (!$REPLIES)
@@ -480,8 +491,9 @@ function parse_thread($thread_info)
 		$REPLIES = LAN_317;		// 'None'
 		$LASTPOST = " - ";
 	}
+		
 
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM));
 }
 
 function parse_sub($subInfo)
