@@ -69,11 +69,11 @@ define("LAN_SIGNUP_27", "Show");
 //define("LAN_SIGNUP_28", "choice of Content/Mail-lists");		Now LAN_USER_73
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
-define("LAN_SIGNUP_31", "URL to your XUP file");
-define("LAN_SIGNUP_32", "What's an XUP file?");
+//define("LAN_SIGNUP_31", "URL to your XUP file");
+//define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
-define("LAN_SIGNUP_35", "Click here to register using an XUP file");
+//define("LAN_SIGNUP_35", "Click here to register using an XUP file");
 define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
 define("LAN_SIGNUP_37", "This stage of registration is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
 define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
@@ -105,7 +105,7 @@ define('LAN_SIGNUP_64','That doesn\'t appear to be valid user information');
 define('LAN_SIGNUP_65','You have been assigned the following login name');
 define('LAN_SIGNUP_66','Please make a note of it.');
 define('LAN_SIGNUP_67','This will be assigned by the system after signup');
-define('LAN_SIGNUP_68','Error: Unable to open remote XUP file');
+//define('LAN_SIGNUP_68','Error: Unable to open remote XUP file');
 define('LAN_SIGNUP_69','');
 define('LAN_SIGNUP_70','');
 define('LAN_SIGNUP_71', 'You have reached the site limit for account registrations. Please login using one of your other accounts.');		// LAN_202

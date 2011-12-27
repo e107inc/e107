@@ -57,23 +57,6 @@ elseif($pref['user_reg_veri'])
 SC_END
 
 
-SC_BEGIN SIGNUP_XUP
-global $pref, $tp, $SIGNUP_XUP_FORM, $signup_shortcodes;
-if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
-{
-	return $tp->parseTemplate($SIGNUP_XUP_FORM, TRUE, $signup_shortcodes);
-}
-SC_END
-
-SC_BEGIN SIGNUP_XUP_ACTION
-global $pref, $tp, $SIGNUP_XUP_BUTTON, $signup_shortcodes;
-if(isset($pref['xup_enabled']) && $pref['xup_enabled'])
-{
-// Puts the button to allow XUP signup onto the 'normal' signup screen
-	return $tp->parseTemplate($SIGNUP_XUP_BUTTON, TRUE, $signup_shortcodes);
-}
-SC_END
-
 
 SC_BEGIN SIGNUP_DISPLAYNAME
 global $pref, $rs;
@@ -292,20 +275,6 @@ SC_BEGIN SIGNUP_FORM_CLOSE
 return "</form>";
 SC_END
 
-SC_BEGIN SIGNUP_XUP_LOGINNAME
-global $rs, $loginname;
-return $rs->form_text("loginnamexup", 30, $loginname, 30);
-SC_END
-
-SC_BEGIN SIGNUP_XUP_PASSWORD1
-global $rs, $password1;
-return $rs->form_password("password1xup", 30, $password1, 20);
-SC_END
-
-SC_BEGIN SIGNUP_XUP_PASSWORD2
-global $rs, $password1;
-return $rs->form_password("password2xup", 30, $password2, 20);
-SC_END
 
 SC_BEGIN SIGNUP_IS_MANDATORY
 global $pref;

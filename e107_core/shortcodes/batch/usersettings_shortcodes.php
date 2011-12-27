@@ -192,13 +192,6 @@ if ($pref['photo_upload'] && FILE_UPLOADS)
 }
 SC_END
 
-SC_BEGIN XUP
-global $pref,$curVal;
-if(isset($pref['xup_enabled']) && $pref['xup_enabled'] == 1)
-{
-	return 	"<input class='tbox' type='text' name='user_xup' size='50' value='{$curVal['user_xup']}' maxlength='100' />";
-}
-SC_END
 
 
 SC_BEGIN USEREXTENDED_ALL
