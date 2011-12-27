@@ -525,7 +525,7 @@ class links
 			<td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<select name='linkrender' class='tbox'>";
-			$rentype = array("","Main","Alt","Alt", "Alt");
+			$rentype = array("","Main","Alt","Alt", "Alt","Alt","Alt", "Alt","Alt","Alt", "Alt");
 			for ($i=1; $i<count($rentype); $i++) {
 				$sel = ($link_category == $i) ? "selected='selected'" : "";
 				$text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
