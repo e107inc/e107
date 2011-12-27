@@ -430,7 +430,7 @@ function parse_thread($thread_info)
 	{
 		$thread_id = $thread_info['thread_id'];
 		$ADMIN_ICONS = "
-			<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}' style='margin:0;'><div>
+			<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}' style='margin:0;'><div class='forum-admin-icons'>
 			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			";
 
@@ -476,6 +476,13 @@ function parse_thread($thread_info)
 	$F_VIEW_FORUM_ANNOUNCE = ($current_row == 1) ? $FORUM_VIEW_FORUM_ANNOUNCE : str_replace("forumheader3","forumheader3 forumheader3_alt",$FORUM_VIEW_FORUM_ANNOUNCE);
 	$F_VIEW_FORUM = ($current_row == 1) ? $FORUM_VIEW_FORUM : str_replace("forumheader3","forumheader3 forumheader3_alt",$FORUM_VIEW_FORUM);
 
+
+	if (!$REPLIES)
+	{
+		$REPLIES = LAN_317;		// 'None'
+		$LASTPOST = " - ";
+	}
+
 	if ($thread_info['thread_s'] == 1 && $F_VIEW_FORUM_STICKY)
 	{
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM_STICKY));
@@ -485,13 +492,6 @@ function parse_thread($thread_info)
 	{
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM_ANNOUNCE));
 	}
-
-	if (!$REPLIES)
-	{
-		$REPLIES = LAN_317;		// 'None'
-		$LASTPOST = " - ";
-	}
-		
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $F_VIEW_FORUM));
 }

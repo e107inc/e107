@@ -42,7 +42,7 @@ global $post_info;
 if ($post_info['user_id']) {
 if ($post_info["user_image"]) {
 require_once(e_HANDLER."avatar_handler.php");
-return "<div class='spacer'><img src='".avatar($post_info['user_image'])."' alt='' /></div><br />";
+return "<div class='spacer'><img src='".avatar($post_info['user_image'])."' alt='' /></div>";
 } else {
 return "";
 }
