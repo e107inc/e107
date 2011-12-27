@@ -144,7 +144,7 @@ define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Enable Image-code verification during forgotten password.");
 define("PRFLAN_139", "Display warning when main administrator password hasn't changed for at least 30 days");
 define("PRFLAN_140", "Text to display after signup form has been submitted.");
-define("PRFLAN_141", "Allow registration using XML User Profiles");
+//define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
 define("PRFLAN_143", "Failed Login Only");
 define("PRFLAN_144", "Flood &amp; Failed Login");
