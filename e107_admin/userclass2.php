@@ -916,7 +916,7 @@ class uclass_manager
 		{
              $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-userclass-list'>
-						<legend class='e-hideme'>".CUSLAN_5."</legend>
+						<legend class='e-hideme'>".UCSLAN_5."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
