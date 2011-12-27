@@ -73,16 +73,6 @@ $sc_style['PHOTO_UPLOAD']['pre'] = "
 $sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
 
 
-$sc_style['XUP']['pre'] = "
-<tr>
-<td colspan='2' class='forumheader'>".LAN_USER_11."</td>
-</tr>
-<tr>
-<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_USET_29."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel='external'>".LAN_USET_30."</a></span></td>
-<td style='width:80%' class='forumheader2'>
-";
-$sc_style['XUP']['post'] = "</td></tr>";
-
 $USER_EXTENDED_CAT = "<tr><td colspan='2' class='forumheader'>{CATNAME}</td></tr>";
 $USEREXTENDED_FIELD = "
 <tr>
@@ -192,7 +182,6 @@ $USERSETTINGS_EDIT = "
 
 	{AVATAR_UPLOAD}
 	{PHOTO_UPLOAD}
-	{XUP}
 
 	<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_USET_37."' /></td>

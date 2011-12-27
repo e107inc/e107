@@ -41,7 +41,7 @@ define('LAN_USER_07','Avatar');
 define('LAN_USER_08','Email address');
 define('LAN_USER_09','Signature');
 define('LAN_USER_10','Hide email');
-define('LAN_USER_11','XUP file');
+//define('LAN_USER_11','XUP file');
 define('LAN_USER_12','User class');
 define('LAN_USER_13','ID');
 define('LAN_USER_14','Join Date');
