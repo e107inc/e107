@@ -1681,25 +1681,28 @@ class e_db_mysql
 	protected function loadTableDef($defFile, $tableName)
 	{
 		$result = FALSE;
-		// Read the file using the array handler routines
-		// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
-		$temp = file_get_contents($defFile);
-		// Strip any comments  (only /*...*/ supported)
-		$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
-		//echo "Check: {$defFile}, {$tableName}<br />";
-		if ($temp !== FALSE)
+		if (is_readable($defFile))
 		{
-			$array = e107::getArrayStorage();
-			$typeDefs = $array->ReadArray($temp);
-			unset($temp);
-			if (isset($typeDefs[$tableName]))
+			// Read the file using the array handler routines
+			// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
+			$temp = file_get_contents($defFile);
+			// Strip any comments  (only /*...*/ supported)
+			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
+			//echo "Check: {$defFile}, {$tableName}<br />";
+			if ($temp !== FALSE)
 			{
-				$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-				$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
-				if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
-				{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+				$array = e107::getArrayStorage();
+				$typeDefs = $array->ReadArray($temp);
+				unset($temp);
+				if (isset($typeDefs[$tableName]))
+				{
+					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
+					$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
+					if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+					}
+					$result = TRUE;
 				}
-				$result = TRUE;
 			}
 		}
 
