@@ -531,12 +531,6 @@ $text .= "
 					$text .= "
 							</select></td>
 					</tr>
-                	<tr>
-						<td class='label'>".PRFLAN_141."</td>
-						<td class='control'>
-							".$frm->radio_switch('xup_enabled', $pref['xup_enabled'])."
-						</td>
-					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_160."</td>
 						<td class='control'>
