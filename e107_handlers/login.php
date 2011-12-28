@@ -54,7 +54,7 @@ class userlogin
 	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
-		$this->userIP = $this->e107->getip();
+		$this->userIP = e107::getIPHandler()->getIP();
 		$this->userMethods = e107::getUserSession();
 	}
 
@@ -92,7 +92,8 @@ class userlogin
 		}
 
 //	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
-		$this->e107->check_ban("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
+//		$this->e107->check_ban("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
+		e107::getIPHandler()->checkBan("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 
 		$forceLogin = ($autologin == 'signup');
 		$autologin = intval($autologin);		// Will decode to zero if forced login
@@ -227,7 +228,7 @@ class userlogin
 		/* restrict more than one person logging in using same us/pw */
 		if($pref['disallowMultiLogin'])
 		{
-			if($this->e107->sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			if($this->e107->sql->db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
 				return $this->invalidLogin($username,LOGIN_MULTIPLE,$user_id);
 			}
@@ -342,7 +343,7 @@ class userlogin
 		}
 
 		// User is in DB here
-		$this->userData = $this->e107->sql -> db_Fetch(MYSQL_ASSOC);		// Get user info
+		$this->userData = $this->e107->sql->db_Fetch(MYSQL_ASSOC);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
 		
@@ -510,11 +511,11 @@ class userlogin
 		{		// See if ban required (formerly the checkibr() function)
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3)
 			{ // Flood + Login or Login Only.
-				$fails = $this->e107->sql -> db_Count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$fails = $this->e107->sql->db_Count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 				if($fails > 10)
 				{
 					$this->e107->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
-					$this->e107->sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					$this->e107->sql->db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				}
 			}
 		}

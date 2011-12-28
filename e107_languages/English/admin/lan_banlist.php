@@ -10,17 +10,17 @@
 +----------------------------------------------------------------------------+
 */
 // define("BANLAN_1", "Ban removed.");
-define("BANLAN_2", 'No bans in list.');
-define("BANLAN_3", "Existing Bans");
+define('BANLAN_2', 'No bans in list.');
+define('BANLAN_3', 'Existing Bans');
 // define("BANLAN_4", "Remove ban");
-define("BANLAN_5", "Enter IP, email address, or host");
-define("BANLAN_7", "Reason");
-define("BANLAN_8", "Ban Address");
-define("BANLAN_9", "Ban users from site by email, IP or host address");
-define("BANLAN_10", "IP / Email / Reason");
-define("BANLAN_11", "Auto-ban: More than 10 failed login attempts");
-define("BANLAN_12", "Note: Reverse DNS is currently disabled; it must be enabled to allow banning by host.  Banning by IP and email address will still function normally.");
-define("BANLAN_13", "Note: To ban a user by user name, go to the users admin page: ");
+define('BANLAN_5', 'Enter IP, email address, or host');
+define('BANLAN_7', 'Reason');
+define('BANLAN_8', 'Ban Address');
+define('BANLAN_9', 'Ban users from site by email, IP or host address');
+define('BANLAN_10', 'IP / Email / Reason');
+define('BANLAN_11', 'Auto-ban: More than 10 failed login attempts');
+define('BANLAN_12', 'Note: Reverse DNS is currently disabled; it must be enabled to allow banning by host.  Banning by IP and email address will still function normally.');
+define('BANLAN_13', 'Note: To ban a user by user name, go to the users admin page: ');
 define('BANLAN_14','Ban List');
 define('BANLAN_15','Messages/Ban Periods');
 define('BANLAN_16','Banning');
@@ -36,7 +36,7 @@ define('BANLAN_25','Add to Banlist');
 define('BANLAN_26','Currently ');
 define('BANLAN_27','Invalid characters in IP address stripped - now:');
 define('BANLAN_28','Ban type');
-define('BANLAN_29','Message to show');
+define('BANLAN_29','Message to show to banned user');
 define('BANLAN_30','Ban duration');
 define('BANLAN_31','(Use an empty message if you wish the user to get a blank screen)');
 define('BANLAN_32','Indefinite');
@@ -55,7 +55,7 @@ define('BANLAN_44','Use expiry date/time from import');
 define('BANLAN_45','Import');
 define('BANLAN_46','Import File:');
 define('BANLAN_47','File upload error');
-//define('BANLAN_48','Error importing file');
+define('BANLAN_48','Deleted --NUM-- expired ban list entries');
 define('BANLAN_49','CSV import: Unbalanced quotes in line ');
 define('BANLAN_50','CSV import: Error writing banlist record at line ');
 define('BANLAN_51','CSV import: Success, --NUM-- lines imported from file ');
@@ -88,6 +88,19 @@ define('BANLAN_77','Messages/Ban Periods');
 // define('BANLAN_78','Hit count exceeded (--HITS-- requests within allotted time)');
 define('BANLAN_79','CSV Export format:');
 define('BANLAN_80','CSV Import format:');
+define('BANLAN_81','Ban Action Log');
+define('BANLAN_82', 'No entries in Ban Action Log');
+define('BANLAN_83', 'Date/Time');
+define('BANLAN_84', 'IP Address');
+define('BANLAN_85', 'Additional information');
+define('BANLAN_86', 'Ban-related events');
+define('BANLAN_87', 'Total --NUM-- entries in list');
+define('BANLAN_88', 'Empty Ban Action Log');
+define('BANLAN_89', 'Log File Deleted');
+define('BANLAN_90', 'Error deleting log file');
+define('BANLAN_91', 'Date/time format for ban log');
+define('BANLAN_92', 'See the strftime function page at php.net');
+define('BANLAN_93', '');
 
 // Ban types - block reserved 100-109
 define('BANLAN_100', 'Unknown');
@@ -113,6 +126,6 @@ define('BANLAN_117', 'Spare reason');
 define('BANLAN_118', 'Spare reason');
 define('BANLAN_119', 'Indicates an import error - previously imported bans');
 
-define('BANLAN_120', 'Unknown');
+define('BANLAN_120', 'Whitelist entry');
 
 ?>
