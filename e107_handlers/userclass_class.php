@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -44,6 +44,7 @@ define('e_UC_ADMINMOD',249);
 define('e_UC_MODS',248);
 define('e_UC_NEWUSER',247);					// Users in 'probationary' period
 define('e_UC_BOTS',246);					// Reserved to identify search bots
+											// 243..245 reserved for future predefined user classes
 define('e_UC_SPECIAL_BASE',243);			// Assign class IDs 243 and above for fixed/special purposes
 define('e_UC_SPECIAL_END',255);				// Highest 'special' class
 
@@ -86,7 +87,7 @@ class user_class
 							);
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER, 'mods' => e_UC_MODS,
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
 
 		$this->readTree(TRUE);			// Initialise the classes on entry

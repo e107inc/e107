@@ -2,18 +2,25 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Admin Log
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
+
+/**
+ *
+ *	@package     e107
+ *	@subpackage	admin
+ *	@version 	$Id$;
+ *
+ *	Handle display of the various system logs
+ */
 
 /*
  * Preferences:
@@ -30,10 +37,10 @@
 //TODO before release. - replace majority of code with admin_gui class setup. 
 
 
-require_once ("../class2.php");
-if(! getperms("S"))
+require_once ('../class2.php');
+if(! getperms('S'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit();
 }
 
@@ -420,19 +427,19 @@ if($action == "config")
 
 	// User Audit Trail Options
 	$text .= "
-					<tr>
-						<td class='label'>".RL_LAN_123."</td>
-						<td class='control'>
-							<select class='tbox' name='user_audit_class'>
-								".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,classes')."
-							</select>
-							<div class='field-help'>".RL_LAN_026."</div>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>".RL_LAN_124."</td>
-						<td class='control'>
-							".RL_LAN_031."
+		<tr>
+			<td class='label'>".RL_LAN_123."</td>
+			<td class='control'>
+				<select class='tbox' name='user_audit_class'>
+					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes')."
+				</select>
+				<div class='field-help'>".RL_LAN_026."</div>
+			</td>
+		</tr>
+		<tr>
+			<td class='label'>".RL_LAN_124."</td>
+			<td class='control'>
+				".RL_LAN_031."
 	";
 	foreach($audit_checkboxes as $k => $t)
 	{
@@ -446,10 +453,9 @@ if($action == "config")
 					</tr>
 	";
 
+
 	// Rolling log options
 	//====================
-
-
 	$text .= "
 					<tr>
 						<td class='label'>".RL_LAN_008."</td>
@@ -524,14 +530,37 @@ if(isset($page_title[$action]))
 
 
 	// Array decides which filters are active for each log. There are 4 columns total. All but 'datetimes' occupy 2. Must specify multiple of 4 columns - add 'blank' if necessary
-	$active_filters = array('adminlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0), 'auditlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'rolllog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0, 'callerfilter' => 0, 'blank' => 2), 'downlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'downloadidfilter' => 0, 'blank' => 2), 'detailed' => array('datestart' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 'online' => array('ipfilter' => 0, 'userfilter' => 0));
+	$active_filters = array(
+		'adminlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0), 
+		'auditlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 
+		'rolllog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'priority' => 0, 'callerfilter' => 0, 'blank' => 2), 
+		'downlog' => array('datetimes' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'downloadidfilter' => 0, 'blank' => 2), 
+		'detailed' => array('datestart' => 0, 'ipfilter' => 0, 'userfilter' => 0, 'eventfilter' => 0, 'blank' => 2), 
+		'online' => array('ipfilter' => 0, 'userfilter' => 0));
 
 	// Arrays determine column widths, headings, displayed fields for each log
-	$col_fields = array('adminlog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'auditlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'rolllog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_caller', 'dblog_title', 'dblog_remarks'), 'downlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'download_request_download_id', 'download_name'), 'detailed' => array('cf_microtime', 'cf_microtimediff', 'source', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 'online' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'online_location', 'online_pagecount', 'online_flag', 'online_active'));
-	$col_widths = array('adminlog' => array(18, 4, 14, 7, 15, 8, 14, 20), // Date - Pri - IP - UID - User - Code - Event - Info
-'auditlog' => array(18, 14, 7, 15, 8, 14, 24), 'rolllog' => array(15, 4, 12, 6, 12, 7, 13, 13, 18), // Date - Pri - IP - UID - User - Code - Caller - Event - Info
-'downlog' => array(18, 14, 7, 15, 8, 38), 'detailed' => array(10, 8, 6, 4, 14, 6, 17, 7, 17, 21), 'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
-	$col_titles = array('adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033),  'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
+	$col_fields = array(
+		'adminlog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 
+		'auditlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 
+		'rolllog' => array('cf_datestring', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'dblog_user_name', 'dblog_eventcode', 'dblog_caller', 'dblog_title', 'dblog_remarks'), 
+		'downlog' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'download_request_download_id', 'download_name'), 
+		'detailed' => array('cf_microtime', 'cf_microtimediff', 'source', 'dblog_type', 'dblog_ip', 'dblog_user_id', 'user_name', 'dblog_eventcode', 'dblog_title', 'dblog_remarks'), 
+		'online' => array('cf_datestring', 'dblog_ip', 'dblog_user_id', 'user_name', 'online_location', 'online_pagecount', 'online_flag', 'online_active'));
+	$col_widths = array(
+		'adminlog' => array(18, 4, 14, 7, 15, 8, 14, 20), // Date - Pri - IP - UID - User - Code - Event - Info
+		'auditlog' => array(18, 14, 7, 15, 8, 14, 24), 
+		'rolllog' => array(15, 4, 12, 6, 12, 7, 13, 13, 18), // Date - Pri - IP - UID - User - Code - Caller - Event - Info
+		'downlog' => array(18, 14, 7, 15, 8, 38), 
+		'detailed' => array(10, 8, 6, 4, 14, 6, 17, 7, 17, 21), 
+		'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 
+		'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
+	$col_titles = array(
+		'adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
+		'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 
+		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 
+		'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 
+		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033),  
+		'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
 
 
