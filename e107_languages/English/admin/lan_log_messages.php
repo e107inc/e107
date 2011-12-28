@@ -88,6 +88,7 @@ define('LAN_AL_BANLIST_08','Banlist options updated');
 define('LAN_AL_BANLIST_09','Banlist entry edited');
 define('LAN_AL_BANLIST_10','Whitelist entry edited');
 define('LAN_AL_BANLIST_11','Whitelist hit for ban entry');
+define('LAN_AL_BANLIST_12','Expired bans cleared');
 
 
 // Comment-related events

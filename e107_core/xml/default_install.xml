@@ -17,6 +17,7 @@
 		<core name="auth_method"></core>
 		<core name="autoban">1</core>
 		<core name="autologinpostsignup">1</core>
+		<core name="ban_date_format">%H:%M %d-%m-%y</core>
 		<core name="ban_max_online_access">100,200</core>
 		<core name="ban_retrigger">0</core>
 		<core name="cachestatus"></core>

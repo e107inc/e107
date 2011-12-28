@@ -200,6 +200,7 @@ class e107
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
 		
 	);
 
@@ -224,7 +225,7 @@ class e107
 	 * Constructor
 	 *
 	 * Use {@link getInstance()}, direct instantiating
-	 * is not possible for signleton objects
+	 * is not possible for singleton objects
 	 *
 	 * @return void
 	 */
@@ -668,7 +669,6 @@ class e107
 		//singleton object found - overload not possible
 		if(self::getRegistry($id))
 		{
-
 			return self::getRegistry($id);
 		}
 
@@ -914,7 +914,7 @@ class e107
 	 */
 	public static function getParser()
 	{
-		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php'); //WARNING - don't change this - inifinite loop!!!
+		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php'); //WARNING - don't change this - infinite loop!!!
 	}
 
 	/**
@@ -1153,6 +1153,16 @@ class e107
 	public static function getLanguage()
 	{
 		return self::getSingleton('language', true);
+	}
+
+	/**
+	 * Retrieve IP/ban handler singleton object
+	 *
+	 * @return language
+	 */
+	public static function getIPHandler()
+	{
+		return self::getSingleton('eIPHandler', true);
 	}
 
 	/**
@@ -2558,6 +2568,7 @@ class e107
 	 * FIXME - create eBanHelper, move it there
 	 * @return void
 	 */
+	 /* No longer required - moved to eIPHelper class
 	public function ban()
 	{
 		$sql = e107::getDb();
@@ -2603,7 +2614,7 @@ class e107
 				$this->check_ban($match);
 			}
 		}
-	}
+	} */
 
 	/**
 	 * Check the banlist table. $query is used to determine the match.
@@ -2618,6 +2629,7 @@ class e107
 	 * @param boolean $do_return
 	 * @return boolean
 	 */
+	 /* No longer required - moved to eIPHelper class
 	public function check_ban($query, $show_error = TRUE, $do_return = FALSE)
 	{
 		$sql = e107::getDb();
@@ -2665,7 +2677,7 @@ class e107
 		}
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 		return TRUE; // Email address OK
-	}
+	} */
 
 
 	/**
@@ -2684,6 +2696,9 @@ class e107
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
+		return e107::getIPHandler()->add_ban($bantype, $ban_message, $ban_ip, $ban_user, $ban_notes);
+		
+		/*
 		global $sql, $pref, $e107, $admin_log;
 		$sql = e107::getDb();
 		$pref = e107::getPref();
@@ -2697,7 +2712,9 @@ class e107
 		{
 			$ban_ip = $this->getip();
 		}
-		$ban_ip = preg_replace('/[^\w@\.]*/', '', urldecode($ban_ip)); // Make sure no special characters
+		*/
+		//$ban_ip = preg_replace('/[^\w@\.]*/', '', urldecode($ban_ip)); // Make sure no special characters
+		/*
 		if(!$ban_ip)
 		{
 			return FALSE;
@@ -2714,17 +2731,19 @@ class e107
 		}
 		// Add using an array - handles DB changes better
 		$sql->db_Insert('banlist', array('banlist_ip' => $ban_ip , 'banlist_bantype' => $bantype , 'banlist_datestamp' => time() , 'banlist_banexpires' => (varsettrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) , 'banlist_admin' => $ban_user , 'banlist_reason' => $ban_message , 'banlist_notes' => $ban_notes));
-		return TRUE;
+		return TRUE;  */
 	}
 
 	/**
 	 * Get the current user's IP address
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
-	 * FIXME - move to eHelper
+	 * FIXME - call ipHandler directly
 	 * @return string
 	 */
 	public function getip()
 	{
+		return e107::getIPHandler()->getIP(FALSE);
+		/*
 		if(!$this->_ip_cache)
 		{
 			$ip=$_SERVER['REMOTE_ADDR'];
@@ -2750,16 +2769,18 @@ class e107
 			$this->_ip_cache = $this->ipEncode($ip); // Normalise for storage
 		}
 		return $this->_ip_cache;
+		*/
 	}
 
 	/**
 	 * Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	 * Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
-	 * FIXME - move to eHelper
+	 * FIXME - moved to ipHandler - check for calls elsewhere
 	 * @param string $ip
 	 * @param string $div divider
 	 * @return string encoded IP
 	 */
+	 /*
 	public function ipEncode($ip, $div = ':')
 	{
 		$ret = '';
@@ -2802,20 +2823,23 @@ class e107
 			return str_repeat('0000'.$div, 5).'ffff'.$div.$temp;
 		}
 		return FALSE; // Unknown
-	}
+	} */
 
 	/**
 	 * Takes an encoded IP address - returns a displayable one
 	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format,
 	 * FALSE to display in standard IPV6 format
 	 * Should handle most things that can be thrown at it.
-	 * FIXME - move to eHelper
+	 * FIXME - moved to ipHandler - check for calls elsewhere
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
 	 * @return string decoded IP
 	 */
-	public function ipDecode($ip, $IP4Legacy = TRUE)
+
+	public function ipdecode($ip, $IP4Legacy = TRUE)
 	{
+		return e107::getIPHandler()->ipDecode($ip, $IP4Legacy);
+		/*
 		if (strstr($ip,'.'))
 		{
 			if ($IP4Legacy) return $ip;			// Assume its unencoded IPV4
@@ -2872,17 +2896,21 @@ class e107
 			$ret = implode('.',$z);
 		}
 
-		return $ret;
+		return $ret; */
 	}
 
 	/**
 	 * Given a string which may be IP address, email address etc, tries to work out what it is
-	 * FIXME - move to eHelper
+	 * Movet to eIPHandler class
+	 * FIXME - moved to ipHandler - check for calls elsewhere
 	 * @param string $string
 	 * @return string ip|email|url|ftp|unknown
 	 */
+	 /*
 	public function whatIsThis($string)
 	{
+		//return e107::getIPHandler()->whatIsThis($string);
+		
 		if (strstr($string,'@')) return 'email';		// Email address
 		if (strstr($string,'http://')) return 'url';
 		if (strstr($string,'ftp://')) return 'ftp';
@@ -2892,14 +2920,16 @@ class e107
 			return 'ip';
 		}
 		return 'unknown';
-	}
+	} */
 
 	/**
 	 * Retrieve & cache host name
 	 *
 	 * @param string $ip_address
 	 * @return string host name
+	 * FIXME - moved to ipHandler - check for calls elsewhere
 	 */
+	 /*
 	public function get_host_name($ip_address)
 	{
 		if(!$this->_host_name_cache[$ip_address])
@@ -2907,7 +2937,7 @@ class e107
 			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
 		}
 		return $this->_host_name_cache[$ip_address];
-	}
+	} */
 
 	/**
 	 * MOVED TO eHelper::parseMemorySize()
@@ -3181,6 +3211,10 @@ class e107
 				$ret = e107::getOnline();
 			break;
 
+			case 'eIPHandler':
+				$ret = e107::getIPHandler();
+				break;
+				
 			case 'user_class':
 				$ret = e107::getUserClass();
 			break;

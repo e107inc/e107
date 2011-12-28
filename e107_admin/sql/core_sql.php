@@ -73,7 +73,7 @@ CREATE TABLE audit_log (
 
 CREATE TABLE banlist (
   banlist_ip varchar(100) NOT NULL default '',
-  banlist_bantype tinyint(3) unsigned NOT NULL default '0',
+  banlist_bantype tinyint(3) signed NOT NULL default '0',
   banlist_datestamp int(10) unsigned NOT NULL default '0',
   banlist_banexpires int(10) unsigned NOT NULL default '0',
   banlist_admin smallint(5) unsigned NOT NULL default '0',
