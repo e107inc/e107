@@ -128,10 +128,10 @@ function imageselector_shortcode($parm = '', $mod = '')
 					}
 				}
 			}
-			$text .= '</optgroup>\n';
+			$text .= "</optgroup>\n";
 		}
 		$text .= "</select>";
-		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
+		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&amp;saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
 		if(!e_AJAX_REQUEST) $text .= '</div>';
 
 		if ($scaction == 'select') return $text;

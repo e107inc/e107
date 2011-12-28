@@ -246,8 +246,8 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 
 $text .= "
 						</td>
-						
-	<tr>
+					</tr>
+					<tr>
 						<td class='label'>".PRFLAN_214."</td>
 						<td class='control'>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'-- No Image --')."</td>
 					</tr>
@@ -401,7 +401,8 @@ $text .= "
 							".$frm->radio_switch('admin_slidedown_subs', $pref['admin_slidedown_subs'])."
 							<div class='smalltext field-help'>".PRFLAN_200."</div>
 						</td>
-                        <tr>
+					</tr>
+					<tr>
 						<td class='label'>".PRFLAN_204."</td>
 						<td class='control'>
 							".$frm->radio_switch('admin_separate_plugins', $pref['admin_separate_plugins'])."
