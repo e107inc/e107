@@ -451,7 +451,7 @@ if ($e107_popup != 1) {
 //
 
 	if(ADMIN){
-		if(file_exists(e_BASE.'install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
+		if(file_exists(e_BASE.'install.php')){ echo "<div class='installe' style='text-align:center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; }
 	}
 
 // Display Welcome Message when old method activated.
