@@ -16,10 +16,13 @@ if($mode == "new_page" || $mode == "new_menu" ){
 }
 
 $data = $cobj->getCommentData(intval($arr[7]), '0', $qry);
-
+// SecretR - comment_itemurl - use if available
 foreach($data as $row){
 	$rowheading	= $this -> parse_heading($row['comment_title'], $mode);
-	if($row['comment_url']){
+	if(varsettrue($row['comment_itemurl'])){
+		$HEADING	= "<a href='".$row['comment_itemurl']."' title='".$row['comment_itemurl']."'>".$tp -> toHTML($rowheading, TRUE)."</a>";
+	}
+	elseif($row['comment_url']){
 		$HEADING	= "<a href='".$row['comment_url']."' title='".$row['comment_title']."'>".$tp -> toHTML($rowheading, TRUE)."</a>";
 	}else{
 		$HEADING	= $tp -> toHTML($rowheading, TRUE);

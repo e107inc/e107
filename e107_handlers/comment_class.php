@@ -882,12 +882,15 @@ class comment {
 							$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
 							if($sql2 -> db_Select_gen($qryp))
 							{
+								// SecretR - comment_itemurl, comment_category options added, see list_new/sections/list_comment.php 
 								$row2 = $sql2 -> db_Fetch();
 								$ret['comment_type']				= $var['plugin_name'];
 								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
-								$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
+								$ret['comment_itemurl']				= varset($var['comment_location']) ? str_replace(array('{NID}', '{TTL}'), array($row['comment_item_id'], rawurlencode($row2[$var['db_title']])), $var['comment_location']) : str_replace(array('{NID}', '{TTL}'), array($row['comment_item_id'], rawurlencode($row2[$var['db_title']])), $var['reply_location']);
+								$ret['comment_url']					= str_replace(array('{NID}', '{TTL}'), array($row['comment_item_id'], rawurlencode($row2[$var['db_title']])), $var['reply_location']);
 								$ret['comment_category_heading']	= $var['plugin_name'];
-								$ret['comment_category_url']		= e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
+								$ret['comment_category_url']		= varset($var['comment_category']) ? $var['comment_category'] : e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
+
 							}
 						}
 					//old method
