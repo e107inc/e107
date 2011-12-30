@@ -56,7 +56,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 	public function config()
 	{
 		$cron = array();
-		$cron[] = array('name' => LAN_EC_MAIL_04, 'function' => 'processSubs', 'description' => LAN_EC_MAIL_05);
+		$cron[] = array('name' => LAN_EC_MAIL_04, 'category' => 'plugin', 'function' => 'processSubs', 'description' => LAN_EC_MAIL_05);
 		return $cron;
 	}
 	

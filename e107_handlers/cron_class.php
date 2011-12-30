@@ -18,6 +18,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 define ('CRON_MAIL_DEBUG', TRUE);
+define ('CRON_RETRIGGER_DEBUG', TRUE);
 class _system_cron 
 {
 	
@@ -43,7 +44,7 @@ class _system_cron
 	
 	function procEmailQueue()
 	{
-		global $pref;
+		//global $pref;
 		if (CRON_MAIL_DEBUG)
 		{
 			$e107 = e107::getInstance();
@@ -60,7 +61,7 @@ class _system_cron
 	
 	function procEmailBounce()
 	{
-		global $pref;
+		//global $pref;
 		if (CRON_MAIL_DEBUG)
 		{
 			$e107 = e107::getInstance();
@@ -72,6 +73,23 @@ class _system_cron
 		if (CRON_MAIL_DEBUG)
 		{
 			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
+		}
+	}
+	
+	function procBanRetrigger()
+	{
+		//global $pref;
+		if (CRON_RETRIGGER_DEBUG)
+		{
+			$e107 = e107::getInstance();
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban retrigger','Retrigger processing started',FALSE,LOG_TO_ROLLING);
+		}
+		require_once(e_HANDLER.'iphandler_class.php');
+		$ipManager = new banlistManager();
+		$ipManager->banRetriggerAction();
+		if (CRON_RETRIGGER_DEBUG)
+		{
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -100,7 +118,7 @@ class _system_cron
  * This class is idea for people who can not use the traditional Unix cron through shell.
  * One way of using is embedding the calling script in a web page which is often visited.
  * The script will work out the last due time, by comparing with run log timestamp. The scrip
- * will envoke any scripts needed to run, be it deleting older table records, or updating prices.
+ * will invoke any scripts needed to run, be it deleting older table records, or updating prices.
  * It can parse the same cron string used by Unix.
  */
 
