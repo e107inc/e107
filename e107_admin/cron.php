@@ -135,13 +135,21 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> 'Mail Queue',
 					'category'		=> 'mail',
 					'function' 		=> 'procEmailQueue',
-					'description' 	=> 'Process mail queue'),
+					'description' 	=> 'Process mail queue'
+					),
 				2 => array(
 					'name' 			=> 'Mail Bounce Check',
 					'category'		=> 'mail',
 					'function' 		=> 'procEmailBounce',
 					'description' 	=> 'Check for bounced emails',
 				//	'available' 	=> vartrue($pref['mail_bounce_auto'])
+				),
+				3 => array(
+					'name' 			=> 'Ban Retrigger Check',
+					'category'		=> 'user',
+					'function' 		=> 'procBanRetrigger',
+					'description' 	=> 'Process bounce retriggers<br />Only needed if retriggering of bans enabled.',
+					'available' 	=> e107::getPref('ban_retrigger')
 				),
 			);
 	
@@ -424,12 +432,13 @@ class cron_admin_form_ui extends e_admin_form_ui
 	
 	
 	var $cronCategories = array(					
-						'backup'	=> "Backup",
+						'backup'	=> 'Backup',
 						'content'	=> ADLAN_CL_3,
-						'log'		=> "Logging",
+						'log'		=> 'Logging',
 						'mail'		=> ADLAN_136,				
 						'notify'	=> ADLAN_149, 
 						'user'		=> LAN_USER,
+						'plugin'	=> 'Plugins'
 	);
 	
 	/**

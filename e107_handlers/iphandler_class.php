@@ -1480,6 +1480,10 @@ class banlistManager
 				}
 			}
 		}
+		if ($numRet)
+		{
+			$this->writeBanListFiles('ip');		// Just rewrite the ban list - the actual IP addresses won't have changed
+		}
 		return $numRet;
 	}
 }
