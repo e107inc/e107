@@ -684,7 +684,7 @@ function zip_up_lang($language)
 	);
 	 
 	 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
-	 "khatru","kubrick","lamb","leaf","newsroom","reline","sebes","vekna_blue");
+	 "khatru","kubrick","lamb","leaf","newsroom","core","sebes","vekna_blue");
 
 	require_once(e_HANDLER.'pclzip.lib.php');
 	list($ver, $tmp) = explode(" ", $e107info['e107_version']);
