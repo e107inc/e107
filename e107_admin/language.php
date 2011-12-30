@@ -728,8 +728,6 @@ function zip_up_lang($language)
 	}
 	else
 	{
-		if($_POST['contribute_pack'])
-		{
 			
 			$fileName = e_FILE."public/".$language.".xml";
 			@unlink($fileName);
@@ -743,13 +741,13 @@ function zip_up_lang($language)
 				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');				
 				$_SESSION['lancheck_'.$language]['xml'] = "Yes";
 			}
+			else
+			{
+				$_SESSION['lancheck_'.$language]['xml'] = "No";	
+			}
+			
 			@unlink($fileName);	
-		}
-		else
-		{
-			$_SESSION['lancheck_'.$language]['xml'] = "No";
-			// echo "NO CONTRIBUTE";
-		}
+
 
 		
 		$ret['file']  = $newfile; 
