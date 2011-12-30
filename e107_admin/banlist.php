@@ -87,12 +87,12 @@ if (isset($_POST['update_ban_prefs']))		// Update ban messages
 		$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
 		$t1 = $tp->toDB(varset($_POST['ban_text_'.($i)],''));
 		$t2 = intval(varset($_POST['ban_time_'.($i)],0));
-		if ($pref['ban_messages'][$bt] != $t1)
+		if (!isset($pref['ban_messages'][$bt]) || ($pref['ban_messages'][$bt] != $t1))
 		{
 			$pref['ban_messages'][$bt] = $t1;
 			$changed = TRUE;
 		}
-		if ($pref['ban_durations'][$bt] != $t2)
+		if (!isset($pref['ban_durations'][$bt]) || ($pref['ban_durations'][$bt] != $t2))
 		{
 			$pref['ban_durations'][$bt] = $t2;
 			$changed = TRUE;
@@ -1007,7 +1007,7 @@ function parse_date($instr)
 function process_csv($filename, $override_imports, $override_expiry, $separator = ',', $quote = '"')
 {
 	$sql = e107::getDb();
-	$pref['ban_durations'] = e107::getPref('ban_durations');		// @todo - check this
+	$pref['ban_durations'] = e107::getPref('ban_durations');
 	$emessage = &eMessage::getInstance();
 	
 	//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
