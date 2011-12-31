@@ -34,7 +34,7 @@ if (ADMIN) {
 		if ($cat_id) {
 			$text .= "<span class=\"menuItemArrow\">&#9654;</span>";
 		}
-			$text .= "</a>";
+			$text .= "</a>\n";
 		return $text;
 	}
 	if (file_exists(THEME.'nav_menu.js')) {
@@ -137,8 +137,9 @@ if (ADMIN) {
 		foreach($slinks->eLinkList['head_menu'] as $k=>$lk)
 		{
 			$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
-			
-			$text .= adnav_main($tp->toHtml($lk['link_name'],'','defs'), $tp->replaceConstants($link,'full'), $tp->replaceConstants($lk['link_button'],'full'));	
+			$img = (substr($lk['link_button'],0,3)=='{e_' || trim($lk['link_button'])=='') ? $lk['link_button'] : "{e_IMAGE}icons/".$lk['link_button'];
+			$imgTag = ($img) ? "<img src='".$img."' alt='".$tp->toAttribute($lk['link_name'])."' style='border: 0px none; vertical-align: bottom; width: 16px; height: 16px;' />" : "";
+			$text .= adnav_main($tp->toHtml($lk['link_name'],'','defs'), $tp->replaceConstants($link,'full'), $tp->replaceConstants($imgTag,'full'));	
 		}
 
 		$text .= "</div>";
