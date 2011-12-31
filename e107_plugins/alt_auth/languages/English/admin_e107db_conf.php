@@ -1,5 +1,27 @@
 <?php
 
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file
+ *
+ * $URL$
+ * $Id$
+ * 
+ */
+
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ */
+
 define('E107DB_LAN_1', 'E107 format database');
 define('E107DB_LAN_9', 'Password Method:');
 define('E107DB_LAN_10', 'Configure E107 db auth');
@@ -7,7 +29,7 @@ define('E107DB_LAN_11', 'Check the box against any field you wish to be transfer
 
 
 define('IMPORTDB_LAN_7', 'MD5 (E107 original)');
-define('IMPORTDB_LAN_8', 'E107 salted (option 0.8 on)');
+define('IMPORTDB_LAN_8', 'E107 salted (option 2.0 on)');
 
 
 define('LAN_AUTHENTICATE_HELP','This authentication method is to be used with a second E107 database, which may use a different password format to this system. The

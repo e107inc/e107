@@ -6,14 +6,30 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ *	Alt_auth plugin - general configuration
+ *
  * $URL$
  * $Id$
  * 
  */
 
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ */
+
+
+/*
+@todo:
+	1. Change prefs handling
+	2. Change admin log references
+ */
 $eplug_admin = true;
 require_once('../../class2.php');
-if(!getperms("P") || !plugInstalled('alt_auth'))
+if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
 	header('location:'.e_BASE.'index.php'); 
 	exit(); 
@@ -37,7 +53,7 @@ if(isset($_POST['updateprefs']))
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
 		save_prefs();		// Only save if changes
-		header("location:".e_SELF);
+		header('location:'.e_SELF);
 		exit;
 	}
 }
@@ -91,7 +107,7 @@ else
 
 if(isset($message))
 {
-	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	e107::getRender()->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $text = "
@@ -125,9 +141,9 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_6.":<br /></td>
 <td>
 <select class='tbox' name='auth_noconn'>";
-$sel = (!$pref['auth_noconn'] ? "" : " selected = 'selected' ");
+$sel = (!$pref['auth_noconn'] ? '' : " selected = 'selected' ");
 $text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
-$sel = ($pref['auth_noconn'] ? " selected = 'selected' " : "");
+$sel = ($pref['auth_noconn'] ? " selected = 'selected' " : '');
 $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 </select><div class='smalltext field-help'>".LAN_ALT_7."</div>
 </td>
@@ -149,7 +165,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 </form>
 </div>";
 
-$ns -> tablerender(LAN_ALT_3, $text);
+e107::getRender()->tablerender(LAN_ALT_3, $text);
 
 
 if ($euf->userCount)
@@ -190,13 +206,13 @@ if ($euf->userCount)
 
 </form>
 </div>";
-$ns -> tablerender(LAN_ALT_60, $text);
+e107::getRender()->tablerender(LAN_ALT_60, $text);
 
 
 }
 
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 function alt_auth_conf_adminmenu()
 {

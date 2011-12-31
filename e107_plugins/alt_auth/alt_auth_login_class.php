@@ -13,15 +13,26 @@
  * 
  */
 
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ */
+
 define('AA_DEBUG',FALSE);
 define('AA_DEBUG1',FALSE);
 
 
-//TODO convert to class constants
+//TODO convert to class constants (but may be more useful as globals, perhaps within a general login manager scheme)
 define('AUTH_SUCCESS', -1);
 define('AUTH_NOUSER', 1);
 define('AUTH_BADPASSWORD', 2);
 define('AUTH_NOCONNECT', 3);
+define('AUTH_UNKNOWN', 4);
+define('AUTH_NOT_AVAILABLE', 5);
+define('AUTH_NORESOURCE', 6);		// Used to indicate, for example, that a required PHP module isn't loaded
 
 class alt_login
 {
@@ -30,7 +41,6 @@ class alt_login
 
 	public function __construct($method, &$username, &$userpass)
 	{
-		global $pref;
 		$this->e107 = e107::getInstance();
 		$newvals=array();
 
@@ -45,11 +55,11 @@ class alt_login
 
 		if(isset($_login->Available) && ($_login->Available === FALSE))
 		{	// Relevant auth method not available (e.g. PHP extension not loaded)
-			$this->loginResult = AUTH_NOCONNECT;
+			$this->loginResult = AUTH_NOT_AVAILABLE;
 			return;
 		}
 
-		$login_result = $_login -> login($username, $userpass, $newvals, FALSE);
+		$login_result = $_login->login($username, $userpass, $newvals, FALSE);
 
 		if($login_result === AUTH_SUCCESS )
 		{
@@ -61,7 +71,7 @@ class alt_login
 				$username = mysql_real_escape_string($username);
 			}
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-			$username = substr($username, 0, varset($pref['loginname_maxlength'],30));
+			$username = substr($username, 0, e107::getPref('loginname_maxlength');
 
 			$aa_sql = e107::getDb('aa');
 			$userMethods = new UserHandler;
@@ -157,7 +167,7 @@ class alt_login
 				if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
 				if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
 				if (!isset($db_vals['user_join'])) $db_vals['user_join'] = time();
-				$db_vals['user_class'] = varset($pref['initial_user_classes'],'');
+				$db_vals['user_class'] = e107::getPref('initial_user_classes');
 				if (!isset($db_vals['user_signature'])) $db_vals['user_signature'] = '';
 				if (!isset($db_vals['user_prefs'])) $db_vals['user_prefs'] = '';
 				if (!isset($db_vals['user_perms'])) $db_vals['user_perms'] = '';
@@ -193,17 +203,8 @@ class alt_login
 		{	// Failure modes
 			switch($login_result)
 			{
-/*
-				case AUTH_NOUSER:			// Now handled differently
-					if(!varset($pref['auth_nouser'],0))
-					{
-						$username=md5('xx_nouser_xx');
-						return LOGIN_ABORT;
-					}
-					break;
-*/
 				case AUTH_NOCONNECT:
-					if(varset($pref['auth_noconn'], TRUE))
+					if(varset(e107::getPref('auth_noconn'), TRUE))
 					{
 						$this->loginResult = LOGIN_TRY_OTHER;
 						return;
@@ -211,9 +212,8 @@ class alt_login
 					$username=md5('xx_noconn_xx');
 					$this->loginResult = LOGIN_ABORT;
 					return;
-					break;
 				case AUTH_BADPASSWORD:
-					if(varset($pref['auth_badpassword'], TRUE))
+					if(varset(e107::getPref('auth_badpassword'), TRUE))
 					{
 						$this->loginResult = LOGIN_TRY_OTHER;
 						return;
@@ -221,7 +221,6 @@ class alt_login
 					$userpass=md5('xx_badpassword_xx');
 					$this->loginResult = LOGIN_ABORT;					// Not going to magically be able to log in!
 					return;
-					break;
 			}
 		}
 		$this->loginResult = LOGIN_ABORT;			// catch-all just in case
@@ -232,7 +231,7 @@ class alt_login
 	// Function to implement copy methods
 	public function translate($method, $word)
 	{
-		global $tp;
+		$tp = e107::getParser();
 		switch ($method)
 		{
 			case 'bool1' :

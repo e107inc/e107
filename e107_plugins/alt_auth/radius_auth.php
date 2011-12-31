@@ -31,25 +31,26 @@ define('RADIUS_DEBUG',TRUE);
 class auth_login
 {
 
-	var $server;
-	var $secret;
-	var $port;
-	var $usr;
-	var $pwd;
-	var $ErrorText;
-	var $connection;			// Handle to use on successful creation
-	var $result;
-	var $Available;
+	private $server;
+	private	$secret;
+	private	$port;
+	private	$usr;
+	private	$pwd;
+	private	$connection;			// Handle to use on successful creation
+	public	$Available = FALSE;		// Flag indicates whether DB connection available
+	public	$ErrorText;				// e107 error string on exit
 
-	function auth_login()
+
+	/**
+	 *	Read configuration, initialise connection to LDAP database
+	 *
+	 *	@return AUTH_xxxx result code
+	 */
+	function __construct()
 	{
 		$this->copyAttribs = array();
-		$sql = new db;
-		$sql -> db_Select("alt_auth", "*", "auth_type = 'radius' ");
-		while($row = $sql -> db_Fetch())
-		{
-			$radius[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
-		}
+		$radius = altAuthGetParams('radius');
+
 		$this->server = explode(',',$radius['radius_server']);
 		$this->port = 1812;								// Assume fixed port number for now - 1812 (UDP) is listed for servers, 1645 for authentification. (1646, 1813 for accounting)
 														// (A Microsoft app note says 1812 is the RFC2026-compliant port number. (http://support.microsoft.com/kb/230786)
@@ -66,18 +67,22 @@ class auth_login
 		$this->ErrorText = '';
 		if(!function_exists('radius_auth_open'))
 		{
-			$this->Available = FALSE;
-			return false;
+			return AUTH_NORESOURCE;
 		}
 
 		if(!$this -> connect())
 		{
 			return AUTH_NOCONNECT;
 		}
+		$this->Available = TRUE;
+		return AUTH_SUCCESS;
 	}
 
 
 
+	/**
+	 *	Retrieve and construct error strings
+	 */
 	function makeErrorText($extra = '')
 	{
 		$this->ErrorText = $extra.radius_strerror($this->connection) ;
@@ -88,9 +93,13 @@ class auth_login
 
 
 
+	/**
+	 *	Try to connect to a radius server
+	 *
+	 *	@return boolean TRUE for success, FALSE for failure
+	 */
 	function connect()
 	{
-		// Try to connect to a radius server
 		if (!($this->connection = radius_auth_open()))
 		{
 			$this->makeErrorText('RADIUS open failed: ') ;
@@ -109,6 +118,9 @@ class auth_login
 
 
 
+	/**
+	 *	Close the connection to the Radius server
+	 */
 	function close()
 	{
 		if ( !radius_close( $this->connection))		// (Not strictly necessary, but tidy)
@@ -124,6 +136,18 @@ class auth_login
 
 
 
+	/**
+	 *	Validate login credentials
+	 *
+	 *	@param string $uname - The user name requesting access
+	 *	@param string $pass - Password to use (usually plain text)
+	 *	@param pointer &$newvals - pointer to array to accept other data read from database
+	 *	@param boolean $connect_only - TRUE to simply connect to the server
+	 *
+	 *	@return integer result (AUTH_xxxx)
+	 *
+	 *	On a successful login, &$newvals array is filled with the requested data from the server
+	 */
 	function login($uname, $pass, &$newvals, $connect_only = FALSE)
 	{
 		// Create authentification request
