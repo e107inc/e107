@@ -77,8 +77,9 @@ foreach($eMenuList[$tmp[0]] as $row)
 			global $tp;
 			$sql -> db_Select("page", "*", "page_id='".$row['menu_path']."' ");
 			$page  = $sql -> db_Fetch();
-			$caption = $tp -> toHTML($page['page_title'], TRUE, 'parse_sc, constants');
-			$text = $tp -> toHTML($page['page_text'], TRUE, 'parse_sc, constants');
+			$caption = $tp -> toHTML($page['page_title'], TRUE, 'title');
+			//$text = $tp -> toHTML($page['page_text'], TRUE, 'parse_sc, constants');
+			$text = $tp -> toHTML($page['page_text'], TRUE, 'body');
 			$ns -> tablerender($caption, $text, "custom_menu");
 		}
 		else
