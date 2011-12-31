@@ -12,7 +12,7 @@ if(e_SELF == SITEURLBASE.e_ADMIN_ABS."admin.php")
 			{ADMIN_LOGO}
 		</div>
 		<div class="admin_header_right">
-			<div style="padding: 0px 30px 0px 0px;">{ADMIN_SEL_LAN}</div><div>{ADMIN_LOGGED}</div><div>{ADMIN_SITEINFO=version}</div>
+			<div>{ADMIN_SEL_LAN}</div><div>{ADMIN_LOGGED}</div><div>{ADMIN_SITEINFO=version}</div>
 		</div>
 	</div>
 	<div class="clear"></div>
