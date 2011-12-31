@@ -1,47 +1,56 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_auth.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *	LDAP authorisation for alt_auth plugin
+ *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ */
 
 class auth_login
 {
-	var $server;
-	var $dn;
-	var $ou;
-	var $usr;
-	var $pwd;
-	var $serverType;
-	var $ldapErrorCode;
-	var $ldapErrorText;
-	var $ErrorText;
-	var $connection;
-	var $result;
-	var $ldapVersion;
-	var $Available;
-	var $filter;
-	var $copyAttribs; // Any attributes which are to be copied on successful login
-	var $copyMethods;
+	private	$server;		// The LDAP server (array of possible servers)
+	private $dn;			// LDAP domain
+	private $ou;			// LDAP OU
+	private	$usr;			// User name to log on to server
+	private $pwd;			// Password to log on to server
+	private $serverType;	// Server type = LDAP/AD/eDirectory
+	public	$ldapErrorCode;	// LDAP error code on exit
+	public	$ldapErrorText;	// LDAP error string on exit
+	public	$ErrorText;		// e107 error string on exit
+	private	$connection;	// LDAP resource for connection
+	private	$ldapVersion;	// Version of LDAP to use
+	public	$Available = FALSE;		// Flag indicates whether DB connection available
+	private	$filter;		// Filter for eDirectory search
+	private	$copyAttribs; 	// Any attributes which are to be copied on successful login
+	private	$copyMethods;	// Methods which are to be used to copy attributes
 
-	function auth_login()
+
+
+	/**
+	 *	Read configuration, initialise connection to LDAP database
+	 *
+	 *	@return AUTH_xxxx result code
+	 */
+	public function auth_login()
 	{
 		$this->copyAttribs = array();
 		$this->copyMethods = array();
-		$sql = new db;
-		$sql->db_Select("alt_auth", "*", "auth_type = 'ldap' ");
+		$sql = e107::getDB('altAuth');
+		$sql->db_Select('alt_auth', '*', "auth_type = 'ldap' ");
 		while ($row = $sql->db_Fetch())
 		{
 			$ldap[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
@@ -55,7 +64,7 @@ class auth_login
 			}
 			unset($row['auth_parmname']);
 		}
-		$this->server = explode(",", $ldap['ldap_server']);
+		$this->server = explode(',', $ldap['ldap_server']);
 		$this->serverType = $ldap['ldap_servertype'];
 		$this->dn = $ldap['ldap_basedn'];
 		$this->ou = $ldap['ldap_ou'];
@@ -66,24 +75,35 @@ class auth_login
 
 		if (!function_exists('ldap_connect'))
 		{
-			$this->Available = false;
-			return false;
+			return AUTH_NORESOURCE;
 		}
 
 		if (!$this->connect())
 		{
 			return AUTH_NOCONNECT;
 		}
+		$this->Available = TRUE;
+		return AUTH_SUCCESS;
 	}
 
-	function makeErrorText($extra = '')
+
+	/**
+	 *	Retrieve and construct error strings
+	 */
+	private function makeErrorText($extra = '')
 	{
 		$this->ldapErrorCode = ldap_errno($this->connection);
 		$this->ldapErrorText = ldap_error($this->connection);
 		$this->ErrorText = $extra . ' ' . $this->ldapErrorCode . ': ' . $this->ldapErrorText;
 	}
 
-	function connect()
+
+	/**
+	 *	Connect to the LDAP server
+	 *
+	 *	@return boolean TRUE for success, FALSE for failure
+	 */
+	public function connect()
 	{
 		foreach ($this->server as $key => $host)
 		{
@@ -104,7 +124,11 @@ class auth_login
 		return false;
 	}
 
-	function close()
+
+	/**
+	 *	Close the connection to the LDAP server
+	 */
+	public function close()
 	{
 		if (!@ldap_close($this->connection))
 		{
@@ -117,6 +141,19 @@ class auth_login
 		}
 	}
 
+
+	/**
+	 *	Validate login credentials
+	 *
+	 *	@param string $uname - The user name requesting access
+	 *	@param string $pass - Password to use (usually plain text)
+	 *	@param pointer &$newvals - pointer to array to accept other data read from database
+	 *	@param boolean $connect_only - TRUE to simply connect to the server
+	 *
+	 *	@return integer result (AUTH_xxxx)
+	 *
+	 *	On a successful login, &$newvals array is filled with the requested data from the server
+	 */
 	function login($uname, $pass, &$newvals, $connect_only = false)
 	{
 		/* Construct the full DN, eg:-
@@ -248,8 +285,8 @@ class auth_login
 		}
 		else
 		{
-			/* Login failed. Return false, together with the error code and text from
-			** the LDAP server. The common error codes and reasons are listed below :
+			/* Login failed. Return error code.
+			** The common error codes and reasons are listed below :
 			** (for iPlanet, other servers may differ)
 			** 19 - Account locked out (too many invalid login attempts)
 			** 32 - User does not exist

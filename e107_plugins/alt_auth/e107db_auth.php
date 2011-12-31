@@ -1,21 +1,26 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/e107db_auth.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *	e107 DB authorisation for alt_auth plugin
+ *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ *
+ *	This connects to a 'foreign' e107 user database to validate the user
+ */
 
 /* 
 	return values
@@ -28,61 +33,77 @@
 
 class auth_login
 {
-
-	var $Available;
-	var $ErrorText;
-	var	$conf;				// Configuration parameters
+	public	$Available = FALSE;		// Flag indicates whether DB connection available
+	public	$ErrorText;				// e107 error string on exit
+	private $conf;					// Configuration parameters
 
 	
-	function auth_login()
+	/**
+	 *	Read configuration, initialise connection to remote e107 database
+	 *
+	 *	@return AUTH_xxxx result code
+	 */
+	public function __construct()
 	{
-		global $sql;
-		$this->conf = array();
 		$this->ErrorText = '';
-		$sql -> db_Select("alt_auth", "*", "auth_type = 'e107db' ");
-		while($row = $sql -> db_Fetch())
-		{
-			$this->conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
-		}
+		$this->conf = altAuthGetParams('e107db');
 		$this->Available = TRUE;
 	}
 
 
-	// Add the reconnect function in here - might be needed
-	function makeErrorText($extra = '')
+
+	/**
+	 *	Retrieve and construct error strings
+	 *
+	 *	@todo - test whether reconnect to DB is required (shouldn't be)
+	 */
+	private function makeErrorText($extra = '')
 	{
 		$this->ErrorText = $extra;
-		global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $sql;
-		$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+		//global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $sql;
+		//$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 	}
 
 
-	function login($uname, $pword, &$newvals, $connect_only = FALSE)
+	/**
+	 *	Validate login credentials
+	 *
+	 *	@param string $uname - The user name requesting access
+	 *	@param string $pass - Password to use (usually plain text)
+	 *	@param pointer &$newvals - pointer to array to accept other data read from database
+	 *	@param boolean $connect_only - TRUE to simply connect to the database
+	 *
+	 *	@return integer result (AUTH_xxxx)
+	 *
+	 *	On a successful login, &$newvals array is filled with the requested data from the server
+	 */
+	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
-	  //Attempt to open connection to sql database
-	  if(!$res = mysql_connect($this->conf['e107db_server'], $this->conf['e107db_username'], $this->conf['e107db_password']))
-	  {
-		$this->makeErrorText('Cannot connect to remote server');
-		return AUTH_NOCONNECT;
-	  }
-	  //Select correct db
-	  if(!mysql_select_db($this->conf['e107db_database'], $res))
-	  {
-		mysql_close($res);
-		$this->makeErrorText('Cannot connect to remote DB');
-		return AUTH_NOCONNECT;
-	  }
-	  if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
-	  
-	  $sel_fields = array();
-	  // Make an array of the fields we want from the source DB
-	  foreach($this->conf as $k => $v)
-	  {
-	    if ($v && (strpos($k,'e107db_xf_') === 0))
+		//Attempt to open connection to sql database
+		if(!$res = mysql_connect($this->conf['e107db_server'], $this->conf['e107db_username'], $this->conf['e107db_password']))
 		{
-		  $sel_fields[] = substr($k,strlen('e107db_xf_'));
+			$this->makeErrorText('Cannot connect to remote server');
+			return AUTH_NOCONNECT;
 		}
-	  }
+	  //Select correct db
+
+		if(!mysql_select_db($this->conf['e107db_database'], $res))
+		{
+			mysql_close($res);
+			$this->makeErrorText('Cannot connect to remote DB');
+			return AUTH_NOCONNECT;
+		}
+		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
+	  
+		$sel_fields = array();
+		// Make an array of the fields we want from the source DB
+		foreach($this->conf as $k => $v)
+		{
+			if ($v && (strpos($k,'e107db_xf_') === 0))
+			{
+				$sel_fields[] = substr($k,strlen('e107db_xf_'));
+			}
+		}
 
 		$filterClass = intval(varset($this->conf['e107db_filter_class'], e_UC_PUBLIC));
 		if (($filterClass != e_UC_PUBLIC) && (!in_array('user_class',$sel_fields)))
@@ -95,7 +116,7 @@ class auth_login
 
 
 		//Get record containing supplied login name
-		$qry = "SELECT ".implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
+		$qry = 'SELECT '.implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
 //	  echo "Query: {$qry}<br />";
 		if(!$r1 = mysql_query($qry))
 		{
@@ -103,7 +124,7 @@ class auth_login
 			$this->makeErrorText('Lookup query failed');
 			return AUTH_NOCONNECT;
 		}
-		if(!$row = mysql_fetch_array($r1))
+		if (!$row = mysql_fetch_array($r1))
 		{
 			mysql_close($res);
 			$this->makeErrorText('User not found');
@@ -143,17 +164,17 @@ class auth_login
 			unset($tmp);
 		}
 
-	  // Now copy across any values we have selected
-	  foreach($this->conf as $k => $v)
-	  {
-	    if ($v && (strpos($k,'e107db_xf_') === 0))
+		// Now copy across any values we have selected
+		foreach($this->conf as $k => $v)
 		{
-		  $f = substr($k,strlen('e107db_xf_'));
-		  if (isset($row[$f])) $newvals[$f] = $row[$f];
+			if ($v && (strpos($k,'e107db_xf_') === 0))
+			{
+				$f = substr($k,strlen('e107db_xf_'));
+				if (isset($row[$f])) $newvals[$f] = $row[$f];
+			}
 		}
-	  }
 		$this->makeErrorText('');		// Success - just reconnect to E107 DB if needed
-	  return AUTH_SUCCESS;
+		return AUTH_SUCCESS;
 	}
 }
 

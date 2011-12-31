@@ -1,21 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/importdb_auth.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *	imported DB authorisation for alt_auth plugin
+ *
+ * $URL$
+ * $Id$
+ */
+
+/**
+ *	e107 Alternate authorisation plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	alt_auth
+ *	@version 	$Id$;
+ */
 
 /* 
 	return values
@@ -26,33 +29,47 @@
 	AUTH_SUCCESS 		= valid login
 */
 
+
 class auth_login
 {
 
-	var $conf;
-	var $ErrorText;
+	public	$Available = FALSE;		// Flag indicates whether DB connection available
+	public	$ErrorText;				// e107 error string on exit
+	private $conf;					// Configuration parameters
+
 	
-	function auth_login()
+	/**
+	 *	Read configuration
+	 *
+	 *	@return AUTH_xxxx result code
+	 */
+	public function __construct()
 	{
-		global $sql;
 		$this->ErrorText = '';
-		$this->conf = array();
-		if (!$sql -> db_Select("alt_auth", "*", "auth_type = 'importdb' ")) return AUTH_NOCONNECT;	// We should get at least one value
-		while ($row = $sql -> db_Fetch())
-		{
-			$this->conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
-		}
+		$this->conf = altAuthGetParams('importdb');
 		$this->Available = TRUE;
 	}
 	
 	
-	function makeErrorText($extra = '')
+	private function makeErrorText($extra = '')
 	{
 		$this->ErrorText = $extra;
 	}
 
 
-	function login($uname, $pword, &$newvals, $connect_only = FALSE)
+	/**
+	 *	Validate login credentials
+	 *
+	 *	@param string $uname - The user name requesting access
+	 *	@param string $pass - Password to use (usually plain text)
+	 *	@param pointer &$newvals - pointer to array to accept other data read from database
+	 *	@param boolean $connect_only - TRUE to simply connect to the database
+	 *
+	 *	@return integer result (AUTH_xxxx)
+	 *
+	 *	On a successful login, &$newvals array is filled with the requested data from the server
+	 */
+	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
 		if ($connect_only) return AUTH_SUCCESS;			// Big problem if can't connect to our own DB!
 
