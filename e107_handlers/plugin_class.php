@@ -1893,6 +1893,8 @@ class e107plugin
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
+		$text = '';
+
 		// install plugin ...
 		$id = (int) $id;
 		$plug = $this->getinfo($id);
