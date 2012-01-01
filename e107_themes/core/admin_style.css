@@ -176,4 +176,7 @@ table.bb-preimageselect { -moz-box-shadow: 2px 2px 4px #999; -webkit-box-shadow:
 
 #new-version { color:#FFCC00; width:250px; padding:5px; float:right; margin-left:50px;margin-top:10px; }
 #new-version-caption {font-weight:bold}
+.forumheader3 a, .forumheader2 a, .forumheader a {
+	color: #3399cc;
+}
 
