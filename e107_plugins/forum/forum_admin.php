@@ -888,7 +888,7 @@ class forum
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_33.":<br /><span class='smalltext'>(".FORLAN_34.")</span></td>
 		<td style='width:60%' class='forumheader3'>";
-		$text .= r_userclass("forum_moderators", $forum_moderators, 'off', 'admin,classes');
+		$text .= r_userclass("forum_moderators", $forum_moderators, 'off', 'admin,main,classes');
 
 		//		$admin_no = $sql->db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('A.') OR user_perms='0' ");
 		//		while ($row = $sql->db_Fetch())
@@ -906,12 +906,12 @@ class forum
 		</tr>
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class, 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class, 'off', 'nobody,public,member,admin,main,classes')."</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $forum_postclass, 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $forum_postclass, 'off', 'nobody,public,member,admin,main,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>

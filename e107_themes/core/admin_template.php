@@ -9,7 +9,7 @@ if(e_SELF == SITEURLBASE.e_ADMIN_ABS."admin.php")
 	$ADMIN_HEADER = '
 	<div class="admin_header clearfix">
 		<div class="admin_header_left">
-			{ADMIN_LOGO}
+			{ADMIN_LOGO} {ADMIN_UPDATE=adminpanel|text}
 		</div>
 		<div class="admin_header_right">
 			<div>{ADMIN_SEL_LAN}</div><div>{ADMIN_LOGGED}</div><div>{ADMIN_SITEINFO=version}</div>
