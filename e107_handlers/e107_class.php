@@ -2565,63 +2565,19 @@ class e107
 	 *
 	 * Generates the queries to interrogate the ban list, then calls $this->check_ban().
 	 * If the user is banned, $check_ban() never returns - so a return from this routine indicates a non-banned user.
-	 * FIXME - create eBanHelper, move it there
+	 * FIXME -  moved to ban helper, replace all calls
 	 * @return void
 	 */
 	 /* No longer required - moved to eIPHelper class
 	public function ban()
 	{
-		$sql = e107::getDb();
-		$ban_count = $sql->db_Count('banlist');
-		if($ban_count)
-		{
-			$vals = array();
-			$ip = $this->getip(); // This will be in normalised IPV6 form
-			if($ip!='x.x.x.x')
-			{
-				$vals[] = $ip; // Always look for exact match
-				if(strpos($ip, '0000:0000:0000:0000:0000:ffff:')===0)
-				{ // It's an IPV4 address
-					$vals[] = substr($ip, 0, -2).'*';
-					$vals[] = substr($ip, 0, -4).'*';
-					$vals[] = substr($ip, 0, -7).'*'; // Knock off colon as well here
-				}
-				else
-				{ // Its an IPV6 address - ban in blocks of 16 bits
-					$vals[] = substr($ip, 0, -4).'*';
-					$vals[] = substr($ip, 0, -9).'*';
-					$vals[] = substr($ip, 0, -14).'*';
-				}
-			}
-			if(e107::getPref('enable_rdns'))
-			{
-				$tmp = array_reverse(explode('.', $this->get_host_name(getenv('REMOTE_ADDR'))));
-				$line = '';
-				//		  $vals[] = $addr;
-				foreach($tmp as $e)
-				{
-					$line = '.'.$e.$line;
-					$vals[] = '*'.$line;
-				}
-			}
-			if((defined('USEREMAIL')&&USEREMAIL))
-			{
-				$vals[] = USEREMAIL;
-			}
-			if(($ip!='127.0.0.1')&&count($vals))
-			{
-				$match = "`banlist_ip`='".implode("' OR `banlist_ip`='", $vals)."'";
-				$this->check_ban($match);
-			}
-		}
 	} */
 
 	/**
 	 * Check the banlist table. $query is used to determine the match.
 	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
 	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
-	 * XXX - clean up
-	 * FIXME - create eBanHelper, move it there
+	 * FIXME - moved to ban helper, replace all calls
 	 * 
 	 *
 	 * @param string $query
@@ -2632,51 +2588,6 @@ class e107
 	 /* No longer required - moved to eIPHelper class
 	public function check_ban($query, $show_error = TRUE, $do_return = FALSE)
 	{
-		$sql = e107::getDb();
-		$pref = e107::getPref();
-		$tp = e107::getParser();
-		$admin_log = e107::getAdminLog();
-		
-		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
-		if($sql->db_Select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
-		{
-			// Any whitelist entries will be first - so we can answer based on the first DB record read
-			define('BAN_TYPE_WHITELIST', 100); // Entry for whitelist
-			$row = $sql->db_Fetch();
-			if($row['banlist_bantype']>=BAN_TYPE_WHITELIST)
-			{
-				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
-				return TRUE;
-			}
-			// Found banlist entry in table here
-			if(($row['banlist_banexpires']>0)&&($row['banlist_banexpires']<time()))
-			{ // Ban has expired - delete from DB
-				$sql->db_Delete('banlist', $query);
-				return TRUE;
-			}
-			if(varsettrue($pref['ban_retrigger'])&&varsettrue($pref['ban_durations'][$row['banlist_bantype']]))
-			{ // May need to retrigger ban period
-				$sql->db_Update('banlist', "`banlist_banexpires`=".intval(time()+($pref['ban_durations'][$row['banlist_bantype']]*60*60)), "WHERE `banlist_ip`='{$row['banlist_ip']}'");
-				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
-			}
-			//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
-			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
-			
-			if($show_error)
-				header("HTTP/1.1 403 Forbidden", true);
-			if(isset($pref['ban_messages']))
-			{ // May want to display a message
-				// Ban still current here
-
-				echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']])); // Show message if one set
-			}
-			if($do_return)
-				return FALSE;
-			
-			exit();
-		}
-		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
-		return TRUE; // Email address OK
 	} */
 
 
@@ -2684,8 +2595,7 @@ class e107
 	 * Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins
 	 * Returns TRUE if ban accepted.
 	 * Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
-	 * FIXME - remove $admin_log global, add admin_log method getter instead
-	 * FIXME - create eBanHelper, move it there
+	 * FIXME - moved to IP handler, replace all calls
 	 * @param string $bantype
 	 * @param string $ban_message
 	 * @param string $ban_ip
@@ -2697,41 +2607,6 @@ class e107
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
 		return e107::getIPHandler()->add_ban($bantype, $ban_message, $ban_ip, $ban_user, $ban_notes);
-		
-		/*
-		global $sql, $pref, $e107, $admin_log;
-		$sql = e107::getDb();
-		$pref = e107::getPref();
-		$e107 = e107::getInstance();
-		$admin_log = e107::getAdminLog();
-		if(!$ban_message)
-		{
-			$ban_message = 'No explanation given';
-		}
-		if(!$ban_ip)
-		{
-			$ban_ip = $this->getip();
-		}
-		*/
-		//$ban_ip = preg_replace('/[^\w@\.]*/', '', urldecode($ban_ip)); // Make sure no special characters
-		/*
-		if(!$ban_ip)
-		{
-			return FALSE;
-		}
-		// See if the address is in the whitelist
-		if($sql->db_Select('banlist', '*', '`banlist_bantype` >= '.BAN_TYPE_WHITELIST))
-		{ // Got a whitelist entry for this
-			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
-			return FALSE;
-		}
-		if(varsettrue($pref['enable_rdns_on_ban']))
-		{
-			$ban_message .= 'Host: '.$e107->get_host_name($ban_ip);
-		}
-		// Add using an array - handles DB changes better
-		$sql->db_Insert('banlist', array('banlist_ip' => $ban_ip , 'banlist_bantype' => $bantype , 'banlist_datestamp' => time() , 'banlist_banexpires' => (varsettrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) , 'banlist_admin' => $ban_user , 'banlist_reason' => $ban_message , 'banlist_notes' => $ban_notes));
-		return TRUE;  */
 	}
 
 	/**
@@ -2743,33 +2618,6 @@ class e107
 	public function getip()
 	{
 		return e107::getIPHandler()->getIP(FALSE);
-		/*
-		if(!$this->_ip_cache)
-		{
-			$ip=$_SERVER['REMOTE_ADDR'];
-			if (getenv('HTTP_X_FORWARDED_FOR'))
-			{
-				if (preg_match('/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/', getenv('HTTP_X_FORWARDED_FOR'), $ip3))
-				{
-					$ip2 = array('#^0\..*#',
-							'#^127\..*#', 							// Local loopbacks
-							'#^192\.168\..*#', 						// RFC1918 - Private Network
-							'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-							'#^10\..*#', 							// RFC1918 - Private Network
-							'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP
-							'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-							);
-					$ip = preg_replace($ip2, $ip3[1], $ip);
-				}
-			}
-			if ($ip == "")
-			{
-				$ip = "x.x.x.x";
-			}
-			$this->_ip_cache = $this->ipEncode($ip); // Normalise for storage
-		}
-		return $this->_ip_cache;
-		*/
 	}
 
 	/**
@@ -2783,46 +2631,6 @@ class e107
 	 /*
 	public function ipEncode($ip, $div = ':')
 	{
-		$ret = '';
-		$divider = '';
-		if(strpos($ip, ':')!==FALSE)
-		{ // Its IPV6 (could have an IP4 'tail')
-			if(strpos($ip, '.')!==FALSE)
-			{ // IPV4 'tail' to deal with
-				$temp = strrpos($ip, ':')+1;
-				$ipa = explode('.', substr($ip, $temp));
-				$ip = substr($ip, 0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-			}
-			// Now 'normalise' the address
-			$temp = explode(':', $ip);
-			$s = 8-count($temp); // One element will of course be the blank
-			foreach($temp as $f)
-			{
-				if($f=='')
-				{
-					$ret .= $divider.'0000'; // Always put in one set of zeros for the blank
-					$divider = $div;
-					if($s>0)
-					{
-						$ret .= str_repeat($div.'0000', $s);
-						$s = 0;
-					}
-				}
-				else
-				{
-					$ret .= $divider.sprintf('%04x', hexdec($f));
-					$divider = $div;
-				}
-			}
-			return $ret;
-		}
-		if(strpos($ip, '.')!==FALSE)
-		{ // Its IPV4
-			$ipa = explode('.', $ip);
-			$temp = sprintf('%02x%02x%s%02x%02x', $ipa[0], $ipa[1], $div, $ipa[2], $ipa[3]);
-			return str_repeat('0000'.$div, 5).'ffff'.$div.$temp;
-		}
-		return FALSE; // Unknown
 	} */
 
 	/**
@@ -2839,64 +2647,6 @@ class e107
 	public function ipdecode($ip, $IP4Legacy = TRUE)
 	{
 		return e107::getIPHandler()->ipDecode($ip, $IP4Legacy);
-		/*
-		if (strstr($ip,'.'))
-		{
-			if ($IP4Legacy) return $ip;			// Assume its unencoded IPV4
-			$ipa = explode('.', $ip);
-			$ip = '0:0:0:0:0:ffff:'.sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-		}
-		if (strstr($ip,'::')) return $ip;			// Assume its a compressed IPV6 address already
-		if ((strlen($ip) == 8) && !strstr($ip,':'))
-		{	// Assume a 'legacy' IPV4 encoding
-			$ip = '0:0:0:0:0:ffff:'.implode(':',str_split($ip,4));		// Turn it into standard IPV6
-		}
-		elseif ((strlen($ip) == 32) && !strstr($ip,':'))
-		{  // Assume a compressed hex IPV6
-			$ip = implode(':',str_split($ip,4));
-		}
-		if (!strstr($ip,':')) return FALSE;			// Return on problem - no ':'!
-		$temp = explode(':',$ip);
-		$z = 0;		// State of the 'zero manager' - 0 = not started, 1 = running, 2 = done
-		$ret = '';
-		$zc = 0;			// Count zero fields (not always required)
-		foreach ($temp as $t)
-		{
-			$v = hexdec($t);
-			if (($v != 0) || ($z == 2))
-			{
-				if ($z == 1)
-				{ // Just finished a run of zeros
-					$z++;
-					$ret .= ':';
-				}
-				if ($ret) $ret .= ':';
-				$ret .= sprintf('%x',$v);				// Drop leading zeros
-			}
-			else
-			{  // Zero field
-				$z = 1;
-				$zc++;
-			}
-		}
-		if ($z == 1)
-		{  // Need to add trailing zeros, or double colon
-			if ($zc > 1) $ret .= '::'; else $ret .= ':0';
-		}
-		if ($IP4Legacy && (substr($ret,0,7) == '::ffff:'))
-		{
-			$temp = explode(':',substr($ret,7));		// Should give us two 16-bit hex values
-			$z = array();
-			foreach ($temp as $t)
-			{
-				$zc = hexdec($t);
-				$z[] = intval($zc / 256);		// intval needed to avoid small rounding error
-				$z[] = $zc % 256;
-			}
-			$ret = implode('.',$z);
-		}
-
-		return $ret; */
 	}
 
 	/**
@@ -2910,16 +2660,6 @@ class e107
 	public function whatIsThis($string)
 	{
 		//return e107::getIPHandler()->whatIsThis($string);
-		
-		if (strstr($string,'@')) return 'email';		// Email address
-		if (strstr($string,'http://')) return 'url';
-		if (strstr($string,'ftp://')) return 'ftp';
-		$string = strtolower($string);
-		if (str_replace(' ', '', strtr($string,'0123456789abcdef.:*', '                   ')) == '')	// Delete all characters found in ipv4 or ipv6 addresses, plus wildcards
-		{
-			return 'ip';
-		}
-		return 'unknown';
 	} */
 
 	/**
@@ -2932,27 +2672,12 @@ class e107
 	 /*
 	public function get_host_name($ip_address)
 	{
-		if(!$this->_host_name_cache[$ip_address])
-		{
-			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
-		}
-		return $this->_host_name_cache[$ip_address];
+
 	} */
 
 	/**
 	 * MOVED TO eHelper::parseMemorySize()
 	 * FIXME - find all calls, replace with eHelper::parseMemorySize() (once eHelper lives in a separate file)
-	 * Return a memory value formatted helpfully
-	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
-	 * FIXME e107->parseMemorySize() START
-	 * - maybe we are in need of General Helper handler, this + the above ban/ip related methods
-	 * are not fitting e107 class logic anymore
-	 * - change access to public static - more useful
-	 * - out of (integer) range case?
-	 * 32 bit systems range: -2147483648 to 2147483647
-	 * 64 bit systems range: -9223372036854775808 9223372036854775807
-	 * {@link http://www.php.net/intval}
-	 * FIXME e107->parseMemorySize() END
 	 *
 	 * @param integer $size
 	 * @param integer $dp
@@ -2960,58 +2685,24 @@ class e107
 	 */
 	public function parseMemorySize($size, $dp = 2)
 	{
-		if (!$size) { $size = 0; }
-		if ($size < 4096)
-		{	// Fairly arbitrary limit below which we always return number of bytes
-			return number_format($size, 0).CORE_LAN_B;
-		}
-
-		$size = $size / 1024;
-		$memunit = CORE_LAN_KB;
-
-		if ($size > 1024)
-		{ /* 1.002 mb, etc */
-			$size = $size / 1024;
-			$memunit = CORE_LAN_MB;
-		}
-		if ($size > 1024)
-		{ /* show in GB if >1GB */
-			$size = $size / 1024;
-			$memunit = CORE_LAN_GB;
-		}
-		if ($size > 1024)
-		{ /* show in TB if >1TB */
-			$size = $size / 1024;
-			$memunit = CORE_LAN_TB;
-		}
-		return (number_format($size, $dp).$memunit);
+		return eHelper::parseMemorySize($size, $dp);
 	}
 
 
 	/**
-	 * FIXME - move to eHelper
+	 * Removed, see eHelper::getMemoryUsage()
 	 * Get the current memory usage of the code
 	 * If $separator argument is null, raw data (array) will be returned
 	 *
 	 * @param null|string $separator
 	 * @return string|array memory usage
 	 */
+	/*
 	public function get_memory_usage($separator = '/')
 	{
-		$ret = array();
-		if(function_exists("memory_get_usage"))
-		{
-	      $ret[] = $this->parseMemorySize(memory_get_usage());
-		  // With PHP>=5.2.0, can show peak usage as well
-	      if (function_exists("memory_get_peak_usage")) $ret[] = $this->parseMemorySize(memory_get_peak_usage(TRUE));
-		}
-		else
-		{
-		  $ret[] = 'Unknown';
-		}
+		return eHelper::getMemoryUsage($separator);
+	}*/
 
-		return (null !== $separator ? implode($separator, $ret) : $ret);
-	}
 
 	/**
 	 * Check if plugin is installed

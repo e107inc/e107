@@ -3929,6 +3929,30 @@ class eHelper
 		return (number_format($size, $dp).$memunit);
 	}
 	
+	/**
+	 * Get the current memory usage of the code
+	 * If $separator argument is null, raw data (array) will be returned
+	 *
+	 * @param null|string $separator
+	 * @return string|array memory usage
+	 */
+	public static function getMemoryUsage($separator = '/')
+	{
+		$ret = array();
+		if(function_exists("memory_get_usage"))
+		{
+	      $ret[] = eHelper::parseMemorySize(memory_get_usage());
+		  // With PHP>=5.2.0, can show peak usage as well
+	      if (function_exists("memory_get_peak_usage")) $ret[] = eHelper::parseMemorySize(memory_get_peak_usage(TRUE));
+		}
+		else
+		{
+		  $ret[] = 'Unknown';
+		}
+
+		return (null !== $separator ? implode($separator, $ret) : $ret);
+	}
+	
 	public static function camelize($str, $all = false, $space = '')
 	{
 		// clever recursion o.O
