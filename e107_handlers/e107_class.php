@@ -2448,8 +2448,8 @@ class e107
 		// e_MENU fix
 		if(e_MENU)
 		{
-			str_replace('['.e_MENU.']', '', $requestUri);
-			str_replace('['.e_MENU.']', '', $requestUrl);
+			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
+			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
