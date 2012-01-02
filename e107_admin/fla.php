@@ -88,7 +88,8 @@ if(isset($_POST['delbanSubmit']))
 		if($sql->db_Select("generic", "*", "gen_id={$ban}"))
 		{
 			$at = $sql->db_Fetch();
-			if (!$e107->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
+			//if (!$e107->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
+			if (!e107::getIPHandler()add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
 			{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
 				$emessage->add(str_replace(FLALAN_18,'--IP--',$at['gen_ip']), E_MESSAGE_WARNING);
 			}
@@ -184,7 +185,7 @@ else
 						<tr>
 							<td>".$gen->convert_date($gen_datestamp, "forum")."</td>
 							<td>".$gen_chardata."</td>
-							<td>".$e107->ipDecode($fa['gen_ip'])."<br />{$host}</td>
+							<td>".e107::getIPHandler()->ipDecode($fa['gen_ip'])."<br />{$host}</td>
 							<td class='center middle autocheck e-pointer'>
 								".$frm->checkbox('fladelete[]', $gen_id)."
 							</td>

@@ -743,6 +743,34 @@ class eIPHandler
 	}
 
 
+
+	/**
+	 *	Split up an email address to check for banned domains.
+	 *	@param string $email - email address to process
+	 *	@param string $fieldname - name of field being searched in DB
+	 *
+	 *	@return bool|string false if invalid address. Otherwise returns a set of values to check
+	 *	(Moved in from user_handler.php)
+	 */
+	public function makeEmailQuery($email, $fieldname = 'banlist_ip')
+	{
+		$tp = e107::getParser();
+		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
+		if ($tmp == '') return FALSE;
+		if (strpos($tmp,'.') === FALSE) return FALSE;
+		$em = array_reverse(explode('.',$tmp));
+		$line = '';
+		$out = array($fieldname."='*@{$tmp}'");		// First element looks for domain as email address
+		foreach ($em as $e)
+		{
+			$line = '.'.$e.$line;
+			$out[] = '`'.$fieldname."`='*{$line}'";
+		}
+		return implode(' OR ',$out);
+	}
+
+
+
 /**
  *	Routines beyond here are to handle banlist-related tasks which involve the DB
  *	note: Most of these routines already existed; moved in from e107_class.php

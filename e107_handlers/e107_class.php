@@ -2604,15 +2604,16 @@ class e107
 	 *
 	 * @return boolean check result
 	 */
+	 /*
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
 		return e107::getIPHandler()->add_ban($bantype, $ban_message, $ban_ip, $ban_user, $ban_notes);
-	}
+	} */
 
 	/**
 	 * Get the current user's IP address
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
-	 * FIXME - call ipHandler directly
+	 * FIXME - call ipHandler directly (done for core - left temporarily for BC)
 	 * @return string
 	 */
 	public function getip()
@@ -2638,7 +2639,7 @@ class e107
 	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format,
 	 * FALSE to display in standard IPV6 format
 	 * Should handle most things that can be thrown at it.
-	 * FIXME - moved to ipHandler - check for calls elsewhere
+	 * FIXME - moved to ipHandler - check for calls elsewhere - core done; left temporarily for BC
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
 	 * @return string decoded IP

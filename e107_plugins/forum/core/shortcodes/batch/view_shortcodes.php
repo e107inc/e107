@@ -118,7 +118,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['post_user_anon'] && (ADMIN || MODERATOR))
 		{
-			return $this->e107->ipDecode($this->postInfo['post_ip']);
+			return e107::getIPHandler()->ipDecode($this->postInfo['post_ip']);
 		}
 	}
 
@@ -126,7 +126,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if((ADMIN || MODERATOR) && !$this->postInfo['user_admin'])
 		{
-			return $this->e107->ipDecode($this->postInfo['post_ip']);
+			return e107::getIPHandler()->ipDecode($this->postInfo['post_ip']);
 		}
 
 	}

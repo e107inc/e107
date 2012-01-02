@@ -215,7 +215,7 @@ function notify_userveri($data)
 	global $nt, $e107;
 	$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
 	$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
-	$msgtext .= NT_LAN_UV_4.$e107->getip();
+	$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
 	$nt->send('userveri', NT_LAN_UV_1, $msgtext);
 }
 

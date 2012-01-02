@@ -1229,7 +1229,7 @@ class e_user extends e_user_model
 		{
 			$sql = e107::getDb();
 			$this->set('last_ip', $this->get('user_ip'));
-			$current_ip = e107::getInstance()->getip();
+			$current_ip = e107::getIPHandler()->getIP(FALSE);
 			$update_ip = $this->get('user_ip' != $current_ip ? ", user_ip = '".$current_ip."'" : "");
 			$this->set('user_ip', $current_ip);
 			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))

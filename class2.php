@@ -594,7 +594,7 @@ init_session();
 //DEPRECATED but necessary. BC Fix.
 function getip()
 {
-	return e107::ipDecode(USERIP);
+	return e107::getIPHandler()->ipDecode(USERIP);
 }
 
 // for multi-language these definitions needs to come after the language loaded.
@@ -832,7 +832,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 		}
 	}
 
-	$ip = $e107->getip();
+	// $ip = e107::getIPHandler()->getIP(FALSE);			Appears to not be used, so removed
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
 
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
@@ -1493,7 +1493,7 @@ function init_session()
 	// New user model
 	$user = e107::getUser();
 
-	define('USERIP', $e107->getip());
+	define('USERIP', e107::getIPHandler()->getIP(FALSE));
 	define('POST_REFERER', md5($user->getToken()));
 
 	// Check for intruders - outside the model for now

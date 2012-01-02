@@ -1334,7 +1334,7 @@ class users
 			break;
 
 			case 'user_ip':
-				return $e107->ipDecode($row['user_ip']);
+				return e107::getIPHandler()->ipDecode($row['user_ip']);
 			break;
 
 
@@ -1775,7 +1775,7 @@ class users
 				}
 				else
 				{
-					if ($e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
+					if (e107::getIPHandler()->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
 					{
 					// Successful IP ban
 						$this->show_message(str_replace("{IP}",$row['user_ip'],USRLAN_137));

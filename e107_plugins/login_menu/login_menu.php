@@ -36,7 +36,7 @@ if(defined('FPW_ACTIVE'))
 
 global $eMenuActive, $pref, $e107, $sql, $tp, $ns, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
        $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
-$ip = $e107->getip();
+$ip = e107::getIPHandler()->getIP(FALSE);
 
 //shortcodes
     require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");

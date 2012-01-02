@@ -399,7 +399,7 @@ if (isset($_POST['register']))
 		unset($_POST['password1']);					// Restrict the scope of this
 		unset($_POST['password2']);
 
-		$allData['user_ip'] = $e107->getip();
+		$allData['user_ip'] = e107::getIPHandler()->getIP(FALSE);
 
 
 		// check for multiple signups from the same IP address. But ignore localhost
@@ -411,7 +411,7 @@ if (isset($_POST['register']))
 				{
 					$allData['errors']['user_email'] = ERR_GENERIC;
 					$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
-					$admin_log->log_event('USET_15',LAN_SIGNUP_103.$e107->getip(),4);
+					$admin_log->log_event('USET_15',LAN_SIGNUP_103.e107::getIPHandler()->getIP(FALSE),4);
 				}
 			}
 		}

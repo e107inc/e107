@@ -244,7 +244,7 @@ class e_db_mysql
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$ip = $e107->getip();
+		$ip = e107::getIPHandler()->getIP(FALSE);
 		$qry = $tp->toDB($log_query);
 		$this->db_Insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
 	}

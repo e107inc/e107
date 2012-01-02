@@ -416,9 +416,13 @@ class UserHandler
 	 *	@param string $fieldname - name of field being searched in DB
 	 *
 	 *	@return bool|string false if invalid address. Otherwise returns a set of values to check
+	 *	Moved to IPHandler
 	 */
+	 /*
 	public function make_email_query($email, $fieldname = 'banlist_ip')
 	{
+		return e107::getIPHandler()->makeEmailQuery($v, $fieldname);		// Valid 'stub' if required
+
 		$tp = e107::getParser();
 		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
 		if ($tmp == '') return FALSE;
@@ -433,7 +437,7 @@ class UserHandler
 		}
 		return implode(' OR ',$out);
 	}
-
+	*/
 
 
 
@@ -610,9 +614,9 @@ Following fields auto-filled in code as required:
 			}
 			else
 			{	// See if email address banned
-				$wc = $this->make_email_query($v);		// Generate the query for the ban list
+				$wc = e107::getIPHandler()->makeEmailQuery($v);		// Generate the query for the ban list
 				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
-				if (($wc === FALSE) || !e107::getInstance()->check_ban($wc, FALSE, TRUE))
+				if (($wc === FALSE) || !e107::getIPHandler()->checkBan($wc, FALSE, TRUE))
 				{
 //					echo "Email banned<br />";
 					$errMsg = ERR_BANNED_EMAIL;

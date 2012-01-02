@@ -239,7 +239,7 @@ class comment
 		$unblock = "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
 		$block = "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
 		$delete = "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
-		$userinfo = "[<a href='".e_ADMIN_ABS."userinfo.php?".$e107->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
+		$userinfo = "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
 		if (!$COMMENTSTYLE)
 		{
 			global $THEMES_DIRECTORY;

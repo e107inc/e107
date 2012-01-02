@@ -316,7 +316,7 @@ class ecal_class
 	  }
 	  else
 	    $cmessage .= "Event Start unknown<br />";
-	  $edata_ec = array('cmessage' => $cmessage, 'ip' => $e107->getip());
+	  $edata_ec = array('cmessage' => $cmessage, 'ip' => e107::getIPHandler()->getIP(FALSE));
 	  switch ($event_type)
 	  {
 	    case 5 :
