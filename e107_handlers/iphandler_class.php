@@ -9,7 +9,7 @@
 * IP Address related routines, including banning-related code
 *
 * $URL$
-* $Revision: $
+* $Revision$
 * $Id$
 *
 */
