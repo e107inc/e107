@@ -845,8 +845,9 @@ class e_form
 
 		//format data first
 		$name = trim($this->name2id($name), '-');
-		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
-		$value = trim(str_replace("/","-",$value), '-');
+		$value = trim(preg_replace('#[^a-zA-Z0-9\-]#','-', $value), '-');
+		//$value = trim(preg_replace('#[^a-z0-9\-]#/i','-', $value), '-');		// This should work - but didn't for me!
+		$value = trim(str_replace("/","-",$value), '-');					// Why?
 		if(!$id_value && is_numeric($value)) $id_value = $value;
 
 		// clean - do it better, this could lead to dups
