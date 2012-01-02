@@ -97,7 +97,7 @@ if (varset($e107_popup) != 1)
 	$rendertime = number_format($clockTime, 2); // Clock time during page render
 	$db_time = number_format($db_time, 2); // Clock time in DB render
 	$dbPercent = number_format($dbPercent, 0); // DB as percent of clock
-	$memuse = $e107->get_memory_usage(); // Memory at end, in B/KB/MB/GB ;)
+	$memuse = eHelper::getMemoryUsage(); // Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 	
 	if (function_exists('getrusage'))
