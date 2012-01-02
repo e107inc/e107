@@ -2442,13 +2442,14 @@ class e_form
 	}
 }
 
-class form {
-
-	function form_open($form_method, $form_action, $form_name = "", $form_target = "", $form_enctype = "", $form_js = "") {
+class form 
+{
+	function form_open($form_method, $form_action, $form_name = "", $form_target = "", $form_enctype = "", $form_js = "") 
+	{
 		$method = ($form_method ? "method='".$form_method."'" : "");
 		$target = ($form_target ? " target='".$form_target."'" : "");
 		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">".e107::getForm()->token();
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js."><div>".e107::getForm()->token()."</div>";
 	}
 
 	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
