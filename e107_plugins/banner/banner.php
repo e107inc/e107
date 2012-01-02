@@ -43,7 +43,7 @@ if (e_QUERY) {
 	$query_string = intval(e_QUERY);
 	$sql->db_Select("banner", "*", "banner_id = '{$query_string}' ");
 	$row = $sql->db_Fetch();
-	$ip = $e107->getip();
+	$ip = e107::getIPHandler()->getIP(FALSE);
 	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^";
 	$sql->db_Update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '{$newip}' WHERE `banner_id` = '{$query_string}'");
 	header("Location: {$row['banner_clickurl']}");

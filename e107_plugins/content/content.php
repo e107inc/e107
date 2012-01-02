@@ -1083,7 +1083,7 @@ function show_content_item()
 
 			//update refer count outside of cache (count visits ^ count unique ips)
 			if( varsettrue($content_pref["content_log"]) ){
-				$ip			= $e107->getip();
+				$ip			= e107::getIPHandler()->getIP(FALSE);
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
 				if(strpos($self, "admin") === FALSE){

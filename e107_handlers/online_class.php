@@ -94,7 +94,7 @@ class e_online
 			$page = e_REQUEST_URI; // mod rewrite & single entry support
 			// FIXME parse url, trigger registered e_online callbacks
 			$page = $e107->tp->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
-			$ip = $e107->getip();
+			$ip = e107::getIPHandler()->getIP(FALSE);
 			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -208,7 +208,7 @@ class e_online
 				if ($row['online_pagecount'] > $online_bancount)
 				{
 					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
-					if ($e107->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
+					if (e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
 					{
 						e107::getEvent()->trigger('flood', $ip);
 						exit;

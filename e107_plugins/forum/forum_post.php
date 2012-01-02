@@ -222,7 +222,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			exit;
 		}
 		$hasPoll = ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
-		$postInfo['post_ip'] = $e107->getip();
+		$postInfo['post_ip'] = e107::getIPHandler()->getIP(FALSE);
 
 		if (USER)
 		{

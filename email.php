@@ -103,7 +103,7 @@ if (isset($_POST['emailsubmit']))
 	{
 //		$message .= $comments."\n";			// Added to message later on
 	}
-	$ip = $e107->getip();
+	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 
 	if (substr($source,0,7) == 'plugin:')

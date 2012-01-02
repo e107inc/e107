@@ -192,7 +192,7 @@ if ($type == "file")
 			// increment download count
 			$sql->db_Update("download", "download_requested = download_requested + 1 WHERE download_id = '{$id}'");
 			$user_id = USER ? USERID : 0;
-			$ip = $e107->getip();
+			$ip = e107::getIPHandler()->getIP(FALSE);
 			$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '".time()."'";
 			//add request info to db
 			$sql->db_Insert("download_requests", $request_data, FALSE);
@@ -452,7 +452,7 @@ function check_download_limits()
 		{
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
 		} else {
-			$ip = $e107->getip();
+			$ip = e107::getIPHandler()->getIP(FALSE);
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 		}
 		$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
@@ -478,7 +478,7 @@ function check_download_limits()
 		if(USER) {
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
 		} else {
-			$ip = $e107->getip();
+			$ip = e107::getIPHandler()->getIP(FALSE);
 			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 		}
 		$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";

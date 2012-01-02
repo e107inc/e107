@@ -1298,8 +1298,8 @@ class e_form
 			break;
 
 			case 'ip':
-				$e107 = e107::getInstance();
-				$value = $e107->ipDecode($value);
+				//$e107 = e107::getInstance();
+				$value = e107::getIPHandler()->ipDecode($value);
 				// else same
 			break;
 
@@ -1637,7 +1637,7 @@ class e_form
 			break;
 
 			case 'ip':
-				return $this->text($key, e107::getInstance()->ipDecode($value), 32, $parms);
+				return $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
 			break;
 
 			case 'url':

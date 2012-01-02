@@ -157,7 +157,7 @@ $text .= "
 			$text .= "<tr>
 				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'%H:%M:%S')."</td>
 					<td>".renderOnlineName($val['online_user_id'])."</td>
-					<td>".e107::ipDecode($val['online_ip'])."</td>
+					<td>".e107::getIPHandler()->ipDecode($val['online_ip'])."</td>
 					<td><a href='".$val['online_location']."' title='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50,'...')."</a></td>
 					<td>".$tp->text_truncate(str_replace("/"," / ",$val['online_agent']),20,'...')."</td>
 				</tr>

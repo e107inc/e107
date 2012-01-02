@@ -2320,7 +2320,7 @@ class admin_newspost
 						</td>";
 						
 				$text .= "<td class='nowrap'>".date('D jS M, Y, g:ia', $row['submitnews_datestamp'])."</td>
-				<td><a href=\"mailto:".$row['submitnews_email']."?subject=[".SITENAME."] ".trim($row['submitnews_title'])."\" title='".$row['submitnews_email']." - ".$e107->ipDecode($row['submitnews_ip'])."'>".$row['submitnews_name']."</a></td>
+				<td><a href=\"mailto:".$row['submitnews_email']."?subject=[".SITENAME."] ".trim($row['submitnews_title'])."\" title='".$row['submitnews_email']." - ".e107::getIPHandler()->ipDecode($row['submitnews_ip'])."'>".$row['submitnews_name']."</a></td>
 				<td>".$newsCat[$row['submitnews_category']]."</td>
 				<td class='center'>".($row['submitnews_auth'] == 0 ?  "-" : ADMIN_TRUE_ICON)."</td>		
 						

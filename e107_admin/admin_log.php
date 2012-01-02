@@ -796,7 +796,7 @@ if(isset($page_title[$action]))
 				$text .= "
 					<td class='label'>".RL_LAN_060."</td>
 					<td class='control'>
-						<input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".$e107->ipDecode($ipaddress_filter)."' maxlength='20' />
+						<input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".e107::getIPHandler()->ipDecode($ipaddress_filter)."' maxlength='20' />
 						<div class='field-help'>".RL_LAN_061."</div>
 					</td>
 				";
@@ -981,10 +981,10 @@ if(isset($page_title[$action]))
 						$val = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $row['dblog_remarks']);
 						break;
 					case 'dblog_ip':
-						$val = $e107->ipDecode($row['dblog_ip']);
+						$val = e107::getIPHandler()->ipDecode($row['dblog_ip']);
 						break;
 					case 'comment_ip':
-						$val = $e107->ipDecode($row['comment_ip']);
+						$val = e107::getIPHandler()->ipDecode($row['comment_ip']);
 						/*		    if (strlen($val) == 8)		// New decoder should handle this automatically
 			{
 			  $hexip = explode('.', chunk_split($val, 2, '.'));

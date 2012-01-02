@@ -205,8 +205,8 @@ class e_admin_log
 		// Calculations common to all logs
 		//---------------------------------------
 		$userid = (USER === TRUE) ? USERID : 0;
-		$userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$userIP = $e107->getip();
+		$userstring = (USER === true ? USERNAME : 'LAN_ANONYMOUS');
+		$userIP = e107::getIPHandler()->getIP(FALSE);
 
 		$importance = $tp->toDB($importance, true, false, 'no_html');
 		$eventcode = $tp->toDB($eventcode, true, false, 'no_html');
@@ -331,7 +331,7 @@ class e_admin_log
 		else $userid = (USER === TRUE) ? USERID : 0;
 		if ($u_name) $userstring = $u_name;
 		else $userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$userIP = $e107->getip();
+		$userIP = e107::getIPHandler()->getIP(FALSE);
 		$eventcode = 'USER_'.$event_type;
 
 		$title = 'LAN_AUDIT_LOG_0'.$event_type; // This creates a string which will be displayed as a constant

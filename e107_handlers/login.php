@@ -514,8 +514,8 @@ class userlogin
 				$fails = $this->e107->sql->db_Count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 				if($fails > 10)
 				{
-					$this->e107->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
-					$this->e107->sql->db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getIPHandler()->add_ban(4,LAN_LOGIN_18,$this->userIP,1);
+					e107::getDb()->db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".$this->e107->tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				}
 			}
 		}

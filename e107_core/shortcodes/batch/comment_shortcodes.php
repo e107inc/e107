@@ -128,7 +128,7 @@ SC_END
 SC_BEGIN IPADDRESS
 global $IPADDRESS, $comrow, $e107;
 //require_once(e_HANDLER."encrypt_handler.php");
-return (ADMIN ? "<a href='".SITEURL."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".$e107->ipDecode($comrow['comment_ip'])."</a>" : "");
+return (ADMIN ? "<a href='".SITEURL."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."</a>" : "");
 SC_END
 
 SC_BEGIN LEVEL

@@ -81,7 +81,7 @@ if (varset($e107_popup) != 1)
 	$logLine = '';
 	if ($pref['log_page_accesses'])
 	{ // Collect the first batch of data to log
-		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".$e107->getIP()."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."'";
+		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."'";
 	}
 	
 	if (function_exists('getrusage'))

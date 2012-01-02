@@ -186,7 +186,7 @@ class poll
 					break;
 
 					case POLL_MODE_IP:
-						$userid = $e107->getip();
+						$userid = e107::getIPHandler()->getIP(FALSE);
 						$voted_ids = explode('^', substr($pollArray['poll_ip'], 0, -1));
 						if (in_array($userid, $voted_ids))
 						{

@@ -70,7 +70,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != '')
 				else
 				{
 					$datestamp = time();
-					$ip = $e107->getip();
+					$ip = e107::getIPHandler()->getIP(FALSE);
 					if(USER)
 					{
 						$nick = USERID.".".USERNAME;

@@ -36,7 +36,7 @@ if (!check_class($pref['subnews_class']))
 
 if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['submitnews_item'])
 {
-	$ip = $e107->getip();
+	$ip = e107::getIPHandler()->getIP(FALSE);
 	$fp = new floodprotect;
 	if ($fp->flood("submitnews", "submitnews_datestamp") == FALSE)
 	{
