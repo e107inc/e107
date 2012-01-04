@@ -11,7 +11,7 @@
  * $Id$
  */
 
-define('MAKE_INSTALL_LOG', true);  # Set this to 'true' if you want a log file to be created during the installation process
+define('MAKE_INSTALL_LOG', false);  # Set this to 'true' if you want a log file to be created during the installation process
 
 #
 # Default Options and Paths for Installer
@@ -173,7 +173,7 @@ class e_install
 	{
 		$this->stage = 1;
 		$this->get_lan_file();
-		$this->logLine("\n".LANINS_002.' '.LANINS_003.' [ '.LANINS_004.' ]: --- '.LANINS_109.' ---');
+//		$this->logLine("\n".LANINS_002.' '.LANINS_003.' [ '.LANINS_004.' ]: --- '.LANINS_109.' ---');
 		
 		# Prepare HTML
 		$this->set_message(LANINS_005);
@@ -223,12 +223,12 @@ class e_install
 		{
 			$this->previous_steps['language'] = $_POST['language'];
 			$this->get_lan_file();
-			$this->logLine("\t\t".LANINS_004a.': '.$_POST['language']."\n".LANINS_002.' '.LANINS_003.' [ '.LANINS_004.' ]: --- '.LANINS_110.' ---'."\n\n".LANINS_002.' '.LANINS_021.' [ '.LANINS_022.' ]: --- '.LANINS_109.' ---');
+//			$this->logLine("\t\t".LANINS_004a.': '.$_POST['language']."\n".LANINS_002.' '.LANINS_003.' [ '.LANINS_004.' ]: --- '.LANINS_110.' ---'."\n\n".LANINS_002.' '.LANINS_021.' [ '.LANINS_022.' ]: --- '.LANINS_109.' ---');
 			$this->set_message(nl2br(LANINS_023));
 		}
 		else
 		{
-			$this->logLine("\t\t".LANINS_011.":\n\t\t\t".implode(":\n\t\t\t", $this->_messages['error']));
+	//		$this->logLine("\t\t".LANINS_011.":\n\t\t\t".implode(":\n\t\t\t", $this->_messages['error']));
 		}
 		
 		# Prepare HTML
@@ -380,7 +380,7 @@ class e_install
 			return;
 		}
 		
-		$this->logLine("\t\t\t".print_a($this->previous_steps['mysql'])."\n".LANINS_002.' '.LANINS_021.' [ '.LANINS_022.' ]: --- '.LANINS_110.' ---'."\n\n".LANINS_002.' '.LANINS_036.' [ '.LANINS_037.LANINS_038.' ]: --- '.LANINS_109.' ---');
+	//	$this->logLine("\t\t\t".print_a($this->previous_steps['mysql'])."\n".LANINS_002.' '.LANINS_021.' [ '.LANINS_022.' ]: --- '.LANINS_110.' ---'."\n\n".LANINS_002.' '.LANINS_036.' [ '.LANINS_037.LANINS_038.' ]: --- '.LANINS_109.' ---');
 		
 		$this->set_message(LANINS_042.'<br /><br />
 						'.($this->previous_steps['mysql']['createdb'] ? LANINS_044 : LANINS_054).'<br /><br />
@@ -466,9 +466,9 @@ class e_install
 		$php_version      = phpversion();
 		$php_help         = version_compare($php_version, $this->required_php, '>=') ? '<div class="success">'.LANINS_017.'</div>' : '<div class="error">'.LANINS_019.'</div>';
 		
-		if (!$perms_pass)     $this->logLine("\n\t\t".LANINS_011.': '.$perms_errors);
-		if ($version_fail)    $this->logLine("\n\t\t".LANINS_011.': '.$mysql_help);
-		if (!$xml_installed)  $this->logLine("\n\t\t".LANINS_011.': '.LANINS_053);
+//		if (!$perms_pass)     $this->logLine("\n\t\t".LANINS_011.': '.$perms_errors);
+//		if ($version_fail)    $this->logLine("\n\t\t".LANINS_011.': '.$mysql_help);
+//		if (!$xml_installed)  $this->logLine("\n\t\t".LANINS_011.': '.LANINS_053);
 		
 		$html             =
 						'<form method="post" id="versions" action="'.$_SERVER['PHP_SELF'].('debug' == $_SERVER['QUERY_STRING'] ? '?debug' : '').'">
@@ -646,7 +646,7 @@ class e_install
 	{
 		$this->stage = 7;
 		$this->get_lan_file();
-		$this->logLine("\n".LANINS_002.' '.LANINS_056.' [ '.LANINS_055.' ]: --- '.LANINS_109.' ---'."\n\n".LANINS_002.' '.LANINS_058.' [ '.LANINS_071.' ]: --- '.LANINS_109.' ---');
+	//	$this->logLine("\n".LANINS_002.' '.LANINS_056.' [ '.LANINS_055.' ]: --- '.LANINS_109.' ---'."\n\n".LANINS_002.' '.LANINS_058.' [ '.LANINS_071.' ]: --- '.LANINS_109.' ---');
 		
 		$config_result = $this->_write_config();
 		
@@ -655,11 +655,11 @@ class e_install
 			$html = '';
 			$this->set_message($config_result, 'error'); 
 			$this->_error = true;
-			$this->logLine("\t".'Error writing e107_config.php config file: '.$config_result);
+	//		$this->logLine("\t".'Error writing e107_config.php config file: '.$config_result);
 		} 
 		else 
 		{
-			$this->logLine("\t".'The e107_config.php config file is written successfully');
+	//		$this->logLine("\t".'The e107_config.php config file is written successfully');
 			$errors = $this->_create_tables();
 			
 			if ($errors) 
@@ -667,11 +667,11 @@ class e_install
 				$this->set_message($errors, 'error');
 				$html = '';
 				$this->_error = true;
-				$this->logLine("\t".'Error writing database content: '.$errors);
+		//		$this->logLine("\t".'Error writing database content: '.$errors);
 			}
 			else 
 			{
-				$this->logLine("\t".'Database content successfully created');
+	//			$this->logLine("\t".'Database content successfully created');
 				$this->set_message(LANINS_069);
 				
 				$html = '<form method="post" id="confirmation" action="index.php">
@@ -694,7 +694,7 @@ class e_install
 		$this->template->SetTag('static_title',         $this->_error ? LANINS_071c : LANINS_071a);
 		$this->template->SetTag('stage_content',        $html);
 		
-		$this->logLine("\n".LANINS_002.' '.LANINS_058.' [ '.LANINS_071.' ]: --- '.LANINS_110.' ---');
+//		$this->logLine("\n".LANINS_002.' '.LANINS_058.' [ '.LANINS_071.' ]: --- '.LANINS_110.' ---');
 	}
 	
 	public function stage_invalid()
