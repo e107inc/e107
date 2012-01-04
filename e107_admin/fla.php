@@ -89,7 +89,7 @@ if(isset($_POST['delbanSubmit']))
 		{
 			$at = $sql->db_Fetch();
 			//if (!$e107->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
-			if (!e107::getIPHandler()add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
+			if (!e107::getIPHandler()->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
 			{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
 				$emessage->add(str_replace(FLALAN_18,'--IP--',$at['gen_ip']), E_MESSAGE_WARNING);
 			}
