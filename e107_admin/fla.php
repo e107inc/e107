@@ -14,24 +14,24 @@
  * $Author$
  *
 */
-require_once("../class2.php");
-if (!getperms("4"))
+require_once('../class2.php');
+if (!getperms('4'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'failed_login';
-require_once("auth.php");
+require_once('auth.php');
 
-require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form();
 
-require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER.'message_handler.php');
 $emessage = &eMessage::getInstance();
 
-$tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
+$tmp = (e_QUERY) ? explode('.', e_QUERY) : '';
 $from = intval(varset($tmp[0], 0));
 $amount = intval(varset($tmp[1], 50));
 
@@ -49,18 +49,20 @@ $amount = intval(varset($tmp[1], 50));
 
 function deleteBan($banID, $banIP = '')
 {
-	global $sql2;
+	$sql2 = e107::getDb('sql2');
+	$banID = intval($banID);
 	if ($banIP == '')
 	{
-		if($sql2->db_Select("generic", "gen_ip", "gen_id={$banID}"))
+		if($sql2->db_Select('generic', 'gen_ip', 'gen_id='.$banID))
 		{
 			$at = $sql2->db_Fetch();
 			$banIP = $at['gen_ip'];
 		}
 	}
-	$sql2->db_Delete("generic", "gen_id='{$banID}' ");			// Delete from generic table
+	$sql2->db_Delete('generic', 'gen_id='.$banID);				// Delete from generic table
 	if ($banIP == '') return FALSE;
-	$sql2->db_Delete("banlist", "banlist_ip='{$banIP}'");		// Delete from main banlist
+	$sql2->db_Delete('banlist', "banlist_ip='{$banIP}'");		// Delete from main banlist
+	// @todo Admin log messages
 	return TRUE;
 }
 
@@ -104,7 +106,7 @@ if(isset($_POST['delbanSubmit']))
 }
 
 
-if(e_QUERY == "dabl")
+if(e_QUERY == 'dabl')
 {
 	$sql->db_Select("generic", 'gen_ip,gen_id',"gen_type='auto_banned' ");
 	while ($row = $sql->db_Fetch())
@@ -120,7 +122,7 @@ if(e_QUERY == "dabl")
 
 
 // Now display any outstanding auto-banned IP addresses
-if($sql->db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
+if($sql->db_Select('generic', "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
 {
 	$abArray = $sql->db_getList();
 	$message = FLALAN_15;
@@ -135,8 +137,8 @@ if($sql->db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestam
 }
 
 $gen = new convert;
-$fla_total = $sql->db_Count("generic", "(*)", "WHERE gen_type='failed_login'");
-if(!$sql->db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
+$fla_total = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'");
+if(!$sql->db_Select('generic', '*', "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
 	$text = $emessage->render()."<div class='center'>".FLALAN_2."</div>";
 }
@@ -180,7 +182,7 @@ else
 		extract($fa);//FIXME kill extract()
 		
 		$gen_chardata = str_replace(":::", "<br />", $e107->tp->toHTML($gen_chardata));
-		$host = $e107->get_host_name(getenv($gen_ip));
+		$host = e107::getIPHandler()->get_host_name(getenv($gen_ip));
 		$text .= "
 						<tr>
 							<td>".$gen->convert_date($gen_datestamp, "forum")."</td>
