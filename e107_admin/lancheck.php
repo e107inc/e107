@@ -25,15 +25,31 @@ if (!getperms("0")) {
 $e_sub_cat = 'language';
 require_once("auth.php");
 
-$qry = explode("|",e_QUERY);
-$f = varset($qry[0]);
-$lan = varset($qry[1]);
-$mode = varset($qry[2]);
+$acceptedLans = explode(",",e_LANLIST);
 
-if($f == "tools" || $f == "db" || $f == "modify")
+$qry = explode("|",e_QUERY);
+
+$f = $tp->toDB(varset($qry[0]));
+$mode = $tp->toDB(varset($qry[2]));
+
+
+
+if($f == "tools" || $f == "db" || $f == "modify" || $f == '')
 {
 	$f = "";
 	
+}
+else
+{
+	if(in_array($qry[1],$acceptedLans)) // accepted Language Check. 
+	{
+		$lan = varset($qry[1]);
+	}
+	else
+	{
+		require_once(e_ADMIN."footer.php");
+		exit;	
+	}	
 }
 
 // Write the language file.
@@ -124,8 +140,11 @@ if(isset($_POST['submit']))
 	$message .="<br />";
 	$message .="</div>";
 	$input .= "\n\n?>";
-
+//<?
 	// Write to file.
+	
+	$writeit = str_replace("//","/",$writeit); // Quick Fix. 
+	
 	$fp = @fopen($writeit,"w");
 	if(!@fwrite($fp, $input))
 	{
@@ -140,8 +159,8 @@ if(isset($_POST['submit']))
 
 	$message .= "<form method='post' action='".e_SELF."' id='select_lang'>
 	<div style='text-align:center'><br />";
-	$message .= "<br /><br /><input class='button' type='submit' name='language_sel' value=\"".LAN_BACK."\" />
-	<input type='hidden' name='language' value='$lan' /></div></form>";
+	$message .= "<br /><br /><input class='button' type='submit' name='language_sel[$lan]' value=\"".LAN_BACK."\" />
+	</div></form>";
 
 
 	$ns -> tablerender($caption, $message);
@@ -636,6 +655,8 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 
 	echo "<br />dir2 = $dir2";
 	echo "<br />file2 = $f2";*/
+	
+
 
 	if($dir2.$f2 == e_LANGUAGEDIR.$lan."/English.php") // it's a language config file.
 	{
