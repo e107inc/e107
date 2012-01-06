@@ -935,11 +935,11 @@ class e107
 	 * <code><?php
 	 * // core news shortcodes
 	 * e107::getScObject('news');
-	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/core/shortcodes/batch/my_shortcodes.php
+	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/shortcodes/batch/my_shortcodes.php
 	 * e107::getScObject('my', 'myplugin');
-	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/news_shortcodes.php
+	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/news_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', true);
-	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/core/shortcodes/batch/mynews_shortcodes.php
+	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/mynews_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', 'mynews');
 	 * </code>
 	 *
@@ -2818,7 +2818,7 @@ class e107
 				// read the todo for e_shortcode.php related problems
 				if('shortcodes' == $end)
 				{
-					$filename = e_PLUGIN.$tmp[0].'/core/shortcodes/batch/'; // plugname/core/shortcodes/batch/
+					$filename = e_PLUGIN.$tmp[0].'/shortcodes/batch/'; // plugname/shortcodes/batch/
 					unset($tmp[0]);
 					$filename .= implode('_', $tmp).'_shortcodes.php'; // my_shortcodes.php
 					break;
