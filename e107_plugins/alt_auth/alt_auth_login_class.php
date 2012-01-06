@@ -71,7 +71,7 @@ class alt_login
 				$username = mysql_real_escape_string($username);
 			}
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-			$username = substr($username, 0, e107::getPref('loginname_maxlength');
+			$username = substr($username, 0, e107::getPref('loginname_maxlength'));
 
 			$aa_sql = e107::getDb('aa');
 			$userMethods = new UserHandler;
