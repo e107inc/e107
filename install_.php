@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Copyright (C) 2008-2012 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -24,7 +24,7 @@
 // minimal software version
 define('MIN_PHP_VERSION',   '5.0');
 define('MIN_MYSQL_VERSION', '4.1.2');
-define('MAKE_INSTALL_LOG', TRUE);
+define('MAKE_INSTALL_LOG', false);
 
 // ensure CHARSET is UTF-8 if used
 //define('CHARSET', 'utf-8');
@@ -160,6 +160,16 @@ $e107_paths = array();
 $e107 = e107::getInstance();
 $e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
+
+### NEW Register Autoload - do it asap
+if(!function_exists('spl_autoload_register'))
+{
+	// PHP >= 5.1.2 required
+	die('Fatal exception - spl_autoload_* required.');
+}
+
+// register core autoload
+e107::autoload_register(array('e107', 'autoload'));
 
 // NEW - session handler
 require_once(e_HANDLER.'session_handler.php');
@@ -829,8 +839,11 @@ class e_install
 		}
 
 		// required for various core routines
-		define('USERNAME', $this->previous_steps['admin']['user']);
-		define('USEREMAIL', $this->previous_steps['admin']['email']);
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
 
 
 		// ------------- Step 6 Form --------------------------------
@@ -915,8 +928,11 @@ class e_install
 		$this->logLine('Stage 7 started');
 
 		// required for various core routines
-		define('USERNAME', $this->previous_steps['admin']['user']);
-		define('USEREMAIL', $this->previous_steps['admin']['email']);
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
 
 		if(varset($_POST['sitename']))
 		{
@@ -987,8 +1003,11 @@ class e_install
 		global $e_forms;
 
 		// required for various core routines
-		define('USERNAME', $this->previous_steps['admin']['user']);
-		define('USEREMAIL', $this->previous_steps['admin']['email']);
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
 
 		$this->stage = 8;
 		$this->logLine('Stage 8 started');
@@ -1090,7 +1109,7 @@ class e_install
 		);
 		foreach ($config_aliases as $alias) 
 		{
-			e107::getConfig($alias, false);
+			e107::getConfig($alias, false)->clearPrefCache();
 		}
 		// PRE-CONFIG end		
 
@@ -1135,15 +1154,16 @@ class e_install
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 
-		//Create default plugin-table entries.
-//		e107::getConfig('core')->clearPrefCache();
-		e107::getSingleton('e107plugin')->update_plugins_table();
-		$this->logLine('Plugins table updated');
-
 		//should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
-		e107::getXml()->e107Import($XMLImportfile, 'add', true); // Add missing core pref values
+		e107::getXml()->e107Import($XMLImportfile, 'add', true, false); // Add missing core pref values
 		$this->logLine('Core prefs written');
+		
+
+		//Create default plugin-table entries.
+//		e107::getConfig('core')->clearPrefCache();
+		e107::getPlugin()->update_plugins_table();
+		$this->logLine('Plugins table updated');
 
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']))
@@ -1200,7 +1220,23 @@ class e_install
 		// Cookie name fix, ended up with 406 error when non-latin words used
 		$cookiename 										= preg_replace('/[^a-z0-9]/i', '', trim($this->previous_steps['prefs']['sitename']));
 		$this->previous_steps['prefs']['cookie_name']		= ($cookiename ? substr($cookiename, 0, 4).'_' : 'e_').'cookie';
+		
+		### URL related prefs
+		// set all prefs so that they are available, required for adminReadModules() - it checks which plugins are installed
+		e107::getConfig('core')->setPref($this->previous_steps['prefs']); 
+		
+		$url_modules = eRouter::adminReadModules();
+		$url_locations = eRouter::adminBuildLocations($url_modules);
+		$url_config = eRouter::adminBuildConfig(array(), $url_modules);
+		
+		$this->previous_steps['prefs']['url_aliases']		= array();
+		$this->previous_steps['prefs']['url_config']		= $url_config;
+		$this->previous_steps['prefs']['url_modules']		= $url_modules;
+		$this->previous_steps['prefs']['url_locations']		= $url_locations;
+		eRouter::clearCache();
+		$this->logLine('Core URL config set to default state');
 
+		// Set prefs, save
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install.
 		$this->logLine('Core prefs set to install choices');
@@ -1375,7 +1411,8 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
-		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/|{$SYSTEM_DIRECTORY}cache/|{$SYSTEM_DIRECTORY}cache/content/|{$SYSTEM_DIRECTORY}cache/db/|{$SYSTEM_DIRECTORY}cache/images/|{$SYSTEM_DIRECTORY}cache/url/';
+		// old entry, not used at this time, could come back - |{$SYSTEM_DIRECTORY}cache/url/
+		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/|{$SYSTEM_DIRECTORY}cache/|{$SYSTEM_DIRECTORY}cache/content/|{$SYSTEM_DIRECTORY}cache/db/|{$SYSTEM_DIRECTORY}cache/images/|{$SYSTEM_DIRECTORY}url/';
 		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
 		foreach ($this->e107->e107_dirs as $dir_name => $value)
