@@ -252,11 +252,11 @@ class e_parse_shortcode
 	 * // simple use
 	 * e107::getScParser()->getScObject('news_shortcodes');
 	 *
-	 * // plugin override - e107_plugins/myplug/core/shortcodes/batch/news_shortcodes.php -> class plugin_myplug_news_shortcodes
+	 * // plugin override - e107_plugins/myplug/shortcodes/batch/news_shortcodes.php -> class plugin_myplug_news_shortcodes
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', true);
 	 *
 	 * // more complex plugin override
-	 * // e107_plugins/myplug/core/shortcodes/batch/news2_shortcodes.php -> class plugin_myplug_news2_shortcodes
+	 * // e107_plugins/myplug/shortcodes/batch/news2_shortcodes.php -> class plugin_myplug_news2_shortcodes
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', 'news2_shortcodes');
 	 * </code>
 	 * @param string $className
@@ -289,7 +289,7 @@ class e_parse_shortcode
 			return $this->scClasses[$className];
 		}
 
-		$path = ($pluginName ? e_PLUGIN.$pluginName.'/core/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
+		$path = ($pluginName ? e_PLUGIN.$pluginName.'/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
 		if (is_readable($path))
 		{
 			require_once($path);
