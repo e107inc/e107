@@ -199,7 +199,8 @@ class e_pref extends e_front_model
 		{
 			return $this;
 		}
-		$this->data_has_changed = (vartrue($this->_data[$pref_name]) != $value);
+		
+		if(!isset($this->_data[$pref_name]) || $this->_data[$pref_name] != $value) $this->data_has_changed = true;
 		$this->_data[$pref_name] = $value;
 
 		//BC
@@ -227,7 +228,7 @@ class e_pref extends e_front_model
 		}
 		if(isset($this->_data[$pref_name])) 
 		{
-			$this->data_has_changed = ($this->_data[$pref_name] != $value);
+			if($this->_data[$pref_name] != $value) $this->data_has_changed = true;
 			$this->_data[$pref_name] = $value;
 		}
 
