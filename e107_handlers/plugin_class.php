@@ -277,9 +277,10 @@ class e107plugin
 				//			echo "Updated: ".$plug_path."<br />";
 				}
 		}
-		if ($sp && vartrue($p_installed))
+		if ($sp/* && vartrue($p_installed)*/)
 		{
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
+			$this->rebuildUrlConfig();
 			e107::getConfig('core')->save();
 		}
 	}
@@ -1074,6 +1075,30 @@ class e107plugin
 		$notify_prefs->save(false);
 	}
 
+	/**
+	 * Rebuild URL configuration values
+	 * Note - new core system pref values will be set, but not saved
+	 * e107::getConfig()->save() is required outside after execution of this method 
+	 * @return void
+	 */
+	public function rebuildUrlConfig()
+	{
+		
+		$modules = eRouter::adminReadModules(); // get all available locations, non installed plugins will be ignored
+		$config = eRouter::adminBuildConfig(e107::getPref('url_config'), $modules); // merge with current config
+		$locations = eRouter::adminBuildLocations($modules); // rebuild locations pref
+		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
+			
+		// set new values, changes should be saved outside this methods
+		e107::getConfig()
+			->set('url_aliases', $aliases)
+			->set('url_config', $config)
+			->set('url_modules', $modules)
+			->set('url_locations', $locations);
+				
+		eRouter::clearCache();
+	}
+
 	function displayArray(&$array, $msg = '')
 	{
 		$txt = ($msg ? $msg.'<br />' : '');
@@ -1283,7 +1308,7 @@ class e107plugin
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
-			e107::getConfig('core')->save();
+			//e107::getConfig('core')->save(); - save triggered below
 		}
 
 		if ($function == 'uninstall')
@@ -1293,6 +1318,8 @@ class e107plugin
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
 		}
+		
+		$this->rebuildUrlConfig();
 
 		e107::getConfig('core')->save();
 
@@ -1870,7 +1897,11 @@ class e107plugin
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 		$p_installed[$plug['plugin_path']] = $plug['plugin_version'];
 
-		e107::getConfig('core')->setPref('plug_installed', $p_installed)->save();
+		e107::getConfig('core')->setPref('plug_installed', $p_installed);
+		
+		$this->rebuildUrlConfig();
+		
+		e107::getConfig('core')->save();
 
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 		if ($eplug_conffile)

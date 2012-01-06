@@ -29,22 +29,22 @@
 		<core name="contact_emailcopy">0</core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
-  0 => "e-administrator",
-  1 => "e-cpage",
-  2 => "e-filemanager",
-  3 => "e-frontpage",
-  4 => "e-image",
-  5 => "e-mailout",
-  6 => "e-menus",
-  7 => "e-meta",
-  8 => "e-newspost",
-  9 => "e-plugin",
-  10 => "e-prefs",
-  11 => "e-links",
-  12 => "e-theme",
-  13 => "e-userclass2",
-  14 => "e-users",
-  15 => "e-wmessage",
+  0 => 'e-administrator',
+  1 => 'e-cpage',
+  2 => 'e-filemanager',
+  3 => 'e-frontpage',
+  4 => 'e-image',
+  5 => 'e-mailout',
+  6 => 'e-menus',
+  7 => 'e-meta',
+  8 => 'e-newspost',
+  9 => 'e-plugin',
+  10 => 'e-prefs',
+  11 => 'e-links',
+  12 => 'e-theme',
+  13 => 'e-userclass2',
+  14 => 'e-users',
+  15 => 'e-wmessage',
 )]]></core>
 		<core name="developer">0</core>
 		<core name="disable_emailcheck">0</core>
@@ -58,10 +58,10 @@
 		<core name="download_email">0</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
-  "prototype/prototype.js" => "all",
-  "scriptaculous/scriptaculous.js" => "all",
-  "scriptaculous/effects.js" => "all",
-  "e107.js.php" => "all",
+  'prototype/prototype.js' => 'all',
+  'scriptaculous/scriptaculous.js' => 'all',
+  'scriptaculous/effects.js' => 'all',
+  'e107.js.php' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
@@ -77,10 +77,10 @@
 		<core name="forumdate">%a %b %d %Y, %I:%M%p</core>
 		<core name="fpwcode">0</core>
 		<core name="frontpage"><![CDATA[array (
-  0 => "news.php",
+  0 => 'index.php',
 )]]></core>
 		<core name="frontpage_force"><![CDATA[array (
-  0 => "",
+  0 => '',
 )]]></core>
 		<core name="im_height">100</core>
 		<core name="im_path">/usr/X11R6/bin/</core>
@@ -108,14 +108,14 @@
 		<core name="memberlist_access">253</core>
 		<core name="membersonly_enabled">0</core>
 		<core name="membersonly_exceptions"><![CDATA[array (
-  0 => "",
+  0 => '',
 )]]></core>
 		<core name="menu_wordwrap"></core>
 		<core name="menuconfig_list"><![CDATA[array (
-  "login_menu" => 
+  'login_menu' => 
   array (
-    "name" => "Login",
-    "link" => "login_menu/config.php",
+    'name' => 'Login',
+    'link' => 'login_menu/config.php',
   ),
 )]]></core>
 		<core name="meta_tag"></core>
@@ -180,24 +180,24 @@ City, State, Country
 		<core name="sitetheme_custompages"></core>
 		<core name="sitetheme_deflayout">3_column</core>
 		<core name="sitetheme_layouts"><![CDATA[array (
-  "3_column" => 
+  '3_column' => 
   array (
-    "@attributes" => 
+    '@attributes' => 
     array (
-      "title" => "3 Columns",
-      "preview" => "preview.jpg",
-      "default" => "true",
+      'title' => '3 Columns',
+      'preview' => 'preview.jpg',
+      'default' => 'true',
     ),
-    0 => "",
+    0 => '',
   ),
-  "2_column" => 
+  '2_column' => 
   array (
-    "@attributes" => 
+    '@attributes' => 
     array (
-      "title" => "2 Columns",
-      "preview" => "preview.jpg",
+      'title' => '2 Columns',
+      'preview' => 'preview.jpg',
     ),
-    0 => "",
+    0 => '',
   ),
 )]]></core>
 		<core name="sitetheme_pref"></core>
@@ -216,6 +216,10 @@ City, State, Country
 		<core name="upload_class">255</core>
 		<core name="upload_enabled">0</core>
 		<core name="upload_maxfilesize"></core>
+		<core name="url_aliases"><![CDATA[array()]]></core>
+		<core name="url_config"><![CDATA[array()]]></core>
+		<core name="url_locations"><![CDATA[array()]]></core>
+		<core name="url_modules"><![CDATA[array()]]></core>
 		<core name="useGeshi">0</core>
 		<core name="use_coppa">1</core>
 		<core name="user_reg">1</core>
@@ -271,64 +275,64 @@ City, State, Country
 		<menu name="newforumposts_title">0</menu>
 		<menu name="update_menu">Update menu Settings</menu>
 		<search name="comments_handlers"><![CDATA[array (
-  "news" => 
+  'news' => 
   array (
-    "id" => 0,
-    "dir" => "core",
-    "class" => "0",
+    'id' => 0,
+    'dir' => 'core',
+    'class' => '0',
   ),
-  "download" => 
+  'download' => 
   array (
-    "id" => 2,
-    "dir" => "core",
-    "class" => "0",
+    'id' => 2,
+    'dir' => 'core',
+    'class' => '0',
   ),
 )]]></search>
 		<search name="core_handlers"><![CDATA[array (
-  "news" => 
+  'news' => 
   array (
-    "class" => "0",
-    "pre_title" => "0",
-    "pre_title_alt" => "",
-    "chars" => "150",
-    "results" => "10",
-    "order" => "1",
+    'class' => '0',
+    'pre_title' => '0',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '1',
   ),
-  "comments" => 
+  'comments' => 
   array (
-    "class" => "0",
-    "pre_title" => "1",
-    "pre_title_alt" => "",
-    "chars" => "150",
-    "results" => "10",
-    "order" => "2",
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '2',
   ),
-  "users" => 
+  'users' => 
   array (
-    "class" => "0",
-    "pre_title" => "1",
-    "pre_title_alt" => "",
-    "chars" => "150",
-    "results" => "10",
-    "order" => "3",
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '3',
   ),
-  "downloads" => 
+  'downloads' => 
   array (
-    "class" => "0",
-    "pre_title" => "1",
-    "pre_title_alt" => "",
-    "chars" => "150",
-    "results" => "10",
-    "order" => "4",
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '4',
   ),
-  "pages" => 
+  'pages' => 
   array (
-    "class" => "0",
-    "chars" => "150",
-    "results" => "10",
-    "pre_title" => "0",
-    "pre_title_alt" => "",
-    "order" => "5",
+    'class' => '0',
+    'chars' => '150',
+    'results' => '10',
+    'pre_title' => '0',
+    'pre_title_alt' => '',
+    'order' => '5',
   ),
 )]]></search>
 		<search name="google">0</search>
@@ -341,50 +345,50 @@ City, State, Country
 		<search name="time_secs">60</search>
 		<search name="user_select">1</search>
 		<notify name="event"><![CDATA[array (
-  "usersup" => 
+  'usersup' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "userveri" => 
+  'userveri' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "login" => 
+  'login' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "logout" => 
+  'logout' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "flood" => 
+  'flood' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "subnews" => 
+  'subnews' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "newspost" => 
+  'newspost' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "newsupd" => 
+  'newsupd' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
-  "newsdel" => 
+  'newsdel' => 
   array (
-    "class" => "254",
-    "email" => "",
+    'class' => '254',
+    'email' => '',
   ),
 )]]></notify>
 	</prefs>

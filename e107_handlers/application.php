@@ -437,7 +437,6 @@ class eDispatcher
 		{
 			case 'plugin':
 				if(!$plugin) return null;
-				$location = $tmp[1];
 				return $sc ? '{e_PLUGIN}'.$plugin.'/controllers/' : e_PLUGIN.$plugin.'/controllers/';
 			break;
 			
@@ -1036,6 +1035,7 @@ class eRouter
 					{
 						$ret['plugin'][] = $plugin;
 					}
+					continue;
 				}
 				
 				// Register only those who don't need install and may be dispatchable
@@ -1066,6 +1066,19 @@ class eRouter
 				}
 			}
 			sort($ret['override']);
+			
+			// remove not installed plugin locations, possible only for 'all' type
+			if($type == 'all')
+			{
+				foreach ($ret['override'] as $i => $l) 
+				{
+					// it's a plugin override, but not listed in current plugin array - remove
+					if(in_array($l, $plugins) && !in_array($l, $ret['plugin']))
+					{
+						unset($ret['override'][$i]);
+					}
+				}
+			}
 		}
 		
 		return $ret;
