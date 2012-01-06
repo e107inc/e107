@@ -807,13 +807,20 @@ class xmlClass
 			return array();
 		}
 
-		$mes = eMessage::getInstance();
+		//$mes = eMessage::getInstance();
 
 		$pref = array();
 		foreach($XMLData['prefs'][$prefType] as $val)
 		{
 			$name = $val['@attributes']['name'];
-			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			// if(strpos($val['@value'], 'array (') === 0)
+			// {
+				// echo '<pre>'.$val['@value'];
+				// echo "\n";
+				// var_dump(e107::getArrayStorage()->ReadArray($val['@value']));
+				// echo $val['@value'].'</pre>';
+			// }
+			$value = strpos($val['@value'], 'array (') === 0 ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
 			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);
@@ -839,30 +846,30 @@ class xmlClass
 
 		if($debug)
 		{
-			// $message = print_r($xmlArray);
-		//	echo "<pre>".print_r($xmlArray,TRUE)."</pre>";
+			//$message = print_r($xmlArray);
+			echo "<pre>".var_export($xmlArray,TRUE)."</pre>";
 			return;
 		}
 
 		$ret = array();
-		//FIXME - doesn't work from install_.php.
+		
 		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
+				
 				$pArray = $this->e107ImportPrefs($xmlArray,$type);
-
-				if($mode == 'replace')
+				
+				if($mode == 'replace') // merge with existing, add new
 				{
 					e107::getConfig($type)->setPref($pArray);
 				}
-				else // 'add'
+				else // 'add' only new prefs
 				{
 					foreach ($pArray as $pname => $pval)
 					{
 						e107::getConfig($type)->add($pname, $pval); // don't parse x/y/z
 					}
-					// e107::getConfig($type)->addPref($pArray);
 				}
 
 				if($debug == FALSE)

@@ -52,6 +52,7 @@ $pman->pluginObserver();
 require_once("footer.php");
 exit;
 
+// FIXME switch to admin UI
 class pluginManager{
 
 	var $plugArray;
@@ -193,11 +194,15 @@ class pluginManager{
 
 
 	}
-
+	// FIXME - move it to plugin handler, similar to install_plugin() routine
 	function pluginUninstall()
 	{
-         global $plugin,$admin_log,$pref,$tp,$sql;
-
+			$pref = e107::getPref();
+			$admin_log = e107::getAdminLog();
+			$plugin = e107::getPlugin();
+			$tp = e107::getParser();
+			$sql = e107::getDb();
+			
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
 				$this->pluginConfirmUninstall($this->id);
@@ -285,23 +290,18 @@ class pluginManager{
 					$plugin->manage_search('remove', $eplug_folder);
 
 					$plugin->manage_notify('remove', $eplug_folder);
+					
+					// it's done inside install_plugin_xml(), required only here
+					if (isset($pref['plug_installed'][$plug['plugin_path']]))
+					{
+						unset($pref['plug_installed'][$plug['plugin_path']]);
+					}
+					e107::getConfig('core')->setPref($pref);
+					$plugin->rebuildUrlConfig();
+					e107::getConfig('core')->save();
 				}
 
 				$admin_log->log_event('PLUGMAN_03', $plug['plugin_path'], E_LOG_INFORMATIVE, '');
-
-				if (isset($pref['plug_installed'][$plug['plugin_path']]))
-				{
-
-					unset($pref['plug_installed'][$plug['plugin_path']]);
-					if(save_prefs())
-					{
-                    	// echo "WORKED";
-					}
-					else
-					{
-                    	// echo "FAILED";
-					}
-				}
 			}
 
 			if($_POST['delete_files'])
@@ -449,136 +449,93 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
-   function pluginUpgrade()
-   {
-       global $plugin,$pref,$admin_log;
+	function pluginUpgrade()
+	{
+		$pref = e107::getPref();
+		$admin_log = e107::getAdminLog();
+		$plugin = e107::getPlugin();
 
-	   $sql = e107::getDb();
+	  	$sql = e107::getDb();
 
-	   		$emessage = eMessage::getInstance();
+   		$emessage = eMessage::getInstance();
 
-			$plug = $plugin->getinfo($this->id);
+		$plug = $plugin->getinfo($this->id);
 
-			$_path = e_PLUGIN.$plug['plugin_path'].'/';
-			if(file_exists($_path.'plugin.xml'))
+		$_path = e_PLUGIN.$plug['plugin_path'].'/';
+		if(file_exists($_path.'plugin.xml'))
+		{
+			$plugin->install_plugin_xml($this->id, 'upgrade');
+		}
+		else
+		{
+			include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+
+			$func = $eplug_folder.'_upgrade';
+			if (function_exists($func))
 			{
-				$plugin->install_plugin_xml($this->id, 'upgrade');
-			}
-			else
-			{
-				include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-
-				$func = $eplug_folder.'_upgrade';
-				if (function_exists($func))
-				{
-					$text .= call_user_func($func);
-				}
-
-				if (is_array($upgrade_alter_tables))
-				{
-					$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
-					if (true !== $result)
-					{
-						//$text .= EPL_ADLAN_9.'<br />';
-						$emessage->addWarning(EPL_ADLAN_9)
-							->addDebug($result);
-					}
-					else
-					{
-						$text .= EPL_ADLAN_7."<br />";
-					}
-				}
-
-		/* Not used in 0.8
-				if ($eplug_module)
-				{
-					$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
-				}
-				else
-				{
-					$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
-				}
-
-				if ($eplug_status)
-				{
-					$plugin->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
-				}
-				else
-				{
-					$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
-				}
-
-				if ($eplug_latest)
-				{
-					$plugin->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
-				}
-				else
-				{
-					$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
-				}
-
-				if (is_array($upgrade_add_eplug_sc))
-				{
-					$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
-				}
-
-				if (is_array($upgrade_remove_eplug_sc))
-				{
-					$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
-				}
-
-				if (is_array($upgrade_add_eplug_bb))
-				{
-					$plugin->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
-				}
-
-				if (is_array($upgrade_remove_eplug_bb))
-				{
-					$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
-				}
-		*/
-				if (is_array($upgrade_add_prefs))
-				{
-					$plugin->manage_prefs('add', $upgrade_add_prefs);
-					$text .= EPL_ADLAN_8.'<br />';
-				}
-
-				if (is_array($upgrade_remove_prefs))
-				{
-					$plugin->manage_prefs('remove', $upgrade_remove_prefs);
-				}
-
-				if (is_array($upgrade_add_array_pref))
-				{
-					foreach($upgrade_add_array_pref as $key => $val)
-					{
-						$plugin->manage_plugin_prefs('add', $key, $eplug_folder, $val);
-					}
-				}
-
-				if (is_array($upgrade_remove_array_pref))
-				{
-					foreach($upgrade_remove_array_pref as $key => $val)
-					{
-						$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
-					}
-				}
-
-				$plugin->manage_search('upgrade', $eplug_folder);
-				$plugin->manage_notify('upgrade', $eplug_folder);
-
-				$eplug_addons = $plugin -> getAddons($eplug_folder);
-
-				$admin_log->log_event('PLUGMAN_02', $eplug_folder, E_LOG_INFORMATIVE, '');
-				$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
-				$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
-				$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
-				save_prefs();
+				$text .= call_user_func($func);
 			}
 
+			if (is_array($upgrade_alter_tables))
+			{
+				$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
+				if (true !== $result)
+				{
+					//$text .= EPL_ADLAN_9.'<br />';
+					$emessage->addWarning(EPL_ADLAN_9)
+						->addDebug($result);
+				}
+				else
+				{
+					$text .= EPL_ADLAN_7."<br />";
+				}
+			}
 
-			$emessage->add($text, E_MESSAGE_SUCCESS);
-			$plugin->save_addon_prefs();
+			if (is_array($upgrade_add_prefs))
+			{
+				$plugin->manage_prefs('add', $upgrade_add_prefs);
+				$text .= EPL_ADLAN_8.'<br />';
+			}
+
+			if (is_array($upgrade_remove_prefs))
+			{
+				$plugin->manage_prefs('remove', $upgrade_remove_prefs);
+			}
+
+			if (is_array($upgrade_add_array_pref))
+			{
+				foreach($upgrade_add_array_pref as $key => $val)
+				{
+					$plugin->manage_plugin_prefs('add', $key, $eplug_folder, $val);
+				}
+			}
+
+			if (is_array($upgrade_remove_array_pref))
+			{
+				foreach($upgrade_remove_array_pref as $key => $val)
+				{
+					$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
+				}
+			}
+
+			$plugin->manage_search('upgrade', $eplug_folder);
+			$plugin->manage_notify('upgrade', $eplug_folder);
+
+			$eplug_addons = $plugin -> getAddons($eplug_folder);
+
+			$admin_log->log_event('PLUGMAN_02', $eplug_folder, E_LOG_INFORMATIVE, '');
+			$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
+			$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
+			$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
+			
+			e107::getConfig('core')->setPref($pref);
+			$plugin->rebuildUrlConfig();
+			e107::getConfig('core')->save();
+		}
+
+
+		$emessage->add($text, E_MESSAGE_SUCCESS);
+		$plugin->save_addon_prefs();
 
    }
 

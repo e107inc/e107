@@ -195,11 +195,11 @@ class e_pref extends e_front_model
 	public function set($pref_name, $value)
 	{
 		global $pref;
-		if(empty($pref_name))
+		if(empty($pref_name) || !is_string($pref_name))
 		{
 			return $this;
 		}
-		parent::set((string) $pref_name, $value, false);
+		$this->_data[$pref_name] = $value;
 
 		//BC
 		if($this->alias === 'core')
@@ -220,11 +220,11 @@ class e_pref extends e_front_model
 	public function update($pref_name, $value)
 	{
 		global $pref;
-		if(empty($pref_name))
+		if(empty($pref_name) || !is_string($pref_name))
 		{
 			return $this;
 		}
-		parent::set((string) $pref_name, $value, true);
+		if(isset($this->_data[$pref_name])) $this->_data[$pref_name] = $value;
 
 		//BC
 		if($this->alias === 'core')
@@ -249,8 +249,13 @@ class e_pref extends e_front_model
 		{
 			return $this;
 		}
-
-		$this->addData($pref_name, $value);
+		if(!isset($this->_data[$pref_name])) $this->_data[$pref_name] = $value;
+		
+		//BC
+		if($this->alias === 'core')
+		{
+			$pref = $this->getData();
+		}
 		return $this;
 	}
 
@@ -633,7 +638,7 @@ class e_pref extends e_front_model
 	 * @param boolean $runtime clear runtime cache as well ($this->pref_cache)
 	 * @return e_pref
 	 */
-	protected function clearPrefCache($cache_name = '', $runtime = true)
+	public function clearPrefCache($cache_name = '', $runtime = true)
 	{
 		if($runtime)
 		{
