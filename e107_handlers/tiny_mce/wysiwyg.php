@@ -35,6 +35,7 @@ class wysiwyg
 		$mce_plugins[5]	= (ADMIN) ? "ibrowser" : "";				// Third party plugins - 'image' may not be a valid plugin name
 		//$mce_plugins[6]	= "compat2x";					// May well not be needed - mostly for if we have our own code
 		$mce_plugins[7]	= "paste";
+		$mce_plugins[8]	= "directionality";	
 
 		if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip") && (ini_get("zlib.output_compression") == false) && file_exists(e_HANDLER."tiny_mce/tiny_mce_gzip.php"))
 		{
@@ -75,6 +76,7 @@ class wysiwyg
 		$text .= ",charmap,iespell,media";
 		$text .= (ADMIN) ? ",ibrowser" : ",image";
 		$text .= (ADMIN) ? ",code" : "";
+		$text .= ",|,ltr,rtl,|";
 		$text .= "',"; // end of buttons 2
 		
 		$text .= $this->tinyMce_config();
