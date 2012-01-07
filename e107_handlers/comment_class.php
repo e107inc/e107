@@ -599,7 +599,7 @@ class comment {
 			}
 		}
 
-		if (($lock != '1') && ($this->getCommentPermissions() === 'rw'))
+		if ($lock != '1')
 		{
 			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
 		}
