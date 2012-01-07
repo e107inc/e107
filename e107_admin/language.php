@@ -15,7 +15,9 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
 require_once("../class2.php");
+
 if (!getperms('0'))
 {
     header("location:".e_BASE."index.php");
@@ -32,6 +34,10 @@ if (e_QUERY)
     $id = varset($tmp[2]);
     unset($tmp);
 }
+else
+{
+	unset($_SESSION['language-list']); // Clear Language-List Cache on first page load. 
+}
 
 require_once("auth.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
@@ -40,7 +46,8 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."language_class.php");
 
-$ln = new language;
+// $ln = new language;
+$ln = $lng;
 $fl = new e_file;
 $rs = new form;
 
@@ -48,7 +55,6 @@ $tabs = table_list(); // array("news","content","links");
 
 $lanlist = getLanlist();
 $message = "";
-
 
 
 
@@ -62,6 +68,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 
     save_prefs();
     $ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
+	
 
 }
 
@@ -79,6 +86,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
         }
     }
     global $cachevar;
+	unset($_SESSION['language-list']);
     unset($cachevar['table_list']);
 
 }
