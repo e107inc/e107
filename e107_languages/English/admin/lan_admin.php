@@ -282,4 +282,6 @@ define("LAN_SECURITYL_0", "Looking for troubles (none)");
 define("LAN_SECURITYL_5", "Balanced");
 define("LAN_SECURITYL_8", "High");
 define("LAN_SECURITYL_10", "Insane");
+
+define("LAN_PLEASEWAIT","Please Wait");
 ?>

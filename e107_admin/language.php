@@ -50,6 +50,7 @@ require_once(e_HANDLER."language_class.php");
 $ln = $lng;
 $fl = new e_file;
 $rs = new form;
+$lck = new lancheck;
 
 $tabs = table_list(); // array("news","content","links");
 
@@ -60,7 +61,8 @@ $message = "";
 
 
 
-if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
+if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
+{
 
     $pref['multilanguage']  = $_POST['multilanguage'];
     $pref['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
@@ -69,7 +71,6 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
     save_prefs();
     $ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
 	
-
 }
 
 
@@ -138,22 +139,30 @@ if (varset($_POST['ziplang']))
 	{
 		$_COOKIE['e107_certified'] = $certVal; 	
 	}
-		
-		
+			
 	$_POST['language'] = key($_POST['ziplang']);
 	
-		$status = zip_up_lang($_POST['language']);
-		if($status['error']==FALSE)
-		{	
-			$text = $status['message']."<br />";
-			$text .= share($status['file']); 
-			$ns->tablerender(LAN_CREATED, $text );
-			
-		}
-		else
-		{
-			$ns->tablerender(LAN_CREATED_FAILED, $status['message']);
-		}
+	// If no session data, scan before zipping. 	
+	if(!isset($_SESSION['lancheck_'.$_POST['language']]['file']))
+	{
+		$_POST['language_sel'] = $_POST['ziplang'];	
+		$lck->check_all('norender');
+		unset($_POST['language_sel']);
+	}
+	
+	$status = zip_up_lang($_POST['language']);
+	
+	if($status['error']==FALSE)
+	{	
+		$text = $status['message']."<br />";
+		$text .= share($status['file']); 
+		$ns->tablerender(LAN_CREATED, $text );
+		
+	}
+	else
+	{
+		$ns->tablerender(LAN_CREATED_FAILED, $status['message']);
+	}
 }
 
     if(isset($message) && $message){
@@ -239,8 +248,15 @@ if ($action == 'db') {
 }
 
 
+$debug = "<br />f=".$_GET['f'];
+$debug .= "<br />mode=".$_GET['mode'];
+$debug .= "<br />lan=".$_GET['lan'];
+// $ns->tablerender("Debug",$debug);
 
-if($action == "tools"){
+$rendered = $lck->init(); // Lancheck functions. 
+
+if($action == "tools" && !$rendered)
+{
     show_tools();
 }
 
@@ -381,6 +397,7 @@ function show_tools()
 	
 	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
 	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
+	$lan_pleasewait = (defsettrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
 	
 	$text = "<form id='lancheck' method='post' action='".e_SELF."?tools'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>";
@@ -435,7 +452,7 @@ function show_tools()
 			<td class='forumheader3' >".$value['compatibility']."</td>
 			<td class='forumheader3' style='text-align:center' >".($ver == $value['compatibility'] || varset($_SESSION['lancheck_'.$language]['total']) =='0' ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td>
 			<td class='forumheader3' style='text-align:center'><input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='button' />
-			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='button' /></td>	
+			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='button' onclick=\"this.value = '".$lan_pleasewait."'\" /></td>	
 			</tr>";
 		}
 		
@@ -738,7 +755,11 @@ function zip_up_lang($language)
 	{
 			
 			$fileName = e_FILE."public/".$language.".xml";
-			@unlink($fileName);
+			if(is_readable($fileName))
+			{
+				@unlink($fileName);	
+			}
+			
 		$fileData = '<?xml version="1.0" encoding="utf-8"?>
 <e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
 <author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
@@ -851,7 +872,8 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 // --------------------------------------------------------------------------
 
 
-function language_adminmenu() {
+function language_adminmenu()
+{
     global $action,$pref;
     if ($action == "") {
         $action = "main";
@@ -867,6 +889,11 @@ function language_adminmenu() {
         $var['db']['text'] = LANG_LAN_03;
         $var['db']['link'] = e_SELF."?db";
     }
+	
+	if(varsettrue($_GET['f']))
+	{
+		$action = 'tools';	
+	}
 	
 
     $lcnt = explode(",",e_LANLIST);
