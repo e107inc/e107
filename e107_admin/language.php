@@ -457,7 +457,7 @@ function show_tools()
 		}
 		
 		$srch = array("[","]");
-		$repl = array("<a rel='external' href='http://e107.org/news.php?extend.876.1'>","</a>");
+		$repl = array("<a rel='external' href='http://e107.org/content/About-Us:The-Team#translation-team'>","</a>");
 		$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
 	
 		$checked = varset($_COOKIE['e107_certified']) == 1 ? "checked='checked'" : "";
