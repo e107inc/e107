@@ -34,6 +34,7 @@
     if($cacheData)
     {
     	list($caption,$ftext) = explode('|', $cacheData);
+		if ($cacheData == 'up-to-date') return '';		
 		
     	if($parm == 'text')
 		{
@@ -41,7 +42,6 @@
 		}
 		else
 		{
-			if ($cacheData == 'up-to-date') return '';			
    	  		return $ns -> tablerender($caption, $ftext,'admin_update');	
 		}
 		
