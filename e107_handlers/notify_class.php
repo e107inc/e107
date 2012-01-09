@@ -207,8 +207,11 @@ function notify_newspost($data) {
 	{
 		return;
 	}
+	// Never use $tp->toDB() here. 
+	$message = '<b>'.$data['news_title'].'</b>';
+	$message .= (trim($data['news_summary'])!='') ? '<br /><br />'.trim($data['news_summary']) : "";
+	$message .= '<br /><br />'.trim($data['data']).'<br /><br />'.$data['news_extended'];
 	
-	$message = $tp->toDB('<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended']);
 	$nt -> send('newspost', $data['news_title'], $message);
 }
 
@@ -219,8 +222,11 @@ function notify_newsupd($data) {
 	{
 		return;
 	}
-
-	$message = $tp->toDB('<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended']);
+	// Never use $tp->toDB() here. 
+	$message = '<b>'.$data['news_title'].'</b>';
+	$message .= (trim($data['news_summary'])!='') ? '<br /><br />'.trim($data['news_summary']) : "";
+	$message .= '<br /><br />'.trim($data['data']).'<br /><br />'.$data['news_extended'];
+	
 	$nt -> send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], $message);
 }
 
