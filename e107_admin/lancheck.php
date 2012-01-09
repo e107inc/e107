@@ -156,7 +156,8 @@ class lancheck
 		}
 	
 		$message .= "<div style='".ADMIN_WIDTH.";text-align:center;padding:20px'>
-		<form id='lancheck' method='post' action='".e_ADMIN."language.php?tools'>";
+		<form id='lancheck' method='post' action='".e_ADMIN."language.php?tools'>
+		<div>\n";
 		
 		$icon = ($_SESSION['lancheck_'.$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
 		
@@ -169,17 +170,12 @@ class lancheck
 		$lang_sel_diz = (defsettrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
 		$lan_pleasewait = (defsettrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
 		
-		$message .= "<span>
+		$message .= "
 		<br /><br />
 		<input type='hidden' name='language' value='".$_POST['language']."' />
 	    <input type='submit' name='ziplang[".$_POST['language']."]' value=\"".$just_go_diz."\" class='button' onclick=\"this.value = '".$lan_pleasewait."'\" />
-		</span>
-	    </form>
-		<form name='refresh' method='post' action='".e_SELF."?tools'>
-		<span>
-		<input type='hidden' name='language' value='".$_POST['language']."' />
 	    <input type='submit' name='language_sel[".$_POST['language']."]' value=\"".$lang_sel_diz."\" class='button' />
-		</span>
+		</div>
 	    </form>
 		</div>";
 			
@@ -203,24 +199,33 @@ class lancheck
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if($_POST['root'])
+		if(varsettrue($_SESSION['lancheck-edit-file']))
 		{
-			$writeit = $_POST['root'];
+			$writeit = $_SESSION['lancheck-edit-file'];
+		}
+		else
+		{
+			return;	
 		}
 	
 		$old_kom = "";
 		$in_kom=0;
-		$data = file($writeit);
-		foreach($data as $line)
+		
+		if(is_readable($writeit)) // File Exists; 
 		{
-	
-			if (strpos($line,$kom_start) !== False && $old_kom == "")
+			$data = file($writeit);
+			foreach($data as $line)
 			{
-				$in_kom=1;
-			}
-			if ($in_kom) { $old_kom.=$line; }
-			if (strpos($line,$kom_end) !== False && $in_kom) {$in_kom = 0;}
+		
+				if (strpos($line,$kom_start) !== False && $old_kom == "")
+				{
+					$in_kom=1;
+				}
+				if ($in_kom) { $old_kom .= $line; }
+				if (strpos($line,$kom_end) !== False && $in_kom) {$in_kom = 0;}
+			}	
 		}
+		
 	
 	
 		$message = "<div style='text-align:left'><br />";
@@ -268,7 +273,7 @@ class lancheck
 				$defvar = $_POST['newdef'][$i];
 			}
 	
-			if($_POST['newdef'][$i] == "LC_ALL" && isset($_POST['root']))
+			if($_POST['newdef'][$i] == "LC_ALL" && varsettrue($_SESSION['lancheck-edit-file']))
 			{
 				$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
 				$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
@@ -305,7 +310,7 @@ class lancheck
 		$message .= "<br /><br /><input class='button' type='submit' name='language_sel[".$lan."]' value=\"".LAN_BACK."\" />
 		</div></form>";
 	
-	
+		unset($_SESSION['lancheck-edit-file']);
 		$ns -> tablerender($caption, $message);
 	}
 	
@@ -515,10 +520,16 @@ class lancheck
 	
 	function get_comp_lan_phrases($comp_dir,$lang,$depth=0)
 	{
+		if(!is_dir($comp_dir))
+		{
+			return array();
+		}
+		
+		
 		require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 		$ret = array();
-	
+			
 		if($lang_array = $fl->get_files($comp_dir, ".php","standard",$depth)){
 			sort($lang_array);
 		}
@@ -748,7 +759,10 @@ class lancheck
 			$text .="</td></tr>";
 		}
 	
+		unset($_SESSION['lancheck-edit-file']);
+	
 		//Check if directory is writable
+		
 		if($writable)
 		{
 			$text .="<tr style='vertical-align:top'>
@@ -757,8 +771,8 @@ class lancheck
 			<input class='button' type='submit' name='submit' value=\"".LAN_SAVE." ".str_replace($dir2,"",$root_file)." \" />";
 	
 			if($root_file)
-			{
-				$text .= "<input type='hidden' name='root' value='".$root_file."' />";
+			{			
+				$_SESSION['lancheck-edit-file'] = $root_file;
 			}
 	
 			$text .= "</td></tr>";
