@@ -40,6 +40,8 @@ class lancheck
 		
 	var $core_themes = array("crahan","core","e107v4a","human_condition","interfectus","jayya",
 		"khatru","kubrick","lamb","leaf","sebes","vekna_blue");
+		
+	var $errorsOnly = FALSE;
 
 	
 	function init()
@@ -47,9 +49,11 @@ class lancheck
 		global $ns,$tp;
 		
 		$acceptedLans = explode(",",e_LANLIST);
-		
-		if(isset($_POST['language_sel']))
+			
+		if(isset($_POST['language_sel'])) // Verify
 		{
+			$_SESSION['lancheck-errors-only'] 	= ($_POST['errorsonly']==1) ?  1 : 0;	
+			$this->errorsOnly 					= ($_POST['errorsonly']==1) ?  TRUE : FALSE;
 			$this->check_all();
 			return TRUE;
 		}
@@ -330,9 +334,9 @@ class lancheck
 		
 	//	print_a($check);
 	//	return;
-		
+		$text = "";
 	
-		$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
+		$header = "<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
 		<td class='fcaption'>".LAN_CHECK_16."</td>
 		<td class='fcaption'>".$_POST['language']." ".LAN_CHECK_26."</td>
@@ -351,7 +355,7 @@ class lancheck
 				$k_check = str_replace("English",$checklan,$k);
 				if(array_key_exists($k,$check))
 				{
-					$text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
+					// $text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
 					$subkeys = array_keys($English[$k]);
 	
 					$er="";
@@ -384,7 +388,13 @@ class lancheck
 					
 						$er .= $this->check_lan_errors($English[$k],$check[$k],$sk);
 					}
-	
+					
+					if($this->errorsOnly == TRUE && !$er)
+					{
+						continue;		
+					}
+						
+					$text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
 					$style = ($er) ? "forumheader2" : "forumheader3";
 					$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 					$text .= $bom_error . $utf_error;
@@ -405,9 +415,10 @@ class lancheck
 				$text .="</td></tr>";
 			}
 		}
-		$text .= "</table>";
+
+		$footer = "</table>";
 	
-		return $text;
+		return $header.$text.$footer;
 	}
 
 
@@ -530,7 +541,7 @@ class lancheck
 		$fl = new e_file;
 		$ret = array();
 			
-		if($lang_array = $fl->get_files($comp_dir, ".php","standard",$depth)){
+		if($lang_array = $fl->get_files($comp_dir, ".php$","standard",$depth)){
 			sort($lang_array);
 		}
 	
@@ -620,9 +631,7 @@ class lancheck
 			$k_check = str_replace("English",$target_lan,$k);
 			if(array_key_exists($k_check,$check))
 			{
-				$text .= "<tr>
-				<td class='forumheader3' style='width:20%'>".$comp_name."</td>
-				<td class='forumheader3' style='width:25%'>".str_replace("English/","",$lnk)."</td>";
+				
 	
 				$subkeys = array_keys($baselang[$k]);
 				$er="";
@@ -657,6 +666,15 @@ class lancheck
 					*/
 					$er .= $this->check_lan_errors($baselang[$k],$check[$k_check],$sk);
 				}
+	
+				if($this->errorsOnly == TRUE && !$er)
+				{
+					continue;		
+				}
+	
+				$text .= "<tr>
+				<td class='forumheader3' style='width:20%'>".$comp_name."</td>
+				<td class='forumheader3' style='width:25%'>".str_replace("English/","",$lnk)."</td>";
 	
 				$style = ($er) ? "forumheader2" : "forumheader3";
 				$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";

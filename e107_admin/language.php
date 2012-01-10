@@ -398,6 +398,8 @@ function show_tools()
 	$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
 	$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
 	$lan_pleasewait = (defsettrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+	$lan_displayerrors = (defsettrue('LANG_LAN_33')) ?  LANG_LAN_33 : "Display only errors during verification";
+	
 	
 	$text = "<form id='lancheck' method='post' action='".e_SELF."?tools'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>";
@@ -461,14 +463,19 @@ function show_tools()
 		$diz = (defsettrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
 	
 		$checked = varset($_COOKIE['e107_certified']) == 1 ? "checked='checked'" : "";
-		$text .= "<tr><td class='forumheader' colspan='5' style='text-align:center'>
+		$text .= "<tr><td class='forumheader' colspan='4' style='text-align:center'>
 		 <input type='checkbox' name='contribute_pack' value='1' {$checked} />".str_replace($srch,$repl,$diz);
-				
-		$text .= "</td></tr></table>";
+		
+		$echecked = varset($_SESSION['lancheck-errors-only']) == 1 ? "checked='checked'" : "";		
+		$text .= "</td>
+		<td class='forumheader' style='text-align:center'>
+		<input type='checkbox' name='errorsonly' value='1' {$echecked}  /> ".$lan_displayerrors." </td>
+		
+		</tr></table>";
 		
 		
 		$text .= "</form>";
-		
+	
 	$text .= "<div class='smalltext' style='padding-top:50px;text-align:center'>".LANG_LAN_AGR."</div>";	
 	$ns->tablerender(LANG_LAN_32, $text);		
 	return;

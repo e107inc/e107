@@ -48,5 +48,6 @@ define("LANG_LAN_29", "You should correct the remaining errors before contributi
 define("LANG_LAN_30", "Release Date");
 define("LANG_LAN_31", "Compatibility");
 define("LANG_LAN_32", "Installed Languages");
+define("LANG_LAN_33", "Display only errors during verification");
 
 ?>
