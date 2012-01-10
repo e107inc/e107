@@ -1471,13 +1471,7 @@ function init_session() {
 	define('USERIP', $e107->getip());
 	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']]))
 	{
-		define("USER", FALSE);
-		define('USERID', 0);
-		define("USERTHEME", FALSE);
-		define("ADMIN", FALSE);
-		define("GUEST", TRUE);
-		define('USERCLASS', '');
-		define('USEREMAIL', '');
+		setGuest();
 	}
 	else
 	{
@@ -1488,28 +1482,25 @@ function init_session() {
 			cookie($pref['cookie_name'], "", (time() - 2592000));
 			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
-			define("ADMIN", FALSE);
-			define("USER", FALSE);
-			define('USERID', 0);
-			define("USERCLASS", "");
+			setGuest();
 			define('USERCLASS_LIST', class_list());
-			define("LOGINMESSAGE",CORE_LAN10."<br /><br />");
+			define('LOGINMESSAGE',CORE_LAN10.'<br /><br />');
 			return (FALSE);
 		}
 
 		$result = get_user_data($uid);
-		if(is_array($result) && md5($result['user_password']) == $upw)
+		if(is_array($result) && (md5($result['user_password']) == $upw) && ($result['user_ban'] == 0))
 		{
-			define("USERID", $result['user_id']);
-			define("USERNAME", $result['user_name']);
-			define("USERURL", (isset($result['user_homepage']) ? $result['user_homepage'] : false));
-			define("USEREMAIL", $result['user_email']);
-			define("USER", TRUE);
-			define("USERCLASS", $result['user_class']);
-			define("USERREALM", $result['user_realm']);
-			define("USERVIEWED", $result['user_viewed']);
-			define("USERIMAGE", $result['user_image']);
-			define("USERSESS", $result['user_sess']);
+			define('USER', TRUE);
+			define('USERID', $result['user_id']);
+			define('USERNAME', $result['user_name']);
+			define('USERURL', (isset($result['user_homepage']) ? $result['user_homepage'] : false));
+			define('USEREMAIL', $result['user_email']);
+			define('USERCLASS', $result['user_class']);
+			define('USERREALM', $result['user_realm']);
+			define('USERVIEWED', $result['user_viewed']);
+			define('USERIMAGE', $result['user_image']);
+			define('USERSESS', $result['user_sess']);
 
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
 
@@ -1527,9 +1518,7 @@ function init_session() {
 
 			$currentUser = $result;
 			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
-			define("USERLV", $result['user_lastvisit']);
-
-			if ($result['user_ban'] == 1) { exit; }
+			define('USERLV', $result['user_lastvisit']);
 
 			if ($result['user_admin'])
 			{
@@ -1568,12 +1557,8 @@ function init_session() {
 		}
 		else
 		{
-			define("USER", FALSE);
-			define('USERID', 0);
-			define("USERTHEME", FALSE);
-			define("ADMIN", FALSE);
-			define("CORRUPT_COOKIE", TRUE);
-			define("USERCLASS", "");
+			setGuest();
+			define('CORRUPT_COOKIE', TRUE);
 		}
 	}
 
@@ -1593,6 +1578,29 @@ function init_session() {
 //		exit;
 //	}
 }
+
+
+/**
+ *	Set all the defines appropriate to a guest (visitor or user who isn't logged in)
+ */
+function setGuest()
+{
+	define('USER', FALSE);
+	define('ADMIN', FALSE);
+	define('GUEST', TRUE);
+	define('USERID', 0);
+	define('USERTHEME', FALSE);
+	define('USERCLASS', '');
+	define('USEREMAIL', '');
+	define('USERURL', '');
+	define('USEREMAIL', '');
+	define('USERREALM', '');
+	define('USERVIEWED', '');
+	define('USERIMAGE', '');
+	define('USERSESS', '');
+}
+
+
 
 $sql->db_Mark_Time('Start: Go online');
 if(isset($pref['track_online']) && $pref['track_online']) {
