@@ -24,7 +24,7 @@ $max_age = varset($menu_pref['newforumposts_maxage'], 0);
 $max_age = $max_age == 0 ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
 $forum = new e107forum;
-$forumList = implode(',', $forum->permList['view']);
+$forumList = implode(',', $forum->getForumPermList('view'));
 //TODO: Use query from forum class to get thread list
 $qry = "
 SELECT
@@ -74,14 +74,12 @@ if($results = $e107->sql->db_Select_gen($qry))
 		}
 		else
 		{
-			$text .= "<a href='{$url}'>".NFP_11." {$poster}</a><br />{$post}<br />{$datestamp}<br/><br />";
+			$text .= "<a href='{$url}'>".NFP_11."</a> {$poster}<br />{$post}<br />{$datestamp}<br/><br />";
 		}
 	}
 }
 else
 {
 	$text = NFP_2;
-
 }
 $e107->ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
-?>
