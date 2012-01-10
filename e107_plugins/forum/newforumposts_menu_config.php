@@ -88,11 +88,7 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td class='forumheader3'>".NFP_8.":</td>
 	<td class='forumheader3'>
-	<input type=\"checkbox\" name=\"newforumposts_title\" value=\"1\" ";
-if ($menu_pref['newforumposts_title']) {
-	$text .= " checked ";
-}
-$text .= "
+	<input type='checkbox' name='newforumposts_title' value='1'".($menu_pref['newforumposts_title'] ? ' checked="checked"' : '')."
 	</td>
 	</tr>
 	 
@@ -106,4 +102,3 @@ $text .= "
 	</div>";
 $ns->tablerender(NFP_10, $text);
 require_once(e_ADMIN."footer.php");
-?>

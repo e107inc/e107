@@ -12,7 +12,9 @@
  * $Id$
  */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT'))  exit;
+
+global $menu_pref;
 
 $e107 = e107::getInstance();
 $gen = new convert;
@@ -20,7 +22,7 @@ $gen = new convert;
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
 
-$max_age = varset($menu_pref['newforumposts_maxage'], 0);
+$max_age = vartrue($menu_pref['newforumposts_maxage'], 0);
 $max_age = $max_age == 0 ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
 $forum = new e107forum;
