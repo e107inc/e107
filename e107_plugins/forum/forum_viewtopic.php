@@ -378,7 +378,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='" . $key . "'>" . $val . "</option>";
 	}
-	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='" . LAN_03 . "' /></form>";
+	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='" . LAN_03 . "' /></p></form>";
 	return $text;
 }
 
