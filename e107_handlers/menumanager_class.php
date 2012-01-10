@@ -1060,7 +1060,7 @@ class e_menuManager {
 		$conf = '';
 		if (file_exists(e_PLUGIN.$menu_path.$menu_name.'_menu_config.php'))
 		{
-			$conf = $menu_path.$menu_name.'_menu_config.php';
+			$conf = $menu_path.$menu_name.'_menu_config';
 		}
 
 		if($conf == '' && file_exists(e_PLUGIN."{$menu_path}config.php"))
@@ -1187,7 +1187,6 @@ class e_menuManager {
 
 	}
 
-
     function menuSetConfigList()
 	{
         	global $sql,$pref;
@@ -1226,13 +1225,5 @@ class e_menuManager {
 
            $pref['menuconfig_list'] = $tmp;
 		   save_prefs();
-
 	}
-
-
-
 }  // end of Class.
-
-
-
-?>

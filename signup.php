@@ -513,7 +513,8 @@ if (isset($_POST['register']))
 		}
 		// Work out data to be written to user audit trail
 		$signup_data = array('user_name', 'user_loginname', 'user_email', 'user_ip');
-		foreach (array() as $f)
+//		foreach (array() as $f)
+		foreach ($signup_data as $f)
 		{
 			$signup_data[$f] = $allData['data'][$f];		// Just copy across selected fields
 		}
@@ -525,6 +526,13 @@ if (isset($_POST['register']))
 		}
 
 		$allData['data']['user_join'] = time();
+		
+		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
+		//   so we put apropriate ones, otherwise - broken DB Insert
+		$allData['data']['user_class'] = '';
+		$allData['data']['user_perms'] = '';
+		$allData['data']['user_prefs'] = '';
+		$allData['data']['user_realm'] = '';
 
 		// Actually write data to DB
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
