@@ -8,20 +8,9 @@
  *
  * $URL$
  * $Id$
+ * 
+ * Plugin administration area
  *
- */
-
-if (!defined('e107_INIT')) { exit; }
-
-
-/**
- *
- * @package     e107
- * @category	e107_handlers
- * @version     $Id$
- * @author      e107inc
- *
- *	Plugin administration area
  */
 
 require_once("../class2.php");
@@ -31,7 +20,7 @@ if (!getperms("Z"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('plugin', true);
 
 $e_sub_cat = 'plug_manage';
 
