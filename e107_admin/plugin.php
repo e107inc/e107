@@ -1,21 +1,28 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * $URL$
+ * $Id$
+ *
+ */
+
+if (!defined('e107_INIT')) { exit; }
+
+
+/**
+ *
+ * @package     e107
+ * @category	e107_handlers
+ * @version     $Id$
+ * @author      e107inc
+ *
+ *	Plugin administration area
+ */
 
 require_once("../class2.php");
 if (!getperms("Z"))
@@ -202,7 +209,7 @@ class pluginManager{
 			$plugin = e107::getPlugin();
 			$tp = e107::getParser();
 			$sql = e107::getDb();
-			
+			$eplug_folder = '';
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
 				$this->pluginConfirmUninstall($this->id);

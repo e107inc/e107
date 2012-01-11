@@ -2,23 +2,29 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Administration - Site Maintenance
  *
  * $URL$
  * $Id$
  *
  */
 
-if (!defined('e107_INIT'))
-{
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_plugin.php');
+
+/**
+ *
+ * @package     e107
+ * @category	e107_handlers
+ * @version     $Id$
+ * @author      e107inc
+ *
+ *	Plugin administration handler
+ */
+
+e107::coreLan('plugin', true);
 
 class e107plugin
 {
@@ -1524,7 +1530,7 @@ class e107plugin
 			$attrib = $link['@attributes'];
 			$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
 			$url = e_PLUGIN_ABS.$this->plugFolder."/".$attrib['url'];
-			if ($attrib['primary'] == 'true')
+			if (isset($attrib['primary']) && $attrib['primary'] == 'true')
 			{
 				$this->plugConfigFile = $url;
 			}
