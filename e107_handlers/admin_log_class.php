@@ -231,7 +231,7 @@ class e_admin_log
 		//---------------------------------------
 		if ($target_logs & LOG_TO_ADMIN)
 		{ // Admin log - assume all fields valid
-			$qry = " 0, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
+			$qry = " null, ".intval($time_sec).','.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userIP}', '{$event_title}', '{$explain}' ";
 			$this->rldb->db_Insert("admin_log", $qry);
 		}
 
