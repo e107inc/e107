@@ -525,7 +525,7 @@ class e107plugin
 			$regex = varset($field_attrib['regex']);
 			$hide = vartrue($field_attrib['allow_hide']) ? 1 : 0;
 			$failmsg = '';
-			if($regex || hide)
+			if($regex || $hide)
 			{
 				// failmsg only when required
 				if($field_attrib['required'] == 1 || $regex)

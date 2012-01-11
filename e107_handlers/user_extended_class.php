@@ -37,8 +37,7 @@ Code uses two tables:
 
 */
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
-
+e107::coreLan('user_extended');
 
 class e107_user_extended
 {
@@ -387,6 +386,11 @@ class e107_user_extended
 	function user_extended_type_text($type, $default)
 	{
 	  global $tp;
+	  if(!is_numeric($type))
+	  {
+	  	return false;
+	  }
+	  
 	  switch ($type)
 	  {
 		case EUF_INTEGER :
@@ -399,7 +403,7 @@ class e107_user_extended
 
 		case EUF_TEXTAREA:
 		  $db_type = 'TEXT';
-		  break;
+		 break;
 
 		case EUF_TEXT :
 		case EUF_RADIO :
@@ -409,7 +413,16 @@ class e107_user_extended
 		case EUF_PREDEFINED :
 		case EUF_CHECKBOX :
 		  $db_type = 'VARCHAR(255)';
-		  break;
+		 break;
+		 
+		case EUF_CATEGORY:
+			return '';
+		 break;
+		 
+		default:
+			e107::getMessage()->addDebug("<strong>Unknown type '{$type}' for user extended field.</strong>"); 
+			return false;
+		break;
 
 	  }
 	  if($type != EUF_DB_FIELD && $type != EUF_TEXTAREA && $default != '')
@@ -459,7 +472,11 @@ class e107_user_extended
 	  if (!$this->user_extended_field_exist($name) && !$this->user_extended_reserved($name))
 	  {
 		$field_info = $this->user_extended_type_text($type, $default);
-		if($order === '')
+		
+		// wrong type
+		if(false === $field_info) return false;
+		
+		if($order === '' && $field_info)
 		{
 		  if($sql->db_Select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
 		  {
@@ -470,8 +487,13 @@ class e107_user_extended
 			}
 		  }
 		}
-		$sql->db_Select_gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
-		$sql->db_Insert('user_extended_struct',"0,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+		// field of type category
+		if($field_info)
+		{
+			$sql->db_Select_gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
+		}
+		
+		$sql->db_Insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 		if ($this->user_extended_field_exist($name))
 		{
 		  return TRUE;
@@ -488,7 +510,15 @@ class e107_user_extended
 		if ($this->user_extended_field_exist($name))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
-			$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
+			// wrong type
+			if(false === $field_info) return false;
+			
+			// field of type category
+			if($field_info)
+			{
+				$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
+			}
+			
 			$newfield_info = "
 			user_extended_struct_text = '".$tp -> toDB($text, true)."',
 			user_extended_struct_type = '".intval($type)."',
@@ -512,7 +542,10 @@ class e107_user_extended
 		$this->clear_cache(); 
 		if ($this->user_extended_field_exist($name))
 		{
+			// FIXME - no table structure changes for categories
+			// but no good way to detect it right now - ignore the sql error for now, fix it asap
 			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
+			
 			if(is_numeric($id))
 			{
 				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
