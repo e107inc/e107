@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English_admin_links_page.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id$
+ *
+ * Admin Language File
+ * 
 */
 
 //define("LCLAN_USERPROFILE_1", ">> view all links");
