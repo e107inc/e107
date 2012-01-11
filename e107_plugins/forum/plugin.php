@@ -28,11 +28,6 @@ $eplug_compatible   = 'e107v0.7+';
 $eplug_description  = LAN_FORUM_INSTALL_02;
 $eplug_readme       = '';
 
-# Icon images and caption text
-$eplug_icon         = $eplug_folder.'/images/forums_32.png';
-$eplug_icon_small   = $eplug_folder.'/images/forums_16.png';
-$eplug_caption      = LAN_FORUM_INSTALL_03;
-
 # Plugin options
 $eplug_latest       = true;                  # Show reported threads in admin (use latest.php)
 $eplug_status       = true;                  # Show post count in admin (use status.php)
@@ -46,6 +41,11 @@ $eplug_link_name    = LAN_FORUM_INSTALL_01;
 
 $eplug_done         = LAN_FORUM_INSTALL_04;  # Message for successfull instalation
 $eplug_upgrade_done = sprintf(LAN_FORUM_INSTALL_05, $eplug_version);
+
+# Icon images and caption text
+$eplug_icon         = $eplug_folder.'/images/forums_32.png';
+$eplug_icon_small   = $eplug_folder.'/images/forums_16.png';
+$eplug_caption      = LAN_FORUM_INSTALL_03;
 
 
 # List of plugin preferences
