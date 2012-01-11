@@ -476,7 +476,9 @@ else
 
 $SESS_NAME = strtoupper(preg_replace("/[\W_]/","",$pref['cookie_name'])); // clean-up characters.  
 session_name('SESS'.$SESS_NAME); // avoid session conflicts with separate sites within subdomains
-unset($SESS_NAME);
+$doma = (!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) ? ".".e_DOMAIN : FALSE;
+session_set_cookie_params(FALSE,e_HTTP,$doma); // same cookie for www. and without 
+unset($SESS_NAME,$doma);
 
 // Start session after $prefs are available.
 session_start(); // Needs to be started after language detection (session.cookie_domain) to avoid multi-language 'access-denied' issues. 
@@ -1609,10 +1611,11 @@ if(isset($pref['track_online']) && $pref['track_online']) {
 
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = "", $secure = 0)
 {
-	if(defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE)
+	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 	{
-		$domain = e_DOMAIN;
+		$domain = ".".e_DOMAIN;
 	}
+
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 

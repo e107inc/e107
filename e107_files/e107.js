@@ -32,19 +32,23 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  */
 function SyncWithServerTime(serverTime)
 {
+	var domain = window.location.hostname;
+	domain = domain.replace('www.', '');
+
 	if (serverTime) 
 	{
 	  	/* update time difference cookie */
 		var serverDelta=Math.floor(localTime-serverTime);
-	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path=/';
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path=/'; /* server time when set */
+		
+	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path=/; domain= .'+domain;
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path=/; domain=.'+domain; /* server time when set */
 	}
 
 	var tzCookie = 'e107_tzOffset=';
 //	if (document.cookie.indexOf(tzCookie) < 0) {
 		/* set if not already set */
 		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path=/';
+		document.cookie = tzCookie + timezoneOffset+'; path=/; domain=.'+domain;
 //	}
 }
 var ns6=0;
