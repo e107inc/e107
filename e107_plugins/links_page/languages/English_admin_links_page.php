@@ -339,20 +339,21 @@ define('LAN_AL_LINKS_16', '');
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 
 define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the category<br /><br />
-".LINK_ICON_EDIT." : edit the category<br /><br />
-".LINK_ICON_DELETE." : delete the category<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the category item one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br />
+".defset('LINK_ICON_LINK')." : link to the category<br /><br />
+".defset('LINK_ICON_EDIT')." : edit the category<br /><br />
+".defset('LINK_ICON_DELETE')." : delete the category<br /><br />
+".defset('LINK_ICON_ORDER_UP')." : the up button allows you to move the category item one up in order.<br /><br />
+".defset('LINK_ICON_ORDER_DOWN')." : the down button allows you to move the category item one down in order.<br />
 <br />
 <b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 
+// FIXME - not to be used in language files!!! Temporary fix to avoid notices in e.g. plugin manager
 define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
-define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
+define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".defset('LINK_ICON_LINK')." : link to the category<br /><br />".defset('LINK_ICON_EDIT')." : click the icon to view all links in this category<br />");
 define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_EDIT." : post the submitted link to the link create form<br /><br />
-".LINK_ICON_DELETE." : delete the submitted link<br />
+".defset('LINK_ICON_EDIT')." : post the submitted link to the link create form<br /><br />
+".defset('LINK_ICON_DELETE')." : delete the submitted link<br />
 ");
 define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />
 general options<br />
@@ -372,11 +373,11 @@ These options are used on the top rated links page.<br />
 define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
 
 define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
-".LINK_ICON_LINK." : link to the website<br /><br />
-".LINK_ICON_EDIT." : edit the link<br /><br />
-".LINK_ICON_DELETE." : delete the link<br /><br />
-".LINK_ICON_ORDER_UP." : the up button allows you to move the link one up in order.<br /><br />
-".LINK_ICON_ORDER_DOWN." : the down button allows you to move the link one down in order.<br />
+".defset('LINK_ICON_LINK')." : link to the website<br /><br />
+".defset('LINK_ICON_EDIT')." : edit the link<br /><br />
+".defset('LINK_ICON_DELETE')." : delete the link<br /><br />
+".defset('LINK_ICON_ORDER_UP')." : the up button allows you to move the link one up in order.<br /><br />
+".defset('LINK_ICON_ORDER_DOWN')." : the down button allows you to move the link one down in order.<br />
 <br />
 <b>order</b><br />here you can manually set the order of all the links. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
 
