@@ -414,13 +414,10 @@ class users_ext
 	{
         global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
 
-  //		$catList = $ue->user_extended_get_categories();
-  //		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
-  //		$catNums = array_keys($catList);
 		$extendedList = $ue->user_extended_get_fields();
 
-        $emessage = &eMessage::getInstance();
-	  	$text = $emessage->render()  ;
+        $emessage = e107::getMessage();
+	  	$text = $emessage->render();
 
 		$mode = 'show';
 			$text .= "
@@ -465,7 +462,7 @@ class users_ext
 							$text .= "
 							<tr>
 							<td>{$ext['user_extended_struct_name']}</td>
-							<td>".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."</td>
+							<td>".$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")."</td>
 							<td class='left'>".$ue->user_extended_edit($ext,$uVal)."</td>
 							<td class='left'>".$category_name."</td>
 							<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>

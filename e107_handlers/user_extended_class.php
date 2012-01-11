@@ -569,6 +569,7 @@ class e107_user_extended
 		  foreach($choices as $choice)
 		  {
 			$choice = trim($choice);
+			$choice = deftrue($choice, $choice);
 			$chk = ($curval == $choice)? " checked='checked' " : "";
 			$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
 		  }
@@ -588,6 +589,7 @@ class e107_user_extended
             	$val = $choice;
 				$label = $choice;
 			}
+			$label = deftrue($label, $label);
 			$chk = ($curval == $val)? " checked='checked' " : "";
 			$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
 		  }
@@ -600,6 +602,7 @@ class e107_user_extended
 		  foreach($choices as $choice)
 		  {
 			$choice = trim($choice);
+			$choice = deftrue($choice, $choice);
 			$sel = ($curval == $choice) ? " selected='selected' " : "";
 			$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 		  }
