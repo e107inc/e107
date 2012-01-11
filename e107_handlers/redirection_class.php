@@ -196,12 +196,12 @@ class redirection
 	public function checkMaintenance()
 	{
 		// prevent looping.
-		if(strpos(e_SELF, 'admin.php') !== FALSE || strpos(e_SELF, 'sitedown.php') !== FALSE)
+		if(strpos(defset('e_SELF'), 'admin.php') !== FALSE || strpos(defset('e_SELF'), 'sitedown.php') !== FALSE)
 		{
 			return;
 		}
 		
-		if(e107::getPref('maintainance_flag') && e_PAGE != 'secure_img_render.php')
+		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
 		{
 			// if not admin
 			if(!ADMIN 
