@@ -73,7 +73,7 @@ class ecache {
 					// It's a page - need the query in the hash
 					if (!$this->CachePageMD5)
 					{
-						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.e_QUERY.filemtime(THEME.'theme.php'));
+						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
 					}
 					$CheckTag = '_'.$this->CachePageMD5;
 				}
