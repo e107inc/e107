@@ -148,7 +148,7 @@ if (isset($_POST['add_field']))
 		}
 		else
 		{
-			$result = admin_update($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29);
+			$result = admin_update($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
 			if(!$result)
 			{
 				$message = EXTLAN_75;
@@ -177,7 +177,7 @@ if (isset($_POST['update_field']))
 	}
 	$upd_values = $user->make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	$result = admin_update($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29);
+	$result = admin_update($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
 	if($result)
 	{
 		$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
@@ -191,7 +191,15 @@ if (isset($_POST['update_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = trim($tp->toDB($_POST['user_field']));
-		$result = admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
+		$result = admin_update(
+			$sql->db_Update(
+				"user_extended_struct",
+				"user_extended_struct_name = '{$name}', user_extended_struct_text='".$tp->toDB($_POST['user_text'])."', user_extended_struct_read = '".intval($_POST['user_read'])."', user_extended_struct_write = '".intval($_POST['user_write'])."', user_extended_struct_applicable = '".intval($_POST['user_applicable'])."' WHERE user_extended_struct_id = '{$sub_action}'"),
+				'update', 
+				EXTLAN_43,
+				false, 
+				false
+		);
 		if($result)
 		{
 			$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
@@ -211,7 +219,7 @@ if (isset($_POST['add_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = $tp->toDB($_POST['user_field']);
-		$result = admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+		$result = admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
 		if($result)
 		{
 			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
@@ -278,10 +286,7 @@ if($message)
 {
     $emessage = eMessage::getInstance();
 	$emessage->add($message, $message_type);
-  //	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-	echo $emessage->render();
 }
-
 
 
 if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
@@ -448,7 +453,7 @@ class users_ext
 				$i=0;
 				$category_name = $this->catList[$cn][0]['user_extended_struct_name'];
 
-				if(count($extendedList[$cn]))  //	Show current extended fields
+				if(vartrue($extendedList[$cn]))  //	Show current extended fields
 				{
 					foreach($extendedList[$cn] as $ext)
 					{
@@ -506,9 +511,7 @@ class users_ext
 			$text .= "</tbody>
 			</table></form>";
 
-
-			$emessage = eMessage::getInstance();
-	  		$ns->tablerender(EXTLAN_9,$text);
+	  		$ns->tablerender(EXTLAN_9, $text);
 
 
 	}
@@ -813,7 +816,7 @@ class users_ext
 			";
 
 		//		$text .= "</div>";
-		$emessage = eMessage::getInstance();
+		$emessage = e107::getMessage();
 		$ns->tablerender(EXTLAN_9,$emessage->render().$text);
 	}
 
@@ -829,10 +832,11 @@ class users_ext
 		<thead>
 		<tr>
 		<th>".EXTLAN_1."</th>
+		<th>".EXTLAN_79."</th>
 		<th>".EXTLAN_5."</th>
 		<th>".EXTLAN_6."</th>
 		<th>".EXTLAN_7."</th>
-		<th>&nbsp;</td>
+		<th>&nbsp;</th>
 		<th>".EXTLAN_8."</th>
 		</tr>
 		</thead>
@@ -853,13 +857,15 @@ class users_ext
 				}
 
 				$text .= "
+				<tr>
 				<td>{$ext['user_extended_struct_name']}</td>
-				</td>
+				<td>".deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text'])."</td>
 				<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 				<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 				<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 				<td>
 				<form method='post' action='".e_SELF."?cat'>
+				<div>
 				<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
 				";
 				if($i > 0)
@@ -873,14 +879,17 @@ class users_ext
 					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='catdown' value='{$ext['user_extended_struct_id']}.{$i}' />";
 				}
 				$text .= "
+				</div>
 				</form>
 				</td>
 				<td class='center' style='white-space: nowrap'>
 				<form method='post' action='".e_SELF."?cat' onsubmit='return confirm(\"".EXTLAN_27."\")'>
+				<div>
 				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 				<a style='text-decoration:none' href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
+				</div>
 				</form>
 				</td>
 				</tr>
@@ -918,7 +927,15 @@ class users_ext
 		<br /><span class='field-help'>".EXTLAN_11."</span>
 		</td>
 		</tr>
-
+		
+		<tr>
+		<td>".EXTLAN_31.":</td>
+		<td colspan='3'>
+		<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='255' />
+		<br /><span class='field-help'>".EXTLAN_32."</span>
+		</td>
+		</tr>
+		
 		<tr>
 		<td>".EXTLAN_5."</td>
 		<td colspan='3'>
@@ -955,7 +972,8 @@ class users_ext
 		}
 		// ======= end added by Cam.
 		$text .= "</div></form></div>";
-		$ns->tablerender(EXTLAN_9, $text);
+		$emessage = e107::getMessage();
+		$ns->tablerender(EXTLAN_9, $emessage->render().$text);
 	}
 
 
@@ -1051,7 +1069,7 @@ class users_ext
 
 		$txt .= "</tbody></table></form>";
 
-		$emessage = eMessage::getInstance();
+		$emessage = e107::getMessage();
 		$ns->tablerender(EXTLAN_56,$emessage->render(). $txt);
 		require_once(e_ADMIN.'footer.php');
 		exit;
@@ -1225,8 +1243,8 @@ function headerjs()
 			$text .= "
 			if(type == \"{$i}\")
 			{
-				xtype=\"".constant($type_const)."\";
-				what=\"".constant($help_const)."\";
+				xtype=\"".defset($type_const)."\";
+				what=\"".defset($help_const)."\";
 			}";
 		}
 		$text .= "
