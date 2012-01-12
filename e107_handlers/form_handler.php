@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -14,8 +14,14 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-//FIXME hardcoded text
+
 /**
+ * 
+ * @package e107
+ * @subpackage handlers
+ * @version $Id$
+ * @todo hardcoded text
+ * 
  * Automate Form fields creation. Produced markup is following e107 CSS/XHTML standards
  * If options argument is omitted, default values will be used (which OK most of the time)
  * Options are intended to handle some very special cases.
@@ -1142,13 +1148,13 @@ class e_form
 				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
 				$field = $data['alias'];
 			}
-
+			
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
 				continue;
 			}
-			elseif(!$data['forced'] && !isset($fieldvalues[$field]))
+			elseif($data['type'] != 'method' && !$data['forced'] && !isset($fieldvalues[$field]))
 			{
 				$ret .= "
 					<td>
