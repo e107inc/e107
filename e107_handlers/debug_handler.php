@@ -149,11 +149,11 @@ class e107_debug {
 			{
 				if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
 				{
-					cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
+					cookie('e107_debug_level', 'level='.$dVal, time() + 86400,e_HTTP,e_DOMAIN);
 				}
 				if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
 				{
-					cookie('e107_debug_level', '', time() - 3600);
+					cookie('e107_debug_level', '', time() - 3600,e_HTTP,e_DOMAIN);
 				}
 			}
 

@@ -225,7 +225,7 @@ if (abs($_serverTime - $lastSet) > 120) {
 	* Drawback: each update may cause all server times to display a bit different
 	*/
 	echo "<script type='text/javascript'>\n";
-	echo "SyncWithServerTime('{$_serverTime}');
+	echo "SyncWithServerTime('{$_serverTime}','".e_DOMAIN."');
        </script>\n";
 }
 

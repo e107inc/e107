@@ -30,11 +30,8 @@ var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded 
  * The value calculated in SyncWithServerTime is not known until after the
  * entire page has been processed.
  */
-function SyncWithServerTime(serverTime)
+function SyncWithServerTime(serverTime,domain)
 {
-	var domain = window.location.hostname;
-	domain = domain.replace('www.', '');
-
 	if (serverTime) 
 	{
 	  	/* update time difference cookie */
