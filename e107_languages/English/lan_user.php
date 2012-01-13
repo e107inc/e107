@@ -118,6 +118,7 @@ define('LAN_USER_86', 'Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels');
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
 // FIXME - do we need this?
+// 	- [Berckoff] Used in validator_class for error handling, maybe moved to a more suitable place?
 if (!defined('USER_ERR_01')) { define('USER_ERR_01','Missing value');  }
 if (!defined('USER_ERR_02')) { define('USER_ERR_02','Unexpected value');  }
 if (!defined('USER_ERR_03')) { define('USER_ERR_03','Value contains invalid characters');  }
@@ -140,6 +141,7 @@ if (!defined('USER_ERR_19')) { define('USER_ERR_19','General error');  }
 if (!defined('USER_ERR_20')) { define('USER_ERR_20','Image too wide');  }
 if (!defined('USER_ERR_21')) { define('USER_ERR_21','Image too high');  }
 if (!defined('USER_ERR_22')) { define('USER_ERR_22','Unspecified error');  }
+if (!defined('USER_ERR_23')) { define('USER_ERR_23','Disallowed value (exact match)');  }
 
 
 ?>
