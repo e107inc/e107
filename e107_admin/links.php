@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -126,18 +126,22 @@ class links_admin_ui extends e_admin_ui
 		);
 	}
 
-	public function handleListCategoryParentIdBatch($selected, $value)
+	public function handleListLinkParentBatch($selected, $value)
 	{
 		$field = 'link_parent';
 		$ui = $this->getUI();
+		$found = false;
 		foreach ($selected as $k => $id)
-		{
-			if($ui->_has_parent($id, $value, $this->getLinkArray()))
+		{var_dump($ui->_has_parent($value, $id, $this->getLinkArray()));
+			if($ui->_has_parent($value, $id, $this->getLinkArray()))
 			{
 				unset($selected[$k]);
+				$found = true;
 			}
 		}
+		if($found) e107::getMessage()->addWarning('Some selections omitted - you can\'t set Link as a Sublink of its Sublink.');
 		if(!$selected) return;
+		
 		if(parent::handleListBatch($selected, $field, $value))
 		{
 			$this->_link_array = null; // reset batch/filters
