@@ -1231,20 +1231,14 @@ class validatorClass
 								{
 									$tmp = explode(",", $pref[$options['vetParam']]);
 									foreach($tmp as $disallow)
-									{	// Exact match search (exact match should be noticed with exclamation mark in the beginning or the end of the word)
-										if (stristr(trim($disallow), '!'))
-										{
-											if ($v == str_replace('!', '', $disallow))
-											{
-												$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
-											}
+									{
+										if ('!' == substr(trim($disallow), -1) && $v == str_replace('!', '', $disallow))
+										{	// Exact match search (noticed with exclamation mark in the end of the word)
+											$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
 										}
-										else
+										elseif(stristr($v, trim($disallow)))
 										{	// Wild card search
-											if(stristr($v, trim($disallow)))
-											{
-												$errMsg = ERR_DISALLOWED_TEXT;
-											}
+											$errMsg = ERR_DISALLOWED_TEXT;
 										}
 									}
 									unset($tmp);
