@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -3427,6 +3427,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
 		}
 		$this->getTreeModel()->setMessages();
+		return $cnt;
 	}
 
 	/**
