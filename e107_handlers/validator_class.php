@@ -25,6 +25,7 @@ define('ERR_TOO_SHORT', '04');
 define('ERR_TOO_LONG', '05');
 define('ERR_DUPLICATE', '06');
 define('ERR_DISALLOWED_TEXT', '07');
+define('ERR_DISALLOWED_TEXT_EXACT_MATCH', '23');
 define('ERR_FIELD_DISABLED', '08');
 define('ERR_INVALID_WORD', '09');
 define('ERR_PASSWORDS_DIFFERENT', '10');
@@ -940,14 +941,16 @@ The validator functions use an array of parameters for each variable to be valid
 	In general, only define an option if its to be used
 */
 
-
+/*	[ Berckoff ]
+ * Added "public static " to each method as the parser generates errors (and methods are called statically everywhere)
+ */
 class validatorClass
 {
 	// Passed an array of 'source' fields and an array of definitions to validate. The definition may include the name of a validation function.
 	// Returns three arrays - one of validated results, one of failed fields and one of errors corresponding to the failed fields
 	// Normally processes only those source fields it finds (and for which it has a definition). If $addDefaults is true, sets defaults for those that have
 	//  ...one and aren't otherwise defined.
-	function validateFields(&$sourceFields, &$definitions, $addDefaults = FALSE)
+	public static function validateFields(&$sourceFields, &$definitions, $addDefaults = FALSE)
 	{
 		global $tp, $pref;
 		$ret = array('data' => array(), 'failed' => array(), 'errors' => array());
@@ -1187,7 +1190,7 @@ class validatorClass
 		3 - Check email address against remote server, only if option enabled
 
 */
-	function dbValidateArray(&$targetData, &$definitions, $targetTable, $userID = 0)
+	public static function dbValidateArray(&$targetData, &$definitions, $targetTable, $userID = 0)
 	{
 		global $pref;
 		$u_sql = new db;
@@ -1228,10 +1231,20 @@ class validatorClass
 								{
 									$tmp = explode(",", $pref[$options['vetParam']]);
 									foreach($tmp as $disallow)
-									{
-										if(stristr($v, trim($disallow)))
+									{	// Exact match search (exact match should be noticed with exclamation mark in the beginning or the end of the word)
+										if (stristr(trim($disallow), '!'))
 										{
-											$errMsg = ERR_DISALLOWED_TEXT;
+											if ($v == str_replace('!', '', $disallow))
+											{
+												$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
+											}
+										}
+										else
+										{	// Wild card search
+											if(stristr($v, trim($disallow)))
+											{
+												$errMsg = ERR_DISALLOWED_TEXT;
+											}
 										}
 									}
 									unset($tmp);
@@ -1276,7 +1289,7 @@ class validatorClass
 
 	// Given a comma-separated string of required fields, and an array of data, adds an error message for each field which doesn't already have an entry.
 	// Returns TRUE if no changes (which doesn't mean there are no errors - other routines may have found them). FALSE if new errors
-	function checkMandatory($fieldList, &$target)
+	public static function checkMandatory($fieldList, &$target)
 	{
 		$fields = explode(',', $fieldList);
 		$allOK = TRUE;
@@ -1294,7 +1307,7 @@ class validatorClass
 
 	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
 	// $fieldList is the standard definition array
-	function addFieldTypes($fieldList, &$target, $auxList=FALSE)
+	public static function addFieldTypes($fieldList, &$target, $auxList=FALSE)
 	{
 		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
 		foreach ($target['data'] as $k => $v)
@@ -1314,7 +1327,7 @@ class validatorClass
 
 	// Given two arrays, returns an array of those elements in $input which are different from the corresponding element in $refs.
 	// If $addMissing == TRUE, includes any element in $input for which there isn't a corresponding element in $refs
-	function findChanges(&$input, &$refs, $addMissing = FALSE)
+	public static function findChanges(&$input, &$refs, $addMissing = FALSE)
 	{
 		$ret = array();
 		foreach ($input as $k => $v)
@@ -1340,7 +1353,7 @@ class validatorClass
 	// %x is the 'nice name' - possible if parameter list passed. Otherwise field name added
 	// $EOL is inserted after all messages except the last.
 	// If $EOL is an empty string, returns an array of messages.
-	function makeErrorList($vars, $constPrefix, $format = '%n - %x %t: %v', $EOL = '<br />', $niceNames = NULL)
+	public static function makeErrorList($vars, $constPrefix, $format = '%n - %x %t: %v', $EOL = '<br />', $niceNames = NULL)
 	{
 		if (count($vars['errors']) == 0) return '';
 		$eList = array();
