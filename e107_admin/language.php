@@ -143,7 +143,7 @@ if (varset($_POST['ziplang']))
 	$_POST['language'] = key($_POST['ziplang']);
 	
 	// If no session data, scan before zipping. 	
-	if(!isset($_SESSION['lancheck_'.$_POST['language']]['file']))
+	if(!isset($_SESSION['lancheck_'.$_POST['language']]['total']) || $_SESSION['lancheck_'.$_POST['language']]['total']!='0')
 	{
 		$_POST['language_sel'] = $_POST['ziplang'];	
 		$lck->check_all('norender');
@@ -675,6 +675,15 @@ function zip_up_lang($language)
 	$ret = array();
 	$ret['file'] = "";
 	
+	if($_SESSION['lancheck_'.$language]['total'] > 0)
+	{
+		$ret = array();
+		$ret['error'] = TRUE;
+		$message = (defined('LANG_LAN_34')) ? LANG_LAN_34 : "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.";
+		$ret['message'] = str_replace("[x]",$_SESSION['lancheck_'.$language]['total'],$message);
+		return $ret;		
+	}
+		
 	if(!isset($_SESSION['lancheck_'.$language]))
 	{
 		$ret = array();
@@ -747,7 +756,7 @@ function zip_up_lang($language)
 	$plugs = grab_lans(e_BASE.$PLUGINS_DIRECTORY, $language, $core_plugins); // standardized path. 
 	$theme  = grab_lans(e_BASE.$THEMES_DIRECTORY, $language, $core_themes);
 	$docs = grab_lans(e_BASE.$HELP_DIRECTORY,$language);
-	$handlers = grab_lans(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path. 
+	$handlers = grab_lans(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path. 		
 		
 	$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
 	$data = implode(",", $file);
@@ -814,8 +823,60 @@ function getLanList()
 	return $list;	
 }
 
+function coreFile($path,$language,$isocode)
+{
+	global $lng;
+	
+	if(strpos($path,"help/")!==FALSE)
+	{
+		return TRUE;
+	}
+	
+	$valid = FALSE;
+	
+	$image = $_SESSION['lancheck-core-image'];
+	
+	$rpath = str_replace("../","",$path);
+	$rpath = str_replace($language,"English",$rpath);
+	$rpath = str_replace($isocode.".js","en.js",$rpath); // TinyMce
+	$rpath = str_replace($isocode."_dlg.js","en_dlg.js",$rpath); // TinyMce
+
+	$tmp = explode("/",$rpath);
+	
+	$l = '$image';
+	
+	foreach($tmp as $key)
+	{
+		$l .= "['".$key."']";	
+	}
+	
+	eval("\$valid = isset(".$l.");");
+	/*
+	if($valid == FALSE)
+	{
+		echo "<br />Excluded: ".$path;
+		print_a($image[$tmp[0]][$tmp[1]]);
+	
+		echo "<hr>";
+	}
+	
+	 */
+	
+	return $valid;
+
+}
+
+
+
+
 function grab_lans($path, $language, $filter = "",$depth=5)
 {
+	
+	// print_a($_SESSION['lancheck-core-image']);
+	// $this->validFile($path);
+
+	
+	
 	global $fl,$ln;
 	
 	$isocode = $ln->convert($language);
@@ -857,21 +918,25 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 				$dir =  basename(dirname($p['path']));
 				foreach($filter as $val)
 				{
-					if(strpos($fullpath,'/'.$val.'/')!==FALSE)
+					if(strpos($fullpath,'/'.$val.'/')!==FALSE && coreFile($fullpath,$language,$isocode))
 					{
 						$pzip[] = $fullpath;	
 					}
 				}
 		
 			}
-			else
+			elseif(coreFile($fullpath,$language,$isocode))
 			{
 				$pzip[] = $fullpath;	
 			}
 			
 		}
 	}
-	return $pzip;
+	
+	// print_a($pzip);
+	//return;
+	
+	 return $pzip;
 }
 
 

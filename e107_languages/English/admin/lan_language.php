@@ -49,5 +49,6 @@ define("LANG_LAN_30", "Release Date");
 define("LANG_LAN_31", "Compatibility");
 define("LANG_LAN_32", "Installed Languages");
 define("LANG_LAN_33", "Display only errors during verification");
+define("LANG_LAN_34", "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.");
 
 ?>

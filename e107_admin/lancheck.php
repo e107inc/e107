@@ -42,6 +42,8 @@ class lancheck
 		"khatru","kubrick","lamb","leaf","sebes","vekna_blue");
 		
 	var $errorsOnly = FALSE;
+	
+	var $coreImage = array();
 
 	
 	function init()
@@ -49,6 +51,17 @@ class lancheck
 		global $ns,$tp;
 		
 		$acceptedLans = explode(",",e_LANLIST);
+		
+		if(!isset($_SESSION['lancheck-core-image']))
+		{
+			$core = array();	
+
+			$coredir = array('admin' => 'e107_admin', 'files' => 'e107_files', 'images' => 'e107_images', 'themes' => 'e107_themes', 'plugins' => 'e107_plugins', 'handlers' => 'e107_handlers', 'languages' => 'e107_languages', 'downloads' => 'e107_downloads', 'docs' => 'e107_docs');
+			
+			require_once(e_ADMIN."core_image.php");
+			
+			$_SESSION['lancheck-core-image'] = $core_image;	
+		}
 			
 		if(isset($_POST['language_sel'])) // Verify
 		{
@@ -93,6 +106,24 @@ class lancheck
 		}	
 		
 		return FALSE;
+	}
+	
+	
+	function countFiles($array)
+	{
+		foreach($array as $k=>$val)
+		{
+			if(is_array($val))
+			{
+				$key = key($val);
+				$this->coreImage[$key] = $val;
+			}
+			elseif($val)
+			{
+			//	$this->totalFiles++;		
+			}	
+			
+		}	
 	}
 	
 	
