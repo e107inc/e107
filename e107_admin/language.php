@@ -840,6 +840,7 @@ function coreFile($path,$language,$isocode)
 	$rpath = str_replace($language,"English",$rpath);
 	$rpath = str_replace($isocode.".js","en.js",$rpath); // TinyMce
 	$rpath = str_replace($isocode."_dlg.js","en_dlg.js",$rpath); // TinyMce
+	$rpath = str_replace("phpmailer.lang-".$isocode.".php","phpmailer.lang-en.php",$rpath);
 
 	$tmp = explode("/",$rpath);
 	
