@@ -21,7 +21,6 @@ $eplug_admin = true;
 
 require_once '../../class2.php';
 
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_common.php');
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/lan_otherdb_auth.php');
 define('ALT_AUTH_ACTION', 'otherdb');
 
@@ -45,7 +44,7 @@ function update_otherdb_prefs()
 		}
 	}
 	
-	return LAN_ALT_AUTH_11;
+	return LAN_UPDATED;
 }
 
 function show_otherdb_form()
@@ -69,11 +68,12 @@ function show_otherdb_form()
 				<td class="forumheader3">
 					'.$frm->form_select_open('otherdb_dbtype');
 	
-	foreach($db_types as $k => $v)  $text.= '
-						'.$frm->form_option($v, ($parm['otherdb_dbtype'] == $k ? ' '.LAN_ALT_AUTH_12 : ''), $k);
+	foreach($db_types as $k => $v)
+	{
+		$text.= $frm->form_option($v, ($parm['otherdb_dbtype'] == $k ? 'selected' : ''), $k);		
+	}  
 	
-	$text.= '
-					'.$frm->form_select_close().'
+	$text.= $frm->form_select_close().'
 				</td>
 			</tr>
 			<tr>
@@ -128,16 +128,17 @@ function show_otherdb_form()
 				<td class="forumheader3">
 					'.$frm->form_select_open('otherdb_password_method');
 	
-	foreach ($pwd_methods as $v)  $text.= '
-						'.$frm->form_option($v, ($parm['otherdb_password_method'] == $v ? ' '.LAN_ALT_AUTH_12 : ''), $v);
-	
-	$text .= '
-					'.$frm->form_select_close().'
+	foreach ($pwd_methods as $v)
+	{
+		$text.= $frm->form_option($v, ($parm['otherdb_password_method'] == $v ? 'selected' : ''), $v);		
+	} 
+ 
+	$text .= $frm->form_select_close().'
 				</td>
 			</tr>
 			<tr>
 				<td class="forumheader" colspan="2" style="text-align:center;">
-					'.$frm->form_button('submit', 'update', LAN_ALT_AUTH_10).'
+					'.$frm->form_button('submit', 'update', LAN_UPDATE).'
 				</td>
 			</tr>
 		</table>
@@ -152,3 +153,5 @@ if (varsettrue($message))          $ns->tablerender('', '<div style="text-align:
 $ns->tablerender(OTHERDB_LAN_10, show_otherdb_form());
 
 require_once e_ADMIN.'footer.php';
+
+?>

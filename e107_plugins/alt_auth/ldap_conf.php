@@ -21,7 +21,6 @@ $eplug_admin = true;
 
 require_once '../../class2.php';
 
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_common.php');
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/lan_ldap_auth.php');
 define('ALT_AUTH_ACTION', 'ldap');
 
@@ -46,7 +45,7 @@ if ($_POST['update'])
 		}
 	}
 	
-	$message = LAN_ALT_AUTH_11;
+	$message = LAN_UPDATED;
 }
 
 $ldap['ldap_edirfilter'] == '';
@@ -59,15 +58,17 @@ $current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 
 $frm  = new form;
 $text = '
-		'.$frm->form_open('POST', e_SELF).'
+		'.$frm->form_open('post', e_SELF).'
 			<table style="width:96%">
 				<tr>
 					<td class="forumheader3">'.LDAPLAN_11.'</td>
 					<td class="forumheader3">
 						'.$frm->form_select_open('ldap_servertype');
 
-foreach($server_types as $v)  $text.= '
-							'.$frm->form_option($v, ($ldap['ldap_servertype'] == $v ? ' '.LAN_ALT_AUTH_12 : ''), $v);
+						foreach($server_types as $v)
+						{
+							$text.= $frm->form_option($v, ($ldap['ldap_servertype'] == $v ? 'selected' : ''), $v);	
+						}  
 
 $text .= '
 						'.$frm->form_select_close().'
@@ -121,7 +122,7 @@ $text .= '
 				</tr>
 				<tr>
 					<td class="forumheader" colspan="2" style="text-align:center;">
-						'.$frm->form_button('submit', 'update', LAN_ALT_AUTH_10).'
+						'.$frm->form_button('submit', 'update', LAN_UPDATE).'
 					</td>
 				</tr>
 			</table>

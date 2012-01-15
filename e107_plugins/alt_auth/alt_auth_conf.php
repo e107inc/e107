@@ -4,8 +4,7 @@
 |     e107 website system
 |
 |     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
-|
+|     Copyright (C) 2008-2012 e107 Inc (e107.org)
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
@@ -23,7 +22,7 @@ require_once '../../class2.php';
 
 if (!getperms('P'))  { header('Location:'.e_BASE.'index.php'); exit; }
 
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_common.php');
+
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/lan_alt_auth_conf.php');
 define('ALT_AUTH_ACTION', 'main');
 
@@ -40,7 +39,7 @@ if (isset($_POST['updateprefs']))
 	save_prefs();
 	
 	$_POST   = array();
-	$message = LAN_ALT_AUTH_11;
+	$message = LAN_UPDATED;
 }
 
 $auth_dropdown = '';
@@ -53,10 +52,9 @@ foreach (alt_auth_get_authlist() as $a)
 
 if (varsettrue($message))  $ns->tablerender('', '<div style="text-align:center"><strong>'.$message.'</strong></div>');
 
-$ns->tablerender('<div style="text-align:center">'.LAN_ALT_3.'</div>', '
-			<div style="text-align:center">
+$text = '	<div style="text-align:center">
 				<form method="post" action="'.e_SELF.'">
-					<table style="width:95%" class="fborder" cellspacing="1" cellpadding="0">
+					<table class="fborder" style="'.ADMIN_WIDTH.'" cellspacing="1" cellpadding="0">
 						<tr>
 							<td style="width:70%" class="forumheader3">
 								'.LAN_ALT_2.':
@@ -98,12 +96,17 @@ $ns->tablerender('<div style="text-align:center">'.LAN_ALT_3.'</div>', '
 						<tr style="vertical-align:top"> 
 							<td colspan="2"  style="text-align:center" class="forumheader3">
 								<br />
-								<input class="button" type="submit" name="updateprefs" value="'.LAN_ALT_AUTH_10.'" />
+								<input class="button" type="submit" name="updateprefs" value="'.LAN_UPDATE.'" />
 							</td>
 						</tr>
 					</table>
 				</form>
-			</div>'
-);
+			</div>';
+
+
+$ns->tablerender(LAN_ALT_3,$text);
 
 require_once e_ADMIN.'footer.php';
+
+
+?>
