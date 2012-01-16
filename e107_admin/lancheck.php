@@ -71,7 +71,7 @@ class lancheck
 		if(isset($_POST['language_sel'])) // Verify
 		{
 			
-			$_SESSION['lancheck-errors-only'] 	= ($_POST['errorsonly']==1) ?  1 : 0;	
+			$_SESSION['lancheck-errors-only'] 	= ($_POST['errorsonly']==1 ) ?  1 : 0;	
 			$this->errorsOnly 					= ($_POST['errorsonly']==1) ?  TRUE : FALSE;
 			$this->check_all();
 			return TRUE;
@@ -150,10 +150,12 @@ class lancheck
 	
 		$core_text 	= $this->check_core_lanfiles($_POST['language']);
 		$core_admin = $this->check_core_lanfiles($_POST['language'],"admin/");
+		$plug_text = "";
+		$theme_text = "";
 	
 	
 		// Plugins -------------
-		$plug_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
+		$plug_header = "<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
 		<td class='fcaption'>".LAN_PLUGIN."</td>
 		<td class='fcaption'>".LAN_CHECK_16."</td>
@@ -168,10 +170,10 @@ class lancheck
 			}
 		}
 		
-		$plug_text .= "</table>";
+		$plug_footer = "</table>";
 	
 		// Themes  -------------
-		$theme_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
+		$theme_header = "<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
 		<td class='fcaption'>".LAN_CHECK_22."</td>
 		<td class='fcaption'>".LAN_CHECK_16."</td>
@@ -184,7 +186,7 @@ class lancheck
 				$theme_text .= $this->check_lanfiles('T',$them,"English",$_POST['language']);
 			}
 		}
-		$theme_text .= "</table>";
+		$theme_footer = "</table>";
 		
 		// -------------------------
 		
@@ -214,6 +216,7 @@ class lancheck
 		$message .= "
 		<br /><br />
 		<input type='hidden' name='language' value='".$_POST['language']."' />
+		<input type='hidden' name='errorsonly' value='".$_SESSION['lancheck-errors-only']."' />    
 	    <input type='submit' name='ziplang[".$_POST['language']."]' value=\"".$just_go_diz."\" class='button' onclick=\"this.value = '".$lan_pleasewait."'\" />
 	    <input type='submit' name='language_sel[".$_POST['language']."]' value=\"".$lang_sel_diz."\" class='button' />
 		</div>
@@ -221,6 +224,10 @@ class lancheck
 		</div>";
 		
 //	print_a($_SESSION['lancheck'][$_POST['language']]);
+
+		$plug_text = ($plug_text) ? $plug_header.$plug_text.$plug_footer : "<div>".LAN_OK."</div>";	
+		$theme_text = ($theme_text) ? $theme_header.$theme_text.$theme_footer : "<div>".LAN_OK."</div>";	
+
 			
 		$ns -> tablerender(LAN_CHECK_24.": ".$_POST['language'],$message);
 	
@@ -456,8 +463,15 @@ class lancheck
 		}
 
 		$footer = "</table>";
-	
-		return $header.$text.$footer;
+		
+		if($text)
+		{
+			return $header.$text.$footer;	
+		}
+		else
+		{
+		 	return "<div>".LAN_OK."</div>";
+		}
 	}
 
 
