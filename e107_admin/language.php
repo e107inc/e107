@@ -59,8 +59,6 @@ $message = "";
 
 
 
-
-
 if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 {
 
@@ -143,7 +141,7 @@ if (varset($_POST['ziplang']))
 	$_POST['language'] = key($_POST['ziplang']);
 	
 	// If no session data, scan before zipping. 	
-	if(!isset($_SESSION['lancheck_'.$_POST['language']]['total']) || $_SESSION['lancheck_'.$_POST['language']]['total']!='0')
+	if(!isset($_SESSION['lancheck'][$_POST['language']]['total']) || $_SESSION['lancheck'][$_POST['language']]['total']!='0')
 	{
 		$_POST['language_sel'] = $_POST['ziplang'];	
 		$lck->check_all('norender');
@@ -195,13 +193,13 @@ function share($newfile)
 	<br />...would like to contribute the following language pack for e107. (see attached)<br />:
 		
 	
-	<br />Missing Files: ".$_SESSION['lancheck_'.$_POST['language']]['file']."
-	<br />Bom Errors : ".$_SESSION['lancheck_'.$_POST['language']]['bom']."
-	<br />UTF Errors : ".$_SESSION['lancheck_'.$_POST['language']]['utf']."
-	<br />Definition Errors : ".$_SESSION['lancheck_'.$_POST['language']]['def']."
-	<br />Total Errors: ".$_SESSION['lancheck_'.$_POST['language']]['total']."
+	<br />Missing Files: ".$_SESSION['lancheck'][$_POST['language']]['file']."
+	<br />Bom Errors : ".$_SESSION['lancheck'][$_POST['language']]['bom']."
+	<br />UTF Errors : ".$_SESSION['lancheck'][$_POST['language']]['utf']."
+	<br />Definition Errors : ".$_SESSION['lancheck'][$_POST['language']]['def']."
+	<br />Total Errors: ".$_SESSION['lancheck'][$_POST['language']]['total']."
 	<br />
-	<br />XML file: ".$_SESSION['lancheck_'.$_POST['language']]['xml'];
+	<br />XML file: ".$_SESSION['lancheck'][$_POST['language']]['xml'];
 	
 	
 	
@@ -253,7 +251,7 @@ $debug .= "<br />mode=".$_GET['mode'];
 $debug .= "<br />lan=".$_GET['lan'];
 // $ns->tablerender("Debug",$debug);
 
-$rendered = $lck->init(); // Lancheck functions. 
+ $rendered = $lck->init(); // Lancheck functions. 
 
 if($action == "tools" && !$rendered)
 {
@@ -447,12 +445,15 @@ function show_tools()
 				'compatibility' => '&nbsp;'
 			);	
 		}
+		
+		$errFound = (isset($_SESSION['lancheck'][$language]['total']) && $_SESSION['lancheck'][$language]['total'] > 0) ?  TRUE : FALSE;
+		
 						
 		$text .= "<tr>
 			<td class='forumheader3' >".$language."</td>
 			<td class='forumheader3' >".$value['date']."</td>
 			<td class='forumheader3' >".$value['compatibility']."</td>
-			<td class='forumheader3' style='text-align:center' >".($ver == $value['compatibility'] || varset($_SESSION['lancheck_'.$language]['total']) =='0' ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td>
+			<td class='forumheader3' style='text-align:center' >".($ver != $value['compatibility'] || $errFound ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON )."</td>
 			<td class='forumheader3' style='text-align:center'><input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='button' />
 			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='button' onclick=\"this.value = '".$lan_pleasewait."'\" /></td>	
 			</tr>";
@@ -675,16 +676,16 @@ function zip_up_lang($language)
 	$ret = array();
 	$ret['file'] = "";
 	
-	if($_SESSION['lancheck_'.$language]['total'] > 0)
+	if($_SESSION['lancheck'][$language]['total'] > 0)
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
 		$message = (defined('LANG_LAN_34')) ? LANG_LAN_34 : "Please verify and correct the remaining [x] error(s) before attempting to create a language-pack.";
-		$ret['message'] = str_replace("[x]",$_SESSION['lancheck_'.$language]['total'],$message);
+		$ret['message'] = str_replace("[x]",$_SESSION['lancheck'][$language]['total'],$message);
 		return $ret;		
 	}
 		
-	if(!isset($_SESSION['lancheck_'.$language]))
+	if(!isset($_SESSION['lancheck'][$language]))
 	{
 		$ret = array();
 		$ret['error'] = TRUE;
@@ -692,7 +693,7 @@ function zip_up_lang($language)
 		return $ret;	
 	}
 	
-	if(varset($_POST['contribute_pack']) && varset($_SESSION['lancheck_'.$language]['total']) !='0')
+	if(varset($_POST['contribute_pack']) && varset($_SESSION['lancheck'][$language]['total']) !='0')
 	{
 		$ret['error'] = TRUE;
 		$ret['message'] = (defined("LANG_LAN_29")) ? LANG_LAN_29 : "You should correct the remaining errors before contributing your language pack.";	
@@ -784,11 +785,11 @@ function zip_up_lang($language)
 			if(file_put_contents($fileName,$fileData))
 			{
 				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');				
-				$_SESSION['lancheck_'.$language]['xml'] = "Yes";
+				$_SESSION['lancheck'][$language]['xml'] = "Yes";
 			}
 			else
 			{
-				$_SESSION['lancheck_'.$language]['xml'] = "No";	
+				$_SESSION['lancheck'][$language]['xml'] = "No";	
 			}
 			
 			@unlink($fileName);	

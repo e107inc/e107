@@ -51,6 +51,7 @@ class lancheck
 		global $ns,$tp;
 		
 		$acceptedLans = explode(",",e_LANLIST);
+	
 		
 		if(!isset($_SESSION['lancheck-core-image']))
 		{
@@ -60,11 +61,16 @@ class lancheck
 			
 			require_once(e_ADMIN."core_image.php");
 			
+			unset($core_image['e107_images'],$core_image['e107_files'],$core_image['e107_admin']);
+			
 			$_SESSION['lancheck-core-image'] = $core_image;	
 		}
+		
+
 			
 		if(isset($_POST['language_sel'])) // Verify
 		{
+			
 			$_SESSION['lancheck-errors-only'] 	= ($_POST['errorsonly']==1) ?  1 : 0;	
 			$this->errorsOnly 					= ($_POST['errorsonly']==1) ?  TRUE : FALSE;
 			$this->check_all();
@@ -134,12 +140,12 @@ class lancheck
 			
 		$_POST['language'] = key($_POST['language_sel']);
 
-		$_SESSION['lancheck_'.$_POST['language']] = array();
-		$_SESSION['lancheck_'.$_POST['language']]['file']	= 0;
-		$_SESSION['lancheck_'.$_POST['language']]['def']	= 0;
-		$_SESSION['lancheck_'.$_POST['language']]['bom']	= 0;
-		$_SESSION['lancheck_'.$_POST['language']]['utf']	= 0;
-		$_SESSION['lancheck_'.$_POST['language']]['total']	= 0;
+		$_SESSION['lancheck'][$_POST['language']] = array();
+		$_SESSION['lancheck'][$_POST['language']]['file']	= 0;
+		$_SESSION['lancheck'][$_POST['language']]['def']	= 0;
+		$_SESSION['lancheck'][$_POST['language']]['bom']	= 0;
+		$_SESSION['lancheck'][$_POST['language']]['utf']	= 0;
+		$_SESSION['lancheck'][$_POST['language']]['total']	= 0;
 	
 	
 		$core_text 	= $this->check_core_lanfiles($_POST['language']);
@@ -194,12 +200,12 @@ class lancheck
 		<form id='lancheck' method='post' action='".e_ADMIN."language.php?tools'>
 		<div>\n";
 		
-		$icon = ($_SESSION['lancheck_'.$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
+		$icon = ($_SESSION['lancheck'][$_POST['language']]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;	
 		
 		
 		$errors_diz = (defsettrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
 		
-		$message .= "<div>".$icon." ".$errors_diz.": ".$_SESSION['lancheck_'.$_POST['language']]['total']."</div>";	
+		$message .= "<div>".$icon." ".$errors_diz.": ".$_SESSION['lancheck'][$_POST['language']]['total']."</div>";	
 	
 		$just_go_diz = (defsettrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
 		$lang_sel_diz = (defsettrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
@@ -213,6 +219,8 @@ class lancheck
 		</div>
 	    </form>
 		</div>";
+		
+//	print_a($_SESSION['lancheck'][$_POST['language']]);
 			
 		$ns -> tablerender(LAN_CHECK_24.": ".$_POST['language'],$message);
 	
@@ -420,7 +428,7 @@ class lancheck
 						$er .= $this->check_lan_errors($English[$k],$check[$k],$sk);
 					}
 					
-					if($this->errorsOnly == TRUE && !$er)
+					if($this->errorsOnly == TRUE && !$er && !$utf_error && !$bom_error)
 					{
 						continue;		
 					}
@@ -516,8 +524,8 @@ class lancheck
 	
 	function checkLog($type='error',$count)
 	{
-		$_SESSION['lancheck_'.$_POST['language']][$type] += $count;
-		$_SESSION['lancheck_'.$_POST['language']]['total'] += $count;
+		$_SESSION['lancheck'][$_POST['language']][$type] += $count;
+		$_SESSION['lancheck'][$_POST['language']]['total'] += $count;
 	}
 	
 	
@@ -698,7 +706,7 @@ class lancheck
 					$er .= $this->check_lan_errors($baselang[$k],$check[$k_check],$sk);
 				}
 	
-				if($this->errorsOnly == TRUE && !$er)
+				if($this->errorsOnly == TRUE && !$er && !$utf_error && !$bom_error)
 				{
 					continue;		
 				}
