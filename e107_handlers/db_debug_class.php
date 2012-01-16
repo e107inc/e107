@@ -203,7 +203,7 @@ class e107_db_debug {
 		}
 
 		if ($badCount) {
-			$text .= "\n<table class='fborder'>\n";
+			$text .= "\n<table class='fborder debug-footer'>\n";
 			$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
@@ -220,7 +220,7 @@ class e107_db_debug {
 		// Optionally list good queries
 		//
 		if ($okCount && E107_DBG_SQLDETAILS) {
-			$text .= "\n<table class='fborder'>\n";
+			$text .= "\n<table class='fborder debug-footer'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
@@ -241,7 +241,7 @@ class e107_db_debug {
 		//
 		if (E107_DBG_SQLDETAILS) {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
-				$text .= "\n<table class='fborder' style='width: 100%;'>\n";
+				$text .= "\n<table class='fborder debug-footer' style='width: 100%;'>\n";
 				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br />".$cQuery['query']."</td></tr>\n";
 				if (isset($cQuery['explain'])) {
 					$text .= $cQuery['explain'];
@@ -348,7 +348,7 @@ class e107_db_debug {
 		// Stats by Table
 		//
 
-		$text .= "\n<table class='fborder'>\n";
+		$text .= "\n<table class='fborder debug-footer'>\n";
 
 		$bRowHeaders=FALSE;
 		$aSum=$this->aDBbyTable['core']; // create a template from the 'real' array
@@ -426,7 +426,7 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
-		$text = "<table class='fborder' style='width: 100%'>
+		$text = "<table class='fborder debug-footer' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>Shortcode / BBCode</b></td></tr>
 			<tr>
 			<td class='fcaption' style='width: 10%;'>Type</td>
@@ -455,8 +455,8 @@ class e107_db_debug {
 			return FALSE;
 		}
 		global $e107;
-		$text = "<table class='fborder' style='width: 100%'>
-			<tr><td class='fcaption' colspan='4'><b>Paths &amp; Variables</b></td></tr>
+		$text = "<table class='fborder debug-footer' style='width: 100%'>
+			<tr><td class='fcaption debug-footer-caption' colspan='4'><b>Paths &amp; Variables</b></td></tr>
 			<tr>
 			<td class='forumheader3'>\n";
 			
@@ -496,7 +496,7 @@ class e107_db_debug {
 		if (!E107_DBG_DEPRECATED){
 			return FALSE;
 		} else {
-			$text = "<table class='fborder' style='width: 100%'>
+			$text = "<table class='fborder debug-footer' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>The following deprecated functions were used:</b></td></tr>
 			<tr>
 			<td class='fcaption' style='width: 10%;'>Function</td>
@@ -554,7 +554,7 @@ class e107_db_debug {
 		// Dump the debug log
 		//
 
-		$text .= "\n<table class='fborder'>\n";
+		$text .= "\n<table class='fborder debug-footer'>\n";
 
 		$bRowHeaders=FALSE;
 		
@@ -578,7 +578,7 @@ class e107_db_debug {
 		if (!E107_DBG_INCLUDES) return FALSE;
 
 		$aIncList = get_included_files();
-		$text = "<table class='fborder'>\n";
+		$text = "<table class='fborder debug-footer'>\n";
 		$text .= "<tr><td class='forumheader3'>".
 							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $aIncList).
 							"&nbsp;</td></tr>\n";

@@ -179,4 +179,5 @@ table.bb-preimageselect { -moz-box-shadow: 2px 2px 4px #999; -webkit-box-shadow:
 .forumheader3 a, .forumheader2 a, .forumheader a {
 	color: #3399cc;
 }
+.debug-footer {color:white;}
 
