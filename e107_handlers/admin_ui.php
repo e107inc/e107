@@ -2079,6 +2079,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var e_plugin_pref|e_core_pref
 	 */
 	protected $_pref = null;
+	
+	/**
+	 * Prevent parsing table aliases more than once
+	 * @var boolean
+	 */
+	protected $_alias_parsed = false;
 
 	public function getBatchDelete()
 	{
@@ -2607,7 +2613,13 @@ class e_admin_controller_ui extends e_admin_controller
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
 				if(method_exists($this, $method)) // callback handling
 				{
-					return $this->$method($filter[1], $selected);
+					//return $this->$method($filter[1], $selected); selected?
+					// better approach - pass all values as method arguments
+					// NOTE - callbacks are allowed to return QUERY as a string, it'll be added in the WHERE clause
+					$args = array_slice($filter, 1);
+					e107::getMessage()->addDebug('Executing filter callback <strong>'.get_class($this).'::'.$method.'('.implode(', ', $args).')</strong>');
+
+					return call_user_func_array(array($this, $method), $args);
 				}
 				else // default handling
 				{
@@ -2920,13 +2932,21 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		list($filterField, $filterValue) = $searchFilter;
-
-		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
+		
+		if($searchFilter && is_array($searchFilter))
 		{
-			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
+			list($filterField, $filterValue) = $searchFilter;
+	
+			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
+			{
+				$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+			}
 		}
-
+		elseif($searchFilter && is_string($searchFilter))
+		{
+			// filter callbacks could add to WHERE clause
+			$searchQry[] = $searchFilter;
+		}
 
 		// main table should select everything
 		$tableSFieldsArr[] = $tablePath.'*';
@@ -3340,7 +3360,7 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 
 		// delete one by one - more control, less performance
-		// TODO - pass  afterDelete() callback to tree delete method?
+		// pass  afterDelete() callback to tree delete method
 		$set_messages = true;
 		foreach ($selected as $id)
 		{
