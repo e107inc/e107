@@ -2937,7 +2937,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		
+
 		if($searchFilter && is_array($searchFilter))
 		{
 			list($filterField, $filterValue) = $searchFilter;
@@ -2973,7 +2973,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$searchable_types = array('text', 'textarea', 'bbarea', 'user', 'email'); //method?
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types))
 			{
-				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";
+				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
 				if($isfilter)
 				{
 					$filterFrom[] = $var['__tableField'];
@@ -2981,8 +2981,6 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
-
-
 
 		if($isfilter)
 		{
@@ -3104,8 +3102,8 @@ class e_admin_controller_ui extends e_admin_controller
 		// where query
 		if(count($searchQry) > 0)
 		{
-			if(strpos($qry, ' WHERE ') !== false) $qry .= " WHERE ".implode(" AND ", $searchQry);
-			else  $qry .= " AND ".implode(" AND ", $searchQry);
+			// add more where details on the fly via $this->listQrySql['db_where'];
+			$qry .= " WHERE ".implode(" AND ", $searchQry);
 		}
 
 		// GROUP BY if needed
@@ -4149,6 +4147,23 @@ class e_admin_form_ui extends e_form
 		$controller = $this->getController();
 		$filter_pre = vartrue($controller->preFiliterMarkup);
 		$filter_post = vartrue($controller->postFiliterMarkup);
+		$filter_preserve_var = array();
+		// method requires controller - stanalone advanced usage not possible 
+		if($this->getController())
+		{
+			$get = $this->getController()->getQuery();
+			foreach ($get as $key => $value) 
+			{
+				if($key == 'searchquery' || $key == 'filter_options' || $key == 'etrigger_filter') continue;
+				$key = preg_replace('/[^\w]/', '', $key);
+				$filter_preserve_var[] = $this->hidden($key, rawurlencode($value));
+			}
+		}
+		else
+		{
+			$filter_preserve_var[] = $this->hidden('mode', $l[0]);
+			$filter_preserve_var[] = $this->hidden('action', $l[1]);
+		}
 		$text = "
 			<form method='get' action='".e_SELF."'>
 				<fieldset class='e-filter'>
@@ -4162,8 +4177,7 @@ class e_admin_form_ui extends e_form
 							".$this->renderBatchFilter('filter', $current_query[1])."
 						".$this->select_close()."
 						<div class='e-autocomplete'></div>
-						".$this->hidden('mode', $l[0])."
-						".$this->hidden('action', $l[1])."
+						".implode("\n", $filter_preserve_var)."
 						".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
 						<span class='indicator' style='display: none;'>
 							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />

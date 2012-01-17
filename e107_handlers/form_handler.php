@@ -1102,7 +1102,7 @@ class e_form
 				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= defset($val['title'], $val['title']);
 				$text .= ($val['url']) ? "</a>" : "";
-	            $text .= ($key == "options") ? $this->columnSelector($fieldarray, $columnPref) : "";
+	            $text .= ($key == "options" && !vartrue($val['noselector'])) ? $this->columnSelector($fieldarray, $columnPref) : "";
 				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : "";
 
 
@@ -1242,10 +1242,17 @@ class e_form
 
 				if($attributes['type']=='method') // Allow override with 'options' function.
 				{
-
 					$attributes['mode'] = "read";
-					return $this->options($field, $value, $attributes, $id);
-
+					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
+					{
+						$method = $attributes['method'];
+						return $this->$method($parms, $value, $id);
+						
+					}
+					elseif(method_exists($this, 'options'))
+					{
+						return $this->options($parms, $value, $id);
+					}
 				}
 
 				if(!$value)
@@ -1275,9 +1282,6 @@ class e_form
 					{
 						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
 					}
-
-
-
 				}
 				//$attributes['type'] = 'text';
 				return $value;
@@ -1888,7 +1892,7 @@ class e_form
 	public function renderListForm($form_options, $tree_models, $nocontainer = false)
 	{
 		$tp = e107::getParser();
-
+		$text = '';
 		foreach ($form_options as $fid => $options)
 		{
 			$tree_model = $tree_models[$fid];
@@ -1905,13 +1909,14 @@ class e_form
 			$formurl = $url.($query ? '?'.$query : '');
 			$fields = $options['fields'];
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
+			$legend_class = vartrue($options['legend_class'], 'e-hideme');
 
-	        $text = "
+	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
 					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
-						<legend class='e-hideme'>".$options['legend']."</legend>
+						<legend class='{$legend_class}'>".$options['legend']."</legend>
 						".vartrue($options['table_pre'])."
 						<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
 							".$this->colGroup($fields, $current_fields)."
@@ -1970,11 +1975,10 @@ class e_form
 				</div>
 				</form>
 			";
-			if(!$nocontainer)
-			{
-				$text = '<div class="e-container">'.$text.'</div>';
-			}
-
+		}
+		if(!$nocontainer)
+		{
+			$text = '<div class="e-container">'.$text.'</div>';
 		}
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
@@ -2114,7 +2118,7 @@ class e_form
 					$required = $this->getRequiredString();
 					$required_class = ' class="required-label"'; // TODO - add 'required-label' to the core CSS definitions
 					$required_help = true;
-					if($att['validate'])
+					if(vartrue($att['validate']))
 					{
 						// override
 						$model_required[$key] = array();
