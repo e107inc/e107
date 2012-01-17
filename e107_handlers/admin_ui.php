@@ -1848,12 +1848,17 @@ class e_admin_controller
 		if($mode) $request->setMode($mode);
 		if($action) $request->setAction($action);
 		if(!$path) $path = e_SELF;
+		
+		//prevent cache
+		header('Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: no-cache');
 
 		$url = $path.'?'.$request->buildQueryString($merge_query, false, $exclude_query);
 		// Transfer all messages to session
 		e107::getMessage()->moveToSession();
 		// write session data
 		session_write_close();
+
 		// do redirect
 		header('Location: '.$url);
 		exit;
@@ -3099,7 +3104,8 @@ class e_admin_controller_ui extends e_admin_controller
 		// where query
 		if(count($searchQry) > 0)
 		{
-			$qry .= " WHERE ".implode(" AND ", $searchQry);
+			if(strpos($qry, ' WHERE ') !== false) $qry .= " WHERE ".implode(" AND ", $searchQry);
+			else  $qry .= " AND ".implode(" AND ", $searchQry);
 		}
 
 		// GROUP BY if needed

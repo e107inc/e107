@@ -101,18 +101,34 @@ class admin_shortcodes
 		if (ADMIN)
 		{
 			global $e_sub_cat, $e_icon_array, $PLUGINS_DIRECTORY;
-			if (strstr(e_SELF, $PLUGINS_DIRECTORY))
+			if (e_CURRENT_PLUGIN)
 			{
-				if (is_readable('plugin.xml'))
+				$eplug_icon = '';
+				$eplug_folder = e_CURRENT_PLUGIN.'/';
+				if (is_readable(e_PLUGIN_DIR.'plugin.xml'))
 				{
 					$xml = e107::getXml();
 					/**
 					 *	@todo: folder and administration are deprecated. What replaces them?
+					 * XXX removed folder (as not needed), admininstration[icon] should be replaced with 'icon' only (root xml var), looking in adminlinks for icons isn't that easy
 					 */
 					$xml->filter = array('folder' => FALSE, 'administration' => FALSE);		// Just need one variable
-					$readFile = $xml->loadXMLfile('plugin.xml', true, true);
-					$eplug_icon = $readFile['folder'].'/'.$readFile['administration']['icon'];
-					$eplug_folder = $readFile['folder'];
+					$readFile = $xml->loadXMLfile(e_PLUGIN_DIR.'plugin.xml', 'advanced', true); 
+					
+					// TODO - the better way to go - simple!
+					//$eplug_icon = $readFile['icon'];
+					
+					if(isset($readFile['adminLinks']['link']) && is_array($readFile['adminLinks']['link']))
+					{
+						foreach ($readFile['adminLinks']['link'] as $data) 
+						{
+							if(isset($data['@attributes']['primary']) && $data['@attributes']['primary'] && vartrue($data['@attributes']['icon']))
+							{
+								$eplug_icon = $data['@attributes']['icon'];
+								break;
+							}
+						}
+					}
 				}
 				elseif (is_readable('plugin.php'))
 				{
@@ -123,7 +139,8 @@ class admin_shortcodes
 					$icon = E_32_CAT_PLUG;
 					return $icon;
 				}
-				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_icon)) ? "<img src='".e_PLUGIN_ABS.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
+				
+				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_folder.$eplug_icon)) ? "<img src='".e_PLUGIN_ABS.$eplug_folder.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
 			}
 			else
 			{
