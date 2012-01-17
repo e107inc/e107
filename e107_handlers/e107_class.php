@@ -149,7 +149,7 @@ class e107
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
-		'e_admin_icons'					 => '{e_HANDLER}admin_ui.php',
+		'e_admin_icons'					 => '{e_HANDLER}admin_handler.php',
 		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
 		'e_admin_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
