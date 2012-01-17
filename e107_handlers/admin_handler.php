@@ -96,8 +96,8 @@ class e_admin_icons
 		}
 		else
 		{
-			$this->path = e_IMAGE_ABS.'/admin_images/';
-			$this->relpath = e_IMAGE.'/admin_images/';
+			$this->path = e_IMAGE_ABS.'admin_images/';
+			$this->relpath = e_IMAGE.'admin_images/';
 		}
 	}
 	
@@ -111,6 +111,10 @@ class e_admin_icons
 	 */
 	public function url($name, $size = 16, $extension = 'png')
 	{
+		if($size)
+		{
+			$name .= '_'.$size;
+		}
 		return $this->path.$name.'.'.$extension;		
 	}
 	
@@ -129,14 +133,13 @@ class e_admin_icons
 		$_class = 'icon';
 		if($size)
 		{
-			$name .= '_'.$size;
 			$_class .= ' S'.$size;
 		}
 		if($class)
 		{
 			$_class .= ' '.$class;
 		}
-		$src = $this->url($name, $extension);
+		$src = $this->url($name, $size, $extension);
 		
 		return '<img src="'.$src.'" alt="'.$alt.'" class="'.$_class.'" />';
 	}	
@@ -151,6 +154,10 @@ class e_admin_icons
 	 */
 	public function path($name, $size = 16, $extension = 'png')
 	{
+		if($size)
+		{
+			$name .= '_'.$size;
+		}
 		return $this->relpath.$name.'.'.$extension;
 	}
 }
