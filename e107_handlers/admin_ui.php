@@ -1242,14 +1242,14 @@ class e_admin_dispatcher
 				//give access to current request object, user defined init
 				$this->_current_controller->setRequest($this->getRequest())->init();
 			}
+			// Known controller (found in e_admin_dispatcher::$modes), class not found exception
 			else
 			{
-				//TODO - get default controller (core or user defined), set Action for
-				//'Controller not found' page, add message(?), break
+				// TODO - admin log
 				// get default controller
 				$this->_current_controller = $this->getDefaultController();
 				// add messages
-				e107::getMessage()->add('Can\'t find class '.($class_name ? $class_name : 'n/a'), E_MESSAGE_ERROR)
+				e107::getMessage()->add('Can\'t find class <strong>&quot;'.($class_name ? $class_name : 'n/a').'&quot;</strong> for controller <strong>&quot;'.ucfirst($request->getModeName()).'&quot;</strong>', E_MESSAGE_ERROR)
 					->add('Requested: '.e_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
 				//
 				$request->setMode($this->getDefaultControllerName())->setAction('e404');
@@ -1271,6 +1271,19 @@ class e_admin_dispatcher
 			}
 			$this->_current_controller->setParam('modes', $this->modes);
 
+		}
+		// Not known controller (not found in e_admin_dispatcher::$modes) exception
+		else
+		{
+			var_dump($this->getDefaultControllerName(), $this->modes);
+			// TODO - admin log
+			$this->_current_controller = $this->getDefaultController();
+			// add messages
+			e107::getMessage()->add('Can\'t find class for controller <strong>&quot;'.ucfirst($request->getModeName()).'&quot;</strong>', E_MESSAGE_ERROR)
+				->add('Requested: '.e_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
+			// go to not found page
+			$request->setMode($this->getDefaultControllerName())->setAction('e404');
+			$this->_current_controller->setRequest($request)->init();
 		}
 
 		return $this;
