@@ -942,7 +942,25 @@ class e_admin_dispatcher
 	 *
 	 * @var array
 	 */
-	protected $modes;
+	protected $modes = array();
+	
+	/**
+	 * Optional - access restrictions per action 
+	 * Access array in format (similar to adminMenu)
+	 * 'MODE/ACTION' => e_UC_* (userclass constant, or custom userclass ID if dynamically set) 
+	 *
+	 * @var array
+	 */
+	protected $access = array();
+	
+	/**
+	 * Optional - generic entry point access restriction (via getperms()) 
+	 * Value of this for plugins would be always 'P'.
+	 * More detailed access control is granted with $access and $modes[MODE]['perm'] or  $modes[MODE]['userclass'] settings
+	 *
+	 * @var string
+	 */
+	protected $perm;
 
 	/**
 	 * @var string
@@ -964,6 +982,8 @@ class e_admin_dispatcher
 	 * Optional (set by child class).
 	 * Required for admin menu render
 	 * Format: 'mode/action' => array('caption' => 'Link title'[, 'perm' => '0', 'url' => '{e_PLUGIN}plugname/admin_config.php'], ...);
+	 * Note that 'perm' and 'userclass' restrictions are inherited from the $modes, $access and $perm, so you don't have to set that vars if 
+	 * you don't need any additional 'visual' control.
 	 * All valid key-value pair (see e_admin_menu function) are accepted.
 	 * @var array
 	 */
@@ -1009,12 +1029,14 @@ class e_admin_dispatcher
 
 		// register itself
 		e107::setRegistry('admin/ui/dispatcher', $this);
+		
+		// permissions and restrictions
+		$this->checkAccess();
 
 		if($auto_observe)
 		{
 			$this->runObservers(true);
 		}
-
 	}
 
 	/**
@@ -1023,6 +1045,63 @@ class e_admin_dispatcher
 	 */
 	public function init()
 	{
+	}
+	
+	public function checkAccess()
+	{
+		$request = $this->getRequest();
+		$currentMode = $request->getMode();
+
+		// access based on mode setting - general controller access
+		if(!$this->checkModeAccess($currentMode))
+		{
+			$request->setAction('e403');
+			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+				->addDebug('Mode access restriction triggered.');
+			return false;
+		}
+		
+		// access based on $access settings - access per action
+		$currentAction = $request->getAction();
+		$route = $currentMode.'/'.$currentAction;
+		if(!$this->checkRouteAccess($route))
+		{
+			$request->setAction('e403');
+			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+				->addDebug('Route access restriction triggered.');
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function checkModeAccess($mode)
+	{
+		// mode userclass (former check_class())
+		if(isset($this->modes[$mode]['userclass']) && !e107::getUser()->checkClass($this->modes[$mode]['userclass'], false))
+		{
+			return false;
+		}
+		// mode admin permission (former getperms())
+		if(isset($this->modes[$mode]['perm']) && !e107::getUser()->checkAdminPerms($this->modes[$mode]['perm']))
+		{
+			return false;
+		}
+		// generic dispatcher admin permission  (former getperms())
+		if(null !== $this->perm && !e107::getUser()->checkAdminPerms($this->perm))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public function checkRouteAccess($route)
+	{
+		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -1093,12 +1172,13 @@ class e_admin_dispatcher
 	/**
 	 * Dispatch & render all
 	 *
-	 * @param boolean $return if true, array(title, body, render_mod) will be returned
+	 * @param boolean $run_header see runObservers()
+	 * @param boolean $return see runPage()
 	 * @return string|array current admin page body
 	 */
-	public function run($return = false)
+	public function run($run_header = true, $return = 'render')
 	{
-		return $this->runObserver()->renderPage($return);
+		return $this->runObservers()->runPage($return);
 	}
 
 	/**
@@ -1275,7 +1355,6 @@ class e_admin_dispatcher
 		// Not known controller (not found in e_admin_dispatcher::$modes) exception
 		else
 		{
-			var_dump($this->getDefaultControllerName(), $this->modes);
 			// TODO - admin log
 			$this->_current_controller = $this->getDefaultController();
 			// add messages
@@ -1321,6 +1400,12 @@ class e_admin_dispatcher
 		{
 			$tmp = explode('/', trim($key, '/'), 3);
 
+			// sync with mode/route access
+			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.$tmp[1]))
+			{
+				continue;
+			}
+
 			// custom 'selected' check
 			if(isset($val['selected']) && $val['selected']) $selected = $val['selected'] === true ? $key : $val['selected'];
 
@@ -1348,14 +1433,15 @@ class e_admin_dispatcher
 					break;
 				}
 
-				if($val['perm']!= null) // check perms
-				{
-					if(getperms($val['perm']))
-					{
-						$var[$key][$k2] = $v;
-					}
-				}
-				else
+				// Access check done above
+				// if($val['perm']!= null) // check perms
+				// {
+					// if(getperms($val['perm']))
+					// {
+						// $var[$key][$k2] = $v;
+					// }
+				// }
+				// else
 				{
 					$var[$key][$k2] = $v;
 				}
@@ -1371,7 +1457,9 @@ class e_admin_dispatcher
 			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
 			$var[$key]['perm'] = $val['perm'];	*/
 		}
-
+		
+		if(empty($var)) return '';
+		
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
@@ -1400,6 +1488,22 @@ class e_admin_controller
 	 * @var string default action name
 	 */
 	protected $_default_action = 'index';
+	
+	/**
+	 * List (numerical array) of only allowed for this controller actions
+	 * Useful to grant access for certain pre-defined actions only
+	 * XXX - we may move this in dispatcher (or even having it also there), still searching the most 'friendly' way
+	 * @var array
+	 */
+	protected $allow = array();
+	
+	/**
+	 * List (numerical array) of only disallowed for this controller actions
+	 * Useful to restrict access for certain pre-defined actions only
+	 * XXX - we may move this in dispatcher (or even having it also there), still searching the most 'friendly' way
+	 * @var array
+	 */
+	protected $disallow = array();
 
 	/**
 	 * Constructor
@@ -1411,6 +1515,36 @@ class e_admin_controller
 		$this->setRequest($request)
 			->setResponse($response)
 			->setParams($params);
+			
+		$this->checkAccess();
+	}
+
+	/**
+	 * Check against allowed/disallowed actions
+	 */
+	public function checkAccess()
+	{
+		$request = $this->getRequest();
+		$currentAction = $request->getAction();
+
+		// access based on mode setting - general controller access
+		if(!empty($this->disallow) && in_array($currentAction, $this->disallow))
+		{
+			$request->setAction('e403');
+			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+				->addDebug('Controller action disallowed restriction triggered.');
+			return false;
+		}
+		
+		// access based on $access settings - access per action
+		if(!empty($this->allow) && !in_array($currentAction, $this->allow))
+		{
+			$request->setAction('e403');
+			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+				->addDebug('Controller action not in allowed list restriction triggered.');
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -1519,6 +1653,15 @@ class e_admin_controller
 	{
 		$this->_response = $response;
 		return $this;
+	}
+	
+	/**
+	 * Get current dispatcher object
+	 * @return e_admin_dispatcher
+	 */
+	public function getDispatcher()
+	{
+		return e107::getRegistry('admin/ui/dispatcher');
 	}
 
 	/**
@@ -1838,6 +1981,23 @@ class e_admin_controller
 
 
 	public function E404AjaxPage()
+	{
+		exit;
+	}
+	
+
+	public function E403Observer()
+	{
+		$this->getResponse()->setTitle(LAN_UI_403_TITLE_ERROR);
+	}
+
+	public function E403Page()
+	{
+		return '<div class="center">'.LAN_UI_403_BODY_ERROR.'</div>'; // TODO - lan
+	}
+
+
+	public function E403AjaxPage()
 	{
 		exit;
 	}

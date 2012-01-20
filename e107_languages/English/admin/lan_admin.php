@@ -343,6 +343,8 @@ define('LAN_UI_BATCHDEL_ERROR', 'Batch delete not allowed!');
 define('LAN_UI_404_BODY_ERROR', 'Requested page was not found!');
 define('LAN_UI_404_TITLE_ERROR', 'Page Not Found');
 define('LAN_UI_404_METHOD_ERROR', 'Action <strong>%1$s</strong> not found!');
+define('LAN_UI_403_BODY_ERROR', 'Access to the requested page is denied.');
+define('LAN_UI_403_TITLE_ERROR', 'Access denied');
 define('LAN_UI_FORM_METHOD_ERROR', 'FATAL ERROR: The field name <strong>%1$s</strong> is not allowed. Please rename the key <strong>%1$s</strong> to something else in your fields array and database table (if required).');
 
 define('LAN_UI_BATCH_UPDATE_SUCCESS', '<strong>%1$s</strong> set for <strong>%2$d</strong> record(s).');

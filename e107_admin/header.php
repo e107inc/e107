@@ -422,7 +422,8 @@ if ($e107_popup != 1)
 	 * $e107_vars['action']['text'] -> link title
 	 * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
 	 * $e107_vars['action']['image'] -> (new) image tag
-	 * $e107_vars['action']['perm'] -> permissions
+	 * $e107_vars['action']['perm'] -> permissions via getperms()
+	 * $e107_vars['action']['userclass'] -> user class permissions via check_class()
 	 * $e107_vars['action']['include'] -> additional <a> tag attributes
 	 * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
 	 * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
@@ -502,7 +503,13 @@ if ($e107_popup != 1)
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 		foreach (array_keys($e107_vars) as $act)
 		{
-			if (vartrue($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
+			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
+			{
+				continue;
+			}
+			
+			// check class so that e.g. e_UC_NOBODY will result no permissions granted (even for main admin)
+			if (isset($e107_vars[$act]['userclass']) && !e107::getUser()->checkClass($e107_vars[$act]['userclass'], false)) // check userclass perms 
 			{
 				continue;
 			}
