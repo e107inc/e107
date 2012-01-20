@@ -30,7 +30,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
 
 /*
 Fixed classes occupy a numeric block from e_UC_SPECIAL_BASE to e_UC_SPECIAL_END, plus zero = e_UC_PUBLIC
-(Note that in 0.7, class numbers stopped at 255. Now they can be up to 65535).
+(Note that in 0.7/1.0, class numbers stopped at 255. Now they can be up to 65535).
 For info:
 define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -75,7 +75,8 @@ class user_class
 		$this->sql_r = e107::getDb('sql_r');
 		$this->isAdmin = FALSE;
 
-		$this->fixed_classes = array(e_UC_PUBLIC => UC_LAN_0,
+		$this->fixed_classes = array(
+							e_UC_PUBLIC => UC_LAN_0,
 							e_UC_GUEST => UC_LAN_1,
 							e_UC_NOBODY => UC_LAN_2,
 							e_UC_MEMBER => UC_LAN_3,
@@ -315,15 +316,22 @@ class user_class
 
 
 
-	/** Given a comma separated list, returns the minimum number of class memberships required to achieve this (i.e. strips classes 'above' another in the tree)
+	/** 
+	 *	Given a comma separated list, returns the minimum number of class memberships required to achieve this (i.e. strips classes 'above' another in the tree)
 	 *	Requires the class tree to have been initialised
+	 *
 	 *	@param array|string $classList - the complete list of current class memberships
-	 *	@return string|array of user classes; format is the same as $inClasses
+	 *
+	 *	@return string|array of user classes; format is the same as $classList
 	 */
 	public function normalise_classes($classList)
 	{
-		$asArray = TRUE;
-		if (!is_array($inClasses))
+		if (is_array($classList))
+		{
+			$asArray = TRUE;
+			$oldClasses = $classList;
+		}
+		else
 		{
 			$asArray = FALSE;
 			$oldClasses = explode(',',$classList);
@@ -349,8 +357,10 @@ class user_class
 
 
 
-	/** Generate a dropdown list of user classes from which to select - virtually as the deprecated r_userclass() function did
+	/** 
+	 *	Generate a dropdown list of user classes from which to select - virtually as the deprecated r_userclass() function did
 	 *	[ $mode parameter of r_userclass() removed - $optlist is more flexible) ]
+	 *
 	 * 	@param string $fieldname - name of select list
 	 *	@param mixed $curval - current selected value (empty string if no current value)
 	 *	@param string $optlist - comma-separated list of classes/class types to be included in the list
@@ -369,7 +379,7 @@ class user_class
 			blank - puts an empty option at the top of select dropdowns
 
 			filter - only show those classes where member is in a class permitted to view them - e.g. as the new 'visible to' field - added for 0.8
-			force  - show all classes (subject to the other options, including matchclass) - added for 0.8
+			force  - show all classes (subject to the other options, including matchclass) - added for 2.0
 
 			no-excludes - if present, doesn't show the 'not member of' list
 
