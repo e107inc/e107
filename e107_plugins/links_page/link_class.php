@@ -18,10 +18,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class linkclass {
 
-    function LinkPageDefaultPrefs(){
+define('URL_SEPARATOR','X');		// Used in names of 'inc' and 'dec' fields
 
+class linkclass 
+{
+    function LinkPageDefaultPrefs()
+	{
         $linkspage_pref['link_page_categories'] = "0";
         $linkspage_pref['link_submit'] = "0";
         $linkspage_pref['link_submit_class'] = "0";
@@ -94,11 +97,13 @@ class linkclass {
         return $linkspage_pref;
     }
 
-    function getLinksPagePref(){
+    function getLinksPagePref()
+	{
         global $sql, $eArrayStorage;
 
         $num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
-        if ($num_rows == 0) {
+        if ($num_rows == 0) 
+		{
             $linkspage_pref = $this->LinkPageDefaultPrefs();
             $tmp = $eArrayStorage->WriteArray($linkspage_pref);
             $sql -> db_Insert("core", "'links_page', '{$tmp}' ");
@@ -110,14 +115,20 @@ class linkclass {
         return $linkspage_pref;
     }
 
-    function UpdateLinksPagePref(){
+
+    function UpdateLinksPagePref()
+	{
         global $sql, $eArrayStorage, $tp;
 
         $num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
-        if ($num_rows == 0) {
-            $sql -> db_Insert("core", "'links_page', '' ");
-        }else{
-            $row = $sql -> db_Fetch();
+        if ($num_rows == 0)
+		{
+            $sql -> db_Insert("core", "'links_page', '' ");	// Create dummy entry if none present
+        }
+		else
+		{
+            $row = $sql->db_Fetch(MYSQL_ASSOC);
+
 
             //assign new preferences
             foreach($_POST as $k => $v){
@@ -134,14 +145,18 @@ class linkclass {
         return $linkspage_pref;
     }
 
-	function ShowNextPrev($from='0', $number, $total){
+
+	function ShowNextPrev($from='0', $number, $total)
+	{
 		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE, $pref;
 
 		$number = (e_PAGE == 'admin_linkspage_config.php' ? '20' : $number);
-		if($total<=$number){
+		if($total<=$number)
+		{
 			return;
 		}
-		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"])){
+		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]))
+		{
 			$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 			$parms = $total.",".$number.",".$from.",".$np_querystring."";
 			$LINK_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -158,7 +173,9 @@ class linkclass {
 		}
 	}
 
-    function setPageTitle(){
+
+    function setPageTitle()
+	{
         global $sql, $qs, $linkspage_pref;
 
         //show all categories
@@ -206,8 +223,8 @@ class linkclass {
 
 
 
-    function parse_link_append($rowl){
-
+    function parse_link_append($rowl)
+	{
         global $tp, $linkspage_pref;
         if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
             $link_open_type = $rowl['link_open'];
@@ -238,7 +255,8 @@ class linkclass {
 
 
 
-    function showLinkSort($mode=''){
+    function showLinkSort($mode='')
+	{
         global $rs, $ns, $qs, $linkspage_pref;
 
         $check = "";
@@ -291,7 +309,9 @@ class linkclass {
         return $sotext;
     }
 
-    function parseOrderCat($orderstring){
+
+    function parseOrderCat($orderstring)
+	{
         if(substr($orderstring,6) == "heading"){
             $orderby        = "link_category_name";
             $orderby2       = "";
@@ -309,7 +329,8 @@ class linkclass {
         return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
     }
 
-    function parseOrderLink($orderstring){
+	function parseOrderLink($orderstring)
+	{
         if(substr($orderstring,6) == "heading"){
             $orderby        = "link_name";
             $orderby2       = "";
@@ -333,7 +354,8 @@ class linkclass {
         return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
     }
 
-    function getOrder($mode=''){
+	function getOrder($mode='')
+	{
         global $qs, $linkspage_pref;
 
         if(isset($qs[0]) && substr($qs[0],0,5) == "order"){
@@ -369,12 +391,14 @@ class linkclass {
         return $order;
     }
 
-    function show_message($message, $caption='') {
+    function show_message($message, $caption='') 
+	{
         global $ns;
         $ns->tablerender($caption, "<div style='text-align:center'><b>".$message."</b></div>");
     }
 
-    function uploadLinkIcon(){
+    function uploadLinkIcon()
+	{
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -382,9 +406,11 @@ class linkclass {
         $uploaded = file_upload($pathicon);
 
         $icon = "";
-        if($uploaded) {
+        if($uploaded) 
+		{
             $icon = $uploaded[0]['name'];
-            if($_POST['link_resize_value']){
+            if($_POST['link_resize_value'])
+			{
                 require_once(e_HANDLER."resize_handler.php");
                 resize_image($pathicon.$icon, $pathicon.$icon, $_POST['link_resize_value'], "nocopy");
             }
@@ -393,7 +419,8 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function uploadCatLinkIcon(){
+	function uploadCatLinkIcon()
+	{
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -401,9 +428,11 @@ class linkclass {
         $uploaded = file_upload($pathicon);
 
         $icon = "";
-        if($uploaded) {
+        if($uploaded) 
+		{
             $icon = $uploaded[0]['name'];
-            if($_POST['link_cat_resize_value']){
+            if($_POST['link_cat_resize_value'])
+			{
                 require_once(e_HANDLER."resize_handler.php");
                 resize_image($pathicon.$icon, $pathicon.$icon, $_POST['link_cat_resize_value'], "nocopy");
             }
@@ -412,66 +441,89 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function dbCategoryCreate() {
+
+    function dbCategoryCreate() 
+	{
         global $sql, $tp;
         $link_t = $sql->db_Count("links_page_cat", "(*)");
-        $sql->db_Insert("links_page_cat", " '0', '".$tp -> toDB($_POST['link_category_name'])."', '".$tp -> toDB($_POST['link_category_description'])."', '".$tp -> toDB($_POST['link_category_icon'])."', '".($link_t+1)."', '".$tp -> toDB($_POST['link_category_class'])."', '".time()."' ");
+        $linkData = array();
+		$linkData['link_category_name'] = $tp -> toDB($_POST['link_category_name']);
+		$linkData['link_category_description'] = $tp -> toDB($_POST['link_category_description']);
+		$linkData['link_category_icon'] = $tp -> toDB($_POST['link_category_icon']);
+		$linkData['link_category_order'] = $link_t+1;
+		$linkData['link_category_class'] = $tp -> toDB($_POST['link_category_class']);
+		$linkData['link_category_datestamp'] = time();
+		$sql->db_Insert('links_page_cat', $linkData);
         $this->show_message(LCLAN_ADMIN_4);
     }
-    function dbCategoryUpdate() {
+	function dbCategoryUpdate() 
+	{
         global $sql, $tp;
         $time = ($_POST['update_datestamp'] ? time() : ($_POST['link_category_datestamp'] != "0" ? $_POST['link_category_datestamp'] : time()) );
         $sql->db_Update("links_page_cat", "link_category_name ='".$tp -> toDB($_POST['link_category_name'])."', link_category_description='".$tp -> toDB($_POST['link_category_description'])."', link_category_icon='".$tp -> toDB($_POST['link_category_icon'])."', link_category_order='".$tp -> toDB($_POST['link_category_order'])."', link_category_class='".$tp -> toDB($_POST['link_category_class'])."', link_category_datestamp='".intval($time)."'   WHERE link_category_id='".intval($_POST['link_category_id'])."'");
         $this->show_message(LCLAN_ADMIN_5);
     }
 
-    function dbOrderUpdate($order) {
+
+    function dbOrderUpdate($order) 
+	{
         global $sql;
-        foreach ($order as $order_id) {
+		foreach ($order as $order_id) 
+		{
             $tmp = explode(".", $order_id);
-        $sql->db_Update("links_page", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
+			$sql->db_Update("links_page", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
         }
         $this->show_message(LCLAN_ADMIN_9);
     }
 
-    function dbOrderCatUpdate($order) {
+
+	function dbOrderCatUpdate($order) 
+	{
         global $sql;
-        foreach ($order as $order_id) {
+		foreach ($order as $order_id) 
+		{
             $tmp = explode(".", $order_id);
             $sql->db_Update("links_page_cat", "link_category_order=".intval($tmp[1])." WHERE link_category_id=".intval($tmp[0]));
         }
         $this->show_message(LCLAN_ADMIN_9);
     }
 
-    function dbOrderUpdateInc($inc) {
+
+	function dbOrderUpdateInc($linkid, $link_order, $location) 
+	{
         global $sql;
-        $tmp = explode(".", $inc);
-        $linkid = intval($tmp[0]);
-        $link_order = intval($tmp[1]);
-        $location = $tmp[2];
-        if(isset($location)){
-            $location = intval($location);
-            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location'");
-            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location'");
-        }else{
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_order='".($link_order-1)."' ");
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_id='$linkid' ");
+		//$tmp = explode(".", $inc);
+        //$linkid = intval($tmp[0]);
+        //$link_order = intval($tmp[1]);
+        //$location = $tmp[2];
+        if($location)
+		{
+            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category=".$location);
+            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='{$linkid}' AND link_category=".$location);
+        }
+		else
+		{
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_order=".($link_order-1));
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_id=".$linkid);
         }
     }
 
-    function dbOrderUpdateDec($dec) {
+	function dbOrderUpdateDec($linkid, $link_order, $location) 
+	{
         global $sql;
-        $tmp = explode(".", $dec);
-        $linkid = intval($tmp[0]);
-        $link_order = intval($tmp[1]);
-        $location = $tmp[2];
-        if(isset($location)){
-            $location = intval($location);
-            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location'");
-            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location'");
-        }else{
+        //$tmp = explode(".", $dec);
+        //$linkid = intval($tmp[0]);
+        //$link_order = intval($tmp[1]);
+        //$location = $tmp[2];
+        if($location)
+		{
+            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order=".($link_order+1)." AND link_category=".$location);
+            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='{$linkid}' AND link_category=".$location);
+        }
+		else
+		{
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_order='".($link_order+1)."' ");
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id=".$linkid);
         }
     }
 
@@ -555,7 +607,8 @@ class linkclass {
         }
     }
 
-    function show_link_create() {
+	function show_link_create()
+	{
         global $sql, $rs, $qs, $ns, $fl, $linkspage_pref;
 
         $row['link_category']       = "";
@@ -567,13 +620,16 @@ class linkclass {
         $row['link_class']          = "";
         $link_resize_value          = (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
 
-        if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
-            if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
+        if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) 
+		{
+            if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) 
+			{
                 $row = $sql->db_Fetch();
             }
         }
 
-        if (isset($qs[1]) && $qs[1] == 'sn') {
+        if (isset($qs[1]) && $qs[1] == 'sn') 
+		{
             if ($sql->db_Select("tmp", "*", "tmp_time='".intval($qs[2])."'")) {
                 $row = $sql->db_Fetch();
                 $submitted                  = explode("^", $row['tmp_info']);
@@ -723,6 +779,11 @@ class linkclass {
         $ns->tablerender(LCLAN_ITEM_24, $text);
     }
 
+
+
+	/**
+	 *		Display list of links within a particular category
+	 */
     function show_links() 
 	{
         global $sql, $qs, $rs, $ns, $tp, $from;
@@ -783,15 +844,25 @@ class linkclass {
                         }
                     }
                 }
-                if($row['link_order'] == "1"){
+
+				$name_suffix = URL_SEPARATOR.$linkid.URL_SEPARATOR.$row['link_order'].URL_SEPARATOR.$row['link_category'];
+                if($row['link_order'] == "1")
+				{
                     $up = "&nbsp;&nbsp;&nbsp;";
-                }else{
-                    $up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' value='".$linkid.".".$row['link_order'].".".$row['link_category']."' name='inc' />";
                 }
-                if($row['link_order'] == $link_total){
+				else
+				{
+					//$up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' value='".$linkid.".".$row['link_order'].".".$row['link_category']."' name='inc' />";
+					$up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' name='inc".$name_suffix."' />";
+                }
+                if($row['link_order'] == $link_total)
+				{
                     $down = "&nbsp;&nbsp;&nbsp;";
-                }else{
-                    $down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' value='".$linkid.".".$row['link_order'].".".$row['link_category']."' name='dec' />";
+                }
+				else
+				{
+                    //$down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' value='".$linkid.".".$row['link_order'].".".$row['link_category']."' name='dec' />";
+					$down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' name='dec".$name_suffix."' />";
                 }
                 $text .= "
                 <tr>
@@ -923,7 +994,15 @@ class linkclass {
         unset($row['link_category_name'], $row['link_category_description'], $row['link_category_icon']);
     }
 
-    function show_categories($mode) {
+
+
+	/**
+	 *	Show a list of categories
+	 *
+	 *	@param string $mode = (cat)
+	 */
+	function show_categories($mode) 
+	{
         global $sql, $rs, $ns, $tp, $fl;
 
         if ($category_total = $sql->db_Select("links_page_cat", "*", "ORDER BY link_category_order ASC", "mode=no_where")) {
@@ -942,11 +1021,15 @@ class linkclass {
             }
             $text .= "
             </tr>";
-            while ($row = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch()) 
+			{
                 $linkcatid = $row['link_category_id'];
-                if ($row['link_category_icon']) {
+				if ($row['link_category_icon']) 
+				{
                     $img = (strstr($row['link_category_icon'], "/") ? "<img src='".e_BASE.$row['link_category_icon']."' alt='' style='vertical-align:middle' />" : "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$row['link_category_icon']."' alt='' style='vertical-align:middle' />");
-                } else {
+                } 
+				else 
+				{
                     $img = "&nbsp;";
                 }
                 $text .= "
@@ -956,16 +1039,26 @@ class linkclass {
                     <a href='".e_PLUGIN_ABS."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a>
                     ".$row['link_category_name']."<br /><span class='smalltext'>".$row['link_category_description']."</span>
                 </td>";
-                if($mode == "cat"){
-                    if($row['link_category_order'] == "1"){
+				if($mode == "cat")
+				{
+					$name_suffix = URL_SEPARATOR.$linkcatid.URL_SEPARATOR.$row['link_category_order'].URL_SEPARATOR;
+                    if($row['link_category_order'] == "1")
+					{
                         $up = "&nbsp;&nbsp;&nbsp;";
-                    }else{
-                        $up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' value='".$linkcatid.".".$row['link_category_order']."' name='inc' />";
                     }
-                    if($row['link_category_order'] == $category_total){
+					else
+					{
+						//$up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' value='".$linkcatid.".".$row['link_category_order']."' name='inc' />";
+						$up = "<input type='image' src='".LINK_ICON_ORDER_UP_BASE."' name='inc".$name_suffix."' />";
+                    }
+                    if($row['link_category_order'] == $category_total)
+					{
                         $down = "&nbsp;&nbsp;&nbsp;";
-                    }else{
-                        $down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' value='".$linkcatid.".".$row['link_category_order']."' name='dec' />";
+                    }
+					else
+					{
+						//$down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' value='".$linkcatid.".".$row['link_category_order']."' name='dec' />";
+						$down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' name='dec".$name_suffix."' />";
                     }
                     $text .= "
                     <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
@@ -978,19 +1071,23 @@ class linkclass {
                     </td>
                     <td style='width:10%; text-align:center' class='forumheader3'>
                         <select name='link_category_order[]' class='tbox'>";
-                        for($a = 1; $a <= $category_total; $a++) {
+                        for($a = 1; $a <= $category_total; $a++) 
+						{
                             $text .= $rs -> form_option($a, ($row['link_category_order'] == $a ? "1" : "0"), $linkcatid.".".$a, "");
                         }
                         $text .= $rs -> form_select_close()."
                     </td>";
-                }else{
+                }
+				else
+				{
                     $text .= "<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
                     <a href='".e_SELF."?link.view.".$linkcatid."' title='".LCLAN_CAT_9."'>".LINK_ICON_EDIT."</a></td>";
                 }
                 $text .= "
                 </tr>\n";
             }
-            if($mode == "cat"){
+            if($mode == "cat")
+			{
                 $text .= "
                 <tr>
                 <td class='forumheader' colspan='4'>&nbsp;</td>
@@ -1447,7 +1544,8 @@ class linkclass {
         $ns->tablerender(LCLAN_OPT_2, $text);
     }
 
-    function pref_submit() {
+    function pref_submit() 
+	{
         global $rs;
         $text = "
         <tr>
