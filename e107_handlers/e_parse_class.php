@@ -1261,23 +1261,31 @@ class e_parse
 									SITEURL.$THEMES_DIRECTORY,
 									SITEURL.$DOWNLOADS_DIRECTORY);
 			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
-			if (ADMIN) {
+			if (defined('THEME'))
+			{
+				$search[] = '{THEME}';
+				$replace_relative[] = THEME;
+				$replace_absolute[] = SITEURL.THEME;
+			}
+			if (ADMIN) 
+			{
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
 				$search[] = "{e_ADMIN}";
 			}
-			if ($all) {
-			  if (USER)
-			  {  // Can only replace with valid number for logged in users
-				$replace_relative[] = USERID;
-				$replace_absolute[] = USERID;
-			  }
-			  else
-			  {
-				$replace_relative[] = '';
-				$replace_absolute[] = '';
-			  }
-			  $search[] = "{USERID}";
+			if ($all) 
+			{
+				if (USER)
+				{  // Can only replace with valid number for logged in users
+					$replace_relative[] = USERID;
+					$replace_absolute[] = USERID;
+				}
+				else
+				{
+					$replace_relative[] = '';
+					$replace_absolute[] = '';
+				}
+				$search[] = "{USERID}";
 			}
 			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
