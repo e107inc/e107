@@ -464,29 +464,39 @@ if ($perform_search)
 	$_GET['q'] = rawurlencode($_GET['q']);
 	foreach ($search_info as $key => $a) 
 	{
-		if (isset($searchtype[$key]) || isset($searchtype['all'])) {
+		if (isset($searchtype[$key]) || isset($searchtype['all'])) 
+		{
 			unset($text);
-			if (file_exists($search_info[$key]['sfile'])) {
+			if (file_exists($search_info[$key]['sfile'])) 
+			{
 				$pre_title = ($search_info[$key]['pre_title'] == 2) ? $search_info[$key]['pre_title_alt'] : $search_info[$key]['pre_title'];
 				$search_chars = $search_info[$key]['chars'];
 				$search_res = $search_info[$key]['results'];
 				@require_once($search_info[$key]['sfile']);
 				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
-				foreach ($_GET as $pparm_key => $pparm_value) {
-					if (!isset($core_parms[$pparm_key])) {
-						$parms .= "&".$pparm_key."=".$_GET[$pparm_key];
+				foreach ($_GET as $pparm_key => $pparm_value) 
+				{
+					$temp = preg_replace('/[^\w_]/i','',$pparm_key);
+					$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
+					if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
+					{
+						$parms .= "&".$pparm_key."=".$temp1;
 					}
 				}
-				if ($results > $search_res) {
+				if ($results > $search_res) 
+				{
 					$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
 					$text .= "<div class='nextprev' style='text-align: center'>".$nextprev."</div>";
 				}
-				if ($results > 0) {
+				if ($results > 0) 
+				{
 					$res_from = $_GET['r'] + 1;
 					$res_to = ($_GET['r'] + $search_res) > $results ? $results : ($_GET['r'] + $search_res);
 					$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
-				} else {
+				} 
+				else 
+				{
 					$res_display = "";
 				}
 				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $search_info[$key]['qtype']), $text);
