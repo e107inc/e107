@@ -27,8 +27,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 
 class sitelinks
 {
-    var $eLinkList;
-	var $eSubLinkLevel=0;
+    var $eLinkList     = array();
+	var $eSubLinkLevel = 0;
 	
     function getlinks($cat=1)
     {
@@ -67,6 +67,8 @@ class sitelinks
         }
         $this->getlinks($cat);
 		
+        if (empty($this->eLinkList))  { return ''; }
+        
         // are these defines used at all ?
 
         if(!defined('PRELINKTITLE'))
