@@ -339,7 +339,6 @@ class eDispatcher
 			throw new eException("Controller $controller is not an instance of eController");
 		}
 		
-		$request->setDispatched(true);
 		$actionName = $request->getActionMethodName();
 		
 		ob_start();
