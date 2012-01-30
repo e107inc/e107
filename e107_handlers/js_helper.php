@@ -182,7 +182,7 @@ class e_jshelper
     	    $this->addResponseAction($action, $data_array);
     	}
 
-    	echo $this->buildXmlResponse();
+    	if(null !== $action) echo $this->buildXmlResponse();
     	exit;
     }
 
@@ -191,8 +191,9 @@ class e_jshelper
      *
      * @return string JSON response
      */
-    function buildJsonResponse()
+    function buildJsonResponse($data = null)
     {
+    	if(null !== $data) return "/*-secure-\n".json_encode($data)."\n*/";
         return "/*-secure-\n".json_encode($this->getResponseActions(true))."\n*/";
     }
 
@@ -209,7 +210,7 @@ class e_jshelper
     	{
     	    $this->addResponseAction($action, $data_array);
     	}
-    	echo $this->buildJSONResponse();
+		if(null !== $action) echo $this->buildJSONResponse();
     	exit;
     }
     
