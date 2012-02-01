@@ -241,7 +241,8 @@ if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existi
     multilang_prefs();
 }
 
-if ($action == 'db') {
+if ($action == 'db')
+{
     multilang_db();
 }
 
@@ -948,12 +949,16 @@ function grab_lans($path, $language, $filter = "",$depth=5)
 
 function language_adminmenu()
 {
-    global $action,$pref;
+    global $pref;
+	
+	list($action,$other) = explode('.', e_QUERY);
+
     if ($action == "") {
         $action = "main";
     }
 
-    if($action == "modify"){
+    if($action == "modify")
+    {
         $action = "db";
     }
     $var['main']['text'] = LAN_PREFS;
