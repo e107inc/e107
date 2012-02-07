@@ -94,7 +94,7 @@ class e_object
     {
         if ($this->getFieldIdName())
         {
-            return $this->get($this->getFieldIdName(), 0);
+            return $this->get($this->getFieldIdName(), null);
         }
         return $this->get('id', 0);
     }
@@ -108,7 +108,7 @@ class e_object
     {
         if ($this->getFieldIdName())
         {
-            return $this->set($this->getFieldIdName(), intval($id));
+            return $this->set($this->getFieldIdName(), $id);
         }
         return $this;
     }
@@ -1340,7 +1340,7 @@ class e_model extends e_object
 			$this->setData(array())
 				->_clearCacheData();
 		}
-		$id = intval($id);
+		$id = e107::getParser()->toDB($id);
 		if(!$id)
 		{
 			return $this;
@@ -2377,11 +2377,18 @@ class e_front_model extends e_model
 		}
 
 		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES; //DB field types are optional
-		$qry['data'][$this->getFieldIdName()] = $this->getId();
-		$qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'int';
-
+		
+		// support for tables with no auto-increment PK
+		$id = $this->getId();
+		$qry['data'][$this->getFieldIdName()] = $id;
+		
+		if($action == 'create' && !$id) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'NULL';
+		elseif(is_numeric($id)) $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'integer';
+		else $qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'string';
+		
 		foreach ($this->_data_fields as $key => $type)
 		{
+			
 			if($key == $this->getFieldIdName())
 			{
 				continue;
@@ -2396,7 +2403,7 @@ class e_front_model extends e_model
 		switch($action)
 		{
 			case 'create':
-				$qry['data'][$this->getFieldIdName()] = 0;
+				//$qry['data'][$this->getFieldIdName()] = NULL;
 			break;
 			case 'replace':
 				$qry['_REPLACE'] = true;
@@ -2404,7 +2411,9 @@ class e_front_model extends e_model
 
 			case 'update':
 				unset($qry['data'][$this->getFieldIdName()]);
-				$qry['WHERE'] = $this->getFieldIdName().'='.intval($this->getId()); //intval just in case...
+				if(is_numeric($id)) $id = intval($id);
+				else $id = "'".e107::getParser()->toDB($id)."'";
+				$qry['WHERE'] = $this->getFieldIdName().'='.$id; 
 			break;
 		}
 
@@ -2458,6 +2467,7 @@ class e_front_model extends e_model
 
 			case 'str':
 			case 'string':
+			case 'array':
 				return $tp->toDB($value);
 			break;
 
@@ -2555,6 +2565,28 @@ class e_front_model extends e_model
 
 		return false;
     }
+	
+    /**
+     * Update record
+     *
+     * @param boolen $from_post
+     * @return boolean|integer
+     */
+    public function update($from_post = true, $force = false, $session_messages = false)
+    {
+    	if(!$this->getFieldIdName())
+		{
+			return false;
+		}
+
+		if($from_post)
+		{
+			//no strict copy, validate & sanitize
+			$this->mergePostedData(false, true, true);
+		}
+
+		return $this->dbUpdate($force, $session_messages);
+    }
 
     /**
      * Exactly what it says - your debug helper
@@ -2625,6 +2657,24 @@ class e_admin_model extends e_front_model
 		if($this->getId())
 		{
 			return $this->dbUpdate($force, $session_messages);
+		}
+
+		return $this->dbInsert($session_messages);
+    }
+	
+    /**
+     * Insert record
+     *
+     * @param boolen $from_post
+	 * @param boolean $session_messages
+	 * @return integer inserted ID or false on error
+     */
+    public function insert($from_post = true, $session_messages = false)
+    {
+		if($from_post)
+		{
+			//no strict copy, validate & sanitize
+			$this->mergePostedData(false, true, true);
 		}
 
 		return $this->dbInsert($session_messages);
@@ -2728,7 +2778,10 @@ class e_admin_model extends e_front_model
 			return 0;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
+		$id = $this->getId();
+		if(is_numeric($id)) $id = intval($id);
+		else  $id = "'".e107::getParser()->toDB($id)."'";
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.$id);
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -2945,7 +2998,9 @@ class e_tree_model extends e_front_model
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
-			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '').' * FROM #'.$this->getModelTable()
+			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '')
+				.($this->getParam('db_cols') ? ' '.$this->getParam('db_cols') : ' *').' FROM #'.$this->getModelTable()
+				.($this->getParam('db_joins') ? ' '.$this->getParam('db_joins') : '')
 				.($this->getParam('db_where') ? ' WHERE '.$this->getParam('db_where') : '')
 				.($this->getParam('db_order') ? ' ORDER BY '.$this->getParam('db_order') : '')
 				.($this->getParam('db_limit') ? ' LIMIT '.$this->getParam('db_limit') : '')
@@ -3216,9 +3271,9 @@ class e_front_tree_model extends e_tree_model
 
 		if($sanitize)
 		{
-			$ids = array_map('intval', $ids);
+			$ids = array_map(array($tp, 'toDB'), $ids);
 			$field = $tp->toDb($field);
-			$value = "'".$tp->toDb($value)."'";
+			$value = "'".$tp->toDB($value)."'";
 		}
 		$idstr = implode(', ', $ids);
 
@@ -3281,7 +3336,8 @@ class e_admin_tree_model extends e_front_tree_model
 			$ids = explode(',', $ids);
 		}
 
-		$ids = array_map('intval', $ids);
+		$tp = e107::getParser();
+		$ids = array_map(array($tp, 'toDB'), $ids);
 		$idstr = implode(', ', $ids);
 
 		$sql = e107::getDb();
@@ -3321,12 +3377,13 @@ class e_admin_tree_model extends e_front_tree_model
 	 */
 	public function copy($ids)
 	{
-		$ids = array_map('intval', $ids);
+		$tp = e107::getParser();
+		$ids = array_map(array($tp, 'toDB'), $ids);
 		$idstr = implode(', ', $ids);
 
 		$sql = e107::getDb();
-		
-		if($res = $sql->db_CopyRow($this->getModelTable(), "*", $this->getFieldIdName().' IN ('.$idstr.')'))
+		$res = $sql->db_CopyRow($this->getModelTable(), "*", $this->getFieldIdName().' IN ('.$idstr.')');
+		if(false !== $res)
 		{
 			$this->addMessageSuccess('Copied #'.$idstr);
 		}
@@ -3334,7 +3391,7 @@ class e_admin_tree_model extends e_front_tree_model
 		{
 			if($sql->getLastErrorNumber())
 			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageError('SQL Copy Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}	
 		}

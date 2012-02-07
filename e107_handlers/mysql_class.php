@@ -668,6 +668,14 @@ class e_db_mysql
 			case 'escape':
 				return "'".mysql_real_escape_string($fieldValue)."'";
 				break;
+				
+			case 'array':
+				if(is_array($fieldValue))
+				{
+					return "'".e107::getArrayStorage()->writeArray($fieldValue, true)."'";
+				}
+				return "'". (string) $fieldValue."'";
+			break;
 
 			case 'todb':
 			default:
@@ -1442,7 +1450,7 @@ class e_db_mysql
 	{
 		if(!$table || !$args )
 		{
-			return;
+			return false;
 		}
 			
 		if($fields == '*')

@@ -1158,7 +1158,7 @@ class e107
 	/**
 	 * Retrieve IP/ban handler singleton object
 	 *
-	 * @return language
+	 * @return eIPHandler
 	 */
 	public static function getIPHandler()
 	{

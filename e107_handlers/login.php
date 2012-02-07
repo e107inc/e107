@@ -441,68 +441,68 @@ class userlogin
 		switch ($reason)
 		{
 			case LOGIN_ABORT :		// alt_auth reject
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_21);
 			  $this->genNote($this->userIP,$username, 'Alt_auth: '.LAN_LOGIN_14);
 			  $this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_DB_ERROR :	// alt_auth couldn't add valid user
-				define("LOGINMESSAGE", LAN_LOGIN_31."<br /><br />");
+				define("LOGINMESSAGE", LAN_LOGIN_31);
 				$this->genNote($username, 'Alt_auth: '.LAN_LOGIN_30);
 //				$this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);	// Added in alt_auth login
 				$doCheck = TRUE;
 				break;
 			case LOGIN_BAD_PW :
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_21);
 			  $this->logNote('LAN_ROLL_LOG_03', $username);
 			  break;
 			case LOGIN_CHAP_FAIL :
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_21);
 			  $this->logNote('LAN_ROLL_LOG_03', 'CHAP: '.$username);
 			  break;
 			case LOGIN_BAD_USER :
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_21);
 			  $this->genNote($username, LAN_LOGIN_14);
 			  $this->logNote('LAN_ROLL_LOG_04', $username);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BAD_USERNAME :
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_21);
 			  $this->logNote('LAN_ROLL_LOG_08', $username);
 			  break;
 			case LOGIN_MULTIPLE :
-			  define("LOGINMESSAGE", LAN_LOGIN_24."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_24);
 			  $this->logNote('LAN_ROLL_LOG_07', "U: {$username} IP: {$this->userIP}");
 			  $this->genNote($username, LAN_LOGIN_16);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BAD_CODE :
-			  define("LOGINMESSAGE", LAN_LOGIN_23."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_23);
 			  $this->logNote('LAN_ROLL_LOG_02', $username);
 			  break;
 			case LOGIN_NOT_ACTIVATED :
 			  $srch = array("[","]");
 			  $repl = array("<a href='".e_BASE_ABS."signup.php?resend'>","</a>");
-			  define("LOGINMESSAGE", str_replace($srch,$repl,LAN_LOGIN_22)."<br /><br />");
+			  define("LOGINMESSAGE", str_replace($srch,$repl,LAN_LOGIN_22));
 			  $this->logNote('LAN_ROLL_LOG_05', $username);
 			  $this->genNote($username, LAN_LOGIN_27);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BLANK_FIELD :
-			  define("LOGINMESSAGE", LAN_LOGIN_20."<br /><br />");
+			  define("LOGINMESSAGE", LAN_LOGIN_20);
 			  $this->logNote('LAN_ROLL_LOG_01', $username);
 			  break;
 			case LOGIN_BAD_TRIGGER :
-			  define("LOGINMESSAGE", $extra_text."<br /><br />");
+			  define("LOGINMESSAGE", $extra_text);
 			  $this->logNote('LAN_ROLL_LOG_06', $username);
 			  break;
 			case LOGIN_BANNED :
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");		// Just give 'incorrect login' message
+			  define("LOGINMESSAGE", LAN_LOGIN_21);		// Just give 'incorrect login' message
 			  $this->genNote($username, LAN_LOGIN_25);
 			  $this->logNote('LAN_ROLL_LOG_09', $username);
 			  break;
 			default :		// Something's gone wrong!
-			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");		// Just give 'incorrect login' message
+			  define("LOGINMESSAGE", LAN_LOGIN_21);		// Just give 'incorrect login' message
 			  $this->genNote($username, LAN_LOGIN_26);
 			  $this->logNote('LAN_ROLL_LOG_10', $username);
 		}

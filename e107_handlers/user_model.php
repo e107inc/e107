@@ -26,7 +26,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-class e_user_model extends e_front_model
+class e_user_model extends e_admin_model
 {
 	/**
 	 * Describes all model data, used as _FIELD_TYPE array as well
@@ -888,6 +888,7 @@ class e_user_model extends e_front_model
 
 		// TODO - do the save manually in this order: validate() on user model, save() on extended fields, save() on user model
 		$ret = parent::save(true, $force, $session);
+		
 		if(false !== $ret && null !== $this->_extended_model) // don't load extended fields if not already used
 		{
 			$ret_e = $this->_extended_model->save($force, $session);
@@ -1352,7 +1353,7 @@ class e_user extends e_user_model
 	}
 }
 
-class e_user_extended_model extends e_front_model
+class e_user_extended_model extends e_admin_model
 {
 	/**
 	 * Describes known model fields
@@ -1740,10 +1741,11 @@ class e_user_extended_model extends e_front_model
 
 		// validaton rules
 		$vtype = $parms[1] ? 'regex' : $ftype;
-		$this->setValidationRule($structure_model->getValue('name'), array($vtype, $parms[1], $structure_model->getValue('text'), $parms[2]), $structure_model->getValue('required'));
+		$name = 'user_'.$structure_model->getValue('name');
+		$this->setValidationRule($name, array($vtype, $parms[1], $structure_model->getValue('text'), $parms[2]), $structure_model->getValue('required'));
 
 		// data type, required for sql query
-		$this->_data_fields[$structure_model->getValue('name')] = $ftype;
+		$this->_data_fields[$name] = $ftype;
 		return $this;
 	}
 
@@ -1762,7 +1764,7 @@ class e_user_extended_model extends e_front_model
 			$fields = $struct_tree->getTree();
 			foreach ($fields as $id => $field)
 			{
-				if (!in_array($field->getValue('name'), $ignore))
+				if (!in_array('user_'.$field->getValue('name'), $ignore) && !$field->isCategory())
 				{
 					// build _data_type and rules
 					$this->_buildManageField($field);
@@ -1808,7 +1810,17 @@ class e_user_extended_model extends e_front_model
 	 */
 	public function save($force = false, $session = false)
 	{
+		// when not loaded from db, see the construct check
+		if(!$this->getId()) 
+		{
+			$this->setId($this->getUser()->getId());
+		}
 		$this->_buildManageRules();
+		// insert new record
+		if(!e107::getDb()->db_Count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
+		{
+			return $this->insert(true, $session);
+		}
 		return parent::save(true, $force, $session);
 	}
 
@@ -2116,7 +2128,8 @@ class e_user_pref extends e_front_model
 	 */
 	public function apply()
 	{
-		$this->_user->set('user_prefs', $this->toString(true));
+		$data = $this->hasData() ? $this->toString(true) : '';
+		$this->_user->set('user_prefs', $data);
 		return $this;
 	}
 

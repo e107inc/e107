@@ -3622,6 +3622,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
 			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
+			// force reload the collection from DB, fix some issues as 'observer' is executed before the batch handler
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load(true);
 		}
 		$this->getTreeModel()->setMessages();
 		return $cnt;

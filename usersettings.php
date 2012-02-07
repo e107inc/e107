@@ -425,7 +425,7 @@ if ($dataToSave && !$promptPassword)
 		//print_a($changedEUFData);
 		// ***** Next line creates a record which presumably should be there anyway, so could generate an error
 		$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
-		if (!$sql->db_Update('user_extended', $changedEUFData))
+		if (false === $sql->db_Update('user_extended', $changedEUFData))
 		{
 			$message .= '<br />Error updating EUF';
 		}
