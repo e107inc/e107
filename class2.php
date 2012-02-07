@@ -1073,7 +1073,7 @@ if (!file_exists(FOOTERF))
 	message_handler('CRITICAL_ERROR', 'Unable to find file: '.FOOTERF, __LINE__ - 2, __FILE__);
 }
 
-define('LOGINMESSAGE', '');
+//define('LOGINMESSAGE', ''); - not needed, breaks login messages
 define('OPEN_BASEDIR', (ini_get('open_basedir') ? true : false));
 define('SAFE_MODE', (ini_get('safe_mode') ? true : false));
 define('FILE_UPLOADS', (ini_get('file_uploads') ? true : false));

@@ -360,7 +360,7 @@ class UserHandler
 		$digitLength = strlen($digit) - 1;
 
 		// Create alpha numeric [A-Z][a-z]
-		$alphaNum = $alpha.$digit;
+		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _	
 		$alphaNumLength = strlen($alphaNum) - 1;
 
 		// Next character of seed (if used)

@@ -194,7 +194,7 @@ foreach($catList as $cat)
 		$done_heading = TRUE;
 	  }
   	  $replace = array(
-    			$tp->toHTML($ext['user_extended_struct_text'], FALSE, 'emotes_off,defs'),
+    			$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, 'emotes_off,defs'),
     			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
     			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
         );

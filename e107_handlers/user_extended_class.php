@@ -174,9 +174,10 @@ class e107_user_extended
 					case EUF_LANGUAGE :
 					case EUF_PREDEFINED :
 					case EUF_CHECKBOX :
+					case EUF_RADIO :
 						$target['_FIELD_TYPES'][$k] = 'todb';
 						break;
-					case EUF_RADIO :
+					
 					case EUF_INTEGER :
 						$target['_FIELD_TYPES'][$k] = 'int';
 						break;
