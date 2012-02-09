@@ -137,7 +137,7 @@ class eFront
 			// dispatched status true on first loop
 			$router->checkLegacy($request);
 			
-			// dispatched by default - don't allow legacy to alter dsiaptch status
+			// dispatched by default - don't allow legacy to alter dispatch status
 			$request->setDispatched(true);
 			
 			// legacy mod - return control to the bootstrap
@@ -2634,9 +2634,24 @@ class eController
 			->init();
 	}
 	
+	/**
+	 * Custom init, always called in the constructor, no matter what is the request dispatch status
+	 */
 	public function init() {}
 	
+	/**
+	 * Custom shutdown, always called after the controller dispatch, no matter what is the request dispatch status
+	 */
+	public function shutdown() {}
+	
+	/**
+	 * Pre-action callback, fired only if dispatch status is still true and action method is found
+	 */
 	public function preAction() {}
+	
+	/**
+	 * Post-action callback, fired only if dispatch status is still true and action method is found
+	 */
 	public function postAction() {}
 	
 	/**
@@ -2703,17 +2718,25 @@ class eController
 	
 	public function dispatch($actionMethodName)
 	{
-		$this->preAction();
 		$request = $this->getRequest();
 		
+		// init() could modify the dispatch status
 		if($request->isDispatched())
 		{		
 			if(method_exists($this, $actionMethodName)) 
 			{
+				$this->preAction();
 				// TODO request userParams() to store private data - check for noPopulate param here
-				$request->populateRequestParams();
-				$this->$actionMethodName();
-				$this->postAction();
+				if($request->isDispatched())
+				{
+					$request->populateRequestParams();
+					$this->$actionMethodName();
+					
+					if($request->isDispatched())
+					{
+						$this->postAction();
+					}
+				}
 			}
 			else 
 			{
@@ -2722,6 +2745,7 @@ class eController
 				throw new eException('Action "'.$action.'" does not exist');
 			}
 		}
+		$this->shutdown();
 	}
 	
 	public function run(eRequest $request = null, eResponse $response = null)
