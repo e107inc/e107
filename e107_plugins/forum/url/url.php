@@ -62,7 +62,7 @@ class plugin_forum_url extends eUrlConfig
 					break;
 		
 				case 'post':
-					return $base."forum_post.php?f={$params['type']}}id={$params['id']}";
+					return $base."forum_post.php?f={$params['type']}{$amp}id={$params['id']}";
 					break;
 		
 				case 'rules':

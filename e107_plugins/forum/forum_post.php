@@ -402,7 +402,7 @@ if (isset($_POST['update_thread']))
 		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
-		$url = $e107->url->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $postInfo['post_id'], 'thread' => $postInfo['post_thread']));
+		$url = $e107->url->create('forum/thread/post', array('name'=>$threadVals['thread_name'], 'id' => $postInfo['post_id'], 'thread' => $postInfo['post_thread']), array('encode'=>false));
 		header('location:'.$url);
 		exit;
 	}
