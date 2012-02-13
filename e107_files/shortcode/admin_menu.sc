@@ -18,7 +18,8 @@ if (ADMIN) {
 		}
 	}
 	$plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
-	$plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace($plugindir,"",strstr(e_SELF,$plugindir)))."admin_menu.php";
+	$plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace("/".$plugindir,"","/".strstr(e_SELF,$plugindir)))."admin_menu.php";
+	
 	if(file_exists($plugpath)){
 		if (!$parm) {
 			@require_once($plugpath);
