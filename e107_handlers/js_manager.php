@@ -211,7 +211,7 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function coreCSS($file_path, $media = 'all')
+	public function coreCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
 		$this->addJs('core_css', $file_path, $media);
 		return $this;
@@ -225,17 +225,17 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function pluginCSS($plugname, $file_path, $media = 'all')
+	public function pluginCSS($plugname, $file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fpath => $media_attr)
 			{
-				$this->addJs('plugin_css', $plugname.':'.$fpath, $media_attr);
+				$this->addJs('plugin_css', $plugname.':'.$fpath, $media_attr, $preComment, $postComment);
 			}
 			return $this;
 		}
-		$this->addJs('plugin_css', $plugname.':'.$file_path, $media);
+		$this->addJs('plugin_css', $plugname.':'.$file_path, $media, $preComment, $postComment);
 		return $this;
 	}
 
@@ -246,9 +246,9 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function themeCSS($file_path, $media = 'all')
+	public function themeCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('theme_css', $file_path, $media);
+		$this->addJs('theme_css', $file_path, $media, $preComment, $postComment);
 		return $this;
 	}
 
@@ -259,9 +259,9 @@ class e_jsmanager
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
-	public function otherCSS($file_path, $media = 'all')
+	public function otherCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('other_css', $file_path, $media);
+		$this->addJs('other_css', $file_path, $media, $preComment, $postComment);
 		return $this;
 	}
 
@@ -519,7 +519,7 @@ class e_jsmanager
 	 * @param string|integer $runtime_location admin|front|all (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
 	 * @return object $this
 	 */
-	protected function addJs($type, $file_path, $runtime_location = '')
+	protected function addJs($type, $file_path, $runtime_location = '', $pre = '', $post = '')
 	{
 		if(empty($file_path))
 		{
@@ -562,7 +562,7 @@ class e_jsmanager
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
-				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/');
+				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
@@ -570,14 +570,14 @@ class e_jsmanager
 
 			case 'plugin_css':
 				$file_path = explode(':', $file_path);
-				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
+				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
 			break;
 
 			case 'theme_css':
-				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
+				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
@@ -806,10 +806,14 @@ class e_jsmanager
             {
             	if('css' === $external)
 				{
-					$path = explode('|', $path, 2);
+					$path = explode('|', $path, 4);
 					$media = $path[0] ? $path[0] : 'all';
+					// support of IE checks
+					$pre = varset($path[2]) ? $path[2]."\n" : '';
+					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					echo '<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'" />';
+					
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'" />'.$post;
 					echo "\n";
 					continue;
 				}
@@ -829,10 +833,14 @@ class e_jsmanager
             {
 				if('css' === $external)
 				{
-					$path = explode('|', $path, 2);
+					$path = explode('|', $path, 4);
 					$media = $path[0];
+					// support of IE checks
+					$pre = varset($path[2]) ? $path[2]."\n" : '';
+					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					echo '<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'" />';
+					
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'" />'.$post;
 					echo "\n";
 					continue;
 				}

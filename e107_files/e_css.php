@@ -39,10 +39,5 @@ echo "
    span.e-hide-if-js,
    button.e-hide-if-js { display: inline; }
 </style>
-<script type='text/javascript'>
-   //$('e-js-css').disabled=true;
-   // 'disabled' is not valid style attribute, fails with Konqueror (tested on Fedora) 
-   $('e-js-css').remove();
-</script>
 ";
 ?>
