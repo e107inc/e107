@@ -291,6 +291,11 @@ if($e_pref->get('enable_png_image_fix') || (isset($sleight) && $sleight == true)
 }
 
 //
+// Style for unobtrusive JS, prevent 3rd party code overload
+//
+require_once(e_FILE."/e_css.php");
+
+//
 // E: Send JS all in once
 // Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
 // TODO - more work (zones, eplug_js, headerjs etc order, external JS/CSS)
@@ -429,12 +434,6 @@ elseif (file_exists(e_BASE."favicon.ico"))
 }
 
 //
-// Unobtrusive JS, prevent 3rd party code overload
-//
-require_once(e_FILE."/e_css.php");
-
-
-//
 // FIXME H: Generate JS for image preloads (do we really need this?)
 //
 
@@ -495,6 +494,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
+echo "$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
 echo "document.observe('dom:loaded', function() {\n";
 echo "e107Event.trigger('loaded', {element: null}, document);\n";
 echo "});\n";
