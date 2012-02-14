@@ -15,6 +15,8 @@ e107Base.setPrefs('core-dialog', {
 	minHeight: 100,
 	maxHeight: null,
 	maxWidth: null,
+	maxAdaptWidth: null,
+	maxAdaptHeight: null,
 	gridX: 1,
 	gridY: 1,
 	wired: false,
@@ -352,6 +354,16 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 	 */
 	adapt: function() {
 		var dimensions = this.content.getScrollDimensions();
+		
+		if(this.options.maxAdaptHeight && dimensions.height > this.options.maxAdaptHeight) 
+			dimensions.height = this.options.maxAdaptHeight;
+			
+		if(this.options.maxAdaptWidth && dimensions.width > this.options.maxAdaptWidth) 
+			dimensions.width = this.options.maxAdaptWidth;
+			
+		if(this.options.maxHeight && dimensions.height > this.options.maxHeight) 
+			dimensions.height = this.options.maxHeight;
+			
 		if (this.options.superflousEffects)
 			this.morph(dimensions, true);
 		else
@@ -392,11 +404,22 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 				options[name] = options[name].bind(this);
 		}, this);
 
-		var onComplete = options.onComplete;
+		var onComplete = options.onComplete, afterComplete = options.onAfterComplete;
 		options.onComplete = (function(response, json) {
-			this.setContent(response.responseText);
+			
 			if (Object.isFunction(onComplete))
 				onComplete(response, json);
+			else {
+				if(response.responseJSON) {
+					this.setContent(response.responseJSON['body']);
+					this.setHeader(response.responseJSON['header']);
+					this.setFooter(response.responseJSON['footer']);
+				}
+				else this.setContent(response.responseText);
+			}
+			
+			if (Object.isFunction(afterComplete))
+				afterComplete(response, json);
 		}).bind(this);
 
 		new e107Ajax.Request(url, options);
@@ -691,7 +714,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 	computePosition: function(top, left) {
 		if (this.modal && this.centerOptions && this.centerOptions.auto)
 			return this.computeRecenter(this.getSize());
-
+		
 		return {
 			top: this.animating ? top : top.snap(this.options.gridY),
 			left: this.animating ? left : left.snap(this.options.gridX)
@@ -1556,7 +1579,8 @@ e107Widgets.DialogManager.DefPositionningStrategy = function(win, area, winoffse
 		maxtop = area.height - size.height, 
 		maxleft = area.width - size.width,
 		poffset = winoffset === false ? 0 : (winoffset || 20),
-		start = { left: offset[0] + poffset, top: offset[1] + poffset };
+		start = { left: offset[0] + poffset, top: offset[1] + poffset },
+		left, top;
 	
 	if(last) {
 		start = last.getPosition();
@@ -1566,7 +1590,6 @@ e107Widgets.DialogManager.DefPositionningStrategy = function(win, area, winoffse
 	
 	left = start.left < maxleft ? start.left : start.left - (poffset * 2);
 	top = start.top < maxtop ? start.top : start.top - (poffset * 2);
-
 	win.setPosition(top, left);
 };
 
