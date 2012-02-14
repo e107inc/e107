@@ -2702,6 +2702,12 @@ class eController
 		return $this;
 	}
 	
+	/**
+	 * Add document title
+	 * @param string $title
+	 * @param boolean $meta auto-add it as meta-title
+	 * @return eResponse
+	 */
 	public function addTitle($title, $meta = true)
 	{
 		$this->getResponse()->appendTitle($title);
@@ -3410,6 +3416,8 @@ class eResponse
 	protected $_params = array(
 		'render' => true,
 		'meta' => false,
+		'jsonNoTitle' => false,
+		'jsonRender' => false,
 	);
 	
 	public function setParam($key, $value)
@@ -3427,6 +3435,11 @@ class eResponse
 	public function getParam($key, $default = null)
 	{
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
+	}
+	
+	public function isParam($key)
+	{
+		return isset($this->_params[$key]);
 	}
 	
 	public function addContentType($typeName, $mediaType)
@@ -3795,6 +3808,55 @@ class eResponse
 			print $content;
 			return '';
 		}
+	}
+	
+	/**
+	 * Send AJAX Json Response Output - default method
+	 * It's fully compatible with the core dialog.js
+	 * @param array $override override output associative array (header, body and footer keys)
+	 * @param string $ns namespace/segment
+	 * @param bool $render_message append system messages
+	 */
+	function sendJson($override = array(), $ns = null, $render_message = true)
+	{
+		if(!$ns) $ns = 'default';
+		
+		$content = $this->getBody($ns, true);
+		// separate render parameter for json response, false by default
+		$render = $this->getParam('jsonRender');
+		if($render_message)
+		{
+			$content = eMessage::getInstance()->render().$content;
+		}
+
+		//render disabled by the controller
+		if(!$this->getRenderMod($ns))
+		{
+			$render = false;
+		}
+		
+		
+		$title = '';
+		if(!$this->getParam('jsonNoTitle'))
+		{
+			$titleArray = $this->_title;
+			$title = isset($titleArray[$ns]) ? array_pop($titleArray[$ns]) : '';
+		} 
+
+		if($render)
+		{
+			$render = e107::getRender();
+			$content = $render->tablerender($this->getTitle($ns, true), $content, $this->getRenderMod($ns), true);
+		}
+
+		$jshelper = e107::getJshelper();
+		$override = array_merge(array(
+			'header' => $title,
+			'body' => $content,
+			'footer' => $statusText,
+		), $override);
+		echo $jshelper->buildJsonResponse($override);
+		$jshelper->sendJsonResponse(null);
 	}
 	
 	/**
