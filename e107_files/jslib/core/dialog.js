@@ -1,50 +1,104 @@
+/**
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
+ * 
+ * e107 Core modal window widget
+ * Based on Prorotype UI Window http://prototype-ui.com/  
+ * 
+ * $URL$
+ * $Id$
+ */
+
+
 
 /**
  * Global prefs
  */
 e107Base.setPrefs('core-dialog', {
 	id: null,
-	theme : '',
-	shadow: false,
-	shadowTheme: '',
-	top: null,
-	left: null,
-	width: 300,
-	height: 200,
-	minWidth: 200,
-	minHeight: 100,
-	maxHeight: null,
-	maxWidth: null,
-	maxAdaptWidth: null,
-	maxAdaptHeight: null,
+	theme : '', 						/* omit to use default */
+	shadow: false, 						/* use shadow widget, need to be extra included (shadow.js) */
+	shadowTheme: '', 					/* if the above is true, which theme to use for shadow widget, omit for default */
+	top: null, 							/* initial window position */
+	left: null, 						/* initial window left position */
+	width: 300, 						/* initial window width */
+	height: 200, 						/* initial window height */
+	minWidth: 200, 						/* window min width */
+	minHeight: 100, 					/* window min height */
+	maxHeight: null, 					/* window max height */
+	maxWidth: null, 					/* window max width */
+	maxAdaptWidth: null, 				/* window max width when adapt() is called (fit the content when e.g. dynamically added via AJAX) */
+	maxAdaptHeight: null, 				/* window max height when adapt() is called (fit the content when e.g. dynamically added via AJAX) */
 	gridX: 1,
 	gridY: 1,
-	wired: false,
-	draggable : true,
-	resizable : true,
-	activeOnClick : true,
-	show: Element.show,
-	hide: Element.hide,
-	maximizeEffects: true,
-	dialogManager: null,
-	positionningStrategyOffset: null,
-	close: 'destroy', // e107Widgets.Dialog method for closing dialog or false to disable
-	maximize: 'toggleMaximize', // e107Widgets.Dialog method for closing dialog or false to disable
+	wired: false, 						/* wired element shown when resizing/moving the window (browser performance) */
+	draggable : true, 					/* allow drag, requires draggable.js */
+	resizable : true, 					/* allow resize, requires draggable.js */
+	activeOnClick : true, 				/* activate (set on top) when clicking on an window body, if false, activate works only on window header bar click */
+	show: Element.show, 				/* show callback, used when window.show() is called, defaults to Element.show() */
+	hide: Element.hide, 				/* hide callback, used when window.show() is called, defaults to Element.hide() */
+	maximizeEffects: true, 				/* use effect when maximizing (uses scripty Effect library) */
+	superflousEffects: false, 			/* enable various 'superflous' effects  (uses scripty Effect library, currently used on adapt() only) */
+	adaptOnAjaxContent: true,			/* auto-fire adapt (only when no callback is registered) when setAjaxContent() finish AJAX update  */
+	dialogManager: null, 				/* dialog manager for the current instance, defaults to e107Widgets.DialogManagerDefault */
+	positionningStrategyOffset: null, 	/* offset used to auto-position a window when multiple windows are opened, defaults to 20 */
+	close: 'destroy', 					/* e107Widgets.Dialog callback method for closing dialog or false to disable */
+	maximize: 'toggleMaximize' 			/* e107Widgets.Dialog method for closing dialog or false to disable */
 });
 
-
+/**
+ * Example usage:
+ * <code>
+ * // basic example - create, activate and show empty dialog window in the middle of the screen
+ * new e107Widgets.Dialog({
+ * 		id: 'unique-window-id'
+ * }).center().activate().show();
+ * 
+ * // more advanced example - create, activate and show centered 400px300px dialog window, on top 30 position
+ * // set body, header and footer data; 
+ * new e107Widgets.Dialog({
+ * 		id: 'unique-window-id',
+ * 		width: 400,
+ * 		height: 300
+ * }).center({top: 30}).setHeader('My Header').setFooter('My Footer').setContent('My Body').activate().show();
+ * 
+ * // create from DOM example
+ * // DOM elements required to make it work: 
+ * // <a href="#" id="dialog" title="Window Title">Open a window</a>
+ * // <div id="dialog-source" style="display: none">Window (HTML) content</a>
+ * $('dialog').observe('click', function(event){
+ * 		var target = event.findElement('a'), source = $('dialog-source');
+ * 		event.stop(); // prevent default
+ * 		new e107Widgets.Dialog({
+ * 			id: target.id + '-window',
+ * 		}).center({top: 30}).setHeader(target.readAttribute('title')).setContent(source.innerHTML).activate().show();
+ * });
+ * 
+ * // AJAX example
+ * new e107Widgets.Dialog({
+ * 		id: 'unique-window-id',
+ * 		width: 400,
+ * 		height: 300
+ * }).setAjaxContent(url, roptions)..center({top: 30}).activate().show();
+ * </code> 
+ * 
+ * e107Widgets.Dialog#setAjaxContent() Options:
+ * Any valid e107Ajax.Request() options + additional 'onAfterComplete' callback
+ * 
+ */
 e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 	Version : '1.0',
 	style : "position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;",
 	wiredElement: null,
 	events : null,
-	element : null, // window element
-	header : null, // window header element
-	content : null, // window content element
-	footer : null, // window footer element
-	visible: false, // window visibility
-	focused: false, // windows on focus
-	modal: false, // modal window
+	element : null, /* window element */
+	header : null, /* window header element */
+	content : null, /* window content element */
+	footer : null, /* window footer element */
+	visible: false, /* window visibility */
+	focused: false, /* windows on focus */
+	modal: false, /* modal window */
 	zIndex: 0,
 	shadow: null,
 	
@@ -379,6 +433,9 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 		if (this.centerOptions)
 			Event.stopObserving(this.dialogManager.scrollContainer, "scroll", this.centerOptions.handler);
 		
+		// clean-up all content container events
+		this.content.stopObserving();
+		
 		this.dialogManager.unregister(this);
 		this.events.notify('destroy');
 		this.fire('destroyed');
@@ -416,6 +473,9 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 					this.setFooter(response.responseJSON['footer']);
 				}
 				else this.setContent(response.responseText);
+				Object.extend(response.request.options, { element: this.content } );
+				e107Event.trigger('ajax_update_after', response.request.options, response.request.options.element);
+				if(this.options.adaptOnAjaxContent) this.adapt(); 
 			}
 			
 			if (Object.isFunction(afterComplete))
@@ -1334,7 +1394,7 @@ e107Widgets.DialogManager = Class.create(e107WidgetAbstract, {
 	 * window manager. First one is the back window, last one is the front
 	 * window.
 	 * 
-	 * Example: UI.defaultWM.windows().invoke('destroy');
+	 * Example: e107Widgets.DialogManagerDefault.windows().invoke('destroy');
 	 */
 	windows: function() {
 		return this.stack.windows.clone();
@@ -1566,7 +1626,7 @@ e107Widgets.DialogManager = Class.create(e107WidgetAbstract, {
 			area = this.viewport.getDimensions(),
 			winoffset = win.options.positionningStrategyOffset || win.options.positionningStrategyOffset === false ? win.options.positionningStrategyOffset : this.options.positionningStrategyOffset;
 
-		Object.isFunction(strategy) ? strategy(win, area) : strategy.position(win, area, winoffset);
+		Object.isFunction(strategy) ? strategy(win, area, winoffset) : strategy.position(win, area, winoffset);
 	}
 });
 
@@ -1653,7 +1713,8 @@ Object.extend(Number.prototype, {
 });
 
 document.observe('dom:loaded', function() {
-	e107Widgets.DialogManagerDefault = new e107Widgets.DialogManager();
+	if(typeof e107Widgets['DialogManagerDefault'] == 'undefined')
+		e107Widgets.DialogManagerDefault = new e107Widgets.DialogManager();
 });
 	
 	
