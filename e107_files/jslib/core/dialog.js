@@ -75,13 +75,56 @@ e107Base.setPrefs('core-dialog', {
  * 		}).center({top: 30}).setHeader(target.readAttribute('title')).setContent(source.innerHTML).activate().show();
  * });
  * 
- * // AJAX example
+ * // AJAX example, call to http://yoursite.com/e107_plugins/myplugin/myAjaxScript.php?id=someId
  * new e107Widgets.Dialog({
  * 		id: 'unique-window-id',
  * 		width: 400,
  * 		height: 300
- * }).setAjaxContent(url, roptions)..center({top: 30}).activate().show();
+ * }).setAjaxContent(('#{e_PLUGIN}myplugin/myAjaxScript.php').parsePath(), {
+ * 		method: 'get',
+ * 		params: { id: 'someId' }
+ * }).center({top: 30}).activate().show();
  * </code> 
+ * 
+ * Example JSON response from e107_plugins/myplugin/myAjaxScript.php
+ * <code>
+ * <?php
+ * require_once('../../class2.php');
+ * if(!e_AJAX_REQUEST) exit();
+ * 
+ * $ret = array();
+ * $ret['header'] = 'Window Title';
+ * $ret['footer'] = 'Window Footer';
+ * $ret['body'] = 'Window Body';
+ * 
+ * $jshelper = e107::getJshelper();
+ * echo $jshelper->buildJsonResponse($ret);
+ * $jshelper->sendJsonResponse(null);
+ * </code>
+ * 
+ * PREFFERED WAY - Example JSON response within a controller (single entry point)
+ * File: e107_plugins/myplugin/controllers/ajax.php
+ * URL: http://yoursite.com/myplugin/ajax
+ * <code>
+ * <?php
+ * if (!defined('e107_INIT')) { exit; }
+ * 
+ * class plugin_myplugin_ajax_controller extends eController
+ * {
+ * 		public function actionIndex()
+ * 		{
+ * 			$this->addTitle('My page title', false);
+ * 			$this->addBody('My page body');
+ * 
+ * 			// optional - override and/or add footer information
+ * 			$more = array('footer' => 'Footer details');
+ * 			
+ * 			// send the response
+ * 			$this->getResponse()
+ * 				->sendJson($more);
+ * 		}
+ * }
+ * </code>
  * 
  * e107Widgets.Dialog#setAjaxContent() Options:
  * Any valid e107Ajax.Request() options + additional 'onAfterComplete' callback
