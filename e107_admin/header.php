@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Header
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 if (!defined('e107_INIT'))
@@ -206,6 +204,12 @@ if ((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tr
 	echo "<![endif]-->\n";
 }
 
+
+//
+// Unobtrusive JS via CSS, prevent 3rd party code overload
+//
+require_once(e_FILE."/e_css.php");
+
 //
 // E: Send JS
 //
@@ -361,11 +365,6 @@ echo "
 e107::getJs()->renderJs('header', 5);
 e107::getJs()->renderJs('header_inline', 5);
 
-//
-// Unobtrusive JS via CSS, prevent 3rd party code overload
-//
-require_once(e_FILE."/e_css.php");
-
 /*
  * Fire Event e107:loaded
  * TODO - remove it from here, should be registered to e_jsmanager
@@ -373,6 +372,7 @@ require_once(e_FILE."/e_css.php");
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
+echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
 echo "document.observe('dom:loaded', function () {\n";
 echo "e107Event.trigger('loaded', null, document);\n";
 echo "});\n";

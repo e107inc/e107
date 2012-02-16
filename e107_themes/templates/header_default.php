@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -494,7 +494,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
-echo "$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
+echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
 echo "document.observe('dom:loaded', function() {\n";
 echo "e107Event.trigger('loaded', {element: null}, document);\n";
 echo "});\n";
