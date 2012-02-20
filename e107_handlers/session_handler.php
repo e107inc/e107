@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -156,6 +156,29 @@ class e_session
 	protected $_data = array();
 	
 	/**
+	 * Set session options
+	 * @param string $key
+	 * @param mixed $value
+	 * @return e_session
+	 */
+	public function setOption($key, $value)
+	{
+		$this->setOptions(array($key => $value));
+		return $this;
+	}
+	
+	/**
+	 * Get session option
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed value
+	 */
+	public function getOption($key, $default = null)
+	{
+		return (isset($this->_options[$key]) ? $this->_options[$key] : $default);
+	}
+	
+	/**
 	 * Set default settings/options based on the current security level
 	 * NOTE: new prefs 'session_save_path', 'session_save_method', 'session_lifetime' introduced, 
 	 * still not added to preference administration
@@ -178,9 +201,11 @@ class e_session
 			
 			if(!defined('E107_INSTALL'))
 			{
-				$config['SavePath'] = e107::getPref('session_save_path', false);
-				$config['SaveMethod'] = e107::getPref('session_save_method', 'files');
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 3600);
+				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
+				$config['SaveMethod'] = e107::getPref('session_save_method', 'files'); // FIXME - new pref
+				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 3600); // FIXME - new pref
+				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
+				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
 			}
 			
 			$this->setConfig($config)
@@ -429,7 +454,7 @@ class e_session
 		{
 			$this->setSessionName($sessionName);
 		}
-
+		
 		// set session cookie params
 		session_set_cookie_params($this->_options['lifetime'],
 			$this->_options['path'],
@@ -748,12 +773,11 @@ class e_core_session extends e_session
 	{	
 		// default system configuration
 		$this->setDefaultSystemConfig();
-		
-		// TODO $data[config] and $data[options] to override default settings
-		
+
 		$namespace = 'e107sess'; // Quick Fix for Fatal Error "Cannot use object of type e107 as array" on line 550
 		$name = (isset($data['name']) && !empty($data['name']) ? $data['name'] : deftrue('e_COOKIE', 'e107')).'SID';
 		if(isset($data['namespace']) && !empty($data['namespace'])) $namespace = $data['namespace'];
+
 		// create $_SESSION['e107'] namespace by default
 		$this->init($namespace, $name);
 	}
