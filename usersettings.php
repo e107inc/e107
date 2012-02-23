@@ -750,10 +750,12 @@ function headerjs()
 {
 	//global $cal;
 	$script = "
+	<script type='text/javascript'>
 		function addtext_us(sc)
 		{
 			document.getElementById('dataform').image.value = sc;
 		}
+	</script>
 	";
 
 	//$script .= $cal->load_files();
