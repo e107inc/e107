@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Search Administration
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -162,7 +160,7 @@ if (isset($_POST['update_prefs']))
 	$temp['selector'] = intval($_POST['selector']);
 	$temp['time_restrict'] = intval($_POST['time_restrict']);
 	$temp['time_secs'] = min(intval($_POST['time_secs']), 300);
-	$temp['mysql_sort'] = ($_POST['search_sort'] == 'mysql');
+	$temp['mysql_sort'] = $_POST['search_sort'] ? 1 : 0;
 	$temp['php_limit'] = intval($_POST['php_limit']);
 	$temp['boundary'] = intval($_POST['boundary']);
 
