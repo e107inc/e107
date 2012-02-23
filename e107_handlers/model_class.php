@@ -2704,7 +2704,7 @@ class e_admin_model extends e_front_model
     	$this->_db_errmsg = '';
 		if($this->hasError()/* || (!$this->data_has_changed && !$force)*/) // not appropriate here!
 		{
-			return 0;
+			return false;
 		}
 		$sql = e107::getDb();
 		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
