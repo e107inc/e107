@@ -1,19 +1,14 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Id$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * $URL$
+ * $Id$
+ */
 
 require_once('class2.php');
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
@@ -144,6 +139,9 @@ function array_sort($array, $column, $order = SORT_DESC) {
 // validate search query
 $perform_search = true;
 
+// simple parse object
+$SEARCH_VARS = new e_vars();
+
 function magic_search($data) {
 	foreach ($data as $key => $value) {
 		if (is_array($value)) {
@@ -192,16 +190,16 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 
 	if (isset($_GET['r']) && !is_numeric($_GET['r'])) {
 		$perform_search = false;
-		$SEARCH_MESSAGE = LAN_SEARCH_201;
+		$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_201;
 		$result_flag = 0;
 	} else if (strlen($full_query) == 0) {
 		$perform_search = false;
-		$SEARCH_MESSAGE = LAN_SEARCH_201;
+		$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_201;
 	} 
 	elseif (strlen($full_query) < ($char_count = ($search_prefs['mysql_sort'] ? 4 : 3))) 
 	{
 		$perform_search = false;
-		$SEARCH_MESSAGE = str_replace('--CHARS--', $char_count, LAN_417);
+		$SEARCH_VARS->SEARCH_MESSAGE = str_replace('--CHARS--', $char_count, LAN_417);
 	} 
 	elseif ($search_prefs['time_restrict']) {
 		$time = time() - $search_prefs['time_secs'];
@@ -211,7 +209,7 @@ if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
 				$perform_search = false;
-				$SEARCH_MESSAGE = LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18;
+				$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18;
 			} else {
 				$sql -> db_Update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
 			}
@@ -299,16 +297,16 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 }
 
 $value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
+$SEARCH_VARS->SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
 if ($search_prefs['selector'] == 1) 
 {
-  $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-  $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
+  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 
-$SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
+$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 
-$ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
+$SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';
@@ -316,7 +314,7 @@ $enhanced_types['ex'] = LAN_SEARCH_25.':';
 $enhanced_types['ep'] = LAN_SEARCH_26.':';
 $enhanced_types['be'] = LAN_SEARCH_27.':';
 
-$ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
+$SEARCH_VARS->ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
 if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all') 
@@ -330,7 +328,7 @@ if (!varsettrue($_GET['adv']) || $_GET['t'] == 'all')
   }
 }
 
-$SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
 <input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 
 $js_adv = '';
@@ -344,11 +342,11 @@ foreach ($search_info as $key => $value)
 
 if (isset($_GET['t']) && isset($search_info[$_GET['t']]['advanced'])) 
 {
-  $SEARCH_TYPE_DISPLAY = "";
+  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "";
 } 
 else 
 {
-  $SEARCH_TYPE_DISPLAY = "style='display: none'";
+  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "style='display: none'";
 }
 
 if (check_class($search_prefs['google'])) {
@@ -368,19 +366,19 @@ if ($perform_search)
   {
 	if ($stop_count > 1) 
 	{
-	  $SEARCH_MESSAGE = LAN_SEARCH_32.": ";
+	  $SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_32.": ";
 	} 
 	else 
 	{
-	  $SEARCH_MESSAGE = LAN_SEARCH_33.": ";
+	  $SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_33.": ";
 	}
 	$i = 1;
 	foreach ($sch -> stop_keys as $stop_key) 
 	{
-	  $SEARCH_MESSAGE .= $stop_key;
+	  $SEARCH_VARS->SEARCH_MESSAGE .= $stop_key;
 	  if ($i != $stop_count) 
 	  {
-		$SEARCH_MESSAGE .= ', ';
+		$SEARCH_VARS->SEARCH_MESSAGE .= ', ';
 	  }
 	  $i++;
 	}
@@ -395,7 +393,7 @@ if (!isset($SEARCH_TOP_TABLE)) {
 	if (file_exists(THEME."search_template.php")) {
 		require(THEME."search_template.php");
 	} else {
-		require(e_BASE.$THEMES_DIRECTORY."templates/search_template.php");
+		require(e_THEME."templates/search_template.php");
 	}
 }
 
@@ -404,14 +402,14 @@ if (!isset($SEARCH_TOP_TABLE)) {
 // standard search config
 if ($search_prefs['selector'] == 2) 
 {
-	$SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
+	$SEARCH_VARS->SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
 	if ($search_prefs['multisearch']) {
-		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_22."</option>";
+		$SEARCH_VARS->SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_22."</option>";
 	}
 } 
 else 
 {
-  $SEARCH_MAIN_CHECKBOXES = '';
+  $SEARCH_VARS->SEARCH_MAIN_CHECKBOXES = '';
 }
 
 foreach($search_info as $key => $value) 
@@ -423,80 +421,91 @@ foreach($search_info as $key => $value)
 	}
 	$google_js = check_class($search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
 	if ($search_prefs['selector'] == 2) {
-		$SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$value['qtype']."</option>";
+		$SEARCH_VARS->SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$value['qtype']."</option>";
 	} else if ($search_prefs['selector'] == 1) {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+		$SEARCH_VARS->SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
 	} else {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+		$SEARCH_VARS->SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
 	}
 }
 
 if (check_class($search_prefs['google'])) 
 {
 	if ($search_prefs['selector'] == 2) {
-		$SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
+		$SEARCH_VARS->SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
 	} else if ($search_prefs['selector'] == 1) {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
+		$SEARCH_VARS->SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
 	} else {
-		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
+		$SEARCH_VARS->SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
 	}
 }
 
 if ($search_prefs['selector'] == 2) 
 {
-	$SEARCH_DROPDOWN .= "</select>";
+	$SEARCH_VARS->SEARCH_DROPDOWN .= "</select>";
 }
 // end of standard search config
 
 
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
-foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) {
-	$ENHANCED_DISPLAY_ID = "en_".$en_id;
-	$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm($_GET[$en_id])."' maxlength='50' />";
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
+//$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
+$tp = e107::getParser();
+$text = $tp->simpleParse($SEARCH_TOP_TABLE, $SEARCH_VARS);
+foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) 
+{
+	$SEARCH_VARS->ENHANCED_TEXT = $ENHANCED_TEXT;
+	$SEARCH_VARS->ENHANCED_DISPLAY_ID = "en_".$en_id;
+	$SEARCH_VARS->ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm($_GET[$en_id])."' maxlength='50' />";
+	//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
+	$text .= $tp->simpleParse($SEARCH_ENHANCED, $SEARCH_VARS);
 }
+$SEARCH_VARS->ENHANCED_TEXT = $SEARCH_VARS->ENHANCED_DISPLAY_ID = $SEARCH_VARS->ENHANCED_FIELD = null;
+
 if ($search_prefs['user_select']) {
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CATS);
+	//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CATS);
+	$text .= $tp->simpleParse($SEARCH_CATS, $SEARCH_VARS);
 }
 
-$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TYPE);
+//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TYPE);
+$text .= $tp->simpleParse($SEARCH_TYPE, $SEARCH_VARS);
 
 if ($_GET['adv']) {
 	if (isset($search_info[$_GET['t']]['advanced'])) {
 		@require_once($search_info[$_GET['t']]['advanced']);
 		foreach ($advanced as $adv_key => $adv_value) {
 			if ($adv_value['type'] == 'single') {
-				$SEARCH_ADV_TEXT = $adv_value['text'];
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV_COMBO);
+				$SEARCH_VARS->SEARCH_ADV_TEXT = $adv_value['text'];
+				//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV_COMBO);
+				$text .= $tp->simpleParse($SEARCH_ADV_COMBO, $SEARCH_VARS);
 			} else {
 				if ($adv_value['type'] == 'dropdown') {
-					$SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_ADV_B = "<select name='".$adv_key."' class='tbox'>";
+					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
+					$SEARCH_VARS->SEARCH_ADV_B = "<select name='".$adv_key."' class='tbox'>";
 					foreach ($adv_value['list'] as $list_item) {
-						$SEARCH_ADV_B .= "<option value='".$list_item['id']."' ".($_GET[$adv_key] == $list_item['id'] ? "selected='selected'" : "").">".$list_item['title']."</option>";
+						$SEARCH_VARS->SEARCH_ADV_B .= "<option value='".$list_item['id']."' ".($_GET[$adv_key] == $list_item['id'] ? "selected='selected'" : "").">".$list_item['title']."</option>";
 					}
-					$SEARCH_ADV_B .= "</select>";
+					$SEARCH_VARS->SEARCH_ADV_B .= "</select>";
 				} else if ($adv_value['type'] == 'date') {
-					$SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_ADV_B = "<select id='on' name='on' class='tbox'>
+					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
+					$SEARCH_VARS->SEARCH_ADV_B = "<select id='on' name='on' class='tbox'>
 					<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
 					<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
 					</select>&nbsp;<select id='time' name='time' class='tbox'>";
 					$time = array(LAN_SEARCH_36 => 'any', LAN_SEARCH_37 => 86400, LAN_SEARCH_38 => 172800, LAN_SEARCH_39 => 259200, LAN_SEARCH_40 => 604800, LAN_SEARCH_41 => 1209600, LAN_SEARCH_42 => 1814400, LAN_SEARCH_43 => 2628000, LAN_SEARCH_44 => 5256000, LAN_SEARCH_45 => 7884000, LAN_SEARCH_46 => 15768000, LAN_SEARCH_47 => 31536000, LAN_SEARCH_48 => 63072000, LAN_SEARCH_49 => 94608000);
 					foreach ($time as $time_title => $time_secs) {
-						$SEARCH_ADV_B .= "<option value='".$time_secs."' ".($_GET['time'] == $time_secs ? "selected='selected'" : "").">".$time_title."</option>";
+						$SEARCH_VARS->SEARCH_ADV_B .= "<option value='".$time_secs."' ".($_GET['time'] == $time_secs ? "selected='selected'" : "").">".$time_title."</option>";
 					}
-					$SEARCH_ADV_B .= "</select>";
+					$SEARCH_VARS->SEARCH_ADV_B .= "</select>";
 				} else if ($adv_value['type'] == 'author') {
 					require_once(e_HANDLER.'user_select_class.php');
 					$us = new user_select;
-					$SEARCH_ADV_A = $adv_value['text'];
-					$SEARCH_ADV_B = $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
+					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['text'];
+					$SEARCH_VARS->SEARCH_ADV_B = $us -> select_form('popup', $adv_key, $_GET[$adv_key]);
 				} else if ($adv_value['type'] == 'dual') {
-					$SEARCH_ADV_A = $adv_value['adv_a'];
-					$SEARCH_ADV_B = $adv_value['adv_b'];
+					$SEARCH_VARS->SEARCH_ADV_A = $adv_value['adv_a'];
+					$SEARCH_VARS->SEARCH_ADV_B = $adv_value['adv_b'];
 				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV);
+				//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV);
+				$text .= $tp->simpleParse($SEARCH_ADV, $SEARCH_VARS);
 			}
 		}
 	} else {
@@ -504,15 +513,19 @@ if ($_GET['adv']) {
 	}
 }
 
-$text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
-$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
+//$text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
+$text .= $SEARCH_VARS->SEARCH_MESSAGE ? $tp->simpleParse($SEARCH_TABLE_MSG, $SEARCH_VARS) : "";
+//$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
+$text .= $tp->simpleParse($SEARCH_BOT_TABLE, $SEARCH_VARS);
 
-$ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
+e107::getRender()->tablerender(PAGE_NAME." ".SITENAME, $text, 'search_head');
 
 // parse search
+$SEARCH_VARS = new e_vars();
 if ($perform_search) 
 {
 	$_GET['q'] = rawurlencode($_GET['q']);
+	$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
 	foreach ($search_info as $key => $a) 
 	{
 		if (isset($searchtype[$key]) || isset($searchtype['all'])) 
@@ -523,7 +536,9 @@ if ($perform_search)
 				$pre_title = ($search_info[$key]['pre_title'] == 2) ? $search_info[$key]['pre_title_alt'] : $search_info[$key]['pre_title'];
 				$search_chars = $search_info[$key]['chars'];
 				$search_res = $search_info[$key]['results'];
+				$text .= '<div class="search-block">';
 				@require_once($search_info[$key]['sfile']);
+				$text .= '</div>';
 				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 				foreach ($_GET as $pparm_key => $pparm_value) 
@@ -538,7 +553,7 @@ if ($perform_search)
 				if ($results > $search_res) 
 				{
 					$nextprev = ($results > $search_res) ? $tp -> parseTemplate("{NEXTPREV={$parms}}") : "";
-					$text .= "<div class='nextprev' style='text-align: center'>".$nextprev."</div>";
+					$text .= "<div class='nextprev search'>".$nextprev."</div>";
 				}
 				if ($results > 0) 
 				{
@@ -550,7 +565,7 @@ if ($perform_search)
 				{
 					$res_display = "";
 				}
-				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $search_info[$key]['qtype']), $text);
+				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $search_info[$key]['qtype']), $text, 'search_result');
 			}
 		}
 	}
