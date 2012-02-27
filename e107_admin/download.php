@@ -262,6 +262,10 @@ if ($action == "cat")
 	$download->show_categories($sub_action, $id);
 }
 
+if ($action == "requests")
+{
+	$download->show_requests($sub_action);
+}
 
 if ($delete == 'main')
 {
@@ -628,6 +632,16 @@ class download
 				  break;
 				case "download_comment" :
                   $text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "&nbsp;";
+				  break;
+				case "download_requested" :
+				  if($row[$disp]>0)
+				  {
+					$text .= "<a href='".e_SELF."?requests.".$row['download_id']."' alt=''>".$row[$disp]."</a>";
+				  }
+				  else
+				  {	// Display zero requested without link
+					$text .= $row[$disp];
+				  }
 				  break;
 				default :
 				  $text .= $row[$disp]."&nbsp;";
@@ -1901,6 +1915,54 @@ class download
 		}
 	}
 
+	
+	function show_requests($id)
+	{
+		global $sql,$ns;
+		include_once(e_HANDLER."date_handler.php");
+		$gen = new convert();
+		$sql2 = new db();
+		$query2 = "
+			SELECT r.*,d.*
+			FROM #download_requests AS r
+			JOIN #download AS d ON download_request_download_id = download_id
+			WHERE download_request_download_id =".intval($id)."
+			ORDER BY r.download_request_datestamp DESC
+			";
+		$sql2->db_Select_Gen($query2);
+		$text = "
+			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<tr>
+				<td style='width: 30%;' class='forumheader'>".DOWLAN_163."</td>
+				<td style='width: 30%;' class='forumheader'>".DOWLAN_164."</td>
+				<td style='width: 40%;' class='forumheader'>".DOWLAN_165."</td>
+			</tr>
+		";
+		while ($row2 = $sql2->db_Fetch()) 
+		{
+			extract($row2);
+			if ($user = get_user_data($row2['download_request_userid'])) 
+			{
+				$user_name = $user["user_name"];
+			}
+			$download_request_datestamp = $gen->convert_date($row2['download_request_datestamp'], "short");
+			$text .= 
+			"<tr>
+				<td style='width: 30%;' class='forumheader3'><a href='".SITEURL."user.php?id.".$row2['download_request_userid']."' alt=''>".$user_name."</a></td>
+				<td style='width: 30%;' class='forumheader3'>".$row2['download_request_ip']."</td>
+				<td style='width: 40%;' class='forumheader3'>".$download_request_datestamp."</td>
+			</tr>";
+			$download_name = $row2['download_name'];
+		}
+		$text .= "
+			</table>
+			<br />
+			<div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_166."' onClick='history.go(-1)' /></div>			
+			";
+		$ns -> tablerender(DOWLAN_162." '".$download_name."'", $text);
+		return TRUE;
+	}
+	
 // -------------------------------------------------------------------------
 
 

@@ -146,4 +146,10 @@ define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
 
 define("DOWLAN_160", "Prevent simultaneous downloads by individual users");
 define("DOWLAN_161", "Using a splash page to delay the downloading of files");
+
+define("DOWLAN_162", "Requests for");
+define("DOWLAN_163", "User");
+define("DOWLAN_164", "IP");
+define("DOWLAN_165", "Date / time");
+define("DOWLAN_166", "Return to Downloads Front Page");
 ?>
