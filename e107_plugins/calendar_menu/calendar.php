@@ -142,8 +142,14 @@ foreach ($ev_list as $row)
 	else
 	{  // Its a 'normal' event
 		$tmp	= date('j',$row['event_start']);		// Day of month for start
-		$tmp2	= date('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
-
+		if ($row['event_allday'])
+		{
+			$tmp2 = $tmp;			// Same day for start and end
+		}
+		else
+		{
+			$tmp2	= date('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
+		}
 		if(($row['event_start']>=$monthstart) && ($row['event_start']<=$monthend))
 		{	// Start within month
 		  $events[$tmp][] = $row;
