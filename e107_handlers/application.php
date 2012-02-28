@@ -2,21 +2,28 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * e107 Single Entry Point
  *
  * $URL$
  * $Id$
 */
 
+
 /**
+ * @package e107
+ * @subpackage	e107_handlers
+ * @version $Id$
+ * @author SecretR
+ *
+ * e107 Single Entry Point handling
+ * 
  * Currently this file contains all classes required for single entry point functionallity
  * They will be separated in different files in a proper way (soon)
  */
 
+ 
 /**
  * e107 Front controller
  */
@@ -2711,7 +2718,7 @@ class eController
 	public function addTitle($title, $meta = true)
 	{
 		$this->getResponse()->appendTitle($title);
-		if($meta) $this->addMetaTitle($title);
+		if($meta) $this->addMetaTitle(strip_tags($title));
 		return $this;
 	}
 	
