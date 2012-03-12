@@ -366,11 +366,11 @@ class e_form
 		return 'Ready to use upload form fields, optional - file list view';
 	}
 
-	function password($name, $maxlength = 50, $options = array())
+	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
-		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		return "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
 	// autoexpand done
