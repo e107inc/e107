@@ -577,7 +577,7 @@ class e_form
 	{
 		if(!is_array($options)) parse_str($options, $options);
 
-		if($option_array == 'yesno')
+		if($option_array === 'yesno')
 		{
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
