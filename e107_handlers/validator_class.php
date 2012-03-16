@@ -305,7 +305,7 @@ class e_validator
 		// no rules, no check
 		if(!$rules)
 		{
-			$this->_is_valid_data = true;
+			$this->setIsValidData(true);
 			$this->_valid_data = $data;
 			return true;
 		}
@@ -316,7 +316,7 @@ class e_validator
 			$required = $this->isRequiredField($field_name);
 			if(($required || $this->isOptionalField($field_name)) && !$this->validateField($field_name, $value, $required))
 			{
-				$this->_is_valid_data = false;
+				$this->setIsValidData(false);
 				$this->addValidateMessage($this->getFieldName($field_name, $required), $this->getErrorCode($field_name), $this->getFieldMessage($field_name, $value, $required));
 				continue;
 			}
@@ -900,6 +900,18 @@ class e_validator
 	{
 		return empty($this->_is_valid_data);
 	}
+	
+	/**
+	 * Set validation status
+	 *
+	 * @param boolean $status
+	 * @return e_validator
+	 */
+	public function setIsValidData($status)
+	{
+		$this->_is_valid_data = (boolean) $status;
+		return $this;
+	}
 
 	/**
 	 * Reset object validate result data
@@ -907,7 +919,7 @@ class e_validator
 	 */
 	function reset()
 	{
-		$this->_is_valid_data = true;
+		$this->setIsValidData(true);
 		$this->_valid_data = array();
 		$this->clearValidateResults()
 			->clearValidateMessages();
