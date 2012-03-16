@@ -2227,7 +2227,7 @@ class e_front_model extends e_model
 	 */
 	public function addValidationError($message, $field_title = '', $error_code = '')
 	{
-		$this->getValidator()->addValidateMessage($field_title, $error_code, $message);
+		$this->getValidator()->addValidateMessage($field_title, $error_code, $message)->setIsValidData(false);
 		return $this;
 	}
 
