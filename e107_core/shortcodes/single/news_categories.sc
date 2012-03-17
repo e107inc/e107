@@ -4,6 +4,7 @@
  *
  * News Categories shortcode
 */
+//<?
 global $e107, $sql,$pref,$tp,$NEWSCAT,$NEWSCAT_ITEM;
 
 $cString = 'nq_news_categories_sc';
@@ -110,10 +111,10 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 			}
 		}
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."'><img src='".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='".e107::getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."'><img src='".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
 
 		$search[1] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[1] = ($category_name) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='".e107::getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='".NEWSCAT_CELL."; width:$wid%;'>\n";
