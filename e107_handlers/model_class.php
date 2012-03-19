@@ -2514,7 +2514,8 @@ class e_front_model extends e_model
     {
     	$this->_db_errno = 0;
 		$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
+		if($this->hasError()) return false;
+		if(!$this->data_has_changed && !$force)
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
@@ -2734,7 +2735,8 @@ class e_admin_model extends e_front_model
     {
     	$this->_db_errno = 0;
     	$this->_db_errmsg = '';
-		if($this->hasError() || (!$this->data_has_changed && !$force))
+		if($this->hasError()) return false;
+		if(!$this->data_has_changed && !$force)
 		{
 			return 0;
 		}
