@@ -2771,7 +2771,7 @@ class e_admin_model extends e_front_model
 		$this->_db_errmsg = '';
 		if($this->hasError())
 		{
-			return 0;
+			return false;
 		}
 
 		if(!$this->getId())
