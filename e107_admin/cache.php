@@ -112,10 +112,10 @@ $cache_files_num = count($cache_files);
 $imgcache_files_num = count($imgcache_files);
 $dbcache_files_num = count($dbcache_files);
 
-$syscache_label = CACLAN_17.' <strong>'.$syscache_files_num.' '.($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
-$contentcache_label = CACLAN_17.' <strong>'.$cache_files_num.' '.($cache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
-$imgcache_label = CACLAN_17.' <strong>'.$imgcache_files_num.' '.($imgcache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
-$dbcache_label = CACLAN_17.' <strong>'.$dbcache_files_num.' '.($dbcache_files_num != 1 ? CACLAN_19 : CACLAN_18).'</strong>';
+$syscache_label = $syscache_files_num.' '.($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$contentcache_label = $cache_files_num.' '.($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$imgcache_label = $imgcache_files_num.' '.($imgcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$dbcache_label = $dbcache_files_num.' '.($dbcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 
 $text = "
 	<form method='post' action='".e_SELF."'>
@@ -123,48 +123,54 @@ $text = "
 			<legend class='e-hideme'>".CACLAN_3."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
 				<colgroup span='2'>
-					<col style='width:80%' />
+					<col style='width:60%' />
+					<col style='width:20%' />
 					<col style='width:20%' />
 				</colgroup>
 				<thead>
 					<tr>
 						<th><!-- --></th>
+						<th class='left'>".CACLAN_17."</th>
 						<th class='center last'>".CACLAN_1."</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>
-							<strong>".CACLAN_11."</strong>: {$contentcache_label}
+							<strong>".CACLAN_11."</strong>
 							<div class='field-help'>".CACLAN_13."</div>
 						</td>
+						<td>{$contentcache_label}</td>
 						<td class='center middle'>
 							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_12."</strong>: {$syscache_label}
+							<strong>".CACLAN_12."</strong>
 							<div class='field-help'>".CACLAN_14."</div>
 						</td>
+						<td>{$syscache_label}</td>
 						<td class='center middle'>
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_20."</strong>: {$dbcache_label}
+							<strong>".CACLAN_20."</strong>
 							<div class='field-help'>".CACLAN_21."</div>
 						</td>
+						<td>{$dbcache_label}</td>
 						<td class='center middle'>
 							".LAN_ENABLED."
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_22."</strong>: {$imgcache_label}
+							<strong>".CACLAN_22."</strong>
 							<div class='field-help'>".CACLAN_23."</div>
 						</td>
+						<td>{$imgcache_label}</td>
 						<td class='center middle'>
 							".LAN_ENABLED."
 						</td>
