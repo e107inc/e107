@@ -1203,6 +1203,9 @@ class e107
 		{
 			return self::getUser();
 		}
+		
+		if(!$user_id) return self::getObject('e_system_user');
+		
 		$user = self::getRegistry('core/e107/user/'.$user_id);
 		if(null === $user)
 		{
