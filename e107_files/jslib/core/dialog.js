@@ -30,6 +30,8 @@ e107Base.setPrefs('core-dialog', {
 	maxWidth: null, 					/* window max width */
 	maxAdaptWidth: null, 				/* window max width when adapt() is called (fit the content when e.g. dynamically added via AJAX) */
 	maxAdaptHeight: null, 				/* window max height when adapt() is called (fit the content when e.g. dynamically added via AJAX) */
+	adaptWidthOffset: 0, 				/* width offset to be added when adapting */
+	adaptHeightOffset: 0, 				/* height offset to be added when adapting */
 	gridX: 1,
 	gridY: 1,
 	wired: false, 						/* wired element shown when resizing/moving the window (browser performance) */
@@ -44,6 +46,8 @@ e107Base.setPrefs('core-dialog', {
 	dialogManager: null, 				/* dialog manager for the current instance, defaults to e107Widgets.DialogManagerDefault */
 	positionningStrategyOffset: null, 	/* offset used to auto-position a window when multiple windows are opened, defaults to 20 */
 	close: 'destroy', 					/* e107Widgets.Dialog callback method for closing dialog or false to disable */
+	hideOptions: null,
+	hideShadowOptions: null,
 	maximize: 'toggleMaximize' 			/* e107Widgets.Dialog method for closing dialog or false to disable */
 });
 
@@ -318,7 +322,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 			return this;
 
 		this.fire('hiding');
-		this.effect('hide');
+		this.effect('hide', null, this.options['hideOptions']);
 
 		if (this.modalSession) {
 			this.dialogManager.endModalSession(this);
@@ -452,14 +456,55 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 	adapt: function() {
 		var dimensions = this.content.getScrollDimensions();
 		
+		dimensions.height += this.options.adaptHeightOffset;
+		dimensions.width += this.options.adaptWidthOffset;
+		
 		if(this.options.maxAdaptHeight && dimensions.height > this.options.maxAdaptHeight) 
 			dimensions.height = this.options.maxAdaptHeight;
 			
 		if(this.options.maxAdaptWidth && dimensions.width > this.options.maxAdaptWidth) 
 			dimensions.width = this.options.maxAdaptWidth;
 			
+			
+		if(this.options.maxWidth && dimensions.width > this.options.maxWidth) 
+			dimensions.height = this.options.maxWidth;
+			
 		if(this.options.maxHeight && dimensions.height > this.options.maxHeight) 
 			dimensions.height = this.options.maxHeight;
+		
+		if (this.options.superflousEffects)
+			this.morph(dimensions, true);
+		else
+			this.setSize(dimensions.width, dimensions.height, true);
+		return this;
+	},
+	
+	/*
+	 * Function: fit Fits window size to its inner content
+	 * 
+	 * @param string selector
+	 * @param boolean fitWidth 
+	 */
+	fit: function(selector, fitWidth) {
+		var target = this.content.select(selector), dimensions;
+		
+		if(!target || !target.length) return this;
+		dimensions = target[0].getDimensions();
+		
+		if(!fitWidth) dimensions.width = this.content.getDimensions().width;
+		
+		if(this.options.maxWidth && dimensions.width > this.options.maxWidth) 
+			dimensions.width = this.options.maxWidth;
+			
+		if(this.options.maxHeight && dimensions.height > this.options.maxHeight) 
+			dimensions.height = this.options.maxHeight;
+			
+		
+		if(this.options.minWidth && dimensions.width < this.options.minWidth) 
+			dimensions.width = this.options.minWidth;
+			
+		if(this.options.minHeight && dimensions.height < this.options.minHeight) 
+			dimensions.height = this.options.minHeight;
 			
 		if (this.options.superflousEffects)
 			this.morph(dimensions, true);
@@ -1246,7 +1291,7 @@ e107Widgets.Dialog.addMethods( {
 
 	hideShadow: function() {
 		if (this.shadow)
-			this.effect('hide', this.shadow.shadow);
+			this.effect('hide', this.shadow.shadow, this.options['hideShadowOptions']);
 	},
 	
 	removeShadow: function() {
@@ -1424,7 +1469,7 @@ e107Widgets.DialogManager = Class.create(e107WidgetAbstract, {
 			return;
 
 		if (!element.hasClassName(this.options.className))
-			element = element.up(this.options.className);
+			element = element.up('.' + this.options.className);
 
 		var id = element.id;
 		return this.stack.windows.find(function(win) {
@@ -1745,6 +1790,130 @@ e107Widgets.DialogManager.Stack = Class.create(Enumerable, {
 	}
 });
 
+/*
+  Utility functions for CSS/StyleSheet files access
+
+  Authors:
+    - Sébastien Gruhier, <http://www.xilinus.com>
+    - Samuel Lebeau, <http://gotfresh.info>
+*/
+
+var CSS = (function() {
+  // Code based on:
+  //   - IE5.5+ PNG Alpha Fix v1.0RC4 (c) 2004-2005 Angus Turnbull http://www.twinhelix.com
+  //   - Whatever:hover - V2.02.060206 - hover, active & focus (c) 2005 - Peter Nederlof * Peterned - http://www.xs4all.nl/~peterned/
+  function fixPNG() {
+   parseStylesheet.apply(this, $A(arguments).concat(fixRule));
+  };
+
+  function parseStylesheet() {
+    var patterns = $A(arguments);
+    var method = patterns.pop();
+
+    // To avoid flicking background
+    //document.execCommand("BackgroundImageCache", false, true);
+    // Parse all document stylesheets
+    var styleSheets = $A(document.styleSheets);
+    if (patterns.length > 1) {
+      styleSheets = styleSheets.select(function(css) {
+        return patterns.any(function(pattern) {
+          return css.href && css.href.match(pattern)
+          });
+      });
+    }
+    styleSheets.each(function(styleSheet) {fixStylesheet.call(this, styleSheet, method)});
+  };
+
+  // Fixes a stylesheet
+  function fixStylesheet(stylesheet, method) {
+    // Parse import files
+    if (stylesheet.imports)
+      $A(stylesheet.imports).each(fixStylesheet);
+
+    var href = stylesheet.href || document.location.href;
+    var docPath = href.substr(0, href.lastIndexOf('/'));
+	  // Parse all CSS Rules
+    $A(stylesheet.rules || stylesheet.cssRules).each(function(rule) { method.call(this, rule, docPath) });
+  };
+
+  var filterPattern = 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="#{src}",sizingMethod="#{method}")';
+
+  // Fixes a rule if it has a PNG background
+  function fixRule(rule, docPath) {
+    var bgImg = rule.style.backgroundImage;
+    // Rule with PNG background image
+    if (bgImg && bgImg != 'none' && bgImg.match(/^url[("']+(.*\.png)[)"']+$/i)) {
+      var src = RegExp.$1;
+      var bgRepeat = rule.style.backgroundRepeat;
+      // Relative path
+      if (src[0] != '/')
+        src = docPath + "/" + src;
+      // Apply filter
+      rule.style.filter = filterPattern.interpolate({
+        src:    src,
+        method: bgRepeat == "no-repeat" ? "crop" : "scale" });
+      rule.style.backgroundImage = "none";
+    }
+  };
+
+  var preloadedImages = new Hash();
+
+  function preloadRule(rule, docPath) {
+    var bgImg = rule.style.backgroundImage;
+    if (bgImg && bgImg != 'none'  && bgImg != 'initial' ) {
+      if (!preloadedImages.get(bgImg)) {
+        bgImg.match(/^url[("']+(.*)[)"']+$/i);
+        var src = RegExp.$1;
+        // Relative path
+        if (!(src[0] == '/' || src.match(/^file:/) || src.match(/^https?:/)))
+          src = docPath + "/" + src;
+        preloadedImages.set(bgImg, true);
+        var image = new Image();
+        image.src = src;
+      }
+    }
+  }
+
+  return {
+    /*
+       Method: fixPNG
+         Fix transparency of PNG background of document stylesheets.
+         (only on IE version<7, otherwise does nothing)
+
+         Warning: All png background will not work as IE filter use for handling transparency in PNG
+         is not compatible with all background. It does not support top/left position (so no CSS sprite)
+
+         I recommend to create a special CSS file with png that needs to be fixed and call CSS.fixPNG on this CSS
+
+         Examples:
+          > CSS.fixPNG() // To fix all css
+          >
+          > CSS.fixPNG("mac_shadow.css") // to fix all css files with mac_shadow.css so mainly only on file
+          >
+          > CSS.fixPNG("shadow", "vista"); // To fix all css files with shadow or vista in their names
+
+       Parameters
+         patterns: (optional) list of pattern to filter css files
+    */
+    fixPNG: (Prototype.Browser.IE && Prototype.Browser.IEVersion < 7) ? fixPNG : Prototype.emptyFunction,
+
+    // By Tobie Langel (http://tobielangel.com)
+    //   inspired by http://yuiblog.com/blog/2007/06/07/style/
+    addRule: function(css, backwardCompatibility) {
+      if (backwardCompatibility) css = css + '{' + backwardCompatibility + '}';
+      var style = new Element('style', { type: 'text/css', media: 'screen' });
+      $(document.getElementsByTagName('head')[0]).insert(style);
+      if (style.styleSheet) style.styleSheet.cssText = css;
+      else style.appendText(css);
+      return style;
+    },
+
+    preloadImages: function() {
+      parseStylesheet.apply(this, $A(arguments).concat(preloadRule));
+    }
+  };
+})();
+
 /**
  * String extension
  */
@@ -1759,5 +1928,4 @@ document.observe('dom:loaded', function() {
 	if(typeof e107Widgets['DialogManagerDefault'] == 'undefined')
 		e107Widgets.DialogManagerDefault = new e107Widgets.DialogManager();
 });
-	
 	
