@@ -179,7 +179,7 @@ define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
 
 define("PRFLAN_170", "Use reverse DNS to allow host banning");
-define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
+define('PRFLAN_171', "Turning this option on will allow you to ban users by hostname, rather than just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
 define("PRFLAN_173", "Check for E107 updates once/day");
 
