@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -14,7 +14,7 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-//TODO: Investigate queries
+//TODO: Investigate queries - needs some more sorting
 class list_forum
 {
 	function list_forum($parent)
@@ -30,30 +30,36 @@ class list_forum
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
 		if($this->parent->mode == 'new_page' || $this->parent->mode == 'new_menu' )
-		{
+		{	// New posts since last visit, up to limit
 			$lvisit = $this->parent->getlvisit();
 			$qry = "
-			SELECT tp.thread_name AS parent_name, tp.thread_id as parent_id, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, t.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies
-			FROM #forum_t AS t
-			LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+			SELECT tp.thread_name AS parent_name, tp.thread_id as parent_id, 
+			f.forum_id, f.forum_name, f.forum_class, 
+			u.user_name, lp.user_name AS lp_name, 
+			t.thread_id, t.thread_views as tviews, t.thread_name, t.thread_datestamp, t.thread_user,
+			tp.post_thread, tp.post_user, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies
+			FROM #forum_thread AS t
+			LEFT JOIN #forum_post AS tp ON t.thread_id = tp.post_thread
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-			LEFT JOIN #user AS u ON t.thread_user = u.user_id
-			LEFT JOIN #user AS lp ON tp.thread_lastuser = lp.user_id
-			WHERE f.forum_class REGEXP '".e_CLASS_REGEXP."'
-			AND t.thread_datestamp > $lvisit
-			ORDER BY t.thread_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
+			LEFT JOIN #user AS u ON tp.post_user = u.user_id
+			LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
+			WHERE find_in_set(forum_class, '".USERCLASS_LIST."')
+			AND t.thread_lastpost > {$lvisit}
+			ORDER BY tp.post_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
 		}
 		else
-		{
+		{	// Most recently updated threads up to limit
 			$qry = "
-			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
-			FROM #forum_t AS t
+			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, 
+			t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
+			FROM #forum_thread AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 			LEFT JOIN #user AS u ON t.thread_user = u.user_id
 			LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
-			WHERE t.thread_parent=0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."'
+			WHERE find_in_set(f.forum_class, '".USERCLASS_LIST."')
 			ORDER BY t.thread_lastpost DESC LIMIT 0,".intval($this->parent->settings['amount']);
 		}
+
 
 		if(!$results = $this->parent->e107->sql->db_Select_gen($qry))
 		{
