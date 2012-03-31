@@ -137,22 +137,22 @@ class e_parse
 				// text is part of the summary of a longer item (e.g. content summary)
 				'SUMMARY' =>
 					array(
-						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE
 						),
 				// text is the description of an item (e.g. download, link)
 				'DESCRIPTION' =>
 					array(
-						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE
 						),
 				// text is 'body' or 'bulk' text (e.g. custom page body, content body)
 				'BODY' =>
 					array(
-						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE
 						),
 				// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 				'USER_BODY' =>
 					array(
-						'constants'=>TRUE, 'scripts' => FALSE
+						'constants'=>'full', 'scripts' => FALSE
 						),
 				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
 				'E_BODY' =>
@@ -543,15 +543,14 @@ class e_parse
 		{
 			$checkTags = explode(',', $tagList);
 		}
-		$data = preg_replace('#\[code.*?\[\/code\]#i', '', $data);		// Ignore code blocks
+		$data = strtolower(preg_replace('#\[code.*?\[\/code\]#i', '', $data));		// Ignore code blocks. All lower case simplifies subsequent processing
 		foreach ($checkTags as $tag)
 		{
-			if (($pos = stripos($data, '</'.$tag)) !== FALSE)
+			$aCount = substr_count($data,  '<'.$tag);			// Count opening tags
+			$bCount = substr_count($data,  '</'.$tag);			// Count closing tags
+			if ($aCount != $bCount)
 			{
-				if ((($bPos = stripos($data, '<'.$tag )) === FALSE) || ($bPos > $pos))
-				{
-					return TRUE;		// Potentially abusive HTML found
-				}
+				return TRUE;		// Potentially abusive HTML found - tags don't balance
 			}
 		}
 		return FALSE;		// Nothing detected
@@ -564,7 +563,7 @@ class e_parse
 	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
 	 *
 	 */
-	public function dataFilter($data,$mode='bbcode')
+	public function dataFilter($data, $mode='bbcode')
 	{
 		$ans = '';
 		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
@@ -1370,8 +1369,11 @@ class e_parse
 					// $matches[4] - bit between the tags (i.e. text to process)
 					// $matches[5] - closing tag
 					// In case we decide to load a file
-					$bbFile = e_CORE.'bbcodes/'.strtolower(str_replace('_', '', $matches[2])).'.bb';
+					$bbPath = e_CORE.'bbcodes/';
+					$bbFile = strtolower(str_replace('_', '', $matches[2]));
 					$bbcode = '';
+					$className = '';
+					$full_text = '';
 					$code_text = $matches[4];
 					$parm = $matches[3] ? substr($matches[3],1) : '';
 					$last_bbcode = $matches[2];
@@ -1389,7 +1391,7 @@ class e_parse
 			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
 							// [SecretR] - avoid php code injections, missing php.bb will completely disable user posted php blocks
-							$bbcode = file_get_contents($bbFile);
+							$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
 							if (!$matches[3])
 							{
 								$code_text = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
@@ -1405,26 +1407,36 @@ class e_parse
 							$proc_funcs = TRUE;
 
 						default :		// Most bbcodes will just execute their normal file
-							// Just read in the code file and execute it
-							/// @todo Handle class-based bbcodes
-							$bbcode = file_get_contents($bbFile);
+							// @todo should we cache these bbcodes? require_once should make class-related codes quite efficient
+							if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
+							{	// Its a bbcode class file
+								require_once($bbPath.'bb_'.$bbFile.'.php');
+								//echo "Load: {$bbFile}.php<br />";
+								$className = 'bb_'.$code;
+								$this->bbList[$code] = new $className();
+							}
+							elseif (file_exists($bbPath.$bbFile.'.bb'))
+							{
+								$bbcode = file_get_contents($bbPath.$bbFile.'.bb');
+							}
 					}   // end - switch ($matches[2])
 
-					if ($bbcode)
+					if ($className)
+					{
+						$tempCode = new $className();
+						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
+					}
+					elseif ($bbcode)
 					{	// Execute the file
-						ob_start();
-						$bbcode_return = eval($bbcode);
-						$bbcode_output = ob_get_contents();
-						ob_end_clean();
+						$full_text = eval($bbcode);			// Require output of bbcode to be returned
 						// added to remove possibility of nested bbcode exploits ...
 						//   (same as in bbcode_handler - is it right that it just operates on $bbcode_return and not on $bbcode_output? - QUERY XXX-02
-						if(strpos($bbcode_return, "[") !== FALSE)
-						{
-							$exp_search = array("eval", "expression");
-							$exp_replace = array("ev<b></b>al", "expres<b></b>sion");
-							$bbcode_return = str_replace($exp_search, $exp_replace, $bbcode_return);
-						}
-						$full_text = $bbcode_output.$bbcode_return;
+					}
+					if(strpos($full_text, '[') !== FALSE)
+					{
+						$exp_search = array('eval', 'expression');
+						$exp_replace = array('ev<b></b>al', 'expres<b></b>sion');
+						$bbcode_return = str_replace($exp_search, $exp_replace, $full_text);
 					}
 				}
 			}
