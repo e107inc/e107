@@ -217,15 +217,14 @@ class e_parse
 		{
 			$checkTags = explode(',', $tagList);
 		}
-		$data = preg_replace('#\[code.*?\[\/code\]#i', '', $data);		// Ignore code blocks
+		$data = strtolower(preg_replace('#\[code.*?\[\/code\]#i', '', $data));		// Ignore code blocks. All lower case simplifies subsequent processing
 		foreach ($checkTags as $tag)
 		{
-			if (($pos = stripos($data, '</'.$tag)) !== FALSE)
+			$aCount = substr_count($data,  '<'.$tag);			// Count opening tags
+			$bCount = substr_count($data,  '</'.$tag);			// Count closing tags
+			if ($aCount != $bCount)
 			{
-				if ((($bPos = stripos($data, '<'.$tag )) === FALSE) || ($bPos > $pos))
-				{
-					return TRUE;		// Potentially abusive HTML found
-				}
+				return TRUE;		// Potentially abusive HTML found - tags don't balance
 			}
 		}
 		return FALSE;		// Nothing detected
@@ -235,7 +234,7 @@ class e_parse
 	/*
 	 * Filter User Input
 	*/
-	function dataFilter($data,$mode='bbcode')
+	function dataFilter($data, $mode='bbcode')
 	{
 		$ans = '';
 		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
