@@ -195,7 +195,7 @@ function PreImage_Select($formid)
 		$fl = new e_file;
 	}
 
-	$imagelist = $fl->get_files($path,"",'standard',2);
+	$imagelist = $fl->get_files($path,"",'standard',4);
     sort($imagelist);
 
 	$text ="<!-- Start of PreImage selector -->

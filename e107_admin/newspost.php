@@ -143,6 +143,7 @@ if ($delete == 'category' && $del_id)
 		$newspost->show_message(NWSLAN_33.' #'.$del_id.' '.NWSLAN_32);
 		unset($delete, $del_id);
 	}
+	unset($_SESSION['news_categories']);
 }
 
 if($delete == 'sn' && $del_id)
@@ -220,6 +221,7 @@ if (isset($_POST['create_category']))
 		$_POST['category_name'] = $tp->toDB($_POST['category_name']);
 		$sql->db_Insert('news_category', "'0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
 		$newspost->show_message(NWSLAN_35);
+		unset($_SESSION['news_categories']);
 	}
 }
 
@@ -235,6 +237,7 @@ if (isset($_POST['update_category']))
 	$e107cache->clear('news.php');
 	$e107cache->clear('othernews');
 	$e107cache->clear('othernews2');
+	unset($_SESSION['news_categories']);
 }
 
 if (isset($_POST['save_prefs'])) 
@@ -353,8 +356,10 @@ class newspost
 			<tr>
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.{$sort_link}.{$from}'>".LAN_NEWS_45."</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.{$sort_link}.{$from}'>".NWSLAN_40."</a></td>
+			<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.news_category.{$sort_link}.{$from}'>".NWSLAN_6."</a></td>
 			<td style='width:15%' class='fcaption'>".LAN_NEWS_49."</td>
-			<td style='width:15%' class='fcaption'>".LAN_OPTIONS."</td>
+			
+			<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
 			$ren_type = array('default','title','other-news','other-news 2');
 			foreach($newsarray as $row)
@@ -365,7 +370,9 @@ class newspost
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>{$news_id}</td>
 				<td style='width:55%' class='forumheader3'><a href='".e_BASE."news.php?item.{$news_id}.{$news_category}'>".($news_title ? $tp->toHTML($news_title,"","no_hook,emotes_off,no_make_clickable") : "[".NWSLAN_42."]")."</a></td>
-				<td style='20%' class='forumheader3'>";
+				
+				<td style='15%' class='forumheader3' >".$this->show_category($news_category)."</td>
+				<td style='15%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
@@ -375,7 +382,7 @@ class newspost
 				$text .= "
 				</td>
 
-				<td style='width:15%; text-align:center' class='forumheader3'>
+				<td style='width:10%; text-align:center' class='forumheader3'>
 				<a href='".e_SELF."?create.edit.{$news_id}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[main_{$news_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".NWSLAN_39." [ID: $news_id ]')\"/>
 				</td>
@@ -397,6 +404,38 @@ class newspost
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
 		$ns->tablerender(NWSLAN_4, $text);
 	}
+	
+	function show_category($id)
+	{
+		global $sql2,$tp;	
+		
+		if(!$_SESSION['news_categories'])
+		{
+			if ($sql2->db_Select('news_category', '*'))
+			{
+				while($row = $sql2->db_Fetch(MYSQL_ASSOC))
+				{
+					$_SESSION['news_categories'][$row['category_id']] = $row['category_name'];	
+				}				
+			}
+			else
+			{
+				$_SESSION['news_categories'] = array();		
+			}	
+		}		
+			
+		if(isset($_SESSION['news_categories'][$id]))
+		{
+			return $tp->toHtml($_SESSION['news_categories'][$id],FALSE,"defs");	
+		}
+		else
+		{
+			return "";
+		}
+		
+	}
+	
+	
 
 	function show_options($action) 
 	{
@@ -612,6 +651,7 @@ class newspost
 		$parms .= '&height=100px';
 		$parms .= '&multiple=TRUE';
 		$parms .= '&label=-- '.LAN_NEWS_48.' --';
+		$parms .= '&subdirs=4';
 
         $text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}}");
 
