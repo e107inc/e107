@@ -1437,7 +1437,7 @@ class e_user_extended_model extends e_admin_model
 
 	/**
 	 * Set User model
-	 * @param $user_model
+	 * @param e_user_model $user_model
 	 * @return e_user_extended_model
 	 */
 	public function setUser($user_model)
