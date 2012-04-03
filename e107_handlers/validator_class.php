@@ -776,8 +776,8 @@ class e_validator
 		$dbgmsg = false;
 		if($err_message)
 		{
-			$lan = (strpos($err_message, '%1$s') !== false ? '' : '<strong>&quot;%1$s&quot;</strong> - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
-			$dbgmsg = LAN_VALIDATE_FAILMSG;
+			$lan = (!$field_title || strpos($err_message, '%1$s') !== false ? '' : '<strong>&quot;%1$s&quot;</strong> - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
+			$dbgmsg = LAN_VALIDATE_FAILMSG;var_dump($lan);
 		}
 		
 		//Core message
