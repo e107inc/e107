@@ -56,7 +56,7 @@ class parseXml {
 			// ... and there shouldn't be unprintable characters in the URL anyway
 		}
 				
-		if (function_exists('file_get_contents'))
+		if (function_exists('file_get_contents') && ini_get("allow_url_fopen"))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
 			
