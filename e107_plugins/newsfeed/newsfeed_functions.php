@@ -59,7 +59,7 @@ if(!function_exists("checkUpdate"))
 							echo NFLAN_48."<br /><br />".$serializedArray;
 						}
 					}
-					else
+					elseif(ADMIN)
 					{
 						echo $xml -> error;
 					}
