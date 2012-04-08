@@ -137,6 +137,7 @@ if (ADMIN) {
 		foreach($slinks->eLinkList['head_menu'] as $k=>$lk)
 		{
 			$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
+			$link = $tp->parseTemplate($link, TRUE); // dynamic URL support via Shortcodes. 
 			$img = (substr($lk['link_button'],0,3)=='{e_' || trim($lk['link_button'])=='') ? $lk['link_button'] : "{e_IMAGE}icons/".$lk['link_button'];
 			$imgTag = ($img) ? "<img src='".$img."' alt='".$tp->toAttribute($lk['link_name'])."' style='border: 0px none; vertical-align: bottom; width: 16px; height: 16px;' />" : "";
 			$text .= adnav_main($tp->toHtml($lk['link_name'],'','defs'), $tp->replaceConstants($link,'full'), $tp->replaceConstants($imgTag,'full'));	
