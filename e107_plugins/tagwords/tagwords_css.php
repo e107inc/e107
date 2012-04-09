@@ -44,7 +44,7 @@ a.tag3:hover {
 	color:#73880A;
 	text-decoration:none;
 }
-a.tag1:hover {
+a.tag4:hover {
 	text-decoration:underline;
 }
 
