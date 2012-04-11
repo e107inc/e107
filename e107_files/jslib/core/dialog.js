@@ -303,7 +303,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 		this.visible = true;
 		
 		new PeriodicalExecuter(function(executer) {
-			if (!this.element.visible())
+			if (this.element && !this.element.visible())
 				return;
 			this.fire('shown');
 			executer.stop();
@@ -330,7 +330,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 		}
 
 		new PeriodicalExecuter(function(executer) {
-			if (this.element.visible())
+			if (this.element && this.element.visible())
 				return;
 			this.visible = false;
 			this.element.remove();
