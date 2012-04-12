@@ -59,6 +59,10 @@ if ($action == 'rp')
 	{
 	  $forum_info = FALSE;		// Someone fed us a dud forum id - should exist if replying
 	}
+	elseif ($thread_info['head']['thread_active'] == 0)
+	{	// Locked thread - posting not allowed
+		$forum_info = FALSE;
+	}
 	else
 	{
 		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
@@ -79,7 +83,8 @@ elseif ($action == 'quote' || $action == 'edit')
 	}
 }
 
-if (($forum_info === FALSE) || !check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) {
+if (($forum_info === FALSE) || !check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) 
+{
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	require_once(FOOTERF);
