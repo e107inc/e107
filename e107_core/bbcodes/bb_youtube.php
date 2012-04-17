@@ -22,7 +22,13 @@ if (!defined('e107_INIT')) { exit; }
 /**
  *	Youtube handling
  *
- * [youtube=tiny|small|medium|big|huge or width,height|nofull&norel&border&privacy&hd]ID[/youtube]
+ * [youtube=tiny|small|medium|large|huge or width,height]ID{&query options}[/youtube]
+ * 
+ * examples: 
+ * [youtube=560,340]N2wivHYCRho?hd=1&color1=&color2=&cc_load_policy=0&autoplay=0[/youtube]
+ * [youtube=big|privacy]N2wivHYCRho?hd=1&hl=en[/youtube]
+ * 
+ * Will also convert Youtube embed code, and youtube 'watch' urls. (http://www.youtube.com/watch?v=)
  * Youtube ID is the only required data!
  * TODO - use swfobject JS - XHTML validation
  */
@@ -50,13 +56,24 @@ class bb_youtube extends e_bb_base
 		$bbpars = array();
 		$widthString = '';
 		$parm = trim($parm);
+		
+		// Convert Simple URLs. 
+		if(strpos($code_text,"youtube.com/watch?v=")!==FALSE || strpos($code_text,"youtube.com/watch#!v=")!==FALSE )
+		{
+			$validUrls = array("http://","www.","youtube.com/watch?v=","youtube.com/watch#!v=");
+			$tmp = str_replace($validUrls,'',$code_text);
+			$qrs = explode("&",$tmp);		
+			$code_text = $qrs[0];
+			unset($qrs);		
+		}
+			
 		if ($parm)
 		{
 			if (strpos($parm, '|') !== FALSE)
 			{
 				list($widthString, $parm) = explode('|', $parm);
 			}
-			elseif (in_array($parm, array('tiny', 'small', 'medium', 'big', 'huge')) || (strpos($parm, ',') !== FALSE))
+			elseif (in_array($parm, array('tiny', 'small', 'medium','large', 'big', 'huge')) || (strpos($parm, ',') !== FALSE))
 			{	// Assume we're just setting a width
 				$widthString = $parm;
 				$parm = '';
@@ -66,6 +83,13 @@ class bb_youtube extends e_bb_base
 				$bbpars = explode('&', $parm);
 			}
 		}
+		
+		/*
+		echo '<br />Parm= '.$parm;
+		echo "<br />COde= ".htmlspecialchars($code_text);
+		echo "<br />Width= ".$widthString;
+		*/
+		
 		$params = array();										// Accumulator for parameters from youtube code
 		$ok = 0;
 		if (strpos($code_text, '<') === FALSE)
@@ -115,24 +139,26 @@ class bb_youtube extends e_bb_base
 			list($url, $query) = explode('?', $target['src']);
 			if (strpos($url, 'youtube-nocookie.com') !== FALSE)
 			{
-				$params[] = 'privacy';
+				$bb_params[] = 'privacy';
 			}
+			
 			parse_str($query, $vals);		// Various options set here
+												
 			if (varset($vals['allowfullscreen'], 'true') != 'true')
 			{
-				$params[] = 'nofull';
+				$params[] = 'fs=0';
 			}
 			if (varset($vals['border'], 0) != 0)
 			{
-				$params[] = 'border';
+				$params[] = 'border=1';
 			}
-			if (varset($vals['rel'], 1) == 0)
+			if (varset($vals['rel'], 1) != 1)
 			{
-				$params[] = 'norel';
+				$params[] = 'rel='.intval($vals['rel']);
 			}
 			if (varset($vals['hd'], 1) != 0)
 			{
-				$params[] = 'hd';
+				$params[] = 'hd='.intval($vals['hd']);
 			}
 			if (varset($vals['hl'], 1) != 0)
 			{
@@ -146,6 +172,15 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'color2='.$vals['color2'];
 			}
+			if (varset($vals['cc_load_policy'], 1) != 0)
+			{
+				$params[] = 'cc_load_policy='.intval($vals['cc_load_policy']);
+			}
+			if (ADMIN && varset($vals['autoplay'], 1) != 0)
+			{
+				$params[] = 'autoplay='.intval($vals['autoplay']);
+			}
+
 			$picRef = substr($url, strrpos($url, '/') + 1);
 		}
 
@@ -154,11 +189,19 @@ class bb_youtube extends e_bb_base
 		if (($yID != $picRef) || (strlen($yID) > 20))
 		{	// Possible hack attempt
 		}
-		$params = array_merge($params, $bbpars);			// Any parameters set in bbcode override those in HTML
+	//	$params = array_merge($params, $bbpars);			// Any parameters set in bbcode override those in HTML
 		// Could check for valid array indices here
 		$paramString = implode('&', $params);
-		if ($paramString) $widthString .= '|'.$paramString;
-		$ans = '[youtube='.$widthString.']'.$picRef.'[/youtube]';
+		if ($paramString) $picRef .= '?'.$paramString;
+		if($widthString)
+		{
+			$widthString = "=".$widthString;
+			if(count($bbpars))
+			{
+				$widthString .= "|".implode("&",$bbpars);
+			}
+		}
+		$ans = '[youtube'.$widthString.']'.$picRef.'[/youtube]';
 		return $ans;
 	}
 
@@ -171,12 +214,33 @@ class bb_youtube extends e_bb_base
 	{
 		if(empty($code_text)) return '';
 
-		$parms = explode('|', $parm, 2);
+		list($dimensions,$tmp) = explode('|', $parm, 2);
+		
+		if($tmp)
+		{
+			parse_str(varset($tmp, ''), $bbparm);
+		}
+		
+		if(strpos($code_text,"&")!==FALSE && strpos($code_text,"?")===FALSE) // DEPRECATED
+		{
+			$parms = explode('&', $code_text, 2);	
+		}
+		else
+		{
+			$parms = explode('?', $code_text, 2);	// CORRECT SEPARATOR
+		}
+		
+
+		$code_text = $parms[0];
+			
 		parse_str(varset($parms[1], ''), $params);
+		
+	//	print_a($params);
 
-		if(empty($parms[0])) $parms[0] = 'small';
+		if(empty($dimensions)) $dimensions = 'medium'; // (default as per YouTube spec)
+		// formula: width x (height+25px)
 
-		switch ($parms[0]) 
+		switch ($dimensions) 
 		{
 			case 'tiny':
 				$params['w'] = 320; // 200;
@@ -213,52 +277,88 @@ class bb_youtube extends e_bb_base
 				if($params['h'] > 1105 || $params['h'] < 137) $params['h'] = 385;
 			break;
 		}
+	
+	
+		$yID = preg_replace('/[^0-9a-z\-_\&\?]/i', '', $code_text);
 
-		$yID = preg_replace('/[^0-9a-z\-_\&]/i', '', $code_text);
-
-		$url = isset($params['privacy']) ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
+		$url = isset($bbparm['privacy']) ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
 		$url .= $yID.'?';
 
-		if(isset($params['nofull'])) 
+		if(isset($params['nofull']) || !varset($params['fs'])) 
 		{
 			$fscr = 'false';
-			$url = $url.'fs=0';
+			$url = $url.'fs='.intval($params['fs']);
 		} 
 		else 
 		{
 			$fscr = 'true';
 			$url = $url.'fs=1';
 		}
-		if(isset($params['border'])) $url = $url.'&amp;border=1';
-		if(isset($params['norel'])) $url = $url.'&amp;rel=0';
-		if(isset($params['hd'])) $url = $url.'&amp;hd=1';
+		
+
+		
+		if(isset($params['border'])) $url = $url.'&amp;border='.intval($params['border']);
+		if(isset($params['norel'])) // BC non-standard val. 
+		{
+			$url = $url.'&amp;rel=0';	
+		} 
+		elseif(isset($params['rel']))
+		{
+			$url = $url.'&amp;rel='.intval($params['rel']);	
+		}
+		
+		if(isset($params['hd'])) $url = $url.'&amp;hd='.intval($params['hd']);
+		
 		$hl = 'en_US';
-		if(isset($params['hl'])) {
+		
+		if(isset($params['hl']))
+		{
 			$params['hl'] = preg_replace('/[^0-9a-z\-_]/i', '', $params['hl']);
-			if(strlen($params['hl']) == 5) {
+			if(strlen($params['hl']) == 2 || strlen($params['hl']) == 5)
+			{
 				$hl = $params['hl'];
 			}
 		}
+		
 		$url = $url.'&amp;hl='.$hl;
 		$color = array();
 		if(isset($params['color1'])) $color[1] = $params['color1'];
 		if(isset($params['color2'])) $color[2] = $params['color2'];
-		foreach ($color as $key => $value) {
-			if (ctype_xdigit($value) && strlen($value) == 6) {
+		foreach ($color as $key => $value)
+		{
+			if (ctype_xdigit($value) && strlen($value) == 6)
+			{
 				$url = $url.'&amp;color'.$key.'='.$value;
 			}
 		}
-
-		$ret = ' 
-		<object width="'.$params['w'].'" height="'.$params['h'].'">
+		
+		if(isset($params['cc_load_policy']))
+		{
+			$url .= "&amp;cc_load_policy=".intval($params['cc_load_policy']);
+		}
+		
+		if(isset($params['autoplay']))
+		{
+			$url .= "&amp;autoplay=".intval($params['autoplay']);
+		}
+		
+		$ret = '
+		
+<!-- Start YouTube --> 
+		
+		<object class="bbcode" width="'.$params['w'].'" height="'.$params['h'].'" >
 			<param name="movie" value="'.$url.'"></param>
 			<param name="allowFullScreen" value="'.$fscr.'"></param>
 			<param name="allowscriptaccess" value="always"></param>
 			<param name="wmode" value="transparent"></param>
-			<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>
-		</object>
-		';
+		';		
+	// Not XHTML - but needed for compatibility. 
+		$ret .= '<embed class="bbcode" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
+		$ret .= '</object>';
+		$ret .= '
+<!-- End YouTube -->
 
+';
 		return $ret;
 	}
 }
