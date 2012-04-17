@@ -346,14 +346,14 @@ class bb_youtube extends e_bb_base
 		
 <!-- Start YouTube --> 
 		
-		<object width="'.$params['w'].'" height="'.$params['h'].'" >
+		<object class="bbcode" width="'.$params['w'].'" height="'.$params['h'].'" >
 			<param name="movie" value="'.$url.'"></param>
 			<param name="allowFullScreen" value="'.$fscr.'"></param>
 			<param name="allowscriptaccess" value="always"></param>
 			<param name="wmode" value="transparent"></param>
 		';		
 	// Not XHTML - but needed for compatibility. 
-		$ret .= '<embed src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
+		$ret .= '<embed class="bbcode" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
 		$ret .= '</object>';
 		$ret .= '
 <!-- End YouTube -->
