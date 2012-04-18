@@ -301,6 +301,13 @@ class admin_newspost
 		$this->_sort_order = isset($tmp[2]) && !is_numeric($tmp[2]) ? $tmp[2] : 'desc';
 		$from = intval(varset($tmp[3],0));
 		unset($tmp);
+		
+		$action = vartrue($_GET['action'],'main');
+		$sub_action = varset($_GET['sub'],'');
+		$id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+		$this->_sort_order = isset($_GET['id']) && !is_numeric($_GET['id']) ? $_GET['id'] : 'desc';
+		$from = intval(varset($_GET['frm'],0));
+
 
         if ($this->_sort_order != 'asc') $this->_sort_order = 'desc';
 		$this->_sort_link = ($this->_sort_order) == 'asc' ? 'desc' : 'asc';
@@ -972,6 +979,8 @@ class admin_newspost
 	function show_existing_items()
 	{
 		$user_pref = e107::getUser()->getPref(); 
+		$sql = e107::getDb();
+		
 		if(!getperms('H'))
 		{
         	return;
@@ -998,9 +1007,22 @@ class admin_newspost
         // ------ Search Filter ------
 
         $text .= "
-			<form method='post' action='".e_SELF."'>
+			<form method='get' action='".e_SELF."'>
 			<div class='left' style='padding:20px'>
-			<input type='text' name='searchquery' value='".$_POST['searchquery']."' />";
+			<input type='text' name='srch' value='".$_GET['srch']."' />\n";
+			
+		$text .= "<select class='tbox' name='filter' onchange='this.form.submit()' >
+		<option value=''>All Categories</option>\n"; // TODO LAN
+
+		foreach($this->news_categories as $arr)
+		{
+			$key = $arr['category_id'];
+			$val = $arr['category_name'];
+			$sel = ($_GET['filter'] == $key) ? "selected='selected'" : "";
+        	$text .= "<option value='$key' {$sel}>".$val."</option>\n";
+		}
+
+		$text .= "</select>";
 			$text .= $frm->admin_button('searchsubmit', NWSLAN_63, 'search');
 			$text .= "
 			</div></form>
@@ -1015,9 +1037,13 @@ class admin_newspost
 		";
 
 		$check_perms = !getperms('0') ? " nc.category_manager IN (".USERCLASS_LIST.") " : '';
-		if (vartrue($_POST['searchquery']))
+		
+		// Quick qry fix. 
+		$check_perms .= (vartrue($_GET['filter'])) ? " n.news_category = ".intval($_GET['filter'])." " : "";
+		
+		if (vartrue($_GET['srch']))
 		{
-			$query .= "WHERE {$check_perms}n.news_title REGEXP('".$_POST['searchquery']."') OR n.news_body REGEXP('".$_POST['searchquery']."') OR n.news_extended REGEXP('".$_POST['searchquery']."') ORDER BY n.news_datestamp DESC";
+			$query .= "WHERE {$check_perms}n.news_title REGEXP('".$_GET['srch']."') OR n.news_body REGEXP('".$_GET['srch']."') OR n.news_extended REGEXP('".$_GET['srch']."') ORDER BY n.news_datestamp DESC";
 		}
 		else
 		{
@@ -1036,11 +1062,14 @@ class admin_newspost
 				$ordfield = 'n.'.$this->getSubAction();
 			}
 
-			$query .= ($check_perms ? "WHERE {$check_perms}" : '')."ORDER BY {$ordfield} ".strtoupper($this->_sort_order)." LIMIT ".$this->getFrom().", {$amount}";
+			$query .= ($check_perms ? "WHERE {$check_perms}" : '')."ORDER BY {$ordfield} ".strtoupper($this->_sort_order);
 		}
 
-
-		if ($e107->sql->db_Select_gen($query))
+		$newsposts = $sql->db_Select_gen($query);
+		
+		//echo "sql=".$query;
+		
+		if ($sql->db_Select_gen($query." LIMIT ".$this->getFrom().", {$amount}"))
 		{
 			$newsarray = $e107->sql->db_getList();
 
@@ -1050,7 +1079,7 @@ class admin_newspost
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
 							".$frm->colGroup($this->fields, $this->fieldpref)."
-							".$frm->thead($this->fields, $this->fieldpref, 'main.[FIELD].[ASC].[FROM]')."
+							".$frm->thead($this->fields, $this->fieldpref, 'action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch'].'&amp;frm=[FROM]')."
 							<tbody>";
 
 			$ren_type = array("default","title","other-news","other-news 2"); // Shortened
@@ -1089,20 +1118,22 @@ class admin_newspost
 		else
 		{
 			$tmp = NWSLAN_43;
-			if(vartrue($_POST['searchquery']))
+			if(vartrue($_GET['srch']))
 			{
-				$tmp = sprintf(NWSLAN_121, '<em>&quot;'.$_POST['searchquery'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>";
+				$tmp = sprintf(NWSLAN_121, '<em>&quot;'.$_GET['srch'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>";
 			}
 			$text = "<div class='center warning'>{$tmp}</div>";
 		}
 
 
 
-		$newsposts = $e107->sql->db_Count('news');
+	//	$newsposts = $e107->sql->db_Count('news');
 
-		if (!vartrue($_POST['searchquery']))
+		if (!vartrue($_GET['srch']))
 		{
-			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$this->_sort_order.".[FROM]";
+		//	$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$this->_sort_order.".[FROM]";
+			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?action=".$this->getAction().'&amp;sub='.($this->getSubAction() ? $this->getSubAction() : 0).'&amp;id='.$this->_sort_order.'&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]";
+			
 			$nextprev = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
 			if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
@@ -2470,29 +2501,29 @@ class admin_newspost
 		$var['main']['perm'] = "H";
 
 		$var['create']['text'] = NWSLAN_45;
-		$var['create']['link'] = e_SELF."?create";
+		$var['create']['link'] = e_SELF."?action=create";
 		$var['create']['perm'] = "H";
 
 		$var['cat']['text'] = NWSLAN_46;
-		$var['cat']['link'] = e_SELF."?cat";
+		$var['cat']['link'] = e_SELF."?action=cat";
 		$var['cat']['perm'] = "7";
 
 		$var['pref']['text'] = NWSLAN_90;
-		$var['pref']['link'] = e_SELF."?pref";
+		$var['pref']['link'] = e_SELF."?action=pref";
 		$var['pref']['perm'] = "0";
 
 //TODO remove commented code before release.
 	//	$c = $e107->sql->db_Count('submitnews');
 	//	if ($c) {
 			$var['sn']['text'] = NWSLAN_47." ({$c})";
-			$var['sn']['link'] = e_SELF."?sn";
+			$var['sn']['link'] = e_SELF."?action=sn";
 			$var['sn']['perm'] = "N";
 	//	}
 
 		if (getperms('0'))
 		{
 			$var['maint']['text'] = LAN_NEWS_55;
-			$var['maint']['link'] = e_SELF."?maint";
+			$var['maint']['link'] = e_SELF."?action=maint";
 			$var['maint']['perm'] = "N";
 		}
 
