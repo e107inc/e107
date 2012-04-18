@@ -97,15 +97,23 @@ $frm = new e_form;
 $rs = new form;
 if (e_QUERY)
 {
-	$tmp = explode('.',e_QUERY);
-	$action = $tmp[0];
-	$sub_action = varset($tmp[1],'');
-	$id = varset($tmp[2],0);
-	$from = varset($tmp[3],0);
+//	$tmp = explode('.',e_QUERY);
+//	$action = $tmp[0];
+//	$sub_action = varset($tmp[1],'');
+//	$id = varset($tmp[2],0);
+//	$from = varset($tmp[3],0);
+//	unset ($tmp);
+	
+	
+	$action = $_GET['action'];
+	$sub_action = varset($_GET['sub'],'');
+	$id = varset($_GET['id'],0);
+	$from = varset($_GET['frm'],0);
 	unset ($tmp);
+	
 }
 $from = varset($from,0);
-$amount = 30;
+$amount = 20;
 
 // ------- Check for Bounces --------------
 $bounce_act = '';
@@ -661,16 +669,16 @@ class users
 		$var ['main']['link'] = e_ADMIN.'users.php';
 		$var ['main']['perm'] = '4|U0|U1';
 		$var ['create']['text'] = LAN_USER_QUICKADD;
-		$var ['create']['link'] = e_ADMIN.'users.php?create';
+		$var ['create']['link'] = e_ADMIN.'users.php?action=create';
 		$var ['create']['perm'] = '4|U0|U1';
 		$var ['prune']['text'] = LAN_USER_PRUNE;
-		$var ['prune']['link'] = e_ADMIN.'users.php?prune';// Will be moved to "Schedule tasks"
+		$var ['prune']['link'] = e_ADMIN.'users.php?action=prune';// Will be moved to "Schedule tasks"
 		$var ['prune']['perm'] = '4';
 		$var ['options']['text'] = LAN_OPTIONS;
-		$var ['options']['link'] = e_ADMIN.'users.php?options';
+		$var ['options']['link'] = e_ADMIN.'users.php?action=options';
 		$var ['options']['perm'] = '4|U2';	
 		$var ['ranks']['text'] = LAN_USER_RANKS;
-		$var ['ranks']['link'] = e_ADMIN.'users.php?ranks';
+		$var ['ranks']['link'] = e_ADMIN.'users.php?action=ranks';
 		$var ['ranks']['perm'] = '4|U3';				
 				
 			// if ($unverified) // No longer needed - done with 'filter'. 
@@ -1164,19 +1172,21 @@ class users
 		{
 			$_SESSION['srch'] = $tp->toDB(trim($_SESSION['srch']));
 			$query .= "( ";
-			$query .= (strpos($_SESSION['srch'],"@") !== false) ? "user_email REGEXP('".$_SESSION['srch']."') OR " : "";
-	  		$query .= (strpos($_SESSION['srch'],".") !== false) ? "user_ip REGEXP('".$_SESSION['srch']."') OR " : "";
+			$query .= (strpos($_SESSION['srch'],"@") !== false) ? "u.user_email REGEXP('".$_SESSION['srch']."') OR " : "";
+	  		$query .= (strpos($_SESSION['srch'],".") !== false) ? "u.user_ip REGEXP('".$_SESSION['srch']."') OR " : "";
 
 			$fquery = array();
+			
 	   		foreach ($this->fieldpref as $field)
 			{
+				if($field == 'user_status'){ continue; }
 				$fquery[] = $field." REGEXP('".$_SESSION['srch']."')";
 			}
 
 			$query .= implode(" OR ",$fquery);
 
 			$query .= " ) ";
-			$qry_order = ' ORDER BY user_id';
+			$qry_order = ' ORDER BY u.user_id';
 		}
 		else
 		{
@@ -1185,7 +1195,7 @@ class users
 			{
 				$query = 'user_ban = 2 ';
 			}*/
-			$qry_order = 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
+			$qry_order = 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC');
 		}
 
 		if(varset($_SESSION['filter']))
@@ -1239,15 +1249,19 @@ class users
 		$this->fieldpref = array_unique($this->fieldpref);
 		
 		$text = "<div>".$this->show_search_filter();
-
-		if ($user_total = $sql->db_Select_gen($qry))
+		
+	//	echo "<br />qry=".$qry;
+		
+		$user_total = $sql->db_Select_gen($qry); 
+	
+		if ($users = $sql->db_Select_gen($qry."  LIMIT ".$from.", ".$amount))
 		{
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
 						$frm->colGroup($this->fields,$this->fieldpref).
-						$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
+						$frm->thead($this->fields,$this->fieldpref,"action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter=".intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]").
 			"<tbody>\n";
 
 			while ($row = $sql->db_Fetch())
@@ -1273,11 +1287,13 @@ class users
 			</table>
 
 			<div class='buttons-bar center'>".$this->show_batch_options();
-			$users = (e_QUERY != "unverified") ? $sql->db_Count("user") : $unverified;
+		//	$users = (e_QUERY != "unverified") ? $sql->db_Count("user") : $unverified;
 
-			if ($users > $amount && !$_GET['srch'])
+			if ($user_total > $amount )
 			{
-				$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
+				$parms = "{$user_total},{$amount},{$from},";
+			//	$parms .= e_SELF."?".(e_QUERY ? "action=".$action."&amp;sub=".$sub_action."&amp;id=".$id : "action=main&amp;sub=user_id&ampid=desc&ampfrm=")."[FROM]";
+				$parms .= e_SELF."?action=".$action."&amp;sub=".$sub_action."&amp;id=".$id."&amp;filter=".$_GET['filter']."&amp;srch=".$_GET['srch']."&amp;frm=[FROM]";
 				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
 
@@ -1298,7 +1314,7 @@ class users
 		$text .= "</fieldset></form>
 
 		</div>";
-
+		// echo "<br />amount=".$amount;
 		$emessage = eMessage :: getInstance();
 
 		$total_cap = (isset ($_GET['srch'])) ? $user_total : $users;
