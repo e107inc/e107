@@ -1096,7 +1096,7 @@ class admin_newspost
 	
 				$row['news_allow_comments'] = !$row['news_allow_comments'] ? true : false; // old reverse logic
 				$row['options'] 			= "
-												<a class='action' href='".e_SELF."?create.edit.{$row['news_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
+												<a class='action' href='".e_SELF."?action=create&amp;sub=edit&amp;id={$row['news_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
 												".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
 											";
 				$row['checkboxes'] 			= $row['news_id'];
