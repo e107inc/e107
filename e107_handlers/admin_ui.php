@@ -3276,7 +3276,8 @@ class e_admin_controller_ui extends e_admin_controller
 		if(count($searchQry) > 0)
 		{
 			// add more where details on the fly via $this->listQrySql['db_where'];
-			$qry .= " WHERE ".implode(" AND ", $searchQry);
+			$qry .= (strripos($qry, 'where')==FALSE) ? " WHERE " : " AND "; // Allow 'where' in custom listqry
+			$qry .= implode(" AND ", $searchQry);
 		}
 
 		// GROUP BY if needed
@@ -3314,8 +3315,8 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// Debug Filter Query.
-
-		// echo $qry.'<br />';
+		
+		// echo $qry.'<br />';		
 		// print_a($_GET);
 
 		return $qry;
@@ -4411,6 +4412,8 @@ class e_admin_form_ui extends e_form
 		$fields = $this->getController()->getFields();
 		if(!varset($fields['checkboxes']))
 		{
+			$mes = e107::getMessage();
+			$mes->add("Cannot display Batch drop-down as 'checkboxes' was not found in \$fields array.", E_MESSAGE_DEBUG);
 			return '';
 		}
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!

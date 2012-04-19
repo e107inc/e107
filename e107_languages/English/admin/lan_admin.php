@@ -321,6 +321,8 @@ define("LAN_FILE", "File");
 define("LAN_EXECUTE","Execute");
 define("LAN_SEFURL","SEF URL");
 define("LAN_COPY","Copy");
+define("LAN_KEYWORDS","Keywords");
+
 
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");

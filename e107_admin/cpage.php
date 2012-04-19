@@ -31,14 +31,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'custom';
 
-require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'message_handler.php');
 require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form(true);
-$emessage = &eMessage::getInstance();
-$page = new page;
+$emessage = eMessage::getInstance();
+// $page = new page;
 
+/*
 if (e_QUERY)
 {
 	$tmp        = explode(".", e_QUERY);
@@ -47,36 +47,13 @@ if (e_QUERY)
 	$id         = intval(varset($tmp[2], 0));
 	$from       = intval(varset($tmp[3], 0));
 }
+*/
 
-if(isset($_POST['submitPage']))
-{
-	$page->submitPage();
-}
 
-if(isset($_POST['uploadfiles']))
-{
 
-	$page->uploadPage();
-	$id = intval(varset($_POST['pe_id'], 0));
-	$sub_action = ($_POST['pe_id']) ? "edit" : "";
-	$page->createPage($_POST['mode']);
-}
 
-if(isset($_POST['submitMenu']))
-{
-	$page->submitPage("", TRUE);
-}
 
-if(isset($_POST['updateMenu']))
-{
-	$page->submitPage($_POST['pe_id'], TRUE);
-}
-
-if(isset($_POST['updatePage']))
-{
-	$page->submitPage($_POST['pe_id']);
-}
-
+/*
 if(isset($_POST['delete']) || varset($_POST['etrigger_delete']))
 {
 	if($_POST['etrigger_delete'])
@@ -93,12 +70,10 @@ if(isset($_POST['delete']) || varset($_POST['etrigger_delete']))
 		$page->delete_page($pid);
 	}
 }
+*/
 
-if (isset($_POST['saveOptions']))
-{
-	$page->saveSettings();
-}
 
+/*
 if(!e_QUERY)
 {
 	if(getperms('5'))
@@ -129,15 +104,702 @@ else
 	$function = $action.'Page';
 	$page->$function();
 }
+*/
+
+
+
+class page_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+		'main'		=> array(
+			'controller' 	=> 'page_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'page_admin_form_ui',
+			'uipath' 		=> null
+		)				
+	);	
+
+
+	protected $adminMenu = array(
+		'main/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
+		'main/menus'	=> array('caption'=> CUSLAN_49, 'perm' => 'J'),
+		'main/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
+		'main/createem' => array('caption'=> CUSLAN_31, 'perm' => 'J'),
+		'main/options'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
+	);
+	
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = 'Custom Pages';
+}
+
+class page_admin_form_ui extends e_admin_form_ui
+{
+	/*public function faq_info_parent($curVal,$mode)
+	{
+		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter
+		// Get UI instance
+		$controller = $this->getController();
+		switch($mode)
+		{
+			case 'read':
+				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
+			break;
+
+			case 'write':
+				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return $controller->getFaqCategoryTree();
+			break;
+		}
+	}*/
+}
+
+
+
+
+
+class page_admin_ui extends e_admin_ui
+{
+		protected $pluginTitle = ADLAN_42;
+		protected $pluginName = 'core';
+		protected $table = "page";
+		
+		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme = '' "; // without any Order or Limit.
+		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
+		
+		protected $pid 			= "page_id";
+		protected $listOrder 	= 'p.page_id desc'; 
+		protected $perPage 		= 10;
+		protected $batchDelete 	= true;
+		protected $batchCopy 	= true;	
+		
+		protected $fields = array(
+			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'page_id'			=> array('title'=> 'ID',			'width'=>'5%', 			'forced'=> TRUE),
+            'page_title'	   	=> array('title'=> CUSLAN_1, 		'type' => 'text', 		'width'=>'auto'),
+			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 		'width' => 'auto','nolist'=>true),
+			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 		'width' => 'auto'),
+         	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'user', 		'width' => 'auto', 'thclass' => 'left'),
+			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'width' => 'auto'),
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 	'width' => 'auto',  'filter' => true, 'batch' => true),
+			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 	'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
+			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 	'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
+		//	'page_password' 	=> array('title'=> LAN_USER_05, 	'type' => 'text', 'width' => 'auto'),
+
+	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
+
+			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+		);
+	
+		protected $fieldpref = array("page_id","page_title","page_template","page_author","page_class");
+
+
+		function init()
+		{
+			//FIX ME - mode not retained after using  drop-down 'filter' or 'search'. 
+			if($_GET['mode'] =='main' && $_GET['action'] =='menus')
+			{
+				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme != '' "; // without any Order or Limit.	
+			}
+			
+					
+			if(isset($_POST['uploadfiles']))
+			{
+			
+				$this->uploadPage();
+				$id = intval(varset($_POST['pe_id'], 0));
+				$sub_action = ($_POST['pe_id']) ? "edit" : "";
+				$this->createPage($_POST['mode']);
+			}
+			
+			if (isset($_POST['saveOptions']))
+			{
+				$this->saveSettings();
+			}
+			
+			if(isset($_POST['submitPage']))
+			{
+				$this->submitPage();
+			}
+					
+			if(isset($_POST['submitMenu']))
+			{
+				$this->submitPage("", TRUE);
+			}
+			
+			if(isset($_POST['updateMenu']))
+			{
+				$this->submitPage($_POST['pe_id'], TRUE);
+			}
+			
+			if(isset($_POST['updatePage']))
+			{
+				$this->submitPage($_POST['pe_id']);
+			}
+			
+			
+		}
+		
+		// Create Menu Page. 
+		function createemPage()
+		{
+			if(!getperms("J")){ return; }
+			$this->createPage('menu');	
+		}
+		
+
+		
+		// Create Page Page. 
+		function createPage($mode=FALSE)
+		{
+			/* mode: FALSE == page, mode: TRUE == menu */
+	
+		
+			
+			global $e107, $e_userclass, $e_event;
+	
+			$frm = e107::getForm();
+			$sql = e107::getDb();
+			$tp = e107::getParser();
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+	
+			$id = intval($_GET['id']);
+			$sub_action = $_GET['action'];
+	
+			$edit = ($sub_action == 'edit');
+			$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
+	
+			if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
+			{
+				
+				//$url = e107::getUrl()->sc('page/view', $row, 'allow=page_id,page_title,page_sef');
+	        	//$query = "SELECT p.*,l.link_name,m.menu_name FROM #page AS p
+	        	$query = "SELECT p.* FROM #page AS p
+				LEFT JOIN #menus AS m ON m.menu_path='{$id}' WHERE p.page_id ='{$id}' LIMIT 1";
+				// FIXME - extremely bad
+				//LEFT JOIN #links AS l ON l.link_url='".$url."'
+	            if ($sql->db_Select_gen($query))
+				{
+					$row                          = $sql->db_Fetch();
+					$page_class                   = $row['page_class'];
+					$page_password                = $row['page_password'];
+					$page_title                   = $tp->toForm($row['page_title']);
+					$page_rating_flag             = $row['page_rating_flag'];
+					$page_comment_flag            = $row['page_comment_flag'];
+					$page_display_authordate_flag = $row['page_author'];
+					$page_link 					  = varset($row['link_name'],'');
+					$data                         = $tp->toForm($row['page_text']);
+					$edit                         = TRUE;
+	//				$menu_name					  = $tp->toForm($row['menu_name']);
+					$menu_name					  = $tp->toForm($row['page_theme']);
+					
+				}
+			}
+			else
+			{
+				$menu_name = '';
+				$page_title = '';
+				$data = '';
+			}
+	
+			$e_qry = ($mode) ? 'menus=1' : '';
+	
+			$text = "
+				<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
+					<fieldset id='core-cpage-create-general'>
+						<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminedit'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>
+			";
+	
+			if($mode)  // menu mode.
+			{
+				$text .= "
+					<tr>
+						<td>".CUSLAN_7."</td>
+						<td>".$frm->text('menu_name', $menu_name, 50)."</td>
+					</tr>
+				";
+			}
+			else
+			{
+				// fixed - last parameter (allinfo) should be false as getLayout method is returning non-usable formatted array
+				$templates = e107::getLayouts('', 'page', 'front', '', false, false); 
+	
+				$text .= "
+					<tr>
+						<td>Template</td>
+						<td>". $frm->selectbox('page_template',$templates,$row['page_template'])  ."</td>
+					</tr>
+				";
+			}
+			$text .= "
+					<tr>
+						<td>".CUSLAN_8."</td>
+						<td>".$frm->text('page_title', $page_title, 250)."</td>
+					</tr>
+			";
+			
+			if(!$mode)
+			{
+				$text .= "
+						<tr>
+							<td>".CUSLAN_3."</td>
+							<td>".$frm->text('page_sef', $row['page_sef'], 250)."</td>
+						</tr>
+				";
+				
+				$text .= "
+						<tr>
+							<td>".CUSLAN_32."</td>
+							<td>".$frm->text('page_metakeys', $row['page_metakeys'], 250)."</td>
+						</tr>
+				";
+				
+				$text .= "
+						<tr>
+							<td>".CUSLAN_11."</td>
+							<td>".$frm->textarea('page_metadscr', $row['page_metadscr'], 10, 80, array(), 200)."</td>
+						</tr>
+				";
+			}
+	
+			$text .= "
+						<tr>
+							<td>".CUSLAN_9."</td>
+							<td>
+			";
+	
+		//	require_once(e_HANDLER."ren_help.php");
+	
+		//	$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
+	
+			$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
+	
+			$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
+		//	$text .= $frm->textarea('data', $textareaValue);
+			$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
+	
+	
+	
+		//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
+		//			<br />".display_help('cpage-help', 'cpage')."
+	
+	
+					$text .= "</td>
+								</tr>
+								<tr>
+									<td class='label'>".LAN_UPLOAD_IMAGES."</td>
+									<td class='control'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
+								</tr>
+	
+	
+			";
+	
+			if(!$mode)
+			{
+				$text .= "
+							</tbody>
+						</table>
+					</fieldset>
+					<fieldset id='core-cpage-create-options'>
+						<legend>".LAN_OPTIONS."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminedit options'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>
+								<tr>
+									<td class='label'>".CUSLAN_10."</td>
+									<td class='control'>
+										".$frm->radio_switch('page_rating_flag', $page_rating_flag)."
+									</td>
+								</tr>
+								<tr>
+									<td class='label'>".CUSLAN_13."</td>
+									<td class='control'>
+										".$frm->radio_switch('page_comment_flag', $page_comment_flag)."
+									</td>
+								</tr>
+								<tr>
+									<td class='label'>".CUSLAN_41."</td>
+									<td class='control'>
+										".$frm->radio_switch('page_display_authordate_flag', $page_display_authordate_flag)."
+									</td>
+								</tr>
+								<tr>
+									<td class='label'>".CUSLAN_14."</td>
+									<td class='control'>
+										".$frm->text('page_password', $page_password, 50)."
+										<div class='field-help'>".CUSLAN_15."</div>
+									</td>
+								</tr>
+	
+								<tr>
+									<td class='label'>".CUSLAN_18."</td>
+	
+									<td class='control'>
+										".$e_userclass->uc_dropdown('page_class', $page_class, 'public,guest,nobody,member,main,admin,classes', "tabindex='".$frm->getNext()."'")."
+									</td>
+								</tr>
+				";
+	
+								/*
+								<tr>
+									<td class='label'>".CUSLAN_16."</td>
+									<td class='control'>
+										".$frm->text('page_link', $page_link, 50)."
+										<div class='field-help'>".CUSLAN_17."</div>
+									</td>
+								</tr>
+								 **/
+								
+				
+				//triggerHook
+				$data = array('method'=>'form', 'table'=>'page', 'id'=>$id, 'plugin'=>'page', 'function'=>'createPage');
+				$hooks = $e_event->triggerHook($data);
+				if(!empty($hooks))
+				{
+					$text .= "
+					</tbody>
+						</table>
+					</fieldset>
+					<fieldset id='core-cpage-create-hooks'>
+						<legend>".LAN_HOOKS."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminedit options'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>";
+					foreach($hooks as $hook)
+					{
+						if(!empty($hook))
+						{
+							$text .= "
+							<tr>
+								<td class='label'>".$hook['caption']."</td>
+								<td class='control'>".$hook['text']."</td>
+							</tr>";
+						}
+					}
+				}
+	
+			}
+	
+			$text .= "
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+							".
+							(!$mode ?
+							($edit  ? $frm->admin_button('updatePage', CUSLAN_19, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitPage', CUSLAN_20, 'create')) :
+							($edit  ? $frm->admin_button('updateMenu', CUSLAN_21, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitMenu', CUSLAN_22, 'create')))
+							."
+							<input type='hidden' name='mode' value='{$mode}' />
+						</div>
+					</fieldset>
+				</form>
+			";
+	
+		//	$ns->tablerender($caption, $text);
+			
+			echo $mes->render().$text;
+		}
+		
+
+
+		
+		function optionsPage()
+		{
+			global $e107, $pref;
+			
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			$frm = e107::getForm();
+			$sql = e107::getDb();
+			$tp = e107::getParser();
+	
+			if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
+	
+			//XXX Lan - Options
+			$text = "
+				<form method='post' action='".e_SELF."?".e_QUERY."'>
+					<fieldset id='core-cpage-options'>
+						<legend class='e-hideme'>".LAN_OPTIONS."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminform'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>
+								<tr>
+									<td class='label'>".CUSLAN_29."</td>
+									<td class='control'>
+										".$frm->radio_switch('listPages', $pref['listPages'])."
+									</td>
+								</tr>
+	
+								<tr>
+									<td class='label'>".CUSLAN_30."</td>
+									<td class='control'>
+										".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+							".$frm->admin_button('saveOptions', CUSLAN_40, 'submit')."
+						</div>
+					</fieldset>
+				</form>
+			";
+	
+			//$ns->tablerender(LAN_OPTIONS, $mes->render().$text);
+			echo $mes->render().$text;
+		}
+		
+		
+		
+		function saveSettings()
+		{
+			global $pref, $admin_log, $emessage;
+			$temp['listPages'] = $_POST['listPages'];
+			$temp['pageCookieExpire'] = $_POST['pageCookieExpire'];
+			if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
+			{
+				save_prefs();		// Only save if changes
+				$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
+			}
+			else
+			{
+				$emessage->add(LAN_NOCHANGE_NOTSAVED);
+			}
+		}
+
+
+
+		// Write new/edited page/menu to the DB
+		// $mode - zero for new page, page id for existing
+		// $type = FALSE for page, TRUE for menu
+		function submitPage($mode = FALSE, $type=FALSE)
+		{
+			
+			global $e107cache, $admin_log, $e_event;
+			
+			
+			$frm = e107::getForm();
+			$sql = e107::getDb();
+			$tp = e107::getParser();
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+	
+			$page_title = $tp->toDB($_POST['page_title']);
+			$page_text = $tp->toDB($_POST['data']);
+			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
+			$update = 0;			// Make sure some updates happen
+			
+			$page_sef = '';
+			$page_metad = '';
+			$page_metak = '';
+			if(!$type)
+			{
+				
+				if(!empty($_POST['page_sef']))
+				{
+					$page_sef = eHelper::secureSef($_POST['page_sef']);
+				}
+				
+				if(empty($page_sef))
+				{
+					$page_sef = eHelper::title2sef($_POST['page_title']);
+				}
+				
+				if(!empty($_POST['page_metadscr']))
+				{
+					$page_metad = $tp->toDB(eHelper::formatMetaDescription($_POST['page_metadscr']));
+				}
+	
+				if(!empty($_POST['page_metakeys']))
+				{
+					$page_metak = eHelper::formatMetaKeys($_POST['page_metakeys']);
+				}
+				
+			}
+	
+			if(!$type && (!$page_title || !$page_sef))
+			{
+				e107::getMessage()->addError(CUSLAN_34, 'default', true);
+				e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
+			}
+			
+			if(!$type && $sql->db_Count('page', '(page_id)', ($mode ? "page_id<>{$mode} AND " : '')."page_sef!={$page_sef}"))
+			{
+				e107::getMessage()->addError(CUSLAN_34, 'default', true);
+				e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
+			}
+			
+			if($type && empty($_POST['menu_name']))
+			{
+				e107::getMessage()->addError(CUSLAN_36, 'default', true);
+				e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
+			}
+	
+			if($mode)
+			{	// Saving existing page/menu after edit
+				// Don't think $_POST['page_ip_restrict'] is ever set.
+				
+				$menuname = ($type && vartrue($_POST['menu_name']) ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
+				
+				$status = $sql -> db_Update("page", "page_title='{$page_title}', page_sef='{$page_sef}', page_metakeys='{$page_metak}', page_metadscr='{$page_metad}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'") ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				if ($status == E_MESSAGE_SUCCESS) $update++;
+	
+			
+				$mes->add($message, $status);
+	
+				$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
+				$e107cache->clear("page_{$mode}");
+				$e107cache->clear("page-t_{$mode}");
+	
+				$data = array('method'=>'update', 'table'=>'page', 'id'=>$mode, 'plugin'=>'page', 'function'=>'submitPage');
+				$this->message = $e_event->triggerHook($data);
+	
+				if($type)
+				{
+					$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
+					// Need to check whether menu already in table, else we can't distinguish between a failed update and no update needed
+					if ($sql->db_Select('menus', 'menu_name', "`menu_path` = '{$mode}'"))
+					{		// Updating existing entry
+						if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
+						{
+							$update++;
+						}
+					}
+				}
+	
+				//$url = e107::getUrl()->sc('page/view', array('name' => $tp->post_toForm($_POST['page_title']), 'id' => $mode));
+				/*
+				if ($_POST['page_link'])
+				{
+					// FIXME extremely ugly, just join on created link ID by new field page_link 
+					if ($sql->db_Select("links", "link_id", "link_url='".$url."' && link_name!='".$tp->toDB($_POST['page_link'])."'"))
+					{
+						$sql->db_Update("links", "link_name='".$tp->toDB($_POST['page_link'])."' WHERE link_url='".$url."'");
+						$update++;
+						$e107cache->clear("sitelinks");
+					}
+					else if (!$sql->db_Select("links", "link_id", "link_url='".$url."'"))
+					{
+						$sql->db_Insert("links", "0, '".$tp->toDB($_POST['page_link'])."', '".$url."', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+						$update++;
+						$e107cache->clear("sitelinks");
+					}
+				} else {
+					if ($sql->db_Select("links", "link_id", "link_url='".$url."'"))
+					{
+						$sql->db_Delete("links", "link_url='".$url."'");
+						$update++;
+						$e107cache->clear("sitelinks");
+					}
+				}*/
+				
+				
+				admin_update($update, 'update', LAN_UPDATED, false, false);		// Display result of update
+			}
+			else
+			{	// New page/menu
+				$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
+				$addMsg = ($type ? CUSLAN_51 : CUSLAN_27);
+				
+				$info = array(
+					'page_title' => $page_title,
+					'page_sef' => $page_sef,
+					'page_metakeys' => $page_metak,
+					'page_metadscr' => $page_metad,
+					'page_text' => $page_text,
+					'page_author' => $pauthor,
+					'page_datestamp' => time(),
+					'page_rating_flag' => varset($_POST['page_rating_flag'],0),
+					'page_comment_flag' => varset($_POST['page_comment_flag'], ''),
+					'page_password' => varset($_POST['page_password'], ''),
+					'page_class' => varset($_POST['page_class'],e_UC_PUBLIC),
+					'page_ip_restrict' => '',
+					'page_theme' => $menuname,
+					'page_template' => varset($_POST['page_template'],'')
+					);
+				$pid = admin_update($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
+				$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
+	
+				if($type)
+				{
+					$info = array(
+						'menu_name' => $menuname,
+						'menu_location' => 0,
+						'menu_order' => 0,
+						'menu_class' => '0',
+						'menu_pages' => '',
+						'menu_path' => $pid,
+					);
+					admin_update($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
+				}
+	
+				/*if(vartrue($_POST['page_link']))
+				{
+					//$link = 'page.php?'.$pid;
+					$url = e107::getUrl()->sc('page/view', array('name' => $tp->post_toForm($_POST['page_title']), 'id' => $pid));
+					if (!$sql->db_Select("links", "link_id", "link_name='".$tp->toDB($_POST['page_link'])."'"))
+					{
+						$linkname = $tp->toDB($_POST['page_link']);
+						$sql->db_Insert("links", "0, '{$linkname}', '{$url}', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+						$e107cache->clear("sitelinks");
+					}
+				}*/
+	
+				$data = array('method'=>'create', 'table'=>'page', 'id'=>$pid, 'plugin'=>'page', 'function'=>'submitPage');
+				$this->message = $e_event->triggerHook($data);
+			}
+		}
+
+
+
+		function uploadPage()
+		{
+			global $pref;
+			$pref['upload_storagetype'] = "1";
+			require_once(e_HANDLER."upload_handler.php");
+			$uploaded = file_upload(e_IMAGE."custom/");
+		}
+
+}
+require_once('auth.php');
+new page_admin();
+
+
+e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN.'footer.php');
+
 
 // FIXME - add page link to sitelinks is completely disabled as current implementation is not reliable (+ is obsolete and generates sql error)
 class page
 {
 	var $fields;
 
-
+	// DEPRECATED
 	function page()
 	{
 
@@ -156,7 +818,7 @@ class page
 			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 'width' => 'auto'),
          	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),
 			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 'width' => 'auto'),
-            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'width' => 'auto'),
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'width' => 'auto', 'filter' => true, 'batch' => true,),
 			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
 			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),
 		//	'page_password' 	=> array('title'=> LAN_USER_05, 	'type' => 'text', 'width' => 'auto'),
@@ -171,15 +833,17 @@ class page
 
 
 // --------------------------------------------------------------------------
-
+	// DEPRECATED
+/*
 	function menusPage()
 	{
 		if(!getperms("J")){ return; }
     	return $this->showExistingPages('menus');
 	}
+ **/
 
 // --------------------------------------------------------------------------
-
+/*
 	function showExistingPages($mode=FALSE)
 	{
 		global $sql, $e107, $emessage, $frm, $pref;
@@ -240,452 +904,20 @@ class page
 		$e107->ns->tablerender($caption, $emessage->render().$text);
 	}
 
-
-	function createmPage()
-	{
-		$this->createPage(TRUE);
-	}
-
-
-	function uploadPage()
-	{
-		global $pref;
-		$pref['upload_storagetype'] = "1";
-		require_once(e_HANDLER."upload_handler.php");
-		$uploaded = file_upload(e_IMAGE."custom/");
-	}
-
-
-	function createPage($mode=FALSE)
-	{
-		/* mode: FALSE == page, mode: TRUE == menu */
-
-		global $e107, $sub_action, $id, $e_userclass, $e_event;
-
-		$frm = e107::getForm();
-		$sql = e107::getDb();
-		$tp = e107::getParser();
-		$ns = e107::getRender();
-
-
-		$edit = ($sub_action == 'edit');
-		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
-
-		if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
-		{
-			
-			//$url = e107::getUrl()->sc('page/view', $row, 'allow=page_id,page_title,page_sef');
-        	//$query = "SELECT p.*,l.link_name,m.menu_name FROM #page AS p
-        	$query = "SELECT p.* FROM #page AS p
-			LEFT JOIN #menus AS m ON m.menu_path='{$id}' WHERE p.page_id ='{$id}' LIMIT 1";
-			// FIXME - extremely bad
-			//LEFT JOIN #links AS l ON l.link_url='".$url."'
-            if ($sql->db_Select_gen($query))
-			{
-				$row                          = $sql->db_Fetch();
-				$page_class                   = $row['page_class'];
-				$page_password                = $row['page_password'];
-				$page_title                   = $tp->toForm($row['page_title']);
-				$page_rating_flag             = $row['page_rating_flag'];
-				$page_comment_flag            = $row['page_comment_flag'];
-				$page_display_authordate_flag = $row['page_author'];
-				$page_link 					  = varset($row['link_name'],'');
-				$data                         = $tp->toForm($row['page_text']);
-				$edit                         = TRUE;
-//				$menu_name					  = $tp->toForm($row['menu_name']);
-				$menu_name					  = $tp->toForm($row['page_theme']);
-				
-			}
-		}
-		else
-		{
-			$menu_name = '';
-			$page_title = '';
-			$data = '';
-		}
-
-		$e_qry = ($mode) ? 'menus=1' : '';
-
-		$text = "
-			<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
-				<fieldset id='core-cpage-create-general'>
-					<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-		";
-
-		if($mode)  // menu mode.
-		{
-			$text .= "
-				<tr>
-					<td>".CUSLAN_7."</td>
-					<td>".$frm->text('menu_name', $menu_name, 50)."</td>
-				</tr>
-			";
-		}
-		else
-		{
-			// fixed - last parameter (allinfo) should be false as getLayout method is returning non-usable formatted array
-			$templates = e107::getLayouts('', 'page', 'front', '', false, false); 
-
-			$text .= "
-				<tr>
-					<td>Template</td>
-					<td>". $frm->selectbox('page_template',$templates,$row['page_template'])  ."</td>
-				</tr>
-			";
-		}
-		$text .= "
-				<tr>
-					<td>".CUSLAN_8."</td>
-					<td>".$frm->text('page_title', $page_title, 250)."</td>
-				</tr>
-		";
-		
-		if(!$mode)
-		{
-			$text .= "
-					<tr>
-						<td>".CUSLAN_3."</td>
-						<td>".$frm->text('page_sef', $row['page_sef'], 250)."</td>
-					</tr>
-			";
-			
-			$text .= "
-					<tr>
-						<td>".CUSLAN_32."</td>
-						<td>".$frm->text('page_metakeys', $row['page_metakeys'], 250)."</td>
-					</tr>
-			";
-			
-			$text .= "
-					<tr>
-						<td>".CUSLAN_11."</td>
-						<td>".$frm->textarea('page_metadscr', $row['page_metadscr'], 10, 80, array(), 200)."</td>
-					</tr>
-			";
-		}
-
-		$text .= "
-					<tr>
-						<td>".CUSLAN_9."</td>
-						<td>
-		";
-
-	//	require_once(e_HANDLER."ren_help.php");
-
-	//	$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
-
-		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-
-		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
-	//	$text .= $frm->textarea('data', $textareaValue);
-		$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
+*/
 
 
 
-	//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
-	//			<br />".display_help('cpage-help', 'cpage')."
 
 
-				$text .= "</td>
-							</tr>
-							<tr>
-								<td class='label'>".LAN_UPLOAD_IMAGES."</td>
-								<td class='control'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
-							</tr>
 
-
-		";
-
-		if(!$mode)
-		{
-			$text .= "
-						</tbody>
-					</table>
-				</fieldset>
-				<fieldset id='core-cpage-create-options'>
-					<legend>".LAN_OPTIONS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit options'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-							<tr>
-								<td class='label'>".CUSLAN_10."</td>
-								<td class='control'>
-									".$frm->radio_switch('page_rating_flag', $page_rating_flag)."
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".CUSLAN_13."</td>
-								<td class='control'>
-									".$frm->radio_switch('page_comment_flag', $page_comment_flag)."
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".CUSLAN_41."</td>
-								<td class='control'>
-									".$frm->radio_switch('page_display_authordate_flag', $page_display_authordate_flag)."
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".CUSLAN_14."</td>
-								<td class='control'>
-									".$frm->text('page_password', $page_password, 50)."
-									<div class='field-help'>".CUSLAN_15."</div>
-								</td>
-							</tr>
-
-							<tr>
-								<td class='label'>".CUSLAN_18."</td>
-
-								<td class='control'>
-									".$e_userclass->uc_dropdown('page_class', $page_class, 'public,guest,nobody,member,main,admin,classes', "tabindex='".$frm->getNext()."'")."
-								</td>
-							</tr>
-			";
-
-							/*
-							<tr>
-								<td class='label'>".CUSLAN_16."</td>
-								<td class='control'>
-									".$frm->text('page_link', $page_link, 50)."
-									<div class='field-help'>".CUSLAN_17."</div>
-								</td>
-							</tr>
-							 **/
-							
-			
-			//triggerHook
-			$data = array('method'=>'form', 'table'=>'page', 'id'=>$id, 'plugin'=>'page', 'function'=>'createPage');
-			$hooks = $e_event->triggerHook($data);
-			if(!empty($hooks))
-			{
-				$text .= "
-				</tbody>
-					</table>
-				</fieldset>
-				<fieldset id='core-cpage-create-hooks'>
-					<legend>".LAN_HOOKS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit options'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>";
-				foreach($hooks as $hook)
-				{
-					if(!empty($hook))
-					{
-						$text .= "
-						<tr>
-							<td class='label'>".$hook['caption']."</td>
-							<td class='control'>".$hook['text']."</td>
-						</tr>";
-					}
-				}
-			}
-
-		}
-
-		$text .= "
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".
-						(!$mode ?
-						($edit  ? $frm->admin_button('updatePage', CUSLAN_19, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitPage', CUSLAN_20, 'create')) :
-						($edit  ? $frm->admin_button('updateMenu', CUSLAN_21, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitMenu', CUSLAN_22, 'create')))
-						."
-						<input type='hidden' name='mode' value='{$mode}' />
-					</div>
-				</fieldset>
-			</form>
-		";
-
-		$ns->tablerender($caption, $text);
-	}
-
-
-	// Write new/edited page/menu to the DB
-	// $mode - zero for new page, page id for existing
-	// $type = FALSE for page, TRUE for menu
-	function submitPage($mode = FALSE, $type=FALSE)
-	{
-		global $sql, $tp, $e107cache, $admin_log, $e_event;
-
-		$page_title = $tp->toDB($_POST['page_title']);
-		$page_text = $tp->toDB($_POST['data']);
-		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
-		$update = 0;			// Make sure some updates happen
-		
-		$page_sef = '';
-		$page_metad = '';
-		$page_metak = '';
-		if(!$type)
-		{
-			
-			if(!empty($_POST['page_sef']))
-			{
-				$page_sef = eHelper::secureSef($_POST['page_sef']);
-			}
-			
-			if(empty($page_sef))
-			{
-				$page_sef = eHelper::title2sef($_POST['page_title']);
-			}
-			
-			if(!empty($_POST['page_metadscr']))
-			{
-				$page_metad = $tp->toDB(eHelper::formatMetaDescription($_POST['page_metadscr']));
-			}
-
-			if(!empty($_POST['page_metakeys']))
-			{
-				$page_metak = eHelper::formatMetaKeys($_POST['page_metakeys']);
-			}
-			
-		}
-
-		if(!$type && (!$page_title || !$page_sef))
-		{
-			e107::getMessage()->addError(CUSLAN_34, 'default', true);
-			e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
-		}
-		
-		if(!$type && $sql->db_Count('page', '(page_id)', ($mode ? "page_id<>{$mode} AND " : '')."page_sef!={$page_sef}"))
-		{
-			e107::getMessage()->addError(CUSLAN_34, 'default', true);
-			e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
-		}
-		
-		if($type && empty($_POST['menu_name']))
-		{
-			e107::getMessage()->addError(CUSLAN_36, 'default', true);
-			e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
-		}
-
-		if($mode)
-		{	// Saving existing page/menu after edit
-			// Don't think $_POST['page_ip_restrict'] is ever set.
-			
-			$menuname = ($type && vartrue($_POST['menu_name']) ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
-			
-			$status = $sql -> db_Update("page", "page_title='{$page_title}', page_sef='{$page_sef}', page_metakeys='{$page_metak}', page_metadscr='{$page_metad}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'") ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			if ($status == E_MESSAGE_SUCCESS) $update++;
-
-			$mes = e107::getMessage();
-			$mes->add($message, $status);
-
-			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
-			$e107cache->clear("page_{$mode}");
-			$e107cache->clear("page-t_{$mode}");
-
-			$data = array('method'=>'update', 'table'=>'page', 'id'=>$mode, 'plugin'=>'page', 'function'=>'submitPage');
-			$this->message = $e_event->triggerHook($data);
-
-			if($type)
-			{
-				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				// Need to check whether menu already in table, else we can't distinguish between a failed update and no update needed
-				if ($sql->db_Select('menus', 'menu_name', "`menu_path` = '{$mode}'"))
-				{		// Updating existing entry
-					if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
-					{
-						$update++;
-					}
-				}
-			}
-
-			//$url = e107::getUrl()->sc('page/view', array('name' => $tp->post_toForm($_POST['page_title']), 'id' => $mode));
-			/*
-			if ($_POST['page_link'])
-			{
-				// FIXME extremely ugly, just join on created link ID by new field page_link 
-				if ($sql->db_Select("links", "link_id", "link_url='".$url."' && link_name!='".$tp->toDB($_POST['page_link'])."'"))
-				{
-					$sql->db_Update("links", "link_name='".$tp->toDB($_POST['page_link'])."' WHERE link_url='".$url."'");
-					$update++;
-					$e107cache->clear("sitelinks");
-				}
-				else if (!$sql->db_Select("links", "link_id", "link_url='".$url."'"))
-				{
-					$sql->db_Insert("links", "0, '".$tp->toDB($_POST['page_link'])."', '".$url."', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
-					$update++;
-					$e107cache->clear("sitelinks");
-				}
-			} else {
-				if ($sql->db_Select("links", "link_id", "link_url='".$url."'"))
-				{
-					$sql->db_Delete("links", "link_url='".$url."'");
-					$update++;
-					$e107cache->clear("sitelinks");
-				}
-			}*/
-			admin_update($update, 'update', LAN_UPDATED, false, false);		// Display result of update
-		}
-		else
-		{	// New page/menu
-			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
-			$addMsg = ($type ? CUSLAN_51 : CUSLAN_27);
-			
-			$info = array(
-				'page_title' => $page_title,
-				'page_sef' => $page_sef,
-				'page_metakeys' => $page_metak,
-				'page_metadscr' => $page_metad,
-				'page_text' => $page_text,
-				'page_author' => $pauthor,
-				'page_datestamp' => time(),
-				'page_rating_flag' => varset($_POST['page_rating_flag'],0),
-				'page_comment_flag' => varset($_POST['page_comment_flag'], ''),
-				'page_password' => varset($_POST['page_password'], ''),
-				'page_class' => varset($_POST['page_class'],e_UC_PUBLIC),
-				'page_ip_restrict' => '',
-				'page_theme' => $menuname,
-				'page_template' => varset($_POST['page_template'],'')
-				);
-			$pid = admin_update($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
-			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
-
-			if($type)
-			{
-				$info = array(
-					'menu_name' => $menuname,
-					'menu_location' => 0,
-					'menu_order' => 0,
-					'menu_class' => '0',
-					'menu_pages' => '',
-					'menu_path' => $pid,
-				);
-				admin_update($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
-			}
-
-			/*if(vartrue($_POST['page_link']))
-			{
-				//$link = 'page.php?'.$pid;
-				$url = e107::getUrl()->sc('page/view', array('name' => $tp->post_toForm($_POST['page_title']), 'id' => $pid));
-				if (!$sql->db_Select("links", "link_id", "link_name='".$tp->toDB($_POST['page_link'])."'"))
-				{
-					$linkname = $tp->toDB($_POST['page_link']);
-					$sql->db_Insert("links", "0, '{$linkname}', '{$url}', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
-					$e107cache->clear("sitelinks");
-				}
-			}*/
-
-			$data = array('method'=>'create', 'table'=>'page', 'id'=>$pid, 'plugin'=>'page', 'function'=>'submitPage');
-			$this->message = $e_event->triggerHook($data);
-		}
-	}
-
+	
+	// DEPRECATED
 	function delete_page($del_id)
 	{
+		return; 
+		
+		
 		global $sql, $e107cache, $admin_log, $e_event;
 		//if(!$sql->db_Select('page', '*', "page_id={$del_id}")) return;
 		//$row = $sql->db_Fetch();
@@ -707,51 +939,8 @@ class page
 		$this->message = $e_event->triggerHook($data);
 	}
 
-	function optionsPage()
-	{
-		global $e107, $pref, $frm, $emessage;
-		
-		$ns = e107::getRender();
-
-		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
-
-		//XXX Lan - Options
-		$text = "
-			<form method='post' action='".e_SELF."?".e_QUERY."'>
-				<fieldset id='core-cpage-options'>
-					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-							<tr>
-								<td class='label'>".CUSLAN_29."</td>
-								<td class='control'>
-									".$frm->radio_switch('listPages', $pref['listPages'])."
-								</td>
-							</tr>
-
-							<tr>
-								<td class='label'>".CUSLAN_30."</td>
-								<td class='control'>
-									".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('saveOptions', CUSLAN_40, 'submit')."
-					</div>
-				</fieldset>
-			</form>
-		";
-
-		$ns->tablerender(LAN_OPTIONS, $emessage->render().$text);
-	}
-
-
+	
+	/*
 	function saveSettings()
 	{
 		global $pref, $admin_log, $emessage;
@@ -803,7 +992,9 @@ class page
 
 		e_admin_menu(CUSLAN_33, $action, $var);
 	}
+	*/
 }
+
 
 function cpage_adminmenu()
 {
@@ -819,6 +1010,7 @@ function cpage_adminmenu()
  */
 function headerjs()
 {
+	return;
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
