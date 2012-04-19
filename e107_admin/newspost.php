@@ -266,20 +266,30 @@ class admin_newspost
 		$this->fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
+ 				'news_thumbnail'		=> array('title' => NWSLAN_67, 	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParams' => 'path={e_MEDIA}','readonly'=>false),		  		
  				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
+				
+				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
     			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                 'category_name'			=> array('title' => NWSLAN_6, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+  				
+  				'news_start'			=> array('title' => "Start", 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+       			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+                       
+  				
   				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'number', 		'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false),
-			   	'news_thumbnail'		=> array('title' => LAN_NEWS_22, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-		  		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
+			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
                 'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
 		);
+
 
 /*		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
 		$r_array = array();
@@ -1088,8 +1098,7 @@ class admin_newspost
 			{
 				// PREPARE SOME DATA
 				// safe to pass $row as it contains username and id only (no sensitive data), user_id and user_name will be internal converted to 'id', 'name' vars 
-				$row['user_name'] 			= "<a href='".e107::getUrl()->create('user/profile/view', $row)."' title='{$row['user_name']}'>{$row['user_name']}</a>";
-				$row['news_thumbnail'] 		= ($row['news_thumbnail'] && is_readable(e_NEWSIMAGE.$row['news_thumbnail'])) ? "<a href='".e_NEWSIMAGE_ABS.$row['news_thumbnail']."' title='{$row['news_thumbnail']}' rel='external' class='e-image-preview'>".e107::getParser()->text_truncate($row['news_thumbnail'], 20, '...')."</a>" : "";
+				$row['user_name'] 			= "<a href='".e107::getUrl()->create('user/profile/view', $row)."' title='{$row['user_name']}'>{$row['user_name']}</a>";		
 				$row['news_title'] 			= "<a href='".e107::getUrl()->create('news/view/item', $row)."'>".$e107->tp->toHTML($row['news_title'], false, 'TITLE')."</a>";
 				$row['category_name'] 		= "<a href='".e107::getUrl()->create('news/list/items', $row)."'>".$row['category_name']."</a>";
 				$row['news_render_type'] 	= $ren_type[$row['news_render_type']];
@@ -1100,6 +1109,8 @@ class admin_newspost
 												".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
 											";
 				$row['checkboxes'] 			= $row['news_id'];
+				
+				
 
 				// AUTO RENDER
 				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'news_id');
