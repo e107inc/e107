@@ -209,7 +209,7 @@ class news_shortcodes extends e_shortcode
 		if (ADMIN && getperms('H'))
 		{
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? THEME_ABS."images/newsedit.png" : e_IMAGE_ABS."admin_images/edit_16.png");
-			return " <a href='".e_ADMIN_ABS."newspost.php?create.edit.".$this->news_item['news_id']."'><img src='".$adop_icon."' alt='".LAN_NEWS_25."' class='icon' /></a>\n";
+			return " <a href='".e_ADMIN_ABS."newspost.php?action=create&amp;sub=edit&amp;id=".$this->news_item['news_id']."'><img src='".$adop_icon."' alt='".LAN_NEWS_25."' class='icon' /></a>\n";
 		}
 		else
 		{

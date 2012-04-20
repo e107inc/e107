@@ -114,7 +114,7 @@ class page_shortcodes extends e_shortcode
 	 * @see eHelper::scDualParams()
 	 * @see eHelper::scParams()
 	 */
-	function sc_cpagehumbnail($parm = '')
+	function sc_cpagethumbnail($parm = '')
 	{
 		$parms = eHelper::scDualParams($parm);
 		if(empty($parms[1])) return '';
@@ -143,6 +143,17 @@ class page_shortcodes extends e_shortcode
 				return '<img class="cpage-image" src="'.$thumb.'" alt="'.varset($parms[1]['alt']).'" />';
 			break;
 		}
+	}
+	
+	// For Future Use..
+	function sc_cpageimage($parm = '')
+	{
+		list($num,$size) = explode("|",$parm);
+		if($this->page['page_images'])
+		{
+			$img = explode(",",$this->page['page_images']);
+			
+		}	
 	}
 
 	function sc_cpagelink($parm)
