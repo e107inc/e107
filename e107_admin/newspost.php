@@ -1140,7 +1140,7 @@ class admin_newspost
 
 	//	$newsposts = $e107->sql->db_Count('news');
 
-		if (!vartrue($_GET['srch']))
+		if ($newsposts > $amount)
 		{
 		//	$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$this->_sort_order.".[FROM]";
 			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?action=".$this->getAction().'&amp;sub='.($this->getSubAction() ? $this->getSubAction() : 0).'&amp;id='.$this->_sort_order.'&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]";
