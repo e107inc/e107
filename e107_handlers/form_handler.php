@@ -1251,7 +1251,8 @@ class e_form
 					}
 					elseif(method_exists($this, 'options'))
 					{
-						return $this->options($parms, $value, $id);
+						return  $this->options($field, $value, $attributes, $id);
+						// return $this->options($parms, $value, $id); // breaks admin->cron 'options' column
 					}
 				}
 
