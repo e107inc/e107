@@ -82,15 +82,18 @@ if ($dont_check_update === TRUE)
 	}
 }
 
+
+
 if (!$dont_check_update)
 {
-	if ($sql->db_Select('plugin', 'plugin_version, plugin_path', 'plugin_installflag=1'))
+	if ($sql->db_Select('plugin', 'plugin_id, plugin_version, plugin_path', 'plugin_installflag=1'))
 	{
 		while ($row = $sql->db_Fetch())
 		{  // Mark plugins for update which have a specific update file, or a plugin.php file to check
-			if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php'))
+			if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_setup.php'))
 			{
 				$dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
+				//TODO - Add support for {plugins}_setup.php upgrade check and routine. 
 			}
 		}
 	}
@@ -101,6 +104,13 @@ if (!$dont_check_update)
 	{
 		$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';
 		if (is_readable($fname)) include_once($fname);
+		
+		$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
+		if (is_readable($fname))
+		{
+			$dbupdatep[$path] =  $path ; // ' 0.7.x forums '.LAN_UPDATE_9.' 0.8 forums';
+			include_once($fname);
+		} 
 	}
 
 
@@ -143,9 +153,6 @@ function update_check()
 				}
 			}
 		}
-
-
-
 
 		// Now check plugins
 		foreach($dbupdatep as $func => $rmks)
@@ -978,6 +985,7 @@ function update_706_to_800($type='')
 	$med = e107::getMedia();
 	
 	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_nick` = '_common' ");
+
 	if($count != 1)
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
@@ -995,11 +1003,18 @@ function update_706_to_800($type='')
 		$med->import('newsthumb',e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');
-		$med->import('download',e_FILE.'downloadimages');
-		$med->import('downloadthumb',e_IMAGE.'downloadthumbs');
-	}
-
 		
+	}
+	
+	// Check for Legacy Download Images. 
+	if(!$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download' "))
+	{
+		if ($just_check) return update_needed('Import Download Images into Media Manager');
+		$med->import('download',e_FILE.'downloadimages');
+		$med->import('downloadthumb',e_FILE.'downloadthumbs');	
+	}
+	
+			
 	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick='_icon_16' OR media_cat_nick='_icon_32' ");
 	
 	if($count < 2)
@@ -1020,6 +1035,7 @@ function update_706_to_800($type='')
 		
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");
+		$med->importIcons(e_IMAGE."icons/",16);
 		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
 		e107::getMessage()->addDebug("Icon category added");
 	}
