@@ -799,6 +799,69 @@ class eMessage
 		}
 		throw new Exception('Method eMessage::'.$method.' does not exist!');//FIXME - e107Exception handler
 	}
+	
+	
+	
+	/**
+	 * Automate DB system messages
+	 * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
+	 *
+	 * @param integer|bool $update return result of db::db_Query
+	 * @param string $type update|insert|update
+	 * @param string $success forced success message
+	 * @param string $failed forced error message
+	 * @param bool $output false suppress any function output
+	 * @return integer|bool db::db_Query result
+	 */
+	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
+	 // It has been copied from admin_update() in e107_admin/header.php
+	 
+	public function autoMessage($update, $type = 'update', $success = false, $failed = false, $output = false)
+	{
+
+		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
+		{
+			$this->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
+		}
+		elseif ($type == 'delete' && $update)
+		{
+			$this->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
+		}
+		elseif (!mysql_errno())
+		{
+			if ($type == 'update')
+			{
+				$this->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
+			}
+			elseif ($type == 'delete')
+			{
+				$this->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
+			}
+		}
+		else
+		{
+			switch ($type)
+			{
+				case 'insert':
+					$msg = LAN_CREATED_FAILED;
+				break;
+				case 'delete':
+					$msg = LAN_DELETED_FAILED;
+				break;
+				default:
+					$msg = LAN_UPDATED_FAILED;
+				break;
+			}
+
+			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+			$this->add($text, E_MESSAGE_ERROR);
+		}
+
+		if ($output) echo $this->render();
+		return $update;
+	}
+	
+	
 
 }
 

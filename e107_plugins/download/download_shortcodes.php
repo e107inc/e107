@@ -171,7 +171,9 @@ class download_shortcodes
    function sc_download_list_thumb()
    {
       global $dlrow,$parm;
-      $img = ($dlrow['download_thumb']) ? "<img src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
+	  $tp = e107::getParser();
+	  
+      $img = ($dlrow['download_thumb']) ? "<img src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
       if ($parm == "link" && $dlrow['download_thumb']){
       	return "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$img."</a>";
       }
@@ -213,6 +215,8 @@ class download_shortcodes
      		return ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$dlrow['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a href='".e_BASE."request.php?".$dlrow['download_id']."' >{$img}</a>");
      	}
    }
+   
+   
    function sc_download_list_icon()
    {
       global $dlrow,$parm;
@@ -225,6 +229,25 @@ class download_shortcodes
       }
       return;
    }
+   
+   function sc_download_list_imagefull()
+   {
+		global $dlrow,$parm;
+		$tp = e107::getParser();
+		
+		$img = ($dlrow['download_image']) ? "<img class='dl_image' src='".$tp->replaceConstants($dlrow['download_image'])."' alt='' style='".DL_IMAGESTYLE."' />" : "";
+		
+		if($parm == "link" && $dlrow['download_image'])
+		{
+			return "<a href='".e_BASE."download.php?view.".$dlrow['download_id']."'>".$img."</a>";
+		}
+		else
+		{
+			return $img;
+		}
+	}
+   
+   
    function sc_download_list_nextprev()
    {
      	global $nextprev_parms,$tp;
@@ -238,6 +261,12 @@ class download_shortcodes
       global $dlft;
       return $dlft." ".LAN_dl_17;
    }
+   
+   
+   
+   
+   
+   
 	// View ****************************************************************************************
    function sc_download_view_id()
    {
@@ -330,8 +359,10 @@ class download_shortcodes
    function sc_download_view_image()
    {
       global $dlrow;
+	  $tp = e107::getParser();
+	  
       if ($dlrow['download_thumb']) {
-      	return ($dlrow['download_image'] ? "<a href='".e_BASE."request.php?download.".$dlrow['download_id']."'><img class='dl_image' src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*' style='".DL_IMAGESTYLE."' /></a>" : "<img class='dl_image' src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*' style='".DL_IMAGESTYLE."' />");
+      	return ($dlrow['download_image'] ? "<a href='".e_BASE."request.php?download.".$dlrow['download_id']."'><img class='dl_image' src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*' style='".DL_IMAGESTYLE."' /></a>" : "<img class='dl_image' src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*' style='".DL_IMAGESTYLE."' />");
       }
       else if ($dlrow['download_image']) {
       	return "<a href='".e_BASE."request.php?download.".$dlrow['download_id']."'>".LAN_dl_40."</a>";
@@ -344,7 +375,8 @@ class download_shortcodes
    function sc_download_view_imagefull()
    {
       global $dlrow;
-      return ($dlrow['download_image']) ? "<img class='dl_image' src='".e_FILE."downloadimages/".$dlrow['download_image']."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
+	  $tp = e107::getParser();
+      return ($dlrow['download_image']) ? "<img class='dl_image' src='".$tp->replaceConstants($dlrow['download_image'])."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
    }
    function sc_download_view_link()
    {
@@ -430,7 +462,8 @@ class download_shortcodes
 	}
 	function sc_download_mirror_request_icon() {
 	   global $dlrow;
-      return ($dlrow['download_thumb'] ? "<img src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*'/>" : "");
+	   $tp = e107::getParser();
+      return ($dlrow['download_thumb'] ? "<img src='".$tp->replaceConstants($dlrow['download_thumb'])."' alt='*'/>" : "");
 	}
 	function sc_download_mirror_name() {
 	   global $dlmirror;
@@ -438,7 +471,8 @@ class download_shortcodes
 	}
 	function sc_download_mirror_image() {
 	   global $dlrow, $dlmirror;
-      return ($dlmirror['mirror_image'] ? "<a href='{$dlmirror['mirror_url']}' rel='external'><img src='".e_FILE."downloadimages/".$dlmirror['mirror_image']."' alt='*'/></a>" : "");
+	   $tp = e107::getParser();
+      return ($dlmirror['mirror_image'] ? "<a href='{$dlmirror['mirror_url']}' rel='external'><img src='".$tp->replaceConstants($dlmirror['mirror_image'])."' alt='*'/></a>" : "");
 	}
 	function sc_download_mirror_location() {
 	   global $dlmirror;

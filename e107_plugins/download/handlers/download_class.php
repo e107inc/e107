@@ -25,6 +25,12 @@ class download
    }
    function displayCategoryList() {
    }
+   
+   
+   
+   
+   
+   
    function getBreadcrumb($arr)
    {
       $dlbreadcrumb = array();
@@ -44,6 +50,11 @@ class download
       $dlbreadcrumb['fieldlist'] = implode(",", array_keys($dlbreadcrumb));
       return $dlbreadcrumb;
    }
+   
+   
+   
+   
+   
    function getCategorySelectList($currentID=0, $incSubSub=true, $groupOnMain=true, $blankText="&nbsp;", $name="download_category")
    {
       global $sql,$parm;

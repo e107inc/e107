@@ -149,9 +149,9 @@ else
 
 if (isset($order) && !in_array($order,$order_options)) unset($order);
 if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
-if (!isset($order))	$order = varset($pref['download_order'],'download_datestamp');
-if (!isset($sort))	$sort =  varset($pref['download_sort'], 'DESC');
-if (!isset($view))	$view =  varset($pref['download_view'], '10');
+if (!isset($order))	$order = vartrue($pref['download_order'],'download_datestamp');
+if (!isset($sort))	$sort =  vartrue($pref['download_sort'], 'DESC');
+if (!isset($view))	$view =  vartrue($pref['download_view'], '10');
 
 //--------------------------------------------------
 //			GENERATE DISPLAY TEXT
