@@ -35,28 +35,52 @@ function run_updates($dbupdate)
 	global $mes;
 	foreach($dbupdate as $func => $rmks)
 	{
-		$installed = call_user_func("update_".$func);
-		//?! (LAN_UPDATE == $_POST[$func])
-		if(varsettrue($_POST[$func]) && !$installed)
+		if(function_exists('update_'.$func)) // Legacy Method. 
 		{
-			if(function_exists("update_".$func))
+			$installed = call_user_func("update_".$func);
+			//?! (LAN_UPDATE == $_POST[$func])
+			if(varsettrue($_POST[$func]) && !$installed)
 			{
-				$message = LAN_UPDATE_7." {$rmks}";
-				$error = call_user_func("update_".$func, "do");
-				if($error != '')
+				if(function_exists("update_".$func))
 				{
-					$mes->add($message, E_MESSAGE_ERROR);
-					$mes->add($error, E_MESSAGE_ERROR);
+					$message = LAN_UPDATE_7." {$rmks}";
+					$error = call_user_func("update_".$func, "do");
+					if($error != '')
+					{
+						$mes->add($message, E_MESSAGE_ERROR);
+						$mes->add($error, E_MESSAGE_ERROR);
+					}
+					else $mes->add($message, E_MESSAGE_SUCCESS);
 				}
-				else $mes->add($message, E_MESSAGE_SUCCESS);
-			}
+			}	
 		}
+		
+		
+	
 	}
+}
+
+function run_updates_plugin($func,$check=TRUE) // New for {plugin}_setup.php 
+{
+	if(class_exists($func.'_setup'))
+	{
+			$class = $func.'_setup';
+			$setObj = new $class;
+		
+			if(method_exists($setObj,'upgrade_post'))
+			{
+				return $setObj->upgrade_post($check);	
+			}			
+			// print_a($setObj);
+			// echo "<br />Found: ".$func;			
+	}	
 }
 
 function show_updates($dbupdate, $what)
 {
 	global $frm;
+	$mes = e107::getMessage();
+	
 	$caption = constant('LAN_UPDATE_CAPTION_'.strtoupper($what));
 	$text = "
 	<form method='post' action='".e_SELF."'>
@@ -77,32 +101,42 @@ function show_updates($dbupdate, $what)
 	";
 
 	$updates = 0;
+	
+	asort($dbupdate);
 
 	foreach($dbupdate as $func => $rmks)
 	{
 		if(function_exists("update_".$func))
 		{
-			$text .= "
-					<tr>
-						<td>{$rmks}</td>
-			";
-			//	  echo "Core2 Check {$func}=>{$rmks}<br />";
-			if(call_user_func("update_".$func))
+			$text .= "<tr><td>{$rmks}</td>";
+
+			if(call_user_func("update_".$func) || run_updates_plugin($func,TRUE)!= TRUE)
 			{
-				$text .= "
-						<td>".LAN_UPDATE_3."</td>
-				";
+				$text .= "<td>".LAN_UPDATE_3."</td>";
 			}
 			else
 			{
 				$updates ++;
-				$text .= "
-						<td>".$frm->admin_button($func, LAN_UPDATE, 'update', '', "id=e-{$func}")."</td>
-				";
+				$text .= "<td>".$frm->admin_button($func, LAN_UPDATE, 'update', '', "id=e-{$func}")."</td>";
 			}
-			$text .= "
-					</tr>
-			";
+			$text .= "</tr>\n";
+		}
+		elseif(class_exists($func.'_setup')) // plugin_setup.php
+		{
+			$text .= "<tr><td>{$rmks}</td>";
+			
+			$reason = run_updates_plugin($func,TRUE); // TRUE = Just check if needed. 		
+			if(!$reason)
+			{
+				$text .= "<td>".LAN_UPDATE_3."</td>";
+			}
+			else
+			{
+				$updates ++;
+				$mes->addDebug($reason);
+				$text .= "<td>".$frm->admin_button('update['.$func.']', LAN_UPDATE, 'update')."</td>";
+			}
+			$text .= "</tr>\n";	
 		}
 	}
 
@@ -117,14 +151,15 @@ function show_updates($dbupdate, $what)
 	return $updates; // Number of updates to do
 }
 
-if($_POST)
+if($_POST['update'])
 {
 	$message = run_updates($dbupdate);
 }
 
-if($_POST)
-{ // Do plugin updates
-	$message = run_updates($dbupdatep);
+if(is_array($_POST['update'])) // Do plugin updates
+{ 
+	$func = key($_POST['update']);
+	run_updates_plugin($func,FALSE);
 }
 
 $total_updates = 0;
