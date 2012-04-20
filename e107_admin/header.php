@@ -739,6 +739,9 @@ if ($e107_popup != 1)
 	 * @param bool $output false suppress any function output
 	 * @return integer|bool db::db_Query result
 	 */
+	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
+	 // It has been copied to message_handler.php as autoMessage();
+	 
 	function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
 	{
 		require_once (e_HANDLER."message_handler.php");
