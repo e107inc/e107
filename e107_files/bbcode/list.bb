@@ -1,3 +1,4 @@
+//<?
 /* Tag: unordered list [list][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
 /* Tag: ordered list [list=<list type>][*]line 1[*]line2[*]line 3[*]line 4[*]line5 etc[/list]  - preferred */
 /* Tag: unordered list [list]*line 1*line2*line 3*line 4*line5 etc[/list]  - legacy*/
@@ -30,14 +31,14 @@ if ($parm == '')
 else
 {
   $type = $tp -> toAttribute($parm);
-  $listtext = "\n<ol class='bbcode' style='list-style-type: $type'>";
+  $listtext = "\n<ol class='bbcode ".$type."' style='list-style-type: $type'>";
   $trailer = "</ol>";
 }
 foreach($listitems as $item)
 {
   if($item && $item != E_NL)
   {
-	$listtext .= "<li class='bbcode'>$item</li>";
+	$listtext .= "<li class='bbcode ".$type."'>$item</li>";
   }
 }
 return $listtext.$trailer;
