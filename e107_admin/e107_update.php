@@ -110,7 +110,7 @@ function show_updates($dbupdate, $what)
 		{
 			$text .= "<tr><td>{$rmks}</td>";
 
-			if(call_user_func("update_".$func) || run_updates_plugin($func,TRUE)!= TRUE)
+			if(call_user_func("update_".$func))
 			{
 				$text .= "<td>".LAN_UPDATE_3."</td>";
 			}
