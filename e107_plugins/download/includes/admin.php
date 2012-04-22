@@ -820,7 +820,7 @@ $columnInfo = array(
 									 $text .= "     </select>";
 										   */
 		   
-		$text .= $frm->imagepicker('download_image', $download_image,'','download'); 
+		$text .= $frm->imagepicker('download_image', $download_image,'','download_image'); 
 		  
 	      if ($subAction == "dlm" && $download_image)
 	      {
@@ -844,7 +844,7 @@ $columnInfo = array(
 								 $text .= "        </select>";
 				   */
 		 
-		 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','downloadthumb'); 
+		 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','download_thumb'); 
 		 
 		 
 	      $text .= "

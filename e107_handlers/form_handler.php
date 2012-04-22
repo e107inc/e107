@@ -204,7 +204,23 @@ class e_form
 		}
 
 		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.")  ";
-		$qry .= vartrue($sc_parameters['media']) ? " AND (`media_category` = '".$tp->toDB($sc_parameters['media'])."' OR `media_category` = '_common' )" : " AND `media_category` = '_common' "; // " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
+		
+		// Old Method
+		$qry .= vartrue($sc_parameters['media']) ? " AND (`media_category` = '".$tp->toDB($sc_parameters['media'])."' OR `media_category` = '_common' )" : " AND `media_category` = '_common' "; 
+		
+		// New Method
+	/*
+		if(vartrue($sc_parameters['owner']) && vartrue($sc_parameters['cat'])) 
+			{
+				
+				
+				
+				
+				$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.")  ";
+				$qry .= " AND (`media_owner` = '".$tp->toDB($sc_parameters['owner'])."' AND `media_category` = '".$tp->toDB($sc_parameters['cat'])."' ) OR `media_owner` = '_common' "; 	
+			} 	*/
+	
+	
 		$qry .= "ORDER BY media_name";
 
 
@@ -247,6 +263,7 @@ class e_form
 			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, 'w='.$width, true);
 			$ret .= "<img src='{$thpath}' alt='{$default_url}' class='image-selector' /></a>";
 			$ret .= "</div>\n";
+
 			return $ret;
 		}
 		// ----------------
@@ -1836,6 +1853,8 @@ class e_form
 
 			case 'hidden':
 				$ret = (vartrue($parms['show']) ? ($value ? $value : varset($parms['empty'], $value)) : '');
+				$value = (vartrue($parms['value'])) ? $parms['value'] : $value;
+				echo "key=".$key."<br />value=".$value;
 				return $ret.$this->hidden($key, $value);
 			break;
 

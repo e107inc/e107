@@ -984,48 +984,103 @@ function update_706_to_800($type='')
 	
 	$med = e107::getMedia();
 	
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_nick` = '_common' ");
+	// Media Category Update
+	if($sql->db_Field("core_media_cat","media_cat_nick"))
+	{
+		$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick = '_common'  ");
+		if($count ==1)
+		{
+			if ($just_check) return update_needed('Media-Manager Categories needs to be updated.');	
+					$sql->db_Update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = 'news', media_cat_category='thumb' WHERE media_cat_nick = 'newsthumb' ");
+			e107::getMessage()->addDebug("core-media-cat Categories and Ownership updated");
+			if(mysql_query("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
+			{
+				e107::getMessage()->addDebug("core-media-cat `media_cat_nick` field removed.");	
+			}
+			
+			$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
+			(0, 'gallery', 'gallery_1', 'Gallery 1', 'Visible to the public at /gallery.php', 0, '', 0);
+			";
+			
+			if(mysql_query($query))
+			{
+				e107::getMessage()->addDebug("Added core-media-cat Gallery.");	
+			}
+		}
+	}
+	
+	
+	// Media Update
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = 'newsthumb' OR media_category = 'downloadthumb'  LIMIT 1 ");
+	if($count ==1)
+	{
+		if ($just_check) return update_needed('Media-Manager Data needs to be updated.');
+		$sql->db_Update('core_media', "media_category='download_image' WHERE media_category = 'download' ");
+		$sql->db_Update('core_media', "media_category='download_thumb' WHERE media_category = 'downloadthumb' ");
+		$sql->db_Update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
+		e107::getMessage()->addDebug("core-media Category names updated");
+	}
+	
+
+	
+	
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' ");
 
 	if($count != 1)
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		
-		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
-		(0, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
-		(0, 'news', 'News', 'Will be available in the news area. ', 253),
-		(0, 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253),
-		(0, 'download', 'Download Images', '', 253),
-		(0, 'downloadthumb', 'Download Thumbnails (legacy)', '', 253),
-		(0, 'newsthumb', 'News Thumbnails (legacy)', '', 253);";
+		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
+			(1, '_common', '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0),
+			(2, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 0),
+			(3, 'page', 'page', 'Custom Pages', 'Available in the custom pages area of admin. ', 253, '', 0),
+			(4, 'gallery', 'gallery_1', 'Gallery 1', 'Available to the public at /gallery.php ', 0, '', 0),
+			(5, 'download', 'thumb', 'Download Thumbnails', 'Available to the downloads plugin', 253, '', 0),
+			(6, 'download', 'image', 'Download Images', 'Available to the downloads plugin', 253, '', 0),		
+			(7, '_icon', '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253, '', 0),
+			(8, '_icon', '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253, '', 0),
+			(9, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
+			(10, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
+	
+		";
 
 		mysql_query($query);
 		
-		$med->import('newsthumb',e_IMAGE.'newspost_images',"^thumb_");
+		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');
 		
 	}
 	
 	// Check for Legacy Download Images. 
-	if(!$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download' "))
+
+	$fl = e107::getFile();
+	$dl_images = $fl->get_files(e_FILE.'downloadimages');
+
+	if(count($dl_images) && !$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
 	{
 		if ($just_check) return update_needed('Import Download Images into Media Manager');
-		$med->import('download',e_FILE.'downloadimages');
-		$med->import('downloadthumb',e_FILE.'downloadthumbs');	
+		$med->import('download_image',e_FILE.'downloadimages');
+		$med->import('download_thumb',e_FILE.'downloadthumbs');	
 	}
 	
 			
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick='_icon_16' OR media_cat_nick='_icon_32' ");
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
 	
-	if($count < 2)
+	if(!$count)
 	{
 		if ($just_check) return update_needed('Add icons to media-manager');
-		
-		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
-		(0, '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253),
-		(0, '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253),
-		(0, '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253),
-		(0, '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253);";
+			
+		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
+		(0, '_icon', '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253, '', 0),
+		(0, '_icon', '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253, '', 0),
+		(0, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
+		(0, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
+		";
 		
 		if(!mysql_query($query))
 		{
@@ -1035,7 +1090,6 @@ function update_706_to_800($type='')
 		
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");
-		$med->importIcons(e_IMAGE."icons/",16);
 		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
 		e107::getMessage()->addDebug("Icon category added");
 	}

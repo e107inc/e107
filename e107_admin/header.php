@@ -23,7 +23,7 @@ if (!defined('ADMIN_AREA'))
 }
 define("USER_AREA", FALSE);
 
-$sql->db_Mark_Time('(Header Top)');
+e107::getDb()->db_Mark_Time('(Header Top)');
 
 //
 // *** Code sequence for headers ***
@@ -262,7 +262,7 @@ if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0"))
 	echo "<script type='text/javascript'>
 <!--
 function savepreset(ps,pid){
-	if(confirm('".$tp->toJS(LAN_PRESET_CONFIRMSAVE)."'))
+	if(confirm('".e107::getParser()->toJS(LAN_PRESET_CONFIRMSAVE)."'))
 	{
 		document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
    		document.getElementById(ps).submit();
@@ -385,7 +385,7 @@ echo "</head>
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
 
-$sql->db_Mark_Time("End Head, Start Body");
+e107::getDb()->db_Mark_Time("End Head, Start Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)

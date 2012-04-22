@@ -142,12 +142,15 @@ CREATE TABLE core_media (
 
 CREATE TABLE core_media_cat (
   media_cat_id int(10) unsigned NOT NULL auto_increment,
-  media_cat_nick varchar(255) NOT NULL default '',
+  media_cat_owner varchar(255) NOT NULL default '',
+  media_cat_category varchar(255) NOT NULL default '',
   media_cat_title text NOT NULL,
   media_cat_diz text NOT NULL,
   media_cat_class int(5) default '0',
+  media_cat_image varchar(255) NOT NULL default '',
+  media_cat_order int(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (media_cat_id),
-  UNIQUE KEY media_cat_nick (media_cat_nick)
+  UNIQUE KEY media_cat_category (media_cat_category)
 ) ENGINE=MyISAM;
 
 

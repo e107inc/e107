@@ -33,13 +33,14 @@ $frm = e107::getForm();
 function run_updates($dbupdate)
 {
 	global $mes;
+
 	foreach($dbupdate as $func => $rmks)
 	{
 		if(function_exists('update_'.$func)) // Legacy Method. 
 		{
 			$installed = call_user_func("update_".$func);
 			//?! (LAN_UPDATE == $_POST[$func])
-			if(varsettrue($_POST[$func]) && !$installed)
+			if(varsettrue($_POST['update_core'][$func]) && !$installed)
 			{
 				if(function_exists("update_".$func))
 				{
@@ -117,7 +118,7 @@ function show_updates($dbupdate, $what)
 			else
 			{
 				$updates ++;
-				$text .= "<td>".$frm->admin_button($func, LAN_UPDATE, 'update', '', "id=e-{$func}")."</td>";
+				$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'update', '', "id=e-{$func}")."</td>";
 			}
 			$text .= "</tr>\n";
 		}
@@ -151,7 +152,7 @@ function show_updates($dbupdate, $what)
 	return $updates; // Number of updates to do
 }
 
-if($_POST['update'])
+if(is_array($_POST['update_core']))
 {
 	$message = run_updates($dbupdate);
 }
