@@ -322,6 +322,7 @@ define("LAN_EXECUTE","Execute");
 define("LAN_SEFURL","SEF URL");
 define("LAN_COPY","Copy");
 define("LAN_KEYWORDS","Keywords");
+define("LAN_IMAGE","Image");
 
 
 

@@ -116,7 +116,7 @@ class media_cat_ui extends e_admin_ui
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
-         	'media_cat_owner' 		=> array('title'=> "Owner",		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         	'media_cat_owner' 		=> array('title'=> "Owner",			'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
@@ -129,10 +129,12 @@ class media_cat_ui extends e_admin_ui
 	{
 		$this->fields['media_cat_owner']['writeParms'] = array(
 			"_common" 	=> "_common",
-			"news"		=> "news",
+			"_icon"		=> "_icon",
+			"news"		=> "news",	
 			"page"		=> "page",
-			"download"	=> "download",
-			"gallery"	=> "gallery"
+			"gallery"	=> "gallery",
+			"download"	=> "download"
+					
 		);
 		
 		$sql = e107::getDb();
@@ -332,6 +334,11 @@ class media_admin_ui extends e_admin_ui
 		if(varset($_POST['batch_import_selected']))
 		{
 			$this->batchImport();
+		}
+
+		if(varset($_POST['update_options']))
+		{
+			$this->updateSettings();
 		}
 
 		if($this->getQuery('iframe'))
@@ -595,17 +602,21 @@ class media_admin_ui extends e_admin_ui
 		foreach($files as $f)
 		{
 
-			$text .= "<tr>
-				<td class='center'>".$frm->checkbox("batch_selected[$c]",$f['fname'])."</td>
+			$text .= "
+			
+			<tr>
+				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'])."</td>
 				<td class='center'>".$this->preview($f)."</td>			
 				<td>".$f['fname']."</td>
-				<td>".$frm->text('batch_import_name[$c]', $f['fname'])."</td>
-				<td>".$frm->textarea('batch_import_diz[$c]', $_POST['batch_import_diz'][$c])."</td>
+				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $f['fname']))."</td>
+				<td>".$frm->textarea('batch_import_diz['.$c.']', $_POST['batch_import_diz'][$c])."</td>
 				<td>".$f['mime']."</td>
 				<td>".$f['fsize']."</td>
 				<td>".e107::getDateConvert()->convert_date($f['modified'])."</td>
 				<td class='center last'>".$f['img-width']." x ".$f['img-height']."</td>
-				</tr>";
+			</tr>
+				
+				\n";
 				
 			$c++;
 		}
@@ -726,6 +737,14 @@ class media_admin_ui extends e_admin_ui
 			// continue;
 			$f['fname'] = $file;
 			
+			if(file_exists($newpath) || $sql->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+			{
+				$mes->addWarning($newpath." already exists and was ignored during import.");
+				continue;
+			}
+			
+			
+			
 			if(rename($oldpath,$newpath))
 			{
 				$insert = array(
@@ -780,6 +799,43 @@ class media_admin_ui extends e_admin_ui
 		if($id) return (isset($this->cats[$id]) ? $this->cats[$id] : 0);
 		return $this->cats;
 	}
+	
+	
+	/*
+ * UPDATE IMAGE OPTIONS - MAIN SCREEN
+ */
+ 	function updateSettings()
+	{
+		global $pref,$admin_log,$tp;
+		
+		$mes = e107::getMessage();
+		
+		$tmp = array();
+		$tmp['image_post'] = intval($_POST['image_post']);
+		$tmp['resize_method'] = $tp->toDB($_POST['resize_method']);
+		$tmp['im_path'] = trim($tp->toDB($_POST['im_path']));
+		$tmp['image_post_class'] = intval($_POST['image_post_class']);
+		$tmp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
+		$tmp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
+		
+		if($_POST['img_import_resize_w'] && $_POST['img_import_resize_h'])
+		{
+			$tmp['img_import_resize'] = intval($_POST['img_import_resize_w'])."x".intval($_POST['img_import_resize_h']);		
+		} 
+	
+		if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
+		{
+			save_prefs();		// Only save if changes
+			$mes->add(IMALAN_9, E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$mes->add(IMALAN_20, E_MESSAGE_INFO);
+		}	
+	}
+
+	
+	
 
 }
 
@@ -973,34 +1029,7 @@ if (isset($_POST['submit_avdelete_multi']))
 
 }
 
-/*
- * UPDATE IMAGE OPTIONS - MAIN SCREEN
- */
-if (isset($_POST['update_options']))
-{
-	$tmp = array();
-	$tmp['image_post'] = intval($_POST['image_post']);
-	$tmp['resize_method'] = $tp->toDB($_POST['resize_method']);
-	$tmp['im_path'] = trim($tp->toDB($_POST['im_path']));
-	$tmp['image_post_class'] = intval($_POST['image_post_class']);
-	$tmp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
-	$tmp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
-	
-	if($_POST['img_import_resize_w'] && $_POST['img_import_resize_h'])
-	{
-		$tmp['img_import_resize'] = intval($_POST['img_import_resize_w'])."x".intval($_POST['img_import_resize_h']);		
-	} 
 
-	if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
-	{
-		save_prefs();		// Only save if changes
-		$emessage->add(IMALAN_9, E_MESSAGE_SUCCESS);
-	}
-	else
-	{
-		$emessage->add(IMALAN_20, E_MESSAGE_INFO);
-	}
-}
 
 /*
  * SHOW AVATARS SCREEN

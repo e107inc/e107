@@ -249,7 +249,7 @@ class e_media
 	/**
 	 * Return an array of Images in a particular category
 	 */
-	public function getImages($cat = '')
+	public function getImages($cat,$from='',$amount='')
 	{
 		if(!$cat) return;
 		// TODO check the category is valid. 
