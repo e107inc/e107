@@ -12,7 +12,12 @@
  * $Id$
  *
 */
-require_once("../class2.php");
+
+if (!defined('e107_INIT'))
+{
+	require_once("../class2.php");
+}
+
 if (!getperms("A"))
 {
 	header("location:".e_HTTP."index.php");
@@ -61,9 +66,9 @@ class media_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
 		'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
-		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A'),
+		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A|A2'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
-	//	'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
+		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
 	//	'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 
@@ -102,56 +107,74 @@ class media_cat_ui extends e_admin_ui
 		protected $pid			= "media_cat_id";
 		protected $perPage = 0; //no limit
 		protected $batchDelete = false;
+		
+		public 	$ownerCount = array();
 	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit.
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 
 		protected $fields = array(
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
-         	'media_cat_nick' 		=> array('title'=> "Nickname",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
-			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
-         	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>TRUE), // Display name
+         	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
+         	'media_cat_owner' 		=> array('title'=> "Owner",		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
+			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
-		//	'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'media_cat_order' 		=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),										
+			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);
 
-	/**
-	 * Get FAQ Category data
-	 *
-	 * @param integer $id [optional] get category title, false - return whole array
-	 * @param mixed $default [optional] default value if not found (default 'n/a')
-	 * @return TBD
-	 */
-	function getMediaCategoryTree($id = false, $default = 'n/a')
+	function init()
 	{
-		// TODO get faq category tree
+		$this->fields['media_cat_owner']['writeParms'] = array(
+			"_common" 	=> "_common",
+			"news"		=> "news",
+			"page"		=> "page",
+			"download"	=> "download",
+			"gallery"	=> "gallery"
+		);
+		
+		$sql = e107::getDb();
+		$sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner");
+		while($row = $sql->db_Fetch())	
+		{
+			$this->ownerCount[$row['media_cat_owner']] = $row['number'];		
+		}
+		
+	}
+	
+	public function beforeCreate($new_data)
+	{
+
+		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
+		//$new_data['media_cat_category'] = str_replace($replace,"-",$new_data['media_cat_category']);
+		
+		$increment = ($this->ownerCount[$new_data['media_cat_owner']] +1);
+		$new_data['media_cat_category'] = $new_data['media_cat_owner']."_".$increment;
+	
+		return $new_data;
+	}
+	
+	
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		$mes = e107::getMessage();
+	
+		if($new_data['media_cat_owner']	!= "gallery")
+		{
+			$mes->addError("Modification is not permitted");
+			return FALSE;
+		}
+		
+		return $new_data;
 	}
 
 }
 
-class faq_cat_form_ui extends e_admin_form_ui
+class media_cat_form_ui extends e_admin_form_ui
 {
-	/*public function faq_info_parent($curVal,$mode)
-	{
-		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter
-		// Get UI instance
-		$controller = $this->getController();
-		switch($mode)
-		{
-			case 'read':
-				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
-			break;
 
-			case 'write':
-				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
-			break;
-
-			case 'filter':
-			case 'batch':
-				return $controller->getFaqCategoryTree();
-			break;
-		}
-	}*/
 }
 
 
@@ -160,24 +183,28 @@ class faq_cat_form_ui extends e_admin_form_ui
 class media_form_ui extends e_admin_form_ui
 {
 
-	//private $cats = array();
-
 	function init()
 	{
 		/*$sql = e107::getDb();
-	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
-		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
+	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
+		$sql->db_Select_gen("SELECT media_cat_title, media_cat_owner FROM #core_media_cat");
 		while($row = $sql->db_Fetch())
 		{
-			$cat = $row['media_cat_nick'];
+			$cat = $row['media_cat_owner'];
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);*/
 	}
 
+
+	
+
+
+
+
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
-
+		
 		if($mode == 'read')
 		{
 			return $this->getController()->getMediaCategory($curVal);
@@ -238,9 +265,9 @@ class media_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParams' => 'path={e_MEDIA}',	'width' => '110px','readonly'=>false),
+      		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParams' => 'path={e_MEDIA}',	'width' => '110px'),
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
-
+			
 		// Upload should be managed completely separately via upload-handler.
        		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
@@ -282,19 +309,25 @@ class media_admin_ui extends e_admin_ui
 		);*/
 
 	protected $cats = array();
+	protected $owner = array();
+	protected $ownercats = array();
+	
 
 	function init()
 	{
 		$sql = e107::getDb();
-	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_nick GROUP BY m.media_category");
-		$sql->db_Select_gen("SELECT media_cat_title, media_cat_nick FROM #core_media_cat");
+	//	$sql->db_Select_gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
+		$sql->db_Select_gen("SELECT media_cat_title, media_cat_owner, media_cat_category FROM #core_media_cat");
 		while($row = $sql->db_Fetch())
 		{
-			$cat = $row['media_cat_nick'];
+			$cat = $row['media_cat_category'];
+			$owner = $row['media_cat_owner'];
+			$this->owner[$owner] = $owner;
+			$this->ownercats[$owner.'|'.$cat] = $row['media_cat_title'];
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);
-
+		
 
 		if(varset($_POST['batch_import_selected']))
 		{
@@ -548,6 +581,8 @@ class media_admin_ui extends e_admin_ui
 									<th class='center'>".e107::getForm()->checkbox_toggle('e-column-toggle', 'batch_selected')."</th>
 									<th class='center' style='width:50px'>Preview</th>
 									<th class='center'>".LAN_FILE."</th>
+									<th >Title</th>
+									<th >Caption</th>
 									<th>Mime Type</th>
 									<th>File Size</th>
 									<th>".LAN_DATESTAMP."</th>
@@ -555,19 +590,24 @@ class media_admin_ui extends e_admin_ui
 								</tr>
 							</thead>
 							<tbody>";
-
+		
+		$c = 0;
 		foreach($files as $f)
 		{
 
 			$text .= "<tr>
-				<td class='center'>".$frm->checkbox("batch_selected[]",$f['fname'])."</td>
-				<td class='center'>".$this->preview($f)."</td>
+				<td class='center'>".$frm->checkbox("batch_selected[$c]",$f['fname'])."</td>
+				<td class='center'>".$this->preview($f)."</td>			
 				<td>".$f['fname']."</td>
+				<td>".$frm->text('batch_import_name[$c]', $f['fname'])."</td>
+				<td>".$frm->textarea('batch_import_diz[$c]', $_POST['batch_import_diz'][$c])."</td>
 				<td>".$f['mime']."</td>
 				<td>".$f['fsize']."</td>
 				<td>".e107::getDateConvert()->convert_date($f['modified'])."</td>
 				<td class='center last'>".$f['img-width']." x ".$f['img-height']."</td>
 				</tr>";
+				
+			$c++;
 		}
 
 
@@ -620,7 +660,7 @@ class media_admin_ui extends e_admin_ui
 			return;
 		}
 		
-		
+
 		require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 		list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
 		
@@ -635,9 +675,9 @@ class media_admin_ui extends e_admin_ui
 		 	$WM = FALSE; 
 		}	
 
-		foreach($_POST['batch_selected'] as $file)
+		foreach($_POST['batch_selected'] as $key=>$file)
 		{
-								
+						
 			$oldpath = e_MEDIA."temp/".$file;
 			
 			// Resize on Import Routine ------------------------
@@ -677,23 +717,25 @@ class media_admin_ui extends e_admin_ui
 
 
 			$newpath = $this->getPath($f['mime']).'/'.$file;
-
+			$newname = $tp->toDB($_POST['batch_import_name'][$key]);
+			$newdiz = $tp->toDB($_POST['batch_import_diz'][$key]);
+			
 			// echo "oldpath=".$file;
 //
 			// echo "<br />newpath=".$tp->createConstants($newpath,'rel');
 			// continue;
 			$f['fname'] = $file;
-
+			
 			if(rename($oldpath,$newpath))
 			{
 				$insert = array(
-					'media_caption'		=> $f['fname'],
+					'media_caption'		=> $newdiz,
 					'media_description'	=> '',
 					'media_category'	=> $_POST['batch_category'],
 					'media_datestamp'	=> $f['modified'],
 					'media_url'			=> $tp->createConstants($newpath,'rel'),
 					'media_userclass'	=> 0,
-					'media_name'		=> $f['fname'],
+					'media_name'		=> $newname,
 					'media_author'		=> USERID,
 					'media_size'		=> $f['fsize'],
 					'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],

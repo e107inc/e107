@@ -881,6 +881,8 @@ class e_userperms
 		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
 		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),			// File-Manager  - Upload /manage files - 
 		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager and Image Settings
+		"A1"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add)
+		"A2"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media-Import)
 		
 		
 		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus

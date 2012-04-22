@@ -33,12 +33,13 @@ class e_media
 	public function import($cat,$epath,$fmask='')
 	{
 		if(!vartrue($cat)){ return $this;}
+		
 	
 		if(!is_readable($epath))
 		{
 			return $this;
 		}
-	
+			
 		$fl = e107::getFile();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -175,7 +176,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
+		$status = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_owner = '_icon' ")) ? TRUE : FALSE;		
 		while ($row = $sql->db_Fetch())
 		{
 			$ret[] = $row['media_url'];
@@ -225,14 +226,20 @@ class e_media
 	/**
 	 * Return an Array of Media Categories
 	 */
-	public function getCategories()
+	public function getCategories($owner='')
 	{
 		$ret = array();
-		e107::getDb()->db_Select_gen("SELECT * FROM #core_media_cat ORDER BY media_cat_title");
+		
+		
+		$qry = "SELECT * FROM #core_media_cat ";
+		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : "";
+		$qry .= "ORDER BY media_cat_order";
+		
+		e107::getDb()->db_Select_gen($qry);
 		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
 		{
-			$id = $row['media_cat_nick'];
-			$ret[$id] = $row['media_cat_title'];
+			$id = $row['media_cat_category'];
+			$ret[$id] = $row;
 		}
 		return $ret;	
 	}
