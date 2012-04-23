@@ -329,7 +329,8 @@ global $user;
 $url = e107::getUrl();
 if (USERID == $user['user_id']) 
 {
-	return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
+	//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
+	return "<a href='usersettings.php' alt=''>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 }
 else if(ADMIN && getperms("4") && !$user['user_admin']) 
 {
