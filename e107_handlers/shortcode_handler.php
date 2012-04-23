@@ -76,12 +76,13 @@ class e_parse_shortcode
 	function __construct()
 	{
 		$this->parseSCFiles = true; // Default probably never used, but make sure its defined.
-
+		
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
 		$this->loadCoreShortcodes();
+
 	}
 
 	/**
@@ -250,7 +251,7 @@ class e_parse_shortcode
 	 *
 	 * <code><?php
 	 * // simple use
-	 * e107::getScParser()->getScObject('news_shortcodes');
+	 * e107::getScParser()->getScObject('news_shortcodes'); // For Globally Registered shortcodes, including plugins using e_shortcode.php
 	 *
 	 * // plugin override - e107_plugins/myplug/shortcodes/batch/news_shortcodes.php -> class plugin_myplug_news_shortcodes
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', true);
@@ -260,14 +261,16 @@ class e_parse_shortcode
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', 'news2_shortcodes');
 	 * </code>
 	 * @param string $className
-	 * @param string $plugName
+	 * @param string $plugName if true className is used., if string, string value is used.  
 	 * @param string $overrideClass if true, $className is used
 	 * @return e_shortcode
 	 */
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
+		if(trim($className)==""){ return; }
+				
 		$_class_fname = $className;
-
+			
 		// plugin override
 		if($overrideClass)
 		{
@@ -279,27 +282,41 @@ class e_parse_shortcode
 			$_class_fname = $overrideClass;
 			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $overrideClass);
 		}
-		elseif($pluginName)
+		elseif(is_string($pluginName))
 		{
 			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
-
-		if ($this->isScClass($className))
+		elseif($pluginName === TRUE)
+		{
+			$pluginName = str_replace("_shortcodes","",$className);		
+		}
+	
+		if ($this->isScClass($className)) // Includes global Shortcode Classes. ie. e_shortcode.php 
 		{
 			return $this->scClasses[$className];
 		}
 
 		$path = ($pluginName ? e_PLUGIN.$pluginName.'/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
+		
+		
 		if (is_readable($path))
 		{
 			require_once($path);
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
-				$this->scClasses[$className] = new $className();
+				// $this->scClasses[$className] = new $className(); // located inside registerClassMethods()
 				$this->registerClassMethods($className, $path);
 				return $this->scClasses[$className];
 			}
+			elseif(E107_DBG_BBSC || E107_DBG_SC)
+			{
+				echo "Couldn't Find Class '".$className."' in <b>".$path."</b>";
+			}
+		}
+		elseif(E107_DBG_BBSC || E107_DBG_SC)
+		{
+			echo "Couldn't Load: <b>".$path."</b>";
 		}
 
 		// TODO - throw exception?
@@ -410,6 +427,8 @@ class e_parse_shortcode
 			}
 
 			$this->registerClassMethods($classFunc, $path, false);
+
+			
 		}
 		return $this;
 	}
@@ -432,9 +451,16 @@ class e_parse_shortcode
 				if ($force || !$this->isRegistered($code))
 				{
 					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $className);
+					
+					if (class_exists($className, false))
+					{
+						$this->scClasses[$className] = new $className(); // Required. Test with e107::getScBatch($className)				
+					}
 				}
 			}
 		}
+		
+
 		return $this;
 	}
 
