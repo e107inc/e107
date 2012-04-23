@@ -524,7 +524,7 @@ class media_admin_ui extends e_admin_ui
 
 	}
 
-	function getPath($mime)
+	function getPath($mime,$owner='_common')
 	{
 		$mes = e107::getMessage();
 
@@ -536,9 +536,20 @@ class media_admin_ui extends e_admin_ui
 			return FALSE;
 		}
 
-		$dir = $this->mimePaths[$pmime].date("Y-m");
+		$dir = $this->mimePaths[$pmime].$owner; 
 
-		if(!is_dir($dir))
+		if(!is_dir($dir)) // Owner Directory
+		{
+			if(!mkdir($dir, 0755))
+			{
+				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				return FALSE;
+			};
+		}
+		
+		$dir .= "/".date("Y-m");
+		
+		if(!is_dir($dir)) // Dated Directory
 		{
 			if(!mkdir($dir, 0755))
 			{
@@ -627,7 +638,7 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats);
+						Import into Category: ".$frm->selectbox('batch_category',$this->ownercats);
 			
 			$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";				
 					
@@ -726,8 +737,9 @@ class media_admin_ui extends e_admin_ui
 				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);
 			}
 
-
-			$newpath = $this->getPath($f['mime']).'/'.$file;
+			list($owner,$category) = explode("|",$_POST['batch_category']);
+			
+			$newpath = $this->getPath($f['mime'],$owner).'/'.$file;
 			$newname = $tp->toDB($_POST['batch_import_name'][$key]);
 			$newdiz = $tp->toDB($_POST['batch_import_diz'][$key]);
 			
@@ -750,7 +762,7 @@ class media_admin_ui extends e_admin_ui
 				$insert = array(
 					'media_caption'		=> $newdiz,
 					'media_description'	=> '',
-					'media_category'	=> $_POST['batch_category'],
+					'media_category'	=> $category,
 					'media_datestamp'	=> $f['modified'],
 					'media_url'			=> $tp->createConstants($newpath,'rel'),
 					'media_userclass'	=> 0,
