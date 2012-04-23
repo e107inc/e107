@@ -13,13 +13,19 @@ class gallery_shortcodes extends e_shortcode
 {		
 	function sc_gallery_caption($parm='')
 	{
-		return $this->eParserVars['media_caption'];
+		$text = "<a href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'])."' rel='external shadowbox' >";
+		$text .= $this->eParserVars['media_caption'];
+		$text .= "</a>";
+		return $text;
 	}
 	
 	function sc_gallery_thumb($parm='')
 	{
 		$att = ($parm) ?$parm : 'aw=190&ah=150';
-		return "<img src='".e107::getParser()->thumbUrl($this->eParserVars['media_url'],$att)."' alt='' />";	
+		$text = "<a href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'])."' rel='external shadowbox' >";
+		$text .= "<img src='".e107::getParser()->thumbUrl($this->eParserVars['media_url'],$att)."' alt='' />";
+		$text .= "</a>";
+		return $text;	
 	}
 	
 	function sc_gallery_cat_title($parm='')

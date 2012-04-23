@@ -33,6 +33,7 @@ if (!getperms("P") || !plugInstalled('gallery'))
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
 require_once(HEADERF);
 
 
