@@ -1,0 +1,25 @@
+
+
+
+/* IMAGE LIST */
+
+.gallery-list-start		{ clear:both; }
+
+.gallery-list-item		{ width:190px; height:180px; float:left; margin:3px; border:1px solid #000000; background-color:#000000 }
+
+.gallery-list-end		{ text-align:center; clear:both; padding-top:20px; }
+
+.gallery-list-caption 	{ display:block; text-align:center; color:#FFFFFF; }
+
+
+/* CATEGORY LIST */
+
+.gallery-cat-start		{ clear:both; }
+
+.gallery-cat-item		{ width:190px; height:180px; float:left; margin:3px; border:1px solid #000000; background-color:#000000; }
+
+.gallery-cat-end		{ text-align:center; clear:both; }
+
+.gallery-cat-title		{ text-align:center; }
+
+
