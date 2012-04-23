@@ -1567,7 +1567,7 @@ class e107
 	/**
 	 * Get plugin template. Use this method for plugin templates, which are following the
 	 * new template standards:
-	 * - template variables naming conventions
+	 * - template variables naming conventions ie. ${NAME IN CAPS}_TEMPLATE['{ID}'] = "<div>...</div>";
 	 * - one array variable per template only
 	 * - theme override is made now by current_theme/templates/plugin_name/ folder
 	 *
@@ -1590,11 +1590,15 @@ class e107
 	 * @param boolean $info retrieve template info only
 	 * @return string|array
 	 */
-	public static function getTemplate($plug_name, $id, $key = null, $override = true, $merge = false, $info = false)
+	public static function getTemplate($plug_name, $id = null, $key = null, $override = true, $merge = false, $info = false)
 	{
 		if(null === $plug_name)
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
+		}
+		if(null == $id) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
+		{
+			$id = $plug_name;
 		}
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
