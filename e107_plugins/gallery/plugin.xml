@@ -8,7 +8,7 @@
 		<file type='install' path='languages/--LAN--/admin_gallery.php' />
 	</languageFiles>
 	<adminLinks>
-		<link url='admin_gallery.php' description='LAN_CONFIGURE' icon='images/dgallery_32.png' iconSmall='images/gallery_16.png' primary='true' >LAN_CONFIGURE</link>		
+		<link url='admin_gallery.php' description='LAN_CONFIGURE' icon='images/gallery_32.png' iconSmall='images/gallery_16.png' primary='true' >LAN_CONFIGURE</link>		
 	</adminLinks>
 	<siteLinks>
 		<link url="{e_PLUGIN}gallery/gallery.php" sef="gallery" perm="everyone" >Gallery</link>	
