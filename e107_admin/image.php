@@ -524,7 +524,7 @@ class media_admin_ui extends e_admin_ui
 
 	}
 
-	function getPath($mime,$owner='_common')
+	function getPath($mime)
 	{
 		$mes = e107::getMessage();
 
@@ -536,20 +536,9 @@ class media_admin_ui extends e_admin_ui
 			return FALSE;
 		}
 
-		$dir = $this->mimePaths[$pmime].$owner; 
+		$dir = $this->mimePaths[$pmime].date("Y-m");
 
-		if(!is_dir($dir)) // Owner Directory
-		{
-			if(!mkdir($dir, 0755))
-			{
-				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
-				return FALSE;
-			};
-		}
-		
-		$dir .= "/".date("Y-m");
-		
-		if(!is_dir($dir)) // Dated Directory
+		if(!is_dir($dir))
 		{
 			if(!mkdir($dir, 0755))
 			{
@@ -638,7 +627,7 @@ class media_admin_ui extends e_admin_ui
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->ownercats);
+						Import into Category: ".$frm->selectbox('batch_category',$this->cats);
 			
 			$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";				
 					
@@ -737,9 +726,7 @@ class media_admin_ui extends e_admin_ui
 				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);
 			}
 
-			list($owner,$category) = explode("|",$_POST['batch_category']);
-			
-			$newpath = $this->getPath($f['mime'],$owner).'/'.$file;
+			$newpath = $this->getPath($f['mime']).'/'.$file;
 			$newname = $tp->toDB($_POST['batch_import_name'][$key]);
 			$newdiz = $tp->toDB($_POST['batch_import_diz'][$key]);
 			
@@ -751,8 +738,9 @@ class media_admin_ui extends e_admin_ui
 			
 			if(file_exists($newpath) || $sql->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 			{
-				$mes->addWarning($newpath." already exists and was ignored during import.");
-				continue;
+				$mes->addWarning($newpath." already exists and was renamed during import.");	
+				$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
+				$newpath = $this->getPath($f['mime']).'/'.$file;						
 			}
 			
 			
@@ -762,7 +750,7 @@ class media_admin_ui extends e_admin_ui
 				$insert = array(
 					'media_caption'		=> $newdiz,
 					'media_description'	=> '',
-					'media_category'	=> $category,
+					'media_category'	=> $_POST['batch_category'],
 					'media_datestamp'	=> $f['modified'],
 					'media_url'			=> $tp->createConstants($newpath,'rel'),
 					'media_userclass'	=> 0,
