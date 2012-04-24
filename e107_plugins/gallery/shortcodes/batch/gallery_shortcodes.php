@@ -10,7 +10,13 @@ if (!defined('e107_INIT')) { exit; }
 
 
 class gallery_shortcodes extends e_shortcode
-{		
+{
+	
+	public $total = 0;
+	public $amount = 3;
+	public $from = 0;
+	public $curCat = null;
+			
 	function sc_gallery_caption($parm='')
 	{
 		$text = "<a href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'])."' rel='external shadowbox' >";
@@ -44,6 +50,14 @@ class gallery_shortcodes extends e_shortcode
 		$text .= "<img src='".e107::getParser()->thumbUrl($this->eParserVars['media_cat_image'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;		
+	}
+	
+	function sc_gallery_nextprev($parm='')
+	{
+		$url = e_SELF."?cat=".$this->curCat."--AMP--frm=--FROM--";
+		$parm = 'total='.$this->total.'&amount='.$this->amount.'&current='.$this->from.'&url='.$url; // .'&url='.$url;
+		$text .= e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
+		return $text;	
 	}
 	
 	

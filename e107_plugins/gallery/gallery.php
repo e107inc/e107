@@ -73,19 +73,29 @@ class gallery
 	//TODO Shadowbox/Popup support. 
 	function showImages($cat)
 	{
-		$mes 		= e107::getMessage();				
+		$mes 		= e107::getMessage();	
+		$tp			= e107::getParser();			
 		$template 	= e107::getTemplate('gallery');
-		$list 		= e107::getMedia()->getImages($cat);
 		$sc 		= e107::getScBatch('gallery',TRUE);
+					
+		$sc->total 	= e107::getMedia()->countImages($cat);
+		$sc->amount = 9; // TODO Add Pref. 
+		$sc->curCat = $cat;
+		$sc->from 	= ($_GET['frm']) ? intval($_GET['frm']) : 0;
+		
+		$list 		= e107::getMedia()->getImages($cat,$sc->from,$sc->amount);
 	
-		$text = "";	
+		$inner = "";	
+		
 		foreach($list as $row)
 		{
 			$sc->setParserVars($row);				
-			$text .= e107::getParser()->parseTemplate($template['LIST_ITEM'],TRUE);
+			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
 		}
-			
-		$text = $template['LIST_START'].$text.$template['LIST_END'];
+					
+		$text = $tp->parseTemplate($template['LIST_START'],TRUE);
+		$text .= $inner; 	
+		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
 		
 		e107::getRender()->tablerender("Gallery :: ".str_replace("_"," ",$cat),$mes->render().$text);
 		
