@@ -19,7 +19,8 @@ class gallery_shortcodes extends e_shortcode
 			
 	function sc_gallery_caption($parm='')
 	{
-		$text = "<a href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'])."' rel='external shadowbox' >";
+		$tp = e107::getParser();
+		$text = "<a title='".$tp->toAttribute($this->eParserVars['media_caption'])."' href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'],'abs')."' rel='lightbox[Gallery2]' >";
 		$text .= $this->eParserVars['media_caption'];
 		$text .= "</a>";
 		return $text;
@@ -27,8 +28,9 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_thumb($parm='')
 	{
+		$tp = e107::getParser();
 		$att = ($parm) ?$parm : 'aw=190&ah=150';
-		$text = "<a href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'])."' rel='external shadowbox' >";
+		$text = "<a title='".$tp->toAttribute($this->eParserVars['media_caption'])."' href='".e107::getParser()->replaceConstants($this->eParserVars['media_url'],'abs')."'  rel='lightbox[Gallery]' >";
 		$text .= "<img src='".e107::getParser()->thumbUrl($this->eParserVars['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;	

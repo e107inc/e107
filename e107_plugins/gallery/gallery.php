@@ -25,17 +25,35 @@
   * THIS SCRIPT IS HIGHLY EXPERIMENTAL. USE AT OWN RISK. 
   * 
   */
-  
-  
 require_once("../../class2.php");
 if (!getperms("P") || !plugInstalled('gallery'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
-e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
-require_once(HEADERF);
 
+e107::getJS()->headerFile("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",1);
+e107::getJs()->headerPlugin('gallery', 'jslib/lightbox/js/lightbox.js');
+e107::getJs()->pluginCSS('gallery', 'jslib/lightbox/css/lightbox.css');
+e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
+
+//e107::getJs()->headerPlugin('gallery', 'jslib/shadowbox/shadowbox.js');
+//e107::getJs()->pluginCSS('gallery', 'jslib/shadowbox/shadowbox.css');
+
+ // e107::getJs()->headerInline('Shadowbox.init();');
+/*
+e107::getJs()->headerInline('
+Shadowbox.init({
+    handleOversize: "drag",
+  	overlayOpacity: 0.9,
+  	viewportPadding: 50
+});
+');
+
+*/
+
+
+require_once(HEADERF);
 
 class gallery
 {
@@ -70,7 +88,7 @@ class gallery
 		e107::getRender()->tablerender("Gallery",$text);
 	}
 	
-	//TODO Shadowbox/Popup support. 
+
 	function showImages($cat)
 	{
 		$mes 		= e107::getMessage();	
