@@ -689,7 +689,7 @@ class e_parse_shortcode
 								}
 
 								// egister passed eVars object on init - call it manually?
-								// $this->callScFunc($_class, 'setVars', $this->eParserVars);
+								// $this->callScFunc($_class, 'setVars', $this->var);
 							}
 
 							// FIXME - register passed eVars object - BAD solution - called on EVERY sc method call
@@ -895,7 +895,7 @@ class e_shortcode
 	 * Stores passed to shortcode handler simple parser object
 	 * @var e_vars
 	 */
-	protected $eParserVars = null;
+	protected $var = null; // value returned by each shortcode. 
 
 	/**
 	 * Storage for shortcode values
@@ -916,7 +916,7 @@ class e_shortcode
 	 */
 	public function setParserVars($eVars)
 	{
-		$this->eParserVars = $eVars;
+		$this->var = $eVars;
 		return $this;
 	}
 
@@ -927,8 +927,8 @@ class e_shortcode
 	 */
 	public function getParserVars()
 	{
-		if(null === $this->eParserVars) $this->eParserVars = new e_vars();
-		return $this->eParserVars;
+		if(null === $this->var) $this->var = new e_vars();
+		return $this->var;
 	}
 
 	/**

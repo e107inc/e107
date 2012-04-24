@@ -107,7 +107,8 @@ class gallery
 		
 		foreach($list as $row)
 		{
-			$sc->setParserVars($row);				
+			$sc->setParserVars($row);	
+			echo "THIS=".$sc->getScVar['gallery_caption'];			
 			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
 		}
 					
