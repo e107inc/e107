@@ -21,7 +21,8 @@ $GALLERY_TEMPLATE['LIST_ITEM'] =
 $GALLERY_TEMPLATE['LIST_END'] = 
 	"</div>
 	<div class='gallery-list-end' >
-	<a href='".e_SELF."'>Back to Categories</a>
+	<div class='gallery-list-nextprev'>{GALLERY_NEXTPREV}</div>
+	<div class='gallery-list-back'><a href='".e_SELF."'>Back to Categories</a></div>
 	</div>
 	";
 	

@@ -244,17 +244,32 @@ class e_media
 		return $ret;	
 	}
 	
+	/**
+	 * Return the total number of Images in a particular category
+	 */	
+	public function countImages($cat)
+	{
+		$query = "SELECT media_id FROM #core_media WHERE media_category = '".$cat."' ";
+		return e107::getDb()->db_Select_gen($query);	
+	}
 	
 	
 	/**
 	 * Return an array of Images in a particular category
 	 */
-	public function getImages($cat,$from='',$amount='')
+	public function getImages($cat, $from=0, $amount=null)
 	{
 		if(!$cat) return;
 		// TODO check the category is valid. 
+		// TODO check userclasses. 
 		$ret = array();
-		e107::getDb()->db_Select_gen("SELECT * FROM #core_media WHERE media_category = '".$cat."' ORDER BY media_name");
+		$query = "SELECT * FROM #core_media WHERE media_category = '".$cat."' ORDER BY media_name";
+		
+		if($amount)
+		{
+			$query .= " LIMIT ".$from." ,".$amount;	
+		}
+		e107::getDb()->db_Select_gen($query);
 		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
 		{
 			$id = $row['media_id'];
