@@ -45,9 +45,9 @@ function usersearch_shortcode($parm)
 	
 	if($sql->db_Select_gen($qry))
 	{
+		if($emailSrch) $info_field = 'user_email';
 		while($row = $sql->db_Fetch())
 		{
-			if($emailSrch) $info_field = 'user_email';
 			$ret .= "<li id='{$row['user_id']}'>{$row[$search_field]}<span class='informal'> [{$row['user_id']}] ".$row[$info_field].$email." </span></li>";
 		}
 	}
