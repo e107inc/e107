@@ -8,7 +8,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
+/*
+// SEE e_shortcode.php instead. 
+  
+ 
 class gallery_shortcodes extends e_shortcode
 {
 	
@@ -64,3 +67,4 @@ class gallery_shortcodes extends e_shortcode
 	
 	
 }
+*/
