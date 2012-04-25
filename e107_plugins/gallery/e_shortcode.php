@@ -17,6 +17,7 @@ class gallery_shortcodes extends e_shortcode
 	public $curCat = null;
 	public $sliderCat = 1;
 	public $slideMode = FALSE;
+	public $slideCount = 1;
 			
 	function sc_gallery_caption($parm='')
 	{
@@ -85,23 +86,39 @@ class gallery_shortcodes extends e_shortcode
 		{
 			$this->setParserVars($row);	
 					
-			$inner .= ($count == 1) ?  "\n\n<!-- SLIDE ".$count." -->\n<div class='slide'>\n" : "";
+			$inner .= ($count == 1) ?  "\n\n<!-- SLIDE ".$count." -->\n<div class='slide' id='gallery-item-".$this->slideCount."'>\n" : "";
 			$inner .= "\n\t".$tp->parseTemplate($item_template,TRUE)."\n";
 			$inner .= ($count == $amount) ? "\n</div>\n\n" : "";
 						
 			if($count == $amount)
 			{
 				$count = 1; 
+				$this->slideCount++;
 			}
 			else
 			{
 				$count++;
-			}
-			
+			}		
 		}
-		
+
 		$inner .= ($count != 1) ? "</div><!-- END SLIDES -->" : "";
 		return $inner;
+	}
+	
+	function sc_gallery_jumper($parm)
+	{
+		// echo "SlideCount=".$this->slideCount; 
+		if($this->slideCount ==1 ){ return "gallery-jumper must be loaded after Gallery-Slides"; }
+			
+		$text = '';
+		for($i=1; $i < ($this->slideCount +1); $i++)
+		{
+			$val = ($parm == 'space') ? "&nbsp;" : $i;					
+			$text .= '<a href="#" class="gallery-slide-jumper" rel="gallery-item-'.$i.'">'.$val.'</a>';			
+		}
+	
+		return $text;						
+								
 	}
 	
 	

@@ -19,7 +19,7 @@ e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
 $gp = e107::getPlugPref('gallery');
 
 e107::getJs()->footerInline("		
-	new Carousel('gallery-slideshow-wrapper', $$('#gallery-slideshow-content .slide'), $$('a.carousel-control', 'a.carousel-jumper' ),
+	new Carousel('gallery-slideshow-wrapper', $$('#gallery-slideshow-content .slide'), $$('a.carousel-control', 'a.gallery-slide-jumper' ),
 	{
 		duration:           ".varset($gp['slideshow_duration'],1).",
         auto:               ".varset($gp['slideshow_auto'],0).",
@@ -28,11 +28,24 @@ e107::getJs()->footerInline("
         wheel:              true,
         visibleSlides: 		1,
         effect:             '".varset($gp['slideshow_effect'],'scroll')."',
-        transition:         '".varset($gp['slideshow_transition'],'sinoidal')."'
+        transition:         '".varset($gp['slideshow_transition'],'sinoidal')."',
+        jumperClassName:    'gallery-slide-jumper',
+        selectedClassName:	'gallery-slide-jumper-selected'
+   
 		   
 	});
+	
+	var aj = $$('.gallery-slide-jumper')[0];
+	if (!aj.hasClassName('gallery-slide-jumper-selected'))  aj.toggleClassName('gallery-slide-jumper-selected');
 ");
+/*
 
+				jumperClassName:    'scroller-jumper',
+				selectedClassName:  'scroller-selected',
+				var aj = $$('.donwload-jumper')[0];
+				if (!aj.hasClassName('scroller-selected'))  aj.toggleClassName('scroller-selected');
+			*/
+	
 unset($gp);
 
 
