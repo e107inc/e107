@@ -22,7 +22,7 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_caption($parm='')
 	{
 		$tp = e107::getParser();
-		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."' rel='lightbox[Gallery2]' >";
+		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."' rel='lightbox.Gallery2' >";
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
 		return $text;
@@ -33,7 +33,7 @@ class gallery_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$class = ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
 		$att = ($parm) ?$parm : 'aw=190&ah=150';
-		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."'  rel='lightbox[Gallery]' >";
+		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."'  rel='lightbox.Gallery' >";
 		$text .= "<img class='".$class."' src='".e107::getParser()->thumbUrl($this->var['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;	
