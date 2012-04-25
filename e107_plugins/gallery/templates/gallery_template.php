@@ -43,6 +43,23 @@ $GALLERY_TEMPLATE['CAT_END'] =
 	<div class='gallery-cat-end'>
 	</div>
 	";
+
+// {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1')
+// {GALLERY_SLIDES=X}  X = number of items per slide. 
+$GALLERY_TEMPLATE['SLIDESHOW_WRAPPER'] = '
+			<div id="carousel-wrapper">
+			    <div id="carousel-content">
+			        {GALLERY_SLIDES=3}
+			    </div>
+			</div>
+			<div class="controls">
+            	<a href="javascript:" class="carousel-control ico-next" rel="next" style="float: right">Next &rsaquo;</a>
+                <a href="javascript:" class="carousel-control ico-prev" rel="prev">&lsaquo; Previous</a>
+            </div>
+		';	
+
+$GALLERY_TEMPLATE['SLIDESHOW_SLIDE_ITEM'] = '<span class="gallery-slide-item">{GALLERY_THUMB}</span>';
+
 		
 
 ?>

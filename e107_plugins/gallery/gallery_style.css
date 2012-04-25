@@ -29,3 +29,11 @@
 .lb-dataContainer		{ padding-top:10px; font-size: 110%;}
 
 .lb-caption				{  }
+
+
+/* CAROUSEL */
+#carousel-wrapper 			{ width: 610px;  height: 170px;  overflow: hidden; background: black; margin-top:10px; margin-left:auto;margin-right:auto }
+#carousel-content 			{ width: 2500px; }
+#carousel-content .slide 	{ float: left; width: 600px; padding:10px; height: 160px; }
+.controls					{ width: 610px; margin-left:auto;margin-right:auto; margin-bottom:10px; }
+.gallery-slide-item			{ margin-right:5px;  }

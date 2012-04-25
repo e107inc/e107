@@ -32,25 +32,12 @@ if (!getperms("P") || !plugInstalled('gallery'))
 	exit;
 }
 
-e107::getJS()->headerFile("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",1);
-e107::getJs()->headerPlugin('gallery', 'jslib/lightbox/js/lightbox.js');
-e107::getJs()->pluginCSS('gallery', 'jslib/lightbox/css/lightbox.css');
-e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
+//e107::getJS()->headerFile("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",1);
+//e107::getJs()->headerPlugin('gallery', 'jslib/lightbox/js/lightbox.js');
+//e107::getJs()->pluginCSS('gallery', 'jslib/lightbox/css/lightbox.css');
+//e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
 
-//e107::getJs()->headerPlugin('gallery', 'jslib/shadowbox/shadowbox.js');
-//e107::getJs()->pluginCSS('gallery', 'jslib/shadowbox/shadowbox.css');
 
- // e107::getJs()->headerInline('Shadowbox.init();');
-/*
-e107::getJs()->headerInline('
-Shadowbox.init({
-    handleOversize: "drag",
-  	overlayOpacity: 0.9,
-  	viewportPadding: 50
-});
-');
-
-*/
 
 
 require_once(HEADERF);
@@ -108,7 +95,6 @@ class gallery
 		foreach($list as $row)
 		{
 			$sc->setParserVars($row);	
-			// echo "THIS=".$sc->getScVar['gallery_caption'];			
 			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
 		}
 					
