@@ -5,7 +5,7 @@
 
 .gallery-list-start		{ clear:both; }
 
-.gallery-list-item		{ width:190px; height:180px; float:left; margin:3px; border:1px solid #000000; background-color:#000000 }
+.gallery-list-item		{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width:190px; height:180px; float:left; margin:3px; border:1px solid #000000; background-color:#000000 }
 
 .gallery-list-end		{ text-align:center; clear:both; padding-top:20px; }
 
@@ -32,8 +32,9 @@
 
 
 /* SLIDESHOW */
-#gallery-slideshow-wrapper 			{ width: 610px;  height: 170px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
-#gallery-slideshow-content 			{ width: 2500px; }
-#gallery-slideshow-content .slide 	{ float: left; width: 600px; padding:10px; height: 160px; }
-.gallery-slideshow-controls			{ clear:both; width: 610px; margin-left:auto; margin-right:auto; padding-bottom:10px; }
-.gallery-slide-item					{ margin-right:5px; }
+#gallery-slideshow-wrapper 			{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 660px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
+#gallery-slideshow-content 			{ width: 3500px; }
+#gallery-slideshow-content .slide 	{ float: left; width: 660px; padding:12px; height: 146px; }
+.gallery-slideshow-controls			{ clear:both; width: 660px; margin-left:auto; margin-right:auto; padding-bottom:10px; }
+.gallery-slide-item					{ margin-right:8px;   }
+.gallery-slideshow-thumb			{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }
