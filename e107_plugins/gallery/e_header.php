@@ -16,16 +16,24 @@ e107::getJS()->headerFile("https://ajax.googleapis.com/ajax/libs/scriptaculous/1
 e107::getJs()->headerPlugin('gallery', 'jslib/carousel.js');
 e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
 
+$gp = e107::getPlugPref('gallery');
+
 e107::getJs()->footerInline("		
-	new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper' ),
+	new Carousel('gallery-slideshow-wrapper', $$('#gallery-slideshow-content .slide'), $$('a.carousel-control', 'a.carousel-jumper' ),
 	{
-		auto: true,
-		circular: true
+		duration:           ".varset($gp['slideshow_duration'],1).",
+        auto:               ".varset($gp['slideshow_auto'],0).",
+        frequency:          ".varset($gp['slideshow_freq'],3).",
+		circular: 			".varset($gp['slideshow_circular'],1).",
+        wheel:              true,
+        visibleSlides: 		1,
+        effect:             '".varset($gp['slideshow_effect'],'scroll')."',
+        transition:         '".varset($gp['slideshow_transition'],'sinoidal')."'
+		   
 	});
 ");
 
-
-
+unset($gp);
 
 
 ?>
