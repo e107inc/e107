@@ -64,14 +64,15 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_slideshow($parm='')
 	{
-		if($parm){ $this->sliderCat = intval($parm); }
+		$this->sliderCat = ($parm) ? intval($parm) : vartrue(e107::getPlugPref('gallery','slideshow_category'),1);
+
 		$template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_WRAPPER');		
 		return e107::getParser()->parseTemplate($template);
 	}
 	
 	function sc_gallery_slides($parm)
 	{
-		$amount = ($parm) ? intval($parm) : 3;
+		$amount = ($parm) ? intval($parm) : vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$tp = e107::getParser();
 		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat);
 		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');		
@@ -80,10 +81,11 @@ class gallery_shortcodes extends e_shortcode
 		foreach($list as $row)
 		{
 			$this->setParserVars($row);	
+					
 			$inner .= ($count == 1) ?  "\n\n<!-- SLIDE ".$count." -->\n<div class='slide'>\n" : "";
-			$inner .= "\n".$tp->parseTemplate($item_template,TRUE)."\n";
+			$inner .= "\n\t".$tp->parseTemplate($item_template,TRUE)."\n";
 			$inner .= ($count == $amount) ? "\n</div>\n\n" : "";
-			
+						
 			if($count == $amount)
 			{
 				$count = 1; 
@@ -92,10 +94,10 @@ class gallery_shortcodes extends e_shortcode
 			{
 				$count++;
 			}
+			
 		}
 		
-		$inner .= ($count != $amount) ? "</div>" : "";
-		
+		$inner .= ($count != 1) ? "</div><!-- END SLIDES -->" : "";
 		return $inner;
 	}
 	

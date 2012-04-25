@@ -55,7 +55,8 @@ class plugin_gallery_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 	//	'main/list'			=> array('caption'=> LAN_CATEGORY, 'perm' => 'P'),
 	//	'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'main/gallery' 		=> array('caption'=> 'Info', 'perm' => 'P')//, 'url'=>'{e_ADMIN}image.php'
+		//'main/gallery' 		=> array('caption'=> 'Info', 'perm' => 'P'),//, 'url'=>'{e_ADMIN}image.php'
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P')
 	);
 
 
@@ -75,6 +76,8 @@ class plugin_gallery_admin extends e_admin_dispatcher
 	 * @var string
 	 */
 	protected $menuTitle = 'Gallery';
+	
+
 }
 
 
@@ -120,6 +123,48 @@ class gallery_cat_admin_ui extends e_admin_ui
 		
 		$mes->addInfo($message);
 	}
+	
+	
+	protected $prefs = array(
+		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'integer', 'help'=>'The category of images which should be used.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'slideshow_perslide'	=> array('title'=> 'Images per slide', 'type' => 'number', 'data' => 'integer', 'help'=>'Number of images to show per slide.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'slideshow_duration'	=> array('title'=> 'Slide duration', 'type' => 'number', 'data' => 'integer', 'help'=>'The duration (in seconds) of a full jump.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),		
+		'slideshow_auto'		=> array('title'=> 'Slide auto-start', 'type'=>'boolean', 'data' => 'integer','help' => 'When enabled image-rotation begins automatically when the page is loaded.'),
+		'slideshow_freq'		=> array('title'=> 'Slide frequency', 'type' => 'number', 'data' => 'integer', 'help'=>'When auto-start is enabled, this dictates how long a slides stays put before the next jump. '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
+		'slideshow_circular'	=> array('title'=> 'Slide circular-mode', 'type' => 'boolean', 'data' => 'integer', 'help'=>'By default when the first/last slide is reached, calling prev/next does nothing. If you want the effect to continue enable this option.'), // 
+		'slideshow_effect'		=> array('title'=> 'Slide Effect', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of effect. '), // 
+		'slideshow_transition'	=> array('title'=> 'Slide Transition', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of transition. ') // 	
+	);
+	
+	
+
+	function init()
+	{
+		$effects = array('scroll'=>'scroll','fade'=>'fade');		
+		$this->prefs['slideshow_effect']['writeParms'] 		= $effects;	
+		$this->prefs['slideshow_effect']['readParms'] 		= $effects;	
+		
+		$transitions = array('sinoidal'=>'sinoidal','spring'=>'spring');	
+		$this->prefs['slideshow_transition']['writeParms'] 	= $transitions;	
+		$this->prefs['slideshow_transition']['readParms'] 	= $transitions;	
+		
+		$categories = e107::getMedia()->getCategories('gallery');
+		$cats = array();
+		foreach($categories as $k=>$var)
+		{
+			list($tmp,$id) = explode("_",$k);
+			$cats[$id] = $var['media_cat_title'];	
+		}
+		
+		$this->prefs['slideshow_category']['writeParms'] 	= $cats;	
+		$this->prefs['slideshow_category']['readParms'] 	= $cats;	
+		
+		$mes = e107::getMessage();
+		$message = "<b>Gallery</b> is active. Simply import and assign images to the gallery categories using the <a href='".e_ADMIN."image.php'>Media Manager</a>";
+		
+		$mes->addInfo($message);
+	}
+
 		
 }
 

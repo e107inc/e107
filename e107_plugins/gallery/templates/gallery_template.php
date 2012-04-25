@@ -44,15 +44,15 @@ $GALLERY_TEMPLATE['CAT_END'] =
 	</div>
 	";
 
-// {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1')
-// {GALLERY_SLIDES=X}  X = number of items per slide. 
+// {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1') Overrides preference in admin. 
+// {GALLERY_SLIDES=X}  X = number of items per slide. (Overrides preference in admin.)
 $GALLERY_TEMPLATE['SLIDESHOW_WRAPPER'] = '
-			<div id="carousel-wrapper">
-			    <div id="carousel-content">
-			        {GALLERY_SLIDES=3}
+			<div id="gallery-slideshow-wrapper">
+			    <div id="gallery-slideshow-content">
+			        {GALLERY_SLIDES}
 			    </div>
 			</div>
-			<div class="controls">
+			<div class="gallery-slideshow-controls">
             	<a href="javascript:" class="carousel-control ico-next" rel="next" style="float: right">Next &rsaquo;</a>
                 <a href="javascript:" class="carousel-control ico-prev" rel="prev">&lsaquo; Previous</a>
             </div>

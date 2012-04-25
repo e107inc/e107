@@ -31,9 +31,9 @@
 .lb-caption				{  }
 
 
-/* CAROUSEL */
-#carousel-wrapper 			{ width: 610px;  height: 170px;  overflow: hidden; background: black; margin-top:10px; margin-left:auto;margin-right:auto }
-#carousel-content 			{ width: 2500px; }
-#carousel-content .slide 	{ float: left; width: 600px; padding:10px; height: 160px; }
-.controls					{ width: 610px; margin-left:auto;margin-right:auto; margin-bottom:10px; }
-.gallery-slide-item			{ margin-right:5px;  }
+/* SLIDESHOW */
+#gallery-slideshow-wrapper 			{ width: 610px;  height: 170px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
+#gallery-slideshow-content 			{ width: 2500px; }
+#gallery-slideshow-content .slide 	{ float: left; width: 600px; padding:10px; height: 160px; }
+.gallery-slideshow-controls			{ clear:both; width: 610px; margin-left:auto; margin-right:auto; padding-bottom:10px; }
+.gallery-slide-item					{ margin-right:5px; }
