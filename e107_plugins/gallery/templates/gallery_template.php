@@ -46,16 +46,23 @@ $GALLERY_TEMPLATE['CAT_END'] =
 
 // {GALLERY_SLIDESHOW=X}  X = Gallery Category. Default: 1 (ie. 'gallery_1') Overrides preference in admin. 
 // {GALLERY_SLIDES=X}  X = number of items per slide. (Overrides preference in admin.)
+// {GALLERY_JUMPER=space} will remove numbers and just leave spaces. 
+
 $GALLERY_TEMPLATE['SLIDESHOW_WRAPPER'] = '
+			
 			<div id="gallery-slideshow-wrapper">
 			    <div id="gallery-slideshow-content">
 			        {GALLERY_SLIDES}
 			    </div>
 			</div>
-			<div class="gallery-slideshow-controls">
-            	<a href="javascript:" class="carousel-control ico-next" rel="next" style="float: right">Next &rsaquo;</a>
+			
+			<div class="gallery-slideshow-controls">		
+            	<a href="javascript:" class="carousel-control ico-next" rel="next" style="float: right">Next &rsaquo;</a>           
                 <a href="javascript:" class="carousel-control ico-prev" rel="prev">&lsaquo; Previous</a>
+                <span class="gallery-slide-jumper-container">{GALLERY_JUMPER}</span>
             </div>
+         
+            
 		';	
 
 $GALLERY_TEMPLATE['SLIDESHOW_SLIDE_ITEM'] = '<span class="gallery-slide-item">{GALLERY_THUMB=aw=150&ah=120}</span>';
