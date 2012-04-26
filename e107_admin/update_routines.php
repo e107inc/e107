@@ -997,7 +997,7 @@ function update_706_to_800($type='')
 			$sql->db_Update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
 			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
 			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
-			$sql->db_Update('core_media_cat', "media_cat_owner = 'news', media_cat_category='thumb' WHERE media_cat_nick = 'newsthumb' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
 			e107::getMessage()->addDebug("core-media-cat Categories and Ownership updated");
 			if(mysql_query("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
 			{
