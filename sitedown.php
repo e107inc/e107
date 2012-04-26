@@ -18,7 +18,7 @@
 */
 require_once('class2.php');
 
-if (!varset($pref['maintainance_flag']))
+if (!varset($pref['maintainance_flag']) && !getperms('0')) // Allow main admin to test and view template before going offline.
 {
 	header('location: '.SITEURL);
 	exit();
