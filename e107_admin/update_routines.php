@@ -518,7 +518,7 @@ function update_706_to_800($type='')
 	//delete record for online_extended_menu (now only using one online menu)
 	if($sql->db_Select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 	{
-		if ($just_check) return update_needed();
+		if ($just_check) return update_needed("The Menu table needs to have some paths corrected in its data.");
 
 		$row=$sql->db_Fetch();
 
@@ -546,6 +546,33 @@ function update_706_to_800($type='')
 		$mes->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
 		catch_error($sql);
 	}
+
+	if (!$just_check)
+	{	
+		// Alert Admin to delete deprecated menu folders. 
+		$chgPath = array();
+		foreach($changeMenuPaths as $cgpArray)
+		{
+			if(is_dir(e_PLUGIN.$cgpArray['oldpath']))
+			{
+				$chgPath[] = $cgpArray['oldpath'];
+			}
+		}
+		//TODO LAN
+		
+		if(count($chgPath))
+		{
+			e107::getMessage()->addWarning('Before continuing, please manually delete the following outdated folders from your system: ');
+			array_unique($chgPath);
+			asort($chgPath);
+			foreach($chgPath as $cgp)
+			{
+				e107::getMessage()->addWarning(e_PLUGIN_ABS."<b>".$cgp."</b>");			
+			}	
+		}
+		
+	}
+
 
 
 //---------------------------------------------------------
