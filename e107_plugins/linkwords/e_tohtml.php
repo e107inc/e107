@@ -30,7 +30,7 @@
 if (!defined('e107_INIT')) { exit; }
 // if (!plugInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
 
-define('LW_CACHE_ENABLE', TRUE);
+define('LW_CACHE_ENABLE', FALSE);
 
 
 class e_tohtml_linkwords
@@ -144,7 +144,7 @@ class e_tohtml_linkwords
 	function to_html($text,$area = 'olddefault')
 	{
 			
-		if (!$this->lw_enabled || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
+		if (!$this->lw_enabled || !count($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
 	
 // Split up by HTML tags and process the odd bits here
 		$ptext = "";
@@ -259,5 +259,8 @@ class e_tohtml_linkwords
 		return $ret;
 	} 
 }
+
+
+
 
 ?>
