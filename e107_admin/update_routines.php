@@ -1043,7 +1043,8 @@ function update_706_to_800($type='')
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
-				
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1);");		
+		
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');

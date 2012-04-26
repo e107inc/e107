@@ -177,7 +177,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_owner = '_icon' ")) ? TRUE : FALSE;		
+		$status = ($sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
 		while ($row = $sql->db_Fetch())
 		{
 			$ret[] = $row['media_url'];
