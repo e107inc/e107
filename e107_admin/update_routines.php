@@ -273,6 +273,8 @@ function update_706_to_800($type='')
 	$sql = e107::getDb();
 	$sql2 = e107::getDb('sql2');
 	$tp = e107::getParser();
+	
+	e107::getCache()->clearAll('db');
 
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
@@ -1034,22 +1036,14 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		
-		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
-			(1, '_common', '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0),
-			(2, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 0),
-			(3, 'page', 'page', 'Custom Pages', 'Available in the custom pages area of admin. ', 253, '', 0),
-			(4, 'gallery', 'gallery_1', 'Gallery 1', 'Available to the public at /gallery.php ', 0, '', 0),
-			(5, 'download', 'thumb', 'Download Thumbnails', 'Available to the downloads plugin', 253, '', 0),
-			(6, 'download', 'image', 'Download Images', 'Available to the downloads plugin', 253, '', 0),		
-			(7, '_icon', '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253, '', 0),
-			(8, '_icon', '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253, '', 0),
-			(9, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
-			(10, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
-	
-		";
-
-		mysql_query($query);
 		
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 1);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
+				
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
 		$med->import('page',e_IMAGE.'custom');

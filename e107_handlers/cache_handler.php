@@ -264,4 +264,65 @@ class ecache {
 			return false;
 		}
 	}
+	
+	
+	// Clear Full Catche
+	/**
+	 * @param string $type: content | system| browser | db | image
+	 * @example clearAll('db');
+	 */
+	 
+	function clearAll($type)
+	{
+		
+		$path = null;
+		$mask = null;
+		
+		if($type =='content')
+		{
+			$this->clear();	
+			return;
+		}
+			
+		if($type == 'system')
+		{
+			$this->clear_sys();
+			return;	
+		}
+
+		if($type == 'browser')
+		{
+			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			return;	
+		}
+
+		if($type == 'db')
+		{
+			$path = e_CACHE_DB;
+			$mask = '*.php';
+		}
+
+		if($type == 'image')
+		{
+			$path = e_CACHE_IMAGE;
+			$mask = '*.cache\.bin';			
+		}
+
+		if((null == $path) || (null == $mask))
+		{
+			return;
+		}
+		
+		$fl = e107::getFile(false);
+		$fl->mode = 'fname';
+		$files = $fl->get_files($path, $fmask);
+		if($files)
+		{
+			foreach ($files as $file)
+			{
+				unlink($path.$file);
+			}
+		}
+	}
+	
 }

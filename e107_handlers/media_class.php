@@ -30,7 +30,7 @@ class e_media
 	 * @param string $fmask [optional] filetypes eg. .jpg|.gif
 	 * @return e_media
 	 */
-	public function import($cat,$epath,$fmask='')
+	public function import($cat='',$epath,$fmask='')
 	{
 		if(!vartrue($cat)){ return $this;}
 		
@@ -60,7 +60,7 @@ class e_media
 		foreach($img_array as $f)
 		{
 			$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
-	
+			// echo "<br />cat=".$cat;
 			$insert = array(
 				'media_caption'		=> $f['fname'],
 				'media_description'	=> '',
@@ -79,6 +79,7 @@ class e_media
 	
 			if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
 			{
+			
 				if($sql->db_Insert("core_media",$insert))
 				{
 					$mes->addSuccess("Imported Media: ".$f['fname']);

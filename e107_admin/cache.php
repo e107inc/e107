@@ -34,7 +34,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'cache';
 
 require_once("auth.php");
-$ec = e107::getCache();
+
 $frm = e107::getForm();
 
 $emessage = eMessage::getInstance();
@@ -65,38 +65,38 @@ if (isset($_POST['trigger_empty_cache']))
 	switch ($_POST['option_clear_cache'])
 	{
 		case 'empty_contentcache':
-			$ec->clear();
+			e107::getCache()->clearAll('content');
 			e107::getAdminLog()->flushMessages(CACLAN_5);
 		break;
 
 		case 'empty_syscache':
-			$ec->clear_sys();
+			e107::getCache()->clearAll('system');
 			e107::getAdminLog()->flushMessages(CACLAN_16);
 		break;
 
 		case 'empty_dbcache':
-			admin_page_cache_erase(e_CACHE_DB, '*.php');
+			e107::getCache()->clearAll('db');
 			e107::getAdminLog()->flushMessages(CACLAN_24);
 		break;
 
 		case 'empty_imgcache':
-			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
+			e107::getCache()->clearAll('image');
 			e107::getAdminLog()->flushMessages(CACLAN_25);
 		break;
 		
 		// used in standard page output and internal JS includes
 		case 'empty_browsercache':
-			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			e107::getCache()->clearAll('browser');
 			e107::getAdminLog()->flushMessages(CACLAN_25);
 		break;
 
 		// all
 		default:
-			$ec->clear();
-			$ec->clear_sys();
-			admin_page_cache_erase(e_CACHE_DB, '*.php');
-			admin_page_cache_erase(e_CACHE_IMAGE, '*.cache\.bin');
-			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			e107::getCache()->clearAll('content');
+			e107::getCache()->clearAll('system');
+			e107::getCache()->clearAll('db');
+			e107::getCache()->clearAll('image');
+			e107::getCache()->clearAll('browser');
 			e107::getAdminLog()->flushMessages(CACLAN_26);
 		break;
 	}
@@ -196,22 +196,4 @@ e107::getRender()->tablerender(CACLAN_3, $emessage->render().$text);
 
 require_once("footer.php");
 
-/**
- * @param string $path
- * @param string $mask
- * @return void
- */
-function admin_page_cache_erase($path, $mask)
-{
-	$fl = e107::getFile(false);
-	$fl->mode = 'fname';
-	$files = $fl->get_files($path, $fmask);
-	if($files)
-	{
-		foreach ($files as $file)
-		{
-			unlink($path.$file);
-		}
-	}
-}
 ?>
