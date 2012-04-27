@@ -280,7 +280,7 @@ class media_admin_ui extends e_admin_ui
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
           	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),
-			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap'),
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
 			'media_usedby' 			=> array('title'=> '',				'type' => 'text',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
@@ -432,16 +432,16 @@ class media_admin_ui extends e_admin_ui
 
 		if(vartrue($_FILES['file_userfile']))
 		{
+			
 			$pref['upload_storagetype'] = "1";
 			require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
 			$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
 			$upload = array_shift($uploaded);
 			if(vartrue($upload['error']))
 			{
-				{
-					$mes->add($upload['message'], E_MESSAGE_ERROR);
-					return FALSE;
-				}
+				$mes->add($upload['message'], E_MESSAGE_ERROR);
+				return FALSE;
+			}	
 
 				if(!$typePath = $this->getPath($upload['type']))
 				{
@@ -472,12 +472,14 @@ class media_admin_ui extends e_admin_ui
 					return FALSE;
 				};
 
-				$img_data = $this->mediaData('{e_MEDIA}'.$newpath);
+				$img_data = $this->mediaData($newpath);
 				if(!varset($new_data['media_name']))
 				{
 					$img_data['media_name'] = $upload['name'];
 				}
-			}
+				$mes->addDebug(print_a($img_data,TRUE));
+		
+			
 		}
 		else
 		{
@@ -487,9 +489,11 @@ class media_admin_ui extends e_admin_ui
 
 			if(!($typePath = $this->getPath($img_data['media_type'])))
 			{
+				$mes->addError("Couldn't get path ".$typePath);
+					
 				return FALSE;
 			}
-
+			
 			$fname = basename($new_data['media_url']);
 			// move to the required place
 			if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
@@ -510,7 +514,7 @@ class media_admin_ui extends e_admin_ui
 				$img_data['media_name'] = basename($new_data['media_url']);
 			}
 		}
-
+		
 		return $img_data;
 	}
 
