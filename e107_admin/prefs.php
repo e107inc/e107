@@ -249,7 +249,7 @@ $text .= "
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_214."</td>
-						<td class='control'>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'-- No Image --')."</td>
+						<td class='control'>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common')."</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_5."</td>

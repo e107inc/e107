@@ -1509,25 +1509,32 @@ class admin_newspost
 									".$frm->bbarea('news_extended', $val, 'extended', 'helpc')."
 									<!-- <div class='field-help'>".NWSLAN_83."</div> -->
 								</td>
-							</tr>
-							<tr>
-								<td>".NWSLAN_66.":</td>
-								<td>";
-
-		$text .= $frm->mediaUrl('news', NWSLAN_69);
-
-		$text .= "
-								</td>
-							</tr>
-							<tr>
-								<td>".NWSLAN_67.":</td>
-								<td>
-		";
-
+							</tr>";
+		/*
+							
+				$text .= "
+									<tr>
+										<td>".NWSLAN_66.":</td>
+										<td>";
+		
+				$text .= $frm->mediaUrl('news', NWSLAN_69);
+		
+				$text .= "
+										</td>
+									</tr>";
+	*/
+		 $text .= "
+	
+									<tr>
+										<td>".NWSLAN_67.":<br />
+										".$frm->help(LAN_NEWS_23)."</td>
+										<td>
+				";
+		
+		
 		$text .= $frm->imagepicker('news_thumbnail', $_POST['news_thumbnail'],'','news');
 
 		$text .= "
-								<div class='field-help'>".LAN_NEWS_23."</div>
 								</td>
 							</tr>
 						</tbody>

@@ -145,12 +145,20 @@ class e_form
 	}
 
 	// FIXME - Dialog JS no more working, investigate
-	public function mediaUrl($category = '', $label = '')
+	public function mediaUrl($category = '', $label = '', $tagid='', $tabs=TRUE)
 	{
 		if($category) $category = '&amp;for='.$category;
 		if(!$label) $label = ' Upload an image or file';
-		$ret = "<a rel='external' class='e-dialog' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=create{$category}'>".$label."</a>";
+		if($tagid) $category .= '&amp;tagid='.$tagid; 
+		
+		// $tabs // TODO - option to choose which tabs to display.  
+		
+		//TODO Parse selection data back to parent form. 
 
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$category;
+
+		$ret = "<a title='Click to Change' rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
+	
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
 			e107::getJs()->requireCoreLib('core/admin.js')
@@ -165,7 +173,8 @@ class e_form
 					new e107Widgets.URLDialog(element.href + "&iframe=1", {
 						id: element["id"] || "e-dialog",
 						width: 900,
-						height: 550
+						height: 600
+		
 					}).center().activate().show();
 				});
 			');
@@ -194,8 +203,50 @@ class e_form
 	 */
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
-		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$name_id = $this->name2id($name);
+		if(is_string($sc_parameters))
+		{
+			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
+			parse_str($sc_parameters, $sc_parameters);
+		}
+		
+		$default_thumb = $default;
+		if($default)
+		{
+			if('{' != $default[0])
+			{
+				// convert to sc path
+				$default_thumb = $tp->createConstants($default, 'nice');
+				$default = $tp->createConstants($default, 'mix');
+			}
+			$default_url = $tp->replaceConstants($default, 'abs');
+		}
+		else
+		{
+			$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
+		}
+		
+		//$width = intval(vartrue($sc_parameters['width'], 150));
+		
+		$ret = "<div class='imgselector-container'  style='display:block;width:120px;min-height:100px'>";
+		$att = 'aw=120&ah=100';
+		$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, $att, true);
+		$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";
+			
+		$cat = $tp->toDB($sc_parameters['media']);	
+		$ret .= $this->mediaUrl($cat, $label,$name_id);
+		$ret .= "</div>\n";
+		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; // to be hidden eventually. 
+	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
+		return $ret;
+		
+		
+		// ---------------- OLD DROPDOWN METHOD BELOW -----------------------------
+		
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
 
 		if(is_string($sc_parameters))
 		{

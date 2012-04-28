@@ -37,10 +37,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'image';
 
-// require_once("auth.php");
-// require_once(e_HANDLER."form_handler.php");
-//require_once(e_HANDLER."userclass_class.php");
-//require_once(e_HANDLER."message_handler.php");
+
+
 // $frm = new e_form(); //new form handler
 $emessage = eMessage::getInstance();
 
@@ -329,7 +327,7 @@ class media_admin_ui extends e_admin_ui
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);
-		
+
 
 		if(varset($_POST['batch_import_selected']))
 		{
@@ -342,19 +340,95 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		if($this->getQuery('iframe'))
-		{
-			$this->getResponse()->setIframeMod();
-		}
-
-		if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
-		{
-			$this->setPosted('media_category', $this->getQuery('for'));
-			if(!$this->getId())
+		{		
+ 			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
+ 			if(!$this->getQuery('for'))
 			{
-				$this->getModel()->set('media_category', $this->getQuery('for'));
+				$this->setPosted('media_category', "_common");
+				$this->getModel()->set('media_category', "_common");
+			}
+			elseif($this->getMediaCategory($this->getQuery('for')))
+			{
+				$this->setPosted('media_category', $this->getQuery('for'));
+				if(!$this->getId())
+				{
+					$this->getModel()->set('media_category', $this->getQuery('for'));
+				}	
 			}
 		}
+// 
+		// if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
+		// {
+// 			
+			// $this->setPosted('media_category', $this->getQuery('for'));
+			// if(!$this->getId())
+			// {
+				// $this->getModel()->set('media_category', $this->getQuery('for'));
+			// }
+		// }
+// 		
 	}
+
+	function dialogPage() // Popup dialogPage for Image Selection. 
+	{
+
+	//	$this->getModel()->setAction('create');
+	//	$this->getUI()->getController()->getRequest()->setAction('create');
+	//$this->setAction('create');;
+	
+		if($_POST['etrigger_submit'])
+		{		
+			$data = $this->beforeCreate($_POST);
+			e107::getDb()->db_Insert('core_media',$data); // Replace with Generic (needs parm sent)	
+		}
+		echo $this->imageSelectUpload();	
+	}
+
+
+	function imageSelectUpload() 
+	{
+		$text = "
+			<div class='admintabs' id='tab-container'>
+			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
+				<li id='tab-select'><a href='#core-media-select'>Choose from Library</a></li>
+				<li id='tab-upload'><a href='#core-media-upload'>Upload a File</a></li>
+			</ul>
+			<fieldset id='core-media-select'>
+			<legend>Library</legend>
+			<table cellpadding='0' cellspacing='0' class='adminedit'>
+			<tbody><tr><td>
+			<div>Filter: <input type='text' name='non-working-filter-example' value='' /><br />&nbsp;</div>
+			<div>";
+		
+		// This should really be replaced with the generic LIST function, but with it's own template for markup. 	
+		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid')); // eg. news, news-thumbnail	
+			
+		$text .= "</div>
+			</td></tr>
+			</tbody></table>
+			</fieldset>
+			
+			<fieldset id='core-media-upload'>
+			<legend>Upload</legend>";
+			
+		$this->fields['media_category']['readonly']	= TRUE;
+		$this->fields['media_url']['noedit'] 		= TRUE;
+		$this->fields['media_userclass']['noedit']	= TRUE;
+		
+		$text .=  $this->CreatePage();
+				
+		$text .= "	
+			</fieldset>
+			</div>
+		";
+
+		return $text;
+	}
+
+
+
+
+
 
 	function importPage()
 	{
@@ -384,6 +458,7 @@ class media_admin_ui extends e_admin_ui
 	 */
 	public function beforeCreate($new_data)
 	{
+		// print_a($_POST);
 		// return data to be merged with posted model data
 		$this->getRequest()->setPosted('media_upload', null);
 		//$dataFields = $this->getModel()->getDataFields();
@@ -430,7 +505,7 @@ class media_admin_ui extends e_admin_ui
 
 		$mes = e107::getMessage();
 
-		if(vartrue($_FILES['file_userfile']))
+		if(vartrue($_FILES['file_userfile'])) // CREATE
 		{
 			
 			$pref['upload_storagetype'] = "1";
@@ -439,49 +514,46 @@ class media_admin_ui extends e_admin_ui
 			$upload = array_shift($uploaded);
 			if(vartrue($upload['error']))
 			{
-				$mes->add($upload['message'], E_MESSAGE_ERROR);
+				$mes->addError($upload['message']);
 				return FALSE;
 			}	
 
 				if(!$typePath = $this->getPath($upload['type']))
 				{
+					$mes->addError("Couldn't generated path from upload data");
 					return FALSE;
 				}
+				$mes->addDebug(print_a($upload,TRUE));
 
-				$oldpath = 'temp/'.$upload['name'];
-				$newpath = $typePath.'/'.$upload['name'];
+				$oldpath = e_MEDIA."temp/".$upload['name'];
+				$newpath = $this->checkDupe($oldpath,$typePath.'/'.$upload['name']);
 
-				//$info = $fl->get_file_info(e_MEDIA.$oldpath);
-
-				/*$upload_data = array( // not saved if 'noedit' is active.
-					'media_type'		=> $upload['type'],
-					'media_datestamp'	=> time(),
-					'media_url'			=> "{e_MEDIA}".$newpath,
-					'media_size'		=> $upload['size'],
-					'media_author'		=> USERID,
-					'media_usedby'		=> '',
-					'media_tags'		=> '',
-					'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
-				);*/
-
-				// only one upload? Not sure what's the idea here
-				// we are currently creating one media item
-				if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
+				if(!rename($oldpath, e_MEDIA.$newpath))
 				{
 					$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 					return FALSE;
 				};
 
-				$img_data = $this->mediaData($newpath);
-				if(!varset($new_data['media_name']))
+				$img_data = $this->mediaData($newpath); // Basic File Info only
+				
+				$img_data['media_name'] 		= $new_data['name'];
+				$img_data['media_caption'] 		= $new_data['media_caption'];
+				$img_data['media_category'] 	= $new_data['media_category'];
+				$img_data['media_description'] 	= $new_data['media_description'];
+				$img_data['media_tags'] 		= $new_data['media_tags'];
+				$img_data['media_userclass'] 	= 0;	
+				$img_data['media_author']		= USERID;
+				
+				if(!varset($img_data['media_name']))
 				{
 					$img_data['media_name'] = $upload['name'];
-				}
+				}			
+				
 				$mes->addDebug(print_a($img_data,TRUE));
 		
-			
+				return $img_data;
 		}
-		else
+		else // Update Only ?
 		{
 
 			$img_data = $this->mediaData($new_data['media_url']);
@@ -500,7 +572,9 @@ class media_admin_ui extends e_admin_ui
 			{
 				$tp = e107::getParser();
 				$oldpath = $tp->replaceConstants($new_data['media_url']);
-				$newpath = $typePath.'/'.$fname;
+				$newpath = $this->checkDupe($oldpath,$typePath.'/'.$fname);
+				
+			
 				if(!rename($oldpath, $newpath))
 				{
 					$mes->add("Couldn't move file from ".$oldpath." to ".str_replace('../', '', $newpath), E_MESSAGE_ERROR);
@@ -513,10 +587,32 @@ class media_admin_ui extends e_admin_ui
 			{
 				$img_data['media_name'] = basename($new_data['media_url']);
 			}
+
+
+			return $img_data;
 		}
 		
-		return $img_data;
+		
 	}
+
+	// Check for existing image path in db and rename if found. 
+	function checkDupe($oldpath,$newpath)
+	{
+		$mes = e107::getMessage();	
+		$tp = e107::getParser();
+		$f = e107::getFile()->get_file_info($oldpath,TRUE);
+		
+	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
+		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		{
+			// $mes->addWarning($newpath." already exists and was renamed during import.");	
+			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
+			$newpath = $this->getPath($f['mime']).'/'.$file;						
+		}
+		
+		return $newpath;	
+	}
+
 
 	function beforeDelete($data, $id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
 	{
@@ -730,22 +826,21 @@ class media_admin_ui extends e_admin_ui
 				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);
 			}
 
-			$newpath = $this->getPath($f['mime']).'/'.$file;
+			$newpath = $this->checkDupe($oldpath,$this->getPath($f['mime']).'/'.$file);
 			$newname = $tp->toDB($_POST['batch_import_name'][$key]);
 			$newdiz = $tp->toDB($_POST['batch_import_diz'][$key]);
 			
-			// echo "oldpath=".$file;
-//
-			// echo "<br />newpath=".$tp->createConstants($newpath,'rel');
-			// continue;
 			$f['fname'] = $file;
 			
-			if(file_exists($newpath) || $sql->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
-			{
-				$mes->addWarning($newpath." already exists and was renamed during import.");	
-				$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
-				$newpath = $this->getPath($f['mime']).'/'.$file;						
-			}
+			/*
+				
+						if(file_exists($newpath) || $sql->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+						{
+							$mes->addWarning($newpath." already exists and was renamed during import.");	
+							$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
+							$newpath = $this->getPath($f['mime']).'/'.$file;						
+						}
+			*/
 			
 			
 			
