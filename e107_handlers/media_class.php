@@ -247,6 +247,7 @@ class e_media
 	
 	/**
 	 * Return the total number of Images in a particular category
+	 * 
 	 */	
 	public function countImages($cat)
 	{
@@ -257,14 +258,26 @@ class e_media
 	
 	/**
 	 * Return an array of Images in a particular category
+	 * @param string $cat : category name. use + to include _common eg. 'news+'
 	 */
-	public function getImages($cat, $from=0, $amount=null)
+	public function getImages($cat='', $from=0, $amount=null)
 	{
-		if(!$cat) return;
+		$inc = array();
+		
+		if(strpos($cat,"+") || !$cat)
+		{
+			$cat = str_replace("+","",$cat);
+			$inc[] = "media_category = '_common' ";
+		}
+		if($cat)
+		{
+			$inc[] = "media_category = '".$cat."' ";
+		}
 		// TODO check the category is valid. 
-		// TODO check userclasses. 
+
 		$ret = array();
-		$query = "SELECT * FROM #core_media WHERE media_category = '".$cat."' ORDER BY media_name";
+		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc) ;
+		$query .= " ) ORDER BY media_datestamp DESC";
 		
 		if($amount)
 		{
@@ -315,6 +328,39 @@ class e_media
 				
 		$text .= "</div></div>";
 		
+		return $text;	
+	}
+
+
+	public function mediaSelect($cat='',$tagid=null,$att=null)
+	{
+		
+		$cat = ($cat) ? $cat."+" : "";
+		$images = $this->getImages($cat);
+		$att = 'aw=120&ah=100';
+		
+		$name = $tagid;
+		$prevId = $name."_prev";
+	
+		
+		foreach($images as $im)
+		{
+			$realPath = e107::getParser()->thumbUrl($im['media_url'], $att);
+			$diz = e107::getParser()->toAttribute($im['media_title']);
+
+		 	$onclick = "onclick =\"
+		 	parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
+		 	parent.document.getElementById('".$prevId."').src = '{$realPath}';
+		 	parent.window.close();
+		 	 return false; \"";
+
+			//FIXME Make Window Close automatically when selection is made. 
+			
+			$text .= "<a class='media-select' title=\"".$diz."\" href='#' {$onclick} >";
+			$text .= "<img src='".e107::getParser()->thumbUrl($im['media_url'], $att)."' alt=\"".$im['media_title']."\"  />";
+			$text .= "</a>";
+		}	
+				
 		return $text;	
 	}
 
