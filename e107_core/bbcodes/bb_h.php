@@ -9,8 +9,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
- * Basic usage [h=2]text[/h]
- * The same [h]text[/h] as heading number defaults to '2'
+ * Basic usage [h=2]text[/h] // this will break things. 
+ * The same [h]text[/h] as heading number defaults to '2' // this won't. 
  * Advanced usage [h=2|class=className&id=element-id&style=some: style; and: moresStyle]text[/h]
  * 'class' defaults to 'bbcode' (if left empty)
  */
@@ -45,9 +45,12 @@ class bb_h extends e_bb_base
 		}
 		if($safe)
 		{
-			return '[h='.$h.'|'.eHelper::buildAttr($safe).']'.$code_text.'[/h]';
+			return '[h'.$h.'|'.eHelper::buildAttr($safe).']'.$code_text.'[/h'.$h.']';
 		}
-		return '[h='.$h.']'.$code_text.'[/h]';
+		return '[h'.$h.']'.$code_text.'[/h'.$h.']'; 
+		
+		// IMPORTANT: Using '[h=2]' with a non-matching closing tag etc will cause major issues with TinyMce. 
+		// It is cleaner to use [h2], [h3] etc. TODO - Batch BBcodes. ;-) 
 	}
 
 

@@ -487,7 +487,8 @@ class e107_db_debug {
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
 		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
 		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
-
+		$text .= "Active Theme Layout: '".THEME_LAYOUT."'<br />";
+		
 
   	  	$text .= "<pre>";
         $text .= htmlspecialchars(print_r($e107,TRUE));
