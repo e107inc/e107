@@ -43,25 +43,30 @@
 				s = s.replace(re, str);
 			};
 			
-		//	rep(/<td>([\s\S]*?)<\/td>/gim,"[td]$1[/td]\n"); // verified
-		//	rep(/<tr>([\s\S]*?)<\/tr>/gim,"[tr]$1[/tr]\n"); // verified
-		//	rep(/<table>([\s\S]*?)<\/table>/gim,"[table]$1[/table]\n"); // verified
+			//return s;
+				
+			rep(/<table(.*)>/gim, "[table]");
+			rep(/<\/table>/gim, "[/table]");
+			rep(/<td>/gim, "[td]");
+			rep(/<\/td>/gim, "[/td]");
+			rep(/<tr>/gim, "[tr]");
+			rep(/<\/tr>/gim, "[/tr]");
+			rep(/<tbody>/gim, "[tbody]");
+			rep(/<\/tbody>/gim, "[/tbody]");
 			
-			
-			
-			return s;
 			
 			rep(/<div style="text-align: center;">([\s\S]*)<\/div>/gi,"[center]$1[/center]"); // verified
+					
+			rep(/<li>/gi,		"[*]"); // verified
+			rep(/<\/li>/gi,		""); // verified
+			rep(/<ul>([\s\S]*?)<\/ul>/gim,	"[list]$1[/list]\n"); // verified
 			
-			
-			rep(/<li>/gi,"[*]"); // verified
-			rep(/<\/li>/gi,""); // verified
-			rep(/<ul>([\s\S]*?)<\/ul>/gim,"[list]$1[/list]\n"); // verified
 			rep(/<ol .* style=\'list-style-type:\s*([\w]*).*\'>([\s\S]*)<\/ol>/gim,"[list=$1]$2[/list]\n"); // verified
 			rep(/<ol>([\s\S]*?)<\/ol>/gim,"[list=decimal]$1[/list]\n"); // verified
 			rep(/<span style="color: (#?.*?);">([\s\S]*)<\/span>/gi,"[color=$1]$2[/color]"); // verified
-		
-		
+			rep(/<h2>/gim,		"[h]"); // verified
+			rep(/<\/h2>/gim, 	"[/h]"); // verified
+			
 
 			// example: <strong> to [b]
 			rep(/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/gi,"[link=$1]$2[/link]");
@@ -95,9 +100,17 @@
 			rep(/<u>/gi,"[u]");
 			rep(/<blockquote[^>]*>/gi,"[quote]");
 			rep(/<\/blockquote>/gi,"[/quote]");
-			rep(/<br \/>/gi,"\n");
-			rep(/<br\/>/gi,"\n");
-			rep(/<br>/gi,"\n");
+			
+			// Compromise - but BC issues for sure. 
+			rep(/<br \/>/gi,"[br]");
+			rep(/<br\/>/gi,"[br]");
+			rep(/<br>/gi,"[br]");
+			
+			// rep(/<br \/>/gi,"\n");
+			// rep(/<br\/>/gi,"\n");
+			// rep(/<br>/gi,"\n");
+			
+			
 			rep(/<p>/gi,"");
 			rep(/<\/p>/gi,"\n");
 			rep(/&nbsp;/gi," ");
@@ -120,16 +133,42 @@
 				s = s.replace(re, str);
 			};
 
+			
 			// example: [b] to <strong>
 			
+		//	rep(/<ul>(\r|\n)?/gim, "<ul>"); // remove line-breaks
+		//	rep(/<\/li>(\r|\n)?/gim, "</li>"); // remove line-breaks
+		//	rep(/<\/ul>(\r|\n)?/gim, "</ul>"); // remove line-breaks
+		
+			rep(/\[table]/gim, "<table>");
+			rep(/\[\/table]/gim, "</table>");
+			rep(/\[td]/gim, "<td>");
+			rep(/\[\/td]/gim, "</td>");
+			rep(/\[tr]/gim, "<tr>");
+			rep(/\[\/tr]/gim, "</tr>");
+			rep(/\[tbody]/gim, "<tbody>");
+			rep(/\[\/tbody]/gim, "</tbody>");
 			
-			rep(/(\[list=.*\])\\*([\s\S]*)(\[\/list])/gim,"<ol>$2</ol>"); // verified
-			rep(/(\[list\])\\*([\s\S]*)(\[\/list])/gim,"<ul>$2</ul>");// verified
+			rep(/\[h]/gim,		"<h2>"); // verified
+			rep(/\[\/h]/gim, 	"</h2>"); // verified
+			
+		//	rep(/(\[list=.*\])\\*([\s\S]*)(\[\/list])(\n|\r)/gim,"<ol>$2</ol>"); // verified
+			rep(/(\[list\])\\*([\s\S]*)(\[\/list])(\n|\r)?/gim,"<ul>$2</ul>");// verified
+		
 			rep(/^ *?\[\*\](.*)/gim,"<li>$1</li>"); 
+			
+			
 			rep(/\[center\]([\s\S]*)\[\/center\]/gi,"<div style=\"text-align:center\">$1</div>"); // verified
 			rep(/\[color=(.*?)\]([\s\S]*)\[\/color\]/gi,"<span style=\"color: $1;\">$2<\/span>"); // verified
+		//	rep(/\[list](\r|\n)/gim, '[list]'); // remove breaks from [list]
 			
-		//	rep(/\n/gi,"<br \/>"); // breaks lists.. need a regex to exclude everything between [list]...[/list]
+			rep(/\[br]/gi,"<br />"); // compromise
+			//	rep(/\n/gi,"<br \/>"); // breaks lists.. need a regex to exclude everything between [list]...[/list]
+		
+	
+	
+		//rep( /(?<!(\[list]))\r|\n/gim,"<br />" )
+		
 		
 			rep(/\[b\]/gi,"<strong>");
 			rep(/\[\/b\]/gi,"</strong>");
@@ -144,6 +183,8 @@
 		//	rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
 			rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
 			rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
+
+		
 
 			// e107 FIXME!
 		
