@@ -341,7 +341,17 @@ class e_media
 		
 		$name = $tagid;
 		$prevId = $name."_prev";
+		
+		$onclick_clear = "onclick =\"
+		 	parent.document.getElementById('{$tagid}').value = '';
+		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
+		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
+		 	 return false; \"";
 	
+		$text .= "<a class='media-select-clear' style='float:left' href='#' {$onclick_clear} >
+		<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:60px'>
+		No Image</div>";
+		
 		
 		foreach($images as $im)
 		{
@@ -351,7 +361,7 @@ class e_media
 		 	$onclick = "onclick =\"
 		 	parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 	parent.document.getElementById('".$prevId."').src = '{$realPath}';
-		 	parent.window.close();
+		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 		 	 return false; \"";
 
 			//FIXME Make Window Close automatically when selection is made. 
