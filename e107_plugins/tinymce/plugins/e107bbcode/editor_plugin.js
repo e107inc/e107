@@ -27,7 +27,7 @@
 			return {
 				longname : 'e107 BBCode Plugin',
 				author : 'Moxiecode Systems AB - Modified by e107 Inc',
-				authorurl : 'http://tinymce.moxiecode.com',
+				authorurl : 'http://e107.org',
 				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/bbcode',
 				version : tinymce.majorVersion + "." + tinymce.minorVersion
 			};
@@ -43,7 +43,7 @@
 				s = s.replace(re, str);
 			};
 			
-			//return s;
+		//	return s;
 				
 			rep(/<table(.*)>/gim, "[table]");
 			rep(/<\/table>/gim, "[/table]");
@@ -79,18 +79,29 @@
 			rep(/<span style=\"font-size:(.*?);\">(.*?)<\/span>/gi,"[size=$1]$2[/size]");
 			rep(/<font>(.*?)<\/font>/gi,"$1");
 		
-			rep(/<img.*?style=\"(.*?)\".*?src=\"(.*?)\".*?\/>/gi,"[img style=$1]$2[/img]");
-			rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
-	//		rep(/<img.*?style=\"(.*?)\".*?src=\"(.*?)\" alt=\"(.*?)\" .*?width=\"(.*?)\".*? .*?height=\"(.*?)\" .*?\/>/gi,"[img style=$1;width:$4px; height:$5;]$2[/img]");
+		//	rep(/<img.*?style=\"(.*?)\".*?src=\"(.*?)\".*?\/>/gi,"[img style=$1]$2[/img]");
+		
+		
+			// New Image Handler // verified
+			rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="(\S*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" )
+			rep(/;width:px;height:px/gi, ""); // Img cleanup. 
+			rep(/<img\s*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
 			
-			rep(/<span class=\"codeStyle\">(.*?)<\/span>/gi,"[code]$1[/code]");
-			rep(/<span class=\"quoteStyle\">(.*?)<\/span>/gi,"[quote]$1[/quote]");
-			rep(/<strong class=\"codeStyle\">(.*?)<\/strong>/gi,"[code][b]$1[/b][/code]");
-			rep(/<strong class=\"quoteStyle\">(.*?)<\/strong>/gi,"[quote][b]$1[/b][/quote]");
-			rep(/<em class=\"codeStyle\">(.*?)<\/em>/gi,"[code][i]$1[/i][/code]");
-			rep(/<em class=\"quoteStyle\">(.*?)<\/em>/gi,"[quote][i]$1[/i][/quote]");
-			rep(/<u class=\"codeStyle\">(.*?)<\/u>/gi,"[code][u]$1[/u][/code]");
-			rep(/<u class=\"quoteStyle\">(.*?)<\/u>/gi,"[quote][u]$1[/u][/quote]");
+			rep(/<blockquote[^>]*>/gi,"[blockquote]");
+			rep(/<\/blockquote>/gi,"[/blockquote]");
+			
+			rep(/<code[^>]*>/gi,"[code]");
+			rep(/<\/code>/gi,"[/code]");
+					
+		//	rep(/<span class=\"codeStyle\">(.*?)<\/span>/gi,"[code]$1[/code]");
+		//	rep(/<span class=\"quoteStyle\">(.*?)<\/span>/gi,"[quote]$1[/quote]");
+		//	rep(/<strong class=\"codeStyle\">(.*?)<\/strong>/gi,"[code][b]$1[/b][/code]");
+		//	rep(/<strong class=\"quoteStyle\">(.*?)<\/strong>/gi,"[quote][b]$1[/b][/quote]");
+		//	rep(/<em class=\"codeStyle\">(.*?)<\/em>/gi,"[code][i]$1[/i][/code]");
+		//	rep(/<em class=\"quoteStyle\">(.*?)<\/em>/gi,"[quote][i]$1[/i][/quote]");
+		//	rep(/<u class=\"codeStyle\">(.*?)<\/u>/gi,"[code][u]$1[/u][/code]");
+		//	rep(/<u class=\"quoteStyle\">(.*?)<\/u>/gi,"[quote][u]$1[/u][/quote]");
+		
 			rep(/<\/(strong|b)>/gi,"[/b]");
 			rep(/<(strong|b)>/gi,"[b]");
 			rep(/<\/(em|i)>/gi,"[/i]");
@@ -98,8 +109,7 @@
 			rep(/<\/u>/gi,"[/u]");
 			rep(/<span style=\"text-decoration: ?underline;\">(.*?)<\/span>/gi,"[u]$1[/u]");
 			rep(/<u>/gi,"[u]");
-			rep(/<blockquote[^>]*>/gi,"[quote]");
-			rep(/<\/blockquote>/gi,"[/quote]");
+		
 			
 			// Compromise - but BC issues for sure. 
 			rep(/<br \/>/gi,"[br]");
@@ -165,7 +175,11 @@
 			rep(/\[br]/gi,"<br />"); // compromise
 			//	rep(/\n/gi,"<br \/>"); // breaks lists.. need a regex to exclude everything between [list]...[/list]
 		
-	
+			rep(/\[blockquote\]/gi,"<blockquote>");
+			rep(/\[\/blockquote\]/gi,"</blockquote>");
+			
+			rep(/\[code\]/gi,"<code>");
+			rep(/\[\/code\]/gi,"</code>");
 	
 		//rep( /(?<!(\[list]))\r|\n/gim,"<br />" )
 		
@@ -178,11 +192,13 @@
 			rep(/\[\/u\]/gi,"</u>");
 			rep(/\[link=([^\]]+)\](.*?)\[\/link\]/gi,"<a href=\"$1\">$2</a>");
 			rep(/\[url\](.*?)\[\/url\]/gi,"<a href=\"$1\">$1</a>");
-			rep(/\[img.*?style=(.*?).*?\](.*?)\[\/img\]/gi,"<img style=\"$1\" src=\"$2\" />");
-			rep(/\[img.*?\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
+		//	rep(/\[img.*?style=(.*?).*?\](.*?)\[\/img\]/gi,"<img style=\"$1\" src=\"$2\" />");
+			rep(/\[img\s*?style=([^\]]*)]([\s\S]*?)\[\/img]/gi,"<img style=\"$1\" src=\"$2\" />");	
+			
+		//	rep(/\[img.*?\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
 		//	rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
-			rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
-			rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
+		//	rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
+		//	rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
 
 		
 
