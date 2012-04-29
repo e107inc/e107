@@ -334,42 +334,56 @@ class e_media
 
 	public function mediaSelect($cat='',$tagid=null,$att=null)
 	{
+		$onclick = null;
 		
 		$cat = ($cat) ? $cat."+" : "";
-		$images = $this->getImages($cat);
+		parse_str($att);
+		
+		$images = $this->getImages($cat,0,30);
 		$att = 'aw=120&ah=100';
 		
-		$name = $tagid;
-		$prevId = $name."_prev";
+	
 		
-		$onclick_clear = "onclick =\"
-		 	parent.document.getElementById('{$tagid}').value = '';
+		$prevId = $tagid."_prev";
+		
+		$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
 		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
-		 	 return false; \"";
+		 	 return false;";
 	
-		$text .= "<a class='media-select-clear' style='float:left' href='#' {$onclick_clear} >
-		<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:60px'>
+		$text .= "<a class='media-select-clear' style='float:left' href='#' onclick=\"{$onclick_clear}\" >
+		<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:58px'>
 		No Image</div>";
 		
+		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
 		
 		foreach($images as $im)
 		{
+			$media_path = e107::getParser()->replaceConstants($im['media_url'],'full');
 			$realPath = e107::getParser()->thumbUrl($im['media_url'], $att);
 			$diz = e107::getParser()->toAttribute($im['media_title']);
-
-		 	$onclick = "onclick =\"
-		 	parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
-		 	parent.document.getElementById('".$prevId."').src = '{$realPath}';
-		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
-		 	 return false; \"";
-
-			//FIXME Make Window Close automatically when selection is made. 
 			
-			$text .= "<a class='media-select' title=\"".$diz."\" href='#' {$onclick} >";
-			$text .= "<img src='".e107::getParser()->thumbUrl($im['media_url'], $att)."' alt=\"".$im['media_title']."\"  />";
-			$text .= "</a>";
+			$repl = array($im['media_url'],$media_path);
+			
+			if($onclick == null)
+			{
+				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
+		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
+		 		parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
+		 	 	return false;";	
+			}
+			else
+			{
+				$onclicki = str_replace($srch,$repl,$onclick);
+			}
+		 	
+			
+			$text .= "<a class='media-select' title=\"".$diz."\" href='#' onclick=\"{$onclicki}\" >\n";
+			$text .= "<img src='".e107::getParser()->thumbUrl($im['media_url'], $att)."' alt=\"".$im['media_title']."\"  />\n";
+			$text .= "</a>\n\n";
 		}	
+		
+	
 				
 		return $text;	
 	}
