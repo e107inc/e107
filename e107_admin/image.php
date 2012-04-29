@@ -397,13 +397,12 @@ class media_admin_ui extends e_admin_ui
 			<legend>Library</legend>
 			<table cellpadding='0' cellspacing='0' class='adminedit'>
 			<tbody><tr><td>
-			<div>Filter: <input type='text' name='non-working-filter-example' value='' /><br />&nbsp;</div>
-			<div>";
+			";
 		
 		// This should really be replaced with the generic LIST function, but with it's own template for markup. 	
 		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid')); // eg. news, news-thumbnail	
 			
-		$text .= "</div>
+		$text .= "
 			</td></tr>
 			</tbody></table>
 			</fieldset>

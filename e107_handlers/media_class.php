@@ -334,45 +334,58 @@ class e_media
 
 	public function mediaSelect($cat='',$tagid=null,$att=null)
 	{
-		$onclick = null;
+		$onclick = null; // option to override onclick behavior. See ibrowser.php 
 		
-		$cat = ($cat) ? $cat."+" : "";
-		parse_str($att);
+		$cat = ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
 		
-		$images = $this->getImages($cat,0,30);
-		$att = 'aw=120&ah=100';
+		parse_str($att); // grab 'onclick' . 
 		
+	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
+		$images 		= $this->getImages($cat,0,30);
+		$att 			= 'aw=120&ah=100';		
+		$prevId 		= $tagid."_prev";
+		
+		// EXAMPLE of FILTER GUI. 
 	
+		// This filter should run independently of admin_ui so that it can also be utilized by ibrowser.php 
+		$text .= "<div>Filter: <input type='text' name='non-working-filter-example' value='' />";
+		$text .= "<input type='button' value='Go' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
+		$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
+		$text .= "<input type='button' value='&raquo;' />"; // see next page of images. 
+		$text .= " Displaying 0-30 of 150 images.<br />&nbsp; </div>
+		<div>\n";
 		
-		$prevId = $tagid."_prev";
 		
-		$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
+		if($onclick == null) // e107 Media Manager Only. TinyMce doesn't need it. 
+		{
+			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
 		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 		 	 return false;";
-	
-		$text .= "<a class='media-select-clear' style='float:left' href='#' onclick=\"{$onclick_clear}\" >
-		<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:58px'>
-		No Image</div>";
+			
+			$text .= "<a class='media-select-clear' style='float:left' href='#' onclick=\"{$onclick_clear}\" >
+			<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:58px'>
+			No Image</div>";		
+		}
 		
+	
 		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
 		
 		foreach($images as $im)
 		{
-			$media_path = e107::getParser()->replaceConstants($im['media_url'],'full');
-			$realPath = e107::getParser()->thumbUrl($im['media_url'], $att);
-			$diz = e107::getParser()->toAttribute($im['media_title']);
+			$media_path 	= e107::getParser()->replaceConstants($im['media_url'],'full');
+			$realPath 		= e107::getParser()->thumbUrl($im['media_url'], $att);
+			$diz 			= e107::getParser()->toAttribute($im['media_title']);		
+			$repl 			= array($im['media_url'],$media_path);
 			
-			$repl = array($im['media_url'],$media_path);
-			
-			if($onclick == null)
+			if($onclick == null) // e107 Media Manager
 			{
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
 		 		parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 		 	 	return false;";	
 			}
-			else
+			else // TinyMce and other applications. 
 			{
 				$onclicki = str_replace($srch,$repl,$onclick);
 			}
@@ -384,6 +397,10 @@ class e_media
 		}	
 		
 	
+		
+		
+		
+		$text .= "</div>";
 				
 		return $text;	
 	}
