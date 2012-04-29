@@ -2,7 +2,7 @@
  * $Id$
  *
  * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright ï¿½ 2004-2008, Moxiecode Systems AB, All rights reserved.
  */
 
 (function() {
@@ -23,7 +23,7 @@
 			ed.addCommand('mceibrowser', function() {
 				ed.windowManager.open({
 					file : url + '/ibrowser.php',
-					width : 520 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
+					width : 800 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
 					height : 770 + parseInt(ed.getLang('ibrowser.delta_height', 0)),
 					inline : 1
 				}, {

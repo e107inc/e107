@@ -262,6 +262,8 @@ class wysiwyg
 			'theme_advanced_toolbar_location'	=> 'top',
 			'theme_advanced_toolbar_align'		=> 'left',
 			'theme_advanced_blockformats' 		=> 'p,h2,blockquote,code',
+			'dialog_type' 						=> "modal",
+			
 			
 			
 			

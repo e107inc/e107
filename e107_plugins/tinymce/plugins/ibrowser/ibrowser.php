@@ -304,21 +304,37 @@ echo "</head>
   <legend>".$lang_ibrowser_img_sel."</legend>
   <table style='width:100%;border:0px' cellspacing=\"0\" cellpadding=\"0\">
     <tr>
-      <td><table style='width:100%;border:0px' cellpadding=\"2\" cellspacing=\"0\">
+      <td><table style='width:100%;border:0px' cellpadding=\"2\" cellspacing=\"0\">\n";
+	  
+echo e107::getMedia()->mediaSelect('news',null, "onclick=document.getElementById('src').value = '{MEDIA_PATH}';return false");
+	  
+	   /*
+	  echo "
           <tr>
             <td style='width:210px'><strong>".$lang_ibrowser_library.":</strong></td>
             <td style='width:5px'>&nbsp;</td>
             <td ><strong>".$lang_ibrowser_preview.":</strong></td>
-          </tr>
-          <tr>
-            <td><select name=\"lib\" size=\"1\" style=\"width: 100%;\" onchange=\"this.form.submit();\">
-                ".$lib_options."
-              </select></td>
-            <td>&nbsp;</td>
-            <td style='border:0px;text-align:left;vertical-align:top' rowspan=\"3\">
-            <iframe name=\"imgpreview\" id=\"imgpreview\" class=\"previewWindow\" src=\"".$preview."\" style=\"border:0px;width: 100%; height: 220px;overflow:auto\" ></iframe>
-            </td>
-          </tr>
+          </tr>\n";
+          
+          
+    
+          
+               
+        echo "       
+               <tr>
+                 <td><select name=\"lib\" size=\"1\" style=\"width: 100%;\" onchange=\"this.form.submit();\">
+                     ".$lib_options."
+                   </select></td>
+                 <td>&nbsp;</td>
+                 <td style='border:0px;text-align:left;vertical-align:top' rowspan=\"3\">
+                 <iframe name=\"imgpreview\" id=\"imgpreview\" class=\"previewWindow\" src=\"".$preview."\" style=\"border:0px;width: 100%; height: 220px;overflow:auto\" ></iframe>
+                 </td>
+               </tr>";
+               
+    
+           
+         
+     echo "    
           <tr>
             <td><strong>".$lang_ibrowser_images.":</strong></td>
             <td>&nbsp;</td>
@@ -326,7 +342,8 @@ echo "</head>
           <tr>
             <td>";
 		
-	$mediaCat = ($_POST['lib']) ? $_POST['lib'] : "_common";		
+	$mediaCat = ($_POST['lib']) ? $_POST['lib'] : "_common";	
+	$mediaCat = "news+";	
 	$array = e107::getMedia()->getImages($mediaCat);
 
 			
@@ -349,13 +366,14 @@ echo "</head>
 		}
 	}
 	
-	
-	
-
-
- echo "  </select></td>
+	echo "  </select>";
+ 	echo "</td>
             <td>&nbsp;</td>
-          </tr>
+          </tr>";
+		  
+	*/
+		  
+	echo "
           <tr>
             <td colspan=\"3\"><table style='width:100%;border:0px' cellspacing=\"0\" cellpadding=\"0\">
                 <tr>
@@ -372,7 +390,12 @@ echo "</head>
                 </tr>
               </table></td>
           </tr>
-        </table></td>
+        </table>
+        
+        
+        
+        
+        </td>
     </tr>
   </table>
   </fieldset>
