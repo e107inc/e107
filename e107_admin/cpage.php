@@ -142,12 +142,11 @@ class page_admin_form_ui extends e_admin_form_ui
 	
 	function page_title($curVal,$mode,$parm)
 	{
-		// $parm = $this->getController()->getUI()->getDataFields();	//$model->getData();
-		// print_a($parm);
-		$parm = "";
-		if($mode == 'read') // FIXME - Link not working as intended. 
+	
+		if($mode == 'read') 
 		{
-			return "<a href='".e_BASE."page.php?".$parm."' >".$curVal."</a>";
+			$id = $this->getController()->getListModel()->get('page_id');
+			return "<a href='".e_BASE."page.php?".$id."' >".$curVal."</a>";
 		}
 			
 		if($mode == 'write')
