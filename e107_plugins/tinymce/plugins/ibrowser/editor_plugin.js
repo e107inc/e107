@@ -23,7 +23,7 @@
 			ed.addCommand('mceibrowser', function() {
 				ed.windowManager.open({
 					file : url + '/ibrowser.php',
-					width : 800 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
+					width : 830 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
 					height : 770 + parseInt(ed.getLang('ibrowser.delta_height', 0)),
 					inline : 1
 				}, {

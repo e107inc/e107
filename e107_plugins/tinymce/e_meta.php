@@ -14,7 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php"))
+if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 {
   	require_once(e_PLUGIN."tinymce/wysiwyg.php");
 	if(deftrue('TINYMCE_CONFIG'))
@@ -25,8 +25,12 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php"))
 	{
 		$wy = new wysiwyg();
 	}
-
-	$wy -> render();
+	
+	if(!strpos(e_SELF,e_ADMIN_ABS."image.php"))
+	{
+		$wy -> render();	
+	}
+	
 }
 
 
