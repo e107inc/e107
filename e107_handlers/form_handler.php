@@ -145,20 +145,22 @@ class e_form
 	}
 
 	// FIXME - Dialog JS no more working, investigate
-	public function mediaUrl($category = '', $label = '', $tagid='', $tabs=TRUE)
+	public function mediaUrl($category = '', $label = '', $tagid='', $bbcode='')
 	{
-		if($category) $category = '&amp;for='.$category;
+		$cat = ($category) ? '&amp;for='.$category : "";
 		if(!$label) $label = ' Upload an image or file';
-		if($tagid) $category .= '&amp;tagid='.$tagid; 
-		
+		if($tagid) $cat .= '&amp;tagid='.$tagid; 
+		if($bbcode) $cat .= '&amp;bbcode=1'; 
 		// $tabs // TODO - option to choose which tabs to display.  
 		
 		//TODO Parse selection data back to parent form. 
 
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$category;
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$cat;
 
 		$ret = "<a title='Click to Change' rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
 	
+	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
+	$footer = '';
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
 			e107::getJs()->requireCoreLib('core/admin.js')
@@ -172,10 +174,10 @@ class e_form
 					ev.stop();
 					new e107Widgets.URLDialog(element.href + "&iframe=1", {
 						id: element["id"] || "e-dialog",
-						width: 900,
-						height: 600
+						width: 830,
+						height: 650
 		
-					}).center().activate().show();
+					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
 				});
 			');
 			e107::setRegistry('core/form/mediaurl', true);

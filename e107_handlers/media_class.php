@@ -334,29 +334,28 @@ class e_media
 
 	public function mediaSelect($cat='',$tagid=null,$att=null)
 	{
-		$onclick = null; // option to override onclick behavior. See ibrowser.php 
+		$bbcode = null; // option to override onclick behavior. See ibrowser.php 
 		
 		$cat = ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
 		
 		parse_str($att); // grab 'onclick' . 
 		
 	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
-		$images 		= $this->getImages($cat,0,30);
+		$images 		= $this->getImages($cat,0,23);
 		$att 			= 'aw=120&ah=100';		
 		$prevId 		= $tagid."_prev";
 		
 		// EXAMPLE of FILTER GUI. 
-	
-		// This filter should run independently of admin_ui so that it can also be utilized by ibrowser.php 
+
 		$text .= "<div>Filter: <input type='text' name='non-working-filter-example' value='' />";
 		$text .= "<input type='button' value='Go' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 		$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
 		$text .= "<input type='button' value='&raquo;' />"; // see next page of images. 
-		$text .= " Displaying 0-30 of 150 images.<br />&nbsp; </div>
+		$text .= " Displaying 0-24 of 150 images.<br />&nbsp; </div>
 		<div>\n";
 		
 		
-		if($onclick == null) // e107 Media Manager Only. TinyMce doesn't need it. 
+		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
@@ -378,7 +377,7 @@ class e_media
 			$diz 			= e107::getParser()->toAttribute($im['media_title']);		
 			$repl 			= array($im['media_url'],$media_path);
 			
-			if($onclick == null) // e107 Media Manager
+			if($bbcode == null) // e107 Media Manager
 			{
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
@@ -387,7 +386,11 @@ class e_media
 			}
 			else // TinyMce and other applications. 
 			{
-				$onclicki = str_replace($srch,$repl,$onclick);
+				$onclicki = "document.getElementById('src').value = '{$im['media_url']}';
+		 		updateBB();
+				;
+				
+					return false;";	
 			}
 		 	
 			
