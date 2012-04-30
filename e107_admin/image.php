@@ -340,7 +340,29 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		if($this->getQuery('iframe'))
-		{		
+		{
+			if($this->getQuery('bbcode'))
+			{
+				e107::getJs()->headerFile(e_PLUGIN_ABS.'tinymce/tiny_mce_popup.js',2);
+				e107::getJS()->headerInline("
+				
+				/* Send the generated IMG bbcode back to the textarea/window */
+				function saveBB()
+				{
+					var add = document.getElementById('bbcode_holder').value;
+					addtext(add);
+					
+				//	tinyMCE.execCommand('mceInsertContent',false,'hi there');
+			   		tinyMCEPopup.close();
+					
+					//parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
+					return false;
+				}
+				
+				");
+				
+			}
+					
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			if(!$this->getQuery('for'))
 			{
@@ -355,6 +377,8 @@ class media_admin_ui extends e_admin_ui
 					$this->getModel()->set('media_category', $this->getQuery('for'));
 				}	
 			}
+			
+		
 		}
 // 
 		// if($this->getQuery('for') && $this->getMediaCategory($this->getQuery('for')))
@@ -387,11 +411,22 @@ class media_admin_ui extends e_admin_ui
 
 	function imageSelectUpload() 
 	{
+		$frm = e107::getForm();
+		$bbcodeMode = ($this->getQuery('bbcode')==1) ? 'bbcode=1' : FALSE;
+		
 		$text = "
 			<div class='admintabs' id='tab-container'>
 			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
 				<li id='tab-select'><a href='#core-media-select'>Choose from Library</a></li>
-				<li id='tab-upload'><a href='#core-media-upload'>Upload a File</a></li>
+				<li id='tab-upload'><a href='#core-media-upload'>Upload a File</a></li>";
+		
+		if($bbcodeMode)
+		{
+			$text .= "<li id='tab-style'><a href='#core-media-style'>Appearance</a></li>\n";	
+		}
+		
+				
+		$text .= "
 			</ul>
 			<fieldset id='core-media-select'>
 			<legend>Library</legend>
@@ -399,8 +434,7 @@ class media_admin_ui extends e_admin_ui
 			<tbody><tr><td>
 			";
 		
-		// This should really be replaced with the generic LIST function, but with it's own template for markup. 	
-		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid')); // eg. news, news-thumbnail	
+		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail	
 			
 		$text .= "
 			</td></tr>
@@ -417,10 +451,151 @@ class media_admin_ui extends e_admin_ui
 		$text .=  $this->CreatePage();
 				
 		$text .= "	
-			</fieldset>
-			</div>
-		";
+			</fieldset>";
+		
+		/* In BBCODE-Mode this dialog rerturns an [img] bbcode to the 'tagid' container with the appropriate parms generated. 
+		 * eg. [img style=float:left;margin-right:3px]{e_MEDIA_IMAGE}someimage.jpg[/img]
+		 * Then the dialog may be used as a bbcode img popup and within TinyMce also. 
+		 * 
+		 */
+		
+		if($bbcodeMode)
+		{
+			$text .= "<fieldset id='core-media-style'>
+				<legend>Appearance</legend>
+				<table cellpadding='0' cellspacing='0' class='adminedit'>
+				<colgroup span='2'>
+				<col class='col-label' />
+				<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td>Dimensions: </td>
+						<td>
+						<input type='text' id='width' name='width' size='4' style='width:50px' value='' onkeyup='updateBB()' /> px
+						 X <input type='text' id='height' name='height' size='4' style='width:50px' value='' onkeyup='updateBB()' /> px
+						</td>
+					</tr>
+			
+					<tr>
+						<td>Text flow: </td>
+						<td>".$frm->selectbox('float', array('default'=>'Default','left'=>'Right','right'=>"Left"))."</td>
+					</tr>
+					
+					<tr>
+						<td>Margin-Left: </td>
+						<td><input type='text' id='margin-left' name='margin_left' value='' onkeyup='updateBB()' /></td>
+					</tr>
+					
+					<tr>
+						<td>Margin-Right: </td>
+						<td><input type='text' id='margin-right' name='margin_right' value='' onkeyup='updateBB()' /></td>
+					</tr>
+					
+					<tr>
+						<td>Margin-Top: </td>
+						<td><input type='text' id='margin-top' name='margin_top' value='' onkeyup='updateBB()' /></td>
+					</tr>
+					
+					<tr>
+						<td>Margin-Bottom: </td>
+						<td><input type='text' id='margin-bottom' name='margin_bottom' value='' onkeyup='updateBB()' /></td>
+					</tr>
+		
+			</tbody></table>
+			</fieldset>";
+		}	
+		$text .= "</div>";
+		
+		// For BBCODE mode. //TODO image-float. 
+		if($bbcodeMode)
+		{
+			$text .= "To be Hidden<br />
+			bbcode: <input type='text' style='width:800px' id='bbcode_holder' name='bbcode_holder' value='' /><br />
+			html: <input type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
+			<br />src: <input type='text' style='width:600px' id='src' name='src' value='' />			
+			";		
+							
+			$text .= "<div style='text-align:right;padding:5px'>
+			
+			<button type='submit' class='submit' name='save_image' value='Save' onclick=\"saveBB();\" >
+			<span>Save</span>
+			</button>
+			<button type='submit' class='submit' name='cancel_image' value='Cancel' onclick=\"parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();\" >
+			<span>Cancel</span>
+			</button>
+			</div>";
+			
 
+			e107::getJs()->footerInline("
+				
+		
+			/* Generate an IMG bbcode based on input by user */
+			function updateBB()
+			{
+				var style 			= '';
+				var bb 				= '';
+				
+				var src				= document.getElementById('src').value;	
+				var width 			= document.getElementById('width').value;	
+				var height			= document.getElementById('height').value;			
+				var margin_top 		= document.getElementById('margin-top').value;				
+				var margin_bottom 	= document.getElementById('margin-bottom').value;
+				var margin_right 	= document.getElementById('margin-right').value;
+				var margin_left 	= document.getElementById('margin-left').value;
+						
+				if(width !='')
+				{				
+					style  = style + 'width:' + width + 'px;';	
+				}
+
+				if(height !='')
+				{				
+					style  = style + 'height:' + height + 'px;';	
+				}				
+							
+				if(margin_right !='')
+				{				
+					style  = style + 'margin-right:' + margin_right + 'px;';	
+				}
+				
+				if(margin_left !='')
+				{				
+					style  = style + 'margin-left:' + margin_left + 'px;';	
+				}
+				
+				if(margin_top !='')
+				{				
+					style  = style + 'margin-top:' + margin_top + 'px;';	
+				}
+				
+				if(margin_bottom !='')
+				{				
+					style  = style + 'margin-bottom:' + margin_bottom + 'px;';	
+				}
+				
+				bb = '[img';
+				
+				if(style !='')
+				{
+					bb = bb + ' style='+style;			
+				}
+				
+				bb = bb + ']';
+				bb = bb + src;
+				bb = bb + '[/img]';
+				
+				document.getElementById('bbcode_holder').value = bb;
+				
+				var html = '<img src=\''+ src +'\' style=\'' + style + '\'  />'; 
+				document.getElementById('html_holder').value = html;
+				
+			}	
+		
+			");
+						
+		}
+		
 		return $text;
 	}
 
