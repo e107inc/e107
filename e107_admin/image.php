@@ -349,12 +349,16 @@ class media_admin_ui extends e_admin_ui
 				/* Send the generated IMG bbcode back to the textarea/window */
 				function saveBB()
 				{
-					var add = document.getElementById('bbcode_holder').value;
-					addtext(add);
-					
-				//	tinyMCE.execCommand('mceInsertContent',false,'hi there');
+								
+							
+					var add = document.getElementById('bbcode_holder').value;		
+					var html = document.getElementById('html_holder').value;			
+				//	tinyMCE.execCommand('mceInsertContent',false,add);
+					tinyMCE.execCommand('mceInsertRawHTML',false,html);
 			   		tinyMCEPopup.close();
 					
+					
+					//addtext(add);
 					//parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 					return false;
 				}
@@ -503,6 +507,11 @@ class media_admin_ui extends e_admin_ui
 					</tr>
 		
 			</tbody></table>
+			<table><tr><td>Preview<br /></td></tr>
+			<tr><td style='text-align:center'>
+			<img id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='border:1px solid silver; min-width:220px; min-height:180px;' />
+			
+			</td></tr></table>
 			</fieldset>";
 		}	
 		$text .= "</div>";
@@ -587,7 +596,7 @@ class media_admin_ui extends e_admin_ui
 				
 				document.getElementById('bbcode_holder').value = bb;
 				
-				var html = '<img src=\''+ src +'\' style=\'' + style + '\'  />'; 
+				var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
 				document.getElementById('html_holder').value = html;
 				
 			}	

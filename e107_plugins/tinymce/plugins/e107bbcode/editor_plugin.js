@@ -83,9 +83,10 @@
 		
 		
 			// New Image Handler // verified
-			rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="(\S*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" )
+		//	rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([\S ]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" )
+		rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([^;"]*)")(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?(?:alt="(\S*)")? (?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" );
 			rep(/;width:px;height:px/gi, ""); // Img cleanup. 
-			rep(/<img\s*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
+		//	rep(/<img\s*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
 			
 			rep(/<blockquote[^>]*>/gi,"[blockquote]");
 			rep(/<\/blockquote>/gi,"[/blockquote]");

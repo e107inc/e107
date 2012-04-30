@@ -366,6 +366,7 @@ class e_media
 			<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:58px'>
 			No Image</div>";		
 		}
+
 		
 	
 		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
@@ -386,11 +387,11 @@ class e_media
 			}
 			else // TinyMce and other applications. 
 			{
+				//TODO Add a preview window 
 				$onclicki = "document.getElementById('src').value = '{$im['media_url']}';
+				document.getElementById('preview').src = '{$realPath}';
 		 		updateBB();
-				;
-				
-					return false;";	
+				return false;";	
 			}
 		 	
 			
