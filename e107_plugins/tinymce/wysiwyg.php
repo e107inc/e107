@@ -97,6 +97,8 @@ class wysiwyg
 	        case 'insert_to_editor': // Convert e107Paths for TinyMce
 
 	            source = source.replace(/rel=\"external\"/, 'target=\"_blank\"');
+	            
+	      
 
 			";
 
@@ -269,7 +271,9 @@ class wysiwyg
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
 			'theme_advanced_resizing'			=> 'true',
+			'remove_linebreaks'					=> 'false',
 			'extended_valid_elements'			=> '',
+			'apply_source_formatting'			=> 'true',
 			'invalid_elements'					=> 'p,font,align,script,applet,iframe',
 			'auto_cleanup_word'					=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
@@ -277,13 +281,15 @@ class wysiwyg
 			'inline_styles'						=> 'true',
 			'auto_resize'						=> 'true',
 			'debug'								=> 'false',
-			'force_br_newlines'					=> 'false',
+			'force_br_newlines'					=> 'true',
 			'forced_root_block'					=> '',
+			'convert_newlines_to_brs'			=> 'false', // will break [list] if set to true
 			'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
 			'convert_fonts_to_styles'			=> 'true',
 			'remove_script_host'				=> 'true',
 			'relative_urls'						=> 'true',
+			'preformatted'						=> 'true',
 			'document_base_url'					=> SITEURL,
 			'theme_advanced_styles'				=> 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3',
 			'verify_css_classes'				=> 'false'
