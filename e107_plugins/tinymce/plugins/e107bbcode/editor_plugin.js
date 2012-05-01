@@ -83,9 +83,11 @@
 		
 		
 			// New Image Handler // verified
-		//	rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([\S ]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" )
-		rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([^;"]*)")(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?(?:alt="(\S*)")? (?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" );
-			rep(/;width:px;height:px/gi, ""); // Img cleanup. 
+		//	rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([^;"]*)")(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?(?:alt="(\S*)")? (?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" );
+		
+		//rep(/<img(?:\s*)?(?:style="(.*)")?\s?(?:src="([\S ]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gi,"[img style=$1;width:$4px;height:$5px]$2[/img]" )
+		rep(/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/gm,"[img style=width:$4px;height:$5px;$1]$2[/img]" );
+		rep(/;width:px;height:px/gi, ""); // Img cleanup. 
 		//	rep(/<img\s*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
 			
 			rep(/<blockquote[^>]*>/gi,"[blockquote]");
@@ -196,6 +198,11 @@
 			rep(/\[link=([^\]]+)\](.*?)\[\/link\]/gi,"<a href=\"$1\">$2</a>");
 			rep(/\[url\](.*?)\[\/url\]/gi,"<a href=\"$1\">$1</a>");
 		//	rep(/\[img.*?style=(.*?).*?\](.*?)\[\/img\]/gi,"<img style=\"$1\" src=\"$2\" />");
+		
+			// When Width and Height are present: 
+			rep(/\[img\s*?style=(?:width:(\d*)px;height:(\d*)px;)([^\]]*)]([\s\S]*?)\[\/img]/gm, "<img style=\"$3\" src=\"$4\" alt=\"\" width=\"$1\" height=\"$2\" />");  
+		
+			// No width/height but style is present
 			rep(/\[img\s*?style=([^\]]*)]([\s\S]*?)\[\/img]/gi,"<img style=\"$1\" src=\"$2\" />");	
 			
 			rep(/\[img\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
