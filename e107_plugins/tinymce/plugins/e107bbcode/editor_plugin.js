@@ -59,7 +59,7 @@
 					
 			rep(/<li>/gi,		"[*]"); // verified
 			rep(/<\/li>/gi,		""); // verified
-			rep(/<ul>([\s\S]*?)<\/ul>/gim,	"[list]$1[/list]\n"); // verified
+			rep(/<ul>([\s\S]*?)<\/ul>\n/gim,	"[list]$1[/list]"); // verified
 			
 			rep(/<ol .* style=\'list-style-type:\s*([\w]*).*\'>([\s\S]*)<\/ol>/gim,"[list=$1]$2[/list]\n"); // verified
 			rep(/<ol>([\s\S]*?)<\/ol>/gim,"[list=decimal]$1[/list]\n"); // verified
@@ -113,13 +113,13 @@
 		
 			
 			// Compromise - but BC issues for sure. 
-			rep(/<br \/>/gi,"[br]");
-			rep(/<br\/>/gi,"[br]");
-			rep(/<br>/gi,"[br]");
-			
-			// rep(/<br \/>/gi,"\n");
-			// rep(/<br\/>/gi,"\n");
-			// rep(/<br>/gi,"\n");
+		//	rep(/<br \/>/gi,"[br]");
+		//	rep(/<br\/>/gi,"[br]");
+		//	rep(/<br>/gi,"[br]");
+		
+			 rep(/<br \/>/gi,"\n");
+			 rep(/<br\/>/gi,"\n");
+			 rep(/<br>/gi,"\n");
 			
 			
 			rep(/<p>/gi,"");
@@ -163,19 +163,21 @@
 			rep(/\[h]/gim,		"<h2>"); // verified
 			rep(/\[\/h]/gim, 	"</h2>"); // verified
 			
+			rep(/\[list](?:\n)/gim,		"<ul>\n"); // verified
+		//	rep(/\[list]/gim,		"<ul>"); // verified
+
+			rep(/\[\/list](?:\n)?/gim, 	"</ul>\n"); // verified
+			rep(/^ *?(?:\*|\[\*\])([^\*[]*)/gm,"<li>$1</li>\n"); 
+		//	return s;
 		//	rep(/(\[list=.*\])\\*([\s\S]*)(\[\/list])(\n|\r)/gim,"<ol>$2</ol>"); // verified
-			rep(/(\[list\])\\*([\s\S]*)(\[\/list])(\n|\r)?/gim,"<ul>$2</ul>");// verified
+		//	rep(/(\[list\])\\*([\s\S]*)(\[\/list])(\n|\r)?/gim,"<ul>$2</ul>");// verified
 		
-			rep(/^ *?\[\*\](.*)/gim,"<li>$1</li>"); 
-			
-			
+						
 			rep(/\[center\]([\s\S]*)\[\/center\]/gi,"<div style=\"text-align:center\">$1</div>"); // verified
 			rep(/\[color=(.*?)\]([\s\S]*)\[\/color\]/gi,"<span style=\"color: $1;\">$2<\/span>"); // verified
-		//	rep(/\[list](\r|\n)/gim, '[list]'); // remove breaks from [list]
 			
-			rep(/\[br]/gi,"<br />"); // compromise
-			//	rep(/\n/gi,"<br \/>"); // breaks lists.. need a regex to exclude everything between [list]...[/list]
-		
+		//	rep(/\[br]/gi,"<br />"); // compromise
+				
 			rep(/\[blockquote\]/gi,"<blockquote>");
 			rep(/\[\/blockquote\]/gi,"</blockquote>");
 			
@@ -196,11 +198,13 @@
 		//	rep(/\[img.*?style=(.*?).*?\](.*?)\[\/img\]/gi,"<img style=\"$1\" src=\"$2\" />");
 			rep(/\[img\s*?style=([^\]]*)]([\s\S]*?)\[\/img]/gi,"<img style=\"$1\" src=\"$2\" />");	
 			
-		//	rep(/\[img.*?\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
+			rep(/\[img\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
 		//	rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
 		//	rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
 		//	rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
-
+			
+		//	rep(/<br \/>/gm, "<br />\n");
+			rep(/(\r|\n)$/gim,"<br />"); 
 		
 
 			// e107 FIXME!
