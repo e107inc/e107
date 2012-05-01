@@ -1,1 +1,1 @@
-return "<div class='indent'>{$code_text}</div>";
+return "<div class='indent bbcode-blockquote'>{$code_text}</div>";
