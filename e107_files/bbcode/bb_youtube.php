@@ -144,7 +144,7 @@ class bb_youtube extends e_bb_base
 			
 			parse_str($query, $vals);		// Various options set here
 												
-			if (varset($vals['allowfullscreen'], 'true') != 'true')
+			if (varset($vals['allowfullscreen'], 'true') != 'true' && !varset($val['fs']))
 			{
 				$params[] = 'fs=0';
 			}
@@ -216,6 +216,9 @@ class bb_youtube extends e_bb_base
 
 		list($dimensions,$tmp) = explode('|', $parm, 2);
 		
+		
+		$code_text = str_replace("&amp;","&",$code_text); // Quick Fix. 
+		
 		if($tmp)
 		{
 			parse_str(varset($tmp, ''), $bbparm);
@@ -234,8 +237,13 @@ class bb_youtube extends e_bb_base
 		$code_text = $parms[0];
 			
 		parse_str(varset($parms[1], ''), $params);
+		/*
+				if(getperms('0'))
+				{
+					print_a($parms);	
+				}
+		*/
 		
-	//	print_a($params);
 
 		if(empty($dimensions)) $dimensions = 'medium'; // (default as per YouTube spec)
 		// formula: width x (height+25px)
