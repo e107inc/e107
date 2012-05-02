@@ -1101,6 +1101,43 @@ $text .= "
 			".pref_submit('comments')."
 		</fieldset>
 	";
+	
+// Javascripts
+//TODO LANS
+$text .= "
+			<fieldset class='e-hideme' id='core-prefs-javascript'>
+			<legend>Javascript Frameworks (for testing purposes only)</legend>
+			<table cellpadding='0' cellspacing='0' class='adminform'>
+				<colgroup span='2'>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>";
+	
+		$js_options = array('admin'=>'Admin Area','front'=>'Front-End','all'=>"Both");	
+	
+				
+		$js_types = array(
+		  'prototype/prototype.js' ,
+		  'scriptaculous/scriptaculous.js',
+		  'scriptaculous/effects.js',
+		  'e107.js.php'
+		);			
+				
+		foreach($js_types as $k)
+		{
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".$frm->radio_multi("e_jslib_core[{$k}]",$js_options,$pref['e_jslib_core'][$k])."</td>
+				</tr>";
+		}
+								
+		$text .= "
+					</tbody></table>
+			".pref_submit('javascript')."
+					</fieldset>";	
+	
+	
 
 //Advanced Features
 $text .= "
@@ -1218,6 +1255,7 @@ function prefs_adminmenu()
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
+	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
