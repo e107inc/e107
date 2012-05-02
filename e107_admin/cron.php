@@ -502,7 +502,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 	}
 	
 	// Override the default Options field. 
-	function options($field, $value, $attributes, $id)
+	function options($parms, $value, $id, $attributes)
 	{
 		
 		if($attributes['mode'] == 'read')
@@ -905,7 +905,7 @@ class cron
 	    <td style='width:30%'>Cron Password</td>
 	    <td style='width:70%'>
 	    	"
-			.$frm->password('cron_password', 100)."
+			.$frm->password('cron_password', '', 100)."
 	    </td>
 	    </tr>
 

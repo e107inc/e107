@@ -608,7 +608,7 @@ class e_form
 		foreach ($elements as $value => $label)
 		{
 			$label = defset($label, $label);
-			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value).(isset($help[$value]) ? "<div class='field-help'>".$help[$value]."</div>" : '');
+			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($help[$value]) ? "<div class='field-help'>".$help[$value]."</div>" : '');
 		}
 		if(!$multi_line)
 			return implode("&nbsp;&nbsp;", $text);
@@ -1316,13 +1316,14 @@ class e_form
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
 					{
 						$method = $attributes['method'];
-						return $this->$method($parms, $value, $id);
+						return $this->$method($parms, $value, $id, $attributes);
 						
 					}
 					elseif(method_exists($this, 'options'))
 					{
-						return  $this->options($field, $value, $attributes, $id);
-						// return $this->options($parms, $value, $id); // breaks admin->cron 'options' column
+						//return  $this->options($field, $value, $attributes, $id); 
+						// consistent method arguments, fixed in admin cron administration
+						 return $this->options($parms, $value, $id, $attributes); // OLD breaks admin->cron 'options' column
 					}
 				}
 
