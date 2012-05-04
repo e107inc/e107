@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -71,14 +69,16 @@ class e_menuManager {
 
 				if(isset($_POST['menu_id']) || $_GET['id'])
 				{
-                	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : $_GET['id'];
+                	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : intval($_GET['id']);
 				}
 
-				if ($menu_act == "sv" || isset($_POST['class_submit']))
+				if (/*$menu_act == "sv" || */isset($_POST['class_submit']))
 				{
-
 					$this->menuSaveVisibility();
-
+				}
+				elseif(isset($_POST['parms_submit']))
+				{
+					$this->menuSaveParameters();
 				}
 
                 if ($_GET['mode'] == "deac")
@@ -155,19 +155,18 @@ class e_menuManager {
 	function menuRenderMessage()
 	{
 	  //	return $this->menuMessage;
-	  	$emessage = &eMessage::getInstance();
-
-		$text = $emessage->render($message);
+	  	$emessage = eMessage::getInstance();
+		$text = $emessage->render('menuUi');
 	  //	$text .= "ID = ".$this->menuId;
 		return $text;
-
+		
 	}
 
 
 	function menuAddMessage($message, $type = E_MESSAGE_INFO, $session = false)
 	{
-		$emessage = &eMessage::getInstance();
- 		$emessage->add($message, $type, $session);
+		$emessage = eMessage::getInstance();
+ 		$emessage->add(array($message, 'menuUi'), $type, $session);
 	}
 
     // -------------------------------------------------------------------------
@@ -245,7 +244,7 @@ class e_menuManager {
 				  {
 					if (trim($v))
 					{
-					  $this->menuId = $k;
+					  $this->menuId = intval($k);
 					  list($menu_act, $location, $position, $this->menuNewLoc) = explode(".", $_POST['menuAct'][$k]);
 					}
 				  }
@@ -448,9 +447,48 @@ class e_menuManager {
 		return $link_class;
 	}
 
-
-
-
+	/**
+	 * This one will be greatly extended, allowing menus to offer UI and us 
+	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
+	 */
+	function menuInstanceParameters()
+	{
+		if(!$_GET['parmsId']) return;
+		$id = intval($_GET['parmsId']);
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		
+		if(!$sql->db_Select("menus", "*", "menu_id=".$id))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		};
+		$row = $sql->db_Fetch();
+		
+		// TODO lan
+		$text = "<div style='text-align:center;'>
+		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+        <fieldset id='core-menus-parametersform'>
+		<legend>Menu parameters ".$row['menu_name']."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+		<tr>
+		<td>
+		Parameters (query string format):
+		".$frm->text('menu_parms', $row['menu_parms'], 900)."
+		</td>
+		</tr>
+		</table>
+		<div class='buttons-bar center'>";
+        $text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
+		$text .= "<input type='hidden' name='menu_id' value='".$id."' />
+		</div>
+		</fieldset>
+		</form>
+		</div>";
+		return $text;
+		//$caption = MENLAN_7." ".$row['menu_name'];
+		//$ns->tablerender($caption, $text);
+	}
 
 
 	function menuVisibilityOptions()
@@ -474,11 +512,6 @@ class e_menuManager {
         <fieldset id='core-menus-visibilityform'>
 		<legend>". MENLAN_7." ".$row['menu_name']."</legend>
         <table cellpadding='0' cellspacing='0' class='adminform'>
-
-        	<colgroup span='2'>
-        		<col class='col-label' />
-        		<col class='col-control' />
-        	</colgroup>
 		<tr>
 		<td>
 		<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
@@ -633,7 +666,27 @@ class e_menuManager {
 
 	    return FALSE;
 	}
-
+	
+	// --------------------------------------------------------------------------
+	
+	function menuSaveParameters()
+	{
+		$sql = e107::getDb();
+		$parms = $sql->escape(strip_tags($_POST['menu_parms']));
+		$check = $sql->db_Update("menus", "menu_parms='".$parms."' WHERE menu_id=".$this->menuId);
+		
+		if($check)
+		{
+			// FIXME - menu log
+			//$admin_log->log_event('MENU_02',$_POST['menu_parms'].'[!br!]'.$parms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
+			$this->menuAddMessage(LAN_SAVED,E_MESSAGE_SUCCESS);
+		}
+		elseif(false === $check)
+		{
+            $this->menuAddMessage(LAN_UPDATED_FAILED,E_MESSAGE_ERROR);
+		}
+		else $this->menuAddMessage(LAN_NOCHANGE_NOTSAVED,E_MESSAGE_INFO);
+	}
 
 
 	// --------------------------------------------------------------------------
@@ -1047,13 +1100,20 @@ class e_menuManager {
 		//FIXME extract
 		extract($row);
 		if(!$menu_id){ return; }
-
+		include_once(e_HANDLER.'admin_handler.php');
 		$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		//TODO we need a CSS class for this
 		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span class='required'>*</span> " : "";
 		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 		// use theme render style instead
-		$caption = $menu_name.$vis;
+		$menuParms = array();
+		if(!empty($row['menu_parms'])) parse_str($row['menu_parms'], $menuParms);
+		if(isset($menuParms['admin_title']) && $menuParms['admin_title'])
+		{
+			$caption = deftrue($menuParms['admin_title'], $menuParms['admin_title']).$vis;
+		}
+		else $caption = $menu_name.$vis;
+		
 		$menu_info = "{$menu_location}.{$menu_order}";
 
 		$text = "";
@@ -1095,21 +1155,26 @@ class e_menuManager {
 			}
 		}
 
-		// $text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
+		// Visibility is an action icon now
+		//$text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
 		$text .= $rs->form_select_close();
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		$text .= '<div class="right">
-		<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'">
+		<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'" title="'.MENLAN_20.'">
 			'.ADMIN_VIEW_ICON.'
 		</a>';
 
 		if($conf)
 		{
-			$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'">
+			$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'" title="Configure menu">
 				'.ADMIN_CONFIGURE_ICON.'
 			</a>';
 		}
+		
+		$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;parmsId='.$menu_id.'" title="Configure parameters">
+			'._ITAG('edit', 16, 'icon action S16').'
+		</a>';
 
 		$text .= '<a class="delete" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
 		</a>
