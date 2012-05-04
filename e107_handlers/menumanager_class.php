@@ -936,7 +936,7 @@ class e_menuManager {
 		}
 		else if(strstr($str, "SITENAME"))
 		{
-			echo "<div style='padding: 2px'>[SiteName]</div>";
+			echo "[SiteName]";
 		}
 		else if(strstr($str, "SITETAG"))
 		{
@@ -1070,10 +1070,11 @@ class e_menuManager {
 
 		$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
 		$text .= $rs->form_option(MENLAN_25, TRUE, " ");
-		$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
+	//	$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 
-		if ($conf) {
-			$text .= $rs->form_option(LAN_CONFIGURE, "", $conf);
+		if ($conf) 
+		{
+		//	$text .= $rs->form_option("Configure", "", $conf); // TODO Check LAN availability
 		}
 
 		if ($menu_order != 1) 
@@ -1094,7 +1095,7 @@ class e_menuManager {
 			}
 		}
 
-		$text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
+		// $text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
 		$text .= $rs->form_select_close();
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
