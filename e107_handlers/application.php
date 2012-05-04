@@ -3530,15 +3530,19 @@ class eResponse
 	/**
 	 * Get content
 	 * @param str $ns
+	 * @param boolean $reset
 	 * @return string
 	 */
-	public function getBody($ns = 'default')
+	public function getBody($ns = 'default', $reset = false)
 	{
 		if(!isset($this->_body[$ns]))
 		{
 			$this->_body[$ns] = '';
 		}
-		return $this->_body[$ns];
+		$ret = $this->_body[$ns];
+		if($reset) unset($this->_body[$ns]);
+		
+		return $ret;
 	}
 	
 	/**
