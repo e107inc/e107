@@ -1106,6 +1106,8 @@ class e_menuManager {
 		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span class='required'>*</span> " : "";
 		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 		// use theme render style instead
+		
+		// Undocumented special parameter 'admin_title'
 		$menuParms = array();
 		if(!empty($row['menu_parms'])) parse_str($row['menu_parms'], $menuParms);
 		if(isset($menuParms['admin_title']) && $menuParms['admin_title'])
