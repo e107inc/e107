@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if(isset($_GET['configure']))
@@ -29,7 +27,9 @@ if (!getperms("2"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('menus', true);
+e107::coreLan('admin', true);
 
 $e_sub_cat = 'menus';
 
@@ -78,6 +78,7 @@ if($_POST)
             $text .= $men->menuRenderMessage();
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
+			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
             $ns -> tablerender(ADLAN_6." :: ".LAN_MENULAYOUT, $text, 'menus_config');
 		}
