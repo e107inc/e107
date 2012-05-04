@@ -263,15 +263,17 @@ class e_menu
 		}
 		else
 		{
-			e107::loadLanFiles($mpath);
-
+			// not sure what would break this, but it's good idea to go away
+			//e107::loadLanFiles($mpath);
+			
 			//include once is not an option anymore
-			//e107_include will break many old menus (evel globals), so we'll wait for a while...
+			//e107_include will break many old menus (evil globals), so we'll wait for a while...
 			//e107_include(e_PLUGIN.$mpath."/".$mname.".php");
-			if(substr($mpath,-1)!='/')
-			{
-				$mpath .= '/';
-			}
+			//if(substr($mpath,-1)!='/')
+			//{
+			//	$mpath .= '/';
+			//}
+			$mpath = trim($mpath, '/').'/'; // faster...
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 
 			/*if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
