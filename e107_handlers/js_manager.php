@@ -175,7 +175,11 @@ class e_jsmanager
 		$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
 
 		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
+			
 		$core_libs = e107::getPref('e_jslib_core');
+		
+	
+		
 		if(!$core_libs)
 		{
 			$core_libs = array();
@@ -516,16 +520,35 @@ class e_jsmanager
 	 * @see footerInline()
 	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css - runtime
 	 * @param string|array $file_path
-	 * @param string|integer $runtime_location admin|front|all (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
+	 * @param string|integer $runtime_location admin|front|all|none (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
 	 * @return object $this
 	 */
 	protected function addJs($type, $file_path, $runtime_location = '', $pre = '', $post = '')
 	{
+		// TODO FIXME - remove JS framework dependency from front-end and backend. 
+		// ie. no JS errors when prototype.js is completely disabled. 
+		// no JS error with only 'e107 Core Minimum' is enabled. 
+		// e107 Core Minimum should function independently of framework. 
+		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
+		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
+		
+			
 		if(empty($file_path))
 		{
 			return $this;
 		}
-
+		
+		if($type == 'core' && ($runtime_location == 'none')) // disabled core js library
+		{
+			return $this;
+		}
+		
+		if($type == 'core' && substr($file_path,0,4)=='http' ) // Core using CDN. 
+		{
+			$type = 'header';
+			$runtime_location = 1;
+		}
+		
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
 		if(is_array($file_path))
 		{
