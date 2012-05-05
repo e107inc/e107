@@ -544,7 +544,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				var style 			= '';
 				var bb 				= '';
-				
+							
 				var src				= document.getElementById('src').value;	
 				var width 			= document.getElementById('width').value;	
 				var height			= document.getElementById('height').value;			
@@ -555,12 +555,12 @@ class media_admin_ui extends e_admin_ui
 						
 				if(width !='')
 				{				
-					style  = style + 'width:' + width + 'px;';	
+			//		style  = style + 'width:' + width + 'px;';	
 				}
 
 				if(height !='')
 				{				
-					style  = style + 'height:' + height + 'px;';	
+			//		style  = style + 'height:' + height + 'px;';	
 				}				
 							
 				if(margin_right !='')
@@ -596,7 +596,9 @@ class media_admin_ui extends e_admin_ui
 				
 				document.getElementById('bbcode_holder').value = bb;
 				
-				var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
+			//	var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
+				var html = '<img style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\"/>'; 
+
 				document.getElementById('html_holder').value = html;
 				
 			}	
