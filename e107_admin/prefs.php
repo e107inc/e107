@@ -1102,7 +1102,7 @@ $text .= "
 		</fieldset>
 	";
 	
-// Javascripts
+// Javascript Control
 //TODO LANS
 $text .= "
 			<fieldset class='e-hideme' id='core-prefs-javascript'>
@@ -1114,20 +1114,38 @@ $text .= "
 				</colgroup>
 				<tbody>";
 	
-		$js_options = array('admin'=>'Admin Area','front'=>'Front-End','all'=>"Both");	
+		$js_options = array('admin'=>'Admin Area','front'=>'Front-End','all'=>"Both", 'none'=> 'Disabled');	
 	
+		
+		//TODO FIXME - remove JS framework dependency from front-end and backend. 
+		// ie. no JS errors when prototype.js is completely disabled. 
+		// no JS error with only 'e107 Core Minimum' is enabled. 
+		// e107 Core Minimum should function independently of framework. 
+		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded "e_js.php" (no framwork dependency) 
+		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
+		
+		//TODO Move paths into js_manager and store only keys like 'prototype-local', 'core-minimum' in prefs. 
 				
 		$js_types = array(
-		  'prototype/prototype.js' ,
-		  'scriptaculous/scriptaculous.js',
-		  'scriptaculous/effects.js',
-		  'e107.js.php'
+		  array('name'=> 'Prototype (local)',				'path'=> 'prototype/prototype.js') ,
+		  array('name'=> 'Scriptaculous (local)',			'path'=> 'scriptaculous/scriptaculous.js'),
+		  array('name'=> 'Scriptaculous-effects (local)',	'path'=> 'scriptaculous/effects.js'),
+		  array('name'=> 'Prototype (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js'),
+		  array('name'=> 'Scriptaculous + Effects (CDN)',	'path'=> 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects'),
+		  array('name'=> 'jQuery (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
+		  array('name'=> 'jQuery UI (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'),
+		  array('name'=> 'e107 Core Minimum',				'path'=> 'e107.js.php'),
+		  array('name'=> 'e107 Plugin Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Plugins. 
+		  array('name'=> 'e107 Theme Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Themes. 
 		);			
+		
 				
-		foreach($js_types as $k)
+		foreach($js_types as $arr)
 		{
+			$k = $arr['path'];
+			$name = $arr['name'];
 			$text .= "<tr>
-				<td>".$k."</td>
+				<td>".$name."</td>
 				<td>".$frm->radio_multi("e_jslib_core[{$k}]",$js_options,$pref['e_jslib_core'][$k])."</td>
 				</tr>";
 		}
