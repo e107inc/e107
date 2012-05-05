@@ -25,16 +25,6 @@ require_once("../../../../class2.php");
 header("Location: ".e_ADMIN_ABS.'image.php?mode=main&action=dialog&for=news&tagid=news-thumbnail&iframe=1&bbcode=1');
 exit; 
 
-$_GET['iframe'] = 1;
-$_GET['mode'] = 'main';
-$_GET['action'] = 'dialog';
-$_GET['for'] = 'news';
-$_GET['tagid'] = 'news-thumbnail';
-$_GET['bbcode']= 1;
-
-// 
-require_once(e_ADMIN.'image.php');
-exit;
 
 if (!defined('e107_INIT')) { exit; }
 
