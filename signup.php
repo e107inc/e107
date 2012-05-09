@@ -562,7 +562,7 @@ if (isset($_POST['register']))
 		}
 
 		$adviseLoginName = '';
-		if (varsettrue($pref['predefinedLoginName']))
+		if (varsettrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
 		{
 			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
@@ -726,6 +726,7 @@ function render_email($userInfo, $preview = FALSE)
 		$userInfo['user_password'] = "test-password";
 		$userInfo['user_loginname'] = "test-loginname";
 		$userInfo['user_name'] = "test-username";
+		$userInfo['user_email'] = "test-username@email";
 		$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
 		$userInfo['user_id'] = 0;
 		$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
@@ -761,7 +762,7 @@ function render_email($userInfo, $preview = FALSE)
 	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
 
 	$search[0] = '{LOGINNAME}';
-	$replace[0] = $userInfo['user_loginname'];
+	$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
 
 	$search[1] = '{PASSWORD}';
 	$replace[1] = $pass_show;
