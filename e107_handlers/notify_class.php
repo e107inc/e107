@@ -114,7 +114,7 @@ class notify
 				}
 				else
 				{	// Otherwise add to mailout queue
-					require(e_HANDLER.'mail_manager_class.php');
+					require_once(e_HANDLER.'mail_manager_class.php');
 					$mailer = new e107MailManager;
 
 
