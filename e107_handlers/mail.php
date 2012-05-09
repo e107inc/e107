@@ -8,10 +8,8 @@
  *
  * e107 Main
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
 */
 
 /**
@@ -251,7 +249,7 @@ class e107Email extends PHPMailer
 							$this->Port = 465;
 							break;
 						default :
-							echo "Invalid option: {$smtp_options['secure']}<br />";
+							if (defined('MAIL_DEBUG')) echo "Invalid option: {$smtp_options['secure']}<br />";
 					}
 				}
 				$this->SMTPKeepAlive = varset($smtp_options['keepalive'],FALSE);									// ***** Control this
@@ -757,7 +755,7 @@ class e107Email extends PHPMailer
 					}
 					else
 					{
-						echo "Add embedded image {$url} failed<br />";
+						if (defined('MAIL_DEBUG')) echo "Add embedded image {$url} failed<br />";
 					}
 				}
 			}
