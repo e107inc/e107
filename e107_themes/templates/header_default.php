@@ -250,7 +250,7 @@ function render_meta($type)
 	}
 	elseif($type == 'og')
 	{
-		if(!defined("META_OG") || !defined("XMLNS"))
+		if(!defined("META_OG") )
 		{
 			return;
 		}
@@ -261,7 +261,18 @@ function render_meta($type)
 		// FB will still utilize 'name' instead of 'property' (which is not valid XHTML)
 		foreach($tmp as $k=>$v)
 		{
-			$ret .= '<meta name="og:'.$k.'" content="'.$v.'" />'."\n";
+			if($k == 'image')
+			{
+				foreach($v as $img)
+				{
+					$ret .= '<meta name="og:image" content="'.$img.'" />'."\n";	
+				}
+			}
+			else
+			{
+				$ret .= '<meta name="og:'.$k.'" content="'.$v.'" />'."\n";	
+			}
+			
 		}
 
 		return $ret;		

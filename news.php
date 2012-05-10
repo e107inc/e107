@@ -686,27 +686,66 @@ function setNewsCache($cache_tag, $cache_data) {
  */
 function setNewsMeta($mode,$news)
 {
-	if($news['news_thumbnail'])
-	{
-		$image = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail']) : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
-	}
-	else
-	{
-		$image = "";
-	}
+	global $tp;
 		
 	$og_array = array(
 		'title'			=> $news['news_title'],
 		'type'			=> 'article',		  		
 		'url'			=> e_SELF."?".$mode.".".$news['news_id'],
-		'image'			=> ($image) ? $image : '',
 		'description' 	=> $news['news_summary'],
 		'site_name'		=> SITENAME
 	);
-		  	
+	
+	//YouTube Thumbs
+	preg_match_all("/\[youtube(?:[^\]]*)?]([^\[]*)(?:\[\/youtube])/im",$news['news_body'],$match);
+	
+	if(is_array($match[1]))
+	{
+		foreach($match[1] as $i)
+		{
+			list($img,$tmp) = explode("?",$i);
+			$og_array['image'][] = "http://img.youtube.com/vi/".$img."/0.jpg"; 	
+		}
+	}
+	
+	// Embedded Images
+	preg_match_all("/\[img(?:[^\]]*)?]([^\[]*)(?:\[\/img])/im",$news['news_body'],$mtch);
+	
+	if(is_array($mtch[1]))
+	{
+		foreach($mtch[1] as $i)
+		{
+			if(substr($i,0,4)=='http')
+			{
+				$og_array['image'][] = $i;
+			}
+			elseif(substr($i,0,3)=="{e_")
+			{
+				$og_array['image'][] = $tp->replaceConstants($i,'full');
+			}
+			else
+			{
+				$og_array['image'][] = SITEURL.e_IMAGE."newspost_images/".$i;	
+			}
+			
+		}
+	}
+	
+
+	if($news['news_thumbnail'])
+	{
+		$og_array['image'][] = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail']) : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
+	}
+
+			  	
 	define('META_OG',serialize($og_array));
 	define('META_DESCRIPTION',SITENAME.': '.$news['news_title'].' - '.$news['news_summary']);
 }
+
+
+
+
+
 
 function checkCache($cacheString){
 	global $pref,$e107cache;

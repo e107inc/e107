@@ -144,7 +144,7 @@ class bb_youtube extends e_bb_base
 			
 			parse_str($query, $vals);		// Various options set here
 												
-			if (varset($vals['allowfullscreen'], 'true') != 'true' && !varset($val['fs']))
+			if (varset($vals['allowfullscreen'], 'true') != 'true')
 			{
 				$params[] = 'fs=0';
 			}
@@ -292,12 +292,12 @@ class bb_youtube extends e_bb_base
 		$url = isset($bbparm['privacy']) ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
 		$url .= $yID.'?';
 
-		if(isset($params['nofull']) || !varset($params['fs'])) 
+		if(isset($params['nofull']) || varset($params['fs'])=='0') 
 		{
 			$fscr = 'false';
 			$url = $url.'fs='.intval($params['fs']);
 		} 
-		else 
+		else // fullscreen option enabled is the default. 
 		{
 			$fscr = 'true';
 			$url = $url.'fs=1';
