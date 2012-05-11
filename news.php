@@ -892,32 +892,32 @@ function setNewsFrontMeta($news, $type='news')
 {
 	
 	$tp = e107::getParser();
-	
+
 	if($type == 'news')
 	{
 		if($news['news_title'] && !defined('e_PAGETITLE'))
 		{
 			define('e_PAGETITLE', $news['news_title']);
-			e107::getJS()->coreMeta('og:title',$news['news_title']);
-			e107::getJS()->coreMeta('og:type','article');		
+			e107::meta('og:title',$news['news_title']);
+			e107::meta('og:type','article');		
 		}
 
 		if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
 		{
-			e107::getJS()->coreMeta('description',$news['news_meta_description']);
-			e107::getJS()->coreMeta('og:description',$news['news_meta_description']);	
+			e107::meta('description',$news['news_meta_description']);
+			e107::meta('og:description',$news['news_meta_description']);	
 			//define('META_DESCRIPTION', $news['news_meta_description']); // deprecated
 		}
 		elseif($news['news_summary']) // BC compatibility
 		{
-			e107::getJS()->coreMeta('og:description',$news['news_summary']);		
+			e107::meta('og:description',$news['news_summary']);		
 		}
 	
 		// grab all images in news-body and add to meta. 
 		$images = e107::getBB()->getContent('img',$news['news_body'],SITEURL.e_IMAGE."newspost_images/");
 		foreach($images as $im)
 		{
-			e107::getJS()->coreMeta('og:image',$im);		
+			e107::meta('og:image',$im);		
 		}
 		
 		// grab all youtube videos in news-body and add thumbnails to meta. 
@@ -925,28 +925,28 @@ function setNewsFrontMeta($news, $type='news')
 		foreach($youtube as $yt)
 		{
 			list($img,$tmp) = explode("?",$yt);
-			e107::getJS()->coreMeta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");		
+			e107::meta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");		
 		}	
 
 		// include news-thumbnail/image in meta. 
 		if($news['news_thumbnail'])
 		{
 			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
-			e107::getJS()->coreMeta('og:image',$iurl);			
+			e107::meta('og:image',$iurl);			
 		}
 
 		$url = e107::getUrl()->create('news/view/item', $news,'full=1');
-		e107::getJS()->coreMeta('og:url',$url);	
+		e107::meta('og:url',$url);	
 		
-		e107::getJS()->coreMeta('article:section',$news['category_name']);	
+		e107::meta('article:section',$news['category_name']);	
 		
 		if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
 		{		
-			e107::getJS()->coreMeta('keywords',$news['news_meta_keywords']);
+			e107::meta('keywords',$news['news_meta_keywords']);
 			$tmp = explode(",",$news['news_meta_keywords']);
 			foreach($tmp as $t)
 			{
-				e107::getJS()->coreMeta('article:tag',$t);
+				e107::meta('article:tag',$t);
 			}
 
 			//	define('META_KEYWORDS', $news['news_meta_keywords']); // deprecated
