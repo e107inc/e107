@@ -3702,12 +3702,12 @@ class eResponse
 		$attrData = '';
 		foreach ($this->_meta as $attr) 
 		{
+			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
 			{
-				$attrData .= '<meta';
 				$attrData .= ' '.preg_replace('/[\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
-				$attrData .= ' />'."\n";
 			}
+			$attrData .= ' />'."\n";
 		}
 		return $attrData;
 	}
