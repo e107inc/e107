@@ -734,7 +734,7 @@ function setNewsMeta($mode,$news)
 
 	if($news['news_thumbnail'])
 	{
-		$og_array['image'][] = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail']) : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
+		$og_array['image'][] = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
 	}
 
 			  	

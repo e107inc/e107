@@ -295,6 +295,7 @@ echo render_meta('og');
 unset($key_merge,$diz_merge);
 
 // ---------- Favicon ---------
+	echo "\n<!-- *FAV-ICONS* -->\n";
 if (file_exists(THEME."favicon.ico")) {
 	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
 }elseif (file_exists(e_BASE."favicon.ico")) {

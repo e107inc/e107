@@ -349,6 +349,10 @@ class bb_youtube extends e_bb_base
 		{
 			$url .= "&amp;autoplay=".intval($params['autoplay']);
 		}
+
+		// Show Info by default. 
+		$url .= (isset($params['showinfo'])) ? "&amp;showinfo=".intval($params['showinfo']) : "&amp;showinfo=1";
+		
 		
 		$ret = '
 		
