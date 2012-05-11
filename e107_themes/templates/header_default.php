@@ -103,6 +103,10 @@ echo "<head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 <meta http-equiv='content-style-type' content='text/css' />
 ";
+
+
+
+
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
@@ -122,6 +126,8 @@ else
 //
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
+
+
 
 // Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
 // NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
@@ -150,6 +156,8 @@ unset($e_headers);
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
 
+e107::getJS()->renderJs('core_meta',false);
+
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';
 if (is_array($pref['e_meta_list']))
@@ -167,6 +175,8 @@ if (is_array($pref['e_meta_list']))
 	$e_meta_content = ob_get_contents();
 	ob_end_clean();
 }
+
+
 
 // Register Plugin specific CSS 
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
@@ -383,6 +393,8 @@ e107::getJs()->renderJs('header_inline', 5);
 
 // --- Send plugin Meta  --------
 echo $e_meta_content; // e_meta already loaded
+
+
 
 //
 // G: Send Theme Headers
