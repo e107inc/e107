@@ -103,11 +103,12 @@ echo "<head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 <meta http-equiv='content-style-type' content='text/css' />
 ";
-
-
-
-
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+
+
+echo e107::getUrl()->response()->renderMeta();
+
+
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
@@ -127,6 +128,7 @@ else
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
 
+// Other Meta tags. 
 
 
 // Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
@@ -156,7 +158,6 @@ unset($e_headers);
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
 
-e107::getJS()->renderJs('core_meta',false);
 
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';
