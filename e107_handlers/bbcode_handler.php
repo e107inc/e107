@@ -29,13 +29,13 @@ class e_bbcode
 	var $bbList;			// Caches the file contents for each bbcode processed
 	var $bbLocation;		// Location for each file - 'core' or a plugin name
 	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
-
+	var $core_bb = array();
 
 	function __construct()
 	{
 		$pref = e107::getPref();
 		
-		$core_bb = array(
+		$this->core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
 		'_br', 'color', 'size', 'code',
 		'html', 'flash', 'link', 'email',
@@ -46,7 +46,7 @@ class e_bbcode
 		'p', 'h', 'nobr', 'block',
 		);
 
-		foreach($core_bb as $c)
+		foreach($this->core_bb as $c)
 		{
 			$this->bbLocation[$c] = 'core';
 		}
@@ -376,6 +376,48 @@ class e_bbcode
 			$bbcode_return = str_replace($exp_search, $exp_replace, $bbcode_return);
 		}
 		return $bbcode_output.$bbcode_return;
+	}
+
+
+	/** Grab a list of bbcode content . ie. all [img]xxxx[/img] within a block of text. 
+	 * @var string $type  - bbcode eg. 'img' or 'youtube'
+	 * @var string $text  - text to be processed for bbcode content
+	 * @var string $path - optional path to prepend to output if http or {e_xxxx} is not found. 
+	 * @return array
+	 */
+	function getContent($type,$text,$path='')
+	{
+		if(!in_array($type,$this->core_bb))
+		{
+			return;
+		}
+		
+		preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
+		
+		$ret = array();
+		
+		if(is_array($mtch[1]))
+		{
+			$tp = e107::getParser();
+			foreach($mtch[1] as $i)
+			{
+				if(substr($i,0,4)=='http')
+				{
+					$ret[] = $i;
+				}
+				elseif(substr($i,0,3)=="{e_")
+				{
+					$ret[] = $tp->replaceConstants($i,'full');
+				}
+				else
+				{
+					$ret[] = $path.$i;	
+				}
+				
+			}			
+		}
+		
+		return $ret;
 	}
 }
 

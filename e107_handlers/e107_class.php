@@ -155,6 +155,7 @@ class e107
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_ui'					 => '{e_HANDLER}admin_ui.php',
+		'e_bbcode'						 => '{e_HANDLER}bbcode_handler.php',
 		'e_file'						 => '{e_HANDLER}file_class.php',
 		'e_form'						 => '{e_HANDLER}form_handler.php',
 		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
@@ -967,13 +968,23 @@ class e107
 	}
 
 	/**
-	 * Retrieve event singleton object
+	 * Retrieve cache singleton object
 	 *
 	 * @return ecache
 	 */
 	public static function getCache()
 	{
 		return self::getSingleton('ecache', true);
+	}
+
+	/**
+	 * Retrieve bbcode singleton object
+	 *
+	 * @return e_bbcode
+	 */
+	public static function getBB()
+	{
+		return self::getSingleton('e_bbcode', true);
 	}
 
 	/**

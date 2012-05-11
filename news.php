@@ -890,24 +890,77 @@ function render_newscats(){  // --  CNN Style Categories. ----
 
 function setNewsFrontMeta($news, $type='news')
 {
+	
+	$tp = e107::getParser();
+	
 	if($type == 'news')
 	{
 		if($news['news_title'] && !defined('e_PAGETITLE'))
 		{
 			define('e_PAGETITLE', $news['news_title']);
-		}
-
-		if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
-		{
-			define('META_KEYWORDS', $news['news_meta_keywords']);
+			e107::getJS()->coreMeta('og:title',$news['news_title']);
+			e107::getJS()->coreMeta('og:type','article');		
 		}
 
 		if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
 		{
-			define('META_DESCRIPTION', $news['news_meta_description']);
+			e107::getJS()->coreMeta('description',$news['news_meta_description']);
+			e107::getJS()->coreMeta('og:description',$news['news_meta_description']);	
+			//define('META_DESCRIPTION', $news['news_meta_description']); // deprecated
 		}
+		elseif($news['news_summary']) // BC compatibility
+		{
+			e107::getJS()->coreMeta('og:description',$news['news_summary']);		
+		}
+	
+		// grab all images in news-body and add to meta. 
+		$images = e107::getBB()->getContent('img',$news['news_body'],SITEURL.e_IMAGE."newspost_images/");
+		foreach($images as $im)
+		{
+			e107::getJS()->coreMeta('og:image',$im);		
+		}
+		
+		// grab all youtube videos in news-body and add thumbnails to meta. 
+		$youtube = e107::getBB()->getContent('youtube',$news['news_body']);
+		foreach($youtube as $yt)
+		{
+			list($img,$tmp) = explode("?",$yt);
+			e107::getJS()->coreMeta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");		
+		}	
+
+		// include news-thumbnail/image in meta. 
+		if($news['news_thumbnail'])
+		{
+			$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $tp->replaceConstants($news['news_thumbnail'],'full') : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];	
+			e107::getJS()->coreMeta('og:image',$iurl);			
+		}
+
+		$url = e107::getUrl()->create('news/view/item', $news,'full=1');
+		e107::getJS()->coreMeta('og:url',$url);	
+		
+		e107::getJS()->coreMeta('article:section',$news['category_name']);	
+		
+		if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
+		{		
+			e107::getJS()->coreMeta('keywords',$news['news_meta_keywords']);
+			$tmp = explode(",",$news['news_meta_keywords']);
+			foreach($tmp as $t)
+			{
+				e107::getJS()->coreMeta('article:tag',$t);
+			}
+
+			//	define('META_KEYWORDS', $news['news_meta_keywords']); // deprecated
+		}
+
+
+		/* Facebook reference. 
+		 * http://developers.facebook.com/docs/opengraph/objects/builtin/
+		 */
+
 		return;
 	}
+
+
 
 	if($news['category_name'] && !defined('e_PAGETITLE'))
 	{
@@ -923,6 +976,9 @@ function setNewsFrontMeta($news, $type='news')
 	{
 		define('META_DESCRIPTION', $news['category_meta_description']);
 	}
+	
+			
+
 }
 
 

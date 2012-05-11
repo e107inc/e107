@@ -98,6 +98,13 @@ class e_jsmanager
      * @var array
      */
     protected $_e_css_src = array();
+	
+	 /**
+     * Meta
+     *
+     * @var array
+     */
+    protected $_e_meta = array();
 
     /**
      * Runtime location
@@ -279,6 +286,19 @@ class e_jsmanager
 	public function inlineCSS($css_content, $media = 'all')
 	{
 		$this->addJs('inline_css', $css_content, $media);
+		return $this;
+	}
+	
+	/**
+	 * Add Meta code to site header
+	 *
+	 * @param string $name 
+	 * @param string $content 
+	 * @return e_jsmanager
+	 */
+	public function coreMeta($name, $content = '')
+	{
+		$this->addJs('core_meta', $name, $content);
 		return $this;
 	}
 
@@ -543,7 +563,7 @@ class e_jsmanager
 			return $this;
 		}
 		
-		if($type == 'core' && substr($file_path,0,4)=='http' ) // Core using CDN. 
+		if($type == 'core' && !is_array($file_path) && substr($file_path,0,4)=='http' ) // Core using CDN. 
 		{
 			$type = 'header';
 			$runtime_location = 1;
@@ -615,6 +635,13 @@ class e_jsmanager
 
 			case 'inline_css': // no zones, TODO - media?
 				$this->_e_css_src[] = $file_path;
+				return $this;
+				break;
+			break;
+			
+			case 'core_meta': 
+				$this->_e_meta['core'][] = $file_path."|".$runtime_location;
+				$registry = &$this->_e_meta['core'];
 				return $this;
 				break;
 			break;
@@ -751,6 +778,11 @@ class e_jsmanager
 			case 'inline_css':
 				$this->renderInline($this->_e_css_src, 'Inline CSS', 'css');
 				$this->_e_css_src = array();
+			break;
+			
+			case 'core_meta':
+				$this->renderMeta($this->_e_meta, 'Meta', 'core');
+				$this->_e_meta['core'] = array();
 			break;
 
 			case 'footer':
@@ -927,6 +959,46 @@ class e_jsmanager
 				echo "\n";
 			break;
 		}
+	}
+	
+	
+	
+	
+	
+/**
+	 * Render Meta source array
+	 *
+	 * @param array $js_content_array
+	 * @param string $label added as comment if non-empty
+	 * @return void
+	 */
+	function renderMeta($content_array, $label = '',$type = 'core')
+	{
+		
+		
+		
+		if(empty($content_array))
+		{
+			return '';
+		}
+
+		$content_array[$type] = array_unique($content_array[$type]); //TODO quick fix, we need better control!
+		echo "\n";
+
+		if($label) 
+		{
+			echo "<!-- [JSManager] ".$label." -->\n";
+		}
+		
+		foreach($content_array[$type] as $met)
+		{
+			list($name,$content) = explode("|",$met);
+			echo "\n";
+			echo '<meta name="'.$name.'" content="'.$content.'" />';	
+		}
+		
+		echo "\n\n";
+			
 	}
 
 	/**
