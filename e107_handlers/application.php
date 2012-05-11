@@ -3698,8 +3698,9 @@ class eResponse
 	 */
 	public function renderMeta()
 	{
-		$this->_meta = array_unique($this->_meta);
+		
 		$attrData = '';
+		
 		foreach ($this->_meta as $attr) 
 		{
 			$attrData .= '<meta';
