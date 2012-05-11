@@ -3408,6 +3408,7 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
+	protected $_meta = array();
 	protected $_title_separator = ' &raquo; ';
 	protected $_content_type = 'html';
 	protected $_content_type_arr =  array(
@@ -3663,6 +3664,52 @@ class eResponse
 			$ns = 'default';
 		}
 		return vartrue($this->_render_mod[$ns], null);
+	}
+	
+	/**
+	 * Generic meta information 
+	 * Example usage: 
+	 * addMeta('og:title', 'My Title');
+	 * addMeta(null, 30, array('http-equiv' => 'refresh'));
+	 * addMeta(null, null, array('http-equiv' => 'refresh', 'content' => 30)); // same as above
+	 * @param string $name 'name' attribute value, or null to avoid it
+	 * @param string $content 'content' attribute value, or null to avoid it
+	 * @param array $extended format 'attribute_name' => 'value'
+	 * @return eResponse
+	 */
+	public function addMeta($name = null, $content = null, $extended = array())
+	{
+		$attr = array();
+		if(null !== $name) $attr['name'] = $name;
+		if(null !== $content) $attr['content'] = $content;
+		if(!empty($extended)) 
+		{
+			if(!empty($attr))  $attr = array_merge($attr, $extended);
+			else $attr = $extended;
+		}
+		
+		if(!empty($attr)) $this->_meta[] = $attr;
+		return $this;
+	}
+	
+	/**
+	 * Render meta tags, registered via addMeta() method
+	 * @return string
+	 */
+	public function renderMeta()
+	{
+		$this->_meta = array_unique($this->_meta);
+		$attrData = '';
+		foreach ($this->_meta as $attr) 
+		{
+			foreach ($attr as $p => $v) 
+			{
+				$attrData .= '<meta';
+				$attrData .= ' '.preg_replace('/[\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
+				$attrData .= ' />'."\n";
+			}
+		}
+		return $attrData;
 	}
 
 	/**
