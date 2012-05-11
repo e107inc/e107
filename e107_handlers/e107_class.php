@@ -1361,6 +1361,15 @@ class e107
 		}
 		return self::getObject('e_jshelper', null, true);
 	}
+	
+	/**
+	 * @see eResponse::addMeta()
+	 * @return eResponse
+	 */
+	public static function meta($name = null, $content = null, $extended = array())
+	{
+		return e107::getUrl()->response()->addMeta($name, $content, $extended);
+	}
 
 	/**
 	 * Retrieve admin dispatcher instance.
