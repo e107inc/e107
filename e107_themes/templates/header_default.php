@@ -106,7 +106,7 @@ echo "<head>
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 
 
-echo e107::getUrl()->response()->renderMeta();
+echo e107::getUrl()->response()->renderMeta()."\n";
 
 
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
