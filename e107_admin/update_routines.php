@@ -129,14 +129,21 @@ function update_check()
 		}
 	}
 
-	foreach($dbupdatep as $func => $rmks) {
-		if (function_exists("update_".$func)) {
-			if (!call_user_func("update_".$func, FALSE)) {
-				$update_needed = TRUE;
-				continue;
+	if(is_array($dbupdatep))
+	{
+		foreach($dbupdatep as $func => $rmks)
+		{
+			if (function_exists("update_".$func))
+			{
+				if (!call_user_func("update_".$func, FALSE))
+				{
+					$update_needed = TRUE;
+					continue;
+				}
 			}
-		}
+		}	
 	}
+
   	$e107cache->set("nq_admin_updatecheck", time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
   }
   else  
