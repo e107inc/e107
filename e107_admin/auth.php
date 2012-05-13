@@ -126,6 +126,7 @@ else
 	}
 
 	$e_sub_cat = 'logout';
+	
 	if (!defset('NO_HEADER'))
 		require_once (e_ADMIN."header.php");
 
@@ -161,7 +162,7 @@ class auth
 			<tr>
             <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."generic/password.png' alt='' />\n")."</td>
 			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
-			<td class='forumheader3' style='text-align:center'><input class='tbox' type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />\n</td>
+			<td class='forumheader3' style='text-align:center'><input autofocus class='tbox' type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />\n</td>
 
 			</tr>
 			<tr>

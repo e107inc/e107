@@ -430,8 +430,8 @@ switch ($action)
 			<form method='post' action='".e_SELF."?options'>
 				<fieldset id='core-banlist-options'>
 					<legend>".BANLAN_72."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -488,8 +488,8 @@ switch ($action)
 				</fieldset>
 				<fieldset id='core-banlist-options-ban'>
 					<legend>".BANLAN_74."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -532,11 +532,11 @@ switch ($action)
 			<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
 				<fieldset id='core-banlist-times'>
 					<legend class='e-hideme'>".BANLAN_77."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='3'>
-							<col style='width: 20%'></col>
-							<col style='width: 65%'></col>
-							<col style='width: 15%'></col>
+					<table class='adminlist'>
+						<colgroup>
+							<col style='width: 20%' />
+							<col style='width: 65%' />
+							<col style='width: 15%' />
 						</colgroup>
 						<thead>
 							<tr>
@@ -593,8 +593,8 @@ switch ($action)
 			<form method='post' action='".e_SELF.$next."'>
 				<fieldset id='core-banlist-edit'>
 					<legend class='e-hideme'>".$page_title[$action]."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -736,8 +736,8 @@ switch ($action)
 			<form method='post' action='".e_ADMIN_ABS."banlist_export.php' id='core-banlist-transfer-form' >
 				<fieldset id='core-banlist-transfer-export'>
 					<legend>".BANLAN_40."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='3'>
+					<table class='adminlist'>
+						<colgroup>
 							<col style='width:30%' />
 							<col style='width:30%' />
 							<col style='width:40%' />
@@ -780,8 +780,8 @@ switch ($action)
 			<form enctype='multipart/form-data' method='post' action='".e_SELF."?transfer' id='ban_import_form' >
 				<fieldset id='core-banlist-transfer-import'>
 					<legend>".BANLAN_41."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='3'>
+					<table class='adminlist'>
+						<colgroup>
 							<col style='width:30%' />
 							<col style='width:30%' />
 							<col style='width:40%' />
@@ -854,8 +854,8 @@ switch ($action)
 		else
 		{
 			$text .= "
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='".count($col_widths[$action])."'>
+					<table class='adminlist'>
+						<colgroup>
 			";
 			foreach($col_widths[$action] as $fw)
 			{

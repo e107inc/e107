@@ -101,7 +101,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 $text .= "
 	<div id='core-infopanel_latest' class='f-left' style='width:49%' >
 	<div style='border:1px solid silver;margin:10px'>
-	<table cellspacing='0' cellpadding='0'>
+	<table>
 	<tr>
 	<td style='padding:0px'>";
 	
@@ -127,13 +127,13 @@ $text .= "
 	<div class='left block-text'>
 
 
-		<table cellpadding='0' cellspacing='0' class='adminlist'>
-		<colgroup span='5'>
-			<col style='width: 10%'></col>
-            <col style='width: 25%'></col>
-			<col style='width: 10%'></col>
-			<col style='width: 40%'></col>
-			<col style='width: auto'></col>
+		<table class='adminlist'>
+		<colgroup>
+			<col style='width: 10%' />
+            <col style='width: 25%' />
+			<col style='width: 10%' />
+			<col style='width: 40%' />
+			<col style='width: auto' />
 		</colgroup>
 		<thead>
 			<tr>

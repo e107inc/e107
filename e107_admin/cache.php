@@ -121,8 +121,8 @@ $text = "
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-cache-settings'>
 			<legend class='e-hideme'>".CACLAN_3."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='2'>
+			<table class='adminlist'>
+				<colgroup>
 					<col style='width:60%' />
 					<col style='width:20%' />
 					<col style='width:20%' />
