@@ -122,8 +122,8 @@ function show_admins()
 	<form action='".e_SELF."' method='post' id='del_administrator'>
 		<fieldset id='core-administrator-list'>
 			<legend class='e-hideme'>".ADMSLAN_13."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='4'>
+			<table class='adminlist'>
+				<colgroup>
 					<col style='width:  5%'></col>
 					<col style='width: 20%'></col>
 					<col style='width: 65%'></col>

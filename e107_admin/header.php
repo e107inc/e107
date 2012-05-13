@@ -72,8 +72,11 @@ if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 
 // send the charset to the browser - overrides spurious server settings with the lan pack settings.
 header('Content-type: text/html; charset=utf-8', TRUE);
+ 
 
-echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+
+//echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html>\n";
+
 
 //
 // B.2: Include admin LAN defines
@@ -94,12 +97,24 @@ if (!defined('ADMIN_WIDTH'))
 // C: Send start of HTML
 //
 
-echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
-<head>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-<meta http-equiv='content-style-type' content='text/css' />
-";
-echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+// HTML 5 default. 
+if(!defined('XHTML_FORCE'))
+{
+	echo "<!doctype html>\n";
+	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
+	echo "<head>\n";
+}
+else
+{
+	echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";	
+	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
+	echo "
+	<head>	
+	<meta http-equiv='content-style-type' content='text/css' />\n";
+	echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+}
+echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+
 echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 
 //

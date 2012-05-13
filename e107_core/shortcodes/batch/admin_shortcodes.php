@@ -1057,7 +1057,7 @@ class admin_shortcodes
 				$text = "<script type='text/javascript' src='".e_FILE_ABS."nav_menu.js'></script>";
 			}
 
-			$text .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
+			$text .= "<div style='width: 100%'><table style='border-collapse: collapse; width: 100%'>
 			<tr><td>
 			<div class='menuBar' style='width: 100%'>";
 

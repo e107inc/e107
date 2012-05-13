@@ -437,10 +437,10 @@ class system_tools
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
 			<fieldset id='core-db-plugin-scan'>
 			<legend class='e-hideme'>".DBLAN_10."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='2'>
-					<col style='width: 60%'></col>
-					<col style='width: 40%'></col>
+				<table class='adminlist'>
+				<colgroup>
+					<col style='width: 60%' />
+					<col style='width: 40%' />
 				</colgroup>
 				<tbody>";
 
@@ -492,9 +492,8 @@ class system_tools
 
 				  $text = "
 					<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$_GET['mode']."'>
-	                <table cellpadding='0' cellspacing='0' class='adminform'>
-
-	                	<colgroup span='2'>
+	                <table class='adminform'>
+	                	<colgroup>
 	                		<col class='col-label' />
 	                		<col class='col-control' />
 	                	</colgroup>
@@ -540,9 +539,8 @@ class system_tools
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
 			<legend class='e-hideme'>Export Options</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='2'>
-
+				<table class='adminlist'>
+				<colgroup>
 					<col style='width: 80%'></col>
 					<col style='width: 20%'></col>
 				</colgroup>
@@ -577,12 +575,10 @@ class system_tools
 					}
 					$text .= "</tbody>
 				</table>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-
-				<colgroup span='2'>
-
-					<col style='width: 80%'></col>
-					<col style='width: 20%'></col>
+				<table class='adminlist'>
+				<colgroup>
+					<col style='width: 80%' />
+					<col style='width: 20%' />
 				</colgroup>
 				<thead>
 				<tr>
@@ -611,11 +607,10 @@ class system_tools
 					</tbody>
 				</table>
 
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='2'>
-
-					<col style='width: 80%'></col>
-					<col style='width: 20%'></col>
+				<table class='adminlist'>
+				<colgroup>
+					<col style='width: 80%' />
+					<col style='width: 20%' />
 				</colgroup>
 				<thead>
 				<tr>
@@ -719,12 +714,12 @@ class system_tools
 
 
 		$text .= "</select></div>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='4'>
-								<col style='width: 5%'></col>
-								<col style='width: 20%'></col>
-								<col style='width: 70%'></col>
-								<col style='width: 5%'></col>
+						<table class='adminlist'>
+							<colgroup>
+								<col style='width: 5%' />
+								<col style='width: 20%' />
+								<col style='width: 70%' />
+								<col style='width: 5%' />
 							</colgroup>
 							<thead>
 								<tr>
@@ -837,12 +832,12 @@ class system_tools
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='plug_edit'>
 					<fieldset id='core-db-plugin-scan'>
 						<legend class='e-hideme'>".ADLAN_CL_7."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='4'>
-								<col style='width: 20%'></col>
-								<col style='width: 20%'></col>
-								<col style='width: 35%'></col>
-								<col style='width: 25%'></col>
+						<table class='adminlist'>
+							<colgroup>
+								<col style='width: 20%' />
+								<col style='width: 20%' />
+								<col style='width: 35%' />
+								<col style='width: 25%' />
 							</colgroup>
 							<thead>
 								<tr>
@@ -1112,9 +1107,9 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			<form method='post' action='".e_SELF."'>
 				<fieldset id='core-db-verify-sql-tables'>
 					<legend class='e-hideme'>".DBLAN_39."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='1'>
-							<col style='width: 100%'></col>
+					<table class='adminlist'>
+						<colgroup>
+							<col style='width: 100%' />
 						</colgroup>
 						<thead>
 							<tr>
@@ -1181,8 +1176,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 					<fieldset id='core-core-db-verify-sql-records-{$ctype}'>
 						<legend>".DBLAN_40." ".$ctype."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='4'>
+						<table class='adminlist'>
+							<colgroup>
 								<col style='width: 20%'></col>
 								<col style='width: 10%'></col>
 								<col style='width: 50%'></col>

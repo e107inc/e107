@@ -1087,7 +1087,7 @@ class admin_newspost
 				<form action='".e_SELF."' id='newsform' method='post'>
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<table class='adminlist'>
 							".$frm->colGroup($this->fields, $this->fieldpref)."
 							".$frm->thead($this->fields, $this->fieldpref, 'action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch'].'&amp;frm=[FROM]')."
 							<tbody>";
@@ -1384,8 +1384,8 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
 				<fieldset id='core-newspost-create'>
 					<legend>".LAN_NEWS_52."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit'>
-						<colgroup span='2'>
+					<table class='adminedit'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -1546,8 +1546,8 @@ class admin_newspost
 		$text .= "
 				<fieldset id='core-newspost-seo'>
 					<legend>SEO</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit'>
-						<colgroup span='2'>
+					<table class='adminedit'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -1578,8 +1578,8 @@ class admin_newspost
 		$text .= "
 				<fieldset id='core-newspost-edit-options'>
 					<legend>".LAN_NEWS_53."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit'>
-						<colgroup span='2'>
+					<table class='adminedit'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -1837,7 +1837,7 @@ class admin_newspost
 		return "
 				<fieldset id='core-newspost-preview'>
 					<legend>".NWSLAN_27."</legend>
-					<table cellpadding='0' cellspacing='0' class='admininfo'>
+					<table class='admininfo'>
 					<tbody>
 						<tr>
 							<td class='label' colspan='2'>
@@ -1973,8 +1973,8 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?cat' id='core-newspost-cat-create-form'>
 				<fieldset id='core-newspost-cat-create'>
 					<legend>".NWSLAN_56."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -2069,14 +2069,14 @@ class admin_newspost
 			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
 					<legend>".NWSLAN_51."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='6'>
-							<col style='width: 	5%'></col>
-							<col style='width:  10%'></col>
-							<col style='width:  40%'></col>
-							<col style='width:  20%'></col>
-							<col style='width:  15%'></col>
-							<col style='width:  10%'></col>
+					<table class='adminlist'>
+						<colgroup>
+							<col style='width: 	5%'  />
+							<col style='width:  10%' />
+							<col style='width:  40%' />
+							<col style='width:  20%' />
+							<col style='width:  15%' />
+							<col style='width:  10%' />
 						</colgroup>
 						<thead>
 							<tr>
@@ -2172,8 +2172,8 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
 					<legend class='e-hideme'>".NWSLAN_90."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -2319,16 +2319,16 @@ class admin_newspost
 			<form action='".e_SELF."?sn' method='post'>
 				<fieldset id='core-newspost-sn-list'>
 					<legend class='e-hideme'>".NWSLAN_47."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='6'>
-							<col style='width: 2%'></col>
-							<col style='width: 5%'></col>
-							<col style='width: 60%'></col>
-							<col style='width: auto'></col>
-							<col style='width: auto'></col>
-							<col style='width: auto'></col>
-							<col style='width: auto'></col>
-							<col style='width: 20%'></col>
+					<tableclass='adminlist'>
+						<colgroup>
+							<col style='width: 2%' />
+							<col style='width: 5%' />
+							<col style='width: 60%' />
+							<col style='width: auto' />
+							<col style='width: auto' />
+							<col style='width: auto' />
+							<col style='width: auto' />
+							<col style='width: 20%' />
 						</colgroup>
 						<thead>
 							<tr>
@@ -2423,11 +2423,11 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?maint' id='core-newspost-maintenance-form'>
 				<fieldset id='core-newspost-maintenance'>
 					<legend class='e-hideme'>".LAN_NEWS_59."</legend>
-					<table class='adminform' cellpadding='0' cellspacing='0'>
-					<colgroup span='3'>
-						<col class='col-label'></col>
-						<col class='col-control'></col>
-						<col class='col-control'></col>
+					<table class='adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
+						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>

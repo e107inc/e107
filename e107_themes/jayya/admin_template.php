@@ -58,13 +58,17 @@ $ADMIN_HEADER = "<table class='page_container'>
 </tr>
 </table>";
 
-if (ADMIN) {
+if (ADMIN)
+{
 	$ADMIN_HEADER .= "{ADMIN_ALT_NAV}";
-} else {
+}
+else // Admin LOGIN area. 
+{
+	// file not found errors when logged out. 
 	if (file_exists(THEME.'admin_nav.js')) {
-		$ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
+		//$ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
 	} else {
-		$ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+		// $ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
 	}
 
 	$ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>

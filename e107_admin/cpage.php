@@ -322,8 +322,8 @@ class page_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
 					<fieldset id='core-cpage-create-general'>
 						<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminedit'>
-							<colgroup span='2'>
+						<table class='adminedit'>
+							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
 							</colgroup>
@@ -422,8 +422,8 @@ class page_admin_ui extends e_admin_ui
 					</fieldset>
 					<fieldset id='core-cpage-create-options'>
 						<legend>".LAN_OPTIONS."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminedit options'>
-							<colgroup span='2'>
+						<table class='adminedit options'>
+							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
 							</colgroup>
@@ -485,8 +485,8 @@ class page_admin_ui extends e_admin_ui
 					</fieldset>
 					<fieldset id='core-cpage-create-hooks'>
 						<legend>".LAN_HOOKS."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminedit options'>
-							<colgroup span='2'>
+						<table class='adminedit options'>
+							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
 							</colgroup>
@@ -546,8 +546,8 @@ class page_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".e_QUERY."'>
 					<fieldset id='core-cpage-options'>
 						<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminform'>
-							<colgroup span='2'>
+						<table class='adminform'>
+							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
 							</colgroup>
@@ -858,7 +858,7 @@ class page
         $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-cpage-list'>
 						<legend class='e-hideme'>".CUSLAN_5."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+						<table class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
 

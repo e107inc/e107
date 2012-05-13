@@ -193,8 +193,8 @@ $text = "
 	<form class='admin-menu' method='post' action='".e_SELF."'>
 		<fieldset class='e-hideme' id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -328,8 +328,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-display'>
 			<legend>".PRFLAN_13."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -375,8 +375,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-admindisp'>
 			<legend>".PRFLAN_77."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -425,8 +425,8 @@ $date3 = $ga->convert_date(time(), "forum");
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
 			<legend>".PRFLAN_21."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -489,8 +489,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-registration'>
 			<legend>".PRFLAN_28."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -634,8 +634,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-signup'>
 			<legend>".PRFLAN_19."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -701,8 +701,8 @@ if(!isset($pref['post_html']))
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-textpost'>
 			<legend>".PRFLAN_101."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -848,8 +848,8 @@ $hasGD = extension_loaded("gd");
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-security'>
 			<legend>".PRFLAN_47."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -1034,8 +1034,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-comments'>
 			<legend>".PRFLAN_87."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -1082,8 +1082,8 @@ $text .= "
 			</table>
 
 			<legend>".PRFLAN_209."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -1107,8 +1107,8 @@ $text .= "
 $text .= "
 			<fieldset class='e-hideme' id='core-prefs-javascript'>
 			<legend>Javascript Frameworks (for testing purposes only)</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -1161,8 +1161,8 @@ $text .= "
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-advanced'>
 			<legend>".PRFLAN_149."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
