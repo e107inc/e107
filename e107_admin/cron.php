@@ -956,14 +956,14 @@ class cron
 			.e_SELF."' id='cronform'>
 		   <table class='adminlist'>
 		   <colgroup span='8'>
-			   	<col></col>
-				<col></col>
-				<col></col>
-				<col></col>
-				<col></col>
-				<col></col>
-				<col></col>
-				<col></col>
+			   	<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
 			</colgroup>
 		   <thead>
 		   	<tr>
