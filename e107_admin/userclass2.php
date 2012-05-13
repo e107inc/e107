@@ -412,8 +412,8 @@ switch ($action)
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='classForm'>
- 	<table cellpadding='0' cellspacing='0' class='adminform'>
- 	<colgroup span='2'>
+ 	<table class='adminform'>
+ 	<colgroup>
  		<col class='col-label' />
  		<col class='col-control' />
 
@@ -591,7 +591,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
 
-	$text = "<table cellpadding='5' cellspacing='0' border='1'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
+	$text = "<table><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
 	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
 	while ($row = $sql->db_Fetch())
@@ -917,7 +917,7 @@ class uclass_manager
              $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-userclass-list'>
 						<legend class='e-hideme'>".UCSLAN_5."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+						<table class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
 

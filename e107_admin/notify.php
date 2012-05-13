@@ -118,8 +118,8 @@ class notify_config
 		<form action='".e_SELF."?results' method='post' id='scanform'>
 		<fieldset id='core-notify-config'>
 		<legend>".NU_LAN_1."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        <table class='adminform'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>
@@ -133,8 +133,8 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-2'>
         <legend>".NS_LAN_1."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        <table class='adminform'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>";
@@ -145,8 +145,8 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-3'>
         <legend>".NN_LAN_1."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        <table class='adminform'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>";
@@ -159,8 +159,8 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-4'>
         <legend>".NM_LAN_1."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        <table class='adminform'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>";
@@ -171,8 +171,8 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-5'>
         <legend>".NF_LAN_1."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        <table class='adminform'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>";
@@ -189,8 +189,8 @@ class notify_config
 				$text .= "</fieldset>
 				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
 		        <legend>".$config_category."</legend>
-		        <table cellpadding='0' cellspacing='0' class='adminform'>
-		        	<colgroup span='2'>
+		        <table class='adminform'>
+		        	<colgroup>
 		        		<col class='col-label' />
 		        		<col class='col-control' />
 		        	</colgroup>";

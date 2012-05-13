@@ -226,7 +226,7 @@ if(($action == "confdel") || ($action == "auditdel"))
 		<form method='post' action='".e_SELF."?backdel.{$qs[1]}.{$qs[2]}'>
 			<fieldset id='core-admin-log-confirm-delete'>
 				<legend class='e-hideme'>".LAN_CONFDELETE."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
+				<table class='adminform'>
 					<tr>
 						<td class='center'>
 							<strong>".(($action == "confdel") ? RL_LAN_047 : RL_LAN_065).$old_string."</strong>
@@ -404,8 +404,8 @@ if($action == "config")
 	<form method='post' action='".e_SELF."?config'>
 		<fieldset id='core-admin-log-options'>
 			<legend>".RL_LAN_122."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -486,8 +486,8 @@ if($action == "config")
 	<form method='post' action='".e_SELF."?config'>
 		<fieldset id='core-admin-log-maintenance'>
 			<legend>".RL_LAN_125."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -726,8 +726,8 @@ if(isset($page_title[$action]))
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 		<fieldset id='core-admin-log-filter'>
 			<legend>".RL_LAN_012."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='4'>
+			<table class='adminform'>
+				<colgroup>
 					<col style='width:15%;vertical-align:top;' />
 					<col style='width:35%;vertical-align:top;' />
 					<col style='width:15%;vertical-align:top;' />
@@ -869,7 +869,7 @@ if(isset($page_title[$action]))
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 			<fieldset id='core-admin-log-list'>
 				<legend class='e-hideme'>{$page_title[$action]}</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<table class='adminlist'>
 					<colgroup span='4'>
 	";
 

@@ -434,7 +434,7 @@ class media_admin_ui extends e_admin_ui
 			</ul>
 			<fieldset id='core-media-select'>
 			<legend>Library</legend>
-			<table cellpadding='0' cellspacing='0' class='adminedit'>
+			<table class='adminedit'>
 			<tbody><tr><td>
 			";
 		
@@ -467,10 +467,10 @@ class media_admin_ui extends e_admin_ui
 		{
 			$text .= "<fieldset id='core-media-style'>
 				<legend>Appearance</legend>
-				<table cellpadding='0' cellspacing='0' class='adminedit'>
-				<colgroup span='2'>
-				<col class='col-label' />
-				<col class='col-control' />
+				<table class='adminedit'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
@@ -861,12 +861,12 @@ class media_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='batch_import'>
 					<fieldset id='core-mediamanager-batch'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<table class='adminlist'>
 							<colgroup span='4'>
-								<col style='width: 5%'></col>
-								<col></col>
-								<col></col>
-								<col></col>
+								<col style='width: 5%' />
+								<col />
+								<col />
+								<col />
 							</colgroup>
 							<thead>
 								<tr>
@@ -1453,12 +1453,12 @@ if (isset($_POST['check_avatar_sizes']))
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-image-check-avatar'>
 			<legend class='e-hideme'>".CACLAN_3."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='4'>
-					<col style='width:10%'></col>
-					<col style='width:20%'></col>
-					<col style='width:25%'></col>
-					<col style='width:45%'></col>
+			<table class='adminlist'>
+				<colgroup>
+					<col style='width:10%' />
+					<col style='width:20%' />
+					<col style='width:25%' />
+					<col style='width:45%' />
 				</colgroup>
 				<thead>
 					<tr>
@@ -1568,8 +1568,8 @@ if (isset($_POST['check_avatar_sizes']))
 		</fieldset>
 	</form>
 
-	<table cellpadding='0' cellspacing='0' class='adminform'>
-	<colgroup span='2'>
+	<table class='adminform'>
+	<colgroup>
 		<col class='col-label' />
 		<col class='col-control' />
 	</colgroup>
@@ -1656,10 +1656,10 @@ if (isset($_POST['check_avatar_sizes']))
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-image-settings'>
 				<legend class='e-hideme'>".IMALAN_7."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='2'>
-						<col class='col-label'></col>
-						<col class='col-control'></col>
+				<table class='adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>

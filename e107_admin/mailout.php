@@ -765,8 +765,8 @@ function show_prefs($mailAdmin)
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
 		<div id='mail'>
-		<table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
+		<table class='adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -796,7 +796,7 @@ function show_prefs($mailAdmin)
 	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
 	$text .= "<div id='smtp' {$smtpdisp}>
 		<table style='margin-right:auto;margin-left:0px;border:0px'>
-		<colgroup span='2'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -928,8 +928,8 @@ function show_prefs($mailAdmin)
 	$text .= "</table>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend>".LAN_MAILOUT_31."</legend>
-		<table cellpadding='0' cellspacing='0' class='adminedit'>
-		<colgroup span='2'>
+		<table class='adminedit'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -951,8 +951,8 @@ function show_prefs($mailAdmin)
 	</tr></tbody></table>
 
 
-		<table cellpadding='0' cellspacing='0' class='adminedit' id='mail_bounce_auto' {$autoDisp}>
-		<colgroup span='2'>
+		<table class='adminedit' id='mail_bounce_auto' {$autoDisp}>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -977,8 +977,8 @@ function show_prefs($mailAdmin)
 
 	// Parameters for mail-account based bounce processing
 	$text .= "
-		<table cellpadding='0' cellspacing='0' class='adminedit' id='mail_bounce_mail' {$autoMail}>
-		<colgroup span='2'>
+		<table class='adminedit' id='mail_bounce_mail' {$autoMail}>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -1028,8 +1028,8 @@ function show_maint($debug = FALSE)
 	$text .= "
 			<form action='".e_SELF."?mode=maint' id='email_maint' method='post'>
 			<fieldset id='email-maint'>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='2'>
+			<table class='adminlist'>
+			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
 			</colgroup>

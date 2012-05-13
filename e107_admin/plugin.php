@@ -588,8 +588,8 @@ class pluginManager{
 
 			  $text = "
 				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-                <table cellpadding='0' cellspacing='0' class='adminform'>
-                	<colgroup span='2'>
+                <table class='adminform'>
+                	<colgroup>
                 		<col class='col-label' />
                 		<col class='col-control' />
                 	</colgroup>
@@ -646,7 +646,7 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset id='core-plugin-list'>
 					<legend class='e-hideme'>".$caption."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<table class='adminlist'>
 						".$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref)."
 						<tbody>
@@ -904,8 +904,8 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' method='post'>
 			<fieldset id='core-plugin-confirmUninstall'>
 			<legend>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
-            <table cellpadding='0' cellspacing='0' class='adminform'>
-            	<colgroup span='2'>
+            <table class='adminform'>
+            	<colgroup>
             		<col class='col-label' />
             		<col class='col-control' />
             	</colgroup>

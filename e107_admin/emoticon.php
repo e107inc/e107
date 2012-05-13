@@ -146,8 +146,8 @@ class emotec
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='emoticon-activate'>
 				<legend>".EMOLAN_1."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='2'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width:30%' />
 						<col style='width:70%' />
 					</colgroup>
@@ -175,8 +175,8 @@ class emotec
 			<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 				<fieldset id='emoticon-packages'>
 					<legend>".EMOLAN_13."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='4'>
+					<table class='adminlist'>
+						<colgroup>
 							<col style='width:15%' />
 							<col style='width:50%' />
 							<col style='width:15%' />
@@ -277,8 +277,8 @@ class emotec
 			<fieldset id='core-emoticon-configure'>
 				<legend class='e-hideme'>".EMOLAN_15."</legend>
 				<div class='info-bar'><strong>".sprintf(EMOLAN_31, count($eArray))."</strong></div>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='3'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width:20px' />
 						<col class='col-label' />
 						<col class='col-control' />

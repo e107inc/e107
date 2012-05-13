@@ -73,8 +73,8 @@ $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
 		<fieldset id='core-meta-settings'>
 			<legend class='e-hideme'>".METLAN_8." (".e_LANGUAGE.")"."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>

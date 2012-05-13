@@ -167,8 +167,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 			<form action='".e_SELF."?mode=main&action=alias' method='post' id='urlconfig-form'>
 				<fieldset id='core-eurl-core'>
 					<legend>".LAN_EURL_LEGEND_ALIASES."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='2'>
+					<table class='adminlist'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -229,8 +229,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 			<form action='".e_SELF."?mode=main&action=config' method='post' id='urlconfig-form'>
 				<fieldset id='core-eurl-core'>
 					<legend>".LAN_EURL_LEGEND_CONFIG."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='3'>
+					<table class='adminlist'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 							<col class='col-control' />

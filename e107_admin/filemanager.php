@@ -290,12 +290,12 @@ $text .= "
 	<form enctype='multipart/form-data' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' method='post'>
 		<fieldset id='core-filemanager'>
 			<legend class='e-hideme'>XX</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='4'>
-					<col style='width:  5%'></col>
-					<col style='width: 40%'></col>
-					<col style='width: 20%'></col>
-					<col style='width: 15%'></col>
+			<table class='adminlist'>
+				<colgroup>
+					<col style='width:  5%' />
+					<col style='width: 40%' />
+					<col style='width: 20%' />
+					<col style='width: 15%' />
 				</colgroup>
 				<thead>
 					<tr>
