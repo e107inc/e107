@@ -1370,6 +1370,88 @@ class e107
 	{
 		return e107::getUrl()->response()->addMeta($name, $content, $extended);
 	}
+	
+	/**
+	 * CSS Common Public Function
+	 * @var string $type - core | inline | theme | other | (plugin folder name)
+	 */
+	public static function css($type = null, $file_path = null, $media = 'all', $preComment = '', $postComment = '')
+	{
+		if($type == 'core')
+		{
+			return e107::getJs()->coreCSS($file_path, $media, $preComment, $postComment);
+		}
+		
+		if($type == 'inline')
+		{
+			return e107::getJs()->inlineCSS($file_path, $media);
+		}
+							
+		if($type == 'theme')
+		{
+			return e107::getJs()->themeCSS($file_path, $media, $preComment, $postComment);
+		}
+		
+		if($type == 'other')
+		{
+			return e107::getJs()->otherCSS($file_path, $media, $preComment, $postComment);
+		}
+		
+		if($this->isInstalled($type)) // plugin
+		{
+			return e107::getJs()->pluginCSS($type, $file_path, $media, $preComment, $postComment);
+		}
+	}
+	
+	
+	
+	/**
+	 * JS Common Public Function
+	 * @var string $type - core | file | header_inline | footer | footer_inline | theme | (plugin folder name)
+	 */
+	public static function js($type, $file_path ='', $zone='')
+	{
+		if($type == 'core')
+		{
+			if(empty($zone)){ $zone = 2; } 
+			return e107::getJs()->headerCore($file_path, $zone);
+		}
+		
+		if($type == 'file' || $type == 'header')
+		{
+			if(empty($zone)){ $zone = 5; } 
+			e107::getJs()->headerFile($file_path, $zone);
+		}
+		
+		if($type == 'header_inline')
+		{
+			if(empty($zone)){ $zone = 5; } 
+			e107::getJs()->headerInline($file_path, $zone);
+		}
+		
+		if($type == 'footer_inline')
+		{
+			if(empty($zone)){ $zone = 5; } 
+			e107::getJs()->footerInline($file_path, $zone);
+		}
+		
+		if($type == 'footer')
+		{
+			if(empty($zone)){ $zone = 2; } 
+			e107::getJs()->footerFile($file_path, $zone);
+		}
+		
+		if($type=='theme')
+		{
+			if(empty($zone)){ $zone = 5; } 
+			return e107::getJs()->headerTheme($file_path, $zone);	
+		}
+		
+		if($this->isInstalled($type)) // plugin
+		{
+			return e107::getJs()->headerPlugin($type, $file_path);
+		}
+	}
 
 	/**
 	 * Retrieve admin dispatcher instance.

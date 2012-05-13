@@ -3679,7 +3679,13 @@ class eResponse
 	 */
 	public function addMeta($name = null, $content = null, $extended = array())
 	{
+		if(empty($content)){ return $this; } // content is required, otherwise ignore. 
+		
+		//TODO need an option that allows subsequent entries to overwrite existing ones. 
+		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data. 
+		
 		$attr = array();
+				
 		if(null !== $name) $attr['name'] = $name;
 		if(null !== $content) $attr['content'] = $content;
 		if(!empty($extended)) 
@@ -3698,7 +3704,6 @@ class eResponse
 	 */
 	public function renderMeta()
 	{
-		
 		$attrData = '';
 		
 		foreach ($this->_meta as $attr) 
