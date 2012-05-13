@@ -112,8 +112,8 @@ if ($action == "main" || $action == "")
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
 		$text .= "<div style='text-align:center'>
-            <table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='4'>
+            <table class='adminlist'>
+			<colgroup>
 				<col style='width:5%' />
 				<col style='width:60%' />
 				<col style='width:20%' />
@@ -174,8 +174,8 @@ if ($action == "create" || $action == "edit")
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'  id='wmform'>
 		<fieldset id='code-wmessage-create'>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
+        <table class='adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -231,8 +231,8 @@ if ($action == "opt") {
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<fieldset id='code-wmessage-options'>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
+        <table class='adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>

@@ -428,7 +428,7 @@ class users_ext
 			$text .= "
 
 			   <form method='post' action='".e_SELF."' >
-			   <table class='adminlist' cellpadding='0' cellspacing='0'>
+			   <table class='adminlist'>
 			<thead>
 				<tr>
 				<th>".EXTLAN_1."</th>
@@ -539,8 +539,8 @@ class users_ext
 			<fieldset id='core-user-extended-create'>";
 
 			$text .= "
-            <table cellpadding='0' cellspacing='0' class='adminform'>
-            	<colgroup span='2'>
+            <table class='adminform'>
+            	<colgroup>
             		<col class='col-label' />
             		<col class='col-control' />
             	</colgroup>
@@ -827,7 +827,7 @@ class users_ext
 
 		$text = "<div style='text-align:center'>";
 		$text .= "
-        <table cellpadding='0' cellspacing='0' class='adminlist'>
+        <table class='adminlist'>
 
 		<thead>
 		<tr>
@@ -912,8 +912,8 @@ class users_ext
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		";
 		$text .= "<div><br /></div>
-		<table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
+		<table class='adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>";
@@ -1037,8 +1037,8 @@ class users_ext
 
 		$txt = "
 		<form method='post' action='".e_SELF."?pre'>
-	    <table cellpadding='0' cellspacing='0' class='adminlist'>
-		<colgroup span='6'>
+	    <table class='adminlist'>
+		<colgroup>
 			<col  />
 			<col  />
 			<col  />

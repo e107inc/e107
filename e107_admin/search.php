@@ -201,8 +201,8 @@ if ($query[0] == 'settings')
 	<form method='post' action='".e_SELF."?settings'>
 		<fieldset id='core-search-settings'>
 			<legend class='e-hideme'>".SEALAN_20."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -301,8 +301,8 @@ elseif ($query[0] == 'edit')
 	<form method='post' action='".e_SELF."?main.".$query[1].".".$query[2]."'>
 		<fieldset id='core-search-edit'>
 			<legend class='e-hideme'>{$caption}</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -354,7 +354,7 @@ else
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='core-search-configuration-main'>
 				<legend class='e-hideme'>".SEALAN_1."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<table class='adminlist'>
 					<colgroup span='4'>
 						<col style='width:55%' />
 						<col style='width:25%' />
@@ -440,8 +440,8 @@ else
 
 			<fieldset id='core-search-configuration-comm'>
 				<legend class='e-hideme'>".SEALAN_1."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='2'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width:55%' />
 						<col style='width:45%' />
 					</colgroup>

@@ -243,8 +243,8 @@ if (isset($_POST['edit_existing']))
 	<form method='post' action='".e_SELF."?db'>
 		<fieldset id='core-language-edit'>
 			<legend class='e-hideme'>".$_POST['lang_choices']."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='2'>
+			<table class='adminlist'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -326,8 +326,8 @@ function multilang_prefs()
 	<form method='post' action='".e_SELF."' id='linkform'>
 		<fieldset id='core-language-settings'>
 			<legend class='e-hideme'>".LANG_LAN_13."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
@@ -467,8 +467,8 @@ function multilang_db()
 		$text = "
 			<fieldset id='core-language-list'>
 				<legend class='e-hideme'>".LANG_LAN_16."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='3'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width:20%' />
 						<col style='width:60%' />
 						<col style='width:20%' />
@@ -558,8 +558,8 @@ function show_tools()
 		<form id='core-language-lancheck-form' method='post' action='".e_ADMIN."lancheck.php'>
 			<fieldset id='core-language-lancheck'>
 				<legend class='e-hideme'>".LAN_CHECK_1."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='3'>
+				<table class='adminform'>
+					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
@@ -593,8 +593,8 @@ function show_tools()
 		<form id='ziplang' method='post' action='".e_SELF."?tools'>
 			<fieldset id='core-language-package'>
 				<legend class='e-hideme'>".LANG_LAN_23."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='2'>
+				<table class='adminform'>
+					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
@@ -684,7 +684,7 @@ function available_langpacks()
 		}
 		
 		$text .= "<div class='block-text'>".LANG_LAN_35."</div>";
-		$text .= "<table cellpadding='0' cellspacing='0' class='adminlist'>";
+		$text .= "<table class='adminlist'>";
 		foreach($rawData['language'] as $val)
 		{
 			$att = $val['@attributes'];

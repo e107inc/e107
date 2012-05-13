@@ -151,13 +151,13 @@ else
 		<form method='post' action='".e_SELF."' id='flaform' >
 			<fieldset id='core-fla'>
 				<legend class='e-hideme'>".ADLAN_146."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='5'>
-						<col style='width: 20%'></col>
-						<col style='width: 40%'></col>
-						<col style='width: 20%'></col>
-						<col style='width: 10%'></col>
-						<col style='width: 10%'></col>
+				<table class='adminlist'>
+					<colgroup>
+						<col style='width: 20%' />
+						<col style='width: 40%' />
+						<col style='width: 20%' />
+						<col style='width: 10%' />
+						<col style='width: 10%' />
 					</colgroup>
 					<thead>
 						<tr>

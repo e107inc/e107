@@ -1259,7 +1259,7 @@ class users
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+						<table class='adminlist'>".
 						$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref,"action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter=".intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]").
 			"<tbody>\n";
@@ -1617,8 +1617,8 @@ class users
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
 		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
-        <table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
+        <table class='adminform'>
+		<colgroup>
 		<col class='col-label' />
 		<col class='col-control' />
 		</colgroup>
@@ -2048,8 +2048,8 @@ class users
 		$caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
 		$text = "	<div>
 					<form method='post' action='".e_SELF."?".e_QUERY."'>
-                    <table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='2'>
+                    <table class='adminform'>
+					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
@@ -2341,7 +2341,7 @@ function showRanks()
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
    <fieldset id='core-userranks-list'>
 
-	<table cellpadding='0' cellspacing='0' class='adminlist'>".
+	<table class='adminlist'>".
 	$frm->colGroup($fields, array_keys($fields)).
 	$frm->thead($fields, array_keys($fields));
 	foreach ($fieldList['core'] as $k => $f)
@@ -2416,7 +2416,7 @@ function showRanks()
 
 
 	$text .= "
-	<table cellpadding='0' cellspacing='0' class='adminlist'>".
+	<table class='adminlist'>".
 	$frm->colGroup($fields, array_keys($fields)).
 	$frm->thead($fields, array_keys($fields));
 

@@ -200,10 +200,10 @@ class links_admin_ui extends e_admin_ui
 		<form method='post' action='".e_REQUEST_URL."'>
 			<fieldset id='core-links-generator'>
 				<legend class='e-hideme'>".LINKLAN_4."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='2'>
-						<col class='col-label'></col>
-						<col class='col-control'></col>
+				<table class='adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>

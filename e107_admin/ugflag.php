@@ -77,8 +77,8 @@ $text = "
 	<form method='post' action='".e_SELF."' id='core-ugflag-form'>
 		<fieldset id='core-ugflag'>
 			<legend class='e-hideme'>".UGFLAN_4."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
+			<table class='adminform'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
