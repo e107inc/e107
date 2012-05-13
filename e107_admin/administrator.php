@@ -124,10 +124,10 @@ function show_admins()
 			<legend class='e-hideme'>".ADMSLAN_13."</legend>
 			<table class='adminlist'>
 				<colgroup>
-					<col style='width:  5%'></col>
-					<col style='width: 20%'></col>
-					<col style='width: 65%'></col>
-					<col style='width: 10%'></col>
+					<col style='width:  5%' />
+					<col style='width: 20%' />
+					<col style='width: 65%' />
+					<col style='width: 10%' />
 				</colgroup>
 				<thead>
 					<tr>

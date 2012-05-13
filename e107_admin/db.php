@@ -541,8 +541,8 @@ class system_tools
 			<legend class='e-hideme'>Export Options</legend>
 				<table class='adminlist'>
 				<colgroup>
-					<col style='width: 80%'></col>
-					<col style='width: 20%'></col>
+					<col style='width: 80%' />
+					<col style='width: 20%' />
 				</colgroup>
 				<thead>
 				<tr>
@@ -1178,10 +1178,10 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 						<legend>".DBLAN_40." ".$ctype."</legend>
 						<table class='adminlist'>
 							<colgroup>
-								<col style='width: 20%'></col>
-								<col style='width: 10%'></col>
-								<col style='width: 50%'></col>
-								<col style='width: 20%'></col>
+								<col style='width: 20%' />
+								<col style='width: 10%' />
+								<col style='width: 50%' />
+								<col style='width: 20%' />
 							</colgroup>
 							<thead>
 								<tr>
