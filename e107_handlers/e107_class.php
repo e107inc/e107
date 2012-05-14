@@ -1397,7 +1397,7 @@ class e107
 			// $type is plugin name
 			default:
 				// data is e.g. 'jslib/myplug.js'
-				if(!$this->isInstalled($type)) return;
+				if(!self::isInstalled($type)) return;
 				if(null !== $zone) $jshandler->requirePluginLib($type, $data, $zone);
 				else $jshandler->requirePluginLib($type, $data);
 			break;
@@ -1440,7 +1440,7 @@ class e107
 			// $type is plugin name
 			default:
 				// data is e.g. 'css/myplug.css'
-				if($this->isInstalled($type)) $jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
+				if(self::isInstalled($type)) $jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
 			break;
 		}
 	}
