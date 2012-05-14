@@ -1346,6 +1346,103 @@ class e107
 		}
 		return e_jsmanager::getInstance();
 	}
+	
+	/**
+	 * Proxy method for easy js registering. Prefered is shortcode script path
+	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
+	 * @param string $data depends on the type - path/url or inline js source
+	 * @param integer $zone [optional] leave it null for default zone
+	 */
+	public static function js($type, $data, $zone = null)
+	{
+		$jshandler = e107::getJs();
+		switch ($type) 
+		{
+			case 'core':
+				// data is e.g. 'core/tabs.js'
+				if(null !== $zone) $jshandler->requireCoreLib($data, $zone);
+				else $jshandler->requireCoreLib($data);
+			break;
+				
+			case 'theme':
+				// data is e.g. 'jslib/mytheme.js'
+				if(null !== $zone) $jshandler->headerTheme($data, $zone);
+				else $jshandler->headerTheme($data);
+			break;
+				
+			case 'inline':
+				// data is JS source (without script tags)
+				if(null !== $zone) $jshandler->headerInline($data, $zone);
+				else $jshandler->headerInline($data);
+			break;
+			
+			case 'footer-inline':
+				// data is JS source (without script tags)
+				if(null !== $zone) $jshandler->footerInline($data, $zone);
+				else $jshandler->footerInline($data);
+			break;
+				
+			case 'url':
+				// data is e.g. 'http://cdn.somesite.com/some.js'
+				if(null !== $zone) $jshandler->headerFile($data, $zone);
+				else $jshandler->headerFile($data);
+			break;
+			
+			case 'footer':
+				// data is e.g. '{e_PLUGIN}myplugin/jslib/myplug.js'
+				if(null !== $zone) $jshandler->footerFile($data, $zone);
+				else $jshandler->footerFile($data);
+			break;
+			
+			// $type is plugin name
+			default:
+				// data is e.g. 'jslib/myplug.js'
+				if(null !== $zone) $jshandler->requirePluginLib($type, $data, $zone);
+				else $jshandler->requirePluginLib($type, $data);
+			break;
+		}
+	}
+	
+	/**
+	 * Proxy method for easy css registering
+	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
+	 * @param string $data depends on the type - path/url or inline js source
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @param string $preComment possible comment e.g. <!--[if lt IE 7]>
+	 * @param string $postComment possible comment e.g. <![endif]-->
+	 */
+	public static function css($type, $data, $media = 'all', $preComment = '', $postComment = '')
+	{
+		$jshandler = e107::getJs();
+		switch ($type) 
+		{
+			case 'core':
+				// data is path relative to e_FILE/jslib/
+				$jshandler->coreCSS($data, $media, $preComment, $postComment);
+			break;
+				
+			case 'theme':
+				// data is path relative to current theme
+				$jshandler->themeCSS($data, $media, $preComment, $postComment);
+			break;
+				
+			case 'inline':
+				// data is CSS source (without style tags)
+				$jshandler->inlineCSS($data, $media);
+			break;
+				
+			case 'url':
+				// data is e.g. 'http://cdn.somesite.com/some.css'
+				$jshandler->otherCSS($data, $media, $preComment, $postComment);
+			break;
+			
+			// $type is plugin name
+			default:
+				// data is e.g. 'css/myplug.css'
+				$jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
+			break;
+		}
+	}
 
 	/**
 	 * Retrieve JS Helper object

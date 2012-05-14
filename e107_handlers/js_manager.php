@@ -7,7 +7,7 @@
  * GNU General Public License (http://gnu.org).
  *
  * $URL$
- * Id$
+ * $Id$
  *
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
