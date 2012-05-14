@@ -193,7 +193,7 @@ else
 //
 // F: Grab e107_config, get directory paths and create $e107 object
 //
-@include_once(realpath(dirname(__FILE__).'/e107_config.php'));
+@include(realpath(dirname(__FILE__).'/e107_config.php'));
 
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
 {

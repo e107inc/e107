@@ -2,14 +2,14 @@
 /*
  * e107 website system
  * 
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
- * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
+ * 
+ * FIXME - re-check and fix all browser cache related code
  * 
 */
 global $pref, $eplug_admin;
@@ -28,24 +28,47 @@ class e_jslib
      */
     public function renderHeader($where = 'front', $return = false)
     {
-    	// FIXME: convert e107.js.php to pure e107.js file
-    	// FIXME: 'e_jslib_browser_cache' used by js_manager - add it together with all new prefs (JS management tab, Site preferences area)
-		// FIXME: option to use external sources (e.g. google) even if JS is combined (script tags for external sources)
+    	$ret = '';
+		$ret .= "
+			<script type=\"text/javascript\">
+				var e107Path = {
+			        e_IMAGE:    '".e_IMAGE_ABS."',
+			        SITEURL:    '".SITEURL."',
+			        SITEURLBASE:    '".SITEURLBASE."',
+			        e_HTTP:    '".e_HTTP."',
+			        e_IMAGE_PACK:    '".e_IMAGE_ABS."',
+			        e_PLUGIN:   '".e_PLUGIN_ABS."',
+			        e_FILE:     '".e_FILE_ABS."',
+			        e_MEDIA:     '".e_MEDIA_ABS."', 
+			        e_WEB:     '".e_WEB_ABS."', 
+			        e_ADMIN: 	'".(deftrue('ADMIN') ? e_ADMIN_ABS : '')."',
+			        e_THEME:    '".e_THEME_ABS."',
+			        THEME:      '".e_THEME_ABS."'
+				};
+			</script>
+		";
+    	// FIXED: convert e107.js.php to pure e107.js file
+    	// FIXED: 'e_jslib_browser_cache' used by js_manager - add it together with all new prefs (JS management tab, Site preferences area)
+		// FIXED: option to use external sources (e.g. google) even if JS is combined (script tags for external sources)
 		if(!e107::getPref('e_jslib_nocombine'))
 		{
 			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
 			// TODO disable cache in debug mod 
-			$hash .= (e107::getPref('e_jslib_nocache') || deftrue('e_NOCACHE') ? '_nocache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
-			$ret = "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
-			if($return) $ret;
+			$hash .= (e107::getPref('e_jslib_nocache')/* || deftrue('e_NOCACHE')*/ ? '_nocache' : '').(!e107::getPref('e_jslib_nobcache') || deftrue('e_NOCACHE') ? '_nobcache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
+			$ret .= "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+			if($return) return $ret;
 			echo $ret;
 			return;
 		}
 		
 		$e_jsmanager = e107::getJs();
-		
+		if(!$return)
+		{
+			echo $ret;
+			$ret = '';
+		}
 		// script tags
-		$ret = $e_jsmanager->renderJs('core', null, true, $return);
+		$ret .= $e_jsmanager->renderJs('core', null, true, $return);
 		$ret .= $e_jsmanager->renderJs('plugin', null, true, $return);
 		$ret .= $e_jsmanager->renderJs('theme', null, true, $return);
 		
@@ -195,8 +218,8 @@ class e_jslib
      * @param integer $lmodified last modfied time
      */
     function set_cache($contents, $encoding = '', $lmodified = 0)
-    {
-        if (e107::getPref('syscachestatus'))
+    { 
+        if (e107::getPref('e_jslib_nocache') == '0')
         {
             $cacheFile = $this->cache_filename($encoding);
 			if(!$lmodified) $lmodified = time(); 
@@ -240,7 +263,7 @@ class e_jslib
     }
     
     /**
-     * Create cache filename (doesn't require e107 API)
+     * Create cache filename (require e107 API)
      *
      * @param string $encoding
      * @param string $cacheStr defaults to 'S_e_jslib'
@@ -248,10 +271,10 @@ class e_jslib
      */
     function cache_filename($encoding = '', $cacheStr =  'S_e_jslib')
     {
-        $cacheDir = 'cache/';
+        $cacheDir =  e_CACHE_CONTENT;
         $hash = $_SERVER['QUERY_STRING'] && $_SERVER['QUERY_STRING'] !== '_nogzip' ? md5(str_replace('_nogzip', '', $_SERVER['QUERY_STRING'])) : 'nomd5';
         $cacheFile = $cacheDir . $cacheStr . ($encoding ? '_' . $encoding : '') . '_' . $hash . '.cache.php';
-        
+       
         return $cacheFile;
     }
 }

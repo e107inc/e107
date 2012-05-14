@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  *
@@ -25,17 +25,29 @@ else
 {
 	define('USER_AREA', true); //force user area
 }
-// no-cache check
-if (strpos($_SERVER['QUERY_STRING'], '_nocache') !== FALSE)
+// no-browser-cache check
+if (strpos($_SERVER['QUERY_STRING'], '_nobcache') !== FALSE)
 {
-	define('e_NOCACHE', true); //force admin area
+	define('e_NOCACHE', true); //force no browser cache
 }
 else
 {
-	define('e_NOCACHE', false); //force user area
+	define('e_NOCACHE', false); 
+}
+
+// no-server-cache check
+if (strpos($_SERVER['QUERY_STRING'], '_nocache') !== FALSE)
+{
+	define('e_NOSCACHE', true); //force no system cache
+}
+else
+{
+	define('e_NOSCACHE', false); 
 }
 
 if(!e_NOCACHE) session_cache_limiter('private');
+
+$eJslibCacheDir = null;
 
 //output cache if available before calling the api
 e_jslib_cache_out();
@@ -45,7 +57,7 @@ e_jslib_cache_out();
 $_E107['minimal'] = true;
 
 //call jslib handler, render content
-require_once ("../class2.php");
+require_once ("../class2.php"); 
 //require_once (e_HANDLER.'jslib_handler.php');
 //$jslib = new e_jslib();
 $jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
@@ -142,7 +154,8 @@ function e_jslib_cache_out()
  */
 function e_jslib_is_cache($encoding)
 {
-	$cacheFile = e_jslib_cache_filename($encoding);
+	//if(!e_NOSCACHE) return '';
+	$cacheFile = e_jslib_cache_filename($encoding); 
 	if (is_file($cacheFile) && is_readable($cacheFile))
 	{
 		return $cacheFile;
@@ -193,11 +206,36 @@ function e_jslib_browser_enc()
  */
 function e_jslib_cache_filename($encoding = '')
 {
-
-	$cacheDir = './cache/';
+	$cacheDir = e_jslib_cache_path();
 	$hash = $_SERVER['QUERY_STRING'] && $_SERVER['QUERY_STRING'] !== '_nogzip' ? md5(str_replace('_nogzip', '', $_SERVER['QUERY_STRING'])) : 'nomd5';
 	$cacheFile = $cacheDir.'S_e_jslib'.($encoding ? '_'.$encoding : '').'_'.$hash.'.cache.php';
 	
 	return $cacheFile;
+}
+
+/**
+ * Retrieve cache system path (doesn't require e107 API)
+ *
+ * @return string path to cache folder
+ */
+function e_jslib_cache_path()
+{
+	global $eJslibCacheDir;
+	
+	if(null === $eJslibCacheDir)
+	{
+		include('../e107_config.php');
+	
+		if($CACHE_DIRECTORY)
+		{
+			$eJslibCacheDir = '../'.$CACHE_DIRECTORY.'content/';
+		}
+		elseif (isset($E107_CONFIG) && isset($E107_CONFIG['CACHE_DIRECTORY'])) 
+		{
+			$eJslibCacheDir = '../'.$E107_CONFIG['CACHE_DIRECTORY'].'content/';
+		}
+		else $eJslibCacheDir = '';
+	}
+	return $eJslibCacheDir;
 }
 ?>
