@@ -105,9 +105,9 @@ echo "<head>
 ";
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 
-e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
-e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
+if($pref['meta_copyright'][e_LANGUAGE]) e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
+if($pref['meta_author'][e_LANGUAGE]) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
+if($pref['sitelogo']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
 
 echo e107::getUrl()->response()->renderMeta()."\n";
 
@@ -230,7 +230,7 @@ else
 			$e_js->themeCSS('style.css', $css_default);
 		}
 		
-		// Support for print and handheld medi - override theme default CSS
+		// Support for print and handheld media - override theme default CSS
 		if(file_exists(THEME."style_mobile.css"))
 		{
             //echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";

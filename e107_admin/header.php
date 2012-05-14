@@ -246,9 +246,8 @@ e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
 
 // Load Javascript Library consolidation script
-// TODO - option to call libraries external (admin preferences)
-$hash = md5(serialize(varset($pref['e_jslib'])).THEME.e_LANGUAGE.ADMIN).'_admin'; //FIXME - hash is wrong, move this to e_jsmanager?
-echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
+$jslib->renderHeader('admin', false);
 
 // [JSManager] Load JS Includes - Zone 2 - After Library, before CSS
 e107::getJs()->renderJs('header', 2);

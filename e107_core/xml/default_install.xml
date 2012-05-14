@@ -57,11 +57,15 @@
 		<core name="displaythemeinfo">1</core>
 		<core name="download_email">0</core>
 		<core name="e_jslib_browser_cache">0</core>
+		<core name="e_jslib_nobcache">1</core>
+		<core name="e_jslib_nocache">0</core>
+		<core name="e_jslib_gzip">1</core>
+		<core name="e_jslib_nocombine">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
   'prototype/prototype.js' => 'all',
   'scriptaculous/scriptaculous.js' => 'all',
   'scriptaculous/effects.js' => 'all',
-  'e107.js.php' => 'all',
+  'e107.js' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>

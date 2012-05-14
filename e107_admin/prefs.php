@@ -1134,7 +1134,7 @@ $text .= "
 		  array('name'=> 'Scriptaculous + Effects (CDN)',	'path'=> 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects'),
 		  array('name'=> 'jQuery (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
 		  array('name'=> 'jQuery UI (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'),
-		  array('name'=> 'e107 Core Minimum',				'path'=> 'e107.js.php'),
+		  array('name'=> 'e107 Core Minimum',				'path'=> 'e107.js'),
 		  array('name'=> 'e107 Plugin Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Plugins. 
 		  array('name'=> 'e107 Theme Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Themes. 
 		);			
@@ -1151,9 +1151,67 @@ $text .= "
 		}
 								
 		$text .= "
+					</tbody>
+			</table>
+			<table cellpadding='0' cellspacing='0' class='adminform' style='margin-top: 20px'>
+				<colgroup span='2'>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td class='label'>Disable scripts consolidation</td>
+						<td class='control'>
+							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
+							<div class='smalltext field-help'>If disabled, scripts will be loaded in one consolidated file</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>Enable consolidated scripts zlib compression:</td>
+						<td class='control'>
+							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
+							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>Disable consolidated scripts server cache:</td>
+						<td class='control'>
+							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
+							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>Disable consolidated scripts browser cache:</td>
+						<td class='control'>
+							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
+							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
+						</td>
+					</tr>
+		";	
+					
+		$text .= "
 					</tbody></table>
 			".pref_submit('javascript')."
-					</fieldset>";	
+					</fieldset>
+					
+					<script type='text/javascript'>
+						\$\$('#e-jslib-nocombine', '#e-jslib-nocombine-1').invoke('observe', 'change', function(event) {
+							var element = event.findElement('input'), check = !parseInt(element.value);
+							eHandleJsForm(check);
+							
+						});
+						
+						var eHandleJsForm = function(enable) {
+							var collection = \$w('e-jslib-gzip e-jslib-nocache e-jslib-nobcache');
+							collection.each(function(id) {
+								var method = enable ? 'enable' : 'disable';
+								\$\$('#' + id, '#' + id + '-1').invoke(method);
+							});
+						};
+						
+						eHandleJsForm(".($pref['e_jslib_nocombine'] ? 'false' : 'true').");
+					</script>
+					";
 	
 	
 
@@ -1278,17 +1336,3 @@ function prefs_adminmenu()
 	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
