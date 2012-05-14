@@ -262,7 +262,7 @@ class e_menu
 		else
 		{
 			// not sure what would break this, but it's good idea to go away
-			//e107::loadLanFiles($mpath);
+			e107::loadLanFiles($mpath);
 			
 			//include once is not an option anymore
 			//e107_include will break many old menus (evil globals), so we'll wait for a while...
