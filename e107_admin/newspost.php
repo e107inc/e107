@@ -38,7 +38,8 @@ $gen = new convert();
 //Handle Ajax Calls
 if($newspost->ajax_observer()) exit;
 
-e107::getJs()->requireCoreLib('core/admin.js');
+e107::js('core','core/admin.js','prototype');
+//e107::getJs()->requireCoreLib('core/admin.js');
 
 
 function headerjs()

@@ -42,13 +42,47 @@ define("IMODE", "lite");
 	$no_core_css = TRUE;
 
 //temporary fixed - awaiting theme.xml addition
-e107::getJs()->requireCoreLib(array(
-	'core/decorate.js' => 2,
-	'core/tabs.js' => 2
-));
+e107::js('core', 'core/decorate.js', 'prototype', 2);
+e107::js('core', 'core/tabs.js', 'prototype', 2);
+
+e107::js('inline',"
+	 /**
+    	* Decorate all tables having e-list class
+    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
+    	*/
+        e107.runOnLoad( function(event) {
+        	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+
+            element.select('table.adminlist:not(.no-decorate)').each(function(element) {
+            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
+            });
+			element.select('div.admintabs').each(function(element) {
+				//show tab navaigation
+				element.select('ul.e-tabs').each( function(el){
+					el.show();
+					el.removeClassName('e-hideme');//prevent hideme re-register (e.g. ajax load)
+				});
+				//init tabs
+            	new e107Widgets.Tabs(element);
+            	//hide legends if any
+            	element.select('legend').invoke('hide');
+            });
+
+        }, document, true);
+"
+,'prototype');
+
+
+// 
+// e107::getJs()->requireCoreLib(array(
+	// 'core/decorate.js' => 2,
+	// 'core/tabs.js' => 2
+// ));
 
 function theme_head() 
 {
+	return '';
+	
     return "
     <script type='text/javascript'>
        /**
