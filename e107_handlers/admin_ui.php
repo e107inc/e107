@@ -3695,8 +3695,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListHeader()
 	{
-		e107::getJs()->headerCore('core/tabs.js')
-			->headerCore('core/admin.js');
+		e107::js('core','core/tabs.js','prototype');
+		e107::js('core','core/admin.js','prototype');
 	}
 
 	/**
@@ -4364,7 +4364,8 @@ class e_admin_form_ui extends e_form
 			</form>
 		";
 
-		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
+	
+		e107::js('core','scriptaculous/controls.js','prototype', 2);
 		//TODO - external JS
 		e107::getJs()->footerInline("
 	            //autocomplete fields

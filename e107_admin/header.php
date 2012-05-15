@@ -241,6 +241,7 @@ else
 	define("e_WYSIWYG", FALSE);
 }
 
+
 // [JSManager] Load JS Includes - Zone 1 - Before Library
 e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
@@ -368,6 +369,7 @@ $body_onload = "";
  * TODO - remove it from here
  */
 require_once (e_HANDLER.'js_helper.php');
+
 echo "
 <script type='text/javascript'>
 	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
@@ -375,23 +377,26 @@ echo "
 </script>
 ";
 
+
 // [JSManager] Load JS Includes - Zone 5 - After theme_head, before e107:loaded trigger
+
+// unobtrusive JS - moved here from external e_css.php
+
 e107::getJs()->renderJs('header', 5);
-e107::getJs()->renderJs('header_inline', 5);
+
 
 /*
  * Fire Event e107:loaded
  * TODO - remove it from here, should be registered to e_jsmanager
  * or better - moved to core init.js(.php)
  */
-echo "<script type='text/javascript'>\n";
-echo "<!--\n";
-echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
-echo "document.observe('dom:loaded', function () {\n";
-echo "e107Event.trigger('loaded', null, document);\n";
-echo "});\n";
-echo "// -->\n";
-echo "</script>\n";
+
+e107::js('inline',"\$('e-js-css').remove();
+document.observe('dom:loaded', function () {
+e107Event.trigger('loaded', null, document);
+});",'prototype',5);
+
+e107::getJs()->renderJs('header_inline', 5);
 
 echo "</head>
 <body".$body_onload.">\n";

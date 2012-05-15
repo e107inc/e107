@@ -1352,10 +1352,13 @@ class e107
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
 	 * @param string $data depends on the type - path/url or inline js source
 	 * @param integer $zone [optional] leave it null for default zone
+	 * @param string $dep dependence :  null | prototype | jquery 
 	 */
-	public static function js($type, $data, $zone = null)
+	public static function js($type, $data, $dep = null, $zone = null)
 	{
 		$jshandler = e107::getJs();
+		$jshandler->setDependency($dep);
+		
 		switch ($type) 
 		{
 			case 'core':
@@ -1402,6 +1405,8 @@ class e107
 				else $jshandler->requirePluginLib($type, $data);
 			break;
 		}
+
+		$jshandler->resetDependency();
 	}
 	
 	/**
@@ -1412,9 +1417,11 @@ class e107
 	 * @param string $preComment possible comment e.g. <!--[if lt IE 7]>
 	 * @param string $postComment possible comment e.g. <![endif]-->
 	 */
-	public static function css($type, $data, $media = 'all', $preComment = '', $postComment = '')
+	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
 		$jshandler = e107::getJs();
+		$jshandler->setDependency($dep);
+		
 		switch ($type) 
 		{
 			case 'core':
@@ -1443,6 +1450,7 @@ class e107
 				if(self::isInstalled($type)) $jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
 			break;
 		}
+		$jshandler->resetDependency();
 	}
 
 	/**

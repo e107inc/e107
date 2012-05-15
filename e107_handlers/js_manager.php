@@ -14,6 +14,21 @@ global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 
 class e_jsmanager
 {
+	/**
+	 * Supported Libraries (Front-End) - loaded on demand. 
+	 */
+	protected $_libraries = array(
+		'prototype'	=> array(
+		'prototype/prototype.js' ,
+		'scriptaculous/scriptaculous.js',
+		'scriptaculous/effects.js',
+		'e107.js'),
+		
+		'jquery'	=> array(
+		"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
+		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js")
+	);
+	
     /**
      * Core JS library files, loaded via e_jslib.php
      *
@@ -126,6 +141,13 @@ class e_jsmanager
 	 * @var e_jsmanager
 	 */
 	protected static $_instance = null;
+	
+	/**
+	 * Current Framework Dependency
+	 *
+	 * @var string null | prototype | jquery
+	 */
+	protected $_dependence = null;
 
 	/**
 	 * Constructor
@@ -509,6 +531,17 @@ class e_jsmanager
 		$this->addJs('footer_inline', $js_content, $priority);
 		return $this;
 	}
+	
+	
+	function setDependency($dep)
+	{
+		$this->_dependence = $dep;		
+	}
+	
+	public function resetDependency()
+	{
+		$this->_dependence = null;
+	}
 
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
@@ -534,6 +567,7 @@ class e_jsmanager
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
 		
+
 			
 		if(empty($file_path))
 		{
@@ -544,7 +578,16 @@ class e_jsmanager
 		{
 			return $this;
 		}
-		
+
+		// Load Required Library (prototype | jquery)
+		if($pre != 'noloop' && $this->_dependence != null && isset($this->_libraries[$this->_dependence])) // load framework
+		{		
+			foreach($this->_libraries[$this->_dependence] as $inc)
+			{
+				$this->addJs('core', $inc, 'all', 'noloop');
+			}
+		}
+				
 		if($type == 'core' && !is_array($file_path) && substr($file_path,0,4)=='http' ) // Core using CDN. 
 		{
 			$type = 'header';
@@ -565,6 +608,12 @@ class e_jsmanager
 			}
 			return $this;
 		}
+		
+		if($runtime_location == 'front' && $this->isInAdmin())
+		{
+			return $this;	
+		}
+		
 
 		$tp = e107::getParser();
 		$runtime = false;
