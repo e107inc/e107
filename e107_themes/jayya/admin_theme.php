@@ -102,7 +102,8 @@ e107::js('inline','
 
 	$(document).ready(function()
     {
-    	$(".e-hideme").hide();
+    	// $(".e-hideme").hide();
+    	 $(".e-expandit").show();
     			
        	$(".e-expandit").click(function () {
 			$(".e-hideme").toggle("slow");
@@ -133,6 +134,7 @@ e107::js('inline','
 		var fixHelper = function(e, ui) {
 			ui.children().each(function() {
 				$(this).width($(this).width());
+				$(this).addClass("e-moving");
 			});
 			return ui;
 		};
@@ -143,13 +145,14 @@ e107::js('inline','
 			opacity: 0.9,
 			containment: "parent",
 			update: function(event, ui) {
-
+			
 			$.ajax({
 			  type: "POST",
 			  url: "links.php?ajax_used=1",
-			  data: { name: "John", location: "Boston" }
+			  data: { name: "hi", location: "Boston" }
 			}).done(function( msg ) {
-			  alert( "Data Saved: " + msg + ui);
+				
+			  alert( "Data Saved: " + msg );
 			});
 
  		}
@@ -160,7 +163,8 @@ e107::js('inline','
 ','jquery');
 
 e107::css('inline',"
-	#e-sort.tr { cursor: pointer;}
+	.e-moving { background-color:yellow; }
+	legend { display: none; }
 ",'jquery');
 
 
