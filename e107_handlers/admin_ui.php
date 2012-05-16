@@ -4367,7 +4367,8 @@ class e_admin_form_ui extends e_form
 	
 		e107::js('core','scriptaculous/controls.js','prototype', 2);
 		//TODO - external JS
-		e107::getJs()->footerInline("
+		e107::js('footer-inline',"
+	
 	            //autocomplete fields
 	             \$\$('input[name=searchquery]').each(function(el, cnt) {
 				 	if(!cnt) el.activate();
@@ -4399,7 +4400,7 @@ class e_admin_form_ui extends e_form
 						});
 					}
 				});
-		");
+		",'prototype');
 
 		return $text;
 	}

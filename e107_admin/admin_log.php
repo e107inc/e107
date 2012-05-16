@@ -870,7 +870,7 @@ if(isset($page_title[$action]))
 			<fieldset id='core-admin-log-list'>
 				<legend class='e-hideme'>{$page_title[$action]}</legend>
 				<table class='adminlist'>
-					<colgroup span='4'>
+					<colgroup>
 	";
 
 	foreach($col_widths[$action] as $i)

@@ -955,7 +955,7 @@ class cron
 		   <form method='post' action='"
 			.e_SELF."' id='cronform'>
 		   <table class='adminlist'>
-		   <colgroup span='8'>
+		   <colgroup>
 			   	<col />
 				<col />
 				<col />

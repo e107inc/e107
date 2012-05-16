@@ -156,8 +156,9 @@ class e_form
 		//TODO Parse selection data back to parent form. 
 
 		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$cat;
+		$url .= "&amp;iframe=1";
 
-		$ret = "<a title='Click to Change' rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
+		$ret = "<a title='Click on a thumbnail to change..' rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
 	$footer = '';
@@ -172,7 +173,7 @@ class e_form
 			$$("a.e-dialog").invoke("observe", "click", function(ev) {
 					var element = ev.findElement("a");
 					ev.stop();
-					new e107Widgets.URLDialog(element.href + "&iframe=1", {
+					new e107Widgets.URLDialog(element.href, {
 						id: element["id"] || "e-dialog",
 						width: 830,
 						height: 650
@@ -182,26 +183,6 @@ class e_form
 			
 			','prototype');
 			
-			
-			/*
-			e107::getJs()->requireCoreLib('core/admin.js')
-				->requireCoreLib('core/dialog.js')
-				->requireCoreLib('core/draggable.js')
-				->coreCSS('core/dialog/dialog.css')
-				->coreCSS('core/dialog/e107/e107.css')
-				->footerInline('
-				$$("a.e-dialog").invoke("observe", "click", function(ev) {
-					var element = ev.findElement("a");
-					ev.stop();
-					new e107Widgets.URLDialog(element.href + "&iframe=1", {
-						id: element["id"] || "e-dialog",
-						width: 830,
-						height: 650
-		
-					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
-				});
-			');
-			 */
 			e107::setRegistry('core/form/mediaurl', true);
 		}
 		return $ret;
@@ -1301,7 +1282,7 @@ class e_form
 		if($cnt)
 		{
 			return '
-				<tr'.$trclass.'>
+				<tr'.$trclass.' id="'.$fieldvalues[$pid].'">
 					'.$ret.'
 				</tr>
 			';
@@ -1989,12 +1970,16 @@ class e_form
 	{
 		$tp = e107::getParser();
 		$text = '';
+		
+		
+		//print_a($form_options);
+		
 		foreach ($form_options as $fid => $options)
 		{
 			$tree_model = $tree_models[$fid];
 			$tree = $tree_model->getTree();
 			$total = $tree_model->getTotal();
-
+		
 			$amount = $options['perPage'];
 			$from = vartrue($options['from'], 0);
 			$field = vartrue($options['field'], $options['pid']);
@@ -2007,6 +1992,7 @@ class e_form
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
 
+
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
@@ -2017,7 +2003,7 @@ class e_form
 						<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
 							".$this->colGroup($fields, $current_fields)."
 							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
-							<tbody>
+							<tbody id='e-sort'>
 			";
 
 			if(!$tree)
