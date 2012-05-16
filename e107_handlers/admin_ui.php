@@ -3781,7 +3781,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	function EditHeader()
 	{
-		e107::getJs()->requireCoreLib('core/admin.js');
+		// e107::getJs()->requireCoreLib('core/admin.js');
+		e107::js('core','core/admin.js','prototype');
 	}
 
 	/**
@@ -3868,7 +3869,8 @@ class e_admin_ui extends e_admin_controller_ui
 	function CreateHeader()
 	{
 		// TODO - invoke it on className (not all textarea elements)
-		e107::getJs()->requireCoreLib('core/admin.js');
+		//e107::getJs()->requireCoreLib('core/admin.js');
+		e107::js('core','core/admin.js','prototype');
 	}
 
 	/**

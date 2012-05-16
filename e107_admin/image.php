@@ -845,7 +845,8 @@ class media_admin_ui extends e_admin_ui
 
 		$fl->setFileInfo('all');
 		$files = $fl->get_files(e_MEDIA."temp/");
-		e107::getJs()->requireCoreLib('core/admin.js');
+		e107::js('core','core/admin.js','prototype');
+	//	e107::getJs()->requireCoreLib('core/admin.js');
 
 		//TODO Detect XML file, and if found - read that instead of the directory.
 

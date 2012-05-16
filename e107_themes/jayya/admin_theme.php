@@ -97,6 +97,7 @@ e107::css('inline',"/******** Tabs JS */
 
 e107::js('core', 'core/colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 'core/colorbox/colorbox.css', 'jquery');
+e107::js('core', 'core/jquery.elastic.source.js', 'jquery', 2);
 
 e107::js('inline','
 
@@ -109,19 +110,36 @@ e107::js('inline','
 			$(".e-hideme").toggle("slow");
 		}); 
 		
+		// Date
 		$(function() {
 			$( ".e-date" ).datepicker();
 		});  
 		
+		// Tabs
 		$(function() {
 			$( "#tab-container" ).tabs();
 		});	
 		
+		// Decorate		
 		$(".adminlist tr:even").addClass("even");
 		$(".adminlist tr:odd").addClass("odd");
 		$(".adminlist tr:first").addClass("first");
   		$(".adminlist tr:last").addClass("last");
+				
+		// Character Counter
+		$("textarea").before("<p id=\"remainingCharacters\">&nbsp;</p>");
+		$("textarea").keyup(function(){
+    		
+    	//	var max=$(this).attr("maxlength");
+			var max = 100;
+    		var valLen=$(this).val().length;
+    		$("#remainingCharacters").text( valLen + " characters")
+		});
 		
+		// Text-area AutoGrow
+		$("textarea.e-autoheight").elastic();
+		
+		// Dialog
 		$("a.e-dialog").colorbox({
 			iframe:true,
 			width:"60%",
@@ -133,6 +151,7 @@ e107::js('inline','
 			parent.$.colorbox.close()
 		}); 
 		
+		// Sorting
 		var fixHelper = function(e, ui) {
 			ui.children().each(function() {
 				$(this).width($(this).width());
@@ -160,6 +179,28 @@ e107::js('inline','
  		}
 			
 		}).disableSelection();
+		
+		
+		
+		// Check-All
+		$("input.toggle-all").click(function(evt){
+			if($(this).is(":checked")){
+				$("input[type=\"checkbox\"].checkbox").attr("checked", "checked");
+			}
+			else{
+				$("input[type=\"checkbox\"].checkbox").removeAttr("checked");
+			}
+		});
+		
+	
+		// Basic Delete Confirmation	
+		$("input.delete").click(function(){
+  			var answer = confirm($(this).attr("title")+ " ?");
+  			return answer // answer is a boolean
+		});  
+		
+
+		
 		
 })
 ','jquery');
