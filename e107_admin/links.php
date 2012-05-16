@@ -29,10 +29,9 @@ if (!getperms("I"))
 
 e107::coreLan('links', true);
 
-if(e_AJAX_REQUEST)
+if(e_AJAX_REQUEST) // ajax link sorting. 
 {
 	print_a($_POST);
-	echo "HI THERE";
 	exit;
 }
 
