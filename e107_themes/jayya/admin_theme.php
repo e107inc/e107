@@ -110,7 +110,7 @@ e107::js('inline','
 		}); 
 		
 		$(function() {
-			$( "#datepicker" ).datepicker();
+			$( ".e-date" ).datepicker();
 		});  
 		
 		$(function() {
@@ -119,6 +119,8 @@ e107::js('inline','
 		
 		$(".adminlist tr:even").addClass("even");
 		$(".adminlist tr:odd").addClass("odd");
+		$(".adminlist tr:first").addClass("first");
+  		$(".adminlist tr:last").addClass("last");
 		
 		$("a.e-dialog").colorbox({
 			iframe:true,

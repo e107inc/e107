@@ -62,8 +62,8 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
 
 function headerjs()
 {
-	require_once (e_HANDLER.'js_helper.php');
-	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
+//	require_once (e_HANDLER.'js_helper.php');
+//	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
 }
 
 
