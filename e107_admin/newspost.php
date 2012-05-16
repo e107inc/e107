@@ -1377,7 +1377,7 @@ class admin_newspost
 
 		$text .= "
 		<div class='admintabs' id='tab-container'>
-			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
+			<ul class='e-tabs' id='core-emote-tabs'>
 				<li id='tab-general'><a href='#core-newspost-create'>".LAN_NEWS_52."</a></li>
 				<li id='tab-seo'><a href='#core-newspost-seo'>SEO</a></li>
 				<li id='tab-advanced'><a href='#core-newspost-edit-options'>".LAN_NEWS_53."</a></li>

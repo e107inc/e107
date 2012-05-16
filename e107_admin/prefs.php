@@ -1114,7 +1114,13 @@ $text .= "
 				</colgroup>
 				<tbody>";
 	
-		$js_options = array('admin'=>'Admin Area','front'=>'Front-End','all'=>"Both", 'none'=> 'Disabled');	
+		$js_options = array(
+			'auto'	=> 'Auto (on-demand)', 	// load based on dependency
+			'admin'	=> 'Admin Area', 		// Always load in admin
+			'front'	=> 'Front-End', 		// Always load in front-end
+			'all'	=> "Both",				// Always load in admin and front-end
+			'none'	=> 'Disabled' 			// disabled
+		);	
 	
 		
 		//TODO FIXME - remove JS framework dependency from front-end and backend. 
@@ -1125,7 +1131,7 @@ $text .= "
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
 		
 		//TODO Move paths into js_manager and store only keys like 'prototype-local', 'core-minimum' in prefs. 
-				
+		/*		
 		$js_types = array(
 		  array('name'=> 'Prototype (local)',				'path'=> 'prototype/prototype.js') ,
 		  array('name'=> 'Scriptaculous (local)',			'path'=> 'scriptaculous/scriptaculous.js'),
@@ -1137,12 +1143,25 @@ $text .= "
 		  array('name'=> 'e107 Core Minimum',				'path'=> 'e107.js'),
 		  array('name'=> 'e107 Plugin Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Plugins. 
 		  array('name'=> 'e107 Theme Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Themes. 
-		);			
+		);	
+		*/
+		
+		// e107 minimum loaded by default once dependency is removed. 
+		
+		$js_types = array(
+		  array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
+		  array('id'	=> 'prototype-cdn', 'name'=> 'Prototype (CDN)'),		
+		  array('id'	=> 'jquery', 		'name'=> 'jQuery (CDN)')	
+ 		);	
+		
+		
+				
 		
 				
 		foreach($js_types as $arr)
 		{
-			$k = $arr['path'];
+			// $k = $arr['path'];
+			$k = $arr['id'];
 			$name = $arr['name'];
 			$text .= "<tr>
 				<td>".$name."</td>
@@ -1154,7 +1173,7 @@ $text .= "
 					</tbody>
 			</table>
 			<table cellpadding='0' cellspacing='0' class='adminform' style='margin-top: 20px'>
-				<colgroup span='2'>
+				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>

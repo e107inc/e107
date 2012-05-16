@@ -72,7 +72,67 @@ e107::js('inline',"
 "
 ,'prototype');
 
+//TODO - Move to external files. 
 
+e107::css('inline',"/******** Tabs JS */
+
+.admintabs ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
+.admintabs ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
+.admintabs fieldset { clear: both ; border: 1px solid #DDDDDD; padding: 10px; border-top: 0px none; }
+.admintabs fieldset legend { border: 1px solid #DDDDDD; }
+.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+ a.e-tabs {
+   text-decoration: none;
+ }
+",'prototype');
+
+
+
+e107::js('inline','
+
+	$(document).ready(function()
+    {
+    			
+       $(".e-expandit").click(function () {
+		$(".e-hideme").toggle("slow");
+		}); 
+		
+		$(function() {
+		$( "#datepicker" ).datepicker();
+		});  
+		
+		$(function() {
+		$( "#tab-container" ).tabs();
+		});	
+		
+		$(".adminlist tr:even").addClass("even");
+		$(".adminlist tr:odd").addClass("odd");
+		
+		$(".e-dialog").click(function () {
+			var link = $(this).attr("href");
+			$("").load(link).dialog({
+				modal:true
+			}); 
+			return false;
+		});
+    });
+
+
+','jquery');
+
+e107::css('inline',"
+	.e-hideme { display:none; }
+",'jquery');
+
+
+/*
+<div class="admintabs" id="tab-container">
+			<ul class="e-tabs e-hideme" id="core-emote-tabs">
+				<li id="tab-general"><a href="#core-newspost-create">General Information</a></li>
+				<li id="tab-seo"><a href="#core-newspost-seo">SEO</a></li>
+				<li id="tab-advanced"><a href="#core-newspost-edit-options">Advanced Options</a></li>
+			</ul>
+*/
 // 
 // e107::getJs()->requireCoreLib(array(
 	// 'core/decorate.js' => 2,

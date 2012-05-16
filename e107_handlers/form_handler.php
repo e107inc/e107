@@ -163,6 +163,27 @@ class e_form
 	$footer = '';
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
+			e107::js('core','core/admin.js','prototype');
+			e107::js('core','core/dialog.js','prototype');
+			e107::js('core','core/draggable.js','prototype');
+			e107::css('core','core/dialog/dialog.css','prototype');
+			e107::css('core','core/dialog/e107/e107.css','prototype');
+			e107::js('footer-inline','
+			$$("a.e-dialog").invoke("observe", "click", function(ev) {
+					var element = ev.findElement("a");
+					ev.stop();
+					new e107Widgets.URLDialog(element.href + "&iframe=1", {
+						id: element["id"] || "e-dialog",
+						width: 830,
+						height: 650
+		
+					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
+				});
+			
+			','prototype');
+			
+			
+			/*
 			e107::getJs()->requireCoreLib('core/admin.js')
 				->requireCoreLib('core/dialog.js')
 				->requireCoreLib('core/draggable.js')
@@ -180,6 +201,7 @@ class e_form
 					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
 				});
 			');
+			 */
 			e107::setRegistry('core/form/mediaurl', true);
 		}
 		return $ret;
@@ -1104,7 +1126,7 @@ class e_form
 		}
 
 		return '
-			<colgroup span="'.$count.'">
+			<colgroup>
 				'.$text.'
 			</colgroup>
 		';
@@ -2123,7 +2145,9 @@ class e_form
 			</div>
 			</form>
 			";
-			e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
+			
+			e107::js('footer-inline',"Form.focusFirstElement('{$form['id']}-form');",'prototype');
+			// e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
 		}
 		if(!$nocontainer)
 		{

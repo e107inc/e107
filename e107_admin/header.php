@@ -103,8 +103,9 @@ if(!defined('XHTML_FORCE'))
 	echo "<!doctype html>\n";
 	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
 	echo "<head>\n";
+	echo "<meta charset='utf-8' />\n";
 }
-else
+else // XHTML
 {
 	echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";	
 	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
@@ -112,8 +113,9 @@ else
 	<head>	
 	<meta http-equiv='content-style-type' content='text/css' />\n";
 	echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+	echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 }
-echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+
 
 echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 
@@ -369,14 +371,19 @@ $body_onload = "";
  * TODO - remove it from here
  */
 require_once (e_HANDLER.'js_helper.php');
-
+/*
 echo "
 <script type='text/javascript'>
 	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
 </script>
 ";
+*/
+e107::js('inline',"
+	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
 
+",'prototype',5);
 
 // [JSManager] Load JS Includes - Zone 5 - After theme_head, before e107:loaded trigger
 

@@ -21,7 +21,7 @@ $emessage = &eMessage::getInstance();
 
 $text = "<div style='text-align:center'>
 	   	<div class='admintabs' id='tab-container'>
-			<ul class='e-tabs e-hideme' id='core-emote-tabs'>";
+			<ul class='e-tabs' id='core-emote-tabs'>";
 
             foreach ($admin_cat['id'] as $cat_key => $cat_id)
 			{

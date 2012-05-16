@@ -418,9 +418,12 @@ class media_admin_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$bbcodeMode = ($this->getQuery('bbcode')==1) ? 'bbcode=1' : FALSE;
 		
+
+		
+		
 		$text = "
 			<div class='admintabs' id='tab-container'>
-			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
+			<ul class='e-tabs' id='core-emote-tabs'>
 				<li id='tab-select'><a href='#core-media-select'>Choose from Library</a></li>
 				<li id='tab-upload'><a href='#core-media-upload'>Upload a File</a></li>";
 		
@@ -862,7 +865,7 @@ class media_admin_ui extends e_admin_ui
 					<fieldset id='core-mediamanager-batch'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>
 						<table class='adminlist'>
-							<colgroup span='4'>
+							<colgroup>
 								<col style='width: 5%' />
 								<col />
 								<col />
