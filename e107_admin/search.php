@@ -355,7 +355,7 @@ else
 			<fieldset id='core-search-configuration-main'>
 				<legend class='e-hideme'>".SEALAN_1."</legend>
 				<table class='adminlist'>
-					<colgroup span='4'>
+					<colgroup>
 						<col style='width:55%' />
 						<col style='width:25%' />
 						<col style='width:10%' />

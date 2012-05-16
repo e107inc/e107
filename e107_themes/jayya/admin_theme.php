@@ -41,7 +41,7 @@ define("IMODE", "lite");
 // [dont render core style sheet link]
 	$no_core_css = TRUE;
 
-//temporary fixed - awaiting theme.xml addition
+//Prototype Scripts
 e107::js('core', 'core/decorate.js', 'prototype', 2);
 e107::js('core', 'core/tabs.js', 'prototype', 2);
 
@@ -68,6 +68,12 @@ e107::js('inline',"
             	element.select('legend').invoke('hide');
             });
 
+            $$('a.e-dialog-close').invoke('observe', 'click', function(ev) {
+					parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
+			});
+           //  
+            
+            
         }, document, true);
 "
 ,'prototype');
@@ -87,90 +93,77 @@ e107::css('inline',"/******** Tabs JS */
 ",'prototype');
 
 
+// jQUERY scripts
+
+e107::js('core', 'core/colorbox/jquery.colorbox-min.js', 'jquery', 2);
+e107::css('core', 'core/colorbox/colorbox.css', 'jquery');
 
 e107::js('inline','
 
 	$(document).ready(function()
     {
+    	$(".e-hideme").hide();
     			
-       $(".e-expandit").click(function () {
-		$(".e-hideme").toggle("slow");
+       	$(".e-expandit").click(function () {
+			$(".e-hideme").toggle("slow");
 		}); 
 		
 		$(function() {
-		$( "#datepicker" ).datepicker();
+			$( "#datepicker" ).datepicker();
 		});  
 		
 		$(function() {
-		$( "#tab-container" ).tabs();
+			$( "#tab-container" ).tabs();
 		});	
 		
 		$(".adminlist tr:even").addClass("even");
 		$(".adminlist tr:odd").addClass("odd");
 		
-		$(".e-dialog").click(function () {
-			var link = $(this).attr("href");
-			$("").load(link).dialog({
-				modal:true
-			}); 
-			return false;
+		$("a.e-dialog").colorbox({
+			iframe:true,
+			width:"60%",
+			height:"60%",
+			speed:100
 		});
-    });
+		
+		$(".e-dialog-close").click(function () {
+			parent.$.colorbox.close()
+		}); 
+		
+		var fixHelper = function(e, ui) {
+			ui.children().each(function() {
+				$(this).width($(this).width());
+			});
+			return ui;
+		};
+		
+		$("#e-sort").sortable({
+			helper: fixHelper,
+			cursor: "move",
+			opacity: 0.9,
+			containment: "parent",
+			update: function(event, ui) {
 
+			$.ajax({
+			  type: "POST",
+			  url: "links.php?ajax_used=1",
+			  data: { name: "John", location: "Boston" }
+			}).done(function( msg ) {
+			  alert( "Data Saved: " + msg + ui);
+			});
 
+ 		}
+			
+		}).disableSelection();
+		
+})
 ','jquery');
 
 e107::css('inline',"
-	.e-hideme { display:none; }
+	#e-sort.tr { cursor: pointer;}
 ",'jquery');
 
 
-/*
-<div class="admintabs" id="tab-container">
-			<ul class="e-tabs e-hideme" id="core-emote-tabs">
-				<li id="tab-general"><a href="#core-newspost-create">General Information</a></li>
-				<li id="tab-seo"><a href="#core-newspost-seo">SEO</a></li>
-				<li id="tab-advanced"><a href="#core-newspost-edit-options">Advanced Options</a></li>
-			</ul>
-*/
-// 
-// e107::getJs()->requireCoreLib(array(
-	// 'core/decorate.js' => 2,
-	// 'core/tabs.js' => 2
-// ));
-
-function theme_head() 
-{
-	return '';
-	
-    return "
-    <script type='text/javascript'>
-       /**
-    	* Decorate all tables having e-list class
-    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
-    	*/
-        e107.runOnLoad( function(event) {
-        	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
-
-            element.select('table.adminlist:not(.no-decorate)').each(function(element) {
-            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
-            });
-			element.select('div.admintabs').each(function(element) {
-				//show tab navaigation
-				element.select('ul.e-tabs').each( function(el){
-					el.show();
-					el.removeClassName('e-hideme');//prevent hideme re-register (e.g. ajax load)
-				});
-				//init tabs
-            	new e107Widgets.Tabs(element);
-            	//hide legends if any
-            	element.select('legend').invoke('hide');
-            });
-
-        }, document, true);
-
-    </script>";
-}
 // [layout]
 
 $layout = "_default";

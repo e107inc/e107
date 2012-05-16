@@ -716,7 +716,7 @@ class themeHandler
 		$text .= "
 		<div id='core-thememanager-configure'>
         <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='3'>
+        	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
 				<col class='col-control' />

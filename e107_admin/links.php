@@ -29,6 +29,13 @@ if (!getperms("I"))
 
 e107::coreLan('links', true);
 
+if(e_AJAX_REQUEST)
+{
+	print_a($_POST);
+	echo "HI THERE";
+	exit;
+}
+
 
 class links_admin extends e_admin_dispatcher
 {
@@ -67,6 +74,7 @@ class links_admin_ui extends e_admin_ui
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
 	protected $listOrder = 'link_order ASC';
+	protected $listSorting = true;
 
 	public $current_parent = 0;
 	public $sublink_data = null;

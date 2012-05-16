@@ -382,8 +382,7 @@ class e_media
 			{
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
-		 		parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
-		 	 	return false;";	
+		 		return false;";	
 			}
 			else // TinyMce and other applications. 
 			{
@@ -395,7 +394,7 @@ class e_media
 			}
 		 	
 			
-			$text .= "<a class='media-select' title=\"".$diz."\" href='#' onclick=\"{$onclicki}\" >\n";
+			$text .= "<a class='media-select e-dialog-close' title=\"".$diz."\" href='#' onclick=\"{$onclicki}\" >\n";
 			$text .= "<img src='".e107::getParser()->thumbUrl($im['media_url'], $att)."' alt=\"".$im['media_title']."\"  />\n";
 			$text .= "</a>\n\n";
 		}	

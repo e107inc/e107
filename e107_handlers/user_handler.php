@@ -1103,8 +1103,8 @@ class e_userperms
 			<form method='post' action='".e_SELF."' id='myform'>
 				<fieldset id='core-administrator-edit'>
 					<legend class='e-hideme'>".ADMSLAN_52."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -1157,10 +1157,10 @@ class e_userperms
 		foreach($groupedList as $section=>$list)
 		{
 			$text .= "\t\t<table class='adminlist'>
-			<colgroup span='3'>
-							<col class='center' style='width:50px' />
-							<col style='width:50px' />
-							<col  />
+			<colgroup>
+				<col class='center' style='width:50px' />
+				<col style='width:50px' />
+				<col  />
 			</colgroup>
 			<tbody><tr><td class='field-section' colspan='3'><h4>".$this->renderSectionDiz($section)."</h4></td></tr>"; //XXX Lan - General
 		//	$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General

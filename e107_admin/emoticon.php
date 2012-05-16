@@ -139,7 +139,7 @@ class emotec
 
 		$text = "
 	<div class='admintabs' id='tab-container'>
-		<ul class='e-tabs e-hideme' id='core-emote-tabs'>
+		<ul class='e-tabs' id='core-emote-tabs'>
 			<li id='tab-activate'><a href='#emoticon-activate'>".EMOLAN_1."</a></li>
 			<li id='tab-packages'><a href='#emoticon-packages'>".EMOLAN_13."</a></li>
 		</ul>
