@@ -19,15 +19,20 @@ class e_jsmanager
 	 */
 	protected $_libraries = array(
 		'prototype'	=> array(
-		'prototype/prototype.js' ,
-		'scriptaculous/scriptaculous.js',
-		'scriptaculous/effects.js',
-		'e107.js'),
+			'prototype/prototype.js' ,
+			'scriptaculous/scriptaculous.js',
+			'scriptaculous/effects.js',
+			'e107.js'),
 		
 		'jquery'	=> array(
-		"https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
-		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js")
+			"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js",
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
+			)
+			
 	);
+	
+	protected $_core_prefs = array();
 	
     /**
      * Core JS library files, loaded via e_jslib.php
@@ -199,15 +204,23 @@ class e_jsmanager
 
 		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
 			
-		$core_libs = e107::getPref('e_jslib_core');
+	//	$core_libs = e107::getPref('e_jslib_core');
+		$this->_core_prefs = e107::getPref('e_jslib_core');
+		$core = array();
 		
-	
-		
-		if(!$core_libs)
+		foreach($this->_core_prefs as $id=>$vis)
 		{
-			$core_libs = array();
+			if($vis != 'none' && $vis != 'auto')
+			{
+				foreach($this->_libraries[$id] as $path)
+				{
+					$core[$path] = $vis;	
+				}	
+			}
+
 		}
-		$this->coreLib($core_libs);
+	
+		$this->coreLib($core);
 
 		// Load stored in preferences plugin lib paths ASAP
 		$plug_libs = e107::getPref('e_jslib_plugin');
@@ -542,6 +555,41 @@ class e_jsmanager
 	{
 		$this->_dependence = null;
 	}
+	
+	/**
+	 * Return TRUE if the library is disabled. ie. prototype or jquery. 
+	 */
+	public function libDisabled($type, $loc)
+	{
+		if($type == 'core' && ($loc == 'none'))
+		{
+			return TRUE;
+		}
+		
+		if($this->_dependence != null && isset($this->_libraries[$this->_dependence]))
+		{
+			
+			$status = $this->_core_prefs[$this->_dependence];
+			if($status == 'auto')
+			{
+			//	echo "<h2>".$this->_dependence." :: ".$status."</h2>";
+				return FALSE;
+			}
+			
+			
+			if($this->isInAdmin() && $status !='admin' && $status !='all')
+			{
+				return TRUE;	
+			}
+			elseif($status == 'none')
+			{
+				return TRUE;
+			}		
+		}
+		
+		return FALSE;
+		
+	}
 
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
@@ -567,24 +615,27 @@ class e_jsmanager
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
 		
-
+	
 			
 		if(empty($file_path))
 		{
 			return $this;
 		}
 		
-		if($type == 'core' && ($runtime_location == 'none')) // disabled core js library
-		{
-			return $this;
-		}
 
 		// Load Required Library (prototype | jquery)
-		if($pre != 'noloop' && $this->_dependence != null && isset($this->_libraries[$this->_dependence])) // load framework
+		if($pre != '<!-- AutoLoad -->' && $this->_dependence != null && isset($this->_libraries[$this->_dependence])) // load framework
 		{		
 			foreach($this->_libraries[$this->_dependence] as $inc)
 			{
-				$this->addJs('core', $inc, 'all', 'noloop');
+				if(strpos($inc,".css"))
+				{
+					$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');
+				}
+				else
+				{
+					$this->addJs('core', $inc, 'all', '<!-- AutoLoad -->');	
+				}
 			}
 		}
 				
@@ -609,10 +660,16 @@ class e_jsmanager
 			return $this;
 		}
 		
-		if($runtime_location == 'front' && $this->isInAdmin())
+		if($this->libDisabled($type,$runtime_location))
 		{
-			return $this;	
+			return $this;
+			//echo $this->_dependence."::".$file_path." : DISABLED<br />";	
 		}
+		else
+		{
+			// echo $this->_dependence."::".$file_path." : ENABLED<br />";	
+		}
+		
 		
 
 		$tp = e107::getParser();

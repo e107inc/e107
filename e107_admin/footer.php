@@ -280,7 +280,7 @@ if (isset($footer_js) && is_array($footer_js))
 e107::getJs()->renderJs('footer', true);
 
 // [JSManager] Load JS Footer inline code by priority
-e107::getJs()->renderJs('footer_inline', true);
+
 
 //
 // G final JS script keeps user and server time in sync.
@@ -298,10 +298,15 @@ if (abs($_serverTime - $lastSet) > 120)
 	 * Benefit: account for user time corrections and changes in internet delays
 	 * Drawback: each update may cause all server times to display a bit different
 	 */
-	echo "<script type='text/javascript'>\n";
-	echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
-       </script>\n";
+	// echo "<script type='text/javascript'>\n";
+	
+	e107::js('footer-inline',"SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');",'prototype');
+	
+	//echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
+     //  </script>\n";
 }
+
+e107::getJs()->renderJs('footer_inline', true);
 
 //
 // H Final HTML

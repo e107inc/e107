@@ -550,15 +550,6 @@ div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
 /******** Prepare for Image Preview JS */
 .image-preview {}
 
-/******** Tabs JS */
-.admintabs ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
-.admintabs ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
-.admintabs fieldset { clear: both ; border: 1px solid #DDDDDD; padding: 10px; border-top: 0px none; }
-.admintabs fieldset legend { border: 1px solid #DDDDDD; }
-.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
- a.e-tabs {
-   text-decoration: none;
- }
 
 /******** SyS Messages / Message text formatting */
 /* message boxes */
