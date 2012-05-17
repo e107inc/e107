@@ -445,7 +445,7 @@ CREATE TABLE submitnews (
   submitnews_datestamp int(10) unsigned NOT NULL default '0',
   submitnews_ip varchar(45) NOT NULL default '',
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
-  submitnews_file varchar(100) NOT NULL default '',
+  submitnews_file text NOT NULL,
   PRIMARY KEY  (submitnews_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

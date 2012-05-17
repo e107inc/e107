@@ -202,7 +202,15 @@ $text .= render_infopanel_options();
 
 $text .= "</form>";
 $text .= "</div>";
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);
+
+if($_GET['mode'] != 'customize')
+{
+	$ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
+}
+else
+{
+	echo render_infopanel_options(true);	
+}
 
 
 
@@ -223,12 +231,21 @@ function render_info_panel($caption, $text)
 // ------------------
 
 
-function render_infopanel_options()
+function render_infopanel_options($render = false)
 {
-	$frm = e107::getSingleton('e_form');
-	$start = "<div>To customize this page, please <a href='#customize_icons' class='e-expandit'>click here</a>.</div>
-    <div class='e-hideme' id='customize_icons' style='border:1px solid silver;margin:10px'>";
-	$text2 = "<h2>Icons</h2>";
+	// $frm = e107::getSingleton('e_form');
+	$frm = e107::getForm();
+	$mes = e107::getMessage();
+	$start = "<div>
+	To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&iframe=1' class='e-modal-iframe'>click here</a>.
+	</div>
+    ";
+    
+    if($render == false){ return $start; }
+    
+	$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
+    <form method='post' 'id='e-modal-form' action='".e_SELF."?".e_QUERY."'>
+    <h2>Icons</h2>";
 	$text2 .= render_infopanel_icons();
 	$text2 .= "<div class='clear'>&nbsp;</div>";
 	$text2 .= "<h2>Menus</h2>";
@@ -236,10 +253,11 @@ function render_infopanel_options()
 	$text2 .= "<div class='clear'>&nbsp;</div>";
 	$text2 .= "<div id='button' class='buttons-bar center'>";
 	$text2 .= $frm->admin_button('submit-mye107', 'Save', 'Save');
-	$text2 .= "</div>";
+	$text2 .= "</div></form></div>";
 	$end = "</div>";
-
-	return $start.render_info_panel("Customize", $text2).$end;
+		
+	
+	return $mes->render().$text2.$end;
 }
 
 

@@ -245,10 +245,6 @@ class media_admin_ui extends e_admin_ui
 
 	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 
-	//	protected $tableJoin = array(
-	//		'u.user' => array('leftField' => 'media_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
-	//	);
-
 		protected $pid = "media_id";
 		protected $perPage = 10;
 		protected $batchDelete = true;
@@ -673,7 +669,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		if(!$sc_path) return array();
 		$path = e107::getParser()->replaceConstants($sc_path);
-		$info = e107::getFile()->get_file_info($path);
+		$info = e107::getFile()->get_file_info($path,true);
 		return array(
 			'media_type'		=> $info['mime'],
 			'media_datestamp'	=> time(),

@@ -41,6 +41,477 @@ if($newspost->ajax_observer()) exit;
 e107::js('core','core/admin.js','prototype');
 //e107::getJs()->requireCoreLib('core/admin.js');
 
+class news_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+		'main'		=> array(
+			'controller' 	=> 'news_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'news_form_ui',
+			'uipath' 		=> null
+		),
+		'cat'		=> array(
+			'controller' 	=> 'news_cat_ui',
+			'path' 			=> null,
+			'ui' 			=> 'news_cat_form_ui',
+			'uipath' 		=> null
+		),
+		'sub'		=> array(
+			'controller' 	=> 'news_sub_ui',
+			'path' 			=> null,
+			'ui' 			=> 'news_sub_form_ui',
+			'uipath' 		=> null
+		)
+	);
+
+
+	protected $adminMenu = array(
+		'main/list'			=> array('caption'=> NWSLAN_44, 'perm' => 'H'),
+		'main/create' 		=> array('caption'=> NWSLAN_45, 'perm' => 'H'),  // Create/Edit News Item
+	//	'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Category List
+		'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Create Category. 
+		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => '7'), // Category List
+		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'), // Preferences
+		'main/submitted'	=> array('caption'=> "Old Submitted ", 'perm' => 'N'), // Submitted News
+		'sub/list'			=> array('caption'=> NWSLAN_47, 'perm' => 'N'), // Submitted News
+	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list',
+		'cat/edit'	=> 'cat/list'
+	);
+
+	protected $menuTitle = "News";
+
+
+}
+
+
+class news_cat_ui extends e_admin_ui
+{
+		protected $pluginTitle	= 'News Categories';
+		protected $pluginName	= 'core';
+		protected $table 		= "news_category";
+		protected $pid			= "category_id";
+		protected $perPage = 0; //no limit
+		protected $batchDelete = false;
+		
+		protected $fields = array(
+			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'category_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
+         	'category_icon' 			=> array('title'=> LAN_ICON,			'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
+         	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         
+         	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
+			'category_meta_keywords' 	=> array('title'=> "Meta Keywords",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
+			'category_sef' 				=> array('title'=> "SEF Url String",	'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
+			'category_manager' 			=> array('title'=> "Manage Permissions",'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
+			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+		);
+
+		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description','category_manager', 'category_order', 'options');
+		
+		protected $newspost;
+	
+		function init()
+		{
+			$this->newspost = new admin_newspost;	
+		}
+		
+	//	function createPage()
+	//	{
+		//	$this->newspost->show_categories();
+	//	}
+		
+		public function beforeCreate($new_data)
+		{
+	
+		}
+		
+		
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+	
+		}
+
+}
+
+class news_cat_form_ui extends e_admin_form_ui
+{
+
+}
+
+
+
+// Submitted News Area. 
+
+
+class news_sub_ui extends e_admin_ui
+{
+		protected $pluginTitle	= NWSLAN_47;
+		protected $pluginName	= 'core';
+		protected $table 		= "submitnews";
+		protected $pid			= "submitnews_id";
+		protected $perPage 		= 20; //no limit
+		protected $batchDelete 	= true;
+		protected $formQuery	= "mode=main&amp;action=create";
+		protected $listOrder	= "submitnews_id desc";
+		
+		
+
+// submitnews_id 	submitnews_name 	submitnews_email 	submitnews_title 	submitnews_category 	submitnews_item 	submitnews_datestamp 	submitnews_ip 	submitnews_auth 	submitnews_file		
+		protected $fields = array(
+			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'submitnews_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
+         	'submitnews_title' 			=> array('title'=> LAN_TITLE,			'type' => 'method',			'width' => '65%', 'thclass' => 'left', 'readonly'=>TRUE),
+         	'submitnews_datestamp'		=> array('title' => LAN_NEWS_32, 		'type' => 'date', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),      	     
+        
+			'submitnews_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
+		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
+			'submitnews_name' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
+       		'submitnews_ip' 			=> array('title'=> "IP",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),			
+			'submitnews_auth' 			=> array('title'=> "User",			'type' => 'user',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
+			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => "method",				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+		);
+
+		protected $fieldpref = array('checkboxes', 'submitnews_id',  'submitnews_title', 'submitnews_category', 'options');
+		
+		protected $newspost;
+		
+		protected $cats;
+	
+		function init()
+		{
+			$sql = e107::getDb();
+			$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
+			while($row = $sql->db_Fetch())
+			{
+				$cat = $row['category_id'];
+				$this->cats[$cat] = $row['category_name'];
+			}
+			asort($this->cats);
+			$this->fields['submitnews_category']['writeParms'] = $this->cats;
+			$this->newspost = new admin_newspost;	
+		}
+		
+	//	function createPage()
+	//	{
+		//	$this->newspost->show_categories();
+	//	}
+		
+		public function beforeCreate($new_data)
+		{
+	
+		}
+		
+		
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+	
+		}
+
+}
+
+class news_sub_form_ui extends e_admin_form_ui
+{
+	
+	
+	
+	function submitnews_title($cur,$val)
+	{
+		$tp = e107::getParser();
+		$row = $this->getController()->getListModel();
+		
+		$submitnews_id 		= $row->get('submitnews_id');
+		$submitnews_title 	= $row->get('submitnews_title');
+		$submitnews_file 	= $row->get('submitnews_file');
+		$submitnews_item 	= $row->get('submitnews_item');
+		
+		$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
+		$text .= $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');
+		$text .= '</a>';
+		$text .= "<div id='submitted_".$submitnews_id."' title='".$tp->toAttribute($submitnews_title)."' style='display:none'>".$tp->toHTML($submitnews_item,TRUE);
+				
+		if($submitnews_file)
+		{
+			$tmp = explode(',',$submitnews_file);
+			$text .= "<br />";
+			foreach($tmp as $imgfile)
+			{
+				$text .= "<br /><img src='".e_UPLOAD.$imgfile."' alt='".$imgfile."' />";					
+			}
+		}
+		$text .= "\n</div>";
+		return $text;
+
+	}
+	
+	// Override the default Options field. 
+	function options($parms, $value, $id, $attributes)
+	{
+	
+		if($attributes['mode'] == 'read')
+		{
+			$approved = $this->getController()->getListModel()->get('submitnews_auth'); // approved;
+			if($approved == 0)
+			{
+				$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
+				// NWSLAN_103;	
+			} 
+			else // Already submitted; 
+			{
+				
+			}
+					
+			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
+			
+			return $text;
+		}
+	}
+		
+}
+
+
+
+
+
+
+// Main News Area. 
+
+class news_admin_ui extends e_admin_ui
+{
+		protected $pluginTitle	= 'Media Categories';
+		protected $pluginName	= 'core';
+		protected $table 		= "news";
+		protected $pid			= "news_id";
+		protected $perPage 		= 20; //no limit
+		protected $batchDelete 	= true;
+		protected $batchCopy 	= true;
+		protected $listOrder	= "news_id desc";
+		
+		protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.
+		
+		
+		protected $fields = array(
+				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
+				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
+ 				'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParams' => 'path={e_MEDIA}','readonly'=>false),		  		
+ 				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
+				
+				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+    			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+                'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+  				
+  				'news_start'			=> array('title' => "Start", 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+       			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
+                       				
+  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'data' => 'int',	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
+                'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
+                'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
+
+		);
+		
+		
+	protected $cats = array();
+	protected $newspost;
+
+	function init()
+	{
+		$sql = e107::getDb();
+		$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
+		while($row = $sql->db_Fetch())
+		{
+			$cat = $row['category_id'];
+			$this->cats[$cat] = $row['category_name'];
+		}
+		asort($this->cats);
+		$this->fields['news_category']['writeParms'] = $this->cats;
+		$this->fields['news_render_type']['writeParms'] = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
+		
+		$this->newspost = new admin_newspost;
+		$this->newspost->observer();
+
+ 
+	}
+		
+	function createPage()
+	{
+		// print_a($_POST);
+		if(isset($_POST['submitnews']))
+		{
+			$id = key($_POST['submitnews']);
+	
+			$this->loadSubmitted($id); 	
+		}
+		else
+		{
+			$this->preCreate();	
+		}
+				
+		$this->newspost->show_create_item();
+	}
+
+	function categoryPage()
+	{
+		if(!getperms('0|7'))
+		{
+			$this->noPermissions();
+		}
+		$this->newspost->show_categories();
+		// $newspost->show_create_item();
+	}
+	
+	function submittedPage()
+	{
+		$this->newspost->show_submitted_news();	
+	}
+	
+	function maintPage()
+	{
+		
+	}
+		
+	function settingsPage()
+	{
+		$this->newspost->show_news_prefs();	
+	}
+
+
+	function noPermissions($qry = '')
+	{
+		$url = e_SELF.($qry ? '?'.$qry : '');
+		if($qry !== e_QUERY)
+		{
+			$mes = e107::getMessage();
+			$this->show_message('Insufficient permissions!', E_MESSAGE_ERROR, true);
+			session_write_close();
+			header('Location: '.$url);
+		}
+		exit;
+	}
+	
+	
+	function loadSubmitted($id)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+			if ($sql->db_Select("submitnews", "*", "submitnews_id=".intval($id), TRUE))
+			{
+				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
+				$row = $sql->db_Fetch();
+				$_POST['news_title'] = $row['submitnews_title'];
+				$_POST['news_body'] = $row['submitnews_item'];
+				$_POST['cat_id'] = $row['submitnews_category'];
+
+				if (defsettrue('e_WYSIWYG'))
+				{
+				  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
+				  if (substr($_POST['news_body'],0,6) == '[html]') $_POST['news_body'] = substr($_POST['news_body'],6);
+					$_POST['news_body'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
+					$_POST['news_body'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
+				}
+				else
+				{
+					$_POST['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
+					
+					if($row['submitnews_file'])
+					{
+						$files = explode(",",$row['submitnews_file']);
+						foreach($files as $f)
+						{
+							if($bbpath = e107::getMedia()->importFile($f,'news'))
+							{
+								$_POST['news_body'] .= "\n\n[img]".$bbpath."[/img]";
+							}
+							
+						}	
+					}
+					
+					
+					
+				}
+				$_POST['data'] = $tp->dataFilter($_POST['data']);		// Filter any nasties
+				$_POST['news_title'] = $tp->dataFilter($_POST['news_title']);
+			}
+			
+		
+	}
+	
+	
+	
+	
+	
+	function preCreate()
+	{
+		if($_GET['action'] == "edit" && !$_POST['preview'])
+		{		
+			if(!isset($_POST['submit_news']))
+			{
+				if(e107::getDb()->db_Select('news', '*', 'news_id='.intval($_GET['id'])))
+				{
+					$row = e107::getDb()->db_Fetch();
+
+				//	if(!isset($this->news_categories[$row['news_category']]))
+					{
+				//		$this->noPermissions();
+					}
+
+					$_POST['news_title'] = $row['news_title'];
+					$_POST['news_sef'] = $row['news_sef'];
+					$_POST['news_body'] = $row['news_body'];
+					$_POST['news_author'] = $row['news_author'];
+					$_POST['news_extended'] = $row['news_extended'];
+					$_POST['news_allow_comments'] = $row['news_allow_comments'];
+					$_POST['news_class'] = $row['news_class'];
+					$_POST['news_summary'] = $row['news_summary'];
+					$_POST['news_sticky'] = $row['news_sticky'];
+					$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $row['news_datestamp'];
+
+					$_POST['cat_id'] = $row['news_category'];
+					$_POST['news_start'] = $row['news_start'];
+					$_POST['news_end'] = $row['news_end'];
+					$_POST['comment_total'] = e107::getDb()->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
+					$_POST['news_render_type'] = $row['news_render_type'];
+					$_POST['news_thumbnail'] = $row['news_thumbnail'];
+					$_POST['news_meta_keywords'] = $row['news_meta_keywords'];
+					$_POST['news_meta_description'] = $row['news_meta_description'];
+				}
+			}
+		}	
+	}
+}
+
+
+class news_form_ui extends e_admin_form_ui
+{
+
+}
+
+	new news_admin();
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
+	if(!e_AJAX_REQUEST) require_once("footer.php");
+	exit;
+
+
+
+
+
+
+
+
+
 
 function headerjs()
 {
@@ -1768,7 +2239,8 @@ class admin_newspost
 		";
 
 		$emessage = eMessage::getInstance();
-		$e107->ns->tablerender($this->getSubAction() == 'edit' ? NWSLAN_29a : NWSLAN_29, $emessage->render().$text);
+		echo $emessage->render().$text;
+		// $e107->ns->tablerender($this->getSubAction() == 'edit' ? NWSLAN_29a : NWSLAN_29, $emessage->render().$text);
 	}
 
 
@@ -2056,8 +2528,9 @@ class admin_newspost
 		";
 
 
-
-		e107::getRender()->tablerender(NWSLAN_46a, e107::getMessage()->render().$text);
+		echo e107::getMessage()->render().$text;
+		
+		// e107::getRender()->tablerender(NWSLAN_46a, e107::getMessage()->render().$text);
 	}
 
 	function show_categoriy_list()
@@ -2110,8 +2583,15 @@ class admin_newspost
 								<td class='center middle'>{$icon}</td>
 								<td class='middle'>{$url}</td>
 								<td class='middle'>".$frm->uc_select('multi_category_manager['.$category['category_id'].']',  vartrue($category['category_manager'], e_UC_ADMIN), 'main,admin,classes')."</td>
-								<td class='center middle'>
-									<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".defset('ADMIN_EDIT_ICON', '<img src="'.e_IMAGE_ABS.'admin_images/edit_16.png" alt="Edit" />')."</a>
+								<td class='center middle'>";
+				
+		
+				$text .= "<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?mode=cat&amp;action=edit&amp;id={$category['category_id']}' tabindex='".$frm->getNext()."'>".defset('ADMIN_EDIT_ICON', '<img src="'.e_IMAGE_ABS.'admin_images/edit_16.png" alt="Edit" />')."</a>";
+				
+				// $text .= "<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".defset('ADMIN_EDIT_ICON', '<img src="'.e_IMAGE_ABS.'admin_images/edit_16.png" alt="Edit" />')."</a>";				
+								
+				$text .= "
+									
 									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', e107::getParser()->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
 								</td>
 								<td class='middle center'>".$frm->text('multi_category_order['.$category['category_id'].']', $category['category_order'], 3, 'size=2&tabindex='.$tindex)."</td>
@@ -2292,7 +2772,8 @@ class admin_newspost
 				</fieldset>
 			</form>
 		";
-		e107::getRender()->tablerender(NWSLAN_90, e107::getMessage()->render().$text);
+		echo e107::getMessage()->render().$text;
+		// e107::getRender()->tablerender(NWSLAN_90, e107::getMessage()->render().$text);
 	}
 
 
