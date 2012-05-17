@@ -61,7 +61,7 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 	if (FILE_UPLOADS && $_FILES['file_userfile'] && varsettrue($pref['subnews_attach']) && varsettrue($pref['upload_enabled']) && check_class($pref['upload_class']))
 	{
 		require_once(e_HANDLER.'upload_handler.php');
-		$uploaded = process_uploaded_files(e_IMAGE . 'newspost_images/', FALSE, array('file_mask' => 'jpg,gif,png', 'max_file_count' => 1));
+		$uploaded = process_uploaded_files(e_UPLOAD, FALSE, array('file_mask' => 'jpg,gif,png', 'max_file_count' => 1));
 	
 		if (($uploaded === FALSE) || !is_array($uploaded))
 		{	// Non-specific error
@@ -76,49 +76,49 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 			{
 				if (varset($uploaded[$c]['error'],0) != 0)
 				{
-			$submitnews_error = TRUE;
-			$message = handle_upload_messages($uploaded);
-		}
-		else
-		{
+					$submitnews_error = TRUE;
+					$message = handle_upload_messages($uploaded);
+				}
+				else
+				{
 					if (isset($uploaded[$c]['name']) && isset($uploaded[$c]['type']) && isset($uploaded[$c]['size']))
-			{
+					{
 						$filename = $uploaded[$c]['name'];
 						$filetype = $uploaded[$c]['type'];
 						$filesize = $uploaded[$c]['size'];
-				$fileext  = substr(strrchr($filename, "."), 1);
-				$today = getdate();
+						$fileext  = substr(strrchr($filename, "."), 1);
+						$today = getdate();
 						$submitnews_file = USERID."_".$today[0]."_".$c."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
-						
-				if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
-				{
-					require_once(e_HANDLER.'resize_handler.php');
-			
-					if (!resize_image(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file, $pref['subnews_resize']))
-					{
-					  rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
+								
+						if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
+						{
+							require_once(e_HANDLER.'resize_handler.php');
+					
+							if (!resize_image(e_UPLOAD.$filename, e_UPLOAD.$submitnews_file, $pref['subnews_resize']))
+							{
+							  rename(e_UPLOAD.$filename, e_UPLOAD.$submitnews_file);
+							}
+						}
+						elseif ($filename)
+						{
+							rename(e_UPLOAD.$filename, e_UPLOAD.$submitnews_file);
+						}
 					}
 				}
-				elseif ($filename)
-				{
-					rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
-				}
-			}
-		}
 	
-				if ($filename && file_exists(e_IMAGE."newspost_images/".$submitnews_file))
-		{
+				if ($filename && file_exists(e_UPLOAD.$submitnews_file))
+				{
 					$submitnews_filearray[] = $submitnews_file;	
-		}
+				}
 				
-	}
+			}
 		}
 		
 	}
 
 	if ($submitnews_error === FALSE)
 	{
-		$sql->db_Insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '$submitnews_file' ");
+		$sql->db_Insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '".implode(',',$submitnews_filearray)."' ");
 		$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "image" => $submitnews_file, "ip" => $ip);
 		$e_event->trigger("subnews", $edata_sn);
 		$ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");

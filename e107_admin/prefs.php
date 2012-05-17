@@ -1102,6 +1102,54 @@ $text .= "
 		</fieldset>
 	";
 	
+// File Uploads
+
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
+
+	$text .= "
+	<fieldset class='e-hideme' id='core-prefs-uploads'>
+			<legend>File Uploading</legend>
+			<table class='adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+	<tr>
+	<td class='label'>".UPLLAN_25."</td>
+	<td class='control'>".
+	
+	$frm->radio_switch('upload_enabled', $pref['upload_enabled'], LAN_YES, LAN_NO)
+	."
+	<div class='field-help'>".UPLLAN_26."</div>
+	</td>
+	</tr>
+
+	<tr>
+	<td class='label'>".UPLLAN_33."<br />
+	</td>
+	<td class='control'>".
+	$frm->text('upload_maxfilesize', $pref['upload_maxfilesize'], 10)
+	 ."
+	 <div class='field-help'>".UPLLAN_34." (upload_max_filesize = ".ini_get('upload_max_filesize').", post_max_size = ".ini_get('post_max_size')." )</div>
+	</td>
+	</tr>
+
+	<tr>
+	<td class='label'>".UPLLAN_37."</td>
+	<td class='control'>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,classes")."
+	<div class='field-help'>".UPLLAN_38."</div>
+	</td>
+	</tr>
+	</tbody>
+		</table>
+			".pref_submit('uploads')."
+		</fieldset>";	
+	
+	
+	
+	
+	
 // Javascript Control
 //TODO LANS
 $text .= "
@@ -1353,6 +1401,7 @@ function prefs_adminmenu()
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
+	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
 	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);

@@ -21,7 +21,18 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e_media
 {
-	public $imagelist = array();
+	protected $imagelist = array();
+	
+	protected $mimePaths = array(
+				'text'			=> e_MEDIA_FILE,
+				'multipart'		=> e_MEDIA_FILE,
+				'application'	=> e_MEDIA_FILE,
+				'audio'			=> e_MEDIA_AUDIO,
+				'image'			=> e_MEDIA_IMAGE,
+				'video'			=> e_MEDIA_VIDEO,
+				'other'			=> e_MEDIA_FILE
+		);
+	
 	
 	/**
 	 * Import files from specified path into media database. 
@@ -458,6 +469,134 @@ class e_media
 				
 		return $text;	
 	}
+
+
+
+	function checkDupe($oldpath,$newpath)
+	{
+		$mes = e107::getMessage();	
+		$tp = e107::getParser();
+		$f = e107::getFile()->get_file_info($oldpath,TRUE);
+		
+	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
+		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		{
+			$mes->addWarning($newpath." already exists and was renamed during import.");	
+			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
+			$newpath = $this->getPath($f['mime']).'/'.$file;						
+		}
+		
+		return $newpath;	
+	}
+	
+	
+	function getPath($mime)
+	{
+		$mes = e107::getMessage();
+
+		list($pmime,$tmp) = explode('/',$mime);
+
+		if(!vartrue($this->mimePaths[$pmime]))
+		{
+			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
+			return FALSE;
+		}
+
+		$dir = $this->mimePaths[$pmime].date("Y-m");
+
+		if(!is_dir($dir))
+		{
+			if(!mkdir($dir, 0755))
+			{
+				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				return FALSE;
+			};
+		}
+		return $dir;
+	}
+	
+	
+	
+	public function mediaData($sc_path)
+	{
+		if(!$sc_path) return array();
+		
+		$mes = e107::getMessage();
+		$path = e107::getParser()->replaceConstants($sc_path);
+		
+		if(!is_readable($path))
+		{
+			$mes->addError("Couldn't read file: {$path}");	
+			return FALSE;
+		}
+		
+		$info = e107::getFile()->get_file_info($path);
+		
+		return array(
+			'media_type'		=> $info['mime'],
+			'media_datestamp'	=> time(),
+			'media_url'			=> e107::getParser()->createConstants($path, 'rel'),
+			'media_size'		=> filesize($path),
+			'media_author'		=> USERID,
+			'media_usedby'		=> '',
+			'media_tags'		=> '',
+			'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
+		);
+	}
+	
+	
+	public function importFile($file='',$category='_common')
+	{
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+				
+		$oldpath = e_MEDIA."temp/".$file;
+		
+		if(!file_exists($oldpath))
+		{
+			$mes->add("Couldn't find the file: ".$oldpath, E_MESSAGE_ERROR);
+			return;
+		}	
+			
+		$img_data = $this->mediaData($oldpath); // Basic File Info only
+		
+		if(!$typePath = $this->getPath($img_data['media_type']))
+		{
+				$mes->addError("Couldn't generated path from file info:".$oldpath);
+				return FALSE;
+		}
+				
+		$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file);
+		
+		if(!rename($oldpath, e_MEDIA.$newpath))
+		{
+			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+			return FALSE;
+		};
+		
+		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
+		$img_data['media_name'] 		= $tp->toDB($file);
+		$img_data['media_caption'] 		= $new_data['media_caption'];
+		$img_data['media_category'] 	= $category;
+		$img_data['media_description'] 	= $new_data['media_description'];
+		$img_data['media_userclass'] 	= 0;	
+
+		if($sql->db_Insert("core_media",$img_data))
+		{		
+			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
+			return $img_data['media_url'];	
+		}
+		else
+		{
+			rename($newpath,$oldpath);	//move it back.
+			return FALSE;
+		}
+		
+		
+	}
+	
+	
 
 	
 }

@@ -19,6 +19,12 @@ require_once('../class2.php');
 //TODO - marj prepare language reorganisation
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
+if($_GET['iframe'] == 1)
+{
+	define('e_IFRAME', true);
+
+}
+
 $e_sub_cat = 'main';
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');

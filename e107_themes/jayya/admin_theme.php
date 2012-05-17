@@ -159,10 +159,36 @@ e107::js('inline','
 			var id = $(this).attr("href");
 			$(id).dialog({
 				 minWidth: 800,
-				 maxHeight: 800,
+				 maxHeight: 700,
 				 modal: true
 			 });
 		});
+		
+		// Modal Box - uses inline hidden content  // NEEDS work - see customize link for admin-infopanel. 
+		
+		$(".e-modal-iframe").click(function (e) {
+			var id = $(this).attr("href");
+				e.preventDefault();
+                var page = $(this).attr("href")
+                var pagetitle = $(this).attr("title")
+                var $dialog = $("<div></div>")
+                .html("<iframe style=\"border: 0px; \" src=\"" + page + "\" width=\"100%\" height=\"100%\"></iframe>")
+                .dialog({
+                    autoOpen: false,
+                    modal: true,
+                    width:800,
+                    height: 700,
+                    minWidth: 800,
+                    minHeight: 700,
+				 	maxHeight: 700,
+                    title: pagetitle
+                });
+                $dialog.dialog("open");
+		});
+		
+		
+		
+		
 		
 		
 		// Sorting
