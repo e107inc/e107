@@ -387,8 +387,8 @@ function showStartPage()
 	<form method='post' action='".e_SELF."' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
 		<legend class='e-hideme'>".'DBLAN_10'."</legend>
-            <table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='2'>
+            <table class='adminlist'>
+			<colgroup>
 			<col />
 			<col />
 			<col />
@@ -463,8 +463,8 @@ function showImportOptions($mode='csv')
 
 	$text = "
 	<form method='post' action='".e_SELF."'>
-    <table cellpadding='0' cellspacing='0' class='adminform'>
-    	<colgroup span='2'>
+    <table class='adminform'>
+    	<colgroup>
     		<col class='col-label' />
     		<col class='col-control' />
     	</colgroup>";

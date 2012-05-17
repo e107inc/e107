@@ -477,8 +477,8 @@ class themeHandler
 			
 			$text = "
 			  	<div style='text-align:center'>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
-					<colgroup span='2'>
+				<table class='adminform'>
+					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
@@ -522,7 +522,7 @@ class themeHandler
 
 		
 		$text = "<div style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-			<table class='adminlist' cellpadding='0' cellspacing='0'>";
+			<table class='adminlist'>";
 		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
@@ -715,7 +715,7 @@ class themeHandler
 		
 		$text .= "
 		<div id='core-thememanager-configure'>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
+        <table class='adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -777,8 +777,8 @@ class themeHandler
 			$itext = "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td colspan='2' style='vertical-align:top'>
-                    <table cellpadding='0' cellspacing='0' class='adminlist'>
-                      	<colgroup span='2'>
+                    <table class='adminlist'>
+                      	<colgroup>
                       		<col class='col-tm-layout-default' style='width:10%' />
                       		<col class='col-tm-layout-name' style='width:20%' />
 							<col class='col-tm-layout-visibility' style='width:35%' />

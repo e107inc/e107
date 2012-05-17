@@ -1172,7 +1172,7 @@ $text .= "
 		$text .= "
 					</tbody>
 			</table>
-			<table cellpadding='0' cellspacing='0' class='adminform' style='margin-top: 20px'>
+			<table class='adminform' style='margin-top: 20px'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />

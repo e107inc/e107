@@ -107,7 +107,8 @@ e107::js('inline','
     	 $(".e-expandit").show();
     			
        	$(".e-expandit").click(function () {
-			$(".e-hideme").toggle("slow");
+       		var id = $(this).attr("href");
+			$(id).toggle("slow");
 		}); 
 		
 		// Date
@@ -127,13 +128,14 @@ e107::js('inline','
   		$(".adminlist tr:last").addClass("last");
 				
 		// Character Counter
-		$("textarea").before("<p id=\"remainingCharacters\">&nbsp;</p>");
+		$("textarea").before("<p class=\"remainingCharacters\" id=\"" + $("textarea").attr("name")+ "-remainingCharacters\">&nbsp;</p>");
 		$("textarea").keyup(function(){
     		
     	//	var max=$(this).attr("maxlength");
 			var max = 100;
+			var el = "#" + $(this).attr("name") + "-remainingCharacters";
     		var valLen=$(this).val().length;
-    		$("#remainingCharacters").text( valLen + " characters")
+    		$(el).text( valLen + " characters")
 		});
 		
 		// Text-area AutoGrow
@@ -150,6 +152,18 @@ e107::js('inline','
 		$(".e-dialog-close").click(function () {
 			parent.$.colorbox.close()
 		}); 
+		
+		
+		// Modal Box - uses inline hidden content 
+		$(".e-modal").click(function () {
+			var id = $(this).attr("href");
+			$(id).dialog({
+				 minWidth: 800,
+				 maxHeight: 800,
+				 modal: true
+			 });
+		});
+		
 		
 		// Sorting
 		var fixHelper = function(e, ui) {
@@ -192,6 +206,24 @@ e107::js('inline','
 			}
 		});
 		
+		// highlight checked row
+		$("input[type=\"checkbox\"].checkbox").click(function(evt){
+	
+			if(this.checked)
+			{
+				$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );
+				$(this).closest("tr").switchClass( "even", "highlight-even", 0 );
+    		}
+			else
+			{
+				$(this).closest("tr").switchClass( "highlight-even", "even", 300 );
+				$(this).closest("tr").switchClass( "highlight-odd", "odd", 300 );
+			}	
+			
+		});
+		
+			
+		
 	
 		// Basic Delete Confirmation	
 		$("input.delete").click(function(){
@@ -199,14 +231,27 @@ e107::js('inline','
   			return answer // answer is a boolean
 		});  
 		
+		
+		
 
 		
 		
 })
+		// BC Expandit() function 
+		function expandit(e) {
+			var id = "#" + e; // TODO detect new "div" when e = ""; 
+			$(id).toggle("slow");
+			
+		};
+		
+		
+		
 ','jquery');
 
 e107::css('inline',"
 	.e-moving { background-color:yellow; }
+	tr.highlight-even	{ background-color:silver; }
+	tr.highlight-odd	{ background-color:silver; }
 	legend { display: none; }
 ",'jquery');
 

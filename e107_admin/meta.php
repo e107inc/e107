@@ -82,13 +82,13 @@ $text = "
 					<tr>
 						<td class='label'>".METLAN_9."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
+							<textarea class='tbox textarea e-autoheight' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".METLAN_10."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
+							<textarea class='tbox textarea e-autoheight' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 
@@ -109,7 +109,7 @@ $text = "
 					<tr>
 						<td class='label'>".METLAN_2."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
+							<textarea class='tbox textarea e-autoheight' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
 							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE]))."</textarea>
 							<div class='smalltext field-help'>eg. &lt;meta name='author' content='your name' /&gt; </div>
 						</td>
@@ -143,6 +143,7 @@ require_once("footer.php");
  */
 function headerjs()
 {
+	
 	$ret = "
 		<script type='text/javascript'>
 			var e107Admin = {}

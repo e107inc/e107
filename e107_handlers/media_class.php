@@ -291,6 +291,45 @@ class e_media
 		}
 		return $ret;	
 	}
+
+
+
+	/**
+	 * Return an array of Images in a particular category
+	 * @param string $type : 16 | 32 | 48 | 64
+	 * @param integer $from
+	 * @param integer $amount
+	 */
+	public function getIcons($type='', $from=0, $amount=null)
+	{
+		$inc = array();
+		
+		if($type)
+		{
+			$inc[] = "media_category = '_icon_".$type."' ";
+		}
+
+		$ret = array();
+		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND media_category LIKE '_icon%' ";
+		$query .= (count($inc)) ? " AND ( ".implode(" OR ",$inc)." )" : "";
+		$query .= "  ORDER BY media_category, media_name";
+		
+		if($amount)
+		{
+			$query .= " LIMIT ".$from." ,".$amount;	
+		}
+		
+		e107::getDb()->db_Select_gen($query);
+		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		{
+			$id = $row['media_id'];
+			$ret[$id] = $row;
+		}
+		return $ret;	
+	}
+	
+
+
 		
 	/**
 	 * Generate Simple Thumbnail window for image-selection 
@@ -336,39 +375,52 @@ class e_media
 	{
 		$bbcode = null; // option to override onclick behavior. See ibrowser.php 
 		
-		$cat = ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
+		if($cat !='_icon')
+		{
+			$cat 	= ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
+			$images = $this->getImages($cat,0,23);
+			$class 	= "media-select-image";
+			$w		= 120;
+			$h		= 100;
+		}
+		else // Icons
+		{
+			$cat 	= "";
+			$images = $this->getIcons($cat,0,200);
+			$class 	= "media-select-icon";
+			$w		= 64;
+			$h		= 64;
+		}
 		
 		parse_str($att); // grab 'onclick' . 
 		
 	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
-		$images 		= $this->getImages($cat,0,23);
+	
 		$att 			= 'aw=120&ah=100';		
 		$prevId 		= $tagid."_prev";
 		
 		// EXAMPLE of FILTER GUI. 
+	//	$text .= "CAT=".$cat;
 
 		$text .= "<div>Filter: <input type='text' name='non-working-filter-example' value='' />";
 		$text .= "<input type='button' value='Go' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 		$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
 		$text .= "<input type='button' value='&raquo;' />"; // see next page of images. 
 		$text .= " Displaying 0-24 of 150 images.<br />&nbsp; </div>
-		<div>\n";
+		<div class='media-select-container'>\n";
 		
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
-		 	parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 		 	 return false;";
 			
-			$text .= "<a class='media-select-clear' style='float:left' href='#' onclick=\"{$onclick_clear}\" >
-			<div style='display:block;border:1px solid silver;padding-top:40px;text-align:center;vertical-align:middle;width:120px;height:58px'>
-			No Image</div>";		
+			$text .= "<a class='{$class} media-select-none e-dialog-close' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			<div style='text-align:center;position: relative; top: 30%'>No image</div>
+			</a>";		
 		}
 
-		
-	
 		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
 		
 		foreach($images as $im)
@@ -393,16 +445,15 @@ class e_media
 				return false;";	
 			}
 		 	
+		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
 			
-			$text .= "<a class='media-select e-dialog-close' title=\"".$diz."\" href='#' onclick=\"{$onclicki}\" >\n";
-			$text .= "<img src='".e107::getParser()->thumbUrl($im['media_url'], $att)."' alt=\"".$im['media_title']."\"  />\n";
+			$text .= "<a class='{$class} e-dialog-close' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<img src='".$img_url."' alt=\"".$im['media_title']."\"  />";
 			$text .= "</a>\n\n";
 		}	
 		
 	
-		
-		
-		
+		$text .= "<div style='clear:both'><!-- --></div>";
 		$text .= "</div>";
 				
 		return $text;	
