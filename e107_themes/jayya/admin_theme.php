@@ -103,7 +103,7 @@ e107::js('inline','
 
 	$(document).ready(function()
     {
-    	// $(".e-hideme").hide();
+    	 $(".e-hideme").hide();
     	 $(".e-expandit").show();
     			
        	$(".e-expandit").click(function () {
@@ -145,7 +145,7 @@ e107::js('inline','
 		$("a.e-dialog").colorbox({
 			iframe:true,
 			width:"60%",
-			height:"60%",
+			height:"65%",
 			speed:100
 		});
 		
@@ -185,6 +185,24 @@ e107::js('inline','
                 });
                 $dialog.dialog("open");
 		});
+		
+		
+		// Admin Prefs Navigation
+		
+		 $(".plugin-navigation a").click(function () {
+		 	$(".plugin-navigation a").each(function(index) {
+    			var ot = $(this).attr("href");
+				$(ot).hide();
+				$(this).closest("li").removeClass("active");
+				$(this).switchClass( "link-active", "link", 0 );
+			});
+	   		var id = $(this).attr("href");
+			$(this).switchClass( "link", "link-active", 30 );
+			$(this).closest("li").addClass("active");
+			$(id).show({
+				effect: "slide"
+				});
+		}); 
 		
 		
 		
