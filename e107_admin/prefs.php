@@ -191,7 +191,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 $text = "
 <div id='core-prefs'>
 	<form class='admin-menu' method='post' action='".e_SELF."'>
-		<fieldset class='e-hideme' id='core-prefs-main'>
+		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='adminform'>
 				<colgroup>
@@ -574,12 +574,7 @@ $text .= "
 						</td>
 					</tr>
 
-					<tr>
-						<td class='label'>".CUSTSIG_16."</td>
-						<td class='control'>
-							".$frm->text('signup_pass_len', $pref['signup_pass_len'], 2)."
-						</td>
-					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_136."</td>
 						<td class='control'>
@@ -587,40 +582,8 @@ $text .= "
 							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".CUSTSIG_18."</td>
-						<td class='control'>
-							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 3, 1)."
-							<div class='field-help'>".CUSTSIG_19."</div>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_155.":</td>
-						<td class='control'>
-							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
-							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_192.":</td>
-						<td class='control'>
-							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
-							<div class='field-help'>".PRFLAN_193."</div>
-							<div class='field-help'>".PRFLAN_194."</div>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_158.":</td>
-						<td class='control'>
-							".$frm->text('displayname_maxlength', $pref['displayname_maxlength'], 3)."
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_172.":</td>
-						<td class='control'>
-							".$frm->text('loginname_maxlength', $pref['loginname_maxlength'], 3)."
-						</td>
-					</tr>
+
+				
 				</tbody>
 			</table>
 			".pref_submit('registration')."
@@ -651,6 +614,49 @@ $text .= "
 						<td class='label'>".PRFLAN_140."</td>
 						<td class='control'>
 							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 1)."
+						</td>
+					</tr>
+					
+					<tr>
+						<td class='label'>".CUSTSIG_16."</td>
+						<td class='control'>
+							".$frm->text('signup_pass_len', $pref['signup_pass_len'], 2)."
+						</td>
+					</tr>
+		
+					<tr>
+						<td class='label'>".CUSTSIG_18."</td>
+						<td class='control'>
+							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 3, 1)."
+							<div class='field-help'>".CUSTSIG_19."</div>
+						</td>
+					</tr>
+					
+						<tr>
+						<td class='label'>".PRFLAN_155.":</td>
+						<td class='control'>
+							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
+							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_192.":</td>
+						<td class='control'>
+							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
+							<div class='field-help'>".PRFLAN_193."</div>
+							<div class='field-help'>".PRFLAN_194."</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_158.":</td>
+						<td class='control'>
+							".$frm->text('displayname_maxlength', $pref['displayname_maxlength'], 3)."
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_172.":</td>
+						<td class='control'>
+							".$frm->text('loginname_maxlength', $pref['loginname_maxlength'], 3)."
 						</td>
 					</tr>
 ";
