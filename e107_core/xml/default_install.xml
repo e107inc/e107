@@ -62,11 +62,10 @@
 		<core name="e_jslib_gzip">1</core>
 		<core name="e_jslib_nocombine">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
-  'prototype/prototype.js' => 'all',
-  'scriptaculous/scriptaculous.js' => 'all',
-  'scriptaculous/effects.js' => 'all',
-  'e107.js' => 'all',
-)]]></core>
+		  'prototype' => 'auto',
+		  'prototype-cdn' => 'none',
+		  'jquery' => 'none',
+		)]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
 		<core name="email_notify">0</core>
