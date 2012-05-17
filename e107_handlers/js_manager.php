@@ -208,18 +208,20 @@ class e_jsmanager
 		$this->_core_prefs = e107::getPref('e_jslib_core');
 		$core = array();
 		
-		foreach($this->_core_prefs as $id=>$vis)
+		if(is_array($this->_core_prefs))
 		{
-			if($vis != 'none' && $vis != 'auto')
+			foreach($this->_core_prefs as $id=>$vis)
 			{
-				foreach($this->_libraries[$id] as $path)
+				if($vis != 'none' && $vis != 'auto')
 				{
-					$core[$path] = $vis;	
-				}	
-			}
-
-		}
+					foreach($this->_libraries[$id] as $path)
+					{
+						$core[$path] = $vis;	
+					}	
+				}
 	
+			}
+		}
 		$this->coreLib($core);
 
 		// Load stored in preferences plugin lib paths ASAP
