@@ -175,8 +175,8 @@ class e_form
 					ev.stop();
 					new e107Widgets.URLDialog(element.href, {
 						id: element["id"] || "e-dialog",
-						width: 830,
-						height: 650
+						width: 890,
+						height: 680
 		
 					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
 				});

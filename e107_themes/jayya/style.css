@@ -827,7 +827,7 @@ h1.bbcode, h2.bbcode, h3.bbcode, h4.bbcode, h5.bbcode, h6.bbcode {  }/* override
 
 div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
-a.media-select-image 		{ margin:5px; border:1px solid silver; }
+a.media-select-image 		{ margin:5px; border:1px solid silver; width:120px; height:100px; }
 a.media-select-image:hover	{ border:1px solid red; }
 a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; border:1px solid white; width:48px; height:48px;}
 a.media-select-icon:hover	{ border:1px solid red; }
