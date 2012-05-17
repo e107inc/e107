@@ -470,7 +470,7 @@ class e_menuManager {
 		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
         <fieldset id='core-menus-parametersform'>
 		<legend>Menu parameters ".$row['menu_name']."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
+        <table class='adminform'>
 		<tr>
 		<td>
 		Parameters (query string format):
@@ -511,7 +511,7 @@ class e_menuManager {
 		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
         <fieldset id='core-menus-visibilityform'>
 		<legend>". MENLAN_7." ".$row['menu_name']."</legend>
-        <table cellpadding='0' cellspacing='0' class='adminform'>
+        <table class='adminform'>
 		<tr>
 		<td>
 		<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />

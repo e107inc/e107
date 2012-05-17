@@ -146,7 +146,7 @@ class tinymce
         $text = "<form method='post' action='".e_SELF."?mode=create'>
                         <fieldset id='core-release-list'>
 						<legend class='e-hideme'>".$this->pluginTitle."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+						<table class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
 
@@ -280,8 +280,8 @@ class tinymce
 			<form method='post' action='".e_SELF."?mode=create' id='dataform' enctype='multipart/form-data'>
 				<fieldset id='core-cpage-create-general'>
 					<legend class='e-hideme'>".$this->pluginTitle."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminedit'>
-						<colgroup span='2'>
+					<table class='adminedit'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -450,8 +450,8 @@ class tinymce
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 				<fieldset id='core-cpage-options'>
 					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
+					<table class='adminform'>
+						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
@@ -611,8 +611,8 @@ function edit_theme()
  $text = "<div style='text-align:center'>
     <form method='post' action='".e_SELF."'>
 	<fieldset id='plugin-tinymce-config'>
-     <table cellpadding='0' cellspacing='0' class='adminform'>
-     	<colgroup span='2'>
+     <table class='adminform'>
+     	<colgroup>
      		<col class='col-label' />
      		<col class='col-control' />
      	</colgroup>

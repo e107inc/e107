@@ -362,8 +362,8 @@ class db_verify
 			<fieldset id='core-db-verify-{$selection}'>
 				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16."</legend>
 
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='4'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width: 25%'></col>
 						<col style='width: 25%'></col>
 						<col style='width: 10%'></col>
@@ -858,8 +858,8 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='1'>
+				<table class='adminlist'>
+					<colgroup>
 						<col style='width: 100%'></col>
 					</colgroup>
 					<thead>
@@ -923,8 +923,8 @@ function check_tables($what)
 	{	// $k is the DB table name (less prefix)
 		$ttcount = 0;
 		$ttext = "
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
-					<colgroup span='4'>
+				<table  class='adminlist'>
+					<colgroup >
 						<col style='width: 25%'></col>
 						<col style='width: 25%'></col>
 						<col style='width: 10%'></col>
@@ -1333,8 +1333,8 @@ $text = "
 	<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 		<fieldset id='core-db-verify-sql-tables'>
 			<legend>".DBVLAN_14."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='1'>
+			<table class='adminlist'>
+				<colgroup>
 					<col style='width: 100%'></col>
 				</colgroup>
 				<thead>

@@ -2168,14 +2168,14 @@ class e_admin_controller_ui extends e_admin_controller
 	 * db query building
 	 * @var array
 	 */
-	protected $tableJoin = array();
+	protected $tableJoin = array(); 
 
 	/**
 	 * Array of table names and their aliases. (detected from listQry)
 	 * db query building
 	 * @var array
 	 */
-	protected $joinAlias = array();
+	protected $joinAlias = array(); 
 
 	/**
 	 * Main model table alias
@@ -2237,6 +2237,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var integer
 	 */
 	protected $perPage = 20;
+	
+		/**
+	 * @var e_admin_model
+	 */
+	protected $formQuery = false; // custom form post query
 
 	/**
 	 * @var e_admin_model
@@ -2384,6 +2389,11 @@ class e_admin_controller_ui extends e_admin_controller
 	public function getPerPage()
 	{
 		return $this->perPage;
+	}
+	
+	public function getFormQuery()
+	{
+		return $this->formQuery;
 	}
 
 	public function getPrimaryName()
@@ -4245,6 +4255,7 @@ class e_admin_form_ui extends e_form
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
 			//'url' => e_SELF, default
+			'query'	=> $controller->getFormQuery(), // work around - see form in newspost.php (submitted news)
 			//'query' => $request->buildQueryString(array(), true, 'ajax_used'), - ajax_used is now removed from QUERY_STRING - class2
 			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality

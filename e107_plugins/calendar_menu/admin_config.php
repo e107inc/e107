@@ -454,7 +454,7 @@ if($action == 'cat')
 			$calendarmenu_text .= "
 			<form id='calformupdate' method='post' action='".e_SELF."?cat'>
 			<fieldset id='plugin-ecal-categories'>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
+				<table class='adminform'>
 			<colgroup span='2'>
 				<col style = 'width:20%;' class='col-label' />
 				<col style = 'width:80%;' class='col-control' />

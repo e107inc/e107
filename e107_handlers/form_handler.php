@@ -124,7 +124,7 @@ class e_form
     	// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
 		// eg. <img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
 		// The button itself could be replaced with an icon just for this purpose.
-
+		return $this->imagepicker($name, $default, $label, 'media=_icon');
 
 		$e107 = e107::getInstance();
 		$id = $this->name2id($name);
@@ -226,20 +226,36 @@ class e_form
 				$default = $tp->createConstants($default, 'mix');
 			}
 			$default_url = $tp->replaceConstants($default, 'abs');
+			$blank = FALSE;
 		}
 		else
 		{
 			$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
+			$blank = TRUE;
 		}
 		
 		//$width = intval(vartrue($sc_parameters['width'], 150));
-		
-		$ret = "<div class='imgselector-container'  style='display:block;width:120px;min-height:100px'>";
-		$att = 'aw=120&ah=100';
-		$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, $att, true);
-		$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";
-			
 		$cat = $tp->toDB($sc_parameters['media']);	
+		
+		if($cat == '_icon')
+		{
+			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
+			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $default_thumb;
+			$style = ($blank) ? "border:1px dashed black;width:64px;height:64px" : "border:1px dashed black";
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='{$style}' />";
+				
+		}
+		else
+		{
+			$ret = "<div class='imgselector-container'  style='display:block;width:120px;min-height:100px'>";
+			$att = 'aw=120&ah=100';
+			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, $att, true);
+			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";
+			
+		}
+		
+		
+		
 		$ret .= $this->mediaUrl($cat, $label,$name_id);
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; // to be hidden eventually. 
@@ -354,7 +370,7 @@ class e_form
 		{
 		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		}
-
+		
 		return $cal->make_input_field($cal_options, $cal_attrib);
 	}
 
@@ -1972,7 +1988,7 @@ class e_form
 		$text = '';
 		
 		
-		//print_a($form_options);
+		// print_a($form_options);
 		
 		foreach ($form_options as $fid => $options)
 		{
@@ -1992,7 +2008,6 @@ class e_form
 			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
 
-
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
@@ -2000,7 +2015,7 @@ class e_form
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']."</legend>
 						".vartrue($options['table_pre'])."
-						<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
+						<table class='adminlist' id='{$elid}-list-table'>
 							".$this->colGroup($fields, $current_fields)."
 							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
 							<tbody id='e-sort'>
@@ -2155,8 +2170,8 @@ class e_form
 			<fieldset id='{$id}'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
-				<table cellpadding='0' cellspacing='0' class='adminedit'>
-					<colgroup span='2'>
+				<table class='adminedit'>
+					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
@@ -2373,7 +2388,7 @@ class e_form
 		if(vartrue($fdata['table_rows']) || vartrue($fdata['table_body']))
 		{
 			$text .= "
-				<table cellpadding='0' cellspacing='0' class='adminform'>
+				<table class='adminform'>
 					{$colgroup}
 					<thead>
 						".vartrue($fdata['table_head'])."

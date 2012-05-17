@@ -43,7 +43,7 @@ $ADMIN_HEADER = "
 		</div>
 	</div>
 	<div class='admin-page-body'>
-		<table class='main-table' cellpadding='0' cellspacing='0'>
+		<table class='main-table'>
 			<tr>
 				<!--
 				<td class='col-left'></td>
