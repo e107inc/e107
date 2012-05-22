@@ -112,26 +112,32 @@ class page_admin extends e_admin_dispatcher
 {
 
 	protected $modes = array(
-		'main'		=> array(
+		'page'		=> array(
 			'controller' 	=> 'page_admin_ui',
 			'path' 			=> null,
 			'ui' 			=> 'page_admin_form_ui',
 			'uipath' 		=> null
-		)				
+		),
+		'menu'		=> array(
+			'controller' 	=> 'page_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'page_admin_form_ui',
+			'uipath' 		=> null
+		)						
 	);	
-
-
+	
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
-		'main/menus'	=> array('caption'=> CUSLAN_49, 'perm' => 'J'),
-		'main/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
-		'main/createem' => array('caption'=> CUSLAN_31, 'perm' => 'J'),
-		'main/options'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
+		'page/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
+		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J'),
+		'page/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
+		'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J'),
+		'page/options'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
 	
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'				
+		'page/edit'		=> 'page/list',
+		'menu/edit'		=> 'menu/list'				
 	);	
 	
 	protected $menuTitle = 'Custom Pages';
@@ -209,8 +215,8 @@ class page_admin_ui extends e_admin_ui
 
 		function init()
 		{
-			//FIX ME - mode not retained after using  drop-down 'filter' or 'search'. 
-			if($_GET['mode'] =='main' && $_GET['action'] =='menus')
+			//FIXME - mode not retained after using  drop-down 'filter' or 'search'. 
+			if($_GET['mode'] =='menu')
 			{
 				$this->listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.page_theme != '' "; // without any Order or Limit.	
 			}
@@ -266,9 +272,12 @@ class page_admin_ui extends e_admin_ui
 		function createPage($mode=FALSE)
 		{
 			/* mode: FALSE == page, mode: TRUE == menu */
-	
-		
-			
+			if($_GET['mode'] =='menu')
+			{
+				$mode = TRUE;
+			}
+				
+				
 			global $e107, $e_userclass, $e_event;
 	
 			$frm = e107::getForm();
@@ -283,7 +292,7 @@ class page_admin_ui extends e_admin_ui
 			$edit = ($sub_action == 'edit');
 			$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
 	
-			if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
+			if ($_GET['action'] == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
 			{
 				
 				//$url = e107::getUrl()->sc('page/view', $row, 'allow=page_id,page_title,page_sef');
@@ -403,7 +412,7 @@ class page_admin_ui extends e_admin_ui
 		//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 		//			<br />".display_help('cpage-help', 'cpage')."
 	
-	
+	/*
 					$text .= "</td>
 								</tr>
 								<tr>
@@ -413,7 +422,7 @@ class page_admin_ui extends e_admin_ui
 	
 	
 			";
-	
+	*/
 			if(!$mode)
 			{
 				$text .= "
