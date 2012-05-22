@@ -14,6 +14,8 @@
 				upper-alpha	A, B, C
 */
 
+$class = e107::getBB()->getClass('list');
+
 if (strpos($code_text,"[*]") !== FALSE)
 {
   $listitems = explode("[*]", $code_text);
@@ -38,7 +40,7 @@ foreach($listitems as $item)
 {
   if($item && $item != E_NL)
   {
-	$listtext .= "<li class='bbcode ".$type."'>$item</li>";
+	$listtext .= "<li class='bbcode ".$type." {$class}'>$item</li>";
   }
 }
 return $listtext.$trailer;

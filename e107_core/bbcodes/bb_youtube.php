@@ -342,18 +342,20 @@ class bb_youtube extends e_bb_base
 			$url .= "&amp;autoplay=".intval($params['autoplay']);
 		}
 		
+		$class = "bbcode ".e107::getBB()->getClass('youtube'); // consistent classes across all themes. 
+		
 		$ret = '
 		
 <!-- Start YouTube --> 
 		
-		<object class="bbcode" width="'.$params['w'].'" height="'.$params['h'].'" >
+		<object class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" >
 			<param name="movie" value="'.$url.'"></param>
 			<param name="allowFullScreen" value="'.$fscr.'"></param>
 			<param name="allowscriptaccess" value="always"></param>
 			<param name="wmode" value="transparent"></param>
 		';		
 	// Not XHTML - but needed for compatibility. 
-		$ret .= '<embed class="bbcode" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
+		$ret .= '<embed class="'.$class.'" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'"></embed>';
 		$ret .= '</object>';
 		$ret .= '
 <!-- End YouTube -->

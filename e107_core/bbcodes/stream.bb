@@ -1,3 +1,5 @@
+//<?
+$class = e107::getBB()->getClass('stream');
 unset($stream_parms);
 
 if($parm)
@@ -37,7 +39,7 @@ foreach($stream_parms as $k => $v)
 }
 
 $ret = "
-<object id='MediaPlayer' classid='CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95' standby='Loading Microsoft® Windows® Media Player components...' type='application/x-oleobject' codebase='http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112' width='".$tp -> toAttribute($width)."' height='".$tp -> toAttribute($height)."'>\n";
+<object class='{$class}' id='MediaPlayer' classid='CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95' standby='Loading Microsoftï¿½ Windowsï¿½ Media Player components...' type='application/x-oleobject' codebase='http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112' width='".$tp -> toAttribute($width)."' height='".$tp -> toAttribute($height)."'>\n";
 $ret .= "<param name='filename' value='".$tp -> toAttribute($code_text)."'>\n";
 $ret .= $MozparmStr;
 $ret .= "<embed src='".$tp -> toAttribute($code_text)."' width='".$tp -> toAttribute($width)."' height='".$tp -> toAttribute($height)."' id='mediaPlayer' name='mediaPlayer' {$IEparmStr}>

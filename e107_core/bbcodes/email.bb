@@ -1,3 +1,5 @@
+//<?php
+$class = e107::getBB()->getClass('email');
 
 global $pref;
 
@@ -21,7 +23,7 @@ if($pref['make_clickable'])
 }
 // Old method that attracts SPAM.
 if ($parm) {
-  	return "<a href='mailto:".$tp -> toAttribute($parm)."'>".$code_text."</a>";
+  	return "<a class='{$class}' href='mailto:".$tp -> toAttribute($parm)."'>".$code_text."</a>";
 } else {
-  	return "<a href='mailto:".$tp -> toAttribute($code_text)."'>".$code_text."</a>";
+  	return "<a class='{$class}' href='mailto:".$tp -> toAttribute($code_text)."'>".$code_text."</a>";
 }
