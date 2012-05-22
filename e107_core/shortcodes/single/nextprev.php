@@ -142,16 +142,16 @@ function nextprev_shortcode($parm = '')
 			// Format is: route::module/controller/action::urlParams::urlOptions
 			// Example: url::news/list/category::id=xxx&name=yyy&page=--PAGE--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
-			$urlParms = explode('::', $parm['url']);
-			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
+			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
+			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 		}
 		elseif(substr($parm['url'], 0, 5) == 'url::')
 		{
 			// New - use URL assembling engine
 			// Format is: url::module/controller/action?id=xxx&name=yyy&page=--PAGE--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
-			$urlParms = explode('::', $parm['url']);
-			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $e107->url->create($urlParms[1], array(), varset($urlParms[2])));
+			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
+			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], array(), varset($urlParms[2])));
 		}
 		// just regular full or absolute URL
 		else $url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
