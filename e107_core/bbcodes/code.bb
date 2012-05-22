@@ -1,3 +1,6 @@
+//<?php
+$class = e107::getBB()->getClass('code');
+
 global $pref, $e107cache, $tp;
 
 if($pref['smiley_activate']) 
@@ -31,14 +34,14 @@ if(isset($pref['useGeshi']) && $pref['useGeshi'] && file_exists(e_PLUGIN."geshi/
 		$CodeCache = $geshi->parse_code();
 		$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 	}
-	$ret = "<div class='code_highlight code-box' style='unicode-bidi: embed; direction: ltr'>".str_replace("&amp;", "&", $CodeCache)."</div>";
+	$ret = "<div class='code_highlight code-box {$class}' style='unicode-bidi: embed; direction: ltr'>".str_replace("&amp;", "&", $CodeCache)."</div>";
 }
 else
 {
 	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$divClass = ($parm) ? $parm : 'code_highlight';
-	$ret = "<div class='".$tp -> toAttribute($divClass)." code-box' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</div>";
+	$ret = "<div class='".$tp -> toAttribute($divClass)." code-box{$class}' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</div>";
 }
 $ret = str_replace("[", "&#091;", $ret);
 return $ret;

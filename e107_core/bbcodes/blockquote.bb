@@ -1,1 +1,3 @@
-return "<div class='indent'>{$code_text}</div>";
+//<?
+$class = e107::getBB()->getClass('blockquote');
+return "<div class='indent {$class}'>{$code_text}</div>";

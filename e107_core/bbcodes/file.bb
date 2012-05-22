@@ -1,3 +1,6 @@
+//<?
+$class = e107::getBB()->getClass('file');
+
 global $pref, $fromadmin;
 
 if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN || $fromadmin))
@@ -35,5 +38,5 @@ if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref[
 	{
 		$fname = str_replace('{e_BASE}', SITEURL, $fname);			// Translate into an absolute URL
 	}
-	return "<a href='".$tp -> toAttribute($fname)."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$tp -> toAttribute($fname)."'>".$code_text."</a>";
+	return "<a class='{$class}' href='".$tp -> toAttribute($fname)."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$tp -> toAttribute($fname)."'>".$code_text."</a>";
 }

@@ -1,3 +1,6 @@
+//<?php
+$class = e107::getBB()->getClass('color');
+
 $aColors = array(
 "black" => "#000000",
 "blue" => "#0000FF",
@@ -26,13 +29,13 @@ $aColors = array(
 
 if(array_key_exists($parm, $aColors))
 {
-	return "<span style='color:{$aColors[$parm]}'>$code_text</span>";
+	return "<span class='{$class}' style='color:{$aColors[$parm]}'>$code_text</span>";
 }
 else
 {
 	if(preg_match("/(#[a-fA-F0-9]{3,6})/", $parm, $matches))
 	{
-		return "<span style='color:{$matches[1]}'>$code_text</span>";
+		return "<span class='{$class}' style='color:{$matches[1]}'>$code_text</span>";
 
 	}
 }

@@ -1,3 +1,5 @@
+//<?
+$class = e107::getBB()->getClass('img');
 // $Id$
 
 // General purpose image bbcode. As well as the obvious insertion of a picture:
@@ -21,7 +23,7 @@ $replace = array('&#039;', e_IMAGE_ABS, e_FILE_ABS, e_IMAGE_ABS, e_FILE_ABS);
 $replaceInt = array('&#039;', e_IMAGE, e_FILE, e_IMAGE, e_FILE);
 $intName = str_replace($search, $replaceInt, $code_text);			// Server-relative file names
 unset($imgParms);
-$imgParms['class']="bbcode floatnone";  //  This will be overridden if a new class is specified
+$imgParms['class']="bbcode {$class}";  //  This will be overridden if a new class is specified
 
 $imgParms['alt']='';
 
