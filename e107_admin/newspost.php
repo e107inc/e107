@@ -283,19 +283,19 @@ class news_sub_form_ui extends e_admin_form_ui
 
 class news_admin_ui extends e_admin_ui
 {
-		protected $pluginTitle	= 'Media Categories';
-		protected $pluginName	= 'core';
-		protected $table 		= "news";
-		protected $pid			= "news_id";
-		protected $perPage 		= 20; //no limit
-		protected $batchDelete 	= true;
-		protected $batchCopy 	= true;
-		protected $listOrder	= "news_id desc";
+	protected $pluginTitle	= ADLAN_0; // "News"
+	protected $pluginName	= 'core';
+	protected $table 		= "news";
+	protected $pid			= "news_id";
+	protected $perPage 		= 20; //no limit
+	protected $batchDelete 	= true;
+	protected $batchCopy 	= true;
+	protected $listOrder	= "news_id desc";
 		
-		protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.
+	protected $listQry = "SELECT n.*,u.user_id,u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id "; // without any Order or Limit.
 		
 		
-		protected $fields = array(
+	protected $fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParams' => 'path={e_MEDIA}','readonly'=>false),		  		
@@ -319,7 +319,9 @@ class news_admin_ui extends e_admin_ui
                 'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
-		);
+	);
+	
+	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'options');
 		
 		
 	protected $cats = array();
