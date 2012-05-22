@@ -99,6 +99,30 @@ e107::js('core', 'core/colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 'core/colorbox/colorbox.css', 'jquery');
 e107::js('core', 'core/jquery.elastic.source.js', 'jquery', 2);
 
+// e107::js('url', 'http://bp.yahooapis.com/2.4.21/browserplus-min.js', 'jquery', 2);
+
+//e107::css('core', 'plupload/jquery.ui.plupload/css/jquery.ui.plupload.css', 'jquery');
+
+
+e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
+//e107::js('core', 'plupload/jquery.ui.plupload/jquery.ui.plupload.js','jquery',2);
+
+e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+
+// 
+
+
+
+
+
+
+
+
+
+
+
+
 e107::js('inline','
 
 	$(document).ready(function()
@@ -119,6 +143,11 @@ e107::js('inline','
 		// Tabs
 		$(function() {
 			$( "#tab-container" ).tabs();
+		});	
+		
+		// Tabs
+		$(function() {
+			$( ".e-tabs" ).tabs();
 		});	
 		
 		// Decorate		
@@ -276,17 +305,95 @@ e107::js('inline','
 		});  
 		
 		
+		// Upload Handling
 		
+
+		
+		
+		$(function() {
+			var path = $("#uploader").attr("rel");
+	
+			$("#uploader").pluploadQueue({
+	        // General settings
+		        runtimes : "html5,html4",
+		        url : path,
+		        max_file_size : "10mb",
+		        chunk_size : "1mb",
+		        unique_names : false,
+		 
+		        // Resize images on clientside if we can
+		        resize : {width : 320, height : 240, quality : 90},
+		 
+		        // Specify what files to browse for
+		        filters : [
+		            {title : "Image files", extensions : "jpg,gif,png"},
+		            {title : "Zip files", extensions : "zip,gz"}
+		        ]
+		        ,
+		         // Error reporting etc
+    			preinit: attachError, 
+    			setup: attachCallbacks
+		    });
+		});	
+		
+		
+		// Attach widget callbacks
+		function attachError(Uploader) {
+		    Uploader.bind("FileUploaded", function(up, file, response) {
+		        var data = $.parseJSON(response.response);
+		        console.log("[FileUploaded] Response - " + response.response);
+		        
+		        if (data.error == 1) {
+		            up.trigger("Error", {message: "\'" + data.message + "\'", file: file});
+		            console.log("[Error] " + file.id + " : " + data.message);
+		            return false;
+		        }
+		    });
+		}
+		
+		function attachCallbacks(Uploader) {
+		    Uploader.bind("Init", function(up) {
+		        up.settings.multipart_params = {
+		            "upload_type" : $("#uploadQueue").attr("data-uploadType"), 
+		            "xref_id" : $("#uploadQueue").attr("data-xrefID"), 
+		            "image_category" : $("#uploadQueue").attr("data-imageCategory")
+		        };
+		    });
+		
+		    Uploader.bind("UploadComplete", function(up, files) {
+		        console.log("[UploadComplete]");
+			
+				$(".plupload_buttons").css("display", "inline");
+            	$(".plupload_upload_status").css("display", "inline");
+            	$(".plupload_start").addClass("plupload_disabled");
+					alert("it worked");
+		   });
+		}
+
+
+	
 
 		
 		
 })
 		// BC Expandit() function 
+	
 		function expandit(e) {
-			var id = "#" + e; // TODO detect new "div" when e = ""; 
-			$(id).toggle("slow");
+				
+			var href = $(e).attr("href");
+						
+			if(href === "#" || href == "") 
+			{
+				idt = $(e).next("div");	
+				$(idt).toggle("slow");
+				return false;;			
+			}
 			
+			var id = "#" + e; 		
+			$(id).toggle("slow");
+			return false;
 		};
+
 		
 		
 		

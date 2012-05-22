@@ -43,6 +43,7 @@ class db_verify
 			'mismatch_index' 	=> '', // TODO
 		);
 	
+	var $errors = array();
 	/**
 	 * Setup
 	 */
@@ -213,7 +214,7 @@ class db_verify
 		//	$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
 		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
-			if($debugA)
+			if(isset($debugA))
 			{
 									
 				$debug = "<table border='1'>
@@ -316,8 +317,8 @@ class db_verify
 	{
 		foreach($this->results as $tabs => $field)
 		{
-			$file = $this->results[$tabs]['_file'];		
-			if($this->errors[$tabs]['_status'] == 'missing_table') // Missing Table
+			$file = varset($this->results[$tabs]['_file']);		
+			if(varset($this->errors[$tabs]['_status']) == 'missing_table') // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
 			}					

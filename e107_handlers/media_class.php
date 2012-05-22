@@ -23,6 +23,8 @@ class e_media
 {
 	protected $imagelist = array();
 	
+	protected $logging = true;
+	
 	protected $mimePaths = array(
 				'text'			=> e_MEDIA_FILE,
 				'multipart'		=> e_MEDIA_FILE,
@@ -278,7 +280,7 @@ class e_media
 		if(strpos($cat,"+") || !$cat)
 		{
 			$cat = str_replace("+","",$cat);
-			$inc[] = "media_category = '_common' ";
+			$inc[] = "media_category = '_common_image' ";
 		}
 		if($cat)
 		{
@@ -481,6 +483,7 @@ class e_media
 	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
 		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
+			$this->log($newpath." already exists and will be renamed during import.");
 			$mes->addWarning($newpath." already exists and was renamed during import.");	
 			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
 			$newpath = $this->getPath($f['mime']).'/'.$file;						
@@ -545,16 +548,30 @@ class e_media
 	}
 	
 	
-	public function importFile($file='',$category='_common')
+	
+	
+	public function log($message)
+	{
+		if($this->logging == false) return; 
+		$insert = "\n".$message;
+		file_put_contents(e_UPLOAD."upload.log",$insert,FILE_APPEND | LOCK_EX);	
+	}
+	
+	
+	
+	
+	
+	public function importFile($file='',$category='_common_image')
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 				
-		$oldpath = e_MEDIA."temp/".$file;
+		$oldpath = e_UPLOAD.$file;
 		
 		if(!file_exists($oldpath))
 		{
+			$this->log("Couldn't find the file: ".$oldpath);
 			$mes->add("Couldn't find the file: ".$oldpath, E_MESSAGE_ERROR);
 			return;
 		}	
@@ -563,14 +580,17 @@ class e_media
 		
 		if(!$typePath = $this->getPath($img_data['media_type']))
 		{
+			
+				$this->log("Couldn't generated path from file info:".$oldpath);
 				$mes->addError("Couldn't generated path from file info:".$oldpath);
 				return FALSE;
 		}
 				
 		$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file);
 		
-		if(!rename($oldpath, e_MEDIA.$newpath))
+		if(!rename($oldpath, $newpath)) // e_MEDIA.$newpath was working before. 
 		{
+			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 			return FALSE;
 		};
@@ -585,10 +605,12 @@ class e_media
 		if($sql->db_Insert("core_media",$img_data))
 		{		
 			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
+			$this->log("Importing Media: ".$file." successful");
 			return $img_data['media_url'];	
 		}
 		else
 		{
+			$this->log("Db Insert Failed ");
 			rename($newpath,$oldpath);	//move it back.
 			return FALSE;
 		}
