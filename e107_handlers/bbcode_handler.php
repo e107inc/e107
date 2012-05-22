@@ -30,6 +30,7 @@ class e_bbcode
 	var $bbLocation;		// Location for each file - 'core' or a plugin name
 	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
 	var $core_bb = array();
+	var $class = FALSE;
 
 	function __construct()
 	{
@@ -418,6 +419,28 @@ class e_bbcode
 		}
 		
 		return $ret;
+	}
+	
+	//Set the class type for a bbcode eg. news | page | user | {plugin-folder}
+	function setClass($mode=false)
+	{
+		$this->class = $mode;	
+	}
+	
+	// return the class for a bbcode
+	function getClass($type='')
+	{
+		$ret = "bbcode-".$type;
+		if($this->class)
+		{
+			$ret .= " bbcode-".$type."-".$this->class;
+		}
+		return $ret; 
+	}	
+	
+	function clearClass()
+	{
+		$this->setClass();	
 	}
 }
 
