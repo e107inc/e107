@@ -24,6 +24,7 @@ if (!getperms("A"))
 	exit;
 }
 
+
 /*
  * CLOSE - GO TO MAIN SCREEN
  */
@@ -407,6 +408,15 @@ class media_admin_ui extends e_admin_ui
 		}
 		echo $this->imageSelectUpload();	
 	}
+	
+	function uploadPage()
+	{
+		$text = '<div id="uploader" rel="'.e_FILE.'jslib/plupload/upload.php">
+	        <p>No HTML5 support.</p>
+		</div>';
+	    
+		return $text;
+	}
 
 
 	function imageSelectUpload() 
@@ -451,7 +461,8 @@ class media_admin_ui extends e_admin_ui
 		$this->fields['media_url']['noedit'] 		= TRUE;
 		$this->fields['media_userclass']['noedit']	= TRUE;
 		
-		$text .=  $this->CreatePage();
+		//$text .=  $this->uploadPage(); // To test upload script with plupload
+		$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
 			</fieldset>";

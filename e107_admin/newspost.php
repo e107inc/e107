@@ -725,7 +725,7 @@ class admin_newspost
 		global $user_pref;
 		
 		
-		
+		$qry = "";
 		$this->parseRequest($qry);
 
 		require_once(e_HANDLER."cache_handler.php");
@@ -795,7 +795,7 @@ class admin_newspost
 
         if ($this->_sort_order != 'asc') $this->_sort_order = 'desc';
 		$this->_sort_link = ($this->_sort_order) == 'asc' ? 'desc' : 'asc';
-
+		$sort_order = 'desc';
 		$this->_request = array($action, $sub_action, $id, $sort_order, $from);
 	}
 

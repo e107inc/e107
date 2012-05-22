@@ -1020,7 +1020,7 @@ function update_706_to_800($type='')
 		if($count ==1)
 		{
 			if ($just_check) return update_needed('Media-Manager Categories needs to be updated.');	
-					$sql->db_Update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
+			$sql->db_Update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
 			$sql->db_Update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
 			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
 			$sql->db_Update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
@@ -1053,23 +1053,52 @@ function update_706_to_800($type='')
 		$sql->db_Update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
 		e107::getMessage()->addDebug("core-media Category names updated");
 	}
+
+
+	// Media Update - core media and core-file. 
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
+	if($count ==1)
+	{
+		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
+		$sql->db_Update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
+		e107::getMessage()->addDebug("core-media _common Category updated");
+	}
 	
+	
+	
+	// Media Update - core media and core-file. CATEGORY
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_category = '_common' LIMIT 1 ");
+	if($count ==1)
+	{
+		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
+		$sql->db_Update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
+		e107::getMessage()->addDebug("core-media-cat _common Category updated");
+	}
+		
 
 	
 	
-	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' ");
+	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
 
 	if($count != 1)
 	{
 		if ($just_check) return update_needed('Add Media-Manager Categories and Import existing images.');
 		
 		
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+	
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', 'Will be available in the news area. ', 253, '', 1);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253, '', 0);");
+		
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image', 'Download Images', '', 253, '', 0);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0);");
+		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");
+				
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
+		
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1);");		
 		
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
