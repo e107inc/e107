@@ -110,6 +110,8 @@ e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
 
+e107::css('core', 'chosen/chosen.css', 'jquery');
+e107::js('core', 'chosen/chosen.jquery.min.js', 'jquery', 2);
 // 
 
 
@@ -149,6 +151,9 @@ e107::js('inline','
 		$(function() {
 			$( ".e-tabs" ).tabs();
 		});	
+		
+		$(".e-multiselect").chosen();
+		
 		
 		// Decorate		
 		$(".adminlist tr:even").addClass("even");
@@ -240,9 +245,12 @@ e107::js('inline','
 		
 		// Sorting
 		var fixHelper = function(e, ui) {
+			ui.closest("tr").switchClass( "odd", "highlight-odd", 0 );
+			ui.closest("tr").switchClass( "even", "highlight-even", 0 );
 			ui.children().each(function() {
 				$(this).width($(this).width());
-				$(this).addClass("e-moving");
+			// 	$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );
+			//	$(this).closest("tr").switchClass( "even", "highlight-even", 0 );
 			});
 			return ui;
 		};
@@ -251,19 +259,37 @@ e107::js('inline','
 			helper: fixHelper,
 			cursor: "move",
 			opacity: 0.9,
+			handle: ".e-sort",
+			distance: 20,
 			containment: "parent",
-			update: function(event, ui) {
+			stop: function(e,ui) {
+			    var allItems = $(this).sortable("toArray");
+			    var newSortValue = allItems.indexOf( $(ui.item).attr("id") );
+			 //   alert($(ui.item).attr("id") + " was moved to index " + newSortValue);
+			 	$(".highlight-even").switchClass( "highlight-even", "even", 600 );
+				$(".highlight-odd").switchClass( "highlight-odd", "odd", 600 );   
+			},
 			
-			$.ajax({
-			  type: "POST",
-			  url: "links.php?ajax_used=1",
-			  data: { name: "hi", location: "Boston" }
-			}).done(function( msg ) {
+			update: function(event, ui) {         	
+				var allItems = $(this).sortable("toArray");
+			//	console.log(allItems);
+				var neworder = allItems.indexOf( $(ui.item).attr("id") );
+				var linkid = $(ui.item).attr("id"); 
+			//	 $("td").removeClass("e-moving","slow"); 
+			     	
+				var script = $(".e-sort:first").attr("href");
+			//	alert(script);
+				$.ajax({
+				  type: "POST",
+				  url: script,
+				  data: { all: allItems, linkid: linkid, neworder: neworder }
+			//	  data: { linkid: linkid, neworder: neworder }
+				}).done(function( msg ) {
 				
-			  alert( "Data Saved: " + msg );
-			});
+				//  alert("Posted: "+allItems+" Updated: "+ msg );
+				});
 
- 		}
+ 			}
 			
 		}).disableSelection();
 		
@@ -305,70 +331,14 @@ e107::js('inline','
 		});  
 		
 		
-		// Upload Handling
-		
-
-		
-		
-		$(function() {
-			var path = $("#uploader").attr("rel");
-	
-			$("#uploader").pluploadQueue({
-	        // General settings
-		        runtimes : "html5,html4",
-		        url : path,
-		        max_file_size : "10mb",
-		        chunk_size : "1mb",
-		        unique_names : false,
-		 
-		        // Resize images on clientside if we can
-		        resize : {width : 320, height : 240, quality : 90},
-		 
-		        // Specify what files to browse for
-		        filters : [
-		            {title : "Image files", extensions : "jpg,gif,png"},
-		            {title : "Zip files", extensions : "zip,gz"}
-		        ]
-		        ,
-		         // Error reporting etc
-    			preinit: attachError, 
-    			setup: attachCallbacks
-		    });
-		});	
+		$(".e-dialog-close").click(function () {
+			parent.$.colorbox.close()
+		}); 
 		
 		
-		// Attach widget callbacks
-		function attachError(Uploader) {
-		    Uploader.bind("FileUploaded", function(up, file, response) {
-		        var data = $.parseJSON(response.response);
-		        console.log("[FileUploaded] Response - " + response.response);
-		        
-		        if (data.error == 1) {
-		            up.trigger("Error", {message: "\'" + data.message + "\'", file: file});
-		            console.log("[Error] " + file.id + " : " + data.message);
-		            return false;
-		        }
-		    });
-		}
 		
-		function attachCallbacks(Uploader) {
-		    Uploader.bind("Init", function(up) {
-		        up.settings.multipart_params = {
-		            "upload_type" : $("#uploadQueue").attr("data-uploadType"), 
-		            "xref_id" : $("#uploadQueue").attr("data-xrefID"), 
-		            "image_category" : $("#uploadQueue").attr("data-imageCategory")
-		        };
-		    });
 		
-		    Uploader.bind("UploadComplete", function(up, files) {
-		        console.log("[UploadComplete]");
-			
-				$(".plupload_buttons").css("display", "inline");
-            	$(".plupload_upload_status").css("display", "inline");
-            	$(".plupload_start").addClass("plupload_disabled");
-					alert("it worked");
-		   });
-		}
+		
 
 
 	
@@ -399,8 +369,11 @@ e107::js('inline','
 		
 ','jquery');
 
+e107::js("core","plupload/customUpload.js","jquery",3);
+e107::js("core","core/mediaManager.js","jquery",3);
+
 e107::css('inline',"
-	.e-moving { background-color:yellow; }
+	.e-moving { background-color:silver; }
 	tr.highlight-even	{ background-color:silver; }
 	tr.highlight-odd	{ background-color:silver; }
 	legend { display: none; }

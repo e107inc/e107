@@ -284,7 +284,7 @@ class e_media
 		}
 		if($cat)
 		{
-			$inc[] = "media_category = '".$cat."' ";
+			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
 		// TODO check the category is valid. 
 
@@ -391,7 +391,7 @@ class e_media
 		if($cat !='_icon')
 		{
 			$cat 	= ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
-			$images = $this->getImages($cat,0,23);
+			$images = $this->getImages($cat,0,21);
 			$class 	= "media-select-image";
 			$w		= 120;
 			$h		= 100;
@@ -429,7 +429,7 @@ class e_media
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
 		 	 return false;";
 			
-			$text .= "<a class='{$class} media-select-none e-dialog-close' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a class='{$class} media-select-none e-dialog-close' data-src='{$im['media_url']}' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<div style='text-align:center;position: relative; top: 30%'>No image</div>
 			</a>";		
 		}
@@ -448,25 +448,32 @@ class e_media
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
 		 		return false;";	
+		 		$onclicki = "";
+				$class .= " e-media-select e-dialog-close";
 			}
-			else // TinyMce and other applications. 
+			else // TinyMce and textarea bbcode  
 			{
 				//TODO Add a preview window 
 				$onclicki = "document.getElementById('src').value = '{$im['media_url']}';
 				document.getElementById('preview').src = '{$realPath}';
-		 		updateBB();
+		 		
 				return false;";	
+				$class .= " e-media-select";
+				$onclicki = "";
+				
 			}
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
 			
-			$text .= "<a class='{$class} e-dialog-close' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a class='{$class} ' data-src='{$media_path}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img src='".$img_url."' alt=\"".$im['media_title']."\"  />";
 			$text .= "</a>\n\n";
 		}	
 		
-	
+		
 		$text .= "<div style='clear:both'><!-- --></div>";
+		$mes = e107::getMessage();
+		$mes->addDebug("Target: {$tagid}");
 		$text .= "</div>";
 				
 		return $text;	
@@ -554,7 +561,7 @@ class e_media
 	{
 		if($this->logging == false) return; 
 		$insert = "\n".$message;
-		file_put_contents(e_UPLOAD."upload.log",$insert,FILE_APPEND | LOCK_EX);	
+		file_put_contents(e_LOG."mediaUpload.log",$insert,FILE_APPEND | LOCK_EX);	
 	}
 	
 	

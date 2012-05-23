@@ -833,3 +833,4 @@ a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; bo
 a.media-select-icon:hover	{ border:1px solid red; }
 .media-select-container 	{ padding:10px; }
 .media-select-none			{ text-decoration:none; }
+.media-select-active		{ border: 2px solid silver; }

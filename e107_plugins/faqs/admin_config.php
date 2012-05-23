@@ -23,6 +23,8 @@ if (!getperms("P"))
 	exit;
 }
 
+
+
 class faq_admin extends e_admin_dispatcher
 {
 
@@ -63,7 +65,9 @@ class faq_cat_ui extends e_admin_ui
 		protected $pluginName	= 'plugin';
 		protected $table 		= "faqs_info";
 		protected $pid			= "faq_info_id";
-		protected $perPage = 0; //no limit
+		protected $perPage 		= 5; //no limit
+		protected $listOrder	= 'faq_info_order ASC';
+
 	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
@@ -76,9 +80,30 @@ class faq_cat_ui extends e_admin_ui
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => '5%'),		
 			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 			'faq_info_order' 			=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'left' ),					
-			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);	
+	
+	public function init()
+	{
+		if(e_AJAX_REQUEST) // ajax link sorting. 
+		{
+			$sql = e107::getDb();
+			$c=0;
+			if(isset($_POST['all']))
+			{
+				foreach($_POST['all'] as $id)
+				{
+					$sql->db_Update("faqs_info","faq_info_order = ".intval($c)." WHERE faq_info_id = ".intval($id));
+					$c++;		
+				}	
+			}
+			
 		
+			exit;
+		}		
+		
+		
+	}	
 	/**
 	 * Get FAQ Category data
 	 *
@@ -131,11 +156,12 @@ class faq_main_ui extends e_admin_ui
 		// without any Order or Limit. 
 		//protected $listQry			= "SELECT  * FROM #faqs"; 
 		
-		protected $editQry			= "SELECT * FROM #faqs WHERE faq_id = {ID}";
+		protected $editQry		= "SELECT * FROM #faqs WHERE faq_id = {ID}";
 		
-		protected $pid = "faq_id";
-		protected $perPage = 10;
-		protected $batchDelete = true;
+		protected $pid 			= "faq_id";
+		protected $perPage 		= 10;
+		protected $batchDelete	= true;
+		protected $listOrder	= 'faq_order ASC';
 		
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
@@ -149,11 +175,11 @@ class faq_main_ui extends e_admin_ui
             'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
        		'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
-			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => true ),	
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);
 		 
-	//	protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_comment', 'comment_type', 'options');
+		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
 		
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
@@ -162,6 +188,34 @@ class faq_main_ui extends e_admin_ui
 			'submit_question'	   		=> array('title'=> 'Allow submitting of Questions by:', 'type'=>'userclass'),		
 			'classic_look'				=> array('title'=> 'Use Classic Layout', 'type'=>'boolean')
 		);
+	
+	public function init()
+	{
+		if(e_AJAX_REQUEST) // ajax link sorting. 
+		{
+			$sql = e107::getDb();
+			$c= ($_GET['from']) ? intval($_GET['from']) : 0;
+			$updated = array();
+			foreach($_POST['all'] as $row)
+			{
+				
+				list($tmp,$id) = explode("-",$row);
+				if($sql->db_Update("faqs","faq_order = ".intval($c)." WHERE faq_id = ".intval($id)))
+				{
+					$updated[] = $id;
+				}
+				$c++;		
+			}
+			
+		//	echo "Updated ".implode(",",$updated);
+			exit;
+		}	
+		
+		
+	}
+	
+	
+	
 		
 	/**
 	 * FAQ categories

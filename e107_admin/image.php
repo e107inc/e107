@@ -205,7 +205,7 @@ class media_form_ui extends e_admin_form_ui
 
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
-		
+		$curVal = explode(",",$curVal);
 		if($mode == 'read')
 		{
 			return $this->getController()->getMediaCategory($curVal);
@@ -223,11 +223,12 @@ class media_form_ui extends e_admin_form_ui
 		}
 
 
-		$text = "<select class='tbox>' name='media_category' >";
+		$text = "<select class='tbox e-multiselect' name='media_category[]' multiple='multiple'>";
 		$cats = $this->getController()->getMediaCategory();
+		
 		foreach($cats as $key => $val)
 		{
-			$selected = ($curVal == $key) ? "selected='selected'" : "";
+			$selected = (in_array($key,$curVal)) ? "selected='selected'" : "";
 			$text .= "<option value='{$key}' {$selected}>".$val."</option>\n";
 		}
 		$text .= "</select>";
@@ -263,7 +264,7 @@ class media_admin_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
       		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParams' => 'path={e_MEDIA}',	'width' => '110px'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,'writeParms'=>'multiple=1'),
 			
 		// Upload should be managed completely separately via upload-handler.
        		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
@@ -461,7 +462,7 @@ class media_admin_ui extends e_admin_ui
 		$this->fields['media_url']['noedit'] 		= TRUE;
 		$this->fields['media_userclass']['noedit']	= TRUE;
 		
-		//$text .=  $this->uploadPage(); // To test upload script with plupload
+	//	$text .=  $this->uploadPage(); // To test upload script with plupload
 		$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
@@ -537,7 +538,7 @@ class media_admin_ui extends e_admin_ui
 							
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='submit' name='save_image' value='Save' onclick=\"saveBB();\" >
+			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save' onclick=\"saveBB();\" >
 			<span>Save</span>
 			</button>
 			<button type='submit' class='submit' name='cancel_image' value='Cancel' onclick=\"parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();\" >
@@ -545,7 +546,7 @@ class media_admin_ui extends e_admin_ui
 			</button>
 			</div>";
 			
-
+			
 			e107::getJs()->footerInline("
 				
 		
@@ -673,6 +674,9 @@ class media_admin_ui extends e_admin_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		// return data to be merged with posted model data
+		$new_data['media_category'] = implode(",",$new_data['media_category']);
+		print_a($new_data);
+		return $new_data;
 		return $this->observeUploaded($new_data);
 	}
 
@@ -750,7 +754,7 @@ class media_admin_ui extends e_admin_ui
 		}
 		else // Update Only ?
 		{
-
+		
 			$img_data = $this->mediaData($new_data['media_url']);
 
 
@@ -1091,6 +1095,16 @@ class media_admin_ui extends e_admin_ui
 
 	public function getMediaCategory($id = false)
 	{
+		if(is_array($id))
+		{
+			$text = "";
+			foreach($id as $val)
+			{
+				$text .= (isset($this->cats[$val]) ? "<span class='nowrap'>".$this->cats[$val]."</span><br />" : '');			
+			}		
+			return $text;						
+		}
+
 		if($id) return (isset($this->cats[$id]) ? $this->cats[$id] : 0);
 		return $this->cats;
 	}
