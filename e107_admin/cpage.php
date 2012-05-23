@@ -801,9 +801,9 @@ class page_admin_ui extends e_admin_ui
 }
 
 
-require_once('auth.php');
-new page_admin();
 
+new page_admin();
+require_once('auth.php');
 
 e107::getAdminUI()->runPage();
 
@@ -1011,38 +1011,13 @@ class page
 	*/
 }
 
-
+/*
 function cpage_adminmenu()
 {
 	global $page;
 	global $action;
-	$page->show_options($action);
+	// $page->show_options($action);
 }
+*/
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	return;
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			if(typeof e107Admin == 'undefined') var e107Admin = {}
-
-			/**
-			 * OnLoad Init Control
-			 */
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
 ?>

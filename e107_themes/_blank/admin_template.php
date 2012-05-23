@@ -45,9 +45,31 @@ $ADMIN_HEADER = "
 	<div class='admin-page-body'>
 		<table class='main-table'>
 			<tr>
-				<!--
-				<td class='col-left'></td>
-				-->
+			
+				<td class='col-left'>
+				
+						{SETSTYLE=admin_menu}
+						{ADMIN_MENU}
+						{ADMIN_MENUMANAGER} 
+						{ADMIN_PRESET}
+						{ADMIN_LANG}
+						{SETSTYLE=none}
+						{ADMIN_PWORD}
+						{ADMIN_STATUS=request}
+						{ADMIN_LATEST=request}
+						{ADMIN_LOG=request}
+						{ADMIN_MSG}
+						{ADMIN_PLUGINS}
+						{ADMIN_UPDATE}
+						
+						{SETSTYLE=site_info}
+						{ADMIN_SITEINFO}
+						{ADMIN_HELP}
+				
+				
+				
+				
+				</td>
 				<td>
 					<div class='col-main'>
 						<div class='inner-wrapper'>
@@ -68,29 +90,15 @@ $ADMIN_FOOTER = "
 						</div>
 					</div>
 				</td>
+				<!--
 				<td class='col-right'>
 					<div class='col-right'>
 
-						{SETSTYLE=admin_menu}
-						{ADMIN_MENU}
-						{ADMIN_MENUMANAGER} 
-						{ADMIN_PRESET}
 
-						{SETSTYLE=none}
-						{ADMIN_PWORD}
-						{ADMIN_STATUS=request}
-						{ADMIN_LATEST=request}
-						{ADMIN_LOG=request}
-						{ADMIN_MSG}
-						{ADMIN_PLUGINS}
-						{ADMIN_UPDATE}
-
-						{SETSTYLE=site_info}
-
-						{ADMIN_HELP}
 
 					</div>
 				</td>
+				-->
 			</tr>
 		</table>
 	</div>
