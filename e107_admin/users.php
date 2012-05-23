@@ -255,12 +255,16 @@ if (isset ($_POST['adduser']))
 	{
 		$_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 	}
+	/*
 	if (isset ($_POST['generatepassword']))
 	{
 		$_POST['password1'] = $userMethods->generateRandomString('**********');
 		// 10-char password should be enough
 		$_POST['password2'] = $_POST['password1'];
 	}
+	*/
+	
+	$_POST['password2'] = $_POST['password1'];
 	// Now validate everything
 	$allData = validatorClass :: validateFields($_POST,$userMethods->userVettingInfo,true);
 	// Do basic validation
@@ -1646,19 +1650,20 @@ class users
 
 		<tr>
 			<td>".USRLAN_62."</td>
-			<td>
-			".$rs->form_password("password1",40,"",20)."&nbsp;&nbsp;
-			".$frm->checkbox_label(USRLAN_171,'generatepassword', 1)."
-			</td>
-		</tr>
-
+			<td>".$rs->form_password("password1",40,"",20)."</td>
+		</tr>";
+		
+	/*
+	$text .= "
 		<tr>
 			<td>".USRLAN_63."</td>
 			<td>
 			".$rs->form_password("password2",40,"",20)."
 			</td>
-		</tr>
+		</tr>";
+	*/	
 
+	$text .= "
 		<tr>
 			<td>".USRLAN_64."</td>
 			<td>

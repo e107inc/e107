@@ -62,9 +62,9 @@
 		<core name="e_jslib_gzip">1</core>
 		<core name="e_jslib_nocombine">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
-		  'prototype' => 'auto',
+		  'prototype' => 'none',
 		  'prototype-cdn' => 'none',
-		  'jquery' => 'none',
+		  'jquery' => 'auto',
 		)]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
