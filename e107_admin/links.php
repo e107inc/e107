@@ -29,11 +29,7 @@ if (!getperms("I"))
 
 e107::coreLan('links', true);
 
-if(e_AJAX_REQUEST) // ajax link sorting. 
-{
-	print_a($_POST);
-	exit;
-}
+
 
 
 class links_admin extends e_admin_dispatcher
@@ -73,7 +69,8 @@ class links_admin_ui extends e_admin_ui
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
 	protected $listOrder = 'link_order ASC';
-	protected $listSorting = true;
+	protected $listSorting = true; // TODO - should enable the 'sort' icon in the 'options' column. 
+
 
 	public $current_parent = 0;
 	public $sublink_data = null;
@@ -89,14 +86,14 @@ class links_admin_ui extends e_admin_ui
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
 		'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
+		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
 		
-		'options' 			=> array('title'=> LAN_OPTIONS, 	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
+		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
-	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','link_order','options');
+	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','options');
 
 	protected $prefs = array(
 		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
@@ -131,6 +128,26 @@ class links_admin_ui extends e_admin_ui
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
+		
+		
+		if(e_AJAX_REQUEST) // ajax link sorting. 
+		{
+		
+			$c= ($_GET['from']) ? intval($_GET['from']) : 0;
+			if(isset($_POST['all']))
+			{
+				foreach($_POST['all'] as $row)
+				{
+					list($tmp,$id) = explode("-",$row);
+					$sql->db_Update("links","link_order = ".intval($c)." WHERE link_id = ".intval($id));
+					$c++;		
+				}
+			}
+			
+			exit;
+		}
+		
+		
 	}
 
 	public function handleListLinkParentBatch($selected, $value)
@@ -599,6 +616,8 @@ class links_admin_form_ui extends e_admin_form_ui
 			return $this->linkFunctions;
 		}
 	}
+	
+	
 
 	/**
 	 *

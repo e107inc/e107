@@ -650,6 +650,10 @@ class e_form
 	function select_open($name, $options = array())
 	{
 		$options = $this->format_options('select', $name, $options);
+		if($options['multiple'])
+		{
+			$options['class'] .= ' e-multiselect';	
+		}		
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
@@ -1298,7 +1302,7 @@ class e_form
 		if($cnt)
 		{
 			return '
-				<tr'.$trclass.' id="'.$fieldvalues[$pid].'">
+				<tr'.$trclass.' id="row-'.$fieldvalues[$pid].'">
 					'.$ret.'
 				</tr>
 			';
@@ -1328,7 +1332,7 @@ class e_form
 		switch($field) // special fields
 		{
 			case 'options':
-
+				
 				if($attributes['type']=='method') // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
@@ -1353,12 +1357,17 @@ class e_form
 					$query['action'] = 'edit';
 					$query['id'] = $id;
 
-
-
 					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
 					$query = http_build_query($query);
-
-					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
+					
+					$value = "";
+					
+					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
+					{
+						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?".(e_QUERY ? e_QUERY."&amp;ajax_used=1" : "ajax_used=1")."' title='Re-order'><img  class='icon action S16' src='".ADMIN_SORT_ICON_PATH."' alt='' title='Re-Order' /></a> ";	
+					}		
+			
+					$value .= "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
 
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']))
@@ -1571,7 +1580,7 @@ class e_form
 				{
 					$value[] = $this->_uc->uc_get_classname($cid);
 				}
-				$value = implode(vartrue($parms['separator']), $value);
+				$value = implode(vartrue($parms['separator'],"<br />"), $value);
 			break;
 
 			/*case 'user_name':
@@ -1866,10 +1875,11 @@ class e_form
 
 			case 'userclass':
 			case 'userclasses':
-				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,classes,admin,main'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
-				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
-				return $this->$method($key, $value, $uc_options, vartrue($parms['__options'], array()));
+				$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
+				if($atrributes['type'] == 'userclasses'){ $parms['multiple'] = true; }
+				return $this->$method($key, $value, $uc_options, vartrue($parms, array()));
 			break;
 
 			/*case 'user_name':
