@@ -5,11 +5,32 @@ define('STANDARDS_MODE', TRUE);
 
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-//temporary fixed - awaiting theme.xml addition
-e107::getJs()->requireCoreLib(array(
-	'core/decorate.js' => 2,
-	'core/tabs.js' => 2
-));
+// jQUERY scripts
+
+e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
+e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+
+e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
+
+e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
+e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+
+e107::css('core', 	'chosen/chosen.css', 'jquery');
+e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
+
+e107::css('core', 	'password/style.css', 'jquery');
+e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+// 
+e107::js("core",	"plupload/customUpload.js","jquery",3);
+
+e107::js("core",	"core/mediaManager.js","jquery",3);
+
+e107::css('core', 	'core/admin.css', 'jquery');
+e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
+
+
+
 
 $register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;
@@ -71,6 +92,8 @@ $no_core_css = TRUE;
 	define("ADMIN_EXECUTE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/execute_32.png' alt='' title='".LAN_EXECUTE."' />");
 	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_32.png");
 
+	define("ADMIN_SORT_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/sort_32.png' alt='' title='Re-Sort' />");
+	define("ADMIN_SORT_ICON_PATH", e_IMAGE."admin_images/sort_32.png");
 
 
 function theme_head() {
@@ -94,38 +117,6 @@ function theme_head() {
 			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
 		<![endif]-->
 	';
-
-
-    $ret .= "
-    <script type='text/javascript'>
-       /**
-    	* Decorate all tables having e-list class
-    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
-    	*/
-        e107.runOnLoad( function(event) {
-        	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
-
-            element.select('table.adminlist:not(.no-decorate)').each(function(element) {
-            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
-            });
-               element.select('table.fborder:not(.no-decorate)').each(function(element) {
-            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
-            });
-			element.select('div.admintabs').each(function(element) {
-				//show tab navaigation
-				element.select('ul.e-tabs').each( function(el){
-					el.show();
-					el.removeClassName('e-hideme');//prevent hideme re-register (e.g. ajax load)
-				});
-				//init tabs
-            	new e107Widgets.Tabs(element);
-            	//hide legends if any
-            	element.select('legend').invoke('hide');
-            });
-
-        }, document, true);
-
-    </script>";
 	return $ret;
 }
 

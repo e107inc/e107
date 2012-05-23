@@ -1364,7 +1364,7 @@ class e_form
 					
 					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
 					{
-						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?".(e_QUERY ? e_QUERY."&amp;ajax_used=1" : "ajax_used=1")."' title='Re-order'><img  class='icon action S16' src='".ADMIN_SORT_ICON_PATH."' alt='' title='Re-Order' /></a> ";	
+						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?".(e_QUERY ? e_QUERY."&amp;ajax_used=1" : "ajax_used=1")."' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
 					}		
 			
 					$value .= "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
@@ -1732,6 +1732,10 @@ class e_form
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
 		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])==2)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
+			if(vartrue($attributes['writeParms'])) // eg. different size thumbnail on the edit page. 
+			{
+				$attributes['readParms'] = $attributes['writeParms'];
+			}
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 

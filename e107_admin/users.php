@@ -81,12 +81,15 @@ if (isset ($_POST['updateRanks']))
 	updateRanks();
 }
 $e_sub_cat = 'users';
-require_once ('auth.php');
-$user = new users;
 require_once (e_HANDLER.'form_handler.php');
 require_once (e_HANDLER.'userclass_class.php');
 include_once (e_HANDLER.'user_extended_class.php');
 require_once (e_HANDLER.'validator_class.php');
+$user = new users;
+require_once ('auth.php');
+
+
+
 // require_once (e_HANDLER.'user_handler.php');
 //      $userMethods = new UserHandler;
 //    	$colList = $userMethods->getNiceNames(TRUE);
@@ -2189,7 +2192,7 @@ function users_adminmenu()
 {
 	global $user;
 	global $action;
-	$user->show_options($action);
+	$user->show_options($action); // FIXME
 }
 
 
