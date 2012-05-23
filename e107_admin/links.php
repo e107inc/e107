@@ -132,7 +132,7 @@ class links_admin_ui extends e_admin_ui
 		
 		if(e_AJAX_REQUEST) // ajax link sorting. 
 		{
-		
+			$sql = e107::getDb();
 			$c= ($_GET['from']) ? intval($_GET['from']) : 0;
 			if(isset($_POST['all']))
 			{
@@ -143,7 +143,7 @@ class links_admin_ui extends e_admin_ui
 					$c++;		
 				}
 			}
-			
+			echo "Updating";
 			exit;
 		}
 		

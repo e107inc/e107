@@ -115,6 +115,8 @@ class bbcode_shortcodes
 			}
 		}
 
+		$pre = "\n";
+		$post = "\n";
 
 		$_onclick_func = (isset($bbcode[$parm][0])) ? $bbcode[$parm][0] : $bbcode_func;
 		$_onclick_var = (isset($bbcode[$parm][1])) ? $bbcode[$parm][1] : '';
@@ -122,10 +124,19 @@ class bbcode_shortcodes
 		$_function = (isset($bbcode[$parm][4])) ? $bbcode[$parm][4] : '';
 		$_function_var = (isset($bbcode[$parm][5])) ? $bbcode[$parm][5] : '';
 
+		if($_onclick_func == 'e-dialog')
+		{   $tagid = "news-body";
+			$pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='e-dialog' >";
+			$post = "</a>\n";	
+		}
+		
+		
 
 		if($bbcode[$parm])  // default - insert text.
 		{
-			$text = "\n<img class='bbcode bbcode_buttons e-pointer' src='".$iconpath[$parm]."' alt='' title='".$_helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />\n";
+			$text = $pre;
+			$text .= "<img class='bbcode bbcode_buttons e-pointer' src='".$iconpath[$parm]."' alt='' title='".$_helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
+			$text .= $post;
 		}
 
 		if($_function)
