@@ -112,6 +112,9 @@ e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jqu
 
 e107::css('core', 'chosen/chosen.css', 'jquery');
 e107::js('core', 'chosen/chosen.jquery.min.js', 'jquery', 2);
+
+e107::css('core', 'password/style.css', 'jquery');
+e107::js('core', 'password/jquery.pwdMeter.js', 'jquery', 2);
 // 
 
 
@@ -154,6 +157,18 @@ e107::js('inline','
 		
 		$(".e-multiselect").chosen();
 		
+		
+		// Password
+		$(function() {
+			
+			$("#password1").pwdMeter({
+	            minLength: 6,
+	            displayGeneratePassword: true,
+	            generatePassText: "Generate",
+	            randomPassLength: 12
+	        });
+			
+        });
 		
 		// Decorate		
 		$(".adminlist tr:even").addClass("even");
@@ -306,7 +321,7 @@ e107::js('inline','
 		});
 		
 		// highlight checked row
-		$("input[type=\"checkbox\"].checkbox").click(function(evt){
+		$(".adminlist input[type=\"checkbox\"].checkbox").click(function(evt){
 	
 			if(this.checked)
 			{

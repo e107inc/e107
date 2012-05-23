@@ -1,0 +1,56 @@
+.GeneratePasswordLink{
+cursor:pointer;
+color:#084B8A;
+font-size:10px;
+}
+
+.NewPassword{
+color:#000000;
+font-size:10px;
+}
+
+.neutral{
+
+
+border:1px solid #000000;
+background-color:#FFFFFF;
+}
+
+.veryweak{
+border:1px solid #000000;
+background-color:#B40404;
+}
+
+.weak{
+border:1px solid #000000;
+background-color:#DF7401;
+}
+
+.medium{
+border:1px solid #000000;
+background-color:#FFFF00;
+}
+
+
+.strong{
+border:1px solid #000000;
+background-color:#9AFE2E;
+}
+
+
+.verystrong{
+border:1px solid #000000;
+background-color:#0B610B;
+color:#FFFFFF;
+}
+
+#pwdMeter {
+	width:150px;
+	padding:2px;
+	color:#000000;
+	font-size:6px;
+	text-align:center;
+	height:12px;	
+	display:inline-block;
+	margin-top:4px;
+}
