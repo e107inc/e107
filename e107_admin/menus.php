@@ -31,6 +31,49 @@ if (!getperms("2"))
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
+if(strpos(e_QUERY, 'configure') !== FALSE )
+{
+	
+	e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
+	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+	
+	e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
+	
+	e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
+	e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+	e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+	
+	e107::css('core', 	'chosen/chosen.css', 'jquery');
+	e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
+	
+	e107::css('core', 	'password/style.css', 'jquery');
+	e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+	// 
+	e107::js("core",	"plupload/customUpload.js","jquery",3);
+	
+	e107::js("core",	"core/mediaManager.js","jquery",3);
+	
+	
+	e107::css('core', 	'core/admin.css', 'jquery');
+	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
+	
+	
+	e107::css('inline',"	.column { width: 170px; float: left; padding-bottom: 100px; }
+	.portlet { margin: 0 1em 1em 0; }
+	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
+	.portlet-header .ui-icon { float: right; }
+	.portlet-content { padding: 10px; }
+	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
+	.ui-sortable-placeholder * { visibility: hidden; }
+	",'jquery');
+	
+	
+}
+
+
+
+
+
 $e_sub_cat = 'menus';
 
 require_once(e_HANDLER."file_class.php");
@@ -41,7 +84,7 @@ require_once(e_HANDLER."menumanager_class.php");
 
 	$rs = new form;
 	$frm = new e_form();
-	$men = new e_menuManager();   // use 1 for dragdrop.
+	$men = new e_menuManager(0);   // use 1 for dragdrop.
 
 
 if(e_AJAX_REQUEST)
@@ -96,6 +139,8 @@ require_once("footer.php");
 
 function headerjs()
 {
+	return;
+	
 	global $sql,$pref,$men;
 
     if(!$men->dragDrop)

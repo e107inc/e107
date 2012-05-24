@@ -84,7 +84,7 @@ else
 			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 		//	header("location: ../index.php");
-			e107::getRedirect()->redirect('../index.php');
+			e107::getRedirect()->redirect('admin.php?failed');
 			exit;
 		}
 		else
@@ -126,7 +126,7 @@ else
 	}
 
 	$e_sub_cat = 'logout';
-	
+		
 	if (!defset('NO_HEADER'))
 		require_once (e_ADMIN."header.php");
 
@@ -156,7 +156,9 @@ class auth
 
 		$incChap = (vartrue($pref['password_CHAP'], 0)) ? " onsubmit='hashLoginPassword(this)'" : "";
 
-		$text = "<div style='padding:20px;text-align:center'>
+		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
+
+		$text = "<div {$class} style='padding:20px;text-align:center'>
 			<form method='post' action='".e_SELF."' {$incChap} >
 			<table style='width:50%' class='fborder'>
 			<tr>
@@ -196,7 +198,8 @@ class auth
 			</form>
 			</div>";
 
-		e107::getRender()->tablerender(ADLAN_92, $text);
+		//	echo $text;
+			e107::getRender()->tablerender(ADLAN_92, $text);
 	}
 
 

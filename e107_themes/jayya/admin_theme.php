@@ -71,9 +71,17 @@ e107::js('inline',"
             $$('a.e-dialog-close').invoke('observe', 'click', function(ev) {
 					parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
 			});
+			
+			// Menu Manager Layout drop-down options
+			
+			 $$('#menuManagerSelect').invoke('observe', 'change', function(ev) {
+				var link = ev.element().value;
+				$('menu_iframe').writeAttribute('data', link);	
+			});
+			
            //  
             
-            
+          // alert('fix me : jayya/admin_theme.php (inline js)');  
         }, document, true);
 "
 ,'prototype');
