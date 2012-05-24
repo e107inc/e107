@@ -1060,7 +1060,7 @@ class e_userperms
 		$id = "id_".$uniqueID;
 
 
-		$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$perms}</div>\n";
+		$text = "<div href='#id_{$id}' class='e-pointer e-expandit' title='".ADMSLAN_71."'>{$perms}</div>\n";
 
 		if(varset($ptext))
 		{
