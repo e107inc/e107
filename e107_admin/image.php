@@ -439,6 +439,11 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<li id='tab-style'><a href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
+		if($_GET['from'])
+		{
+			$bbcodeMode .= "&from=".intval($_GET['from']);
+		}
+		
 				
 		$text .= "
 			</ul>
@@ -487,8 +492,8 @@ class media_admin_ui extends e_admin_ui
 					<tr>
 						<td>Dimensions: </td>
 						<td>
-						<input type='text' id='width' name='width' size='4' style='width:50px' value='' onkeyup='updateBB()' /> px
-						 X <input type='text' id='height' name='height' size='4' style='width:50px' value='' onkeyup='updateBB()' /> px
+						<input type='text' class='e-media-attribute' id='width' name='width' size='4' style='width:50px' value='' /> px
+						 X <input type='text' class='e-media-attribute' id='height' name='height' size='4' style='width:50px' value=''  /> px
 						</td>
 					</tr>
 			
@@ -499,22 +504,22 @@ class media_admin_ui extends e_admin_ui
 					
 					<tr>
 						<td>Margin-Left: </td>
-						<td><input type='text' id='margin-left' name='margin_left' value='' onkeyup='updateBB()' /></td>
+						<td><input class='e-media-attribute' type='text' id='margin-left' name='margin_left' value='' /></td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Right: </td>
-						<td><input type='text' id='margin-right' name='margin_right' value='' onkeyup='updateBB()' /></td>
+						<td><input class='e-media-attribute' type='text' id='margin-right' name='margin_right' value=''  /></td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Top: </td>
-						<td><input type='text' id='margin-top' name='margin_top' value='' onkeyup='updateBB()' /></td>
+						<td><input class='e-media-attribute' type='text' id='margin-top' name='margin_top' value=''  /></td>
 					</tr>
 					
 					<tr>
 						<td>Margin-Bottom: </td>
-						<td><input type='text' id='margin-bottom' name='margin_bottom' value='' onkeyup='updateBB()' /></td>
+						<td><input class='e-media-attribute' type='text' id='margin-bottom' name='margin_bottom' value=''  /></td>
 					</tr>
 		
 			</tbody></table>
@@ -530,91 +535,24 @@ class media_admin_ui extends e_admin_ui
 		// For BBCODE mode. //TODO image-float. 
 		if($bbcodeMode)
 		{
-			$text .= "To be Hidden<br />
-			bbcode: <input type='text' style='width:800px' id='bbcode_holder' name='bbcode_holder' value='' /><br />
-			html: <input type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
-			<br />src: <input type='text' style='width:600px' id='src' name='src' value='' />			
-			";		
-							
+			
+						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
 			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save' onclick=\"saveBB();\" >
 			<span>Save</span>
 			</button>
-			<button type='submit' class='submit' name='cancel_image' value='Cancel' onclick=\"parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();\" >
+			<button type='submit' class='submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>Cancel</span>
 			</button>
 			</div>";
 			
-			
-			e107::getJs()->footerInline("
-				
-		
-			/* Generate an IMG bbcode based on input by user */
-			function updateBB()
-			{
-				var style 			= '';
-				var bb 				= '';
-							
-				var src				= document.getElementById('src').value;	
-				var width 			= document.getElementById('width').value;	
-				var height			= document.getElementById('height').value;			
-				var margin_top 		= document.getElementById('margin-top').value;				
-				var margin_bottom 	= document.getElementById('margin-bottom').value;
-				var margin_right 	= document.getElementById('margin-right').value;
-				var margin_left 	= document.getElementById('margin-left').value;
-						
-				if(width !='')
-				{				
-			//		style  = style + 'width:' + width + 'px;';	
-				}
-
-				if(height !='')
-				{				
-			//		style  = style + 'height:' + height + 'px;';	
-				}				
-							
-				if(margin_right !='')
-				{				
-					style  = style + 'margin-right:' + margin_right + 'px;';	
-				}
-				
-				if(margin_left !='')
-				{				
-					style  = style + 'margin-left:' + margin_left + 'px;';	
-				}
-				
-				if(margin_top !='')
-				{				
-					style  = style + 'margin-top:' + margin_top + 'px;';	
-				}
-				
-				if(margin_bottom !='')
-				{				
-					style  = style + 'margin-bottom:' + margin_bottom + 'px;';	
-				}
-				
-				bb = '[img';
-				
-				if(style !='')
-				{
-					bb = bb + ' style='+style;			
-				}
-				
-				bb = bb + ']';
-				bb = bb + src;
-				bb = bb + '[/img]';
-				
-				document.getElementById('bbcode_holder').value = bb;
-				
-			//	var html = '<img style=\"' + style + '\" src=\"'+ src +'\" />'; 
-				var html = '<img style=\"' + style + '\" src=\"'+ src +'\" alt=\"\" width=\"' + width + '\" height=\"' + height + '\"/>'; 
-
-				document.getElementById('html_holder').value = html;
-				
-			}	
-		
-			");
+			// TODO to eventually be hidden. 
+			$text .= "bbcode: <input type='text' style='width:800px' id='bbcode_holder' name='bbcode_holder' value='' />
+			<br />html: <input type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
+			<br />src: <input type='text' style='width:600px' id='src' name='src' value='' />
+			<br />path: <input type='text' style='width:600px' id='path' name='path' value='' />				
+			";		
 						
 		}
 		

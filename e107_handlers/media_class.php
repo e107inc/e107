@@ -264,7 +264,21 @@ class e_media
 	 */	
 	public function countImages($cat)
 	{
-		$query = "SELECT media_id FROM #core_media WHERE media_category = '".$cat."' ";
+		$inc = array();
+		
+		if(strpos($cat,"+") || !$cat)
+		{
+			$cat = str_replace("+","",$cat);
+			$inc[] = "media_category = '_common_image' ";
+		}
+		if($cat)
+		{
+			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
+		}
+		
+		
+		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." )" ;
+		
 		return e107::getDb()->db_Select_gen($query);	
 	}
 	
@@ -384,17 +398,46 @@ class e_media
 	}
 
 
-	public function mediaSelect($cat='',$tagid=null,$att=null)
+	public function mediaSelectNav($category,$att)
 	{
-		$bbcode = null; // option to override onclick behavior. See ibrowser.php 
+		parse_str($att,$option); 
 		
-		if($cat !='_icon')
+		$cat = ($category) ? '&amp;for='.$category : "";
+		if(!$label) $label = ' Upload an image or file';
+		if($option['tagid']) $cat .= '&amp;tagid='.$option['tagid']; 
+		if($option['bbcode']) $cat .= '&amp;bbcode=1'; 
+		
+		
+		
+		$cat .= ($option['limit']) ? "&amp;limit=".$option['limit'] : "";
+		
+		$cat .= ($option['frm']) ? "&amp;frm=".$option['frm'] : "";
+		
+			
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$cat;
+		return $url;	
+	}
+
+
+
+	public function mediaSelect($category='',$tagid=null,$att=null)
+	{
+	
+		parse_str($att,$option); // grab 'onclick' . 
+			
+		$frm 		= ($option['from']) ? $option['from'] : 0;
+		$limit 		= ($option['limit']) ? $option['limit'] : 20;
+		$newfrm 	= $frm + $limit; 
+		$bbcode		= ($option['bbcode']) ? $option['bbcode'] : null;
+		
+		if($category !='_icon')
 		{
-			$cat 	= ($cat) ? $cat."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
-			$images = $this->getImages($cat,0,21);
+			$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
+			$images = $this->getImages($cat,$frm,$limit);
 			$class 	= "media-select-image";
 			$w		= 120;
 			$h		= 100;
+			$total	= $this->countImages($cat);
 		}
 		else // Icons
 		{
@@ -403,9 +446,11 @@ class e_media
 			$class 	= "media-select-icon";
 			$w		= 64;
 			$h		= 64;
+			$total 	= 500;
+			// $total	= $this->countIcons($cat); //TODO
 		}
 		
-		parse_str($att); // grab 'onclick' . 
+		
 		
 	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
 	
@@ -414,14 +459,17 @@ class e_media
 		
 		// EXAMPLE of FILTER GUI. 
 	//	$text .= "CAT=".$cat;
+		$dipTotal = (($frm + $limit) < $total) ? ($frm + $limit) : $total;
 
 		$text .= "<div>Filter: <input type='text' name='non-working-filter-example' value='' />";
 		$text .= "<input type='button' value='Go' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-		$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
-		$text .= "<input type='button' value='&raquo;' />"; // see next page of images. 
-		$text .= " Displaying 0-24 of 150 images.<br />&nbsp; </div>
-		<div class='media-select-container'>\n";
+	//	$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
+		$text .= "<a class='button e-nav e-ajax' href='#media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&from=0 #media-select-container' >&laquo;</a>"; // see next page of images. 
 		
+		$text .= "&nbsp;<a class='button e-nav e-ajax' href='#media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&from=0 #media-select-container' >&raquo;</a>"; // see next page of images. 
+		$text .= "</div>
+		<div id='media-select-container'>
+		<div style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
@@ -438,6 +486,7 @@ class e_media
 		
 		foreach($images as $im)
 		{
+			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
 			$media_path 	= e107::getParser()->replaceConstants($im['media_url'],'full');
 			$realPath 		= e107::getParser()->thumbUrl($im['media_url'], $att);
 			$diz 			= e107::getParser()->toAttribute($im['media_title']);		
