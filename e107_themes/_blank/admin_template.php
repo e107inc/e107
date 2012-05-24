@@ -25,6 +25,14 @@ define("ADLINK_COLS",5);
 
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
+
+$ADMIN_LOGIN = "<div class='admin-wrapper'>Something</div>"; // TODO
+
+
+
+
+
+
 //{FS_ADMIN_ALT_NAV}
 $ADMIN_HEADER = "
 <div class='admin-wrapper'>

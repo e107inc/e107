@@ -93,7 +93,7 @@ if(e_AJAX_REQUEST)
 	exit;
 }
 
-if(isset($_GET['configure']))
+if(isset($_GET['configure']) || isset($_GET['iframe']))
 {
 	//No layout parse when in iframe mod
 	define('e_IFRAME', true);

@@ -508,7 +508,7 @@ class e_menuManager {
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div style='text-align:center;'>
-		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."&amp;iframe=1'>
         <fieldset id='core-menus-visibilityform'>
 		<legend>". MENLAN_7." ".$row['menu_name']."</legend>
         <table class='adminform'>
@@ -1208,7 +1208,7 @@ class e_menuManager {
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		$text .= '<div class="center">
-		<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
+		<a class="e-dialog" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
 
 		if($conf)
 		{
