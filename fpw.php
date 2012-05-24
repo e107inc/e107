@@ -55,7 +55,7 @@ require_once(HEADERF);
 function fpw_error($txt)
 {
 	global $ns;
-	$ns->tablerender(LAN_03, "<div style='text-align:center'>".$txt."</div>");
+	$ns->tablerender(LAN_03, "<div class='fpw-page'>".$txt."</div>", 'fpw');
 	require_once(FOOTERF);
 	exit;
 }
@@ -101,16 +101,25 @@ if (e_QUERY)
 		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
 
 		$sql->db_Update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
+		
+		if((integer) e107::getPref('allowEmailLogin') > 0)
+		{
+			// always show email when possible
+			$sql->db_Select('user', 'user_email', "user_loginname='{$loginName}'");
+			$tmp = $sql->db_Fetch();
+			$loginName = $tmp['user_email'];
+			unset($tmp);
+		}
 
 		cookie($pref['cookie_name'], '', (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = '';
 
-		$txt = "<div>".LAN_FPW8."<br /><br />
-		<table style='width:70%'>
+		$txt = "<div class='fpw-message'>".LAN_FPW8."</div>
+		<table class='fpw-info'>
 		<tr><td>".LAN_218."</td><td style='font-weight:bold'>{$loginName}</td></tr>
 		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
 		</table>
-		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12."</div>";
+		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12;
 		fpw_error($txt);
 
 	}
@@ -148,7 +157,7 @@ if (isset($_POST['pwsubmit']))
 
 		if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
 		{	// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
-			sendemail($pref['siteadminemail'], LAN_06, LAN_07.' '.e107::getIPHandler()->getIP(FALSE).' '.LAN_08);
+			sendemail($pref['siteadminemail'], LAN_06, LAN_07.' ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).' '.LAN_08);
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
@@ -177,7 +186,7 @@ if (isset($_POST['pwsubmit']))
 		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
 		$link = SITEURL.'fpw.php?'.$rcode;
-		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.' : '.e107::getIPHandler()->getIP(FALSE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
+		$message = LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.' : ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		$deltime = time()+86400 * 2;			//Set timestamp two days ahead so it doesn't get auto-deleted
 		$sql->db_Insert('tmp', "'pwreset',{$deltime},'".$row['user_loginname'].FPW_SEPARATOR.$rcode."'");
