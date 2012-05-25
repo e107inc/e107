@@ -1,0 +1,17 @@
+
+/* ADMIN specific styling */
+
+a.media-select-image 		{ margin:5px; border:1px solid silver; width:120px; height:100px; }
+a.media-select-image:hover	{ border:1px solid red; }
+a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; border:1px solid white; width:48px; height:48px;}
+a.media-select-icon:hover	{ border:1px solid red; }
+.media-select-container 	{ padding:10px; }
+.media-select-none			{ text-decoration:none; }
+.media-select-active		{ border: 2px solid silver; }
+
+.e-moving 					{ background-color: silver; }
+tr.highlight-even			{ background-color: silver; }
+tr.highlight-odd			{ background-color: silver; }
+legend 						{ display: none; }
+.chzn-choices				{ width: 350px; }
+.e-autocomplete				{ display: none }

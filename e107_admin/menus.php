@@ -84,7 +84,7 @@ require_once(e_HANDLER."menumanager_class.php");
 
 	$rs = new form;
 	$frm = new e_form();
-	$men = new e_menuManager(0);   // use 1 for dragdrop.
+	$men = new e_menuManager(1);   // use 1 for dragdrop.
 
 
 if(e_AJAX_REQUEST)
