@@ -296,7 +296,7 @@ class e_form
 
 		$cat 		= $tp->toDB($sc_parameters['media']);	
 		$default 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' >".$default."</span>";
+		$label 		= "<span id='{$name_id}_prev' >".basename($default)."</span>";
 			
 		
 		$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
