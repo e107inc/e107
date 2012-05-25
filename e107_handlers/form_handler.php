@@ -144,21 +144,31 @@ class e_form
 		return $ret;
 	}
 
-	// FIXME - Dialog JS no more working, investigate
-	public function mediaUrl($category = '', $label = '', $tagid='', $bbcode='')
+	/**
+	 * Internal Function used by imagepicker and filepicker
+	 */ 
+	private function mediaUrl($category = '', $label = '', $tagid='', $extras='')
 	{
+		
 		$cat = ($category) ? '&amp;for='.$category : "";
 		if(!$label) $label = ' Upload an image or file';
 		if($tagid) $cat .= '&amp;tagid='.$tagid; 
+		
+		parse_str($extras);
+		
 		if($bbcode) $cat .= '&amp;bbcode=1'; 
+		
+		if(!$mode) $mode = 'main';
+		if(!$action) $action = 'dialog';
+
 		// $tabs // TODO - option to choose which tabs to display.  
 		
 		//TODO Parse selection data back to parent form. 
 
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$cat;
+		$url = e_ADMIN_ABS."image.php?mode={$mode}&amp;action={$action}".$cat;
 		$url .= "&amp;iframe=1";
 
-		$ret = "<a title='Click on a thumbnail to change..' rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
+		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
 	$footer = '';
@@ -262,88 +272,46 @@ class e_form
 	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
 		return $ret;
 		
-		
-		// ---------------- OLD DROPDOWN METHOD BELOW -----------------------------
-		
-		$tp = e107::getParser();
-		$sql = e107::getDb();
-		
 
+		
+		
+		
+		// ----------------
+
+	}
+
+
+
+			
+		
+	function filepicker($name, $default, $label = '', $sc_parameters = '')
+	{
+		$tp = e107::getParser();
+		$name_id = $this->name2id($name);
 		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.")  ";
+		$cat 		= $tp->toDB($sc_parameters['media']);	
+		$default 	= ($default) ? $default : "Choose a file";
+		$label 		= "<span id='{$name_id}_prev' >".$default."</span>";
+			
 		
-		// Old Method
-		$qry .= vartrue($sc_parameters['media']) ? " AND (`media_category` = '".$tp->toDB($sc_parameters['media'])."' OR `media_category` = '_common' )" : " AND `media_category` = '_common' "; 
+		$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
+		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
+			
+		return $ret;
+	
 		
-		// New Method
-	/*
-		if(vartrue($sc_parameters['owner']) && vartrue($sc_parameters['cat'])) 
-			{
-				
-				
-				
-				
-				$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.")  ";
-				$qry .= " AND (`media_owner` = '".$tp->toDB($sc_parameters['owner'])."' AND `media_category` = '".$tp->toDB($sc_parameters['cat'])."' ) OR `media_owner` = '_common' "; 	
-			} 	*/
-	
-	
-		$qry .= "ORDER BY media_name";
-
-
-		if($sql->db_Select_gen($qry))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$opts[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
-			}
-
-			asort($opts);
-
-			$hide = $default_url = '';
-			$default_thumb = $default;
-			if($default)
-			{
-				if('{' != $default[0])
-				{
-					// convert to sc path
-					$default_thumb = $tp->createConstants($default, 'nice');
-					$default = $tp->createConstants($default, 'mix');
-				}
-				$default_url = $tp->replaceConstants($default, 'abs');
-			}
-			else
-			{
-				$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
-				$hide = ' style="display: none;"';
-			}
-
-			if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
-			$name_id = $this->name2id($name);
-			$width = intval(vartrue($sc_parameters['width'], 150));
-			$onchange = "onchange=\"replaceSC('imagepreview={$name}|{$width}',this.form,'{$name_id}_prev'); \"";
-
-			$ret = $this->selectbox($name, $opts, $default, array('default'=>'&nbsp;', 'other' => $onchange));
-			$ret .= "<div class='imgselector-container' id='{$name_id}_prev'>";
-			$ret .= "<a href='{$default_url}'{$hide} rel='external' title='Preview {$default_url}' class='e-image-preview'>";
-
-			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, 'w='.$width, true);
-			$ret .= "<img src='{$thpath}' alt='{$default_url}' class='image-selector' /></a>";
-			$ret .= "</div>\n";
-
-			return $ret;
-		}
-		// ----------------
-
 	}
 
+
+
+
 	/**
-	 * Date field with popup calendar
+	 * Date field with popup calendar // NEW in 0.8/2.0
 	 * $options allowed keys:
 	 * - time: show time, default is true
 	 * - others: ???, default is false
@@ -356,6 +324,12 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = array())
 	{
+		
+		
+		
+		
+		// DHTML Calendar is deprecated in 2.0. 
+		
 		$cal = new DHTML_Calendar(true);
 		$cal_options['showsTime'] = varset($options['time'], true);
 		$cal_options['showOthers'] = varset($options['others'], false);
@@ -1537,6 +1511,14 @@ class e_form
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
 				{
+				
+					if(!preg_match("/[a-zA-z0-9_-]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value))
+					{
+						$value = "{e_IMAGE}filemanager/zip_32.png";	
+						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
+						return '<img src="'.$src.'" alt="'.$alt.'" class="e-thumb" />';
+					}
+					
 					if(vartrue($parms['thumb']))
 					{
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');

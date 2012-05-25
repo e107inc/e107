@@ -98,7 +98,7 @@ $(document).ready(function()
 		$(".e-media-select").live("click", function(){
   	
     	
-    		//	console.log(this);
+    			console.log(this);
     			
 		
 				
@@ -111,7 +111,9 @@ $(document).ready(function()
 				$(this).closest("img").addClass("active");
 									
 				$('#' + target, window.top.document).attr('value',path);	// set new value
-				$('#' + target + "_prev", window.top.document).attr('src',preview); // set new value
+				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
+				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
+				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
 								
 				$('#src').attr('value',src); // working old
 				$('#preview').attr('src',preview);	// working old
