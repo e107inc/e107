@@ -210,11 +210,7 @@ class media_form_ui extends e_admin_form_ui
 		$path = $this->getController()->getListModel()->get('media_url');
 		$preview = basename($path);
 	
-		
-		$text .= "<input type='button' value='Select' class='button e-media-select e-dialog-close' data-target='{$tagid}' data-path='{$path}' data-preview='{$preview}' title=\"".$diz."\" style='float:left' href='#' />";
-	//	$text .= "SELECT";
-	//	$text .= "</a>\n\n";
-		return $text;	
+		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-target='{$tagid}' data-path='{$path}' data-preview='{$preview}' title=\"Select\"  />";
 	}
 	
 
@@ -358,12 +354,18 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('mode') == 'dialog')
 		{
 			$cat = $_GET['for'];
+			if(!isset($this->cats[$cat]))
+			{
+				return;
+			}
+			
 			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE media_category = '".$cat."' "; // without any Order or Limit.
 			
 			unset($this->fields['checkboxes']);
 			$this->fields['options']['type'] = 'method';
+			$this->fields['media_category']['nolist'] = true;
 			$this->fields['media_userclass']['nolist'] = true;
-			$this->fields['media_dimentions']['nolist'] = true;
+			$this->fields['media_dimensions']['nolist'] = true;
 			$this->fields['media_description']['nolist'] = true;
 			$this->fields['media_type']['nolist'] = true;
 			
