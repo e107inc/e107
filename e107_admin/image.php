@@ -53,6 +53,12 @@ class media_admin extends e_admin_dispatcher
 			'ui' 			=> 'media_form_ui',
 			'uipath' 		=> null
 		),
+		'dialog'		=> array(
+			'controller' 	=> 'media_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'media_form_ui',
+			'uipath' 		=> null
+		),
 		'cat'		=> array(
 			'controller' 	=> 'media_cat_ui',
 			'path' 			=> null,
@@ -197,7 +203,19 @@ class media_form_ui extends e_admin_form_ui
 		asort($this->cats);*/
 	}
 
-
+	function options()
+	{
+		//return print_a($_GET,true);
+		$tagid = $_GET['tagid'];
+		$path = $this->getController()->getListModel()->get('media_url');
+		$preview = basename($path);
+	
+		
+		$text .= "<input type='button' value='Select' class='button e-media-select e-dialog-close' data-target='{$tagid}' data-path='{$path}' data-preview='{$preview}' title=\"".$diz."\" style='float:left' href='#' />";
+	//	$text .= "SELECT";
+	//	$text .= "</a>\n\n";
+		return $text;	
+	}
 	
 
 
@@ -336,6 +354,27 @@ class media_admin_ui extends e_admin_ui
 		{
 			$this->updateSettings();
 		}
+		
+		if($this->getQuery('mode') == 'dialog')
+		{
+			$cat = $_GET['for'];
+			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE media_category = '".$cat."' "; // without any Order or Limit.
+			
+			unset($this->fields['checkboxes']);
+			$this->fields['options']['type'] = 'method';
+			$this->fields['media_userclass']['nolist'] = true;
+			$this->fields['media_dimentions']['nolist'] = true;
+			$this->fields['media_description']['nolist'] = true;
+			$this->fields['media_type']['nolist'] = true;
+			
+			foreach($this->fields as $k=>$v)
+			{
+				$this->fields[$k]['filter'] = false;	
+			}	
+		}
+		
+		
+		
 
 		if($this->getQuery('iframe'))
 		{
@@ -397,15 +436,26 @@ class media_admin_ui extends e_admin_ui
 
 	function dialogPage() // Popup dialogPage for Image Selection. 
 	{
+		$cat = $this->getQuery('for');		
+		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
+		
+		if($file)
+		{
+			
+			echo $this->getUI()->getList();
 
+			return;
+		}
+			
+		
 	//	$this->getModel()->setAction('create');
 	//	$this->getUI()->getController()->getRequest()->setAction('create');
 	//$this->setAction('create');;
 	
 		if($_POST['etrigger_submit'])
 		{		
-			$data = $this->beforeCreate($_POST);
-			e107::getDb()->db_Insert('core_media',$data); // Replace with Generic (needs parm sent)	
+		//	$data = $this->beforeCreate($_POST);
+		//	e107::getDb()->db_Insert('core_media',$data); // Replace with Generic (needs parm sent)	
 		}
 		echo $this->imageSelectUpload();	
 	}
@@ -467,8 +517,8 @@ class media_admin_ui extends e_admin_ui
 		$this->fields['media_url']['noedit'] 		= TRUE;
 		$this->fields['media_userclass']['noedit']	= TRUE;
 		
-	//	$text .=  $this->uploadPage(); // To test upload script with plupload
-		$text .=  $this->CreatePage(); // comment me out to test plupload
+		$text .=  $this->uploadPage(); // To test upload script with plupload
+	//	$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
 			</fieldset>";

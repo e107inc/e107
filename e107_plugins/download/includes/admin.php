@@ -620,7 +620,7 @@ $columnInfo = array(
 	
 	      $text = "
 	      <div class='admintabs' id='tab-container'>
-	         <ul class='e-tabs e-hideme' id='core-download-tabs'>
+	         <ul class='e-tabs' id='core-download-tabs'>
 	            <li id='tab-general'><a href='#download-create'>".DOWLAN_175."</a></li>
 	            <li id='tab-external'><a href='#download-edit-external'>".DOWLAN_176."</a></li>
 	            <li id='tab-mirror'><a href='#download-edit-mirror'>".DOWLAN_128."</a></li>
@@ -632,10 +632,11 @@ $columnInfo = array(
 	                     <tr>
 	                        <td style='width:20%;'>".DOWLAN_13."</td>
 	                        <td style='width:80%'>
-	                           <div>".DOWLAN_131."&nbsp;&nbsp;
-	                              <select name='download_url' class='tbox'>
-	                                 <option value=''>&nbsp;</option>
-	         ";
+	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
+							  
+	                   //       $text .= "<select name='download_url' class='tbox'>
+	                  //               <option value=''>&nbsp;</option>\n";
+	   
 	
 	      $counter = 0;
 	      while (isset($file_array[$counter]))
@@ -648,7 +649,7 @@ $columnInfo = array(
 	            $found = 1;
 	         }
 	
-	         $text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
+	     //    $text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
 	         $counter++;
 	      }
 	
@@ -666,10 +667,14 @@ $columnInfo = array(
 	
 	      if (!$found && $download_url)
 	      {
-	         $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
+	    //     $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
 	      }
 	
-	      $text .= "             </select>
+	  //    $text .= "             </select>";
+	  
+	  	$text .= e107::getForm()->filepicker("download_url",$download_url,DOWLAN_131,"media=download_file&title=Choose a file");
+	  
+	      $text .= "
 	                        </div>
 	                     </td>
 	                  </tr>

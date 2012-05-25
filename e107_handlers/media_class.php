@@ -67,8 +67,8 @@ class e_media
 	
 		if(!count($img_array)){ return $this;}
 		
-		//print_a($img_array);
-		//return;
+	//	print_a($img_array);
+	//	return;
 	
 		foreach($img_array as $f)
 		{
@@ -79,15 +79,15 @@ class e_media
 				'media_description'	=> '',
 				'media_category'	=> $cat,
 				'media_datestamp'	=> $f['modified'],
-				'media_url'	=> $fullpath,
+				'media_url'			=> $fullpath,
 				'media_userclass'	=> 0,
-				'media_name'	=> $f['fname'],
-				'media_author'	=> USERID,
-				'media_size'	=> $f['fsize'],
+				'media_name'		=> $f['fname'],
+				'media_author'		=> USERID,
+				'media_size'		=> $f['fsize'],
 				'media_dimensions'	=> $f['img-width']." x ".$f['img-height'],
-				'media_usedby'	=> '',
-				'media_tags'	=> '',
-				'media_type'	=> $f['mime']
+				'media_usedby'		=> '',
+				'media_tags'		=> '',
+				'media_type'		=> $f['mime']
 			);
 	
 			if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
@@ -429,6 +429,7 @@ class e_media
 		$limit 		= ($option['limit']) ? $option['limit'] : 20;
 		$newfrm 	= $frm + $limit; 
 		$bbcode		= ($option['bbcode']) ? $option['bbcode'] : null;
+
 		
 		if($category !='_icon')
 		{

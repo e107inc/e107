@@ -61,7 +61,7 @@ $(document).ready(function()
 		$("a.e-dialog").colorbox({
 			iframe:true,
 			width:"60%",
-			height:"65%",
+			height:"70%",
 			speed:100
 		});
 		
@@ -352,7 +352,7 @@ $(document).ready(function()
 			    var opt = linkid.split('-');
 			    
 			    if(area == 'remove')
-			    {	alert(area);
+			    {	// alert(area);
 			    	var remove = linkid;
 			    	areaList = '';
 			    	$('#check-' + opt[1]).show('fast');

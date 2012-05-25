@@ -1119,6 +1119,36 @@ function update_706_to_800($type='')
 		$med->import('download_thumb',e_FILE.'downloadthumbs');	
 	}
 	
+	$dl_files = $fl->get_files(e_DOWNLOAD, "","standard",5);
+	$public_files = $fl->get_files(e_FILE.'public');
+	
+	if((count($dl_files) || count($public_files)) && !$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
+	{
+		if ($just_check) return update_needed('Import Download and Public Files into Media Manager');
+	// check for file-types;
+		if (is_readable(e_ADMIN.'filetypes.php'))
+		{
+			$a_types = strtolower(trim(file_get_contents(e_ADMIN.'filetypes.php')));
+			$srch = array("png","jpg","jpeg","gif");
+			$a_types = str_replace($srch,"",$a_types); // filter-out images. 
+			
+		} else
+		{
+			$a_types = 'zip, gz, pdf';
+		}
+		
+		$a_types = explode(',', $a_types);
+		foreach ($a_types as $f_type) {
+			$allowed_types[] = trim(str_replace('.', '', $f_type));
+		}
+				
+		$fmask = '[a-zA-z0-9_-]+\.('.implode('|',$allowed_types).')$';
+		$med->import('download_file',e_DOWNLOAD, $fmask);
+		$med->import('_common_file',e_FILE.'public', $fmask);	
+	}
+
+
+
 			
 	$count = $sql->db_Select_gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
 	
