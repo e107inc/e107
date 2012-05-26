@@ -164,103 +164,13 @@ if (!function_exists('simplexml_load_string'))
 */
 
 
-/*
- * This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
- * Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
- *
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
- * or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
- */
-
-/**
- * http://snipplr.com/view/4964/emulate-php-5-for-backwards-compatibility/
- *
- * Parse a date generated with strftime().
- * PHP Compatibility *nix v5.1.0+, all $M
- * 
- * This function is the same as the original one defined by PHP (Linux/Unix only),
- *  but now you can use it on Windows too.
- *  Limitation : Only this format can be parsed %S, %M, %H, %d, %m, %Y
- *
- * @author Lionel SAURON
- * @version 1.0
- * @public
- *
- * @param string $str date string to parse (e.g. returned from strftime()).
- * @param string $sFormat strftime format used to create the date
- * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
- */
-// strptime - PHP 5 >= 5.1.0
 if (!function_exists('strptime'))
 {
+
 	define('STRPTIME_COMPAT', true);
 	function strptime($str, $format)
 	{
-		static $expand = array('%D'=>'%m/%d/%y', '%T'=>'%H:%M:%S', );
-		
-		static $map_r = array('%S'=>'tm_sec', '%M'=>'tm_min', '%H'=>'tm_hour', '%d'=>'tm_mday', '%m'=>'tm_mon', '%Y'=>'tm_year', '%y'=>'tm_year', /*'%W'=>'tm_wday', '%D'=>'tm_yday',*/ '%u'=>'unparsed', );
-		
-		#-- TODO  - not so useful, locale is breaking it, so use date() and mktime() to generate the array below
-		static $names = array('Jan'=>1, 'Feb'=>2, 'Mar'=>3, 'Apr'=>4, 'May'=>5, 'Jun'=>6, 'Jul'=>7, 'Aug'=>8, 'Sep'=>9, 'Oct'=>10, 'Nov'=>11, 'Dec'=>12, 'Sun'=>0, 'Mon'=>1, 'Tue'=>2, 'Wed'=>3, 'Thu'=>4, 'Fri'=>5, 'Sat'=>6 );
-		
-		#-- transform $format into extraction regex
-		$format = str_replace(array_keys($expand), array_values($expand), $format);
-		$preg = preg_replace('/(%\w)/', '(\w+)', preg_quote($format));
-		
-		#-- record the positions of all STRFCMD-placeholders
-		preg_match_all('/(%\w)/', $format, $positions);
-		$positions = $positions[1];
-		
-		#-- get individual values
-		if (preg_match("#$preg#", $str, $extracted))
-		{
-			#-- get values
-			foreach ($positions as $pos => $strfc)
-			{
-				$v = $extracted[$pos + 1];
-				#-- add
-				if (isset($map_r[$strfc]))
-				{
-					$n = $map_r[$strfc];
-					$vals[$n] = ($v > 0) ? (int) $v : $v;
-				}
-				else
-				{
-					$vals['unparsed'] .= $v.' ';
-				}
-			}
-			
-			#-- fixup some entries
-			//$vals["tm_wday"] = $names[ substr($vals["tm_wday"], 0, 3) ];
-			if ($vals['tm_year'] >= 1900)
-			{
-				$vals['tm_year'] -= 1900;
-			}
-			elseif ($vals['tm_year'] > 0)
-			{
-				$vals['tm_year'] += 100;
-			}
-			
-			if ($vals['tm_mon'])
-			{
-				$vals['tm_mon'] -= 1;
-			}
-			else
-			{
-				$vals['tm_mon'] = $names[substr($vals['tm_mon'], 0, 3)] - 1;
-			}
-			
-			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
-			
-			#-- calculate wday/yday
-			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
-			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
-			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
-			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
-		}
-		
-		return isset($vals) ? $vals : false;
-		
+		return e107::getDate()->strptime($str,$format);	
 	} 
 	
 }

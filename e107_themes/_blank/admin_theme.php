@@ -10,7 +10,8 @@ include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
-e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
+e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
+e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 
 e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');

@@ -421,6 +421,7 @@ $ga = new convert();
 $date1 = $ga->convert_date(time(), "short");
 $date2 = $ga->convert_date(time(), "long");
 $date3 = $ga->convert_date(time(), "forum");
+$date4 = e107::getDate()->convert(time(),"input");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
@@ -451,6 +452,51 @@ $text .= "
 							".$frm->text('forumdate', $pref['forumdate'], 50)."
 							<div class='field-help'>".PRFLAN_83.": {$date3}</div>
 							<div class='field-help'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
+						</td>
+					</tr>";
+					
+					
+					$inputdate = array( // TODO add more formats
+						"%A, %d %b, %Y"	=> strftime("%A, %d %b, %Y"),
+						"%a, %d %b, %Y"	=> strftime("%a, %d %b, %Y"),
+						"%Y-%m-%d"		=> strftime("%Y-%m-%d"),
+						"%d-%m-%Y"		=> strftime("%d-%m-%Y"),
+						"%m/%d/%Y"		=> strftime("%m/%d/%Y")
+					);
+					
+			
+					$inputtime = array();
+					
+			
+					 
+					$inputtime["%I:%M %p"]	= strftime("%I:%M %p",mktime(14,3,11));
+					if(e107::getDate()->supported('P'))
+					{	
+						$inputtime["%I:%M %P"]	=  strftime("%I:%M %P",mktime(14,3,11));
+					}
+					if(e107::getDate()->supported('l'))
+					{
+						$inputtime["%l:%M %p"]	= strftime("%l:%M %p",mktime(14,3,11));
+						$inputtime["%l:%M %P"]	= strftime("%l:%M %P",mktime(14,3,11));	
+					}
+					
+					$inputtime["%H:%M"]		= strftime("%H:%M",mktime(14,3,11));
+					$inputtime["%H:%M:%S"]	= strftime("%H:%M:%S",mktime(14,3,11));
+									
+			
+			
+			
+					
+					
+					$text .= "
+					<tr>
+						<td class='label'>Date/Time Input-Field format: </td>
+						<td class='control'>
+							".$frm->selectbox('inputdate',$inputdate, e107::getPref('inputdate'));
+							
+					$text .= $frm->selectbox('inputtime',$inputtime, e107::getPref('inputtime'));
+					
+					$text .= "
 						</td>
 					</tr>
 					<tr>

@@ -18,6 +18,12 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
 
 class convert
 {
+	
+	function __construct()
+	{
+		
+		
+	}
 	/**
 	 * Convert datestamp to human readable date.
 	 * System time offset is considered.
@@ -42,9 +48,20 @@ class convert
 			case 'short':
 				$mask = e107::getPref('shortdate');
 			break;
-
-			case 'input': //New - use inputdate as mask; FIXME - add inputdate to Date site prefs 
-				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
+			
+			case 'input': 
+			case 'inputdate': 
+				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M');
+				// $mask .= " ".e107::getPref('inputtime', '%H:%M');
+			break;
+			
+			case 'inputdatetime': 
+				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M');
+				$mask .= " ".e107::getPref('inputtime', '%H:%M');
+			break;
+			
+			case 'inputtime': 
+				$mask .= e107::getPref('inputtime', '%H:%M');
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
@@ -61,6 +78,18 @@ class convert
 		return strftime($mask, $datestamp);
 	}
 
+
+
+	/**
+	 * Converts between unix timestamp and human-readable date-time OR vice-versa. (auto-detected)
+	 * @param string $string unix timestamp OR human-readable date-time. 
+	 * @param string $mask (optional) long | short | input
+	 */
+	function convert($string=null, $mask = 'inputdate')
+	{
+		if($string == null) return false;
+		return is_integer($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+	}
 
 
 	
@@ -84,13 +113,26 @@ class convert
 				$mask = e107::getPref('shortdate');
 			break;
 
-			case 'input': //New - use inputdate as mask; FIXME - add inputdate to Date site prefs 
-				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
+			case 'input': 
+			case 'inputdate': 
+				$mask = e107::getPref('inputdate', '%Y/%m/%d');
+			break;
+			
+			case 'inputdatetime': 
+				$mask = e107::getPref('inputdate', '%Y/%m/%d');
+				$mask .= " ".e107::getPref('inputtime', '%H:%M');
+			break;
+			
+			case 'inputtime': 
+				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 		}
 		
-		// see php compat handler
-		$tdata = strptime($date_string, $mask);
+		// also in php compat handler for plugins that might use it. 
+		$tdata = $this->strptime($date_string, $mask);
+		
+		print_a($tdata);
+		
 		if(empty($tdata))
 		{
 			return null;
@@ -99,19 +141,16 @@ class convert
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
 			$tdata['tm_sec'], 
-			$tdata['tm_mon'] + 1, 
+			$tdata['tm_mon'], 
 			$tdata['tm_mday'], 
-			$tdata['tm_year'] + 1900 
+			($tdata['tm_year'] + 1900) 
 		); 
 		
-		//var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
+		// var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
 		return $unxTimestamp;
 	}
 
-
-
-
-
+// -----------------------
 
 	/**
 	 * Tolerant date/time input routine - doesn't force use of specific delimiters, and can sometimes allow no delimiters at all
@@ -347,5 +386,243 @@ class convert
 		}
 		return ($mode ? $outputArray : implode(", ", $outputArray));
 	}
+
+
+
+
+	/**
+	 *  This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
+	 *  Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
+	 *  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
+	 *  or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+	 * 
+	 * http://snipplr.com/view/4964/emulate-php-5-for-backwards-compatibility/
+	 * 
+	 * Parse a date generated with strftime().
+	 * 
+	 * @author Lionel SAURON and reworked by e107 Inc. for month names. 
+	 * @version 1.0
+	 * @public
+	 *
+	 * @param string $str date string to parse (e.g. returned from strftime()).
+	 * @param string $sFormat strftime format used to create the date
+	 * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
+	 */
+	public function strptime($str, $format)
+	{
+		
+		static $expand = array('%D'=>'%m/%d/%y', '%T'=>'%H:%M:%S', );
+		
+		$ampm	= (preg_match("/%l|%I|%p|%P/",$format)) ? 'true' : 'false';
+		
+		static $map_r = array(
+			'%S'	=>'tm_sec',
+			'%M'	=>'tm_min',
+			'%H'	=>'tm_hour', 
+			'%I'	=>'tm_hour',
+			'%d'	=>'tm_mday', 
+			'%m'	=>'tm_mon', 
+			'%Y'	=>'tm_year', 
+			'%y'	=>'tm_year', 
+			'%W'	=>'tm_wday', 
+			'%D'	=>'tm_yday', 
+			'%B'	=>'tm_fmon', // full month-name
+			'%b'	=>'tm_amon', // abrev. month-name
+			'%p'	=>'tm_AMPM', // AM/PM	
+			'%P'	=>'tm_ampm', // am/pm				
+			'%u'	=>'unparsed',
+			 
+		);
+				
+		$fullmonth = array();
+		$abrevmonth = array();
+		
+		for ($i = 1; $i <= 12; $i++)
+		{
+			$k = strftime('%B',mktime(0,0,0,$i));
+    		$fullmonth[$k] = $i;
+			
+			$j = strftime('%b',mktime(0,0,0,$i));
+    		$abrevmonth[$j] = $i;
+		}
+
+		
+		
+		#-- transform $format into extraction regex
+		$format = str_replace(array_keys($expand), array_values($expand), $format);
+		$preg = preg_replace('/(%\w)/', '(\w+)', preg_quote($format));
+		
+		#-- record the positions of all STRFCMD-placeholders
+		preg_match_all('/(%\w)/', $format, $positions);
+		$positions = $positions[1];
+		
+		#-- get individual values
+		if (preg_match("#$preg#", $str, $extracted))
+		{
+			#-- get values
+			foreach ($positions as $pos => $strfc)
+			{
+				$v = $extracted[$pos + 1];
+				#-- add
+				if (isset($map_r[$strfc]))
+				{
+					$n = $map_r[$strfc];
+					$vals[$n] = ($v > 0) ? (int) $v : $v;
+				}
+				else
+				{
+					$vals['unparsed'] .= $v.' ';
+				}
+			}
+			
+			#-- fixup some entries
+			//$vals["tm_wday"] = $names[ substr($vals["tm_wday"], 0, 3) ];
+			if ($vals['tm_year'] >= 1900)
+			{
+				$vals['tm_year'] -= 1900;
+			}
+			elseif ($vals['tm_year'] > 0)
+			{
+				$vals['tm_year'] += 100;
+			}
+			
+			if ($vals['tm_mon'])
+			{
+				$vals['tm_mon'] -= 1;			
+			}
+			else
+			{
+
+				if(isset($fullmonth[$vals['tm_fmon']]))
+				{
+					$vals['tm_mon'] = $fullmonth[$vals['tm_fmon']];	
+				}
+				elseif(isset($abrevmonth[$vals['tm_amon']]))
+				{
+					$vals['tm_mon'] = $abrevmonth[$vals['tm_amon']];	
+				}
+	
+			}
+			
+			if($ampm && ($vals['tm_AMPM'] == 'PM' || $vals['tm_ampm'] == 'pm'))
+			{
+				$vals['tm_hour'] = $vals['tm_hour'] + 12;					
+			}
+			
+			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
+			
+			#-- calculate wday/yday
+			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
+			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
+			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
+			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
+		}
+		
+		return isset($vals) ? $vals : false;
+		
+	} 
+
+
+
+
+
+	function supported($mode = FALSE)
+	{
+		$strftimeFormats = array(
+		    'A' => 'A full textual representation of the day',
+		    'B' => 'Full month name, based on the locale',
+		    'C' => 'Two digit representation of the century (year divided by 100, truncated to an integer)',
+		    'D' => 'Same as "%m/%d/%y"',
+		    'E' => '',
+		    'F' => 'Same as "%Y-%m-%d"',
+		    'G' => 'The full four-digit version of %g',
+		    'H' => 'Two digit representation of the hour in 24-hour format',
+		    'I' => 'Two digit representation of the hour in 12-hour format',
+		    'J' => '',
+		    'K' => '',
+		    'L' => '',
+		    'M' => 'Two digit representation of the minute',
+		    'N' => '',
+		    'O' => '',
+		    'P' => 'lower-case "am" or "pm" based on the given time',
+		    'Q' => '',
+		    'R' => 'Same as "%H:%M"',
+		    'S' => 'Two digit representation of the second',
+		    'T' => 'Same as "%H:%M:%S"',
+		    'U' => 'Week number of the given year, starting with the first Sunday as the first week',
+		    'V' => 'ISO-8601:1988 week number of the given year, starting with the first week of the year with at least 4 weekdays, with Monday being the start of the week',
+		    'W' => 'A numeric representation of the week of the year, starting with the first Monday as the first week',
+		    'X' => 'Preferred time representation based on locale, without the date',
+		    'Y' => 'Four digit representation for the year',
+		    'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
+		    'a' => 'An abbreviated textual representation of the day',
+		    'b' => 'Abbreviated month name, based on the locale',
+		    'c' => 'Preferred date and time stamp based on local',
+		    'd' => 'Two-digit day of the month (with leading zeros)',
+		    'e' => 'Day of the month, with a space preceding single digits',
+		    'f' => '',
+		    'g' => 'Two digit representation of the year going by ISO-8601:1988 standards (see %V)',
+		    'h' => 'Abbreviated month name, based on the locale (an alias of %b)',
+		    'i' => '',
+		    'j' => 'Day of the year, 3 digits with leading zeros',
+		    'k' => '',
+		    'l' => 'Hour in 12-hour format, with a space preceeding single digits',
+		    'm' => 'Two digit representation of the month',
+		    'n' => 'A newline character ("\n")',
+		    'o' => '',
+		    'p' => 'UPPER-CASE "AM" or "PM" based on the given time',
+		    'q' => '',
+		    'r' => 'Same as "%I:%M:%S %p"',
+		    's' => 'Unix Epoch Time timestamp',
+		    't' => 'A Tab character ("\t")',
+		    'u' => 'ISO-8601 numeric representation of the day of the week',
+		    'v' => '',
+		    'w' => 'Numeric representation of the day of the week',
+		    'x' => 'Preferred date representation based on locale, without the time',
+		    'y' => 'Two digit representation of the year',
+		    'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
+		    '%' => 'A literal percentage character ("%")',
+		);
+		
+		// Results.
+		$strftimeValues = array();
+		
+		// Evaluate the formats whilst suppressing any errors.
+		foreach($strftimeFormats as $format => $description)
+		{
+		    if (False !== ($value = @strftime("%{$format}")))
+		    {
+		        $strftimeValues[$format] = $value;
+		    }
+		}
+		
+		// Find the longest value.
+		$maxValueLength = 2 + max(array_map('strlen', $strftimeValues));
+		
+		$ret = array(
+			'enabled' 	=> array(),
+			'disabled' 	=> array()
+		);
+		
+		// Report known formats.
+		foreach($strftimeValues as $format => $value)
+		{
+			$ret['enabled'][] = $format;
+		    echo ($mode =='list') ? "Known format   : '{$format}' = ". str_pad("'{$value}'", $maxValueLength). " ( {$strftimeFormats[$format]} )<br />" : "";
+		}
+		
+		// Report unknown formats.
+		foreach(array_diff_key($strftimeFormats, $strftimeValues) as $format => $description)
+		{
+			$ret['disabled'][] = $format;
+		    echo ($mode =='list') ? "Unknown format : '{$format}'   ". str_pad(' ', $maxValueLength). ($description ? " ( {$description} )" : ''). "<br />" : "";
+		}	
+		
+		return in_array($mode,$ret['enabled']); 
+		
+		
+	}
+
+
 }
 ?>
