@@ -27,7 +27,7 @@ $(document).ready(function()
     		});
     		
     		// Inline versions 
-    		$("span.e-date").each(function() {
+    		$("div.e-date").each(function() {
     			var id = $(this).attr("id");
         		var newid = id.replace("inline-", "");
         		$(this).datepicker({
@@ -41,17 +41,18 @@ $(document).ready(function()
         		 });    		 
     		});
     		
-    		$("span.e-datetime").each(function() {
+    		$("div.e-datetime").each(function() {
     			var id = $(this).attr("id");
         		var newid = id.replace("inline-", "");
         		$(this).datetimepicker({
         			dateFormat: $(this).attr("data-date-format"),
         			ampm: $(this).attr("data-date-ampm"),
-        			defaultDate: $("#"+newid).val(),
-        			onSelect: function(dateText, inst) {
+        			showButtonPanel: false,
+           			onSelect: function(dateText, inst) {
 				      $("#"+newid).val(dateText);
 				   	}
-        		 });    		 
+        		 }); 
+        		 $(this).datetimepicker('setDate', $("#"+newid).val());   		 
     		});
     		
     		
@@ -324,6 +325,12 @@ $(document).ready(function()
 			
   			var id = $(this).attr("href");
   			var src = $(this).attr("data-src");
+  			if(src == null) // old way - href='myscript.php#id-to-target
+  			{
+  				var tmp = src.split('#');
+  				id = tmp[1];
+  				src = tmp[0];	
+  			}
   			var effect = $(this).attr("data-effect");
   			
   			$(id).load(src + " ",function() {

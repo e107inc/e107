@@ -332,6 +332,8 @@ class e_form
 		$timeFormat = ($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
 						
 		$type		= ($options['type']) ? trim($options['type']) : "date";
+		
+	//	echo "TYPE=".$type;
 			
 		$ampm		= (preg_match("/%l|%I|%p|%P/",$timeFormat)) ? 'true' : 'false';
 				
@@ -392,8 +394,8 @@ class e_form
 		
 		if(vartrue($options['inline']))
 		{
-			return "<span class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></span>
-				<input  type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />
+			return "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></div>
+				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />
 			";		
 		}
 		else
@@ -1919,7 +1921,7 @@ class e_form
 				{
 					return $this->hidden($key, $value);
 				}
-				print_a($parms);
+				
 				return $this->datepicker($key, $value, $parms);
 			break;
 
