@@ -456,32 +456,51 @@ $text .= "
 					</tr>";
 					
 					
+					
+					$def = strtotime('December 21, 2012 3:45pm');
+					
 					$inputdate = array( // TODO add more formats
-						"%A, %d %b, %Y"	=> strftime("%A, %d %b, %Y"),
-						"%a, %d %b, %Y"	=> strftime("%a, %d %b, %Y"),
-						"%Y-%m-%d"		=> strftime("%Y-%m-%d"),
-						"%d-%m-%Y"		=> strftime("%d-%m-%Y"),
-						"%m/%d/%Y"		=> strftime("%m/%d/%Y")
+						"%A, %d %B, %Y"	=> strftime("%A, %d %B, %Y",$def),
+						"%A, %d %b, %Y"	=> strftime("%A, %d %b, %Y",$def),
+						"%a, %d %B, %Y"	=> strftime("%a, %d %B, %Y",$def),
+						"%a, %d %b, %Y"	=> strftime("%a, %d %b, %Y",$def),
+						
+						"%A, %B %d, %Y"	=> strftime("%A, %B %d, %Y",$def),
+						"%A, %b %d, %Y"	=> strftime("%A, %b %d, %Y",$def),
+						"%A, %b %d, %y"	=> strftime("%A, %b %d, %y",$def),
+						
+						"%B %d, %Y"		=> strftime("%B %d, %Y",$def),
+						"%b %d, %Y"		=> strftime("%b %d, %Y",$def),
+						"%b %d, %y"		=> strftime("%b %d, %y",$def),
+						
+						"%d %B, %Y"		=> strftime("%d %B, %Y",$def),
+						"%d %b, %Y"		=> strftime("%d %b, %Y",$def),
+						"%d %b, %y"		=> strftime("%d %b, %y",$def),
+						
+						"%Y-%m-%d"		=> strftime("%Y-%m-%d",$def),
+						"%d-%m-%Y"		=> strftime("%d-%m-%Y",$def),
+						"%m/%d/%Y"		=> strftime("%m/%d/%Y",$def)
 					);
 					
 			
 					$inputtime = array();
 					
 			
-					 
-					$inputtime["%I:%M %p"]	= strftime("%I:%M %p",mktime(14,3,11));
+					
+						 
+					$inputtime["%I:%M %p"]	= strftime("%I:%M %p",$def);
 					if(e107::getDate()->supported('P'))
 					{	
-						$inputtime["%I:%M %P"]	=  strftime("%I:%M %P",mktime(14,3,11));
+						$inputtime["%I:%M %P"]	=  strftime("%I:%M %P",$def);
 					}
 					if(e107::getDate()->supported('l'))
 					{
-						$inputtime["%l:%M %p"]	= strftime("%l:%M %p",mktime(14,3,11));
-						$inputtime["%l:%M %P"]	= strftime("%l:%M %P",mktime(14,3,11));	
+						$inputtime["%l:%M %p"]	= strftime("%l:%M %p",$def);
+						$inputtime["%l:%M %P"]	= strftime("%l:%M %P",$def);	
 					}
 					
-					$inputtime["%H:%M"]		= strftime("%H:%M",mktime(14,3,11));
-					$inputtime["%H:%M:%S"]	= strftime("%H:%M:%S",mktime(14,3,11));
+					$inputtime["%H:%M"]		= strftime("%H:%M",$def);
+					$inputtime["%H:%M:%S"]	= strftime("%H:%M:%S",$def);
 									
 			
 			
