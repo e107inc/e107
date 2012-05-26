@@ -10,7 +10,56 @@ $(document).ready(function()
 		
 		// Date
 		$(function() {
-			$( ".e-date" ).datepicker();
+					
+			$("input.e-date").each(function() {
+        		$(this).datepicker({
+        			 dateFormat: $(this).attr("data-date-format"),
+        			 ampm: $(this).attr("data-date-ampm")
+        		 });    		 
+    		});
+    		
+    		$("input.e-datetime").each(function() {
+        		$(this).datetimepicker({
+        			 dateFormat: $(this).attr("data-date-format"),
+        			 timeFormat: $(this).attr("data-time-format"),
+        			 ampm: $(this).attr("data-date-ampm")
+        		 });    		 
+    		});
+    		
+    		// Inline versions 
+    		$("span.e-date").each(function() {
+    			var id = $(this).attr("id");
+        		var newid = id.replace("inline-", "");
+        		$(this).datepicker({
+        			dateFormat: $(this).attr("data-date-format"),
+        			ampm: $(this).attr("data-date-ampm"),
+        			defaultDate: $("#"+newid).val(),
+        			onSelect: function(dateText, inst) {
+				      $("#"+newid).val(dateText);
+				   	}
+				  
+        		 });    		 
+    		});
+    		
+    		$("span.e-datetime").each(function() {
+    			var id = $(this).attr("id");
+        		var newid = id.replace("inline-", "");
+        		$(this).datetimepicker({
+        			dateFormat: $(this).attr("data-date-format"),
+        			ampm: $(this).attr("data-date-ampm"),
+        			defaultDate: $("#"+newid).val(),
+        			onSelect: function(dateText, inst) {
+				      $("#"+newid).val(dateText);
+				   	}
+        		 });    		 
+    		});
+    		
+    		
+    		
+    		
+    		
+    		
+
 		});  
 		
 		// Tabs

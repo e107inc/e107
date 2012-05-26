@@ -1077,26 +1077,37 @@ class admin_newspost
 		
 		$ix = new news;
 
+		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdatetime'), 0);
+
+echo "date=".$_POST['news_start'];
 		if($_POST['news_start'])
 		{
-			$tmp = explode("/", $_POST['news_start']);
-			$_POST['news_start'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+		//	$_POST['news_start'] = e107::getDate()->convert($_POST['news_start']);
 		}
 		else
 		{
-			$_POST['news_start'] = 0;
+	//		$_POST['news_start'] = 0;
 		}
 
 		if($_POST['news_end'])
 		{
-			$tmp = explode("/", $_POST['news_end']);
-			$_POST['news_end'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+			$_POST['news_end'] = e107::getDate()->convert($_POST['news_end'],'inputdatetime');
 		}
 		else
 		{
 			$_POST['news_end'] = 0;
 		}
-
+		
+		if($_POST['news_datestamp'])
+		{
+			$_POST['news_datestamp'] = e107::getDate()->convert($_POST['news_datestamp'],'inputdatetime');
+		}
+		else
+		{
+			$_POST['news_datestamp'] = time();	
+		}
+		
+		/*
 		$matches = array();
 		if(preg_match('#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#', $_POST['news_datestamp'], $matches))
 		{
@@ -1106,12 +1117,14 @@ class admin_newspost
 		{
 			$_POST['news_datestamp'] = time();
 		}
-
+		
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
 		}
-
+		*/
+		
+		
 		if ($id && $sub_action != "sn" && $sub_action != "upload")
 		{
 			$_POST['news_id'] = $id;
@@ -2088,7 +2101,7 @@ class admin_newspost
 										<div class='field-spacer'>".NWSLAN_21.":</div>
 										<div class='field-spacer'>
 		";
-
+		/*
 		$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
 
 		$cal_options['showsTime'] = false;
@@ -2101,9 +2114,14 @@ class admin_newspost
 		$cal_attrib['value'] = $_startdate;
 		$cal_attrib['tabindex'] = $frm->getNext();
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
+		*/
+		
+		$text .= $frm->datepicker("news_start",$_POST['news_start'],"type=datetime");
+		
+	
 
 		$text .= " - ";
-
+/*
 		$_enddate = ($_POST['news_end'] > 0) ? date("d/m/Y", $_POST['news_end']) : "";
 
 		unset($cal_options);
@@ -2118,6 +2136,8 @@ class admin_newspost
 		$cal_attrib['value'] = $_enddate;
 		$cal_attrib['tabindex'] = $frm->getNext();
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
+	*/	
+		$text .= $frm->datepicker("news_end",$_POST['news_end'],"type=datetime");
 
 		$text .= "
 										</div>
@@ -2131,7 +2151,7 @@ class admin_newspost
 									<td class='control'>
 										<div class='field-spacer'>
 		";
-
+/*
 		$_update_datestamp = ($_POST['news_datestamp'] > 0 && !strpos($_POST['news_datestamp'],"/")) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : trim($_POST['news_datestamp']);
 		unset($cal_options);
 		unset($cal_attrib);
@@ -2144,6 +2164,8 @@ class admin_newspost
 		$cal_attrib['name'] = "news_datestamp";
 		$cal_attrib['value'] = $_update_datestamp;
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
+	*/	
+		$text .= $frm->datepicker("news_datestamp",$_POST['news_datestamp'],"type=datetime");
 
 		$text .= "
 										</div>

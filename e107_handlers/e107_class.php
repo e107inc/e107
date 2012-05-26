@@ -1145,6 +1145,16 @@ class e107
 	{
 		return self::getSingleton('convert', true);
 	}
+	
+	/**
+	 * Retrieve date handler singleton object - preferred method. 
+	 *
+	 * @return convert
+	 */
+	public static function getDate()
+	{
+		return self::getSingleton('convert', true);
+	}
 
 	/**
 	 * Retrieve notify handler singleton object

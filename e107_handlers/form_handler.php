@@ -311,25 +311,154 @@ class e_form
 
 
 	/**
-	 * Date field with popup calendar // NEW in 0.8/2.0
-	 * $options allowed keys:
-	 * - time: show time, default is true
-	 * - others: ???, default is false
-	 * - weeks: show weeks, default is false
-	 * - size: input field size attribute, default 25
+	 *	Date field with popup calendar // NEW in 0.8/2.0
 	 *
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
-	 * @param array $options calendar options
+	 * @param array or str 
+	 * @example $frm->datepicker('my_field',time(),'type=date');
+	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
+	 * 
+	 * @url http://trentrichardson.com/examples/timepicker/
 	 */
-	function datepicker($name, $datestamp = false, $options = array())
+	function datepicker($name, $datestamp = false, $options = null)
 	{
+		if(vartrue($options) && !is_array($options))
+		{
+			parse_str($options,$options);	
+		} 
+		
+		$dateFormat = ($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$timeFormat = ($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
+						
+		$type		= ($options['type']) ? trim($options['type']) : "date";
+			
+		$ampm		= (preg_match("/%l|%I|%p|%P/",$timeFormat)) ? 'true' : 'false';
+				
+		$convert = array(
+			'%d'	=> 'dd',
+			'%m'	=> 'mm',
+			'%y'	=> 'y',
+			'%Y'	=> 'yy',
+			
+			'%a'	=> 'D', 	// An abbreviated textual representation of the day
+			'%A'	=> 'DD', 	// A full textual representation of the day
+			'%B'	=> 'MM', 	// Full month name, based on the locale
+			'%b'	=> 'M', 	// Abbreviated month name, based on the locale
+			'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
+			
+			'%l'	=> 'h',		// 12 hour format - no leading zero
+			'%I'	=> 'hh',	// 12 hour format - leading zero
+			'%H'	=> 'hh',	// 24 hour format - leading zero
+			'%M'	=> 'mm',
+			'%S'	=> 'ss',
+			'%p'	=> 'TT',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+			'%P'	=> 'tt',		// %P	lower-case 'am' or 'pm' based on the given time
+			'%T' 	=> 'hh:mm:ss',
+			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
+		
+		);
+			
+		$s = array_keys($convert);
+		$r = array_values($convert);
+			
+		$dformat = str_replace($s,$r,$dateFormat);
+		$tformat = str_replace($s,$r,$timeFormat);
+				
+		$id = $this->name2id($name);
+		
+		$classes = array(
+			'date'		=> 'e-date',
+		//	'time'		=> 'e-time',
+			'datetime'	=> 'e-datetime'
+		);
+		
+		$def = array(
+			'date'		=> $dateFormat,
+		//	'time'		=> $timeFormat,
+			'datetime'	=> $dateFormat." ".$timeFormat
+		);
+			
+		$defdisp = (isset($def[$type])) ? $def[$type] : $def['date'];
+		
+		if ($datestamp)
+		{
+		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $defdisp) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
+		}
+
+		$text = "";
+	
+		$class = (isset($classes[$type])) ? $classes[$type] : "e-date";
+		
+		if(vartrue($options['inline']))
+		{
+			return "<span class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></span>
+				<input  type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />
+			";		
+		}
+		else
+		{	
+			return "<input class='{$class}' type='date' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
+		}
+		
+		
+			// Keep this info here: 
+			/*
+				 * $options allowed keys:
+	
+		 * 
+		 *   d - day of month (no leading zero)
+		    dd - day of month (two digit)
+		    o - day of the year (no leading zeros)
+		    oo - day of the year (three digit)
+		    D - day name short
+		    DD - day name long
+		    m - month of year (no leading zero)
+		    mm - month of year (two digit)
+		    M - month name short
+		    MM - month name long
+		    y - year (two digit)
+		    yy - year (four digit)
+		    @ - Unix timestamp (ms since 01/01/1970)
+		     ! - Windows ticks (100ns since 01/01/0001)
+		    '...' - literal text
+		    '' - single quote
+		    anything else - literal text 
+		
+		    ATOM - 'yy-mm-dd' (Same as RFC 3339/ISO 8601)
+		    COOKIE - 'D, dd M yy'
+		    ISO_8601 - 'yy-mm-dd'
+		    RFC_822 - 'D, d M y' (See RFC 822)
+		    RFC_850 - 'DD, dd-M-y' (See RFC 850)
+		    RFC_1036 - 'D, d M y' (See RFC 1036)
+		    RFC_1123 - 'D, d M yy' (See RFC 1123)
+		    RFC_2822 - 'D, d M yy' (See RFC 2822)
+		    RSS - 'D, d M y' (Same as RFC 822)
+		    TICKS - '!'
+		    TIMESTAMP - '@'
+		    W3C - 'yy-mm-dd' (Same as ISO 8601)
+		 * 
+		 * h    Hour with no leading 0
+		 * hh    Hour with leading 0
+		 * m    Minute with no leading 0
+		 * mm    Minute with leading 0
+		 * s    Second with no leading 0
+		 * ss    Second with leading 0
+		 * l    Milliseconds always with leading 0
+		 * t    a or p for AM/PM
+		 * T    A or P for AM/PM
+		 * tt    am or pm for AM/PM
+		 * TT    AM or PM for AM/PM 
+			
+			*/
 		
 		
 		
 		
+		
+
 		// DHTML Calendar is deprecated in 2.0. 
-		
+		/*
 		$cal = new DHTML_Calendar(true);
 		$cal_options['showsTime'] = varset($options['time'], true);
 		$cal_options['showOthers'] = varset($options['others'], false);
@@ -346,6 +475,8 @@ class e_form
 		}
 		
 		return $cal->make_input_field($cal_options, $cal_attrib);
+		*/
+		
 	}
 
 	/**
@@ -1548,7 +1679,7 @@ class e_form
 			break;
 
 			case 'datestamp':
-				$value = $value ? e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
+				$value = $value ? e107::getDate()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
 			break;
 
 			case 'userclass':
@@ -1774,6 +1905,7 @@ class e_form
 				return $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
 			break;
 
+		
 			case 'datestamp':
 				// If hidden, value is updated regardless. eg. a 'last updated' field.
 				// If not hidden, and there is a value, it is retained. eg. during the update of an existing record.
@@ -1787,7 +1919,7 @@ class e_form
 				{
 					return $this->hidden($key, $value);
 				}
-
+				print_a($parms);
 				return $this->datepicker($key, $value, $parms);
 			break;
 

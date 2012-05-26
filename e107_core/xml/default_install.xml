@@ -101,6 +101,8 @@
 		<core name="logcode">0</core>
 		<core name="loginname_maxlength">30</core>
 		<core name="longdate">%A %d %B %Y - %H:%M:%S</core>
+		<core name="inputdate">%A, %d %b, %Y</core>
+		<core name="inputtime">%I:%M %p</core>
 		<core name="mail_pause">3</core>
 		<core name="mail_bounce">none</core>
 		<core name="mail_pausetime">4</core>
