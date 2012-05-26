@@ -131,7 +131,7 @@ class convert
 		// also in php compat handler for plugins that might use it. 
 		$tdata = $this->strptime($date_string, $mask);
 		
-		print_a($tdata);
+	//	print_a($tdata);
 		
 		if(empty($tdata))
 		{
