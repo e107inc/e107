@@ -195,13 +195,15 @@ class e107
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
 		'override'						 => '{e_HANDLER}override_class.php',
+		'rater'					 		 => '{e_HANDLER}rate_class.php',
 		'redirection'					 => '{e_HANDLER}redirection_class.php',
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
+		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php'
+		
 		
 	);
 
@@ -1022,6 +1024,17 @@ class e107
 	public static function getRedirect()
 	{
 		return self::getSingleton('redirection', true);
+	}
+	
+	
+		/**
+	 * Retrieve rater singleton object
+	 *
+	 * @return rate
+	 */
+	public static function getRate()
+	{
+		return self::getSingleton('rater', true);
 	}
 
 	/**

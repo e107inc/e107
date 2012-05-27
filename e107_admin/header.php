@@ -25,6 +25,33 @@ define("USER_AREA", FALSE);
 
 e107::getDb()->db_Mark_Time('(Header Top)');
 
+
+e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
+e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+
+e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
+e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
+
+e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
+e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+
+e107::css('core', 	'chosen/chosen.css', 'jquery');
+e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
+
+e107::css('core', 	'password/style.css', 'jquery');
+e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+// 
+e107::js("core",	"plupload/customUpload.js","jquery",3);
+
+e107::js("core",	"core/mediaManager.js","jquery",3);
+
+
+e107::css('core', 	'core/admin.jquery.css', 'jquery');
+e107::css('core', 	'core/all.jquery.css', 'jquery');
+e107::js("core",	"core/admin.jquery.js","jquery",4); // Load all default functions.
+e107::js("core",	"core/all.jquery.js","jquery",4); // Load all default functions.
+
 //
 // *** Code sequence for headers ***
 // IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
@@ -755,7 +782,7 @@ if ($e107_popup != 1)
 	}
 
 	/**
-	 * Automate DB system messages
+	 * Automate DB system messages DEPRECATED
 	 * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
 	 *
 	 * @param integer|bool $update return result of db::db_Query
@@ -766,6 +793,8 @@ if ($e107_popup != 1)
 	 * @return integer|bool db::db_Query result
 	 */
 	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
+	 
+	 
 	 // It has been copied to message_handler.php as autoMessage();
 	 
 	function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
@@ -810,6 +839,8 @@ if ($e107_popup != 1)
 			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 			$emessage->add($text, E_MESSAGE_ERROR);
 		}
+		
+		$emessage->addInfo("Using deprecated admin_update() which has been replaced by \$mes->autoMessage();"); 
 
 		if ($output) echo $emessage->render();
 		return $update;

@@ -731,8 +731,8 @@ class page_admin_ui extends e_admin_ui
 					}
 				}*/
 				
-				
-				admin_update($update, 'update', LAN_UPDATED, false, false);		// Display result of update
+				$mes = e107::getMessage();
+				$mes->autoMessage($update, 'update', LAN_UPDATED, false, false);		// Display result of update
 			}
 			else
 			{	// New page/menu
@@ -755,7 +755,7 @@ class page_admin_ui extends e_admin_ui
 					'page_theme' => $menuname,
 					'page_template' => varset($_POST['page_template'],'')
 					);
-				$pid = admin_update($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
+				$pid = e107::getMessage()->autoMessage($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
 				$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 	
 				if($type)
@@ -768,7 +768,7 @@ class page_admin_ui extends e_admin_ui
 						'menu_pages' => '',
 						'menu_path' => $pid,
 					);
-					admin_update($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
+					e107::getMessage()->autoMessage($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
 				}
 	
 				/*if(vartrue($_POST['page_link']))

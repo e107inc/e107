@@ -1,5 +1,5 @@
 $(document).ready(function()
-    {
+{
     	 $(".e-hideme").hide();
     	 $(".e-expandit").show();
     			

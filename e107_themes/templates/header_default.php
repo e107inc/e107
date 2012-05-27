@@ -23,6 +23,15 @@ define('ADMIN_AREA',FALSE);
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
 
+e107::css('core', 	'password/style.css', 'jquery');
+e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
+e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+
+e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
+e107::css('core', 	'core/all.jquery.css', 'jquery');
+e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions.
+
 //
 // *** Code sequence for headers ***
 // IMPORTANT: These items are in a carefully constructed order. DO NOT REARRANGE
@@ -124,6 +133,8 @@ else
 {
 	define("e_WYSIWYG",FALSE);
 }
+
+
 
 //
 // D: Register CSS
@@ -508,6 +519,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
  * Fire Event e107:loaded
  * FIXME - disable core JS
  */
+/*
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
 echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
@@ -516,7 +528,7 @@ echo "e107Event.trigger('loaded', {element: null}, document);\n";
 echo "});\n";
 echo "// -->\n";
 echo "</script>\n";
-
+*/
 echo "</head>
 <body".$body_onload.">\n";
 
