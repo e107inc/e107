@@ -428,44 +428,53 @@ class pageClass
 	// FIXME most probably will fail when cache enabled
 	function pageRating($page_rating_flag)
 	{
-		$rate_text = '';      // Notice removal
+		
 		if($page_rating_flag)
 		{
-			require_once(e_HANDLER."rate_class.php");
-			$rater = new rater;
-			$rate_text = "<br /><table style='width:100%'><tr><td style='width:50%'>";
-
-			if ($ratearray = $rater->getrating("page", $this->pageID))
-			{
-				if ($ratearray[2] == "")
-				{
-					$ratearray[2] = 0;
-				}
-				$rate_text .= "<img src='".e_IMAGE_ABS."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
-				$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-				$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
-			}
-			else
-			{
-				$rating .= LAN_PAGE_dl_13;
-			}
-			$rate_text .= "</td><td style='width:50%; text-align:right'>";
-
-			if (!$rater->checkrated("page", $this->pageID) && USER)
-			{
-				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this->pageID);
-			}
-			else if(!USER)
-			{
-				$rate_text .= "&nbsp;";
-			}
-			else
-			{
-				$rate_text .= LAN_PAGE_5;
-			}
-			$rate_text .= "</td></tr></table>";
+			return "<br /><div style='text-align:right'>".e107::getRate()->render("page", $this->pageID,array('label'=>LAN_PAGE_4))."</div>";
+			/*
+			
+						$rate_text = '';      // Notice removal
+						
+						require_once(e_HANDLER."rate_class.php");
+						$rater = new rater;
+						$rate_text = "<br /><table style='width:100%'><tr><td style='width:50%'>";
+			
+						if ($ratearray = $rater->getrating("page", $this->pageID))
+						{
+							if ($ratearray[2] == "")
+							{
+								$ratearray[2] = 0;
+							}
+							$rate_text .= "<img src='".e_IMAGE_ABS."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
+							$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
+							$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
+						}
+						else
+						{
+							$rating .= LAN_PAGE_dl_13;
+						}
+						$rate_text .= "</td><td style='width:50%; text-align:right'>";
+			
+						if (!$rater->checkrated("page", $this->pageID) && USER)
+						{
+							$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>".LAN_PAGE_4."</b>", "page", $this->pageID);
+						}
+						else if(!USER)
+						{
+							$rate_text .= "&nbsp;";
+						}
+						else
+						{
+							$rate_text .= LAN_PAGE_5;
+						}
+						$rate_text .= "</td></tr></table>";
+						*/
+			
 		}
-		return $rate_text;
+		
+		
+		// return $rate_text;
 	}
 
 	function pageComment($page_comment_flag)

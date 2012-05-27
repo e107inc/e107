@@ -549,6 +549,24 @@ class e_form
 		return $ret;
 
 	}
+	
+	
+	/**
+	 * A 'Rating' element
+	 * @var $text 
+	 */
+	function rate($table,$id,$options=null)
+	{		
+		$table 	= preg_replace('/\W/', '', $table);
+		$id 	= intval($id);
+		
+		return e107::getRate()->render($table, $id, $options);	
+	}
+		
+	
+	
+	
+	
 
 	function file($name, $options = array())
 	{
@@ -566,7 +584,7 @@ class e_form
 	{
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
-		return "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		return "<input class='e-password' type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
 	// autoexpand done

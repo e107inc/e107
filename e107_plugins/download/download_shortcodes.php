@@ -189,7 +189,8 @@ class download_shortcodes
    }
    function sc_download_list_rating()
    {
-      global $dlrow;
+      global $dlrow,$tp;
+	  return $tp->rate("download", $dlrow['download_id']);
       $rater = new rater();
       $ratearray = $rater->getrating("download", $dlrow['download_id']);
      	if (!$ratearray[0]) {
@@ -307,7 +308,7 @@ class download_shortcodes
    {
       global $pref,$dl,$tp;
       if ($pref['agree_flag'] == 1) {
-      	return "xxx<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+      	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       } else {
       	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       }
@@ -399,7 +400,7 @@ class download_shortcodes
       }
       else
       {
-      	return $dnld_link." xxx<img src='".IMAGE_DOWNLOAD."' alt='*' /></a>";
+      	return $dnld_link."<img src='".IMAGE_DOWNLOAD."' alt='*' /></a>";
       }
    }
    function sc_download_view_filesize()
@@ -409,9 +410,14 @@ class download_shortcodes
    }
    function sc_download_view_rating()
    {
+   		global $dlrow;
+		$frm = e107::getForm();
+		$options = array('label'=>' ','template'=>'RATE|VOTES|STATUS');
+	  	return $frm->rate("download", $dlrow['download_id'],$options);
+		
       	require_once(e_HANDLER."rate_class.php");
       	$rater = new rater;
-      	global $dlrow;
+      	
       	$text = "
       		<table style='width:100%'>
       		<tr>

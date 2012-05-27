@@ -15,11 +15,91 @@ if (!defined('e107_INIT')) { exit; }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
 
 class rater {
-	function rateselect($text, $table, $id, $mode=FALSE) {
+	
+	
+	function render($table,$id,$options=array())
+	{
+		list($votes,$score,$uvoted) = $this->getrating($table, $id);
+		parse_str($options,$options);
+	//	
+		$label = varset($options['label'],RATELAN_5);
+			
+		$readonly = $this->checkrated($table, $id) ? '1' : '0';
+		
+		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
+
+		$datahint = implode(",",$hintArray);
+		$path = e_FILE_ABS."jslib/rate/img/";
+		
+		$score = ($score / 2);
+	//	var_dump($readonly);
+	
+		if(!$votes)
+		{
+			$voteDiz = RATELAN_4;	
+		}
+		else
+		{
+			$voteDiz = ($votes == 1) ? RATELAN_0 : RATELAN_1;	
+		}
+		
+		if($readonly == '1')
+		{
+			$label = RATELAN_3;	
+		}
+		
+		if(!USERID)
+		{
+			$label = RATELAN_6; // Please login to vote. 
+			$readonly = '1';	
+		}
+		
+		$template = vartrue($options['template'], "STATUS|RATE|VOTES");
+		
+		$TEMPLATE['STATUS'] 	= "<div class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}'>".$label."</div>";
+		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_BASE."rate.php' data-path='{$path}'></div>";
+		$TEMPLATE['VOTES'] 	= "<div class='e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'>".$this->renderVotes($votes,$score)."</div>";
+
+		$tmp = explode("|",$template);
+		
+		$text = "";
+		foreach($tmp as $k)
+		{
+			$text .= $TEMPLATE[$k];	
+		}	
+		
+		return $text;
+	}
+	
+	
+
+	
+	function renderVotes($votes,$score) // TODO use template?
+	{	
+		if(!$votes)
+		{
+			$voteDiz = RATELAN_4;	
+		}
+		else
+		{
+			$voteDiz = ($votes == 1) ? RATELAN_0 : RATELAN_1;	
+		}
+		
+		return "{$score}/5 : {$votes} ".$voteDiz;
+	}
+	
+	
+	
+	// Legacy Rate Selector. 
+	function rateselect($text, $table, $id, $mode=FALSE)
+	{
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
 
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
+		
+	//	return $this->render($text,$table,$id,$mode);
+		
 
 		// $self = $_SERVER['PHP_SELF'];
 		// if ($_SERVER['QUERY_STRING']) {
@@ -71,7 +151,7 @@ class rater {
 	}
 
 	function checkrated($table, $id) {
-
+		
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
@@ -97,6 +177,12 @@ class rater {
 
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
+		
+		if($id == 0)
+		{
+			return "There is no item ID in the rating";	
+		}
+		$sep = chr(1);
 
 		$sql = new db;
 		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
@@ -107,8 +193,8 @@ class rater {
 				$rating = "";
 				$rateusers = explode(".", $rowgr['rate_voters']);
 				for($i=0;$i<count($rateusers);$i++){
-					if(strpos($rateusers[$i], chr(1))){
-						$rateuserinfo[$i] = explode(chr(1), $rateusers[$i]);
+					if(strpos($rateusers[$i], $sep)){
+						$rateuserinfo[$i] = explode($sep, $rateusers[$i]);
 						if($userid == $rateuserinfo[$i][0]){
 							$rating[0] = 0;						//number of votes, not relevant in users rating
 							$rating[1] = $rateuserinfo[$i][1];	//the rating by this user
@@ -137,14 +223,38 @@ class rater {
 		}
 	}
 
-	function enterrating($rateindex){
-		global $sql, $tp;
+
+
+
+	function submitVote($table,$itemid,$rate)
+	{
+		$array = $table."^".$itemid."^^".$rate;
+		return $this->enterrating($array,true);
+			
+	}
+
+
+	function enterrating($rateindex,$ajax = false)
+	{
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 
 		$qs = explode("^", $rateindex);
 
-		if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1) {
-			header("location:".e_BASE."index.php");
-			exit;
+		if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1)
+		{
+				
+			if($ajax == false)
+			{
+				header("location:".e_BASE."index.php");
+				exit;	
+			}
+			else
+			{
+				return "Error: ".print_a($qs,true);	
+			}	
+			
 		}
 
 		$table = $tp -> toDB($qs[0], true);
@@ -153,17 +263,50 @@ class rater {
 
 		//rating is now stored as userid-rating (to retain individual users rating)
 		//$sep = "^";
-		$sep = chr(1);
+		$sep = chr(1); // problematic - invisible in phpmyadmin. 
 		$voter = USERID.$sep.intval($qs[3]);
 
-		if ($sql->db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' ")) {
-			$row = $sql->db_Fetch();
+		if ($sql->db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
+		{
+		
+			$row = $sql -> db_Fetch();
 			$rate_voters = $row['rate_voters'].".".$voter.".";
-			$sql->db_Update("rate", "rate_votes=rate_votes+1, rate_rating=rate_rating+'{$rate}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' ");
-			} else {
-			$sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' ");
+			$new_votes = $row['rate_votes'] + 1;
+			$new_rating = $row['rate_rating'] + $rate;
+			
+			$stat = ($new_rating /$new_votes)/2;
+			$statR = round($stat,1);
+			
+			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
+			{
+				
+				return "You already voted|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
+			}
+			
+			
+			if($sql->db_Update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
+			{
+				return RATELAN_3."|".$this->renderVotes($new_votes,$statR);	// Thank you for your vote. 
+			}
+			else
+			{
+				return "Error";	
+			}
+				
 		}
+		elseif($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
+		{
+			$stat = ($rate /1)/2;
+			$statR = round($stat,1);
+			return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
+		}
+		
 	}
+
+
+
+
+
 
 	function composerating($table, $id, $enter=TRUE, $userid=FALSE, $nojump=FALSE){
 		//enter		: boolean to show (rateselect box + textual info) or not
