@@ -1,0 +1,9 @@
+
+/* CSS File for Javascript library elements in all areas of e107 */
+
+
+div.e-rate				{ width:100px; display:inline-block    }
+img.e-rate-star			{    }
+.e-rate-status			{ font-weight:bold;vertical-align:middle; padding-right:4px; width:140px; display:inline-block; text-align:right	}
+.e-rate-status-download { text-align:left; }
+.e-rate-votes			{ vertical-align:middle; display:inline-block; width:100px }
