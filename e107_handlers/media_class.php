@@ -508,14 +508,17 @@ class e_media
 				document.getElementById('preview').src = '{$realPath}';
 		 		
 				return false;";	
+				$onclicki = "";
 				$class .= " e-media-select";
 				$onclicki = "";
 				
 			}
+			
+			$data_bb = ($bbcode) ? "img" : "";
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
 			
-			$text .= "<a class='{$class} ' data-src='{$media_path}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a class='{$class} ' data-src='{$media_path}' data-bbcode[{$data_bb}] data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img src='".$img_url."' alt=\"".$im['media_title']."\"  />";
 			$text .= "</a>\n\n";
 		}	

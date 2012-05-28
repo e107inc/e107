@@ -629,33 +629,36 @@ class e_form
 		// auto-height support
 	   	$options = array('class' => 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
+		
 		// FIXME - see ren_help.php
-	//	if(!deftrue('e_WYSIWYG'))
-		{
-			require_once(e_HANDLER."ren_help.php");
-			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
-			$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
-		}
+		
+		require_once(e_HANDLER."ren_help.php");
+		$help_tagid = $this->name2id($name)."--preview"; // required as it needs to have some matching name with textarea.
+		$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+		$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
 
-		$toggleID = "bbcode-panel-".$help_tagid;
-		$tinyMceID = str_replace("_","-",$name);
 
 		$ret = "
 		<div class='bbarea {$size}'>
-			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
-			<div><a href='#' class='e-wysiwyg-switch' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
-			<div class='field-spacer'><!-- --></div>
+		<div class='field-spacer'><!-- --></div>
 			{$bbbar}
+			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
+			
+			
 		</div>
 		";
+		
 		// Quick fix - hide TinyMCE links if not installed, dups are handled by JS handler
-		e107::getJs()->footerInline("
-				if(typeof tinyMCE === 'undefined')
-				{
-					\$$('a.e-wysiwyg-switch').invoke('hide');
-				}
-		");
-
+		/*
+		
+				e107::getJs()->footerInline("
+						if(typeof tinyMCE === 'undefined')
+						{
+							\$$('a.e-wysiwyg-switch').invoke('hide');
+						}
+				");
+		*/
+		
 		return $ret;
 	}
 

@@ -16,8 +16,8 @@
 // $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."bbcode/template.png");
 // Simplified default bbcode bar - removed P, H, BR and NOBR bbcodes
 $BBCODE_TEMPLATE = "
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -31,8 +31,8 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 	
 	{BB_HELP}
 	<div class='field-spacer'><!-- --></div>
-    {BB=link}{BB=h}{BB=p}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=block}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
+    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=list}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -42,8 +42,8 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 $BBCODE_TEMPLATE_ADMIN = "
 	{BB_HELP=admin}
 	<div class='field-spacer'><!-- --></div>
-	{BB=link}{BB=h}{BB=p}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=block}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
@@ -52,8 +52,8 @@ $BBCODE_TEMPLATE_ADMIN = "
 $BBCODE_TEMPLATE_MAILOUT = "
 	{BB_HELP=admin}
 	<div class='field-spacer'><!-- --></div>
-	{BB=link}{BB=h}{BB=p}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=block}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
 	<div class='field-spacer'><!-- --></div>
@@ -64,8 +64,8 @@ $BBCODE_TEMPLATE_MAILOUT = "
 $BBCODE_TEMPLATE_NEWSPOST = "
 	{BB_HELP=$mode}
 	<div class='field-spacer'><!-- --></div>
-	{BB=link}{BB=h}{BB=p}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}
-	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=block}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=news}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
@@ -75,8 +75,8 @@ $BBCODE_TEMPLATE_CPAGE = "
 	{BB_HELP}
 	<div class='field-spacer'><!-- --></div>
 	{BB=newpage}
-	{BB=link}{BB=h}{BB=p}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=block}{BB=nobr}{BB=br}{BB=fontsize}{BB=emotes}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=page}
 	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
