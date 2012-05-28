@@ -209,8 +209,10 @@ class media_form_ui extends e_admin_form_ui
 		$tagid = $_GET['tagid'];
 		$path = $this->getController()->getListModel()->get('media_url');
 		$preview = basename($path);
+		
+		$bbcode = ($_GET['bbcode']==1) ? "file" : "";
 	
-		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-target='{$tagid}' data-path='{$path}' data-preview='{$preview}' title=\"Select\"  />";
+		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"Select\"  />";
 	}
 	
 
@@ -380,9 +382,12 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
+			
+			
+			
 			if($this->getQuery('bbcode'))
 			{
-				e107::getJs()->headerFile(e_PLUGIN_ABS.'tinymce/tiny_mce_popup.js',2);
+				
 				e107::getJS()->headerInline("
 				
 				/* Send the generated IMG bbcode back to the textarea/window */
@@ -591,8 +596,8 @@ class media_admin_ui extends e_admin_ui
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save' onclick=\"saveBB();\" >
-			<span>Save</span>
+			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<span>Save IT</span>
 			</button>
 			<button type='submit' class='submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>Cancel</span>

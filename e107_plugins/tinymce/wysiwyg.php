@@ -7,7 +7,16 @@
 |     $Id$
 +----------------------------------------------------------------------------+
 */
+require_once("../../class2.php");
+ob_start();
+ob_implicit_flush(0);
+header("last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
+header('Content-type: text/javascript', TRUE);
 
+
+$wy = new wysiwyg();
+
+echo_gzipped_page(); 
 
 class wysiwyg
 {
@@ -49,12 +58,12 @@ class wysiwyg
 	}
 	else
 	{*/
-		$text = "<script type='text/javascript' src='".e_PLUGIN_ABS."tinymce/tiny_mce.js'></script>\n";
+	//	$text = "<script type='text/javascript' src='".e_PLUGIN_ABS."tinymce/tiny_mce.js'></script>\n";
 	//}
 
 
 
-	$text .= "<script type='text/javascript'>\n";
+//	$text .= "<script type='text/javascript'>\n";
 	$text .= "\n /* TinyMce Config: ".$this->configName." */";
 	$text .= $this->tinyMce_config();
 
@@ -80,7 +89,7 @@ class wysiwyg
 	        case 'get_from_editor':
 	            // Convert HTML to e107-BBcode
 	            source = source.replace(/target=\"_blank\"/, 'rel=\"external\"');
-	            source = source.replace(/^\s*|\s*$/g,'');
+	        //    source = source.replace(/^\s*|\s*$/g,'');
 
 			";
 
@@ -123,12 +132,12 @@ class wysiwyg
 	}
 
 
-
-
-	</script>\n
 	";
+	
+	//$text .= "</script>\n";
 
 		$this->js = $text;
+		$this->render();
 
 	}
 
@@ -264,9 +273,7 @@ class wysiwyg
 			'theme_advanced_toolbar_location'	=> 'top',
 			'theme_advanced_toolbar_align'		=> 'left',
 			'theme_advanced_blockformats' 		=> 'p,h2,blockquote,code',
-			'dialog_type' 						=> "modal",
-			
-			
+			'dialog_type' 						=> "modal",		
 			
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',

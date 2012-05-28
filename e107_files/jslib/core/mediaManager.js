@@ -3,13 +3,17 @@ $(document).ready(function()
 	
 	$(".e-dialog-save").click(function () { // FIXME TODO missing caret , text selection overwrite etc. 
 		
+		//alert('hello');
 		var newval = $('#bbcode_holder').val();
+	//	alert(newval);
 		var target 	= $(this).attr('data-target');
-		('#' + target, window.top.document).insertAtCaret(newVal);
+		//('#' + target, window.top.document).insertAtCaret(newVal);
 		
 	//	$('#' + target, window.parent.document).append(newval);	//FIXME caret!!
 	//	var t = $('#' + target, window.parent.document).text();
-	//	addtext(newval);
+		
+		$('#' + target, window.top.document).attr('value',newval);	// set new value
+		// inserttext(newval,target);
 		// alert(newval);
 	});
 	
@@ -106,11 +110,21 @@ $(document).ready(function()
 				var path		= $(this).attr('data-path');
 				var preview 	= $(this).attr('data-preview');
 				var src			= $(this).attr('data-src');
+				var bbcode		= $(this).attr('data-bbcode');
 						
 				$(this).addClass("media-select-active");
 				$(this).closest("img").addClass("active");
-									
-				$('#' + target, window.top.document).attr('value',path);	// set new value
+				
+				// TinyMce?					
+				$('input#' + target, window.top.document).attr('value',path);	// set new value
+				
+				if(bbcode)
+				{
+					bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
+					$('textarea#' + target, window.top.document).attr('value',bbpath);	
+				}
+				
+				
 				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
 				$('span#' + target + "_prev", window.top.document).html(preview); // set new value

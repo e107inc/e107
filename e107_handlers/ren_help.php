@@ -37,6 +37,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$bbcode_func = $addtextfunc;
  	$bbcode_help = $helpfunc;
     $bbcode_helptag = $tagid;
+	
+	// $arr = get_defined_vars();
+	// print_a($arr);
 
     // load the template
 	if(is_readable(THEME."bbcode_template.php"))
@@ -84,8 +87,26 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 
     if(is_readable(e_CORE."shortcodes/batch/bbcode_shortcodes.php"))
 	{
-  		require_once(e_CORE."shortcodes/batch/bbcode_shortcodes.php");
-  		return "<div id='bbcode-panel-".$tagid."' class='bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE)."</div>";
+		
+		$sc = e107::getScBatch('bbcode');
+		
+		if($tagid == 'data') // BC fix. 
+		{
+			$tagid = 'data_';	
+		}
+		
+		$data = array(
+			'tagid'			=> $tagid,
+			'template'		=> $mode,
+			'trigger'		=> $addtextfunc,
+			'hint_func'		=> $helpfunc,
+			'hint_active'	=> $bbcode_helpactive,
+			'size'			=> $helpsize
+		);
+				
+		$sc->setParserVars($data);	
+		
+  		return "<div id='bbcode-panel-".$tagid."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE)."</div>";
 	}
 	else
 	{
@@ -118,8 +139,8 @@ function Size_Select($formid='size_selector') {
 function Color_Select($formid='col_selector') {
 
 	$text = "<!-- Start of Color selector -->
-	<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right; display: none' id='{$formid}' onclick=\"this.style.display='none'\" >
-	<div style='position: absolute; bottom: 30px; right: 145px; width: 221px'>";
+	<div style='width: 221px; position: absolute; left:340px; top:60px;  margin-right:auto; margin-left:auto; display:none; z-index: 1000; id='{$formid}' onclick=\"expandit(this)\" >
+	<div  style='border:1px solid black; position: absolute;  top:30px;  width: 221px; '>";
 
 	$text .= "<script type='text/javascript'>
 	//<![CDATA[

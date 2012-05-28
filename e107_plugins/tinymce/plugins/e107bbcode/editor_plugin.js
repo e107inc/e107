@@ -8,7 +8,7 @@
 (function() {
 	tinymce.create('tinymce.plugins.e107BBCodePlugin', {
 		init : function(ed, url) {
-			var t = this, dialect = ed.getParam('bbcode_dialect', 'punbb').toLowerCase();
+			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
 			ed.onBeforeSetContent.add(function(ed, o) {
 				o.content = t['_' + dialect + '_bbcode2html'](o.content);
@@ -36,7 +36,7 @@
 		// Private methods
 
 		// HTML -> BBCode in PunBB dialect
-		_punbb_html2bbcode : function(s) {
+		_e107_html2bbcode : function(s) {
 			s = tinymce.trim(s);
 
 			function rep(re, str) {
@@ -139,14 +139,14 @@
 		},
 
 		// BBCode -> HTML from PunBB dialect
-		_punbb_bbcode2html : function(s) {
+		_e107_bbcode2html : function(s) {
 			s = tinymce.trim(s);
 
 			function rep(re, str) {
 				s = s.replace(re, str);
 			};
-
 			
+	
 			// example: [b] to <strong>
 			
 		//	rep(/<ul>(\r|\n)?/gim, "<ul>"); // remove line-breaks
@@ -212,6 +212,7 @@
 			
 		//	rep(/<br \/>/gm, "<br />\n");
 			rep(/(\r|\n)$/gim,"<br />"); 
+		//	rep(/(\r|\n)/gim,"<br />\n"); // this will break bullets. 
 		
 
 			// e107 FIXME!

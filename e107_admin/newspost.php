@@ -517,6 +517,7 @@ class news_form_ui extends e_admin_form_ui
 
 function headerjs()
 {
+	return; 
 	$newspost = e107::getRegistry('_newspost_admin');
 /*
     $ret .= "<script type='text/javascript'>
@@ -703,9 +704,6 @@ require_once("footer.php");
 exit;
 
 
-// FIXME - news2plugin! Full rewrite.
-
-
 class admin_newspost
 {
 	var $_request = array();
@@ -730,8 +728,8 @@ class admin_newspost
 
 		require_once(e_HANDLER."cache_handler.php");
 		require_once(e_HANDLER."news_class.php");
-		require_once(e_HANDLER."calendar/calendar_class.php");
-		$this->_cal = new DHTML_Calendar(true);
+	//	require_once(e_HANDLER."calendar/calendar_class.php");
+	//	$this->_cal = new DHTML_Calendar(true);
 
 		$this->_pst = $pstobj;
 
@@ -1804,7 +1802,8 @@ echo "date=".$_POST['news_start'];
 
 		require_once(e_HANDLER."userclass_class.php");
 		require_once(e_HANDLER."form_handler.php");
-		$frm = new e_form(true); //enable inner tabindex counter
+	//	$frm = new e_form(true); //enable inner tabindex counter
+		$frm = e107::getForm();
 
 		$text = '';
 		if (isset($_POST['preview']))
@@ -1846,6 +1845,7 @@ echo "date=".$_POST['news_start'];
 				$_POST['news_title'] = $tp->dataFilter($_POST['news_title']);
 			}
 		}
+/*
 
 		if ($sub_action == "upload" && !varset($_POST['preview']))
 		{
@@ -1860,6 +1860,7 @@ echo "date=".$_POST['news_start'];
 				$_POST['news_body'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->create('user/profile/view', 'id='.$post_author_id.'&name='.$post_author_name)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
 			}
 		}
+*/
 
 		$text .= "
 		<div class='admintabs' id='tab-container'>
@@ -1888,17 +1889,14 @@ echo "date=".$_POST['news_start'];
 		}
 		else
 		{
-			$text .= "
-									".$frm->select_open('cat_id')."
-			";
+			// $text .= $frm->selectbox("cat_id",$this->news_category,$_POST['cat_id']);
+			$text .= $frm->select_open('cat_id');
 
 			foreach ($this->news_categories as $row)
 			{
 					$text .= $frm->option($tp->toHTML($row['category_name'], FALSE, "LINKTEXT"), $row['category_id'], varset($_POST['cat_id']) == $row['category_id']);
 			}
-			$text .= "
-									</select>
-			";
+			$text .= "</select>";
 		}
 		$text .= "
 								</td>
@@ -1972,12 +1970,41 @@ echo "date=".$_POST['news_start'];
 			";
 		}
 
-		$text .= "
-								</td>
-							</tr>
+
+		$text .= "</td></tr>\n";
+		
+		
+		// -----
+		
+		$text .= "<tr>
+					<td>".NWSLAN_13.":<br /></td>
+					<td>\n";
+		$text .= "<div class='e-tabs'>
+		<ul>
+			<li><a href='#news-body-container'>".NWSLAN_13."</a></li>
+			<li><a href='#news-extended-container'>".NWSLAN_14."</a></li>
+		</ul>";
+		
+		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
+        $text .= "<div id='news-body-container'>";
+        $text .= $frm->bbarea('news_body', $val, 'news', 'helpb');
+		$text .= "</div><div id='news-extended-container'>";
+		
+		
+		$val = (strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
+		$text .= $frm->bbarea('news_extended', $val, 'extended', 'helpc','large');
+		
+		$text .= "</div>
+			</div></td></tr>";
+		//-----------
+		
+		/*		
+				$text .= "
 							<tr>
 								<td>".NWSLAN_13.":<br /></td>
-								<td>";
+								<td>
+								
+								";
 
 		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
         $text .= $frm->bbarea('news_body', $val, 'news', 'helpb');
@@ -1997,6 +2024,7 @@ echo "date=".$_POST['news_start'];
 									<!-- <div class='field-help'>".NWSLAN_83."</div> -->
 								</td>
 							</tr>";
+						/*
 		/*
 							
 				$text .= "
@@ -2084,7 +2112,6 @@ echo "date=".$_POST['news_start'];
 							<tr>
 								<td class='label'>".NWSLAN_73.":</td>
 								<td class='control'>
-
 		";
 
 
@@ -2101,46 +2128,13 @@ echo "date=".$_POST['news_start'];
 										<div class='field-spacer'>".NWSLAN_21.":</div>
 										<div class='field-spacer'>
 		";
-		/*
-		$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
 
-		$cal_options['showsTime'] = false;
-		$cal_options['showOthers'] = false;
-		$cal_options['weekNumbers'] = false;
-		$cal_options['ifFormat'] = "%d/%m/%Y";
-		$cal_attrib['class'] = "tbox";
-		$cal_attrib['size'] = "10";
-		$cal_attrib['name'] = "news_start";
-		$cal_attrib['value'] = $_startdate;
-		$cal_attrib['tabindex'] = $frm->getNext();
-		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
-		*/
 		
 		$text .= $frm->datepicker("news_start",$_POST['news_start'],"type=datetime");
-		
-	
-
 		$text .= " - ";
-/*
-		$_enddate = ($_POST['news_end'] > 0) ? date("d/m/Y", $_POST['news_end']) : "";
-
-		unset($cal_options);
-		unset($cal_attrib);
-		$cal_options['showsTime'] = false;
-		$cal_options['showOthers'] = false;
-		$cal_options['weekNumbers'] = false;
-		$cal_options['ifFormat'] = "%d/%m/%Y";
-		$cal_attrib['class'] = "tbox";
-		$cal_attrib['size'] = "10";
-		$cal_attrib['name'] = "news_end";
-		$cal_attrib['value'] = $_enddate;
-		$cal_attrib['tabindex'] = $frm->getNext();
-		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
-	*/	
 		$text .= $frm->datepicker("news_end",$_POST['news_end'],"type=datetime");
 
-		$text .= "
-										</div>
+		$text .= "</div>
 										<div class='field-help'>
 											".NWSLAN_72."
 										</div>
@@ -2151,31 +2145,22 @@ echo "date=".$_POST['news_start'];
 									<td class='control'>
 										<div class='field-spacer'>
 		";
-/*
-		$_update_datestamp = ($_POST['news_datestamp'] > 0 && !strpos($_POST['news_datestamp'],"/")) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : trim($_POST['news_datestamp']);
-		unset($cal_options);
-		unset($cal_attrib);
-		$cal_options['showsTime'] = true;
-		$cal_options['showOthers'] = true;
-		$cal_options['weekNumbers'] = false;
-		$cal_options['ifFormat'] = "%d/%m/%Y %H:%M:%S";
-		$cal_options['timeFormat'] = "24";
-		$cal_attrib['class'] = "tbox";
-		$cal_attrib['name'] = "news_datestamp";
-		$cal_attrib['value'] = $_update_datestamp;
-		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
-	*/	
+
 		$text .= $frm->datepicker("news_datestamp",$_POST['news_datestamp'],"type=datetime");
 
-		$text .= "
-										</div>
-										<div class='field-spacer'>
-											".$frm->checkbox('update_datestamp', '1', $_POST['update_datestamp']).$frm->label(NWSLAN_105, 'update_datestamp', '1')."
-										</div>
-										<div class='field-help'>
-											".LAN_NEWS_33."
-										</div>
-									</td>
+		$text .= "</div>";
+		/*
+		
+				$text .= "<div class='field-spacer'>
+						".$frm->checkbox('update_datestamp', '1', $_POST['update_datestamp']).$frm->label(NWSLAN_105, 'update_datestamp', '1')."
+						</div>
+						<div class='field-help'>
+						".LAN_NEWS_33."
+						</div>";
+				*/
+				
+			$text .= "
+			</td>
 								</tr>
 		";
 
@@ -3015,6 +3000,7 @@ echo "date=".$_POST['news_start'];
 		}
 		exit;
 	}
+/*
 
 	function show_options()
 	{
@@ -3053,10 +3039,11 @@ echo "date=".$_POST['news_start'];
 
 		e_admin_menu(NWSLAN_48, $this->getAction(), $var);
 	}
+*/
 
 }
 
 function newspost_adminmenu()
 {
-	e107::getRegistry('_newspost_admin')->show_options();
+	// e107::getRegistry('_newspost_admin')->show_options();
 }

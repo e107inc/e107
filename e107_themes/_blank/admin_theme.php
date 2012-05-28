@@ -5,30 +5,6 @@ define('STANDARDS_MODE', TRUE);
 
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-// jQUERY scripts
-
-e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
-e107::css('core', 	'colorbox/colorbox.css', 'jquery');
-
-e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
-e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
-
-e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
-
-e107::css('core', 	'chosen/chosen.css', 'jquery');
-e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
-
-e107::css('core', 	'password/style.css', 'jquery');
-e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-// 
-e107::js("core",	"plupload/customUpload.js","jquery",3);
-
-e107::js("core",	"core/mediaManager.js","jquery",3);
-
-e107::css('core', 	'core/admin.css', 'jquery');
-e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
 
 
 

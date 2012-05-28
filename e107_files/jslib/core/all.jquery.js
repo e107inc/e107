@@ -71,6 +71,72 @@ $(document).ready(function()
 			$( ".e-tabs" ).tabs();
 		});	
 		
+/*
+		$("a.e-bb").click(function(){
+			var add = $(this).attr('data-bbcode');
+			var func = $(this).attr('data-function');
+			var diz = $(this).attr('title');
+			id = $(this).attr('href');
+			var tmp = id.replace('#','');
+			//alert(tmp);
+			if(func == 'insert')
+			{
+				addtext(add,true);	
+				return false;
+			}
+			if(func == 'input')
+			{
+				addinput(add,diz);
+				return false;	
+			}
+			if(func == 'show')
+			{
+				$('#'+add).show('slow');
+				// addinput(add,diz);
+				return false;	
+			}
+			if(func == 'add')
+			{
+				addtext(add);	
+				return false;	
+			}
+
+
+			return false;
+		 	
+		});
+			
+		
+		$("select.e-bb").change(function(){
+			var add = $(this).val();
+		 	addtext(add);
+		 	$(this).val('');
+		 	return false;	
+		});
+		
+		$(".e-bb").mouseover(function(){
+			
+			var id = $(this).attr('id');
+			var diz = $(this).attr('title');
+		//	alert(id);
+			var tmp = id.split('--');
+		//	alert('#'+tmp[0]);
+		 	$('#'+tmp[0]).val(diz);
+		 	return false;	
+		});
+		
+		$(".e-bb").mouseout(function(){
+			var id = $(this).attr('id');
+			var tmp = id.split('--')			
+		 	$('#'+tmp[0]).val('');
+		 	return false;	
+		});
+		
+	*/	
+		
+		
+		
+		
 	//	$(".e-multiselect").chosen();
 		
 		
@@ -87,7 +153,7 @@ $(document).ready(function()
         });
 					
 		// Character Counter
-		$("textarea").before("<p class=\"remainingCharacters\" id=\"" + $("textarea").attr("name")+ "-remainingCharacters\">&nbsp;</p>");
+	//	$("textarea").before("<p class=\"remainingCharacters\" id=\"" + $("textarea").attr("name")+ "-remainingCharacters\">&nbsp;</p>");
 		$("textarea").keyup(function(){
     		
     	//	var max=$(this).attr("maxlength");
@@ -154,7 +220,7 @@ $(document).ready(function()
   			//	targetType : 'number',
   				targetText : $('#e-rate-'+tmp).text(),			
     		//	cancel		: true,
-    			css			: 'e-rate-star',
+    		//	css			: 'e-rate-star',
     			click: function(score, evt) {
         				$(this).find('img').unbind('click');
 						$(this).find('img').unbind();
@@ -177,12 +243,18 @@ $(document).ready(function()
     		});
     	});
     
-    
+    	// $( ".field-help" ).tooltip();
 	
+		// Allow Tabs to be used inside textareas. 
+		$( 'textarea' ).keypress( function( e ) {
+	    if ( e.keyCode == 9 ) {
+	        e.preventDefault();
+	        $( this ).val( $( this ).val() + '\t' );
+	    }
+		});
 
-
-				// Text-area AutoGrow
-	//	$("textarea.e-autoheight").elastic();
+		// Text-area AutoGrow
+		$("textarea.e-autoheight").elastic();
 
 		
 		
@@ -215,17 +287,18 @@ $(document).ready(function()
 	};
 		
 
-	var addinput = function(text) {
+	var addinput = function(text,rep) {
 	
 	// quick fix to prevent JS errors - proper match was done only for latin words
-		var rep = text.match(/\=([^\]]*)\]/);
-		var val = rep ? prompt(rep[1]) : prompt('http://');
+		// var rep = text.match(/\=([^\]]*)\]/);
+		// var rep = '';
+		var val = rep ? prompt(rep) : prompt('http://');
 	
 		if(!val)
 		{
 			return;
 		}
-		var newtext = text.replace(rep[1], val);
+		var newtext = text.replace('*', val);
 		emote = '';
 	    addtext(newtext, emote);
 	     return;
@@ -397,7 +470,7 @@ function mozSwap(txtarea, newtext){
 
 /**
  * New improved version - fixed scroll to top behaviour when inserting BBcodes
- * @TODO - improve it more (0.8) - Prototype
+ * @TODO - improve it more (0.8) 
  */
 	function addtext(text, emote) {
 	
