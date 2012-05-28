@@ -46,7 +46,7 @@ e107::js("core",	"plupload/customUpload.js","jquery",3);
 
 e107::js("core",	"core/mediaManager.js","jquery",3);
 
-e107::js("core",	"tooltip/jquery.qtip-1.0.0-rc3.min.js","jquery",3);
+// e107::js("core",	"tooltip/jquery.qtip-1.0.0-rc3.min.js","jquery",3);
 
 
 e107::css('core', 	'core/admin.jquery.css', 'jquery');
