@@ -30,27 +30,27 @@ class sitelinks
     var $eLinkList     = array();
 	var $eSubLinkLevel = 0;
 	
-    function getlinks($cat=1)
-    {
-        global $sql;
-        if ($sql->db_Select('links', '*', "link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC"))
+	function getlinks($cat=1)
+	{
+		$sql = new db();
+		if ($sql->db_Select('links', '*', 'link_category = '.intval($cat).' and link_class IN ('.USERCLASS_LIST.') ORDER BY link_order ASC'))
 		{
-            while ($row = $sql->db_Fetch())
-            {
+			while ($row = $sql->db_Fetch())
+			{
 				//  if (substr($row['link_name'], 0, 8) == 'submenu.'){
 				//      $tmp=explode('.', $row['link_name'], 3);
 				//     $this->eLinkList[$tmp[1]][]=$row;
 				if (isset($row['link_parent']) && $row['link_parent'] != 0)
 				{
-					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
-                }
+					$this->eLinkList['sub_'.$row['link_parent']][] = $row;
+				}
 				else
 				{
-                    $this->eLinkList['head_menu'][] = $row;
-                }
-            }
-        }
-    }
+					$this->eLinkList['head_menu'][] = $row;
+				}
+			}
+		}
+	}
 
     function get($cat=1, $style='', $css_class = false)
     {
@@ -99,7 +99,7 @@ class sitelinks
 		
 		if(!varset($style['linkseparator']))
 		{
-			$style['linkseparator'] = "";
+			$style['linkseparator'] = '';
 		}
 
 		// Sublink styles.- replacing the tree-menu.
@@ -115,10 +115,7 @@ class sitelinks
 			$style['subindent'] = "&nbsp;&nbsp;";
 			$aSubStyle = $style;
         }
-
-
-        $text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
-
+		
         if ($style['linkdisplay'] != 3) 
 		{
             foreach ($this->eLinkList['head_menu'] as $key => $link)
@@ -164,7 +161,9 @@ class sitelinks
                 $text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', TRUE);
             }
         }
-        $text .= "\n\n\n<!-- end Site Links -->\n\n\n";
+        
+       	$text = $text ? "\n<!-- BoF Sitelinks ({$cat}) -->\n{$style['prelink']}\n{$text}\n<!-- EoF Sitelinks ({$cat}) -->\n" : "\n<!-- Sitelinks ({$cat}) Empty -->";
+        
         if($usecache)
         {
             $e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);

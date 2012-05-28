@@ -124,7 +124,7 @@ define('LANINS_DB_UTF8_TOOLTIP', 'If set, the installation script will make the 
 
 // v1.0 - Be sure to re-check ALL translations above for modifications and additions. 
 
-define('LANINS_109',	'Inititated');
+define('LANINS_109',	'Initiated');
 define('LANINS_110',	'Complete');
 define('LANINS_111',	'e107 Themes');
 define('LANINS_112',	'e107 Handbook');
