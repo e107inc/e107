@@ -386,7 +386,7 @@ class page_admin_ui extends e_admin_ui
 				$text .= "
 						<tr>
 							<td>".CUSLAN_11."</td>
-							<td>".$frm->textarea('page_metadscr', $row['page_metadscr'], 10, 80, array(), 200)."</td>
+							<td>".$frm->textarea('page_metadscr', $row['page_metadscr'], 1, 80, array(), 200)."</td>
 						</tr>
 				";
 			}
@@ -396,16 +396,17 @@ class page_admin_ui extends e_admin_ui
 							<td>".CUSLAN_9."</td>
 							<td>
 			";
+		
+		$text .= "<div class='e-tabs'>";	
+				
+		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
 	
-		//	require_once(e_HANDLER."ren_help.php");
+		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
 	
-		//	$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
+		$text .= $this->bbareaMulti('data', $textareaValue, 'page','help','large');
 	
-			$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-	
-			$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
-		//	$text .= $frm->textarea('data', $textareaValue);
-			$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
+	//	$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
+			
 	
 	
 	
@@ -535,7 +536,54 @@ class page_admin_ui extends e_admin_ui
 			echo $mes->render().$text;
 		}
 		
+	// 	bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
+		function bbareaMulti($name, $textareaValue, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
+		{
+			$name = $name."[]";
+			
+			$frm = e107::getForm();
+			
+			if(!$textareaValue)
+			{
+				$textareaValue = "[newpage]	";
+			}
+			
+			
+			if(preg_match_all("/\[newpage=?(.*?)\]/si", $textareaValue, $pt))
+			{
+		
+			}
+			$pages = preg_split("/\[newpage(.*?)\]/si", $textareaValue, -1, PREG_SPLIT_NO_EMPTY);
+			
 
+			$c= 0;
+			$titles[0] = ""; 
+			$text .= "<ul>";
+			foreach($pages as $page)
+			{
+				
+				$id = "#page_".$c;
+				$pageCap = "Page ".($c+1);
+				$text .= "<li><a href='{$id}'>{$pageCap}</a></li>";	
+				$c++;
+			}
+			$text .= "</ul>";
+			$c= 0;
+			foreach($pages as $page)
+			{
+				$titles[] = isset($pt[1][$c]) ? $pt[1][$c] : "";
+				$id = "page_".$c;
+				$text .= "<div id='{$id}'>\n";
+				$text .= "<div>Title: ".$frm->text('page_subtitle[]', $titles[($c+1)], 250)."</div>\n";
+				$text .= $frm->bbarea($name, $page, $help_mod,$help_tagid,$size,$counter);
+				$text .= "</div>";	
+				$c++;	
+			}
+					
+			$text .= "</div>";		
+			
+			return $text;
+		}
 
 		
 		function optionsPage()
@@ -623,7 +671,22 @@ class page_admin_ui extends e_admin_ui
 			$mes = e107::getMessage();
 	
 			$page_title = $tp->toDB($_POST['page_title']);
-			$page_text = $tp->toDB($_POST['data']);
+			
+	//		if(is_array($_POST['data']) && is_array($_POST['subtitle']))
+			{
+				$newData = "";
+				foreach($_POST['data'] as $key=>$val)
+				{
+					$newData .= "[newpage=".$_POST['page_subtitle'][$key]."]\n";
+					$newData .= $_POST['data'][$key]."\n\n";
+					
+				}
+				echo $newData;
+				// return;	
+			}
+		
+				
+			$page_text = $tp->toDB($newData);
 			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
 			$update = 0;			// Make sure some updates happen
 			
@@ -707,6 +770,20 @@ class page_admin_ui extends e_admin_ui
 	
 				//$url = e107::getUrl()->sc('page/view', array('name' => $tp->post_toForm($_POST['page_title']), 'id' => $mode));
 				/*
+				 
+				// Prevent links being updated in another language unless the table is present. 
+			if((($pref['sitelanguage'] != $sql->mySQLlanguage) && ($sql->mySQLlanguage!='')) && ($sql->db_IsLang("links")=='links'))
+			{
+				//echo "DISABLED LINK CREATION";
+				//echo ' Sitelan='.$pref['sitelanguage'];
+				//echo " Dblang=".$sql->mySQLlanguage;
+				//echo " Links=".$sql->db_IsLang("links");
+			
+				return;	
+			}
+				 
+				 
+				 
 				if ($_POST['page_link'])
 				{
 					// FIXME extremely ugly, just join on created link ID by new field page_link 
