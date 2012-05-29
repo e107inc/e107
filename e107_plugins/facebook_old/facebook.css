@@ -1,0 +1,62 @@
+.fb_share_button { display: -moz-inline-block; display:inline-block; padding:1px 20px 0 5px; height:15px; border:1px solid #d8dfea; background:url(http://static.ak.fbcdn.net/rsrc.php/z39E0/hash/ya8q506x.gif) no-repeat top right; } 
+
+html .fb_share_button:hover { color:#fff; border-color:#295582; background:#3b5998 url(http://static.ak.fbcdn.net/rsrc.php/z39E0/hash/ya8q506x.gif) no-repeat top right; text-decoration:none; } 
+
+.facebook_link {
+background:#3b5998;
+line-height:1.6em;font-size:12px;height:100%;width:100%;padding:5px;border:1px solid  #203360;
+color:#fff; font-weight:bold;   margin: 5px auto auto auto
+}
+
+.facebook_link:hover {
+background:#637bad;
+}
+
+.facebook_notice a,
+.facebook_link a{
+text-decoration:none
+}
+
+.facebook_notice a{
+color:#000
+}
+
+.facebook_link a{
+color: #fff
+}
+
+.facebook_notice {
+color:#000;
+background:#fff9d7;
+line-height:1.6em;font-size:12px;height:100%;width:100%;padding:5px;border:1px solid #e2c822;font-weight:bold; margin: 5px auto auto auto
+}
+
+.facebook_notice:hover {
+border:1px solid #dd3c10;
+background: #ffebe8;
+}
+
+.welcome_msg {
+ height:100%;
+ width:100%;
+ background:#eaecf3;
+ padding:5px;
+ line-height:1.6em;
+ border:1px solid #d1d5da;
+ margin: 5px auto auto auto
+}
+
+.user_image {
+ height:100%;
+ width:100%;
+ padding:5px;
+ background:#eaecf3;
+ border:1px solid #d1d5da;
+ margin: 5px auto auto auto
+}
+
+.fb_green {
+background: #ddffbb;
+color:#558833;
+line-height:1.6em;font-size:12px;height:100%;width:100%;padding:5px;border:1px solid #88dd00;font-weight:bold; margin: 5px auto auto auto
+}
