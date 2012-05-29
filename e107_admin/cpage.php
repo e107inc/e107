@@ -396,15 +396,15 @@ class page_admin_ui extends e_admin_ui
 							<td>".CUSLAN_9."</td>
 							<td>
 			";
-		
-		$text .= "<div class='e-tabs'>";	
+	
+		$text .= "<div id='tab-container' class='admintabs e-tabs'>";	
 				
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
 	
 		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
 	
 		$text .= $this->bbareaMulti('data', $textareaValue, 'page','help','large');
-	
+		$text .= "</div>";
 	//	$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
 			
 	
@@ -558,7 +558,7 @@ class page_admin_ui extends e_admin_ui
 
 			$c= 0;
 			$titles[0] = ""; 
-			$text .= "<ul>";
+			$text .= "<ul class='e-tabs'>";
 			foreach($pages as $page)
 			{
 				
@@ -573,14 +573,14 @@ class page_admin_ui extends e_admin_ui
 			{
 				$titles[] = isset($pt[1][$c]) ? $pt[1][$c] : "";
 				$id = "page_".$c;
-				$text .= "<div id='{$id}'>\n";
+				$text .= "<fieldset id='{$id}'>\n";
 				$text .= "<div>Title: ".$frm->text('page_subtitle[]', $titles[($c+1)], 250)."</div>\n";
 				$text .= $frm->bbarea($name, $page, $help_mod,$help_tagid,$size,$counter);
-				$text .= "</div>";	
+				$text .= "</fieldset>";	
 				$c++;	
 			}
 					
-			$text .= "</div>";		
+		
 			
 			return $text;
 		}
