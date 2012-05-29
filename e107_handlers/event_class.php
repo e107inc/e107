@@ -97,10 +97,11 @@ class e107_event
 						//TODO log errors $eventname, $location, $class, $method
 					//	echo "event didn't work. Class=".$class." Method=".$method;
 					//	echo "<br />".$e;
-						exit;
+						//exit;
+						continue;
 					}
 				}
-				if (function_exists($evt_func))
+				elseif (function_exists($evt_func))
 				{
 					$ret = $evt_func($data, $eventname); //let callback know what event is calling it
 					if (!empty($ret))
