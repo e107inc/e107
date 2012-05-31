@@ -332,8 +332,13 @@ class cron_admin_ui extends e_admin_ui
 			//FIXME: for Windows, the is_executable() function only checks the file
 			// extensions of exe, com, bat and cmd.
 			
+			$isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
-			if ($actualPerm != 755) // is_executable() is not reliable. 
+			if($isWin)
+			{
+				$mes->add("Please be sure cron.php is executable.", E_MESSAGE_WARNING);
+			}
+			if (!$isWin && $actualPerm != 755) // is_executable() is not reliable. 
 			{
 				$mes->add("Please CHMOD /cron.php to 755 ", E_MESSAGE_WARNING);
 			}
