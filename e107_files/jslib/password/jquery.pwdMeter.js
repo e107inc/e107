@@ -94,7 +94,7 @@ jQuery.fn.pwdMeter = function(options){
 			var randomPassword = random_password();
 			$('#Spn_NewPassword').text(randomPassword);
 			$(options.passwordBox).val(randomPassword);
-			alert(randomPassword);
+		//	alert(randomPassword);
 			evaluateMeter();
 		});
 		

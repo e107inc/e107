@@ -734,22 +734,31 @@ $text .= "
 					</tr>
 					-->
 */
-$signup_option_title = array(CUSTSIG_2, CUSTSIG_6, CUSTSIG_7, CUSTSIG_17, CUSTSIG_20);
-$signup_option_names = array("signup_option_realname", "signup_option_signature", "signup_option_image", "signup_option_class", 'signup_option_customtitle');
 
-foreach($signup_option_names as $key => $value)
-{
-	$text .= "
-					<tr>
-						<td class='label'>".$signup_option_title[$key]."</td>
-						<td class='control'>
-							".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
-							".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
-							".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
-						</td>
-					</tr>
-	";
-}
+	$signup_option_names = array(
+	//	"signup_option_loginname" 	=> "Login Name",
+		"signup_option_email_confirm" 	=> "Email Confirmation",
+		"signup_option_realname" 		=> CUSTSIG_2,
+		"signup_option_signature" 		=> CUSTSIG_6,
+		"signup_option_image" 			=> CUSTSIG_7,
+		"signup_option_class" 			=> CUSTSIG_17,
+		'signup_option_customtitle'		=> CUSTSIG_20,
+		'signup_option_hideemail'		=> 'Option to hide email'
+	);
+
+	foreach($signup_option_names as $value => $key)
+	{
+		$text .= "
+						<tr>
+							<td class='label'>".$key."</td>
+							<td class='control'>
+								".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
+								".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
+								".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
+							</td>
+						</tr>
+		";
+	}
 
 $text .= "
 				</tbody>

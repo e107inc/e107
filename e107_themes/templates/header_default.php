@@ -25,12 +25,15 @@ $e107->sql->db_Mark_Time('(Header Top)');
 
 e107::css('core', 	'password/style.css', 'jquery');
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
+e107::js('core',	'jquery.mailcheck.min.js','jquery',2);
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+
 
 e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
 e107::css('core', 	'core/all.jquery.css', 'jquery');
 e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions.
+
 
 //
 // *** Code sequence for headers ***

@@ -110,6 +110,14 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
+	
+	function email($name, $value, $maxlength = 200, $options = array())
+	{
+		$options = $this->format_options('text', $name, $options);
+		//never allow id in format name-value for text fields
+		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />
+		";
+	}
 
 	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
@@ -582,9 +590,11 @@ class e_form
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
+		
 		$options = $this->format_options('text', $name, $options);
+		$options['class'] = vartrue($options['class'],'e-password');
 		//never allow id in format name-value for text fields
-		return "<input class='e-password' type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		return "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
 	// autoexpand done
@@ -1048,6 +1058,18 @@ class e_form
 				case 'disabled':
 					if($optval) $ret .= " disabled='disabled'";
 					break;
+					
+				case 'required':
+					if($optval) $ret .= " required='required'";
+					break;
+					
+				case 'placeholder':
+					if($optval) $ret .= " placeholder='{$optval}'";
+					break;
+					
+				case 'pattern':
+					if($optval) $ret .= " pattern='{$optval}'";
+					break;
 
 				case 'other':
 					if($optval) $ret .= " $optval";
@@ -1133,9 +1155,12 @@ class e_form
 			'selected' => false,
 			'checked' => false,
 			'disabled' => false,
+			'required' => false,	
 		//	'multiple' => false, - see case 'select'
 			'tabindex' => 0,
 			'label' => '',
+			'placeholder' => '',
+			'pattern'	=> '',
 			'other' => ''
 		);
 

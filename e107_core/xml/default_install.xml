@@ -158,9 +158,11 @@
 		<core name="signup_maxip">3</core>
 		<core name="signup_option_class">1</core>
 		<core name="signup_option_customtitle">0</core>
-		<core name="signup_option_image">1</core>
+		<core name="signup_option_email_confirm">0</core>
+		<core name="signup_option_image">0</core>
 		<core name="signup_option_realname">1</core>
-		<core name="signup_option_signature">1</core>
+		<core name="signup_option_signature">0</core>
+		<core name="signup_option_hideemail">0</core>
 		<core name="signup_pass_len">4</core>
 		<core name="signup_remote_emailcheck">0</core>
 		<core name="signup_text"></core>

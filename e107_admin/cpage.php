@@ -36,6 +36,8 @@ require_once(e_HANDLER.'message_handler.php');
 require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form(true);
 $emessage = eMessage::getInstance();
+
+
 // $page = new page;
 
 /*
@@ -123,7 +125,13 @@ class page_admin extends e_admin_dispatcher
 			'path' 			=> null,
 			'ui' 			=> 'page_admin_form_ui',
 			'uipath' 		=> null
-		)						
+		),
+		'dialog'		=> array(
+			'controller' 	=> 'page_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'page_admin_form_ui',
+			'uipath' 		=> null
+		)							
 	);	
 	
 	protected $adminMenu = array(
@@ -215,6 +223,14 @@ class page_admin_ui extends e_admin_ui
 
 		function init()
 		{
+			if($this->getQuery('iframe') == 1)
+			{
+			
+				$this->getResponse()->setIframeMod();			
+			}
+			
+			
+			
 			//FIXME - mode not retained after using  drop-down 'filter' or 'search'. 
 			if($_GET['mode'] =='menu')
 			{
@@ -266,6 +282,18 @@ class page_admin_ui extends e_admin_ui
 			$this->createPage('menu');	
 		}
 		
+		function dialogPage() // FIXME - remove table-rendering when using 'return' ??
+		{
+			$frm = e107::getForm();
+			$text .= "<fieldset id='e-tab-empty'>\n";
+			$text .= "<div>Title: ".$frm->text('page_subtitle[]', '', 250)."</div>\n";
+			$text .= $frm->bbarea('data[]', '', 'page','help','large');
+			$text .= "</fieldset>";	
+			echo $text;	
+			exit;
+			// return $text;
+			
+		}
 
 		
 		// Create Page Page. 
@@ -405,10 +433,11 @@ class page_admin_ui extends e_admin_ui
 	
 		$text .= $this->bbareaMulti('data', $textareaValue, 'page','help','large');
 		$text .= "</div>";
+		
 	//	$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
 			
 	
-	
+			
 	
 		//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 		//			<br />".display_help('cpage-help', 'cpage')."
@@ -580,6 +609,7 @@ class page_admin_ui extends e_admin_ui
 				$c++;	
 			}
 					
+			$text .= "<input type='text' id='e-tab-count' value='".count($pages)."' />";
 		
 			
 			return $text;
