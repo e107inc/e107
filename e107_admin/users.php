@@ -1653,7 +1653,7 @@ class users
 
 		<tr>
 			<td>".USRLAN_62."</td>
-			<td>".$rs->form_password("password1",40,"",20)."</td>
+			<td>".$frm->password('password','',20,array('size'=>40,'class'=>'tbox e-password-admin'))."</td>
 		</tr>";
 		
 	/*

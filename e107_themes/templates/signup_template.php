@@ -52,7 +52,7 @@ $USERCLASS_SUBSCRIBE_START = "
 <tr>
 <td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USER_76." ".req($pref['signup_option_class'])."
 <br /><span class='smalltext'>".LAN_USER_73."</span></td>
-<td class='forumheader3' style='width:70%'>
+<td class='forumheader3' style='width:70%;margin-left:0px'>
 <table style='".USER_WIDTH."'>
 ";
 }
@@ -145,6 +145,38 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 ";
 
 
+$sc_style['SIGNUP_LOGINNAME']['pre'] = "
+<tr>
+	<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_81.req(2)."</td>
+	<td class='forumheader3' style='width:70%'>
+";
+$sc_style['SIGNUP_LOGINNAME']['post'] = "
+</td>
+</tr>
+";
+
+$sc_style['SIGNUP_HIDE_EMAIL']['pre'] = "
+<tr>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_83."</td>
+	<td class='forumheader3' style='width:70%'>
+";
+$sc_style['SIGNUP_HIDE_EMAIL']['post'] = "
+</td>
+</tr>
+";
+
+$sc_style['SIGNUP_EMAIL_CONFIRM']['pre'] = "
+<tr>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."</td>
+	<td class='forumheader3' style='width:70%'>
+";
+$sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
+</td>
+</tr>
+";
+
+
+
 if(!defined($COPPA_TEMPLATE))
 {
 $COPPA_TEMPLATE = LAN_SIGNUP_77." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."
@@ -173,27 +205,34 @@ if(!defined($SIGNUP_BEGIN))
 {
 $SIGNUP_BEGIN = "
 {SIGNUP_FORM_OPEN}
-<div style='text-align:center;".USER_WIDTH."'>
-{SIGNUP_SIGNUP_TEXT}
-<br />
+<div class='signup-container' style='text-align:center;".USER_WIDTH."'>
 ".LAN_SIGNUP_85."<br /><br /></div>";
 }
 
+
+
+
+
 if(!defined($SIGNUP_BODY))
 {
-$SIGNUP_BODY = "
+			// TODO Add other signup options for Facebook and Twitter. 
+$SIGNUP_BODY = "<div class='signup-other'>{FB=login}{TW=login}</div>
 {SIGNUP_XUP}
 <div id='default'>
 {SIGNUP_XUP_ACTION}
 <table class='fborder' style='".USER_WIDTH."'>
 {SIGNUP_DISPLAYNAME}
+
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
-<td class='forumheader3' style='width:70%'>
 {SIGNUP_LOGINNAME}
+{SIGNUP_REALNAME}
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</td>
+<td class='forumheader3' style='width:70%'>
+{SIGNUP_EMAIL}
 </td>
 </tr>
-{SIGNUP_REALNAME}
+{SIGNUP_EMAIL_CONFIRM}
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
 <td class='forumheader3' style='width:70%'>
@@ -207,27 +246,7 @@ $SIGNUP_BODY = "
 {SIGNUP_PASSWORD2}
 </td>
 </tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</td>
-<td class='forumheader3' style='width:70%'>
-{SIGNUP_EMAIL}
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."{SIGNUP_IS_MANDATORY=email}</td>
-<td class='forumheader3' style='width:70%'>
-{SIGNUP_EMAIL_CONFIRM}
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_83."</td>
-<td class='forumheader3' style='width:70%'>
 {SIGNUP_HIDE_EMAIL}
-</td>
-</tr>
 {SIGNUP_USERCLASS_SUBSCRIBE}
 {SIGNUP_EXTENDED_USER_FIELDS}
 {SIGNUP_SIGNATURE}

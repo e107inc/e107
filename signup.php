@@ -16,6 +16,9 @@
 
 require_once("class2.php");
 
+
+
+
 $qs = explode(".", e_QUERY);
 
 if($qs[0] != 'activate')
@@ -39,7 +42,10 @@ $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
 require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
 
-include_once(e_CORE.'shortcodes/batch/signup_shortcodes.php');
+//include_once(e_CORE.'shortcodes/batch/signup_shortcodes.php');
+
+$signup_shortcodes = e107::getScBatch('signup');
+$facebook_shortcodes = e107::getScBatch('facebook',TRUE);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
 $text = '';
@@ -261,9 +267,16 @@ if($signup_imagecode)
 }
 
 
-if (USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107'))
+if ((USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
-	header('location: '.e_HTTP.'index.php');
+	 header('location: '.e_HTTP.'index.php');
+}
+
+if(getperms('0'))
+{
+	//$mes = e107::getMessage();
+	//$mes->debug("You are currently logged in.");
+	 $SIGNUP_BEGIN = "<div class='s-message' style='background-color:red;text-align:center;padding:30px;'> You are currently logged in.</div>". $SIGNUP_BEGIN;		
 }
 
 
@@ -380,6 +393,17 @@ if (isset($_POST['register']))
 		  $_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 		}
 
+		if(!isset($_POST['hideemail'])) // For when it is disabled - default is to hide-email.  
+		{
+			$_POST['hideemail'] = 1;
+		}
+		
+		if(!isset($_POST['email_confirm']))
+		{
+			$_POST['email_confirm'] = $_POST['email'];	
+		}
+			
+			
 		// Use LoginName for DisplayName if restricted
 		if (!check_class($pref['displayname_class'],e_UC_PUBLIC.','.e_UC_MEMBER))
 		{

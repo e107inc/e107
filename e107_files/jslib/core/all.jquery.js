@@ -63,13 +63,59 @@ $(document).ready(function()
 		
 		// Tabs
 		$(function() {
-			$( "#tab-container" ).tabs();
+			$( "#tab-container" ).tabs({cache: true});
 		});	
 		
 		// Tabs
 		$(function() {
 			$( ".e-tabs" ).tabs();
 		});	
+		
+		$('.e-tabs-add').on("click", function(){
+			var url = $(this).attr('data-url');
+			var count = parseInt($("#e-tab-count").val()) + 1; 	
+			
+			// alert(count);
+			//return false;
+			if($("#tab-container").tabs("add",url + '?iframe=1',"Page "+count))
+			{
+				$("#e-tab-count").val(count);	
+			}
+			
+			return false;
+		});
+		
+		$('.e-email').on('blur', function() {
+			// alert('hello');
+		  $(this).mailcheck({
+		    
+		    suggested: function(element, suggestion) {
+		    	var id = $(element);
+		    	var hint = $(element).next('div').attr('data-hint');
+		    	var mes = hint.replace('[x]',suggestion.full);
+		    	$(element).next('div').html(mes);
+		    	$(element).next('div').show('slow');
+		    },
+		    empty: function(element) {
+		      $(element).next('div').hide('slow');
+		    }
+	  		});
+		});
+		
+		$('.e-password').on('keyup', function() {
+			// var len = $(this).val().length;
+			
+			//data-minlength
+		});
+		
+		
+		
+		
+		
+	//	var tabs = $('#tab-container').clone(true);
+	//	$('#htmlEditor').append(tabs);
+
+
 		
 /*
 		$("a.e-bb").click(function(){
@@ -143,7 +189,7 @@ $(document).ready(function()
 		// Password
 		$(function() {
 			
-			$("#password1").pwdMeter({
+			$(".e-password-admin").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",

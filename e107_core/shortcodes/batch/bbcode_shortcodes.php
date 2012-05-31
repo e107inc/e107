@@ -54,6 +54,18 @@ class bbcode_shortcodes extends e_shortcode
 		return $text;
 	}
 	
+	function bb_newpage($id)
+	{
+	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
+		$data = "[newpage]";
+		$event = $this->getEvent('addtext',$data,LANHELP_34,1);
+		$text = "<a {$event} class='e-bb e-tabs-add' id='{$id}' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/newpage.png' alt='' /></a>";
+		return $text;
+	}
+	
+	
+	
 	function bb_list($id)
 	{
 
@@ -149,6 +161,7 @@ class bbcode_shortcodes extends e_shortcode
 
 	function bb_fontcol($id)
 	{
+		return '';
 		// $bbcode['fontcol'] = array("e-expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
 	
 		$formid = $id."_";
