@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -344,7 +344,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
 					Using your server control panel (eg. cPanel,Plesk etc.) please create a crontab to run this command on your server every minute.";
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 			}
