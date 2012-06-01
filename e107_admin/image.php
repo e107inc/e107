@@ -1746,19 +1746,28 @@ if (isset($_POST['check_avatar_sizes']))
 								".$frm->text('im_path', $pref['im_path'])."
 								<div class='field-help'>".IMALAN_6."</div>
 							</td>
-						</tr>					
+						</tr>";		
 						
-
-						<tr>
-							<td class='label'>".IMALAN_34."
-							</td>
-							<td class='control'>
-								<div class='auto-toggle-area autocheck'>
-									".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
-									<div class='field-help'>".IMALAN_35."</div>
-								</div>
-							</td>
-						</tr>
+			// Removed as IE6 should no longer be supported. A 3rd-party plugin can be made for this functionality if really needed. 			
+			/*
+						
+			
+						$text .= "
+									<tr>
+										<td class='label'>".IMALAN_34."
+										</td>
+										<td class='control'>
+											<div class='auto-toggle-area autocheck'>
+												".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
+												<div class='field-help'>".IMALAN_35."</div>
+											</div>
+										</td>
+									</tr>";
+									
+						*/
+						
+						
+		$text .= "
 
 						<tr>
 							<td class='label'>".IMALAN_36."</td>
