@@ -694,16 +694,7 @@ class e107_user_extended
 				break;
 
 			case EUF_DATE : //date
-				return $cal->make_input_field(
-				array(
-               'ifFormat' => '%Y-%m-%d'
-               ),
-				array(
-					'class' => 'tbox',
-					'name' => $fname,
-					'value' => $curval
-					)
-				);
+				return e107::getForm()->datepicker($fname,$curval,'dateformat=yy-mm-dd');	
 				break;
 
 			case EUF_LANGUAGE : // language

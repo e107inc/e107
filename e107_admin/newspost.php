@@ -728,8 +728,7 @@ class admin_newspost
 
 		require_once(e_HANDLER."cache_handler.php");
 		require_once(e_HANDLER."news_class.php");
-	//	require_once(e_HANDLER."calendar/calendar_class.php");
-	//	$this->_cal = new DHTML_Calendar(true);
+
 
 		$this->_pst = $pstobj;
 
@@ -1077,7 +1076,7 @@ class admin_newspost
 
 		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdatetime'), 0);
 
-echo "date=".$_POST['news_start'];
+// echo "date=".$_POST['news_start'];
 		if($_POST['news_start'])
 		{
 		//	$_POST['news_start'] = e107::getDate()->convert($_POST['news_start']);

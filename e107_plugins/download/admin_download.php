@@ -33,13 +33,13 @@ require_once(e_HANDLER.'xml_class.php');
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
-$cal = new DHTML_Calendar(true);
-$gen = new convert();
+//$cal = new DHTML_Calendar(true);
+//$gen = new convert();
 
 function headerjs()
 {
-   global $cal;
-	return $cal->load_files()."<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>\n";
+ //  global $cal;
+//	return $cal->load_files()."<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>\n";
 }
 
 $e_sub_cat = 'download';

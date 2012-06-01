@@ -339,7 +339,7 @@ class e_form
 		$dateFormat = ($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$timeFormat = ($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
 						
-		$type		= ($options['type']) ? trim($options['type']) : "date";
+		$type		= ($options['type']) ? trim($options['type']) : "date"; // 'datetime'
 		
 	//	echo "TYPE=".$type;
 			
@@ -398,7 +398,7 @@ class e_form
 
 		$text = "";
 	
-		$class = (isset($classes[$type])) ? $classes[$type] : "e-date";
+		$class = (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		
 		if(vartrue($options['inline']))
 		{
@@ -461,31 +461,6 @@ class e_form
 		 * TT    AM or PM for AM/PM 
 			
 			*/
-		
-		
-		
-		
-		
-
-		// DHTML Calendar is deprecated in 2.0. 
-		/*
-		$cal = new DHTML_Calendar(true);
-		$cal_options['showsTime'] = varset($options['time'], true);
-		$cal_options['showOthers'] = varset($options['others'], false);
-		$cal_options['weekNumbers'] = varset($options['weeks'], false);
-		$cal_options['ifFormat'] = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
-		$cal_options['timeFormat'] = "24";
-
-		$cal_attrib['class'] = "tbox date";
-		$cal_attrib['size'] = varset($options['size'], 25);
-		$cal_attrib['name'] = $name;
-		if ($datestamp)
-		{
-		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
-		}
-		
-		return $cal->make_input_field($cal_options, $cal_attrib);
-		*/
 		
 	}
 

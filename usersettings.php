@@ -59,9 +59,6 @@ require_once (e_HANDLER.'ren_help.php');
 include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
 include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
 
-require_once (e_HANDLER.'calendar/calendar_class.php');
-$cal = new DHTML_Calendar(true);
-
 // include JS, headerjs not called in header anymore
 $js = e107::getJs();
 $js->footerInline(headerjs());
@@ -748,7 +745,7 @@ function delete_file($fname, $dir = 'avatars/')
 
 function headerjs()
 {
-	//global $cal;
+
 	$script = "
 	<script type='text/javascript'>
 		function addtext_us(sc)
@@ -758,7 +755,7 @@ function headerjs()
 	</script>
 	";
 
-	//$script .= $cal->load_files();
+
 	return $script;
 }
 

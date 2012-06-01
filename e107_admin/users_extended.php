@@ -34,16 +34,13 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'user_extended';
 
 $curtype = '1';
-require_once(e_HANDLER.'calendar/calendar_class.php');
 require_once(e_HANDLER.'message_handler.php');
 
-$cal = new DHTML_Calendar(true);
 require_once("auth.php");
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
 
-require_once(e_HANDLER.'form_handler.php');
-$frm = new e_form;
+$frm = e107::getForm();
 
 $ue = new e107_user_extended;
 
@@ -1263,9 +1260,6 @@ function headerjs()
 
 
 	</script>";
-
-	global $cal;
-	$text .= $cal->load_files();
 
 	echo $text;
 }
