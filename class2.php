@@ -783,11 +783,11 @@ $ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 $e107 = e107::getInstance();		// Is this needed now?
 e107::getIPHandler()->ban();
 
-if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
+if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout')
 {
 	if(force_userupdate($currentUser))
 	{
-	  header('Location: '.e_BASE.'usersettings.php?update');
+	  header('Location: '.SITEURL.'usersettings.php?update');
 	  exit();
 	}
 }
