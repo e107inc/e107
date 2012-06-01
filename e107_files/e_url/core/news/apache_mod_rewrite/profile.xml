@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<urlprofile>
-	<title>{LAN_EURL_MODREWR_TITLE}</title>
-	<description>{LAN_EURL_MODREWR_DESCR}</description>
-	<!-- <adminLan>{e_LANGUAGEDIR}{e_LANGUAGE}/admin/lan_newspost.php</adminLan> -->
-</urlprofile>

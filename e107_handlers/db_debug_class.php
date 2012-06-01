@@ -488,7 +488,12 @@ class e107_db_debug {
 		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
 		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
 		$text .= "Active Theme Layout: '".THEME_LAYOUT."'<br />";
-		
+		$text .= "<br />";
+		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
+		$text .= "e_LAN: '".e_LAN."'<br />";
+		$text .= "e_LOCALE: '".e_LOCALE."'<br />";
+		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
+		$text .= "<br />";		
 
   	  	$text .= "<pre>";
         $text .= htmlspecialchars(print_r($e107,TRUE));
