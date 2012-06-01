@@ -134,7 +134,6 @@ class e107
 	 */
 	protected static $_known_handlers = array(
 		'ArrayData'						 => '{e_HANDLER}arraystorage_class.php',
-		'DHTML_Calendar'				 => '{e_HANDLER}calendar/calendar_class.php',
 		'UserHandler'					 => '{e_HANDLER}user_handler.php',
 		'comment'						 => '{e_HANDLER}comment_class.php',
 		'convert'						 => '{e_HANDLER}date_handler.php',

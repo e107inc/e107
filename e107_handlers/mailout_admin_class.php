@@ -1353,7 +1353,16 @@ class mailoutAdminClass extends e107MailManager
 			'name' => $calName,
 			'value' => (($calVal == '') ? '' : date($dispString,$calVal))
 		);
-		return $this->_cal->make_input_field($calOptions, $calAttrib);
+		
+
+		list($dformat,$tformat) = explode(" ",$dateString);
+		$options['type'] 		= 'datetime';
+		$options['dateFormat'] 	= $dformat;
+		$options['timeFormat'] 	= $tformat; 
+		
+		return e107::getForm()->datepicker($calName,$calVal,$options);
+		
+		// return $this->_cal->make_input_field($calOptions, $calAttrib);
 	}
 
 

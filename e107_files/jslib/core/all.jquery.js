@@ -15,7 +15,8 @@ $(document).ready(function()
 			$("input.e-date").each(function() {
         		$(this).datepicker({
         			 dateFormat: $(this).attr("data-date-format"),
-        			 ampm: $(this).attr("data-date-ampm")
+        			 ampm: $(this).attr("data-date-ampm"),
+        			 showButtonPanel: true
         		 });    		 
     		});
     		
@@ -23,7 +24,8 @@ $(document).ready(function()
         		$(this).datetimepicker({
         			 dateFormat: $(this).attr("data-date-format"),
         			 timeFormat: $(this).attr("data-time-format"),
-        			 ampm: $(this).attr("data-date-ampm")
+        			 ampm: $(this).attr("data-date-ampm"),
+        			 showButtonPanel: true
         		 });    		 
     		});
     		

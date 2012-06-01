@@ -861,18 +861,13 @@ $columnInfo = array(
 	      if (!$download_datestamp){
 	           $download_datestamp = time();
 	      }
-	      $cal_options['showsTime'] = false;
-	      $cal_options['showOthers'] = false;
-	      $cal_options['weekNumbers'] = false;
-	      $cal_options['ifFormat'] = "%d/%m/%Y %H:%M:%S";
-	      $cal_options['timeFormat'] = "24";
-	      $cal_attrib['class'] = "tbox";
-	      $cal_attrib['size'] = "22";
-	      $cal_attrib['name'] = "download_datestamp";
-	      $cal_attrib['value'] = date("d/m/Y H:i:s", $download_datestamp);
-	      $text .= $cal->make_input_field($cal_options, $cal_attrib);
-	      $update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
-	      $text .= "        &nbsp;&nbsp;<span><input type='checkbox' value='1' name='update_datestamp' $update_checked/>".DOWLAN_148."</span>
+	
+			$text .= $frm->datepicker('download_datestamp',$download_datestamp);
+			
+	  //    $update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
+	  //    $text .= "        &nbsp;&nbsp;<span><input type='checkbox' value='1' name='update_datestamp' $update_checked/>".DOWLAN_148."</span>";
+		  
+		  $text .= "
 	                     </td>
 	                  </tr>
 	                  <tr>
@@ -1086,27 +1081,20 @@ $columnInfo = array(
 	       // ------------------------------------------
 	
 	
-	      $dlInfo['download_description'] 		= $tp->toDB($_POST['download_description']);
-	      $dlInfo['download_name'] 				= $tp->toDB($_POST['download_name']);
-	      $dlInfo['download_author'] 			= $tp->toDB($_POST['download_author']);
-	      $dlInfo['download_author_email'] 		= $tp->toDB($_POST['download_author_email']);
-	      $dlInfo['download_author_website'] 	= $tp->toDB($_POST['download_author_website']);
-	      $dlInfo['download_category'] 			= intval($_POST['download_category']);
-	      $dlInfo['download_active']  			= intval($_POST['download_active']);
-	      $dlInfo['download_thumb']				= $tp->toDB($_POST['download_thumb']);
-	      $dlInfo['download_image']				= $tp->toDB($_POST['download_image']);
-	      $dlInfo['download_comment']			= $tp->toDB($_POST['download_comment']);
-	      $dlInfo['download_class']				= intval($_POST['download_class']);
-	      $dlInfo['download_visible']			= intval($_POST['download_visible']);
-	
-	      if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['download_datestamp'], $matches))
-	      {
-				$dlInfo['download_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
-	      }
-	      else
-	      {
-				$dlInfo['download_datestamp'] = time();
-	      }
+			$dlInfo['download_description'] 		= $tp->toDB($_POST['download_description']);
+			$dlInfo['download_name'] 				= $tp->toDB($_POST['download_name']);
+			$dlInfo['download_author'] 				= $tp->toDB($_POST['download_author']);
+			$dlInfo['download_author_email'] 		= $tp->toDB($_POST['download_author_email']);
+			$dlInfo['download_author_website'] 		= $tp->toDB($_POST['download_author_website']);
+			$dlInfo['download_category'] 			= intval($_POST['download_category']);
+			$dlInfo['download_active']  			= intval($_POST['download_active']);
+			$dlInfo['download_thumb']				= $tp->toDB($_POST['download_thumb']);
+	      	$dlInfo['download_image']				= $tp->toDB($_POST['download_image']);
+	      	$dlInfo['download_comment']				= $tp->toDB($_POST['download_comment']);
+	      	$dlInfo['download_class']				= intval($_POST['download_class']);
+	      	$dlInfo['download_visible']				= intval($_POST['download_visible']);
+			$dlInfo['download_datestamp']			= e107::getDate()->convert($_POST['download_datestamp'],'inputdate');
+			
 	
 	      if($_POST['update_datestamp'])
 	      {

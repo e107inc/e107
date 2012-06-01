@@ -63,12 +63,6 @@ $creditsArray = array(
 				"version" => "0.1",
 				"licence" => "GPL, ".CRELAN_8
 			),
-	array(	"name" => "DHTML / JavaScript Calendar",
-				"url" => "http://www.dynarch.com/projects/",
-				"description" => CRELAN_17,
-				"version" => "1.0",
-				"licence" => "GPL"
-			),
 	array(	"name" => "FPDF",
 				"url" => "http://www.fpdf.org/",
 				"description" => CRELAN_18,
