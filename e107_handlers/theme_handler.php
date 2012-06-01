@@ -689,7 +689,7 @@ class themeHandler
 			
 			//FIXME e-hideme doesn't work when JS is turned off. 
 			// This popup information should be loaded with ajax. 		
-		//	$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
+			$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
 
 			$text .= "</div>";
 			return $text;
