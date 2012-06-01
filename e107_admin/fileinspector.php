@@ -1056,7 +1056,7 @@ class file_inspector {
 			echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
-			echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+			echo "<link rel='stylesheet' href='".e_WEB_CSS."e107.css' type='text/css' />\n";
 		}
 	}
 	

@@ -299,25 +299,6 @@ echo "\n<!-- footer_theme_css -->\n";
 $e_js->renderJs('inline_css', false, 'css', false);
 echo "\n<!-- footer_inline_css -->\n";
 
-//IEpngfix - visible by IE6 only
-// FIXME - disable this style block via JS for all GOOD browsers.
-if($e_pref->get('enable_png_image_fix') || (isset($sleight) && $sleight == true)) // FIXME - KILL this GLOBAL!
-{
-    /*
-     * The only problem is that the browser is REALLY,
-     * REALLY slow when it has to render more elements
-     * try e.g. "div, img, td, input" (or just *) instead only img rule
-     * However I hope it'll force IE6 users to switch to a modern browser...
-     */
-	echo "<!--[if lte IE 6]>\n";
-	echo "<style type='text/css'>\n";
-	echo "img {\n";
-	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
-	echo "}\n";
-	echo "</style>\n";
-	echo "<![endif]-->\n";
-}
-
 //
 // Style for unobtrusive JS, prevent 3rd party code overload
 //

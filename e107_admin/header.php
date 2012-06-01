@@ -158,7 +158,7 @@ $e_js =  e107::getJs();
 if (!isset($no_core_css) || !$no_core_css)
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-	$e_js->otherCSS('{e_FILE}e107.css');
+	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
 // Register Plugin specific CSS
@@ -231,25 +231,6 @@ echo "\n<!-- footer_theme_css -->\n";
 // Inline CSS - not sure if this should stay at all!
 $e_js->renderJs('inline_css', false, 'css', false);
 echo "\n<!-- footer_inline_css -->\n";
-
-//iepngfix - IE6 only
-if ((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
-{
-	/*
-	 * The only problem is that the browser is REALLY,
-	 * REALLY slow when it has to render more elements
-	 * try e.g. "div, img, td, input" (or just *) instead only img rule
-	 * However I hope this will force IE6 user to hate it :)
-	 */
-	echo "<!--[if lte IE 6]>\n";
-	echo "<style type='text/css'>\n";
-	echo "img {\n";
-	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
-	echo "}\n";
-	echo "</style>\n";
-	echo "<![endif]-->\n";
-}
-
 
 //
 // Unobtrusive JS via CSS, prevent 3rd party code overload
