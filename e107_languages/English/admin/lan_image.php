@@ -40,8 +40,8 @@ define("IMALAN_29", "No images");
 // define("IMALAN_31", "Guests only");
 // define("IMALAN_32", "Members only");
 // define("IMALAN_33", "Admin only");
-define("IMALAN_34", "Enable PNG Fix");
-define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
+//define("IMALAN_34", "Enable PNG Fix");
+//define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
 define("IMALAN_36", "Validate avatar size and access");
 define("IMALAN_37", "Avatar Validation");
@@ -82,8 +82,7 @@ define('IMALAN_68', 'Close');
 define('IMALAN_69', 'Folder');
 define('IMALAN_70', 'Non-system folder is found!');
 
-define("IMALAN_71", "Icon Pool");
-define("IMALAN_72", "Icons");
+// define("IMALAN_72", "Icons");
 
 
 ?>

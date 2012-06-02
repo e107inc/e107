@@ -73,12 +73,17 @@ class comment
 			}
 			//FIXME - e_REQUEST_URI?
 			//e_SELF."?".e_QUERY
+			
 			$text = "\n<div id='e-comment-form' style='text-align:center'>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
-			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='dataform' >\n<table style='width:100%'>";
+			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='dataform' >\n
+			
+			<table style='width:100%'>";
+			
 			if ($pref['nested_comments'])
 			{
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n
 				<input class='tbox comment subject' type='text' name='subject' size='61' value='".$tp->toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
+				
 				$text2 = "";
 			}
 			else
@@ -149,18 +154,39 @@ class comment
 				}
 				$rate = $rater->composerating($table, $itemid, $enter = TRUE, USERID, TRUE);
 				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
+			
 			} //end rating area
 
-			if (ANON == TRUE && USER == FALSE)
-			{ // Box for author name (anonymous comments - if allowed)
+			if (ANON == TRUE && USER == FALSE) // Box for author name (anonymous comments - if allowed)
+			{ 
 				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox comment author' type='text' name='author_name' size='61' value='{$author_name}' maxlength='100' />\n</td>\n</tr>";
 			}
+			
 			$text .= $rate."<tr> \n
-			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='e-wysiwyg tbox comment' id='comment' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".trim($comval)."</textarea>\n<br />
-			".display_help('helpb', "comment")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n
+			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n";
+			
+			
+			$text .= e107::getForm()->bbarea('comment',trim($comval),'comment','comment-'.$itemid,'large',array('autofocus'=>1));		
+			
+			$text .= "</td></tr>
+			<tr style='vertical-align:top'>
+			<td style='width:20%'>".$text2."</td>\n";
+			
+			$text .= "
 			<td id='commentformbutton' style='width:80%;'>
+			
+			".(isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '')."<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n
+			</td>\n</tr>\n
+			</table>
+			<div>
 			<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
-			".(isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '')."<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			</div>
+			</form>
+			</div>";
+			
+			
+			
+			
 			if ($tablerender)
 			{
 				$text = $ns->tablerender($caption, $text, '', TRUE);

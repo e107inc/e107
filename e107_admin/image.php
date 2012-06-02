@@ -74,7 +74,6 @@ class media_admin extends e_admin_dispatcher
 		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A|A2'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
-	//	'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 
 		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
@@ -84,8 +83,7 @@ class media_admin extends e_admin_dispatcher
 	$var['main']['text'] = IMALAN_7;
 	$var['main']['link'] = e_SELF;
 
-	$var['icons']['text'] = IMALAN_71;
-	$var['icons']['link'] = e_SELF."?icons";
+
 
 	$var['avatars']['text'] = IMALAN_23;
 	$var['avatars']['link'] = e_SELF."?avatars";
@@ -387,7 +385,7 @@ class media_admin_ui extends e_admin_ui
 			
 			if($this->getQuery('bbcode'))
 			{
-				
+				//TODO this is not really used when jquery is running. 
 				e107::getJS()->headerInline("
 				
 				/* Send the generated IMG bbcode back to the textarea/window */
@@ -628,7 +626,173 @@ class media_admin_ui extends e_admin_ui
 
 	function settingsPage()
 	{
-		main_config();
+		global $pref;
+
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+	
+		if(function_exists('gd_info'))
+		{
+			$gd_info = gd_info();
+			$gd_version = $gd_info['GD Version'];
+		}
+		else
+		{
+			$gd_version = "<span class='error'> ".IMALAN_55."</span>";
+		}
+		
+		if($pref['resize_method'] == "ImageMagick" && (!vartrue(e107::getFolder('imagemagick'))))
+		{
+			
+			$mes->addWarning('Please add: <b>$IMAGEMAGICK_DIRECTORY="'.$pref['im_path'].'";</b> to your e107_config.php file');	
+		}
+		
+			
+		//$IM_NOTE = "";
+		$im_path = vartrue(e107::getFolder('imagemagick'));
+		if($im_path != "")
+		{
+		  $im_file = $im_path.'convert';
+			if(!file_exists($im_file))
+			{
+				//$IM_NOTE = "<span class='error'>".IMALAN_52."</span>";
+				$mes->addWarning(IMALAN_52);
+			}
+			else
+			{
+				$cmd = "{$im_file} -version";
+				$tmp = `$cmd`;
+				if(strpos($tmp, "ImageMagick") === FALSE)
+				{
+					//$IM_NOTE = "<span class='error'>".IMALAN_53."</span>";
+					$mes->addWarning(IMALAN_53);
+				}
+			}
+		}
+	
+
+	
+	
+	
+	
+		$text = "
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+				<fieldset id='core-image-settings'>
+					<legend class='e-hideme'>".IMALAN_7."</legend>
+					<table class='adminform'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>
+									".IMALAN_1."
+								</td>
+								<td class='control'>
+									<div class='auto-toggle-area autocheck'>
+										".$frm->checkbox('image_post', 1, $pref['image_post'])."
+										<div class='field-help'>".IMALAN_2."</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>
+									".IMALAN_10."
+								</td>
+								<td class='control'>
+									".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
+									<div class='field-help'>".IMALAN_11."</div>
+								</td>
+							</tr>
+	
+							<tr>
+								<td class='label'>
+									".IMALAN_12."
+								</td>
+								<td class='control'>
+									".$frm->select_open('image_post_disabled_method')."
+										".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
+										".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
+									".$frm->select_close()."
+									<div class='field-help'>".IMALAN_13."</div>
+								</td>
+							</tr>";
+							
+							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
+							
+							//TODO LANS
+							$text .= "						
+							<tr>
+								<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td class='control'>
+									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
+								</td>
+							</tr>
+	
+							<tr>
+								<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
+								<td class='control'>
+									".$frm->select_open('resize_method')."
+										".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
+										".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
+										".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
+									".$frm->select_close()."
+									<div class='field-help'>".IMALAN_4."</div>
+								</td>
+							</tr>";
+				/*			
+				$text .= "
+							// Removed to prevent mod_security blocks, and show only when relevant (non-GD2 users)
+							<tr>
+								<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
+								<td class='control'>
+									".$frm->text('im_path', $pref['im_path'])."
+									<div class='field-help'>".IMALAN_6."</div>
+								</td>
+							</tr>";		
+							
+				// Removed as IE6 should no longer be supported. A 3rd-party plugin can be made for this functionality if really needed. 			
+				
+							
+				
+							$text .= "
+										<tr>
+											<td class='label'>".IMALAN_34."
+											</td>
+											<td class='control'>
+												<div class='auto-toggle-area autocheck'>
+													".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
+													<div class='field-help'>".IMALAN_35."</div>
+												</div>
+											</td>
+										</tr>";
+										
+							*/
+							
+							
+			$text .= "
+	
+							<tr>
+								<td class='label'>".IMALAN_36."</td>
+								<td class='control'>
+									".$frm->admin_button('check_avatar_sizes', ADLAN_145)."
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('update_options', IMALAN_8, 'update')."
+					</div>
+				</fieldset>
+			</form>";
+	
+			echo $mes->render().$text;
+			return;
+		//	$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_7, $mes->render().$text);
 	}
 
 	function avatarPage()
@@ -1630,163 +1794,7 @@ if (isset($_POST['check_avatar_sizes']))
 	$ns->tablerender(IMALAN_37, $emessage->render().$text);
 }
 
-/*
- * MAIN CONFIG SCREEN
- */
- function main_config()
- {
- 	global $pref;
 
-	$frm = e107::getForm();
-	$tp = e107::getParser();
-	$sql = e107::getDb();
-	$ns = e107::getRender();
-	$mes = e107::getMessage();
-
-	if(function_exists('gd_info'))
-	{
-		$gd_info = gd_info();
-		$gd_version = $gd_info['GD Version'];
-	}
-	else
-	{
-		$gd_version = "<span class='error'> ".IMALAN_55."</span>";
-	}
-
-	$IM_NOTE = "";
-	if($pref['im_path'] != "")
-	{
-	  $im_file = $pref['im_path'].'convert';
-		if(!file_exists($im_file))
-		{
-			$IM_NOTE = "<span class='error'>".IMALAN_52."</span>";
-		}
-		else
-		{
-			$cmd = "{$im_file} -version";
-			$tmp = `$cmd`;
-			if(strpos($tmp, "ImageMagick") === FALSE)
-			{
-				$IM_NOTE = "<span class='error'>".IMALAN_53."</span>";
-			}
-		}
-	}
-
-	$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<fieldset id='core-image-settings'>
-				<legend class='e-hideme'>".IMALAN_7."</legend>
-				<table class='adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tbody>
-						<tr>
-							<td class='label'>
-								".IMALAN_1."
-							</td>
-							<td class='control'>
-								<div class='auto-toggle-area autocheck'>
-									".$frm->checkbox('image_post', 1, $pref['image_post'])."
-									<div class='field-help'>".IMALAN_2."</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class='label'>
-								".IMALAN_10."
-							</td>
-							<td class='control'>
-								".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
-								<div class='field-help'>".IMALAN_11."</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td class='label'>
-								".IMALAN_12."
-							</td>
-							<td class='control'>
-								".$frm->select_open('image_post_disabled_method')."
-									".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
-									".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
-								".$frm->select_close()."
-								<div class='field-help'>".IMALAN_13."</div>
-							</td>
-						</tr>";
-						
-						list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
-						
-						//TODO LANS
-						$text .= "						
-						<tr>
-							<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
-							<td class='control'>
-								".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
-								<div class='field-help'>".IMALAN_6."</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
-							<td class='control'>
-								".$frm->select_open('resize_method')."
-									".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
-									".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
-									".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
-								".$frm->select_close()."
-								<div class='field-help'>".IMALAN_4."</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
-							<td class='control'>
-								".$frm->text('im_path', $pref['im_path'])."
-								<div class='field-help'>".IMALAN_6."</div>
-							</td>
-						</tr>";		
-						
-			// Removed as IE6 should no longer be supported. A 3rd-party plugin can be made for this functionality if really needed. 			
-			/*
-						
-			
-						$text .= "
-									<tr>
-										<td class='label'>".IMALAN_34."
-										</td>
-										<td class='control'>
-											<div class='auto-toggle-area autocheck'>
-												".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
-												<div class='field-help'>".IMALAN_35."</div>
-											</div>
-										</td>
-									</tr>";
-									
-						*/
-						
-						
-		$text .= "
-
-						<tr>
-							<td class='label'>".IMALAN_36."</td>
-							<td class='control'>
-								".$frm->admin_button('check_avatar_sizes', ADLAN_145)."
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class='buttons-bar center'>
-					".$frm->admin_button('update_options', IMALAN_8, 'update')."
-				</div>
-			</fieldset>
-		</form>";
-
-		echo $mes->render().$text;
-		return;
-		$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_7, $mes->render().$text);
-}
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php");
 

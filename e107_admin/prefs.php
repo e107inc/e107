@@ -588,7 +588,12 @@ $text .= "
                     <tr>
 						<td class='label'>".PRFLAN_184."</td>
 						<td class='control'>".$frm->select_open('allowEmailLogin');
-                        $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
+                     //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
+                        $login_list = array(
+	                        2 => PRFLAN_203,
+	                        1 => PRFLAN_202,
+	                        0 => PRFLAN_201
+                        );
                         foreach($login_list as $l => $l_title)
 						{
 							$text .= $frm->option($l_title, $l, ($pref['allowEmailLogin'] == $l));
@@ -1057,7 +1062,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_43.":</td>
 						<td class='control'>
-							".$frm->textarea('profanity_words', $pref['profanity_words'], 2, 59)."
+							".$frm->tags('profanity_words', $pref['profanity_words'])."
 							<div class='field-help'>".PRFLAN_44."</div>
 						</td>
 					</tr>

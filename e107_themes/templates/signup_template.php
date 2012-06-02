@@ -34,7 +34,7 @@ $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
 
 $sc_style['SIGNUP_REALNAME']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_91."".req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_SIGNUP_92."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_91."".req($pref['signup_option_realname'])."</td>
 <td class='forumheader3' style='width:70%' >
 ";
 $sc_style['SIGNUP_REALNAME']['post'] = "
@@ -110,6 +110,7 @@ if(!defined($EXTENDED_USER_FIELD_REQUIRED))
 	$EXTENDED_USER_FIELD_REQUIRED	= "<span class='required'> *</span>";
 }
 
+/* // DEPRECATED
 $SIGNUP_SIGNATURE_START = "
 <tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_SIGNUP_93." ".req($pref['signup_option_signature'])."</td>
@@ -121,7 +122,16 @@ $SIGNUP_SIGNATURE_END = "
 	<div style='".USER_WIDTH."'>{REN_HELP}</div>
 	</td></tr>
 ";
+*/
 
+
+$sc_style['SIGNUP_SIGNATURE']['pre'] = "<tr>
+	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_SIGNUP_93." ".req($pref['signup_option_signature'])."</td>
+	<td class='forumheader3' style='width:70%' >";
+	
+$sc_style['SIGNUP_SIGNATURE']['post'] = "
+	</td></tr>";
+	
 
 $sc_style['SIGNUP_IMAGES']['pre'] = "
 <tr>
@@ -237,7 +247,6 @@ $SIGNUP_BODY = "<div class='signup-other'>{FB=login}{TW=login}</div>
 <td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_PASSWORD1}
-{SIGNUP_PASSWORD_LEN}
 </td>
 </tr>
 <tr>

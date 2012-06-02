@@ -16,7 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
+// IMPORTANT : Entire file is deprecated. see: bbcode_shortcodes.php and bbcode_hanlder.php 
+// Left in place only for BC. 
 
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
@@ -30,6 +31,14 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 // FIXME - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
+	return e107::getBB()->renderButtons($mode,'data'); // guessing the name of the textarea as 'data' no indicator unfortunately. 
+	// may cause pre-image and pre-file selector issues. 
+	
+	
+	
+	
+	
+	
   //  if(defsettrue('e_WYSIWYG')) { return; }
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $bbcode_helpsize;
 	$bbcode_helpsize = $helpsize;
@@ -76,7 +85,8 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$temp['mailout']	= $BBCODE_TEMPLATE_MAILOUT;
 	$temp['page']		= $BBCODE_TEMPLATE_CPAGE;
 	$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
-	$temp['comment'] 	= "{BB_HELP}<br />".$BBCODE_TEMPLATE;
+	$temp['comment'] 	= $BBCODE_TEMPLATE;
+	$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
 
 	if(isset($temp[$mode]))
 	{
