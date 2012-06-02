@@ -22,8 +22,11 @@
 // test
 
 $_E107['cli'] = TRUE;
-$_E107['debug'] = FALSE;
+$_E107['debug'] = false;
 $_E107['no_online'] = TRUE;
+$_E107['no_forceuserupdate'] = TRUE;
+$_E107['no_menus'] = TRUE;
+// we allow theme init as cron jobs might need to access current theme templates (e.g. custom email templates)
 
 require_once(realpath(dirname(__FILE__)."/class2.php"));
 
@@ -93,7 +96,7 @@ require_once(e_HANDLER."cron_class.php");
 
 $cron = new CronParser();
 
-
+require_once(e_HANDLER."mail.php");
 foreach($list as $func=>$val)
 {
 	$cron->calcLastRan($val['tab']);
@@ -116,7 +119,7 @@ foreach($list as $func=>$val)
 			}
 				
 			$classname = $val['class']."_cron";
-			if(class_exists($classname))
+			if(class_exists($classname, false))
 			{
 				$obj = new $classname;
 				if(method_exists($obj,$val['function']))
@@ -124,12 +127,30 @@ foreach($list as $func=>$val)
 					//	$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
 					if($_E107['debug'])	{ echo "<br />Method Found: ".$classname."::".$val['function']."()"; }
 					
-					$status = call_user_func(array($obj,$val['function']));
-					if(!$status)
+					// Exception handling
+					$methodname = $val['function'];
+					$status = false;
+					try 
 					{
-						//TODO log error in admin log. 
+						$status = $obj->$methodname();
+					}
+					catch (Exception $e)
+					{
+						$errorMData = $e->getFile().' '.$e->getLine();
+						$errorMData .= "\n\n".$e->getCode().''.$e->getMessage();
+						$errorMData .= "\n\n".implode("\n", $e->getTrace());
+						//TODO log error in admin log. Pref for sending email to Administator 
+						sendemail($pref['siteadminemail'], $pref['siteadmin'].": Cron Schedule Exception", $errorMData, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+					}
+					// $status = call_user_func(array($obj,$val['function']));
+					
+					// If task returns value which is not boolean (bc), it'll be used as a message (send email, logs) 
+					if($status && true !== $status)
+					{
+						//TODO log error in admin log. Pref for sending email to Administator 
 						// echo "\nerror running the function ".$func.".\n"; // log the error.
-						if($_E107['debug'])	{ 	echo "<br />Method returned False: ".$val['function']; }
+						if($_E107['debug'])	{ 	echo "<br />Method returned message: [{$classname}::".$val['function'].'] '.$status; }
+						sendemail($pref['siteadminemail'],  $pref['siteadmin'].": Cron Schedule Task Report", "Method returned message: [{$classname}::".$val['function'].'] '.$status, $pref['siteadmin'], $pref['siteadminemail'], $pref['siteadmin']);
 					}					 					
 				}
 				else
