@@ -28,7 +28,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 
 
-// FIXME - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
+// DONE - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
 	return e107::getBB()->renderButtons($mode,'data'); // guessing the name of the textarea as 'data' no indicator unfortunately. 
