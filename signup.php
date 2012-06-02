@@ -468,15 +468,15 @@ if (isset($_POST['register']))
 
 		// Validate Extended User Fields.
 		$eufVals = array();
-		if (isset($_POST['ue']))
+		//if (isset($_POST['ue']))
 		{
-			$eufVals = $usere->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()), TRUE);		// Validate the extended user fields
+			$eufVals = $usere->userExtendedValidateAll(varset($_POST['ue'], array()), varset($_POST['hide'],array()), TRUE);		// Validate the extended user fields
 		}
 
 
 		// Determine whether we have an error
 		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
-
+		
 		// All validated here - handle any errors
 		if ($error)
 		{
@@ -490,10 +490,11 @@ if (isset($_POST['register']))
 			{
 				$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 			}
-			if (varsettrue($eufData['errors']))
+			if (varsettrue($eufVals['errors']))
 			{
-				$temp[] = validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+				$temp[] = validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %t: %v', '<br />');
 			}
+
 			message_handler('P_ALERT', implode('<br />', $temp));
 		}
 	}		// End of data validation

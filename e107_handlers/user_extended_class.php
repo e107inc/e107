@@ -281,21 +281,23 @@ class e107_user_extended
 		global $tp;
 		$eufVals = array();		// 'Answer' array
 		$hideFlags = array();
+		
 		foreach ($this->fieldDefinitions as $k => $defs)
 		{
 			$category = $defs['user_extended_struct_parent'];
-			if (($category == 0) || (check_class($this->catDefinitions[$category]['user_extended_struct_applicable']) && check_class($this->catDefinitions[$category]['user_extended_struct_write'])))
+			if (($category == 0) || ($isSignup && (int) $this->catDefinitions[$category]['user_extended_struct_applicable'] === (int) e_UC_MEMBER && (int) $this->catDefinitions[$category]['user_extended_struct_write'] === (int) e_UC_MEMBER) || (check_class($this->catDefinitions[$category]['user_extended_struct_applicable']) && check_class($this->catDefinitions[$category]['user_extended_struct_write'])))
 			{	// Category applicable to user
-				if (check_class($defs['user_extended_struct_applicable']) && check_class($defs['user_extended_struct_write']))
+				
+				if (($isSignup && (int) $defs['user_extended_struct_applicable'] === (int) e_UC_MEMBER && (int) $defs['user_extended_struct_write'] === (int) e_UC_MEMBER) || (check_class($defs['user_extended_struct_applicable']) && check_class($defs['user_extended_struct_write'])))
 				{	// User can also update field
 					$f = 'user_'.$defs['user_extended_struct_name'];
 					if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
 					{	// Only allow valid keys
 						$val = varset($inArray[$f], FALSE);
-						$err = $this->user_extended_validate_entry($val, $defs);
+						$err = $this->user_extended_validate_entry($val, $defs); 
 						if ($err === true)
 						{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-							$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
+							$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
 							$eufVals['errors'][$f] = ERR_GENERIC;
 						}
 						elseif ($err)
