@@ -103,6 +103,13 @@ class e_form
 		$this->_required_string = $string;
 		return $this;
 	}
+	
+	// For Comma separated keyword tags. 
+	function tags($name, $value, $maxlength = 200, $options = array())
+	{
+		$options['class'] = 'tbox input-text e-tags';
+		return $this->text($name, $value, $maxlength, $options);	
+	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
@@ -588,9 +595,9 @@ class e_form
 	}
 
 	/**
-	 * Bbcode Area. Name, value, help_mode, form-id, size, counter
+	 * Bbcode Area. Name, value, template, form-id, size, options array eg. counter
 	 */
-	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
+	function bbarea($name, $value, $template = '', $help_tagid='', $size = 'large', $options = array())
 	{
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
@@ -612,26 +619,28 @@ class e_form
 		}
 
 		// auto-height support
-	   	$options = array('class' => 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg');
+	   	$options['class'] = 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight';
 		$bbbar = '';
 		
 		// FIXME - see ren_help.php
 		
-		require_once(e_HANDLER."ren_help.php");
-		$help_tagid = $this->name2id($name)."--preview"; // required as it needs to have some matching name with textarea.
+	//	require_once(e_HANDLER."ren_help.php"); // Ren-help no longer required. 
+	//	$bbbar = display_help($help_tagid, $template, 'addtext', 'help', $size);
+		$help_tagid = $this->name2id($name)."--preview"; // not really needed, but a unique name is always welcome
 		$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
-		$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
-
-
+	
+		$counter = vartrue($options['counter'],false); 
+		
 		$ret = "
 		<div class='bbarea {$size}'>
-		<div class='field-spacer'><!-- --></div>
-			{$bbbar}
-			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
+		<div class='field-spacer'><!-- --></div>\n";
+
+		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
+		$ret .=	$this->textarea($name, $value, $rows, 50, $options, $counter);
 			
-			
-		</div>
-		";
+		$ret .= "</div>\n";
+		
+		return $ret;
 		
 		// Quick fix - hide TinyMCE links if not installed, dups are handled by JS handler
 		/*
@@ -644,7 +653,7 @@ class e_form
 				");
 		*/
 		
-		return $ret;
+		
 	}
 
 	/**
@@ -752,7 +761,7 @@ class e_form
 	function label($text, $name = '', $value = '')
 	{
 		$for_id = $this->_format_id('', $name, $value, 'for');
-		return "<label$for_id>{$text}</label>";
+		return "<label$for_id class='e-tip'>{$text}</label>";
 	}
 	
 	function help($text)
@@ -1038,6 +1047,10 @@ class e_form
 					if($optval) $ret .= " required='required'";
 					break;
 					
+				case 'autofocus':
+					if($optval) $ret .= " autofocus='autofocus'";
+					break;
+					
 				case 'placeholder':
 					if($optval) $ret .= " placeholder='{$optval}'";
 					break;
@@ -1122,21 +1135,22 @@ class e_form
 		if(isset($this->_cached_attributes[$type])) return $this->_cached_attributes[$type];
 
 		$def_options = array(
-			'id' => '',
-			'class' => '',
-			'title' => '',
-			'size' => '',
-			'readonly' => false,
-			'selected' => false,
-			'checked' => false,
-			'disabled' => false,
-			'required' => false,	
-		//	'multiple' => false, - see case 'select'
-			'tabindex' => 0,
-			'label' => '',
-			'placeholder' => '',
-			'pattern'	=> '',
-			'other' => ''
+			'id' 			=> '',
+			'class' 		=> '',
+			'title' 		=> '',
+			'size' 			=> '',
+			'readonly' 		=> false,
+			'selected' 		=> false,
+			'checked' 		=> false,
+			'disabled' 		=> false,
+			'required' 		=> false,	
+			'autofocus'		=> false,	
+			'tabindex' 		=> 0,
+			'label' 		=> '',
+			'placeholder' 	=> '',
+			'pattern'		=> '',
+			'other' 		=> ''
+			//	'multiple' => false, - see case 'select'
 		);
 
 		switch ($type) {
@@ -1912,7 +1926,8 @@ class e_form
 			break;
 
 			case 'bbarea':
-				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'), varset($parms['counter'], false));
+				$options = array('counter' => varset($parms['counter'], false)); 
+				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
 			break;
 
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...

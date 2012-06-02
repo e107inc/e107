@@ -9,8 +9,7 @@ $(document).ready(function()
 			$(id).toggle("slow");
 		}); 
 		
-		// Date
-		$(function() {
+		// Dates --------------------------------------------------
 					
 			$("input.e-date").each(function() {
         		$(this).datepicker({
@@ -58,12 +57,11 @@ $(document).ready(function()
         		 $(this).datetimepicker('setDate', $("#"+newid).val());   		 
     		});
     		
-    		
-    		  		
-
-		});  
+ 		  	
 		
-		// Tabs
+		// Tabs -----------------------------------------------------
+		
+		
 		$(function() {
 			$( "#tab-container" ).tabs({cache: true});
 		});	
@@ -87,6 +85,9 @@ $(document).ready(function()
 			return false;
 		});
 		
+		
+		// --------------- Email ----------------------------------------
+		
 		$('.e-email').on('blur', function() {
 			// alert('hello');
 		  $(this).mailcheck({
@@ -103,16 +104,21 @@ $(document).ready(function()
 		    }
 	  		});
 		});
-		
+	
+	
+		// --------------- Passwords -----------------------------
+	
+		// front-end
 		$('.e-password').on('keyup', function() {
 			// var len = $(this).val().length;
 			
 			//data-minlength
 		});
 		
+
 		
-		
-		
+		// 	Tooltips for bbarea. 
+		$(".bbcode_buttons").tipsy({gravity: 's',opacity: 1.0, fade: true,html: true});
 		
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);
@@ -187,18 +193,6 @@ $(document).ready(function()
 		
 	//	$(".e-multiselect").chosen();
 		
-		
-		// Password
-		$(function() {
-			
-			$(".e-password-admin").pwdMeter({
-	            minLength: 6,
-	            displayGeneratePassword: true,
-	            generatePassText: "Generate",
-	            randomPassLength: 12
-	        });
-			
-        });
 					
 		// Character Counter
 	//	$("textarea").before("<p class=\"remainingCharacters\" id=\"" + $("textarea").attr("name")+ "-remainingCharacters\">&nbsp;</p>");
@@ -215,11 +209,33 @@ $(document).ready(function()
 		
 		// Dialog
 		$("a.e-dialog").colorbox({
-			iframe:true,
+		iframe:true,
 			width:"60%",
 			height:"70%",
 			speed:100
 		});
+		
+		/*
+		$("a.e-dialog").live('click',function() {
+			var link = $(this).attr("href");
+			
+		 	$(this).dialog({
+	            modal: true,
+	            open: function ()
+	            {
+	                $(this).load(link);
+	            },         
+	            height: 600,
+	            iframe: true,
+	            width: 700,
+	            title: 'Dynamically Loaded Page'
+        	});
+        	return false;
+		});
+		*/
+
+
+		
 		
 		$(".e-dialog-close").click(function () {
 			parent.$.colorbox.close()
@@ -232,10 +248,13 @@ $(document).ready(function()
 			$(id).dialog({
 				 minWidth: 800,
 				 maxHeight: 700,
+				 
 				 modal: true
 			 });
 		});
 	
+		  
+		
 		
 				
 		$(".e-shake" ).effect("shake","",100);
@@ -302,7 +321,7 @@ $(document).ready(function()
 		});
 
 		// Text-area AutoGrow
-	//	$("textarea.e-autoheight").elastic();
+		$("textarea.e-autoheight").elastic();
 
 		
 		
@@ -320,7 +339,9 @@ $(document).ready(function()
 	
 	function expandit(e) {
 				
-			var href = $(e).attr("href");
+		
+		var href = ($(e).is("a")) ? $(e).attr("href") : '';
+
 						
 			if(href === "#" || href == "") 
 			{

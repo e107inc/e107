@@ -30,13 +30,13 @@ class bbcode_shortcodes extends e_shortcode
 	function bb_format($id)
 	{
 		 
-		$text = "<select class='e-bb' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
+		$text = "<select class='e-bb bbcode_buttons e-pointer' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
 			<option value=''>Format</option>		
-			<option value='[p][/p]'>Paragraph [p]</option>
-			<option value='[h2][/h2]'>Heading [h2]</option>
-			<option value='[block][/block]'>Block [div]</option>
-			<option value='[blockquote][/blockquote]'>Quote [blockquote]</option>
-			<option value='[code][/code]'>Code [code]</option>
+			<option value='[p][/p]'>Paragraph</option>
+			<option value='[h2][/h2]'>Heading</option>
+			<option value='[block][/block]'>Block</option>
+			<option value='[blockquote][/blockquote]'>Quote</option>
+			<option value='[code][/code]'>Code</option>
 			</select>";
 			
 		return $text;
@@ -49,8 +49,8 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
 		$data = "[table][tr][td]Cell 1[/td][td]Cell 2[/td][/tr][/table]";
 		$event = $this->getEvent('addtext',$data,'Insert a table',1);
-		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
-		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' title='Insert a table' /></a>";
 		return $text;
 	}
 	
@@ -59,8 +59,8 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
 		$data = "[newpage]";
 		$event = $this->getEvent('addtext',$data,LANHELP_34,1);
-		$text = "<a {$event} class='e-bb e-tabs-add' id='{$id}' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
-		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/newpage.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb e-tabs-add' id='{$id}' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/newpage.png' alt='' title='".LANHELP_34."'  /></a>";
 		return $text;
 	}
 	
@@ -72,8 +72,8 @@ class bbcode_shortcodes extends e_shortcode
 		$data = "[list][*]Item 1[*]Item 2[/list]";
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
 		$event = $this->getEvent('addtext',$data,LANHELP_36);
-		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='".LANHELP_36."' data-bbcode='{$data}'>";
-		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}'>";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' title='".nl2br(LANHELP_36)."' /></a>";
 		return $text;
 	}
 	
@@ -81,8 +81,8 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$data = "[youtube]*[/youtube]";
 		$event = $this->getEvent('addinput',$data,LANHELP_48);
-		$text = "<a {$event} class='e-bb' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".LANHELP_48."' data-bbcode='{$data}'>
-		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb' id='{$id}' data-function='input' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
+		$text .="<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/youtube.png' alt='' title='".nl2br(LANHELP_48)."' /></a>";
 		return $text;
 	}
 	
@@ -90,8 +90,8 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$data = "[link=*]*[/link]";
 		$event = $this->getEvent('addinput',$data,LANHELP_35);
-		$text = "<a {$event} class='e-bb' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".LANHELP_35."' data-bbcode='{$data}'>
-		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/link.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>\n";
+		$text .="<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/link.png' alt='' title='".nl2br(LANHELP_23)."' /></a>";
 		return $text;
 	}
 	
@@ -107,7 +107,7 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		$text = "<a class='e-dialog' id='{$id}' href='".e_ADMIN."image.php?mode=main&action=dialog&for=".$this->var['template']."&tagid=".$tag."&iframe=1&bbcode=1'  >";
-		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' alt='' />";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
 	}
@@ -123,25 +123,25 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		$text = "<a class='e-dialog' id='{$id}' href='".e_ADMIN."image.php?mode=dialog&action=list&for=download_file&tagid=".$tag."&iframe=1&bbcode=1'  >";
-		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' alt='' />";
+		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
 		$text .= "</a>\n";
 		return $text;
 	}	
 	
-	function bb_fontsize($id)
+	function bb_fontsize($id) // FIXME CSS issues 
 	{
 		
 		 $data = "size";
 		 $formid = $id."_";
 
 		 $event = $this->getEvent('expandit',$formid, LANHELP_22);
-		$text = "<a {$event} class='e-bb'  data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
-		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontsize.png' alt='' /></a>";
+		$text = "<a {$event} class='e-bb e-expandit'  onclick=\"expandit('{$this->var['tagid']}')\" data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
+		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontsize.png' alt='' title='".LANHELP_22."' /></a>";
 		
 		
 		$text .="<!-- Start of Size selector -->
-		<div style='margin-left:0px;margin-right:0px; position: absolute; left:340px; top:60px;z-index:1000;display:none' id='{$formid}'>";
-		$text .="<div style='position:absolute; bottom:30px; left:125px; width:100px'>";
+		<div id='{$this->var['tagid']}' style='display:none;margin-left:0px;margin-right:0px; position: absolute; left:340px; top:60px;z-index:5000;' >";
+		$text .="<div style='position:relative;bottom:30px; left:125px; width:100px'>";
 		$text .= "<table class='fborder' style='background-color: #fff'>
 		<tr><td class='forumheader3'>
 		<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
@@ -156,10 +156,10 @@ class bbcode_shortcodes extends e_shortcode
 		return $text;	
 	}
 
+		
 
 
-
-	function bb_fontcol($id)
+	function bb_fontcol($id) // JS in this breaks ajax loading.  
 	{
 		return '';
 		// $bbcode['fontcol'] = array("e-expandit","col_selector_".$rand, LANHELP_21,"fontcol.png","Color_Select",'col_selector_'.$rand);
@@ -169,7 +169,7 @@ class bbcode_shortcodes extends e_shortcode
 		 
 		 
 		$text = "<a {$event} class='e-bb' id='{id}' data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
-		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontcol.png' alt='' /></a>";
+		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontcol.png' alt='' title='".LANHELP_21."' /></a>";
 		
 	//	return $text;
 		
@@ -269,10 +269,12 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			$meth = "bb_".$parm;
 			$mes = e107::getMessage();
-			$mes->debug("Loaded BB: ".$parm);
+		//	$mes->debug("Loaded BB: ".$parm);
 			$unique = $this->var['template']."--".$parm; // works in conjunction with media-manager category
 			return "\n\n<!-- {$parm} -->\n".$this->$meth($unique);
 		}
+		
+		// NOTE: everything below here could be replaced with separate 'bb_xxxx' methods if need be. (see above)
 	
 		
 		//FIXME - cachevars/getcachedvars!
@@ -385,7 +387,7 @@ class bbcode_shortcodes extends e_shortcode
 		if($bbcode[$parm])  // default - insert text.
 		{
 			$text = $pre;
-			$text .= "<img class='bbcode bbcode_buttons e-pointer' src='".$iconpath[$parm]."' alt='' title='".$_helptxt."' onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
+			$text .= "<img class='bbcode bbcode_buttons e-pointer' src='".$iconpath[$parm]."' alt='' title=\"".nl2br($_helptxt)."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." />";
 			$text .= $post;
 		}
 	
@@ -404,6 +406,7 @@ class bbcode_shortcodes extends e_shortcode
 
 	function sc_bb_help($parm)
 	{
+		return ''; // Use tooltips instead. 
 		/*
 		global $bbcode_helpactive,$bbcode_helptag, $bbcode_helpsize;
 		if($parm) $bbcode_helptag = $parm;

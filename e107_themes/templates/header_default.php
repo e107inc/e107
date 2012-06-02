@@ -23,15 +23,19 @@ define('ADMIN_AREA',FALSE);
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
 
-e107::css('core', 	'password/style.css', 'jquery');
-e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-e107::js('core',	'jquery.mailcheck.min.js','jquery',2);
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
+// Used for Signup form elements - could be on any page of the site. 
+e107::js('core',	'jquery.mailcheck.min.js','jquery',2);
+e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
+e107::css('core', 	'tooltip/tipsy.css', 'jquery');
+// ------------------
 
 e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
 e107::css('core', 	'core/all.jquery.css', 'jquery');
+
+e107::js("core",	"core/front.jquery.js","jquery",5); // Load all default functions.
 e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions.
 
 
@@ -153,7 +157,7 @@ $e_pref = e107::getConfig('core');
 if (/*!defined("PREVIEWTHEME") && */!isset($no_core_css) || !$no_core_css) 
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-	$e_js->otherCSS('{e_FILE}e107.css');
+	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
 // Load Plugin Header Files, allow them to load CSS/JSS via JS Manager early enouhg

@@ -67,7 +67,7 @@ define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
 //define("LAN_SIGNUP_28", "choice of Content/Mail-lists");		Now LAN_USER_73
-define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
+//define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
 //define("LAN_SIGNUP_31", "URL to your XUP file");
 //define("LAN_SIGNUP_32", "What's an XUP file?");
@@ -129,7 +129,7 @@ define('LAN_SIGNUP_85', 'Usernames and passwords are <b>case-sensitive</b>.');	/
 define('LAN_SIGNUP_89', 'Display Name: ');										// LAN_7
 define('LAN_SIGNUP_90', 'the name that will be displayed on site');				// LAN_8
 define('LAN_SIGNUP_91', 'Real Name: ');											// LAN_308
-define('LAN_SIGNUP_92', 'your real name, including first and last name');		// LAN_310
+//define('LAN_SIGNUP_92', 'your real name, including first and last name');		// LAN_310
 define('LAN_SIGNUP_93', 'Signature: ');											// LAN_120
 define('LAN_SIGNUP_94', 'Avatar: ');											// LAN_121
 define('LAN_SIGNUP_95', 'Enter code visible in the image');						// LAN_410
@@ -150,5 +150,9 @@ define("LAN_LOGINNAME", "Username");
 define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
 
+define("LAN_SIGNUP_107", "Password must be a minimum of [x] characters and include at least one UPPERCASE letter and a digit");
+define("LAN_SIGNUP_108", "Must be a valid email address");
+define("LAN_SIGNUP_109", "Must not contain any spaces");//TODO check against regex requirements 
+define("LAN_SIGNUP_110", "Your full name");
 
 ?>

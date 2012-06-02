@@ -1800,7 +1800,7 @@ class admin_newspost
 		$this->_pre_create();
 
 		require_once(e_HANDLER."userclass_class.php");
-		require_once(e_HANDLER."form_handler.php");
+	//	require_once(e_HANDLER."form_handler.php");
 	//	$frm = new e_form(true); //enable inner tabindex counter
 		$frm = e107::getForm();
 
@@ -1913,6 +1913,9 @@ class admin_newspost
 									".$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250)."
 								</td>
 							</tr>
+							
+							
+							
 		";
 
 
@@ -2076,9 +2079,14 @@ class admin_newspost
 							</tr>
 
 							<tr>
-								<td class='label'>Meta keywords: </td>
-								<td class='control'>".$frm->text('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."</td>
+								<td class='label'>".LAN_KEYWORDS.": </td>
+								<td class='control'>".$frm->tags('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."
+								<div class='field-help'>Keywords/tags associated to associate with this news item</div>
+								</td>
+								
 							</tr>
+							
+		
 							<tr>
 								<td class='label'>Meta description: </td>
 								<td class='control'>".$frm->textarea('news_meta_description', $tp->post_toForm($_POST['news_meta_description']), 7)."</td>
@@ -2114,8 +2122,7 @@ class admin_newspost
 		";
 
 
-		$text .= "
-										".$frm->radio_multi('news_render_type', $this->news_renderTypes, $_POST['news_render_type'], true)."
+		$text .= $frm->radio_multi('news_render_type', $this->news_renderTypes, $_POST['news_render_type'], true,array(NWSLAN_74))."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
@@ -2181,9 +2188,9 @@ class admin_newspost
 								<tr>
 									<td class='label'>".LAN_NEWS_28.":</td>
 									<td class='control'>
-										".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_30, 'news_sticky', '1')."
+										".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_29, 'news_sticky', '1')."
 										<div class='field-help'>
-											".LAN_NEWS_29."
+											".LAN_NEWS_30."
 										</div>
 									</td>
 								</tr>

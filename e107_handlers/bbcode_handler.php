@@ -442,7 +442,66 @@ class e_bbcode
 	{
 		$this->setClass();	
 	}
-}
+	
+	
+	
+	
+	// NEW bbcode button rendering function. replacing displayHelp(); 
+	function renderButtons($template,$id='')
+	{
+
+		$tp = e107::getParser();
+		require_once(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
+
+		$pref = e107::getPref('e_bb_list');
+		    
+		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
+		{
+			foreach($pref as $val)
+			{
+				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+				{
+					require(e_PLUGIN.$val."/e_bb.php");
+				}
+			}
+		}
+	
+		$temp = array();
+	    $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
+		$temp['submitnews']	= $BBCODE_TEMPLATE_SUBMITNEWS;
+		$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
+		$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
+		$temp['mailout']	= $BBCODE_TEMPLATE_MAILOUT;
+		$temp['page']		= $BBCODE_TEMPLATE_CPAGE;
+		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
+		$temp['comment'] 	= $BBCODE_TEMPLATE;
+		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
+	
+		if(isset($temp[$template]))
+		{
+	        $BBCODE_TEMPLATE = $temp[$template];
+		}
+	
+		$bbcode_shortcodes = e107::getScBatch('bbcode');	
+				
+		$data = array(
+				'tagid'			=> $id,
+				'template'		=> $template,
+				'trigger'		=> $addtextfunc,
+		//		'hint_func'		=> $helpfunc, // unused
+		//		'hint_active'	=> $bbcode_helpactive, // unused
+				'size'			=> $helpsize
+		);
+				
+		$bbcode_shortcodes->setParserVars($data);	
+		
+  		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE)."</div>";		
+	}
+	
+	
+	
+	
+} // end Class 
 
 
 

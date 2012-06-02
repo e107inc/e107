@@ -83,30 +83,40 @@ class signup_shortcodes extends e_shortcode
 		{
 		  return LAN_SIGNUP_67;
 		}
-		if ($pref['signup_option_loginname'])
+	//	if ($pref['signup_option_loginname'])
 		{
 			$log_name_length = varset($pref['loginname_maxlength'],30);
-			return $rs->form_text("loginname", 30,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length);
+			$options = array('size'=>30,'required'=>1);
+			$options['title'] = str_replace("[x]",$log_name_length,LAN_SIGNUP_109); // Password must be at least 
+	
+			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length, $options);
+			// return $rs->form_text("loginname", 30,  , $log_name_length);
 		}
 	}
 	
 	
 	function sc_signup_realname()
 	{
-		global $rs, $pref;
-		if ($pref['signup_option_realname'])
-		{
-			return $rs->form_text("realname", 30,  ($_POST['realname'] ? $_POST['realname'] : $realname), 100);
-		}
+		$pref = e107::getPref('signup_option_realname');
+		if($pref < 1){ return; }
+			
+		$options 				= array('size'=>30);
+		$options['required'] 	= ($pref==2) ? 1 : 0;
+		$options['title']		= LAN_SIGNUP_110;
+		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : $realname), 100, $options);
+			
+		//return $rs->form_text("realname", 30,  ($_POST['realname'] ? $_POST['realname'] : $realname), 100);
 	}
 	
 	
 	function sc_signup_password1()
 	{
 		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
+	//	$options['title'] = 'Password must contain at least 6 characters, including UPPER/lowercase and numbers';
 		$len = vartrue(e107::getPref('signup_pass_len'),6);
-	//	$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
-		$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
+		$options['title'] = str_replace("[x]",$len,LAN_SIGNUP_107); // Password must be at least 
+		$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
+	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 		
 		return e107::getForm()->password('password1', '', 20, $options);
 	}
@@ -131,6 +141,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_email()
 	{	
 		$options = array('size'=>30,'required'=>1,'class'=>'tbox input-text e-email');
+		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address. 
 		$text = e107::getForm()->email('email',($_POST['email'] ? $_POST['email'] : $email),100,$options);
 		$text .= "<div class='e-email-hint' style='display:none' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
 		return $text;
@@ -267,9 +278,11 @@ class signup_shortcodes extends e_shortcode
 		global $pref, $SIGNUP_SIGNATURE_START, $SIGNUP_SIGNATURE_END;
 		if($pref['signup_option_signature'])
 		{
-			require_once(e_HANDLER."ren_help.php");
-			$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_START);
-			$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_END);
+			$frm = e107::getForm();
+			return $frm->bbarea('signature', $sig, 'signature','helpb','small');
+		//	require_once(e_HANDLER."ren_help.php");
+			$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", $area, $SIGNUP_SIGNATURE_START);
+			$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", $area, $SIGNUP_SIGNATURE_END);
 			$sig = ($_POST['signature'] ? $_POST['signature'] : $signature);
 			return $SIGNUP_SIGNATURE_START.$sig.$SIGNUP_SIGNATURE_END;
 		}
@@ -285,10 +298,10 @@ class signup_shortcodes extends e_shortcode
 			$text = "
 			<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 		
-			<input class='button' type ='button' style='cursor:pointer' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
-			<div style='display:none' >";
+			<input class='button' type ='button' style='cursor:pointer' size='30' value='".LAN_SIGNUP_27."' onclick=\"expandit(this)\" />
+			<div id='signup-avatar' style='display:none' >";
 			$avatarlist[0] = "";
-			$handle = opendir(e_IMAGE."avatars/");
+			$handle = opendir(e_MEDIA."avatars/");
 			while ($file = readdir($handle))
 			{
 				if ($file != "." && $file != ".." && $file != "CVS" && $file != "index.html")

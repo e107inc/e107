@@ -10,7 +10,7 @@
 		<core name="adminstyle">infopanel</core>
 		<core name="admintheme">jayya</core>
 		<core name="allowCommentEdit">0</core>
-		<core name="allowEmailLogin">0</core>
+		<core name="allowEmailLogin">2</core>
 		<core name="anon_post">0</core>
 		<core name="antiflood1">1</core>
 		<core name="antiflood_timeout">10</core>
@@ -156,14 +156,14 @@
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
 		<core name="signup_maxip">3</core>
-		<core name="signup_option_class">1</core>
+		<core name="signup_option_class">0</core>
 		<core name="signup_option_customtitle">0</core>
 		<core name="signup_option_email_confirm">0</core>
 		<core name="signup_option_image">0</core>
-		<core name="signup_option_realname">1</core>
+		<core name="signup_option_realname">0</core>
 		<core name="signup_option_signature">0</core>
 		<core name="signup_option_hideemail">0</core>
-		<core name="signup_pass_len">4</core>
+		<core name="signup_pass_len">6</core>
 		<core name="signup_remote_emailcheck">0</core>
 		<core name="signup_text"></core>
 		<core name="signup_text_after"></core>

@@ -11,6 +11,6 @@ img.e-rate				{    }
 .e-rate-status-download { text-align:left; }
 .e-rate-votes			{ vertical-align:middle; display:inline-block; width:100px }
 select.e-bb				{ margin-top:4px; display:inline-block; vertical-align:top }
-.bbcode_buttons			{ border:1px solid transparent }
+.bbcode_buttons			{ border:1px solid transparent; background-color: #FFFFFF }
 .bbcode_buttons:hover	{ background-color: silver; border:1px solid black; }
 

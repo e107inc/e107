@@ -15,13 +15,24 @@
 
 // $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."bbcode/template.png");
 // Simplified default bbcode bar - removed P, H, BR and NOBR bbcodes
+
+
+// This is used on the front-end. ie. comments etc. 
 $BBCODE_TEMPLATE = "
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=justify}{BB=center}{BB=left}{BB=right}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=list}{BB=emotes}
 	<div class='field-spacer'><!-- --></div>
 ";
 
 // $BBCODE_TEMPLATE .= "{BB=blank}";
+
+$BBCODE_TEMPLATE_SIGNATURE = "
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=justify}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=list}
+	<div class='field-spacer'><!-- --></div>
+";
+
+
 
 
 // $sc_style['BB_HELP']['pre'] = "<div style='text-align:center'>";

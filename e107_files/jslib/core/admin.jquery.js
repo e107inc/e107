@@ -1,26 +1,34 @@
 $(document).ready(function()
 {
 
-		/*
-		$(".field-help").each(function(c) {
-		
-			$(this).before("<a class='field-tip-"+c+"' href='#'><img src='../e107_images/admin_images/info_16.png' /></a>");	
-			$(this).hide();
-			$(".field-tip-"+c).qtip({
-		   		content: $(this).html(),
-		   		show: 'mouseover',
-		   		hide: 'mouseout',
-		   		style: { 
-		      		name: 'dark', // Inherit from preset style
-		      		border: { width: 1, radius: 5 },
-		      		tip: 'topLeft'
-		   		}
-			})
+		$("input,textarea,select,.e-tip").each(function(c) {
+			
+			$(this).nextAll(".field-help").hide();
+		//	alert('hello');
+			$(this).tipsy({title: function() {
+				var tip = $(this).nextAll(".field-help").text();
+				if(!tip)
+				{
+				 var tip = $(this).find(".field-help").text();	
+				}
+				 return tip; 
+				},
+				fade: true,
+				html: true,
+				gravity: 'w'  
+			});
 		
 		});
-		*/
-
-
+		
+		$(".e-radio-multi").each(function() {
+		//	$(this).nextAll(".field-help").hide();
+		//	$(this).nextAll(":input").tipsy({title: 'hello'});
+			
+		});
+		
+		
+		$(".e-tags").tagit();
+		
 		
 		$(".e-multiselect").chosen();
 		
@@ -75,7 +83,13 @@ $(document).ready(function()
 		}); 
 		
 		
-		
+		// backend 
+		$(".e-password-admin").pwdMeter({
+	            minLength: 6,
+	            displayGeneratePassword: true,
+	            generatePassText: "Generate",
+	            randomPassLength: 12
+	    });
 		
 		
 		
