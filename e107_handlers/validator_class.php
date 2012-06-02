@@ -1376,6 +1376,10 @@ class validatorClass
 			{
 				$curLine = str_replace('%t', constant($constPrefix.$n), $curLine);		// Standard messages
 			}
+			if(empty($vars['failed'][$f]))
+			{
+				$vars['failed'][$f] = LAN_VALIDATE_191; 
+			}
 			$curLine = str_replace('%v', htmlentities($vars['failed'][$f]),$curLine);
 			$curLine = str_replace('%f', $f, $curLine);
 			if ($checkNice & isset($niceNames[$f]['niceName']))
