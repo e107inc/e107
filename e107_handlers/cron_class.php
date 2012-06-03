@@ -93,6 +93,64 @@ class _system_cron
 		}
 	}
 	
+	// Very basic and needs improvement. (for large DBs)
+	function dbBackup()
+	{
+		require(e_BASE."e107_config.php");
+
+		$sql = e107::getDb();
+		$dbtable = $mySQLdefaultdb; // TODO - retrieve this in a better way. (without including e107_config) 
+	
+		$backupFile = e_SYSTEM."backups/".SITENAME."_".date("Y-m-d-H-i-s").".sql";
+		$result = mysql_list_tables($dbtable);
+		
+		while ($tab = mysql_fetch_array($result, MYSQL_NUM))
+		{
+			$table = $tab[0];
+			$text = "";
+			
+			$sql->db_Select_gen("SHOW CREATE TABLE `".$table."`");
+			$row2 = $sql->db_Fetch();
+			$text .= $row2['Create Table'];
+			$text .= ";\n\n";
+			
+			$sql->db_Select_gen("SELECT * FROM `".$table."`");
+			$data_array = array();
+		
+			while($row = $sql->db_Fetch())
+			{
+				if(!$fields)
+				{
+					$fields = array_keys($row);			
+				}
+				
+				$d = array();
+				foreach($fields as $val)
+				{
+					$d[] = "'".mysql_real_escape_string($row[$val])."'"; 				
+				}
+	
+				$data_array[] = "(".implode(", ",$d).")";
+	
+			}
+			
+			
+			$text .= "\nINSERT INTO `".$table."` (`".implode("` ,`",$fields)."`) VALUES \n";
+			$text .= implode(",\n",$data_array);
+			$text .= ";\n\n\n";		
+			$c++;		
+		    
+			file_put_contents($backupFile,$text,FILE_APPEND);
+			unset($fields);	
+			
+		}
+				
+		
+		
+	}
+	
+	
+	
 }
 
 
