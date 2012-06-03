@@ -47,7 +47,7 @@ class cron_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
-	//	'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
+		'main/refresh' 	=> array('caption'=> "Refresh", 'perm' => '0','url'=>'cron.php'),
 	//	'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
@@ -151,9 +151,16 @@ class cron_admin_ui extends e_admin_ui
 					'description' 	=> 'Process bounce retriggers<br />Only needed if retriggering of bans enabled.',
 					'available' 	=> e107::getPref('ban_retrigger')
 				),
+				4 => array(
+					'name' 			=> 'Database Backup',
+					'category'		=> 'backup',
+					'function' 		=> 'dbBackup',
+					'description' 	=> 'Backup the system database to '.e_SYSTEM.'backups/',
+					'available' 	=> e107::getPref('ban_retrigger')
+				),
 			);
 	
-			if(!$_GET['action'])
+			if(!$_GET['action'] || $_GET['action'] == 'refresh')
 			{
 				
 				$this->cronImport($cronDefaults);	// import Core Crons (if missing)
