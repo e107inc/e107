@@ -669,12 +669,12 @@ class themeHandler
 		
 		$previewbutton = (!$mode ? "<input class='button top' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
 		
-		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/main_16.png'  name='selectmain[".$theme['id']."]' alt='' title=\"".TPVLAN_10."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S16' />";
-		$info_icon = "<a href='#themeInfo_".$theme['id']."' class='e-expandit' title='Click to select columns to display'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' title=\"".TPVLAN_7."\" class='icon S16' /></a>\n";
-		$preview_icon = "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/search_16.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />\n";
-		$admin_icon = ($pref['admintheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."e107_icon_16.png'  name='selectadmin[".$theme['id']."]' alt='' title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S16' />";
+		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt='' title=\"".TPVLAN_10."\" />" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
+		$info_icon = "<a href='#themeInfo_".$theme['id']."' class='e-modal e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
+		$preview_icon = "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/search_32.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />";
+		$admin_icon = ($pref['admintheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt='' title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
 		
-		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
+		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img class='admin-theme-thumb' src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
 		
 		// Choose a Theme to Install.
 		if(!$mode)
@@ -682,14 +682,13 @@ class themeHandler
 			// styles NEED to be put into style.css
 			
 			$borderStyle = (($pref['sitetheme'] == $theme['path']) || ($pref['admintheme'] == $theme['path'])) ? "border:1px solid black" : "border:1px dotted silver;background-color:#DDDDDD";
-			$text = "<div class='f-left block-text' style='margin:5px;".$borderStyle.";width:202px;height:160px'>
-					<div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>
-					<div class='f-left mediumtext' style='width:55%;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
-					<div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>";
-			
-			//FIXME e-hideme doesn't work when JS is turned off. 
-			// This popup information should be loaded with ajax. 		
-			$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
+			$text = "<div class='f-left block-text admin-theme-cell' style='margin:5px;".$borderStyle.";'>
+					<div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>";
+			$text .= "<div class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>";
+					
+			$text .= "<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>";
+		//	$text .= "<div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>";
+			$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='background-color:white;position:relative;top:-130px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
 
 			$text .= "</div>";
 			return $text;

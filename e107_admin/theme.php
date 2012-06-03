@@ -24,6 +24,33 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'theme_manage';
 
+e107::css("inline","
+
+.admin-theme-thumb			{    }
+.admin-theme-thumb:hover	{ opacity:0.4 }
+
+.admin-theme-options		{ transition: opacity .20s ease-in-out;
+							 -moz-transition: opacity .20s ease-in-out;
+							 -webkit-transition: opacity .20s ease-in-out;
+							 opacity:0.1; 
+							 width:100%;
+							 height:80px;
+							 padding-top:50px;
+							 white-space:nowrap;
+							 background-color:black;
+							 display:block;position:relative; text-align:center; vertical-align:middle; top:-141px;}
+
+.admin-theme-options:hover	{ opacity:0.8; }
+
+.admin-theme-title			{ font-size: 15px; overflow:hidden; white-space:no-wrap; width:200px; position:relative; top:-130px; }
+
+.admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }
+
+.admin-theme-select-active	{ background-color:red;float:left }
+
+.admin-theme-cell			{ width:202px; height:160px; -moz-border-radius: 5px; border-radius: 5px; }
+");
+
 require_once("auth.php");
 
 require_once(e_HANDLER."theme_handler.php");

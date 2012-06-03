@@ -137,7 +137,7 @@ $text = "
 				<tbody>
 					<tr>
 						<td>
-							<strong>".CACLAN_11."</strong>
+							<strong class='e-tip'>".CACLAN_11."</strong>
 							<div class='field-help'>".CACLAN_13."</div>
 						</td>
 						<td>{$contentcache_label}</td>
@@ -147,7 +147,7 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_12."</strong>
+							<strong class='e-tip'>".CACLAN_12."</strong>
 							<div class='field-help'>".CACLAN_14."</div>
 						</td>
 						<td>{$syscache_label}</td>
@@ -157,7 +157,7 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_20."</strong>
+							<strong class='e-tip'>".CACLAN_20."</strong>
 							<div class='field-help'>".CACLAN_21."</div>
 						</td>
 						<td>{$dbcache_label}</td>
@@ -167,7 +167,7 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong>".CACLAN_22."</strong>
+							<strong class='e-tip'>".CACLAN_22."</strong>
 							<div class='field-help'>".CACLAN_23."</div>
 						</td>
 						<td>{$imgcache_label}</td>

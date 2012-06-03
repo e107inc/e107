@@ -1,16 +1,26 @@
 $(document).ready(function()
 {
-
-		$("input,textarea,select,.e-tip").each(function(c) {
+		// run tips on title attribute. 
+		$(".e-tip").each(function() {
+			var tip = $(this).attr('title');
+			if(!tip)
+			{
+				return;
+			}
 			
+			$(this).tipsy({opacity:1.0,fade:true});
+			// $(this).css( 'cursor', 'pointer' )
+		});
+		
+		
+	
+		// run tips on .field-help 
+		$("input,textarea,select,label,.e-tip").each(function(c) {
+					
 			$(this).nextAll(".field-help").hide();
 		//	alert('hello');
 			$(this).tipsy({title: function() {
 				var tip = $(this).nextAll(".field-help").text();
-				if(!tip)
-				{
-				 var tip = $(this).find(".field-help").text();	
-				}
 				 return tip; 
 				},
 				fade: true,
@@ -19,15 +29,13 @@ $(document).ready(function()
 			});
 		
 		});
-		
-		
-		
-		$(".e-radio-multi").each(function() {
+	
+	
+			$(".e-radio-multi").each(function() {
 		//	$(this).nextAll(".field-help").hide();
 		//	$(this).nextAll(":input").tipsy({title: 'hello'});
 			
 		});
-		
 		
 		$(".e-tags").tagit();
 		
