@@ -140,7 +140,7 @@ class bbcode_shortcodes extends e_shortcode
 		
 		
 		$text .="<!-- Start of Size selector -->
-		<div id='{$this->var['tagid']}' style='display:none;margin-left:0px;margin-right:0px; position: absolute; left:340px; top:60px;z-index:5000;' >";
+		<div id='{$this->var['tagid']}' class='e-hideme col-selection' style='position:relative;top:30px;left:200px' >";
 		$text .="<div style='position:relative;bottom:30px; left:125px; width:100px'>";
 		$text .= "<table class='fborder' style='background-color: #fff'>
 		<tr><td class='forumheader3'>
