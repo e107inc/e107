@@ -58,11 +58,13 @@ if(strpos(e_QUERY, 'configure') !== FALSE )
 	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
 	
 	
-	e107::css('inline',"	.column { width: 170px; float: left; padding-bottom: 100px; }
+	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
+	.regularMenu { border:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px }
+	.menuOptions { padding-top:7px; padding-right:5px; text-align:right; }
 	.portlet { margin: 0 1em 1em 0; }
 	.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor:move }
 	.portlet-header .ui-icon { float: right; }
-	.portlet-content { padding: 10px; }
+	.portlet-content { padding: 7px; }
 	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 	.ui-sortable-placeholder * { visibility: hidden; }
 	",'jquery');
@@ -84,7 +86,7 @@ require_once(e_HANDLER."menumanager_class.php");
 
 	$rs = new form;
 	$frm = new e_form();
-	$men = new e_menuManager(1);   // use 1 for dragdrop.
+	$men = new e_menuManager(0);   // use 1 for dragdrop.
 
 
 if(e_AJAX_REQUEST)

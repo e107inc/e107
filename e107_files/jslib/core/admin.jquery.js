@@ -20,6 +20,8 @@ $(document).ready(function()
 		
 		});
 		
+		
+		
 		$(".e-radio-multi").each(function() {
 		//	$(this).nextAll(".field-help").hide();
 		//	$(this).nextAll(":input").tipsy({title: 'hello'});
@@ -371,6 +373,7 @@ $(document).ready(function()
 		});
 
 		$( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+	//	$( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
 			.find( ".portlet-header" )
 				.addClass( "ui-widget-header ui-corner-all" )
 				.prepend( "<span class='ui-icon ui-icon-minusthick'></span>")

@@ -30,8 +30,9 @@ class faqs_shortcodes
 				
 		if($parm == 'expand')
 		{
-			$text = "<a class='e-expandit faq-question' href='faqs.php'>".$tp->toHtml($this->row['faq_question'])."</a>
-			<div class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->row['faq_answer'],TRUE)."</div>";		
+			$id = "faq_".$this->row['faq_id'];
+			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHtml($this->row['faq_question'])."</a>
+			<div id='{$id}' class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->row['faq_answer'],TRUE)."</div>";		
 		}
 		else
 		{

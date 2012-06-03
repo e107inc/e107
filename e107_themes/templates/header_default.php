@@ -32,6 +32,7 @@ e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
 e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 // ------------------
 
+e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
 e107::css('core', 	'core/all.jquery.css', 'jquery');
 
