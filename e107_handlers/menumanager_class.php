@@ -28,6 +28,7 @@ class e_menuManager {
         var $menuActivateIds;
 		var $debug;
 		var $menuMessage;
+		var $style = 'default';
 
 		function __construct($dragdrop=FALSE)
 		{
@@ -1035,6 +1036,7 @@ class e_menuManager {
 		}
 		else if(strstr($str, "MENU"))
 		{
+			
 			$matches = array();
 			if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches))
 			{
@@ -1075,11 +1077,13 @@ class e_menuManager {
 						$sql9->db_Select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
 						$menu_count = $sql9->db_Rows();
 						
+						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
+						
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
 						while($row = $sql9->db_Fetch(MYSQL_ASSOC))
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
-							$menuText .= "<div class='portlet' id='block-".$row['menu_id']."-".$menu."'>\n";
+							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";
 		
 						//	echo "<div class='ggportal'>";
 							
@@ -1120,6 +1124,8 @@ class e_menuManager {
 		{
 			$tmp = explode("=", $str);
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
+			$this->style = $style;
+			
 		}
 		else if(strstr($str, "SITEDISCLAIMER"))
 		{
@@ -1131,6 +1137,8 @@ class e_menuManager {
 	function menuRenderMenu($row,$menu_count,$rep = FALSE)
 	{
 		global $ns,$rs,$menu,$menu_info,$menu_act;
+		global $style;
+		$style = $this->style;
 		//      $menu_count is empty in here
 		//FIXME extract
 		extract($row);
@@ -1207,7 +1215,7 @@ class e_menuManager {
 				
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
-		$text .= '<div class="center">
+		$text .= '<div class="menuOptions">
 		<a class="e-dialog" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1" title="'.MENLAN_20.'">'.ADMIN_VIEW_ICON.'</a>';
 
 		if($conf)
@@ -1219,33 +1227,18 @@ class e_menuManager {
 		$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;parmsId='.$menu_id.'" 
 		title="Configure parameters">'.ADMIN_EDIT_ICON.'</a>';
 
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'</a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
 		</div>';
 
 		$text .= ($rep == true) ? "</div>" : "";
-/*
-		if($this->dragDrop)
-		{
 
-			$text .= '
-			<div class="block-controls">
-				<a class="block-remove"><span>x</span></a> <a class="block-config"><span>e</span></a>
-			</div>
-			<div class="config" style="display: none; width: 200px;">
-				<div>config-params</div>
-				<div style="float:right">
-					<a href="#" class="cancel-button">cancel</a>
-					<a href="#" class="save-button">save</a>
-				</div>
-			</div>';
-		}
-*/
 		
 		
 		if(!$this->dragDrop)
 		{
+			
 			ob_start();
 
 			$ns->tablerender($caption, $text);
@@ -1256,10 +1249,10 @@ class e_menuManager {
 		}
 		else
 		{
+			
 			return "
 			<div class='portlet-header'>".$caption."</div>
-			<div class='portlet-content'>".$text."</div>";
-		
+			<div class='portlet-content' >".$text."</div>";		
 		}
 		
 		

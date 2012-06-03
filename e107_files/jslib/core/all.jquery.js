@@ -5,8 +5,10 @@ $(document).ready(function()
     	 $(".e-expandit").show();
     			
        	$(".e-expandit").click(function () {
-       		var id = $(this).attr("href");
+       		
+       		var id = $(this).attr("href");   		
 			$(id).toggle("slow");
+			return false;
 		}); 
 		
 		// Dates --------------------------------------------------
@@ -119,7 +121,7 @@ $(document).ready(function()
 		
 		// 	Tooltips for bbarea. 
 		$(".bbcode_buttons").tipsy({gravity: 's',opacity: 1.0, fade: true,html: true});
-		
+		$("a.e-tip").tipsy({gravity: 'w',opacity: 1.0, fade: true,html: true});
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);
 
