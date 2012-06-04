@@ -1389,11 +1389,11 @@ class e_form
 			{
 				continue;
 			}
-			elseif($data['type'] != 'method' && !$data['forced'] && !isset($fieldvalues[$field]))
+			elseif($data['type'] != 'method' && !$data['forced'] && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== NULL)
 			{
 				$ret .= "
 					<td>
-						Not Found!
+						Not Found! ($field)
 					</td>
 				";
 
@@ -1427,7 +1427,7 @@ class e_form
 
 			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
-
+		
 			if($tdclass)
 			{
 				$tdclass = ' class="'.$tdclass.'"';
@@ -1784,7 +1784,8 @@ class e_form
 
 			case 'bool':
 			case 'boolean':
-				$value = $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+				$false = vartrue($parms['trueonly']) ? "" : ADMIN_FALSE_ICON;
+				$value = $value ? ADMIN_TRUE_ICON : $false;
 			break;
 
 			case 'url':
@@ -1811,8 +1812,8 @@ class e_form
 				$value = "<a href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
 			break;
 
-			case 'method': // Custom Function
-				$method = $field;
+			case 'method': // Custom Function			
+				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 			break;
 

@@ -836,7 +836,28 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_administrator.php");
 class e_userperms
 {
 
-	protected $core_perms = array(
+	protected $core_perms = array();
+
+	protected $plugin_perms = array();
+
+	protected $language_perms = array();
+
+	protected $main_perms = array();
+	
+	protected $full_perms = array();
+
+	protected $permSectionDiz = array(
+		'core'		=> ADMSLAN_74,
+		'plugin'	=> ADLAN_CL_7,
+		'language'	=> ADLAN_132,
+		'main'		=> ADMSLAN_58
+	 );
+
+
+	function __construct()
+	{
+		require_once(e_ADMIN."ad_links.php");
+		$this->core_perms = array(
 
 		// In the same order as admin navigation! 
 		
@@ -888,38 +909,19 @@ class e_userperms
 		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus
 		
 		
-	//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
-	//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)	
-	// "K"=>
+		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
+		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)	
+		// "K"=>
 		
-	// "P" 				// Reserved for Plugins
+		// "P" 				// Reserved for Plugins
 		
-	//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
-	//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)	
+		//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
+		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)	
 		
 	
-	//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category. 
-	);
-
-	protected $plugin_perms = array();
-
-	protected $language_perms = array();
-
-	protected $main_perms = array();
+		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category. 
+		);
 	
-	protected $full_perms = array();
-
-	protected $permSectionDiz = array(
-		'core'		=> ADMSLAN_74,
-		'plugin'	=> ADLAN_CL_7,
-		'language'	=> ADLAN_132,
-		'main'		=> ADMSLAN_58
-	 );
-
-
-	function __construct()
-	{
-
 
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
