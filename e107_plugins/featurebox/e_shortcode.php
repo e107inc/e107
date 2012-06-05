@@ -10,7 +10,8 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_front_featurebox.php');
 
-class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLDER]_shortcodes
+
+class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_FOLDER]_shortcodes
 {	
 	protected $_categories = array();
 	
@@ -25,9 +26,11 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	 * 
 	 * @param string $parm parameters
 	 * @param string $mod category template
+	 * @example {FEATUREBOX=cols=2|tabs}
 	 */
 	function sc_featurebox($parm, $mod = '')
 	{
+		
 		// TODO cache
 		if(!e107::isInstalled('featurebox')) //just in case
 		{
@@ -37,6 +40,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		if(!$mod)
 		{
 			$ctemplate = 'default';
+	
 		}
 		else
 		{
@@ -64,7 +68,30 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		}
 		
 		$tmpl = $this->getFboxTemplate($ctemplate);
+	
+		
+		$type = vartrue($tmpl['js_type'],''); // Legacy support (prototype.js)
+		
+		if(vartrue($tmpl['js']))
+		{		
+			$tmp = explode(',', $tmpl['js']);
+			
+			foreach($tmp as $file)
+			{
+				e107::js('footer',$file,$type);	
+			}
+		}
+		
 		$tp = e107::getParser();
+				
+		if(vartrue($tmpl['js_inline']))
+		{
+			$data = $tp->toText($category->getData('fb_category_parms'));
+			$jsInline = str_replace("{FEATUREBOX_PARMS}","{".trim($data)."}",$tmpl['js_inline']);
+			e107::js('footer-inline', $jsInline, $type, 3);
+		}
+				
+	
 		
 		// Fix - don't use tablerender if no result (category could contain hidden items)
 		$ret = $this->render($category, $ctemplate, $parm);
@@ -92,7 +119,9 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	 */
 	function sc_featurebox_navigation($parm, $mod = '')
 	{
-		// TODO cache
+		// TODO cache	
+		//TODO default $parm values. eg. assume 'tabs' when included in the 'tabs' template. 	
+		
 		if(!e107::isInstalled('featurebox')) //just in case
 		{
 			return '';
@@ -109,6 +138,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		parse_str($parm, $parm);
 		
 		$category = $this->getCategoryModel($ctemplate); 
+		
 		if(!$category->hasData())
 		{
 			return '';
@@ -119,6 +149,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			return '';
 		}
 		$tmpl = $this->getFboxTemplate($ctemplate);
+		
 		if($category->get('fb_category_random'))
 		{
 			unset($parm['loop']);
@@ -190,16 +221,35 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		}
 		$ret .= $category->toHTML(varset($tmpl[$base.'end']), true);
 		
-		if(vartrue($tmpl['js']))
-		{
-			e107::getJs()->footerFile(explode(',', $tmpl['js']));
-		}
+		// Moved to 'sc_featurebox' - as it wouldn't load js if navigation was not used. 
+		/*
+		$type = vartrue($tmpl['js_type'],''); // Legacy support (prototype.js)
 		
+		if(vartrue($tmpl['js']))
+		{		
+			$tmp = explode(',', $tmpl['js']);
+			
+			foreach($tmp as $file)
+			{
+				e107::js('footer',$file,$type);	
+			}
+		}
+				
 		if(vartrue($tmpl['js_inline']))
 		{
-			e107::getJs()->footerInline($tmpl['js_inline'], 3);
+			e107::js('inline',$tmpl['js_inline'],$type,3);
+			// e107::getJs()->footerInline($tmpl['js_inline'], 3);
 		}
 		
+		if(vartrue($tmpl['css']))
+		{		
+			$tmp = explode(',', $tmpl['css']);
+			foreach($tmp as $file)
+			{
+				e107::css('url',$file,$type);	
+			}
+		}
+		*/
 		return $ret;
 	}
 	
@@ -385,8 +435,9 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	 */
 	public function getCategoryModel($template, $force = false)
 	{
+		
 		if(!isset($this->_categories[$template]))
-		{
+		{		
 			$this->_categories[$template] = new plugin_featurebox_category();
 			$this->_categories[$template]->loadByTemplate($template, $force);
 		}
