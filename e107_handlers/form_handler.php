@@ -1898,11 +1898,11 @@ class e_form
 				if(!vartrue($parms['size'])) $parms['size'] = 15;
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
 				if(!$value) $value = '0';
-				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
 
 			case 'ip':
-				return $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
+				$ret =  $this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms);
 			break;
 
 			case 'url':
@@ -1910,7 +1910,7 @@ class e_form
 			case 'text':
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
 			break;
 
 			case 'textarea':
@@ -1923,25 +1923,25 @@ class e_form
 				}
 
 				$text .= $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
-				return $text;
+				$ret =  $text;
 			break;
 
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
-				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
+				$ret =  $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
 			break;
 
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
-				return $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
+				$ret =  $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
 			break;
 
 			case 'icon':
 				$label = varset($parms['label'], 'LAN_EDIT');
 				$ajax = varset($parms['ajax'], true) ? true : false;
 				unset($parms['label'], $parms['ajax']);
-				return $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
+				$ret =  $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
 			break;
 
 		
@@ -1956,10 +1956,12 @@ class e_form
 
 				if(vartrue($parms['hidden']))
 				{
-					return $this->hidden($key, $value);
+					$ret =  $this->hidden($key, $value);
 				}
-				
-				return $this->datepicker($key, $value, $parms);
+				else
+				{
+					$ret =  $this->datepicker($key, $value, $parms);	
+				}				
 			break;
 
 			case 'layouts': //to do - exclude param (exact match)
@@ -1984,7 +1986,7 @@ class e_form
 				}
 
 				//$this->selectbox($key, $layouts, $value)
-				return (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value, true, $info));
+				$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value, true, $info));
 			break;
 
 			case 'templates': //to do - exclude param (exact match)
@@ -2011,7 +2013,7 @@ class e_form
 					$k = str_replace('_template.php', '', $files['fname']);
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
 				}
-				return (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
+				$ret =  (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
 			break;
 
 			case 'dropdown':
@@ -2019,7 +2021,7 @@ class e_form
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
-				return vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			case 'radio':
@@ -2027,7 +2029,7 @@ class e_form
 				/*$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);*/
-				return vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, false).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, false).vartrue($eloptions['post']);
 			break;
 
 			case 'userclass':
@@ -2036,7 +2038,7 @@ class e_form
 				unset($parms['classlist']);
 				$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
 				if($atrributes['type'] == 'userclasses'){ $parms['multiple'] = true; }
-				return $this->$method($key, $value, $uc_options, vartrue($parms, array()));
+				$ret =  $this->$method($key, $value, $uc_options, vartrue($parms, array()));
 			break;
 
 			/*case 'user_name':
@@ -2070,7 +2072,7 @@ class e_form
 				if(!$value) $value = array();
 				$uname = varset($value[$colname]);
 				$value = varset($value['user_id'], 0);
-				return $this->userpicker(vartrue($parms['nameField'], $key.'_usersearch'), $key, $uname, $value, vartrue($parms['__options']));
+				$ret =  $this->userpicker(vartrue($parms['nameField'], $key.'_usersearch'), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 
 			case 'bool':
@@ -2078,24 +2080,24 @@ class e_form
 				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
 				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
 				unset($parms['enabled'], $parms['disabled']);
-				return $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
+				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
 			break;
 
 			case 'method': // Custom Function
-				return call_user_func_array(array($this, $key), array($value, 'write', $parms));
+				$ret =  call_user_func_array(array($this, $key), array($value, 'write', $parms));
 			break;
 
 			case 'upload': //TODO - from method
 				// TODO uploadfile SC is now processing uploads as well (add it to admin UI), write/readParms have to be added (see uploadfile.php parms)
 				$disbut = varset($parms['disable_button'], '0');
-				return $tp->parseTemplate("{UPLOADFILE=".(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles&disable_button={$disbut}}");
+				$ret =  $tp->parseTemplate("{UPLOADFILE=".(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles&disable_button={$disbut}}");
 			break;
 
 			case 'hidden':
 				$ret = (vartrue($parms['show']) ? ($value ? $value : varset($parms['empty'], $value)) : '');
 				$value = (vartrue($parms['value'])) ? $parms['value'] : $value;
 				echo "key=".$key."<br />value=".$value;
-				return $ret.$this->hidden($key, $value);
+				$ret =  $ret.$this->hidden($key, $value);
 			break;
 
 			case 'lanlist':
@@ -2106,13 +2108,24 @@ class e_form
 				if(!is_array($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
-				return vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			default:
-				return $value;
+				$ret =  $value;
 			break;
 		}
+
+		if(vartrue($parms['expand']))
+		{
+			$k = "exp-".$this->name2id($key);
+			$text = "<a class='e-expandit e-tip' href='#{$k}'>".$parms['expand']."</a>";
+			$text .= vartrue($parms['help']) ? '<div class="field-help">'.$parms['help'].'</div>' : '';
+			$text .= "<div id='{$k}' class='e-hideme'>".$ret."</div>";
+			return $text;	
+		}
+
+		return $ret;
 	}
 
 	/**

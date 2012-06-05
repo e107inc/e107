@@ -125,6 +125,16 @@ class plugin_featurebox_item extends e_model
 		}
 		return '<a id="featurebox-imageurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$tag.'</a>';
 	}
+	
+	public function sc_featurebox_thumb($parm='')
+	{
+		if(!$this->get('fb_image'))
+		{
+			return '';
+		}
+		$att = ($parm) ?$parm : 'aw=100&ah=60';
+		return e107::getParser()->thumbUrl($this->get('fb_image'),$att);			
+	}
 
 	/**
 	 * Item counter number (starting from 1)

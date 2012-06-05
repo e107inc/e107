@@ -23,6 +23,7 @@ CREATE TABLE featurebox_category (
   `fb_category_random` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `fb_category_class` smallint(5) NOT NULL DEFAULT '0',
   `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `fb_category_parms` text NOT NULL,
   PRIMARY KEY (`fb_category_id`),
   UNIQUE KEY `fb_category_template` (`fb_category_template`)
 ) ENGINE=MyISAM;
