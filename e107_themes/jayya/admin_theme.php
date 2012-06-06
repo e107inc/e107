@@ -248,8 +248,21 @@ define('TRACKBACKBEFORESTRING', '&nbsp;|&nbsp;');
 
 //	[tablestyle]
 
-function tablestyle($caption, $text, $mode){
+function tablestyle($caption, $text, $mode)
+{
 	global $style;
+	
+	
+	if($mode == 'admin-login')
+	{
+		
+		echo $text;	
+		return;
+	}
+	
+	
+	
+	
 	$caption = $caption ? $caption : '&nbsp;';
 	if ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) {
 		$menu = ' buttons';

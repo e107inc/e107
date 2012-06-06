@@ -126,12 +126,84 @@ else
 	}
 
 	$e_sub_cat = 'logout';
-		
+	if (ADMIN == FALSE)
+	{
+		define("e_IFRAME",TRUE);
+	}	
 	if (!defset('NO_HEADER'))
 		require_once (e_ADMIN."header.php");
 
 	if (ADMIN == FALSE)
 	{
+		// Needs help from Deso, Vesko and Stoev! :-)
+		
+		e107::css('inline',"
+		
+			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#134B63 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 10px; }
+			a					{ 	color:#F6931E; text-decoration:none; }
+			a:hover				{ 	color:silver; text-decoration:none; }
+			.bold				{ 	font-weight:bold; }
+			.field				{ 	text-align:center;padding:5px }
+			.field input		{	padding:5px; 
+									border-width:1px;							
+    								border-style:solid;
+    								border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
+									background:#fff;
+									font:16px arial, helvetica, sans-serif;
+									-moz-border-radius:3px;
+									-webkit-border-radius:3px;
+									border-radius:3px;
+									-moz-box-shadow: 1px 1px 2px #999 inset;
+									-webkit-box-shadow: 1px 1px 2px #999 inset;
+									box-shadow: 1px 1px 2px #999 inset;
+								}
+			
+			.field input:focus	{
+									border:1px solid #F6931E;
+								}
+								
+			.field input:hover	{
+									border:1px solid #F6931E;
+								}
+					
+			#login-admin 		{
+									margin-left:auto;
+									margin-right:auto;
+									margin-top:200px;
+									width:400px; 
+									padding: 10px 20px 0 20px;
+									-moz-border-radius:5px;
+									-webkit-border-radius:5px;
+									border-radius:5px;
+									-moz-box-shadow:5px 5px 20px #000000;
+									-webkit-box-shadow:5px 5px 20px #000000;
+									box-shadow:5px 5px 20px #000000;	
+									background-color: #FEFEFE;
+								}
+			
+			#login-admin label 	{ 	display: none; text-align: right	}
+				
+			
+			.admin-submit 		{ 	text-align: center; 	padding:20px;	}
+			
+			.submit				{ 	font-size:14px; }
+			
+		
+			.placeholder 		{	color: #bbb;	}
+	
+			::-webkit-input-placeholder {	color: #bbb;	}
+		
+			:-moz-placeholder 	{	color: #bbb;	}
+			
+			h1					{ text-align: center }
+			
+			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
+				 
+			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
+			
+		");
+		
+	
 		$obj = new auth;
 		$obj->authform();
 		if (!defset('NO_HEADER'))
@@ -148,7 +220,7 @@ class auth
 	 * Admin auth login
 	 * @return null
 	 */
-	public function authform() //TODO Template
+	public function authform()  // NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	{
 		global $use_imagecode,$sec_img,$pref;
 
@@ -156,7 +228,7 @@ class auth
 
 		$incChap = (vartrue($pref['password_CHAP'], 0)) ? " onsubmit='hashLoginPassword(this)'" : "";
 
-		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
+	/*	
 
 		$text = "<div {$class} style='padding:20px;text-align:center'>
 			<form method='post' action='".e_SELF."' {$incChap} >
@@ -164,12 +236,12 @@ class auth
 			<tr>
             <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."generic/password.png' alt='' />\n")."</td>
 			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
-			<td class='forumheader3' style='text-align:center'><input autofocus class='tbox' type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />\n</td>
+			<td class='forumheader3' style='text-align:center'><input autofocus class='tbox'  type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />\n</td>
 
 			</tr>
 			<tr>
 			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
-			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password' name='authpass' id='userpass' size='30' value='' maxlength='30' />\n";
+			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password'  name='authpass' id='userpass' size='30' value='' maxlength='30' />\n";
 
 		$session = e107::getSession();
 		if ($session->is('challenge') && varset($pref['password_CHAP'], 0))
@@ -198,8 +270,58 @@ class auth
 			</form>
 			</div>";
 
-		//	echo $text;
-			e107::getRender()->tablerender(ADLAN_92, $text);
+		e107::getRender()->tablerender(ADLAN_92, $text, 'admin-login');
+	*/
+	
+	// Start Clean 
+	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
+	
+		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
+			
+		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
+		<div id='login-admin' >
+		<div {$class}>
+		<h1>".SITENAME." admin area</h1>
+        
+		    <div class='field'>
+		    	<label for='username'>".ADLAN_89."</label> 
+		    	<input class='tbox e-tip' type='text' required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
+		    	<div class='field-help'>Please enter your username or email</div>
+		   	</div>			
+		
+		    <div class='field'>
+		    	<label for='userpass'>".ADLAN_90."</label>
+		    	<input class='tbox e-tip' type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
+		    	<div class='field-help'>Password is required</div>
+		    </div>";
+		
+		if ($use_imagecode)
+		{
+			$text .= "
+			<div class='field'>
+				<label for='code_verify'>".ADLAN_152."</label>
+				<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />
+				<span class='code-image'>"
+				.$sec_img->r_image().
+				"</span><input class='tbox' type='text' required='required' name='code_verify' size='15' maxlength='20' />	
+			</div>";
+		}
+			    
+		    $text .= "<div class='admin-submit'>"
+		       	.$frm->admin_button('authsubmit',ADLAN_91);				
+				
+			if (e107::getSession()->is('challenge') && varset($pref['password_CHAP'], 0))
+			{
+				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";		
+			}
+								
+		$text .= "</div>
+		</div>
+		</div>
+		</form>";
+		    
+		e107::getRender()->tablerender(ADLAN_92, $text, 'admin-login');
+		echo "<div class='center' style='margin-top:30%; color:silver'><span style='padding:0 40px 0 40px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>";
 	}
 
 
