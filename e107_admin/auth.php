@@ -186,7 +186,7 @@ else
 			
 			.admin-submit 		{ 	text-align: center; 	padding:20px;	}
 			
-			.submit				{ 	font-size:14px; }
+			.submit				{  }
 			
 		
 			.placeholder 		{	color: #bbb;	}
