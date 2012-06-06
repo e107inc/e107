@@ -634,6 +634,7 @@ class e_form
 		$ret = "
 		<div class='bbarea {$size}'>
 		<div class='field-spacer'><!-- --></div>\n";
+	
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
 		$ret .=	$this->textarea($name, $value, $rows, 50, $options, $counter);
@@ -1570,7 +1571,8 @@ class e_form
 				}
 				$attributes['writeParms']['raw'] = true;
 				$tmp = $this->renderElement($field, '', $attributes);
-				$value = $pre.vartrue($tmp[$value]).$post;
+							
+			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
 			break;
 
 			case 'dropdown':
@@ -1928,7 +1930,7 @@ class e_form
 
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
-				$ret =  $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
+				$ret =  $this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
 			break;
 
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
@@ -2123,6 +2125,10 @@ class e_form
 			$text .= vartrue($parms['help']) ? '<div class="field-help">'.$parms['help'].'</div>' : '';
 			$text .= "<div id='{$k}' class='e-hideme'>".$ret."</div>";
 			return $text;	
+		}
+		else
+		{
+			$ret .= vartrue($parms['help']) ? '<div class="field-help">'.$tp->toHtml($parms['help'],false,'defs').'</div>' : '';	
 		}
 
 		return $ret;

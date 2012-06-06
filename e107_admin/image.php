@@ -75,7 +75,7 @@ class media_admin extends e_admin_dispatcher
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
-
+	//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
 	);
 
@@ -200,6 +200,44 @@ class media_form_ui extends e_admin_form_ui
 		}
 		asort($this->cats);*/
 	}
+	
+	function resize_method($curval)
+	{
+		$frm = e107::getForm();
+		
+		$options = array(
+			'gd1' => 'gd1',
+			'gd2' => 'gd2',
+			'ImageMagick' => 'ImageMagick'
+		);
+		
+		return $frm->selectbox('resize_method',$options,$curval)."<div class='field-help'>".IMALAN_4."</div>";										
+	}
+	
+	function resize_dimensions($curval) // ie. never manually resize another image again!
+	{
+		$text = "";
+		$frm = e107::getForm();
+		
+		$options = array(
+			"news-image" 			=> "News Images",
+			"news-bbcode" 			=> "News [img] bbcode",
+			"page-bbcode" 			=> "Page [img] bbcode",
+		//	"featurebox-image" 		=> "Featurebox Images",
+		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
+		);
+		$text .= "<div>Non-functional example (maximum width and maximum height)</div>";
+		foreach($options as $key=>$title)
+		{
+			$text .= "<input type='text' name='resize_dimensions[{$key}]' value='$val' size='7' title='hello' /> ".$title."<br />";
+		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
+		}	
+		
+		return $text;
+		
+		
+	}
+	
 
 	function options()
 	{
@@ -313,13 +351,75 @@ class media_admin_ui extends e_admin_ui
 
 
 
-		/*
-		protected $prefs = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')
-		);*/
+	
+	protected $prefs = array(
+		'image_post'	   				=> array('title'=> IMALAN_1, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'help=IMALAN_2'),
+		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
+		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
+		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
+		'resize_dimensions'				=> array('title'=> "Resize Dimensions", 'type'=>'method', 'data'=>'str'),
+	);
+	
+	
+	/*
 
+	<tr>
+								<td class='label'>
+									".IMALAN_1."
+								</td>
+								<td class='control'>
+									<div class='auto-toggle-area autocheck'>
+										".$frm->checkbox('image_post', 1, $pref['image_post'])."
+										<div class='field-help'>".IMALAN_2."</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>
+									".IMALAN_10."
+								</td>
+								<td class='control'>
+									".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
+									<div class='field-help'>".IMALAN_11."</div>
+								</td>
+							</tr>
+	
+							<tr>
+								<td class='label'>
+									".IMALAN_12."
+								</td>
+								<td class='control'>
+									".$frm->select_open('image_post_disabled_method')."
+										".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
+										".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
+									".$frm->select_close()."
+									<div class='field-help'>".IMALAN_13."</div>
+								</td>
+							</tr>";
+							
+							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
+							
+							//TODO LANS
+							$text .= "						
+							<tr>
+								<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td class='control'>
+									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
+								</td>
+							</tr>
+	
+							<tr>
+								<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
+								<td class='control'>
+									".$frm->select_open('resize_method')."
+										".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
+										".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
+										".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
+									".$frm->select_close()."
+									<div class='field-help'>".IMALAN_4."</div>
+								</td>
+							</tr>";
+	*/
 	protected $cats = array();
 	protected $owner = array();
 	protected $ownercats = array();

@@ -38,7 +38,7 @@ $FEATUREBOX_TEMPLATE['image_right'] = '
 
 
 $FEATUREBOX_TEMPLATE['camera'] = '
-	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
+	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB=src}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
 		<div class="featurebox-text camera_effected" style="position:absolute">
 			<div class="featurebox-title">{FEATUREBOX_TITLE|camera}</div>
 			<div class="featurebox-text">{FEATUREBOX_TEXT|camera}</div>
@@ -49,7 +49,7 @@ $FEATUREBOX_TEMPLATE['camera'] = '
 
 
 $FEATUREBOX_TEMPLATE['camera_caption'] = '
-	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
+	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB=src}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
 		<div class="camera_caption fadeFromBottom">
 			<h3>{FEATUREBOX_TITLE|camera}</h3>
 			{FEATUREBOX_TEXT|camera}
@@ -60,7 +60,17 @@ $FEATUREBOX_TEMPLATE['camera_caption'] = '
 $FEATUREBOX_TEMPLATE['accordion'] = '
 	<h3 class="featurebox-title-accordion"><a href="#">{FEATUREBOX_TITLE|accordion}</a></h3>
 		<div class="featurebox-text-accordion" >
+			{FEATUREBOX_IMAGE|accordion}
 			{FEATUREBOX_TEXT|accordion}
+			<div class="clear"><!-- --></div>
+		</div>
+';
+
+$FEATUREBOX_TEMPLATE['tabs'] = '
+		<div class="featurebox-text-tabs" >
+			{FEATUREBOX_IMAGE|accordion}
+			{FEATUREBOX_TEXT|accordion}
+			<div class="clear"><!-- --></div>
 		</div>
 ';
 
@@ -72,6 +82,7 @@ $FEATUREBOX_INFO = array(
 	'image_left'	=> array('title' => 'Left image (core)'	, 	'description' => 'Left floated image'),
 	'camera'		=> array('title' => 'Camera item',	'description' => 'For use with the "camera" category'),
 	'camera_caption' => array('title' => 'Camera item with caption',	'description' => 'For use with the "camera" category'),
-	'accordion' 	=> array('title' => 'Accordion Item',	'description' => 'For use with accordion')
+	'accordion' 	=> array('title' => 'Accordion Item',	'description' => 'For use with accordion'),
+	'tabs' 			=> array('title' => 'Tab Item',	'description' => 'For use with tabs')
 );
 ?>
