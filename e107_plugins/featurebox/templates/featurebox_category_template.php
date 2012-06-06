@@ -167,6 +167,34 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_inline'] = '';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_type'] = 'jquery';
 
 
+
+// ------------------------------------------ ACCORDION (jquery) ----------------------------------------------
+
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['list_start'] 		= "\n\n<!-- Accordion -->\n<div class='box featurebox' id='featurebox-accordion-container' style='width:100%'>";
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['list_end'] 			= "</div>\n<!-- -->\n\n";
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['col_start'] 		= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['col_end'] 			= '';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['item_start'] 		= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['item_end'] 			= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['item_separator'] 	= '';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['item_empty'] 		= '';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['nav_start'] 		= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['nav_item'] 			= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['nav_end'] 			= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['nav_separator'] 	= '';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['js'] 				= '';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['js_inline'] 		= '$( "#featurebox-accordion-container" ).accordion({FEATUREBOX_PARMS});';
+$FEATUREBOX_CATEGORY_TEMPLATE['accordion']['js_type'] 			= 'jquery';
+
+
+
 // ------------------------------------------ CAMERA ----------------------------------------------
 /*
  <div class="camera_wrap">
@@ -219,8 +247,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
  * @var array
  */
 $FEATUREBOX_CATEGORY_INFO = array(
-	'tabs' 			=> array('title' => 'Tabs (jquery)'	, 'description' => 'Tabbed Feature box items'),
-	'camera' 		=> array('title' => 'Image-Slider (jquery)'	, 'description' => 'Image transitions using "<a href=\'http://www.pixedelic.com/plugins/camera/\'>Camera</a>"'),
+	'tabs' 			=> array('title' => 'Tabs (jquery)'	, 'description' => 'Tabbed Feature box items utlizing jQuery UI'),
+	'camera' 		=> array('title' => 'Image-Slider (jquery)'	, 'description' => 'Image transitions using the "Camera" jquery plugin'),
+	'accordion' 	=> array('title' => 'Accordion (jquery)'	, 'description' => 'Accordion utilizing jQuery UI'),
 	'default' 		=> array('title' => 'Default (prototype.js)', 'description' => 'Flat - show by category limit'),
 	'dynamic' 		=> array('title' => 'Dynamic (prototype.js)', 'description' => 'Load items on click (AJAX)'),
 	'tabs-proto' 	=> array('title' => 'Tabs (prototype.js)'	, 'description' => 'Tabbed Feature box items')
