@@ -128,12 +128,25 @@ class plugin_featurebox_item extends e_model
 	
 	public function sc_featurebox_thumb($parm='')
 	{
+		$tp = e107::getParser();
 		if(!$this->get('fb_image'))
 		{
 			return '';
 		}
-		$att = ($parm) ?$parm : 'aw=100&ah=60';
-		return e107::getParser()->thumbUrl($this->get('fb_image'),$att);			
+		parse_str($parm, $parm);
+		$att = ($parm['aw']) ? "aw=".$parm['aw'] : 'aw=100&ah=60';
+		$src = e107::getParser()->thumbUrl($this->get('fb_image'),$att);
+			
+		if(isset($parm['src']))
+		{
+			return $src;		
+		}
+		else
+		{
+			return '<img id="featurebox-thumb-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox" />';
+			
+		}
+				
 	}
 
 	/**

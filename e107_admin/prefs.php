@@ -1282,9 +1282,10 @@ $text .= "
 		// e107 minimum loaded by default once dependency is removed. 
 		
 		$js_types = array(
-		  array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
-		  array('id'	=> 'prototype-cdn', 'name'=> 'Prototype (CDN)'),		
-		  array('id'	=> 'jquery', 		'name'=> 'jQuery (CDN)')	
+			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
+		//	array('id'	=> 'prototype-cdn', 'name'=> 'Prototype (CDN)'),		
+			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),
+		//	array('id'	=> 'jquery-cdn', 	'name'=> 'jQuery (CDN)')		
  		);	
 		
 		

@@ -23,6 +23,13 @@ class e_jsmanager
 			'scriptaculous/scriptaculous.js',
 			'scriptaculous/effects.js',
 			'e107.js'),
+		/*	
+		'jquery'	=> array(
+			"jquery/jquery-1.7.2.min.js",
+			"jquery/jquery-ui-1.8.21.custom.min.js",
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
+			),	
+		*/
 		
 		'jquery'	=> array(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
@@ -632,7 +639,14 @@ class e_jsmanager
 			{
 				if(strpos($inc,".css"))
 				{
-					$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');
+					if(strpos($inc,"://")) // cdn 
+					{
+						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
+					}
+					else
+					{
+						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
+					}
 				}
 				else
 				{
