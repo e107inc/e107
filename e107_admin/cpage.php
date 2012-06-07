@@ -25,7 +25,7 @@
 
 require_once('../class2.php');
 
-if (!getperms("5|J")) { header('location:'.e_BASE.'index.php'); exit; }
+if (!getperms("5|J")) { header('location:'.e_ADMIN.'admin.php'); exit; }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 

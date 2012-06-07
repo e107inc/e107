@@ -268,7 +268,7 @@ $(document).ready(function()
 			
 		});
 				
-		$(".e-shake" ).effect("shake","",100);
+		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
 		
 		
 		$("select.filter").change(function() {
