@@ -150,9 +150,9 @@ else
     								border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
 									background:#fff;
 									font:16px arial, helvetica, sans-serif;
-									-moz-border-radius:3px;
-									-webkit-border-radius:3px;
-									border-radius:3px;
+									-moz-border-radius: 4px;
+									-webkit-border-radius: 4px;
+									border-radius: 4px;
 									-moz-box-shadow: 1px 1px 2px #999 inset;
 									-webkit-box-shadow: 1px 1px 2px #999 inset;
 									box-shadow: 1px 1px 2px #999 inset;
@@ -189,13 +189,13 @@ else
 			.submit				{  }
 			
 		
-			.placeholder 		{	color: #bbb;	}
+			.placeholder 		{	color: #bbb; font-style:italic	}
 	
-			::-webkit-input-placeholder {	color: #bbb;	}
+			::-webkit-input-placeholder { font-style:italic;	color: #bbb; 	}
 		
-			:-moz-placeholder 	{	color: #bbb;	}
+			:-moz-placeholder 	{ font-style:italic;	color: #bbb; 		}
 			
-			h1					{ text-align: center }
+			h1					{ text-align: center; color: #646667; text-transform:uppercase; }
 			
 			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
 				 

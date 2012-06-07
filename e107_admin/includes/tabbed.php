@@ -16,8 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 
 $text = "<div style='text-align:center'>
 	   	<div class='admintabs' id='tab-container'>
@@ -25,7 +24,8 @@ $text = "<div style='text-align:center'>
 
             foreach ($admin_cat['id'] as $cat_key => $cat_id)
 			{
-				$text .= "<li id='tab-main_".$cat_key."'><img class='icon S16' src='".$admin_cat['img'][$cat_key]."' alt='' style='margin-right:3px' /><a href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
+				// $text .= "<li id='tab-main_".$cat_key."' ><span style='white-space:nowrap'><img class='icon S16' src='".$admin_cat['img'][$cat_key]."' alt='' style='margin-right:3px' /><a href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></span></li>";
+				$text .= "<li id='tab-main_".$cat_key."' ><a href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
 			}
 			$text .= "</ul>";
 
@@ -80,8 +80,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 
 $text .= "</div></div>";
 
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);
-
+$ns->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
 
 
 ?>

@@ -325,11 +325,6 @@ function update_706_to_800($type='')
 
 	$do_save = TRUE;
 
-	foreach($setCorePrefs as $k=>$v)
-	{
-		$pref[$k] = $v;
-	}
-
 
 	// List of changed menu locations.
 	$changeMenuPaths = array(
@@ -362,6 +357,13 @@ function update_706_to_800($type='')
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
+	if (!$just_check)
+	{
+		foreach($setCorePrefs as $k=>$v)
+		{
+			$pref[$k] = $v;
+		}
+	}
 
 	if (!$just_check)
 	{
