@@ -1045,6 +1045,10 @@ function update_706_to_800($type='')
 	{
 		mkdir(e_BACKUP,0755);
 	}
+	if(!is_dir(e_CACHE_URL))
+	{
+		mkdir(e_CACHE_URL,0755);
+	}
 	
 	
 	$root_media = str_replace(basename(e_MEDIA)."/","",e_MEDIA);

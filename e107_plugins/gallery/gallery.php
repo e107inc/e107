@@ -111,6 +111,33 @@ class gallery
 
 new gallery;
 
+
+echo '<a class="backward">prev</a>
+ 
+<!-- container for the slides -->
+<div class="images">
+ 
+  <!-- first slide -->
+  <div>Lorem ipsum ..</div>
+ 
+  <!-- second slide -->
+  <div>Lorem ipsum the 2nd..</div>
+ 
+  <!-- third slide -->
+  <div>Lorem ipsum the 3rd</div>
+ 
+</div>
+ 
+<!-- "next slide" button -->
+<a class="forward">next</a>
+ 
+<!-- the tabs -->
+<div class="slidetabs">
+  <a href="#"></a>
+  <a href="#"></a>
+  <a href="#"></a>
+</div>';
+
 require_once(FOOTERF);
 exit;
 
