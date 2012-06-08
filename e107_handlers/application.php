@@ -870,8 +870,8 @@ class eRouter
 	 */
 	protected function _loadConfig()
 	{
-		if(!is_readable(e_SYSTEM.'url/config.php')) $config = $this->buildGlobalConfig();
-		else $config = include(e_SYSTEM.'url/config.php');
+		if(!is_readable(e_CACHE_URL.'config.php')) $config = $this->buildGlobalConfig();
+		else $config = include(e_CACHE_URL.'config.php');
 		
 		if(!$config) $config = array();
 		
@@ -891,7 +891,7 @@ class eRouter
 	
 	public static function clearCache()
 	{
-		@unlink(e_SYSTEM.'url/config.php');
+		@unlink(e_CACHE_URL.'config.php');
 	}
 	
 	/**
@@ -940,7 +940,7 @@ class eRouter
 			$fileContent = '<?php'."\n### Auto-generated - DO NOT EDIT ### \nreturn ";
 			$fileContent .= trim(var_export($config, true)).';';
 			
-			file_put_contents(e_SYSTEM.'url/config.php', $fileContent);
+			file_put_contents(e_CACHE_URL.'config.php', $fileContent);
 		}
 		return $config;
 	}

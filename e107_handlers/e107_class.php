@@ -404,8 +404,8 @@ class e107
 		$ret['MEDIA_FILES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'files/';
 		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'temp/';
 
-		$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
-		
+	//	$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
+		$ret['WEB_JS_DIRECTORY'] 			= $ret['FILES_DIRECTORY'].'jslib/';
 		
 		
 		$ret['WEB_CSS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'css/';
@@ -419,6 +419,7 @@ class e107
 		$ret['CACHE_CONTENT_DIRECTORY'] 	= $ret['CACHE_DIRECTORY'].'content/';
 		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'images/';
 		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
+		$ret['CACHE_URL_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'url/';
 
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
@@ -2514,6 +2515,7 @@ class e107
 			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));
 			define('e_CACHE_IMAGE', $this->get_override_rel('CACHE_IMAGE'));
 			define('e_CACHE_DB', $this->get_override_rel('CACHE_DB'));
+			define('e_CACHE_URL', $this->get_override_rel('CACHE_URL'));
 
 			define('e_LOG', $this->get_override_rel('LOGS'));
 			define('e_BACKUP', $this->get_override_rel('BACKUP'));
