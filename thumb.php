@@ -101,6 +101,9 @@ class e_thumbpage
 		$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
 		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
 		$e107 = e107::getInstance();
+		
+		$e107->site_path = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);
+		
 		$e107->prepare_request();
 		$e107->setDirs($e107_paths, varset($E107_CONFIG, array()));
 		$e107->set_constants();
@@ -110,7 +113,7 @@ class e_thumbpage
 		$e107->set_request(false);
 		$e107->set_urls(false);
 		unset($tmp, $self);
-
+	
 		// basic Admin area detection - required for proper path parsing
 		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
 		
@@ -159,6 +162,8 @@ class e_thumbpage
 			$this->_src_path = $path;
 			return true;
 		}
+		
+		// echo "path=".$path."<br />";
 		return false;
 	}
 

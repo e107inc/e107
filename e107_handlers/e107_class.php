@@ -45,6 +45,7 @@ class e107
 	public $https_path;
 	public $base_path;
 	public $file_path;
+	public $site_path;
 	public $relative_base_path;
 	public $_ip_cache;
 	public $_host_name_cache;
@@ -310,13 +311,16 @@ class e107
 		{
 			// Do some security checks/cleanup, prepare the environment
 			$this->prepare_request();
-
-			// Set default folder (and override paths) if missing from e107_config.php
-			$this->setDirs($e107_paths, $e107_config_override);
-
+	
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
-
+			
+			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs() 
+			$this->site_path = substr(md5($e107_config_mysql_info['mySQLdefaultdb'].".".$e107_config_mysql_info['mySQLprefix']),0,10);
+		
+			// Set default folder (and override paths) if missing from e107_config.php
+			$this->setDirs($e107_paths, $e107_config_override);
+				
 			// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
 			$this->set_constants();
 
@@ -385,9 +389,12 @@ class e107
 			'CORE_DIRECTORY' 		=> 'e107_core/',
 			'WEB_DIRECTORY' 		=> 'e107_web/',
 		), (array) $override_root);
-
+		
+		$ret['MEDIA_DIRECTORY'] 	.= $this->site_path."/"; // multisite support. 
+		$ret['SYSTEM_DIRECTORY'] 	.= $this->site_path."/"; // multisite support. 
+				
 		if($return_root) return $ret;
-
+		
 		$ret['HELP_DIRECTORY'] 				= $ret['DOCS_DIRECTORY'].'help/';
 
 		$ret['MEDIA_IMAGES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'images/';
@@ -398,6 +405,9 @@ class e107
 		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'temp/';
 
 		$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
+		
+		
+		
 		$ret['WEB_CSS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'css/';
 		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'images/';
 		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
@@ -411,6 +421,9 @@ class e107
 		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
 
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
+		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
+
+		//TODO create directories which don't exist. 
 
 		return $ret;
 	}
@@ -543,7 +556,23 @@ class e107
 	function getMySQLConfig($for)
 	{
 		$key = 'mySQL'.$for;
-		return (isset($this->e107_config_mysql_info[$key]) ? $this->e107_config_mysql_info[$key] : '');
+		$self = self::getInstance();
+		return (isset($self->e107_config_mysql_info[$key]) ? $self->e107_config_mysql_info[$key] : '');
+		
+	//	return (isset($this->e107_config_mysql_info[$key]) ? $this->e107_config_mysql_info[$key] : '');
+	}
+	
+
+	/**
+	 * Return a unique path based on database used. ie. multi-site support from single install. 
+	 *
+	 * @return string
+	 * @author  
+	 */
+	function getSitePath()
+	{
+		$self = self::getInstance();
+		return $self->site_path;
 	}
 
 	/**
@@ -1177,6 +1206,19 @@ class e107
 	{
 		return self::getSingleton('notify', true);
 	}
+
+
+	/**
+	 * Retrieve override handler singleton object
+	 *
+	 * @return notify
+	 */
+	public static function getOverride()
+	{
+		return self::getSingleton('override', true);
+	}
+
+
 
 	/**
 	 * Retrieve Language handler singleton object
@@ -2327,7 +2369,10 @@ class e107
 		{
 			return $this->e107_dirs[$dir.'_SERVER'];
 		}
-		return e_BASE.$this->e107_dirs[$dir.'_DIRECTORY'];
+		$ret = e_BASE.$this->e107_dirs[$dir.'_DIRECTORY'];
+
+		
+		return $ret;
 	}
 
 	/**
@@ -2471,6 +2516,7 @@ class e107
 			define('e_CACHE_DB', $this->get_override_rel('CACHE_DB'));
 
 			define('e_LOG', $this->get_override_rel('LOGS'));
+			define('e_BACKUP', $this->get_override_rel('BACKUP'));
 
 			//
 			// HTTP absolute paths
@@ -2502,6 +2548,9 @@ class e107
 			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
 			define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
 			define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
+			
+			define('e_JS', $this->get_override_http('WEB_JS')); // ABS Alias 
+			define('e_CSS', $this->get_override_http('WEB_CSS')); // ABS Alias 
 
 		}
 		return $this;

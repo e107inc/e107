@@ -101,7 +101,7 @@ class _system_cron
 		$sql = e107::getDb();
 		$dbtable = $mySQLdefaultdb; // TODO - retrieve this in a better way. (without including e107_config) 
 	
-		$backupFile = e_SYSTEM."backups/".SITENAME."_".date("Y-m-d-H-i-s").".sql";
+		$backupFile = e_BACKUP.SITENAME."_".date("Y-m-d-H-i-s").".sql";
 		$result = mysql_list_tables($dbtable);
 		
 		while ($tab = mysql_fetch_array($result, MYSQL_NUM))

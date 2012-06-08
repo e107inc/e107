@@ -26,36 +26,106 @@ if (!defined('e107_INIT')) { exit; }
  * if ($over_func_name = $override->override_check('original_func_name')) {
  *	$result=call_user_func($over_func_name, params...);
  * }
+ * 
  *
  */
  
 class override {
-	var $functions = array();
-	var $includes = array();
+	
+	protected $functions = array();
+	protected $includes = array();
+	
+	
+	
+	/**
+	 * Replace an existing function or class method
+	 * @param string|array $override - function name or class::method
+	 * @param string|array $function - new function name or class::method 
+	 * @param $include (optional) - file to include from root dir. 
+	 * @example e107::getOverride()->replace('secure_image::create_code', 'myclass::mymethod');
+	 */
+	public function replace($override,$function,$include) // Alias with class functionality. 
+	{
+		if(is_array($override))
+		{
+			$arr = $override[0]."::".$override[1];		
+		}
+		else
+		{
+			$arr = $override;	
+		}
+		
+		$this->override_function($arr, $function, $include);
+	}
+	/**
+	 * check if an override exists
+	 * @param $override : function name or class object
+	 * @param $method : method name when 'class' is used for $override
+	 * @return mixed
+	 * @example if ($user_func = e107::getOverride()->check($this,'secure_image'))
+				{
+	 				return call_user_func($user_func);
+				}  
+	 */
+	public function check($override,$method='') // alias with check for class object
+	{
+		
+		if(vartrue($method))
+		{			
+			$class = get_class($override);
+			$override = $class."::".$method;	
+		}
+		return $this->override_check($override);	
+	}
+	
+
 	 
-	function override_function($override, $function, $include) {
-		if ($include) {
+	function override_function($override, $function, $include) 
+	{
+		if ($include)
+		{
 			$this->includes[$override] = $include;
 		}
-		else if (isset($this->includes[$override])) {
+		else if (isset($this->includes[$override]))
+		{
 			unset($this->includes[$override]);
 		}
+		
 		$this->functions[$override] = $function;
 	}
 	 
-	function override_check($override) {
-		if (isset($this->includes[$override])) {
-			if (file_exists($this->includes[$override])) {
+	 
+	function override_check($override)
+	{		
+		if (isset($this->includes[$override])) 
+		{			
+			if (file_exists($this->includes[$override]))
+			{
 				include_once($this->includes[$override]);
-			}
-			if (function_exists($this->functions[$override])) {
-				return $this->functions[$override];
-			} else {
-				return false;
-			}
-		} else {
+			}	
+		} 
+		
+		
+		$tmp =  strpos($this->functions[$override],"::") ?  explode("::",$this->functions[$override]) : $this->functions[$override];
+		if(is_array($tmp) && class_exists($tmp[0]))
+		{
+			$cl = new $tmp[0];
+			 if(method_exists($cl,$tmp[1]))
+			 {
+			 	return $this->functions[$override];
+			 }	
+		}	
+	
+		if (function_exists($this->functions[$override]))
+		{
+			
+			return $this->functions[$override];
+		}
+		else
+		{
 			return false;
 		}
+
 	}
 }
 	
