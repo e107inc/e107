@@ -664,7 +664,7 @@ function headerjs()
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
 		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
 	return $ret;

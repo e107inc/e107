@@ -391,11 +391,11 @@ class e_jsmanager
 		{
 			foreach ($file_path as $fpath => $z)
 			{
-				$this->tryHeaderFile('{e_FILE}jslib/'.trim($fpath, '/'), $z);
+				$this->tryHeaderFile('{e_WEB_JS}'.trim($fpath, '/'), $z);
 			}
 			return $this;
 		}
-		$this->tryHeaderFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);
+		$this->tryHeaderFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
 		return $this;
 	}
 
@@ -444,7 +444,7 @@ class e_jsmanager
 	 */
 	public function headerCore($file_path, $zone = 2)
 	{
-		$this->headerFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);
+		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
 		return $this;
 	}
 
@@ -693,7 +693,7 @@ class e_jsmanager
 		switch($type)
 		{
 			case 'core':
-				$file_path = '{e_FILE}jslib/'.trim($file_path, '/');
+				$file_path = '{e_WEB_JS}'.trim($file_path, '/');
 				$registry = &$this->_e_jslib_core;
 			break;
 
@@ -709,7 +709,7 @@ class e_jsmanager
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
-				$file_path = $runtime_location.'|{e_FILE}jslib/'.trim($file_path, '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.'|{e_WEB_JS}'.trim($file_path, '/')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;

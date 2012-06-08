@@ -604,7 +604,7 @@ function headerjs()
 			//add required core lan - delete confirm message
 			(".e_jshelper::toString(FRTLAN_54).").addModLan('core', 'delete_confirm');
 		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
 	return $ret;
