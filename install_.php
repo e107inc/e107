@@ -431,7 +431,7 @@ class e_install
 				</tr>
 				<tr>
 				<td class='row-border'><label for='prefix'>".LANINS_029."</label></td>
-				<td class='row-border'><input type='text' name='prefix' size='20' id='prefix' value='e107_'  maxlength='100' /></td>
+				<td class='row-border'><input type='text' name='prefix' size='20' id='prefix' value='e107_'  maxlength='100' required='required' /></td>
 				<td class='row-border'>".LANINS_034."</td>
 				</tr>
 			</table>
@@ -1411,9 +1411,9 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
-		// old entry, not used at this time, could come back - |{$SYSTEM_DIRECTORY}cache/url/
-		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$MEDIA_DIRECTORY}images/|{$SYSTEM_DIRECTORY}|{$SYSTEM_DIRECTORY}logs/|{$SYSTEM_DIRECTORY}cache/|{$SYSTEM_DIRECTORY}cache/content/|{$SYSTEM_DIRECTORY}cache/db/|{$SYSTEM_DIRECTORY}cache/images/|{$SYSTEM_DIRECTORY}url/';
-		$data['can_write'] = '{$CACHE_DIRECTORY}|{$UPLOADS_DIRECTORY}|{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
+	
+		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$SYSTEM_DIRECTORY}'; // all-sub folders are created on-the-fly
+		$data['can_write'] = '{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
 		foreach ($this->e107->e107_dirs as $dir_name => $value)
 		{

@@ -567,7 +567,7 @@ class media_admin_ui extends e_admin_ui
 	
 	function uploadPage()
 	{
-		$text = '<div id="uploader" rel="'.e_FILE.'jslib/plupload/upload.php">
+		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php">
 	        <p>No HTML5 support.</p>
 		</div>';
 	    
