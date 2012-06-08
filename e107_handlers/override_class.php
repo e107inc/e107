@@ -44,7 +44,7 @@ class override {
 	 * @param $include (optional) - file to include from root dir. 
 	 * @example e107::getOverride()->replace('secure_image::create_code', 'myclass::mymethod');
 	 */
-	public function replace($override,$function,$include) // Alias with class functionality. 
+	public function replace($override,$function,$include='') // Alias with class functionality. 
 	{
 		if(is_array($override))
 		{
