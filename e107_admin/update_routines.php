@@ -1013,6 +1013,61 @@ function update_706_to_800($type='')
 
 	//-- Media-manger import --------------------------------------------------
 	
+	if(!is_dir(e_MEDIA))
+	{
+		mkdir(e_MEDIA,0755);	
+	}	
+	if(!is_dir(e_SYSTEM))
+	{
+		mkdir(e_SYSTEM,0755);
+	}
+	if(!is_dir(e_CACHE))
+	{
+		mkdir(e_CACHE,0755);
+	}
+	if(!is_dir(e_CACHE_CONTENT))
+	{
+		mkdir(e_CACHE_CONTENT,0755);
+	}	
+	if(!is_dir(e_CACHE_IMAGE))
+	{
+		mkdir(e_CACHE_IMAGE,0755);
+	}
+	if(!is_dir(e_CACHE_DB))
+	{
+		mkdir(e_CACHE_DB,0755);
+	}
+	if(!is_dir(e_LOG))
+	{
+		mkdir(e_LOG,0755);
+	}
+	if(!is_dir(e_BACKUP))
+	{
+		mkdir(e_BACKUP,0755);
+	}
+	
+	
+	$root_media = str_replace(basename(e_MEDIA)."/","",e_MEDIA);
+	$user_media_dirs = array("images","avatars","files","temp","videos","icons");
+	
+	// check for old paths and rename. 
+	if(is_dir($root_media."images") || is_dir($root_media."temp"))
+	{
+		foreach($user_media_dirs as $md)
+		{
+			@rename($root_media.$md,e_MEDIA.$md);	
+		}				
+	}
+	
+	// create sub-directories if they do not exist. 
+	if(!is_dir(e_MEDIA."images") || !is_dir(e_MEDIA."temp"))
+	{
+		foreach($user_media_dirs as $md)
+		{
+			mkdir(e_MEDIA.$md);	
+		}	
+	}
+	
 	$med = e107::getMedia();
 	
 	// Media Category Update

@@ -24,6 +24,11 @@ class secure_image
 
 	function secure_image()
 	{
+		if ($user_func = e107::getOverride()->check($this,'secure_image'))
+		{
+	 		return call_user_func($user_func);
+		}
+		
 		list($usec, $sec) = explode(" ", microtime());
 		$this->random_number = str_replace(".", "", $sec.$usec);
 
@@ -49,6 +54,10 @@ class secure_image
 
 	function create_code()
 	{
+		if ($user_func = e107::getOverride()->check($this,'create_code'))
+		{
+	 		return call_user_func($user_func);
+		}
 
 		$pref = e107::getPref();
 		$sql = e107::getDb();
@@ -68,6 +77,11 @@ class secure_image
 
 	function verify_code($rec_num, $checkstr)
 	{
+		if ($user_func = e107::getOverride()->check($this,'verify_code'))
+		{
+	 		return call_user_func($user_func,$rec_num,$checkstr);
+		}
+		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
@@ -83,6 +97,11 @@ class secure_image
 
 	function r_image()
 	{
+		if ($user_func = e107::getOverride()->check($this,'r_image'))
+		{
+	 		return call_user_func($user_func);
+		}
+
 		$code = $this->create_code();
 		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' class='icon secure-image' alt='' />";
 	}
@@ -94,6 +113,11 @@ class secure_image
 	 */
 	function render($qcode)
 	{
+		if ($user_func = e107::getOverride()->check($this,'render'))
+		{
+	 		return call_user_func($user_func,$qcode);
+		}
+		
 		if(!is_numeric($qcode)){ exit; }
 		$recnum = preg_replace('#\D#',"",$qcode);
 
