@@ -44,7 +44,7 @@ class e_bbcode
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
 		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block',
+		'p', 'h', 'nobr', 'block','table','tr','tbody','td'
 		);
 
 		foreach($this->core_bb as $c)
@@ -507,7 +507,7 @@ class e_bbcode
 	/**
 	 * Convert HTML to bbcode. 
 	 */
-	function htmltoBbcode($text)
+	function htmltoBBcode($text)
 	{
 		//return $text;
 		$convert = array(		
@@ -525,7 +525,22 @@ class e_bbcode
 			array(	"[/b]",			'</strong>'),
 			array(	"[i]",			'<em class="bbcode italic bbcode-i">'),		// e107 bbcode markup
 			array(	"[i]",			'<em>'),
-			array(	"[/i]",			'</em>'),		
+			array(	"[/i]",			'</em>'),
+			array(	"[block]",		'<div>'),
+			array(	"[/block]",		'</div>'),
+			array(	"[table]\n",	'<table>'),
+			array(	"[/table]",		'</table>'),
+			array(	"[table]\n",	'<table class="bbcode-table">'),
+			array(	"[tbody]\n",	'<tbody class="bbcode-tbody">'),
+			array(	"[tr]",			'<tr class="bbcode-tr">'),
+			array(	"\n\t[td]",		'<td class="bbcode-td">'),
+			
+			array(	"[tbody]\n",	'<tbody>'),
+			array(	"[/tbody]\n",	'</tbody>'),
+			array(	"[tr]",			'<tr>'),
+			array(	"\n[/tr]\n",	'</tr>'),
+			array(	"\n\t[td]",		'<td>'),
+			array(	"[/td]",		'</td>'),						
 		);
 		
 		foreach($convert as $arr)
@@ -541,6 +556,9 @@ class e_bbcode
 		$text = preg_replace('/<img class="bbcode bbcode-img"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 		$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
+	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
+		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
+		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
 		
 		
 		$blank = array('</li>','width:px;height:px;');
