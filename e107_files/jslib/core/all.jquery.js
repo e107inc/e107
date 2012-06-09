@@ -214,8 +214,19 @@ $(document).ready(function()
 		iframe:true,
 			width:"60%",
 			height:"70%",
-			speed:100
+			speed:10,
+			opacity: 0.7
+
 		});
+		
+		
+				
+		$(".e-dialog-close").live("click", function(){
+			parent.$.colorbox.close()	
+		}); 
+		
+		
+		
 		
 		/*
 		$("a.e-dialog").live('click',function() {

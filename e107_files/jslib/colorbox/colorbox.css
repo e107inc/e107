@@ -19,8 +19,18 @@
     Change the following styles to modify the appearance of ColorBox.  They are
     ordered & tabbed in a way that represents the nesting of the generated HTML.
 */
-#cboxOverlay{background:url(images/overlay.png) repeat 0 0;}
-#colorbox{}
+#cboxOverlay{ background-color:#000000;}
+
+#colorbox{ 
+	-moz-border-radius:9px;
+	-webkit-border-radius:9px;
+	border-radius:9px;
+	-moz-box-shadow:5px 5px 20px #000000;
+	-webkit-box-shadow:5px 5px 20px #000000;
+	box-shadow:5px 5px 20px #000000;	
+	background-color:white;
+	}
+/*
     #cboxTopLeft{width:21px; height:21px; background:url(images/controls.png) no-repeat -101px 0;}
     #cboxTopRight{width:21px; height:21px; background:url(images/controls.png) no-repeat -130px 0;}
     #cboxBottomLeft{width:21px; height:21px; background:url(images/controls.png) no-repeat -101px -29px;}
@@ -29,11 +39,12 @@
     #cboxMiddleRight{width:21px; background:url(images/controls.png) right top repeat-y;}
     #cboxTopCenter{height:21px; background:url(images/border.png) 0 0 repeat-x;}
     #cboxBottomCenter{height:21px; background:url(images/border.png) 0 -29px repeat-x;}
+*/ 
     #cboxContent{background:#fff; overflow:hidden;}
-        .cboxIframe{background:#fff;}
+       .cboxIframe{background:#fff;}
         #cboxError{padding:50px; border:1px solid #ccc;}
         #cboxLoadedContent{margin-bottom:28px;}
-        #cboxTitle{position:absolute; bottom:4px; left:0; text-align:center; width:100%; color:#949494;}
+        #cboxTitle{position:absolute;bottom:4px; left:0; text-align:center; width:100%; color:#949494;}
         #cboxCurrent{position:absolute; bottom:4px; left:58px; color:#949494;}
         #cboxSlideshow{position:absolute; bottom:4px; right:30px; color:#0092ef;}
         #cboxPrevious{position:absolute; bottom:0; left:0; background:url(images/controls.png) no-repeat -75px 0; width:25px; height:25px; text-indent:-9999px;}
