@@ -195,10 +195,7 @@ $(document).ready(function()
   			return answer // answer is a boolean
 		});    
 		
-		
-		$(".e-dialog-close").live("click", function(){
-			parent.$.colorbox.close()	
-		}); 
+
 		
 		// Menu Manager Layout drop-down options
 		$("#menuManagerSelect").change(function(){
