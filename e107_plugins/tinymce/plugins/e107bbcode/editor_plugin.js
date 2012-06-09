@@ -11,15 +11,16 @@
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
 			ed.onBeforeSetContent.add(function(ed, o) {
-				o.content = t['_' + dialect + '_bbcode2html'](o.content);
+		
+				o.content = t['_' + dialect + '_bbcode2html'](o.content,url);
 			});
 
 			ed.onPostProcess.add(function(ed, o) {
 				if (o.set)
-					o.content = t['_' + dialect + '_bbcode2html'](o.content);
+					o.content = t['_' + dialect + '_bbcode2html'](o.content,url);
 
 				if (o.get)
-					o.content = t['_' + dialect + '_html2bbcode'](o.content);
+					o.content = t['_' + dialect + '_html2bbcode'](o.content,url);
 			});
 		},
 
@@ -36,8 +37,26 @@
 		// Private methods
 
 		// HTML -> BBCode in PunBB dialect
-		_e107_html2bbcode : function(s) {
+		_e107_html2bbcode : function(s,url) {
 			s = tinymce.trim(s);
+			
+			
+				var p = $.ajax({
+					type: "POST",
+					url: url + "/parser.php",
+					data: { content: s, mode: 'tobbcode' },
+					async       : false,
+
+					dataType: "html",
+					success: function(html) {
+				      return html;
+				    }
+				}).responseText;
+
+				return p;
+			
+			
+			
 
 			function rep(re, str) {
 				s = s.replace(re, str);
@@ -137,10 +156,28 @@
 			
 			return s; 
 		},
-
+		
 		// BBCode -> HTML from PunBB dialect
-		_e107_bbcode2html : function(s) {
+		_e107_bbcode2html : function(s,url) {
 			s = tinymce.trim(s);
+	
+				var p = $.ajax({
+					type: "POST",
+					url: url + "/parser.php",
+					data: { content: s, mode: 'tohtml' },
+					async       : false,
+
+					dataType: "html",
+					success: function(html) {
+				      return html;
+				    }
+				}).responseText;
+
+				return p;
+			
+			
+			return s;
+			
 
 			function rep(re, str) {
 				s = s.replace(re, str);
