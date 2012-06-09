@@ -278,9 +278,9 @@ class wysiwyg
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
 			'theme_advanced_resizing'			=> 'true',
-			'remove_linebreaks'					=> 'false',
+			'remove_linebreaks'					=> 'true',
 			'extended_valid_elements'			=> '',
-			'apply_source_formatting'			=> 'true',
+			'apply_source_formatting'			=> 'false',
 			'invalid_elements'					=> 'p,font,align,script,applet,iframe',
 			'auto_cleanup_word'					=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
@@ -290,7 +290,7 @@ class wysiwyg
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
 			'forced_root_block'					=> '',
-			'convert_newlines_to_brs'			=> 'false', // will break [list] if set to true
+			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true
 			'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
 			'convert_fonts_to_styles'			=> 'true',

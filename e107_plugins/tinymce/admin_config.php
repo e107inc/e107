@@ -527,35 +527,6 @@ function admin_config_adminmenu()
 	$ef->show_options($action);
 }
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			if(typeof e107Admin == 'undefined') var e107Admin = {}
-
-			/**
-			 * OnLoad Init Control
-			 */
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
-
-
-
-
 
 if($_POST['save_settings'])   // Needs to be saved before e_meta.php is loaded by auth.php.
 {
@@ -680,19 +651,5 @@ function edit_theme()
 
 require_once(e_ADMIN."footer.php");
 
-/*
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
-	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-   //	return $ret;
-}*/
 
 ?>
