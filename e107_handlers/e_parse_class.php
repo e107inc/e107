@@ -1333,7 +1333,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(html|php|code|scode|hide).*?\[/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		}
 
 
@@ -1357,7 +1357,7 @@ class e_parse
 
 				// Have to have a good test in case a 'non-key' bbcode starts the block
 				// - so pull out the bbcode parameters while we're there
-				if (($parseBB !== FALSE) && preg_match('#(^\[(html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches ))
+				if (($parseBB !== FALSE) && preg_match('#(^\[(table|html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches ))
 				{
 					// It's one of the 'key' bbcodes
 					// Usually don't want 'normal' processing if its a 'special' bbcode
@@ -1402,6 +1402,11 @@ class e_parse
 							$proc_funcs = TRUE;
 							$convertNL = FALSE;
 							break;
+							
+						case 'table' : // strip <br /> from end of <table>		
+							
+							$convertNL = FALSE;
+						//	break;
 
 						case 'hide' :
 							$proc_funcs = TRUE;
@@ -1473,7 +1478,7 @@ class e_parse
 
 
 						// Could put tag stripping in here
-
+					
 /*
 						//	Line break compression - filter white space after HTML tags - among other things, ensures HTML tables display properly
 						// Hopefully now achieved by other means
@@ -1664,7 +1669,6 @@ class e_parse
 								$sub_blk = $this->e_highlight($sub_blk, $this->e_query);
 							}
 						}
-
 
 						if ($convertNL)
 						{

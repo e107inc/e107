@@ -20,7 +20,7 @@ if($_POST['mode'] == 'tohtml')
 if($_POST['mode'] == 'tobbcode')
 {
 	//echo $_POST['content'];
-	echo e107::getBB()->htmltoBbcode($_POST['content']);	
+	echo e107::getBB()->htmltoBBcode($_POST['content']);	
 }
 
 
