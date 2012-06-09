@@ -36,11 +36,7 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 //$cal = new DHTML_Calendar(true);
 //$gen = new convert();
 
-function headerjs()
-{
- //  global $cal;
-//	return $cal->load_files()."<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>\n";
-}
+
 
 $e_sub_cat = 'download';
 require_once(e_HANDLER."form_handler.php");

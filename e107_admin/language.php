@@ -923,8 +923,11 @@ function unused($lanfile,$script)
 	 	}
 
 		$text .= "</tbody></table>";
+		
+		
+		$mes->addInfo("Pink is unused LAN");
 
-		$ret['text'] = $text;
+		$ret['text'] = $mes->render().$text;
 		$ret['caption'] = "Deprecated LAN Check (experimental!)";
 
 		return $ret;
@@ -962,6 +965,9 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 	$commonPhrases = file_get_contents(e_LANGUAGEDIR."English/admin/lan_admin.php");	
 	$commonLines = explode("\n",$commonPhrases);
 	
+	$foundSimilar = FALSE;
+	$foundCommon = FALSE;
+	
 	foreach($commonLines as $line)
 	{
 		if($match = getDefined($line))
@@ -974,12 +980,20 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 	// Check if a common phrases was used. 
 	foreach($ar as $def=>$common)
 	{
+		similar_text($value, $common, $p);
+		
     	if(strtoupper(trim($value)) == strtoupper($common))
 		{
 			//$text .= "<div style='color:yellow'><b>$common</b></div>";
 			$foundCommon = TRUE;
 			break;
 		}
+		elseif($p > 55)
+		{
+			$foundSimilar = TRUE;
+			break;	
+		}	
+		$p = 0 ; 
 	}
 
 	
@@ -1021,9 +1035,24 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 	{	
 		$color = "background-color:yellow";
 		$disabled .= "<br /><i>".$common."</i> is a common phrase.<br />(Use <b>".$def."</b> instead.)";
+		
 		// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
 	}
+	
+	elseif($foundSimilar && $found && substr($def,0,4) == "LAN_")
+	{
+		$color = "background-color:#E9EAF2";
+		$disabled .= "  <a class='e-tip' href='#' title=\"".$value." :: ".$common."\">".round($p)."% like ".$def."</a> ";
+		// $disabled .= " <a class='e-tip' href='#' title=\"".$common."\">" . $def."</a>"; //  $common; 		
+	}
+	
+	if($disabled == " (disabled)")
+	{
+		$color = "background-color:#DFFFDF";	
+	}	
 
+	
+	
 	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text."</tr>";
 }
 

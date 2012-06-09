@@ -899,32 +899,6 @@ function banners_adminlog($msg_num='00', $woffle='')
   $admin_log->log_event('BANNER_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
-			/**
-			 * OnLoad Init Control
-			 */
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
 
 ?>

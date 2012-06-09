@@ -1896,42 +1896,8 @@ if (isset($_POST['check_avatar_sizes']))
 
 
 //Just in case...
-if(!e_AJAX_REQUEST) require_once("footer.php");
+if(!e_AJAX_REQUEST) require_once("footer.php"); 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-//function headerjs()
-//{
-//	require_once(e_HANDLER.'js_helper.php');
-//	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
-//	$ret = "
-//		<script type='text/javascript'>
-//			//add required core lan - delete confirm message
-//			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-//		</script>
-//		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-//	";
-//
-//	return $ret;
-//}
 ?>
