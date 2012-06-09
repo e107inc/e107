@@ -438,6 +438,7 @@ class e_bbcode
 		return $ret; 
 	}	
 	
+	
 	function clearClass()
 	{
 		$this->setClass();	
@@ -508,10 +509,13 @@ class e_bbcode
 	 */
 	function htmltoBbcode($text)
 	{
+		//return $text;
 		$convert = array(		
 			array(	"\n",			'<br />'),
 			array(	"[list]",		'<ul class="bbcode">'),
+			array(	"[list]",		'<ul>'),
 			array(	"\n[/list]",	'</ul>'),
+			array(	"\n[*]",		'<li>'),
 			array(	"\n[*]",		'<li class="bbcode  bbcode-list">'),
 			array(	"[h2]",			'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h2]",			'<h2>'),
@@ -531,11 +535,13 @@ class e_bbcode
 		}
 		
 		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
-		$text = preg_replace('/<div style="text-align: center;">([\s\S]*)<\/div>/i',"[center]$1[/center]",$text); // verified
-		$text = preg_replace('/<div class="bbcode-([\w]*)" style="text-align: (?:[\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
+		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified
+		$text = preg_replace('/<div class="bbcode-(?:[\w]*)" style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
 		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 		$text = preg_replace('/<img class="bbcode bbcode-img"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 		$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
+		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
+		
 		
 		$blank = array('</li>','width:px;height:px;');
 		$text = str_replace($blank,"",$text); // Cleanup 
