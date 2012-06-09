@@ -123,7 +123,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['nav_separator'] = '';
 
 // external JS, comma separated list
 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js'] = '{e_FILE}jslib/core/tabs.js';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js'] = '{e_WEB_JS}core/tabs.js';
 // inline JS, without <script> tags
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js_inline'] = 'new e107Widgets.Tabs("featurebox-tab-container", { bookmarkFix: false });';
 $FEATUREBOX_CATEGORY_TEMPLATE['tabs-proto']['js_type'] = 'prototype';
@@ -231,7 +231,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_item'] = ''; // <li><a href="#tab-{
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_end'] = ''; // </ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_separator'] = '';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_FILE}jslib/camera/scripts/camera.min.js';
+$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_inline'] = "$('.camera_wrap').camera({FEATUREBOX_PARMS});";
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['js_type'] = 'jquery';
 

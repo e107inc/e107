@@ -6,10 +6,10 @@
  * Admin Language File
  *
 */
-define("CUSLAN_1", "Title");
+// define("CUSLAN_1", "Title");
 define("CUSLAN_2", "Type");
 define("CUSLAN_3", "Search engine friendly string");
-define("CUSLAN_4", "Delete this item?");
+// define("CUSLAN_4", "Delete this item?");
 define("CUSLAN_5", "Existing Pages");
 define("CUSLAN_7", "Menu Name");
 define("CUSLAN_8", "Title / Caption");

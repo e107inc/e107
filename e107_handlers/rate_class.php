@@ -29,7 +29,7 @@ class rater {
 		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
 
 		$datahint = implode(",",$hintArray);
-		$path = e_FILE_ABS."jslib/rate/img/";
+		$path = e_WEB_JS."rate/img/";
 		
 		$score = ($score / 2);
 	//	var_dump($readonly);
