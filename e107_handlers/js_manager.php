@@ -219,8 +219,11 @@ class e_jsmanager
 		{
 			foreach($this->_core_prefs as $id=>$vis)
 			{
-				if($vis != 'none' && $vis != 'auto')
+				$this->_dependence = $id;
+			
+				if(!$this->libDisabled($id,$vis))
 				{
+				//	echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
 					foreach($this->_libraries[$id] as $path)
 					{
 						$core[$path] = $vis;	
@@ -229,6 +232,7 @@ class e_jsmanager
 	
 			}
 		}
+		$this->_dependence = null;
 		$this->coreLib($core);
 
 		// Load stored in preferences plugin lib paths ASAP
@@ -572,31 +576,39 @@ class e_jsmanager
 	{
 		if($type == 'core' && ($loc == 'none'))
 		{
-			return TRUE;
+			return true;
 		}
 		
 		if($this->_dependence != null && isset($this->_libraries[$this->_dependence]))
-		{
-			
+		{			
 			$status = $this->_core_prefs[$this->_dependence];
-			if($status == 'auto')
-			{
-			//	echo "<h2>".$this->_dependence." :: ".$status."</h2>";
-				return FALSE;
-			}
 			
-			
-			if($this->isInAdmin() && $status !='admin' && $status !='all')
+			switch ($status)
 			{
-				return TRUE;	
+				case 'auto':
+				case 'all':
+					return false;	
+				break;
+				
+				case 'admin':
+					return ($this->isInAdmin()) ? false : true;	
+				break;
+				
+				case 'front':
+					return ($this->isInAdmin()) ? true : false;	
+				break;
+				
+				case 'none':
+					return true;	
+				break;
+				
+				default:
+					return true;
+				break;
 			}
-			elseif($status == 'none')
-			{
-				return TRUE;
-			}		
 		}
-		
-		return FALSE;
+
+		return false;
 		
 	}
 
@@ -678,12 +690,15 @@ class e_jsmanager
 		
 		if($this->libDisabled($type,$runtime_location))
 		{
+			//echo $this->_dependence." :: DISABLED<br />";
+			// echo $this->_dependence."::".$file_path." : DISABLED<br />";		
 			return $this;
-			//echo $this->_dependence."::".$file_path." : DISABLED<br />";	
+			
 		}
 		else
 		{
-			// echo $this->_dependence."::".$file_path." : ENABLED<br />";	
+			// echo $this->_dependence." :: ENABLED<br />";
+			 // echo $this->_dependence."::".$file_path." : DISABLED<br />";		
 		}
 		
 		
