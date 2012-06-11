@@ -935,6 +935,8 @@ if(!defined("THEME_LAYOUT"))
 	{
 	    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
 		$c_url = str_replace(array('&amp;'), array('&'), e_REQUEST_URL);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
+		// FIX - check against urldecoded strings
+		$c_url = rawurldecode($c_url);
 		
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
