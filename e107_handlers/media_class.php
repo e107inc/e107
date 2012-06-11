@@ -498,7 +498,7 @@ class e_media
 				$onclicki = "parent.document.getElementById('{$tagid}').value = '{$im['media_url']}';
 		 		parent.document.getElementById('".$prevId."').src = '{$realPath}';
 		 		return false;";	
-		 		$onclicki = "";
+		 		//$onclicki = "";
 				$class .= " e-media-select e-dialog-close";
 			}
 			else // TinyMce and textarea bbcode  
@@ -508,7 +508,7 @@ class e_media
 				document.getElementById('preview').src = '{$realPath}';
 		 		
 				return false;";	
-				$onclicki = "";
+				//$onclicki = "";
 				$class .= " e-media-select";
 				$onclicki = "";
 				
