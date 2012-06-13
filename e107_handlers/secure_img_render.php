@@ -24,11 +24,13 @@
 
 	 ?>
 */
-
+// error_reporting(E_ALL);
 define('e107_INIT', true);
+
 require_once(realpath(dirname(__FILE__)."/secure_img_handler.php"));
 
 $sim = new secure_image();
+
 $sim->render($_SERVER['QUERY_STRING']);
 
 exit;
