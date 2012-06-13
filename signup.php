@@ -210,36 +210,7 @@ if(!$_POST)
 
 
 
-if(e_QUERY == 'thirdparty')
-{
-	$config = array(
-	"base_url" => "http://godoholics.org/e107_handlers/hybridauth/",
-		"providers" => array
-		(
-			"Facebook" => array
-			(
-				"enabled" => true,
-				"keys"    => array ( "id" => "341715689232729", "secret" => "001c35bdb735ace858317eba40b2ed15" ),
-				"scope" => "email, user_about_me, user_birthday, user_hometown",
-				"display" => "popup",
-			)
-		),
-		"debug_mode" => true ,
-		"debug_file" => e_HANDLER."hybridauth/hybridauth.log"
-	);
-	
-	
-	require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
-	
 
-	$hybridauth = new Hybrid_Auth( $config );
-
-	$adapter = $hybridauth->authenticate( "Facebook" );
-	$user_profile = $adapter->getUserProfile(); 
-	
-	print_a($user_profile);
-	
-}
 
 
 
