@@ -289,7 +289,7 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_signup_images()
+	function sc_signup_images() // AVATARS
 	{
 		global $pref;
 		if($pref['signup_option_image'])
@@ -341,8 +341,18 @@ class signup_shortcodes extends e_shortcode
 		global $signup_imagecode, $rs, $sec_img;
 		if($signup_imagecode)
 		{
-			return $rs->form_hidden("rand_num", $sec_img->random_number). $sec_img->r_image()."<br />".$rs->form_text("code_verify", 20, "", 20);
+			return e107::getSecureImg()->r_image()."<div>".e107::getSecureImg()->renderInput()."</div>"; 
+			// return $rs->form_hidden("rand_num", $sec_img->random_number). $sec_img->r_image()."<br />".$rs->form_text("code_verify", 20, "", 20);
 		}
+	}
+	
+	function sc_signup_imagecode_label()
+	{
+		global $signup_imagecode,$sec_img;
+		if($signup_imagecode)
+		{
+			return $sec_img->renderLabel(); 
+		}			
 	}
 	
 	

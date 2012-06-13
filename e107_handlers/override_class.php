@@ -70,7 +70,7 @@ class override {
 	public function check($override,$method='') // alias with check for class object
 	{
 		
-		if(vartrue($method))
+		if($method != '')
 		{			
 			$class = get_class($override);
 			$override = $class."::".$method;	

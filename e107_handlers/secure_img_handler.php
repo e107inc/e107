@@ -13,6 +13,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+
 class secure_image
 {
 	public $random_number;
@@ -24,11 +26,15 @@ class secure_image
 
 	function secure_image()
 	{
+		
+/*
 		if ($user_func = e107::getOverride()->check($this,'secure_image'))
 		{
 	 		return call_user_func($user_func);
 		}
-		
+ * */
+
+	
 		list($usec, $sec) = explode(" ", microtime());
 		$this->random_number = str_replace(".", "", $sec.$usec);
 
@@ -74,7 +80,9 @@ class secure_image
 		return $recnum;
 	}
 
-
+	/* Return TRUE if code is valid, otherwise return FALSE 
+	 * 
+	 */
 	function verify_code($rec_num, $checkstr)
 	{
 		if ($user_func = e107::getOverride()->check($this,'verify_code'))
@@ -94,6 +102,31 @@ class secure_image
 		}
 		return FALSE;
 	}
+	
+	
+	
+	// Return an Error message (true) if check fails, otherwise return false. 
+	function invalidCode($rec_num,$checkstr)
+	{
+		if ($user_func = e107::getOverride()->check($this,'invalidCode'))
+		{
+	 		return call_user_func($user_func,$rec_num,$checkstr);
+		}
+			
+		if($this->verify_code($rec_num,$checkstr))
+		{
+			return false;	
+		}
+		else
+		{
+			return LAN_INVALID_CODE;	
+		}
+		
+		return true;	
+		
+	}
+	
+	
 
 	function r_image()
 	{
@@ -105,16 +138,49 @@ class secure_image
 		$code = $this->create_code();
 		return "<img src='".e_HTTP.$this->HANDLERS_DIRECTORY."secure_img_render.php?{$code}' class='icon secure-image' alt='' />";
 	}
+	
+	
+	function renderImage() // Alias of r_image
+	{
+		return $this->r_image();			
+	}
 
 
+
+	function renderInput()
+	{
+		if ($user_func = e107::getOverride()->check($this,'renderInput'))
+		{
+	 		return call_user_func($user_func);
+		}
+			
+		$frm = e107::getForm();	
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, "","size=20");
+	}
+	
+	function renderLabel()
+	{
+		if ($user_func = e107::getOverride()->check($this,'renderLabel'))
+		{
+	 		return call_user_func($user_func);
+		}
+			
+		return LAN_ENTER_CODE;	
+	}
+	
 
 	/**
 	 * Render the generated Image. Called without class2 environment (standalone).
 	 */
 	function render($qcode)
 	{
-		if ($user_func = e107::getOverride()->check($this,'render'))
+		
+		require_once($this->BASE_DIR.$this->HANDLERS_DIRECTORY."override_class.php");
+		$over = new override;
+		
+		if ($user_func = $over->check($this,'render'))
 		{
+			
 	 		return call_user_func($user_func,$qcode);
 		}
 		

@@ -146,7 +146,7 @@ $sc_style['SIGNUP_IMAGES']['post'] = "
 
 $sc_style['SIGNUP_IMAGECODE']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_95.req(2)."</td>
+	<td class='forumheader3' style='width:30%'>".e107::getSecureImg()->renderLabel().req(2)."</td>
 	<td class='forumheader3' style='width:70%'>
 ";
 $sc_style['SIGNUP_IMAGECODE']['post'] = "

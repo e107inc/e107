@@ -202,8 +202,8 @@ class e107
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php'
-		
+		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
+		'secure_image'					 => '{e_HANDLER}secure_img_handler.php'
 		
 	);
 
@@ -957,6 +957,17 @@ class e107
 	public static function getScParser()
 	{
 		return self::getSingleton('e_parse_shortcode', true);
+	}
+	
+	
+	/**
+	 * Retrieve secure_image singleton object
+	 *
+	 * @return secure_image
+	 */
+	public static function getSecureImg()
+	{
+		return self::getSingleton('secure_image', true);	
 	}
 
 	/**

@@ -56,23 +56,19 @@ else
 
 	$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
-	if ($use_imagecode)
-	{
-		require_once (e_HANDLER."secure_img_handler.php");
-		$sec_img = new secure_image;
-	}
-
 	if ($_POST['authsubmit'])
 	{
 		$obj = new auth;
 
 		if ($use_imagecode)
-		{
-			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+		{	
+			if (e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify']))
 			{
-				echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-				header("location: ../index.php");
+				e107::getRedirect()->redirect('admin.php?failed');
 				exit;
+			//	echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+			//	header("location: ../index.php");
+			//	exit;
 			}
 		}
 
@@ -201,6 +197,9 @@ else
 				 
 			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
 			
+			input[disabled] 	{	color: silver;	}
+			button[disabled] span	{	color: silver;	}
+		
 		");
 		
 	
@@ -227,51 +226,6 @@ class auth
 		$frm = e107::getForm();
 
 		$incChap = (vartrue($pref['password_CHAP'], 0)) ? " onsubmit='hashLoginPassword(this)'" : "";
-
-	/*	
-
-		$text = "<div {$class} style='padding:20px;text-align:center'>
-			<form method='post' action='".e_SELF."' {$incChap} >
-			<table style='width:50%' class='fborder'>
-			<tr>
-            <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."generic/password.png' alt='' />\n")."</td>
-			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
-			<td class='forumheader3' style='text-align:center'><input autofocus class='tbox'  type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />\n</td>
-
-			</tr>
-			<tr>
-			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
-			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password'  name='authpass' id='userpass' size='30' value='' maxlength='30' />\n";
-
-		$session = e107::getSession();
-		if ($session->is('challenge') && varset($pref['password_CHAP'], 0))
-
-		$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".$session->get('challenge')."' />\n\n";
-		$text .= "</td></tr>\n";
-
-		if ($use_imagecode)
-		{
-			$text .= "
-			<tr>
-			<td style='width:35%' class='forumheader3'>".ADLAN_152."</td>
-			<td style='text-align:center'>
-			<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />".$sec_img->r_image()."<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20' /></td>
-			</tr>
-			";
-		}
-
-		$text .= "
-			<tr>
-			<td colspan='2' class='forumheader center'>"
-			.$frm->admin_button('authsubmit',ADLAN_91).
-			"</td>
-			</tr>
-			</table>
-			</form>
-			</div>";
-
-		e107::getRender()->tablerender(ADLAN_92, $text, 'admin-login');
-	*/
 	
 	// Start Clean 
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
@@ -299,11 +253,9 @@ class auth
 		{
 			$text .= "
 			<div class='field'>
-				<label for='code_verify'>".ADLAN_152."</label>
-				<input type='hidden' name='rand_num' value='".$sec_img->random_number."' />
-				<span class='code-image'>"
-				.$sec_img->r_image().
-				"</span><input class='tbox' type='text' required='required' name='code_verify' size='15' maxlength='20' />	
+				<label for='code_verify'>".ADLAN_152."</label>"
+				.e107::getSecureImg()->renderImage().
+				e107::getSecureImg()->renderInput()."	
 			</div>";
 		}
 			    

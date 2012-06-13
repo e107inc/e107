@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -208,6 +208,45 @@ if(!$_POST)
 	$signature = '';
 }
 
+
+
+if(e_QUERY == 'thirdparty')
+{
+	$config = array(
+	"base_url" => "http://godoholics.org/e107_handlers/hybridauth/",
+		"providers" => array
+		(
+			"Facebook" => array
+			(
+				"enabled" => true,
+				"keys"    => array ( "id" => "341715689232729", "secret" => "001c35bdb735ace858317eba40b2ed15" ),
+				"scope" => "email, user_about_me, user_birthday, user_hometown",
+				"display" => "popup",
+			)
+		),
+		"debug_mode" => true ,
+		"debug_file" => e_HANDLER."hybridauth/hybridauth.log"
+	);
+	
+	
+	require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
+	
+
+	$hybridauth = new Hybrid_Auth( $config );
+
+	$adapter = $hybridauth->authenticate( "Facebook" );
+	$user_profile = $adapter->getUserProfile(); 
+	
+	print_a($user_profile);
+	
+}
+
+
+
+
+
+
+
 if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.aftersignup'))
 {
 	if(e_QUERY == "preview.aftersignup")
@@ -366,15 +405,17 @@ if (e_QUERY)
 //----------------------------------------
 // 		Initial signup (registration)
 //----------------------------------------
+
 if (isset($_POST['register']))
-{
+{	
 	$e107cache->clear("online_menu_totals");
 	require_once(e_HANDLER."message_handler.php");
 	if (isset($_POST['rand_num']) && $signup_imagecode)
-	{
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+	{	
+		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
 		{
-			$extraErrors[] = LAN_SIGNUP_3."\\n";
+			//$extraErrors[] = LAN_SIGNUP_3."\\n";
+			$extraErrors[] = $badCodeMsg."\\n";
 			$error = TRUE;
 		}
 	}
@@ -384,7 +425,6 @@ if (isset($_POST['register']))
     	$extraErrors[] = $invalid."\\n";
         $error = TRUE;
 	}
-
 
 	if (!$error)
 	{
@@ -478,7 +518,7 @@ if (isset($_POST['register']))
 		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
 		
 		// All validated here - handle any errors
-		if ($error)
+		if ($error) //FIXME - this ignores the errors caused by invalid image-code. 
 		{
 			require_once(e_HANDLER."message_handler.php");
 			$temp = array();
@@ -498,7 +538,10 @@ if (isset($_POST['register']))
 			message_handler('P_ALERT', implode('<br />', $temp));
 		}
 	}		// End of data validation
-
+	else
+	{
+		message_handler('P_ALERT', implode('<br />', $extraErrors));	// Workaround for image-code errors. 
+	}
 
 
 	// ========== End of verification.. ==============
