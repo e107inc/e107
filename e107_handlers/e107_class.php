@@ -967,7 +967,7 @@ class e107
 	 */
 	public static function getSecureImg()
 	{
-		return self::getSingleton('secure_image', true);	
+		return self::getObject('secure_image');
 	}
 
 	/**
