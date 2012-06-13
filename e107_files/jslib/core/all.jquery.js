@@ -3,13 +3,76 @@ $(document).ready(function()
 
     	 $(".e-hideme").hide();
     	 $(".e-expandit").show();
-    			
+    		
+    		
+    	// default 'toggle'. 	
        	$(".e-expandit").click(function () {
        		
+       		var href = ($(this).is("a")) ? $(this).attr("href") : '';
+						
+			if(href === "#" || href == "") 
+			{
+				idt = $(this).nextAll("div");	
+				$(idt).toggle("slow");
+				 return true;			
+			}
+			      		    		
        		var id = $(this).attr("href");   		
 			$(id).toggle("slow");
 			return false;
 		}); 
+		
+		// On 
+		$(".e-expandit-on").click(function () {
+       		
+       		var href = ($(this).is("a")) ? $(this).attr("href") : '';
+						
+			if(href === "#" || href == "") 
+			{
+				idt = $(this).nextAll("div");	
+				$(idt).show("slow");
+				 return true;	// must be true or radio buttons etc. won't work 		
+			}
+			
+			if($(this).attr("data-expandit"))
+			{
+				var id = $(this).attr("data-expandit");	
+			}
+			else
+			{
+				var id = $(this).attr("href");   	
+			}
+			      		    		     				
+			$(id).show("slow");
+			return false;
+		}); 
+		
+		// Off. 
+		$(".e-expandit-off").click(function () {
+       		
+       		var href = ($(this).is("a")) ? $(this).attr("href") : '';
+						
+			if(href === "#" || href == "") 
+			{
+				idt = $(this).nextAll("div");	
+				$(idt).hide("slow");
+				 return true;	 // must be true or radio buttons etc. won't work 			
+			}
+			      		    		    					
+			if($(this).attr("data-expandit"))
+			{
+				var id = $(this).attr("data-expandit");	
+			}
+			else
+			{
+				var id = $(this).attr("href");   	
+			}
+					
+			$(id).hide("slow");
+			return false;
+		}); 
+		
+		
 		
 		// Dates --------------------------------------------------
 					
