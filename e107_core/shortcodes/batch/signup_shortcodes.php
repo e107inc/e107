@@ -40,6 +40,31 @@ class signup_shortcodes extends e_shortcode
 		}
 	}
 	
+	function sc_signup_xup() // show it to those who were using xup
+	{
+		return $this->sc_single_login();	
+	}
+	
+	
+	function sc_single_login()
+	{
+		$pref['single_login_active'] = 1;
+		
+		if(vartrue($pref['single_login_active']))
+		{
+			$text = "";
+			$providers = array('facebook','twitter','google','yahoo');
+			foreach($providers as $p)
+			{
+				$text .= "<a href='".e_SELF."?provider={$p}'><img src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
+			}	
+			
+			$text .= "<hr />";
+			return $text;	
+			// return $tp->parseTemplate($SIGNUP_XUP_FORM, TRUE, $signup_shortcodes);
+		}	
+	}
+	
 	
 	function sc_signup_form_open()
 	{

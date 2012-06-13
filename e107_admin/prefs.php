@@ -58,7 +58,12 @@ if(isset($_POST['submit_resetdisplaynames']))
 /*	UPDATE PREFERENCES */
 if(isset($_POST['updateprefs']))
 {
+	
+	
+	
 	unset($_POST['updateprefs'], $_POST['sitelanguage']);
+	
+	print_a($_POST);
 
 	$_POST['cookie_name'] = str_replace(array(" ", "."), "_", $_POST['cookie_name']);
 	$_POST['cookie_name'] = preg_replace("#[^a-zA-Z0-9_]#", "", $_POST['cookie_name']);
@@ -660,6 +665,139 @@ $text .= "
 		</fieldset>
 
 	";
+	
+// Single Login / / copied from hybridAuth config.php so it's easy to add more. 
+// Used Below. 
+
+$single_logins = array ( 
+			// openid providers
+			"OpenID" => array (
+				"enabled" => true
+			),
+
+			"Yahoo" => array ( 
+				"enabled" => true 
+			),
+
+			"AOL"  => array ( 
+				"enabled" => true 
+			),
+
+			"Google" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ),
+				"scope"   => ""
+			),
+
+			"Facebook" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ),
+
+				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
+				"scope"   => "", 
+
+				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
+				"display" => "" 
+			),
+
+			"Twitter" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "key" => "", "secret" => "" ) 
+			),
+
+			// windows live
+			"Live" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ) 
+			),
+
+			"MySpace" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "key" => "", "secret" => "" ) 
+			),
+
+			"LinkedIn" => array ( 
+				"enabled" => true,
+				"keys"    => array ( "key" => "", "secret" => "" ) 
+			),
+
+			"Foursquare" => array (
+				"enabled" => true,
+				"keys"    => array ( "id" => "", "secret" => "" ) 
+			)
+		);
+ 
+ 
+ 
+ 
+ 
+ 
+$text .= "
+		<fieldset class='e-hideme' id='core-prefs-single-login'>
+					<legend>Single Login Options</legend>
+					<div>Note: This section is not functional at the moment</div>
+					<table class='adminform'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+					<tr>
+						<td class='label'>Enable Single Logins</td>
+						<td class='control'>
+							".$frm->radio_switch('single_login_active', $pref['single_login_active'])."
+						</td>
+					</tr>";
+					
+			foreach($single_logins as $prov=>$val)
+			{		
+					$text .= "
+					<tr>
+						<td class='label'>".$prov."</td>
+						<td class='control'>
+						";
+					foreach($val as $k=>$v)
+					{
+						switch ($k) {
+							case 'enabled':
+								$eopt = array('class'=>'e-expandit');
+								$text .= $frm->radio_switch('single_login['.$prov.'][enabled]', $pref['single_login'][$prov]['enabled'],'','',$eopt);
+							break;
+							
+							case 'keys':
+								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
+								$sty = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "" : "display:none";
+								$text .= "<div id='option-{$prov}' style='padding:10px;{$sty}'>";
+								foreach($v as $tk=>$idk)
+								{
+									$opt['placeholder'] = $tk;
+									$text .= "<br />".$frm->text('single_login['.$prov.'][keys]['.$tk.']', $pref['single_login'][$prov]['keys'][$tk],20,$opt);								
+								}	
+								$text .= "</div>";
+								
+							break;
+							
+							default:
+								
+							break;
+						}	
+					}				
+				
+				$text .= "</td>
+					</tr>					
+					";
+			}		
+					
+	
+	
+$text .= "
+				</tbody>
+			</table>
+			".pref_submit('single-login')."
+		</fieldset>
+";	
+	
+	
 
 // Signup options ===========================.
 
@@ -1256,39 +1394,17 @@ $text .= "
 		);	
 	
 		
-		//TODO FIXME - remove JS framework dependency from front-end and backend. 
-		// ie. no JS errors when prototype.js is completely disabled. 
-		// no JS error with only 'e107 Core Minimum' is enabled. 
-		// e107 Core Minimum should function independently of framework. 
+		//TODO FIXME 
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
-		
-		//TODO Move paths into js_manager and store only keys like 'prototype-local', 'core-minimum' in prefs. 
-		/*		
-		$js_types = array(
-		  array('name'=> 'Prototype (local)',				'path'=> 'prototype/prototype.js') ,
-		  array('name'=> 'Scriptaculous (local)',			'path'=> 'scriptaculous/scriptaculous.js'),
-		  array('name'=> 'Scriptaculous-effects (local)',	'path'=> 'scriptaculous/effects.js'),
-		  array('name'=> 'Prototype (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js'),
-		  array('name'=> 'Scriptaculous + Effects (CDN)',	'path'=> 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects'),
-		  array('name'=> 'jQuery (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
-		  array('name'=> 'jQuery UI (CDN)',					'path'=> 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'),
-		  array('name'=> 'e107 Core Minimum',				'path'=> 'e107.js'),
-		  array('name'=> 'e107 Plugin Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Plugins. 
-		  array('name'=> 'e107 Theme Scripts (TO-DO)',	'path'=> ''), // all js that has been added by Themes. 
-		);	
-		*/
-		
-		// e107 minimum loaded by default once dependency is removed. 
+
 		
 		$js_types = array(
 			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
-		//	array('id'	=> 'prototype-cdn', 'name'=> 'Prototype (CDN)'),		
-			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),
-		//	array('id'	=> 'jquery-cdn', 	'name'=> 'jQuery (CDN)')		
+			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),		
  		);	
 		
-		
+		//TODO // separate switch for CDN.. or automatic fall-back. 	
 				
 		
 				
@@ -1484,6 +1600,7 @@ function prefs_adminmenu()
 	$var['core-prefs-date']['text'] = PRFLAN_21;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
+	$var['core-prefs-single-login']['text'] = "Single-Login";
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_210;

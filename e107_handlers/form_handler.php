@@ -735,10 +735,19 @@ class e_form
 
 	}
 
-	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '')
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
 	{
-		return $this->radio($name, 1, $checked_enabled)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
-			".$this->radio($name, 0, !$checked_enabled)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
+		$options_on = array();
+		$options_off = array();	
+		
+		if($options['class'] == 'e-expandit') // See admin->prefs 'Single Login' for an example. 
+		{
+			$options_on = array('class' => 'e-expandit-on');
+			$options_off = array('class' => 'e-expandit-off');			
+		}
+
+		return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
+			".$this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
 
 	}
 

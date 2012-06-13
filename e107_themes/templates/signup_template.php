@@ -225,8 +225,8 @@ $SIGNUP_BEGIN = "
 
 if(!defined($SIGNUP_BODY))
 {
-			// TODO Add other signup options for Facebook and Twitter. 
-$SIGNUP_BODY = "<div class='signup-other'>{FB=login}{TW=login}</div>
+			
+$SIGNUP_BODY = "
 {SIGNUP_XUP}
 <div id='default'>
 {SIGNUP_XUP_ACTION}
