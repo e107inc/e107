@@ -63,7 +63,7 @@ if(isset($_POST['updateprefs']))
 	
 	unset($_POST['updateprefs'], $_POST['sitelanguage']);
 	
-	print_a($_POST);
+
 
 	$_POST['cookie_name'] = str_replace(array(" ", "."), "_", $_POST['cookie_name']);
 	$_POST['cookie_name'] = preg_replace("#[^a-zA-Z0-9_]#", "", $_POST['cookie_name']);
@@ -133,6 +133,7 @@ if(isset($_POST['updateprefs']))
 		{
 			$newValue = $tp->toDB($value);
 		}
+		
 		$core_pref->update($key, $newValue);
 		/*if($newValue != $core_pref->get($key))
 		{ // Changed value
@@ -733,8 +734,8 @@ $single_logins = array (
  
  
 $text .= "
-		<fieldset class='e-hideme' id='core-prefs-single-login'>
-					<legend>Single Login Options</legend>
+		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
+					<legend>Social Login Options</legend>
 					<div>Note: This section is not functional at the moment</div>
 					<table class='adminform'>
 						<colgroup>
@@ -743,14 +744,20 @@ $text .= "
 						</colgroup>
 						<tbody>
 					<tr>
-						<td class='label'>Enable Single Logins</td>
+						<td class='label'>Enable Social Logins</td>
 						<td class='control'>
-							".$frm->radio_switch('single_login_active', $pref['single_login_active'])."
+							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
 						</td>
 					</tr>";
 					
+			if(!is_array($pref['social_login']))
+			{
+				$pref['social_login'] = array();	
+			}
+							
 			foreach($single_logins as $prov=>$val)
-			{		
+			{
+									
 					$text .= "
 					<tr>
 						<td class='label'>".$prov."</td>
@@ -761,20 +768,24 @@ $text .= "
 						switch ($k) {
 							case 'enabled':
 								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('single_login['.$prov.'][enabled]', $pref['single_login'][$prov]['enabled'],'','',$eopt);
+								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', $pref['social_login'][$prov]['enabled'],'','',$eopt);
 							break;
 							
 							case 'keys':
 								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "" : "display:none";
+								$sty = vartrue($pref['social_login'][$prov]['keys'][$tk]) ? "" : "display:none";
 								$text .= "<div id='option-{$prov}' style='padding:10px;{$sty}'>";
 								foreach($v as $tk=>$idk)
 								{
 									$opt['placeholder'] = $tk;
-									$text .= "<br />".$frm->text('single_login['.$prov.'][keys]['.$tk.']', $pref['single_login'][$prov]['keys'][$tk],20,$opt);								
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', $pref['social_login'][$prov]['keys'][$tk],20,$opt);								
 								}	
 								$text .= "</div>";
 								
+							break;
+							
+							case 'scope':
+								$text .= $frm->hidden('social_login['.$prov.'][scope]','email');
 							break;
 							
 							default:
@@ -793,7 +804,7 @@ $text .= "
 $text .= "
 				</tbody>
 			</table>
-			".pref_submit('single-login')."
+			".pref_submit('sociallogin')."
 		</fieldset>
 ";	
 	
@@ -1600,7 +1611,7 @@ function prefs_adminmenu()
 	$var['core-prefs-date']['text'] = PRFLAN_21;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
-	$var['core-prefs-single-login']['text'] = "Single-Login";
+	$var['core-prefs-sociallogin']['text'] = "Social Logins";
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
