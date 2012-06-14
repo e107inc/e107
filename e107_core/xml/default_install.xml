@@ -210,6 +210,8 @@ City, State, Country
 		<core name="sitetheme_pref"></core>
 		<core name="siteurl">/</core>
 		<core name="smiley_activate">1</core>
+		<core name="social_login_active">0</core>
+		<core name="social_login"><![CDATA[array()]]></core>
 		<core name="ssl_enabled">0</core>
 		<core name="subnews_attach"></core>
 		<core name="subnews_class">0</core>

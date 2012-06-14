@@ -519,7 +519,7 @@ CREATE TABLE user (
   user_perms text NOT NULL,
   user_realm text NOT NULL,
   user_pwchange int(10) unsigned NOT NULL default '0',
-  user_xup varchar(100) NOT NULL default '',
+  user_xup text NOT NULL,
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
   UNIQUE KEY user_loginname (user_loginname),

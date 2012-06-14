@@ -53,10 +53,10 @@ class signup_shortcodes extends e_shortcode
 		if(vartrue($pref['single_login_active']))
 		{
 			$text = "";
-			$providers = array('facebook','twitter','google','yahoo');
+			$providers = array('facebook','twitter','google','yahoo','blogger');
 			foreach($providers as $p)
 			{
-				$text .= "<a href='".e_SELF."?provider={$p}'><img src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
+				$text .= "<a href='".e_SELF."?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
 			}	
 			
 			$text .= "<hr />";
