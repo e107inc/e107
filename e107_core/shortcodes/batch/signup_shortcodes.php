@@ -42,21 +42,21 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_xup() // show it to those who were using xup
 	{
-		return $this->sc_single_login();	
+		return $this->sc_social_login();	
 	}
 	
 	
-	function sc_single_login()
+	function sc_social_login()
 	{
-		$pref['single_login_active'] = 1;
-		
-		if(vartrue($pref['single_login_active']))
+		$pref = e107::getPref('social_login_active');
+			
+		if(vartrue($pref))
 		{
 			$text = "";
 			$providers = array('facebook','twitter','google','yahoo','blogger');
 			foreach($providers as $p)
 			{
-				$text .= "<a href='".e_SELF."?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
+				$text .= "<a href='".e_BASE."index.php?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
 			}	
 			
 			$text .= "<hr />";

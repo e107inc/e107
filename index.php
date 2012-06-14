@@ -64,7 +64,7 @@
 
 	unset($_SESSION['E:SOCIAL']);
 
-	if(!isset($_SESSION['E:SOCIAL']) && e107::getPref('social_login_active', false) && (e_ADMIN_AREA !== true))
+	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getPref('social_login_active', false) && (e_ADMIN_AREA !== true))
 	{
 		require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
 	
@@ -73,7 +73,7 @@
 			"providers" => e107::getPref('social_login', array())	
 		);
 	
-		print_a($config);
+	//	print_a($config);
 	 //	$params = array("hauth_return_to" => e_SELF);  
 	
 		$hybridauth = new Hybrid_Auth($config);

@@ -1494,7 +1494,7 @@ function init_session()
 	
 	if($_SESSION['E:SOCIAL'] != FALSE)
 	{
-		$user = $_SESSION['E:SOCIAL'];
+		$user = (array) $_SESSION['E:SOCIAL'];
 	// 	print_a($_SESSION['E:SOCIAL']);
 		define('USER', true);
 		define('USERID', 1);
