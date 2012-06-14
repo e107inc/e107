@@ -633,6 +633,8 @@ if(isset($pref['e_module_list']) && $pref['e_module_list'])
 	}
 }
 
+
+
 //
 // P: THEME LOADING
 //
@@ -1486,6 +1488,30 @@ function init_session()
 	# - return boolean
 	# - scope public
 	*/
+	
+	
+	// Experimental ------------------------- see /index.php 
+	
+	if($_SESSION['E:SOCIAL'] != FALSE)
+	{
+		$user = $_SESSION['E:SOCIAL'];
+	// 	print_a($_SESSION['E:SOCIAL']);
+		define('USER', true);
+		define('USERID', 1);
+		define('USERNAME', $user['displayName']);
+		define('USERTHEME', false);
+		define('ADMIN', false);
+		define('GUEST', false);
+		define('USERCLASS', '');
+		define('USEREMAIL', $user['email']);
+		define('USERCLASS_LIST', '');
+		define('USERCLASS', '');
+		define('USERIMAGE', $user['photoURL']);
+		return;
+	}
+
+	
+	// ----------------------------------------
 
 
 	global $user_pref, $currentUser;
