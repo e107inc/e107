@@ -778,7 +778,7 @@ $text .= "
 								foreach($v as $tk=>$idk)
 								{
 									$opt['placeholder'] = $tk;
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', $pref['social_login'][$prov]['keys'][$tk],20,$opt);								
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', $pref['social_login'][$prov]['keys'][$tk],100,$opt);								
 								}	
 								$text .= "</div>";
 								
