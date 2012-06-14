@@ -53,10 +53,16 @@ class signup_shortcodes extends e_shortcode
 		if(vartrue($pref))
 		{
 			$text = "";
-			$providers = array('facebook','twitter','google','yahoo','blogger');
-			foreach($providers as $p)
+			$providers = e107::getPref('social_login'); 
+		//	$providers = array('facebook','twitter','google','yahoo','blogger');
+			foreach($providers as $p=>$v)
 			{
-				$text .= "<a href='".e_BASE."index.php?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";	
+				$p = strtolower($p);
+				if($v['enabled'] == 1)
+				{
+					$text .= "<a href='".e_BASE."index.php?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
+				}
+				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
 			
 			$text .= "<hr />";
