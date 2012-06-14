@@ -288,9 +288,8 @@ echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$di
 echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
 echo render_meta('copyright');
 echo render_meta('author');
-echo render_meta('tag');
 echo render_meta('og');
-
+echo render_meta('tag');
 
 unset($key_merge,$diz_merge);
 
@@ -455,6 +454,14 @@ if ($e107_popup != 1) {
 			}
 		}
 		parseheader(($e107ParseHeaderFlag ? $cust_header : $HEADER));
+		if($e107ParseHeaderFlag== TRUE)
+		{
+			define('THEME_LAYOUT',$key_extract);	
+		}
+		else
+		{
+			define('THEME_LAYOUT','default');	
+		}
 	}
 
 
