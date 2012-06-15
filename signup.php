@@ -45,7 +45,7 @@ require_once(e107::coreTemplatePath('signup')); //correct way to load a core tem
 //include_once(e_CORE.'shortcodes/batch/signup_shortcodes.php');
 
 $signup_shortcodes = e107::getScBatch('signup');
-$facebook_shortcodes = e107::getScBatch('facebook',TRUE);
+// $facebook_shortcodes = e107::getScBatch('facebook',TRUE);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
 $text = '';

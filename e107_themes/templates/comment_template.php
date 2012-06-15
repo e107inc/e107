@@ -59,7 +59,7 @@ $sc_style['LOCATION']['post'] = "<br />";
 $sc_style['SIGNATURE']['pre'] = "";
 $sc_style['SIGNATURE']['post'] = "<br />";
 
-
+/*
 $COMMENTSTYLE = "
 <table class='fborder' style='".USER_WIDTH."'>
 <tr>
@@ -82,6 +82,92 @@ $COMMENTSTYLE = "
 </tr>
 </table>
 <br />";
+*/
 
+// from e107.org 
+
+
+$sc_style['COMMENTEDIT']['pre']  		= '<div class="clear_b H10"><!-- --></div><div class="comments-box-reply smalltext f-right">';
+$sc_style['COMMENTEDIT']['post'] 		= '</div>';
+
+$sc_style['COMMENT_AVATAR']['pre']  	= '<div class="center">';
+$sc_style['COMMENT_AVATAR']['post'] 	= '</div>';
+
+
+$COMMENT_TEMPLATE['ITEM'] = '
+	<div class="comments-box-left">
+		{COMMENT_AVATAR}
+	</div>
+
+	<div class="comments-box-right">
+
+		<div class="P10">
+
+			<span class="comments-box-username">{USERNAME}</span>
+			<span class="comments-box-date">{TIMEDATE}</span>
+			<span class="comments-reply">{REPLY}</span>
+
+			<div class="comments-user-badge-bar">
+
+				{SUPPORT}
+
+			</div>
+
+			<div class="clear_b H5"><!-- --></div>
+
+			{COMMENT}
+
+			{COMMENTEDIT}
+
+		</div>
+
+	</div>';
+	
+$COMMENT_TEMPLATE['ITEM_START'] 	= '<div class="comments-box clearfix">';
+$COMMENT_TEMPLATE['ITEM_END']		= '</div><div class="clear_b"><!-- --></div>';
+
+$COMMENT_TEMPLATE['LAYOUT'] 		= '{COMMENTFORM}{COMMENTS}{MODERATE}';
+										
+$COMMENT_TEMPLATE['FORM']			= ""; //TODO 
+
+
+	
+/*
+$COMMENTSTYLE = '
+
+<div class="comments-box clearfix">
+
+	<div class="comments-box-left">
+		{COMMENT_AVATAR}
+	</div>
+
+	<div class="comments-box-right">
+
+		<div class="P10">
+
+			<span class="comments-box-username">{USERNAME}</span>
+			<span class="comments-box-date">{TIMEDATE}</span>
+			<span class="comments-reply">{REPLY}</span>
+
+			<div class="comments-user-badge-bar">
+
+				{SUPPORT}
+
+			</div>
+
+			<div class="clear_b H5"><!-- --></div>
+
+			{COMMENT}
+
+			{COMMENTEDIT}
+
+		</div>
+
+	</div>
+
+
+
+';
+*/
 
 ?>

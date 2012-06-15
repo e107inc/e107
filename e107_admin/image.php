@@ -1612,16 +1612,15 @@ function show_avatars()
 	$tp = e107::getParser();
 	$mes = e107::getMessage();
 
-	$handle = opendir(e_UPLOAD."avatars/"); //TODO replace with $fl
+
+	$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
+
 	$dirlist = array();
-	while ($file = readdir($handle))
+	
+	foreach($avFiles as $f)
 	{
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file))
-		{
-			$dirlist[] = $file;
-		}
+		$dirlist[] = $f['fname'];	
 	}
-	closedir($handle);
 
 	$text = '';
 
@@ -1655,10 +1654,10 @@ function show_avatars()
 			}
 
 			//directory?
-			if(is_dir(e_UPLOADE."avatars/".$image_name))
+			if(is_dir(e_MEDIA."avatars/".$image_name))
 			{
 				//File info
-				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
+				$users = "<a href='#' title='".IMALAN_69.": {$image_name}'><img class='e-tip icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_69.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
 
 				//Friendly UI - click text to select a form element
 				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
@@ -1667,16 +1666,18 @@ function show_avatars()
 			else
 			{
 				//File info
-				$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 				// Control over the image size (design)
-				$image_size = getimagesize(e_UPLOAD."avatars/".$image_name);
+				$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
 
 				//Friendly UI - click text to select a form element
-				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'><img src='".e_FILE_ABS."public/avatars/{$image_name}' alt='{$image_name}' /></label>";
+				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'>
+				<img class='e-tip' src='".e_MEDIA."avatars/{$image_name}' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				</label>";
 				if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
 				{
-					$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
+					$img_src = "<a class='image-preview' href='".e_MEDIA."avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
 				}
 			}
 
