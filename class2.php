@@ -845,15 +845,17 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	
 	// earlier event trigger with user data still available 
 	e107::getEvent()->trigger('logout');
-
+	
+	// first model logout and session destroy..
+	e107::getUser()->logout();
+	
+	// it might be removed soon
 	if ($pref['user_tracking'] == 'session')
 	{
 		session_destroy();
 		$_SESSION[e_COOKIE]='';
 	}
-
 	cookie(e_COOKIE, '', (time() - 2592000));
-	e107::getUser()->logout();
 	
 	e107::getRedirect()->redirect(SITEURL);
 	// header('location:'.e_BASE.'index.php');

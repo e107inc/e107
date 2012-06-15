@@ -1105,7 +1105,8 @@ class e_user extends e_user_model
 			$this->_extended_model = $this->_parent_extmodel;
 			$this->_extended_structure = $this->_parent_extstruct;
 			$this->_user_config = $this->_parent_config;
-			$this->setData($this->_parent_model->getData());
+			if($this->_parent_model)
+				$this->setData($this->_parent_model->getData());
 
 			// cleanup
 			$this->_parent_id = false;
