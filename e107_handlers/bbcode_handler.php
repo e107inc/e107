@@ -475,7 +475,7 @@ class e_bbcode
 		$temp['mailout']	= $BBCODE_TEMPLATE_MAILOUT;
 		$temp['page']		= $BBCODE_TEMPLATE_CPAGE;
 		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
-		$temp['comment'] 	= $BBCODE_TEMPLATE;
+		$temp['comment'] 	= $BBCODE_TEMPLATE_COMMENT;
 		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
 	
 		if(isset($temp[$template]))
@@ -529,7 +529,7 @@ class e_bbcode
 			array(	"[block]",		'<div>'),
 			array(	"[/block]",		'</div>'),
 			array(	"[table]\n",	'<table>'),
-			array(	"[/table]",		'</table>'),
+			array(	"[/table]\n",		'</table>'),
 			array(	"[table]\n",	'<table class="bbcode-table">'),
 			array(	"[tbody]\n",	'<tbody class="bbcode-tbody">'),
 			array(	"[tr]",			'<tr class="bbcode-tr">'),
@@ -537,10 +537,15 @@ class e_bbcode
 			
 			array(	"[tbody]\n",	'<tbody>'),
 			array(	"[/tbody]\n",	'</tbody>'),
+			array(	"[code]\n",		'<code>'),
+			array(	"[/code]\n",	'</code>'),
 			array(	"[tr]",			'<tr>'),
 			array(	"\n[/tr]\n",	'</tr>'),
 			array(	"\n\t[td]",		'<td>'),
-			array(	"[/td]",		'</td>'),						
+			array(	"[/td]",		'</td>'),	
+			array(	"[blockquote]",	'<blockquote>'),
+			array(  "[blockquote]", '<blockquote class="indent bbcode-blockquote">'),
+			array(	"[/blockquote]",'</blockquote>'),					
 		);
 		
 		foreach($convert as $arr)
@@ -554,11 +559,13 @@ class e_bbcode
 		$text = preg_replace('/<div class="bbcode-(?:[\w]*)" style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
 		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 		$text = preg_replace('/<img class="bbcode bbcode-img"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
-		$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
+	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
 		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
 		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
+		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
+		
 		
 		
 		$blank = array('</li>','width:px;height:px;');

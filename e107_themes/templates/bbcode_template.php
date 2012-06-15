@@ -24,6 +24,8 @@ $BBCODE_TEMPLATE = "
 	<div class='field-spacer'><!-- --></div>
 ";
 
+$BBCODE_TEMPLATE_COMMENT = ""; // no buttons on comments by default. 
+
 // $BBCODE_TEMPLATE .= "{BB=blank}";
 
 $BBCODE_TEMPLATE_SIGNATURE = "

@@ -161,7 +161,7 @@ $ret = "
 <input class='button' type ='button' style=' cursor:pointer' size='30' value='".LAN_USET_38."' onclick='expandit(this)' />
 <div style='display:none' >";
 $avatarlist[0] = "";
-$handle = opendir(e_IMAGE."avatars/");
+$handle = opendir(e_MEDIA."avatars/");
 while ($file = readdir($handle))
 {
 	if ($file != "." && $file != ".." && $file != "index.html" && $file != "CVS")
@@ -173,7 +173,7 @@ closedir($handle);
 
 for($c = 1; $c <= (count($avatarlist)-1); $c++)
 {
-	$ret .= "<a href='javascript:addtext_us(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' alt='' /></a> ";
+	$ret .= "<a href='javascript:addtext_us(\"$avatarlist[$c]\")'><img src='".e_MEDIA."avatars/".$avatarlist[$c]."' alt='' /></a> ";
 }
 
 $ret .= "

@@ -185,6 +185,7 @@ if (isset ($_POST['test_mail']))
 // ------- Update Options. --------------
 if (isset ($_POST['update_options']))
 {
+	$mes = e107::getMessage();
 	$temp = array();
 	$temp['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$temp['im_width'] = $_POST['im_width'];

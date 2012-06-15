@@ -41,6 +41,28 @@ class comment
 			6	=> 'bugtrack'
 	);
 
+	private $template;
+
+	function __construct()
+	{
+		global $COMMENTSTYLE;
+			
+		if (!$COMMENTSTYLE)
+		{
+			require_once(e107::coreTemplatePath('comment'));	
+		}
+		else // BC
+		{
+			$COMMENT_TEMPLATE['ITEM_START'] = "";
+			$COMMENT_TEMPLATE['ITEM'] 		= $COMMENTSTYLE;	
+			$COMMENT_TEMPLATE['ITEM_END'] 	= "";
+			$COMMENT_TEMPLATE['LAYOUT'] 	= "{COMMENTS}{COMMENTFORM}{MODERATE}";
+		}	
+		
+		$this->template = $COMMENT_TEMPLATE;
+		
+		
+	}
 	/**
 	 * Display the comment editing form
 	 *
@@ -62,7 +84,9 @@ class comment
 			return;
 		}
 
-		require_once(e_HANDLER."ren_help.php");
+	// 	require_once(e_HANDLER."ren_help.php");
+	
+	
 		if ($this->getCommentPermissions() == 'rw')
 		{
 			$itemid = $id;
@@ -185,7 +209,7 @@ class comment
 			</div>";
 			
 			
-			
+			//TODO Add Template 
 			
 			if ($tablerender)
 			{
@@ -223,14 +247,25 @@ class comment
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
-		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
+		global $sc_style, $rater, $gen;
+			
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$pref = e107::getPref();
+		
+		
+		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction,$thistable,$thisid,$e107;
+		
+		
 		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
 			return;
 		}
 		$comrow = $row;
+		
+		e107::getScBatch('comment')->setParserVars($row);
+		
 		$thistable = $table;
 		$thisid = $id;
 		$thisaction = $action;
@@ -256,35 +291,37 @@ class comment
 		{
 			define("IMAGE_new_comments", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/new_comments.png' alt=''  /> "));
 		}
+		
 		$ns = new e107table;
+		
 		if (!$gen || !is_object($gen))
 		{
 			$gen = new convert;
 		}
-		$url = e_PAGE."?".e_QUERY;
-		$unblock = "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
-		$block = "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
-		$delete = "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
-		$userinfo = "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
-		if (!$COMMENTSTYLE)
-		{
-			global $THEMES_DIRECTORY;
-			$COMMENTSTYLE = "";
-			if (file_exists(THEME."comment_template.php"))
-			{
-				require_once (THEME."comment_template.php");
-			}
-			else
-			{
-				require_once (e_BASE.$THEMES_DIRECTORY."templates/comment_template.php");
-			}
-		}
+		
+		$url 		= e_PAGE."?".e_QUERY;
+		
+		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
+		$block 		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
+		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
+		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
+		
+		
+		$COMMENT_TEMPLATE = $this->template; 
+			
 		if ($pref['nested_comments'])
 		{
 			$width2 = 100 - $width;
 			$total_width = "95%";
 			if ($width)
 			{
+				
+				
+				$renderstyle = $COMMENT_TEMPLATE['ITEM_START'];
+				$renderstyle .= "<div style='margin-left:{$width}%'>".$COMMENT_TEMPLATE['ITEM']."</div>";	
+				$renderstyle .= $COMMENT_TEMPLATE['ITEM_END'];	
+				
+				/*
 				$renderstyle = "
 				<table style='width:".$total_width."' border='0'>
 				<tr>
@@ -293,10 +330,14 @@ class comment
 				</td>
 				</tr>
 				</table>";
+				 * */
+				
 			}
 			else
 			{
-				$renderstyle = $COMMENTSTYLE;
+					
+				$renderstyle = $COMMENT_TEMPLATE['ITEM_START'].$COMMENT_TEMPLATE['ITEM'].$COMMENT_TEMPLATE['ITEM_END'];
+
 			}
 			if ($pref['comments_icon'])
 			{
@@ -316,13 +357,16 @@ class comment
 		}
 		else
 		{
-			$renderstyle = $COMMENTSTYLE;
+			$renderstyle = $COMMENT_TEMPLATE['ITEM'];
 		}
 		$highlight_search = FALSE;
+		
+		
 		if (isset($_POST['highlight_search']))
 		{
 			$highlight_search = TRUE;
 		}
+		
 		if (!defined("IMAGE_rank_main_admin_image"))
 		{
 			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/main_admin.png' alt='' />"));
@@ -335,8 +379,17 @@ class comment
 		{
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/admin.png' alt='' />"));
 		}
+		
 		$RATING = ($addrating == TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+		
+		$comment_shortcodes = e107::getScBatch('comment');
+		
+	//	$text = $tp->parseTemplate($COMMENT_TEMPLATE['ITEM_START'], TRUE, $comment_shortcodes);
 		$text = $tp->parseTemplate($renderstyle, TRUE, $comment_shortcodes);
+		
+		
+		
+		
 		if ($action == "comment" && $pref['nested_comments'])
 		{
 			$type = $this->getCommentType($thistable);
@@ -362,6 +415,9 @@ class comment
 				}
 			}
 		} // End (nested comment handling)
+		
+	
+		
 		return $text;
 	}
 
@@ -373,7 +429,7 @@ class comment
 	 * @param unknown_type $comment
 	 * @param unknown_type $table
 	 * @param integer $id - reference of item in source table to which comment is linked
-	 * @param unknown_type $pid
+	 * @param unknown_type $pid - parent comment id when it's a reply to a specific comment. t
 	 * @param unknown_type $subject
 	 * @param unknown_type $rateindex
 	 */
@@ -689,7 +745,13 @@ class comment
 	{
 		//compose comment	: single call function will render the existing comments and show the form_comment
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
-		global $pref, $ns, $e107cache, $tp, $totcc;
+		global $e107cache, $totcc;
+		
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+		$pref = e107::getPref();
+		
+		
 		if ($this->getCommentPermissions() === FALSE) return;
 
 		$sql = e107::getDb();
@@ -734,16 +796,7 @@ class comment
 
 			if ($tablerender)
 			{
-				$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
-			}
-
-			if (!$return)
-			{
-				echo $text;
-			}
-			else
-			{
-				$ret['comment'] = $text;
+			//	$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
 			}
 
 			if (ADMIN && getperms("B"))
@@ -754,7 +807,7 @@ class comment
 
 		if ($lock != '1')
 		{
-			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
+			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, false); // tablerender turned off. 
 		}
 		else
 		{
@@ -763,10 +816,28 @@ class comment
 
 		if (!$return)
 		{
-			echo $modcomment.$comment;
+			
+			$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}");
+			$replace = array($modcomment,$text,$comment);
+			$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
+				
+			if ($tablerender)
+			{
+				echo $ns->tablerender(COMLAN_99, $TEMPL, 'comment', TRUE);	
+			}
+			else
+			{
+				echo $TEMPL;	
+			}
+				
+			//echo $modcomment.$comment;
+			//echo $text;
 		}
+		
+		
 
-		$ret['comment'] .= $modcomment;
+		$ret['comment'] = $text . $modcomment;
+
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = COMLAN_99;
 
