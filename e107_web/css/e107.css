@@ -133,26 +133,36 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 /* default comments layout   */
 
-.comments-box										{ padding-bottom:10px; margin-bottom:10px; border-top:1px solid #C0C0C0;  }
+.comment-box										{ padding-bottom:10px; margin-bottom:10px; border-top:1px solid #C0C0C0;  }
 
-.comments-box-left									{ float:left; text-align:center; width:10%; min-width:100px }
+.comment-box-left									{ float:left; text-align:center; width:10%; min-width:100px }
 
-.comments-box-userinfo								{ padding:20px 5px 10px 5px; }
+.comment-box-userinfo								{ padding:20px 5px 10px 5px; }
 
-.comments-box-username								{ padding-left:0px; font-size:1.2em; padding-right: 10px }
+.comment-box-username								{ padding-left:0px; font-size:1.2em; padding-right: 10px }
 
 .comments-avatar									{ padding:10px 10px 0px 10px; }
 
 img.comment-avatar									{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }
 
-.comments-box-right									{ width:85%; min-height: 70px; float:left; }
+.comment-box-right									{ width:85%; min-height: 70px; float:left; }
 
-.comments-box-arrow									{ width:11px; height:26px; float:left; position:relative; top:5px; left:-18px; }
+.comment-box-arrow									{ width:11px; height:26px; float:left; position:relative; top:5px; left:-18px; }
 
-.comments-box-date									{  }
+.comment-box-date									{  }
 
 .comments-user-badge-bar							{ float:right; margin-left:20px; }
 
-.comments-box-reply									{ position:relative; bottom:0px; right:-10px; padding:2px 5px; font-size:0.85em; background-color:#EBFAFF; border:1px solid #C6F1FF; border-bottom:0px none; border-right:0px none; -webkit-border-top-left-radius: 5px; -moz-border-radius-topleft: 5px; border-top-left-radius: 5px; }
+.comment-replyxxx									{ position:relative; bottom:0px; right:-10px; padding:2px 5px; font-size:0.85em; background-color:#EBFAFF; border:1px solid #C6F1FF; border-bottom:0px none; border-right:0px none; -webkit-border-top-left-radius: 5px; -moz-border-radius-topleft: 5px; border-top-left-radius: 5px; }
 
+.comment-input										{ width:100% }
 
+.comment-status										{ float:right; font-style: italic }
+
+a.comment-edit										{ }
+
+.comment-edit										{ float:right; margin-right:5px; }
+
+.comment-reply										{ float:right ; margin-right:5px;}
+
+.comment-moderate									{ text-align:center }

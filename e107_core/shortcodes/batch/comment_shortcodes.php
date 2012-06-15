@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,28 +15,49 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-//include_once(e_HANDLER.'shortcode_handler.php');
-//$comment_shortcodes = e107::getScParser()->parse_scbatch(__FILE__);
 
 
 class comment_shortcodes extends e_shortcode
 {
 	var $var;
 	
-	function sc_subject($parm)
+	function sc_subject_input($parm)
 	{
+		$tp = e107::getParser();
+		$pref = e107::getPref();
 		
-		global $SUBJECT, $comrow, $pref, $NEWIMAGE, $tp;
-		if (isset($pref['nested_comments']) && $pref['nested_comments']) {
-			$SUBJECT = $NEWIMAGE." ".(empty($this->var['comment_subject']) ? $subject : $tp->toHTML($this->var['comment_subject'], TRUE));
-		} else {
-			$SUBJECT = '';
+		if(vartrue($pref['nested_comments']))
+		{
+				return "<input class='tbox comment subject-input' type='text' placeholder='".COMLAN_324." name='subject' size='61' value='".$tp->toForm($this->var['subject'])."' maxlength='100' />";
 		}
-		return $SUBJECT;
+				
+		return;	
 	}
 	
-	function sc_username($parm)
+	
+	function sc_subject($parm)
 	{
+		$tp = e107::getParser();
+		$pref = e107::getPref();
+
+		global $SUBJECT, $NEWIMAGE;
+		
+		if (vartrue($pref['nested_comments'])) 
+		{
+			$SUBJECT = $NEWIMAGE." ".(empty($this->var['comment_subject']) ? $subject : $tp->toHTML($this->var['comment_subject'], TRUE));
+		}
+		else
+		{
+			$SUBJECT = '';
+		}
+		
+		return $SUBJECT;
+		
+	}
+	
+	
+	function sc_username($parm)
+	{	
 		global $USERNAME;
 		if (isset($this->var['user_id']) && $this->var['user_id']) 
 		{
@@ -52,19 +73,24 @@ class comment_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_TIMEDATE($parm) 
+	function sc_timedate($parm) 
 	{
 		global $TIMEDATE, $datestamp, $gen;
 		$datestamp = $gen->convert_date($this->var['comment_datestamp'], "short");
 		return $datestamp;
 	}
 	
+	
 	function sc_reply($parm) 
 	{
-		global $REPLY, $action, $pref, $table, $id, $thisaction, $thistable, $thisid;
+		global $REPLY, $action, $table, $id, $thisaction, $thistable, $thisid;
+		
+		$pref = e107::getPref();
 		$REPLY = '';
-		if($this->var['comment_lock'] != "1"){
-			if ($thisaction == "comment" && $pref['nested_comments']) {
+		if($this->var['comment_lock'] != "1" && $this->var['comment_blocked'] < 1)
+		{
+			if ($thisaction == "comment" && $pref['nested_comments']) 
+			{
 				$REPLY = "<a href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 			}
 		}
@@ -105,9 +131,7 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_avatar($parm) 
 	{
-					
-
-		
+						
 		//  ---------  Legacy Code below for those who still want to use it. 
 		
 		global $AVATAR;
@@ -125,11 +149,13 @@ class comment_shortcodes extends e_shortcode
 		return $this->var['user_image'];
 	}
 	
+	
 	function sc_comments($parm) 
 	{
 		global $COMMENTS;
 		return (isset($this->var['user_id']) && $this->var['user_id'] ? COMLAN_99.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
 	}
+	
 	
 	function sc_joined($parm) 
 	{
@@ -142,28 +168,134 @@ class comment_shortcodes extends e_shortcode
 		return $JOINED;
 	}
 	
+	
+	function sc_comment_itemid($parm) // for ajax item id. 
+	{
+		return 'comment-'.intval($this->var['comment_id']);	
+	}
+	
+	function sc_comment_moderate($parm)
+	{
+		if(!getperms('0') && !getperms("B"))
+		{
+			return;	
+		}
+		
+		$url 		= e_PAGE."?".e_QUERY;
+		
+		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
+		$block 		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
+		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
+		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
+			
+		return $unblock.$block.$delete.$userinfo;
+	}
+	
+	
+	
+	function sc_comment_button($parm)
+	{
+		if($this->mode == 'edit')
+		{
+			return "<input class='button' type='submit' name='".$this->var['action']."submit' value='".(isset($this->var['eaction']) && $this->var['eaction'] == "edit" ? COMLAN_320 : COMLAN_9)."' />";		
+		}	
+		
+	}
+	
+	
+	function sc_author_input($parm)
+	{
+		if($this->mode == 'edit')
+		{
+			if (ANON == TRUE && USER == FALSE) // (anonymous comments - if allowed)
+			{ 
+				return "<input class='tbox comment author' type='text' placeholder=\"".COMLAN_16."\" name='author_name' size='61' value='{$_POST['author_name']}' maxlength='100' />";			
+			}
+		}	
+	}
+		
+			
+	function sc_rate_input($parm)
+	{
+		return $this->var['rate'];	
+	}
+		
+	
+	function sc_comment_input($parm)
+	{	
+		$options = array(
+			'class'			=> 'tbox input comment-input',
+			'placeholder'	=> "Leave a message..." // TODO Lan
+		);
+			
+		if($parm == 'bbcode')
+		{
+			return e107::getForm()->bbarea('comment',$this->var['comval'],'comment','comment-'.$this->var['itemid'],'large',$options);			
+		}
+		else
+		{
+			return e107::getForm()->textarea('comment',$this->var['comval'], 5, 80,$options);						
+		}		
+	}		
+	
+	
+	function sc_user_avatar($parm)
+	{
+		$this->var['user_id'] = USERID;
+		$this->var['user_image'] = USERIMAGE;
+		return $this->sc_comment_avatar($parm);			
+	}
+	
+	
 	function sc_comment($parm) 
 	{
-		global $COMMENT, $pref;
+		// global $COMMENT, $pref;	
 		$tp = e107::getParser();
-		return (isset($this->var['comment_blocked']) && $this->var['comment_blocked'] ? COMLAN_0 : $tp->toHTML($this->var['comment_comment'], TRUE, FALSE, $this->var['user_id']));
+		if($this->var['comment_blocked'] == 1)
+		{
+			return COMLAN_0;	
+		}
+		
+		return $tp->toHTML($this->var['comment_comment'], TRUE, FALSE, $this->var['user_id']);		
 	}
+	
+	function sc_comment_status($parm)
+	{
+		switch ($this->var['comment_blocked'])
+		{
+			case 2:
+				return "Pending Approval"; // TODO LAN
+			break;
+				
+			case 1:
+				return COMLAN_0;
+			break;
+			
+			default:
+				
+			break;
+		}
+	}	
+		
+	
 	
 	function sc_commentedit($parm) 
 	{
-		global $COMMENTEDIT, $pref, $comment_edit_query;
-		if ($pref['allowCommentEdit'] && USER && $this->var['user_id'] == USERID && $this->var['comment_lock'] != "1")
+		global $COMMENTEDIT, $comment_edit_query;
+		$pref = e107::getPref();
+		
+		if ($pref['allowCommentEdit'] && USER && $this->var['user_id'] == USERID && ($this->var['comment_lock'] < 1))
 		{
-		    $adop_icon = (file_exists(THEME."images/commentedit.png") ? THEME_ABS."images/commentedit.png" : e_IMAGE_ABS."admin_images/edit_16.png");
+		    $adop_icon = (file_exists(THEME."images/commentedit.png") ? "<img src='".THEME_ABS."images/commentedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' />" : "Edit");
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
 			if (strstr(e_QUERY, "&"))
 			{
-				return "<a href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'><img src='".$adop_icon."' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
+				return "<a class='comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
 			}
 			else
 			{
 		//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$this->var['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-				return "<a href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'><img src='".$adop_icon."' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
+				return "<a class='comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
 			}
 		}
 		else
@@ -172,11 +304,13 @@ class comment_shortcodes extends e_shortcode
 		}
 	}
 	
+	
 	function sc_rating($parm) 	
 	{
 		global $RATING;
 		return $RATING;
 	}
+	
 	
 	function sc_ipaddress($parm) 
 	{
@@ -184,6 +318,7 @@ class comment_shortcodes extends e_shortcode
 		//require_once(e_HANDLER."encrypt_handler.php");
 		return (ADMIN ? "<a href='".SITEURL."userposts.php?0.comments.".$this->var['user_id']."'>".COMLAN_330." ".e107::getIPHandler()->ipDecode($this->var['comment_ip'])."</a>" : "");
 	}
+	
 	
 	function sc_level($parm) 
 	{
@@ -193,12 +328,14 @@ class comment_shortcodes extends e_shortcode
 		return ($this->var['user_admin'] ? $ldata[0] : $ldata[1]);
 	}
 	
+	
 	function sc_location($parm) 
 	{
 		global $LOCATION;
 		$tp = e107::getParser();
 		return (isset($this->var['user_location']) && $this->var['user_location'] ? COMLAN_313.": ".$tp->toHTML($this->var['user_location'], TRUE) : '');
 	}
+	
 	
 	function sc_signature($parm) 
 	{
