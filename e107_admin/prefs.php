@@ -1312,6 +1312,13 @@ $text .= "
 						</td>
 					</tr>
 
+					<tr>
+						<td class='label'>Moderate Comments: </td>
+						<td class='control'>
+							".$frm->radio_switch('comments_moderate', $pref['comments_moderate'], LAN_YES, LAN_NO)."
+						</td>
+					</tr>
+					
 				</tbody>
 			</table>
 
