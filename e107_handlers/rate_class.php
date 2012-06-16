@@ -232,6 +232,125 @@ class rater {
 		return $this->enterrating($array,true);
 			
 	}
+	
+	/**
+	 * @param $table: table without prefix that the like is for
+	 * @param $itemid: item id within that table for the item to be liked
+	 * @param $curval: optional array of current values for 'up' and 'down'
+	 * @param $perc: optional percentage mode. Displays percentages instead of totals. 
+	 */
+	function renderLike($table,$itemid,$curVal=false,$perc=false)
+	{	
+		$id = "rate-".$table."-".$itemid;	 // "-up or -down is appended to the ID by jquery as both value will need updating. 
+		
+		if($curVal == false)
+		{
+			$curVal = $this->getLikes($table,$itemid);	
+		}
+		
+		$p = ($perc) ? "%" : "";	
+		
+		$upImg = "<img class='e-tip' src='".e_IMAGE."rate/like_16.png' alt='' title='Like' />";
+		$upDown = "<img class='e-tip' src='".e_IMAGE."rate/dislike_16.png' alt='' title='Dislike' />";
+			
+		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>
+			<a class='e-rate-thumb e-rate-up'  href='".e_BASE."rate.php?table={$table}&id={$itemid}&type=up#{$id}'>{$upImg}</a> 
+				
+				<span id='{$id}-down'>".intval($curVal['down'])."{$p}</span>
+				<a  class='e-rate-thumb e-rate-down' href='".e_BASE."rate.php?table={$table}&id={$itemid}&type=down#{$id}'>{$upDown}</a>"; 	
+		return $text;	
+	}
+	
+	
+	
+	protected function getLikes($table,$itemid,$perc=false)
+	{
+		$sql = e107::getDb();
+		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		{
+			$row 		= $sql->db_Fetch();	
+			if($perc == true) // Percentage Mode
+			{
+				$up 	= round(($row['rate_up'] / $row['rate_votes']) * 100) . "%";
+				$down 	= round(($row['rate_down'] / $row['rate_votes']) * 100) . "%";	
+				return array('up'=>$up,'down'=>$down,'total'=> $row['rate_votes']);	
+			}
+			else // Counts mode. 
+			{
+				$up 	= $row['rate_up'];
+				$down 	= $row['rate_down'];
+				return array('up'=>$up,'down'=>$down,'total'=>$row['rate_votes']);	
+			}		
+		}
+		
+		return ($perc == false) ? array('up'=>0,'down'=>0,'total'=>0) : array('up'=>'0%','down'=>'0%','total'=>'0%');
+	}
+	
+	
+	function submitLike($table,$itemid,$type,$perc=false)
+	{	
+		$sql 	= e107::getDb();
+			
+		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		{
+			$row 		= $sql->db_Fetch();
+			
+			if(preg_match("/\.". USERID."\./",$row['rate_voters'])) // already voted. 
+			{		
+				return false;
+			}
+						
+			$newvoters 	= $row['rate_voters'].".".USERID.".";	
+			$totalVotes = $row['rate_votes'] + 1; 
+			$totalDown	= $row['rate_down'] + (($type == 'down') ? 1 : 0);
+			$totalUp	= $row['rate_up'] + (($type == 'up') ? 1 : 0);
+					
+			$qry = ($type == 'up') ? "rate_up = {$totalUp} " : "rate_down = {$totalDown}";
+			$qry .= ", rate_voters = '{$newvoters}', rate_votes = {$totalVotes} ";
+			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1";
+			
+			if($sql->db_Update("rate",$qry))
+			{
+				if($perc == true) // Percentage Mode
+				{
+					$up 	= round(($totalUp /$totalVotes) * 100) . "%";
+					$down 	= round(($totalDown /$totalVotes) * 100) . "%";		
+				}
+				else // Counts mode. 
+				{
+					$up 	= $totalUp;
+					$down 	= $totalDown;	
+				}
+					
+				return $up."|".$down;
+			}		
+		}
+		else
+		{			
+			$insert = array(
+				//	"rate_id"		=> 0, // let it increment
+					"rate_table"	=> $table,
+					"rate_itemid"	=> $itemid,
+					"rate_rating"	=> 0,
+					"rate_votes"	=> 1,
+					"rate_voters"	=> ".".USERID.".",
+					"rate_up"		=> ($type == 'up') ? 1 : 0,
+					"rate_down"		=> ($type == 'down') ? 1 : 0
+			);
+				
+			if($sql->db_Insert("rate", $insert))
+			{
+				if($perc == true) // Percentage Mode
+				{
+					return ($type == 'up') ? "100%|0%" : "0%|100%";
+				}
+				else
+				{
+					return ($type == 'up') ? "1|0" : "0|1";	
+				}
+			}		
+		}		
+	}
 
 
 	function enterrating($rateindex,$ajax = false)
@@ -294,11 +413,32 @@ class rater {
 			}
 				
 		}
-		elseif($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
+		else
 		{
-			$stat = ($rate /1)/2;
-			$statR = round($stat,1);
-			return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
+			
+			$insert = array(
+			//	"rate_id"	=> 0,
+				"rate_table"	=> $table,
+				"rate_itemid"	=> $itemid,
+				"rate_rating"	=> $rate,
+				"rate_votes"	=> 1,
+				"rate_voters"	=> ".".$voter.".",
+				"rate_up"		=> 0,
+				"rate_down"		=> 0
+			);
+			
+			
+			if($sql->db_Insert("rate", $insert))
+		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
+			{
+				$stat = ($rate /1)/2;
+				$statR = round($stat,1);
+				return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
+			}
+			elseif(getperms('0'))
+			{
+				return "Rating Failed ";	
+			}
 		}
 		
 	}

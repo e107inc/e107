@@ -141,7 +141,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 .comment-box-username								{ padding-left:0px; font-size:1.2em; padding-right: 10px }
 
-.comments-avatar									{ padding:10px 10px 0px 10px; }
+div.comment-avatar									{ margin-top:5px; padding:10px 10px 0px 10px; }
 
 img.comment-avatar									{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }
 
@@ -151,7 +151,7 @@ img.comment-avatar									{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px
 
 .comment-box-date									{  }
 
-.comments-user-badge-bar							{ float:right; margin-left:20px; }
+.comment-user-badge-bar								{ float:right; margin-left:20px; }
 
 .comment-replyxxx									{ position:relative; bottom:0px; right:-10px; padding:2px 5px; font-size:0.85em; background-color:#EBFAFF; border:1px solid #C6F1FF; border-bottom:0px none; border-right:0px none; -webkit-border-top-left-radius: 5px; -moz-border-radius-topleft: 5px; border-top-left-radius: 5px; }
 
@@ -166,3 +166,9 @@ a.comment-edit										{ }
 .comment-reply										{ float:right ; margin-right:5px;}
 
 .comment-moderate									{ text-align:center }
+
+.comment-rate										{ text-align:right; float:right; width:100px }
+
+.e-rate-up img										{ opacity: 0.5 }
+.e-rate-down img									{ opacity: 0.5 }
+

@@ -399,6 +399,63 @@ $(document).ready(function()
 		// Text-area AutoGrow
 		$("textarea.e-autoheight").elastic();
 
+
+
+
+		$(".e-ajax").click(function(){
+			
+  			var id = $(this).attr("href");
+  			var src = $(this).attr("data-src");
+  			
+  			if(src == null) // old way - href='myscript.php#id-to-target
+  			{
+  				var tmp = src.split('#');
+  				id = tmp[1];
+  				src = tmp[0];	
+  			}
+  			var effect = $(this).attr("data-effect");
+  			
+  			$(id).load(src + " ",function() {
+    			// $(id).effect("slide");
+			});
+			
+			
+		});
+		
+		
+		$(".e-rate-thumb").click(function(){
+					
+  			var src = $(this).attr("href");	
+  			
+  			var tmp = src.split('#');
+  				id = tmp[1];
+  				src = tmp[0];		
+  			
+  			$.ajax({
+				type: "POST",
+				url: src,
+				data: { ajax_used: 1, mode: 'thumb' },
+				dataType: "html",
+				success: function(html) {
+					
+					if(html == '')
+					{
+						return false;	
+					}
+					
+					var tmp = html.split('|');
+  					up= tmp[0];
+  					down = tmp[1];	
+					
+				    $('#'+id +'-up').text(up);
+				    $('#'+id +'-down').text(down);
+				    
+				    // alert('Thanks for liking');		
+				}
+			});
+			
+			return false; 	
+		});
 		
 		
 })

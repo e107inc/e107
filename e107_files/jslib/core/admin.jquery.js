@@ -246,24 +246,7 @@ $(document).ready(function()
 	
 		});
 		
-		$(".e-ajax").click(function(){
-			
-  			var id = $(this).attr("href");
-  			var src = $(this).attr("data-src");
-  			if(src == null) // old way - href='myscript.php#id-to-target
-  			{
-  				var tmp = src.split('#');
-  				id = tmp[1];
-  				src = tmp[0];	
-  			}
-  			var effect = $(this).attr("data-effect");
-  			
-  			$(id).load(src + " ",function() {
-    			// $(id).effect("slide");
-			});
-			
-			
-		});
+	
 				
 		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
 		

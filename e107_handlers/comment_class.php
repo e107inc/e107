@@ -202,6 +202,7 @@ class comment
 			}
 
 			//add the rating select box/result ?
+			/*
 			$rate = "";
 			if ($rating == TRUE && !(ANON == TRUE && USER == FALSE))
 			{
@@ -215,7 +216,7 @@ class comment
 				
 			
 			} //end rating area
-
+			*/
 			
 			// -------------------------------------------------------------
 			
@@ -287,38 +288,28 @@ class comment
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sc_style, $rater, $gen;
+		global $sc_style, $gen;
 			
-		$tp = e107::getParser();
-		$sql = e107::getDb();
-		$pref = e107::getPref();
-		
-		
-		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
-		global $thisaction,$thistable,$thisid,$e107;
-		
+		$tp 	= e107::getParser();
+		$sql 	= e107::getDb();
+		$pref 	= e107::getPref();
 		
 		if (vartrue($pref['comments_disabled']))
 		{
 			return;
 		}
-		$comrow = $row;
-		
-		
-		
-		$thistable = $table;
-		$thisid = $id;
-		$thisaction = $action;
-		if ($addrating === TRUE)
-		{
-			require_once(e_HANDLER."rate_class.php");
-			if (!$rater || !is_object($rater))
-			{
-				$rater = new rater;
-			}
-		}
+				
+		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
+		global $thisaction,$thistable,$thisid,$e107;
+				
+		$comrow 		= $row;			
+		$thistable 		= $table;
+		$thisid 		= $id;
+		$thisaction 	= $action;
+
 		//FIXME - new level handler, currently commented to avoid parse errors
 		//require_once (e_HANDLER."level_handler.php");
+		
 		if (!$width)
 		{
 			$width = 0;
@@ -339,10 +330,12 @@ class comment
 			$gen = new convert;
 		}	
 		
+		$row['rating_enabled'] = true; // Toggles rating shortcode. //TODO add pref
+		
 		e107::getScBatch('comment')->setParserVars($row);
 		$COMMENT_TEMPLATE = $this->template; 
 			
-		if ($pref['nested_comments'])
+		if (vartrue($pref['nested_comments']))
 		{
 			$width2 = 100 - $width;
 			$total_width = "95%";
@@ -399,24 +392,24 @@ class comment
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/admin.png' alt='' />"));
 		}
 		
-		$RATING = ($addrating == TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+	//	$RATING = ($addrating == TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 		
 		$comment_shortcodes = e107::getScBatch('comment');
 		
-	//	$text = $tp->parseTemplate($COMMENT_TEMPLATE['ITEM_START'], TRUE, $comment_shortcodes);
 		$text = $tp->parseTemplate($renderstyle, TRUE, $comment_shortcodes);
+			
+		//FIXME - dramatically increases the number of queries performed. 
 		
-		
-		
-		
-		if ($action == "comment" && $pref['nested_comments'])
+		if ($action == "comment" && vartrue($pref['nested_comments']))
 		{
 			$type = $this->getCommentType($thistable);
 			$sub_query = "
-			SELECT c.*, u.*, ue.*
+			SELECT c.*, u.*, ue.*, r.*
 			FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
+			
 			WHERE comment_item_id='".intval($thisid)."' AND comment_type='".$tp->toDB($type, true)."' AND comment_pid='".intval($comrow['comment_id'])."'
 			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
 			
@@ -778,21 +771,32 @@ class comment
 
 		$sql = e107::getDb();
 		$type = $this->getCommentType($table);
-		$query = $pref['nested_comments'] ?
-			"SELECT c.*, u.*, ue.* FROM #comments AS c
+		if(vartrue($pref['nested_comments']))
+		{
+			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
+			
 			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
 			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
-			ORDER BY c.comment_datestamp"
-			:
-			"SELECT c.*, u.*, ue.* FROM #comments AS c
+			ORDER BY c.comment_datestamp";
+		}
+		else
+		{
+			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
+			
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
+			";
+			
+			
+			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 
 			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
 			
 			ORDER BY c.comment_datestamp";
+		}
 
 		$text = "";
 		$comment = '';
