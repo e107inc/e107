@@ -98,6 +98,7 @@ class comment_shortcodes extends e_shortcode
 	}
 	
 	
+	
 	function sc_comment_avatar($parm)
 	{
 		$height 	= e107::getPref("im_height");
@@ -109,18 +110,18 @@ class comment_shortcodes extends e_shortcode
 			if (vartrue($this->var['user_image'])) 
 			{
 				$img = $tp->thumbUrl(e_MEDIA."avatars/".$this->var['user_image'],"aw=".$width."&ah=".$height);
-				$text = "<div class='comments-avatar'><img class='comment-avatar' src='".$img."' alt='' /></div>";
+				$text = "<img class='comment-avatar' src='".$img."' alt='' />";
 			}
 			else
 			{
 				$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","aw=".$width."&ah=".$height);
-				$text = "<div class='comments-avatar'><img class='comment-avatar' src='".$img."' alt='' /></div>";
+				$text = "<img class='comment-avatar' src='".$img."' alt='' />";
 			}
 		}
 		else
 		{
 			$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","aw=".$width."&ah=".$height);
-			$text = "<div class='comments-avatar'><img class='comment-avatar' src='".$img."' alt='' /></div>";
+			$text = "<img class='comment-avatar' src='".$img."' alt='' />";
 		}
 			
 		return $text;						
@@ -215,9 +216,21 @@ class comment_shortcodes extends e_shortcode
 	}
 		
 			
-	function sc_rate_input($parm)
+	function sc_comment_rate($parm)
 	{
-		return $this->var['rate'];	
+		
+		if($this->var['comment_blocked'] > 0 || $this->var['rating_enabled'] == false)
+		{
+			return;	
+		}
+				
+		$curVal = array(
+			'up'	=> $this->var['rate_up'],
+			'down'	=> $this->var['rate_down'],
+			'total'	=> $this->var['rate_votes']
+		);
+		
+		return e107::getRate()->renderLike("comments",$this->var['comment_id'],$curVal);
 	}
 		
 	

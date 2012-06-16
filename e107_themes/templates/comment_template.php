@@ -65,7 +65,7 @@ $sc_style['REPLY']['post'] 				= "</span>";
 $sc_style['COMMENTEDIT']['pre']  		= '<span class="comment-edit">';
 $sc_style['COMMENTEDIT']['post'] 		= '</span>';
 
-$sc_style['COMMENT_AVATAR']['pre']  	= '<div class="center">';
+$sc_style['COMMENT_AVATAR']['pre']  	= '<div class="comment-avatar center">';
 $sc_style['COMMENT_AVATAR']['post'] 	= '</div>';
 
 $sc_style['SUBJECT_INPUT']['pre']		= ""; //COMLAN_324
@@ -74,17 +74,17 @@ $sc_style['SUBJECT_INPUT']['post']		= "";
 $sc_style['AUTHOR_INPUT']['pre']		= ""; // COMLAN_16
 $sc_style['AUTHOR_INPUT']['post']		= "";
 
-$sc_style['RATE_INPUT']['pre']			= "".COMLAN_327."";
-$sc_style['RATE_INPUT']['post']			= "";
-
 $sc_style['COMMENT_INPUT']['pre']		= "";// COMLAN_8
 $sc_style['COMMENT_INPUT']['post']		= "";
 
 $sc_style['COMMENT_BUTTON']['pre']		= "<div id='commentformbutton'>";
 $sc_style['COMMENT_BUTTON']['post']		= "</div>";
 
-$sc_style['USER_AVATAR']['pre']  	= '<div class="center">';
-$sc_style['USER_AVATAR']['post'] 	= '</div>';
+$sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate">';
+$sc_style['COMMENT_RATE']['post'] 		= '</div>';
+
+$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
+$sc_style['USER_AVATAR']['post'] 		= '</div>';
 
 
 
@@ -120,9 +120,11 @@ $COMMENT_TEMPLATE['ITEM'] = '
 			<span class="comment-box-date">{TIMEDATE}</span>
 			
 			<span class="comment-status">{COMMENT_STATUS}</span>
-			<div class="comments-user-badge-bar">
+			<div class="comment-user-badge-bar">
+				{COMMENT_RATE}
 				{REPLY}
 				{COMMENTEDIT}
+				
 				
 				
 			</div>
