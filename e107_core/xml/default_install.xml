@@ -25,7 +25,8 @@
 		<core name="comments_disabled">0</core>
 		<core name="comments_emoticons">0</core>
 		<core name="comments_icon">0</core>
-		<core name="comments_moderate">0</core>			
+		<core name="comments_moderate">0</core>	
+		<core name="comments_sort">desc</core>				
 		<core name="compress_output">0</core>
 		<core name="contact_emailcopy">0</core>
 		<core name="cookie_name">e107cookie</core>

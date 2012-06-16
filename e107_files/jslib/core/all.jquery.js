@@ -423,6 +423,63 @@ $(document).ready(function()
 		});
 		
 		
+		$(".e-comment-submit").click(function(){
+			
+			var url = $(this).attr("data-target");
+			var sort = $(this).attr("data-sort");
+			var data = $("form#e-comment-form").serialize();
+	
+			$.ajax({
+			  type: 'POST',
+			  url: url + '?ajax_used=1',
+			  data: data,
+			  success: function(html) {
+		
+				$("#comment").val('');
+				if(sort == 'desc')
+				{
+					$(html).prependTo('#comments-container').hide().slideDown(800);	
+				}
+				else
+				{
+					$(html).appendTo('#comments-container').hide().slideDown(800);
+					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
+				}  
+
+			  	return false;	
+			  }
+			});
+			
+			return false;
+
+		});
+		
+		
+		
+		$(".e-comment-delete").click(function(){ //TODO - for admin use on front-end. 
+			
+			var url = $(this).attr("data-target");
+			var sort = $(this).attr("data-sort");
+			var data = $("form#e-comment-form").serialize();
+	
+			$.ajax({
+			  type: 'POST',
+			  url: url + '?ajax_used=1',
+			  data: data,
+			  success: function(html) {
+				// var sort = $(this).attr("data-sort");
+
+
+			  	return false;	
+			  }
+			});
+			
+			return false;
+
+		});
+		
+		
+		
 		$(".e-rate-thumb").click(function(){
 					
   			var src = $(this).attr("href");	
@@ -449,7 +506,7 @@ $(document).ready(function()
 					
 				    $('#'+id +'-up').text(up);
 				    $('#'+id +'-down').text(down);
-				    
+				    $(this).attr('title','Thanks for voting');
 				    // alert('Thanks for liking');		
 				}
 			});

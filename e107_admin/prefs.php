@@ -1293,6 +1293,7 @@ $text .= "
 							".$frm->radio_switch('nested_comments', $pref['nested_comments'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
+					
 					<tr>
 						<td class='label'>".PRFLAN_90.": </td>
 						<td class='control'>
@@ -1316,6 +1317,18 @@ $text .= "
 						<td class='label'>Moderate Comments: </td>
 						<td class='control'>
 							".$frm->radio_switch('comments_moderate', $pref['comments_moderate'], LAN_YES, LAN_NO)."
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>Comment Sorting: </td>
+						<td class='control'>";
+						
+						$comment_sort = array(
+							"desc"	=> "Most recent comments first", //default //TODO LAN
+							'asc'	=> "Most recent comments last" 
+						);
+					
+					$text .= $frm->selectbox('comments_sort',$comment_sort, $pref['comments_moderate'])."
 						</td>
 					</tr>
 					
