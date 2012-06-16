@@ -42,6 +42,8 @@ class comment
 	);
 
 	private $template;
+	
+	private $totalComments = 0;
 
 	function __construct()
 	{
@@ -221,7 +223,7 @@ class comment
 			// -------------------------------------------------------------
 			
 			$text = "\n<div id='e-comment-form'>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
-			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='dataform' >";	
+			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='e-comment-form' >";	
 					
 			$data = array(
 				'action'	=> $action,
@@ -245,9 +247,11 @@ class comment
 			$text .=(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "");
 			$text .=(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '');
 			$text .= (!$pref['nested_comments']) ? "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n" : "";
-		
+	
 			$text .= "
 			<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
+			<input type='hidden' name='table' value='".$table."' />\n
+			<input type='hidden' name='itemid' value='".$itemid."' />\n
 			</div>
 			</form>
 			</div>";
@@ -428,6 +432,8 @@ class comment
 					unset($width);
 				}
 			}
+			
+			$this->totalComments = $this->totalComments + $sub_total;
 		} // End (nested comment handling)
 		
 	
@@ -608,11 +614,11 @@ class comment
 						}
 
 						//if rateindex is posted, enter the rating from this user
-						if ($rateindex)
-						{
-							$rater->enterrating($rateindex);
-						}
-						return true;
+					//	if ($rateindex)
+					//	{
+					//		$rater->enterrating($rateindex);
+					//	}
+						return $inserted_id; // return the ID number so it can be used. true;
 					}
 				}
 			}
@@ -771,6 +777,8 @@ class comment
 
 		$sql = e107::getDb();
 		$type = $this->getCommentType($table);
+		$sort = vartrue($pref['comments_sort'],'desc');
+		
 		if(vartrue($pref['nested_comments']))
 		{
 			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
@@ -780,7 +788,7 @@ class comment
 			
 			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
 			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
-			ORDER BY c.comment_datestamp";
+			ORDER BY c.comment_datestamp ".$sort;
 		}
 		else
 		{
@@ -795,16 +803,19 @@ class comment
 			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 
 			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
 			
-			ORDER BY c.comment_datestamp";
+			ORDER BY c.comment_datestamp ".$sort;
 		}
 
+		// TODO Preference for sort-order. 
+		
+		
 		$text = "";
 		$comment = '';
 		$modcomment = '';
 		$lock = '';
 		$ret['comment'] = '';
 
-		if ($comment_total = $sql->db_Select_gen($query))
+		if ($this->totalComments = $sql->db_Select_gen($query))
 		{
 			$width = 0;
 			//Shortcodes could use $sql, so just grab all results
@@ -825,10 +836,11 @@ class comment
 				}
 			}
 
-			if ($tablerender)
-			{
+			
+		//	if ($tablerender)
+		//	{
 			//	$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
-			}
+		//	}
 
 			if (ADMIN && getperms("B"))
 			{
@@ -852,12 +864,13 @@ class comment
 		{
 			
 			$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}");
-			$replace = array($modcomment,$text,$comment);
+			$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment);
 			$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
 				
 			if ($tablerender)
 			{
-				echo $ns->tablerender(COMLAN_99, $TEMPL, 'comment', TRUE);	
+				
+				echo $ns->tablerender($this->totalComments." ".COMLAN_99, $TEMPL, 'comment', TRUE);	
 			}
 			else
 			{

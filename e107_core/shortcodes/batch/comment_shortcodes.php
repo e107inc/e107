@@ -28,7 +28,7 @@ class comment_shortcodes extends e_shortcode
 		
 		if(vartrue($pref['nested_comments']))
 		{
-				return "<input class='tbox comment subject-input' type='text' placeholder='".COMLAN_324." name='subject' size='61' value='".$tp->toForm($this->var['subject'])."' maxlength='100' />";
+				return "<input class='tbox comment subject-input' type='text' placeholder='".COMLAN_324."' name='subject' size='61' value='".$tp->toForm($this->var['subject'])."' maxlength='100' />";
 		}
 				
 		return;	
@@ -196,9 +196,13 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_comment_button($parm)
 	{
+		$pref = e107::getPref('comments_sort');
+		
 		if($this->mode == 'edit')
 		{
-			return "<input class='button' type='submit' name='".$this->var['action']."submit' value='".(isset($this->var['eaction']) && $this->var['eaction'] == "edit" ? COMLAN_320 : COMLAN_9)."' />";		
+			$value = (varset($this->var['eaction']) == "edit" ? COMLAN_320 : COMLAN_9);
+			
+			return "<input data-sort='".$pref."' data-target='".e_BASE."comment.php' class='button e-comment-submit' type='submit' name='".$this->var['action']."submit' value='".$value."' />";		
 		}	
 		
 	}
@@ -247,7 +251,7 @@ class comment_shortcodes extends e_shortcode
 		}
 		else
 		{
-			return e107::getForm()->textarea('comment',$this->var['comval'], 5, 80,$options);						
+			return e107::getForm()->textarea('comment',$this->var['comval'], 3, 80,$options);						
 		}		
 	}		
 	

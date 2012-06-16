@@ -24,6 +24,48 @@
 require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
+//	print_r($_POST);
+//	exit;
+
+if(e_AJAX_REQUEST)
+{
+
+	if(vartrue($_POST['comment']) && USERID)
+	{
+		$pid = intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
+	
+		$clean_authorname = $_POST['author_name'];
+		$clean_comment = $_POST['comment'];
+		$clean_subject = $_POST['subject'];
+		
+		$newid = e107::getComment()->enter_comment($clean_authorname, $clean_comment, $_POST['table'], intval($_POST['itemid']), $pid, $clean_subject);
+	
+		if($newid)
+		{
+			$row['comment_id']			= $newid; 
+			$row['comment_item_id']		= intval($_POST['itemid']);
+			$row['comment_type']		= e107::getComment()->getCommentType($tp->toDB($_POST['table'],true));
+			$row['comment_subject'] 	= $_POST['subject'];
+			$row['comment_comment'] 	= $_POST['comment'];
+			$row['user_image'] 			= USERIMAGE;
+			$row['user_id']				= USERID;
+			$row['user_name'] 			= USERNAME;
+			$row['comment_datestamp'] 	= time();
+			$row['comment_blocked']		= (vartrue($pref['comments_moderate']) ? 2 : 0);
+			
+			echo "\n<!-- Appended -->\n";
+			echo e107::getComment()->render_comment($row,'comment',intval($_POST['itemid']));
+			echo "\n<!-- end Appended -->\n";	
+		}
+	}
+	
+	
+		
+
+		
+	exit;
+}
+
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
 define("PAGE_NAME", COMLAN_99);
