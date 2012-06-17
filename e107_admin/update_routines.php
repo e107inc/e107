@@ -1072,6 +1072,25 @@ function update_706_to_800($type='')
 		}	
 	}
 	
+	// Move Avatars to new location 
+	$av1 = e107::getFile()->get_files(e_FILE.'public/avatars','.jpg|.gif|.png|.GIF|.jpeg|.JPG|.PNG');
+	$av2 = e107::getFile()->get_files(e_IMAGE.'avatars','.jpg|.gif|.png|.GIF|.jpeg|.JPG|.PNG');
+	
+	$avatar_images = array_merge($av1,$av2);
+	
+	if(count($avatar_images))
+	{
+		if ($just_check) return update_needed('Avatar paths require updating.');
+		foreach($avatar_images as $av)
+		{
+			@rename($av['path'].$av['fname'],e_MEDIA."avatars/".$av['fname']);			
+		}	
+	}
+	
+	// -------------------------------
+	
+	
+	
 	$med = e107::getMedia();
 	
 	// Media Category Update
