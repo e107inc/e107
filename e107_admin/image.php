@@ -74,8 +74,8 @@ class media_admin extends e_admin_dispatcher
 		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A|A2'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
-		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
-	//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
+	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
 	);
 
@@ -226,7 +226,9 @@ class media_form_ui extends e_admin_form_ui
 		//	"featurebox-image" 		=> "Featurebox Images",
 		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
 		);
-		$text .= "<div>Non-functional example (maximum width and maximum height)</div>";
+		$text .= "<div>Experimental (maximum width and maximum height)</div>";
+		
+		
 		foreach($options as $key=>$title)
 		{
 			$text .= "<input type='text' name='resize_dimensions[{$key}]' value='$val' size='7' title='hello' /> ".$title."<br />";
@@ -357,10 +359,15 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
+		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
+		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
 		'resize_dimensions'				=> array('title'=> "Resize Dimensions", 'type'=>'method', 'data'=>'str'),
+	
 	);
 	
+
 	
+
 	/*
 
 	<tr>
@@ -1669,16 +1676,20 @@ function show_avatars()
 			//	$users = "<a class='e-tip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 				// Control over the image size (design)
-				$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
+			//	$image_size = getimagesize(e_MEDIA."avatars/".$image_name);
 
 				//Friendly UI - click text to select a form element
+				
+				// Resized on-the-fly - avatar-size no longer an issue. 
+				$attr = "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+				$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$image_name,$attr);
 				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'>
-				<img class='e-tip' src='".e_MEDIA."avatars/{$image_name}' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
+				<img class='e-tip' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' />
 				</label>";
-				if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
-				{
-					$img_src = "<a class='image-preview' href='".e_MEDIA."avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
-				}
+			//	if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
+			//	{
+				//	$img_src = "<a class='image-preview' href='".e_MEDIA."avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
+			//	}
 			}
 
 			//style attribute allowed here - server side width/height control
@@ -1702,8 +1713,8 @@ function show_avatars()
 			<div class='spacer clear'>
 				<div class='buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
-					".$frm->admin_button('check_all', LAN_CHECKALL, 'action')."
-					".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'action')."
+					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action')."
+					".$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action')."
 					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
 					".$frm->admin_button('submit_show_deleteall', IMALAN_25, 'delete')."
 					".$frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')."

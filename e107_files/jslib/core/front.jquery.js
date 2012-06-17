@@ -23,6 +23,7 @@ $(document).ready(function()
 			  data: data,
 			  success: function(data) {
 			  	
+			  //	alert(data);
 			 // 	console.log(data);
 			  	var a = $.parseJSON(data);
 	
