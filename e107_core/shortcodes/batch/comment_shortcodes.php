@@ -184,8 +184,11 @@ class comment_shortcodes extends e_shortcode
 		
 		// TODO put into a <ul> drop-down format. 
 		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete'>Delete</a> ";
-		$text .= "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-approve-".$this->var['comment_id']."' class='e-comment-approve'>Approve</a> ";
 		
+		if($this->var['comment_blocked'] == 2) // pending approval. 
+		{
+			$text .= "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-approve-".$this->var['comment_id']."' class='e-comment-approve'>Approve</a> ";
+		}
 		return $text;
 		
 		$url 		= e_PAGE."?".e_QUERY;
