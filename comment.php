@@ -24,6 +24,11 @@
 require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
+	if (vartrue(e107::getPref('comments_disabled')))
+	{
+		exit;
+	}
+
 
 if(e_AJAX_REQUEST) // TODO improve security
 {
@@ -33,7 +38,23 @@ if(e_AJAX_REQUEST) // TODO improve security
 		exit;
 	}
 	
+
+
+	
 	$ret = array();
+	
+
+	
+	if(varset($_GET['mode']) == 'reply' && vartrue($_POST['itemid']))
+	{	
+		$status 		= e107::getComment()->replyComment($_POST['itemid']);	
+		$ret['msg'] 	= "Couldn't delete comment"; 
+		$ret['error'] 	= ($status) ? false : true;
+		$ret['html']	= $status;
+		echo json_encode($ret);
+		exit; 	
+	}
+	
 	
 	if(varset($_GET['mode']) == 'delete' && vartrue($_POST['itemid']))
 	{
@@ -53,6 +74,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		echo json_encode($ret);
 		exit; 	
 	}
+	
 		
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
@@ -68,12 +90,14 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
 		
 		$ret['error'] 	= ($error) ? true : false;
-		$ret['msg'] 	= ($error) ? $error : "Saved!!!"; //TODO Common LAN
+		$ret['msg'] 	= ($error) ? $error : "Updated Successfully."; //TODO Common LAN
 		
 		echo json_encode($ret);
 		exit;	
 	}
 	
+	
+
 	
 	// Insert Comment and return rendered html. 
 	if(vartrue($_POST['comment']) && USERID) // ajax render comment
@@ -100,8 +124,10 @@ if(e_AJAX_REQUEST) // TODO improve security
 			$row['comment_datestamp'] 	= time();
 			$row['comment_blocked']		= (vartrue($pref['comments_moderate']) ? 2 : 0);
 			
+			$width = ($pid) ? 5 : 0;
+			
 			$ret['html'] = "\n<!-- Appended -->\n";
-			$ret['html'] .= e107::getComment()->render_comment($row,'comment',intval($_POST['itemid']));
+			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width);
 			$ret['html'] .= "\n<!-- end Appended -->\n";
 			
 			$ret['error'] = false;	
