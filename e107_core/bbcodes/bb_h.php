@@ -1,4 +1,4 @@
-v<?php
+<?php
 /**
  * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
