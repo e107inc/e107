@@ -896,6 +896,8 @@ class e_shortcode
 	 * @var e_vars
 	 */
 	protected $var = null; // value returned by each shortcode. 
+	
+	protected $mode = 'view'; // or edit. Used within shortcodes for form elements vs values only.   
 
 	/**
 	 * Storage for shortcode values
@@ -918,6 +920,12 @@ class e_shortcode
 	{
 		$this->var = $eVars;
 		return $this;
+	}
+	
+	public function setMode($mode)
+	{
+		$this->mode = ($mode == 'edit') ? 'edit' : 'view';
+		return $this;			
 	}
 
 	/**
