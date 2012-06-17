@@ -35,7 +35,7 @@ else
 {
 	if(preg_match("/(#[a-fA-F0-9]{3,6})/", $parm, $matches))
 	{
-		return "<span class='{$class}' style='color:{$matches[1]}'>$code_text</span>";
+		return "<span class='{$class}' style='color:{$matches[1]};'>$code_text</span>";
 
 	}
 }
