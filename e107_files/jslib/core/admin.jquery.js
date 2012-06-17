@@ -78,6 +78,9 @@ $(document).ready(function()
 		// Admin Prefs Navigation
 		
 		 $(".plugin-navigation a").click(function () {
+		 	
+		 //	alert(document.location.hash);
+		 	
 		 	$(".plugin-navigation a").each(function(index) {
     			var ot = $(this).attr("href");
 				$(ot).hide();

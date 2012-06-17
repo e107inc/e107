@@ -29,8 +29,8 @@ e107::getDb()->db_Mark_Time('(Header Top)');
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
-e107::js('core', 	'fancybox/jquery.fancybox-1.3.4.js', 'jquery', 2);
-e107::css('core', 	'fancybox/jquery.fancybox-1.3.4.css', 'jquery');
+// e107::js('core', 	'fancybox/jquery.fancybox-1.3.4.js', 'jquery', 2);
+// e107::css('core', 	'fancybox/jquery.fancybox-1.3.4.css', 'jquery');
 
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);

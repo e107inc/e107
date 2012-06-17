@@ -122,7 +122,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 			$row['user_id']				= USERID;
 			$row['user_name'] 			= USERNAME;
 			$row['comment_datestamp'] 	= time();
-			$row['comment_blocked']		= (vartrue($pref['comments_moderate']) ? 2 : 0);
+			$row['comment_blocked']		= (check_class($pref['comments_moderate']) ? 2 : 0);
 			
 			$width = ($pid) ? 5 : 0;
 			
