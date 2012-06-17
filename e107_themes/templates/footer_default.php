@@ -81,7 +81,7 @@ if (varset($e107_popup) != 1)
 	$logLine = '';
 	if ($pref['log_page_accesses'])
 	{ // Collect the first batch of data to log
-		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."'";
+		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."','".$_SERVER['HTTP_USER_AGENT']."','{$_SERVER["REQUEST_METHOD"]}'";
 	}
 	
 	if (function_exists('getrusage'))
@@ -138,7 +138,15 @@ if (varset($e107_popup) != 1)
 		// Need to log the page info to a text file as CSV data
 
 		$logname = e_LOG."logd_".date("z.Y", time()).".csv";
+		$logHeader = "Unix time,Date/Time,IP,URL,RenderTime,DbTime,Qrys,Memory-Usage,User-Agent,Request-Method";
+			
 		$logfp = fopen($logname, 'a+');
+		
+		if(filesize($logname) == 0 || !is_file($logname))
+		{
+			fwrite($logfp, $logHeader."\n");	
+		}	
+		
 		fwrite($logfp, $logLine."\n");
 		fclose($logfp);
 	}
