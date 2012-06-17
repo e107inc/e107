@@ -113,6 +113,27 @@ class comment
 		
 		
 	}
+
+
+
+	function replyComment($id) // Ajax Reply. 
+	{
+		$sql = e107::getDb();
+		if($sql->db_Select("comments","*","comment_id= ".intval($id)." LIMIT 1"))
+		{
+			$row = $sql->db_Fetch();
+			// [comment_id] =&gt; 65
+
+			return $this->form_comment('reply', $row['comment_type'], $row['comment_item_id'], $row['comment_subject'], false, true,false,false,$id);
+	
+		}			
+	}
+			
+		
+
+
+
+
 	/**
 	 * Display the comment editing form
 	 *
@@ -125,7 +146,7 @@ class comment
 	 * @param unknown_type $rating
 	 * @return unknown
 	 */
-	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE)
+	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE,$pid = false)
 	{
 		//rating	: boolean, to show rating system in comment
 		
@@ -222,8 +243,11 @@ class comment
 			
 			// -------------------------------------------------------------
 			
-			$text = "\n<div id='e-comment-form'>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
-			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='e-comment-form' >";	
+			$indent = ($action == 'reply') ? "style='margin-left:40px'" : "";
+			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
+			
+			$text = "\n<div id='{$formid}' {$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
+			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
 					
 			$data = array(
 				'action'	=> $action,
@@ -231,6 +255,7 @@ class comment
 				'table'		=> $table,
 				'comval'	=> strip_tags(trim($comval)),
 				'itemid'	=> $itemid,
+				'pid'		=> $pid,
 				'eaction'	=> $eaction,
 				'rate'		=> $rate
 			);
@@ -241,9 +266,9 @@ class comment
 	
 			$text .= $tp->parseTemplate($this->template['FORM'], TRUE, e107::getScBatch('comment'));
 			
-			$text .= "<div>"; // All Hidden Elements. 
+			$text .= "\n<div>\n"; // All Hidden Elements. 
 			
-			$text .= (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '');
+			$text .= (varset($action) == "reply" && $pid ? "<input type='hidden' name='pid' value='{$pid}' />" : '');
 			$text .=(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "");
 			$text .=(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '');
 		//	$text .= (!$pref['nested_comments']) ? "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n" : "";
@@ -254,8 +279,9 @@ class comment
 			<input type='hidden' name='table' value='".$table."' />\n
 			<input type='hidden' name='itemid' value='".$itemid."' />\n
 			</div>
-			</form>
-			</div>";
+			</form>\n";
+			
+			$text .= "</div>";
 			
 			if ($tablerender)
 			{

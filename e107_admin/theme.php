@@ -32,7 +32,7 @@ e107::css("inline","
 .admin-theme-options		{ transition: opacity .20s ease-in-out;
 							 -moz-transition: opacity .20s ease-in-out;
 							 -webkit-transition: opacity .20s ease-in-out;
-							 opacity:0.1; 
+							 opacity:0; 
 							 width:100%;
 							 height:80px;
 							 padding-top:50px;

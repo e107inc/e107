@@ -2,30 +2,37 @@
 
 $(document).ready(function()
 {
-		$(":input").tipsy({gravity: 'w',fade: true});
+		$(":input").tipsy({gravity: 'w',fade: true, live: true});
 		
-		$(".e-tip").tipsy({gravity: 'sw',fade: true});
+		$(".e-tip").tipsy({gravity: 'sw',fade: true, live: true});
 	
 	
 	
-		$(".e-comment-submit").click(function(){
+		$(".e-comment-submit").live("click", function(){
 			
-			var url = $(this).attr("data-target");
-			var sort = $(this).attr("data-sort");
-			var data = $("form#e-comment-form").serialize();
-			var total = parseInt($("#e-comment-total").text());
+			var url 	= $(this).attr("data-target");
+			var sort 	= $(this).attr("data-sort");
+			var pid 	= parseInt($(this).attr("data-pid"));
+			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
+			var data 	= $('form'+formid).serialize() ;
+			var total 	= parseInt($("#e-comment-total").text());		
 	
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=submit',
 			  data: data,
-			  success: function(html) {
+			  success: function(data) {
 			  	
-			  	console.log(html);
-			  	var a = $.parseJSON(html);
+			 // 	console.log(data);
+			  	var a = $.parseJSON(data);
 	
 				$("#comment").val('');
-				if(sort == 'desc')
+				
+				if(pid != 0)
+				{
+					$('#comment-'+pid).after(a.html).hide().slideDown(800);	
+				}
+				else if(sort == 'desc')
 				{
 					$(a.html).prependTo('#comments-container').hide().slideDown(800);	
 				}
@@ -37,7 +44,12 @@ $(document).ready(function()
 				
 				if(!a.error)
 				{
-					$("#e-comment-total").text(total + 1);	
+					$("#e-comment-total").text(total + 1);
+					if(pid != '0')
+					{
+						$(formid).hide();		
+					}	
+					
 				}
 				else
 				{
@@ -50,6 +62,47 @@ $(document).ready(function()
 			return false;
 
 		});
+		
+		
+		
+		
+		
+		
+		$(".e-comment-reply").live("click", function(){
+			
+			var url 	= $(this).attr("data-target");
+			var table 	= $(this).attr("data-type");
+			var sp 		= $(this).attr('id').split("-");	
+			var id 		= "#comment-" + sp[3];
+			
+			if($('.e-comment-edit-save').length != 0) //prevent creating save button twice. 
+			{
+				return false;	
+			}
+			
+			$.ajax({
+			  type: 'POST',
+			  url: url + '?ajax_used=1&mode=reply',
+			  data: { itemid: sp[3], table: table },
+			  success: function(data) {
+			  	var a = $.parseJSON(data);
+			  
+				if(!a.error)
+				{
+					// alert(a.html);				
+					 $(id).after(a.html).hide().slideDown(800);
+				}
+
+			  }
+			});		
+		
+			return false;		
+		});
+		
+		
+		
+		
+		
 		
 		
 		
@@ -195,14 +248,18 @@ $(document).ready(function()
 		
 		
 		
-		$(".e-rate-thumb").click(function(){
+		
+		
+		
+		$(".e-rate-thumb").live("click", function(){
 					
-  			var src = $(this).attr("href");	
+  			var src 		= $(this).attr("href");	
+  			var thumb 		= $(this);	
+  			var tmp 		= src.split('#');
+  			var	id 			= tmp[1];
+  			var	src 		= tmp[0];
   			
-  			var tmp = src.split('#');
-  				id = tmp[1];
-  				src = tmp[0];		
-  			
+ 
   			$.ajax({
 				type: "POST",
 				url: src,
@@ -221,7 +278,7 @@ $(document).ready(function()
 					
 				    $('#'+id +'-up').text(up);
 				    $('#'+id +'-down').text(down);
-				    $(this).attr('title','Thanks for voting');
+				    thumb.attr('title','Thanks for voting');
 				    // alert('Thanks for liking');		
 				}
 			});
