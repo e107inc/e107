@@ -182,6 +182,12 @@ class comment_shortcodes extends e_shortcode
 			return;	
 		}
 		
+		// TODO put into a <ul> drop-down format. 
+		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete'>Delete</a> ";
+		$text .= "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-approve-".$this->var['comment_id']."' class='e-comment-approve'>Approve</a> ";
+		
+		return $text;
+		
 		$url 		= e_PAGE."?".e_QUERY;
 		
 		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
@@ -281,17 +287,19 @@ class comment_shortcodes extends e_shortcode
 		switch ($this->var['comment_blocked'])
 		{
 			case 2:
-				return "Pending Approval"; // TODO LAN
+				$text = "Pending Approval"; // TODO LAN
 			break;
 				
 			case 1:
-				return COMLAN_0;
+				$text = COMLAN_0;
 			break;
 			
 			default:
-				
+				return;
 			break;
 		}
+		
+		return "<span id='comment-status-".$this->var['comment_id']."'>".$text."</span>";
 	}	
 		
 	
@@ -307,12 +315,12 @@ class comment_shortcodes extends e_shortcode
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
 			if (strstr(e_QUERY, "&"))
 			{
-				return "<a class='comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
+				return "<a data-target='".e_BASE."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='e-comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
 			}
 			else
 			{
 		//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$this->var['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-				return "<a class='comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
+				return "<a data-target='".e_BASE."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
 			}
 		}
 		else

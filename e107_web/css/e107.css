@@ -161,7 +161,7 @@ img.comment-avatar									{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px
 
 a.comment-edit										{ }
 
-.comment-edit										{ float:right; margin-right:5px; }
+.comment-edit										{ float:right; margin:0 5px 0 5px; }
 
 .comment-reply										{ float:right ; margin-right:5px;}
 
@@ -169,6 +169,11 @@ a.comment-edit										{ }
 
 .comment-rate										{ text-align:right; float:right; width:100px }
 
-.e-rate-up img										{ opacity: 0.5 }
-.e-rate-down img									{ opacity: 0.5 }
+div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
+.e-comment-edit-active								{ -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
+.e-comment-edit-success								{ padding:5px; text-align:center; background-color:#DFFFDF; border: 1px solid #009900; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
+.e-comment-edit-error								{ padding:5px; text-align:center; background-color:#FFCECE; border: 1px solid #CC0000;  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
+
+.e-rate-up img										{ opacity: 0.4 }
+.e-rate-down img									{ opacity: 0.4 }
 

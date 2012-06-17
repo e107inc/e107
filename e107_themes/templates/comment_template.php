@@ -96,9 +96,7 @@ $COMMENT_TEMPLATE['FORM']			= "
 		</div>
 		<div class='comment-box-right' style='text-align:left'>
 			<div class='P10'>
-				{SUBJECT_INPUT}
 				{AUTHOR_INPUT}
-				{RATE_INPUT}
 				{COMMENT_INPUT}
 				{COMMENT_BUTTON}
 			</div>
@@ -120,12 +118,12 @@ $COMMENT_TEMPLATE['ITEM'] = '
 			
 			<span class="comment-status">{COMMENT_STATUS}</span>
 			<div class="comment-user-badge-bar">
-				{COMMENT_RATE}{REPLY}{COMMENTEDIT}		
+				{COMMENT_RATE}{REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
 			</div>
 
 			<div class="clear_b H5"><!-- --></div>
-			<div id="{COMMENT_ITEMID}-edit">{COMMENT}</div>
-			{COMMENT_MOD//ERATE}	
+			<div id="{COMMENT_ITEMID}-edit" contentEditable="false">{COMMENT}</div>
+			
 		</div>
 	</div>';
 	

@@ -24,13 +24,59 @@
 require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-//	print_r($_POST);
-//	exit;
 
-if(e_AJAX_REQUEST)
+if(e_AJAX_REQUEST) // TODO improve security
 {
 
-	if(vartrue($_POST['comment']) && USERID)
+	if(!ANON && !USER)
+	{
+		exit;
+	}
+	
+	$ret = array();
+	
+	if(varset($_GET['mode']) == 'delete' && vartrue($_POST['itemid']))
+	{
+		$status 		= e107::getComment()->deleteComment($_POST['itemid']);		
+		$ret['msg'] 	= "Couldn't delete comment"; 
+		$ret['error'] 	= ($status) ? false : true;
+		echo json_encode($ret);
+		exit; 	
+	}
+	
+	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']))
+	{
+		$status 		= e107::getComment()->approveComment($_POST['itemid']);		
+		$ret['msg'] 	= ($status) ? "Comment approved" : "Couldn't approve comment"; 
+		$ret['error'] 	= ($status) ? false : true;
+		$ret['html']	= "Approved"; //TODO LAN
+		echo json_encode($ret);
+		exit; 	
+	}
+		
+	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
+	{
+		$ret['error'] 	= true;
+		$ret['msg'] 	= "Please write something first."; //TODO LAN
+		echo json_encode($ret);
+		exit; 	
+	}
+
+	// Update Comment 
+	if(e107::getPref('allowCommentEdit') && varset($_GET['mode']) == 'edit' && vartrue($_POST['comment']) && vartrue($_POST['itemid']))
+	{			
+		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
+		
+		$ret['error'] 	= ($error) ? true : false;
+		$ret['msg'] 	= ($error) ? $error : "Saved!!!"; //TODO Common LAN
+		
+		echo json_encode($ret);
+		exit;	
+	}
+	
+	
+	// Insert Comment and return rendered html. 
+	if(vartrue($_POST['comment']) && USERID) // ajax render comment
 	{
 		$pid = intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 	
@@ -40,8 +86,9 @@ if(e_AJAX_REQUEST)
 		
 		$newid = e107::getComment()->enter_comment($clean_authorname, $clean_comment, $_POST['table'], intval($_POST['itemid']), $pid, $clean_subject);
 	
-		if($newid)
+		if(is_numeric($newid) && ($_GET['mode'] == 'submit'))
 		{
+			$row 						= array();
 			$row['comment_id']			= $newid; 
 			$row['comment_item_id']		= intval($_POST['itemid']);
 			$row['comment_type']		= e107::getComment()->getCommentType($tp->toDB($_POST['table'],true));
@@ -53,20 +100,30 @@ if(e_AJAX_REQUEST)
 			$row['comment_datestamp'] 	= time();
 			$row['comment_blocked']		= (vartrue($pref['comments_moderate']) ? 2 : 0);
 			
-			echo "\n<!-- Appended -->\n";
-			echo e107::getComment()->render_comment($row,'comment',intval($_POST['itemid']));
-			echo "\n<!-- end Appended -->\n";	
+			$ret['html'] = "\n<!-- Appended -->\n";
+			$ret['html'] .= e107::getComment()->render_comment($row,'comment',intval($_POST['itemid']));
+			$ret['html'] .= "\n<!-- end Appended -->\n";
+			
+			$ret['error'] = false;	
+			
 		}
+		else
+		{
+			$ret['error'] = true;
+			$ret['msg'] = $newid;			
+		}
+		
+		echo json_encode($ret);
 	}
 	
 	
-		
-
-		
 	exit;
 }
 
-require_once(e_HANDLER."news_class.php");
+
+
+
+require_once(e_HANDLER."news_class.php"); // FIXME shouldn't be here. 
 require_once(e_HANDLER."comment_class.php");
 define("PAGE_NAME", COMLAN_99);
 

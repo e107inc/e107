@@ -246,9 +246,10 @@ class comment
 			$text .= (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '');
 			$text .=(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "");
 			$text .=(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '');
-			$text .= (!$pref['nested_comments']) ? "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n" : "";
+		//	$text .= (!$pref['nested_comments']) ? "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n" : "";
 	
 			$text .= "
+			<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />
 			<input type='hidden' name='e-token' value='".e_TOKEN."' />\n
 			<input type='hidden' name='table' value='".$table."' />\n
 			<input type='hidden' name='itemid' value='".$itemid."' />\n
@@ -441,6 +442,42 @@ class comment
 		return $text;
 	}
 
+	
+	function deleteComment($id) // delete a single comment by comment id.  
+	{
+		if(!getperms('0') && !getperms("B"))
+		{
+			return;	
+		}
+		return e107::getDb()->db_Delete("comments","comment_id = ".intval($id)." LIMIT 1");	
+	}
+	
+	function approveComment($id) // appropve a single comment by comment id.  
+	{
+		if(!getperms('0') && !getperms("B"))
+		{
+			return;	
+		}
+		
+		return e107::getDb()->db_Update("comments","comment_blocked=0 WHERE comment_id = ".intval($id)." LIMIT 1");
+	}
+
+	
+	function updateComment($id,$comment)
+	{
+		$tp = e107::getParser();
+		
+		if(!e107::getDb()->db_Update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id)." LIMIT 1"))
+		{
+			return "Update Failed"; // trigger ajax error message. 
+		}		
+	}
+			
+		
+	
+	
+	
+	
 	/**
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
@@ -496,6 +533,7 @@ class comment
 		$subject = $tp->toDB($subject);
 		$cuser_id = 0;
 		$cuser_name = 'Anonymous'; // Preset as an anonymous comment
+		
 		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' "))
 		{
 			if ($_POST['comment'])
@@ -506,8 +544,8 @@ class comment
 					$cuser_name = USERNAME;
 					$cuser_mail = USEREMAIL;
 				}
-				elseif ($_POST['author_name'] != '')
-				{ // See if author name is registered user
+				elseif ($_POST['author_name'] != '') // See if author name is registered user
+				{ 
 					if ($sql2->db_Select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
 					{
 						if ($sql2->db_Select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
@@ -523,8 +561,8 @@ class comment
 							define("emessage", COMLAN_310);
 						}
 					}
-					else
-					{ // User not on-line, so can't be entering comments
+					else // User not on-line, so can't be entering comments
+					{ 
 						$cuser_name = $tp->toDB($author_name);
 					}
 				}
@@ -585,6 +623,10 @@ class comment
 					if (!($inserted_id = $sql->db_Insert("comments", $edata_li)))
 					{
 						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
+						if(e_AJAX_REQUEST)
+						{
+							return "Error";	
+						}
 						e107::getMessage()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
 
 					}
@@ -630,6 +672,12 @@ class comment
 
 		if (defined("emessage"))
 		{
+			if(e_AJAX_REQUEST)
+			{
+				return emessage;	
+			}
+			
+			
 			message_handler("ALERT", emessage);
 		}
 		return false;
@@ -870,7 +918,7 @@ class comment
 			if ($tablerender)
 			{
 				
-				echo $ns->tablerender($this->totalComments." ".COMLAN_99, $TEMPL, 'comment', TRUE);	
+				echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99, $TEMPL, 'comment', TRUE);	
 			}
 			else
 			{
