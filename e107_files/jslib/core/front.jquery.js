@@ -179,6 +179,8 @@ $(document).ready(function()
 					 $(id).text(a.html)
 					 .fadeIn('slow')
 					 .addClass('e-comment-edit-success'); //TODO another class?
+					 
+					 $('#e-comment-approve-'+sp[3]).hide('slow');
 				}
 				else
 				{
