@@ -745,7 +745,14 @@ class e_form
 			$options_on = array('class' => 'e-expandit-on');
 			$options_off = array('class' => 'e-expandit-off');			
 		}
-
+		
+		if(vartrue($options['reverse'])) // reverse order. 
+		{
+			unset($options['reverse']);
+			return $this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0)."&nbsp;&nbsp;".
+			$this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1);			
+		}
+		
 		return $this->radio($name, 1, $checked_enabled, $options_on)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
 			".$this->radio($name, 0, !$checked_enabled, $options_off)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
 

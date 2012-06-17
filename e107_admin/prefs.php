@@ -1274,6 +1274,12 @@ $text .= "
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
+					<tr>
+						<td class='label'>Allow users to post comments: </td>
+						<td class='control'>
+							".$frm->radio_switch('comments_disabled', $pref['comments_disabled'], LAN_NO, LAN_YES,array('reverse'=>1))."
+						</td>
+					</tr>
              		<tr>
 						<td class='label'>".PRFLAN_32."</td>
 						<td class='control'>
@@ -1300,12 +1306,7 @@ $text .= "
 							".$frm->radio_switch('allowCommentEdit', $pref['allowCommentEdit'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_161.": </td>
-						<td class='control'>
-							".$frm->radio_switch('comments_disabled', $pref['comments_disabled'], LAN_YES, LAN_NO)."
-						</td>
-					</tr>
+					
 					<tr>
 						<td class='label'>".PRFLAN_166.": </td>
 						<td class='control'>
@@ -1314,9 +1315,10 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td class='label'>Moderate Comments: </td>
+						<td class='label'>Approve Comments: </td>
 						<td class='control'>
 							".$frm->radio_switch('comments_moderate', $pref['comments_moderate'], LAN_YES, LAN_NO)."
+							<div class='field-help'>Posted comments will require approval before being visible to others</div>
 						</td>
 					</tr>
 					<tr>
