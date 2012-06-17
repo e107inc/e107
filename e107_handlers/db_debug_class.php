@@ -604,7 +604,13 @@ class e107_db_debug {
 //
 function e107_debug_shutdown()
 {
-global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
+	if(e_AJAX_REQUEST) // extra output will break json ajax returns ie. comments 
+	{
+		return; 	
+	}
+	
+	
+	global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 	if (isset($e107_Clean_Exit)) return;
 
 	if (!isset($In_e107_Footer))
@@ -630,7 +636,7 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 		ob_end_flush();
 	}
 
-	if (isset($error_handler) )
+	if (isset($error_handler))
 	{
 		if($error_handler->return_errors())
 		{

@@ -157,8 +157,19 @@ $(document).ready(function()
 		}).disableSelection();
 		
 		
+		// Check ALl Button
+		$("#e-check-all").click(function(){
+			$("input[type=\"checkbox\"]").attr("checked", "checked");
+		});
 		
-		// Check-All
+		// Uncheck all button. 
+		$("#e-uncheck-all").click(function(){
+			$("input[type=\"checkbox\"]").removeAttr("checked");
+		});
+		
+		
+		
+		// Check-All checkbox toggle
 		$("input.toggle-all").click(function(evt){
 			if($(this).is(":checked")){
 				$("input[type=\"checkbox\"].checkbox").attr("checked", "checked");
