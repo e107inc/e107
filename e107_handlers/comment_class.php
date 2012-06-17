@@ -615,7 +615,7 @@ class comment
 						'comment_author_email'	=> $tp->toDB($cuser_mail),
 						'comment_datestamp'		=> $_t,
 						'comment_comment'		=> $comment,
-						'comment_blocked'		=> (vartrue($pref['comments_moderate']) ? 2 : 0), 
+						'comment_blocked'		=> (check_class($pref['comments_moderate']) ? 2 : 0), 
 						'comment_ip'			=> $ip,
 						'comment_type'			=> $tp->toDB($type, true),
 						'comment_lock'			=> 0 //Not locked by default

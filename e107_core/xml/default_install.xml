@@ -25,7 +25,7 @@
 		<core name="comments_disabled">0</core>
 		<core name="comments_emoticons">0</core>
 		<core name="comments_icon">0</core>
-		<core name="comments_moderate">0</core>	
+		<core name="comments_moderate">247</core>	
 		<core name="comments_sort">desc</core>				
 		<core name="compress_output">0</core>
 		<core name="contact_emailcopy">0</core>
@@ -64,10 +64,9 @@
 		<core name="e_jslib_gzip">1</core>
 		<core name="e_jslib_nocombine">0</core>
 		<core name="e_jslib_core"><![CDATA[array (
-		  'prototype' => 'none',
-		  'prototype-cdn' => 'none',
-		  'jquery' => 'auto',
-		)]]></core>
+'prototype' => 'none',
+'jquery' => 'auto',
+)]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
 		<core name="email_notify">0</core>
@@ -236,6 +235,7 @@ City, State, Country
 		<core name="user_reg">1</core>
 		<core name="user_reg_secureveri">1</core>
 		<core name="user_reg_veri">1</core>
+		<core name="user_new_period">3</core>
 		<core name="user_tracking">cookie</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">0</core>

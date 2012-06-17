@@ -29,6 +29,36 @@ if(! getperms("1"))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'prefs';
+
+//FIXME temporary fix - need universal solution. 
+e107::js('inline',"
+$(document).ready(function()
+{	
+	var hash = document.location.hash;
+	if(hash)
+	{
+		$('.plugin-navigation a').each(function(index) {
+    			var ot = $(this).attr('href');
+				$(ot).hide();
+				$(this).closest('li').removeClass('active');
+				$(this).switchClass( 'link-active', 'link', 0 );
+			});
+		var button = '#eplug-nav-' + hash.replace('#', '') + '-prev-nav';
+		$(hash).show();
+		$(button).switchClass('link', 'link-active', 30 );
+		$(button).closest('li').addClass('active');
+	}
+	else
+	{
+		$('#core-prefs-main').show();	
+	}
+		
+});	
+","jquery");
+
+
+
+
 require_once (e_ADMIN."auth.php");
 
 $e_userclass = e107::getUserClass(); 
@@ -197,7 +227,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 $text = "
 <div id='core-prefs'>
 	<form class='admin-menu' method='post' action='".e_SELF."'>
-		<fieldset id='core-prefs-main'>
+		<fieldset class='e-hideme' id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='adminform'>
 				<colgroup>
@@ -1315,10 +1345,13 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td class='label'>Approve Comments: </td>
+						<td class='label'>Moderate Comments made by: </td>
 						<td class='control'>
-							".$frm->radio_switch('comments_moderate', $pref['comments_moderate'], LAN_YES, LAN_NO)."
-							<div class='field-help'>Posted comments will require approval before being visible to others</div>
+							".
+							
+							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
+							"
+							<div class='field-help'>Comments will require manual approval by an admin prior to being visible to other users</div>
 						</td>
 					</tr>
 					<tr>
