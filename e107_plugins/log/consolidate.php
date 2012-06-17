@@ -16,7 +16,8 @@
 
 /* first thing to do is check if the log file is out of date ... */
 
-$pathtologs = e_PLUGIN."log/logs/";
+// $pathtologs = e_PLUGIN."log/logs/";
+$pathtologs = e_LOG;
 $date = date("z.Y", time());
 $yesterday = date("z.Y",(time() - 86400));		// This makes sure year wraps round OK
 $date2 = date("Y-m-j", (time() -86400));		// Yesterday's date for the database summary	
@@ -294,7 +295,7 @@ function createLog($pathtologs)
 	global $statTotal, $statUnique, $pfile, $ifile;
 	if(!is_writable($pathtologs)) 
 	{
-		echo "Log directory is not writable - please CHMOD ".e_PLUGIN."log/logs to 777";
+		echo "Log directory is not writable - please CHMOD ".e_LOG." to 777";
 		echo '<br />Path to logs: '.$pathtologs;
 		return FALSE;
 	}

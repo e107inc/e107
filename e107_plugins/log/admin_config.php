@@ -732,7 +732,8 @@ function rempage()
 {
 	global $sql, $ns;
 
-	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+	$logfile = e_LOG."logp_".date("z.Y", time()).".php";
+//	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
 	if(is_readable($logfile))
 	{
 		require($logfile);
@@ -796,8 +797,9 @@ function rempagego()
 	$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
 	$row = $sql -> db_Fetch();
 	$pageTotal = unserialize($row['log_data']);
-
-	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+	$logfile = e_LOG."logp_".date("z.Y", time()).".php";
+	
+//	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
 	if(is_readable($logfile))
 	{
 		require($logfile);

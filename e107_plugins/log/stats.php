@@ -925,12 +925,14 @@ class siteStats
 		$sql = e107::getDB();
 
 		/* get today's logfile ... */
-		$logfile = e_PLUGIN.'log/logs/logp_'.date('z.Y', time()).'.php';
+		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php';
+	//	$logfile = e_PLUGIN.'log/logs/logp_'.date('z.Y', time()).'.php';
 		if(is_readable($logfile)) 
 		{
 			require($logfile);
 		}
-		$logfile = e_PLUGIN.'log/logs/logi_'.date('z.Y', time()).'.php';
+	//	$logfile = e_PLUGIN.'log/logs/logi_'.date('z.Y', time()).'.php';
+		$logfile = e_LOG.'logi_'.date('z.Y', time()).'.php';
 		if(is_readable($logfile)) 
 		{
 			require($logfile);
