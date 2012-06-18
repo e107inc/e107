@@ -118,7 +118,7 @@ $COMMENT_TEMPLATE['ITEM'] = '
 			
 			<span class="comment-status">{COMMENT_STATUS}</span>
 			<div class="comment-user-badge-bar">
-				{COMMENT_RATE}{REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
+				{COMMENT_RATE}{COMMENT_REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
 			</div>
 
 			<div class="clear_b H5"><!-- --></div>
@@ -127,8 +127,7 @@ $COMMENT_TEMPLATE['ITEM'] = '
 		</div>
 	</div>';
 	
-$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
-$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
+
 
 
 $COMMENT_TEMPLATE['LAYOUT'] 		= '{COMMENTFORM}{COMMENTS}{MODERATE}';

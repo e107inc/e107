@@ -100,27 +100,30 @@ if (!function_exists("parseheader")) {
 //else
   header("Content-type: text/html; charset=utf-8", TRUE);
 
-// NEW - HTML5 support
+// NEW - HTML5 default
 // TODO - more precise controlo over page header depending on the HTML5 mode
-// 'HTML5_MOD' - to be defined by themes; 'HTML5_FORCE' - a way to force a single page to use HTML5
-if(defined('HTML5_MOD') || defined('HTML5_FORCE'))
+if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
+	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
+	echo "<head>\n";
+	echo "<meta charset='utf-8' />\n";
 }
 else 
 {
 	echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("XMLNS") ? " ".XMLNS." " : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
+	echo "<head>
+	<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+	<meta http-equiv='content-style-type' content='text/css' />
+	";
+	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 }
 
 //
 // C: Send start of HTML
 //
-echo "<head>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-<meta http-equiv='content-style-type' content='text/css' />
-";
-echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+
 
 if($pref['meta_copyright'][e_LANGUAGE]) e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
 if($pref['meta_author'][e_LANGUAGE]) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);

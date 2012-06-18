@@ -100,13 +100,15 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	
 	// Insert Comment and return rendered html. 
-	if(vartrue($_POST['comment']) && USERID) // ajax render comment
+	if(vartrue($_POST['comment'])) // ajax render comment
 	{
 		$pid = intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 	
 		$clean_authorname = $_POST['author_name'];
 		$clean_comment = $_POST['comment'];
 		$clean_subject = $_POST['subject'];
+		
+		$_SESSION['comment_author_name'] = $clean_authorname;
 		
 		$newid = e107::getComment()->enter_comment($clean_authorname, $clean_comment, $_POST['table'], intval($_POST['itemid']), $pid, $clean_subject);
 	
@@ -116,11 +118,12 @@ if(e_AJAX_REQUEST) // TODO improve security
 			$row['comment_id']			= $newid; 
 			$row['comment_item_id']		= intval($_POST['itemid']);
 			$row['comment_type']		= e107::getComment()->getCommentType($tp->toDB($_POST['table'],true));
-			$row['comment_subject'] 	= $_POST['subject'];
-			$row['comment_comment'] 	= $_POST['comment'];
+			$row['comment_subject'] 	= $tp->toDB($_POST['subject']);
+			$row['comment_comment'] 	= $tp->toDB($_POST['comment']);
 			$row['user_image'] 			= USERIMAGE;
-			$row['user_id']				= USERID;
+			$row['user_id']				= (USERID) ? USERID : 0;
 			$row['user_name'] 			= USERNAME;
+			$row['comment_author_name'] = $tp->toDB($clean_authorname);
 			$row['comment_datestamp'] 	= time();
 			$row['comment_blocked']		= (check_class($pref['comments_moderate']) ? 2 : 0);
 			

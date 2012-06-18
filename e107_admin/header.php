@@ -140,7 +140,7 @@ if (!defined('ADMIN_WIDTH'))
 //
 
 // HTML 5 default. 
-if(!defined('XHTML_FORCE'))
+if(!defined('XHTML4'))
 {
 	echo "<!doctype html>\n";
 	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
