@@ -118,7 +118,7 @@ $COMMENT_TEMPLATE['ITEM'] = '
 			
 			<span class="comment-status">{COMMENT_STATUS}</span>
 			<div class="comment-user-badge-bar">
-				{COMMENT_RATE}{COMMENT_REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
+				{COMMENT_RATE}{REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
 			</div>
 
 			<div class="clear_b H5"><!-- --></div>
