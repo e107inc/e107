@@ -161,9 +161,11 @@ img.comment-avatar									{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px
 
 a.comment-edit										{ }
 
-.comment-edit										{ float:right; margin:0 5px 0 5px; }
+.comment-edit										{ float:right; margin-right:5px; }
 
 .comment-reply										{ float:right ; margin-right:5px;}
+
+.comment-moderate									{ float:right ; margin-right:5px;}
 
 .comment-moderate									{ text-align:center }
 

@@ -86,6 +86,9 @@ $sc_style['COMMENT_RATE']['post'] 		= '</div>';
 $sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
 $sc_style['USER_AVATAR']['post'] 		= '</div>';
 
+$sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate">';
+$sc_style['COMMENT_MODERATE']['post']	= '</span>';
+
 
 
 

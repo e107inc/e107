@@ -223,8 +223,11 @@ class comment_shortcodes extends e_shortcode
 		if($this->mode == 'edit')
 		{
 			if (ANON == TRUE && USER == FALSE) // (anonymous comments - if allowed)
-			{ 
-				return "<input class='tbox comment author' type='text' placeholder=\"".COMLAN_16."\" name='author_name' size='61' value='{$_SESSION['comment_author_name']}' maxlength='100' />";			
+			{
+				$disabled = ($_SESSION['comment_author_name']) ? "disabled='disabled'" : ""; // prevent anon users changing names on the same session.
+
+				return "<input {$disabled} class='tbox comment author' type='text' placeholder=\"".COMLAN_16."\" name='author_name' size='61' value='{$_SESSION['comment_author_name']}' maxlength='100' />";			
+		 
 			}
 		}	
 	}

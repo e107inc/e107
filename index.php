@@ -62,7 +62,7 @@
 
 // -------------- Experimental -----------------
 
-	unset($_SESSION['E:SOCIAL']);
+	// unset($_SESSION['E:SOCIAL']);
 
 	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getPref('social_login_active', false) && (e_ADMIN_AREA !== true))
 	{

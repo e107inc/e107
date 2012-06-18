@@ -44,9 +44,18 @@ class comment
 	private $template;
 	
 	private $totalComments = 0;
+	
+	private $moderator = false;
 
 	function __construct()
 	{
+		
+		if(getperms('0')) // moderator perms. 
+		{
+			$this->moderator = true;	
+		}
+		
+		
 		global $COMMENTSTYLE;
 			
 		if (!$COMMENTSTYLE)
@@ -302,6 +311,21 @@ class comment
 		}
 	}
 
+	
+	function isPending($row)
+	{
+		if($row['comment_blocked'] > 0 && ($row['comment_author_id'] != USERID || ($row['comment_author_id']==0 && $row['comment_author_name'] != $_SESSION['comment_author_name'])) && $this->moderator == false)
+		{
+			$this->totalComments = $this->totalComments - 1;
+			return true;
+		}
+		
+		return false;		
+	}
+		
+		
+	
+	
 	/**
 	 * Enter description here...
 	 *
@@ -445,7 +469,7 @@ class comment
 			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
 			
 			WHERE comment_item_id='".intval($thisid)."' AND comment_type='".$tp->toDB($type, true)."' AND comment_pid='".intval($comrow['comment_id'])."'
-			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
+			
 			
 			ORDER BY comment_datestamp
 			";
@@ -454,6 +478,14 @@ class comment
 			{
 				while ($row1 = $sql_nc->db_Fetch())
 				{
+					
+					if($this->isPending($row1))
+					{
+						$sub_total = $sub_total - 1;
+				 		continue;	
+					}	
+					
+					
 					if ($pref['nested_comments'])
 					{
 						$width = min($width + 3, 80);
@@ -867,7 +899,6 @@ class comment
 			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
 			
 			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
-			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
 			ORDER BY c.comment_datestamp ".$sort;
 		}
 		else
@@ -881,19 +912,22 @@ class comment
 			
 			
 			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 
-			AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
+			
 			
 			ORDER BY c.comment_datestamp ".$sort;
 		}
 
+		// AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
+		
 		// TODO Preference for sort-order. 
 		
 		
-		$text = "";
-		$comment = '';
-		$modcomment = '';
-		$lock = '';
+		$text 			= "";
+		$comment 		= '';
+		$modcomment 	= '';
+		$lock 			= '';
 		$ret['comment'] = '';
+		$moderator 		= getperms('0');
 
 		if ($this->totalComments = $sql->db_Select_gen($query))
 		{
@@ -905,6 +939,13 @@ class comment
 			//while ($row = $sql->db_Fetch())
 			foreach ($rows as $row)
 			{
+				
+				if($this->isPending($row,$moderator))
+				{
+				 	continue;	
+				}					
+					
+				
 				$lock = $row['comment_lock'];
 				// $subject = $tp->toHTML($subject);
 				if ($pref['nested_comments'])
