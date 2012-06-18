@@ -224,7 +224,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			if (ANON == TRUE && USER == FALSE) // (anonymous comments - if allowed)
 			{ 
-				return "<input class='tbox comment author' type='text' placeholder=\"".COMLAN_16."\" name='author_name' size='61' value='{$_POST['author_name']}' maxlength='100' />";			
+				return "<input class='tbox comment author' type='text' placeholder=\"".COMLAN_16."\" name='author_name' size='61' value='{$_SESSION['comment_author_name']}' maxlength='100' />";			
 			}
 		}	
 	}

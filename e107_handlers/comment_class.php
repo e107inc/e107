@@ -365,6 +365,9 @@ class comment
 		
 		e107::getScBatch('comment')->setParserVars($row);
 		$COMMENT_TEMPLATE = $this->template; 
+		
+		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
+		$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
 			
 		if (vartrue($pref['nested_comments']))
 		{
@@ -805,6 +808,7 @@ class comment
 
 		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
+			
         	return FALSE;
 		}
 		if (isset($pref['comments_class']))
@@ -849,6 +853,8 @@ class comment
 		
 		if ($this->getCommentPermissions() === FALSE) return;
 
+
+		
 		$sql = e107::getDb();
 		$type = $this->getCommentType($table);
 		$sort = vartrue($pref['comments_sort'],'desc');
@@ -891,6 +897,7 @@ class comment
 
 		if ($this->totalComments = $sql->db_Select_gen($query))
 		{
+			
 			$width = 0;
 			//Shortcodes could use $sql, so just grab all results
 			$rows = $sql->db_getList();

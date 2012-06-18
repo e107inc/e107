@@ -53,6 +53,8 @@ else
 		require_once (e_HANDLER.'js_helper.php');
 		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87, true);
 	}
+	
+	$sec_img = e107::getSecureImg();
 
 	$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
@@ -62,7 +64,7 @@ else
 
 		if ($use_imagecode)
 		{	
-			if (e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify']))
+			if ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify']))
 			{
 				e107::getRedirect()->redirect('admin.php?failed');
 				exit;
@@ -254,8 +256,8 @@ class auth
 			$text .= "
 			<div class='field'>
 				<label for='code_verify'>".ADLAN_152."</label>"
-				.e107::getSecureImg()->renderImage().
-				e107::getSecureImg()->renderInput()."	
+				.$sec_img->renderImage().
+				$sec_img->renderInput()."	
 			</div>";
 		}
 			    

@@ -681,7 +681,7 @@ class users_admin_ui extends e_admin_ui
 	 		'user_loginname' 	=> array('title' => LAN_USER_02,	'type' => 'text',	'width' => 'auto'), // User name
 	 		'user_login' 		=> array('title' => LAN_USER_03,	'type' => 'text',	'width' => 'auto'), // Real name (no real vetting)
 	 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'type' => 'text',	'width' => 'auto'), // No real vetting
-	 		'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'text',	'width' => 'auto'),
+	 	//	'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'text',	'width' => 'auto'), //TODO add md5 option to form handler? 
 			'user_sess' 		=> array('title' => 'session',	'type' => 'text',	'width' => 'auto'), // Photo
 	 		'user_image' 		=> array('title' => LAN_USER_07,	'type' => 'text',	'width' => 'auto'), // Avatar
 	 		'user_email' 		=> array('title' => LAN_USER_08,	'type' => 'text',	'width' => 'auto'),
