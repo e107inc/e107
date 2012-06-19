@@ -105,12 +105,13 @@ class comment_shortcodes extends e_shortcode
 		$width 		= e107::getPref("im_width");
 		$tp 		= e107::getParser();
 		
+		
 		if (vartrue($this->var['user_id'])) 
 		{
 			if (vartrue($this->var['user_image'])) 
 			{
-				$img = $tp->thumbUrl(e_MEDIA."avatars/".$this->var['user_image'],"aw=".$width."&ah=".$height);
-				$text = "<img class='comment-avatar' src='".$img."' alt='' />";
+				$img = (strpos($this->var['user_image'],"://")!==false) ? $this->var['user_image'] : $tp->thumbUrl(e_MEDIA."avatars/".$this->var['user_image'],"aw=".$width."&ah=".$height);
+				$text = "<img class='comment-avatar' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 			}
 			else
 			{

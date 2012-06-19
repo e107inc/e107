@@ -42,11 +42,11 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_xup() // show it to those who were using xup
 	{
-		return $this->sc_social_login();	
+		return $this->sc_signup_social_login();	
 	}
 	
 	
-	function sc_social_login()
+	function sc_signup_social_login()
 	{
 		$pref = e107::getPref('social_login_active');
 			
@@ -54,7 +54,7 @@ class signup_shortcodes extends e_shortcode
 		{
 			$text = "";
 			$providers = e107::getPref('social_login'); 
-		//	$providers = array('facebook','twitter','google','yahoo','blogger');
+
 			foreach($providers as $p=>$v)
 			{
 				$p = strtolower($p);
@@ -65,9 +65,8 @@ class signup_shortcodes extends e_shortcode
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
 			
-			$text .= "<hr />";
+		//	$text .= "<hr />";
 			return $text;	
-			// return $tp->parseTemplate($SIGNUP_XUP_FORM, TRUE, $signup_shortcodes);
 		}	
 	}
 	
@@ -322,47 +321,11 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_images() // AVATARS
 	{
-		global $pref;
+		$pref 	= e107::getPref();
+		
 		if($pref['signup_option_image'])
 		{
-		
-			$text = "
-			<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
-		
-			<input class='button' type ='button' style='cursor:pointer' size='30' value='".LAN_SIGNUP_27."' onclick=\"expandit(this)\" />
-			<div id='signup-avatar' style='display:none' >";
-			$avatarlist[0] = "";
-			$handle = opendir(e_MEDIA."avatars/");
-			while ($file = readdir($handle))
-			{
-				if ($file != "." && $file != ".." && $file != "CVS" && $file != "index.html")
-				{
-					$avatarlist[] = $file;
-				}
-			}
-			closedir($handle);
-		
-			for($c = 1; $c <= (count($avatarlist)-1); $c++)
-			{
-				$text .= "<a href='javascript:insertext(\"$avatarlist[$c]\", \"avatar\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' alt='' /></a> ";
-			}
-		
-			$text .= "<br />
-			</div><br />";
-		
-		    // Intentionally disable uploadable avatar and photos at this stage
-			if (false && $pref['avatar_upload'] && FILE_UPLOADS)
-			{
-				$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
-				<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-			}
-		
-			if (false && $pref['photo_upload'] && FILE_UPLOADS)
-			{
-				$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
-				<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-			}  
-			return $text;
+			return e107::getForm()->avatarpicker('avatar');
 		}
 	}
 	
