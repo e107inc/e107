@@ -44,7 +44,7 @@ function user_avatar_shortcode($parm='')
 	{
 		$img = (strpos($image,"://")!==false) ? $image : $tp->thumbUrl(e_MEDIA."avatars/".$image,"aw=".$width."&ah=".$height);
 		$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />
-		<div class='field-help' style='display;none'>User info here</div>";
+		";
 	}
 	else
 	{
