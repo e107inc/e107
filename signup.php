@@ -272,8 +272,8 @@ if ($pref['membersonly_enabled'])
 
 if($signup_imagecode)
 {
-	require_once(e_HANDLER."secure_img_handler.php");
-	$sec_img = new secure_image;
+	// require_once(e_HANDLER."secure_img_handler.php");
+	// $sec_img = new secure_image;
 }
 
 
