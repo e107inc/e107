@@ -198,6 +198,8 @@ if (isset ($_POST['update_options']))
 	$temp['force_userupdate'] = $_POST['force_userupdate'];
 	$temp['memberlist_access'] = $_POST['memberlist_access'];
 	$temp['user_new_period'] = $_POST['user_new_period'];
+	$temp['signature_access'] = $_POST['signature_access'];
+	
 	if ($admin_log->logArrayDiffs($temp,$pref,'USET_03'))
 	{
 		save_prefs();
@@ -962,22 +964,24 @@ class users_admin_ui extends e_admin_ui
 			</tr>
 	
 			<tr>
-			<td style='vertical-align:top'>".USRLAN_133.":<br /><span class='smalltext'>".USRLAN_134."</span></td>
-			<td style='vertical-align:top'>".($pref['force_userupdate'] ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
+			<td style='vertical-align:top'>".USRLAN_133.":</td>
+			<td style='vertical-align:top'>".e107::getForm()->radio_switch('force_userupdate',($pref['force_userupdate'])). //  ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
+			"<div class='field-help'>".USRLAN_134."</div>
 			</td>
 			</tr>
 	
 	
 			<tr>
-			<td style='vertical-align:top'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
+			<td style='vertical-align:top'>".USRLAN_93.":</td>
 			<td>
 			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
+			<div class='field-help'>".USRLAN_94."</div>
 			</td></tr>
 	
 			<tr>
-			<td>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
-			<td>&nbsp;
-			<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
+			<td>".USRLAN_130.":</td>
+			<td>".e107::getForm()->radio_switch('track_online',$pref['track_online'])."
+			<div class='field-help'>".USRLAN_131."</div>
 			</td>
 			</tr>
 	
@@ -989,12 +993,21 @@ class users_admin_ui extends e_admin_ui
 			$text .= "</select>
 			</td>
 			</tr>
+				
+			<tr>
+			<td>Signatures may be entered by:</td>
+			<td>". // TODO LAN
+				e107::getForm()->uc_select('signature_access',$pref['signature_access'],"member,admin,main,classes,nobody")
+				."</td>
+			</tr>
+	
 	
 	
 			<tr>
-			<td style='vertical-align:top'>".USRLAN_190."<br /><span class='smalltext'>".USRLAN_191."</span></td>
+			<td style='vertical-align:top'>".USRLAN_190.":</td>
 			<td>
 			<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".USRLAN_192."
+			<div class='field-help'>".USRLAN_191."</div>
 			</td></tr>
 	
 			</table>

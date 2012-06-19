@@ -1,9 +1,9 @@
-// <?php
+<?php
 // $Id$
-
+function user_avatar_shortcode($parm='')
+{
 	global $loop_uid;
 	
-	return $parm;
 	
 	$height 	= e107::getPref("im_height");
 	$width 		= e107::getPref("im_width");
@@ -30,22 +30,21 @@
 	{
 		$image=$parm;
 	}
-	else
+	elseif(USERIMAGE)
 	{
 		$image = USERIMAGE;
 	}
+	else
+	{
+		$image = "";	
+	}
 	
-// 	if(!$image) { return; }
-	
-	
-	
-	//require_once(e_HANDLER.'avatar_handler.php');
-//	$avatar = avatar($image);
 	
 	if (vartrue($image)) 
 	{
 		$img = (strpos($image,"://")!==false) ? $image : $tp->thumbUrl(e_MEDIA."avatars/".$image,"aw=".$width."&ah=".$height);
-		$text = "<img class='user-avatar' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
+		$text = "<img class='user-avatar e-tip' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />
+		<div class='field-help' style='display;none'>User info here</div>";
 	}
 	else
 	{
@@ -54,12 +53,6 @@
 	}
 	
 	return $text;
-	
-	
-	//if($avatar)
-	//{
-	//	return "<div class='spacer'><img src='".avatar($image)."' alt='' /></div><br />";
-	//}
 
-
+}
 ?>

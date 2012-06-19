@@ -922,6 +922,11 @@ class e_shortcode
 		return $this;
 	}
 	
+	public function setVars($eVars) // Alias of setParserVars();
+	{
+		return $this->setParserVars($eVars);	
+	}
+	
 	public function setMode($mode)
 	{
 		$this->mode = ($mode == 'edit') ? 'edit' : 'view';

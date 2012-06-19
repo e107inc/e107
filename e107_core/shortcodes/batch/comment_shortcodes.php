@@ -104,28 +104,10 @@ class comment_shortcodes extends e_shortcode
 		$height 	= e107::getPref("im_height");
 		$width 		= e107::getPref("im_width");
 		$tp 		= e107::getParser();
-		
-		
-		if (vartrue($this->var['user_id'])) 
-		{
-			if (vartrue($this->var['user_image'])) 
-			{
-				$img = (strpos($this->var['user_image'],"://")!==false) ? $this->var['user_image'] : $tp->thumbUrl(e_MEDIA."avatars/".$this->var['user_image'],"aw=".$width."&ah=".$height);
-				$text = "<img class='comment-avatar' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
-			}
-			else
-			{
-				$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","aw=".$width."&ah=".$height);
-				$text = "<img class='comment-avatar' src='".$img."' alt='' />";
-			}
-		}
-		else
-		{
-			$img = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","aw=".$width."&ah=".$height);
-			$text = "<img class='comment-avatar' src='".$img."' alt='' />";
-		}
-			
-		return $text;						
+	
+		// 
+		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}");
+		exit;					
 	}	
 	
 	
@@ -133,9 +115,11 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_avatar($parm) 
 	{
-						
-		//  ---------  Legacy Code below for those who still want to use it. 
+		return $this->sc_comment_avatar($parm);				
 		
+		//  ---------  Legacy Code for reference
+		
+		/*
 		global $AVATAR;
 		if (isset($this->var['user_id']) && $this->var['user_id']) {
 			if (isset($this->var['user_image']) && $this->var['user_image']) {
@@ -149,6 +133,9 @@ class comment_shortcodes extends e_shortcode
 			$this->var['user_image'] = '';
 		}
 		return $this->var['user_image'];
+		
+		 */
+		
 	}
 	
 	
@@ -269,14 +256,14 @@ class comment_shortcodes extends e_shortcode
 		}		
 	}		
 	
-	
+	/*
 	function sc_user_avatar($parm)
 	{
 		$this->var['user_id'] = USERID;
 		$this->var['user_image'] = USERIMAGE;
 		return $this->sc_comment_avatar($parm);			
 	}
-	
+	*/
 	
 	function sc_comment($parm) 
 	{

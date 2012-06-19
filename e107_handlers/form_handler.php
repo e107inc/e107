@@ -213,6 +213,100 @@ class e_form
 		return $ret;
 	}
 
+
+	/**
+	 * Avatar Picker
+	 * @param $name - form element name ie. value to be posted. 
+	 * @param $curVal - current avatar value. ie. the image-file name or URL. 
+	 */
+	function avatarpicker($name,$curVal='',$options=array())
+	{
+		
+		$tp 		= e107::getParser();
+		$pref 		= e107::getPref();
+		
+		$attr 		= "aw=".$pref['im_width']."&ah=".$pref['im_height'];
+		$blankImg 	= $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg",$attr);
+		$localonly 	= true; //TODO add a pref for allowing external or internal avatars or both. 
+		$idinput 	= $this->name2id($name);
+		$previnput	= $idinput."-preview";
+		$optioni 	= $idinput."-options";
+		
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_MEDIA."avatars/".$curVal,"aw=".$width."&ah=".$height);
+		
+		if(!$curVal)
+		{
+			$img = $blankImg;	
+		}
+		
+		if($localonly == true)
+		{
+			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' size='40' value='{$curVal}' maxlength='100' />";			
+			$text .= "<img src='".$img."' id='{$previnput}' class='e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='Choose an avatar for yourself'/>"; // TODO LAN
+		}
+		else
+		{			
+			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
+			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
+			$text .= "<input class='button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
+		}
+						
+		$avFiles = e107::getFile()->get_files(e_MEDIA."avatars/",".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
+			
+		$text .= "\n<div id='{$optioni}' style='display:none' >\n"; //TODO unique id. 
+		
+		if ($pref['avatar_upload'] && FILE_UPLOADS && vartrue($options['upload']))
+		{
+				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
+	
+				$text .= "<div>".LAN_USET_26."<br />
+				<input class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
+				</div>
+				<div class='divider'><span>OR</span></div>";
+		}
+		
+				
+		foreach($avFiles as $fi)
+		{
+			$img_path = $tp->thumbUrl(e_MEDIA_ABS."avatars/".$fi['fname'],$attr);	
+			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
+			//TODO javascript CSS selector 		
+		}
+		
+		
+		
+		
+		$text .= "<br />
+		</div>";
+		
+		// Used by usersettings.php right now. 
+		
+	
+		
+		
+		
+		
+		
+		return $text;
+		
+		//TODO discuss and FIXME
+		    // Intentionally disable uploadable avatar and photos at this stage
+			if (false && $pref['avatar_upload'] && FILE_UPLOADS)
+			{
+				$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
+				<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
+			}
+		
+			if (false && $pref['photo_upload'] && FILE_UPLOADS)
+			{
+				$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
+				<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
+			}  
+	}
+
+
+
+
 	/**
 	 * FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
 	 * FIXME - use the media-manager as an image selector.
@@ -737,8 +831,8 @@ class e_form
 
 	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
 	{
-		$options_on = array();
-		$options_off = array();	
+		$options_on = varset($options['enabled'],array());
+		$options_off = varset($options['disabled'],array());
 		
 		if($options['class'] == 'e-expandit') // See admin->prefs 'Single Login' for an example. 
 		{

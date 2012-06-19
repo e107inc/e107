@@ -71,7 +71,7 @@ define("LAN_SIGNUP_27", "Show");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
 //define("LAN_SIGNUP_31", "URL to your XUP file");
 //define("LAN_SIGNUP_32", "What's an XUP file?");
-define("LAN_SIGNUP_33", "Type path or choose avatar");
+// define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 //define("LAN_SIGNUP_35", "Click here to register using an XUP file");
 define("LAN_SIGNUP_36", "An error has occurred creating your user information, please contact the site admin");
@@ -152,7 +152,8 @@ define("LAN_USERNAME", "Display Name");
 
 define("LAN_SIGNUP_107", "Password must be a minimum of [x] characters and include at least one UPPERCASE letter and a digit");
 define("LAN_SIGNUP_108", "Must be a valid email address");
-define("LAN_SIGNUP_109", "Must not contain any spaces");//TODO check against regex requirements 
+define("LAN_SIGNUP_109", "Is CaSe sensitive and must not contain spaces");//TODO check against regex requirements 
 define("LAN_SIGNUP_110", "Your full name");
+define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 
 ?>

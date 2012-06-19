@@ -982,33 +982,36 @@ class comment
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
 		}
 
-		if (!$return)
-		{
+		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}");
+		$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment);
+		$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
+
+
+	
 			
-			$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}");
-			$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment);
-			$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
-				
+			
+		if(!$return)
+		{		
 			if ($tablerender)
 			{
-				
-				echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99, $TEMPL, 'comment', TRUE);	
+					
+					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99, $TEMPL, 'comment', TRUE);	
 			}
 			else
 			{
 				echo $TEMPL;	
 			}
-				
+		}		
 			//echo $modcomment.$comment;
 			//echo $text;
-		}
+		
 		
 		
 
-		$ret['comment'] = $text . $modcomment;
+		$ret['comment'] = "<div id='comments-container'>\n".$text."\n</div>";
 
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = COMLAN_99;
+		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99;
 
 		return (!$return) ? "" : $ret;
 	}
