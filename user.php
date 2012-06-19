@@ -21,7 +21,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 global $user;
 $user['user_id'] = USERID;
 
-require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
+// require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
 require_once(e_HANDLER."form_handler.php");
 
 if (isset($_POST['delp']))
@@ -45,6 +45,16 @@ if (isset($_POST['delp']))
 $qs = explode(".", e_QUERY);
 $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
+include_once(e107::coreTemplatePath('user')); //correct way to load a core template.
+
+$user_shortcodes = e107::getScBatch('user');
+
+
+
+
+
+
+/*
 if (file_exists(THEME."user_template.php"))
 {
 	require_once(THEME."user_template.php");
@@ -53,6 +63,8 @@ else
 {
 	require_once(e_BASE.$THEMES_DIRECTORY."templates/user_template.php");
 }
+  */
+
 $user_frm = new form;
 require_once(HEADERF);
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
@@ -164,6 +176,7 @@ else
 	foreach ($userList as $row)
 	{
 		$loop_uid = $row['user_id'];
+		
 		$text .= renderuser($row, "short");
 	}
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
@@ -192,6 +205,8 @@ function renderuser($uid, $mode = "verbose")
 			return FALSE;
 		}
 	}
+	
+	e107::getScBatch('user')->setVars($user);
 
 	if($mode == 'verbose')
 	{

@@ -133,6 +133,8 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 /* default comments layout   */
 
+
+
 .comment-box										{ padding-bottom:10px; margin-bottom:10px; border-top:1px solid #C0C0C0;  }
 
 .comment-box-left									{ float:left; text-align:center; width:10%; min-width:100px }
@@ -145,7 +147,7 @@ div.comment-avatar										{ margin-top:5px; padding:10px 10px 0px 10px; }
 
 img.user-avatar										{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }
 
-.comment-box-right									{ width:85%; min-height: 70px; float:left; }
+.comment-box-right									{ width:auto; min-height: 70px; float:left; }
 
 .comment-box-arrow									{ width:11px; height:26px; float:left; position:relative; top:5px; left:-18px; }
 
@@ -155,7 +157,9 @@ img.user-avatar										{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 1
 
 .comment-replyxxx									{ position:relative; bottom:0px; right:-10px; padding:2px 5px; font-size:0.85em; background-color:#EBFAFF; border:1px solid #C6F1FF; border-bottom:0px none; border-right:0px none; -webkit-border-top-left-radius: 5px; -moz-border-radius-topleft: 5px; border-top-left-radius: 5px; }
 
-.comment-input										{ width:100% }
+.comment-input										{ width:100%;  }
+
+.comment-box-right textarea							{ border:1px solid red; width: 90%; resize: none; margin:0px auto;}
 
 .comment-status										{ float:right; font-style: italic }
 
@@ -179,7 +183,9 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-rate-up img										{ opacity: 0.4 }
 .e-rate-down img									{ opacity: 0.4 }
 
-
+#comments-container .comment-box:nth-child(even) {
+     background: red;
+}
     
 .divider 											{ border-bottom: 1px solid silver;  font-size: 18px;  margin-bottom: 30px;  position: relative;  text-align: center; }
 .divider span 										{ background:  #fff; padding: 0 15px; position: relative; top: 10px; }

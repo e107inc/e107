@@ -57,9 +57,10 @@ $userMethods = e107::getUserSession();
 
 require_once (e_HANDLER.'ren_help.php');
 include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
-include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
+// include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
 
 $usersettings_shortcodes = e107::getScBatch('usersettings');
+
 
 e107::js('inline',"
 		function addtext_us(sc)

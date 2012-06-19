@@ -75,7 +75,11 @@ $sc_style['LOGINNAME']['post'] 			= "</td></tr>\n";
 $sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req($pref['signup_option_signature'])."</td>
 											<td style='width:60%' class='forumheader2'>";
 
-$sc_style['SIGNATURE_HELP']['pre']		= "</td></tr>";
+//$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'></td>
+			//								<td style='width:60%' class='forumheader2'>";
+
+// $sc_style['SIGNATURE_HELP']['pre']		= "</td></tr>";											\
+$sc_style['SIGNATURE_HELP']['post']		= "</td></tr>";
 
 
 $USER_EXTENDED_CAT 						= "<tr><td colspan='2' class='forumheader'>{CATNAME}</td></tr>";

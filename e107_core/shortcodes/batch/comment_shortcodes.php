@@ -101,13 +101,21 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_comment_avatar($parm)
 	{
-		$height 	= e107::getPref("im_height");
-		$width 		= e107::getPref("im_width");
+
 		$tp 		= e107::getParser();
 	
 		// 
-		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}");
-		exit;					
+		$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}");
+		$text .= "<div class='field-help' style='display;none;'>
+		<div class='left'>";
+		$text .= "<h2>".$this->sc_username()."</h2>";
+	//	$text .= e107::getDate()-> //    convert($this->var['user_lastvisit'],'short');
+		$text .= $this->sc_joined()."<br />".$this->sc_comments()."<br />".$this->sc_rating().$this->sc_location;
+		
+		$text .= "
+		</div>
+		</div>";
+		return $text;				
 	}	
 	
 	
