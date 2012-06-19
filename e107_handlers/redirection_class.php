@@ -333,7 +333,7 @@ class redirection
 		header('Content-Length: 0');
 		
 		// write session if needed
-		if(session_id()) session_write_close();
+		//if(session_id()) session_write_close();
 		
 		exit();
 	}
