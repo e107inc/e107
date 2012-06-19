@@ -59,6 +59,8 @@ require_once (e_HANDLER.'ren_help.php');
 include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
 include_once (e_CORE.'shortcodes/batch/usersettings_shortcodes.php');
 
+$usersettings_shortcodes = e107::getScBatch('usersettings');
+
 e107::js('inline',"
 		function addtext_us(sc)
 		{
@@ -694,6 +696,8 @@ if (e_QUERY == "update")
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
+// $sc->setParserVars($val);	
+e107::getScBatch('usersettings')->setVars($curVal);
 $text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 
 

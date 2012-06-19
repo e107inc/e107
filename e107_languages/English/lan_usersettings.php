@@ -86,14 +86,14 @@ define("LAN_USET_16", "Tick box to delete existing photo without uploading anoth
 define("LAN_USET_17", "Display name already used. Please choose another");
 define('LAN_USET_18', 'User data changed by admin: --ID--, login name: --LOGNAME--');
 //define('LAN_USET_19', 'Custom Title');			Now LAN_USER_74
-define('LAN_USET_20', 'You must also change the user\'s password if you are changing their login name or email address');
+define('LAN_USET_20', "You must also change the user's password if you are changing their login name or email address");
 define('LAN_USET_21', 'Please validate the changes by re-entering your password: ');
-define('LAN_USET_22', 'Invalid password!');
+define('LAN_USET_22', 'Invalid password!'); // TODO LAN common?
 define('LAN_USET_23', 'Leave blank to keep existing password');		// LAN_401
 define('LAN_USET_24', 'New Password: ');							// LAN_152
 define('LAN_USET_25', 'Re-type New Password: ');					// LAN_153
 define('LAN_USET_26', 'Upload your Avatar');						// LAN_415
-define('LAN_USET_27', 'Upload Your Photograph');					// LAN_414
+define('LAN_USET_27', 'Upload your Photograph');					// LAN_414
 define('LAN_USET_28', 'This will be shown on your profile page');	// LAN_426
 //define('LAN_USET_29', 'URL to your XUP file');						// LAN_433
 define('LAN_USET_30', 'what\'s this?');								// LAN_434
@@ -103,11 +103,11 @@ define('LAN_USET_33', 'Choose site-stored avatar');					// LAN_421
 define('LAN_USET_34', 'Use remote avatar');							// LAN_422
 define('LAN_USET_35', 'Please type full address to image');			// LAN_423
 define('LAN_USET_36', 'Click button to see avatars stored on this site');	// LAN_424
-define('LAN_USET_37', 'Save Settings');								// LAN_154
+define('LAN_USET_37', 'Save Settings');								// LAN_154 //TODO common LAN?
 define('LAN_USET_38', 'Choose avatar');								// LAN_403
 define('LAN_USET_39', 'Update User Settings');						// LAN_155
 define('LAN_USET_40', 'The two passwords do not match');			// LAN_105
-define('LAN_USET_41', 'Settings updated and saved into database.');	// LAN_150
+define('LAN_USET_41', 'Settings updated and saved into database.');	// LAN_150 //TODO Common LAN?
 define('LAN_USET_42', '');
 
 

@@ -135,7 +135,7 @@ $sc_style['SIGNUP_SIGNATURE']['post'] = "
 
 $sc_style['SIGNUP_IMAGES']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_SIGNUP_94.req($pref['signup_option_image'])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
+<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_SIGNUP_94.req($pref['signup_option_image'])."</td>
 <td class='forumheader3' style='width:70%;vertical-align:top' >
 ";
 $sc_style['SIGNUP_IMAGES']['post'] = "
@@ -185,6 +185,9 @@ $sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
 </tr>
 ";
 
+$sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
+$sc_style['SIGNUP_XUP']['post'] = "<h2 class='divider'><span>OR</span></h2></div>";
+
 
 
 if(!defined($COPPA_TEMPLATE))
@@ -206,17 +209,14 @@ $COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
 if(!defined($SIGNUP_TEXT))
 {
 $SIGNUP_TEXT =
-LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />
+LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />".LAN_SIbGNUP_85."
 ";
 }
 
 
 if(!defined($SIGNUP_BEGIN))
 {
-$SIGNUP_BEGIN = "
-{SIGNUP_FORM_OPEN}
-<div class='signup-container' style='text-align:center;".USER_WIDTH."'>
-".LAN_SIGNUP_85."<br /><br /></div>";
+	$SIGNUP_BEGIN = "{SIGNUP_FORM_OPEN}";
 }
 
 

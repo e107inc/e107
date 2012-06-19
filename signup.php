@@ -282,11 +282,13 @@ if ((USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') !
 	 header('location: '.e_HTTP.'index.php');
 }
 
-if(getperms('0'))
+if(getperms('0')) // allow main admin to view signup page for design/testing. 
 {
 	//$mes = e107::getMessage();
 	//$mes->debug("You are currently logged in.");
-	 $SIGNUP_BEGIN = "<div class='s-message' style='background-color:red;text-align:center;padding:30px;'> You are currently logged in.</div>". $SIGNUP_BEGIN;		
+	 $SIGNUP_BEGIN = "<div class='s-message'>
+	 <div class='error'> You are currently logged in.
+	 </div></div>". $SIGNUP_BEGIN;		
 }
 
 

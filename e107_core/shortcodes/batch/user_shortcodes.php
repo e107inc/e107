@@ -472,7 +472,11 @@ SC_BEGIN PROFILE_COMMENTS
 global $user, $pref, $sql, $ns;
 if($pref['profile_comments'])
 {
-	include_once(e_HANDLER."comment_class.php");
+	$ret = e107::getSingleton('comment')->compose_comment('profile', 'comment', $user['user_id'], null, $user['user_name'], FALSE,true);
+
+ 	return $ns->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
+
+ include_once(e_HANDLER."comment_class.php");
 	$cobj = new comment;
 	$qry = "
 	SELECT c.*, u.*, ue.* FROM #comments AS c
@@ -497,6 +501,8 @@ return "";
 SC_END
 
 SC_BEGIN PROFILE_COMMENT_FORM
+return ;
+
 global $pref, $user;
 if($pref['profile_comments'])
 {

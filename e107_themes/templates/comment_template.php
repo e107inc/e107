@@ -83,8 +83,8 @@ $sc_style['COMMENT_BUTTON']['post']		= "</div>";
 $sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate">';
 $sc_style['COMMENT_RATE']['post'] 		= '</div>';
 
-$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
-$sc_style['USER_AVATAR']['post'] 		= '</div>';
+//$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
+//$sc_style['USER_AVATAR']['post'] 		= '</div>';
 
 $sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate">';
 $sc_style['COMMENT_MODERATE']['post']	= '</span>';
@@ -95,7 +95,7 @@ $sc_style['COMMENT_MODERATE']['post']	= '</span>';
 $COMMENT_TEMPLATE['FORM']			= "
 	<div class='comment-box comment-box-form clearfix'>
 		<div class='comment-box-left'>
-		{USER_AVATAR}
+		{COMMENT_AVATAR}
 		</div>
 		<div class='comment-box-right' style='text-align:left'>
 			<div class='P10'>

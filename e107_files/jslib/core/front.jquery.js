@@ -2,11 +2,37 @@
 
 $(document).ready(function()
 {
-		$(":input").tipsy({gravity: 'w',fade: true, live: true});
+	//	$(":input").tipsy({gravity: 'w',fade: true, live: true});	
 		
-		$(".e-tip").tipsy({gravity: 'sw',fade: true, live: true});
+		$(":input,label,.e-tip").each(function() {
+			
+			var field = $(this).nextAll(".field-help");
+		
+			if(field.length == 0)
+			{
+				$(this).tipsy({gravity: 'sw',fade: true, live: true}); // Normal 'title' attribute
+				return;	
+			}
+			
+			
+			field.hide();		
+			$(this).tipsy({
+				title: 	function() {
+							return field.html(); // field-help when HTML is required. 	 			 	
+						},
+				fade: true,
+				live: true,
+				html: true,
+				gravity: 'sw'  
+			});
+		});
 	
-	
+		// $(".e-tip").tipsy({gravity: 'sw',fade: true, live: true});
+		
+		
+		
+		
+		
 	
 		$(".e-comment-submit").live("click", function(){
 			
