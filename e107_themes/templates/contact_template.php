@@ -37,24 +37,24 @@ if(!isset($CONTACT_FORM))
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	{CONTACT_PERSON}
 	<tr><td>".LANCONTACT_03."<br />
-	<input type='text' name='author_name' size='30' class='tbox' value=\"".$_POST['author_name']."\" />
+	{CONTACT_NAME}
 	</td></tr>
 	<tr><td>".LANCONTACT_04."<br />
-	<input type='text' name='email_send' size='30' class='tbox' value='".($_POST['email_send'] ? $_POST['email_send'] : USEREMAIL)."' />
+	{CONTACT_EMAIL}
 	</td></tr>
 	<tr><td>
 	".LANCONTACT_05."<br />
-	<input type='text' name='subject' size='30' class='tbox' value=\"".$_POST['subject']."\" />
+	{CONTACT_SUBJECT}
 	</td></tr>
 	{CONTACT_EMAIL_COPY}
 	<tr><td>
     ".LANCONTACT_06."<br />
-	<textarea cols='50' rows='10' name='body' class='tbox'>".stripslashes($_POST['body'])."</textarea>
+    {CONTACT_BODY}
 	</td></tr>
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}
 	<tr><td>
-	<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='button' />
+	{CONTACT_SUBMIT_BUTTON}
 	</td></tr>
 	</table>
 	</form>";

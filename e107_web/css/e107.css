@@ -159,8 +159,11 @@ img.user-avatar										{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 1
 
 .comment-input										{ width:100%;  }
 
-.comment-box-right textarea							{ border:1px solid red; width: 90%; resize: none; margin:0px auto;}
-
+.comment-box-right textarea {
+    margin: 0 auto;
+    resize: none;
+    width: 100% !important;
+}
 .comment-status										{ float:right; font-style: italic }
 
 a.comment-edit										{ }
@@ -188,7 +191,7 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 }
     
 .divider 											{ border-bottom: 1px solid silver;  font-size: 18px;  margin-bottom: 30px;  position: relative;  text-align: center; }
-.divider span 										{ background:  #fff; padding: 0 15px; position: relative; top: 10px; }
+.divider span 										{ padding: 0 15px; position: relative; top: 10px; }
 
 
 

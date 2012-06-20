@@ -27,10 +27,11 @@ $(document).ready(function()
 			});
 		});
 	
+	//	var color = $(".divider").parents().css("background-color");
+		
+	
 		// $(".e-tip").tipsy({gravity: 'sw',fade: true, live: true});
-		
-		
-		
+
 		
 		
 	

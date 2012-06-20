@@ -44,7 +44,8 @@ if (!$CONTACT_FORM) {
 	}
 }
 
-if(isset($_POST['send-contactus'])){
+if(isset($_POST['send-contactus']))
+{
 
 	$error = "";
 
@@ -163,7 +164,8 @@ if(SITECONTACTINFO && $CONTACT_INFO)
 
 if(isset($pref['sitecontacts']) && $pref['sitecontacts'] != 255)
 {
-	require_once(e_CORE."shortcodes/batch/contact_shortcodes.php");
+	// require_once(e_CORE."shortcodes/batch/contact_shortcodes.php");
+	$contact_shortcodes = e107::getScBatch('contact');
 	$text = $tp->parseTemplate($CONTACT_FORM, TRUE, $contact_shortcodes);
 
 	if(trim($text) != "")
