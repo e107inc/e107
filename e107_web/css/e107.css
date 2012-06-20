@@ -137,7 +137,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 .comment-box										{ padding-bottom:10px; margin-bottom:10px; border-top:1px solid #C0C0C0;  }
 
-.comment-box-left									{ float:left; text-align:center; width:10%; min-width:100px }
+.comment-box-left									{ float:left; text-align:center; width:15%; min-width:100px; max-width:150px }
 
 .comment-box-userinfo								{ padding:20px 5px 10px 5px; }
 
@@ -162,7 +162,7 @@ img.user-avatar										{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 1
 .comment-box-right textarea {
     margin: 0 auto;
     resize: none;
-    width: 100% !important;
+    width: auto !important;
 }
 .comment-status										{ float:right; font-style: italic }
 

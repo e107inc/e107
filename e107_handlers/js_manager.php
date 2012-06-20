@@ -224,10 +224,14 @@ class e_jsmanager
 				if(!$this->libDisabled($id,$vis))
 				{
 				//	echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
-					foreach($this->_libraries[$id] as $path)
+					if(vartrue($this->_libraries[$id]))
 					{
-						$core[$path] = $vis;	
-					}	
+						foreach($this->_libraries[$id] as $path)
+						{
+							$core[$path] = $vis;	
+						}		
+					}
+					
 				}
 	
 			}
