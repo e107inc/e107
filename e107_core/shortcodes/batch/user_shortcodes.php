@@ -152,16 +152,14 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_lastvisit($parm)
 	{
-		$gen = new convert;
-		return $this->var['user_currentvisit'] ? $gen->convert_date($this->var['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
+		return $this->var['user_currentvisit'] ? e107::getDate()->convert_date($this->var['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
 	}
 	
 	
 	
 	function sc_user_lastvisit_lapse($parm) 
-	{
-		$gen = new convert;
-		return $this->var['user_currentvisit'] ? "( ".$gen -> computeLapse($this->var['user_currentvisit'])." ".LAN_USER_34." )" : '';
+	{	
+		return $this->var['user_currentvisit'] ? "( ".e107::getDate()->computeLapse($this->var['user_currentvisit'])." ".LAN_USER_34." )" : '';
 	}
 
 
@@ -175,16 +173,14 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_join($parm) 
 	{
-		$gen = new convert;
-		return $gen->convert_date($this->var['user_join'], "forum");
+		return e107::getDate()->convert_date($this->var['user_join'], "forum");
 	}
 	
 	
 	
 	function sc_user_daysregged($parm) 
 	{
-		$gen = new convert;
-		return $gen -> computeLapse($this->var['user_join'])." ".LAN_USER_34;
+		return e107::getDate()->computeLapse($this->var['user_join'])." ".LAN_USER_34;
 	}
 
 	
@@ -228,7 +224,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_email_link($parm) 
 	{
-		global $user, $tp;
+		$tp = e107::getParser();
 		return ($this->var['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->parseTemplate("{email={$this->var['user_email']}-link}");
 	}
 
@@ -296,8 +292,7 @@ class user_shortcodes extends e_shortcode
 	function sc_user_name_link($parm) 
 	{
 		$uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
-		$url = e107::getUrl();
-		return "<a href='".$url->create('user/profile/view', $uparams)."'>".$this->var['user_name']."</a>";
+		return "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>".$this->var['user_name']."</a>";
 	}
 	
 	
@@ -357,7 +352,6 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_forum_link($parm) 
 	{
-		global $user;
 		return $this->var['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$this->var['user_id']."'>".LAN_USER_37."</a>" : "";
 	}
 
@@ -365,7 +359,8 @@ class user_shortcodes extends e_shortcode
 		
 	function sc_user_sendpm($parm) 
 	{
-		global $pref, $tp, $user;
+		$pref = e107::getPref();
+		$tp = e107::getParser();
 		if(isset($pref['plug_installed']['pm']) && ($this->var['user_id'] > 0))
 		{
 		  return $tp->parseTemplate("{SENDPM={$this->var['user_id']}}");
@@ -374,29 +369,45 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_rating($parm) 
+	function sc_user_rating($parm='') 
 	{
 		$pref = e107::getPref();
-		if($pref['profile_rate'] && USER)
+		$frm = e107::getForm();
+		
+		if(!vartrue($pref['profile_rate'])){ return; }
+		if(!USER){ return "Login to rate this user"; } // TODO LAN
+		
+		
+		switch ($parm) 
 		{
-			include_once(e_HANDLER."rate_class.php");
-			$rater = new rater;
-			$ret = "<span>";
-			if($rating = $rater->getrating('user', $this->var['user_id']))
-			{
-				$num = $rating[1];
-				for($i=1; $i<= $num; $i++)
+			case 'like':
+				return $frm->like('user',$this->var['user_id']);	
+			break;
+			
+			case 'legacy':
+				$rater = e107::getRate();
+				$ret = "<span>";
+				if($rating = $rater->getrating('user', $this->var['user_id']))
 				{
-					$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star.png' alt='' />";
+					$num = $rating[1];
+					for($i=1; $i<= $num; $i++)
+					{
+						$ret .= "<img src='".e_IMAGE_ABS."rate/star.png' alt='' />";
+					}
 				}
-			}
-			if(!$rater->checkrated('user', $this->var['user_id']))
-			{
-				$ret .= " &nbsp; &nbsp;".$rater->rateselect('', 'user', $this->var['user_id']);
-			}
-			$ret .= "</span>";
-			return $ret;
-		}
+				if(!$rater->checkrated('user', $this->var['user_id']))
+				{
+					$ret .= " &nbsp; &nbsp;".$rater->rateselect('', 'user', $this->var['user_id']);
+				}
+				$ret .= "</span>";
+				return $ret;	
+			break;
+			
+			default:
+				return $frm->rate('user',$this->var['user_id']);	
+			break;
+		}		
+
 		return "";
 	}
 
@@ -458,7 +469,7 @@ class user_shortcodes extends e_shortcode
 	{
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))
 		{
-			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true);
+			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true); // this one will resize. 
 			 return "<img src='".e_UPLOAD_ABS."public/avatars/".$this->var['user_sess']."' alt='' />";
 		}
 		else
@@ -565,15 +576,14 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_profile_comment_form($parm) // deprecated. 
+	function sc_profile_comment_form($parm='') // deprecated. 
 	{
 		return ;
-
 	}
 	
 	
 	
-	function sc_total_users($parm) 
+	function sc_total_users($parm='') 
 	{
 		global $users_total;
 		return $users_total;
@@ -581,7 +591,7 @@ class user_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_user_form_records($parm) 
+	function sc_user_form_records($parm='') 
 	{
 		global $records, $user_frm;
 		$ret = $user_frm->form_select_open("records");

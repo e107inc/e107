@@ -647,7 +647,14 @@ class e_form
 		return e107::getRate()->render($table, $id, $options);	
 	}
 		
-	
+	function like($table,$id,$options=null)
+	{
+		$table 	= preg_replace('/\W/', '', $table);
+		$id 	= intval($id);	
+		
+		return e107::getRate()->renderLike($table,$id,$options); 	
+	}
+		
 	
 	
 	

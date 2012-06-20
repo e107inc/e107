@@ -40,19 +40,19 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 */
-define('e_UC_ADMINMOD',249);
-define('e_UC_MODS',248);
-define('e_UC_NEWUSER',247);					// Users in 'probationary' period
-define('e_UC_BOTS',246);					// Reserved to identify search bots
+define('e_UC_ADMINMOD'		,249);
+define('e_UC_MODS'			,248);
+define('e_UC_NEWUSER'		,247);					// Users in 'probationary' period
+define('e_UC_BOTS'			,246);					// Reserved to identify search bots
 											// 243..245 reserved for future predefined user classes
-define('e_UC_SPECIAL_BASE',243);			// Assign class IDs 243 and above for fixed/special purposes
-define('e_UC_SPECIAL_END',255);				// Highest 'special' class
+define('e_UC_SPECIAL_BASE'	,243);			// Assign class IDs 243 and above for fixed/special purposes
+define('e_UC_SPECIAL_END'	,255);				// Highest 'special' class
 
-define('UC_ICON_DIR',e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
+define('UC_ICON_DIR',		e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
 
-define('e_UC_BLANK','-1');
-define('UC_TYPE_STD', '0');
-define('UC_TYPE_GROUP', '1');
+define('e_UC_BLANK'			,'-1');
+define('UC_TYPE_STD'		, '0');
+define('UC_TYPE_GROUP'		, '1');
 
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
@@ -86,10 +86,14 @@ class user_class
 							e_UC_NEWUSER => UC_LAN_9,
 							e_UC_BOTS => UC_LAN_10
 							);
+							
+		
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
 									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER, 'mods' => e_UC_MODS,
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
+									
+		
 
 		$this->readTree(TRUE);			// Initialise the classes on entry
 	}
@@ -506,6 +510,7 @@ class user_class
 			  $ret[e_UC_READONLY] = $this->class_tree[e_UC_READONLY]['userclass_description'];
 			}
 		*/
+			
 		return $ret;
 	}
 
@@ -555,13 +560,16 @@ class user_class
 		{
 			foreach ($this->class_tree[$listnum]['class_children'] as $p)
 			{
+				
 				// Looks like we don't need to differentiate between function and class calls
 				if (isset($perms[$p]))
 				{
 					$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
 				}
 				$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
-			}
+			}					
+				
+			
 		}
 		return $ret;
 	}
@@ -594,12 +602,17 @@ class user_class
 		}
 		foreach ($this->class_parents as $p)
 		{
+			
 			if (isset($perms[$p]))
 			{
 				$ret .= call_user_func($callback,$treename, $p,$current_value,0, $opt_options);
 			}
 			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms, $opt_options);
 		}
+		
+		// Inverted classes. (negative values for exclusion). 
+		//FIXME - inverted class functionality lost during development. 
+		
 		return $ret;
 	}
 
