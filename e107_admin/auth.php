@@ -193,7 +193,7 @@ else
 		
 			:-moz-placeholder 	{ font-style:italic;	color: #bbb; 		}
 			
-			h1					{ text-align: center; color: #646667; text-transform:uppercase; }
+			h2					{ text-align: center; color: #FAAD3D; text-shadow: #000 1px 1px 1px; }
 			
 			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 7px; padding-left:30px; }
 				 
@@ -237,7 +237,7 @@ class auth
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
 		<div id='login-admin' >
 		<div {$class}>
-		<h1>".SITENAME." admin area</h1>
+		<h2>".e_DOMAIN." admin area</h2>
         
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
