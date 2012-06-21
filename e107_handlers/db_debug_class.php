@@ -468,6 +468,7 @@ class e107_db_debug {
 		$text .= "e_THEME: '".e_THEME."'<br />";
 		$text .= "e_MENU: '".e_MENU."'<br />";
 		$text .= "THEME: '".THEME."'<br />";
+		$text .= "Active Theme Layout: '".THEME_LAYOUT."'<br />";
 		$text .= "<br />";
 		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
 		$text .= "e_LAN: '".e_LAN."'<br />";
