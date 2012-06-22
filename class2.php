@@ -465,8 +465,8 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
 // $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 $sql->db_Mark_Time('Start: Init Language and detect changes');
-
-e107::getLanguage()->detect();
+$lng = e107::getLanguage(); // required for v1.0 BC. 
+$lng->detect();
 
 //
 // M: Subdomain and Language Selection
