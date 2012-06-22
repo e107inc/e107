@@ -137,7 +137,7 @@ if (varset($e107_popup) != 1)
 	{
 		// Need to log the page info to a text file as CSV data
 
-		$logname = e_LOG."logd_".date("z.Y", time()).".csv";
+		$logname = e_LOG."logd_".date("Y-m-d", time()).".csv";
 		$logHeader = "Unix time,Date/Time,IP,URL,RenderTime,DbTime,Qrys,Memory-Usage,User-Agent,Request-Method";
 			
 		$logfp = fopen($logname, 'a+');
