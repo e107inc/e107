@@ -412,7 +412,7 @@ City, State, Country
 				<field name="gen_user_id">1</field>
 				<field name="gen_ip"></field>
 				<field name="gen_intdata">0</field>
-				<field name="gen_chardata"><![CDATA[[center]<img src=&#039;{e_IMAGE}splash.jpg&#039; style=&#039;width: 412px; height: 275px&#039; alt=&#039;&#039; />[/center]]]></field>
+				<field name="gen_chardata">Welcome!</field>
 			</item>
 		</dbTable>
 		<dbTable name="links">
@@ -643,17 +643,6 @@ City, State, Country
 				<field name="menu_parms"></field>
 			</item>
 			<item>
-				<field name="menu_id">22</field>
-				<field name="menu_name">PCMag</field>
-				<field name="menu_location">2</field>
-				<field name="menu_order">1</field>
-				<field name="menu_class">0</field>
-				<field name="menu_pages"></field>
-				<field name="menu_path">1</field>
-				<field name="menu_layout"></field>
-				<field name="menu_parms"></field>
-			</item>
-			<item>
 				<field name="menu_id">24</field>
 				<field name="menu_name">counter_menu</field>
 				<field name="menu_location">0</field>
@@ -715,19 +704,6 @@ City, State, Country
 			</item>
 		</dbTable>
 		<dbTable name="page">
-			<item>
-				<field name="page_id">1</field>
-				<field name="page_title"></field>
-				<field name="page_text">[img]{e_IMAGE}pcmag.png[/img]</field>
-				<field name="page_author">0</field>
-				<field name="page_datestamp">1145843485</field>
-				<field name="page_rating_flag">0</field>
-				<field name="page_comment_flag">0</field>
-				<field name="page_password"></field>
-				<field name="page_class"></field>
-				<field name="page_ip_restrict"></field>
-				<field name="page_theme">PCMag</field>
-			</item>
 		</dbTable>
 		<dbTable name="userclass_classes">
 			<item>
@@ -743,8 +719,8 @@ City, State, Country
 			</item>
 			<item>
 				<field name="userclass_id">2</field>
-				<field name="userclass_name">PRIVATEFORUM1</field>
-				<field name="userclass_description">Example private forum class</field>
+				<field name="userclass_name">CONTACT PEOPLE</field>
+				<field name="userclass_description">Example contact person class</field>
 				<field name="userclass_editclass">254</field>
 				<field name="userclass_parent">0</field>
 				<field name="userclass_accum"></field>
