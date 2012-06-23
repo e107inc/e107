@@ -278,11 +278,13 @@ class e107
 	{
 		// Do some security checks/cleanup, prepare the environment
 		$this->prepare_request();
-
+		
+		$this->site_path = "[hash]"; // placeholder
 		// folder info
 		//$this->e107_dirs = $e107_paths;
 		$this->setDirs($e107_paths, $e107_config_override);
 
+		
 		// build all paths
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
@@ -295,7 +297,7 @@ class e107
 
 		// set some core URLs (e_LOGIN/SIGNUP)
 		$this->set_urls();
-
+		
 		return $this;
 	}
 
@@ -316,7 +318,7 @@ class e107
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
 			
 			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs() 
-			$this->site_path = substr(md5($e107_config_mysql_info['mySQLdefaultdb'].".".$e107_config_mysql_info['mySQLprefix']),0,10);
+			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']); 
 		
 			// Set default folder (and override paths) if missing from e107_config.php
 			$this->setDirs($e107_paths, $e107_config_override);
@@ -338,7 +340,15 @@ class e107
 			$this->set_urls();
 		}
 
+		
 		return $this;
+	}
+
+	// Create a unique hash for each database configuration (multi-site support)
+	function makeSiteHash($db,$prefix) // also used by install. 
+	{
+		return substr(md5($db.".".$prefix),0,10);	
+		
 	}
 
 	/**

@@ -26,6 +26,8 @@ define('MIN_PHP_VERSION',   '5.0');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', false);
 
+
+
 // ensure CHARSET is UTF-8 if used
 //define('CHARSET', 'utf-8');
 
@@ -233,6 +235,7 @@ class e_install
 //	public function __construct()
 	function e_install()
 	{
+
 		// notice removal, required from various core routines
 		define('USERID', 1);
 		define('USER', true);
@@ -272,6 +275,9 @@ class e_install
 			define("e_LANGUAGE", $this->previous_steps['language']);
 			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 		}
+		
+
+		
 	}
 
 
@@ -445,6 +451,23 @@ class e_install
 		$this->logLine('Stage 2 completed');
 	}
 
+	
+	
+	private function updatePaths() // replace hash paths and create folders if needed. 
+	{
+		$hash = e107::makeSiteHash($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
+		$this->e107->site_path = $hash;	
+		foreach($this->e107->e107_dirs as $dir => $p)
+		{
+			$this->e107->e107_dirs[$dir] = str_replace("[hash]", $hash, $this->e107->e107_dirs[$dir]);
+			if(!is_dir($this->e107->e107_dirs[$dir]))
+			{
+				@mkdir($this->e107->e107_dirs[$dir]);	
+			}					
+		}
+
+	}
+		
 
 	private function stage_3()
 	{
@@ -465,6 +488,8 @@ class e_install
 		$this->previous_steps['mysql']['db'] = trim($_POST['db']);
 		$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
 		$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
+		
+		
 		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
 		if ($success)
 		{
@@ -586,6 +611,8 @@ class e_install
 	private function stage_4()
 	{
 		global $e_forms;
+		
+	
 
 		$this->stage = 4;
 		$this->logLine('Stage 4 started');
@@ -720,6 +747,9 @@ class e_install
 	private function stage_5()
 	{
 		global $e_forms;
+		
+		$this->updatePaths(); // update dynamic paths and create media and system directories - requires mysql info. 	
+		
 		$this->stage = 5;
 		$this->logLine('Stage 5 started');
 
@@ -1049,7 +1079,7 @@ class e_install
 \$HANDLERS_DIRECTORY  = '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}';
 \$LANGUAGES_DIRECTORY = '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}';
 \$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
-\$CACHE_DIRECTORY     = '{$this->e107->e107_dirs['CACHE_DIRECTORY']}';
+\$SYSTEM_DIRECTORY     = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 \$DOWNLOADS_DIRECTORY = '{$this->e107->e107_dirs['DOWNLOADS_DIRECTORY']}';
 \$UPLOADS_DIRECTORY   = '{$this->e107->e107_dirs['UPLOADS_DIRECTORY']}';
 \$MEDIA_DIRECTORY   = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
@@ -1182,6 +1212,7 @@ class e_install
 		}
 
 		// Media import
+		/*
 		e107::getMedia()->import('news',e_IMAGE.'newspost_images/') //TODO remove when news are pluginized
 			->import('page',e_IMAGE.'custom/') //TODO remove when pages are pluginized
 			// ->importIcons(e_PLUGIN) - icons for plugins are imported on install
@@ -1189,7 +1220,7 @@ class e_install
 			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/images/")
 			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/icons/");
 		$this->logLine('Media imported to media manager');
-
+		*/
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
@@ -1411,11 +1442,16 @@ class e_install
 	function check_writable_perms($list = 'must_write')
 	{
 		$bad_files = array();
+		
+		$system_dirs = $this->e107->e107_dirs;
+		$system_dirs['MEDIA_DIRECTORY'] = str_replace("[hash]/","", $system_dirs['MEDIA_DIRECTORY']);
+		$system_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]/","", $system_dirs['SYSTEM_DIRECTORY']);
 	
 		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$SYSTEM_DIRECTORY}'; // all-sub folders are created on-the-fly
+		
 		$data['can_write'] = '{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}';
 		if (!isset($data[$list])) return $bad_files;
-		foreach ($this->e107->e107_dirs as $dir_name => $value)
+		foreach ($system_dirs as $dir_name => $value)
 		{
 			$find[] = "{\${$dir_name}}";
 			$replace[] = "./$value";
