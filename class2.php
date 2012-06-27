@@ -476,7 +476,7 @@ else
 
 $SESS_NAME = strtoupper(preg_replace("/[\W_]/","",$pref['cookie_name'])); // clean-up characters.  
 session_name('SESS'.$SESS_NAME); // avoid session conflicts with separate sites within subdomains
-$doma = (!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) ? ".".e_DOMAIN : FALSE;
+$doma = ((!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE;
 session_set_cookie_params(FALSE,e_HTTP,$doma); // same cookie for www. and without 
 unset($SESS_NAME,$doma);
 
@@ -500,9 +500,11 @@ if(e_SECURITY_LEVEL > 0 && session_id() && isset($_POST['e-token']) && ($_POST['
 		$details .= "\nPlugins:\n";
 		$details .= print_r($pref['plug_installed'],true);
 			
-		$admin_log->log_event("Access denied", $details, E_LOG_WARNING);				
+		$admin_log->log_event("Access denied", $details, E_LOG_WARNING); // admin access may not be possible. 
+		echo nl2br($details);				
 	}	
 		// do not redirect, prevent dead loop, save server resources
+
 	die('Access denied');
 }
 
@@ -1613,7 +1615,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = "", $secure 
 {
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 	{
-		$domain = ".".e_DOMAIN;
+		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
 	}
 
 	setcookie($name, $value, $expire, $path, $domain, $secure);
@@ -1765,7 +1767,7 @@ function e107_filter($input,$key,$type,$base64=FALSE)
 			exit();	
 		}
 		
-		$regex = "/(wget |curl -o |fetch |lwp-download|onmouse)/i";
+		$regex = "/(wget |curl -o |fetch -|lwp-download|onmouse)/i";
 		if(preg_match($regex,$input))
 		{
 			header('HTTP/1.0 400 Bad Request', true, 400);
