@@ -108,7 +108,7 @@ class page
 
 		$text = "<div style='text-align: center;'>";
 
-		if(!$sql -> db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
+		if(!$sql -> db_Select("page", "*", "ORDER BY Field(page_theme,'') DESC, page_id DESC", "nowhere"))
 		{
 			$text .= CUSLAN_42;
 		}
@@ -116,27 +116,45 @@ class page
 		{
 			$pages = $sql -> db_getList('ALL', FALSE, FALSE);
 			$text .= "<form action='".e_SELF."' id='newsform' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>\n";
+			
+			$head = "
 			<tr>
 			<td style='width:5%; text-align: center;' class='fcaption'>ID</td>
 			<td style='width:60%' class='fcaption'>".CUSLAN_1."</td>
 			<td style='width:15%; text-align: center;' class='fcaption'>".CUSLAN_2."</td>
 			<td style='width:20%; text-align: center;' class='fcaption'>".CUSLAN_3."</td>
 			</tr>";
+		
+			$text .= $head;
 
+			$prev = "";
+			
 			foreach($pages as $pge)
 			{
+				
+				$type = ($pge['page_theme'] ? "menu" : "page");
+				
+				if($type != $prev && $prev !='')
+				{
+					$text .= "<tr><td  colspan='4'>&nbsp;</td></tr>".$head;				
+				
+				}
+
+				
 			  $title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
 			  $text .= "
 				<tr>
 				<td style='width:5%; text-align: center;' class='forumheader3'>{$pge['page_id']}</td>
 				<td style='width:60%' class='forumheader3'><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>
-				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge['page_theme'] ? "menu" : "page")."</td>
+				<td style='width:15%; text-align: center;' class='forumheader3'>".($type)."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
 				</td>
 				</tr>";
+				
+				$prev = ($pge['page_theme'] ? "menu" : "page");
 			}
 
 			$text .= "
@@ -294,7 +312,7 @@ class page
 
 	function submitPage($mode = FALSE, $type=FALSE)
 	{
-		global $sql, $tp, $e107cache;
+		global $sql, $tp, $e107cache,$pref;
 
 		$page_title = $tp -> toDB($_POST['page_title']);
 		$page_text = $tp -> toDB($_POST['data']);
@@ -328,6 +346,17 @@ class page
 						$update++;
 					}
 				}
+			}
+			
+			// Prevent links being updated in another language unless the table is present. 
+			if(($pref['sitelanguage'] != $sql->mySQLlanguage) && ($sql->mySQLlanguage!='') && ($sql->db_IsLang("links")=='links'))
+			{
+				//echo "DISABLED LINK CREATION";
+				//echo ' Sitelan='.$pref['sitelanguage'];
+				//echo " Dblang=".$sql->mySQLlanguage;
+				//echo " Links=".$sql->db_IsLang("links");
+			
+				return;	
 			}
 
 			if ($_POST['page_link'])
@@ -363,6 +392,18 @@ class page
 			if($type)
 			{
 				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
+			}
+			
+
+			// Prevent links being updated in another language unless the table is present. 
+			if((($pref['sitelanguage'] != $sql->mySQLlanguage) && ($sql->mySQLlanguage!='')) && ($sql->db_IsLang("links")=='links'))
+			{
+				//echo "DISABLED LINK CREATION";
+				//echo ' Sitelan='.$pref['sitelanguage'];
+				//echo " Dblang=".$sql->mySQLlanguage;
+				//echo " Links=".$sql->db_IsLang("links");
+			
+				return;	
 			}
 
 			if($_POST['page_link'])
