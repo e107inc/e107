@@ -39,7 +39,7 @@ if($pref['sitecontacts'] == e_UC_ADMIN){
 }
 
 $text = "<select name='contact_person' class='tbox contact_person'>\n";
-$count = $sql -> db_Select("user", "user_id,user_name,user_customtitle", $query . " ORDER BY user_name");
+$count = $sql -> db_Select("user", "user_id,user_name,user_customtitle", $query . " ORDER BY user_customtitle,user_name");
 if($count > 1){
     while($row = $sql-> db_Fetch())
 	{
