@@ -30,10 +30,13 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_thumb($parm='')
 	{
-		$tp = e107::getParser();
+		$tp = e107::getParser();	
+		$w = 190; $h = 150;	
+		
 		$class = ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
-		$att = ($parm) ?$parm : 'aw=190&ah=150';
-		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."'  rel='lightbox.Gallery' >";
+		$rel = ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
+		$att = ($parm) ?$parm : 'aw='.$w.'&ah='.$h ; // 'aw=190&ah=150';
+		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."'  rel='{$rel}' >";
 		$text .= "<img class='".$class."' src='".e107::getParser()->thumbUrl($this->var['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;	
@@ -76,7 +79,7 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_slides($parm)
 	{
 		$this->slideMode = TRUE;
-		$amount = ($parm) ? intval($parm) : vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
+		$amount = ($parm) ? intval($parm) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$tp = e107::getParser();
 		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat);
 		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');		
@@ -114,7 +117,7 @@ class gallery_shortcodes extends e_shortcode
 		for($i=1; $i < ($this->slideCount +1); $i++)
 		{
 			$val = ($parm == 'space') ? "&nbsp;" : $i;					
-			$text .= '<a href="#" class="gallery-slide-jumper" rel="gallery-item-'.$i.'">'.$val.'</a>';			
+			$text .= '<a href="#" class="gallery-slide-jumper" id="gallery-jumper-'.$i.'">'.$val.'</a>';			
 		}
 	
 		return $text;						
