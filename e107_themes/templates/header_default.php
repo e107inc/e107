@@ -286,10 +286,13 @@ function render_meta($type)
 echo "\n<!-- Core Meta Tags -->\n";
 echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
 echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
+
 echo render_meta('copyright');
 echo render_meta('author');
 echo render_meta('og');
 echo render_meta('tag');
+
 
 unset($key_merge,$diz_merge);
 
