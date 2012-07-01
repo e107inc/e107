@@ -7,44 +7,50 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-e107::getJS()->headerFile("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",1);
-e107::getJs()->headerPlugin('gallery', 'jslib/lightbox/js/lightbox.js');
-e107::getJs()->pluginCSS('gallery', 'jslib/lightbox/css/lightbox.css');
+e107::js('gallery', 'jslib/lightbox/js/lightbox.js','jquery');
+e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
 
-e107::getJS()->headerFile("https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js",1);
-e107::getJS()->headerFile("https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects",1);
-e107::getJs()->headerPlugin('gallery', 'jslib/carousel.js');
-e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
+e107::js('gallery', 'jslib/jquery.cycle.all.js','jquery');
+e107::css('gallery', 'gallery_style.css');
 
 $gp = e107::getPlugPref('gallery');
 
-e107::getJs()->footerInline("		
-	new Carousel('gallery-slideshow-wrapper', $$('#gallery-slideshow-content .slide'), $$('a.carousel-control', 'a.gallery-slide-jumper' ),
-	{
-		duration:           ".varset($gp['slideshow_duration'],1).",
-        auto:               ".varset($gp['slideshow_auto'],0).",
-        frequency:          ".varset($gp['slideshow_freq'],3).",
-		circular: 			".varset($gp['slideshow_circular'],1).",
-        wheel:              true,
-        visibleSlides: 		1,
-        effect:             '".varset($gp['slideshow_effect'],'scroll')."',
-        transition:         '".varset($gp['slideshow_transition'],'sinoidal')."',
-        jumperClassName:    'gallery-slide-jumper',
-        selectedClassName:	'gallery-slide-jumper-selected'
-   
-		   
+e107::js('inline',"
+$(document).ready(function() 
+{
+	
+	$('#gallery-slideshow-content').cycle({
+		fx: 		'".varset($gp['slideshow_effect'],'scrollHorz')."',
+		next:		'.gal-next',
+		prev: 		'.gal-prev',
+		speed:		1000,  // speed of the transition (any valid fx speed value) 
+    	timeout:	4000,
+		slideExpr:	'.slide', 
+		
+		activePagerClass: '.gallery-slide-jumper-selected',//,
+		before: function(currSlideElement, nextSlideElement, options, forwardFlag)
+		{
+			var nx = $(nextSlideElement).attr('id').split('item-');
+			var th = $(currSlideElement).attr('id').split('item-');
+			$('#gallery-jumper-'+th[1]).removeClass('gallery-slide-jumper-selected');
+			$('#gallery-jumper-'+nx[1]).addClass('gallery-slide-jumper-selected');						
+		}
 	});
 	
-	var aj = $$('.gallery-slide-jumper')[0];
-	if (!aj.hasClassName('gallery-slide-jumper-selected'))  aj.toggleClassName('gallery-slide-jumper-selected');
-");
-/*
+	
+	
+	$('.gallery-slide-jumper').click(function() { 
+		var nid = $(this).attr('id');
+		var id = nid.split('-jumper-');
+	
+		var go = parseInt(id[1]) - 1;
+    	$('#gallery-slideshow-content').cycle(go); 
+    	return false; 
+	}); 
 
-				jumperClassName:    'scroller-jumper',
-				selectedClassName:  'scroller-selected',
-				var aj = $$('.donwload-jumper')[0];
-				if (!aj.hasClassName('scroller-selected'))  aj.toggleClassName('scroller-selected');
-			*/
+});
+");
+
 	
 unset($gp);
 

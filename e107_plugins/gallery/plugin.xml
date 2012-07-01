@@ -15,14 +15,11 @@
 	</siteLinks>	
 	<mainPrefs>
 	</mainPrefs>
-	<pluginPrefs>
+	<pluginPrefs>	
 		<pref name="slideshow_category">1</pref>
-		<pref name="slideshow_perslide">4</pref>
 		<pref name="slideshow_duration">1</pref>
 		<pref name="slideshow_auto">1</pref>
 		<pref name="slideshow_freq">4</pref>
-		<pref name="slideshow_circular">1</pref>		
-		<pref name="slideshow_effect">scroll</pref>	
-		<pref name="slideshow_transition">sinoidal</pref>		
+		<pref name="slideshow_effect">scrollHorz</pref>	
 	</pluginPrefs>
 </e107Plugin>

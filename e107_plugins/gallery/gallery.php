@@ -26,18 +26,11 @@
   * 
   */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('gallery'))
+if (!plugInstalled('gallery'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
-
-//e107::getJS()->headerFile("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",1);
-//e107::getJs()->headerPlugin('gallery', 'jslib/lightbox/js/lightbox.js');
-//e107::getJs()->pluginCSS('gallery', 'jslib/lightbox/css/lightbox.css');
-//e107::getJs()->pluginCSS('gallery', 'gallery_style.css');
-
-
 
 
 require_once(HEADERF);
@@ -84,7 +77,7 @@ class gallery
 		$sc 		= e107::getScBatch('gallery',TRUE);
 					
 		$sc->total 	= e107::getMedia()->countImages($cat);
-		$sc->amount = 9; // TODO Add Pref. 
+		$sc->amount = 9; // TODO Add Pref. amount per page. 
 		$sc->curCat = $cat;
 		$sc->from 	= ($_GET['frm']) ? intval($_GET['frm']) : 0;
 		
@@ -110,33 +103,6 @@ class gallery
 
 
 new gallery;
-
-
-echo '<a class="backward">prev</a>
- 
-<!-- container for the slides -->
-<div class="images">
- 
-  <!-- first slide -->
-  <div>Lorem ipsum ..</div>
- 
-  <!-- second slide -->
-  <div>Lorem ipsum the 2nd..</div>
- 
-  <!-- third slide -->
-  <div>Lorem ipsum the 3rd</div>
- 
-</div>
- 
-<!-- "next slide" button -->
-<a class="forward">next</a>
- 
-<!-- the tabs -->
-<div class="slidetabs">
-  <a href="#"></a>
-  <a href="#"></a>
-  <a href="#"></a>
-</div>';
 
 require_once(FOOTERF);
 exit;
