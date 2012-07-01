@@ -44,8 +44,7 @@ e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
 
 e107::css('core', 	'password/style.css', 'jquery');
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-// 
-e107::js("core",	"plupload/customUpload.js","jquery",3);
+
 
 e107::js("core",	"core/mediaManager.js","jquery",3);
 e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);

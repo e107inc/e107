@@ -14,6 +14,11 @@
 
 require_once("../../../class2.php");
 
+if(!ADMIN)
+{
+	exit;	
+}
+
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -131,11 +136,13 @@ if (!$chunks || $chunk == $chunks - 1) {
 }
 
 
-rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
-e107::getMedia()->importFile($fileName,'news');
+// rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
+$result = e107::getMedia()->importFile($fileName,$_GET['for']);
+$array = array("jsonrpc"=>"2.0", "result"=>$result,"id"=>"id");
 
+echo json_encode($array);
 // Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+// die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 
 
 ?>
