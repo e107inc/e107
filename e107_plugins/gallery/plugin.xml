@@ -15,7 +15,9 @@
 	</siteLinks>	
 	<mainPrefs>
 	</mainPrefs>
-	<pluginPrefs>	
+	<pluginPrefs>
+		<pref name="popup_w">1024</pref>	
+		<pref name="popup_h">768</pref>	
 		<pref name="slideshow_category">1</pref>
 		<pref name="slideshow_duration">1</pref>
 		<pref name="slideshow_auto">1</pref>

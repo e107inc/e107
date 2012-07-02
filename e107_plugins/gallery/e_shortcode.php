@@ -30,15 +30,55 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_thumb($parm='')
 	{
-		$tp = e107::getParser();	
-		$w = 190; $h = 150;	
+		$tp 		= e107::getParser();	
+		$w 			= 190;
+		$h 			= 150;	
 		
-		$class = ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
-		$rel = ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
-		$att = ($parm) ?$parm : 'aw='.$w.'&ah='.$h ; // 'aw=190&ah=150';
-		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."'  rel='{$rel}' >";
-		$text .= "<img class='".$class."' src='".e107::getParser()->thumbUrl($this->var['media_url'],$att)."' alt='' />";
+		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
+		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
+		$att 		= vartrue($parm) ? $parm : 'aw='.$w.'&ah='.$h ; // 'aw=190&ah=150';
+		
+		$pop_w 		= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
+		$pop_h 		= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
+		$attFull 	= 'w='.$pop_w.'&h='.$pop_h;
+		
+		$wm_text	= vartrue(e107::getPlugPref('gallery','watermark_text'));
+		$wm_font	= vartrue(e107::getPlugPref('gallery','watermark_font'));
+		$wm_size	= vartrue(e107::getPlugPref('gallery','watermark_size'),20);
+		$wm_pos		= vartrue(e107::getPlugPref('gallery','watermark_pos'),"BR");
+		$wm_color	= vartrue(e107::getPlugPref('gallery','watermark_color'),"fff");
+		$wm_opacity	= vartrue(e107::getPlugPref('gallery','watermark_opacity'),"70");
+		$wm_padding	= vartrue(e107::getPlugPref('gallery','watermark_padding'),"5");
+		
+		/*
+		"wmt" (WaterMarkText)
+         [ex: &fltr[]=wmt|<t>|<s>|<a>|<c>|<f>|<o>|<m>|<n>]
+         where:
+         <t> is the text to use as a watermark,
+         <s> is the font size (1-5 for built-in font, or point
+           size for TrueType fonts),
+         <a> is the alignment (one of BR, BL, TR, TL, C, R, L,
+           T, B, * where B=bottom, T=top, L=left, R=right,
+           C=centre, *=tile),
+         <c> is the hex color of the text
+         <f> is the filename of the TTF file (optional, if
+           omitted a built-in font will be used)
+         <o> is opacity from 0 to 100,
+         <m> is the edge (and inter-tile) margin in percent
+         <n> is the angle 
+		*/
+		
+		if($wm_text)
+		{
+			$attFull .= "&wm=".$wm_text."|".$wm_size."|".$wm_pos."|".$wm_color."|".$wm_font."|".$wm_opacity."|".$wm_padding;		
+		}
+	
+	//	echo "<br /><br />".$attFull;
+	
+		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'  rel='{$rel}' >";
+		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
+		
 		return $text;	
 	}
 	
