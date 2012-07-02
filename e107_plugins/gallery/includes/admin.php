@@ -126,7 +126,16 @@ class gallery_cat_admin_ui extends e_admin_ui
 	
 	
 	protected $prefs = array(
-		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'integer', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'popup_w'				=> array('title'=> 'Image Max. Width', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the width given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'popup_h'				=> array('title'=> 'Image Max. Height', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the height given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+	
+		'watermark_text'		=> array('title'=> 'Watermark Text', 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_font'		=> array('title'=> 'Watermark Font', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_size'		=> array('title'=> 'Watermark Size', 'type' => 'text', 'data' => 'int', 'help'=>'Optional Watermark Font'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_pos'			=> array('title'=> 'Watermark Position', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'		=> array('title'=> 'Watermark Opacity', 'type' => 'text', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+	
+		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_w'	=> array('title'=> 'Thumbnail Width', 'type' => 'number', 'data' => 'integer', 'help'=>'Width in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_h'	=> array('title'=> 'Thumbnail Height', 'type' => 'number', 'data' => 'integer', 'help'=>'Height in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),		
 	
@@ -154,7 +163,39 @@ class gallery_cat_admin_ui extends e_admin_ui
 		//	'zoom'			=> 'zoom'			
 		);	
 		
-			
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+		$fl = e107::getFile();
+		$path = e_THEME.$pref['sitetheme']."/fonts/";
+	
+		$fDir = $fl->get_files(e_THEME.$pref['sitetheme']."/fonts/",".ttf",'',2);
+		$fonts = array(0=>'None');
+		foreach($fDir as $f)
+		{			
+			$id = $tp->createConstants($f['path'].$f['fname'],'rel');
+			$fonts[$id] = $f['fname'];	
+		}
+		
+		
+		$this->prefs['watermark_font']['writeParms'] 		= $fonts;	
+		$this->prefs['watermark_font']['readParms'] 		= $fonts;	
+		
+		$wm_pos = array(
+			'BR'	=> "Bottom Right",
+			'BL'	=> "Bottom Left",
+			'TR'	=> "Top Right",
+			'TL'	=> "Top Left",
+			'C'		=> "Center",
+			'R'		=> "Right",
+			'L'		=> "Left",
+			'T'		=> "Top",
+			'B'		=> "Bottom",
+			'*'		=> "Tile"
+		);
+		
+		$this->prefs['watermark_pos']['writeParms'] 		= $wm_pos;	
+		$this->prefs['watermark_pos']['readParms'] 			= $wm_pos;	
+					
 		$this->prefs['slideshow_effect']['writeParms'] 		= $effects;	
 		$this->prefs['slideshow_effect']['readParms'] 		= $effects;	
 		

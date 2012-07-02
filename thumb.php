@@ -123,8 +123,10 @@ class e_thumbpage
 
 	function parseRequest()
 	{
+		//echo 'e_query='.str_replace('&amp;', '&', e_QUERY);
 		parse_str(str_replace('&amp;', '&', e_QUERY), $this->_request);
-		//parse_str($_SERVER['QUERY_STRING'], $this->_request);
+		
+		// parse_str($_SERVER['QUERY_STRING'], $this->_request);
 		return $this;
 	}
 
@@ -228,6 +230,23 @@ class e_thumbpage
 			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
 		}
 
+		//TODO Move to $_SESSION and activate based on width/height ie. watermark all images larger than....
+		// ie. prevent user tampering with URLs. 
+		if(isset($this->_request['wm']))
+		{
+			$tp = e107::getParser();
+			
+			$tmp = explode("|",$this->_request['wm']);
+			
+			$tmp[4] = $tp->createConstants($tmp[4], 'mix');
+			$tmp[4]	= realpath($tp->replaceConstants($tmp[4],'rel'));
+			
+			$thumb->WatermarkText($tmp);
+			//	$alignment='BR', $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend=''
+			
+		}
+	
+	
 		// set cache
 		$thumb->save(e_CACHE_IMAGE.$fname);
 
@@ -242,6 +261,7 @@ class e_thumbpage
 		$ret['h'] = isset($this->_request['h']) ? intval($this->_request['h']) : $ret['w'];
 		$ret['aw'] = isset($this->_request['aw']) ? intval($this->_request['aw']) : false;
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
+		$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
 		return $ret;
 	}
 

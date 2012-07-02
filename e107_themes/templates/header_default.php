@@ -128,6 +128,7 @@ else
 if($pref['meta_copyright'][e_LANGUAGE]) e107::meta('copyright',$pref['meta_copyright'][e_LANGUAGE]);
 if($pref['meta_author'][e_LANGUAGE]) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if($pref['sitelogo']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
+if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); 
 
 echo e107::getUrl()->response()->renderMeta()."\n";
 
@@ -436,6 +437,8 @@ function render_meta($type)
 
 echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
 echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+
+
 //echo render_meta('copyright');
 //echo render_meta('author');
 echo render_meta('tag');

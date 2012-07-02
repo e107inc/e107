@@ -46,11 +46,15 @@ class GdReflectionLib
 	public function createReflection ($percent, $reflection, $white, $border, $borderColor, &$that)
 	{
 		// bring stuff from the parent class into this class...
+		
+	
+		
 		$this->parentInstance 		= $that;
 		$this->currentDimensions 	= $this->parentInstance->getCurrentDimensions();
 		$this->workingImage			= $this->parentInstance->getWorkingImage();
 		$this->newImage				= $this->parentInstance->getOldImage();
 		$this->options				= $this->parentInstance->getOptions();
+		
 		
 		$width				= $this->currentDimensions['width'];
 		$height				= $this->currentDimensions['height'];
