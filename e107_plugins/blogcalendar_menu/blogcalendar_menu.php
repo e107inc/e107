@@ -72,8 +72,8 @@ else if(strstr(e_QUERY, "month")) {
 // -------------------------------
 // create the month selection item
 // -------------------------------
-$month_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
-$month_selector .= "<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>";
+$month_selector = "<div class='forumheader blogcalendar-month-selector' style='text-align: center; margin-bottom: 2px;'>";
+$month_selector .= "<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox blogcalendar-month-selector'>";
 
 // get all newsposts since the beginning of the year till now
 // -------------------------------------------
@@ -122,10 +122,10 @@ $month_selector .= "</select></div>";
 // ------------------------
 // create and show calendar
 // ------------------------
-$menu = "<div style='text-align: center;'><table border='0' cellspacing='7'>";
-$menu .= "<tr><td>$month_selector";
-$menu .= "<div style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
-$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
+$menu = "<div class='blogcalendar-block' style='text-align: center;'><table class='blogcalendar-table' border='0' cellspacing='7'>";
+$menu .= "<tr><td class='blogcalendar-month-selector'>$month_selector";
+$menu .= "<div class='blogcalendar-day-selector' style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
+$menu .= "<div class='forumheader blogcalendar-archive-link' style='text-align: center; margin-top:2px;'><span class='smalltext'><a class='blogcalendar-archive-link' href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 $menu .= "</table></div>";
 $ns->tablerender(BLOGCAL_L1." ".$req_year, $menu, 'blog_calender');
 ?>

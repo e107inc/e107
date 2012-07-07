@@ -49,10 +49,10 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	if ($ws && $day_of_week == 0) $day_of_week = 7;
 	 
 	// print the daynames
-	$calendar = "<table class='fborder'>";
+	$calendar = "<table class='fborder blogcalendar'>";
 	$calendar .= '<tr>';
 	foreach($darray as $dheader) {
-		$calendar .= "<td class='forumheader' style='padding: ".$padding."px;'><span class='smalltext'>$dheader</span></td>";
+		$calendar .= "<td class='forumheader blogcalendar-day-name' style='padding: ".$padding."px;'><span class='smalltext blogcalendar-day-name'>$dheader</span></td>";
 	}
 	$calendar .= "</tr>";
 	$calendar .= '<tr>';
@@ -62,7 +62,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	 
 	// take care of the first "empty" days of the month
 	if ($day_of_week-$ws > 0) {
-		$calendar .= "<td colspan='";
+		$calendar .= "<td class='blogcalendar-day-empty' colspan='";
 		$calendar .= $day_of_week-$ws;
 		$calendar .= "'>&nbsp;</td>";
 	}
@@ -76,12 +76,12 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 			$tablerow++;
 		}
 		if ($day_of_month == $req_day) {
-			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
+			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active" : "forumheader3 blogcalendar-day";
 		} else {
-			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
+			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active" : "forumheader3 blogcalendar-day";
 		}
-		$calendar .= "<td class='$day_style' style='padding: ".$padding."px;'><span class='smalltext'>";
-		$calendar .= isset($links[$day_of_month]) ? "<a href='".$links[$day_of_month]."'>":"";
+		$calendar .= "<td class='$day_style' style='padding: ".$padding."px;'><span class='smalltext blogcalendar-day-link'>";
+		$calendar .= isset($links[$day_of_month]) ? "<a class='blogcalendar-day-link' href='".$links[$day_of_month]."'>":"";
 		$calendar .= $day_of_month;
 		$calendar .= isset($links[$day_of_month]) ? "</a>" : "";
 		$calendar .= "</span></td>";
@@ -89,11 +89,11 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 		$day_of_week++;
 	}
 	if ($day_of_week-$ws != 7) {
-		$calendar .= '<td colspan="' . (7 - $day_of_week+$ws) . '">&nbsp;</td>';
+		$calendar .= '<td class="blogcalendar-day-empty" colspan="' . (7 - $day_of_week+$ws) . '">&nbsp;</td>';
 	}
 	$calendar .= "</tr>";
 	if ($tablerow != 6) {
-		$calendar .= "<tr><td style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
+		$calendar .= "<tr><td class='blogcalendar-day-empty' style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
 	}
 	 
 	$calendar .= "</table>";
