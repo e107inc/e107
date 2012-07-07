@@ -697,9 +697,10 @@ class e_form
 
 	/**
 	 * Bbcode Area. Name, value, template, form-id, size, options array eg. counter
+	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
 	 */
-	function bbarea($name, $value, $template = '', $help_tagid='', $size = 'large', $options = array())
-	{
+	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
+	{		
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 		switch($size)
@@ -720,17 +721,14 @@ class e_form
 		}
 
 		// auto-height support
-	   	$options['class'] = 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight';
-		$bbbar = '';
+	   	$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight';
+		$bbbar 				= '';
 		
-		// FIXME - see ren_help.php
-		
-	//	require_once(e_HANDLER."ren_help.php"); // Ren-help no longer required. 
-	//	$bbbar = display_help($help_tagid, $template, 'addtext', 'help', $size);
-		$help_tagid = $this->name2id($name)."--preview"; // not really needed, but a unique name is always welcome
-		$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+
+		$help_tagid 		= $this->name2id($name)."--preview"; 
+		$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
 	
-		$counter = vartrue($options['counter'],false); 
+		$counter 			= vartrue($options['counter'],false); 
 		
 		$ret = "
 		<div class='bbarea {$size}'>
@@ -741,6 +739,8 @@ class e_form
 		$ret .=	$this->textarea($name, $value, $rows, 50, $options, $counter);
 			
 		$ret .= "</div>\n";
+		
+		$_SESSION['media_category'] = $mediaCat; // used by TinyMce. 
 		
 		return $ret;
 		

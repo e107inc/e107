@@ -517,9 +517,12 @@ class e_bbcode
 			array(	"\n[/list]",	'</ul>'),
 			array(	"\n[*]",		'<li>'),
 			array(	"\n[*]",		'<li class="bbcode  bbcode-list">'),
-			array(	"[h2]",			'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
-			array(	"[h2]",			'<h2>'),
-			array(	"[/h2]",		'</h2>'),
+			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
+			array(	"[h=2]",		'<h2>'),
+			array(	"[/h]",			'</h2>'),
+			array(	"[h=3]",		'<h3 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
+			array(	"[h=3]",		'<h3>'),
+			array(	"[/h]",			'</h3>'),
 			array(	"[b]",			'<strong>'), 								// Tinymce markup
 			array(	"[b]",			'<strong class="bbcode bold bbcode-b">'),	// e107 bbcode markup
 			array(	"[/b]",			'</strong>'),
@@ -529,7 +532,7 @@ class e_bbcode
 			array(	"[block]",		'<div>'),
 			array(	"[/block]",		'</div>'),
 			array(	"[table]\n",	'<table>'),
-			array(	"[/table]\n",		'</table>'),
+			array(	"[/table]\n",	'</table>'),
 			array(	"[table]\n",	'<table class="bbcode-table">'),
 			array(	"[tbody]\n",	'<tbody class="bbcode-tbody">'),
 			array(	"[tr]",			'<tr class="bbcode-tr">'),
@@ -545,7 +548,8 @@ class e_bbcode
 			array(	"[/td]",		'</td>'),	
 			array(	"[blockquote]",	'<blockquote>'),
 			array(  "[blockquote]", '<blockquote class="indent bbcode-blockquote">'),
-			array(	"[/blockquote]",'</blockquote>'),					
+			array(	"[/blockquote]",'</blockquote>')
+				
 		);
 		
 		foreach($convert as $arr)
@@ -563,12 +567,13 @@ class e_bbcode
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
 		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
+		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
 		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
 		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
 		
 		
 		
-		$blank = array('</li>','width:px;height:px;');
+		$blank = array('</li>','width:px;height:px;',"</p>","<p>");
 		$text = str_replace($blank,"",$text); // Cleanup 
 		
 		return str_replace($srch,$repl,$text);	

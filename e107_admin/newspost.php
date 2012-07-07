@@ -1995,12 +1995,12 @@ class admin_newspost
 		
 		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
         $text .= "<div id='news-body-container'>";
-        $text .= $frm->bbarea('news_body', $val, 'news', 'helpb');
+        $text .= $frm->bbarea('news_body', $val, 'news', 'news');
 		$text .= "</div><div id='news-extended-container'>";
 		
 		
 		$val = (strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
-		$text .= $frm->bbarea('news_extended', $val, 'extended', 'helpc','large');
+		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news','large');
 		
 		$text .= "</div>
 			</div></td></tr>";
