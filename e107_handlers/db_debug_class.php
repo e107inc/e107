@@ -454,7 +454,7 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
-		global $e107;
+		global $e107,$sql;
 		$text = "<table class='fborder debug-footer' style='width: 100%'>
 			<tr><td class='fcaption debug-footer-caption' colspan='4'><b>Paths &amp; Variables</b></td></tr>
 			<tr>
@@ -468,11 +468,18 @@ class e107_db_debug {
 		$text .= "e_THEME: '".e_THEME."'<br />";
 		$text .= "e_MENU: '".e_MENU."'<br />";
 		$text .= "THEME: '".THEME."'<br />";
-		$text .= "Active Theme Layout: '".THEME_LAYOUT."'<br />";
+		$text .= "THEME_LAYOUT: '".THEME_LAYOUT."'<br />";
+			
 		$text .= "<br />";
 		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
 		$text .= "e_LAN: '".e_LAN."'<br />";
 		$text .= "e_LOCALE: '".e_LOCALE."'<br />";
+		
+		$text .= "<br />";
+		$text .= "META_OG: '".META_OG."'<br />";
+		$text .= "META_DESCRIPTION: '".META_DESCRIPTION."'<br />";
+		$text .= "<br />";
+		
 		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
 		$text .= "<br />";					
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
