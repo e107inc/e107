@@ -7,6 +7,8 @@ $(document).ready(function()
 		var newval = $('#bbcode_holder').val();
 	//	alert(newval);
 		var target 	= $(this).attr('data-target');
+		
+		if(!target){return true; }
 		//('#' + target, window.top.document).insertAtCaret(newVal);
 		
 	//	$('#' + target, window.parent.document).append(newval);	//FIXME caret!!
@@ -102,7 +104,7 @@ $(document).ready(function()
 		$(".e-media-select").live("click", function(){
   	
     	
-    			console.log(this);
+    		//	console.log(this);
     			
 		
 				
@@ -113,27 +115,26 @@ $(document).ready(function()
 				var bbcode		= $(this).attr('data-bbcode');
 						
 				$(this).addClass("media-select-active");
-				$(this).closest("img").addClass("active");
+				$(this).closest("img").addClass("active");			
 				
-				// TinyMce?					
-				$('input#' + target, window.top.document).attr('value',path);	// set new value
-				
-				if(bbcode)
+				if(bbcode) // not needed for Tinymce
 				{
-					bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
-					$('textarea#' + target, window.top.document).attr('value',bbpath);	
+			//		$('input#' + target, window.top.document).attr('value',path);	// set new value
+				//	bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
+			//		$('textarea#' + target, window.top.document).attr('value',bbpath);	
 				}
 				
-				
-				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
-				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
-				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
-								
 				$('#src').attr('value',src); // working old
 				$('#preview').attr('src',preview);	// working old
 				
 				$('#path').attr('value',path); // working old
 				$('#src').attr('src',src);	// working old
+				
+				$('img#' + target + "_prev", window.top.document).attr('src',preview); // set new value
+				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
+				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
+								
+			
 				
 				
 				eMediaAttribute(this);	

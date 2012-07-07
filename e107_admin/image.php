@@ -491,13 +491,13 @@ class media_admin_ui extends e_admin_ui
 		{
 			
 			
-			
+			/*
 			if($this->getQuery('bbcode'))
 			{
 				//TODO this is not really used when jquery is running. 
 				e107::getJS()->headerInline("
 				
-				/* Send the generated IMG bbcode back to the textarea/window */
+				// Send the generated IMG bbcode back to the textarea/window 
 				function saveBB()
 				{
 								
@@ -517,6 +517,7 @@ class media_admin_ui extends e_admin_ui
 				");
 				
 			}
+			*/
 					
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			if(!$this->getQuery('for'))
@@ -619,6 +620,8 @@ class media_admin_ui extends e_admin_ui
 			<table class='adminedit'>
 			<tbody><tr><td>
 			";
+			
+		$tag = ($bbcodeMode) ? "" : $this->getQuery('tagid');
 		
 		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail	
 			
@@ -715,10 +718,10 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 			
 			// TODO to eventually be hidden. 
-			$text .= "bbcode: <input type='text' style='width:800px' id='bbcode_holder' name='bbcode_holder' value='' />
-			<br />html: <input type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
-			<br />src: <input type='text' style='width:600px' id='src' name='src' value='' />
-			<br />path: <input type='text' style='width:600px' id='path' name='path' value='' />				
+			$text .= "bbcode: <input type='text' readonly='readonly' style='border:0px; width:700px' id='bbcode_holder' name='bbcode_holder' value='' />
+			<input title='html' type='hidden' style='width:800px' id='html_holder' name='html_holder' value='' />
+			<input title='src' type='hidden' style='width:600px' id='src' name='src' value='' />
+			<input title='path' type='hidden' style='width:600px' id='path' name='path' value='' />				
 			";		
 						
 		}

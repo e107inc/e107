@@ -45,12 +45,9 @@ class bb_h extends e_bb_base
 		}
 		if($safe)
 		{
-			return '[h'.$h.'|'.eHelper::buildAttr($safe).']'.$code_text.'[/h'.$h.']';
+			return '[h='.$h.'|'.eHelper::buildAttr($safe).']'.$code_text.'[/h]';
 		}
-		return '[h'.$h.']'.$code_text.'[/h'.$h.']'; 
-		
-		// IMPORTANT: Using '[h=2]' with a non-matching closing tag etc will cause major issues with TinyMce. 
-		// It is cleaner to use [h2], [h3] etc. TODO - Batch BBcodes. ;-) 
+		return '[h='.$h.']'.$code_text.'[/h]';
 	}
 
 
