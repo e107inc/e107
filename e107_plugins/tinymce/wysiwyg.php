@@ -272,7 +272,7 @@ class wysiwyg
 			'theme_advanced_buttons4'			=> $config['tinymce_buttons4'],
 			'theme_advanced_toolbar_location'	=> 'top',
 			'theme_advanced_toolbar_align'		=> 'left',
-			'theme_advanced_blockformats' 		=> 'p,h2,blockquote,code',
+			'theme_advanced_blockformats' 		=> 'p,h2,h3,blockquote,code',
 			'dialog_type' 						=> "modal",		
 			
 			
@@ -289,9 +289,9 @@ class wysiwyg
 			'auto_resize'						=> 'true',
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
-			'forced_root_block'					=> '',
+		//	'forced_root_block'					=> '',
 			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true
-			'force_p_newlines'					=> 'false',
+		//	'force_p_newlines'					=> 'false',
 			'entity_encoding'					=> 'raw',
 			'convert_fonts_to_styles'			=> 'true',
 			'remove_script_host'				=> 'true',
