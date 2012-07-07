@@ -1903,14 +1903,20 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_12.":</td>
 								<td>
-									".$frm->text('news_title', $tp->post_toForm($_POST['news_title']))."
+								<input type='text' name='news_title' value=\"". $tp->post_toForm($_POST['news_title'])."\" class='tbox' style='width:90%' />
+									".
+								// TOO short ->	$frm->text('news_title', $tp->post_toForm($_POST['news_title']),200,array('size'=>300)).
+									"
 								</td>
 							</tr>
 
 							<tr>
 								<td>".LAN_NEWS_27.":</td>
 								<td>
-									".$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250)."
+								<input type='text' name='news_summary' value=\"". $tp->post_toForm($_POST['news_summary'])."\" class='tbox' style='width:90%' />
+									".
+								//	$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250).
+									"
 								</td>
 							</tr>
 							
