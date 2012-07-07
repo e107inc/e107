@@ -18,7 +18,7 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
-if (!getperms("A"))
+if (!getperms("A") && ($_GET['action'] != 'dialog')) 
 {
 	header("location:".e_HTTP."index.php");
 	exit;
@@ -458,8 +458,10 @@ class media_admin_ui extends e_admin_ui
 			$this->updateSettings();
 		}
 		
-		if($this->getQuery('mode') == 'dialog')
+		if($this->getQuery('mode') == 'dialog')//TODO Check this actually does something, as it was changed to 'action'. 
 		{
+			if(!ADMIN){ exit; }
+			
 			$cat = $_GET['for'];
 			if(!isset($this->cats[$cat]))
 			{
@@ -574,6 +576,9 @@ class media_admin_ui extends e_admin_ui
 	
 	function uploadPage()
 	{
+		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
+		
+		
 		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>No HTML5 support.</p>
 		</div>';
@@ -702,7 +707,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div style='text-align:right;padding:5px'>
 			
 			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
-			<span>Save IT</span>
+			<span>Save</span>
 			</button>
 			<button type='submit' class='submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>Cancel</span>

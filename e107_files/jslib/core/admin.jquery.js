@@ -409,7 +409,7 @@ $(document).ready(function()
 		 
 		        // Specify what files to browse for
 		        filters : [
-		            {title : "Image files", extensions : "jpg,gif,png"},
+		            {title : "Image files", extensions : "jpg,gif,png,jpeg"},
 		            {title : "Zip files", extensions : "zip,gz"}
 		        ],
 		        preinit : {
