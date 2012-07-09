@@ -2185,7 +2185,7 @@ class admin_newspost
 								<tr>
 									<td class='label'>".NWSLAN_22.":</td>
 									<td class='control'>
-										".$frm->uc_select('news_userclass[]', $_POST['news_class'], 'nobody,public,guest,member,admin,classes,language', 'description=1&multiple=1')."
+										".$frm->uc_select('news_userclass[]', vartrue($_POST['news_class'],0), 'nobody,public,guest,member,admin,classes,language', 'description=1&multiple=1')."
 										<div class='field-help'>
 											".NWSLAN_84."
 										</div>

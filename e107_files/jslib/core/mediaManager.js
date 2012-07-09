@@ -113,6 +113,20 @@ $(document).ready(function()
 				var preview 	= $(this).attr('data-preview');
 				var src			= $(this).attr('data-src');
 				var bbcode		= $(this).attr('data-bbcode');
+				
+				// Create new offscreen image to test
+			//	var theImage = new Image();
+			//	theImage.src = $(this).attr('data-src');
+				
+				// Get accurate measurements from that.
+			//	var imageWidth = theImage.width;
+			//	var imageHeight = theImage.height;
+			
+			//	$('#width').val(theImage.width);
+			//	$('#height').val(theImage.height);		
+				// alert('width='+imageWidth);
+				
+
 						
 				$(this).addClass("media-select-active");
 				$(this).closest("img").addClass("active");			

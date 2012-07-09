@@ -485,12 +485,29 @@ class e_media
 
 		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
 		
+		$w	= false;
+		$h = false;
+			
+		if($bbcode)
+		{
+			e107::getBB()->setClass($category);
+			$w = e107::getBB()->resizeWidth(); // resize the image according to prefs. 
+			$h = e107::getBB()->resizeHeight();
+			e107::getBB()->clearclass();	
+		}
+		
+		
+		
+		$tp = e107::getParser();
+	//	e107::getParser()
+		
 		foreach($images as $im)
 		{
 			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
-			$media_path 	= e107::getParser()->replaceConstants($im['media_url'],'full');
-			$realPath 		= e107::getParser()->thumbUrl($im['media_url'], $att);
-			$diz 			= e107::getParser()->toAttribute($im['media_title']);		
+			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "w={$w}&h={$h}") : $tp->replaceConstants($im['media_url'],'full'); // max-size 
+				
+			$realPath 		= $tp->thumbUrl($im['media_url'], $att);
+			$diz 			= $tp->toAttribute($im['media_title']);		
 			$repl 			= array($im['media_url'],$media_path);
 			
 			if($bbcode == null) // e107 Media Manager
