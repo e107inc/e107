@@ -226,14 +226,21 @@ class media_form_ui extends e_admin_form_ui
 		//	"featurebox-image" 		=> "Featurebox Images",
 		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
 		);
-		$text .= "<div>Experimental (maximum width and maximum height)</div>";
 		
 		
 		foreach($options as $key=>$title)
 		{
-			$text .= "<input type='text' name='resize_dimensions[{$key}]' value='$val' size='7' title='hello' /> ".$title."<br />";
+			$valW = $curval[$key]['w'];
+			$valH = $curval[$key]['h'];
+		
+			$text .= "<div style='margin-bottomp:8px;text-align:right;width:280px'>".$title.": ";
+			$text .= "<input class='e-tip' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
+			$text .= "<input class='e-tip' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
+			$text .= "</div>";
 		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
 		}	
+		
+		$text .= "<div><br />Warning: This feature is experimental.</div>";
 		
 		return $text;
 		
@@ -719,9 +726,9 @@ class media_admin_ui extends e_admin_ui
 			
 			// TODO to eventually be hidden. 
 			$text .= "bbcode: <input type='text' readonly='readonly' style='border:0px; width:700px' id='bbcode_holder' name='bbcode_holder' value='' />
-			<input title='html' type='hidden' style='width:800px' id='html_holder' name='html_holder' value='' />
-			<input title='src' type='hidden' style='width:600px' id='src' name='src' value='' />
-			<input title='path' type='hidden' style='width:600px' id='path' name='path' value='' />				
+			<input title='html' type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
+			<input title='src' type='text' style='width:600px' id='src' name='src' value='' />
+			<input title='path' type='text' style='width:600px' id='path' name='path' value='' />				
 			";		
 						
 		}

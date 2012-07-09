@@ -14,7 +14,9 @@ require_once("../../../../class2.php");
 
 if($_POST['mode'] == 'tohtml')
 {
-	echo $tp->toHtml($_POST['content'],true);	
+	e107::getBB()->setClass($_SESSION['media_category']);
+	echo $tp->toHtml($_POST['content'],true);
+	e107::getBB()->clearClass();	
 }
 
 if($_POST['mode'] == 'tobbcode')

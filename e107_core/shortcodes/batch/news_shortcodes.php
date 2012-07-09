@@ -43,12 +43,13 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsbody($parm)
 	{
+		e107::getBB()->setClass("news");
 		$news_body = $this->e107->tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && $parm != 'noextend')
 		{
 			$news_body .= $this->e107->tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
-
+		e107::getBB()->clearClass();
 		return $news_body;
 	}
 
@@ -316,9 +317,21 @@ class news_shortcodes extends e_shortcode
 		{
 			return '';
 		}
-		// We store SC path in DB now + BC
-		$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];
-
+		
+		$w = vartrue($pref['resize_dimensions']['news-image']['w']);
+		$h = vartrue($pref['resize_dimensions']['news-image']['h']);
+	
+		if($this->news_item['news_thumbnail'][0] == '{' && ($w || $h))
+		{
+			$src = $tp->thumbUrl($this->news_item['news_thumbnail'],"w={$w}&h={$h}");	
+		}
+		else
+		{
+			// We store SC path in DB now + BC
+			$src = $this->news_item['news_thumbnail'][0] == '{' ? e107::getParser()->replaceConstants($this->news_item['news_thumbnail'], 'abs') : e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'];			
+		}
+		
+		
 		switch($parm)
 		{
 			case 'src':

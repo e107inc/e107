@@ -427,6 +427,33 @@ class e_bbcode
 		$this->class = $mode;	
 	}
 	
+	// return the Mode used by the class.  eg. news | page | user | {plugin-folder}
+	function getMode()
+	{
+		return $this->class; 	
+	}
+	
+	
+	function resizeWidth()
+	{
+		$pref = e107::getPref();
+		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['w']))
+		{
+			return $pref['resize_dimensions'][$this->class.'-bbcode']['w'];		
+		}
+		return false;	
+	}
+	
+	function resizeHeight()
+	{
+		$pref = e107::getPref();
+		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['h']))
+		{
+			return $pref['resize_dimensions'][$this->class.'-bbcode']['h'];		
+		}
+		return false;	
+	}	
+	
 	// return the class for a bbcode
 	function getClass($type='')
 	{
@@ -509,6 +536,25 @@ class e_bbcode
 	 */
 	function htmltoBBcode($text)
 	{
+					
+		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
+		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified
+		$text = preg_replace('/<div class="bbcode-(?:[\w]*)" style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
+		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
+		$text = preg_replace('/<img class="(?:[^"]*)"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
+	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
+		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
+	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
+		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
+		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
+		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
+		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
+		
+		$ehttp = str_replace("/",'\/',e_HTTP);
+		$text = preg_replace('/thumb.php\?src='.$ehttp.'([^&]*)([^\[]*)/i', "$1",$text);
+		$text = preg_replace('/thumb.php\?src=([^&]*)([^\[]*)/i', "$1",$text);
+		
+			
 		//return $text;
 		$convert = array(		
 			array(	"\n",			'<br />'),
@@ -548,9 +594,17 @@ class e_bbcode
 			array(	"[/td]",		'</td>'),	
 			array(	"[blockquote]",	'<blockquote>'),
 			array(  "[blockquote]", '<blockquote class="indent bbcode-blockquote">'),
-			array(	"[/blockquote]",'</blockquote>')
+			array(	"[/blockquote]",'</blockquote>'),
+			array(	"]",			' style=]')
 				
 		);
+		
+	//	thumb.php?src
+		
+		
+		
+		
+		
 		
 		foreach($convert as $arr)
 		{
@@ -558,21 +612,22 @@ class e_bbcode
 			$srch[] = $arr[1];	
 		}
 		
-		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
-		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified
-		$text = preg_replace('/<div class="bbcode-(?:[\w]*)" style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
-		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
-		$text = preg_replace('/<img class="bbcode bbcode-img"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
-	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
-		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
-	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
-		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
-		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
-		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
-		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
+		$paths = array(
+			e107::getFolder('images'),
+			e107::getFolder('plugins'),
+			e107::getFolder('media_images'),
+			e107::getFolder('media_files'),
+			e107::getFolder('media_videos')
+		);
 		
+		$tp = e107::getParser();
+		foreach($paths as $k=>$path)
+		{
+			$srch[] = $path;
+			$repl[] = $tp->createConstants($path);
+		}
 		
-		
+
 		$blank = array('</li>','width:px;height:px;',"</p>","<p>");
 		$text = str_replace($blank,"",$text); // Cleanup 
 		

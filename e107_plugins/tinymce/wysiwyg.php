@@ -305,7 +305,7 @@ class wysiwyg
 
 	//	if(!in_array('e107bbcode',$plug_array))
 		{
-			$this->config['cleanup_callback'] = 'tinymce_e107Paths';
+			$this->config['cleanup_callback'] = 'tinymce_e107Paths';										
 		}
 
 		$paste_plugin = (strpos($config['tinymce_plugins'],'paste')!==FALSE) ? TRUE : FALSE;
