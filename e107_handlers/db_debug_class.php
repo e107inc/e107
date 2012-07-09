@@ -476,30 +476,52 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
+		
 		global $e107;
-		$text = "<table class='fborder' style='width: 100%'>
-			<tr><td class='fcaption' colspan='4'><b>Paths</b></td></tr>
+		$sql = e107::getDb();
+		
+		$text = "<table class='fborder debug-footer' style='width: 100%'>
+			<tr><td class='fcaption debug-footer-caption' colspan='4'><b>Paths &amp; Variables</b></td></tr>
 			<tr>
 			<td class='forumheader3'>\n";
-
+			
+		$text .= "e_DOMAIN: '".e_DOMAIN."'<br />";
+		$text .= "e_SUBDOMAIN: '".e_SUBDOMAIN."'<br />";
 		$text .= "e_HTTP: '".e_HTTP."'<br />";
 		$text .= "e_BASE: '".e_BASE."'<br />";
-		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
-		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
-		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
-		$text .= "Active Theme Layout: '".THEME_LAYOUT."'<br />";
+		$text .= "e_PLUGIN: '".e_PLUGIN."'<br />";
+		$text .= "e_THEME: '".e_THEME."'<br />";
+		$text .= "e_MENU: '".e_MENU."'<br />";
+		$text .= "THEME: '".THEME."'<br />";
+		$text .= "THEME_LAYOUT: '".THEME_LAYOUT."'<br />";
+			
 		$text .= "<br />";
 		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
 		$text .= "e_LAN: '".e_LAN."'<br />";
 		$text .= "e_LOCALE: '".e_LOCALE."'<br />";
+		
+		$text .= "<br />";
+		$text .= "META_OG: '".META_OG."'<br />";
+		$text .= "META_DESCRIPTION: '".META_DESCRIPTION."'<br />";
+		$text .= "<br />";
+		
 		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
-		$text .= "<br />";		
-
-  	  	$text .= "<pre>";
-        $text .= htmlspecialchars(print_r($e107,TRUE));
-	  	$text .= "</pre>";
+		$text .= "<br />";					
+		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
+		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
+		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
+		$text .= "\$_SERVER['REQUEST_URI']: '".$_SERVER['REQUEST_URI']."'<br />";
+		$text .= "</td></tr>
+		<tr><td class='forumheader3'>\n";
+			
+  	  	$text .= "<pre>".htmlspecialchars(print_r($e107,TRUE))."</pre>";
+  	  	$text .= "</td></tr>\n";
+		$text .= "<tr><td class='fcaption' colspan='4'><b>Session</b></td></tr>
+					<tr><td class='forumheader3'>\n";
+  	  	$text .= "<pre>".htmlspecialchars(print_r($_SESSION,TRUE))."</pre>";
 
 		$text .= "</td></tr></table>";
+
 		return $text;
 	}
 
