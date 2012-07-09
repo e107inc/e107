@@ -332,6 +332,8 @@ class pageClass
 	public function parsePage()
 	{
 		$tp = e107::getParser();
+		e107::getBB()->setClass("page");
+		
 		$this->pageTitles = array();		// Notice removal
 
 		if(preg_match_all("/\[newpage.*?\]/si", $this->pageText, $pt))
@@ -406,6 +408,7 @@ class pageClass
 				echo "<pre>"; print_r($this->pageTitles); echo "</pre>";
 			}
 		}
+		e107::getBB()->clearClass();
 	}
 
 	function pageIndex()

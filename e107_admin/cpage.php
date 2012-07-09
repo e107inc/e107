@@ -431,7 +431,7 @@ class page_admin_ui extends e_admin_ui
 	
 		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
 	
-		$text .= $this->bbareaMulti('data', $textareaValue, 'page','help','large');
+		$text .= $this->bbareaMulti('data', $textareaValue, 'page','page','large');
 		$text .= "</div>";
 		
 	//	$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
@@ -568,7 +568,7 @@ class page_admin_ui extends e_admin_ui
 	// 	bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
 		function bbareaMulti($name, $textareaValue, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
 		{
-			$name = $name."[]";
+			// $name = $name."[]";
 			
 			$frm = e107::getForm();
 			
@@ -602,9 +602,10 @@ class page_admin_ui extends e_admin_ui
 			{
 				$titles[] = isset($pt[1][$c]) ? $pt[1][$c] : "";
 				$id = "page_".$c;
+				$nm = $name."_".$c;
 				$text .= "<fieldset id='{$id}'>\n";
 				$text .= "<div>Title: ".$frm->text('page_subtitle[]', $titles[($c+1)], 250)."</div>\n";
-				$text .= $frm->bbarea($name, $page, $help_mod,$help_tagid,$size,$counter);
+				$text .= $frm->bbarea($nm, $page, $help_mod,$help_tagid,$size,$counter);
 				$text .= "</fieldset>";	
 				$c++;	
 			}
@@ -702,19 +703,25 @@ class page_admin_ui extends e_admin_ui
 	
 			$page_title = $tp->toDB($_POST['page_title']);
 			
+		//	print_a($_POST);
+			
+			
 	//		if(is_array($_POST['data']) && is_array($_POST['subtitle']))
+			$newData = "";
+			foreach($_POST as $k=>$v)
 			{
-				$newData = "";
-				foreach($_POST['data'] as $key=>$val)
+				if(substr($k,0,4)=='data')
 				{
+					list($tm,$key) = explode("_",$k);
+
 					$newData .= "[newpage=".$_POST['page_subtitle'][$key]."]\n";
-					$newData .= $_POST['data'][$key]."\n\n";
-					
+					$newData .= $v."\n\n";			
 				}
-				echo $newData;
+				
 				// return;	
 			}
 		
+		//	echo $newData;
 				
 			$page_text = $tp->toDB($newData);
 			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
