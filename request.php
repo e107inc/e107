@@ -30,6 +30,23 @@ if (!e_QUERY || isset($_POST['userlogin']))
 }
 
 $id = FALSE;
+
+//TODO e_request.php - allow plugins like 'downloads' to hook into request.php which should only be a generic file-downloading function.  
+
+// Media-Manager direct file download. 
+if(vartrue($_GET['file']) && is_numeric($_GET['file']))
+{
+	if ($sql->db_Select('core_media', 'media_url', "media_id= ".intval($_GET['file'])." AND media_userclass IN (".USERCLASS_LIST.") LIMIT 1 ")) 
+	{
+		$row = $sql->db_Fetch();
+		$file = $tp->replaceConstants($row['media_url'],'rel');
+		// echo 'file='.$file;
+		send_file($file);
+		exit();
+	} 	
+}
+
+
 if (!is_numeric(e_QUERY)) 
 {
 	if ($sql->db_Select('download', 'download_id', "download_url='".$tp -> toDB(e_QUERY)."'")) 
@@ -49,6 +66,7 @@ if (!is_numeric(e_QUERY))
 		exit();
 	}
 }
+
 
 
 if(strstr(e_QUERY, "mirror")) 
@@ -343,13 +361,17 @@ else
 // File retrieval function. by Cam.
 function send_file($file) 
 {
-	global $pref, $DOWNLOADS_DIRECTORY,$FILES_DIRECTORY, $e107;
+	global $DOWNLOADS_DIRECTORY,$FILES_DIRECTORY, $e107;
+	
+	$pref = e107::getPref();
+	
+	/* PHP handling by default. 
 	if (!$pref['download_php'])
 	{
 		header("Location: ".SITEURL.$file);
 		exit();
 	}
-	
+	*/
 	
 	@set_time_limit(10 * 60);
 	@session_write_close();

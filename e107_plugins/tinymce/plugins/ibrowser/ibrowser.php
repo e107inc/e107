@@ -23,7 +23,7 @@
 // unset $tinyMCE_imglib_include
 require_once("../../../../class2.php");
 
-header("Location: ".e_ADMIN_ABS.'image.php?mode=main&action=dialog&for='.$_SESSION['media_category'].'&tagid=&iframe=1&bbcode=1');
+header("Location: ".e_ADMIN_ABS.'image.php?mode=main&action=dialog&for='.$_SESSION['media_category'].'&tagid=&iframe=1&bbcode=img');
 exit; 
 
 

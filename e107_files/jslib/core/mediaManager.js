@@ -105,37 +105,32 @@ $(document).ready(function()
   	
     	
     		//	console.log(this);
-    			
-		
-				
+
+				var id			= $(this).attr('data-id');
 				var target 		= $(this).attr('data-target');
 				var path		= $(this).attr('data-path');
 				var preview 	= $(this).attr('data-preview');
 				var src			= $(this).attr('data-src');
 				var bbcode		= $(this).attr('data-bbcode');
-				
-				// Create new offscreen image to test
-			//	var theImage = new Image();
-			//	theImage.src = $(this).attr('data-src');
-				
-				// Get accurate measurements from that.
-			//	var imageWidth = theImage.width;
-			//	var imageHeight = theImage.height;
-			
-			//	$('#width').val(theImage.width);
-			//	$('#height').val(theImage.height);		
-				// alert('width='+imageWidth);
-				
-
+				var name		= $(this).attr('data-name');
 						
 				$(this).addClass("media-select-active");
 				$(this).closest("img").addClass("active");			
 				
-				if(bbcode) // not needed for Tinymce
-				{
-			//		$('input#' + target, window.top.document).attr('value',path);	// set new value
-				//	bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
+				if(bbcode == "file") // not needed for Tinymce
+				{						
+					bbpath = '[file='+ id +']'+ name + '[/file]';	
+					$('#bbcode_holder').val(bbpath);		
+					alert(bbpath);	//FIXME bbcode -  Insert into correct caret in text-area. 
+					return;	
+			//		$('input#' + target, window.top.document).attr('value',path);	// set new value	
 			//		$('textarea#' + target, window.top.document).attr('value',bbpath);	
+				}
+				
+				if(bbcode == "img")
+				{
+					// bbpath = '['+bbcode+']'+ path + '[/' + bbcode + ']';
+					//alert(bbpath);		
 				}
 				
 				$('#src').attr('value',src); // working old
