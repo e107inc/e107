@@ -1,7 +1,17 @@
 //<?
-$class = e107::getBB()->getClass('file');
+
 
 global $pref, $fromadmin;
+
+
+$class = e107::getBB()->getClass('file');
+
+if(is_numeric($parm)) // Media-Manager file. 
+{	
+	return "<a class='".$class."' href='".e_BASE."request.php?file={$parm}'>".$code_text."</a>";		
+}
+
+
 
 if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN || $fromadmin))
 {

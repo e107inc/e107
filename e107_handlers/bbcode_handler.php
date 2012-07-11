@@ -536,6 +536,9 @@ class e_bbcode
 	 */
 	function htmltoBBcode($text)
 	{
+		
+				
+		$text = preg_replace("/<a.*?href=\"(.*?)?request.php\?file=([\d]*)\".*?>(.*?)<\/a>/i","[file=$2]$3[/file]",$text);		
 					
 		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
 		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified

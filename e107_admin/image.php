@@ -253,11 +253,13 @@ class media_form_ui extends e_admin_form_ui
 		//return print_a($_GET,true);
 		$tagid = $_GET['tagid'];
 		$path = $this->getController()->getListModel()->get('media_url');
+		$title = $this->getController()->getListModel()->get('media_name');
+		$id = $this->getController()->getListModel()->get('media_id');
 		$preview = basename($path);
 		
-		$bbcode = ($_GET['bbcode']==1) ? "file" : "";
+		$bbcode = ($_GET['bbcode']=='file')  ? "file" : "";
 	
-		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"Select\"  />";
+		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 	}
 	
 
@@ -598,11 +600,8 @@ class media_admin_ui extends e_admin_ui
 	function imageSelectUpload() 
 	{
 		$frm = e107::getForm();
-		$bbcodeMode = ($this->getQuery('bbcode')==1) ? 'bbcode=1' : FALSE;
-		
-
-		
-		
+		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
+			
 		$text = "
 			<div class='admintabs' id='tab-container'>
 			<ul class='e-tabs' id='core-emote-tabs'>
@@ -1267,6 +1266,10 @@ class media_admin_ui extends e_admin_ui
 		 	$WM = FALSE; 
 		}	
 
+		// Disable resize-on-import and watermark for now. 
+		$img_import_w = false;
+		$img_import_h = false; 
+		
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
 						
@@ -1304,7 +1307,10 @@ class media_admin_ui extends e_admin_ui
 
 			if(!$f['mime'])
 			{
-				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_ERROR);
+				
+				$mes->add("Couldn't get file info from : ".$oldpath, E_MESSAGE_WARNING);
+				// $mes->add(print_a($f,true), E_MESSAGE_ERROR);
+				$f['mime'] = "other/file";
 			}
 
 			$newpath = $this->checkDupe($oldpath,$this->getPath($f['mime']).'/'.$file);
@@ -1333,7 +1339,7 @@ class media_admin_ui extends e_admin_ui
 					'media_category'	=> $_POST['batch_category'],
 					'media_datestamp'	=> $f['modified'],
 					'media_url'			=> $tp->createConstants($newpath,'rel'),
-					'media_userclass'	=> 0,
+					'media_userclass'	=> '0',
 					'media_name'		=> $newname,
 					'media_author'		=> USERID,
 					'media_size'		=> $f['fsize'],

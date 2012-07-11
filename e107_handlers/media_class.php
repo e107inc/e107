@@ -535,7 +535,7 @@ class e_media
 		 	
 		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $att) : $media_path;
 			
-			$text .= "<a class='{$class} ' data-src='{$media_path}' data-bbcode[{$data_bb}] data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
+			$text .= "<a class='{$class} ' data-id='{$im['media_id']}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img src='".$img_url."' alt=\"".$im['media_title']."\"  />";
 			$text .= "</a>\n\n";
 		}	
@@ -677,7 +677,7 @@ class e_media
 		$img_data['media_caption'] 		= $new_data['media_caption'];
 		$img_data['media_category'] 	= $category;
 		$img_data['media_description'] 	= $new_data['media_description'];
-		$img_data['media_userclass'] 	= 0;	
+		$img_data['media_userclass'] 	= '0';	
 
 		if($sql->db_Insert("core_media",$img_data))
 		{		
