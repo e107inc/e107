@@ -31,11 +31,11 @@ class tinymce_setup
 		
 		$query = "INSERT INTO #tinymce (
 		`tinymce_id`, `tinymce_name`, `tinymce_userclass`, `tinymce_plugins`, `tinymce_buttons1`, `tinymce_buttons2`, `tinymce_buttons3`, `tinymce_buttons4`, `tinymce_custom`, `tinymce_prefs`) VALUES 
-		(1, 'Simple Users', '252', 'e107bbcode,emoticons', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, bullist, numlist, outdent, indent, emoticons', '', '', '', '', ''),
-		(2, 'Members', '253', 'e107bbcode,emoticons,table', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, removeformat, table, bullist, numlist, outdent, indent, emoticons', '', '', '', '', ''),
-		(3, 'Administrators', '254', 'e107bbcode,contextmenu,emoticons,ibrowser,iespell,paste,table,xhtmlxtras', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, removeformat, table, bullist, numlist, outdent, indent, cleanup, code, emoticons', '', '', '', '', ''),
-		(4, 'Main Admin', '250', 'e107bbcode,advhr,advlink,autoresize,contextmenu,directionality,emoticons,ibrowser,paste,table,visualchars,wordcount,xhtmlxtras,zoom', 'bold, italic, underline, undo, redo, link, unlink, ibrowser, forecolor, removeformat, table, bullist, numlist, outdent, indent, cleanup, code, emoticons', '', '', '', '', ''
-		);";
+		(1, 'Simple Users', '252', 'e107bbcode,emoticons,jqueryinlinepopups,', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, bullist, numlist, outdent, indent, emoticons', '', '', '', '', ''),
+		(2, 'Members', '253', 'e107bbcode,emoticons,table,jqueryinlinepopups', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, removeformat, table, bullist, numlist, outdent, indent, emoticons', '', '', '', '', ''),
+		(3, 'Administrators', '254', 'contextmenu,e107bbcode,jqueryinlinepopups,emoticons,ibrowser,iespell,paste,table,xhtmlxtras', 'bold, italic, underline, undo, redo, link, unlink, image, forecolor, removeformat, table, bullist, numlist, outdent, indent, cleanup, code, emoticons', '', '', '', '', ''),
+		(4, 'Main Admin', '250', 'advhr,advlink,autoresize,contextmenu,directionality,e107bbcode,emoticons,ibrowser,jqueryinlinepopups,media,paste,table,visualchars,wordcount,xhtmlxtras,youtube,zoom', 'link, unlink, bold, italic, underline, undo, redo,formatselect,justifyleft,justifycenter,justifyright,justifyfull, |, ibrowser, forecolor, removeformat, table, bullist, numlist, outdent, indent, cleanup, emoticons,media,youtube', '', '', '', '', '');
+		";
 		
 		if($sql->db_Select_gen($query))
 		{
