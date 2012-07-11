@@ -12,17 +12,20 @@
 require_once("../../../../class2.php");
 
 
+
 if($_POST['mode'] == 'tohtml')
 {
+	$content = $tp->toDB($_POST['content']);
 	e107::getBB()->setClass($_SESSION['media_category']);
-	echo $tp->toHtml($_POST['content'],true);
+	echo $tp->toHtml($content,true);
 	e107::getBB()->clearClass();	
 }
 
 if($_POST['mode'] == 'tobbcode')
 {
 	// echo $_POST['content'];
-	 echo e107::getBB()->htmltoBBcode($_POST['content']);	
+	$content = stripslashes($_POST['content']);
+	echo e107::getBB()->htmltoBBcode($content);	
 }
 
 
