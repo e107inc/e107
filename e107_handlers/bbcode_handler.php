@@ -552,62 +552,43 @@ class e_bbcode
 		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
 		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
 		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
+		$text = preg_replace('/<strong([\w :\-_;="]*)?>/i', "[b]",$text);
+		$text = preg_replace('/<em([\w :\-_;="]*)?>/i', "[i]",$text);
+		$text = preg_replace('/<li([\w :\-_;="]*)?>/i', "\n[*]",$text);
+		$text = preg_replace('/<ul([\w :\-_;="]*)?>/i', "[list]",$text);
+		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
+		$text = preg_replace('/<tbody([\w :\-_;="]*)?>/i', "[tbody]\n",$text);
+		$text = preg_replace('/<tr([\w :\-_;="]*)?>/i', "[tr]",$text);
+		$text = preg_replace('/<td([\w :\-_;="]*)?>/i', "\n\t[td]",$text);
+		$text = preg_replace('/<blockquote([\w :\-_;="]*)?>/i', "[blockquote]",$text);
 		
 		$ehttp = str_replace("/",'\/',e_HTTP);
 		$text = preg_replace('/thumb.php\?src='.$ehttp.'([^&]*)([^\[]*)/i', "$1",$text);
 		$text = preg_replace('/thumb.php\?src=([^&]*)([^\[]*)/i', "$1",$text);
 		
 			
-		//return $text;
+		// Mostly closing tags. 
 		$convert = array(		
 			array(	"\n",			'<br />'),
-			array(	"[list]",		'<ul class="bbcode">'),
-			array(	"[list]",		'<ul>'),
 			array(	"\n[/list]",	'</ul>'),
-			array(	"\n[*]",		'<li>'),
-			array(	"\n[*]",		'<li class="bbcode  bbcode-list">'),
 			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=2]",		'<h2>'),
 			array(	"[/h]",			'</h2>'),
 			array(	"[h=3]",		'<h3 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=3]",		'<h3>'),
 			array(	"[/h]",			'</h3>'),
-			array(	"[b]",			'<strong>'), 								// Tinymce markup
-			array(	"[b]",			'<strong class="bbcode bold bbcode-b">'),	// e107 bbcode markup
 			array(	"[/b]",			'</strong>'),
-			array(	"[i]",			'<em class="bbcode italic bbcode-i">'),		// e107 bbcode markup
-			array(	"[i]",			'<em>'),
 			array(	"[/i]",			'</em>'),
-			array(	"[block]",		'<div>'),
 			array(	"[/block]",		'</div>'),
-			array(	"[table]\n",	'<table>'),
 			array(	"[/table]\n",	'</table>'),
-			array(	"[table]\n",	'<table class="bbcode-table">'),
-			array(	"[tbody]\n",	'<tbody class="bbcode-tbody">'),
-			array(	"[tr]",			'<tr class="bbcode-tr">'),
-			array(	"\n\t[td]",		'<td class="bbcode-td">'),
-			
-			array(	"[tbody]\n",	'<tbody>'),
 			array(	"[/tbody]\n",	'</tbody>'),
-			array(	"[code]\n",		'<code>'),
 			array(	"[/code]\n",	'</code>'),
-			array(	"[tr]",			'<tr>'),
 			array(	"\n[/tr]\n",	'</tr>'),
-			array(	"\n\t[td]",		'<td>'),
 			array(	"[/td]",		'</td>'),	
-			array(	"[blockquote]",	'<blockquote>'),
-			array(  "[blockquote]", '<blockquote class="indent bbcode-blockquote">'),
 			array(	"[/blockquote]",'</blockquote>'),
 			array(	"]",			' style=]')
 				
 		);
-		
-	//	thumb.php?src
-		
-		
-		
-		
-		
 		
 		foreach($convert as $arr)
 		{
