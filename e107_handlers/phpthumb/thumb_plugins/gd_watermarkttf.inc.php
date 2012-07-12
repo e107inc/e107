@@ -68,12 +68,12 @@ class GdWatermarkTTF
 	// public function WatermarkText($text, $size=12, $alignment='BR', $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend='', &$that) 
 	public function WatermarkText($parms,  &$that) 
 	{
-		$text		= $parms[0];
-		$size 		= $parms[1];
-		$alignment	= $parms[2];
-		$hex_color	= $parms[3];
-		$ttffont	= $parms[4];
-		$opacity	= (isset($parms[5])) ? $parms[5] : 100; 
+		$text		= $parms['text'];
+		$size 		= $parms['size'];
+		$alignment	= $parms['pos'];
+		$hex_color	= $parms['color'];
+		$ttffont	= $parms['font'];
+		$opacity	= (isset($parms['opacity'])) ? $parms['opacity'] : 100; 
 		$margin		= 30; // (isset($parms[6])) ? $parms[6] : 25; 
 		$angle		= 0; // $parms['angle'];
 		$bg_color	= false;

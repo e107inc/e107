@@ -280,6 +280,12 @@ $text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parm
 //TODO make the preview update when image-picker is used.
 $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
+$sLogo = siteinfo_shortcodes::sc_logo();
+
+echo $sLogo; 
+// $frm->imagepicker('sitelogo',$pref['sitelogo'],'_common')
+
+
 $text .= "
 						</td>
 					</tr>

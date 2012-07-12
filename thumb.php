@@ -32,6 +32,8 @@ define('e107_INIT', true);
 
 $thumbpage = new e_thumbpage();
 
+
+
 if(!$thumbpage->checkSrc())
 {
 	die(' Access denied!');
@@ -59,6 +61,11 @@ class e_thumbpage
 	 * @var string source path modified/sanitized
 	 */
 	protected $_src_path = null;
+	
+	
+	/** Stores watermark prefs 
+	 */
+	protected $_watermark = array();
 
 	/**
 	 * Constructor - init paths
@@ -116,7 +123,20 @@ class e_thumbpage
 	
 		// basic Admin area detection - required for proper path parsing
 		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
+		$e107->set_urls(false);
+			
+		$pref = $e107->getPref(); //TODO optimize/benchmark
 		
+		$this->_watermark = array(
+			'activate'	=> vartrue($pref['watermark_activate'], false),
+			'text'		=> vartrue($pref['watermark_text']),
+			'size'		=> vartrue($pref['watermark_size'], 20),
+			'pos'		=> vartrue($pref['watermark_pos'],"BR"),
+			'color'		=> vartrue($pref['watermark_color'],'fff'),
+			'font'		=> vartrue($pref['watermark_font']),
+			'opacity'	=> vartrue($pref['watermark_opacity'], 20)		
+		);	
+				
 		// parse request
 		$this->parseRequest();
 	}
@@ -229,21 +249,20 @@ class e_thumbpage
 		{
 			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
 		}
-
-		//TODO Move to $_SESSION and activate based on width/height ie. watermark all images larger than....
-		// ie. prevent user tampering with URLs. 
-		if(isset($this->_request['wm']))
+	
+		// Watermark Option - See admin->MediaManager->prefs for details. 
+		
+		if($this->_watermark['activate'] < $options['w'] 
+		|| $this->_watermark['activate'] < $options['aw']
+		|| $this->_watermark['activate'] < $options['h']
+		|| $this->_watermark['activate'] < $options['ah']
+		)
 		{
 			$tp = e107::getParser();
+			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
+			$this->_watermark['font'] =  realpath($tp->replaceConstants($this->_watermark['font'],'rel'));
 			
-			$tmp = explode("|",$this->_request['wm']);
-			
-			$tmp[4] = $tp->createConstants($tmp[4], 'mix');
-			$tmp[4]	= realpath($tp->replaceConstants($tmp[4],'rel'));
-			
-			$thumb->WatermarkText($tmp);
-			//	$alignment='BR', $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend=''
-			
+			$thumb->WatermarkText($this->_watermark);			
 		}
 	
 	
@@ -261,7 +280,7 @@ class e_thumbpage
 		$ret['h'] = isset($this->_request['h']) ? intval($this->_request['h']) : $ret['w'];
 		$ret['aw'] = isset($this->_request['aw']) ? intval($this->_request['aw']) : false;
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
-		$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
+	//	$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
 		return $ret;
 	}
 
