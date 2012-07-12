@@ -2743,6 +2743,10 @@ class e_admin_controller_ui extends e_admin_controller
 					break;
 				}
 			break;
+			
+			case 'append':
+				//TODO - append value to existing field value. eg. userclasses. 
+			break;
 
 			default:
 				$field = $trigger[0];
@@ -2827,6 +2831,7 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function convertToData(&$data)
 	{
 		$model = new e_model($data);
+	
 		foreach ($this->getFields() as $key => $attributes)
 		{
 			$value = vartrue($attributes['dataPath']) ? $model->getData($attributes['dataPath'])  : $model->get($key);
@@ -2853,7 +2858,7 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'ip': // TODO - ask Steve if this check is required
 					//if(strpos($value, '.') !== FALSE)
 					{
-						$value = trim($value) ? e107::getInstance()->ipEncode($value) : '';
+						$value = trim($value) ? e107::getIPHandler()->ipEncode($value) : '';
 					}
 				break;
 
@@ -2867,6 +2872,7 @@ class e_admin_controller_ui extends e_admin_controller
 						$value = implode(',', $value);
 					}
 				break;
+	
 			}
 			if(vartrue($attributes['dataPath']))
 			{
@@ -3634,7 +3640,24 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListBatch($selected, $field, $value)
 	{
-		$cnt = $this->getTreeModel()->update($field, "'".$value."'", $selected, $value, false);
+		// special exceptions
+		
+		if($value == '#delete') // see admin->users
+		{
+			$val = "''";
+			$value = "(empty)";	
+		}	
+		elseif($value == "#null")
+		{
+			$val = null;
+			$value = "(empty)";
+		}
+		else
+		{
+			$val = "'".$value."'";	
+		}
+		
+		$cnt = $this->getTreeModel()->update($field, $val, $selected, $value, false);
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
