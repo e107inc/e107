@@ -606,6 +606,8 @@ define('SITEADMIN', $pref['siteadmin']);
 define('SITEADMINEMAIL', $pref['siteadminemail']);
 define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
 define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
+define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
+
 
 /* Withdrawn 0.8
 // legacy module.php file loading.

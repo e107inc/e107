@@ -158,7 +158,13 @@ class e_file
 			{
 				$omit = array($omit);
 			}
+			
+			if(count($omit))
+			{
+				$this->fileFilter = $omit;	
+			}
 		}
+		
 		while (false !== ($file = readdir($handle)))
 		{
 			if(is_dir($path.'/'.$file))
