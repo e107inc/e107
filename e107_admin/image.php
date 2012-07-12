@@ -1082,7 +1082,7 @@ class media_admin_ui extends e_admin_ui
 		$f = e107::getFile()->get_file_info($oldpath,TRUE);
 		
 	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
-		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
 			// $mes->addWarning($newpath." already exists and was renamed during import.");	
 			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
@@ -1135,9 +1135,11 @@ class media_admin_ui extends e_admin_ui
 		$fl = e107::getFile();
 
 		$fl->setFileInfo('all');
-		$files = $fl->get_files(e_MEDIA."temp/");
+		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
+		$files = $fl->get_files(e_MEDIA."temp/",'',$rejectArray);
+		
 		e107::js('core','core/admin.js','prototype');
-	//	e107::getJs()->requireCoreLib('core/admin.js');
+
 
 		//TODO Detect XML file, and if found - read that instead of the directory.
 
@@ -1170,6 +1172,7 @@ class media_admin_ui extends e_admin_ui
 									<th class='center'>".LAN_FILE."</th>
 									<th >Title</th>
 									<th >Caption</th>
+									<th >Author</th>
 									<th>Mime Type</th>
 									<th>File Size</th>
 									<th>".LAN_DATESTAMP."</th>
@@ -1181,15 +1184,18 @@ class media_admin_ui extends e_admin_ui
 		$c = 0;
 		foreach($files as $f)
 		{
-
+			$default = $this->getFileXml($f['fname']);
+			
 			$text .= "
 			
 			<tr>
 				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'])."</td>
 				<td class='center'>".$this->preview($f)."</td>			
 				<td>".$f['fname']."</td>
-				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $f['fname']))."</td>
-				<td>".$frm->textarea('batch_import_diz['.$c.']', $_POST['batch_import_diz'][$c])."</td>
+				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $default['title']))."</td>
+				<td><textarea name='batch_import_diz['.$c.']' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description'])."</textarea></td>
+			
+				<td><a href='mailto:".$default['authorEmail']."'>".$default['authorName']."</a></td>
 				<td>".$f['mime']."</td>
 				<td>".$f['fsize']."</td>
 				<td>".e107::getDateConvert()->convert_date($f['modified'])."</td>
@@ -1201,7 +1207,7 @@ class media_admin_ui extends e_admin_ui
 			$c++;
 		}
 
-
+		// <td>".$frm->textarea('batch_import_diz['.$c.']', ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description']))."</td>
 
 		$text .= "
 				</tbody>
@@ -1235,6 +1241,65 @@ class media_admin_ui extends e_admin_ui
 
 		echo $mes->render().$text;
 	}
+
+
+
+	// Check for matching XML file name and if found, return data from it during import. 
+	function getFileXml($imgFile)
+	{
+		list($file,$ext) = explode(".",$imgFile);
+		
+		$xmlFile = e_UPLOAD.$file.".xml";
+		
+		if(is_readable($xmlFile))
+		{
+			$data = file_get_contents($xmlFile);
+			$tmp = preg_match("/<author name=(?:'|\")([^'\"]*)/i",$data,$authorName);
+			$tmp = preg_match("/email=(?:'|\")([^'\"]*)/i",$data,$authorEmail);
+			$tmp = preg_match("/<title>(.*)<\/title>/i",$data,$title);
+			$tmp = preg_match("/<description>(.*)<\/description>/i",$data,$diz);
+			
+			return array(
+				'title'			=> $title[1],
+				'description'	=> $diz[1],
+				'authorName'	=> $authorName[1],
+				'authorEmail'	=> $authorEmail[1]
+			);				
+		}
+			
+		return array('title'=>basename($file),'description'=>'','authorName'=>'','authorEmail'=>'');
+		
+		/*
+		Example: matchingfilename.xml (ie. same name as jpg|.gif|.png etc)
+		 
+		<?xml version='1.0' encoding='utf-8' ?>
+		<e107Media>
+			<item file='filename.jpg' date='2012-10-25'>
+		   		<author name='MyName' url='http://mysite.com' email='email@email.com' />
+		   		<title>Title of File</title>
+				<description>Description of File</description>
+				<category></category>
+			</item>  
+		</e107Media>
+
+		*/
+					
+	}
+
+
+
+	function deleteFileXml($imgFile)
+	{
+		list($file,$ext) = explode(".",$imgFile);
+		
+		$xmlFile = e_UPLOAD.$file.".xml";
+		
+		if(file_exists($xmlFile))
+		{
+			unlink($xmlFile);	
+		}			
+	}
+
 
 
 	function batchImport()
@@ -1353,6 +1418,7 @@ class media_admin_ui extends e_admin_ui
 				if($sql->db_Insert("core_media",$insert))
 				{
 					$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS);
+					$this->deleteFileXml($f['fname']);
 				}
 				else
 				{
@@ -1371,8 +1437,9 @@ class media_admin_ui extends e_admin_ui
 		if($type == 'image')
 		{
 			$url = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=100', true);
+			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
 			//echo $url;
-			return "<img src='".$url."' alt=\"".$f['name']."\" width='50px' />";
+			return "<a class='e-dialog' href='".$large."'><img src='".$url."' alt=\"".$f['name']."\" width='100px' /></a>";
 		}
 		else
 		{
