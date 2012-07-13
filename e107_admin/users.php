@@ -1065,21 +1065,23 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 	function user_class($curval,$mode)
 	{
-		if($mode == 'write')
-		{
-			$frm = e107::getForm();
-			return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');	
-		}
-		
-		$e_userclass = new user_class;
-		$list = $e_userclass->uc_required_class_list("classes");
+				
+		$e_userclass 	= new user_class;
+		$frm 			= e107::getForm();
+		$list 			= $e_userclass->uc_required_class_list("classes");
    		
 		if($mode == 'filter')
 		{
 			return $list;	
 		}
 		
-		//FIXME userclasses are NOT be saved since they are an array. 
+		if($mode == 'write') //FIXME userclasses are NOT be saved since they are an array. 
+		{		
+			return $frm->selectbox('user_class', $list, $curval, 'description=1&multiple=1');
+			// return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');// doesn't work correctly. 	
+		}
+		
+		
 		//FIXME TODO - option to append userclass to existing value. 
 		if($mode == 'batch')
 		{
