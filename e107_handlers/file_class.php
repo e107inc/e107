@@ -115,6 +115,13 @@ class e_file
 		$this->finfo = $val;
 		return $this;
 	}
+	
+	
+	public function setFileFilter($filter)
+	{
+		$this->fileFilter = $filter;	
+		return $this;	
+	}
 
 	/**
 	 * Read files from given path
@@ -157,11 +164,6 @@ class e_file
 			if (!is_array($omit))
 			{
 				$omit = array($omit);
-			}
-			
-			if(count($omit))
-			{
-				$this->fileFilter = $omit;	
 			}
 		}
 		
