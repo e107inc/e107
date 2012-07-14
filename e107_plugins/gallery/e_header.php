@@ -16,6 +16,7 @@ e107::css('gallery', 'gallery_style.css');
 $gp = e107::getPlugPref('gallery');
 
 e107::js('inline',"
+
 $(document).ready(function() 
 {
 	
@@ -23,8 +24,8 @@ $(document).ready(function()
 		fx: 		'".varset($gp['slideshow_effect'],'scrollHorz')."',
 		next:		'.gal-next',
 		prev: 		'.gal-prev',
-		speed:		1000,  // speed of the transition (any valid fx speed value) 
-    	timeout:	4000,
+		speed:		".varset($gp['slideshow_duration'],1000).",  // speed of the transition (any valid fx speed value) 
+    	timeout:	".varset($gp['slideshow_freq'],4000).",
 		slideExpr:	'.slide', 
 		
 		activePagerClass: '.gallery-slide-jumper-selected',//,
@@ -47,6 +48,12 @@ $(document).ready(function()
     	$('#gallery-slideshow-content').cycle(go); 
     	return false; 
 	}); 
+	
+	$('#img.lb-close').on('live', function(e) {
+		$(this).attr('src','".e_PLUGIN."gallery/jslib/lightbox/images/close.png');
+	}); 
+
+
 
 });
 ");

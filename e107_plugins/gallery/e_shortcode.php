@@ -36,11 +36,11 @@ class gallery_shortcodes extends e_shortcode
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
 		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
-		$att 		= vartrue($parm) ? $parm : 'aw='.$w.'&ah='.$h ; // 'aw=190&ah=150';
+		$att 		= vartrue($parm) ? $parm : 'aw='.$w.'&ah='.$h.'&x=1' ; // 'aw=190&ah=150';
 		
 		$pop_w 		= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
 		$pop_h 		= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
-		$attFull 	= 'w='.$pop_w.'&h='.$pop_h;
+		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 		
 	//	echo "<br /><br />".$attFull;
 	
@@ -90,7 +90,8 @@ class gallery_shortcodes extends e_shortcode
 		$this->slideMode = TRUE;
 		$amount = ($parm) ? intval($parm) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$tp = e107::getParser();
-		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat);
+		$limit = varset($gp['slideshow_limit'],16);
+		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat,0,$limit);
 		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');		
 		
 		$count = 1;
@@ -123,7 +124,7 @@ class gallery_shortcodes extends e_shortcode
 		if($this->slideCount ==1 ){ return "gallery-jumper must be loaded after Gallery-Slides"; }
 			
 		$text = '';
-		for($i=1; $i < ($this->slideCount +1); $i++)
+		for($i=1; $i < ($this->slideCount); $i++)
 		{
 			$val = ($parm == 'space') ? "&nbsp;" : $i;					
 			$text .= '<a href="#" class="gallery-slide-jumper" id="gallery-jumper-'.$i.'">'.$val.'</a>';			

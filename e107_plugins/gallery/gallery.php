@@ -77,11 +77,12 @@ class gallery
 		$sc 		= e107::getScBatch('gallery',TRUE);
 					
 		$sc->total 	= e107::getMedia()->countImages($cat);
-		$sc->amount = 9; // TODO Add Pref. amount per page. 
+		$sc->amount = 12; // TODO Add Pref. amount per page. 
 		$sc->curCat = $cat;
 		$sc->from 	= ($_GET['frm']) ? intval($_GET['frm']) : 0;
 		
 		$list 		= e107::getMedia()->getImages($cat,$sc->from,$sc->amount);
+		$catname	= $tp->toHtml($this->catList[$cat]['media_cat_title'],false,'defs');
 	
 		$inner = "";	
 		
@@ -95,7 +96,7 @@ class gallery
 		$text .= $inner; 	
 		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
 		
-		e107::getRender()->tablerender("Gallery :: ".str_replace("_"," ",$cat),$mes->render().$text);
+		e107::getRender()->tablerender("Gallery :: ".$catname,$mes->render().$text);
 		
 	}
 	

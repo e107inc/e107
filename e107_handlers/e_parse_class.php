@@ -1791,7 +1791,9 @@ class e_parse
 
 		if($raw) $url = $this->createConstants($url, 'mix');
 		
-		$thurl = ($full ? SITEURL : e_HTTP).'thumb.php?src='.$url.'&amp;';
+		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
+		
+		$thurl = 'src='.$url.'&amp;';
 				
 		if(vartrue($options['aw']) || vartrue($options['ah']))
 		{
@@ -1803,14 +1805,15 @@ class e_parse
 			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
 		}
 		
-		if(vartrue($options['wm']))//TODO remove from URL. set session. 
+		
+		if(vartrue($options['x']))//base64 encode url
 		{
-			$thurl .= "&amp;wm=".$this->replaceConstants($options['wm'],'abs');	
+			$thurl = 'id='.base64_encode($thurl);
 		}
 
 	//	echo "<br /><br />".$thurl; 
 		
-		return $thurl;
+		return $baseurl.$thurl;
 	}
 
 	/**

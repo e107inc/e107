@@ -47,6 +47,7 @@ class GdWatermarkTTF
 	protected $workingImage;
 	protected $newImage;
 	protected $options;	
+	protected $parms;
 		
 	private function DebugMessage($val)
 	{
@@ -55,26 +56,49 @@ class GdWatermarkTTF
 	
 	private function shadow_text($im, $size, $angle, $x, $y, $font, $text,$opacity=100)
   	{
-    	$black = imagecolorallocatealpha($im, 0, 0, 0, $opacity);
-    	$white = imagecolorallocatealpha($im, 255, 255, 255, $opacity);
-    	imagettftext($im, $size, 0, $x + 1, $y + 1, $black, $font, $text);
-    	imagettftext($im, $size, 0, $x + 0, $y + 1, $black, $font, $text);
+  		$col = $this->hex2rgb($this->parms['color']);
+		$scol = $this->hex2rgb($this->parms['shadowcolor']);
+		
+    	$shadowcolor = imagecolorallocatealpha($im, $scol[0], $scol[1], $scol[2], $opacity);
+    	$white = imagecolorallocatealpha($im, $col[0], $col[1], $col[2], $opacity);
+		
+    	imagettftext($im, $size, 0, $x + 1, $y + 1, $shadowcolor, $font, $text);
+    	imagettftext($im, $size, 0, $x -1, $y + 1, $shadowcolor, $font, $text);
    	 	imagettftext($im, $size, 0, $x + 0, $y + 0, $white, $font, $text);
   	}
 	
-	
+	private function hex2rgb($hex) {
+	   $hex = str_replace("#", "", $hex);
+	 
+	   if(strlen($hex) == 3) {
+	      $r = hexdec(substr($hex,0,1).substr($hex,0,1));
+	      $g = hexdec(substr($hex,1,1).substr($hex,1,1));
+	      $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+	   } else {
+	      $r = hexdec(substr($hex,0,2));
+	      $g = hexdec(substr($hex,2,2));
+	      $b = hexdec(substr($hex,4,2));
+	   }
+	   $rgb = array($r, $g, $b);
+	   //return implode(",", $rgb); // returns the rgb values separated by commas
+	   return $rgb; // returns an array with the rgb values
+	}	
+
+
+
 	
 	// Taken from http://phpthumb.sourceforge.net/index.php?source=phpthumb.filters.php
 	// public function WatermarkText($text, $size=12, $alignment='BR', $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend='', &$that) 
 	public function WatermarkText($parms,  &$that) 
 	{
+		$this->parms = $parms;
 		$text		= $parms['text'];
 		$size 		= $parms['size'];
 		$alignment	= $parms['pos'];
 		$hex_color	= $parms['color'];
 		$ttffont	= $parms['font'];
 		$opacity	= (isset($parms['opacity'])) ? $parms['opacity'] : 100; 
-		$margin		= 30; // (isset($parms[6])) ? $parms[6] : 25; 
+		$margin		= $parms['margin']; // 30; // (isset($parms[6])) ? $parms[6] : 25; 
 		$angle		= 0; // $parms['angle'];
 		$bg_color	= false;
 		$bg_opacity	= 0;
