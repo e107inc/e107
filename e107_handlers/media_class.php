@@ -246,7 +246,8 @@ class e_media
 		
 		
 		$qry = "SELECT * FROM #core_media_cat ";
-		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : "";
+		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : " (1) ";
+		$qry .= "AND media_cat_class IN (".USERCLASS_LIST.") ";
 		$qry .= "ORDER BY media_cat_order";
 		
 		e107::getDb()->db_Select_gen($qry);
