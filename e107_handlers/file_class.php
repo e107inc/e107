@@ -122,6 +122,31 @@ class e_file
 		$this->fileFilter = $filter;	
 		return $this;	
 	}
+	
+	/**
+	 * Clean and rename file name
+	 * @param $f array as returned by get_files();
+	 * @param $rename boolean  - set to true to rename file. 
+	 */
+	public function cleanFileName($f,$rename=false)
+	{
+		$fullpath = $f['path'].$f['fname'];
+		$newfile = preg_replace("/[^a-z0-9-\.]/", "-", strtolower($f['fname']));	
+		$newpath = $f['path'].$newfile;
+		
+		if($rename == true)
+		{
+						
+			if(!rename($fullpath,$newpath))
+			{
+				$f['error'] = "Couldn't rename $fullpath to $newpath";
+			}	
+		}
+		
+		$f['fname'] = $newfile;
+			
+		return $f;	
+	}
 
 	/**
 	 * Read files from given path

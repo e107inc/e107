@@ -294,7 +294,8 @@ class e_media
 		if(strpos($cat,"+") || !$cat)
 		{
 			$cat = str_replace("+","",$cat);
-			$inc[] = "media_category = '_common_image' ";
+			// $inc[] = "media_category = '_common_image' ";
+			$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
 		}
 		if($cat)
 		{

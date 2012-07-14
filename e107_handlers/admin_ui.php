@@ -3539,6 +3539,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListDeleteBatch($selected)
 	{
+	
 		if(!$this->getBatchDelete())
 		{
 			e107::getMessage()->add(LAN_UI_BATCHDEL_ERROR, E_MESSAGE_WARNING);
@@ -3557,11 +3558,13 @@ class e_admin_ui extends e_admin_controller_ui
 				// already confirmed, resurrect selected values
 				$selected = array_map('intval', explode(',', $this->getPosted('delete_confirm_value')));
 			}
+			
 		}
 
 		// delete one by one - more control, less performance
 		// pass  afterDelete() callback to tree delete method
 		$set_messages = true;
+	
 		foreach ($selected as $id)
 		{
 			$data = array();
@@ -3578,11 +3581,16 @@ class e_admin_ui extends e_admin_controller_ui
 					}
 				}
 			}
+			else
+			{
+				$set_messages = "Couldn't get model";	
+			}
 		}
 
 		//$this->getTreeModel()->delete($selected);
 		if($set_messages) $this->getTreeModel()->setMessages();
-		$this->redirect();
+		exit;
+		//$this->redirect();
 	}
 
 	/** TODO

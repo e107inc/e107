@@ -33,7 +33,7 @@
 
 /* SLIDESHOW */
 
-#gallery-slideshow-wrapper 			{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 660px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
+#gallery-slideshow-wrapper 			{ display:block; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 660px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto }
 
 #gallery-slideshow-content 			{ width: 3500px; }
 

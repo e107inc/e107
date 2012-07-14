@@ -128,13 +128,15 @@ class e_thumbpage
 		$pref = $e107->getPref(); //TODO optimize/benchmark
 		
 		$this->_watermark = array(
-			'activate'	=> vartrue($pref['watermark_activate'], false),
-			'text'		=> vartrue($pref['watermark_text']),
-			'size'		=> vartrue($pref['watermark_size'], 20),
-			'pos'		=> vartrue($pref['watermark_pos'],"BR"),
-			'color'		=> vartrue($pref['watermark_color'],'fff'),
-			'font'		=> vartrue($pref['watermark_font']),
-			'opacity'	=> vartrue($pref['watermark_opacity'], 20)		
+			'activate'		=> vartrue($pref['watermark_activate'], false),
+			'text'			=> vartrue($pref['watermark_text']),
+			'size'			=> vartrue($pref['watermark_size'], 20),
+			'pos'			=> vartrue($pref['watermark_pos'],"BR"),
+			'color'			=> vartrue($pref['watermark_color'],'fff'),
+			'font'			=> vartrue($pref['watermark_font']),
+			'margin'		=> vartrue($pref['watermark_margin'],30),
+			'shadowcolor'	=> vartrue($pref['watermark_shadowcolor'], '000000'),		
+			'opacity'		=> vartrue($pref['watermark_opacity'], 20)		
 		);	
 				
 		// parse request
@@ -144,7 +146,14 @@ class e_thumbpage
 	function parseRequest()
 	{
 		//echo 'e_query='.str_replace('&amp;', '&', e_QUERY);
-		parse_str(str_replace('&amp;', '&', e_QUERY), $this->_request);
+		$e_QUERY = e_QUERY;
+		
+		if(isset($_GET['id'])) // very-basic url-tampering prevention and path cloaking
+		{
+			$e_QUERY = base64_decode($_GET['id']);	
+		}
+		
+		parse_str(str_replace('&amp;', '&', $e_QUERY), $this->_request);
 		
 		// parse_str($_SERVER['QUERY_STRING'], $this->_request);
 		return $this;

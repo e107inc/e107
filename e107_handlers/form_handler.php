@@ -1799,11 +1799,11 @@ class e_form
 				if($value)
 				{
 				
-					if(!preg_match("/[a-zA-z0-9_-]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value))
+					if(!preg_match("/[a-zA-z0-9_-\s\(\)]+\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/",$value))
 					{
-						$value = "{e_IMAGE}filemanager/zip_32.png";	
-						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
-						return '<img src="'.$src.'" alt="'.$alt.'" class="e-thumb" />';
+						$icon = "{e_IMAGE}filemanager/zip_32.png";	
+						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');
+						return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
 					
 					if(vartrue($parms['thumb']))
@@ -1822,7 +1822,7 @@ class e_form
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = $src;
 						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="e-thumb" />';
-						$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
+						$value = '<a href="'.$src.'" class="e-dialog e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
 					else
 					{
