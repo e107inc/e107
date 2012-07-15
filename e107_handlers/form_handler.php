@@ -1587,7 +1587,7 @@ class e_form
 			if(!is_array($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
 			$parms = $attributes['readParms'];
 		}
-
+	
 		$tp = e107::getParser();
 		switch($field) // special fields
 		{
@@ -1741,7 +1741,7 @@ class e_form
 			break;
 
 			case 'text':
-
+				
 				if(vartrue($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
@@ -1754,6 +1754,14 @@ class e_form
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
+				if(vartrue($parms['link']) && $id && is_numeric($id) ) 
+				{
+					$link = str_replace('[id]',$id,$parms['link']);
+					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
+					$dialog = vartrue($parms['dialog']) ? "e-dialog" : "";
+					$value = "<a class='e-tip {$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
+				}
+				
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;

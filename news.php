@@ -46,7 +46,7 @@ if (!defined('ITEMVIEW'))
 	define('ITEMVIEW', varset($pref['newsposts'],15));
 }
 
-if (e_QUERY)
+if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format. 
 {
 
 	$tmp = explode(".",e_QUERY);
@@ -123,7 +123,8 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 //		DISPLAY NEWS IN 'CATEGORY' FORMAT HERE
 //------------------------------------------------------
 // Just title and a few other details
-if ($action == 'cat' || $action == 'all')
+
+if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
@@ -174,6 +175,22 @@ if ($action == 'cat' || $action == 'all')
 		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		ORDER BY n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
+	}
+	elseif(vartrue($_GET['tag']))
+	{
+		$tagsearch = preg_replace('#[^a-zA-Z0-9\-]#','', $_GET['tag']);
+		$query = "
+		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, nc.category_meta_keywords,
+		nc.category_meta_description{$rewrite_cols_cat}{$rewrite_cols}
+		FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_meta_keywords LIKE '%".$tagsearch."%'
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		ORDER BY n.news_datestamp DESC
+		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;	
+		$category_name = 'Tag: "'.$tagsearch.'"';
 	}
 
 	$newsList = array();

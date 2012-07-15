@@ -4566,8 +4566,8 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'userclass':
-					//case 'userclasses':
-						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], ''));
+					case 'userclasses':
+						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
 						foreach($classes as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
