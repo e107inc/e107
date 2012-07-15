@@ -446,6 +446,18 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
+	function sc_newstags($parm=5)
+	{
+		$tmp = explode(",",$this->news_item['news_meta_keywords']);
+		$words = array();
+		foreach($tmp as $val)
+		{
+			$words[] = "<a href='".e_BASE."news.php?tag=".$val."'>".$val."</a>";	
+			
+		}
+		return implode(", ",$words);			
+	}
+
 
 }
 ?>

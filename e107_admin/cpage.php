@@ -203,7 +203,7 @@ class page_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> 'ID',			'width'=>'5%', 			'forced'=> TRUE),
-            'page_title'	   	=> array('title'=> LAN_TITLE, 		'type' => 'method', 		'width'=>'auto'),
+            'page_title'	   	=> array('title'=> LAN_TITLE, 		'type' => 'text', 		'width'=>'auto','readParms'=>'link={e_BASE}page.php?[id]&dialog=1'),
 			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 		'width' => 'auto','nolist'=>true),
 			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 		'width' => 'auto'),
          	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'user', 		'width' => 'auto', 'thclass' => 'left'),

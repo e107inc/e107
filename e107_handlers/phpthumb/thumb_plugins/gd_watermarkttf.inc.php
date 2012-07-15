@@ -62,6 +62,9 @@ class GdWatermarkTTF
     	$shadowcolor = imagecolorallocatealpha($im, $scol[0], $scol[1], $scol[2], $opacity);
     	$white = imagecolorallocatealpha($im, $col[0], $col[1], $col[2], $opacity);
 		
+	//	imagefilter($shadowcolor, IMG_FILTER_GAUSSIAN_BLUR);
+		imagefilter($shadowcolor, IMG_FILTER_SELECTIVE_BLUR);
+		
     	imagettftext($im, $size, 0, $x + 1, $y + 1, $shadowcolor, $font, $text);
     	imagettftext($im, $size, 0, $x -1, $y + 1, $shadowcolor, $font, $text);
    	 	imagettftext($im, $size, 0, $x + 0, $y + 0, $white, $font, $text);
