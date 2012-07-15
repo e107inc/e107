@@ -1014,7 +1014,9 @@ class e_jsmanager
 				}
             	if($external)
 				{
-					echo '<script type="text/javascript" src="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'"></script>';
+					// Never use CacheID on a CDN script. 
+					$src = (substr($path,0,4)=='http') ? $path : $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					echo '<script type="text/javascript" src="'.$src.'"></script>';
 					echo "\n";
 					continue;
 				}
