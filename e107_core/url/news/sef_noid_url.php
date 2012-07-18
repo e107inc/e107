@@ -89,6 +89,11 @@ class core_news_sef_noid_url extends eUrlConfig
 						$r[0] = '';
 						if($page) $parm = array('page' => $page); // news?page=xxx
 				break;
+						
+				case 'all':
+						$r[0] = 'All';
+						if($page) $parm = array('page' => $page); // news/All?page=xxx
+				break;
 				
 				case 'category':
 				case 'short':

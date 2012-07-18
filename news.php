@@ -116,6 +116,11 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 			break;
 		}
 	}
+	elseif($action == 'all')
+	{
+		$newsRoute = 'list/all';
+		$newsUrlparms['id'] = $sub_action;
+	}
 	else $newsRoute = 'list/items';
 	$newsRoute = 'news/'.$newsRoute;
 
@@ -254,6 +259,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	//	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
 	//
 	//	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+
 	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
 	$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 	$url = rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
