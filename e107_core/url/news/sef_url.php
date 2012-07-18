@@ -80,6 +80,9 @@ class core_news_sef_url extends eUrlConfig
 				// 'View/<name:{sefsecure}>' 			=> array('view/item', 'mapVars' => array('news_sef' => 'name', 'news_id' => 'id'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				// 'View/<id:{number}>' 				=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 
+				## All news
+				'All' => array('list/all', 'allowVars' => array('page'), 'legacyQuery' => 'all.0.{page}'),
+				
 				## URL with ID and Title - no DB call, balanced performance!
 				'Short/<id:{number}>/<name:{sefsecure}>' => array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id', 'category_sef' => 'name'), 'legacyQuery' => 'cat.{id}.{page}'),
 				## fallback when name is not provided	

@@ -30,7 +30,8 @@ class core_news_sef_full_url extends eUrlConfig
 				'/' 										=> array('list/items', 'allowVars' => array('page'), 'legacyQuery' => 'default.0.{page}', ),
 				'Category' 									=> array('list/items', 'allowVars' => array('page'), 'legacyQuery' => 'default.0.{page}', ),
 				'Category/<name:{sefsecure}>' 				=> array('list/category', 'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'list.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
-
+				'All' 										=> array('list/all', 'allowVars' => array('page'), 'legacyQuery' => 'all.0.{page}'),
+				
 				'Short/<name:{sefsecure}>' 					=> array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_sef' => 'name'), 'legacyQuery' => 'cat.{name}.{page}', 'parseCallback' => 'categoryIdByTitle'),
 				'Short/<id:{number}>' 						=> array('list/short', 'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
 				'Day/<id:{number}>' 						=> array('list/day', 'allowVars' => array('page'), 'legacyQuery' => 'day.{id}.{page}'),
