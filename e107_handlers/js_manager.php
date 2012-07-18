@@ -653,9 +653,10 @@ class e_jsmanager
 		{		
 			foreach($this->_libraries[$this->_dependence] as $inc)
 			{
-				if(strpos($inc,".css"))
+				
+				if(strpos($inc,".css")!==false)
 				{
-					if(strpos($inc,"://")) // cdn 
+					if(strpos($inc,"://")!==false) // cdn 
 					{
 						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
 					}
@@ -677,7 +678,10 @@ class e_jsmanager
 			$runtime_location = 1;
 		}
 		
+		// Possibly no longer needed. 
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
+		// Causes the css error on jquery-ui as a css file is loaded as a js. 
+		/* 
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fp => $loc)
@@ -687,11 +691,11 @@ class e_jsmanager
 					$fp = $loc;
 					$loc = $runtime_location;
 				}
-				$this->addJs($type, $fp, $loc);
+				// $this->addJs($type, $fp, $loc);
 			}
 			return $this;
 		}
-		
+		*/
 		if($this->libDisabled($type,$runtime_location))
 		{
 			//echo $this->_dependence." :: DISABLED<br />";
