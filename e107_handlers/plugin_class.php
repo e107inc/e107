@@ -1265,13 +1265,11 @@ class e107plugin
 		}
 
 		if (varset($plug_vars['mainPrefs'])) //Core pref items <mainPrefs>
-
 		{
 			$this->XmlPrefs('core', $function, $plug_vars['mainPrefs']);
 		}
 
 		if (varset($plug_vars['pluginPrefs'])) //Plugin pref items <pluginPrefs>
-
 		{
 			$this->XmlPrefs($plug['plugin_path'], $function, $plug_vars['pluginPrefs']);
 		}
@@ -1289,6 +1287,11 @@ class e107plugin
 		if (varset($plug_vars['languageFiles']))
 		{
 			$this->XmlLanguageFiles($function, $plug_vars['languageFiles']);
+		}
+		
+		if (varset($plug_vars['bbcodes']))
+		{
+			$this->XmlBBcodes($function, $plug_vars);
 		}
 
 		$this->manage_icons($this->plugFolder, $function);
@@ -1535,6 +1538,42 @@ class e107plugin
 				$this->plugConfigFile = $url;
 			}
 		}
+	}
+	
+	
+	/**
+	 * Process XML Tag <bbcodes>
+	 * @return none
+	 */
+	function XmlBBcodes($function, $tag)
+	{
+		$mes = e107::getMessage();
+		//print_a($tag);
+		switch ($function)
+		{
+			case 'install': // Probably best to leave well alone
+				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
+				{
+					e107::getConfig('core')->add("e_imageresize",$tag['folder']); //FIXME - should be saved as an array; 
+					$mes->debug('Adding imageResize for: '.$tag['folder']);
+				}
+			
+			break;
+			
+			case 'uninstall': // Probably best to leave well alone
+				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
+				{
+					// e107::getConfig('core')->add("e_imageresize",$tag['folder']);
+				}
+			
+			break;
+		
+		
+		}
+		
+             
+		return;
+
 	}
 
 	/**

@@ -199,8 +199,8 @@ $(document).ready(function()
 		
 	
 		// Basic Delete Confirmation	
-		$("input.delete").click(function(){
-  			var answer = confirm($(this).attr("title")+ " ?");
+		$("input.delete,button.delete").click(function(){
+  			var answer = confirm($(this).attr("data-confirm"));
   			return answer // answer is a boolean
 		});
 		

@@ -131,7 +131,7 @@ class e_file
 	public function cleanFileName($f,$rename=false)
 	{
 		$fullpath = $f['path'].$f['fname'];
-		$newfile = preg_replace("/[^a-z0-9-\.]/", "-", strtolower($f['fname']));	
+		$newfile = preg_replace("/[^a-z0-9-\._]/", "-", strtolower($f['fname']));	
 		$newpath = $f['path'].$newfile;
 		
 		if($rename == true)
