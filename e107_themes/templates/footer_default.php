@@ -307,6 +307,7 @@ if (abs($_serverTime - $lastSet) > 120)
 //
 // browser cache control - FIXME - use this value as AJAX requests cache control!
 echo "\n<!-- ".md5(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'))." -->\n";
+echo "<div id='powered-by-e107' class='e-footer-info' style='display:block; opacity:1.0; text-align:center'>Proudly powered by <a href='http://e107.org'>e107</a></div>";
 echo "</body></html>";
 
 //
