@@ -2035,6 +2035,7 @@ class e_form
 			case 'url':
 			case 'email':
 			case 'text':
+			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);

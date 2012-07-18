@@ -373,8 +373,20 @@ class e107
 	public function setDirs($e107_dirs, $e107_config_override = array())
 	{
 		$override = array_merge((array) $e107_dirs, (array) $e107_config_override);
+
 		// override all
 		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
+		
+		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
+		{
+			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
+		}
+		
+		if(strpos($this->e107_dirs['SYSTEM_DIRECTORY'],$this->site_path) === false)
+		{
+			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
+		}
+		
 		return $this;
 	}
 
