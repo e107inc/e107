@@ -145,7 +145,6 @@ if($functions_ok == false)
 
 
 //obsolete $installer_folder_name = 'e107_install';
-
 include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
@@ -156,12 +155,21 @@ function check_class($whatever)
 	return TRUE;
 }
 
+$override = array();
+
+if(isset($_POST['previous_steps']))
+{
+	$tmp = unserialize(base64_decode($_POST['previous_steps']));
+	$override = (isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
+	unset($tmp);
+}
 
 //$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107_paths = array();
 $e107 = e107::getInstance();
-$e107->initInstall($e107_paths, realpath(dirname(__FILE__)));
-unset($e107_paths);
+$e107->initInstall($e107_paths, realpath(dirname(__FILE__)), $override);
+unset($e107_paths,$override);
+
 
 ### NEW Register Autoload - do it asap
 if(!function_exists('spl_autoload_register'))
@@ -193,6 +201,7 @@ if(isset($_GET['create_tables']))
 }
 
 header('Content-type: text/html; charset=utf-8');
+
 $e_install = new e_install();
 $e_forms = new e_forms();
 
@@ -201,6 +210,8 @@ $e_install->template->SetTag("installer_css_http", $_SERVER['PHP_SELF']."?object
 $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
 $e_install->renderPage();
+
+
 
 /**
  * Set Cookie
@@ -457,9 +468,14 @@ class e_install
 	{
 		$hash = e107::makeSiteHash($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
 		$this->e107->site_path = $hash;	
+		
+		$this->previous_steps['paths']['hash'] = $hash;
+
+		
 		foreach($this->e107->e107_dirs as $dir => $p)
 		{
 			$this->e107->e107_dirs[$dir] = str_replace("[hash]", $hash, $this->e107->e107_dirs[$dir]);
+					
 			if(!is_dir($this->e107->e107_dirs[$dir]))
 			{
 				@mkdir($this->e107->e107_dirs[$dir]);	
@@ -953,6 +969,9 @@ class e_install
 	private function stage_7()
 	{
 		global $e_forms;
+		
+		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['SYSTEM_DIRECTORY']);	
+		$this->e107->e107_dirs['CACHE_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['CACHE_DIRECTORY']);
 
 		$this->stage = 7;
 		$this->logLine('Stage 7 started');
@@ -1017,6 +1036,9 @@ class e_install
 		$e_forms->add_button("submit", LANINS_035);
 
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
+		
+	
+		
 		$this->logLine('Stage 7 completed');
 	}
 
@@ -1031,6 +1053,10 @@ class e_install
 	{
 
 		global $e_forms;
+	
+		$system_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
+		$media_dir = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
+		
 
 		// required for various core routines
 		if(!defined('USERNAME'))
@@ -1046,6 +1072,9 @@ class e_install
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_120);
 		$this->template->SetTag("stage_title", LANINS_071);
+		
+	
+		
 
 
 		$config_file = "<?php
@@ -1079,10 +1108,10 @@ class e_install
 \$HANDLERS_DIRECTORY  = '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}';
 \$LANGUAGES_DIRECTORY = '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}';
 \$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
-\$SYSTEM_DIRECTORY     = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
-\$DOWNLOADS_DIRECTORY = '{$this->e107->e107_dirs['DOWNLOADS_DIRECTORY']}';
-\$UPLOADS_DIRECTORY   = '{$this->e107->e107_dirs['UPLOADS_DIRECTORY']}';
-\$MEDIA_DIRECTORY   = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
+\$MEDIA_DIRECTORY	 = '{$media_dir}';
+\$SYSTEM_DIRECTORY    = '{$system_dir}';
+
+
 
 
 ";

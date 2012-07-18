@@ -509,7 +509,7 @@ class e_form
 		}
 		else
 		{	
-			return "<input class='{$class}' type='date' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
+			return "<input class='{$class}' type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
 		}
 		
 		

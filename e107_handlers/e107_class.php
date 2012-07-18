@@ -276,15 +276,17 @@ class e107
 	 */
 	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
 	{
+			
 		// Do some security checks/cleanup, prepare the environment
 		$this->prepare_request();
 		
-		$this->site_path = "[hash]"; // placeholder
+		//generated from mysql data at stage 5 of install. 
+		$this->site_path = isset($e107_config_override['site_path']) ? $e107_config_override['site_path'] : "[hash]"; // placeholder
+		
 		// folder info
 		//$this->e107_dirs = $e107_paths;
 		$this->setDirs($e107_paths, $e107_config_override);
-
-		
+	
 		// build all paths
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
