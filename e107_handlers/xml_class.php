@@ -886,6 +886,11 @@ class xmlClass
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
 				$table = $val['@attributes']['name'];
+				
+				if(!isset($val['item']))
+				{
+					continue;
+				}
 
 				foreach($val['item'] as $item)
 				{
