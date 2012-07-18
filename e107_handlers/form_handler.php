@@ -349,7 +349,8 @@ class e_form
 		}
 		else
 		{
-			$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
+			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
+			$default_url = e_IMAGE_ABS."generic/blank.gif";
 			$blank = TRUE;
 		}
 		
@@ -377,7 +378,7 @@ class e_form
 		
 		$ret .= $this->mediaUrl($cat, $label,$name_id);
 		$ret .= "</div>\n";
-		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; // to be hidden eventually. 
+		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
 		return $ret;
 		
