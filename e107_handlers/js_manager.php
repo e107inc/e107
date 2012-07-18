@@ -223,7 +223,7 @@ class e_jsmanager
 			
 				if(!$this->libDisabled($id,$vis))
 				{
-				//	echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
+				// 	echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
 					if(vartrue($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
@@ -237,7 +237,12 @@ class e_jsmanager
 			}
 		}
 		$this->_dependence = null;
-		$this->coreLib($core);
+	
+		if($vis != 'auto')
+		{
+			$this->coreLib($core);
+		}
+		
 
 		// Load stored in preferences plugin lib paths ASAP
 		$plug_libs = e107::getPref('e_jslib_plugin');
@@ -681,9 +686,10 @@ class e_jsmanager
 		// Possibly no longer needed. 
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
 		// Causes the css error on jquery-ui as a css file is loaded as a js. 
-		/* 
-		if(is_array($file_path))
+		 
+		if(is_array($file_path) )
 		{
+		// 	print_a($file_path);
 			foreach ($file_path as $fp => $loc)
 			{
 				if(is_numeric($fp))
@@ -691,11 +697,15 @@ class e_jsmanager
 					$fp = $loc;
 					$loc = $runtime_location;
 				}
-				// $this->addJs($type, $fp, $loc);
+				
+				$type = (strpos($fp,".css")!==false && $type == 'core') ? "core_css" : $type;
+				
+							
+				 $this->addJs($type, $fp, $loc);
 			}
 			return $this;
 		}
-		*/
+		
 		if($this->libDisabled($type,$runtime_location))
 		{
 			//echo $this->_dependence." :: DISABLED<br />";
