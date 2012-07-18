@@ -824,7 +824,7 @@ class e_admin_response
 		global $HEADER, $FOOTER, $CUSTOMHEADER, $CUSTOMFOOTER;
 		$HEADER = $FOOTER = '';
 		$CUSTOMHEADER = $CUSTOMFOOTER = array();
-
+		//TODO generic $_GET to activate for any page of admin. 
 		// New
 		if(!defined('e_IFRAME'))
 		{
@@ -2842,6 +2842,16 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			switch($attributes['type'])
 			{
+			
+				case 'password': //TODO more encryption options. 
+					if(strlen($value) < 30) // expect a non-md5 value if less than 32 chars. 
+					{
+						$value = md5($value);
+					}
+					
+				break;	
+			
+			
 				case 'datestamp':
 					if(!is_numeric($value))
 					{
