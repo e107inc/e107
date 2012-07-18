@@ -80,7 +80,7 @@ class e_media
 				'media_category'	=> $cat,
 				'media_datestamp'	=> $f['modified'],
 				'media_url'			=> $fullpath,
-				'media_userclass'	=> 0,
+				'media_userclass'	=> '0',
 				'media_name'		=> $f['fname'],
 				'media_author'		=> USERID,
 				'media_size'		=> $f['fsize'],

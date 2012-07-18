@@ -1046,6 +1046,7 @@ class e_form
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
 				$options['class'] = $options['class'] == 'action' ? 'action delete' : $options['class'];
+				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
@@ -1080,6 +1081,11 @@ class e_form
 		$options['class'] = $action;//shorthand
 		if(empty($label)) $label = $value;
 
+		if($action == 'delete')
+		{
+			$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+		}
+		
 		return "
 			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";

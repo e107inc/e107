@@ -25,14 +25,16 @@
 
 define('e107_INIT', true);
 
-//error_reporting(E_ALL);
+// error_reporting(E_ALL);
+
+
+error_reporting(0); // suppress all errors or image will be corrupted. 
+
 //require_once './e107_handlers/benchmark.php';
 //$bench = new e_benchmark();
 //$bench->start();
 
 $thumbpage = new e_thumbpage();
-
-
 
 if(!$thumbpage->checkSrc())
 {
@@ -300,6 +302,7 @@ class e_thumbpage
 			echo 'Headers already sent! ';
 			exit;
 		}
+
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');

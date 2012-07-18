@@ -137,7 +137,11 @@ if (!$chunks || $chunk == $chunks - 1) {
 
 
 // rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
-$result = e107::getMedia()->importFile($fileName,$_GET['for']);
+if($_GET['for'] !='') // leave in upload directory if no category given. 
+{
+	$result = e107::getMedia()->importFile($fileName,$_GET['for']);
+}
+
 $array = array("jsonrpc"=>"2.0", "result"=>$result,"id"=>"id");
 
 echo json_encode($array);

@@ -70,8 +70,8 @@ class media_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
-		'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
-		'main/import' 		=> array('caption'=> "Media Import", 'perm' => 'A|A2'),
+	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
+		'main/import' 		=> array('caption'=> "Media Upload/Import", 'perm' => 'A|A2'),
 		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
 	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
@@ -218,6 +218,7 @@ class media_form_ui extends e_admin_form_ui
 	{
 		$text = "";
 		$frm = e107::getForm();
+		$pref 	= e107::getPref();
 		
 		$options = array(
 			"news-image" 			=> "News Images",
@@ -226,6 +227,16 @@ class media_form_ui extends e_admin_form_ui
 		//	"featurebox-image" 		=> "Featurebox Images",
 		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
 		);
+		
+		if(vartrue($pref['e_imageresize']))
+		{
+			foreach($pref['e_imageresize'] as $val)
+			{
+			
+				$options[$k]		= ucfirst($k). " [img] bbcode";
+			}
+		}
+		
 		
 		
 		foreach($options as $key=>$title)
@@ -330,7 +341,7 @@ class media_admin_ui extends e_admin_ui
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,'writeParms'=>'multiple=1'),
 			
 		// Upload should be managed completely separately via upload-handler.
-       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
+       	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => 'auto'),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
@@ -370,7 +381,7 @@ class media_admin_ui extends e_admin_ui
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
 		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
 		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
-		'resize_dimensions'				=> array('title'=> "Resize Dimensions", 'type'=>'method', 'data'=>'str'),
+		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'text', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		'watermark_text'				=> array('title'=> 'Watermark Text', 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
@@ -513,6 +524,11 @@ class media_admin_ui extends e_admin_ui
 		{
 			$this->batchImport();
 		}
+		
+		if(varset($_POST['batch_import_delete']))
+		{
+			$this->batchDelete();
+		}
 
 		if(varset($_POST['update_options']))
 		{
@@ -640,7 +656,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
 		
-		
+		// if 'for' has no value, files are placed in /temp and not added to the db. 
 		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>No HTML5 support.</p>
 		</div>';
@@ -1136,9 +1152,10 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
 		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
-			// $mes->addWarning($newpath." already exists and was renamed during import.");	
+			$mes->addWarning($newpath." already exists.");	
 			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
-			$newpath = $this->getPath($f['mime']).'/'.$file;						
+			$newpath = $this->getPath($f['mime']).'/'.$file;
+			return false;			
 		}
 		
 		return $newpath;	
@@ -1198,12 +1215,18 @@ class media_admin_ui extends e_admin_ui
 
 		if(!vartrue($_POST['batch_import_selected']))
 		{
-			$mes->add("Scanning for new media (images, videos, files) in folder:  ".e_MEDIA."temp/", E_MESSAGE_INFO);
+			$mes->add("Scanning for new media (images, videos, files) in folder: <b> ".e_UPLOAD."</b>", E_MESSAGE_INFO);
 		}
 
-		if(!count($files) && !$_POST['batch_import_selected'])
+		if(!count($files))
 		{
-			$mes->add("No media Found! Please upload some files and then refresh this page.", E_MESSAGE_INFO);
+			if(!vartrue($_POST['batch_import_selected']))
+			{
+				$mes->add("No media Found! Please upload some files.", E_MESSAGE_INFO);
+			}
+			
+			$text = $this->uploadPage();
+			echo $mes->render().$text;
 			return;
 		}
 
@@ -1253,7 +1276,7 @@ class media_admin_ui extends e_admin_ui
 				<td class='center'>".$this->preview($f)."</td>			
 				<td>".$f['fname']."</td>
 				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $default['title']))."</td>
-				<td><textarea name='batch_import_diz['.$c.']' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description'])."</textarea></td>
+				<td><textarea name='batch_import_diz[".$c."]' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description'])."</textarea></td>
 			
 				<td><a href='mailto:".$default['authorEmail']."'>".$default['authorName']."</a></td>
 				<td>".$f['mime']."</td>
@@ -1265,17 +1288,23 @@ class media_admin_ui extends e_admin_ui
 				\n";
 				
 			$c++;
+			$lastMime = $f['mime'];
 		}
 
 		// <td>".$frm->textarea('batch_import_diz['.$c.']', ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description']))."</td>
 
+		if(!isset($_POST['batch_category']) && substr($lastMime,0,5)=='image')
+		{
+			$_POST['batch_category'] = "_common_image";
+		}
+		
 		$text .= "
 				</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						Import into Category: ".$frm->selectbox('batch_category',$this->cats);
+						Import into Category: ".$frm->selectbox('batch_category',$this->cats, $_POST['batch_category']);
 			
-			$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";				
+		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
 					
 			if(is_readable($waterMarkPath))
 			{
@@ -1285,11 +1314,8 @@ class media_admin_ui extends e_admin_ui
 						$text .= "
 						</div>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import');
-							
-			
-		
-							
+							".$frm->admin_button('batch_import_selected', "Import Selected Files", 'import')
+							.$frm->admin_button('batch_import_delete', "Delete Selected Files", 'delete');				
 			$text .= "
 						</div>
 					</fieldset>
@@ -1360,6 +1386,23 @@ class media_admin_ui extends e_admin_ui
 		}			
 	}
 
+	
+	function batchDelete()
+	{
+		foreach($_POST['batch_selected'] as $key=>$file)
+		{
+			if(trim($file) == '')
+			{
+				continue;
+			}	
+			
+			$oldpath = e_MEDIA."temp/".$file;
+			if(file_exists($oldpath))
+			{
+				unlink($oldpath);
+			}
+		}
+	}
 
 
 	function batchImport()
