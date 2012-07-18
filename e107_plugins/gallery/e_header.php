@@ -13,6 +13,14 @@ e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
 e107::js('gallery', 'jslib/jquery.cycle.all.js','jquery');
 e107::css('gallery', 'gallery_style.css');
 
+e107::css('inline', "
+/* Gallery CSS */
+a.lb-close			{ width:27px; height:27px; background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/close.png) no-repeat 0 0; }
+.lb-loader			{ background:url(".SITEURLBASE.e_PLUGIN_ABS."gallery/images/loading.gif) no-repeat 50% 49%; }
+
+",'jquery');
+
+
 $gp = e107::getPlugPref('gallery');
 
 e107::js('inline',"

@@ -78,6 +78,7 @@ lightbox = new Lightbox options
       var _this = this;
       return $('body').on('click', 'a[rel^=lightbox], area[rel^=lightbox]', function(e) {
         _this.start($(e.currentTarget));
+        console.log(this);
         return false;
       });
     };
@@ -105,8 +106,8 @@ lightbox = new Lightbox options
         "class": 'lb-loader'
       }).append($('<a/>', {
         "class": 'lb-cancel'
-      }).append($('<img/>', {
-        src: this.options.fileLoadingImage
+      }).append($('<span/>', {
+        "class": 'lb'
       }))))), $('<div/>', {
         "class": 'lb-dataContainer'
       }).append($('<div/>', {
@@ -121,8 +122,8 @@ lightbox = new Lightbox options
         "class": 'lb-closeContainer'
       }).append($('<a/>', {
         "class": 'lb-close'
-      }).append($('<img/>', {
-        src: this.options.fileCloseImage
+      }).append($('<span/>', {
+        "class": 'lb'
       }))))))).appendTo($('body'));
       $('#lightboxOverlay').hide().on('click', function(e) {
         _this.end();
