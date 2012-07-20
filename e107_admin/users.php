@@ -163,6 +163,7 @@ if (isset($_POST['update_options']))
 	$pref['track_online'] = $_POST['track_online'];
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
 	$pref['memberlist_access'] = $_POST['memberlist_access'];
+	$pref['signature_access']	= $_POST['signature_access'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -1028,6 +1029,14 @@ class users
 			<td style='width:50%' class='forumheader3'>".r_userclass("memberlist_access",$pref['memberlist_access'], "off", "public,member,guest,admin,main,classes,nobody")."
 			</td>
 			</tr>
+			
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_194.":</td>
+			<td style='width:50%' class='forumheader3'>". 
+				r_userclass('signature_access',$pref['signature_access'],'off',"member,admin,main,classes,nobody")
+				."</td>
+			</tr>
+	
 
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>

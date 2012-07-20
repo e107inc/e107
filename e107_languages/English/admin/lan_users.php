@@ -203,6 +203,7 @@ define("DUSRLAN_35", "Tracked threads");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 
+define('USRLAN_194', 'Signature may be modified by');
 define('USRLAN_219', 'Older than 30 days');     
 
 ?>

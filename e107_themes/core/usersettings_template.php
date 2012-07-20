@@ -76,6 +76,18 @@ $sc_style['PHOTO_UPLOAD']['pre'] = "
 $sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
 
 
+$sc_style['SIGNATURE']['pre']	= "	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
+	<tr>
+	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_120.req($pref['signup_option_signature'])."</td>
+	<td style='width:60%' class='forumheader2'>";
+	
+	
+$sc_style['SIGNATURE']['post']	= "<br />";
+
+$sc_style['SIGNATURE_HELP']['pre']	= "";
+$sc_style['SIGNATURE_HELP']['post']	= "	</td></tr>";
+
+
 $sc_style['XUP']['pre'] = "
 <tr>
 <td colspan='2' class='forumheader'>".LAN_435."</td>
@@ -152,15 +164,10 @@ $USERSETTINGS_EDIT = "
 	{USERCLASSES}
 	{USEREXTENDED_ALL}
 
-	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
-	<tr>
-	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_120.req($pref['signup_option_signature'])."</td>
-	<td style='width:60%' class='forumheader2'>
+
 	{SIGNATURE=cols=58&rows=4}
-	<br />
 	{SIGNATURE_HELP}
-	</td>
-	</tr>
+
 
 	<tr>
 	<td style='width:40%' class='forumheader3'>".LAN_122.req($pref['signup_option_timezone'])."</td>

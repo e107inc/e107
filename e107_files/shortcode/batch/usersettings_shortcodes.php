@@ -133,7 +133,11 @@ return $ret;
 SC_END
 
 SC_BEGIN SIGNATURE
-global $curVal;
+global $curVal,$pref;
+if(!check_class($pref['signature_access']))
+{
+	return;
+}
 parse_str($parm);
 $cols = (isset($cols) ? $cols : 58);
 $rows = (isset($rows) ? $rows : 4);
@@ -141,6 +145,11 @@ return "<textarea class='tbox signature' name='signature' cols='{$cols}' rows='{
 SC_END
 
 SC_BEGIN SIGNATURE_HELP
+global $pref;
+if(!check_class($pref['signature_access']))
+{
+	return;
+}
 return display_help("", 2);
 SC_END
 

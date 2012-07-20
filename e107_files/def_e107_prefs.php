@@ -166,7 +166,8 @@ City, State, Country
   'check_updates' => '1',
   'user_tracking' => 'cookie',
   'cookie_name' => 'e107cookie',
-  'email_item_class' => '253'			// Members only
+  'email_item_class' => '253',			// Members only
+  'signature_access' => '253'
 );
 
 ?>
