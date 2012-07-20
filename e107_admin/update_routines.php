@@ -1199,7 +1199,7 @@ function update_706_to_800($type='')
 		$med->import('download_thumb',e_FILE.'downloadthumbs');	
 	}
 	
-	$dl_files = $fl->get_files(e_DOWNLOAD, "","standard",5);
+	$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
 	$public_files = $fl->get_files(e_FILE.'public');
 	
 	if((count($dl_files) || count($public_files)) && !$sql->db_Select_gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' "))
