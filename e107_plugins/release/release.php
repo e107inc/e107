@@ -23,7 +23,7 @@ $tp = e107::getParser();
 e107::getDb()->db_Select_gen("SELECT * FROM #release ORDER BY release_type,release_date DESC");
 while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 {
-	echo "\t<".$row['release_type']." name='".$tp->toRss($row['release_name'])."' folder='".$tp->toRss($row['release_folder'])."' author='".$tp->toRss($row['release_author'])."' authorURL='".$row['release_authorURL']."' version='".$row['release_version']."' date='".$row['release_date']."' compatibility='".$row['release_compatibility']."' url='".$row['release_url']."' />\n";
+	echo "\t<".$row['release_type']." name='".$tp->toRss($row['release_name'])."' folder='".$tp->toRss(strtolower($row['release_folder']))."' author='".$tp->toRss($row['release_author'])."' authorURL='".$row['release_authorURL']."' version='".$row['release_version']."' date='".$row['release_date']."' compatibility='".$row['release_compatibility']."' url='".$tp->replaceConstants($row['release_url'],'full')."' icon='".$tp->replaceConstants($row['release_icon'],'full')."' />\n";
 }
 
 echo "</e107Release>";

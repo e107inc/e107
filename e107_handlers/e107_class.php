@@ -2191,8 +2191,16 @@ class e107
 		if (isset($_COOKIE)) array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
 		if (isset($_REQUEST)) array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
 
-		// TODO - better ajax detection method (headers when possible)
-		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
+		// A better way to detect an AJAX request. No need for "ajax_used=1";
+		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') 
+		{
+  			define('e_AJAX_REQUEST', true);
+		}
+		else
+		{
+			define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));	
+		}
+		
 		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
 
 		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST

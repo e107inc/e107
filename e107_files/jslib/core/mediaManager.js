@@ -1,13 +1,15 @@
 $(document).ready(function()
 {
 	
-	$(".e-dialog-save").click(function () { // FIXME TODO missing caret , text selection overwrite etc. 
+	$(".e-dialog-save").live("click", function(){// FIXME TODO missing caret , text selection overwrite etc. 
 		
-		//alert('hello');
+		
 		var newval = $('#bbcode_holder').val();
 	//	alert(newval);
 		var target 	= $(this).attr('data-target');
 		
+	
+		//alert('hello');
 		if(!target){return true; }
 		//('#' + target, window.top.document).insertAtCaret(newVal);
 		
@@ -103,7 +105,7 @@ $(document).ready(function()
 				// $(".e-media-select").click(function () {  
 		$(".e-media-select").live("click", function(){
   	
-    	
+    			
     		//	console.log(this);
 
 				var id			= $(this).attr('data-id');
@@ -143,14 +145,16 @@ $(document).ready(function()
 				$('div#' + target + "_prev", window.top.document).html(preview); // set new value
 				$('span#' + target + "_prev", window.top.document).html(preview); // set new value
 								
+				// see $frm->filepicker()
+				$('input#' + target , window.top.document).attr('value',path); // set new value
 			
-				
-				
 				eMediaAttribute(this);	
+				
+			
 			//	$(this).parent('#src').attr('value',preview); // set new value
 			//	$(this).parent('#preview').attr('src',preview);	 // set new value
 
-			return true;
+			return false;
 				
 	}); 			
 });	

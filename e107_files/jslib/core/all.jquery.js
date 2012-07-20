@@ -404,18 +404,32 @@ $(document).ready(function()
 
 		$(".e-ajax").click(function(){
 			
+			
   			var id = $(this).attr("href");
   			var src = $(this).attr("data-src");
-  			
+  			var target = $(this).attr("data-target"); // support for input buttons etc. 
+  			var loading = $(this).attr('data-loading'); // image to show loading. 
+		
+  			if(target != null)
+  			{			
+  				id = '#' + target; 
+  			}
+  						
+  			if(loading != null)
+  			{
+  				$(id).html("<img src='"+loading+"' alt='' />");
+  			}
+  					
   			if(src == null) // old way - href='myscript.php#id-to-target
   			{
   				var tmp = src.split('#');
   				id = tmp[1];
   				src = tmp[0];	
   			}
-  			var effect = $(this).attr("data-effect");
-  			
-  			$(id).load(src + " ",function() {
+  		//	var effect = $(this).attr("data-effect");
+  		
+  			$(id).load(src,function() {
+  				// alert(src);
     			// $(id).effect("slide");
 			});
 			
