@@ -194,8 +194,7 @@ class xmlClass
 	/**
 	 * Set Xml tags that should always return arrays.
 	 *
-	 *FIXME is this an array or a string???
-	 * @param object $array
+	 * @param object $string (comma separated)
 	 * @return xmlClass
 	 */
 	public function setOptArrayTags($string)
@@ -260,7 +259,7 @@ class xmlClass
 
 	/**
 	 * Get Remote file contents
-	 *
+	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string

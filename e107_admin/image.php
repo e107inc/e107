@@ -269,8 +269,9 @@ class media_form_ui extends e_admin_form_ui
 		$preview = basename($path);
 		
 		$bbcode = ($_GET['bbcode']=='file')  ? "file" : "";
-	
-		return "<input type='button' value='Select' class='e-media-select e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
+	// e-dialog-close
+		return "<input type='button' value='Select' class='e-media-select e-dialog-save e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 	}
 	
 

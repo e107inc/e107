@@ -20,6 +20,64 @@ if (!getperms("Z"))
 	exit;
 }
 
+// Only tested Locally so far. 
+if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax 
+{
+	$string =  base64_decode($_GET['src']);	
+	parse_str($string,$p);
+	$remotefile = $p['plugin_url'];
+	
+	$localfile = md5($remotefile.time()).".zip";
+	$status = "Downloading...";
+	
+	e107::getFile()->getRemoteFile($remotefile,$localfile);
+	
+	if(!file_exists(e_UPLOAD.$localfile))
+	{
+		echo 'There was a problem retrieving the file';
+		exit;	
+	}
+	
+	require_once(e_HANDLER."pclzip.lib.php");
+	$archive = new PclZip(e_UPLOAD.$localfile);
+	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0666));
+	
+	$dir 		= basename($unarc[0]['filename']);
+	
+	if($dir != $p['plugin_folder'])
+	{
+		
+		echo "<br />There is a problem with the data submitted by the author of the plugin.";
+		echo "dir=".$dir;
+		echo "<br />pfolder=".$p['plugin_folder'];
+		exit;
+	}	
+		
+	if($unarc[0]['folder'] ==1 && is_dir($unarc[0]['filename']))
+	{
+		$status = "Unzipping...";
+		$dir 		= basename($unarc[0]['filename']);
+		$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
+		
+		e107::getSingleton('e107plugin')->update_plugins_table();
+		e107::getDb()->db_Select_gen("SELECT plugin_id FROM #plugin WHERE plugin_path = '".$plugPath."' LIMIT 1");
+		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
+		$status = e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
+		unlink(e_UPLOAD.$localfile);
+		
+	}
+	else 
+	{
+		print_a($unarc);
+		$status = "There was a problem";	
+	}
+	
+	echo $status;
+
+//	echo "file=".$file;
+	exit;	
+}
+
 e107::coreLan('plugin', true);
 
 $e_sub_cat = 'plug_manage';
@@ -76,7 +134,7 @@ class pluginManager{
 		$this-> fields = array(
 
 		   		"plugin_checkboxes"		=> array("title" => "", "forced"=>TRUE, "width"=>"3%"),
-				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"image", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"icon", "width" => "5%", "thclass" => "middle center",'class'=>'center', "url" => ""),
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "30", "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle", "url" => ""),
@@ -166,6 +224,13 @@ class pluginManager{
 		{
         	$this -> pluginUpload();
 		}
+		
+		if($this->action == "online")
+		{
+        	$this -> pluginOnline();
+			return;
+		}
+		
 
 		if(isset($_POST['install-selected']))
 		{
@@ -190,6 +255,93 @@ class pluginManager{
 
 
 	}
+	
+	
+	function pluginOnline()
+	{
+		global $plugin, $frm;
+		$caption	= "Search Online";
+		
+		$e107 = e107::getInstance();
+		$xml = e107::getXml();
+	//	$file = "http://www.e107.org/releases.php"; //pluginfeed.php or similar. 
+		$file = "http://localhost:8080/e107_0.8/e107_plugins/release/release.php"; // temporary testing
+		
+		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
+		$xdata = $xml->loadXMLfile($file,'advanced');
+
+		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
+
+		// XML data array. 
+		foreach($xdata['plugin'] as $r)
+		{
+			$row = $r['@attributes'];
+			
+				$data[] = array(
+					'plugin_icon'			=> $row['icon'],
+					'plugin_name'			=> $row['name'],
+					'plugin_folder'			=> $row['folder'],
+					'plugin_version'		=> $row['version'],
+					'plugin_description'	=> vartrue($row['description']),
+					'plugin_category'		=> vartrue($row['category']),
+					'plugin_author'			=> vartrue($row['author']),
+					'plugin_website'		=> vartrue($row['authorUrl']),
+					'plugin_url'			=> $row['url'],
+					'plugin_notes'			=> ''
+					);	
+		}
+	
+	
+		
+		$text = "
+			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
+				<fieldset id='core-plugin-list'>
+					<legend class='e-hideme'>".$caption."</legend>
+					<table class='adminlist'>
+						".$frm->colGroup($this->fields,$this->fieldpref).
+						$frm->thead($this->fields,$this->fieldpref)."
+						<tbody>
+		";	
+		
+		foreach($data as $key=>$val	)
+		{
+			$text .= "<tr>";
+			$text .= "<td>checkbox</td>\n";
+			foreach($this->fieldpref as $k=>$v)
+			{
+				$text .= "<td class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $val[$v], $this->fields[$v])."</td>\n";
+			}
+			$text .= "<td class='center'>".$this->options($val)."</td>";
+			$text .= "</tr>";		
+			
+		}
+		
+		
+		$text .= "
+						</tbody>
+					</table>";
+		$text .= "
+				</fieldset>
+			</form>
+		";
+
+		$emessage 	= &eMessage::getInstance();
+		
+		
+		e107::getRender()->tablerender(ADLAN_98." :: ".$caption, $emessage->render(). $text);
+	}
+	
+	
+	
+	function options($data)
+	{		
+		$d = http_build_query($data,false,'&');
+		$url = e_SELF."?src=".base64_encode($d);
+		$id = 'plug_'.$data['plugin_folder'];
+		return "<div id='{$id}'><input type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='button e-ajax' value='Download and Install' data-src='".$url."' /></div>";				
+	}
+	
+	
 	// FIXME - move it to plugin handler, similar to install_plugin() routine
 	function pluginUninstall()
 	{
@@ -1037,8 +1189,11 @@ class pluginManager{
 				$var['avail']['text'] = EPL_ADLAN_23;
 				$var['avail']['link'] = e_SELF."?avail";
 
-				$var['upload']['text'] = EPL_ADLAN_38;
-				$var['upload']['link'] = e_SELF."?upload";
+			//	$var['upload']['text'] = EPL_ADLAN_38;
+			//	$var['upload']['link'] = e_SELF."?upload";
+				
+				$var['online']['text'] = "Search";
+				$var['online']['link'] = e_SELF."?online";
 
 				$keys = array_keys($var);
 

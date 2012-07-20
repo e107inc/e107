@@ -130,7 +130,7 @@ class e_file
 	 */
 	public function cleanFileName($f,$rename=false)
 	{
-		$fullpath = $f['path'].$f['fname'];
+		$fullpath = $f['path'].$f['fname'];		
 		$newfile = preg_replace("/[^a-z0-9-\._]/", "-", strtolower($f['fname']));	
 		$newpath = $f['path'].$newfile;
 		
@@ -283,6 +283,23 @@ class e_file
 
 		return $finfo;
 	}
+
+	// Grab a remote file and save it in the /temp directory. requires CURL
+	function getRemoteFile($remote_url, $local_file)
+	{
+        $fp = fopen(e_UPLOAD.$local_file, 'w'); // always download to temp directory. 
+       
+        $cp = curl_init($remote_url);
+        curl_setopt($cp, CURLOPT_FILE, $fp);
+       
+        $buffer = curl_exec($cp);
+       
+        curl_close($cp);
+        fclose($fp);
+       
+        return true;
+    }
+
 
 	/**
 	 * Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()

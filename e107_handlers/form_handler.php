@@ -404,13 +404,14 @@ class e_form
 			parse_str($sc_parameters, $sc_parameters);
 		}
 
-		$cat 		= $tp->toDB($sc_parameters['media']);	
-		$default 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' >".basename($default)."</span>";
+		$cat 		= vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
+		
+		$default_label 	= ($default) ? $default : "Choose a file";
+		$label 		= "<span id='{$name_id}_prev' >".basename($default_label)."</span>";
 			
 		
 		$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
-		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
+		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 
 			
 		return $ret;
 	
@@ -1587,7 +1588,7 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
-
+	
 		$parms = array();
 		if(isset($attributes['readParms']))
 		{
@@ -2070,6 +2071,12 @@ class e_form
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
+			break;
+			
+			case 'file': //TODO - thumb, image list shortcode, js tooltip...
+				$label = varset($parms['label'], 'LAN_EDIT');
+				unset($parms['label']);
+				$ret =  $this->filepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
 			break;
 
 			case 'icon':
