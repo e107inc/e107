@@ -43,6 +43,28 @@ class comment {
 	 * @param unknown_type $rating
 	 * @return unknown
 	 */
+	 
+	var $known_types = array(
+			0	=> "news",
+			1	=> 'content',
+			2	=> 'download',
+			3	=> 'faq',
+			4	=> 'poll',
+			5	=> 'docs',
+			6	=> 'bugtrack'
+	);
+	 	 
+	var $moderator = false;
+	
+	function comment() // __construct
+	{
+		if ((ADMIN && getperms("B")) || getperms('0')) // moderator perms. 
+		{
+			$this->moderator = true;	
+		}	
+		
+	}
+	 
 	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE)
 	{
 		//rating	: boolean, to show rating system in comment
@@ -298,6 +320,12 @@ class comment {
 			{
 			  while ($row1 = $sql_nc->db_Fetch()) 
 			  {
+			  	if($this->isPending($row1))
+				{
+					$sub_total = $sub_total - 1;
+					continue;	
+				}	
+				
 				if ($pref['nested_comments']) 
 				{
 				  $width = min($width + 3, 80);
@@ -326,7 +354,7 @@ class comment {
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex = FALSE)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
-		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $rater;
+		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $rater, $pref;
 
 
 		if ($this->getCommentPermissions() != 'rw') return;
@@ -407,8 +435,10 @@ class comment {
 						$e107cache->clear("comment");
 						return;
 					}
-
-					if (!$sql->db_Insert("comments", "0, '".intval($pid)."', '".intval($id)."', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '".$tp -> toDB($type, true)."', '0' "))
+					
+					$moderate = ($this->moderateComment($pref['comments_moderate'])) ? 2 : '0';
+					
+					if (!$sql->db_Insert("comments", "0, '".intval($pid)."', '".intval($id)."', '$subject', '$nick', '', '".$_t."', '$comment', $moderate, '$ip', '".$tp -> toDB($type, true)."', '0' "))
 					{
 						echo "<b>".COMLAN_323."</b> ".COMLAN_11;
 					}
@@ -419,7 +449,16 @@ class comment {
 							$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
 						}
 						$edata_li = array("comment_type" => $type, "comment_subject" => $subject, "comment_item_id" => $id, "comment_nick" => $nick, "comment_time" => $_t, "comment_comment" => $comment);
-						$e_event->trigger("postcomment", $edata_li);
+						
+						if($moderate == 2)
+						{
+							$e_event->trigger("commentpending", $edata_li);	
+						}
+						else
+						{
+							$e_event->trigger("postcomment", $edata_li);		
+						}
+											
 						$e107cache->clear("comment");
 						if(!$type || $type == "news")
 						{
@@ -444,6 +483,33 @@ class comment {
 		}
 	}
 
+	/** Check if comment should be moderated
+	 * 
+	 * @param $var = pref value of userclass. 
+	 * @return boolean true if it should be moderated. 
+	 */	
+	function moderateComment($var)
+	{	
+		if ($var == e_UC_MEMBER) // different behavior to check_class();
+		{
+			return (USER == TRUE && ADMIN == FALSE) ? TRUE : FALSE;
+		}
+		
+		return check_class($var);
+	}	
+	
+	function isPending($row)
+	{
+		list($comment_author_id,$comment_author_name) = explode(".", $row['comment_author'],2);	
+		
+		if($row['comment_blocked'] > 0 && ($comment_author_id != USERID ) && $this->moderator == false)
+		{
+			return true;
+		}
+		
+		return false;		
+	}
+	
 	/**
 	 * Enter description here...
 	 *
@@ -472,6 +538,27 @@ class comment {
 				****************************************/
 		}
 		return $type;
+	}
+	
+	
+	/**
+	 * Convert type number to (core) table string
+	 * @param integer|string $type
+	 * @return string
+	 */
+	public function getTable($type)
+	{
+		if (!is_numeric($type))
+		{
+			return $type;
+		}
+		else
+		{
+			if(varset($this->known_types[$type]))
+			{
+				return $this->known_types[$type];
+			}
+		}
 	}
 
 	/**
@@ -567,6 +654,11 @@ class comment {
 			$width = 0;
 			while ($row = $sql->db_Fetch())
 			{
+				if($this->isPending($row))
+				{
+					$comment_total = $comment_total - 1;
+					continue;	
+				}	
 				$lock = $row['comment_lock'];
 				// $subject = $tp->toHTML($subject);
 				if ($pref['nested_comments'])

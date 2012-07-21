@@ -480,6 +480,21 @@ class e107_db_debug {
 		$text .= "META_DESCRIPTION: '".META_DESCRIPTION."'<br />";
 		$text .= "<br />";
 		
+		$text .= "USERID: '".USERID."'<br />";
+		$text .= "USERNAME: '".USERNAME."'<br />";
+		$text .= "USERURL: '".USERURL."'<br />";
+		$text .= "USEREMAIL: '".USEREMAIL."'<br />";
+		$text .= "USERCLASS: '".USERCLASS."'<br />";
+		$text .= "USERREALM: '".USERREALM."'<br />";
+		$text .= "USERVIEWED: '".USERVIEWED."'<br />";
+		$text .= "USERVISITS: '".USERVISITS."'<br />";		
+		$text .= "USERIMAGE: '".USERIMAGE."'<br />";	
+		$text .= "USERSESS: '".USERSESS."'<br />";		
+		$text .= "USERJOINED: '".USERJOINED."'<br />";									
+	
+		$text .= "<br />";
+		
+		
 		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
 		$text .= "<br />";					
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";

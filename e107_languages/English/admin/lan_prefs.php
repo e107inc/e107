@@ -200,5 +200,7 @@ define('PRFLAN_218', 'If \'off\', puts users at increased risk of XSS exploits p
 define('PRFLAN_220', 'HTML Abuse filter (experimental)');
 define('PRFLAN_221', 'Blocks some unmatched tags for those allowed to post HTML');
 
+define('PRFLAN_222', 'Moderate Comments made by');
+define('PRFLAN_223', 'Comments will require manual approval by an admin prior to being visible to other users');
 
 ?>

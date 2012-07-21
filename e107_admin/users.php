@@ -164,6 +164,8 @@ if (isset($_POST['update_options']))
 	$pref['force_userupdate'] = $_POST['force_userupdate'];
 	$pref['memberlist_access'] = $_POST['memberlist_access'];
 	$pref['signature_access']	= $_POST['signature_access'];
+	$pref['user_new_period']	= $_POST['user_new_period'];
+
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -1037,6 +1039,12 @@ class users
 				."</td>
 			</tr>
 	
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_190.":<div class='smalltext field-help'>".USRLAN_191."</div></td>
+			<td style='width:50%' class='forumheader3'>
+			<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".LANDT_04s."
+			
+			</td></tr>
 
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>

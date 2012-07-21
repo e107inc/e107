@@ -215,6 +215,18 @@ function notify_newspost($data) {
 	$nt -> send('newspost', $data['news_title'], $message);
 }
 
+
+function notify_commentpending($data)
+{
+	global $nt, $tp;
+	foreach($data as $key=>$val)
+	{
+		$message .= "<br /><b>".$key.":</b> ".$val;
+	}	
+	$nt -> send('commentpending', NT_LAN_CM_1.': '.$data['comment_subject'], $message);
+}
+
+
 function notify_newsupd($data) {
 	global $nt, $tp;
 

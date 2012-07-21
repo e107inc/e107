@@ -35,4 +35,7 @@ define("NN_LAN_5", "News item deleted by admin");
 define("NF_LAN_1", "File Events");
 define("NF_LAN_2", "File uploaded by user");
 
+define("CM_LAN_1", "Comment Events");
+define("CM_LAN_2", "Comment posted by user which is pending approval");
+
 ?>

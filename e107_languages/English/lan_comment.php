@@ -57,6 +57,7 @@ define("COMLAN_327", 'Rating');
 define("COMLAN_328", 'Comments are locked');
 define("COMLAN_329", 'Unauthorized');
 define("COMLAN_330", 'IP:');
+define("COMLAN_331", "Pending Approval");
 
 define("COMLAN_TYPE_1", "news");
 define("COMLAN_TYPE_2", "download");

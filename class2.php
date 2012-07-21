@@ -257,6 +257,8 @@ define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
 
 define("e_UC_PUBLIC", 0);
+define('e_UC_NEWUSER', 247);	// Users in 'probationary' period
+define('e_UC_BOTS', 246);	// Reserved to identify search bots
 define("e_UC_MAINADMIN", 250);
 define("e_UC_READONLY", 251);
 define("e_UC_GUEST", 252);
@@ -1045,7 +1047,7 @@ function check_email($email) {
  */
 function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE)
 {
-	global $tp;
+	global $tp,$pref;
 	if($var == e_LANGUAGE){
 		return TRUE;
 	}
@@ -1081,10 +1083,12 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 		$_user = true;
 		$_admin = $peer['user_admin'] === 1;
 		$peer = false;
+		$_userjoined = $peer['user_joined']; 
 	} else {
 		$_adminperms = defined('ADMINPERMS') ? ADMINPERMS : '';
 		$_user = USER;
 		$_admin = ADMIN;
+		$_userjoined = USERJOINED;
 	}
 
 	//Test 'special' userclass numbers
@@ -1093,6 +1097,11 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 		if ($var == e_UC_MAINADMIN && getperms('0', $_adminperms))
 		{
         	return TRUE;
+		}
+		//&& $_admin == FALSE
+		if ($var == e_UC_NEWUSER  && (time() < ($_userjoined + (varset($pref['user_new_period'],0)*86400))))
+		{
+			return TRUE;
 		}
 
 		if ($var == e_UC_MEMBER && $_user == TRUE)
@@ -1503,8 +1512,10 @@ function init_session() {
 			define('USERCLASS', $result['user_class']);
 			define('USERREALM', $result['user_realm']);
 			define('USERVIEWED', $result['user_viewed']);
+			define('USERVISITS', $result['user_visits']);
 			define('USERIMAGE', $result['user_image']);
 			define('USERSESS', $result['user_sess']);
+			define('USERJOINED', $result['user_join']);
 
 			$update_ip = ($result['user_ip'] != USERIP ? ", user_ip = '".USERIP."'" : "");
 

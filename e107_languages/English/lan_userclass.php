@@ -16,4 +16,8 @@ define("UC_LAN_3", "Members");
 define("UC_LAN_4", "Read Only");
 define("UC_LAN_5", "Admin");
 define("UC_LAN_6", "Main Admin");
+
+define('UC_LAN_9','New Users');
+define('UC_LAN_10', 'Search Bots');
+
 ?>

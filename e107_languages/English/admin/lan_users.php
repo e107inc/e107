@@ -203,6 +203,9 @@ define("DUSRLAN_35", "Tracked threads");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 
+define('USRLAN_190', 'New user probationary period (days)');
+define('USRLAN_191', '(admin can impose restrictions during this period in some areas)');
+
 define('USRLAN_194', 'Signature may be modified by');
 define('USRLAN_219', 'Older than 30 days');     
 

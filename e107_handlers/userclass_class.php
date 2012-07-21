@@ -40,17 +40,23 @@ language - list of languages.
 
 function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 	global $pref;
-
+	
+	
 	$text = "<select class='tbox' name='{$fieldname}'>\n";
 	if (!$optlist || strpos($optlist, "public") !== FALSE) {
 		$s = ($curval == e_UC_PUBLIC) ?  "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_PUBLIC."' ".$s.">".UC_LAN_0."</option>\n";
 	}
-
+	if (!$optlist || strpos($optlist, "new") !== FALSE) {
+		$diz = varsettrue($pref['user_new_period']) ? " (".$pref['user_new_period']." ".LANDT_04s.")" : " ";
+		$s = ($curval == e_UC_NEWUSER) ? "selected='selected'" : "";
+		$text .= "<option  value='".e_UC_NEWUSER."' ".$s.">".UC_LAN_9.$diz."</option>\n";
+	}
 	if (!$optlist || strpos($optlist, "guest") !== FALSE) {
 		$s = ($curval == e_UC_GUEST) ? "selected='selected'" : "";
 		$text .= "<option  value='".e_UC_GUEST."' ".$s.">".UC_LAN_1."</option>\n";
 	}
+
 	if (!$optlist || strpos($optlist, "nobody") !== FALSE) {
 		$s = ($curval == e_UC_NOBODY) ? "selected='selected'" : "";
 		$text .= "<option value='".e_UC_NOBODY."' ".$s.">".UC_LAN_2."</option>\n";
@@ -221,12 +227,15 @@ function r_userclass_name($id) {
 	{
 		$sql = new db;
 		$class_names[e_UC_PUBLIC] = UC_LAN_0;
+		$class_names[e_UC_NEWUSER] = UC_LAN_9;
 		$class_names[e_UC_GUEST] = UC_LAN_1;
 		$class_names[e_UC_NOBODY] = UC_LAN_2;
 		$class_names[e_UC_MEMBER] = UC_LAN_3;
 		$class_names[e_UC_READONLY] = UC_LAN_4;
 		$class_names[e_UC_ADMIN] = UC_LAN_5;
 		$class_names[e_UC_MAINADMIN] = UC_LAN_6;
+		
+			
 		if ($sql->db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere"))
 		{
 			while($row = $sql->db_Fetch())
