@@ -321,7 +321,15 @@ class sitelinks
 		if ($linkInfo['link_button'])
 		{
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
-			$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
+			
+			if($linkInfo['link_button'][0]=='{')
+			{
+				$linkstart .= "<img src='".$tp->replaceConstants($linkInfo['link_button'],'abs')."' alt='' style='vertical-align:middle' />";	
+			}
+			else 
+			{
+				$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";	
+			}
 		}
 
 		// mobile phone support.
