@@ -533,6 +533,17 @@ class comment
 			return "Update Failed"; // trigger ajax error message. 
 		}		
 	}
+	
+	
+	function moderateComment($var)
+	{	
+		if ($var == e_UC_MEMBER) // different behavior to check_class();
+		{
+			return (USER == TRUE && ADMIN == FALSE) ? TRUE : FALSE;
+		}
+		
+		return check_class($var);
+	}
 			
 		
 	
@@ -650,7 +661,7 @@ class comment
 						'comment_author_email'	=> $tp->toDB($cuser_mail),
 						'comment_datestamp'		=> $_t,
 						'comment_comment'		=> $comment,
-						'comment_blocked'		=> (check_class($pref['comments_moderate']) ? 2 : 0), 
+						'comment_blocked'		=> ($this->moderateComment($pref['comments_moderate']) ? 2 : 0), 
 						'comment_ip'			=> $ip,
 						'comment_type'			=> $tp->toDB($type, true),
 						'comment_lock'			=> 0 //Not locked by default

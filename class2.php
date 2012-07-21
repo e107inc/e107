@@ -1549,6 +1549,7 @@ function init_session()
 		define('USEREMAIL', '');
 		define('USERCLASS_LIST', '');
 		define('USERCLASS', '');
+		define('USERJOINED', '');
 		return;
 	}
 
@@ -1580,12 +1581,14 @@ function init_session()
 		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
 		define('USERID', $user->getId());
 		define('USERNAME', $user->get('user_name'));
-		// define('USERURL', $user->get('user_homepage', false)); OLD?
+		define('USERURL', $user->get('user_homepage', false)); //required for BC
 		define('USEREMAIL', $user->get('user_email'));
 		define('USER', true);
 		define('USERCLASS', $user->get('user_class'));
 		define('USERIMAGE', $user->get('user_image'));
 		define('USERPHOTO', $user->get('user_sess'));
+		define('USERJOINED', $user->get('user_join'));
+		define('USERVISITS', $user->get('user_visits'));
 
 		define('ADMIN', $user->isAdmin());
 		define('ADMINID', $user->getAdminId());

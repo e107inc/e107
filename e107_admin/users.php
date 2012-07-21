@@ -995,8 +995,8 @@ class users_admin_ui extends e_admin_ui
 			</tr>
 				
 			<tr>
-			<td>Signatures may be entered by:</td>
-			<td>". // TODO LAN
+			<td>".USRLAN_194.":</td>
+			<td>". 
 				e107::getForm()->uc_select('signature_access',$pref['signature_access'],"member,admin,main,classes,nobody")
 				."</td>
 			</tr>
@@ -1006,7 +1006,7 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 			<td style='vertical-align:top'>".USRLAN_190.":</td>
 			<td>
-			<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".USRLAN_192."
+			<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".LANDT_04s."
 			<div class='field-help'>".USRLAN_191."</div>
 			</td></tr>
 	
