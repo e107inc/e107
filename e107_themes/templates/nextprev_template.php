@@ -95,8 +95,8 @@ $NEXTPREV_TEMPLATE['page_nav_last'] = '';
 $NEXTPREV_TEMPLATE['page_nav_next'] = '';
 
 $NEXTPREV_TEMPLATE['page_items_start'] = '';
-$NEXTPREV_TEMPLATE['page_item'] = '{bullet}&nbsp;<a class="cpage-np" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['page_item_current'] = '{bullet}&nbsp;<a class="cpage-np current" href="#" onclick="return false;" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['page_item'] = "{bullet}&nbsp;<a class='cpage-np' href='{url}' title=\"{url_label}\">{label}</a>";
+$NEXTPREV_TEMPLATE['page_item_current'] = "{bullet}&nbsp;<a class='cpage-np current' href='#' onclick='return false;' title=\"{url_label}\">{label}</a>";
 $NEXTPREV_TEMPLATE['page_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
