@@ -258,7 +258,7 @@ class userlogin
 			return $cookieval;
 		}
 
-		if (in_array(e_UC_NEWUSER,$class_list))
+		if (in_array(e_UC_NEWUSER,$class_list))//XXX Why not just add a check in check_class ?
 		{
 			if (time() > ($this->userData['user_join'] + (varset($pref['user_new_period'],0)*86400)))
 			{	// 'New user' probationary period expired - we can take them out of the class

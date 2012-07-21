@@ -196,9 +196,9 @@ define('USRLAN_189', 'Error sending email');
 
 define('USRLAN_190', 'New user probationary period (days)');
 define('USRLAN_191', '(admin can impose restrictions during this period in some areas)');
-define('USRLAN_192', 'days');
+define('USRLAN_192', ''); // was 'days' use value in lan_date.php instead. 
 define('USRLAN_193', 'Nothing changed - not saved');
-define('USRLAN_194', '');
+define('USRLAN_194', 'Signature may be modified by');
 define('USRLAN_195', '');
 
 //User Ranks phrases

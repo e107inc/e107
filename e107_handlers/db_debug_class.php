@@ -494,6 +494,8 @@ class e107_db_debug {
 		$text .= "e_MENU: '".e_MENU."'<br />";
 		$text .= "THEME: '".THEME."'<br />";
 		$text .= "THEME_LAYOUT: '".THEME_LAYOUT."'<br />";
+		
+		
 			
 		$text .= "<br />";
 		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
@@ -503,6 +505,20 @@ class e107_db_debug {
 		$text .= "<br />";
 		$text .= "META_OG: '".META_OG."'<br />";
 		$text .= "META_DESCRIPTION: '".META_DESCRIPTION."'<br />";
+		$text .= "<br />";
+		
+		$text .= "USERID: '".USERID."'<br />";
+		$text .= "USERNAME: '".USERNAME."'<br />";
+		$text .= "USERURL: '".USERURL."'<br />";
+		$text .= "USEREMAIL: '".USEREMAIL."'<br />";
+		$text .= "USERCLASS: '".USERCLASS."'<br />";
+		$text .= "USERREALM: '".USERREALM."'<br />";
+		$text .= "USERVIEWED: '".USERVIEWED."'<br />";
+		$text .= "USERVISITS: '".USERVISITS."'<br />";		
+		$text .= "USERIMAGE: '".USERIMAGE."'<br />";	
+		$text .= "USERSESS: '".USERSESS."'<br />";		
+		$text .= "USERJOINED: '".USERJOINED."'<br />";									
+	
 		$text .= "<br />";
 		
 		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
