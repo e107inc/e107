@@ -272,7 +272,7 @@ function nextprev_shortcode($parm = '')
 		}
 
 		$e_vars_loop = new e_vars();
-		$e_vars_loop->bullet = $bullet;
+		$e_vars_loop->bullet = stripslashes($bullet); // fix magicquotes 
 		$ret_items = array();
 		for($c = $loop_start; $c < $loop_end; $c++)
 		{
@@ -282,7 +282,7 @@ function nextprev_shortcode($parm = '')
 				$label = defset($pagetitle[$c], $pagetitle[$c]);
 			}
 			$e_vars_loop->url = str_replace('[FROM]', ($perpage * ($c + $index_add)), $url);
-			$e_vars_loop->label = $label ? $tp->toHTML($label, false, 'TITLE') : $c + 1;
+			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes($label), false, 'TITLE') : $c + 1; //quick fix servers with magicquotes - stripslashes()
 
 			if($c + 1 == $current_page)
 			{

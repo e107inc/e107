@@ -80,11 +80,15 @@ class pageClass
 	
 		if(defined('BULLET'))
 		{
-			$this->bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
+			$this->bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' class='icon' />";
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$this->bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="" class="icon" />';
+			$this->bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' class='icon' />";
+		}
+		elseif(file_exists(THEME.'images/bullet2.png'))
+		{
+			$this->bullet = "<img src='".THEME_ABS."images/bullet2.png' alt='' class='icon' />";
 		}
 
 		$this->debug = $debug;
@@ -102,6 +106,8 @@ class pageClass
 	function listPages()
 	{
 		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		if(!e107::getPref('listPages', false))
 		{
 			message_handler("MESSAGE", LAN_PAGE_1);
@@ -118,7 +124,7 @@ class pageClass
 				foreach($pageArray as $page)
 				{
 					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
-					$text .= $this->bullet." <a href='".$url."'>".$page['page_title']."</a><br />";
+					$text .= $this->bullet." <a href='".$url."'>".$tp->toHtml($page['page_title'])."</a><br />";
 				}
 				e107::getRender()->tablerender(LAN_PAGE_11, $text,"cpage_list");
 			}
