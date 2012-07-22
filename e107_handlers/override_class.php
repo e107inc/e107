@@ -106,7 +106,7 @@ class override {
 		} 
 		
 		
-		$tmp =  strpos($this->functions[$override],"::") ?  explode("::",$this->functions[$override]) : $this->functions[$override];
+		$tmp =  (varset($this->functions[$override]) && strpos($this->functions[$override],"::")) ?  explode("::",$this->functions[$override]) : $this->functions[$override];
 		if(is_array($tmp) && class_exists($tmp[0]))
 		{
 			$cl = new $tmp[0];

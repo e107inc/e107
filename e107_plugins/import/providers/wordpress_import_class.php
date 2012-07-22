@@ -146,7 +146,7 @@ class wordpress_import extends base_import_class
 		$target['user_visits'] 		= $source['user_visits'];
 		$target['user_class'] 		= $source['user_class'];
 		$target['user_perms'] 		= $source['user_perms'];
-		$target['user_xup'] 		= $source['user_xup'];
+	//	$target['user_xup'] 		= $source['user_xup'];
 		$target['user_language'] 	= $source['user_language'];
 		$target['user_country'] 	= $source['user_country'];
 		$target['user_location'] 	= $source['user_location'];
@@ -199,7 +199,7 @@ class wordpress_import extends base_import_class
 	//		$target['news_id']					= $source['ID'];
 			$target['news_title']				= $source['post_title'];
 			$target['news_sef']					= $source['post_name'];
-			$target['news_body']				= $source['post_content'];
+			$target['news_body']				= (vartrue($source['post_content'])) ? "[html]".$source['post_content']."[/html]" : ""; 
 		//	$target['news_extended']			= '';
 		//	$target['news_meta_keywords']		= '';
 		//	$target['news_meta_description']	= '';
@@ -251,7 +251,7 @@ class wordpress_import extends base_import_class
 	// 	$target['page_id']				= $source['ID']; //  auto increment
 		$target['page_title']			= $source['post_title'];
 		$target['page_sef']				= $source['post_name'];
-		$target['page_text']			= "[html]".$source['post_content']."[/html]";
+		$target['page_text']			= (vartrue($source['post_content'])) ? "[html]".$source['post_content']."[/html]" : ""; 
 		$target['page_metakeys']		= '';
 		$target['page_metadscr']		= '';
 		$target['page_datestamp']		= strtotime($source['post_date']);
@@ -306,20 +306,18 @@ class wordpress_import extends base_import_class
 			link_sefurl
 			 */	
 			 
-			 		
-	// 	$target['page_id']				= $source['ID']; //  auto increment
-		$target['link_name']			= $source['post_title'];
-		$target['link_url']				= $source['post_name'];
-		$target['link_description']		= "[html]".$source['post_content']."[/html]";
-		$target['link_button']			= '';
-		$target['link_category']		= '';
-		$target['link_order']			= strtotime($source['post_date']);
-		$target['link_parent']			= $source['post_author'];
-		$target['link_open']			= '';
-		$target['link_class']			= '';
-		$target['link_sefurl']			= $source['post_password'];
+		$target['link_name']			= $source['link_name'];
+		$target['link_url']				= $source['link_url'];
+		$target['link_description']		= (vartrue($source['link_description'])) ? "[html]".$source['link_description']."[/html]" : "";
+	//	$target['link_button']			= '';
+	//	$target['link_category']		= '';
+	//	$target['link_order']			= '';
+	//	$target['link_parent']			= '';
+		$target['link_open']			= ''; // link_target
+		$target['link_class']			= ($source['link_visible'] == 'Y') ? '0' : e_UC_MAINADMIN;
+	//	$target['link_sefurl']			= '';
 		
-	//	return $target;  // comment out to debug 
+		return $target;  // comment out to debug 
 		
 		// DEBUG INFO BELOW. 
 		$this->renderDebug($source,$target);

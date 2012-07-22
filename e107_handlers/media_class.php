@@ -313,7 +313,7 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 		e107::getDb()->db_Select_gen($query);
-		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		while($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
