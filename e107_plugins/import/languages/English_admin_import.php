@@ -73,5 +73,5 @@ define('LAN_CONVERT_43','Error connecting to source database');
 define('LAN_CONVERT_44','Query setup error for ');
 define('LAN_CONVERT_45','Cannot read import code file');
 define('LAN_CONVERT_46','Error: --ERRNUM-- while writing to --DB-- database, line ');
-define('LAN_CONVERT_47','Block --BLOCK-- import completed. --LINES-- read, --USERS-- added, --ERRORS-- errors');
+define('LAN_CONVERT_47','Batch --BLOCK-- import completed. --LINES-- read, --USERS-- added, --ERRORS-- errors');
 define('LAN_CONVERT_48','Forum posts');
