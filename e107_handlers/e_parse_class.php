@@ -149,6 +149,10 @@ class e_parse
 					array(
 						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE
 						),
+				'WYSIWYG' =>
+					array(
+						'defs'=>FALSE, 'constants'=>'full', 'parse_sc'=>FALSE, 'wysiwyg'=>TRUE
+						),
 				// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 				'USER_BODY' =>
 					array(
@@ -229,7 +233,8 @@ class e_parse
 				'defs'			=> array('defs' => TRUE),
 				'parse_sc'		=> array('parse_sc'	=> TRUE),
 				'constants'		=> array('constants' => 'rel'),
-				'value'			=> array('value' => TRUE)
+				'value'			=> array('value' => TRUE),
+				'wysiwyg'		=> array('wysiwyg'=>TRUE)
 		);
 
 
@@ -1325,6 +1330,9 @@ class e_parse
 		$last_bbcode = '';
 		// So we can change them on each loop
 		$saveOpts = $opts;
+		
+		
+		
 		if ($parseBB == FALSE)
 		{
 			$content = array($text);
@@ -1375,6 +1383,7 @@ class e_parse
 					$className = '';
 					$full_text = '';
 					$code_text = $matches[4];
+	
 					$parm = $matches[3] ? substr($matches[3],1) : '';
 					$last_bbcode = $matches[2];
 					switch ($matches[2])
@@ -1401,6 +1410,7 @@ class e_parse
 						case 'html' :
 							$proc_funcs = TRUE;
 							$convertNL = FALSE;
+							$full_text = str_replace(array("[html]","[/html]"),"",$code_text); // quick fix.. security issue?
 							break;
 							
 						case 'table' : // strip <br /> from end of <table>		
@@ -1429,7 +1439,7 @@ class e_parse
 					if ($className)
 					{
 						$tempCode = new $className();
-						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
+						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);	
 					}
 					elseif ($bbcode)
 					{	// Execute the file
@@ -1570,7 +1580,15 @@ class e_parse
 							if ($parseBB === TRUE)
 							{
 								// 'Normal' or 'legacy' processing
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);
+								if($modifiers == "WYSIWYG")
+								{
+									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'wysiwyg');	
+								}
+								else 
+								{
+									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);	
+								}
+								
 							}
 							elseif ($parseBB === 'STRIP')
 							{

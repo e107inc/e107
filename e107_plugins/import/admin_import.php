@@ -305,6 +305,8 @@ function dbImport($mode='db')
 	
 	$mes = e107::getMessage();
 	
+	define("RSS_IMPORT",vartrue($_POST['rss_feed'],false));	
+	
 	// if (IMPORT_DEBUG) echo "Importing: {$current_db_type}<br />";
 	$mes->addDebug("Loading: ".$current_db_type);
 	
