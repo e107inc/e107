@@ -59,20 +59,24 @@ $import_class_comment = array();		// Descriptive comment
 $import_class_support = array();		// Array of data types supported
 
 // Definitions of available areas to import
-$db_import_blocks = array('users' => array('message' => LAN_CONVERT_25, 'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
-							'news' => array('message' => LAN_CONVERT_28),
-						  'forumdefs' => array('message' => LAN_CONVERT_26),
-						  'forumposts' => array('message' => LAN_CONVERT_48), 
-						  'polls' => array('message' => LAN_CONVERT_27)
-
-						  );
+$db_import_blocks = array(
+	'users' 		=> array('message' => LAN_CONVERT_25, 	'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
+	'news' 			=> array('message' => LAN_CONVERT_28,	'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
+	'page' 			=> array('message' => "Pages",			'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
+	'links' 		=> array('message' => "Links", 			'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
+	'media' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
+	'comments' 		=> array('message'=> "Comments"),
+//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
+//	'forumposts' 	=> array('message' => LAN_CONVERT_48), 
+//	'polls' 		=> array('message' => LAN_CONVERT_27)
+);
 
 
 // See what DB-based imports are available (don't really want it here, but gets it into the header script)
 require_once(e_HANDLER.'file_class.php');
 
 $fl = new e_file;
-$importClassList = $fl->get_files(e_PLUGIN.'import', "^.+?_import_class\.php$", "standard", 1);
+$importClassList = $fl->get_files(e_PLUGIN.'import/providers', "^.+?_import_class\.php$", "standard", 1);
 foreach($importClassList as $file)
 {
 	$tag = str_replace('_class.php','',$file['fname']);
@@ -98,6 +102,7 @@ if(varset($_POST['import_source']))
 
 	$current_db_type = varset($_POST['db_import_type'],key($import_class_names));
 }
+
 $db_blocks_to_import = array();
 
 
@@ -168,192 +173,244 @@ $msg = '';
 //======================================================
 if(isset($_POST['do_conversion']))
 {
-  $abandon = TRUE;
-  switch ($import_source)
-  {
-	case 'csv' : 
-	  if (!isset($csv_formats[$current_csv])) $msg = "CSV File format error<br /><br />";
-	  if (!is_readable($csv_data_file)) $msg = LAN_CONVERT_31;
-	  if (!isset($csv_options[$current_csv])) $msg = LAN_CONVERT_37.' '.$current_csv;
-	  if (!isset($csv_option_settings[$csv_options[$current_csv]])) $msg = LAN_CONVERT_37.' '.$csv_options[$current_csv];
-	  
-	  if (!$msg)
-	  {
-		$field_list = explode(',',$csv_formats[$current_csv]);
-		$separator = $csv_option_settings[$csv_options[$current_csv]]['separator'];
-		$enveloper = $csv_option_settings[$csv_options[$current_csv]]['envelope'];
-		if (IMPORT_DEBUG) echo "CSV import: {$current_csv}  Fields: {$csv_formats[$current_csv]}<br />";
-		require_once('import_user_class.php');
-		$usr = new user_import;
-		$usr->overrideDefault('user_class',$checked_class_list);
-		if (($source_data = file($csv_data_file)) === FALSE) $msg = LAN_CONVERT_32;
-		if ($import_delete_existing_data) $usr->emptyTargetDB();				// Delete existing users - reasonably safe now
-		$line_counter = 0;
-		$error_counter = 0;
-		$write_counter = 0;
-		foreach ($source_data as $line)
-		{
-		  $line_counter++;
-		  $line_error = FALSE;
-		  if ($line = trim($line))
-		  {
-			$usr_data = $usr->getDefaults();		// Reset user data
-			$line_data = csv_split($line, $separator, $enveloper);
-			$field_data = current($line_data);
-			foreach ($field_list as $f)
+	$abandon = TRUE;
+	
+ 	switch ($import_source)
+	{
+		case 'csv' : 
+			if (!isset($csv_formats[$current_csv])) $msg = "CSV File format error<br /><br />";
+		  	if (!is_readable($csv_data_file)) $msg = LAN_CONVERT_31;
+		  	if (!isset($csv_options[$current_csv])) $msg = LAN_CONVERT_37.' '.$current_csv;
+		  	if (!isset($csv_option_settings[$csv_options[$current_csv]]))
 			{
-			  if ($field_data === FALSE) $line_error = TRUE;
-			  if ($f != 'dummy') $usr_data[$f] = $field_data;
-			  $field_data = next($line_data);
+				$msg = LAN_CONVERT_37.' '.$csv_options[$current_csv];	
+			} 
+		  
+		  	if (!$msg)
+		  	{
+				$field_list = explode(',',$csv_formats[$current_csv]);
+				$separator = $csv_option_settings[$csv_options[$current_csv]]['separator'];
+				$enveloper = $csv_option_settings[$csv_options[$current_csv]]['envelope'];
+				if (IMPORT_DEBUG) echo "CSV import: {$current_csv}  Fields: {$csv_formats[$current_csv]}<br />";
+				require_once('import_user_class.php');
+				$usr = new user_import;
+				$usr->overrideDefault('user_class',$checked_class_list);
+				if (($source_data = file($csv_data_file)) === FALSE) $msg = LAN_CONVERT_32;
+				if ($import_delete_existing_data) $usr->emptyTargetDB();				// Delete existing users - reasonably safe now
+				$line_counter = 0;
+				$error_counter = 0;
+				$write_counter = 0;
+				foreach ($source_data as $line)
+				{
+			  		$line_counter++;
+			  		$line_error = FALSE;
+			  		if ($line = trim($line))
+			  		{
+						$usr_data = $usr->getDefaults();		// Reset user data
+						$line_data = csv_split($line, $separator, $enveloper);
+						$field_data = current($line_data);
+						foreach ($field_list as $f)
+						{
+				  			if ($field_data === FALSE) $line_error = TRUE;
+				  			if ($f != 'dummy') $usr_data[$f] = $field_data;
+				  			$field_data = next($line_data);
+						}
+						if ($line_error)
+						{
+				  			if ($msg) $msg .= "<br />";
+				  			$msg .= LAN_CONVERT_33.$line_counter;
+				  			$error_counter++;
+						}
+						else
+						{
+							if ($csv_pw_not_encrypted)
+							{
+								$usr_data['user_password'] = md5($usr_data['user_password']);
+							}
+				 			$line_error = $usr->saveData($usr_data);
+							if ($line_error === TRUE)
+							{
+								$write_counter++;
+							}
+							else
+							{
+								$line_error = $usr->getErrorText($line_error);
+								if ($msg) $msg .= "<br />";
+								$msg .= str_replace('--ERRNUM--',$line_error,LAN_CONVERT_34).$line_counter;
+								$error_counter++;
+							}
+						}
+					}
+				}
+
+			if ($msg) $msg .= "<br />";
+			if ($import_delete_existing_data) $msg .= LAN_CONVERT_40.'<br />';
+			$msg .= str_replace(array('--LINES--','--USERS--', '--ERRORS--'),array($line_counter,$write_counter,$error_counter),LAN_CONVERT_35);
 			}
-			if ($line_error)
+		break;
+
+		case 'db' :
+			if(dbImport() == false)
 			{
-			  if ($msg) $msg .= "<br />";
-			  $msg .= LAN_CONVERT_33.$line_counter;
-			  $error_counter++;
-			}
-			else
+				$abandon = true;
+			};
+		break;
+		
+		case 'rss' :
+			if(rssImport() == false)
 			{
-			  if ($csv_pw_not_encrypted)
-			  {
-				$usr_data['user_password'] = md5($usr_data['user_password']);
-			  }
-			  $line_error = $usr->saveData($usr_data);
-			  if ($line_error === TRUE)
-			  {
-				$write_counter++;
-			  }
-			  else
-			  {
-			    $line_error = $usr->getErrorText($line_error);
-				if ($msg) $msg .= "<br />";
-				$msg .= str_replace('--ERRNUM--',$line_error,LAN_CONVERT_34).$line_counter;
-				$error_counter++;
-			  }
-			}
-		  }
-		}
-		if ($msg) $msg .= "<br />";
-		if ($import_delete_existing_data) $msg .= LAN_CONVERT_40.'<br />';
-		$msg .= str_replace(array('--LINES--','--USERS--', '--ERRORS--'),array($line_counter,$write_counter,$error_counter),LAN_CONVERT_35);
-	  }
-	  break;
+				$abandon = true;
+			};
+		break;
+	}
 
-	case 'db' :
+	if ($msg)
+	{
+		$emessage->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
+		$msg = '';
+	}
 
-	  if (IMPORT_DEBUG) echo "Importing: {$current_db_type}<br />";
-	  if (!isset($_POST['dbParamHost']) || !isset($_POST['dbParamUsername']) || !isset($_POST['dbParamPassword']) || !isset($_POST['dbParamDatabase']))
-	  {
-	    $msg = LAN_CONVERT_41;
-	  }
-	  if (!$msg)
-	  {
-	    if (class_exists($current_db_type))
+	if ($abandon)
+	{
+	//	unset($_POST['do_conversion']);
+		$text = "
+		<form method='post' action='".e_SELF."'>
+		<table style='width: 98%;' class='fborder'>
+		<tr><td class='forumheader3' style='text-align:center'>
+		<input class='button' type='submit' name='dummy_continue' value='".LAN_CONTINUE."' />
+		</td>
+		</tr>
+		</table></form>";
+		$ns -> tablerender(LAN_CONVERT_30,$emessage->render(). $text);
+		require_once(e_ADMIN."footer.php");
+		exit;
+	}
+}
+
+
+function rssImport()
+{
+	global $current_db_type, $db_import_blocks, $import_delete_existing_data,$db_blocks_to_import;
+			
+	$mes = e107::getMessage();
+	$mes->addDebug("Loading: RSS");		
+	$mes->addWarning("Under Construction"); 
+	return dbImport('xml');
+	
+}
+
+function dbImport($mode='db')
+{
+	global $current_db_type, $db_import_blocks, $import_delete_existing_data,$db_blocks_to_import;
+	
+	$mes = e107::getMessage();
+	
+	// if (IMPORT_DEBUG) echo "Importing: {$current_db_type}<br />";
+	$mes->addDebug("Loading: ".$current_db_type);
+	
+	if (class_exists($current_db_type))
+	{
+		$mes->addDebug("Class Available: ".$current_db_type);   
+		$converter = new $current_db_type;
+	}
+	else
+	{
+		$mes->addError(LAN_CONVERT_42);
+		return false;
+	}
+	
+	if($mode == 'db') // Don't do DB check on RSS/XML 
+	{
+		if (!isset($_POST['dbParamHost']) || !isset($_POST['dbParamUsername']) || !isset($_POST['dbParamPassword']) || !isset($_POST['dbParamDatabase']))
 		{
-		  $converter = new $current_db_type;
+			$mes->addError(LAN_CONVERT_41);
+			return false;
 		}
-		else
-		{
-		  $msg = LAN_CONVERT_42;
-		}
-	  }
-	  if (!$msg)
-	  {
-
+	
 		$result = $converter->db_Connect($_POST['dbParamHost'],	$_POST['dbParamUsername'], $_POST['dbParamPassword'], $_POST['dbParamDatabase'],  $_POST['dbParamPrefix']);
-
-
-
 		if ($result !== TRUE)
 		{
-		  $msg = LAN_CONVERT_43.": ".$result;   // db connect failed
-		}
-	  }
-	  if (!$msg)
-	  {
-		foreach ($db_import_blocks as $k => $v)
+			$mes->addError(LAN_CONVERT_43.": ".$result);  // db connect failed
+			return false;
+		}	
+	}	
+
+
+	foreach ($db_import_blocks as $k => $v)
+	{
+		if (isset($db_blocks_to_import[$k]))
 		{
-		  if (isset($db_blocks_to_import[$k]))
-		  {
 			$loopCounter = 0;
 			$errorCounter = 0;
+			
 			if (is_readable($v['classfile']))
 			{
 				require_once($v['classfile']);
 			}
 			else
 			{
-				$msg = LAN_CONVERT_45.': '.$v['classfile'];  // can't read class file.
+				$mes->addError(LAN_CONVERT_45.': '.$v['classfile']);   // can't read class file.
+				return false;
 			}
-			if (!$msg && (varset($_POST["import_block_{$k}"],0) == 1))
+
+			if (varset($_POST["import_block_{$k}"],0) == 1)
 			{
-			  if (IMPORT_DEBUG) echo "Importing: {$k}<br />";
-			  $result = $converter->setupQuery($k,!$import_delete_existing_data);
-			  if ($result !== TRUE)
-			  {
-				$msg = LAN_CONVERT_44.' '.$k;
-			//	$msg .= "Prefix = ".$converter->DBPrefix;
-				break;
-			  }
-			  $exporter = new $v['classname'];		// Writes the output data
-			  // Do any type-specific default setting
-			  switch ($k)
-			  {
-				case 'users' :
-				  $exporter->overrideDefault('user_class',$checked_class_list);
-				  break;
-			  }
-			  if ($import_delete_existing_data) $exporter->emptyTargetDB();		// Clean output DB - reasonably safe now
-			  while ($row = $converter->getNext($exporter->getDefaults()))
-			  {
-				$loopCounter++;
-		   		$result = $exporter->saveData($row);
-				if ($result !== TRUE)
+				//if (IMPORT_DEBUG) echo "Importing: {$k}<br />";
+				$mes->addDebug("Importing: ".$k);
+				
+			  	$result = $converter->setupQuery($k,!$import_delete_existing_data);
+						
+			  	if ($result !== TRUE)
+			  	{
+					$mes->addError(LAN_CONVERT_44.' '.$k);   // couldn't set query
+					//	$msg .= "Prefix = ".$converter->DBPrefix;
+					break;
+			  	}
+				
+			  	$exporter = new $v['classname'];		// Writes the output data
+			 				 	
+				switch ($k)  // Do any type-specific default setting
 				{
-				  $errorCounter++;
-				  $line_error = $exporter->getErrorText($result);
-				  if ($msg) $msg .= "<br />";
-				  $msg .= str_replace(array('--ERRNUM--','--DB--'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
+					case 'users' :
+					  $exporter->overrideDefault('user_class',$checked_class_list);
+					  break;
 				}
-			  }
-			  $converter->endQuery;
-			  unset($exporter);
-			  if ($msg) $msg .= "<br />";
-			  $msg .= str_replace(array('--LINES--','--USERS--', '--ERRORS--','--BLOCK--'),
-								array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
+				
+			  	if ($import_delete_existing_data)
+				{
+					$exporter->emptyTargetDB();		// Clean output DB - reasonably safe now	
+				} 
+				
+				while ($row = $converter->getNext($exporter->getDefaults(),$mode))
+				{
+					$loopCounter++;
+		   			$result = $exporter->saveData($row);
+					if ($result !== TRUE)
+					{
+						$errorCounter++;
+						$line_error = $exporter->getErrorText($result);
+					//	if ($msg) $msg .= "<br />";
+						$msg = str_replace(array('--ERRNUM--','--DB--'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
+						$mes->addError($msg);   // couldn't set query
+					}
+				}
+				
+				$converter->endQuery(); 
+				
+				unset($exporter);
+				
+				
+				$msg = str_replace(array('--LINES--','--USERS--', '--ERRORS--','--BLOCK--'),
+				array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
+				$mes->addSuccess($msg);   // couldn't set query
 			}
 		  }
 		}
-	  }
+
 //	  $msg = LAN_CONVERT_29;
-	  $abandon = FALSE;
-	  break;
-  }
-
-  if ($msg)
-  {
-	$emessage->add($msg, E_MESSAGE_INFO); //  $ns -> tablerender(LAN_CONVERT_30, $msg);
-	$msg = '';
-  }
-
-  if ($abandon)
-  {
-//	unset($_POST['do_conversion']);
-  $text = "
-	<form method='post' action='".e_SELF."'>
-	<table style='width: 98%;' class='fborder'>
-	<tr><td class='forumheader3' style='text-align:center'>
-	<input class='button' type='submit' name='dummy_continue' value='".LAN_CONTINUE."' />
-	</td>
-	</tr>
-	</table></form>";
-	$ns -> tablerender(LAN_CONVERT_30, $text);
-	require_once(e_ADMIN."footer.php");
-	exit;
-  }
+	return true;
+	// $abandon = FALSE;	
 }
-
-
 
 //======================================================
 // 					Display front page
@@ -411,19 +468,25 @@ function showStartPage()
 			<tbody>
 
 			<tr>
-			<td>CSV</td>
-			<td class='center'>".ADMIN_TRUE_ICON."</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-	        <td class='center middle'>".$frm->radio('import_type', 'csv')."</td></tr>";
+			<td><img src='".e_PLUGIN."import/images/csv.png' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>CSV</td>
+			<td class='center'>".ADMIN_TRUE_ICON."</td>";
+			
+			for ($i=0; $i < count($db_import_blocks)-1; $i++) 
+			{ 
+				$text .= "<td>&nbsp;</td>";	
+			}
+
+			
+			$text .= "<td class='center middle'>".$frm->radio('import_type', 'csv')."</td></tr>";
 
 
         foreach ($import_class_names as $k => $title)
 		{
+			$iconFile = e_PLUGIN."import/images/".str_replace("_import","",strtolower($k)).".png";		
+			$icon = (file_exists($iconFile)) ? "<img src='{$iconFile}' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>" : "";
+			
           	$text .= "<!-- $title -->
-			<tr><td>".$title."<div class='smalltext'>".$import_class_comment[$k]."</div></td>\n";
+			<tr><td>".$icon.$title."<div class='smalltext'>".$import_class_comment[$k]."</div></td>\n";
 
 			 foreach($db_import_blocks as $key=>$val)
 			 {
@@ -500,6 +563,15 @@ function showImportOptions($mode='csv')
 		";
 
 	}
+	elseif($mode == 'rss_import')
+	{
+		$text .= "<tr>
+		<td>Feed URL</td>
+		<td><input class='tbox' type='text' name='rss_feed' size='80' value='{$_POST['rss_feed']}' maxlength='250' />
+		<input type='hidden' name='import_source' value='rss' />
+		</td>
+		</tr>";	
+	}
 	else
 	{
     	$importType = $import_class_names[$mode];
@@ -526,7 +598,13 @@ function showImportOptions($mode='csv')
 		<td ><input class='tbox' type='text' name='dbParamPrefix' size='30' value='".(varset($_POST['dbParamPrefix']) ? $_POST['dbParamPrefix'] : $import_default_prefix[$mode])."' maxlength='100' />
 		<input type='hidden' name='import_source' value='db' />
   		</td>
-		</tr>
+		</tr>";
+
+	}
+
+	if($mode != 'csv')
+	{
+		$text .= "
 		<tr>
 		<td >$importType ".LAN_CONVERT_24."</td>
 		<td >";
@@ -540,8 +618,9 @@ function showImportOptions($mode='csv')
 				$text .= "<br />";
 			}
 	  	}
-	  	$text .= "</td></tr>";
+	  	$text .= "</td></tr>";		
 	}
+
 
 	$text .= "<tr><td>".LAN_CONVERT_38."</td>
 	<td><input type='checkbox' name='import_delete_existing_data' value='1'".($import_delete_existing_data ? " checked='checked'" : '')."/>

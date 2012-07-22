@@ -20,96 +20,169 @@ Root classes for import and saving of data. Application-specific classes build o
 
 class base_import_class
 {
-  var $ourDB = NULL;
-  var $DBPrefix = '';
-  var $currentTask = '';
-  var $copyUserInfo = TRUE;
+	var $ourDB = NULL;
+	var $DBPrefix = '';
+	var $currentTask = '';
+	var $copyUserInfo = TRUE;
+	var $arrayData = array();
 
-
-  // Connect to the external DB if not already connected
-  function db_Connect($server, $user, $password, $database, $prefix)
-  {
-    if ($this->ourDB == NULL)
+	/**
+	 * Connect to the external DB if not already connected
+	 */
+	function db_Connect($server, $user, $password, $database, $prefix)
 	{
-	  $this->ourDB = new db;
-	  $result = $this->ourDB->db_Connect($server, $user, $password, $database);
-	  $this->DBPrefix = $prefix;
-	  if ($result)
-	  {
-	  	 return $result;
-	  }
+		if ($this->ourDB == NULL)
+		{
+	  		$this->ourDB = new db;
+	  		$result = $this->ourDB->db_Connect($server, $user, $password, $database);
+	  		$this->DBPrefix = $prefix;
+	  		if ($result)
+	  		{
+	  	 		return $result;
+	  		}
+		}
+		
+		return TRUE;
 	}
-	return TRUE;
-  }
 
-
-  // Set up a query for the specified task.  If $blank_user is TRUE, user ID Data in source data is ignored
-  // Returns TRUE on success. FALSE on error
-  function setupQuery($task, $blank_user=FALSE)
-  {
-    return FALSE;
-  }
-
-
-  function saveData($dataRecord)
-  {
-	switch($this->currentTask)
+	/**
+	 * Set up a query for the specified task.  If $blank_user is TRUE, user ID Data in source data is ignored
+	 * @return boolean TRUE on success. FALSE on error
+	*/
+	function setupQuery($task, $blank_user=FALSE)
 	{
-	  case 'users' :
-	    return $this->saveUserData($dataRecord);
-	    break;
-	  case 'forumdefs' :
-	    return $this->saveForumData($dataRecord);
-	    return FALSE;
-	  case 'forumposts' :
-	    return $this->savePostData($dataRecord);
-	    return FALSE;
-	  case 'polls' :
-	    return FALSE;
-	  case 'news' :
-	    return FALSE;
+		return FALSE;
 	}
-    return FALSE;
+
+
+	function saveData($dataRecord)
+	{
+		switch($this->currentTask)
+		{
+	  		case 'users' :
+	    		return $this->saveUserData($dataRecord);
+	    	break;
+			
+			case 'news' :
+				return $this->saveNewsData($dataRecord);
+			break;
+			
+			case 'page' :
+				return $this->savePageData($dataRecord);
+			break;
+
+			case 'links' :
+				return $this->saveLinksData($dataRecord);
+			break;
+			
+			case 'media' :
+				return $this->saveMediaData($dataRecord);
+			break;
+			
+	  		case 'forumdefs' :
+	    		return $this->saveForumData($dataRecord);
+	    	break;
+			
+	  		case 'forumposts' :
+	    		return $this->savePostData($dataRecord);
+	    	break;
+			
+	  		case 'polls' :
+	    	break;
+		}
+		
+		return FALSE;
   }
 
 
   // Return the next record as an array. All data has been converted to the appropriate E107 formats
   // Return FALSE if no more data
   // Its passed a record initialised with the default values
-  function getNext($initial)
-  {
-	$result = $this->ourDB->db_Fetch();
-	if (!$result) return FALSE;
-	switch($this->currentTask)
+	function getNext($initial,$mode='db')
 	{
-	  case 'users' :
-	    return $this->copyUserData($initial, $result);
-	    break;
-	  case 'forumdefs' :
-	    return FALSE;
-	  case 'forumposts' :
-	    return FALSE;
-	  case 'polls' :
-	    return FALSE;
-	  case 'news' :
-	    return FALSE;
+		if($mode == 'db')
+		{
+			$result = $this->ourDB->db_Fetch();	
+		}
+		else
+		{
+			$result = current($this->arrayData);
+			next($this->arrayData);
+		}
+		
+		
+		if (!$result) return FALSE;
+		switch($this->currentTask)
+		{
+	  		case 'users' :
+				return $this->copyUserData($initial, $result);
+			break;
+			
+			case 'news' :
+				return $this->copyNewsData($initial, $result);
+	  		break;
+			
+			case 'page' :
+				return $this->copyPageData($initial, $result);
+	  		break;
+
+			case 'links' :
+				return $this->copyLinksData($initial, $result);
+	  		break;
+
+			case 'media' :
+				return $this->copyMediaData($initial, $result);
+	  		break;
+						
+	  		case 'forumdefs' :
+	  		break; 
+				
+	  		case 'forumposts' :
+	  		break;
+		  
+	  		case 'polls' :
+	  		break;
+		  
+	  		
+		}
+
+    	return FALSE;
 	}
-    return FALSE;
-  }
 
 
-  // Called to signal that current task is complete; tidy up as required
-  function endQuery()
-  {
-	$this->currentTask = '';
-  }
+	// Called to signal that current task is complete; tidy up as required
+	function endQuery()
+	{
+		$this->currentTask = '';
+	}
 
 
-  // Empty function which descendants can inherit from
-  function copyUserData(&$target, &$source)
-  {
-    return $target;
-  }
+	// Empty functions which descendants can inherit from
+	
+	function copyUserData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyNewsData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyPageData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyLinksData(&$target, &$source)
+	{
+		return $target;
+	}
+	
+	function copyMediaData(&$target, &$source)
+	{
+		return $target;
+	}
 }
 
 
