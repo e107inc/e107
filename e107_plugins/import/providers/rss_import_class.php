@@ -21,7 +21,7 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
-$import_class_names['rss_import'] 	= 'RSS';
+$import_class_names['rss_import'] 		= 'RSS';
 $import_class_comment['rss_import'] 	= 'Import RSS v2.0 feeds';
 $import_class_support['rss_import'] 	= array('news','page','links');
 $import_default_prefix['rss_import'] 	= '';
@@ -87,6 +87,7 @@ class rss_import extends base_import_class
 	 */
 	function copyNewsData(&$target, &$source)
 	{
+		
 			$target['news_title']				= $source['title'][0];
 		//	$target['news_sef']					= $source['post_name'];
 			$target['news_body']				= "[html]".$source['description'][0]."[/html]";
@@ -170,8 +171,12 @@ class rss_import extends base_import_class
 		
 	}
 	
-
-
+	//TODO Option to save remote images locally and replace urlss in news_body with local ones. eg. {e_MEDIA}
+	function saveBodyFiles($body)
+	{
+		
+		
+	}
 	
 
 	
