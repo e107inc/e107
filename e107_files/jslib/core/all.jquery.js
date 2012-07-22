@@ -142,7 +142,7 @@ $(document).ready(function()
 			
 			// alert(count);
 			//return false;
-			if($("#tab-container").tabs("add",url + '?iframe=1',"Page "+count))
+			if($("#tab-container").tabs("add",url +'&count='+count,"Page "+count))
 			{
 				$("#e-tab-count").val(count);	
 			}

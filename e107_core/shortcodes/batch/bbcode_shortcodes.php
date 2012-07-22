@@ -57,8 +57,9 @@ class bbcode_shortcodes extends e_shortcode
 	function bb_newpage($id)
 	{
 	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
-		$data = "[newpage]";
-		$event = $this->getEvent('addtext',$data,LANHELP_34,1);
+	//	$data = "[newpage]";
+	//	$event = $this->getEvent('addtext',$data,LANHELP_34,1);
+		$event = '';
 		$text = "<a {$event} class='e-bb e-tabs-add' id='{$id}' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#{$this->var['tagid']}'  data-bbcode='{$data}'>";
 		$text .= "<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/newpage.png' alt='' title='".LANHELP_34."'  /></a>";
 		return $text;
