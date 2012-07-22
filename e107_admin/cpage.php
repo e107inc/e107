@@ -109,7 +109,6 @@ else
 */
 
 
-
 class page_admin extends e_admin_dispatcher
 {
 
@@ -223,6 +222,13 @@ class page_admin_ui extends e_admin_ui
 
 		function init()
 		{
+			
+			if(varset($_GET['mode'])=='dialog' && varset($_GET['action'])=='dialog') // New Page bbcode in tabs. 
+			{
+				$this->dialogPage();
+			}
+			
+		
 			if($this->getQuery('iframe') == 1)
 			{
 			
@@ -284,10 +290,11 @@ class page_admin_ui extends e_admin_ui
 		
 		function dialogPage() // FIXME - remove table-rendering when using 'return' ??
 		{
+			$count = varset($_GET['count']);
 			$frm = e107::getForm();
 			$text .= "<fieldset id='e-tab-empty'>\n";
 			$text .= "<div>Title: ".$frm->text('page_subtitle[]', '', 250)."</div>\n";
-			$text .= $frm->bbarea('data[]', '', 'page','help','large');
+			$text .= $frm->bbarea('data_'.intval($count), '', 'page','help','large');
 			$text .= "</fieldset>";	
 			echo $text;	
 			exit;
@@ -720,7 +727,7 @@ class page_admin_ui extends e_admin_ui
 				
 				// return;	
 			}
-		
+	
 		//	echo $newData;
 				
 			$page_text = $tp->toDB($newData);
