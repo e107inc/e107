@@ -193,42 +193,51 @@ function edit_administrator($row){
 	<tr>
 	<td style='width:25%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
 	<td style='width:75%' class='forumheader3'>";
-
-	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";			// Alter site preferences
-	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";			// Alter Menus
-	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";			// Modify administrator permissions
-	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />";			// Moderate users/bans etc
-	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />";			// create/edit custom pages/menus
-	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";			// Manage download categories
-	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";			// Upload /manage files
-	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";			// file inspector
-	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />";			// notify
-	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";			// Oversee news categories
-  //	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";		// Oversee link categories - NOWPLUGIN
+	
+	$text .= "<div class='fcaption'>".ADLAN_CL_1."</div><br />"; // Settings
 	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />";			// Clear Cache - Previously moderate chatbox
-	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";			// Take site down for maintenance
-	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";	// Configure mail settings and mailout
-
-	$text .= checkb("D", $a_perms).ADMSLAN_29."<br />";			// Manage banners
-//	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines - now plugin
 	$text .= checkb("F", $a_perms).ADMSLAN_31."<br />";			// Configure emoticons
-	$text .= checkb("G", $a_perms).ADMSLAN_32."<br />";			// Configure front page content
-//	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure log/stats - now plugin (used for system logs in 0.8)
-	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";			// Configure meta tags
-	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";			// Configure public file uploads
-	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";			// Configure Search
+	$text .= checkb("G", $a_perms).ADMSLAN_32."<br />";			// Configure front page content	
 	$text .= checkb("A", $a_perms).ADMSLAN_36."<br />";			// Configure Image Settings (Previously Moderate forums - NOW PLUGIN)
-	$text .= checkb("B", $a_perms).ADMSLAN_37."<br />";			// Moderate comments
-	$text .= checkb("H", $a_perms).ADMSLAN_39."<br />";			// Post news
+	$text .= checkb("L", $a_perms).ADMSLAN_76."<br />";			// Language-Pack Area. 
+	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";			// Configure meta tags
+	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";			// Alter site preferences		
+	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";			// Configure Search
 	$text .= checkb("I", $a_perms).ADMSLAN_40."<br />";			// Post links
-//	$text .= checkb("J", $a_perms).ADMSLAN_41."<br />";					// Post articles   - NOW PLUGIN
-//	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";					// Post reviews    - NOW PLUGIN
-//	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";					// Post content pages - NOW PLUGIN
+	
+	$text .= "<br /><div class='fcaption'>".ADLAN_CL_2."</div><br />"; // Users
+	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";			// Modify administrator permissions		
+	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />";			// Moderate users/bans etc
+	$text .= checkb("W", $a_perms).ADMSLAN_65."<br />";	// Configure mail settings and mailout
+	
+	$text .= "<br /><div class='fcaption'>".ADLAN_CL_3."</div><br />"; // Content
+	$text .= checkb("D", $a_perms).ADMSLAN_29."<br />";			// Manage banners	
+	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />";			// create/edit custom pages/menus
 	$text .= checkb("R", $a_perms).ADMSLAN_44."<br />";			// Post downloads
-//	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Post polls  - NOW PLUGIN.
+	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";			// Manage download categories			
+	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";			// Alter Menus
+	$text .= checkb("H", $a_perms).ADMSLAN_39."<br />";			// Post news
+	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";			// Oversee news categories
+	$text .= checkb("N", $a_perms).ADMSLAN_47."<br />";	// Moderate submitted news
+	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";			// Upload /manage files
+	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";			// Configure public file uploads
 	$text .= checkb("M", $a_perms).ADMSLAN_46."<br />";			// Welcome message
-	$text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";	// Moderate submitted news
 
+	$text .= "<br /><div class='fcaption'>".ADLAN_CL_6."</div><br />"; // Tools
+	$text .= checkb("B", $a_perms).ADMSLAN_37."<br />";			// Moderate comments
+	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";			// file inspector
+	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";			// Take site down for maintenance
+	
+	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />";			// notify
+
+ //	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";			// Oversee link categories - NOWPLUGIN
+//	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines - now plugin
+//	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure log/stats - now plugin (used for system logs in 0.8)
+
+//	$text .= checkb("J", $a_perms).ADMSLAN_41."<br />";			// Post articles   - NOW PLUGIN
+//	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";			// Post reviews    - NOW PLUGIN
+//	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Post polls  - NOW PLUGIN.
+	
 	$text .= "<br /><div class='fcaption'>".ADLAN_CL_7."</div><br />";
 	$text .= checkb("Z", $a_perms).ADMSLAN_62."<br /><br />";	// Plugin Manager
 
@@ -327,6 +336,7 @@ function renderperms($perm,$id){
 		$pt["Q"] = ADMSLAN_24;	// Manage download categories
 		$pt["6"] = ADMSLAN_25;	// Upload /manage files
 		$pt["Y"] = ADMSLAN_67;	// file inspector
+		$pt["L"] = ADMSLAN_76; // Language Pack Access. 
 		$pt["O"] = ADMSLAN_68;	// notify
 		$pt["7"] = ADMSLAN_26;
 		$pt["8"] = ADMSLAN_27;
@@ -345,7 +355,7 @@ function renderperms($perm,$id){
 		$pt["B"] = ADMSLAN_37;
 		$pt["H"] = ADMSLAN_39;
 		$pt["I"] = ADMSLAN_40;
-		$pt["L"] = ADMSLAN_43;
+
 		$pt["R"] = ADMSLAN_44;
 		$pt["U"] = ADMSLAN_45;
 		$pt["M"] = ADMSLAN_46;

@@ -18,11 +18,13 @@
 
 require_once("../class2.php");
 
-if (!getperms('0'))
+if (!getperms('L'))
 {
     header("location:".e_BASE."index.php");
     exit;
 }
+
+
 
 $e_sub_cat = 'language';
 
@@ -59,7 +61,7 @@ $message = "";
 
 
 
-if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
+if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getperms('0'))
 {
 
     $pref['multilanguage']  = $_POST['multilanguage'];
@@ -92,7 +94,8 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 
 // ----------create tables -----------------------------------------------------
 
-if (isset($_POST['kreate_tbl']) && $_POST['language']) {
+if (isset($_POST['kreate_tbl']) && $_POST['language'] && getperms('0')) 
+{
 
     $table_to_copy = array();
     $lang_to_create = array();
@@ -236,6 +239,10 @@ function share($newfile)
 
 unset($text);
 
+if(!getperms('0'))
+{
+	$action = 'tools';
+}
 
 if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing']) {
     multilang_prefs();
@@ -318,7 +325,13 @@ if (isset($_POST['edit_existing']))
 require_once(e_ADMIN."footer.php");
 
 // ---------------------------------------------------------------------------
-function multilang_prefs() {
+function multilang_prefs() 
+{
+	if(!getperms('0'))
+	{
+		return;
+	}
+	
     global $ns, $pref,$lanlist;
 
     $text = "<div style='text-align:center'>
@@ -578,7 +591,15 @@ function table_list() {
 
 
 // ------------- render form ---------------------------------------------------
-function multilang_db(){
+function multilang_db()
+{
+	if(!getperms('0'))
+	{
+		return "Access Denied";
+	}
+	
+	
+	
     global $pref,$ns,$tp,$rs,$lanlist,$tabs;
 
     if(isset($pref['multilanguage']) && $pref['multilanguage']){
@@ -961,13 +982,19 @@ function language_adminmenu()
     {
         $action = "db";
     }
-    $var['main']['text'] = LAN_PREFS;
-    $var['main']['link'] = e_SELF;
+	
+	if(getperms('0'))
+	{
+		 $var['main']['text'] = LAN_PREFS;
+   		 $var['main']['link'] = e_SELF;
 
-    if(isset($pref['multilanguage']) && $pref['multilanguage']){
-        $var['db']['text'] = LANG_LAN_03;
-        $var['db']['link'] = e_SELF."?db";
-    }
+	    if(isset($pref['multilanguage']) && $pref['multilanguage'])
+	    {
+	        $var['db']['text'] = LANG_LAN_03;
+	        $var['db']['link'] = e_SELF."?db";
+	    }	
+	}
+
 	
 	if(varsettrue($_GET['f']))
 	{

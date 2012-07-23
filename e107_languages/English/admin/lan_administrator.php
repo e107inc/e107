@@ -78,6 +78,9 @@ define("ADMSLAN_68", "Configure email notification");
 define("ADMSLAN_69", "is already an administrator and must be edited.");
 
 define("ADMSLAN_70", "Return to Administrator Listing");
-define("ADMSLAN_71", "Click here to display privileges");  
+define("ADMSLAN_71", "Click here to display privileges"); 
+
+//v1.0.2 and v2
+define("ADMSLAN_76", "Manage language-packs");
 
 ?>

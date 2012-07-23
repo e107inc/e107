@@ -18,7 +18,7 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("0")) {
+if (!getperms("L")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
