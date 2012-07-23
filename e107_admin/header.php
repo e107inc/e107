@@ -29,15 +29,12 @@ e107::getDb()->db_Mark_Time('(Header Top)');
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
-// e107::js('core', 	'fancybox/jquery.fancybox-1.3.4.js', 'jquery', 2);
-// e107::css('core', 	'fancybox/jquery.fancybox-1.3.4.css', 'jquery');
-
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 
-e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+//e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
+//e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+//e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
 
 e107::css('core', 	'chosen/chosen.css', 'jquery');
 e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
@@ -46,13 +43,12 @@ e107::css('core', 	'password/style.css', 'jquery');
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 
 
-e107::js("core",	"core/mediaManager.js","jquery",3);
+// e107::js("core",	"core/mediaManager.js","jquery",3);
 e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
 e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 
 e107::js("core",	"tags/jquery.tagit.js","jquery",3);
 e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
-// e107::js("core",	"tooltip/jquery.qtip-1.0.0-rc3.min.js","jquery",3);
 
 
 e107::css('core', 	'core/admin.jquery.css', 'jquery');

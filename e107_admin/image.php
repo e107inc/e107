@@ -24,6 +24,10 @@ if (!getperms("A") && ($_GET['action'] != 'dialog'))
 	exit;
 }
 
+e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
+e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+e107::js("core",	"core/mediaManager.js","jquery",3);
 
 /*
  * CLOSE - GO TO MAIN SCREEN
@@ -670,7 +674,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		$frm = e107::getForm();
 		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
-			
+						
 		$text = "
 			<div class='admintabs' id='tab-container'>
 			<ul class='e-tabs' id='core-emote-tabs'>

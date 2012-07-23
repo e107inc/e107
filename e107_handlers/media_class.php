@@ -40,7 +40,7 @@ class e_media
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
 	 * @param string $epath path to file.
-	 * @param string $fmask [optional] filetypes eg. .jpg|.gif
+	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask. 
 	 * @return e_media
 	 */
 	public function import($cat='',$epath,$fmask='')

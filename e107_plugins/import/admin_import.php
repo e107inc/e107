@@ -84,6 +84,7 @@ foreach($importClassList as $file)
 }
 unset($importClassList);
 unset($fl);
+asort($import_class_names);
 
 
 
@@ -253,14 +254,14 @@ if(isset($_POST['do_conversion']))
 			if(dbImport() == false)
 			{
 				$abandon = true;
-			};
+			}
 		break;
 		
 		case 'rss' :
 			if(rssImport() == false)
 			{
 				$abandon = true;
-			};
+			}
 		break;
 	}
 
@@ -274,13 +275,11 @@ if(isset($_POST['do_conversion']))
 	{
 	//	unset($_POST['do_conversion']);
 		$text = "
-		<form method='post' action='".e_SELF."'>
-		<table style='width: 98%;' class='fborder'>
-		<tr><td class='forumheader3' style='text-align:center'>
-		<input class='button' type='submit' name='dummy_continue' value='".LAN_CONTINUE."' />
-		</td>
-		</tr>
-		</table></form>";
+		<form method='get' action='".e_SELF."'>
+		<div class='center'>
+		".$frm->admin_button('dummy_continue',LAN_CONTINUE, 'execute')."
+		</div>
+		</form>";
 		$ns -> tablerender(LAN_CONVERT_30,$emessage->render(). $text);
 		require_once(e_ADMIN."footer.php");
 		exit;
@@ -291,10 +290,14 @@ if(isset($_POST['do_conversion']))
 function rssImport()
 {
 	global $current_db_type, $db_import_blocks, $import_delete_existing_data,$db_blocks_to_import;
-			
+	
 	$mes = e107::getMessage();
-	$mes->addDebug("Loading: RSS");		
-	$mes->addWarning("Under Construction"); 
+	$mes->addDebug("Loading: RSS");	
+	if(!varset($_POST['do_conversion']))
+	{
+		$mes->addWarning("Under Construction"); 	
+	}	
+	
 	return dbImport('xml');
 	
 }
@@ -305,8 +308,6 @@ function dbImport($mode='db')
 	
 	$mes = e107::getMessage();
 	
-	define("RSS_IMPORT",vartrue($_POST['rss_feed'],false));	
-	
 	// if (IMPORT_DEBUG) echo "Importing: {$current_db_type}<br />";
 	$mes->addDebug("Loading: ".$current_db_type);
 	
@@ -314,6 +315,7 @@ function dbImport($mode='db')
 	{
 		$mes->addDebug("Class Available: ".$current_db_type);   
 		$converter = new $current_db_type;
+		$converter->init();
 	}
 	else
 	{
@@ -420,9 +422,9 @@ function dbImport($mode='db')
 
 
 
-if(varset($_POST['import_type']) || varset($_POST['do_conversion']))
+if(varset($_GET['import_type']) || varset($_POST['do_conversion']))
 {
-	showImportOptions($_POST['import_type']);
+	showImportOptions($_GET['import_type']);
 }
 else
 {
@@ -443,7 +445,7 @@ function showStartPage()
     global $ns, $emessage, $frm, $import_class_names, $import_class_support, $db_import_blocks, $import_class_comment;
 
 	$text = "
-	<form method='post' action='".e_SELF."' id='core-import-form'>
+	<form method='get' action='".e_SELF."' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
 		<legend class='e-hideme'>".'DBLAN_10'."</legend>
             <table class='adminlist'>
@@ -521,7 +523,18 @@ function showStartPage()
 
 function showImportOptions($mode='csv')
 {
-	global $text, $frm, $ns, $emessage, $csv_names, $import_class_names, $e_userclass, $db_import_blocks, $import_class_support, $import_default_prefix;
+	global $text, $emessage, $csv_names, $import_class_names, $e_userclass, $db_import_blocks, $import_class_support, $import_default_prefix;
+	
+	$frm = e107::getForm();
+	$ns = e107::getRender();
+	
+	$mes = e107::getMessage();
+	
+	if (class_exists($mode))
+	{
+		$mes->addDebug("Class Available: ".$mode);   
+		$proObj = new $mode;
+	}
 
 	$message = LAN_CONVERT_02."<br /><strong>".LAN_CONVERT_05."</strong>";
 	$emessage->add($message, E_MESSAGE_WARNING);
@@ -565,14 +578,24 @@ function showImportOptions($mode='csv')
 		";
 
 	}
-	elseif($mode == 'rss_import')
+	elseif(method_exists($proObj,"config"))
 	{
-		$text .= "<tr>
-		<td>Feed URL</td>
-		<td><input class='tbox' type='text' name='rss_feed' size='80' value='{$_POST['rss_feed']}' maxlength='250' />
-		<input type='hidden' name='import_source' value='rss' />
-		</td>
-		</tr>";	
+		$ops  = $proObj->config();
+		foreach($ops as $key=>$val)
+		{
+			$text .= "<tr>
+				<td>".$val['caption']."</td>
+				<td>".$val['html'];
+			$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";	
+			$text .= "</td>
+			</tr>\n";		
+		}
+		
+		if($proObj->sourceType)
+		{
+			$text .= "<input type='hidden' name='import_source' value='".$proObj->sourceType."' />\n";	
+		} 			
+				
 	}
 	else
 	{
@@ -634,7 +657,9 @@ function showImportOptions($mode='csv')
   	$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $checked_class_list,'main,admin,classes,matchclass');
 
   	$text .= "</td></tr></table>
-	<div class='buttons-bar center'>".$frm->admin_button('do_conversion',LAN_CONTINUE, 'execute')."
+	<div class='buttons-bar center'>".$frm->admin_button('do_conversion',LAN_CONTINUE, 'execute').
+	
+	$frm->admin_button('back',LAN_CANCEL, 'cancel')."
 	<input type='hidden' name='db_import_type' value='$mode' />
 	<input type='hidden' name='import_type' value='".$mode."' />
 	</div>

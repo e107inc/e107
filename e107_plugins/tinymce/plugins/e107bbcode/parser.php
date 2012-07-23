@@ -17,7 +17,7 @@ if($_POST['mode'] == 'tohtml')
 {
 	$content = $tp->toDB($_POST['content']);
 	e107::getBB()->setClass($_SESSION['media_category']);
-	echo $tp->toHtml($content,true);
+	echo $tp->toHtml($content, true, 'wysiwyg');
 	e107::getBB()->clearClass();	
 }
 

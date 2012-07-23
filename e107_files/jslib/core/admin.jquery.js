@@ -392,65 +392,7 @@ $(document).ready(function()
 
 
 
-		// ----------------- Upload --------------------------------------
-		
-		var upath = $("#uploader").attr("rel");
 	
-		$("#uploader").pluploadQueue({
-	        // General settings
-		        runtimes : "html5,html4",
-		        url : upath,
-		        max_file_size : "10mb",
-		        chunk_size : "1mb",
-		        unique_names : false,
-		 
-		        // Resize images on clientside if we can
-		 //       resize : {width : 320, height : 240, quality : 90},
-		 
-		        // Specify what files to browse for
-		        filters : [
-		            {title : "Image files", extensions : "jpg,gif,png,jpeg"},
-		            {title : "Zip files", extensions : "zip,gz"}
-		        ],
-		        preinit : {
-            		Init: function(up, info) {
-		                //log('[Init]', 'Info:', info, 'Features:', up.features);
-	            	}
-	       		},
-		        init : {
-		        	
-		        	FilesAdded: function(up, files) {
-               						
-	            	},
-	            	FileUploaded: function(up, file, info) {  // Called when a file has finished uploading
-	                	//log('[FileUploaded] File:', file, "Info:", info);
-		            },
-		            UploadProgress: function(up, file) {  // Called while a file is being uploaded
-	               
-	               		// console.log(up.total);
-	                	// console.log('[UploadProgress]', 'File:', file, "Total:", up.total);
-	            	},	
-	            	UploadComplete: function(up, files){
-	            		document.location.reload(); // refresh the page. 	
-	            		
-	            	}, 
-		            ChunkUploaded: function(up, file, info) { // Called when a file chunk has finished uploading
-		                
-		                //log('[ChunkUploaded] File:', file, "Info:", info);
-		               // console.log(info);
-		            },	 
-		            Error: function(up, args) { // Called when a error has occured
-		                alert('There was an error');
-		              // console.log(args);
-		            }	
-		        	
-		        }
-		    });
-		    
-
-		// -----------------------------------------------------------------
-
-
 
 
 

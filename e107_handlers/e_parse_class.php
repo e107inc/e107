@@ -1407,10 +1407,16 @@ class e_parse
 							}
 							break;
 
-						case 'html' :
+						case 'html' : // This overrides and deprecates html.bb
 							$proc_funcs = TRUE;
 							$convertNL = FALSE;
-							$full_text = str_replace(array("[html]","[/html]"),"",$code_text); // quick fix.. security issue?
+							$code_text = str_replace("\r\n", " ", $code_text);
+							$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
+							$html_end	= "<!-- bbcode-html-end -->";
+							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							
+							$full_text =$this->replaceConstants($full_text,'abs');	
+							$full_text = $html_start.$full_text.$html_end;
 							break;
 							
 						case 'table' : // strip <br /> from end of <table>		
@@ -1439,7 +1445,7 @@ class e_parse
 					if ($className)
 					{
 						$tempCode = new $className();
-						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);	
+						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
 					}
 					elseif ($bbcode)
 					{	// Execute the file

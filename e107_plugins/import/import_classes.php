@@ -158,7 +158,13 @@ class base_import_class
 
 
 	// Empty functions which descendants can inherit from
+
+	function init()
+	{
+		return;
+	}
 	
+		
 	function copyUserData(&$target, &$source)
 	{
 		return $target;

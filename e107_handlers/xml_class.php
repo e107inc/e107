@@ -367,6 +367,9 @@ class xmlClass
 		{
 			return FALSE;
 		}
+		
+		$xmlData = str_replace('content:encoded', 'content_encoded', $xmlData);
+		
 		if(!$xml = simplexml_load_string($xmlData))
 		{
 			$this->errors = $this->getErrors($xmlData);
@@ -388,9 +391,12 @@ class xmlClass
 	 */
 	function xml2array($xml, $rec_parent = '')
 	{
+		
 		$ret = array();
+	
 		$tags = get_object_vars($xml);
-
+	
+		
 		//remove comments
 		if($this->stripComments && isset($tags['comment']))
 		{
@@ -465,6 +471,7 @@ class xmlClass
 
 					//more cases?
 					default:
+					
 						$count = count($xml->{$tag});
 						if($count >= 1) //array of elements - loop
 						{
@@ -596,7 +603,7 @@ class xmlClass
 				$vars[$vl] = array($vars[$vl]);
 			}
 		}
-
+		
 		return $vars;
 	}
 
