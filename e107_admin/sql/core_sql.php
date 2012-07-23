@@ -403,21 +403,6 @@ CREATE TABLE plugin (
 ) ENGINE=MyISAM;
 
 # --------------------------------------------------------
-
-#
-# Table structure for table `preset`
-#
-
-CREATE TABLE preset (
-  preset_id int(10) unsigned NOT NULL auto_increment,
-  preset_name varchar(80) NOT NULL default '',
-  preset_field varchar(80) NOT NULL default '',
-  preset_value varchar(255) NOT NULL default '',
-  PRIMARY KEY  (preset_id)
-) ENGINE=MyISAM;
-
-# --------------------------------------------------------
-
 #
 # Table structure for table `rate`
 #

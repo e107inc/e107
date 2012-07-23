@@ -397,7 +397,7 @@ $(document).ready(function()
 		});
 
 		// Text-area AutoGrow
-		$("textarea.e-autoheight").elastic();
+	//	$("textarea.e-autoheight").elastic();
 
 
 
