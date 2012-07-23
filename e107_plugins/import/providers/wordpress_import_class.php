@@ -22,7 +22,7 @@
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
 $import_class_names['wordpress_import'] 	= 'Wordpress';
-$import_class_comment['wordpress_import'] 	= 'Tested with version 2.8.x (salted passwords)';
+$import_class_comment['wordpress_import'] 	= 'Tested with version 3.4.x (salted passwords)';
 $import_class_support['wordpress_import'] 	= array('users','news','page','links');
 $import_default_prefix['wordpress_import'] 	= 'wp_';
 
@@ -305,6 +305,13 @@ class wordpress_import extends base_import_class
 			link_function
 			link_sefurl
 			 */	
+		/* e107.
+		0 => LCLAN_20, // 0 = same window
+		1 => LCLAN_23, // new window
+		4 => LCLAN_24, // 4 = miniwindow  600x400
+		5 => LINKLAN_1 // 5 = miniwindow  800x600
+		*/
+		
 			 
 		$target['link_name']			= $source['link_name'];
 		$target['link_url']				= $source['link_url'];

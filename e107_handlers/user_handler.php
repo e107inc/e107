@@ -865,13 +865,14 @@ class e_userperms
 		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
 		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
 		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
+		"L"	=> array(ADMSLAN_76,E_16_LANGUAGE, E_32_LANGUAGE),			// Meta tags
 		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),			// Meta tags
 		
 		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
 		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),		// Search
 		"I"	=> array(ADMSLAN_40,E_16_LINKS, E_32_LINKS),		// Post SiteLinks 
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
-		"L"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),			// Configure URLs
+		"K"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),			// Configure URLs
 				
 		// Users 
 		"3"	=> array(ADMSLAN_21,E_16_ADMIN, E_32_ADMIN),		// Modify Admin perms
@@ -901,9 +902,9 @@ class e_userperms
 		// Manage
 		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
 		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),			// File-Manager  - Upload /manage files - 
-		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager and Image Settings
-		"A1"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add)
-		"A2"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media-Import)
+		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager All Areas. 
+		"A1"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add/Import)
+		"A2"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media-Categories)
 		
 		
 		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus

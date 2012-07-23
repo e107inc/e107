@@ -132,6 +132,9 @@ if (!$dont_check_update)
  */
 function update_check()
 {
+	
+	
+		
   global $ns, $dont_check_update, $e107info;
 
 
@@ -193,7 +196,7 @@ function update_check()
 	}
 }
 
-
+	
 
 require_once(e_HANDLER.'e_upgrade_class.php');
 //	$upg = new e_upgrade;
@@ -273,7 +276,7 @@ function update_706_to_800($type='')
 	$sql = e107::getDb();
 	$sql2 = e107::getDb('sql2');
 	$tp = e107::getParser();
-	
+
 	e107::getCache()->clearAll('db');
 
 	// List of unwanted $pref values which can go
@@ -283,7 +286,7 @@ function update_706_to_800($type='')
 );
 
 	// List of DB tables not required (includes a few from 0.6xx)
-	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last', 'session');
+	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last', 'session', 'preset');
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
@@ -575,7 +578,7 @@ function update_706_to_800($type='')
 		
 	}
 
-
+	
 
 //---------------------------------------------------------
 //			Comments - split user field
@@ -655,6 +658,7 @@ function update_706_to_800($type='')
 		$mes->logMessage(LAN_UPDATE_20."frontpage",E_MESSAGE_SUCCESS);
 		$do_save = TRUE;
 	}
+
 
 /*
  * Deprecated by db-verify-class
@@ -896,7 +900,6 @@ function update_706_to_800($type='')
 
 */	
 
-
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
 	{
@@ -1088,7 +1091,7 @@ function update_706_to_800($type='')
 	}
 	
 	// -------------------------------
-	
+
 	
 	
 	$med = e107::getMedia();

@@ -89,7 +89,7 @@ define('ADMSLAN_73', 'Admin ID: --ID-- name: --NAME--');
 
 define('ADMSLAN_74', 'General');
 // define('ADMSLAN_75', '');
-// define("ADMSLAN_76", "Language Configuration");
+define("ADMSLAN_76", "Manage language-packs");
 
 define("ADMSLAN_2", "Site Administrator <strong>%s</strong> updated in database.");
 ?>

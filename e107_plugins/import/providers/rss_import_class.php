@@ -22,7 +22,7 @@
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
 $import_class_names['rss_import'] 		= 'RSS';
-$import_class_comment['rss_import'] 	= 'Import RSS v2.0 feeds';
+$import_class_comment['rss_import'] 	= 'Import content via RSS v2.0 feeds from virtually any website.';
 $import_class_support['rss_import'] 	= array('news','page','links');
 $import_default_prefix['rss_import'] 	= '';
 
