@@ -20,6 +20,11 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+@set_time_limit(10 * 60);
+@session_write_close();
+@e107_ini_set("max_execution_time", 10 * 60);
+while (@ob_end_clean()); // kill all output buffering else it eats server resources
+@ob_implicit_flush(TRUE);
 
 
 /*
@@ -287,7 +292,7 @@ class e_file
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file)
 	{
-        $fp = fopen(e_UPLOAD.$local_file, 'w'); // always download to temp directory. 
+        $fp = fopen(e_MEDIA.$local_file, 'w'); // media-directory is the root. 
        
         $cp = curl_init($remote_url);
         curl_setopt($cp, CURLOPT_FILE, $fp);
@@ -297,7 +302,7 @@ class e_file
         curl_close($cp);
         fclose($fp);
        
-        return true;
+        return ($buffer) ? true : false;
     }
 
 

@@ -299,7 +299,9 @@ class page_admin_ui extends e_admin_ui
 			echo $text;	
 			exit;
 			// return $text;
-			
+			/*
+			<div class='bbcode large' >
+			 */
 		}
 
 		
@@ -717,7 +719,7 @@ class page_admin_ui extends e_admin_ui
 			$newData = "";
 			foreach($_POST as $k=>$v)
 			{
-				if(substr($k,0,4)=='data')
+				if(substr($k,0,4)=='data' && trim($v)!='')
 				{
 					list($tm,$key) = explode("_",$k);
 
@@ -728,7 +730,7 @@ class page_admin_ui extends e_admin_ui
 				// return;	
 			}
 	
-		//	echo $newData;
+		//	echo nl2br($newData);
 				
 			$page_text = $tp->toDB($newData);
 			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.

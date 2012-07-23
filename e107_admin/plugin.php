@@ -30,7 +30,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	$localfile = md5($remotefile.time()).".zip";
 	$status = "Downloading...";
 	
-	e107::getFile()->getRemoteFile($remotefile,$localfile);
+	e107::getFile()->getRemoteFile($remotefile,"temp/".$localfile);
 	
 	if(!file_exists(e_UPLOAD.$localfile))
 	{

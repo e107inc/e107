@@ -111,7 +111,7 @@ class e_bbcode
 			$strip_array = explode(',',$bbStrip);
 			if ($strip_array[0] == 'PRE')
 			{
-				$this->preProcess = TRUE;
+				$this->preProcess = "toDB";
 				unset($strip_array[0]);
 				if (count($strip_array) == 0) 
 				{
@@ -124,6 +124,9 @@ class e_bbcode
 				
 			}
 		}
+		
+
+		
 		$pattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 		// $matches[0] - same as the input text
 		// $matches[1] - '/' for a closing tag. Otherwise empty string
@@ -352,14 +355,18 @@ class e_bbcode
 
 		if (is_object($this->bbList[$code]))
 		{
-			if ($this->preProcess)
+			if ($this->preProcess == 'toDB')
 			{
 				//echo "Preprocess: ".htmlspecialchars($code_text).", params: {$param1}<br />";
 				return $this->bbList[$code]->bbPreSave($code_text, $param1);
 			}
+			if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior. 
+			{
+			// 	return $this->bbList[$code]->bbWYSIWYG($code_text, $param1);					
+			}
 			return $this->bbList[$code]->bbPreDisplay($code_text, $param1);
 		}
-		if ($this->preProcess) return $full_text;		// No change
+		if ($this->preProcess == 'toDB') return $full_text;		// No change
 
 		/**
 		 *	@todo - capturing output deprecated
@@ -536,7 +543,13 @@ class e_bbcode
 	 */
 	function htmltoBBcode($text)
 	{
-		
+		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
+		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
+
+		if(substr($text,0,6)=='[html]')
+		{
+			return $text;
+		}
 				
 		$text = preg_replace("/<a.*?href=\"(.*?)?request.php\?file=([\d]*)\".*?>(.*?)<\/a>/i","[file=$2]$3[/file]",$text);		
 					
@@ -677,6 +690,23 @@ class e_bb_base
 	{
 		// Could add logging, security in here
 		return $this->toHTML($code_text, $parm);
+	}
+	
+	
+	/**
+	 *	Process bbcode prior to display in WYSIWYG
+	 *	Functionally this routine does exactly the same as the existing bbcodes
+	 *	Parameters passed by reference to minimise memory use
+	 *
+	 *	@param string $code_text - text between the bbcode tags
+	 *	@param string $parm - any parameters specified for the bbcode
+	 *
+	 *	@return string with $code_text transformed into displayable XHTML as necessary
+	 */
+	final public function bbWYSIWYG(&$code_text, &$parm)
+	{
+		// Could add logging, security in here
+		return $this->toWYSIWYG($code_text, $parm);
 	}
 }
 
