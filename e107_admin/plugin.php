@@ -264,8 +264,13 @@ class pluginManager{
 		
 		$e107 = e107::getInstance();
 		$xml = e107::getXml();
+		$mes = e107::getMessage();
+		
+		$mes->addWarning("Experimental: Release plugin must be installed and contain data in order to bug-test this mechanism");
 	//	$file = "http://www.e107.org/releases.php"; //pluginfeed.php or similar. 
-		$file = "http://localhost:8080/e107_0.8/e107_plugins/release/release.php"; // temporary testing
+	
+		$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
+
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');
@@ -338,7 +343,8 @@ class pluginManager{
 		$d = http_build_query($data,false,'&');
 		$url = e_SELF."?src=".base64_encode($d);
 		$id = 'plug_'.$data['plugin_folder'];
-		return "<div id='{$id}'><input type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='button e-ajax' value='Download and Install' data-src='".$url."' /></div>";				
+		return "<div id='{$id}' style='margin-top:6px'>
+		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax' value='Download and Install' data-src='".$url."' /><span>Download and Install</span></div>";				
 	}
 	
 	
