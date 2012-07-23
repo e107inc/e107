@@ -1291,22 +1291,25 @@ class eRouter
 		// remove non existing languages
 		$lng = e107::getLanguage();
 		$lanList = $lng->installed();
-		foreach ($currentAliases as $lanCode => $aliases) 
+		
+		if(is_array($currentAliases))
 		{
-			$lanName = $lng->convert($lanCode);
-			if(!$lanName || !in_array($lanName, $lanList))
+			foreach ($currentAliases as $lanCode => $aliases) 
 			{
-				unset($currentAliases[$lanCode]);
-				continue;
-			}
-			
-			// remove non-existing modules
-			foreach ($aliases as $alias => $module) 
-			{
-				if(!isset($currentConfig[$module])) unset($currentAliases[$lanCode][$alias]);
+				$lanName = $lng->convert($lanCode);
+				if(!$lanName || !in_array($lanName, $lanList))
+				{
+					unset($currentAliases[$lanCode]);
+					continue;
+				}
+				
+				// remove non-existing modules
+				foreach ($aliases as $alias => $module) 
+				{
+					if(!isset($currentConfig[$module])) unset($currentAliases[$lanCode][$alias]);
+				}
 			}
 		}
-		
 		return $currentAliases;
 	}
 
