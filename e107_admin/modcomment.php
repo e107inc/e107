@@ -233,8 +233,10 @@ else
 	<tr><td colspan='6' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr>
 	";
 }
-$text .= "</table></form>
-<input type='hidden' name='e-token' value='".e_TOKEN."' />
+$text .= "</table>
+<div><input type='hidden' name='e-token' value='".e_TOKEN."' /></div>
+</form>
+
 </div>";
 
 if($totalCom > $amount)

@@ -1170,7 +1170,10 @@ class e_parse
 		return trim($text);
 	}
 
-
+	/**
+	 * Parse string into a format which is compatible with an html tag attribute. eg. name='$string' 
+	 * @param string $text 
+	 */
 	function toAttribute($text) {
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
 		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
@@ -1183,6 +1186,9 @@ class e_parse
 		}
 	}
 
+	/**
+	 * Parse string into a JS compatible format. 
+	 */
 	function toJS($stringarray) {
 		$search = array("\r\n","\r","<br />","'");
 		$replace = array("\\n","","\\n","\'");
@@ -1195,6 +1201,11 @@ class e_parse
 		return strtr ($stringarray, $trans_tbl);
 	}
 
+	/**
+	 * Parse string to an RSS-compatible format
+	 * @param $text string 
+	 * @param $tags boolean - Set to TRUE to allow tags and bbcode in the result. 
+	 */
 	function toRss($text,$tags=FALSE)
 	{
 
