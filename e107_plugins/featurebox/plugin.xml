@@ -2,7 +2,7 @@
 
 <!-- $Id: plugin.xml,v 1.9 2009-12-08 17:21:31 secretr Exp $ -->
 
-	<e107Plugin name="FBLAN_01" version="1.0" compatibility="0.8" installRequired="true">
+	<e107Plugin name="FBLAN_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="cameron@e107.org" />
 	<description>FBLAN_02</description>
 	<category>content</category>

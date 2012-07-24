@@ -2276,6 +2276,7 @@ class e107plugin
 
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['version'] = varset($eplug_version);
+		$ret['@attributes']['date'] = varset($eplug_date);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
 		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) ? 'true' : '';
 		$ret['@attributes']['xhtmlcompliant'] = vartrue($eplug_compliant) ? 'true' : '';
