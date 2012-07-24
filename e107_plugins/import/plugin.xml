@@ -2,8 +2,8 @@
 
 <!-- $Id: plugin.xml,v 1.2 2009-09-24 00:11:20 e107coders Exp $ -->
 
-	<e107Plugin name="LAN_CONVERT_01" version="1.0" compatibility="0.8" installRequired="true">
-	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
+	<e107Plugin name="LAN_CONVERT_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="devs@e107.org" />
 	<description>Import into e107</description>
 	<category>tools</category>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>

@@ -2,7 +2,7 @@
 
 <!-- $Id: plugin.xml,v 1.9 2009-10-22 04:14:45 e107coders Exp $ -->
 
-	<e107Plugin name="LCLAN_PLUGIN_LAN_1" version="1.12" compatibility="0.8" installRequired="true" releaseUrl=''>
+	<e107Plugin name="LCLAN_PLUGIN_LAN_1" version="1.12" date="2012-08-01" compatibility="2.0" installRequired="true" releaseUrl=''>
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>Links Page For Displaying External Web Links</description>
 	<category>content</category>
