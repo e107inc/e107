@@ -282,7 +282,7 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 
 $sLogo = siteinfo_shortcodes::sc_logo();
 
-echo $sLogo; 
+//echo $sLogo; 
 // $frm->imagepicker('sitelogo',$pref['sitelogo'],'_common')
 
 

@@ -1916,7 +1916,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_12.":</td>
 								<td>
-								<input type='text' name='news_title' value=\"". $tp->post_toForm($_POST['news_title'])."\" class='tbox' style='width:90%' />
+								<input type='text' name='news_title' value=\"". $tp->post_toForm($_POST['news_title'])."\" class='tbox' style='width:90%' required='required' />
 									".
 								// TOO short ->	$frm->text('news_title', $tp->post_toForm($_POST['news_title']),200,array('size'=>300)).
 									"

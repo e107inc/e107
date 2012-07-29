@@ -3675,6 +3675,11 @@ class e_admin_ui extends e_admin_controller_ui
 			$val = "'".$value."'";	
 		}
 		
+		if($field == 'options') // reserved field type. see: admin -> media-manager - batch rotate image. 
+		{
+			return; 
+		}
+		
 		$cnt = $this->getTreeModel()->update($field, $val, $selected, $value, false);
 		if($cnt)
 		{

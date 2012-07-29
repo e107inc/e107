@@ -129,7 +129,7 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 			'media_cat_order' 		=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);
 
 	function init()
@@ -203,6 +203,14 @@ class media_form_ui extends e_admin_form_ui
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);*/
+				
+		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
+		{
+			$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",",$_POST['multiselect']);
+			$this->rotateImages($ids,$type);
+		}
+		
 	}
 	
 	function resize_method($curval)
@@ -217,6 +225,43 @@ class media_form_ui extends e_admin_form_ui
 		
 		return $frm->selectbox('resize_method',$options,$curval)."<div class='field-help'>".IMALAN_4."</div>";										
 	}
+	
+	private function rotateImages($ids,$type)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		
+		$degrees = ($type == 'rotate_cw') ? 270 : 90;
+		
+	//	$mes->addDebug("Rotate Mode Set: ".$type);
+		
+		//TODO GIF and PNG rotation. 
+		
+		if($sql->db_Select("core_media","media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$original = $tp->replaceConstants($row['media_url']);
+
+				$mes->addDebug("Attempting to rotate by {$degrees} degrees: ".basename($original));
+				
+				$source = imagecreatefromjpeg($original);
+				
+				$rotate = imagerotate($source, $degrees, 0);
+				$srch = array(".jpg",".jpeg");
+				$cacheFile = str_replace($srch,"",strtolower(basename($original)))."_(.*)\.cache\.bin";
+				
+				if(imagejpeg($rotate,$original,100))
+				{
+					$mes->addSuccess("Rotated: ".basename($original));
+					e107::getCache()->clearAll('image',$cacheFile);
+					$mes->addDebug("Clearing Image cache with mask: ".$cacheFile);
+				}			
+			}
+		}	
+	}
+	
 	
 	function resize_dimensions($curval) // ie. never manually resize another image again!
 	{
@@ -255,7 +300,7 @@ class media_form_ui extends e_admin_form_ui
 		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
 		}	
 		
-		$text .= "<div><br />Warning: This feature is experimental.</div>";
+	//	$text .= "<div><br />Warning: This feature is experimental.</div>";
 		
 		return $text;
 		
@@ -263,9 +308,22 @@ class media_form_ui extends e_admin_form_ui
 	}
 	
 
-	function options()
+	function options($parms, $value, $id)
 	{
 		//return print_a($_GET,true);
+		if($value == 'batch')
+		{
+			return array(
+				"rotate_cw"		=> "Rotate 90&deg; cw",
+				"rotate_ccw"	=> "Rotate 90&deg; ccw"
+			);	
+		}
+		
+		if($_GET['action'] == 'edit')
+		{
+			return;
+		}	
+		
 		$tagid = $_GET['tagid'];
 		$path = $this->getController()->getListModel()->get('media_url');
 		$title = $this->getController()->getListModel()->get('media_name');
@@ -275,7 +333,15 @@ class media_form_ui extends e_admin_form_ui
 		$bbcode = ($_GET['bbcode']=='file')  ? "file" : "";
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
-		return "<input type='button' value='Select' class='e-media-select e-dialog-save e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+		$text = $this->renderValue('options',$value,'',$id);
+	
+		if($_GET['action'] == 'dialog')
+		{		
+			$text .= "<input type='button' value='Select' class='e-media-select e-dialog-save e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+		}
+		
+		return $text;
+		
 	}
 	
 
@@ -360,7 +426,7 @@ class media_admin_ui extends e_admin_ui
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
 			'media_usedby' 			=> array('title'=> '',				'type' => 'text',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
 
-			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'batch'=>true, 'noedit'=>true)
 		);
 
 
