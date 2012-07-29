@@ -272,11 +272,9 @@ class ecache {
 	 * @example clearAll('db');
 	 */
 	 
-	function clearAll($type)
-	{
-		
+	function clearAll($type,$mask = null)
+	{		
 		$path = null;
-		$mask = null;
 		
 		if($type =='content')
 		{
@@ -299,13 +297,13 @@ class ecache {
 		if($type == 'db')
 		{
 			$path = e_CACHE_DB;
-			$mask = '*.php';
+			$mask = ($mask == null) ? '*.php' : $mask;
 		}
 
 		if($type == 'image')
 		{
 			$path = e_CACHE_IMAGE;
-			$mask = '*.cache\.bin';			
+			$mask = ($mask == null) ? '*.cache\.bin' : $mask;		
 		}
 
 		if((null == $path) || (null == $mask))
@@ -315,7 +313,7 @@ class ecache {
 		
 		$fl = e107::getFile(false);
 		$fl->mode = 'fname';
-		$files = $fl->get_files($path, $fmask);
+		$files = $fl->get_files($path, $mask);
 		if($files)
 		{
 			foreach ($files as $file)

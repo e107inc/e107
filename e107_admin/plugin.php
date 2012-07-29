@@ -37,13 +37,18 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 		echo 'There was a problem retrieving the file';
 		exit;	
 	}
+//	chmod(e_PLUGIN,0777);
+	chmod(e_UPLOAD.$localfile,0755);
 	
 	require_once(e_HANDLER."pclzip.lib.php");
 	$archive = new PclZip(e_UPLOAD.$localfile);
-	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0666));
-	
+	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0755));
+//	chmod(e_PLUGIN,0755);
 	$dir 		= basename($unarc[0]['filename']);
-	
+//		chmod(e_UPLOAD.$localfile,0666);
+
+
+
 	/* Cannot use this yet until 'folder' is included in feed. 
 	if($dir != $p['plugin_folder'])
 	{
@@ -65,17 +70,20 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 		e107::getDb()->db_Select_gen("SELECT plugin_id FROM #plugin WHERE plugin_path = '".$plugPath."' LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
 		$status = e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
-		unlink(e_UPLOAD.$localfile);
+		//unlink(e_UPLOAD.$localfile);
 		
 	}
 	else 
 	{
-		print_a($unarc);
-		$status = "There was a problem";	
+		// print_a($fileList);
+		$status = "Error: <br /><a href='".$remotefile."'>Download Manually</a>";
+		//echo $archive->errorInfo(true);
+		// $status = "There was a problem";	
 		//unlink(e_UPLOAD.$localfile);
 	}
 	
 	echo $status;
+	@unlink(e_UPLOAD.$localfile);
 
 //	echo "file=".$file;
 	exit;	
@@ -94,6 +102,12 @@ require_once(e_HANDLER.'plugin_class.php');
 require_once(e_HANDLER.'file_class.php');
 require_once(e_HANDLER."form_handler.php");
 require_once (e_HANDLER.'message_handler.php');
+
+if(isset($_POST['uninstall_cancel']))
+{
+	header("location:".e_SELF);
+	exit;		
+}
 
 
 $plugin = new e107plugin;
@@ -1209,10 +1223,14 @@ class pluginManager{
 			</tr>
 			</table>
 			<div class='buttons-bar center'>";
+			
+			$text .= $frm->admin_button('uninstall_confirm',EPL_ADLAN_3,'submit');
+			$text .= $frm->admin_button('uninstall_cancel',EPL_ADLAN_62,'cancel');
 
+			/*
 			$text .= "<input class='button' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;
 			<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/>";
-
+			*/
              //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
 
 			$text .= "</div>
