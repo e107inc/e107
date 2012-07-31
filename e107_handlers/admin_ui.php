@@ -2178,6 +2178,13 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $joinAlias = array(); 
 
 	/**
+	 * Array of fields detected from listQry which are JOINs
+	 * @example returns array('user_name'=>'u.user_name'); from $listQry = "SELECT n.*,u.user_name FROM #news...."etc.
+	 */
+	protected $joinField = array();
+
+
+	/**
 	 * Main model table alias
 	 * @var string
 	 */
@@ -2496,7 +2503,7 @@ class e_admin_controller_ui extends e_admin_controller
 		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
 	}
 
-	public function getIfTableAlias($prefix = false, $quote = false)
+	public function getIfTableAlias($prefix = false, $quote = false) //XXX May no longer by useful. see joinAlias()
 	{
 		$alias = $this->getTableName(true);
 		if($alias)
@@ -2507,13 +2514,13 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * Get join table data
+	 * Get join table data - XXX DEPRECATE?
 	 * @param string $table if null all data will be returned
 	 * @param string $att_name search for specific attribute, default null (no search)
 	 * @return mixed
 	 */
 	public function getJoinData($table = null, $att_name = null, $default_att = null)
-	{
+	{		
 		if(null === $table)
 		{
 			return $this->tableJoin;
@@ -2525,7 +2532,7 @@ class e_admin_controller_ui extends e_admin_controller
 		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
 	}
 
-	public function setJoinData($table, $data)
+	public function setJoinData($table, $data) //XXX - DEPRECATE?
 	{
 		if(null === $data)
 		{
@@ -3000,6 +3007,25 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Given an alias such as 'u' or 'n.news_datestamp' -  will return the associated table such as 'user' or 'news'
+	 */
+	function getTableFromAlias($alias)
+	{
+		if(strpos($alias,".")!==false)
+		{
+			list($alias,$tmp) = explode(".",$alias,2);	
+		}
+				
+		$tmp = array_flip($this->joinAlias);
+		return vartrue($tmp[$alias]);			
+	}
+
+	function getJoinField($field)
+	{
+		return vartrue($this->joinField[$field],false);	
+	}
+
+	/**
 	 * Parses all available field data, adds internal attributes for handling join requests
 	 * @return e_admin_controller_ui
 	 */
@@ -3008,7 +3034,7 @@ class e_admin_controller_ui extends e_admin_controller
 		if($this->_alias_parsed) return $this; // already parsed!!!
 
 
-
+		/* OUTDATED. 
 		if($this->getJoinData())
 		{
 			foreach ($this->getJoinData() as $table => $att)
@@ -3032,7 +3058,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$this->setJoinData($table, $att);
 			}
 		}
-
+		*/
 
 
 		$this->joinAlias(); // generate Table Aliases from listQry
@@ -3041,22 +3067,36 @@ class e_admin_controller_ui extends e_admin_controller
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
 		{
-			// tableAlias.fieldName.fieldAlias
+			// fieldAlias.fieldName // table name no longer required as it's included in listQry. (see joinAlias() )
 			if(strpos($field, '.') !== false) // manually entered alias.
 			{
-				$tmp = explode('.', $field, 3);
-				$att['table'] = $tmp[0] ? $tmp[0] : $this->getIfTableAlias(false);
-				$att['alias'] = vartrue($tmp[2]);
+				$tmp = explode('.', $field, 2);
+				$table = $this->getTableFromAlias($tmp[0]);
+				$att['table'] = $table;
+				$att['alias'] = $field;
 				$att['field'] = $tmp[1];
-				$field = $att['alias'] ? $att['alias'] : $tmp[1];
+				$att['__tableField'] = $field;
+				$att['__tableFrom'] = "`#".$table."`.".$tmp[1]." AS ".$field;
+				$field = $att['alias'] ? $tmp[1] : $tmp[0];
+				
 				$fields[$field] = $att;
+				
 				unset($tmp);
 			}
 			else
 			{
 
 				$att['table'] = $this->getIfTableAlias(false);
-				if(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
+				
+				if($newField = $this->getJoinField($field)) // Auto-Detect. 
+				{
+					$table = $this->getTableFromAlias($newField); // Auto-Detect. 
+					$att['table'] = $table;
+					$att['alias'] = $newField;
+					$att['__tableField'] = $newField;	
+					$att['__tableFrom'] = "`#".$table."`.".$field." AS ".$newField;
+				}			
+				elseif(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
 				{
 					$att['alias'] = $this->joinAlias[$this->table].".".$field;
 				}
@@ -3075,7 +3115,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			else
 			{
-				$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
+		//		$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 			}
 			/*if($fields[$field]['table'])
 			{
@@ -3095,7 +3135,9 @@ class e_admin_controller_ui extends e_admin_controller
 			}*/
 		}
 
+	
 		$this->fields = $fields;
+		
 		$this->_alias_parsed = true;
 		return $this;
 	}
@@ -3112,16 +3154,29 @@ class e_admin_controller_ui extends e_admin_controller
 		if($this->listQry)
 		{
 			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
-
+			$keys = array();
 			foreach($matches[1] AS $k=>$v)
 			{
 				if(varset($matches[3][$k]))
 				{
 					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
 				}
+				
+				$keys[] = $matches[3][$k];
 			}
+			
+			foreach($keys as $alias)
+			{
+				preg_match_all("/".$alias."\.([\w]*)/i",$this->listQry,$match);
+				foreach($match[1] as $k=>$m)
+				{
+					$this->joinField[$m] = $match[0][$k];		
+				}
+					
+			}
+			
 		}
-
+		
 	}
 
 
@@ -3130,6 +3185,8 @@ class e_admin_controller_ui extends e_admin_controller
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
+		
+		
 		$searchQry = array();
 		$filterFrom = array();
 		$request  = $this->getRequest();
@@ -3163,6 +3220,7 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
+			
 			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === $var['type'])
 			{
 				continue;
@@ -3237,6 +3295,7 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 
+				
 			//From
 			$qry .= $tableSJoinArr ? ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom : " FROM ".$tableFrom;
 
@@ -3280,6 +3339,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return $rawData;
 		}
 
+
 		// join where
 		if(count($jwhere) > 0)
 		{
@@ -3303,6 +3363,8 @@ class e_admin_controller_ui extends e_admin_controller
 				$searchQry[] = $this->listQrySql['db_where'];
 			}
 		}
+		
+	
 
 		// where query
 		if(count($searchQry) > 0)
