@@ -253,14 +253,14 @@ class comment_shortcodes extends e_shortcode
 			'class'			=> 'tbox input comment-input',
 			'placeholder'	=> "Leave a message..." // TODO Lan
 		);
-			
+					
 		if($parm == 'bbcode')
 		{
 			return e107::getForm()->bbarea('comment',$this->var['comval'],'comment','comment-'.$this->var['itemid'],'large',$options);			
 		}
 		else
 		{
-			return e107::getForm()->textarea('comment',$this->var['comval'], 3, 80,$options);						
+			return e107::getForm()->textarea('comment',$this->var['comval'], 3, 50,$options);						
 		}		
 	}		
 	
