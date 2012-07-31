@@ -85,8 +85,11 @@ class userlogin
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+		
+		$forceLogin = ($autologin === 'signup');
+		if(!$forceLogin && $autologin === 'provider') $forceLogin = 'provider';
 
-		if($username == "" || (($userpass == "") && ($response == '')))
+		if($username == "" || (($userpass == "") && ($response == '') && $forceLogin !== 'provider'))
 		{	// Required fields blank
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
 		}
@@ -94,8 +97,7 @@ class userlogin
 //	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
 //		$this->e107->check_ban("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 		e107::getIPHandler()->checkBan("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
-
-		$forceLogin = ($autologin == 'signup');
+		
 		$autologin = intval($autologin);		// Will decode to zero if forced login
 		$authorized = false;
 		if (!$forceLogin && $this->e107->isInstalled('alt_auth'))
@@ -279,20 +281,21 @@ class userlogin
 		{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
 //		  $log_info = "New user: ".$this->userData['user_name']."  Class: ".$this->userData['user_class']."  Admin: ".$this->userData['user_admin']."  Perms: ".$this->userData['user_perms'];
 //		  $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
+			// FIXME - front page now supports SEF URLs - make a check here
 			foreach ($pref['frontpage_force'] as $fk=>$fp)
 			{
 				if (in_array($fk,$class_list))
 				{  // We've found the entry of interest
 					if (strlen($fp))
 					{
-						$redir = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
 		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;
 				}
 			}
 		}
-
+		
 		$redirPrev = e107::getRedirect()->getPreviousUrl();
 
 		if($redirPrev)
@@ -355,6 +358,11 @@ class userlogin
 		$pref = e107::getPref();
 
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+		
+		if($forceLogin === 'provider')
+		{
+			return "{$dbAlias}`user_xup`='".$this->e107->tp->toDB($username)."'";
+		}
 
         $qry[0] = "{$dbAlias}`user_loginname`= '".$this->e107->tp->toDB($username)."'";  // username only  (default)
 		$qry[1] = "{$dbAlias}`user_email` = '".$this->e107->tp->toDB($username)."'";   // email only
@@ -379,6 +387,9 @@ class userlogin
 	protected function checkUserPassword($userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
+		
+		if($forceLogin === 'provider') return true;
+		
 		if ($this->lookEmail && varsettrue($pref['passwordEncoding']))
 		{
 			$tmp = unserialize($this->userData['user_prefs']);

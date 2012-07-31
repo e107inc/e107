@@ -621,14 +621,16 @@ if (isset($_POST['register']))
 				$eml['e107_header'] = $eml['userid'];
 				require_once(e_HANDLER.'mail.php');
 				$mailer = new e107Email();
-
-				if(!$mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE))
+				
+				// FIX - sendEmail returns TRUE or error message...
+				if(true !== $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE))
 				{
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
 				unset($allData['data']['user_password']);
 			}
 			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
+			// FIXME - undocummented feature - userpartial trigger (better trigger name?)
 			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			require_once(HEADERF);

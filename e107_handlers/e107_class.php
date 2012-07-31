@@ -191,6 +191,7 @@ class e107
 		'eUrl'							 => '{e_HANDLER}e107Url.php',
 		'eUrlConfig'					 => '{e_HANDLER}application.php',
 		'eUrlRule'						 => '{e_HANDLER}application.php',
+		'Hybrid_Auth'					 => '{e_HANDLER}hybridauth/Hybrid/Auth.php',
 		'language'						 => '{e_HANDLER}language_class.php',
 		'news'							 => '{e_HANDLER}news_class.php',
 		'notify'						 => '{e_HANDLER}notify_class.php',
@@ -1289,6 +1290,20 @@ class e107
 			return self::getSingleton('xmlClass', true, (true === $singleton ? '' : $singleton));
 		}
 		return self::getObject('xmlClass', null, true);
+	}
+	
+	/**
+	 * Retrieve HybridAuth object
+	 *
+	 * @return Hybrid_Auth
+	 */
+	public static function getHybridAuth()
+	{
+		$config = array(
+			'base_url' => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+			'providers' => e107::getPref('social_login', array())	
+		);
+		return new Hybrid_Auth($config);
 	}
 
 	/**
