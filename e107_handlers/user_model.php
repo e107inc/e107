@@ -702,6 +702,28 @@ class e_user_model extends e_admin_model
 		$this->getConfig()->setData($pref_path, $value = null);
 		return $this;
 	}
+	
+	/**
+	 * New - External login providers support
+	 * @return string Provider name
+	 */
+	public function getProviderName()
+	{
+		if($this->get('user_xup'))
+		{
+			return array_shift(explode('_', $this->get('user_xup')));
+		}
+		return null;
+	}
+	
+	/**
+	 * New - External login providers support
+	 * @return boolean Check if there is external provider data
+	 */
+	public function hasProviderName()
+	{
+		return $this->has('user_xup');
+	}
 
 	/**
 	 * Get user extended model
@@ -876,9 +898,9 @@ class e_user_model extends e_admin_model
 	/**
 	 * Send model data to DB
 	 */
-	public function save($force = false, $session = false)
+	public function save($noEditorCheck = false, $force = false, $session = false)
 	{
-		if (!$this->checkEditorPerms())
+		if (!$noEditorCheck && !$this->checkEditorPerms())
 		{
 			return false; // TODO - message, admin log
 		}
@@ -960,6 +982,204 @@ class e_system_user extends e_user_model
 		//return ($this->getId() && $this->getId() == e107::getUser()->getId());
 		return false;
 	}
+	
+	/**
+	 * Send user email
+	 * @param mixed $userInfo array data or null for current logged in user or any object subclass of e_object (@see e_system_user::renderEmail() for field requirements)
+	 */
+	public function email($type = 'default', $options = array(), $userInfo = null)
+	{
+		
+		if(null === $userInfo)
+		{
+			$userInfo = $this->getData();
+		}
+		elseif(is_object($userInfo) && get_class($userInfo) == 'e_object' || is_subclass_of($userInfo, 'e_object'))
+		{
+			$userInfo = $userInfo->getData();
+		}
+		
+		if(empty($userInfo) || !vartrue($userInfo['user_email'])) return false;
+		
+		if($options && is_array($options))
+		{
+			$userInfo = array_merge($options, $userInfo);
+		}
+		
+		$eml = $this->renderEmail($userInfo, $type);
+		if(empty($eml)) return false;
+		
+		$mailer = e107::getEmail();
+		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
+	}
+	
+	/**
+	 * Render user email. 
+	 * Additional user fields:
+	 * 'mail_subject' -> required when type is not signup
+	 * 'mail_body' -> required when type is not signup
+	 * 'mail_copy_to' -> optional, carbon copy, used when type is not signup
+	 * 'mail_bcopy_to' -> optional, blind carbon copy, used when type is not signup
+	 * 'mail_attach' -> optional, attach files, available for all types, additionally it overrides $SIGNUPEMAIL_ATTACHMENTS when type is signup
+	 * 'mail_options' -> optional, available for all types, any additional valid mailer option as described in e107Email::sendEmail() phpDoc help (options above can override them)
+	 * All standard user fields from the DB (user_name, user_loginname, etc.)
+	 * 
+	 * @param array $userInfo
+	 * @param string $type signup|notify|default
+	 * @return array
+	 */
+	public function renderEmail($type, $userInfo)
+	{	
+		$pref = e107::getPref();
+		$ret = array();
+		
+		// mailer options
+		if(isset($userInfo['mail_options']) && is_array($userInfo['mail_options']))
+		{
+			$ret = $userInfo['mail_options'];
+		}
+
+		// FIXME convert to the new template to avoid include on every call
+		// BC
+		if (file_exists(THEME.'email_template.php'))
+		{
+			include(THEME.'email_template.php');
+		}
+		else
+		{
+			// new standards
+			include(e107::coreTemplatePath('email'));
+		}
+		
+		$template = '';
+		switch ($type) 
+		{
+			case 'signup':
+				if(vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) $template = $SIGNUPPROVIDEREMAIL_TEMPLATE; 
+				else $template = $SIGNUPEMAIL_TEMPLATE;
+			break;
+				
+			case 'notify':
+				if(vartrue($userInfo['mail_body'])) $template = $NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+			break;
+				
+			case 'default':
+				if(vartrue($userInfo['mail_body'])) $template = $EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
+			break;
+		}
+		
+		if(!$template) return array();
+
+		// signup email only
+		if($type == 'signup')
+		{
+			$pass_show = $userInfo['user_password'];
+			
+			$ret['mail_recipient_id'] = $userInfo['user_id'];
+			if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
+			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
+			if (vartrue($userInfo['mail_attach'])) { $ret['mail_attach'] = $userInfo['mail_attach']; }
+			elseif (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['mail_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
+			
+			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
+		
+			$search[0] = '{LOGINNAME}';
+			$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+		
+			$search[1] = '{PASSWORD}';
+			$replace[1] = $pass_show;
+		
+			$search[2] = '{ACTIVATION_LINK}';
+			$replace[2] = '';
+		
+			$search[3] = '{SITENAME}';
+			$replace[3] = SITENAME;
+		
+			$search[4] = '{SITEURL}';
+			$replace[4] = "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
+		
+			$search[5] = '{USERNAME}';
+			$replace[5] = $userInfo['user_name'];
+		
+			$search[6] = '{USERURL}';
+			$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+			
+			$search[7] = '{DISPLAYNAME}';
+			$replace[7] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+			
+			$search[8] = '{EMAIL}';
+			$replace[8] = $userInfo['user_email'];
+		
+			$subject = str_replace($search, $replace, $SIGNUPEMAIL_SUBJECT);
+			$ret['mail_subject'] =  $subject;
+			$ret['send_html'] = TRUE;
+		
+			$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+			$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
+			$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+			$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURLBASE.THEME_ABS."style.css\" type=\"text/css\" />\n" : "";
+		    $HEAD .= "<title>".LAN_SIGNUP_58."</title>\n";
+			
+			if($SIGNUPEMAIL_USETHEME == 2)
+			{
+				$CSS = file_get_contents(THEME."style.css");
+				$HEAD .= "<style>\n".$CSS."\n</style>";
+			}
+		
+			$HEAD .= "</head>\n";
+			if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
+			{
+				$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
+			}
+			else
+			{
+				$HEAD .= "<body>\n";
+			}
+			$FOOT = "\n</body>\n</html>\n";
+		
+			$ret['mail_body'] = str_replace($search,$replace,$HEAD.$template.$FOOT);
+			$ret['preview'] = $ret['mail_body'];// Non-standard field
+			return $ret;
+		}
+
+		// all other email types
+		$subject = $userInfo['mail_subject'];
+		
+		if(!$subject) return array();
+		
+		$ret['mail_recipient_id'] = $userInfo['user_id'];
+		if (vartrue($userInfo['mail_copy_to'])) { $ret['mail_copy_to'] = $userInfo['mail_copy_to']; }
+		if (vartrue($userInfo['mail_bcopy_to'])) { $ret['mail_bcopy_to'] = $userInfo['mail_bcopy_to']; }
+		if (vartrue($userInfo['mail_attach'])) { $ret['mail_attach'] = $userInfo['mail_attach']; }
+		
+		$search[0] = '{LOGINNAME}';
+		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+		
+		$search[1] = '{DISPLAYNAME}';
+		$replace[1] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+		
+		$search[2] = '{EMAIL}';
+		$replace[2] = $userInfo['user_email'];
+	
+		$search[3] = '{SITENAME}';
+		$replace[3] = SITENAME;
+	
+		$search[4] = '{SITEURL}';
+		$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
+	
+		$search[5] = '{USERNAME}';
+		$replace[5] = $userInfo['user_name'];
+	
+		$search[6] = '{USERURL}';
+		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+	
+		$ret['mail_subject'] =  str_replace($search, $replace, $subject);
+		$ret['send_html'] = TRUE;
+		$ret['mail_body'] = str_replace($search, $replace, $template);
+		$ret['preview'] = $ret['mail_body']; // Non-standard field
+		
+		return $ret;
+	}
 }
 
 /**
@@ -978,6 +1198,11 @@ class e_user extends e_user_model
 	private $_parent_extmodel = null;
 	private $_parent_extstruct = null;
 	private $_parent_config = null;
+	
+	/**
+	 * @var Hybrid_Provider_Model
+	 */
+	protected $_provider;
 
 	public function __construct()
 	{
@@ -985,7 +1210,7 @@ class e_user extends e_user_model
 			->load() // load current user from DB
 			->setEditor($this); // reference to self
 	}
-
+	
 	/**
 	 * Yes, it's current user - return always true
 	 * NOTE: it's not user check, use isUser() instead!
@@ -1006,6 +1231,53 @@ class e_user extends e_user_model
 	{
 		return $this->_parent_id;
 	}
+	
+	/**
+	 * Init external user login/signup provider
+	 * @return e_system_user
+	 */
+	public function initProvider()
+	{
+		if(null !== $this->_provider) return $this;
+
+		if($this->get('user_xup'))
+		{
+			$providerId = $this->getProviderName();
+			require_once(e_HANDLER.'user_handler.php');
+			$this->_provider = new e_user_provider($providerId);
+			$this->_provider->init();
+		}
+	}
+	
+	/**
+	 * Get external user provider
+	 * @return Hybrid_Provider_Model
+	 */
+	public function getProvider()
+	{
+		if(null === $this->_provider) $this->initProvider();
+		return $this->_provider;
+	}
+	
+	
+	/**
+	 * Set external user provider (already initialized)
+	 * @return e_user
+	 */
+	public function setProvider($provider)
+	{
+		$this->_provider = $provider;
+		return $this;
+	}
+	
+	/**
+	 * Check if this user has assigned login provider
+	 * @return boolean
+	 */
+	public function hasProvider()
+	{
+		return ($this->getProvider() !== null);
+	}
 
 	/**
 	 * User login
@@ -1022,6 +1294,26 @@ class e_user extends e_user_model
 
 		$userlogin = new userlogin();
 		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
+		
+		$this->setSessionData(true)
+			->setData($userlogin->getUserData());
+
+		return $this->isUser();
+	}
+	
+	/**
+	 * User login via external user provider
+	 * @param string $xup external user provider identifier
+	 * @return boolean success
+	 */
+	final public function loginProvider($xup)
+	{
+		if(!e107::getPref('social_login_active', false))  return false;
+		
+		if($this->isUser()) return true;
+		
+		$userlogin = new userlogin();
+		$userlogin->login($xup, '', 'provider', false, true);
 		
 		$this->setSessionData(true)
 			->setData($userlogin->getUserData());
@@ -1082,6 +1374,10 @@ class e_user extends e_user_model
 	 */
 	final public function logout()
 	{
+		if($this->hasProvider())
+		{
+			$this->getProvider()->logout();
+		}
 		$this->logoutAs()
 			->_destroySession();
 
@@ -1115,6 +1411,42 @@ class e_user extends e_user_model
 		$this->_destroyAsSession();
 		return $this;
 	}
+	
+	public function tryProviderSession($deniedAs)
+	{
+		// don't allow if main admin browse front-end or there is already user session
+		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
+		
+		// detect all currently connected providers
+		$hybrid = e107::getHybridAuth(); // init the auth class
+
+		$connected = Hybrid_Auth::getConnectedProviders();
+		
+		// no active session found 
+		if(!$connected) return $this;
+		
+		// query DB
+		$sql = e107::getDb();
+		$where = array();
+		foreach ($connected as $providerId) 
+		{
+			$adapter = Hybrid_Auth::getAdapter($providerId);
+			
+			if(!$adapter->getUserProfile()->identifier) continue;
+			
+			$id = $providerId.'_'.$adapter->getUserProfile()->identifier;
+			$where[] = "user_xup='".$sql->escape($id)."'";
+		}
+		$where = implode(' OR ', $where);
+		if($sql->db_Select('user', 'user_id, user_password, user_xup', $where))
+		{
+			$user = $sql->db_Fetch();
+			e107::getUserSession()->makeUserCookie($user);
+			$this->setSessionData();
+		}
+		
+		return $this;
+	}
 
 	/**
 	 * TODO load user data by cookie/session data
@@ -1133,6 +1465,9 @@ class e_user extends e_user_model
 			$this->_initConstants();
 			return $this;
 		}
+		
+		// NEW - new external user login provider feature
+		$this->tryProviderSession($denyAs);
 
 		// We have active session
 		if(null !== $this->_session_data)
@@ -1169,6 +1504,10 @@ class e_user extends e_user_model
 
 				// currently does nothing
 				$this->_initConstants();
+				
+				// init any available external user provider
+				if(e107::getPref('social_login_active', false)) $this->initProvider();
+				
 				return $this;
 			}
 
