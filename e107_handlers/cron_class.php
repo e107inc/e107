@@ -114,14 +114,18 @@ class _system_cron
 			$text .= $row2['Create Table'];
 			$text .= ";\n\n";
 			
-			$sql->db_Select_gen("SELECT * FROM `".$table."`");
-			$data_array = array();
+			ob_end_clean(); // prevent memory exhaustian 
+			
+			$count = $sql->db_Select_gen("SELECT * FROM `".$table."`");
+			$data_array = "";
 		
 			while($row = $sql->db_Fetch())
 			{
 				if(!$fields)
 				{
-					$fields = array_keys($row);			
+					$fields = array_keys($row);	
+					$text = "\nINSERT INTO `".$table."` (`".implode("` ,`",$fields)."`) VALUES \n";	
+					file_put_contents($backupFile,$text,FILE_APPEND);	
 				}
 				
 				$d = array();
@@ -130,14 +134,12 @@ class _system_cron
 					$d[] = "'".mysql_real_escape_string($row[$val])."'"; 				
 				}
 	
-				$data_array[] = "(".implode(", ",$d).")";
+				$data_array = "(".implode(", ",$d)."),\n"; //XXX extra ',' at the end may be an issue. - to be tested. 
+				file_put_contents($backupFile,$data_array,FILE_APPEND);
 	
 			}
-			
-			
-			$text .= "\nINSERT INTO `".$table."` (`".implode("` ,`",$fields)."`) VALUES \n";
-			$text .= implode(",\n",$data_array);
-			$text .= ";\n\n\n";		
+				
+			$text = ";\n\n\n";		
 			$c++;		
 		    
 			file_put_contents($backupFile,$text,FILE_APPEND);
