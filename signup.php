@@ -379,7 +379,7 @@ if (e_QUERY)
 // 		Initial signup (registration)
 //----------------------------------------
 
-if (isset($_POST['register']))
+if (isset($_POST['register']) ) //&& $pref['user_reg'] == 1 add later. 
 {	
 	$e107cache->clear("online_menu_totals");
 	require_once(e_HANDLER."message_handler.php");
@@ -567,6 +567,7 @@ if (isset($_POST['register']))
 		}
 
 		$allData['data']['user_join'] = time();
+		$allData['data']['user_ip'] = e107::getIPHandler()->getIP(FALSE);
 		
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
