@@ -600,7 +600,7 @@ class e_session
 			
 			// TODO event trigger
 			
-			e107::getAdminLog()->log_event('Session validation failed!', $details, E_LOG_FATAL);
+			// e107::getAdminLog()->log_event('Session validation failed!', $details, E_LOG_FATAL);
 			// TODO session exception, handle it proper on live site
 			// throw new Exception('');
 			
