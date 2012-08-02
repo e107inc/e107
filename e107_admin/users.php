@@ -689,7 +689,7 @@ class users_admin_ui extends e_admin_ui
 	 		'user_email' 		=> array('title' => LAN_USER_08,	'type' => 'text',	'width' => 'auto'),
 			'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 			'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
-			'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'method' , 'data' =>'text', 'filter'=>true, 'batch'=>true),
+			'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'method' , 'data' =>'comma', 'filter'=>true, 'batch'=>true),
 			'user_join' 		=> array('title' => LAN_USER_14,	'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 			'user_lastvisit' 	=> array('title' => LAN_USER_15,	'type' => 'datestamp', 	'width' => 'auto'),
 			'user_currentvisit' => array('title' => LAN_USER_16,	'type' => 'datestamp', 	'width' => 'auto'),
@@ -1089,7 +1089,13 @@ class users_admin_form_ui extends e_admin_form_ui
 			return $list;	
 		}
         
-		return $list[$curval];
+		$tmp = explode(",",$curval);
+		$text = array();
+		foreach($tmp as $v)
+		{
+			$text[] = $list[$v];	
+		}
+		return implode("<br />",$text); // $list[$curval];
 				
 	}	
 	
