@@ -350,7 +350,9 @@ class media_form_ui extends e_admin_form_ui
 
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
+		
 		$curVal = explode(",",$curVal);
+		
 		if($mode == 'read')
 		{
 			return $this->getController()->getMediaCategory($curVal);
@@ -409,7 +411,7 @@ class media_admin_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
       		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE, 'writeParms'=>'thumb=180&thumb_urlraw=0&thumb_aw=180',	'width' => '110px'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => 'auto', 'filter' => true, 'batch' => true,'writeParms'=>'multiple=1'),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'comma',	'width' => 'auto', 'filter' => true, 'batch' => true,'writeParms'=>'multiple=1'),
 			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
@@ -1093,10 +1095,10 @@ class media_admin_ui extends e_admin_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		// return data to be merged with posted model data
-		$new_data['media_category'] = implode(",",$new_data['media_category']);
-		print_a($new_data);
+	//	$new_data['media_category'] = implode(",",$new_data['media_category']);
+		$this->fields['media_category']['data'] = 'str'; //XXX Quick fix for 'comma' incompatibility in Db-Update routines. 
 		return $new_data;
-		return $this->observeUploaded($new_data);
+	//	return $this->observeUploaded($new_data);
 	}
 
 	public function mediaData($sc_path)
