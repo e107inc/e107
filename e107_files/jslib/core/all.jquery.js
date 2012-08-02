@@ -435,6 +435,19 @@ $(document).ready(function()
 			
 			
 		});
+		
+
+		
+		// Does the same as externalLinks(); 
+		$('a').each(function() {
+			var href = $(this).attr("href");
+			var rel = $(this).attr("rel");
+			if(href && rel == 'external')
+			{
+				$(this).attr("target",'_blank');	
+			}					
+		});
+		
 			
 		
 })
