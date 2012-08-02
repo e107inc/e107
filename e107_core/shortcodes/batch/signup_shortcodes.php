@@ -40,17 +40,27 @@ class signup_shortcodes extends e_shortcode
 		}
 	}
 	
-	function sc_signup_xup() // show it to those who were using xup
+	function sc_signup_xup($param) // show it to those who were using xup
 	{
-		return $this->sc_signup_social_login();	
+		switch ($param) 
+		{
+			case 'login':
+				return $this->sc_signup_social_login();	
+			break;
+			
+			case 'signup':
+			default:
+				return $this->sc_signup_xup_signup();	
+			break;
+		}
 	}
 	
-	
-	function sc_signup_social_login()
+	// TODO - template
+	function sc_signup_xup_login()
 	{
 		$pref = e107::getPref('social_login_active');
 			
-		if(vartrue($pref))
+		if(!empty($pref))
 		{
 			$text = "";
 			$providers = e107::getPref('social_login'); 
@@ -60,7 +70,32 @@ class signup_shortcodes extends e_shortcode
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
-					$text .= "<a href='".e_BASE."index.php?provider={$p}'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
+					$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p)."'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
+				}
+				//TODO different icon options. see: http://zocial.smcllns.com/
+			}	
+			
+		//	$text .= "<hr />";
+			return $text;	
+		}	
+	}
+	
+	// TODO - template
+	function sc_signup_xup_signup()
+	{
+		$pref = e107::getPref('social_login_active');
+			
+		if(!empty($pref))
+		{
+			$text = "";
+			$providers = e107::getPref('social_login'); 
+
+			foreach($providers as $p=>$v)
+			{
+				$p = strtolower($p);
+				if($v['enabled'] == 1)
+				{
+					$text .= "<a href='".e107::getUrl()->create('system/xup/signup?provider='.$p)."'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
