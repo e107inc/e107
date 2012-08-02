@@ -954,8 +954,8 @@ class e_user_provider
 			$userdata['user_login'] = $userdata['user_name'];
 			$userdata['user_customtitle'] = ''; // not used
 			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
-			$userdata['user_sess'] = $profile->photoURL; // should we?
-			$userdata['user_image'] = ''; // not used
+			$userdata['user_sess'] = ''; // 
+			$userdata['user_image'] = $profile->photoURL; // avatar
 			$userdata['user_signature'] = ''; // not used
 			$userdata['user_hideemail'] = 1; // hide it by default
 			$userdata['user_xup'] = $sql->escape($this->userId());
