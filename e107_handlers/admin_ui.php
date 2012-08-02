@@ -2891,6 +2891,14 @@ class e_admin_controller_ui extends e_admin_controller
 				break;
 	
 			}
+
+			if($attributes['data'] == 'comma') 
+			{
+				$value = implode(',', $value);	
+				$model->setData($attributes['data'], 'str');
+				
+			}
+	
 			if(vartrue($attributes['dataPath']))
 			{
 				$model->setData($attributes['dataPath'], $value);
@@ -3117,7 +3125,8 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 		//		$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 			}
-			/*if($fields[$field]['table'])
+			/*
+			if($fields[$field]['table'])
 			{
 				if($fields[$field]['table'] == $this->getIfTableAlias(false))
 				{
@@ -3132,7 +3141,8 @@ class e_admin_controller_ui extends e_admin_controller
 			else
 			{
 				$fields[$field]['__tableField'] = '`'.$this->getTableName(false, true).'`.'.$field;
-			}*/
+			}
+			*/
 		}
 
 	
@@ -3149,8 +3159,6 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function joinAlias()
 	{
-		//TODO - editQry
-		// TODO - auto-detect fields that belong to other tables. eg. u.user_id,u.user_name and adjust query to suit.
 		if($this->listQry)
 		{
 			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
@@ -3171,8 +3179,7 @@ class e_admin_controller_ui extends e_admin_controller
 				foreach($match[1] as $k=>$m)
 				{
 					$this->joinField[$m] = $match[0][$k];		
-				}
-					
+				}					
 			}
 			
 		}
@@ -3202,15 +3209,25 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($searchFilter && is_array($searchFilter))
 		{
+			
 			list($filterField, $filterValue) = $searchFilter;
-	
+			
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 			{
-				$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+				if($this->fields[$filterField]['data'] == 'comma') 
+				{
+					$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."',".$this->fields[$filterField]['__tableField'].")";
+				}
+				else
+				{
+					$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+				}
+				
 			}
 		}
 		elseif($searchFilter && is_string($searchFilter))
 		{
+			
 			// filter callbacks could add to WHERE clause
 			$searchQry[] = $searchFilter;
 		}
@@ -4138,6 +4155,11 @@ class e_admin_ui extends e_admin_controller_ui
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
+				
+				if($att['data'] == 'comma') //XXX quick fix so it can be stored. 
+				{
+					$this->dataFields[$key] = 'str';	
+				}
 			}
 		}
 		// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
@@ -4736,3 +4758,5 @@ include_once(e107::coreTemplatePath('admin_icons'));
  * 16. tabs support (create/edit view)
  * 17. tree list view (should handle cases like Site Links admin page)
  */
+ 
+?>

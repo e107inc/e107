@@ -785,7 +785,7 @@ class e_model extends e_object
         {
             return $this->$data_src;
         }
-        
+		        
         $simple = false;
         if(strpos($key, '//') === 0)
         {
@@ -2397,7 +2397,13 @@ class e_front_model extends e_model
 			{
 				$qry['_FIELD_TYPES'][$key] = $type; //_FIELD_TYPES much more optional now...
 			}
+			
+			if($qry['_FIELD_TYPES'][$key] == 'comma') //XXX quick fix. 
+			{
+				$qry['_FIELD_TYPES'][$key] = 'str';			
+			}
 			$qry['data'][$key] = $this->getData($key);
+			
 		}
 
 		switch($action)
@@ -2416,7 +2422,8 @@ class e_front_model extends e_model
 				$qry['WHERE'] = $this->getFieldIdName().'='.$id; 
 			break;
 		}
-
+	
+		$this->addMessageDebug('SQL Qry: '.print_a($qry,true), $session_messages); 
 		return $qry;
 	}
 
