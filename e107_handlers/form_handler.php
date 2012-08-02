@@ -917,9 +917,10 @@ class e_form
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
 
-		if($options['multiple'] && strpos($name, '[') === false)
+		if($options['multiple'])
 		{
-			$name = $name.'[]';
+			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
+			$selected = explode(",",$selected);
 		}
 		$text = $this->select_open($name, $options)."\n";
 
