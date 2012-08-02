@@ -45,7 +45,7 @@ class signup_shortcodes extends e_shortcode
 		switch ($param) 
 		{
 			case 'login':
-				return $this->sc_signup_social_login();	
+				return $this->sc_signup_xup_login();	
 			break;
 			
 			case 'signup':
