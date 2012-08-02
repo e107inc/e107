@@ -2329,6 +2329,10 @@ class e_form
 			$asc = strtoupper(vartrue($options['asc'], 'asc'));
 			$elid = $fid;//$options['id'];
 			$query = isset($options['query']) ? $options['query'] : e_QUERY ;
+			if($_GET['action'] == 'list')
+			{
+				$query = e_QUERY; //XXX Quick fix for loss of pagination after 'delete'. 	
+			}
 			$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
 			$formurl = $url.($query ? '?'.$query : '');
 			$fields = $options['fields'];
