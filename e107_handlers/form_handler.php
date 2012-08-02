@@ -1921,7 +1921,15 @@ class e_form
 			case 'bool':
 			case 'boolean':
 				$false = vartrue($parms['trueonly']) ? "" : ADMIN_FALSE_ICON;
-				$value = $value ? ADMIN_TRUE_ICON : $false;
+				
+				if(vartrue($parms['reverse']))
+				{
+					$value = ($value) ? $false : ADMIN_TRUE_ICON;	
+				}
+				else
+				{
+					$value = $value ? ADMIN_TRUE_ICON : $false;	
+				}				
 			break;
 
 			case 'url':
@@ -2223,7 +2231,7 @@ class e_form
 				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
 				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
 				unset($parms['enabled'], $parms['disabled']);
-				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
+				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms);
 			break;
 
 			case 'method': // Custom Function

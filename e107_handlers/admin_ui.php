@@ -4614,8 +4614,17 @@ class e_admin_form_ui extends e_form
 			{
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
-						$option['bool__'.$key.'__1'] = LAN_YES;
-						$option['bool__'.$key.'__0'] = LAN_NO;
+						if(vartrue($parms['reverse'])) // reverse true/false values; 
+						{
+							$option['bool__'.$key.'__0'] = LAN_YES;	// see newspost.php : news_allow_comments for an example. 
+							$option['bool__'.$key.'__1'] = LAN_NO;							
+						}
+						else 
+						{
+							$option['bool__'.$key.'__1'] = LAN_YES;
+							$option['bool__'.$key.'__0'] = LAN_NO;	
+						}
+							
 						if($type == 'batch')
 						{
 							$option['boolreverse__'.$key] = LAN_BOOL_REVERSE;
