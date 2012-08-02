@@ -3795,7 +3795,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->setTriggersEnabled(false);
 		$data = array();
-		$model = $this->getTreeModel()->getNode($id);
+		$model = $this->getTreeModel()->getNode($id); //FIXME - this has issues with being on a page other than the 1st. 
 		if($model)
 		{
 			$data = $model->getData();
@@ -3811,6 +3811,13 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$this->getTreeModel()->setMessages();// errors
 			}
+		}
+		else  //FIXME - this is a fall-back for the BUG which causes model to fail on all list pages other than the 1st
+		{ 
+			//echo "Couldn't get Node for ID: ".$id;
+			// exit; 
+			$check = $this->getTreeModel()->delete($id);
+			return;			
 		}
 	}
 
