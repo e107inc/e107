@@ -229,9 +229,10 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_hide_email()
 	{
-		global $rs,$pref;
+		global $rs;
 		$default_email_setting = 1;   // Gives option of turning into a pref later if wanted
-		if ($pref['signup_option_realname'])
+		$pref = e107::getPref('signup_option_hideemail');
+		if ($pref)
 		{
 			return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_NO;
 		}

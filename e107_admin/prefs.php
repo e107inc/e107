@@ -706,7 +706,7 @@ $text .= "
 // Single Login / / copied from hybridAuth config.php so it's easy to add more. 
 // Used Below. 
 
-$single_logins = array ( 
+$social_logins = array ( 
 			// openid providers
 			"OpenID" => array (
 				"enabled" => true
@@ -765,8 +765,15 @@ $single_logins = array (
 		);
  
  
- 
- 
+// Key registration 
+$social_external = array(
+			"Facebook" 		=> "https://developers.facebook.com/apps",
+			"Twitter"		=> "https://dev.twitter.com/apps/new",
+			"Google"		=> "https://code.google.com/apis/console/",
+			"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
+			"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
+			"Foursquare"	=> "https://www.foursquare.com/oauth/"
+); 
  
  
 $text .= "
@@ -791,12 +798,14 @@ $text .= "
 				$pref['social_login'] = array();	
 			}
 							
-			foreach($single_logins as $prov=>$val)
+			foreach($social_logins as $prov=>$val)
 			{
+					
+					$label = varset($social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
 									
 					$text .= "
 					<tr>
-						<td class='label'>".$prov."</td>
+						<td class='label'>".$label."</td>
 						<td class='control'>
 						";
 					foreach($val as $k=>$v)
