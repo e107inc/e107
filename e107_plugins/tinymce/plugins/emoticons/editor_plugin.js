@@ -2,7 +2,7 @@
  * $Id$
  *
  * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright ï¿½ 2004-2008, Moxiecode Systems AB, All rights reserved.
  */
 
 (function() {
@@ -35,7 +35,19 @@
 			// Register example button
 			ed.addButton('emoticons', {
 				title : 'emoticons.desc',
-				cmd : 'mceEmotion',
+				onclick: function(){
+                	
+                	$.colorbox({
+                		href: url + "/emoticons.php",
+                		iframe: true,
+                		width:"200px",
+						height:"200px",
+						speed:2,
+						opacity: 0.3,
+						scrolling: false
+                	});
+                },
+				//cmd : 'mceEmotion',
 				image : url + '/images/emoticons.png'
 			});
 
