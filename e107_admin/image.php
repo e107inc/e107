@@ -40,7 +40,7 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-if($_GET['action'] == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reaosn. 
+if($_GET['action'] == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
 	define("e_IFRAME",true);
 	// require_once(e_ADMIN."auth.php");
@@ -901,10 +901,10 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 			
 			// TODO to eventually be hidden. 
-			$text .= "bbcode: <input type='text' readonly='readonly' style='border:0px; width:700px' id='bbcode_holder' name='bbcode_holder' value='' />
-			<input title='html' type='text' style='width:800px' id='html_holder' name='html_holder' value='' />
-			<input title='src' type='text' style='width:600px' id='src' name='src' value='' />
-			<input title='path' type='text' style='width:600px' id='path' name='path' value='' />				
+			$text .= "bbcode: <input title='bbcode' type='text' readonly='readonly' style='border:0px; width:700px' id='bbcode_holder' name='bbcode_holder' value='' />
+			<input title='html' type='hidden' style='width:800px' id='html_holder' name='html_holder' value='' />
+			<input title='src' type='hidden' style='width:600px' id='src' name='src' value='' />
+			<input title='path' type='hidden' style='width:600px' id='path' name='path' value='' />				
 			";		
 						
 		}
