@@ -273,22 +273,25 @@ class wysiwyg
 			'theme_advanced_toolbar_location'	=> 'top',
 			'theme_advanced_toolbar_align'		=> 'left',
 			'theme_advanced_blockformats' 		=> 'p,h2,h3,blockquote,code',
+			'theme_advanced_resize_vertical' 		=> 'true',
 			'dialog_type' 						=> "modal",		
-			
+			'theme_advanced_source_editor_height' => '400',
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
-			'theme_advanced_resizing'			=> 'true',
+			'theme_advanced_resizing'			=> 'false',
 			'remove_linebreaks'					=> 'true',
-			'extended_valid_elements'			=> '',
+			'extended_valid_elements'			=> (ADMIN ? 'object[*],embed[*]' : ''),
 			'apply_source_formatting'			=> 'false',
-			'invalid_elements'					=> 'p,font,align,script,applet,iframe',
+			'invalid_elements'					=> 'p,font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
+		//	'cleanup'							=> 'false',
 			'convert_fonts_to_spans'			=> 'true',
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
-			'auto_resize'						=> 'true',
+			'auto_resize'						=> 'false',
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
+			'media_strict'						=> 'false',
 		//	'forced_root_block'					=> '',
 			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true
 		//	'force_p_newlines'					=> 'false',
@@ -343,7 +346,7 @@ class wysiwyg
 
 		$smile_pref = e107::getConfig()->getPref('smiley_activate');
 
-		$admin_only = array("ibrowser","code");
+		$admin_only = array("ibrowser");
 
 		$plug_array = explode(",",$plugs);
 

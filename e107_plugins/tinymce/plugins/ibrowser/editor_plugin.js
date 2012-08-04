@@ -35,7 +35,17 @@
 			// Register ibrowser button
 			ed.addButton('ibrowser', {
 				title : 'ibrowser.desc',
-				cmd : 'mceibrowser',
+		//		cmd : 'mceibrowser',
+			onclick: function() {
+					$.colorbox({ 
+						href: url + "/ibrowser.php",
+						iframe: true,
+						width:"60%",
+						height:"70%",
+						speed:10,
+						opacity: 0.4
+					 });	
+				},
 				image : url + '/images/ibrowser.gif'
 			});
 
