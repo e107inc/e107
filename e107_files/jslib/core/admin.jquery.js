@@ -219,49 +219,9 @@ $(document).ready(function()
 		});
 		
 		
-		$(".e-nav").click(function(){ // should be run before ajax. 
-			
-			var src = $(this).attr("data-src");
-			var inc = parseInt($(this).attr("data-nav-inc"));
-			var dir = $(this).attr("data-nav-dir");
-			var tot = parseInt($(this).attr("data-nav-total"));
-			var val = src.match(/from=(\d+)/);
-			var amt = parseInt(val[1]);
-			
-			var oldVal = 'from='+ amt;
-		
-			var sub = amt - inc;
-			var add = amt + inc;
-			
-			$(this).show();	
-			
-			if(add > tot)
-			{
-				add = amt;	
-			}
-				
-			if(sub < 0)
-			{
-				sub = 0
-			}
-			
-			if(dir == 'down')
-			{
-				var newVal = 'from='+ sub;
-			}
-			else
-			{
-				var newVal = 'from='+ add;	
-			}
-			
-			
-			src = src.replace(oldVal, newVal);
-			$(".e-nav").attr("data-src",src);
 	
-		});
 		
-	
-				
+		
 		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
 		
 		

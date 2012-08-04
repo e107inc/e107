@@ -263,9 +263,10 @@ class e_media
 	 * Return the total number of Images in a particular category
 	 * 
 	 */	
-	public function countImages($cat)
+	public function countImages($cat,$search=null)
 	{
-		$inc = array();
+		$inc 		= array();
+		$searchinc 	= array();
 		
 		if(strpos($cat,"+") || !$cat)
 		{
@@ -277,8 +278,21 @@ class e_media
 			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
 		
+		if($search)
+		{
+			$searchinc[] = "media_name LIKE '%".$search."%' "; 
+			$searchinc[] = "media_description LIKE '%".$search."%' "; 
+			$searchinc[] = "media_caption LIKE '%".$search."%' ";
+			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
+		}
+		
 		
 		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." )" ;
+		
+		if($search)
+		{
+			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
+		}
 		
 		return e107::getDb()->db_Select_gen($query);	
 	}
@@ -288,9 +302,10 @@ class e_media
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
 	 */
-	public function getImages($cat='', $from=0, $amount=null)
+	public function getImages($cat='', $from=0, $amount=null,$search=null)
 	{
-		$inc = array();
+		$inc 		= array();
+		$searchinc 	= array();
 		
 		if(strpos($cat,"+") || !$cat)
 		{
@@ -303,10 +318,26 @@ class e_media
 			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
 		// TODO check the category is valid. 
+		
+		if($search)
+		{
+			$searchinc[] = "media_name LIKE '%".$search."%' "; 
+			$searchinc[] = "media_description LIKE '%".$search."%' "; 
+			$searchinc[] = "media_caption LIKE '%".$search."%' ";
+			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
+		}
 
+		
 		$ret = array();
-		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc) ;
-		$query .= " ) ORDER BY media_datestamp DESC";
+		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
+			
+		if($search)
+		{
+			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
+		}
+		
+		$query .= " ORDER BY media_datestamp DESC";
+
 		
 		if($amount)
 		{
@@ -405,18 +436,15 @@ class e_media
 		parse_str($att,$option); 
 		
 		$cat = ($category) ? '&amp;for='.$category : "";
+		
 		if(!$label) $label = ' Upload an image or file';
 		if($option['tagid']) $cat .= '&amp;tagid='.$option['tagid']; 
-		if($option['bbcode']) $cat .= '&amp;bbcode=1'; 
-		
-		
+		if($option['bbcode']) $cat .= '&amp;bbcode='.$option['bbcode']; 
 		
 		$cat .= ($option['limit']) ? "&amp;limit=".$option['limit'] : "";
-		
 		$cat .= ($option['frm']) ? "&amp;frm=".$option['frm'] : "";
-		
 			
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=dialog".$cat;
+		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=nav&amp;iframe=1".$cat;
 		return $url;	
 	}
 
@@ -431,16 +459,19 @@ class e_media
 		$limit 		= ($option['limit']) ? $option['limit'] : 20;
 		$newfrm 	= $frm + $limit; 
 		$bbcode		= ($option['bbcode']) ? $option['bbcode'] : null;
+		$navMode	= ($option['nav']) ? TRUE : FALSE;
+		$search		= ($option['search']) ? $option['search'] : null;
 
+	
 		
 		if($category !='_icon')
 		{
 			$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
-			$images = $this->getImages($cat,$frm,$limit);
+			$images = $this->getImages($cat,$frm,$limit,$search);
 			$class 	= "media-select-image";
 			$w		= 120;
 			$h		= 100;
-			$total	= $this->countImages($cat);
+			$total	= $this->countImages($cat,$search);
 		}
 		else // Icons
 		{
@@ -464,14 +495,20 @@ class e_media
 	//	$text .= "CAT=".$cat;
 		$dipTotal = (($frm + $limit) < $total) ? ($frm + $limit) : $total;
 
-		$text .= "<div>Filter: <input type='text' name='non-working-filter-example' value='' />";
-		$text .= "<input type='button' value='Go' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-	//	$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
-		$text .= "<a class='button e-nav e-ajax' href='#media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&from=0 #media-select-container' >&laquo;</a>"; // see next page of images. 
+		if($navMode === false)
+		{
+			$text .= "<div>Filter: <input type='text' id='media-search' title='Enter some text to filter the results' name='search' value='' class='e-tip e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />";
+			$text .= "<input type='button' value='Go' class='e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
+		//	$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
+			$text .= "<button title='previous page' class='button e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
 		
-		$text .= "&nbsp;<a class='button e-nav e-ajax' href='#media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&from=0 #media-select-container' >&raquo;</a>"; // see next page of images. 
-		$text .= "</div>
-		<div id='media-select-container'>
+			$text .= "&nbsp;<button title='next page' class='button e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&raquo;</button>"; // see next page of images. 
+			$text .= "</div>
+			<div id='media-select-container'>";	
+		}
+		
+		
+		$text .= "
 		<div style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
@@ -546,7 +583,11 @@ class e_media
 		$text .= "<div style='clear:both'><!-- --></div>";
 		$mes = e107::getMessage();
 		$mes->addDebug("Target: {$tagid}");
-		$text .= "</div>";
+		
+		if($navMode === false)
+		{			
+			$text .= "</div>";
+		}
 				
 		return $text;	
 	}

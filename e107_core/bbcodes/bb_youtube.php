@@ -271,10 +271,10 @@ class bb_youtube extends e_bb_base
 			default: // maximum 1920 x 1080 (+25)
 				$dim = explode(',', $dimensions, 2);
 				$params['w'] = (integer) varset($dim[0], 445);
-				if($params['w'] > 1920 || $params['w'] < 200) $params['w'] = 640;
+				if($params['w'] > 1920 || $params['w'] < 100) $params['w'] = 640;
 				
 				$params['h'] = (integer) varset($dim[1], 364);
-				if($params['h'] > 1105 || $params['h'] < 137) $params['h'] = 385;
+				if($params['h'] > 1105 || $params['h'] < 67) $params['h'] = 385;
 			break;
 		}
 	
@@ -344,24 +344,28 @@ class bb_youtube extends e_bb_base
 		
 		$class = "bbcode ".e107::getBB()->getClass('youtube'); // consistent classes across all themes. 
 		
-		$ret = '
-		
-<!-- Start YouTube --> 
-		
-		<object class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" >
+		$ret = "<!-- Start YouTube-".$dimensions."-".$yID." -->\n";	// <-- DO NOT MODIFY - used for detection by bbcode handler. 	
+		$ret .= '<object class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" >
 			<param name="movie" value="'.$url.'" />
 			<param name="allowFullScreen" value="'.$fscr.'" />
 			<param name="allowscriptaccess" value="always" />
 			<param name="wmode" value="transparent" />
 		';		
-	// Not XHTML - but needed for compatibility. 
+			
+		// Not XHTML - but needed for compatibility. 
 		$ret .= '<embed class="'.$class.'" src="'.$url.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="'.$fscr.'" wmode="transparent" width="'.$params['w'].'" height="'.$params['h'].'" />';
+		
 		$ret .= '</object>';
-		$ret .= '
-<!-- End YouTube -->
+		$ret .= "<!-- End YouTube -->"; // <-- DO NOT MODIFY. 
 
-';
+
 		return $ret;
+	}
+
+	// Wysiwyg representation of bbcode render. 
+	function toWYSIWYG($code_text,$parm)
+	{
+		//eg. an image of the video thumbnail	
 	}
 }
 

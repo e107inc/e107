@@ -420,17 +420,19 @@ $(document).ready(function()
   				$(id).html("<img src='"+loading+"' alt='' />");
   			}
   					
-  			if(src == null) // old way - href='myscript.php#id-to-target
+  			if(src === null) // old way - href='myscript.php#id-to-target
   			{
   				var tmp = src.split('#');
   				id = tmp[1];
   				src = tmp[0];	
   			}
   		//	var effect = $(this).attr("data-effect");
-  		
+  		//	alert(src);
+  			
   			$(id).load(src,function() {
   				// alert(src);
-    			// $(id).effect("slide");
+  				//$(this).hide();
+    			// $(this).fadeIn();
 			});
 			
 			

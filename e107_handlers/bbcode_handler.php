@@ -550,7 +550,11 @@ class e_bbcode
 		{
 			return $text;
 		}
-				
+		
+		// Youtube conversion (TinyMce)
+		$text = preg_replace('/<img class="youtube-([\w]*)" style="([^"]*)" src="([^"]*)" alt="([^"]*)" \/>/i',"[youtube=$1]$4[/youtube]",$text);	
+		$text = preg_replace('/<!-- Start YouTube-([\w,]*)-([\w]*) -->.*<!-- End YouTube -->/i','[youtube=$1]$2[/youtube]',$text);	
+					
 		$text = preg_replace("/<a.*?href=\"(.*?)?request.php\?file=([\d]*)\".*?>(.*?)<\/a>/i","[file=$2]$3[/file]",$text);		
 					
 		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);

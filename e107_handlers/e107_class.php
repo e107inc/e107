@@ -2754,8 +2754,11 @@ class e107
 		}
 
 		// This should avoid further checks - NOTE: used in js_manager.php
-		define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA'))); //Force USER_AREA added
-
+		if(!defined('e_ADMIN_AREA'))
+		{
+			define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA'))); //Force USER_AREA added	
+		}
+		
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
