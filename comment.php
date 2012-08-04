@@ -43,6 +43,16 @@ if(e_AJAX_REQUEST) // TODO improve security
 	
 	$ret = array();
 	
+	// Comment Pagination 
+	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
+	{
+		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
+		
+		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']),$att);	
+		echo $tmp['comments'];
+		exit;
+	}
+	
 
 	
 	if(varset($_GET['mode']) == 'reply' && vartrue($_POST['itemid']))

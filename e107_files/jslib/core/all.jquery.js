@@ -398,17 +398,68 @@ $(document).ready(function()
 
 		// Text-area AutoGrow
 	//	$("textarea.e-autoheight").elastic();
+	
+		// ajax next/prev mechanism - updates url from value. 
+		$(".e-nav").click(function(){ // should be run before ajax. 
+			/*
+			var src = $(this).attr("data-src");
+			var inc = parseInt($(this).attr("data-nav-inc"));
+			var dir = $(this).attr("data-nav-dir");
+			var tot = parseInt($(this).attr("data-nav-total"));
+			var val = src.match(/from=(\d+)/);
+			var amt = parseInt(val[1]);
+			
+			var oldVal = 'from='+ amt;
+		
+			var sub = amt - inc;
+			var add = amt + inc;
+			
+			$(this).show();	
+			
+			if(add > tot)
+			{
+				add = amt;	
+			}
+				
+			if(sub < 0)
+			{
+				sub = 0
+			}
+			
+			if(dir == 'down')
+			{
+				var newVal = 'from='+ sub;
+			}
+			else
+			{
+				var newVal = 'from='+ add;	
+			}
+			
+			alert('nav');
+			src = src.replace(oldVal, newVal);
+			$(".e-nav").attr("data-src",src);
+		*/
+		});
 
-
+		
+	
 
 
 		$(".e-ajax").click(function(){
 			
 			
-  			var id = $(this).attr("href");
-  			var src = $(this).attr("data-src");
-  			var target = $(this).attr("data-target"); // support for input buttons etc. 
-  			var loading = $(this).attr('data-loading'); // image to show loading. 
+  			var id 			= $(this).attr("href");
+  			
+  			var target 		= $(this).attr("data-target"); // support for input buttons etc. 
+  			var loading 	= $(this).attr('data-loading'); // image to show loading. 
+  			var nav			= $(this).attr('data-nav-inc');
+  			
+  			if(nav !== null)
+  			{
+  				eNav(this,'.e-ajax');	//modify data-src value for next/prev. 'from=' 
+  			}
+  			
+  			var src 		= $(this).attr("data-src");
 		
   			if(target != null)
   			{			
@@ -427,7 +478,7 @@ $(document).ready(function()
   				src = tmp[0];	
   			}
   		//	var effect = $(this).attr("data-effect");
-  		//	alert(src);
+  		//	alert(id);
   			
   			$(id).load(src,function() {
   				// alert(src);
@@ -435,8 +486,13 @@ $(document).ready(function()
     			// $(this).fadeIn();
 			});
 			
+			return false;
 			
 		});
+		
+		
+
+		
 		
 
 		
@@ -454,10 +510,54 @@ $(document).ready(function()
 		
 })
 
+
+	/**
+	 * dynamic next/prev  
+	 * @param e object (eg. from selector)
+	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
+	 */
+	function eNav(e,navid)
+	{
+			var src = $(e).attr("data-src");
+			var inc = parseInt($(e).attr("data-nav-inc"));
+			var dir = $(e).attr("data-nav-dir");
+			var tot = parseInt($(e).attr("data-nav-total"));
+			var val = src.match(/from=(\d+)/);
+			var amt = parseInt(val[1]);
+			
+			var oldVal = 'from='+ amt;
+		
+			var sub = amt - inc;
+			var add = amt + inc;
+			
+			$(e).show();	
+			
+			if(add > tot)
+			{
+				add = amt;	
+			//	$(e).hide();
+			}
+				
+			if(sub < 0)
+			{
+				sub = 0
+			}
+			
+			if(dir == 'down')
+			{
+				var newVal = 'from='+ sub;
+			}
+			else
+			{
+				var newVal = 'from='+ add;	
+			}
+			
+			src = src.replace(oldVal, newVal);
+			$(navid).attr("data-src",src);
+				
+	}
+
 // Legacy Stuff to be converted. 
-
-
-
 // BC Expandit() function 
 
 	var nowLocal = new Date();		/* time at very beginning of js execution */
