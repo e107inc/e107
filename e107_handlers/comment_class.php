@@ -46,16 +46,22 @@ class comment
 	private $totalComments = 0;
 	
 	private $moderator = false;
+	
+	private $commentsPerPage = 5;
+	
+	private $table = null;
 
 	function __construct()
 	{
 		
-		if(getperms('0')) // moderator perms. 
+		if(getperms('B')) // moderator perms. 
 		{
 			$this->moderator = true;	
 		}
 		
-		
+		//TODO - add a pref for comments per page. 
+		// $this->commentsPerPage = pref; 
+				
 		global $COMMENTSTYLE;
 			
 		if (!$COMMENTSTYLE)
@@ -92,7 +98,7 @@ class comment
 			$COMMENT_TEMPLATE['ITEM_START'] = "";
 			$COMMENT_TEMPLATE['ITEM'] 		= $COMMENTSTYLE;	
 			$COMMENT_TEMPLATE['ITEM_END'] 	= "";
-			$COMMENT_TEMPLATE['LAYOUT'] 	= "{COMMENTS}{COMMENTFORM}{MODERATE}";
+			$COMMENT_TEMPLATE['LAYOUT'] 	= "{COMMENTS}{COMMENTFORM}{MODERATE}{COMMENTNAV}";
 			$COMMENT_TEMPLATE['FORM']			= "<table style='width:100%'>
 													{SUBJECT_INPUT}
 													{AUTHOR_INPUT}
@@ -265,8 +271,8 @@ class comment
 				'comval'	=> strip_tags(trim($comval)),
 				'itemid'	=> $itemid,
 				'pid'		=> $pid,
-				'eaction'	=> $eaction,
-				'rate'		=> $rate
+				'eaction'	=> varset($eaction),
+				'rate'		=> $rating
 			);
 			
 			e107::getScBatch('comment')->setParserVars($data);
@@ -311,8 +317,12 @@ class comment
 		}
 	}
 
-	
-	function isPending($row)
+	/**
+	 * Check if comment is pending approval. 
+	 * @param array - a row from the comments table. 
+	 * @return boolean True/False
+	 */
+	private function isPending($row)
 	{
 		if($row['comment_blocked'] > 0 && ($row['comment_author_id'] != USERID || ($row['comment_author_id']==0 && $row['comment_author_name'] != $_SESSION['comment_author_name'])) && $this->moderator == false)
 		{
@@ -327,19 +337,17 @@ class comment
 	
 	
 	/**
-	 * Enter description here...
+	 * Render a single comment and any nested comments it may have. 
 	 *
-	 * @param unknown_type $row
-	 * @param unknown_type $table
-	 * @param unknown_type $action
-	 * @param unknown_type $id
-	 * @param unknown_type $width
-	 * @param unknown_type $subject
-	 * @param unknown_type $addrating
-	 * @return unknown
+	 * @param array $row
+	 * @param string $table
+	 * @param string $action
+	 * @param integer $id
+	 * @param interger $width
+	 * @param string $subject
+	 * @param integer $addrating
+	 * @return html
 	 */
-
-
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
 		//addrating	: boolean, to show rating system in rendered comment
@@ -388,7 +396,8 @@ class comment
 		$row['rating_enabled'] = true; // Toggles rating shortcode. //TODO add pref
 		
 		e107::getScBatch('comment')->setParserVars($row);
-		$COMMENT_TEMPLATE = $this->template; 
+		
+		$COMMENT_TEMPLATE 					= $this->template; 
 		
 		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
 		$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
@@ -887,6 +896,8 @@ class comment
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global $e107cache, $totcc;
 		
+	
+		
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
@@ -897,69 +908,15 @@ class comment
 
 // ------------- TODO move the 'listing' into separate function so that ajax can access it easily. 
 
-		$sql = e107::getDb();
-		$type = $this->getCommentType($table);
-		$sort = vartrue($pref['comments_sort'],'desc');
+		$options = array(
+			'action'	=> $action,
+			'subject'	=> $subject,
+			'rate'		=> $rate
+		);
 		
-		if(vartrue($pref['nested_comments']))
-		{
-			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-			
-			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
-			ORDER BY c.comment_datestamp ".$sort;
-		}
-		else
-		{
-			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 		
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 	";			
-			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 		
-			ORDER BY c.comment_datestamp ".$sort;
-		}
-			
-		
-		$text 			= "";
-		$comment 		= '';
-		$modcomment 	= '';
-		$lock 			= '';
-		$ret['comment'] = '';
-		$moderator 		= getperms('0');
-
-		if ($this->totalComments = $sql->db_Select_gen($query))
-		{
-			
-			$width = 0;
-			//Shortcodes could use $sql, so just grab all results
-			$rows = $sql->db_getList();
-
-			//while ($row = $sql->db_Fetch())
-			foreach ($rows as $row)
-			{
-				
-				if($this->isPending($row,$moderator))
-				{
-				 	continue;	
-				}					
-									
-				$lock = $row['comment_lock'];
-				// $subject = $tp->toHTML($subject);
-				if ($pref['nested_comments'])
-				{
-					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-				}
-				else
-				{
-					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-				}
-			} // end loop
-			
-		} // end if
-
-		
+		$tmp = $this->getComments($table,$id,0,$options); // render all comments;
+		$text = $tmp['comments'];
+		$lock = $tmp['lock'];
 		
 		// -------------------------------------------------------
 		
@@ -971,7 +928,7 @@ class comment
 				$modcomment .= "</div>";
 		}
 		
-		
+		$modcomment .= 	$this->nextprev($table,$id,$from);	
 	// ---------------------------
 		
 		if ($lock != '1')
@@ -983,8 +940,8 @@ class comment
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
 		}
 
-		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}");
-		$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment);
+		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
+		$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
 
 
@@ -1021,17 +978,98 @@ class comment
 
 
 	
-	function renderComments($table,$id,$from,$options=null)
+	function getComments($table,$id,$from=0,$att=null)
 	{
+		// global $e107cache, $totcc;
 		
+		//TODO Cache 
 		
+		$sql 		= e107::getDb();
+		$tp 		= e107::getParser();
+		$pref 		= e107::getPref();
 		
+		$action 	= varset($att['action']);
+		$subject 	= varset($att['subject']);
+		$rate		= varset($att['rate']);
+			
+		$type = $this->getCommentType($table);
+		$sort = vartrue($pref['comments_sort'],'desc');
 		
+		if(vartrue($pref['nested_comments']))
+		{
+			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
+			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
+			
+			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
+			ORDER BY c.comment_datestamp ".$sort;
+		}
+		else
+		{
+			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
+			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 		
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 	";			
+			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 		
+			ORDER BY c.comment_datestamp ".$sort;
+		}
+		
+		$this->totalComments = $sql->db_Select_gen($query);
+			
+		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
+		
+		$text 			= "";
+		$lock 			= '';
+
+		if ($sql->db_Select_gen($query))
+		{			
+			$width = 0; 			
+			$rows = $sql->db_getList(); //Shortcodes could use $sql, so just grab all results
+
+			foreach ($rows as $row)
+			{
+				
+				if($this->isPending($row))
+				{
+				 	continue;	
+				}					
+									
+				$lock = $row['comment_lock'];
+	
+				if ($pref['nested_comments'])
+				{
+					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
+				}
+				else
+				{
+					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
+				}
+			} // end loop
+			
+		} // end if
+					
+		return array('comments'=> $text,'lock'=> $lock);		
 	}
 
 
 
-
+	function nextprev($table,$id,$from=0)
+	{
+		//return "table=".$table."  id=".$id."  from=".$from;
+		//$from = $from + $this->commentsPerPage;
+		
+		
+		// from calculations are done by eNav() js. 
+		return "
+		<a class='e-ajax' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
+		
+		<a class='e-ajax' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
+		
+		";	
+		
+		
+	}
 
 
 

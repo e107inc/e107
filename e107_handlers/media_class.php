@@ -497,7 +497,7 @@ class e_media
 
 		if($navMode === false)
 		{
-			$text .= "<div>Filter: <input type='text' id='media-search' title='Enter some text to filter the results' name='search' value='' class='e-tip e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />";
+			$text .= "<div>Filter: <input type='text' id='media-search' title='Enter some text to filter the results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />";
 			$text .= "<input type='button' value='Go' class='e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 		//	$text .= "<input type='button' value='&laquo;' />"; // see previous page of images. 
 			$text .= "<button title='previous page' class='button e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
