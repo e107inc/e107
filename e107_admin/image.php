@@ -40,6 +40,35 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
+if($_GET['action'] == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reaosn. 
+{
+	define("e_IFRAME",true);
+	// require_once(e_ADMIN."auth.php");
+		$bbcodeMode = ($_GET['bbcode']=='img') ? 'bbcode=img' : FALSE;
+						
+		if($_GET['from'])
+		{
+			$bbcodeMode .= "&from=".intval($_GET['from']);
+		}
+		
+		$bbcodeMode .= "&nav=1";
+			
+		$tag = ($bbcodeMode===false) ? false : $_GET['tagid']; // eg. news, news-thumbnail	
+		
+		if($_GET['search'])
+		{
+			$bbcodeMode .= "&search=".preg_replace("/[^a-z0-9]/i","",$_GET['search']);
+		}
+					
+		echo e107::getMedia()->mediaSelect($_GET['for'],$tag,$bbcodeMode); 
+	
+	// require_once(e_ADMIN."footer.php");
+	exit;	
+	
+}
+
+
+
 $e_sub_cat = 'image';
 
 
@@ -589,7 +618,15 @@ class media_admin_ui extends e_admin_ui
 		//FIXME TODO - clear thumbnail cache when prefs are saved/updated. 
 		// e107::getCache()->clearAll('image');
 		
+	//	print_a($_GET);
 		
+		if($_GET['action'] == 'nav' )
+		{
+			//echo $this->navPage();\
+		//	$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
+		//	print_a($_GET);
+
+		}
 		
 
 
@@ -639,37 +676,9 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
-			
-			
-			/*
-			if($this->getQuery('bbcode'))
-			{
-				//TODO this is not really used when jquery is running. 
-				e107::getJS()->headerInline("
-				
-				// Send the generated IMG bbcode back to the textarea/window 
-				function saveBB()
-				{
-								
-							
-					var add = document.getElementById('bbcode_holder').value;		
-					var html = document.getElementById('html_holder').value;			
-				//	tinyMCE.execCommand('mceInsertContent',false,add);
-					tinyMCE.execCommand('mceInsertRawHTML',false,html);
-			   		tinyMCEPopup.close();
-					
-					
-					//addtext(add);
-					//parent.e107Widgets.DialogManagerDefault.getWindow('e-dialog').close();
-					return false;
-				}
-				
-				");
-				
-			}
-			*/
 					
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
+ 			
  			if(!$this->getQuery('for'))
 			{
 				$this->setPosted('media_category', "_common");
@@ -699,6 +708,30 @@ class media_admin_ui extends e_admin_ui
 // 		
 	}
 
+
+	function navPage() // no functioning correctly - see e_AJAX_REQUEST above. 
+	{
+	
+		
+		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
+						
+		if($_GET['from'])
+		{
+			$bbcodeMode .= "&from=".intval($_GET['from']);
+		}
+		
+		$bbcodeMode .= "&nav=1";
+			
+		$tag = ($bbcodeMode) ? "" : $this->getQuery('tagid');
+		echo e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail	
+	
+		return;	
+	}
+	
+
+		
+
+
 	function dialogPage() // Popup dialogPage for Image Selection. 
 	{
 		$cat = $this->getQuery('for');		
@@ -724,6 +757,9 @@ class media_admin_ui extends e_admin_ui
 		}
 		echo $this->imageSelectUpload();	
 	}
+	
+	
+	
 	
 	function uploadPage()
 	{

@@ -105,7 +105,7 @@ $(document).ready(function()
 				// $(".e-media-select").click(function () {  
 		$(".e-media-select").live("click", function(){
   	
-    			
+    		
     		//	console.log(this);
 
 				var id			= $(this).attr('data-id');
@@ -115,6 +115,8 @@ $(document).ready(function()
 				var src			= $(this).attr('data-src');
 				var bbcode		= $(this).attr('data-bbcode');
 				var name		= $(this).attr('data-name');
+						
+					//alert(target);			
 						
 				$(this).addClass("media-select-active");
 				$(this).closest("img").addClass("active");			
@@ -167,6 +169,138 @@ $(document).ready(function()
 				
 	}); 	
 	
+	
+		$(".e-nav").click(function(){ // should be run before ajax. 
+			
+			var src = $(this).attr("data-src");
+			var inc = parseInt($(this).attr("data-nav-inc"));
+			var dir = $(this).attr("data-nav-dir");
+			var tot = parseInt($(this).attr("data-nav-total"));
+			var val = src.match(/from=(\d+)/);
+			var amt = parseInt(val[1]);
+			
+			var oldVal = 'from='+ amt;
+		
+			var sub = amt - inc;
+			var add = amt + inc;
+			
+			$(this).show();	
+			
+			if(add > tot)
+			{
+				add = amt;	
+			}
+				
+			if(sub < 0)
+			{
+				sub = 0
+			}
+			
+			if(dir == 'down')
+			{
+				var newVal = 'from='+ sub;
+			}
+			else
+			{
+				var newVal = 'from='+ add;	
+			}
+			
+			
+			src = src.replace(oldVal, newVal);
+			$(".e-nav").attr("data-src",src);
+	
+		});
+	
+	
+	
+	$(".e-media-nav").click(function(){
+			
+			return mediaNav(this);
+			/*
+  			var id = $(this).attr("href");
+  			var src = $(this).attr("data-src");
+  			var target = $(this).attr("data-target"); // support for input buttons etc. 
+  			var loading = $(this).attr('data-loading'); // image to show loading.
+  			var search = $('#media-search').val(); // image to show loading.  
+				
+  			if(target != null)
+  			{			
+  				id = '#' + target; 
+  			}
+  						
+  			if(loading != null)
+  			{
+  				$(id).html("<img src='"+loading+"' alt='' />");
+  			}
+  					
+  			if(src === null) // old way - href='myscript.php#id-to-target
+  			{
+  				var tmp = src.split('#');
+  				id = tmp[1];
+  				src = tmp[0];	
+  			}
+  			
+  			if(search !== null)
+  			{
+  				src = src + '&search='+search;	
+  			}
+  		//	var effect = $(this).attr("data-effect");
+  		//	alert(src);
+  			
+  			$(id).load(src,function() {
+  				// alert(src);
+  			//	$(this).hide();
+    		//	 $(this).SlideUp();
+			});
+			
+			*/
+		});
+	
+		$("#media-search").keyup(function(){
+			mediaNav(this);
+				
+		});
+	
+	
+		function mediaNav(e)
+		{
+			var id = $(e).attr("href");
+  			var src = $(e).attr("data-src");
+  			var target = $(e).attr("data-target"); // support for input buttons etc. 
+  			var loading = $(e).attr('data-loading'); // image to show loading.
+  			var search = $('#media-search').val(); // image to show loading.  
+				
+  			if(target != null)
+  			{			
+  				id = '#' + target; 
+  			}
+  						
+  			if(loading != null)
+  			{
+  				$(id).html("<img src='"+loading+"' alt='' />");
+  			}
+  					
+  			if(src === null) // old way - href='myscript.php#id-to-target
+  			{
+  				var tmp = src.split('#');
+  				id = tmp[1];
+  				src = tmp[0];	
+  			}
+  			
+  			if(search !== null)
+  			{
+  				src = src + '&search='+search;	
+  			}
+  			
+  			$(id).load(src,function() {
+  				// alert(src);
+  			//	$(this).hide();
+    		//	 $(this).SlideUp();
+			});
+				
+			
+			
+		}
 	
 	
 		// ----------------- Upload --------------------------------------
