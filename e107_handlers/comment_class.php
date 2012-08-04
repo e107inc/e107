@@ -881,8 +881,6 @@ class comment
 	 * @param unknown_type $subject
 	 * @param unknown_type $rate
 	 */
-
-
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
 		//compose comment	: single call function will render the existing comments and show the form_comment
@@ -897,7 +895,8 @@ class comment
 		if ($this->getCommentPermissions() === FALSE) return;
 
 
-		
+// ------------- TODO move the 'listing' into separate function so that ajax can access it easily. 
+
 		$sql = e107::getDb();
 		$type = $this->getCommentType($table);
 		$sort = vartrue($pref['comments_sort'],'desc');
@@ -916,22 +915,12 @@ class comment
 		{
 			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
-			
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-			";
-			
-			
-			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 
-			
-			
+			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 		
+			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 	";			
+			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 		
 			ORDER BY c.comment_datestamp ".$sort;
 		}
-
-		// AND (c.comment_blocked = 0 OR (c.comment_blocked > 0 AND c.comment_author_id = ".intval(USERID)."))
-		
-		// TODO Preference for sort-order. 
-		
+			
 		
 		$text 			= "";
 		$comment 		= '';
@@ -955,8 +944,7 @@ class comment
 				{
 				 	continue;	
 				}					
-					
-				
+									
 				$lock = $row['comment_lock'];
 				// $subject = $tp->toHTML($subject);
 				if ($pref['nested_comments'])
@@ -967,23 +955,25 @@ class comment
 				{
 					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
 				}
-			}
-
+			} // end loop
 			
-		//	if ($tablerender)
-		//	{
-			//	$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
-		//	}
+		} // end if
 
-			if (ADMIN && getperms("B"))
-			{
+		
+		
+		// -------------------------------------------------------
+		
+		if($this->totalComments && getperms("B"))
+		{
 				$modcomment = "<div class='comment-moderate'>";		
 			//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
 				$modcomment .= "<a href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
 				$modcomment .= "</div>";
-			}
 		}
-
+		
+		
+	// ---------------------------
+		
 		if ($lock != '1')
 		{
 			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, false); // tablerender turned off. 
@@ -1026,6 +1016,27 @@ class comment
 
 		return (!$return) ? "" : $ret;
 	}
+
+
+
+
+	
+	function renderComments($table,$id,$from,$options=null)
+	{
+		
+		
+		
+		
+	}
+
+
+
+
+
+
+
+
+
 
 
 	function recalc_user_comments($id)
