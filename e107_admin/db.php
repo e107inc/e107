@@ -124,11 +124,11 @@ class system_tools
 			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
-			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8')
+			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8'),
+			'correct_perms'			=> array('diz'=>'Correct File and Directory perms','label'=>'Correct Perms')
 		);
 
-		//TODO Merge db_verify.php into db.php
-
+	
 
 		if(isset($_POST['delplug']))
 		{
@@ -202,6 +202,12 @@ class system_tools
 			$this->perform_utf8_convert();
 			return;
 		}
+		
+		if(varset($_GET['mode'])=='correct_perms')
+		{
+			$this->correct_perms();	
+			return;
+		}
 
 		if(!vartrue($_GET['mode']) && !isset($_POST['db_execute']))
 		{
@@ -211,6 +217,39 @@ class system_tools
 
 
 	}
+
+	/**
+	 * Correct Folder and File permissions. 
+	 */
+	function correct_perms()
+	{
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		ob_start();
+		$fl->chmod(e_BASE);
+		$fl->chmod(e_BASE."cron.php",0755);
+		$errors = ob_get_clean();
+		
+		if($errors !='')
+		{
+			$mes->addError($errors);		
+		}
+		else
+		{
+			$mes->addSuccess("Folder and File permissions have been updated");			
+		}
+		
+		e107::getRender()->tablerender("Correcting File and Directory Permissions", $mes->render());	
+		
+	}
+
+
+
+
+
+
+
+
 
 	private function convertUTF8Form()
 	{
