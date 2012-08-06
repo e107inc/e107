@@ -34,7 +34,7 @@ $import_default_prefix['blogger_import'] 	= '';
 class blogger_import extends rss_import
 {
 	var $cleanupHtml = false;
-	
+	var $defaultClass = false;
 	/*
 	 If the first 500 posts of your blog feed are here:
 

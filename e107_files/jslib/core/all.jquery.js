@@ -453,8 +453,8 @@ $(document).ready(function()
   			var target 		= $(this).attr("data-target"); // support for input buttons etc. 
   			var loading 	= $(this).attr('data-loading'); // image to show loading. 
   			var nav			= $(this).attr('data-nav-inc');
-  			
-  			if(nav !== null)
+  			  			
+  			if(nav != null)
   			{
   				eNav(this,'.e-ajax');	//modify data-src value for next/prev. 'from=' 
   			}

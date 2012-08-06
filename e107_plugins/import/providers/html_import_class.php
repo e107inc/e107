@@ -14,35 +14,38 @@
  * $Author: secretr $
  */
 
-// This must be an incredibly pointless file! But it does allow testing of the basic plugin structure.
-
-// Each import file has an identifier which must be the same for:
-//		a) This file name - add '_class.php' to get the file name
-//		b) The array index of certain variables
-// Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
-
-$import_class_names['rss_import'] 		= 'RSS';
-$import_class_comment['rss_import'] 	= 'Import content via RSS v2.0 feeds from virtually any website.';
-$import_class_support['rss_import'] 	= array('news','page','links');
-$import_default_prefix['rss_import'] 	= '';
+$import_class_names['html_import'] 		= 'HTML';
+$import_class_comment['html_import'] 	= 'Import content from an html website. eg. created with Frontpage, Dreamweaver or Notepad etc. ';
+$import_class_support['html_import'] 	= array('news','page');
+$import_default_prefix['html_import'] 	= '';
 
 require_once('import_classes.php');
 
-class rss_import extends base_import_class
+class html_import extends base_import_class
 {
-	var $sourceType = 'rss';
-	var $feedUrl	= null;
-	var $defaultClass = false;
+	var $sourceType 	= 'rss';
+	var $feedUrl		= null;
+	var $defaultClass 	= false;
+	var $useTidy		= true;
+	var	$action			= 'preview'; // default action after setup page; 
 	
 	function init()
 	{
-		$this->feedUrl	= vartrue($_POST['rss_feed'],false);
+		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
+		$this->feedUrl	= "http://drboylan.com/";
+		$this->feedUrl 	= rtrim($this->feedUrl,"/");
+		
+		if($_POST['preview'])
+		{
+			$this->previewContent();
+			return false;	
+		}
 	}
 	
 	function config()
 	{
-		$var[0]['caption']	= "Feed URL";
-		$var[0]['html'] 	= "<input class='tbox' type='text' name='rss_feed' size='80' value='{$_POST['rss_feed']}' maxlength='250' />";
+		$var[0]['caption']	= "Website Home-page URL";
+		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$_POST['rss_feed']}' maxlength='250' />";
 
 		return $var;
 	}
@@ -54,9 +57,12 @@ class rss_import extends base_import_class
 	{
 		$this->arrayData = array();
 		
-		$xml = e107::getXml();	
+		print_a($_POST);
+		
+	
+	
 		$file = $this->feedUrl;
-					
+						
     	switch ($task)
 		{		
 			case 'news' :
@@ -65,7 +71,8 @@ class rss_import extends base_import_class
 				
 				// $rawData = $xml->getRemoteFile($file);
 				//	print_a($rawData);
-				$array = $xml->loadXMLfile($file,'advanced');
+				//$content = $this->getAll();
+		
 				if ($array === FALSE || $file === FALSE) return FALSE;
 				
 				foreach($array['channel']['item'] as $val)
@@ -86,6 +93,180 @@ class rss_import extends base_import_class
 		$this->currentTask = $task;
 		return TRUE;
   }
+
+	private function getAll()
+	{
+		$html = $this->getRawHtml();
+		$pages = $this->findLinks($html);
+		$c = 0;
+		foreach($pages as $url=>$p)
+		{
+			// echo "url=".$url;
+			$html = $this->getRawHtml($url);	
+			
+			$html = str_replace("\n","",$html); // strip line-breaks. 
+			$html = preg_replace("/<title>([^<]*)<\/title>/i","",$html);
+			$html = trim($html,"\n");
+			
+			$body = trim(strip_tags($html,"<b><i><u><strong><br><img><object><embed>"));
+		
+			$content[$url] = array(
+				'title'	=> str_replace("\n","",$p['title']),
+		//		'raw'	=> $html,
+				'body'	=> $body
+			);
+			
+			$c++;
+			
+			if($c == 15)
+			{
+				break;	
+			}
+			
+		}
+			
+		return $content;
+		
+	}
+				
+	private function previewContent()
+	{
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
+		$content = $this->getAll();	
+		
+		
+		$text = "<form method='post' action='".e_SELF."?import_type=html_import' id='core-import-form'>
+		<fieldset id='core-import-select-type'>
+		<legend class='e-hideme'>".DBLAN_10."</legend>
+            <table class='adminlist'>
+			<colgroup>
+			<col style='width:40%' />
+			<col />
+			<col />
+			<col />
+			</colgroup>
+			<thead>
+			<tr>
+            	<th>".LAN_TITLE."</th>
+            	<th>Sample</th>
+            	<th>".LAN_URL."</th>
+                <th class='center'>".LAN_OPTIONS."</th>
+
+			</tr>
+			</thead>
+			<tbody>\n";
+
+
+        foreach ($content as $key=>$data)
+		{
+			
+          	$text .= "<tr>
+				
+			<td>".$data['title']."</td>\n
+			<td>".$tp->text_truncate($data['body'],150)."</td>\n
+			<td class='center middle'>
+			 		".$key."
+			 	</td>
+			
+			";
+
+             $text .= "
+			 	<td class='center middle'>
+			 		".$frm->selectbox('import_'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
+			 	</td>
+			 </tr>";
+		}
+
+
+		$text .= "
+				</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('do_conversion',LAN_CONTINUE, 'execute').
+				$frm->admin_button('back',LAN_CANCEL, 'cancel')."
+				<input type='hidden' name='db_import_type' value='html_import' />
+				<input type='hidden' name='import_type' value='html_import' />
+				<input type='hidden' name='import_source' value='".$this->sourceType."' />
+				<input type='hidden' name='import_block_news' value='1' />
+				<input type='hidden' name='siteUrl' value='".$this->feedUrl."' />	
+			</div>
+		</fieldset>
+	</form>";
+
+	$ns->tablerender(LAN_CONVERT_01,$text);
+		
+		
+		
+	}		
+		
+
+	private function getRawHtml($file='')
+	{
+		$url 		= $this->feedUrl."/".$file; 
+		
+		if($file == '')	{ $file = "index.html";	} // just for local file, not url. 
+			
+		$path		= md5($this->feedUrl);
+		$local_file = $path."/".$file; 
+		
+		if(!is_dir(e_TEMP.$path))
+		{
+			mkdir(e_TEMP.$path,0755);
+		}
+				
+		if(!file_exists(e_TEMP.$local_file))
+		{
+			 e107::getFile()->getRemoteFile($url, $local_file); // downloads to e107_system/.../temp
+		}		
+		
+		if($this->useTidy)
+		{
+			$tidy = new tidy();
+			$options = array("output-xhtml" => true, "clean" => true);
+			$parsed = tidy_parse_file(e_TEMP.$local_file,$options);
+			return $parsed->value;
+		}
+		elseif(!$html = file_get_contents(e_TEMP.$local_file))
+		{
+			return "Couldn't read file";
+		}	
+			
+		return $html;
+	}
+			
+	
+	
+	
+	
+			
+	private function findLinks($content,$type='html')
+	{	
+		$doc = new DOMDocument(); 
+		$doc->loadHTML($content);
+		
+		$urls = $doc->getElementsByTagName('a');	
+		$pages = array();
+						
+		foreach ($urls as $u) 
+		{
+			$title = str_replace("\n","",$u->nodeValue);
+			$href = $u->attributes->getNamedItem('href')->value;
+			$href = ltrim(str_replace($this->feedUrl,"",$href),"/");	
+			
+			if($type == 'html' && (substr($href,-5,5)=='.html' || substr($href,-4,4)=='.htm'))
+			{	
+				$pages[$href] = array('title'=>$title, 'href'=>$href);
+			}
+		}	
+		
+		return $pages; 	
+		
+	}	
+		
+
 
 
   //------------------------------------
@@ -294,7 +475,7 @@ class rss_import extends base_import_class
 				}
 				
 				$filename = basename($link);
-				$fl->getRemoteFile($link,$relPath."/".$filename,'media');
+				$fl->getRemoteFile($link,$relPath."/".$filename);
 				$search[] = $link;
 				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
 			}	

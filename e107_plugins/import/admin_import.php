@@ -319,7 +319,7 @@ function dbImport($mode='db')
 	}
 	else
 	{
-		$mes->addError(LAN_CONVERT_42);
+		$mes->addError(LAN_CONVERT_42. "[".$current_db_type."]");
 		return false;
 	}
 	
@@ -338,6 +338,13 @@ function dbImport($mode='db')
 			return false;
 		}	
 	}	
+
+	if(!is_array($db_import_blocks))
+	{
+		$mes->addError("No areas selected for import");  // db connect failed
+		return false;	
+	}
+
 
 
 	foreach ($db_import_blocks as $k => $v)
@@ -408,6 +415,16 @@ function dbImport($mode='db')
 				array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
 				$mes->addSuccess($msg);   // couldn't set query
 			}
+			else
+			  {
+			  		$mes->addDebug("Error: _POST['import_block_{$k}'] = ".$_POST['import_block_{$k}']);   // cou
+					
+			  }
+		  }
+		  else
+		  {
+		  		$mes->addDebug("\$db_blocks_to_import doesn't contain key: ".$k);   // cou
+				
 		  }
 		}
 
@@ -534,13 +551,17 @@ function showImportOptions($mode='csv')
 	{
 		$mes->addDebug("Class Available: ".$mode);   
 		$proObj = new $mode;
+		if($proObj->init()===FALSE)
+		{
+			return;
+		}
 	}
 
 	$message = LAN_CONVERT_02."<br /><strong>".LAN_CONVERT_05."</strong>";
 	$emessage->add($message, E_MESSAGE_WARNING);
 
 	$text = "
-	<form method='post' action='".e_SELF."'>
+	<form method='post' action='".e_SELF."?import_type=".$_GET['import_type']."'>
     <table class='adminform'>
     	<colgroup>
     		<col class='col-label' />
@@ -608,15 +629,15 @@ function showImportOptions($mode='csv')
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_20."</td>
-		<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".$_POST['dbParamUsername']."' maxlength='100' /></td>
+		<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' /></td>
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_21."</td>
-		<td ><input class='tbox' type='text' name='dbParamPassword' size='30' value='".$_POST['dbParamPassword']."' maxlength='100' /></td>
+		<td ><input class='tbox' type='text' name='dbParamPassword' size='30' value='".varset($_POST['dbParamPassword'])."' maxlength='100' /></td>
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_22."</td>
-		<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".$_POST['dbParamDatabase']."' maxlength='100' /></td>
+		<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".varset($_POST['dbParamDatabase'])."' maxlength='100' /></td>
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_23."</td>
@@ -648,16 +669,22 @@ function showImportOptions($mode='csv')
 
 
 	$text .= "<tr><td>".LAN_CONVERT_38."</td>
-	<td><input type='checkbox' name='import_delete_existing_data' value='1'".($import_delete_existing_data ? " checked='checked'" : '')."/>
+	<td><input type='checkbox' name='import_delete_existing_data' value='1'".(varset($_POST['import_delete_existing_data']) ? " checked='checked'" : '')."/>
 	<span class='smallblacktext'>".LAN_CONVERT_39."</span></td>
-	</tr>
-
-	<tr><td>".LAN_CONVERT_16."</td>
-	<td>";
-  	$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $checked_class_list,'main,admin,classes,matchclass');
-
-  	$text .= "</td></tr></table>
-	<div class='buttons-bar center'>".$frm->admin_button('do_conversion',LAN_CONTINUE, 'execute').
+	</tr>";
+	
+	if(varset($proObj->defaultClass) !== false)
+	{
+		$text .= "
+		<tr><td>".LAN_CONVERT_16."</td>
+		<td>";
+  		$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), varset($_POST['classes_select']),'main,admin,classes,matchclass');
+  		$text .= "</td></tr>";
+	}
+ 	
+  	$action = varset($proObj->action,'do_conversion');
+  	$text .= "</table>
+	<div class='buttons-bar center'>".$frm->admin_button($action,LAN_CONTINUE, 'execute').
 	
 	$frm->admin_button('back',LAN_CANCEL, 'cancel')."
 	<input type='hidden' name='db_import_type' value='$mode' />
@@ -667,9 +694,9 @@ function showImportOptions($mode='csv')
 
 	// Now a little bit of JS to initialise some of the display divs etc
   	$temp = '';
-  	if ($import_source) $temp .=  "disp('{$import_source}');";
-  	if ($current_db_type) $temp .= " flagbits('{$current_db_type}');";
-  	if ($temp) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
+  	if(varset($import_source)) { $temp .=  "disp('{$import_source}');"; }
+  	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
+  	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
 
   	$ns -> tablerender(LAN_CONVERT_01." :: ".$importType, $emessage->render().$text);
 
