@@ -448,7 +448,7 @@ class e107
 
 		$ret['LOGS_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'logs/';
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
-
+		$ret['TEMP_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'temp/';
 		//TODO create directories which don't exist. 
 
 		return $ret;
@@ -2578,6 +2578,7 @@ class e107
 
 			define('e_LOG', $this->get_override_rel('LOGS'));
 			define('e_BACKUP', $this->get_override_rel('BACKUP'));
+			define('e_TEMP', $this->get_override_rel('TEMP'));
 
 			//
 			// HTTP absolute paths

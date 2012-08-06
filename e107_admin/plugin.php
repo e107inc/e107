@@ -30,18 +30,18 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	$localfile = md5($remotefile.time()).".zip";
 	$status = "Downloading...";
 	
-	e107::getFile()->getRemoteFile($remotefile,"temp/".$localfile);
+	e107::getFile()->getRemoteFile($remotefile,$localfile);
 	
-	if(!file_exists(e_UPLOAD.$localfile))
+	if(!file_exists(e_TEMP.$localfile))
 	{
 		echo 'There was a problem retrieving the file';
 		exit;	
 	}
 //	chmod(e_PLUGIN,0777);
-	chmod(e_UPLOAD.$localfile,0755);
+	chmod(e_TEMP.$localfile,0755);
 	
 	require_once(e_HANDLER."pclzip.lib.php");
-	$archive = new PclZip(e_UPLOAD.$localfile);
+	$archive = new PclZip(e_TEMP.$localfile);
 	$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0755));
 //	chmod(e_PLUGIN,0755);
 	$dir 		= basename($unarc[0]['filename']);
@@ -83,7 +83,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 	}
 	
 	echo $status;
-	@unlink(e_UPLOAD.$localfile);
+//	@unlink(e_TEMP.$localfile);
 
 //	echo "file=".$file;
 	exit;	

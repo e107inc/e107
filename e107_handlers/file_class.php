@@ -290,9 +290,11 @@ class e_file
 	}
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
-	function getRemoteFile($remote_url, $local_file)
+	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
-        $fp = fopen(e_MEDIA.$local_file, 'w'); // media-directory is the root. 
+		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
+		
+        $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
        
         $cp = curl_init($remote_url);
         curl_setopt($cp, CURLOPT_FILE, $fp);

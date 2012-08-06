@@ -1052,7 +1052,10 @@ function update_706_to_800($type='')
 	{
 		mkdir(e_CACHE_URL,0755);
 	}
-	
+	if(!is_dir(e_TEMP))
+	{
+		mkdir(e_TEMP,0755);
+	}
 	
 	$root_media = str_replace(basename(e_MEDIA)."/","",e_MEDIA);
 	$user_media_dirs = array("images","avatars","files","temp","videos","icons");
