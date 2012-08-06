@@ -70,7 +70,7 @@ class signup_shortcodes extends e_shortcode
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
-					$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p)."'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
+					$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
@@ -95,7 +95,7 @@ class signup_shortcodes extends e_shortcode
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
-					$text .= "<a href='".e107::getUrl()->create('system/xup/signup?provider='.$p)."'><img class='e-tip' title='Register using your {$p} account' src='".e_HANDLER."hybridauth/icons/{$p}.png' alt='' /></a>";		
+					$text .= "<a href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
