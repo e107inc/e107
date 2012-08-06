@@ -8,16 +8,33 @@
  *
  * System XUP controller
  *
- * $URL$
- * $Id$
+ *    $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.8/e107_admin/update_routines.php $
+ *    $Revision: 12933 $
+ *    $Id: update_routines.php 12933 2012-08-06 08:55:51Z e107coders $
+ *    $Author: e107coders $
 */
+
+
 class core_system_xup_controller extends eController
 {
+		
+	var $backUrl = null;
+	
+		
+	public function __construct()
+	{
+		//$back = 'system/xup/test';
+		$this->backUrl = vartrue($_GET['back']) ? base64_decode($_GET['back']) : "";	
+	}
+	
+	
 	
 	public function actionSignup()
 	{
-		echo 'Signup controller';
-
+		// echo 'Signup controller';
+		//$back = 'system/xup/test';
+		$back = vartrue($_GET['back']) ? base64_decode($_GET['back']) : "";
+		
 		// FIXME - pref for default XUP - e.g. Facebook, use it when GET is empty
 		if(vartrue($_GET['provider']))
 		{
@@ -26,21 +43,25 @@ class core_system_xup_controller extends eController
 			//$provider->setBackUrl(e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)));
 			try
 			{
-				$provider->signup('system/xup/test'); // redirect to test page is expected, if true - redirect to SITEURL
+				
+				
+				$provider->signup($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
 				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage());
-				print_a($provider->getUserProfile());
-				echo '<br /><br /><a href="'.e107::getUrl()->create('system/xup/test').'">Test page</a>';
+			//	print_a($provider->getUserProfile());
+			//	echo '<br /><br /><a href="'.e107::getUrl()->create($this->backUrl).'">Test page</a>';
 				return;
 			}
-			print_a($provider->getUserProfile());
+			// print_a($provider->getUserProfile());
 			return;
 		}
 		
-		e107::getRedirect()->redirect(e107::getUrl()->create('system/xup/test'));
+		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
 	}
+	
+	
 	
 	public function actionLogin()
 	{
@@ -54,20 +75,22 @@ class core_system_xup_controller extends eController
 			//$provider->setBackUrl(e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)));
 			try
 			{
-				$provider->login('system/xup/test'); // redirect to test page is expected, if true - redirect to SITEURL
+				$provider->login($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
 				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage());
-				print_a($provider->getUserProfile());
-				echo '<br /><br /><a href="'.e107::getUrl()->create('system/xup/test').'">Test page</a>';
+			//	print_a($provider->getUserProfile());
+			//	echo '<br /><br /><a href="'.e107::getUrl()->create($this->backUrl).'">Test page</a>';
 				return;
 			}
-			print_a($provider->getUserProfile());
+			// print_a($provider->getUserProfile());
 			return;
 		}
-		e107::getRedirect()->redirect(e107::getUrl()->create('system/xup/test'));
+		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
 	}
+	
+	
 	
 	public function actionTest()
 	{
@@ -87,6 +110,8 @@ class core_system_xup_controller extends eController
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Facebook').'">Test login with Facebook</a>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Facebook').'">Test signup with Facebook</a>';
 	}
+	
+	
 	
 	public function actionEndpoint()
 	{
