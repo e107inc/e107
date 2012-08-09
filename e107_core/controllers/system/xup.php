@@ -21,19 +21,16 @@ class core_system_xup_controller extends eController
 	var $backUrl = null;
 	
 		
-	public function __construct()
+	public function init()
 	{
 		//$back = 'system/xup/test';
-		$this->backUrl = vartrue($_GET['back']) ? base64_decode($_GET['back']) : "";	
+		$this->backUrl = vartrue($_GET['back']) ? base64_decode($_GET['back']) : true;	
 	}
-	
-	
 	
 	public function actionSignup()
 	{
 		// echo 'Signup controller';
 		//$back = 'system/xup/test';
-		$back = vartrue($_GET['back']) ? base64_decode($_GET['back']) : "";
 		
 		// FIXME - pref for default XUP - e.g. Facebook, use it when GET is empty
 		if(vartrue($_GET['provider']))
@@ -43,8 +40,6 @@ class core_system_xup_controller extends eController
 			//$provider->setBackUrl(e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)));
 			try
 			{
-				
-				
 				$provider->signup($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
@@ -55,17 +50,15 @@ class core_system_xup_controller extends eController
 				return;
 			}
 			// print_a($provider->getUserProfile());
-			return;
+			//return;
 		}
 		
 		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
 	}
 	
-	
-	
 	public function actionLogin()
 	{
-		echo 'Login controller';
+		//echo 'Login controller';
 
 		// FIXME - pref for default XUP - e.g. Facebook, use it when GET is empty
 		if(vartrue($_GET['provider']))
@@ -85,12 +78,10 @@ class core_system_xup_controller extends eController
 				return;
 			}
 			// print_a($provider->getUserProfile());
-			return;
+			//return;
 		}
 		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
 	}
-	
-	
 	
 	public function actionTest()
 	{
@@ -110,8 +101,6 @@ class core_system_xup_controller extends eController
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Facebook').'">Test login with Facebook</a>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Facebook').'">Test signup with Facebook</a>';
 	}
-	
-	
 	
 	public function actionEndpoint()
 	{
