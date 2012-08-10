@@ -286,7 +286,7 @@ e107::getJs()->renderJs('footer_inline', true);
 // see e107.js and class2.php
 // This must be done as late as possible in page processing.
 $_serverTime = time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
+$lastSet = isset($_COOKIE['e107_tdSetTime']) ? intval($_COOKIE['e107_tdSetTime']) : 0;
 $_serverPath = e_HTTP;
 $_serverDomain = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
 if (abs($_serverTime - $lastSet) > 120)

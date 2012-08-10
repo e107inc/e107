@@ -882,13 +882,13 @@ $e_deltaTime=0;
 if (isset($_COOKIE['e107_tdOffset']))
 {
 	// Actual seconds of delay. See e107.js and footer_default.php
-	$e_deltaTime = (15*floor(($_COOKIE['e107_tdOffset']/60)/15))*60; // Delay in seconds rounded to the lowest quarter hour
+	$e_deltaTime = (15*floor((intval($_COOKIE['e107_tdOffset']) /60)/15))*60; // Delay in seconds rounded to the lowest quarter hour
 }
 
 if (isset($_COOKIE['e107_tzOffset']))
 {
 	// Relative client-to-server time zone offset in seconds.
-	$e_deltaTime += (-($_COOKIE['e107_tzOffset'] * 60 + date("Z")));
+	$e_deltaTime += (-(intval($_COOKIE['e107_tzOffset']) * 60 + date("Z")));
 }
 
 define('TIMEOFFSET', $e_deltaTime);

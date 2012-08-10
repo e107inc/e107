@@ -309,7 +309,7 @@ CREATE TABLE news (
   news_start int(10) unsigned NOT NULL default '0',
   news_end int(10) unsigned NOT NULL default '0',
   news_class varchar(255) NOT NULL default '0',
-  news_render_type tinyint(3) unsigned NOT NULL default '0',
+  news_render_type varchar(20) NOT NULL default '0',
   news_comment_total int(10) unsigned NOT NULL default '0',
   news_summary text NOT NULL,
   news_thumbnail text NOT NULL,
