@@ -36,7 +36,7 @@ define('e107_INIT',  TRUE);
 define('e_UC_ADMIN', 254);
 define('MIN_MYSQL_UTF8_VERSION', '4.1.2');
 
-error_reporting(E_ALL);
+error_reporting(0);
 
 if (!function_exists('file_get_contents'))  die('e107 requires PHP 4.3 or greater to work correctly.');
 if (!function_exists('mysql_connect'))      die('e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.');

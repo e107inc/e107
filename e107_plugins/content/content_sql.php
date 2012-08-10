@@ -16,7 +16,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-header("location:../index.php");
+header("location:../../index.php");
 exit;
 ?>
 # Table structure for table `content`

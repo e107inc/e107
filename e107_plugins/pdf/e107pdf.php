@@ -20,6 +20,7 @@
 // Debug option - adds entries to rolling log (only works in 0.8)
 //define ('PDF_DEBUG', TRUE);
 define ('PDF_DEBUG', FALSE);
+if (!defined('e107_INIT')) { exit; }
 
 //extend fpdf class from package with custom functions
 class e107PDF extends UFPDF{

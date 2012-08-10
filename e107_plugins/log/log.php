@@ -23,6 +23,7 @@
 		err_referer - referrer if came via error page
 */
 define('log_INIT', TRUE);
+error_reporting(0);
 
 //define('STATS_LOG_DEBUG', TRUE);			// Enables separate logging of first reference of each page to a separate file
 

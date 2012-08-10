@@ -218,7 +218,7 @@ if(isset($footer_js) && is_array($footer_js))
 // see e107.js and class2.php
 // This must be done as late as possible in page processing.
 $_serverTime=time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
+$lastSet = isset($_COOKIE['e107_tdSetTime']) ? intval($_COOKIE['e107_tdSetTime']) : 0;
 if (abs($_serverTime - $lastSet) > 120) {
 	/* update time delay every couple of minutes.
 	* Benefit: account for user time corrections and changes in internet delays
