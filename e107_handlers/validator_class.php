@@ -1380,7 +1380,7 @@ class validatorClass
 			{
 				$vars['failed'][$f] = LAN_VALIDATE_191; 
 			}
-			$curLine = str_replace('%v', htmlentities($vars['failed'][$f]),$curLine);
+			$curLine = str_replace('%v', filter_var($vars['failed'][$f], FILTER_SANITIZE_SPECIAL_CHARS), $curLine);
 			$curLine = str_replace('%f', $f, $curLine);
 			if ($checkNice & isset($niceNames[$f]['niceName']))
 			{
