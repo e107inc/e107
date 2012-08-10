@@ -379,7 +379,7 @@ if (e_QUERY)
 // 		Initial signup (registration)
 //----------------------------------------
 
-if (isset($_POST['register']) ) //&& $pref['user_reg'] == 1 add later. 
+if (isset($_POST['register']) && $pref['user_reg'] == 1) 
 {	
 	$e107cache->clear("online_menu_totals");
 	require_once(e_HANDLER."message_handler.php");

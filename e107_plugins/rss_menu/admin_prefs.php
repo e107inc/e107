@@ -27,6 +27,7 @@ require_once("../../class2.php");
 if(!getperms("P") || !e107::isInstalled('rss_menu'))
 { 
 	header("location:".e_BASE."index.php"); 
+	exit;
 }
 
 include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");

@@ -32,6 +32,7 @@ if (!defined('e107_INIT'))
 if (!e107::isInstalled('banner'))
 {
 	header("location:".e_BASE."index.php"); 
+	exit;
 }
 
 e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php");
