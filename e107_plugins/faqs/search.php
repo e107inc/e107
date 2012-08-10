@@ -1,6 +1,6 @@
 <?php
 // search module for faq.
-
+if (!defined('e107_INIT')){ exit; } 
 $search_info[$key]['qtype'] = "FAQs";    
 
 if($results = $sql -> db_Select("faqs", "*", "faq_question REGEXP('".$query."') OR faq_answer REGEXP('".$query."') ORDER BY faq_id DESC ")){

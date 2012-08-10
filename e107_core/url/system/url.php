@@ -5,6 +5,8 @@
  * 
  * System routing config
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
 class core_system_url extends eUrlConfig
 {
 	public function config()

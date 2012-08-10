@@ -5,6 +5,8 @@
  * 
  * User routing config
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
 class core_user_url extends eUrlConfig
 {
 	public function config()

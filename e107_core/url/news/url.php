@@ -8,6 +8,8 @@
  * All possible config options added here - to be used as a reference.
  * A good programming practice is to remove all non-used options.
  */
+if (!defined('e107_INIT')){ exit; }  
+
 class core_news_url extends eUrlConfig
 {
 	public function config()

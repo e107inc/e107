@@ -9,6 +9,8 @@
  * Generally, things are much more simpler...
  * 
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
 class core_news_sef_url extends eUrlConfig
 {
 	public function config()
