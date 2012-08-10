@@ -24,6 +24,9 @@
 /**
  * @todo core request handler (non-admin), core response
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
+ 
 class e_admin_request
 {
 	/**

@@ -5,6 +5,8 @@
  * 
  * Search routing config
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
 class core_search_url extends eUrlConfig
 {
 	public function config()

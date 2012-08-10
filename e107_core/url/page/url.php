@@ -5,6 +5,8 @@
  * 
  * Custom page routing config
  */
+if (!defined('e107_INIT')){ exit; } 
+  
 class core_page_url extends eUrlConfig
 {
 	public function config()

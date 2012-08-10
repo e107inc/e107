@@ -6,6 +6,9 @@
  * 
  * Full SEF URLs support and the most risky one, almost the same as sef_noid, just working with rules only
  */
+ 
+if (!defined('e107_INIT')){ exit; } 
+ 
 class core_news_sef_full_url extends eUrlConfig
 {
 	public function config()

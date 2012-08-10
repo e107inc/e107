@@ -21,6 +21,7 @@
  *	@subpackage	chatbox
  *	@version 	$Id$;
  */
+error_reporting(0);
 
 global $tp, $e107cache, $e_event, $e107, $pref;
 if (!plugInstalled('chatbox_menu')) 

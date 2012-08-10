@@ -6,6 +6,8 @@
  * 
  * SEF URLs support, example of manually (rules-less) created/parsed urls
  */
+if (!defined('e107_INIT')){ exit; }  
+ 
 class core_news_sef_noid_url extends eUrlConfig
 {
 	public function config()
