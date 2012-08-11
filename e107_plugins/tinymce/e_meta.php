@@ -19,7 +19,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	if(e_PAGE != 'image.php')
 	{
 		e107::js('tinymce','tiny_mce.js','jquery');
-		e107::js('tinymce','wysiwyg.php','jquery');
+		e107::js('tinymce','wysiwyg.php','jquery',5);
 	}
 	else
 	{
@@ -38,6 +38,13 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 		    //	alert(id);
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 		       			
+			});
+		
+			$('.e-wysiwyg').live('click',function(){			
+				var id = $(this).attr('id'); // eg. news-body	
+				$('#bbcode-panel-'+id+'--preview').hide();
+				$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');
+				tinyMCE.execCommand('mceAddControl', false, id);
 			});
 				
 				
@@ -60,6 +67,9 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 				tinyMCE.execCommand('mceInsertRawHTML',false,html);
 				tinyMCEPopup.close();
 			});
+			
+		
+			
 							
 					
 				
