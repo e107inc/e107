@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<tinymce>
+	<tinymce_name>Simple Users</tinymce_name>
+	<tinymce_userclass>252</tinymce_userclass>
+	<tinymce_plugins>e107bbcode,emoticons,jqueryinlinepopups</tinymce_plugins>
+	<tinymce_buttons1>bold, italic, underline, undo, redo, link, unlink, image, forecolor, bullist, numlist, outdent, indent, emoticons</tinymce_buttons1>
+</tinymce>

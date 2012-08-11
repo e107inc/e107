@@ -406,11 +406,24 @@ class tinymce
 			}
 		}
 			
+		$xml = new SimpleXMLElement('<tinymce/>');
+		$insertXml = array_flip($insert_array);
+		array_walk_recursive($insertXml, array ($xml, 'addChild'));
+		$save =  $xml->asXML();
+
+		file_put_contents(e_SYSTEM."admin.xml",$save);
+		
+	//	echo htmlentities($save);
+			
+			
 		if($id)
 		{
 			$insert_array['WHERE'] = $this->primary." = ".$id;
 			$status = $sql->db_Update($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
 			$message = LAN_UPDATED;	
+			
+			
+			
 
 		}
 		else
