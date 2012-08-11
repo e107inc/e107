@@ -6,6 +6,8 @@
 *
 * Tagwords Default URL configuration
 */
+if (!defined('e107_INIT')){ exit; } 
+
 class plugin_tagwords_url extends eUrlConfig
 {
 	public function config()

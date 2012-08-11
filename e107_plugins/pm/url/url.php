@@ -7,6 +7,8 @@
 * PM Default URL configuration
 * TODO - SEF URL configuration
 */
+if (!defined('e107_INIT')){ exit; } 
+
 class plugin_pm_url extends eUrlConfig
 {
 	public function config()
