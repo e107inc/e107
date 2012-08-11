@@ -2,10 +2,8 @@
 //---------------------------------------------------------------
 //              BEGIN CONFIGURATION AREA
 //---------------------------------------------------------------
-
-if(file_exists(e_PLUGIN."eXMLRPC/languages/".e_LANGUAGE.".php")){
-  @include_once(e_PLUGIN."eXMLRPC/languages/".e_LANGUAGE.".php");
-}
+if (!defined('e107_INIT')){ exit; } 
+include_lan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
 
   $helptitle = XMLRPC_HELP_001;
 //

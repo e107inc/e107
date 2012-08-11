@@ -17,6 +17,9 @@
 /* first thing to do is check if the log file is out of date ... */
 
 // $pathtologs = e_PLUGIN."log/logs/";
+
+if (!defined('e107_INIT')){ exit; } 
+
 $pathtologs = e_LOG;
 $date = date("z.Y", time());
 $yesterday = date("z.Y",(time() - 86400));		// This makes sure year wraps round OK

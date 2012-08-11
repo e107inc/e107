@@ -25,6 +25,7 @@
 
 // Normally the file is 'silent' - if any errors occur, not sure where they'll appear - (file type now text/html instead of text/css)
 */
+error_reporting(0);
 define('log_INIT', TRUE);
 
 // Array of page names which should have individual query values recorded.

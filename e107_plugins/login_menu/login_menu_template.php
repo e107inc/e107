@@ -23,7 +23,7 @@
  *	@subpackage	login
  *	@version 	$Id$;
  */
-
+if (!defined('e107_INIT')){ exit; } 
 
 if ( ! isset($LOGIN_MENU_FORM))
 {
