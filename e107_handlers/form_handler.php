@@ -707,18 +707,21 @@ class e_form
 		//width should be explicit set by current admin theme
 		switch($size)
 		{
-			case 'medium':
-				$rows = '10';
-			break;
-
 			case 'small':
 				$rows = '7';
+				$height = "style='height:250px'"; // inline required for wysiwyg
+			break;
+						
+			case 'medium':
+				$rows = '10';
+				$height = "style='height:375px'"; // inline required for wysiwyg
 			break;
 
 			case 'large':
 			default:
 				$rows = '15';
 				$size = 'large';
+				$height = "style='height:500px'"; // inline required for wysiwyg
 			break;
 		}
 
@@ -728,7 +731,7 @@ class e_form
 		
 
 		$help_tagid 		= $this->name2id($name)."--preview"; 
-		$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+		$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
 	
 		$counter 			= vartrue($options['counter'],false); 
 		
