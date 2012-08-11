@@ -67,7 +67,9 @@ class wysiwyg
 	$text .= "\n /* TinyMce Config: ".$this->configName." */";
 	$text .= $this->tinyMce_config();
 
-	$text .= "\t\t start_tinyMce(); \n
+	$text .= "\t\t start_tinyMce(); \n";
+	
+	$text .= "
 
 	function tinymce_e107Paths(type, source) {
 	";
@@ -235,20 +237,26 @@ class wysiwyg
 
 
 	function getConfig($config=FALSE)
-	{
-		$sql = e107::getDb();
-
-		if($config)
+	{		
+		if(getperms('0'))
 		{
-			$query = "SELECT * FROM #tinymce WHERE tinymce_id = ".$config." LIMIT 1";
+			$template = "mainadmin.xml";		
+		}
+		elseif(ADMIN)
+		{
+			$template = "admin.xml";			
+		}
+		elseif(USER)
+		{
+			$template = "member.xml";			
 		}
 		else
 		{
-			$query = "SELECT * FROM #tinymce WHERE tinymce_userclass REGEXP '".e_CLASS_REGEXP."' AND NOT (tinymce_userclass REGEXP '(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)') ORDER BY Field(tinymce_userclass,250,254,253) LIMIT 1";
+			$template = "public.xml";			
 		}
+		
+		$config = e107::getXml()->loadXMLfile(e_PLUGIN."tinymce/templates/".$template,true); //TODO System and theme folder checks for overrides. 
 
-		$sql -> db_Select_gen($query);
-		$config = $sql->db_Fetch();
 
 		//TODO Cache!
 
@@ -267,20 +275,20 @@ class wysiwyg
 		$this->config += array(
 
 			'theme_advanced_buttons1'			=> $config['tinymce_buttons1'],
-			'theme_advanced_buttons2'			=> $config['tinymce_buttons2'],
-			'theme_advanced_buttons3'			=> $config['tinymce_buttons3'],
-			'theme_advanced_buttons4'			=> $config['tinymce_buttons4'],
-			'theme_advanced_toolbar_location'	=> 'top',
+			'theme_advanced_buttons2'			=> vartrue($config['tinymce_buttons2']),
+			'theme_advanced_buttons3'			=> vartrue($config['tinymce_buttons3']),
+			'theme_advanced_buttons4'			=> vartrue($config['tinymce_buttons4']),
+			'theme_advanced_toolbar_location'	=> vartrue($config['theme_advanced_toolbar_location'],'top'),
 			'theme_advanced_toolbar_align'		=> 'left',
 			'theme_advanced_blockformats' 		=> 'p,h2,h3,blockquote,code',
-			'theme_advanced_resize_vertical' 		=> 'true',
+			// 'theme_advanced_resize_vertical' 		=> 'true',
 			'dialog_type' 						=> "modal",		
-			'theme_advanced_source_editor_height' => '400',
+		//	'theme_advanced_source_editor_height' => '400',
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
 			'theme_advanced_resizing'			=> 'false',
 			'remove_linebreaks'					=> 'true',
-			'extended_valid_elements'			=> (ADMIN ? 'object[*],embed[*]' : ''),
+			'extended_valid_elements'			=> vartrue($config['extended_valid_elements']), 
 			'apply_source_formatting'			=> 'false',
 			'invalid_elements'					=> 'p,font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
@@ -292,6 +300,8 @@ class wysiwyg
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
 			'media_strict'						=> 'false',
+			'width'								=> '85%',
+		//	'height'							=> '90%', // higher causes padding at the top?
 		//	'forced_root_block'					=> '',
 			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true
 		//	'force_p_newlines'					=> 'false',

@@ -40,8 +40,20 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 		       			
 			});
 		
-			$('.e-wysiwyg').live('click',function(){			
-				var id = $(this).attr('id'); // eg. news-body	
+		//	jQuery.e-tab-add = function()
+		//	{
+		//		alert('added tab');
+		//	}
+					
+				
+			// When new tab is added - convert textarea to TinyMce. 
+			$('.e-tabs-add').on('click',function(){
+				
+				alert('New Page Added'); // added for delay - quick and dirty work-around. XXX fixme
+				
+				var idt = $(this).attr('data-target'); // eg. news-body	
+				var ct = parseInt($('#e-tab-count').val());
+				var id = idt + '-' + ct;
 				$('#bbcode-panel-'+id+'--preview').hide();
 				$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');
 				tinyMCE.execCommand('mceAddControl', false, id);

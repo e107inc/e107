@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<tinymce>
+	<tinymce_name>Members</tinymce_name>
+	<tinymce_userclass></tinymce_userclass>
+	<tinymce_plugins>e107bbcode,emoticons,jqueryinlinepopups,table</tinymce_plugins>
+	<tinymce_buttons1>bold, italic, underline, undo, redo, link, unlink, image, forecolor, removeformat, table, bullist, numlist, outdent, indent, emoticons</tinymce_buttons1>
+	<tinymce_prefs></tinymce_prefs>
+</tinymce>
