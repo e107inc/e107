@@ -27,6 +27,11 @@ require_once('../class2.php');
 
 if (!getperms("5|J")) { header('location:'.e_ADMIN.'admin.php'); exit; }
 
+e107::css('inline',"
+
+.e-wysiwyg { height: 400px }
+");
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'custom';
@@ -603,7 +608,7 @@ class page_admin_ui extends e_admin_ui
 				
 				$id = "#page_".$c;
 				$pageCap = "Page ".($c);
-				$text .= "<li><a href='{$id}'>{$pageCap}</a></li>";	
+				$text .= "<li><a href='{$id}' >{$pageCap}</a></li>";	
 				$c++;
 			}
 			$text .= "</ul>";
@@ -616,14 +621,17 @@ class page_admin_ui extends e_admin_ui
 				$text .= "<fieldset id='{$id}'>\n";
 				$text .= "<div>Title: ".$frm->text('page_subtitle['.$c.']', $titles[($c)], 250)."</div>\n";
 				$text .= $frm->bbarea($nm, $curval, $help_mod,$help_tagid,$size,$counter);
+		
 				$text .= "</fieldset>";	
+			
 			//	$text .= 'name='.$nm."<br />page=".$page."<br />help_mode=". $help_mod."<br />htlp_tagid=".$help_tagid."<br />size=".$size;
 				$c++;	
 			}
-					
+			
+			$text .= "<button class='e-bb e-tabs-add' data-target='$name' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#'  data-bbcode=''><span>New Page</span></button>";
+				
 			$text .= "<input type='hidden' id='e-tab-count' value='".count($pages)."' />";
 			
-			$text .= "<button class='e-bb e-tabs-add e-wysiwyg-add' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#'  data-bbcode=''><span>New Page</span></button>";
 			
 			return $text;
 		}

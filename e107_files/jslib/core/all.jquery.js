@@ -136,14 +136,16 @@ $(document).ready(function()
 			$( ".e-tabs" ).tabs();
 		});	
 		
+		
 		$('.e-tabs-add').on("click", function(){
 			var url = $(this).attr('data-url');
-			var count = parseInt($("#e-tab-count").val()) + 1; 	
-			
+			var ct = parseInt($("#e-tab-count").val());
+			var count = ct + 1; 	
 			// alert(count);
 			//return false;
 			if($("#tab-container").tabs("add",url +'&count='+count,"Page "+count))
 			{
+				$("#tab-container").tabs('select', ct);
 				$("#e-tab-count").val(count);	
 			}
 			
