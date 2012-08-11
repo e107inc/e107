@@ -292,10 +292,11 @@ class page_admin_ui extends e_admin_ui
 		{
 			$count = varset($_GET['count']);
 			$frm = e107::getForm();
-			$text .= "<fieldset id='e-tab-empty'>\n";
+			$text = "<fieldset id='page_{$count}'>\n";
 			$text .= "<div>Title: ".$frm->text('page_subtitle[]', '', 250)."</div>\n";
-			$text .= $frm->bbarea('data_'.intval($count), '', 'page','help','large');
+			$text .= $frm->bbarea('data_'.(intval($count)), '', 'page','page','large');
 			$text .= "</fieldset>";	
+		//	$text .= 'name='.$nm."<br />page=".$page."<br />help_mode=". $help_mod."<br />htlp_tagid=".$help_tagid."<br />size=".$size;
 			echo $text;	
 			exit;
 			// return $text;
@@ -592,35 +593,37 @@ class page_admin_ui extends e_admin_ui
 		
 			}
 			$pages = preg_split("/\[newpage(.*?)\]/si", $textareaValue, -1, PREG_SPLIT_NO_EMPTY);
-			
-
-			$c= 0;
+						
+			$c= 1;
 			$titles[0] = ""; 
+			
 			$text .= "<ul class='e-tabs'>";
 			foreach($pages as $page)
 			{
 				
 				$id = "#page_".$c;
-				$pageCap = "Page ".($c+1);
+				$pageCap = "Page ".($c);
 				$text .= "<li><a href='{$id}'>{$pageCap}</a></li>";	
 				$c++;
 			}
 			$text .= "</ul>";
-			$c= 0;
-			foreach($pages as $page)
+			$c= 1;
+			foreach($pages as $curval)
 			{
-				$titles[] = isset($pt[1][$c]) ? $pt[1][$c] : "";
+				$titles[] = isset($pt[1][($c-1)]) ? $pt[1][($c-1)] : "";
 				$id = "page_".$c;
 				$nm = $name."_".$c;
 				$text .= "<fieldset id='{$id}'>\n";
-				$text .= "<div>Title: ".$frm->text('page_subtitle[]', $titles[($c+1)], 250)."</div>\n";
-				$text .= $frm->bbarea($nm, $page, $help_mod,$help_tagid,$size,$counter);
+				$text .= "<div>Title: ".$frm->text('page_subtitle['.$c.']', $titles[($c)], 250)."</div>\n";
+				$text .= $frm->bbarea($nm, $curval, $help_mod,$help_tagid,$size,$counter);
 				$text .= "</fieldset>";	
+			//	$text .= 'name='.$nm."<br />page=".$page."<br />help_mode=". $help_mod."<br />htlp_tagid=".$help_tagid."<br />size=".$size;
 				$c++;	
 			}
 					
-			$text .= "<input type='text' id='e-tab-count' value='".count($pages)."' />";
-		
+			$text .= "<input type='hidden' id='e-tab-count' value='".count($pages)."' />";
+			
+			$text .= "<button class='e-bb e-tabs-add e-wysiwyg-add' data-url='".e_SELF."?mode=dialog&action=dialog&iframe=1' data-function='add' href='#'  data-bbcode=''><span>New Page</span></button>";
 			
 			return $text;
 		}
@@ -712,7 +715,7 @@ class page_admin_ui extends e_admin_ui
 	
 			$page_title = $tp->toDB($_POST['page_title']);
 			
-		//	print_a($_POST);
+	//		print_a($_POST);
 			
 			
 	//		if(is_array($_POST['data']) && is_array($_POST['subtitle']))
@@ -731,6 +734,7 @@ class page_admin_ui extends e_admin_ui
 			}
 	
 		//	echo nl2br($newData);
+		//	return;
 				
 			$page_text = $tp->toDB($newData);
 			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
