@@ -238,7 +238,7 @@ City, State, Country
 		<core name="user_new_period">3</core>
 		<core name="user_tracking">cookie</core>
 		<core name="wmessage_sc">0</core>
-		<core name="wysiwyg">0</core>
+		<core name="wysiwyg">1</core>
 		<core name="xup_enabled">1</core>
 		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
 		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>	
