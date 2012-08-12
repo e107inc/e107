@@ -29,15 +29,7 @@ class wysiwyg
 	{
 
 		$this->getConfig($config);
-
-
 		$pref = e107::getConfig();
-
-
-
-
-
-
 
 	/*
 	if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip") && (ini_get("zlib.output_compression") == false) && file_exists(e_PLUGIN."tinymce/tiny_mce_gzip.php"))
@@ -198,32 +190,7 @@ class wysiwyg
 			$newConfig[] = "\t\t  ".$key." : ".$val;
 		}
 
-		// foreach($this->config as $key=>$val)
-		// {
-			// if($val != 'true' && $val !='false')
-			// {
-				// $val = "'".$val."'";
-			// }
-			// $text .= "\t\t  ".$key." : '".$val."',\n";
-		// }
-
 		$text .= implode(",\n",$newConfig);
-
-	/*
-		if($tinyMcePrefs['customjs'])
-		{
-			$text .= "\n,
-
-			// Start Custom TinyMce JS  -----
-
-			".$pref['tinymce']['customjs']."
-
-			// End Custom TinyMce JS ---
-
-			";
-
-		}
-	*/
 		$text .= "
 		});
 
@@ -265,7 +232,7 @@ class wysiwyg
 
 		$this->config = array(
 			'language'			=> $this->tinymce_lang(),
-			'mode'				=> 'textareas',
+			'mode'				=> 'specific_textareas',
 			'editor_selector' 	=> 'e-wysiwyg',
 			'editor_deselector'	=> 'e-wysiwyg-off',
 			'theme'				=> 'advanced',
@@ -300,7 +267,7 @@ class wysiwyg
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
 			'media_strict'						=> 'false',
-			'width'								=> '85%',
+			'width'								=> vartrue($config['width'],'100%'),
 		//	'height'							=> '90%', // higher causes padding at the top?
 		//	'forced_root_block'					=> '',
 			'convert_newlines_to_brs'			=> 'true', // will break [list] if set to true

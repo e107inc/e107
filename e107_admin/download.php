@@ -56,7 +56,6 @@ $frm = new e_form;
 $download = new download;
 
 require_once("auth.php");
-$pst->save_preset();  // unique name(s) for the presets - comma separated.
 
  /*
 One form example (no arrays needed)

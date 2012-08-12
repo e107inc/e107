@@ -149,7 +149,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea class='e-wysiwyg tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea class='tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";

@@ -621,7 +621,8 @@ class e_media
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
-			$mes->add("Couldn't detect mime-type($mime). Upload failed.", E_MESSAGE_ERROR);
+			$this->log("Couldn't detect mime-type ($mime).");
+			$mes->add("Couldn't detect mime-type ($mime). Upload failed.", E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
@@ -631,6 +632,7 @@ class e_media
 		{
 			if(!mkdir($dir, 0755))
 			{
+				$this->log("Couldn't create folder ($dir).");
 				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
 				return FALSE;
 			};
@@ -650,13 +652,16 @@ class e_media
 		if(!is_readable($path))
 		{
 			$mes->addError("Couldn't read file: {$path}");	
+			$this->log("Couldn't read file: {$path}");
 			return FALSE;
 		}
 		
-		$info = e107::getFile()->get_file_info($path);
+		$info = e107::getFile()->get_file_info($path,true);
+		
+		$this->log("File info for $path : ".print_r($info,true));
 		
 		return array(
-			'media_type'		=> $info['mime'],
+			'media_type'		=> vartrue($info['mime']),
 			'media_datestamp'	=> time(),
 			'media_url'			=> e107::getParser()->createConstants($path, 'rel'),
 			'media_size'		=> filesize($path),
@@ -666,6 +671,13 @@ class e_media
 			'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
 		);
 	}
+	
+
+	
+	
+	
+	
+	
 	
 	
 	
@@ -691,7 +703,7 @@ class e_media
 		
 		if(!file_exists($oldpath))
 		{
-			$this->log("Couldn't find the file: ".$oldpath);
+			$this->log("Line: ".__LINE__." Couldn't find the file: ".$oldpath);
 			$mes->add("Couldn't find the file: ".$oldpath, E_MESSAGE_ERROR);
 			return;
 		}	
@@ -699,10 +711,9 @@ class e_media
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
 		
 		if(!$typePath = $this->getPath($img_data['media_type']))
-		{
-			
-				$this->log("Couldn't generated path from file info:".$oldpath);
-				$mes->addError("Couldn't generated path from file info:".$oldpath);
+		{		
+				$this->log("Line: ".__LINE__." Couldn't generate path from file info:".$oldpath);
+				$mes->addError("Couldn't generate path from file info:".$oldpath);
 				return FALSE;
 		}
 				

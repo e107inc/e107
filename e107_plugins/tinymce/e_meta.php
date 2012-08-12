@@ -26,6 +26,17 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 		e107::js('tinymce','tiny_mce_popup.js','jquery');
 	}
 	
+	if(ADMIN)
+	{
+		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');");	
+	}
+	else 
+	{
+		define("SWITCH_TO_BB","");
+	}
+	
+//	print_a($_POST);
+	
 	// <div><a href='#' class='e-wysiwyg-switch' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
 	e107::js('inline',"
 	
@@ -34,17 +45,12 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 			$('.e-wysiwyg').each(function() {
 													
 				var id = $(this).attr('id'); // 'e-wysiwyg';
-				$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');
+				".SWITCH_TO_BB."
 		    //	alert(id);
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 		       			
 			});
-		
-		//	jQuery.e-tab-add = function()
-		//	{
-		//		alert('added tab');
-		//	}
-					
+						
 				
 			// When new tab is added - convert textarea to TinyMce. 
 			$('.e-tabs-add').on('click',function(){
@@ -55,7 +61,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 				var ct = parseInt($('#e-tab-count').val());
 				var id = idt + '-' + ct;
 				$('#bbcode-panel-'+id+'--preview').hide();
-				$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');
+				".SWITCH_TO_BB."
 				tinyMCE.execCommand('mceAddControl', false, id);
 			});
 				
@@ -93,23 +99,6 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	
 	","jquery");
 	
-	e107::css('inline',".e-wysiwyg { width:100% }","jquery");
-	
-	
-  //	require_once(e_PLUGIN."tinymce/wysiwyg.php");
-	if(deftrue('TINYMCE_CONFIG'))
-	{
-	//	$wy = new wysiwyg(TINYMCE_CONFIG);
-	}
-	else
-	{
-	//	$wy = new wysiwyg();
-	}
-	
-	if(!strpos(e_SELF,e_ADMIN_ABS."image.php"))
-	{
-	//	$wy -> render();	
-	}
 	
 }
 

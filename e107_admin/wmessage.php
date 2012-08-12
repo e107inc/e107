@@ -25,14 +25,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'wmessage';
 
-require_once(e_HANDLER."preset_class.php");
-$pst = new e_preset;
-$pst->form = "wmform";
-$pst->page = "wmessage.php?create";
-$pst->id = "admin_wmessage";
-require_once("auth.php");
-$pst->save_preset();  // save and render result
 
+require_once("auth.php");
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
@@ -159,15 +153,6 @@ if ($action == "create" || $action == "edit")
 	{
 		$sql->db_Select("generic", "gen_intdata, gen_ip, gen_chardata", "gen_id = $id");
 		$row = $sql->db_Fetch();
-	}
-
-	if ($sub_action != 'edit')
-	{
-		$preset = $pst->read_preset("admin_wmessage");
-		if (is_array($preset))
-		{
-			extract($preset);
-		}
 	}
 
 	$text = "

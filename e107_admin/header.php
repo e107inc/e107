@@ -252,7 +252,7 @@ echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
-if (varset($pref['wysiwyg'], FALSE) && check_class($pref['post_html']))
+if (varset($pref['wysiwyg'], FALSE) ) // posts bbcode by default. 
 {
 	define("e_WYSIWYG", TRUE);
 }
@@ -290,23 +290,6 @@ if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js'))
 {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n";
 }
-
-// XXX - This shouldn't be here as well
-if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0"))
-{
-	echo "<script type='text/javascript'>
-<!--
-function savepreset(ps,pid){
-	if(confirm('".e107::getParser()->toJS(LAN_PRESET_CONFIRMSAVE)."'))
-	{
-		document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
-   		document.getElementById(ps).submit();
-	}
-}
-//-->
-</script>\n";
-}
-
 
 
 // [JSManager] Load JS Includes - Zone 3 - before e_meta and headerjs()

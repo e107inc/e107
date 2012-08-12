@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <tinymce>
-	<tinymce_name>Simple Users</tinymce_name>
-	<tinymce_userclass>252</tinymce_userclass>
-	<tinymce_plugins>e107bbcode,emoticons,jqueryinlinepopups</tinymce_plugins>
-	<tinymce_buttons1>bold, italic, underline, undo, redo, link, unlink, image, forecolor, bullist, numlist, outdent, indent, emoticons</tinymce_buttons1>
+	<tinymce_name>Main Admin</tinymce_name>
+	<tinymce_plugins>advhr,advlink,autosave,contextmenu,directionality,e107bbcode,emoticons,ibrowser,paste,table,visualchars,wordcount,xhtmlxtras,youtube</tinymce_plugins>
+	<tinymce_buttons1>link, unlink, bold, italic, underline, undo, redo,formatselect,justifyleft,justifycenter,justifyright,justifyfull, |, ibrowser, forecolor, removeformat, table, bullist, numlist, outdent, indent, cleanup, emoticons, youtube</tinymce_buttons1>
+	<extended_valid_elements>object[*],embed[*]</extended_valid_elements>
 </tinymce>
