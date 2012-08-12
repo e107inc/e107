@@ -559,11 +559,11 @@ class e_bbcode
 					
 		$text = preg_replace("/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/i","[link=$1]$2[/link]",$text);
 		$text = preg_replace('/<div style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // verified
-		$text = preg_replace('/<div class="bbcode-(?:[\w]*)" style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
+		$text = preg_replace('/<div class="bbcode-(?:[\w]*).* style="text-align: ([\w]*);">([\s\S]*)<\/div>/i',"[$1]$2[/$1]",$text); // left / right / center
 		$text = preg_replace('/<img(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 		$text = preg_replace('/<img class="(?:[^"]*)"(?:\s*)?(?:style="([^"]*)")?\s?(?:src="([^"]*)")(?:\s*)?(?:alt="(\S*)")?(?:\s*)?(?:width="([\d]*)")?\s*(?:height="([\d]*)")?(?:\s*)?\/>/i',"[img style=width:$4px;height:$5px;$1]$2[/img]",$text );
 	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
-		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u" )?style="text-decoration: underline;">(.*?)<\/span>/i',"[u]$1[/u]",$text);
+		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u)(?:[^>]*)>(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
 		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
 		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
