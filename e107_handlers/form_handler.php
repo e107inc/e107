@@ -410,7 +410,8 @@ class e_form
 		$label 		= "<span id='{$name_id}_prev' >".basename($default_label)."</span>";
 			
 		
-		$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
+	//	$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
+			$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=main&action=dialog");
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 
 			
 		return $ret;

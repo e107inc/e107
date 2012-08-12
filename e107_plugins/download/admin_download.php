@@ -56,19 +56,11 @@ $pst->id = array("admin_downloads","admin_dl_cat");
 $download = new download();
 // $adminDownload = new adminDownload();
 
-$pst->save_preset();  // unique name(s) for the presets - comma separated.
 new plugin_download_admin();
 require_once(e_ADMIN."auth.php");
 
 
 
-
- /*
-One form example (no arrays needed)
-$pst->form = "myform"; // form id of the form that will have it's values saved.
-$pst->page = "download.php?create"; // display preset options on which page.
-$pst->save_preset("admin_downloads");  // unique name for the preset
-*/
 /*
 
 $rs = new form;

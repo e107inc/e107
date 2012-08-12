@@ -137,7 +137,7 @@ echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME
 
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']))
+if (varset($pref['wysiwyg'],FALSE))
 {
 	define("e_WYSIWYG",TRUE);
 }

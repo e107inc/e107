@@ -125,7 +125,7 @@ CREATE TABLE core (
 
 CREATE TABLE core_media (
   media_id int(10) unsigned NOT NULL auto_increment,
-  media_type varchar(15) NOT NULL default '',
+  media_type varchar(50) NOT NULL default '',
   media_name varchar(255) NOT NULL default '',
   media_caption varchar(255) NOT NULL default '',
   media_description varchar(255) NOT NULL default '',

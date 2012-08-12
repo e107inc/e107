@@ -277,8 +277,10 @@ class e_file
 		}
 
 		$tmp = stat($path_to_file);
+		
 		if($tmp)
 		{
+			
 			$finfo['fsize'] = $tmp['size'];
 			$finfo['modified'] = $tmp['mtime'];
 		}
@@ -286,6 +288,7 @@ class e_file
 		// associative array elements: dirname, basename, extension, filename
 		$finfo['pathinfo'] = pathinfo($path_to_file);
 
+		$finfo['mime'] = vartrue($finfo['mime'],'application/'.$finfo['pathinfo']['extension']);
 		return $finfo;
 	}
 

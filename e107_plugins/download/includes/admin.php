@@ -579,8 +579,6 @@ $columnInfo = array(
 	      $download_status[0] = DOWLAN_122;
 	      $download_status[1] = DOWLAN_123;
 	      $download_status[2] = DOWLAN_124;
-	      $preset = $pst->read_preset("admin_downloads");  // read preset values into array
-	      extract($preset);
 	
 	      if (!$sql->db_Select("download_category"))
 	      {

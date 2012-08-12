@@ -209,7 +209,8 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 	<td style='width:80%' class='forumheader3'>
-    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toHTML($_POST['submitnews_item'],TRUE,'USER_BODY')."</textarea><br />";
+    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toForm($_POST['submitnews_item'],TRUE,'USER_BODY')."</textarea><br />"; 
+    // toHTML is dangerous. 
 
 if (!e_WYSIWYG)
 {

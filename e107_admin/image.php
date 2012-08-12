@@ -645,30 +645,12 @@ class media_admin_ui extends e_admin_ui
 			$this->updateSettings();
 		}
 		
+		// filepicker stuff. 
 		if($this->getQuery('mode') == 'dialog')//TODO Check this actually does something, as it was changed to 'action'. 
 		{
 			if(!ADMIN){ exit; }
 			
-			$cat = $_GET['for'];
-			if(!isset($this->cats[$cat]))
-			{
-				return;
-			}
 			
-			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE media_category = '".$cat."' "; // without any Order or Limit.
-			
-			unset($this->fields['checkboxes']);
-			$this->fields['options']['type'] = 'method';
-			$this->fields['media_category']['nolist'] = true;
-			$this->fields['media_userclass']['nolist'] = true;
-			$this->fields['media_dimensions']['nolist'] = true;
-			$this->fields['media_description']['nolist'] = true;
-			$this->fields['media_type']['nolist'] = true;
-			
-			foreach($this->fields as $k=>$v)
-			{
-				$this->fields[$k]['filter'] = false;	
-			}	
 		}
 		
 		
@@ -736,26 +718,39 @@ class media_admin_ui extends e_admin_ui
 	{
 		$cat = $this->getQuery('for');		
 		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
+		$mes = e107::getMessage();
+		$mes->addDebug("For:".$cat);
 		
 		if($file)
 		{
+			$cat = $_GET['for'];
+			if(!isset($this->cats[$cat]))
+			{
+				return;
+			}
 			
-			echo $this->getUI()->getList();
-
-			return;
+			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE m.media_category = '".$cat."' "; // without any Order or Limit.
+			
+			unset($this->fields['checkboxes']);
+			$this->fields['options']['type'] = 'method';
+			$this->fields['media_category']['nolist'] = true;
+			$this->fields['media_userclass']['nolist'] = true;
+			$this->fields['media_dimensions']['nolist'] = true;
+			$this->fields['media_description']['nolist'] = true;
+			$this->fields['media_type']['nolist'] = true;
+			
+			foreach($this->fields as $k=>$v)
+			{
+				$this->fields[$k]['filter'] = false;	
+			}	
+						
+			echo $this->mediaSelectUpload('file');	
 		}
-			
+		else
+		{
+			echo $this->mediaSelectUpload();		
+		}	
 		
-	//	$this->getModel()->setAction('create');
-	//	$this->getUI()->getController()->getRequest()->setAction('create');
-	//$this->setAction('create');;
-	
-		if($_POST['etrigger_submit'])
-		{		
-		//	$data = $this->beforeCreate($_POST);
-		//	e107::getDb()->db_Insert('core_media',$data); // Replace with Generic (needs parm sent)	
-		}
-		echo $this->imageSelectUpload();	
 	}
 	
 	
@@ -774,7 +769,7 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-	function imageSelectUpload() 
+	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
 		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
@@ -806,7 +801,14 @@ class media_admin_ui extends e_admin_ui
 			
 		$tag = ($bbcodeMode) ? "" : $this->getQuery('tagid');
 		
-		$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail	
+		if($type == 'file')
+		{
+			$text .= $this->getUI()->getList();	//FIXME NOT WORKING! 
+		}
+		else 
+		{
+			$text .= e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'),$bbcodeMode); // eg. news, news-thumbnail				
+		}
 			
 		$text .= "
 			</td></tr>
