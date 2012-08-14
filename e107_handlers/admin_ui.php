@@ -3681,7 +3681,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		//$this->getTreeModel()->delete($selected);
 		if($set_messages) $this->getTreeModel()->setMessages();
-		exit;
+		
 		//$this->redirect();
 	}
 
