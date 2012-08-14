@@ -137,7 +137,8 @@ class gallery_cat_admin_ui extends e_admin_ui
 	protected $prefs = array(
 		'popup_w'				=> array('title'=> 'Image Max. Width', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the width given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 		'popup_h'				=> array('title'=> 'Image Max. Height', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the height given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-	
+		
+		'downloadable'			=> array('title'=> 'Show "download" link', 'type' => 'boolean', 'integer' => 'int', 'help'=>'A download option will be shown next to the popup caption'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	
 		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_w'	=> array('title'=> 'Thumbnail Width', 'type' => 'number', 'data' => 'integer', 'help'=>'Width in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				

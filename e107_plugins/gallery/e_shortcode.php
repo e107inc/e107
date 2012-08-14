@@ -18,6 +18,12 @@ class gallery_shortcodes extends e_shortcode
 	public $sliderCat = 1;
 	public $slideMode = FALSE;
 	public $slideCount = 1;
+	private $downloadable = FALSE;
+	
+	function __construct()
+	{
+		$this->downloadable = e107::getPlugPref('gallery','downloadable');	
+	}
 			
 	function sc_gallery_caption($parm='')
 	{
@@ -44,7 +50,10 @@ class gallery_shortcodes extends e_shortcode
 		
 	//	echo "<br /><br />".$attFull;
 	
-		$text = "<a class='".$class."' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'  rel='{$rel}' >";
+		$caption = $tp->toAttribute($this->var['media_caption']) ;	
+		$caption .= ($this->downloadable) ? " <a class='e-tip smalltext' title='Right-click > Save Link As' href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'>Download</a>" : "";
+		
+		$text = "<a class='".$class."' title=\"".$caption."\" href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'  rel='{$rel}' >";
 		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
 		
