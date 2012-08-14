@@ -222,6 +222,7 @@ class e_thumbpage
 			
 			// Send required headers
 			$this->sendHeaders($thumbnfo);
+		
 
 			// check browser cache
 			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
@@ -311,6 +312,8 @@ class e_thumbpage
 		header('Cache-Control: must-revalidate');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
 		header('Content-Length: '.$thumbnfo['fsize']);
+		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as. 
+
 		$ctype = self::ctype($thumbnfo['extension']);
 		if(null !== $ctype)
 		{
@@ -321,6 +324,7 @@ class e_thumbpage
 		$time = time() + 365 * 86400;
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT');
 		header("Etag: ".$thumbnfo['md5s']);
+		
 	}
 
 	public static function ctype($ftype)
