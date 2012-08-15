@@ -10,7 +10,7 @@ if(!isset($FPW_TABLE))
 {
 		$FPW_TABLE = "
 		<div style='text-align:center'>
-		<form method='post' action='".SITEURL."fpw.php'>
+		<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>
 		<table style='".USER_WIDTH."' class='fborder'>
 
 		<tr>

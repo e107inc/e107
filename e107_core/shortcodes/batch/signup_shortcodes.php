@@ -29,7 +29,7 @@ class signup_shortcodes extends e_shortcode
 		else
 		{
 			return "
-		<form method='post' action='".e_SELF."?stage1' >\n
+		<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
 		<div><br />
 		<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
 		<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
@@ -109,6 +109,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_form_open()
 	{
 		global $rs;
+		return "<form action='".e_SELF."' method='post' id='signupform' autocomplete='off'><div>".e107::getForm()->token()."</div>";
 		return $rs->form_open("post", e_SELF, "signupform");
 	}
 	
