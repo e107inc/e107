@@ -23,11 +23,15 @@ require_once('import_classes.php');
 
 class html_import extends base_import_class
 {
+	public $override 	= true;
 	var $sourceType 	= 'rss';
 	var $feedUrl		= null;
 	var $defaultClass 	= false;
 	var $useTidy		= true;
 	var	$action			= 'preview'; // default action after setup page; 
+	private $localPath	= '';
+	private $content 	= array();
+	private $contentArray = array();
 	
 	function init()
 	{
@@ -40,7 +44,45 @@ class html_import extends base_import_class
 			$this->previewContent();
 			return false;	
 		}
+		
+		if($_POST['do_conversion'])
+		{
+			$import = $this->sortSelection();	
+			$this->doConversion($import);
+
+		}
+		
 	}
+
+
+	function sortSelection()
+	{
+		$import = array();
+		foreach($_POST as $k=>$v)
+		{
+		
+			if($v == 'news' || $v=='page')
+			{
+				$file = str_replace("add__","",$k);
+				$import[$v][]	 = 	$file;
+				
+			}
+			
+		}		
+		
+		return $import;
+	}
+	
+	
+	function doConversion($data)
+	{
+		
+		print_a($data);	
+		
+	}
+	
+	
+	
 	
 	function config()
 	{
@@ -58,6 +100,22 @@ class html_import extends base_import_class
 		$this->arrayData = array();
 		
 		print_a($_POST);
+		
+		
+	
+		
+		
+		
+		
+		
+		
+					
+					
+				
+				
+			
+			
+		
 		
 	
 	
@@ -94,23 +152,28 @@ class html_import extends base_import_class
 		return TRUE;
   }
 
-	private function getAll()
+  
+  
+  
+  
+  
+	private function getAll($root = '')
 	{
-		$html = $this->getRawHtml();
+		$html = $this->getRawHtml($root);
 		$pages = $this->findLinks($html);
 		$c = 0;
 		foreach($pages as $url=>$p)
 		{
 			// echo "url=".$url;
-			$html = $this->getRawHtml($url);	
+			$html = $this->getAll($url);	
 			
 			$html = str_replace("\n","",$html); // strip line-breaks. 
 			$html = preg_replace("/<title>([^<]*)<\/title>/i","",$html);
 			$html = trim($html,"\n");
 			
-			$body = trim(strip_tags($html,"<b><i><u><strong><br><img><object><embed>"));
+			$body = trim(strip_tags($html,"<b><i><u><strong><em><br><img><object><embed><a>"));
 		
-			$content[$url] = array(
+			$this->content[$url] = array(
 				'title'	=> str_replace("\n","",$p['title']),
 		//		'raw'	=> $html,
 				'body'	=> $body
@@ -125,9 +188,12 @@ class html_import extends base_import_class
 			
 		}
 			
-		return $content;
+		return $this->content;
 		
 	}
+		
+		
+		
 				
 	private function previewContent()
 	{
@@ -168,14 +234,14 @@ class html_import extends base_import_class
 			<td>".$data['title']."</td>\n
 			<td>".$tp->text_truncate($data['body'],150)."</td>\n
 			<td class='center middle'>
-			 		".$key."
+			 		<a class='e-dialog' href='".$this->localPath.$key."'>".$key."</a>
 			 	</td>
 			
 			";
 
              $text .= "
 			 	<td class='center middle'>
-			 		".$frm->selectbox('import_'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
+			 		".$frm->selectbox('add__'.$key,array('news'=>'News','page'=>'Page','0'=>'Ignore'))."
 			 	</td>
 			 </tr>";
 		}
@@ -211,6 +277,7 @@ class html_import extends base_import_class
 			
 		$path		= md5($this->feedUrl);
 		$local_file = $path."/".$file; 
+		$this->localPath = e_TEMP.$path."/"; 
 		
 		if(!is_dir(e_TEMP.$path))
 		{

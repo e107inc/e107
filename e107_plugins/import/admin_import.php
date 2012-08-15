@@ -345,6 +345,11 @@ function dbImport($mode='db')
 		return false;	
 	}
 
+	if(vartrue($converter->override))
+	{
+		return;
+	}
+		
 
 
 	foreach ($db_import_blocks as $k => $v)

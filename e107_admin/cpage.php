@@ -734,7 +734,10 @@ class page_admin_ui extends e_admin_ui
 				{
 					list($tm,$key) = explode("_",$k);
 
-					$newData .= "[newpage=".$_POST['page_subtitle'][$key]."]\n";
+					if($mode === FALSE) // Pages only, not menus. 
+					{
+						$newData .= "[newpage=".$_POST['page_subtitle'][$key]."]\n";
+					}
 					$newData .= $v."\n\n";			
 				}
 				
