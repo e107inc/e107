@@ -46,8 +46,8 @@ class cron_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
-		'main/refresh' 	=> array('caption'=> "Refresh", 'perm' => '0','url'=>'cron.php'),
+		'main/list'		=> array('caption'=> LAN_CRON_M_01, 'perm' => '0'),
+		'main/refresh' 	=> array('caption'=> LAN_CRON_M_02, 'perm' => '0','url'=>'cron.php'),
 	//	'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
