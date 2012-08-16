@@ -11,6 +11,13 @@
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Tasks"); }
 
+// Menu
+define("LAN_CRON_M_01", "Manage"); 
+define("LAN_CRON_M_02", "Refresh"); 
+
+
+
+
 define("LAN_CRON_1", "Name");
 define("LAN_CRON_2", "Description");
 define("LAN_CRON_3", "Minute(s):");
