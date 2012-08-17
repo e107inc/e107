@@ -103,6 +103,7 @@ CREATE TABLE comments (
   comment_ip varchar(45) NOT NULL default '',
   comment_type varchar(20) NOT NULL default '0',
   comment_lock tinyint(1) unsigned NOT NULL default '0',
+  comment_share tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id),
   KEY comment_blocked (comment_blocked),
   KEY comment_author_id (comment_author_id) 

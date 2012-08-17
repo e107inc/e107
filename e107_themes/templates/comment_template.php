@@ -77,8 +77,11 @@ $sc_style['AUTHOR_INPUT']['post']		= "";
 $sc_style['COMMENT_INPUT']['pre']		= "";// COMLAN_8
 $sc_style['COMMENT_INPUT']['post']		= "";
 
-$sc_style['COMMENT_BUTTON']['pre']		= "<div id='commentformbutton'>";
-$sc_style['COMMENT_BUTTON']['post']		= "</div>";
+$sc_style['COMMENT_BUTTON']['pre']		= "";
+$sc_style['COMMENT_BUTTON']['post']		= "";
+
+$sc_style['COMMENT_SHARE']['pre']		= "";
+$sc_style['COMMENT_SHARE']['post']		= "";
 
 $sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate">';
 $sc_style['COMMENT_RATE']['post'] 		= '</div>';
@@ -101,7 +104,10 @@ $COMMENT_TEMPLATE['FORM']			= "
 			<div class='P10'>
 				{AUTHOR_INPUT}
 				{COMMENT_INPUT}
+			<div id='commentformbutton'>
 				{COMMENT_BUTTON}
+				{COMMENT_SHARE}
+			</div>
 			</div>
 		</div>
 	</div>

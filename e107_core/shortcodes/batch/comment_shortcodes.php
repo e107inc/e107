@@ -372,6 +372,15 @@ class comment_shortcodes extends e_shortcode
 		$SIGNATURE = (isset($this->var['user_signature']) && $this->var['user_signature'] ? $tp->toHTML($this->var['user_signature'], true) : '');
 		return $SIGNATURE;
 	}	
+	
+	function sc_comment_share($parm='')
+	{
+		return e107::getForm()->checkbox('comment_share',1,true). "Share on Facebook";		
+		
+	}
+	
+	
+	
 }
 
 /*
