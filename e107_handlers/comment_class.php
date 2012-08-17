@@ -563,7 +563,7 @@ class comment
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
 	 *
-	 * @param unknown_type $author_name
+	 * @param string or array $data - $author_name or array of all values. 
 	 * @param unknown_type $comment
 	 * @param unknown_type $table
 	 * @param integer $id - reference of item in source table to which comment is linked
@@ -573,9 +573,27 @@ class comment
 	 */
 
 
-	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex = FALSE)
+	function enter_comment($data, $comment='', $table='', $id='', $pid='', $subject='', $rateindex = FALSE)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
+		
+		if(is_array($data))
+		{
+			$table 				= $data['comment_type'];
+			$id					= intval($data['comment_item_id']);
+			$pid				= intval($data['comment_pid']);
+			$subject			= $data['comment_subject'];
+			$comment			= $data['comment_comment'];
+			$author_name		= $data['comment_author_name'];
+			$comment_share		= intval($data['comment_share']);
+			$comment_datestamp	= $data['comment_datestamp'];	
+		}
+		else
+		{
+			$author_name = $data; //BC Fix. 	
+		}
+		
+		
 		global $e_event,$e107,$rater;
 
 		$sql 		= e107::getDb();
@@ -673,7 +691,8 @@ class comment
 						'comment_blocked'		=> ($this->moderateComment($pref['comments_moderate']) ? 2 : 0), 
 						'comment_ip'			=> $ip,
 						'comment_type'			=> $tp->toDB($type, true),
-						'comment_lock'			=> 0 //Not locked by default
+						'comment_lock'			=> 0,//Not locked by default
+						'comment_share'			=> $comment_share
 					);
 
 					//SecretR: new event 'prepostcomment' - allow plugin hooks - e.g. Spam Check
