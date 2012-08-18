@@ -186,6 +186,8 @@ class db_verify
 					
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
+		
+			
 			if($rawSqlData === FALSE)
 			{
 				if($language) continue;
@@ -203,14 +205,15 @@ class db_verify
 			
 			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
-		/*				
+		/*			
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
 			$debugA .= print_r($fileIndexData,TRUE);
 			$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays	
 			$debugB .= "<h2>Index</h2>";
 			$debugB .= print_r($sqlIndexData,TRUE);
-		*/	
+		*/
+		
 		//	$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
 		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
@@ -722,8 +725,7 @@ class db_verify
 		$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 		$regex = "/^ *?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 	
-	
-	//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
+		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
 		
 	//	$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
 	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|tinyblob|blob|mediumblob|longblob|tinytext|mediumtext|longtext|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
@@ -820,7 +822,8 @@ class db_verify
 		if($z)
 		{
 			$row = mysql_fetch_row($z);
-			return str_replace("`", "", stripslashes($row[1])).';';
+			return stripslashes($row[1]).';'; // backticks needed. 
+			// return str_replace("`", "", stripslashes($row[1])).';';
 		}
 		else
 		{
