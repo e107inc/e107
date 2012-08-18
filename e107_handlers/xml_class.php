@@ -145,6 +145,11 @@ class xmlClass
 	 */
 	protected $_optValueKey = '@value';
 
+
+	protected $_feedUrl = FALSE;
+
+
+
 	/**
 	 * Constructor - set defaults
 	 *
@@ -256,6 +261,16 @@ class xmlClass
 		$this->filter = (array) $filter;
 		return $this;
 	}
+	
+	
+	
+	public function setFeedUrl($feed)
+	{
+		if($feed)
+		{
+			$this->_feedUrl = $feed;
+		}	
+	}
 
 	/**
 	 * Get Remote file contents
@@ -269,12 +284,25 @@ class xmlClass
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 		$timeout = min($timeout, 120);
 		$timeout = max($timeout, 3);
-		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea
+			
+		if($this->_feedUrl) // override option for use when part of the address needs to be encoded. 
+		{
+			$address = $this->_feedUrl;	
+			echo "address=".$address;
+		}
+		else
+		{
+			$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
+			// ... and there shouldn't be unprintable characters in the URL anyway
+		}		
+		
 		// ... and there shouldn't be unprintable characters in the URL anyway
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents(urldecode($address));
+			$address = ($this->_feedUrl) ? $this->_feedUrl : urldecode($address);
+
+			$data = file_get_contents($address);
 
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
@@ -621,12 +649,19 @@ class xmlClass
 	function loadXMLfile($fname, $parse = false, $replace_constants = false)
 	{
 		$tp = e107::getParser();
-
+	
+		if($this->_feedUrl !== false)
+		{
+			$fname = $this->_feedUrl;	
+		}
+	
 		if (empty($fname))
 		{
 			return false;
 		}
+		
 		$xml = false;
+		
 		if (strpos($fname, '://') !== false)
 		{
 			$this->getRemoteFile($fname);
