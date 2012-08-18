@@ -7,6 +7,7 @@
 |     $Id$
 +----------------------------------------------------------------------------+
 */
+$_E107['no_online'] = true;
 require_once("../../class2.php");
 ob_start();
 ob_implicit_flush(0);
@@ -259,7 +260,7 @@ class wysiwyg
 			'apply_source_formatting'			=> 'false',
 			'invalid_elements'					=> 'p,font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
-		//	'cleanup'							=> 'false',
+			'cleanup'							=> 'true',
 			'convert_fonts_to_spans'			=> 'true',
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
@@ -303,7 +304,7 @@ class wysiwyg
  				'paste_unindented_list_class'			=> 'unindentedList', // for paste plugin - specify what class to assign to the UL list of middot cl's
  				'paste_convert_headers_to_strong'		=> 'true',	// for paste plugin - converts H1-6 elements to strong elements on paste
  				'paste_insert_word_content_callback'	=> 'convertWord', // for paste plugin - This callback is executed when the user pastes word content
-				'auto_cleanup_word'						=> 'false'	// auto clean pastes from Word
+				'auto_cleanup_word'						=> 'true'	// auto clean pastes from Word
 			);
 		}
 
