@@ -252,6 +252,7 @@ class wysiwyg
 			// 'theme_advanced_resize_vertical' 		=> 'true',
 			'dialog_type' 						=> "modal",		
 		//	'theme_advanced_source_editor_height' => '400',
+
 			
 	//		'theme_advanced_statusbar_location'	=> 'bottom',
 			'theme_advanced_resizing'			=> 'false',
@@ -295,9 +296,13 @@ class wysiwyg
 		{
 			$this->config += array(
 
+				'paste_text_sticky'						=> 'true',
+				'paste_text_sticky_default'				=> 'true',
+				'paste_text_linebreaktype'				=> 'br',
+		
 				'remove_linebreaks'						=> 'false', // remove line break stripping by tinyMCE so that we can read the HTML
  				'paste_create_paragraphs'				=> 'false',	// for paste plugin - double linefeeds are converted to paragraph elements
- 				'paste_create_linebreaks'				=> 'false',	// for paste plugin - single linefeeds are converted to hard line break elements
+ 				'paste_create_linebreaks'				=> 'true',	// for paste plugin - single linefeeds are converted to hard line break elements
  				'paste_use_dialog'						=> 'true',	// for paste plugin - Mozilla and MSIE will present a paste dialog if true
  				'paste_auto_cleanup_on_paste'			=> 'true',	// for paste plugin - word paste will be executed when the user copy/paste content
  				'paste_convert_middot_lists'			=> 'false',	// for paste plugin - middot lists are converted into UL lists
