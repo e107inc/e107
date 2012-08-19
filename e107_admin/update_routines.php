@@ -1057,6 +1057,19 @@ function update_706_to_800($type='')
 		mkdir(e_TEMP,0755);
 	}
 	
+	// Autogenerate filetypes.xml if not found. 
+	if(!is_readable(e_SYSTEM."filetypes.xml"))
+	{
+		$data = '<?xml version="1.0" encoding="utf-8"?>
+<e107Filetypes>
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml" maxupload="2M" />
+</e107Filetypes>';	
+					
+		file_put_contents(e_SYSTEM."filetypes.xml",$data);
+	}
+			
+
+	
 	$root_media = str_replace(basename(e_MEDIA)."/","",e_MEDIA);
 	$user_media_dirs = array("images","avatars","files","temp","videos","icons");
 	

@@ -515,6 +515,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
  *		9 - unacceptable file type (prone to exploits)
  */
 
+ //TODO - Move this function to file_class.php
 function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = FALSE)
 {
 	// 1. Start by checking against filetypes - that's the easy one!
@@ -692,12 +693,12 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			}
 		}
 
-		if ($def_file && is_readable(e_ADMIN.$def_file))
+		if ($def_file && is_readable(e_SYSTEM.$def_file))
 		{
 			$xml = e107::getXml();
 			// class tag should be always array
 			$xml->setOptArrayTags('class');
-			$temp_vars = $xml->loadXMLfile(e_ADMIN.$def_file, 'filetypes', false);
+			$temp_vars = $xml->loadXMLfile(e_SYSTEM.$def_file, 'filetypes', false);
 			if ($temp_vars === FALSE)
 			{
 				echo "Error reading XML file: {$def_file}<br />";
@@ -785,6 +786,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	{
 		if ($filename != '')
 		{
+			
 			if (strtolower(substr($filename, -4) == '.xml'))
 			{
 				return get_XML_filetypes($filename, $file_mask);
@@ -792,7 +794,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			return get_allowed_filetypes($filename, $file_mask);
 		}
 
-		if (is_readable(e_ADMIN.e_READ_FILETYPES))
+		if (is_readable(e_SYSTEM.e_READ_FILETYPES))
 		{
 			return get_XML_filetypes(e_READ_FILETYPES, $file_mask);
 		}
