@@ -203,17 +203,20 @@ class e_media
 	 * Create media category.
 	 * 'class' data is optional, 'id' key is ignored
 	 * 
-	 * @param array $data associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'nick', etc.
+	 * @param array $data associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
 	 * @return integer last inserted ID or false on error
 	 */
-	public function createCategory($data)
+	public function createCategory($datas)
 	{
-		foreach ($data as $k => $v) 
+		foreach ($datas as $k => $v) 
 		{
 			$data['media_cat_'.$k] = $v;
 		}
 		$data['media_cat_id'] = 0;
-		if(!isset($data['media_cat_class']) || '' === $data['media_cat_class']) $data['media_cat_class'] = defset('e_UC_MEMBER', 253);
+		if(!isset($data['media_cat_class']) || '' === $data['media_cat_class']) 
+		{
+			$data['media_cat_class'] = defset('e_UC_MEMBER', 253);
+		}
 		return e107::getDb()->db_Insert('core_media_cat', $data);
 	}
 	
@@ -235,6 +238,31 @@ class e_media
 	public function deleteCategory($id)
 	{
 		// TODO
+	}
+	
+	public function deleteAllCategories($owner='')
+	{
+		if($owner == '')
+		{
+			return;	
+		}
+		
+		$sql = e107::getDb();
+		
+		$sql->db_Select('core_media_cat',"media_cat_category", "media_cat_owner = '".$owner."' ");
+		while($row = $sql->db_Fetch())
+		{
+			$categories[] = "'".$row['media_cat_category']."'";	
+		}
+		
+		if($sql->db_Delete('core_media_cat', "media_cat_owner = '".$owner."' "))
+		{
+			//TODO retrieve all category names for owner, and reset all media categories to _common. 
+			return TRUE;
+		//	return $sql->db_Update('core_media', "media_category = '_common_image' WHERE media_category IN (".implode(",",$categories).")");	
+		}
+		
+		return FALSE; 
 	}
 	
 	/**

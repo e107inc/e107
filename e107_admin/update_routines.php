@@ -1117,14 +1117,14 @@ function update_706_to_800($type='')
 				e107::getMessage()->addDebug("core-media-cat `media_cat_nick` field removed.");	
 			}
 			
-			$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
-			(0, 'gallery', 'gallery_1', 'Gallery 1', 'Visible to the public at /gallery.php', 0, '', 0);
-			";
-			
-			if(mysql_query($query))
-			{
-				e107::getMessage()->addDebug("Added core-media-cat Gallery.");	
-			}
+	//		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
+	//		(0, 'gallery', 'gallery_1', 'Gallery 1', 'Visible to the public at /gallery.php', 0, '', 0);
+	///		";
+	//		
+	//		if(mysql_query($query))
+	//		{
+	//			e107::getMessage()->addDebug("Added core-media-cat Gallery.");	
+	//		}
 		}
 	}
 	
@@ -1183,7 +1183,7 @@ function update_706_to_800($type='')
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', 'Download Thumbnails', '', 253, '', 0);");
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");
 				
-		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
+	//	mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
 		
 		mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', 'Legacy news thumbnails. ', 253, '', 1);");		
 		

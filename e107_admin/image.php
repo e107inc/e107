@@ -145,39 +145,54 @@ class media_cat_ui extends e_admin_ui
 		protected $batchDelete = false;
 		
 		public 	$ownerCount = array();
-	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit.
+	//	protected $listQry = "SELECT * FROM #core_media_cat"; // without any Order or Limit.
+		protected $listOrder = 'media_cat_owner asc';
+
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 
 		protected $fields = array(
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
+			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'nolist'=>true, 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
-         	'media_cat_owner' 		=> array('title'=> "Owner",			'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         	'media_cat_owner' 		=> array('title'=> "Owner",			'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 			'media_cat_order' 		=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'noedit'=>true, 'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);
 
 	function init()
 	{
-		$this->fields['media_cat_owner']['writeParms'] = array(
+	
+		$restricted = array(
 			"_common" 	=> "_common",
 			"_icon"		=> "_icon",
 			"news"		=> "news",	
 			"page"		=> "page",
-			"gallery"	=> "gallery",
-			"download"	=> "download"
-					
+			"download"	=> "download"					
 		);
 		
+		if($_GET['action'] == 'list')
+		{	
+			$this->fields['media_cat_owner']['writeParms'] = $restricted;
+		}
+
 		$sql = e107::getDb();
+		
+	
 		$sql->db_Select_gen("SELECT media_cat_owner, count(media_cat_id) as number FROM `#core_media_cat` GROUP BY media_cat_owner");
 		while($row = $sql->db_Fetch())	
 		{
-			$this->ownerCount[$row['media_cat_owner']] = $row['number'];		
+			$this->ownerCount[$row['media_cat_owner']] = $row['number'];
+			$own = $row['media_cat_owner'];
+			if(!in_array($own,$restricted))
+			{
+				
+				$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
+				
+			}		
 		}
 		
 	}
@@ -212,7 +227,37 @@ class media_cat_ui extends e_admin_ui
 
 class media_cat_form_ui extends e_admin_form_ui
 {
+	protected $restrictedOwners = array(
+			'_common', 
+			'news',
+			'page',
+			'download',
+			'_icon'
+	);		
+		
+	
+	function options($parms, $value, $id)
+	{
 
+		if($_GET['action'] == 'create' || $_GET['action'] == 'edit')
+		{
+			return;
+		}	
+		
+		$owner = $this->getController()->getListModel()->get('media_cat_owner');	
+		if(!in_array($owner,$this->restrictedOwners))
+		{
+			return $this->renderValue('options',$value,'',$id);	
+		}
+			
+		
+		
+
+	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
+	// e-dialog-close
+		
+		
+	}
 }
 
 
@@ -1379,13 +1424,13 @@ class media_admin_ui extends e_admin_ui
 				$mes->addWarning($f['fname']." couldn't be renamed. Check file perms.");
 			}
 				
-			
+			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
 			$text .= "
 			
 			<tr>
 				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'])."</td>
 				<td class='center'>".$this->preview($f)."</td>			
-				<td>".$f['fname']."</td>
+				<td><a class='e-dialog' href='".$large."'>".$f['fname']."</a></td>
 				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $default['title']))."</td>
 				<td><textarea name='batch_import_diz[".$c."]' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description'])."</textarea></td>
 			

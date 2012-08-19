@@ -782,14 +782,26 @@ class page_admin_ui extends e_admin_ui
 			if(!$type && (!$page_title || !$page_sef))
 			{
 				e107::getMessage()->addError(CUSLAN_34, 'default', true);
+				
+			
+				
 				e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
 			}
 			
-			if(!$type && $sql->db_Count('page', '(page_id)', ($mode ? "page_id<>{$mode} AND " : '')."page_sef!='{$page_sef}'"))
+			// FIXME Causes false positives on Update.. - what is trying to be achieved with this check?
+			/*
+			if(!$type && $sql->db_Count('page', '(page_id)', ($mode ? "page_id != {$mode} AND " : '')."page_sef != '{$page_sef}'"))
 			{
 				e107::getMessage()->addError(CUSLAN_34, 'default', true);
+				
+				e107::getMessage()->addDebug("type=".$type, 'default', true);
+				e107::getMessage()->addDebug("page_title=".$page_title, 'default', true);
+				e107::getMessage()->addDebug("page_sef=".$page_sef, 'default', true);
+				e107::getMessage()->addDebug("Mode=".$mode, 'default', true);					
+				
 				e107::getRedirect()->redirect(e_ADMIN_ABS.'cpage.php');
 			}
+			*/
 			
 			if($type && empty($_POST['menu_name']))
 			{

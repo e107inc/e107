@@ -313,14 +313,10 @@ class wysiwyg
 			);
 		}
 
-
 		if(ADMIN)
 		{
 			$this->config['external_link_list_url'] = e_PLUGIN_ABS."tiny_mce/filelist.php";
 		}
-
-
-
 	}
 
 

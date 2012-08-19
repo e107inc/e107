@@ -54,7 +54,8 @@ class e107plugin
 		'e_cron',
 		'e_mailout',
 		'e_sitelink',
-		'e_tohtml'
+		'e_tohtml',
+		'e_featurebox'
 	);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -1293,6 +1294,11 @@ class e107plugin
 		{
 			$this->XmlBBcodes($function, $plug_vars);
 		}
+		
+		if (varset($plug_vars['mediaCategories']))
+		{
+			$this->XmlMediaCategories($function, $plug_vars);
+		}
 
 		$this->manage_icons($this->plugFolder, $function);
 
@@ -1499,7 +1505,7 @@ class e107plugin
 
 					{
 						$status = ($this->manage_link('add', $url, $linkName, $perm)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status);
+						$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); //TODO LAN
 					}
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
@@ -1539,6 +1545,67 @@ class e107plugin
 			}
 		}
 	}
+
+	// Only 1 category per file-type allowed. ie. 1 for images, 1 for files. 
+	function XmlMediaCategories($function, $tag)
+	{
+		$mes = e107::getMessage();
+	//	print_a($tag);
+		
+		$folder = $tag['folder'];
+		$prevType = "";
+	
+		
+		//print_a($tag);
+		switch ($function)
+		{
+			case 'install': 
+				$c = 1;
+				foreach($tag['mediaCategories']['category'] as $v)
+				{
+					$type = $v['@attributes']['type'];
+					
+					if($type != 'image' && $type !='file')
+					{
+						continue; 	
+					}
+					
+					if($c == 3 || ($prevType == $type))
+					{
+						$mes->addDebug("Only 2 Media Categories are permitted during install. One for images and one for files.");
+						break;
+					}
+					
+					$prevType = $type;
+									
+					$data['owner'] = $folder;
+					$data['category'] = $folder."_".$c;	
+					$data['title'] = $v['@value'];
+				//	$data['type'] = $v['@attributes']['type']; //TODO
+					$data['class'] = 253;
+					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+					$mes->add("Adding Media Category: {$data['category']}", $status);				
+					
+					$c++;					
+				}	
+			
+			break;
+			
+			case 'uninstall': // Probably best to leave well alone
+				$status = e107::getMedia()->deleteAllCategories($folder)? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$mes->add("Deleting All Media Categories owned by : {$folder}", $status);	
+			break;
+		
+		
+		}	
+		
+		
+	}
+
+
+
+
+
 	
 	
 	/**
