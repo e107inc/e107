@@ -2083,13 +2083,13 @@ class e_form
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
-				$ret =  $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
+				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
 			
 			case 'file': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
-				$ret =  $this->filepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
+				$ret =  $this->filepicker($key, $value, defset($label, $label), $parms);
 			break;
 
 			case 'icon':

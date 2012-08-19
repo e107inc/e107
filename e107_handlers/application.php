@@ -891,7 +891,10 @@ class eRouter
 	
 	public static function clearCache()
 	{
-		@unlink(e_CACHE_URL.'config.php');
+		if(file_exists(e_CACHE_URL.'config.php'))
+		{
+			@unlink(e_CACHE_URL.'config.php');	
+		}			
 	}
 	
 	/**
