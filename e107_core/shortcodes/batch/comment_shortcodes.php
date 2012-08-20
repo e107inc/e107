@@ -375,8 +375,23 @@ class comment_shortcodes extends e_shortcode
 	
 	function sc_comment_share($parm='')
 	{
-		return e107::getForm()->checkbox('comment_share',1,true). "Share on Facebook";		
+		if(!$xup = e107::getUser()->getProviderName())
+		{
+			return;
+		}
 		
+		list($prov,$id) = explode("_",$xup);
+		$prov = strtolower($prov);
+		
+		if($prov == 'facebook' || $prov == 'twitter')
+		{
+			//TODO Move styling to e107.css 
+			$text = "<img src='".e_IMAGE."xup/".$prov.".png' style='display:inline-block;width:26px;height:26px;vertical-align:middle' alt='Share' />";
+			$text .= e107::getForm()->checkbox('comment_share',$prov,true);
+		
+			$text .= "Share";	
+			return $text;		
+		}	
 	}
 	
 	
