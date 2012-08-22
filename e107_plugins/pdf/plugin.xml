@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!-- $Id: plugin.xml,v 1.6 2009-12-05 12:33:30 e107steved Exp $ -->
-
-	<e107Plugin name="PDF_PLUGIN_LAN_1" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" releaseUrl=''>
+<e107Plugin name="PDF" lang="PDF_PLUGIN_LAN_1" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107Inc" />
-	<description>PDF_PLUGIN_LAN_2</description>
+	<description lang="PDF_PLUGIN_LAN_2">PDF creation support using TCPDF</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<languageFiles>
 		<file type='log' path='languages/--LAN--_admin_pdf.php' />
