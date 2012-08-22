@@ -162,7 +162,6 @@ class e107plugin
 
 		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		foreach ($plugList as $num => $val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.
-
 		{
 			$key = basename($val['path']);
 			$pluginList[$key] = $val;
@@ -189,7 +188,7 @@ class e107plugin
 				//parsing of plugin.php/plugin.xml failed.
 				$mes->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
 				continue; // Carry on and do any others that are OK
-				}
+			}
 
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
@@ -243,16 +242,18 @@ class e107plugin
 				else // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
 				{
 					if ($plug_info['@attributes']['name'])
-					{
-
+					{					
+						$pName = vartrue($plug_info['@attributes']['lang']) ? $plug_info['@attributes']['lang'] : $plug_info['@attributes']['name'] ;
+						
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($plug_info['@attributes']['name'], true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
+						
+						if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
 						{
-								$mes->add("Added <b>".$plug_info['@attributes']['name']."</b> to the plugin table.", E_MESSAGE_DEBUG);
+								$mes->add("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.", E_MESSAGE_DEBUG);
 							}
 							else
 							{
-								$mes->add("Failed to add ".$plug_info['@attributes']['name']." to the plugin table.", E_MESSAGE_DEBUG);
+								$mes->add("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.", E_MESSAGE_DEBUG);
 							}
 						}
 					}
@@ -2342,6 +2343,7 @@ class e107plugin
 		//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
 
 		$ret['@attributes']['name'] = varset($eplug_name);
+		$ret['@attributes']['lang'] = varset($eplug_name);
 		$ret['@attributes']['version'] = varset($eplug_version);
 		$ret['@attributes']['date'] = varset($eplug_date);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
@@ -2352,7 +2354,8 @@ class e107plugin
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
 		$ret['author']['@attributes']['url'] = varset($eplug_url);
 		$ret['author']['@attributes']['email'] = varset($eplug_email);
-		$ret['description'] = varset($eplug_description);
+		$ret['description']['@value'] = varset($eplug_description);
+		$ret['description']['@attributes']['lang'] = varset($eplug_description);
 
 		$ret['category'] = varset($eplug_category) ? $this->manage_category($eplug_category) : "misc";
 		$ret['readme'] = varset($eplug_readme);
@@ -2411,15 +2414,15 @@ class e107plugin
 		$tp = e107::getParser();
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		$xml = e107::getXml();
+		$mes = e107::getMessage();
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
 
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', 'advanced');
+		
 		if ($this->plug_vars === FALSE)
 		{
-			require_once(e_HANDLER."message_handler.php");
-			$mes = e107::getMessage();
 			$mes->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
 			return FALSE;
 		}
@@ -2427,8 +2430,16 @@ class e107plugin
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
 
-		/*
+		if(!is_array($this->plug_vars['description']))
+		{
+			$diz = $this->plug_vars['description'];
+			unset($this->plug_vars['description']);
+			
+			$this->plug_vars['description']['@value'] = $diz;		
+		}
+		
 		 // Very useful debug code.to compare plugin.php vs plugin.xml
+		/*
 		 $testplug = 'forum';
 		 if($plugName == $testplug)
 		 {
@@ -2445,8 +2456,8 @@ class e107plugin
 		 print_a($plug_vars1);
 		 echo "</table>";
 		 }
-
-		 */
+		*/
+		
 
 		// TODO search for $this->plug_vars['adminLinks']['link'][0]['@attributes']['primary']==true.
 		$this->plug_vars['administration']['icon'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['icon']);

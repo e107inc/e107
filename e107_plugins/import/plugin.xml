@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!-- $Id: plugin.xml,v 1.2 2009-09-24 00:11:20 e107coders Exp $ -->
-
-	<e107Plugin name="LAN_CONVERT_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Import into e107" lang="LAN_CONVERT_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="devs@e107.org" />
-	<description>Import into e107</description>
+	<description lang="LAN_CONVERT_02">Import data from Wordpress, Joomla, Drupal, Blogpost, RSS and other formats.</description>
 	<category>tools</category>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<adminLinks>

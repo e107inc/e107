@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!-- $Id: plugin.xml,v 1.9 2009-12-08 17:21:31 secretr Exp $ -->
-
-	<e107Plugin name="FBLAN_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Featurebox" lang="FBLAN_01" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="cameron@e107.org" />
-	<description>FBLAN_02</description>
+	<description lang="FBLAN_02">Displays an animated area on the top of your page with news-items and other content you would like to feature.</description>
 	<category>content</category>
 	<adminLinks>
 		<link url='admin_config.php' description='Configure feature box' icon='images/featurebox_32.png' iconSmall='images/featurebox_16.png' primary='true' >Configure feature box</link>

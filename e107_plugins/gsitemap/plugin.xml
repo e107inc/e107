@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: plugin.xml,v 1.7 2009-10-22 04:14:45 e107coders Exp $ -->
-<e107Plugin name="GSLAN_19" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true" releaseUrl=''>
-	<author name="e107 Inc." url="http://e107coders.org" email="cameron@e107coders.org" />
-	<description>GSLAN_41</description>
+<e107Plugin name="Google Sitemap" lang="GSLAN_19" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="security@e107.org" />
+	<description lang="GSLAN_41">Generates a Google Sitemap</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<languageFiles>
 		<file type='log' path='languages/--LAN--_admin_gsitemap.php' />
@@ -11,7 +11,7 @@
 		<link url='admin_config.php' description='Configure feature box' icon='images/icon.png' iconSmall='images/icon_16.png' primary='true' >Configure Sitemap</link>		
 	</adminLinks>
 	<siteLinks>
-		<link name="" url="gsitemap.php?show" >Sitemap</link>	
+		<link name="" url="gsitemap.php?show" lang="GSLAN_Name">Sitemap</link>	
 	</siteLinks>
 	<pluginPrefs>
 	</pluginPrefs>

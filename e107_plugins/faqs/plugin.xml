@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!-- $Id: plugin.xml,v 1.1 2009-11-09 12:57:34 e107coders Exp $ -->
-
-<e107Plugin name="FAQs" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="FAQs" lang="FAQs" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc" url="http://www.e107.org" email="security@e107.org" />
-	<description>Based on the original FAQ plugin by Cameron @ e107 Inc.</description>
+	<description lang="A simple plugin to add Frequently Asked Questions to your website.">A simple plugin to add Frequently Asked Questions to your website.</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<bbcodes imgResize="true" />	
 	<category>content</category>

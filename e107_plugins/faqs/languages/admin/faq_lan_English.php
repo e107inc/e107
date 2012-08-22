@@ -1,4 +1,9 @@
 <?php
+
+define("_FAQS_NAME_","FAQs");
+define("_FAQS_DESCRIPTION_","Description");
+
+
 define(FAQ_ADLAN_22, "Category deleted.");
 define(FAQ_ADLAN_23, "Please confirm you wish to delete this FAQ Item ");
 define(FAQ_ADLAN_24, "once deleted it cannot be retrieved.");

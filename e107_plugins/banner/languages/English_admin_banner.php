@@ -79,5 +79,5 @@ define("BNRLAN_67", "No campaigns yet.");
 define("BNRLAN_68", "Banner Menu Configuration");
 
 // Plugin manager
-define("BNRLAN_100", "Banner Plugin Description TODO");
+define("BNRLAN_100", "Add advertising banners to your e107 website");
 ?>

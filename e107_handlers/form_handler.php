@@ -2099,7 +2099,7 @@ class e_form
 				$ret =  $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
 			break;
 
-		
+			case 'date': // date will show the datepicker but won't convert the value to unix. ie. string value will be saved. (or may be processed manually with beforeCreate() etc. Format may be determined by $parm. 
 			case 'datestamp':
 				// If hidden, value is updated regardless. eg. a 'last updated' field.
 				// If not hidden, and there is a value, it is retained. eg. during the update of an existing record.
