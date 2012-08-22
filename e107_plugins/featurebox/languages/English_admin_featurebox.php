@@ -8,9 +8,9 @@
 */
 
 define("FBLAN_01", "Feature Box");
-define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
+define("FBLAN_02", "Displays an animated area on the top of your page with news-items and other content you would like to feature.");
 define("FBLAN_03", "Configure feature box");
-define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
+// define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
 define("FBLAN_05", "No feature box messages defined yet");
 define("FBLAN_06", "Existing Feature Box Messages");
 define("FBLAN_07", "Title / Caption");

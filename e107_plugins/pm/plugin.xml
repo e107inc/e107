@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: plugin.xml,v 1.13 2009-12-11 22:33:15 e107steved Exp $ -->
-<e107Plugin name="ADLAN_PM" version="3.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Private Messenger" lang="ADLAN_PM" version="3.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." email="devs@e107.org" />
-	<description>ADLAN_PM_57</description>
+	<description lang="ADLAN_PM_57">This plugin is a fully featured Private Messaging system.</description>
 	<category>users</category>
 	<languageFiles>
 		<file type='log' path='languages/--LAN--_log.php' />	
 	</languageFiles>
 	<adminLinks>
-		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' >ADLAN_PM_2</link>	
+		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
 	</adminLinks>
 </e107Plugin>
