@@ -899,12 +899,11 @@ class pluginManager{
 	function pluginRenderPlugin($pluginList)
 	{
 			global $plugin; 
-			$frm = e107::getForm();
-
+			
 			if (empty($pluginList)) return '';
 
 			$tp = e107::getParser();
-
+			$frm = e107::getForm();
 
 			$text = "";
 
@@ -948,6 +947,8 @@ class pluginManager{
 					$plugURL = varset($plug_vars['author']['@attributes']['url'],'');
 					$plugDate	= varset($plug_vars['@attributes']['date'],'');
 					
+					$description = varset($plug_vars['description']['@attributes']['lang']) ? $tp->toHTML($plug_vars['description']['@attributes']['lang'], false, "defs,emotes_off, no_make_clickable") : $tp->toHTML($plug_vars['description']['@value'], false, "emotes_off, no_make_clickable") ;
+					
                     $plugReadme = "";
 					if(varset($plug['plugin_installflag']))
 					{
@@ -985,7 +986,7 @@ class pluginManager{
                     $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
                     $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "")."</td>" : "";
                     $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'>".ADMIN_INFO_ICON."</a>" : "&nbsp;")."</td>" : "";
-					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$tp->toHTML($plug_vars['description'], false, "defs,emotes_off, no_make_clickable")."</td>" : "";
+					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$description."</td>" : "";
                     $text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".varset($plug_vars['@attributes']['compatibility'],'')."</td>" : "";
 					$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
 

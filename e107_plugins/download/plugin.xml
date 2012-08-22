@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: plugin.xml,v 1.15 2009-10-22 04:14:45 e107coders Exp $ -->
-<e107Plugin name="Download" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true" releaseUrl=''>
+<e107Plugin name="Downloads" lang="Downloads" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
-	<description>DOWLAN_DESCRIPTION</description>
+	<description lang="DOWLAN_DESCRIPTION">This plugin is a fully featured File-download system</description>
 	<category>content</category>
 	<languageFiles>
 		<file type='install' path='languages/--LAN--/admin_download.php' />

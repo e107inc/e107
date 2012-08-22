@@ -28,7 +28,7 @@ if (!defined('e107_INIT')) { exit; }
 //define('LAN_CONTINUE','Continue');		Now global definition
 
 define('LAN_CONVERT_01','Import into e107');
-define('LAN_CONVERT_02','This module allows you to import various data into E107');
+define('LAN_CONVERT_02','Import data from Wordpress, Joomla, Drupal, Blogspot, RSS and other formats.');
 define('LAN_CONVERT_03','You must start with a clean E107 database, other than the main admin user (ID=1)');
 define('LAN_CONVERT_04','Field(s) left blank, please go back and re-enter values.');
 define('LAN_CONVERT_05','Running this script may empty many of your E107 tables - make sure you have a full backup before continuing!');
