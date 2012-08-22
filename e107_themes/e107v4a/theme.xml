@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: theme.xml,v 1.18 2009-09-29 17:42:23 secretr Exp $ -->  
-<e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="0.8" releaseUrl='http://www.e107.org/themeupdate.php'>
+<e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="2.0">
 	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org" />
 	<description>Classic e107 theme</description>
 	<compliance xhtml="1.1" css="2.1" />

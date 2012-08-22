@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: plugin.xml,v 1.5 2009-12-08 17:21:34 secretr Exp $ -->
-<e107Plugin name="Banners" version="1.0" date="2012-08-01" compatibility="0.8" installRequired="true" releaseUrl=''>
+<e107Plugin name="Banners" version="1.0" date="2012-08-01" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
 	<description lang="BNRLAN_100">Add advertising banners to your e107 website</description>
 	<languageFiles>
