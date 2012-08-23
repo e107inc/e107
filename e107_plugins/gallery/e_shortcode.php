@@ -153,9 +153,10 @@ class gallery_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$limit = varset($gp['slideshow_limit'],16);
 		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat,0,$limit);
-		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');		
-		$cat = $this->catList[$this->sliderCat];
-		
+		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');
+		$catList = e107::getMedia()->getCategories('gallery');		
+		$cat = $catList['gallery_'.$this->sliderCat];
+
 		$count = 1;
 		foreach($list as $row)
 		{
