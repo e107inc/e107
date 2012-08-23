@@ -229,20 +229,14 @@ class e_parse_shortcode
 		if (class_exists($class, false) && ($force || !$this->isScClass($class)))
 		{
 			$this->scClasses[$class] = new $class();
+			if(method_exists($this->scClasses[$class], 'init'))
+			{
+				$this->scClasses[$class]->init();
+			}
 			return $this->scClasses[$class];
 		}
 		return null;
 	}
-
-	/*public function getScObject($className)
-	{
-		if (isset($this->scClasses[$className]))
-		{
-			return $this->scClasses[$className];
-		}
-		// TODO - throw exception?
-		return null;
-	}*/
 
 	/**
 	 * Get registered SC object
@@ -892,10 +886,12 @@ class e_parse_shortcode
 class e_shortcode
 {
 	/**
-	 * Stores passed to shortcode handler simple parser object
-	 * @var e_vars
+	 * Stores passed to shortcode handler array data
+	 * Usage: $this->var['someKey']
+	 * Assigned via setVars() and addVars() methods
+	 * @var array
 	 */
-	protected $var = null; // value returned by each shortcode. 
+	protected $var = array(); // value available to each shortcode. 
 	
 	protected $mode = 'view'; // or edit. Used within shortcodes for form elements vs values only.   
 
@@ -909,11 +905,16 @@ class e_shortcode
 	{
 		$this->scVars = new e_vars();
 	}
+	
+	/**
+	 * Startup code for child class
+	 */
+	public function init() {}
 
 	/**
-	 * Set external simple parser object
+	 * Set external array data to be used in the batch
 	 *
-	 * @param e_vars $eVars
+	 * @param array $eVars
 	 * @return e_shortcode
 	 */
 	public function setParserVars($eVars)
@@ -927,23 +928,58 @@ class e_shortcode
 		return $this->setParserVars($eVars);	
 	}
 	
-	public function setMode($mode)
+	/**
+	 * Add array to current parser array data
+	 * @param array $array
+	 * @return e_shortcode
+	 */
+	public function addParserVars($array) 
 	{
-		$this->mode = ($mode == 'edit') ? 'edit' : 'view';
-		return $this;			
+		$this->var = array_merge($this->var, $array);
+		return $this;
+	}
+	
+	/**
+	 * Alias of addParserVars()
+	 * @param array $array
+	 * @return e_shortcode
+	 */
+	public function addVars($array) 
+	{
+		return $this->addParserVars($array);
 	}
 
 	/**
 	 * Get external simple parser object
 	 *
-	 * @return e_vars
+	 * @return array
 	 */
 	public function getParserVars()
 	{
-		if(null === $this->var) $this->var = new e_vars();
 		return $this->var;
 	}
 
+	/**
+	 * Alias of getParserVars()
+	 *
+	 * @return array
+	 */
+	public function getVars()
+	{
+		return $this->getParserVars();
+	}
+	
+	/**
+	 * Batch mod
+	 * @param string mod
+	 * @return e_shortcode
+	 */
+	public function setMode($mode)
+	{
+		$this->mode = ($mode == 'edit') ? 'edit' : 'view';
+		return $this;			
+	}
+	
 	/**
 	 * Add shortcode value
 	 * <code>e107::getScBatch('class_name')->setScVar('some_property', $some_value);</code>
