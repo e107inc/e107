@@ -935,6 +935,7 @@ class e_shortcode
 	 */
 	public function addParserVars($array) 
 	{
+		if(!is_array($array)) return $this;
 		$this->var = array_merge($this->var, $array);
 		return $this;
 	}

@@ -42,6 +42,7 @@ $(document).ready(function()
 		speed:		".varset($gp['slideshow_duration'],1000).",  // speed of the transition (any valid fx speed value) 
     	timeout:	".varset($gp['slideshow_freq'],4000).",
 		slideExpr:	'.slide', 
+		pause: 		1, // pause on hover - TODO pref
 		
 		activePagerClass: '.gallery-slide-jumper-selected',//,
 		before: function(currSlideElement, nextSlideElement, options, forwardFlag)
