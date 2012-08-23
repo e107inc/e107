@@ -2860,6 +2860,225 @@ class eController
 }
 
 /**
+ * @package e107
+ * @subpackage e107_handlers
+ * @version $Id$
+ *
+ * Base front-end controller
+ */
+
+class eControllerFront extends eController
+{
+	/**
+	 * Plugin name - used to check if plugin is installed
+	 * Set this only if plugin requires installation
+	 * @var string
+	 */
+	protected $plugin = null;
+	
+	/**
+	 * Default controller access
+	 * @var integer
+	 */
+	protected $userclass = e_UC_PUBLIC;
+	
+	/**
+	 * Generic 404 page URL (redirect), SITEURL will be added
+	 * @var string
+	 */
+	protected $e404 = '404.html';
+	
+	/**
+	 * Generic 403 page URL (redirect), SITEURL will be added
+	 * @var string
+	 */
+	protected $e403 = '403.html';
+	
+	/**
+	 * Generic 404 route URL (forward)
+	 * @var string
+	 */
+	protected $e404route = 'index/not-found';
+	
+	/**
+	 * Generic 403 route URL (forward)
+	 * @var string
+	 */
+	protected $e403route = 'index/access-denied';
+	
+	/**
+	 * View renderer objects
+	 * @var array
+	 */
+	protected $_validator;
+	
+	/**
+	 * Per action access
+	 * Format 'action' => userclass
+	 * @var array
+	 */
+	protected $access = array();
+	
+	/**
+	 * Per action access
+	 * Format 'action' => userclass
+	 * @var array
+	 */
+	protected $filter = array();
+	
+	/**
+	 * Base constructor - set 404/403 locations
+	 */
+	public function __construct(eRequest $request, eResponse $response = null)
+	{
+		parent::__construct($request, $response);
+		$this->_init();
+	}
+	
+	/**
+	 * Base init, called after the public init() - handle access restrictions
+	 * The base init() method is able to change controller variables on the fly (e.g. access, filters, etc)
+	 */
+	final protected function _init()
+	{
+		// plugin check
+		if(null !== $this->plugin)
+		{
+			if(!e107::isInstalled($this->plugin))
+			{
+				$this->forward403();
+				return;
+			}
+		}
+		
+		// global controller restriction
+		if(!e107::getUser()->checkClass($this->userclass, false))
+		{
+			$this->forward403();
+			return;
+		}
+		
+		// by action access
+		if(!$this->checkActionPermissions()) exit;
+		
+		// _GET input validation
+		$this->validateInput();
+	}
+	
+	/**
+	 * Check persmission for current action
+	 * @return boolean
+	 */
+	protected function checkActionPermissions()
+	{
+		// per action restrictions
+		$action = $this->getRequest()->getAction();
+		if(isset($this->access[$action]) && !e107::getUser()->checkClass($this->access[$action], false))
+		{
+			$this->forward403();
+			return false;
+		}
+		return true;
+	}
+	
+	public function redirect404()
+	{
+		e107::getRedirect()->redirect(SITEURL.$this->e404);
+	}
+	
+	public function redirect403()
+	{
+		e107::getRedirect()->redirect(SITEURL.$this->e403);
+	}
+	
+	public function forward404()
+	{
+		$this->_forward($this->e404route);
+	}
+	
+	public function forward403()
+	{
+		$this->_forward($this->e403route);
+	}
+	
+	/**
+	 * Controller validator object
+	 * @return e_validator
+	 */
+	public function getValidator()
+	{
+		if(null === $this->_validator)
+		{
+			$this->_validator = new e_validator('controller');
+		}
+		
+		return $this->_validator;
+	}
+	
+	/**
+	 * Register request parameters based on current $filter data (_GET only)
+	 * Additional security layer
+	 */
+	public function validateInput()
+	{
+		$validator = $this->getValidator(); 
+		$request = $this->getRequest();
+		if(empty($this->filter) || !isset($this->filter[$request->getAction()])) return;
+		$validator->setRules($this->filter[$request->getAction()])
+			->validate($_GET);
+		
+		$validData = $validator->getValidData();
+		
+		foreach ($validData as $key => $value) 
+		{
+			if(!$request->isRequestParam($key)) $request->setRequestParam($key, $value);
+		}
+		$validator->clearValidateMessages();
+	}
+	
+	/**
+	 * System error message proxy
+	 * @param string $message
+	 * @param boolean $session
+	 */
+	public function messageError($message, $session = false)
+	{
+		return e107::getMessage()->addError($message, 'default', $session);
+	}
+	
+	/**
+	 * System success message proxy
+	 * @param string $message
+	 * @param boolean $session
+	 */
+	public function messageSuccess($message, $session = false)
+	{
+		return e107::getMessage()->addSuccess($message, 'default', $session);
+	}
+	
+	/**
+	 * System warning message proxy
+	 * @param string $message
+	 * @param boolean $session
+	 */
+	public function messageWarning($message, $session = false)
+	{
+		return e107::getMessage()->addWarning($message, 'default', $session);
+	}
+	
+	/**
+	 * System debug message proxy
+	 * @param string $message
+	 * @param boolean $session
+	 */
+	public function messageDebug($message, $session = false)
+	{
+		return e107::getMessage()->addDebug($message, 'default', $session);
+	}
+}
+
+
+/**
  * Request handler
  * 
  */
