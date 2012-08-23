@@ -932,22 +932,29 @@ class comment
 			'subject'	=> $subject,
 			'rate'		=> $rate
 		);
+		$text = $lock = $modcomment ='';
 		
-		$tmp = $this->getComments($table,$id,0,$options); // render all comments;
-		$text = $tmp['comments'];
-		$lock = $tmp['lock'];
-		
+		if($action != 'reply')
+		{
+			$tmp = $this->getComments($table,$id,0,$options); // render all comments;
+			$text = $tmp['comments'];
+			$lock = $tmp['lock'];
+			unset($tmp);
+		}
 		// -------------------------------------------------------
 		
-		if($this->totalComments && getperms("B"))
+		if($text)
 		{
-				$modcomment = "<div class='comment-moderate'>";		
-			//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
-				$modcomment .= "<a href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
-				$modcomment .= "</div>";
-		}
-		
-		$modcomment .= 	$this->nextprev($table,$id,$from);	
+			if($this->totalComments && getperms("B"))
+			{
+					$modcomment = "<div class='comment-moderate'>";		
+				//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
+					$modcomment .= "<a href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
+					$modcomment .= "</div>";
+			}
+			
+			$modcomment .= 	$this->nextprev($table,$id,$from);
+		}	
 	// ---------------------------
 		
 		if ($lock != '1')
@@ -958,14 +965,14 @@ class comment
 		{
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
 		}
-
+		
+		if($text)
+		{
+			$text = "<div id='comments-container'>\n".$text."\n</div>";
+		}
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
-		$replace = array($modcomment,"<div id='comments-container'>\n".$text."\n</div>",$comment,$pagination);
+		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['LAYOUT']);		
-
-
-	
-			
 			
 		if(!$return)
 		{		
@@ -985,8 +992,8 @@ class comment
 		
 		
 
-		$ret['comment'] = "<div id='comments-container'>\n".$text."\n</div>";
-
+		$ret['comment'] = $text;
+		
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".COMLAN_99;
 
