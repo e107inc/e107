@@ -7,6 +7,13 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
+// Override support
+if(file_exists(e_PLUGIN.'gallery/custom_header.php'))
+{
+	include(e_PLUGIN.'gallery/custom_header.php');
+	return;
+}
+
 e107::js('gallery', 'jslib/lightbox/js/lightbox.js','jquery');
 e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
 

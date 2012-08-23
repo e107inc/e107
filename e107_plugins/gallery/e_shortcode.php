@@ -20,7 +20,7 @@ class gallery_shortcodes extends e_shortcode
 	public $slideCount = 1;
 	private $downloadable = FALSE;
 	
-	function __construct()
+	function init()
 	{
 		$this->downloadable = e107::getPlugPref('gallery','downloadable');	
 	}
@@ -34,21 +34,47 @@ class gallery_shortcodes extends e_shortcode
 		return $text;
 	}
 	
+	function sc_gallery_description($parm='')
+	{
+		$tp = e107::getParser();
+		return $tp->toHTML($this->var['media_description'], true, 'BODY');
+	}
+	
+	/**
+	 * All possible parameters
+	 * {GALLERY_THUMB=w=200&h=200&thumburl&thumbsrc&imageurl&orig}
+	 * w and h - optional width and height of the thumbnail
+	 * thumburl - return only the URL of the destination image (large one)
+	 * thumbsrc - url to the thumb, as it's written in the src attribute of the image
+	 * imageurl - full path to the destination image (no proxy)
+	 * actualPreview - large preview will use the original size of the image (if available!), prefs will be ignored
+	 */
 	function sc_gallery_thumb($parm='')
 	{
 		$tp 		= e107::getParser();	
-		$w 			= 190;
-		$h 			= 150;	
+		$parms = eHelper::scParams($parm);
+		
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 190;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 150;	
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb' : 'gallery-thumb';
 		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
-		$att 		= vartrue($parm) ? $parm : 'aw='.$w.'&ah='.$h.'&x=1' ; // 'aw=190&ah=150';
+		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
 		$pop_w 		= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
 		$pop_h 		= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
-		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 		
+		if(isset($parm['actualPreview']) && !empty($this->var['media_dimensions']))
+		{
+			list($pop_w, $pop_w) = array_map('trim', explode('x', $this->var['media_dimensions']));
+		}
+		
+		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
+
 	//	echo "<br /><br />".$attFull;
+		if(isset($parms['thumburl'])) return $tp->thumbUrl($this->var['media_url'], $attFull);
+		elseif(isset($parms['thumbsrc'])) return $tp->thumbUrl($this->var['media_url'],$att);
+		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
 	
 		$caption = $tp->toAttribute($this->var['media_caption']) ;	
 		$caption .= ($this->downloadable) ? " <a class='e-tip smalltext' title='Right-click > Save Link As' href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'>Download</a>" : "";
@@ -63,16 +89,43 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_cat_title($parm='')
 	{
 		$tp = e107::getParser();
-		$text = "<a href='".e_SELF."?cat=".$this->var['media_cat_category']."'>";
-		$text .= $tp->toHtml($this->var['media_cat_title']);
+		$url = e107::getUrl()->create('gallery/index/list', $this->var); 
+		if($parm == 'title') return $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+		$text = "<a href='".$url."'>";
+		$text .= $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
 		$text .= "</a>";
 		return $text;	
 	}
 	
+	function sc_gallery_cat_url($parm='')
+	{
+		return e107::getUrl()->create('gallery/index/list', $this->var); 
+	}
+	
+	function sc_gallery_cat_description($parm='')
+	{
+		$tp = e107::getParser();
+		return $tp->toHTML($this->var['media_cat_diz'], true, 'BODY');
+	}
+	
+	function sc_gallery_baseurl()
+	{
+		return e107::getUrl()->create('gallery'); 
+	}
+	
 	function sc_gallery_cat_thumb($parm='')
 	{
-		$att = ($parm) ?$parm : 'aw=190&ah=150';
-		$text = "<a href='".e_SELF."?cat=".$this->var['media_cat_category']."'>";
+		$parms = eHelper::scParams($parm);
+		
+		$w 			= vartrue($parms['w']) ? $parms['w'] : 190;
+		$h 			= vartrue($parms['h']) ? $parms['h'] : 150;	
+		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
+		
+		$url = e107::getUrl()->create('gallery/index/list', $this->var);
+		
+		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);
+		
+		$text = "<a href='".$url."'>";
 		$text .= "<img src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
 		$text .= "</a>";
 		return $text;		
@@ -80,8 +133,9 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_nextprev($parm='')
 	{
-		$url = e_SELF."?cat=".$this->curCat."--AMP--frm=--FROM--";
-		$parm = 'total='.$this->total.'&amount='.$this->amount.'&current='.$this->from.'&url='.$url; // .'&url='.$url;
+		// we passs both fields, the router will convert one of them to 'cat' variable, based on the current URL config
+		$url = 'url::gallery/index/list?media_cat_category='.$this->curCat.'--AMP--media_cat_title='.$this->var['media_cat_title'].'--AMP--frm=--FROM--::full=1';
+		$parm = 'total='.$this->total.'&amount='.$this->amount.'&current='.$this->from.'&url='.rawurlencode($url); // .'&url='.$url;
 		$text .= e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
 		return $text;	
 	}
@@ -102,11 +156,13 @@ class gallery_shortcodes extends e_shortcode
 		$limit = varset($gp['slideshow_limit'],16);
 		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat,0,$limit);
 		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');		
+		$cat = $this->catList[$this->sliderCat];
 		
 		$count = 1;
 		foreach($list as $row)
 		{
-			$this->setParserVars($row);	
+			$this->setVars($row)
+				->addVars($cat);	
 					
 			$inner .= ($count == 1) ?  "\n\n<!-- SLIDE ".$count." -->\n<div class='slide' id='gallery-item-".$this->slideCount."'>\n" : "";
 			$inner .= "\n\t".$tp->parseTemplate($item_template,TRUE)."\n";
@@ -142,7 +198,5 @@ class gallery_shortcodes extends e_shortcode
 		return $text;						
 								
 	}
-	
-	
 }
 ?>
