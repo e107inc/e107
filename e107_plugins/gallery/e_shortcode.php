@@ -47,12 +47,12 @@ class gallery_shortcodes extends e_shortcode
 	 * thumburl - return only the URL of the destination image (large one)
 	 * thumbsrc - url to the thumb, as it's written in the src attribute of the image
 	 * imageurl - full path to the destination image (no proxy)
-	 * actualPreview - large preview will use the original size of the image (if available!), prefs will be ignored
+	 * actualPreview - large preview will use the original path to the image (no proxy)
 	 */
 	function sc_gallery_thumb($parm='')
 	{
 		$tp 		= e107::getParser();	
-		$parms = eHelper::scParams($parm);
+		$parms 		= eHelper::scParams($parm);
 		
 		$w 			= vartrue($parms['w']) ? $parms['w'] : 190;
 		$h 			= vartrue($parms['h']) ? $parms['h'] : 150;	
@@ -63,23 +63,21 @@ class gallery_shortcodes extends e_shortcode
 		
 		$pop_w 		= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
 		$pop_h 		= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
-		
-		if(isset($parm['actualPreview']) && !empty($this->var['media_dimensions']))
+		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
+		$srcFull = $tp->thumbUrl($this->var['media_url'], $attFull);
+		if(isset($parm['actualPreview']))
 		{
-			list($pop_w, $pop_w) = array_map('trim', explode('x', $this->var['media_dimensions']));
+			$srcFull = $tp->replaceConstants($this->var['media_url'], 'full');
 		}
 		
-		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
-
-	//	echo "<br /><br />".$attFull;
-		if(isset($parms['thumburl'])) return $tp->thumbUrl($this->var['media_url'], $attFull);
+		if(isset($parms['thumburl'])) return $srcFull;
 		elseif(isset($parms['thumbsrc'])) return $tp->thumbUrl($this->var['media_url'],$att);
 		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
-	
-		$caption = $tp->toAttribute($this->var['media_caption']) ;	
-		$caption .= ($this->downloadable) ? " <a class='e-tip smalltext' title='Right-click > Save Link As' href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'>Download</a>" : "";
 		
-		$text = "<a class='".$class."' title=\"".$caption."\" href='".$tp->thumbUrl($this->var['media_url'], $attFull)."'  rel='{$rel}' >";
+		$caption = $tp->toAttribute($this->var['media_caption']) ;	
+		$caption .= ($this->downloadable) ? " <a class='e-tip smalltext' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
+		
+		$text = "<a class='".$class."' title=\"".$caption."\" href='".$srcFull."'  rel='{$rel}' >";
 		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."' alt='' />";
 		$text .= "</a>";
 		

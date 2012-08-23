@@ -65,7 +65,7 @@ $GALLERY_TEMPLATE['SLIDESHOW_WRAPPER'] = '
             
 		';	
 
-$GALLERY_TEMPLATE['SLIDESHOW_SLIDE_ITEM'] = '<span class="gallery-slide-item">{GALLERY_THUMB=aw=150&ah=120}</span>';
+$GALLERY_TEMPLATE['SLIDESHOW_SLIDE_ITEM'] = '<span class="gallery-slide-item">{GALLERY_THUMB=w=150&h=120}</span>';
 
 		
 
