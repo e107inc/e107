@@ -661,17 +661,20 @@ class comment {
 				}	
 				$lock = $row['comment_lock'];
 				// $subject = $tp->toHTML($subject);
-				if ($pref['nested_comments'])
+				if($action != "reply") 
 				{
-					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
-				}
-				else
-				{
-					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
+					if ($pref['nested_comments'])
+					{
+						$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
+					}
+					else
+					{
+						$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
+					}
 				}
 			}
 
-			if ($tablerender)
+			if ($tablerender && !empty($text))
 			{
 				$text = $ns->tablerender(COMLAN_99, $text, '', TRUE);
 			}
@@ -685,12 +688,12 @@ class comment {
 				$ret['comment'] = $text;
 			}
 
-			if (ADMIN && getperms("B"))
+			if (ADMIN && getperms("B") && !empty($text))
 			{
 				$modcomment = "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a></div><br />";
 			}
 		}
-
+		
 		if ($lock != '1')
 		{
 			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, $tablerender);
