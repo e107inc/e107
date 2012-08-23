@@ -35,6 +35,7 @@
  * - url (rawurlencode'd string) [required]: URL template, will be rawurldecode'd after parameters are parsed to array, '--AMP--' strings will be replaced with '&amp;'
  * 	NOTE: URL should be DOUBLE encoded, which means you need to encode the query only of passed URL (W3C standards) and rawurlencode the whole URL string
  * The reason to do this is to not break the whole shortcode $parm string, shortcode itself is doing decode once, which means we'll end up with correct, W3C compliant URL string
+ * 'url' now supports url::module/controller/action?id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1 and route::news/list/category::id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1 formats
  *
  * Preffered 'FROM' template is now '--FROM--' (instead '[FROM]')
  * - caption (rawurlencode'd string) [optional]: Label, rawurldecode'd after parameters are parsed to array, language constants are supported
@@ -140,7 +141,7 @@ function nextprev_shortcode($parm = '')
 		{
 			// New - use URL assembling engine
 			// Format is: route::module/controller/action::urlParams::urlOptions
-			// Example: url::news/list/category::id=xxx&name=yyy&page=--PAGE--::full=1
+			// Example: route::news/list/category::id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
 			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
 			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
@@ -148,7 +149,7 @@ function nextprev_shortcode($parm = '')
 		elseif(substr($parm['url'], 0, 5) == 'url::')
 		{
 			// New - use URL assembling engine
-			// Format is: url::module/controller/action?id=xxx&name=yyy&page=--PAGE--::full=1
+			// Format is: url::module/controller/action?id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
 			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
 			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], array(), varset($urlParms[2])));
