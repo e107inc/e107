@@ -26,5 +26,6 @@
 		<pref name="slideshow_auto">1</pref>
 		<pref name="slideshow_freq">4000</pref>
 		<pref name="slideshow_effect">scrollHorz</pref>	
+		<pref name="perpage">12</pref>
 	</pluginPrefs>
 </e107Plugin>

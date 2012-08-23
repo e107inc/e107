@@ -138,7 +138,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 		'popup_w'				=> array('title'=> 'Image Max. Width', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the width given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 		'popup_h'				=> array('title'=> 'Image Max. Height', 'type' => 'text', 'data' => 'int', 'help'=>'Images will be auto-resized if greater than the height given here'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 		
-		'downloadable'			=> array('title'=> 'Show "download" link', 'type' => 'boolean', 'integer' => 'int', 'help'=>'A download option will be shown next to the popup caption'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'downloadable'			=> array('title'=> 'Show "download" link', 'type' => 'boolean', 'data' => 'int', 'help'=>'A download option will be shown next to the popup caption'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	
 		'slideshow_category'	=> array('title'=> 'Slideshow category', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Images from this category will be used in the sliding menu.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	//	'slideshow_thumb_w'	=> array('title'=> 'Thumbnail Width', 'type' => 'number', 'data' => 'integer', 'help'=>'Width in px'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
@@ -150,7 +150,8 @@ class gallery_cat_admin_ui extends e_admin_ui
 		'slideshow_freq'		=> array('title'=> 'Slide frequency', 'type' => 'number', 'data' => 'integer', 'help'=>'When auto-start is enabled, this dictates how long a slides stays put before the next jump. '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 	//	'slideshow_circular'	=> array('title'=> 'Slide circular-mode', 'type' => 'boolean', 'data' => 'integer', 'help'=>'By default when the first/last slide is reached, calling prev/next does nothing. If you want the effect to continue enable this option.'), // 
 		'slideshow_effect'		=> array('title'=> 'Slide effect', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of effect. '), // 
-	//	'slideshow_transition'	=> array('title'=> 'Slide transition', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of transition. ') // 	
+	//	'slideshow_transition'	=> array('title'=> 'Slide transition', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Type of transition. ') //
+		'perpage'				=> array('title'=> 'Images per page', 'type' => 'number', 'data' => 'int', 'help'=>'Number of images to be shown per page', 'validate' => 'required'), // 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')), 	
 	);
 	
 	
