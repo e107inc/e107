@@ -89,7 +89,8 @@ class plugin_gallery_index_controller extends eControllerFront
 			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
 		}	
 		$text = $template['CAT_START'].$text.$template['CAT_END'];
-		$this->addBody($text);
+		$this->addTitle('Gallery')
+			->addBody($text);
 	}
 	
 	public function actionList()
@@ -147,7 +148,9 @@ class plugin_gallery_index_controller extends eControllerFront
 		$text .= $inner; 	
 		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
 		
-		$this->addBody($text);
+		$this->addTitle($catname)
+			->addTitle('Gallery')
+			->addBody($text);
 	}
 }
  
