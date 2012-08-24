@@ -19,16 +19,20 @@ class gallery_shortcodes extends e_shortcode
 	public $slideMode = FALSE;
 	public $slideCount = 1;
 	private $downloadable = FALSE;
+	private $attFull = null;
 	
 	function init()
 	{
 		$this->downloadable = e107::getPlugPref('gallery','downloadable');	
+		$pop_w 				= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
+		$pop_h 				= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
+		$this->attFull 		= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 	}
 			
 	function sc_gallery_caption($parm='')
 	{
 		$tp = e107::getParser();
-		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".e107::getParser()->replaceConstants($this->var['media_url'],'abs')."' rel='lightbox.Gallery2' >";
+		$text = "<a class='gallery-caption' title='".$tp->toAttribute($this->var['media_caption'])."' href='".$tp->thumbUrl($this->var['media_url'], $this->attFull)."' rel='lightbox.Gallery2' >";
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
 		return $text;
@@ -61,10 +65,7 @@ class gallery_shortcodes extends e_shortcode
 		$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
-		$pop_w 		= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
-		$pop_h 		= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
-		$attFull 	= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
-		$srcFull = $tp->thumbUrl($this->var['media_url'], $attFull);
+		$srcFull = $tp->thumbUrl($this->var['media_url'], $this->attFull);
 		if(isset($parm['actualPreview']))
 		{
 			$srcFull = $tp->replaceConstants($this->var['media_url'], 'full');

@@ -4,4 +4,7 @@
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>Wysiwyg Text-Area Replacement</description>
 	<category>misc</category>
+	<adminLinks>
+		<link icon='images/icon_32.png' iconSmall='images/icon_16.png' primary='true' />
+	</adminLinks>
 </e107Plugin>

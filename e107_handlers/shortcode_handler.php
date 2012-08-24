@@ -445,11 +445,12 @@ class e_parse_shortcode
 				if ($force || !$this->isRegistered($code))
 				{
 					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $className);
-					
-					if (class_exists($className, false))
-					{
-						$this->scClasses[$className] = new $className(); // Required. Test with e107::getScBatch($className)				
-					}
+					$this->initShortcodeClass($className);
+				//	if (class_exists($className, false))
+				//	{
+					//	$this->scClasses[$className] = new $className(); // Required. Test with e107::getScBatch($className)	
+					//	echo "CLASS=:".$className;			
+				//	}
 				}
 			}
 		}
