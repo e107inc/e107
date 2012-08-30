@@ -727,7 +727,7 @@ class page_admin_ui extends e_admin_ui
 			
 			
 	//		if(is_array($_POST['data']) && is_array($_POST['subtitle']))
-			$newData = "";
+			$newData = array();
 			foreach($_POST as $k=>$v)
 			{
 				if(substr($k,0,4)=='data' && trim($v)!='')
@@ -738,7 +738,7 @@ class page_admin_ui extends e_admin_ui
 					{
 						$newData .= "[newpage=".$_POST['page_subtitle'][$key]."]\n";
 					}
-					$newData .= $v."\n\n";			
+					$newData[] = $v;			
 				}
 				
 				// return;	
@@ -746,7 +746,7 @@ class page_admin_ui extends e_admin_ui
 	
 		//	echo nl2br($newData);
 		//	return;
-				
+			$newData = implode("\n\n", $newData);
 			$page_text = $tp->toDB($newData);
 			$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // Ideally, this check should be done in the front-end.
 			$update = 0;			// Make sure some updates happen
