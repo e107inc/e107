@@ -141,22 +141,32 @@ class gallery_shortcodes extends e_shortcode
 	
 	function sc_gallery_slideshow($parm='')
 	{
-		$this->sliderCat = ($parm) ? intval($parm) : vartrue(e107::getPlugPref('gallery','slideshow_category'),1);
+		$this->sliderCat = ($parm) ? $parm : vartrue(e107::getPlugPref('gallery','slideshow_category'),1);
 
 		$template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_WRAPPER');		
 		return e107::getParser()->parseTemplate($template);
 	}
 	
+	/**
+	 * All possible parameters
+	 * {GALLERY_SLIDES=4|limit=16&template=MY_SLIDESHOW_SLIDE_ITEM}
+	 * first parameter is always number of slides, default is 3
+	 * limit - (optional) total limit of pcitures to be shown
+	 * template - (optional) template - name of template to be used for parsing the slideshow item
+	 */
 	function sc_gallery_slides($parm)
 	{
-		$this->slideMode = TRUE;
-		$amount = ($parm) ? intval($parm) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
-		$tp = e107::getParser();
-		$limit = varset($gp['slideshow_limit'],16);
-		$list = e107::getMedia()->getImages('gallery_'.$this->sliderCat,0,$limit);
-		$item_template 	= e107::getTemplate('gallery','gallery','SLIDESHOW_SLIDE_ITEM');
-		$catList = e107::getMedia()->getCategories('gallery');		
-		$cat = $catList['gallery_'.$this->sliderCat];
+		$tp 				= e107::getParser();
+		$this->slideMode 	= TRUE;
+		$parms 				= eHelper::scDualParams($parm);
+		
+		$amount 			= $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
+		$parms 				= $parms[2];
+		$limit 				= (integer) vartrue($parms['limit'], 16);
+		$list 				= e107::getMedia()->getImages('gallery_'.$this->sliderCat,0,$limit);
+		$item_template 		= e107::getTemplate('gallery','gallery', vartrue($parms['template'], 'SLIDESHOW_SLIDE_ITEM'));
+		$catList 			= e107::getMedia()->getCategories('gallery');		
+		$cat 				= $catList['gallery_'.$this->sliderCat];
 
 		$count = 1;
 		foreach($list as $row)

@@ -7,6 +7,8 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
+e107::plugLan('gallery', 'front');
+
 $text = e107::getParser()->parseTemplate("{GALLERY_SLIDESHOW}");
 e107::getRender()->tablerender("Gallery",$text,'gallery_slideshow');
 unset($text);
