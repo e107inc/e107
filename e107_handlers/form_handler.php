@@ -440,10 +440,10 @@ class e_form
 			parse_str($options,$options);	
 		} 
 		
-		$dateFormat = ($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
-		$timeFormat = ($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
+		$dateFormat = varset($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$timeFormat = varset($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
 						
-		$type		= ($options['type']) ? trim($options['type']) : "date"; // 'datetime'
+		$type		= varset($options['type']) ? trim($options['type']) : "date"; // 'datetime'
 		
 	//	echo "TYPE=".$type;
 			
@@ -506,16 +506,16 @@ class e_form
 		
 		if(vartrue($options['inline']))
 		{
-			return "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></div>
+			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></div>
 				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />
 			";		
 		}
 		else
-		{	
-			return "<input class='{$class}' type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
+		{
+			$text .= "<input class='{$class}' type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
 		}
 		
-		
+		return $text;
 			// Keep this info here: 
 			/*
 				 * $options allowed keys:
