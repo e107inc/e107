@@ -43,10 +43,12 @@ class convert
 		{
 			case 'long':
 				$mask = e107::getPref('longdate');
+			//	$datestamp += TIMEOFFSET;
 			break;
 			
 			case 'short':
 				$mask = e107::getPref('shortdate');
+			//	$datestamp += TIMEOFFSET;
 			break;
 			
 			case 'input': 
@@ -71,10 +73,12 @@ class convert
 				{
 					$mask = e107::getPref('forumdate');
 				}
+			//	$datestamp += TIMEOFFSET;
 			break;
 		}
 		
-		$datestamp += TIMEOFFSET;
+		// 
+
 		return strftime($mask, $datestamp);
 	}
 
@@ -131,6 +135,7 @@ class convert
 		// also in php compat handler for plugins that might use it. 
 		$tdata = $this->strptime($date_string, $mask);
 		
+
 	//	print_a($tdata);
 		
 		if(empty($tdata))
@@ -146,7 +151,12 @@ class convert
 			($tdata['tm_year'] + 1900) 
 		); 
 		
+		
+	//	echo "<br />UNIX=".$unxTimestamp - TIMEOFFSET;
+	//	echo "<br />".date("l, d M Y g:i A",$unxTimestamp);
+	
 		// var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
+
 		return $unxTimestamp;
 	}
 
@@ -504,9 +514,9 @@ class convert
 	
 			}
 			
-			if($ampm && ($vals['tm_AMPM'] == 'PM' || $vals['tm_ampm'] == 'pm'))
+			if($ampm && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am') )
 			{
-				$vals['tm_hour'] = $vals['tm_hour'] + 12;					
+				$vals['tm_hour'] = intval($vals['tm_hour'] - 12);					
 			}
 			
 			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
