@@ -67,7 +67,7 @@ if($_GET['action'] == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly insi
 	
 }
 
-
+	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 
 $e_sub_cat = 'image';
 
@@ -277,6 +277,7 @@ class media_form_ui extends e_admin_form_ui
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);*/
+	//	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 				
 		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
@@ -284,6 +285,16 @@ class media_form_ui extends e_admin_form_ui
 			$ids = implode(",",$_POST['multiselect']);
 			$this->rotateImages($ids,$type);
 		}
+		
+		
+		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
+		{
+			$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",",$_POST['multiselect']);
+			$this->resizeImages($ids,$type);
+		}
+		
+		
 		
 	}
 	
@@ -305,6 +316,8 @@ class media_form_ui extends e_admin_form_ui
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$mes = e107::getMessage();
+		ini_set('memory_limit', '150M');
+		ini_set('gd.jpeg_ignore_warning', 1);
 		
 		$degrees = ($type == 'rotate_cw') ? 270 : 90;
 		
@@ -321,23 +334,115 @@ class media_form_ui extends e_admin_form_ui
 				$mes->addDebug("Attempting to rotate by {$degrees} degrees: ".basename($original));
 				
 				$source = imagecreatefromjpeg($original);
-				
-				$rotate = imagerotate($source, $degrees, 0);
+							
+				try 
+				{
+					$rotate = imagerotate($source, $degrees, 0);
+				} 
+				catch (Exception $e) 
+				{
+					$mes->addError("Not enough memory available to rotate: ".basename($original));
+				}  
+							
 				$srch = array(".jpg",".jpeg");
 				$cacheFile = str_replace($srch,"",strtolower(basename($original)))."_(.*)\.cache\.bin";
 				
-				if(imagejpeg($rotate,$original,100))
+				try 
 				{
+					imagejpeg($rotate,$original,80);
 					$mes->addSuccess("Rotated: ".basename($original));
 					e107::getCache()->clearAll('image',$cacheFile);
 					$mes->addDebug("Clearing Image cache with mask: ".$cacheFile);
-				}			
+				}
+				catch (Exception $e) 
+				{
+					$mes->addError("Not enough memory available to rotate: ".basename($original));
+				}  	
 			}
 		}	
 	}
+
+
+	/**
+	 * Resize a single image. 
+	 * @param string
+	 * @param int
+	 * @param int
+	 */
+	private function resizeImage($oldpath,$img_import_w,$img_import_h)
+	{
+		
+		try
+		{
+		    $thumb = PhpThumbFactory::create($oldpath);
+		    $thumb->setOptions(array('correctPermissions' => true));
+		}
+		catch (Exception $e)
+		{
+		     $mes->addError($e->getMessage());
+		     return FALSE;
+		    // return $this;
+		}
+		if($WM) // TODO Add watermark prefs for alpha and position. 
+		{
+			$thumb->resize($img_import_w,$img_import_h)->addWatermark($watermark, 'rightBottom', 30, 0, 0)->save($oldpath); 
+		}
+		else
+		{
+		 	if($thumb->resize($img_import_w,$img_import_h)->save($oldpath))
+			{
+				return TRUE;
+			} 
+		}	
+		
+	}
+
+
+
+
+	private function resizeImages($ids,$type)
+	{
+		
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('sql2');
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
+		$fl = e107::getFile();
+				
+		// Max size is 6 megapixel. 
+		$img_import_w = 2816;
+		$img_import_h = 2112; 
+			
+		if($sql->db_Select("core_media","media_id,media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$path = $tp->replaceConstants($row['media_url']);
+
+				$mes->addDebug("Attempting to resize: ".basename($path));
+				
+				if($this->resizeImage($path,$img_import_w,$img_import_h))
+				{
+					
+					$info = $fl->get_file_info($path);
+					$mes->addSuccess("Resizing: ".basename($path));
+					$mes->addSuccess(print_a($info,true));
+					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
+					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])." LIMIT 1");
+				}
+				else 
+				{
+					$mes->addError("Resizing: ".basename($path));
+				}	
+			}
+		}		
+		
+		
+		
+	}
 	
 	
-	function resize_dimensions($curval) // ie. never manually resize another image again!
+	private function resize_dimensions($curval) // ie. never manually resize another image again!
 	{
 		$text = "";
 		$frm = e107::getForm();
@@ -388,8 +493,9 @@ class media_form_ui extends e_admin_form_ui
 		if($value == 'batch')
 		{
 			return array(
+				"resize_2048"	=> "Reduce Oversized Images",
 				"rotate_cw"		=> "Rotate 90&deg; cw",
-				"rotate_ccw"	=> "Rotate 90&deg; ccw"
+				"rotate_ccw"	=> "Rotate 90&deg; ccw"				
 			);	
 		}
 		
@@ -1413,11 +1519,12 @@ class media_admin_ui extends e_admin_ui
 							</thead>
 							<tbody>";
 		
-		$c = 0;
+	//	$c = 0;
 		foreach($files as $f)
 		{
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
+			$c = md5($f['path'].$f['fname']);
 			
 			if($f['error'])
 			{
@@ -1434,16 +1541,15 @@ class media_admin_ui extends e_admin_ui
 				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $_POST['batch_import_name'][$c] : $default['title']))."</td>
 				<td><textarea name='batch_import_diz[".$c."]' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description'])."</textarea></td>
 			
-				<td><a href='mailto:".$default['authorEmail']."'>".$default['authorName']."</a></td>
+				<td><a href='mailto:".$default['authorEmail']."'>".$default['authorName']."</a><br />".$default['authorEmail']."</td>
 				<td>".$f['mime']."</td>
 				<td>".$f['fsize']."</td>
 				<td>".e107::getDateConvert()->convert_date($f['modified'])."</td>
 				<td class='center last'>".$f['img-width']." x ".$f['img-height']."</td>
 			</tr>
+			\n";
 				
-				\n";
-				
-			$c++;
+			// $c++;
 			$lastMime = $f['mime'];
 		}
 
@@ -1561,6 +1667,9 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
+
+
+
 	function batchImport()
 	{
 		$fl = e107::getFile();
@@ -1576,7 +1685,7 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 
-		require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
+	
 		list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
 		
 		if(vartrue($_POST['batch_import_watermark']))
@@ -1591,8 +1700,8 @@ class media_admin_ui extends e_admin_ui
 		}	
 
 		// Disable resize-on-import and watermark for now. 
-		$img_import_w = false;
-		$img_import_h = false; 
+		$img_import_w = 2816;
+		$img_import_h = 2112; 
 		
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
@@ -1602,28 +1711,7 @@ class media_admin_ui extends e_admin_ui
 			// Resize on Import Routine ------------------------
 			if(vartrue($img_import_w) && vartrue($img_import_h))
 			{
-				try
-				{
-				    $thumb = PhpThumbFactory::create($oldpath);
-				    $thumb->setOptions(array('correctPermissions' => true));
-				}
-				catch (Exception $e)
-				{
-				     $mes->addError($e->getMessage());
-				     continue;
-				    // return $this;
-				}
-				if($WM) // TODO Add watermark prefs for alpha and position. 
-				{
-					$thumb->resize($img_import_w,$img_import_h)->addWatermark($watermark, 'rightBottom', 30, 0, 0)->save($oldpath); 
-			
-				}
-				else
-				{
-				 	$thumb->resize($img_import_w,$img_import_h)->save($oldpath); 
-				}
-				
-			
+				// $this->resizeImage($file,$img_import_w,$img_import_h);		
 			}
 			// End Resize routine. ---------------------
 
