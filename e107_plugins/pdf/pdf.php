@@ -15,8 +15,10 @@
  *
 */
 require_once('../../class2.php');
-$e107 = e107::getInstance();
-if (!$e107->isInstalled('calendar_menu') || !e_QUERY) header('Location: '.e_BASE.'index.php');
+if(!e107::isInstalled('pdf') || !e_QUERY)
+{
+	header('Location: '.e_BASE.'index.php');	
+}
 
 $qs = explode('.', e_QUERY,2);
 $source = $qs[0];

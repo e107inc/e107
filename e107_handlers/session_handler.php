@@ -606,7 +606,7 @@ class e_session
 			
 			// just for now
 			$msg = 'Session validation failed! <a href="'.strip_tags($_SERVER['REQUEST_URI']).'">Go Back</a>';
-			die($msg);
+		//	die($msg); //FIXME not functioning as intended. 
 		}
 
 		return $this;

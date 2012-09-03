@@ -29,7 +29,7 @@ define('e107_INIT', true);
 
 
 error_reporting(0); // suppress all errors or image will be corrupted. 
-
+ini_set('gd.jpeg_ignore_warning', 1);
 //require_once './e107_handlers/benchmark.php';
 //$bench = new e_benchmark();
 //$bench->start();
