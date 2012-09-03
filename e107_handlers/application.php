@@ -4191,7 +4191,7 @@ class eHelper
 	public static function formatMetaTitle($title)
 	{
 		$title = trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($title, TRUE))));
-		return trim(preg_replace('/[\s,]+/', ',', str_replace('_', ' ', $title)));
+		return trim(preg_replace('/[\s,]+/', ' ', str_replace('_', ' ', $title)));
 	}
 	
 	public static function secureSef($sef)
