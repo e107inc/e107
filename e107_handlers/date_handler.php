@@ -514,9 +514,18 @@ class convert
 	
 			}
 			
-			if($ampm && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am') )
+			if($ampm)
 			{
-				$vals['tm_hour'] = intval($vals['tm_hour'] - 12);					
+				if($vals['tm_hour'] == 12 && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am'))
+				{
+					$vals['tm_hour'] = 0;			
+				}
+				
+				if($vals['tm_hour'] < 12 && ($vals['tm_AMPM'] == 'PM' || $vals['tm_ampm'] == 'pm'))
+				{
+					$vals['tm_hour'] = intval($vals['tm_hour']) + 12;			
+				}
+							
 			}
 			
 			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
