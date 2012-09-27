@@ -522,7 +522,18 @@ global $db_debug;
 	}
 	
 	// Always validate an email address if entered. If its blank, that's OK if checking disabled
-	$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
+	//$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
+	$_POST['email'] = trim(varset($_POST['email'],''));
+	if(!empty($_POST['email']))
+	{
+		$_POST['email'] = preg_replace('/[^_a-zA-Z0-9\-+@\.]/', '', $_POST['email']);
+	}
+	$_POST['email_confirm'] = trim(varset($_POST['email_confirm'],''));
+	if(!empty($_POST['email_confirm']))
+	{
+		$_POST['email_confirm'] = preg_replace('/[^_a-zA-Z0-9\-+@\.]/', '', $_POST['email_confirm']);
+	}
+	
 	$do_email_validate = !varset($pref['disable_emailcheck'],FALSE) || ($_POST['email'] !='');
 
 
