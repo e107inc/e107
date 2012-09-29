@@ -56,13 +56,64 @@ class parseXml {
 			// ... and there shouldn't be unprintable characters in the URL anyway
 		}
 				
-		if (function_exists('file_get_contents') && ini_get("allow_url_fopen"))
+		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
 			
-			$address = ($this->Url) ? $this->Url : urldecode($address);
+			$address = trim(($this->Url) ? $this->Url : urldecode($address));
 
-			$data = file_get_contents($address);
+
+			/*
+			 *	Following code block can be enabled to give more control over http transfers using file_get_contents()
+			 *	Much of it requires relatively recent versions of PHP (some identified in comments)
+			 *	Its likely that the code will require selective commenting out before use
+			 */
+			if (FALSE && (substr($address, 0, 4) == 'http'))
+			{
+				//Set stream options
+				$opts = array(
+				  'http' => array()
+				);
+				$opts['http']['ignore_errors'] = true;		// PHP >= 5.2.10
+				$opts['http']['timeout'] = 10;				// PHP >= 5.2.1
+				
+				// Can add in additional headers to send (in PHP >= 5.2.10, can have array of extras)
+				$opts['http']['header'] = 'If-Modified-Since: Sat, 3 Sep 2011 11:00:00 GMT';
+				//$opts['http']['header'] = 'If-None-Match: ';
+
+				$ua = ini_get('user_agent');
+				echo 'User agent: '.$ua.'<br />';
+				if (!$ua)
+				{
+					$opts['http']['user_agent'] = $_SERVER['HTTP_USER_AGENT'];		// Some sites need user agent - set to that of current user
+				}
+
+				//Create the stream context
+				$context = stream_context_create($opts);
+				
+				
+				// To display progress of transfer, uncomment the following line
+				stream_context_set_params($context, array('notification' => array($this, 'stream_notification_callback')));
+
+
+				//echo 'Context set for: '.$address.'<br />';
+				
+				
+				// print_a(stream_context_get_params('http'));		// Requires PHP >= 5.3
+
+				// Read the file using the defined context
+				$data = file_get_contents($address, false, $context);
+				if (ADMIN && ($data === FALSE))
+				{
+					echo 'file_get_contents() error on http transfer <br />';
+					// $smd = stream_get_meta_data($context);  Won't work - context will have been closed, presumably
+					// print_a($smd);
+				}
+			}
+			else
+			{
+				$data = file_get_contents($address);
+			}
 
 			// $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
@@ -74,16 +125,27 @@ class parseXml {
 				$this->xmlFileContents = $data;
 				return $data;
 			}
-			$this->error = "File_get_contents() error";		// Fill in more info later
+			$this->error = 'File_get_contents() error: '.$address;
 			return FALSE;
 		}
-		if (function_exists("curl_init") && function_exists("curl_exec"))
+		
+		if (function_exists('curl_init') && function_exists('curl_exec'))
 		{
 			$cu = curl_init();
 			curl_setopt($cu, CURLOPT_URL, $address);
 			curl_setopt($cu, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($cu, CURLOPT_HEADER, 0);
 			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+			// More options which could be necessary with specific sites
+			//curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Your application name');		// Could be needed (alternative on next line)
+			//curl_setopt( $ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1" );
+			//curl_setopt( $ch, CURLOPT_COOKIEJAR, $cookie );
+			//curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+			//curl_setopt( $ch, CURLOPT_ENCODING, "" );
+			//curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+			//curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );    # required for https urls
+			//curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout );
+			//curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
 			$this->xmlFileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
@@ -91,8 +153,9 @@ class parseXml {
 				return FALSE;
 			}
 			curl_close($cu);
-			return $this->xmlFileContents;
+			return $this->xmlFileContents;		// Will be FALSE if transfer failed
 		}
+		
 		if (ini_get("allow_url_fopen"))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
@@ -133,6 +196,54 @@ class parseXml {
 		}
 		return $this->xmlFileContents;
 	}
+
+
+
+	/**
+	 *	Callback function which may be invoked to print progress on file_get_contents() if problems
+	 *	(see stream_context_set_params() in method above)
+	 *	Used during debugging only
+	 */
+	function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) 
+	{
+		switch($notification_code) 
+		{
+			case STREAM_NOTIFY_RESOLVE:
+			case STREAM_NOTIFY_AUTH_REQUIRED:
+			case STREAM_NOTIFY_COMPLETED:
+			case STREAM_NOTIFY_FAILURE:
+			case STREAM_NOTIFY_AUTH_RESULT:
+				var_dump($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max);
+				// Ignore 
+				break;
+
+			case STREAM_NOTIFY_REDIRECTED:
+				echo "Being redirected to: ", $message;
+				break;
+
+			case STREAM_NOTIFY_CONNECT:
+				echo "Connected...";
+				break;
+
+			case STREAM_NOTIFY_FILE_SIZE_IS:
+				echo "Got the filesize: ", $bytes_max;
+				break;
+
+			case STREAM_NOTIFY_MIME_TYPE_IS:
+				echo "Found the mime-type: ", $message;
+				break;
+
+			case STREAM_NOTIFY_PROGRESS:
+				echo "Made some progress, downloaded ", $bytes_transferred, " so far";
+				break;
+			
+			default :
+				echo 'Unfiltered progress call: <br />';
+				var_dump($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max);
+		}
+		echo '<br />';
+	}
+
 
 
 	function parseXmlContents ()
