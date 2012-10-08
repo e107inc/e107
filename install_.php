@@ -1398,7 +1398,8 @@ class e_install
 		$handle = opendir("{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}");
 		while ($file = readdir($handle))
 		{
-			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS") {
+			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS" && $file != 'index.html') 
+			{
 				if(file_exists("./{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}{$file}/lan_installer.php")){
 					$lanlist[] = $file;
 				}
