@@ -22,16 +22,16 @@ class e_emotefilter {
 	var $emotes;
 	 
 	function e_emotefilter() /* constructor */
-	{
-		global $sysprefs, $pref;
+	{		
+		$pref = e107::getPref();
+		
 		if(!$pref['emotepack'])	
 		{	
 			$pref['emotepack'] = "default";
 			save_prefs();
 		}
-		
-
-		$this->emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
+			
+		$this->emotes = e107::getConfig("emote")->getPref();
 		
 		if(!vartrue($this->emotes))
 		{
