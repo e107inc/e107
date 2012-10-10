@@ -31,9 +31,10 @@ class notify
 
 	function notify()
 	{
-		global $sysprefs, $e_event, $eArrayStorage;
-		$this->notify_prefs = $sysprefs->get('notify_prefs');
-		$this->notify_prefs = $eArrayStorage->ReadArray($this->notify_prefs);
+		global $e_event;
+		
+		$this->notify_prefs = e107::getConfig("notify")->getPref();
+	
 		if(varset($this->notify_prefs['event']))
 		{
 			foreach ($this->notify_prefs['event'] as $id => $status)
