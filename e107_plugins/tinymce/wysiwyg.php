@@ -258,6 +258,7 @@ class wysiwyg
 			'theme_advanced_resizing'			=> 'false',
 			'remove_linebreaks'					=> 'true',
 			'extended_valid_elements'			=> vartrue($config['extended_valid_elements']), 
+	//		'pagebreak_separator'				=> "[newpage]", 
 			'apply_source_formatting'			=> 'false',
 			'invalid_elements'					=> 'p,font,align,script,applet',
 			'auto_cleanup_word'					=> 'true',
