@@ -125,7 +125,7 @@ class news {
 		$data['_FIELD_TYPES']['news_class'] = 'todb';
 
 		$data['data']['news_render_type'] = $news['news_render_type'];
-		$data['_FIELD_TYPES']['news_render_type'] = 'int';
+		$data['_FIELD_TYPES']['news_render_type'] = 'todb';
 
 
 		//news_comment_total
