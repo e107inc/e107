@@ -9,25 +9,35 @@
  */
 
 (function() {
-	tinymce.create('tinymce.plugins.PageBreakPlugin', {
+	tinymce.create('tinymce.plugins.ePageBreakPlugin', {
 		init : function(ed, url) {
+			
 			var pb = '<img src="' + ed.theme.url + '/img/trans.gif" class="mcePageBreak mceItemNoResize" />', cls = 'mcePageBreak', sep = ed.getParam('pagebreak_separator', '<!-- pagebreak -->'), pbRE;
 
 			pbRE = new RegExp(sep.replace(/[\?\.\*\[\]\(\)\{\}\+\^\$\:]/g, function(a) {return '\\' + a;}), 'g');
 
 			// Register commands
-			ed.addCommand('mcePageBreak', function() {
-				ed.execCommand('mceInsertContent', 0, pb);
+			
+			ed.addCommand('mcePageBreak', function() 
+			{
+				// var name = prompt("Please enter title for this page","");
+			//	ed.execCommand('mceInsertContent', 0, "<div class='newpage' readonly='readonly' style='background-color:silver'>"+ name + "</div>");
+			//	ed.execCommand('mceInsertContent', 0, "[newpage="+ name + "]");
+				ed.execCommand('mceInsertContent', 0, "[newpage]");
 			});
 
 			// Register buttons
-			ed.addButton('pagebreak', {title : 'pagebreak.desc', cmd : cls});
+			ed.addButton('epagebreak', {
+				title : 'pagebreak.desc',
+				 cmd : cls,
+				image : url + '/img/epagebreak.gif' 
+			});
 
 			ed.onInit.add(function() {
 				if (ed.theme.onResolveName) {
 					ed.theme.onResolveName.add(function(th, o) {
 						if (o.node.nodeName == 'IMG' && ed.dom.hasClass(o.node, cls))
-							o.name = 'pagebreak';
+							o.name = 'epagebreak';
 					});
 				}
 			});
@@ -40,7 +50,7 @@
 			});
 
 			ed.onNodeChange.add(function(ed, cm, n) {
-				cm.setActive('pagebreak', n.nodeName === 'IMG' && ed.dom.hasClass(n, cls));
+				cm.setActive('epagebreak', n.nodeName === 'IMG' && ed.dom.hasClass(n, cls));
 			});
 
 			ed.onBeforeSetContent.add(function(ed, o) {
@@ -60,7 +70,7 @@
 
 		getInfo : function() {
 			return {
-				longname : 'PageBreak',
+				longname : 'ePageBreak',
 				author : 'Moxiecode Systems AB',
 				authorurl : 'http://tinymce.moxiecode.com',
 				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/pagebreak',
@@ -70,5 +80,5 @@
 	});
 
 	// Register plugin
-	tinymce.PluginManager.add('pagebreak', tinymce.plugins.PageBreakPlugin);
+	tinymce.PluginManager.add('epagebreak', tinymce.plugins.ePageBreakPlugin);
 })();
