@@ -474,8 +474,9 @@ class lancheck
 	
 		foreach($lang_array as $f)
 		{
-			if(preg_match($regexp,$f['path'].$f['fname']) && is_file($f['path'].$f['fname']))
+			if(preg_match($regexp,$f['path'].$f['fname']))
 			{
+				
 				$data = file($f['path'].$f['fname']);
 				$relpath = str_replace($comp_dir,"",$f['path']);
 				if(substr($data[0],0,5) != "<?php")

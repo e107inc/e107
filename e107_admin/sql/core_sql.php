@@ -370,6 +370,7 @@ CREATE TABLE page (
   page_id int(10) unsigned NOT NULL auto_increment,
   page_title varchar(250) NOT NULL default '',
   page_sef varchar (250) NOT NULL default '',
+  page_chapter int(10) unsigned NOT NULL default '0',
   page_metakeys varchar (250) NOT NULL default '',
   page_metadscr mediumtext NOT NULL,
   page_text mediumtext NOT NULL,
@@ -382,9 +383,32 @@ CREATE TABLE page (
   page_ip_restrict text NOT NULL,
   page_theme varchar(50) NOT NULL default '',
   page_template varchar(50) NOT NULL default '',
+  page_order int(4) unsigned NOT NULL default '9999',
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
+
+
+#
+# Table structure for table `page_chapters`
+#
+
+CREATE TABLE page_chapters (
+  chapter_id tinyint(3) unsigned NOT NULL auto_increment,
+  chapter_parent int(4) unsigned NOT NULL default '0',
+  chapter_name varchar(200) NOT NULL default '',
+  chapter_sef varchar(200) NOT NULL default '',
+  chapter_meta_description text NOT NULL,
+  chapter_meta_keywords  varchar(255) NOT NULL default '',
+  chapter_manager tinyint(3) unsigned NOT NULL default '254',
+  chapter_icon varchar(250) NOT NULL default '',
+  chapter_order tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (chapter_id),
+  KEY chapter_order (chapter_order)
+) ENGINE=MyISAM;
+# --------------------------------------------------------
+
+
 
 #
 # Table structure for table `plugin`

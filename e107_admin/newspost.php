@@ -22,12 +22,6 @@ if (!getperms('H|N'))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-// -------- Presets. ------------  // always load before auth.php
-require_once(e_HANDLER.'preset_class.php');
-$pst = new e_preset();
-$pst->form = "core-newspost-create-form"; // form id of the form that will have it's values saved.
-$pst->page = "newspost.php?create"; // display preset options on which page(s).
-$pst->id = "admin_newspost";
 // ------------------------------
 // done in class2: require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
 $newspost = new admin_newspost(e_QUERY, $pst);
@@ -313,7 +307,7 @@ class news_admin_ui extends e_admin_ui
        			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                        				
   				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclasses', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
-				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'data' => 'int',	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+				'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown', 	'data' => 'str',	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'reverse=1'),
                 'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -338,7 +332,7 @@ class news_admin_ui extends e_admin_ui
 		}
 		asort($this->cats);
 		$this->fields['news_category']['writeParms'] = $this->cats;
-		$this->fields['news_render_type']['writeParms'] = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
+		$this->fields['news_render_type']['writeParms'] = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
 		
 		$this->newspost = new admin_newspost;
 		$this->newspost->observer();
@@ -782,7 +776,7 @@ class admin_newspost
 			$this->news_renderTypes[$key] = $value;
 		}*/
 
-		$this->news_renderTypes = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
+		$this->news_renderTypes = array('0'=>NWSLAN_75,'1'=>NWSLAN_76,'2'=>NWSLAN_77,'3'=>NWSLAN_77." 2",'4'=>"Featurebox");
 
 	}
 
@@ -965,13 +959,6 @@ class admin_newspost
 	//	print_a($POST);
 		
 		switch ($this->getAction()) {
-			case 'savepreset':
-			case 'clr_preset':
-				$this->_pst->save_preset('news_datestamp', false); // save and render result using unique name. Don't save item datestamp
-				$_POST = array();
-				$this->parseRequest('');
-				$this->show_existing_items();
-			break;
 			case 'create':
 				$this->_pst->read_preset('admin_newspost');  //only works here because $_POST is used.
 				$this->show_create_item();
@@ -1081,6 +1068,7 @@ class admin_newspost
 		return true;
 	}
 
+// In USE. 
 	function _observe_submit_item($sub_action, $id)
 	{
 		// ##### Format and submit item to DB
@@ -1117,6 +1105,7 @@ class admin_newspost
 			$_POST['news_datestamp'] = time();	
 		}
 		
+				
 		/*
 		$matches = array();
 		if(preg_match('#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#', $_POST['news_datestamp'], $matches))
@@ -1159,6 +1148,9 @@ class admin_newspost
 			$_POST['news_thumbnail'] = urldecode(basename($_POST['news_thumbnail']));
 		}*/
 
+		$_POST['news_render_type'] = implode(",",$_POST['news_render_type']);
+//		print_a($_POST);
+//	 exit;
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 		
@@ -1474,7 +1466,7 @@ class admin_newspost
 		}
 	}
 
-
+/*
 	function _observe_saveColumns()
 	{
 		global $user_pref,$admin_log;
@@ -1650,6 +1642,8 @@ class admin_newspost
 		e107::getRender()->tablerender(NWSLAN_4, e107::getMessage()->render().$text);
 	}
 
+
+
 	function show_batch_options()
 	{
 		$classes = e107::getUserClass()->uc_get_classlist();
@@ -1765,11 +1759,13 @@ class admin_newspost
 		}
 	}
 
+*/
 
-
-
+	// In Use. 
 	function _pre_create()
 	{
+	
+		
 		if($this->getSubAction() == "edit" && !$_POST['preview'])
 		{
 			if(!isset($_POST['submit_news']))
@@ -2141,12 +2137,12 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_73.":</td>
+								<td class='label'>".LAN_TEMPLATE.":</td>
 								<td class='control'>
 		";
 
-
-		$text .= $frm->radio_multi('news_render_type', $this->news_renderTypes, $_POST['news_render_type'], true,array(NWSLAN_74))."
+		//TODO multiple-selections at once. (comma separated)
+		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, intval($_POST['news_render_type']), "multiple=1",array(NWSLAN_74))."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
