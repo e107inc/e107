@@ -512,7 +512,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 
 /*
  * Fire Event e107:loaded
- * FIXME - disable core JS
+ * core JS available only in Prototype front-end environment
  */
 
 echo "<script type='text/javascript'>\n";
