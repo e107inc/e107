@@ -514,16 +514,18 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
  * Fire Event e107:loaded
  * FIXME - disable core JS
  */
-/*
+
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
+echo "if(typeof e107 != 'undefined') {\n";
 echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
 echo "document.observe('dom:loaded', function() {\n";
 echo "e107Event.trigger('loaded', {element: null}, document);\n";
 echo "});\n";
+echo "}\n";
 echo "// -->\n";
 echo "</script>\n";
-*/
+
 echo "</head>
 <body".$body_onload.">\n";
 
