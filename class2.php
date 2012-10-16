@@ -195,6 +195,11 @@ else
 //
 @include(realpath(dirname(__FILE__).'/e107_config.php'));
 
+if(!defined('e_POWEREDBY_DISABLE'))
+{
+	define('e_POWEREDBY_DISABLE', false);
+}
+
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
 {
 	 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));

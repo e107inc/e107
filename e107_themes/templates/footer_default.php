@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright 2008-2010 e107 Inc (e107.org)
+* Copyright 2008-2012 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -307,7 +307,11 @@ if (abs($_serverTime - $lastSet) > 120)
 //
 // browser cache control - FIXME - use this value as AJAX requests cache control!
 echo "\n<!-- ".md5(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'))." -->\n";
-echo "<div id='powered-by-e107' class='e-footer-info' style='display:block; opacity:1.0; text-align:center'>Proudly powered by <a href='http://e107.org'>e107</a></div>";
+if(!deftrue('e_POWEREDBY_DISABLE'))
+{
+	// TODO lan
+	echo "<div id='powered-by-e107' class='e-footer-info'>Proudly powered by <a href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
+}
 echo "</body></html>";
 
 //
