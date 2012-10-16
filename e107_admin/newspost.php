@@ -15,6 +15,14 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// e-token check
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once('../class2.php');
 
 if (!getperms('H')) 
@@ -359,7 +367,7 @@ class newspost
 			<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.news_category.{$sort_link}.{$from}'>".NWSLAN_6."</a></td>
 			<td style='width:15%' class='fcaption'>".LAN_NEWS_49."</td>
 			
-			<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
+			<td style='width:10%' class='fcaption'>".LAN_OPTIONS."<input type='hidden' name='e-token' value='".e_TOKEN."' /></td>
 			</tr>";
 			$ren_type = array('default','title','other-news','other-news 2');
 			foreach($newsarray as $row)
@@ -401,7 +409,7 @@ class newspost
 			$parms = $newsposts.','.$amount.','.$from.','.e_SELF.'?'.(e_QUERY ? "{$action}.{$sub_action}.{$sort_order}." : "main.news_datestamp.desc.")."[FROM]";
 			$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
+		$text .= "<br /><form method='post' action='".e_SELF."'><input type='hidden' name='e-token' value='".e_TOKEN."' />\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
 		$ns->tablerender(NWSLAN_4, $text);
 	}
 	
@@ -830,10 +838,11 @@ class newspost
 
 		$text .= "<tr style='vertical-align: top;'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>".
-
+		
 		(isset($_POST['preview']) ? "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> " : "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' /> ").
 		($id && $sub_action != 'sn' && $sub_action != 'upload' ? "<input class='button' type='submit' name='submit_news' value='".NWSLAN_25."' /> " : "<input class='button' type='submit' name='submit_news' value='".NWSLAN_26."' /> ")."
-
+		
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input type='hidden' name='news_id' value='{$news_id}' />  \n</td>
 		</tr>
 		</table>
@@ -1016,7 +1025,8 @@ class newspost
 		$text .= "</div></td>
 		</tr>
 
-		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
+		<tr><td colspan='2' style='text-align:center' class='forumheader'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />";
 		if ($id) 
 		{
 			$text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."' />
@@ -1045,7 +1055,7 @@ class newspost
 			<td style='width:5%' class='fcaption'>".LAN_NEWS_45."</td>
 			<td style='width:5%' class='fcaption'>&nbsp;</td>
 			<td style='width:70%' class='fcaption'>".NWSLAN_6."</td>
-			<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
+			<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."<input type='hidden' name='e-token' value='".e_TOKEN."' /></td>
 			</tr>";
 			while ($row = $sql->db_Fetch())
 			{
@@ -1192,7 +1202,7 @@ class newspost
 		</tr>
 
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
-		$text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
+		$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' /><input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
 
 		$text .= "</table>
 		".$rs->form_close()."
@@ -1208,7 +1218,7 @@ class newspost
 		".$rs->form_open('post', e_SELF.'?maint', 'dataform')."
 		<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr><td class='forumheader3'>".LAN_NEWS_51."</td><td class='forumheader3'><input type='checkbox' name='newsdeletecomments' value='1'>".LAN_NEWS_61."</td><td style='text-align:center;' class='forumheader3'>";
-		$text .= "<input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_52."' /></td></tr>";
+		$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' /><input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_52."' /></td></tr>";
 		$text .= "</table>
 		".$rs->form_close()."
 		</div>";
@@ -1284,6 +1294,7 @@ class newspost
 				."<div style='white-space:nowrap'>".
 				$rs->form_button('button', 'category_view_'.$submitnews_id, NWSLAN_27, "onclick=\"expandit('submitted_".$submitnews_id."')\"").
 				$rs->form_button('button', 'category_edit_'.$submitnews_id, $buttext, "onclick=\"document.location='".e_SELF."?create.sn.{$submitnews_id}'\"")."
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				<input type='submit' class='button' name='delete[sn_".$submitnews_id."]' value=\"".LAN_DELETE."\" />
 				</div>".$rs->form_close()."
 				</td>
