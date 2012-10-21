@@ -2062,7 +2062,7 @@ class eRouter
 		$ampersand = !$encode && $options['amp'] == '&amp;' ? '&' : $options['amp'];
 		foreach ($params as $k => $v)
 		{
-			if (null !== $key) $k = $key.'['.$k.']';
+			if (null !== $key) $k = $key.'['.rawurlencode($k).']';
 
 			if (is_array($v)) $pairs[] = $this->createPathInfo($v, $options, $k);
 			else 
@@ -2071,14 +2071,14 @@ class eRouter
 				{
 					if($encode)
 					{
-						$k = rawurlencode($k);
+						$k = null !== $key ? $k : rawurlencode($k);
 					}
 					$pairs[] = $k;
 					continue;
 				}
 				if($encode)
 				{
-					$k = rawurlencode($k);
+					$k =  null !== $key ? $k : rawurlencode($k);
 					$v = rawurlencode($v);
 				}
 				$pairs[] = $k.$equal.$v;
@@ -2459,12 +2459,13 @@ class eUrlRule
 		
 		foreach ($this->params as $key => $value)
 		{
-			$tr["<$key>"] = $params[$key];
+			// FIX - non-latin URLs proper encoded
+			$tr["<$key>"] = rawurlencode($params[$key]);
 			unset($params[$key]);
 		}
 		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
-
+		
 		$url = strtr($this->template, $tr);
 		
 		if (empty($params)) return $url !== '' ? $url.$suffix : $url;
