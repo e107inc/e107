@@ -47,7 +47,11 @@ $oblev_before_start = ob_get_level();
 // Block common bad agents / queries / php issues. 
 array_walk($_SERVER,  'e107_filter', '_SERVER');
 if (isset($_GET)) array_walk($_GET,     'e107_filter', '_GET');
-if (isset($_POST)) array_walk($_POST,    'e107_filter', '_POST');
+if (isset($_POST))
+{
+	array_walk($_POST,    'e107_filter', '_POST');
+	reset($_POST);			// Change of behaviour in PHP 5.3.17?
+}
 if (isset($_COOKIE)) array_walk($_COOKIE,  'e107_filter', '_COOKIE');
 
 //
