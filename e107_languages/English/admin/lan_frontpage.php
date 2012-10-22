@@ -23,7 +23,7 @@ define("FRTLAN_18", "error: no content item selected");
 define("FRTLAN_19", "content main parent");
 define("FRTLAN_20", "content category");
 define("FRTLAN_21", "content item");
-// define("FRTLAN_22", "");
+define("FRTLAN_22", "Custom Page");
 // define("FRTLAN_23", "");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");

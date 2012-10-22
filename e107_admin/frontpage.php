@@ -33,7 +33,7 @@ $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
 if ($sql -> db_Select("page", "*", "page_theme=''")) {
-	$front_page['custom']['title'] = 'Custom Page';
+	$front_page['custom']['title'] = FRTLAN_22;
 	while ($row = $sql -> db_Fetch()) {
 		$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
 	}
