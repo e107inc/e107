@@ -190,10 +190,8 @@ if (is_array($pref['e_meta_list']))
 	ob_start();
 	foreach($pref['e_meta_list'] as $val)
 	{
-		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
-		{
-			require_once(e_PLUGIN.$val."/e_meta.php");
-		}
+		// no checks fore existing file - performance
+		e107_include_once(e_PLUGIN.$val."/e_meta.php");
 	}
 	// content will be added later
 	// NOTE: not wise to do e_meta output, use JS Manager!  
