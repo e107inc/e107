@@ -12,6 +12,9 @@ define("FRTLAN_1", "Front Page settings updated.");
 define("FRTLAN_12", "Update Front Page Settings");
 define("FRTLAN_13", "Current Front Page Settings");
 define("FRTLAN_15", "Other (enter url):");
+
+define('FRTLAN_30', 'Custom Page');
+
 //define("FRTLAN_33", "Current Settings");
 
 // New language defs for 0.8
