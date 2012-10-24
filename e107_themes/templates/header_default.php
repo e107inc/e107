@@ -172,10 +172,8 @@ if ($e_headers && is_array($e_headers))
 {
 	foreach($e_headers as $val)
 	{
-		if(is_readable(e_PLUGIN.$val."/e_header.php"))
-		{
-			require_once(e_PLUGIN.$val."/e_header.php");
-		}
+		// no checks fore existing file - performance
+		e107_include(e_PLUGIN.$val."/e_header.php");
 	}
 }
 unset($e_headers);
