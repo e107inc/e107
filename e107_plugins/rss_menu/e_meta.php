@@ -18,7 +18,10 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-global $tp,$PLUGINS_DIRECTORY;
+global $PLUGINS_DIRECTORY;
+
+$tp = e107::getParser();
+$sql = e107::getDb();
 
 if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
 {
