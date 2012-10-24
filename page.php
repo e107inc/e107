@@ -21,7 +21,8 @@ $e107CorePage = new pageClass(false);
 if(!e_QUERY)
 {
 	require_once(HEADERF);
-	$tmp = $e107CorePage->listPages();
+//	$tmp = $e107CorePage->listPages();
+	$tmp = $e107CorePage->listBooks();
 	if(is_array($tmp))
 	{
 		$ns->tablerender($tmp['title'], $tmp['text']);
@@ -102,8 +103,53 @@ class pageClass
 		
 	}
 
+	
+
+	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	function listBooks()
+	{
+		$sql = e107::getDb('sql2');
+		$tp = e107::getParser();
+		
+		if($sql->db_Select("page_chapters", "*", "chapter_parent ='0' ORDER BY chapter_order ASC "))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$text .= "<h2>".$tp->toHtml($row['chapter_name'])."</h2>"; // Book Title. 			
+				$text .= $this->listChapters($row['chapter_id']);
+			}			
+		}	
+		
+		$text .= "<h1>Other Pages</h1>"; // Book Title. 		
+		$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
+		e107::getRender()->tablerender(LAN_PAGE_11, $text,"cpage_list");
+	}
+
+
+
+
+	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
+	function listChapters($book=1)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		if($sql->db_Select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$text .= "<h3>".$tp->toHtml($row['chapter_name'])."</h3>"; // Chapter Title. 
+				$text .= $this->listPages(intval($row['chapter_id']));	
+			}			
+		}	
+		
+		return $text;		
+	}
+
+
+
 	// TODO template for page list
-	function listPages()
+	function listPages($chapt=0)
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -114,7 +160,7 @@ class pageClass
 		}
 		else
 		{
-			if(!$sql->db_Select("page", "*", "page_theme='' AND page_class IN (".USERCLASS_LIST.") "))
+			if(!$sql->db_Select("page", "*", "page_theme='' AND page_chapter=".$chapt." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
 				$text = LAN_PAGE_2;
 			}
@@ -124,11 +170,15 @@ class pageClass
 				foreach($pageArray as $page)
 				{
 					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
-					$text .= $this->bullet." <a href='".$url."'>".$tp->toHtml($page['page_title'])."</a><br />";
+					$text .= $this->bullet." <a href='".$url."'>".$tp->toHtml($page['page_title'])."</a><br />"; //XXX Better to use <ul> and <li> ??
 				}
-				e107::getRender()->tablerender(LAN_PAGE_11, $text,"cpage_list");
+				
+			//	$caption = ($title !='')? $title: LAN_PAGE_11;
+			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
 		}
+		
+		return $text;
 	}
 
 	
