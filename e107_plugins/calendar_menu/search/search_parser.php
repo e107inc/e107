@@ -1,22 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Event calendar - search parser
+ *
+ * $URL$
+ * $Id$
+ */
+ 
 if (!defined('e107_INIT')) { exit; }    
+
+if (!isset($pref['plug_installed']['calendar_menu']))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
 
 $return_fields = 'event_id, event_start, event_title, event_location, event_details';
 $search_fields = array('event_title', 'event_location', 'event_details');

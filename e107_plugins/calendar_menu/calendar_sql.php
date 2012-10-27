@@ -14,7 +14,8 @@ CREATE TABLE event (
 	event_thread varchar(100) NOT NULL default '',
 	event_rec_m tinyint(2) unsigned NOT NULL default '0',
 	event_rec_y tinyint(2) unsigned NOT NULL default '0',
-	PRIMARY KEY  (event_id)
+	PRIMARY KEY  (event_id),
+	KEY event_start (event_start)
 	) ENGINE=MyISAM;,
 	CREATE TABLE event_cat (
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,

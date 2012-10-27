@@ -1,14 +1,36 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Event calendar - for 'list new' plugin
+ *
+ * $URL$
+ * $Id$
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
+if (isset($pref['plug_installed'])) 
+{
+  if (!isset($pref['plug_installed']['calendar_menu'])) return;
+}
+else
+{  // Support 'legacy' method as well for now
+  if(!$calendar_install = $sql -> db_Select("plugin", "*", "plugin_path = 'calendar_menu' AND plugin_installflag = '1' "))
+  {
+	return;
+  }
+}
 
+	$LIST_CAPTION = $arr[0];
+	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 require_once('ecal_class.php');
 $ecal_class = new ecal_class;
-
-$LIST_CAPTION = $arr[0];
-$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 $current_day	= $ecal_class->cal_date['mday'];
 $current_month	= $ecal_class->cal_date['mon'];
