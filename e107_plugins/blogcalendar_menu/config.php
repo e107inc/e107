@@ -18,7 +18,7 @@
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-if (!getperms("1")) {
+if (!isset($pref['plug_installed']['blogcalendar_menu']) || !getperms("1")) {
 	header("location:".e_BASE."index.php");
 	 exit();
 }

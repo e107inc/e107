@@ -17,7 +17,7 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("P")) 
+if (!isset($pref['plug_installed']['log']) || !getperms("P")) 
 {
 	header("location:../../index.php");
 	exit;

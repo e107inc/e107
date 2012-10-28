@@ -17,7 +17,7 @@
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("P")) {
+if (!isset($pref['plug_installed']['linkwords']) || !getperms("P")) {
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
@@ -282,6 +282,9 @@ $ns -> tablerender(LWLAN_32, $text);
 
 function admin_config_adminmenu()
 {
+	global $pref;
+	if (!isset($pref['plug_installed']['linkwords'])) return '';
+	
   if (e_QUERY) 
   {
 	$tmp = explode(".", e_QUERY);

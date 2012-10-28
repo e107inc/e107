@@ -23,7 +23,7 @@ require_once(e_PLUGIN.'pm/pm_class.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
 
-if (!getperms("P"))
+if (!isset($pref['plug_installed']['pm']) || !getperms("P"))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
@@ -346,7 +346,9 @@ function add_limit()
 
 function show_menu($action)
 {
-	global $sql;
+	global $sql, $pref;
+	if (!isset($pref['plug_installed']['pm'])) return '';
+
 	if ($action == "") { $action = "main"; }
 	$var['main']['text'] = ADLAN_PM_54;
 	$var['main']['link'] = e_SELF;

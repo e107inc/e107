@@ -18,7 +18,7 @@
 
 require_once("../../class2.php");
 
-if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
+if(!isset($pref['plug_installed']['content']) || !getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 $e_wysiwyg = "content_text,cat_text";
 $plugindir = e_PLUGIN."content/";
@@ -435,8 +435,11 @@ if(!e_QUERY){																//show main categories
 
 
 // ##### Display options --------------------------------------------------------------------------
-function admin_content_config_adminmenu(){
-
+function admin_content_config_adminmenu()
+{
+	global $pref;
+	if (!isset($pref['plug_installed']['content'])) return '';
+	
                 global $sql, $plugintable, $aa;
 
 				//toggle to show categories in admin right hand menu

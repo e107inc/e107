@@ -18,7 +18,8 @@
 */
 require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-if (!getperms("P")) {
+if (!isset($pref['plug_installed']['poll']) || !getperms("P")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }

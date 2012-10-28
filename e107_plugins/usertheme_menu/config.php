@@ -22,7 +22,7 @@ include_lan(e_PLUGIN."usertheme_menu/languages/".e_LANGUAGE.".php");
 require_once(e_HANDLER.'userclass_class.php');
 
 
-if (!getperms("2")) 		// Same permissions as menu configuration
+if (!isset($pref['plug_installed']['usertheme_menu']) || !getperms("2")) 		// Same permissions as menu configuration
 {
 	header("location:".e_BASE."index.php");
 	exit ;

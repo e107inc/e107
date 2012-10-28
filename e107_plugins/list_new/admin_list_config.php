@@ -18,7 +18,12 @@
 
 //include and require several classes
 require_once("../../class2.php");
-if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
+if(!isset($pref['plug_installed']['list_new']) || !getperms("1"))
+{ 
+	header("location:".e_BASE."index.php"); 
+	exit ;
+}
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -527,7 +532,10 @@ function pref_submit() {
 
 
 // ##### Display options --------------------------------------------------------------------------
-function admin_list_config_adminmenu(){
+function admin_list_config_adminmenu()
+{
+	global $pref;
+	if (!isset($pref['plug_installed']['list_new'])) return '';
 
 				$act = "";
 				unset($var);

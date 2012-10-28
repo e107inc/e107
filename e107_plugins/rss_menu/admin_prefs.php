@@ -29,7 +29,11 @@ Notes:
 */
 
 require_once("../../class2.php");
-if(!getperms("P")){ header("location:".e_BASE."index.php"); exit(); }
+if(!isset($pref['plug_installed']['rss_menu']) || !getperms("P"))
+{ 
+	header("location:".e_BASE."index.php"); 
+	exit(); 
+}
 
 include_lan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'.php');
 

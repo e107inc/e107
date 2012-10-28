@@ -25,7 +25,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 require_once("../../class2.php");
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
-if (!getperms("P"))
+if (!isset($pref['plug_installed']['forum']) || !getperms("P"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -1561,6 +1561,8 @@ class forum
 	{
 		global $forum;
 		global $action;
+		global $pref;
+		if (!isset($pref['plug_installed']['forum'])) return '';
 		$forum->show_options($action);
 	}
 	?>

@@ -17,7 +17,7 @@
 */
 
 require_once('../../class2.php');
-if (!getperms('P')) 
+if (!isset($pref['plug_installed']['links_page']) || !getperms('P')) 
 {
 	header('location:'.e_BASE.'index.php');
 	exit();
@@ -247,7 +247,9 @@ elseif (isset($qs[0]))
 // ##### Display options --------------------------------------------------------------------------
 function admin_linkspage_config_adminmenu()
 {
-	global $qs, $sql;
+	global $qs, $sql, $pref;
+	if (!isset($pref['plug_installed']['links_page'])) return '';
+	
 	$act = varset($qs[0],'cat');
 	if($act == 'cat' && isset($qs[1]))
 	{

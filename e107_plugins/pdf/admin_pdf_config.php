@@ -17,6 +17,12 @@
 */
 
 require_once("../../class2.php");
+if (!isset($pref['plug_installed']['pdf']) || !getperms("P")) 
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

@@ -20,7 +20,7 @@ $eplug_admin = TRUE;
 require_once("../../class2.php");
 include_lan(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
 
-if (!getperms("4")) {
+if (!isset($pref['plug_installed']['tree_menu']) || !getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit ;
 }
