@@ -193,6 +193,7 @@ define("ADLAN_LAT_5", "Submitted links");
 define("ADLAN_LAT_6", "Reported forum posts");
 define("ADLAN_LAT_7", "File uploads");
 define("ADLAN_LAT_8", "There are unmoderated administrator messages");
+define("ADLAN_LAT_9", "Comments pending");
 
 //LAN_WARNING define("ADLAN_ERR_1", "Warning!");
 define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed <b>immediately</b>. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
