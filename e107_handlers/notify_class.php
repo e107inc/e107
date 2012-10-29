@@ -19,6 +19,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+require_once(e_HANDLER.'date_handler.php');
+
 class notify {
 
 	var $notify_prefs;
@@ -221,7 +223,16 @@ function notify_commentpending($data)
 	global $nt, $tp;
 	foreach($data as $key=>$val)
 	{
-		$message .= "<br /><b>".$key.":</b> ".$val;
+		switch ($key)
+		{
+			case 'comment_subject' :	// Just ignore - its in the title
+				break;
+			case 'comment_time' :
+				$message .= "<br /><b>".$key.":</b> ".convert::convert_date($val, 'short');
+				break;
+			default :
+			$message .= "<br /><b>".$key.":</b> ".$val;
+		}
 	}	
 	$nt -> send('commentpending', NT_LAN_CM_1.': '.$data['comment_subject'], $message);
 }
