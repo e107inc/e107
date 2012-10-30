@@ -202,7 +202,7 @@ class language{
 			"Japanese"		=> "日本語",
 			"Korean"		=> "한국어",
 			"Lithuanian"	=> "Lietuvių",
-			"Mongolian"		=> "монгол",
+			"Mongolian"		=> "Монгол",
 			"Nepali"		=> "नेपाली",
 			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
