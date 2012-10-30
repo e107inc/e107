@@ -211,6 +211,17 @@ define("DOWLAN_196", "list");
 define("DOWLAN_197", "random");
 define("DOWLAN_198", "Filter");
 
+define("DOWLAN_199", "Beware: after pruning the statistics shown per download might not reflect their total history!");
+define("DOWLAN_200", "Number");
+define("DOWLAN_201", "Year/month");
+define("DOWLAN_202", "Prune downloads history");
+define("DOWLAN_203", "Download history records deleted.");
+define("DOWLAN_204", "Back to prune overview");
+define("DOWLAN_205", "Prune downloads history details");
+define("DOWLAN_206", "Download history record deleted.");
+define("DOWLAN_207", "Back to prune details overview");
+define("DOWLAN_208", "Prune downloads history");
+
 define("DOWLAN_HELP_1", "Help");
 define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");
 define("DOWLAN_HELP_3", "Help for cat");
@@ -225,5 +236,4 @@ define("DOWLAN_HELP_10", "Help for upload options");
 define("DOWLAN_INSTALL_DONE", "Your download plugin is now installed");
 define("DOWLAN_DESCRIPTION", "This plugin is a fully featured Download system");
 define("DOWLAN_CAPTION", "Configure Download");
-
 ?>
