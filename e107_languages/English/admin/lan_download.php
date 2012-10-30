@@ -153,14 +153,14 @@ define("DOWLAN_164", "IP");
 define("DOWLAN_165", "Date / time");
 define("DOWLAN_166", "Return to Downloads Front Page");
 
-define("DOWLAN_167", "Beware: after pruning the statistics shown per download might not reflect their total history!");
-define("DOWLAN_168", "Number");
-define("DOWLAN_169", "Year/month");
-define("DOWLAN_170", "Prune downloads history");
-define("DOWLAN_171", "Download history records deleted.");
-define("DOWLAN_172", "Back to prune overview");
-define("DOWLAN_173", "Prune downloads history details");
-define("DOWLAN_174", "Download history record deleted.");
-define("DOWLAN_175", "Back to prune details overview");
-define("DOWLAN_176", "Prune downloads history");
+define("DOWLAN_199", "Beware: after pruning the statistics shown per download might not reflect their total history!");
+define("DOWLAN_200", "Number");
+define("DOWLAN_201", "Year/month");
+define("DOWLAN_202", "Prune downloads history");
+define("DOWLAN_203", "Download history records deleted.");
+define("DOWLAN_204", "Back to prune overview");
+define("DOWLAN_205", "Prune downloads history details");
+define("DOWLAN_206", "Download history record deleted.");
+define("DOWLAN_207", "Back to prune details overview");
+define("DOWLAN_208", "Prune downloads history");
 ?>

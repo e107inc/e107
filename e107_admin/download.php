@@ -484,7 +484,7 @@ if($action == 'limits')
 
 if($action == 'prune')
 {
-	$txt = DOWLAN_167."<br />";
+	$txt = DOWLAN_199."<br />";
 	$qry = "SELECT COUNT( DISTINCT download_request_id ) AS nmbr
 			, FROM_UNIXTIME(download_request_datestamp, \"%Y-%m\") AS yearmonth
 			FROM ".MPREFIX."download_requests
@@ -492,22 +492,22 @@ if($action == 'prune')
 			ORDER BY download_request_datestamp DESC";
 	$sql->db_Select_Gen($qry);
 	$txt .= "<table class='fborder' style='width:100%'>";
-	$txt .= "<tr><td class='fcaption'>".DOWLAN_168."</td><td class='fcaption'>".DOWLAN_169."</td><td class='fcaption'>".LAN_OPTIONS."</td></tr>";
+	$txt .= "<tr><td class='fcaption'>".DOWLAN_200."</td><td class='fcaption'>".DOWLAN_201."</td><td class='fcaption'>".LAN_OPTIONS."</td></tr>";
 	while($row = $sql->db_Fetch()) 
 	{
 		$txt .= "<tr><td class='forumheader3'>". $row['nmbr'] ."</td><td class='forumheader3'><a href='".e_SELF."?prune_details.".$row['yearmonth']."' alt='' >". $row['yearmonth'] . "</a></td><td class='forumheader3'><a href='".e_SELF."?del_month.".$row['yearmonth']."' alt=''><img src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' /></a></td></tr>";
 	}
 	$txt .= "</table>";	
-	$ns->tablerender(DOWLAN_170, $txt);
+	$ns->tablerender(DOWLAN_202, $txt);
 }
 
 if($action == 'del_month')
 {
 	if($sql -> db_Delete("download_requests", "FROM_UNIXTIME(download_request_datestamp, \"%Y-%m\")='".$tp->toDB($sub_action)."'"))
 	{
-		$txt = "<div style='text-align:center'>".DOWLAN_171."</div>";
-		$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_172."' onClick=\"parent.location='".e_SELF."?prune'\" /></div>";
-		$ns-> tablerender(DOWLAN_170, $txt);
+		$txt = "<div style='text-align:center'>".DOWLAN_203."</div>";
+		$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_204."' onClick=\"parent.location='".e_SELF."?prune'\" /></div>";
+		$ns-> tablerender(DOWLAN_202, $txt);
 	}
 }
 
@@ -524,7 +524,7 @@ if($action == 'prune_details')
 			WHERE FROM_UNIXTIME(download_request_datestamp, \"%Y-%m\") = '".$sub_action."'
 			ORDER BY dr.download_request_datestamp DESC";
 	$sql3->db_Select_Gen($qry3);
-	$txt = DOWLAN_167."<br />";
+	$txt = DOWLAN_199."<br />";
 	$txt .= "<table class='fborder' style='width:100%'>";
 	$txt .= "<tr><td class='fcaption'>".DOWLAN_163."</td><td class='fcaption'>".DOWLAN_164."</td><td class='fcaption'>".DOWLAN_27."</td><td class='fcaption'>".DOWLAN_165."</td><td class='fcaption'>".LAN_OPTIONS."</td></tr>";
 	while($row3 = $sql3->db_Fetch()) 
@@ -538,17 +538,17 @@ if($action == 'prune_details')
 		$txt .= "<tr><td class='forumheader3'><a href='".SITEURL."user.php?id." .$row3['download_request_userid']. "' alt=''>". $user_name ."</a></td><td class='forumheader3'>". $row3['download_request_ip'] . "</td><td class='forumheader3'><a href='".SITEURL."download.php?view.".$row3['download_request_download_id']."' alt=''>". $row3['download_name'] . "</a></td><td class='forumheader3'>". $download_request_datestamp . "</td><td class='forumheader3'><a href='".e_SELF."?del_detail.".$sub_action.".".$row3['download_request_id']."' alt=''><img src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' /></a></td></tr>";
 	}
 	$txt .= "</table>";	
-	$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_172."' onClick=\"parent.location='".e_SELF."?prune'\"' /></div>";
-	$ns->tablerender(DOWLAN_173."&nbsp;".$sub_action , $txt);
+	$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_204."' onClick=\"parent.location='".e_SELF."?prune'\"' /></div>";
+	$ns->tablerender(DOWLAN_205."&nbsp;".$sub_action , $txt);
 }
 
 if($action == 'del_detail')
 {
 	if($sql -> db_Delete("download_requests", "download_request_id='".intval($id)."'"))
 	{
-		$txt = "<div style='text-align:center'>".DOWLAN_174."</div>";
-		$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_175."' onClick=\"parent.location='".e_SELF."?prune_details.".$sub_action."'\" /></div>";
-		$ns-> tablerender(DOWLAN_173, $txt);
+		$txt = "<div style='text-align:center'>".DOWLAN_206."</div>";
+		$txt .= "<br /><div style='text-align:center;'><input class='button' type='submit' value='".DOWLAN_207."' onClick=\"parent.location='".e_SELF."?prune_details.".$sub_action."'\" /></div>";
+		$ns-> tablerender(DOWLAN_205, $txt);
 	}
 }
 
@@ -788,7 +788,7 @@ class download
 		$var['mirror']['text'] = DOWLAN_128;
 		$var['mirror']['link'] = e_SELF."?mirror";
 		
-		$var['prune']['text'] = DOWLAN_176;
+		$var['prune']['text'] = DOWLAN_208;
 		$var['prune']['link'] = e_SELF."?prune";
 
 		show_admin_menu(DOWLAN_32, $action, $var);
