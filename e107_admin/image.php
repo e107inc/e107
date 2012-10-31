@@ -323,7 +323,7 @@ class media_form_ui extends e_admin_form_ui
 		return $frm->selectbox('resize_method',$options,$curval)."<div class='field-help'>".IMALAN_4."</div>";										
 	}
 	
-	private function rotateImages($ids,$type)
+	public function rotateImages($ids,$type)
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -381,7 +381,7 @@ class media_form_ui extends e_admin_form_ui
 	 * @param int
 	 * @param int
 	 */
-	private function resizeImage($oldpath,$img_import_w,$img_import_h)
+	public function resizeImage($oldpath,$img_import_w,$img_import_h)
 	{
 		
 		try
@@ -412,7 +412,7 @@ class media_form_ui extends e_admin_form_ui
 
 
 
-	private function resizeImages($ids,$type)
+	public function resizeImages($ids,$type)
 	{
 		
 		$sql = e107::getDb();
@@ -454,9 +454,11 @@ class media_form_ui extends e_admin_form_ui
 	}
 	
 	
-	private function resize_dimensions($curval) // ie. never manually resize another image again!
+	public function resize_dimensions($curval) // ie. never manually resize another image again!
 	{
+
 		$text = "";
+	
 		$frm = e107::getForm();
 		$pref 	= e107::getPref();
 		
