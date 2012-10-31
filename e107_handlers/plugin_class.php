@@ -1566,21 +1566,21 @@ class e107plugin
 				{
 					$type = $v['@attributes']['type'];
 					
-					if($type != 'image' && $type !='file')
+					if(strpos($type, 'image') !== 0 && strpos($type, 'file') !== 0 && strpos($type, 'video') !== 0)
 					{
 						continue; 	
 					}
 					
-					if($c == 3 || ($prevType == $type))
+					if($c == 4 || ($prevType == $type))
 					{
-						$mes->addDebug("Only 2 Media Categories are permitted during install. One for images and one for files.");
+						$mes->addDebug("Only 3 Media Categories are permitted during install. One for images and one for files.");
 						break;
 					}
 					
 					$prevType = $type;
 									
 					$data['owner'] = $folder;
-					$data['category'] = $folder."_".$c;	
+					$data['category'] = $folder."_".$type;	
 					$data['title'] = $v['@value'];
 				//	$data['type'] = $v['@attributes']['type']; //TODO
 					$data['class'] = 253;
