@@ -155,7 +155,10 @@ class media_cat_ui extends e_admin_ui
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'nolist'=>true, 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
          	'media_cat_owner' 		=> array('title'=> "Owner",			'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
+         	
+         	'media_cat_type' 		=> array('title'=> "Type",			'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
+         	
+			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
@@ -173,6 +176,9 @@ class media_cat_ui extends e_admin_ui
 			"page"		=> "page",
 			"download"	=> "download"					
 		);
+		
+		// FIXME lan
+		$this->fields['media_cat_type']['writeParms'] = array('image' => 'Image', 'file' => 'File', 'video' => 'Video');
 		
 		if($this->getAction() == 'list')
 		{	
@@ -207,10 +213,11 @@ class media_cat_ui extends e_admin_ui
 
 		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
 		//$new_data['media_cat_category'] = str_replace($replace,"-",$new_data['media_cat_category']);
+		$type = $this->getRequest()->getPosted('media_cat_type', 'image').'_';
 		
 		$increment = ($this->ownerCount[$new_data['media_cat_owner']] +1);
-		$new_data['media_cat_category'] = $new_data['media_cat_owner']."_".$increment;
-	
+		$new_data['media_cat_category'] = $new_data['media_cat_owner'].'_'.$type.$increment;
+		//print_a($new_data); exit;
 		return $new_data;
 	}
 	
