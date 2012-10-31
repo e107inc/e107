@@ -591,6 +591,8 @@ class media_admin_ui extends e_admin_ui
 		protected $batchDelete = true;
 	//	protected $defaultOrder = 'desc';
 		protected $listOrder = 'm.media_id desc'; // show newest images first. 
+		public $deleteConfirmScreen = true;
+		public $deleteConfirmMessage = 'You are about to delete %d records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!';
 
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	/*
