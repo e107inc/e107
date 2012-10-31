@@ -3044,8 +3044,8 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		if($this->_alias_parsed) return $this; // already parsed!!!
 
-
-		/* OUTDATED. 
+		$this->joinAlias(); // generate Table Aliases from listQry
+		
 		if($this->getJoinData())
 		{
 			foreach ($this->getJoinData() as $table => $att)
@@ -3069,11 +3069,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$this->setJoinData($table, $att);
 			}
 		}
-		*/
-
-
-		$this->joinAlias(); // generate Table Aliases from listQry
-
+		
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
@@ -3084,14 +3080,14 @@ class e_admin_controller_ui extends e_admin_controller
 				$tmp = explode('.', $field, 2);
 				$table = $this->getTableFromAlias($tmp[0]);
 				$att['table'] = $table;
-				$att['alias'] = $field;
+				$att['alias'] = $tmp[0];
 				$att['field'] = $tmp[1];
 				$att['__tableField'] = $field;
-				$att['__tableFrom'] = "`#".$table."`.".$tmp[1]." AS ".$field;
+				$att['__tablePath'] = $att['alias'].'.';
+				$att['__tableFrom'] = "`#".$table."`.".$tmp[1];//." AS ".$att['alias'];
 				$field = $att['alias'] ? $tmp[1] : $tmp[0];
-				
+
 				$fields[$field] = $att;
-				
 				unset($tmp);
 			}
 			else
@@ -3105,7 +3101,8 @@ class e_admin_controller_ui extends e_admin_controller
 					$att['table'] = $table;
 					$att['alias'] = $newField;
 					$att['__tableField'] = $newField;	
-					$att['__tableFrom'] = "`#".$table."`.".$field." AS ".$newField;
+					// $att['__tablePath'] = $newField; ????!!!!!
+					$att['__tableFrom'] = "`#".$table."`.".$field;//." AS ".$newField;
 				}			
 				elseif(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
 				{
@@ -3186,6 +3183,23 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			
 		}
+		elseif($this->tableJoin)
+		{
+			foreach ($this->tableJoin as $tbl => $data) 
+			{
+				$matches = explode('.', $tbl, 2);
+				$this->joinAlias[$matches[1]] = $matches[0]; // array. eg $this->joinAlias['core_media'] = 'm';
+				//'user_name'=>'u.user_name'
+				if(isset($data['fields']) && $data['fields'] !== '*')
+				{
+					$tmp = explode(',', $data['fields']);
+					foreach ($tmp as $field) 
+					{
+						$this->joinField[$field] = $matches[0].'.'.$field;
+					}
+				}
+			}
+		}
 		
 	}
 
@@ -3247,9 +3261,9 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// select FROM... for main table
-			if($var['alias'] && vartrue($var['__tableFrom']))
+			if($var['alias'] && vartrue($var['__tableField']))
 			{
-				$tableSFieldsArr[] = $var['__tableFrom'];
+				$tableSFieldsArr[] = $var['__tableField'];
 			}
 
 			// filter for WHERE and FROM clauses
@@ -3566,6 +3580,12 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @var boolean
 	 */
 	public $deleteConfirmScreen = false;
+	
+	/**
+	 * Confirm screen custom message
+	 * @var string
+	 */
+	public $deleteConfirmMessage = null;
 
 	/**
 	 * Constructor
@@ -4430,8 +4450,11 @@ class e_admin_form_ui extends e_form
 		$forms = array();
 		$id_array = explode(',', $ids);
 		$delcount = count($id_array);
-
-		e107::getMessage()->addWarning(sprintf(LAN_UI_DELETE_WARNING, $delcount));
+		
+		if(!empty($controller->deleteConfirmMessage)) 
+			e107::getMessage()->addWarning(sprintf($controller->deleteConfirmMessage, $delcount));
+		else 
+			e107::getMessage()->addWarning(sprintf(LAN_UI_DELETE_WARNING, $delcount));
 
 		$fieldsets['confirm'] = array(
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
