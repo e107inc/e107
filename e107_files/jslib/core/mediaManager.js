@@ -274,7 +274,10 @@ $(document).ready(function()
 	
 		// ----------------- Upload --------------------------------------
 		
-		var upath = $("#uploader").attr("rel");
+		var upath = $("#uploader").attr("rel"),
+			extImg = $("#uploader").attr("extimg"),
+			extArchive = $("#uploader").attr("extarch"),
+			extDoc = $("#uploader").attr("extdoc");
 	
 		$("#uploader").pluploadQueue({
 	        // General settings
@@ -289,8 +292,9 @@ $(document).ready(function()
 		 
 		        // Specify what files to browse for
 		        filters : [
-		            {title : "Image files", extensions : "jpg,gif,png,jpeg"},
-		            {title : "Zip files", extensions : "zip,gz"}
+		            {title : "Image files", extensions : extImg || "jpg,gif,png,jpeg"},
+		            {title : "Zip files", extensions : extArchive || "zip,gz"},
+		            {title : "Document files", extensions : extDoc || "pdf,doc,docx,xls,xlsm"}
 		        ],
 		        preinit : {
             		Init: function(up, info) {

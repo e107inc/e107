@@ -1815,6 +1815,16 @@ class e_form
 			case 'icon':
 				$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
 			break;
+			
+			case 'file':
+				if(vartrue($parms['base']))
+				{
+					$url = $parms['base'].$value;
+				}
+				else $url = e107::getParser()->replaceConstants($value, 'full');
+				$name = basename($value);
+				$value = '<a href="'.$url.'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
+			break;
 
 			case 'image': //TODO - thumb, js tooltip...
 				if($value)
@@ -1857,6 +1867,10 @@ class e_form
 
 			case 'datestamp':
 				$value = $value ? e107::getDate()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
+			break;
+			
+			case 'date':
+				// just show original value
 			break;
 
 			case 'userclass':

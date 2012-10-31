@@ -174,9 +174,14 @@ class media_cat_ui extends e_admin_ui
 			"download"	=> "download"					
 		);
 		
-		if($_GET['action'] == 'list')
+		if($this->getAction() == 'list')
 		{	
 			$this->fields['media_cat_owner']['writeParms'] = $restricted;
+		}
+		
+		if($this->getAction() == 'create')
+		{
+			$this->fields['media_cat_category']['noedit'] = true;
 		}
 
 		$sql = e107::getDb();
@@ -874,7 +879,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($file)
 		{
-			$cat = $_GET['for'];
+			$cat = e107::getParser()->toDB($cat);
 			if(!isset($this->cats[$cat]))
 			{
 				return;
@@ -910,7 +915,7 @@ class media_admin_ui extends e_admin_ui
 	function uploadPage()
 	{
 		if(!ADMIN){ exit; } //TODO check for upload-access in perms. 
-		
+
 		// if 'for' has no value, files are placed in /temp and not added to the db. 
 		$text = '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>No HTML5 support.</p>
@@ -954,7 +959,9 @@ class media_admin_ui extends e_admin_ui
 		
 		if($type == 'file')
 		{
-			$text .= $this->getUI()->getList();	//FIXME NOT WORKING! 
+			$this->perPage = 0;
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+			$text .= $this->getUI()->getList();	
 		}
 		else 
 		{
