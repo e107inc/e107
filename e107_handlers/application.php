@@ -2498,8 +2498,8 @@ class eUrlRule
 		if ($this->urlSuffix !== null)	$pathInfo = $manager->removeUrlSuffix($rawPathInfo, $this->urlSuffix);
 		
 		$pathInfo = rtrim($pathInfo, '/').'/';
-		
-		if (preg_match($this->pattern.$case, $pathInfo, $matches))
+		// pathInfo is decoded, pattern could be encoded - required for proper url assemble (e.g. cyrillic chars)
+		if (preg_match(rawurldecode($this->pattern).$case, $pathInfo, $matches))
 		{
 			foreach ($this->defaultParams as $name => $value)
 			{
