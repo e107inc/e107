@@ -1157,6 +1157,10 @@ class e_menuManager {
 		{
 			$caption = deftrue($menuParms['admin_title'], $menuParms['admin_title']).$vis;
 		}
+		elseif(isset($menuParms['title']) && $menuParms['title'])
+		{
+			$caption = deftrue($menuParms['title'], $menuParms['title']).$vis;
+		}
 		else $caption = $menu_name.$vis;
 		
 		$menu_info = "{$menu_location}.{$menu_order}";
