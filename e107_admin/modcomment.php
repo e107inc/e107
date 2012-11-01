@@ -124,9 +124,7 @@ if ($editid)
 		$text .= "<tr><td><textarea class='tbox' name='comment_comment' cols='1' rows='15' style='width:100%;'>".$row['comment_comment']."</textarea></td></tr>";
 		$text .= "<tr><td colspan='6' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' />
 		</td></tr>";
-		$text .= "</table>
-		<div><input type='hidden' name='e-token' value='".e_TOKEN."' /></div>
-		</form></div>";
+		$text .= "<div><input type='hidden' name='e-token' value='".e_TOKEN."' /></div>";
 	}
 
 	$text .= "</table></form></div>";
