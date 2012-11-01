@@ -652,18 +652,18 @@ class media_admin_ui extends e_admin_ui
 		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
 		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
 		
-		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'text', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'number', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		'watermark_text'				=> array('title'=> 'Watermark Text', 'type' => 'text', 'data' => 'str', 'help'=>'Optional Watermark Text'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 		'watermark_font'				=> array('title'=> 'Watermark Font', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Optional Watermark Font. Upload more .ttf fonts to the /fonts folder in your theme directory.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_size'				=> array('title'=> 'Watermark Size', 'type' => 'text', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_size'				=> array('title'=> 'Watermark Size', 'type' => 'number', 'data' => 'int', 'help'=>'Size of the font in pts'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		
 		'watermark_pos'					=> array('title'=> 'Watermark Position', 'type' => 'dropdown', 'data' => 'str', 'help'=>'Watermark Position'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
-		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'type' => 'text', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
+		'watermark_margin'				=> array('title'=> 'Watermark Margin', 'type' => 'number', 'data' => 'int', 'help'=>'The distance that watermark will appear from the edge of the image.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		
 		'watermark_color'				=> array('title'=> 'Watermark Color', 'type' => 'text', 'data' => 'str', 'help'=>'Color of the watermark eg. 000000'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 		'watermark_shadowcolor'			=> array('title'=> 'Watermark Shadow-Color', 'type' => 'text', 'data' => 'str', 'help'=>'Shadow Color of the watermark eg. ffffff '), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						
 	
-		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'type' => 'text', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
+		'watermark_opacity'				=> array('title'=> 'Watermark Opacity', 'type' => 'number', 'data' => 'int', 'help'=>'Enter a number between 1 and 100'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),				
 	
 	);
 	

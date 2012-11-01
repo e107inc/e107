@@ -690,7 +690,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_136."</td>
 						<td class='control'>
-							".$frm->text('signup_maxip', $pref['signup_maxip'], 3)."
+							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
 							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
@@ -884,7 +884,7 @@ $text .= "
 					<tr>
 						<td class='label'>".CUSTSIG_16."</td>
 						<td class='control'>
-							".$frm->text('signup_pass_len', $pref['signup_pass_len'], 2)."
+							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
 						</td>
 					</tr>
 		
@@ -914,13 +914,13 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_158.":</td>
 						<td class='control'>
-							".$frm->text('displayname_maxlength', $pref['displayname_maxlength'], 3)."
+							".$frm->number('displayname_maxlength', $pref['displayname_maxlength'], 3)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_172.":</td>
 						<td class='control'>
-							".$frm->text('loginname_maxlength', $pref['loginname_maxlength'], 3)."
+							".$frm->number('loginname_maxlength', $pref['loginname_maxlength'], 3)."
 						</td>
 					</tr>
 ";
@@ -1269,7 +1269,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_36.":</td>
 						<td class='control'>
-							".$frm->text('antiflood_timeout', $pref['antiflood_timeout'], 3)."
+							".$frm->number('antiflood_timeout', $pref['antiflood_timeout'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_38."</div>
 						</td>
 					</tr>
