@@ -58,6 +58,7 @@
  *
  */
 
+define("BAN_TYPE_LEGACY",0); // Quick fix for PHP Notice. 
 
 class eIPHandler
 {
@@ -68,7 +69,7 @@ class eIPHandler
 
 	const BAN_REASON_COUNT =	7;				// Update as more ban reasons added (max 10 supported)
 
-	const BAN_TYPE_LEGACY = 	0;				// Shouldn't get these unless update process not run
+//	const BAN_TYPE_LEGACY = 	0;				// Shouldn't get these unless update process not run
 	const BAN_TYPE_MANUAL = 	-1;				/// Manually entered bans
 	const BAN_TYPE_FLOOD  = 	-2;				/// Flood ban
 	const BAN_TYPE_HITS = 		-3;
