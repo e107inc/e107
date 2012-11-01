@@ -343,7 +343,10 @@ function update_706_to_800($type='')
 		array('oldpath'	=> 'counter_menu',		'newpath' => 'siteinfo',	'menu' => 'counter_menu'),
 		array('oldpath'	=> 'usertheme_menu',	'newpath' => 'user_menu',	'menu' => 'usertheme_menu'),
 		array('oldpath'	=> 'userlanguage_menu',	'newpath' => 'user_menu',	'menu' => 'userlanguage_menu'),
-		array('oldpath'	=> 'lastseen_menu',		'newpath' => 'online',		'menu' => 'lastseen_menu')
+		array('oldpath'	=> 'lastseen_menu',		'newpath' => 'online',		'menu' => 'lastseen_menu'),
+		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news_menu'),
+		array('oldpath'	=> 'other_news_menu',	'newpath' => 'news',		'menu' => 'other_news2_menu')
+		
 	);
 
 

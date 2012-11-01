@@ -1719,7 +1719,7 @@ class e_form
 
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
-			
+				
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
@@ -1735,7 +1735,7 @@ class e_form
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
 
-				if($opts['multiple'])
+				if($opts['multiple'] || $attributes['data']=='comma')
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -1752,6 +1752,8 @@ class e_form
 					$value = $ret;
 				}
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
+				
+				// return ;
 			break;
 
 			case 'radio':
@@ -2198,6 +2200,7 @@ class e_form
 			break;
 
 			case 'dropdown':
+				
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
