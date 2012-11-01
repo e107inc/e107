@@ -470,7 +470,7 @@ class media_form_ui extends e_admin_form_ui
 		//	"featurebox-bbcode" 	=> "Featurebox [img] bbcode",		
 		);
 		
-		if(vartrue($pref['e_imageresize']))
+		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
 		{
 			foreach($pref['e_imageresize'] as $val)
 			{
@@ -486,9 +486,9 @@ class media_form_ui extends e_admin_form_ui
 			$valW = vartrue($curval[$key]['w']);
 			$valH = vartrue($curval[$key]['h']);
 		
-			$text .= "<div style='margin-bottomp:8px;text-align:right;width:280px'>".$title.": ";
-			$text .= "<input class='e-tip' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
-			$text .= "<input class='e-tip' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
+			$text .= "<div style='margin-bottomp:8px;text-align:right;width:290px'>".$title.": ";
+			$text .= "<input class='e-tip e-spinner' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
+			$text .= "<input class='e-tip e-spinner' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
 			$text .= "</div>";
 		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
 		}	
@@ -648,8 +648,8 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
-		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'text', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
+		'im_width'						=> array('title'=> "Avatar Width", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'), //TODO LAN
+		'im_height'						=> array('title'=> "Avatar Height", 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=Avatar images will be constrained to these dimensions (in pixels)'),
 		'resize_dimensions'				=> array('title'=> "Resize-Image Dimensions", 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> 'Watermark Activation', 'type' => 'text', 'data' => 'str', 'help'=>'All images with a width or height greater than this value will be given a watermark during resizing.'), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),						

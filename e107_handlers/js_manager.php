@@ -25,17 +25,25 @@ class e_jsmanager
 			'e107.js'),
 		/*	
 		'jquery'	=> array(
-			"jquery/jquery-1.7.2.min.js",
-			"jquery/jquery-ui-1.8.21.custom.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
+			"http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css",
+			"http://code.jquery.com/jquery-1.8.2.js",
+			"http://code.jquery.com/ui/1.9.1/jquery-ui.js"		
 			),	
-		*/
+		
 		
 		'jquery'	=> array(
 			"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
 			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js",
 			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
 			)
+		*/	
+		
+		
+		'jquery'	=> array(
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
+			"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"		
+			)	
 			
 	);
 	

@@ -9,7 +9,8 @@ $.ajaxSetup({
 $(document).ready(function()
 {
     	 $(".e-hideme").hide();
-    	 $(".e-expandit").show();
+    	 $(".e-expandit").show();   	 
+    	 $(".e-spinner").spinner();
     		
     		
     	// default 'toggle'. 	
@@ -612,24 +613,26 @@ $(document).ready(function()
 		
 		
 		
-	function SyncWithServerTime(serverTime,domain)
+function SyncWithServerTime(serverTime, path, domain)
+{
+	if (serverTime) 
 	{
-		if (serverTime) 
-		{
-		  	/* update time difference cookie */
-			var serverDelta=Math.floor(localTime-serverTime);
-			
-		  	document.cookie = 'e107_tdOffset='+serverDelta+'; path=/; domain= .'+domain;
-		  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path=/; domain=.'+domain; /* server time when set */
-		}
-	
-		var tzCookie = 'e107_tzOffset=';
-	//	if (document.cookie.indexOf(tzCookie) < 0) {
-			/* set if not already set */
-			var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-			document.cookie = tzCookie + timezoneOffset+'; path=/; domain=.'+domain;
-	//	}
+	  	/* update time difference cookie */
+		var serverDelta=Math.floor(localTime-serverTime);
+		if(!path) path = '/';
+		if(!domain) domain = '';
+		else domain = '; domain=' + domain;
+	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain; /* server time when set */
 	}
+
+	var tzCookie = 'e107_tzOffset=';
+//	if (document.cookie.indexOf(tzCookie) < 0) {
+		/* set if not already set */
+		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
+		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain;
+//	}
+}
 	
 	
 	function urljump(url){
