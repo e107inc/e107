@@ -118,6 +118,18 @@ class e_form
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 	
+	function number($name, $value, $maxlength = 200, $options = array())
+	{
+		$maxlength = vartrue($parms['maxlength'], 255);
+		unset($parms['maxlength']);
+		if(!vartrue($parms['size'])) $parms['size'] = 15;
+		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner';
+		if(!$value) $value = '0';
+		return $this->text($key, $value, $maxlength, $parms);	
+	}
+	
+	
+	
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
