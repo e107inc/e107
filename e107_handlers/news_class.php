@@ -151,6 +151,7 @@ class news {
 			return $data;
 		}
 
+		
 		// Calculate short strings for admin logging - no need to clog up the log with potentially long items
 		$logData = $data['data'];
 		if (isset($logData['news_body'])) $logData['news_body'] = $tp->text_truncate($tp->toDB($logData['news_body']),300,'...');

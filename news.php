@@ -495,7 +495,7 @@ switch ($action)
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
+		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 		break;
 
@@ -523,7 +523,7 @@ switch ($action)
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-		AND n.news_render_type<2
+		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 		GROUP by n.news_id
 		ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
 		}
@@ -537,7 +537,7 @@ switch ($action)
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-		AND n.news_render_type<2
+		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".$pref['newsposts'];
 		}
 }	// END - switch($action)

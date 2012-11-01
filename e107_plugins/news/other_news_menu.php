@@ -88,7 +88,7 @@ $nbr_cols = OTHERNEWS_COLS;
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=2  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
+WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND FIND_IN_SET(2, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
 if ($sql->db_Select_gen($query)){
 	$text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
