@@ -533,7 +533,7 @@ class e_bbcode
 				'size'			=> $helpsize
 		);
 				
-		$bbcode_shortcodes->setParserVars($data);	
+		$bbcode_shortcodes->setVars($data);	
 		
   		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE)."</div>";		
 	}
@@ -545,6 +545,8 @@ class e_bbcode
 	{
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
+	//	$text = str_replace('<!-- pagebreak -->',"[newpage=]",$text);
+
 
 		if(substr($text,0,6)=='[html]')
 		{
@@ -552,8 +554,11 @@ class e_bbcode
 		}
 		
 		// Youtube conversion (TinyMce)
+		
+	//	return $text;
+	
 		$text = preg_replace('/<img class="youtube-([\w]*)" style="([^"]*)" src="([^"]*)" alt="([^"]*)" \/>/i',"[youtube=$1]$4[/youtube]",$text);	
-		$text = preg_replace('/<!-- Start YouTube-([\w,]*)-([\w]*) -->.*<!-- End YouTube -->/i','[youtube=$1]$2[/youtube]',$text);	
+		$text = preg_replace('/<!-- Start YouTube-([\w,]*)-([\w]*) -->([^!]*)<!-- End YouTube -->/i','[youtube=$1]$2[/youtube]',$text);	
 					
 		$text = preg_replace("/<a.*?href=\"(.*?)?request.php\?file=([\d]*)\".*?>(.*?)<\/a>/i","[file=$2]$3[/file]",$text);		
 					
@@ -587,6 +592,7 @@ class e_bbcode
 		// Mostly closing tags. 
 		$convert = array(		
 			array(	"\n",			'<br />'),
+		//	array(	"\n",			'<p>'),
 			array(	"\n[/list]",	'</ul>'),
 			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=2]",		'<h2>'),

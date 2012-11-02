@@ -31,11 +31,11 @@ foreach($tmp as $c)
 	}
 }
 */
-register_shortcode('tagwords_shortcodes', TRUE);
+// register_shortcode('tagwords_shortcodes', TRUE);
 
-initShortcodeClass('tagwords_shortcodes');
+// initShortcodeClass('tagwords_shortcodes');
 
-class tagwords_shortcodes
+class tagwords_shortcodes extends e_shortcode
 {
 	var $e107;
 

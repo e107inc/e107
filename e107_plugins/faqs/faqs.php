@@ -167,8 +167,10 @@ class faq
 
 	function __construct()
 	{
+		$sc = e107::getScBatch('faqs',TRUE);
 		$this->pref = e107::getPlugConfig('faqs')->getPref();
-		setScVar('faqs_shortcodes', 'pref', $this->pref);
+		$sc->pref = $this->pref;
+		// setScVar('faqs_shortcodes', 'pref', $this->pref);
 	}
 
 	function view_all() // new funtion to render all FAQs
@@ -191,7 +193,6 @@ class faq
 		
 		while ($rw = $sql->db_Fetch())
 		{
-			// setScVar('faqs_shortcodes', 'row', $rw);
 			$sc->setVars($rw);	
 
 			if($rw['faq_info_order'] != $prevcat)
@@ -239,11 +240,9 @@ class faq
 
 		while ($rw = $sql->db_Fetch())
 		{
-			// setScVar('faqs_shortcodes', 'var', $rw);
 			$sc->setVars($rw);
 			$text .= $tp->parseTemplate($FAQ_LIST_LOOP, true);
 			$caption = "&nbsp;Category: <b>".$rw['faq_info_title']."</b>";
-
 		}
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
@@ -285,7 +284,6 @@ class faq
 		while ($row = $sql->db_Fetch())
 		{
 			$sc->setVars($row);
-			// setScVar('faqs_shortcodes', 'row', $row);
 
 			if ($row['faq_info_parent'] == '0') //
 			{
