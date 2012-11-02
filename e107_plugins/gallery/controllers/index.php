@@ -86,7 +86,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$text = "";		
 		foreach($this->catList as $val)
 		{
-			$sc->setParserVars($val);	
+			$sc->setVars($val);	
 			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
 		}	
 		$text = $template['CAT_START'].$text.$template['CAT_END'];

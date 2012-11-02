@@ -275,7 +275,7 @@ class comment
 				'rate'		=> $rating
 			);
 			
-			e107::getScBatch('comment')->setParserVars($data);
+			e107::getScBatch('comment')->setVars($data);
 			
 			e107::getScBatch('comment')->setMode('edit');
 	
@@ -395,7 +395,7 @@ class comment
 		
 		$row['rating_enabled'] = true; // Toggles rating shortcode. //TODO add pref
 		
-		e107::getScBatch('comment')->setParserVars($row);
+		e107::getScBatch('comment')->setVars($row);
 		
 		$COMMENT_TEMPLATE 					= $this->template; 
 		

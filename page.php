@@ -207,7 +207,7 @@ class pageClass
 			$ret['cachecontrol'] = false;
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
-			$this->batch = e107::getScBatch('page')->setParserVars(new e_vars($ret))->setScVar('page', array());
+			$this->batch = e107::getScBatch('page')->setVars(new e_vars($ret))->setScVar('page', array());
 			
 			define("e_PAGETITLE", $ret['title']);
 			return;
@@ -248,7 +248,7 @@ class pageClass
 		$ret['err'] = FALSE;
 		$ret['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);		// Don't cache password protected pages
 		
-		$this->batch->setParserVars(new e_vars($ret))->setScVar('page', $this->page);
+		$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page);
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($ret['title']));
 		define('META_DESCRIPTION', $this->page['page_metadscr']);
@@ -286,7 +286,7 @@ class pageClass
 		if($this->cacheData['COMMENT_FLAG'])
 		{
 			$vars = new e_vars(array('comments' => $this->pageComment(true)));
-			$comments = e107::getScBatch('page')->setParserVars($vars)->cpagecomments();
+			$comments = e107::getScBatch('page')->setVars($vars)->cpagecomments();
 		} 
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
 		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
@@ -326,7 +326,7 @@ class pageClass
 		$vars = $this->batch->getParserVars();
 		
 		// reset batch data
-		$this->batch->setParserVars(null)->setScVar('page', array());
+		$this->batch->setVars(null)->setScVar('page', array());
 		
 		// copy some data
 		$extend->title = $vars->title;
