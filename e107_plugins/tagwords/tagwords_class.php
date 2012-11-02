@@ -45,8 +45,9 @@ class tagwords
 		e107::includeLan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
 
 		//shortcodes
-		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');
-		$this->shortcodes = $tagwords_shortcodes;
+		//require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');
+		$this->shortcodes = e107::getScBatch('tagwords',TRUE);
+		//$this->shortcodes = $tagwords_shortcodes;
 
 		//template
 		if (is_readable(THEME."tagwords_template.php"))

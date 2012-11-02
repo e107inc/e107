@@ -17,9 +17,6 @@
  */
 if (!defined('e107_INIT')) { exit; }
 
-// register_shortcode('faqs_shortcodes', true);
-// initShortcodeClass('faqs_shortcodes');
-
 class faqs_shortcodes extends e_shortcode
 {
 	// var $var;

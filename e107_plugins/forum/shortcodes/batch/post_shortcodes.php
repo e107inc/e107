@@ -26,7 +26,6 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		for($i = count($tmp); $i > 0; $i--)
 		{
 			$bach->setScVar('postInfo', $tmp[$i-1]);
-			//setScVar('forum_shortcodes', 'postInfo', $tmp[$i]);
 			$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_POST, true);
 		}
 		$txt .= $this->e107->tp->parseTemplate($LATESTPOSTS_END, true);
