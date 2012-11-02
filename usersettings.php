@@ -697,7 +697,7 @@ if (e_QUERY == "update")
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
-// $sc->setParserVars($val);	
+
 e107::getScBatch('usersettings')->setVars($curVal);
 $text .= $tp->parseTemplate($USERSETTINGS_EDIT, TRUE, $usersettings_shortcodes);
 

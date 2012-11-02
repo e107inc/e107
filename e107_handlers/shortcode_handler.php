@@ -292,6 +292,12 @@ class e_parse_shortcode
 
 		$path = ($pluginName ? e_PLUGIN.$pluginName.'/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
 		
+		$pathBC = e_PLUGIN.$pluginName.'/'.$_class_fname.'.php';
+		
+		if(is_readable($pathBC)) // BC  - required. 
+		{
+			$path = $pathBC;
+		}		
 		
 		if (is_readable($path))
 		{
@@ -914,16 +920,20 @@ class e_shortcode
 
 	/**
 	 * Set external array data to be used in the batch
+	 * Use setVars() - preferred. 
 	 *
 	 * @param array $eVars
 	 * @return e_shortcode
 	 */
-	public function setParserVars($eVars)
+	public function setParserVars($eVars) //XXX will soon become private. Use setVars() instead. 
 	{
 		$this->var = $eVars;
 		return $this;
 	}
 	
+	/**
+	 * Alias of setParserVars - Preferred use by Plugins. 
+	 */
 	public function setVars($eVars) // Alias of setParserVars();
 	{
 		return $this->setParserVars($eVars);	

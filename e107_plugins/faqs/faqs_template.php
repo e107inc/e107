@@ -85,7 +85,7 @@ if(!defined("USER_WIDTH"))
         <table class='fborder' style='margin-left:auto;margin-right:auto;padding:0px;".USER_WIDTH.";' >
         <tr>
 			<td class='forumheader3' style='vertical-align:top;width:30px'>
-				<img src='".e_PLUGIN."faq/images/q.png' alt='' />
+				<img src='".e_PLUGIN_ABS."faqs/images/q.png' alt='' />
 			</td>
        	 	<td class='forumheader3' style='vertical-align:top'>
 				{FAQ_QUESTION}
@@ -94,7 +94,7 @@ if(!defined("USER_WIDTH"))
 		
         <tr>
 			<td class='forumheader3' style='width:30px;vertical-align:top'>
-				<img src='".e_PLUGIN."faq/images/a.png' alt='' />
+				<img src='".e_PLUGIN_ABS."faqs/images/a.png' alt='' />
 			</td>
         	<td class='forumheader3'>
 				<div class='faq_answer'>{FAQ_ANSWER}</div>

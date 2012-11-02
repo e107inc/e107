@@ -179,15 +179,20 @@ class faq
 
 		global $FAQ_START, $FAQ_END, $FAQ_LISTALL_START,$FAQ_LISTALL_LOOP,$FAQ_LISTALL_END;
 
-		require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ORDER BY cat.faq_info_order,f.faq_order ";
 		$sql->db_Select_gen($query);
 		$text = $tp->parseTemplate($FAQ_START, true);
 		$prevcat = "";
+		$sc = e107::getScBatch('faqs',TRUE);
+		
+	//	var_dump($sc);
+		
 		while ($rw = $sql->db_Fetch())
 		{
-			setScVar('faqs_shortcodes', 'row', $rw);
+			// setScVar('faqs_shortcodes', 'row', $rw);
+			$sc->setVars($rw);	
 
 			if($rw['faq_info_order'] != $prevcat)
 			{
@@ -222,20 +227,20 @@ class faq
 	{
 		global $ns,$row,$FAQ_LIST_START,$FAQ_LIST_LOOP,$FAQ_LIST_END;
 
-		$tp = e107::getParser();
-		$sql = e107::getDb();
-		require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		$tp 	= e107::getParser();
+		$sql 	= e107::getDb();
+		$sc 	= e107::getScBatch('faqs',TRUE);
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE f.faq_parent = '$id' ";
 		$sql->db_Select_gen($query);
-
-		setScVar('faqs_shortcodes', 'row', $row);
+		$sc->setVars($row);
 
 		$text = $tp->parseTemplate($FAQ_LIST_START, true);
 
 		while ($rw = $sql->db_Fetch())
 		{
-			setScVar('faqs_shortcodes', 'row', $rw);
+			// setScVar('faqs_shortcodes', 'var', $rw);
+			$sc->setVars($rw);
 			$text .= $tp->parseTemplate($FAQ_LIST_LOOP, true);
 			$caption = "&nbsp;Category: <b>".$rw['faq_info_title']."</b>";
 
@@ -258,7 +263,8 @@ class faq
 		// ##### Display scrolling list of existing FAQ items ---------------------------------------------------------------------------------------------------------
 		global $FAQ_CAT_START,$FAQ_CAT_PARENT,$FAQ_CAT_CHILD,$FAQ_CAT_END;
 
-		require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		// require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		$sc = e107::getScBatch('faqs',TRUE);
 
 		$text = "<div style='text-align:center'>
 			<div style='text-align:center'>";
@@ -278,8 +284,8 @@ class faq
 		$sql->db_Select_gen($qry);
 		while ($row = $sql->db_Fetch())
 		{
-
-			setScVar('faqs_shortcodes', 'row', $row);
+			$sc->setVars($row);
+			// setScVar('faqs_shortcodes', 'row', $row);
 
 			if ($row['faq_info_parent'] == '0') //
 			{
@@ -313,11 +319,14 @@ class faq
 	{
 		global $ns,$row,$sql,$aj,$pref,$cobj,$id,$tp,$FAQ_VIEW_TEMPLATE;
 
-		require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
+		
+		$sc = e107::getScBatch('faqs',TRUE);
 
 		$sql->db_Select("faqs", "*", "faq_id='$idx' LIMIT 1");
 		$row = $sql->db_Fetch();
-		setScVar('faqs_shortcodes', 'row', $row);
+
+		$sc->setVars($row);
 
 		$caption = "&nbsp;FAQ #".$row['faq_id'];
 		$text = $tp->parseTemplate($FAQ_VIEW_TEMPLATE, true);

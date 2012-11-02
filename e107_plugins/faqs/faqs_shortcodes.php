@@ -17,12 +17,12 @@
  */
 if (!defined('e107_INIT')) { exit; }
 
-register_shortcode('faqs_shortcodes', true);
-initShortcodeClass('faqs_shortcodes');
+// register_shortcode('faqs_shortcodes', true);
+// initShortcodeClass('faqs_shortcodes');
 
-class faqs_shortcodes
+class faqs_shortcodes extends e_shortcode
 {
-	var $row;
+	// var $var;
 	
 	function sc_faq_question($parm='')
 	{
@@ -30,13 +30,13 @@ class faqs_shortcodes
 				
 		if($parm == 'expand')
 		{
-			$id = "faq_".$this->row['faq_id'];
-			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHtml($this->row['faq_question'])."</a>
-			<div id='{$id}' class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->row['faq_answer'],TRUE)."</div>";		
+			$id = "faq_".$this->var['faq_id'];
+			$text = "<a class='e-expandit faq-question' href='#{$id}'>".$tp->toHtml($this->var['faq_question'])."</a>
+			<div id='{$id}' class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->var['faq_answer'],TRUE)."</div>";		
 		}
 		else
 		{
-			$text = $tp->toHtml($this->row['faq_question']);		
+			$text = $tp->toHtml($this->var['faq_question']);		
 		}
 		return $text;
 	}
@@ -44,47 +44,47 @@ class faqs_shortcodes
 	function sc_faq_question_link($parm='')
 	{
 		$tp = e107::getParser();
-		return "<a class='faq-question' href='faqs.php?cat.".$this->row['faq_info_id'].".".$this->row['faq_id']."' >".$tp -> toHtml($this->row['faq_question'])."</a>";	
+		return "<a class='faq-question' href='faqs.php?cat.".$this->var['faq_info_id'].".".$this->var['faq_id']."' >".$tp -> toHtml($this->var['faq_question'])."</a>";	
 	}
 	
 	function sc_faq_answer()
 	{
 		$tp = e107::getParser();
-		return "<div class='faq-answer'>".$tp -> toHtml($this->row['faq_answer'])."</div>";	
+		return "<div class='faq-answer'>".$tp -> toHtml($this->var['faq_answer'])."</div>";	
 	}
 	
 	function sc_faq_edit()
 	{
 		$tp = e107::getParser();
 		$faqpref = e107::getPlugConfig('faqs')->getPref();
-		if(($faqpref['add_faq'] && $this->row['faq_author'] == USERID) || ADMIN )
+		if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
 		{
-		 	return "[ <a href='faqs.php?edit.".$this->row['faq_parent'].".".$this->row['faq_id']."'>Edit</a> ]";
+		 	return "[ <a href='faqs.php?edit.".$this->var['faq_parent'].".".$this->var['faq_id']."'>Edit</a> ]";
 		}	
 	}
 	
 	function sc_faq_category()
 	{
 		$tp = e107::getParser();
-		return "<a href='".e_SELF."?cat.".$this->row['faq_info_id']."'>".$tp->toHtml($this->row['faq_info_title'])."</a>";	
+		return "<a href='".e_SELF."?cat.".$this->var['faq_info_id']."'>".$tp->toHtml($this->var['faq_info_title'])."</a>";	
 	}
 	
 	function sc_faq_catlink()
 	{
 		$tp = e107::getParser();
-		return "<a href='".e_SELF."?cat.".$this->row['faq_info_id']."'>".($this->row['faq_info_title'] ? $tp -> toHtml($this->row['faq_info_title']) : "[".NWSLAN_42."]")."</a>";	
+		return "<a href='".e_SELF."?cat.".$this->var['faq_info_id']."'>".($this->var['faq_info_title'] ? $tp -> toHtml($this->var['faq_info_title']) : "[".NWSLAN_42."]")."</a>";	
 	}
 	
 	function sc_faq_count()
 	{
 		$tp = e107::getParser();
- 		return $this->row['f_count'];
+ 		return $this->var['f_count'];
 	}
 	
 	function sc_faq_cat_diz()
 	{
 		$tp = e107::getParser();
-		return $tp->toHtml($this->row['faq_info_about'])."&nbsp;";	
+		return $tp->toHtml($this->var['faq_info_about'])."&nbsp;";	
 	}
 
 	function sc_faq_icon()

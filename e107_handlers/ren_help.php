@@ -114,7 +114,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			'size'			=> $helpsize
 		);
 				
-		$sc->setParserVars($data);	
+		$sc->setVars($data);	
 		
   		return "<div id='bbcode-panel-".$tagid."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE)."</div>";
 	}
