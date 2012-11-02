@@ -33,7 +33,7 @@ class db_verify
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 							
 	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
-		'real','double','float','decimal','numeric','varchar','char','binary','varbinary','enum','set');
+		'real','double','float','decimal','numeric','varchar','char ','binary','varbinary','enum','set'); // space after 'char' required. 
 	
 	var $modes = array(
 			'missing_table'		=> 'create',
@@ -217,8 +217,8 @@ class db_verify
 		*/
 		
 			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
-			$debugB = $rawSqlData;
-		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
+		//	$debugB = $rawSqlData;
+			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
 			if(isset($debugA))
 			{
@@ -728,6 +728,8 @@ class db_verify
 		$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 		$regex = "/^ *?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 	
+	//	echo $regex."<br /><br />";
+	
 		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
 		
 	//	$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
@@ -745,7 +747,7 @@ class db_verify
 		foreach($m[1] as $k=>$val)
 		{
 			$ret[$val] = array(
-				'type'			=> strtoupper($m[2][$k]),
+				'type'			=> trim(strtoupper($m[2][$k])),
 				'value'			=> $m[3][$k],
 				'attributes'	=> strtoupper($m[4][$k]),
 				'null'			=> strtoupper($m[5][$k]),
