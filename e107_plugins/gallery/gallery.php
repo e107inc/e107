@@ -61,7 +61,7 @@ class gallery
 		$text = "";		
 		foreach($this->catList as $val)
 		{
-			$sc->setParserVars($val);	
+			$sc->setVars($val);	
 			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
 		}	
 		$text = $template['CAT_START'].$text.$template['CAT_END'];
@@ -88,7 +88,7 @@ class gallery
 		
 		foreach($list as $row)
 		{
-			$sc->setParserVars($row);	
+			$sc->setVars($row);	
 			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE);
 		}
 					
