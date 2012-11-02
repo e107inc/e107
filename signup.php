@@ -151,7 +151,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 	elseif(!$_POST['submit_resend'])
 	{	// Display form to get info from user
 		$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?resend' id='resend_form'>
+		<form method='post' action='".e_SELF."?resend' id='resend_form' autocomplete='off'>
 		<table style='".USER_WIDTH."' class='fborder'>
 		<tr>
 			<td class='forumheader3' style='text-align:right'>".LAN_SIGNUP_48."</td>
@@ -277,7 +277,7 @@ if($signup_imagecode)
 }
 
 
-if ((USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
+if ((USER || ($pref['user_reg'] === 0) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
 	 header('location: '.e_HTTP.'index.php');
 }
