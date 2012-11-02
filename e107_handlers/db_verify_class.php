@@ -134,8 +134,8 @@ class db_verify
 		{
 			$mes->add("Tables appear to be okay!",E_MESSAGE_SUCCESS); //TODO LAN
 			$mes->add("<a href='".$this->backUrl."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
-			$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
-			$mes->add($debug,E_MESSAGE_DEBUG);	
+			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
+			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
 			$ns->tablerender("Okay",$mes->render().$text);
 		}	
@@ -186,11 +186,13 @@ class db_verify
 					
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
-		
+			
 			
 			if($rawSqlData === FALSE)
 			{
 				if($language) continue;
+				
+				
 				
 				$this->errors[$tbl]['_status'] = 'missing_table';
 				$this->results[$tbl]['_file'] = $selection;
@@ -205,7 +207,7 @@ class db_verify
 			
 			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
-		/*			
+		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
 			$debugA .= print_r($fileIndexData,TRUE);
@@ -214,7 +216,8 @@ class db_verify
 			$debugB .= print_r($sqlIndexData,TRUE);
 		*/
 		
-		//	$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+			$debugB = $rawSqlData;
 		//	$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
 			if(isset($debugA))
@@ -705,7 +708,7 @@ class db_verify
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
 		
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\sa-z0-9_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
  			
 		$table = preg_match_all($regex,$sql_data,$match);
 				
@@ -818,10 +821,13 @@ class db_verify
 			
 		mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
+		
+		
 		$z = mysql_query($qry);
 		if($z)
 		{
 			$row = mysql_fetch_row($z);
+			//return $row[1];
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';
 		}
