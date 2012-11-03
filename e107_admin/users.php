@@ -942,13 +942,13 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 			<td>".USRLAN_47.":</td>
 			<td>
-			<input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
+			<input class='tbox e-spinner' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
 			</td></tr>
 	
 			<tr>
 			<td>".USRLAN_49.":</td>
 			<td>
-			<input class='tbox' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
+			<input class='tbox e-spinner' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
 			</td></tr>
 	
 			<tr>
@@ -974,7 +974,7 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 			<td style='vertical-align:top'>".USRLAN_93.":</td>
 			<td>
-			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
+			<input class='tbox e-spinner' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 			<div class='field-help'>".USRLAN_94."</div>
 			</td></tr>
 	
@@ -1006,7 +1006,7 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 			<td style='vertical-align:top'>".USRLAN_190.":</td>
 			<td>
-			<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".LANDT_04s."
+			<input class='tbox e-spinner' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".LANDT_04s."
 			<div class='field-help'>".USRLAN_191."</div>
 			</td></tr>
 	
@@ -3115,7 +3115,7 @@ function showRanks()
 				<input type='hidden' name='field_id[{$k}]' value='1' />
 				<input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}' />
 			</td>
-			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
+			<td class='control'><input class='tbox e-spinner' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
 			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked} /></td>
 			<td class='control'>".RankImageDropdown($imageList,"calc_img[$k]",$r['image'])."&nbsp;".
 			$frm->submit_image("delete_rank[{$r['id']}]",LAN_DELETE,'delete',LAN_CONFIRMDEL.": [{$r['name']}]?")."
@@ -3131,7 +3131,7 @@ function showRanks()
 	<tr>
 		<td class='control'>".USRLAN_214."</td>
 		<td class='control'><input class='tbox' type='text' name='new_calc_name' value='' /></td>
-		<td class='control'><input class='tbox' type='text' size='5' name='new_calc_lower' value='' /></td>
+		<td class='control'><input class='tbox e-spinner' type='text' size='5' name='new_calc_lower' value='' /></td>
 		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1' /></td>
 		<td class='control'>".RankImageDropdown($imageList,'new_calc_img')."</td>
 	</tr>
