@@ -2791,7 +2791,7 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_101."</td>
 								<td class='control'>
-									".$frm->text('subnews_resize', $pref['subnews_resize'], 5, 'size=6&class=tbox')."
+									".$frm->number('subnews_resize', $pref['subnews_resize'], 5, 'size=6&class=tbox')."
 									<div class='field-help'>".NWSLAN_102."</div>
 								</td>
 							</tr>

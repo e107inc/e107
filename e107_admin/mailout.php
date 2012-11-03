@@ -764,12 +764,14 @@ function show_prefs($mailAdmin)
 
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
-		<div id='mail'>
-		<table class='adminform'>
+		<fieldset id='mail'>
+		<legend>".LAN_MAILOUT_110."</legend>
+		<table class='adminedit'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
+		<tbody>
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
 			<td>".$frm->admin_button('testemail', LAN_MAILOUT_112)."&nbsp;
@@ -795,7 +797,7 @@ function show_prefs($mailAdmin)
 	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
 	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
 	$text .= "<div id='smtp' {$smtpdisp}>
-		<table style='margin-right:auto;margin-left:0px;border:0px'>
+		<table class='adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -883,15 +885,15 @@ function show_prefs($mailAdmin)
 	<tr>
 		<td>".LAN_MAILOUT_25."</td>
 		<td> ".LAN_MAILOUT_26."
-		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
-		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
+		<input class='tbox e-spinner' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
+		"<input class='tbox e-spinner' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
 		<span class='field-help'>".LAN_MAILOUT_30."</span>
 		</td>
 	</tr>\n
 	
 	<tr>
 		<td>".LAN_MAILOUT_156."</td>
-		<td><input class='tbox' size='3' type='text' name='mail_workpertick' value='".varset($pref['mail_workpertick'],5)."' />
+		<td><input class='tbox e-spinner' size='3' type='text' name='mail_workpertick' value='".varset($pref['mail_workpertick'],5)."' />
 		<span class='field-help'>".LAN_MAILOUT_157."</span>
 		</td>
 	</tr>\n";
@@ -925,7 +927,7 @@ function show_prefs($mailAdmin)
 		"</td>
 	</tr>\n";
 
-	$text .= "</table>
+	$text .= "</table></fieldset>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend>".LAN_MAILOUT_31."</legend>
 		<table class='adminedit'>
@@ -1007,7 +1009,7 @@ function show_prefs($mailAdmin)
 
 	<div class='buttons-bar center'>".$frm->admin_button('updateprefs',LAN_MAILOUT_28)."</div>
 
-	</div></form>";
+	</form>";
 
 	$caption = ADLAN_136.' :: '.LAN_PREFS;
 	$e107->ns->tablerender($caption,$mes->render(). $text);
