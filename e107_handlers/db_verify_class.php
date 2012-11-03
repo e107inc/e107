@@ -220,7 +220,7 @@ class db_verify
 		//	$debugB = $rawSqlData;
 			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
-			if(isset($debugA))
+			if(isset($debugA) && (e_PAGE == 'db.php'))
 			{
 									
 				$debug = "<table border='1'>
