@@ -263,7 +263,7 @@ else
 /**
  *	Create dropdown with options for ban time - uses internal fixed list of reasonable values
  */
-function ban_time_dropdown($click_js = '', $zero_text = BANLAN_21, $curval = -1, $drop_name = 'ban_time')
+function ban_time_dropdown($click_js = '', $zero_text = LAN_NEVER, $curval = -1, $drop_name = 'ban_time')
 {
 	global $frm;
 	$intervals = array(0, 1, 2, 3, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 336, 672);
@@ -274,7 +274,7 @@ function ban_time_dropdown($click_js = '', $zero_text = BANLAN_21, $curval = -1,
 	{
 		if ($i == 0)
 		{
-			$words = $zero_text ? $zero_text : BANLAN_21;
+			$words = $zero_text ? $zero_text : LAN_NEVER;
 		}
 		elseif (($i % 24) == 0)
 		{
@@ -656,7 +656,7 @@ switch ($action)
 
 		if ($action == 'edit' || $action == 'add')
 		{
-			$inhelp = (($action == 'edit') ? '<div class="field-help">'.BANLAN_26.($banlist_banexpires ? strftime($pref['ban_date_format'], $banlist_banexpires) : BANLAN_21).'</div>' : '');
+			$inhelp = (($action == 'edit') ? '<div class="field-help">'.BANLAN_26.($banlist_banexpires ? strftime($pref['ban_date_format'], $banlist_banexpires) : LAN_NEVER).'</div>' : '');
 
 			$text .= "
 							<tr>
@@ -897,7 +897,7 @@ switch ($action)
 							$val = e107::getIPHandler()->ipDecode($row['banlist_ip'])."<br />".$fv.": ".$row['banlist_reason'];
 							break;
 						case 'banlist_banexpires':
-							$val = ($row['banlist_banexpires'] ? strftime($pref['ban_date_format'], $row['banlist_banexpires']).(($row['banlist_banexpires'] < time()) ? ' ('.BANLAN_34.')' : '') : BANLAN_21)."<br />".ban_time_dropdown("onchange=\"e107Helper.urlJump('".e_SELF."?newtime-{$row['banlist_ip']}-'+this.value)\"");
+							$val = ($row['banlist_banexpires'] ? strftime($pref['ban_date_format'], $row['banlist_banexpires']).(($row['banlist_banexpires'] < time()) ? ' ('.BANLAN_34.')' : '') : LAN_NEVER)."<br />".ban_time_dropdown("onchange=\"e107Helper.urlJump('".e_SELF."?newtime-{$row['banlist_ip']}-'+this.value)\"");
 							break;
 						case 'ban_options':
 							$row_class = ' class="center"';

@@ -28,7 +28,7 @@ define('BANLAN_17','Ban Date');
 define('BANLAN_18','Ban expires');
 define('BANLAN_19','Notes');
 define('BANLAN_20','Type');
-define('BANLAN_21','Never');
+//define('BANLAN_21','Never');
 define('BANLAN_22','Unknown');
 define('BANLAN_23','day(s)');
 define('BANLAN_24','hours');
