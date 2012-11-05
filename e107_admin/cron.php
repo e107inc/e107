@@ -330,7 +330,7 @@ class cron_admin_ui extends e_admin_ui
 
 			$lastRefresh = ($ago < 10000) ? $lastRun : LAN_NEVER;
 	
-			$mes->add(LAN_STATUS.":<b>".$status."</b>", E_MESSAGE_INFO);
+			$mes->add(LAN_STATUS.": <b>".$status."</b>", E_MESSAGE_INFO);
 	
 	
 			$mes->add(LAN_CRON_12.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
