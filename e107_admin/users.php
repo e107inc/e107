@@ -3,7 +3,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Copyright (C) 2008-2012 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -732,7 +732,7 @@ class users_admin_ui extends e_admin_ui
 			$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'bbarea',	'width' => 'auto');
 	
 			
-			$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center');
+			$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center');
 	
 					
 			if(!getperms('4|U0')) // Quick Add User Access Only. 
