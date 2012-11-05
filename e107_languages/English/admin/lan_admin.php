@@ -85,7 +85,7 @@ define("ADLAN_78", "Extended User Fields");
 define("ADLAN_79", "Edit extended user fields");
 
 
-define("ADLAN_86", "Foirbbiden");
+define("ADLAN_86", "Forbidden");
 define("ADLAN_87", "Access denied!");
 //define("ADLAN_88", "Unable to login ");
 define("ADLAN_89", "Admin Name ");
@@ -235,6 +235,7 @@ define("LAN_DELETED_FAILED","Deletion Unsuccessful");
 define("LAN_UPDATED_FAILED","Update Unsuccessful");
 define("LAN_NO_CHANGE","Nothing updated as no changes were made.");
 define("LAN_TRY_AGAIN","Please try again.");
+define("LAN_NEVER", "Never");
 
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");

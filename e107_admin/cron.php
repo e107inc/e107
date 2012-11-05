@@ -74,16 +74,13 @@ class cron_admin_ui extends e_admin_ui
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
        		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-			
-       		'cron_name'			=> array('title'=> "Name",			'type' => 'text',			'width' => 'auto',	'readonly' => 1),
-         	
-         	'cron_description'	=> array('title'=> "Description",	'type' => 'text',			'width' => '35%',	'readonly' => 1),
-         	
-         	'cron_function'		=> array('title'=> "Function",		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
-         	'cron_tab'			=> array('title'=> "Tab",			'type' => 'method',			'width' => 'auto'), // Display name
-		 	'cron_lastrun'		=> array('title'=> "Last-run",		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
-     		'cron_active' 		=> array('title'=> "Active",		'type' => 'boolean',	'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
-			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',		'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+       		'cron_name'			=> array('title'=> LAN_CRON_1,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
+         	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'width' => '35%',	'readonly' => 1),
+         	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
+         	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
+		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
+     		'cron_active' 		=> array('title'=> LAN_CRON_5,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		
 		
@@ -126,36 +123,36 @@ class cron_admin_ui extends e_admin_ui
 			
 			$cronDefaults['_system'] = array(
 				0 => array(
-					'name' 			=> 'Test Email',
+					'name' 			=> LAN_CRON_01_2,
 					'function' 		=> 'sendEmail',
 					'category'		=> 'mail',
-					'description' 	=> 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'
+					'description'   => str_replace("[eml]",$pref['siteadminemail'],LAN_CRON_01_2) ."<br />". LAN_CRON_01_3
 					),
 				1 => array(
-					'name' 			=> 'Mail Queue',
+					'name' 			=> LAN_CRON_02_1,
 					'category'		=> 'mail',
 					'function' 		=> 'procEmailQueue',
-					'description' 	=> 'Process mail queue'
+					'description' 	=> LAN_CRON_02_2
 					),
 				2 => array(
-					'name' 			=> 'Mail Bounce Check',
+					'name' 			=> LAN_CRON_03_1,
 					'category'		=> 'mail',
 					'function' 		=> 'procEmailBounce',
-					'description' 	=> 'Check for bounced emails',
+					'description' 	=> LAN_CRON_03_2
 				//	'available' 	=> vartrue($pref['mail_bounce_auto'])
 				),
 				3 => array(
-					'name' 			=> 'Ban Retrigger Check',
+					'name' 			=> LAN_CRON_04_1,
 					'category'		=> 'user',
 					'function' 		=> 'procBanRetrigger',
-					'description' 	=> 'Process bounce retriggers<br />Only needed if retriggering of bans enabled.',
+					'description' 	=> LAN_CRON_04_2 ."<br />". LAN_CRON_04_3,
 					'available' 	=> e107::getPref('ban_retrigger')
 				),
 				4 => array(
-					'name' 			=> 'Database Backup',
+					'name' 			=> LAN_CRON_05_1,
 					'category'		=> 'backup',
 					'function' 		=> 'dbBackup',
-					'description' 	=> 'Backup the system database to '.e_SYSTEM.'backups/',
+					'description' 	=> LAN_CRON_05_1 . '.e_SYSTEM.'."backups/", 
 					'available' 	=> e107::getPref('ban_retrigger')
 				),
 			);
@@ -251,11 +248,11 @@ class cron_admin_ui extends e_admin_ui
 			
 			if(!$sql->db_Insert('cron',$insert))
 			{
-				e107::getMessage()->add("Couldn't Import Prefs", E_MESSAGE_ERROR);
+				e107::getMessage()->add(LAN_CRON_6, E_MESSAGE_ERROR);
 			}
 			else
 			{
-				e107::getMessage()->add("Imported: ".$insert['cron_function'], E_MESSAGE_INFO);
+				e107::getMessage()->add(LAN_CRON_8.":".$insert['cron_function'], E_MESSAGE_INFO); 
 			}	
 		}
 		
@@ -268,7 +265,7 @@ class cron_admin_ui extends e_admin_ui
 		{
 			 // print_a($insert);
 			 // return;
-// 			
+			
 			$sql = e107::getDb();
 			
 			$cron_function = $insert['cron_function'];
@@ -276,11 +273,11 @@ class cron_admin_ui extends e_admin_ui
 					
 			if($sql->db_Update('cron',$insert)===FALSE)
 			{
-				e107::getMessage()->add("Couldn't Import Timing Settings", E_MESSAGE_ERROR);
+				e107::getMessage()->add(LAN_CRON_7, E_MESSAGE_ERROR);
 			}
 			else
 			{			
-				e107::getMessage()->add("Imported Timing Settings for: ".$cron_function, E_MESSAGE_INFO);
+				e107::getMessage()->add(LAN_CRON_8.$cron_function, E_MESSAGE_INFO);
 			}	
 		}
 		
@@ -325,16 +322,19 @@ class cron_admin_ui extends e_admin_ui
 	
 			$mins = floor($ago / 60);
 			$secs = $ago % 60;
+
+			$srch = array("[x]","[y]");
+			$repl = array($mins,$secs);
 	
-			$lastRun = ($mins) ? $mins." minutes and ".$secs." seconds ago." : $secs." seconds ago.";
+			$lastRun = ($mins) ? str_replace($srch,$repl,LAN_CRON_10) : str_replace($srch,$repl,LAN_CRON_11); // FIX: check syntax
+
+			$lastRefresh = ($ago < 10000) ? $lastRun : LAN_NEVER;
 	
-			$lastRefresh = ($ago < 10000) ? $lastRun : 'Never';
-	
-			$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
+			$mes->add(LAN_STATUS.":<b>".$status."</b>", E_MESSAGE_INFO);
 	
 	
-			$mes->add("Active Crons: <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
-			$mes->add("Last cron refresh: ".$lastRefresh, E_MESSAGE_INFO);
+			$mes->add(LAN_CRON_12.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
+			$mes->add(LAN_CRON_13.": ".$lastRefresh, E_MESSAGE_INFO);
 	
 			//FIXME: for Windows, the is_executable() function only checks the file
 			// extensions of exe, com, bat and cmd.
@@ -343,16 +343,15 @@ class cron_admin_ui extends e_admin_ui
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
 			if($isWin)
 			{
-				$mes->add("Please be sure cron.php is executable.", E_MESSAGE_WARNING);
+				$mes->add(LAN_CRON_14, E_MESSAGE_WARNING);
 			}
 			if (!$isWin && $actualPerm != 755) // is_executable() is not reliable. 
 			{
-				$mes->add("Please CHMOD /cron.php to 755 ", E_MESSAGE_WARNING);
+				$mes->add(LAN_CRON_15, E_MESSAGE_WARNING);
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
-					Using your server control panel (eg. cPanel,Plesk etc.) please create a crontab to run this command on your server every minute.";
+				$setpwd_message = LAN_CRON_16.": <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />". LAN_CRON_17;
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 			}
 	
@@ -388,7 +387,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 			$class_name .= '_cron';
 			$status = $this->cronExecuteMethod($class_name, $method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			$mes->add("Running <b>".$cron_name."</b>", $status);
+			$mes->add(LAN_CRON_RUNNING.":<b>".$cron_name."</b>", $status);
 		}
 		
 		
@@ -427,30 +426,30 @@ class cron_admin_form_ui extends e_admin_form_ui
 {
 	
 	var $min_options = array(
-						"*"																						 => LAN_CRON_11,
-						"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58"	 => LAN_CRON_12,
-						"0,5,10,15,20,25,30,35,40,45,50,55"														 => LAN_CRON_13,
-						"0,10,20,30,40,50"																		 => LAN_CRON_14,
-						"0,15,30,45"																			 => LAN_CRON_10,
-						"0,30"																					 => LAN_CRON_15
+						"*"																						 => LAN_CRON_30,
+						"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58"	 => LAN_CRON_31,
+						"0,5,10,15,20,25,30,35,40,45,50,55"														 => LAN_CRON_32,
+						"0,10,20,30,40,50"																		 => LAN_CRON_33,
+						"0,15,30,45"																			 => LAN_CRON_34,
+						"0,30"																					 => LAN_CRON_35
 		);
 
 	var	$hour_options = array(
-						"*"								 => LAN_CRON_16,
-						"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_17,
-						"0,3,6,9,12,15,18,21"			 => LAN_CRON_18,
-						"0,6,12,18"						 => LAN_CRON_19
+						"*"								 => LAN_CRON_36,
+						"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_37,
+						"0,3,6,9,12,15,18,21"			 => LAN_CRON_38,
+						"0,6,12,18"						 => LAN_CRON_39
 	);
 	
 	
 	var $cronCategories = array(					
-						'backup'	=> 'Backup',
+						'backup'	=> LAN_CRON_BACKUP,
 						'content'	=> ADLAN_CL_3,
-						'log'		=> 'Logging',
+						'log'		=> LAN_CRON_LOGGING,
 						'mail'		=> ADLAN_136,				
 						'notify'	=> ADLAN_149, 
 						'user'		=> LAN_USER,
-						'plugin'	=> 'Plugins'
+						'plugin'	=> ADLAN_CL_7
 	);
 	
 	/**
@@ -462,15 +461,15 @@ class cron_admin_form_ui extends e_admin_form_ui
 		{
 			$sep = array();
 			list($min, $hour, $day, $month, $weekday) = explode(" ", $curVal);
-			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_3.$min;	
+			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50.$min;	
 			$text .= "<br />";
-			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_4.$hour;			
+			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51.$hour;			
 			$text .= "<br />";
-			$text .= ($day != '*') ? LAN_CRON_5.$day : LAN_CRON_20;
+			$text .= ($day != '*') ? LAN_CRON_52.$day : LAN_CRON_40;
 			$text .= "<br />";
-			$text .= ($month != '*') ? strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_21;
+			$text .= ($month != '*') ? strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41;
 			$text .= "<br />";		
-			$text .= ($weekday != '*') ? strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_22;
+			$text .= ($weekday != '*') ? strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42;
 			return $text; 
 		}
 		
@@ -605,7 +604,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 
 					$sel_day = ($day[0] == "*") ? "selected='selected'" : "";
 
-					$text .= "<option value='*' {$sel_day}>".LAN_CRON_20."</option>\n"; // Every Day
+					$text .= "<option value='*' {$sel_day}>".LAN_CRON_40."</option>\n"; // Every Day
 					for ($i = 1; $i <= 31; $i++)
 					{
 						$sel = (in_array($i, $day)) ? "selected='selected'" : "";
@@ -616,7 +615,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					<select class='tbox' style='height:90px' multiple='multiple' name='tab[month]'>\n";
 
 					$sel_month = ($month[0] == "*") ? "selected='selected'" : "";
-					$text .= "<option value='*' $sel_month>".LAN_CRON_21."</option>\n"; // Every Month
+					$text .= "<option value='*' $sel_month>".LAN_CRON_41."</option>\n"; // Every Month
 
 					for ($i = 1; $i <= 12; $i++)
 					{
@@ -629,7 +628,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					<select class='tbox' style='height:90px' multiple='multiple' name='tab[weekday]'>\n";
 
 					$sel_weekday = ($weekday[0] == "*") ? "selected='selected'" : "";
-					$text .= "<option value='*' $sel_weekday>".LAN_CRON_22."</option>\n"; // Every Week Day.
+					$text .= "<option value='*' $sel_weekday>".LAN_CRON_42."</option>\n"; // Every Week Day.
 				
 
 					for ($i = 0; $i <= 6; $i++)
