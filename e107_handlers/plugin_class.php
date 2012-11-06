@@ -1135,7 +1135,7 @@ class e107plugin
 		global $pref;
 
 		$sql = e107::getDb();
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
@@ -1174,6 +1174,36 @@ class e107plugin
 			$error[] = EPL_ADLAN_76;
 			$canContinue = FALSE;
 		}
+		
+		/*
+		 * NEW upgrade XML 
+		 * higher priority -> from-to version upgrade XML - e.g. upgrade/upgrade_1.0-1.1.xml (v1.0 to v1.1 only)
+		 * when above not present -> generic version upgrade XML - e.g. upgrade/upgrade_1.1.xml (all prior versions to v1.1)
+		 * last checked -> generic upgrade file - plugName/plugin_upgrade.xml (all version)
+		 * All upgrade XMLs are optional BUT recommended (at least plugin_upgrade.xml)
+		 * The reason is plugin prefs will be reset to default values, user classes will be duplicated etx if plugin.xml is used
+		 * To avoid this, put upgrade XML with basic data nodes (version, description, category, author etc) 
+		 */
+		if ($canContinue && $function === 'upgrade')
+		{
+			$found = false;
+			$search = array(
+				'upgrade/upgrade_'.$this->current_plug['plugin_version'].'-'.$this->plug_vars['@attributes']['version'].'.xml',
+				'upgrade/upgrade_'.$this->plug_vars['@attributes']['version'].'.xml',
+				'plugin_upgrade.xml',
+			);
+			foreach ($search as $case) 
+			{
+				if(file_exists($path.$case) && is_readable($path.$case) &&  $this->parse_plugin_xml($plug['plugin_path'], $case))
+				{
+					// TODO - lan
+					$mes->addSuccess('Upgrade using '.$case);
+					$plug_vars = $this->plug_vars;
+					break;
+				}
+			}
+		}
+		// END upgrade XML
 
 		if (varset($plug_vars['languageFiles']))
 		{
@@ -1199,8 +1229,35 @@ class e107plugin
 			if (!is_bool($ret))
 				$txt .= $ret;
 		}
+		
+		/*
+		 * FIXME - sql upgrade draft - we need better 'parse sql' support, INSERTs, ALTERs, etc 
+		 * NEW upgrade SQL 
+		 * higher priority -> from-to version upgrade sql queries - e.g. upgrade/sql_1.0-1.1.php (v1.0 to v1.1 only)
+		 * when above not present -> generic version upgrade XML - e.g. upgrade/sql_1.1.php (all prior versions to v1.1)
+		 * All upgrade sql scripts are optional, if not found system is using the auto detection mode (diff against main sql file)
+		 * ONLY NEW tables should be created here
+		 */
+		$doSql = true;
+		if($canContinue && $function === 'upgrade')
+		{
+			$search = array(
+				'upgrade/sql_'.$this->current_plug['plugin_version'].'-'.$this->plug_vars['@attributes']['version'].'.php',
+				'upgrade/sql_'.$this->plug_vars['@attributes']['version'].'.php',
+			);
+			foreach ($search as $case) 
+			{
+				if(file_exists($path.$case) && is_readable($path.$case) &&  $this->parse_plugin_xml($plug['plugin_path'], $case))
+				{
+					// TODO - lan
+					$mes->addSuccess('(draft) Upgrade using '.$case);
+					$doSql = false;
+					break;
+				}
+			}
+		}
 
-		if ($canContinue && count($sql_list)) // TODO - move to it's own function.
+		if ($canContinue && $doSql && count($sql_list)) // TODO - move to it's own function.
 
 		{ // Handle tables
 
@@ -2408,18 +2465,19 @@ class e107plugin
 	}
 
 	// Called to parse the plugin.xml file if it exists
-	function parse_plugin_xml($plugName)
+	function parse_plugin_xml($plugName, $where = null)
 	{
 
 		$tp = e107::getParser();
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
-
+		
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
+		if(null === $where) $where = 'plugin.xml';
 
-		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', 'advanced');
+		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/'.$where, 'advanced');
 		
 		if ($this->plug_vars === FALSE)
 		{
