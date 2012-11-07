@@ -50,6 +50,11 @@ class download_setup
 	{
 		/*
 		 * Currently Installed version (prior to upgrade): $needed->current_plug['plugin_version'];
+		 * Add "IF" statements as needed, and other upgrade_x_y() methods as required. 
+		 * eg.	if($needed->current_plug['plugin_version'] == '1.0')
+		 * 		{
+		 * 			$this->upgrade_from_1();
+		 * 		}
 		 */		
 		
 		$sql = e107::getDb();
@@ -79,7 +84,7 @@ class download_setup
 			}		
 		}
 		
-		$qry = "SELECT * FROM #download_category WHERE download_category_icon !='' AND SUBSTRING(download_category_icon, 1, 3) != '{e_' LIMIT 2";
+		$qry = "SELECT * FROM #download_category WHERE download_category_icon !='' AND SUBSTRING(download_category_icon, 1, 3) != '{e_' ";
 		if($sql->db_Select_gen($qry))
 		{
 			// Signal that an update is required.
