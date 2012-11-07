@@ -679,7 +679,7 @@ class e107plugin
 			}
 			else
 			{
-				return FALSE;
+				return NULL;
 			}
 		}
 		if ($action == 'remove')
@@ -739,7 +739,7 @@ class e107plugin
 			}
 			else
 			{
-				return FALSE;
+				return ;
 			}
 		}
 		if ($action == 'remove')
@@ -1176,7 +1176,7 @@ class e107plugin
 		}
 		
 		/*
-		 * NEW upgrade XML 
+		 * NEW upgrade XML - Not required. 
 		 * higher priority -> from-to version upgrade XML - e.g. upgrade/upgrade_1.0-1.1.xml (v1.0 to v1.1 only)
 		 * when above not present -> generic version upgrade XML - e.g. upgrade/upgrade_1.1.xml (all prior versions to v1.1)
 		 * last checked -> generic upgrade file - plugName/plugin_upgrade.xml (all version)
@@ -1184,6 +1184,7 @@ class e107plugin
 		 * The reason is plugin prefs will be reset to default values, user classes will be duplicated etx if plugin.xml is used
 		 * To avoid this, put upgrade XML with basic data nodes (version, description, category, author etc) 
 		 */
+		 /*
 		if ($canContinue && $function === 'upgrade')
 		{
 			$found = false;
@@ -1203,6 +1204,7 @@ class e107plugin
 				}
 			}
 		}
+		  * */
 		// END upgrade XML
 
 		if (varset($plug_vars['languageFiles']))
@@ -1562,14 +1564,16 @@ class e107plugin
 				case 'install':
 
 					if (!$remove) // Add any non-deprecated link
-
 					{
-						$status = ($this->manage_link('add', $url, $linkName, $perm)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); //TODO LAN
+						$result = $this->manage_link('add', $url, $linkName, $perm);
+						if($result !== NULL)
+						{
+							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); //TODO LAN
+						}					
 					}
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
-
 					{
 						$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
@@ -1727,10 +1731,13 @@ class e107plugin
 				case 'refresh':
 
 					if (!$remove) // Add all active userclasses (code checks for already installed)
-
 					{
-						$status = $this->manage_userclass('add', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Adding Userclass: '.$name, $status);
+						$result = $this->manage_userclass('add', $name, $description);
+						if($result !== NULL)
+						{
+							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$mes->add('Adding Userclass: '.$name, $status);	
+						}						
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive userclass
@@ -1858,11 +1865,15 @@ class e107plugin
 			switch ($function)
 			{
 				case 'install':
-					$config->add($key, $value);
-					$mes->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS);
+				case 'upgrade':
+					$ret = $config->add($key, $value);
+					if($ret->data_has_changed == TRUE)
+					{
+						$mes->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS);	
+					}								
 					break;
 
-				case 'upgrade':
+				
 				case 'refresh':
 					if ($remove) // remove active='false' prefs.
 
