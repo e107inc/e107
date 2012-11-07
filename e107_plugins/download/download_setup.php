@@ -48,9 +48,13 @@ class download_setup
 	 */
 	function upgrade_post($needed)
 	{
+		/*
+		 * Currently Installed version (prior to upgrade): $needed->current_plug['plugin_version'];
+		 */		
+		
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		$qry = "SELECT * FROM #download WHERE download_image !='' AND SUBSTRING(download_image, 1, 3) != '{e_' LIMIT 2";
+		$qry = "SELECT * FROM #download WHERE download_image !='' AND SUBSTRING(download_image, 1, 3) != '{e_' ";
 		
 		if($sql->db_Select_gen($qry))
 		{
@@ -93,10 +97,5 @@ class download_setup
 		
 		if($needed == TRUE){ return FALSE; }	
 			
-		//if(version_compare($var['current_plug']['plugin_version'], "1.2", "<"))
-		//{
-		//	$qry = "ALTER TABLE #download ADD download_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;";
-		//	$sql->db_Select_gen($qry);
-		//}
 	}
 }

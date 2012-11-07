@@ -1231,13 +1231,13 @@ class e107plugin
 		}
 		
 		/*
-		 * FIXME - sql upgrade draft - we need better 'parse sql' support, INSERTs, ALTERs, etc 
-		 * NEW upgrade SQL 
-		 * higher priority -> from-to version upgrade sql queries - e.g. upgrade/sql_1.0-1.1.php (v1.0 to v1.1 only)
-		 * when above not present -> generic version upgrade XML - e.g. upgrade/sql_1.1.php (all prior versions to v1.1)
+		 * XXX - sql upgrade draft - we need better 'parse sql' support, INSERTs, ALTERs, etc 
+		 * NEW upgrade SQL - ALREADY EXISTS - use upgrade_pre($var) OR upgrade_post() methods in the {plugin}_setup.php file. 
 		 * All upgrade sql scripts are optional, if not found system is using the auto detection mode (diff against main sql file)
-		 * ONLY NEW tables should be created here
+		 * ONLY table CONTENT should be changed with this. 
 		 */
+		
+		 /*
 		$doSql = true;
 		if($canContinue && $function === 'upgrade')
 		{
@@ -1256,6 +1256,8 @@ class e107plugin
 				}
 			}
 		}
+		  
+		  */
 
 		if ($canContinue && $doSql && count($sql_list)) // TODO - move to it's own function.
 
@@ -1920,6 +1922,7 @@ class e107plugin
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
+				$obj->version_from = $this;
 				if (method_exists($obj, $method_name))
 				{
 					$mes->add("Executing setup function <b>".$method_name."()</b>", E_MESSAGE_DEBUG);
