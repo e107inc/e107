@@ -2817,7 +2817,7 @@ class eController
 		
 		switch (count($route)) {
 			case 3:
-				if($route[2] !== '*') $request->setModule($route[0]);
+				if($route[0] !== '*') $request->setModule($route[0]);
 				if($route[1] !== '*') $request->setController($route[1]);
 				$request->setAction($route[2]);
 			break;
