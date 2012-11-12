@@ -91,7 +91,7 @@ define("DOWLAN_67",  "ID");
 define("DOWLAN_68",  "File Missing!");
 define("DOWLAN_69",  "Downloads handled by PHP");
 define("DOWLAN_70",  "Checking this will send all download requests through PHP.");
-define("DOWLAN_71",  "This page helps you create a file for managing file upload permissions. The file is saved as ../e107_files/temp/filetypes_.xml, and must be copied to ../e107_admin/filetypes.xml before it takes effect.");
+// define("DOWLAN_71",  "This page helps you create a file for managing file upload permissions. The file is saved as ../e107_files/temp/filetypes_.xml, and must be copied to ../e107_admin/filetypes.xml before it takes effect.");
 define("DOWLAN_72",  "Source for values: ");
 define("DOWLAN_73",  "Userclass");
 define("DOWLAN_74",  "File extensions");

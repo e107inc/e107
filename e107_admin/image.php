@@ -1337,7 +1337,8 @@ class media_admin_ui extends e_admin_ui
 			
 			$pref['upload_storagetype'] = "1";
 			require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
-			$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
+		//	$uploaded = process_uploaded_files(e_MEDIA.'temp/'); //FIXME doesn't handle xxx.JPG (uppercase)
+			$uploaded = process_uploaded_files(e_TEMP); //FIXME doesn't handle xxx.JPG (uppercase)
 			$upload = array_shift($uploaded);
 			if(vartrue($upload['error']))
 			{
@@ -1352,7 +1353,8 @@ class media_admin_ui extends e_admin_ui
 				}
 				$mes->addDebug(print_a($upload,TRUE));
 
-				$oldpath = e_MEDIA."temp/".$upload['name'];
+			//	$oldpath = e_MEDIA."temp/".$upload['name'];
+				$oldpath = e_TEMP.$upload['name'];
 				$newpath = $this->checkDupe($oldpath,$typePath.'/'.$upload['name']);
 
 				if(!rename($oldpath, e_MEDIA.$newpath))
@@ -1395,7 +1397,8 @@ class media_admin_ui extends e_admin_ui
 			
 			$fname = basename($new_data['media_url']);
 			// move to the required place
-			if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
+			if(strpos($new_data['media_url'], '{e_TEMP}') !== FALSE)
+		//	if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
 			{
 				$tp = e107::getParser();
 				$oldpath = $tp->replaceConstants($new_data['media_url']);
@@ -1486,7 +1489,8 @@ class media_admin_ui extends e_admin_ui
 		$fl->setFileInfo('all');
 		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		$fl->setFileFilter($rejectArray);
-		$files = $fl->get_files(e_MEDIA."temp/");
+	//	$files = $fl->get_files(e_MEDIA."temp/");
+		$files = $fl->get_files(e_TEMP);
 		
 		e107::js('core','core/admin.js','prototype');
 
@@ -1676,7 +1680,8 @@ class media_admin_ui extends e_admin_ui
 				continue;
 			}	
 			
-			$oldpath = e_MEDIA."temp/".$file;
+		//	$oldpath = e_MEDIA."temp/".$file;
+			$oldpath = e_TEMP.$file;
 			if(file_exists($oldpath))
 			{
 				unlink($oldpath);
@@ -1724,7 +1729,8 @@ class media_admin_ui extends e_admin_ui
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
 						
-			$oldpath = e_MEDIA."temp/".$file;
+		//	$oldpath = e_MEDIA."temp/".$file;
+			$oldpath = e_TEMP.$file;
 			
 			// Resize on Import Routine ------------------------
 			if(vartrue($img_import_w) && vartrue($img_import_h))
