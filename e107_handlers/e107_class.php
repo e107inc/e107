@@ -427,7 +427,7 @@ class e107
 		$ret['MEDIA_AVATARS_DIRECTORY'] 	= $ret['MEDIA_DIRECTORY'].'avatars/';
 		$ret['MEDIA_VIDEOS_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'videos/';
 		$ret['MEDIA_FILES_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'files/';
-		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['MEDIA_DIRECTORY'].'temp/';
+		$ret['MEDIA_UPLOAD_DIRECTORY'] 		= $ret['SYSTEM_DIRECTORY'].'temp/'; // security measure. Media is public, system is private. 
 
 	//	$ret['WEB_JS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'js/';
 		$ret['WEB_JS_DIRECTORY'] 			= $ret['FILES_DIRECTORY'].'jslib/';

@@ -36,7 +36,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 define("UH_DEBUG", FALSE);
 
 //FIXME need another name
-define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/');	// Temporary directory - used if PHP's OPEN_BASEDIR active
+// define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/');
+define('e_UPLOAD_TEMP_DIR', e_TEMP);	// Temporary directory - used if PHP's OPEN_BASEDIR active
 define('e_READ_FILETYPES', 'filetypes.xml'); 	// Upload permissions
 define('e_SAVE_FILETYPES', 'filetypes_.xml');
 
