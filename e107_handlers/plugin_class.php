@@ -1175,42 +1175,10 @@ class e107plugin
 			$canContinue = FALSE;
 		}
 		
-		/*
-		 * NEW upgrade XML - Not required. 
-		 * higher priority -> from-to version upgrade XML - e.g. upgrade/upgrade_1.0-1.1.xml (v1.0 to v1.1 only)
-		 * when above not present -> generic version upgrade XML - e.g. upgrade/upgrade_1.1.xml (all prior versions to v1.1)
-		 * last checked -> generic upgrade file - plugName/plugin_upgrade.xml (all version)
-		 * All upgrade XMLs are optional BUT recommended (at least plugin_upgrade.xml)
-		 * The reason is plugin prefs will be reset to default values, user classes will be duplicated etx if plugin.xml is used
-		 * To avoid this, put upgrade XML with basic data nodes (version, description, category, author etc) 
-		 */
-		 /*
-		if ($canContinue && $function === 'upgrade')
-		{
-			$found = false;
-			$search = array(
-				'upgrade/upgrade_'.$this->current_plug['plugin_version'].'-'.$this->plug_vars['@attributes']['version'].'.xml',
-				'upgrade/upgrade_'.$this->plug_vars['@attributes']['version'].'.xml',
-				'plugin_upgrade.xml',
-			);
-			foreach ($search as $case) 
-			{
-				if(file_exists($path.$case) && is_readable($path.$case) &&  $this->parse_plugin_xml($plug['plugin_path'], $case))
-				{
-					// TODO - lan
-					$mes->addSuccess('Upgrade using '.$case);
-					$plug_vars = $this->plug_vars;
-					break;
-				}
-			}
-		}
-		  * */
-		// END upgrade XML
-
 		if (varset($plug_vars['languageFiles']))
 		{
 			$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
-			}
+		}
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
@@ -1225,45 +1193,17 @@ class e107plugin
 
 		// All the dependencies are OK - can start the install now
 
-		if ($canContinue)
+		if ($canContinue) // Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
 		{
-			$ret = $this->execute_function($path, $function, 'pre');
+			$ret = $this->execute_function($path, $function, 'pre'); 
 			if (!is_bool($ret))
 				$txt .= $ret;
 		}
 		
-		/*
-		 * XXX - sql upgrade draft - we need better 'parse sql' support, INSERTs, ALTERs, etc 
-		 * NEW upgrade SQL - ALREADY EXISTS - use upgrade_pre($var) OR upgrade_post() methods in the {plugin}_setup.php file. 
-		 * All upgrade sql scripts are optional, if not found system is using the auto detection mode (diff against main sql file)
-		 * ONLY table CONTENT should be changed with this. 
-		 */
-		
-		 /*
-		$doSql = true;
-		if($canContinue && $function === 'upgrade')
-		{
-			$search = array(
-				'upgrade/sql_'.$this->current_plug['plugin_version'].'-'.$this->plug_vars['@attributes']['version'].'.php',
-				'upgrade/sql_'.$this->plug_vars['@attributes']['version'].'.php',
-			);
-			foreach ($search as $case) 
-			{
-				if(file_exists($path.$case) && is_readable($path.$case) &&  $this->parse_plugin_xml($plug['plugin_path'], $case))
-				{
-					// TODO - lan
-					$mes->addSuccess('(draft) Upgrade using '.$case);
-					$doSql = false;
-					break;
-				}
-			}
-		}
-		  
-		  */
-
-		if ($canContinue && $doSql && count($sql_list)) // TODO - move to it's own function.
-
-		{ // Handle tables
+	
+		// Handle tables
+		if ($canContinue && count($sql_list)) // TODO - move to it's own function. XmlTables(). 
+		{ 
 
 			require_once(e_HANDLER.'db_table_admin_class.php');
 			$dbHandler = new db_table_admin;
@@ -1283,7 +1223,7 @@ class e107plugin
 					{
 						case 'install':
 							$sqlTable = str_replace("CREATE TABLE ".MPREFIX.'`', "CREATE TABLE `".MPREFIX, preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]));
-							$txt = "Adding table: {$ct[1]} ... ";
+							$txt = "Adding Table: {$ct[1]} ... ";
 							$status = $this->manage_tables('add', array($sqlTable)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; // Pass the statement to create the table
 							$mes->add($txt, $status);
 							break;
@@ -1291,7 +1231,7 @@ class e107plugin
 							$tmp = $dbHandler->update_table_structure($ct, FALSE, TRUE, $pref['multilanguage']);
 							if ($tmp === FALSE)
 							{
-								$error[] = 'Error updating table: '.$ct[1];
+								$error[] = 'Error Updating Table: '.$ct[1];
 							}
 							elseif ($tmp !== TRUE)
 							{
@@ -1303,7 +1243,7 @@ class e107plugin
 						case 'uninstall':
 							if (vartrue($options['delete_tables'], FALSE))
 							{
-								$txt = "Removing table {$ct[1]} <br />";
+								$txt = "Removing Table: {$ct[1]} <br />";
 								$status = $this->manage_tables('remove', array($ct[1])) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; // Delete the table
 								$mes->add($txt, $status);
 							}
@@ -1400,7 +1340,7 @@ class e107plugin
 
 		e107::getConfig('core')->save();
 
-		/*		if($function == 'install')
+		/*	if($function == 'install')
 		 {
 		 if(isset($plug_vars['management']['installDone'][0]))
 		 {
@@ -1408,8 +1348,9 @@ class e107plugin
 		 }
 		 }*/
 
-		if (!$this->execute_function($path, $function, 'post')) // Call any custom post functions defined in <plugin>_setup.php or the deprecated <management> section
-
+		// Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
+		// Call any custom post functions defined in <plugin>_setup.php or the deprecated <management> section
+		if (!$this->execute_function($path, $function, 'post')) 
 		{
 			if ($function == 'install')
 			{
@@ -1427,6 +1368,17 @@ class e107plugin
 
 	}
 
+	// Placeholder. 
+	function XmlTables($data)
+	{
+					
+	}
+				
+			
+		
+	
+	
+	
 	/**
 	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
 	 * @param array $tag

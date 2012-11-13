@@ -190,6 +190,7 @@ class eMessage
 		{
 			$message = array($message);
 		}
+		
 		foreach ($message as $m)
 		{
 			$this->add(array($m, $mstack), $type, $session);
@@ -430,7 +431,7 @@ class eMessage
 			$this->mergeWithSession(true, $mstack);
 		}
 		$ret = array();
-
+		$unique = array(); 
 		foreach ($this->_get_types() as $type)
 		{
 			if(E_MESSAGE_DEBUG === $type && !deftrue('E107_DEBUG_LEVEL'))
@@ -438,7 +439,7 @@ class eMessage
 				continue;
 			}
 			$message = $this->get($type, $mstack, $raw);
-			
+					
 			if(!empty($message))
 			{
 				$ret[$type] = $message;
@@ -448,7 +449,7 @@ class eMessage
 		if($reset) $this->reset(false, $mstack);
 		if(true === $raw || empty($ret)) return ($raw ? $ret : '');
 
-		//changed to class
+
 		return "
 			<div class='s-message'>
 				".implode("\n", $ret)."
@@ -469,6 +470,7 @@ class eMessage
 		if (empty($message)) return '';
 		elseif (is_array($message))
 		{
+			$message = array_unique($message); // quick fix for duplicates. 
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
 		return "
