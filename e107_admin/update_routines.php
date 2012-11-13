@@ -101,6 +101,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 }
 
 // $dbupdate["701_to_702"] = LAN_UPDATE_8." .7.1 ".LAN_UPDATE_9." .7.2";
+$dbupdate["10x_to_103"] = LAN_UPDATE_8." 1.0.x ".LAN_UPDATE_9." 1.0.3";
 $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
 $dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
@@ -173,6 +174,43 @@ function update_701_to_702($type='') {
 
 }
 */
+
+function update_10x_to_103($type='')
+{
+	
+	global $sql,$ns; // , $e107cache;	
+		
+	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."news")) // add missing indexes to news table. 
+	{
+		$found = array();
+		while($row = $sql -> db_Fetch(MYSQL_ASSOC))
+		{
+			$found[] = $row['Key_name'];
+		}
+			
+		if (!in_array('news_sticky', $found) && !in_array('news_datestamp', $found)) 
+		{
+			if($type == 'do')
+			{
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD INDEX `news_sticky` (`news_sticky`)");
+				catch_error();
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD INDEX `news_datestamp` (`news_datestamp`)");
+				catch_error();
+				// $e107cache->delete("nq_admin_update");
+				return '';		
+			}
+			
+			return update_needed();
+		}
+	}
+
+	// No updates needed
+	return TRUE;
+	
+	
+}
+
+
 
 function update_70x_to_706($type='') {
 	global $sql,$ns;

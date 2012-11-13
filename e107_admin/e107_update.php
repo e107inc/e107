@@ -21,8 +21,9 @@ $e_sub_cat = 'database';
 require_once("auth.php");
 require_once("update_routines.php");
 
-function run_updates($dbupdate) {
-	global $ns;
+function run_updates($dbupdate) 
+{
+	global $ns,$e107cache;
 	foreach($dbupdate as $func => $rmks) {
 		$installed = call_user_func("update_".$func);
 		if ((LAN_UPDATE == $_POST[$func]) && !$installed) {
@@ -35,13 +36,16 @@ function run_updates($dbupdate) {
 			}
 		}
 	}
-	if ($message) {
-		$ns->tablerender(LAN_UPDATE, $message);
+	if ($message)
+	{
+		$ns->tablerender(LAN_UPDATE, $message);	
+		$e107cache->delete(e_FILE."cache","nq_admin_update*");	
 	}
 }
 
 function show_updates($dbupdate, $additional = false) {
 	global $ns;
+	/*
 	$text = "<form method='POST' action='".e_SELF."'>
 	<div style='width:100%'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -50,7 +54,8 @@ function show_updates($dbupdate, $additional = false) {
 	<td class='fcaption'>".LAN_UPDATE_2."</td>
 	</tr>
 	";
-
+	*/
+	
 	$updates = 0;
 
 	foreach($dbupdate as $func => $rmks) {
@@ -66,8 +71,11 @@ function show_updates($dbupdate, $additional = false) {
 		}
 	}
 
-	$text .= "</table></div></form>";
-	$ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
+
+	return $text;
+
+	// $text .= "</table></div></form>";
+	// $ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
 }
 
 if ($_POST) 
@@ -111,11 +119,28 @@ if ($_POST) {
 	$message = run_updates($dbupdatep);
 }
 
-if (isset($dbupdatep)) {
-	show_updates($dbupdatep, true);
-}
-show_updates($dbupdate);
 
+
+$text = "<form method='POST' action='".e_SELF."'>
+	<div style='width:100%'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
+	<tr>
+	<td class='fcaption'>".LAN_UPDATE."</td>
+	<td class='fcaption'>".LAN_UPDATE_2."</td>
+	</tr>
+	";
+
+
+$text .= show_updates($dbupdate);
+
+if (isset($dbupdatep)) 
+{
+	$text .= show_updates($dbupdatep);
+}
+
+	$text .= "</table></div></form>";
+	$ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
+	
 require_once("footer.php");
 
 ?>
