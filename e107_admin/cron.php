@@ -152,8 +152,8 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> LAN_CRON_05_1,
 					'category'		=> 'backup',
 					'function' 		=> 'dbBackup',
-					'description' 	=> LAN_CRON_05_1 . '.e_SYSTEM.'."backups/", 
-					'available' 	=> e107::getPref('ban_retrigger')
+					'description' 	=> LAN_CRON_05_1 .' '.e_SYSTEM.'backups/'
+				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
 			);
 	
