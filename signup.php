@@ -23,11 +23,12 @@ $qs = explode(".", e_QUERY);
 
 if($qs[0] != 'activate')
 {   // multi-language fix.
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+	e107::coreLan('signup'); 
+	//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
+e107::coreLan('user'); // Generic user-related language defines
 
 define('SIGNUP_DEBUG', FALSE);
 
