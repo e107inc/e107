@@ -64,9 +64,13 @@ class e_menu
 		{
 			return;
 		}
-
+		
 		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
-		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+		
+		e107::getCache()->CachePageMD5 = md5(e_LANGUAGE.$menu_layout_field); //FIXME add a function to the cache class for this. 
+		
+		// $menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
 		$eMenuArea = array();
 		// $eMenuList = array();
@@ -83,7 +87,8 @@ class e_menu
 			}
 			$menu_data['menu_area'] = $eMenuArea;
 			$menuData = e107::getArrayStorage()->WriteArray($menu_data, false);
-			e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+			e107::getCache()->set_sys('menus_'.USERCLASS_LIST, $menuData);
+		//	e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
 		}
 		else
 		{
