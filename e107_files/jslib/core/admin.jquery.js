@@ -1,5 +1,8 @@
 $(document).ready(function()
 {
+	
+	
+	
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
 			var tip = $(this).attr('title');
@@ -16,7 +19,8 @@ $(document).ready(function()
 	
 		// run tips on .field-help 
 		$("input,textarea,select,label,.e-tip").each(function(c) {
-					
+				
+		
 			$(this).nextAll(".field-help").hide();
 		//	alert('hello');
 			$(this).tipsy({title: function() {
@@ -29,6 +33,9 @@ $(document).ready(function()
 			});
 		
 		});
+	
+	//	 $(".e-spinner").spinner();
+		
 	
 	
 			$(".e-radio-multi").each(function() {
@@ -153,9 +160,10 @@ $(document).ready(function()
 				});
 
  			}
-			
-		}).disableSelection();
 		
+		});	
+	//	}).disableSelection(); // causes issue with admin->users drop-down selection. 
+	
 		
 		// Check ALl Button
 		$("#e-check-all").click(function(){
