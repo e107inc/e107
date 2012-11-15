@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  *
@@ -10,7 +10,7 @@
  * $Id$
  *
 */
-global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
+//global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 
 class e_jsmanager
 {
@@ -168,6 +168,13 @@ class e_jsmanager
 	 * @var string null | prototype | jquery
 	 */
 	protected $_dependence = null;
+	
+	/**
+	 * Loaded Framework Dependency
+	 *
+	 * @var array
+	 */
+	protected $_dependenceLoaded = array();
 
 	/**
 	 * Constructor
@@ -215,7 +222,8 @@ class e_jsmanager
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
 
 		// Try to load browser cache id from core preferences
-		$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
+		//$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
+		$this->setCacheId(e107::getPref('e_jslib_browser_cache'), 0);
 
 		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
 			
@@ -231,11 +239,12 @@ class e_jsmanager
 			
 				if(!$this->libDisabled($id,$vis))
 				{
-				// 	echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
+				 	//echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
 					if(vartrue($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
 						{
+							//echo "<h4>Loaded: ".$path."  :: ".$vis."</h4>";
 							$core[$path] = $vis;	
 						}		
 					}
@@ -248,7 +257,7 @@ class e_jsmanager
 	
 		if($vis != 'auto')
 		{
-			$this->coreLib($core);
+			$this->checkLibDependence(null, $core);
 		}
 		
 
@@ -588,8 +597,9 @@ class e_jsmanager
 	
 	/**
 	 * Return TRUE if the library is disabled. ie. prototype or jquery. 
+	 * FIXME - remove $type & $loc
 	 */
-	public function libDisabled($type, $loc)
+	public function libDisabled($type = null, $loc = null)
 	{
 		if($type == 'core' && ($loc == 'none'))
 		{
@@ -628,6 +638,68 @@ class e_jsmanager
 		return false;
 		
 	}
+	
+	public function checkLibDependence($rlocation, $libs = null)
+	{
+		// Load Required Library (prototype | jquery)
+		// called from addJs(), make isDisabled checks for smart runtime library detection
+		if($rlocation && $libs === null && $this->_dependence != null && isset($this->_libraries[$this->_dependence]) && !isset($this->_dependenceLoaded[$this->_dependence][$rlocation])) // load framework
+		{
+			if($this->libDisabled()) 
+			{
+				$this->_dependenceLoaded[$this->_dependence][$rlocation] = array();
+				return;
+			}
+			
+			foreach($this->_libraries[$this->_dependence] as $inc)
+			{
+				if(strpos($inc,".css")!==false)
+				{
+					if(strpos($inc,"://")!==false) // cdn 
+					{
+						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
+					}
+					else
+					{
+						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
+					}
+				}
+				else
+				{
+					$this->addJs('core', $inc, $rlocation, '<!-- AutoLoad -->');
+				}
+				$this->_dependenceLoaded[$this->_dependence][$rlocation][] = $inc;
+			}
+			return $this;
+		}
+		// called on init time, isDisabled checks already done, just add stuff
+		if($rlocation === null && is_array($libs))
+		{
+			foreach ($libs as $inc => $rlocation) 
+			{
+				if(isset($this->_dependenceLoaded[$this->_dependence][$rlocation]) && in_array($inc, $this->_dependenceLoaded[$this->_dependence][$rlocation]))
+				{
+					continue;
+				}
+				if(strpos($inc,".css")!==false)
+				{
+					if(strpos($inc,"://")!==false) // cdn 
+					{
+						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
+					}
+					else
+					{
+						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
+					}
+				}
+				else
+				{
+					$this->addJs('core', $inc, $rlocation, '<!-- AutoLoad -->');
+				}
+				$this->_dependenceLoaded[$this->_dependence][$rlocation][] = $inc;
+			}
+		}
+	}
 
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
@@ -660,36 +732,34 @@ class e_jsmanager
 			return $this;
 		}
 		
-
-		// Load Required Library (prototype | jquery)
-		if($pre != '<!-- AutoLoad -->' && $this->_dependence != null && isset($this->_libraries[$this->_dependence])) // load framework
-		{		
-			foreach($this->_libraries[$this->_dependence] as $inc)
+		// prevent loop of death
+		if($pre != '<!-- AutoLoad -->') 
+		{
+			$rlocation = $runtime_location;
+			if(is_numeric($runtime_location)) $rlocation = $this->isInAdmin() ? 'admin' : 'front';
+			
+			$this->checkLibDependence($rlocation);
+			
+			
+			// FIXME - better performance - executed on every addJs call - BAD
+			//libraries handled only by checkLibDependence()
+			if(!is_array($file_path))
 			{
-				
-				if(strpos($inc,".css")!==false)
+				foreach ($this->_libraries as $l) 
 				{
-					if(strpos($inc,"://")!==false) // cdn 
+					if(in_array($file_path, $l)) 
 					{
-						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
-					}
-					else
-					{
-						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
-					}
-				}
-				else
-				{
-					$this->addJs('core', $inc, 'all', '<!-- AutoLoad -->');	
+						return $this;
+					} 
 				}
 			}
 		}
-				
-		if($type == 'core' && !is_array($file_path) && substr($file_path,0,4)=='http' ) // Core using CDN. 
-		{
-			$type = 'header';
-			$runtime_location = 1;
-		}
+
+		// if($type == 'core' && !is_array($file_path) && substr($file_path,0,4)=='http' ) // Core using CDN. 
+		// {
+			// $type = 'header';
+			// $runtime_location = 1;
+		// }
 		
 		// Possibly no longer needed. 
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
@@ -734,7 +804,8 @@ class e_jsmanager
 		switch($type)
 		{
 			case 'core':
-				$file_path = '{e_WEB_JS}'.trim($file_path, '/');
+				// added direct CDN support
+				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/');
 				$registry = &$this->_e_jslib_core;
 			break;
 
@@ -750,7 +821,8 @@ class e_jsmanager
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
-				$file_path = $runtime_location.'|{e_WEB_JS}'.trim($file_path, '/')."|{$pre}|{$post}";
+				// added direct CDN support
+				$file_path = $runtime_location.'|'.(strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/')."|{$pre}|{$post}";
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
@@ -1002,14 +1074,16 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
+					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
 					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 					continue;
 				}
 				elseif($external) //true or 'js'
 				{
-					echo '<script type="text/javascript" src="'.$tp->replaceConstants($path, 'abs').'?external=1&amp;cacheid='.$this->getCacheId().'"></script>';
+					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					echo '<script type="text/javascript" src="'.$path.'"></script>';
 					echo "\n";
 					continue;
 				}
@@ -1029,16 +1103,17 @@ class e_jsmanager
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
+					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$tp->replaceConstants($path, 'abs').'?'.$this->getCacheId().'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 					continue;
 				}
             	if($external)
 				{
 					// Never use CacheID on a CDN script. 
-					$src = (substr($path,0,4)=='http') ? $path : $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
-					echo '<script type="text/javascript" src="'.$src.'"></script>';
+					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					echo '<script type="text/javascript" src="'.$path.'"></script>';
 					echo "\n";
 					continue;
 				}
