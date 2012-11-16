@@ -52,10 +52,21 @@ class e_jslib
 		// FIXED: option to use external sources (e.g. google) even if JS is combined (script tags for external sources)
 		if(!e107::getPref('e_jslib_nocombine'))
 		{
+			$e_jsmanager = e107::getJs();
+			
+			// render CDN frameworks
+			$ret .= $e_jsmanager->renderJs('framework', null, true, true);
+			
 			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
 			// TODO disable cache in debug mod 
 			$hash .= (e107::getPref('e_jslib_nocache')/* || deftrue('e_NOCACHE')*/ ? '_nocache' : '').(!e107::getPref('e_jslib_nobcache') || deftrue('e_NOCACHE') ? '_nobcache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
 			$ret .= "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+			
+			// render CDN libraries asap 
+			$ret .= $e_jsmanager->renderJs('core', null, true, true);
+			$ret .= $e_jsmanager->renderJs('plugin', null, true, true);
+			$ret .= $e_jsmanager->renderJs('theme', null, true, true);
+			
 			if($return) return $ret;
 			echo $ret;
 			return;
