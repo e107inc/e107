@@ -5,6 +5,8 @@ $(document).ready(function()
 	
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
+						
+			
 			var tip = $(this).attr('title');
 			if(!tip)
 			{
@@ -16,15 +18,15 @@ $(document).ready(function()
 		});
 		
 		
-	
+		
 		// run tips on .field-help 
 		$("input,textarea,select,label,.e-tip").each(function(c) {
-				
-		
-			$(this).nextAll(".field-help").hide();
+						
+			var t = $(this).nextAll(".field-help");
+			t.hide();
 		//	alert('hello');
 			$(this).tipsy({title: function() {
-				var tip = $(this).nextAll(".field-help").text();
+				var tip = t.text();			
 				 return tip; 
 				},
 				fade: true,
@@ -34,8 +36,8 @@ $(document).ready(function()
 		
 		});
 	
-	//	 $(".e-spinner").spinner();
-		
+	
+		 $(".e-spinner").spinner();
 	
 	
 			$(".e-radio-multi").each(function() {

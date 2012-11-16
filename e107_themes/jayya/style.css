@@ -451,6 +451,10 @@ select[disabled='disabled'],
 option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
 
+input.e-spinner {
+	border:0px;
+}
+
 select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
