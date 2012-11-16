@@ -281,6 +281,12 @@ class e_jsmanager
 			$theme_libs = array();
 		}
 		$this->themeLib($theme_libs);
+		
+		// TEST VALUES
+		// $this->_e_jslib_plugin[] = '{e_PLUGIN}myplug/test.js';
+		// $this->_e_jslib_plugin[] = 'http://somesite/myplug/test.js';
+		// $this->_e_jslib_theme[] = '{THEME}js/test.js';
+		// $this->_e_jslib_theme[] = 'http://somesite/js/test.js';
 	}
 
 	/**
@@ -942,8 +948,25 @@ class e_jsmanager
 
 		switch($mod)
 		{
+			case 'framework': // CDN frameworks - rendered before consolidation script (if enabled)
+				$fw = array();
+				foreach ($this->_libraries as $lib) 
+				{
+					foreach ($lib as $path) 
+					{
+						$erase = array_search($path, $this->_e_jslib_core);
+						if($erase !== false && strpos($path, 'http') === 0)
+						{
+							unset($this->_e_jslib_core[$erase]);
+							$fw[] = $path;
+						}
+					}
+				}
+				$this->renderFile($fw, $external, 'CDN Framework', $mod, false);
+			break;
+			
 			case 'core': //e_jslib
-				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_core, $external, 'Core libraries'));
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_core, $external, 'Core libraries', $mod));
 				$this->_e_jslib_core = array();
 			break;
 
@@ -952,37 +975,37 @@ class e_jsmanager
 				{
 					$this->setLastModfied($mod, $this->renderFile($paths, $external, $plugname.' libraries'));
 				}*/
-				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, 'Plugin libraries'));
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, 'Plugin libraries', $mod));
 				$this->_e_jslib_plugin = array();
 			break;
 
 			case 'theme': //e_jslib
-				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_theme, $external, 'Theme libraries'));
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_theme, $external, 'Theme libraries', $mod));
 				$this->_e_jslib_theme = array();
 			break;
 
 			case 'header':
-				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone);
+				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
 				unset($this->_runtime_header[$zone]);
 			break;
 
 			case 'core_css': //e_jslib
-				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', false);
+				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', $mod, false);
 				unset($this->_e_css['core']);
 			break;
 
 			case 'plugin_css': //e_jslib
-				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', false);
+				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', $mod, false);
 				unset($this->_e_css['plugin']);
 			break;
 
 			case 'theme_css': //e_jslib
-				$this->renderFile(varset($this->_e_css['theme'], array()), $external, 'Theme CSS', false);
+				$this->renderFile(varset($this->_e_css['theme'], array()), $external, 'Theme CSS', $mod, false);
 				unset($this->_e_css['theme']);
 			break;
 
 			case 'other_css':
-				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', false);
+				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', $mod, false);
 				unset($this->_e_css['other']);
 			break;
 
@@ -998,13 +1021,13 @@ class e_jsmanager
 					ksort($this->_runtime_footer, SORT_NUMERIC);
 					foreach ($this->_runtime_footer as $priority => $path_array)
 					{
-						$this->renderFile($path_array, $external, 'Footer JS include - priority #'.$priority);
+						$this->renderFile($path_array, $external, 'Footer JS include - priority #'.$priority, $mod);
 					}
 					$this->_runtime_footer = array();
 				}
 				else
 				{
-					$this->renderFile(varsettrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone);
+					$this->renderFile(varsettrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
 					unset($this->_runtime_footer[$zone]);
 				}
 			break;
@@ -1048,7 +1071,7 @@ class e_jsmanager
 	 * @param string $label added as comment if non-empty
 	 * @return void
 	 */
-	public function renderFile($file_path_array, $external = false, $label = '', $checkModified = true)
+	public function renderFile($file_path_array, $external = false, $label = '', $mod = null, $checkModified = true)
 	{
 		if(empty($file_path_array))
 		{
@@ -1082,7 +1105,8 @@ class e_jsmanager
 				}
 				elseif($external) //true or 'js'
 				{
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					if(strpos($path, 'http') == 0) continue; // not allowed
+					$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
 					echo '<script type="text/javascript" src="'.$path.'"></script>';
 					echo "\n";
 					continue;
@@ -1095,6 +1119,14 @@ class e_jsmanager
             }
             else
             {
+            	// CDN fix, ignore URLs inside consolidation script, render as external scripts
+            	$isExternal = false;
+				if(strpos($path, 'http') === 0) 
+				{
+					if($external !== 'css') $isExternal = true;
+				}
+				
+				            	
 				if('css' === $external)
 				{
 					$path = explode('|', $path, 4);
@@ -1111,13 +1143,23 @@ class e_jsmanager
 				}
             	if($external)
 				{
-					// Never use CacheID on a CDN script. 
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					// Never use CacheID on a CDN script, always render if it's CDN
+					if(!$isExternal) 
+					{
+						// don't render non CDN libs as external script calls when script consolidation is enabled
+						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
+						{
+							if(!e107::getPref('e_jslib_nocombine')) continue;
+						}
+						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					}
 					echo '<script type="text/javascript" src="'.$path.'"></script>';
 					echo "\n";
 					continue;
 				}
-
+				
+				// never try to consolidate external scripts
+				if($isExternal) continue;
 				$path = $tp->replaceConstants($path, '');
 				if($checkModified) $lmodified = max($lmodified, filemtime($path));
                 echo file_get_contents($path);
