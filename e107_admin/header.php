@@ -8,8 +8,8 @@
  *
  * Admin Header
  *
- * $URL$
- * $Id$
+ * $URL:$
+ * $Id:$
 */
 
 if (!defined('e107_INIT'))
@@ -243,7 +243,7 @@ echo "\n<!-- footer_inline_css -->\n";
 //
 // Unobtrusive JS via CSS, prevent 3rd party code overload
 //
-require_once(e_FILE."/e_css.php");
+// require_once(e_FILE."/e_css.php"); //moved to e107_web/css/e107.css 
 
 //
 // E: Send JS
