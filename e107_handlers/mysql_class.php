@@ -328,6 +328,99 @@ class e_db_mysql
 		return $sQryRes;
 	}
 
+	/**
+	 * Query and fetch at once
+	 * 
+	 * Examples:
+	 * <code>
+	 * <?php
+	 * 
+	 * // Get single value, $multi and indexField are ignored
+	 * $string = e107::getDb()->retrieve('user', 'user_email', 'user_id=1');
+	 * 
+	 * // Get single row set, $multi and indexField are ignored
+	 * $array = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id=1');
+	 * 
+	 * // Fetch all, don't append WHERE to the query, index by user_id
+	 * $array = e107::getDb()->retrieve('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true, true, 'user_id');
+	 * 
+	 * // Same as above but retrieve() is only used to fetch, not useable for single return value
+	 * if(e107::getDb()->select('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true))
+	 * {
+	 * 		$array = e107::getDb()->retrieve(false, '', '', false, true, 'user_id');
+	 * }
+	 * 
+	 * </code>
+	 * 
+	 * @param string $table if empty, enter fetch only mode
+	 * @param string $fields comma separated list of fields or * or single field name (get one) 
+	 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
+	 * @param boolean $noWhere if true $where doesn't contain any WHERE clause (e.g. ORDER/LIMIT only), don't prepare WHERE
+	 * @param boolean $multi if true, fetch all (multi mode)
+	 * @param string $indexField field name to be used for indexing when in multi mode
+	 */
+	public function retrieve($table, $fields = '*', $where, $noWhere = false, $multi = false, $indexField = null)
+	{
+		// fetch mode
+		if(empty($table))
+		{
+			$ret = array();
+			if(!$multi) return $this->fetch();
+			
+			while($row = $this->fetch())
+			{
+				if(null !== $indexField) $ret[$row[$indexField]] = $row;
+				else $ret[] = $row;
+			}
+			return $ret;
+		}
+		
+		// detect mode
+		$mode = 'one';
+		if('*' !== $fields && strpos($fields, ',') === false)
+		{
+			$mode = 'single';
+		}
+		elseif($multi)
+		{
+			$mode = 'multi';
+		}
+		
+		// execute & fetch
+		switch ($mode) 
+		{
+			case 'single':
+				if(!$this->select($table, $fields, $where, $noWhere))
+				{
+					return null;
+				}
+				return array_shift($this->fetch());
+			break;
+			
+			case 'one':
+				if(!$this->select($table, $fields, $where, $noWhere))
+				{
+					return array();
+				}
+				return $this->fetch();
+			break;
+			
+			case 'multi':
+				if(!$this->select($table, $fields, $where, $noWhere))
+				{var_dump($this->getLastQuery());
+					return array();
+				}
+				$ret = array();
+				while($row = $this->fetch())
+				{
+					if(null !== $indexField) $ret[$row[$indexField]] = $row;
+					else $ret[] = $row;
+				}
+				return $ret;
+			break;
+			
+		}
+	}
 
 	/**
 	* Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
@@ -335,22 +428,22 @@ class e_db_mysql
 	* If you need more requests think to call the class.<br />
 	* <br />
 	* Example using a unique connection to database:<br />
-	* <code>$sql->db_Select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
+	* <code>e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
 	* <br />
 	* OR as second connection:<br />
-	* <code>$sql2 = new db;
-	* $sql2->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, 'no_where');</code>
+	* <code>
+	* e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
 	*
 	* @return integer Number of rows or false on error
 	*/
-	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
+	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		global $db_mySQLQueryCount;
 
 		$table = $this->db_IsLang($table);
 
 		$this->mySQLcurTable = $table;
-		if ($arg != '' && $mode == 'default')
+		if ($arg != '' && !$noWhere)
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
@@ -363,7 +456,7 @@ class e_db_mysql
 				return FALSE;
 			}
 		}
-		elseif ($arg != '' && $mode != 'default')
+		elseif ($arg != '' && $noWhere)
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
@@ -391,6 +484,15 @@ class e_db_mysql
 		}
 	}
 
+	/**
+	 * select() alias
+	 * 
+	 * @deprecated
+	 */
+	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->select($table, $fields, $arg, $mode !== 'default', $debug, $log_type, $log_remark);
+	}
 
 	/**
 	* @return int Last insert ID or false on error
@@ -400,11 +502,11 @@ class e_db_mysql
 	* @desc Insert a row into the table<br />
 	* <br />
 	* Example:<br />
-	* <code>$sql->db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	* <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
 	*
 	* @access public
 	*/
-	function db_Insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
@@ -508,6 +610,15 @@ class e_db_mysql
 			return FALSE;
 		}
 	}
+	
+	/**
+	 * insert() alias
+	 * @deprecated
+	 */
+	function db_Insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->insert($tableName, $arg, $debug, $log_type, $log_remark);
+	}
 
 	/**
 	* @return int Last insert ID or false on error
@@ -517,14 +628,23 @@ class e_db_mysql
 	* @desc Insert/REplace a row into the table<br />
 	* <br />
 	* Example:<br />
-	* <code>$sql->db_Replace("links", $array);</code>
+	* <code>e107::getDb()->replace("links", $array);</code>
 	*
 	* @access public
 	*/
-	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$arg['_REPLACE'] = TRUE;
 		return $this->db_Insert($table, $arg, $debug, $log_type, $log_remark);
+	}
+	
+	/**
+	 * replace() alias
+	 * @deprecated
+	 */
+	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->replace($table, $arg, $debug, $log_type, $log_remark);
 	}
 
 
@@ -538,15 +658,15 @@ class e_db_mysql
 	* Think to call it if you need to do an update while retrieving data.<br />
 	* <br />
 	* Example using a unique connection to database:<br />
-	* <code>$sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
+	* <code>e107::getDb()->update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
 	* <br />
 	* OR as second connection<br />
-	* <code>$sql2 = new db;
-	* $sql2->db_Update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
+	* <code>
+	* e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
 	*
 	* @access public
 	*/
-	function db_Update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
@@ -603,6 +723,15 @@ class e_db_mysql
 			$this->dbError("db_Update ({$query})");
 			return FALSE;
 		}
+	}
+
+	/**
+	 * update() alias
+	 * @deprecated
+	 */
+	function db_Update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->update($tableName, $arg, $debug, $log_type, $log_remark);
 	}
 
 	function _getTypes(&$arg)
@@ -733,13 +862,13 @@ class e_db_mysql
 	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
 	* <br />
 	* Example :<br />
-	* <code>while($row = $sql->db_Fetch()){
+	* <code>while($row = $sql->fetch()){
 	*  $text .= $row['username'];
 	* }</code>
 	*
 	* @access public
 	*/
-	function db_Fetch($type = MYSQL_ASSOC)
+	function fetch($type = MYSQL_ASSOC)
 	{
 		if (!(is_int($type)))
 		{
@@ -759,6 +888,15 @@ class e_db_mysql
 		$this->dbError('db_Fetch');
 		return FALSE;				// Failure
 	}
+	
+	/**
+	 * fetch() alias
+	 * @deprecated
+	 */
+	function db_Fetch($type = MYSQL_ASSOC)
+	{
+		return $this->fetch($type);
+	}
 
 	/**
 	* @return int number of affected rows or false on error
@@ -768,11 +906,11 @@ class e_db_mysql
 	* @desc Count the number of rows in a select<br />
 	* <br />
 	* Example:<br />
-	* <code>$topics = $sql->db_Count("forum_t", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
+	* <code>$topics = e107::getDb()->count("forum_t", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
 	*
 	* @access public
 	*/
-	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($table);
 
@@ -811,6 +949,11 @@ class e_db_mysql
 			return FALSE;
 		}
 	}
+	
+	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->count($table, $fields, $arg, $debug, $log_type, $log_remark);
+	}
 
 
 	/**
@@ -845,11 +988,11 @@ class e_db_mysql
 	* @desc Delete rows from a table<br />
 	* <br />
 	* Example:
-	* <code>$sql->db_Delete("tmp", "tmp_ip='$ip'");</code><br />
+	* <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
 	* <br />
 	* @access public
 	*/
-	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
@@ -889,6 +1032,11 @@ class e_db_mysql
 			}
 		}
 	}
+	
+	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->delete($table, $arg, $debug, $log_type, $log_remark);
+	}
 
 
 	/**
@@ -926,7 +1074,7 @@ class e_db_mysql
 	*		Returns TRUE if the query is successful, and it does not return a row count
 	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
 	*/
-	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
+	public function gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		global $db_mySQLQueryCount;
 
@@ -969,6 +1117,15 @@ class e_db_mysql
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
 		}
+	}
+
+	/**
+	 * gen() alias
+	 * @deprecated
+	 */
+	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		return $this->gen($query, $debug, $log_type, $log_remark);
 	}
 
 	function ml_check($matches)
@@ -1794,5 +1951,3 @@ class db extends e_db_mysql
 {
 
 }
-
-?>
