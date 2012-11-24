@@ -67,8 +67,8 @@ $cal_super = $ecal_class->cal_super;
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 $calSc = new event_calendar_shortcodes();
 
-require_once(e_HANDLER.'calendar/calendar_class.php');
-$cal = new DHTML_Calendar(true);
+// require_once(e_HANDLER.'calendar/calendar_class.ph_');
+// $cal = new DHTML_Calendar(true);
 
 $cat_filter = intval(varset($_POST['event_cat_ids'],-1));
 if ($cat_filter == -1) $cat_filter = '*';
@@ -400,10 +400,14 @@ if ($action == 'ne' || $action == 'ed')
 	{
 		function make_calendar($boxname, $boxvalue)
 		{
-		  global $ecal_class, $cal;
+		  global $ecal_class;
+		  	// global $cal;
+		  	$frm = e107::getForm();
 		
 			unset($cal_options);
 			unset($cal_attrib);
+			/*
+			DHTML Calendar is deprecated in v2+
 			$cal_options['firstDay'] = $ecal_class->ec_first_day_of_week;
 			$cal_options['showsTime'] = false;
 			$cal_options['showOthers'] = true;
@@ -413,7 +417,11 @@ if ($action == 'ne' || $action == 'ed')
 			$cal_attrib['size'] = "12";
 			$cal_attrib['name'] = $boxname;
 			$cal_attrib['value'] = $boxvalue;
-			return $cal->make_input_field($cal_options, $cal_attrib);
+			*/
+			
+			$opt = array('size' => 12);
+			return $frm->datepicker($boxname,$boxvalue,$opt);
+			// return $cal->make_input_field($cal_options, $cal_attrib);
 		}
 
 

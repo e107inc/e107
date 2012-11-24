@@ -25,14 +25,15 @@ if (!getperms("R"))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-
-require_once(e_HANDLER."calendar/calendar_class.php");
+/*
+require_once(e_HANDLER."calendar/calendar_class.ph_");
 $cal = new DHTML_Calendar(true);
 function headerjs()
 {
 	global $cal;
 	return $cal->load_files();
 }
+*/
 
 $e_sub_cat = 'download';
 

@@ -32,7 +32,7 @@ require_once(e_HANDLER.'upload_handler.php');
 require_once(e_HANDLER.'xml_class.php');
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
-require_once(e_HANDLER."calendar/calendar_class.php");
+//require_once(e_HANDLER."calendar/calendar_class.ph_");
 //$cal = new DHTML_Calendar(true);
 //$gen = new convert();
 
