@@ -622,7 +622,7 @@ class e_form
 	             		el.next('div.e-autocomplete').hide();
 	             		return;
 					}
-					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_FILE_ABS."e_ajax.php', {
+					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_JS."e_ajax.php', {
 					  paramName: '{$name_fld}',
 					  minChars: 2,
 					  frequency: 0.5,
