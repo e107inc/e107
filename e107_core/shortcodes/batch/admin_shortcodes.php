@@ -1054,7 +1054,7 @@ class admin_shortcodes
 			}
 			else
 			{
-				$text = "<script type='text/javascript' src='".e_FILE_ABS."nav_menu.js'></script>";
+				$text = "<script type='text/javascript' src='".e_JS."nav_menu.js'></script>";
 			}
 
 			$text .= "<div style='width: 100%'><table style='border-collapse: collapse; width: 100%'>
