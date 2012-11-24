@@ -123,7 +123,7 @@ class cron_admin_ui extends e_admin_ui
 			
 			$cronDefaults['_system'] = array(
 				0 => array(
-					'name' 			=> LAN_CRON_01_2,
+					'name' 			=> LAN_CRON_01_1,
 					'function' 		=> 'sendEmail',
 					'category'		=> 'mail',
 					'description'   => str_replace("[eml]",$pref['siteadminemail'],LAN_CRON_01_2) ."<br />". LAN_CRON_01_3
@@ -152,7 +152,7 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> LAN_CRON_05_1,
 					'category'		=> 'backup',
 					'function' 		=> 'dbBackup',
-					'description' 	=> LAN_CRON_05_1 .' '.e_SYSTEM.'backups/'
+					'description' 	=> LAN_CRON_05_2 .' '.e_SYSTEM.'backups/'
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
 			);
@@ -252,7 +252,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				e107::getMessage()->add(LAN_CRON_8.":".$insert['cron_function'], E_MESSAGE_INFO); 
+				e107::getMessage()->add(LAN_CRON_8.": ".$insert['cron_function'], E_MESSAGE_INFO); 
 			}	
 		}
 		
@@ -455,21 +455,21 @@ class cron_admin_form_ui extends e_admin_form_ui
 	/**
 	 * Render cron_tab field
 	 */
-	function cron_tab($curVal,$mode) 
+	function cron_tab($curVal,$mode)  
 	{ 
 		if($mode == 'read')
 		{
 			$sep = array();
 			list($min, $hour, $day, $month, $weekday) = explode(" ", $curVal);
-			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50.$min;	
+			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50. $min;	
 			$text .= "<br />";
-			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51.$hour;			
+			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51. $hour;			
 			$text .= "<br />";
-			$text .= ($day != '*') ? LAN_CRON_52.$day : LAN_CRON_40;
+			$text .= ($day != '*') ? LAN_CRON_52 . $day : LAN_CRON_40;
 			$text .= "<br />";
-			$text .= ($month != '*') ? strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41;
+			$text .= ($month != '*') ? LAN_CRON_53 . strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41;
 			$text .= "<br />";		
-			$text .= ($weekday != '*') ? strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42;
+			$text .= ($weekday != '*') ? LAN_CRON_54 . strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42;
 			return $text; 
 		}
 		

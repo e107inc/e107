@@ -45,7 +45,7 @@ define("LAN_CRON_05_2", "Backup the system database to");
 define("LAN_CRON_6", "Couldn't Import Prefs");
 define("LAN_CRON_7", "Couldn't Import Timing Settings");
 define("LAN_CRON_8", "Imported Timing Settings for");
-define("LAN_CRON_9", "Imported");
+//define("LAN_CRON_9", "Imported");
 
 define("LAN_CRON_10", "[x] minutes and [y] seconds ago."); // [x] and [y] are automatically replaced. 
 define("LAN_CRON_11", "[y] seconds ago.");
@@ -79,9 +79,9 @@ define("LAN_CRON_42", "Every Week Day");
 define("LAN_CRON_50", "Minute(s):");
 define("LAN_CRON_51", "Hour(s):");
 define("LAN_CRON_52", "Day(s):");
-define("LAN_CRON_53", "Month(s):");
+define("LAN_CRON_53", "Month(s):");    // 52 - 54 need to be included in cron line 468 - 472 => spaces 
 define("LAN_CRON_54", "Weekday(s):");
-define("LAN_CRON_55", "Active");
+//define("LAN_CRON_55", "Active");
 
 define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
