@@ -1,3 +1,4 @@
+//<?php
 global $loop_uid;
 if($parm == "" && is_numeric($loop_uid))
 {
@@ -23,9 +24,9 @@ else
 {
 	$image = USERPHOTO;
 }
-if($image && file_exists(e_FILE."public/avatars/".$image))
+if($image && file_exists(e_MEDIA_AVATAR.$image))
 {
-	 return "<img src='".e_FILE_ABS."public/avatars/{$image}' alt='' />";
+	 return "<img src='".e_MEDIA_AVATAR_ABS."{$image}' alt='' />";
 }
 else
 {

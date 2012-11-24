@@ -292,7 +292,7 @@ class e_jsmanager
 	/**
 	 * Add Core CSS file for inclusion in site header, shorthand of headerFile() method
 	 *
-	 * @param string|array $file_path relative to {e_FILE}jslib/ folder
+	 * @param string|array $file_path relative to {e_JS} folder
 	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
@@ -474,7 +474,7 @@ class e_jsmanager
 	/**
 	 * Add Core JS file for inclusion in site header, shorthand of headerFile() method
 	 *
-	 * @param string $file_path relative to {e_FILE}jslib/ folder
+	 * @param string $file_path relative to {e_JS} folder
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
