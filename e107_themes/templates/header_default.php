@@ -307,7 +307,7 @@ echo "\n<!-- footer_inline_css -->\n";
 //
 // Style for unobtrusive JS, prevent 3rd party code overload
 //
-require_once(e_FILE."/e_css.php");
+// require_once(e_FILE."/e_css.php"); see e107_web/css/e107.css
 
 //
 // E: Send JS all in once
