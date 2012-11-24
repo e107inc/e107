@@ -60,7 +60,7 @@ class e_jslib
 			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
 			// TODO disable cache in debug mod 
 			$hash .= (e107::getPref('e_jslib_nocache')/* || deftrue('e_NOCACHE')*/ ? '_nocache' : '').(!e107::getPref('e_jslib_nobcache') || deftrue('e_NOCACHE') ? '_nobcache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
-			$ret .= "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+			$ret .= "<script type='text/javascript' src='".e_JS."e_jslib.php?{$hash}'></script>\n";
 			
 			// render CDN libraries asap 
 			$ret .= $e_jsmanager->renderJs('core', null, true, true);
