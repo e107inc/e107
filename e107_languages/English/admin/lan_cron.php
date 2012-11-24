@@ -45,18 +45,17 @@ define("LAN_CRON_05_2", "Backup the system database to");
 define("LAN_CRON_6", "Couldn't Import Prefs");
 define("LAN_CRON_7", "Couldn't Import Timing Settings");
 define("LAN_CRON_8", "Imported Timing Settings for");
-//define("LAN_CRON_9", "Imported");
 
-define("LAN_CRON_10", "[x] minutes and [y] seconds ago."); // [x] and [y] are automatically replaced. 
-define("LAN_CRON_11", "[y] seconds ago.");
+define("LAN_CRON_9", "[x] minutes and [y] seconds ago."); // [x] and [y] are automatically replaced. 
+define("LAN_CRON_10", "[y] seconds ago.");
 
-define("LAN_CRON_12", "Active Crons");
-define("LAN_CRON_13", "Last cron refresh");
-define("LAN_CRON_14", "Please be sure cron.php is executable.");
-define("LAN_CRON_15", "Please CHMOD /cron.php to 755.");
+define("LAN_CRON_11", "Active Crons");
+define("LAN_CRON_12", "Last cron refresh");
+define("LAN_CRON_13", "Please be sure cron.php is executable.");
+define("LAN_CRON_14", "Please CHMOD /cron.php to 755.");
 
-define("LAN_CRON_16", "Use the following Cron Command");
-define("LAN_CRON_17", "Using your server control panel (eg. cPanel, DirectAdmin, Plesk etc.) please create a crontab to run this command on your server every minute.");
+define("LAN_CRON_15", "Use the following Cron Command");
+define("LAN_CRON_16", "Using your server control panel (eg. cPanel, DirectAdmin, Plesk etc.) please create a crontab to run this command on your server every minute.");
 
 // leave some room for additions/changes
 
@@ -79,9 +78,9 @@ define("LAN_CRON_42", "Every Week Day");
 define("LAN_CRON_50", "Minute(s):");
 define("LAN_CRON_51", "Hour(s):");
 define("LAN_CRON_52", "Day(s):");
-define("LAN_CRON_53", "Month(s):");    // 52 - 54 need to be included in cron line 468 - 472 => spaces 
+define("LAN_CRON_53", "Month(s):");   
 define("LAN_CRON_54", "Weekday(s):");
-//define("LAN_CRON_55", "Active");
+
 
 define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
