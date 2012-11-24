@@ -370,7 +370,7 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
 		// *** Add in the code to swap the display tags
 		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
   	}
-  	echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
+  	echo "<script type='text/javascript' src='".e_JS."chap_script.js'></script>\n";
   	$js_body_onload[] = "getChallenge();";
 }
 
