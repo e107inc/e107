@@ -572,7 +572,7 @@ class e107_user_extended
 
 	function user_extended_edit($struct, $curval)
 	{
-	  global $cal, $tp;
+	  global $tp;
 	  if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
 	  {
 		$curval = $struct['user_extended_struct_default'];

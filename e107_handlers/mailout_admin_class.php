@@ -169,8 +169,8 @@ class mailoutAdminClass extends e107MailManager
 	public function __construct($mode = '')
 	{
 		parent::__construct();
-		require_once(e_HANDLER.'calendar/calendar_class.php');
-		$this->_cal = new DHTML_Calendar(true);
+	//	require_once(e_HANDLER.'calendar/calendar_class.ph_');
+	//	$this->_cal = new DHTML_Calendar(true);
 
 		$dbTable = '';
 		if (isset($this->tasks[$mode]))

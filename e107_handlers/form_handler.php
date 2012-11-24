@@ -515,6 +515,7 @@ class e_form
 		$text = "";
 	
 		$class = (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
+		$size = vartrue($options['size']) ? intval($options['size']) : 40;
 		
 		if(vartrue($options['inline']))
 		{
@@ -524,7 +525,7 @@ class e_form
 		}
 		else
 		{
-			$text .= "<input class='{$class}' type='text' size='40' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
+			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
 		}
 		
 		return $text;

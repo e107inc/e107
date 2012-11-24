@@ -34,8 +34,8 @@ define('SIGNUP_DEBUG', FALSE);
 
 include_once(e_HANDLER.'user_extended_class.php');
 $usere = new e107_user_extended;
-require_once(e_HANDLER.'calendar/calendar_class.php');
-$cal = new DHTML_Calendar(true);
+// require_once(e_HANDLER.'calendar/calendar_class.ph_');
+// $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'validator_class.php');
 // require_once(e_HANDLER.'user_handler.php');
 $userMethods = e107::getUserSession();
