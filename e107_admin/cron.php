@@ -326,15 +326,15 @@ class cron_admin_ui extends e_admin_ui
 			$srch = array("[x]","[y]");
 			$repl = array($mins,$secs);
 	
-			$lastRun = ($mins) ? str_replace($srch,$repl,LAN_CRON_10) : str_replace($srch,$repl,LAN_CRON_11); // FIX: check syntax
+			$lastRun = ($mins) ? str_replace($srch,$repl,LAN_CRON_9) : str_replace($srch,$repl,LAN_CRON_10); // FIX: check syntax
 
 			$lastRefresh = ($ago < 10000) ? $lastRun : LAN_NEVER;
 	
 			$mes->add(LAN_STATUS.": <b>".$status."</b>", E_MESSAGE_INFO);
 	
 	
-			$mes->add(LAN_CRON_12.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
-			$mes->add(LAN_CRON_13.": ".$lastRefresh, E_MESSAGE_INFO);
+			$mes->add(LAN_CRON_11.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
+			$mes->add(LAN_CRON_12.": ".$lastRefresh, E_MESSAGE_INFO);
 	
 			//FIXME: for Windows, the is_executable() function only checks the file
 			// extensions of exe, com, bat and cmd.
@@ -343,15 +343,15 @@ class cron_admin_ui extends e_admin_ui
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
 			if($isWin)
 			{
-				$mes->add(LAN_CRON_14, E_MESSAGE_WARNING);
+				$mes->add(LAN_CRON_13, E_MESSAGE_WARNING);
 			}
 			if (!$isWin && $actualPerm != 755) // is_executable() is not reliable. 
 			{
-				$mes->add(LAN_CRON_15, E_MESSAGE_WARNING);
+				$mes->add(LAN_CRON_14, E_MESSAGE_WARNING);
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = LAN_CRON_16.": <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />". LAN_CRON_17;
+				$setpwd_message = LAN_CRON_15.": <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />". LAN_CRON_16;
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 			}
 	
@@ -461,15 +461,15 @@ class cron_admin_form_ui extends e_admin_form_ui
 		{
 			$sep = array();
 			list($min, $hour, $day, $month, $weekday) = explode(" ", $curVal);
-			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50. $min;	
+			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50 ." ". $min;	// Minute(s)
 			$text .= "<br />";
-			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51. $hour;			
+			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51 ." ". $hour;	// Hour(s)		
 			$text .= "<br />";
-			$text .= ($day != '*') ? LAN_CRON_52 . $day : LAN_CRON_40;
+			$text .= ($day != '*') ? LAN_CRON_52 ." ". $day : LAN_CRON_40;  // Day(s)
 			$text .= "<br />";
-			$text .= ($month != '*') ? LAN_CRON_53 . strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41;
-			$text .= "<br />";		
-			$text .= ($weekday != '*') ? LAN_CRON_54 . strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42;
+			$text .= ($month != '*') ? LAN_CRON_53 ." ". strftime("%B", mktime(00, 00, 00, $month, 1, 2000)) : LAN_CRON_41; // Month(s)
+			$text .= "<br />";		 
+			$text .= ($weekday != '*') ? LAN_CRON_54 ." ". strftime("%A", mktime(00, 00, 00, 5, $weekday, 2000)) : LAN_CRON_42; // Weekday(s)
 			return $text; 
 		}
 		
