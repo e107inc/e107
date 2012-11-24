@@ -28,7 +28,7 @@ var Featurebox = Class.create({
 			'ajax_loader': null,
 			'ajax_hide_onload': false,
 			'continuous': false,
-			'ajax_url': '#{e_FILE}'.parsePath() + 'e_ajax.php'  
+			'ajax_url': '#{e_JS}'.parsePath() + 'e_ajax.php'  
 		}, options || {});
 		
 		this._ajax_container = this.options.ajax_container && $(this.options.ajax_container) ? $(this.options.ajax_container) : this._container.down('.body');
