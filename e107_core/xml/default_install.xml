@@ -151,6 +151,12 @@
 		<core name="replyto_email">registration@yoursite.com</core>
 		<core name="replyto_name">e107 Website System</core>
 		<core name="resize_method">gd2</core>
+		<core name="resize_dimensions"><![CDATA[array ( 
+			'news-image' => array ( 'w' => '300', 'h' => '300', ), 
+			'news-bbcode' => array ( 'w' => '300', 'h' => '300', ), 
+			'page-bbcode' => array ( 'w' => '300', 'h' => '300', ), 
+)]]>
+</core>
 		<core name="search_highlight">1</core>
 		<core name="search_restrict">0</core>
 		<core name="shortdate">%d %b : %H:%M</core>
