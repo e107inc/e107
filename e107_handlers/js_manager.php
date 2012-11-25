@@ -40,9 +40,13 @@ class e_jsmanager
 		
 		
 		'jquery'	=> array(
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
-			"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"		
+		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
+		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
+		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
+			"http://code.jquery.com/jquery-1.8.3.js",
+			"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css",
+			"http://code.jquery.com/ui/1.9.2/jquery-ui.js"
+			
 			)	
 			
 	);
