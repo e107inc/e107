@@ -60,7 +60,11 @@ class wysiwyg
 	$text .= "\n /* TinyMce Config: ".$this->configName." */";
 	$text .= $this->tinyMce_config();
 
-	$text .= "\t\t start_tinyMce(); \n";
+	$text .= "\t\t 
+	$(document).ready(function()
+{
+	start_tinyMce(); \n
+}); ";
 	
 	$text .= "
 
