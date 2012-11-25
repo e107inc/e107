@@ -1105,7 +1105,8 @@ class e_jsmanager
 				}
 				elseif($external) //true or 'js'
 				{
-					if(strpos($path, 'http') == 0) continue; // not allowed
+
+					if(strpos($path, 'http') === 0) continue; // not allowed
 					$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
 					echo '<script type="text/javascript" src="'.$path.'"></script>';
 					echo "\n";
