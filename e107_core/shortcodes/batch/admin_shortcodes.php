@@ -308,7 +308,7 @@ class admin_shortcodes
 		if (ADMIN) {
 			if (!function_exists('admin_latest'))
 			{
-				function admin_latest()
+				function admin_latest($parm='')
 				{
 					global $sql, $ns, $pref;
 
@@ -342,7 +342,9 @@ class admin_shortcodes
 						$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 					}
 					$text .= "</div>";
-					return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);
+					
+					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;	
+
 				}
 			}
 
@@ -352,13 +354,13 @@ class admin_shortcodes
 				{
 					if (latest_request())
 					{
-						return admin_latest();
+						return admin_latest($parm);
 					}
 				}
 			}
 			else
 			{
-				return admin_latest();
+				return admin_latest($parm);
 			}
 		}
 	}
@@ -875,7 +877,7 @@ class admin_shortcodes
 		{
 			if (!function_exists('admin_status'))
 			{
-				function admin_status()
+				function admin_status($parm='')
 				{
 					global $sql, $ns, $pref;
 					$members = $sql -> db_Count('user');
@@ -909,7 +911,9 @@ class admin_shortcodes
 						$text .= "<img src='".e_IMAGE_ABS."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a>";
 					}
 					$text .= "</div>";
-					return $ns -> tablerender(LAN_STATUS, $text, '', TRUE);
+					
+					
+					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
 				}
 			}
 
@@ -919,13 +923,13 @@ class admin_shortcodes
 				{
 					if (status_request())
 					{
-						return admin_status();
+						return admin_status($parm);
 					}
 				}
 			}
 			else
 			{
-				return admin_status();
+				return admin_status($parm);
 			}
 		}
 	}

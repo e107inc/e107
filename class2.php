@@ -733,7 +733,13 @@ if (!class_exists('e107table', false))
 		public $eMenuArea;
 		public $eMenuTotal = array();
 		public $eSetStyle;
-
+		
+		/**
+		 * @param $caption
+		 * @param $text
+		 * @param $mode
+		 * @param $return boolean : return the html instead of echo it. 
+		 */
 		function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
 		

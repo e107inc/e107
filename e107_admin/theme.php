@@ -81,6 +81,8 @@ require_once("footer.php");
 function theme_adminmenu()
 {
 	global $mode;
+	$mode = e_QUERY;
+	
    	$e107 = &e107::getInstance();
 
 		$var['main']['text'] = TPVLAN_33;
@@ -98,7 +100,7 @@ function theme_adminmenu()
         $selected = (e_QUERY) ? e_QUERY : "main";
 
 
-		e_admin_menu(TPVLAN_26, $mode, $var);
+		e_admin_menu(TPVLAN_26, $selected, $var);
 }
 
 

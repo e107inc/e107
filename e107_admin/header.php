@@ -510,11 +510,15 @@ if ($e107_popup != 1)
 
 		$kpost = '';
 		$text = '';
+		
 		if ($sub_link)
 		{
 			$kpost = '_sub';
 		}
-		else $text = $tmpl['start'];
+		else
+		{
+			 $text = $tmpl['start'];
+		}
 
 		//FIXME - e_parse::array2sc()
 		$search = array();
@@ -528,6 +532,7 @@ if ($e107_popup != 1)
 		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
+		
 		foreach (array_keys($e107_vars) as $act)
 		{
 			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
@@ -544,7 +549,10 @@ if ($e107_popup != 1)
 			//  print_a($e107_vars[$act]);
 
 			$replace = array();
-			if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
+			
+			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
+			
+			if (($active_page == $act && !is_numeric($act))|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
 			{
 				$temp = $tmpl['button_active'.$kpost];
 			}
@@ -552,6 +560,16 @@ if ($e107_popup != 1)
 			{
 				$temp = $tmpl['button'.$kpost];
 			}
+
+		//	$temp = $tmpl['button'.$kpost];
+		//	echo "ap = ".$active_page;
+		//	echo " act = ".$act."<br /><br />";
+
+			if($rid == 'main')
+			{
+				$temp = $tmpl['button_other'.$kpost];	
+			}
+	
 
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			// valid URLs
@@ -565,34 +583,56 @@ if ($e107_popup != 1)
 			$replace[3] = $title;
 			$replace[4] = '';
 
-			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
+		
+			
+			
+			
 			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
-			$replace[6] = '';
+			$replace[6] = $rid;
+		
 			$replace[7] = varset($e107_vars[$act]['link_class']);
 			$replace[8] = '';
 			$replace[9] = varset($e107_vars[$act]['image']);
+			
+			if($rid == 'logout' || $rid == 'home')
+			{
+				$START_SUB = $tmpl['start_other_sub'];
+			}
+			else 
+			{
+				$START_SUB = $tmpl['start_sub'];	
+			}		
 
 			if (varsettrue($e107_vars[$act]['sub']))
 			{
 				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
 				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
-				$replace[4] = preg_replace($search, $replace, $tmpl['start_sub']);
+				$replace[4] = preg_replace($search, $replace, $START_SUB);
 				$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 				$replace[4] .= $tmpl['end_sub'];
 			}
 
 			$text .= preg_replace($search, $replace, $temp);
+		//	echo "<br />".$title." act=".$act;
+			//print_a($e107_vars[$act]);
 		}
 
-		$text .= !$sub_link ? $tmpl['end'] : '';
+		$text .= (!$sub_link) ? $tmpl['end'] : '';
+		
 		if ($sub_link || empty($title))
+		{
 			return $text;
+		}
 
 		$ns = e107::getRender();
 		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
 		return '';
 	}
+
+
+
+
 
 	/*
 	 *  DEPRECATED - use e_admin_menu()
