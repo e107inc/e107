@@ -226,7 +226,7 @@ if(($action == "confdel") || ($action == "auditdel"))
 		<form method='post' action='".e_SELF."?backdel.{$qs[1]}.{$qs[2]}'>
 			<fieldset id='core-admin-log-confirm-delete'>
 				<legend class='e-hideme'>".LAN_CONFDELETE."</legend>
-				<table class='adminform'>
+				<table class='table adminform'>
 					<tr>
 						<td class='center'>
 							<strong>".(($action == "confdel") ? RL_LAN_047 : RL_LAN_065).$old_string."</strong>
@@ -404,15 +404,15 @@ if($action == "config")
 	<form method='post' action='".e_SELF."?config'>
 		<fieldset id='core-admin-log-options'>
 			<legend>".RL_LAN_122."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".RL_LAN_044."</td>
-						<td class='control'>
+						<td>".RL_LAN_044."</td>
+						<td>
 							<select name='sys_log_perpage' class='tbox select'>
 								<option value='10' ".($pref['sys_log_perpage'] == '10' ? " selected='selected' " : "")." >10</option>
 								<option value='20' ".($pref['sys_log_perpage'] == '20' ? " selected='selected' " : "")." >20</option>
@@ -428,8 +428,8 @@ if($action == "config")
 	// User Audit Trail Options
 	$text .= "
 		<tr>
-			<td class='label'>".RL_LAN_123."</td>
-			<td class='control'>
+			<td>".RL_LAN_123."</td>
+			<td>
 				<select class='tbox' name='user_audit_class'>
 					".$e_userclass->vetted_tree('user_audit_class', array($e_userclass, 'select'), varset($pref['user_audit_class'], ''), 'nobody,admin,member,new,mods,main,classes')."
 				</select>
@@ -437,8 +437,8 @@ if($action == "config")
 			</td>
 		</tr>
 		<tr>
-			<td class='label'>".RL_LAN_124."</td>
-			<td class='control'>
+			<td>".RL_LAN_124."</td>
+			<td>
 				".RL_LAN_031."
 	";
 	foreach($audit_checkboxes as $k => $t)
@@ -458,16 +458,16 @@ if($action == "config")
 	//====================
 	$text .= "
 					<tr>
-						<td class='label'>".RL_LAN_008."</td>
-						<td class='control'>
+						<td>".RL_LAN_008."</td>
+						<td>
 							<div class='auto-toggle-area autocheck'>
 								<input class='checkbox' type='checkbox' name='roll_log_active' value='1' ".($pref['roll_log_active'] == 1 ? " checked='checked' " : "")." />
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".RL_LAN_009."</td>
-						<td class='control'>
+						<td>".RL_LAN_009."</td>
+						<td>
 						   <input class='tbox' type='text' name='roll_log_days' size='10' value='".$pref['roll_log_days']."' maxlength='5' />
 						</td>
 					</tr>
@@ -486,15 +486,15 @@ if($action == "config")
 	<form method='post' action='".e_SELF."?config'>
 		<fieldset id='core-admin-log-maintenance'>
 			<legend>".RL_LAN_125."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".RL_LAN_045." </td>
-						<td class='control'>
+						<td>".RL_LAN_045." </td>
+						<td>
 							".gen_log_delete('rolllog_clearadmin').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldadmin' value='no-value'><span>".RL_LAN_049."</span></button>
 						</td>
 					</tr>
@@ -504,8 +504,8 @@ if($action == "config")
 	//====================
 	$text .= "
 					<tr>
-						<td class='label'>".RL_LAN_066." </td>
-						<td class='control'>
+						<td>".RL_LAN_066." </td>
+						<td>
 							".gen_log_delete('rolllog_clearaudit').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldaudit' value='no-value'><span>".RL_LAN_049."</span></button>
 						</td>
 					</tr>
@@ -726,7 +726,7 @@ if(isset($page_title[$action]))
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 		<fieldset id='core-admin-log-filter'>
 			<legend>".RL_LAN_012."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col style='width:15%;vertical-align:top;' />
 					<col style='width:35%;vertical-align:top;' />
@@ -743,15 +743,15 @@ if(isset($page_title[$action]))
 		{
 			case 'datetimes':
 				$text .= "
-					<td class='label'>
+					<td>
 						<input class='checkbox' type='checkbox' name='start_enabled' id='start-enabled' value='1'".($start_enabled == 1 ? " checked='checked' " : "")."/><label for='start-enabled'>".RL_LAN_013."</label>
 					</td>
-					<td class='control'>
+					<td>
 						".time_box("starttime", $start_time, $back_day_count[$action], FALSE)."
 					</td>
-					<td class='label'>
+					<td>
 						<input class='checkbox' type='checkbox' name='end_enabled' id='end-enabled' value='1'".($end_enabled == 1 ? " checked='checked' " : "")."/><label for='end-enabled'>".RL_LAN_014."</label></td>
-					<td class='control'>
+					<td>
 						".time_box("endtime", $end_time, $back_day_count[$action], TRUE)."
 					</td>
 				";
@@ -759,10 +759,10 @@ if(isset($page_title[$action]))
 				break;
 			case 'datestart':
 				$text .= "
-					<td class='label'>".RL_LAN_013."</td>
-					<td class='control'>".time_box("starttime", $start_time, $back_day_count[$action], FALSE, TRUE)."</td>
-					<td class='label'>".RL_LAN_092."</td>
-					<td class='control'>
+					<td>".RL_LAN_013."</td>
+					<td>".time_box("starttime", $start_time, $back_day_count[$action], FALSE, TRUE)."</td>
+					<td>".RL_LAN_092."</td>
+					<td>
 						<select name='timelength' class='tbox select time-offset'>";
 				// for ($i = 1; $i <= 10; $i++)
 				foreach(array(1, 2, 3, 4, 5, 7, 10, 15, 20, 30) as $i)
@@ -779,8 +779,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'priority':
 				$text .= "
-					<td class='label'>".RL_LAN_058."</td>
-					<td class='control'>
+					<td>".RL_LAN_058."</td>
+					<td>
 						<select name='roll_pri_cond' class='tbox'>
 							<option value='xx' ".($pri_filter_cond == 'xx' ? " selected='selected' " : "")." >&nbsp;</option>
 							<option value='gt' ".($pri_filter_cond == 'gt' ? " selected='selected' " : "")." >&gt;=</option>
@@ -794,8 +794,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'ipfilter':
 				$text .= "
-					<td class='label'>".RL_LAN_060."</td>
-					<td class='control'>
+					<td>".RL_LAN_060."</td>
+					<td>
 						<input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".e107::getIPHandler()->ipDecode($ipaddress_filter)."' maxlength='20' />
 						<div class='field-help'>".RL_LAN_061."</div>
 					</td>
@@ -804,8 +804,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'userfilter':
 				$text .= "
-					<td class='label'>".RL_LAN_015."</td>
-					<td class='control'>
+					<td>".RL_LAN_015."</td>
+					<td>
 						<input class='tbox' type='text' name='roll_user_filter' size='20' value='".$user_filter."' maxlength='10' />
 						<div class='field-help'>".RL_LAN_016."</div>
 					</td>
@@ -814,8 +814,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'eventfilter':
 				$text .= "
-					<td class='label'>".RL_LAN_029."</td>
-					<td class='control'>
+					<td>".RL_LAN_029."</td>
+					<td>
 						<input class='tbox' type='text' name='roll_event_filter' size='20' value='".$event_filter."' maxlength='10' />
 						<div class='field-help'>".RL_LAN_061."</div>
 					</td>
@@ -824,8 +824,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'callerfilter':
 				$text .= "
-					<td class='label'>".RL_LAN_059."</td>
-					<td class='control'>
+					<td>".RL_LAN_059."</td>
+					<td>
 						<input class='tbox' type='text' name='roll_caller_filter' size='40' value='".$caller_filter."' maxlength='40' />
 						<div class='field-help'>".RL_LAN_061."</div>
 					</td>
@@ -834,8 +834,8 @@ if(isset($page_title[$action]))
 				break;
 			case 'downloadidfilter':
 				$text .= "
-					<td class='label'>".RL_LAN_090."</td>
-					<td class='control'>
+					<td>".RL_LAN_090."</td>
+					<td>
 						<input class='tbox' type='text' name='roll_downloadid_filter' size='20' value='".$downloadid_filter."' maxlength='10' />
 					</td>";
 				$filter_cols += 2;
@@ -869,7 +869,7 @@ if(isset($page_title[$action]))
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 			<fieldset id='core-admin-log-list'>
 				<legend class='e-hideme'>{$page_title[$action]}</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 	";
 

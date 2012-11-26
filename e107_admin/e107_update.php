@@ -87,7 +87,7 @@ function show_updates($dbupdate, $what)
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-e107-update-{$what}'>
 		<legend>{$caption}</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 60%' />
 					<col style='width: 40%' />

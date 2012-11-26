@@ -16,6 +16,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$e107info['e107_version'] = "0.8.0 (cvs)";
+$e107info['e107_version'] = "2.0.0 (git)";
 
 ?>

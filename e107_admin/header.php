@@ -468,6 +468,7 @@ if ($e107_popup != 1)
 	 */
 	function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 	{
+			
 		global $E_ADMIN_MENU;
 		if (!$tmpl)
 			$tmpl = $E_ADMIN_MENU;
@@ -508,6 +509,8 @@ if ($e107_popup != 1)
 			}
 			unset($temp);
 		}
+
+
 
 		$kpost = '';
 		$text = '';
@@ -566,7 +569,7 @@ if ($e107_popup != 1)
 		//	echo "ap = ".$active_page;
 		//	echo " act = ".$act."<br /><br />";
 
-			if($rid == 'main')
+			if($rid == 'adminhome')
 			{
 				$temp = $tmpl['button_other'.$kpost];	
 			}
@@ -642,8 +645,8 @@ if ($e107_popup != 1)
 	{
 		function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
 		{
-
-			//return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
+			
+			return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
 
 			global $ns,$BUTTON,$BUTTON_OVER,$BUTTONS_START,$BUTTONS_END,$SUB_BUTTON,$SUB_BUTTON_OVER,$SUB_BUTTONS_START,$SUB_BUTTONS_END;
 

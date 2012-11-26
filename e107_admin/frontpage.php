@@ -300,13 +300,13 @@ class frontpage
 			<fieldset id='frontpage-settings'>
 				<legend{$show_legend}>".FRTLAN_13."</legend>
 
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:  5%' />
 						<col style='width: 25%' />
 						<col style='width: 30%' />
-						<col style='width: 30%' />
-						<col style='width: 10%' />
+						<col style='width: 25%' />
+						<col style='width: 15%' />
 					</colgroup>
 					<thead>
 						<tr>
@@ -394,7 +394,7 @@ class frontpage
 			<fieldset id='core-frontpage-edit'>
 				<legend class='e-hideme'>".($rule_info['order'] ? FRTLAN_46 : FRTLAN_42)."</legend>
 				<div id='core-frontpage-edit-home'>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 40%' />
 							<col style='width: 60%' />
@@ -415,7 +415,7 @@ class frontpage
 					</table>
 				</div>
 				<div id='core-frontpage-edit-post-login'>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 40%' />
 							<col style='width: 60%' />

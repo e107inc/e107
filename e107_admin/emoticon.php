@@ -152,17 +152,17 @@ class emotec
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='emoticon-activate'>
 				<legend>".EMOLAN_1."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:30%' />
 						<col style='width:70%' />
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>
+							<td>
 								".EMOLAN_4.":
 							</td>
-							<td class='control'>
+							<td>
 								<div class='auto-toggle-area autocheck'>
 									<input type='checkbox' class='checkbox' name='smiley_activate' value='1'".($pref['smiley_activate'] ? " checked='checked'" : '')." />
 								</div>

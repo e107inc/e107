@@ -174,7 +174,7 @@ if ($euf->userCount)
 	$fl = &$euf->fieldDefinitions;
 	$text = "<div>
 		<form method='post' action='".e_SELF."'>
-		<table class='adminlist' cellspacing='1' cellpadding='0'>
+		<table class='table adminlist'>
 		<colgroup>
 		<col style='width:10%' />
 		<col style='width:30%' />

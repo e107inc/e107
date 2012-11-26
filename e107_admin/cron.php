@@ -911,7 +911,7 @@ class cron
 		$text = "<div style='text-align:center'>
 	    <form method='post' action='"
 			.e_SELF."' id='linkform'>
-	    <table class='adminlist'>
+	    <table class='table adminlist'>
 	    <tr>
 	    <td style='width:30%'>Cron Password</td>
 	    <td style='width:70%'>
@@ -965,7 +965,7 @@ class cron
 		$text = "<div style='text-align:center'>
 		   <form method='post' action='"
 			.e_SELF."' id='cronform'>
-		   <table class='adminlist'>
+		   <table class='table adminlist'>
 		   <colgroup>
 			   	<col />
 				<col />

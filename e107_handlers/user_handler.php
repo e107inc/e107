@@ -1439,7 +1439,7 @@ class e_userperms
 		
 		foreach($groupedList as $section=>$list)
 		{
-			$text .= "\t\t<table class='adminlist'>
+			$text .= "\t\t<table class='table adminlist'>
 			<colgroup>
 				<col class='center' style='width:50px' />
 				<col style='width:50px' />

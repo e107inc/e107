@@ -425,7 +425,7 @@ class users_ext
 			$text .= "
 
 			   <form method='post' action='".e_SELF."' >
-			   <table class='adminlist'>
+			   <table class='table adminlist'>
 			<thead>
 				<tr>
 				<th>".EXTLAN_1."</th>
@@ -536,7 +536,7 @@ class users_ext
 			<fieldset id='core-user-extended-create'>";
 
 			$text .= "
-            <table class='adminform'>
+            <table class='table adminform'>
             	<colgroup>
             		<col class='col-label' />
             		<col class='col-control' />
@@ -824,7 +824,7 @@ class users_ext
 
 		$text = "<div style='text-align:center'>";
 		$text .= "
-        <table class='adminlist'>
+        <table class='table adminlist'>
 
 		<thead>
 		<tr>
@@ -909,7 +909,7 @@ class users_ext
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		";
 		$text .= "<div><br /></div>
-		<table class='adminform'>
+		<table class='table adminform'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -1034,7 +1034,7 @@ class users_ext
 
 		$txt = "
 		<form method='post' action='".e_SELF."?pre'>
-	    <table class='adminlist'>
+	    <table class='table adminlist'>
 		<colgroup>
 			<col  />
 			<col  />

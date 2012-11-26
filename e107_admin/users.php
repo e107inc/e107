@@ -809,7 +809,7 @@ class users_admin_ui extends e_admin_ui
 			
 			
 			$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
-	        <table class='adminform'>
+	        <table class='table adminform'>
 			<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -921,7 +921,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<table class='adminform'>
+			<table class='table adminform'>
 			<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -1777,7 +1777,7 @@ class users
 		$e_userclass = new user_class;
    		// TODO - The search field (not the userclass drop-down) should be replaced with a generic ajax search-filter class element.
 		$text = "<form method='get' action='".e_SELF."'>
-		<table class='adminform'>\n";
+		<table class='table adminform'>\n";
 		$text .= "<tr><td><input class='tbox' type='text' name='srch' size='20' value=\"".$_GET['srch']."\" maxlength='50' />\n";
 
         $list = $e_userclass->uc_required_class_list("public,member,admin,main,classes");
@@ -1909,7 +1909,7 @@ class users
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
-						<table class='adminlist'>".
+						<table class='table adminlist'>".
 						$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref,"action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter=".intval($_GET['filter']).'&amp;srch='.$_GET['srch']."&amp;frm=[FROM]").
 			"<tbody>\n";
@@ -2122,7 +2122,7 @@ class users
 		$pref['memberlist_access'] = varset($pref['memberlist_access'],e_UC_MEMBER);
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='adminlist'>
+		<table class='table adminlist'>
 		<colgroup>
 		<col style='width:60%' />
 		<col style='width:40%' />
@@ -2267,7 +2267,7 @@ class users
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
 		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
-        <table class='adminform'>
+        <table class='table adminform'>
 		<colgroup>
 		<col class='col-label' />
 		<col class='col-control' />
@@ -2701,7 +2701,7 @@ class users
 		$caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
 		$text = "	<div>
 					<form method='post' action='".e_SELF."?".e_QUERY."'>
-                    <table class='adminform'>
+                    <table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -2995,7 +2995,7 @@ function showRanks()
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
    <fieldset id='core-userranks-list'>
 
-	<table class='adminlist'>".
+	<table class='table adminlist'>".
 	$frm->colGroup($fields, array_keys($fields)).
 	$frm->thead($fields, array_keys($fields));
 	foreach ($fieldList['core'] as $k => $f)
@@ -3004,7 +3004,7 @@ function showRanks()
 		<tr>
 		<td class='label'>".USRLAN_204."</td>
 		<td class='label'>{$f}</td>
-		<td class='control'>
+		<td>
 			<select name='op[{$k}]' class='tbox'>
 		";
 		foreach ($opArray as $op)
@@ -3015,7 +3015,7 @@ function showRanks()
 		$text .= "
 			</select>
 		</td>
-		<td class='control'><input type='text' class='tbox' name='val[{$k}]' value='".varset($config[$k]['val'])."' size='3' maxlength='3' /></td>
+		<td><input type='text' class='tbox' name='val[{$k}]' value='".varset($config[$k]['val'])."' size='3' maxlength='3' /></td>
 		</tr>
 		";
 	}
@@ -3030,7 +3030,7 @@ function showRanks()
 			<tr>
 			<td class='label'>".USRLAN_205."</td>
 			<td class='label'>{$f}</td>
-			<td class='control'>
+			<td>
 				<select name='op[{$f}]' class='tbox'>
 			";
 			foreach ($opArray as $op)
@@ -3041,7 +3041,7 @@ function showRanks()
 			$text .= "
 				</select>
 			</td>
-			<td class='control'>
+			<td>
 			<input type='text' class='tbox' name='val[{$f}]' value='".varset($config[$f]['val'])."' size='3' maxlength='3' value='' />
 			</td>
 			</tr>
@@ -3070,7 +3070,7 @@ function showRanks()
 
 
 	$text .= "
-	<table class='adminlist'>".
+	<table class='table adminlist'>".
 	$frm->colGroup($fields, array_keys($fields)).
 	$frm->thead($fields, array_keys($fields));
 
@@ -3079,13 +3079,13 @@ function showRanks()
 	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	$text .= "
 	<tr>
-		<td class='control'>".LAN_MAINADMIN."</td>
-		<td class='control'>
+		<td>".LAN_MAINADMIN."</td>
+		<td>
 			<input class='tbox' type='text' name='calc_name[main_admin]' value='{$val}' />
 		</td>
-		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='calc_pfx[main_admin]' {$pfx} value='1' /></td>
-		<td class='control'>".RankImageDropdown($imageList,'calc_img[main_admin]',$info['image'])."</td>
+		<td>N/A</td>
+		<td><input type='checkbox' name='calc_pfx[main_admin]' {$pfx} value='1' /></td>
+		<td>".RankImageDropdown($imageList,'calc_img[main_admin]',$info['image'])."</td>
 	</tr>
 	";
 	$info = $ranks['special'][2];
@@ -3093,13 +3093,13 @@ function showRanks()
 	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	$text .= "
 	<tr>
-		<td class='control'>".LAN_ADMIN."</td>
-		<td class='control'>
+		<td>".LAN_ADMIN."</td>
+		<td>
 			<input class='tbox' type='text' name='calc_name[admin]' value='{$val}' />
 		</td>
-		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='calc_pfx[admin]' {$pfx} value='1' /></td>
-		<td class='control'>".RankImageDropdown($imageList,'calc_img[admin]',$info['image'])."</td>
+		<td>N/A</td>
+		<td><input type='checkbox' name='calc_pfx[admin]' {$pfx} value='1' /></td>
+		<td>".RankImageDropdown($imageList,'calc_img[admin]',$info['image'])."</td>
 	</tr>
 	<tr>
 		<td colspan='5'>&nbsp;</td>
@@ -3110,14 +3110,14 @@ function showRanks()
 		$pfx_checked = ($r['lan_pfx'] ? "checked='checked'" : '');
 		$text .= "
 		<tr>
-			<td class='control'>".USRLAN_212."</td>
-			<td class='control'>
+			<td>".USRLAN_212."</td>
+			<td>
 				<input type='hidden' name='field_id[{$k}]' value='1' />
 				<input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}' />
 			</td>
-			<td class='control'><input class='tbox e-spinner' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
-			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked} /></td>
-			<td class='control'>".RankImageDropdown($imageList,"calc_img[$k]",$r['image'])."&nbsp;".
+			<td><input class='tbox e-spinner' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
+			<td><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked} /></td>
+			<td>".RankImageDropdown($imageList,"calc_img[$k]",$r['image'])."&nbsp;".
 			$frm->submit_image("delete_rank[{$r['id']}]",LAN_DELETE,'delete',LAN_CONFIRMDEL.": [{$r['name']}]?")."
 			</td>
 		</tr>
@@ -3126,14 +3126,14 @@ function showRanks()
 	$text .= "
 
 	<tr>
-		<td class='control' colspan='5'>&nbsp;</td>
+		<td colspan='5'>&nbsp;</td>
 	</tr>
 	<tr>
-		<td class='control'>".USRLAN_214."</td>
-		<td class='control'><input class='tbox' type='text' name='new_calc_name' value='' /></td>
-		<td class='control'><input class='tbox e-spinner' type='text' size='5' name='new_calc_lower' value='' /></td>
-		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1' /></td>
-		<td class='control'>".RankImageDropdown($imageList,'new_calc_img')."</td>
+		<td>".USRLAN_214."</td>
+		<td><input class='tbox' type='text' name='new_calc_name' value='' /></td>
+		<td><input class='tbox e-spinner' type='text' size='5' name='new_calc_lower' value='' /></td>
+		<td><input type='checkbox' name='new_calc_pfx' value='1' /></td>
+		<td>".RankImageDropdown($imageList,'new_calc_img')."</td>
 	</tr>
 	<tr>
 		<td colspan='5' style='text-align:center'>

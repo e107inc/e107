@@ -600,8 +600,8 @@ class page_admin_ui extends e_admin_ui
 					$text .= "</td>
 								</tr>
 								<tr>
-									<td class='label'>".LAN_UPLOAD_IMAGES."</td>
-									<td class='control'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
+									<td>".LAN_UPLOAD_IMAGES."</td>
+									<td>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
 								</tr>
 	
 	
@@ -622,35 +622,35 @@ class page_admin_ui extends e_admin_ui
 							</colgroup>
 							<tbody>
 								<tr>
-									<td class='label'>".CUSLAN_10."</td>
-									<td class='control'>
+									<td>".CUSLAN_10."</td>
+									<td>
 										".$frm->radio_switch('page_rating_flag', $page_rating_flag)."
 									</td>
 								</tr>
 								<tr>
-									<td class='label'>".CUSLAN_13."</td>
-									<td class='control'>
+									<td>".CUSLAN_13."</td>
+									<td>
 										".$frm->radio_switch('page_comment_flag', $page_comment_flag)."
 									</td>
 								</tr>
 								<tr>
-									<td class='label'>".CUSLAN_41."</td>
-									<td class='control'>
+									<td>".CUSLAN_41."</td>
+									<td>
 										".$frm->radio_switch('page_display_authordate_flag', $page_display_authordate_flag)."
 									</td>
 								</tr>
 								<tr>
-									<td class='label'>".CUSLAN_14."</td>
-									<td class='control'>
+									<td>".CUSLAN_14."</td>
+									<td>
 										".$frm->text('page_password', $page_password, 50)."
 										<div class='field-help'>".CUSLAN_15."</div>
 									</td>
 								</tr>
 	
 								<tr>
-									<td class='label'>".CUSLAN_18."</td>
+									<td>".CUSLAN_18."</td>
 	
-									<td class='control'>
+									<td>
 										".$e_userclass->uc_dropdown('page_class', $page_class, 'public,guest,nobody,member,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 									</td>
 								</tr>
@@ -658,8 +658,8 @@ class page_admin_ui extends e_admin_ui
 	
 								/*
 								<tr>
-									<td class='label'>".CUSLAN_16."</td>
-									<td class='control'>
+									<td>".CUSLAN_16."</td>
+									<td>
 										".$frm->text('page_link', $page_link, 50)."
 										<div class='field-help'>".CUSLAN_17."</div>
 									</td>
@@ -690,8 +690,8 @@ class page_admin_ui extends e_admin_ui
 						{
 							$text .= "
 							<tr>
-								<td class='label'>".$hook['caption']."</td>
-								<td class='control'>".$hook['text']."</td>
+								<td>".$hook['caption']."</td>
+								<td>".$hook['text']."</td>
 							</tr>";
 						}
 					}
@@ -793,22 +793,22 @@ class page_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".e_QUERY."'>
 					<fieldset id='core-cpage-options'>
 						<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-						<table class='adminform'>
+						<table class='table adminform'>
 							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
 							</colgroup>
 							<tbody>
 								<tr>
-									<td class='label'>".CUSLAN_29."</td>
-									<td class='control'>
+									<td>".CUSLAN_29."</td>
+									<td>
 										".$frm->radio_switch('listPages', $pref['listPages'])."
 									</td>
 								</tr>
 	
 								<tr>
-									<td class='label'>".CUSLAN_30."</td>
-									<td class='control'>
+									<td>".CUSLAN_30."</td>
+									<td>
 										".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
 									</td>
 								</tr>
@@ -1160,7 +1160,7 @@ class page
         $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-cpage-list'>
 						<legend class='e-hideme'>".CUSLAN_5."</legend>
-						<table class='adminlist'>".
+						<table class='table adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
 

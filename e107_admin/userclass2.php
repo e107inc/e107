@@ -412,7 +412,7 @@ switch ($action)
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='classForm'>
- 	<table class='adminform'>
+ 	<table class='table adminform'>
  	<colgroup>
  		<col class='col-label' />
  		<col class='col-control' />
@@ -502,7 +502,7 @@ switch ($action)
 if($params == 'edit')
 {
    	$text .= $frm->admin_button('createclass', UCSLAN_14, 'create');
-	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'create');
+	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
  //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />";
  //	$text .= "&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
@@ -512,7 +512,7 @@ if($params == 'edit')
 else
 {
 	$text .= $frm->admin_button('createclass', UCSLAN_15, 'create');
-	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'create');
+	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
  //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
   //	&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
@@ -548,7 +548,8 @@ $ns->tablerender(UCSLAN_21, $text);
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?initial' id='initialForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'><tr><td>";
+		<table class='table adminform'>
+		<tr><td>";
 	$text .= UCSLAN_43;
 	if (count($icn) > 0)
 	{
@@ -571,7 +572,8 @@ $ns->tablerender(UCSLAN_21, $text);
 	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</option>
 	  </select>\n";
 	  $text .= "</td></tr></table></td></tr>
-	  <tr><td style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
+	  <tr><td style='text-align:center'>".
+	  $frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE);
 	}
 	else
 	{
@@ -591,7 +593,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
 
-	$text = "<table><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
+	$text = "<table class='table adminlist'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
 	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
 	while ($row = $sql->db_Fetch())
@@ -647,34 +649,49 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 
+	$mes = e107::getMessage();
+
+	$mes->addWarning(UCSLAN_52."<br />".UCSLAN_53);
 
 	$text = "<form method='post' action='".e_SELF."?options' id='treesetForm'>
-		<table class='fborder' style='text-align:center; ".ADMIN_WIDTH."'>
+		<table class='table adminform'>
 		<colgroup>
-		<col style='width:50%' />
-		<col style='width:50%' />
+		<col class='col-label' />
+		<col class='col-content' />
 		</colgroup>
-		<tr><td style='text-align:center' colspan='2'>".UCSLAN_52."<br />".UCSLAN_53."</td></tr>
-		<tr><td style='text-align:center'>".UCSLAN_54."<br /><span class='smalltext'>".UCSLAN_57."</span><br />
-		<input class='button' type='submit' name='add_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_67."')\" />
-		</td><td style='text-align:center'>".UCSLAN_55."<br /><span class='smalltext'>".UCSLAN_56."</span><br />
-		<input class='button' type='submit' name='flatten_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_66."')\" />
+		<tr><td >".UCSLAN_54."<br /><span class='smalltext'>".UCSLAN_57."</span><br />
+		</td><td>
+		".$frm->admin_button('add_class_tree','no-value','delete', UCSLAN_58)."
 		</td>
-		</tr></table></form>";
-	$ns->tablerender(UCSLAN_61, $text);
+		</tr>
+		<tr>
+			<td>".UCSLAN_55."<br /><span class='smalltext'>".UCSLAN_56."</span><br />
+			</td><td>
+			".$frm->admin_button('flatten_class_tree','no-value','delete', UCSLAN_58)."
+			</td>
+		</tr>
+		</table></form>";
+		
+	$ns->tablerender(UCSLAN_61, $mes->render().$text);
 
 
 	$text = "<form method='post' action='".e_SELF."?options' id='maintainForm'>
-		<table class='fborder' style='text-align:center; ".ADMIN_WIDTH."'>
+		<table class='table adminform'>
 		<colgroup>
-		<col style='width:50%' />
-		<col style='width:50%' />
+			<col class='col-label' />
+			<col class='col-content' />
 		</colgroup>
-		<tr><td style='text-align:center'>".UCSLAN_72."<br /><span class='smalltext'>".UCSLAN_73."</span></td>
-		<td style='text-align:center'>
-		<input class='button' type='submit' name='rebuild_tree' value='".UCSLAN_58."' />
-		</td>
-		</tr></table></form>";
+		<tr>
+			<td>".UCSLAN_72."<br />
+				<span class='smalltext'>".UCSLAN_73."</span>
+			</td>
+			<td>
+			".$frm->admin_button('rebuild_tree','no-value','delete', UCSLAN_58)."
+			</td>
+		</tr>
+		</table>		
+		</form>";
+		
 	$ns->tablerender(UCSLAN_71, $text);
 
     break;				// End of 'options'
@@ -917,7 +934,7 @@ class uclass_manager
              $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-userclass-list'>
 						<legend class='e-hideme'>".UCSLAN_5."</legend>
-						<table class='adminlist'>".
+						<table class='table adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
 

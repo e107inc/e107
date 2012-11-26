@@ -118,7 +118,7 @@ class notify_config
 		<form action='".e_SELF."?results' method='post' id='scanform'>
 		<fieldset id='core-notify-config'>
 		<legend>".NU_LAN_1."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -133,7 +133,7 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-2'>
         <legend>".NS_LAN_1."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -145,7 +145,7 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-3'>
         <legend>".NN_LAN_1."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -159,7 +159,7 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-4'>
         <legend>".NM_LAN_1."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -171,7 +171,7 @@ class notify_config
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-5'>
         <legend>".NF_LAN_1."</legend>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -189,7 +189,7 @@ class notify_config
 				$text .= "</fieldset>
 				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
 		        <legend>".$config_category."</legend>
-		        <table class='adminform'>
+		        <table class='table adminform'>
 		        	<colgroup>
 		        		<col class='col-label' />
 		        		<col class='col-control' />

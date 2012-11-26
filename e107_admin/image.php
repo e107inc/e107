@@ -673,10 +673,10 @@ class media_admin_ui extends e_admin_ui
 	/*
 
 	<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_1."
 								</td>
-								<td class='control'>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox('image_post', 1, $pref['image_post'])."
 										<div class='field-help'>".IMALAN_2."</div>
@@ -684,20 +684,20 @@ class media_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_10."
 								</td>
-								<td class='control'>
+								<td>
 									".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
 									<div class='field-help'>".IMALAN_11."</div>
 								</td>
 							</tr>
 	
 							<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_12."
 								</td>
-								<td class='control'>
+								<td>
 									".$frm->select_open('image_post_disabled_method')."
 										".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
 										".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
@@ -711,15 +711,15 @@ class media_admin_ui extends e_admin_ui
 							//TODO LANS
 							$text .= "						
 							<tr>
-								<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
-								<td class='control'>
+								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
 							</tr>
 	
 							<tr>
-								<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
-								<td class='control'>
+								<td>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
+								<td>
 									".$frm->select_open('resize_method')."
 										".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
 										".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
@@ -1151,17 +1151,17 @@ class media_admin_ui extends e_admin_ui
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 				<fieldset id='core-image-settings'>
 					<legend class='e-hideme'>".IMALAN_7."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_1."
 								</td>
-								<td class='control'>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox('image_post', 1, $pref['image_post'])."
 										<div class='field-help'>".IMALAN_2."</div>
@@ -1169,20 +1169,20 @@ class media_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_10."
 								</td>
-								<td class='control'>
+								<td>
 									".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
 									<div class='field-help'>".IMALAN_11."</div>
 								</td>
 							</tr>
 	
 							<tr>
-								<td class='label'>
+								<td>
 									".IMALAN_12."
 								</td>
-								<td class='control'>
+								<td>
 									".$frm->select_open('image_post_disabled_method')."
 										".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
 										".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
@@ -1196,15 +1196,15 @@ class media_admin_ui extends e_admin_ui
 							//TODO LANS
 							$text .= "						
 							<tr>
-								<td class='label'>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
-								<td class='control'>
+								<td>Resize images during media import<div class='label-note'>Leave empty to disable</div></td>
+								<td>
 									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
 								</td>
 							</tr>
 	
 							<tr>
-								<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
-								<td class='control'>
+								<td>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
+								<td>
 									".$frm->select_open('resize_method')."
 										".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
 										".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
@@ -1217,8 +1217,8 @@ class media_admin_ui extends e_admin_ui
 				$text .= "
 							// Removed to prevent mod_security blocks, and show only when relevant (non-GD2 users)
 							<tr>
-								<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
-								<td class='control'>
+								<td>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
+								<td>
 									".$frm->text('im_path', $pref['im_path'])."
 									<div class='field-help'>".IMALAN_6."</div>
 								</td>
@@ -1230,9 +1230,9 @@ class media_admin_ui extends e_admin_ui
 				
 							$text .= "
 										<tr>
-											<td class='label'>".IMALAN_34."
+											<td>".IMALAN_34."
 											</td>
-											<td class='control'>
+											<td>
 												<div class='auto-toggle-area autocheck'>
 													".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
 													<div class='field-help'>".IMALAN_35."</div>
@@ -1246,8 +1246,8 @@ class media_admin_ui extends e_admin_ui
 			$text .= "
 	
 							<tr>
-								<td class='label'>".IMALAN_36."</td>
-								<td class='control'>
+								<td>".IMALAN_36."</td>
+								<td>
 									".$frm->admin_button('check_avatar_sizes', ADLAN_145)."
 								</td>
 							</tr>
@@ -1518,7 +1518,7 @@ class media_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='batch_import'>
 					<fieldset id='core-mediamanager-batch'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>
-						<table class='adminlist'>
+						<table class='table adminlist'>
 							<colgroup>
 								<col style='width: 5%' />
 								<col />
@@ -2208,7 +2208,7 @@ if (isset($_POST['check_avatar_sizes']))
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-image-check-avatar'>
 			<legend class='e-hideme'>".CACLAN_3."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width:10%' />
 					<col style='width:20%' />
@@ -2323,7 +2323,7 @@ if (isset($_POST['check_avatar_sizes']))
 		</fieldset>
 	</form>
 
-	<table class='adminform'>
+	<table class='table adminform'>
 	<colgroup>
 		<col class='col-label' />
 		<col class='col-control' />

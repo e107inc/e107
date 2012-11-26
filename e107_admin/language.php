@@ -243,7 +243,7 @@ if (isset($_POST['edit_existing']))
 	<form method='post' action='".e_SELF."?db'>
 		<fieldset id='core-language-edit'>
 			<legend class='e-hideme'>".$_POST['lang_choices']."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
@@ -257,8 +257,8 @@ if (isset($_POST['edit_existing']))
 		{
 			$text .= "
 					<tr>
-						<td class='label'>".ucfirst(str_replace("_", " ", $table_name))."</td>
-						<td class='control'>
+						<td>".ucfirst(str_replace("_", " ", $table_name))."</td>
+						<td>
 							<div class='auto-toggle-area f-left e-pointer'>
 			";
 			$selected = ($sql->db_Table_exists($table_name,$_POST['lang_choices'])) ? " checked='checked'" : "";
@@ -291,15 +291,15 @@ if (isset($_POST['edit_existing']))
 	}
 	$text .= "
 					<tr>
-						<td class='label'><strong>".LANG_LAN_07."</strong></td>
-						<td class='control'>
+						<td><strong>".LANG_LAN_07."</strong></td>
+						<td>
 							".$frm->checkbox('drop', 1)."
 							<div class='smalltext field-help'>".$frm->label(LANG_LAN_08, 'drop', 1)."</div>
 						</td>
 					</tr>
 					<tr>
-						<td class='label'><strong>".LAN_CONFDELETE."</strong></td>
-						<td class='control'>
+						<td><strong>".LAN_CONFDELETE."</strong></td>
+						<td>
 							".$frm->checkbox('remove', 1)."
 							<div class='smalltext field-help'>".$frm->label(LANG_LAN_11, 'remove', 1)."</div>
 						</td>
@@ -308,6 +308,7 @@ if (isset($_POST['edit_existing']))
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='language' value='{$_POST['lang_choices']}' />
+				".$frm->admin_button('create_tables','no-value',$baction,$bcaption)."
 				<button class='{$baction}' type='submit' name='create_tables' value='no-value'><span>{$bcaption}</span></button>
 			</div>
 		</fieldset>
@@ -322,19 +323,21 @@ require_once (e_ADMIN."footer.php");
 function multilang_prefs()
 {
 	global $pref,$lanlist,$emessage;
+	$frm = e107::getForm();
+	
 	$text = "
 	<form method='post' action='".e_SELF."' id='linkform'>
 		<fieldset id='core-language-settings'>
 			<legend class='e-hideme'>".LANG_LAN_13."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".LANG_LAN_14.": </td>
-						<td class='control'>
+						<td>".LANG_LAN_14.": </td>
+						<td>
 						<select name='mainsitelanguage' class='box select'>";
 						$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
 						foreach ($lanlist as $lan)
@@ -348,8 +351,8 @@ function multilang_prefs()
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".LANG_LAN_12.": </td>
-						<td class='control'>
+						<td>".LANG_LAN_12.": </td>
+						<td>
 							<div class='auto-toggle-area autocheck'>";
 						$checked = ($pref['multilanguage'] == 1) ? " checked='checked'" : "";
 						$text .= "
@@ -358,8 +361,8 @@ function multilang_prefs()
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".LANG_LAN_26.":</td>
-						<td class='control'>
+						<td>".LANG_LAN_26.":</td>
+						<td>
 							<div class='auto-toggle-area autocheck'>\n";
 					$checked = ($pref['noLanguageSubs'] == 1) ? " checked='checked'" : "";
 					$text .= "
@@ -369,11 +372,11 @@ function multilang_prefs()
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>
+						<td>
 							".LANG_LAN_18."
 							<div class='label-note'>".LANG_LAN_19."</div>
 						</td>
-						<td class='control'>
+						<td>
 							<textarea name='multilanguage_subdomain' rows='5' cols='15'>{$pref['multilanguage_subdomain']}</textarea>
 							<div class='smalltext field-help'>".LANG_LAN_20."</div>
 						</td>
@@ -396,19 +399,19 @@ function multilang_prefs()
 						//TODO LANs and class2.php check. 
 						$text .= "	
 						<tr>
-							<td class='label'>
+							<td>
 							Language by Domain Name
 							<div class='label-note'>Domain determines the site's language. Enter domain without the 'www.'</div>
 							</td>
-							<td class='control'><table style='margin-left:0px;width:400px'>".$opt."</table></td>
+							<td><table style='margin-left:0px;width:400px'>".$opt."</table></td>
 						</tr>";
 					}
 					
 					$text .= "
 				</tbody>
 			</table>
-			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='submit_prefs' value='no-value'><span>".LAN_SAVE."</span></button>
+			<div class='buttons-bar center'>".
+			$frm->admin_button('submit_prefs','no-value','update',LAN_SAVE)."
 			</div>
 		</fieldset>
 	</form>\n";
@@ -457,9 +460,11 @@ function table_list()
 
 function multilang_db()
 {
-	global $pref,$tp,$frm,$emessage,$lanlist,$tabs;
+	global $pref, $emessage, $lanlist, $tabs;
 	
 	$sql = e107::getDb();
+	$frm = e107::getForm();
+	$tp = e107::getParser();
 	
 	if (isset($pref['multilanguage']) && $pref['multilanguage'])
 	{
@@ -467,7 +472,7 @@ function multilang_db()
 		$text = "
 			<fieldset id='core-language-list'>
 				<legend class='e-hideme'>".LANG_LAN_16."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:20%' />
 						<col style='width:60%' />
@@ -527,7 +532,8 @@ function multilang_db()
 			}
 			elseif ($e_language != $pref['sitelanguage'])
 			{
-				$text .= "<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>";
+				// $text .= "<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>";
+				$text .= $frm->admin_button('create_edit_existing','no-value','create',LAN_CREATE);
 			}
 			$text .= "<input type='hidden' name='lang_choices' value='".$e_language."' />
 								</div>
@@ -558,15 +564,15 @@ function show_tools()
 		<form id='core-language-lancheck-form' method='post' action='".e_ADMIN."lancheck.php'>
 			<fieldset id='core-language-lancheck'>
 				<legend class='e-hideme'>".LAN_CHECK_1."</legend>
-				<table class='adminform'>
+				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>".LAN_CHECK_1."</td>
-							<td class='control'>
+							<td>".LAN_CHECK_1."</td>
+							<td>
 								<select name='language' class='tbox select'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
@@ -580,8 +586,8 @@ function show_tools()
 										";
 									}
 								}
-								$text .= "</select>
-								<button class='submit' type='submit' name='language_sel' value='no-value'><span>".LAN_CHECK_2."</span></button>
+								$text .= "</select>".
+								$frm->admin_button('language_sel','no-value','update',LAN_CHECK_2)."
 							</td>
 						</tr>
 					</tbody>
@@ -593,15 +599,15 @@ function show_tools()
 		<form id='ziplang' method='post' action='".e_SELF."?tools'>
 			<fieldset id='core-language-package'>
 				<legend class='e-hideme'>".LANG_LAN_23."</legend>
-				<table class='adminform'>
+				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>".LANG_LAN_23."</td>
-							<td class='control'>
+							<td>".LANG_LAN_23."</td>
+							<td>
 								<select name='language' class='tbox select'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
@@ -617,8 +623,7 @@ function show_tools()
 								}
 								$text .= "
 								</select>
-								
-								<button class='submit' type='submit' name='ziplang' value='no-value'><span>".LANG_LAN_24."</span></button>
+								".$frm->admin_button('ziplang','no-value','update',LANG_LAN_24)."
 								<input type='checkbox' name='contribute_pack' value='1' /> Check to share your language-pack with the e107 community.
 							</td>
 						</tr>";
@@ -626,8 +631,8 @@ function show_tools()
 								
 						$text .= "						
 						<tr>
-							<td class='label'>Search for Deprecated Lans</td>
-							<td class='control'>
+							<td>Search for Deprecated Lans</td>
+							<td>
 								<select name='deprecatedLans' class='tbox select'>
 									<option value=''>".LAN_SELECT."</option>";
 									
@@ -684,7 +689,7 @@ function available_langpacks()
 		}
 		
 		$text .= "<div class='block-text'>".LANG_LAN_35."</div>";
-		$text .= "<table class='adminlist'>";
+		$text .= "<table class='table adminlist'>";
 		foreach($rawData['language'] as $val)
 		{
 			$att = $val['@attributes'];
@@ -893,7 +898,7 @@ function unused($lanfile,$script)
 	if($lanDefines && $compare)
 	{
 
-		$text = "<table class='adminlist' style='width:100%'>
+		$text = "<table class='table adminlist' style='width:100%'>
 		<thead>
 		<tr>
 			<th>".$lanfile."</th>";

@@ -221,7 +221,7 @@ if (!$action) {
 		<form method='post' action='".e_SELF."' id='core-banner-list-form'>
 			<fieldset id='core-banner-list'>
 				<legend class='e-hideme'>".BNRLAN_7."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup span='7'>
 						<col style='width: 5%'></col>
 						<col style='width: 35%'></col>

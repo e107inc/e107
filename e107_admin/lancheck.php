@@ -210,7 +210,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	$text .= "
 		<fieldset id='core-lancheck-plugin'>
 			<legend>".ADLAN_CL_7."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 25%' />
 					<col style='width: 25%' />
@@ -244,7 +244,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	$text .= "
 		<fieldset id='core-lancheck-theme'>
 			<legend>".LAN_CHECK_22."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 25%' />
 					<col style='width: 25%' />
@@ -309,7 +309,7 @@ class lancheck
 		$text .= "
 			<fieldset id='core-lancheck-{$fieldset_id}'>
 				<legend>{$legend_txt}</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width: 50%' />
 						<col style='width: 40%' />
@@ -628,7 +628,7 @@ class lancheck
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
 				<fieldset id='core-lancheck-edit'>
 					<legend>".LAN_CHECK_3." ".str_replace(array(e_PLUGIN, e_LANGUAGEDIR), array(e_PLUGIN_ABS, e_LANGUAGEDIR_ABS), $dir2)."{$f2} -&gt; {$lan}</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 20%' />
 							<col style='width: 40%' />

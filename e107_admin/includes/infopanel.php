@@ -49,7 +49,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	$text .= "
 	<form method='post' action='".e_SELF."?".e_QUERY."'>";
 	
-	
+	$tp->parseTemplate("{SETSTYLE=core-infopanel}");
 	
 	// Personalized Panel 
 	
@@ -62,7 +62,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		{
 			if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
-				$mainPanel .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+				$mainPanel .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div-icon-only");
 			}
 		}
 
@@ -71,7 +71,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
          </div>
 		</div>";
 
-	$text .= $ns->tablerender(ucwords(USERNAME)."'s Admin Panel",$mainPanel,"core-infopanel_mye107",true);
+	$text .= $ns->tablerender(ucwords(USERNAME)."'s Control Panel",$mainPanel,"core-infopanel_mye107",true);
 	
 
 //  ------------------------------- e107 News --------------------------------
@@ -161,22 +161,16 @@ $panelOnline = "
 	$text .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
 	
 // --------------------- User Selected Menus -------------------
+	
 
 	if (varset($pref['core-infopanel-menus']))
 	{
-
 		foreach ($pref['core-infopanel-menus'] as $val)
 		{
-			$id = $frm->name2id('core-infopanel_'.$val);
-			$text .= "
-			<div id='".$id."' class='f-left' style='width:49%' >
-			<div class='left' style='border:1px solid silver;margin:10px'>
-			";
-			$text .= $tp->parseTemplate("{PLUGIN=$val|TRUE}");
-			$text .= "
-			</div>
-			</div>
-			";
+			$id = $frm->name2id('core-infopanel_'.$val);			
+			$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+			$text .= $inc;
+			// $text .= $ns->tablerender("", $inc, $id,true);
 		}
 	}
 
@@ -294,6 +288,7 @@ function render_infopanel_menu_options()
 	}
 	global $pref;
 	$frm = e107::getSingleton('e_form');
+
 	$text = "";
 	$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 	$settings = varset($pref['core-infopanel-menus'],array());

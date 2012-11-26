@@ -151,7 +151,7 @@ else
 		<form method='post' action='".e_SELF."' id='flaform' >
 			<fieldset id='core-fla'>
 				<legend class='e-hideme'>".ADLAN_146."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width: 20%' />
 						<col style='width: 40%' />

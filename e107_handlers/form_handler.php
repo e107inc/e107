@@ -1105,6 +1105,9 @@ class e_form
 		switch ($action)
 		{
 			case 'update':
+			case 'create':
+			case 'import':
+			case 'submit':
 				$options['class'] .= 'btn-success';
 			break;
 
@@ -2565,7 +2568,7 @@ class e_form
 			<fieldset id='{$id}'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
-				<table class='adminedit'>
+				<table class='table adminedit'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -2636,10 +2639,10 @@ class e_form
 				}
 				$text .= "
 					<tr>
-						<td class='label'>
+						<td>
 							".$required."<span{$required_class}>".defset($att['title'], $att['title'])."</span>".$label."
 						</td>
-						<td class='control'>
+						<td>
 							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
 							{$help}
 						</td>
@@ -2783,7 +2786,7 @@ class e_form
 		if(vartrue($fdata['table_rows']) || vartrue($fdata['table_body']))
 		{
 			$text .= "
-				<table class='adminform'>
+				<table class='table adminform'>
 					{$colgroup}
 					<thead>
 						".vartrue($fdata['table_head'])."

@@ -430,15 +430,15 @@ switch ($action)
 			<form method='post' action='".e_SELF."?options'>
 				<fieldset id='core-banlist-options'>
 					<legend>".BANLAN_72."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".BANLAN_63."</td>
-								<td class='control'>
+								<td>".BANLAN_63."</td>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox('ban_rdns_on_access', 1, $pref['enable_rdns'] == 1)."
 										<div class='field-help'>".BANLAN_65."</div>
@@ -446,8 +446,8 @@ switch ($action)
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".BANLAN_64."</td>
-								<td class='control'>
+								<td>".BANLAN_64."</td>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox('ban_rdns_on_ban', 1, $pref['enable_rdns_on_ban'] == 1)."
 										<div class='field-help'>".BANLAN_66."</div>
@@ -455,16 +455,16 @@ switch ($action)
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".BANLAN_67."</td>
-								<td class='control'>
+								<td>".BANLAN_67."</td>
+								<td>
 									<div class='field-spacer'>".drop_box('ban_access_guest', $ban_access_guest).BANLAN_70."</div>
 									<div class='field-spacer'>".drop_box('ban_access_member', $ban_access_member).BANLAN_69."</div>
 									<div class='field-help'>".BANLAN_68."</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".BANLAN_71."</td>
-								<td class='control'>
+								<td>".BANLAN_71."</td>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox('ban_retrigger', 1, $pref['ban_retrigger'] == 1)."
 										<div class='field-help'>".BANLAN_73."</div>
@@ -473,8 +473,8 @@ switch ($action)
 							</tr>
 
 							<tr>
-							  <td class='label'>".BANLAN_91."</td>
-							  <td class='control'>
+							  <td>".BANLAN_91."</td>
+							  <td>
 							  ".$frm->text('ban_date_format', varset($pref['ban_date_format'], '%H:%M %d-%m-%y'), 40)."
 							  <div class='field-help'>".BANLAN_92."</div>
 							  </td>
@@ -488,15 +488,15 @@ switch ($action)
 				</fieldset>
 				<fieldset id='core-banlist-options-ban'>
 					<legend>".BANLAN_74."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".BANLAN_75."</td>
-								<td class='control'>
+								<td>".BANLAN_75."</td>
+								<td>
 									".$frm->admin_button('remove_expired_bans', BANLAN_76, 'delete')."
 									<input type='hidden' name='e-token' value='".e_TOKEN."' />
 								</td>
@@ -532,7 +532,7 @@ switch ($action)
 			<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
 				<fieldset id='core-banlist-times'>
 					<legend class='e-hideme'>".BANLAN_77."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 20%' />
 							<col style='width: 65%' />
@@ -593,20 +593,20 @@ switch ($action)
 			<form method='post' action='".e_SELF.$next."'>
 				<fieldset id='core-banlist-edit'>
 					<legend class='e-hideme'>".$page_title[$action]."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>
+								<td>
 									".BANLAN_5.":
 									<div class='label-note'>
 										".BANLAN_13."<a href='".e_ADMIN_ABS."users.php'><img src='".e_IMAGE_ABS.'admin_images/'."users_16.png' alt='' /></a>
 									</div>
 								</td>
-								<td class='control'>
+								<td>
 									<input type='hidden' name='entry_intent' value='{$action}' />
 									".$frm->text('ban_ip', e107::getIPHandler()->ipDecode($banlist_ip), 200)."
 									{$rdns_warn}
@@ -618,8 +618,8 @@ switch ($action)
 		{ // Its a manual or unknown entry - only allow edit of reason on those
 			$text .= "
 							<tr>
-								<td class='label'>".BANLAN_7.": </td>
-								<td class='control'>
+								<td>".BANLAN_7.": </td>
+								<td>
 									".$frm->textarea('ban_reason', $banlist_reason, 4, 50)."
 								</td>
 							</tr>
@@ -629,8 +629,8 @@ switch ($action)
 		{
 			$text .= "
 							<tr>
-								<td class='label'>".BANLAN_7.": </td>
-								<td class='control'>{$banlist_reason}</td>
+								<td>".BANLAN_7.": </td>
+								<td>{$banlist_reason}</td>
 							</tr>
 			";
 		}
@@ -639,16 +639,16 @@ switch ($action)
 		{
 			$text .= "
 							<tr>
-								<td class='label'>".BANLAN_28.": </td>
-								<td class='control'>".$ipAdministrator->getBanTypeString($banlist_bantype, FALSE)." - ".$ipAdministrator->getBanTypeString($banlist_bantype, TRUE)."</td>
+								<td>".BANLAN_28.": </td>
+								<td>".$ipAdministrator->getBanTypeString($banlist_bantype, FALSE)." - ".$ipAdministrator->getBanTypeString($banlist_bantype, TRUE)."</td>
 							</tr>
 			";
 		}
 
 		$text .= "
 							<tr>
-								<td class='label'>".BANLAN_19.": </td>
-								<td class='control'>
+								<td>".BANLAN_19.": </td>
+								<td>
 									".$frm->textarea('ban_notes', $banlist_notes, 4, 50)."
 								</td>
 							</tr>
@@ -660,8 +660,8 @@ switch ($action)
 
 			$text .= "
 							<tr>
-								<td class='label'>".BANLAN_18.": </td>
-								<td class='control'>".ban_time_dropdown().$inhelp."</td>
+								<td>".BANLAN_18.": </td>
+								<td>".ban_time_dropdown().$inhelp."</td>
 							</tr>
 			";
 		}
@@ -736,7 +736,7 @@ switch ($action)
 			<form method='post' action='".e_ADMIN_ABS."banlist_export.php' id='core-banlist-transfer-form' >
 				<fieldset id='core-banlist-transfer-export'>
 					<legend>".BANLAN_40."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width:30%' />
 							<col style='width:30%' />
@@ -780,7 +780,7 @@ switch ($action)
 			<form enctype='multipart/form-data' method='post' action='".e_SELF."?transfer' id='ban_import_form' >
 				<fieldset id='core-banlist-transfer-import'>
 					<legend>".BANLAN_41."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width:30%' />
 							<col style='width:30%' />
@@ -854,7 +854,7 @@ switch ($action)
 		else
 		{
 			$text .= "
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 			";
 			foreach($col_widths[$action] as $fw)

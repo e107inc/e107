@@ -797,7 +797,7 @@ function show_prefs($mailAdmin)
 	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
 	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
 	$text .= "<div id='smtp' {$smtpdisp}>
-		<table class='adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
+		<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -1030,7 +1030,7 @@ function show_maint($debug = FALSE)
 	$text .= "
 			<form action='".e_SELF."?mode=maint' id='email_maint' method='post'>
 			<fieldset id='email-maint'>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
