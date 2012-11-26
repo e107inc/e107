@@ -290,7 +290,7 @@ $text .= "
 	<form enctype='multipart/form-data' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' method='post'>
 		<fieldset id='core-filemanager'>
 			<legend class='e-hideme'>XX</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width:  5%' />
 					<col style='width: 40%' />

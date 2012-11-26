@@ -224,15 +224,15 @@ class links_admin_ui extends e_admin_ui
 		<form method='post' action='".e_REQUEST_URL."'>
 			<fieldset id='core-links-generator'>
 				<legend class='e-hideme'>".LINKLAN_4."</legend>
-				<table class='adminform'>
+				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>".LINKLAN_6."</td>
-							<td class='control'>
+							<td>".LINKLAN_6."</td>
+							<td>
 		";
 
 		foreach($sublinks as $key => $type)
@@ -249,8 +249,8 @@ class links_admin_ui extends e_admin_ui
 							</td>
 						</tr>
 						<tr>
-							<td class='label'>".LINKLAN_7."</td>
-							<td class='control'>
+							<td>".LINKLAN_7."</td>
+							<td>
 								";
 		$text .= $ui->link_parent($this->getPosted('link_parent'), 'write');
 		$text .= "

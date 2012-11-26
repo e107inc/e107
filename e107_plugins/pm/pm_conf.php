@@ -295,7 +295,7 @@ function show_options($pm_prefs)
 	$txt = "
 	<fieldset id='plugin-pm-prefs'>
 	<form method='post' action='".e_SELF."'>
-	<table cellpadding='0' cellspacing='0' class='adminedit'>
+	<table class='table adminform'>
 	<colgroup span='2'>
 		<col class='col-label' />
 		<col class='col-control' />
@@ -369,11 +369,11 @@ function show_options($pm_prefs)
 		<td>".ADLAN_PM_81."</td>
 		<td>".form::form_text('pm_option-pm_max_send', 5, $pm_prefs['pm_max_send'], 5)."<span style='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
-	<tr>
-		<td colspan='2' style='text-align:center'><input type='submit' class='button' name='update_prefs' value='".ADLAN_PM_32."' /></td>
-	</tr>
 	</tbody>
 	</table>
+	<div class='buttons-bar center'>
+	".e107::getForm()->admin_button('update_prefs','no-value','update',ADLAN_PM_32)."
+	</div>
 	</form>
 	</fieldset>
 	";
@@ -387,6 +387,7 @@ function show_options($pm_prefs)
 function show_limits($pm_prefs)
 {
 	$sql = e107::getDb();
+	$frm = e107::getForm();
 	
 	if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
@@ -400,12 +401,19 @@ function show_limits($pm_prefs)
 	$txt = "
 		<fieldset id='plugin-pm-showlimits'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<table cellpadding='0' cellspacing='0' class='adminedit'>
-		<colgroup span='3'>
+		<table class='table adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 			<col class='col-control' />
 		</colgroup>
+		<thead>
+			<tr>
+			<th>".ADLAN_PM_36."</th>
+			<th>".ADLAN_PM_37."</th>
+			<th>".ADLAN_PM_38."</th>
+		</tr>
+		</thead>
 		<tbody>
 		<tr>
 			<td colspan='3' style='text-align:left'>".ADLAN_PM_45." 
@@ -425,11 +433,7 @@ function show_limits($pm_prefs)
 		$txt .= '&nbsp;&nbsp;'.ADLAN_PM_77."
 			</td>
 		</tr>
-		<tr>
-			<th>".ADLAN_PM_36."</th>
-			<th>".ADLAN_PM_37."</th>
-			<th>".ADLAN_PM_38."</th>
-		</tr>
+	
 	";
 
 	if (isset($limitList)) 
@@ -460,17 +464,12 @@ function show_limits($pm_prefs)
 		";
 	}
 
-	$txt .= "
-	<tr>
-	<td colspan='3' style='text-align:center'>
-	<input type='submit' class='button' name='updatelimits' value='".ADLAN_PM_42."' />
-	</td>
-	</tr>
-	";
-
 	$txt .= '
 	</tbody>
 	</table>
+	<div class="buttons-bar center">
+	'.$frm->admin_button('updatelimits','no-value','update',ADLAN_PM_42).'
+	</div>
 	</form>
 	</fieldset>';
 	return $txt;
@@ -482,6 +481,8 @@ function show_limits($pm_prefs)
 function add_limit($pm_prefs)
 {
 	$sql = e107::getDb();
+	$frm = e107::getForm();
+	
 	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
 		while($row = $sql->db_Fetch())
@@ -492,18 +493,20 @@ function add_limit($pm_prefs)
 	$txt = "
 		<fieldset id='plugin-pm-addlimit'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<table cellpadding='0' cellspacing='0' class='adminedit'>
-		<colgroup span='3'>
+		<table class='table adminform'>
+		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 			<col class='col-control' />
 		</colgroup>
-		<tbody>
+		<thead>
 		<tr>
 			<th>".ADLAN_PM_36."</th>
 			<th>".ADLAN_PM_37."</th>
 			<th>".ADLAN_PM_38."</th>
-		</tr>
+			</tr>
+		</thead>
+		<tbody>
 	";
 
 	$txt .= "
@@ -518,16 +521,15 @@ function add_limit($pm_prefs)
 		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
 	</td>
 	</tr>
-	<tr>
-	<td colspan='3' style='text-align:center'>
-	<input type='submit' class='button' name='addlimit' value='".ADLAN_PM_43."' />
-	</td>
-	</tr>
+
 	";
 
 	$txt .= '
 	</tbody>
 	</table>
+	<div class="buttons-bar center">
+	'.$frm->admin_button('addlimit','no-value','update',ADLAN_PM_43).'
+	</div>
 	</form>
 	</fieldset>';
 	return $txt;
@@ -542,8 +544,8 @@ function show_maint($pmPrefs)
 	<fieldset id='plugin-pm-maint'>
 	<legend>".ADLAN_PM_62."</legend>
 	<form method='post' action='".e_SELF."?maint'>
-	<table cellpadding='0' cellspacing='0' class='adminedit'>
-	<colgroup span='2'>
+	<table class='table adminform'>
+	<colgroup>
 		<col class='col-label' />
 		<col class='col-control' />
 	</colgroup>
@@ -576,11 +578,11 @@ function show_maint($pmPrefs)
 		<td>".ADLAN_PM_78."</td>
 		<td>".yes_no('pm_maint_attach', '0')."</td>
 	</tr>
-	<tr>
-		<td colspan='2' style='text-align:center'><input type='submit' class='button' name='pm_maint_execute' value='".ADLAN_PM_61."' /></td>
-	</tr>
 	</tbody>
 	</table>
+	<div class='buttons-bar center'>
+	".e107::getForm()->admin_button('pm_maint_execute','no-value','delete',ADLAN_PM_61)."
+	</div>
 	</form>
 	</fieldset>
 	";
@@ -815,6 +817,7 @@ function doMaint($opts, $pmPrefs)
 function pm_conf_adminmenu() 
 {
 	global $action;
+	
 	if ($action == '') { $action = 'main'; }
 
 	$var['main']['text'] = ADLAN_PM_54;

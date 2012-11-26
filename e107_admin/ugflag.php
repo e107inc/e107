@@ -77,7 +77,7 @@ $text = "
 	<form method='post' action='".e_SELF."' id='core-ugflag-form'>
 		<fieldset id='core-ugflag'>
 			<legend class='e-hideme'>".UGFLAN_4."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
@@ -90,8 +90,8 @@ $elements = array(e_UC_PUBLIC=>LAN_DISABLED,
 	 
 $text .= "
 					<tr>
-						<td class='label'>".UGFLAN_2.": </td>
-						<td class='control'>
+						<td>".UGFLAN_2.": </td>
+						<td>
 							".$frm->radio_multi('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."
 						</td>
 					</tr>";
@@ -99,10 +99,10 @@ $text .= "
 //TODO multilanguage pref					
 $text .= "
 					<tr>
-						<td class='label'>".UGFLAN_5."
+						<td>".UGFLAN_5."
 							
 						</td>
-						<td class='control'>
+						<td>
 							".$frm->bbarea('maintainance_text', $pref['maintainance_text'], 'maintenance', 'maintenance_bbhelp')."
 						<div class='field-help'>".UGFLAN_6."</div>
 						</td>

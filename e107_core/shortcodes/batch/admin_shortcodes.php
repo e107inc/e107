@@ -1224,11 +1224,11 @@ class admin_shortcodes
 
 		// MAIN LINK
 		$menu_vars = array();
-		$menu_vars['main']['text'] = ADLAN_151;
-		$menu_vars['main']['link'] = e_ADMIN_ABS.'admin.php';
-		$menu_vars['main']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-		$menu_vars['main']['image_src'] = ADLAN_151;
-		$menu_vars['main']['perm'] = '';
+		$menu_vars['adminhome']['text'] = ADLAN_151;
+		$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
+		$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
+		$menu_vars['adminhome']['image_src'] = ADLAN_151;
+		$menu_vars['adminhome']['perm'] = '';
 
 		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
 

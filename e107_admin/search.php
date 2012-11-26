@@ -201,66 +201,66 @@ if ($query[0] == 'settings')
 	<form method='post' action='".e_SELF."?settings'>
 		<fieldset id='core-search-settings'>
 			<legend class='e-hideme'>".SEALAN_20."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".SEALAN_15.": </td>
-						<td class='control'>
+						<td>".SEALAN_15.": </td>
+						<td>
 							".$e_userclass->uc_dropdown('search_restrict', $pref['search_restrict'], 'public,guest,nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_30."</td>
-						<td class='control'>
+						<td>".SEALAN_30."</td>
+						<td>
 							".$frm->radio_switch('search_highlight', $pref['search_highlight'])."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_10."</td>
-						<td class='control'>
+						<td>".SEALAN_10."</td>
+						<td>
 							".$frm->radio_switch('relevance', $search_prefs['relevance'])."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_11."</td>
-						<td class='control'>
+						<td>".SEALAN_11."</td>
+						<td>
 							".$frm->radio_switch('user_select', $search_prefs['user_select'])."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_19."</td>
-						<td class='control'>
+						<td>".SEALAN_19."</td>
+						<td>
 							".$frm->radio_switch('multisearch', $search_prefs['multisearch'])."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_35."</td>
-						<td class='control'>
+						<td>".SEALAN_35."</td>
+						<td>
 							".$frm->radio_multi('selector', array(2 => SEALAN_36, 1 => SEALAN_37, 0 => SEALAN_38), $search_prefs['selector'])."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_12."</td>
-						<td class='control'>
+						<td>".SEALAN_12."</td>
+						<td>
 							".$frm->radio_multi('time_restrict', array(0 => LAN_DISABLED, 1 => SEALAN_13), $search_prefs['time_restrict'])."&nbsp;
 							".$frm->text('time_secs', $tp -> toForm($search_prefs['time_secs']), 3, 'class=tbox&size=5')."&nbsp;".SEALAN_14."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_3."</td>
-						<td class='control'>
+						<td>".SEALAN_3."</td>
+						<td>
 							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySql', SEALAN_31)."&nbsp;
 							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=5')."&nbsp;".SEALAN_32."
 							<div class='field-help'>".SEALAN_49."</div>
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_47."</td>
-						<td class='control'>
+						<td>".SEALAN_47."</td>
+						<td>
 							".$frm->radio_switch('boundary', $search_prefs['boundary'])."
 							<div class='field-help'>".SEALAN_48."</div>
 						</td>
@@ -301,33 +301,33 @@ elseif ($query[0] == 'edit')
 	<form method='post' action='".e_SELF."?main.".$query[1].".".$query[2]."'>
 		<fieldset id='core-search-edit'>
 			<legend class='e-hideme'>{$caption}</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".SEALAN_44.":</td>
-						<td class='control'>
+						<td>".SEALAN_44.":</td>
+						<td>
 							".r_userclass("class", $search_prefs[$handler_type][$query[2]]['class'], "off", "public,guest,nobody,member,admin,classes")."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_45.":</td>
-						<td class='control'>
+						<td>".SEALAN_45.":</td>
+						<td>
 							<input class='tbox input-text' type='text' name='results' value='".$tp -> toForm($search_prefs[$handler_type][$query[2]]['results'])."' size='4' maxlength='4' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_46.":</td>
-						<td class='control'>
+						<td>".SEALAN_46.":</td>
+						<td>
 							<input class='tbox input-text' type='text' name='chars' value='".$tp -> toForm($search_prefs[$handler_type][$query[2]]['chars'])."' size='4' maxlength='4' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".SEALAN_26.":</td>
-						<td class='control'>
+						<td>".SEALAN_26.":</td>
+						<td>
 							<input type='radio' class='radio' id='pre-title-1' name='pre_title' value='1'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 1) ? " checked='checked'" : "")." /><label for='pre-title-1'>".SEALAN_22."</label><br />
 							<input type='radio' class='radio' id='pre-title-0' name='pre_title' value='0'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 0) ? " checked='checked'" : "")." /><label for='pre-title-0'>".SEALAN_17."</label><br />
 							<input type='radio' class='radio' id='pre-title-2' name='pre_title' value='2'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 2) ? " checked='checked'" : "")." /><label for='pre-title-2'>".SEALAN_23."</label>
@@ -354,7 +354,7 @@ else
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='core-search-configuration-main'>
 				<legend class='e-hideme'>".SEALAN_1."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:55%' />
 						<col style='width:25%' />
@@ -440,7 +440,7 @@ else
 
 			<fieldset id='core-search-configuration-comm'>
 				<legend class='e-hideme'>".SEALAN_1."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:55%' />
 						<col style='width:45%' />

@@ -191,28 +191,41 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 					$text .= '<tr>';
 				}
 			}
-			if ($mode == 'default')
+			
+			
+			switch ($mode) 
 			{
-				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
+				case 'default':
+					$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
 					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
-			}
-			elseif ($mode == 'classis')
-			{
-				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
-					<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
-			}
-			elseif ($mode == 'beginner')
-			{
-                $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a class='core-mainpanel-link-icon' href='".$link."' >".$icon."</a>
+				break;
+				
+				case 'classis':
+					$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
+					<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";			
+				break;
+					
+				case 'beginner':
+					 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a class='core-mainpanel-link-icon' href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
-					<a class='core-mainpanel-link-text' href='".$link."' title='".$description."'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";
-			}
-			elseif($mode == "div")
-			{
-                $text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a><br />
+					<a class='core-mainpanel-link-text' href='".$link."' title='".$description."'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";		
+				break;
+					
+				case 'div':
+					$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a><br />
 					<a class='core-mainpanel-link-text e-tip' href='".$link."' title='{$description}'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a>
-					</div>";
+					</div>";					
+				break;
+				
+				case 'div-icon-only':
+					$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a></div>";					
+				break;
+				
+				default:
+					
+					break;
 			}
+			
 			$td++;
 		}
 	}

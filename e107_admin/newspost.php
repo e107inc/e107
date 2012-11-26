@@ -1595,7 +1595,7 @@ class admin_newspost
 				<form action='".e_SELF."' id='newsform' method='post'>
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
-						<table class='adminlist'>
+						<table class='table adminlist'>
 							".$frm->colGroup($this->fields, $this->fieldpref)."
 							".$frm->thead($this->fields, $this->fieldpref, 'action=main&amp;sub=[FIELD]&amp;id=[ASC]&amp;filter='.intval($_GET['filter']).'&amp;srch='.$_GET['srch'].'&amp;frm=[FROM]')."
 							<tbody>";
@@ -1950,8 +1950,8 @@ class admin_newspost
 							
 							
 		<tr>
-								<td class='label'>".LAN_TEMPLATE.":</td>
-								<td class='control'>
+								<td>".LAN_TEMPLATE.":</td>
+								<td>
 		";
 
 		//XXX multiple-selections at once. (comma separated) - working
@@ -2122,16 +2122,16 @@ class admin_newspost
 						<tbody>
 						
 							<tr>
-								<td class='label'>Friendly URL string: </td>
-								<td class='control'>
+								<td>Friendly URL string: </td>
+								<td>
 									".$frm->text('news_sef', $tp->post_toForm($_POST['news_sef']), 255)."
 									<div class='field-help'>If left empty will be automatically created from current News Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
 								</td>
 							</tr>
 
 							<tr>
-								<td class='label'>".LAN_KEYWORDS.": </td>
-								<td class='control'>".$frm->tags('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."
+								<td>".LAN_KEYWORDS.": </td>
+								<td>".$frm->tags('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."
 								<div class='field-help'>Keywords/tags associated to associate with this news item</div>
 								</td>
 								
@@ -2139,8 +2139,8 @@ class admin_newspost
 							
 		
 							<tr>
-								<td class='label'>Meta description: </td>
-								<td class='control'>".$frm->textarea('news_meta_description', $tp->post_toForm($_POST['news_meta_description']), 7)."</td>
+								<td>Meta description: </td>
+								<td>".$frm->textarea('news_meta_description', $tp->post_toForm($_POST['news_meta_description']), 7)."</td>
 							</tr>
 						</tbody>
 					</table>
@@ -2158,8 +2158,8 @@ class admin_newspost
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".NWSLAN_15.":</td>
-								<td class='control'>
+								<td>".NWSLAN_15.":</td>
+								<td>
 									".$frm->radio('news_allow_comments', 0, !$_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
 									".$frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
 									<div class='field-help'>
@@ -2169,8 +2169,8 @@ class admin_newspost
 							</tr>
 							
 								<tr>
-									<td class='label'>".NWSLAN_19.":</td>
-									<td class='control'>
+									<td>".NWSLAN_19.":</td>
+									<td>
 										<div class='field-spacer'>".NWSLAN_21.":</div>
 										<div class='field-spacer'>
 		";
@@ -2187,8 +2187,8 @@ class admin_newspost
 									</td>
 								</tr>
 								<tr>
-									<td class='label'>".LAN_NEWS_32.":</td>
-									<td class='control'>
+									<td>".LAN_NEWS_32.":</td>
+									<td>
 										<div class='field-spacer'>
 		";
 
@@ -2217,8 +2217,8 @@ class admin_newspost
 
 		$text .= "
 								<tr>
-									<td class='label'>".NWSLAN_22.":</td>
-									<td class='control'>
+									<td>".NWSLAN_22.":</td>
+									<td>
 										".$frm->uc_select('news_userclass[]', vartrue($_POST['news_class'],0), 'nobody,public,guest,member,admin,classes,language', 'description=1&multiple=1')."
 										<div class='field-help'>
 											".NWSLAN_84."
@@ -2226,8 +2226,8 @@ class admin_newspost
 									</td>
 								</tr>
 								<tr>
-									<td class='label'>".LAN_NEWS_28.":</td>
-									<td class='control'>
+									<td>".LAN_NEWS_28.":</td>
+									<td>
 										".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_29, 'news_sticky', '1')."
 										<div class='field-help'>
 											".LAN_NEWS_30."
@@ -2239,8 +2239,8 @@ class admin_newspost
 		if($pref['trackbackEnabled']){
 			$text .= "
 								<tr>
-									<td class='label'>".LAN_NEWS_34.":</td>
-									<td class='control'>
+									<td>".LAN_NEWS_34.":</td>
+									<td>
 										<a class='e-pointer' onclick='expandit(this);'>".LAN_NEWS_35."</a>
 										<div class='e-hideme'>
 											<div class='field-spacer'>
@@ -2270,8 +2270,8 @@ class admin_newspost
 				{
 					$text .= "
 								<tr>
-									<td class='label'>".$hook['caption']."</td>
-									<td class='control'>".$hook['text']."</td>
+									<td>".$hook['caption']."</td>
+									<td>".$hook['text']."</td>
 								</tr>
 					";
 				}
@@ -2368,7 +2368,7 @@ class admin_newspost
 					<table class='admininfo'>
 					<tbody>
 						<tr>
-							<td class='label' colspan='2'>
+							<td colspan='2'>
 								".$e107->tp->parseTemplate('{NEWSINFO}').$ix->render_newsitem($_PR, 'return')."
 							</td>
 						</tr>
@@ -2501,50 +2501,50 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?cat' id='core-newspost-cat-create-form'>
 				<fieldset id='core-newspost-cat-create'>
 					<legend>".NWSLAN_56."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".NWSLAN_52."</td>
-								<td class='control'>
+								<td>".NWSLAN_52."</td>
+								<td>
 									".$frm->text('category_name', $category['category_name'], 200)."
 									<div class='field-help'>Required field</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>Category friendly URL string</td>
-								<td class='control'>
+								<td>Category friendly URL string</td>
+								<td>
 									".$frm->text('category_sef', $category['category_sef'], 200)."
 									<div class='field-help'>If left empty will be automatically created from current Category Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>Category meta keywords</td>
-								<td class='control'>
+								<td>Category meta keywords</td>
+								<td>
 									".$frm->text('category_meta_keywords', $category['category_meta_keywords'], 255)."
 									<div class='field-help'>Used on news categoty list page</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>Category meta description</td>
-								<td class='control'>
+								<td>Category meta description</td>
+								<td>
 									".$frm->textarea('category_meta_description', $category['category_meta_description'], 5)."
 									<div class='field-help'>Used on news categoty list page</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>Category management permissions</td>
-								<td class='control'>
+								<td>Category management permissions</td>
+								<td>
 									".$frm->uc_select('category_manager',  vartrue($category['category_manager'], e_UC_ADMIN), 'main,admin,classes')."
 									<div class='field-help'>Which group of site administrators are able to manage this category related news</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_53."</td>
-								<td class='control'>
+								<td>".NWSLAN_53."</td>
+								<td>
 									".$frm->iconpicker('category_icon', $category['category_icon'], NWSLAN_54)."
 									".$frm->hidden('category_order', $category['category_order'])."
 									
@@ -2598,7 +2598,7 @@ class admin_newspost
 			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
 					<legend>".NWSLAN_51."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 	5%'  />
 							<col style='width:  10%' />
@@ -2708,34 +2708,34 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
 					<legend class='e-hideme'>".NWSLAN_90."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".NWSLAN_127."</td>
-								<td class='control'>
+								<td>".NWSLAN_127."</td>
+								<td>
 									".$frm->text('news_sefbase', $pref['news_sefbase'])."
 									<div class='field-help'>".sprintf(NWSLAN_128, e_ADMIN_ABS.'eurl.php').'<strong>'.SITEURL.($pref['news_sefbase'] ? $pref['news_sefbase'].'/' : '')."</strong></div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_86."</td>
-								<td class='control'>
+								<td>".NWSLAN_86."</td>
+								<td>
 									".$frm->checkbox_switch('news_cats', 1, $pref['news_cats'])."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_87."</td>
-								<td class='control'>
+								<td>".NWSLAN_87."</td>
+								<td>
 									".$frm->selectbox('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'], 'class=tbox')."
 								</td>
 							</tr>
 							<tr>
-							<td class='label'>".NWSLAN_88."</td>
-							<td class='control'>
+							<td>".NWSLAN_88."</td>
+							<td>
 								".$frm->selectbox('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
 							</td>
 							</tr>
@@ -2748,15 +2748,15 @@ class admin_newspost
 		//SecretR - Done
 		$text .= "
 							<tr>
-								<td class='label'>".NWSLAN_115."</td>
-								<td class='control'>
+								<td>".NWSLAN_115."</td>
+								<td>
 									<div id='newsposts-archive-cont'>".$frm->selectbox('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."</div>
 									<div class='field-help'>".NWSLAN_116."</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_117."</td>
-								<td class='control'>
+								<td>".NWSLAN_117."</td>
+								<td>
 									".$frm->text('newsposts_archive_title', $pref['newsposts_archive_title'])."
 								</td>
 							</tr>
@@ -2765,39 +2765,39 @@ class admin_newspost
 
 		$text .= "
 							<tr>
-								<td class='label'>".LAN_NEWS_51."</td>
-								<td class='control'>
+								<td>".LAN_NEWS_51."</td>
+								<td>
 									".$frm->uc_select('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes')."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_106."</td>
-								<td class='control'>
+								<td>".NWSLAN_106."</td>
+								<td>
 									".$frm->uc_select('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes')."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_107."</td>
-								<td class='control'>
+								<td>".NWSLAN_107."</td>
+								<td>
 									".$frm->checkbox_switch('subnews_htmlarea', '1', $pref['subnews_htmlarea'])."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_100."</td>
-								<td class='control'>
+								<td>".NWSLAN_100."</td>
+								<td>
 									".$frm->checkbox_switch('subnews_attach', '1', $pref['subnews_attach'])."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_101."</td>
-								<td class='control'>
+								<td>".NWSLAN_101."</td>
+								<td>
 									".$frm->number('subnews_resize', $pref['subnews_resize'], 5, 'size=6&class=tbox')."
 									<div class='field-help'>".NWSLAN_102."</div>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_111."</td>
-								<td class='control'>
+								<td>".NWSLAN_111."</td>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox_switch('news_newdateheader', '1', $pref['news_newdateheader'])."
 										<div class='field-help'>".NWSLAN_112."</div>
@@ -2805,8 +2805,8 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_113."</td>
-								<td class='control'>
+								<td>".NWSLAN_113."</td>
+								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->checkbox_switch('news_unstemplate', '1', $pref['news_unstemplate'])."
 										<div class='field-help'>".NWSLAN_114."</div>
@@ -2814,8 +2814,8 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".NWSLAN_120."</td>
-								<td class='control'>
+								<td>".NWSLAN_120."</td>
+								<td>
 									".$frm->bbarea('news_subheader', stripcslashes($pref['news_subheader']), 2, 'helpb')."
 								</td>
 							</tr>
@@ -2856,7 +2856,7 @@ class admin_newspost
 			<form action='".e_SELF."?sn' method='post'>
 				<fieldset id='core-newspost-sn-list'>
 					<legend class='e-hideme'>".NWSLAN_47."</legend>
-					<tableclass='adminlist'>
+					<tableclass='table adminlist'>
 						<colgroup>
 							<col style='width: 2%' />
 							<col style='width: 5%' />
@@ -2960,7 +2960,7 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?maint' id='core-newspost-maintenance-form'>
 				<fieldset id='core-newspost-maintenance'>
 					<legend class='e-hideme'>".LAN_NEWS_59."</legend>
-					<table class='adminform'>
+					<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -2968,11 +2968,11 @@ class admin_newspost
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>".LAN_NEWS_56."</td>
-							<td class='control'>
+							<td>".LAN_NEWS_56."</td>
+							<td>
 								".$frm->checkbox('newsdeletecomments', '1', '0').LAN_NEWS_61."
 							</td>
-							<td class='control'>
+							<td>
 								".$frm->admin_button('news_comments_recalc', LAN_NEWS_57, 'update')."
 							</td>
 						</tr>

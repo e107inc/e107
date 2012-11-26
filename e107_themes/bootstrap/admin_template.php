@@ -29,7 +29,7 @@ $E_ADMIN_NAVIGATION['start'] = '<ul class="nav">';
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
-		{LINK_TEXT} 
+		 {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
 		{SUB_MENU}
@@ -52,7 +52,7 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 $E_ADMIN_NAVIGATION['button_other'] = '
 	<li>
 		<a  role="button" href="{LINK_URL}" >
-		{LINK_TEXT} 
+		<i class="icon-home icon-white"></i> {LINK_TEXT} 
 		</a> 
 	</li>
 ';

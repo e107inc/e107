@@ -167,7 +167,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			<form action='".e_SELF."?mode=main&action=alias' method='post' id='urlconfig-form'>
 				<fieldset id='core-eurl-core'>
 					<legend>".LAN_EURL_LEGEND_ALIASES."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -229,7 +229,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			<form action='".e_SELF."?mode=main&action=config' method='post' id='urlconfig-form'>
 				<fieldset id='core-eurl-core'>
 					<legend>".LAN_EURL_LEGEND_CONFIG."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -395,8 +395,8 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$section = vartrue($admin['labels'], array());
 			$text .= "
 				<tr>
-					<td class='label'>".vartrue($section['name'], eHelper::labelize($obj->module))."</td>
-					<td class='control'>
+					<td>".vartrue($section['name'], eHelper::labelize($obj->module))."</td>
+					<td>
 			";
 			
 			foreach ($obj->locations as $index => $location) 
@@ -527,13 +527,13 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			{
 			$text .= "
 				<tr>
-					<td class='label'>
+					<td>
 						".LAN_EURL_CORE_INDEX."
 					</td>
-					<td class='control'>
+					<td>
 						".LAN_EURL_CORE_INDEX_INFO."
 					</td>
-					<td class='control'>
+					<td>
 						".LAN_EURL_FORM_HELP_EXAMPLE." <br /><strong>".e107::getUrl()->create('/', '', array('full' => 1))."</strong>
 					</td>
 				</tr>
@@ -549,13 +549,13 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			
 			$text .= "
 				<tr>
-					<td class='label'>
+					<td>
 						".vartrue($section['name'], ucfirst(str_replace('_', ' ', $obj->module)))."
 						<div class='label-note'>
 						".LAN_EURL_FORM_HELP_ALIAS_0." <strong>{$module}</strong><br />
 						</div>
 					</td>
-					<td class='control'>
+					<td>
 			";
 			
 			
@@ -584,7 +584,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			
 			$text .= "
 					</td>
-					<td class='control'>
+					<td>
 						".implode("<div class='spacer'><!-- --></div>", $help)."
 					</td>
 				</tr>

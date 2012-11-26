@@ -476,7 +476,7 @@ class system_tools
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
 			<fieldset id='core-db-plugin-scan'>
 			<legend class='e-hideme'>".DBLAN_10."</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 60%' />
 					<col style='width: 40%' />
@@ -531,7 +531,7 @@ class system_tools
 
 				  $text = "
 					<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$_GET['mode']."'>
-	                <table class='adminform'>
+	                <table class='table adminform'>
 	                	<colgroup>
 	                		<col class='col-label' />
 	                		<col class='col-control' />
@@ -578,7 +578,7 @@ class system_tools
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
 			<legend class='e-hideme'>Export Options</legend>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 80%' />
 					<col style='width: 20%' />
@@ -614,7 +614,7 @@ class system_tools
 					}
 					$text .= "</tbody>
 				</table>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 80%' />
 					<col style='width: 20%' />
@@ -646,7 +646,7 @@ class system_tools
 					</tbody>
 				</table>
 
-				<table class='adminlist'>
+				<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 80%' />
 					<col style='width: 20%' />
@@ -753,7 +753,7 @@ class system_tools
 
 
 		$text .= "</select></div>
-						<table class='adminlist'>
+						<table class='table adminlist'>
 							<colgroup>
 								<col style='width: 5%' />
 								<col style='width: 20%' />
@@ -871,7 +871,7 @@ class system_tools
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='plug_edit'>
 					<fieldset id='core-db-plugin-scan'>
 						<legend class='e-hideme'>".ADLAN_CL_7."</legend>
-						<table class='adminlist'>
+						<table class='table adminlist'>
 							<colgroup>
 								<col style='width: 20%' />
 								<col style='width: 20%' />
@@ -1146,7 +1146,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			<form method='post' action='".e_SELF."'>
 				<fieldset id='core-db-verify-sql-tables'>
 					<legend class='e-hideme'>".DBLAN_39."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 100%' />
 						</colgroup>
@@ -1215,7 +1215,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 					<fieldset id='core-core-db-verify-sql-records-{$ctype}'>
 						<legend>".DBLAN_40." ".$ctype."</legend>
-						<table class='adminlist'>
+						<table class='table adminlist'>
 							<colgroup>
 								<col style='width: 20%' />
 								<col style='width: 10%' />

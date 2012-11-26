@@ -26,6 +26,7 @@ $e_sub_cat = 'meta';
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
+$frm = e107::getForm();
 
 if (isset($_POST['metasubmit']))
 {
@@ -73,42 +74,42 @@ $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
 		<fieldset id='core-meta-settings'>
 			<legend class='e-hideme'>".METLAN_8." (".e_LANGUAGE.")"."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".METLAN_9."</td>
-						<td class='control'>
+						<td>".METLAN_9."</td>
+						<td>
 							<textarea class='tbox textarea e-autoheight' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".METLAN_10."</td>
-						<td class='control'>
+						<td>".METLAN_10."</td>
+						<td>
 							<textarea class='tbox textarea e-autoheight' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 
 					<tr>
-						<td class='label'>".METLAN_11."</td>
-						<td class='control'>
+						<td>".METLAN_11."</td>
+						<td>
 							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value='".$meta_copyright[e_LANGUAGE]."' />
 						</td>
 					</tr>
 
 					<tr>
-						<td class='label'>".METLAN_13."</td>
-						<td class='control'>
+						<td>".METLAN_13."</td>
+						<td>
 							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" />
 						</td>
 					</tr>
 
 					<tr>
-						<td class='label'>".METLAN_2."</td>
-						<td class='control'>
+						<td>".METLAN_2."</td>
+						<td>
 							<textarea class='tbox textarea e-autoheight' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
 							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE]))."</textarea>
 							<div class='smalltext field-help'>eg. &lt;meta name='author' content='your name' /&gt; </div>
@@ -116,8 +117,8 @@ $text = "
 					</tr>
 
 					<tr>
-						<td class='label'>".METLAN_12."</td>
-						<td class='control'>
+						<td>".METLAN_12."</td>
+						<td>
 							<div class='auto-toggle-area autocheck'>
 								<input class='checkbox' type='checkbox' name='meta_news_summary' value='1'".($pref['meta_news_summary'] ? " checked='checked'" : '')." />
 							</div>
@@ -125,8 +126,8 @@ $text = "
 					</tr>
 				</tbody>
 			</table>
-			<div class='buttons-bar center'>
-				<button class='create' type='submit' name='metasubmit' value='no-value'><span>".METLAN_3."</span></button>
+			<div class='buttons-bar center'>".
+			$frm->admin_button('metasubmit','no-value','create',METLAN_3)."
 			</div>
 		</fieldset>
 	</form>

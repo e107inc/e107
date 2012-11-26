@@ -121,7 +121,7 @@ class gsitemap
 			$text .= "
 
 			<form action='".e_SELF."' id='display' method='post'>
-			<table class='adminlist' cellspacing='0' cellpadding='0'>
+			<table class='table adminlist'>
             	<colgroup span='2'>
 					<col style='width:5%' />
 					<col style='width:10%' />

@@ -122,7 +122,7 @@ function show_admins()
 	<form action='".e_SELF."' method='post' id='del_administrator'>
 		<fieldset id='core-administrator-list'>
 			<legend class='e-hideme'>".ADMSLAN_13."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width:  5%' />
 					<col style='width: 20%' />

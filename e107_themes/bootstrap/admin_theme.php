@@ -110,18 +110,9 @@ function tablestyle($caption, $text, $mode)
 	
 	$class = '';
 	
-	if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
+	// echo 'mod='.$style;
 	
-	if($mode == 'core-infopanel_mye107' || $mode == 'core-infopanel_news' || $mode == 'core-infopanel_online')
-	{
-		echo '
-				<div class="well sidebar-nav span6" style="padding:10px">  
-				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
-			</div>
-		';
-		return;
-	}
+	if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
 	
 	if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 	{
@@ -133,6 +124,19 @@ function tablestyle($caption, $text, $mode)
 		';
 		return;
 	}	
+	
+	if($style == 'core-infopanel')
+	{
+		echo '
+				<div class="well sidebar-nav span6" style="padding:10px">  
+				<div class="nav-header">'.$caption.'</div>
+				'.$text.'
+			</div>
+		';
+		return;
+	}
+	
+
 	
 	
 	

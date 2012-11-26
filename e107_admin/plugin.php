@@ -339,7 +339,7 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset id='core-plugin-list'>
 					<legend class='e-hideme'>".$caption."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						".$frm->colGroup($fieldList,$this->fieldpref).
 						$frm->thead($fieldList,$this->fieldpref)."
 						<tbody>
@@ -396,7 +396,7 @@ class pluginManager{
 		$url = e_SELF."?src=".base64_encode($d);
 		$id = 'plug_'.$data['plugin_folder'];
 		return "<div id='{$id}' style='vertical-align:middle'>
-		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
+		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		</div>";				
 	}
 	
@@ -800,7 +800,7 @@ class pluginManager{
 
 			  $text = "
 				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-                <table class='adminform'>
+                <table class='table adminform'>
                 	<colgroup>
                 		<col class='col-label' />
                 		<col class='col-control' />
@@ -859,7 +859,7 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset id='core-plugin-list'>
 					<legend class='e-hideme'>".$caption."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						".$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref)."
 						<tbody>
@@ -1122,7 +1122,7 @@ class pluginManager{
 			<form action='".e_SELF."?".e_QUERY."' method='post'>
 			<fieldset id='core-plugin-confirmUninstall'>
 			<legend>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
-            <table class='adminform'>
+            <table class='table adminform'>
             	<colgroup>
             		<col class='col-label' />
             		<col class='col-control' />

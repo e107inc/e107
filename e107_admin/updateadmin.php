@@ -27,6 +27,7 @@ require_once(e_HANDLER.'message_handler.php');
 require_once(e_HANDLER.'validator_class.php');
 $userMethods = e107::getUserSession();
 $emessage = e107::getMessage();
+$frm = e107::getForm();
 
 if (isset($_POST['update_settings'])) 
 {
@@ -78,35 +79,36 @@ else
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-updateadmin'>
 			<legend class='e-hideme'>".UDALAN_8." ".ADMINNAME."</legend>
-			<table class='adminform'>
+			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".UDALAN_4.":</td>
-						<td class='control'>
+						<td>".UDALAN_4.":</td>
+						<td>
 							".ADMINNAME."
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".UDALAN_5.":</td>
-						<td class='control'>
+						<td>".UDALAN_5.":</td>
+						<td>
 							<input class='tbox input-text' type='password' name='a_password' size='60' value='' maxlength='20' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".UDALAN_6.":</td>
-						<td class='control'>
+						<td>".UDALAN_6.":</td>
+						<td>
 							<input class='tbox input-text' type='password' name='a_password2' size='60' value='' maxlength='20' />
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<button class='update' type='submit' name='update_settings' value='no-value'><span>".UDALAN_7."</span></button>
+				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />".
+				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
+				
 			</div>
 		</fieldset>
 	</form>

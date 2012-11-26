@@ -25,12 +25,15 @@
 .smalltext	{ font-size: 11px; }
 .nowrap		{ white-space:nowrap; }
 
-label 		{ background-color:transparent;		cursor: pointer; }
 
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
 .core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
 
+td.center { text-align:center }
 
+.col-label {
+	width:40%;
+}
 
 .sidebar-nav {
 	padding: 9px 0;
@@ -54,6 +57,22 @@ label 		{ background-color:transparent;		cursor: pointer; }
     -webkit-filter: grayscale(0%);
 }
 
+legend { display:none }
+
+.btn {
+	vertical-align: top;
+}
+
+input[type='radio'] {
+	vertical-align:top;
+}
+
+label {
+	margin-left:5px;
+	margin-right:10px;
+	display: inline;
+}
+
 /* Core Icons & Image Buttons */
 img.icon		{ border: 0px; vertical-align: middle; }
 img.icon.list, 
@@ -67,9 +86,11 @@ img.S128		{ width: 128px; height: 128px }
 img.edit, 
 img.delete, 
 input.delete 	{ }
+
+.buttons-bar { padding: 10px 0px; background-color: #d0fbfd; }
 /*******************************************************************************************************************/
 /* Admin List Table */ 
-.adminlist { width:100%;  border:1px solid #ddd;}
+.adminlist, .adminform { width:100%;  border:1px solid #ddd;}
 .adminlist th { border-bottom:1px solid #ddd;    }
 .adminlist td { border-bottom:1px solid #ddd; border-right: 1px solid #ddd;  }
 .adminlist th.last,
@@ -78,6 +99,7 @@ input.delete 	{ }
 .adminlist thead { background-color:#f2f2f2; }
 .adminlist tr.even { background-color:#f6f6f6; }
 .adminlist .col-selection-cont { position: relative; float:right; }
+
 .col-selection-cont .col-selection { text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px; overflow:visible; position: absolute; z-index:101; right:0px;}
 .col-selection .col-selection-body { padding: 5px; clear: both; }
 

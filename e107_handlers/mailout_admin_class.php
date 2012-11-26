@@ -1022,7 +1022,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "
 			<form action='".e_SELF.'?mode=maildeleteconfirm&amp;m='.$mailID.'&amp;savepage='.$nextPage."' id='email_delete' method='post'>
 			<fieldset id='email-delete'>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -1093,7 +1093,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "
 			<form action='".e_SELF.'?'.e_QUERY."' id='email_list' method='post'>
 			<fieldset id='emails-list'>
-			<table class='adminlist'>";
+			<table class='table adminlist'>";
 
 		$fieldPrefs = $this->calcFieldSpec($type, TRUE);			// Get columns to display
 
@@ -1241,7 +1241,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "
 			<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID."' id='email_send' method='post'>
 			<fieldset id='email-send'>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -1304,7 +1304,7 @@ class mailoutAdminClass extends e107MailManager
 		$text = "
 			<legend>".LAN_MAILOUT_242."</legend>
 			<fieldset id='email-send-options'>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -1392,7 +1392,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "
 			<form action='".e_SELF.'?'.e_QUERY."' id='email_recip_header' method='post'>
 			<fieldset id='email-recip_header'>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -1424,7 +1424,7 @@ class mailoutAdminClass extends e107MailManager
 			$text .= "
 				<form action='".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$count}&amp;frm={$this->showFrom}&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}' id='email_recip_body' method='post'>
 				<fieldset id='email-recip_body'>
-				<table class='adminlist'>";
+				<table class='table adminlist'>";
 
 
 			$fieldPrefs = $this->calcFieldSpec('recipients', TRUE);			// Get columns to display
