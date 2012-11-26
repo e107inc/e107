@@ -1430,7 +1430,7 @@ class admin_shortcodes
 				$tmp[$c]['text'] = $tp->toHtml($lk['link_name'],'','defs');
 				$tmp[$c]['description'] = $tp->toHtml($lk['link_description'],'','defs');
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
-				$tmp[$c]['image'] = "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='' />"; ;
+				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';
 				$tmp[$c]['image_src'] = '';
 				$tmp[$c]['image_large_src'] = '';
