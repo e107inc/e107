@@ -947,8 +947,8 @@ $columnInfo = array(
 	            if(!empty($hook))
 	            {
 	               $text .= "<tr>
-	                            <td class='label'>".$hook['caption']."</td>
-	                            <td class='control'>".$hook['text']."</td>
+	                            <td>".$hook['caption']."</td>
+	                            <td>".$hook['text']."</td>
 	                         </tr>";
 	            }
 	         }

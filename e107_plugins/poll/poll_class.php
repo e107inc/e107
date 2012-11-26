@@ -491,6 +491,8 @@ class poll
 	function renderPollForm($mode='admin')
 	{
 		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
 		//TODO Hardcoded FORUM code needs to be moved somewhere. 
 		if ($mode == 'forum')
 		{
@@ -550,8 +552,8 @@ class poll
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='{$formgo}'>
-		<table class='adminform' cellpadding='0' cellspacing='0'>
-        <colgroup span='2'>
+		<table class='table adminform'>
+        <colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
 		</colgroup>
@@ -631,14 +633,20 @@ class poll
 			}
 			else
 			{
-				$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_23."' /> ";
+				$text .= $frm->admin_button('submit','no-value','submit',POLLAN_23);
+			//	$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_23."' /> ";
 			}
-		} else {
-			$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+		} 
+		else 
+		{
+			$text .= $frm->admin_button('preview','no-value','preview',POLLAN_24);
+		//	$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
 		}
 		
-		if (defset('POLLID')) {
-			$text .= "<input class='button' type='submit' name='reset' value='".POLLAN_25."' /> ";
+		if (defset('POLLID')) 
+		{
+			$text .= $frm->admin_button('reset','no-value','reset',POLLAN_25);
+		//	$text .= "<input class='button' type='submit' name='reset' value='".POLLAN_25."' /> ";
 		}
 
 		$text .= "</div>

@@ -473,7 +473,7 @@ else
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_main' value='no-value'><span>".LAN_UPDATE."</span></button>
+			".$frm->admin_button('update_main','no-value','update',LAN_UPDATE)."
 			</div>
 		</fieldset>
 		</form>
@@ -485,13 +485,12 @@ else
 
 require_once("footer.php");
 
-function search_adminmenu() {
-	global $query;
-	if ($query[0] == '' || $query[0] == 'main') {
-		$action = "main";
-	} else if ($query[0] == 'settings') {
-		$action = "settings";
-	}
+function search_adminmenu() 
+{
+
+	$query = e_QUERY;
+	
+	$action = vartrue($query,'main');
 
 	$var['main']['text'] = SEALAN_41;
 	$var['main']['link'] = e_SELF;
