@@ -58,20 +58,20 @@ $E_ADMIN_NAVIGATION['button_other'] = '
 ';
 
 $E_ADMIN_NAVIGATION['start_sub'] = '
-		<ul class="dropdown-menu" role="menu" aria-labelledby="{SUB_ID}">
+		<ul class="dropdown-menu" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['start_other_sub'] = '
-		<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="{SUB_ID}">
+		<ul class="dropdown-menu pull-right" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['button_sub'] = '
-			<li>
+			<li role="menuitem">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_TEXT}</a>
 			</li>
 ';
 $E_ADMIN_NAVIGATION['button_active_sub'] = '
-			<li class="active">
+			<li role="menuitem" class="active">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_TEXT}</a>
 			</li>
 ';
@@ -93,7 +93,7 @@ $ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
           
           
-          <a class="brand" href="#"><img src="'.e_IMAGE_ABS.'e107_icon_32.png" /> e107 Admin</a>
+          <a class="brand" href="#"><img src="'.e_IMAGE_ABS.'e107_icon_32.png" alt="e107" /> e107 Admin</a>
           <div class="nav-collapse collapse">
             <div class="dropdown nav pull-right navbar-text ">
             
@@ -170,7 +170,7 @@ $ADMIN_FOOTER = '
       <hr>
 
       <footer> 
-        <p>{ADMIN_CREDITS}</p>
+        {ADMIN_CREDITS}
       </footer>
 
     </div><!--/.fluid-container-->';
