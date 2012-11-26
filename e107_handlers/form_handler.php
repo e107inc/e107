@@ -1118,11 +1118,13 @@ class e_form
 			break;
 
 			case 'batch':
-				$options['class'] .= 'btn-success';
+			case 'batch e-hide-if-js': // FIXME hide-js shouldn't be here. 
+				$options['class'] .= 'btn-primary';
 			break;
 			
 			case 'filter':
-				$options['class'] .= 'btn-success';
+			case 'filter e-hide-if-js': // FIXME hide-js shouldn't be here. 
+				$options['class'] .= 'btn-primary';
 			break;
 		}	
 		
