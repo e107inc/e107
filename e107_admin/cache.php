@@ -121,7 +121,7 @@ $text = "
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-cache-settings'>
 			<legend class='e-hideme'>".CACLAN_3."</legend>
-			<table class='adminlist'>
+			<table class='table adminlist'>
 				<colgroup>
 					<col style='width:60%' />
 					<col style='width:20%' />
@@ -178,7 +178,7 @@ $text = "
 				</tbody>
 			</table>
 			<div class='buttons-bar left'>
-				".$frm->admin_button('submit_cache', CACLAN_2, 'update f-right')."
+				".$frm->admin_button('submit_cache', CACLAN_2, 'update')."
 				".$frm->selectbox('option_clear_cache', array(
 					'empty_all' => CACLAN_26,
 					'empty_contentcache' => CACLAN_5,

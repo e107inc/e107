@@ -477,7 +477,7 @@ class themeHandler
 			
 			$text = "
 			  	<div style='text-align:center'>
-				<table class='adminform'>
+				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -522,7 +522,7 @@ class themeHandler
 
 		
 		$text = "<div style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-			<table class='adminlist'>";
+			<table class='table adminlist'>";
 		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
@@ -714,7 +714,7 @@ class themeHandler
 		
 		$text .= "
 		<div id='core-thememanager-configure'>
-        <table class='adminform'>
+        <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
         		<col class='col-control' />
@@ -776,7 +776,7 @@ class themeHandler
 			$itext = "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td colspan='2' style='vertical-align:top'>
-                    <table class='adminlist'>
+                    <table class='table adminlist'>
                       	<colgroup>
                       		<col class='col-tm-layout-default' style='width:10%' />
                       		<col class='col-tm-layout-name' style='width:20%' />
@@ -891,7 +891,7 @@ class themeHandler
 			$text .= "
 				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
 				<td colspan='2' style='vertical-align:top'>
-				<table class='adminlist' style='width:100%' >
+				<table class='table adminlist' style='width:100%' >
 				<tr>
                 	<td class='center' style='width:10%'>".TPVLAN_55."</td>
 			  		<td style='width:20%'>".TPVLAN_52."</td>
@@ -1375,6 +1375,17 @@ class themeHandler
 		$vars['layouts'] = $lays;
 		$vars['path'] = $path;
 		$vars['custompages'] = $custom;
+		
+		/*
+		$mes = e107::getMessage();
+		
+		if($path == "bootstrap")
+		{
+			$mes->addDebug("<h2>".$path."</h2>");
+			$mes->addDebug(print_a($vars,true));
+			$mes->addDebug("<hr />");
+		}
+		*/
 		
 		return $vars;
 	}

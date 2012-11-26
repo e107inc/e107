@@ -1143,7 +1143,7 @@ function headerjs()
 	</script>";
 
 	$mailAdmin = e107::getRegistry('_mailout_admin');
-	$text .= $mailAdmin->_cal->load_files();
+// 	$text .= $mailAdmin->_cal->load_files();
 
 	return $text;
 }

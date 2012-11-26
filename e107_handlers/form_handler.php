@@ -851,6 +851,7 @@ class e_form
 	{
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
+		$options['class'] = 'inline';
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 
 	}
@@ -898,7 +899,7 @@ class e_form
 	function label($text, $name = '', $value = '')
 	{
 		$for_id = $this->_format_id('', $name, $value, 'for');
-		return "<label$for_id class='e-tip'>{$text}</label>";
+		return "<label$for_id class='e-tip inline'>{$text}</label>";
 	}
 	
 	function help($text)
@@ -1098,16 +1099,35 @@ class e_form
 		$btype = 'submit';
 		if(strpos($action, 'action') === 0) $btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
-		$options['class'] = $action;//shorthand
+		$options['class'] = 'btn '.$action.' ';//shorthand
 		if(empty($label)) $label = $value;
-
-		if($action == 'delete')
+		
+		switch ($action)
 		{
-			$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
-		}
+			case 'update':
+				$options['class'] .= 'btn-success';
+			break;
+
+			case 'delete':
+				$options['class'] .= 'btn-danger';
+				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+			break;
+
+			case 'execute':
+				$options['class'] .= 'btn-success';
+			break;
+
+			case 'batch':
+				$options['class'] .= 'btn-success';
+			break;
+			
+			case 'filter':
+				$options['class'] .= 'btn-success';
+			break;
+		}	
 		
 		return "
-			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
+			<button  type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";
 	}
 
@@ -2382,13 +2402,13 @@ class e_form
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
 
 	        $text .= "
-				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
+				<form class='method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
 					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']."</legend>
 						".vartrue($options['table_pre'])."
-						<table class='adminlist' id='{$elid}-list-table'>
+						<table class='table adminlist' id='{$elid}-list-table'>
 							".$this->colGroup($fields, $current_fields)."
 							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
 							<tbody id='e-sort'>
@@ -2850,7 +2870,7 @@ class e_form
 	function batchoptions($options, $ucOptions = null)
 	{
 		$text = "
-         <div class='f-left'>
+         <div class='f-left btn-group'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
 				".$this->option('With selected...', '')."
@@ -2915,8 +2935,7 @@ class e_form
 
 
 		$text .= "
-				".$this->select_close()."
-				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
+				".$this->select_close().$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
 			</div><div class='clear'></div>
 		";
 

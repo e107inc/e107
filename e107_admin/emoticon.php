@@ -135,7 +135,13 @@ class emotec
 	// List available emote packs
 	function listPacks()
 	{
-		global $e107, $emessage, $fl, $pref;
+		global $pref;
+		$frm = e107::getForm();
+		$fl = e107::getFile();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		
 
 		$text = "
 	<div class='admintabs' id='tab-container'>
@@ -165,7 +171,7 @@ class emotec
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='active'><span>".LAN_UPDATE."</span></button>
+				".$frm->admin_button('active','active','update',LAN_UPDATE)."
 				</div>
 			</fieldset>
 		</form>
@@ -175,7 +181,7 @@ class emotec
 			<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 				<fieldset id='emoticon-packages'>
 					<legend>".EMOLAN_13."</legend>
-					<table class='adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width:15%' />
 							<col style='width:50%' />
@@ -223,20 +229,23 @@ class emotec
 			$text .= "
 								</td>
 								<td class='center middle'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<button type='submit' name='defPack_".$pack."' value='".EMOLAN_11."'><span>".EMOLAN_11."</span></button>")."</td>
-								<td>
-									<button class='edit' type='submit' name='subPack_".$pack."'><span>".EMOLAN_12."</span></button>
-			";
+								<td>";
+								
+								
+								
+						
+			$text .= $frm->admin_button('subPack_'.$pack,'edit','submit',EMOLAN_12);
+			
 			if ($can_scan && ($pack != 'default'))
 			{
 				$text .= "
-									<br /><br />
+									
 									<button class='submit' type='submit' name='scanPack_".$pack."'><span>".EMOLAN_26."</span></button>
 				";
+				$text .= $frm->admin_button('scanPack_'.$pack,'active','submit',EMOLAN_26);
 			}
-			$text .= "
-									<br /><br />
-									<button class='create' type='submit' name='XMLPack_".$pack."'><span>".EMOLAN_28."</span></button>
-			";
+			
+			$text .= $frm->admin_button('XMLPack_'.$pack,'submit','submit',EMOLAN_28);
 			$text .= "
 								</td>
 							</tr>
@@ -251,7 +260,7 @@ class emotec
 		</div>
 		";
 
-		$e107->ns->tablerender(EMOLAN_PAGE_TITLE, $emessage->render().$text);
+		$ns->tablerender(EMOLAN_PAGE_TITLE, $mes->render().$text);
 	}
 
 
@@ -259,6 +268,8 @@ class emotec
 	function emoteConf($packID)
 	{
 		global $e107, $fl, $sysprefs, $tp;
+		$frm = e107::getForm();
+		
 		$corea = "emote_".$packID;
 
 		$emotecode = $sysprefs -> getArray($corea);	
@@ -277,7 +288,7 @@ class emotec
 			<fieldset id='core-emoticon-configure'>
 				<legend class='e-hideme'>".EMOLAN_15."</legend>
 				<div class='info-bar'><strong>".sprintf(EMOLAN_31, count($eArray))."</strong></div>
-				<table class='adminlist'>
+				<table class='table adminlist'>
 					<colgroup>
 						<col style='width:20px' />
 						<col class='col-label' />
@@ -323,9 +334,13 @@ class emotec
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='packID' value='{$packID}' />
-				<button class='update' type='submit' name='sub_conf' value='no-value'><span>".EMOLAN_14."</span></button>
-				<button class='cancel' type='submit' name='cancel' value='no-value'><span>".LAN_CANCEL."</span></button>
+				<input type='hidden' name='packID' value='{$packID}' />";
+				
+				
+				$text .= $frm->admin_button('sub_conf', 'no-value', 'update', LAN_SAVE);
+				$text .= $frm->admin_button('cancel','no-value', 'cancel' ,LAN_CANCEL);
+				
+		$text .= "
 			</div>
 		</fieldset>
 	</form>";

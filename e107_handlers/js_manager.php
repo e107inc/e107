@@ -827,6 +827,7 @@ class e_jsmanager
 
 			case 'theme':
 				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
+				echo "file-Path = ".$file_path;
 				$registry = &$this->_e_jslib_theme;
 			break;
 

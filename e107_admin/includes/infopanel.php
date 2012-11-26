@@ -38,7 +38,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 
 // ---------------------- Start Panel --------------------------------
 
-	$text = "<div style='text-align:center'>";
+	$text = "<div >";
 	if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
 	{
 		$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
@@ -47,40 +47,39 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	$iconlist = array_merge($array_functions_assoc, getPluginLinks(E_16_PLUGMANAGER, "array"));
 
 	$text .= "
-	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<div id='core-infopanel_mye107' class='f-left' style='width:49%'>
-		<div style='border:1px solid silver;margin:10px'>
-			<div class='main_caption bevel left'><b>Welcome to your e107 Content Management System</b></div>
-
-			<div class='left block-text' >
-            	<h1>".ucwords(USERNAME)."'s Admin Panel</h1>
-				Welcome to your Website Content Manager
-				<br />
-
-            </div>
-
+	<form method='post' action='".e_SELF."?".e_QUERY."'>";
+	
+	
+	
+	// Personalized Panel 
+	
+	$mainPanel = "
+	<div id='core-infopanel_mye107' >
+		<div>
 			<div class='left' style='padding:25px'>";
 		// Rendering the saved configuration.
 		foreach ($iconlist as $key=>$val)
 		{
 			if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
-				$text .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+				$mainPanel .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 			}
 		}
 
-		$text .= "<div class='clear'>&nbsp;</div>
+		$mainPanel .= "<div class='clear'>&nbsp;</div>
              </div>
          </div>
 		</div>";
 
+	$text .= $ns->tablerender(ucwords(USERNAME)."'s Admin Panel",$mainPanel,"core-infopanel_mye107",true);
+	
 
 //  ------------------------------- e107 News --------------------------------
-	$text .= "
-	<div id='core-infopanel_news' class='f-left' style='width:49%'>
-	<div style='border:1px solid silver;margin:10px'>
-	<div class='main_caption bevel left'><b>e107 News</b></div>
-	<div class='left block-text'>";
+	
+	
+	$panelRSS = "
+	";
+	
 	// TODO Load with Ajax
 
 
@@ -90,44 +89,35 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	 $text .= print_r($vars,TRUE);
 	*/
 
-	$text .= "
+	$panelRSS .= "
     RSS News feed from e107.org goes here.
-	</div>
-	</div>
-	</div>
+
 	";
+/*
+
+		</div>
+	</div>
+	</div>
+	*/
+
+	$text .= $ns->tablerender("e107 News",$panelRSS,"core-infopanel_news",true);
 
 // ---------------------Latest Stuff ---------------------------
-$text .= "
-	<div id='core-infopanel_latest' class='f-left' style='width:49%' >
-	<div style='border:1px solid silver;margin:10px'>
-	<table>
-	<tr>
-	<td style='padding:0px'>";
-	
+
 	require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 	
-	$text .= $tp->parseTemplate("{ADMIN_LATEST}");
-	$text .= "</td><td style='padding:0px'>";
-	$text .= $tp->parseTemplate("{ADMIN_STATUS}");
-	$text .= "</td></tr></table>
-	</div>
-	</div>
-	";
+	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
+	$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
+
 
 // ---------------------- Who's Online  ------------------------
 // TODO Could use a new _menu item instead.
 
 	$nOnline = e107::getDB()->db_Select('online', '*');
 
-$text .= "
-	<div id='core-infopanel_online' class='f-left' style='width:49%'>
-	<div style='border:1px solid silver;margin:10px;'>
-	<div class='main_caption bevel left'><b>Visitors Online : ".$nOnline."</b></div>
-	<div class='left block-text'>
-
-
-		<table class='adminlist'>
+$panelOnline = "
+	
+		<table class='table adminlist'>
 		<colgroup>
 			<col style='width: 10%' />
             <col style='width: 25%' />
@@ -154,7 +144,7 @@ $text .= "
 		$newsarray = $e107->sql->db_getList();
 		foreach ($newsarray as $key=>$val)
 		{
-			$text .= "<tr>
+			$panelOnline .= "<tr>
 				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'%H:%M:%S')."</td>
 					<td>".renderOnlineName($val['online_user_id'])."</td>
 					<td>".e107::getIPHandler()->ipDecode($val['online_ip'])."</td>
@@ -165,10 +155,11 @@ $text .= "
 		}
 	}
 
-	$text .= "</tbody></table></div>
-	</div>
-	</div>
+	$panelOnline .= "</tbody></table>
 	";
+	
+	$text .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
+	
 // --------------------- User Selected Menus -------------------
 
 	if (varset($pref['core-infopanel-menus']))
@@ -205,7 +196,8 @@ $text .= "</div>";
 
 if($_GET['mode'] != 'customize')
 {
-	$ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
+	// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
+	echo $emessage->render().$text;
 }
 else
 {
