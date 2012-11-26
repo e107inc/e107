@@ -389,7 +389,7 @@ e107::getJs()->renderJs('header_inline', 4);
 
 // [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
 e107::getJs()->renderJs('header', 5);
-e107::getJs()->renderJs('header_inline', 5);
+
 
 //
 // F: Send Meta Tags, Icon links
@@ -510,17 +510,16 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
  * Fire Event e107:loaded
  * core JS available only in Prototype front-end environment
  */
+// e_css.php is removed
+//\$('e-js-css').remove();
 
-echo "<script type='text/javascript'>\n";
-echo "<!--\n";
-echo "if(typeof e107 != 'undefined') {\n";
-echo "\$('e-js-css').remove();\n"; // unobtrusive JS - moved here from external e_css.php
-echo "document.observe('dom:loaded', function() {\n";
-echo "e107Event.trigger('loaded', {element: null}, document);\n";
-echo "});\n";
-echo "}\n";
-echo "// -->\n";
-echo "</script>\n";
+e107::js('inline',"
+document.observe('dom:loaded', function () {
+e107Event.trigger('loaded', null, document);
+});
+",'prototype',5);
+
+e107::getJs()->renderJs('header_inline', 5);
 
 echo "</head>
 <body".$body_onload.">\n";
