@@ -419,7 +419,7 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_logged()
+	function sc_admin_logged($parm='')
 	{
 		if (ADMIN)
 		{
@@ -1211,8 +1211,12 @@ class admin_shortcodes
 
 		require(e_ADMIN.'ad_links.php');
 		require_once(e_HANDLER.'admin_handler.php');
-
-
+		
+		if($parm == 'home' || $parm == 'logout' || $parm == 'language')
+		{
+			$menu_vars = $this->getOtherNav($parm);	
+			return e_admin_menu('', '', $menu_vars, $$tmpl, FALSE, FALSE);
+		}
 
 		// MAIN LINK
 		$menu_vars = array();
@@ -1291,7 +1295,13 @@ class admin_shortcodes
 					e107::loadLanFiles($row['plugin_path'], 'admin');
 					if(varset($plug_vars['adminLinks']['link']))
 					{
-
+						
+						if($row['plugin_category'] == 'menu')
+						{
+							continue;
+						}
+						
+						
 						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
 						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
@@ -1309,7 +1319,7 @@ class admin_shortcodes
 						$tmp[$id]['sort'] = 2;
 						$tmp[$id]['category'] = $row['plugin_category'];
 
-						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']))
+						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
 						{
 							$tmp[$id]['sub_class'] = 'sub';
 							$tmp[$id]['sort'] = false;
@@ -1378,6 +1388,21 @@ class admin_shortcodes
 		//added option to disable leave/logout (ll) - more flexibility for theme developers
 		if(!varsettrue($parms['disable_ll']))
 		{
+		//	$menu_vars += $this->getOtherNav('home');	
+		}
+
+		// print_a($menu_vars);
+		return e_admin_menu('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+	}
+
+
+	function getOtherNav($type)
+	{
+		$tp = e107::getParser();
+		
+		if($type == 'home')
+		{
+		
 			$menu_vars['home']['text'] = ADLAN_53;
 			$menu_vars['home']['link'] = e_HTTP.'index.php';
 			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
@@ -1411,16 +1436,63 @@ class admin_shortcodes
 
 			$menu_vars['home']['sub'] = $tmp;
 			// --------------------
+		}
+		elseif($type == 'logout')
+		{
+			$tmp[0]['text'] = ADLAN_46;
+			$tmp[0]['description'] = ADLAN_151;
+			$tmp[0]['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[0]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[0]['image_large'] = '';
+			$tmp[0]['image_src'] = '';
+			$tmp[0]['image_large_src'] = '';
+			$tmp[0]['perm'] = '';
 			
-			$menu_vars['logout']['text'] = ADLAN_46;
-			$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[1]['text'] = ADLAN_CL_1;
+			$tmp[1]['description'] = ADLAN_151;
+			$tmp[1]['link'] = e_BASE.'usersettings.php';
+			$tmp[1]['image'] = "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[1]['image_large'] = '';
+			$tmp[1]['image_src'] = '';
+			$tmp[1]['image_large_src'] = '';
+			$tmp[1]['perm'] = '';	
+			
+				
+			$menu_vars['logout']['text'] = ADMINNAME;
+			$menu_vars['logout']['link'] = '#';
 			$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
-			$menu_vars['logout']['perm'] = '';
+			$menu_vars['logout']['perm'] = '';	
+			$menu_vars['logout']['sub'] = $tmp;	
 		}
 
-		// print_a($menu_vars);
-		return e_admin_menu('', '', $menu_vars, $$tmpl, FALSE, FALSE);
+		if($type == 'language')
+		{
+			$languages = array('English','French');
+			$c = 0;
+			foreach($languages as $lng)
+			{
+				$tmp[$c]['text'] = $lng." (TO DO)";
+				$tmp[$c]['description'] = '';
+				$tmp[$c]['link'] = '#';
+				$tmp[$c]['image'] = ""; // TODO Flag icons. 
+				$tmp[$c]['image_large'] = '';
+				$tmp[$c]['image_src'] = '';
+				$tmp[$c]['image_large_src'] = '';
+				$tmp[$c]['perm'] = '';
+				$c++;		
+			}
+			
+			$menu_vars['language']['text'] = e_LANGUAGE;
+			$menu_vars['language']['link'] = '#';
+			$menu_vars['language']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['language']['image_src'] = ADLAN_46;
+			$menu_vars['language']['perm'] = '';	
+			$menu_vars['language']['sub'] = $tmp;		
+			
+		}	
+		
+		return $menu_vars;
 	}
 
 
