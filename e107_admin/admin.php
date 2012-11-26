@@ -209,7 +209,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			}
 			elseif($mode == "div")
 			{
-                $text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
+                $text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a><br />
 					<a class='core-mainpanel-link-text e-tip' href='".$link."' title='{$description}'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a>
 					</div>";
 			}
