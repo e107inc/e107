@@ -538,7 +538,7 @@ class themeHandler
 		{
 			$itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
-					<td style='vertical-align:top'><table class='fborder' style='margin-left:0px;margin-right:auto' >
+					<td style='vertical-align:top'><table style='margin-left:0px;margin-right:auto' >
 						<tr>";
 			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>Default</td>" : "";
 			$itext .= "
@@ -891,7 +891,7 @@ class themeHandler
 			$text .= "
 				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
 				<td colspan='2' style='vertical-align:top'>
-				<table class='table adminlist' style='width:100%' >
+				<table class='table adminlist' >
 				<tr>
                 	<td class='center' style='width:10%'>".TPVLAN_55."</td>
 			  		<td style='width:20%'>".TPVLAN_52."</td>

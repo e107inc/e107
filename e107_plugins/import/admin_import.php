@@ -470,7 +470,7 @@ function showStartPage()
 	<form method='get' action='".e_SELF."' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
 		<legend class='e-hideme'>".'DBLAN_10'."</legend>
-            <table class='adminlist'>
+            <table class='table adminlist'>
 			<colgroup>
 			<col />
 			<col />
@@ -567,7 +567,7 @@ function showImportOptions($mode='csv')
 
 	$text = "
 	<form method='post' action='".e_SELF."?import_type=".$_GET['import_type']."'>
-    <table class='adminform'>
+    <table class='table adminform'>
     	<colgroup>
     		<col class='col-label' />
     		<col class='col-control' />

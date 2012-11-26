@@ -302,8 +302,8 @@ class tinymce
 			{
 				$text .= "
 					<tr>
-						<td class='label'>".$att['title']."</td>
-						<td class='control'>".$this->renderElement($key,$row)."</td>
+						<td>".$att['title']."</td>
+						<td>".$this->renderElement($key,$row)."</td>
 					</tr>";
 			}
 							
@@ -470,15 +470,15 @@ class tinymce
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".CUSLAN_29."</td>
-								<td class='control'>
+								<td>".CUSLAN_29."</td>
+								<td>
 									".$frm->radio_switch('listPages', $pref['listPages'])."
 								</td>
 							</tr>
 
 							<tr>
-								<td class='label'>".CUSLAN_30."</td>
-								<td class='control'>
+								<td>".CUSLAN_30."</td>
+								<td>
 									".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
 								</td>
 							</tr>

@@ -194,7 +194,7 @@ function poll_list()
 	
 	if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
 	{
-		$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>";
+		$text .= "<table class='table adminlist'>";
 		$text .= $frm->colGroup($fields,$fieldpref).
 				$frm->thead($fields,$fieldpref);
 	    $text .= "<tbody>";		
@@ -237,10 +237,10 @@ function poll_list()
 function admin_config_adminmenu() 
 {
 	$action = varset($_GET['mode']) ? $_GET['mode'] : "list";
-    $var['list']['text'] = POLLAN_1;
+    $var['list']['text'] = LAN_EXISTING;
 	$var['list']['link'] = e_SELF;
 	$var['list']['perm'] = "P";
-	$var['create']['text'] = POLLAN_2 ;
+	$var['create']['text'] = LAN_CREATE ;
 	$var['create']['link'] = e_SELF."?mode=create";
 	$var['create']['perm'] = "P";
 /*	$var['import']['text'] = GSLAN_23;

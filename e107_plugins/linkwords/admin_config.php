@@ -50,7 +50,7 @@ $lw_context_areas = array(
 
 // Yes, I know its a silly order - but that's history!
 $lwaction_vals = array(1=>LWLAN_51, 0=>LWLAN_52, 2=>LWLAN_53, 3=>LWLAN_54);
-
+$frm = e107::getForm();
 // Generate dropdown for possible actions on finding a linkword
 function lw_act_opts($curval)
 {
@@ -204,57 +204,58 @@ else
 
 if (($action == 'words') || ($action == 'edit'))
 {
+	
+	$frm = e107::getForm();
+	
 $text = "
 <div class='center'>
 <form method='post' action='".e_SELF."?words'>
-<table style='".ADMIN_WIDTH."' class='fborder'>
+<table class='table adminform'>
 	<colgroup>
-  	<col style='width: 35%; vertical-align:top;' />
-  	<col style='width: 65%; vertical-align:top;' />
+  	<col class='col-label' />
+  	<col class='col-control' />
 	</colgroup>
 
 <tr>
-<td class='forumheader3'>".LWLAN_21."</td>
-<td class='forumheader3'>
+<td>".LWLAN_21."</td>
+<td>
 <input class='tbox' type='text' name='linkword_word' size='40' value='".$linkword_word."' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3'>".LWLAN_6."</td>
-<td class='forumheader3'>
+<td>".LWLAN_6."</td>
+<td>
 <input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='250' /><br />
 	<input type='checkbox' name='linkword_newwindow' value='1'{$chkNewWindow} />".LWLAN_55."
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3'>".LWLAN_50."</td>
-<td class='forumheader3'>
+<td>".LWLAN_50."</td>
+<td>
 <textarea rows='3' cols='80' class='tbox' name='linkword_tooltip'>".$linkword_tooltip."</textarea>
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3'>".LWLAN_62."</td>
-<td class='forumheader3'>
+<td>".LWLAN_62."</td>
+<td>
 <input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /> ".LWLAN_63."
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3'>".LWLAN_22."</td>
-<td style='text-align:left' class='forumheader3'><select class='tbox' name='linkword_active'>".lw_act_opts($linkword_active).
+<td>".LWLAN_22."</td>
+<td style='text-align:left'><select class='tbox' name='linkword_active'>".lw_act_opts($linkword_active).
 "</select>
 </td>
 </tr>
-
-<tr>
-<td colspan='2' style='text-align:center' class='forumheader'>".
-(defined("LW_EDIT") ? "<input class='button' type='submit' name='update_linkword' value='".LWLAN_15."' /><input type='hidden' name='lw_edit_id' value='{$id}' />" : "<input class='button' type='submit' name='submit_linkword' value='".LWLAN_14."' />")."
-</td>
-</tr>
 </table>
+<div class='buttons-bar center'>
+".
+(defined("LW_EDIT") ? $frm->admin_button('update_linkword','no-value','update',LAN_UPDATE) .  "<input type='hidden' name='lw_edit_id' value='{$id}' />" : $frm->admin_button('submit_linkword','no-value','submit',LAN_CREATE))."
+</div>
 </form>
 </div>\n";
 
@@ -275,7 +276,7 @@ if (($action == 'words') || ($action == 'edit'))
   {
 	$text = "
   <div class='center'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<table class='table adminform'>
 	  <colgroup>
   	  <col style='width:  5%; vertical-align:top;' />
   	  <col style='width: 15%; vertical-align:top;' />
@@ -286,28 +287,28 @@ if (($action == 'words') || ($action == 'edit'))
   	  <col style='width: 10%; vertical-align:top; text-align: center;' />
   	  <col style='width: 15%; vertical-align:top; text-align: center;' />
 	</colgroup>	<tr>
-	<td class='forumheader'>".LWLAN_61."</td>
-	<td class='forumheader'>".LWLAN_5."</td>
-	<td class='forumheader'>".LWLAN_6."</td>
-	<td class='forumheader'>".LWLAN_56."</td>
-	<td class='forumheader'>".LWLAN_50."</td>
-	<td class='forumheader'>".LWLAN_60."</td>
-	<td class='forumheader'>".LWLAN_7."</td>
-	<td class='forumheader'>".LWLAN_8."</td>
+	<td>".LWLAN_61."</td>
+	<td>".LWLAN_5."</td>
+	<td>".LWLAN_6."</td>
+	<td>".LWLAN_56."</td>
+	<td>".LWLAN_50."</td>
+	<td>".LWLAN_60."</td>
+	<td>".LWLAN_7."</td>
+	<td>".LWLAN_8."</td>
 	</tr>\n";
 
 	while($row = $sql -> db_Fetch())
 	{
 		$text .= "
 		<tr>
-		<td class='forumheader'>{$row['linkword_id']}</td>
-		<td class='forumheader'>{$row['linkword_word']}</td>
-		<td class='forumheader'>{$row['linkword_link']}</td>
-		<td class='forumheader'>".($row['linkword_newwindow'] ? LAN_YES : LAN_NO)."</td>
-		<td class='forumheader'>{$row['linkword_tooltip']}</td>
-		<td class='forumheader'>".($row['linkword_tip_id'] > 0 ? $row['linkword_tip_id'] : '')."</td>
-		<td class='forumheader' >".$lwaction_vals[$row['linkword_active']]."</td>
-		<td class='forumheader' >
+		<td>{$row['linkword_id']}</td>
+		<td>{$row['linkword_word']}</td>
+		<td>{$row['linkword_link']}</td>
+		<td>".($row['linkword_newwindow'] ? LAN_YES : LAN_NO)."</td>
+		<td>{$row['linkword_tooltip']}</td>
+		<td>".($row['linkword_tip_id'] > 0 ? $row['linkword_tip_id'] : '')."</td>
+		<td >".$lwaction_vals[$row['linkword_active']]."</td>
+		<td >
 		<form action='".e_SELF."' method='post' id='myform_{$row['linkword_id']}'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: {$row['linkword_id']} ]')\">
 		<div>
 		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LWLAN_16."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
@@ -333,57 +334,55 @@ if ($action=='options')
   $menu_pages = str_replace("|", "\n", $menu_pages);
   $AjaxEnable = varset($pref['lw_ajax_enable'],0);
   $text = "
-  <div class='center'>
+  <div>
   <form method='post' action='".e_SELF."?options'>
-  <table style='".ADMIN_WIDTH."' class='fborder'>
+  <table class='table adminform'>
 	<colgroup>
 	<col style='width: 30%; vertical-align:top;' />
 	<col style='width: 40%; vertical-align:top;' />
 	<col style='width: 30%; vertical-align:top;' />
 	</colgroup>
   <tr>
-  <td class='forumheader3'>".LWLAN_26."</td>
-  <td class='forumheader3'>";
+  <td>".LWLAN_26."</td>
+  <td>";
   foreach ($lw_context_areas as $lw_key=>$lw_desc)
   {
     $checked = $pref['lw_context_visibility'][$lw_key] ? "checked='checked'" : '';
 	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} />{$lw_desc}<br />";
   }
   $text .= "</td>
-  <td class='forumheader3'>".LWLAN_27."</td>
+  <td>".LWLAN_27."</td>
   </tr>
 
   <tr>
-  <td class='forumheader3'>".LWLAN_28."</td>
-  <td class='forumheader3'><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea>
+  <td>".LWLAN_28."</td>
+  <td><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea>
   </td>
-  <td class='forumheader3'>".LWLAN_29."</td>
+  <td>".LWLAN_29."</td>
   </tr>";
 
   $checked = varset($pref['lw_ajax_enable'],0) ? 'checked=checked' : '';
   $text .= "
   <tr>
-  <td class='forumheader3'>".LWLAN_59."</td>
-  <td class='forumheader3'><input type='checkbox' name='lw_ajax_enable' {$checked} />
+  <td>".LWLAN_59."</td>
+  <td><input type='checkbox' name='lw_ajax_enable' {$checked} />
   </td>
-  <td class='forumheader3'>".""."</td>
+  <td>".""."</td>
   </tr>";
 
   $checked = varset($pref['lw_notsamepage'],0) ? 'checked=checked' : '';
   $text .= "
   <tr>
-  <td class='forumheader3'>".LWLAN_64."</td>
-  <td class='forumheader3'><input type='checkbox' name='lw_notsamepage' {$checked} />
+  <td>".LWLAN_64."</td>
+  <td><input type='checkbox' name='lw_notsamepage' {$checked} />
   </td>
-  <td class='forumheader3'>".LWLAN_65."</td>
+  <td>".LWLAN_65."</td>
   </tr>
 
-<tr>
-<td colspan='3' style='text-align:center' class='forumheader'>
-<input class='button' type='submit' name='saveopts_linkword' value='".LWLAN_30."' />
-</td>
-</tr>
 </table>
+<div class='buttons-bar center'>
+".$frm->admin_button('saveopts_linkword','no-value','submit',LWLAN_30)."
+</div>
 </form>
 </div>\n";
 

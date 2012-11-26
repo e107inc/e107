@@ -368,15 +368,15 @@ if ($action == "create") {
 	<form method='post' action='".e_SELF."'>
 		<fieldset id='core-banner-edit'>
 			<legend class='e-hideme'>".($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23)."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminedit'>
+			<table class='table adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
 					<tr>
-						<td class='label'>".BNRLAN_24."<div class='label-note'>".BNRLAN_25."</div></td>
-						<td class='control'>
+						<td>".BNRLAN_24."<div class='label-note'>".BNRLAN_25."</div></td>
+						<td>
 	";
 
 	if (count($campaigns)) {
@@ -414,8 +414,8 @@ if ($action == "create") {
 						</td>
 					</tr>
 					<tr>
-					<td class='label'>".BNRLAN_27."<div class='label-note'>".BNRLAN_28."</div></td>
-					<td class='control'>
+					<td>".BNRLAN_27."<div class='label-note'>".BNRLAN_28."</div></td>
+					<td>
 	";
 
 	if (count($clients)) {
@@ -488,20 +488,20 @@ if ($action == "create") {
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".BNRLAN_30."</td>
-						<td class='control'>
+						<td>".BNRLAN_30."</td>
+						<td>
 							<input class='tbox input-text' type='text' size='30' maxlength='20' id='clientlogin' name='client_login' value='".$_POST['client_login']."' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".BNRLAN_31."</td>
-						<td class='control'>
+						<td>".BNRLAN_31."</td>
+						<td>
 							<input class='tbox input-text' type='text' size='30' maxlength='50' id='clientpassword' name='client_password' value='".$_POST['client_password']."' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".BNRLAN_32."</td>
-						<td class='control'>
+						<td>".BNRLAN_32."</td>
+						<td>
 							<div class='field-spacer'>
 								<button class='action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
 							</div>
@@ -550,21 +550,21 @@ if ($action == "create") {
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".BNRLAN_33."</td>
-						<td class='control'>
+						<td>".BNRLAN_33."</td>
+						<td>
 							<input class='tbox input-text' type='text' size='50' maxlength='150' name='click_url' value='".$_POST['click_url']."' />
 						</td>
 					</tr>
 					<tr>
-						<td class='label'>".BNRLAN_34."</td>
-						<td class='control'>
+						<td>".BNRLAN_34."</td>
+						<td>
 							<input class='tbox input-text' type='text' size='10' maxlength='10' name='impressions_purchased' value='".$_POST['impressions_purchased']."' />
 							<div class='field-help'>0 = ".BNRLAN_35."</div>
 						</td>
 					</tr>
 					<tr>
-					<td class='label'>".BNRLAN_36."</td>
-					<td class='control'>
+					<td>".BNRLAN_36."</td>
+					<td>
 						<select name='startday' class='tbox'>
 							<option value='0'>&nbsp;</option>
 	";
@@ -595,8 +595,8 @@ if ($action == "create") {
 					</td>
 				</tr>
 				<tr>
-					<td class='label'>".BNRLAN_37."</td>
-					<td class='control'>
+					<td>".BNRLAN_37."</td>
+					<td>
 						<select name='endday' class='tbox'>
 							<option value='0'>&nbsp;</option>
 	";
@@ -624,8 +624,8 @@ if ($action == "create") {
 					</td>
 				</tr>
 				<tr>
-					<td class='label'>".MENLAN_4."</td>
-					<td class='control'>
+					<td>".MENLAN_4."</td>
+					<td>
 						".$e_userclass->uc_dropdown('banner_class', $_POST['banner_active'], 'public,member,guest,admin,classes,nobody,classes')."
 					</td>
 				</tr>
@@ -634,16 +634,16 @@ if ($action == "create") {
 			<div class='buttons-bar center'>
 
 	";
-	if 	($sub_action == "edit" && $id) {
-		$text .= "
-				<input type='hidden' name='eid' value='".$id."' />
-				<button class='update' type='submit' name='updatebanner' value='no-value'><span>".BNRLAN_40."</span></button>
-		";
-	} else {
-		$text .= "
-				<button class='create' type='submit' name='createbanner' value='no-value'><span>".BNRLAN_41."</span></button>
-		";
+	if 	($sub_action == "edit" && $id) 
+	{
+		$text .= $frm->admin_button('updatebanner','no-value','create',LAN_UPDATE);
+		$text .= "<input type='hidden' name='eid' value='".$id."' />";
+	} 
+	else 
+	{
+		$text .= $frm->admin_button('createbanner','no-value','create',LAN_CREATE);
 	}
+
 	$text .= "
 			</div>
 		</fieldset>
@@ -684,21 +684,21 @@ if ($action == "menu")
 		<form method='post' action='".e_SELF."?menu' id='menu_conf_form'>
 			<fieldset id='core-banner-menu'>
 				<legend class='e-hideme'>".BANNER_MENU_L5."</legend>
-				<table cellpadding='0' cellspacing='0' class='adminform'>
+				<table class='table adminform'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
 					</colgroup>
 					<tbody>
 						<tr>
-							<td class='label'>".BANNER_MENU_L3.": </td>
-							<td class='control'>
+							<td>".BANNER_MENU_L3.": </td>
+							<td>
 								<input class='tbox input-text' type='text' name='banner_caption' size='20' value='".$menu_pref['banner_caption']."' maxlength='100' />
 							</td>
 						</tr>
 						<tr>
-							<td class='label'>".BANNER_MENU_L6."</td>
-							<td class='control'>
+							<td>".BANNER_MENU_L6."</td>
+							<td>
 	";
 	//removed by SecretR; Reason - BAD UI, null usability
 	//".BANNER_MENU_L7."<br />
@@ -744,14 +744,14 @@ if ($action == "menu")
 							</td>
 						</tr>
 						<tr>
-							<td class='label'>".BANNER_MENU_L19."</td>
-							<td class='control'>
+							<td>".BANNER_MENU_L19."</td>
+							<td>
 								<input class='tbox input-text' type='text' name='banner_amount' size='10' value='".$menu_pref['banner_amount']."' maxlength='2' />
 							</td>
 						</tr>
 						<tr>
-							<td class='label'>".BANNER_MENU_L10."</td>
-							<td class='control'>
+							<td>".BANNER_MENU_L10."</td>
+							<td>
 								<select class='tbox select' id='banner_rendertype' name='banner_rendertype'>
 									".$frm->option(BANNER_MENU_L11, 0, (empty($menu_pref['banner_rendertype'])))."
 									".$frm->option("1 - ".BANNER_MENU_L12, 1, ($menu_pref['banner_rendertype'] == "1"))."
@@ -762,8 +762,8 @@ if ($action == "menu")
 						</tr>
 					</tbody>
 				</table>
-				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='update_menu' value='no-value'><span>".BANNER_MENU_L18."</span></button>
+				<div class='buttons-bar center'>".
+				$frm->admin_button('update_menu','no-value','update',LAN_SAVE)."
 				</div>
 			</fieldset>
 		</form>
@@ -869,13 +869,12 @@ if ($action == "menu")
 }
 
 
-function admin_banner_adminmenu() {
+function admin_banner_adminmenu() 
+{
 
-	global $action;
-	$act = $action;
-	if ($act == "") {
-		$act = "main";
-	}
+	$qry = e_QUERY;
+	$act = vartrue($qry,'main');
+	
 	$var['main']['text'] = BNRLAN_58;
 	$var['main']['link'] = e_SELF;
 

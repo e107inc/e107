@@ -1063,10 +1063,10 @@ class media_admin_ui extends e_admin_ui
 						
 			$text .= "<div style='text-align:right;padding:5px'>
 			
-			<button type='submit' class='submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<button type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>Save</span>
 			</button>
-			<button type='submit' class='submit e-dialog-close' name='cancel_image' value='Cancel' >
+			<button type='submit' class='btn submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>Cancel</span>
 			</button>
 			</div>";
