@@ -398,11 +398,12 @@ e107::getJs()->renderJs('header', 5);
  * TODO - remove it from here, should be registered to e_jsmanager
  * or better - moved to core init.js(.php)
  */
-
-e107::js('inline',"\$('e-js-css').remove();
+//\$('e-js-css').remove();
+e107::js('inline',"
 document.observe('dom:loaded', function () {
 e107Event.trigger('loaded', null, document);
-});",'prototype',5);
+});
+",'prototype',5);
 
 e107::getJs()->renderJs('header_inline', 5);
 

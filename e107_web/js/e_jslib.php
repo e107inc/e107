@@ -57,7 +57,7 @@ e_jslib_cache_out();
 $_E107['minimal'] = true;
 
 //call jslib handler, render content
-require_once ("../class2.php"); 
+require_once ("../../class2.php"); 
 //require_once (e_HANDLER.'jslib_handler.php');
 //$jslib = new e_jslib();
 $jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
@@ -224,7 +224,7 @@ function e_jslib_cache_path()
 	
 	if(null === $eJslibCacheDir)
 	{
-		include('../e107_config.php');
+		include('../../e107_config.php');
 	
 		if($CACHE_DIRECTORY)
 		{
