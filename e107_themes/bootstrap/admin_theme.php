@@ -9,7 +9,19 @@ define('STANDARDS_MODE', TRUE);
 e107::css('theme','css/bootstrap.css');
 e107::css('theme','css/bootstrap-responsive.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
-// e107::js("inline","$('.dropdown-toggle').dropdown();");
+/*
+$drop = "
+$(function() {
+	$('.navbar .dropdown').hover(function() {
+	$(this).find('.dropdown-menu').first().stop(true, true).slideDown()
+}, function() {
+	$(this).find('.dropdown-menu').first().stop(true, true).slideUp('fast')
+});
+});
+";
+
+ e107::js("inline",$drop);
+ */
 
 // e107::js("inline","$('.dropdown-toggle').toggle('slow');");
 

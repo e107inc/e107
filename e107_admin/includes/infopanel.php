@@ -229,7 +229,7 @@ function render_infopanel_options($render = false)
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
 	$start = "<div>
-	To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&iframe=1' class='e-modal-iframe'>click here</a>.
+	To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
 	</div>
     ";
     
