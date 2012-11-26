@@ -56,7 +56,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	$mainPanel = "
 	<div id='core-infopanel_mye107' >
 		<div>
-			<div class='left' style='padding:25px'>";
+			<div class='left' style='padding:32px'>";
 		// Rendering the saved configuration.
 		foreach ($iconlist as $key=>$val)
 		{
