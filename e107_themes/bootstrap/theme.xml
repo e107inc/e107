@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="bootstrap" version="1.0" date="2012-12-01" compatibility="0.8">
+	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<description>Bootstrap e107 admin theme</description>
+	<layouts>
+		<layout name='default' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' >
+		<custompages>usersettings.php</custompages>
+		</layout>
+	</layouts>
+</e107Theme>

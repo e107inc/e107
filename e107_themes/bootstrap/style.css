@@ -1,0 +1,175 @@
+
+/* E107 CORE CSS *********************************************************************************************/
+.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
+/*
+ * e107 v0.800 - new class definitions
+ */
+ 
+/* Core Formatting */
+.left		{ text-align: left }
+.right		{ text-align: right }
+.center		{ text-align: center }
+.f-left		{ float: left }
+.f-right	{ float: right }
+.top		{ vertical-align: top }
+.middle		{ vertical-align: middle }
+.bottom		{ vertical-align: bottom }
+.clear		{ clear: both }
+.clear-l	{ clear: right }
+.clear-r	{ clear: left }
+.smalltext	{ font-size: 11px; }
+.nowrap		{ white-space:nowrap; }
+
+/* Core Icons */
+img.icon		{ vertical-align: middle; border: 0 }
+img.icon.list	{ margin: 0px 5px 5px 0px }
+img.icon.action {  }
+img.S16		{ width: 16px; height: 16px }
+img.S32		{ width: 32px; height: 32px }
+img.S64		{ width: 64px; height: 64px }
+img.S128		{ width: 128px; height: 128px }
+/*******************************************************************************************************************/
+
+
+
+/* Lists */
+ul,ol       { list-style:none; }
+
+/* Tools */
+/*.no-display { display:none; }*/
+.no-margin  { margin:0 !important; }
+.no-padding { padding:0 !important; }
+.no-bg      { background:none !important; }
+.clear		{ clear: both; }
+
+pre {
+	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	/* width: 99%; */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+/********** Page Loading Status default style */
+#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; background-color: transparent; }
+#loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
+#loading-mask img { margin: 10px auto; }
+
+/********** Element Loading Status default style */
+.element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
+
+/********** Auto complete default style */
+div.e-autocomplete {
+  position:absolute;
+  width:250px;
+  background-color:white;
+  border:1px solid #c0c0c0;
+  margin:0;
+  padding:0;
+}
+div.e-autocomplete ul {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+  font-weight: bold; font-size: 11px
+}
+div.e-autocomplete ul li.selected { background-color: #f5f5f5;}
+div.e-autocomplete ul li {
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding: 5px;
+  cursor:pointer;
+
+}
+div.e-autocomplete ul li span.informal { font-weight: normal; font-size: 9px}
+
+/******** Tabs JS */
+ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
+ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
+.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+
+/********** Misc */
+.e-pointer { cursor: pointer; } /* Pointer Hand */
+.expand-container { padding: 10px; } /* Block with expandable items */
+.nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev navigation block */
+
+
+/******** SyS Messages / Message text formatting */
+/* message boxes */
+.s-message { }
+
+.s-message div.info,
+.s-message div.error,
+.s-message div.success,
+.s-message div.debug,
+.s-message div.warning { padding: 5px; margin-bottom: 10px; }
+
+
+.s-message div.info 	{ background-color:#C1E0FF; border: 1px solid #3399FF; }
+.s-message div.error 	{ background-color:#FFCECE; border: 1px solid #CC0000; }
+.s-message div.success  { background-color:#DFFFDF; border: 1px solid #009900; }
+.s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+.s-message div.debug 	{ background-color:#FFFFFF; border: 1px solid #EAEAEA; }
+
+.s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
+
+.s-message div.info 		.s-message-title 	{ background-image: url(images/messagebox_info.png); }
+.s-message div.error 		.s-message-title 	{ background-image: url(images/messagebox_critical.png); } 
+.s-message div.success 	.s-message-title 	{ background-image: url(images/ok.png); }
+.s-message div.warning 	.s-message-title	{ background-image: url(images/messagebox_warning.png); }
+.s-message div.debug 		.s-message-title	{ background-image: url(images/messagebox_info.png); }
+
+/* message text (overall) */
+.warning { color: #FF6600 }
+.success { color: green; }
+.error { color: #FF0000 }
+.info {}
+.required { color:red }
+
+/* THEME SPECIFIC CSS *********************************************************************************************/
+/******** Page Base */
+.wrapper { width: 100%; }
+.header { padding: 20px 15px 0; }
+.header-content { border: 1px solid #DDDDDD}
+.page-body { padding: 20px 15px 0; }
+.footer {}
+legend { font-size: 14px; font-weight: bold; padding: 5px; }
+
+/******** Block Elements */
+.block { border: 1px solid #DDDDDD; margin-bottom: 10px;}
+.block-text { padding: 10px 10px 10px; }
+.block h1.caption { padding: 5px 10px 5px; vertical-align: middle; }
+.block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
+
+/******** Horizontal navigation ADMIN_NAV_ALT */
+.navigation { border: 1px solid #DDDDDD;}
+
+/******** Layout */
+.main-table { width: 100%; border: 0 none; }
+.col-left { width: 220px; }
+.col-right { width: 220px;}
+.col-main { padding: 0 15px 0 15px;}
+.inner-wrapper { margin: 0 5px }
+
+/******** Horizontal navigation ADMIN_NAV_ALT */
+.navigation { border: 1px solid #DDDDDD;}
+
+/******** FEATUREBOX PLUGIN */
+#featurebox-ajax-container { display: block }
+#featurebox-ajax-container img { padding: 1px; margin: 5px; border: 1px solid #DDDDDD }
+
+div.featurebox-nav { text-align: right; margin-right: 5px }
+div.featurebox-nav a.featurebox-nav-link {  }
+div.featurebox-nav a.featurebox-nav-link.active,
+div.featurebox-nav a.featurebox-nav-link.active:hover { text-decoration: none; color: #000 }
+
+div.featurebox-nav a.featurebox-nav-next,
+div.featurebox-nav a.featurebox-nav-next:hover,
+div.featurebox-nav a.featurebox-nav-prev,
+div.featurebox-nav a.featurebox-nav-prev:hover { text-decoration: none; font-size: 16px }
+
+
