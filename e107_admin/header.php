@@ -568,10 +568,25 @@ if ($e107_popup != 1)
 		//	$temp = $tmpl['button'.$kpost];
 		//	echo "ap = ".$active_page;
 		//	echo " act = ".$act."<br /><br />";
-
+		
 			if($rid == 'adminhome')
 			{
 				$temp = $tmpl['button_other'.$kpost];	
+			}
+
+			if($rid == 'home')
+			{
+				$temp = $tmpl['button_home'.$kpost];	
+			}
+			
+			if($rid == 'language')
+			{
+				$temp = $tmpl['button_language'.$kpost];	
+			}
+			
+			if($rid == 'logout')
+			{
+				$temp = $tmpl['button_logout'.$kpost];	
 			}
 	
 
@@ -598,7 +613,7 @@ if ($e107_popup != 1)
 			$replace[8] = '';
 			$replace[9] = varset($e107_vars[$act]['image']);
 			
-			if($rid == 'logout' || $rid == 'home')
+			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
 				$START_SUB = $tmpl['start_other_sub'];
 			}

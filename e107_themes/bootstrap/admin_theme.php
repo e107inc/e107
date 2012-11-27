@@ -4,7 +4,7 @@ if ( ! defined('e107_INIT')) { exit(); }
 define('STANDARDS_MODE', TRUE);
 
 // include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
- e107::js('theme','js/bootstrap.js');
+e107::js('theme','js/bootstrap.js');
 e107::css('theme','css/bootstrap.css');
 e107::css('theme','css/bootstrap-responsive.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
