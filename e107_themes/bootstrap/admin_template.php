@@ -167,7 +167,7 @@ $ADMIN_FOOTER = '
 
       <hr>
 
-      <footer> 
+      <footer class="center"> 
 		Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
       </footer>
 
