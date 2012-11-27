@@ -45,9 +45,9 @@ define("TPVLAN_30", "Preload Theme Images:");
 define("TPVLAN_31", "This is the currently selected admin theme");
 define("TPVLAN_32", "Set As Admin Theme");
 
-define("TPVLAN_33", "Site Theme Configuration");
-define("TPVLAN_34", "Admin Theme Configuration");
-define("TPVLAN_35", "Save options");
+define("TPVLAN_33", "Site Theme"); // shorter is better
+define("TPVLAN_34", "Admin Theme"); // shorter is better. 
+define("TPVLAN_35", "Save options"); 
 define("TPVLAN_36", "Admin Message");
 define("TPVLAN_37", "Theme options saved");
 define("TPVLAN_38", "Upload Theme");
