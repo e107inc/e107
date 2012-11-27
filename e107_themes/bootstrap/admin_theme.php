@@ -2,6 +2,7 @@
 if ( ! defined('e107_INIT')) { exit(); }
 
 define('STANDARDS_MODE', TRUE);
+define("VIEWPORT","width=device-width, initial-scale=1.0");
 
 // include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 e107::js('theme','js/bootstrap.js');
@@ -158,7 +159,7 @@ function tablestyle($caption, $text, $mode)
 
 	case 'admin_menu' :
 		echo '
-				<div class="well sidebar-nav" style="padding:10px">  
+				<div class="well sidebar-nav" >  
 				<div class="nav-header">'.$caption.'</div>
 				'.$text.'
 			</div>
