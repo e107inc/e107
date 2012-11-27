@@ -2121,6 +2121,37 @@ class e107
 		self::includeLan($path, false);
 	}
 
+
+
+	/**
+	 * PREFERRED Generic Language File Loading Function for use by theme and plugin developers. 
+	 * Language-file equivalent to e107::js, e107::meta and e107::css
+	 * @param string $type : 'theme' or plugin name
+	 * @param $string $fname (optional): relative path to the theme or plugin language folder. (same as in the other functions)
+	 * when missing, [e_LANGUAGE].php will be used. 
+	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
+	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
+	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
+	 */
+	public static function lan($type,$fname = null,$options = null)
+	{
+		switch ($type)
+		{
+			case 'core' :
+				self::coreLan($name);//TODO include $options for admin. 
+				break;
+				break;
+			case 'theme' :
+				self::themeLan($fname, null);
+				break;
+			default :
+				self::plugLan($type,$fname, false);
+				break;
+		}	
+		
+	}
+
+
 	/**
 	 * Routine looks in standard paths for language files associated with a plugin or
 	 * theme - primarily for core routines, which won't know for sure where the author has put them.
@@ -2189,6 +2220,7 @@ class e107
 		}
 		return FALSE;		// Nothing found
 	}
+
 
 	/**
 	 * Prepare e107 environment
