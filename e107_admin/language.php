@@ -749,7 +749,10 @@ function available_langpacks()
 
 function language_adminmenu()
 {
-	global $action,$pref;
+	global $pref;
+	
+	$action = e_QUERY;
+	
 	if ($action == "")
 	{
 		$action = "main";
@@ -758,8 +761,10 @@ function language_adminmenu()
 	{
 		$action = "db";
 	}
+	
 	$var['main']['text'] = LAN_PREFS;
 	$var['main']['link'] = e_SELF;
+	
 	if (isset($pref['multilanguage']) && $pref['multilanguage'])
 	{
 		$var['db']['text'] = LANG_LAN_03;

@@ -1688,6 +1688,7 @@ function prefs_adminmenu()
 	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
 	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
+	
 	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 

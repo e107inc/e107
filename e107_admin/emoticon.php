@@ -234,7 +234,7 @@ class emotec
 								
 								
 						
-			$text .= $frm->admin_button('subPack_'.$pack,'edit','submit',EMOLAN_12);
+			$text .= $frm->admin_button('subPack_'.$pack,'edit','submit',LAN_CONFIGURE);
 			
 			if ($can_scan && ($pack != 'default'))
 			{

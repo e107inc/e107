@@ -6,8 +6,16 @@
 	padding:10px;
 }
 
+.navbar {
+	background-color: #081D28;
+}
+
 #core-infopanel_mye107 a {
 	
+}
+
+.tipsy-inner {
+	font-size:15px;
 }
       
 /* Core Formatting */
@@ -87,7 +95,16 @@ img.edit,
 img.delete, 
 input.delete 	{ }
 
-.buttons-bar { padding: 10px 0px; background-color: #d0fbfd; }
+.buttons-bar { padding: 10px 0px;  }
+
+ i.icon-chevron-right {
+	float:right; 
+	opacity: 0.3
+}
+
+a.link-active i {
+	opacity: 1.0;
+}
 /*******************************************************************************************************************/
 /* Admin List Table */ 
 .adminlist, .adminform { width:100%;  border:1px solid #ddd;}

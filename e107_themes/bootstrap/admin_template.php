@@ -52,7 +52,7 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 $E_ADMIN_NAVIGATION['button_other'] = '
 	<li>
 		<a  role="button" href="{LINK_URL}" >
-		<i class="icon-home icon-white"></i> {LINK_TEXT} 
+		{LINK_TEXT} 
 		</a> 
 	</li>
 ';
@@ -90,10 +90,8 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
    
 $ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
-          
-          
-          <a class="brand" href="#"><img src="'.e_IMAGE_ABS.'e107_icon_32.png" alt="e107" /> e107 Admin</a>
+        <div class="container-fluid">  
+          <a class="brand" href="'.e_ADMIN_ABS.'admin.php"><img src="'.THEME.'img/e107_adminlogo.png" alt="e107" /></a>
           <div class="nav-collapse collapse">
             <div class="dropdown nav pull-right navbar-text ">
             
@@ -170,7 +168,7 @@ $ADMIN_FOOTER = '
       <hr>
 
       <footer> 
-        {ADMIN_CREDITS}
+		Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
       </footer>
 
     </div><!--/.fluid-container-->';
@@ -273,13 +271,13 @@ $E_ADMIN_MENU['start'] = '
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
+		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="icon-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
 		{SUB_MENU}
 	</li>
 ';

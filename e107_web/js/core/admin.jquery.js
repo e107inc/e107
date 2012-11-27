@@ -102,6 +102,7 @@ $(document).ready(function()
 			$(id).show({
 				effect: "slide"
 				});
+				return false; //FIXME See admin/prefs navigation. 
 		}); 
 		
 		

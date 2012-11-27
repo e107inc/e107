@@ -1,249 +1,66 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $URL$
- * $Id$
- */
++ ----------------------------------------------------------------------------+
+|     e107 website system
+
+|     Copyright (C) 2008-2012 e107 Inc (e107.org)
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.7/e107_admin/credits.php $
+|     $Id: credits.php 12477 2011-12-28 03:12:22Z e107coders $
++----------------------------------------------------------------------------+
+*/
 
 require_once("../class2.php");
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+$css = "body 				{ text-align: left; font-size:13px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
+			p 					{ margin:0px 5px 10px 5px; }
+			h1					{ font-size:20px; color:#134B63; font-weight:normal; line-height:1em; margin:20px 0px 5px 0px; }
+			a					{ color:#F6931E; text-decoration:none; }
+			a:hover				{ color:#134B63; text-decoration:none; }
+			.bold				{ font-weight:bold; }
+			.center				{ text-align:center; }
+			.wrapper			{ width:800px; height:415px; margin:0px auto 0px 0px; padding-bottom:10px; background-color: #ebeef0; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; }
+			.wrapper-top		{ height:10px; }
+			.wrapper-bottom		{ height:6px; }
+			.wrapper-middle		{ min-height:389px; background-color:#FDFDFD0; }
+			.logo				{  }
+			.credits-content	{ padding:160px 20px 20px 20px; background:url(".e_IMAGE_ABS."admin_images/credits_logo.png) no-repeat 50% 30px; }
+        	.copyright			{ text-align:center; margin-top:30px}
+      ";
 
-$e_sub_cat = 'credits';
-include(e_ADMIN.'ver.php');
-
-
-$creditsArray = array(
-	array(	"name" => "MagpieRSS",
-				"url" => "http://magpierss.sourceforge.net/",
-				"description" => CRELAN_10,
-				"version" => "0.71.1",
-				"licence" => "GPL, ".CRELAN_8
-			),
-	array(	"name" => "PCLZip",
-				"url" => "http://www.phpconcept.net/pclzip/",
-				"description" => CRELAN_11,
-				"version" => "2.3",
-				"licence" => "GPL"
-			),
-	array(	"name" => "PCLTar",
-				"url" => "http://www.phpconcept.net/pcltar/",
-				"description" => CRELAN_12,
-				"version" => "1.3",
-				"licence" => "GPL"
-			),
-	array(	"name" => "TinyMCE",
-				"url" => "http://tinymce.moxiecode.com/",
-				"description" => CRELAN_13,
-				"version" => "2.08",
-				"licence" => "GPL"
-			),
-	array(	"name" => "Nuvolo Icons",
-				"url" => "http://www.icon-king.com",
-				"description" => CRELAN_14,
-				"version" => "1.0",
-				"licence" => "GPL"
-			),
-	array(	"name" => "PHPMailer",
-				"url" => "http://phpmailer.sourceforge.net/",
-				"description" => CRELAN_15,
-				"version" => "1.72",
-				"licence" => "GPL"
-			),
-	array(	"name" => "Brainjar DHTML Menu",
-				"url" => "http://www.brainjar.com/dhtml/menubar/",
-				"description" => CRELAN_16,
-				"version" => "0.1",
-				"licence" => "GPL, ".CRELAN_8
-			),
-	array(	"name" => "FPDF",
-				"url" => "http://www.fpdf.org/",
-				"description" => CRELAN_18,
-				"version" => "1.53",
-				"licence" => "Freeware"
-			),
-	array(	"name" => "UFPDF",
-				"url" => "http://www.acko.net/node/56",
-				"description" => CRELAN_19,
-				"version" => "0.1",
-				"licence" => "GPL"
-			),
-	);
-
-$contentA = array( // ORDER BY FirstName ASC ;)
-	"<h3>".CRELAN_6."<\/h3>",
-	"<h1>Cameron Hanly<\/h1>[ CaMer0n ]<br /><br /><br />".CRELAN_21,
-	"<h1>Carl Cedergren<\/h1>[ asperon ]<br /><br /><br />".CRELAN_20,
-	"<h1>Eric Vanderfeesten<\/h1> [ lisa ]<br /><br /><br />".CRELAN_23,
-	"<h1>James Currie<\/h1>[ SweetAs ]<br /><br /><br />".CRELAN_27,
-	"<h1>Martin Nicholls<\/h1>[ streaky ]<br /><br /><br />".CRELAN_26,
-	"<h1>Miroslav Yovchev<\/h1>[ SecretR ]<br /><br /><br />".defset('CRELAN_29'),
-	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28,
-	"<h1>Steve Dunstan<\/h1>[ jalist ]<br /><br /><br />".CRELAN_22,
-	"<h1>Steven Davies<\/h1>[ steved ]<br /><br /><br />".defset('CRELAN_30'),
-	"<h1>Thom Michelbrink<\/h1>[ McFly ]<br /><br /><br />".CRELAN_24,
-	"<h1>William Moffett<\/h1>[ que ]<br /><br /><br />".CRELAN_25,
-);
-
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-<html xmlns='http://www.w3.org/1999/xhtml'>
-<head>
-<title>".PAGE_NAME."</title>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-<meta http-equiv='content-style-type' content='text/css' />
-<link rel='stylesheet' href='".THEME."style.css' type='text/css' />
-</head>
-<body style='padding: 0; margin: 0; background-color: #e8e8e8; color: #8E8E8E'>
-
-<div><img src='".e_IMAGE."generic/cred.png' alt='' />
-<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>".CRELAN_7." ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2008, ".CRELAN_3."</div>
-
-";
+e107::css('inline',$css);
 
 
-$fadejs = "
-<script type='text/javascript'>
-<!--
-
-var delay = 2000;
-var maxsteps=30;
-var stepdelay=40;
-var startcolor= new Array(255,255,255);
-var endcolor=new Array(0,0,0);
-var fcontent=new Array();
-";
-
-if(e_QUERY && e_QUERY == "stps")
-{
-	$count=1;
-	$fadejs .= "fcontent[0] = '<br /><br />".CRELAN_2."';";
-	foreach($creditsArray as $credits)
-	{
-		extract($credits);
-		$fadejs .= "fcontent[$count] = '<br /><br /><h1>$name<\/h1>".CRELAN_7." $version<br /><br />$description<br /><br />[ <a href=\"$url\" rel=\"external\">$url<\/a> ]<br /><br />".CRELAN_9." - $licence';
-		";
-		$count++;
-	}
-}
-else
-{
-	$count=0;
-	foreach($contentA as $content)
-	{
-		$fadejs .= "fcontent[$count] = '<br /><br />$content';
-		";
-		$count++;
-	}
-}
-
-$fadejs .= <<<TEXT
-begintag='';
-closetag='';
+require_once(e_ADMIN."auth.php");
 
 
-var fadelinks=1;
+ $text ='<div class="wrapper">
+        	<div class="wrapper-middle">
+                <div class="credits-content">
+                    <h1>v2+ Developers</h1>
+                    <p>
+                        Cameron Hanly, Miroslav Yovchev, Steven Davies,<br />
+                        Henk Jongedijk, James Currie, Martin Nicholls,<br /> 
+                        Steven Davies, Thom Michelbrink
+                    </p>
+                    <h1>3rd Parties</h1>
+                    <p>
+                        Twitter Bootstrap, MagpieRSS, PCLZip, PCLTar, TinyMCE,<br />
+                        Nuvolo Icons, PHPMailer, FPDF, UFPDF, PHP UTF8
+                    </p>
+                    <div class="copyright">Copyright <a href="http://e107.org/content/About-Us:The-Team" title="e107 Team">e107 Inc.</a> 2008-2012</div>
+                </div>
+            </div>
+        	
+		</div>';
 
-var fwidth='95%';
-var fheight='220px;'
+$ns->tablerender("",$text);
 
-///No need to edit below this line/////////////////
+require_once(e_ADMIN."footer.php");
 
-var ie4=document.all&&!document.getElementById;
-var DOM2=document.getElementById;
-var faderdelay=0;
-var index=0;
+exit;
 
-/*Rafael Raposo edited function*/
-//function to change content
-function changecontent(){
-  if (index>=fcontent.length)
-    index=0
-  if (DOM2){
-    document.getElementById("fscroller").style.color="rgb("+startcolor[0]+", "+startcolor[1]+", "+startcolor[2]+")"
-    document.getElementById("fscroller").innerHTML=begintag+fcontent[index]+closetag
-    if (fadelinks)
-      linkcolorchange(1);
-    colorfade(1, 15);
-  }
-  else if (ie4)
-    document.all.fscroller.innerHTML=begintag+fcontent[index]+closetag;
-  index++
-}
-
-// colorfade() partially by Marcio Galli for Netscape Communications.  ////////////
-// Modified by Dynamicdrive.com
-
-function linkcolorchange(step){
-  var obj=document.getElementById("fscroller").getElementsByTagName("A");
-  if (obj.length>0){
-    for (i=0;i<obj.length;i++)
-      obj[i].style.color=getstepcolor(step);
-  }
-}
-
-/*Rafael Raposo edited function*/
-var fadecounter;
-function colorfade(step) {
-  if(step<=maxsteps) {
-    document.getElementById("fscroller").style.color=getstepcolor(step);
-    if (fadelinks)
-      linkcolorchange(step);
-    step++;
-    fadecounter=setTimeout("colorfade("+step+")",stepdelay);
-  }else{
-    clearTimeout(fadecounter);
-    document.getElementById("fscroller").style.color="rgb("+endcolor[0]+", "+endcolor[1]+", "+endcolor[2]+")";
-    setTimeout("changecontent()", delay);
-
-  }
-}
-
-/*Rafael Raposo's new function*/
-function getstepcolor(step) {
-  var diff
-  var newcolor=new Array(3);
-  for(var i=0;i<3;i++) {
-    diff = (startcolor[i]-endcolor[i]);
-    if(diff > 0) {
-      newcolor[i] = startcolor[i]-(Math.round((diff/maxsteps))*step);
-    } else {
-      newcolor[i] = startcolor[i]+(Math.round((Math.abs(diff)/maxsteps))*step);
-    }
-  }
-  return ("rgb(" + newcolor[0] + ", " + newcolor[1] + ", " + newcolor[2] + ")");
-}
-
-if (ie4||DOM2)
-  document.write('<div id="fscroller" style="text-align: center; width:'+fwidth+';height:'+fheight+'"><\/div>');
-
-if (window.addEventListener)
-window.addEventListener("load", changecontent, false)
-else if (window.attachEvent)
-window.attachEvent("onload", changecontent)
-else if (document.getElementById)
-window.onload=changecontent;
-//-->
-</script>
-
-TEXT;
-
-echo $fadejs;
-
-echo "
-<div style='text-align: center; margin-left: auto; margin-right: auto;'>
-<form method='get' action=''><div>".
-(e_QUERY && e_QUERY == "stps" ? "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php'\" value='".CRELAN_4."' />" : "<input class='tbox' type='button' onclick=\"self.parent.location='".e_ADMIN."credits.php?stps'\" value='".CRELAN_5."' />")."</div>
-</form>
-</div>
-
-</div>
-</body>
-</html>
-";
+?>

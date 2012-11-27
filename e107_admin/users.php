@@ -3134,15 +3134,13 @@ function showRanks()
 		<td><input class='tbox e-spinner' type='text' size='5' name='new_calc_lower' value='' /></td>
 		<td><input type='checkbox' name='new_calc_pfx' value='1' /></td>
 		<td>".RankImageDropdown($imageList,'new_calc_img')."</td>
-	</tr>
-	<tr>
-		<td colspan='5' style='text-align:center'>
-			<br />
-			<input type='submit' name='updateRanks' value='".USRLAN_215."' />
-		</td>
-	</tr>
-	";
-	$text .= '</table></form>';
+	</tr>";
+	
+	$text .= '</table>
+	<div class="buttons-bar center">
+	'.$frm->admin_button('updateRanks','no-value','submit',USRLAN_215).'
+	</div>
+	</form>';
 	
 	echo $emessage->render().$text;
 
