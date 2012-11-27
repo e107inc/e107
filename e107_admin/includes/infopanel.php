@@ -222,25 +222,32 @@ function render_infopanel_options($render = false)
 	// $frm = e107::getSingleton('e_form');
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
+	$ns = e107::getRender();
+	
 	$start = "<div>
 	To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
 	</div>
     ";
     
-    if($render == false){ return $start; }
+    if($render == false){ return ""; }
     
 	$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
-    <form method='post' 'id='e-modal-form' action='".e_SELF."?".e_QUERY."'>
-    <h2>Icons</h2>";
-	$text2 .= render_infopanel_icons();
+    <form method='post' id='e-modal-form' action='".e_SELF."'>";
+    
+	$text2 .= $ns->tablerender("Personalize Icons",render_infopanel_icons(),'personalize',true); 
 	$text2 .= "<div class='clear'>&nbsp;</div>";
-	$text2 .= "<h2>Menus</h2>";
-	$text2 .= render_infopanel_menu_options();
+	$text2 .= $ns->tablerender("Personalize Menus",render_infopanel_menu_options(),'personalize',true); 
+//	$text2 .= render_infopanel_icons();
+	//$text2 .= "<div class='clear'>&nbsp;</div>";
+//	$text2 .= "<h3>Menus</h3>";
+//	$text2 .= render_infopanel_menu_options();
 	$text2 .= "<div class='clear'>&nbsp;</div>";
 	$text2 .= "<div id='button' class='buttons-bar center'>";
-	$text2 .= $frm->admin_button('submit-mye107', 'Save', 'Save');
-	$text2 .= "</div></form></div>";
-	$end = "</div>";
+	$text2 .= $frm->admin_button('submit-mye107', 'Save', 'create');
+	$text2 .= "</div></form>";
+//	$text2 .= "</div>";
+	
+//	$end = "</div>";
 		
 	
 	return $mes->render().$text2.$end;
@@ -276,6 +283,7 @@ function render_infopanel_icons()
 			}
 		}
 	}
+	$text .= "<div class='clear'>&nbsp;</div>";
 	return $text;
 }
 
@@ -308,6 +316,7 @@ function render_infopanel_menu_options()
 			}
 		}
 	}
+	$text .= "<div class='clear'>&nbsp;</div>";
 	return $text;
 }
 ?>

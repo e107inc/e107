@@ -179,7 +179,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 		else
 		{
 
-			if($mode != "div")
+			if($mode != "div" && $mode != 'div-icon-only')
 			{
 				if ($td == (ADLINK_COLS+1))
 				{

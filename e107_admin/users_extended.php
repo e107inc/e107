@@ -34,15 +34,20 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'user_extended';
 
 $curtype = '1';
-require_once(e_HANDLER.'message_handler.php');
-
 require_once("auth.php");
-require_once(e_HANDLER.'user_extended_class.php');
-require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'message_handler.php');
+$ue = new e107_user_extended;
+$user = new users_ext;
 
 $frm = e107::getForm();
 
-$ue = new e107_user_extended;
+
+require_once(e_HANDLER.'user_extended_class.php');
+require_once(e_HANDLER.'userclass_class.php');
+
+
+
+
 
 
 $message = '';
@@ -123,7 +128,7 @@ if (isset($_POST['catdown_x']) || isset($_POST['catdown']))
 	}
 }
 
-$user = new users_ext;
+
 
 if (isset($_POST['add_field']))
 {
@@ -1212,7 +1217,11 @@ class users_ext
 
 	function users_extended_adminmenu() {
 		global $user, $action, $ns, $curtype, $action;
-		$user->show_options($action);
+		// $user->show_options($action);
+		$ac = e_QUERY;
+		$action = vartrue($ac,'main');
+		
+		users_ext::show_options($action);
 		if($action == 'editext' || $action == 'continue')
 		{
 			$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");

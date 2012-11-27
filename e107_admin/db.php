@@ -75,6 +75,8 @@ if(isset($_POST['exportXmlFile']))
 
 }
 
+
+
 require_once ("auth.php");
 
 $st = new system_tools;
@@ -956,9 +958,10 @@ class system_tools
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
 
-function db_adminmenu()
+function db_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
 {
 	global $st;
+
 
 	foreach($st->_options as $key=>$val)
 	{

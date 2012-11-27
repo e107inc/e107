@@ -1443,14 +1443,7 @@ class admin_shortcodes
 		}
 		elseif($type == 'logout')
 		{
-			$tmp[0]['text'] = ADLAN_46;
-			$tmp[0]['description'] = ADLAN_151;
-			$tmp[0]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[0]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[0]['image_large'] = '';
-			$tmp[0]['image_src'] = '';
-			$tmp[0]['image_large_src'] = '';
-			$tmp[0]['perm'] = '';
+			$tmp = array();
 			
 			$tmp[1]['text'] = ADLAN_CL_1;
 			$tmp[1]['description'] = ADLAN_151;
@@ -1461,6 +1454,25 @@ class admin_shortcodes
 			$tmp[1]['image_large_src'] = '';
 			$tmp[1]['perm'] = '';	
 			
+						
+			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
+			$tmp[2]['description'] = "Customize administration panels";
+			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
+			$tmp[2]['image'] = E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[2]['image_large'] = '';
+			$tmp[2]['image_src'] = '';
+			$tmp[2]['image_large_src'] = '';
+			$tmp[2]['perm'] = '';	
+			
+			
+			$tmp[3]['text'] = ADLAN_46;
+			$tmp[3]['description'] = ADLAN_151;
+			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[3]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[3]['image_large'] = '';
+			$tmp[3]['image_src'] = '';
+			$tmp[3]['image_large_src'] = '';
+			$tmp[3]['perm'] = '';
 				
 			$menu_vars['logout']['text'] = ADMINNAME;
 			$menu_vars['logout']['link'] = '#';

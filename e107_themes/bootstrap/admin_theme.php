@@ -4,7 +4,6 @@ if ( ! defined('e107_INIT')) { exit(); }
 define('STANDARDS_MODE', TRUE);
 
 // include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
-
  e107::js('theme','js/bootstrap.js');
 e107::css('theme','css/bootstrap.css');
 e107::css('theme','css/bootstrap-responsive.css');
@@ -124,6 +123,19 @@ function tablestyle($caption, $text, $mode)
 		';
 		return;
 	}	
+
+	if($mode == 'personalize')
+	{
+		echo '<div class="well" style="padding:10px">  
+				<div class="nav-header">'.$caption.'</div>
+				'.$text.'
+			</div>';
+			
+		return;
+	}
+	
+
+
 	
 	if($style == 'core-infopanel')
 	{
@@ -137,7 +149,6 @@ function tablestyle($caption, $text, $mode)
 	}
 	
 
-	
 	
 	
 	
