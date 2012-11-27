@@ -67,7 +67,7 @@ class news_admin extends e_admin_dispatcher
 		'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Create Category. 
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => '7'), // Category List
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'), // Preferences
-		'main/submitted'	=> array('caption'=> "Old Submitted ", 'perm' => 'N'), // Submitted News
+	//	'main/submitted'	=> array('caption'=> "Old Submitted ", 'perm' => 'N'), // Submitted News
 		'sub/list'			=> array('caption'=> NWSLAN_47, 'perm' => 'N'), // Submitted News
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
@@ -744,7 +744,7 @@ class admin_newspost
 
 	public $error = false;
 
-	function __construct($qry, $pstobj)
+	function __construct($qry='', $pstobj='')
 	{
 		global $user_pref;
 		
@@ -2283,7 +2283,7 @@ class admin_newspost
 					</table>
 				</fieldset>
 				<div class='buttons-bar center'>
-					".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'submit')."
+					".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
 					".$frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
 					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay'])).$frm->label(LAN_NEWS_54, 'create_edit_stay', 1)."
 					<input type='hidden' name='news_id' value='{$id}' />
