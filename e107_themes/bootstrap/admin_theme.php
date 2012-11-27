@@ -4,7 +4,7 @@ if ( ! defined('e107_INIT')) { exit(); }
 define('STANDARDS_MODE', TRUE);
 define("VIEWPORT","width=device-width, initial-scale=1.0");
 
-// include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
+e107::lan('theme');
 e107::js('theme','js/bootstrap.js');
 e107::css('theme','css/bootstrap.css');
 e107::css('theme','css/bootstrap-responsive.css');
