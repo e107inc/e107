@@ -500,7 +500,7 @@ class page_admin_ui extends e_admin_ui
 				<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
 					<fieldset id='core-cpage-create-general'>
 						<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
-						<table class='adminedit'>
+						<table class='table adminform'>
 							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />

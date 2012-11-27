@@ -962,7 +962,7 @@ class media_admin_ui extends e_admin_ui
 			</ul>
 			<fieldset id='core-media-select'>
 			<legend>Library</legend>
-			<table class='adminedit'>
+			<table class='table adminform'>
 			<tbody><tr><td>
 			";
 			
@@ -1007,7 +1007,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			$text .= "<fieldset id='core-media-style'>
 				<legend>Appearance</legend>
-				<table class='adminedit'>
+				<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
