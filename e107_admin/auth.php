@@ -137,7 +137,7 @@ else
 		
 		e107::css('inline',"
 		
-			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#134B63 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 10px; }
+			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#081D28 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 10px; }
 			a					{ 	color:#F6931E; text-decoration:none; }
 			a:hover				{ 	color:silver; text-decoration:none; }
 			.bold				{ 	font-weight:bold; }
@@ -274,7 +274,7 @@ class auth
 		</div>
 		</form>";
 		    
-		e107::getRender()->tablerender(ADLAN_92, $text, 'admin-login');
+		e107::getRender()->tablerender("", $text, 'admin-login');
 		echo "<div class='center' style='margin-top:30%; color:silver'><span style='padding:0 40px 0 40px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>";
 	}
 
