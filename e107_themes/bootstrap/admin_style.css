@@ -34,6 +34,13 @@ td.center, th.center { text-align:center }
 
 .sidebar-nav 	{ padding: 9px 0; font-size:11px; min-width:150px; }
 
+a.brand:hover img {
+	filter: blur(13px); 
+	-webkit-filter: blur(13px); 
+	-moz-filter: blur(13px);
+	-o-filter: blur(13px); 
+	-ms-filter: blur(13px);
+}
 
 @media (min-width: 1300px) { 
 	
