@@ -123,7 +123,12 @@ a.dropdown-toggle:hover i  {
 	opacity: 1.0	
 }
 
-
+a.dropdown-toggle {
+	-webkit-transition:color .20s ease-in;  
+	-moz-transition:color .20s ease-in;  
+	-o-transition:color .20s ease-in;  
+	transition:color .20s ease-in;  	
+}
 
 
 /*******************************************************************************************************************/
