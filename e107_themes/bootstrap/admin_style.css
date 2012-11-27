@@ -1,38 +1,28 @@
- body {
-        padding-top: 75px;
-        padding-bottom: 40px;
-      }
-.well {
-	padding:10px;
-}
-
-.navbar {
-	background-color: #081D28;
-}
+ body 			{ padding-top: 75px; padding-bottom: 40px; }
+      	
+.well 			{ padding:10px; }
+.navbar 		{ background-color: #081D28; }
 
 #core-infopanel_mye107 a {
 	
 }
 
-.tipsy-inner {
-	padding:10px;
-	font-size:15px;
-}
+.tipsy-inner 	{ padding:10px; font-size:15px; }
       
 /* Core Formatting */
-.left		{ text-align: left }
-.right		{ text-align: right }
-.center		{ text-align: center }
-.f-left		{ float: left }
-.f-right	{ float: right }
-.top		{ vertical-align: top }
-.middle		{ vertical-align: middle }
-.bottom		{ vertical-align: bottom }
-.clear		{ clear: both }
-.clear-l	{ clear: right }
-.clear-r	{ clear: left }
-.smalltext	{ font-size: 11px; }
-.nowrap		{ white-space:nowrap; }
+.left			{ text-align: left }
+.right			{ text-align: right }
+.center			{ text-align: center }
+.f-left			{ float: left }
+.f-right		{ float: right }
+.top			{ vertical-align: top }
+.middle			{ vertical-align: middle }
+.bottom			{ vertical-align: bottom }
+.clear			{ clear: both }
+.clear-l		{ clear: right }
+.clear-r		{ clear: left }
+.smalltext		{ font-size: 11px; }
+.nowrap			{ white-space:nowrap; }
 
 
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
@@ -40,17 +30,24 @@
 
 td.center, th.center { text-align:center }
 
-.col-label {
-	width:30%;
-}
+.col-label 		{ width:30%; }
 
-.sidebar-nav {
-	padding: 9px 0;
-}
+.sidebar-nav 	{ padding: 9px 0; font-size:11px; min-width:150px; }
+
+
+@media (min-width: 1300px) { 
+	
+.sidebar-nav 	{ font-size:12px; }
+
+} 
+ 
+@media (min-width: 1500px) { 
+	
+.sidebar-nav 	{ font-size:15px; }
+
+} 
       
-.nav-collapse {
-	margin-top:8px;	
-}
+.nav-collapse 	{ margin-top:8px; }
 
 .dropdown-menu img { padding: 0px 0px; margin-right: 10px; }
 
@@ -83,6 +80,7 @@ label {
 	margin-left:5px;
 	margin-right:10px;
 	display: inline;
+	vertical-align:bottom;
 }
 
 /* Core Icons & Image Buttons */
@@ -130,6 +128,13 @@ a.dropdown-toggle {
 	transition:color .20s ease-in-out;	
 }
 
+img.S32 {
+
+	
+}
+img.S32:hover {
+
+}
 
 /*******************************************************************************************************************/
 /* Admin List Table */ 
