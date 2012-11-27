@@ -254,11 +254,12 @@ if ($action == "opt") {
 
 }
 
-function wmessage_adminmenu() {
-	global $action;
-	if ($action == "") {
-		$action = "main";
-	}
+function wmessage_adminmenu() 
+{
+
+	$act = e_QUERY;
+	$action = vartrue($act,'main');
+	
 	$var['main']['text'] = WMLAN_00;
 	$var['main']['link'] = e_SELF;
 	$var['create']['text'] = WMLAN_01;

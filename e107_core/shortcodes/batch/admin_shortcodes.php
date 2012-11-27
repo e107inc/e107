@@ -315,7 +315,7 @@ class admin_shortcodes
 					$active_uploads = $sql -> db_Count('upload', '(*)', 'WHERE upload_active = 0');
 					$submitted_news = $sql -> db_Count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
 
-					$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
+					$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : ' '.ADLAN_LAT_7.': '.$active_uploads).'</div>';
 
 					if(vartrue($pref['e_latest_list']))
@@ -815,6 +815,17 @@ class admin_shortcodes
 			$obj = e107::getDateConvert();
 			$install_date = $obj->convert_date($pref['install_date'], 'long');
 			
+			if(is_readable(THEME."theme.xml"))
+			{
+				$xml = e107::getXml();
+				$data = $xml->loadXMLfile(THEME."theme.xml",true);
+			
+				$themename = $data['@attributes']['name'];
+				$themeversion = $data['@attributes']['version'];
+				$themedate = $data['@attributes']['date'];
+				$themeauthor = $data['author']['@attributes']['name'];			
+			}
+			
 			$text = "<b>".FOOTLAN_1."</b>
 			<br />".
 			SITENAME."
@@ -886,7 +897,7 @@ class admin_shortcodes
 					$comments = $sql -> db_Count('comments');
 
 
-					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?filter=unverified'>".ADLAN_111."</a>" : ADLAN_111);
+					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'>".ADLAN_111."</a>" : ADLAN_111);
 
 					$text = "
 					<div class='left'>
@@ -1223,12 +1234,15 @@ class admin_shortcodes
 		}
 
 		// MAIN LINK
-		$menu_vars = array();
-		$menu_vars['adminhome']['text'] = ADLAN_151;
-		$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
-		$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-		$menu_vars['adminhome']['image_src'] = ADLAN_151;
-		$menu_vars['adminhome']['perm'] = '';
+		if($parm != 'no-main')
+		{
+			$menu_vars = array();
+			$menu_vars['adminhome']['text'] = ADLAN_151;
+			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
+			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['adminhome']['image_src'] = ADLAN_151;
+			$menu_vars['adminhome']['perm'] = '';
+		}
 
 		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
 
