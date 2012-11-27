@@ -152,7 +152,7 @@ else // XHTML
 	echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 	echo "<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
 }
-
+echo (defined("VIEWPORT")) ? "<meta name=\"viewport\" content=\"".VIEWPORT."\" />\n" : "";
 
 echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_head_4." :: ".SITENAME."</title>\n";
 
@@ -663,6 +663,7 @@ if ($e107_popup != 1)
 			
 			return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
 
+			/*
 			global $ns,$BUTTON,$BUTTON_OVER,$BUTTONS_START,$BUTTONS_END,$SUB_BUTTON,$SUB_BUTTON_OVER,$SUB_BUTTONS_START,$SUB_BUTTONS_END;
 
 			$id_title = "yop_".str_replace(" ", "", $title);
@@ -782,8 +783,14 @@ if ($e107_popup != 1)
 			{
 				$ns->tablerender($title, $text, array('id'=>$id_title, 'style'=>'button_menu'));
 			}
+		*/
 		}
 	}
+
+
+
+
+
 
 	if (file_exists(THEME.'admin_template.php'))
 	{

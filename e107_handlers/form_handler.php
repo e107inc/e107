@@ -851,7 +851,7 @@ class e_form
 	{
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
-		$options['class'] = 'inline';
+		// $options['class'] = 'inline';	
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 
 	}
@@ -899,7 +899,7 @@ class e_form
 	function label($text, $name = '', $value = '')
 	{
 		$for_id = $this->_format_id('', $name, $value, 'for');
-		return "<label$for_id class='e-tip inline'>{$text}</label>";
+		return "<label$for_id class='e-tip '>{$text}</label>";
 	}
 	
 	function help($text)
@@ -1354,7 +1354,7 @@ class e_form
 				break;
 
 			case 'radio':
-				$def_options['class'] = 'radio';
+				$def_options['class'] = 'radio inline';
 				unset($def_options['size'], $def_options['selected']);
 				break;
 
