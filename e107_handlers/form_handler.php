@@ -1120,6 +1120,7 @@ class e_form
 				$options['class'] .= 'btn-success';
 			break;
 
+			case 'login':
 			case 'batch':
 			case 'batch e-hide-if-js': // FIXME hide-js shouldn't be here. 
 				$options['class'] .= 'btn-primary';

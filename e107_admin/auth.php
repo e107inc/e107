@@ -262,7 +262,7 @@ class auth
 		}
 			    
 		    $text .= "<div class='admin-submit'>"
-		       	.$frm->admin_button('authsubmit',ADLAN_91);				
+		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');				
 				
 			if (e107::getSession()->is('challenge') && varset($pref['password_CHAP'], 0))
 			{
