@@ -41,13 +41,57 @@ $E_ADMIN_NAVIGATION['button'] = '
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		{LINK_TEXT}
+		 {LINK_IMAGE} {LINK_TEXT}
 		<b class="caret"></b>
 		</a>
 		{SUB_MENU}
 	</li>
 ';
 
+
+// Leave Admin Area. 
+$E_ADMIN_NAVIGATION['button_home'] = '
+	<li class="dropdown">
+		<a class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 {LINK_IMAGE} {LINK_TEXT} 
+		<b class="caret"></b>
+		</a> 
+		{SUB_MENU}
+	</li>
+';
+
+// Change Language
+$E_ADMIN_NAVIGATION['button_language'] = '
+	<li class="dropdown">
+		<a class="dropdown-toggle" title="Change Language" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 {LINK_IMAGE} {LINK_TEXT} 
+		<b class="caret"></b>
+		</a> 
+		{SUB_MENU}
+	</li>
+';
+
+			$str = str_replace('.', '', ADMINPERMS);
+			
+			if ($str == '0')
+			{
+				$label = ADLAN_48.': '.ADMINNAME.' ('.ADLAN_49.') ';
+			}
+			else
+			{
+				$label = ADLAN_48.': '.ADMINNAME.' ';
+			}	
+
+// Logout / Settings / Personalize 			
+$E_ADMIN_NAVIGATION['button_logout'] = '
+	<li class="dropdown">
+		<a class="dropdown-toggle" title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 {LINK_IMAGE} {LINK_TEXT} 
+		<b class="caret"></b>
+		</a> 
+		{SUB_MENU}
+	</li>
+';
 
 $E_ADMIN_NAVIGATION['button_other'] = '
 	<li>

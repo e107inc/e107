@@ -38,7 +38,7 @@
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
 .core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
 
-td.center { text-align:center }
+td.center, th.center { text-align:center }
 
 .col-label {
 	width:30%;
@@ -59,7 +59,10 @@ td.center { text-align:center }
     filter: gray; /* IE6-9 */
     -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
+
 }
+
+
 
 .dropdown-menu a:hover {
 	filter: none;
@@ -106,6 +109,23 @@ input.delete 	{ }
 a.link-active i {
 	opacity: 1.0;
 }
+
+a.dropdown-toggle i {
+
+	transition: opacity .20s ease-in-out;
+	-moz-transition: opacity .20s ease-in-out;
+	-webkit-transition: opacity .20s ease-in-out;
+
+	opacity: 0.3	
+}
+
+a.dropdown-toggle:hover i  {
+	opacity: 1.0	
+}
+
+
+
+
 /*******************************************************************************************************************/
 /* Admin List Table */ 
 .adminlist, .adminform { width:100%;  border:1px solid #ddd;}

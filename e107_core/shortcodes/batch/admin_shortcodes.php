@@ -1407,9 +1407,9 @@ class admin_shortcodes
 		if($type == 'home')
 		{
 		
-			$menu_vars['home']['text'] = ADLAN_53;
+			$menu_vars['home']['text'] =  ""; // ADLAN_53;
 			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['home']['image'] = "<i class='icon-home icon-white'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['home']['image_src'] = ADLAN_151;
 			$menu_vars['home']['perm'] = '';
 			$menu_vars['home']['sort'] = 1;
@@ -1474,9 +1474,14 @@ class admin_shortcodes
 			$tmp[3]['image_large_src'] = '';
 			$tmp[3]['perm'] = '';
 				
-			$menu_vars['logout']['text'] = ADMINNAME;
+				
+
+				
+				
+				
+			$menu_vars['logout']['text'] = ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image'] = "<i class='icon-user icon-white'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = ADLAN_46;
 			$menu_vars['logout']['perm'] = '';	
 			$menu_vars['logout']['sub'] = $tmp;	
@@ -1487,11 +1492,13 @@ class admin_shortcodes
 			$languages = array('English','French');
 			$c = 0;
 			foreach($languages as $lng)
-			{
+			{			
+				$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-black'></i> " : "&nbsp;";
+				
 				$tmp[$c]['text'] = $lng." (TO DO)";
 				$tmp[$c]['description'] = '';
 				$tmp[$c]['link'] = '#';
-				$tmp[$c]['image'] = ""; // TODO Flag icons. 
+				$tmp[$c]['image'] = $checked; 
 				$tmp[$c]['image_large'] = '';
 				$tmp[$c]['image_src'] = '';
 				$tmp[$c]['image_large_src'] = '';
@@ -1499,9 +1506,9 @@ class admin_shortcodes
 				$c++;		
 			}
 			
-			$menu_vars['language']['text'] = e_LANGUAGE;
+			$menu_vars['language']['text'] = ""; // e_LANGUAGE;
 			$menu_vars['language']['link'] = '#';
-			$menu_vars['language']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['language']['image'] = "<i class='icon-globe icon-white'></i>" ;
 			$menu_vars['language']['image_src'] = ADLAN_46;
 			$menu_vars['language']['perm'] = '';	
 			$menu_vars['language']['sub'] = $tmp;		
