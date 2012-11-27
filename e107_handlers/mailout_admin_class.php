@@ -489,13 +489,13 @@ class mailoutAdminClass extends e107MailManager
 			if ($m->mailerEnabled)
 			{
 				$tab .= "<li id='tab-main_".$key."'><a href='#main-mail-".$key."'>".$m->mailerName."</a></li>";
-				$tabc .= "<div id='main-mail-".$key."'>";
+				$tabc .= "<div id='main-mail-".$key."' style='padding:0px;border-collapse:collapse;'>";
 				
 				$content = $m->showSelect(TRUE, varset($selectorInfo[$key], FALSE));
 				
 				if(is_array($content))
 				{
-					$tabc .= "<table class='adminform' style='width:100%;margin-left:0px'>
+					$tabc .= "<table class='table adminform' style='width:100%;margin-left:0px'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -791,7 +791,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "<div>
 			<form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>
 			".$this->emailSelector('all', varset($mailSource['mail_selectors'], FALSE))."
-			<table class='adminform'>
+			<table class='table adminform'>
 			<colgroup>
 				<col class='col-label' />
 				<col class='col-control' />
@@ -865,7 +865,8 @@ class mailoutAdminClass extends e107MailManager
 
 			
 		}
-
+		// TODO File-Picker from Media-Manager. 
+		
 
 		$text .= "
 			<tr>
@@ -891,8 +892,8 @@ class mailoutAdminClass extends e107MailManager
 		$text .="
 		</td></tr>\n
 			<tr>
-			<td>&nbsp;</td>
-			<td>".$frm->bbarea('email_body',$email_body,'mailout','helpb')."</td>
+			
+			<td colspan='2'>".$frm->bbarea('email_body',$email_body,'mailout','helpb')."</td>
 			</tr>";
 
 		$text .="
@@ -904,10 +905,10 @@ class mailoutAdminClass extends e107MailManager
 
 		if(e_WYSIWYG) 
 		{
-			$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
-			<input type='button' class='button' name='usrlink' value=\"".LAN_MAILOUT_14."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|DISPLAYNAME|')\" />
-			<input type='button' class='button' name='usrlink' value=\"".LAN_MAILOUT_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
-			<input type='button' class='button' name='usrid' value=\"".LAN_MAILOUT_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
+			$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='btn button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
+			<input type='button' class='btn button' name='usrlink' value=\"".LAN_MAILOUT_14."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|DISPLAYNAME|')\" />
+			<input type='button' class='btn button' name='usrlink' value=\"".LAN_MAILOUT_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
+			<input type='button' class='btn button' name='usrid' value=\"".LAN_MAILOUT_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
 		}
 
 		$text .="
@@ -927,7 +928,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 		else
 		{
-			$text .= $frm->admin_button('save_email',LAN_SAVE);
+			$text .= $frm->admin_button('save_email',LAN_SAVE,'other');
 		}
 	
 		

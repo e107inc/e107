@@ -766,7 +766,7 @@ function show_prefs($mailAdmin)
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
 		<fieldset id='mail'>
 		<legend>".LAN_MAILOUT_110."</legend>
-		<table class='adminedit'>
+		<table class='table adminform'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -774,7 +774,7 @@ function show_prefs($mailAdmin)
 		<tbody>
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
-			<td>".$frm->admin_button('testemail', LAN_MAILOUT_112)."&nbsp;
+			<td>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
 			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 			</td>
 		</tr>
@@ -930,7 +930,7 @@ function show_prefs($mailAdmin)
 	$text .= "</table></fieldset>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend>".LAN_MAILOUT_31."</legend>
-		<table class='adminedit'>
+		<table class='table adminform'>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -953,7 +953,7 @@ function show_prefs($mailAdmin)
 	</tr></tbody></table>
 
 
-		<table class='adminedit' id='mail_bounce_auto' {$autoDisp}>
+		<table class='adminform' id='mail_bounce_auto' {$autoDisp}>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -979,7 +979,7 @@ function show_prefs($mailAdmin)
 
 	// Parameters for mail-account based bounce processing
 	$text .= "
-		<table class='adminedit' id='mail_bounce_mail' {$autoMail}>
+		<table class='table adminform' id='mail_bounce_mail' {$autoMail}>
 		<colgroup>
 			<col class='col-label' />
 			<col class='col-control' />
@@ -1007,7 +1007,7 @@ function show_prefs($mailAdmin)
 	</tbody>
 	</table></fieldset>
 
-	<div class='buttons-bar center'>".$frm->admin_button('updateprefs',LAN_MAILOUT_28)."</div>
+	<div class='buttons-bar center'>".$frm->admin_button('updateprefs',LAN_MAILOUT_28,'update')."</div>
 
 	</form>";
 
@@ -1024,6 +1024,7 @@ function show_maint($debug = FALSE)
 {
 	$mes = e107::getMessage();
 	$ns = e107::getRender();
+	$frm = e107::getForm();
 	
 	$text = "<div style='text-align:center'>";
 
@@ -1038,7 +1039,10 @@ function show_maint($debug = FALSE)
 			
 			<tbody>";
 
-		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td><input class='button' type='submit' name='email_dross' value=\"".LAN_SUBMIT."\" /> <br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td>
+		
+		".$frm->admin_button('email_dross','no-value','delete',LAN_SUBMIT)."
+		<br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
 		$text .= "</tbody></table>\n</fieldset></form></div>";
 
 		$ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $mes->render().$text);
