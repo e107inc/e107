@@ -8,7 +8,7 @@
 		<core name="admincss">style.css</core>
 		<core name="adminpwordchange">0</core>
 		<core name="adminstyle">infopanel</core>
-		<core name="admintheme">jayya</core>
+		<core name="admintheme">bootstrap</core>
 		<core name="allowCommentEdit">0</core>
 		<core name="allowEmailLogin">2</core>
 		<core name="anon_post">0</core>
