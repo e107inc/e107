@@ -124,10 +124,10 @@ a.dropdown-toggle:hover i  {
 }
 
 a.dropdown-toggle {
-	-webkit-transition:color .20s ease-in;  
-	-moz-transition:color .20s ease-in;  
-	-o-transition:color .20s ease-in;  
-	transition:color .20s ease-in;  	
+	-webkit-transition:color .20s ease-in-out;
+	-moz-transition:color .20s ease-in-out;
+	-o-transition:color .20s ease-in-out;
+	transition:color .20s ease-in-out;	
 }
 
 
