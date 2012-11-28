@@ -235,8 +235,8 @@ if(($action == "confdel") || ($action == "auditdel"))
 				</table>
 				<div class='buttons-bar center'>
 					<input type='hidden' name='backdeltype' value='{$action}' />
-					<button class='delete' type='submit' name='confirmdeleteold' value='no-value'><span>".RL_LAN_049."</span></button>
-					<button class='cancel' type='submit' name='confirmcancelold' value='no-value'><span>".LAN_CANCEL."</span></button>
+					$frm->admin_button('confirmdeleteold', 'no-value', 'delete', RL_LAN_049); 
+					$frm->admin_button('confirmcancelold', 'no-value', 'delete', LAN_CANCEL);					
 				</div>
 			</fieldset>
 		</form>
@@ -474,7 +474,7 @@ if($action == "config")
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='setoptions' value='no-value'><span>".RL_LAN_010."</span></button>
+				".$frm->admin_button('setoptions', 'no-value', 'update', LAN_UPDATE)."
 			</div>
 		</fieldset>
 	</form>
@@ -495,7 +495,7 @@ if($action == "config")
 					<tr>
 						<td>".RL_LAN_045." </td>
 						<td>
-							".gen_log_delete('rolllog_clearadmin').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldadmin' value='no-value'><span>".RL_LAN_049."</span></button>
+							".gen_log_delete('rolllog_clearadmin').RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."						
 						</td>
 					</tr>
 	";
@@ -506,7 +506,7 @@ if($action == "config")
 					<tr>
 						<td>".RL_LAN_066." </td>
 						<td>
-							".gen_log_delete('rolllog_clearaudit').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldaudit' value='no-value'><span>".RL_LAN_049."</span></button>
+							".gen_log_delete('rolllog_clearaudit').RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."
 						</td>
 					</tr>
 				</tbody>
@@ -773,7 +773,7 @@ if(isset($page_title[$action]))
 				";
 				}
 				$text .= "
-						</select>".RL_LAN_093."
+						</select> ".RL_LAN_093."
 					</td>";
 				$filter_cols = 4;
 				break;
@@ -856,8 +856,8 @@ if(isset($page_title[$action]))
 	$text .= "
 			</table>
 			<div class='buttons-bar center'>
-				<button class='delete no-confirm' type='submit' name='clearfilters' value='no-value'><span>".RL_LAN_114."</span></button>
-				<button class='update' type='submit' name='updatefilters' value='no-value'><span>".RL_LAN_028."</span></button>
+				".$frm->admin_button('clearfilters', 'no-value', 'delete', RL_LAN_114)."
+				".$frm->admin_button('updatefilters', 'no-value', 'update', RL_LAN_028)."
 			</div>
 			</fieldset>
 		</form>
@@ -1013,13 +1013,11 @@ if(isset($page_title[$action]))
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='submit' type='submit' name='refreshlog' value='no-value'><span>".RL_LAN_018."</span></button>
+				".$frm->admin_button('refreshlog', 'no-value', 'submit', RL_LAN_018)."
 	";
 	if($delete_button)
 	{
-		$text .= "
-				<button class='delete' type='submit' name='deleteitems' value='no-value'><span>".RL_LAN_111."</span></button>
-		";
+		$text .=  $frm->admin_button('deleteitems', 'no-value', 'delete', RL_LAN_11);	
 	}
 	$text .= "
 			</div>

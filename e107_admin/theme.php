@@ -51,10 +51,36 @@ e107::css("inline","
 .admin-theme-cell			{ width:202px; height:160px; -moz-border-radius: 5px; border-radius: 5px; }
 ");
 
-require_once("auth.php");
 
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
+
+
+if(e_AJAX_REQUEST)
+{
+	$data = $themec->getThemeInfo('jayya');
+	echo $themec->renderThemeInfo($data);
+	
+	exit;	
+}
+
+echo '
+
+		 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			    <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			    <h3>Theme Info.</h3>
+			    </div>
+			    <div class="modal-body">
+			    <p>Loading…</p>
+			    </div>
+			    <div class="modal-footer">
+			    <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+			    </div>
+			    </div>';	
+				
+require_once("auth.php");
+
 
 $mode = (e_QUERY) ? e_QUERY :"main" ;
 
@@ -74,6 +100,9 @@ if($_POST['selectmain'] || varset($_POST['setUploadTheme']))
 }
 
 $themec -> showThemes($mode);
+// <a data-toggle="modal" href="'.e_SELF.'" data-target="#myModal" class="btn" >Launch demo modal</a>
+
+
 
 
 require_once("footer.php");
