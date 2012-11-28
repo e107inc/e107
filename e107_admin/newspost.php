@@ -1899,7 +1899,7 @@ class admin_newspost
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
 				<fieldset id='core-newspost-create'>
 					<legend>".LAN_NEWS_52."</legend>
-					<table class='adminedit'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -2034,9 +2034,9 @@ class admin_newspost
 		</ul>";
 		
 		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
-        $text .= "<div id='news-body-container'>";
+        $text .= "<div id='news-body-container' class='e-tab'>";
         $text .= $frm->bbarea('news_body', $val, 'news', 'news');
-		$text .= "</div><div id='news-extended-container'>";
+		$text .= "</div><div id='news-extended-container' class='t-container'>";
 		
 		
 		$val = (strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
@@ -2114,7 +2114,7 @@ class admin_newspost
 		$text .= "
 				<fieldset id='core-newspost-seo'>
 					<legend>SEO</legend>
-					<table class='adminedit'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -2151,7 +2151,7 @@ class admin_newspost
 		$text .= "
 				<fieldset id='core-newspost-edit-options'>
 					<legend>".LAN_NEWS_53."</legend>
-					<table class='adminedit'>
+					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -2856,7 +2856,7 @@ class admin_newspost
 			<form action='".e_SELF."?sn' method='post'>
 				<fieldset id='core-newspost-sn-list'>
 					<legend class='e-hideme'>".NWSLAN_47."</legend>
-					<tableclass='table adminlist'>
+					<table class='table adminlist'>
 						<colgroup>
 							<col style='width: 2%' />
 							<col style='width: 5%' />

@@ -2587,7 +2587,7 @@ class e_form
 			<fieldset id='{$id}'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
-				<table class='table adminedit'>
+				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
 						<col class='col-control' />
