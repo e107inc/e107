@@ -15,6 +15,7 @@
  */
 
 require_once("../../class2.php");
+$frm    = e107::getForm();
 
 if (!plugInstalled('chatbox_menu') || !getperms("P")) 
 {
@@ -86,20 +87,20 @@ if (isset($_POST['recalculate']))
 
 if (isset($message)) 
 {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>"); //  $mes->addSuccess?
 }
 
 $chatbox_posts = $pref['chatbox_posts'];
 
 $text = "<div>
-	<form method='post' action='".e_SELF."' id='cbform'>
-    <table cellpadding='0' cellspacing='0' class='adminform'>
+	<form method='post' action='".e_SELF."' id='cbform' >
+    <table class='table adminform'>
     	<colgroup span='2'>
     		<col class='col-label' />
     		<col class='col-control' />
     	</colgroup>
 	<tr>
-	<td>".CHBLAN_11.":  <div class='smalltext'>".CHBLAN_12."</div></td>
+	<td>".CHBLAN_11.":</td>
 	<td>
 	<select name='chatbox_posts' class='tbox'>";
 if ($chatbox_posts == 5) {
@@ -134,6 +135,7 @@ if(!isset($pref['cb_mod']))
 }
 
 $text .= "</select>
+<span class='field-help'>".CHBLAN_12."</span>
 	</td>
 	</tr>
 
@@ -145,7 +147,7 @@ $text .= "</select>
 	<tr><td>".CHBLAN_36."</td>
 	<td>".
 	($pref['cb_layer'] == 0 ? "<input type='radio' name='cb_layer' value='0' checked='checked' />" : "<input type='radio' name='cb_layer' value='0' />")."&nbsp;&nbsp;". CHBLAN_37."<br />".
-	($pref['cb_layer'] == 1 ? "<input type='radio' name='cb_layer' value='1' checked='checked' />" : "<input type='radio' name='cb_layer' value='1' />")."&nbsp;".CHBLAN_29."&nbsp;--&nbsp;". CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' /><br />".
+	($pref['cb_layer'] == 1 ? "<input type='radio' name='cb_layer' value='1' checked='checked' />" : "<input type='radio' name='cb_layer' value='1' />")."&nbsp;&nbsp;".CHBLAN_29."&nbsp;--&nbsp;". CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' /><br />".
 	($pref['cb_layer'] == 2 ? "<input type='radio' name='cb_layer' value='2' checked='checked' />" : "<input type='radio' name='cb_layer' value='2' />")."&nbsp;&nbsp;". CHBLAN_38."
 	</td>
 	</tr>
@@ -161,7 +163,7 @@ $text .= "</select>
 	}
 
 	$text .= "<tr>
-	<td>".CHBLAN_21.": <div class='smalltext'>".CHBLAN_22."</div></td>
+	<td>".CHBLAN_21.":</td>
 	<td>
 	".CHBLAN_23." <select name='chatbox_prune' class='tbox'>
 	<option></option>
@@ -170,7 +172,8 @@ $text .= "</select>
 	<option value='2592000'>".CHBLAN_26."</option>
 	<option value='1'>".CHBLAN_27."</option>
 	</select>
-	<input class='button' type='submit' name='prune' value='".CHBLAN_21."' />
+	".$frm->admin_button('prune', CHBLAN_21, 'other')."
+	<span class='field-help'>".CHBLAN_22."</span>
 	</td>
 	</tr>";
 
@@ -178,13 +181,13 @@ $text .= "</select>
 	$text .= "<tr>
 	<td>".CHBLAN_34.":</td>
 	<td>
-	<input class='button' type='submit' name='recalculate' value='".CHBLAN_35."' />
+	".$frm->admin_button('recalculate', CHBLAN_35, 'other')."
 	</td>
 	</tr>
 	</table>";
 
 	$text .= "<div class='buttons-bar center'>
-	<input class='button' type='submit' name='updatesettings' value='".CHBLAN_19."' />
+	".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
 	</form>
 	</div>";
