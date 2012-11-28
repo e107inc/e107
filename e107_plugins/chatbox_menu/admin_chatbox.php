@@ -172,7 +172,7 @@ $text .= "</select>
 	<option value='2592000'>".CHBLAN_26."</option>
 	<option value='1'>".CHBLAN_27."</option>
 	</select>
-	".$frm->admin_button('prune', CHBLAN_21, 'submit')."
+	".$frm->admin_button('prune', CHBLAN_21, 'other')."
 	<span class='field-help'>".CHBLAN_22."</span>
 	</td>
 	</tr>";
@@ -181,7 +181,7 @@ $text .= "</select>
 	$text .= "<tr>
 	<td>".CHBLAN_34.":</td>
 	<td>
-	".$frm->admin_button('recalculate', CHBLAN_35, 'submit')."
+	".$frm->admin_button('recalculate', CHBLAN_35, 'other')."
 	</td>
 	</tr>
 	</table>";

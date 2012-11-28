@@ -21,7 +21,7 @@ define("CHBLAN_8", "delete");
 define("CHBLAN_9", "Moderate Chatbox");
 define("CHBLAN_10", "Moderate posts");
 define("CHBLAN_11", "Chatbox posts to display");
-define("CHBLAN_12", "amount of posts displayed in chatbox");
+define("CHBLAN_12", "Amount of posts displayed in chatbox");
 define("CHBLAN_13", "Replace links");
 define("CHBLAN_14", "if ticked, posted links will be replaced by text entered in box below");
 define("CHBLAN_15", "Replace string if activated");
