@@ -678,7 +678,7 @@ class page_admin_ui extends e_admin_ui
 					</fieldset>
 					<fieldset id='core-cpage-create-hooks'>
 						<legend>".LAN_HOOKS."</legend>
-						<table class='adminedit options'>
+						<table class='adminform options'>
 							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />

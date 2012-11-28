@@ -35,7 +35,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 {
 	$text_check = FALSE;
 
-	$text_cat = "<div class='adminedit' id='core-main_".$cat_key."'>
+	$text_cat = "<div class='adminform' id='core-main_".$cat_key."'>
 	<div style='border:1px solid silver;margin:10px'>
 	<div class='main_caption bevel'><b>".$admin_cat['title'][$cat_key]."</b></div>
 	<table style='width:100%'>";
