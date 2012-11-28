@@ -172,8 +172,6 @@ $text = "
 </td>
 </tr>
 
-
-
 <tr>
 <td>".NFLAN_10."</td>
 <td>
@@ -182,49 +180,52 @@ $text = "
 </tr>
 
 <tr>
-<td>".NFLAN_11."<br /><span class='smalltext'>".NFLAN_17."</span></td>
+<td>".NFLAN_11."</td>
 <td>
 <input class='tbox' type='text' name='newsfeed_image' size='80' value='$newsfeed_image' maxlength='200' />
+<span class='field-help'>".NFLAN_17."</span>
 </td>
 </tr>
 
 <tr>
-<td>".NFLAN_36."<br /><span class='smalltext'>".NFLAN_37."</span></td>
+<td>".NFLAN_36."</td>
 <td>
 <input class='tbox' type='text' name='newsfeed_description' size='80' value='$newsfeed_description' maxlength='200' />
+<span class='field-help'>".NFLAN_37."</span>
 </td>
 </tr>
 
 <tr>
-<td>".NFLAN_18."<br /><span class='smalltext'>".NFLAN_19."</span></td>
-<td>
-<input class='tbox' type='text' name='newsfeed_updateint' size='5' value='".($newsfeed_updateint ? $newsfeed_updateint : "3600")."' maxlength='200' />
+<td>".NFLAN_18."</td>
+<td>".
+$frm->number('newsfeed_updateint',($newsfeed_updateint ? $newsfeed_updateint : 3600),5)."
+<span class='field-help'>".NFLAN_19."</span>
 </td>
 </tr>
 
 <tr>
-<td>".NFLAN_12."<br /><span class='smalltext'>".NFLAN_22."</span></td>
-<td>
+<td>".NFLAN_12."</td>
+<td>"; 
 
-<input type='radio' name='newsfeed_active' value='0'".(!$newsfeed_active ? " checked='checked'" : "")." /> ".NFLAN_13."&nbsp;<br />
-<input type='radio' name='newsfeed_active' value='1'".($newsfeed_active == 1 ? " checked='checked'" : "")." /> ".NFLAN_14."&nbsp;<br />
-<input type='radio' name='newsfeed_active' value='2'".($newsfeed_active == 2 ? " checked='checked'" : "")." /> ".NFLAN_20."&nbsp;<br />
-<input type='radio' name='newsfeed_active' value='3'".($newsfeed_active == 3 ? " checked='checked'" : "")." /> ".NFLAN_21."&nbsp;
+$array = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
+
+$text .= 
+$frm->radio_multi('newsfeed_active', $array, ($newsfeeed_active ? $newsfeeed_active : 0), true, NFLAN_22)."
 </td>
 </tr>
 
 <tr>
-<td>".NFLAN_45."<br /><span class='smalltext'>".NFLAN_47."</span></td>
-<td>
-<input class='tbox' type='text' name='newsfeed_showmenu' size='5' value='".($newsfeed_showmenu ? $newsfeed_showmenu : "0")."' maxlength='200' />
-</td>
+<td>".NFLAN_45."</td>
+<td>".
+$frm->number('newsfeed_showmenu', $newsfeed_showmenu ,5)."
+<span class='field-help'>".NFLAN_47."</span></td>
 </tr>
 
 <tr>
-<td>".NFLAN_46."<br /><span class='smalltext'>".NFLAN_47."</span></td>
-<td>
-<input class='tbox' type='text' name='newsfeed_showmain' size='5' value='".($newsfeed_showmain ? $newsfeed_showmain : "0")."' maxlength='200' />
-</td>
+<td>".NFLAN_46."</td>
+<td>".
+$frm->number('newsfeed_showmain', $newsfeed_showmain ,5)."
+<span class='field-help'>".NFLAN_47."</span></td>
 </tr>
 
 </table>
