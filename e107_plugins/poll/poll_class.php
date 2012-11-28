@@ -576,7 +576,7 @@ class poll
 			$text .= "</span><br />";
 		}
 
-		$text .="</div><input class='button' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+		$text .="</div><input class='btn button' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 		</td></tr>
 
 		<tr>
@@ -624,11 +624,13 @@ class poll
 
 		if (isset($_POST['preview']) || varset($_POST['edit']))
 		{
-			$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+			// $text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+			$text .= $frm->admin_button('preview',POLLAN_24,'other');
 			
 			if (POLLACTION == 'edit')
 			{
-				$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_22."' />
+				$text .= $frm->admin_button('submit',POLLAN_22,'submit')."
+				
 				<input type='hidden' name='poll_id' value='".intval($_POST['poll_id'])."' /> ";
 			}
 			else
@@ -639,7 +641,7 @@ class poll
 		} 
 		else 
 		{
-			$text .= $frm->admin_button('preview','no-value','preview',POLLAN_24);
+			$text .= $frm->admin_button('preview','no-value','other',POLLAN_24);
 		//	$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
 		}
 		
