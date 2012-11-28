@@ -112,6 +112,72 @@ if(is_numeric(e_QUERY))
 }
 if($adminEdit) // try to stay in Admin when admin is editing.
 {
+	$mes = e107::getMessage();
+	$ADMIN_USERSETTINGS_EDIT =  $mes->render(). "
+	<table class='table adminform'>
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
+
+	{USERNAME}
+	{LOGINNAME}
+
+	<tr>
+	<td>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
+	<td>
+	{EMAIL}
+	</td>
+	</tr>
+
+	<tr>
+	<td>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
+	<td>
+	{REALNAME}
+	</td>
+	</tr>
+
+	{CUSTOMTITLE}
+
+	{PASSWORD1}
+	{PASSWORD_LEN}
+	{PASSWORD2}
+
+
+	<tr>
+	<td>".LAN_USER_83."</td>
+	<td><span class='defaulttext'>
+	{HIDEEMAIL=radio}
+	</span>
+	</td>
+	</tr>
+	
+	<tr>
+	<td>".LAN_USER_07.req($pref['signup_option_image'])."</td>
+	<td>
+	{AVATAR_REMOTE}
+	</td>
+	</tr>
+
+	{AVATAR_UPLOAD}
+	{PHOTO_UPLOAD}
+
+	{USERCLASSES}
+	{USEREXTENDED_ALL}
+
+	
+	{SIGNATURE=cols=58&rows=4}	
+	{SIGNATURE_HELP}
+	</tr>
+	</table>
+	<div class='buttons-bar center'>
+	".e107::getForm()->admin_button('updatesettings',LAN_UPDATE,'update')."
+	</div>
+	
+	";
+	
+	
+	$USERSETTINGS_EDIT = $ADMIN_USERSETTINGS_EDIT;
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 	require_once (e_ADMIN."auth.php");
 }
@@ -552,6 +618,12 @@ if ($dataToSave && !$promptPassword)
 	{
 		header('Location: index.php');
 	}
+	
+	if($adminEdit && $message)
+	{
+		$mes->addSuccess($message);		
+	}
+	
 	
 	if(isset($USERSETTINGS_MESSAGE))
 	{
