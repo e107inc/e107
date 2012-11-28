@@ -881,7 +881,7 @@ function duplicateHTML(copy,paste,baseid){
 
 			but.type = 'button';
 			but.value = 'x';
-			but.className = 'button';
+			but.className = 'btn button';
 			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
 
 			var destination = document.getElementById(paste);

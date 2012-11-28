@@ -74,12 +74,14 @@ SC_END
 SC_BEGIN RSS_ADMIN_LIMIT
 global $row, $rs;
 $id = $row['rss_id'];
+$frm = e107::getForm();
+ return $frm->number("limit[$id]",$row['rss_limit']);
 return "<input class='tbox' type='text' name=\"limit[$id]\" title=\"".RSS_LAN05."\" value='".intval($row['rss_limit'])."' size='3' maxlength='3' />";
 SC_END
 
 SC_BEGIN RSS_ADMIN_LIMITBUTTON
-global $row;
-return "<input class='button' type='submit' name='update_limit' value=\"".LAN_UPDATE."\" />";
+	$frm = e107::getForm();
+	return $frm->admin_button('update_limit',LAN_UPDATE,'update');
 SC_END
 
 SC_BEGIN RSS_ADMIN_OPTIONS
@@ -132,21 +134,30 @@ SC_END
 
 SC_BEGIN RSS_ADMIN_FORM_LIMIT
 global $row;
+$frm = e107::getForm();
+
+return $frm->number('rss_limit',$row['rss_limit'],3);
 return "<input class='tbox' name='rss_limit' size='3' title=\"".RSS_LAN05."\" value='".intval($row['rss_limit'])."' maxlength='3' />";
 SC_END
 
 
 SC_BEGIN RSS_ADMIN_FORM_CREATEBUTTON
-global $row, $qs;
+global $row;
+$qs = explode(".", e_QUERY);
+$frm = e107::getForm();
+ 
 if(isset($qs[1]) && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) )
 {
 	$text = "<input type='hidden' name='rss_datestamp' value='".$row['rss_datestamp']."' />
-	<input type='hidden' name='rss_id' value='".$row['rss_id']."' />
-	<input class='button' type='submit' name='update_rss' value=\"".LAN_UPDATE."\" />";
+	<input type='hidden' name='rss_id' value='".$row['rss_id']."' />";
+ 	
+  	$text .= $frm->admin_button('update_rss',LAN_UPDATE,'update');
+	
 }
 else
 {
-	$text = "<input class='button' type='submit' name='create_rss' value=\"".LAN_CREATE."\" />";
+ 	$text = $frm->admin_button('create_rss',LAN_CREATE,'submit');
+
 }
 return $text;
 SC_END

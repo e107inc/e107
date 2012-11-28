@@ -38,6 +38,8 @@ require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 $rss = new rss;
 
 global $tp;
+$mes = e107::getMessage();
+
 
 // Delete entry
 if(isset($_POST['delete']))
@@ -87,10 +89,12 @@ if($rss->file_check())
 // Render message
 if(isset($message))
 {
-	$rss->show_message('', $message);
+	$mes->add($message);
+	// $rss->show_message('', $message);
 }
 
 // Get template
+/*
 if (is_readable(THEME."rss_template.php")) 
 {
 	require_once(THEME."rss_template.php");
@@ -98,6 +102,178 @@ if (is_readable(THEME."rss_template.php"))
 else 
 {
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
+}*/
+
+$frm = e107::getForm();
+
+// Admin : rss listing
+if(!isset($RSS_ADMIN_LIST_HEADER))
+{
+		
+    $RSS_ADMIN_LIST_HEADER = "
+    <div style='text-align:center;'>
+    <form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
+    <table class='table adminlist'>
+	<thead>
+    <tr>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=id,RSS_LAN_ADMIN_2}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,RSS_LAN_ADMIN_4}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,RSS_LAN_ADMIN_3}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,RSS_LAN_ADMIN_5}</th>
+        <th style='white-space:nowrap;'>".RSS_LAN_ADMIN_12."</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,RSS_LAN_ADMIN_7}</th>
+        <th style='white-space:nowrap;'>".LAN_OPTIONS."</th>
+    </tr>
+	</thead>
+	<tbody>";
+}
+if(!isset($RSS_ADMIN_LIST_TABLE))
+{
+	$RSS_ADMIN_LIST_TABLE = "
+	<tr>
+		<td>{RSS_ADMIN_ID}</td>
+		<td>{RSS_ADMIN_NAME}</td>
+		<td>{RSS_ADMIN_PATH}</td>
+		<td>{RSS_ADMIN_URL}</td>
+		<td>{RSS_ADMIN_TOPICID}</td>
+		<td>{RSS_ADMIN_LIMIT}</td>
+		<td class='center'>{RSS_ADMIN_OPTIONS}</td>
+	</tr>";
+}
+if(!isset($RSS_ADMIN_LIST_FOOTER))
+{
+	$RSS_ADMIN_LIST_FOOTER = "
+	<tr>
+		<td class='buttons-bar center' colspan='7'>
+			{RSS_ADMIN_LIMITBUTTON}
+		</td>
+	</tr>
+	</tbody>
+	</table>
+	</form>
+	</div>";
+}
+
+// Admin : rss create/edit
+if(!isset($RSS_ADMIN_CREATE_TABLE))
+{
+	$RSS_ADMIN_CREATE_TABLE = "
+	<div style='text-align:center;'>
+	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
+	<table class='table adminform'>
+	<tr>
+		<td style='width:12%'>".RSS_LAN_ADMIN_4."</td>
+		<td>{RSS_ADMIN_FORM_NAME}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_5."</td>
+		<td>{RSS_ADMIN_FORM_URL}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_12."</td>
+		<td>{RSS_ADMIN_FORM_TOPICID}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_3."</td>
+		<td>{RSS_ADMIN_FORM_PATH}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_6."</td>
+		<td>{RSS_ADMIN_FORM_TEXT}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_7."</td>
+		<td>{RSS_ADMIN_FORM_LIMIT}</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_8."</td>
+		<td>{RSS_ADMIN_FORM_CLASS}</td>
+	</tr>
+
+	<tr>
+		<td class='forumheader' colspan='2' style='text-align:center;'>{RSS_ADMIN_FORM_CREATEBUTTON}</td>
+	</tr>
+	</table>
+	</form>
+	</div>";
+}
+
+// Admin : rss options
+if(!isset($RSS_ADMIN_OPTIONS_TABLE))
+{
+	$RSS_ADMIN_OPTIONS_TABLE = "
+	<div style='text-align:center;'>
+	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
+	<table class='table adminlist'>
+	<tr>
+		<td class='fcaption'>".LAN_OPTIONS."</td>
+		<td class='fcaption'>".RSS_LAN_ADMIN_14."</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_13."</td>
+		<td>
+			<input type='checkbox' name='rss_othernews' value='1' ".($pref['rss_othernews'] == 1 ? " checked='checked' " : "")." />
+		</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_19."</td>
+		<td>
+			<input type='checkbox' name='rss_summarydiz' value='1' ".($pref['rss_summarydiz'] == 1 ? " checked='checked' " : "")." />
+		</td>
+	</tr>
+	<tr>
+		<td>".RSS_LAN_ADMIN_33."</td>
+		<td>
+			<input type='checkbox' name='rss_shownewsimage' value='1' ".($pref['rss_shownewsimage'] == 1 ? " checked='checked' " : "")." />
+		</td>
+	</tr>
+	<tr style='vertical-align:top'>
+		
+	</tr>
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('updatesettings',LAN_SAVE,'update')."
+	</div>
+	</form>
+	</div>";
+}
+
+// Admin : rss import
+if(!isset($RSS_ADMIN_IMPORT_HEADER))
+{
+	$RSS_ADMIN_IMPORT_HEADER = "
+	<div style='text-align:center;'>
+	<form action='".e_SELF."' id='imlistform' method='post' >
+	<table class='table adminlist'>
+	<tr>
+		<th>".RSS_LAN_ADMIN_16."</td>
+		<th>".RSS_LAN_ADMIN_3."</td>
+		<th>".RSS_LAN_ADMIN_4."</td>
+		<th>".RSS_LAN_ADMIN_5."</td>
+		<th>".RSS_LAN_ADMIN_12."</td>
+	</tr>";
+}
+if(!isset($RSS_ADMIN_IMPORT_TABLE))
+{
+	$RSS_ADMIN_IMPORT_TABLE = "
+	<tr>
+		<td>{RSS_ADMIN_IMPORT_CHECK}</td>
+		<td>{RSS_ADMIN_IMPORT_PATH}</td>
+		<td><b>{RSS_ADMIN_IMPORT_NAME}</b><br />{RSS_ADMIN_IMPORT_TEXT}</td>
+		<td>{RSS_ADMIN_IMPORT_URL}</td>
+		<td>{RSS_ADMIN_IMPORT_TOPICID}</td>
+	</tr>";
+}
+
+if(!isset($RSS_ADMIN_IMPORT_FOOTER))
+{
+	$RSS_ADMIN_IMPORT_FOOTER = "
+	</table>
+	<div class='buttons-bar center'>
+	".$frm->admin_button('import_rss',RSS_LAN_ADMIN_17,'submit')."
+	</div>
+	</form>
+	</div>";
 }
 
 // Listing
@@ -139,7 +315,8 @@ require_once(e_ADMIN."footer.php");
 // ##### Display options --------------------------------------------------------------------------
 function admin_prefs_adminmenu()
 {
-	global $sql, $qs;
+	global $sql;
+	$qs = explode(".",e_QUERY);
 
 	$act = varset($qs[0], 'list');
 
@@ -177,7 +354,12 @@ class rss
 	// Admin : list : existing rss feeds
 	function rssadminlist()
 	{
-		global $ns, $sql, $tp, $field, $sort, $rss_shortcodes, $row, $RSS_ADMIN_LIST_HEADER, $RSS_ADMIN_LIST_TABLE, $RSS_ADMIN_LIST_FOOTER;
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		
+		global $field, $sort, $rss_shortcodes, $row, $RSS_ADMIN_LIST_HEADER, $RSS_ADMIN_LIST_TABLE, $RSS_ADMIN_LIST_FOOTER;
 
         $fieldstag = array('id'=>'rss_id','path'=>'rss_path','name'=>'rss_name','url'=>'rss_url','limit'=>'rss_limit');
 		$order = (isset($fieldstag[$field])) ? "ORDER BY ".$fieldstag[$field]." ".$sort : "ORDER BY rss_id";
@@ -195,14 +377,19 @@ class rss
 				$text .= $tp -> parseTemplate($RSS_ADMIN_LIST_TABLE, FALSE, $rss_shortcodes);
 			}
 			$text .= $tp -> parseTemplate($RSS_ADMIN_LIST_FOOTER, FALSE, $rss_shortcodes);
-			$ns->tablerender(RSS_LAN_ADMIN_1, $text);
+			$ns->tablerender(RSS_LAN_ADMIN_1,$mes->render(). $text);
 		}
 	}
 
 	// Create or edit - put up a form
 	function rssadmincreate($action, $id=0)
 	{
-		global $ns, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_CREATE_TABLE;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
+		global $rss_shortcodes, $row, $RSS_ADMIN_CREATE_TABLE;
 
 		if (($action == "edit") && $id )
 		{
@@ -219,14 +406,21 @@ class rss
 				$row['rss_text']	= $tp -> toForm($row['rss_text']);
 			}
 		}
-		$text = $tp -> parseTemplate($RSS_ADMIN_CREATE_TABLE, FALSE, $rss_shortcodes);
-		$ns->tablerender(RSS_LAN_ADMIN_10, $text);
+		
+		$text = $tp->parseTemplate($RSS_ADMIN_CREATE_TABLE, FALSE, $rss_shortcodes);
+		
+		$ns->tablerender(RSS_LAN_ADMIN_10, $mes->render().$text);
 	}
 
 	// Import - put up the list of possible feeds to import
 	function rssadminimport()
 	{
-		global $sql, $ns, $i, $tp, $rss_shortcodes, $feed, $pref;
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
+		
+		global $i,$rss_shortcodes, $feed, $pref;
 		global $RSS_ADMIN_IMPORT_HEADER, $RSS_ADMIN_IMPORT_TABLE, $RSS_ADMIN_IMPORT_FOOTER;
 
 		$sqli = new db;
@@ -332,17 +526,21 @@ class rss
 		}
 		else
 		{
-			$ns->tablerender(RSS_LAN_ADMIN_11, $text);
+			$ns->tablerender(RSS_LAN_ADMIN_11, $mes->render(). $text);
 		}
 	}
 
 	// Options - display form
 	function rssadminoptions()
 	{
-		global $ns, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_OPTIONS_TABLE;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+
+		global $rss_shortcodes, $row, $RSS_ADMIN_OPTIONS_TABLE;
 
 		$text = $tp -> parseTemplate($RSS_ADMIN_OPTIONS_TABLE, FALSE, $rss_shortcodes);
-		$ns->tablerender(LAN_OPTIONS, $text);
+		$ns->tablerender(LAN_OPTIONS, $mes->render(). $text);
 		return;
 	}
 

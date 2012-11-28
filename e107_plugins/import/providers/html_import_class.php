@@ -207,7 +207,7 @@ class html_import extends base_import_class
 		$text = "<form method='post' action='".e_SELF."?import_type=html_import' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
 		<legend class='e-hideme'>".DBLAN_10."</legend>
-            <table class='adminlist'>
+            <table class='table adminlist'>
 			<colgroup>
 			<col style='width:40%' />
 			<col />
