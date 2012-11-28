@@ -879,15 +879,24 @@ class e_form
 
 	}
 
-	function radio_multi($name, $elements, $checked, $multi_line = false, $help = array())
+
+	/**
+	 * @param string $name 
+	 * @param array $elements = arrays value => label
+	 * @param string/integer $checked = current value
+	 * @param boolean $multi_line
+	 * @param mixed $help array of field help items or string of field-help (to show on all)
+	 */
+	function radio_multi($name, $elements, $checked, $multi_line = false, $help = null)
 	{
 		$text = array();
 		if(is_string($elements)) parse_str($elements, $elements);
-
+		
 		foreach ($elements as $value => $label)
 		{
 			$label = defset($label, $label);
-			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($help[$value]) ? "<div class='field-help'>".$help[$value]."</div>" : '');
+			$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
+			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
 		if(!$multi_line)
 			return implode("&nbsp;&nbsp;", $text);
