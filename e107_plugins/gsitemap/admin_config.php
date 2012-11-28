@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Plugin Administration - gsitemap
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 require_once("../../class2.php");
@@ -22,10 +18,10 @@ if(!getperms("P") || !plugInstalled('gsitemap'))
 }
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
-include_lan(e_PLUGIN."gsitemap/languages/".e_LANGUAGE."_admin_gsitemap.php");
+
+e107::lan('gsitemap',e_LANGUAGE."_admin_gsitemap.php");
 
 $gsm = new gsitemap;
-
 
 
 class gsitemap
@@ -37,6 +33,8 @@ class gsitemap
 	function gsitemap()
 	{
 		/* constructor */
+		
+		$mes = e107::getMessage();
 
 		$this->freq_list = array
 		(
@@ -72,7 +70,8 @@ class gsitemap
 
 		if($this -> message)
 		{
-			echo "<br /><div style='text-align:center'><b>".$this -> message."</b></div><br />";
+			$mes->addSuccess($this -> message);
+			// echo "<br /><div style='text-align:center'><b>".$this -> message."</b></div><br />";
 		}
 
 
@@ -97,29 +96,32 @@ class gsitemap
 
 	function showList()
 	{
-		global $sql, $ns, $tp;
+		$mes = e107::getMessage();
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+		
 		$gen = new convert;
 		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
-
-		$text = "<div style='text-align:center'>
-
-		";
 
 		if (!$count)
 		{
 			$text .= "
 			<form action='".e_SELF."?import' id='import' method='post'>
-			".GSLAN_39."
-			<input class='button' type='submit' name='import' value='".LAN_YES."' />
+			".GSLAN_39."<br /><br />"
+			.$frm->admin_button('import',LAN_YES,'submit')."
 			</form>";
-			$ns -> tablerender("<div style='text-align:center'>".GSLAN_40."</div>", $text);
+			
+			$mes->addInfo($text);
+			
+			$ns -> tablerender(GSLAN_40, $mes->render());
 			require_once(e_ADMIN."footer.php");
 			exit;
 		}
 		else
 		{
-			$text .= "
-
+			$text = "
 			<form action='".e_SELF."' id='display' method='post'>
 			<table class='table adminlist'>
             	<colgroup span='2'>
@@ -170,14 +172,17 @@ class gsitemap
 			}
 		}
 
-		$text .= "</tbody></table>\n</form><br /><br /><br /></div>";
-		$ns -> tablerender("<div style='text-align:center'>".GSLAN_24."</div>", $text);
+		$text .= "</tbody></table>\n</form>";
+		
+		$ns -> tablerender(GSLAN_24, $mes->render(). $text);
 	}
 
 
 	function editSme()
 	{
-		global $sql, $tp;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		$e_idt = array_keys($_POST['edit']);
 
 		if($sql -> db_Select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
@@ -194,24 +199,30 @@ class gsitemap
 
 	function doForm($editArray=FALSE)
 	{
-		global $sql,$ns;
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		
 		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
+		
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='table adminform'>
 
 		<tr>
-		<td style='width:25%' class='forumheader3'>".GSLAN_25."
+		<td style='width:25%'>".GSLAN_25."
 		<span class='smalltext'>&nbsp;</span></td>
-		<td class='forumheader3'>
+		<td>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_name' size='40' value='".$editArray['gsitemap_name']."' maxlength='100' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:25%' class='forumheader3'>".GSLAN_26."
+		<td style='width:25%'>".GSLAN_26."
 		<span class='smalltext'>&nbsp;</span></td>
-		<td class='forumheader3'>
+		<td>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_url' size='40' value='".$editArray['gsitemap_url']."' maxlength='100' />
 		<input class='tbox' type='hidden'  name='gsitemap_lastmod' size='40' value='".time()."' maxlength='100' />
 		</td>
@@ -219,9 +230,9 @@ class gsitemap
 
 
 		<tr>
-		<td style='width:25%' class='forumheader3'>".GSLAN_10."
+		<td style='width:25%'>".GSLAN_10."
 		<span class='smalltext'>&nbsp;</span></td>
-		<td class='forumheader3'>
+		<td>
 		<select class='tbox' name='gsitemap_freq' >\n";
 
 		foreach($this->freq_list as $k=>$fq){
@@ -233,11 +244,10 @@ class gsitemap
 		</td>
 		</tr>
 
-
 		<tr>
-		<td class='forumheader3'>".GSLAN_9."<br />
+		<td>".GSLAN_9."<br />
 		<span class='smalltext'>&nbsp;</span></td>
-		<td class='forumheader3'>
+		<td>
 		<select class='tbox' name='gsitemap_priority' >\n";
 
 		for ($i=0.1; $i<1.0; $i=$i+0.1) 
@@ -251,8 +261,8 @@ class gsitemap
 
 
 		<tr>
-		<td class='forumheader3'>".GSLAN_30."</td>
-		<td class='forumheader3'><select name='gsitemap_order' class='tbox'>";
+		<td>".GSLAN_30."</td>
+		<td><select name='gsitemap_order' class='tbox'>";
 
 		for($i=0;$i<$count;$i++){
 			$text .= $editArray['gsitemap_order'] == $i ? "<option value='".$i."' selected='selected'>".$i."</option>" : "<option value='".$i."'>".$i."</option>";
@@ -263,41 +273,41 @@ class gsitemap
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".GSLAN_31."</td>
-		<td class='forumheader3'>";
+		<td>".GSLAN_31."</td>
+		<td>";
 		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], 'off', "nobody,public,guest,member,admin,classes,language");
 		$text .="
 		</td>
 		</tr>
+		</table>
 
-
-
-		<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align:center' class='forumheader'>";
+		<div class='buttons-bar center'>";
 		if(is_array($editArray))
 		{
-			$text .= "<input class='button' type='submit' name='add_link' value='".LAN_UPDATE."' />
+			$text .= $frm->admin_button('add_link',LAN_UPDATE,'update')."
 			<input type='hidden' name='gsitemap_id' value='".$editArray['gsitemap_id']."' />";
 		}
 		else
 		{
-			$text .= "<input class='button' type='submit' name='add_link' value='".LAN_CREATE."' />";
+			$text .= $frm->admin_button('add_link',LAN_CREATE,'create');
+			// $text .= "<input class='button' type='submit' name='add_link' value='".LAN_CREATE."' />";
 		}
 
-		$text .= "</td>
-		</tr>
-		</table>
+		$text .= "</div>
 		</form>
 		";
 
-		$ns -> tablerender("<div style='text-align:center'>".GSLAN_29."</div>", $text);
+		$ns -> tablerender(GSLAN_29, $mes->render(). $text);
 	}
 
 
 
 	function addLink()
 	{
-		global $sql, $tp, $admin_log;
+		$log = e107::getAdminLog();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		$gmap = array(
 			'gsitemap_name' 	=> $tp->toDB($_POST['gsitemap_name']),
 			'gsitemap_url' 		=> $tp->toDB($_POST['gsitemap_url']), 
@@ -311,24 +321,26 @@ class gsitemap
 		if(isset($_POST['gsitemap_id']))
 		{
 			$this -> message = $sql -> db_UpdateArray("gsitemap", $gmap, ' WHERE gsitemap_id= '.intval($_POST['gsitemap_id'])) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-			$admin_log->logArrayAll('GSMAP_04',$gmap);
+			$log->logArrayAll('GSMAP_04',$gmap);
 		}
 		else
 		{
 			$gmap['gsitemap_img'] = $_POST['gsitemap_img'];
 			$gmap['gsitemap_cat'] = $_POST['gsitemap_cat'];
 			$this -> message = ($sql -> db_Insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
-			$admin_log->logArrayAll('GSMAP_03',$gmap);
+			$log->logArrayAll('GSMAP_03',$gmap);
 		}
 	}
 
 
 	function deleteSme()
 	{
-		global $sql, $admin_log;
+		$log = e107::getAdminLog();	
+		$sql = e107::getDb();
+		
 		$d_idt = array_keys($_POST['delete']);
 		$this -> message = ($sql -> db_Delete("gsitemap", "gsitemap_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
-		$admin_log->log_event('GSMAP_02',$this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
+		$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
 	}
 
 
@@ -336,7 +348,15 @@ class gsitemap
 	// Import site links
 	function importSme()
 	{
-		global $sql, $sql2, $PLUGINS_DIRECTORY, $ns;
+		global $PLUGINS_DIRECTORY;
+		
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('sql2');
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		
+		
 		$importArray = array();
 
 		/* sitelinks ... */
@@ -400,35 +420,39 @@ class gsitemap
 
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-
+		<table class='table adminlist'>
+		<colgroup>
+			<col class='center' style='width:5%;' />
+			<col style='width:15%' />
+			<col style='width:40%' />
+			<col style='width:40%' />
+		</colgroup>
+		<thead>
 		<tr>
-		<td colspan='4' style='text-align:center' class='forumheader'><b>".GSLAN_6."</b></td>
+		<td>".GSLAN_2."</td>
+		<td>".GSLAN_3."</td>
+		<td>".GSLAN_4."</td>
+		<td>".GSLAN_5."</td>
 		</tr>
-
-		<tr>
-		<td style='width:5%; text-align: center;' class='forumheader'>".GSLAN_2."</td>
-		<td style='width:15%' class='forumheader'>".GSLAN_3."</td>
-		<td style='width:40%' class='forumheader'>".GSLAN_4."</td>
-		<td style='width:40%' class='forumheader'>".GSLAN_5."</td>
-		</tr>
+		</thead>
+		<tbody>
 		";
 
 		foreach($importArray as $ia)
 		{
 			$text .= "
 			<tr>
-			<td style='width:5%; text-align: center;' class='forumheader3'><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
-			<td style='width:15%' class='forumheader3'>".$ia['type']."</td>
-			<td style='width:40%' class='forumheader3'>".$ia['name']."</td>
-			<td style='width:40%' class='forumheader3'><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
+			<td><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
+			<td>".$ia['type']."</td>
+			<td>".$ia['name']."</td>
+			<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
 			</tr>
 			";
 		}
 
 		$text .= "
 		<tr>
-		<td colspan='4' style='text-align:center' class='forumheader'>
+		<td colspan='4' class='center'>
 		<div> ".GSLAN_8." &nbsp; ".GSLAN_9." :&nbsp;<select class='tbox' name='import_priority' >\n";
 
 		for ($i=0.1; $i<1.0; $i=$i+0.1) 
@@ -450,21 +474,29 @@ class gsitemap
 		$text.="</select> <br /><br />
 
 		</div>
-		<input class='button' type='submit' name='import_links' value='".GSLAN_18."' />
+		
 		</td>
 		</tr>
+		</tbody>
 		</table>
+		<div class='buttons-bar center'>
+		".
+		$frm->admin_button('import_links',GSLAN_18,'submit')."
+		</div>
 		</form>
 		";
 
-		$ns -> tablerender("<div style='text-align:center'>".GSLAN_7."</div>", $text);
+		$ns -> tablerender(GSLAN_7, $mes->render(). $text);
 	}
 
 
 
 	function importLink()
 	{
-		global $sql, $tp, $admin_log;
+		$sql 	= e107::getDb();
+		$tp 	= e107::getParser();
+		$log 	= e107::getAdminLog();
+		
 		foreach($_POST['importid'] as $import)
 		{
 			list($name, $url, $type) = explode("^", $import);
@@ -473,14 +505,16 @@ class gsitemap
 			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
 		}
 		$this -> message = count($_POST['importid'])." link(s) imported.";
-		$admin_log->log_event('GSMAP_01',$this->message, E_LOG_INFORMATIVE,'');
+		$log->log_event('GSMAP_01',$this->message, E_LOG_INFORMATIVE,'');
 	}
 
 
 
 	function instructions()
 	{
-		global $ns, $PLUGINS_DIRECTORY;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		
 		
 		$LINK_1 = "https://www.google.com/accounts/ServiceLogin?service=sitemaps";
 		$LINK_2 = "http://www.google.com/support/webmasters/?hl=en";
@@ -507,7 +541,7 @@ class gsitemap
 		<ul>
 		";
 
-		$ns -> tablerender("<div style='text-align:center'>".GSLAN_32."</div>", $text);
+		$ns -> tablerender(GSLAN_32, $mes->render(). $text);
 	}
 
 }
@@ -531,6 +565,7 @@ function admin_config_adminmenu()
 	$var['import']['text'] = GSLAN_23;
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";
+	
 	show_admin_menu(GSLAN_19, $action, $var);
 }
 
