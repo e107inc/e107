@@ -135,7 +135,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 $ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">  
-          <a class="brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.THEME.'img/e107_adminlogo.png" alt="e107" /></a>
+          <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.THEME.'images/e107_adminlogo.png" alt="e107" /></a>
           <div class="nav-collapse collapse">
             <div class="dropdown nav pull-right navbar-text ">
             

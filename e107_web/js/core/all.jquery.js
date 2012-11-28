@@ -193,7 +193,7 @@ $(document).ready(function()
 
 		
 		// 	Tooltips for bbarea. 
-		$(".bbcode_buttons").tipsy({gravity: 's',opacity: 1.0, fade: true,html: true});
+		$(".bbcode_buttons").tooltip({placement: 'top',opacity: 1.0, fade: true,html: true});
 	//	$("a.e-tip").tipsy({gravity: 'w',opacity: 1.0, fade: true,html: true});
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);

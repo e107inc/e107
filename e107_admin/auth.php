@@ -271,7 +271,7 @@ else
 		
 		e107::css('inline',"
 		
-			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#081D28 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 10px; }
+			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; background:#081D28 url(".e_IMAGE."logo_template_large.png) no-repeat 50% 40px; }
 			a					{ 	color:#F6931E; text-decoration:none; }
 			a:hover				{ 	color:silver; text-decoration:none; }
 			.bold				{ 	font-weight:bold; }
@@ -297,12 +297,14 @@ else
 			.field input:hover	{
 									border:1px solid #F6931E;
 								}
-					
+			
 			#login-admin 		{
 									margin-left:auto;
 									margin-right:auto;
-									margin-top:200px;
+									margin-top:12%;
+										
 									width:400px; 
+									/*	
 									padding: 10px 20px 0 20px;
 									-moz-border-radius:5px;
 									-webkit-border-radius:5px;
@@ -311,6 +313,7 @@ else
 									-webkit-box-shadow:5px 5px 20px #000000;
 									box-shadow:5px 5px 20px #000000;	
 									background-color: #FEFEFE;
+									*/
 								}
 			
 			#login-admin label 	{ 	display: none; text-align: right	}
@@ -369,9 +372,9 @@ class auth
 		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
 			
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='login-admin' >
+		<div id='login-admin' class='well center'>
 		<div {$class}>
-		<h2>".e_DOMAIN." admin area</h2>
+		<h3>".e_DOMAIN." admin area</h3>
         
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 

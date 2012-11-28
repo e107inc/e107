@@ -13,7 +13,7 @@ $(document).ready(function()
 				return;
 			}
 			
-			$(this).tipsy({opacity:1.0,fade:true});
+			$(this).tooltip({opacity:1.0,fade:true});
 			// $(this).css( 'cursor', 'pointer' )
 		});
 		
@@ -25,13 +25,13 @@ $(document).ready(function()
 			var t = $(this).nextAll(".field-help");
 			t.hide();
 		//	alert('hello');
-			$(this).tipsy({title: function() {
+			$(this).tooltip({title: function() {
 				var tip = t.text();			
 				 return tip; 
 				},
 				fade: true,
 				html: true,
-				gravity: 'w'  
+				placement: 'right'  
 			});
 		
 		});

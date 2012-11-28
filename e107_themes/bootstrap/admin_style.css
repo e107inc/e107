@@ -8,21 +8,26 @@
 }
 
 .tipsy-inner 	{ padding:10px; font-size:15px; }
-      
+
+.tooltip 			{ font-size: 13px; }    
+.tooltip-inner 	{ box-shadow: 0 2px 5px #808080; -webkit-box-shadow: 0 2px 5px #808080; -moz-box-shadow: 0 2px 5px #808080; }  
+ 
+ 
+ 
 /* Core Formatting */
-.left			{ text-align: left }
-.right			{ text-align: right }
-.center			{ text-align: center }
-.f-left			{ float: left }
-.f-right		{ float: right }
-.top			{ vertical-align: top }
-.middle			{ vertical-align: middle }
-.bottom			{ vertical-align: bottom }
-.clear			{ clear: both }
-.clear-l		{ clear: right }
-.clear-r		{ clear: left }
-.smalltext		{ font-size: 11px; }
-.nowrap			{ white-space:nowrap; }
+.left				{ text-align: left }
+.right				{ text-align: right }
+.center				{ text-align: center }
+.f-left				{ float: left }
+.f-right			{ float: right }
+.top				{ vertical-align: top }
+.middle				{ vertical-align: middle }
+.bottom				{ vertical-align: bottom }
+.clear				{ clear: both }
+.clear-l			{ clear: right }
+.clear-r			{ clear: left }
+.smalltext			{ font-size: 11px; }
+.nowrap				{ white-space:nowrap; }
 
 
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
@@ -33,7 +38,7 @@ td.center, th.center { text-align:center }
 .col-label 		{ width:30%; }
 
 .sidebar-nav 	{ padding: 9px 0; font-size:11px; min-width:150px; }
-
+/*
 a.brand:hover img {
 	filter: blur(13px); 
 	-webkit-filter: blur(13px); 
@@ -41,7 +46,7 @@ a.brand:hover img {
 	-o-filter: blur(13px); 
 	-ms-filter: blur(13px);
 }
-
+*/
 @media (min-width: 1300px) { 
 	
 .sidebar-nav 	{ font-size:12px; }
