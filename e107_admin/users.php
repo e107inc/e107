@@ -433,14 +433,14 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == "reqverify")
 
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "ban")
 {
-	e107::getMessage()->addError('FIXME, I\'m not working...');
+	e107::getMessage()->addError('FIXME, I\'m not working... Use "batch" instead');
 	//$user->user_ban($_POST['userid']);
 }
 
 // ------- Unban User --------------
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "unban")
 {
-	e107::getMessage()->addError('FIXME, I\'m not working...');
+	e107::getMessage()->addError('FIXME, I\'m not working...Use "batch" instead');
 	//$user->user_unban($_POST['userid']);
 }
 
