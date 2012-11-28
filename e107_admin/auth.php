@@ -19,6 +19,139 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+##### Moved from header.php #####################
+e107::coreLan('header', true);
+e107::coreLan('footer', true);
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
+
+// Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
+include_once(e107::coreTemplatePath('admin_icons'));
+
+require_once (e_ADMIN.'ad_links.php');
+
+if (!defined('ADMIN_WIDTH'))
+{
+	define('ADMIN_WIDTH', "width: 95%");
+}
+
+// Wysiwyg JS support on or off.
+// your code should run off e_WYSIWYG
+if (varset($pref['wysiwyg'], FALSE) ) // posts bbcode by default. 
+{
+	define("e_WYSIWYG", TRUE);
+}
+else
+{
+	define("e_WYSIWYG", FALSE);
+}
+
+if (file_exists(THEME.'admin_template.php'))
+{
+	require_once (THEME.'admin_template.php');
+}
+else
+{
+	require_once (e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
+}
+
+/**
+ * Automate DB system messages DEPRECATED
+ * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
+ *
+ * @param integer|bool $update return result of db::db_Query
+ * @param string $type update|insert|update
+ * @param string $success forced success message
+ * @param string $failed forced error message
+ * @param bool $output false suppress any function output
+ * @return integer|bool db::db_Query result
+ */
+ // TODO - This function often needs to be available BEFORE header.php is loaded. 
+ 
+ 
+ // It has been copied to message_handler.php as autoMessage();
+ 
+function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
+{
+	require_once (e_HANDLER."message_handler.php");
+	$emessage = e107::getMessage();
+
+	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
+	{
+		$emessage->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
+	}
+	elseif ($type == 'delete' && $update)
+	{
+		$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
+	}
+	elseif (!mysql_errno())
+	{
+		if ($type == 'update')
+		{
+			$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
+		}
+		elseif ($type == 'delete')
+		{
+			$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
+		}
+	}
+	else
+	{
+		switch ($type)
+		{
+			case 'insert':
+				$msg = LAN_CREATED_FAILED;
+			break;
+			case 'delete':
+				$msg = LAN_DELETED_FAILED;
+			break;
+			default:
+				$msg = LAN_UPDATED_FAILED;
+			break;
+		}
+
+		$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+		$emessage->add($text, E_MESSAGE_ERROR);
+	}
+	
+	$emessage->addInfo("Using deprecated admin_update() which has been replaced by \$mes->autoMessage();"); 
+
+	if ($output) echo $emessage->render();
+	return $update;
+}
+
+function admin_purge_related($table, $id)
+{
+	global $ns,$tp;
+	$msg = "";
+	$tp->parseTemplate("");
+
+	// Delete any related comments
+	require_once (e_HANDLER."comment_class.php");
+	$_com = new comment;
+	$num = $_com->delete_comments($table, $id);
+	if ($num)
+	{
+		$msg .= $num." ".ADLAN_114." ".LAN_DELETED."<br />";
+	}
+
+	// Delete any related ratings
+	require_once (e_HANDLER."rate_class.php");
+	$_rate = new rater;
+	$num = $_rate->delete_ratings($table, $id);
+	if ($num)
+	{
+		$msg .= LAN_RATING." ".LAN_DELETED."<br />";
+	}
+
+	if ($msg)
+	{
+		$ns->tablerender(LAN_DELETE, $msg);
+	}
+}
+
+##### End Moved from header.php #######################
+
 /* done in class2
  @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
  @include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
