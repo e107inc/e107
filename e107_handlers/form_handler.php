@@ -2425,7 +2425,7 @@ class e_form
 			$legend_class = vartrue($options['legend_class'], 'e-hideme');
 
 	        $text .= "
-				<form class='method='post' action='{$formurl}' id='{$elid}-list-form'>
+				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
 					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
