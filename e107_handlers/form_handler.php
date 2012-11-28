@@ -1098,7 +1098,7 @@ class e_form
 		}
 		$options['title'] = $title;//shorthand
 
-		return "<input type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		return "<input class='e-tip' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
 	/**
@@ -1404,8 +1404,8 @@ class e_form
 	{
 		$columnsArray = array_filter($columnsArray);
         $text = "
-		<div class='col-selection-cont'>
-			<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>"
+		<div class='col-selection-cont e-tip' data-placement='left' title='Select columns to display'>
+			<a href='#".$id."' class='e-show-if-js e-expandit' >"
 				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
 			."</a>
 			<div id='".$id."' class='e-show-if-js e-hideme col-selection'><div class='col-selection-body'>
@@ -1429,7 +1429,7 @@ class e_form
 		// has issues with the checkboxes.
         $text .= "
 				<div id='{$id}-button' class='right'>
-					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'update')."
+					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'other')."
 				</div>
 			</div></div>
 		</div>
@@ -1696,7 +1696,8 @@ class e_form
 						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?".(e_QUERY ? e_QUERY."&amp;ajax_used=1" : "ajax_used=1")."' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
 					}		
 			
-					$value .= "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
+					$value .= "<a href='".e_SELF."?{$query}' class='e-tip' title='".LAN_EDIT."' data-placement='left'>
+					<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
 
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']))

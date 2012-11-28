@@ -13,7 +13,13 @@ $(document).ready(function()
 				return;
 			}
 			
-			$(this).tooltip({opacity:1.0,fade:true});
+			var pos = $(this).attr('data-placement'); 
+			if(!pos)
+			{
+				pos = 'top';	
+			}
+			
+			$(this).tooltip({opacity:1.0,fade:true, placement: pos});
 			// $(this).css( 'cursor', 'pointer' )
 		});
 		
