@@ -169,19 +169,30 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-icon";
 		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		$iconlist = $fl->get_files($this->parent->plugin_dir."images/");
+		$frm = e107::getForm();
+		
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
+			$name = $this->parent->sections[$i]."_".$type."_icon";
+			$curVal = $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"];
+			
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
-				<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
-				<div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
-				foreach($iconlist as $icon)
-				{
-					$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a> ";
-				}
-				$this->row['FIELD_ITEM'] .= "</div>";
+			$this->row['FIELD_ITEM'] = $frm->iconpicker($name,$curVal);
+		//	$this->row['FIELD_ITEM'] = $frm->iconpicker($this->parent->sections[$i]."_".$type."_icon",$this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"]).
+		//	$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
+			
+		//		<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
+		//	$this->row['FIELD_ITEM'] .= div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
+				
+				
+			//	foreach($iconlist as $icon)
+		//		{
+			//		$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a> ";
+			//	}
+		//		$this->row['FIELD_ITEM'] .= "</div>";
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
+
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -528,9 +539,11 @@ class list_admin
 	function pref_submit()
 	{
 		global $rs;
-
+		$frm = e107::getForm();
+		
 		$this->row['TOPIC'] = LIST_ADMIN_11;
-		$this->row['FIELD'] = $rs->form_button("submit", 'update_menu', LIST_ADMIN_2);
+		$this->row['FIELD'] = $frm->admin_button('update_menu',LIST_ADMIN_2,'update'); // $rs->form_button("submit", 'update_menu', LIST_ADMIN_2);
+		return "<tr><td class='buttons-bar center' colspan='2'>".$frm->admin_button('update_menu',LIST_ADMIN_2,'update')."</td></tr>"; 
 		return $this->parseTemplate('TOPIC_ROW_NOEXPAND');
 	}
 }
