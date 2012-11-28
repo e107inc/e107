@@ -111,11 +111,11 @@ if (!isset($loginPrefs['new_news']))
 	$loginPrefs['new_members'] = '0';
 }
 
+$frm = e107::getForm();
 
 $text = '
-	<div style="text-align:center">
 	<form action="'.e_SELF.'" method="post">
-	<table class="fborder" >
+	<table class="table adminform" >
 	
     '.$loginClass->render_config_links().'
     
@@ -145,11 +145,12 @@ $text = '
 	</tr>
 	
 	'.$loginClass->render_config_stats().'
-
-	<tr>
-	<td colspan="2" class="forumheader" style="text-align: center;"><input class="button" type="submit" name="update_menu" value="'.LAN_SAVE.'" /></td>
-	</tr>
 	</table>
+	<div class="buttons-bar center">
+	<tr>
+	'.$frm->admin_button('update_menu', LAN_SAVE, 'update').'
+	</div>
+
 	</form>
 	</div>
 	';
