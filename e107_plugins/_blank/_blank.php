@@ -10,7 +10,14 @@
  *
 */
 require_once("../../class2.php");
-require_once(HEADERF); 					// render the header (everything before the main content area)
+
+
+e107::js('_blank','js/my.js','jquery');	// Load Plugin javascript and include jQuery framework 
+e107::css('_blank','css/my.css');		// load css file
+e107::lan('_blank'); 					// load language file ie. e107_plugins/_blank/languages/English.php 
+e107::meta('keywords','some words');	// add meta data to <HEAD> 
+
+require_once(HEADERF); 					// render the header (everything before the main content area) 
 
 
 $sql = e107::getDB(); 					// mysql class object
