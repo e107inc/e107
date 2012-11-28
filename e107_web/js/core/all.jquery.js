@@ -11,7 +11,21 @@ $(document).ready(function()
     	 $(".e-hideme").hide();
     	 $(".e-expandit").show();   	 
     	 $(".e-spinner").spinner();
-    		
+    	 
+    	 
+		 //check all
+		 $("#check-all").click(function(){
+			    $(".field-spacer").each( function() {
+					$(this).children(":checkbox").attr("checked",true);
+				 })
+		 })
+		 
+		 $("#uncheck-all").click(function(){
+			    $(".field-spacer").each( function() {
+					$(this).children(":checkbox").attr("checked",false);
+				 })
+		 })
+		     		
     		
     	// default 'toggle'. 	
        	$(".e-expandit").click(function () {
