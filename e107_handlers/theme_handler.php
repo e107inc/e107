@@ -57,7 +57,8 @@ class themeHandler
 	function themeHandler()
 	{
 		
-		global $emessage,$e107cache,$pref;
+		global $e107cache,$pref;
+		$mes = e107::getMessage();
 		
 		require_once (e_HANDLER."form_handler.php");
 		//enable inner tabindex counter
@@ -129,7 +130,7 @@ class themeHandler
 			
 			$eplug = new e107plugin;
 			$message = $eplug->install_plugin($key);
-			$emessage->add($message, E_MESSAGE_SUCCESS);
+			$mes->add($message, E_MESSAGE_SUCCESS);
 		}
 		
 		if(isset($_POST['setMenuPreset']))
@@ -153,7 +154,7 @@ class themeHandler
 					$message .= MENLAN_14." ".$k." : ".implode(", ", $v)."<br />";
 				}
 				
-				$emessage->add(MENLAN_43." : ".$key."<br />".$message, E_MESSAGE_SUCCESS);
+				$mes->add(MENLAN_43." : ".$key."<br />".$message, E_MESSAGE_SUCCESS);
 			}
 		
 		}
@@ -317,12 +318,15 @@ class themeHandler
 		{
 			exit;
 		}
-		global $ns,$emessage;
+
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		
 		extract($_FILES);
 		if(!is_writable(e_THEME))
 		{
 			//	$ns->tablerender(TPVLAN_16, TPVLAN_20);
-			$emessage->add(TPVLAN_20, E_MESSAGE_INFO);
+			$mes->add(TPVLAN_20, E_MESSAGE_INFO);
 			return FALSE;
 		}
 		else
@@ -343,7 +347,7 @@ class themeHandler
 			}
 			else
 			{
-				$emessage->add(TPVLAN_17, E_MESSAGE_ERROR);
+				$mes->add(TPVLAN_17, E_MESSAGE_ERROR);
 				//	$ns->tablerender(TPVLAN_16, TPVLAN_17);
 				//	require_once("footer.php");
 				return FALSE;
@@ -380,13 +384,13 @@ class themeHandler
 						$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
 					
-					$emessage->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
+					$mes->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
 					//	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
 					return FALSE;
 				}
 				
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-				$emessage->add(TPVLAN_19, E_MESSAGE_SUCCESS);
+				$mes->add(TPVLAN_19, E_MESSAGE_SUCCESS);
 				
 				if(varset($_POST['setUploadTheme']))
 				{
@@ -405,7 +409,9 @@ class themeHandler
 	
 	function showThemes($mode = 'main')
 	{
-		global $ns,$pref,$emessage;
+		global $pref;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
 		
 		echo "<div>
 		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
@@ -421,7 +427,7 @@ class themeHandler
 				}
 			}
 			
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $emessage->render().$text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $mes->render().$text);
 		}
 		
 		// Show Admin Configuration
@@ -435,7 +441,7 @@ class themeHandler
 					$text = $this->renderTheme(2, $theme);
 				}
 			}
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $emessage->render().$text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $mes->render().$text);
 		}
 		
 		// Show Upload Form
@@ -453,7 +459,7 @@ class themeHandler
 				$text .= $this->renderTheme(FALSE, $theme);
 			}
 			$text .= "<div class='clear'>&nbsp;</div>";
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $emessage->render().$text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $mes->render().$text);
 		}
 
 		
@@ -463,7 +469,9 @@ class themeHandler
 	
 	function renderUploadForm()
 	{
-		global $sql,$ns,$emessage;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
 		
 		if(!is_writable(e_THEME))
 		{
@@ -476,7 +484,6 @@ class themeHandler
 			$max_file_size = get_user_max_upload();
 			
 			$text = "
-			  	<div style='text-align:center'>
 				<table class='table adminform'>
 					<colgroup>
 						<col class='col-label' />
@@ -503,10 +510,10 @@ class themeHandler
 			
 			$text .= "
 				</div>
-				</div>\n";
+				\n";
 		}
 		
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $emessage->render().$text);
+		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $mes->render().$text);
 	}
 
 	
@@ -956,14 +963,14 @@ class themeHandler
 		{
 			$mainid = "selectmain[".$theme['id']."]";
 			$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
-			$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'submit');
+			$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
 		
 		}
 		else // main
 		{
 			$adminid = "selectadmin[".$theme['id']."]";
 			$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
-			$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'submit');
+			$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
 		}
 		
 		$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
@@ -1053,7 +1060,7 @@ class themeHandler
 	{
 		$core = e107::getConfig('core');
 		$sql = e107::getDb();
-		$emessage = eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		$themeArray = $this->getThemes("id");
 		
@@ -1078,16 +1085,16 @@ class themeHandler
 		if($core->save())
 		{
 			//TODO LANs
-			$emessage->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
-			$emessage->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
-			$emessage->add("Custom Pages: ".implode(" ",$customPages), E_MESSAGE_SUCCESS);
+			$mes->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
+			$mes->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
+			$mes->add("Custom Pages: ".implode(" ",$customPages), E_MESSAGE_SUCCESS);
 			
 			$this->theme_adminlog('01', $name.', style.css');
 			return TRUE;
 		}
 		else
 		{
-			$emessage->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
+			$mes->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
 			return FALSE;
 		}
 	
@@ -1126,7 +1133,11 @@ class themeHandler
 	
 	function setAdminTheme()
 	{
-		global $pref,$e107cache,$ns,$emessage;
+		global $pref,$e107cache;
+		
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
 		$themeArray = $this->getThemes("id");
 		$pref['admintheme'] = $themeArray[$this->id];
 		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_style.css') ? 'admin_style.css' : 'style.css';
@@ -1134,7 +1145,7 @@ class themeHandler
 		if(save_prefs())
 		{
 			// Default Message
-			$emessage->add(TPVLAN_40." <b>'".$themeArray[$this->id]."'</b>", E_MESSAGE_SUCCESS);
+			$mes->add(TPVLAN_40." <b>'".$themeArray[$this->id]."'</b>", E_MESSAGE_SUCCESS);
 			$this->theme_adminlog('02', $pref['admintheme'].', '.$pref['admincss']);
 		}
 		
@@ -1144,7 +1155,11 @@ class themeHandler
 	
 	function setStyle()
 	{
-		global $pref,$e107cache,$ns,$sql,$emessage;
+		global $pref,$e107cache;
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
 		//TODO adminlog
 		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('image_preload', $_POST['image_preload'])->setPosted('sitetheme_deflayout',
 			 $_POST['layout_default']);
@@ -1152,26 +1167,29 @@ class themeHandler
 		$msg = $this->setThemeConfig();
 		if($msg)
 		{
-			$emessage->add(TPVLAN_37, E_MESSAGE_SUCCESS);
+			$mes->add(TPVLAN_37, E_MESSAGE_SUCCESS);
 			if(is_array($msg))
-				$emessage->add($msg[0], $msg[1]);
+				$mes->add($msg[0], $msg[1]);
 		}
 	}
 	
 	function setAdminStyle()
 	{
-		global $pref,$e107cache,$ns,$emessage;
+		global $pref,$e107cache;
+		
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
 		/*$pref['admincss'] = $_POST['admincss'];
 		 $pref['adminstyle'] = $_POST['adminstyle'];
 		 $e107cache->clear_sys();
 		 if(save_prefs())
 		 {
-		 $emessage->add(TPVLAN_43, E_MESSAGE_SUCCESS);
+		 $mes->add(TPVLAN_43, E_MESSAGE_SUCCESS);
 		 $this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
 		 }
 		 else
 		 {
-		 $emessage->add(TPVLAN_43, E_MESSAGE_ERROR);
+		 $mes->add(TPVLAN_43, E_MESSAGE_ERROR);
 		 }*/
 
 		
