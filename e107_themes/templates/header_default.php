@@ -223,8 +223,8 @@ if(defined("PREVIEWTHEME"))
 {
 	// XXX - can be PREVIEWTHEME done in a better way than this? 
 	//echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
-	$e_js->otherCSS(PREVIEWTHEME);
-	
+	//var_dump(PREVIEWTHEMENAME);
+	$e_js->otherCSS(PREVIEWTHEME.'style.css');
 } 
 else 
 {
