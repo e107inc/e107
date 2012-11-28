@@ -21,6 +21,18 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 
 global $error_handler,$db_time,$ADMIN_FOOTER;
 
+// Legacy fix - call header if not already done, mainly fixing left side menus to work proper
+if(!deftrue('e_ADMIN_UI') && !deftrue('ADMIN_AREA'))
+{
+	// close the old buffer
+	$content =  ob_get_contents();
+	ob_get_clean();
+	// open new
+	ob_start();
+	require_once(e_ADMIN.'header.php');
+	echo $content;
+}
+
 // Clean session shutdown
 e107::getSession()->shutdown();
 

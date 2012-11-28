@@ -1011,6 +1011,11 @@ class e_admin_dispatcher
 	 */
 	public function __construct($request = null, $response = null, $auto_observe = true)
 	{
+		// we let know some admin routines we are in UI mod - related with some legacy checks and fixes
+		if(!defined('e_ADMIN_UI'))
+		{
+			define('e_ADMIN_UI', true);
+		}
 		if(null === $request || !is_object($request))
 		{
 			$request = new e_admin_request($request);
