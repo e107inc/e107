@@ -663,19 +663,24 @@ if (!function_exists('checkvalidtheme'))
 		// e_QUERY not set when in single entry mod
 		if (ADMIN && strpos($_SERVER['QUERY_STRING'], 'themepreview') !== false)
 		{
-			list($action, $id) = explode('.', e_QUERY);
+			list($action, $id) = explode('.', $_SERVER['QUERY_STRING']);
 
 	   		require_once(e_HANDLER.'theme_handler.php');
 			$themeobj = new themeHandler;
             $themeArray = $themeobj->getThemes('id');
  			$themeDef = $themeobj->findDefault($themeArray[$id]);
-
+		
+			$id = intval($id);
+			
             define('THEME_LAYOUT',$themeDef);
 
 			define('PREVIEWTHEME', e_THEME.$themeArray[$id].'/');
 			define('PREVIEWTHEMENAME', $themeArray[$id]);
 			define('THEME', e_THEME.$themeArray[$id].'/');
 			define('THEME_ABS', e_THEME_ABS.$themeArray[$id].'/');
+			
+	
+			
 			return;
 		}
 		if (@fopen(e_THEME.$theme_check.'/theme.php', 'r'))
