@@ -17,6 +17,12 @@
 */
 define('DOWNLOAD_DEBUG',FALSE);
 
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	// set e-token so it can be processed by class2
+	$_POST['e-token'] = '';
+}
+
 require_once("../class2.php");
 if (!getperms("R"))
 {
@@ -380,6 +386,7 @@ if ($action == "opt")
 
 		<tr style='vertical-align:top'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."' />
 		</td>
 		</tr>
@@ -470,6 +477,7 @@ if($action == 'limits')
 	</tr>
 	<tr>
 	<td class='forumheader' colspan='4' style='text-align:center'>
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."' />
 	</td>
 	</tr>
@@ -606,6 +614,7 @@ class download
       	if ($dl_count = $sql->db_Select_gen($query))
 		{
 		  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
+		  		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
@@ -722,7 +731,7 @@ class download
 
 
 		// Search  & display options etc.
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input type='hidden' name='e-token' value='".e_TOKEN."' /><input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
@@ -1227,7 +1236,7 @@ class download
 
 		$text .= "
 			<tr style='vertical-align:top'>
-			<td colspan='2' style='text-align:center' class='forumheader'>";
+			<td colspan='2' style='text-align:center' class='forumheader'><input type='hidden' name='e-token' value='".e_TOKEN."' />";
 
 		if ($id && $sub_action == "edit") 
 		{
@@ -1287,6 +1296,20 @@ class download
 				$_POST['download_filesize_external'] = FALSE;
 			}
 		}
+		
+		$_POST['download_url_external'] = str_replace("'", '', $_POST['download_url_external']);
+		$_POST['download_url'] = str_replace("'", '', $_POST['download_url']);
+		$_POST['download_author_website'] = str_replace("'", '', $_POST['download_author_website']);
+		$_POST['download_image'] = str_replace("'", '', $_POST['download_image']);
+		$_POST['download_thumb'] = str_replace("'", '', $_POST['download_thumb']);
+		$_POST['download_visible'] = $_POST['download_visible'] ? intval($_POST['download_visible']) : '';
+		$_POST['download_class'] = $_POST['download_class'] ? intval($_POST['download_class']) : '';
+		
+		if($_POST['download_author_email'] && !check_email($_POST['download_author_email']))
+		{
+			$_POST['download_author_email'] = '';
+		}
+		
 		if ($_POST['download_url_external'] && $_POST['download_url'] == '')
 		{
 			$durl = $_POST['download_url_external'];
@@ -1567,6 +1590,7 @@ class download
 
 			$text .= "</table></div>";
 			$text .= "<div style='text-align:center'>
+				<input type='hidden' name='e-token' value='".e_TOKEN."' />
 				<input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."' />
 				</div>";
 		}
@@ -1703,7 +1727,7 @@ class download
 
 		$text .= "
 			<tr style='vertical-align:top'>
-			<td colspan='2' style='text-align:center' class='forumheader'>";
+			<td colspan='2' style='text-align:center' class='forumheader'><input type='hidden' name='e-token' value='".e_TOKEN."' />";
 		if ($id && $sub_action == "edit" && !isset($_POST['add_category'])) 
 		{
 			$text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."' /> ";
@@ -1764,6 +1788,7 @@ class download
 
 			$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
+			<input type='hidden' name='e-token' value='".e_TOKEN."' />
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
@@ -1816,6 +1841,7 @@ class download
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
+		<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 
 		<tr>
