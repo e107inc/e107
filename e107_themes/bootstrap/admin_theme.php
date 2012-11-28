@@ -32,11 +32,11 @@ $(function() {
 
 if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDIRECTION).'.css'))
 {
-	e107::css('theme','menu/menu_'.strtolower(TEXTDIRECTION).'.css');
+	// e107::css('theme','menu/menu_'.strtolower(TEXTDIRECTION).'.css');
 }
 else
 {
-	e107::css('theme','menu/menu.css');
+	// e107::css('theme','menu/menu.css');
 }
 
 
