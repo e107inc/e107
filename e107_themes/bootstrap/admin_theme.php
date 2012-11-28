@@ -176,7 +176,7 @@ function tablestyle($caption, $text, $mode)
 			</div>
 		';
 	break;
-
+/*
 	case 'admin_content':
 		echo '
 			<div class="block">
@@ -187,7 +187,7 @@ function tablestyle($caption, $text, $mode)
 			</div>
 		';
 	break;
-
+*/
 	default:
 		echo '
 			<div class="block">
