@@ -11,7 +11,7 @@ define('RL_LAN_006', "Options Updated");
 // define('RL_LAN_007', "User Audit Trail Options");
 define('RL_LAN_008', "Rolling Log is active:");
 define('RL_LAN_009', "Rolling Log History length in days");
-define('RL_LAN_010', "Update Options");
+// define('RL_LAN_010', "Update Options");
 // define('RL_LAN_011', 'Rolling Log Configuration');
 define('RL_LAN_012', "Filter Options");
 define('RL_LAN_013', "Start date/time");
