@@ -54,14 +54,14 @@ function show_otherdb_form()
 
 	$frm = new form;
 	$text = $frm -> form_open("post", e_SELF);
-	$text .= "<table style='width:96%' class='fborder'>";
+	$text .= "<table class='table adminform'>";
 
-	$text .= "<tr><td class='forumheader3'>".LAN_ALT_26."</td><td class='forumheader3'>";
+	$text .= "<tr><td>".LAN_ALT_26."</td><td>";
 	$text .= OTHERDB_LAN_15;
 	$text .= "</td></tr>";
 
 	$text .= alt_auth_get_db_fields('otherdb', $frm, $parm, 'server|uname|pwd|db|table|ufield|pwfield|salt');
-	$text .= "<tr><td class='forumheader3'>".OTHERDB_LAN_9."</td><td class='forumheader3'>";
+	$text .= "<tr><td>".OTHERDB_LAN_9."</td><td>";
 	
 	$text .= altAuthGetPasswordSelector('otherdb_password_method', $frm, $parm['otherdb_password_method'], TRUE);
 
@@ -72,7 +72,7 @@ function show_otherdb_form()
 	$text .= alt_auth_get_field_list('otherdb',$frm, $parm, FALSE);
 
 	$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-	$text .= $frm -> form_button('submit', 'update', LAN_ALT_UPDATESET);
+	$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
 	$text .= '</td></tr>';
 
 	$text .= '</table>';

@@ -35,6 +35,7 @@ if(!getperms('P') || !e107::isInstalled('alt_auth'))
 	exit(); 
 }
 require_once(e_HANDLER.'form_handler.php');
+$frm = e107::getForm();
 require_once(e_ADMIN.'auth.php');
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'main');
@@ -113,7 +114,7 @@ if(isset($message))
 $text = "
 <div>
 <form method='post' action='".e_SELF."'>
-<table cellpadding='0' cellspacing='0' class='adminform'>
+<table class='table adminform'>
     	<colgroup span='2'>
     		<col class='col-label' />
     		<col class='col-control' />
@@ -159,13 +160,14 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 </tr>
 </table>
 
-<div class='buttons-bar center'>
-<input class='button' type='submit' name='updateprefs' value='".LAN_ALT_2."' />
+<div class='buttons-bar center'>".
+$frm->admin_button('updateprefs',LAN_UPDATE,'update')."
 </div>
 </form>
 </div>";
+$ns = e107::getRender();
 
-e107::getRender()->tablerender(LAN_ALT_3, $text);
+$ns->tablerender(LAN_ALT_3, $text);
 
 
 if ($euf->userCount)
@@ -201,7 +203,8 @@ if ($euf->userCount)
 		}
 	$text .= "</tbody>
 </table><div class='buttons-bar center'>
-<input class='button' type='submit' name='updateeufs' value='".LAN_ALT_2."' />
+".$frm->admin_button('updateeufs',LAN_UPDATE,'update')."
+
 </div>
 
 </form>

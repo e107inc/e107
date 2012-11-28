@@ -131,14 +131,14 @@ function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = FALSE)
 	{
 		if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
 		{
-			$ret .= "<tr><td class='forumheader3'>";
+			$ret .= "<tr><td$log>";
 			if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
 			$ret .= $v['prompt'].':';
 			if (isset($v['help']))
 			{
 				$ret .= "<br /><span class='smalltext'>".$v['help']."</span>";
 			}
-			$ret .= "</td><td class='forumheader3'>";
+			$ret .= "</td><td$log>";
 //			$fieldname = $tableType.'_'.$v['optname'];
 			$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
 			$value = varset($v['default'],'');
@@ -267,10 +267,11 @@ function alt_auth_get_db_fields($prefix, $frm, $parm, $fields = 'server|uname|pw
 	{
 		if (in_array($fn,$opts))
 		{
-			$ret .= "<tr><td class='forumheader3'>".$cf['prompt'];
-			if ($cf['help']) $ret .= "<br /><span class='smalltext'>".$cf['help']."</span>";
-			$ret .= "</td><td class='forumheader3'>";
+			$ret .= "<tr><td$log>".$cf['prompt'];
+			
+			$ret .= "</td><td$log>";
 			$ret .= $frm -> form_text($prefix.'_'.$cf['fieldname'], $cf['size'], $parm[$prefix.'_'.$cf['fieldname']], $cf['max_size']);
+			if ($cf['help']) $ret .= "<br /><span class='field-help'>".$cf['help']."</span>";
 			$ret .= "</td></tr>\n";
 		}
 	}
@@ -376,7 +377,7 @@ function altAuthGetParams($prefix)
 function alt_auth_test_form($prefix, $frm)
 {
 	$text = $frm -> form_open('post', e_SELF, 'testform');
-	$text .= "<table style='width:96%' class='fborder'>
+	$text .= "<table class='table adminform'>
 	<tr><td colspan='2' class='forumheader2' style='text-align:center;'>".LAN_ALT_42."</td></tr>";
 
 	if (isset($_POST['testauth']))
@@ -397,13 +398,13 @@ function alt_auth_test_form($prefix, $frm)
 			$log_result = $_login->login($val_name, $_POST['passtovalidate'], $pass_vars, ($val_name == ''));
 		}
 
-		$text .= "<tr><td class='forumheader3'>".LAN_ALT_48;
+		$text .= "<tr><td$log>".LAN_ALT_48;
 		if ($val_name)
 		{
 			$text .= "<br />".LAN_ALT_49.$val_name.'<br />'.LAN_ALT_50;
 			if (varset($_POST['passtovalidate'],'')) $text .= str_repeat('*',strlen($_POST['passtovalidate'])); else $text .= LAN_ALT_51;
 		}
-		$text .= "</td><td class='forumheader3'>";
+		$text .= "</td><td $log>";
 		switch ($log_result)
 		{
 			case AUTH_SUCCESS :
@@ -439,16 +440,17 @@ function alt_auth_test_form($prefix, $frm)
 		$text .= "</td></tr>";
 	}
 
-	$text .= "<tr><td class='forumheader3'>".LAN_ALT_33."</td><td class='forumheader3'>";
+	$text .= "<tr><td $log>".LAN_ALT_33."</td><td $log>";
 	$text .= $frm->form_text('nametovalidate', 35, '', 120);
 	$text .= "</td></tr>";
 
-	$text .= "<tr><td class='forumheader3'>".LAN_ALT_34."</td><td class='forumheader3'>";
+	$text .= "<tr><td $log>".LAN_ALT_34."</td><td $log>";
 	$text .= $frm->form_password('passtovalidate', 35, '', 120);
 	$text .= "</td></tr>";
 
 	$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-	$text .= $frm->form_button("submit", 'testauth', LAN_ALT_47);
+//	$text .= $frm->form_button("submit", 'testauth', LAN_ALT_47);
+	$text .= e107::getForm()->admin_button('testauth', LAN_ALT_47,'other');
 	$text .= "</td></tr>";
 
 	$text .= "</table>";

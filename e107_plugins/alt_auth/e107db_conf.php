@@ -54,19 +54,19 @@ function show_e107db_form()
 
 	$frm = new form;
 	$text = $frm -> form_open('post', e_SELF);
-	$text .= "<table cellpadding='0' cellspacing='0' class='fborder'>
+	$text .= "<table class='table adminform'>
 	<colgroup span='2'>
 		<col class='col-label' />
 		<col class='col-control' />
 	</colgroup>";
 
-	$text .= "<tr><td class='forumheader3'>".LAN_ALT_26."</td><td class='forumheader3'>";
+	$text .= "<tr><td>".LAN_ALT_26."</td><td>";
 	$text .= E107DB_LAN_1;
 	$text .= "</td></tr>";
 
 	$text .= alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db|prefix|classfilt');
 
-	$text .= "<tr><td class='forumheader3'>".E107DB_LAN_9."</td><td class='forumheader3'>";
+	$text .= "<tr><td>".E107DB_LAN_9."</td><td>";
 	$text .= altAuthGetPasswordSelector('e107db_password_method', $frm, $parm['e107db_password_method'], FALSE);
 
 	$text .= "</td></tr>";
@@ -76,7 +76,8 @@ function show_e107db_form()
 	$text .= alt_auth_get_field_list('e107db',$frm, $parm, TRUE);
 
 	$text .= "</table><div class='buttons-bar center'>";
-	$text .= $frm -> form_button("submit", "update", LAN_ALT_UPDATESET);
+	$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
+//	$text .= $frm -> form_button("submit", "update", LAN_ALT_UPDATESET);
 	$text .= '</div>';
 	$text .= $frm -> form_close();
 

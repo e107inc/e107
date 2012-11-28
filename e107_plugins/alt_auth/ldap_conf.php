@@ -29,6 +29,7 @@ include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'ldap');
 require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 
+$mes = e107::getMessage();
 
 $server_types[1] = 'LDAP';
 $server_types[2] = 'ActiveDirectory';
@@ -46,7 +47,8 @@ if($_POST['update'])
 
 if(!function_exists('ldap_connect'))
 {
-	$message .= "<br /><br /><div style='color:#f00; font-weight:bold'>".LDAPLAN_11."</div><br />";
+	// $message .= "<br /><br /><div style='color:#f00; font-weight:bold'>".LDAPLAN_11."</div><br />";
+	$mes->addWarning(LDAPLAN_11);
 }
 
 
@@ -64,8 +66,8 @@ $current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 
 $frm = new form;
 $text = $frm -> form_open('post',e_SELF);
-$text .= "<table style='width:96%' class='fborder'>";
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_12."</td><td class='forumheader3'>";
+$text .= "<table class='table adminform'>";
+$text .= "<tr><td>".LDAPLAN_12."</td><td>";
 $text .= $frm -> form_select_open("ldap_servertype");
 foreach($server_types as $v)
 {
@@ -75,25 +77,25 @@ foreach($server_types as $v)
 $text .= $frm -> form_select_close();
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_1."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_1."</td><td>";
 $text .= $frm -> form_text("ldap_server", 35, $ldap['ldap_server'], 120);
 $text .= "</td></tr>";
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_2."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_2."</td><td>";
 $text .= $frm -> form_text("ldap_basedn", 35, $ldap['ldap_basedn'], 120);
 $text .= "</td></tr>";
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_14."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_14."</td><td>";
 $text .= $frm -> form_text("ldap_ou", 35, $ldap['ldap_ou'], 60);
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_3."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_3."</td><td>";
 $text .= $frm -> form_text("ldap_user", 35, $ldap['ldap_user'], 120);
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_4."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_4."</td><td>";
 $text .= $frm -> form_text("ldap_passwd", 35, $ldap['ldap_passwd'], 120);
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_5."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_5."</td><td>";
 $text .= $frm -> form_select_open("ldap_version");
 
 foreach($ldap_ver as $v)
@@ -105,7 +107,7 @@ foreach($ldap_ver as $v)
 $text .= $frm -> form_select_close();
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LDAPLAN_7."<br /><span class='smalltext'>".LDAPLAN_8."</span></td><td class='forumheader3'>";
+$text .= "<tr><td>".LDAPLAN_7."<br /><span class='smalltext'>".LDAPLAN_8."</span></td><td>";
 $text .= $frm -> form_text('ldap_edirfilter', 35, $ldap['ldap_edirfilter'], 120);
 $text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />".htmlentities($current_filter)."</span></td></tr>";
 
@@ -115,13 +117,15 @@ $text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />".htmlentities($curre
 	$text .= alt_auth_get_field_list('ldap',$frm, $ldap, FALSE);
 
 $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-$text .= $frm -> form_button('submit', 'update', LDAPLAN_13);
+
+$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
+//$text .= $frm -> form_button('submit', 'update', LDAPLAN_13);
 $text .= "</td></tr>";
 
 $text .= "</table>\n";
 $text .= $frm -> form_close();
 
-e107::getRender()->tablerender(LDAPLAN_6,$text);
+e107::getRender()->tablerender(LDAPLAN_6, $mes->render(). $text);
 e107::getRender()->tablerender(LAN_ALT_40.LAN_ALT_41,alt_auth_test_form('ldap',$frm));
 
 require_once(e_ADMIN.'footer.php');

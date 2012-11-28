@@ -24,17 +24,20 @@ include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_radius_conf.php');
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define("ALT_AUTH_ACTION", "radius");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
+$mes = e107::getMessage();
 
 $message = '';
 if($_POST['update'])
 {
-	$message .= alt_auth_post_options('radius');
+	// $message .= alt_auth_post_options('radius');
+	$mes->addSuccess(alt_auth_post_options('radius'));
 }
 
 
 if (!extension_loaded('radius'))
 {
-	$message .= "<br /><br /><div style='color:#f00; font-weight:bold'>".LAN_RADIUS_11."</div><br />";
+	// $message .= "<br /><br /><div style='color:#f00; font-weight:bold'>".LAN_RADIUS_11."</div><br />";
+	$mes->addWarning(LAN_RADIUS_11);
 }
 
 
@@ -53,12 +56,12 @@ while($row = $sql->db_Fetch())
 
 $frm = new form;
 $text = $frm -> form_open("post",e_SELF);
-$text .= "<table style='width:96%' class='fborder'>";
-$text .= "<tr><td class='forumheader3'>".LAN_RADIUS_01."</td><td class='forumheader3'>";
+$text .= "<table class='table adminform'>";
+$text .= "<tr><td>".LAN_RADIUS_01."</td><td>";
 $text .= $frm -> form_text("radius_server", 35, $radius['radius_server'], 120);
 $text .= "</td></tr>";
 
-$text .= "<tr><td class='forumheader3'>".LAN_RADIUS_02."</td><td class='forumheader3'>";
+$text .= "<tr><td>".LAN_RADIUS_02."</td><td>";
 $text .= $frm -> form_text('radius_secret', 35, $radius['radius_secret'], 200);
 $text .= "</td></tr>";
 
@@ -70,13 +73,14 @@ if ($tmp)
 }
 
 $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-$text .= $frm -> form_button("submit", "update", LAN_ALT_2);
+// $text .= $frm -> form_button("submit", "update", LAN_ALT_2);
+$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
 $text .= "</td></tr>";
 
 $text .= "</table>";
 $text .= $frm -> form_close();
 
-$ns -> tablerender(LAN_RADIUS_06,$text);
+$ns -> tablerender(LAN_RADIUS_06, $mes->render() . $text);
 $ns->tablerender(LAN_ALT_40.LAN_ALT_41,alt_auth_test_form('radius',$frm));
 
 require_once(e_ADMIN."footer.php");
