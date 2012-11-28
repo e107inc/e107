@@ -144,12 +144,12 @@ $TEMPLATE_LIST_NEW['TOPIC_ROW'] = "
 </tr>";
 
 //field containing a table
-$TEMPLATE_LIST_NEW['FIELD_TABLE_START'] = "<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+$TEMPLATE_LIST_NEW['FIELD_TABLE_START'] = "<table class='table adminlist'>";
 
 $TEMPLATE_LIST_NEW['FIELD_TABLE'] = "
 <tr>
-	<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>{FIELD_TITLE}</td>
-	<td class='forumheader3'>{FIELD_ITEM}</td>
+	<td style='width:10%; white-space:nowrap; vertical-align:top;'>{FIELD_TITLE}</td>
+	<td>{FIELD_ITEM}</td>
 </tr>";
 
 $TEMPLATE_LIST_NEW['FIELD_TABLE_END'] = "</table>";
@@ -157,7 +157,7 @@ $TEMPLATE_LIST_NEW['FIELD_TABLE_END'] = "</table>";
 //header for options page
 $TEMPLATE_LIST_NEW['OPTIONS_HEADER'] = "
 <div id='{ID}' class='e-hideme center'>
-<table style='".ADMIN_WIDTH."' class='fborder'>
+<table class='table adminlist'>
 <tr><td colspan='4' class='forumheader'>{TITLE}</td></tr>";
 
 //template for spacer row
@@ -166,7 +166,7 @@ $TEMPLATE_LIST_NEW['TOPIC_ROW_SPACER'] = "<tr><td style='border:0; height:20px;'
 $TEMPLATE_LIST_NEW['TOPIC_TABLE_START'] = "
 <div style='text-align:center;'>
 <form method='post' action='".e_SELF."' name='menu_conf_form' id='menu_conf_form' enctype='multipart/form-data'>
-<table style='".ADMIN_WIDTH."' class='fborder'>";
+<table class='table adminlist'>";
 
 $TEMPLATE_LIST_NEW['TOPIC_TABLE_END'] = "{SUBMIT}</table></div>";
 

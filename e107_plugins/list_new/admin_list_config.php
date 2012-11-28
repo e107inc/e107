@@ -32,14 +32,14 @@ if(!getperms("1") || !plugInstalled('list_new'))
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
-require_once(e_HANDLER."file_class.php");
-$fl = new e_file;
+$fl = e107::getFile();
 
 require_once(e_PLUGIN."list_new/list_class.php");
 $rc = new listclass('admin');
 
 //get all sections to use (and reload if new e_list.php files are added)
 $rc->getSections();
+$mes = e107::getMessage();
 
 //update preferences in database
 if(isset($_POST['update_menu']))
@@ -55,13 +55,14 @@ if(isset($message))
 {
 	$MESSAGE = $message;
 	$t = preg_replace("/\{(.*?)\}/e", '$\1', $rc->template['ADMIN_MESSAGE']);
-	$rc->e107->ns->tablerender('', $t);
+	$mes->addInfo($message);
+	//$rc->e107->ns->tablerender('', $t);
 }
 
 //display admin page
 $text = $rc->admin->display();
 
-$rc->e107->ns->tablerender(LIST_ADMIN_1, $text);
+$rc->e107->ns->tablerender(LIST_ADMIN_1, $mes->render(). $text);
 
 /**
  * Display admin menu
