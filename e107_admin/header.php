@@ -96,7 +96,7 @@ e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 //
 // A: Admin Defines and Links
 //
-require_once (e_ADMIN.'ad_links.php');
+//require_once (e_ADMIN.'ad_links.php'); Moved to auth.php
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 {
 	$threshold = (time() - ($pref['del_unv'] * 60));
@@ -119,6 +119,7 @@ header('Content-type: text/html; charset=utf-8', TRUE);
 // B.2: Include admin LAN defines
 //
 
+/* Moved to auth.php
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
 
@@ -128,7 +129,8 @@ include_once(e107::coreTemplatePath('admin_icons'));
 if (!defined('ADMIN_WIDTH'))
 {
 	define('ADMIN_WIDTH', "width: 95%");
-}
+}*/
+
 
 //
 // C: Send start of HTML
@@ -250,6 +252,7 @@ echo "\n<!-- footer_inline_css -->\n";
 //
 echo "<!-- *JS* -->\n";
 
+/* Moved to auth.php
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
 if (varset($pref['wysiwyg'], FALSE) ) // posts bbcode by default. 
@@ -259,7 +262,8 @@ if (varset($pref['wysiwyg'], FALSE) ) // posts bbcode by default.
 else
 {
 	define("e_WYSIWYG", FALSE);
-}
+}*/
+
 
 
 // [JSManager] Load JS Includes - Zone 1 - Before Library
@@ -792,6 +796,7 @@ if ($e107_popup != 1)
 
 
 
+/* Moved to auth.php
 	if (file_exists(THEME.'admin_template.php'))
 	{
 		require_once (THEME.'admin_template.php');
@@ -799,7 +804,8 @@ if ($e107_popup != 1)
 	else
 	{
 		require_once (e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
-	}
+	}*/
+
 
 	if (!function_exists("parse_admin"))
 	{
@@ -836,6 +842,7 @@ if ($e107_popup != 1)
 	 
 	 
 	 // It has been copied to message_handler.php as autoMessage();
+/* Moved to auth.php
 	 
 	function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
 	{
@@ -914,7 +921,8 @@ if ($e107_popup != 1)
 		{
 			$ns->tablerender(LAN_DELETE, $msg);
 		}
-	}
+	}*/
+
 
 	$sql->db_Mark_Time('Parse Admin Header');
 
