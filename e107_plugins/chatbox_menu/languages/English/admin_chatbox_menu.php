@@ -28,7 +28,7 @@ define("CHBLAN_15", "Replace string if activated");
 define("CHBLAN_16", "links will be replaced by this string");
 define("CHBLAN_17", "Wordwrap count");
 define("CHBLAN_18", "words longer than the number you set here will be wrapped");
-define("CHBLAN_19", "Update Chatbox Settings");
+//define("CHBLAN_19", "Update Chatbox Settings");
 define("CHBLAN_20", "Chatbox Settings");
 define("CHBLAN_21", "Prune");
 define("CHBLAN_22", "Delete posts older than a certain time period");
