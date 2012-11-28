@@ -44,8 +44,8 @@ e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 
 
 // e107::js("core",	"core/mediaManager.js","jquery",3);
-e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
-e107::css('core', 	'tooltip/tipsy.css', 'jquery');
+//e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
+//e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 
 e107::js("core",	"tags/jquery.tagit.js","jquery",3);
 e107::css('core', 	'tags/jquery.tagit.css', 'jquery');

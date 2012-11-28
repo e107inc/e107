@@ -5,9 +5,9 @@ define('STANDARDS_MODE', TRUE);
 define("VIEWPORT","width=device-width, initial-scale=1.0");
 
 e107::lan('theme');
-e107::js('theme','js/bootstrap.js');
-e107::css('theme','css/bootstrap.css');
-e107::css('theme','css/bootstrap-responsive.css');
+e107::js('core','bootstrap/js/bootstrap.min.js');
+e107::css('core','bootstrap/css/bootstrap.min.css');
+e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 /*
 $drop = "
