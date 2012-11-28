@@ -359,7 +359,7 @@ class e_db_mysql
 	 * @param boolean $multi if true, fetch all (multi mode)
 	 * @param string $indexField field name to be used for indexing when in multi mode
 	 */
-	public function retrieve($table, $fields = '*', $where, $noWhere = false, $multi = false, $indexField = null)
+	public function retrieve($table, $fields = '*', $where=null, $noWhere = false, $multi = false, $indexField = null)
 	{
 		// fetch mode
 		if(empty($table))
@@ -407,7 +407,8 @@ class e_db_mysql
 			
 			case 'multi':
 				if(!$this->select($table, $fields, $where, $noWhere))
-				{var_dump($this->getLastQuery());
+				{
+					var_dump($this->getLastQuery());
 					return array();
 				}
 				$ret = array();
