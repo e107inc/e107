@@ -146,6 +146,13 @@ class e_form
 		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
 	}
 
+	/**
+	 * @param $name
+	 * @param $default value
+	 * @param $label
+	 * @param $sc_parms
+	 * @param $ajax
+	 */
 	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
 	{
     	// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
