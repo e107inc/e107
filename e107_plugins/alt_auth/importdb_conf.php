@@ -55,14 +55,14 @@ function show_importdb_form()
 
 	$frm = new form;
 	$text = $frm -> form_open('post', e_SELF);
-	$text .= "<table cellpadding='0' cellspacing='0' class='adminform'>
+	$text .= "<table class='table adminform'>
 	<colgroup span='2'>
 		<col class='col-label' />
 		<col class='col-control' />
 	</colgroup>";
 
 
-	$text .= "<tr><td colspan='2' class='forumheader3'>".IMPORTDB_LAN_11."</td></tr>";
+	$text .= "<tr><td colspan='2'>".IMPORTDB_LAN_11."</td></tr>";
 	$text .= "<tr><td>".IMPORTDB_LAN_9."</td><td>";
 
 	$text .= altAuthGetPasswordSelector('importdb_password_method', $frm, $parm['importdb_password_method'], TRUE);
@@ -70,7 +70,7 @@ function show_importdb_form()
 	$text .= "</td></tr>";
 
 	$text .= "</table><div class='buttons-bar center'>";
-	$text .= $frm -> form_button("submit", "update", LAN_ALT_UPDATESET);
+	$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
 	$text .= "</div>";
 	$text .= $frm -> form_close();
 
