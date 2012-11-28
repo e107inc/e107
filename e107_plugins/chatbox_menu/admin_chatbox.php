@@ -100,7 +100,7 @@ $text = "<div>
     		<col class='col-control' />
     	</colgroup>
 	<tr>
-	<td>".CHBLAN_11.":  <div class='smalltext'>".CHBLAN_12."</div></td>
+	<td>".CHBLAN_11.":</td>
 	<td>
 	<select name='chatbox_posts' class='tbox'>";
 if ($chatbox_posts == 5) {
@@ -135,6 +135,7 @@ if(!isset($pref['cb_mod']))
 }
 
 $text .= "</select>
+<span class='field-help'>".CHBLAN_12."</span>
 	</td>
 	</tr>
 
