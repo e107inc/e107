@@ -40,7 +40,7 @@ $ue = new e107_user_extended;
 $user = new users_ext;
 
 $frm = e107::getForm();
-
+$mes = e107::getMessage();
 
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
@@ -150,7 +150,10 @@ if (isset($_POST['add_field']))
 		}
 		else
 		{
-			$result = admin_update($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
+		
+				$result = $mes->autoMessage($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
+		
+		//	$result = $mes->autoMessage($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
 			if(!$result)
 			{
 				$message = EXTLAN_75;
@@ -179,7 +182,7 @@ if (isset($_POST['update_field']))
 	}
 	$upd_values = $user->make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	$result = admin_update($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
+	$result = $mes->autoMessage($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
 	if($result)
 	{
 		$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
@@ -193,7 +196,7 @@ if (isset($_POST['update_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = trim($tp->toDB($_POST['user_field']));
-		$result = admin_update(
+		$result = $mes->autoMessage(
 			$sql->db_Update(
 				"user_extended_struct",
 				"user_extended_struct_name = '{$name}', user_extended_struct_text='".$tp->toDB($_POST['user_text'])."', user_extended_struct_read = '".intval($_POST['user_read'])."', user_extended_struct_write = '".intval($_POST['user_write'])."', user_extended_struct_applicable = '".intval($_POST['user_applicable'])."' WHERE user_extended_struct_id = '{$sub_action}'"),
@@ -221,7 +224,7 @@ if (isset($_POST['add_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = $tp->toDB($_POST['user_field']);
-		$result = admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
+		$result = $mes->autoMessage($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
 		if($result)
 		{
 			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
@@ -619,7 +622,7 @@ class users_ext
 			}
 			$text .= "
 			</div>
-			<input type='button' class='button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<input type='button' class='btn button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
@@ -809,7 +812,7 @@ class users_ext
 			else
 			{
 				$text .= $frm->admin_button('update_field', EXTLAN_24,'update').
-				$frm->admin_button('cancel', EXTLAN_33);
+				$frm->admin_button('cancel', EXTLAN_33,'cancel');
 			}
 
 
@@ -1024,7 +1027,12 @@ class users_ext
 
 	function show_predefined()
 	{
-		global $tp, $ns, $ue, $sql, $frm;
+		global $ue;
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
 
 		// Get list of current extended fields
 		$curList = $ue->user_extended_get_fieldlist();
@@ -1072,9 +1080,9 @@ class users_ext
 		$txt .= "</tbody></table></form>";
 
 		$emessage = e107::getMessage();
+
 		$ns->tablerender(EXTLAN_56,$emessage->render(). $txt);
-		require_once(e_ADMIN.'footer.php');
-		exit;
+
 	}
 
 
@@ -1114,7 +1122,7 @@ class users_ext
         ;
 		$txt .= "
 		<td class='center last'>";
-        $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val);
+        $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val, 'other');
 		$txt .= "</td>
 		</tr>";
 		return $txt;
