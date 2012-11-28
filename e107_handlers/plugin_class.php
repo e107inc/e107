@@ -58,6 +58,11 @@ class e107plugin
 		'e_featurebox'
 	);
 
+
+	var $disAllowed = array(
+		'theme'
+	);
+
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
 	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_install_variables = array(
@@ -181,6 +186,14 @@ class e107plugin
 				$mes->add("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.", E_MESSAGE_WARNING);
 				continue;
 			}
+			
+			if(in_array($path,$this->disAllowed))
+			{
+				$mes->addWarning("Folder error: <i>{$p['path']}</i> is not permitted as an acceptable folder name.");
+				continue;	
+			}
+			
+			
 			$plug['plug_action'] = 'scan'; // Make sure plugin.php knows what we're up to
 
 			if (!$this->parse_plugin($p['path']))
