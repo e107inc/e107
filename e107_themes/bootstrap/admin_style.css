@@ -47,6 +47,11 @@ a.brand:hover img {
 .sidebar-nav 	{ font-size:12px; }
 
 } 
+
+.modal {
+	min-width:800px;
+
+}
  
 @media (min-width: 1500px) { 
 	
