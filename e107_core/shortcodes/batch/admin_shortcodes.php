@@ -1307,14 +1307,22 @@ class admin_shortcodes
 		{
 			while($row = $sql->db_Fetch())
 			{
+				
+				
 				if($plug->parse_plugin($row['plugin_path']))
 				{
 					$plug_vars = $plug->plug_vars;
+					
+					if($row['plugin_path']=='tinymce')
+					{
+					//	print_a($plug_vars);
+					}
+					
 					e107::loadLanFiles($row['plugin_path'], 'admin');
 					if(varset($plug_vars['adminLinks']['link']))
 					{
 						
-						if($row['plugin_category'] == 'menu')
+						if($row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
 						{
 							continue;
 						}
