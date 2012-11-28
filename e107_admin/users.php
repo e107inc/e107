@@ -15,6 +15,8 @@
 */
 require_once ('../class2.php');
 
+// Secretr FIXME move all triggers and pages inside the controller
+
 if (!getperms('4|U0|U1|U2|U3') )
 {	
 	header('location:'.$e107->url->create('/'));
@@ -143,10 +145,10 @@ if (isset ($_POST['resend_to_all']))
 	$user->resend_to_all();
 }
 
-if (isset ($_POST['execute_batch']))
-{
-	$user->process_batch();
-}
+// if (isset ($_POST['execute_batch']))
+// {
+	// $user->process_batch();
+// }
 
 
 
@@ -428,44 +430,50 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == "reqverify")
 		$sub_action = "user_id";
 	}
 }
-/*
+
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "ban")
 {
-	$user->user_ban($_POST['userid']);
+	e107::getMessage()->addError('FIXME, I\'m not working...');
+	//$user->user_ban($_POST['userid']);
 }
 
 // ------- Unban User --------------
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "unban")
 {
-	$user->user_unban($_POST['userid']);
+	e107::getMessage()->addError('FIXME, I\'m not working...');
+	//$user->user_unban($_POST['userid']);
 }
 
 // User Info.
-if ((isset ($_POST['useraction']) && $_POST['useraction'] == "userinfo") || $_GET['userinfo'])
-{
-	$ip = ($_POST['userip']) ? $_POST['userip'] : $_GET['userinfo'];
-	$user->user_info($ip);
-}
+// if ((isset ($_POST['useraction']) && $_POST['useraction'] == "userinfo") || $_GET['userinfo'])
+// {
+	// $ip = ($_POST['userip']) ? $_POST['userip'] : $_GET['userinfo'];
+	// $user->user_info($ip);
+// }
 
 // ------- Delete User --------------
-if (isset ($_POST['useraction']) && $_POST['useraction'] == 'deluser')
-{
-	$user->user_delete($_POST['userid'],true);
-}
+// if (isset ($_POST['useraction']) && $_POST['useraction'] == 'deluser')
+// {
+	// $user->user_delete($_POST['userid'],true);
+// }
 
 // ---- Update User's class --------------------
 if (isset ($_POST['updateclass']))
 {
-	$user->user_userclass($_POST['userid'], $_POST['userclass'],'clear');
+		
+	e107::getMessage()->addError('FIXME, I\'m not working...');
+	//$user->user_userclass($_POST['userid'], $_POST['userclass'],'clear');
 }
+
 
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 {
+	e107::getMessage()->addError('FIXME, I\'m not working...');
   //	header('location:'.e_ADMIN.'userclass.php?'.$e107->tp->toDB($_POST['userid'].'.'.e_QUERY));
   //	exit;
-  	$user->show_userclass($_POST['userid']);
+  	//$user->show_userclass($_POST['userid']);
 }
-*/
+
 // ---- Login as another user --------------------
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'loginas')
 {
@@ -750,7 +758,21 @@ class users_admin_ui extends e_admin_ui
 			{
 				addUser();		
 			}	
-			
+			// all old triggers come here for now
+			if(isset($_POST['useraction']))
+			{
+				switch ($_POST['useraction']) 
+				{
+					case 'deluser':
+						if($_POST['userid'])
+						{
+							// map to the delete trigger - TODO quick and dirty fix, rewrite
+							$_POST['multiselect'] = array($_POST['userid'] => $_POST['userid']);
+							$_POST['etrigger_batch'] = 'delete';
+						}
+					break;
+				}
+			}
 		}
 
 		function ranksPage()
@@ -1162,7 +1184,8 @@ class users_admin_form_ui extends e_admin_form_ui
 				<option selected='selected' value=''>&nbsp;</option>";
 		if ($user_perms != "0")
 		{
-			$text .= "<option value='userinfo'>".USRLAN_80."</option>
+			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
+			$text .= "
 					<option value='usersettings'>".LAN_EDIT."</option>
 					";
 			// login/logout As
@@ -1506,7 +1529,7 @@ class users
 		}
 	}
 */
-/*	FIXME banlist changes need to be integrated into the code above. 
+/*	FIXME banlist changes need to be integrated into the code above. */
 	function user_unban($userid)
 	{
 		global $sql,$admin_log;
@@ -1522,7 +1545,7 @@ class users
 			$sub_action = "user_id";
 		}
 	}
-*/
+
 
 	function user_activate($userid)
 	{
@@ -2210,14 +2233,13 @@ class users
 		$ns->tablerender(USRLAN_52,$emessage->render().$text);
 	}
 
-
+	*/
 	function show_message($message,$type = '')
 	{
-		$emessage = & eMessage :: getInstance();
-		$emessage->add($message,E_MESSAGE_SUCCESS);
+		e107::getMessage()->add($message,E_MESSAGE_SUCCESS);
 	}
 
-
+	/*
 	function show_prune()
 	{
 		global $ns,$sql;
@@ -2412,7 +2434,7 @@ class users
 
 
 	// ------- Ban User. --------------
-	/*
+	/**/
 	function user_ban($user_id)
 	{
 		global $sql,$user,$admin_log;
@@ -2462,7 +2484,7 @@ class users
 			$sub_action = "user_id";
 		}
 	}
-*/
+
 
 	function resend_to_all()
 	{
@@ -2755,7 +2777,7 @@ class users
 */
 
     // Set userclass for user(s).
-    /*
+    /**/
 	function user_userclass($userid,$uclass,$mode=FALSE)
 	{
 		global $admin_log, $e_userclass;
@@ -2828,7 +2850,7 @@ class users
            //	$emessage->add("Update Failed", E_MESSAGE_ERROR);
 		}
 	}
-*/
+
 
 }
 
