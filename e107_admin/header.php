@@ -25,6 +25,16 @@ define("USER_AREA", FALSE);
 
 e107::getDb()->db_Mark_Time('(Header Top)');
 
+// Admin template
+if (defined('THEME') && file_exists(THEME.'admin_template.php'))
+{
+	require_once (THEME.'admin_template.php');
+}
+else
+{
+	require_once (e_BASE.$e107->getFolder('themes').'templates/admin_template.php');
+}
+
 
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
@@ -68,7 +78,7 @@ e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 // without checking with experienced devs! Various subtle things WILL break.
 //
 // We realize this is a bit (!) of a mess and hope to make further cleanups in a future release.
-//
+// FIXME - outdated list
 // A: Admin Defines and Links
 // B: Send HTTP headers that come before any html
 // C: Send start of HTML
@@ -96,7 +106,8 @@ e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 //
 // A: Admin Defines and Links
 //
-//require_once (e_ADMIN.'ad_links.php'); Moved to auth.php
+//require_once (e_ADMIN.'ad_links.php'); Moved to boot.php
+// FIXME - remove ASAP
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 {
 	$threshold = (time() - ($pref['del_unv'] * 60));
@@ -105,32 +116,11 @@ if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 
 //
 // B: Send HTTP headers (these come before ANY html)
-//
-
-// send the charset to the browser - overrides spurious server settings with the lan pack settings.
-header('Content-type: text/html; charset=utf-8', TRUE);
- 
-
-
-//echo(defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html>\n";
-
+// moved to boot.php
 
 //
-// B.2: Include admin LAN defines
-//
-
-/* Moved to auth.php
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
-
-// Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
-include_once(e107::coreTemplatePath('admin_icons'));
-
-if (!defined('ADMIN_WIDTH'))
-{
-	define('ADMIN_WIDTH', "width: 95%");
-}*/
-
+// B.2: Include admin LAN and icon defines
+// Moved to boot.php
 
 //
 // C: Send start of HTML
@@ -252,19 +242,9 @@ echo "\n<!-- footer_inline_css -->\n";
 //
 echo "<!-- *JS* -->\n";
 
-/* Moved to auth.php
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
-if (varset($pref['wysiwyg'], FALSE) ) // posts bbcode by default. 
-{
-	define("e_WYSIWYG", TRUE);
-}
-else
-{
-	define("e_WYSIWYG", FALSE);
-}*/
-
-
+// Moved to boot.php
 
 // [JSManager] Load JS Includes - Zone 1 - Before Library
 e107::getJs()->renderJs('header', 1);
@@ -375,15 +355,6 @@ $body_onload = "";
  * Admin LAN
  * TODO - remove it from here
  */
-require_once (e_HANDLER.'js_helper.php');
-/*
-echo "
-<script type='text/javascript'>
-	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
-</script>
-";
-*/
 e107::js('inline',"
 	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
@@ -398,9 +369,7 @@ e107::getJs()->renderJs('header', 5);
 
 
 /*
- * Fire Event e107:loaded
- * TODO - remove it from here, should be registered to e_jsmanager
- * or better - moved to core init.js(.php)
+ * Fire Event e107:loaded - Prototype only
  */
 //\$('e-js-css').remove();
 e107::js('inline',"
@@ -443,491 +412,22 @@ if ($e107_popup != 1)
 	// N: Send other top-of-body HTML
 	//
 
-	$ns = new e107table;
-	$e107_var = array();
-
-	/**
-	 * Build admin menus - addmin menus are now supporting unlimitted number of submenus
-	 * TODO - add this to a handler for use on front-end as well (tree, sitelinks.sc replacement)
-	 *
-	 * $e107_vars structure:
-	 * $e107_vars['action']['text'] -> link title
-	 * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
-	 * $e107_vars['action']['image'] -> (new) image tag
-	 * $e107_vars['action']['perm'] -> permissions via getperms()
-	 * $e107_vars['action']['userclass'] -> user class permissions via check_class()
-	 * $e107_vars['action']['include'] -> additional <a> tag attributes
-	 * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
-	 * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
-	 * $e107_vars['action']['link_class'] -> (new) additional link class
-	 * $e107_vars['action']['sub_class'] -> (new) additional class used only when sublinks are being parsed
-	 *
-	 * @param string $title
-	 * @param string $active_page
-	 * @param array $e107_vars
-	 * @param array $tmpl
-	 * @param array $sub_link
-	 * @param bool $sortlist
-	 * @return string parsed admin menu (or empty string if title is empty)
-	 */
-	function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
-	{
-			
-		global $E_ADMIN_MENU;
-		if (!$tmpl)
-			$tmpl = $E_ADMIN_MENU;
-
-		/*
-		 * Search for id
-		 */
-		$temp = explode('--id--', $title, 2);
-		$title = $temp[0];
-		$id = str_replace(array(' ', '_'), '-', varset($temp[1]));
-
-		unset($temp);
-
-		/*
-		 * SORT
-		 */
-		if ($sortlist == TRUE)
-		{
-			$temp = $e107_vars;
-			unset($e107_vars);
-			$func_list = array();
-			foreach (array_keys($temp) as $key)
-			{
-				$func_list[] = $temp[$key]['text'];
-			}
-
-			usort($func_list, 'strcoll');
-
-			foreach ($func_list as $func_text)
-			{
-				foreach (array_keys($temp) as $key)
-				{
-					if ($temp[$key]['text'] == $func_text)
-					{
-						$e107_vars[] = $temp[$key];
-					}
-				}
-			}
-			unset($temp);
-		}
-
-
-
-		$kpost = '';
-		$text = '';
-		
-		if ($sub_link)
-		{
-			$kpost = '_sub';
-		}
-		else
-		{
-			 $text = $tmpl['start'];
-		}
-
-		//FIXME - e_parse::array2sc()
-		$search = array();
-		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
-		$search[1] = '/\{LINK_URL\}(.*?)/si';
-		$search[2] = '/\{ONCLICK\}(.*?)/si';
-		$search[3] = '/\{SUB_HEAD\}(.*?)/si';
-		$search[4] = '/\{SUB_MENU\}(.*?)/si';
-		$search[5] = '/\{ID\}(.*?)/si';
-		$search[6] = '/\{SUB_ID\}(.*?)/si';
-		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
-		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
-		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
-		
-		foreach (array_keys($e107_vars) as $act)
-		{
-			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
-			{
-				continue;
-			}
-			
-			// check class so that e.g. e_UC_NOBODY will result no permissions granted (even for main admin)
-			if (isset($e107_vars[$act]['userclass']) && !e107::getUser()->checkClass($e107_vars[$act]['userclass'], false)) // check userclass perms 
-			{
-				continue;
-			}
-
-			//  print_a($e107_vars[$act]);
-
-			$replace = array();
-			
-			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
-			
-			if (($active_page == $act && !is_numeric($act))|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
-			{
-				$temp = $tmpl['button_active'.$kpost];
-			}
-			else
-			{
-				$temp = $tmpl['button'.$kpost];
-			}
-
-		//	$temp = $tmpl['button'.$kpost];
-		//	echo "ap = ".$active_page;
-		//	echo " act = ".$act."<br /><br />";
-		
-			if($rid == 'adminhome')
-			{
-				$temp = $tmpl['button_other'.$kpost];	
-			}
-
-			if($rid == 'home')
-			{
-				$temp = $tmpl['button_home'.$kpost];	
-			}
-			
-			if($rid == 'language')
-			{
-				$temp = $tmpl['button_language'.$kpost];	
-			}
-			
-			if($rid == 'logout')
-			{
-				$temp = $tmpl['button_logout'.$kpost];	
-			}
+	// moved to boot.php
+	//$ns = new e107table;
+	//$e107_var = array();
 	
-
-			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
-			// valid URLs
-			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
-			$replace[2] = '';
-			if (varsettrue($e107_vars[$act]['include']))
-			{
-				$replace[2] = $e107_vars[$act]['include'];
-				//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
-			}
-			$replace[3] = $title;
-			$replace[4] = '';
-
-		
-			
-			
-			
-			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
-			$replace[6] = $rid;
-		
-			$replace[7] = varset($e107_vars[$act]['link_class']);
-			$replace[8] = '';
-			$replace[9] = varset($e107_vars[$act]['image']);
-			
-			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
-			{
-				$START_SUB = $tmpl['start_other_sub'];
-			}
-			else 
-			{
-				$START_SUB = $tmpl['start_sub'];	
-			}		
-
-			if (varsettrue($e107_vars[$act]['sub']))
-			{
-				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
-				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
-				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
-				$replace[4] = preg_replace($search, $replace, $START_SUB);
-				$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace[4] .= $tmpl['end_sub'];
-			}
-
-			$text .= preg_replace($search, $replace, $temp);
-		//	echo "<br />".$title." act=".$act;
-			//print_a($e107_vars[$act]);
-		}
-
-		$text .= (!$sub_link) ? $tmpl['end'] : '';
-		
-		if ($sub_link || empty($title))
-		{
-			return $text;
-		}
-
-		$ns = e107::getRender();
-		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
-		return '';
-	}
-
-
-
-
-
-	/*
-	 *  DEPRECATED - use e_admin_menu()
-	 */
-	if (!function_exists('show_admin_menu'))
-	{
-		function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
-		{
-			
-			return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
-
-			/*
-			global $ns,$BUTTON,$BUTTON_OVER,$BUTTONS_START,$BUTTONS_END,$SUB_BUTTON,$SUB_BUTTON_OVER,$SUB_BUTTONS_START,$SUB_BUTTONS_END;
-
-			$id_title = "yop_".str_replace(" ", "", $title);
-			if (!isset($BUTTONS_START))
-			{
-				$BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
-			}
-			if (!isset($BUTTON))
-			{
-				$BUTTON = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:pointer; text-decoration:none;' {ONCLICK} >{LINK_TEXT}</a></div></td></tr>\n";
-			}
-			if (!isset($BUTTON_OVER))
-			{
-				$BUTTON_OVER = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:pointer; text-decoration:none;' {ONCLICK} ><b>&laquo;&nbsp;{LINK_TEXT}&nbsp;&raquo;</b></a></div></td></tr>\n";
-			}
-			if (!isset($BUTTONS_END))
-			{
-				$BUTTONS_END = "</table></div>\n";
-			}
-			if (!isset($SUB_BUTTON))
-			{
-				$SUB_BUTTON = "<a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a><br />";
-			}
-			if (!isset($SUB_BUTTON_OVER))
-			{
-				$SUB_BUTTON_OVER = "<b> &laquo; <a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a> &raquo; </b><br />";
-			}
-			if (!isset($SUB_BUTTONS_START))
-			{
-				$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>
-			<tr><td class='button'><a style='text-align:center; cursor:pointer; text-decoration:none;'
-			onclick=\"expandit('{SUB_HEAD_ID}');\" >{SUB_HEAD}</a></td></tr>
-			<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
-			}
-			if (!isset($SUB_BUTTONS_END))
-			{
-				$SUB_BUTTONS_END = "</td></tr></table></div>";
-			}
-
-			if ($sortlist == TRUE)
-			{
-				$temp = $e107_vars;
-				unset($e107_vars);
-				foreach (array_keys($temp) as $key)
-				{
-					$func_list[] = $temp[$key]['text'];
-				}
-
-				usort($func_list, 'strcoll');
-
-				foreach ($func_list as $func_text)
-				{
-					foreach (array_keys($temp) as $key)
-					{
-						if ($temp[$key]['text'] == $func_text)
-						{
-							$e107_vars[] = $temp[$key];
-						}
-					}
-				}
-			}
-
-			$search[0] = "/\{LINK_TEXT\}(.*?)/si";
-			$search[1] = "/\{LINK_URL\}(.*?)/si";
-			$search[2] = "/\{ONCLICK\}(.*?)/si";
-			$search[3] = "/\{SUB_HEAD\}(.*?)/si";
-			$search[4] = "/\{SUB_HEAD_ID\}(.*?)/si";
-
-			if ($sub_link)
-			{
-				$replace[0] = '';
-				$replace[1] = '#';
-				$replace[2] = '';
-				$replace[3] = $title;
-				$replace[4] = $id_title;
-				$text = preg_replace($search, $replace, $SUB_BUTTONS_START);
-			}
-			else
-			{
-				$text = $BUTTONS_START.'';
-			}
-
-			foreach (array_keys($e107_vars) as $act)
-			{
-				if (!isset($e107_vars[$act]['perm']) || !$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm']))
-				{
-					if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
-					{
-						$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON_OVER : $BUTTON_OVER;
-					}
-					else
-					{
-						$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON : $BUTTON;
-					}
-					$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
-					$replace[1] = varset($e107_vars[$act]['link'], "#{$act}");
-					if (! empty($e107_vars[$act]['include']))
-					{
-						$replace[2] = $e107_vars[$act]['include'];
-					}
-					else
-					{
-						$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
-					}
-					$replace[3] = $title;
-					$replace[4] = $id_title;
-					$text .= preg_replace($search, $replace, $BUTTON_TEMPLATE);
-				}
-			}
-			$text .= $sub_link ? $SUB_BUTTONS_END : ''.$BUTTONS_END;
-
-			if ($title == "" || $sub_link)
-			{
-				return $text;
-			}
-			else
-			{
-				$ns->tablerender($title, $text, array('id'=>$id_title, 'style'=>'button_menu'));
-			}
-		*/
-		}
-	}
-
-
-
-
-
-
-/* Moved to auth.php
-	if (file_exists(THEME.'admin_template.php'))
-	{
-		require_once (THEME.'admin_template.php');
-	}
-	else
-	{
-		require_once (e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
-	}*/
-
-
-	if (!function_exists("parse_admin"))
-	{
-		function parse_admin($ADMINLAYOUT)
-		{
-			global $tp;
-			$adtmp = explode("\n", $ADMINLAYOUT);
-			for ($a = 0; $a < count($adtmp); $a++)
-			{
-				if (preg_match("/{.+?}/", $adtmp[$a]))
-				{
-					echo $tp->parseTemplate($adtmp[$a]);
-				}
-				else
-				{
-					echo $adtmp[$a];
-				}
-			}
-		}
-	}
-
-	/**
-	 * Automate DB system messages DEPRECATED
-	 * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
-	 *
-	 * @param integer|bool $update return result of db::db_Query
-	 * @param string $type update|insert|update
-	 * @param string $success forced success message
-	 * @param string $failed forced error message
-	 * @param bool $output false suppress any function output
-	 * @return integer|bool db::db_Query result
-	 */
-	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
-	 
-	 
-	 // It has been copied to message_handler.php as autoMessage();
-/* Moved to auth.php
-	 
-	function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
-	{
-		require_once (e_HANDLER."message_handler.php");
-		$emessage = e107::getMessage();
-
-		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
-		{
-			$emessage->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
-		}
-		elseif ($type == 'delete' && $update)
-		{
-			$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
-		}
-		elseif (!mysql_errno())
-		{
-			if ($type == 'update')
-			{
-				$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-			}
-			elseif ($type == 'delete')
-			{
-				$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-			}
-		}
-		else
-		{
-			switch ($type)
-			{
-				case 'insert':
-					$msg = LAN_CREATED_FAILED;
-				break;
-				case 'delete':
-					$msg = LAN_DELETED_FAILED;
-				break;
-				default:
-					$msg = LAN_UPDATED_FAILED;
-				break;
-			}
-
-			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
-			$emessage->add($text, E_MESSAGE_ERROR);
-		}
-		
-		$emessage->addInfo("Using deprecated admin_update() which has been replaced by \$mes->autoMessage();"); 
-
-		if ($output) echo $emessage->render();
-		return $update;
-	}
-
-	function admin_purge_related($table, $id)
-	{
-		global $ns,$tp;
-		$msg = "";
-		$tp->parseTemplate("");
-
-		// Delete any related comments
-		require_once (e_HANDLER."comment_class.php");
-		$_com = new comment;
-		$num = $_com->delete_comments($table, $id);
-		if ($num)
-		{
-			$msg .= $num." ".ADLAN_114." ".LAN_DELETED."<br />";
-		}
-
-		// Delete any related ratings
-		require_once (e_HANDLER."rate_class.php");
-		$_rate = new rater;
-		$num = $_rate->delete_ratings($table, $id);
-		if ($num)
-		{
-			$msg .= LAN_RATING." ".LAN_DELETED."<br />";
-		}
-
-		if ($msg)
-		{
-			$ns->tablerender(LAN_DELETE, $msg);
-		}
-	}*/
+	// function e_admin_menu moved to boot.php
+	// legacy function show_admin_menu moved to boot.php
+	// include admin_template.php moved to boot.php
+	// function parse_admin moved to boot.php
+	// legacy function admin_update moved to boot.php
+	// (legacy?) function admin_purge_related moved to boot.php
 
 
 	$sql->db_Mark_Time('Parse Admin Header');
-
+		
 	//NEW - Iframe mod
-	if (!defsettrue('e_IFRAME'))
+	if (!deftrue('e_IFRAME'))
 	{
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
 		parse_admin($ADMIN_HEADER);
@@ -939,7 +439,5 @@ if ($e107_popup != 1)
 // XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it
 if (!varset($emessage) && !is_object($emessage))
 {
-	require_once (e_HANDLER."message_handler.php");
-	$emessage = &eMessage::getInstance();
+	$emessage = e107::getMessage();
 }
-?>
