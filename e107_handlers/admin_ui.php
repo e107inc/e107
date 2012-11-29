@@ -1016,6 +1016,8 @@ class e_admin_dispatcher
 		{
 			define('e_ADMIN_UI', true);
 		}
+		require_once(e_ADMIN.'boot.php');
+		
 		if(null === $request || !is_object($request))
 		{
 			$request = new e_admin_request($request);
