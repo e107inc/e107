@@ -2934,10 +2934,11 @@ class e107
 	 * @param string $div divider
 	 * @return string encoded IP
 	 */
-	 /*
+	 
 	public function ipEncode($ip, $div = ':')
 	{
-	} */
+		return e107::getIPHandler()->ipEncode($ip);
+	} 
 
 	/**
 	 * Takes an encoded IP address - returns a displayable one
