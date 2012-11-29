@@ -118,7 +118,10 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_signup_text()
 	{
 			
-		global $pref, $tp, $SIGNUP_TEXT;
+		global $SIGNUP_TEXT;
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+		
 		
 		if($pref['signup_text'])
 		{
@@ -126,7 +129,7 @@ class signup_shortcodes extends e_shortcode
 		}
 		elseif($pref['user_reg_veri'])
 		{
-			return $SIGNUP_TEXT;
+			return $SIGNUP_TEXT." ";
 		}
 	}
 	

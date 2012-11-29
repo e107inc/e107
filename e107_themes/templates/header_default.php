@@ -23,13 +23,19 @@ define('ADMIN_AREA',FALSE);
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
 
+
+
 e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
 e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 
 // Used for Signup form elements - could be on any page of the site. 
 e107::js('core',	'jquery.mailcheck.min.js','jquery',2);
-e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
-e107::css('core', 	'tooltip/tipsy.css', 'jquery');
+
+e107::js('core','bootstrap/js/bootstrap-tooltip.js','jquery');
+e107::css('core','bootstrap/css/tooltip.css','jquery');
+
+//e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
+// e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 // ------------------
 
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);

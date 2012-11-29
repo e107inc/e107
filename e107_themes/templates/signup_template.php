@@ -187,11 +187,10 @@ if(!defined($COPPA_FAIL))
 
 if(!defined($SIGNUP_TEXT))
 {
-	$SIGNUP_TEXT =
-	"{SIGNUP_SIGNUP_TEXT}<br />".
-	LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".
-	LAN_SIGNUP_30."<br />".
-	LAN_SIGNUP_85;
+	$SIGNUP_TEXT =	$tp->parseTemplate("{SIGNUP_SIGNUP_TEXT}"); // .
+	//LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".
+	//LAN_SIGNUP_30."<br />".
+	//LAN_SIGNUP_85;
 }
 
 if(!defined($SIGNUP_BEGIN))
