@@ -1,10 +1,13 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
-include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-// TODO theme.xml - add them to jslib/php source
-e107::getJs()->requireCoreLib('core/decorate.js')
-	->requireCoreLib('core/tabs.js');
+define("VIEWPORT","width=device-width, initial-scale=1.0");
+
+e107::lan('theme');
+e107::js('core','bootstrap/js/bootstrap.min.js');
+e107::css('core','bootstrap/css/bootstrap.min.css');
+e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
+e107::css('core','bootstrap/css/jquery-ui.custom.css');
 
 //$register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;

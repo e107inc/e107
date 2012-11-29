@@ -2,31 +2,31 @@
 
 $(document).ready(function()
 {
-	//	$(":input").tipsy({gravity: 'w',fade: true, live: true});	
-		
+		$(":input").tooltip();	
+	/*	
 		$(":input,label,.e-tip").each(function() {
 			
 			var field = $(this).nextAll(".field-help");
 		
 			if(field.length == 0)
 			{
-				$(this).tipsy({gravity: 'sw',fade: true, live: true}); // Normal 'title' attribute
+				$(this).tooltip({placement: 'right',fade: true}); // Normal 'title' attribute
 				return;	
 			}
 			
 			
 			field.hide();		
-			$(this).tipsy({
+			$(this).tooltip({
 				title: 	function() {
 							return field.html(); // field-help when HTML is required. 	 			 	
 						},
 				fade: true,
 				live: true,
 				html: true,
-				gravity: 'sw'  
+				placement: 'right'  
 			});
 		});
-	
+	*/
 	//	var color = $(".divider").parents().css("background-color");
 		
 	
@@ -50,7 +50,7 @@ $(document).ready(function()
 			  data: data,
 			  success: function(data) {
 			  	
-			  //	alert(data);
+			//  	alert(data);
 			 // 	console.log(data);
 			  	var a = $.parseJSON(data);
 	
@@ -62,11 +62,11 @@ $(document).ready(function()
 				}
 				else if(sort == 'desc')
 				{
-					$(a.html).prependTo('#comments-container').hide().slideDown(800);	
+					$(a.html).prependTo('#comments-container').hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
 				}
 				else
 				{
-					$(a.html).appendTo('#comments-container').hide().slideDown(800);
+					$(a.html).appendTo('#comments-container').hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
 					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
 				}  
 				
