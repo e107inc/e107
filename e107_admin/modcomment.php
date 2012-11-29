@@ -83,9 +83,8 @@ if (isset($message)) {
 }
 
 $text = "
-<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
-<table class='fborder' style='".ADMIN_WIDTH."'>";
+<table class='table adminform'>";
 
 if ($editid)
 {
@@ -160,10 +159,12 @@ else
 	<tr><td colspan='5' class='fcaption'>".MDCLAN_12." (".$total_comments." ".($total_comments == "1" ? MDCLAN_11 : MDCLAN_12).", ".$total_blocked." ".MDCLAN_13.")</td></tr>
 	".$comments."
 	<tr><td colspan='5' class='forumheader' style='text-align:center'>".MDCLAN_9."</td></tr>
-	<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr>
+	<tr><td colspan='5' class='forumheader' style='text-align:center'>
+	<input class='button' type='submit' name='moderate' value='".MDCLAN_8."' />
+	</td></tr>
 	";
 }
-$text .= "</table></form></div>";
+$text .= "</table></form>";
 
 $ns->tablerender(MDCLAN_8, $text);
 

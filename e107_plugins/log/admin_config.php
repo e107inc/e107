@@ -33,6 +33,7 @@ if (!getperms('P') || !e107::isInstalled('log'))
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 
+$frm = e107::getForm();
 
 define('LOGPATH', e_PLUGIN.'log/');
 
@@ -287,43 +288,43 @@ switch ($action)
   case 'config' :
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<table class='table adminform'>
 	<colgroup>
 	  <col style='width:50%' />
 	  <col style='width:50%' />
 	</colgroup>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L4."</td>
-	<td style='text-align: right;' class='forumheader3'>
+	<td>".ADSTAT_L4."</td>
+	<td style='text-align: right;'>
 	<input type='radio' name='statActivate' value='1'".($pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statActivate' value='0'".(!$pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L18."</td>
-	<td style='text-align: right;' class='forumheader3'>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
+	<td>".ADSTAT_L18."</td>
+	<td style='text-align: right;'>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L20."</td>
-	<td style='text-align: right;' class='forumheader3'>
+	<td>".ADSTAT_L20."</td>
+	<td style='text-align: right;'>
 	<input type='radio' name='statCountAdmin' value='1'".($pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L21."</td>
-	<td style='text-align: right;' class='forumheader3'>
+	<td>".ADSTAT_L21."</td>
+	<td style='text-align: right;'>
 	<input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' />
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L5."</td>
-	<td style='text-align: right' class='forumheader3'>
+	<td>".ADSTAT_L5."</td>
+	<td style='text-align: right'>
 	".gen_select(ADSTAT_L6, 'statBrowser',$pref['statBrowser'])
 	 .gen_select(ADSTAT_L7, 'statOs',$pref['statOs'])
 	 .gen_select(ADSTAT_L8, 'statScreen',$pref['statScreen'])
@@ -338,14 +339,14 @@ switch ($action)
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L78."<br /><span class='smalltext'>".ADSTAT_L79."</span></td>
-	<td style='text-align: right;' class='forumheader3'>
+	<td>".ADSTAT_L78."<br /><span class='smalltext'>".ADSTAT_L79."</span></td>
+	<td style='text-align: right;'>
 	<input type='checkbox' name='statPrevMonth' value='1'".(varset($pref['statPrevMonth'],0) ? " checked='checked'" : "")." />
 	</td></tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</span></td>
-	<td style='text-align: right;' class='forumheader3'>
+	<td>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</span></td>
+	<td style='text-align: right;'>
 	".ADSTAT_L14."<input type='checkbox' name='wipe[statWipePage]' value='1' /><br />
 	".ADSTAT_L6."<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /><br />
 	".ADSTAT_L7." <input type='checkbox' name='wipe[statWipeOs]' value='1' /><br />
@@ -358,19 +359,18 @@ switch ($action)
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</span></td>
-	<td style='text-align: right;' class='forumheader3'><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
+	<td>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</span></td>
+	<td style='text-align: right;'><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
 	</td>
 	</tr>
 	";
 
 	$text .= "
-	<tr>
-	<td colspan='2'  style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='updatesettings' value='".ADSTAT_L15."' />
-	</td>
 	</tr>
 	</table>
+	<div class='buttons-bar center'>
+	".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
+	</div>
 	</form>
 	</div>";
 
@@ -396,7 +396,7 @@ switch ($action)
 	{
 	  $text .= "<form method='post' action='".e_SELF."?datasets'>";
 	}
-	$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
+	$text .= "<table class='table adminform'>
 	<colgroup>
 	  <col style='width:50%' />
 	  <col style='width:50%' />
@@ -405,18 +405,18 @@ switch ($action)
 
 	if ($action == 'export')
 	{
-	  $text .= "<tr><td class='forumheader3' colspan = '2'>".ADSTAT_L67."</td></tr>";
+	  $text .= "<tr><td colspan = '2'>".ADSTAT_L67."</td></tr>";
 	}
 	else
 	{
-	  $text .= "<tr><td class='forumheader3' colspan = '2'>".ADSTAT_L68."</td></tr>";
+	  $text .= "<tr><td colspan = '2'>".ADSTAT_L68."</td></tr>";
 	}
 
 	// Type of output data - page data, browser stats....
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L51."</td><td class='forumheader3'>\n".data_type_select('export_type',$export_type).'</td></tr>';
+	$text .= "<tr><td>".ADSTAT_L51."</td><td>\n".data_type_select('export_type',$export_type).'</td></tr>';
 
 	// Period selection type for page data
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L41."</td><td class='forumheader3'>\n
+	$text .= "<tr><td>".ADSTAT_L41."</td><td>\n
 	<select class='tbox' name='export_date' id='export_date' onchange=\"setdatebox(this.value);\" ".($export_type=='page' ? "" : "style='display:none'" ).">\n
 	<option value='1'".($export_date==1 ? " selected='selected'" : "").">".ADSTAT_L42."</option>\n
 	<option value='2'".($export_date==2 ? " selected='selected'" : "").">".ADSTAT_L43."</option>\n
@@ -436,7 +436,7 @@ switch ($action)
 
 
 
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L46."</td><td class='forumheader3'>\n";
+	$text .= "<tr><td>".ADSTAT_L46."</td><td>\n";
 	
 	
 	// Now put the various dropdowns - their visibility is controlled by the export_type dropdown
@@ -475,7 +475,7 @@ switch ($action)
 	if ($action == 'export')
 	{
 	// Separators, quotes
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L59."</td><td class='forumheader3'>\n
+	$text .= "<tr><td>".ADSTAT_L59."</td><td>\n
 			<select class='tbox' name='export_char'>";
 	foreach ($separator_list as $k=>$v)
 	{
@@ -491,9 +491,10 @@ switch ($action)
 	$text .= "</select>\n</td></tr>";
 
 	$text .= "<tr>
-	<td class='forumheader3'>".ADSTAT_L60."<br /><span class='smalltext'>".ADSTAT_L61."</span></td>
-	<td  class='forumheader3'>
+	<td>".ADSTAT_L60."<br /></td>
+	<td >
 	<input type='checkbox' name='export_stripurl' value='1' ".($export_stripurl == 1 ? " checked='checked'" : "")."/>
+	<span class='field-help'>".ADSTAT_L61."</span>
 	</td>
 	</tr>";
 	}
@@ -501,9 +502,9 @@ switch ($action)
 
 	if ($export_filter)
 	{
-	  if (getperms('0')) $text .= "<tr><td class='forumheader3'>".ADSTAT_L65."</td><td class='forumheader3'>".$export_filter."</td></tr>";
+	  if (getperms('0')) $text .= "<tr><td>".ADSTAT_L65."</td><td>".$export_filter."</td></tr>";
 	  $sql -> db_Select("logstats", "log_id", "{$export_filter} ");
-	  $text .= "<tr><td class='forumheader3'>".ADSTAT_L64."</td><td class='forumheader3'>";
+	  $text .= "<tr><td>".ADSTAT_L64."</td><td>";
 	  while($row = $sql -> db_Fetch())
 	  {
 		$text .= $row['log_id']."<br />";
@@ -512,12 +513,10 @@ switch ($action)
 	}
 
 	$text .= "
-	<tr>
-	<td colspan='2'  style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='create_export' value='".($action == 'export' ? ADSTAT_L37 : ADSTAT_L66)."' />
-	</td>
-	</tr>
 	</table>
+		<div class='buttons-bar center'>
+	".$frm->admin_button('create_export', ($action == 'export' ? ADSTAT_L37 : ADSTAT_L66), 'update')."
+	</div>
 	</form>
 	</div>";
 
@@ -533,7 +532,7 @@ switch ($action)
 	//===========================================================
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?history'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<table class='table adminlist'>
 	<colgroup>
 	  <col style='width:50%' />
 	  <col style='width:50%' />
@@ -542,57 +541,59 @@ switch ($action)
 	$keep_year = varset($_POST['delete_year'],0);
     if (isset($_POST['delete_history']))
 	{
-	  $text .= "<tr><td class='forumheader3'>".ADSTAT_L72."</td><td class='forumheader3'>".nl_langinfo(constant('MON_'.$keep_month))." ".$keep_year."</td></tr>
+	  $text .= "<tr><td>".ADSTAT_L72."</td><td>".nl_langinfo(constant('MON_'.$keep_month))." ".$keep_year."</td></tr>
 		<tr><td colspan='2'  style='text-align:center' class='forumheader'>
 		<input type='hidden' name='delete_month' value='{$keep_month}' />
 		<input type='hidden' name='delete_year' value='{$keep_year}' />
 		<input class='button' type='submit' name='actually_delete' value='".ADSTAT_L73."' /><br />".ADSTAT_L74."
 	</td></tr>";
-	  $text .= "<tr><td class='forumheader3'>".ADSTAT_L75."</td><td class='forumheader3'>".implode("<br />",get_for_delete($keep_year,$keep_month))."</td></tr>";
+	  $text .= "<tr><td>".ADSTAT_L75."</td><td>".implode("<br />",get_for_delete($keep_year,$keep_month))."</td></tr>";
 	}
 	else
 	{
 	  if (isset($_POST['actually_delete']))
 	  {
-	    $delete_list = get_for_delete($keep_year,$keep_month);
-		$logStr = '';
-//	    $text .= "<tr><td class='forumheader3' colspan='2'>Data notionally deleted {$keep_month}-{$keep_year}</td></tr>";
-		$text .= "<tr><td class='forumheader3'>".ADSTAT_L77."</td><td class='forumheader3'>";
-		foreach ($delete_list as $k => $v)
-		{
-		  $sql->db_Delete('logstats',"log_id='{$k}'");
-		  $text .= $v."<br />";
-		  $logStr .= "[!br!]{$k} => ".$v;
-		}
-		$text .= "</td></tr>";
-		$admin_log->log_event('STAT_04',ADSTAT_L83.$logStr,'');
-	  }
-	$text .= "<tr><td class='forumheader3'>".ADSTAT_L70."</td>";
-	$text .= "<td class='forumheader3'><select class='tbox' name='delete_month'>\n";
-	$match_month = date("n");
-	for ($i = 1; $i < 13; $i++) 
-	{ 
-	  $selected = $match_month == $i ? " selected='selected'" : "";
-	  $text .= "<option value='{$i}'{$selected}>".nl_langinfo(constant('MON_'.$i))."</option>\n"; 
-	};
-	$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
-		
-	$this_year = date("Y");
-	$text .= "<select class='tbox' name='delete_year' id='export_year'>\n";
-	for ($i = $this_year; $i > $this_year - 6; $i--) 
-	{ 
-	  $selected = ($this_year - 2) == $i ? " selected='selected'" : "";
-	  $text .= "<option value='{$i}'{$selected}>{$i}</option>\n"; 
-	};
-	$text .= "</select>\n</td></tr><tr>
-	<td colspan='2'  style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='delete_history' value='".ADSTAT_L71."' />
-	</td></tr>
-	<tr>
-	<td colspan='2'  style='text-align:center' class='forumheader3'><em>".ADSTAT_L76."</em>
-	</td></tr>";
+		    $delete_list = get_for_delete($keep_year,$keep_month);
+			$logStr = '';
+	//	    $text .= "<tr><td colspan='2'>Data notionally deleted {$keep_month}-{$keep_year}</td></tr>";
+			$text .= "<tr><td>".ADSTAT_L77."</td><td>";
+			foreach ($delete_list as $k => $v)
+			{
+			  $sql->db_Delete('logstats',"log_id='{$k}'");
+			  $text .= $v."<br />";
+			  $logStr .= "[!br!]{$k} => ".$v;
+			}
+			$text .= "</td></tr>";
+			$admin_log->log_event('STAT_04',ADSTAT_L83.$logStr,'');
+		  }
+		$text .= "<tr><td>".ADSTAT_L70."</td>";
+		$text .= "<td><select class='tbox' name='delete_month'>\n";
+		$match_month = date("n");
+		for ($i = 1; $i < 13; $i++) 
+		{ 
+		  $selected = $match_month == $i ? " selected='selected'" : "";
+		  $text .= "<option value='{$i}'{$selected}>".nl_langinfo(constant('MON_'.$i))."</option>\n"; 
+		};
+		$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
+			
+		$this_year = date("Y");
+		$text .= "<select class='tbox' name='delete_year' id='export_year'>\n";
+		for ($i = $this_year; $i > $this_year - 6; $i--) 
+		{ 
+		  $selected = ($this_year - 2) == $i ? " selected='selected'" : "";
+		  $text .= "<option value='{$i}'{$selected}>{$i}</option>\n"; 
+		};
+		$text .= "</select>\n</td></tr>";
 	}
-	$text .= "</table></form></div>";
+
+	$text .= "</table>
+	
+	<div class='buttons-bar center'>
+	".$frm->admin_button('delete_history',LAN_DELETE,'delete')."
+	<span class='field-help'>".ADSTAT_L76."</span>
+	</div>
+	
+	</form></div>";
 	$ns->tablerender(ADSTAT_L69, $text);
     break;	// case 'history'
 
@@ -730,7 +731,9 @@ function get_for_delete($keep_year,$keep_month = 1, $filter='*')
 //---------------------------------------------
 function rempage()
 {
-	global $sql, $ns;
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+	$frm = e107::getForm();
 
 	$logfile = e_LOG."logp_".date("z.Y", time()).".php";
 //	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
@@ -749,14 +752,14 @@ function rempage()
 		$pageTotal[$url]['unqv'] += $tmpcon['unq'];
 	}
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<table class='table adminlist'>
 
 	<tr>
 	<td style='width:30%' class='forumheader'>".ADSTAT_L29."</td>
 	<td style='width:50%' class='forumheader'>URL</td>
-	<td style='width:30%; text-align: center;' class='forumheader'>".ADSTAT_L30." ...</td>
+	<td style='width:30%; text-align: center;'>".ADSTAT_L30." ...</td>
 	</tr>
 	";
 
@@ -764,23 +767,19 @@ function rempage()
 	{
 		$text .= "
 		<tr>
-		<td style='width:30%' class='forumheader3'>{$key}</td>
-		<td style='width:50%' class='forumheader3'>".$page['url']."</td>
-		<td style='width:30%; text-align: center;' class='forumheader3'><input type='checkbox' name='remcb[]' value='{$key}' /></td>
+		<td style='width:30%'>{$key}</td>
+		<td style='width:50%'>".$page['url']."</td>
+		<td style='width:30%; text-align: center;'><input type='checkbox' name='remcb[]' value='{$key}' /></td>
 		</tr>
 		";
 	}
 
 	$text .= "
-
-	<tr>
-	<td colspan='3' class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='remSelP' value='".ADSTAT_L31."' />
-	</td>
-	</tr>
-
 	</table>
+	<div class='buttons-bar center'>
+	".$frm->admin_button('remSelP', ADSTAT_L31, 'delete')."
 	</form>
-	</div>
+
 	";
 
 	$ns -> tablerender(ADSTAT_L32, $text);

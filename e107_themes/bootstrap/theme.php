@@ -103,52 +103,42 @@ function tablestyle($caption, $text, $mod)
 }
 
 $HEADER['default'] = '
-<div class="wrapper">
-	<div class="header">
-		<div class="header-content">
-			BLANK HEADER
-		</div>
-		<div style="height: 20px;"><!-- --></div>
-		<div class="navigation">
-			<div id="main-nav">{SITELINKS}</div>
-			<div class="clear"><!-- --></div>
-		</div>
-	</div>
-	<div class="page-body">
-		<table class="main-table" cellpadding="0" cellspacing="0">
-			<tr>
-
-				<td class="col-left">
-				{SETSTYLE=menu}
-				{MENU=1}
-				</td>
-
-				<td>
-					<div class="col-main">
-						<div class="inner-wrapper">
-						{SETSTYLE=content}
-						{FEATUREBOX|default=notablestyle}
-						{FEATUREBOX|dynamic=notablestyle}
+<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">  
+          {SITELOGO}
+          <div class="nav-collapse collapse">
+            <div class="dropdown nav pull-right navbar-text ">
+            {CUSTOM=login}
+            </div>
+            
+			<div class="dropdown nav">     
+        	 {SITELINKS}
+   			 </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div><div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+    		{SETSTYLE=site_info}
+		
+			{MENU=2}
+			
+         </div>
+        <div class="span10">
 ';
 $FOOTER['default'] = '
-						{FEATUREBOX|tabs=notablestyle&cols='.e107::getThemePref('fb_tabs_cols', 1).'}
-						</div>
-					</div>
-				</td>
-				<td class="col-right">
-					<div class="col-right">
-						{SETSTYLE=menu}
-						{MENU=2}
-					</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div class="footer">
-		<!-- -->
-	</div>
-</div>
-';
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer class="center"> 
+		Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
+      </footer>
+
+    </div><!--/.fluid-container-->';
 
 $HEADER['alternate'] = '';
 $FOOTER['alternate'] = '';

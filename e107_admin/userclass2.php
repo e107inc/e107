@@ -756,7 +756,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	$db_status = $e_userclass->update_db(TRUE) ? "Updated" : "Original";
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?test' id='testForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<table class='table adminform'>
 		<tr><td class='fcaption' style='text-align:center' colspan='2'>Test Functions and Information</td></tr>";
 	$text .= "<tr><td style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
 	$text .= "<tr><td><input class='button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";

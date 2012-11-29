@@ -1,3 +1,6 @@
+/*  */
+body 						{ padding-top: 75px; padding-bottom: 40px; }
+.well 						{ padding:10px; }
 
 /* E107 CORE CSS *********************************************************************************************/
 .searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }

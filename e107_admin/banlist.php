@@ -349,7 +349,7 @@ switch ($action)
 // @todo format form the 0.8 way
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?banlog-".$from."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='table adminform'>
 		<colgroup>
 			<col style='width:20%; vertical-align:top;' />
 			<col style='width:30%; vertical-align:top;' />

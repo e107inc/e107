@@ -628,7 +628,7 @@ $columnInfo = array(
 	         <div>
 	            <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
 	               <fieldset id='download-create'>
-	                  <table style='".ADMIN_WIDTH."' class='adminlist'>
+	                  <table class='table adminlist'>
 	                     <tr>
 	                        <td style='width:20%;'>".DOWLAN_13."</td>
 	                        <td style='width:80%'>
@@ -681,7 +681,7 @@ $columnInfo = array(
 	               </table>
 	            </fieldset>
 	            <fieldset id='download-edit-external'>
-	               <table style='".ADMIN_WIDTH."' class='adminlist'>
+	               <table class='table adminlist'>
 	                  <tr>
 	                       <td style='width:20%;'>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
@@ -697,7 +697,7 @@ $columnInfo = array(
 	               </table>
 	            </fieldset>
 	            <fieldset id='download-edit-mirror'>
-	               <table style='".ADMIN_WIDTH."' class='adminlist'>
+	               <table class='table adminlist'>
 	                  <tr>
 	                     <td style='width:20%'><span title='".DOWLAN_129."' style='cursor:help'>".DOWLAN_128."</span></td>
 	                     <td style='width:80%'>";
