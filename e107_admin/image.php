@@ -486,9 +486,9 @@ class media_form_ui extends e_admin_form_ui
 			$valW = vartrue($curval[$key]['w']);
 			$valH = vartrue($curval[$key]['h']);
 		
-			$text .= "<div style='margin-bottomp:8px;text-align:right;width:290px'>".$title.": ";
-			$text .= "<input class='e-tip e-spinner' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
-			$text .= "<input class='e-tip e-spinner' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
+			$text .= "<div style='margin-bottomp:8px;text-align:right:width:400px'>".$title.": ";
+			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
+			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
 			$text .= "</div>";
 		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
 		}	

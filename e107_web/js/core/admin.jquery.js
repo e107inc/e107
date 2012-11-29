@@ -43,7 +43,7 @@ $(document).ready(function()
 		});
 	
 	
-		 $(".e-spinner").spinner();
+	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 	
 	
 			$(".e-radio-multi").each(function() {
