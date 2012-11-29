@@ -123,7 +123,7 @@ class e_form
 		$maxlength = vartrue($parms['maxlength'], 255);
 		unset($parms['maxlength']);
 		if(!vartrue($parms['size'])) $parms['size'] = 15;
-		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner';
+		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner input-small';
 		if(!$value) $value = '0';
 		return $this->text($key, $value, $maxlength, $parms);	
 	}
