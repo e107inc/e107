@@ -116,13 +116,11 @@ class signup_shortcodes extends e_shortcode
 	
 	
 	function sc_signup_signup_text()
-	{
-			
-		global $SIGNUP_TEXT;
+	{		
+		// global $SIGNUP_TEXT;
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		
-		
+			
 		if($pref['signup_text'])
 		{
 			return $tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs');
