@@ -4534,7 +4534,7 @@ class e_admin_form_ui extends e_form
 					".$filter_pre."
 					<div class='left'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."
-						".$this->select_open('filter_options', array('class' => 'tbox select filter', 'id' => false))."
+						".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 							".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 							".$this->renderBatchFilter('filter', $current_query[1])."
