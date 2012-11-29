@@ -2138,7 +2138,7 @@ class e107
 		switch ($type)
 		{
 			case 'core' :
-				self::coreLan($name);//TODO include $options for admin. 
+				self::coreLan($fname,$options);
 				break;
 				break;
 			case 'theme' :
