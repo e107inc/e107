@@ -188,28 +188,73 @@ if (varset($action) == "tools")
 	}	
 }
 
+
+	function findIncludedFiles($script)
+	{
+		
+		$data = file_get_contents($script);
+		
+		preg_match_all("/.*(include_lan|require_once|include|include_once) ?\((.*e_LANGUAGE.*?\.php)/i",$data,$match);
+		
+
+		$srch = array(" ",'e_PLUGIN.', 'e_LANGUAGEDIR', '.e_LANGUAGE.', "'", '"', "'.");
+		$repl = array("", e_PLUGIN, e_LANGUAGEDIR, "English", "", "", "");
+
+		foreach($match[2] as $lanFile)
+		{
+			$arrt = str_replace($srch,$repl,$lanFile);	
+			if(strpos($arrt,'admin'))
+			{
+				return $arrt;	
+			}
+		}
+			
+		return $arr[0];
+	}
+
+
 if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 {
 	$mes = e107::getMessage();
 
-	$lanfile = $_POST['deprecatedLans'];
+	// $lanfile = $_POST['deprecatedLans'];
+	$script = $_POST['deprecatedLans'];
 
 				
-	$scriptname = str_replace("lan_","",basename($lanfile));
+//	$scriptname = str_replace("lan_","",basename($lanfile));
 	
-	if(is_readable(e_ADMIN.$script))
+	if(strpos($script,'admin')!=true) // Plugin 
 	{
-		$script = e_ADMIN.$scriptname; // matching files. lan_xxxx.php and xxxx.php
+		$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($script);	
 	}
+	else  // admin area. 
+	{
+		$lanfile = findIncludedFiles($script);	
+	}	
+	
+	if(!is_readable($script))
+	{
+		$mes->addError("Not Readable: ".$script);
+		// $script = $scriptname; // matching files. lan_xxxx.php and xxxx.php
+	}
+	
+	$found = findIncludedFiles($script);
+	
+//	print_a($found);
 	
 	// Exceptions - same language loaded by several scripts. 
 	if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
 	{
 		$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
 	}
+	
+	$mes->addDebug("LanFile: ".$lanfile);
+	$mes->addDebug("Script: ".$script);
+
 		
 	if(is_readable($lanfile))
 	{
+		$mes->addDebug("Reading LanFile... ");
 		if($res = unused($lanfile,$script))
 		{
 			$ns -> tablerender($res['caption'],$mes->render(). $res['text']);
@@ -217,7 +262,8 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 	}
 	else
 	{
-		// echo 'PROBLEM';	
+		$mes->addDebug("Couldn't Read LanFile... ");
+		$ns -> tablerender($res['caption'],$mes->render(). $res['text']);	 
 	}
 	
 
@@ -587,7 +633,7 @@ function show_tools()
 									}
 								}
 								$text .= "</select>".
-								$frm->admin_button('language_sel','no-value','update',LAN_CHECK_2)."
+								$frm->admin_button('language_sel','no-value','other',LAN_CHECK_2)."
 							</td>
 						</tr>
 					</tbody>
@@ -623,7 +669,7 @@ function show_tools()
 								}
 								$text .= "
 								</select>
-								".$frm->admin_button('ziplang','no-value','update',LANG_LAN_24)."
+								".$frm->admin_button('ziplang','no-value','other',LANG_LAN_24)."
 								<input type='checkbox' name='contribute_pack' value='1' /> Check to share your language-pack with the e107 community.
 							</td>
 						</tr>";
@@ -638,11 +684,15 @@ function show_tools()
 									
 									$fl = e107::getFile();
 									$fl->mode = 'full';
-									$lans = $fl->get_files(e_LANGUAGEDIR."English/admin");
+									$omit = array('languages','\.png','\.gif');
+									$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+									$plugs = $fl->get_files(e_PLUGIN,'.*?/?admin.*?\.php',$omit,2);
 									
-									$exclude = array('lan_admin.php');							
+									$exclude = array('lan_admin.php');	
+															
+									$srch = array(e_ADMIN,e_PLUGIN);
 									
-									
+									$text .= "<optgroup label='Admin Area'>";
 									foreach($lans as $script=>$lan)
 									{								
 										if(in_array(basename($lan),$exclude))
@@ -650,11 +700,28 @@ function show_tools()
 											continue;
 										}
 										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
-										$text .= "<option value='".$lan."' {$selected}>".str_replace(e_LANGUAGEDIR."English/","",$lan)."</option>\n";
+										$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
 									}
 									
+									$text .= "</optgroup>";
+									
+									$text .= "<optgroup label='Plugins'>";
+									foreach($plugs as $script=>$lan)
+									{								
+										if(in_array(basename($lan),$exclude))
+										{
+											continue;
+										}
+										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
+										$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+									}
+									
+									$text .= "</optgroup>";
+									
+									
 								$text .= "
-								</select>".$frm->admin_button('searchDeprecated',"Check")."
+								</select>".$frm->admin_button('searchDeprecated',"Check",'other')."
+								<span class='field-help'>".(count($lans) + count($plugs))." files found</span>
 							</td>
 						</tr>";
 						
@@ -872,6 +939,11 @@ function grab_lans($path, $language, $filter = "")
  */
 function unused($lanfile,$script)
 {
+	$mes = e107::getMessage();
+	
+//	$mes->addInfo("LAN=".$lanfile."<br />Script = ".$script);
+		
+	
 	$lanDefines = file_get_contents($lanfile);
 	
 	$tmp = explode(",",$script);
@@ -903,7 +975,11 @@ function unused($lanfile,$script)
 	if($lanDefines && $compare)
 	{
 
-		$text = "<table class='table adminlist' style='width:100%'>
+		$text = "<table class='table adminlist'>
+		<colgroup>
+			<col style='width:40%' />
+			<col style='auto' />
+		</colgroup>
 		<thead>
 		<tr>
 			<th>".$lanfile."</th>";
@@ -935,7 +1011,7 @@ function unused($lanfile,$script)
 		$text .= "</tbody></table>";
 		
 		
-		$mes->addInfo("Pink is unused LAN");
+		$mes->addInfo("<b>Pink items are likely to be unused LANs.<br />Comment out and test thoroughly.</b>");
 
 		$ret['text'] = $mes->render().$text;
 		$ret['caption'] = "Deprecated LAN Check (experimental!)";

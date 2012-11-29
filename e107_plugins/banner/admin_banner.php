@@ -48,8 +48,8 @@ require_once(e_HANDLER.'message_handler.php');
 $emessage = eMessage::getInstance();
 
 //@FIXME mix up in banner language files
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_menus.php');
-include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'.php');
+//include_//lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_menus.php');
+include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_admin_banner.php');
 include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'_menu_banner.php');
 
 
