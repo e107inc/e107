@@ -16,12 +16,17 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+ini_set('zlib.output_compression', 0);
+header('Content-Encoding: none'); // turn off gzip. 
 ob_implicit_flush(true);
 ob_end_flush();
 
-ini_set('zlib.output_compression', 0);
-header('Content-Encoding: none'); // turn off gzip. 
+
+
 require_once('../class2.php');
+
+e107::lan('core','fileinspector', true);
+
 if (!getperms('Y'))
 {
 	header('location:'.e_BASE.'index.php');
@@ -48,12 +53,16 @@ $e_sub_cat = 'fileinspector';
 
 if(isset($_GET['scan']))
 {
+	
 	session_write_close();
 	while (@ob_end_clean()); 
+	
 
-	header("Content-type: text/html; charset=".CHARSET, true);
-	$css_file = file_exists(e_THEME.$pref['admintheme'].'/'.$pref['admincss']) ? e_THEME.$pref['admintheme'].'/'.$pref['admincss'] : e_THEME.$pref['admintheme'].'/'.$pref['admincss'];
+	//header("Content-type: text/html; charset=".CHARSET, true);
+	//$css_file = file_exists(e_THEME.$pref['admintheme'].'/'.$pref['admincss']) ? e_THEME.$pref['admintheme'].'/'.$pref['admincss'] : e_THEME.$pref['admintheme'].'/'.$pref['admincss'];
 	$fi = new file_inspector;
+
+	
 
 	 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 	 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> 
@@ -61,6 +70,10 @@ if(isset($_GET['scan']))
 	 <title>Results</title>  
 	 ".$fi->headerCss()." ".headerjs()."
 	 <body style='background-color:white'>\n";
+	 
+	 
+	
+	 
 		
 	// echo "<br />loading..";
 	
@@ -78,6 +91,7 @@ if(isset($_GET['scan']))
 		$fi->scan_results();	
 	}
 	
+	
 	echo "</body></html>";
 	
 	exit();
@@ -86,7 +100,7 @@ if(isset($_GET['scan']))
 else
 {
 	$fi = new file_inspector;
-	require_once('auth.php');
+	require_once(e_ADMIN.'auth.php');
 	
 	
 	if (e_QUERY) {
@@ -157,21 +171,25 @@ class file_inspector {
 	}
 
 	
-	function scan_config() {
-		global $ns, $rs, $pref;
+	function scan_config() 
+	{
+		global $rs, $pref;
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		
 
 		$text = "<div style='text-align: center'>
 		<form action='".e_SELF."' method='post' id='scanform'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='table adminform'>
 		<tr>
 		<td class='fcaption' colspan='2'>".FC_LAN_2."</td>
 		</tr>";
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_5.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='core' value='all'".(($_POST['core'] == 'all' || !isset($_POST['core'])) ? " checked='checked'" : "")." /> ".FC_LAN_4."&nbsp;&nbsp;
 		<input type='radio' name='core' value='fail'".($_POST['core'] == 'fail' ? " checked='checked'" : "")." /> ".FC_LAN_6."&nbsp;&nbsp;
 		<input type='radio' name='core' value='none'".($_POST['core'] == 'none' ? " checked='checked'" : "")." /> ".FC_LAN_12."&nbsp;&nbsp;
@@ -179,20 +197,20 @@ class file_inspector {
 		</tr>";
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_13.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='missing' value='0'".($_POST['missing'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_7.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		<input type='checkbox' name='nolang' value='1'".(($_POST['nolang'] == '1' || !isset($_POST['nolang'])) ? " checked='checked'" : "")." /> Exclude Language-Files&nbsp;&nbsp;
@@ -201,10 +219,10 @@ class file_inspector {
 		</tr>";
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_3." ".FC_LAN_21.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='oldcore' value='0'".($_POST['oldcore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td>
@@ -214,20 +232,20 @@ class file_inspector {
 		
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_8.":
 		</td>
-		<td class='forumheader3' style='width: 65%; vertical-align: top'>
+		<td style='width: 65%; vertical-align: top'>
 		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td></tr>";
 		
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		".FC_LAN_14.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='type' value='tree'".(($_POST['type'] == 'tree' || !isset($_POST['type'])) ? " checked='checked'" : "")." /> ".FC_LAN_15."&nbsp;&nbsp;
 		<input type='radio' name='type' value='list'".($_POST['type'] == 'list' ? " checked='checked'" : "")." /> ".FC_LAN_16."&nbsp;&nbsp;
 		</td>
@@ -241,37 +259,38 @@ class file_inspector {
 			</tr>";
 			
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 35%'>
+			<td style='width: 35%'>
 			".FC_LAN_18.":
 			</td>
-			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<td colspan='2' style='width: 65%'>
 			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities($_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
 			</td>
 			</tr>";
 			
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 35%'>
+			<td style='width: 35%'>
 			".FC_LAN_19.":
 			</td>
-			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<td colspan='2' style='width: 65%'>
 			<input type='checkbox' name='num' value='1'".(($_POST['num'] || !isset($_POST['num'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 			
 			$text .= "<tr>
-			<td class='forumheader3' style='width: 35%'>
+			<td style='width: 35%'>
 			".FC_LAN_20.":
 			</td>
-			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<td colspan='2' style='width: 65%'>
 			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 		}
 		
-		$text .= "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'scan', FC_LAN_11)."</td>
-		</tr>
+		$text .= "
 		</table>
+		<div class='buttons-bar center'>
+		".$frm->admin_button('scan', FC_LAN_11, 'other')."
+		</div>
 		</form>
 		</div>";
 
@@ -676,7 +695,7 @@ class file_inspector {
 
 		if ($_POST['type'] == 'tree') {
 			$text = "<div style='text-align:center'>
-			<table style='width:97%' class='fborder'>
+			<table class='table adminlist'>
 			<tr>
 			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
 			</tr>";
@@ -684,31 +703,36 @@ class file_inspector {
 			$text .= "<tr style='display: none'><td style='width:50%'></td><td style='width:50%'></td></tr>";
 		
 			$text .= "<tr>
-			<td class='forumheader3' style='width:50%'>
+			<td style='width:50%'>
 			<div style='height: 400px; overflow: auto'>
 			".$scan_text."
 			</div>
 			</td>
-			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
-		} else {
+			<td style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
+		} 
+		else 
+		{
 			$text = "<div style='text-align:center'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<table class='table adminlist'>
 			<tr>
 			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
 			</tr>";
 			
 			$text .= "<tr>
-			<td class='forumheader3' colspan='2'>";
+			<td colspan='2'>";
 		}
 
-		$text .= "<table class='t' id='initial'>";
+		$text .= "<table class='t table adminlist' id='initial'>";
 		
-		if ($_POST['type'] == 'tree') {
+		if ($_POST['type'] == 'tree') 
+		{
 			$text .= "<tr><td class='f' style='padding-left: 4px'>
 			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 			<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
 			<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
-		} else {
+		} 
+		else 
+		{
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
 			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 			</tr>";
@@ -785,7 +809,7 @@ class file_inspector {
 		if ($_POST['type'] != 'tree')
 		{
 			$text .= "<br /></td></tr><tr>
-			<td class='forumheader3' colspan='2'>
+			<td colspan='2'>
 			<table class='t'>";
 			if (!$this -> results && $_POST['regex']) {
 				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
@@ -895,20 +919,23 @@ class file_inspector {
 		fwrite($fp, $data);
 	}
 	
-	function snapshot_interface() {
+	function snapshot_interface() 
+	{
 		global $ns, $rs;
 		$text = "";
-		if (isset($_POST['create_snapshot'])) {
+		
+		if (isset($_POST['create_snapshot'])) 
+		{
 			$this -> create_image($_POST['snapshot_path']);
 			$text = "<div style='text-align:center'>
 			<form action='".e_SELF."' method='post' id='main_page'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<table class='table adminform'>
 			<tr>
 			<td class='fcaption'>Snapshot Created</td>
 			</tr>";
 		
 			$text .= "<tr>
-			<td class='forumheader3' style='text-align:center'>
+			<td style='text-align:center'>
 			The snapshot (".e_ADMIN."core_image.php) was successfully created.
 			</td>
 			</tr>
@@ -922,24 +949,24 @@ class file_inspector {
 		
 		$text .= "<div style='text-align:center'>
 		<form action='".e_SELF."?".e_QUERY."' method='post' id='snapshot'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='table adminform'>
 		<tr>
-		<td class='fcaption' colspan='2'>Create Snapshot</td>
+		<td ccolspan='2'>Create Snapshot</td>
 		</tr>";
 		
 		$text .= "<tr>
-		<td class='forumheader3' style='width:50%'>
+		<td style='width:50%'>
 		Absolute path of root directory to create image from:
 		</td>
-		<td class='forumheader3' style='width:50%'>
+		<td style='width:50%'>
 		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this -> root_dir)."' />
 		</td></tr>
 		
 		<tr>
-		<td class='forumheader3' style='width: 35%'>
+		<td style='width: 35%'>
 		Create snapshot of current or deprecated core files:
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> Current&nbsp;&nbsp;
 		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> Deprecated&nbsp;&nbsp;
 		</td>
@@ -956,7 +983,8 @@ class file_inspector {
 
 	}
 	
-	function checksum($filename) {
+	function checksum($filename) 
+	{
 		$checksum = md5(str_replace(array(chr(13),chr(10)), "", file_get_contents($filename)));
 		return $checksum;
 	}
@@ -1002,19 +1030,38 @@ class file_inspector {
 		
 		$inc = round(($rand / $total) * 100);
 		
-		if($inc > 100)
+		if($inc == 0)
 		{
-			$inc = 98;
+			return;
 		}
 		
 		echo "<div style='display:block;position:absolute;top:20px;width:100%;'>
 		<div style='width:700px;position:relative;margin-left:auto;margin-right:auto;text-align:center'>";
-			
+		
+		$active = "active";
+		
+		if($inc >= 100)
+		{
+			$inc = 100;
+			$active = "";
+		}
+		
+		
+		echo '<div class="progress progress-striped '.$active.'">
+    			<div class="bar" style="width: '.$inc.'%;"></div>
+   		 </div>';
+		
+	//	exit;
+		/*	
 	    echo "<div style='margin-left:auto;margin-right:auto;border:2px inset black;height:20px;width:700px;overflow:hidden;text-align:left'>    
 		<img src='".THEME."images/bar.jpg' style='width:".$inc."%;height:20px;vertical-align:top' />
 		</div>";
+		*/
+		
 		
 		echo "<div style='width:100%;background-color:white'>".$diz."</div>";
+		
+		
 		if($total > 0)
 		{
 			echo "<div style='width:100%;background-color:white;text-align:center'>".$inc ."%</div>";	
@@ -1039,6 +1086,62 @@ class file_inspector {
 	
 	function headerCss()
 	{
+		$pref = e107::getPref();
+				
+		echo "<!-- *CSS* -->\n";
+		$e_js =  e107::getJs();
+		
+		// Core CSS - XXX awaiting for path changes
+		if (!isset($no_core_css) || !$no_core_css)
+		{
+			//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+			$e_js->otherCSS('{e_WEB_CSS}e107.css');
+		}
+				
+					
+				
+		if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
+		{
+			$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
+			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+			$e_js->themeCSS($css_file);
+		}
+		elseif (isset($pref['themecss']) && $pref['themecss'])
+		{
+			$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
+			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+			$e_js->themeCSS($css_file);
+		}
+		else
+		{
+			$css_file = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
+			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+			$e_js->themeCSS($css_file);
+		}
+		
+						
+		$e_js->renderJs('other_css', false, 'css', false);
+		echo "\n<!-- footer_other_css -->\n";
+		
+		// Core CSS
+		$e_js->renderJs('core_css', false, 'css', false);
+		echo "\n<!-- footer_core_css -->\n";
+		
+		// Plugin CSS
+		$e_js->renderJs('plugin_css', false, 'css', false);
+		echo "\n<!-- footer_plugin_css -->\n";
+		
+		// Theme CSS
+		//echo "<!-- Theme css -->\n";
+		$e_js->renderJs('theme_css', false, 'css', false);
+		echo "\n<!-- footer_theme_css -->\n";
+		
+		// Inline CSS - not sure if this should stay at all!
+		$e_js->renderJs('inline_css', false, 'css', false);
+		echo "\n<!-- footer_inline_css -->\n";			
+				
+			
+		/*
 		echo "<!-- Theme css -->\n";
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
 			$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
@@ -1058,6 +1161,8 @@ class file_inspector {
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_WEB_CSS."e107.css' type='text/css' />\n";
 		}
+		 * */
+		 
 	}
 	
 	
