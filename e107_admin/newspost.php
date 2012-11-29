@@ -2025,8 +2025,8 @@ class admin_newspost
 		// -----
 		
 		$text .= "<tr>
-					<td>".NWSLAN_13.":<br /></td>
-					<td>\n";
+					
+					<td colspan='2'>\n";
 		$text .= "<div class='e-tabs'>
 		<ul>
 			<li><a href='#news-body-container'>".NWSLAN_13."</a></li>

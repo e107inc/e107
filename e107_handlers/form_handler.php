@@ -113,6 +113,7 @@ class e_form
 
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
+		if(!vartrue($options['class']) && $maxlength > 99) $options['class'] = 'tbox span5';
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
@@ -1137,7 +1138,14 @@ class e_form
 			break;
 			
 			case 'other':
-			case 'login':
+			case 'login':	
+				$options['class'] .= 'btn-primary';
+			break;	
+			
+			case 'warning':
+				$options['class'] .= 'btn-warning';
+			break;
+			
 			case 'batch':
 			case 'batch e-hide-if-js': // FIXME hide-js shouldn't be here. 
 				$options['class'] .= 'btn-primary';
