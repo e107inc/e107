@@ -21,4 +21,10 @@ define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "Trackbacks: ");
 define("LAN_THEME_5", "Posted by ");
 define("LAN_THEME_6", "on ");
+
+define('LAN_THEME_LOGIN', 		'Login');
+define('LAN_THEME_REGISTER', 	'Register');
+define('LAN_THEME_CLOSE', 		'Close');
+define("LAN_THEME_WELCOME", 	'Welcome');
+
 ?>

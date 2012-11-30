@@ -57,7 +57,7 @@ a.brand:hover img 			{
  
 @media (min-width: 1500px) { 
 	
-.sidebar-nav 				{ font-size:15px; }
+.sidebar-nav 				{ font-size:12px; }
 
 } 
       
@@ -130,6 +130,8 @@ img.S32:hover 				{}
 .adminlist tr.last td		{ border-bottom: 0px solid;}
 .adminlist thead 			{ background-color:#f2f2f2; }
 .adminlist tr.even			{ background-color:#f6f6f6; }
+.adminlist tr.even.first	{ border-top:0px none; }
+.adminlist tr.odd			{ background-color:#FFFFFF; }
 .adminlist .col-selection-cont { position: relative; float:right; }
 
 .col-selection-cont .col-selection { text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px; overflow:visible; position: absolute; z-index:101; right:0px;}
@@ -177,3 +179,10 @@ img.S32:hover 				{}
 
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
+
+/* */
+.nav-header										{ font-size:12px; }
+.admin-content									{ padding-top:5px; border-top:1px #E3E3E3 solid; }
+
+
+

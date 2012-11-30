@@ -2,6 +2,34 @@
 body 						{ padding-top: 75px; padding-bottom: 40px; }
 .well 						{ padding:10px; }
 
+.site-header .navbar-inner	{ padding:6px 0px 10px 0px; }
+.site-logo					{ padding-top:6px; }
+.site-logo a				{ margin:0px 10px; }
+
+.site-login .btn-toolbar						{ margin-top:0px; margin-bottom:0px; }
+.site-login										{ margin-right:10px; }
+.site-login form								{ margin-top:0px; margin-bottom:0px; }
+
+.register.btn .caret							{ width: 0; height: 0; border-right: 4px solid transparent; border-left: 4px solid #FFFFFF; border-top: 4px solid transparent; border-bottom: 4px solid transparent; content: ""; display: inline-block; vertical-align: top; margin-left:8px; margin-top:7px; }
+a.btn-login span.caret							{ margin-left:10px; }
+#clogin.modal									{ width:300px; margin-left:-150px; }
+.btn-primary a									{ color:#FFFFFF; }
+.loginbox-box									{ padding:15px 20px; text-align:left; }
+.loginbox-box a									{ padding:0px; color:#0088CC; }
+.loginbox-box a:hover							{ color:#000000; }
+.login-box-tbox									{ text-align:center; }
+.login-box-imagecode							{ padding-bottom:5px; text-align:center; }
+.login-box-botton								{ text-align:center; }
+.login-box-remmeber								{ text-align:center; }
+.login-box-item									{ text-align:center; font-size:12px; }
+.login-maintenance								{ text-align:center; }
+.login-box-liks									{ float:left; }
+.login-box-liks a								{ display:block; padding-left:12px; background:url(images/arrow-right.png) no-repeat 0 50%; }
+.login-box-avatar								{ float:right; margin-left:10px; }
+.login-box-avatar img							{ max-width:50px; display:block; }
+.login-box-separator							{ clear:both; border-bottom:1px #EEEEEE solid; padding-bottom:10px; margin-bottom:9px; }
+
+
 /* E107 CORE CSS *********************************************************************************************/
 .searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
 
