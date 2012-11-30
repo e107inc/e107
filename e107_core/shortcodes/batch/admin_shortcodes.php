@@ -1224,7 +1224,7 @@ class admin_shortcodes
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 
-		require_once(e_ADMIN.'ad_links.php');
+		require(e_ADMIN.'ad_links.php'); //FIXME loaded in boot.php but $admin_cat is not available here. 
 		require_once(e_HANDLER.'admin_handler.php');
 		
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language')
@@ -1248,6 +1248,7 @@ class admin_shortcodes
 
   		foreach($admin_cat['id'] as $i => $cat)
 		{
+			
 			$id = $admin_cat['id'][$i];
 			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
 			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
