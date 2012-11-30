@@ -11,12 +11,22 @@ $(document).ready(function()
 	
 		//alert('hello');
 		if(!target){return true; }
+		
+		//console.log($('#' + target, window.top.document).attr('value'));
+		
+		var cursorIndex = $('#' + target, window.top.document).attr("selectionStart");
+		var lStr =  $('#' + target, window.top.document).attr('value').substr(0,cursorIndex) + " " + newval + " ";
+		var rStr = $('#' + target, window.top.document).attr('value').substr(cursorIndex);
+	
+		$('#' + target, window.top.document).attr('value',lStr+rStr);
+		$('#' + target, window.top.document).attr("selectionStart",lStr.length);  
+				
 		//('#' + target, window.top.document).insertAtCaret(newVal);
 		
 	//	$('#' + target, window.parent.document).append(newval);	//FIXME caret!!
 	//	var t = $('#' + target, window.parent.document).text();
 		
-		$('#' + target, window.top.document).attr('value',newval);	// set new value
+		//$('#' + target, window.top.document).attr('value',newval);	// set new value
 		// inserttext(newval,target);
 		// alert(newval);
 	});
