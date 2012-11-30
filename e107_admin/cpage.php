@@ -574,11 +574,14 @@ class page_admin_ui extends e_admin_ui
 	
 			$text .= "
 						<tr>
-							<td>".CUSLAN_9."</td>
-							<td>
+						<td colspan='2'>
 			";
 	
-		$text .= "<div id='tab-container' class='admintabs e-tabs'>";	
+		$text .= "<div id='tab-container' class='admintabs e-tabs'>
+		<ul>
+			<li><a href='#cpage-body-container'>".CUSLAN_9."</a></li>
+		</ul>
+		<div id='cpage-body-container'>";	
 				
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
 	
@@ -586,7 +589,7 @@ class page_admin_ui extends e_admin_ui
 	
 	//	$text .= $this->bbareaMulti('data', $textareaValue, 'page','page','large');
 		$text .= $frm->bbarea('data', $textareaValue, 'page','page','large');
-		$text .= "</div>";
+		$text .= "</div></div>";
 		
 	//	$text .= $frm->bbarea('data', $textareaValue, 'page','help','large');
 			
@@ -615,7 +618,7 @@ class page_admin_ui extends e_admin_ui
 					</fieldset>
 					<fieldset id='core-cpage-create-options'>
 						<legend>".LAN_OPTIONS."</legend>
-						<table class='adminedit options'>
+						<table class='table adminform options'>
 							<colgroup>
 								<col class='col-label' />
 								<col class='col-control' />
@@ -668,7 +671,14 @@ class page_admin_ui extends e_admin_ui
 								
 				
 				//triggerHook
-				$data = array('method'=>'form', 'table'=>'page', 'id'=>$id, 'plugin'=>'page', 'function'=>'createPage');
+				$data = array(
+					'method'	=>'form', 
+					'table'		=>'page', 
+					'id'		=> $id, 
+					'plugin'	=> 'page', 
+					'function'	=> 'createPage'
+				);
+				
 				$hooks = $e_event->triggerHook($data);
 				if(!empty($hooks))
 				{
@@ -684,6 +694,7 @@ class page_admin_ui extends e_admin_ui
 								<col class='col-control' />
 							</colgroup>
 							<tbody>";
+							
 					foreach($hooks as $hook)
 					{
 						if(!empty($hook))
