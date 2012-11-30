@@ -2074,7 +2074,7 @@ class e107
 		{
 			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
 		}
-		if($fname === true) // admin file. 
+		elseif($fname === true) // admin file. 
 		{
 			$fname = "admin/".e_LANGUAGE;	
 		}
@@ -2085,7 +2085,7 @@ class e107
 
 		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
 		
-	//	echo "path = ".$path;
+		//echo "path = ".$path.'<br>';
 		
 		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
