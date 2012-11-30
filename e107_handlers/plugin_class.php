@@ -187,7 +187,7 @@ class e107plugin
 				continue;
 			}
 			
-			if(in_array($path,$this->disAllowed))
+			if(in_array($plugin_path, $this->disAllowed))
 			{
 				$mes->addWarning("Folder error: <i>{$p['path']}</i> is not permitted as an acceptable folder name.");
 				continue;	
@@ -2467,7 +2467,7 @@ class e107plugin
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
 
-		if(!is_array($this->plug_vars['description']))
+		if(varset($this->plug_vars['description']) && !is_array($this->plug_vars['description']))
 		{
 			$diz = $this->plug_vars['description'];
 			unset($this->plug_vars['description']);
