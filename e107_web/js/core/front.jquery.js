@@ -57,7 +57,7 @@ $(document).ready(function()
 				$("#comment").val('');
 				
 				if($('#comments-container').length){
-					alert('true');
+				//	alert('true');
 				}else{
 					$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
 				}
