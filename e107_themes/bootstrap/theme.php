@@ -30,18 +30,7 @@ function theme_head() {
 		<![endif]-->
 	';
 
-    $ret .= "
-    <script type='text/javascript'>
-       /**
-    	* Decorate all tables having e-list class
-    	*/
-        e107.runOnLoad( function() {
-            \$\$('table.e-list').each(function(element) {
-            	e107Utils.Decorate.table(element, { tr_td: 'first last' });
-            });
-        }, document, true);
 
-    </script>";
 
     if(THEME_LAYOUT == "alternate") // as matched by $HEADER['alternate'];
 	{
@@ -66,6 +55,15 @@ function tablestyle($caption, $text, $mod)
 	{
 		$type = 'box';
 	}
+	if($mod == "loginbox")
+	{
+		$style = 'loginbox';
+			echo '
+				'.$text.'
+			';
+		return; 
+	}
+
 	
 	switch($type) 
 	{
@@ -101,44 +99,58 @@ function tablestyle($caption, $text, $mod)
 		break;
 	}
 }
+$c_login = '
+<div class="site-login">
+	'.((!USER) ? '
+	<div class="btn-toolbar">
+		<a href="'.SITEURL.'signup.php" class="btn btn-success register" title="'.LAN_THEME_REGISTER.'">'.LAN_THEME_REGISTER.'<span class="caret"></span></a>
+		<a href="#clogin" role="button" class="btn btn-login" data-toggle="modal" title="'.LAN_THEME_LOGIN.'">'.LAN_THEME_LOGIN.'<span class="caret"></span></a>
+	</div>
+	{SETSTYLE=clogin}
+	{PLUGIN=login_menu}
+	' : '
+	<a href="#clogin" role="button" class="btn btn-login" data-toggle="modal" title="'.LAN_THEME_WELCOME.' '.USERNAME.'">'.LAN_THEME_WELCOME.' '.USERNAME.'<span class="caret"></span></a>
+	{PLUGIN=login_menu}
+	').'
+</div>
+';
 
 $HEADER['default'] = '
-<div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">  
-          {SITELOGO}
-          <div class="nav-collapse collapse">
-            <div class="dropdown nav pull-right navbar-text ">
-            {CUSTOM=login}
-            </div>
-            
-			<div class="dropdown nav">     
-        	 {SITELINKS}
-   			 </div>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div><div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-    		{SETSTYLE=site_info}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="navbar navbar-inverse navbar-fixed-top site-header">
+			<div class="navbar-inner">
+				<div class="span9">
+					<div class="site-logo pull-left thumbnails"><a class="logolink" href="'.SITEURL.' title="">{LOGO}</a></div><div class="dropdown nav navbar-text pull-left">{SITELINKS}</div>
+				</div>
+				<div class="span3">
+					<div class="pull-right">'.$c_login.'</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+		{SETSTYLE=site_info}
 		
-			{MENU=2}
-			
-         </div>
-        <div class="span10">
+		{MENU=2}
+		
+		</div>
+		<div class="span10">
 ';
 $FOOTER['default'] = '
-        </div><!--/span-->
-      </div><!--/row-->
+		</div><!--/span-->
+	</div><!--/row-->
 
-      <hr>
+<hr>
 
-      <footer class="center"> 
-		Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
-      </footer>
+<footer class="center"> 
+	Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
+</footer>
 
-    </div><!--/.fluid-container-->';
+</div><!--/.fluid-container-->';
 
 $HEADER['alternate'] = '';
 $FOOTER['alternate'] = '';

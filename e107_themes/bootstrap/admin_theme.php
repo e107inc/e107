@@ -110,7 +110,7 @@ function theme_head() {
 function tablestyle($caption, $text, $mode) 
 {
 	global $style;
-	
+//	echo $mode;
 	$class = '';
 	
 	// echo 'mod='.$style;
@@ -122,7 +122,7 @@ function tablestyle($caption, $text, $mode)
 		echo '
 				<div class="well sidebar-nav span3" style="padding:10px; min-height:200px">  
 				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
+				<div class="admin-content">'.$text.'</div>
 			</div>
 		';
 		return;
@@ -132,27 +132,33 @@ function tablestyle($caption, $text, $mode)
 	{
 		echo '<div class="well" style="padding:10px">  
 				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
+				<div class="admin-content">'.$text.'</div>
 			</div>';
 			
 		return;
 	}
 	
-
-
-	
-	if($style == 'core-infopanel')
+	if($mode == 'core-infopanel_online')
 	{
 		echo '
 				<div class="well sidebar-nav span6" style="padding:10px">  
 				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
+				<div class="nav-content">'.$text.'</div>
 			</div>
 		';
 		return;
 	}
 	
-
+	if($mode == 'core-infopanel_news' || $mode == 'core-infopanel_mye107')
+	{
+		echo '
+				<div class="well sidebar-nav span6" style="padding:10px">  
+				<div class="nav-header">'.$caption.'</div>
+				<div class="admin-content">'.$text.'</div>
+			</div>
+		';
+		return;
+	}
 	
 	
 	
@@ -164,7 +170,7 @@ function tablestyle($caption, $text, $mode)
 		echo '
 				<div class="well sidebar-nav" >  
 				<div class="nav-header">'.$caption.'</div>
-				'.$text.'
+				<div class="admin-content">'.$text.'</div>
 			</div>
 		';
 	break;
@@ -173,9 +179,7 @@ function tablestyle($caption, $text, $mode)
 		echo '
 			<div class="well sidebar-nav" style="padding:10px">  
 				<div class="nav-header">'.$caption.'</div>
-				<p>
-					'.$text.'
-				</p>
+				<div class="admin-content">'.$text.'</div>
 			</div>
 		';
 	break;
