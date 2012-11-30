@@ -2002,6 +2002,7 @@ class e107
 				return FALSE;
 			}
 			$path = str_replace(e_LANGUAGE, 'English', $path);
+			self::getMessage()->addDebug("Couldn't load language file: ".$path);
 		}
 		$ret = ($force) ? include($path) : include_once($path);
 		return (isset($ret)) ? $ret : "";
@@ -2068,11 +2069,24 @@ class e107
 
 		$plugin = preg_replace('/[^\w]/', '', $plugin);
 
-		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
-		else $fname = e_LANGUAGE;
+
+		if($fname && is_string($fname))
+		{
+			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', $fname);
+		}
+		if($fname === true) // admin file. 
+		{
+			$fname = "admin/".e_LANGUAGE;	
+		}
+		else
+		{
+			 $fname = e_LANGUAGE;
+		}
 
 		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
-
+		
+	//	echo "path = ".$path;
+		
 		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
 	}

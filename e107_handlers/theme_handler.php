@@ -38,6 +38,9 @@ class themeHandler
 	var $fl;
 	var $themeConfigObj = null;
 	var $noLog = FALSE;
+	
+	private $approvedAdminThemes = array('bootstrap','jayya');
+	
 	public $allowedCategories = array('generic',
 		 'adult',
 		 'blog',
@@ -612,11 +615,12 @@ class themeHandler
 	
 	function loadThemeConfig()
 	{
+		$mes = e107::getMessage();
 		$confile = e_THEME.$this->id."/".$this->id."_config.php";
 		
 		if(($this->themeConfigObj === null) && is_readable($confile))
 		{
-			
+			$mes->addDebug("Loading : ".$confile);
 			include ($confile);
 			$className = 'theme_'.$this->id;
 			if(class_exists($className))
@@ -634,7 +638,10 @@ class themeHandler
 	// TODO process custom theme configuration - .
 	function renderThemeConfig()
 	{
-		global $frm;
+		
+		$mes = e107::getMessage();
+		
+		$mes->addDebug("Rendering Theme Config"); 
 		
 		$this->loadThemeConfig();
 		
@@ -692,32 +699,44 @@ class themeHandler
 		
 			$info_icon = "<a data-toggle='modal' href='".e_SELF."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='info' class='icon S32' /></a>";
 	
+		$preview_icon = "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'><img src='".e_IMAGE_ABS."admin_images/search_32.png' alt='Preview' /></a>";
+	
 		
-		$preview_icon = "<input class='middle e-tip e-modal-iframe' href='".e_BASE."index.php?themepreview.".$theme['id']."' type='image' src='".e_IMAGE_ABS."admin_images/search_32.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />";
-	//	$preview_icon = "<a class='middle' title='".TPVLAN_9." #".$theme['id']."' data-toggle='modal'  data-target='#myModal' href='".e_BASE."index.php?themepreview.".$theme['id']."'><img src='".e_IMAGE_ABS."admin_images/search_32.png' alt='Preview' /></a>";
+		$admin_icon = ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
 		
-	//	$preview_icon = "<a data-toggle='modal' href='".e_BASE."index.php?themepreview.".$theme['id']."' data-target='#myModal' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+		if(!in_array($theme['path'], $this->approvedAdminThemes))
+		{
+			$admin_icon = "";	
+		}
 		
 		
-		$admin_icon = ($pref['admintheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
 		
-		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img class='admin-theme-thumb' src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
+		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img  src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
 		
 		// Choose a Theme to Install.
 		if(!$mode)
 		{
 			// styles NEED to be put into style.css
-			
-			$borderStyle = (($pref['sitetheme'] == $theme['path']) || ($pref['admintheme'] == $theme['path'])) ? "border:1px solid black" : "border:1px dotted silver;background-color:#DDDDDD";
-			$text = "<div class='f-left block-text admin-theme-cell' style='margin:5px;".$borderStyle.";'>
-					<div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>";
-			$text .= "<div class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>";
 					
-			$text .= "<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>";
-		//	$text .= "<div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>";
-		//	$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='background-color:white;position:relative;top:-130px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
-
-			$text .= "</div>";
+			if($pref['sitetheme'] == $theme['path'])
+			{
+				$borderStyle = "admin-theme-cell-site";		
+			}
+			elseif($pref['admintheme'] == $theme['path'])
+			{
+				$borderStyle = "admin-theme-cell-admin";	
+			}
+			else 
+			{
+				$borderStyle = "admin-theme-cell-default";
+			}
+			
+			$text = "
+				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
+					<div class='admin-theme-thumb'>".$newpreview."</div>
+					<div class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
+					<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>	
+				</div>";
 			return $text;
 		}
 		
@@ -728,19 +747,17 @@ class themeHandler
 		
 		$text = "
 		<h2 class='caption'>".$theme['name']."</h2>
-        <div class='admintabs' id='tab-container'>";
+        <div id='tab-container' class='e-tabs'>
+        <ul id='core-thememanager-tabs'>
+        <li><a href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
 		
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
-			$text .= "
-				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
-				<li id='tab-thememanager-configure'><a href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>
-				<li id='tab-thememanager-help'><a href='#core-thememanager-help'>".LAN_HELP."</a></li>
-			</ul>";
+			$text .= "<li><a href='#core-thememanager-help'>".LAN_HELP."</a></li>";
 		}
 		
-		$text .= "
-		<div id='core-thememanager-configure'>
+		$text .= "</ul>
+		<fieldset id='core-thememanager-configure'>
         <table class='table adminform'>
         	<colgroup>
         		<col class='col-label' />
@@ -1000,10 +1017,10 @@ class themeHandler
 
 
 
-		</div>
+		</fieldset>
 
 
-			<div id='core-thememanager-help'  >".$this->renderThemeHelp()."</div>
+			<fieldset><div class='tab-border' id='core-thememanager-help'>".$this->renderThemeHelp()."</div></fieldset>
 
         </div>
 		\n";
