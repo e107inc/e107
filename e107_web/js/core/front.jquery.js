@@ -56,6 +56,12 @@ $(document).ready(function()
 	
 				$("#comment").val('');
 				
+				if($('#comments-container').length){
+					alert('true');
+				}else{
+					$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
+				}
+				
 				if(pid != 0)
 				{
 					$('#comment-'+pid).after(a.html).hide().slideDown(800);	
