@@ -40,7 +40,7 @@ if(is_array($_plugins) && count($_plugins) > 0)
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
 
-require_once (e_ADMIN.'ad_links.php');
+require_once (e_ADMIN.'ad_links.php'); //FIXME - see 'FIXME' in sc_admin_navigation
 
 if (!defined('ADMIN_WIDTH'))
 {
