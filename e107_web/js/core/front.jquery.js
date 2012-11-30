@@ -56,17 +56,23 @@ $(document).ready(function()
 	
 				$("#comment").val('');
 				
+				if($('#comments-container').length){
+					alert('true');
+				}else{
+					$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
+				}
+				
 				if(pid != 0)
 				{
 					$('#comment-'+pid).after(a.html).hide().slideDown(800);	
 				}
 				else if(sort == 'desc')
 				{
-					$(a.html).prependTo('#comments-container').hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
+					$('#comments-container').prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
 				}
 				else
 				{
-					$(a.html).appendTo('#comments-container').hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
+					$('#comments-container').append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
 					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
 				}  
 				
