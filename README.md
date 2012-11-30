@@ -14,7 +14,10 @@ For a stable earlier release see [www.e107.org][1]
 Be sure you are using the most recent version prior to reporting an issue. 
 Your may report any bugs or feature requests on Github [here][2] 
 
+## Pull-Requests
 
+* Please submit 1 pull-request for each Github #issue you may work on. 
+* Make sure that only the lines you have changed actually show up in a file-comparison (diff) ie. some text-editors alter every line so this should be avoided. 
 
 
   [1]: http://www.e107.org
