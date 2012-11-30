@@ -88,7 +88,7 @@ if(isset($_POST['backup_core']) || $_GET['mode']=='backup_core')
 {
 	backup_core();
 	//message_handler("MESSAGE", DBLAN_1);
-	$emessage->add(DBLAN_1, E_MESSAGE_SUCCESS);
+	$mes->add(DBLAN_1, E_MESSAGE_SUCCESS);
 }
 
 */
@@ -255,7 +255,7 @@ class system_tools
 
 	private function convertUTF8Form()
 	{
-		$emessage = e107::getMessage();
+		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		//TODO a function to call the e107_config information in e107_class.php.
 		require(e_BASE."e107_config.php");
@@ -282,7 +282,7 @@ class system_tools
 			</ul>
 			';
 
-		$emessage->add($message, E_MESSAGE_WARNING);
+		$mes->add($message, E_MESSAGE_WARNING);
 
 		$text = "
 			<form method='post' action='".e_SELF."' id='linkform'>
@@ -294,7 +294,7 @@ class system_tools
 				</fieldset>
 			</form>";
 
-		e107::getRender()->tablerender("Convert Database to UTF-8", $emessage->render().$text);
+		e107::getRender()->tablerender("Convert Database to UTF-8", $mes->render().$text);
 
 	}
 
@@ -412,7 +412,7 @@ class system_tools
 	 */
 	private function del_pref_val($mode='core')
 	{
-		global $emessage;
+		$mes = e107::getMessage();
 
 		$deleted_list = "";
 
@@ -442,7 +442,7 @@ class system_tools
 
 		if($deleted_list && $config->save())
 		{
-			$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
+			$mes->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
 			e107::getCache()->clear();
 		}
 
@@ -450,16 +450,18 @@ class system_tools
 
 	private function delete_plugin_entry()
 	{
-		global $sql, $emessage;
+
+		$mes = e107::getMessage();
+		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
 		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
 		{
-			$emessage->add(LAN_DELETED, E_MESSAGE_SUCCESS);
+			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$emessage->add(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
+			$mes->add(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
 		}
 
 	}
@@ -472,8 +474,9 @@ class system_tools
 	 */
 	private function render_options()
 	{
-		$frm = e107::getForm();
-
+		$frm = e107::getForm();	
+		$mes = e107::getMessage(); 
+		
 		$text = "
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
 			<fieldset id='core-db-plugin-scan'>
@@ -512,7 +515,6 @@ class system_tools
 		</form>
 		";
 
-		$mes = e107::getMessage(); 
 		e107::getRender()->tablerender(DBLAN_10, $mes->render().$text);
 	}
 
@@ -525,8 +527,8 @@ class system_tools
 	{
 		 // Get largest allowable file upload
 
-		 $frm = e107::getSingleton('e_form');
-
+		$frm = e107::getSingleton('e_form');
+		$mes = eMessage::getInstance();
 
 				require_once(e_HANDLER.'upload_handler.php');
 				  $max_file_size = get_user_max_upload();
@@ -560,8 +562,8 @@ class system_tools
 
 					</form>\n";
 
-		$emessage = eMessage::getInstance();
-		e107::getRender()->tablerender(DBLAN_59, $emessage->render().$text);
+
+		e107::getRender()->tablerender(DBLAN_59, $mes->render().$text);
 
 	}
 
@@ -571,7 +573,7 @@ class system_tools
 	 */
 	private function exportXmlForm()
 	{
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 		$frm = e107::getSingleton('e_form');
 
 
@@ -676,7 +678,7 @@ class system_tools
 		</form>	";
 
 
-		e107::getRender()->tablerender("Export Options",$emessage->render(). $text);
+		e107::getRender()->tablerender("Export Options",$mes->render(). $text);
 
 
 	}
@@ -706,14 +708,14 @@ class system_tools
 	 */
 	private function optimizesql($mySQLdefaultdb)
 	{
-	//	global $emessage;
+	//	global $mes;
 		$result = mysql_list_tables($mySQLdefaultdb);
 		while($row = mysql_fetch_row($result))
 		{
 			mysql_query("OPTIMIZE TABLE ".$row[0]);
 		}
 
-	//	$emessage->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
+	//	$mes->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
 		e107::getRender()->tablerender(DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
 	}
 
@@ -725,7 +727,10 @@ class system_tools
 	{
 		//TODO Add drop-down for editing personal perfs also. ie. user pref of self. (admin)
 
-		global $pref, $e107, $emessage, $frm;
+		global $pref, $e107;
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		
 
 
 
@@ -799,7 +804,7 @@ class system_tools
 					</fieldset>
 				</form>\n\n";
 
-		e107::getRender()->tablerender(DBLAN_10.' :: '.DBLAN_20." :: ".ucwords($type), $emessage->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.' :: '.DBLAN_20." :: ".ucwords($type), $mes->render().$text);
 
 		return $text;
 	}
@@ -810,10 +815,10 @@ class system_tools
 	 */
 	private function scan_override()
 	{
-		global $pref, $emessage;
-
-		require_once(e_HANDLER.'file_class.php');
-		$f = new e_file;
+		global $pref, $mes;
+		
+		$mes = e107::getMessage();
+		$f = e107::getFile();
 
 		$scList = '';
 
@@ -830,7 +835,7 @@ class system_tools
 		}
 		$pref['sc_override'] = $scList;
 		save_prefs();
-	//	$emessage->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
+	//	$mes->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
 		e107::getRender()->tablerender(DBLAN_56, DBLAN_57.':<br />'.$pref['sc_override']);
 	}
 
@@ -849,10 +854,7 @@ class system_tools
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		$emessage = e107::getMessage();
-
-
-
+		$mes = e107::getMessage();
 
 		require_once (e_HANDLER."plugin_class.php");
 		$ep = new e107plugin();
@@ -860,14 +862,14 @@ class system_tools
 		$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
 
 		/* we all are awaiting for PHP5 only support - method chaining...
-		$emessage->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
+		$mes->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
 				 ->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS)
 				 ->add(DBLAN_30);
 		*/
 
-		$emessage->add(DBLAN_23, E_MESSAGE_SUCCESS);
-		$emessage->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
-		$emessage->add(DBLAN_30);
+		$mes->add(DBLAN_23, E_MESSAGE_SUCCESS);
+		$mes->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
+		$mes->add(DBLAN_30);
 
 		$text = "
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='plug_edit'>
@@ -952,7 +954,7 @@ class system_tools
 				</form>
 			";
 
-		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_22, $emessage->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_22, $mes->render().$text);
 	}
 }
 
@@ -984,7 +986,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getSingleton('xmlClass');
 	$tp = e107::getParser();
-	$emessage = eMessage::getInstance();
+	$mes = eMessage::getInstance();
 
 	//TODO LANs
 
@@ -1002,7 +1004,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 
 		if(!is_writable($desinationFolder))
 		{
-			$emessage->add($desinationFolder." is not writable", E_MESSAGE_ERROR);
+			$mes->add($desinationFolder." is not writable", E_MESSAGE_ERROR);
 			return ;
 		}
 	}
@@ -1010,7 +1012,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 
 	if($xml->e107Export($prefs,$tables,$debug))
 	{
-		$emessage->add("Created: ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
+		$mes->add("Created: ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))
 		{
 			foreach($xml->fileConvertLog as $oldfile)
@@ -1019,11 +1021,11 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				$newfile = $desinationFolder.$file;
 				if($oldfile == $newfile || (copy($oldfile,$newfile)))
 				{
-					$emessage->add("Copied: ".$newfile, E_MESSAGE_SUCCESS);
+					$mes->add("Copied: ".$newfile, E_MESSAGE_SUCCESS);
 				}
 				else
 				{
-					$emessage->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);
+					$mes->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);
 				}
 			}
 		}
@@ -1084,11 +1086,14 @@ function backup_core()
 
 function verify_sql_record() // deprecated by db_verify.php ( i think).
 {
-	global $emessage, $sql, $sql2, $sql3, $frm, $e107, $tp;
+	global  $e107;
 
 	$sql = e107::getDb();
 	$sql2 = e107::getDb('sql2');
 	$sql3 = e107::getDb('sql3');
+	$frm = e107::getForm();
+	$tp = e107::getParser();
+	$mes = e107::getMessage();
 
 	$tables = array();
 	$tables[] = 'rate';
@@ -1099,7 +1104,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 		if(!varset($_POST['del_dbrec']))
 		{
-			$emessage->add('Nothing to delete', E_MESSAGE_DEBUG);
+			$mes->add('Nothing to delete', E_MESSAGE_DEBUG);
 		}
 		else
 		{
@@ -1107,7 +1112,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			$msg .= "but, since this is still an experimental procedure, i won't actually delete anything<br />";
 			$msg .= "instead, i will show you the queries that would be performed<br />";
 			$text .= "<br />";
-			$emessage->add($msg, E_MESSAGE_DEBUG);
+			$mes->add($msg, E_MESSAGE_DEBUG);
 
 			foreach($_POST['del_dbrec'] as $k => $v)
 			{
@@ -1129,8 +1134,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 			}
 
-			$emessage->add($qry, E_MESSAGE_DEBUG);
-			$emessage->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_DEBUG);
+			$mes->add($qry, E_MESSAGE_DEBUG);
+			$mes->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_DEBUG);
 		}
 	}
 
@@ -1139,7 +1144,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 	{
 		$_POST['check_verify_sql_record'] = '';
 		unset($_POST['check_verify_sql_record']);
-		$emessage->add(DBLAN_53, E_MESSAGE_WARNING);
+		$mes->add(DBLAN_53, E_MESSAGE_WARNING);
 	}
 
 	if(!isset($_POST['check_verify_sql_record']))
@@ -1181,7 +1186,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_39, $emessage->render().$text);
+		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_39, $mes->render().$text);
 	}
 	else
 	{
@@ -1274,7 +1279,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 		function verify_sql_record_gettables()
 		{
-			global $sql2;
+
+			$sql2 = e107::getDb('sql2');
 
 			//array which will hold all db tables
 			$dbtables = array();
@@ -1487,7 +1493,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_50, $emessage->render().$text);
+		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_50, $mes->render().$text);
 	}
 }
 
