@@ -33,8 +33,8 @@ define("FORLAN_21", "tick to confirm");
 define("FORLAN_22", "Parent");
 define("FORLAN_23", "Viewable by");
 define("FORLAN_24", "Indicates who can view the forum");
-define("FORLAN_25", "Update Parent");
-define("FORLAN_26", "Create Parent");
+//define("FORLAN_25", "Update Parent");
+//define("FORLAN_26", "Create Parent");
 define("FORLAN_27", "You need to define at least one forum parent before creating a forum.");
 define("FORLAN_28", "Forums");
 define("FORLAN_29", "No forums yet.");
@@ -43,8 +43,8 @@ define("FORLAN_31", "Name");
 define("FORLAN_32", "Description");
 define("FORLAN_33", "Moderators");
 define("FORLAN_34", "Choose userclass for moderators of this forum");
-define("FORLAN_35", "Update Forum");
-define("FORLAN_36", "Create Forum");
+//define("FORLAN_35", "Update Forum");
+//define("FORLAN_36", "Create Forum");
 define("FORLAN_37", "Order");
 define("FORLAN_38", "Closed");
 define("FORLAN_39", "Members Only");
@@ -67,9 +67,9 @@ define("FORLAN_55", "Popular thread threshold");
 define("FORLAN_56", "Number of posts made to a thread before it is marked as popular");
 define("FORLAN_57", "Posts per page");
 define("FORLAN_58", "Number of posts displayed per page");
-define("FORLAN_59", "Prune");
+//define("FORLAN_59", "Prune");
 define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <br /><b>Please be careful using this function!</b>");
-define("FORLAN_61", "Update Options");
+//define("FORLAN_61", "Update Options");
 define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
@@ -78,7 +78,7 @@ define('FORLAN_66', 'Not installed');
 
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
-define("FORLAN_72", "Update Order");
+//define("FORLAN_72", "Update Order");
 define("FORLAN_73", "Order Updated");
 
 define("FORLAN_75", "Parents");
@@ -202,7 +202,7 @@ define("FORLAN_178", "Tick this to allow make the email notification checkbox be
 
 define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only. The forum theme must support this option also.)");
 define("FORLAN_180", "Confirm delete operation");
-define("FORLAN_181", "Confirm Delete");
+//define("FORLAN_181", "Confirm Delete");
 define("FORLAN_182", "also recalculate replies for all threads in selected forum");
 define("FORLAN_183", "(this function is not allowed when selecting 'all forums' due to the number of queries it will generate)");
 
