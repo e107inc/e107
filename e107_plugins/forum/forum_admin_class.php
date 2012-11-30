@@ -942,7 +942,7 @@ class forumAdmin
 		$subList   = $for->forumGetSubs('bysub');
 		$frm = e107::getForm();
 
-		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table style='width:100%' class='table adminlist'><tr><td> &nbsp; </td>";
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table style='".ADMIN_WIDTH."' class='table adminlist'>";
 
 		foreach($parentList as $p)
 		{
