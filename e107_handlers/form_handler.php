@@ -202,6 +202,7 @@ class e_form
 
 		$url = e_ADMIN_ABS."image.php?mode={$mode}&amp;action={$action}".$cat;
 		$url .= "&amp;iframe=1";
+		$title = "Media Manager : ".$category;
 
 		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
 	

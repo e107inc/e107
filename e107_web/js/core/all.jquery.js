@@ -298,11 +298,16 @@ $(document).ready(function()
 		
 		// Dialog
 		$("a.e-dialog").colorbox({
-		iframe:true,
+			
+			iframe:true,
 			width:"60%",
 			height:"70%",
-			speed:10,
-			opacity: 0.7
+			initialWidth: "60%",
+			initialHeight: "70%",
+			preloading: false
+	//		,
+		//	speed:10,
+		//	opacity: 0.7
 
 		});
 		
@@ -316,9 +321,10 @@ $(document).ready(function()
 		
 		
 		/*
-		$("a.e-dialog").live('click',function() {
-			var link = $(this).attr("href");
+		$("input.e-dialog").live('click',function() {
 			
+			var link = $(this).attr("data-target");
+				
 		 	$(this).dialog({
 	            modal: true,
 	            open: function ()

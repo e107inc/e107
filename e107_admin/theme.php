@@ -25,8 +25,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'theme_manage';
 
 e107::css("inline","
-
-.admin-theme-thumb			{    }
+.hide						{ display: none }
+.admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
 
 .admin-theme-options		{ transition: opacity .20s ease-in-out;
@@ -42,29 +42,47 @@ e107::css("inline","
 
 .admin-theme-options:hover	{ opacity:0.8; }
 
-.admin-theme-title			{ font-size: 15px; overflow:hidden; white-space:no-wrap; width:200px; position:relative; top:-130px; }
+.admin-theme-title			{ font-size: 15px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
 
 .admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }
 
 .admin-theme-select-active	{ background-color:red;float:left }
 
-.admin-theme-cell			{ width:202px; height:160px; -moz-border-radius: 5px; border-radius: 5px; }
+.admin-theme-cell			{ width:202px; height:160px; padding:10px; -moz-border-radius: 5px; border-radius: 5px; margin:5px}
+
+.admin-theme-cell-default   { border:1px dotted silver; background-color:#DDDDDD }
+
+
+
+.admin-theme-cell-site		{ background-color: #d9edf7;  border: 1px solid #bce8f1; }
+
+.admin-theme-cell-admin	 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+
+
 ");
 
 
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
+if(e_AJAX_REQUEST)
+{
+	define('e_IFRAME',true);
+}
+	
 
 
 if(e_AJAX_REQUEST)
-{
+{	
 	$data = $themec->getThemeInfo('jayya');
 	echo $themec->renderThemeInfo($data);
 	
 	exit;	
 }
+else {
+		require_once("auth.php");
+	
 
-echo '
+		echo '
 
 		 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			    <div class="modal-header">
@@ -78,8 +96,9 @@ echo '
 			    <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
 			    </div>
 			    </div>';	
-				
-require_once("auth.php");
+}				
+
+
 
 
 $mode = (e_QUERY) ? e_QUERY :"main" ;

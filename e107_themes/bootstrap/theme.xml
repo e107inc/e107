@@ -3,7 +3,7 @@
 	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
 	<description>Bootstrap e107 admin theme</description>
 	<layouts>
-		<layout name='default' title='2 Columns' preview='preview.jpg' default='true' previewFull='preview_full.png' >
+		<layout name='default' title='2 Columns' preview='preview.jpg' default='true' previewFull='fullpreview.png' >
 		<custompages>usersettings.php</custompages>
 		</layout>
 	</layouts>
