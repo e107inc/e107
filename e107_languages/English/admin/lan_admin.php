@@ -183,6 +183,18 @@ define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");  
 
+define("ADLAN_CP_01", "'s Control Panel");
+define("ADLAN_CP_02", "e107 News");
+define("ADLAN_CP_03", "RSS News feed from e107.org goes here.");
+
+define("ADLAN_ONLINE_00", "Visitors Online");
+define("ADLAN_ONLINE_01", "Timestamp");
+define("ADLAN_ONLINE_02", "Username");
+define("ADLAN_ONLINE_03", "IP");
+define("ADLAN_ONLINE_04", "Page");
+define("ADLAN_ONLINE_05", "Agent");
+
+
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
 define('ADLAN_CL_3', 'Content');
@@ -368,6 +380,7 @@ define("LAN_USER_QUICKADD","Quick Add User");
 define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
+
 
 
 

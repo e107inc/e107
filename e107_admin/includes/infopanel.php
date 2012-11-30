@@ -71,7 +71,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
          </div>
 		</div>";
 
-	$text .= $ns->tablerender(ucwords(USERNAME)."'s Control Panel",$mainPanel,"core-infopanel_mye107",true);
+	$text .= $ns->tablerender(ucwords(USERNAME).ADLAN_CP_01."",$mainPanel,"core-infopanel_mye107",true);
 	
 
 //  ------------------------------- e107 News --------------------------------
@@ -89,10 +89,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	 $text .= print_r($vars,TRUE);
 	*/
 
-	$panelRSS .= "
-    RSS News feed from e107.org goes here.
-
-	";
+	$panelRSS .= ADLAN_CP_03;
 /*
 
 		</div>
@@ -100,7 +97,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	</div>
 	*/
 
-	$text .= $ns->tablerender("e107 News",$panelRSS,"core-infopanel_news",true);
+	$text .= $ns->tablerender(ADLAN_CP_02,$panelRSS,"core-infopanel_news",true);
 
 // ---------------------Latest Stuff ---------------------------
 
@@ -127,11 +124,11 @@ $panelOnline = "
 		</colgroup>
 		<thead>
 			<tr>
-				<th>Timestamp</th>
-				<th>Username</th>
-				<th>IP</th>
-				<th>Page</th>
-				<th>Agent</th>
+				<th>".ADLAN_ONLINE_01."</th>
+				<th>".ADLAN_ONLINE_02."</th>
+				<th>".ADLAN_ONLINE_03."</th>
+				<th>".ADLAN_ONLINE_04."</th>
+				<th>".ADLAN_ONLINE_05."</th>
 			</tr>
 		</thead>
 		<tbody>";
@@ -158,7 +155,7 @@ $panelOnline = "
 	$panelOnline .= "</tbody></table>
 	";
 	
-	$text .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
+	$text .= $ns->tablerender(''.ADLAN_ONLINE_00.': '.$nOnline, $panelOnline,'core-infopanel_online',true);
 	
 // --------------------- User Selected Menus -------------------
 	
