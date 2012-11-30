@@ -42,7 +42,7 @@ require_once(e_HANDLER.'form_handler.php');
 
 $frm = new e_form();
 $uc = new uclass_manager;
-
+$mes = e107::getMessage();
 
 
 $message = '';
@@ -546,6 +546,8 @@ $ns->tablerender(UCSLAN_21, $text);
 //	$class_text = $e_userclass->uc_checkboxes('init_classes', $initial_classes, 'classes, force', TRUE);
 	$class_text = $e_userclass->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force');
 
+	$mes->addInfo(UCSLAN_49);
+
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?initial' id='initialForm'>
 		<table class='table adminform'>
@@ -560,17 +562,20 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $text .= UCSLAN_44;
 	}
 	$text .= "</td></tr>
-	<tr><td>".UCSLAN_49."</td></tr><tr><td>";
+	<tr></tr><tr><td>";
 
 	if ($class_text)
 	{
 	  $text .= $class_text."</td></tr><tr><td>";
 	  $sel_stage = varset($pref['init_class_stage'],2);
-	  $text .= "<table><tr><td>".UCSLAN_45."<br /><span class='smalltext'>".UCSLAN_46."</span></td><td>
+	  $text .= "<table class='table adminform'>
+	  	<tr>
+	  	<td>".UCSLAN_45."<br />	</td>
+	  	<td>
 	  <select class='tbox' name='init_class_stage'>\n
 	  <option value='1'".($sel_stage==1 ? " selected='selected'" : "").">".UCSLAN_47."</option>
 	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</option>
-	  </select>\n";
+	  </select><span class='field-help'>".UCSLAN_46."</span>";
 	  $text .= "</td></tr></table></td></tr>
 	  <tr><td style='text-align:center'>".
 	  $frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE);
@@ -580,7 +585,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $text .= UCSLAN_39;
 	}
 	$text .= "</td></tr></table></form></div>";
-	$ns->tablerender(UCSLAN_40, $text);
+	$ns->tablerender(UCSLAN_40, $mes->render() . $text);
 
     break;				// End of 'initial'
 

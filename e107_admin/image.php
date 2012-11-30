@@ -962,8 +962,8 @@ class media_admin_ui extends e_admin_ui
 			</ul>
 			<fieldset id='core-media-select'>
 			<legend>Library</legend>
-			<table class='table adminform'>
-			<tbody><tr><td>
+			<div class='table' style='display:block; height:500px'>
+		
 			";
 			
 		$tag = ($bbcodeMode) ? "" : $this->getQuery('tagid');
@@ -980,8 +980,7 @@ class media_admin_ui extends e_admin_ui
 		}
 			
 		$text .= "
-			</td></tr>
-			</tbody></table>
+			</div>
 			</fieldset>
 			
 			<fieldset id='core-media-upload'>
