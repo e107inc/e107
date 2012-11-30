@@ -335,16 +335,19 @@ class language{
 	{
 		if(null == $this->lanlist)
 		{
-			$handle = opendir(e_LANGUAGEDIR);
+			$fl = e107::getFile();
+			$dirArray = $fl->get_dirs(e_LANGUAGEDIR);
+		//	$handle = opendir(e_LANGUAGEDIR);
 			$lanlist = array();
-			while ($file = readdir($handle))
+		//	while ($file = readdir($handle))
+			foreach($dirArray as $file)
 			{
 				if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
 				{
 					$lanlist[] = $file;
 				}
 			}
-			closedir($handle);
+			// closedir($handle);
 			
 			$this->lanlist = array_intersect($lanlist,$this->list);
 		}

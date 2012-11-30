@@ -173,10 +173,12 @@ class themeHandler
 		$themeArray = array();
 		
 		$tloop = 1;
-		$handle = opendir(e_THEME);
+		$fl = e107::getFile();
+		$array = $fl->get_dirs(e_THEME);
 		
-		while(false !== ($file = readdir($handle)))
+		foreach($array as $file)
 		{
+			
 			if(($mode == 'xml') && !is_readable(e_THEME.$file."/theme.xml"))
 			{
 				continue;
@@ -196,12 +198,10 @@ class themeHandler
 				$tloop++;
 			}
 		}
-		closedir($handle);
-		
-		/*
-		 echo "<pre>";
-		 print_r($themeArray);
-		 echo "</pre>";*/
+	
+	//	 echo "<pre>";
+	//	 print_r($themeArray);
+	//	 echo "</pre>";
 
 		
 		return $themeArray;
@@ -1101,7 +1101,7 @@ class themeHandler
 		
 		$themeArray = $this->getThemes("id");
 		
-		$name = ($name) ? $name : $themeArray[$this->id];
+		$name = ($name) ? $name : vartrue($themeArray[$this->id]);
 		$layout = $pref['sitetheme_layouts'] = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();
 		$deflayout = $this->findDefault($name);
 		$customPages = $this->themeArray[$name]['custompages'];
