@@ -1224,7 +1224,7 @@ class admin_shortcodes
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 
-		require(e_ADMIN.'ad_links.php');
+		require_once(e_ADMIN.'ad_links.php');
 		require_once(e_HANDLER.'admin_handler.php');
 		
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language')
@@ -1313,12 +1313,13 @@ class admin_shortcodes
 				{
 					$plug_vars = $plug->plug_vars;
 					
-					if($row['plugin_path']=='tinymce')
-					{
+					//if($row['plugin_path']=='tinymce')
+					//{
 					//	print_a($plug_vars);
-					}
+					//}
 					
-					e107::loadLanFiles($row['plugin_path'], 'admin');
+					// moved to boot.php
+					// e107::loadLanFiles($row['plugin_path'], 'admin');
 					if(varset($plug_vars['adminLinks']['link']))
 					{
 						
