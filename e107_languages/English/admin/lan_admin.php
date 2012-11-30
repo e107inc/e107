@@ -236,7 +236,7 @@ define("LAN_UPDATED_FAILED","Update Unsuccessful");
 define("LAN_NO_CHANGE","Nothing updated as no changes were made.");
 define("LAN_TRY_AGAIN","Please try again.");
 define("LAN_NEVER", "Never");
-
+define("LAN_PRUNE", "Prune");
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
 // define("LAN_OK","OK");     // defined in e107_languages/English/English.php
