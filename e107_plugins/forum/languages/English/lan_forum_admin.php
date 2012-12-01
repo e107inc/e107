@@ -147,7 +147,7 @@ define("WMGLAN_6", "Activate?");
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
 define("FORLAN_128", "Length of tooltip");
-define("FORLAN_129", "This will determine the number of characters to display in the tooltip. ");
+define("FORLAN_129", "This will determine the number of characters to display in the tooltip.");
 define("FORLAN_130", "click here");
 define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
@@ -200,7 +200,7 @@ define("FORLAN_176", "Report");
 define("FORLAN_177", "email notification ON by default");
 define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
-define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only. The forum theme must support this option also.)");
+define("FORLAN_179", "Adding a * to the beginning of the forum name will make this forum a container for sub-forums only. The forum theme must support this option also.");
 define("FORLAN_180", "Confirm delete operation");
 //define("FORLAN_181", "Confirm Delete");
 define("FORLAN_182", "also recalculate replies for all threads in selected forum");
