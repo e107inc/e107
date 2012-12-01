@@ -107,12 +107,14 @@ class e_form
 	// For Comma separated keyword tags. 
 	function tags($name, $value, $maxlength = 200, $options = array())
 	{
+		if(is_string($options)) parse_str($options, $options);
 		$options['class'] = 'tbox input-text e-tags';
 		return $this->text($name, $value, $maxlength, $options);	
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
+		if(is_string($options)) parse_str($options, $options);
 		if(!vartrue($options['class']) && $maxlength > 99) $options['class'] = 'tbox span5';
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
@@ -121,6 +123,7 @@ class e_form
 	
 	function number($name, $value, $maxlength = 200, $options = array())
 	{
+		if(is_string($options)) parse_str($options, $options);
 		$maxlength = vartrue($parms['maxlength'], 255);
 		unset($parms['maxlength']);
 		if(!vartrue($parms['size'])) $parms['size'] = 15;
