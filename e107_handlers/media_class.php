@@ -620,6 +620,31 @@ class e_media
 		
 		
 		$text .= "<div style='clear:both'><!-- --></div>";
+		
+		//fixing tip icon when navigation prev/next page
+		$text .="<script>";
+		$text .="$(document).ready(function(){
+						$('.e-tip').each(function() {
+										
+							
+							var tip = $(this).attr('title');
+							if(!tip)
+							{
+								return;
+							}
+							
+							var pos = $(this).attr('data-placement'); 
+							if(!pos)
+							{
+								pos = 'top';	
+							}
+							
+							$(this).tooltip({opacity:1.0,fade:true, placement: pos});
+
+						});	
+					});			
+		";
+		$text .="</script>";
 		$mes = e107::getMessage();
 		$mes->addDebug("Target: {$tagid}");
 		
