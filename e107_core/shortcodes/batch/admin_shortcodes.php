@@ -310,12 +310,18 @@ class admin_shortcodes
 			{
 				function admin_latest($parm='')
 				{
-					global $sql, $ns, $pref;
+					
+					$sql = e107::getDb();
+					$ns = e107::getRender();
+					$pref = e107::getPref();
 
 					$active_uploads = $sql -> db_Count('upload', '(*)', 'WHERE upload_active = 0');
 					$submitted_news = $sql -> db_Count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
+					$comments_pending = $sql -> db_Count("comments", "(*)", "WHERE comment_blocked = 2 ");
 
 					$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
+					$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT.($comments_pending ? " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a>" : " ".ADLAN_LAT_9.": ".$comments_pending)."</div>";		
+		
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : ' '.ADLAN_LAT_7.': '.$active_uploads).'</div>';
 
 					if(vartrue($pref['e_latest_list']))
