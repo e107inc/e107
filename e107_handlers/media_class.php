@@ -539,9 +539,9 @@ class e_media
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 			$text .= "<button type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
 	
-			$text .= "&nbsp;<button type='button' title='previous page' class='btn button e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
+			$text .= "&nbsp;<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
 		
-			$text .= "<button type='button' title='next page' class='btn button e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&raquo;</button>"; // see next page of images. 
+			$text .= "<button type='button' title='next page' class='btn e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&raquo;</button>"; // see next page of images. 
 			$text .= "</div>
 			<div id='media-select-container'>";	
 		}
