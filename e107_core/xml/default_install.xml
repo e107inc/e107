@@ -236,6 +236,7 @@ City, State, Country
 		<core name="url_config"><![CDATA[array()]]></core>
 		<core name="url_locations"><![CDATA[array()]]></core>
 		<core name="url_modules"><![CDATA[array()]]></core>
+		<core name="url_sef_translate">dashl</core> 
 		<core name="useGeshi">0</core>
 		<core name="use_coppa">1</core>
 		<core name="user_reg">1</core>
