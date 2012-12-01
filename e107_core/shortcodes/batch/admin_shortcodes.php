@@ -545,6 +545,33 @@ class admin_shortcodes
 		return $ret;
 	}
 
+
+	function sc_admin_pm($parm)
+	{
+		$text = '	<li class="dropdown">
+		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+		<i class="icon-envelope icon-white" class="active"></i> 3
+		<b class="caret"></b>
+		</a> 
+		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
+		    <ul class="nav-list">
+	    <li class="nav-header">Unread Messages</li>
+	    <li><a href="#">Incoming Message Number 1</a></li>
+	      <li><a href="#">Incoming Message Number 2</a></li>
+	        <li><a href="#">Incoming Message Number 3</a></li>
+	         <li class="divider"></li>
+	    </ul>
+		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
+		<button class="dropdown-toggle btn btn-primary" >Send</button>	
+		</div>
+		</li>';
+		
+		return $text;	
+	}
+
+
+
+
 	function sc_admin_msg($parm)
 	{
 		if (ADMIN)
@@ -1233,7 +1260,7 @@ class admin_shortcodes
 		require(e_ADMIN.'ad_links.php'); //FIXME loaded in boot.php but $admin_cat is not available here. 
 		require_once(e_HANDLER.'admin_handler.php');
 		
-		if($parm == 'home' || $parm == 'logout' || $parm == 'language')
+		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
 		{
 			$menu_vars = $this->getOtherNav($parm);	
 			return e_admin_menu('', '', $menu_vars, $$tmpl, FALSE, FALSE);
@@ -1433,6 +1460,7 @@ class admin_shortcodes
 	function getOtherNav($type)
 	{
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
 		if($type == 'home')
 		{
@@ -1544,6 +1572,7 @@ class admin_shortcodes
 			$menu_vars['language']['sub'] = $tmp;		
 			
 		}	
+
 		
 		return $menu_vars;
 	}

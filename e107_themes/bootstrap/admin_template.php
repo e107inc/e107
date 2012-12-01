@@ -82,6 +82,7 @@ $E_ADMIN_NAVIGATION['button_language'] = '
 				$label = ADLAN_48.': '.ADMINNAME.' ';
 			}	
 
+
 // Logout / Settings / Personalize 			
 $E_ADMIN_NAVIGATION['button_logout'] = '
 	<li class="dropdown">
@@ -92,6 +93,30 @@ $E_ADMIN_NAVIGATION['button_logout'] = '
 		{SUB_MENU}
 	</li>
 ';
+
+
+// Private Messaging - //TODO Discuss and make this work.. 
+$E_ADMIN_NAVIGATION['button_pm'] = '
+	<li class="dropdown">
+		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+		<i class="icon-envelope icon-white" class="active"></i> 3
+		<b class="caret"></b>
+		</a> 
+		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
+		    <ul class="nav-list">
+	    <li class="nav-header">Unread Messages</li>
+	    <li><a href="#">Incoming Message Number 1</a></li>
+	      <li><a href="#">Incoming Message Number 2</a></li>
+	        <li><a href="#">Incoming Message Number 3</a></li>
+	         <li class="divider"></li>
+	    </ul>
+		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
+		<button class="dropdown-toggle btn btn-primary" >Send</button>	
+		</div>
+	</li>
+';
+
+
 
 $E_ADMIN_NAVIGATION['button_other'] = '
 	<li>
@@ -138,10 +163,11 @@ $ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
           <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.THEME.'images/e107_adminlogo.png" alt="e107" /></a>
           <div class="nav-collapse collapse">
             <div class="dropdown nav pull-right navbar-text ">
-            
+            {ADMIN_PM}
             {ADMIN_NAVIGATION=home}
 			{ADMIN_NAVIGATION=language}
 			{ADMIN_NAVIGATION=logout}
+		
             </div>
             
 			<div class="dropdown nav">
