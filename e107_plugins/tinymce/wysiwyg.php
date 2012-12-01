@@ -145,10 +145,11 @@ class wysiwyg
 		$lang = e_LANGUAGE;
 		$tinylang = array(
 			"Arabic" 	=> "ar",
+			"Bulgarian"	=> "bg",
 			"Danish" 	=> "da",
 			"Dutch" 	=> "nl",
 			"English" 	=> "en",
-			"Farsi" 	=> "fa",
+			"Persian" 	=> "fa",
 			"French" 	=> "fr",
 			"German"	=> "de",
 			"Greek" 	=> "el",
