@@ -302,12 +302,14 @@ $(document).ready(function()
 			iframe:true,
 			width:"60%",
 			height:"70%",
-			initialWidth: "60%",
-			initialHeight: "70%",
-			preloading: false
-	//		,
-		//	speed:10,
-		//	opacity: 0.7
+
+			speed:10,
+			opacity: 0.7,
+			fastIframe:false,
+			onComplete: function() { 
+				$("iframe").contents().find("body").addClass("mediaBody");   
+			}
+
 
 		});
 		
