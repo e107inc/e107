@@ -161,7 +161,7 @@ class tagwords
 		}
 		$caption = $this->e107->tp->parseTemplate($this->template['caption'], true, $this->shortcodes);
 		$text = $this->e107->tp->parseTemplate($this->template['form'], true, $this->shortcodes);
-		return array('caption'=>$caption, 'text'=>$text);
+		return array('caption'=>$caption, 'html'=>$text);
 	}
 
 	/*

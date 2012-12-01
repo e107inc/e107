@@ -1551,6 +1551,47 @@ class e_form
 
 	}
 
+
+	/**
+	 * Render Table cells from hooks.
+	 * @param array $data 
+	 * @return string
+	 */
+	function renderHooks($data)
+	{
+		$hooks = e107::getEvent()->triggerHook($data);
+				
+		$text = "";	
+		
+		if(!empty($hooks))
+		{
+			foreach($hooks as $plugin => $hk)
+			{
+				$text .= "\n\n<!-- Hook : {$plugin} -->\n";
+				
+				if(!empty($hk))
+				{
+					foreach($hk as $hook)
+					{
+						$text .= "\t\t\t<tr>\n";
+						$text .= "\t\t\t<td>".$hook['caption']."</td>\n";
+						$text .= "\t\t\t<td>".$hook['html']."";
+						$text .= (varset($hook['help'])) ? "\n<span class='field-help'>".$hook['help']."</span>" : "";		
+						$text .= "</td>\n\t\t\t</tr>\n";
+					}
+
+					
+				}
+			}
+		}
+		
+		return $text;			
+	}
+			
+		
+
+
+
 	/**
 	 * Render Table cells from field listing.
 	 * @param array $fieldarray - eg. $this->fields

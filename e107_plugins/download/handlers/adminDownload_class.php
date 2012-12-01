@@ -921,23 +921,7 @@ class adminDownload extends download
       //triggerHook
       $data = array('method'=>'form', 'table'=>'download', 'id'=>$id, 'plugin'=>'download', 'function'=>'create_download');
       $hooks = $e107->e_event->triggerHook($data);
-      if(!empty($hooks))
-      {
-         $text .= "<tr>
-                     <td colspan='2' >".LAN_HOOKS." </td>
-                   </tr>
-         ";
-         foreach($hooks as $hook)
-         {
-            if(!empty($hook))
-            {
-               $text .= "<tr>
-                            <td class='label'>".$hook['caption']."</td>
-                            <td class='control'>".$hook['text']."</td>
-                         </tr>";
-            }
-         }
-      }
+
 
       $text .= "  <tr style=''>
                      <td colspan='2' style='text-align:center'>";

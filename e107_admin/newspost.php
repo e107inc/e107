@@ -2254,30 +2254,13 @@ class admin_newspost
 								</tr>
 			";
 		}
+		
+		
 		//triggerHook
-		$data = array('method'=>'form', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'create_item');
-		$hooks = e107::getEvent()->triggerHook($data);
-		if(!empty($hooks))
-		{
-			$text .= "
-								<tr>
-									<td colspan='2' >".LAN_HOOKS." </td>
-								</tr>
-			";
-			foreach($hooks as $hook)
-			{
-				if(!empty($hook))
-				{
-					$text .= "
-								<tr>
-									<td>".$hook['caption']."</td>
-									<td>".$hook['text']."</td>
-								</tr>
-					";
-				}
-			}
-		}
-
+		
+		$data = array('method'=>'form', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'create_item');	
+		$text .= $frm->renderHooks($data);
+		
 		$text .= "
 						</tbody>
 					</table>

@@ -935,24 +935,9 @@ $columnInfo = array(
 	
 	      //triggerHook
 	      $data = array('method'=>'form', 'table'=>'download', 'id'=>$id, 'plugin'=>'download', 'function'=>'create_download');
-	      $hooks = $e107->e_event->triggerHook($data);
-	      if(!empty($hooks))
-	      {
-	         $text .= "<tr>
-	                     <td colspan='2' >".LAN_HOOKS." </td>
-	                   </tr>
-	         ";
-	         foreach($hooks as $hook)
-	         {
-	            if(!empty($hook))
-	            {
-	               $text .= "<tr>
-	                            <td>".$hook['caption']."</td>
-	                            <td>".$hook['text']."</td>
-	                         </tr>";
-	            }
-	         }
-	      }
+	      $text .= $frm->renderHooks($data);
+		  
+	 
 	
 	      $text .= "
 	      	<tr style=''>

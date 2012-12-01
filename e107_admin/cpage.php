@@ -671,6 +671,7 @@ class page_admin_ui extends e_admin_ui
 								
 				
 				//triggerHook
+				
 				$data = array(
 					'method'	=>'form', 
 					'table'		=>'page', 
@@ -679,36 +680,11 @@ class page_admin_ui extends e_admin_ui
 					'function'	=> 'createPage'
 				);
 				
-				$hooks = $e_event->triggerHook($data);
-				if(!empty($hooks))
-				{
-					$text .= "
-					</tbody>
-						</table>
-					</fieldset>
-					<fieldset id='core-cpage-create-hooks'>
-						<legend>".LAN_HOOKS."</legend>
-						<table class='adminform options'>
-							<colgroup>
-								<col class='col-label' />
-								<col class='col-control' />
-							</colgroup>
-							<tbody>";
-							
-					foreach($hooks as $hook)
-					{
-						if(!empty($hook))
-						{
-							$text .= "
-							<tr>
-								<td>".$hook['caption']."</td>
-								<td>".$hook['text']."</td>
-							</tr>";
-						}
-					}
-				}
-	
+				
+				$text .= $frm->renderHooks($data);
+
 			}
+	
 	
 			$text .= "
 							</tbody>

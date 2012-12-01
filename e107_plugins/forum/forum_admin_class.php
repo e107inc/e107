@@ -287,7 +287,7 @@ class forumAdmin
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
 		$text .= "
-		<table style='".ADMIN_WIDTH."' class='table adminlist'>
+		<table class='table adminlist'>
 		<tr>
 		<td colspan='2' style='width:70%; text-align:center'>".FORLAN_28."</td>
 		<td style='width:30%; text-align:center'>".FORLAN_80."</td>
@@ -424,7 +424,7 @@ class forumAdmin
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<table style='".ADMIN_WIDTH."' class='table adminform'>
+		<table class='table adminform'>
 
 		<tr>
 		<td style='width:40%'>".FORLAN_31.":</td>
