@@ -1190,7 +1190,9 @@ class e_form
 		//
 		foreach ($options as $option => $optval)
 		{
-			switch ($option) {
+			$optval = trim($optval);
+			switch ($option) 
+			{
 
 				case 'id':
 					$ret .= $this->_format_id($optval, $name, $value);
