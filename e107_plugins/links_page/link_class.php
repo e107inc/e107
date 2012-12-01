@@ -804,22 +804,9 @@ class linkclass
 
 		//triggerHook
 		$data = array('method'=>'form', 'table'=>'links_page', 'id'=>$row['link_id'], 'plugin'=>'links_page', 'function'=>'show_link_create');
-		$hooks = $e_event->triggerHook($data);
-		if(!empty($hooks))
-		{
-			$text .= "<tr><td class='fcaption' colspan='2' >".LAN_HOOKS." </td></tr>";
-			foreach($hooks as $hook)
-			{
-				if(!empty($hook))
-				{
-					$text .= "
-					<tr>
-					<td style='width:30%; vertical-align:top;' class='forumheader3'>".$hook['caption']."</td>
-					<td style='width:70%' class='forumheader3'>".$hook['text']."</td>
-					</tr>";
-				}
-			}
-		}
+		
+		$text .= e107::getForm()->renderHooks($data);
+		
 
 		$text .= "
         <tr style='vertical-align:top'>

@@ -184,7 +184,18 @@ class e107_event
 								case 'form':
 									if(method_exists($class, "event_{$data['method']}"))
 									{
-										$text[] = $class->event_form($data);
+										$ret = $class->event_form($data);
+										
+										if(!isset($ret[0]))
+										{
+											$text[$hook][0] = $ret;		
+										}
+										else 
+										{
+											$text[$hook] = $ret;
+										}
+										
+										
 									}
 									break;
 								//returns string message

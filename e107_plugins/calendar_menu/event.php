@@ -724,22 +724,8 @@ if ($action == 'ne' || $action == 'ed')
 		//triggerHook
 		$hid = ($action=='ed' ? intval($qs[1]) : '');
 		$data = array('method'=>'form', 'table'=>'event', 'id'=>$hid, 'plugin'=>'calendar_menu', 'function'=>'CalendarCreate');
-		$hooks = $e_event->triggerHook($data);
-		if(!empty($hooks))
-		{
-			$text .= "<tr><td class='forumheader3' colspan='2' >".LAN_HOOKS." </td></tr>";
-			foreach($hooks as $hook)
-			{
-				if(!empty($hook))
-				{
-					$text .= "
-					<tr>
-					<td class='forumheader3'>".$hook['caption']."</td>
-					<td class='forumheader3'>".$hook['text']."</td>
-					</tr>";
-				}
-			}
-		}
+		$text .= $frm->renderHooks($data);
+
 
 		$text .= "
 		<tr>
