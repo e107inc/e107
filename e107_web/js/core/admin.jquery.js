@@ -41,6 +41,11 @@ $(document).ready(function()
 			});
 		
 		});
+		
+		
+		$('.e-noclick').click(function(e) {
+	    	e.stopPropagation();
+	  	});
 	
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 

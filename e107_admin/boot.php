@@ -304,8 +304,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 		{
 			$temp = $tmpl['button_logout'.$kpost];	
 		}
-
-
+		
 		$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 		// valid URLs
 		$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
@@ -317,10 +316,6 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 		}
 		$replace[3] = $title;
 		$replace[4] = '';
-
-	
-		
-		
 		
 		$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
 		$replace[6] = $rid;
