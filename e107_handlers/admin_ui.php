@@ -2816,6 +2816,24 @@ class e_admin_controller_ui extends e_admin_controller
 				// direct query
 				$res = array($filter[1], $filter[2]);
 			break;
+			
+			case 'datestamp':
+							
+				$dateConvert = array(
+					"hour"	=> "1 hour ago",
+					"day"	=> "24 hours ago",
+					"week"	=> "1 week ago",
+					"month"	=> "1 month ago",
+					"year"	=> "1 year ago"
+				);
+				
+				$ky = $filter[2];
+				$time = vartrue($dateConvert[$ky]);
+				$timeStamp = strtotime($time);
+				
+				$res = array($filter[1], $timeStamp);
+				
+			break;
 
 			default:
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
@@ -2836,6 +2854,10 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			break;
 		}
+
+		//print_a($res);
+		//exit;
+
 		return $res;
 	}
 
@@ -3238,16 +3260,34 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 			{
-				if($this->fields[$filterField]['data'] == 'comma') 
+				switch ($this->fields[$filterField]['data']) 
 				{
-					$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."',".$this->fields[$filterField]['__tableField'].")";
-				}
-				else
-				{
-					$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+					case 'comma':
+						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."',".$this->fields[$filterField]['__tableField'].")";
+					break;
+					
+					case 'int':
+					case 'integer':
+						if($this->fields[$filterField]['type'] == 'datestamp') // Past Month, Past Year etc. 
+						{
+							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
+						}
+						else 
+						{
+							$searchQry[] = $this->fields[$filterField]['__tableField']." = ".intval($filterValue);	
+						}		
+					break;
+					
+					default:
+					
+						$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";
+						//exit;
+					break;
 				}
 				
 			}
+				//echo 'type= '. $this->fields[$filterField]['data'];
+					//	print_a($this->fields[$filterField]);
 		}
 		elseif($searchFilter && is_string($searchFilter))
 		{
@@ -3451,7 +3491,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		// Debug Filter Query.
 		
-		// echo $qry.'<br />';		
+	//	 echo $qry.'<br />';		
 		// print_a($_GET);
 
 		return $qry;
@@ -4705,12 +4745,23 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 
-					case 'datestamp': // use $parm to determine unix-style or YYYY-MM-DD
-					    //TODO last hour, today, yesterday, this-month, last-month etc.
-					/*	foreach($val['parm'] as $k=>$name)
+					case 'datestamp': 
+					    //TODO today, yesterday, this-month, last-month .
+					    
+					    $dateFilters = array (
+					    	'hour'		=> "Past Hour",
+					    	"day"		=> "Past 24 hours",
+					    	"week"		=> "Past Week",
+					    	"month"		=> "Past Month",
+					    	"year"		=> "Past Year"
+						);
+					    
+						foreach($dateFilters as $k => $name)
 						{
-							$text .= $frm->option($name, $type.'__'.$key."__".$k);
-						}*/
+							$option['datestamp__'.$key.'__'.$k] = $name;
+						//	$option['bool__'.$key.'__0'] = LAN_NO;	
+						//	$option[$key.'__'.$k] = $name;
+						}
 					break;
 
 					case 'userclass':
