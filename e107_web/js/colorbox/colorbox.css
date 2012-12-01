@@ -95,3 +95,21 @@
 .cboxIE6 #cboxMiddleRight {
     _behavior: expression(this.src = this.src ? this.src : this.currentStyle.backgroundImage.split('"')[1], this.style.background = "none", this.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src=" + this.src + ", sizingMethod='scale')");
 }
+
+.mediaBody{
+	font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px;
+	scrollbar-3dlight-color:#F0F0EE;
+	scrollbar-arrow-color:#676662;
+	scrollbar-base-color:#F0F0EE;
+	scrollbar-darkshadow-color:#DDDDDD;
+	scrollbar-face-color:#E0E0DD;
+	scrollbar-highlight-color:#F0F0EE;
+	scrollbar-shadow-color:#F0F0EE;
+	scrollbar-track-color:#F5F5F5;
+	background:#F0F0EE;
+	padding:0;
+	margin:8px 8px 0 8px;
+}
+
+.mediaBody h4 {color:#2B6FB6; margin:0; padding:0; padding-top:5px;}
+.mediaBody td {font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px;}

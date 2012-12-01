@@ -302,7 +302,11 @@ $(document).ready(function()
 			width:"60%",
 			height:"70%",
 			speed:10,
-			opacity: 0.7
+			opacity: 0.7,
+			fastIframe:false,
+			onComplete: function() { 
+				$("iframe").contents().find("body").addClass("mediaBody");   
+			}
 
 		});
 		
