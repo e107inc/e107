@@ -17,7 +17,8 @@ class forumAdmin
 
 	function show_options($action)
 	{
-		global $sql;
+		
+		$sql = e107::getDb();
 		if ($action == '') { $action = 'main'; }
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = FORLAN_76;
@@ -49,7 +50,7 @@ class forumAdmin
 
 	function delete_item($id)
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$id = (int)$id;
 		$confirm = isset($_POST['confirm']) ? true : false;
 
@@ -82,7 +83,7 @@ class forumAdmin
 
 	function delete_parent($id, $confirm = false)
 	{
-		global $sql;
+		$sql = e107::getDb();
 		$ret = '';
 		if($sql->db_Select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
@@ -110,13 +111,13 @@ class forumAdmin
 
 	function deleteForum($forumId)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
 		$forumId = (int)$forumId;
 //		echo "id = $forumId <br />";
 		// Check for any sub forums
-		if($e107->sql->db_Select('forum', 'forum_id', "forum_sub = {$forumId}"))
+		if($sql->db_Select('forum', 'forum_id', "forum_sub = {$forumId}"))
 		{
-			$list = $e107->sql->db_getList();
+			$list = $sql->db_getList();
 			foreach($list as $f)
 			{
 				$ret .= $this->deleteForum($f['forum_id']);
@@ -124,7 +125,7 @@ class forumAdmin
 		}
 		require_once(e_PLUGIN.'forum/forum_class.php');
 		$f = new e107Forum;
-		if($e107->sql->db_Select('forum_thread', 'thread_id','thread_forum_id='.$forumId))
+		if($sql->db_Select('forum_thread', 'thread_id','thread_forum_id='.$forumId))
 		{
 			$list = $e107->sql->db_getList();
 			foreach($list as $t)
@@ -132,14 +133,15 @@ class forumAdmin
 				$f->threadDelete($t['thread_id'], false);
 			}
 		}
-		return $e107->sql->db_Delete('forum', 'forum_id = '.$forumId);
+		return $sql->db_Delete('forum', 'forum_id = '.$forumId);
 	}
 
 	function delete_forum($id, $confirm = false)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+		$tp  = e107::getParser();
 		$ret = '';
-		if($e107->sql->db_Select('forum', 'forum_id', 'forum_sub = '.$id))
+		if($sql->db_Select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -160,14 +162,15 @@ class forumAdmin
 			return $ret;
 		}
 
-		$e107->sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
-		$row = $e107->sql->db_Fetch();
-		return "Forum {$id} [".$e107->tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
+		$row = $sql->db_Fetch();
+		return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
 
 	function delete_sub($id, $confirm = FALSE)
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+		$tp  = e107::getParser();
 		if($confirm)
 		{
 			if($this->deleteForum($id))
@@ -181,14 +184,14 @@ class forumAdmin
 			return $ret;
 		}
 
-		$e107->sql->db_Select('forum', '*', 'forum_id = '.$id);
-		$row = $e107->sql->db_Fetch();
-		return "Sub-forum {$id} [".$e107->tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$sql->db_Select('forum', '*', 'forum_id = '.$id);
+		$row = $sql->db_Fetch();
+		return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
 
 	function delete_show_confirm($txt)
 	{
-		global $ns;
+		$ns = e107::getRender();
 		$this->show_message($txt);
 		$txt = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
@@ -203,7 +206,9 @@ class forumAdmin
 
 	function show_subs($id)
 	{
-		global $sql, $tp, $ns;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
 		$txt = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table style='width:100%'>
@@ -275,12 +280,14 @@ class forumAdmin
 	{
 		global $e107, $for;
 		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 
 		$subList = $for->forumGetSubs();
 
 		if (!$mode)
 		{
-			$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto; text-align: center;'>";
+			$text = "<div style='padding : 1px; margin-left: auto; margin-right: auto; text-align: center;'>";
 		}
 		else
 		{
@@ -293,13 +300,13 @@ class forumAdmin
 		<td style='width:30%; text-align:center'>".FORLAN_80."</td>
 		</tr>";
 
-		if (!$parent_amount = $e107->sql->db_Select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
+		if (!$parent_amount = $sql->db_Select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
 		{
 			$text .= "<tr><td style='text-align:center' colspan='3'>".FORLAN_29."</td></tr>";
 		}
 		else
 		{
-			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$parentList[] = $row;
 			}
@@ -333,7 +340,7 @@ class forumAdmin
 				}
 				$text .= "</td></tr>";
 
-				$forumCount = $e107->sql->db_Select('forum', '*', "forum_parent='".$parent['forum_id']."' AND forum_sub = 0 ORDER BY forum_order ASC");
+				$forumCount = $sql->db_Select('forum', '*', "forum_parent='".$parent['forum_id']."' AND forum_sub = 0 ORDER BY forum_order ASC");
 				if (!$forumCount)
 				{
 					$text .= "<td colspan='4' style='text-align:center'>".FORLAN_29."</td>";
@@ -341,7 +348,7 @@ class forumAdmin
 				else
 				{
 					$forumList = array();
-					while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+					while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 					{
 						$forumList[] = $row;
 					}
@@ -349,7 +356,7 @@ class forumAdmin
 					{
 						$text .= "
 						<tr>
-						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".$e107->url->create('forum/forum/view', $forum)."'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
+						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".$e107->url->create('forum/forum/view', $forum)."'>".$tp->toHTML($forum['forum_name'])."</a>";
 //						<td style='width:5%; text-align:center'>".IMAGE_new."</td>\n<td style='width:55%'><a href='".e_PLUGIN."forum/forum_viewforum.php?{$forum['forum_id']}'>".$e107->tp->toHTML($forum['forum_name'])."</a>";
 
 						$text .= "
@@ -404,13 +411,16 @@ class forumAdmin
 	{
 		global $e107;
 		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
 
 		$id = (int)$id;
 		if ($sub_action == 'edit' && !$_POST['update_parent'])
 		{
-			if ($e107->sql->db_Select('forum', '*', "forum_id=$id"))
+			if ($sql->db_Select('forum', '*', "forum_id=$id"))
 			{
-				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+				$row = $sql->db_Fetch(MYSQL_ASSOC);
 			}
 		}
 		else
@@ -429,7 +439,7 @@ class forumAdmin
 		<tr>
 		<td style='width:40%'>".FORLAN_31.":</td>
 		<td style='width:60%'>
-		<input class='tbox' type='text' name='forum_name' size='60' value='".$e107->tp->toForm($row['forum_name'])."' maxlength='250' />
+		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($row['forum_name'])."' maxlength='250' />
 		</td>
 		</tr>
 
@@ -466,18 +476,21 @@ class forumAdmin
 		</form>
 		</div>";
 
-		$e107->ns->tablerender(FORLAN_75, $text);
+		$ns->tablerender(FORLAN_75, $text);
 	}
 
 	function create_forums($sub_action, $id)
 	{
 		global $e107;
 		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
 
 		$id = (int)$id;
 		if ($sub_action == 'edit' && !$_POST['update_forum'])
 		{
-			if ($e107->sql->db_Select('forum', '*', "forum_id=$id"))
+			if ($sql->db_Select('forum', '*', "forum_id=$id"))
 			{
 				$fInfo = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			}
@@ -495,14 +508,14 @@ class forumAdmin
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>\n
-		<table style='".ADMIN_WIDTH."' class='table adminform'>
+		<table class='table adminform'>
 		<tr>
 		<td style='width:40%'>".FORLAN_22.":</td>
 		<td style='width:60%'>";
 
-		$e107->sql->db_Select('forum', '*', 'forum_parent=0');
+		$sql->db_Select('forum', '*', 'forum_parent=0');
 		$text .= "<select name='forum_parent' class='tbox'>\n";
-		while (list($fid, $fname) = $e107->sql->db_Fetch(MYSQL_NUM))
+		while (list($fid, $fname) = $sql->db_Fetch(MYSQL_NUM))
 		{
 			$sel = ($fid == $fInfor['forum_parent'] ? "selected='selected'" : '');
 			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
@@ -516,14 +529,14 @@ class forumAdmin
 		<div class='smalltext'>".FORLAN_179."</div>
 		</td>
 		<td style='width:60%'>
-		<input class='tbox' type='text' name='forum_name' size='60' value='".$e107->tp->toForm($fInfo['forum_name'])."' maxlength='250' />
+		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($fInfo['forum_name'])."' maxlength='250' />
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%'>".FORLAN_32.": </td>
 		<td style='width:60%'>
-		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$e107->tp->toForm($fInfo['forum_description'])."</textarea>
+		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm($fInfo['forum_description'])."</textarea>
 		</td>
 		</tr>
 
@@ -564,23 +577,25 @@ class forumAdmin
 		</table>
 		</form>
 		</div>";
-		$e107->ns->tablerender(FORLAN_28, $text);
+		$ns->tablerender(FORLAN_28, $text);
 	}
 
 	function show_message($message)
 	{
-		global $e107;
-		$e107->ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>"); //FIX: v2 style = render?
+		$ns = e107::getRender();
+		$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>"); //FIX: v2 style = render?
 	}
 
 	function show_tools()
 	{
-		global $sql, $ns, $tp;
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
 		$frm = e107::getForm();
 
 		$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='width:".ADMIN_WIDTH."' class='table adminlist'>
+		<table class='table adminlist'>
 		<tr style='width:100%'>
 		<td>".FORLAN_156."</td>
 		</tr>
@@ -638,7 +653,9 @@ class forumAdmin
 
 	function show_prefs()
 	{
-		global $fPref, $ns, $sql;
+		global $fPref;
+		$ns = e107::getRender();
+		$sql    = e107::getDb(); 
 		$e107 = e107::getInstance();
 		$emessage = eMessage::getInstance();
 		$frm = e107::getForm();
@@ -657,7 +674,7 @@ class forumAdmin
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-		<table style='".ADMIN_WIDTH."' class='table adminform'>
+		<table class='table adminform'>
 
 		<tr>
 		<td style='width:75%'>".FORLAN_44."<br /><span class='smalltext'>".FORLAN_45."</span></td>
@@ -784,7 +801,11 @@ class forumAdmin
 
 	function show_reported ($sub_action, $id)
 	{
-		global $sql, $rs, $ns, $tp;
+		global $rs; //FIX: needed?
+		$sql = e107::getDb();
+		$ns = e107::getRender(); 
+		$tp = e107::getParser();
+
 		if ($sub_action) {
 			$sql -> db_Select("generic", "*", "gen_id='".$sub_action."'");
 			$row = $sql -> db_Fetch();
@@ -792,7 +813,7 @@ class forumAdmin
 			$user = $sql -> db_Fetch();
 			$con = new convert;
 			$text = "<div style='text-align: center'>
-			<table style='".ADMIN_WIDTH."' class='table adminlist'><tr>
+			<table class='table adminlist'><tr>
 			<td style='width:40%'>
 			".FORLAN_171.":
 			</td>
@@ -846,7 +867,7 @@ class forumAdmin
 			$text = "<div style='text-align: center'>";
 			if ($reported_total = $sql->db_Select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
 			{
-				$text .= "<table style='".ADMIN_WIDTH."' class='table adminlist'>
+				$text .= "<table class='table adminlist'>
 				<tr>
 				<td style='width:80%' >".FORLAN_170."</td>
 				<td style='width:20%; text-align:center' >".FORLAN_80."</td>
@@ -875,7 +896,8 @@ class forumAdmin
 
 	function show_prune()
 	{
-		global $ns, $sql;
+		$ns = e107::getRender();
+		$sql = e107::getDB();
 		$frm = e107::getForm();
 
 		//		$sql -> db_Select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
@@ -892,7 +914,7 @@ class forumAdmin
 
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-		<table style='".ADMIN_WIDTH."' class='table adminlist'>
+		<table class='table adminlist'>
 		<tr>
 		<td>".FORLAN_60."</td>
 		</tr>
@@ -935,14 +957,17 @@ class forumAdmin
 
 	function show_mods()
 	{
-		global $sql, $ns, $for, $tp;
-		$e107 = e107::getInstance();
+		global $for;
+		$ns = e107::getRender();
+		$sql = e107::getDB();
+		$e107 = e107::getInstance(); // FIX: needed?
 		$forumList = $for->forum_getforums('all');
 		$parentList = $for->forum_getparents('list');
 		$subList   = $for->forumGetSubs('bysub');
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 
-		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table style='".ADMIN_WIDTH."' class='table adminlist'>";
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='table adminlist'>";
 
 		foreach($parentList as $p)
 		{
@@ -984,7 +1009,10 @@ class forumAdmin
 
 		function show_rules()
 		{
-			global $sql, $pref, $ns, $tp;
+			$pref = e107::getPref();
+			$ns = e107::getRender();
+			$sql = e107::getDB();
+			$tp = e107::getParser();
 			$frm = e107::getForm();
 
 			$sql->db_Select("wmessage");
@@ -1015,7 +1043,7 @@ class forumAdmin
 			$text = "
 			<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?rules'  id='wmform'>
-			<table style='".ADMIN_WIDTH."' class='table adminform'>
+			<table class='table adminform'>
 			<tr>";
 
 			$text .= "
