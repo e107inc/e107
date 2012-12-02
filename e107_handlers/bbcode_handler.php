@@ -571,17 +571,17 @@ class e_bbcode
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u)(?:[^>]*)>(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
 		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
-		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
-		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]\n",$text);
+		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]",$text);
+		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]",$text);
 		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
 		$text = preg_replace('/<strong([\w :\-_;="]*)?>/i', "[b]",$text);
 		$text = preg_replace('/<em([\w :\-_;="]*)?>/i', "[i]",$text);
-		$text = preg_replace('/<li([\w :\-_;="]*)?>/i', "\n[*]",$text);
+		$text = preg_replace('/<li([\w :\-_;="]*)?>/i', "[*]",$text);
 		$text = preg_replace('/<ul([\w :\-_;="]*)?>/i', "[list]",$text);
-		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]\n",$text);
-		$text = preg_replace('/<tbody([\w :\-_;="]*)?>/i', "[tbody]\n",$text);
+		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]",$text);
+		$text = preg_replace('/<tbody([\w :\-_;="]*)?>/i', "[tbody]",$text);
 		$text = preg_replace('/<tr([\w :\-_;="]*)?>/i', "[tr]",$text);
-		$text = preg_replace('/<td([\w :\-_;="]*)?>/i', "\n\t[td]",$text);
+		$text = preg_replace('/<td([\w :\-_;="]*)?>/i', "\t[td]",$text);
 		$text = preg_replace('/<blockquote([\w :\-_;="]*)?>/i', "[blockquote]",$text);
 		
 		$ehttp = str_replace("/",'\/',e_HTTP);
@@ -593,7 +593,7 @@ class e_bbcode
 		$convert = array(		
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
-			array(	"\n[/list]",	'</ul>'),
+			array(	"[/list]",		'</ul>\n'),
 			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=2]",		'<h2>'),
 			array(	"[/h]",			'</h2>'),
@@ -603,10 +603,10 @@ class e_bbcode
 			array(	"[/b]",			'</strong>'),
 			array(	"[/i]",			'</em>'),
 			array(	"[/block]",		'</div>'),
-			array(	"[/table]\n",	'</table>'),
-			array(	"[/tbody]\n",	'</tbody>'),
+			array(	"[/table]",	'</table>'),
+			array(	"[/tbody]",	'</tbody>'),
 			array(	"[/code]\n",	'</code>'),
-			array(	"\n[/tr]\n",	'</tr>'),
+			array(	"[/tr]",	'</tr>'),
 			array(	"[/td]",		'</td>'),	
 			array(	"[/blockquote]",'</blockquote>'),
 			array(	"]",			' style=]')
