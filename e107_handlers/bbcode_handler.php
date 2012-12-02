@@ -594,6 +594,7 @@ class e_bbcode
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
 			array(	"[/list]",		'</ul>\n'),
+			array(	"[/list]",		'</ul>'),
 			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=2]",		'<h2>'),
 			array(	"[/h]",			'</h2>'),
