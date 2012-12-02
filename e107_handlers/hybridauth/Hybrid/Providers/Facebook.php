@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
@@ -15,9 +15,7 @@
 class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 {
 	// default permissions, and alot of them. You can change them from the configuration by setting the scope to what you want/need
-	public $scope = "email, user_about_me, user_birthday, user_hometown, user_website, offline_access, read_stream, publish_stream, read_friendlists";
-	
-	public $display = "page";
+	public $scope = "email, user_about_me, user_birthday, user_hometown, user_website, read_stream, offline_access, publish_stream, read_friendlists";
 
 	/**
 	* IDp wrappers initializer 
@@ -28,22 +26,23 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			throw new Exception( "Your application id and secret are required in order to connect to {$this->providerId}.", 4 );
 		}
 
- 		// override requested scope
-		if( isset( $this->config["scope"] ) && ! empty( $this->config["scope"] ) ){
-			$this->scope = $this->config["scope"];
-		}
-
-		// override requested display
-		if( isset( $this->config["display"] ) && ! empty( $this->config["display"] ) ){
-			$this->display = $this->config["display"];
-		}
-
 		if ( ! class_exists('FacebookApiException') ) {
 			require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/base_facebook.php";
 			require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/facebook.php";
 		}
 
 		$this->api = new Facebook( ARRAY( 'appId' => $this->config["keys"]["id"], 'secret' => $this->config["keys"]["secret"] ) ); 
+
+		if ( $this->token("access_token") ) { 
+			$access_token = $this->api->extendedAccessToken( $this->token("access_token") );
+
+			if( $access_token ){
+				$this->token("access_token", $access_token );
+				$this->api->setAccessToken( $access_token );
+			}
+
+			$this->api->setAccessToken( $this->token("access_token") );
+		}
 
 		$this->api->getUser();
 	}
@@ -55,8 +54,17 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	*/
 	function loginBegin()
 	{
+		$parameters = array("scope" => $this->scope, "redirect_uri" => $this->endpoint, "display" => "page");
+		$optionals  = array("scope", "redirect_uri", "display");
+
+		foreach ($optionals as $parameter){
+			if( isset( $this->config[$parameter] ) && ! empty( $this->config[$parameter] ) ){
+				$parameters[$parameter] = $this->config[$parameter];
+			}
+		}
+
 		// get the login url 
-		$url = $this->api->getLoginUrl( array( 'scope' => $this->scope, 'display' => $this->display, 'redirect_uri' => $this->endpoint ) );
+		$url = $this->api->getLoginUrl( $parameters );
 
 		// redirect to facebook
 		Hybrid_Auth::redirect( $url );
@@ -80,10 +88,8 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 		// set user as logged in
 		$this->setUserConnected();
 
-		// try to detect the access token for facebook
-		if( isset( $_SESSION["fb_" . $this->api->getAppId() . "_access_token" ] ) ){
-			$this->token( "access_token", $_SESSION["fb_" . $this->api->getAppId() . "_access_token" ] );
-		}
+		// store facebook access token 
+		$this->token( "access_token", $this->api->getAccessToken() );
 	}
 
 	/**

@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
@@ -45,7 +45,7 @@ class Hybrid_Providers_Foursquare extends Hybrid_Provider_Model_OAuth2
 		$this->user->profile->lastName      = $data->lastName;
 		$this->user->profile->displayName   = trim( $this->user->profile->firstName . " " . $this->user->profile->lastName );
 		$this->user->profile->photoURL      = $data->photo;
-		$this->user->profile->profileURL    = $data->canonicalUrl;
+		$this->user->profile->profileURL    = "https://www.foursquare.com/user/" . $data->id;
 		$this->user->profile->gender        = $data->gender;
 		$this->user->profile->city          = $data->homeCity;
 		$this->user->profile->email         = $data->contact->email;

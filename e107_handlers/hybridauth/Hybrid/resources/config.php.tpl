@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 // ----------------------------------------------------------------------------------------
@@ -19,29 +19,23 @@ return
 				"enabled" => #OPENID_ADAPTER_STATUS#
 			),
 
-			"Yahoo" => array ( 
-				"enabled" => #YAHOO_ADAPTER_STATUS# 
-			),
-
 			"AOL"  => array ( 
 				"enabled" => #AOL_ADAPTER_STATUS# 
 			),
 
+			"Yahoo" => array ( 
+				"enabled" => #YAHOO_ADAPTER_STATUS#,
+				"keys"    => array ( "id" => "#YAHOO_APPLICATION_KEY#", "secret" => "#YAHOO_APPLICATION_SECRET#" )
+			),
+
 			"Google" => array ( 
 				"enabled" => #GOOGLE_ADAPTER_STATUS#,
-				"keys"    => array ( "id" => "#GOOGLE_APPLICATION_APP_ID#", "secret" => "#GOOGLE_APPLICATION_SECRET#" ),
-				"scope"   => ""
+				"keys"    => array ( "id" => "#GOOGLE_APPLICATION_APP_ID#", "secret" => "#GOOGLE_APPLICATION_SECRET#" )
 			),
 
 			"Facebook" => array ( 
 				"enabled" => #FACEBOOK_ADAPTER_STATUS#,
-				"keys"    => array ( "id" => "#FACEBOOK_APPLICATION_APP_ID#", "secret" => "#FACEBOOK_APPLICATION_SECRET#" ),
-
-				// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-				"scope"   => "", 
-
-				// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
-				"display" => "" 
+				"keys"    => array ( "id" => "#FACEBOOK_APPLICATION_APP_ID#", "secret" => "#FACEBOOK_APPLICATION_SECRET#" )
 			),
 
 			"Twitter" => array ( 
@@ -74,5 +68,5 @@ return
 		// if you want to enable logging, set 'debug_mode' to true  then provide a writable file by the web server on "debug_file"
 		"debug_mode" => false,
 
-		"debug_file" => "",
+		"debug_file" => ""
 	);
