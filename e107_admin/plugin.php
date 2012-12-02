@@ -231,7 +231,12 @@ class pluginManager{
     		$this -> action = "installed";
 		}
 
-
+		if($this->action == 'create')
+		{
+			$pc = new pluginCreator;
+			return;
+				
+		}
 
 		if($this->action == "upgrade")
 		{
@@ -1264,6 +1269,9 @@ class pluginManager{
 				
 				$var['online']['text'] = "Search";
 				$var['online']['link'] = e_SELF."?mode=online";
+				
+				$var['create']['text'] = "Plugin Builder";
+				$var['create']['link'] = e_SELF."?mode=create";
 
 				$keys = array_keys($var);
 
@@ -1274,6 +1282,8 @@ class pluginManager{
 
 
 
+		
+
 } // end of Class.
 
 
@@ -1282,6 +1292,716 @@ function plugin_adminmenu()
 {
 	global $pman;
 	$pman -> pluginMenuOptions();
+}
+
+
+/**
+ * Plugin Admin Generator by CaMer0n. //TODO Incorporate plugin.xml generation
+ */
+class pluginCreator
+{
+	
+		var $fields = array();
+		var $table = '';
+		var $pluginName = '';
+		var $special = array();
+	
+		function __construct()
+		{
+			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
+			$this->special['options'] = array( 'title'=> LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
+			
+			
+			if(vartrue($_POST['step']) == 3)
+			{
+				return $this->step3();	
+			}
+			
+			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
+			{
+				return $this->step2();	
+			}
+			
+		
+		
+			return $this->step1();
+		}
+
+
+
+		function step1()
+		{
+			
+			$fl = e107::getFile();
+			$frm = e107::getForm();
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+			$plugFolders = $fl->get_dirs(e_PLUGIN);	
+			foreach($plugFolders as $dir)
+			{
+				if(file_exists(e_PLUGIN.$dir."/admin_config.php") || !file_exists(e_PLUGIN.$dir."/".$dir."_sql.php"))
+				{
+					continue;	
+				}	
+				$newDir[$dir] = $dir;
+			}
+			
+			$mes->addInfo("This Wizard will build an admin area for your plugin and generate a plugin.xml meta file.
+				Before you start: <ul>
+						<li>Create a new writable folder in the ".e_PLUGIN." directory eg. <b>myplugin</b></li>
+						<li>Create a new file in this folder and name it the same as the directory but with <b>_sql.php</b> as a sufix eg. <b>myplugin_sql.php</b></li>
+						<li>Create your table in Phpmyadmin and paste an sql dump of it into your file and save. (see <il>e107_plugins/_blank/_blank_sql.php</i> for an example)</li>
+						<li>Select your plugin's folder to begin.</li>
+				</ul>
+			");
+			
+			$text = $frm->open('createPlugin','get');
+			$text .= $frm->selectbox("newplugin",$newDir);
+			$text .= $frm->admin_button('step', 2,'other','Go');
+			$text .= $frm->close();
+			
+			$ns->tablerender("Plugin Builder", $mes->render() . $text);			
+			
+		}
+
+
+		function step2()
+		{
+			
+			require_once(e_HANDLER."db_verify_class.php");
+			$dv = new db_verify;
+			
+			$frm = e107::getForm();
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+			$newplug = $_GET['newplugin'];
+			$this->pluginName = $newplug;
+			
+			$data = file_get_contents(e_PLUGIN.$newplug."/".$newplug."_sql.php");
+			$ret =  $dv->getTables($data);
+		
+		
+			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&step=3');
+			$text .= "<div class='admintabs' id='tab-container'>\n";
+			$text .= "<ul class='e-tabs' id='core-emote-tabs'>\n";
+			
+			
+			foreach($ret['tables'] as $key=>$table)
+			{
+				$text .= "<li id='tab-".$table."'><a href='#".$table."'>Table: ".$table."</a></li>";
+			}
+			$text .= "<li id='tab-preferences'><a href='#preferences'>Preferences</a></li>";
+			$text .= "<li id='tab-xml'><a href='#xml'>Meta Info.</a></li>";
+			$text .= "</ul>";
+				
+			foreach($ret['tables'] as $key=>$table)
+			{
+				$text .= "<fieldset id='".$table."'>\n";
+				$fields = $dv->getFields($ret['data'][$key]);
+				
+			
+				$text .= $this->form($table,$fields);
+				$text .= "</fieldset>";	
+			}
+			
+			$text .= "<fieldset id='preferences'>\n";
+			$text .= $this->prefs(); 
+			$text .= "</fieldset>";
+			
+			
+			$text .= "<fieldset id='xml'>\n";
+			$text .= $this->pluginXml(); 
+			$text .= "</fieldset>";
+			
+			$text .= "</div>";
+			
+			$text .= "
+			<div class='buttons-bar center'>
+			".$frm->hidden('newplugin', $this->pluginName)."
+			".$frm->admin_button('step', 3,'other','Generate')."
+			</div>";
+			
+			$text .= $frm->close();
+			
+			$mes->addInfo("Review all fields and modify if necessary.");
+			
+			if(count($ret['tables']) > 1)
+			{
+				$mes->addInfo("Review ALL tables before clicking 'Generate'.");	
+			}
+			
+			$ns->tablerender("Plugin Builder", $mes->render() . $text);		
+		}
+
+
+		function prefs()
+		{
+			//TODO Preferences 
+			return "Coming Soon";				
+		}
+
+
+		function pluginXml()
+		{
+			//TODO Plugin.xml Form Fields. . 
+			return "Coming Soon";				
+		}
+
+
+
+
+		function form($table,$fieldArray)
+		{
+			$frm = e107::getForm();
+					
+			$modes = array("main"=>"Main Area","cat"=>"Categories");
+			
+			$this->table = $table."_ui";
+			
+			$text .= "<table class='table adminform'>\n";
+				
+			$text .= "
+					<tr>
+						<td>Plugin Title</td>
+						<td>".$frm->text($this->table.'[pluginTitle]', $newplug, '', 'required=1').
+						
+						$frm->hidden($this->table.'[pluginName]', $this->pluginName, 15).
+						$frm->hidden($this->table.'[table]', $table, 15).
+						"</td>
+						
+					</tr>
+					<tr>
+						<td>Mode</td>
+						<td>".$frm->selectbox($this->table."[mode]",$modes, '', 'required=1', true)."</td>
+					</tr>
+					
+				";
+				
+			$text .= "</table>".$this->special('checkboxes');
+			
+			$text .= "<table class='table adminlist'>
+						<thead>
+						<tr>
+							<th>Field</th>
+							<th>Caption</th>
+							<th>Type</th>
+							<th>Data</th>
+							<th>Width</th>
+							<th class='center'>Batch</th>
+							<th class='center'>Filter</th>
+							<th class='center e-tip' title='Field is required to be filled'>Validate</th>
+							<th class='center e-tip' title='Displayed by Default'>Display</th>
+							<th>HelpTip</th>
+							<th>ReadParms</th>
+							<th>WriteParms</th>
+						</tr>
+						</thead>
+						<tbody>
+						";
+						
+			foreach($fieldArray as $name=>$val)
+			{
+				list($tmp,$nameDef) = explode("_",$name,2);
+				// 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp'
+				$text .= "<tr>
+					<td>".$name."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][title]", $this->guess($name, $val,'title'),35, 'required=1')."</td>
+					<td>".$this->fieldType($name, $val)."</td>
+					<td>".$this->fieldData($name, $val)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][width]",'auto',4)."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][batch]", true, $this->guess($name, $val,'batch'))."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][filter]", true, $this->guess($name, $val,'filter'))."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][validate]", true)."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][fieldpref]", true, $this->guess($name, $val,'fieldpref'))."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 35)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 35)."</td>
+					</tr>";
+			
+			}
+			//'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),		
+			$text .= "</tbody></table>".$this->special('options');	
+			
+			
+			return $text;
+			
+		}
+		
+		// Checkboxes and Options. 
+		function special($name)
+		{
+			$frm = e107::getForm();
+			$text = "";
+			
+			foreach($this->special[$name] as $key=>$val)
+			{
+				$text .= $frm->hidden($this->table."[fields][".$name."][".$key."]", $val);					
+			}
+
+			return $text;
+			
+		}
+					
+				
+			
+		
+		function fieldType($name, $val)
+		{
+			$type = strtolower($val['type']);
+			$frm = e107::getForm();
+			
+			if(strtolower($val['default']) == "auto_increment")
+			{
+				$key = $this->table."[pid]";
+				return "Primary Id".$frm->hidden($key, $name );	// 
+			}
+			
+			switch ($type) 
+			{
+			
+				case 'int':
+				case 'tinyint':
+				case 'smallint':
+					$array = array(
+					"boolean"	=> "True/Flase",
+					"number"	=> "Text Box",
+					"dropdown"	=> "DropDown",
+					"userclass"	=> "DropDown (userclasses)",
+					"datestamp"	=> "Date",
+					"method"	=> "Custom Function",
+					"hidden"	=> "Hidden"
+					);	
+				break;
+				
+				case 'varchar':
+				$array = array(
+					'text'		=> "Text Box",
+					"dropdown"	=> "DropDown",
+					"userclass"	=> "DropDown (userclasses)",
+					"url"		=> "Text Box (url)",
+					"icon"		=> "Icon",
+					"image"		=> "Image",
+					"method"	=> "Custom Function",
+					"hidden"	=> "Hidden"
+					);
+				break;
+				
+				case 'text':
+				$array = array(
+					'textarea'	=> "Text Area",
+					'bbarea'	=> "Rich-Text Area",
+					'text'		=> "Text Box",
+					"method"	=> "Custom Function",
+					"hidden"	=> "Hidden"
+					);
+				break;
+			}
+			
+		//	asort($array);
+			
+			$fname = $this->table."[fields][".$name."][type]";
+			return $frm->selectbox($fname, $array, $this->guess($name, $val),'required=1', true);
+			
+		}
+
+		// Guess Default Field Type based on name of field. 
+		function guess($data, $val='',$mode = 'type')
+		{
+			$tmp = explode("_",$data);	
+			
+			if(count($tmp) == 3) // eg Link_page_title
+			{
+				$name = $tmp[2];	
+			}
+			else // Link_description
+			{
+				$name = $tmp[1];		
+			}
+	
+			$ret['title'] = ucfirst($name);
+			//echo "<br />name=".$name; 
+			switch ($name) 
+			{
+				
+				case 'id':
+					$ret['title'] = 'LAN_ID';
+					// $ret['type'] = 'datestamp';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+				
+				case 'datestamp':
+					$ret['title'] = 'LAN_DATESTAMP';
+					$ret['type'] = 'datestamp';
+					$ret['batch'] = true;
+					$ret['filter'] = true;
+					$ret['fieldpref'] = true;
+				break;
+				
+				case 'name':
+				case 'title':
+				case 'subject':
+					$ret['title'] = 'LAN_TITLE';
+					$ret['type'] = 'text';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					$ret['fieldpref'] = true;
+				break;
+				
+				case 'author':
+					$ret['title'] = 'LAN_AUTHOR';
+					$ret['type'] = 'user';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+				
+				case 'image':
+					$ret['title'] = 'LAN_IMAGE';
+					$ret['type'] = 'image';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+
+				case 'order':
+					$ret['title'] = 'LAN_ORDER';
+					$ret['type'] = 'number';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+
+				case 'category':
+					$ret['title'] = 'LAN_CATEGORY';
+					$ret['type'] = 'dropdown';
+					$ret['batch'] = true;
+					$ret['filter'] = true;
+					$ret['fieldpref'] = true;
+					
+				break;
+								
+				case 'icon':
+				case 'button':
+					$ret['title'] = 'LAN_ICON';
+					$ret['type'] = 'icon';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+				
+				case 'website':
+				case 'url':
+				case 'homepage':
+					$ret['title'] = 'LAN_URL';
+					$ret['type'] = 'url';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+				break;
+				
+				case 'visibility':
+				case 'class':
+					$ret['title'] = 'LAN_USERCLASS';
+					 $ret['type'] = 'userclass';
+					 $ret['batch'] = true;
+					 $ret['filter'] = true;
+					 $ret['fieldpref'] = true;
+				break;
+				
+				case 'description':
+					$ret['title'] = 'LAN_DESCRIPTION';
+					 $ret['type'] = ($val['type'] == 'TEXT') ? 'textarea' : 'text';
+				break;
+				
+				default:
+					$ret['type'] = 'boolean';
+					$ret['batch'] = false;
+					$ret['filter'] = false;
+					break;
+			}
+			
+			return vartrue($ret[$mode]);
+			
+		}
+
+
+
+
+		function fieldData($name, $val)
+		{
+			$frm = e107::getForm();
+			$type = $val['type'];
+			
+			if($type == 'VARCHAR' || $type == 'TEXT')
+			{
+				$value = 'str';	
+			}	
+			else 
+			{
+				$value = 'int';
+			}
+			
+			
+			$fname = $this->table."[fields][".$name."][data]";
+			
+			return $frm->hidden($fname, $value). "<a href='#' class='e-tip' title='{$type}' >".$value."</a>" ;
+			
+		}
+
+
+
+
+// ******************************** CODE GENERATION AREA *************************************************
+
+		function step3()
+		{
+			
+			unset($_POST['step']);
+	
+
+$text .= "\n
+// Generated e107 Plugin Admin Area 
+
+require_once('../../class2.php');
+if (!getperms('P')) 
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+
+
+
+class ".$_POST['newplugin']."_admin extends e_admin_dispatcher
+{
+
+	protected \$modes = array(	
+	";
+	
+	$thePlugin = $_POST['newplugin'];
+	unset($_POST['newplugin']);
+	
+			foreach($_POST as $table => $vars) // LOOP Through Tables. 
+			{
+	$text .= "
+		'".$vars['mode']."'	=> array(
+			'controller' 	=> '".$vars['table']."_ui',
+			'path' 			=> null,
+			'ui' 			=> '".$vars['table']."_form_ui',
+			'uipath' 		=> null
+		),
+";
+			} // END LOOP
+/*
+		'cat'		=> array(
+			'controller' 	=> 'faq_cat_ui',
+			'path' 			=> null,
+			'ui' 			=> 'faq_cat_form_ui',
+			'uipath' 		=> null
+		)					
+	);	
+*/
+
+$text .= "
+	);	
+	
+	
+	protected \$adminMenu = array(
+";
+			foreach($_POST as $table => $vars) // LOOP Through Tables. 
+			{
+$text .= "
+		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'".$vars['mode']."/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+";
+			}
+$text .= "			
+	/*
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	*/	
+
+	);
+
+	protected \$adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected \$menuTitle = '".$vars['pluginName']."';
+}
+
+
+
+";			
+			// print_a($_POST);
+
+			
+			$srch = array(
+				
+				"\n",
+				"),",
+				"    ",
+				"'batch' => '1'",
+				"'filter' => '1'",
+				"'validate' => '1'",
+				", 'fieldpref' => '1'",
+			 );
+			 
+			$repl = array(
+				
+				 "",
+				 "),\n\t\t",
+				 " ",
+				"'batch' => true",
+				"'filter' => true",
+				"'validate' => true",
+				""
+				  );
+			
+	
+			
+			 
+			
+			foreach($_POST as $table => $vars) // LOOP Through Tables. 
+			{
+				
+				$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
+				$FIELDPREF = array();
+				
+				foreach($vars['fields'] as $k=>$v)
+				{
+					if($v['fieldpref'])
+					{
+						$FIELDPREF[] = "'".$k."'";
+					}							
+				}
+				
+$text .= 
+"
+				
+class ".$table." extends e_admin_ui
+{
+			
+		protected \$pluginTitle		= '".$vars['pluginTitle']."';
+		protected \$pluginName		= '".$vars['pluginName']."';
+		protected \$table			= '".$vars['table']."';
+		protected \$pid				= '".$vars['pid']."';
+		protected \$perPage 			= 10; 
+			
+		protected \$fields 		= ".$FIELDS.";		
+		
+		protected \$fieldpref = array(".implode(", ",$FIELDPREF).");
+		
+		
+		
+		/*
+		protected $prefs = array(
+			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+		);
+
+		
+		// optional
+		public function init()
+		{
+			
+		}
+	
+		
+		public function customPage()
+		{
+			\$ns = e107::getRender();
+			\$text = 'Hello World!';
+			\$ns->tablerender('Hello',\$text);	
+			
+		}
+		*/
+			
+}
+				
+
+
+class ".$vars['table']."_form_ui extends e_admin_form_ui
+{
+";
+
+foreach($vars['fields'] as $fld=>$val)
+{
+	if($val['type'] != 'method')
+	{
+		continue;	
+	}	
+	
+$text .= "
+	
+	// Custom Method/Function 
+	function ".$fld."(\$curVal,\$mode)
+	{
+		\$frm = e107::getForm();		
+		 		
+		switch(\$mode)
+		{
+			case 'read': // List Page
+				return \$curVal;
+			break;
+			
+			case 'write': // Edit Page
+				return \$frm->text('".$fld."',\$curVal);		
+			break;
+			
+			case 'filter':
+			case 'batch':
+				return  \$array; 
+			break;
+		}
+	}
+";
+}
+
+$text .= "
+}		
+		
+";			
+						
+	 			
+					
+			} // End LOOP. 
+	
+$text .= '		
+new '.$vars['pluginName'].'_admin();
+
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+';
+
+// ******************************** END GENERATION AREA *************************************************	
+					
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+			$generatedFile = e_PLUGIN.$thePlugin."/admin_config.php";
+			
+			$startPHP = chr(60)."?php";		
+			$endPHP =  "?>";
+			
+			if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
+			{
+				$mes->addSuccess("<a href='".$generatedFile."'>Click Here</a> to vist your generated admin area");
+			}	
+			else 
+			{
+				$mes->addError("Could not write to ".$generatedFile);
+			}
+				
+			
+			$ns->tablerender("Generated",$mes->render()."<pre style='font-size:80%'>".$text."</pre>");
+			
+		//	
+			return;
+	
+		}
 }
 
 ?>

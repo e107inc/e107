@@ -85,6 +85,62 @@ class e_form
 	}
 
 	/**
+	 * Open a new form
+	 * @param string name
+	 * @param $method - post|get  default is post
+	 * @param @target - e_SELF by default
+
+	 * @param $other - unused at the moment. 
+	 */
+	public function open($name, $method=null, $target=null, $options=null)
+	{
+		if($target == null)
+		{
+			$target = e_SELF . (e_QUERY ? "?".e_QUERY : "");	
+		}
+		
+		if($method == null)
+		{
+			$method = "post";	
+		}
+	
+		parse_str($options,$options);
+	
+		$target = str_replace("&", "&amp;", $target);
+		
+		if(vartrue($options['class']))
+		{
+			$class = "class='".$options['class']."'";
+		}
+		
+		$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'>\n";
+		
+		if($method == 'get' && strpos($target,'='))
+		{
+			list($url,$qry) = explode("?",$target);
+			
+			parse_str($qry,$m);
+			foreach($m as $k=>$v)
+			{
+				$text .= $this->hidden($k, $v);					
+			}
+			
+		}	
+		
+		return $text;	
+	}
+	
+	/**
+	 * Close a Form
+	 */
+	public function close()
+	{
+		return "</form>";	
+		
+	}
+
+
+	/**
 	 * Get required field markup string
 	 * @return string
 	 */
@@ -112,10 +168,40 @@ class e_form
 		return $this->text($name, $value, $maxlength, $options);	
 	}
 
-	function text($name, $value, $maxlength = 200, $options = array())
+	/**
+	 * Text-Field Form Element
+	 * @param $name
+	 * @param $value
+	 * @param $maxlength
+	 * @param $options
+	 */
+	function text($name, $value, $maxlength = 80, $options= null)
 	{
-		if(is_string($options)) parse_str($options, $options);
-		if(!vartrue($options['class']) && $maxlength > 99) $options['class'] = 'tbox span5';
+
+		if(vartrue($options) && is_string($options))
+		{
+			parse_str($options,$options);
+		}
+		
+		if(!vartrue($options['class']))
+		{
+			if($maxlength < 10)
+			{
+				$options['class'] = 'tbox span3';
+			}
+			
+			if($maxlength < 50)
+			{
+				$options['class'] = 'tbox span7';	
+			}
+		
+			if($maxlength > 99)
+			{
+				 $options['class'] = 'tbox span7';
+			}
+		}	
+		
+
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
