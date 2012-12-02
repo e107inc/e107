@@ -157,7 +157,7 @@ define("FORLAN_135", "Leave blank to disable auto resizing of images");
 define("FORLAN_136", "Create link to full size image");
 define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image. If disabled, original image will be discarded");
 define("FORLAN_138", "Prune these forums");
-define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
+define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page"); // FIX html in LAN
 define("FORLAN_140", "View");
 define("FORLAN_141", "Post");
 define("FORLAN_142", "Post permission");

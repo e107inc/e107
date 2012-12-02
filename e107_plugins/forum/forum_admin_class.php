@@ -209,6 +209,7 @@ class forumAdmin
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		$frm = e107::getForm();
 		$txt = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table class='table adminlist'>
@@ -296,8 +297,8 @@ class forumAdmin
 		$text .= "
 		<table class='table adminlist'>
 		<tr>
-		<td colspan='2' style='width:70%; text-align:center'>".FORLAN_28."</td>
-		<td style='width:30%; text-align:center'>".FORLAN_80."</td>
+		<td colspan='2' text-align:center'>".FORLAN_28."</td>
+		<td text-align:center'>".FORLAN_80."</td>
 		</tr>";
 
 		if (!$parent_amount = $sql->db_Select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
@@ -437,25 +438,25 @@ class forumAdmin
 		<table class='table adminform'>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_31.":</td>
-		<td style='width:60%'>
+		<td>".FORLAN_31.":</td>
+		<td>
 		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($row['forum_name'])."' maxlength='250' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_23.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
+		<td>".FORLAN_23.":</td>
+		<td>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_142.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+		<td>".FORLAN_142.":</td>
+		<td>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_184.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+		<td>".FORLAN_184.":</td>
+		<td>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
 		</tr>
 
 		<tr style='vertical-align:top'>
@@ -509,8 +510,8 @@ class forumAdmin
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>\n
 		<table class='table adminform'>
 		<tr>
-		<td style='width:40%'>".FORLAN_22.":</td>
-		<td style='width:60%'>";
+		<td>".FORLAN_22.":</td>
+		<td>";
 
 		$sql->db_Select('forum', '*', 'forum_parent=0');
 		$text .= "<select name='forum_parent' class='tbox'>\n";
@@ -524,39 +525,39 @@ class forumAdmin
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_31.":</td>
-		<td style='width:60%'>
+		<td>".FORLAN_31.":</td>
+		<td>
 		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($fInfo['forum_name'])."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_32.":</td>
-		<td style='width:60%'>
+		<td>".FORLAN_32.":</td>
+		<td>
 		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm($fInfo['forum_description'])."</textarea>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_33.":</td>
-		<td style='width:60%'>";
+		<td>".FORLAN_33.":</td>
+		<td>";
 		$text .= $e107->user_class->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
 
 		$text .= "</td>
 		</tr>
 		<tr>
-		<td style='width:40%'>".FORLAN_23.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
+		<td>".FORLAN_23.":</td>
+		<td>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_142.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+		<td>".FORLAN_142.":</td>
+		<td>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:40%'>".FORLAN_184.":</td>
-		<td style='width:60%'>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+		<td>".FORLAN_184.":</td>
+		<td>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
 		</tr>
 
 		<tr style='vertical-align:top'>
@@ -810,42 +811,42 @@ class forumAdmin
 			$text = "
 			<table class='table adminlist'>
 			<tr>
-			<td style='width:40%'>
+			<td>
 			".FORLAN_171.":
 			</td>
-			<td style='width:60%'>
+			<td>
 			<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a>
 			</td>
 			</tr>
 			<tr>
-			<td style='width:40%'>
+			<td>
 			".FORLAN_173.":
 			</td>
-			<td style='width:60%'>
+			<td>
 			".$row['gen_ip']."
 			</td>
 			</tr>
 			<tr>
-			<td style='width:40%'>
+			<td>
 			".FORLAN_174.":
 			</td>
-			<td style='width:60%'>
+			<td>
 			<a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
 			</td>
 			</tr>
 			<tr>
-			<td style='width:40%'>
+			<td>
 			".FORLAN_175.":
 			</td>
-			<td style='width:60%'>
+			<td>
 			".$con -> convert_date($row['gen_datestamp'], "long")."
 			</td>
 			</tr>
 			<tr>
-			<td style='width:40%'>
+			<td>
 			".FORLAN_176.":
 			</td>
-			<td style='width:60%'>
+			<td>
 			".$row['gen_chardata']."
 			</td>
 			</tr>
@@ -1052,7 +1053,7 @@ class forumAdmin
 				$text .= "<input type='checkbox' name='guest_active' value='1' />";
 			}
 			$text .= "</td>
-			<td style='width:60%'>
+			<td>
 			<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guesttext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpguest' size='100' />
@@ -1073,7 +1074,7 @@ class forumAdmin
 				$text .= "<input type='checkbox' name='member_active' value='1' />";
 			}
 			$text .= "</td>
-			<td style='width:60%'>
+			<td>
 			<textarea class='tbox' name='memberrules' cols='70' rows='10'>$membertext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpmember' size='100' /> 
@@ -1096,7 +1097,7 @@ class forumAdmin
 			}
 
 			$text .= "</td>
-			<td style='width:60%'>
+			<td>
 			<textarea class='tbox' name='adminrules' cols='70' rows='10'>$admintext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpadmin' size='100' />
@@ -1107,7 +1108,7 @@ class forumAdmin
 
 			<tr style='vertical-align:top'>
 			<td>&nbsp;</td>
-			<td style='width:60%'>
+			<td>
 			".$frm->admin_button('frsubmit', WMGLAN_4, 'submit')."
 			</td>
 			</tr>
