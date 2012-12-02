@@ -779,7 +779,7 @@ $social_external = array(
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-sociallogin'>
 					<legend>Social Login Options</legend>
-					<div>Note: This section is not functional at the moment</div>
+					<div>Note: This section requires further testing</div>
 					<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
