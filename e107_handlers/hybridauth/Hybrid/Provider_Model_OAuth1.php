@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
@@ -81,6 +81,11 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 		// 3.3 - instanciate OAuth client with client credentials
 		else{
 			$this->api = new OAuth1Client( $this->config["keys"]["key"], $this->config["keys"]["secret"] );
+		}
+
+		// Set curl proxy if exist
+		if( isset( Hybrid_Auth::$config["proxy"] ) ){
+			$this->api->curl_proxy = Hybrid_Auth::$config["proxy"];
 		}
 	}
 

@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
@@ -74,6 +74,11 @@ class Hybrid_Provider_Model_OAuth2 extends Hybrid_Provider_Model
 			$this->api->refresh_token           = $this->token( "refresh_token" );
 			$this->api->access_token_expires_in = $this->token( "expires_in" );
 			$this->api->access_token_expires_at = $this->token( "expires_at" ); 
+		}
+
+		// Set curl proxy if exist
+		if( isset( Hybrid_Auth::$config["proxy"] ) ){
+			$this->api->curl_proxy = Hybrid_Auth::$config["proxy"];
 		}
 	}
 

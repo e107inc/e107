@@ -1,8 +1,8 @@
 <?php
 /*!
 * HybridAuth
-* http://hybridauth.sourceforge.net | https://github.com/hybridauth/hybridauth
-*  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
+* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
@@ -34,7 +34,7 @@ class Hybrid_Provider_Model_OpenID extends Hybrid_Provider_Model
 		// include LightOpenID lib
 		require_once Hybrid_Auth::$config["path_libraries"] . "OpenID/LightOpenID.php"; 
 
-		$this->api = new LightOpenID( parse_url( Hybrid_Auth::$config["base_url"], PHP_URL_HOST) ); 
+		$this->api = new LightOpenID( parse_url( Hybrid_Auth::$config["base_url"], PHP_URL_HOST), Hybrid_Auth::$config["proxy"] ); 
 	}
 
 	// --------------------------------------------------------------------
