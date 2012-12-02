@@ -548,9 +548,9 @@ class admin_shortcodes
 
 	function sc_admin_pm($parm)
 	{
-		$text = '	<li class="dropdown">
+		$text = '<li class="dropdown">
 		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
-		<i class="icon-envelope icon-white" class="active"></i> 3
+		<i class="icon-envelope icon-white active"></i> 3
 		<b class="caret"></b>
 		</a> 
 		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
@@ -564,7 +564,8 @@ class admin_shortcodes
 		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
 		<button class="dropdown-toggle btn btn-primary" >Send</button>	
 		</div>
-		</li>';
+		</li>
+		';
 		
 		return $text;	
 	}
