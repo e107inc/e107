@@ -734,9 +734,12 @@ class e_parse
 		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
 	}
 
-	protected function simpleReplace($tmp) {
+	protected function simpleReplace($tmp) 
+	{
 		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
-		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset);
+		$key = $tmp[1];
+		return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
+	//	return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
 	}
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)

@@ -707,13 +707,32 @@ class db_verify
 		
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
 		
-	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\sa-z0-9_\(\),' `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-		$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
- 			
+	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+	
+		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+	 			
 		$table = preg_match_all($regex,$sql_data,$match);
+		
+
+			
+		$tables = array();
+			
+		foreach($match[1] as $c=>$k)
+		{
+			if(substr($k,0, 5) == 'e107_') // remove prefix if found in sql dump. 
+			{
+				$k = substr($k, 5);	
+			}
+			
+			$tables[$c] = $k;		
+		}		
 				
-		$ret['tables'] = $match[1];
+				
+		$ret['tables'] = $tables;
 		$ret['data'] = $match[2];
+		
+		
+		
 		
 		return $ret;
 	}
