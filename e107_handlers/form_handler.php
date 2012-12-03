@@ -545,7 +545,7 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
-		if(vartrue($options) && !is_array($options))
+		if(vartrue($options) && is_string($options))
 		{
 			parse_str($options,$options);	
 		} 
@@ -612,8 +612,9 @@ class e_form
 
 		$text = "";
 	
-		$class = (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
-		$size = vartrue($options['size']) ? intval($options['size']) : 40;
+		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
+		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
+		$required 	= vartrue($options['required']) ? "required" : "";
 		
 		if(vartrue($options['inline']))
 		{
@@ -623,7 +624,7 @@ class e_form
 		}
 		else
 		{
-			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />";		
+			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' {$required} />";		
 		}
 		
 		return $text;
