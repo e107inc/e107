@@ -200,10 +200,15 @@ class e_menu
 	{
 		global $sql, $ns, $tp, $sc_style;
 		global $error_handler;
+				
 		$e107 = e107::getInstance();
 
 		$tmp = explode(':', $parm);
-		$buffer_output = true; // Default - return all output.
+		
+		
+		$buffer_output = (E107_DBG_INCLUDES) ? false : true; // Turn off when trouble-shooting includes. Default - return all output.
+		
+		
 		if(isset($tmp[1])&&$tmp[1]=='echo')
 		{
 			$buffer_output = false;
