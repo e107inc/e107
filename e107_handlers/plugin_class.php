@@ -60,7 +60,8 @@ class e107plugin
 
 
 	var $disAllowed = array(
-		'theme'
+		'theme',
+		'core'
 	);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
