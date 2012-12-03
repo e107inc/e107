@@ -103,7 +103,7 @@ function show_updates($dbupdate, $what)
 
 	$updates = 0;
 	
-	asort($dbupdate);
+	// asort($dbupdate);
 
 	foreach($dbupdate as $func => $rmks)
 	{
@@ -118,7 +118,7 @@ function show_updates($dbupdate, $what)
 			else
 			{
 				$updates ++;
-				$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'update', '', "id=e-{$func}")."</td>";
+				$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}")."</td>";
 			}
 			$text .= "</tr>\n";
 		}
@@ -135,7 +135,7 @@ function show_updates($dbupdate, $what)
 			{
 				$updates ++;
 				$mes->addDebug($reason);
-				$text .= "<td>".$frm->admin_button('update['.$func.']', LAN_UPDATE, 'update')."</td>";
+				$text .= "<td>".$frm->admin_button('update['.$func.']', LAN_UPDATE, 'warning')."</td>";
 			}
 			$text .= "</tr>\n";	
 		}
