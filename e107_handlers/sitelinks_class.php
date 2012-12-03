@@ -854,7 +854,7 @@ class e_navigation
 				*/
 			ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'
 		
-			if($linkStyle == "array")
+			if($linkStyle == "array" || $iconSize == 'assoc')
 			{
 		       	return $plugin_array;
 			}
@@ -862,7 +862,7 @@ class e_navigation
 			foreach ($plugin_array as $plug_key => $plug_value)
 			{
 				$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
-				$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
+				$text .= $this->renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
 			}
 			return $text;
 	}	
