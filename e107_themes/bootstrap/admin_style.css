@@ -43,6 +43,8 @@ td.center, th.center 		{ text-align:center }
 #cboxTitle					{ font-weight:bold; color: black }
 .chzn-container				{ border: 1px solid #ddd; }
 
+div.nextprev				{ text-align: center; display:inline-block; width:100% }
+
 
 /*
 a.brand:hover img 			{

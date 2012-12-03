@@ -2612,6 +2612,11 @@ class e_form
 				$parms = 'total='.$total;
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
+				if(ADMIN_AREA)
+				{
+					$parms .= '&tmpl_prefix=admin';
+				}
+				
 				// NOTE - the whole url is double encoded - reason is to not break parms query string
 				// 'np_query' should be proper (urlencode'd) url query string
 				$url = rawurlencode($url.'?'.(varset($options['np_query']) ? str_replace(array('&amp;', '&'), array('&', '&amp;'),  $options['np_query']).'&amp;' : '').'from=[FROM]');

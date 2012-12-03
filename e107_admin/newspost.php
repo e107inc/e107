@@ -149,7 +149,7 @@ class news_sub_ui extends e_admin_ui
 		protected $pluginName	= 'core';
 		protected $table 		= "submitnews";
 		protected $pid			= "submitnews_id";
-		protected $perPage 		= 20; //no limit
+		protected $perPage 		= 10; //no limit
 		protected $batchDelete 	= true;
 		protected $formQuery	= "mode=main&amp;action=create";
 		protected $listOrder	= "submitnews_id desc";
@@ -281,7 +281,7 @@ class news_admin_ui extends e_admin_ui
 	protected $pluginName	= 'core';
 	protected $table 		= "news";
 	protected $pid			= "news_id";
-	protected $perPage 		= 20; //no limit
+	protected $perPage 		= 10; //no limit
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
 	protected $listOrder	= "news_id desc";
