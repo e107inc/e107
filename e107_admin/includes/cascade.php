@@ -24,7 +24,7 @@ $text = "<div style='text-align:center'>
 
 while (list($key, $funcinfo) = each($newarray))
 {
-	$text .= e107::renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'adminb');
+	$text .= e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'adminb');
 }
 
 $text .= "<tr>
