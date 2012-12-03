@@ -16,7 +16,7 @@ require_once('class2.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 $tp = e107::getParser();
 
-if (USER)
+if (USER && !getperms('0'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
