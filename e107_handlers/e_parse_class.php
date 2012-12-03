@@ -738,8 +738,12 @@ class e_parse
 	{
 		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
 		$key = $tmp[1];
-		return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
-	//	return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
+		if(is_array($this->replaceVars))
+		{
+			return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);	
+		}		
+	//	
+		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
 	}
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
