@@ -44,7 +44,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
 	}
 
-	$iconlist = array_merge($array_functions_assoc, getPluginLinks(E_16_PLUGMANAGER, "array"));
+	$iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
 
 	$text .= "
 	<form method='post' action='".e_SELF."?".e_QUERY."'>";

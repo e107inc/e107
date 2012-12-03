@@ -498,7 +498,7 @@ class admin_shortcodes
 		if($tmp)
 		{
 			ob_start();
-			// FIXME - renderMenu(), respectively e_admin_menu() should return, not output content!
+			// FIXME - renderMenu(), respectively e_adm/in_menu() should return, not output content!
 			$tmp->renderMenu();
 			$ret = ob_get_contents();
 			ob_end_clean();
@@ -1248,7 +1248,13 @@ class admin_shortcodes
 	{
 	
 		if (!ADMIN) return '';
-		global $admin_cat, $array_functions, $array_sub_functions, $pref;
+	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
+		
+		$pref = e107::getPref();
+
+		$admin_cat 				= e107::getNav()->adminCats();		
+		$array_functions 		= e107::getNav()->adminLinks();
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');
 
 		$tp 	= e107::getParser();
 		$e107	= e107::getInstance();
@@ -1264,7 +1270,7 @@ class admin_shortcodes
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
 		{
 			$menu_vars = $this->getOtherNav($parm);	
-			return e_admin_menu('', '', $menu_vars, $$tmpl, FALSE, FALSE);
+			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
 		}
 
 		// MAIN LINK
@@ -1454,7 +1460,8 @@ class admin_shortcodes
 		}
 
 		// print_a($menu_vars);
-		return e_admin_menu('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
 
 
@@ -1614,7 +1621,8 @@ class admin_shortcodes
    //		$keys = array_keys($var);
 	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
-	  e_admin_menu(ADLAN_6,$action, $var);
+		e107::getNav()->admin(ADLAN_6,$action, $var);
+	 //  e_admin/_menu(ADLAN_6,$action, $var);
 
 	}
 

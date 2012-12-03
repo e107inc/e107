@@ -1301,7 +1301,7 @@ function admin_download_adminmenu($parms)
 	$var['limits']['link'] = e_SELF."?limits";
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
-	e_admin_menu(DOWLAN_32, $action, $var);
+	e107::getNav()->admin(DOWLAN_32, $action, $var);
 
    unset($var);
 	$var['ulist']['text'] = DOWLAN_22;
@@ -1310,7 +1310,7 @@ function admin_download_adminmenu($parms)
 	$var['filetypes']['link'] = e_SELF."?filetypes";
 	$var['uopt']['text'] = LAN_OPTIONS;
 	$var['uopt']['link'] = e_SELF."?uopt";
-	e_admin_menu(DOWLAN_10, $action, $var);
+	e107::getNav()->admin(DOWLAN_10, $action, $var);
 }
  */
 

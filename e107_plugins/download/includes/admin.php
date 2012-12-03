@@ -47,7 +47,7 @@ class plugin_download_admin extends e_admin_dispatcher
 
 	/**
 	 * Format: 'MODE/ACTION' => array('caption' => 'Menu link title'[, 'url' => '{e_PLUGIN}release/admin_config.php', 'perm' => '0']);
-	 * Additionally, any valid e_admin_menu() key-value pair could be added to the above array
+	 * Additionally, any valid e107::getNav()->admin() key-value pair could be added to the above array
 	 * @var array
 	 */
 	protected $adminMenu = array(
@@ -76,7 +76,7 @@ class plugin_download_admin extends e_admin_dispatcher
 	$var['limits']['link'] = e_SELF."?limits";
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
-	e_admin_menu(DOWLAN_32, $action, $var);
+	e107::getNav()->admin(DOWLAN_32, $action, $var);
 
    unset($var);
 	$var['ulist']['text'] = DOWLAN_22;

@@ -18,6 +18,8 @@ if (!defined('e107_INIT')) { exit; }
 
 $mes = e107::getMessage();
 
+$admin_cat = e107::getNav()->adminCats();
+
 $text = "<div style='text-align:center'>
 	   	<div class='admintabs' id='tab-container'>
 			<ul class='e-tabs' id='core-emote-tabs'>";
@@ -58,7 +60,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	}
 	else // Plugin category.
 	{
-		$text_rend  = getPluginLinks(E_32_PLUGMANAGER, "classis");
+		$text_rend  = e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "classis");
 
 		if ($text_rend)
 		{

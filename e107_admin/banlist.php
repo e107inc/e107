@@ -987,7 +987,7 @@ function banlist_adminmenu()
 		$var['banlog']['link'] = e_SELF.'?banlog';
 		$var['banlog']['perm'] = '0';
 	}
-	e_admin_menu(BANLAN_16, $action, $var);
+	e107::getNav()->admin(BANLAN_16, $action, $var);
 }
 
 

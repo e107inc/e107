@@ -1286,7 +1286,7 @@ class page
 		$var['options']['link'] = e_SELF."?options";
 		$var['options']['perm'] = "0";
 
-		e_admin_menu(CUSLAN_33, $action, $var);
+		e107::getNav()->admin(CUSLAN_33, $action, $var);
 	}
 	*/
 }

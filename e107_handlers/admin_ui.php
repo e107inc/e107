@@ -987,7 +987,7 @@ class e_admin_dispatcher
 	 * Format: 'mode/action' => array('caption' => 'Link title'[, 'perm' => '0', 'url' => '{e_PLUGIN}plugname/admin_config.php'], ...);
 	 * Note that 'perm' and 'userclass' restrictions are inherited from the $modes, $access and $perm, so you don't have to set that vars if 
 	 * you don't need any additional 'visual' control.
-	 * All valid key-value pair (see e_admin_menu function) are accepted.
+	 * All valid key-value pair (see e107::getNav()->admin function) are accepted.
 	 * @var array
 	 */
 	protected $adminMenu = array();
@@ -1473,7 +1473,7 @@ class e_admin_dispatcher
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
-		return e_admin_menu($this->menuTitle, $selected, $var);
+		return e107::getNav()->admin($this->menuTitle, $selected, $var);
 	}
 }
 

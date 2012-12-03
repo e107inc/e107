@@ -3066,7 +3066,7 @@ class admin_newspost
 			$var['maint']['perm'] = "N";
 		}
 
-		e_admin_menu(NWSLAN_48, $this->getAction(), $var);
+		e107::getNav()->admin(NWSLAN_48, $this->getAction(), $var);
 	}
 */
 

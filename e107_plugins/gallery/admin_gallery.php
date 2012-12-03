@@ -58,7 +58,7 @@ class plugin_gallery_admin extends e_admin_dispatcher
 
 	/**
 	 * Format: 'MODE/ACTION' => array('caption' => 'Menu link title'[, 'url' => '{e_PLUGIN}release/admin_config.php', 'perm' => '0']);
-	 * Additionally, any valid e_admin_menu() key-value pair could be added to the above array
+	 * Additionally, any valid e107::getNav()->admin() key-value pair could be added to the above array
 	 * @var array
 	 */
 	protected $adminMenu = array(

@@ -199,6 +199,7 @@ class e107
 		'rater'					 		 => '{e_HANDLER}rate_class.php',
 		'redirection'					 => '{e_HANDLER}redirection_class.php',
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
+		'e_navigation'					 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
@@ -1429,6 +1430,15 @@ class e107
 	public static function getMedia()
 	{
 		return self::getSingleton('e_media', true);
+	}
+	
+	/**
+	 * Retrieve Navigation Menu handler singleton object
+	 * @return e_media
+	 */
+	public static function getNav()
+	{
+		return self::getSingleton('e_navigation', true);
 	}
 
 	/**

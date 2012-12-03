@@ -1179,7 +1179,7 @@ class cron
 		
 		  $action = ($this->cronAction) ? $this->cronAction : 'main';
 
-		e_admin_menu(PAGE_NAME, $action, $var);
+		e107::getNav()->admin(PAGE_NAME, $action, $var);
 	}
 
 	function cronExecuteMethod($class_name, $method_name, $return = 'boolean')

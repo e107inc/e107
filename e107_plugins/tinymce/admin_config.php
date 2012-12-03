@@ -529,7 +529,7 @@ class tinymce
 		$var['options']['link'] = e_SELF."?options";
 		$var['options']['perm'] = "0";*/
 
-		e_admin_menu($this->pluginTitle, $action, $var);
+		e107::getNav()->admin($this->pluginTitle, $action, $var);
 	}
 }
 

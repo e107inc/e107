@@ -40,7 +40,7 @@ $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 
 
-$text .= getPluginLinks(E_32_PLUGMANAGER, "classis");
+$text .= e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "classis");
 
 
 $text .= render_clean();

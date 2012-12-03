@@ -1078,7 +1078,7 @@ function admin_log_adminmenu()
 		$var['users']['link'] = "users.php";
 	}
 	*/
-	e_admin_menu(RL_LAN_005, $action, $var);
+	e107::getNav()->admin(RL_LAN_005, $action, $var);
 }
 
 require_once (e_ADMIN."footer.php");
