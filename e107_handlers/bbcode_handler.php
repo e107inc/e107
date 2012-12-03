@@ -570,7 +570,7 @@ class e_bbcode
 	//	$text = preg_replace('/<span (?:class="bbcode-color" )?style=\"color: ?(.*?);\">(.*?)<\/span>/i',"[color=$1]$2[/color]",$text);
 		$text = preg_replace('/<span (?:class="bbcode underline bbcode-u)(?:[^>]*)>(.*?)<\/span>/i',"[u]$1[/u]",$text);
 	//	$text = preg_replace('/<table([^"]*)>/i', "[table $1]",$text);
-		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]\n",$text);
+		$text = preg_replace('/<table style="([^"]*)"([\w ="]*)?>/i', "[table style=$1]",$text);
 		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]",$text);
 		$text = preg_replace('/<tbody([\w ="]*)?>/i', "[tbody]",$text);
 		$text = preg_replace('/<code([\w :\-_;="]*)?>/i', "[code]\n",$text);
@@ -578,11 +578,14 @@ class e_bbcode
 		$text = preg_replace('/<em([\w :\-_;="]*)?>/i', "[i]",$text);
 		$text = preg_replace('/<li([\w :\-_;="]*)?>/i', "[*]",$text);
 		$text = preg_replace('/<ul([\w :\-_;="]*)?>/i', "[list]",$text);
+		$text = preg_replace('/<ol([\w :\-_;="]*)?>/i', "[list class='ol']",$text);		
 		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]",$text);
 		$text = preg_replace('/<tbody([\w :\-_;="]*)?>/i', "[tbody]",$text);
 		$text = preg_replace('/<tr([\w :\-_;="]*)?>/i', "[tr]",$text);
 		$text = preg_replace('/<td([\w :\-_;="]*)?>/i', "\t[td]",$text);
 		$text = preg_replace('/<blockquote([\w :\-_;="]*)?>/i', "[blockquote]",$text);
+		$text = preg_replace('/<p([\w :\-_;="]*)?>/i', "[p]",$text);
+		
 		
 		$ehttp = str_replace("/",'\/',e_HTTP);
 		$text = preg_replace('/thumb.php\?src='.$ehttp.'([^&]*)([^\[]*)/i', "$1",$text);
@@ -593,8 +596,12 @@ class e_bbcode
 		$convert = array(		
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
+			array(	"[/p]\n",			"</p>\n"),
+			array(	"[/p]\n",			"</p>"),
 			array(	"[/list]",		'</ul>\n'),
 			array(	"[/list]",		'</ul>'),
+			array(	"[/list]",		'</ol>\n'),
+			array(	"[/list]",		'</ol>'),			
 			array(	"[h=2]",		'<h2 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=2]",		'<h2>'),
 			array(	"[/h]",			'</h2>'),
@@ -636,7 +643,7 @@ class e_bbcode
 		}
 		
 
-		$blank = array('</li>','width:px;height:px;',"</p>","<p>");
+		$blank = array('</li>','width:px;height:px;');
 		$text = str_replace($blank,"",$text); // Cleanup 
 		
 		return str_replace($srch,$repl,$text);	
