@@ -49,7 +49,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 		{
 			if ($funcinfo[4] == $cat_key)
 			{
-				$text_rend = e107::renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], 'classis');
+				$text_rend = e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], 'classis');
 				if ($text_rend)
 				{
 					$text_check = TRUE;
