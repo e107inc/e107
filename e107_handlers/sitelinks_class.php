@@ -620,7 +620,7 @@ class e_navigation
 	// Previously $array_functions variable. 
 	function adminLinks($mode=false)
 	{
-			
+		
 			if($mode=='sub')
 			{
 				
@@ -651,6 +651,7 @@ class e_navigation
 			//TODO find out where is used $array_functions elsewhere, refactor it
 		
 			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
+			
 			$array_functions = array(
 			0 => array(e_ADMIN.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
 			1 => array(e_ADMIN.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	'', 2, E_16_ADPASS, E_32_ADPASS),
@@ -694,8 +695,11 @@ class e_navigation
 			38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 		);	
 		
+		
+			
 		if($mode == 'assoc')
 		{
+			require_once(e_HANDLER.'admin_handler.php');
 			$newarray = asortbyindex($array_functions, 1);
 			$array_functions_assoc = $this->convert_core_icons($newarray);
 			return $array_functions_assoc;
@@ -729,7 +733,7 @@ class e_navigation
 	// - common to the various admin layouts such as infopanel, classis etc. 
 	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
-		
+	
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
@@ -745,7 +749,7 @@ class e_navigation
 		
 		$pref = e107::getConfig('core')->getPref();
 		
-		$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
+		$text = $this->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
 	
 		$plugs = e107::getObject('e107plugin');
 		
