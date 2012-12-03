@@ -1776,14 +1776,17 @@ TEMPLATE;
 					<td>".$frm->text($this->table."[fields][".$name."][title]", $this->guess($name, $val,'title'),35, 'required=1')."</td>
 					<td>".$this->fieldType($name, $val)."</td>
 					<td>".$this->fieldData($name, $val)."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][width]",'auto',4)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][width]", $this->guess($name, $val,'width'), 4)."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][batch]", true, $this->guess($name, $val,'batch'))."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][filter]", true, $this->guess($name, $val,'filter'))."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][validate]", true)."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][fieldpref]", true, $this->guess($name, $val,'fieldpref'))."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50)."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 35)."</td>
-					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 35)."</td>
+					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 35).
+					$frm->hidden($this->table."[fields][".$name."][class]", $this->guess($name, $val,'class')).
+					$frm->hidden($this->table."[fields][".$name."][thclass]", $this->guess($name, $val,'thclass')).
+					"</td>
 					</tr>";
 			
 			}
@@ -1888,6 +1891,10 @@ TEMPLATE;
 			}
 	
 			$ret['title'] = ucfirst($name);
+			$ret['width'] = 'auto';
+			$ret['class'] = 'left';
+			$ret['thclass'] = 'left';
+			
 			//echo "<br />name=".$name; 
 			switch ($name) 
 			{
@@ -1904,7 +1911,7 @@ TEMPLATE;
 				case 'datestamp':
 					$ret['title'] = 'LAN_DATESTAMP';
 					$ret['type'] = 'datestamp';
-					$ret['batch'] = true;
+					$ret['batch'] = false;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
 				break;
@@ -1989,12 +1996,16 @@ TEMPLATE;
 				case 'description':
 					$ret['title'] = 'LAN_DESCRIPTION';
 					 $ret['type'] = ($val['type'] == 'TEXT') ? 'textarea' : 'text';
+					 $ret['width'] = '40%';
 				break;
 				
 				default:
 					$ret['type'] = 'boolean';
+					$ret['class'] = 'center';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['thclass'] = 'center';
+					$ret['width'] = '5%';
 					break;
 			}
 			
