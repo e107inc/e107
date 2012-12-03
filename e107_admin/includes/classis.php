@@ -23,7 +23,7 @@ $buts = "";
 
 while (list($key, $funcinfo) = each($newarray))
 {
-	$buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
+	$buts .= e107::renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
 }
 if($buts != "")
 {

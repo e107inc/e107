@@ -161,9 +161,14 @@ if(!defined("ADLINK_COLS"))
 	define("ADLINK_COLS",5);
 }
 
-
+// DEPRECATED 
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
 {
+	
+	return e107::getNav()->renderAdminButton($link, $title, $description, $perms, $icon, $mode);
+	
+
+	/*
 	global $td,$tp;
 	$text = '';
 	if (getperms($perms))
@@ -230,6 +235,8 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 		}
 	}
 	return $text;
+	
+	 */
 }
 
 
@@ -248,30 +255,7 @@ function render_clean()
 }
 
 
-$newarray = asortbyindex($array_functions, 1);
-$array_functions_assoc = convert_core_icons($newarray);
 
-
-
-function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
-{
-    foreach($newarray as $key=>$val)
-	{
-		if(varset($val[0]))
-		{
-			$key = "e-".basename($val[0],".php");
-			$val['icon'] = $val[5];
-			$val['icon_32'] = $val[6];
-			$val['title'] = $val[1];
-			$val['link'] = $val[0];
-			$val['caption'] = $val['2'];
-			$val['perms'] = $val['3'];
-			$array_functions_assoc[$key] = $val;
-		}
-	}
-
-    return $array_functions_assoc;
-}
 
 
 
