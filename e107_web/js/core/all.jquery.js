@@ -212,7 +212,14 @@ $(document).ready(function()
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);
 
-
+		$('e-clone').click(function(){
+		
+		
+			var copy = $(this).attr('id');
+		
+			duplicateHTML(copy,paste,baseid);
+				
+		});
 		
 /*
 		$("a.e-bb").click(function(){
