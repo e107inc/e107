@@ -88,7 +88,7 @@ class e_form
 	 * Open a new form
 	 * @param string name
 	 * @param $method - post|get  default is post
-	 * @param @target - e_SELF by default
+	 * @param @target - e_REQUEST_URI by default
 
 	 * @param $other - unused at the moment. 
 	 */
@@ -96,7 +96,7 @@ class e_form
 	{
 		if($target == null)
 		{
-			$target = e_SELF . (e_QUERY ? "?".e_QUERY : "");	
+			$target = e_REQUEST_URI;	
 		}
 		
 		if($method == null)
@@ -175,10 +175,9 @@ class e_form
 	 * @param $maxlength
 	 * @param $options
 	 */
-	function text($name, $value, $maxlength = 80, $options= null)
+	function text($name, $value, $maxlength = 80, $options= array())
 	{
-
-		if(vartrue($options) && is_string($options))
+		if(is_string($options))
 		{
 			parse_str($options,$options);
 		}
@@ -187,20 +186,23 @@ class e_form
 		{
 			if($maxlength < 10)
 			{
-				$options['class'] = 'tbox span3';
+				$options['class'] = 'tbox input-text span3';
 			}
 			
-			if($maxlength < 50)
+			elseif($maxlength < 50)
 			{
-				$options['class'] = 'tbox span7';	
+				$options['class'] = 'tbox input-text span7';	
 			}
 		
-			if($maxlength > 99)
+			elseif($maxlength > 99)
 			{
-				 $options['class'] = 'tbox span7';
+				 $options['class'] = 'tbox input-text span7';
+			}
+			else
+			{
+				$options['class'] = 'tbox input-text';
 			}
 		}	
-		
 
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
@@ -217,8 +219,6 @@ class e_form
 		if(!$value) $value = '0';
 		return $this->text($key, $value, $maxlength, $parms);	
 	}
-	
-	
 	
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
