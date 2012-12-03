@@ -617,11 +617,11 @@ class e_navigation
 		
 	}
 	
-	
-	function adminLinks($sub=false)
+	// Previously $array_functions variable. 
+	function adminLinks($mode=false)
 	{
 			
-			if($sub==true)
+			if($mode=='sub')
 			{
 				
 				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
@@ -694,19 +694,45 @@ class e_navigation
 			38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 		);	
 		
+		if($mode == 'assoc')
+		{
+			$newarray = asortbyindex($array_functions, 1);
+			$array_functions_assoc = $this->convert_core_icons($newarray);
+			return $array_functions_assoc;
+		}
 		
 		return $array_functions;	
 	}
 
 
-
+	function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
+	{
+	    foreach($newarray as $key=>$val)
+		{
+			if(varset($val[0]))
+			{
+				$key = "e-".basename($val[0],".php");
+				$val['icon'] = $val[5];
+				$val['icon_32'] = $val[6];
+				$val['title'] = $val[1];
+				$val['link'] = $val[0];
+				$val['caption'] = $val['2'];
+				$val['perms'] = $val['3'];
+				$array_functions_assoc[$key] = $val;
+			}
+		}
+	
+	    return $array_functions_assoc;
+	}
 		
 	// Function renders all the plugin links according to the required icon size and layout style
 	// - common to the various admin layouts such as infopanel, classis etc. 
 	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
-	
-		global $sql, $tp;
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		
 		$plug_id = array();
 		$plugin_array = array();
@@ -1041,6 +1067,96 @@ class e_navigation
 		return '';
 	}
 			
+
+
+
+	// Previously admin.php -> render_links();
+	function renderAdminButton($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
+	{
+		global $td,$tp;
+		$tp = e107::getParser();
+		
+	
+		
+		$text = '';
+		if (getperms($perms))
+		{
+			$description = strip_tags($description);
+			if ($mode == 'adminb')
+			{
+				$text = "<tr><td class='forumheader3'>
+					<div class='td' style='text-align:left; vertical-align:top; width:100%'
+					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
+					".$icon." <b>".$title."</b> ".($description ? "[ <span class='field-help'>".$description."</span> ]" : "")."</div></td></tr>";
+			}
+			else
+			{
+	
+				if($mode != "div" && $mode != 'div-icon-only')
+				{
+					if ($td == (ADLINK_COLS+1))
+					{
+						$text .= '</tr>';
+						$td = 1;
+					}
+					if ($td == 1)
+					{
+						$text .= '<tr>';
+					}
+				}
+				
+				
+				switch ($mode) 
+				{
+					case 'default':
+						$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
+						onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
+					break;
+					
+					case 'classis':
+						$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
+						<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";			
+					break;
+						
+					case 'beginner':
+						 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a class='core-mainpanel-link-icon' href='".$link."' >".$icon."</a>
+						<div style='padding:5px'>
+						<a class='core-mainpanel-link-text' href='".$link."' title='".$description."'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";		
+					break;
+						
+					case 'div':
+						$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a><br />
+						<a class='core-mainpanel-link-text e-tip' href='".$link."' title='{$description}'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a>
+						</div>";					
+					break;
+					
+					case 'div-icon-only':
+						$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a></div>";					
+					break;
+					
+					default:
+						
+						break;
+				}
+				
+				$td++;
+			}
+		}
+else
+{
+	echo "no Perms";
+}
+	
+		return $text;
+	}
+
+
+
+
+
+
+
+
 	
 	
 	function frontend() //TODO equivalent for front-end sitelinks etc. 

@@ -43,6 +43,8 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	{
 		$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
 	}
+	
+	$array_functions_assoc = e107::getNav()->adminLinks('assoc');
 
 	$iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
 
@@ -62,7 +64,7 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		{
 			if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
-				$mainPanel .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div-icon-only");
+				$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div-icon-only");
 			}
 		}
 

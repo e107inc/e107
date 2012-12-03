@@ -24,7 +24,7 @@ $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 
 while (list($key, $funcinfo) = each($newarray)) {
-	$buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
+	$buts .= e107::renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
 $text .= $buts;
 

@@ -36,7 +36,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 		{
 			if ($funcinfo[4] == $cat_key)
 			{
-				$text_rend = render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
+				$text_rend = e107::renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 				if ($text_rend)
 				{
 					$text_check = TRUE;
@@ -47,7 +47,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	}
 	else
 	{
-		$text_rend = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
+		$text_rend = e107::renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
 
 		$xml = e107::getXml();
 		$xml->filter = array('@attributes' => FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
@@ -94,7 +94,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 		ksort($plugin_array, SORT_STRING);
 		foreach ($plugin_array as $plug_key => $plug_value)
 		{
-			$text_cat .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], 'default');
+			$text_cat .= e107::renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], 'default');
 		}
 	}
 	$text_cat .= render_clean();

@@ -35,7 +35,7 @@ if($_GET['mode'] == "e_advanced"){
  	// $selection = array(21,11,17,24,5,19,7,27,28,25);
 	foreach($selection as $id)
 	{
-		$buts .= render_links($newarray[$id][0],$newarray[$id][1],$newarray[$id][2],$newarray[$id][3],$newarray[$id][6],'beginner');
+		$buts .= e107::renderAdminButton($newarray[$id][0],$newarray[$id][1],$newarray[$id][2],$newarray[$id][3],$newarray[$id][6],'beginner');
 	}
 
 	$text .= $buts;
