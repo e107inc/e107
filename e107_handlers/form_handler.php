@@ -834,7 +834,7 @@ class e_form
 			default:
 				$rows = '15';
 				$size = 'large';
-				$height = "style='height:500px'"; // inline required for wysiwyg
+				$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
 			break;
 		}
 
