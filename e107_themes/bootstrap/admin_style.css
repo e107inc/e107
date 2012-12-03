@@ -43,6 +43,7 @@ td.center, th.center 		{ text-align:center }
 #cboxTitle					{ font-weight:bold; color: black }
 .chzn-container				{ border: 1px solid #ddd; }
 
+
 div.nextprev				{ text-align: center; display:inline-block; width:100% }
 
 
@@ -107,7 +108,12 @@ input.delete 				{ }
 
 .buttons-bar 				{ padding: 10px 0px;  }
 
- i.icon-chevron-right 		{ float:right; opacity: 0.3 }
+i.icon-chevron-right 		{ float:right; opacity: 0.3 }
+ 
+i.icon-fast-backward,
+i.icon-fast-forward,
+i.icon-backward,
+i.icon-forward				{ opacity: 0.8 }
 
 a.link-active i 			{ opacity: 1.0; }
 

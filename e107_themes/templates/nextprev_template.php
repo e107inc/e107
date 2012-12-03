@@ -38,7 +38,7 @@ $NEXTPREV_TEMPLATE['default_items_end'] = '';
 $NEXTPREV_TEMPLATE['default_separator'] = '&nbsp;';
 
 
-// ##########################  ADMIN TEMPLATE see admin-ui. 
+// ADMIN TEMPLATE see admin-ui. 
 
 
 $NEXTPREV_TEMPLATE['admin_start'] = '
@@ -54,13 +54,13 @@ $NEXTPREV_TEMPLATE['admin_end'] = '
 //$NEXTPREV_TEMPLATE['admin_nav_caption'] = '<span class="nexprev-caption center">{caption}</span>&nbsp;'; XXX - awaiting the new front-end themes & templates
 $NEXTPREV_TEMPLATE['admin_nav_caption'] = ''; // NP_3.'&nbsp;';
 
-$NEXTPREV_TEMPLATE['admin_nav_first'] = '<a class="btn nextprev-item first" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['admin_nav_prev'] = '<a class="btn nextprev-item prev" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['admin_nav_last'] = '<a class="btn nextprev-item last" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['admin_nav_next'] = '<a class="btn nextprev-item next" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['admin_nav_first'] = '<a class="btn nextprev-item first e-tip" href="{url}" title="{url_label}"><i class="icon-fast-backward"></i></a>'; 
+$NEXTPREV_TEMPLATE['admin_nav_prev'] = '<a class="btn nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="icon-backward"></i></a>'; 
+$NEXTPREV_TEMPLATE['admin_nav_last'] = '<a class="btn nextprev-item last e-tip" href="{url}" title="{url_label}"><i class="icon-fast-forward"></i></a>';
+$NEXTPREV_TEMPLATE['admin_nav_next'] = '<a class="btn nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="icon-forward"></i></a>';
 
 $NEXTPREV_TEMPLATE['admin_items_start'] = '';
-$NEXTPREV_TEMPLATE['admin_item'] = '<a class="btn nextprev-item" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['admin_item'] = '<a class="btn nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a>';
 $NEXTPREV_TEMPLATE['admin_item_current'] = '<a class="btn nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
 $NEXTPREV_TEMPLATE['admin_items_end'] = '';
 
