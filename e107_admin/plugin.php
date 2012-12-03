@@ -233,7 +233,7 @@ class pluginManager{
 
 		if($this->action == 'create')
 		{
-			$pc = new pluginCreator;
+			$pc = new pluginBuilder;
 			return;
 				
 		}
@@ -1298,7 +1298,7 @@ function plugin_adminmenu()
 /**
  * Plugin Admin Generator by CaMer0n. //TODO Incorporate plugin.xml generation
  */
-class pluginCreator
+class pluginBuilder
 {
 	
 		var $fields = array();
@@ -1311,10 +1311,19 @@ class pluginCreator
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
+			if($_GET['newplugin'])
+			{
+				$this->pluginName = $_GET['newplugin'];
+			}
+				
 			
 			if(vartrue($_POST['step']) == 3)
 			{
-				return $this->step3();	
+		
+				$this->step3();	
+				
+				
+				return;
 			}
 			
 			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
@@ -1357,13 +1366,59 @@ class pluginCreator
 			");
 			
 			$text = $frm->open('createPlugin','get');
-			$text .= $frm->selectbox("newplugin",$newDir);
-			$text .= $frm->admin_button('step', 2,'other','Go');
+			$text .= "<table class='table adminform'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+				<tr>
+					<td>Select your plugin's folder</td>
+					<td>".$frm->selectbox("newplugin",$newDir)."</td>
+				</tr>
+				";
+			
+			/* NOT a good idea - requires the use of $_POST which would prevent browser 'go Back' navigation. 
+			if(e_DOMAIN == FALSE) // localhost. 
+			{
+				$text .= "<tr>
+					<td>Pasted MySql Dump Here</td>
+					<td>".$frm->textarea('mysql','', 10,80)."
+					<span class='field-help'>eg. </span></td>
+					</tr>";			
+			}
+			*/
+					
+				
+			$text .= "				
+				</table>
+				<div class='buttons-bar center'>
+				".$frm->admin_button('step', 2,'other','Go')."
+				</div>";
+		
+			
+			
+			
+			
+			
+			
+			
+			
 			$text .= $frm->close();
 			
 			$ns->tablerender("Plugin Builder", $mes->render() . $text);			
 			
 		}
+
+
+		function enterMysql()
+		{
+			
+			$frm = e107::getForm();
+			return "<div>".$frm->textarea('mysql','', 10,80)."</div>";	
+			
+		}
+
+
 
 
 		function step2()
@@ -1379,11 +1434,19 @@ class pluginCreator
 			$newplug = $_GET['newplugin'];
 			$this->pluginName = $newplug;
 			
+		
+			
+		//	$data = e107::getXml()->loadXMLfile(e_PLUGIN.'links_page/plugin.xml', 'advanced');
+		//	print_a($data);
+		//	echo "<pre>".var_export($data,true)."</pre>";
+			
+			
+			
 			$data = file_get_contents(e_PLUGIN.$newplug."/".$newplug."_sql.php");
 			$ret =  $dv->getTables($data);
 		
 		
-			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&step=3');
+			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&step=3');
 			$text .= "<div class='admintabs' id='tab-container'>\n";
 			$text .= "<ul class='e-tabs' id='core-emote-tabs'>\n";
 			
@@ -1445,11 +1508,214 @@ class pluginCreator
 
 		function pluginXml()
 		{
+			
+			
 			//TODO Plugin.xml Form Fields. . 
-			return "Coming Soon";				
+			
+			$data = array(
+				'main' 			=> array('name','lang','version','date', 'compatibility','installRequired'),
+				'author' 		=> array('name','url'),
+				'description' 	=> array('description'),
+				'category'		=> array('category'),
+				'copyright'		=> array('copyright'),
+		//		'languageFile'	=> array('type','path'),
+		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
+		//		'sitelinks'		=> array('url','description','icon','iconSmall')
+			);
+			
+			$text = "<table class='table adminlist'>";
+					
+			foreach($data as $key=>$val)
+			{
+				$text.= "<tr><td>$key</td><td>
+				<div class='controls'>";
+				foreach($val as $type)
+				{
+					$nm = $key.'-'.$type;
+					$name = "xml[$nm]";	
+					$size = (count($val)==1) ? 'span7' : 'span2';
+					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type)."</div>";	
+				}	
+			
+				$text .= "</div></td></tr>";
+				
+				
+			}
+			$text .= "</table>";
+			
+			return $text;				
+		}
+		
+		
+		function xmlInput($name, $info)
+		{
+			$frm = e107::getForm();	
+			list($cat,$type) = explode("-",$info);
+			
+			$size 		= 30;
+			$default 	= '';
+			$help		= '';
+			
+			switch ($info)
+			{
+				
+				case 'main-name':
+					$help 		= "The name of your plugin. (Must be written in English)";
+					$required 	= true;
+				break;
+		
+				case 'main-lang':
+					$help 		= "If you have a language file, enter the LAN_XXX value for the plugin's name";
+					$required 	= false;
+				break;
+				
+				case 'main-date':
+					$help 		= "Creation date of your plugin";
+					$required 	= true;
+				break;
+				
+				case 'main-version':
+					$default 	= '1.0';
+					$required 	= true;
+					$help 		= "The version of your plugin";
+				break;
+
+				case 'main-compatibility':
+					$default 	= '2.0';
+					$required 	= true;
+					$help 		= "Compatible with this version of e107";
+				break;
+				
+				case 'author-name':
+					$default 	= USERNAME;
+					$required 	= true;
+					$help 		= "Author Name";
+				break;
+				
+				case 'author-url':
+					$default 	= '';
+					$required 	= true;
+					$help 		= "Author Website Url";
+				break;
+				
+				case 'main-installRequired':
+					return "Installation required: ".$frm->radio_switch($name,'',LAN_YES, LAN_NO);
+				break;		
+				
+				case 'description-description':
+					$help 		= "A short description of the plugin<br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 100;
+				break;
+				
+					
+				case 'category-category':
+					$help 		= "What category of plugin is this?";
+					$required 	= true;
+					$size 		= 20;
+				break;
+						
+				default:
+					
+				break;
+			}
+
+			$req = ($required == true) ? "&required=1" : "";	
+			
+			if($type == 'date')
+			{
+				$text = $frm->datepicker($name,time(),'dateformat=yy-mm-dd'.$req);	
+			}
+			elseif($type == 'category')
+			{
+				$options = array(
+					'settings'	=> 'settings',
+					'users'		=> 'users', 
+					'content'	=> 'content',
+					'tools'		=> 'tools',
+					'manage'	=> 'manage',
+					'misc'		=> 'misc',
+					'menu'		=> 'menu',
+					'about'		=> 'about'
+				);
+				
+				$text = $frm->selectbox($name, $options,'','required=1', true);	
+			}
+			else 
+			{
+				$text = $frm->text($name, $default, $size, 'placeholder='.$type.$req);	
+			}
+			
+			$text .= ($help) ? "<span class='field-help'>".$help."</span>" : "";
+			return $text;
+			
 		}
 
+		function processXml($data)
+		{
+			
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+			foreach($data as $key=>$val)
+			{
+				$key = strtoupper(str_replace("-","_",$key));
+				$newArray[$key] = $val;	
+				
+			}
+			
+			//	print_a($newArray);
+			// print_a($this);
+			
+$template = <<<TEMPLATE
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="{MAIN_NAME}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" installRequired="{MAIN_INSTALLREQUIRED}" >
+	<author name="{AUTHOR_NAME}" url="{AUTHOR_URL}" />
+	<description lang="">{DESCRIPTION_DESCRIPTION}</description>
+	<category>{CATEGORY_CATEGORY}</category>
+	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
+	<adminLinks>
+		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
+	</adminLinks>
+</e107Plugin>
+TEMPLATE;
 
+/*
+	<siteLinks>
+		<link url="{e_PLUGIN}_blank/_blank.php" perm="everyone">Blank</link>		
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="blank_pref_1">1</pref>
+		<pref name="blank_pref_2">[more...]</pref>
+	</pluginPrefs>
+	<userClasses>
+		<class name="blank_userclass" description="Blank Userclass Description" />		
+	</userClasses>
+	<extendedFields>
+		<field name="custom" type="EUF_TEXTAREA" default="0" active="true" />
+	</extendedFields>	
+*/
+
+
+			$result = e107::getParser()->simpleParse($template, $newArray);
+			$path = e_PLUGIN.$this->pluginName."/plugin.xml";
+			
+			if(file_put_contents($path,$result))
+			{
+				$mes->addSuccess("Saved: ".$path);
+			}
+			else {
+				$mes->addError("Couldn't Save: ".$path);
+			}
+			
+			return  htmlentities($result);
+			
+		//	$ns->tablerender(LAN_CREATED.": plugin.xml", "<pre  style='font-size:80%'>".htmlentities($result)."</pre>");	
+		}
+						
+					
+				
+			
 
 
 		function form($table,$fieldArray)
@@ -1594,6 +1860,7 @@ class pluginCreator
 					'bbarea'	=> "Rich-Text Area",
 					'text'		=> "Text Box",
 					"method"	=> "Custom Function",
+					"image"		=> "Image",
 					"hidden"	=> "Hidden"
 					);
 				break;
@@ -1632,6 +1899,8 @@ class pluginCreator
 					$ret['filter'] = false;
 				break;
 				
+				case 'start':
+				case 'end':
 				case 'datestamp':
 					$ret['title'] = 'LAN_DATESTAMP';
 					$ret['type'] = 'datestamp';
@@ -1643,6 +1912,7 @@ class pluginCreator
 				case 'name':
 				case 'title':
 				case 'subject':
+				case 'summary':
 					$ret['title'] = 'LAN_TITLE';
 					$ret['type'] = 'text';
 					$ret['batch'] = false;
@@ -1657,6 +1927,8 @@ class pluginCreator
 					$ret['filter'] = false;
 				break;
 				
+				case 'thumb':
+				case 'thumbnail':
 				case 'image':
 					$ret['title'] = 'LAN_IMAGE';
 					$ret['type'] = 'image';
@@ -1664,6 +1936,7 @@ class pluginCreator
 					$ret['filter'] = false;
 				break;
 
+				case 'total':
 				case 'order':
 					$ret['title'] = 'LAN_ORDER';
 					$ret['type'] = 'number';
@@ -1677,7 +1950,14 @@ class pluginCreator
 					$ret['batch'] = true;
 					$ret['filter'] = true;
 					$ret['fieldpref'] = true;
-					
+				break;
+				
+				case 'type':
+					$ret['title'] = 'LAN_TYPE';
+					$ret['type'] = 'dropdown';
+					$ret['batch'] = true;
+					$ret['filter'] = true;
+					$ret['fieldpref'] = true;
 				break;
 								
 				case 'icon':
@@ -1754,7 +2034,16 @@ class pluginCreator
 		function step3()
 		{
 			
-			unset($_POST['step']);
+			if($_POST['xml'])
+			{
+				$xmlText =	$this->processXml($_POST['xml']);
+			}
+					
+			
+			
+			
+			
+			unset($_POST['step'],$_POST['xml']);
 	
 
 $text .= "\n
@@ -1994,9 +2283,13 @@ exit;
 			{
 				$mes->addError("Could not write to ".$generatedFile);
 			}
-				
 			
-			$ns->tablerender("Generated",$mes->render()."<pre style='font-size:80%'>".$text."</pre>");
+			echo $mes->render();
+			
+			$ns->tablerender(LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
+	
+			
+			$ns->tablerender(LAN_CREATED.": admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
 			
 		//	
 			return;
