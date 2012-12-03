@@ -148,7 +148,7 @@ function theme_adminmenu()
         $selected = (e_QUERY) ? e_QUERY : "main";
 
 
-		e_admin_menu(TPVLAN_26, $selected, $var);
+		e107::getNav()->admin(TPVLAN_26, $selected, $var);
 }
 
 

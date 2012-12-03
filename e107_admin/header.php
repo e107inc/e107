@@ -416,7 +416,7 @@ if ($e107_popup != 1)
 	//$ns = new e107table;
 	//$e107_var = array();
 	
-	// function e_admin_menu moved to boot.php
+	// function e_admin_me/nu moved to boot.php (e107::getNav()->admin)
 	// legacy function show_admin_menu moved to boot.php
 	// include admin_template.php moved to boot.php
 	// function parse_admin moved to boot.php

@@ -541,5 +541,518 @@ class sitelinks
 	   	return FALSE;
 	}
 }
+
+
+/**
+ * Class for handling all navigation links site-wide. ie. admin links, admin-menu links, admin-plugin links, front-end sitelinks etc. 
+ */
+class e_navigation
+{
+	
+	//FIXME array structure - see $this->admin();
+	function adminCats()
+	{
+		$pref = e107::getPref();
+		
+		$admin_cat = array();
+		
+		$admin_cat['title'][1] = ADLAN_CL_1;
+		$admin_cat['id'][1] = 'setMenu';
+		$admin_cat['img'][1] = E_16_CAT_SETT;
+		$admin_cat['lrg_img'][1] = E_32_CAT_SETT;
+		$admin_cat['sort'][1] = true;
+		
+		$admin_cat['title'][2] = ADLAN_CL_2;
+		$admin_cat['id'][2] = 'userMenu';
+		$admin_cat['img'][2] = E_16_CAT_USER;
+		$admin_cat['lrg_img'][2] = E_32_CAT_USER;
+		$admin_cat['sort'][2] = true;
+		
+		$admin_cat['title'][3] = ADLAN_CL_3;
+		$admin_cat['id'][3] = 'contMenu';
+		$admin_cat['img'][3] = E_16_CAT_CONT;
+		$admin_cat['lrg_img'][3] = E_32_CAT_CONT;
+		$admin_cat['sort'][3] = true;
+		
+		$admin_cat['title'][4] = ADLAN_CL_6;
+		$admin_cat['id'][4] = 'toolMenu';
+		$admin_cat['img'][4] = E_16_CAT_TOOL;
+		$admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
+		$admin_cat['sort'][4] = true;
+		
+		// Manage
+		$admin_cat['title'][5] = LAN_MANAGE;
+		$admin_cat['id'][5] = 'managMenu';
+		$admin_cat['img'][5] = E_16_CAT_MANAGE;
+		$admin_cat['lrg_img'][5] = E_32_CAT_MANAGE;
+		$admin_cat['sort'][5] = TRUE;
+		
+		if(vartrue($pref['admin_separate_plugins']))
+		{
+			$admin_cat['title'][6] = ADLAN_CL_7;
+			$admin_cat['id'][6] = 'plugMenu';
+			$admin_cat['img'][6] = E_16_CAT_PLUG;
+			$admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
+			$admin_cat['sort'][6] = false;	
+		}
+		else
+		{
+			// Misc.
+			$admin_cat['title'][6] = ADLAN_CL_8;
+			$admin_cat['id'][6] = 'miscMenu';
+			$admin_cat['img'][6] = E_16_CAT_MISC;
+			$admin_cat['lrg_img'][6] = E_32_CAT_MISC;
+			$admin_cat['sort'][6] = TRUE;
+		}
+		
+		//About menu    - No 20 -  leave space for user-categories.
+		$admin_cat['title'][20] = ADLAN_CL_20;
+		$admin_cat['id'][20] = 'aboutMenu';
+		$admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
+		$admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
+		$admin_cat['sort'][20] = false;	
+				
+		
+		return $admin_cat;
+		
+	}
+	
+	
+	function adminLinks($sub=false)
+	{
+			
+			if($sub==true)
+			{
+				
+				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
+				/*
+				 * Info about sublinks array structure
+				 *
+				 * key = $array_functions key
+				 * attribute 1 = link
+				 * attribute 2 = title
+				 * attribute 3 = description
+				 * attribute 4 = perms
+				 * attribute 5 = category
+				 * attribute 6 = 16 x 16 image
+				 * attribute 7 = 32 x 32 image
+				 *
+				 */
+				$array_sub_functions = array();
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, E_16_MANAGE, E_32_MANAGE);
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, ADLAN_4, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
+				
+				return $array_sub_functions;
+			}
+		
+		
+			//FIXME array structure suitable for e_admin_menu (NOW admin() below) - see shortcodes/admin_navigation.php
+			//TODO find out where is used $array_functions elsewhere, refactor it
+		
+			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
+			$array_functions = array(
+			0 => array(e_ADMIN.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
+			1 => array(e_ADMIN.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	'', 2, E_16_ADPASS, E_32_ADPASS),
+			2 => array(e_ADMIN.'banlist.php', 		ADLAN_34,	ADLAN_35,	'4', 2, E_16_BANLIST, E_32_BANLIST),
+			4 => array(e_ADMIN.'cache.php', 		ADLAN_74,	ADLAN_75,	'C', 1, E_16_CACHE, E_32_CACHE),
+			5 => array(e_ADMIN.'cpage.php', 		ADLAN_42,	ADLAN_43,	'5|J', 3, E_16_CUST, E_32_CUST),
+			6 => array(e_ADMIN.'db.php', 			ADLAN_44,	ADLAN_45,	'0', 4, E_16_DATAB, E_32_DATAB),
+		//	7 => array(e_ADMIN.'download.php', ADLAN_24, ADLAN_25, 'R', 3, E_16_DOWNL, E_32_DOWNL),
+			8 => array(e_ADMIN.'emoticon.php', 		ADLAN_58,	ADLAN_59,	'F', 1, E_16_EMOTE, E_32_EMOTE),
+		//	9 => array(e_ADMIN.'filemanager.php', 	ADLAN_30,	ADLAN_31,	'6', 5, E_16_FILE, E_32_FILE), // replaced by media-manager
+			10 => array(e_ADMIN.'frontpage.php', 	ADLAN_60,	ADLAN_61,	'G', 1, E_16_FRONT, E_32_FRONT),
+			11 => array(e_ADMIN.'image.php', 		LAN_MEDIAMANAGER, LAN_MEDIAMANAGER, 'A', 5, E_16_IMAGES, E_32_IMAGES),
+			12 => array(e_ADMIN.'links.php', 		ADLAN_138,	ADLAN_139,	'I', 1, E_16_LINKS, E_32_LINKS),
+			13 => array(e_ADMIN.'wmessage.php', 	ADLAN_28,	ADLAN_29,	'M', 3, E_16_WELCOME, E_32_WELCOME),
+			14 => array(e_ADMIN.'ugflag.php', 		ADLAN_40,	ADLAN_41,	'9', 4, E_16_MAINTAIN, E_32_MAINTAIN),
+			15 => array(e_ADMIN.'menus.php', 		ADLAN_6,	ADLAN_7,	'2', 5, E_16_MENUS, E_32_MENUS),
+			16 => array(e_ADMIN.'meta.php', 		ADLAN_66,	ADLAN_67,	'T', 1, E_16_META, E_32_META),
+			17 => array(e_ADMIN.'newspost.php', 	ADLAN_0,	ADLAN_1,	'H|N|7', 3, E_16_NEWS, E_32_NEWS),
+			18 => array(e_ADMIN.'phpinfo.php', 		ADLAN_68, 	ADLAN_69,	'0', 20, E_16_PHP, E_32_PHP),
+			19 => array(e_ADMIN.'prefs.php', 		ADLAN_4, 	ADLAN_5,	'1', 1, E_16_PREFS, E_32_PREFS),
+			20 => array(e_ADMIN.'search.php', 		ADLAN_142,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
+			21 => array(e_ADMIN.'admin_log.php', 	ADLAN_155,	ADLAN_156,	'S', 4, E_16_ADMINLOG, E_32_ADMINLOG),
+			22 => array(e_ADMIN.'theme.php', 		ADLAN_140,	ADLAN_141,	'1', 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+		//	23 => array(e_ADMIN.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),
+			24 => array(e_ADMIN.'users.php', 		ADLAN_36,	ADLAN_37,	'4|U0|U1|U2|U3', 2, E_16_USER, E_32_USER),
+			25 => array(e_ADMIN.'userclass2.php', 	ADLAN_38,	ADLAN_39,	'4', 2, E_16_USERCLASS, E_32_USERCLASS),
+			26 => array(e_ADMIN.'language.php', 	ADLAN_132,	ADLAN_133,	'0', 1, E_16_LANGUAGE, E_32_LANGUAGE),
+			27 => array(e_ADMIN.'mailout.php', 		ADLAN_136,	ADLAN_137,	'W', 2, E_16_MAIL, E_32_MAIL),
+			28 => array(e_ADMIN.'users_extended.php', ADLAN_78, ADLAN_79,	'4', 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
+			29 => array(e_ADMIN.'fileinspector.php', ADLAN_147, ADLAN_148,	'Y', 4, E_16_INSPECT, E_32_INSPECT),
+			30 => array(e_ADMIN.'notify.php', 		ADLAN_149,	ADLAN_150,	'O', 4, E_16_NOTIFY, E_32_NOTIFY),
+			31 => array(e_ADMIN.'cron.php', 		ADLAN_157,	ADLAN_158,	'U', 4, E_16_CRON, E_32_CRON),
+		
+			32 => array(e_ADMIN.'eurl.php', 		ADLAN_159,	ADLAN_160,	'L', 1, E_16_EURL, E_32_EURL),
+			33 => array(e_ADMIN.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
+			34 => array(e_ADMIN.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
+		// TODO System Info.
+		//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
+			36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_CREDITS, E_32_CREDITS),
+		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
+			38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
+		);	
+		
+		
+		return $array_functions;	
+	}
+
+
+
+		
+	// Function renders all the plugin links according to the required icon size and layout style
+	// - common to the various admin layouts such as infopanel, classis etc. 
+	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	{
+	
+		global $sql, $tp;
+		
+		$plug_id = array();
+		$plugin_array = array();
+		e107::getDb()->db_Select("plugin", "*", "plugin_installflag = 1"); // Grab plugin IDs. 
+		while ($row = e107::getDb()->db_Fetch())
+		{
+			$pth = $row['plugin_path'];
+			$plug_id[$pth] = $row['plugin_id'];
+		}
+		
+		$pref = e107::getConfig('core')->getPref();
+		
+		$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
+	
+		$plugs = e107::getObject('e107plugin');
+		
+	
+		foreach($pref['plug_installed'] as $plug=>$vers)
+		{
+	
+			$plugs->parse_plugin($plug);
+			
+	
+			$plugin_path = $plug;
+			$name = $plugs->plug_vars['@attributes']['name'];
+			
+	/*		echo "<h1>".$name." ($plug)</h1>";
+			print_a($plugs->plug_vars);*/
+	
+			foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
+			{
+				if(varset($tag['@attributes']['primary']) !='true')
+				{
+					continue;
+				}
+				loadLanFiles($plugin_path, 'admin');
+				
+				$att = $tag['@attributes'];
+	
+		
+				$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
+				$eplug_conffile 	= $att['url'];
+				$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
+				$eplug_icon 		= $plugin_path.'/'.$att['icon'];
+				$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+				
+				if (varset($eplug_conffile))
+				{
+					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
+					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+					$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
+					$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plug_id[$plugin_path], 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+				}
+			}
+		}	
+	
+		
+	//	print_a($plugs->plug_vars['adminLinks']['link']);
+		
+		
+	
+	
+		/*	echo "hello there";
+		
+		 	$xml = e107::getXml();
+			$xml->filter = array('@attributes' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
+		
+			if ($sql->db_Select("plugin", "*", "plugin_installflag=1"))
+			{
+				while ($row = $sql->db_Fetch())
+				{
+					extract($row);		//  plugin_id int(10) unsigned NOT NULL auto_increment,
+										//	plugin_name varchar(100) NOT NULL default '',
+										//	plugin_version varchar(10) NOT NULL default '',
+										//	plugin_path varchar(100) NOT NULL default '',
+										//	plugin_installflag tinyint(1) unsigned NOT NULL default '0',
+										//	plugin_addons text NOT NULL,
+		
+					if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
+					{
+						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
+						if ($readFile === FALSE)
+						{
+							echo 'Error in file: '.e_PLUGIN.$plugin_path.'/plugin.xml'.'<br />';
+						}
+						else
+						{
+							loadLanFiles($plugin_path, 'admin');
+							$eplug_name 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
+							$eplug_conffile 	= $readFile['administration']['configFile'];
+							$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
+							$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
+							$eplug_caption 		= str_replace("'", '', $tp->toHTML($readFile['description'], FALSE, 'defs, emotes_off'));
+						}
+					}
+					elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
+					{
+						include(e_PLUGIN.$plugin_path."/plugin.php");
+					}
+					if (varset($eplug_conffile))
+					{
+						$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
+						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
+		
+						$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					}
+					unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
+				}
+					}
+					else
+					{
+						$plugin_array = array();	
+					}
+				*/
+			ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'
+		
+			if($linkStyle == "array")
+			{
+		       	return $plugin_array;
+			}
+		
+			foreach ($plugin_array as $plug_key => $plug_value)
+			{
+				$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
+				$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
+			}
+			return $text;
+	}	
+	
+	
+	/** 
+	 * XXX the NEW version of e_admin_menu(); 
+	 * Build admin menus - addmin menus are now supporting unlimitted number of submenus
+	 * TODO - add this to a handler for use on front-end as well (tree, sitelinks.sc replacement)
+	 *
+	 * $e107_vars structure:
+	 * $e107_vars['action']['text'] -> link title
+	 * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
+	 * $e107_vars['action']['image'] -> (new) image tag
+	 * $e107_vars['action']['perm'] -> permissions via getperms()
+	 * $e107_vars['action']['userclass'] -> user class permissions via check_class()
+	 * $e107_vars['action']['include'] -> additional <a> tag attributes
+	 * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
+	 * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
+	 * $e107_vars['action']['link_class'] -> (new) additional link class
+	 * $e107_vars['action']['sub_class'] -> (new) additional class used only when sublinks are being parsed
+	 *
+	 * @param string $title
+	 * @param string $active_page
+	 * @param array $e107_vars
+	 * @param array $tmpl
+	 * @param array $sub_link
+	 * @param bool $sortlist
+	 * @return string parsed admin menu (or empty string if title is empty)
+	 */
+	function admin($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
+	{
+			
+		global $E_ADMIN_MENU; //TODO remove me?
+		if (!$tmpl)
+			$tmpl = $E_ADMIN_MENU;
+	
+		/*
+		 * Search for id
+		 */
+		$temp = explode('--id--', $title, 2);
+		$title = $temp[0];
+		$id = str_replace(array(' ', '_'), '-', varset($temp[1]));
+	
+		unset($temp);
+	
+		/*
+		 * SORT
+		 */
+		if ($sortlist == TRUE)
+		{
+			$temp = $e107_vars;
+			unset($e107_vars);
+			$func_list = array();
+			foreach (array_keys($temp) as $key)
+			{
+				$func_list[] = $temp[$key]['text'];
+			}
+	
+			usort($func_list, 'strcoll');
+	
+			foreach ($func_list as $func_text)
+			{
+				foreach (array_keys($temp) as $key)
+				{
+					if ($temp[$key]['text'] == $func_text)
+					{
+						$e107_vars[] = $temp[$key];
+					}
+				}
+			}
+			unset($temp);
+		}
+	
+	
+	
+		$kpost = '';
+		$text = '';
+		
+		if ($sub_link)
+		{
+			$kpost = '_sub';
+		}
+		else
+		{
+			 $text = $tmpl['start'];
+		}
+	
+		//FIXME - e_parse::array2sc()
+		$search = array();
+		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
+		$search[1] = '/\{LINK_URL\}(.*?)/si';
+		$search[2] = '/\{ONCLICK\}(.*?)/si';
+		$search[3] = '/\{SUB_HEAD\}(.*?)/si';
+		$search[4] = '/\{SUB_MENU\}(.*?)/si';
+		$search[5] = '/\{ID\}(.*?)/si';
+		$search[6] = '/\{SUB_ID\}(.*?)/si';
+		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
+		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
+		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
+		
+		foreach (array_keys($e107_vars) as $act)
+		{
+			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
+			{
+				continue;
+			}
+			
+			// check class so that e.g. e_UC_NOBODY will result no permissions granted (even for main admin)
+			if (isset($e107_vars[$act]['userclass']) && !e107::getUser()->checkClass($e107_vars[$act]['userclass'], false)) // check userclass perms 
+			{
+				continue;
+			}
+	
+			//  print_a($e107_vars[$act]);
+	
+			$replace = array();
+			
+			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
+			
+			if (($active_page == $act && !is_numeric($act))|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
+			{
+				$temp = $tmpl['button_active'.$kpost];
+			}
+			else
+			{
+				$temp = $tmpl['button'.$kpost];
+			}
+	
+		//	$temp = $tmpl['button'.$kpost];
+		//	echo "ap = ".$active_page;
+		//	echo " act = ".$act."<br /><br />";
+		
+			if($rid == 'adminhome')
+			{
+				$temp = $tmpl['button_other'.$kpost];	
+			}
+	
+			if($rid == 'home')
+			{
+				$temp = $tmpl['button_home'.$kpost];	
+			}
+			
+			if($rid == 'language')
+			{
+				$temp = $tmpl['button_language'.$kpost];	
+			}
+			
+			if($rid == 'logout')
+			{
+				$temp = $tmpl['button_logout'.$kpost];	
+			}
+			
+			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+			// valid URLs
+			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
+			$replace[2] = '';
+			if (varsettrue($e107_vars[$act]['include']))
+			{
+				$replace[2] = $e107_vars[$act]['include'];
+				//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+			}
+			$replace[3] = $title;
+			$replace[4] = '';
+			
+			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
+			$replace[6] = $rid;
+		
+			$replace[7] = varset($e107_vars[$act]['link_class']);
+			$replace[8] = '';
+			$replace[9] = varset($e107_vars[$act]['image']);
+			
+			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
+			{
+				$START_SUB = $tmpl['start_other_sub'];
+			}
+			else 
+			{
+				$START_SUB = $tmpl['start_sub'];	
+			}		
+	
+			if (varsettrue($e107_vars[$act]['sub']))
+			{
+				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
+				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
+				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+				$replace[4] = preg_replace($search, $replace, $START_SUB);
+				$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+				$replace[4] .= $tmpl['end_sub'];
+			}
+	
+			$text .= preg_replace($search, $replace, $temp);
+		//	echo "<br />".$title." act=".$act;
+			//print_a($e107_vars[$act]);
+		}
+	
+		$text .= (!$sub_link) ? $tmpl['end'] : '';
+		
+		if ($sub_link || empty($title))
+		{
+			return $text;
+		}
+	
+		$ns = e107::getRender();
+		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
+		return '';
+	}
+			
+	
+	
+	function frontend() //TODO equivalent for front-end sitelinks etc. 
+	{
+		
+		
+	}
+	
+	
+	
+	
+	
+}
 	
 ?>

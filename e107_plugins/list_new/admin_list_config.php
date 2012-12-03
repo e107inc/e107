@@ -79,7 +79,7 @@ function admin_list_config_adminmenu()
 	$var['list-new-recent-menu']['text'] = LIST_ADMIN_OPT_3;
 	$var['list-new-new-page']['text'] = LIST_ADMIN_OPT_4;
 	$var['list-new-new-menu']['text'] = LIST_ADMIN_OPT_5;
-	e_admin_menu(LIST_ADMIN_OPT_6.'--id--list_new', 'list-new-recent-page', $var);
+	e107::getNav()->admin(LIST_ADMIN_OPT_6.'--id--list_new', 'list-new-recent-page', $var);
 }
 
 require_once(e_ADMIN."footer.php");

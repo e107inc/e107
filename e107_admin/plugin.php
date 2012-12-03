@@ -1277,7 +1277,7 @@ class pluginManager{
 
 				$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
-				e_admin_menu(ADLAN_98, $action, $var);
+				e107::getNav()->admin(ADLAN_98, $action, $var);
 		}
 
 

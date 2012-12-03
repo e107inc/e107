@@ -21,6 +21,8 @@ $emessage = e107::getMessage();
 
 $text = "<div style='text-align:center'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>";
+	
+$admin_cat = e107::getNav()->adminCats();
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id)
 {

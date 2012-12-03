@@ -884,7 +884,7 @@ function admin_banner_adminmenu()
 	$var['menu']['text'] = BNRLAN_61;
 	$var['menu']['link'] = e_SELF."?menu";
 
-	e_admin_menu(BNRLAN_62, $act, $var);
+	e107::getNav()->admin(BNRLAN_62, $act, $var);
 }
 
 require_once(e_ADMIN."footer.php");

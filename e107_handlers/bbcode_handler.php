@@ -578,7 +578,7 @@ class e_bbcode
 		$text = preg_replace('/<em([\w :\-_;="]*)?>/i', "[i]",$text);
 		$text = preg_replace('/<li([\w :\-_;="]*)?>/i', "[*]",$text);
 		$text = preg_replace('/<ul([\w :\-_;="]*)?>/i', "[list]",$text);
-		$text = preg_replace('/<ol([\w :\-_;="]*)?>/i', "[list class='ol']",$text);		
+		$text = preg_replace('/<ol([\w :\-_;="]*)?>/i', "[list=ol]",$text);		
 		$text = preg_replace('/<table([\w :\-_;="]*)?>/i', "[table]",$text);
 		$text = preg_replace('/<tbody([\w :\-_;="]*)?>/i', "[tbody]",$text);
 		$text = preg_replace('/<tr([\w :\-_;="]*)?>/i', "[tr]",$text);

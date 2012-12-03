@@ -421,6 +421,9 @@ if (!defined('E_32_SYSINFO')) {
 	define('E_32_SYSINFO', "<img class='icon S32' src='".e_IMAGE."admin_images/sysinfo_32.png' alt='' />");
 }
 
+
+//XXX Move to e_navigation ?
+
 $e_icon_array = array(
 	'main' => E_32_MAIN,
 	'admin' => E_32_ADMIN,
@@ -465,6 +468,8 @@ $e_icon_array = array(
 	'wmessage' => E_32_WELCOME );
 
 //FIXME array structure - see shortcodes/admin_navigation.php
+// Moved to sitelinks_class.php - e_navigation; 
+/*
 $admin_cat['title'][1] = ADLAN_CL_1;
 $admin_cat['id'][1] = 'setMenu';
 $admin_cat['img'][1] = E_16_CAT_SETT;
@@ -522,6 +527,13 @@ $admin_cat['id'][20] = 'aboutMenu';
 $admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
 $admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
 $admin_cat['sort'][20] = false;
+*/
+
+
+$admin_cat = e107::getNav()->adminCats(); // see e107_handlers/sitelinks.php
+
+
+
 
 // Info about attributes
 /*
@@ -546,12 +558,12 @@ attribute 6 = 16 x 16 image
 attribute 7 = 32 x 32 image
 */
 
-//FIXME array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
+//FIXME array structure suitable for e107::getNav()->admin - see shortcodes/admin_navigation.php
 //TODO find out where is used $array_functions elsewhere, refactor it
 
 
 // DO NOT EDIT without first checking user_handler.php
-
+/*
 $array_functions = array(
 	0 => array(e_ADMIN.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	'', 2, E_16_ADPASS, E_32_ADPASS),
@@ -594,25 +606,11 @@ $array_functions = array(
 //	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 	38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 );
+*/
 
-//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
-/*
- * Info about sublinks array structure
- *
- * key = $array_functions key
- * attribute 1 = link
- * attribute 2 = title
- * attribute 3 = description
- * attribute 4 = perms
- * attribute 5 = category
- * attribute 6 = 16 x 16 image
- * attribute 7 = 32 x 32 image
- *
- */
-$array_sub_functions = array();
-$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, E_16_MANAGE, E_32_MANAGE);
-$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
-$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, ADLAN_4, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);
+$array_functions = e107::getNav()->adminLinks(); // replacement see e107_handlers/sitelinks.php
+
+
 
 if(!defset('e_PAGETITLE'))
 {

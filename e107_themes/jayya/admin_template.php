@@ -154,7 +154,7 @@ $ADMIN_FOOTER .= "</tr>
 
 
 /* NEW ADMIN MENU TEMPLATE
- * see function e_admin_menu() in e107_admin/header.php
+ * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
 <ul class="plugin-navigation">

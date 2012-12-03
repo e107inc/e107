@@ -35,7 +35,7 @@ $text .= "<tr>
 
 
 
-$text .= getPluginLinks( E_16_PLUGMANAGER, 'adminb');
+$text .= e107::getNav()->pluginLinks( E_16_PLUGMANAGER, 'adminb');
 
 $text .= "</table></div>";
 

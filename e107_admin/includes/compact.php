@@ -45,7 +45,7 @@ $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 
 
-$text .= getPluginLinks( E_16_PLUGMANAGER, 'default');
+$text .= e107::getNav()->pluginLinks( E_16_PLUGMANAGER, 'default');
 
 
 $text .= "</tr>

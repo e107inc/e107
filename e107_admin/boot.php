@@ -72,10 +72,13 @@ else
  // TODO - This function often needs to be available BEFORE header.php is loaded. 
  
  
- // It has been copied to message_handler.php as autoMessage();
+ //XXX DEPRECATED It has been copied to message_handler.php as autoMessage();
  
 function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
 {
+	return e107::getMessage()->autoMessage($update, $type, $success , $failed , $output);
+	
+	/*
 	require_once (e_HANDLER."message_handler.php");
 	$emessage = e107::getMessage();
 
@@ -121,6 +124,7 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 
 	if ($output) echo $emessage->render();
 	return $update;
+	 */
 }
 
 function admin_purge_related($table, $id)
@@ -158,49 +162,38 @@ function admin_purge_related($table, $id)
 $ns = e107::getRender();
 $e107_var = array();
 
-/**
- * Build admin menus - addmin menus are now supporting unlimitted number of submenus
- * TODO - add this to a handler for use on front-end as well (tree, sitelinks.sc replacement)
- *
- * $e107_vars structure:
- * $e107_vars['action']['text'] -> link title
- * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
- * $e107_vars['action']['image'] -> (new) image tag
- * $e107_vars['action']['perm'] -> permissions via getperms()
- * $e107_vars['action']['userclass'] -> user class permissions via check_class()
- * $e107_vars['action']['include'] -> additional <a> tag attributes
- * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
- * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
- * $e107_vars['action']['link_class'] -> (new) additional link class
- * $e107_vars['action']['sub_class'] -> (new) additional class used only when sublinks are being parsed
- *
- * @param string $title
- * @param string $active_page
- * @param array $e107_vars
- * @param array $tmpl
- * @param array $sub_link
- * @param bool $sortlist
- * @return string parsed admin menu (or empty string if title is empty)
- */
+// Left in for BC for now. 
+
 function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 {
-		
+			
 	global $E_ADMIN_MENU;
 	if (!$tmpl)
 		$tmpl = $E_ADMIN_MENU;
-
+	
+	
+	return e107::getNav()->admin($title, $active_page, $e107_vars, $tmpl, $sub_link , $sortlist );
+	
+	
+	// See e107::getNav()->admin(); 
+	
+	
+	
+	
+	
 	/*
-	 * Search for id
-	 */
+	/// Search for id
+
 	$temp = explode('--id--', $title, 2);
 	$title = $temp[0];
 	$id = str_replace(array(' ', '_'), '-', varset($temp[1]));
 
 	unset($temp);
 
-	/*
-	 * SORT
-	 */
+	//  SORT
+
+	 
+
 	if ($sortlist == TRUE)
 	{
 		$temp = $e107_vars;
@@ -339,7 +332,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 			$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
 			$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
 			$replace[4] = preg_replace($search, $replace, $START_SUB);
-			$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+			$replace[4] .= e_ad/min_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 			$replace[4] .= $tmpl['end_sub'];
 		}
 
@@ -358,17 +351,18 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	$ns = e107::getRender();
 	$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
 	return '';
+	  */
 }
 
 /*
- *  DEPRECATED - use e_admin_menu()
+ *  DEPRECATED - use e_adm/in_menu()  e107::getNav()->admin
  */
 if (!function_exists('show_admin_menu'))
 {
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
 	{
 		
-		return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
+		return e107::getNav()->admin($title, $active_page, $e107_vars, false, false, $sortlist);
 	}
 }
 

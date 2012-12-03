@@ -971,7 +971,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
 
-	e_admin_menu(DBLAN_10, $_GET['mode'], $var);
+	e107::getNav()->admin(DBLAN_10, $_GET['mode'], $var);
 }
 
 

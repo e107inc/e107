@@ -840,7 +840,7 @@ function lancheck_adminmenu() {
 	$var['tools']['link'] = e_ADMIN_ABS."language.php?tools";
 
 
-	e_admin_menu(ADLAN_132, $action, $var);
+	e107::getNav()->admin(ADLAN_132, $action, $var);
 }
 
 	$ns -> tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_1, LAN_CHECK_26);

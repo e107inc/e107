@@ -843,7 +843,7 @@ function language_adminmenu()
 		$var['tools']['text'] = LANG_LAN_21;
 		$var['tools']['link'] = e_SELF."?tools";
 //	}
-	e_admin_menu(ADLAN_132, $action, $var);
+	e107::getNav()->admin(ADLAN_132, $action, $var);
 }
 // Zip up the language pack.
 // ===================================================

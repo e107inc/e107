@@ -498,7 +498,7 @@ function search_adminmenu()
 	$var['settings']['text'] = SEALAN_42;
 	$var['settings']['link'] = e_SELF."?settings";
 
-	e_admin_menu(SEALAN_40, $action, $var);
+	e107::getNav()->admin(SEALAN_40, $action, $var);
 }
 
 ?>

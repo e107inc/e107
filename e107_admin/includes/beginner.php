@@ -58,7 +58,7 @@ if($_GET['mode'] == "e_advanced"){
 	<table style='".ADMIN_WIDTH."'>";
 
 
-	$text .= getPluginLinks(E_32_PLUGMANAGER, "classis");
+	$text .= e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "classis");
 
 	$text .= render_clean();
 	$text .= "</table></div>";
