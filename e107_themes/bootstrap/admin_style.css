@@ -72,6 +72,7 @@ a.brand:hover img 			{
       
 .nav-collapse 				{ margin-top:8px; }
 
+.dropdown-menu i,
 .dropdown-menu img 			{ padding: 0px 0px; margin-right: 10px; }
 
 .dropdown-menu a 			{
@@ -357,3 +358,183 @@ img.S32:hover 				{}
 .button.active {
   background-color: #408140 \9;
 }
+
+
+
+/* ****************************** ICONS ************************************* */
+
+i.S16 {
+    background: url(images/adminicons_16.png) no-repeat top left;
+ 	display:inline-block;
+ 	width:17px;
+ 	height:16px;
+ 	*margin-right: .3em;
+	line-height: 14px;
+	vertical-align: text-top;
+}
+i.e-add-16{ background-position: 0 0; width: 16px; height: 16px; } 
+i.e-adminlogs-16{ background-position: -21px 0; width: 16px; height: 16px; } 
+i.e-adminpass-16{ background-position: -42px 0; width: 16px; height: 16px; } 
+i.e-admins-16{ background-position: -63px 0; width: 16px; height: 16px; } 
+i.e-arrow-16{ background-position: -84px 0; width: 16px; height: 16px; } 
+i.e-arrow_over-16{ background-position: -105px 0; width: 16px; height: 16px; } 
+i.e-articles-16{ background-position: -126px 0; width: 16px; height: 16px; } 
+i.e-banlist-16{ background-position: -147px 0; width: 16px; height: 16px; } 
+i.e-banners-16{ background-position: -168px 0; width: 16px; height: 16px; } 
+i.e-cache-16{ background-position: -189px 0; width: 16px; height: 16px; } 
+i.e-cat_content-16{ background-position: -210px 0; width: 16px; height: 16px; } 
+i.e-cat_files-16{ background-position: -231px 0; width: 16px; height: 16px; } 
+i.e-cat_plugins-16{ background-position: -252px 0; width: 16px; height: 16px; } 
+i.e-cat_settings-16{ background-position: -273px 0; width: 16px; height: 16px; } 
+i.e-cat_tools-16{ background-position: -294px 0; width: 16px; height: 16px; } 
+i.e-cat_users-16{ background-position: -315px 0; width: 16px; height: 16px; } 
+i.e-chatbox-16{ background-position: -336px 0; width: 16px; height: 16px; } 
+i.e-comments-16{ background-position: -357px 0; width: 16px; height: 16px; } 
+i.e-configure-16{ background-position: -378px 0; width: 16px; height: 16px; } 
+i.e-content-16{ background-position: -399px 0; width: 16px; height: 16px; } 
+i.e-copy-16{ background-position: -420px 0; width: 16px; height: 16px; } 
+i.e-credits-16{ background-position: -441px 0; width: 16px; height: 16px; } 
+i.e-cron-16{ background-position: -462px 0; width: 16px; height: 16px; } 
+i.e-custom-16{ background-position: -483px 0; width: 16px; height: 16px; } 
+i.e-database-16{ background-position: -504px 0; width: 16px; height: 16px; } 
+i.e-delete-16{ background-position: -525px 0; width: 16px; height: 16px; } 
+i.e-docs-16{ background-position: -546px 0; width: 16px; height: 16px; } 
+i.e-down-16{ background-position: -567px 0; width: 16px; height: 16px; } 
+i.e-downloads-16{ background-position: -588px 0; width: 16px; height: 16px; } 
+i.e-edit-16{ background-position: -609px 0; width: 16px; height: 16px; } 
+i.e-emoticons-16{ background-position: -630px 0; width: 16px; height: 16px; } 
+i.e-eurl-16{ background-position: -651px 0; width: 16px; height: 16px; } 
+i.e-extended-16{ background-position: -672px 0; width: 16px; height: 16px; } 
+i.e-failedlogin-16{ background-position: -693px 0; width: 16px; height: 16px; } 
+i.e-false-16{ background-position: -714px 0; width: 16px; height: 16px; } 
+i.e-fileinspector-16{ background-position: -735px 0; width: 16px; height: 16px; } 
+i.e-filemanager-16{ background-position: -756px 0; width: 16px; height: 16px; } 
+i.e-forums-16{ background-position: -777px 0; width: 16px; height: 16px; } 
+i.e-frontpage-16{ background-position: -798px 0; width: 16px; height: 16px; } 
+i.e-images-16{ background-position: -819px 0; width: 16px; height: 16px; } 
+i.e-info-16{ background-position: -840px 0; width: 16px; height: 16px; } 
+i.e-language-16{ background-position: -861px 0; width: 16px; height: 16px; } 
+i.e-leave-16{ background-position: -882px 0; width: 16px; height: 16px; } 
+i.e-links-16{ background-position: -903px 0; width: 16px; height: 16px; } 
+i.e-lock-16{ background-position: -924px 0; width: 16px; height: 16px; } 
+i.e-logout-16{ background-position: -945px 0; width: 16px; height: 16px; } 
+i.e-mail-16{ background-position: -966px 0; width: 16px; height: 16px; } 
+i.e-main-16{ background-position: -987px 0; width: 16px; height: 16px; } 
+i.e-maintain-16{ background-position: -1008px 0; width: 16px; height: 16px; } 
+i.e-manage-16{ background-position: -1029px 0; width: 16px; height: 16px; } 
+i.e-menus-16{ background-position: -1050px 0; width: 16px; height: 16px; } 
+i.e-meta-16{ background-position: -1071px 0; width: 16px; height: 16px; } 
+i.e-move-16{ background-position: -1092px 0; width: 16px; height: 16px; } 
+i.e-news-16{ background-position: -1113px 0; width: 16px; height: 16px; } 
+i.e-newsfeeds-16{ background-position: -1134px 0; width: 16px; height: 16px; } 
+i.e-notify-16{ background-position: -1155px 0; width: 16px; height: 16px; } 
+i.e-phpinfo-16{ background-position: -1176px 0; width: 16px; height: 16px; } 
+i.e-plugin_install-16{ background-position: -1197px 0; width: 16px; height: 16px; } 
+i.e-plugin_uninstall-16{ background-position: -1218px 0; width: 16px; height: 16px; } 
+i.e-plugins-16{ background-position: -1239px 0; width: 16px; height: 16px; } 
+i.e-plugmanager-16{ background-position: -1260px 0; width: 16px; height: 16px; } 
+i.e-prefs-16{ background-position: -1281px 0; width: 16px; height: 16px; } 
+i.e-rename-16{ background-position: -1302px 0; width: 16px; height: 16px; } 
+i.e-reviews-16{ background-position: -1323px 0; width: 16px; height: 16px; } 
+i.e-search-16{ background-position: -1344px 0; width: 16px; height: 16px; } 
+i.e-select_columns-16{ background-position: -1365px 0; width: 16px; height: 16px; } 
+i.e-settings-16{ background-position: -1386px 0; width: 16px; height: 16px; } 
+i.e-sort-16{ background-position: -1407px 0; width: 16px; height: 16px; } 
+i.e-stats-16{ background-position: -1428px 0; width: 16px; height: 16px; } 
+i.e-sub_forums-16{ background-position: -1449px 0; width: 16px; height: 16px; } 
+i.e-sublink-16{ background-position: -1470px 0; width: 16px; height: 16px; } 
+i.e-sysinfo-16{ background-position: -1491px 0; width: 16px; height: 16px; } 
+i.e-themes-16{ background-position: -1512px 0; width: 16px; height: 16px; } 
+i.e-true-16{ background-position: -1533px 0; width: 16px; height: 16px; } 
+i.e-up-16{ background-position: -1554px 0; width: 16px; height: 16px; } 
+i.e-uploads-16{ background-position: -1575px 0; width: 16px; height: 16px; } 
+i.e-userclass-16{ background-position: -1596px 0; width: 16px; height: 16px; } 
+i.e-users-16{ background-position: -1617px 0; width: 16px; height: 16px; } 
+i.e-warning-16{ background-position: -1638px 0; width: 16px; height: 16px; } 
+i.e-welcome-16{ background-position: -1659px 0; width: 16px; height: 16px; } 
+
+i.S32 {
+    background: url(images/adminicons_32.png) no-repeat top left;
+ 	display: inline-block;
+ 	width:32px;
+ 	height:32px;
+}
+
+i.e-add-32{ background-position: 0 0; width: 32px; height: 32px; } 
+i.e-adminlogs-32{ background-position: -37px 0; width: 32px; height: 32px; } 
+i.e-adminpass-32{ background-position: -74px 0; width: 32px; height: 32px; } 
+i.e-admins-32{ background-position: -111px 0; width: 32px; height: 32px; } 
+i.e-arrow-32{ background-position: -148px 0; width: 32px; height: 32px; } 
+i.e-arrow_over-32{ background-position: -185px 0; width: 32px; height: 32px; } 
+i.e-articles-32{ background-position: -222px 0; width: 32px; height: 32px; } 
+i.e-banlist-32{ background-position: -259px 0; width: 32px; height: 32px; } 
+i.e-banners-32{ background-position: -296px 0; width: 32px; height: 32px; } 
+i.e-cache-32{ background-position: -333px 0; width: 32px; height: 32px; } 
+i.e-cat_content-32{ background-position: -370px 0; width: 32px; height: 32px; } 
+i.e-cat_files-32{ background-position: -407px 0; width: 32px; height: 32px; } 
+i.e-cat_plugins-32{ background-position: -444px 0; width: 32px; height: 32px; } 
+i.e-cat_settings-32{ background-position: -481px 0; width: 32px; height: 32px; } 
+i.e-cat_tools-32{ background-position: -518px 0; width: 32px; height: 32px; } 
+i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; } 
+i.e-chatbox-32{ background-position: -592px 0; width: 32px; height: 32px; } 
+i.e-comments-32{ background-position: -629px 0; width: 32px; height: 32px; } 
+i.e-configure-32{ background-position: -666px 0; width: 32px; height: 32px; } 
+i.e-content-32{ background-position: -703px 0; width: 32px; height: 32px; } 
+i.e-copy-32{ background-position: -740px 0; width: 32px; height: 32px; } 
+i.e-credits-32{ background-position: -777px 0; width: 32px; height: 32px; } 
+i.e-cron-32{ background-position: -814px 0; width: 32px; height: 32px; } 
+i.e-custom-32{ background-position: -851px 0; width: 32px; height: 32px; } 
+i.e-database-32{ background-position: -888px 0; width: 32px; height: 32px; } 
+i.e-delete-32{ background-position: -925px 0; width: 32px; height: 32px; } 
+i.e-docs-32{ background-position: -962px 0; width: 32px; height: 32px; } 
+i.e-down-32{ background-position: -999px 0; width: 32px; height: 32px; } 
+i.e-downloads-32{ background-position: -1036px 0; width: 32px; height: 32px; } 
+i.e-edit-32{ background-position: -1073px 0; width: 32px; height: 32px; } 
+i.e-emoticons-32{ background-position: -1110px 0; width: 32px; height: 32px; } 
+i.e-eurl-32{ background-position: -1147px 0; width: 32px; height: 32px; } 
+i.e-execute-32{ background-position: -1184px 0; width: 32px; height: 32px; } 
+i.e-extended-32{ background-position: -1221px 0; width: 32px; height: 32px; } 
+i.e-false-32{ background-position: -1258px 0; width: 32px; height: 32px; } 
+i.e-fileinspector-32{ background-position: -1295px 0; width: 32px; height: 32px; } 
+i.e-filemanager-32{ background-position: -1332px 0; width: 32px; height: 32px; } 
+i.e-forums-32{ background-position: -1369px 0; width: 32px; height: 32px; } 
+i.e-frontpage-32{ background-position: -1406px 0; width: 32px; height: 32px; } 
+i.e-images-32{ background-position: -1443px 0; width: 32px; height: 32px; } 
+i.e-info-32{ background-position: -1480px 0; width: 32px; height: 32px; } 
+i.e-language-32{ background-position: -1517px 0; width: 32px; height: 32px; } 
+i.e-leave-32{ background-position: -1554px 0; width: 32px; height: 32px; } 
+i.e-links-32{ background-position: -1591px 0; width: 32px; height: 32px; } 
+i.e-logout-32{ background-position: -1628px 0; width: 32px; height: 32px; } 
+i.e-mail-32{ background-position: -1665px 0; width: 32px; height: 32px; } 
+i.e-main-32{ background-position: -1702px 0; width: 32px; height: 32px; } 
+i.e-maintain-32{ background-position: -1739px 0; width: 32px; height: 32px; } 
+i.e-manage-32{ background-position: -1776px 0; width: 32px; height: 32px; } 
+i.e-menus-32{ background-position: -1813px 0; width: 32px; height: 32px; } 
+i.e-meta-32{ background-position: -1850px 0; width: 32px; height: 32px; } 
+i.e-move-32{ background-position: -1887px 0; width: 32px; height: 32px; } 
+i.e-news-32{ background-position: -1924px 0; width: 32px; height: 32px; } 
+i.e-newsfeeds-32{ background-position: -1961px 0; width: 32px; height: 32px; } 
+i.e-notify-32{ background-position: 0 -37px; width: 32px; height: 32px; } 
+i.e-phpinfo-32{ background-position: -37px -37px; width: 32px; height: 32px; } 
+i.e-plugin_install-32{ background-position: -74px -37px; width: 32px; height: 32px; } 
+i.e-plugin_uninstall-32{ background-position: -111px -37px; width: 32px; height: 32px; } 
+i.e-plugins-32{ background-position: -148px -37px; width: 32px; height: 32px; } 
+i.e-plugmanager-32{ background-position: -185px -37px; width: 32px; height: 32px; } 
+i.e-prefs-32{ background-position: -222px -37px; width: 32px; height: 32px; } 
+i.e-rename-32{ background-position: -259px -37px; width: 32px; height: 32px; } 
+i.e-reviews-32{ background-position: -296px -37px; width: 32px; height: 32px; } 
+i.e-search-32{ background-position: -333px -37px; width: 32px; height: 32px; } 
+i.e-select_columns-32{ background-position: -370px -37px; width: 32px; height: 32px; } 
+i.e-settings-32{ background-position: -407px -37px; width: 32px; height: 32px; } 
+i.e-sort-32{ background-position: -444px -37px; width: 32px; height: 32px; } 
+i.e-stats-32{ background-position: -481px -37px; width: 32px; height: 32px; } 
+i.e-sysinfo-32{ background-position: -518px -37px; width: 32px; height: 32px; } 
+i.e-themes-32{ background-position: -555px -37px; width: 32px; height: 32px; } 
+i.e-true-32{ background-position: -592px -37px; width: 32px; height: 32px; } 
+i.e-up-32{ background-position: -629px -37px; width: 32px; height: 32px; } 
+i.e-uploads-32{ background-position: -666px -37px; width: 32px; height: 32px; } 
+i.e-userclass-32{ background-position: -703px -37px; width: 32px; height: 32px; } 
+i.e-users-32{ background-position: -740px -37px; width: 32px; height: 32px; } 
+i.e-warning-32{ background-position: -777px -37px; width: 32px; height: 32px; } 
+i.e-welcome-32{ background-position: -814px -37px; width: 32px; height: 32px; } 
+

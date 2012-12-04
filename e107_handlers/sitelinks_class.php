@@ -1050,7 +1050,7 @@ class e_navigation
 				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
 				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
 				$replace[4] = preg_replace($search, $replace, $START_SUB);
-				$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+				$replace[4] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 				$replace[4] .= $tmpl['end_sub'];
 			}
 	
@@ -1077,8 +1077,9 @@ class e_navigation
 	// Previously admin.php -> render_links();
 	function renderAdminButton($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
 	{
-		global $td,$tp;
+		global $td;
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
 		
 	
 		
@@ -1135,7 +1136,7 @@ class e_navigation
 					break;
 					
 					case 'div-icon-only':
-						$text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon e-tip' href='".$link."' title='{$description}'>".$icon."</a></div>";					
+						$text .= "<div class='core-mainpanel-block e-tip' title='{$description}'><a class='core-mainpanel-link-icon e-tip' href='".$link."' >".$icon."</a></div>";					
 					break;
 					
 					default:
@@ -1146,10 +1147,10 @@ class e_navigation
 				$td++;
 			}
 		}
-else
-{
-	echo "no Perms";
-}
+		else
+		{
+			// echo "no Perms";
+		}
 	
 		return $text;
 	}

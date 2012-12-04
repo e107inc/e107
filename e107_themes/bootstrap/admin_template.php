@@ -135,7 +135,7 @@ $E_ADMIN_NAVIGATION['start_other_sub'] = '
 ';
 
 $E_ADMIN_NAVIGATION['button_sub'] = '
-			<li role="menuitem">
+			<li role="menuitem" class="{LINK_CLASS}">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_TEXT}</a>
 			</li>
 ';

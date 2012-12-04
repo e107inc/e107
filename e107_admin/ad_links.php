@@ -271,6 +271,25 @@ if (!defined('E_16_SYSINFO')) {
 }
 
 
+if (!defined('E_16_FAILEDLOGIN')) {
+	define('E_16_FAILEDLOGIN', "<img class='icon S16' src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' />");
+}
+
+
+if (!defined('E_16_FACEBOOK')) {
+	define('E_16_FACEBOOK', "<img class='icon S16' src='".e_IMAGE."admin_images/facebook_16.png' alt='' />");
+}
+
+if (!defined('E_16_TWITTER')) {
+	define('E_16_TWITTER', "<img class='icon S16' src='".e_IMAGE."admin_images/twitter_16.png' alt='' />");
+}
+
+if (!defined('E_16_GITHUB')) {
+	define('E_16_GITHUB', "<img class='icon S16' src='".e_IMAGE."admin_images/github_16.png' alt='' />");
+}
+
+
+
 // Large Admin Main Link Images
 if (!defined('E_32_ADMIN')) {
 	define('E_32_ADMIN', "<img class='icon S32' src='".e_IMAGE."admin_images/admins_32.png' alt='' />");
@@ -421,6 +440,8 @@ if (!defined('E_32_SYSINFO')) {
 	define('E_32_SYSINFO', "<img class='icon S32' src='".e_IMAGE."admin_images/sysinfo_32.png' alt='' />");
 }
 
+define("E_16_E107",  "<img class='icon S16' src='".e_IMAGE."e107_icon_16.png' alt='' />");
+define("E_32_E107",  "<img class='icon S32' src='".e_IMAGE."e107_icon_32.png' alt='' />");
 
 //XXX Move to e_navigation ?
 
