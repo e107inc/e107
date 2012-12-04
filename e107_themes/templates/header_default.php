@@ -192,17 +192,24 @@ $e_pref = e107::getConfig('core');
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';
 if (is_array($pref['e_meta_list']))
-{
+{	
+	// $pref = e107::getPref();
 	ob_start();
+	
 	foreach($pref['e_meta_list'] as $val)
-	{
-		// no checks fore existing file - performance
-		e107_include_once(e_PLUGIN.$val."/e_meta.php");
+	{		
+		$fname = e_PLUGIN.$val."/e_meta.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}	
 	}
 	// content will be added later
 	// NOTE: not wise to do e_meta output, use JS Manager!  
 	$e_meta_content = ob_get_contents();
 	ob_end_clean();
+	unset($ret);
 }
 
 

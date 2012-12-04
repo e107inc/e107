@@ -26,6 +26,15 @@ if($_GET['iframe'] == 1)
 }
 
 $e_sub_cat = 'main';
+
+if($pref['adminstyle'] == 'infopanel')
+{
+	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
+	$adp = new adminstyle_infopanel;	
+}
+
+
+
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
@@ -256,10 +265,16 @@ function render_clean()
 
 
 
+if(is_object($adp))
+{
+	$adp->render();	
+}
+else
+{
+	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');	
+}
 
 
-
-require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 
 function admin_info()
 {
