@@ -31,6 +31,12 @@ if (!getperms("2"))
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
+// FIXME - quick temporarry fix for missing icons on menu administration. We need different core style to be included (forced) here - e.g. e107_web/css/admin/sprite.css
+if(e_IFRAME)
+{
+	e107::css('url','{e_THEME}/bootstrap/admin_style.css');
+}
+
 if(strpos(e_QUERY, 'configure') !== FALSE )
 {
 	
