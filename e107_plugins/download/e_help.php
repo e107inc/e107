@@ -60,6 +60,7 @@ switch($action) {
       break;
    }
    default : {
+   	/*
       $text = "<p>Please upload your files into the ".e_DOWNLOAD." folder, your images into the ".e_FILE."downloadimages folder and thumbnail images into the ".e_FILE."downloadthumbs folder.</p>
          <p>To submit a download, first create a parent, then create a category under that parent, you will then be able to make the download available.</p>";
       $text .= "<div>";
@@ -68,6 +69,8 @@ switch($action) {
       $text .= " <img src='".ADMIN_WARNING_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/> ".DOWLAN_124."<br/>";
       $text .= " <img src='".ADMIN_FALSE_ICON_PATH."' title='".DOWLAN_122."' alt='' style='cursor:help'/> ".DOWLAN_122."<br/>";
       $text .= "</div>";
+	 
+	 */
    }
 }
 $ns -> tablerender(DOWLAN_HELP_1, $text);

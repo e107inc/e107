@@ -363,7 +363,7 @@ class adminDownload extends download
                         }
                         elseif ($row[$disp]== 2)
                         {
-                           $text .= "<img src='".ADMIN_WARNING_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/>";
+                           $text .= "<img src='".ADMIN_WAR/NING_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/>";
                         }
                         else
                         {
@@ -379,7 +379,7 @@ class adminDownload extends download
                         $mirrorArray = $this->makeMirrorArray($row[$disp], TRUE);
                         foreach($mirrorArray as $mirror) {
                            $title = DOWLAN_66." ".$mirror['filesize']."; ".DOWLAN_29." ".$mirror['requests'];
-                           $text .= "<div><img src='".ADMIN_INFO_ICON_PATH."' title='".$title."' alt='' style='cursor:help'/> ";
+                           $text .= "<div><img src='".ADMIN_INFO_IC/ON_PATH."' title='".$title."' alt='' style='cursor:help'/> ";
                            $text .= $tp->toHTML($mirror['url']).'</div>';
                         }
                         break;

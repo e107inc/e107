@@ -76,6 +76,8 @@ class adminstyle_infopanel
 		$frm = e107::getForm();
 				
 		//TODO LANs throughout.
+		
+		global $style;
 
 		// ---------------------- Start Panel --------------------------------
 
@@ -123,30 +125,6 @@ class adminstyle_infopanel
 	
 	//  ------------------------------- e107 News --------------------------------
 		
-		
-		$panelRSS = "
-		";
-		
-		// TODO Load with Ajax
-	
-	
-		/*
-		$xml = e107::getXml();
-		 $vars = $xml->loadXMLfile('http://www.e107.org/e107_plugins/rss_menu/rss.php?1.2', true, true);
-		 $text .= print_r($vars,TRUE);
-		*/
-	
-		$panelRSS .= "
-	    RSS News feed from e107.org goes here.
-	
-		";
-	/*
-	
-			</div>
-		</div>
-		</div>
-		*/
-	
 		$text .= $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true);
 	
 	// ---------------------Latest Stuff ---------------------------

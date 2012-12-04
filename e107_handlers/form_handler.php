@@ -1169,28 +1169,34 @@ class e_form
 		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
+				$icon = "e-edit-16";
 				$options['class'] = $options['class'] == 'action' ? 'action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
+				$icon = "e-delete-16";
 				$options['class'] = $options['class'] == 'action' ? 'action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$image = ADMIN_EXECUTE_ICON_PATH;
+				$icon = "e-execute-16";
 				$options['class'] = $options['class'] == 'action' ? 'action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$image = ADMIN_VIEW_ICON_PATH;
+				$icon = "e-view-16";
 				$options['class'] = $options['class'] == 'action' ? 'action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
+		
+	//	return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S16 {$icon}'></i></button>";
 
-		return "<input class='e-tip' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		return "<input class='e-tip S16 {$icon}' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
 	/**
@@ -1840,7 +1846,16 @@ class e_form
 			
 					$value .= "<a href='".e_SELF."?{$query}' class='e-tip' title='".LAN_EDIT."' data-placement='left'>
 					<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
-
+	
+/*
+						$value .= "<a href='".e_SELF."?{$query}' class='btn e-tip' title='".LAN_EDIT."' data-placement='left'>
+					".ADMIN_EDIT_ICON."
+					</a>";
+					*/
+					
+					
+					
+	
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']))
 					{
