@@ -882,6 +882,8 @@ class e107plugin
 	function manage_tables($action, $var)
 	{
 		$sql = e107::getDB();
+		$mes = e107::getMessage();
+		
 		if (!is_array($var))
 			return FALSE; // Return if nothing to do
 		$error = false;
@@ -891,6 +893,13 @@ class e107plugin
 			case 'add':
 				foreach ($var as $tab)
 				{
+										
+					if(!preg_match("/MyISAM.*CHARSET ?= ?utf8/i",$tab))
+					{
+						$tab = str_replace("MyISAM", "MyISAM DEFAULT CHARSET=utf8", $tab);		
+					}
+					
+					$mes->addDebug($tab);
 					if (false === $sql->db_Query($tab))
 					{
 						$error = true;
