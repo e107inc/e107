@@ -7,6 +7,22 @@
  * 
 */
 
+// Menu
+define("LAN_IMA_M_01", "Media Library"); 
+define("LAN_IMA_M_02", "Media Upload/Import"); 
+define("LAN_IMA_M_03", "Media Categories"); 
+define("LAN_IMA_M_04", "Create Category"); 
+define("LAN_IMA_M_05", "Avatars"); 
+
+
+// Errors / Info / Notices
+define("LAN_IMA_001", "Modification is not permitted.");
+define("LAN_IMA_002", "Not enough memory available to rotate");
+define("LAN_IMA_003", "Rotated");
+define("LAN_IMA_004", "Resizing");
+
+// Work in progress (Moc)
+
 define("IMALAN_1", "Enable image display");
 define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc) to images posted using the [img] bbcode");
 define("IMALAN_3", "Resize method");

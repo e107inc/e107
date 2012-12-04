@@ -24,10 +24,10 @@ if (!getperms("A") && ($_GET['action'] != 'dialog'))
 	exit;
 }
 
-e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
-e107::js("core",	"core/mediaManager.js","jquery",5);
+e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
+e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
+e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+e107::js('core', 'core/mediaManager.js',"jquery",5);
 
 /*
  * CLOSE - GO TO MAIN SCREEN
@@ -102,14 +102,14 @@ class media_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
+		'main/list'			=> array('caption'=> LAN_IMA_M_01, 'perm' => 'A'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
-		'main/import' 		=> array('caption'=> "Media Upload/Import", 'perm' => 'A|A2'),
-		'cat/list' 			=> array('caption'=> 'Media Categories', 'perm' => 'A'),
-		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'A'), // is automatic.
+		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A2'),
+		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A'),
+		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A'), // is automatic.
 	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
-		'main/avatar'		=> array('caption'=> IMALAN_23, 'perm' => 'A')
+		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
 
 /*
@@ -137,7 +137,7 @@ class media_admin extends e_admin_dispatcher
 
 class media_cat_ui extends e_admin_ui
 {
-		protected $pluginTitle	= 'Media Categories';
+		protected $pluginTitle	= LAN_IMA_M_03;
 		protected $pluginName	= 'core';
 		protected $table 		= "core_media_cat";
 		protected $pid			= "media_cat_id";
@@ -154,9 +154,9 @@ class media_cat_ui extends e_admin_ui
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_cat_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'nolist'=>true, 'forced'=> TRUE, 'readonly'=>TRUE),
          	'media_cat_image' 		=> array('title'=> LAN_IMAGE,		'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
-         	'media_cat_owner' 		=> array('title'=> "Owner",			'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         	'media_cat_owner' 		=> array('title'=> LAN_OWNER,		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
          	
-         	'media_cat_type' 		=> array('title'=> "Type",			'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
+         	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
 			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
@@ -228,7 +228,7 @@ class media_cat_ui extends e_admin_ui
 	
 		if($new_data['media_cat_owner']	!= "gallery")
 		{
-			$mes->addError("Modification is not permitted");
+			$mes->addError(LAN_IMA_001);
 			return FALSE;
 		}
 		
@@ -353,7 +353,7 @@ class media_form_ui extends e_admin_form_ui
 				} 
 				catch (Exception $e) 
 				{
-					$mes->addError("Not enough memory available to rotate: ".basename($original));
+					$mes->addError(LAN_IMA_002.": ".basename($original));
 				}  
 							
 				$srch = array(".jpg",".jpeg");
@@ -362,13 +362,13 @@ class media_form_ui extends e_admin_form_ui
 				try 
 				{
 					imagejpeg($rotate,$original,80);
-					$mes->addSuccess("Rotated: ".basename($original));
+					$mes->addSuccess(LAN_IMA_002.": ".basename($original));
 					e107::getCache()->clearAll('image',$cacheFile);
 					$mes->addDebug("Clearing Image cache with mask: ".$cacheFile);
 				}
 				catch (Exception $e) 
 				{
-					$mes->addError("Not enough memory available to rotate: ".basename($original));
+					$mes->addError(LAN_IMA_002.": ".basename($original));
 				}  	
 			}
 		}	
@@ -437,14 +437,14 @@ class media_form_ui extends e_admin_form_ui
 				{
 					
 					$info = $fl->get_file_info($path);
-					$mes->addSuccess("Resizing: ".basename($path));
+					$mes->addSuccess(LAN_IMA_004.": ".basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
 					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])." LIMIT 1");
 				}
 				else 
 				{
-					$mes->addError("Resizing: ".basename($path));
+					$mes->addError(LAN_IMA_004.": ".basename($path));
 				}	
 			}
 		}		
@@ -463,7 +463,7 @@ class media_form_ui extends e_admin_form_ui
 		$pref 	= e107::getPref();
 		
 		$options = array(
-			"news-image" 			=> "News Images",
+			"news-image" 			=> "News Images",  // TODO LAN.
 			"news-bbcode" 			=> "News [img] bbcode",
 			"page-bbcode" 			=> "Page [img] bbcode",
 		//	"featurebox-image" 		=> "Featurebox Images",
