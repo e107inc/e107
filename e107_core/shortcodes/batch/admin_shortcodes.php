@@ -938,12 +938,13 @@ class admin_shortcodes
 						<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": <a href='".e_ADMIN_ABS."users.php?filter=0'>".$members."</a></div>
 						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: <a href='".e_ADMIN_ABS."users.php?filter=unverified'>".$unverified."</a></div>
 						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": <a href='".e_ADMIN_ABS."users.php?filter=banned'>".$banned."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN_ABS."comment.php'>".$comments."</a></div>";
+						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN_ABS."comment.php'>".$comments."</a></div>\n\n";
 
 					if(vartrue($pref['e_status_list']))
 					{
 						foreach($pref['e_status_list'] as $val)
 						{
+							$text .= "\n\t\t\t\t\t";
 							if (is_readable(e_PLUGIN.$val.'/e_status.php'))
 							{
 								include_once(e_PLUGIN.$val.'/e_status.php');
@@ -953,9 +954,9 @@ class admin_shortcodes
 
 					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
-						$text .= "<img src='".e_IMAGE_ABS."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a>";
+						$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
 					}
-					$text .= "</div>";
+					$text .= "\n\t\t\t\t\t</div>";
 					
 					
 					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
@@ -1541,9 +1542,60 @@ class admin_shortcodes
 			$tmp[3]['perm'] = '';
 				
 				
+					
+			$tmp[4]['text'] = ADLAN_46;
+			$tmp[4]['description'] = ADLAN_151;
+			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[4]['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[4]['image_large'] = '';
+			$tmp[4]['image_src'] = '';
+			$tmp[4]['image_large_src'] = '';
+			$tmp[4]['perm'] = '';
+			$tmp[4]['link_class']	= 'divider';
+			
+							
+			$tmp[5]['text'] 			= "e107 Website";
+			$tmp[5]['description'] 		= '';
+			$tmp[5]['link'] 			= 'http://e107.org';
+			$tmp[5]['image'] 			= E_16_E107;
+			$tmp[5]['image_large'] 		= '';
+			$tmp[5]['image_src'] 		= '';
+			$tmp[5]['image_large_src'] 	= '';
+			$tmp[5]['perm'] 			= '';
+			$tmp[5]['link_class']		= '';
 
-				
-				
+										
+			$tmp[6]['text'] 			= "e107 on Twitter";
+			$tmp[6]['description'] 		= '';
+			$tmp[6]['link'] 			= 'http://twitter.com/e107';
+			$tmp[6]['image'] 			= E_16_TWITTER; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[6]['image_large'] 		= '';
+			$tmp[6]['image_src'] 		= '';
+			$tmp[6]['image_large_src'] 	= '';
+			$tmp[6]['perm'] 			= '';
+			$tmp[6]['link_class']		= '';
+								
+							
+			$tmp[7]['text'] 			= "e107 on Facebook";
+			$tmp[7]['description'] 		= '';
+			$tmp[7]['link'] 			= 'https://www.facebook.com/e107CMS';
+			$tmp[7]['image'] 			= E_16_FACEBOOK; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[7]['image_large'] 		= '';
+			$tmp[7]['image_src'] 		= '';
+			$tmp[7]['image_large_src'] 	= '';
+			$tmp[7]['perm'] 			= '';
+			$tmp[7]['link_class']		= '';	
+	
+			
+			$tmp[8]['text'] 			= "e107 on Github";
+			$tmp[8]['description'] 		= '';
+			$tmp[8]['link'] 			= 'https://github.com/e107inc';
+			$tmp[8]['image'] 			= E_16_GITHUB; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[8]['image_large'] 		= '';
+			$tmp[8]['image_src'] 		= '';
+			$tmp[8]['image_large_src'] 	= '';
+			$tmp[8]['perm'] 			= '';
+			$tmp[8]['link_class']		= '';					
 				
 			$menu_vars['logout']['text'] = ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
