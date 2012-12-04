@@ -47,6 +47,8 @@ td.center, th.center 		{ text-align:center }
 div.nextprev				{ text-align: center; display:inline-block; width:100% }
 
 
+a.tweet_action				{ font-size:8px }
+.tweet_time					{ font-size:8px }
 /*
 a.brand:hover img 			{
 								filter: blur(13px); 

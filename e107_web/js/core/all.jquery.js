@@ -1,11 +1,12 @@
 // handle secured json string - the Prototype implementation
-$.ajaxSetup({
+//FIXME this breaks the twitter feed in admin. 
+/*xSetup({
 	dataFilter: function(data, type) {
 		if(type != 'json') return data;
 		return data.replace(/^\/\*-secure-([\s\S]*)\*\/\s*$/, '$1');
 	}
 });
-
+*/
 $(document).ready(function()
 {
     	 $(".e-hideme").hide();
