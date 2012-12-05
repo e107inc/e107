@@ -534,21 +534,36 @@ function tablestyle($caption, $text, $mode)
 	
 	if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 	{
-		echo '
-				<div class="well sidebar-nav span3" style="padding:10px; min-height:200px">  
+		//return;
+		echo '	
+	<!-- Start Mode: '.$mode.' -->
+	<li class="span6 '.$mode.'" >
+				
+				<div class="well" style="padding:10px;min-height:220px;" >  
 				<div class="nav-header">'.$caption.'</div>
+				<!-- Content Start -->
 				'.$text.'
-			</div>
+				<!-- Content End -->
+				</div>
+				
+	</li>
+	<!-- End Mode: '.$mode.' -->
 		';
 		return;
 	}	
 
 	if($mode == 'personalize')
 	{
-		echo '<div class="well" style="padding:10px">  
+		echo '
+	<!-- Mode: '.$mode.' -->
+	<div class="well" style="padding:10px">  
 				<div class="nav-header">'.$caption.'</div>
+				<!-- Content Start -->
 				'.$text.'
-			</div>';
+				<!-- Content End -->
+			</div>
+	<!-- End Mode: '.$mode.' -->
+	';
 			
 		return;
 	}
@@ -558,11 +573,20 @@ function tablestyle($caption, $text, $mode)
 	
 	if($style == 'core-infopanel')
 	{
-		echo '
-				<div class="well sidebar-nav span6" style="padding:10px">  
+		echo '	
+	<!-- Start Style: '.$style.' -->
+		
+	<li class="span12">
+		
+			<div class="well" >  
 				<div class="nav-header">'.$caption.'</div>
+				<!-- Content Start -->
 				'.$text.'
+				<!-- Content End -->
 			</div>
+			
+	</li>
+	<!-- End Style: '.$style.' -->
 		';
 		return;
 	}
