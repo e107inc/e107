@@ -553,3 +553,30 @@ i.e-users-32{ background-position: -740px -37px; width: 32px; height: 32px; }
 i.e-warning-32{ background-position: -777px -37px; width: 32px; height: 32px; } 
 i.e-welcome-32{ background-position: -814px -37px; width: 32px; height: 32px; } 
 
+i.browsers {
+    background: url(images/browsers.png) no-repeat top left;
+ 	display:inline-block;
+ 	 	*margin-right: .3em;
+	line-height: 14px;
+	vertical-align: text-top;
+
+}
+i.e-bot-16{ background-position: 0 0; width: 16px; height: 16px; } 
+i.e-bot-32{ background-position: -21px 0; width: 32px; height: 32px; } 
+i.e-camino-16{ background-position: -58px 0; width: 16px; height: 16px; } 
+i.e-camino-32{ background-position: -79px 0; width: 32px; height: 32px; } 
+i.e-chrome-16{ background-position: -116px 0; width: 16px; height: 16px; } 
+i.e-chrome-32{ background-position: -137px 0; width: 32px; height: 32px; } 
+i.e-firefox-16{ background-position: -174px 0; width: 16px; height: 16px; } 
+i.e-firefox-32{ background-position: -195px 0px; width: 32px; height: 32px; } 
+i.e-ie-16{ background-position: -232px 0; width: 16px; height: 16px; } 
+i.e-ie-32{ background-position: -253px 0; width: 32px; height: 32px; } 
+i.e-konqueror-16{ background-position: -290px 0; width: 16px; height: 16px; } 
+i.e-konqueror-32{ background-position: -311px 0; width: 32px; height: 32px; } 
+i.e-opera-16{ background-position: -348px 0; width: 16px; height: 16px; } 
+i.e-opera-32{ background-position: -369px 0; width: 32px; height: 32px; } 
+i.e-safari-16{ background-position: -406px 0; width: 16px; height: 16px; } 
+i.e-safari-32{ background-position: -427px 0; width: 32px; height: 32px; } 
+i.e-seamonkey-16{ background-position: -464px 0; width: 16px; height: 16px; } 
+i.e-seamonkey-32{ background-position: -485px 0; width: 32px; height: 32px; } 
+

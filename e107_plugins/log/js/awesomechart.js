@@ -474,6 +474,8 @@ function AwesomeChart(canvasElementId){
         context.rotate(Math.PI/2);
         context.translate(-this.width/2, -this.height/2);
         
+               
+        
         //Calculate bar size:
         
         var n = this.data.length;
@@ -562,6 +564,8 @@ function AwesomeChart(canvasElementId){
             context.restore();
             context.stroke();
             
+ 
+            
             //Draw the label:
             
             context.font = this.labelFontStyle + ' ' + this.labelFontHeight + 'px '+ this.labelFont;
@@ -605,6 +609,8 @@ function AwesomeChart(canvasElementId){
             
             x = x + barWidth + this.barHGap;
         }
+        
+        
         
         context.restore();
         
@@ -687,6 +693,9 @@ function AwesomeChart(canvasElementId){
         changeOfMarginBottom = belowZeroMaxBarHeight / numFrames;
         changeOfMarginTop = (chartAreaHeight - belowZeroMaxBarHeight) / numFrames;
         
+        
+        
+        
         var updateVerticalBarChart = function() {
             if(currentFrame++ < numFrames) {
 
@@ -723,6 +732,9 @@ function AwesomeChart(canvasElementId){
                 }
             }
         }        
+
+
+        
 
         updateVerticalBarChart();
         

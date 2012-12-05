@@ -58,6 +58,18 @@ SELECT COUNT(`online_user_id`) AS ol_count, `online_user_id` FROM `#online` GROU
 */
 class e_online
 {
+	
+	public $users = array();	
+	
+	
+	function __construct()
+	{
+		
+		
+	}
+	
+	
+	
 	/**
 	 * Go online
 	 * @param boolean $online_tracking
@@ -231,15 +243,36 @@ class e_online
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 				$total_online = $sql->db_Count('online');
-				if ($members_online = $sql->db_Select('online', 'online_user_id, online_location', 'online_user_id != 0'))
+				if ($members_online = $sql->db_Select('online', '*', 'online_user_id != 0'))
 				{
 					$member_list = '';
 					$listuserson = array();
 					while ($row = $sql->db_Fetch())
 					{
+						$row['online_bot'] = $this->isBot($row['online_agent']);
+						
+						
 						$vals = explode('.', $row['online_user_id'], 2);
 						$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
 						$listuserson[$row['online_user_id']] = $row['online_location'];
+						
+						// Sort into usable format and add bot field. 
+						$user = array(
+							'user_id'			=> $vals[0],
+							'user_name'			=> $vals[1],
+							'user_location'		=> $row['online_location'],
+							'user_bot'			=> $this->isBot($row['online_agent']),
+							'user_agent'		=> $row['online_agent'],
+							'user_ip'			=> $row['online_ip'],
+							'user_currentvisit'	=> $row['online_timestamp'],
+							'user_online'		=> $row['online_flag'],
+							'user_pagecount'	=> $row['online_pagecount'],
+							'user_active'		=> $row['online_active'],
+							'online_user_id'	=> $row['online_user_id']
+						);	
+		
+						$this->users[] = $user;	
+						
 					}
 				}
 				define('TOTAL_ONLINE', $total_online);
@@ -269,4 +302,39 @@ class e_online
 			define('MEMBER_LIST', '');
 		}
 	}
+
+
+	function userList()
+	{
+		return $this->users;		
+		
+	}
+
+
+	
+	
+	function isBot($userAgent='')
+	{
+		if(!$userAgent){ return false; }
+		
+		$botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
+		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
+		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
+		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
+		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
+		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+		"Butterfly","Twitturls","Me.dium","Twiceler");
+		
+		foreach($botlist as $bot)
+		{
+			if(strpos($userAgent, $bot) !== false){ return true; }
+		}
+		return false;
+	}
+
+	
+
+	
+
 }

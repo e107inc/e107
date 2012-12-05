@@ -1903,7 +1903,7 @@ class siteStats
 			$utotal += $fvalue['unq'];
 		}
 
-		print_a($dayarray);;
+	//	print_a($dayarray);;
 
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
