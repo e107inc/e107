@@ -311,6 +311,7 @@ class cron_admin_ui extends e_admin_ui
 		{
 			$pref 	= e107::getPref();
 			$mes 	= e107::getMessage();
+			$frm = e107::getForm();
 			
 			e107::getCache()->CachePageMD5 = '_';
 			$lastload = e107::getCache()->retrieve('cronLastLoad', FALSE, TRUE, TRUE);
@@ -335,6 +336,8 @@ class cron_admin_ui extends e_admin_ui
 	
 			$mes->add(LAN_CRON_11.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
 			$mes->add(LAN_CRON_12.": ".$lastRefresh, E_MESSAGE_INFO);
+			
+			
 	
 			//FIXME: for Windows, the is_executable() function only checks the file
 			// extensions of exe, com, bat and cmd.
@@ -351,7 +354,14 @@ class cron_admin_ui extends e_admin_ui
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = LAN_CRON_15.": <b style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />". LAN_CRON_16;
+				$setpwd_message = LAN_CRON_15.":<br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</pre>". LAN_CRON_16;
+				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
+				{
+					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_DOMAIN."/cpanel'>Go to cPanel</a></div>";
+					
+				}
+					
+				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 			}
 	
