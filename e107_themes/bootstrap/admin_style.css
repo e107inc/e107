@@ -49,6 +49,19 @@ div.nextprev				{ text-align: center; display:inline-block; width:100% }
 
 a.tweet_action				{ font-size:8px }
 .tweet_time					{ font-size:8px }
+
+/* Bootstrap Bug Fix  See: https://github.com/twitter/bootstrap/issues/3494  Specific for e107-admin InfoPanel */
+
+.row-fluid ul.thumbnails li.span12 + li { margin-left : 0px; }
+
+/*
+.row-fluid ul.thumbXnails li.span6:nth-child(2n + 3) { margin-left : 0px; }
+.row-fluid ul.thumXbnails li.span4:nth-child(3n + 4) { margin-left : 0px; }
+.row-fluid ul.thumXbnails li.span3:nth-child(4n + 5) { margin-left : 0px; }
+
+ .ul.thumbnails li.core-infopanel_latest { margin-left : 0px; }
+*/
+
 /*
 a.brand:hover img 			{
 								filter: blur(13px); 

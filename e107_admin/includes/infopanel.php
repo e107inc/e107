@@ -26,7 +26,7 @@ class adminstyle_infopanel
 		e107::js('core','tweet/jquery.tweet.js');
 	//	e107::css('core','tweet/jquery.tweet.css');
 		
-		$code = '
+		$code = <<<EOF
 		jQuery(function($){
 	        $("#e-tweet").tweet({
 	            username: "e107",
@@ -35,7 +35,7 @@ class adminstyle_infopanel
 	 			retweets: false,     
 	            count: 3,
 	            fetch: 5,
-	            template: "{text}<br>- {time} » {retweet_action}",
+	            template: "{text}<br />- {time} » {retweet_action}",
 	            filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
                 auto_join_text_default: "",
 	            auto_join_text_ed: "",
@@ -46,9 +46,10 @@ class adminstyle_infopanel
 	            refresh_interval: 60
 	        });
     	});
-		';
+EOF;
+	
 		
-	  
+	  	$this->getStats();
 		
 		e107::js('inline',$code,'jquery');
 		
@@ -74,6 +75,51 @@ class adminstyle_infopanel
 		$mes = e107::getMessage();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
+		
+		/*
+		
+		echo '
+          <ul class="thumbnails">
+            <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+             <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+             <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+             <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+             <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+             <li class="span4">
+              <a href="#" class="thumbnail">
+                <img src="http://placehold.it/360x270" alt="">
+              </a>
+            </li>
+            
+       
+          </ul>
+
+			
+		';
+		*/
+
+		
+
 				
 		//TODO LANs throughout.
 		
@@ -81,7 +127,7 @@ class adminstyle_infopanel
 
 		// ---------------------- Start Panel --------------------------------
 
-		$text = "<div >";
+//		$text = "<div >";
 		if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
 		{
 			$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
@@ -91,7 +137,7 @@ class adminstyle_infopanel
 	
 		$iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
 	
-		$text .= $frm->open('infopanel');
+	
 		
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
@@ -104,7 +150,7 @@ class adminstyle_infopanel
 		
 		$mainPanel = "
 		<div id='core-infopanel_mye107' >
-			<div>
+			
 				<div class='left' style='padding:32px'>";
 			
 			foreach ($iconlist as $key=>$val)
@@ -115,17 +161,28 @@ class adminstyle_infopanel
 				}
 			}
 	
-			$mainPanel .= "<div class='clear'>&nbsp;</div>
-	             </div>
-	         </div>
+			$mainPanel .= "<div class='clear'>&nbsp;</div>";
+			$mainPanel .= "</div>
+	      
 			</div>";
 	
-		$text .= $ns->tablerender(ucwords(USERNAME)."'s Control Panel",$mainPanel,"core-infopanel_mye107",true);
+		$text .= $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
 		
-		$text .= $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true);
+		$text2 .= $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true);
+	
+		// REQUIRES Log Plugin to be installed. 
+		if (e107::isInstalled('log')) 
+		{
+		 		$text2 .= $ns->tablerender("Visitors This Week", $this->renderStats(),"core-infopanel_stats",true);
+		}
+		else
+		{
+			$text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
+		}
+	
 	
 	// ---------------------Latest Stuff ---------------------------
 	
@@ -133,6 +190,14 @@ class adminstyle_infopanel
 		
 		$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
 		$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
+	/*
+	
+			$text .= "<li class='span6'>
+				".$tp->parseTemplate("{ADMIN_LATEST=norender}").
+				$tp->parseTemplate("{ADMIN_STATUS=norender}")."
+						</div>";
+		
+		*/
 	
 	
 	// ---------------------- Who's Online  ------------------------
@@ -183,7 +248,7 @@ class adminstyle_infopanel
 		$panelOnline .= "</tbody></table>
 		";
 		
-		$text .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
+		$text2 .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
 		
 	// --------------------- User Selected Menus -------------------
 		
@@ -205,22 +270,38 @@ class adminstyle_infopanel
 		
 		
 		
-		$text .= "<div class='clear'>&nbsp;</div>";
+	//	$text .= "<div class='clear'>&nbsp;</div>";
 		
 		$text .= $this->render_infopanel_options();
 		
 		
-		$text .= "</form>";
-		$text .= "</div>";
+		
+	//	$text .= "</div>";
 		
 		if($_GET['mode'] != 'customize')
 		{
 			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
-			echo $mes->render().$text;
+			echo $mes->render().'
+
+			<!-- INFOPANEL -->
+			<div class="span6">
+			 <ul class="thumbnails">'.$text.'</ul>
+			 </div>
+			 
+			 <div class="span6">
+			 <ul class="thumbnails">'.$text2.'</ul>
+			 </div>
+						 
+			<!--  -->  
+			 
+			 
+			 ';
 		}
 		else
 		{
+			echo $frm->open('infopanel');
 			echo $this->render_infopanel_options(true);	
+			echo $frm->close();
 		}
 
 	}
@@ -358,5 +439,153 @@ class adminstyle_infopanel
 		$text .= "<div class='clear'>&nbsp;</div>";
 		return $text;
 	}
+	
+	
+	function getStats() 
+	{
+		
+
+		
+		
+				
+		$sql = e107::getDB();
+
+		$td = date("Y-m-j", time());
+		$dayarray[$td] = array();
+		$pagearray = array();
+
+		$qry = "
+		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
+		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
+		DESC LIMIT 0,6
+		";
+
+		if($amount = $sql -> db_Select_gen($qry)) 
+		{
+			$array = $sql -> db_getList();
+
+			$ttotal = 0;
+			$utotal = 0;
+
+			foreach($array as $key => $value) 
+			{
+				extract($value);
+				if(is_array($log_data)) {
+					$entries[0] = $log_data['host'];
+					$entries[1] = $log_data['date'];
+					$entries[2] = $log_data['os'];
+					$entries[3] = $log_data['browser'];
+					$entries[4] = $log_data['screen'];
+					$entries[5] = $log_data['referer'];
+				} 
+				else 
+				{
+					$entries = explode(chr(1), $log_data);
+				}
+
+				$dayarray[$log_id]['daytotal'] = $entries[0];
+				$dayarray[$log_id]['dayunique'] = $entries[1];
+
+				unset($entries[0]);
+				unset($entries[1]);
+				
+				foreach($entries as $entry) 
+				{
+					if($entry) 
+					{
+						list($url, $total, $unique) = explode("|", $entry);
+						if(strstr($url, "/")) 
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
+						} 
+						else 
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", $url);
+						}
+						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
+						if (!isset($pagearray[$urlname]['total'])) $pagearray[$urlname]['total'] = 0;
+						if (!isset($pagearray[$urlname]['unique'])) $pagearray[$urlname]['unique'] = 0;
+						$pagearray[$urlname]['total'] += $total;
+						$pagearray[$urlname]['unique'] += $unique;
+						$ttotal += $total;
+						$utotal += $unique;
+					}
+				}
+			}
+		}
+
+		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php'; // was logi_ ??
+		if(is_readable($logfile)) 
+		{
+			require($logfile);
+		}
+
+
+
+
+		foreach($pageInfo as $fkey => $fvalue)
+		{
+			$dayarray[$td][$fkey]['total'] += $fvalue['ttl'];
+			$dayarray[$td][$fkey]['unique'] += $fvalue['unq'];
+			$dayarray[$td]['daytotal'] += $fvalue['ttl'];
+			$dayarray[$td]['dayunique'] += $fvalue['unq'];
+			$pagearray[$fkey]['total'] += $fvalue['ttl'];
+			$pagearray[$fkey]['unique'] += $fvalue['unq'];
+			$ttotal += $fvalue['ttl'];
+			$utotal += $fvalue['unq'];
+		}
+
+	
+		ksort($dayarray);
+		foreach($dayarray as $k=>$v)
+		{
+			$unix = strtotime($k);
+			
+			$day[] = intval($v['daytotal']);
+			$label[] = "'".date("D",$unix)."'";				
+		}
+		
+		e107::js('log','js/awesomechart.js');
+		e107::js('inline',"
+		 function drawMyChart()
+		 {
+	        if(!!document.createElement('canvas').getContext){ //check that the canvas
+	                                                           // element is supported
+	            var mychart = new AwesomeChart('canvas1');
+	      //      mychart.title = 'Product Sales - 2010';
+	    //        	mychart.chartType = 'pareto';
+	      //      mychart.data = [1532, 3251, 3460, 1180, 6543];
+	      //      mychart.labels = ['Desktops', 'Laptops', 'Netbooks','Tablets','Smartphones'];
+	       //     mychart.colors = ['#006CFF', '#FF6600', '#34A038', '#945D59', '#93BBF4', '#F493B8'];
+	       
+	       		  mychart.data = [".implode(", ",$day)."];
+	              mychart.labels = [".implode(", ",$label)."];
+	            mychart.colors = ['#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600'];
+	            mychart.animate = true;
+            	mychart.animationFrames = 30;
+            //	mychart.randomColors = true;
+	            mychart.draw();
+	        }
+	      }
+	      
+		window.onload = drawMyChart;
+	  
+      ");
+		
+	//	print_a($dayarray);;
+	
+	}
+	
+	
+	function renderStats()
+	{
+		return '<canvas id="canvas1" class="center" width="710" height="300" style="width:100%; height:100%">
+        	Your web-browser does not support the HTML 5 canvas element.
+   		 </canvas>';	
+		
+		
+		
+	}
+	
 }
 ?>
