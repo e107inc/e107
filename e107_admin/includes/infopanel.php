@@ -176,7 +176,7 @@ EOF;
 		// REQUIRES Log Plugin to be installed. 
 		if (e107::isInstalled('log')) 
 		{
-		 		$text2 .= $ns->tablerender("Visitors This Week", $this->renderStats(),"core-infopanel_stats",true);
+		 		$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
 		}
 		else
 		{
@@ -203,8 +203,10 @@ EOF;
 	// ---------------------- Who's Online  ------------------------
 	// TODO Could use a new _menu item instead.
 	
-		$nOnline = e107::getDB()->db_Select('online', '*');
 	
+	$ol = e107::getOnline();
+//	echo "Users: ".print_a($ol->userList());
+		
 	$panelOnline = "
 		
 			<table class='table adminlist'>
@@ -228,22 +230,21 @@ EOF;
 		
 		
 			
-			
-		if (e107::getDB()->db_Select('online', '*',"online_ip !='' LIMIT 20"))
-		{
-			$newsarray = e107::getDB()->db_getList();
-			foreach ($newsarray as $key=>$val)
+
+			$online = $ol->userList();
+	
+			foreach ($online as $val)
 			{
 				$panelOnline .= "<tr>
-					<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'%H:%M:%S')."</td>
+					<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
 						<td>".$this->renderOnlineName($val['online_user_id'])."</td>
-						<td>".e107::getIPHandler()->ipDecode($val['online_ip'])."</td>
-						<td><a href='".$val['online_location']."' title='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50,'...')."</a></td>
-						<td>".$tp->text_truncate(str_replace("/"," / ",$val['online_agent']),20,'...')."</td>
+						<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
+						<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".basename($val['user_location'])."</a></td>
+						<td><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
 					</tr>
 					";
 			}
-		}
+//$tp->text_truncate(str_replace("/"," / ",$val['user_agent']),20,'...')
 	
 		$panelOnline .= "</tbody></table>
 		";
@@ -307,7 +308,35 @@ EOF;
 	}
 
 
+	function browserIcon($row)
+	{
+	
+		$types = array(
+			"ie" 		=> "MSIE",
+			'chrome'	=> 'Chrome',
+			'firefox'	=> 'Firefox',
+			'seamonkey'	=> 'Seamonkey',
+		//	'Chromium/xyz
+			'safari'	=> "Safari",
+			'opera'		=> "Opera"
+		);
+				
+	
+		if($row['user_bot'] === true)
+		{
+			return "<i class='browser e-bot-32'></i>";	
+		}
+		
+		foreach($types as $icon=>$b)
+		{
+			if(strpos($row['user_agent'], $b)!==false)
+			{
+				return "<i class='browsers e-".$icon."-32' ></i>";	
+			}
+		}
 
+		return "<i class='browsers e-firefox-32'></i>"; // FIXME find a default icon. 
+	}
 
 	
 	function renderOnlineName($val)
@@ -457,7 +486,7 @@ EOF;
 		$qry = "
 		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
 		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
-		DESC LIMIT 0,6
+		DESC LIMIT 0,9
 		";
 
 		if($amount = $sql -> db_Select_gen($qry)) 
@@ -549,21 +578,24 @@ EOF;
 		e107::js('inline',"
 		 function drawMyChart()
 		 {
-	        if(!!document.createElement('canvas').getContext){ //check that the canvas
-	                                                           // element is supported
+	        if(!!document.createElement('canvas').getContext) //check that the canvas element is supported
+	        { 
 	            var mychart = new AwesomeChart('canvas1');
-	      //      mychart.title = 'Product Sales - 2010';
-	    //        	mychart.chartType = 'pareto';
-	      //      mychart.data = [1532, 3251, 3460, 1180, 6543];
-	      //      mychart.labels = ['Desktops', 'Laptops', 'Netbooks','Tablets','Smartphones'];
-	       //     mychart.colors = ['#006CFF', '#FF6600', '#34A038', '#945D59', '#93BBF4', '#F493B8'];
+	  
+	          	mychart.chartType = 'pareto';
+	
 	       
-	       		  mychart.data = [".implode(", ",$day)."];
-	              mychart.labels = [".implode(", ",$label)."];
-	            mychart.colors = ['#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600'];
+				mychart.data = [".implode(", ",$day)."];
+				mychart.labels = [".implode(", ",$label)."];
+	            mychart.colors = ['#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC', '#FF6600','#0088CC'];
 	            mychart.animate = true;
             	mychart.animationFrames = 30;
             //	mychart.randomColors = true;
+           // 	mychart.dataValueFontHeight = 20;
+           mychart.yAxisLabelFontHeight = 15;
+            	mychart.chartMarkerSize = 20;
+            	 mychart.chartHorizontalLineStrokeStyle = '#999';
+    			mychart.chartHorizontalLineWidth = 1;
 	            mychart.draw();
 	        }
 	      }
