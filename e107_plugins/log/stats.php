@@ -1181,6 +1181,8 @@ class siteStats
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
 
+	
+		
 		foreach ($selection as $act)
 		{
 			unset($statBrowser);
@@ -1250,7 +1252,7 @@ class siteStats
 			}
 
 			$total = array_sum($browserArray);
-
+			
 			$text .= "<table class='fborder' style='width: 100%;'>\n
 					 <tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 					 <tr><td class='fcaption' style='width: 20%;'>
@@ -1900,6 +1902,8 @@ class siteStats
 			$ttotal += $fvalue['ttl'];
 			$utotal += $fvalue['unq'];
 		}
+
+		print_a($dayarray);;
 
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 

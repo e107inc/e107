@@ -26,6 +26,14 @@
 // Normally the file is 'silent' - if any errors occur, not sure where they'll appear - (file type now text/html instead of text/css)
 */
 //error_reporting(0);
+$_E107['minimum'] = true;
+require_once("../../class2.php");
+if (!e107::isInstalled('log')) 
+{
+	header('Location: '.e_BASE.'index.php');
+	exit;
+}
+
 define('log_INIT', TRUE);
 
 // Array of page names which should have individual query values recorded.
@@ -36,6 +44,10 @@ $pageUnique = array('page' => 1, 'content' => array('content'));
 
 //$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
 $logVals = urldecode(base64_decode($_GET['lv']));
+
+
+file_put_contents(e_LOG."test.log",print_r($logVals,true)); // , FILE_APPEND | LOCK_EX
+
 parse_str($logVals, $vals);
 
 // We MUST have a timezone set in PHP >= 5.3. This should work for PHP >= 5.1:
@@ -61,7 +73,7 @@ $ref = addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')))
 $logQry = isset($vals['qry']) && $vals['qry'];
 
 $date = date('z.Y', time());
-$logPfile = 'logs/logp_'.$date.'.php';
+$logPfile = e_LOG.'logp_'.$date.'.php';
 
 //$logString = "Colour: {$colour}  Res: {$res}  Self: {$self} Referrer: {$ref} ErrCode: {$vals['err_direct']}\n";
 //$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
@@ -204,63 +216,65 @@ if ($p_handle)
 
 
 // Get current IP address - return as a hex-encoded string
-function getip() 
+if(!function_exists('getip'))
 {
-	$ip = $_SERVER['REMOTE_ADDR'];
-	if (getenv('HTTP_X_FORWARDED_FOR')) 
+	function getip() 
 	{
-		if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
-		{  
-			$ip2 = array('#^0\..*#', 
-				   '#^127\..*#', 							// Local loopbacks
-				   '#^192\.168\..*#', 						// RFC1918 - Private Network
-				   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-				   '#^10\..*#', 							// RFC1918 - Private Network
-				   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
-				   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-				   );
-			$ip = preg_replace($ip2, $ip, $ip3[1]);
-		}
-	}
-	if ($ip == "") 
-	{
-		$ip = "x.x.x.x";
-	}
-	if (strpos($ip, ':') === FALSE)
-	{	// Its an IPV4 address - return it as 32-character packed hex string
-		$ipa = explode(".", $ip);
-		return str_repeat('0000',5).'ffff'.sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-	}
-	else
-	{	// Its IPV6
-		if (strpos($ip,'.') !== FALSE)
-		{  // IPV4 'tail' to deal with
-			$temp = strrpos($ip,':') +1;
-			$ipa = explode('.',substr($ip,$temp));
-			$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-		}
-		// Now 'normalise' the address
-		$temp = explode(':',$ip);
-		$s = 8 - count($temp);		// One element will of course be the blank
-		foreach ($temp as $f)
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if (getenv('HTTP_X_FORWARDED_FOR')) 
 		{
-			if ($f == '')
+			if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+			{  
+				$ip2 = array('#^0\..*#', 
+					   '#^127\..*#', 							// Local loopbacks
+					   '#^192\.168\..*#', 						// RFC1918 - Private Network
+					   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+					   '#^10\..*#', 							// RFC1918 - Private Network
+					   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+					   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+					   );
+				$ip = preg_replace($ip2, $ip, $ip3[1]);
+			}
+		}
+		if ($ip == "") 
+		{
+			$ip = "x.x.x.x";
+		}
+		if (strpos($ip, ':') === FALSE)
+		{	// Its an IPV4 address - return it as 32-character packed hex string
+			$ipa = explode(".", $ip);
+			return str_repeat('0000',5).'ffff'.sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
+		}
+		else
+		{	// Its IPV6
+			if (strpos($ip,'.') !== FALSE)
+			{  // IPV4 'tail' to deal with
+				$temp = strrpos($ip,':') +1;
+				$ipa = explode('.',substr($ip,$temp));
+				$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
+			}
+			// Now 'normalise' the address
+			$temp = explode(':',$ip);
+			$s = 8 - count($temp);		// One element will of course be the blank
+			foreach ($temp as $f)
 			{
-				$ret .= '0000';		// Always put in one set of zeros for the blank
-				if ($s > 0)
+				if ($f == '')
 				{
-					$ret .= str_repeat('0000',$s);
-					$s = 0;
+					$ret .= '0000';		// Always put in one set of zeros for the blank
+					if ($s > 0)
+					{
+						$ret .= str_repeat('0000',$s);
+						$s = 0;
+					}
+				}
+				else
+				{
+					$ret .= sprintf('%04x',hexdec($f));
 				}
 			}
-			else
-			{
-				$ret .= sprintf('%04x',hexdec($f));
-			}
+			return $ret;
 		}
-		return $ret;
 	}
 }
-
 
 ?>
