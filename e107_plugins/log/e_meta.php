@@ -15,7 +15,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-if (isset($pref['statActivate']) && $pref['statActivate'])
+if (vartrue($pref['statActivate']))
 {
 	if(!$pref['statCountAdmin'] && ADMIN)
 	{
@@ -31,10 +31,12 @@ if (isset($pref['statActivate']) && $pref['statActivate'])
 		if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
 		$err_flag .= "&err_referer=".$_SERVER['HTTP_REFERER'];
 	}
+	
+	/*
 	$logJS = "
 function rstr2b64(input)
 {
-	var b64pad  = \"=\"; /* base-64 pad character. \"=\" for strict RFC compliance   */
+	var b64pad  = \"=\"; //  base-64 pad character. \"=\" for strict RFC compliance  
 	var tab = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\";
 	var output = \"\";
 	var len = input.length;
@@ -59,6 +61,7 @@ logString = rstr2b64(logString);
 document.write('<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?lv='+logString + '\">' );
 ";
 
+*/
 
 $logJS = "
 
@@ -102,7 +105,7 @@ $(function() {
 		url: url,             
 		data: {'lv' :logString},              
 		success: function() {         
-			alert(logString);
+		//	alert(logString);
 		}
 	});
 });

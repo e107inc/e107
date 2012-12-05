@@ -11,7 +11,7 @@
 
 if (!defined('log_INIT')) { exit; }
 
-$logIfile = "logs/logi_{$date}.php";
+$logIfile = e_LOG."logi_{$date}.php";
 $i_handle = fopen($logIfile, 'r+');
 if($i_handle && flock( $i_handle, LOCK_EX ) ) 
 {
