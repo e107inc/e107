@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Linkwords" lang="LWLANINS_1" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Linkwords" lan="LWLANINS_1" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>This plugin will link specified words with a defined link and/or tooltip</description>
 	<category>content</category> 
