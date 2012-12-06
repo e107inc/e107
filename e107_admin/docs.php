@@ -88,7 +88,7 @@ foreach ($helplist as $key => $helpdata)
 
 	$id = 'doc-'.$key;
 	$text_h .= "
-		<div class='qitem'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' class='icon S16 middle' alt='' /> <a href='#{$id}' class='scroll-to'>".str_replace("_", " ", $helpdata['fname'])."</a></div>
+		<div class='qitem'>".E_16_DOCS." <a href='#{$id}' class='scroll-to'>".str_replace("_", " ", $helpdata['fname'])."</a></div>
 	";
 	$text .= "
 		<div class='docs-item' id='{$id}'>

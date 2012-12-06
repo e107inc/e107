@@ -551,17 +551,19 @@ EOF;
 
 
 
-
-		foreach($pageInfo as $fkey => $fvalue)
+		if(vartrue($pageInfo))
 		{
-			$dayarray[$td][$fkey]['total'] += $fvalue['ttl'];
-			$dayarray[$td][$fkey]['unique'] += $fvalue['unq'];
-			$dayarray[$td]['daytotal'] += $fvalue['ttl'];
-			$dayarray[$td]['dayunique'] += $fvalue['unq'];
-			$pagearray[$fkey]['total'] += $fvalue['ttl'];
-			$pagearray[$fkey]['unique'] += $fvalue['unq'];
-			$ttotal += $fvalue['ttl'];
-			$utotal += $fvalue['unq'];
+			foreach($pageInfo as $fkey => $fvalue)
+			{
+				$dayarray[$td][$fkey]['total'] += $fvalue['ttl'];
+				$dayarray[$td][$fkey]['unique'] += $fvalue['unq'];
+				$dayarray[$td]['daytotal'] += $fvalue['ttl'];
+				$dayarray[$td]['dayunique'] += $fvalue['unq'];
+				$pagearray[$fkey]['total'] += $fvalue['ttl'];
+				$pagearray[$fkey]['unique'] += $fvalue['unq'];
+				$ttotal += $fvalue['ttl'];
+				$utotal += $fvalue['unq'];
+			}
 		}
 
 	
