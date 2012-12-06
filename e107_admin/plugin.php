@@ -1565,11 +1565,14 @@ class pluginBuilder
 				case 'main-name':
 					$help 		= "The name of your plugin. (Must be written in English)";
 					$required 	= true;
+					$pattern 	= "[A-Za-z ]*";
 				break;
 		
 				case 'main-lang':
 					$help 		= "If you have a language file, enter the LAN_XXX value for the plugin's name";
 					$required 	= false;
+					$placeholder= " ";
+					$pattern 	= "[A-Z0-9_]*";
 				break;
 				
 				case 'main-date':
@@ -1580,36 +1583,41 @@ class pluginBuilder
 				case 'main-version':
 					$default 	= '1.0';
 					$required 	= true;
-					$help 		= "The version of your plugin";
+					$help 		= "The version of your plugin. Format: x.x";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 
 				case 'main-compatibility':
 					$default 	= '2.0';
 					$required 	= true;
 					$help 		= "Compatible with this version of e107";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 				
 				case 'author-name':
 					$default 	= USERNAME;
 					$required 	= true;
 					$help 		= "Author Name";
+					$pattern	= "[A-Za-z \.0-9]*";
 				break;
 				
 				case 'author-url':
 					$default 	= '';
 					$required 	= true;
 					$help 		= "Author Website Url";
+					$pattern	= "https?://.+";
 				break;
 				
-				case 'main-installRequired':
-					return "Installation required: ".$frm->radio_switch($name,'',LAN_YES, LAN_NO);
-				break;	
+				//case 'main-installRequired':
+				//	return "Installation required: ".$frm->radio_switch($name,'',LAN_YES, LAN_NO);
+				//break;	
 				
 				case 'summary-summary':
 					$help 		= "A short one-line description of the plugin<br />(Must be written in English)";
 					$required 	= true;
 					$size 		= 100;
 					$placeholder= " ";
+					$pattern	= "[A-Za-z \.0-9]*";
 				break;	
 				
 				case 'keywords-one':
@@ -1618,6 +1626,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 20;
 					$placeholder= " ";
+					$pattern 	= '^[a-z]*$';
 				break;	
 				
 				case 'description-description':
@@ -1625,6 +1634,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
+					$pattern	= "[A-Za-z \.0-9]*";
 				break;
 				
 					
@@ -1641,6 +1651,7 @@ class pluginBuilder
 
 			$req = ($required == true) ? "&required=1" : "";	
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
+			$pat = ($pattern) ? "&pattern=".$pattern : "";
 			
 			switch ($type) 
 			{
@@ -1649,9 +1660,10 @@ class pluginBuilder
 				break;
 				
 				case 'description':
-					$text = $frm->textarea($name,$default, 3, 80, $req);		
+					$text = $frm->textarea($name,$default, 3, 100, $req);	// pattern not supported. 	
 				break;
-				
+								
+						
 				case 'category':
 					$options = array(
 					'settings'	=> 'settings',
@@ -1669,7 +1681,7 @@ class pluginBuilder
 				
 				
 				default:
-					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req);	
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat);	
 				break;
 			}
 	
@@ -1684,6 +1696,7 @@ class pluginBuilder
 			//print_a($_POST);
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
+			$tp = e107::getParser();
 			
 			foreach($data as $key=>$val)
 			{
@@ -1692,12 +1705,13 @@ class pluginBuilder
 				
 			}
 			
+			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHtml($newArray['DESCRIPTION_DESCRIPTION'],true));
 			//	print_a($newArray);
 			// print_a($this);
 			
 $template = <<<TEMPLATE
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="{MAIN_NAME}" lan="" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" installRequired="true" >
+<e107Plugin name="{MAIN_NAME}" lan="{MAIN_LANG}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" installRequired="true" >
 	<author name="{AUTHOR_NAME}" url="{AUTHOR_URL}" />
 	<summary lan="">{SUMMARY_SUMMARY}</summary>
 	<description lan="">{DESCRIPTION_DESCRIPTION}</description>
