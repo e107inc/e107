@@ -474,7 +474,7 @@ class eMessage
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
 		return "
-			<div class='{$type}'>
+			<div class='s-message {$type}'>
 				<i class='s-message-icon s-message-".$type."'></i>
 				<div class='s-message-title'>".self::getTitle($type, $mstack)."</div>
 				<div class='s-message-body'>

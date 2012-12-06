@@ -53,6 +53,7 @@ a.tweet_action				{ font-size:8px }
 /* Bootstrap Bug Fix  See: https://github.com/twitter/bootstrap/issues/3494  Specific for e107-admin InfoPanel */
 
 .row-fluid ul.thumbnails li.span12 + li { margin-left : 0px; }
+.row-fluid div.s-message + div { margin-left : 0px; }
 
 /*
 .row-fluid ul.thumbXnails li.span6:nth-child(2n + 3) { margin-left : 0px; }
