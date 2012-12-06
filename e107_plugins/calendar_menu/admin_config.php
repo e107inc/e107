@@ -456,12 +456,11 @@ if($action == 'cat')
 			$calendarmenu_text .= "
 			<form id='calformupdate' method='post' action='".e_SELF."?cat'>
 			<fieldset id='plugin-ecal-categories'>
-			<table class=' tableadminform'>
+			<table class='table adminform'>
 			<colgroup span='2'>
-				<col style = 'width:20%;' class='col-label' />
-				<col style = 'width:80%;' class='col-control' />
+				<col style='width:20%;' class='col-label' />
+				<col style='width:80%;' class='col-control' />
 			</colgroup>
-			<tbody>
 			<tr>
 				<th colspan='2' style='text-align:center'>{$calendarmenu_cap1}
 					<input type='hidden' value='{$calendarmenu_id}' name='calendarmenu_id' />
@@ -470,7 +469,7 @@ if($action == 'cat')
 			</tr>
 			{$calendarmenu_msg}
 			<tr>
-				<td style='vertical-align:top;'>".EC_ADLAN_A21."</td>
+				<td>".EC_ADLAN_A21."</td>
 				<td><input type='text' style='width:150px' class='tbox' name='event_cat_name' value='{$event_cat_name}' /></td>
 			</tr>
 			<tr>
@@ -537,7 +536,7 @@ if($action == 'cat')
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg1' >".$event_cat_msg1."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
-		$calendarmenu_text .= "<br /><span class='smalltext'><em>".EC_ADLAN_A189."</em></span>";
+		$calendarmenu_text .= "<br /><span class='field-help'><em>".EC_ADLAN_A189."</em></span>";
 		$calendarmenu_text .= "
 				</td>
 			</tr>
@@ -548,14 +547,14 @@ if($action == 'cat')
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg2' >".$event_cat_msg2."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
-		$calendarmenu_text .= "<br /><span class='smalltext'><em>".EC_ADLAN_A189."</em></span>";
+		$calendarmenu_text .= "<br /><span class='field-help'><em>".EC_ADLAN_A189."</em></span>";
 		$calendarmenu_text .= "
 				</td>
-			</tr>			
-			<tr><td colspan='2' style='text-align:center'><input type='submit' name='submits' value='".EC_ADLAN_A218."' class='button' /></td></tr>
-
-			</tbody>
+			</tr>		
 			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('submits', LAN_UPDATE, 'update')."
+			</div>
 			</fieldset>
 			</form>";
 		} 
@@ -622,54 +621,53 @@ if($action == 'forthcoming')
 	if (!isset($pref['eventpost_linkheader']))  $pref['eventpost_linkheader'] = '0';
 	if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?forthcoming'>
 	<fieldset id='plugin-ecal-forthcoming'>
-	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<table class='table adminform'>
 	<colgroup>
-		<col style = 'width:40%;' class='col-label' />
-		<col style = 'width:60%;' class='col-control' />
+		<col style='width:40%;' class='col-label' />
+		<col style='width:60%;' class='col-control' />
 	</colgroup>
 	<thead>
-	<tr><th style='vertical-align:top;' colspan='2'>".EC_ADLAN_A100." </th></tr>
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A108."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		<td>".EC_ADLAN_A108."</td>
+		<td><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
 		</td>
 	</tr>
 	</thead>
 
 	<tbody>
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A101."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
+		<td>".EC_ADLAN_A101."</td>
+		<td><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A102."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
+		<td>".EC_ADLAN_A102."</td>
+		<td><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A103."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
+		<td>".EC_ADLAN_A103."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A107."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($pref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
+		<td>".EC_ADLAN_A107."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($pref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A199."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($pref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
+		<td>".EC_ADLAN_A199."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($pref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A130."<br /></td>
-		<td style='vertical-align:top;'>
+		<td>".EC_ADLAN_A130."<br /></td>
+		<td>
 			<select name='eventpost_namelink' class='tbox'>
 			<option value='1' ".($pref['eventpost_namelink']=='1'?" selected='selected' ":"")." > ".EC_ADLAN_A131." </option>
 			<option value='2' ".($pref['eventpost_namelink']=='2'?" selected='selected' ":"")." > ".EC_ADLAN_A132." </option>
@@ -678,20 +676,20 @@ if($action == 'forthcoming')
 	</tr>
 	
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A104."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
+		<td>".EC_ADLAN_A104."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A120."</td>
-		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
+		<td>".EC_ADLAN_A120."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
 	<tr>
-		<td style='vertical-align:top;'>".EC_ADLAN_A118."</td>
-		<td style='vertical-align:top;'>";
+		<td>".EC_ADLAN_A118."</td>
+		<td>";
 
 // Now display all the current categories as checkboxes
 	$cal_fe_prefs = array();
@@ -713,14 +711,17 @@ if($action == 'forthcoming')
 	$text .= "</td>
 	</tr>
 	
-	<tr><td colspan='2' style='text-align:center'><input class='button' type='submit' name='updateforthcoming' value='".EC_ADLAN_A218."' /></td></tr>
+
 	</tbody>
 	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('updateforthcoming', LAN_UPDATE, 'update')."
+	</div>
 	</fieldset>
 	</form>
 	</div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A100."</div>", $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A100, $text); // TODO
 }   // End of Forthcoming Events Menu Options
 
 
@@ -753,7 +754,7 @@ if(($action == 'maint'))
 			<option value='2'>2</option>
 			<option value='1'>1</option>
 			</select>
-			<span class='smalltext'><em>".EC_ADLAN_A143."</em></span>
+			<span class='field-help'><em>".EC_ADLAN_A143."</em></span>
 		</td>
 	</tr>
 	<tr><td colspan='2'  style='text-align:center'><input class='button' type='submit' name='deleteold' value='".EC_ADLAN_A145."' /></td></tr>
@@ -985,7 +986,7 @@ $text .= "
 
 	<tr>
 		<td>".EC_ADLAN_A138."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A139."</em></span>
+		<td><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A139."</em></span>
 		</td>
 	</tr>
 
@@ -1083,7 +1084,7 @@ $text .= "
 
 	<tr>
 		<td>".EC_ADLAN_A95."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":'')." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
+		<td><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":'')." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A96."</em></span>
 		</td>
 	</tr>
 	
