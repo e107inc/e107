@@ -1355,10 +1355,10 @@ class admin_shortcodes
 				{
 					$plug_vars = $plug->plug_vars;
 					
-					//if($row['plugin_path']=='tinymce')
-					//{
-					//	print_a($plug_vars);
-					//}
+					if($row['plugin_path']=='calendar_menu')
+					{
+				//		print_a($plug_vars);
+					}
 					
 					// moved to boot.php
 					// e107::loadLanFiles($row['plugin_path'], 'admin');
@@ -1377,7 +1377,7 @@ class admin_shortcodes
 						$id = 'plugnav-'.$row['plugin_path'];
 
            	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
-						$tmp[$id]['description'] = $plug_vars['description'];
+						$tmp[$id]['description'] = vartrue($plug_vars['description']['@value']);
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S16' />" : E_16_PLUGIN;
 						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S32' />" : $icon_src_lrg;
@@ -1396,7 +1396,7 @@ class admin_shortcodes
 							{
 								$subid = $id.'-'.$subkey;
 								$predef_icons = array('add', 'manage', 'settings');
-								$title = $plugsub['@value'];
+								$title = vartrue($plugsub['@value']);
 								$plugsub = $plugsub['@attributes'];
 
 								if(varset($plugsub['primary'])=='true') // remove primary links.
@@ -1408,7 +1408,7 @@ class admin_shortcodes
 
 
 								$tmp[$id]['sub'][$subid]['text'] = e107::getParser()->toHTML($title, FALSE, 'LINKTEXT');
-								$tmp[$id]['sub'][$subid]['description'] = e107::getParser()->toHTML($plug_vars['description']);
+								$tmp[$id]['sub'][$subid]['description'] = (vartrue($plug_vars['description']['@value'])) ? e107::getParser()->toHTML($plug_vars['description']['@value']) : "";
 								$tmp[$id]['sub'][$subid]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plugsub['url'];
 								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['sub'][$subid]['text'])."\" class='icon S16' />" : "";
 								$tmp[$id]['sub'][$subid]['image_large'] = '';

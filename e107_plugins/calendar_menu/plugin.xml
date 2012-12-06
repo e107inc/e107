@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e107Plugin name="Event Calendar" lan="EC_ADLAN_1" version="3.70" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
-	<description lan="EC_ADLAN_A206">This plugin is a fully featured event calendar with calendar menu.</description>
+	<description >This plugin is a fully featured event calendar with calendar menu.</description>
 	<readMe>readme.pdf</readMe>
 	<category>content</category>
 	<languageFiles>
