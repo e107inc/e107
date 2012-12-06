@@ -67,7 +67,7 @@ class convert
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
-			default: 
+		//	default: 
 				//BC - old 'forum' call
 				if(strpos($mask, '%') === FALSE)
 				{
@@ -93,6 +93,99 @@ class convert
 	{
 		if($string == null) return false;
 		return is_integer($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+	}
+	
+	
+	
+	/** 
+	 * Converts from one date function mask to the other and vice-versa. 
+	 */
+	function toMask($mask)
+	{
+		$convert = array(
+			'%Y'	=> 'yy',
+			'%d'	=> 'dd',
+			'%m'	=> 'mm',		
+			'%B'	=> 'MM', 	// Full month name, based on the locale
+			'%A'	=> 'DD', 	// A full textual representation of the day
+	
+			'%y'	=> 'y',
+			'%a'	=> 'D', 	// An abbreviated textual representation of the day
+			'%b'	=> 'M', 	// Abbreviated month name, based on the locale
+			'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
+			
+			'%l'	=> 'h',		// 12 hour format - no leading zero
+			'%I'	=> 'hh',	// 12 hour format - leading zero
+			'%H'	=> 'hh',	// 24 hour format - leading zero
+			'%M'	=> 'mm',
+			'%S'	=> 'ss',
+			'%p'	=> 'TT',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+			'%P'	=> 'tt',		// %P	lower-case 'am' or 'pm' based on the given time
+			'%T' 	=> 'hh:mm:ss',
+			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
+		
+		);
+			
+		$s = array_keys($convert);
+		$r = array_values($convert);	
+		
+		if(strpos($mask, '%') === FALSE)
+		{
+			return str_replace($r, $s,$mask);
+		}
+		
+		
+		return str_replace($s,$r, $mask);
+		
+		// Keep this info here: 
+		/*
+				 * $options allowed keys:
+	
+		 * 
+		 *   d - day of month (no leading zero)
+		    dd - day of month (two digit)
+		    o - day of the year (no leading zeros)
+		    oo - day of the year (three digit)
+		    D - day name short
+		    DD - day name long
+		    m - month of year (no leading zero)
+		    mm - month of year (two digit)
+		    M - month name short
+		    MM - month name long
+		    y - year (two digit)
+		    yy - year (four digit)
+		    @ - Unix timestamp (ms since 01/01/1970)
+		     ! - Windows ticks (100ns since 01/01/0001)
+		    '...' - literal text
+		    '' - single quote
+		    anything else - literal text 
+		
+		    ATOM - 'yy-mm-dd' (Same as RFC 3339/ISO 8601)
+		    COOKIE - 'D, dd M yy'
+		    ISO_8601 - 'yy-mm-dd'
+		    RFC_822 - 'D, d M y' (See RFC 822)
+		    RFC_850 - 'DD, dd-M-y' (See RFC 850)
+		    RFC_1036 - 'D, d M y' (See RFC 1036)
+		    RFC_1123 - 'D, d M yy' (See RFC 1123)
+		    RFC_2822 - 'D, d M yy' (See RFC 2822)
+		    RSS - 'D, d M y' (Same as RFC 822)
+		    TICKS - '!'
+		    TIMESTAMP - '@'
+		    W3C - 'yy-mm-dd' (Same as ISO 8601)
+		 * 
+		 * h    Hour with no leading 0
+		 * hh    Hour with leading 0
+		 * m    Minute with no leading 0
+		 * mm    Minute with leading 0
+		 * s    Second with no leading 0
+		 * ss    Second with leading 0
+		 * l    Milliseconds always with leading 0
+		 * t    a or p for AM/PM
+		 * T    A or P for AM/PM
+		 * tt    am or pm for AM/PM
+		 * TT    AM or PM for AM/PM 
+			
+			*/
 	}
 
 

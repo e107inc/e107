@@ -1305,6 +1305,7 @@ class pluginBuilder
 		var $table = '';
 		var $pluginName = '';
 		var $special = array();
+		var $tableCount = 0;
 	
 		function __construct()
 		{
@@ -1449,14 +1450,16 @@ class pluginBuilder
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&step=3');
 			$text .= "<div class='admintabs' id='tab-container'>\n";
 			$text .= "<ul class='e-tabs' id='core-emote-tabs'>\n";
+			$text .= "<li id='tab-xml'><a href='#xml'>Basic Info.</a></li>";
 			
+			$this->tableCount = count($ret['tables']);
 			
 			foreach($ret['tables'] as $key=>$table)
 			{
 				$text .= "<li id='tab-".$table."'><a href='#".$table."'>Table: ".$table."</a></li>";
 			}
 			$text .= "<li id='tab-preferences'><a href='#preferences'>Preferences</a></li>";
-			$text .= "<li id='tab-xml'><a href='#xml'>Meta Info.</a></li>";
+			
 			$text .= "</ul>";
 				
 			foreach($ret['tables'] as $key=>$table)
@@ -1489,11 +1492,9 @@ class pluginBuilder
 			$text .= $frm->close();
 			
 			$mes->addInfo("Review all fields and modify if necessary.");
-			
-			if(count($ret['tables']) > 1)
-			{
-				$mes->addInfo("Review ALL tables before clicking 'Generate'.");	
-			}
+
+			$mes->addInfo("Review ALL tabs before clicking 'Generate'.");	
+		
 			
 			$ns->tablerender("Plugin Builder", $mes->render() . $text);		
 		}
@@ -1513,9 +1514,11 @@ class pluginBuilder
 			//TODO Plugin.xml Form Fields. . 
 			
 			$data = array(
-				'main' 			=> array('name','lang','version','date', 'compatibility','installRequired'),
+				'main' 			=> array('name','lang','version','date', 'compatibility'),
 				'author' 		=> array('name','url'),
+				'summary' 		=> array('summary'),
 				'description' 	=> array('description'),
+				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
 				'copyright'		=> array('copyright'),
 		//		'languageFile'	=> array('type','path'),
@@ -1600,12 +1603,28 @@ class pluginBuilder
 				
 				case 'main-installRequired':
 					return "Installation required: ".$frm->radio_switch($name,'',LAN_YES, LAN_NO);
-				break;		
+				break;	
 				
-				case 'description-description':
-					$help 		= "A short description of the plugin<br />(Must be written in English)";
+				case 'summary-summary':
+					$help 		= "A short one-line description of the plugin<br />(Must be written in English)";
 					$required 	= true;
 					$size 		= 100;
+					$placeholder= " ";
+				break;	
+				
+				case 'keywords-one':
+				case 'keywords-two':
+					$help 		= "Keyword/Tag for this plugin<br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 20;
+					$placeholder= " ";
+				break;	
+				
+				case 'description-description':
+					$help 		= "A full description of the plugin<br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 100;
+					$placeholder = " ";
 				break;
 				
 					
@@ -1621,14 +1640,20 @@ class pluginBuilder
 			}
 
 			$req = ($required == true) ? "&required=1" : "";	
+			$placeholder = (varset($placeholder)) ? $placeholder : $type;
 			
-			if($type == 'date')
+			switch ($type) 
 			{
-				$text = $frm->datepicker($name,time(),'dateformat=yy-mm-dd'.$req);	
-			}
-			elseif($type == 'category')
-			{
-				$options = array(
+				case 'date':
+					$text = $frm->datepicker($name,time(),'dateformat=yy-mm-dd'.$req);		
+				break;
+				
+				case 'description':
+					$text = $frm->textarea($name,$default, 3, 80, $req);		
+				break;
+				
+				case 'category':
+					$options = array(
 					'settings'	=> 'settings',
 					'users'		=> 'users', 
 					'content'	=> 'content',
@@ -1637,23 +1662,26 @@ class pluginBuilder
 					'misc'		=> 'misc',
 					'menu'		=> 'menu',
 					'about'		=> 'about'
-				);
+					);
 				
-				$text = $frm->selectbox($name, $options,'','required=1', true);	
+					$text = $frm->selectbox($name, $options,'','required=1', true);	
+				break;
+				
+				
+				default:
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req);	
+				break;
 			}
-			else 
-			{
-				$text = $frm->text($name, $default, $size, 'placeholder='.$type.$req);	
-			}
+	
 			
 			$text .= ($help) ? "<span class='field-help'>".$help."</span>" : "";
 			return $text;
 			
 		}
 
-		function processXml($data)
+		function createXml($data)
 		{
-			
+			//print_a($_POST);
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
 			
@@ -1669,9 +1697,14 @@ class pluginBuilder
 			
 $template = <<<TEMPLATE
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="{MAIN_NAME}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" installRequired="{MAIN_INSTALLREQUIRED}" >
+<e107Plugin name="{MAIN_NAME}" lan="" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" installRequired="true" >
 	<author name="{AUTHOR_NAME}" url="{AUTHOR_URL}" />
-	<description lang="">{DESCRIPTION_DESCRIPTION}</description>
+	<summary lan="">{SUMMARY_SUMMARY}</summary>
+	<description lan="">{DESCRIPTION_DESCRIPTION}</description>
+	<keywords>
+		<word>{KEYWORDS_ONE}</word>
+		<word>{KEYWORDS_TWO}</word>
+	</keywords>
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<adminLinks>
@@ -1724,26 +1757,31 @@ TEMPLATE;
 					
 			$modes = array("main"=>"Main Area","cat"=>"Categories");
 			
+		//	echo "TABLE COUNT= ".$this->tableCount ;
+			
+			
 			$this->table = $table."_ui";
 			
-			$text .= "<table class='table adminform'>\n";
+			
 				
-			$text .= "
-					<tr>
-						<td>Plugin Title</td>
-						<td>".$frm->text($this->table.'[pluginTitle]', $newplug, '', 'required=1').
-						
-						$frm->hidden($this->table.'[pluginName]', $this->pluginName, 15).
-						$frm->hidden($this->table.'[table]', $table, 15).
-						"</td>
-						
-					</tr>
+			$text .= 	$frm->hidden($this->table.'[pluginName]', $this->pluginName, 15).
+						$frm->hidden($this->table.'[table]', $table, 15);
+				
+			if($this->tableCount > 1)
+			{
+				$text .= "<table class='table adminform'>\n";
+				$text .= "
 					<tr>
 						<td>Mode</td>
 						<td>".$frm->selectbox($this->table."[mode]",$modes, '', 'required=1', true)."</td>
 					</tr>
 					
 				";
+			}
+			else
+			{
+				$text .= $frm->hidden($this->table.'[mode]','main');
+			}
 				
 			$text .= "</table>".$this->special('checkboxes');
 			
@@ -1901,9 +1939,10 @@ TEMPLATE;
 				
 				case 'id':
 					$ret['title'] = 'LAN_ID';
-					// $ret['type'] = 'datestamp';
+					$ret['type'] = 'boolean';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
+					$ret['width'] = '5%';
 				break;
 				
 				case 'start':
@@ -2005,7 +2044,7 @@ TEMPLATE;
 					$ret['batch'] = false;
 					$ret['filter'] = false;
 					$ret['thclass'] = 'center';
-					$ret['width'] = '5%';
+					$ret['width'] = 'auto';
 					break;
 			}
 			
@@ -2045,9 +2084,11 @@ TEMPLATE;
 		function step3()
 		{
 			
+			$pluginTitle = $_POST['xml']['main-name'] ;
+			
 			if($_POST['xml'])
 			{
-				$xmlText =	$this->processXml($_POST['xml']);
+				$xmlText =	$this->createXml($_POST['xml']);
 			}
 					
 			
@@ -2179,7 +2220,7 @@ $text .=
 class ".$table." extends e_admin_ui
 {
 			
-		protected \$pluginTitle		= '".$vars['pluginTitle']."';
+		protected \$pluginTitle		= '".$pluginTitle."';
 		protected \$pluginName		= '".$vars['pluginName']."';
 		protected \$table			= '".$vars['table']."';
 		protected \$pid				= '".$vars['pid']."';
