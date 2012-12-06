@@ -297,13 +297,13 @@ class ecache {
 		if($type == 'db')
 		{
 			$path = e_CACHE_DB;
-			$mask = ($mask == null) ? '*.php' : $mask;
+			$mask = ($mask == null) ? '.*\.php' : $mask;
 		}
 
 		if($type == 'image')
 		{
 			$path = e_CACHE_IMAGE;
-			$mask = ($mask == null) ? '*.cache\.bin' : $mask;		
+			$mask = ($mask == null) ? '.*\.cache\.bin' : $mask;		
 		}
 
 		if((null == $path) || (null == $mask))

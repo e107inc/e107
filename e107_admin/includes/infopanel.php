@@ -77,7 +77,7 @@ EOF;
 		$frm = e107::getForm();
 		
 		/*
-		
+		XXX Check Bootstrap bug is fixed. 
 		echo '
           <ul class="thumbnails">
             <li class="span4">
@@ -110,17 +110,11 @@ EOF;
                 <img src="http://placehold.it/360x270" alt="">
               </a>
             </li>
-            
-       
           </ul>
 
-			
 		';
 		*/
-
-		
-
-				
+	
 		//TODO LANs throughout.
 		
 		global $style;
@@ -136,16 +130,12 @@ EOF;
 		$array_functions_assoc = e107::getNav()->adminLinks('assoc');
 	
 		$iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
-	
-	
 		
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
 		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
 		
 		// Personalized Panel 
-		
-		
 		// Rendering the saved configuration.
 		
 		$mainPanel = "
@@ -166,7 +156,7 @@ EOF;
 	      
 			</div>";
 	
-		$text .= $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
+		$text = $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
