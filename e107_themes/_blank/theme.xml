@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: theme.xml,v 1.9 2009-08-31 14:37:24 e107coders Exp $ -->  
-<e107Theme name="blank" version="0.1" date="2008-12-01" compatibility="0.8">
+<e107Theme name="blank" version="0.1" date="2008-12-01" compatibility="2.0">
 	<author name ="Desislav Yosifov [SonicE]" email="support@free-source.net" url="http://free-source.net" />
 	<description>Blank e107 admin theme</description>
 	<compliance xhtml="1.1" css="2.1" />

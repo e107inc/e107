@@ -2,9 +2,9 @@
 
 <!-- $Id: plugin.xml,v 1.8 2009-11-08 10:34:23 e107steved Exp $ -->
 
-<e107Plugin name="Alternate Authentication" lang="LAN_ALT_65" version="0.4" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Alternate Authentication" lan="LAN_ALT_65" version="0.4" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc." url="e107.org" email="security@e107.org" />
-	<description lang="LAN_ALT_66">This plugin allows for alternate authentication methods.</description>
+	<description lan="LAN_ALT_66">This plugin allows for alternate authentication methods.</description>
 	<category>users</category>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<languageFiles>
