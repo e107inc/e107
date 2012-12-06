@@ -475,6 +475,7 @@ class eMessage
 		}
 		return "
 			<div class='{$type}'>
+				<i class='s-message-icon s-message-".$type."'></i>
 				<div class='s-message-title'>".self::getTitle($type, $mstack)."</div>
 				<div class='s-message-body'>
 					{$message}
