@@ -58,7 +58,7 @@
  *
  */
 
-define("BAN_TYPE_LEGACY",0); // Quick fix for PHP Notice. 
+// define("BAN_TYPE_LEGACY",0); // Quick fix for PHP Notice.  If the error is triggered from somewhere else, the class name needs adding - eIPHandler::BAN_TYPE_LEGACY 
 
 class eIPHandler
 {
