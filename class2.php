@@ -2061,9 +2061,11 @@ class error_handler
 
 	function handle_error($type, $message, $file, $line, $context) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
+		
+		
 		switch($type) {
 			case E_NOTICE:
-			if ($startup_error || E107_DBG_ALLERRORS)
+			if ($startup_error || E107_DBG_ALLERRORS || E107_DBG_ERRBACKTRACE)
 			{
 				$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
 				$trace = debug_backtrace();
@@ -2074,7 +2076,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
-			if ($startup_error || E107_DBG_BASIC)
+			if ($startup_error || E107_DBG_BASIC || E107_DBG_ERRBACKTRACE)
 			{
 				$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
 				$trace = debug_backtrace();
@@ -2105,14 +2107,18 @@ class error_handler
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
         $ret = "";
 
+	//	print_a($this->errors);
+
 		if (E107_DBG_ERRBACKTRACE)
 		{
 			foreach ($this->errors as $key => $value)
 			{
-				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></td>\n\t</tr>\n";
+				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
 				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
+				$ret .= "</td>\n\t</tr>";
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}
+		
 		}
 		else
 		{

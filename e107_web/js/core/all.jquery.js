@@ -31,6 +31,12 @@ $(document).ready(function()
        	$(".e-expandit").click(function () {
        		
        		var href = ($(this).is("a")) ? $(this).attr("href") : '';
+       		
+       		if(href == '' && $(this).attr("data-target"))
+       		{
+       			href = $(this).attr("data-target");	
+       		}
+       	
 						
 			if(href === "#" || href == "") 
 			{
@@ -38,9 +44,10 @@ $(document).ready(function()
 				$(idt).toggle("slow");
 				 return true;			
 			}
+
 			      		    		
-       		var id = $(this).attr("href");   		
-			$(id).toggle("slow");
+       		//var id = $(this).attr("href");   		
+			$('#'+href).toggle("slow");
 			return false;
 		}); 
 		
@@ -612,6 +619,7 @@ $(document).ready(function()
 			if(href === "#" || href == "") 
 			{
 				idt = $(e).next("div");	
+				
 				$(idt).toggle("slow");
 				return false;;			
 			}

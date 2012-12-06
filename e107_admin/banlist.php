@@ -603,7 +603,7 @@ switch ($action)
 								<td>
 									".BANLAN_5.":
 									<div class='label-note'>
-										".BANLAN_13."<a href='".e_ADMIN_ABS."users.php'><img src='".e_IMAGE_ABS.'admin_images/'."users_16.png' alt='' /></a>
+										".BANLAN_13."<a href='".e_ADMIN_ABS."users.php'>".E_16_CAT_USER."</a>
 									</div>
 								</td>
 								<td>
@@ -891,7 +891,7 @@ switch ($action)
 							$val = ($row['banlist_datestamp'] ? strftime($pref['ban_date_format'], $row['banlist_datestamp']) : BANLAN_22);
 							break;
 						case 'banlist_bantype':
-							$val = "<div class='nowrap' title='".$ipAdministrator->getBanTypeString($row['banlist_bantype'], TRUE)."'>".$ipAdministrator->getBanTypeString($row['banlist_bantype'], FALSE)." <a href='#' title='".$ipAdministrator->getBanTypeString($row['banlist_bantype'], TRUE)."' onclick='return false;'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' /></a></div>";
+							$val = "<div class='nowrap' title='".$ipAdministrator->getBanTypeString($row['banlist_bantype'], TRUE)."'>".$ipAdministrator->getBanTypeString($row['banlist_bantype'], FALSE)." <a href='#' title='".$ipAdministrator->getBanTypeString($row['banlist_bantype'], TRUE)."' onclick='return false;'>".E_16_CAT_USER."</a></div>";
 							break;
 						case 'ip_reason':
 							$val = e107::getIPHandler()->ipDecode($row['banlist_ip'])."<br />".$fv.": ".$row['banlist_reason'];
