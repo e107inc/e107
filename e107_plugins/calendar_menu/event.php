@@ -24,6 +24,8 @@
 
 require_once('../../class2.php');
 $e107 = e107::getInstance();
+$frm = e107::getForm();
+
 if (!$e107->isInstalled('calendar_menu'))
 {
 	header('Location: '.e_BASE.'index.php');

@@ -47,7 +47,9 @@ $calendarmenu_msg  = '';
 // identifies changes, writes back the changes, makes admin log entry
 function logPrefChanges(&$prefList, $logRef)
 {
-	global $pref, $tp, $admin_log;
+	global $admin_log;
+	$pref = e107::getPref();
+	$tp = e107::getParser();
 	$prefChanges = array();
 	foreach ($prefList as $prefName => $process)
 	{
@@ -229,12 +231,12 @@ if ($action == 'confdel')
 	<form method='post' action='".e_SELF."?backdel.{$ec_qs[1]}'>
 	<table style='width:97%' class='fborder'>
 	<tr>
-		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A150.$old_string." </td>
+		<td style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A150.$old_string." </td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdeleteold' value='".EC_ADLAN_A205."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center'>".$frm->admin_button('confirmdeleteold', EC_ADLAN_A205, 'submit')."</td></tr>
 	</table></form></div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text); // TODO
 }
 
 
@@ -245,12 +247,12 @@ if ($action == 'confcache')
 	<form method='post' action='".e_SELF."?cachedel'>
 	<table style='width:97%' class='fborder'>
 	<tr>
-		<td class='forumheader3' style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A162." </td>
+		<td style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A162." </td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='confirmdelcache' value='".EC_ADLAN_A205."' /></td></tr>
+	<tr><td colspan='2'  style='text-align:center'><input class='button' type='submit' name='confirmdelcache' value='".EC_ADLAN_A205."' /></td></tr>
 	</table></form></div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text); // TODO
 }
 
 
@@ -266,7 +268,7 @@ if (isset($ec_qs[2]) && isset($ec_qs[3]) && ($action == 'subs') && ($ec_qs[2] ==
 
 if (isset($message) && ($message != "")) 
 {
-	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>");
+	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>"); // TODO
 	$message = '';
 }
 
@@ -316,24 +318,24 @@ if($action == 'cat')
 		{ 	// New record so add it
 			if ($calendarmenu_db->db_Insert("event_cat", $calPars))
 			{
-				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
+				$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
 				$admin_log->log_event(EC_ADM_08,$calPars['event_cat_name'],'');
 			}
 			else
 			{
-				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A27."</strong></td></tr>";
+				$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A27."</strong></td></tr>";
 			} 
 		}
 		else
 		{ 	// Update existing
 			if ($calendarmenu_db->db_UpdateArray("event_cat", $calPars, 'WHERE `event_cat_id` = '.$calendarmenu_id))
 			{ 	// Changes saved
-				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><b>".EC_ADLAN_A28."</b></td></tr>";
+				$calendarmenu_msg .= "<tr><td colspan='2'><b>".EC_ADLAN_A28."</b></td></tr>";
 				$admin_log->log_event(EC_ADM_09,'ID: '.$calendarmenu_id.', '.$calPars['event_cat_name'],'');
 			}
 			else
 			{
-				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><b>".EC_ADLAN_A29."</b></td></tr>";
+				$calendarmenu_msg .= "<tr><td colspan='2'><b>".EC_ADLAN_A29."</b></td></tr>";
 			} 
 		}
 		// Now see if we need to send a test email
@@ -391,9 +393,9 @@ if($action == 'cat')
 				  $user_name  = USERNAME;
 				  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $pref['eventpost_mailaddress'], $pref['eventpost_mailfrom']); 
 				  if ($send_result)
-					$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
+					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
 				  else
-					$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A188.$ecal_send_email."</strong></td></tr>";
+					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A188.$ecal_send_email."</strong></td></tr>";
 				}
 				break;
 
@@ -430,7 +432,7 @@ if($action == 'cat')
 						if ($calendarmenu_db->db_Delete('event_cat', 'event_cat_id='.$calendarmenu_id))
 						{
 							$admin_log->log_event(EC_ADM_10,'ID: '.$calendarmenu_id,'');
-							$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
+							$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
 						}
 						else
 						{
@@ -454,14 +456,14 @@ if($action == 'cat')
 			$calendarmenu_text .= "
 			<form id='calformupdate' method='post' action='".e_SELF."?cat'>
 			<fieldset id='plugin-ecal-categories'>
-				<table class='adminform'>
+			<table class=' tableadminform'>
 			<colgroup span='2'>
 				<col style = 'width:20%;' class='col-label' />
 				<col style = 'width:80%;' class='col-control' />
 			</colgroup>
 			<tbody>
 			<tr>
-				<th colspan='2' class='fcaption' style='text-align:center'>{$calendarmenu_cap1}
+				<th colspan='2' style='text-align:center'>{$calendarmenu_cap1}
 					<input type='hidden' value='{$calendarmenu_id}' name='calendarmenu_id' />
 					<input type='hidden' value='update' name='calendarmenu_action' />
 				</th>
@@ -550,7 +552,7 @@ if($action == 'cat')
 		$calendarmenu_text .= "
 				</td>
 			</tr>			
-			<tr><td colspan='2' style='text-align:center' class='fcaption'><input type='submit' name='submits' value='".EC_ADLAN_A218."' class='button' /></td></tr>
+			<tr><td colspan='2' style='text-align:center'><input type='submit' name='submits' value='".EC_ADLAN_A218."' class='button' /></td></tr>
 
 			</tbody>
 			</table>
@@ -579,33 +581,30 @@ if($action == 'cat')
 		$calendarmenu_text .= "
 		<form id='calform' method='post' action='".e_SELF."?cat'>
 		
-		<table width='97%' class='fborder'>
-		<tr>
-			<td colspan='2' class='fcaption'>".EC_ADLAN_A11."<input type='hidden' value='dothings' name='calendarmenu_action' /></td>
-		</tr>
+		<table class='table adminform'>
 		{$calendarmenu_msg}
 		<tr>
-			<td style='width:20%' class='forumheader3'>".EC_ADLAN_A11."</td>
-			<td class='forumheader3'><select name='calendarmenu_selcat' class='tbox'>{$calendarmenu_catopt}</select></td>
+			<td>".EC_ADLAN_A11."<input type='hidden' value='dothings' name='calendarmenu_action' /></td>
+			<td><select name='calendarmenu_selcat' class='tbox'>{$calendarmenu_catopt}</select></td>
 		</tr>
 		<tr>
-			<td style='width:20%' class='forumheader3'>".EC_ADLAN_A18."</td>
-			<td class='forumheader3'>
+			<td>".EC_ADLAN_A18."</td>
+			<td>
 				<input type='radio' name='calendarmenu_recdel' value='1' checked='checked' /> ".EC_ADLAN_A13."<br />
 				<input type='radio' name='calendarmenu_recdel' value='2' /> ".EC_ADLAN_A14."<br />
 				<input type='radio' name='calendarmenu_recdel' value='3' /> ".EC_ADLAN_A15."
 				<input type='checkbox' name='calendarmenu_okdel' value='1' />".EC_ADLAN_A16."
 			</td>
 		</tr>
-		<tr>
-			<td colspan='2' class='fcaption'><input type='submit' name='submits' value='".EC_ADLAN_A17."' class='tbox' /></td>
-		</tr>
 		</table>
+		<div class='buttons-bar center'>
+		".$frm->admin_button('submits', EC_ADLAN_A17, 'submit')."
+		</div>
 		</form>";
 	}
 	if(isset($calendarmenu_text))
 	{
-	  $ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1.' - '.EC_ADLAN_A19.'</div>', $calendarmenu_text);
+	  $ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A19, $calendarmenu_text);
 	}
 }
 
@@ -796,7 +795,7 @@ if($action == 'subs')
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?subs.".$from."'>
 	<fieldset id='plugin-ecal-subscriptions'>
-	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<table class='table adminform'>
 	<colgroup>
 		<col style='width:10%; vertical-align:top;' />
 		<col style='width:20%; vertical-align:top;' />
@@ -872,17 +871,14 @@ if($action == 'config')
 	}
 
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."'>
 	<fieldset id='plugin-ecal-prefs'>
-	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<table class='table adminform'>
 	<colgroup>
-		<col style='width:40%;vertical-align:top;' />
-		<col style='width:60%;vertical-align:top;' />
+		<col style='width:40%;' />
+		<col style='width:60%;' />
 	</colgroup>
-	<thead>
-	<tr><th style='vertical-align:top;' colspan='2'>".EC_ADLAN_A207." </th></tr></thead>
-	<tbody>
 	<tr>
 		<td>".EC_ADLAN_A208." </td>
 		<td>". $uc->uc_dropdown('eventpost_admin', $pref['eventpost_admin'], 'public, nobody, member, admin, classes')."
@@ -1119,15 +1115,15 @@ $text .= "
 			</select>
 		</td>
 	</tr>
-
-	<tr><td colspan='2' style='text-align:center'><input class='button' type='submit' name='updatesettings' value='".EC_ADLAN_A218."' /></td></tr>
-	</tbody>
 	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('updatesettings',LAN_UPDATE, 'update')."
+	</div>
 	</fieldset>
 	</form>
-	</div>";
+	";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A207."</div>", $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A207, $text);
 }
 
 
