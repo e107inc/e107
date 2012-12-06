@@ -38,8 +38,7 @@ if($pref['adminstyle'] == 'infopanel')
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
-
-require_once (e_HANDLER."message_handler.php");
+// require_once (e_HANDLER."message_handler.php");
 $emessage = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'classis';		// Shouldn't be needed - but just in case
@@ -51,6 +50,7 @@ if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 	/*$text = ADLAN_ERR_2."<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
 	$ns -> tablerender(ADLAN_ERR_1, $text);*/
+
 	$emessage->add($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/", E_MESSAGE_WARNING);
 }
 
@@ -249,7 +249,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 }
 
 
-function render_clean()
+function render_clean() // still used by classis, tabbed etc. 
 {
 	global $td;
 	$text = "";

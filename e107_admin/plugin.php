@@ -1605,7 +1605,7 @@ class pluginBuilder
 					$default 	= '';
 					$required 	= true;
 					$help 		= "Author Website Url";
-					$pattern	= "https?://.+";
+				//	$pattern	= "https?://.+";
 				break;
 				
 				//case 'main-installRequired':
