@@ -257,7 +257,7 @@ class e107plugin
 				{
 					if ($plug_info['@attributes']['name'])
 					{					
-						$pName = vartrue($plug_info['@attributes']['lang']) ? $plug_info['@attributes']['lang'] : $plug_info['@attributes']['name'] ;
+						$pName = vartrue($plug_info['@attributes']['lan']) ? $plug_info['@attributes']['lan'] : $plug_info['@attributes']['name'] ;
 						
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
 						
