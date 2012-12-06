@@ -377,7 +377,7 @@ define('EC_ADLAN_A214', 'Length of daynames (characters)');
 define('EC_ADLAN_A215', 'Date format in calendar header:');
 define('EC_ADLAN_A216', 'month/year');
 define('EC_ADLAN_A217', 'year/month');
-define('EC_ADLAN_A218', 'Update Settings');
+//define('EC_ADLAN_A218', 'Update Settings');
 define('EC_ADLAN_A219', 'Icon:');
 define('EC_ADLAN_A220', 'Choose');
 
