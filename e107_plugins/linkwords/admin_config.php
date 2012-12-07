@@ -208,56 +208,53 @@ if (($action == 'words') || ($action == 'edit'))
 	$frm = e107::getForm();
 	
 $text = "
-<div class='center'>
 <form method='post' action='".e_SELF."?words'>
 <table class='table adminform'>
 	<colgroup>
   	<col class='col-label' />
   	<col class='col-control' />
 	</colgroup>
-
 <tr>
 <td>".LWLAN_21."</td>
-<td>
-<input class='tbox' type='text' name='linkword_word' size='40' value='".$linkword_word."' maxlength='100' />
-</td>
+	<td>
+		<input class='tbox' type='text' name='linkword_word' size='40' value='".$linkword_word."' maxlength='100' />
+	</td>
 </tr>
 
 <tr>
-<td>".LWLAN_6."</td>
-<td>
-<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='250' /><br />
-	<input type='checkbox' name='linkword_newwindow' value='1'{$chkNewWindow} />".LWLAN_55."
-</td>
+	<td>".LWLAN_6."</td>
+	<td>
+		<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='250' /><br />
+		<input type='checkbox' name='linkword_newwindow' value='1'{$chkNewWindow} /> ".LWLAN_55."
+	</td>
 </tr>
 
 <tr>
-<td>".LWLAN_50."</td>
-<td>
-<textarea rows='3' cols='80' class='tbox' name='linkword_tooltip'>".$linkword_tooltip."</textarea>
-</td>
+	<td>".LWLAN_50."</td>
+	<td>
+		<textarea rows='3' cols='80' class='tbox' name='linkword_tooltip'>".$linkword_tooltip."</textarea>
+	</td>
 </tr>
 
 <tr>
-<td>".LWLAN_62."</td>
-<td>
-<input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /> ".LWLAN_63."
-</td>
+	<td>".LWLAN_62."</td>
+	<td>
+		<input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /> ".LWLAN_63."
+	</td>
 </tr>
 
 <tr>
-<td>".LWLAN_22."</td>
-<td style='text-align:left'><select class='tbox' name='linkword_active'>".lw_act_opts($linkword_active).
-"</select>
-</td>
+	<td>".LWLAN_22."</td>
+	<td>
+		<select class='tbox' name='linkword_active'>".lw_act_opts($linkword_active)."</select>
+	</td>
 </tr>
 </table>
 <div class='buttons-bar center'>
 ".
 (defined("LW_EDIT") ? $frm->admin_button('update_linkword','no-value','update',LAN_UPDATE) .  "<input type='hidden' name='lw_edit_id' value='{$id}' />" : $frm->admin_button('submit_linkword','no-value','submit',LAN_CREATE))."
 </div>
-</form>
-</div>\n";
+</form>\n";
 
 
 $ns -> tablerender(LWLAN_31, $text);
@@ -272,29 +269,29 @@ if (($action == 'words') || ($action == 'edit'))
   {
 	$text .= LWLAN_4;
   }
-  else
+  else // TODO FIX table below needs proper GUI
   {
 	$text = "
-  <div class='center'>
-	<table class='table adminform'>
-	  <colgroup>
-  	  <col style='width:  5%; vertical-align:top;' />
-  	  <col style='width: 15%; vertical-align:top;' />
-  	  <col style='width: 20%; vertical-align:top;' />
-  	  <col style='width: 5%; vertical-align:top;' />
-  	  <col style='width: 25%; vertical-align:top;' />
-  	  <col style='width: 5%; vertical-align:top;' />
-  	  <col style='width: 10%; vertical-align:top; text-align: center;' />
-  	  <col style='width: 15%; vertical-align:top; text-align: center;' />
-	</colgroup>	<tr>
-	<td>".LWLAN_61."</td>
-	<td>".LWLAN_5."</td>
-	<td>".LWLAN_6."</td>
-	<td>".LWLAN_56."</td>
-	<td>".LWLAN_50."</td>
-	<td>".LWLAN_60."</td>
-	<td>".LWLAN_7."</td>
-	<td>".LWLAN_8."</td>
+	<table class='table adminlist'>
+		<colgroup>
+	  	<col style='width:  5%; vertical-align:top;' />
+	  	<col style='width: 15%; vertical-align:top;' />
+	  	<col style='width: 20%; vertical-align:top;' />
+	  	<col style='width: 5%; vertical-align:top;' />
+	  	<col style='width: 25%; vertical-align:top;' />
+	  	<col style='width: 5%; vertical-align:top;' />
+	  	<col style='width: 10%; vertical-align:top; text-align: center;' />
+	  	<col style='width: 15%; vertical-align:top; text-align: center;' />
+		</colgroup>	
+	<tr>
+		<td>".LWLAN_61."</td>
+		<td>".LWLAN_5."</td>
+		<td>".LWLAN_6."</td>
+		<td>".LWLAN_56."</td>
+		<td>".LWLAN_50."</td>
+		<td>".LWLAN_60."</td>
+		<td>".LWLAN_7."</td>
+		<td>".LWLAN_8."</td>
 	</tr>\n";
 
 	while($row = $sql -> db_Fetch())
@@ -322,7 +319,6 @@ if (($action == 'words') || ($action == 'edit'))
 	$text .= "</table>";
   }
 
-  $text .= "</div>";
   $ns -> tablerender(LWLAN_11, $text);
 }
 
@@ -338,9 +334,8 @@ if ($action=='options')
   <form method='post' action='".e_SELF."?options'>
   <table class='table adminform'>
 	<colgroup>
-	<col style='width: 30%; vertical-align:top;' />
-	<col style='width: 40%; vertical-align:top;' />
-	<col style='width: 30%; vertical-align:top;' />
+	<col style='width: 30%; />
+	<col style='width: 70%; />
 	</colgroup>
   <tr>
   <td>".LWLAN_26."</td>
@@ -348,40 +343,34 @@ if ($action=='options')
   foreach ($lw_context_areas as $lw_key=>$lw_desc)
   {
     $checked = $pref['lw_context_visibility'][$lw_key] ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} />{$lw_desc}<br />";
+	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} /> {$lw_desc}s<pan class='field-help>".LWLAN_27."</span><br />";
   }
   $text .= "</td>
-  <td>".LWLAN_27."</td>
   </tr>
 
   <tr>
   <td>".LWLAN_28."</td>
-  <td><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea>
+  <td><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea><span class='field-help'>".LWLAN_29."</span>
   </td>
-  <td>".LWLAN_29."</td>
   </tr>";
 
   $checked = varset($pref['lw_ajax_enable'],0) ? 'checked=checked' : '';
   $text .= "
   <tr>
-  <td>".LWLAN_59."</td>
-  <td><input type='checkbox' name='lw_ajax_enable' {$checked} />
-  </td>
-  <td>".""."</td>
+ 	 <td>".LWLAN_59."</td>
+ 	 <td><input type='checkbox' name='lw_ajax_enable' {$checked} /></td>
   </tr>";
 
   $checked = varset($pref['lw_notsamepage'],0) ? 'checked=checked' : '';
   $text .= "
   <tr>
-  <td>".LWLAN_64."</td>
-  <td><input type='checkbox' name='lw_notsamepage' {$checked} />
-  </td>
-  <td>".LWLAN_65."</td>
+  	<td>".LWLAN_64."</td>
+  	<td><input type='checkbox' name='lw_notsamepage' {$checked} /><span class='field-help'>".LWLAN_65."</span></td>
   </tr>
 
 </table>
 <div class='buttons-bar center'>
-".$frm->admin_button('saveopts_linkword','no-value','submit',LWLAN_30)."
+".$frm->admin_button('saveopts_linkword','no-value','submit', LWLAN_30)."
 </div>
 </form>
 </div>\n";
