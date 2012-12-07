@@ -72,7 +72,7 @@ function wmessage_shortcode($parm)
 			if (isset($wmessage) && $wmessage)
 			{
 				ob_start();
-				if ($pref['wm_enclose'])
+				if (vartrue($pref['wm_enclose']))
 				{
 				 	$ns->tablerender($wmcaption, implode("<br />",$wmessage), 'wm');
 				}
