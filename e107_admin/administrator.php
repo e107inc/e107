@@ -89,7 +89,7 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 		exit;
 	}
 
-	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
+	e107::getMessage()->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
 	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
 	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }

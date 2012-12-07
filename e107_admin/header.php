@@ -420,7 +420,7 @@ if ($e107_popup != 1)
 	// legacy function show_admin_menu moved to boot.php
 	// include admin_template.php moved to boot.php
 	// function parse_admin moved to boot.php
-	// legacy function admin_update moved to boot.php
+	// legacy function admin_updatXXe moved to boot.php
 	// (legacy?) function admin_purge_related moved to boot.php
 
 

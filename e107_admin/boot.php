@@ -72,60 +72,14 @@ else
  // TODO - This function often needs to be available BEFORE header.php is loaded. 
  
  
- //XXX DEPRECATED It has been copied to message_handler.php as autoMessage();
+ //XXX DEPRECATED It has been copied to message_handler.php as addAuto();
  
-function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
+function admin_updXXate($update, $type = 'update', $success = false, $failed = false, $output = true)
 {
-	return e107::getMessage()->autoMessage($update, $type, $success , $failed , $output);
-	
-	/*
-	require_once (e_HANDLER."message_handler.php");
-	$emessage = e107::getMessage();
-
-	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
-	{
-		$emessage->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
-	}
-	elseif ($type == 'delete' && $update)
-	{
-		$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
-	}
-	elseif (!mysql_errno())
-	{
-		if ($type == 'update')
-		{
-			$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-		}
-		elseif ($type == 'delete')
-		{
-			$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-		}
-	}
-	else
-	{
-		switch ($type)
-		{
-			case 'insert':
-				$msg = LAN_CREATED_FAILED;
-			break;
-			case 'delete':
-				$msg = LAN_DELETED_FAILED;
-			break;
-			default:
-				$msg = LAN_UPDATED_FAILED;
-			break;
-		}
-
-		$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
-		$emessage->add($text, E_MESSAGE_ERROR);
-	}
-	
-	$emessage->addInfo("Using deprecated admin_update() which has been replaced by \$mes->autoMessage();"); 
-
-	if ($output) echo $emessage->render();
-	return $update;
-	 */
+	e107::getMessage()->addDebug("Using deprecated admin_update () which has been replaced by \$mes->addAuto();"); 
+	return e107::getMessage()->addAuto($update, $type, $success , $failed , $output);
 }
+
 
 function admin_purge_related($table, $id)
 {

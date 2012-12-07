@@ -1375,8 +1375,14 @@ class pluginBuilder
 				<tr>
 					<td>Select your plugin's folder</td>
 					<td>".$frm->selectbox("newplugin",$newDir)."</td>
-				</tr>
-				";
+				</tr>";
+				
+				
+				$text .= "
+				<tr>
+					<td>Create Files</td>
+					<td>".$frm->checkbox('createFiles',1,1)."</td>
+				</tr>";
 			
 			/* NOT a good idea - requires the use of $_POST which would prevent browser 'go Back' navigation. 
 			if(e_DOMAIN == FALSE) // localhost. 
@@ -1897,6 +1903,7 @@ TEMPLATE;
 				break;
 				
 				case 'varchar':
+				case 'tinytext':
 				$array = array(
 					'text'		=> "Text Box",
 					"dropdown"	=> "DropDown",
@@ -2074,7 +2081,11 @@ TEMPLATE;
 			$frm = e107::getForm();
 			$type = $val['type'];
 			
-			if($type == 'VARCHAR' || $type == 'TEXT')
+			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+			
+			
+			if(in_array(strtolower($type),$strings))
 			{
 				$value = 'str';	
 			}	
