@@ -299,7 +299,7 @@ define('EC_ADLAN_A140', "Show number of events for this month in Calendar Menu")
 define('EC_ADLAN_A141', "Maintenance");
 define('EC_ADLAN_A142', "Remove past events ending more than x months ago");
 define('EC_ADLAN_A143', "timed from beginning of current month");
-define('EC_ADLAN_A144', "Event Calendar Maintenance");
+//define('EC_ADLAN_A144', "Event Calendar Maintenance");
 define('EC_ADLAN_A145', "Delete old entries");
 define('EC_ADLAN_A146', "Events older than ");
 define('EC_ADLAN_A147', " deleted");
