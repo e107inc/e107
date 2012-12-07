@@ -1265,7 +1265,7 @@ class admin_shortcodes
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 
-		require(e_ADMIN.'ad_links.php'); //FIXME loaded in boot.php but $admin_cat is not available here. 
+		require_once(e_ADMIN.'ad_links.php'); //FIXME loaded in boot.php but $admin_cat is not available here. 
 		require_once(e_HANDLER.'admin_handler.php');
 		
 		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')

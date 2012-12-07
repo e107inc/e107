@@ -152,12 +152,12 @@ function show_updates($dbupdate, $what)
 	return $updates; // Number of updates to do
 }
 
-if(is_array($_POST['update_core']))
+if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 {
 	$message = run_updates($dbupdate);
 }
 
-if(is_array($_POST['update'])) // Do plugin updates
+if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
 { 
 	$func = key($_POST['update']);
 	run_updates_plugin($func,FALSE);

@@ -69,7 +69,7 @@ class e_media
 		
 	//	print_a($img_array);
 	//	return;
-	
+		$count = 0;
 		foreach($img_array as $f)
 		{
 			$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
@@ -95,7 +95,8 @@ class e_media
 			
 				if($sql->db_Insert("core_media",$insert))
 				{
-					$mes->addSuccess("Imported Media: ".$f['fname']);
+					$count++;
+					$mes->addDebug("Imported Media: ".$f['fname']);
 				}
 				else
 				{
@@ -103,6 +104,11 @@ class e_media
 				}
 			}
 		}
+		if($count)
+		{
+			// $mes->addSuccess("Imported {$count} Media items.");
+		}
+		
 		return $this;
 	}	
 	

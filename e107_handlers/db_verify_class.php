@@ -675,7 +675,7 @@ class db_verify
 						 
 						if(mysql_query($query))
 						{
-							$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);	
+							$mes->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_DEBUG);	
 						} 
 						else 
 						{

@@ -124,7 +124,25 @@ EOF;
 //		$text = "<div >";
 		if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
 		{
-			$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
+			$defArray = array (
+			  	0 => 'e-administrator',
+			    1 => 'e-cpage',
+			    2 => 'e-frontpage',
+			    3 => 'e-mailout',
+			    4 => 'e-image',
+			    5 => 'e-menus',
+			    6 => 'e-meta',
+			    7 => 'e-newspost',
+			    8 => 'e-plugin',
+			    9 => 'e-prefs',
+			    10 => 'e-links',
+			    11 => 'e-theme',
+			    12 => 'e-userclass2',
+			    13 => 'e-users',
+			    14 => 'e-wmessage'
+			  );
+			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'],$defArray);
+			
 		}
 		
 		$array_functions_assoc = e107::getNav()->adminLinks('assoc');
