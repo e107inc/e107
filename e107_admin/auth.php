@@ -129,6 +129,18 @@ else
 			// Fix - set cookie before login trigger
 			session_set(e_COOKIE, $cookieval, (time() + 3600 * 24 * 30));
 			
+			// Required for a clean v1.x -> v2 upgrade. 
+			$core = e107::getConfig('core'); 		
+			if($core->get('admintheme') != 'bootstrap')
+			{
+				$core->update('admintheme','bootstrap');
+				$core->update('adminstyle','infopanel');
+				$core->update('admincss','admin_style.css');
+				$core->update('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
+				$core->save();			
+			}
+			// ---
+			
 			e107::getEvent()->trigger("login", $edata_li);
 			e107::getRedirect()->redirect(e_ADMIN_ABS.'admin.php');
 			//echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
