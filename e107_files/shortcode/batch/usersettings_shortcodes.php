@@ -134,7 +134,7 @@ SC_END
 
 SC_BEGIN SIGNATURE
 global $curVal,$pref;
-if(!check_class($pref['signature_access']))
+if(!check_class(varset($pref['signature_access'],0)))
 {
 	return;
 }
