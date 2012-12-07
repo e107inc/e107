@@ -179,7 +179,7 @@ EOF;
 	
 	//  ------------------------------- e107 News --------------------------------
 		
-		$text2 .= $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true);
+		$text2 = $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true); 
 	
 		// REQUIRES Log Plugin to be installed. 
 		if (e107::isInstalled('log')) 
@@ -257,7 +257,7 @@ EOF;
 		$panelOnline .= "</tbody></table>
 		";
 		
-		$text2 .= $ns->tablerender('Visitors Online : '.$nOnline, $panelOnline,'core-infopanel_online',true);
+		$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
 		
 	// --------------------- User Selected Menus -------------------
 		
@@ -287,7 +287,7 @@ EOF;
 		
 	//	$text .= "</div>";
 		
-		if($_GET['mode'] != 'customize')
+		if(vartrue($_GET['mode']) != 'customize')
 		{
 			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
 			echo $mes->render().'
@@ -580,7 +580,7 @@ EOF;
 		{
 			$unix = strtotime($k);
 			
-			$day[] = intval($v['daytotal']);
+			$day[] = intval(vartrue($v['daytotal']));
 			$label[] = "'".date("D",$unix)."'";				
 		}
 		
