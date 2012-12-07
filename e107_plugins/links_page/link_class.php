@@ -650,7 +650,11 @@ class linkclass
 
 	function show_link_create()
 	{
-        global $sql, $rs, $qs, $ns, $fl, $linkspage_pref, $e_event;
+        global $rs, $qs, $linkspage_pref, $e_event;
+        $sql = e107::getDb();
+        $frm = e107::getForm();
+        $ns = e107::getRender();
+        $fl = e107::getFile();
 
         $row['link_category']       = "";
         $row['link_name']           = "";
@@ -695,12 +699,11 @@ class linkclass
         }
         $width = (e_PAGE == "admin_linkspage_config.php" ? ADMIN_WIDTH : "width:100%;");
         $text = "
-        <div style='text-align:center'>
         ".$rs -> form_open("post", e_SELF."?".e_QUERY, "linkform", "", "enctype='multipart/form-data'", "")."
-        <table style='".$width."' class='fborder' cellspacing='0' cellpadding='0'>
+        <table class='table adminform'>
         <tr>
-        <td style='width:30%' class='forumheader3'>".LCLAN_ITEM_2."</td>
-        <td style='width:70%' class='forumheader3'>";
+        <td>".LCLAN_ITEM_2."</td>
+        <td>";
 
         if (!$link_cats = $sql->db_Select("links_page_cat")) {
             $text .= LCLAN_ITEM_3."<br />";
@@ -719,26 +722,26 @@ class linkclass
         </td>
         </tr>
         <tr>
-        <td style='width:30%' class='forumheader3'>".LCLAN_ITEM_4."</td>
-        <td style='width:70%' class='forumheader3'>
+        <td>".LCLAN_ITEM_4."</td>
+        <td>
             ".$rs -> form_text("link_name", 60, $row['link_name'], 100)."
         </td>
         </tr>
         <tr>
-        <td style='width:30%' class='forumheader3'>".LCLAN_ITEM_5."</td>
-        <td style='width:70%' class='forumheader3'>
+        <td>".LCLAN_ITEM_5."</td>
+        <td>
             ".$rs -> form_text("link_url", 60, $row['link_url'], 200)."
         </td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_6."</td>
-        <td style='width:70%' class='forumheader3'>
+        <td>".LCLAN_ITEM_6."</td>
+        <td>
             ".$rs -> form_textarea("link_description", '59', '3', $row['link_description'], "", "", "", "", "")."
         </td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_7."</td>
-        <td style='width:70%' class='forumheader3'>";
+        <td>".LCLAN_ITEM_7."</td>
+        <td>";
             if(!FILE_UPLOADS){
                 $text .= "<b>".LCLAN_ITEM_9."</b>";
             }else{
@@ -748,7 +751,7 @@ class linkclass
                 $text .= "
                 <input class='tbox' type='file' name='file_userfile[]'  size='58' /><br />
                 ".LCLAN_ITEM_8." ".$rs -> form_text("link_resize_value", 3, $link_resize_value, 3)."&nbsp;".LCLAN_ITEM_12."
-                ".$rs -> form_button("submit", "uploadlinkicon", LCLAN_ITEM_13, "", "", "");
+                ".$frm->admin_button('uploadlinkicon', LCLAN_ITEM_13, 'submit');
             }
         $text .= "
         </td>
@@ -758,73 +761,74 @@ class linkclass
         $iconpath = e_PLUGIN."links_page/link_images/";
         $iconlist = $fl->get_files($iconpath);
         $iconpath = e_PLUGIN_ABS."links_page/link_images/";			// Absolute paths now we've got the files
-
+        // TODO FIX - needs replacement with up-to-date form handling, see below. 
         $text .= "
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_14."</td>
-        <td style='width:70%; vertical-align:top;' class='forumheader3'>
-        <input class='tbox' type='text' name='link_but' id='link_but' size='60' value='".$row['link_button']."' maxlength='100' />
-            <div id='linkbut' style='display:block; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
-            $selectjs   = " onchange=\"document.getElementById('link_but').value=this.options[this.selectedIndex].value; if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';document.getElementById('iconview').style.display='none';}\"";
-            $text       .= $rs -> form_select_open("link_button", $selectjs);
-            $text       .= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "");
-            foreach($iconlist as $icon){
-                $text   .= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'] );
-            }
-            $text .= $rs -> form_select_close();
-            if(isset($row['link_button']) && $row['link_button']){
-                $img = $iconpath.$row['link_button'];
-            }else{
-                $blank_display = 'display: none';
-                $img = e_PLUGIN_ABS."links_page/images/blank.gif";
-            }
-            $text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; ".$blank_display."' /><br /><br /></td></tr></table>";
-            $text .= "</div>
-        </td>
+        <td>".LCLAN_ITEM_14."</td> 
+            <td>
+            <input class='tbox' type='text' name='link_but' id='link_but' size='60' value='".$row['link_button']."' maxlength='100' />
+                <div id='linkbut' style='display:block; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
+                $selectjs   = " onchange=\"document.getElementById('link_but').value=this.options[this.selectedIndex].value; if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';document.getElementById('iconview').style.display='none';}\"";
+                $text       .= $rs -> form_select_open("link_button", $selectjs);
+                $text       .= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "");
+                foreach($iconlist as $icon){
+                    $text   .= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'] );
+                }
+                $text .= $rs -> form_select_close();
+                if(isset($row['link_button']) && $row['link_button']){
+                    $img = $iconpath.$row['link_button'];
+                }else{
+                    $blank_display = 'display: none';
+                    $img = e_PLUGIN_ABS."links_page/images/blank.gif";
+                }
+                $text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; ".$blank_display."' /><br /><br /></td></tr></table>";
+                $text .= "</div>
+            </td>
         </tr>";
 
         //0=same window, 1=_blank, 2=_parent, 3=_top, 4=miniwindow
         $text .= "
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_16."</td>
-        <td style='width:70%' class='forumheader3'>
-            ".$rs -> form_select_open("linkopentype")."
-            ".$rs -> form_option(LCLAN_ITEM_17, ($row['link_open'] == "0" ? "1" : "0"), "0", "")."
-            ".$rs -> form_option(LCLAN_ITEM_18, ($row['link_open'] == "1" ? "1" : "0"), "1", "")."
-            ".$rs -> form_option(LCLAN_ITEM_19, ($row['link_open'] == "4" ? "1" : "0"), "4", "")."
-            ".$rs -> form_select_close()."
-        </td>
+        <td>".LCLAN_ITEM_16."</td>
+            <td>
+                ".$rs -> form_select_open("linkopentype")."
+                ".$rs -> form_option(LCLAN_ITEM_17, ($row['link_open'] == "0" ? "1" : "0"), "0", "")."
+                ".$rs -> form_option(LCLAN_ITEM_18, ($row['link_open'] == "1" ? "1" : "0"), "1", "")."
+                ".$rs -> form_option(LCLAN_ITEM_19, ($row['link_open'] == "4" ? "1" : "0"), "4", "")."
+                ".$rs -> form_select_close()."
+            </td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_20."</td>
-        <td style='width:70%' class='forumheader3'>
+            <td>".LCLAN_ITEM_20."</td>
+        <td>
             ".r_userclass("link_class", $row['link_class'], "off", "public,guest,nobody,member,admin,classes")."
         </td>
         </tr>";
 
 		//triggerHook
 		$data = array('method'=>'form', 'table'=>'links_page', 'id'=>$row['link_id'], 'plugin'=>'links_page', 'function'=>'show_link_create');
+		$text .= $frm->renderHooks($data);
 		
-		$text .= e107::getForm()->renderHooks($data);
-		
-
 		$text .= "
         <tr style='vertical-align:top'>
-        <td colspan='2' style='text-align:center' class='forumheader'>";
+        <td colspan='2' style='text-align:center'>";
         if (isset($qs[2]) && $qs[2] && $qs[1] == "edit") {
             $text .= $rs -> form_hidden("link_datestamp", $row['link_datestamp']);
             $text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".LCLAN_ITEM_21."<br /><br />";
             $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_22, "", "", "").$rs -> form_hidden("link_id", $row['link_id']).$rs -> form_hidden("link_author", $row['link_author']);
 
         } else {
-            $text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_23, "", "", "");
+            $text .= "
+            <div class='buttons-bar center'>
+                ".$frm->admin_button('add_link', LCLAN_ITEM_23, 'submit')."
+            </div>"; 
         }
         $text .= "</td>
         </tr>
         </table>
         ".$rs -> form_close()."
-        </div>";
-
+        ";
+        // TODO FIX - seperate div buttons-bar from table
         $ns->tablerender(LCLAN_PAGETITLE_1, $text);
     }
 
@@ -835,7 +839,12 @@ class linkclass
 	 */
     function show_links() 
 	{
-        global $sql, $qs, $rs, $ns, $tp, $from;
+        global $qs, $rs, $from;
+        $sql = e107::getDb();
+        $frm = e107::getForm();
+        $tp = e107::getParser();  
+        $ns = e107::getRender();
+    
         $number = "20";
 		$LINK_CAT_NAME = '';			// May be appropriate to add a shortcode later
 
@@ -863,13 +872,13 @@ class linkclass
 		{	// Display the individual links
             $text = $rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "myform_{$row['link_id']}", "", "");
             $text .= "<div style='text-align:center'>
-            <table class='fborder' style='".ADMIN_WIDTH."'>
+            <table class=''table adminlist'>
             <tr>
-            <td class='fcaption' style='width:5%'>".LCLAN_ITEM_25."</td>
-            <td class='fcaption' style='width:65%'>".LCLAN_ITEM_26."</td>
-            <td class='fcaption' style='width:10%'>".LCLAN_ITEM_27."</td>
-            <td class='fcaption' style='width:10%'>".LCLAN_ITEM_28."</td>
-            <td class='fcaption' style='width:10%'>".LCLAN_ITEM_29."</td>
+            <td style='width:5%'>".LCLAN_ITEM_25."</td>
+            <td style='width:65%'>".LCLAN_ITEM_26."</td>
+            <td style='width:10%'>".LCLAN_ITEM_27."</td>
+            <td style='width:10%'>".LCLAN_ITEM_28."</td>
+            <td style='width:10%'>".LCLAN_ITEM_29."</td>
             </tr>";
             while ($row = $sql->db_Fetch()) 
 			{
@@ -915,19 +924,19 @@ class linkclass
                 }
                 $text .= "
                 <tr>
-                <td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$img."</td>
-                <td style='width:65%' class='forumheader3'>
+                <td style='width:5%; text-align: center; vertical-align: middle'>".$img."</td>
+                <td style='width:65%'>
                     <a href='".e_PLUGIN_ABS."links_page/links.php?".$row['link_id']."' rel='external'>".LINK_ICON_LINK."</a> ".$row['link_name']."
                 </td>
-                <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
+                <td style='width:10%; text-align:center; white-space: nowrap'>
                     <a href='".e_SELF."?link.edit.".$linkid."' title='".LCLAN_ITEM_31."'>".LINK_ICON_EDIT."</a>
                     <input type='image' title='delete' name='delete[main_{$linkid}]' alt='".LCLAN_ITEM_32."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_ITEM_33." [ ".$row['link_name']." ]")."')\" />
                 </td>
-                <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
+                <td style='width:10%; text-align:center; white-space: nowrap'>
                     ".$up."
                     ".$down."
                 </td>
-                <td style='width:10%; text-align:center' class='forumheader3'>
+                <td style='width:10%; text-align:center'>
                     <select name='link_order[]' class='tbox'>";
                     //".$rs -> form_select_open("link_order[]");
                     for($a = 1; $a <= $link_total; $a++) {
@@ -939,9 +948,9 @@ class linkclass
             }
             $text .= "
             <tr>
-            <td class='forumheader' colspan='4'>&nbsp;</td>
-            <td class='forumheader' style='width:5%; text-align:center'>
-            ".$rs->form_button("submit", "update_order", LCLAN_ITEM_30)."
+            <td colspan='4'>&nbsp;</td>
+            <td style='width:5%; text-align:center'>
+            ".$rs->form_button('update_order', LCLAN_ITEM_30, 'submit')."
             </td>
             </tr>
             </table></div>
@@ -952,7 +961,12 @@ class linkclass
     }
 
     function show_cat_create() {
-        global $qs, $sql, $rs, $ns, $tp, $fl;
+        global $qs, $rs;
+        $sql = e107::getDb();
+        $frm = e107::getForm();
+        $tp = e107::getParser();  
+        $ns = e107::getRender();
+        $fl = e107::getFile();
 
         $row['link_category_name']          = "";
         $row['link_category_description']   = "";
@@ -978,37 +992,38 @@ class linkclass
 //        $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
         $iconlist = $fl->get_files(e_PLUGIN."links_page/cat_images/");
 
-        $text = "<div style='text-align:center'>
+        $text = "
         ".$rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "linkform", "", "enctype='multipart/form-data'", "")."
-        <table class='fborder' style='".ADMIN_WIDTH."'>
+        <table class='table adminform'>
         <tr>
-        <td class='forumheader3' style='width:30%'>".LCLAN_CAT_13."</td>
-        <td class='forumheader3' style='width:70%'>".$rs->form_text("link_category_name", 50, $row['link_category_name'], 200)."</td>
+            <td>".LCLAN_CAT_13."</td>
+            <td>".$rs->form_text("link_category_name", 50, $row['link_category_name'], 200)."</td>
         </tr>
         <tr>
-        <td class='forumheader3' style='width:30%; vertical-align:top;'>".LCLAN_CAT_14."</td>
-        <td class='forumheader3' style='width:70%'>".$rs->form_text("link_category_description", 60, $row['link_category_description'], 200)."</td>
+            <td>".LCLAN_CAT_14."</td>
+            <td>".$rs->form_text("link_category_description", 60, $row['link_category_description'], 200)."</td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_CAT_15."</td>
-        <td style='width:70%' class='forumheader3'>";
-            if(!FILE_UPLOADS){
-                $text .= "<b>".LCLAN_CAT_17."</b>";
-            }else{
-                if(!is_writable(e_PLUGIN."links_page/cat_images/")){
-                    $text .= "<b>".LCLAN_CAT_18." ".e_PLUGIN."links_page/cat_images/ ".LCLAN_CAT_19."</b><br />";
+            <td>".LCLAN_CAT_15."</td>
+            <td>";
+                if(!FILE_UPLOADS){
+                    $text .= "<b>".LCLAN_CAT_17."</b>";
+                }else{
+                    if(!is_writable(e_PLUGIN."links_page/cat_images/")){
+                        $text .= "<b>".LCLAN_CAT_18." ".e_PLUGIN."links_page/cat_images/ ".LCLAN_CAT_19."</b><br />";
+                    }
+                    $text .= "
+                    <input class='tbox' type='file' name='file_userfile[]'  size='58' /><br />
+                    ".LCLAN_CAT_16." ".$rs -> form_text("link_cat_resize_value", 3, $link_cat_resize_value, 3)."&nbsp;".LCLAN_CAT_20."
+                    ".$frm->admin_button('uploadcatlinkicon', LCLAN_CAT_21, 'submit');
+                    
                 }
-                $text .= "
-                <input class='tbox' type='file' name='file_userfile[]'  size='58' /><br />
-                ".LCLAN_CAT_16." ".$rs -> form_text("link_cat_resize_value", 3, $link_cat_resize_value, 3)."&nbsp;".LCLAN_CAT_20."
-                ".$rs -> form_button("submit", "uploadcatlinkicon", LCLAN_CAT_21, "", "", "");
-            }
-        $text .= "
-        </td>
+            $text .= "
+            </td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_CAT_22."</td>
-        <td style='width:70%' class='forumheader3'>
+        <td>".LCLAN_CAT_22."</td>
+        <td>
             ".$rs -> form_text("link_category_icon", 60, $row['link_category_icon'], 100)."
             ".$rs -> form_button("button", '', LCLAN_CAT_23, "onclick=\"expandit('catico')\"")."
             <div id='catico' style='{head}; display:none'>";
@@ -1019,12 +1034,12 @@ class linkclass
         </td>
         </tr>
         <tr>
-        <td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_CAT_24."</td>
-        <td style='width:70%' class='forumheader3'>
+        <td>".LCLAN_CAT_24."</td>
+        <td>
             ".r_userclass("link_category_class", $row['link_category_class'], "off", "public,guest,nobody,member,admin,classes")."
         </td>
         </tr>
-        <tr><td colspan='2' style='text-align:center' class='forumheader'>";
+        <tr><td colspan='2' style='text-align:center'>";
         if (is_numeric($qs[2])) {
             $text .= $rs -> form_hidden("link_category_order", $row['link_category_order']);
             $text .= $rs -> form_hidden("link_category_datestamp", $row['link_category_datestamp']);
@@ -1033,7 +1048,7 @@ class linkclass
             $text .= $rs -> form_button("submit", "category_clear", LCLAN_CAT_27). $rs->form_hidden("link_category_id", $qs[2]);
 
         } else {
-            $text .= $rs -> form_button("submit", "create_category", LCLAN_CAT_28, "", "", "");
+            $text .= $frm->admin_button('create_category', LCLAN_CAT_28, 'submit'); // TODO FIX LCLAN_CAT_22 td needs fixing and updating to v2 style, unfunctional atm. - above
         }
         $text .= "</td></tr></table>
         ".$rs->form_close()."
@@ -1052,21 +1067,26 @@ class linkclass
 	 */
 	function show_categories($mode) 
 	{
-        global $sql, $rs, $ns, $tp, $fl;
+        global $rs;
+        $sql = e107::getDb();
+        $frm = e107::getForm();
+        $tp = e107::getParser();  
+        $ns = e107::getRender();
+        $fl = e107::getFile();
 
         if ($category_total = $sql->db_Select("links_page_cat", "*", "ORDER BY link_category_order ASC", "mode=no_where")) {
             $text = "
-            <div style='text-align: center'>
+          
             ".$rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "", "", "")."
-            <table class='fborder' style='".ADMIN_WIDTH."'>
+            <table class='table adminlist'>
             <tr>
-            <td style='width:5%' class='fcaption'>".LCLAN_CAT_1."</td>
-            <td class='fcaption'>".LCLAN_CAT_2."</td>
-            <td style='width:10%' class='fcaption'>".LCLAN_CAT_3."</td>";
+            <td style='width:5%'>".LCLAN_CAT_1."</td>
+            <td>".LCLAN_CAT_2."</td>
+            <td style='width:10%'>".LCLAN_CAT_3."</td>";
             if($mode == "cat"){
                 $text .= "
-                <td class='fcaption' style='width:10%'>".LCLAN_CAT_4."</td>
-                <td class='fcaption' style='width:10%'>".LCLAN_CAT_5."</td>";
+                <td style='width:10%'>".LCLAN_CAT_4."</td>
+                <td style='width:10%'>".LCLAN_CAT_5."</td>";
             }
             $text .= "
             </tr>";
@@ -1083,8 +1103,8 @@ class linkclass
                 }
                 $text .= "
                 <tr>
-                <td style='width:5%; text-align:center' class='forumheader3'>".$img."</td>
-                <td class='forumheader3'>
+                <td style='width:5%; text-align:center'>".$img."</td>
+                <td>
                     <a href='".e_PLUGIN_ABS."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a>
                     ".$row['link_category_name']."<br /><span class='smalltext'>".$row['link_category_description']."</span>
                 </td>";
@@ -1110,15 +1130,15 @@ class linkclass
 						$down = "<input type='image' src='".LINK_ICON_ORDER_DOWN_BASE."' name='dec".$name_suffix."' />";
                     }
                     $text .= "
-                    <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
+                    <td style='width:10%; text-align:center; white-space: nowrap'>
                         <a href='".e_SELF."?cat.edit.".$linkcatid."' title='".LCLAN_CAT_6."'>".LINK_ICON_EDIT."</a>
                         <input type='image' title='delete' name='delete[category_{$linkcatid}]' alt='".LCLAN_CAT_7."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_CAT_8." [ ".$row['link_category_name']." ]")."')\"/>
                     </td>
-                    <td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
+                    <td style='width:10%; text-align:center; white-space: nowrap'>
                         ".$up."
                         ".$down."
                     </td>
-                    <td style='width:10%; text-align:center' class='forumheader3'>
+                    <td style='width:10%; text-align:center'>
                         <select name='link_category_order[]' class='tbox'>";
                         for($a = 1; $a <= $category_total; $a++) 
 						{
@@ -1129,7 +1149,7 @@ class linkclass
                 }
 				else
 				{
-                    $text .= "<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
+                    $text .= "<td style='width:10%; text-align:center; white-space: nowrap'>
                     <a href='".e_SELF."?link.view.".$linkcatid."' title='".LCLAN_CAT_9."'>".LINK_ICON_EDIT."</a></td>";
                 }
                 $text .= "
@@ -1139,16 +1159,16 @@ class linkclass
 			{
                 $text .= "
                 <tr>
-                <td class='forumheader' colspan='4'>&nbsp;</td>
-                <td class='forumheader' style='width:5%; text-align:center'>
-                ".$rs->form_button("submit", "update_category_order", LCLAN_CAT_10)."
+                <td colspan='4'>&nbsp;</td>
+                <td style='width:5%; text-align:center'>
+                ".$frm->admin_button('update_category_order', LCLAN_CAT_10, 'submit')."
                 </td>
                 </tr>";
             }else{
                 $text .= "
                 <tr>
-                <td class='forumheader' colspan='2'>&nbsp;</td>
-                <td class='forumheader' style='width:5%; text-align:center'>".$rs->form_button("button", "viewalllinks", LCLAN_ITEM_37, "onclick=\"document.location='".e_SELF."?link.view.all';\"")."
+                <td colspan='2'>&nbsp;</td>
+                <td style='width:5%; text-align:center'>".$rs->form_button("button", "viewalllinks", LCLAN_ITEM_37, "onclick=\"document.location='".e_SELF."?link.view.all';\"")."
                 </td>
                 </tr>";
             }
@@ -1173,9 +1193,9 @@ class linkclass
             ".$rs->form_open("post", e_SELF."?sn", "submitted_links")."
             <table class='fborder' style='".ADMIN_WIDTH."'>
             <tr>
-            <td style='width:60%' class='fcaption'>".LCLAN_SL_3."</td>
-            <td style='width:30%' class='fcaption'>".LCLAN_SL_4."</td>
-            <td style='width:10%; white-space:nowrap; text-align:center' class='fcaption'>".LCLAN_SL_5."</td>
+            <td style='width:60%'>".LCLAN_SL_3."</td>
+            <td>".LCLAN_SL_4."</td>
+            <td style='width:10%; white-space:nowrap; text-align:center'>".LCLAN_SL_5."</td>
             </tr>";
             while ($row = $sql->db_Fetch()) {
                 $tmp_time = $row['tmp_time'];
@@ -1184,9 +1204,9 @@ class linkclass
                     $submitted[2] = "http://".$submitted[2];
                 }
                 $text .= "<tr>
-                <td style='width:60%' class='forumheader3'><a href='".$submitted[2]."' rel='external'>".$submitted[2]."</a></td>
-                <td style='width:30%' class='forumheader3'>".$submitted[5]."</td>
-                <td style='width:10%; white-space:nowrap; text-align:center; vertical-align:top' class='forumheader3'>
+                <td style='width:60%'><a href='".$submitted[2]."' rel='external'>".$submitted[2]."</a></td>
+                <td>".$submitted[5]."</td>
+                <td style='width:10%; white-space:nowrap; text-align:center; vertical-align:top'>
                     <a href='".e_SELF."?link.sn.".$tmp_time."' title='".LCLAN_SL_6."'>".LINK_ICON_EDIT."</a>
                     <input type='image' title='delete' name='delete[sn_{$tmp_time}]' alt='".LCLAN_SL_7."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_SL_8." [ ".$tmp_time." ]")."')\" />
                 </td>
@@ -1198,7 +1218,9 @@ class linkclass
     }
 
     function show_pref_options() {
-        global $linkspage_pref, $ns, $rs, $pref;
+        global $linkspage_pref, $rs;
+        $ns = e107::getRender();
+        $pref = e107::getPref();
 
         $text = "
         <script type=\"text/javascript\">
@@ -1224,11 +1246,11 @@ class linkclass
 
         $TOPIC_ROW = "
         <tr>
-            <td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
-            <td class='forumheader3' style='vertical-align:top;'>{TOPIC_FIELD}</td>
+            <td style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+            <td style='vertical-align:top;'>{TOPIC_FIELD}</td>
         </tr>";
 
-        $TOPIC_TITLE_ROW = "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
+        $TOPIC_TITLE_ROW = "<tr><td colspan='2'>{TOPIC_CAPTION}</td></tr>";
         $TOPIC_ROW_SPACER = "<tr><td style='height:20px;' colspan='2'></td></tr>";
         $TOPIC_TABLE_END = $this->pref_submit()."</table></div>";
 
@@ -1237,7 +1259,7 @@ class linkclass
         ".$rs -> form_open("post", e_SELF."?".e_QUERY, "optform", "", "", "")."
 
         <div id='optgeneral' style='text-align:center'>
-        <table style='".ADMIN_WIDTH."' class='fborder'>";
+        <table class='table adminform'>";
 
         $TOPIC_CAPTION = LCLAN_OPT_MENU_1;
         $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
@@ -1312,7 +1334,7 @@ class linkclass
 
         $text .= "
         <div id='optmanager' style='display:none; text-align:center'>
-        <table style='".ADMIN_WIDTH."' class='fborder'>";
+        <table class='table adminform'>";
 
         $TOPIC_CAPTION = LCLAN_OPT_MENU_2;
         $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
@@ -1593,13 +1615,14 @@ class linkclass
         $ns->tablerender(LCLAN_OPT_2, $text);
     }
 
-    function pref_submit() 
+    function pref_submit()  // TODO FIX - button needs seperation from table, inside buttons-bar div
 	{
         global $rs;
+        $frm = e107::getForm();
         $text = "
         <tr>
-        <td colspan='2' style='text-align:center' class='forumheader'>
-        <input class='button' type='submit' name='updateoptions' value='".LCLAN_ADMIN_1."' />
+        <td colspan='2' style='text-align:center'>
+            ".$frm->admin_button('updateoptions', LAN_UPDATE, 'update')."
         </td>
         </tr>";
 

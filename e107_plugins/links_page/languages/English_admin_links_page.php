@@ -37,7 +37,7 @@ define("LCLAN_PAGETITLE_9", "Submit Link");
 define("LCLAN_PAGETITLE_10", "");
 
 
-define("LCLAN_OPT_1", "general options");
+//define("LCLAN_OPT_1", "general options");
 define("LCLAN_OPT_2", "Link Page Options");
 define("LCLAN_OPT_3", "enabled");
 define("LCLAN_OPT_4", "disabled");
@@ -126,7 +126,7 @@ define("LCLAN_OPT_85", "caption menu");
 define("LCLAN_OPT_86", "link menu");
 define("LCLAN_OPT_87", "show amount of links");
 
-define("LCLAN_ADMIN_1", "update");  // deprecated
+//define("LCLAN_ADMIN_1", "update");  // deprecated
 define("LCLAN_ADMIN_2", "Link saved to database.");
 define("LCLAN_ADMIN_3", "Link updated in database.");
 define("LCLAN_ADMIN_4", "Link Category Saved");
@@ -205,7 +205,7 @@ define("LCLAN_ITEM_10", "The");
 define("LCLAN_ITEM_11", "folder is not writable, you need to CHMOD 777 the folder before uploading");
 define("LCLAN_ITEM_12", "px");
 define("LCLAN_ITEM_13", "upload");
-define("LCLAN_ITEM_14", "Choose an icon:");
+define("LCLAN_ITEM_14", "Choose an icon:"); 
 define("LCLAN_ITEM_15", "View Images");
 define("LCLAN_ITEM_16", "Open Type:");
 define("LCLAN_ITEM_17", "Opens in same window");
