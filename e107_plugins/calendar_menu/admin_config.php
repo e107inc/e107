@@ -227,32 +227,38 @@ if (isset($_POST['confirmdelcache']) && ($action == 'cachedel'))
 if ($action == 'confdel')
 {
 	$old_string = strftime("%d %B %Y",$ec_qs[1]);
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?backdel.{$ec_qs[1]}'>
-	<table style='width:97%' class='fborder'>
+	<table class='table adminform'>
 	<tr>
-		<td style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A150.$old_string." </td>
+		<td>".EC_ADLAN_A150.$old_string."</td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center'>".$frm->admin_button('confirmdeleteold', EC_ADLAN_A205, 'submit')."</td></tr>
-	</table></form></div>";
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('confirmdeleteold', EC_ADLAN_A205, 'delete')."
+	</div>
+	</form>
+	</div>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text); // TODO
+	$ns->tablerender(EC_ADLAN_A205, $text); 
 }
 
 
 // Prompt to clear cache
 if ($action == 'confcache')
 {
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?cachedel'>
-	<table style='width:97%' class='fborder'>
+	<table class='table adminform'>
 	<tr>
-		<td style='width:100%;vertical-align:top;rext-align:center;'>".EC_ADLAN_A162." </td>
+		<td>".EC_ADLAN_A162." </td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center'><input class='button' type='submit' name='confirmdelcache' value='".EC_ADLAN_A205."' /></td></tr>
-	</table></form></div>";
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('confirmdelcache', EC_ADLAN_A205, 'delete')."
+	</form>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_A205."</div>", $text); // TODO
+	$ns->tablerender(EC_ADLAN_A205, $text);
 }
 
 
@@ -268,7 +274,7 @@ if (isset($ec_qs[2]) && isset($ec_qs[3]) && ($action == 'subs') && ($ec_qs[2] ==
 
 if (isset($message) && ($message != "")) 
 {
-	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>"); // TODO
+	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>"); // TODO v2 style
 	$message = '';
 }
 
@@ -469,7 +475,7 @@ if($action == 'cat')
 			</tr>
 			{$calendarmenu_msg}
 			<tr>
-				<td>".EC_ADLAN_A21."</td>
+				<td>".EC_ADLAN_A21."</td> 
 				<td><input type='text' style='width:150px' class='tbox' name='event_cat_name' value='{$event_cat_name}' /></td>
 			</tr>
 			<tr>
@@ -532,7 +538,7 @@ if($action == 'cat')
 			<tr>
 				<td style='vertical-align:top;'>".EC_ADLAN_A84;
 		if ($calendarmenu_do == 1) 
-		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_1' value='".EC_ADLAN_A186."' class='tbox' />";
+		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_1' value='".EC_ADLAN_A186."' class='tbox' />"; // TODO / FIX v2 style
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg1' >".$event_cat_msg1."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
@@ -543,7 +549,7 @@ if($action == 'cat')
 			<tr>
 				<td style='vertical-align:top;'>".EC_ADLAN_A117;
 		if ($calendarmenu_do == 1) 
-		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_2' value='".EC_ADLAN_A186."' class='tbox' />";
+		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_2' value='".EC_ADLAN_A186."' class='tbox' />"; // TODO / FIX v2 style
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg2' >".$event_cat_msg2."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
@@ -710,8 +716,6 @@ if($action == 'forthcoming')
   
 	$text .= "</td>
 	</tr>
-	
-
 	</tbody>
 	</table>
 	<div class='buttons-bar center'>
@@ -731,12 +735,10 @@ if($action == 'forthcoming')
 
 if(($action == 'maint'))
 {
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?maint'>
 	<fieldset id='plugin-ecal-maintenance'>
-	<table cellpadding='0' cellspacing='0' class='adminform'>
-	<tbody>
-	<tr><td style='vertical-align:top;' colspan='2'>".EC_ADLAN_A144." </td></tr>
+	<table class='table adminform'>
 	<tr>
 		<td style='width:40%;vertical-align:top;'>".EC_ADLAN_A142." </td>
 		<td style='width:60%;vertical-align:top;'>
@@ -757,21 +759,30 @@ if(($action == 'maint'))
 			<span class='field-help'><em>".EC_ADLAN_A143."</em></span>
 		</td>
 	</tr>
-	<tr><td colspan='2'  style='text-align:center'><input class='button' type='submit' name='deleteold' value='".EC_ADLAN_A145."' /></td></tr>
-	</tbody></table></fieldset></form></div><br /><br />";
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('deleteold', EC_ADLAN_A145, 'delete')."
+	</div>
+	</fieldset>
+	</form>
+	<br /><br />";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A141."</div>", $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A141, $text);
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?maint'>
 	<fieldset id='plugin-ecal-cache'>
-	<table cellpadding='0' cellspacing='0' class='adminform'>
-	<tbody>
-	<tr><td style='vertical-align:top; text-align:center;' colspan='2' class='smalltext'><em>".EC_ADLAN_A160."</em> </td></tr>
-	<tr><td colspan='2'  style='text-align:center'><input class='button' type='submit' name='cache_clear' value='".EC_ADLAN_A161."' /></td></tr>
-	</tbody></table></fieldset></form></div>";
+	<table class='table adminform'>
+	<tr>
+		<td colspan='2' class='smalltext'><em>".EC_ADLAN_A160."</em> </td>
+	</tr>
+	</table>
+	<div class='buttons-bar center'>
+		".$frm->admin_button('cache_clear', EC_ADLAN_A161, 'delete')."
+	</fieldset>
+	</form>";
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A159."</div>", $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A159, $text);
 
 }
 
@@ -793,7 +804,7 @@ if($action == 'subs')
 					 ORDER BY u.user_id
 					 LIMIT {$from}, {$amount} ";
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."?subs.".$from."'>
 	<fieldset id='plugin-ecal-subscriptions'>
 	<table class='table adminform'>
@@ -834,7 +845,7 @@ if($action == 'subs')
 				<td style='text_align:center'><a href='".e_SELF."?".$action.".".$from.".del.".$row['event_subid']."'>
 				  <img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' /></a></td>
 				</tr>";
-		}  // End while
+		}  // End while  // TODO / FIX admin_images to ad_links constant? 
 
 		// Next-Previous. ==========================
 		if ($num_entry > $amount) 
@@ -847,7 +858,7 @@ if($action == 'subs')
 
 	$text .= "&nbsp;&nbsp;&nbsp;".str_replace("--NUM--", $num_entry, EC_ADLAN_A182);
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A173.'</div>', $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A173, $text);
 }
 
 
@@ -1118,7 +1129,7 @@ $text .= "
 	</tr>
 	</table>
 	<div class='buttons-bar center'>
-		".$frm->admin_button('updatesettings',LAN_UPDATE, 'update')."
+		".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
 	</fieldset>
 	</form>
