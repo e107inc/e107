@@ -1500,7 +1500,7 @@ class e_userperms
 			}
 	  }
 
-		admin_update($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
+		e107::getMessage()->addAuto($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}

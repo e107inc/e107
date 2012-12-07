@@ -414,11 +414,11 @@ class emotec
 
 		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'"))
 		{
-			admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16, false, false);
+			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16, false, false);
 		}
 		else
 		{
-			admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16, false, false);
+			e107::getMessage()->addAuto($sql->insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16, false, false);
 		}
 	}
 

@@ -34,7 +34,7 @@ $(document).ready(function()
        		
        		if(href == '' && $(this).attr("data-target"))
        		{
-       			href = $(this).attr("data-target");	
+       			href = '#' + $(this).attr("data-target");	
        		}
        	
 						
@@ -47,7 +47,7 @@ $(document).ready(function()
 
 			      		    		
        		//var id = $(this).attr("href");   		
-			$('#'+href).toggle("slow");
+			$(href).toggle("slow");
 			return false;
 		}); 
 		

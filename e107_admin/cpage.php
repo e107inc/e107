@@ -1011,7 +1011,7 @@ class page_admin_ui extends e_admin_ui
 				}*/
 				
 				$mes = e107::getMessage();
-				$mes->autoMessage($update, 'update', LAN_UPDATED, false, false);		// Display result of update
+				$mes->addAuto($update, 'update', LAN_UPDATED, false, false);		// Display result of update
 			}
 			else
 			{	// New page/menu
@@ -1035,7 +1035,7 @@ class page_admin_ui extends e_admin_ui
 					'page_theme' => $menuname,
 					'page_template' => varset($_POST['page_template'],'')
 					);
-				$pid = e107::getMessage()->autoMessage($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
+				$pid = e107::getMessage()->addAuto($sql->db_Insert('page', $info), 'insert', $addMsg, LAN_CREATED_FAILED, false);
 				$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 	
 				if($type)
@@ -1048,7 +1048,7 @@ class page_admin_ui extends e_admin_ui
 						'menu_pages' => '',
 						'menu_path' => $pid,
 					);
-					e107::getMessage()->autoMessage($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
+					e107::getMessage()->addAuto($sql->db_Insert('menus', $info), 'insert', CUSLAN_52, LAN_CREATED_FAILED, false);
 				}
 	
 				/*if(vartrue($_POST['page_link']))
@@ -1218,7 +1218,7 @@ class page
 		//if(!$sql->db_Select('page', '*', "page_id={$del_id}")) return;
 		//$row = $sql->db_Fetch();
 		
-		admin_update($sql->db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28, false, false);
+		e107::getMessage()->addAuto($sql->db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28, false, false);
 		$sql->db_Delete('menus', "menu_path='$del_id'");
 		$e107cache->clear_sys('menus_');
 		$admin_log->log_event('CPAGE_03','ID: '.$del_id,E_LOG_INFORMATIVE,'');

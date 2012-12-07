@@ -820,7 +820,7 @@ class eMessage
 	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
 	 // It has been copied from admin_update() in e107_admin/header.php
 	 
-	public function autoMessage($update, $type = 'update', $success = false, $failed = false, $output = false)
+	public function addAuto($update, $type = 'update', $success = false, $failed = false, $output = false)
 	{
 
 		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))

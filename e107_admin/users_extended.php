@@ -151,9 +151,9 @@ if (isset($_POST['add_field']))
 		else
 		{
 		
-				$result = $mes->autoMessage($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
+				$result = $mes->addAuto($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
 		
-		//	$result = $mes->autoMessage($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
+		//	$result = $mes->addAuto($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
 			if(!$result)
 			{
 				$message = EXTLAN_75;
@@ -182,7 +182,7 @@ if (isset($_POST['update_field']))
 	}
 	$upd_values = $user->make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	$result = $mes->autoMessage($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
+	$result = $mes->addAuto($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
 	if($result)
 	{
 		$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
@@ -196,7 +196,7 @@ if (isset($_POST['update_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = trim($tp->toDB($_POST['user_field']));
-		$result = $mes->autoMessage(
+		$result = $mes->addAuto(
 			$sql->db_Update(
 				"user_extended_struct",
 				"user_extended_struct_name = '{$name}', user_extended_struct_text='".$tp->toDB($_POST['user_text'])."', user_extended_struct_read = '".intval($_POST['user_read'])."', user_extended_struct_write = '".intval($_POST['user_write'])."', user_extended_struct_applicable = '".intval($_POST['user_applicable'])."' WHERE user_extended_struct_id = '{$sub_action}'"),
@@ -224,7 +224,7 @@ if (isset($_POST['add_category']))
 	if (preg_match('#^[\w\s]+$#', $_POST['user_field']) === 1) // Check for allowed characters
   	{
 		$name = $tp->toDB($_POST['user_field']);
-		$result = $mes->autoMessage($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
+		$result = $mes->addAuto($sql->db_Insert("user_extended_struct","'0', '{$name}', '".$tp->toDB($_POST['user_text'])."', 0, '', '', '', '".intval($_POST['user_read'])."', '".intval($_POST['user_write'])."', '0', '0', '".intval($_POST['user_applicable'])."', '0', '0'"), 'insert', EXTLAN_40, false, false);
 		if($result)
 		{
 			$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');

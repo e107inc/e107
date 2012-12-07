@@ -1156,7 +1156,7 @@ $columnInfo = array(
 				$updateArray = array_merge($dlInfo,$dlMirrors);
 				$updateArray['WHERE'] = 'download_id='.intval($id);
 				
-				$mes->autoMessage($sql->db_Update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
+				$mes->addAuto($sql->db_Update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
 	                
 				$dlInfo['download_id'] = $id;
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
@@ -1174,7 +1174,7 @@ $columnInfo = array(
 		       
 		            $mes->add($hooks, E_MESSAGE_SUCCESS);
 		
-		            $mes->autoMessage($download_id, 'insert', DOWLAN_1." (<a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".$_POST['download_name']."</a>)");
+		            $mes->addAuto($download_id, 'insert', DOWLAN_1." (<a href='".e_PLUGIN."download/download.php?view.".$download_id."'>".$_POST['download_name']."</a>)");
 		
 		            $dlInfo['download_id'] = $download_id;
 		            $this->downloadLog('DOWNL_05',$dlInfo,$dlMirrors);
@@ -1231,7 +1231,7 @@ $columnInfo = array(
 		  
 	      if ($delete == "mirror")
 	      {
-	         $mes->autoMessage($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
+	         $mes->addAuto($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
 	         $admin_log->log_event('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 	      }
 	
@@ -1382,12 +1382,12 @@ $columnInfo = array(
 		
 		         if (isset($_POST['id']))
 		         {
-		            $mes->autoMessage($sql -> db_Update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
+		            $mes->addAuto($sql -> db_Update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
 		            $admin_log->log_event('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
 		         }
 		         else
 		         {
-		            $mes->autoMessage($sql -> db_Insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
+		            $mes->addAuto($sql -> db_Insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
 		            $admin_log->log_event('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
 		         }
 		      }
