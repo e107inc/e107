@@ -17,7 +17,8 @@
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('print');
 
 $HEADER="";
 $FOOTER="";
