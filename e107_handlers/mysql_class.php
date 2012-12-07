@@ -1939,7 +1939,9 @@ class e_db_mysql
 		$toSave = $array->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
 		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-			echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
+			$mes = e107::getMessage();
+			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade. 
+			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
 		}
 	}
 
