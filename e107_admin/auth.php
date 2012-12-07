@@ -18,6 +18,17 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
+// Required for a clean v1.x -> v2 upgrade. 
+$core = e107::getConfig('core'); 		
+if($core->get('admintheme') != 'bootstrap')
+{
+	$core->update('admintheme','bootstrap');
+	$core->update('adminstyle','infopanel');
+	$core->update('admincss','admin_style.css');
+	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
+	$core->save();	
+	e107::getRedirect()->redirect(e_SELF);		
+}
 
 /* done in class2
  @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
@@ -129,16 +140,7 @@ else
 			// Fix - set cookie before login trigger
 			session_set(e_COOKIE, $cookieval, (time() + 3600 * 24 * 30));
 			
-			// Required for a clean v1.x -> v2 upgrade. 
-			$core = e107::getConfig('core'); 		
-			if($core->get('admintheme') != 'bootstrap')
-			{
-				$core->update('admintheme','bootstrap');
-				$core->update('adminstyle','infopanel');
-				$core->update('admincss','admin_style.css');
-				$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
-				$core->save();			
-			}
+		
 			// ---
 			
 			e107::getEvent()->trigger("login", $edata_li);
@@ -192,9 +194,7 @@ else
 									margin-left:auto;
 									margin-right:auto;
 									margin-top:12%;
-										
 									width:400px; 
-									/*	
 									padding: 10px 20px 0 20px;
 									-moz-border-radius:5px;
 									-webkit-border-radius:5px;
@@ -203,6 +203,8 @@ else
 									-webkit-box-shadow:5px 5px 20px #000000;
 									box-shadow:5px 5px 20px #000000;	
 									background-color: #FEFEFE;
+									/*	
+									
 									*/
 								}
 			
@@ -228,6 +230,7 @@ else
 			
 			input[disabled] 	{	color: silver;	}
 			button[disabled] span	{	color: silver;	}
+			.title_clean		{ display:none; }
 		
 		");
 		

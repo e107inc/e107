@@ -24,6 +24,7 @@ define('E_MESSAGE_SUCCESS', 	'success');
 define('E_MESSAGE_WARNING', 	'warning');
 define('E_MESSAGE_ERROR', 		'error');
 define('E_MESSAGE_DEBUG', 		'debug');
+define('E_MESSAGE_NODISPLAY',	'nodisplay'); // Appears to be needed by update_routine
 
 //FIXME - language file! new?
 

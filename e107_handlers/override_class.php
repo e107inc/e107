@@ -105,8 +105,14 @@ class override {
 			}	
 		} 
 		
-		
-		$tmp =  (isset($this->functions[$override]) && strpos($this->functions[$override],"::")) ?  explode("::",$this->functions[$override]) : $this->functions[$override];
+		if($override && isset($this->functions[$override]))
+		{
+			$tmp =  (strpos($this->functions[$override],"::")) ?  explode("::",$this->functions[$override]) : $this->functions[$override];
+		}
+		else
+		{
+			$tmp = false;
+		} 
 		if(is_array($tmp) && class_exists($tmp[0]))
 		{
 			$cl = new $tmp[0];
@@ -116,7 +122,7 @@ class override {
 			 }	
 		}	
 	
-		if (function_exists($this->functions[$override]))
+		if ($override && isset($this->functions[$override]) && function_exists($this->functions[$override]))
 		{
 			
 			return $this->functions[$override];

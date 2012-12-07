@@ -121,7 +121,7 @@ if (!$dont_check_update)
 	}
 	$dbupdate['core_prefs'] = LAN_UPDATE_13;						// Prefs check
 	$dbupdate['706_to_800'] = LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0';
-	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
+//	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
 
@@ -298,6 +298,16 @@ function update_706_to_800($type='')
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
 
 
+	$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP);
+	
+	foreach($create_dir as $dr)
+	{
+		if(!is_dir($dr))
+		{
+			mkdir($dr, 0755);	
+		}				
+	}
+
 	// List of changed DB tables (defined in core_sql.php)
 	// No Longer required. - automatically checked against core_sql.php. 
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
@@ -317,12 +327,18 @@ function update_706_to_800($type='')
 								);
 	 
 	 */
-
+/*
 	$setCorePrefs = array( //modified prefs during upgrade.
-		'adminstyle' => 'infopanel',
-		'admintheme' => 'jayya'
+		'adminstyle' 		=> 'infopanel',
+		'admintheme' 		=> 'bootstrap',
+		'admincss'			=> 'admin_style.css',
+		'resize_dimensions' => array(
+			'news-image' 	=> array('w' => 250, 'h' => 250),
+			'news-bbcode' 	=> array('w' => 250, 'h' => 250),
+			'page-bbcode' 	=> array('w' => 250, 'h' => 250)
+		)
 	);
-
+*/
 
 
 
@@ -393,45 +409,7 @@ function update_706_to_800($type='')
 
 
 	// Check notify prefs
-	$notify_prefs = $sysprefs -> get('notify_prefs');
-	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
 
-	$nt_changed = 0;
-	if(vartrue($notify_prefs['event']))
-	{
-		foreach ($notify_prefs['event'] as $e => $d)
-		{
-			if (isset($d['type']))
-			{
-				if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
-				switch ($d['type'])
-				{
-					case 'main' :
-						$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
-						break;
-					case 'class' :		// Should already have class defined
-						break;
-					case 'email' :
-						$notify_prefs['event'][$e]['class'] = 'email';
-						break;
-					case 'off' :		// Need to disable
-					default :
-						$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
-				}
-				$nt_changed++;
-				unset($notify_prefs['event'][$e]['type']);
-			}
-		}
-	}
-	if ($nt_changed)
-	{
-		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
-		$status = ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
-		$log->logMessage($message, $status);
-	}
 
 
 	$statusTexts = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail', E_MESSAGE_INFO => 'Info');
@@ -466,7 +444,7 @@ function update_706_to_800($type='')
 	$menuConfig = e107::getConfig('menu'); 
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
 	{
-		$status = E_MESSAGE_SUCCESS;
+		$status = E_MESSAGE_DEBUG;
 		if ($just_check) return update_needed('Move online counts from menupref');
 		$newPrefs = e107::getConfig('history');
 		foreach (array('most_members_online', 'most_guests_online', 'most_online_datestamp') as $v)
@@ -617,7 +595,7 @@ function update_706_to_800($type='')
 			}
 		}
 
-		$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_SUCCESS);
+		$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_DEBUG);
 	}
 
 
@@ -732,7 +710,7 @@ function update_706_to_800($type='')
 				return FALSE;
 			}
 			//$updateMessages[] = LAN_UPDATE_41;
-			$log->logMessage(LAN_UPDATE_41);
+			$log->logMessage(LAN_UPDATE_41, E_MESSAGE_DEBUG);
 		}
 	}
 
@@ -941,31 +919,7 @@ function update_706_to_800($type='')
 
 
 
-	// Saved emails - copy across
-	if ($sql->db_Select('generic', '*', "gen_type='massmail'"))
-	{
-		if ($just_check) return update_needed('Copy across saved emails');
-		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailHandler = new e107MailManager;
-		$i = 0;
-		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
-		{
-			$mailRecord = array(
-				'mail_create_date' => $row['gen_datestamp'],
-				'mail_creator' => $row['gen_user_id'],
-				'mail_title' => $row['gen_ip'],
-				'mail_subject' => $row['gen_ip'],
-				'mail_body' => $row['gen_chardata'],
-				'mail_content_status' => MAIL_STATUS_SAVED
-			);
-			$mailHandler->mailtoDb($mailRecord, TRUE);
-			$mailHandler->saveEmail($mailRecord, TRUE);
-			$sql2->db_Delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
-			$i++;
-		}
-		unset($mailHandler);
-		$log->logMessage(str_replace('--COUNT--', $i, LAN_UPDATE_28));
-	}
+
 
 
 
@@ -1008,7 +962,88 @@ function update_706_to_800($type='')
 	$dbv->runFix(); // Fix entire core database structure. 
 
 	//TODO - send notification messages to Log. 
+	
+	
 
+	
+	
+	// --- Notify Prefs
+	
+		$notify_prefs = $sysprefs -> get('notify_prefs');
+	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+
+	$nt_changed = 0;
+	if(vartrue($notify_prefs['event']))
+	{
+		foreach ($notify_prefs['event'] as $e => $d)
+		{
+			if (isset($d['type']))
+			{
+				if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
+				switch ($d['type'])
+				{
+					case 'main' :
+						$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
+						break;
+					case 'class' :		// Should already have class defined
+						break;
+					case 'email' :
+						$notify_prefs['event'][$e]['class'] = 'email';
+						break;
+					case 'off' :		// Need to disable
+					default :
+						$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
+				}
+				$nt_changed++;
+				unset($notify_prefs['event'][$e]['type']);
+			}
+		}
+	}
+	if ($nt_changed)
+	{
+		$s_prefs = $tp -> toDB($notify_prefs);
+		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
+		$status = ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
+		$log->logMessage($message, $status);
+	}
+	
+	
+	
+	
+	
+	
+		
+	// ---------------  Saved emails - copy across
+	
+	if (!$just_check && $sql->db_Select('generic', '*', "gen_type='massmail'"))
+	{
+		if ($just_check) return update_needed('Copy across saved emails');
+		require_once(e_HANDLER.'mail_manager_class.php');
+		$mailHandler = new e107MailManager;
+		$i = 0;
+		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		{
+			$mailRecord = array(
+				'mail_create_date' => $row['gen_datestamp'],
+				'mail_creator' => $row['gen_user_id'],
+				'mail_title' => $row['gen_ip'],
+				'mail_subject' => $row['gen_ip'],
+				'mail_body' => $row['gen_chardata'],
+				'mail_content_status' => MAIL_STATUS_SAVED
+			);
+			$mailHandler->mailtoDb($mailRecord, TRUE);
+			$mailHandler->saveEmail($mailRecord, TRUE);
+			$sql2->db_Delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
+			$i++;
+		}
+		unset($mailHandler);
+		$log->logMessage(str_replace('--COUNT--', $i, LAN_UPDATE_28));
+	}
+	
+	
+	
 
 	// -------------------  Populate Plugin Table With Changes ------------------ 
 	
@@ -1026,46 +1061,7 @@ function update_706_to_800($type='')
 
 	//-- Media-manger import --------------------------------------------------
 	
-	if(!is_dir(e_MEDIA))
-	{
-		mkdir(e_MEDIA,0755);	
-	}	
-	if(!is_dir(e_SYSTEM))
-	{
-		mkdir(e_SYSTEM,0755);
-	}
-	if(!is_dir(e_CACHE))
-	{
-		mkdir(e_CACHE,0755);
-	}
-	if(!is_dir(e_CACHE_CONTENT))
-	{
-		mkdir(e_CACHE_CONTENT,0755);
-	}	
-	if(!is_dir(e_CACHE_IMAGE))
-	{
-		mkdir(e_CACHE_IMAGE,0755);
-	}
-	if(!is_dir(e_CACHE_DB))
-	{
-		mkdir(e_CACHE_DB,0755);
-	}
-	if(!is_dir(e_LOG))
-	{
-		mkdir(e_LOG,0755);
-	}
-	if(!is_dir(e_BACKUP))
-	{
-		mkdir(e_BACKUP,0755);
-	}
-	if(!is_dir(e_CACHE_URL))
-	{
-		mkdir(e_CACHE_URL,0755);
-	}
-	if(!is_dir(e_TEMP))
-	{
-		mkdir(e_TEMP,0755);
-	}
+
 	
 	// Autogenerate filetypes.xml if not found. 
 	if(!is_readable(e_SYSTEM."filetypes.xml"))
