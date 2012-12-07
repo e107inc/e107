@@ -45,7 +45,15 @@ require_once(e_HANDLER.'iphandler_class.php');		// This is probably already load
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 
-/*
+
+
+
+
+
+
+
+// XXX THIS IS SET UP FOR LATER USE. 
+
 class banlist_admin extends e_admin_dispatcher
 {
 
@@ -109,11 +117,11 @@ class banlist_ui extends e_admin_ui
 		
 		
 		
-		protected  = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
-		);
+	//	protected $pref = array(
+	//		'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
+	//		'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
+	//		'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+	//	);
 
 		
 		// optional
@@ -187,7 +195,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 }		
 		
-		
+/*		
 new banlist_admin();
 
 require_once(e_ADMIN."auth.php");
@@ -197,6 +205,16 @@ require_once(e_ADMIN."footer.php");
 exit;
 
 */
+
+
+
+
+
+
+
+
+
+
 
 $e_sub_cat = 'banlist';
 require_once('auth.php');

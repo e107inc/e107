@@ -1917,6 +1917,8 @@ TEMPLATE;
 				break;
 				
 				case 'text':
+				case 'mediumtext':
+				case 'longtext':
 				$array = array(
 					'textarea'	=> "Text Area",
 					'bbarea'	=> "Rich-Text Area",
@@ -2005,6 +2007,7 @@ TEMPLATE;
 
 				case 'total':
 				case 'order':
+				case 'limit':
 					$ret['title'] = 'LAN_ORDER';
 					$ret['type'] = 'number';
 					$ret['batch'] = false;
