@@ -166,7 +166,7 @@ class ecache {
 		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
-			file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
+			@file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
 			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
 		}

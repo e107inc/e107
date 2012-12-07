@@ -765,6 +765,10 @@ class e_navigation
 			
 	/*		echo "<h1>".$name." ($plug)</h1>";
 			print_a($plugs->plug_vars);*/
+			if(!varset($plugs->plug_vars['adminLinks']['link']))
+			{
+				continue;	
+			}
 	
 			foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
 			{
