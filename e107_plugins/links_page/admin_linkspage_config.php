@@ -33,7 +33,8 @@ require_once(e_PLUGIN.'links_page/link_defines.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
-$rs = new form;
+$rs = new form; // FIX v2 style?
+$frm = e107::getForm();
 require_once(e_HANDLER.'file_class.php');
 $fl = new e_file;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
