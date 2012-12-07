@@ -816,15 +816,21 @@ class e107
 	 * List of allowed $name values (aliases) could be found
 	 * in {@link e_core_pref} class
 	 *
-	 * @param string $name core|core_backup|emote|menu|search|notify|ipool
+	 * @param string $name core|core_backup|emote|menu|search|notify 
 	 * @return e_core_pref
 	 */
 	public static function getConfig($name = 'core', $load = true)
 	{
+		
+		if(isset(self::$_plug_config_arr[$name])) //FIXME Load pluginPref Object instead - Not quite working with calendar_menu. 
+		{
+			return self::getPlugConfig($name);
+		}
+		
 		if(!isset(self::$_core_config_arr[$name]))
 		{
-			e107_require_once(e_HANDLER.'pref_class.php');
-			self::$_core_config_arr[$name] = new e_core_pref($name, $load);
+			e107_require_once(e_HANDLER.'pref_class.php'); 
+			self::$_core_config_arr[$name] = new e_core_pref($name, $load);		
 		}
 
 		return self::$_core_config_arr[$name];
@@ -2163,8 +2169,8 @@ class e107
 		{
 			case 'core' :
 				self::coreLan($fname,$options);
-				break;
-				break;
+			break;
+	
 			case 'theme' :
 				self::themeLan($fname, null);
 				break;
@@ -2174,6 +2180,33 @@ class e107
 		}	
 		
 	}
+
+
+	/**
+	 * Generic PREF retrieval Method for use by theme and plugin developers. 
+	 */
+	public static function pref($type='core', $pname='')
+	{
+		 
+		switch ($type)
+		{
+			case 'core' :
+				return self::getPref();
+			break;
+		
+			case 'theme' :
+				return self::getThemePref();	
+			break;
+			
+			default :
+				return self::getPlugConfig($type)->getPref();	
+			break;
+		}	
+		
+	}
+
+
+
 
 
 	/**
