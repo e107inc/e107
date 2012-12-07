@@ -1126,6 +1126,9 @@ class themeHandler
 			$mes->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
 			$mes->add("Custom Pages: ".implode(" ",$customPages), E_MESSAGE_SUCCESS);
 			
+			$med = e107::getMedia();
+			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
+			
 			$this->theme_adminlog('01', $name.', style.css');
 			return TRUE;
 		}

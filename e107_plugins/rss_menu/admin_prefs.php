@@ -30,7 +30,161 @@ if(!getperms("P") || !e107::isInstalled('rss_menu'))
 	exit;
 }
 
+
 include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
+
+
+
+// XXX THIS IS SET UP FOR LATER USE. 
+
+class rss_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(	
+	
+		'main'	=> array(
+			'controller' 	=> 'rss_ui',
+			'path' 			=> null,
+			'ui' 			=> 'rss_form_ui',
+			'uipath' 		=> null
+		),
+
+	);	
+	
+	
+	protected $adminMenu = array(
+
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+			
+	/*
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	*/	
+
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = 'RSS';
+}
+
+
+
+
+				
+class rss_ui extends e_admin_ui
+{
+			
+		protected $pluginTitle		= 'RSS';
+		protected $pluginName		= 'myplugin';
+		protected $table			= 'rss';
+		protected $pid				= 'rss_id';
+		protected $perPage 			= 10; 
+			
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'rss_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_name' =>   array ( 'title' => 'LAN_TITLE', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_url' =>   array ( 'title' => 'LAN_URL', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '.{Type}.{Topic id}', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_topicid' =>   array ( 'title' => 'Topic id', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_path' =>   array ( 'title' => 'Path', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_text' =>   array ( 'title' => 'Text', 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_class' =>   array ( 'title' => 'LAN_VISIBILITY', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_limit' =>   array ( 'title' => 'Limit', 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options' =>   array ( 'title' => 'LAN_OPTIONS', 'type' => null, 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		);		
+		
+		protected $fieldpref = array('checkboxes', 'rss_name','rss_url', 'rss_topicid', 'rss_path', 'rss_class', 'options');
+		
+		
+		
+		/*
+		protected  = array(
+			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+		);
+
+		
+		// optional
+		public function init()
+		{
+			
+		}
+	
+		
+		public function customPage()
+		{
+			$ns = e107::getRender();
+			$text = 'Hello World!';
+			$ns->tablerender('Hello',$text);	
+			
+		}
+		*/
+			
+}
+				
+
+
+class rss_form_ui extends e_admin_form_ui
+{
+
+	
+	// Custom Method/Function 
+	function rss_class($curVal,$mode)
+	{
+		$frm = e107::getForm();		
+		$array = array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23);
+		 		
+		switch($mode)
+		{
+			case 'read': // List Page
+				return vartrue($array[$curVal]);
+			break;
+			
+			case 'write': // Edit Page
+				return $frm->selectbox('rss_class',$array, $curVal);		
+			break;
+			
+			case 'filter':
+			case 'batch':
+				return  $array; 
+			break;
+		}
+	}
+
+}		
+		
+/*
+new rss_admin();
+
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require_once(e_ADMIN."auth.php");
 
 $imagedir = e_IMAGE."admin_images/";
