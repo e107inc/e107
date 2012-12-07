@@ -516,7 +516,7 @@ function update_706_to_800($type='')
 			{
 				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
 				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-				$status = $sql->db_Update('menus', $updqry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = $sql->db_Update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 				$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;				
 				// catch_error($sql);
 			}	
@@ -534,14 +534,14 @@ function update_706_to_800($type='')
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
 		{
-			$status = $sql->db_Update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$status = $sql->db_Update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
 		}
 		else
 		{	//else if the menu is not active
 			//we need to delete the online_extended menu row, and change the online_menu to online
 			$sql->db_Delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
-			$log->logMessage(LAN_UPDATE_31, E_MESSAGE_SUCCESS);
+			$log->logMessage(LAN_UPDATE_31, E_MESSAGE_DEBUG);
 		}
 		catch_error($sql);
 	}
@@ -551,7 +551,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed();
 
-		$status = $sql->db_Update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$status = $sql->db_Update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
 		catch_error($sql);
 	}
@@ -659,7 +659,7 @@ function update_706_to_800($type='')
 		$pref['frontpage_force'] = array(e_UC_PUBLIC => '');
 		$pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
 		// $_pdateMessages[] = LAN_UPDATE_38; //FIXME
-		$log->logMessage(LAN_UPDATE_20."frontpage",E_MESSAGE_SUCCESS);
+		$log->logMessage(LAN_UPDATE_20."frontpage",E_MESSAGE_DEBUG);
 		$do_save = TRUE;
 	}
 
@@ -745,7 +745,7 @@ function update_706_to_800($type='')
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
 		catch_error($sql);
 		//$updateMessages[] = LAN_UPDATE_43; 
-		$log->logMessage(LAN_UPDATE_43, E_MESSAGE_SUCCESS);
+		$log->logMessage(LAN_UPDATE_43, E_MESSAGE_DEBUG);
 	}
 
 	
@@ -755,7 +755,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Rename rl_history to dblog');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
 		//$updateMessages[] = LAN_UPDATE_44; 
-		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_SUCCESS);
+		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
 		catch_error($sql);
 	}
 	  
@@ -910,7 +910,7 @@ function update_706_to_800($type='')
 		if ($sql->db_Table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
-			$status = $sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$status = $sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_25.$ot, $status);			
 		}
 	}
@@ -927,7 +927,7 @@ function update_706_to_800($type='')
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, $status);				
 			// catch_error($sql);
 		  }
