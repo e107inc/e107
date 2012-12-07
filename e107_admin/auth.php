@@ -136,7 +136,7 @@ else
 				$core->update('admintheme','bootstrap');
 				$core->update('adminstyle','infopanel');
 				$core->update('admincss','admin_style.css');
-				$core->update('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
+				$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 				$core->save();			
 			}
 			// ---
