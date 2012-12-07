@@ -872,7 +872,7 @@ class linkclass
 		{	// Display the individual links
             $text = $rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "myform_{$row['link_id']}", "", "");
             $text .= "<div style='text-align:center'>
-            <table class=''table adminlist'>
+            <table class='table adminlist'>
             <tr>
             <td style='width:5%'>".LCLAN_ITEM_25."</td>
             <td style='width:65%'>".LCLAN_ITEM_26."</td>
