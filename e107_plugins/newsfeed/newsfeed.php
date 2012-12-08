@@ -79,7 +79,7 @@ if (count($newsFeed->feedList))
 	}
 }
 
-$text = $NEWSFEED_LIST_START . $data . $NEWSFEED_LIST_END;
+$text = $NEWSFEED_LIST_START . vartrue($data) . $NEWSFEED_LIST_END;
 $ns->tablerender(NFLAN_29, $text);
 require_once(FOOTERF);
 

@@ -25,7 +25,7 @@ require_once (e_HANDLER."userclass_class.php");
 require_once (e_HANDLER."ren_help.php");
 require_once (e_HANDLER."comment_class.php");
 
-if (!$FAQ_VIEW_TEMPLATE)
+if (!vartrue($FAQ_VIEW_TEMPLATE))
 {
 	if (file_exists(THEME."faqs_template.php"))
 	{

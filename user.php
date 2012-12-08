@@ -110,7 +110,7 @@ else
 		}
 	}
 }
-if ($records > 30)
+if (vartrue($records) > 30)
 {
 	$records = 30;
 }

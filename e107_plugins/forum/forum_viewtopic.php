@@ -138,7 +138,7 @@ if (file_exists(THEME . 'forum_design.php'))
 {
 	include_once (THEME . 'forum_design.php');
 }
-if (!$FORUMSTART)
+if (!vartrue($FORUMSTART))
 {
 	if (file_exists(THEME . 'forum_viewtopic_template.php'))
 	{
@@ -215,7 +215,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 	$tVars->BUTTONS .= "<a href='" . $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
 }
 
-$tVars->POLL = $pollstr;
+$tVars->POLL = vartrue($pollstr);
 
 $tVars->FORUMJUMP = forumjump();
 
@@ -265,14 +265,14 @@ foreach ($postList as $postInfo)
 	{
 		$postInfo['thread_start'] = true;
 		e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
-		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, $forum_shortcodes) . "\n";
+		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($forum_shortcodes)) . "\n";
 	}
 }
 unset($loop_uid);
 
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
-	if (!$forum_quickreply)
+	if (!vartrue($forum_quickreply))
 	{
 		$tVars->QUICKREPLY = "
 		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
@@ -293,7 +293,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 
 $forend = $tp->simpleParse($FORUMEND, $tVars);
 
-$forumstring = $forstr . $forthr . $forrep . $forend;
+$forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
