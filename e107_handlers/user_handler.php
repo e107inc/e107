@@ -1410,20 +1410,13 @@ class e_userperms
 		
 		
 
-		$text .= "<div class='field-section'>
-			".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
-			".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
-			</div>
+		$text .= $this->renderCheckAllButtons()."
 			
 		</td>
 		</tr>
 				</tbody>
 					</table>
-					<div class='buttons-bar center'>
-						<input type='hidden' name='a_id' value='{$a_id}' />
-						".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
-						".$frm->admin_button('go_back', ADMSLAN_70)."
-					</div>
+					".$this->renderSubmitButtons()."
 				</fieldset>
 			</form>
 		";
@@ -1431,6 +1424,28 @@ class e_userperms
 		$ns->tablerender(ADMSLAN_52, $text);
 	}
 
+	function renderCheckAllButtons()
+	{
+		$frm = e107::getForm();
+		return "
+			<div class='field-section'>
+				".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
+				".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
+			</div>
+		";
+	}
+	
+	function renderSubmitButtons()
+	{
+		$frm = e107::getForm();
+		return "
+			<div class='buttons-bar center'>
+				<input type='hidden' name='a_id' value='{$a_id}' />
+				".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
+				".$frm->admin_button('go_back', ADMSLAN_70)."
+			</div>
+		";
+	}
 	
 	function renderPermTable($type,$a_perms='')
 	{
@@ -1479,8 +1494,8 @@ class e_userperms
 			exit();
 		}
 
-		$sql->db_Select("user", "*", "user_id=".$modID);
-		$row = $sql->db_Fetch();
+		$sysuser = e107::getSystemUser($modID, false);
+		$row = $sysuser->getData();
 		$a_name = $row['user_name'];
 
 		$perm = "";
@@ -1498,9 +1513,10 @@ class e_userperms
 			{
 				$perm .= $value.".";
 			}
-	  }
-
-		e107::getMessage()->addAuto($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
+	 	}
+		
+		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ")
+		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
