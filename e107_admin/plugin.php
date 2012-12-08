@@ -663,15 +663,13 @@ class pluginManager{
 
 	function pluginUpgrade()
 	{
-		$pref = e107::getPref();
-		$admin_log = e107::getAdminLog();
-		$plugin = e107::getPlugin();
+		$pref 		= e107::getPref();
+		$admin_log 	= e107::getAdminLog();
+		$plugin 	= e107::getPlugin();
 
-	  	$sql = e107::getDb();
-
-   		$emessage = eMessage::getInstance();
-
-		$plug = $plugin->getinfo($this->id);
+	  	$sql 		= e107::getDb();
+   		$emessage 	= eMessage::getInstance();
+		$plug 		= $plugin->getinfo($this->id);
 
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		if(file_exists($_path.'plugin.xml'))

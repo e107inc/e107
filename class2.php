@@ -713,6 +713,11 @@ if (!function_exists('checkvalidtheme'))
 			if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === false)
 			{
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
+				$tm = e107::getSingleton('themeHandler');
+				$tm->setTheme($e107tmp_theme);
+			//	$config = e107::getConfig();
+			//	$config->set('sitetheme','core');
+				
 			}
 		}
 		$themes_dir = $e107->getFolder('themes');

@@ -16,20 +16,19 @@
 */
 require_once ("../class2.php");
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'database';
 
 require_once ("auth.php");
 require_once ("update_routines.php");
 
-$mes = e107::getMessage();
-$frm = e107::getForm();
 
 
-// FIX ME - Should be a class so it can be called any where.  
+// 
 
-// Carry out core updates
+// Carry out CORE updates
+/*
 function run_updates($dbupdate)
 {
 	global $mes;
@@ -77,6 +76,9 @@ function run_updates_plugin($func,$check=TRUE) // New for {plugin}_setup.php
 	}	
 }
 
+
+
+
 function show_updates($dbupdate, $what)
 {
 	global $frm;
@@ -122,7 +124,8 @@ function show_updates($dbupdate, $what)
 			}
 			$text .= "</tr>\n";
 		}
-		elseif(class_exists($func.'_setup')) // plugin_setup.php
+		
+		if(class_exists($func.'_setup')) // plugin_setup.php
 		{
 			$text .= "<tr><td>{$rmks}</td>";
 			
@@ -151,6 +154,192 @@ function show_updates($dbupdate, $what)
 	echo $text;
 	return $updates; // Number of updates to do
 }
+*/
+
+
+// New in v2.x  ------------------------------------------------
+
+class e107Update
+{
+	var $core = array();
+	var $updates = 0;
+	
+	
+	function __construct($core=null)
+	{
+		$mes = e107::getMessage();
+		
+		$this->core = $core;
+		
+		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
+		{
+			$message = $this->updateCore();
+		}	
+		
+		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
+		{ 
+			$func = key($_POST['update']);
+			$this->updatePlugin($func);
+		}	
+			
+		if(vartrue($message))
+		{
+			$mes->addSuccess($message);	
+		}
+		
+		$this->renderForm();	
+	}
+	
+	
+	
+	
+	function updateCore()
+	{
+		$mes = e107::getMessage();
+		
+		foreach($this->core as $func => $rmks)
+		{
+			if(function_exists('update_'.$func)) // Legacy Method. 
+			{
+				$installed = call_user_func("update_".$func);
+				//?! (LAN_UPDATE == $_POST[$func])
+				if(varsettrue($_POST['update_core'][$func]) && !$installed)
+				{
+					if(function_exists("update_".$func))
+					{
+						$message = LAN_UPDATE_7." {$rmks}";
+						$error = call_user_func("update_".$func, "do");
+						
+						if($error != '')
+						{
+							$mes->add($message, E_MESSAGE_ERROR);
+							$mes->add($error, E_MESSAGE_ERROR);
+						}
+						else
+						{
+							 $mes->add($message, E_MESSAGE_SUCCESS);
+						}
+					}
+				}	
+			}
+		
+		}
+		
+	}
+	
+	
+	
+	function updatePlugin($path)
+	{
+		e107::getPlugin()->install_plugin_xml($path, 'upgrade');
+	}
+	
+	
+	
+	function plugins()
+	{
+		if(!$list = e107::getPlugin()->updateRequired())
+		{
+			return;
+		}
+		
+		$frm = e107::getForm();
+		
+		$text = "";
+		foreach($list as $path=>$val)
+		{
+			$text .= "<tr>
+					<td>".$val['@attributes']['name']."</td>
+					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning')."</td>
+					</tr>";			
+		}
+		
+		return $text;	
+	}
+	
+	
+	
+	
+	function core()
+	{
+		$frm = e107::getForm();
+		
+		$text = "";
+		
+		foreach($this->core as $func => $rmks)
+		{
+			if(function_exists("update_".$func))
+			{
+				$text .= "<tr><td>{$rmks}</td>";
+	
+				if(call_user_func("update_".$func))
+				{
+					$text .= "<td>".LAN_UPDATE_3."</td>";
+				}
+				else
+				{
+					$this->updates ++;
+					$text .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}")."</td>";
+				}
+				$text .= "</tr>\n";
+			}	
+		}
+		
+		return $text;
+	}
+	
+	
+	
+	function renderForm()
+	{
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		
+		$caption = LAN_UPDATE;
+		$text = "
+		<form method='post' action='".e_SELF."'>
+			<fieldset id='core-e107-update'>
+			<legend>{$caption}</legend>
+				<table class='table adminlist'>
+					<colgroup>
+						<col style='width: 60%' />
+						<col style='width: 40%' />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>".LAN_UPDATE_55."</th>
+							<th class='last'>".LAN_UPDATE_2."</th>
+						</tr>
+					</thead>
+					<tbody>
+		";
+	
+		$text .= $this->core();
+		$text .= $this->plugins();
+	
+		$text .= "
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+			";
+	
+	
+		$ns->tablerender("Updates",$mes->render() . $text);
+	
+	}
+	
+
+}
+
+new e107Update($dbupdate);
+
+
+require_once ("footer.php");
+
+
+
+/*
 
 if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 {
@@ -181,6 +370,10 @@ if($total_updates == 0)
 { // No updates needed - clear the cache to be sure
 	$e107cache->set_sys("nq_admin_updatecheck", time().', 1, '.$e107info['e107_version'], TRUE);
 }
+ * 
+ * 
+ */
 
-require_once ("footer.php");
+
+
 ?>

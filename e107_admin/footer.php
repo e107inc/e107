@@ -172,7 +172,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info'>{$rinfo}</div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info center' style='margin-top:10px'>{$rinfo}</div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)

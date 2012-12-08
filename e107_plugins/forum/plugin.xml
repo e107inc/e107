@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Forum" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Forum" lan="" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
-	<description>This plugin is a fully featured Forum system</description>
+	<description lan="">This plugin is a fully featured Forum system</description>
 	<category>content</category> 
 	<adminLinks>
 		<link url='forum_admin.php' description='Configure Forum' icon='images/forums_32.png' iconSmall='images/forums_16.png' primary='true' >Configure Forum</link>

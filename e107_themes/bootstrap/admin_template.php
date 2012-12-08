@@ -17,7 +17,7 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-define("ADLINK_COLS",5);
+
 
 
 // include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");

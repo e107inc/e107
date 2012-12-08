@@ -230,7 +230,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
 
-
+.e-footer-info 		{ text-align: center }
 
 /* ************* Backwards Compatibility CSS *****************/
 

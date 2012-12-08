@@ -42,17 +42,30 @@ class forum_setup
 			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);
 		}*/
 	}
+	
+	/*
+	 * Call During Upgrade Check. May be used to check for existance of tables etc and if not found return TRUE to call for an upgrade. 
+	 * 
+	 */
+	function upgrade_required()
+	{
+		return false;	 // true to trigger an upgrade alert, and false to not. 
+	}
+	
 
 	function upgrade_pre($var)
 	{
 		//Redirect upgrade to customized upgrade routine
-		header('Location: '.e_PLUGIN.'forum/forum_update.php');
-		exit;
+		
+		// e107::getRedirect()->redirect(e_PLUGIN.'forum/forum_update.php');
+		
+		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
 	}
 
+	// After Automatic Upgrade Routine has completed.. run this. ;-)
 	function upgrade_post($var)
-	{
-		$sql = e107::getDb();
+	{	
 		$mes = e107::getMessage();
+		$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");		
 	}
 }

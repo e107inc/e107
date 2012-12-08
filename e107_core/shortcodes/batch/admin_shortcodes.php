@@ -930,15 +930,16 @@ class admin_shortcodes
 					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
 					$comments = $sql -> db_Count('comments');
 
-
-					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'>".ADLAN_111."</a>" : ADLAN_111);
-
+					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'> ".ADLAN_111.": {$unverified}</a>" : ADLAN_111);
+					$lban = ($banned) ? "<a href='".e_ADMIN_ABS."users.php??searchquery=&filter_options=user_ban__1&filter=banned'>".ADLAN_112. ": ".$banned."</a>" : ADLAN_112.":";
+					$lcomment = ($comments) ? "<a href='".e_ADMIN_ABS."comment.php'>".ADLAN_114.": ".$comments."</a>" : ADLAN_114;
+					
 					$text = "
 					<div class='left'>
-						<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": <a href='".e_ADMIN_ABS."users.php?filter=0'>".$members."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: <a href='".e_ADMIN_ABS."users.php?filter=unverified'>".$unverified."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": <a href='".e_ADMIN_ABS."users.php?filter=banned'>".$banned."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN_ABS."comment.php'>".$comments."</a></div>\n\n";
+						<div style='padding-bottom: 2px;'>". E_16_USER." <a href='".e_ADMIN_ABS."users.php?filter=0'>".ADLAN_110.": ".$members."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}</div>
+						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".$lban."</div>
+						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".$lcomment."</div>\n\n";
 
 					if(vartrue($pref['e_status_list']))
 					{

@@ -13,23 +13,16 @@
  *
 */
 
-if(defined('e_PAGE') && e_PAGE == 'e107_update.php')
-{
-	echo "
-	<script type='text/javascript'>
-	window.location='".e_PLUGIN."forum/forum_update.php'
-	</script>
-	";
-	exit;
-}
 
-$eplug_admin = true;
+define('e_ADMIN_AREA',true);
 require_once('../../class2.php');
+
 if (!getperms('P'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+
 error_reporting(E_ALL);
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_ADMIN.'auth.php');
@@ -40,10 +33,13 @@ $f = new forumUpgrade;
 $e107 = e107::getInstance();
 
 $upgradeNeeded = $f->checkUpdateNeeded();
+$upgradeNeeded = true;
 if(!$upgradeNeeded)
 {
-	$text = "The forum is already at the most recent version, no upgrade is required";
-	$ns->tablerender('Forum Upgrade', $text);
+	$mes = e107::getMessage();
+
+	$mes->addInfo("The forum is already at the most recent version, no upgrade is required");
+	$ns->tablerender('Forum Upgrade', $mes->render());
 	require(e_ADMIN.'footer.php');
 	exit;
 }
@@ -138,7 +134,7 @@ function step2()
 	require_once(e_HANDLER.'db_table_admin_class.php');
 	$db = new db_table_admin;
 
-	$tabList = array('forum' => 'forum_new', 'forum_thread' => '', 'forum_post' => '', 'forum_track' => '');
+	$tabList = array('forum' => 'forum_new'); // , 'forum_thread' => '', 'forum_post' => '', 'forum_track' => '' 
 	$ret = '';
 	$failed = false;
 	$text = '';
@@ -146,11 +142,11 @@ function step2()
 	{
 		$text .= 'Creating table '.($rename ? $rename : $name).' -> ';
 		$result = $db->createTable(e_PLUGIN.'forum/forum_sql.php', $name, true, $rename);
-		if($result)
+		if($result === true)
 		{
 			$text .= 'Success <br />';
 		}
-		else
+		elseif($result !== true)
 		{
 			$text .= 'Failed <br />';
 			$failed = true;
@@ -168,13 +164,16 @@ function step2()
 			$text .= "
 			<br /><br />
 			<form method='post'>
-			<input class='button' type='submit' name='nextStep[3]' value='Proceed to step 3' />
+			<input class='button' type='submit' name='nextStep[4]' value='Proceed to step 3' />
 			</form>
 			";
 	}
 	$e107->ns->tablerender('Step 2: Forum table creation', $text);
 }
 
+
+// DEPRECATED - Done automatically via plugin-class. 
+/*
 function step3()
 {
 	$e107 = e107::getInstance();
@@ -233,7 +232,7 @@ function step3()
 	$e107->ns->tablerender($stepCaption, $text);
 
 }
-
+*/
 function step4()
 {
 	global $pref;
@@ -364,7 +363,7 @@ function step5()
 	{
 		$text = "
 		This step will copy all of your forum configuration from the `forum` table into the `forum_new` table.<br /><br />
-		Once the information is successfully copied, the existing 0.7 forum table will be renamed `forum_old` and the newly created `forum_new` table will be renamed `forum`.<br />
+		Once the information is successfully copied, the existing 1.0 forum table will be renamed `forum_old` and the newly created `forum_new` table will be renamed `forum`.<br />
 		<br /><br />
 		<form method='post'>
 		<input class='button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
@@ -684,6 +683,8 @@ function step10()
 	$e107 = e107::getInstance();
 	global $f;
 	$stepCaption = 'Step 10: Migrate forum attachments';
+	
+	//FIXME - Files should be moved to e107_media/files/forum/
 	if(!isset($_POST['migrate_attachments']))
 	{
 		$text = "
@@ -1439,8 +1440,15 @@ function forum_update_adminmenu()
 		{
 			$var[$i]['text'] = "<span style='color:green;'>{$var[$i]['text']}</span>";
 		}
+		
+		if(isset($_POST['nextStep']))
+		{
+			$tmp = array_keys($_POST['nextStep']);
+			$action = $tmp[0];
+			
+		}
 
-		show_admin_menu('Forum Upgrade', $currentStep, $var);
+		show_admin_menu('Forum Upgrade', $action, $var);
 }
 
 ?>
