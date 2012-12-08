@@ -28,6 +28,10 @@ For plugins, use <plugin name='.... etc
 
 
 */
+
+
+// XXX TODO FIXME REQUIRES Overhaul for use with the e107.org 'shop' only. 
+
 class e_upgrade
 {
     protected $_options = array();

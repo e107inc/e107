@@ -138,19 +138,91 @@ class e107plugin
 		}
 		return false;
 	}
+	
+		/**
+	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
+	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
+	 * @return array plugin details
+	 */
+	function getId($path)
+	{
+		$sql = e107::getDb();
+
+		if ($sql->db_Select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
+		{
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			return intval($row['plugin_id']);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Checks all installed plugins and returns an array of those needing an update. 
+	 * @param string $mode  'boolean' for a quick true/false or null for full array returned. 
+	 * @return mixed 
+	 */
+	function updateRequired($mode=null)
+	{
+		$xml 			= e107::getXml();
+		$mes 			= e107::getMessage();	
+		$needed 		= array();
+		$plugVersions 	= e107::getConfig('core')->get('plug_installed');
+				
+		foreach($plugVersions as $path=>$version)
+		{
+			$fullPath = e_PLUGIN.$path."/plugin.xml";
+			if(is_file(e_PLUGIN.$path."/plugin.xml"))
+			{
+				$data = $xml->loadXMLfile($fullPath, true);
+				$curVal = floatval($version);
+				$fileVal = floatval($data['@attributes']['version']);
+				
+				if($ret = $this->execute_function($path, 'upgrade', 'required')) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
+				{
+					if($mode == 'boolean')
+					{
+						$mes->addDebug("Plugin Update(s) Required");
+						return TRUE;	
+					}
+					$needed[$path] = $data;		
+				} 
+				
+				if($curVal < $fileVal)
+				{
+					
+					if($mode == 'boolean')
+					{
+						$mes->addDebug("Plugin Update(s) Required");
+						return TRUE;	
+					}
+					
+					$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
+					$needed[$path] = $data;
+				}	
+			}
+
+		}	
+	
+		return count($needed) ? $needed : FALSE;		
+	}
 
 	/**
 	 * Check for new plugins, create entry in plugin table and remove deleted plugins
 	 */
 	function update_plugins_table()
 	{
-
+		
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('sql2');
 		$tp = e107::getParser();
 		$fl = e107::getFile();
+		$mes = e107::getMessage();
+		$mes->addDebug("Updating plugins Table");
 
-		global $mySQLprefix, $menu_pref, $pref;
+		global $mySQLprefix, $menu_pref;
+		$pref = e107::getPref();
+		
 
 		$sp = FALSE;
 
@@ -1143,7 +1215,7 @@ class e107plugin
 
 	/**
 	 * Install routine for XML file
-	 * @param object $id (the number of the plugin in the DB)
+	 * @param object $id (the number of the plugin in the DB) or the path to the plugin folder. eg. 'forum' 
 	 * @param object $function install|upgrade|uninstall|refresh (adds things that are missing, but doesn't change any existing settings)
 	 * @param object $options [optional] an array of possible options - ATM used only for uninstall:
 	 * 			'delete_userclasses' - to delete userclasses created
@@ -1154,9 +1226,13 @@ class e107plugin
 	 * @return TBD
 	 */
 	function install_plugin_xml($id, $function = '', $options = FALSE)
-	{
-		global $pref;
-
+	{	
+		if(!is_numeric($id))
+		{
+			$id = $this->getId($id);	// use path instead. 
+		}
+				
+		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
@@ -1197,6 +1273,8 @@ class e107plugin
 			$error[] = EPL_ADLAN_76;
 			$canContinue = FALSE;
 		}
+			
+	
 		
 		if (varset($plug_vars['languageFiles']))
 		{
@@ -1215,15 +1293,15 @@ class e107plugin
 		}
 
 		// All the dependencies are OK - can start the install now
-
+		
 		if ($canContinue) // Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
 		{
-			$ret = $this->execute_function($path, $function, 'pre'); 
+			$ret = $this->execute_function($plug['plugin_path'], $function, 'pre'); 
 			if (!is_bool($ret))
 				$txt .= $ret;
 		}
-		
 	
+			
 		// Handle tables
 		if ($canContinue && count($sql_list)) // TODO - move to it's own function. XmlTables(). 
 		{ 
@@ -1279,6 +1357,7 @@ class e107plugin
 				}
 			}
 		}
+
 
 		if (varset($plug_vars['adminLinks']))
 		{
@@ -1373,7 +1452,7 @@ class e107plugin
 
 		// Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
 		// Call any custom post functions defined in <plugin>_setup.php or the deprecated <management> section
-		if (!$this->execute_function($path, $function, 'post')) 
+		if (!$this->execute_function($plug['plugin_path'], $function, 'post')) 
 		{
 			if ($function == 'install')
 			{
@@ -1885,53 +1964,61 @@ class e107plugin
 	 * @param object $when pre|post
 	 * @return boolean FALSE
 	 */
-	function execute_function($path = '', $what = '', $when = '')
+	function execute_function($path = null, $what = '', $when = '')
 	{
 		$mes = eMessage::getInstance();
-		$class_name = $this->plugFolder."_setup";
+		
+		if($path == null)
+		{
+			$path = $this->plugFolder;	
+		}
+		
+		$class_name = $path."_setup"; // was using $this->pluginFolder; 
 		$method_name = $what."_".$when;
-
-		if (varset($this->plug_vars['@attributes']['setupFile']))
-		{
-			$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
-		}
-		else
-		{
-			$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plugFolder.'_setup.php';
-		}
+		
+		
+			// {PLUGIN}_setup.php should ALWAYS be the name. 
+	//	if (varset($this->plug_vars['@attributes']['setupFile']))
+	//	{
+	//		$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
+	//	}
+	//	else
+	//	{
+			$setup_file = e_PLUGIN.$path.'/'.$path.'_setup.php';
+	//	}
 
 		if (is_readable($setup_file))
 		{
-			$mes->add("Found setup file <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+			$mes->add("Found setup file <b>".$path."_setup.php</b> ", E_MESSAGE_DEBUG);
 			include_once($setup_file);
+			
 
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
 				$obj->version_from = $this;
+				
 				if (method_exists($obj, $method_name))
 				{
-					$mes->add("Executing setup function <b>".$method_name."()</b>", E_MESSAGE_DEBUG);
+					$mes->add("Executing setup function <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
 					return call_user_func(array($obj, $method_name), $this);
 				}
 				else
 				{
-					$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+					$mes->add("Setup function ".$class_name." :: ".$method_name."() NOT found.", E_MESSAGE_DEBUG);
 					return FALSE;
 				}
 			}
 			else
 			{
-				$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+				$mes->add("Setup Class ".$class_name." NOT found.", E_MESSAGE_DEBUG);
 				return FALSE;
 			}
 		}
 		else
 		{
-			$mes->add("Optional Setup File NOT Found <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+			$mes->add("Optional Setup File NOT Found ".$path."_setup.php ", E_MESSAGE_DEBUG);
 		}
-
-		$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
 
 		return FALSE; // IMPORTANT.
 	}

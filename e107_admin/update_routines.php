@@ -86,6 +86,7 @@ if ($dont_check_update === TRUE)
 
 if (!$dont_check_update)
 {
+	/*
 	if ($sql->db_Select('plugin', 'plugin_id, plugin_version, plugin_path', 'plugin_installflag=1'))
 	{
 		while ($row = $sql->db_Fetch())
@@ -97,13 +98,18 @@ if (!$dont_check_update)
 			}
 		}
 	}
-
-
+	*/
+	
+	$dbupdateplugs = e107::getConfig('core')->get('plug_installed');
+		
 	// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
 	foreach ($dbupdateplugs as $path => $ver)
 	{
-		$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';
-		if (is_readable($fname)) include_once($fname);
+		if(!is_file(e_PLUGIN.$path."/plugin.xml")) 
+		{		
+			$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';  // DEPRECATED - left for BC only. 
+			if (is_readable($fname)) include_once($fname);
+		}
 		
 		$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
 		if (is_readable($fname))
@@ -120,7 +126,7 @@ if (!$dont_check_update)
 		$dbupdate['test_code'] = 'Test update routine';
 	}
 	$dbupdate['core_prefs'] = LAN_UPDATE_13;						// Prefs check
-	$dbupdate['706_to_800'] = LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0';
+	$dbupdate['706_to_800'] = LAN_UPDATE_8.' 1.x '.LAN_UPDATE_9.' 2.0 (Must be run first)';
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -133,31 +139,32 @@ if (!$dont_check_update)
 function update_check()
 {
 	
-	
+	$ns = e107::getRender();
+	$e107cache = e107::getCache();
+	$sql = e107::getDb();
+	$mes = e107::getMessage();
 		
-  global $ns, $dont_check_update, $e107info;
-
+	global $dont_check_update, $e107info;
+	global $dbupdate, $dbupdatep, $e107cache;
 
 	$update_needed = FALSE;
 
 	if ($dont_check_update === FALSE)
 	{
-		global $dbupdate, $dbupdatep, $e107cache;
-
-		// See which core functions need update
-		foreach($dbupdate as $func => $rmks)
+		
+		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
 		  if (function_exists('update_'.$func))
 			{
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
-				  continue;
+				  break;
 				}
 			}
 		}
 
-		// Now check plugins
+		// Now check plugins - XXX DEPRECATED 
 		foreach($dbupdatep as $func => $rmks)
 		{
 			if (function_exists('update_'.$func))
@@ -165,12 +172,19 @@ function update_check()
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
-				  continue;
+				  break;
 				}
 			}
 		}
+		
+		// New in v2.x
+		if(e107::getPlugin()->updateRequired('boolean'))
+		{
+			 $update_needed = TRUE;		
+		}
+	
 
-		$e107cache->set_sys('nq_admin_updatecheck', time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
+	//	$e107cache->set_sys('nq_admin_updatecheck', time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
 	}
 	else
 	{
@@ -179,30 +193,29 @@ function update_check()
 
 	if ($update_needed === TRUE)
 	{
-		require_once (e_HANDLER.'form_handler.php');
-		$frm = new e_form();
+		$frm = e107::getForm();
+		
 		$txt = "
 		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
 		<div>
 			".ADLAN_120."
-			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'update')."
+			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'other')."
 		</div>
 		</form>
 		";
-
-		require_once (e_HANDLER.'message_handler.php');
-		$emessage = &eMessage::getInstance();
-		$emessage->add($txt);
+		
+		$mes->addInfo($txt);
 	}
 }
 
 	
-
-require_once(e_HANDLER.'e_upgrade_class.php');
+//XXX to be reworked eventually - for checking remote 'new versions' of plugins and installed theme. 
+// require_once(e_HANDLER.'e_upgrade_class.php');
 //	$upg = new e_upgrade;
-	//TODO Enable this before release!!
+
 //	$upg->checkSiteTheme();
 //	$upg->checkAllPlugins();
+
 
 
 //--------------------------------------------
@@ -267,7 +280,7 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 function update_706_to_800($type='')
 {
-	global $ns, $pref, $e107info;
+	global $pref, $e107info;
 	global $sysprefs, $eArrayStorage;
 
 	//$mes = new messageLog;		// Combined logging and message displaying handler
@@ -276,15 +289,15 @@ function update_706_to_800($type='')
 	$sql = e107::getDb();
 	$sql2 = e107::getDb('sql2');
 	$tp = e107::getParser();
+	$ns = e107::getRender();
 	
-
 	e107::getCache()->clearAll('db');
 
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
 						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype'
-);
+				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last', 'session', 'preset', 'tinymce');

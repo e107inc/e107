@@ -165,10 +165,7 @@ if (e_QUERY == 'purge' && getperms('0'))
 */
 
 $td = 1;
-if(!defined("ADLINK_COLS"))
-{
-	define("ADLINK_COLS",5);
-}
+
 
 // DEPRECATED 
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)

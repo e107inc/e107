@@ -21,6 +21,8 @@ if (!defined('e107_INIT'))
 class adminstyle_infopanel
 {
 	
+	private $iconlist = array();
+	
 	function __construct()
 	{
 		e107::js('core','tweet/jquery.tweet.js');
@@ -64,6 +66,13 @@ EOF;
 			
 			save_prefs();
 		}
+		
+		
+		$array_functions_assoc = e107::getNav()->adminLinks('assoc');
+	
+		$this->iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
+		
+		
 	}
 	
 	
@@ -145,9 +154,7 @@ EOF;
 			
 		}
 		
-		$array_functions_assoc = e107::getNav()->adminLinks('assoc');
 	
-		$iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
 		
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
@@ -161,7 +168,7 @@ EOF;
 			
 				<div class='left' style='padding:32px'>";
 			
-			foreach ($iconlist as $key=>$val)
+			foreach ($this->iconlist as $key=>$val)
 			{
 				if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 				{
@@ -231,7 +238,7 @@ EOF;
 					<th>Username</th>
 					<th>IP</th>
 					<th>Page</th>
-					<th>Agent</th>
+					<th class='center'>Agent</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -248,7 +255,7 @@ EOF;
 						<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 						<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
 						<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".basename($val['user_location'])."</a></td>
-						<td><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
+						<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
 					</tr>
 					";
 			}
@@ -386,9 +393,9 @@ EOF;
 		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
 	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
 	    
-		$text2 .= $ns->tablerender("Personalize Icons",render_infopanel_icons(),'personalize',true); 
+		$text2 .= $ns->tablerender("Personalize Icons", $this->render_infopanel_icons(),'personalize',true); 
 		$text2 .= "<div class='clear'>&nbsp;</div>";
-		$text2 .= $ns->tablerender("Personalize Menus",render_infopanel_menu_options(),'personalize',true); 
+		$text2 .= $ns->tablerender("Personalize Menus", $this->render_infopanel_menu_options(),'personalize',true); 
 	//	$text2 .= render_infopanel_icons();
 		//$text2 .= "<div class='clear'>&nbsp;</div>";
 	//	$text2 .= "<h3>Menus</h3>";
@@ -408,21 +415,24 @@ EOF;
 
 	function render_infopanel_icons()
 	{
-		$frm = e107::getSingleton('e_form');
-		global $iconlist,$pluglist, $user_pref;
+	
+		$frm = e107::getForm();
+		global  $user_pref;
 			
 		$text = "";
 	
 	
-		foreach ($iconlist as $key=>$icon)
+		foreach ($this->iconlist as $key=>$icon)
 		{
 			if (getperms($icon['perms']))
 			{
 				$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
 				$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
 		                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
+								
 			}
 		}
+		
 		if (is_array($pluglist))
 		{
 			foreach ($pluglist as $key=>$icon)
