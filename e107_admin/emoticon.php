@@ -431,7 +431,7 @@ class emotec
 
 		// Pick up a list of emote packs from the database
 		$pack_local = array();
-		if ($sql->db_Select("core","*","`e107_name` LIKE 'emote_%'",TRUE))
+		if ($sql->db_Select("core","*","`e107_name` LIKE 'emote_%'"))
 		{
 			while ($row = $sql->db_Fetch())
 		  	{
