@@ -605,7 +605,7 @@ class system_tools
 
 					foreach($pref_types as $key=>$description)
 					{
-						$checked = ($_POST['xml_prefs'][$key] == $key) ? 1: 0;
+						$checked = (vartrue($_POST['xml_prefs'][$key]) == $key) ? 1: 0;
 
 						$text .= "<tr>
 							<td>
@@ -636,7 +636,7 @@ class system_tools
 
 					foreach($tables as $name=>$count)
 					{
-						$checked = ($_POST['xml_tables'][$name] == $name) ? 1: 0;
+						$checked = (vartrue($_POST['xml_tables'][$name]) == $name) ? 1: 0;
 						$text .= "<tr>
 							<td>
 								".$frm->checkbox("xml_tables[".$name."]", $name, $checked)." Table Data: ".$name."

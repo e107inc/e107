@@ -148,7 +148,8 @@ if (isset ($_POST['resend_to_all']))
 // if (isset ($_POST['execute_batch']))
 // {
 	// $user->process_batch();
-// }
+// }
+
 
 
 
@@ -449,13 +450,15 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == "unban")
 // {
 	// $ip = ($_POST['userip']) ? $_POST['userip'] : $_GET['userinfo'];
 	// $user->user_info($ip);
-// }
+// }
+
 
 // ------- Delete User --------------
 // if (isset ($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 // {
 	// $user->user_delete($_POST['userid'],true);
-// }
+// }
+
 
 // ---- Update User's class --------------------
 if (isset ($_POST['updateclass']))
@@ -1111,13 +1114,13 @@ class users_admin_form_ui extends e_admin_form_ui
 			return $list;	
 		}
         
-		$tmp = explode(",",$curval);
+		$tmp = explode(",", $curval);
 		$text = array();
 		foreach($tmp as $v)
 		{
 			$text[] = $list[$v];	
 		}
-		return implode("<br />",$text); // $list[$curval];
+		return implode("<br />", $text); // $list[$curval];
 				
 	}	
 	
@@ -1176,7 +1179,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 		
 		extract($row);
-		$text .= "<div>
+		$text = "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
@@ -1371,7 +1374,7 @@ class users
 			save_prefs();
 		}
 	//	$this->usersSaveColumnPref();
-		$this->fieldpref = (!$user_pref['admin_users_columns']) ? array('user_name','user_class') : $user_pref['admin_users_columns'];
+		$this->fieldpref = (!vartrue($user_pref['admin_users_columns'])) ? array('user_name','user_class') : $user_pref['admin_users_columns'];
 
 		/*        if (e_QUERY)
 		{

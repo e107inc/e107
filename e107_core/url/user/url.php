@@ -52,7 +52,7 @@ class core_user_url extends eUrlConfig
 		if(isset($params['user_id']) && !empty($params['user_id'])) $params['id'] = $params['user_id'];
 		
 		$url = 'user.php';
-		$page = $params['page'] ? intval($params['page']) : '0';
+		$page = vartrue($params['page']) ? intval($params['page']) : '0';
 		
 		if($route[0] == 'profile')
 		{

@@ -311,7 +311,7 @@ function admin_linkspage_config_adminmenu()
 				$var[$row['link_category_id']]['text'] = $row['link_category_name'];
 				$var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
 			}
-			$active = ($qs[0] == 'link') ? $id : FALSE;
+			$active = ($qs[0] == 'link') ? vartrue($id) : FALSE;
 			show_admin_menu(LCLAN_ADMINMENU_8, $active, $var);
 		}
 	}

@@ -813,17 +813,17 @@ $text .= "
 						switch ($k) {
 							case 'enabled':
 								$eopt = array('class'=>'e-expandit');
-								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', $pref['social_login'][$prov]['enabled'],'','',$eopt);
+								$text .= $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
 							break;
 							
 							case 'keys':
 								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['social_login'][$prov]['keys'][$tk]) ? "" : "display:none";
+								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "display:none";
 								$text .= "<div id='option-{$prov}' style='padding:10px;{$sty}'>";
 								foreach($v as $tk=>$idk)
 								{
 									$opt['placeholder'] = $tk;
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', $pref['social_login'][$prov]['keys'][$tk],100,$opt);								
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]),100,$opt);								
 								}	
 								$text .= "</div>";
 								

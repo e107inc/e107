@@ -31,7 +31,7 @@ TODO:
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!is_object($euf))
+if (!is_object(vartrue($euf)))
 {
 	require_once(e_HANDLER.'user_extended_class.php');
 	$euf = new e107_user_extended;

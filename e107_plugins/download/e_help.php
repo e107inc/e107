@@ -22,7 +22,7 @@ if (e_QUERY)
 	$action = $tmp[0];
 }
 
-switch($action) {
+switch(vartrue($action)) {
    case 'create' :{
       $text = DOWLAN_HELP_2;
       break;
@@ -71,6 +71,7 @@ switch($action) {
       $text .= "</div>";
 	 
 	 */
+    $text = "";
    }
 }
 $ns -> tablerender(DOWLAN_HELP_1, $text);

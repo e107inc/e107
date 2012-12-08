@@ -83,7 +83,7 @@ if (!getperms('W'))
 
 $e_sub_cat = 'mail';
 
-if($_GET['mode']=="progress")
+if(vartrue($_GET['mode']) == "progress")
 {
 	session_write_close();
 	sendProgress();

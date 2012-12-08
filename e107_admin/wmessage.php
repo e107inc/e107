@@ -34,7 +34,7 @@ require_once(e_HANDLER."ren_help.php");
 $rs = new form;
 $frm = new e_form;
 
-$action == '';
+vartrue($action) == '';
 if (e_QUERY) 
 {
 	$tmp = explode('.', e_QUERY);
@@ -170,14 +170,14 @@ if ($action == "create" || $action == "edit")
 		<tr>
 		<td>".WMLAN_10."</td>
 		<td>
-		<input type='text' class='tbox' id='wm_caption' name='wm_caption' maxlength='80' style='width:95%' value=\"".$tp->toForm($row['gen_ip'])."\" />
+		<input type='text' class='tbox' id='wm_caption' name='wm_caption' maxlength='80' style='width:95%' value=\"".$tp->toForm(vartrue($row['gen_ip']))."\" />
 		</td>
 		</tr>";
 
 	$text .= "<tr>
 		<td>".WMLAN_04."</td>
 		<td>
-		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
+		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea>
 		<br />";
 
 		$text .= display_help("helpb", "admin");
@@ -187,7 +187,7 @@ if ($action == "create" || $action == "edit")
 		</td>
 		</tr>
 		<tr><td>".WMLAN_03."</td>
-		<td>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>
+		<td>".r_userclass("wm_active", vartrue($row['gen_intdata']), "off", "public,guest,nobody,member,admin,classes")."</td></tr>
 		</table>";
 
 	$text .= "

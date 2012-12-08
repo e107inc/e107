@@ -71,8 +71,8 @@ function imageselector_shortcode($parm = '', $mod = '')
 		}
 
 		$multi = ($multiple == "TRUE" || $multiple == "1") ? " multiple='multiple' style='height:{$height}'" : ""; //style='float:left'
-		$width = ($width) ? $width : "0";
-		$height = ($height) ? $height : "0";
+		$width = (vartrue($width)) ? $width : "0";
+		$height = (vartrue($height)) ? $height : "0";
 		$label = ($label) ? $label : " -- -- ";
 		$tabindex = varset($tabindex) ? " tabindex='{$tabindex}'" : '';
 		$class = varset($class) ? " class='{$class}'" : " class='tbox imgselector'";

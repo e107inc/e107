@@ -327,9 +327,9 @@ $columnInfo = array(
 		public function init()
 		{
 			
-			$this->action 		= $_GET['mode'];
-			$this->subAction 	= $_GET['action'];
-			$this->id			= $_GET['id'];
+			$this->action 		= vartrue($_GET['mode']);
+			$this->subAction 	= vartrue($_GET['action']);
+			$this->id			= vartrue($_GET['id']);
 			
 			$this->observe();
 			
@@ -353,7 +353,7 @@ $columnInfo = array(
 			$this->fields['download_category']['readParms'] 		= $categories;
 			
 			// Custom filter queries 
-			if($_GET['filter_options'])
+			if(vartrue($_GET['filter_options']))
 			{
 				list($filter,$mode) = explode("__",$_GET['filter_options']);
 				
@@ -1297,7 +1297,7 @@ $columnInfo = array(
 	
 	      $text = "<div>
 	      <form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
-	      <table style='".ADMIN_WIDTH."' class='adminlist'>
+	      <table class='table adminform'>
 	
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_12."</td>
