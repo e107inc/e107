@@ -191,7 +191,7 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_62."</td>
 	<td style='width:80%' class='forumheader3'>
-    <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML($_POST['submitnews_title'],TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' />
+    <input class='tbox' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' />
 	</td>
 </tr>";
 
@@ -209,7 +209,7 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 	<td style='width:80%' class='forumheader3'>
-    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toForm($_POST['submitnews_item'],TRUE,'USER_BODY')."</textarea><br />"; 
+    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toForm(vartrue($_POST['submitnews_item']),TRUE,'USER_BODY')."</textarea><br />"; 
     // toHTML is dangerous. 
 
 if (!e_WYSIWYG)
