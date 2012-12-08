@@ -166,7 +166,7 @@ define('USRLAN_160', 'Total --COUNT-- users of type --TYPE-- pruned');
 define('USRLAN_161', 'User ID --UID-- name --NAME-- banned');
 define('USRLAN_162', 'User ID --UID-- name --NAME-- unbanned');
 define('USRLAN_163', 'User ID --UID-- deleted');
-define('USRLAN_164', 'User ID --UID-- name --NAME-- made admin');
+define('USRLAN_164', 'User ID --UID-- name --NAME-- (--EMAIL--) made admin');
 define('USRLAN_165', 'User ID --UID-- name --NAME-- admin status revoked');
 define('USRLAN_166', 'User ID --UID-- name --NAME-- approved');
 //FIX ME USERLAN_160 - USERLAN_166 need to be reworked avoid duplication. 

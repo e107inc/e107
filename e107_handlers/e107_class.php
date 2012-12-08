@@ -1387,7 +1387,7 @@ class e107
 
 	/**
 	 * Retrieve User Perms (admin perms) handler singleton object
-	 * @return comment
+	 * @return e_userperms
 	 */
 	public static function getUserPerms()
 	{
