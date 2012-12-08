@@ -1977,7 +1977,9 @@ class e107plugin
 		$method_name = $what."_".$when;
 		
 		
-			// {PLUGIN}_setup.php should ALWAYS be the name. 
+			// {PLUGIN}_setup.php should ALWAYS be the name of the file.. 
+			
+			
 	//	if (varset($this->plug_vars['@attributes']['setupFile']))
 	//	{
 	//		$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
@@ -2011,13 +2013,13 @@ class e107plugin
 			}
 			else
 			{
-				$mes->add("Setup Class ".$class_name." NOT found.", E_MESSAGE_DEBUG);
+			//	$mes->add("Setup Class ".$class_name." NOT found.", E_MESSAGE_DEBUG);
 				return FALSE;
 			}
 		}
 		else
 		{
-			$mes->add("Optional Setup File NOT Found ".$path."_setup.php ", E_MESSAGE_DEBUG);
+			//$mes->add("Optional Setup File NOT Found ".$path."_setup.php ", E_MESSAGE_DEBUG);
 		}
 
 		return FALSE; // IMPORTANT.
