@@ -252,11 +252,11 @@ class bbcode_shortcodes extends e_shortcode
 			$emote = ",".$emote;	
 		}
 		$text = "onclick=\"{$func}('".$func_var."'{$emote})\" ";
-		$bbcode_help = $this->var['hint_func'];
+		$bbcode_help = vartrue($this->var['hint_func']);
 		$bbcode_tag = $this->var['tagid'];
 		$_helptxt	= $hint_diz;
 	//	onclick="addtext('[justify][/justify]')" onmouseout="help('','admin')" onmouseover="help('Justify align: [justify]This text will be justified[/justify]','admin')">
-		$text .= ($this->var['hint_active'] ? "onmouseout=\"{$bbcode_help}('','{$bbcode_tag}')\" onmouseover=\"{$bbcode_help}('".$_helptxt."','{$bbcode_tag}')\"" : "" );
+		$text .= (vartrue($this->var['hint_active']) ? "onmouseout=\"{$bbcode_help}('','{$bbcode_tag}')\" onmouseover=\"{$bbcode_help}('".$_helptxt."','{$bbcode_tag}')\"" : "" );
 		return $text;	
 	}
 	

@@ -339,11 +339,11 @@ function showLimits()
 	}
 	$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='adminlist'>
+		<table class='table adminform'>
 		<tr>
 			<td colspan='4' style='text-align:left'>
 		";
-		if ($pref['download_limits'] == 1)
+		if(vartrue($pref['download_limits']) == 1)
 		{
 			$chk = "checked = 'checked'";
 		}
@@ -364,7 +364,7 @@ function showLimits()
 		</tr>
 	";
 
-	if(is_array($limitList))
+	if(is_array(vartrue($limitList)))
 	{
 		foreach($limitList as $row)
 		{
@@ -453,7 +453,7 @@ function showMaint() // Deprecated.
                   if (!$foundSome) {
    		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
-                     			<table class="adminlist">';
+                     			<table class="table adminform">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
@@ -509,7 +509,7 @@ function showMaint() // Deprecated.
                   if (!$foundSome) {
    		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
-                     <table class="adminlist">';
+                     <table class="table adminform">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_182.'</th>';
@@ -602,7 +602,7 @@ function showMaint() // Deprecated.
                   {
    		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
-                     		<table class="adminlist">';
+                     		<table class="table adminform">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
                      $text .= '<th>'.DOWLAN_27.'</th>';
@@ -657,7 +657,7 @@ function showMaint() // Deprecated.
    		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '
                      <form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
-                     <table class="adminlist">';
+                     <table class="table adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
                      $text .= '<th>'.DOWLAN_27.'</th>';
@@ -711,7 +711,7 @@ function showMaint() // Deprecated.
                         if (!$foundSome) {
    		                 // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                            $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
-                           		<table class="adminlist">';
+                           		<table class="table adminlist">';
                            $text .= '<tr>';
                            $text .= '<th>'.DOWLAN_67.'</th>';
                            $text .= '<th>'.DOWLAN_27.'</th>';
@@ -766,7 +766,7 @@ function showMaint() // Deprecated.
       	<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-main-form'>
       		<fieldset id='core-db-plugin-scan'>
       		<legend class='e-hideme'>".DOWLAN_10."</legend>
-      			<table cellpadding='0' cellspacing='0' class='adminlist'>
+      			<table class='table adminform'>
       			<colgroup span='2'>
       				<col style='width: 40%'></col>
       				<col style='width: 60%'></col>
@@ -927,7 +927,7 @@ function showMaint() // Deprecated.
             <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
-               <table class='adminlist'>
+               <table class='table adminform'>
                   <tr>
                      <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'class' => 'someclass'))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
                   </tr>
@@ -955,7 +955,7 @@ function showMaint() // Deprecated.
             <div id='download_advanced_search' class='e-hideme'>
             <fieldset>
             <legend class='e-hideme'>".DOWLAN_183."</legend>
-            <table class='adminform'>
+            <table class='table adminform'>
                <colgroup>
                   <col style='width:15%;'/>
                   <col style='width:35%;'/>
@@ -1143,7 +1143,7 @@ function showMaint() // Deprecated.
                      ."</p><p>".
                      DOWLAN_72.$source_file."
                   </p></div>
-                  <table style='".ADMIN_WIDTH."' class='adminlist'>"
+                  <table class='table adminform'>"
                      .$frm->colGroup($columnInfo)
                      .$frm->thead($columnInfo,$filterColumns)."
                      <tbody>
@@ -1197,7 +1197,7 @@ function showMaint() // Deprecated.
            <form method='post' action='".e_SELF."?".e_QUERY."'>
             <fieldset id='core-download-upload1'>
                <div>
-                  <table style='".ADMIN_WIDTH."' class='adminlist'>
+                  <table class='table adminform'>
                      <colgroup>
                         <col style='width:30%'/>
                         <col style='width:70%'/>

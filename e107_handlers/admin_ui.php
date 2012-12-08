@@ -3302,13 +3302,13 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// disabled or system
 			
-			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === $var['type'])
+			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === vartrue($var['type']))
 			{
 				continue;
 			}
 
 			// select FROM... for main table
-			if($var['alias'] && vartrue($var['__tableField']))
+			if(vartrue($var['alias']) && vartrue($var['__tableField']))
 			{
 				$tableSFieldsArr[] = $var['__tableField'];
 			}
@@ -4344,7 +4344,7 @@ class e_admin_form_ui extends e_form
 		foreach($fields as $field => $foptions)
 		{
 			// check form custom methods
-			if($foptions['type'] === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
+			if(vartrue($foptions['type']) === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
 			{
 				e107::getMessage()->addError(sprintf(LAN_UI_FORM_METHOD_ERROR, $field));
 				$err = true;

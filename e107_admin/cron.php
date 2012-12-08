@@ -157,7 +157,7 @@ class cron_admin_ui extends e_admin_ui
 				),
 			);
 	
-			if(!$_GET['action'] || $_GET['action'] == 'refresh')
+			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
 			{
 				
 				$this->cronImport($cronDefaults);	// import Core Crons (if missing)

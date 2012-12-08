@@ -855,7 +855,7 @@ class user_class
 	public function isEditableClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[$class_id])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (isset($this->fixed_classes[vartrue($class_id)])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		return TRUE;
 	}
 
@@ -1187,7 +1187,7 @@ class user_class_admin extends user_class
 	*/
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
-		$num_children = count($this->class_tree[$listnum]['class_children']);
+		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 

@@ -67,7 +67,7 @@ if (!isset($search_prefs['boundary']))
 	$save_search = TRUE;
 }
 
-if ($save_search)
+if (vartrue($save_search))
 {
 	$serialpref = addslashes(serialize($search_prefs));
 	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
@@ -407,7 +407,7 @@ else
 								<select name='plug_handlers[".$plug_dir."][order]' class='tbox select order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
-			$text .= ($search_prefs['plug_handlers'][$plug_dir]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+			$text .= (vartrue($search_prefs['plug_handlers'][$plug_dir]['order']) == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
 		}
 		$text .= "
 								</select>

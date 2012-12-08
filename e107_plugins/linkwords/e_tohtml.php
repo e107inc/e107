@@ -89,7 +89,7 @@ class e_tohtml_linkwords
 				$this->lw_enabled = TRUE;
 			}
 		}
-		if (!$temp)
+		if (!vartrue($temp))
 		{	// Either cache disabled, or no info in cache (or error reading/processing cache)
 			$link_sql = new db;
 			if($link_sql -> db_Select("linkwords", "*", "linkword_active!=1"))

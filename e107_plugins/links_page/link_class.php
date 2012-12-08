@@ -806,7 +806,7 @@ class linkclass
         </tr>";
 
 		//triggerHook
-		$data = array('method'=>'form', 'table'=>'links_page', 'id'=>$row['link_id'], 'plugin'=>'links_page', 'function'=>'show_link_create');
+		$data = array('method'=>'form', 'table'=>'links_page', 'id'=>vartrue($row['link_id']), 'plugin'=>'links_page', 'function'=>'show_link_create');
 		$text .= $frm->renderHooks($data);
 		
 		$text .= "
@@ -1036,7 +1036,7 @@ class linkclass
         <tr>
         <td>".LCLAN_CAT_24."</td>
         <td>
-            ".r_userclass("link_category_class", $row['link_category_class'], "off", "public,guest,nobody,member,admin,classes")."
+            ".r_userclass("link_category_class", vartrue($row['link_category_class']), "off", "public,guest,nobody,member,admin,classes")."
         </td>
         </tr>
         <tr><td colspan='2' style='text-align:center'>";

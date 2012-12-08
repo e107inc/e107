@@ -82,7 +82,7 @@ if(isset($_GET['scan']))
 
 	$_POST = $_GET;
 	
-	if($_GET['exploit'])
+	if(vartrue($_GET['exploit']))
 	{
 		$fi->exploit();	
 	}
@@ -141,7 +141,7 @@ class file_inspector {
 		if ($_POST['core'] == 'fail') {
 			$_POST['integrity'] = TRUE;
 		}
-		if (MAGIC_QUOTES_GPC && $_POST['regex']) {
+		if (MAGIC_QUOTES_GPC && vartrue($_POST['regex'])) {
 			$_POST['regex'] = stripslashes($_POST['regex']);
 		}
 		if ($_POST['regex']) {
@@ -410,7 +410,7 @@ class file_inspector {
 	
 	
 	
-	$this->sendProgress($this->count['core']['num'],$this->totalFiles,FR_LAN_1);	
+	$this->sendProgress(vartrue($this->count['core']['num']),$this->totalFiles,FR_LAN_1);	
 			
 	  foreach ($list as $key => $value)
 	  {
@@ -431,7 +431,7 @@ class file_inspector {
 		}
 		else
 		{
-		  $this->sendProgress($this->count['core']['num'],$this->totalFiles,FR_LAN_1);	
+		  $this->sendProgress(vartrue($this->count['core']['num']),$this->totalFiles,FR_LAN_1);	
 		  $path = $dir.'/'.$key;
 		  
 		  $fid = strtolower($key);
@@ -1208,7 +1208,7 @@ function sh(showid) {
 </script>
 <style type='text/css'>
 <!--\n";
-if ($_POST['regex']) {
+if (vartrue($_POST['regex'])) {
 	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }\n";
 } else {
 	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }\n";

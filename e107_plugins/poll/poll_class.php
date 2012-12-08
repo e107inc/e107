@@ -602,7 +602,7 @@ class poll
 		
 		
 		$text .= "
-		<td>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', $uclass)."</td>
+		<td>".r_userclass("pollUserclass", vartrue($_POST['pollUserclass']), 'off', $uclass)."</td>
 		</tr>
 
 		<tr>

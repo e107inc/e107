@@ -102,7 +102,7 @@ if($headline_total = $sql->db_Select("newsfeed"))
 {
 	$nfArray = $sql -> db_getList();
 
-	$text = "<div style='text-align:center'>
+	$text = "
 	<table class='table adminform'>
 	<colgroup>
 		<col style='width: 5%; text-align: center;' />
@@ -134,7 +134,7 @@ if($headline_total = $sql->db_Select("newsfeed"))
 		</tr>\n";
 	}
 
-	$text .= "</table>\n</div>";
+	$text .= "</table>";
 }
 else
 {

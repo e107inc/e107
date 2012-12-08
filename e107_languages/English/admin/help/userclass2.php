@@ -18,7 +18,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $caption = "User Class Help";
 
-if (!($action = $_GET['action']))
+if (!($action = vartrue($_GET['action'])))
 {
 	if (e_QUERY)
 	{
