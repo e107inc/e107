@@ -1991,7 +1991,11 @@ class e107plugin
 
 		if (is_readable($setup_file))
 		{
-			$mes->add("Found setup file <b>".$path."_setup.php</b> ", E_MESSAGE_DEBUG);
+			if(e_PAGE == 'e107_update.php')
+			{
+				$mes->add("Found setup file <b>".$path."_setup.php</b> ", E_MESSAGE_DEBUG);
+			}
+			
 			include_once($setup_file);
 			
 
@@ -2002,12 +2006,18 @@ class e107plugin
 				
 				if (method_exists($obj, $method_name))
 				{
-					$mes->add("Executing setup function <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
+					if(e_PAGE == 'e107_update.php')
+					{
+						$mes->add("Executing setup function <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
+					}
 					return call_user_func(array($obj, $method_name), $this);
 				}
 				else
 				{
-					$mes->add("Setup function ".$class_name." :: ".$method_name."() NOT found.", E_MESSAGE_DEBUG);
+					if(e_PAGE == 'e107_update.php')
+					{
+						$mes->add("Setup function ".$class_name." :: ".$method_name."() NOT found.", E_MESSAGE_DEBUG);
+					}
 					return FALSE;
 				}
 			}
