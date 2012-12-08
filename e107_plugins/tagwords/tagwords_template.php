@@ -120,13 +120,14 @@ $TEMPLATE_TAGWORDS['menu_cloud'] = "
 
 $TEMPLATE_TAGWORDS['admin_options'] = "
 <form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
-<table cellpadding='0' cellspacing='0' class='adminform'>
+<table class='table adminform'>
 	<colgroup span='2'>
 		<col class='col-label' />
 		<col class='col-control' />
 	</colgroup>
 <tr>
-	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_25."</td>
+	<td colspan='2'>".LAN_TAG_OPT_25."</td>
+
 </tr>
 <tr>
 	<td>".LAN_TAG_OPT_2."</td>
@@ -137,7 +138,7 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	<td>{TAG_OPT_CLASS}</td>
 </tr>
 <tr>
-	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_16."</td>
+	<td colspan='2'>".LAN_TAG_OPT_16."</td>
 </tr>
 <tr>
 	<td>".LAN_TAG_OPT_4."</td>
@@ -158,7 +159,7 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	</td>
 </tr>
 <tr>
-	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_17."</td>
+	<td colspan='2'>".LAN_TAG_OPT_17."</td>
 </tr>
 <tr>
 	<td>".LAN_TAG_OPT_18."</td>
@@ -180,21 +181,21 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	</td>
 </tr>
 <tr>
-	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_21."</td>
+	<td colspan='2'>".LAN_TAG_OPT_21."</td>
 </tr>
 <tr>
 	<td>".LAN_TAG_OPT_22."</td>
 	<td>{TAG_OPT_SEPERATOR}</td>
 </tr>
 <tr>
-	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_23."</td>
+	<td colspan='2'>".LAN_TAG_OPT_23."</td>
 </tr>
 <tr>
 	<td>".LAN_TAG_OPT_24."</td>
 	<td>{TAG_OPT_ACTIVEAREAS}</td>
 </tr>
 <tr>
-	<td class='forumheader' colspan='2' style='text-align:center'>{TAG_OPT_BUTTON}</td>
+	<td colspan='2' style='text-align:center'>{TAG_OPT_BUTTON}</td>
 </tr>
 </table>
 </form>";

@@ -861,14 +861,14 @@ class pluginManager{
 		$text = "
 			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
 				<fieldset id='core-plugin-list'>
-					<legend class='e-hideme'>".$caption."</legend>
+					<legend class='e-hideme'>".vartrue($caption)."</legend>
 					<table class='table adminlist'>
 						".$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref)."
 						<tbody>
 		";
 
-		if($pluginRenderPlugin)
+		if(vartrue($pluginRenderPlugin))
 		{
 			$text .= $pluginRenderPlugin;
 		}

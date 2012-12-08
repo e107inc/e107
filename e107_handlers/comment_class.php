@@ -68,7 +68,7 @@ class comment
 		{
 			require_once(e107::coreTemplatePath('comment'));	
 		}
-		elseif(!$COMMENT_TEMPLATE) // BC template. 
+		elseif(!vartrue($COMMENT_TEMPLATE)) // BC template. 
 		{
 			global $sc_style;
 			/*

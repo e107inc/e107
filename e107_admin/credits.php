@@ -44,7 +44,7 @@ require_once(e_ADMIN."auth.php");
                     <p>
                         Cameron Hanly, Miroslav Yovchev, Steven Davies,<br />
                         Henk Jongedijk, James Currie, Martin Nicholls,<br /> 
-                        Steven Davies, Thom Michelbrink
+                        Steven Davies, Thom Michelbrink, Tijn Kuyper
                     </p>
                     <h1>3rd Parties</h1>
                     <p>

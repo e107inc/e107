@@ -1738,7 +1738,7 @@ class e_form
 		{
 			case 'options':
 				
-				if($attributes['type']=='method') // Allow override with 'options' function.
+				if($attributes['type'] == "method") // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
@@ -1865,7 +1865,7 @@ class e_form
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
 
-				if(vartrue($opts['multiple']) || $attributes['data']=='comma')
+				if(vartrue($opts['multiple']) || vartrue($attributes['data']) == 'comma')
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
