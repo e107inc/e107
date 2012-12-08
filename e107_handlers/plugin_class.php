@@ -2509,17 +2509,17 @@ class e107plugin
 		}
 
 		// For BC.
-		$ret['administration']['icon'] = varset(str_replace($plugName."/","",$eplug_icon));
+		$ret['administration']['icon'] = str_replace($plugName."/","",$eplug_icon);
 		$ret['administration']['caption'] = varset($eplug_caption);
-		$ret['administration']['iconSmall'] = varset(str_replace($plugName."/","",$eplug_icon_small));
+		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
 		if (varset($eplug_conffile))
 		{
 			$ret['adminLinks']['link'][0]['@attributes']['url'] = varset($eplug_conffile);
 			$ret['adminLinks']['link'][0]['@attributes']['description'] = LAN_CONFIGURE;
-			$ret['adminLinks']['link'][0]['@attributes']['icon'] = varset(str_replace($plugName."/","",$eplug_icon));
-			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = varset(str_replace($plugName."/","",$eplug_icon_small));
+			$ret['adminLinks']['link'][0]['@attributes']['icon'] = str_replace($plugName."/","",$eplug_icon);
+			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
 			$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
 		}
 		if (vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
