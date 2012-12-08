@@ -16,28 +16,28 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 // the user box and subject box are not always displayed, therefore we need to define them /in case/ they are, if not they'll be ignored.
 
-if(!$userbox)
+if(!vartrue($userbox))
 {
 $userbox = "<tr>
 <td class='forumheader2' style='width:20%'>".LAN_61."</td>
 <td class='forumheader2' style='width:80%'>
-<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' style='width:95%' />
+<input class='tbox' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
 </td>
 </tr>";
 }
 
-if(!$subjectbox)
+if(!vartrue($subjectbox))
 {
 $subjectbox = "<tr>
 <td class='forumheader2' style='width:20%'>".LAN_62."</td>
 <td class='forumheader2' style='width:80%'>
-<input class='tbox' type='text' name='subject' size='71' value='".$subject."' maxlength='100' style='width:95%' />
+<input class='tbox' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
 </td>
 </tr>";
 }
 
 // the poll is optional, be careful when changing the values here, only change if you know what you're doing ...
-if(!$poll_form)
+if(!vartrue($poll_form))
 {
 	if(is_readable(e_PLUGIN.'poll/poll_class.php')) {
 		require_once(e_PLUGIN.'poll/poll_class.php');
@@ -47,7 +47,7 @@ if(!$poll_form)
 }
 
 // finally, file attach is optional, again only change this if you know what you're doing ...
-if(!$fileattach)
+if(!vartrue($fileattach))
 {
 $fileattach = "
 <tr>
@@ -55,7 +55,7 @@ $fileattach = "
 </tr>
 <tr>
 	<td style='width:20%' class='forumheader3'>".LAN_392."</td>
-	<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($max_upload_size ? $max_upload_size.LAN_396 : ini_get('upload_max_filesize'))."
+	<td style='width:80%' class='forumheader3'>".LAN_393." | ".vartrue($allowed_filetypes)." |<br />".LAN_394."<br />".LAN_395.": ".(vartrue($max_upload_size) ? $max_upload_size.LAN_396 : ini_get('upload_max_filesize'))."
 		<br />
 		<div id='fiupsection'>
 		<span id='fiupopt'>
@@ -70,7 +70,7 @@ $fileattach = "
 //</tr>
 }
 // If the upload directory is not writable, we need to alert the user about this.
-if(!$fileattach_alert)
+if(!vartrue($fileattach_alert))
 {
 	$fileattach_alert = "
 	<tr>
@@ -126,7 +126,7 @@ $FORUMPOST = "
 ";
 }
 
-if(!$FORUMPOST_REPLY)
+if(!vartrue($FORUMPOST_REPLY))
 {
 $FORUMPOST_REPLY = "
 <div style='text-align:center'>
@@ -176,7 +176,7 @@ $FORUMPOST_REPLY = "
 ";
 }
 
-if(!$LATESTPOSTS_START)
+if(!vartrue($LATESTPOSTS_START))
 {
 $LATESTPOSTS_START = "
 <table style='".USER_WIDTH."' class='fborder'>
@@ -187,7 +187,7 @@ LAN_101."{LATESTPOSTSCOUNT}".LAN_102."
 </tr>";
 }
 
-if(!$LATESTPOSTS_POST)
+if(!vartrue($LATESTPOSTS_POST))
 {
 $LATESTPOSTS_POST = "
 <tr>
@@ -200,14 +200,14 @@ $LATESTPOSTS_POST = "
 ";
 }
 
-if(!$LATESTPOSTS_END)
+if(!vartrue($LATESTPOSTS_END))
 {
 $LATESTPOSTS_END = "
 </table>
 ";
 }
 
-if(!$THREADTOPIC_REPLY)
+if(!vartrue($THREADTOPIC_REPLY))
 {
 $THREADTOPIC_REPLY = "
 <table style='".USER_WIDTH."' class='fborder'>

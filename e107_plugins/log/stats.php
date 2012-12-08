@@ -1034,7 +1034,7 @@ class siteStats
 			if ($do_errors XOR !$found) 
 			{
 				$totalArray[$k] = $v;
-				$total += $v['ttlv'];
+				$total += vartrue($v['ttlv']);
 			}
 		}
 		$totalArray = $this -> arraySort($totalArray, "ttl");
