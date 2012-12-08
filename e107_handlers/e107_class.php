@@ -1632,6 +1632,7 @@ class e107
 	public function getAddonConfig($addonName, $className = '')
 	{
 		$new_addon = array();
+		$sql = e107::getDb(); // Might be used by older plugins. 
 
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)

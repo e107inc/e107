@@ -314,6 +314,7 @@ class admin_shortcodes
 					$sql = e107::getDb();
 					$ns = e107::getRender();
 					$pref = e107::getPref();
+					$mes = e107::getMessage();
 
 					$active_uploads = $sql -> db_Count('upload', '(*)', 'WHERE upload_active = 0');
 					$submitted_news = $sql -> db_Count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
@@ -324,6 +325,8 @@ class admin_shortcodes
 		
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : ' '.ADLAN_LAT_7.': '.$active_uploads).'</div>';
 
+					
+					// for BC only. 
 					if(vartrue($pref['e_latest_list']))
 					{
 						foreach($pref['e_latest_list'] as $val)
@@ -331,9 +334,26 @@ class admin_shortcodes
 							if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
 							{
 								include_once(e_PLUGIN.$val.'/e_latest.php');
+								if(!class_exists($val."_latest"))
+								{
+									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_latest method");	
+								}
 							}
 						}
                     }
+
+
+
+					$configs = e107::getAddonConfig('e_latest');
+					foreach($configs as $k=>$v)
+					{
+						foreach($v as $val)
+						{
+							$link =  "<a href='".$val['url']."'>".$val['title'].": ".$val['total']."</a>";
+							$text .= "<div style='padding-bottom: 2px;'>".$val['icon']." ".$link."</div>\n";	
+						}	
+					}
+
 
 					$messageTypes = array('Broken Download', 'Dev Team Message');
 					$queryString = '';
@@ -924,7 +944,12 @@ class admin_shortcodes
 			{
 				function admin_status($parm='')
 				{
-					global $sql, $ns, $pref;
+					$mes = e107::getMessage();
+					$sql = e107::getDb();
+					$ns = e107::getRender();
+					$pref = e107::getPref();
+					
+					
 					$members = $sql -> db_Count('user');
 					$unverified = $sql -> db_Count('user', '(*)', 'WHERE user_ban=2');
 					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
@@ -940,7 +965,9 @@ class admin_shortcodes
 						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}</div>
 						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".$lban."</div>
 						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".$lcomment."</div>\n\n";
+						
 
+					// for BC only. 	
 					if(vartrue($pref['e_status_list']))
 					{
 						foreach($pref['e_status_list'] as $val)
@@ -949,9 +976,25 @@ class admin_shortcodes
 							if (is_readable(e_PLUGIN.$val.'/e_status.php'))
 							{
 								include_once(e_PLUGIN.$val.'/e_status.php');
+								if(!class_exists($val."_status"))
+								{
+									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method");	
+								}
 							}
 						}
 					}
+
+					// New in v2.x
+					$configs = e107::getAddonConfig('e_status');
+					foreach($configs as $k=>$v)
+					{
+						foreach($v as $val)
+						{
+							$link =  "<a href='".$val['url']."'>".$val['title'].": ".$val['total']."</a>";
+							$text .= "<div style='padding-bottom: 2px;'>".$val['icon']." ".$link."</div>\n";	
+						}	
+					}
+
 
 					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{

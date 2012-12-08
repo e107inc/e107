@@ -25,6 +25,22 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$chatbox_posts = $sql -> db_Count('chatbox');
-$text .= "<div style='padding-bottom: 2px;'><img src='".e_PLUGIN_ABS."chatbox_menu/images/chatbox_16.png' style='width: 16px; height: 16px; vertical-align: bottom' alt='' /> ".ADLAN_115.": ".$chatbox_posts."</div>";
+class chatbox_menu_status // include plugin-folder in the name.
+{
+	function config()
+	{
+		$sql = e107::getDb();
+		$chatbox_posts = $sql -> db_Count('chatbox');
+		
+		$var[0]['icon'] 	= "<img src='".e_PLUGIN_ABS."chatbox_menu/images/chatbox_16.png' style='width: 16px; height: 16px; vertical-align: bottom' alt='' /> ";
+		$var[0]['title'] 	= ADLAN_115;
+		$var[0]['url']		= e_PLUGIN."chatbox_menu/admin_chatbox.php";
+		$var[0]['total'] 	= $chatbox_posts;
+
+		return $var;
+	}	
+}
+
+
+
 ?>
