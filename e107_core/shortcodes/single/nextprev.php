@@ -172,7 +172,7 @@ function nextprev_shortcode($parm = '')
 		$e_vars->caption = sprintf(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
-		$pagetitle = explode('|',$parm['pagetitle']);
+		$pagetitle = explode('|', vartrue($parm['pagetitle']));
 		
 		// new - bullet support
 		$bullet = vartrue($parm['bullet'], '');

@@ -4251,7 +4251,7 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				if(vartrue($att['validate']))
 				{
-					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], vartrue($att['help'])));
 				}
 				/*elseif(vartrue($att['check'])) could go?
 				{

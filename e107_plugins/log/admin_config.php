@@ -286,7 +286,7 @@ function data_type_select($name,$value)
 switch ($action)
 {
   case 'config' :
-	$text = "<div style='text-align:center'>
+	$text = "
 	<form method='post' action='".e_SELF."'>
 	<table class='table adminform'>
 	<colgroup>
@@ -296,7 +296,7 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L4."</td>
-	<td style='text-align: right;'>
+	<td>
 	<input type='radio' name='statActivate' value='1'".($pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statActivate' value='0'".(!$pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
@@ -304,12 +304,12 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L18."</td>
-	<td style='text-align: right;'>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
+	<td>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
 	</tr>
 
 	<tr>
 	<td>".ADSTAT_L20."</td>
-	<td style='text-align: right;'>
+	<td>
 	<input type='radio' name='statCountAdmin' value='1'".($pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
@@ -317,14 +317,14 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L21."</td>
-	<td style='text-align: right;'>
+	<td>
 	<input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' />
 	</td>
 	</tr>
 
 	<tr>
 	<td>".ADSTAT_L5."</td>
-	<td style='text-align: right'>
+	<td>
 	".gen_select(ADSTAT_L6, 'statBrowser',$pref['statBrowser'])
 	 .gen_select(ADSTAT_L7, 'statOs',$pref['statOs'])
 	 .gen_select(ADSTAT_L8, 'statScreen',$pref['statScreen'])
@@ -340,13 +340,13 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L78."<br /><span class='smalltext'>".ADSTAT_L79."</span></td>
-	<td style='text-align: right;'>
+	<td>
 	<input type='checkbox' name='statPrevMonth' value='1'".(varset($pref['statPrevMonth'],0) ? " checked='checked'" : "")." />
 	</td></tr>
 
 	<tr>
 	<td>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</span></td>
-	<td style='text-align: right;'>
+	<td>
 	".ADSTAT_L14."<input type='checkbox' name='wipe[statWipePage]' value='1' /><br />
 	".ADSTAT_L6."<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /><br />
 	".ADSTAT_L7." <input type='checkbox' name='wipe[statWipeOs]' value='1' /><br />
@@ -360,7 +360,7 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</span></td>
-	<td style='text-align: right;'><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
+	<td><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
 	</td>
 	</tr>
 	";
@@ -369,10 +369,9 @@ switch ($action)
 	</tr>
 	</table>
 	<div class='buttons-bar center'>
-	".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
+		".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
-	</form>
-	</div>";
+	</form>";
 
 	$ns->tablerender(ADSTAT_L16, $text);
 	break;  // case config

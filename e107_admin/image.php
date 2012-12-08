@@ -40,7 +40,7 @@ if(isset($_POST['submit_cancel_show']))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-if($_GET['action'] == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
+if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
 	define("e_IFRAME",true);
 	// require_once(e_ADMIN."auth.php");
@@ -518,13 +518,13 @@ class media_form_ui extends e_admin_form_ui
 			return;
 		}	
 		
-		$tagid = $_GET['tagid'];
+		$tagid = vartrue($_GET['tagid']); 
 		$path = $this->getController()->getListModel()->get('media_url');
 		$title = $this->getController()->getListModel()->get('media_name');
 		$id = $this->getController()->getListModel()->get('media_id');
 		$preview = basename($path);
 		
-		$bbcode = ($_GET['bbcode']=='file')  ? "file" : "";
+		$bbcode = (vartrue($_GET['bbcode']) == 'file')  ? "file" : "";
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
 		$text = $this->renderValue('options',$value,'',$id);

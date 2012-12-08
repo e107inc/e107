@@ -87,7 +87,7 @@ class gsitemap
 		{
 			$this -> instructions();
 		}
-		else if(!$_POST['edit'])
+		else if(!vartrue($_POST['edit']))
 		{
 			$this -> showList();
 		}
@@ -107,7 +107,7 @@ class gsitemap
 
 		if (!$count)
 		{
-			$text .= "
+			$text = "
 			<form action='".e_SELF."?import' id='import' method='post'>
 			".GSLAN_39."<br /><br />"
 			.$frm->admin_button('import',LAN_YES,'submit')."
@@ -151,7 +151,7 @@ class gsitemap
 			foreach($glArray as $row2)
 			{
 				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
-				$rowStyle = ($rowStyle == "odd") ? "even" : "odd";
+				$rowStyle = (vartrue($rowStyle) == "odd") ? "even" : "odd";
 
 				$text .= "<tr class='{$rowStyle}'>
 				<td style='; text-align: center;'>".$row2['gsitemap_id'] ."</td>
@@ -457,7 +457,7 @@ class gsitemap
 
 		for ($i=0.1; $i<1.0; $i=$i+0.1) 
 		{
-			$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
+			$sel = (vartrue($editArray['gsitemap_priority']) == number_format($i,1))? "selected='selected'" : "";
 			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
 		};
 
@@ -467,7 +467,7 @@ class gsitemap
 		<select class='tbox' name='import_freq' >\n";
 		foreach($this->freq_list as $k=>$fq)
 		{
-			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
+			$sel = (vartrue($editArray['gsitemap_freq']) == $k)? "selected='selected'" : "";
 			$text .= "<option value='{$k}' {$sel}>{$fq}</option>\n";
 		}
 

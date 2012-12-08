@@ -312,7 +312,6 @@ if(!isset($RSS_ADMIN_LIST_FOOTER))
 if(!isset($RSS_ADMIN_CREATE_TABLE))
 {
 	$RSS_ADMIN_CREATE_TABLE = "
-	<div style='text-align:center;'>
 	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
 	<table class='table adminform'>
 	<tr>
@@ -345,7 +344,7 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 	</tr>
 
 	<tr>
-		<td class='forumheader' colspan='2' style='text-align:center;'>{RSS_ADMIN_FORM_CREATEBUTTON}</td>
+		<td colspan='2' style='text-align:center;'>{RSS_ADMIN_FORM_CREATEBUTTON}</td>
 	</tr>
 	</table>
 	</form>
@@ -356,49 +355,39 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 if(!isset($RSS_ADMIN_OPTIONS_TABLE))
 {
 	$RSS_ADMIN_OPTIONS_TABLE = "
-	<div style='text-align:center;'>
 	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
-	<table class='table adminlist'>
-	<tr>
-		<td class='fcaption'>".LAN_OPTIONS."</td>
-		<td class='fcaption'>".RSS_LAN_ADMIN_14."</td>
-	</tr>
+	<table class='table adminform'>
 	<tr>
 		<td>".RSS_LAN_ADMIN_13."</td>
 		<td>
-			<input type='checkbox' name='rss_othernews' value='1' ".($pref['rss_othernews'] == 1 ? " checked='checked' " : "")." />
+			<input type='checkbox' name='rss_othernews' value='1' ".(vartrue($pref['rss_othernews']) == 1 ? " checked='checked' " : "")." />
 		</td>
 	</tr>
 	<tr>
 		<td>".RSS_LAN_ADMIN_19."</td>
 		<td>
-			<input type='checkbox' name='rss_summarydiz' value='1' ".($pref['rss_summarydiz'] == 1 ? " checked='checked' " : "")." />
+			<input type='checkbox' name='rss_summarydiz' value='1' ".(vartrue($pref['rss_summarydiz']) == 1 ? " checked='checked' " : "")." />
 		</td>
 	</tr>
 	<tr>
 		<td>".RSS_LAN_ADMIN_33."</td>
 		<td>
-			<input type='checkbox' name='rss_shownewsimage' value='1' ".($pref['rss_shownewsimage'] == 1 ? " checked='checked' " : "")." />
+			<input type='checkbox' name='rss_shownewsimage' value='1' ".(vartrue($pref['rss_shownewsimage']) == 1 ? " checked='checked' " : "")." />
 		</td>
-	</tr>
-	<tr style='vertical-align:top'>
-		
 	</tr>
 	</table>
 	<div class='buttons-bar center'>
-		".$frm->admin_button('updatesettings',LAN_SAVE,'update')."
+		".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
 	</div>
-	</form>
-	</div>";
+	</form>";
 }
 
 // Admin : rss import
 if(!isset($RSS_ADMIN_IMPORT_HEADER))
 {
 	$RSS_ADMIN_IMPORT_HEADER = "
-	<div style='text-align:center;'>
 	<form action='".e_SELF."' id='imlistform' method='post' >
-	<table class='table adminlist'>
+	<table class='table adminform'>
 	<tr>
 		<th>".RSS_LAN_ADMIN_16."</td>
 		<th>".RSS_LAN_ADMIN_3."</td>
@@ -424,10 +413,10 @@ if(!isset($RSS_ADMIN_IMPORT_FOOTER))
 	$RSS_ADMIN_IMPORT_FOOTER = "
 	</table>
 	<div class='buttons-bar center'>
-	".$frm->admin_button('import_rss',RSS_LAN_ADMIN_17,'submit')."
+		".$frm->admin_button('import_rss',RSS_LAN_ADMIN_17,'submit')."
 	</div>
 	</form>
-	</div>";
+	";
 }
 
 // Listing

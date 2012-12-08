@@ -103,17 +103,17 @@ else {
 
 $mode = (e_QUERY) ? e_QUERY :"main" ;
 
-if($_POST['selectadmin'])
+if(vartrue($_POST['selectadmin']))
 {
 	$mode = "admin";
 }
 
-if($_POST['upload'])
+if(vartrue($_POST['upload']))
 {
 	$mode = "choose";
 }
 
-if($_POST['selectmain'] || varset($_POST['setUploadTheme']))
+if(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }
