@@ -1006,10 +1006,14 @@ class e_system_user extends e_user_model
 			$userInfo = array_merge($options, $userInfo);
 		}
 		
-		$eml = $this->renderEmail($userInfo, $type);
+		$eml = $this->renderEmail($type, $userInfo);
 		if(empty($eml)) return false;
 		
 		$mailer = e107::getEmail();
+		
+		$mailer->template = $eml['template'];
+		unset($eml['template']);
+		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
 	
@@ -1025,7 +1029,7 @@ class e_system_user extends e_user_model
 	 * All standard user fields from the DB (user_name, user_loginname, etc.)
 	 * 
 	 * @param array $userInfo
-	 * @param string $type signup|notify|default
+	 * @param string $type signup|notify|email
 	 * @return array
 	 */
 	public function renderEmail($type, $userInfo)
@@ -1057,14 +1061,17 @@ class e_system_user extends e_user_model
 			case 'signup':
 				if(vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) $template = $SIGNUPPROVIDEREMAIL_TEMPLATE; 
 				else $template = $SIGNUPEMAIL_TEMPLATE;
+				$ret['template'] = false; // Don't allow additional headers (mailer)
 			break;
 				
-			case 'notify':
-				if(vartrue($userInfo['mail_body'])) $template = $NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+			case 'notify': //emailer changes
+				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body'];//$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+				$ret['template'] = 'notify';
 			break;
 				
-			case 'default':
-				if(vartrue($userInfo['mail_body'])) $template = $EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
+			case 'email'://emailer changes
+				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
+				$ret['template'] = 'email';
 			break;
 		}
 		
@@ -1137,7 +1144,7 @@ class e_system_user extends e_user_model
 			}
 			$FOOT = "\n</body>\n</html>\n";
 		
-			$ret['mail_body'] = str_replace($search,$replace,$HEAD.$template.$FOOT);
+			$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
 			$ret['preview'] = $ret['mail_body'];// Non-standard field
 			return $ret;
 		}
@@ -1175,7 +1182,7 @@ class e_system_user extends e_user_model
 	
 		$ret['mail_subject'] =  str_replace($search, $replace, $subject);
 		$ret['send_html'] = TRUE;
-		$ret['mail_body'] = str_replace($search, $replace, $template);
+		$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
 		$ret['preview'] = $ret['mail_body']; // Non-standard field
 		
 		return $ret;
