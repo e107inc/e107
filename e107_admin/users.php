@@ -704,7 +704,8 @@ class users_admin_ui extends e_admin_ui
 
 		<tr>
 			<td>".USRLAN_62."</td>
-			<td>".$frm->password('password','',20,array('size'=>40,'class'=>'tbox e-password-admin'))."</td>
+			<td>".$frm->password('password','',20, array('size'=>40,'class'=>'tbox e-password','generate'=>1,'strength'=>1 ))."
+			</td>
 		</tr>";
 		
 
