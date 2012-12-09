@@ -642,7 +642,7 @@ if ($dataToSave && !$promptPassword)
 
 if (!$error && !$promptPassword) 
 {
-	if(isset($_POST) && $changedUserData['user_name'])
+	if(isset($_POST) && vartrue($changedUserData['user_name']))
 	{
 		$redirect = e107::getRedirect();
 		$url = e107::getUrl();
@@ -746,7 +746,7 @@ $curVal=$sql->db_Fetch(MYSQL_ASSOC);
 $curVal['user_class'] = varset($changedUserData['user_class'], $curVal['user_class']);
 $curVal['userclass_list'] = $userMethods->addCommonClasses($curVal, FALSE);
 
-if ($_POST)
+if (vartrue($_POST))
 {     // Fix for all the values being lost when there was an error in a field - restore from the latest $_POST values
 	  // (Password fields have intentionally been cleared). If no error, there's an unset($_POST) to disable this block
 	foreach ($_POST as $key => $val)
