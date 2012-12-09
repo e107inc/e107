@@ -342,7 +342,7 @@ class e_form
 		$previnput	= $idinput."-preview";
 		$optioni 	= $idinput."-options";
 		
-		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_MEDIA."avatars/".$curVal,"aw=".$width."&ah=".$height);
+		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl(e_MEDIA."avatars/".$curVal,"aw=".vartrue($width)."&ah=".vartrue($height));
 		
 		if(!$curVal)
 		{
@@ -365,7 +365,7 @@ class e_form
 			
 		$text .= "\n<div id='{$optioni}' style='display:none' >\n"; //TODO unique id. 
 		
-		if ($pref['avatar_upload'] && FILE_UPLOADS && vartrue($options['upload']))
+		if (vartrue($pref['avatar_upload']) && FILE_UPLOADS && vartrue($options['upload']))
 		{
 				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
 	
@@ -716,12 +716,12 @@ class e_form
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
-		if($options['generate'])
+		if(vartrue($options['generate']))
 		{
 			$addon .= '&nbsp;<a href="#" class="smalltext" id="Spn_PasswordGenerator" >Generate</a> | <a class="smalltext" href="#" id="showPwd">Show</a><br />';	
 		}
 		
-		if($options['strength'])
+		if(vartrue($options['strength']))
 		{
 			$addon .= "<div><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:215px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
 		}
@@ -731,7 +731,7 @@ class e_form
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
-		return $text.$addon;
+		return $text.vartrue($addon);
 		
 	}
 
