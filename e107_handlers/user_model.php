@@ -157,7 +157,11 @@ class e_user_model extends e_admin_model
 
 	final public function getName($anon = false)
 	{
-		return ($this->isUser() ? $this->get('user_name') : $anon);
+		if($this->isUser())
+		{
+			return ($this->get('user_name') ? $this->get('user_name') : $this->get('user_login'));
+		}
+		return $anon;
 	}
 
 	final public function getAdminId()
@@ -197,6 +201,11 @@ class e_user_model extends e_admin_model
 			$this->set('user_token', e107::getSession()->getFormToken(false));
 		}
 		return $this->get('user_token');
+	}
+	
+	public static function randomKey()
+	{
+		return md5(uniqid(rand(), 1));
 	}
 
 	public function isCurrent()
@@ -987,7 +996,7 @@ class e_system_user extends e_user_model
 	 * Send user email
 	 * @param mixed $userInfo array data or null for current logged in user or any object subclass of e_object (@see e_system_user::renderEmail() for field requirements)
 	 */
-	public function email($type = 'default', $options = array(), $userInfo = null)
+	public function email($type = 'email', $options = array(), $userInfo = null)
 	{
 		
 		if(null === $userInfo)
@@ -1001,6 +1010,8 @@ class e_system_user extends e_user_model
 		
 		if(empty($userInfo) || !vartrue($userInfo['user_email'])) return false;
 		
+		// plain password could be passed only via $options
+		unset($userInfo['user_password']);
 		if($options && is_array($options))
 		{
 			$userInfo = array_merge($options, $userInfo);
@@ -1013,6 +1024,12 @@ class e_system_user extends e_user_model
 		
 		$mailer->template = $eml['template'];
 		unset($eml['template']);
+		
+		// Custom e107 Header
+		if($userInfo['user_id'])
+		{
+			$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
+		}
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
@@ -1042,6 +1059,9 @@ class e_system_user extends e_user_model
 		{
 			$ret = $userInfo['mail_options'];
 		}
+
+		// required for signup email type
+		e107::coreLan('signup');
 
 		// FIXME convert to the new template to avoid include on every call
 		// BC

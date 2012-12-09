@@ -141,8 +141,8 @@ define("USRLAN_137", "Users IP address of {IP} banned.");
 define("USRLAN_138", "Unverified users");
 define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
 
-define("USRLAN_140", "Email Re-sent to");
-define("USRLAN_141", "Failed to Re-send email to");
+define("USRLAN_140", "Activation Email Re-sent to");
+define("USRLAN_141", "Failed to Re-send activation email to");
 define("USRLAN_142", "with the following activation link");
 
 define("USRLAN_143", "Check For Bounces");
@@ -184,8 +184,8 @@ define('USRLAN_175', '');
 define('USRLAN_179', 'User banned: ');
 define('USRLAN_180', 'IP address of {IP} appears on whitelist; IP not banned.');
 define('USRLAN_181', 'Send confirmation email with password to new user');
-define('USRLAN_182', 'Invalid characters in login name');
-define('USRLAN_183', 'That login name already in use');
+define('USRLAN_182', 'Invalid characters in login name'); // duplicate - USRLAN_92, used for 'verify' user action
+define('USRLAN_183', 'That login name already in use');  // wrong used with  'reqverify' user action
 define('USRLAN_184', 'Length of login name outside limits');
 define('USRLAN_185', 'A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGIN}<br />Password: {PASSWORD}<br/><br />');
 define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
