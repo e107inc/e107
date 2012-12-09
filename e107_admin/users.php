@@ -15,16 +15,6 @@
 */
 require_once ('../class2.php');
 
-// Secretr FIXME move all triggers and pages inside the controller
-
-// if (!getperms('4|U0|U1|U2|U3') )
-// {	
-	// header('location:'.$e107->url->create('/'));
-	// exit;
-// }
-
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 e107::coreLan('user');
 e107::coreLan('users', true);
 
@@ -60,7 +50,8 @@ class users_admin extends e_admin_dispatcher
 */
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list',
-		'main/admin'=> 'main/list'					
+		'main/admin'=> 'main/list',
+		'main/userclass'=> 'main/list',					
 	);	
 	
 	protected $menuTitle = 'users';
@@ -110,19 +101,28 @@ class users_admin extends e_admin_dispatcher
 				
 				case 'admin':
 				case 'adminperms':
-					//$_POST['etrigger_admin'] = $_POST['userid'];
 					$this->getRequest()
 						->setQuery(array())
 						->setMode('main')
 						->setAction('admin')
 						->setId($_POST['userid']);
+						
 					$this->getController()->redirect();
-				break;	
+				break;
+				
+				case 'userclass':
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('userclass')
+						->setId($_POST['userid']);
+						
+					$this->getController()->redirect();
+				break;
 			}
 			
 		}
 
-		//var_dump($_POST);
 		return parent::runObservers($run_header);
 	}
 }
@@ -414,7 +414,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Make admin observer
+	 * Admin manage observer
 	 * @return void
 	 */
 	public function AdminObserver()
@@ -462,6 +462,9 @@ class users_admin_ui extends e_admin_ui
 		if($this->getPosted('update_admin')) e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
 	}
 	
+	/**
+	 * Admin manage page
+	 */
 	public function AdminPage()
 	{
 		$request = $this->getRequest();
@@ -480,6 +483,176 @@ class users_admin_ui extends e_admin_ui
 		// TODO lan
 		$this->addTitle(str_replace(array('{NAME}', '{EMAIL}'), array($sysuser->getName(), $sysuser->getValue('email')), 'Update administrator {NAME} ({EMAIL})'));
 	}
+	
+	protected function checkAllowed($class_id) // check userclass change is permitted.
+	{
+		$e_userclass = e107::getUserClass();
+		if (!isset ($e_userclass->class_tree[$class_id]))
+		{
+			return false;
+		}
+		if (!getperms("0") && !check_class($e_userclass->class_tree[$class_id]['userclass_editclass']))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	protected function manageUserclass($userid, $uclass, $mode = false)
+	{
+		$request = $this->getRequest();
+		$response = $this->getResponse();
+		$sysuser = e107::getSystemUser($userid, false);
+		
+		$admin_log = e107::getAdminLog();
+		$e_userclass = e107::getUserClass();
+		$sql = e107::getDb();
+
+		$remuser = true;
+        $emessage = e107::getMessage();
+		
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			$emessage->addError('User not found.');
+			return false;
+		}
+
+		$curClass = array();
+		if($mode !== 'update')
+		{
+			$curClass = $sysuser->getValue('class') ? explode(',', $sysuser->getValue('class')) : array();
+        }
+
+    	foreach ($uclass as $a)
+		{
+			$a = intval($a);
+			if(!$this->checkAllowed($a)) 
+			{
+				// TODO lan
+				$emessage->addError('Insufficient permissions, operation aborted.');
+				return false;
+			}
+			
+			if($a != 0) // if 0 - then do not add.
+			{
+				$curClass[] = $a;
+			}
+		}
+
+		if($mode == "remove") // remove selected classes
+		{
+			$curClass = array_diff($curClass, $uclass);
+		}
+		elseif($mode == "clear") // clear all classes
+		{
+			$curClass = array();
+		}
+
+        $curClass = array_unique($curClass);
+
+        $svar = is_array($curClass) ? implode(",", $curClass) : "";
+		$check = $sysuser->set('user_class', $svar)->save();
+		
+		if($check)
+		{
+			$message = UCSLAN_9;
+			if ($this->getPosted('notifyuser'))
+			{
+				$options = array();
+				$message .= "<br />".UCSLAN_1.":</b> ".$sysuser->getName()."<br />";
+
+				$messaccess = '';
+				foreach ($curClass as $a)
+				{
+					if (!isset ($e_userclass->fixed_classes[$a]))
+					{
+						$messaccess .= $e_userclass->class_tree[$a]['userclass_name']." - ".$e_userclass->class_tree[$a]['userclass_description']."\n";
+					}
+				}
+				if ($messaccess == '') $messaccess = UCSLAN_12."\n";
+				
+				$message = UCSLAN_3." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
+				//    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
+				
+				$options['mail_subject'] = UCSLAN_2;
+				$options['mail_body'] = nl2br($message);
+				
+				$sysuser->email('email', $options);
+				//sendemail($send_to,$subject,$message);
+			}
+			$admin_log->log_event('USET_14', str_replace(array('--UID--','--CLASSES--'), array($id, $svar), UCSLAN_11), E_LOG_INFORMATIVE);
+
+            $emessage->add(nl2br($message), E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+           	//	$emessage->add("Update Failed", E_MESSAGE_ERROR);
+        	if($check === false)
+			{
+				$sysuser->setMessages(); // move messages to the default stack
+			}
+			else
+			{
+				$emessage->addInfo(LAN_NO_CHANGE);
+			}
+		}
+	}
+
+	public function UserclassUpdateclassTrigger()
+	{
+		$this->manageUserclass($this->getId(), $this->getPosted('userclass'), 'update');
+	}
+	
+	public function UserclassBackTrigger()
+	{
+		$this->redirect('list', 'main', true);
+	}
+	
+	public function UserclassPage()
+	{
+		$request = $this->getRequest();
+		$response = $this->getResponse();
+		$sysuser = e107::getSystemUser($request->getId(), false);
+		$e_userclass = e107::getUserClass();
+		$userid = $this->getId();
+		$frm = e107::getForm();
+		
+		$caption = UCSLAN_6." <b>".$sysuser->getName().' - '.$sysuser->getValue('email')."</b> (".$sysuser->getClassList(true).")";
+		$this->addTitle($caption);
+		
+		$text = "	<div>
+					<form method='post' action='".e_REQUEST_URI."'>
+					<fieldset id='core-user-userclass'>
+					
+                    <table class='table adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>";
+		$text .= $e_userclass->vetted_tree('userclass', array($e_userclass,'checkbox_desc'), $sysuser->getValue('class'), 'classes');
+		$text .= '
+						</td>
+					</tr>
+					</tbody>
+					</table>
+		';
+
+		$text .= "	<div class='buttons-bar center'>
+	 					".$frm->hidden('userid', $userid)."
+						".$frm->checkbox_label(UCSLAN_8.'&nbsp;&nbsp;', 'notifyuser', 1)."
+						".$frm->admin_button('etrigger_updateclass', UCSLAN_7, 'update')."
+						".$frm->admin_button('etrigger_back', 'Back', 'cancel')."
+					</div>
+					</fieldset>
+					</form>
+					</div>";
+
+		$response->appendBody($text);
+	}
 
 	function RanksPage()
 	{
@@ -491,16 +664,15 @@ class users_admin_ui extends e_admin_ui
 	function addPage()
 	{
 		
-		global $rs,$pref,$e_userclass;
-
+		$rs = new form;
 		$prm = e107::getUserPerms();
 		$list = $prm->getPermList();
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 
-		if (!is_object($e_userclass))		$e_userclass = new user_class;
-		
+		$e_userclass = e107::getUserClass();
+		$pref = e107::getPref();
 		
 		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
         <table class='table adminform'>
@@ -511,14 +683,14 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_61."</td>
 			<td>
-			".$rs->form_text('username',40,varset($user_data['user_name'],""),varset($pref['displayname_maxlength'],15))."
+			".$frm->text('username', varset($user_data['user_name'],"", varset($pref['displayname_maxlength'],15)))."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".USRLAN_128."</td>
 			<td>
-			".$rs->form_text('loginname',40,varset($user_data['user_loginname'],""),varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
+			".$frm->text('loginname', varset($user_data['user_loginname'],"", varset($pref['loginname_maxlength'],30)))."&nbsp;&nbsp;
 			".$frm->checkbox_label(USRLAN_170,'generateloginname', 1,varset($pref['predefinedLoginName'],false))."
 			</td>
 		</tr>
@@ -918,7 +1090,8 @@ class users_admin_form_ui extends e_admin_form_ui
 		
 	}	
 }
- new users_admin();
+
+new users_admin();
 require_once ('auth.php');
 
 
@@ -1198,24 +1371,6 @@ class users
 		}
 	}
 */
-/*	FIXME banlist changes need to be integrated into the code above. */
-	function user_unban($userid)
-	{
-		global $sql,$admin_log;
-		$sql->db_Select("user","user_name,user_ip","user_id='".$userid."'");
-		$row = $sql->db_Fetch();
-		$sql->db_Update("user","user_ban='0' WHERE user_id='".$userid."' ");
-		$sql->db_Delete("banlist"," banlist_ip='{$row['user_ip']}' ");
-		$admin_log->log_event('USET_06',str_replace(array('--UID--','--NAME--'),array($userid,$row['user_name']),USRLAN_162),E_LOG_INFORMATIVE);
-		$this->show_message(USRLAN_9." (".$userid.". ".$row['user_name'].")");
-		$action = "main";
-		if (!$sub_action)
-		{
-			$sub_action = "user_id";
-		}
-	}
-
-
 	function user_activate($userid)
 	{
 		global $sql,$e_event,$admin_log,$userMethods;
@@ -2101,60 +2256,6 @@ class users
 		}
 	}
 
-
-	// ------- Ban User. --------------
-	/**/
-	function user_ban($user_id)
-	{
-		global $sql,$user,$admin_log;
-		//	$sub_action = $user_id;
-		$sql->db_Select("user","*","user_id='".$user_id."'");
-		$row = $sql->db_Fetch();
-		if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
-		{
-			$this->show_message(USRLAN_7);
-		}
-		else
-		{
-			if ($sql->db_Update("user","user_ban='1' WHERE user_id='".$user_id."' "))
-			{
-				$admin_log->log_event('USET_05',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_161),E_LOG_INFORMATIVE);
-				$this->show_message(USRLAN_8);
-			}
-			if (trim($row['user_ip']) == "")
-			{
-				$this->show_message(USRLAN_135);
-			}
-			else
-			{
-				if($sql->db_Count('user', '(*)', "WHERE user_ip = '{$row['user_ip']}' AND user_ban=0 AND user_id <> {$user_id}") > 0)
-				{
-				// Other unbanned users have same IP address
-					$this->show_message(str_replace("{IP}",$row['user_ip'],USRLAN_136));
-				}
-				else
-				{
-					if (e107::getIPHandler()->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
-					{
-					// Successful IP ban
-						$this->show_message(str_replace("{IP}",$row['user_ip'],USRLAN_137));
-					}
-					else
-					{
-					// IP address on whitelist
-						$this->show_message(str_replace("{IP}",$row['user_ip'],USRLAN_150));
-					}
-				}
-			}
-		}
-		$action = "main";
-		if (!$sub_action)
-		{
-			$sub_action = "user_id";
-		}
-	}
-
-
 	function resend_to_all()
 	{
 		global $sql,$pref,$sql3,$admin_log;
@@ -2444,82 +2545,6 @@ class users
 		}
 	}
 */
-
-    // Set userclass for user(s).
-    /**/
-	function user_userclass($userid,$uclass,$mode=FALSE)
-	{
-		global $admin_log, $e_userclass;
-		$sql = e107::getDb();
-
-		$remuser = true;
-        $emessage = &eMessage::getInstance();
-
-		if($_POST['notifyuser'] || $mode !=='clear')
-		{
-    		$sql->db_Select("user","*","user_id={$userid} ");
-			$row = $sql->db_Fetch();
-			$curClass = varset($row['user_class']) ? explode(",",$row['user_class']) : array();
-        }
-
-    	foreach ($uclass as $a)
-		{
-			$a = intval($a);
-			$this->check_allowed($a);
-			if($a !=0) // if 0 - then do not add.
-			{
-				$curClass[] = $a;
-			}
-		}
-
-		if($mode == "remove") // remove selected classes
-		{
-			$curClass = array_diff($curClass,$uclass);
-		}
-
-		if($mode == "clear") // clear all classes
-		{
-		//	$curClass = array();
-		}
-
-        $curClass = array_unique($curClass);
-
-        $svar = is_array($curClass) ? implode(",",$curClass) : "";
-
-		if($sql->db_Update("user","user_class='".$svar."' WHERE user_id={$userid} ")===TRUE)
-		{
-			$message = UCSLAN_9;
-			if ($_POST['notifyuser'])
-			{
-
-				$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
-				require_once (e_HANDLER."mail.php");
-				$messaccess = '';
-				foreach ($curClass as $a)
-				{
-					if (!isset ($e_userclass->fixed_classes[$a]))
-					{
-						$messaccess .= $e_userclass->class_tree[$a]['userclass_name']." - ".$e_userclass->class_tree[$a]['userclass_description']."\n";
-					}
-				}
-				if ($messaccess == '')
-					$messaccess = UCSLAN_12."\n";
-				$send_to = $row['user_email'];
-				$subject = UCSLAN_2;
-				$message = UCSLAN_3." ".$row['user_name'].",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
-				//    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
-				sendemail($send_to,$subject,$message);
-			}
-			$admin_log->log_event('USET_14',str_replace(array('--UID--','--CLASSES--'),array($id,$svar),UCSLAN_11),E_LOG_INFORMATIVE);
-
-            $emessage->add($message, E_MESSAGE_SUCCESS);
-		}
-		else
-		{
-           //	$emessage->add("Update Failed", E_MESSAGE_ERROR);
-		}
-	}
-
 
 }
 
