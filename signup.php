@@ -540,7 +540,7 @@ if (isset($_POST['register']) && $pref['user_reg'] == 1)
 		}
 
 
-		$u_key = md5(uniqid(rand(), 1));					// Key for signup completion
+		$u_key = e_user_model::randomKey();				// Key for signup completion
 		$allData['data']['user_sess'] = $u_key;			// Validation key
 
 		$userMethods->userClassUpdate($allData['data'], 'usersup');

@@ -185,6 +185,7 @@ class e107
 		'eException'					 => '{e_HANDLER}application.php',
 		'eFront'						 => '{e_HANDLER}application.php',
 		'eHelper'						 => '{e_HANDLER}application.php',
+		'email_validation_class'		 =>	'{e_HANDLER}mail_validation_class.php',
 		'eRequest'						 => '{e_HANDLER}application.php',
 		'eResponse'						 => '{e_HANDLER}application.php',
 		'eRouter'						 => '{e_HANDLER}application.php',
@@ -2186,21 +2187,21 @@ class e107
 	/**
 	 * Generic PREF retrieval Method for use by theme and plugin developers. 
 	 */
-	public static function pref($type='core', $pname='')
+	public static function pref($type = 'core', $pname = null, $default = null)
 	{
 		 
 		switch ($type)
 		{
 			case 'core' :
-				return self::getPref();
+				return self::getPref($pname, $default);
 			break;
 		
 			case 'theme' :
-				return self::getThemePref();	
+				return self::getThemePref($pname, $default);	
 			break;
 			
-			default :
-				return self::getPlugConfig($type)->getPref();	
+			default: 
+				return self::getPlugPref($type, $pname, $default);
 			break;
 		}	
 		

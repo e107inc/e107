@@ -23,13 +23,13 @@ e107::coreLan('users', true);
 
 class users_admin extends e_admin_dispatcher
 {
-
 	protected $modes = array(
 		'main'		=> array(
 			'controller' 	=> 'users_admin_ui',
 			'path' 			=> null,
 			'ui' 			=> 'users_admin_form_ui',
-			'uipath' 		=> null
+			'uipath' 		=> null,
+			//'perm'			=> '0',
 		)				
 	);	
 
@@ -52,6 +52,7 @@ class users_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list',
 		'main/admin'=> 'main/list',
 		'main/userclass'=> 'main/list',					
+		'main/test'=> 'main/list',					
 	);	
 	
 	protected $menuTitle = 'users';
@@ -66,17 +67,22 @@ class users_admin extends e_admin_dispatcher
 		// Catch useraction
 		if (isset($_POST['useraction']))
 		{
-			foreach ($_POST['useraction'] as $key => $val)
+			if(is_array($_POST['useraction']))
 			{
-				if ($val)
+				foreach ($_POST['useraction'] as $key => $val)
 				{
-					$_POST['useraction'] = $val;
-					$_POST['userip'] = $_POST['userip'][$key];
-					$_POST['userid'] = (int) $key;
-					break;
+					if ($val)
+					{
+						$_POST['useraction'] = $val;
+						$_POST['userip'] = $_POST['userip'][$key];
+						$_POST['userid'] = (int) $key;
+						break;
+					}
 				}
 			}
-
+			
+			// FIXME IMPORTANT - permissions per action/trigger
+			
 			// map useraction to UI trigger
 			switch ($_POST['useraction']) 
 			{
@@ -92,13 +98,18 @@ class users_admin extends e_admin_dispatcher
 					}
 				break;
 				
+				// map to List{USERACTION}Trigger()
 				case 'unban':
 				case 'ban':
+				case 'verify':
+				case 'reqverify':
+				case 'resend':
 				case 'loginas':
 				case 'unadmin':
 					$_POST['etrigger_'.$_POST['useraction']] = $_POST['userid'];
 				break;	
 				
+				// redirect to AdminObserver/AdminPage()
 				case 'admin':
 				case 'adminperms':
 					$this->getRequest()
@@ -110,6 +121,7 @@ class users_admin extends e_admin_dispatcher
 					$this->getController()->redirect();
 				break;
 				
+				// redirect to UserclassObserver/UserclassPage()
 				case 'userclass':
 					$this->getRequest()
 						->setQuery(array())
@@ -119,10 +131,27 @@ class users_admin extends e_admin_dispatcher
 						
 					$this->getController()->redirect();
 				break;
+				
+				// redirect to TestObserver/TestPage
+				case 'test':
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('test')
+						->setId($_POST['userid']);
+						
+					$this->getController()->redirect();
+				break;
+				
+				// redirect to TestObserver/TestPage
+				case 'usersettings':
+					header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
+					exit;
+				break;
 			}
 			
 		}
-
+		
 		return parent::runObservers($run_header);
 	}
 }
@@ -155,6 +184,11 @@ class users_admin_ui extends e_admin_ui
 	 * @var boolean
 	 */
 	protected $batchCopy = false;
+	
+	/**
+	 * List (numerical array) of only disallowed for this controller actions
+	 */
+	protected $disallow = array('edit', 'create');
 
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
@@ -205,6 +239,9 @@ class users_admin_ui extends e_admin_ui
 		// Extended fields - FIXME - better field types
 		if($sql->db_Select('user_extended_struct', 'user_extended_struct_name,user_extended_struct_text', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
 		{
+			// FIXME use the handler to build fields and field attributes
+			// FIXME a way to load 3rd party language files for extended user fields
+			e107::coreLan('user_extended'); 	
 			while ($row = $sql->db_Fetch())
 			{
 				$field = "user_".$row['user_extended_struct_name'];
@@ -238,14 +275,20 @@ class users_admin_ui extends e_admin_ui
 	public function ListUnbanTrigger($userid)
 	{
 		$sql = e107::getDb();
+		$sysuser = e107::getSystemUser($userid, false);
 		
-		$row = $sql->retrieve("user", "user_name,user_ip,user_email", "user_id='".$userid."'");
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			e107::getMessage()->addError('User not found.');
+			return;
+		}
 		
 		$sql->db_Update("user", "user_ban='0' WHERE user_id='".$userid."' ");
 		$sql->db_Delete("banlist"," banlist_ip='{$row['user_ip']}' ");
 		
-		e107::getAdminLog()->log_event('USET_06', str_replace(array('--UID--','--NAME--'), array($userid,$row['user_name']), USRLAN_162), E_LOG_INFORMATIVE);
-		e107::getMessage()->addSuccess("(".$userid.".".$row['user_name']." - {$row['user_email']}) ".USRLAN_9);
+		e107::getAdminLog()->log_event('USET_06', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_162), E_LOG_INFORMATIVE);
+		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
 		
 		// List data reload
 		$this->getTreeModel()->load(true);
@@ -263,7 +306,14 @@ class users_admin_ui extends e_admin_ui
 		$admin_log = e107::getAdminLog();
 		$iph = e107::getIPHandler();
 		
-		$row = $sql->retrieve("user","*","user_id='".$userid."'");
+		$sysuser = e107::getSystemUser($userid, false);
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			e107::getMessage()->addError('User not found.');
+			return;
+		}
+		$row = $sysuser->getData();
 		
 		if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
 		{
@@ -289,7 +339,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					if ($iph->add_ban(6, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'],USERID))
+					if ($iph->add_ban(6, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
 					{
 						// Successful IP ban
 						$message->addSuccess(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_137));
@@ -305,6 +355,65 @@ class users_admin_ui extends e_admin_ui
 		
 		// List data reload
 		$this->getTreeModel()->load(true);
+	}
+
+	/**
+	 * Activate user trigger
+	 */
+	public function ListVerifyTrigger($userid)
+	{
+		$e_event = e107::getEvent();
+		$admin_log = e107::getAdminLog();
+		$sysuser = e107::getSystemUser($userid, false);
+		$userMethods = e107::getUserSession();
+		$emessage = e107::getMessage();
+		
+		$uid = intval($userid);
+		if ($sysuser->getId())
+		{
+			$sysuser->set('user_ban', '0')
+				->set('user_sess', '');
+				
+			$row = $sysuser->getData();
+			if ($userMethods->userClassUpdate($row, 'userall'))
+			{
+				$sysuser->set('user_class', $row['user_class']);
+			}
+			$userMethods->addNonDefaulted($row);
+			$sysuser->setData($row)->save();
+			
+			$admin_log->log_event('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
+			$e_event->trigger('userfull', $row);
+			$emessage->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
+			
+			$this->getTreeModel()->load(true);
+
+			if ((int) e107::pref('core', 'user_reg_veri') == 2)
+			{
+				$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
+				$message .= str_replace("{SITEURL}", SITEURL, USRLAN_139);
+				
+				$options = array(
+					'mail_subject' => USRLAN_113.' '.SITENAME,
+					'mail_body' => nl2br($message),
+				);
+				if($sysuser->email('email', $options))
+				{
+					// TODO lan
+					$emessage->addSuccess("Email sent to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+				}
+				else 
+				{
+					$emessage->addError("Failed to send email to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+				}
+			}
+		}
+		else
+		{
+			// TODO lan
+			e107::getMessage()->addError('User not found.');
+			return;
+		}
 	}
 
 	/**
@@ -370,7 +479,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		// System Message only on non-successful logout as another user 
 	}
-
+	
 	/**
 	 * Remove admin status trigger
 	 */
@@ -599,16 +708,25 @@ class users_admin_ui extends e_admin_ui
 		}
 	}
 
+	/**
+	 * Update user class trigger
+	 */
 	public function UserclassUpdateclassTrigger()
 	{
 		$this->manageUserclass($this->getId(), $this->getPosted('userclass'), 'update');
 	}
 	
+	/**
+	 * Back to user list trigger (userclass page)
+	 */
 	public function UserclassBackTrigger()
 	{
 		$this->redirect('list', 'main', true);
 	}
 	
+	/**
+	 * Manage userclasses page
+	 */
 	public function UserclassPage()
 	{
 		$request = $this->getRequest();
@@ -653,6 +771,218 @@ class users_admin_ui extends e_admin_ui
 
 		$response->appendBody($text);
 	}
+	
+	/**
+	 * Resend user activation email trigger 
+	 */
+	public function ListResendTrigger($userid)
+	{
+		$this->resendActivation($userid);
+	}
+	
+	/**
+	 * Resend user activation email helper
+	 * FIXME - better Subject/Content for the activation email when user is bounced/deactivated.
+	 */
+	protected function resendActivation($id, $lfile = '')
+	{
+		$admin_log = e107::getAdminLog();
+		$sysuser = e107::getSystemUser($id, false);
+		$key = $sysuser->getValue('sess');
+		$emessage = e107::getMessage();
+		
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			$emessage->addError('User not found.');
+			return false;
+		}
+
+		if(!$key || !$sysuser->getValue('ban'))
+		{
+			// TODO lan
+			$emessage->addError('Missing activation key.');
+			return false;
+		}
+		
+		// Check for a Language field, and if present, send the email in the user's language.
+		// FIXME - make all system emails to be created from HTML email templates, this should fix the multi-lingual issue when sending multiple emails
+		if ($lfile == "")
+		{
+			$lan = $sysuser->getValue('language');
+			if ($lan)
+			{
+				$lfile = e_LANGUAGEDIR.$lan.'/lan_signup.php';
+			}
+		}
+		if ($lfile && is_readable($lfile))
+		{
+			require_once($lfile);
+		}
+		else
+		{
+			//@FIXME use email templates by Language
+			require_once (e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+		}
+		if(!$lan) $lan = e_LANGUAGE;
+		
+		// FIXME switch to e107::getUrl()->create(), use email content templates
+		$return_address = (substr(SITEURL,- 1) == "/") ? SITEURL."signup.php?activate.".$sysuser->getId().".".$key : SITEURL."/signup.php?activate.".$sysuser->getId().".".$key;
+		$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
+		$message .= "<a href='".$return_address."'>".$return_address."</a>";
+		
+		// custom header now auto-added in email() method 
+		//$mailheader_e107id = $id;
+		
+		$check = $sysuser->email('email', array(
+			'mail_subject' => LAN_SIGNUP_96." ".SITENAME,
+			'mail_body' => nl2br($message),
+		));
+		
+		if ($check)
+		{
+			$admin_log->log_event('USET_11', str_replace(array('--ID--','--NAME--','--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_167), E_LOG_INFORMATIVE);
+			$emessage->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
+		}
+		else
+		{
+			$emessage->addError(USRLAN_141.": ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+		}
+		return $check;
+	}
+
+	/**
+	 * Test user email observer
+	 */
+	public function TestObserver()
+	{
+		$sysuser = e107::getSystemUser($this->getId(), false);
+		$emessage = e107::getMessage();
+		$email = $sysuser->getValue('email');
+		
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			$emessage->addError('User not found.', 'default', true);
+			$this->redirect('list', 'main', true);
+		}
+		
+		$result = $this->testEmail($email);
+		if($result)
+		{
+			// TODO lan
+			$this->setParam('testSucces', $result);
+			$emessage->addSuccess($email.' - Valid');
+		}
+		else
+		{
+			// TODO lan
+			$emessage->addError($email.' - Invalid', 'default', true);
+			$this->redirect('list', 'main', true);
+		}
+
+	}
+	
+	public function TestCancelTrigger()
+	{
+		$this->redirect('list', 'main', true);
+	}
+	
+	/**
+	 * Resend activation email page - only if tested email is valid
+	 */
+	public function TestPage()
+	{
+		$response = $this->getResponse();
+		$sysuser = e107::getSystemUser($this->getId(), false);
+		$userid = $this->getId();
+		$email = $sysuser->getValue('email');
+		$frm = e107::getForm();
+		
+		// TODO lan
+		$caption = "Test ".$email;
+		$this->addTitle($caption);
+		
+		$text = "<a href='".e_REQUEST_HTTP."?mode=main&amp;action=list'>".LAN_BACK."</a>";
+		$text .= '<pre>'.htmlspecialchars($this->getParam('testSucces')).'</pre>';
+		$text .= "	<div>
+					<form method='post' action='".e_REQUEST_HTTP."?mode=main&amp;action=list'>
+					<fieldset id='core-user-testemail'>
+						<div class='buttons-bar center'>
+		 					".$frm->hidden('useraction', 'resend')."
+							".$frm->hidden('userid', $userid)."
+							".$frm->hidden('userip', $sysuser->getValue('ip'))."
+							".$frm->admin_button('resend', USRLAN_112, 'update')."
+						</div>
+					</fieldset>
+					</form>
+					</div>";
+
+		$response->appendBody($text);
+	}
+
+	/**
+	 * Test user email helper
+	 */
+	protected function testEmail($email)
+	{
+		list($adminuser,$adminhost) = explode('@',SITEADMINEMAIL, 2);
+		
+		$validator = new email_validation_class;
+		$validator->localuser = $adminuser;
+		$validator->localhost = $adminhost;
+		$validator->timeout = 5;
+		$validator->debug = 1;
+		$validator->html_debug = 0;
+		
+		ob_start();
+		$email_status = $validator->ValidateEmailBox($email);
+		$text = ob_get_contents();
+		ob_end_clean();
+		
+		if ($email_status == 1)
+		{
+			return $text;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Set user status to require verification - available for bounced users
+	 */
+	public function ListReqverifyTrigger($userid)
+	{
+		$sysuser = e107::getSystemUser($userid, false);
+		
+		if(!$sysuser->getId())
+		{
+			// TODO lan
+			$emessage->addError('User not found.', 'default', true);
+			return;
+		}
+		
+		$sysuser->set('user_ban', 2)
+			->set('user_sess', e_user_model::randomKey());
+		
+		if($sysuser->save())
+		{
+			// TODO lan
+			e107::getMessage()->addSuccess('User now has to verify.');
+			
+			// TODO - auto-send email or not - discuss
+			$this->resendActivation($userid);
+			
+			//FIXME admin log
+			
+			// Reload tree
+			$this->getTreeModel()->load(true);
+			return;
+		}
+		
+		// TODO lan
+		e107::getMessage()->addError('Action failed.');
+	}
 
 	function RanksPage()
 	{
@@ -661,7 +991,7 @@ class users_admin_ui extends e_admin_ui
 		
 	}
 	
-	function addPage()
+	function AddPage()
 	{
 		
 		$rs = new form;
@@ -1004,12 +1334,12 @@ class users_admin_form_ui extends e_admin_form_ui
 	}
 	
 	
-	function options() // old drop-down options. 
+	function options($val, $mode) // old drop-down options. 
 	{
-		// return 'hello';
-		$row = $this->getController()->getListModel()->getData();
-	//	$this->getController()->getListModel()->
-	//	return print_a($row,true);
+		$controller = $this->getController();
+		
+		if($controller->getMode() != 'main' || $controller->getAction() != 'list') return;
+		$row = $controller->getListModel()->getData();
 		
 		if(!getperms('4'))
 		{
@@ -1054,9 +1384,10 @@ class users_admin_form_ui extends e_admin_form_ui
 					break;
 				case 3 :
 					// Bounced
+					// FIXME wrong lan for 'reqverify' - USRLAN_181, wrong lan for 'verify' (USRLAN_182), changed to USRLAN_32
 					$text .= "<option value='ban'>".USRLAN_30."</option>
-						<option value='reqverify'>".USRLAN_181."</option>
-						<option value='verify'>".USRLAN_182."</option>
+						<option value='reqverify'>Make not verified</option>
+						<option value='verify'>".USRLAN_32/*USRLAN_182*/."</option>
 						<option value='test'>".USRLAN_118."</option>";
 					break;
 				default :
@@ -1372,63 +1703,6 @@ class users
 		}
 	}
 */
-	function user_activate($userid)
-	{
-		global $sql,$e_event,$admin_log,$userMethods;
-		$uid = intval($userid);
-		if ($sql->db_Select("user","*","user_id='".$uid."' "))
-		{
-			if ($row = $sql->db_Fetch())
-			{
-				$dbData = array();
-				$dbData['WHERE'] = "user_id=".$uid;
-				$dbData['data'] = array('user_ban' => '0','user_sess' => '');
-				// Add in the initial classes as necessary
-				if ($userMethods->userClassUpdate($row,'userall'))
-				{
-					$dbData['data']['user_class'] = $row['user_class'];
-				}
-				$userMethods->addNonDefaulted($dbData);
-				validatorClass :: addFieldTypes($userMethods->userVettingInfo,$dbData);
-				$sql->db_Update('user',$dbData);
-				$admin_log->log_event('USET_10',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE);
-				$e_event->trigger('userfull',$row);
-				// 'New' event
-				$this->show_message(USRLAN_86." (#".$userid." : ".$row['user_name'].")");
-				if (!$action)
-				{
-					$action = "main";
-				}
-				if (!$sub_action)
-				{
-					$sub_action = "user_id";
-				}
-				if (!$id)
-				{
-					$id = "DESC";
-				}
-				if ($pref['user_reg_veri'] == 2)
-				{
-					if ($sql->db_Select("user","user_email, user_name","user_id = '{$uid}'"))
-					{
-						$row = $sql->db_Fetch();
-						$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
-						$message .= str_replace("{SITEURL}",SITEURL,USRLAN_139);
-						require_once (e_HANDLER."mail.php");
-						if (sendemail($row['user_email'],USRLAN_113." ".SITENAME,$message))
-						{
-						//  echo str_replace("\n","<br>",$message);
-							$this->show_message("Email sent to: ".$row['user_name']);
-						}
-						else
-						{
-							$this->show_message("Failed to send to: ".$row['user_name'],'error');
-						}
-					}
-				}
-			}
-		}
-	}
 
 /*
 	function usersSaveColumnPref()
@@ -2217,45 +2491,7 @@ class users
 	}
 
 */
-	function resend($id,$key,$name,$email,$lfile = '')
-	{
-		global $sql,$mailheader_e107id,$admin_log;
-		$id = (int) $id;
-		// Check for a Language field, and if present, send the email in the user's language.
-		if ($lfile == "")
-		{
-			if ($sql->db_Select('user_extended','user_language','user_extended_id = '.$id))
-			{
-				$row = $sql->db_Fetch();
-				$lfile = e_LANGUAGEDIR.$row['user_language'].'/lan_signup.php';
-			}
-		}
-		if (is_readable($lfile))
-		{
-			require_once ($lfile);
-		}
-		else
-		{
-			$row['user_language'] = e_LANGUAGE;
-			//@FIXME use array
-			require_once (e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
-		}
-		$return_address = (substr(SITEURL,- 1) == "/") ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key;
-		$message = LAN_EMAIL_01." ".$name."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
-		$message .= $return_address."\n\n".SITENAME."\n".SITEURL;
-		$mailheader_e107id = $id;
-		require_once (e_HANDLER."mail.php");
-		if (sendemail($email,LAN_404." ".SITENAME,$message))
-		{
-		//		echo str_replace("\n","<br>",$message);
-			$admin_log->log_event('USET_11',str_replace(array('--ID--','--NAME--','--EMAIL--'),array($id,$name,$email),USRLAN_167),E_LOG_INFORMATIVE);
-			$this->show_message(USRLAN_140.": <a href='mailto:".$email."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$name."</a> (".$row['user_language'].") ");
-		}
-		else
-		{
-			$this->show_message(USRLAN_141.": ".$name);
-		}
-	}
+
 
 	function resend_to_all()
 	{
@@ -2484,38 +2720,6 @@ class users
 
 
 	// ------------------------------------------------------------------------
-	/*
-	function show_userclass($userid)
-	{
-		global $sql,$ns, $e_userclass;
-
-		$sql->db_Select("user","*","user_id={$userid} ");
-		$row = $sql->db_Fetch();
-		$caption = UCSLAN_6." <b>".$row['user_name']."</b> (".$row['user_class'].")";
-		$text = "	<div>
-					<form method='post' action='".e_SELF."?".e_QUERY."'>
-                    <table class='table adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tr>
-						<td>";
-		$text .= $e_userclass->vetted_tree('userclass',array($e_userclass,'checkbox_desc'),$row['user_class'],'classes');
-		$text .= '</td></tr>
-		</table>';
-
-		$text .= "	<div class='buttons-bar center'>
- 					<input type='hidden' name='userid' value='{$userid}' />
-					<input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;
-					<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
-					</div>
-					</form>
-					</div>";
-
-		$ns->tablerender($caption,$text);
-	}
-*/
 
 /*
 	Appears to be unused function
@@ -2547,15 +2751,6 @@ class users
 	}
 */
 
-}
-
-
-// End class users
-function users_adminmenu()
-{
-	global $user;
-	global $action;
-	$user->show_options($action); // FIXME
 }
 
 
@@ -2898,13 +3093,6 @@ function RankImageDropdown(&$imgList, $field, $curVal = '')
 	// }
 // }
 
-// 
-// if (isset ($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
-// {
-	// // __URLFIX__ - user name
-	// header('location:'.$e107->url->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
-	// exit;
-// }
 
 
 
@@ -2984,13 +3172,7 @@ if (e_QUERY)
 	// require_once ("footer.php");
 	// exit;
 // }
-// 
-// // ------- Resend Email. --------------
-// if (isset ($_POST['resend_mail']))
-// {
-	// $user->resend($_POST['resend_id'],$_POST['resend_key'],$_POST['resend_name'],$_POST['resend_email']);
-// }
-// 
+ 
 // // ------- Resend Email. --------------
 // if (isset ($_POST['resend_to_all']))
 // {
@@ -3001,42 +3183,6 @@ if (e_QUERY)
 // if (isset ($_POST['execute_batch']))
 // {
 	// $user->process_batch();
-// }
-
-
-
-
-
-// ------- Test Email. --------------
-// if (isset ($_POST['test_mail']))
-// {
-	// require_once (e_HANDLER.'mail_validation_class.php');
-	// list($adminuser,$adminhost) = explode('@',SITEADMINEMAIL, 2);
-	// $validator = new email_validation_class;
-	// $validator->localuser = $adminuser;
-	// $validator->localhost = $adminhost;
-	// $validator->timeout = 5;
-	// $validator->debug = 1;
-	// $validator->html_debug = 1;
-	// $text = "<div style='".ADMIN_WIDTH."'>";
-	// ob_start();
-	// $email_status = $validator->ValidateEmailBox($_POST['test_email']);
-	// $text .= ob_get_contents();
-	// ob_end_clean();
-	// $text .= "</div>";
-	// $caption = $_POST['test_email']." - ";
-	// $caption .= ($email_status == 1) ? "Valid" : "Invalid";
-	// if ($email_status == 1)
-	// {
-		// $text .= "<form method='post' action='".e_SELF.$qry."'>
-		// <div style='text-align:left'>
-		// <input type='hidden' name='useraction' value='resend' />\n
-		// <input type='hidden' name='userid' value='".$_POST['test_id']."' />\n
-		// <input class='button' type='submit' name='resend_' value='".USRLAN_112."' />\n</div></form>\n";
-		// $text .= "<div>";
-	// }
-	// $ns->tablerender($caption,$text);
-	// unset ($id,$action,$sub_cation);
 // }
 
 // ------- Update Options. --------------
@@ -3273,78 +3419,12 @@ function addUser()
 	
 		
 }
-// ------- Bounce --> Unverified --------------
-// if (isset ($_POST['useraction']) && $_POST['useraction'] == "reqverify")
-// {
-	// $sql->db_Select("user","*","user_id='".$_POST['userid']."'");
-	// $row = $sql->db_Fetch();
-	// extract($row);
-	// $sql->db_Update("user","user_ban='2' WHERE user_id='".$_POST['userid']."' ");
-	// $user->show_message("User now has to verify");
-	// $action = "main";
-	// if (!$sub_action)
-	// {
-		// $sub_action = "user_id";
-	// }
-// }
-
 
 // User Info.
 // if ((isset ($_POST['useraction']) && $_POST['useraction'] == "userinfo") || $_GET['userinfo'])
 // {
 	// $ip = ($_POST['userip']) ? $_POST['userip'] : $_GET['userinfo'];
 	// $user->user_info($ip);
-// }
-
-
-// ------- Delete User --------------
-// if (isset ($_POST['useraction']) && $_POST['useraction'] == 'deluser')
-// {
-	// $user->user_delete($_POST['userid'],true);
-// }
-
-
-// ---- Update User's class --------------------
-/*
-if (isset ($_POST['updateclass']))
-{
-		
-	e107::getMessage()->addError('FIXME, I\'m not working...');
-	//$user->user_userclass($_POST['userid'], $_POST['userclass'],'clear');
-}*/
-
-
-
-/*
-if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userclass')
-{
-	e107::getMessage()->addError('FIXME, I\'m not working...');
-  //	header('location:'.e_ADMIN.'userclass.php?'.$e107->tp->toDB($_POST['userid'].'.'.e_QUERY));
-  //	exit;
-  	//$user->show_userclass($_POST['userid']);
-}*/
-
-
-// ------- Resend Email Confirmation. --------------
-// if (isset ($_POST['useraction']) && $_POST['useraction'] == 'resend')
-// {
-	// $qry = (e_QUERY) ? "?".e_QUERY : "";
-	// if ($sql->db_Select("user","*","user_id='".$_POST['userid']."' "))
-	// {
-		// $resend = $sql->db_Fetch();
-		// $text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
-		// $text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
-// 
-		// <input type='hidden' name='resend_id' value='".$_POST['userid']."' />\n
-		// <input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
-		// <input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
-		// <input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
-		// <input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
-		// $caption = USRLAN_112;
-		// $ns->tablerender($caption,$text);
-		// require_once ("footer.php");
-		// exit;
-	// }
 // }
 
 // ------- TEst Email confirmation. --------------
