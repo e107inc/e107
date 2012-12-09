@@ -716,11 +716,23 @@ class e_form
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
+		if($options['generate'])
+		{
+			$addon .= '&nbsp;<a href="#" class="smalltext" id="Spn_PasswordGenerator" >Generate</a> | <a class="smalltext" href="#" id="showPwd">Show</a><br />';	
+		}
+		
+		if($options['strength'])
+		{
+			$addon .= "<div><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:215px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
+		}
 		
 		$options = $this->format_options('text', $name, $options);
 		$options['class'] = vartrue($options['class'],'e-password');
 		//never allow id in format name-value for text fields
-		return "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+
+		return $text.$addon;
+		
 	}
 
 	// autoexpand done
