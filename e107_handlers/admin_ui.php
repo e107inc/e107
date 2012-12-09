@@ -138,7 +138,7 @@ class e_admin_request
 			$this->_id = intval($this->_request_qry[$this->_id_key]);
 		}
 
-		$this->_posted_qry = $_POST; //raw?
+		$this->_posted_qry =& $_POST; //raw?
 
 		return $this;
 	}
@@ -183,10 +183,12 @@ class e_admin_request
 		if(null === $value)
 		{
 			unset($this->_request_qry[$key]);
+			unset($_GET[$key]);
 			return $this;
 		}
 
 		$this->_request_qry[$key] = $value;
+		$_GET[$key] = $value;
 		return $this;
 	}
 
@@ -410,9 +412,10 @@ class e_admin_request
 	 * @param string|array $merge_with [optional] override request values
 	 * @param boolean $encode if true &amp; separator will be used, all values will be http encoded, default true
 	 * @param string|array $exclude_from_query numeric array/comma separated list of vars to be excluded from current query, true - don't use current query at all
+	 * @param boolean $keepSpecial don't exclude special vars as 'mode' and 'action'
 	 * @return string url encoded query string
 	 */
-	public function buildQueryString($merge_with = array(), $encode = true, $exclude_from_query = '')
+	public function buildQueryString($merge_with = array(), $encode = true, $exclude_from_query = '', $keepSpecial = true)
 	{
 		$ret = $this->getQuery();
 
@@ -430,7 +433,7 @@ class e_admin_request
 		{
 			foreach ($exclude_from_query as $var)
 			{
-				unset($ret[$var]);
+				if($keepSpecial && $var != $this->_action_key && $var != $this->_mode_key) unset($ret[$var]);
 			}
 		}
 
@@ -3302,13 +3305,13 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// disabled or system
 			
-			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === $var['type'])
+			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === vartrue($var['type']))
 			{
 				continue;
 			}
 
 			// select FROM... for main table
-			if($var['alias'] && vartrue($var['__tableField']))
+			if(vartrue($var['alias']) && vartrue($var['__tableField']))
 			{
 				$tableSFieldsArr[] = $var['__tableField'];
 			}
@@ -3853,9 +3856,8 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->setPosted(array());
 			return; // always break on cancel!
 		}
-		// TODO - investigate - strange post vale of delete triggers, switched to key
-		// for quick fix
-		$id = intval(key($posted));//intval(array_shift($posted));
+
+		$id = intval(key($posted));
 		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm'))
 		{
 			// forward data to delete confirm screen
@@ -4251,7 +4253,7 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				if(vartrue($att['validate']))
 				{
-					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], vartrue($att['help'])));
 				}
 				/*elseif(vartrue($att['check'])) could go?
 				{
@@ -4344,7 +4346,7 @@ class e_admin_form_ui extends e_form
 		foreach($fields as $field => $foptions)
 		{
 			// check form custom methods
-			if($foptions['type'] === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
+			if(vartrue($foptions['type']) === 'method' && method_exists('e_form', $field)) // check even if type is not method. - just in case of an upgrade later by 3rd-party.
 			{
 				e107::getMessage()->addError(sprintf(LAN_UI_FORM_METHOD_ERROR, $field));
 				$err = true;

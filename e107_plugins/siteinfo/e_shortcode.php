@@ -39,9 +39,9 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return SITETAG;
 	}
 
-	function sc_logo($parm)
+	function sc_logo($parm = '')
 	{
-		parse_str($parm);		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
+		parse_str(vartrue($parm));		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
 		// Paths to image file, link are relative to site base
 		$tp = e107::getParser();
 				

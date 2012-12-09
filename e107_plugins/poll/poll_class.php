@@ -504,9 +504,9 @@ class poll
 			<span class='smalltext'>".LAN_386."</span>
 			</td>
 			</tr>
-			<tr><td style='width:20%'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm($_POST['poll_title'])."' maxlength='200' /></td></tr>";
+			<tr><td style='width:20%'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' /></td></tr>";
 
-			$option_count = (count($_POST['poll_option']) ? count($_POST['poll_option']) : 1);
+			$option_count = (count(vartrue($_POST['poll_option'])) ? count($_POST['poll_option']) : 1);
 			$text .= "<tr>
 			<td style='width:20%'>".LAN_391."</td>
 			<td style='width:80%'>
@@ -530,7 +530,7 @@ class poll
 			<tr>
 			<td style='width:20%'>".POLL_506."</td>
 			<td style='width:80%'>
-			<input type='radio' name='multipleChoice' value='1'".($_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_507."&nbsp;&nbsp;
+			<input type='radio' name='multipleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLL_507."&nbsp;&nbsp;
 			<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_508."
 			</td>
 			</tr>
@@ -538,7 +538,7 @@ class poll
 			<tr>
 			<td style='width:30%'>".POLLAN_16."</td>
 			<td>
-			<input type='radio' name='storageMethod' value='0'".(!$_POST['storageMethod'] ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
+			<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
 			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
 			<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 			</td></tr>
@@ -602,7 +602,7 @@ class poll
 		
 		
 		$text .= "
-		<td>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', $uclass)."</td>
+		<td>".r_userclass("pollUserclass", vartrue($_POST['pollUserclass']), 'off', $uclass)."</td>
 		</tr>
 
 		<tr>

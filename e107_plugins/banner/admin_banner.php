@@ -98,7 +98,7 @@ if (isset($_POST['update_menu']))
 
 
 
-if ($_POST['createbanner'] || $_POST['updatebanner'])
+if (vartrue($_POST['createbanner']) || vartrue($_POST['updatebanner']))
 {
 	$start_date = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 	$end_date = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
@@ -154,7 +154,7 @@ if (isset($_POST['delete_cancel']))
 	header('Location:'.e_SELF);
 	exit;
 }
-if ($action == "delete" && $sub_action && varsettrue($_POST['delete_confirm']))
+if (vartrue($action) == "delete" && $sub_action && varsettrue($_POST['delete_confirm']))
 {
 	if($sql->db_Delete("banner", "banner_id=".intval($sub_action)))
 	{

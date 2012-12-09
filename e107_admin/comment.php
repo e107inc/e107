@@ -135,7 +135,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 				$id = $row['comment_type'];
 				$list[$id] = e107::getComment()->getTable($id);
 			}
-			return $list;
+			return vartrue($list);
 		}
 		
 		if($mode == 'batch')

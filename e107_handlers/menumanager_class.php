@@ -68,7 +68,7 @@ class e_menuManager {
 
 				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
 
-				if(isset($_POST['menu_id']) || $_GET['id'])
+				if(isset($_POST['menu_id']) || vartrue($_GET['id']))
 				{
                 	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : intval($_GET['id']);
 				}
@@ -82,7 +82,7 @@ class e_menuManager {
 					$this->menuSaveParameters();
 				}
 
-                if ($_GET['mode'] == "deac")
+                if (vartrue($_GET['mode']) == "deac")
 				{
 				 	$this->menuDeactivate();
 				}
@@ -112,7 +112,7 @@ class e_menuManager {
 
 				$this->menuModify();
 
-            	if($_POST['menuActivate'])
+            	if(vartrue($_POST['menuActivate']))
 				{
                     $this->menuActivateLoc = key($_POST['menuActivate']);
 					$this->menuActivateIds = $_POST['menuselect'];
@@ -120,7 +120,7 @@ class e_menuManager {
 
 				}
 
-				if($_POST['menuSetCustomPages'])
+				if(vartrue($_POST['menuSetCustomPages']))
 				{
 					$this->menuSetCustomPages($_POST['custompages']);
 				}
@@ -147,7 +147,7 @@ class e_menuManager {
 
 		$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
-		$text .= "<object type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
+		$text = "<object type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
 		
 		return $text;
 	}
@@ -427,7 +427,7 @@ class e_menuManager {
 				}
 			}
 
-			$this->menuAddMessage($message, E_MESSAGE_INFO);
+			$this->menuAddMessage(vartrue($message), E_MESSAGE_INFO);
 
 	}
 
@@ -454,7 +454,7 @@ class e_menuManager {
 	 */
 	function menuInstanceParameters()
 	{
-		if(!$_GET['parmsId']) return;
+		if(!vartrue($_GET['parmsId'])) return;
 		$id = intval($_GET['parmsId']);
 		$frm = e107::getForm();
 		$sql = e107::getDb();
@@ -494,7 +494,7 @@ class e_menuManager {
 
 	function menuVisibilityOptions()
 	{
-		if(!$_GET['vis']) return;
+		if(!vartrue($_GET['vis'])) return;
 
 		global $sql,$ns,$frm;
 		require_once(e_HANDLER."userclass_class.php");
@@ -899,11 +899,12 @@ class e_menuManager {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function menuSelectLayout()
 	{
-		global $rs, $pref;
+		global $rs;
+		$pref = e107::getPref();
 		
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
-		$text .= "<form  method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
+		$text = "<form  method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
 		$text .= "<div class='buttons-bar center'>".MENLAN_30." ";
         $text .= "<select name='custom_select' id='menuManagerSelect' >\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
@@ -1364,7 +1365,7 @@ class e_menuManager {
 				}
 			}
 
-           $pref['menuconfig_list'] = $tmp;
+           $pref['menuconfig_list'] = vartrue($tmp);
 		   save_prefs();
 	}
 }  // end of Class.

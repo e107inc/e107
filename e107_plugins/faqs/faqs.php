@@ -25,7 +25,7 @@ require_once (e_HANDLER."userclass_class.php");
 require_once (e_HANDLER."ren_help.php");
 require_once (e_HANDLER."comment_class.php");
 
-if (!$FAQ_VIEW_TEMPLATE)
+if (!vartrue($FAQ_VIEW_TEMPLATE))
 {
 	if (file_exists(THEME."faqs_template.php"))
 	{
@@ -44,14 +44,14 @@ if (!$FAQ_VIEW_TEMPLATE)
 $rs = new form;
 $cobj = new comment;
 
-if (!$_GET['elan'])
+if (!vartrue($_GET['elan']))
 {
 	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
 	$id = $qs[1];
 	$idx = $qs[2];
 }
-$from = ($from ? $from : 0);
+$from = (vartrue($from) ? $from : 0);
 $amount = 50;
 
 if (isset($_POST['faq_submit']))
@@ -215,7 +215,7 @@ class faq
 
 		$ret['title'] = FAQLAN_FAQ;
 		$ret['text'] = $text;
-		$ret['caption'] = $caption;
+		$ret['caption'] = vartrue($caption);
 		
 		return $ret;
 	}

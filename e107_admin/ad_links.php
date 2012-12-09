@@ -177,6 +177,9 @@ if (!defined('E_16_INSPECT')) {
 if (!defined('E_16_LINKS')) {
 	define('E_16_LINKS', "<img class='icon S16' src='".e_IMAGE."admin_images/links_16.png' alt='' />");
 }
+if (!defined('E_16_LINKSPAGE')) {
+	define('E_16_LINKSPAGE', "<img class='icon S16' src='".e_IMAGE."admin_images/linkspage_16.png' alt='' />");
+}
 if (!defined('E_16_WELCOME')) {
 	define('E_16_WELCOME', "<img class='icon S16' src='".e_IMAGE."admin_images/welcome_16.png' alt='' />");
 }
@@ -343,6 +346,9 @@ if (!defined('E_32_INSPECT')) {
 }
 if (!defined('E_32_LINKS')) {
 	define('E_32_LINKS', "<img class='icon S32' src='".e_IMAGE."admin_images/links_32.png' alt='' />");
+}
+if (!defined('E_32_LINKSPAGE')) {
+	define('E_32_LINKSPAGE', "<img class='icon S32' src='".e_IMAGE."admin_images/linkspage_32.png' alt='' />");
 }
 if (!defined('E_32_WELCOME')) {
 	define('E_32_WELCOME', "<img class='icon S32' src='".e_IMAGE."admin_images/welcome_32.png' alt='' />");

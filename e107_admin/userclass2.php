@@ -936,7 +936,7 @@ class uclass_manager
 		}
 		else
 		{
-             $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+             $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-userclass-list'>
 						<legend class='e-hideme'>".UCSLAN_5."</legend>
 						<table class='table adminlist'>".

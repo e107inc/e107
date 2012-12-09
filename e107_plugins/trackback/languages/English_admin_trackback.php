@@ -23,7 +23,7 @@ define("TRACKBACK_L5", "On");
 define("TRACKBACK_L6", "Off");
 define("TRACKBACK_L7", "Activate trackback");
 define("TRACKBACK_L8", "Trackback URL text");
-define("TRACKBACK_L9", "Save Settings");
+//define("TRACKBACK_L9", "Save Settings");
 define("TRACKBACK_L10", "Trackback Settings");
 define("TRACKBACK_L11", "Trackback address for this post:");
 

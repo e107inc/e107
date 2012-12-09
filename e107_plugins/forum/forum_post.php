@@ -83,7 +83,7 @@ define('MODERATOR', USER && $forum->isModerator(USERID));
 require_once(e_HANDLER.'ren_help.php');
 
 e107::getScBatch('view', 'forum');
-e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', $threadInfo);
+e107::getScBatch('post', 'forum')->setScVar('forum', $forum)->setScVar('threadInfo', vartrue($threadInfo));
 
 $gen = new convert;
 $fp = new floodprotect;
@@ -437,7 +437,7 @@ if (isset($_POST['update_reply']))
 
 require_once(HEADERF);
 
-if ($error)
+if (vartrue($error))
 {
 	$ns->tablerender(LAN_20, $error);
 }
@@ -491,7 +491,7 @@ if ($action == 'edit' || $action == 'quote')
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Load forumpost template
 
-if (!$FORUMPOST)
+if (!vartrue($FORUMPOST))
 {
   if (is_readable(THEME.'forum_post_template.php'))
   {

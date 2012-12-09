@@ -44,7 +44,7 @@ else
 
 $frm = e107::getForm();
 
-$text .= "
+$text = "
 You can arrange where and in which order your menu items are from here. 
 Use the dropdown menu to move the menus up and down until you are satisfied with their positioning.
 <br />

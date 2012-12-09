@@ -137,7 +137,7 @@ define('LAN_AL_UTHEME_02', '');
 // Update routines
 //----------------
 define('LAN_AL_UPDATE_00','Unknown software update related event');
-define('LAN_AL_UPDATE_01','Update from 0.7 to 0.8 executed');
+define('LAN_AL_UPDATE_01','Update from 1.0 to 2.0 executed');
 define('LAN_AL_UPDATE_02','Update from 0.7.x to 0.7.6 executed');
 define('LAN_AL_UPDATE_03','Missing prefs added');
 

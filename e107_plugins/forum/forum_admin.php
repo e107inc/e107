@@ -307,13 +307,13 @@ if (isset($_POST['frsubmit']))
 }
 
 
-if ($delete == 'main') {
+if (vartrue($delete) == 'main') {
 	if ($e107->sql->db_Delete('forum', "forum_id='$del_id' ")) {
 		$forum->show_message(FORLAN_96);
 	}
 }
 
-if ($action == 'create')
+if (vartrue($action) == 'create')
 {
 	if ($e107->sql->db_Select('forum', '*', "forum_parent='0' "))
 	{
@@ -390,7 +390,7 @@ if ($delete == 'reported')
 
 if (!e_QUERY || $action == 'main')
 {
-	$forum->show_existing_forums($sub_action, $id);
+	$forum->show_existing_forums(vartrue($sub_action), vartrue($id));
 }
 
 //$forum->show_options($action);

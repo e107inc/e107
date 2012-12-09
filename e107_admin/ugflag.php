@@ -103,7 +103,7 @@ $text .= "
 							
 						</td>
 						<td>
-							".$frm->bbarea('maintainance_text', $pref['maintainance_text'], 'maintenance', 'maintenance_bbhelp')."
+							".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', 'maintenance_bbhelp')."
 						<div class='field-help'>".UGFLAN_6."</div>
 						</td>
 					</tr>

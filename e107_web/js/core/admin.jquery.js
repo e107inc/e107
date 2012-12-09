@@ -118,7 +118,7 @@ $(document).ready(function()
 		
 		
 		// backend 
-		$(".e-password-admin").pwdMeter({
+		$(".e-password").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",
