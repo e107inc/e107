@@ -43,7 +43,7 @@ class gallery
 	{
 		$this->catList = e107::getMedia()->getCategories('gallery');
 		
-		if(($_GET['cat']) && isset($this->catList[$_GET['cat']]))
+		if((vartrue($_GET['cat'])) && isset($this->catList[$_GET['cat']]))
 		{
 			$this->showImages($_GET['cat']);	
 		}

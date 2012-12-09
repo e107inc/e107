@@ -217,7 +217,7 @@ class e_form
 		if(!vartrue($parms['size'])) $parms['size'] = 15;
 		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner input-small';
 		if(!$value) $value = '0';
-		return $this->text($key, $value, $maxlength, $parms);	
+		return $this->text(vartrue($key), $value, $maxlength, $parms);	
 	}
 	
 	function email($name, $value, $maxlength = 200, $options = array())
@@ -280,10 +280,10 @@ class e_form
 		
 		parse_str($extras);
 		
-		if($bbcode) $cat .= '&amp;bbcode=1'; 
+		if(vartrue($bbcode)) $cat .= '&amp;bbcode=1'; 
 		
-		if(!$mode) $mode = 'main';
-		if(!$action) $action = 'dialog';
+		if(!vartrue($mode)) $mode = 'main';
+		if(!vartrue($action)) $action = 'dialog';
 
 		// $tabs // TODO - option to choose which tabs to display.  
 		
@@ -465,12 +465,12 @@ class e_form
 		}
 		
 		//$width = intval(vartrue($sc_parameters['width'], 150));
-		$cat = $tp->toDB($sc_parameters['media']);	
+		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
 		
 		if($cat == '_icon')
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
-			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $default_thumb;
+			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
 			$style = ($blank) ? "border:1px dashed black;width:64px;height:64px" : "border:1px dashed black";
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='{$style}' />";
 				
@@ -479,7 +479,7 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:120px;min-height:100px'>";
 			$att = 'aw=120&ah=100';
-			$thpath = isset($sc_parameters['nothumb']) || $hide ? $default : $tp->thumbUrl($default_thumb, $att, true);
+			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";
 			
 		}
@@ -716,11 +716,23 @@ class e_form
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
+		if($options['generate'])
+		{
+			$addon .= '&nbsp;<a href="#" class="smalltext" id="Spn_PasswordGenerator" >Generate</a> | <a class="smalltext" href="#" id="showPwd">Show</a><br />';	
+		}
+		
+		if($options['strength'])
+		{
+			$addon .= "<div><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:215px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
+		}
 		
 		$options = $this->format_options('text', $name, $options);
 		$options['class'] = vartrue($options['class'],'e-password');
 		//never allow id in format name-value for text fields
-		return "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+
+		return $text.$addon;
+		
 	}
 
 	// autoexpand done
@@ -888,7 +900,7 @@ class e_form
 		$options_on = varset($options['enabled'],array());
 		$options_off = varset($options['disabled'],array());
 		
-		if($options['class'] == 'e-expandit') // See admin->prefs 'Single Login' for an example. 
+		if(vartrue($options['class']) == 'e-expandit') // See admin->prefs 'Single Login' for an example. 
 		{
 			$options_on = array('class' => 'e-expandit-on');
 			$options_off = array('class' => 'e-expandit-off');			
@@ -971,7 +983,7 @@ class e_form
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
 
-		if($options['multiple'])
+		if(vartrue($options['multiple']))
 		{
 			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 			$selected = explode(",",$selected);
@@ -1641,7 +1653,7 @@ class e_form
 		foreach ($fieldarray as $field => $data)
 		{
 			// shouldn't happen...
-			if(!isset($fieldvalues[$field]) && $data['alias'])
+			if(!isset($fieldvalues[$field]) && vartrue($data['alias']))
 			{
 				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
 				$field = $data['alias'];
@@ -1652,7 +1664,7 @@ class e_form
 			{
 				continue;
 			}
-			elseif($data['type'] != 'method' && !$data['forced'] && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== NULL)
+			elseif(vartrue($data['type']) != 'method' && !$data['forced'] && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== NULL)
 			{
 				$ret .= "
 					<td>
@@ -1666,7 +1678,7 @@ class e_form
 			$tdclass = vartrue($data['class']);
 			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
 			// there is no other way for now - prepare user data
-			if('user' == $data['type']/* && isset($data['readParms']['idField'])*/)
+			if('user' == vartrue($data['type']) /* && isset($data['readParms']['idField'])*/)
 			{
 				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
 				if(isset($data['readParms']['idField']))
@@ -1738,7 +1750,7 @@ class e_form
 		{
 			case 'options':
 				
-				if($attributes['type']=='method') // Allow override with 'options' function.
+				if($attributes['type'] == "method") // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
@@ -1865,7 +1877,7 @@ class e_form
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
 
-				if($opts['multiple'] || $attributes['data']=='comma')
+				if(vartrue($opts['multiple']) || vartrue($attributes['data']) == 'comma')
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -2222,7 +2234,7 @@ class e_form
 
 			case 'textarea':
 				$text = "";
-				if($parms['append']) // similar to comments - TODO TBD. a 'comment' field type may be better.
+				if(vartrue($parms['append'])) // similar to comments - TODO TBD. a 'comment' field type may be better.
 				{
 					$attributes['readParms'] = 'bb=1';
 					$text = $this->renderValue($key, $value, $attributes).$this->hidden($key, $value).'<br />';
@@ -2351,7 +2363,7 @@ class e_form
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
 				$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
-				if($atrributes['type'] == 'userclasses'){ $parms['multiple'] = true; }
+				if(vartrue($atrributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
 				$ret =  $this->$method($key, $value, $uc_options, vartrue($parms, array()));
 			break;
 
@@ -2500,7 +2512,7 @@ class e_form
 			$asc = strtoupper(vartrue($options['asc'], 'asc'));
 			$elid = $fid;//$options['id'];
 			$query = isset($options['query']) ? $options['query'] : e_QUERY ;
-			if($_GET['action'] == 'list')
+			if(vartrue($_GET['action']) == 'list')
 			{
 				$query = e_QUERY; //XXX Quick fix for loss of pagination after 'delete'. 	
 			}
@@ -2692,7 +2704,7 @@ class e_form
 		foreach($fdata['fields'] as $key => $att)
 		{
 			// convert aliases - not supported in edit mod
-			if($att['alias'] && !$model->hasData($key))
+			if(vartrue($att['alias']) && !$model->hasData($key))
 			{
 				$key = $att['field'];
 			}
@@ -2715,7 +2727,7 @@ class e_form
 			}
 
 			// type null - system (special) fields
-			if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
+			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
 				$required = '';
 				$required_class = '';
@@ -2749,7 +2761,7 @@ class e_form
 				$text .= "
 					<tr>
 						<td>
-							".$required."<span{$required_class}>".defset($att['title'], $att['title'])."</span>".$label."
+							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
 						</td>
 						<td>
 							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."

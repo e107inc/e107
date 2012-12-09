@@ -14,16 +14,46 @@ $(document).ready(function()
     	 
     	 
 		 //check all
-		 $("#check-all").click(function(){
-			    $(".field-spacer").each( function() {
-					$(this).children(":checkbox").attr("checked",true);
-				 })
+		 $("#check-all").click(function(event){
+		 		var val = $(this).val(), selector = '.field-spacer';
+		 		event.preventDefault();
+		 		// e.g. <button id="check-all" value="jstarget:perms"><span>Check All</span></button> - match all checkboxes with attribute 'name="perms[]"
+		 		if(val && val.match(/^jstarget\:/))
+		 		{
+		 			selector = 'input:checkbox[name^=' + val.split(':')[1] + ']';
+				    $(selector).each( function() {
+						$(this).attr("checked",true);
+					 });
+					 return;
+		 		}
+		 		// checkboxes children of .field-spacer
+		 		else 
+		 		{
+				    $(selector).each( function() {
+						$(this).children(":checkbox").attr("checked",true);
+					 })
+		 		}
+
 		 })
 		 
-		 $("#uncheck-all").click(function(){
-			    $(".field-spacer").each( function() {
-					$(this).children(":checkbox").attr("checked",false);
-				 })
+		 $("#uncheck-all").click(function(event) {
+		 		var val = $(this).val(), selector = '.field-spacer';
+		 		event.preventDefault();
+		 		// e.g. <button id="uncheck-all" value="jstarget:perms"><span>Uncheck All</span></button> - match all checkboxes with attribute 'name="perms[]"
+		 		if(val && val.match(/^jstarget\:/))
+		 		{
+		 			selector = 'input:checkbox[name^=' + val.split(':')[1] + ']';
+				    $(selector).each( function() {
+						$(this).attr("checked",false);
+					 })
+		 		}
+		 		// checkboxes children of .field-spacer
+		 		else 
+		 		{
+				    $(".field-spacer").each( function() {
+						$(this).children(":checkbox").attr("checked",false);
+					});
+				}
 		 })
 		     		
     		

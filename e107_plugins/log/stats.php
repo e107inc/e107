@@ -938,20 +938,20 @@ class siteStats
 			require($logfile);
 		}
 
-		$this -> filesiteTotal = $siteTotal;
-		$this -> filesiteUnique = $siteUnique;
+		$this -> filesiteTotal = vartrue($siteTotal);
+		$this -> filesiteUnique = vartrue($siteUnique);
 
 		/* set order var */
 		$this -> order = $order;
 
-		$this -> fileInfo = $pageInfo;
-		$this -> fileBrowserInfo = $browserInfo;
-		$this -> fileOsInfo = $osInfo;
-		$this -> fileScreenInfo = $screenInfo;
-		$this -> fileDomainInfo = $domainInfo;
-		$this -> fileReferInfo = $refInfo;
-		$this -> fileQueryInfo = $searchInfo;
-		$this -> fileRecent = $visitInfo;
+		$this -> fileInfo = vartrue($pageInfo);
+		$this -> fileBrowserInfo = vartrue($browserInfo);
+		$this -> fileOsInfo = vartrue($osInfo);
+		$this -> fileScreenInfo = vartrue($screenInfo);
+		$this -> fileDomainInfo = vartrue($domainInfo);
+		$this -> fileReferInfo = vartrue($refInfo);
+		$this -> fileQueryInfo = vartrue($searchInfo);
+		$this -> fileRecent = vartrue($visitInfo);
 
 		/* get main stat info from database */
 		if($sql -> db_Select('logstats', 'log_data', "log_id='pageTotal'"))
@@ -1034,7 +1034,7 @@ class siteStats
 			if ($do_errors XOR !$found) 
 			{
 				$totalArray[$k] = $v;
-				$total += $v['ttlv'];
+				$total += vartrue($v['ttlv']);
 			}
 		}
 		$totalArray = $this -> arraySort($totalArray, "ttl");

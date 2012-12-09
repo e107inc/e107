@@ -35,7 +35,7 @@ e107::getScParser();
 require_once(e_PLUGIN.'pm/pm_shortcodes.php');
 setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
 $pmManager = new pmbox_manager($pm_prefs);
-setScVar('pm_handler_shortcodes','pmManager', &$pmManager);
+setScVar('pm_handler_shortcodes','pmManager', $pmManager);
 
 define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
 define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");

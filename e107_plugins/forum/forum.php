@@ -191,7 +191,7 @@ else
 	}
 }
 
-if (USER && $allread != TRUE && $total_new_threads && $total_new_threads >= $total_read_threads)
+if (USER && vartrue($allread) != TRUE && $total_new_threads && $total_new_threads >= $total_read_threads)
 {
 	$fVars->INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : '');
 }
@@ -275,7 +275,7 @@ function parse_parent($parent)
 	{
 		$status = '( '.LAN_405.' )';
 	}
-	return $status;
+	return vartrue($status);
 }
 
 function parse_forum($f, $restricted_string = '')

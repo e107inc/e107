@@ -517,7 +517,7 @@ class forumAdmin
 		$text .= "<select name='forum_parent' class='tbox'>\n";
 		while (list($fid, $fname) = $sql->db_Fetch(MYSQL_NUM))
 		{
-			$sel = ($fid == $fInfor['forum_parent'] ? "selected='selected'" : '');
+			$sel = ($fid == vartrue($fInfor['forum_parent']) ? "selected='selected'" : '');
 			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
 		}
 		$text .= "</select>
@@ -527,14 +527,14 @@ class forumAdmin
 		<tr>
 		<td>".FORLAN_31.":</td>
 		<td>
-		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($fInfo['forum_name'])."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span>
+		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm(vartrue($fInfo['forum_name']))."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span>
 		</td>
 		</tr>
 
 		<tr>
 		<td>".FORLAN_32.":</td>
 		<td>
-		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm($fInfo['forum_description'])."</textarea>
+		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm(vartrue($fInfo['forum_description']))."</textarea>
 		</td>
 		</tr>
 
@@ -883,7 +883,7 @@ class forumAdmin
 			}
 			else
 			{
-				$text .= "<div style='text-align:center'>".FORLAN_121."</div>";
+				$text = "<div style='text-align:center'>".FORLAN_121."</div>";
 			}
 			$ns->tablerender(FORLAN_116, $text);
 		}
@@ -1031,9 +1031,9 @@ class forumAdmin
 				$admin_rules = $sql->db_Fetch();
 			}
 
-			$guesttext = $tp->toFORM($guest_rules['gen_chardata']);
-			$membertext = $tp->toFORM($member_rules['gen_chardata']);
-			$admintext = $tp->toFORM($admin_rules['gen_chardata']);
+			$guesttext = $tp->toFORM(vartrue($guest_rules['gen_chardata']));
+			$membertext = $tp->toFORM(vartrue($member_rules['gen_chardata']));
+			$admintext = $tp->toFORM(vartrue($admin_rules['gen_chardata']));
 
 			$text = "
 			<form method='post' action='".e_SELF."?rules'  id='wmform'>
@@ -1044,7 +1044,7 @@ class forumAdmin
 
 			<td style='width:20%'>".WMGLAN_1.": <br />
 			".WMGLAN_6.":";
-			if ($guest_rules['gen_intdata'])
+			if (vartrue($guest_rules['gen_intdata']))
 			{
 				$text .= "<input type='checkbox' name='guest_active' value='1'  checked='checked' />";
 			}
@@ -1065,7 +1065,7 @@ class forumAdmin
 			<tr>
 			<td style='width:20%'>".WMGLAN_2.": <br />
 			".WMGLAN_6.":";
-			if ($member_rules['gen_intdata'])
+			if (vartrue($member_rules['gen_intdata']))
 			{
 				$text .= "<input type='checkbox' name='member_active' value='1'  checked='checked' />";
 			}
@@ -1087,7 +1087,7 @@ class forumAdmin
 			<td style='width:20%'>".WMGLAN_3.": <br />
 			".WMGLAN_6.": ";
 
-			if ($admin_rules['gen_intdata'])
+			if (vartrue($admin_rules['gen_intdata']))
 			{
 				$text .= "<input type='checkbox' name='admin_active' value='1'  checked='checked' />";
 			}

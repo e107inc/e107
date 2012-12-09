@@ -650,7 +650,7 @@ class themeHandler
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
 			foreach ($var as $val)
 			{
-				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				$text = "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
 			}
 			return $text;
 		}

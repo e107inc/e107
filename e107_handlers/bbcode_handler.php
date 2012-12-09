@@ -527,10 +527,10 @@ class e_bbcode
 		$data = array(
 				'tagid'			=> $id,
 				'template'		=> $template,
-				'trigger'		=> $addtextfunc,
+				'trigger'		=> vartrue($addtextfunc),
 		//		'hint_func'		=> $helpfunc, // unused
 		//		'hint_active'	=> $bbcode_helpactive, // unused
-				'size'			=> $helpsize
+				'size'			=> vartrue($helpsize)
 		);
 				
 		$bbcode_shortcodes->setVars($data);	

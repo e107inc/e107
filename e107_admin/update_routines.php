@@ -395,7 +395,7 @@ function update_706_to_800($type='')
 
 	if (!$just_check)
 	{
-		foreach($setCorePrefs as $k=>$v)
+		foreach(vartrue($setCorePrefs) as $k=>$v)
 		{
 			$pref[$k] = $v;
 		}

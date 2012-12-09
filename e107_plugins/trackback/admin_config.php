@@ -24,6 +24,8 @@ if (!getperms("P") || !plugInstalled('trackback'))
 include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
+
+$frm = e107::getForm();
 	
 if (isset($_POST['updatesettings'])) 
 {
@@ -53,30 +55,23 @@ if (isset($message))
 	
 
 $text = "
-<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='".ADMIN_WIDTH."' class='fborder'>
+<table class='table adminform'>
 <tr>
-<td style='width:50%' class='forumheader3'>".TRACKBACK_L7."</td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input type='radio' name='trackbackEnabled' value='1'".($pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L5."&nbsp;&nbsp;
-<input type='radio' name='trackbackEnabled' value='0'".(!$pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L6."
-</td>
+	<td>".TRACKBACK_L7."</td>
+	<td>
+		<input type='radio' name='trackbackEnabled' value='1'".($pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L5."&nbsp;&nbsp;
+		<input type='radio' name='trackbackEnabled' value='0'".(!$pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L6."
+	</td>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>".TRACKBACK_L8."</td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input  size='50' class='tbox' type='text' name='trackbackString' value='".$pref['trackbackString']."' />
-</td>
-</tr>
-
-<td colspan='2' style='text-align:center' class='forumheader'>
-<input class='button' type='submit' name='updatesettings' value='".TRACKBACK_L9."' />
-</td>
-</tr>
-
+	<td>".TRACKBACK_L8."</td>
+	<td><input  size='50' class='tbox' type='text' name='trackbackString' value='".$pref['trackbackString']."' />	</td>
 </table>
+<div class='buttons-bar center'>
+	".$frm->admin_button('updatesettings', LAN_UPDATE, 'update')."
+</div>
 </form>
 </div>
 ";

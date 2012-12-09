@@ -16,14 +16,14 @@ jQuery.fn.pwdMeter = function(options){
 		displayGeneratePassword: false,
 		generatePassText: 'Generate',
 		generatePassClass: 'GeneratePasswordLink',
-		randomPassLength: 13,
+		randomPassLength: 12,
         passwordBox: this
 	
 	}, options);
 
 	var pwdObj = this;
 	
-	$(pwdObj).after("<span id=\"pwdMeter\" class=\"neutral\">Very Weak</span>");
+//	$(pwdObj).after("<span class='progress progress-info span2' ><span class='bar' id=\"pwdMeter\" style='width:20%'></span></span>");
 
 	return this.each(function(index){
 	
@@ -39,53 +39,69 @@ jQuery.fn.pwdMeter = function(options){
 			
 			$("#showPwdBox").val(password);
 
-			if ((password.length >0) && (password.length <=5)) passwordStrength=1;
+			if ((password.length >3) && (password.length <=5)) passwordStrength=1;
 		
 			if (password.length >= options.minLength) passwordStrength++;
 
-			if ((password.match(/[a-z]/)) && (password.match(/[A-Z]/)) ) passwordStrength++;
+			if ((password.match(/[A-Z]/)) ) passwordStrength++;
+			
+			if ((password.match(/[a-z]/)) ) passwordStrength++;
 
-			if (password.match(/\d+/)) passwordStrength++;
+			if (password.match(/\d+/) && password.length > 5) passwordStrength++;
 
 			if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))	passwordStrength++;
 
-			if (password.length > 12) passwordStrength++;
+			if (password.length > 11) passwordStrength++;
 		
-			$('#pwdMeter').removeClass();
-			$('#pwdMeter').addClass('neutral');
+			$('#pwdColor').removeClass();
+			$('#pwdColor').addClass('progress');
+			 $('#pwdMeter').css("width",'1%');
+			// $('#pwdMeter').removeStyle();
 		
 			switch(passwordStrength){
 			case 1:
-			  $('#pwdMeter').addClass('veryweak');
-			  $('#pwdMeter').text('Very Weak');
+			  $('#pwdColor').addClass('progress-danger');
+			  $('#pwdMeter').css("width",'10%');
+			  $('#pwdStatus').text('Very Weak');
 			  break;
 			case 2:
-			  $('#pwdMeter').addClass('weak');
-			  $('#pwdMeter').text('Weak');
+			  $('#pwdColor').addClass('progress-danger');
+			  $('#pwdMeter').css("width",'25%');
+			  $('#pwdStatus').text('Weak');
+			  
 			  break;
 			case 3:
-			  $('#pwdMeter').addClass('medium');
-			  $('#pwdMeter').text('Medium');
+			 	$('#pwdColor').addClass('progress-warning');
+			    $('#pwdMeter').css("width",'30%');
+				  $('#pwdStatus').text('Medium');
 			  break;
 			case 4:
-			  $('#pwdMeter').addClass('strong');
-			  $('#pwdMeter').text('Strong');
+				$('#pwdColor').addClass('progress-warning');
+			    $('#pwdMeter').css("width",'50%');
+			  $('#pwdStatus').text('Medium');
 			  break;
-			case 5:
-			  $('#pwdMeter').addClass('verystrong');
-			  $('#pwdMeter').text('Very Strong');
+			 case 5:
+			  $('#pwdColor').addClass('progress-success');
+			  $('#pwdMeter').css("width",'75%');
+			  $('#pwdStatus').text('Strong');
+			  break;	
+			case 6:
+			  $('#pwdColor').addClass('progress-success');
+			  $('#pwdMeter').css("width",'100%');
+			  $('#pwdStatus').text('Very Strong');
 			  break;		  		  		  
 			default:
-			  $('#pwdMeter').addClass('neutral');
-			  $('#pwdMeter').text('Very Weak');
+			 $('#pwdMeter').css("width",'0px');
+		//	  $('#pwdStatus').text('Strong');
 			}		
 		
 		}
 		
 	
-		if(options.displayGeneratePassword){
-			$('#pwdMeter').before('&nbsp;<a href="#" id="Spn_PasswordGenerator" class="'+options.generatePassClass+'">'+ options.generatePassText +'</a><br />');
-			$('#pwdMeter').after('&nbsp;<a href="#" id="showPwd">Show</a>');
+		if(options.displayGeneratePassword)
+		{
+		//	$('#pwdMeter').before('&nbsp;<a href="#" id="Spn_PasswordGenerator" class="'+options.generatePassClass+'">'+ options.generatePassText +'</a><br />');
+			
 			$(pwdObj).after('<input id="showPwdBox" type="text" class="'+ $(pwdObj).attr('class')  +'" style="display:none" size="'+ $(pwdObj).attr('size')  +'"  value="" />');
        		
 		}
@@ -107,9 +123,51 @@ jQuery.fn.pwdMeter = function(options){
 
 		});
 		
-		
-		function random_password() {
+		function random_password() 
+	    {
+	    	var length = options.randomPassLength;	
+	    	
+		    var pchars = "abcdefghijklmnopqrstuvwxyz";
+		    var pchars1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		    var pchars2 = "1234567890";
+		    var pchars3 = "~!@#$%^&*-<>=_+,./?;':";
+		     
+		    ret_pass = "";
+		    for(x=0;x<Math.abs(length/4);x++) {
+		    i = Math.floor(Math.random() * pchars.length);
+		    ret_pass += pchars.charAt(i);
+		    }
+		    for(x=0;x<Math.abs(length/4);x++) {
+		    i = Math.floor(Math.random() * pchars1.length);
+		    ret_pass += pchars1.charAt(i);
+		    }
+		    for(x=0;x<Math.abs(length/4);x++) {
+		    i = Math.floor(Math.random() * pchars2.length);
+		    ret_pass += pchars2.charAt(i);
+		    }
+		    for(x=0;x<Math.abs(length/4);x++) {
+		    i = Math.floor(Math.random() * pchars3.length);
+		    ret_pass += pchars3.charAt(i);
+		    }
+		    // shuffle the string a bit
+		    var a = ret_pass.split(""),
+		    n = a.length;
+		    for(var i = n - 1; i > 0; i--) {
+		    var j = Math.floor(Math.random() * (i + 1));
+		    var tmp = a[i];
+		    a[i] = a[j];
+		    a[j] = tmp;
+		    }
+		    return a.join("");
+	    }
+
+	
+		/*
+		function random_password_old() {
 			var allowed_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz!?$?%^&*()_-+={[}]:;@~#|\<,>.?/";
+			var allowed_upper = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ";
+			var allowed_lower = "abcdefghiklmnopqrstuvwxyz";
+			var allower_symb  = "!?$?%^&*()_-+={[}]:;@~#|\<,>.?";
 			var pwd_length = options.randomPassLength;
 			var rnd_pwd = '';
 			for (var i=0; i<pwd_length; i++) {
@@ -117,7 +175,8 @@ jQuery.fn.pwdMeter = function(options){
 				rnd_pwd += allowed_chars.substring(rnd_num,rnd_num+1);
 			}
 			return rnd_pwd;
-		}		
+		}
+		*/		
 	
 	});
 

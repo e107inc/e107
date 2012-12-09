@@ -80,7 +80,8 @@ function getDefaultPDFPrefs()
 
 function getPDFPrefs()
 {
-	global $sql, $eArrayStorage;
+	global $eArrayStorage;
+	$sql = e107::getDb(); 
 
 	if(!is_object($sql)){ $sql = new db; }
 	$num_rows = $sql -> db_Select("core", "*", "e107_name='pdf' ");
@@ -184,27 +185,26 @@ foreach ($fontList as $font => $info)
 
 
 $text = "
-<div style='text-align:center'>
 ".$rs -> form_open("post", e_SELF, "pdfform", "", "enctype='multipart/form-data'")."
-<table class='fborder' style='".ADMIN_WIDTH."'>
+<table class='table adminform'>
 
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_5."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_left", 10, $pdfpref['pdf_margin_left'], 10)."</td>
+	<td>".PDF_LAN_5."</td>
+	<td>".$rs -> form_text("pdf_margin_left", 10, $pdfpref['pdf_margin_left'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_6."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_right", 10, $pdfpref['pdf_margin_right'], 10)."</td>
+	<td>".PDF_LAN_6."</td>
+	<td>".$rs -> form_text("pdf_margin_right", 10, $pdfpref['pdf_margin_right'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_7."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_top", 10, $pdfpref['pdf_margin_top'], 10)."</td>
+	<td>".PDF_LAN_7."</td>
+	<td>".$rs -> form_text("pdf_margin_top", 10, $pdfpref['pdf_margin_top'], 10)."</td>
 </tr>";
 
 $text .= "
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_8."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_8."</td>
+	<td>
 		".$rs -> form_select_open("pdf_font_family");
 		foreach($coreList as $font => $info)
 		{
@@ -215,70 +215,68 @@ $text .= "
 </tr>
 
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_9."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size", 10, $pdfpref['pdf_font_size'], 10)."</td>
+	<td>".PDF_LAN_9."</td>
+	<td>".$rs -> form_text("pdf_font_size", 10, $pdfpref['pdf_font_size'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_10."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_sitename", 10, $pdfpref['pdf_font_size_sitename'], 10)."</td>
+	<td>".PDF_LAN_10."</td>
+	<td>".$rs -> form_text("pdf_font_size_sitename", 10, $pdfpref['pdf_font_size_sitename'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_11."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_url", 10, $pdfpref['pdf_font_size_page_url'], 10)."</td>
+	<td>".PDF_LAN_11."</td>
+	<td>".$rs -> form_text("pdf_font_size_page_url", 10, $pdfpref['pdf_font_size_page_url'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_12."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_number", 10, $pdfpref['pdf_font_size_page_number'], 10)."</td>
+	<td>".PDF_LAN_12."</td>
+	<td>".$rs -> form_text("pdf_font_size_page_number", 10, $pdfpref['pdf_font_size_page_number'], 10)."</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_13."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_13."</td>
+	<td>
 		".$rs -> form_radio("pdf_show_logo", "1", ($pdfpref['pdf_show_logo'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_show_logo", "0", ($pdfpref['pdf_show_logo'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_14."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_14."</td>
+	<td>
 		".$rs -> form_radio("pdf_show_sitename", "1", ($pdfpref['pdf_show_sitename'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_show_sitename", "0", ($pdfpref['pdf_show_sitename'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_15."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_15."</td>
+	<td>
 		".$rs -> form_radio("pdf_show_page_url", "1", ($pdfpref['pdf_show_page_url'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_show_page_url", "0", ($pdfpref['pdf_show_page_url'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_16."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_16."</td>
+	<td>
 		".$rs -> form_radio("pdf_show_page_number", "1", ($pdfpref['pdf_show_page_number'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_show_page_number", "0", ($pdfpref['pdf_show_page_number'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_20."</td>
-	<td class='forumheader3' style='width:70%;'>
+	<td>".PDF_LAN_20."</td>
+	<td>
 		".$rs -> form_radio("pdf_error_reporting", "1", ($pdfpref['pdf_error_reporting'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_error_reporting", "0", ($pdfpref['pdf_error_reporting'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
-
-<tr>
-	<td style='text-align:center' class='forumheader' colspan='2'>".$rs -> form_button("submit", "update_pdf", PDF_LAN_17)."</td>
-</tr>
-
 </table>
+<div class='buttons-bar center'>
+	".$rs -> form_button("submit", "update_pdf", PDF_LAN_17)."
+</div>
 ".$rs -> form_close()."
-</div>";
+";
 
 $ns -> tablerender(PDF_LAN_2, $text);
 
 
-$text = "<div style='text-align:center;>\n
-<table cellpadding='0' cellspacing='0' class='adminform'>
+$text = "
+<table class='table adminform'>
 <tr><th>".PDF_LAN_21."</th><th>".PDF_LAN_22."</th><th>".PDF_LAN_23."</th>
 	<th>".PDF_LAN_24."</th><th title='".PDF_LAN_25."'>".PDF_LAN_26."</th></tr>\n";
 
@@ -292,7 +290,7 @@ foreach ($fontList as $font => $info)
 	$text .= "<tr><td>{$font}</td><td>{$info['info']['type']}</td><td>{$variants}</td><td>{$info['info']['weight']}</td><td>{$info['info']['codes']}</td></tr>\n";
 }
 
-$text .= "</table></div>";
+$text .= "</table>";
 $ns->tablerender(PDF_LAN_31, $text);
 
 

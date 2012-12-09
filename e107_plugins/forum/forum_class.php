@@ -1198,7 +1198,7 @@ class e107forum
 
 			$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
 			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
-			$replace 	= array($threadInfo['thread_name'], $e107->url->create('forum/thread/view', $threadInfo)); // $thread->threadInfo - no reference found
+			$replace 	= array(vartrue($threadInfo['thread_name']), $e107->url->create('forum/thread/view', $threadInfo)); // $thread->threadInfo - no reference found
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';

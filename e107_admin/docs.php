@@ -74,7 +74,7 @@ $text_h = '';
 foreach ($helplist as $key => $helpdata)
 {
 	$filename = $doc_fpath.$helpdata['fname'];
-	$filename_alt = $doc_fpath_alt.$$helpdata['fname'];
+	$filename_alt = $doc_fpath_alt.vartrue($$helpdata['fname']);
 
 	if(is_readable($filename))
 		$tmp = file_get_contents($filename);

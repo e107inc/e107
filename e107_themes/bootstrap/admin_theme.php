@@ -454,61 +454,41 @@ if (!defined('E_16_FAILEDLOGIN')) {
 	define('E_16_FAILEDLOGIN', "<i class='S16 e-failedlogin-16'></i>");
 }
 
-
-
-
-
-//	define("ADMIN_TRUE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/true_32.png' alt='' />");
-//	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."admin_images/true_32.png");
-
-//	define("ADMIN_FALSE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/false_32.png' alt='' />");
-//	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."admin_images/false_32.png");
-
-
-	define("ADMIN_EDIT_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/edit_32.png' alt='' title='".LAN_EDIT."' />");
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_32.png");
-
-	define("ADMIN_DELETE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/delete_32.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_32.png");
-
-
-	define("ADMIN_WARNING_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/warning_32.png' alt='' />");
-	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_32.png");
-
-	define("ADMIN_ADD_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/add_32.png' alt='' />");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_32.png");
-
-	define("ADMIN_INFO_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' />");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_32.png");
-
-	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/configure_32.png' alt='' />");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_32.png");
-
-	define("ADMIN_VIEW_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/search_32.png' alt='' />");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_32.png");
-
-	define("ADMIN_URL_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/forums_32.png' alt='' />");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_32.png");
-
-	define("ADMIN_INSTALLPLUGIN_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/plugin_install_32.png' alt='' />");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_32.png");
-
-	define("ADMIN_UNINSTALLPLUGIN_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/plugin_uninstall_32.png' alt='' />");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_32.png");
-
-	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/up_32.png' alt='' />");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_32.png");
-
-	define("ADMIN_UP_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/up_32.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_32.png");
-
-	define("ADMIN_DOWN_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/down_32.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_32.png");
+	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
+	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
 	
-	define("ADMIN_EXECUTE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/execute_32.png' alt='' title='".LAN_EXECUTE."' />");
-	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_32.png");
+	define("ADMIN_EDIT_ICON", "<i class='S32 e-edit-32'></i>");
+	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
+	define("ADMIN_WARNING_ICON", "<i class='S32 e-warning-32'></i>");
+	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
+	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
+	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-configure-32'></i>");	
+	define("ADMIN_VIEW_ICON", "<i class='S32 e-search-32'></i>");	
+	define("ADMIN_URL_ICON", "<i class='S16 e-forums-16'></i>");
+	define("ADMIN_INSTALLPLUGIN_ICON", "<i class='S32 e-plugin_install-32'></i>");
+	define("ADMIN_UNINSTALLPLUGIN_ICON", "<i class='S32 e-plugin_uninstall-32'></i>");
+	define("ADMIN_UPGRADEPLUGIN_ICON", "<i class='S32 e-up-32'></i>");
+	define("ADMIN_UP_ICON", "<i class='S32 e-up-32'></i>");
+	define("ADMIN_DOWN_ICON", "<i class='S32 e-down-32'></i>");
+	define("ADMIN_SORT_ICON", "<i class='S32 e-sort-32'></i>");
+	define("ADMIN_EXECUTE_ICON", "<i class='S32 e-execute-32'></i>");
 
-	define("ADMIN_SORT_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/sort_32.png' alt='' title='Re-Sort' />");
+
+	// FOR BC 
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_32.png");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_32.png");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_32.png");
+	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_32.png");
+	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_32.png");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_32.png");
+	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_32.png");
+	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_32.png");
+	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_32.png");
+	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_32.png");
+	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_32.png");
+	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_32.png");
+	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_32.png");
+	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_32.png");
 	define("ADMIN_SORT_ICON_PATH", e_IMAGE."admin_images/sort_32.png");
 
 

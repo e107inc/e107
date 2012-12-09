@@ -116,7 +116,7 @@ if($_POST)
 
 
 
-		if ($message != "")
+		if (vartrue($message) != "")
 		{
 			echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 		}
@@ -126,7 +126,7 @@ if($_POST)
 		if (!isset($_GET['configure']))
 		{
 			$men->menuScanMenus();
-            $text .= $men->menuRenderMessage();
+            $text = $men->menuRenderMessage();
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();

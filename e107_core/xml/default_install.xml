@@ -232,10 +232,90 @@ City, State, Country
 		<core name="upload_class">255</core>
 		<core name="upload_enabled">0</core>
 		<core name="upload_maxfilesize"></core>
-		<core name="url_aliases"><![CDATA[array()]]></core>
-		<core name="url_config"><![CDATA[array()]]></core>
-		<core name="url_locations"><![CDATA[array()]]></core>
-		<core name="url_modules"><![CDATA[array()]]></core>
+		<core name='url_aliases'><![CDATA[array (
+)]]></core>
+		<core name='url_config'><![CDATA[array (
+  'index' => 'core',
+  'news' => 'core',
+  'page' => 'core',
+  'search' => 'core',
+  'system' => 'core',
+  'user' => 'core',
+  'forum' => 'plugin',
+  'gallery' => 'plugin/rewrite',
+  'tagwords' => 'plugin',
+)]]></core>
+		<core name='url_disable_pathinfo'>1</core>
+		<core name='url_error_redirect'>0</core>
+		<core name='url_locations'><![CDATA[array (
+  'index' => 
+  array (
+    0 => 'core',
+  ),
+  'news' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_full',
+    2 => 'core/sef_noid',
+    3 => 'core/sef',
+  ),
+  'page' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_noid',
+    2 => 'core/sef',
+  ),
+  'search' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'system' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'user' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'forum' => 
+  array (
+    0 => 'plugin',
+    1 => 'plugin/rewrite',
+  ),
+  'gallery' => 
+  array (
+    0 => 'plugin',
+    1 => 'plugin/rewrite',
+  ),
+  'tagwords' => 
+  array (
+    0 => 'plugin',
+  ),
+)]]></core>
+		<core name='url_main_module'></core>
+		<core name='url_modules'><![CDATA[array (
+  'core' => 
+  array (
+    0 => 'index',
+    1 => 'news',
+    2 => 'page',
+    3 => 'search',
+    4 => 'system',
+    5 => 'user',
+  ),
+  'plugin' => 
+  array (
+    0 => 'forum',
+    1 => 'gallery',
+    2 => 'tagwords',
+  ),
+  'override' => 
+  array (
+  ),
+)]]></core>
 		<core name="url_sef_translate">dashl</core> 
 		<core name="useGeshi">0</core>
 		<core name="use_coppa">1</core>

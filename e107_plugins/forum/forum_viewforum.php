@@ -64,7 +64,7 @@ if (!$forum->checkPerm($forumId, 'view'))
 $forumInfo = $forum->forumGet($forumId);
 $threadsViewed = $forum->threadGetUserViewed();
 
-if (!$FORUM_VIEW_START)
+if (!vartrue($FORUM_VIEW_START))
 {
 	if (file_exists(THEME.'forum_viewforum_template.php'))
 	{
@@ -233,7 +233,7 @@ $reg_threads = 0;
 $unstuck = false;
 
 $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view);
-$subList = $forum->forumGetSubs($forum_id);
+$subList = $forum->forumGetSubs(vartrue($forum_id));
 $gen = new convert;
 
 $fVars->SUBFORUMS = '';

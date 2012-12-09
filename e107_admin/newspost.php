@@ -24,7 +24,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 // ------------------------------
 // done in class2: require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
-$newspost = new admin_newspost(e_QUERY, $pst);
+$newspost = new admin_newspost(e_QUERY, vartrue($pst));
 e107::setRegistry('_newspost_admin', $newspost);
 $gen = new convert();
 
@@ -1931,7 +1931,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_12.":</td>
 								<td>
-								<input type='text' name='news_title' value=\"". $tp->post_toForm($_POST['news_title'])."\" class='tbox' style='width:90%' required='required' />
+								<input type='text' name='news_title' value=\"". $tp->post_toForm(vartrue($_POST['news_title']))."\" class='tbox' style='width:90%' required='required' />
 									".
 								// TOO short ->	$frm->text('news_title', $tp->post_toForm($_POST['news_title']),200,array('size'=>300)).
 									"
@@ -1941,7 +1941,7 @@ class admin_newspost
 							<tr>
 								<td>".LAN_NEWS_27.":</td>
 								<td>
-								<input type='text' name='news_summary' value=\"". $tp->post_toForm($_POST['news_summary'])."\" class='tbox' style='width:90%' />
+								<input type='text' name='news_summary' value=\"". $tp->post_toForm(vartrue($_POST['news_summary']))."\" class='tbox' style='width:90%' />
 									".
 								//	$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250).
 									"
@@ -1955,7 +1955,7 @@ class admin_newspost
 		";
 
 		//XXX multiple-selections at once. (comma separated) - working
-		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, $_POST['news_render_type'], "multiple=1",array(NWSLAN_74))."
+		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1",array(NWSLAN_74))."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
@@ -2003,7 +2003,7 @@ class admin_newspost
 	        $sql->db_Select_gen($qry);
 	        while($row = $sql->db_Fetch())
 	        {
-	        	if($_POST['news_author'])
+	        	if(vartrue($_POST['news_author']))
 				{
 		        	$sel = ($_POST['news_author'] == $row['user_id']);
 		        }
@@ -2033,13 +2033,13 @@ class admin_newspost
 			<li><a href='#news-extended-container'>".NWSLAN_14."</a></li>
 		</ul>";
 		
-		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
+		$val = (strstr($tp->post_toForm(vartrue($_POST['news_body'])), "[img]http") ? $tp->post_toForm(vartrue($_POST['news_body'])) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
         $text .= "<div id='news-body-container' class='e-tab'>";
         $text .= $frm->bbarea('news_body', $val, 'news', 'news');
 		$text .= "</div><div id='news-extended-container' class='t-container'>";
 		
 		
-		$val = (strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
+		$val = (strstr($tp->post_toForm(vartrue($_POST['news_extended'])), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
 		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news','large');
 		
 		$text .= "</div>
@@ -2124,14 +2124,14 @@ class admin_newspost
 							<tr>
 								<td>Friendly URL string: </td>
 								<td>
-									".$frm->text('news_sef', $tp->post_toForm($_POST['news_sef']), 255)."
+									".$frm->text('news_sef', $tp->post_toForm(vartrue($_POST['news_sef'])), 255)."
 									<div class='field-help'>If left empty will be automatically created from current News Title based on your current <a href='".e_ADMIN_ABS."eurl.php?mode=main&amp;action=settings' title='To URL settings area' rel='external'>URL settings</a></div>
 								</td>
 							</tr>
 
 							<tr>
 								<td>".LAN_KEYWORDS.": </td>
-								<td>".$frm->tags('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."
+								<td>".$frm->tags('news_meta_keywords', $tp->post_toForm(vartrue($_POST['news_meta_keywords'])), 255)."
 								<div class='field-help'>Keywords/tags associated to associate with this news item</div>
 								</td>
 								
@@ -2140,7 +2140,7 @@ class admin_newspost
 		
 							<tr>
 								<td>Meta description: </td>
-								<td>".$frm->textarea('news_meta_description', $tp->post_toForm($_POST['news_meta_description']), 7)."</td>
+								<td>".$frm->textarea('news_meta_description', $tp->post_toForm(vartrue($_POST['news_meta_description'])), 7)."</td>
 							</tr>
 						</tbody>
 					</table>
@@ -2160,8 +2160,8 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_15.":</td>
 								<td>
-									".$frm->radio('news_allow_comments', 0, !$_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
-									".$frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
+									".$frm->radio('news_allow_comments', 0, !vartrue($_POST['news_allow_comments']))."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
+									".$frm->radio('news_allow_comments', 1, vartrue($_POST['news_allow_comments']))."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
 									<div class='field-help'>
 										".NWSLAN_18."
 									</div>
@@ -2176,9 +2176,9 @@ class admin_newspost
 		";
 
 		
-		$text .= $frm->datepicker("news_start",$_POST['news_start'],"type=datetime");
+		$text .= $frm->datepicker("news_start",vartrue($_POST['news_start']),"type=datetime");
 		$text .= " - ";
-		$text .= $frm->datepicker("news_end",$_POST['news_end'],"type=datetime");
+		$text .= $frm->datepicker("news_end",vartrue($_POST['news_end']),"type=datetime");
 
 		$text .= "</div>
 										<div class='field-help'>
@@ -2192,7 +2192,7 @@ class admin_newspost
 										<div class='field-spacer'>
 		";
 
-		$text .= $frm->datepicker("news_datestamp",$_POST['news_datestamp'],"type=datetime");
+		$text .= $frm->datepicker("news_datestamp",vartrue($_POST['news_datestamp']),"type=datetime");
 
 		$text .= "</div>";
 		/*
@@ -2228,7 +2228,7 @@ class admin_newspost
 								<tr>
 									<td>".LAN_NEWS_28.":</td>
 									<td>
-										".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_29, 'news_sticky', '1')."
+										".$frm->checkbox('news_sticky', '1', vartrue($_POST['news_sticky'])).$frm->label(LAN_NEWS_29, 'news_sticky', '1')."
 										<div class='field-help'>
 											".LAN_NEWS_30."
 										</div>
@@ -2750,7 +2750,7 @@ class admin_newspost
 							<tr>
 								<td>".LAN_NEWS_51."</td>
 								<td>
-									".$frm->uc_select('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes')."
+									".$frm->uc_select('news_editauthor', vartrue($pref['news_editauthor']), 'nobody,main,admin,classes')."
 								</td>
 							</tr>
 							<tr>
@@ -2791,7 +2791,7 @@ class admin_newspost
 								<td>".NWSLAN_113."</td>
 								<td>
 									<div class='auto-toggle-area autocheck'>
-										".$frm->checkbox_switch('news_unstemplate', '1', $pref['news_unstemplate'])."
+										".$frm->checkbox_switch('news_unstemplate', '1', vartrue($pref['news_unstemplate']))."
 										<div class='field-help'>".NWSLAN_114."</div>
 									</div>
 								</td>
@@ -2799,7 +2799,7 @@ class admin_newspost
 							<tr>
 								<td>".NWSLAN_120."</td>
 								<td>
-									".$frm->bbarea('news_subheader', stripcslashes($pref['news_subheader']), 2, 'helpb')."
+									".$frm->bbarea('news_subheader', stripcslashes(vartrue($pref['news_subheader'])), 2, 'helpb')."
 								</td>
 							</tr>
 						</tbody>
