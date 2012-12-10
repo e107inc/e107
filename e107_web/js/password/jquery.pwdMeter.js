@@ -117,7 +117,8 @@ jQuery.fn.pwdMeter = function(options){
        		
 		}
 		
-		$('#Spn_PasswordGenerator').click(function(){
+		$('#Spn_PasswordGenerator').click(function(event){
+			event.preventDefault();
 			var randomPassword = random_password();
 			$('#Spn_NewPassword').text(randomPassword);
 			$(options.passwordBox).val(randomPassword);
@@ -125,7 +126,8 @@ jQuery.fn.pwdMeter = function(options){
 			evaluateMeter();
 		});
 		
-		$("#showPwd").click(function () {
+		$("#showPwd").click(function (event) {
+			event.preventDefault();
 			var id = $(pwdObj).attr("type");
 			$(pwdObj).toggle();
 			$("#showPwdBox").toggle();
