@@ -4,12 +4,13 @@
 @date 31 Oct 2010
 @modify 31 Dec 2010
 @license Free for personal and commercial use as long as the author's name retains
+ 
 */
 (function(jQuery){
 
 jQuery.fn.pwdMeter = function(options){
 
-
+	// FIXME options for all ID's (auto-generated from 'passwordBox' id - used as a base)
 	options = jQuery.extend({
 	
 		minLength: 6,
@@ -31,14 +32,20 @@ jQuery.fn.pwdMeter = function(options){
 			evaluateMeter();
 		});
 		
-		
 		function evaluateMeter(){
 
 			var passwordStrength   = 0;
 			var password = $(options.passwordBox).val();
 			
-			$("#showPwdBox").val(password);
-
+			// fix - when password is shown
+			if($("#showPwdBox").length > 0) {
+				if($('#showPwdBox').is(':visible')) {
+					password = $('#showPwdBox').val();
+					$(options.passwordBox).val(password);
+				}
+				else $("#showPwdBox").val(password);
+			}
+			
 			if ((password.length >3) && (password.length <=5)) passwordStrength=1;
 		
 			if (password.length >= options.minLength) passwordStrength++;
@@ -102,7 +109,11 @@ jQuery.fn.pwdMeter = function(options){
 		{
 		//	$('#pwdMeter').before('&nbsp;<a href="#" id="Spn_PasswordGenerator" class="'+options.generatePassClass+'">'+ options.generatePassText +'</a><br />');
 			
-			$(pwdObj).after('<input id="showPwdBox" type="text" class="'+ $(pwdObj).attr('class')  +'" style="display:none" size="'+ $(pwdObj).attr('size')  +'"  value="" />');
+			$(pwdObj).after('<input id="showPwdBox" type="text" class="'+ $(pwdObj).attr('class')  +'" style="display:none" size="'+ $(pwdObj).attr('size')  +'" maxlength="'+ $(pwdObj).attr('maxlength')  +'"  value="" />');
+			
+			$('#showPwdBox').keyup(function(){
+				evaluateMeter();
+			});
        		
 		}
 		
@@ -110,7 +121,7 @@ jQuery.fn.pwdMeter = function(options){
 			var randomPassword = random_password();
 			$('#Spn_NewPassword').text(randomPassword);
 			$(options.passwordBox).val(randomPassword);
-		//	alert(randomPassword);
+			if($('#showPwdBox').length>0) $('#showPwdBox').val(randomPassword);
 			evaluateMeter();
 		});
 		
