@@ -17,7 +17,7 @@ require_once ('../class2.php');
 
 e107::coreLan('user');
 e107::coreLan('users', true);
-
+e107::coreLan('date');
 
 // ----------------------------- START NEW  --------------------------
 
@@ -228,6 +228,18 @@ class users_admin_ui extends e_admin_ui
 			
 	protected $prefs = array(
 	//	'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
+		'avatar_upload'				=> array('title' => USRLAN_44,  'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
+		'photo_upload'				=> array('title' => USRLAN_53,  'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
+		'im_width'					=> array('title' => USRLAN_47,  'type' => 'number',  'writeParms' => array('maxlength' => 4), 'help' => USRLAN_48, 'data' => 'int', ),
+		'im_height'					=> array('title' => USRLAN_49,  'type' => 'number',  'writeParms' => array('maxlength' => 4), 'help' => USRLAN_50, 'data' => 'int', ),
+		'profile_rate'				=> array('title' => USRLAN_126, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
+		'profile_comments'			=> array('title' => USRLAN_127, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
+		'force_userupdate'			=> array('title' => USRLAN_133, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'help' => USRLAN_134, 'data' => 'int',),
+		'del_unv'					=> array('title' => USRLAN_93,  'type' => 'number',  'writeParms' => array('maxlength' => 5, 'post' => USRLAN_95), 'help' => USRLAN_94, 'data' => 'int',),
+		'track_online'				=> array('title' => USRLAN_130, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'help' => USRLAN_131, 'data' => 'int',),
+		'memberlist_access'			=> array('title' => USRLAN_146, 'type' => 'userclass', 'writeParms' => 'classlist=public,member,guest,admin,main,classes,nobody', 'data' => 'int',),
+		'signature_access'			=> array('title' => USRLAN_194, 'type' => 'userclass', 'writeParms' => 'classlist=member,admin,main,classes,nobody', 'data' => 'int',),
+		'user_new_period'			=> array('title' => USRLAN_190,  'type' => 'number',  'writeParms' => array('maxlength' => 3, 'post' => LANDT_04s), 'help' => USRLAN_191, 'data' => 'int',),
 	);
 	
 	function init()
@@ -991,20 +1003,171 @@ class users_admin_ui extends e_admin_ui
 		
 	}
 	
+	/**
+	 * Quick Add user submit trigger
+	 */
+	public function AddSubmitTrigger()
+	{
+		$e107cache 		= e107::getCache();
+		$userMethods 	= e107::getUserSession();
+		$mes 			= e107::getMessage();
+		$sql 			= e107::getDb();
+		$e_event 		= e107::getEvent();
+		$admin_log		= e107::getAdminLog();
+		
+		if (!$_POST['ac'] == md5(ADMINPWCHANGE))
+		{
+			exit;
+		}
+		
+		$e107cache->clear('online_menu_member_total');
+		$e107cache->clear('online_menu_member_newest');
+		$error = false;
+		
+		if (isset ($_POST['generateloginname']))
+		{
+			$_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
+		}
+		
+		$_POST['password2'] = $_POST['password1'];
+		
+		// Now validate everything
+		$allData = validatorClass::validateFields($_POST, $userMethods->userVettingInfo, true);
+		
+		// Do basic validation
+		validatorClass::checkMandatory('user_name, user_loginname', $allData);
+		
+		// Check for missing fields (email done in userValidation() )
+		validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);
+		
+		// Do basic DB-related checks
+		$userMethods->userValidation($allData);
+		
+		// Do user-specific DB checks
+		if (!isset($allData['errors']['user_password']))
+		{
+			// No errors in password - keep it outside the main data array
+			$savePassword = $allData['data']['user_password'];
+			unset ($allData['data']['user_password']);
+			// Delete the password value in the output array
+		}
+		// Restrict the scope of this
+		unset($_POST['password2'], $_POST['password1']);
+		
+		if (!check_class($pref['displayname_class'], $allData['data']['user_class']))
+		{
+			if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
+			{
+				if(isset($_POST['generateloginname']))
+				{
+					$allData['data']['user_name'] = $allData['data']['user_loginname'];
+				}
+				else $allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
+			}
+		}
+		
+		if (count($allData['errors']))
+		{
+			$temp = validatorClass::makeErrorList($allData, 'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+			$mes->addError($temp);
+			$error = true;
+		}
+		
+		// Always save some of the entered data - then we can redisplay on error
+		$user_data = & $allData['data'];
+		
+		if($error)
+		{
+			$this->setParam('user_data', $user_data);
+			return;
+		}
+		
+		if(varset($_POST['perms']))
+		{
+			$allData['data']['user_admin'] = 1;
+			$allData['data']['user_perms'] = implode('.',$_POST['perms']);
+		}
+
+
+		$message = '';
+		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$user_data['user_login']);
+		$user_data['user_join'] = time();
+		
+		if ($userMethods->needEmailPassword())
+		{
+			// Save separate password encryption for use with email address
+			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $user_data['user_email'])));
+		}
+		
+		$userMethods->userClassUpdate($allData['data'], 'userall');
+		
+		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mode - user_realm is to be deleted from DB later)
+		$allData['data']['user_realm'] = '';
+		
+		// Set any initial classes
+		$userMethods->addNonDefaulted($user_data);
+		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
+		
+		if (($userid = $sql->db_Insert('user', $allData)))
+		{
+			$sysuser = e107::getSystemUser(false, false);
+			$sysuser->setId($userid);
+			$user_data['user_id'] = $userid;
+			
+			// Add to admin log
+			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);
+			
+			// Add to user audit trail
+			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
+			$e_event->trigger('userfull', $user_data);
+			
+			// send everything available for user data - bit sparse compared with user-generated signup
+			if (isset($_POST['sendconfemail']))
+			{
+				// Send confirmation email to user
+				$check = $sysuser->email('quickadd', array('user_password' => $savePassword));
+				
+				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
+				{
+					$mes->addSuccess(USRLAN_188);
+				}
+				else
+				{
+					$mes->addError(USRLAN_189);
+				}
+			}
+			
+			$message .= str_replace('--NAME--', $user_data['user_name'], USRLAN_174);
+			
+			if (isset ($_POST['generateloginname']))
+			{
+				$mes->addSuccess($message)->addSuccess('<br /><br />'.USRLAN_173.': '.$user_data['user_login']);	
+			}
+				
+			if (isset ($_POST['generatepassword']))
+			{
+				$mes->addSuccess($message)->addSuccess(USRLAN_172.': '.$savePassword);	
+			}
+			return;
+		}
+	}
+	
+	/**
+	 * Quick add user page
+	 */
 	function AddPage()
 	{
-		
-		$rs = new form;
 		$prm = e107::getUserPerms();
-		$list = $prm->getPermList();
+		//$list = $prm->getPermList();
 		$frm = e107::getForm();
-		$ns = e107::getRender();
-		$mes = e107::getMessage();
-
 		$e_userclass = e107::getUserClass();
 		$pref = e107::getPref();
+		$user_data = $this->getParam('user_data');
 		
-		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
+		$this->addTitle(LAN_USER_QUICKADD);
+		
+		$text = "<div>".$frm->open("core-user-adduser-form")."
+		<fieldset id='core-user-adduser'>
         <table class='table adminform'>
 		<colgroup>
 		<col class='col-label' />
@@ -1013,28 +1176,28 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_61."</td>
 			<td>
-			".$frm->text('username', varset($user_data['user_name'],"", varset($pref['displayname_maxlength'],15)))."
+			".$frm->text('username', varset($user_data['user_name']), varset($pref['displayname_maxlength'], 15))."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".USRLAN_128."</td>
 			<td>
-			".$frm->text('loginname', varset($user_data['user_loginname'],"", varset($pref['loginname_maxlength'],30)))."&nbsp;&nbsp;
-			".$frm->checkbox_label(USRLAN_170,'generateloginname', 1,varset($pref['predefinedLoginName'],false))."
+			".$frm->text('loginname', varset($user_data['user_loginname']), varset($pref['loginname_maxlength'], 30))."&nbsp;&nbsp;
+			".$frm->checkbox_label(USRLAN_170, 'generateloginname', 1, varset($pref['predefinedLoginName'], false))."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".USRLAN_129."</td>
 			<td>
-			".$rs->form_text("realname",40,varset($user_data['user_login'],""),30)."
+			".$frm->text('realname', varset($user_data['user_login']), 30)."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".USRLAN_62."</td>
-			<td>".$frm->password('password','',20, array('size'=>40,'class'=>'tbox e-password','generate'=>1,'strength'=>1 ))."
+			<td>".$frm->password('password', '', 20, array('size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
 			</td>
 		</tr>";
 		
@@ -1044,177 +1207,71 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 				<td>".USRLAN_64."</td>
 				<td>
-				".$rs->form_text("email",60,varset($user_data['user_email'],""),100)."
+				".$frm->text('email', varset($user_data['user_email']), 100)."
 				</td>
 			</tr>
 	
-			<tr style='vertical-align:top'>
+			<tr>
 				<td>Require Confirmation</td>
-				<td class='center'>".$frm->checkbox_label(USRLAN_181,'sendconfemail', 1)."</td>
+				<td>".$frm->checkbox_label(USRLAN_181, 'sendconfemail', 1)."</td>
 			</tr>";
 
 		//FIXME check what this is doing exactly.. is it a confirmation email (activation link) or just a notification?
 		// Give drop-down option to: 1) Notify User and Activate. 2) Notify User and require activation. 3) Don't Notify
 
-		if (!isset ($user_data['user_class']))
-			$user_data['user_class'] = varset($pref['initial_user_classes'],'');
-		$temp = $e_userclass->vetted_tree('class',array($e_userclass,'checkbox_desc'),$user_data['user_class'],'classes');
+		if (!isset ($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes']);
+		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes');
 
 		if ($temp)
 		{
 			$text .= "<tr style='vertical-align:top'>
 			<td>
-			".USRLAN_120."
-			</td><td>
-			<a href='#set_class' class='e-expandit'>".USRLAN_120."</a>
-			<div class='e-hideme' id='set_class' >
-			{$temp}
-			</div></td>
+				".USRLAN_120."
+			</td>
+			<td>
+				<a href='#set_class' class='e-expandit'>".USRLAN_120."</a>
+				<div class='e-hideme' id='set_class' >
+				{$temp}
+				</div>
+			</td>
 			</tr>\n";
 		}
 
 		// Make Admin.
-		$text .= "<tr>
+		$text .= "
+		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-			<a href='#set_perms' class='e-expandit'>Set Permissions</a>
-			<div class='e-hideme' id='set_perms' >\n";
+				<a href='#set_perms' class='e-expandit'>Set Permissions</a>
+				<div class='e-hideme' id='set_perms'>
+		";
 			
 		$text .= $prm->renderPermTable('grouped');
 
-		$text .= "</div></td>
-		</tr>\n";
+		$text .= "
+				</div>
+			</td>
+		</tr>
+		";
 
 
 		$text .= "
 
 		</table>
-		<div class='buttons-bar center'>".
-		$frm->admin_button('adduser', USRLAN_60, 'submit')."
+		<div class='buttons-bar center'>
+			".$frm->admin_trigger('submit', USRLAN_60, 'create')."
+			".$frm->token()."
 			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 		</div>
+		</fieldset>
 		</form>
 		</div>
 		";
 		
 		
-		echo $mes->render().$text;
+		return $text;
 		//$ns->tablerender(USRLAN_59,$mes->render().$text);
 	}	
-
-
-
-
-	function prefsPage()
-	{
-		global $ns,$pref,$e_userclass;
-		$mes = e107::getMessage();
-		$frm = e107::getForm();
-		
-		if (!is_object($e_userclass))
-			$e_userclass = new user_class;
-			
-		$pref['memberlist_access'] = varset($pref['memberlist_access'],e_UC_MEMBER);
-		
-		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='table adminform'>
-		<colgroup>
-		<col class='col-label' />
-		<col class='col-control' />
-		</colgroup>
-
-		<tr>
-		<td>".USRLAN_44.":</td>
-		<td>".($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".LAN_NO).(!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
-		</td>
-		</tr>
-
-		<tr>
-		<td>".USRLAN_53.":</td>
-		<td>".($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".LAN_NO : "<input name='photo_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".LAN_NO).(!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
-		</td>
-		</tr>
-
-		<tr>
-		<td>".USRLAN_47.":</td>
-		<td>
-		<input class='tbox e-spinner' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
-		</td></tr>
-
-		<tr>
-		<td>".USRLAN_49.":</td>
-		<td>
-		<input class='tbox e-spinner' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
-		</td></tr>
-
-		<tr>
-		<td>".USRLAN_126.":</td>
-		<td style='vertical-align:top'>".($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
-		</td>
-		</tr>
-
-		<tr>
-		<td>".USRLAN_127.":</td>
-		<td style='vertical-align:top'>".($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
-		</td>
-		</tr>
-
-		<tr>
-		<td style='vertical-align:top'>".USRLAN_133.":</td>
-		<td style='vertical-align:top'>".e107::getForm()->radio_switch('force_userupdate',($pref['force_userupdate'])). //  ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
-		"<div class='field-help'>".USRLAN_134."</div>
-		</td>
-		</tr>
-
-
-		<tr>
-		<td style='vertical-align:top'>".USRLAN_93.":</td>
-		<td>
-		<input class='tbox e-spinner' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
-		<div class='field-help'>".USRLAN_94."</div>
-		</td></tr>
-
-		<tr>
-		<td>".USRLAN_130.":</td>
-		<td>".e107::getForm()->radio_switch('track_online',$pref['track_online'])."
-		<div class='field-help'>".USRLAN_131."</div>
-		</td>
-		</tr>
-
-
-		<tr>
-		<td>".USRLAN_146.":</td>
-		<td><select name='memberlist_access' class='tbox'>\n";
-		$text .= $e_userclass->vetted_tree('memberlist_access',array($e_userclass,'select'),$pref['memberlist_access'],"public,member,guest,admin,main,classes,nobody");
-		$text .= "</select>
-		</td>
-		</tr>
-			
-		<tr>
-		<td>".USRLAN_194.":</td>
-		<td>". 
-			e107::getForm()->uc_select('signature_access',$pref['signature_access'],"member,admin,main,classes,nobody")
-			."</td>
-		</tr>
-
-
-
-		<tr>
-		<td style='vertical-align:top'>".USRLAN_190.":</td>
-		<td>
-		<input class='tbox e-spinner' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".LANDT_04s."
-		<div class='field-help'>".USRLAN_191."</div>
-		</td></tr>
-
-		</table>
-		<div class='buttons-bar center'>
-		".$frm->admin_button('update_options', USRLAN_51, 'submit')."
-		</div></form></div>";
-		//$emessage = & eMessage :: getInstance();
-		echo $mes->render().$text;
-		//$ns->tablerender(USRLAN_52,$emessage->render().$text);			
-	}
 }
 
 
@@ -3249,176 +3306,7 @@ if (e_QUERY)
 
 
 // ------- Quick Add User --------------
-function addUser()
-{
 
-	$e107cache 		= e107::getCache();
-	$userMethods 	= e107::getUserSession();
-	$mes 			= e107::getMessage();
-	$sql 			= e107::getDb();
-	$e_event 		= e107::getEvent();
-	global $admin_log;
-	
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE))
-	{
-		exit;
-	}
-	$e107cache->clear('online_menu_member_total');
-	$e107cache->clear('online_menu_member_newest');
-	$error = false;
-	if (isset ($_POST['generateloginname']))
-	{
-		$_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
-	}
-	/*
-	if (isset ($_POST['generatepassword']))
-	{
-		$_POST['password1'] = $userMethods->generateRandomString('**********');
-		// 10-char password should be enough
-		$_POST['password2'] = $_POST['password1'];
-	}
-	*/
-	
-	$_POST['password2'] = $_POST['password1'];
-	// Now validate everything
-	$allData = validatorClass :: validateFields($_POST,$userMethods->userVettingInfo,true);
-	// Do basic validation
-	validatorClass :: checkMandatory('user_name,user_loginname',$allData);
-	// Check for missing fields (email done in userValidation() )
-	validatorClass :: dbValidateArray($allData,$userMethods->userVettingInfo,'user',0);
-	// Do basic DB-related checks
-	$userMethods->userValidation($allData);
-	// Do user-specific DB checks
-	if (!isset ($allData['errors']['user_password']))
-	{
-	// No errors in password - keep it outside the main data array
-		$savePassword = $allData['data']['user_password'];
-		unset ($allData['data']['user_password']);
-		// Delete the password value in the output array
-	}
-	unset ($_POST['password1']);
-	// Restrict the scope of this
-	unset ($_POST['password2']);
-	if (!check_class($pref['displayname_class'],$allData['data']['user_class']))
-	{
-		if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
-		{
-			$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
-		}
-	}
-	if (count($allData['errors']))
-	{
-	//	require_once (e_HANDLER."message_handler.php");
-		$temp = validatorClass :: makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v','<br />',$userMethods->userVettingInfo);
-	//	message_handler('P_ALERT',$temp);
-		$mes->addError($temp);
-		$error = true;
-	}
-	// Always save some of the entered data - then we can redisplay on error
-	$user_data = & $allData['data'];
-	if (!$error)
-	{
-
-		if(varset($_POST['perms']))
-		{
-			$allData['data']['user_admin'] = 1;
-			$allData['data']['user_perms'] = implode('.',$_POST['perms']);
-		}
-
-
-		$message = '';
-		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$user_data['user_login']);
-		$user_data['user_join'] = time();
-		
-		if ($userMethods->needEmailPassword())
-		{
-		// Save separate password encryption for use with email address
-			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword,$user_data['user_email'])));
-		}
-		
-		$userMethods->userClassUpdate($allData['data'],'userall');
-		// Set any initial classes
-		$userMethods->addNonDefaulted($user_data);
-		validatorClass :: addFieldTypes($userMethods->userVettingInfo,$allData);
-		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mode - user_realm is to be deleted from DB later)
-		$allData['data']['user_realm'] = '';
-		
-		if ($sql->db_Insert('user',$allData))
-		{
-			// Add to admin log
-			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);
-			
-			// Add to user audit trail
-			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN,$user_data,0,$user_data['user_loginname']);
-			$e_event->trigger('userfull',$user_data);
-			
-			// send everything available for user data - bit sparse compared with user-generated signup
-			if (isset ($_POST['sendconfemail']))
-			{
-			// Send confirmation email to user
-				require_once(e_HANDLER.'mail.php');
-				include_once(e107::coreTemplatePath('email','front')); //correct way to load a core template.
-				
-				if(!isset($QUICKADDUSER_TEMPLATE))
-				{
-					$QUICKADDUSER_TEMPLATE = USRLAN_185.USRLAN_186; 	
-				}
-				
-				$var_search = array(
-					'{SITEURL}',
-					'{LOGIN}',
-					'{USERNAME}',
-					'{PASSWORD}',
-					'{EMAIL}'
-				);
-				$var_replace = array(
-					SITEURL,
-					$user_data['user_name'],
-					$user_data['user_login'],
-					$savePassword,
-					$user_data['user_email']
-				);
-							
-				$e_message = str_replace($var_search,$var_replace,$QUICKADDUSER_TEMPLATE);
-				
-				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
-				{
-					$message = USRLAN_188.'<br /><br />';
-				}
-				else
-				{
-					$message = USRLAN_189.'<br /><br />';
-				}
-			}
-			
-			$message .= str_replace('--NAME--',$user_data['user_name'],USRLAN_174);
-			
-			if (isset ($_POST['generateloginname']))
-			{
-				$message .= '<br /><br />'.USRLAN_173.': '.$user_data['user_login'];	
-			}
-				
-			if (isset ($_POST['generatepassword']))
-			{
-				$message .= '<br /><br />'.USRLAN_172.': '.$savePassword;	
-			}
-				
-			unset ($user_data);
-			// Don't recycle the data once the user's been accepted without error
-		}
-		$mes->addSuccess($message);
-	}
-	else
-	{
-		
-	}
-
-
-	// $mes = e107::getMessage();
-	
-	
-		
-}
 
 // User Info.
 // if ((isset ($_POST['useraction']) && $_POST['useraction'] == "userinfo") || $_GET['userinfo'])

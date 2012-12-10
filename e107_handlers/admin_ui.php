@@ -4115,6 +4115,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	public function PrefsPage()
 	{
+		$this->addTitle(LAN_PREFS);
 		return $this->getUI()->getSettings();
 	}
 
