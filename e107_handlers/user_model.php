@@ -1045,8 +1045,8 @@ class e_system_user extends e_user_model
 	 * 'mail_options' -> optional, available for all types, any additional valid mailer option as described in e107Email::sendEmail() phpDoc help (options above can override them)
 	 * All standard user fields from the DB (user_name, user_loginname, etc.)
 	 * 
+	 * @param string $type signup|notify|email|quickadd
 	 * @param array $userInfo
-	 * @param string $type signup|notify|email
 	 * @return array
 	 */
 	public function renderEmail($type, $userInfo)
@@ -1060,7 +1060,7 @@ class e_system_user extends e_user_model
 			$ret = $userInfo['mail_options'];
 		}
 
-		// required for signup email type
+		// required for signup and quickadd email type
 		e107::coreLan('signup');
 
 		// FIXME convert to the new template to avoid include on every call
@@ -1083,6 +1083,11 @@ class e_system_user extends e_user_model
 				else $template = $SIGNUPEMAIL_TEMPLATE;
 				$ret['template'] = false; // Don't allow additional headers (mailer)
 			break;
+			
+			case 'quickadd':
+				$template = $QUICKADDUSER_TEMPLATE;
+				$ret['template'] = 'email'; // Don't allow additional headers (mailer)
+			break;
 				
 			case 'notify': //emailer changes
 				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body'];//$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
@@ -1097,11 +1102,11 @@ class e_system_user extends e_user_model
 		
 		if(!$template) return array();
 
+		$pass_show = varset($userInfo['user_password']);
+		
 		// signup email only
 		if($type == 'signup')
 		{
-			$pass_show = $userInfo['user_password'];
-			
 			$ret['mail_recipient_id'] = $userInfo['user_id'];
 			if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
 			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
@@ -1114,7 +1119,7 @@ class e_system_user extends e_user_model
 			$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
 		
 			$search[1] = '{PASSWORD}';
-			$replace[1] = $pass_show;
+			$replace[1] = $pass_show ? $pass_show : '******';
 		
 			$search[2] = '{ACTIVATION_LINK}';
 			$replace[2] = '';
@@ -1201,6 +1206,10 @@ class e_system_user extends e_user_model
 		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 	
 		$ret['mail_subject'] =  str_replace($search, $replace, $subject);
+		
+		$search[7] = '{PASSWORD}';
+		$replace[7] = $pass_show ? $pass_show : '******';
+		
 		$ret['send_html'] = TRUE;
 		$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
 		$ret['preview'] = $ret['mail_body']; // Non-standard field

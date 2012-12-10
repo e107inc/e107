@@ -636,7 +636,7 @@ class e_form
 				<div class="e-autocomplete"></div>
 		</div>
 		';
-
+		// FIXME - switch to external JS, jQuery support
 		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
 		//TODO - external JS
 		e107::getJs()->footerInline("
@@ -716,6 +716,8 @@ class e_form
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
 	{
+		if(is_string($options)) parse_str($options, $options);
+		
 		if(vartrue($options['generate']))
 		{
 			$addon .= '&nbsp;<a href="#" class="smalltext" id="Spn_PasswordGenerator" >Generate</a> | <a class="smalltext" href="#" id="showPwd">Show</a><br />';	
@@ -1137,6 +1139,15 @@ class e_form
 	//	return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  ><i class='S16 {$icon}'></i></button>";
 
 		return "<input class='e-tip S16 {$icon}' data-placement='left' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+	}
+
+	/**
+	 * Alias of admin_button, adds the etrigger_ prefix required for UI triggers
+	 * @see e_form::admin_button()
+	 */
+	function admin_trigger($name, $value, $action = 'submit', $label = '', $options = array())
+	{
+		return $this->admin_button('etrigger_'.$name, $value, $action, $label, $options);
 	}
 
 	/**
@@ -2403,9 +2414,17 @@ class e_form
 
 			case 'bool':
 			case 'boolean':
-				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
-				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
-				unset($parms['enabled'], $parms['disabled']);
+				if(varset($parms['label']) === 'yesno')
+				{
+					$lenabled = 'LAN_YES';
+					$ldisabled = 'LAN_NO';
+				}
+				else
+				{
+					$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
+					$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
+				}
+				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms);
 			break;
 

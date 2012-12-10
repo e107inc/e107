@@ -161,7 +161,6 @@ class e107
 		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
 		'e_media'						 => '{e_HANDLER}media_class.php',
 		'e_menu'						 => '{e_HANDLER}menu_class.php',
-		'eMessage'						 =>	'{e_HANDLER}message_handler.php',
 		'e_model'						 => '{e_HANDLER}model_class.php',
 		'e_news_item'					 => '{e_HANDLER}news_class.php',
 		'e_news_tree'					 => '{e_HANDLER}news_class.php',
@@ -185,7 +184,9 @@ class e107
 		'eException'					 => '{e_HANDLER}application.php',
 		'eFront'						 => '{e_HANDLER}application.php',
 		'eHelper'						 => '{e_HANDLER}application.php',
+		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
 		'email_validation_class'		 =>	'{e_HANDLER}mail_validation_class.php',
+		'eMessage'						 =>	'{e_HANDLER}message_handler.php',
 		'eRequest'						 => '{e_HANDLER}application.php',
 		'eResponse'						 => '{e_HANDLER}application.php',
 		'eRouter'						 => '{e_HANDLER}application.php',
@@ -199,15 +200,14 @@ class e107
 		'override'						 => '{e_HANDLER}override_class.php',
 		'rater'					 		 => '{e_HANDLER}rate_class.php',
 		'redirection'					 => '{e_HANDLER}redirection_class.php',
+		'secure_image'					 => '{e_HANDLER}secure_img_handler.php',
 		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
 		'e_navigation'					 => '{e_HANDLER}sitelinks_class.php',
 		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
 		'user_class'					 => '{e_HANDLER}userclass_class.php',
 		'userlogin'					 	 => '{e_HANDLER}login.php',
+		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
-		'secure_image'					 => '{e_HANDLER}secure_img_handler.php'
-		
 	);
 
 	/**
