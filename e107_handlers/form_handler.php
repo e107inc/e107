@@ -2222,6 +2222,16 @@ class e_form
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 
+		if(vartrue($required_data[0])) // HTML5 'required' field. 
+		{
+			$parms['required'] = 1;	
+		}
+		
+		if(vartrue($required_data[3])) // HTML5 'pattern' field. 
+		{
+			$parms['pattern'] = $required_data[3];	
+		}
+
 		switch($attributes['type'])
 		{
 			case 'number':
