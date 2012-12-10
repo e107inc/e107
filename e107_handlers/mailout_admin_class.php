@@ -516,7 +516,9 @@ class mailoutAdminClass extends e107MailManager
 				$tabc .= "</div>";				
 			}
 		}
-		$ret .= "<ul class='e-tabs e-hideme' id='core-mail-tabs'>".$tab."</ul>";
+
+//		$ret .= "<ul class='e-tabs e-hideme' id='core-mail-tabs'>".$tab."</ul>";		// This hides tabs!
+		$ret .= "<ul class='e-tabs' id='core-mail-tabs'>".$tab."</ul>";
 		$ret .= $tabc;	
 		$ret .= "</div>";
 		
