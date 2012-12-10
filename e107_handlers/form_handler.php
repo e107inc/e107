@@ -730,6 +730,9 @@ class e_form
 		
 		$options = $this->format_options('text', $name, $options);
 		$options['class'] = vartrue($options['class'],'e-password');
+		$options['pattern'] = vartrue($options['pattern'],'[\w\d]{4,}');
+		$options['required'] = vartrue($options['required'], 1);
+		
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
