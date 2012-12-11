@@ -1175,23 +1175,143 @@ class e_navigation
 
 
 
-
-
-
-
-
-	
-	
-	function frontend() //TODO equivalent for front-end sitelinks etc. 
-	{
+	/**
+	 * Return a clean array structure for all links. 
+	 */
+	function getData($cat=1)
+	{	
+		$sql 	= e107::getDb('sqlSiteLinks');
+		$ins 	= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
+		$query 	= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
 		
+		$ret = array();
 		
+		if($sql->db_Select_gen($query))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+								
+				if (isset($row['link_parent']) && $row['link_parent'] != 0)
+				{
+					$id = $row['link_parent'];
+					$ret[$id]['link_sub'][] = $row;
+				}
+				else
+				{
+					$id = $row['link_id'];
+					$ret[$id] = $row;
+				}	
+					
+				if(vartrue($row['link_function']))
+				{
+					list($path,$method) = explode("::",$row['link_function']);
+					if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+					{
+						$class = $path."_sitelinks";
+						$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
+						if(vartrue($sublinkArray))
+						{
+							$ret[$id]['link_sub'] = $sublinkArray;
+						}
+					}
+				}
+				
+			}
+		}
+		
+		return $ret;
+
+	}
+
+
+
+	// Render the Front-end Links. 
+	function frontend($cat=1) 
+	{		
+		$links 			= $this->getData($cat);						
+		$sc 			= e107::getScBatch('navigation');	
+		$template 		= e107::getCoreTemplate('navigation');	
+		$sc->template 	= $template; // parse the template to the shortcodes. (sub menus)
+		
+		$text = $template['START'];
+		
+		foreach($links as $lnk)
+		{
+			$sc->setVars($lnk);		
+			$item = varset($lnk['link_sub']) ? $template['ITEM_SUBMENU'] : $template['ITEM'];
+			$text .= e107::getParser()->parseTemplate($item,TRUE);	
+		}
+		
+		$text .= $template['END'];
+		
+		return $text;	
 	}
 	
 	
-	
+		
 	
 	
 }
+
+
+
+// TODO - 'active links', SEF etc. 
+class navigation_shortcodes extends e_shortcode
+{
+	
+	var $template;
+	
+	function sc_link_name($parm='')
+	{
+		return e107::getParser()->toHtml($this->var['link_name'],false,'TITLE');		
+	}
+
+	function sc_link_url($parm='')
+	{
+		return e107::getParser()->replaceConstants($this->var['link_url']);
+	}
+	
+	function sc_link_image($parm='')
+	{
+		return e107::getParser()->replaceConstants($this->var['link_image']);	
+	}
+		
+	
+	function sc_link_description($parm='')
+	{
+		return e107::getParser()->toAttribute($this->var['link_description']);	
+	}
+		
+	function sc_link_sub($parm='')
+	{
+		if(!varset($this->var['link_sub']))
+		{
+			return;	
+		}	
+		
+		$text = $this->template['SUBMENU_START'];
+		
+		foreach($this->var['link_sub'] as $val)
+		{
+			$this->setVars($val);	
+			$text .= e107::getParser()->parseTemplate($this->template['SUBMENU_ITEM'],TRUE);		
+		}
+
+		$text .= $this->template['SUBMENU_END'];
+		
+		return $text;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 	
 ?>

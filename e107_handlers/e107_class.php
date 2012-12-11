@@ -1744,10 +1744,20 @@ class e107
 	public static function coreTemplatePath($id, $override = true)
 	{
 		$id = str_replace('..', '', $id); //simple security, '/' is allowed
-		$override_path = $override ? self::getThemeInfo($override, 'rel').'templates/'.$id.'_template.php' : null;
-		$default_path = e_THEME.'templates/'.$id.'_template.php';
+		$override_path 	= $override ? self::getThemeInfo($override, 'rel').'templates/'.$id.'_template.php' : null;		
+		$legacy_path 	= e_THEME.'templates/'.$id.'_template.php';
+		$core_path 		= e_CORE.'templates/'.$id.'_template.php';
+		
+		if($override_path && is_readable($override_path))
+		{
+			return $override_path; 	
+		}
+		elseif(is_readable($legacy_path))
+		{
+			return $legacy_path;
+		}
 
-		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
+		return $core_path;
 	}
 
 	/**
