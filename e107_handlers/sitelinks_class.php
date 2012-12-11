@@ -675,7 +675,7 @@ class e_navigation
 			20 => array(e_ADMIN.'search.php', 		ADLAN_142,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
 			21 => array(e_ADMIN.'admin_log.php', 	ADLAN_155,	ADLAN_156,	'S', 4, E_16_ADMINLOG, E_32_ADMINLOG),
 			22 => array(e_ADMIN.'theme.php', 		ADLAN_140,	ADLAN_141,	'1', 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
-		//	23 => array(e_ADMIN.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),
+			23 => array(e_ADMIN.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),
 			24 => array(e_ADMIN.'users.php', 		ADLAN_36,	ADLAN_37,	'4|U0|U1|U2|U3', 2, E_16_USER, E_32_USER),
 			25 => array(e_ADMIN.'userclass2.php', 	ADLAN_38,	ADLAN_39,	'4', 2, E_16_USERCLASS, E_32_USERCLASS),
 			26 => array(e_ADMIN.'language.php', 	ADLAN_132,	ADLAN_133,	'0', 1, E_16_LANGUAGE, E_32_LANGUAGE),
