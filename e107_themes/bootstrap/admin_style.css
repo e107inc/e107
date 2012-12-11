@@ -105,6 +105,13 @@ legend 						{ display:none }
 
 .btn 						{ vertical-align: top; }
 
+
+input::-webkit-input-placeholder { font-style:italic  }
+
+input:-moz-placeholder 		{ font-style:italic }​
+
+
+
 input[type='radio'] 		{ vertical-align:top; }
 
 label 						{ margin-left:5px;	margin-right:10px;	display: inline; vertical-align:bottom; }

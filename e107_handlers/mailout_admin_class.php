@@ -728,6 +728,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $name name of item
 	 * @return text for display
 	 */
+	 //FIXME use $frm->selectbox() instead. 
 	public function sendStyleSelect($curval = '', $name = 'send_style')
 	{
 

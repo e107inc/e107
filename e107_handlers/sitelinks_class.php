@@ -975,6 +975,20 @@ class e_navigation
 				continue;
 			}
 			
+			if (isset($e107_vars[$act]['header'])) 
+			{
+			 	$text .= "<li class='nav-header'>".$e107_vars[$act]['header']."</li>";	//TODO add to Template. 
+				continue;
+			}
+			
+			if (isset($e107_vars[$act]['divider'])) 
+			{
+			 	$text .= "<li class='divider'></li>";	 //TODO add to Template. 
+				continue;	
+			}
+			
+			
+			
 			// check class so that e.g. e_UC_NOBODY will result no permissions granted (even for main admin)
 			if (isset($e107_vars[$act]['userclass']) && !e107::getUser()->checkClass($e107_vars[$act]['userclass'], false)) // check userclass perms 
 			{
