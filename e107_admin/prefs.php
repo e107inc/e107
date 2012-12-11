@@ -1194,7 +1194,10 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_103."</div>
 							<div class='e-expandit-container {$replaceDisp}'>
 							".$frm->text('link_text', $pref['link_text'], 200, 'placeholder='.PRFLAN_104)."
-							<div class='smalltext field-help'>".PRFLAN_105."</div>
+							<div class='smalltext field-help'>".PRFLAN_105."</div>".
+							$frm->text('email_text', $tp->post_toForm($pref['email_text']), 200, 'placeholder='.PRFLAN_107)."
+							<div class='smalltext field-help'>".PRFLAN_108."</div>
+							
 							</div>
 						</td>
 					</tr>
@@ -1230,26 +1233,18 @@ $text .= "
 						</td>
 					</tr>
 					
-					
-					
-					<tr>
-						<td>".PRFLAN_107.":</td>
-						<td>
-							".$frm->text('email_text', $tp->post_toForm($pref['email_text']), 200)."
-							<div class='smalltext field-help'>".PRFLAN_108."</div>
-						</td>
-					</tr>
+				
 					<tr>
 						<td>".PRFLAN_109.":</td>
 						<td>
-							".$frm->text('main_wordwrap', $pref['main_wordwrap'], 3)."
+							".$frm->number('main_wordwrap', $pref['main_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_111.":</td>
 						<td>
-							".$frm->text('menu_wordwrap', $pref['menu_wordwrap'], 3)."
+							".$frm->number('menu_wordwrap', $pref['menu_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
