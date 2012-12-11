@@ -30,9 +30,155 @@ if (!getperms('V'))
   exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::lan('core','upload','admin');
 
 $e_sub_cat = 'upload';
+
+
+// Generated e107 Plugin Admin Area 
+
+class upload_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(	
+	
+		'main'	=> array(
+			'controller' 	=> 'upload_ui',
+			'path' 			=> null,
+			'ui' 			=> 'upload_form_ui',
+			'uipath' 		=> null
+		),
+
+	);	
+	
+	
+	protected $adminMenu = array(
+
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'V'),
+	//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'V'),
+			
+	/*
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	*/	
+
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = 'myplugin';
+}
+
+
+
+
+				
+class upload_ui extends e_admin_ui
+{
+			
+		protected $pluginTitle		= 'upload';
+		protected $pluginName		= 'myplugin';
+		protected $table			= 'upload';
+		protected $pid				= 'upload_id';
+		protected $perPage 			= 10; 
+			
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'upload_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'upload_name' =>   array ( 'title' => 'LAN_TITLE', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),	
+		  'upload_poster' =>   array ( 'title' => 'Poster', 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_email' =>   array ( 'title' => 'Email', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_website' =>   array ( 'title' => 'LAN_URL', 'type' => 'url', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'upload_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'upload_version' =>   array ( 'title' => 'Version', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_file' =>   array ( 'title' => 'File', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_ss' =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_description' =>   array ( 'title' => 'LAN_DESCRIPTION', 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'upload_demo' =>   array ( 'title' => 'Demo', 'type' => 'url', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_filesize' =>   array ( 'title' => 'Filesize', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_active' =>   array ( 'title' => 'Active', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'upload_category' =>   array ( 'title' => 'LAN_CATEGORY', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options' =>   array ( 'title' => 'Options', 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		);		
+		
+		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_name', 'upload_category', 'options');
+		
+		
+		
+		/*
+		protected  = array(
+			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+		);
+
+		
+		// optional
+		public function init()
+		{
+			
+		}
+	
+		
+		public function customPage()
+		{
+			$ns = e107::getRender();
+			$text = 'Hello World!';
+			$ns->tablerender('Hello',$text);	
+			
+		}
+		*/
+			
+}
+				
+
+
+class upload_form_ui extends e_admin_form_ui
+{
+
+}		
+		
+		
+new upload_admin();
+
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 $action = 'list';			// Default action

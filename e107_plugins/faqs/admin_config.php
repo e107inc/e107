@@ -149,12 +149,12 @@ class faq_main_ui extends e_admin_ui
 		protected $pluginTitle		= 'FAQs';
 		protected $pluginName		= 'faqs';
 		protected $table			= "faqs";
-		
-		protected $tableJoin = array(
-			'u.user' => array('leftField' => 'faq_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
-		);
 		// without any Order or Limit. 
-		//protected $listQry			= "SELECT  * FROM #faqs"; 
+		
+		//FIXME JOIN should occur automatically. We have all the data necessary to build the query. 
+		// ie. faq_author is a 'user' field. 
+		
+		protected $listQry		= "SELECT  f.*, u.* FROM #faqs AS f LEFT JOIN #user AS u ON f.faq_author = u.user_id "; // Should not be necessary.
 		
 		protected $editQry		= "SELECT * FROM #faqs WHERE faq_id = {ID}";
 		
