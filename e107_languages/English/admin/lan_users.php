@@ -183,13 +183,12 @@ define('USRLAN_175', '');
 
 define('USRLAN_179', 'User banned: ');
 define('USRLAN_180', 'IP address of {IP} appears on whitelist; IP not banned.');
-define('USRLAN_181', 'Send confirmation email with password to new user');
+define('USRLAN_181', 'Choose option for user status and sending confirmation email to the user');
 define('USRLAN_182', 'Invalid characters in login name'); // duplicate - USRLAN_92, used for 'verify' user action
 define('USRLAN_183', 'That login name already in use');  // wrong used with  'reqverify' user action
 define('USRLAN_184', 'Length of login name outside limits');
-define('USRLAN_185', 'A user account has been created for you at {SITEURL} with the following login:<br />Login Name: {LOGINNAME}<br />Password: {PASSWORD}<br/><br />');
-define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />
-						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
+define('USRLAN_185', 'A user account has been created for you at {SITEURL} with the following login:<br /><br /><b>Login Name:</b> {LOGINNAME}<br /><b>Password:</b> {PASSWORD}<br/><b>Activation link:</b> {ACTIVATION_LINK}<br /><br />');
+define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
 define('USRLAN_187', 'Access to website: ');
 define('USRLAN_188', 'Email sent successfully');
 define('USRLAN_189', 'Error sending email');

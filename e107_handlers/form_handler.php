@@ -217,7 +217,7 @@ class e_form
 		if(!vartrue($parms['size'])) $parms['size'] = 15;
 		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner input-small';
 		if(!$value) $value = '0';
-		return $this->text(vartrue($key), $value, $maxlength, $parms);	
+		return $this->text($name, $value, $maxlength, $parms);	
 	}
 	
 	function email($name, $value, $maxlength = 200, $options = array())

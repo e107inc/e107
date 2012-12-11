@@ -53,7 +53,7 @@ $EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://ww
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 </head>
 <body>
-<div style='padding:10px'>
+<div style='padding:0px 10px'>
 ";
 
 
@@ -78,7 +78,7 @@ $MAILOUT_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 </head>
 <body>
-<div style='padding:10px'>
+<div style='padding:0px 10px'>
 ";
 
 /**
@@ -102,7 +102,7 @@ $NOTIFY_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://w
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 </head>
 <body>
-<div style='padding:10px'>
+<div style='padding:0px 10px'>
 ";
 
 /**
@@ -120,7 +120,7 @@ $NOTIFY_FOOTER = "
  *  SIGNUP EMAIL TEMPLATE - BODY. 
 */
 $SIGNUPEMAIL_TEMPLATE = "
-<div style='padding:10px'>
+<div style='padding:0px 10px'>
 <div style='text-align:left; width:90%'>
 ".LAN_EMAIL_01." {USERNAME},<br />
 <br />".
@@ -157,7 +157,7 @@ LAN_SIGNUP_97." {SITENAME}<br />
 						You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.
 */
 
-$QUICKADDUSER_TEMPLATE = "<div style='padding:10px'>".USRLAN_185.USRLAN_186."</div>"; 
+$QUICKADDUSER_TEMPLATE = "<div>".USRLAN_185.USRLAN_186."</div>"; 
 
 
 ?>

@@ -1239,6 +1239,15 @@ class e_system_user extends e_user_model
 		$search[7] = '{PASSWORD}';
 		$replace[7] = $pass_show ? $pass_show : '******';
 		
+		if(isset($userInfo['activation_url']))
+		{
+			$search[8] = '{ACTIVATION_URL}';
+			$replace[8] = $userInfo['activation_url'];
+			
+			$search[9] = '{ACTIVATION_LINK}';
+			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['url_activate'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+		}
+		
 		$ret['send_html'] = TRUE;
 		$ret['mail_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
 		$ret['preview'] = $ret['mail_body']; // Non-standard field
