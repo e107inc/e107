@@ -7,6 +7,10 @@
 		<word>bootstrap</word>
 		<word>clean</word>
 	</keywords>
+	<screenshots>
+		<image>preview.jpg</image>
+		<image>fullpreview.png</image>
+	</screenshots>
 	<layouts>
 		<layout name='default' title='2 Columns' preview='preview.jpg' default='true' previewFull='fullpreview.png' >
 		<custompages>usersettings.php</custompages>

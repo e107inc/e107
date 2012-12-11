@@ -72,8 +72,9 @@ if(e_AJAX_REQUEST)
 
 
 if(e_AJAX_REQUEST)
-{	
-	$data = $themec->getThemeInfo('jayya');
+{
+	$tm = (string) $_GET['id'];	
+	$data = $themec->getThemeInfo($tm);
 	echo $themec->renderThemeInfo($data);
 	
 	exit;	

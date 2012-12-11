@@ -533,9 +533,7 @@ class themeHandler
 	
 	function renderThemeInfo($theme)
 	{
-		
-		// TO-DO : This SHOULD be loaded by ajax before release.
-		
+			
 		global $pref;
 		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
@@ -543,7 +541,9 @@ class themeHandler
 
 		
 		$text = "<div  style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-			<table class='table adminlist'>";
+			<table class='table adminlist'>
+			<tr><th colspan='2'><b>".$theme['name']."</b></th></tr>";
+			
 		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
@@ -678,14 +678,16 @@ class themeHandler
 	
 	function renderTheme($mode = FALSE, $theme)
 	{
-		
+		$ns = e107::getRender();
+		$pref = e107::getPref();
+		$frm = e107::getForm();
 		/*
 		 mode = 0 :: normal
 		 mode = 1 :: selected site theme
 		 mode = 2 :: selected admin theme
 		 */
 		
-		global $ns,$pref,$frm;
+	//	global $ns,$pref,$frm;
 
 		
 		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
@@ -697,7 +699,7 @@ class themeHandler
 		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
 	//	$info_icon = "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
 		
-			$info_icon = "<a data-toggle='modal' href='".e_SELF."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='info' class='icon S32' /></a>";
+			$info_icon = "<a data-toggle='modal' href='".e_SELF."?id=".$theme['path']."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='info' class='icon S32' /></a>";
 	
 		$preview_icon = "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'><img src='".e_IMAGE_ABS."admin_images/search_32.png' alt='Preview' /></a>";
 	
@@ -709,9 +711,13 @@ class themeHandler
 			$admin_icon = "";	
 		}
 		
+		if($theme['path'] == 'bootstrap')
+		{
+	//		print_a($theme);	
+		}
+	//	
 		
-		
-		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img  src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
+		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".(vartrue($theme['preview'][0]) ? "<img  src='".e_THEME.$theme['path'] ."/".$theme['preview'][0]."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
 		
 		// Choose a Theme to Install.
 		if(!$mode)
@@ -855,9 +861,9 @@ class themeHandler
 				}
 				
 				$itext .= "<td style='vertical-align:top'>";
-				$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
+			//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
 				$itext .= $val['@attributes']['title'];
-				$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
+			//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 				
 				$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
 				$custompage_diz = "";
@@ -1325,8 +1331,6 @@ class themeHandler
 
 		
 		$lays['legacyDefault']['@attributes'] = array('title'=>'Default',
-			 'preview'=>'',
-			 'previewFull'=>'',
 			 'plugins'=>'',
 			 'default'=>'true');
 		
@@ -1352,8 +1356,6 @@ class themeHandler
 			{
 				$themeArray['custompages']['legacyCustom'] = explode(" ", $CUSTOMPAGES);
 				$lays['legacyCustom']['@attributes'] = array('title'=>'Custom',
-					 'preview'=>'',
-					 'previewFull'=>'',
 					 'plugins'=>'');
 			}
 			
@@ -1361,22 +1363,28 @@ class themeHandler
 			foreach($customHeaderArray as $tm)
 			{
 				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
-						 'preview'=>'',
-						 'previewFull'=>'',
 						 'plugins'=>'');
 			}
 			
 			foreach($customFooterArray as $tm)
 			{
 				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
-						 'preview'=>'',
-						 'previewFull'=>'',
 						 'plugins'=>'');
 			}
 		}
 				
 		$themeArray['path'] = $path;
 		$themeArray['layouts'] = $lays;
+		
+		if(file_exists(e_THEME.$path."/preview.jpg"))
+		{
+			$themeArray['preview'] = array("preview.jpg");
+		}
+		
+		if(file_exists(e_THEME.$path."/preview.png"))
+		{
+			$themeArray['preview'] = array("preview.png");
+		}
 	//	 echo "<h2>".$themeArray['name']."</h2>";
 	//	 print_a($lays);
 		
@@ -1390,8 +1398,10 @@ class themeHandler
 		
 				//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
 		// layout should always be an array.
-		$xml->setOptArrayTags('layout');
+		$xml->setOptArrayTags('layout,screenshots/image');
 		$xml->setOptStringTags('menuPresets,customPages');
+	
+			
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
 		
 		$vars['name'] = varset($vars['@attributes']['name']);
@@ -1408,8 +1418,9 @@ class themeHandler
 		$vars['csscompliant'] = varset($vars['compliance']['@attributes']['css']);
 		$vars['path'] = $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
+		$vars['preview'] = varset($vars['screenshots']['image']);
 		
-		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description']);
+		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
 		
 		// Compile layout information into a more usable format.
 
@@ -1434,17 +1445,17 @@ class themeHandler
 		$vars['path'] = $path;
 		$vars['custompages'] = $custom;
 		
-		/*
+	/*
 		$mes = e107::getMessage();
-		
-		if($path == "bootstrap")
+	
+		if($path == "bootstrap" || $path == "jayya")
 		{
 			$mes->addDebug("<h2>".$path."</h2>");
 			$mes->addDebug(print_a($vars,true));
 			$mes->addDebug("<hr />");
 		}
-		*/
-		
+	
+	*/	
 		return $vars;
 	}
 

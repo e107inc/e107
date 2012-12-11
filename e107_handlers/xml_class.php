@@ -620,15 +620,28 @@ class xmlClass
 		{
 			return $vars;
 		}
-
-
-		foreach($this->arrayTags as $vl)
+		
+	
+		foreach($this->arrayTags as $p)
 		{
-
+			
+			list($vl,$sub) = explode("/",$p);
+			
+			if($sub)
+			{
+				if(isset($vars[$vl][$sub]) && is_string($vars[$vl][$sub]))
+				{
+					$vars[$vl][$sub] = array($vars[$vl][$sub]);	
+				}
+				
+				continue;	
+			}
+			
+			
 			if(isset($vars[$vl]) && is_array($vars[$vl]) && !varset($vars[$vl][0]))
 			{
-
-				$vars[$vl] = array($vars[$vl]);
+				
+				$vars[$vl] = array($vars[$vl]);		
 			}
 		}
 		

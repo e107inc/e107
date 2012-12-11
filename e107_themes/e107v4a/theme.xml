@@ -9,8 +9,11 @@
 		<plugin name='chatbox_menu' url='core' />
 		<plugin name='poll' url='core' />
 	</plugins>
+	<screenshots>
+		<image>preview.jpg</image>
+	</screenshots>
 	<layouts>
-		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' default='true' >
+		<layout name='3_column' title='3 Columns' default='true' >
 			<menuPresets>
 				<area id='1' >
                 	<menu name='login' />
@@ -24,7 +27,7 @@
 				</area>
 			</menuPresets>
 		</layout>
-		<layout name='2_column' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' >
+		<layout name='2_column' title='2 Columns'>
         	<menuPresets>
 				<area id='1' >
                 	<menu name='login' />
