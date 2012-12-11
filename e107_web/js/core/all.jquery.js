@@ -88,7 +88,7 @@ $(document).ready(function()
 						
 			if(href === "#" || href == "") 
 			{
-				idt = $(this).nextAll("div");	
+				idt = $(this).nextAll("div.e-expandit-container");	
 				$(idt).show("slow");
 				 return true;	// must be true or radio buttons etc. won't work 		
 			}
@@ -113,7 +113,7 @@ $(document).ready(function()
 						
 			if(href === "#" || href == "") 
 			{
-				idt = $(this).nextAll("div");	
+				idt = $(this).nextAll("div.e-expandit-container");	
 				$(idt).hide("slow");
 				 return true;	 // must be true or radio buttons etc. won't work 			
 			}
