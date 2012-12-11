@@ -743,7 +743,15 @@ class e_form
 		
 	}
 
-	// autoexpand done
+	/**
+	 * Textarea Element 
+	 * @param $name
+	 * @param $value
+	 * @param $rows
+	 * @param $cols
+	 * @param $options
+	 * @param $count
+	 */
 	function textarea($name, $value, $rows = 10, $cols = 80, $options = array(), $counter = false)
 	{
 		if(is_string($options)) parse_str($options, $options);
@@ -903,12 +911,21 @@ class e_form
 
 	}
 
+	/**
+	 * @param name
+	 * @param check_enabled
+	 * @param label_enabled
+	 * @param label_disabled
+	 * @param options
+	 */
 	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
 	{
+		if(!is_array($options)) parse_str($options, $options);
+		
 		$options_on = varset($options['enabled'],array());
 		$options_off = varset($options['disabled'],array());
 		
-		if(vartrue($options['class']) == 'e-expandit') // See admin->prefs 'Single Login' for an example. 
+		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
 			$options_on = array('class' => 'e-expandit-on');
 			$options_off = array('class' => 'e-expandit-off');			

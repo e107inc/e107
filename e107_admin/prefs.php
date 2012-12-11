@@ -304,7 +304,7 @@ $text = "
 					<tr>
 						<td>".PRFLAN_2."</td>
 						<td>
-							".$frm->text('sitename', $pref['sitename'], 100)."
+							".$frm->text('sitename', $pref['sitename'], 100, 'required=1')."
 						</td>
 					</tr>
 					<tr>
@@ -367,14 +367,14 @@ $text .= "
 					<tr>
 						<td>".PRFLAN_6."</td>
 						<td>
-							".$frm->textarea('sitedescription', $pref['sitedescription'], 6, 59)."
+							".$frm->textarea('sitedescription', $pref['sitedescription'], 3, 80)."
 						</td>
 					</tr>
 					
 					<tr>
 						<td>".PRFLAN_9."</td>
 						<td>
-							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 6, 59)."
+							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 3, 80)."
 						</td>
 					</tr>
 				</tbody>
@@ -536,8 +536,8 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					'texthtml' => LAN_MAILOUT_126,
 					'texttheme' => LAN_MAILOUT_127
 				);	
-				$text .= $frm->selectbox('mail_sendstyle', $emFormat,$pref['mail_sendstyle']); //  $mailAdmin->sendStyleSelect(varset($pref['mail_sendstyle'], 'textonly'), 'mail_sendstyle');
-				$text .= "<span class='field-help'>".LAN_MAILOUT_223."</span>
+				$text .= $frm->selectbox('mail_sendstyle', $emFormat,$pref['mail_sendstyle']); 
+				$text .= "
 					</td>
 				</tr>
 					
@@ -871,18 +871,19 @@ $text .= "
 					</tr>
 					<tr>
 						<td>".PRFLAN_58."</td>
-						<td>
-							".$frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'])."
+						<td>";
+					
+					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
+						
+					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
 							<div class='field-help'>".PRFLAN_59."</div>
-						</td>
-					</tr>
-                    <tr>
-						<td>".PRFLAN_206."</td>
-						<td>
-							".$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1)."
+							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>".
+							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
 							<div class='field-help'>".PRFLAN_207."</div>
+							</div>
 						</td>
 					</tr>
+              
                		<tr>
 						<td>".PRFLAN_197.": </td>
 						<td>
@@ -908,7 +909,7 @@ $text .= "
 
 	";
 	
-// Single Login / / copied from hybridAuth config.php so it's easy to add more. 
+// Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more. 
 // Used Below. 
 
 $social_logins = array ( 
@@ -1023,8 +1024,8 @@ $text .= "
 							
 							case 'keys':
 								// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "display:none";
-								$text .= "<div id='option-{$prov}' style='padding:10px;{$sty}'>";
+								$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
+								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
 								foreach($v as $tk=>$idk)
 								{
 									$opt['placeholder'] = $tk;
@@ -1071,43 +1072,50 @@ $text .= "
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				<tbody>
+				<tbody>";
+				
+		$signup_option_names = array(
+	//	"signup_option_loginname" 	=> "Login Name",
+		"signup_option_email_confirm" 	=> "Email Confirmation",
+		"signup_option_realname" 		=> CUSTSIG_2,
+		"signup_option_signature" 		=> CUSTSIG_6,
+		"signup_option_image" 			=> CUSTSIG_7,
+		"signup_option_class" 			=> CUSTSIG_17,
+		'signup_option_customtitle'		=> CUSTSIG_20,
+		'signup_option_hideemail'		=> 'Option to hide email'
+	);
+
+	foreach($signup_option_names as $value => $key)
+	{
+		$text .= "
+						<tr>
+							<td>".$key."</td>
+							<td>
+								".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
+								".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
+								".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
+							</td>
+						</tr>
+		";
+	}			
+				
+				
+				$text .= "
 					<tr>
 						<td>".PRFLAN_126."</td>
 						<td>
-							".$frm->textarea('signup_text', $pref['signup_text'], 3, 1)."
+							".$frm->textarea('signup_text', $pref['signup_text'], 2, 1)."
 						</td>
 					</tr>
 
 					<tr>
 						<td>".PRFLAN_140."</td>
 						<td>
-							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 1)."
+							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 2, 1)."
 						</td>
 					</tr>
 					
-					<tr>
-						<td>".CUSTSIG_16."</td>
-						<td>
-							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
-						</td>
-					</tr>
-		
-					<tr>
-						<td>".CUSTSIG_18."</td>
-						<td>
-							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 3, 1)."
-							<div class='field-help'>".CUSTSIG_19."</div>
-						</td>
-					</tr>
-					
-						<tr>
-						<td>".PRFLAN_155.":</td>
-						<td>
-							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
-							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
-						</td>
-					</tr>
+				
 					<tr>
 						<td>".PRFLAN_192.":</td>
 						<td>
@@ -1139,30 +1147,7 @@ $text .= "
 					-->
 */
 
-	$signup_option_names = array(
-	//	"signup_option_loginname" 	=> "Login Name",
-		"signup_option_email_confirm" 	=> "Email Confirmation",
-		"signup_option_realname" 		=> CUSTSIG_2,
-		"signup_option_signature" 		=> CUSTSIG_6,
-		"signup_option_image" 			=> CUSTSIG_7,
-		"signup_option_class" 			=> CUSTSIG_17,
-		'signup_option_customtitle'		=> CUSTSIG_20,
-		'signup_option_hideemail'		=> 'Option to hide email'
-	);
 
-	foreach($signup_option_names as $value => $key)
-	{
-		$text .= "
-						<tr>
-							<td>".$key."</td>
-							<td>
-								".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
-								".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
-								".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
-							</td>
-						</tr>
-		";
-	}
 
 $text .= "
 				</tbody>
@@ -1197,28 +1182,56 @@ $text .= "
 							".$frm->radio_switch('make_clickable', $pref['make_clickable'])."
 							<div class='smalltext field-help'>".PRFLAN_128."</div>
 						</td>
-					</tr>
+					</tr>";
+					
+				$replaceDisp = vartrue($pref['link_replace']) ? "" : "e-hideme";
+				
+				$text .= "
 					<tr>
 						<td>".PRFLAN_102."?:</td>
 						<td>
-							".$frm->radio_switch('link_replace', $pref['link_replace'])."
+							".$frm->radio_switch('link_replace', $pref['link_replace'],'', '', 'expandit=1')."
 							<div class='smalltext field-help'>".PRFLAN_103."</div>
+							<div class='e-expandit-container {$replaceDisp}'>
+							".$frm->text('link_text', $pref['link_text'], 200, 'placeholder='.PRFLAN_104)."
+							<div class='smalltext field-help'>".PRFLAN_105."</div>
+							</div>
 						</td>
 					</tr>
-					<tr>
+			
+					<tr >
 						<td>".PRFLAN_145."?:</td>
 						<td>
 							".$frm->radio_switch('links_new_window', $pref['links_new_window'])."
 							<div class='smalltext field-help'>".PRFLAN_146."</div>
 						</td>
 					</tr>
+					
+					
 					<tr>
-						<td>".PRFLAN_104.":</td>
+						<td>".PRFLAN_40."</td>
 						<td>
-							".$frm->text('link_text', $pref['link_text'], 200)."
-							<div class='smalltext field-help'>".PRFLAN_105."</div>
+							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
+							<div class='smalltext field-help'>".PRFLAN_41."</div>
 						</td>
 					</tr>
+
+					<tr>
+						<td>".PRFLAN_42.":</td>
+						<td>
+							".$frm->text('profanity_replace', $pref['profanity_replace'], 20)."
+						</td>
+					</tr>
+					<tr>
+						<td>".PRFLAN_43.":</td>
+						<td>
+							".$frm->tags('profanity_words', $pref['profanity_words'])."
+							<div class='field-help'>".PRFLAN_44."</div>
+						</td>
+					</tr>
+					
+					
+					
 					<tr>
 						<td>".PRFLAN_107.":</td>
 						<td>
@@ -1416,6 +1429,36 @@ $text .= "
 							".PRFLAN_55.": <br />".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						</td>
 					</tr>
+					
+				
+		
+					<tr>
+						<td>".CUSTSIG_18."</td>
+						<td>
+							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 2, 1)."
+							<div class='field-help'>".CUSTSIG_19."</div>
+						</td>
+					</tr>
+					
+						<tr>
+						<td>".PRFLAN_155.":</td>
+						<td>
+							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
+							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
+						</td>
+					</tr>
+					
+					
+					
+					<tr>
+						<td>".CUSTSIG_16."</td>
+						<td>
+							".$frm->number('signup_pass_len', $pref['signup_pass_len'], 2)."
+						</td>
+					</tr>
+					
+					
+					
 					<tr>
 						<td>".PRFLAN_188.":</td>
 						<td>
@@ -1423,48 +1466,22 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_191."</div>
 						</td>
 					</tr>
-					<tr>
+					<tr>";
+					
+					$CHAP_list = array(PRFLAN_180, PRFLAN_181, PRFLAN_182);
+	
+					$text .= "
 						<td>".PRFLAN_178."</td>
-						<td>
+						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] )."
 							".$frm->select_open('password_CHAP');
-//TODO - user tracking session name - visible only if Cookie is enabled (JS)
-$CHAP_list[0] = PRFLAN_180;
-$CHAP_list[1] = PRFLAN_181;
-$CHAP_list[2] = PRFLAN_182;
+							
+						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
 
-foreach($CHAP_list as $ab => $ab_title)
-{
-	$text .= "
-								".$frm->option($ab_title, $ab, ($pref['password_CHAP'] == $ab))."
-	";
-}
-
-$text .= "
-							</select>
+						$text .= "
 							<div class='smalltext field-help'>".PRFLAN_183."<br />".PRFLAN_179."</div>
 						</td>
 					</tr>
-					<tr>
-						<td>".PRFLAN_40."</td>
-						<td>
-							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
-							<div class='smalltext field-help'>".PRFLAN_41."</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td>".PRFLAN_42.":</td>
-						<td>
-							".$frm->text('profanity_replace', $pref['profanity_replace'], 20)."
-						</td>
-					</tr>
-					<tr>
-						<td>".PRFLAN_43.":</td>
-						<td>
-							".$frm->tags('profanity_words', $pref['profanity_words'])."
-							<div class='field-help'>".PRFLAN_44."</div>
-						</td>
-					</tr>
+					
 					<tr>
 						<td>".PRFLAN_35.":</td>
 						<td>
