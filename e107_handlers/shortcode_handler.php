@@ -299,6 +299,13 @@ class e_parse_shortcode
 			$path = $pathBC;
 		}		
 		
+		// If it already exists - don't include it again. 
+		if (class_exists($className, false)) // don't allow __autoload()
+		{
+			$this->registerClassMethods($className, $path);
+			return $this->scClasses[$className];
+		}
+		
 		if (is_readable($path))
 		{
 			require_once($path);
