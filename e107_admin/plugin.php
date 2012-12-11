@@ -1348,7 +1348,7 @@ class pluginBuilder
 			$plugFolders = $fl->get_dirs(e_PLUGIN);	
 			foreach($plugFolders as $dir)
 			{
-				if(file_exists(e_PLUGIN.$dir."/admin_config.php") || !file_exists(e_PLUGIN.$dir."/".$dir."_sql.php"))
+				if(file_exists(e_PLUGIN.$dir."/admin_config.php"))
 				{
 					continue;	
 				}	
@@ -1358,7 +1358,7 @@ class pluginBuilder
 			$mes->addInfo("This Wizard will build an admin area for your plugin and generate a plugin.xml meta file.
 				Before you start: <ul>
 						<li>Create a new writable folder in the ".e_PLUGIN." directory eg. <b>myplugin</b></li>
-						<li>Create a new file in this folder and name it the same as the directory but with <b>_sql.php</b> as a sufix eg. <b>myplugin_sql.php</b></li>
+						<li>If your plugin will use sql tables, create a new file in this folder and name it the same as the directory but with <b>_sql.php</b> as a sufix eg. <b>myplugin_sql.php</b></li>
 						<li>Create your table in Phpmyadmin and paste an sql dump of it into your file and save. (see <il>e107_plugins/_blank/_blank_sql.php</i> for an example)</li>
 						<li>Select your plugin's folder to begin.</li>
 				</ul>
@@ -1445,11 +1445,15 @@ class pluginBuilder
 		//	print_a($data);
 		//	echo "<pre>".var_export($data,true)."</pre>";
 			
+			$sqlFile = e_PLUGIN.$newplug."/".$newplug."_sql.php";
 			
+			$ret = array();
 			
-			$data = file_get_contents(e_PLUGIN.$newplug."/".$newplug."_sql.php");
-			$ret =  $dv->getTables($data);
-		
+			if(file_exists($sqlFile))
+			{		
+				$data = file_get_contents($sqlFile);
+				$ret =  $dv->getTables($data);
+			}
 		
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&step=3');
 			$text .= "<div class='admintabs' id='tab-container'>\n";
