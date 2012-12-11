@@ -155,13 +155,42 @@ class e_user_model extends e_admin_model
 		return (integer) parent::getId();
 	}
 
+	/**
+	 * Try display name, fall back to login name when empty (shouldn't happen)
+	 */
 	final public function getName($anon = false)
 	{
 		if($this->isUser())
 		{
-			return ($this->get('user_name') ? $this->get('user_name') : $this->get('user_login'));
+			return ($this->get('user_name') ? $this->get('user_name') : $this->get('user_loginname'));
 		}
 		return $anon;
+	}
+	
+	/**
+	 * Display name getter. Use it as DB field name will be changed soon.
+	 */
+	final public function getDisplayName()
+	{
+		return $this->get('user_name');
+	}
+	
+	/**
+	 * Login name getter. Use it as DB field name will be changed soon.
+	 */
+	final public function getLoginName()
+	{
+		return $this->get('user_loginname');
+	}
+	
+	/**
+	 * Real name getter. Use it as DB field name will be changed soon.
+	 * @param bool $strict if false, fall back to Display name when empty
+	 */
+	final public function getRealName($strict = false)
+	{
+		if($strict) return $this->get('user_login');
+		return ($this->get('user_login') ? $this->get('user_login') : $this->get('user_name'));
 	}
 
 	final public function getAdminId()
