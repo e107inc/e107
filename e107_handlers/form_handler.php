@@ -477,7 +477,10 @@ class e_form
 		}
 		else
 		{
-			$ret = "<div class='imgselector-container'  style='display:block;width:120px;min-height:100px'>";
+			
+			$title = (vartrue($sc_parameters['help'])) ? "title='".$sc_parameters['help']."'" : "";
+
+			$ret = "<div class='imgselector-container e-tip' {$title} style='display:block;width:120px;min-height:100px'>";
 			$att = 'aw=120&ah=100';
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='image-selector' style='width:120px;height:100px;border:1px dashed black;' />";

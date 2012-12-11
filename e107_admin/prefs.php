@@ -29,6 +29,7 @@ if(! getperms("1"))
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'prefs';
+e107::lan('core','mailout','admin');
 
 //FIXME temporary fix - need universal solution. 
 e107::js('inline',"
@@ -52,11 +53,34 @@ $(document).ready(function()
 	{
 		$('#core-prefs-main').show();	
 	}
+	
+	
 		
 });	
 ","jquery");
 
 
+e107::js('inline',"
+	function disp(type) 
+	{
+		if(type == 'smtp')
+		{
+			$('#smtp').show('slow');
+			$('#sendmail').hide('slow');
+			return;
+		}
+
+		if(type =='sendmail')
+		{
+            $('#smtp').hide('slow');
+			$('#sendmail').show('slow');
+			return;
+		}
+
+		$('#smtp').hide('slow');
+		$('#sendmail').hide('slow');
+	}
+",'jquery');
 
 
 require_once (e_ADMIN."auth.php");
@@ -85,6 +109,17 @@ if(isset($_POST['submit_resetdisplaynames']))
 //echo '<pre>';
 //var_dump($core_pref->getPref());
 //echo '</pre>';
+
+if (isset($_POST['testemail'])) 
+{
+	sendTest();
+}
+		
+	
+
+
+
+
 /*	UPDATE PREFERENCES */
 if(isset($_POST['updateprefs']))
 {
@@ -200,6 +235,37 @@ if (plugInstalled('alt_auth'))
 	}
 }
 
+
+
+function sendTest()
+{
+	$log = e107::getAdminLog();
+	$mes = e107::getMessage();
+	
+	if(trim($_POST['testaddress']) == '')
+	{
+		$mes->add(LAN_MAILOUT_19, E_MESSAGE_ERROR);
+		$subAction = 'error';
+	}
+	else
+	{
+		$mailheader_e107id = USERID;
+		require_once(e_HANDLER.'mail.php');
+		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
+		$sendto = trim($_POST['testaddress']);
+		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
+		{
+			$mes->add(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106, E_MESSAGE_ERROR);
+		} 
+		else 
+		{
+			$mes->add(LAN_MAILOUT_81. ' ('.$sendto.')', E_MESSAGE_SUCCESS);
+			$log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+		}
+	}
+
+}
+
 /*
 if(isset($message))
 {
@@ -260,7 +326,7 @@ $text = "
 						<td>".PRFLAN_4."</td>
 						<td>
 ";
-
+/*
 $parms = "name=sitebutton";
 $parms .= "&path=".e_THEME.$pref['sitetheme']."/images/|".e_IMAGE;
 $parms .= "&filter=0";
@@ -281,17 +347,16 @@ $text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parm
 $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 $sLogo = siteinfo_shortcodes::sc_logo();
+*/
 
-//echo $sLogo; 
-// $frm->imagepicker('sitelogo',$pref['sitelogo'],'_common')
-
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'_common','help=Used by Facebook and others. Should be a square image.');
 
 $text .= "
 						</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_214."</td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common')."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help=Used by some themes as the header image on some pages.')."</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_5."</td>
@@ -305,11 +370,35 @@ $text .= "
 							".$frm->textarea('sitedescription', $pref['sitedescription'], 6, 59)."
 						</td>
 					</tr>
+					
 					<tr>
-						<td>".PRFLAN_7."</td>
+						<td>".PRFLAN_9."</td>
 						<td>
-							".$frm->text('siteadmin', SITEADMIN, 100)."
+							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 6, 59)."
 						</td>
+					</tr>
+				</tbody>
+			</table>
+			".pref_submit('main')."
+		</fieldset>
+";
+
+
+// Email and Contact Information --------------
+
+$text .= "<fieldset class='e-hideme' id='core-prefs-email'>
+			<legend>".PRFLAN_13."</legend>
+			<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+				<tr>
+					<td>".PRFLAN_7."</td>
+					<td>
+						".$frm->text('siteadmin', SITEADMIN, 100)."
+					</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_8."</td>
@@ -331,6 +420,128 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_177."</div>
 						</td>
 					</tr>
+							
+							
+					<tr>
+						<td>".LAN_MAILOUT_110."<br /></td>
+						<td>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
+							<input name='testaddress' class='tbox' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+						</td>
+					</tr>
+		
+					<tr>
+						<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
+						<td>
+						<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
+						$mailers = array('php','smtp','sendmail');
+						foreach($mailers as $opt)
+						{
+							$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
+							$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
+						}
+						$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
+		
+
+
+			// SMTP. -------------->
+			$smtp_opts = explode(',',varset($pref['smtp_options'],''));
+			$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
+			$text .= "<div id='smtp' {$smtpdisp}>
+			<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
+			<colgroup>
+				<col class='col-label' />
+				<col class='col-control' />
+			</colgroup>
+			";
+			$text .= "
+			<tr>
+				<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
+				<td>
+				<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
+				</td>
+			</tr>
+	
+			<tr>
+				<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+				<td style='width:50%;' >
+				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
+				</td>
+			</tr>
+	
+			<tr>
+				<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+				<td>
+				<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
+				</td>
+			</tr>
+
+			<tr>
+				<td>".LAN_MAILOUT_90."</td><td>
+				<select class='tbox' name='smtp_options'>\n
+				<option value=''>".LAN_MAILOUT_96."</option>\n";
+			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
+			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
+			$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
+			$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
+			$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
+			$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
+			$text .= "</select><span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
+		
+			$text .= "<tr>
+				<td>".LAN_MAILOUT_57."</td><td>
+				";
+			$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
+			$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
+				</td>
+				</tr>";
+		
+			$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
+			$text .= "<tr>
+				<td>".LAN_MAILOUT_95."</td><td>
+				<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
+				</td>
+				</tr>
+				</table></div>";
+
+			/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
+			// Sendmail. -------------->
+				$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
+				$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
+				$text .= "
+				<tr>
+				<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
+				<td>
+				<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
+				</td>
+				</tr>
+			
+				</table></div>";
+			*/
+			
+				$text .= "<div class='s-message info e-hideme' id='sendmail' {$senddisp}>
+							Not available in this release
+						</div>";
+						
+						
+				$text .="</td>
+				</tr>
+			
+			
+				<tr>
+					<td>".LAN_MAILOUT_222."</td>
+					<td>";
+					
+				$emFormat = array(
+					'textonly' => LAN_MAILOUT_125,
+					'texthtml' => LAN_MAILOUT_126,
+					'texttheme' => LAN_MAILOUT_127
+				);	
+				$text .= $frm->selectbox('mail_sendstyle', $emFormat,$pref['mail_sendstyle']); //  $mailAdmin->sendStyleSelect(varset($pref['mail_sendstyle'], 'textonly'), 'mail_sendstyle');
+				$text .= "<span class='field-help'>".LAN_MAILOUT_223."</span>
+					</td>
+				</tr>
+					
+
 					<tr>
 						<td>".PRFLAN_162."</td>
 						<td>
@@ -355,17 +566,11 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_165."</div>
 						</td>
 					</tr>
-					<tr>
-						<td>".PRFLAN_9."</td>
-						<td>
-							".$frm->textarea('sitedisclaimer', str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $pref['sitedisclaimer']), 6, 59)."
-						</td>
-					</tr>
-				</tbody>
+						</tbody>
 			</table>
-			".pref_submit('main')."
-		</fieldset>
-";
+			".pref_submit('email')."
+		</fieldset>";
+
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-display'>
@@ -1676,19 +1881,24 @@ function pref_submit($post_id = '')
 function prefs_adminmenu()
 {
 	$var['core-prefs-main']['text'] = PRFLAN_1;
-	$var['core-prefs-display']['text'] = PRFLAN_13;
-	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
-	$var['core-prefs-date']['text'] = PRFLAN_21;
+	$var['core-prefs-email']['text'] = "Email &amp; Contact Info.";
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 	$var['core-prefs-sociallogin']['text'] = "Social Logins";
-	$var['core-prefs-textpost']['text'] = PRFLAN_101;
-	$var['core-prefs-security']['text'] = PRFLAN_47;
+	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
+	
+	$var['core-prefs-header1']['header'] = "Advanced Options";	
+	
+	$var['core-prefs-display']['text'] = PRFLAN_13;
+	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
+	$var['core-prefs-textpost']['text'] = PRFLAN_101;
+	$var['core-prefs-security']['text'] = PRFLAN_47;
+	$var['core-prefs-date']['text'] = PRFLAN_21;	
 	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
-	e107::getNav()->admin(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
