@@ -1231,22 +1231,22 @@ class e_navigation
 	 * @param template to use. 
 	 * TODO Support for side-menu templates and others. 
 	 */
-	function render($data, $tmpl = 'navigation') 
-	{					
+	function render($data, $type = 'main') 
+	{							
 		$sc 			= e107::getScBatch('navigation');	
-		$template		= e107::getCoreTemplate($tmpl);	
+		$template		= e107::getCoreTemplate('navigation', $type);	
 		$sc->template 	= $template; // parse the template to the shortcodes. (sub menus)
 		
-		$text = $template['START'];
+		$text = $template['start'];
 		
 		foreach($data as $lnk)
 		{
 			$sc->setVars($lnk);		
-			$item = varset($lnk['link_sub']) ? $template['ITEM_SUBMENU'] : $template['ITEM'];
+			$item = varset($lnk['link_sub']) ? $template['item_submenu'] : $template['item'];
 			$text .= e107::getParser()->parseTemplate($item,TRUE);	
 		}
 		
-		$text .= $template['END'];
+		$text .= $template['end'];
 		
 		return $text;	
 	}
@@ -1267,7 +1267,7 @@ class navigation_shortcodes extends e_shortcode
 	
 	function sc_link_name($parm='')
 	{
-		return e107::getParser()->toHtml($this->var['link_name'],false,'TITLE');		
+		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
 	}
 
 	function sc_link_url($parm='')
@@ -1293,15 +1293,15 @@ class navigation_shortcodes extends e_shortcode
 			return;	
 		}	
 		
-		$text = $this->template['SUBMENU_START'];
-		
+		$text = $this->template['submenu_start'];
+			
 		foreach($this->var['link_sub'] as $val)
 		{
 			$this->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($this->template['SUBMENU_ITEM'],TRUE);		
+			$text .= e107::getParser()->parseTemplate($this->template['submenu_item'],TRUE);		
 		}
 
-		$text .= $this->template['SUBMENU_END'];
+		$text .= $this->template['submenu_end'];
 		
 		return $text;
 	}

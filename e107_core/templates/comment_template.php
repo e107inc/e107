@@ -83,24 +83,25 @@ $sc_style['COMMENT_BUTTON']['post']		= "";
 $sc_style['COMMENT_SHARE']['pre']		= "";
 $sc_style['COMMENT_SHARE']['post']		= "";
 
-$sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate">';
+$sc_style['COMMENT_RATE']['pre']  		= '<div class="comment-rate span2">';
 $sc_style['COMMENT_RATE']['post'] 		= '</div>';
 
 //$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
 //$sc_style['USER_AVATAR']['post'] 		= '</div>';
 
-$sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate">';
+$sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate span2">';
 $sc_style['COMMENT_MODERATE']['post']	= '</span>';
 
-
+$sc_style['MODERATE']['pre']	= '<span class="span2">';
+$sc_style['MODERATE']['post']	= '</span>';
 
 
 $COMMENT_TEMPLATE['FORM']			= "
 	<div class='comment-box comment-box-form clearfix'>
-		<div class='comment-box-left'>
+		<div class='comment-box-left pull-left span1' >
 		{COMMENT_AVATAR}
 		</div>
-		<div class='comment-box-right' style='text-align:left'>
+		<div class='comment-box-right pull-left span11' style='text-align:left'>
 			<div class='P10'>
 				{AUTHOR_INPUT}
 				{COMMENT_INPUT}
@@ -115,25 +116,29 @@ $COMMENT_TEMPLATE['FORM']			= "
 
 
 $COMMENT_TEMPLATE['ITEM'] = '
-	<div class="comment-box-left">
+	<div class="comment-box-left pull-left span1">
 		{COMMENT_AVATAR}
 	</div>
 
-	<div class="comment-box-right">
-		<div class="P10">
+	<div class="comment-box-right pull-left span10">
+		
 
-			<span class="comment-box-username">{USERNAME}</span>
-			<span class="comment-box-date">{TIMEDATE}</span>
+			<span class="comment-box-username span1">{USERNAME}</span>
+			<span class="comment-box-date span2">{TIMEDATE}</span>
 			
-			<span class="comment-status">{COMMENT_STATUS}</span>
-			<div class="comment-user-badge-bar">
-				{COMMENT_RATE}{REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
-			</div>
+			<span class="comment-status span2">{COMMENT_STATUS}</span>
+			<span class="comment-user-badge-bar span6">
+				{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
+			</span>
 
 			<div class="clear_b H5"><!-- --></div>
-			<div id="{COMMENT_ITEMID}-edit" contentEditable="false">{COMMENT}</div>
+			<div id="{COMMENT_ITEMID}-edit" contentEditable="false" class="span12">
+			<p>
+			{COMMENT}
+			</p>
+			</div>
 			
-		</div>
+		
 	</div>';
 	
 

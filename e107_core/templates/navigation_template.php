@@ -6,12 +6,12 @@
 * Gallery Template 
 */
 
-  
-
-$NAVIGATION_TEMPLATE['START'] = '<ul class="nav nav-pills">';
+ 
+// TEMPLATE FOR {NAVIGATION=main}
+$NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav nav-pills">';
 
 // Main Link
-$NAVIGATION_TEMPLATE['ITEM'] = '
+$NAVIGATION_TEMPLATE['main']['item'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" href="{LINK_URL}" >
 		 {LINK_NAME} 
@@ -20,7 +20,7 @@ $NAVIGATION_TEMPLATE['ITEM'] = '
 ';
 
 // Main Link which has a sub menu. 
-$NAVIGATION_TEMPLATE['ITEM_SUBMENU'] = '
+$NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_NAME} 
@@ -30,7 +30,7 @@ $NAVIGATION_TEMPLATE['ITEM_SUBMENU'] = '
 	</li>
 ';
 
-$NAVIGATION_TEMPLATE['ITEM_SUBMENU_ACTIVE'] = '
+$NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_NAME}
@@ -40,7 +40,7 @@ $NAVIGATION_TEMPLATE['ITEM_SUBMENU_ACTIVE'] = '
 	</li>
 ';	
 
-$NAVIGATION_TEMPLATE['ITEM_ACTIVE'] = '
+$NAVIGATION_TEMPLATE['main']['item_active'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_NAME}
@@ -48,15 +48,15 @@ $NAVIGATION_TEMPLATE['ITEM_ACTIVE'] = '
 	</li>
 ';	
 
-$NAVIGATION_TEMPLATE['END'] = '</ul>';	
+$NAVIGATION_TEMPLATE['main']['end'] = '</ul>';	
 
 
-$NAVIGATION_TEMPLATE['SUBMENU_START'] = '
+$NAVIGATION_TEMPLATE['main']['submenu_start'] = '
 		<ul class="dropdown-menu" role="menu" >
 ';
 
 
-$NAVIGATION_TEMPLATE['SUBMENU_ITEM'] = '
+$NAVIGATION_TEMPLATE['main']['submenu_item'] = '
 			<li role="menuitem" >
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
 			</li>
@@ -64,14 +64,44 @@ $NAVIGATION_TEMPLATE['SUBMENU_ITEM'] = '
 
 
 
-$NAVIGATION_TEMPLATE['SUBMENU_ITEM_ACTIVE'] = '
+$NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
 			<li role="menuitem" class="active">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
 			</li>
 ';
 
-$NAVIGATION_TEMPLATE['SUBMENU_END'] = '</ul>';
+$NAVIGATION_TEMPLATE['main']['submenu_end'] = '</ul>';
 
 
+// TEMPLATE FOR {NAVIGATION=side}
+
+$NAVIGATION_TEMPLATE['side']['start'] 				= '<ul class="nav nav-list"><li class="nav-header">Sidebar</li>
+														';
+
+$NAVIGATION_TEMPLATE['side']['item'] 				= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+														';
+
+$NAVIGATION_TEMPLATE['side']['item_submenu'] 		= '<li class="nav-header">{LINK_NAME}</li>{LINK_SUB}
+														';
+
+$NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+														';
+
+$NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
+														';
+
+$NAVIGATION_TEMPLATE['side']['submenu_start'] 		= '';
+
+$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+													';
+
+$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+													';
+
+$NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
+
+
+$NAVIGATION_TEMPLATE['footer'] 						= $NAVIGATION_TEMPLATE['side'];
+$NAVIGATION_TEMPLATE['alt'] 						= $NAVIGATION_TEMPLATE['side'];
 
 ?>
