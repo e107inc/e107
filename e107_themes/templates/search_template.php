@@ -12,7 +12,7 @@ if (!defined('SEARCH_SHORTCODE_REF')) {
 if (!isset($SEARCH_SHORTCODE)) {
 
 	$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='' maxlength='50' />
-	<input class='button search' type='submit' name='s' value=\"".LAN_180."\" />";
+	<input class='button btn search' type='submit' name='s' value=\"".LAN_180."\" />";
 
 	/*  // Image Version Example
 	$SEARCH_SHORTCODE = "<input class='tbox search' type='text' name='q' size='20' value='Default Value' maxlength='50' onclick=\"this.value=''\" />

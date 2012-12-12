@@ -51,7 +51,7 @@ if(!isset($FPW_TABLE))
 		$FPW_TABLE .="
 		<tr style='vertical-align:top'>
 		<td class='forumheader' colspan='2' style='text-align:center'>
-		<input class='button' type='submit' name='pwsubmit' value='".LAN_156."' />
+		<input class='button btn' type='submit' name='pwsubmit' value='".LAN_156."' />
 		</td>
 		</tr>
 		</table>

@@ -236,7 +236,7 @@ if(!defined($SIGNUP_BODY))
 			{SIGNUP_IMAGECODE}
 			<tr style='vertical-align:top'>
 				<td class='forumheader' colspan='2'  style='text-align:center'>
-					<input class='button' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
+					<input class='button btn' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
 					<br />
 				</td>
 			</tr>

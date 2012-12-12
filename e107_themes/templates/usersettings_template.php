@@ -166,7 +166,7 @@ $USERSETTINGS_EDIT = "
 	{SIGNATURE_HELP}
 	
 	<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_USET_37."' /></td>
+	<td colspan='2' style='text-align:center' class='forumheader'><input class='button btn' type='submit' name='updatesettings' value='".LAN_USET_37."' /></td>
 	</tr>
 	</table>
 	</div>
