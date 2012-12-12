@@ -91,7 +91,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			if ($thisaction == "comment" && $pref['nested_comments']) 
 			{
-				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply' data-type='".$this->var['comment_type']."' data-target='".e_BASE."comment.php' href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn' data-type='".$this->var['comment_type']."' data-target='".e_BASE."comment.php' href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 			}
 		}
 		return $REPLY;
@@ -179,7 +179,7 @@ class comment_shortcodes extends e_shortcode
 		}
 		
 		// TODO put into a <ul> drop-down format. 
-		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete'>Delete</a> ";
+		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn'>Delete</a> ";
 		
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
@@ -208,7 +208,7 @@ class comment_shortcodes extends e_shortcode
 			$value 	= (varset($this->var['eaction']) == "edit" ? COMLAN_320 : COMLAN_9);
 			$pid	= ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 			
-			return "<input data-pid='{$pid}' data-sort='{$pref}' data-target='".e_BASE."comment.php' class='button e-comment-submit' type='submit' name='".$this->var['action']."submit' value='".$value."' />";		
+			return "<input data-pid='{$pid}' data-sort='{$pref}' data-target='".e_BASE."comment.php' class='button btn e-comment-submit' type='submit' name='".$this->var['action']."submit' value='".$value."' />";		
 		}	
 		
 	}

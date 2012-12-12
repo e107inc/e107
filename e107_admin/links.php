@@ -156,7 +156,8 @@ class links_admin_ui extends e_admin_ui
 		$ui = $this->getUI();
 		$found = false;
 		foreach ($selected as $k => $id)
-		{var_dump($ui->_has_parent($value, $id, $this->getLinkArray()));
+		{
+			// var_dump($ui->_has_parent($value, $id, $this->getLinkArray()));
 			if($ui->_has_parent($value, $id, $this->getLinkArray()))
 			{
 				unset($selected[$k]);

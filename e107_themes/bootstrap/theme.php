@@ -105,20 +105,19 @@ $HEADER['default'] = '
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">'.USERNAME.'</a>
             </p>
-           {NAVIGATION}
+           {NAVIGATION=main}
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span2">
-		{SETSTYLE=site_info}
-		
-		{MENU=2}
-		
-		</div>
-		<div class="span10">
+		 <div class="span3">
+          <div class="well sidebar-nav">
+            {NAVIGATION=side}
+          </div><!--/.well -->
+        </div><!--/span-->
+		<div class="span9">
 ';
 $FOOTER['default'] = '
 		</div><!--/span-->

@@ -282,6 +282,7 @@ $sc_style['RATING']['post'] = "<br /><br />";
 
 $sc_style['COMMENT']['post'] = "<br />";
 
+
 $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fborder' style='width: 95%'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_THEME_5." {USERNAME} ".LAN_THEME_6." {TIMEDATE}
