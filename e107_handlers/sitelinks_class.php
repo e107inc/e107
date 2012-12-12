@@ -1272,7 +1272,7 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_url($parm='')
 	{
-		return e107::getParser()->replaceConstants($this->var['link_url']);
+		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], TRUE, TRUE);
 	}
 	
 	function sc_link_image($parm='')
