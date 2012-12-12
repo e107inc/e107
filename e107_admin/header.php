@@ -49,7 +49,6 @@ e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 e107::css('core', 	'chosen/chosen.css', 'jquery');
 e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
 
-e107::css('core', 	'password/style.css', 'jquery');
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 
 
