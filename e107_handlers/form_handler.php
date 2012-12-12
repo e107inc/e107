@@ -1124,6 +1124,7 @@ class e_form
 	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
+		$options['class'] = vartrue($options['class'],'button btn');
 		return "<input type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
