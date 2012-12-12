@@ -849,7 +849,7 @@ class page_admin_ui extends e_admin_ui
 	
 			$page_title = $tp->toDB($_POST['page_title']);
 			
-	//		print_a($_POST);
+	//	print_a($_POST);
 			
 			
 	//		if(is_array($_POST['data']) && is_array($_POST['subtitle']))
@@ -862,7 +862,7 @@ class page_admin_ui extends e_admin_ui
 
 					if($mode == FALSE) // Pages only, not menus. 
 					{
-						$newData[] = "[newpage=".$_POST['page_subtitle'][$key]."]\n";
+			//			$newData[] = "[newpage=".$_POST['page_subtitle'][$key]."]\n";
 					}
 					$newData[] = $v;			
 				}
