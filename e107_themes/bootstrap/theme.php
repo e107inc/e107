@@ -15,8 +15,10 @@ $no_core_css = TRUE;
 define("STANDARDS_MODE",TRUE);
 
 // TODO - JS/CSS handling via JSManager
-function theme_head() {
-
+function theme_head() 
+{
+	return; 
+	
 	$theme_pref = e107::getThemePref();
 
 	$ret = '';
@@ -46,7 +48,7 @@ function theme_head() {
 	return $ret;
 }
 
-function tablestyle($caption, $text, $mod) 
+function tablestyle($caption, $text, $mode) 
 {
 	global $style;
 	
@@ -55,6 +57,19 @@ function tablestyle($caption, $text, $mod)
 	{
 		$type = 'box';
 	}
+	
+	if($mode == 'wm')
+	{
+		
+		echo '<div class="hero-unit">
+            <h1>'.$caption.'</h1>
+            <p>'.$text.'</p>
+            <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+          </div>';	
+		
+		return;
+	}
+	
 	
 	switch($type) 
 	{
@@ -65,6 +80,15 @@ function tablestyle($caption, $text, $mod)
 					<h4 class="caption">'.$caption.'</h4>
 					'.$text.'
 				</div>
+			';
+		break;
+		
+		case 'span4' :
+			echo '
+				<div class="span4">
+              		<h2>'.$caption.'</h2>
+              		<p>'.$text.'</p>
+            	</div><!--/span-->
 			';
 		break;
 		
@@ -115,11 +139,16 @@ $HEADER['default'] = '
 		 <div class="span3">
           <div class="well sidebar-nav">
             {NAVIGATION=side}
+			
           </div><!--/.well -->
+          {SETSTYLE=menu}
+          {MENU=1}
         </div><!--/span-->
 		<div class="span9">
 ';
 $FOOTER['default'] = '
+		 {SETSTYLE=span4}
+		{MENU=2}
 		</div><!--/span-->
 	</div><!--/row-->
 

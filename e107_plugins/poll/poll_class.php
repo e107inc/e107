@@ -404,7 +404,7 @@ class poll
 					}
 					$count ++;
 				}
-				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' />";
+				$SUBMITBUTTON = "<input class='button btn' type='submit' name='pollvote' value='".POLLAN_30."' />";
 				if (('preview' == $type || $preview == TRUE) && strpos(e_SELF, "viewtopic") === FALSE)
 				{
 					$SUBMITBUTTON = "[".POLLAN_30."]";
