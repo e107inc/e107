@@ -733,7 +733,7 @@ class e_form
 		
 		$options = $this->format_options('text', $name, $options);
 		$options['class'] = vartrue($options['class'],'e-password');
-		$options['pattern'] = vartrue($options['pattern'],'[\w\d]{4,}');
+		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = vartrue($options['required'], 1);
 		
 		//never allow id in format name-value for text fields
@@ -1124,7 +1124,6 @@ class e_form
 	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
-		$options['class'] = vartrue($options['class'],'button btn');
 		return "<input type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
