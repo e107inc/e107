@@ -1176,7 +1176,7 @@ class e_navigation
 
 
 	/**
-	 * Return a clean array structure for all links. 
+	 * Return a standardized clean array structure for all links. 
 	 */
 	function getData($cat=1)
 	{	
@@ -1225,17 +1225,21 @@ class e_navigation
 
 
 
-	// Render the Front-end Links. 
-	function frontend($cat=1) 
-	{		
-		$links 			= $this->getData($cat);						
+	/**
+	 * Render the Front-end Links. (and eventually the back-end too)
+	 * @param data array - see getData() above. Follows e107_links table format. 
+	 * @param template to use. 
+	 * TODO Support for side-menu templates and others. 
+	 */
+	function render($data, $tmpl = 'navigation') 
+	{					
 		$sc 			= e107::getScBatch('navigation');	
-		$template 		= e107::getCoreTemplate('navigation');	
+		$template		= e107::getCoreTemplate($tmpl);	
 		$sc->template 	= $template; // parse the template to the shortcodes. (sub menus)
 		
 		$text = $template['START'];
 		
-		foreach($links as $lnk)
+		foreach($data as $lnk)
 		{
 			$sc->setVars($lnk);		
 			$item = varset($lnk['link_sub']) ? $template['ITEM_SUBMENU'] : $template['ITEM'];
