@@ -48,8 +48,8 @@ define("ADSTAT_L29", "Page Name");
 define("ADSTAT_L30", "Check to remove");
 define("ADSTAT_L31", "Remove selected pages");
 define("ADSTAT_L32", "Page Tidy");
-define("ADSTAT_L33", "Configure Statistics Logging");
-define("ADSTAT_L34", "Site Stats");
+// define("ADSTAT_L33", "Configure Statistics Logging"); see English_global.php
+// define("ADSTAT_L34", "Site Stats");
 define ('ADSTAT_L35', 'Options');
 define ('ADSTAT_L36', 'Data Export');
 define ('ADSTAT_L37', 'Create export file');
@@ -102,13 +102,6 @@ define ('ADSTAT_L83', 'Following log ID entries removed:');
 define ('ADSTAT_L84', '');
 define ('ADSTAT_L85', '');
 
-// Messages for log entries
-define('LAN_AL_STAT_01', 'Stats - reset');
-define('LAN_AL_STAT_02', 'Stats - settings changed');
-define('LAN_AL_STAT_03', 'Stats - pages removed');
-define('LAN_AL_STAT_04', 'Stats - historic data removed');
-define('LAN_AL_STAT_05', '');
-define('LAN_AL_STAT_06', '');
-define('LAN_AL_STAT_07', '');
+
 
 ?>

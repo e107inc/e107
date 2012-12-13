@@ -491,7 +491,7 @@ class e_pref extends e_front_model
 	 *
 	 * @param boolean $from_post merge post data
 	 * @param boolean $force
-	 * @param boolean $session_messages use session messages
+	 * @param boolean $session_messages use session messages //FIXME Appears to be ignored on "Settings successfully saved."; 
 	 * @return boolean|integer 0 - no change, true - saved, false - error
 	 */
 	public function save($from_post = true, $force = false, $session_messages = false)

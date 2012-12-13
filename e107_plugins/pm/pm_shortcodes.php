@@ -175,13 +175,13 @@ class pm_handler_shortcodes
 
 	public	function sc_pm_post_button()
 	{
-		return "<input class='button' type='submit' name='postpm' value='".LAN_PM_1."' />";
+		return "<input class='button btn' type='submit' name='postpm' value='".LAN_PM_1."' />";
 	}
 
 
 	public	function sc_pm_preview_button()
 	{
-		return "<input class='button' type='submit' name='postpm' value='".LAN_PM_3."' />";
+		return "<input class='button btn' type='submit' name='postpm' value='".LAN_PM_3."' />";
 	}
 
 

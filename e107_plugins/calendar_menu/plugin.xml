@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Event Calendar" lan="EC_ADLAN_1" version="3.70" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Event Calendar" lan="LAN_PLUGIN_CALENDAR_MENU_NAME" version="3.70" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
-	<description >This plugin is a fully featured event calendar with calendar menu.</description>
+	<description lan="LAN_PLUGIN_CALENDAR_MENU_DESCRIPTION" >This plugin is a fully featured event calendar with calendar menu.</description>
 	<readMe>readme.pdf</readMe>
 	<category>content</category>
-	<languageFiles>
-		<file type='install' path='languages/--LAN--_install.php' />
-		<file type='log' path='languages/--LAN--_log.php' />	
-	</languageFiles>
 	<adminLinks>
-		<link url='admin_config.php' description='EC_ADINST_LAN_05' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >EC_ADINST_LAN_05</link>
+		<link url='admin_config.php' description='LAN_PLUGIN_CALENDAR_MENU_CONFIG' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >LAN_PLUGIN_CALENDAR_MENU_CONFIG</link>
 		<link url='admin_config.php?cat' description='EC_ADLAN_A11' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A11</link>
 		<link url='admin_config.php?forthcoming' description='EC_ADLAN_A100' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A100</link>
 		<link url='admin_config.php?maint' description='EC_ADLAN_A141' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A141</link>
 		<link url='admin_config.php?subs' description='EC_ADLAN_A173' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A173</link>		
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}calendar_menu/calendar.php" >Calendar</link>		
+		<link url="{e_PLUGIN}calendar_menu/calendar.php" >LAN_PLUGIN_CALENDAR_MENU_LINK</link>		
 	</siteLinks>
-	<mainPrefs>
+	<pluginPrefs>
 		<pref name="eventpost_admin">254</pref>
 		<pref name="eventpost_super">254</pref>
 		<pref name="eventpost_adminlog">0</pref>
@@ -56,5 +52,5 @@
 		<pref name="eventpost_fe_showrecent">0</pref>
 		<pref name="eventpost_showcaticon">0</pref>
 		<pref name="eventpost_namelink">0</pref>
-	</mainPrefs>
+	</pluginPrefs>
 </e107Plugin>

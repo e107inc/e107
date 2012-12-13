@@ -691,6 +691,12 @@ class user_class
 		{
 			$style = " style='text-indent:".(1.2*$nest_level)."em'";
 		}
+		
+		$id = "{$treename}_{$classnum}";
+		
+		return "<div {$style}><label>
+			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</label></div>\n";
+		
 		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
 	}
 

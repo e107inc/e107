@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Blank Plugin" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Blank Plugin" lan="LAN_PLUGIN__BLANK_NAME" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
-	<description lan="">A Blank Plugin to help you get started in plugin development</description>
+	<description lan="LAN_PLUGIN__BLANK_DIZ">A Blank Plugin to help you get started in plugin development</description>
 	<category>misc</category> 
 	<adminLinks>
-		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' primary='true' >Configure Blank</link>
+		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' primary='true' >LAN_CONGIGURE</link>
 		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone'>Blank</link>		
+		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone'>LAN_PLUGIN__BLANK_LINK</link>		
 	</siteLinks>
 	<pluginPrefs>
 		<pref name="blank_pref_1">1</pref>

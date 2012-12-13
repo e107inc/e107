@@ -49,7 +49,7 @@ define("ADSTAT_L30", "Site Referrals");
 define("ADSTAT_L31", "Search Engine Query Strings");
 define("ADSTAT_L32", "Referred from");
 define("ADSTAT_L33", "Visits in last");
-define("ADSTAT_L34", "Visits");
+// define("ADSTAT_L34", "Visits"); // see English_globa.php
 define("ADSTAT_L35", "Unique visits in last");
 define("ADSTAT_L36", "days by page");
 define("ADSTAT_L37", "Visits by month");

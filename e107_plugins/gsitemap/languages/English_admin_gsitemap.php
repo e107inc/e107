@@ -58,11 +58,5 @@ define("GSLAN_40", "Google Sitemap Entries");
 define('GSLAN_41', "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>");
 define('GSLAN_42', 'Installation Successful..');
 
-// Admin log messages
-//-------------------
-define('LAN_AL_GSMAP_01', 'Import sitelinks');
-define('LAN_AL_GSMAP_02', 'Sitemap link deleted');
-define('LAN_AL_GSMAP_03', 'Sitemap link added');
-define('LAN_AL_GSMAP_04', 'Sitemap link updated');
-define('LAN_AL_GSMAP_05', '');
+
 ?>
