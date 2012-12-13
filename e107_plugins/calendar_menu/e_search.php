@@ -6,7 +6,7 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	Search shim for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_search.php,v $
  * $Revision$
@@ -16,6 +16,8 @@
  
 /**
  *	e107 Event calendar plugin
+ *
+ *	Search shim for event calendar
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar

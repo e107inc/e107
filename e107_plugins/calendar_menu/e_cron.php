@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2010 e107 Inc (e107.org)
+ * Copyright (C) 2001-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -14,6 +14,8 @@
 
 /**
  *	e107 Event calendar plugin
+ *
+ * Event calendar plugin - cron task
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
@@ -120,8 +122,6 @@ class calendar_menu_cron // include plugin-folder in the name.
 	 */
 	public function processSubs()
 	{
-		global $pref;
-
 		require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 		$this->ecalClass = new ecal_class;
 
@@ -141,7 +141,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 		setScVar('event_calendar_shortcodes', 'ecalClass', &$this->ecalClass);			// Give shortcode a pointer to calendar class
 
 
-		$this->logRequirement = varset($pref['eventpost_emaillog'], 0);
+		$this->logRequirement = varset($this->ecal_class->pref['eventpost_emaillog'], 0);
 		if ($this->debugLevel >= 2) $this->logRequirement = 2;		// Force full logging if debug
 
 
@@ -220,8 +220,6 @@ class calendar_menu_cron // include plugin-folder in the name.
 	*/
 	function sendMailshot($cal_query, $shot_type, $msg_num, $calendar_shortcodes)
 	{
-		global $pref;
-	  
 		if ($this->logRequirement > 1)
 		{
 			$this->logLine(' Starting emails for '.$shot_type, FALSE, TRUE);
@@ -265,7 +263,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 				//	MAIL_CONTACT, MAIL_THREAD (maybe). Also MAIL_LINK, MAIL_SHORT_DATE 
 				// Best to strip entities here rather than at entry - handles old events as well
 				// Note that certain user-related substitutions will work, however - |USERID|, |USERNAME|, |DISPLAYNAME|
-				$cal_title = html_entity_decode($this->e107->tp->parseTemplate($pref['eventpost_mailsubject'], TRUE),ENT_QUOTES,CHARSET);
+				$cal_title = html_entity_decode($this->e107->tp->parseTemplate($this->ecal_class->pref['eventpost_mailsubject'], TRUE),ENT_QUOTES,CHARSET);
 				$cal_msg = html_entity_decode($this->e107->tp->parseTemplate($cal_msg, TRUE),ENT_QUOTES,CHARSET);
 			  
 				// Four cases for the query:
@@ -274,7 +272,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 				// 	3. Forced mailshot to group of members - based on user table only						Don't need JOIN
 				//	4. Forced mailshot to group, plus optional subscriptions - use the lot!    				Need LEFT JOIN
 				// (Always block sent to banned members)
-				$manual_subs = (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs'] == '1'));
+				$manual_subs = (isset($this->ecal_class->pref['eventpost_asubs']) && ($this->ecal_class->pref['eventpost_asubs'] == '1'));
 				$subs_fields = '';
 				$subs_join = '';
 				$whereClause = '';
@@ -330,8 +328,8 @@ class calendar_menu_cron // include plugin-folder in the name.
 						'mail_title' => str_replace('--REF--', intval(time()/3600), LAN_EC_MAIL_07),
 						'mail_subject' => $cal_title,
 						'mail_body' => $cal_msg,
-						'mail_sender_email' => $pref['eventpost_mailaddress'],
-						'mail_sender_name' => $pref['eventpost_mailfrom'],
+						'mail_sender_email' => $this->ecal_class->pref['eventpost_mailaddress'],
+						'mail_sender_name' => $this->ecal_class->pref['eventpost_mailfrom'],
 						'mail_send_style' => 'textonly'
 					);
 					if (FALSE === ($mailMainID = $this->mailManager->saveEmail($email, TRUE)))

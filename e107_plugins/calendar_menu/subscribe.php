@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,6 +16,8 @@
 
 /**
  *	e107 Event calendar plugin
+ *
+ * Event calendar plugin - mail subscription to events notification
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
@@ -31,13 +33,16 @@ if (!$e107->isInstalled('calendar_menu'))
 	exit();
 }
 
+require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
+
+if (!is_object($ecal_class)) $ecal_class = new ecal_class;
+
 include_lan(e_PLUGIN .'calendar_menu/languages/'.e_LANGUAGE.'.php');
-global $pref;
 define('PAGE_NAME', EC_LAN_80);
 require_once(HEADERF);
 
 
-if ((USER) && (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs'] == '1')))
+if ((USER) && (isset($ecal_class->pref['eventpost_asubs']) && ($ecal_class->pref['eventpost_asubs'] == '1')))
 {
 	$cal_db = new db;			// Probably best to keep this
 
@@ -66,50 +71,51 @@ if ((USER) && (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs'] == '
 	<table class='fborder' width='97%'>
 	<tr><td class='fcaption' colspan='3'>" . EC_LAN_125 . "</td></tr>
 	<tr><td class='forumheader2' >" . EC_LAN_126 . "</td><td class='forumheader2' >" . EC_LAN_127 . "</td><td class='forumheader2' >" . EC_LAN_136 . "</td></tr>"; 
+
 		// Get list of currently subscribed
-	  $cal_db->db_Select('event_subs', 'event_cat', "where event_userid='" . USERID . "'", "nowhere");
-	  while ($cal_s = $cal_db->db_Fetch())
-	  {
-		extract($cal_s);
-		$cal_array[] = $event_cat;
-	  } // while 
+		$cal_db->db_Select('event_subs', 'event_cat', "where event_userid='" . USERID . "'", "nowhere");
+		while ($cal_s = $cal_db->db_Fetch())
+		{
+			extract($cal_s);
+			$cal_array[] = $event_cat;
+		} // while 
 
 		// Get list of categories that have subscriptions and are visible to this member
-	  $cal_args = "select * from #event_cat 
-		where event_cat_subs>0  and (find_in_set(event_cat_class,'".USERCLASS_LIST."')  OR find_in_set(event_cat_force_class,'".USERCLASS_LIST."'))";
-	  if ($cal_db->db_Select_gen($cal_args))
-	  { 
-		// echo $cal_args."<br />";
-		while ($cal_row = $cal_db->db_Fetch())
-		{
-		  extract($cal_row);
-		  $caltext .= "<tr><td class='forumheader3' style='width:10%;'>";
-		  if (check_class($event_cat_force_class))
-		  {
-			$caltext .= EC_LAN_126;
-		  }
-		  else
-		  {
-			$caltext .= "<input type='hidden' name='event_list[]' value='" . $event_cat_id . "' />
-			<input type='checkbox' class='tbox' value='1' name='event_subd[$event_cat_id]' " . (in_array($event_cat_id, $cal_array)?"checked='checked' ":"") . " /> </td>";
-		  }
-		  $caltext .= "<td class='forumheader3'>{$event_cat_name}</td><td class='forumheader3'>{$event_cat_description}</td></tr>";
+		$cal_args = "select * from #event_cat 
+			where event_cat_subs>0  and (find_in_set(event_cat_class,'".USERCLASS_LIST."')  OR find_in_set(event_cat_force_class,'".USERCLASS_LIST."'))";
+		if ($cal_db->db_Select_gen($cal_args))
+		{ 
+			// echo $cal_args."<br />";
+			while ($cal_row = $cal_db->db_Fetch())
+			{
+				extract($cal_row);
+				$caltext .= "<tr><td class='forumheader3' style='width:10%;'>";
+				if (check_class($event_cat_force_class))
+				{
+					$caltext .= EC_LAN_126;
+				}
+				else
+				{
+					$caltext .= "<input type='hidden' name='event_list[]' value='" . $event_cat_id . "' />
+						<input type='checkbox' class='tbox' value='1' name='event_subd[$event_cat_id]' " . (in_array($event_cat_id, $cal_array)?"checked='checked' ":"") . " /> </td>";
+				}
+				$caltext .= "<td class='forumheader3'>{$event_cat_name}</td><td class='forumheader3'>{$event_cat_description}</td></tr>";
+			} 
 		} 
-	  } 
-	  else
-	  {
-		$caltext .= "<tr><td class='forumheader3' colspan='3'>" . EC_LAN_128 . "</td></tr>";
-	  } 
-	  $caltext .= "<tr><td class='forumheader3' colspan='3'><input class='tbox' type='submit' value='" . EC_LAN_129 . "' name='upsubs' /></td></tr>";
-	  $caltext .= "</table></form>";
+		else
+		{
+			$caltext .= "<tr><td class='forumheader3' colspan='3'>" . EC_LAN_128 . "</td></tr>";
+		} 
+		$caltext .= "<tr><td class='forumheader3' colspan='3'><input class='tbox' type='submit' value='" . EC_LAN_129 . "' name='upsubs' /></td></tr>";
+		$caltext .= "</table></form>";
 	}
 }
 else
 {
-	if (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs'] == '1'))
-	$caltext = EC_LAN_142;	// Register or log in 
+	if (isset($ecal_class->pref['eventpost_asubs']) && ($ecal_class->pref['eventpost_asubs'] == '1'))
+		$caltext = EC_LAN_142;	// Register or log in 
 	else
-	$caltext = EC_LAN_143;	// No facility
+		$caltext = EC_LAN_143;	// No facility
 } 
 $e107->ns->tablerender(EC_LAN_124, $caltext);
 require_once(FOOTERF);

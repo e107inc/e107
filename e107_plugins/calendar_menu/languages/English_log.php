@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -12,6 +12,17 @@
  * $Revision$
  * $Date$
  * $Author$
+ */
+
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	Language file - admin log titles
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id$;
  */
 
 define('LAN_AL_EC_ADM_01', 'Event Calendar - add event');

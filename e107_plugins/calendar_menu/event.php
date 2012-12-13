@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,6 +16,8 @@
 
 /**
  *	e107 Event calendar plugin
+ *
+ * Calender plugin - event listing and event entry
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
@@ -60,17 +62,13 @@ include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 define('PAGE_NAME', EC_LAN_80);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
-global $ecal_class;
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 $cal_super = $ecal_class->cal_super;
 
 
-//e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 $calSc = new event_calendar_shortcodes();
 
-// require_once(e_HANDLER.'calendar/calendar_class.ph_');
-// $cal = new DHTML_Calendar(true);
 
 $cat_filter = intval(varset($_POST['event_cat_ids'],-1));
 if ($cat_filter == -1) $cat_filter = '*';
@@ -97,7 +95,7 @@ $ev_fields = array(
 //--------------------------------------
 // Event to add or update
 //--------------------------------------
-if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($pref['eventpost_admin'])))
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  || check_class($ecal_class->pref['eventpost_admin'])))
 {  
 	$ev_start	= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
 	if (($_POST['ne_event'] == '') || !isset($_POST['qs']))
@@ -226,7 +224,7 @@ if ($mult_count > 1)
 		<tr><td class='forumheader3'>".EC_LAN_57."</td><td class='forumheader3'>".$ev_event."</td></tr>";
 		
     // Only display for forum thread/link if required.  No point if not wanted
-    if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
+    if (isset($ecal_class->pref['eventpost_forum']) && $ecal_class->pref['eventpost_forum'] == 1)
     {
 		$text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
     }
@@ -286,7 +284,7 @@ $month		= $dateArray['mon'];				// Number of month being shown
 $year		= $dateArray['year'];				// Number of year being shown
 
 
-if ($cal_super || check_class($pref['eventpost_admin']))
+if ($cal_super || check_class($ecal_class->pref['eventpost_admin']))
 {  // Bits relating to 'delete event', and generation of multiple events
   if ($action == 'mc')
   {
@@ -398,74 +396,63 @@ function merge_date_time($date, $time)
 //-------------------------------------
 if ($action == 'ne' || $action == 'ed')
 {
-	if ($ecal_class->cal_super || check_class($pref['eventpost_admin']))
+	if ($ecal_class->cal_super || check_class($ecal_class->pref['eventpost_admin']))
 	{
 		function make_calendar($boxname, $boxvalue)
 		{
-		  global $ecal_class;
-		  	// global $cal;
+			global $ecal_class;
 		  	$frm = e107::getForm();
-		
-			unset($cal_options);
-			unset($cal_attrib);
-			/*
-			DHTML Calendar is deprecated in v2+
-			$cal_options['firstDay'] = $ecal_class->ec_first_day_of_week;
-			$cal_options['showsTime'] = false;
-			$cal_options['showOthers'] = true;
-			$cal_options['weekNumbers'] = false;
-			$cal_options['ifFormat'] = $ecal_class->dcal_format_string;
-			$cal_attrib['class'] = "tbox";
-			$cal_attrib['size'] = "12";
-			$cal_attrib['name'] = $boxname;
-			$cal_attrib['value'] = $boxvalue;
-			*/
-			
-			$opt = array('size' => 12);
+
+			$opt = array(
+				'type' => 'date',
+				'dateformat' => $ecal_class->dcal_format_string,
+				'firstDay' => $ecal_class->ec_first_day_of_week,		// 0 = Sunday.    @TODO: Can't change firstday ATM!
+				'size' => 12
+				);
 			return $frm->datepicker($boxname,$boxvalue,$opt);
-			// return $cal->make_input_field($cal_options, $cal_attrib);
 		}
 
 
 		function make_hourmin($boxname,$cur_hour,$cur_minute)
 		{
-		  global $pref;
-		  if (isset($pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
-		  $retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
-		  for($count = "00"; $count <= "23"; $count++)
-		  {
-			$val = sprintf("%02d", $count);
-			$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
-		  }
-		  $retval .= "</select>\n
-			<select name='{$boxname}minute' class='tbox'>\n";
-		  for($count = "00"; $count <= "59"; $count+= $incval)
-		  {
-			$val = sprintf("%02d", $count);
-			$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
-		  }
-		  $retval .= "</select>\n";
-		  return $retval;
+			global $ecal_class;			// @TODO:
+			if (isset($ecal_class->pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
+			// @TODO: Need to restrict width of select box
+			$retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
+			for($count = '00'; $count <= '23'; $count++)
+			{
+				$val = sprintf("%02d", $count);
+				$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
+			}
+			$retval .= "</select>\n
+				<select name='{$boxname}minute' class='tbox'>\n";
+			for($count = '00'; $count <= '59'; $count+= $incval)
+			{
+				$val = sprintf("%02d", $count);
+				$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
+			}
+			$retval .= "</select>\n";
+			return $retval;
 		}
 
 		function recur_select($curval)
 		{
-		  global $ecal_class;
-		  while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
-		  $ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
-		  foreach ($ecal_class->recur_type as $k => $v)
-		  {
-			$selected = ($curval == $k) ? " selected = 'selected'" : "";
-			$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-		  }
-		  $ret .= "</select>\n";
-		  return $ret;
+			global $ecal_class;			// @TODO:
+			while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
+			$ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
+			foreach ($ecal_class->recur_type as $k => $v)
+			{
+				$selected = ($curval == $k) ? " selected = 'selected'" : "";
+				$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+			}
+			$ret .= "</select>\n";
+			return $ret;
 		}
 		
 		
 		function recur_week_select($curval)
 		{
-			global $ecal_class;
+			global $ecal_class;			// @TODO:
 			$disp = $curval < 100 ? " style='display:none;'" : "";
 			$curval -= intval($curval % 10);		// Should make it an exact multiple of 100
 			$ret = "<span id='rec_week_sel'{$disp}><select class='tbox' name='ec_recur_week'>";
@@ -676,7 +663,7 @@ if ($action == 'ne' || $action == 'ed')
         $text .= "</select>
 		</td></tr>";
 
-		switch ($pref['eventpost_editmode'])
+		switch ($ecal_class->pref['eventpost_editmode'])
 		{
 		  case 1  : 
 			$insertjs = "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
@@ -694,7 +681,7 @@ if ($action == 'ne' || $action == 'ed')
 
 		<tr><td class='forumheader3'>".EC_LAN_57." *</td><td class='forumheader3'>
 		<textarea class='tbox' id='ne_event' name='ne_event' cols='59' style='width:95%' {$insertjs}>".(isset($ne_event) ? $ne_event : "")."</textarea>";
-		if ($pref['eventpost_editmode'] == 1)
+		if ($ecal_class->pref['eventpost_editmode'] == 1)
 		{
 		  // Show help
 		  require_once(e_HANDLER."ren_help.php");
@@ -704,7 +691,7 @@ if ($action == 'ne' || $action == 'ed')
 		$text .= "</td></tr>";
 
         // Only display for forum thread/link if required.  No point if not wanted
-        if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
+        if (isset($ecal_class->pref['eventpost_forum']) && $ecal_class->pref['eventpost_forum'] == 1)
         {
             $text .= "
 			<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>

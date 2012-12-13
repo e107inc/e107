@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,10 +16,13 @@
 /**
  *	e107 Event calendar plugin
  *
+ * Event calendar plugin - calendar menu display
+ *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
  *	@version 	$Id$;
  */
+
 
 if (!defined('e107_INIT')) { exit; }
 $e107 = e107::getInstance();
@@ -30,6 +33,7 @@ if (!isset($ecal_class))
 	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 	$ecal_class = new ecal_class;
 }
+
 // See if the page is already in the cache
 $cache_tag = 'nq_event_cal_cal';
 if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time))
@@ -37,12 +41,9 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	echo $cacheData;
 	return;
 }
-global $pref;
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 
 // Doesn't use shortcodes - rather a specific format for that
-//e107::getScParser();
-//require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 if (is_readable(THEME.'calendar_template.php')) 
 {  // Has to be require
 	require(THEME.'calendar_template.php');
@@ -88,7 +89,7 @@ foreach ($ev_list as $cal_row)
 
 // set up month array for calendar display
 $cal_months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
-if ($pref['eventpost_dateformat'] == 'my')
+if ($this->ecal_class->pref['eventpost_dateformat'] == 'my')
 {
 	$calendar_title = $cal_months[$cal_current_month-1] .' '. $cal_current_year;
 }
@@ -96,27 +97,32 @@ else
 {
 	$calendar_title = $cal_current_year .' '. $cal_months[$cal_current_month-1];
 }
-switch ($pref['eventpost_menulink']) 
+
+switch ($this->ecal_class->pref['eventpost_menulink']) 
 {
-  case 0 :  $calendar_title = "<a {$CALENDAR_MENU_HDG_LINK_CLASS} href='".e_PLUGIN."calendar_menu/event.php' >".$calendar_title."</a>";
-			break;
-  case 1 :  $calendar_title = "<a {$CALENDAR_MENU_HDG_LINK_CLASS} href='".e_PLUGIN."calendar_menu/calendar.php' >".$calendar_title."</a>";
-			break;
-  default : ;
+	case 0 :  
+		$calendar_title = "<a {$CALENDAR_MENU_HDG_LINK_CLASS} href='".e_PLUGIN."calendar_menu/event.php' >".$calendar_title."</a>";
+		break;
+	case 1 :  
+		$calendar_title = "<a {$CALENDAR_MENU_HDG_LINK_CLASS} href='".e_PLUGIN."calendar_menu/calendar.php' >".$calendar_title."</a>";
+		break;
+	default : ;
 }
+
 $cal_text = $CALENDAR_MENU_START;
-if ($pref['eventpost_showeventcount']=='1')
+if ($this->ecal_class->pref['eventpost_showeventcount']=='1')
 {
-  if ($cal_totev)
-  {
-    $cal_text .= EC_LAN_26 . ": " . $cal_totev;
-  }
-  else
-  {
-    $cal_text .= EC_LAN_27;
-  }
-  $cal_text .= "<br /><br />";
+	if ($cal_totev)
+	{
+		$cal_text .= EC_LAN_26 . ": " . $cal_totev;
+	}
+	else
+	{
+		$cal_text .= EC_LAN_27;
+	}
+	$cal_text .= "<br /><br />";
 }
+
 $cal_start	= $cal_monthstart;		// First day of month as time stamp
 // Start the table
 $cal_text .= $CALENDAR_MENU_TABLE_START;
@@ -160,7 +166,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 		if ($cal_event_count)
 		{   // Show icon if it exists
 			$cal_css += 2;		// Gives 3 for today, 4 for other day
-			if (isset($pref['eventpost_showmouseover']) && ($pref['eventpost_showmouseover'] == 1))
+			if (isset($this->ecal_class->pref['eventpost_showmouseover']) && ($this->ecal_class->pref['eventpost_showmouseover'] == 1))
 			{
 				$cal_ins = " title='";
 				foreach ($cal_titles[$cal_c] as $cur_title)
@@ -210,10 +216,10 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
 }
 if ($cal_loop != 0)
 {
-for($cal_a = ($cal_loop + 1); $cal_a <= 7; $cal_a++)
-{
-	$cal_text .= $CALENDAR_MENU_DAY_NON;
-}
+	for($cal_a = ($cal_loop + 1); $cal_a <= 7; $cal_a++)
+	{
+		$cal_text .= $CALENDAR_MENU_DAY_NON;
+	}
 }
 // Close table
 $cal_text .= $CALENDAR_MENU_END;

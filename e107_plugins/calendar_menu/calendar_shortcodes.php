@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -18,6 +18,8 @@
 /**
  *	e107 Event calendar plugin
  *
+ * Shortcodes for event calendar
+ *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
  *	@version 	$Id$;
@@ -28,14 +30,11 @@ TODO:
 	1.	Good way of reading categories
 	2. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
 	3. Check whether $prop should be calculated better
-	4. Get rid of global on $pref
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');	
-//register_shortcode('event_calendar_shortcodes', true);
-//initShortcodeClass('event_calendar_shortcodes');
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 
 /*
 Navigation Shortcodes
@@ -282,12 +281,11 @@ class event_calendar_shortcodes
 
 	public function sc_ec_current_month($parm = '')
 	{
-		global $pref;
-		if($pref['eventpost_dateformat'] == 'my') 
+		if($this->ecalClass->pref['eventpost_dateformat'] == 'my') 
 		{
 			return $this->months[($this->month-1)].' '.$this->year;
 		} 
-			return $this->year.' '.$this->months[($this->month-1)];
+		return $this->year.' '.$this->months[($this->month-1)];
 	}
 
 
@@ -328,19 +326,17 @@ class event_calendar_shortcodes
 
 	public function sc_ec_nav_but_subscription($parm = '')
 	{
-		global $pref;
-		if (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs']>0) && USER)
+		if (isset($this->ecalClass->pref['eventpost_asubs']) && ($this->ecalClass->pref['eventpost_asubs']>0) && USER)
 		{
-			return "<input class='button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' />";
+			return "<input class='button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' title='".EC_LAN_182."' />";
 		}
 		return '';
 	}
 
 	public function sc_ec_nav_but_enterevent($parm = '')
 	{
-		global $pref;
 		$ret = "<input type='hidden' name='enter_new_val' value='".$this->prop."' />";
-		if ($this->ecalClass->cal_super || check_class($pref['eventpost_admin']))
+		if ($this->ecalClass->cal_super || check_class($this->ecalClass->pref['eventpost_admin']))
 		{
 			$ret .= "<input class='button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
 		}
@@ -359,17 +355,17 @@ class event_calendar_shortcodes
 
 	public function sc_ec_nav_but_printlists($parm = '')
 	{
-		global $pref;
-		if (isset($pref['eventpost_printlists']) && ($pref['eventpost_printlists']>0) && USER)
+		if (isset($this->ecalClass->pref['eventpost_printlists']) && ($this->ecalClass->pref['eventpost_printlists']>0) && USER)
 		{
-		  return "<input class='button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' />";
+			return "<input class='button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' title='".EC_LAN_183."' />";
 		}
+		else
+		  return 'Cant print lists';
 	}
 
 	// Categories listing
 	public function sc_ec_nav_categories($parm = '')
 	{
-		global $pref;
 		if ($this->ourDB == NULL)
 		{
 			$this->ourDB = new db;			// @todo use new method
@@ -566,10 +562,9 @@ class event_calendar_shortcodes
 //------------------------------------------
 	public function sc_ec_calendar_calendar_header_day($parm = '')
 	{
-		global $pref;
-		if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday'])
+		if(isset($this->ecalClass->pref['eventpost_lenday']) && $this->ecalClass->pref['eventpost_lenday'])
 		{
-		  return "<strong>".$this->e107->tp->text_truncate($this->headerDay,$pref['eventpost_lenday'],'')."</strong>";
+		  return "<strong>".$this->e107->tp->text_truncate($this->headerDay,$this->ecalClass->pref['eventpost_lenday'],'')."</strong>";
 		}
 		else
 		{
@@ -822,9 +817,8 @@ class event_calendar_shortcodes
 
 	public function sc_ec_event_options()
 	{
-		global $pref;
 		$event_author_name = strstr(varset($this->event['event_author'],'0.??'),'.');
-		if (USERNAME == $event_author_name || $this->ecalClass->cal_super || check_class($pref['eventpost_admin']))
+		if (USERNAME == $event_author_name || $this->ecalClass->cal_super || check_class($this->ecalClass->pref['eventpost_admin']))
 		{
 			return "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 		}
@@ -912,8 +906,7 @@ class event_calendar_shortcodes
 
 	function sc_ec_next_event_recent_icon()
 	{
-		global $pref;
-		if (!$pref['eventpost_fe_showrecent']) return;
+		if (!$this->ecalClass->pref['eventpost_fe_showrecent']) return;
 		if (!isset($this->event['is_recent'])) return;
 		if (is_readable(EC_RECENT_ICON))
 		{
@@ -941,8 +934,7 @@ class event_calendar_shortcodes
 
 	public function sc_ec_next_event_title()
 	{
-		global $pref;
-		if (isset($pref['eventpost_namelink']) && ($pref['eventpost_namelink'] == '2') && (isset($this->event['event_thread']) && ($this->event['event_thread'] != '')))
+		if (isset($this->ecalClass->pref['eventpost_namelink']) && ($this->ecalClass->pref['eventpost_namelink'] == '2') && (isset($this->event['event_thread']) && ($this->event['event_thread'] != '')))
 		{
 			$fe_event_title = "<a href='".$this->event['event_thread']."'>";
 		}
@@ -957,9 +949,8 @@ class event_calendar_shortcodes
 
 	public function sc_ec_next_event_icon()
 	{
-		global $pref;
 		$fe_icon_file = '';
-		if ($pref['eventpost_showcaticon'] == 1)
+		if ($this->ecalClass->pref['eventpost_showcaticon'] == 1)
 		{
 			if($this->event['event_cat_icon'] && is_readable(e_PLUGIN.'calendar_menu/images/'.$this->event['event_cat_icon']))
 			{

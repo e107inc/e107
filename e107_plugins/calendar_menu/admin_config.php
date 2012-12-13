@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -17,6 +17,8 @@
 /**
  *	e107 Event calendar plugin
  *
+ * Event calendar plugin - admin functions
+ *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
  *	@version 	$Id$;
@@ -25,7 +27,6 @@
 $eplug_admin = true;		// Make sure we show admin theme
 $e_sub_cat = 'event_calendar';
 require_once('../../class2.php');
-//require_once(e_HANDLER.'userclass_class.php');
 if (!getperms('P')) 
 {
   header('location:'.e_BASE.'index.php');
@@ -38,19 +39,31 @@ include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu
 require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form();
 
+$sql = e107::getDb();
 $uc = e107::getUserClass();		// Userclass object pointer
 $message = '';
 $calendarmenu_text = '';
 $calendarmenu_msg  = '';
+$calPref = e107::pref('calendar_menu');
 
-// Given an array of name => format, reads the $_POST variable of each name, applies the specified formatting, 
-// identifies changes, writes back the changes, makes admin log entry
-function logPrefChanges(&$prefList, $logRef)
+/**
+ * Given an array of name => format, reads the $_POST variable of each name, applies the specified formatting, 
+ * identifies changes, writes back the changes, makes admin log entry
+ *
+ *	@param array $prefList - each key is the name of a pref; value is an integer representing its type
+ *	@param array $oldPref  - array of current pref values
+ *	@param string $logRef  - used as title if any changes to be logged
+ *
+ *	@return - none
+ */
+function logPrefChanges(&$prefList, &$oldPref, $logRef)
 {
-	global $admin_log;
-	$pref = e107::getPref();
+	$admin_log = e107::getAdminLog();
+	$calNew = e107::getPlugConfig('calendar_menu');		// Initialize calendar_menu prefs.
 	$tp = e107::getParser();
 	$prefChanges = array();
+	$mes = eMessage::getInstance();
+
 	foreach ($prefList as $prefName => $process)
 	{
 		switch ($process)
@@ -74,18 +87,32 @@ function logPrefChanges(&$prefList, $logRef)
 				unset($tmp);
 				break;
 		}
-		if (!isset($pref[$prefName]) || ($temp != $pref[$prefName]))
+		if (!isset($oldPref[$prefName]) || ($temp != $oldPref[$prefName]))
 		{	// Change to process
-			$pref[$prefName] = $temp;
+			$oldPref[$prefName] = $temp;
+			$calNew->set($prefName, $temp);
 			$prefChanges[] = $prefName.' => '.$temp;
 		}
 	}
 	if (count($prefChanges))
 	{
-		save_prefs();
-		// Do admin logging
-		$logString = implode('[!br!]', $prefChanges);
-		$admin_log->log_event($logRef,$logString,'');
+		$result = $calNew->save();
+		if ($result === TRUE)
+		{
+			// Do admin logging
+			$logString = implode('[!br!]', $prefChanges);
+			$admin_log->log_event($logRef,$logString,'');
+			$mes->add('Calendar prefs updated', E_MESSAGE_SUCCESS);	
+		}
+		elseif ($result === FALSE)
+		{
+			$mes->add('Error saving calendar prefs', E_MESSAGE_ERROR);		
+		}
+		else
+		{		// Should never happen
+			$mes->add('Unexpected result: '.$result, E_MESSAGE_INFO);
+
+		}
 	}
 }
 
@@ -135,18 +162,20 @@ $prefSettings = array(
 );
 if (isset($_POST['updatesettings'])) 
 {
-	logPrefChanges(&$prefSettings['updateOptions'], 'EC_ADM_06');
+	logPrefChanges($prefSettings['updateOptions'], $calPref, 'EC_ADM_06');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	$message = EC_ADLAN_A204; 				// "Calendar settings updated.";
 }
 
+
 // ****************** FORTHCOMING EVENTS ******************
 if (isset($_POST['updateforthcoming']))
 {
-	logPrefChanges(&$prefSettings['updateForthcoming'], 'EC_ADM_07');
+	logPrefChanges($prefSettings['updateForthcoming'], $calPref, 'EC_ADM_07');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	$message = EC_ADLAN_A109; 				// "Forthcoming Events settings updated.";
 }
+
 
 $action = 'config';		// Default action - show preferences
 if (e_QUERY) 
@@ -156,7 +185,6 @@ if (e_QUERY)
 }
 
 require_once('ecal_class.php');
-global $ecal_class;
 $ecal_class = new ecal_class;
 
 
@@ -375,7 +403,6 @@ if($action == 'cat')
 				if ($ecal_send_email != 0)
 				{  // Need to send a test email
 				  // First, set up a dummy event
-				  global $thisevent;
 				  $thisevent = array('event_start' => $ecal_class->time_now, 'event_end' => ($ecal_class->time_now)+3600,
 									 'event_title' => 'Test event', 'event_details' => EC_ADLAN_A191,
 									 'event_cat_name' => $event_cat_name, 'event_location' => EC_ADLAN_A192,
@@ -394,10 +421,10 @@ if($action == 'cat')
 							 break;
 				  }
 				  $cal_msg = $tp -> parseTemplate($cal_msg, TRUE);
-				  $cal_title = $tp -> parseTemplate($pref['eventpost_mailsubject'], TRUE);
+				  $cal_title = $tp -> parseTemplate($calPref['eventpost_mailsubject'], TRUE);
 				  $user_email = USEREMAIL;
 				  $user_name  = USERNAME;
-				  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $pref['eventpost_mailaddress'], $pref['eventpost_mailfrom']); 
+				  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $calPref['eventpost_mailaddress'], $calPref['eventpost_mailfrom']); 
 				  if ($send_result)
 					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
 				  else
@@ -583,6 +610,9 @@ if($action == 'cat')
 			$calendarmenu_catopt .= "<option value=0'>".EC_ADLAN_A33."</option>";
 		} 
 
+		$emessage = eMessage::getInstance();
+		echo $emessage->render().$text;
+
 		$calendarmenu_text .= "
 		<form id='calform' method='post' action='".e_SELF."?cat'>
 		
@@ -620,12 +650,15 @@ if($action == 'cat')
 if($action == 'forthcoming')
 {
 
-	if (!isset($pref['eventpost_menuheading'])) $pref['eventpost_menuheading'] = EC_ADLAN_A100;
-	if (!isset($pref['eventpost_daysforward'])) $pref['eventpost_daysforward'] = 30;
-	if (!isset($pref['eventpost_numevents']))   $pref['eventpost_numevents'] = 3;
-	if (!isset($pref['eventpost_checkrecur']))  $pref['eventpost_checkrecur'] = '1';
-	if (!isset($pref['eventpost_linkheader']))  $pref['eventpost_linkheader'] = '0';
-	if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
+	if (!isset($calPref['eventpost_menuheading'])) $calPref['eventpost_menuheading'] = EC_ADLAN_A100;
+	if (!isset($calPref['eventpost_daysforward'])) $calPref['eventpost_daysforward'] = 30;
+	if (!isset($calPref['eventpost_numevents']))   $calPref['eventpost_numevents'] = 3;
+	if (!isset($calPref['eventpost_checkrecur']))  $calPref['eventpost_checkrecur'] = '1';
+	if (!isset($calPref['eventpost_linkheader']))  $calPref['eventpost_linkheader'] = '0';
+	if (!isset($calPref['eventpost_namelink']))    $calPref['eventpost_namelink'] = '1';
+
+	$emessage = eMessage::getInstance();
+	echo $emessage->render().$text;
 
 	$text = "
 	<form method='post' action='".e_SELF."?forthcoming'>
@@ -638,7 +671,7 @@ if($action == 'forthcoming')
 	<thead>
 	<tr>
 		<td>".EC_ADLAN_A108."</td>
-		<td><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		<td><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$calPref['eventpost_menuheading']."' maxlength='30' />
 		</td>
 	</tr>
 	</thead>
@@ -646,50 +679,50 @@ if($action == 'forthcoming')
 	<tbody>
 	<tr>
 		<td>".EC_ADLAN_A101."</td>
-		<td><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
+		<td><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$calPref['eventpost_daysforward']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A102."</td>
-		<td><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
+		<td><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$calPref['eventpost_numevents']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A103."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
+		<td><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($calPref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A107."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($pref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
+		<td><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($calPref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A199."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($pref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
+		<td><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($calPref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A130."<br /></td>
 		<td>
 			<select name='eventpost_namelink' class='tbox'>
-			<option value='1' ".($pref['eventpost_namelink']=='1'?" selected='selected' ":"")." > ".EC_ADLAN_A131." </option>
-			<option value='2' ".($pref['eventpost_namelink']=='2'?" selected='selected' ":"")." > ".EC_ADLAN_A132." </option>
+			<option value='1' ".($calPref['eventpost_namelink']=='1'?" selected='selected' ":"")." > ".EC_ADLAN_A131." </option>
+			<option value='2' ".($calPref['eventpost_namelink']=='2'?" selected='selected' ":"")." > ".EC_ADLAN_A132." </option>
 			</select>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>".EC_ADLAN_A104."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
+		<td><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($calPref['eventpost_linkheader']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
 	<tr>
 		<td>".EC_ADLAN_A120."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
+		<td><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($calPref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
@@ -699,7 +732,7 @@ if($action == 'forthcoming')
 
 // Now display all the current categories as checkboxes
 	$cal_fe_prefs = array();
-    if (isset($pref['eventpost_fe_set'])) $cal_fe_prefs = array_flip(explode(",",$pref['eventpost_fe_set']));
+    if (isset($calPref['eventpost_fe_set'])) $cal_fe_prefs = array_flip(explode(",",$calPref['eventpost_fe_set']));
 	if (!isset($calendarmenu2_db) || !is_object($calendarmenu2_db)) $calendarmenu2_db = new DB;		// Possible notice here
 	if ($calendarmenu2_db->db_Select("event_cat", "event_cat_id,event_cat_name", " WHERE (event_cat_name != '".EC_DEFAULT_CATEGORY."') order by event_cat_name", "nowhere"))
 	{
@@ -735,6 +768,9 @@ if($action == 'forthcoming')
 
 if(($action == 'maint'))
 {
+	$emessage = eMessage::getInstance();
+	echo $emessage->render().$text;
+
 	$text = "
 	<form method='post' action='".e_SELF."?maint'>
 	<fieldset id='plugin-ecal-maintenance'>
@@ -792,6 +828,9 @@ if(($action == 'maint'))
 
 if($action == 'subs')
 {
+	$emessage = eMessage::getInstance();
+	echo $emessage->render().$text;
+
 	$from = 0;
 	$amount = 20;		// Number per page - could make configurable later if required
 	if (isset($ec_qs[1])) $from = intval($ec_qs[1]);
@@ -882,6 +921,8 @@ if($action == 'config')
 		return $ret;
 	}
 
+		$emessage = eMessage::getInstance();
+		echo $emessage->render().$text;
 
 	$text = "
 	<form method='post' action='".e_SELF."'>
@@ -893,14 +934,14 @@ if($action == 'config')
 	</colgroup>
 	<tr>
 		<td>".EC_ADLAN_A208." </td>
-		<td>". $uc->uc_dropdown('eventpost_admin', $pref['eventpost_admin'], 'public, nobody, member, admin, classes')."
+		<td>". $uc->uc_dropdown('eventpost_admin', $calPref['eventpost_admin'], 'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
 	";
 $text .= "
 	<tr>
 		<td>".EC_ADLAN_A211." </td>
-		<td>". $uc->uc_dropdown('eventpost_super', $pref['eventpost_super'],  'public, nobody, member, admin, classes')."
+		<td>". $uc->uc_dropdown('eventpost_super', $calPref['eventpost_super'],  'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
 
@@ -908,9 +949,9 @@ $text .= "
 		<td>".EC_ADLAN_A134."</td>
 		<td>
 			<select name='eventpost_adminlog' class='tbox'>
-			<option value='0' ".($pref['eventpost_adminlog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
-			<option value='1' ".($pref['eventpost_adminlog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A135." </option>
-			<option value='2' ".($pref['eventpost_adminlog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A136." </option>
+			<option value='0' ".($calPref['eventpost_adminlog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
+			<option value='1' ".($calPref['eventpost_adminlog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A135." </option>
+			<option value='2' ".($calPref['eventpost_adminlog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A136." </option>
 			</select>
 			<span class='field-help'>".EC_ADLAN_A137."</span>
 		</td>
@@ -920,50 +961,50 @@ $text .= "
 		<td>".EC_ADLAN_A165."</td>
 		<td>
 			<select name='eventpost_menulink' class='tbox'>
-			<option value='0' ".($pref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A209." </option>
-			<option value='1' ".($pref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A210." </option>
-			<option value='2' ".($pref['eventpost_menulink']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A185." </option>
+			<option value='0' ".($calPref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A209." </option>
+			<option value='1' ".($calPref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A210." </option>
+			<option value='2' ".($calPref['eventpost_menulink']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A185." </option>
 			</select>
 		</td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A183."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_showmouseover' value='1' ".($pref['eventpost_showmouseover']==1?" checked='checked' ":"")." />
+		<td><input class='tbox' type='checkbox' name='eventpost_showmouseover' value='1' ".($calPref['eventpost_showmouseover']==1?" checked='checked' ":"")." />
 		<span class='field-help'>".EC_ADLAN_A184."</span></td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A140."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_showeventcount' value='1' ".($pref['eventpost_showeventcount']==1?" checked='checked' ":"")." /></td>
+		<td><input class='tbox' type='checkbox' name='eventpost_showeventcount' value='1' ".($calPref['eventpost_showeventcount']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A213."</td>
 		<td>
-		  <input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." />
+		  <input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($calPref['eventpost_forum']==1?" checked='checked' ":"")." />
 		  		<span class='field-help'>".EC_ADLAN_A22."</span>
 		  </td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A171."</td>
-		<td><input class='tbox' type='text' name='eventpost_recentshow' size='10' value='".$pref['eventpost_recentshow']."' maxlength='5' />
+		<td><input class='tbox' type='text' name='eventpost_recentshow' size='10' value='".$calPref['eventpost_recentshow']."' maxlength='5' />
 		<span class='field-help'>".EC_ADLAN_A172."</span>
 		</td>
 	</tr>  
 
 	<tr>
 		<td>".EC_ADLAN_A212."</td>
-		<td>".select_day_start($pref['eventpost_weekstart'])."</td>
+		<td>".select_day_start($calPref['eventpost_weekstart'])."</td>
 	</tr>
 	<tr>
 		<td>".EC_ADLAN_A214."<br /></td>
 		<td>
 			<select name='eventpost_lenday' class='tbox'>
-			<option value='1' ".($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." > 1 </option>
-			<option value='2' ".($pref['eventpost_lenday']=='2'?" selected='selected' ":"")." > 2 </option>
-			<option value='3' ".($pref['eventpost_lenday']=='3'?" selected='selected' ":"")." > 3 </option>
+			<option value='1' ".($calPref['eventpost_lenday']=='1'?" selected='selected' ":"")." > 1 </option>
+			<option value='2' ".($calPref['eventpost_lenday']=='2'?" selected='selected' ":"")." > 2 </option>
+			<option value='3' ".($calPref['eventpost_lenday']=='3'?" selected='selected' ":"")." > 3 </option>
 			</select>
 		</td>
 	</tr>
@@ -972,8 +1013,8 @@ $text .= "
 		<td>".EC_ADLAN_A215."<br /></td>
 		<td>
 			<select name='eventpost_dateformat' class='tbox'>
-			<option value='my' ".($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_ADLAN_A216."</option>
-			<option value='ym' ".($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_ADLAN_A217."</option>
+			<option value='my' ".($calPref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_ADLAN_A216."</option>
+			<option value='ym' ".($calPref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_ADLAN_A217."</option>
 			</select>
 		</td>
 	</tr>
@@ -982,22 +1023,22 @@ $text .= "
 		<td>".EC_ADLAN_A133."<br /></td>
 		<td>
 			<select name='eventpost_datedisplay' class='tbox'>
-			<option value='1' ".($pref['eventpost_datedisplay']=='1'?" selected='selected' ":"")." > yyyy-mm-dd</option>
-			<option value='2' ".($pref['eventpost_datedisplay']=='2'?" selected='selected' ":"")." > dd-mm-yyyy</option>
-			<option value='3' ".($pref['eventpost_datedisplay']=='3'?" selected='selected' ":"")." > mm-dd-yyyy</option>
-			<option value='4' ".($pref['eventpost_datedisplay']=='4'?" selected='selected' ":"")." > yyyy.mm.dd</option>
-			<option value='5' ".($pref['eventpost_datedisplay']=='5'?" selected='selected' ":"")." > dd.mm.yyyy</option>
-			<option value='6' ".($pref['eventpost_datedisplay']=='6'?" selected='selected' ":"")." > mm.dd.yyyy</option>
-			<option value='7' ".($pref['eventpost_datedisplay']=='7'?" selected='selected' ":"")." > yyyy/mm/dd</option>
-			<option value='8' ".($pref['eventpost_datedisplay']=='8'?" selected='selected' ":"")." > dd/mm/yyyy</option>
-			<option value='9' ".($pref['eventpost_datedisplay']=='9'?" selected='selected' ":"")." > mm/dd/yyyy</option>
+			<option value='1' ".($calPref['eventpost_datedisplay']=='1'?" selected='selected' ":"")." > yyyy-mm-dd</option>
+			<option value='2' ".($calPref['eventpost_datedisplay']=='2'?" selected='selected' ":"")." > dd-mm-yyyy</option>
+			<option value='3' ".($calPref['eventpost_datedisplay']=='3'?" selected='selected' ":"")." > mm-dd-yyyy</option>
+			<option value='4' ".($calPref['eventpost_datedisplay']=='4'?" selected='selected' ":"")." > yyyy.mm.dd</option>
+			<option value='5' ".($calPref['eventpost_datedisplay']=='5'?" selected='selected' ":"")." > dd.mm.yyyy</option>
+			<option value='6' ".($calPref['eventpost_datedisplay']=='6'?" selected='selected' ":"")." > mm.dd.yyyy</option>
+			<option value='7' ".($calPref['eventpost_datedisplay']=='7'?" selected='selected' ":"")." > yyyy/mm/dd</option>
+			<option value='8' ".($calPref['eventpost_datedisplay']=='8'?" selected='selected' ":"")." > dd/mm/yyyy</option>
+			<option value='9' ".($calPref['eventpost_datedisplay']=='9'?" selected='selected' ":"")." > mm/dd/yyyy</option>
 			</select>
 		</td>
 	</tr>
 
 	<tr>
 		<td>".EC_ADLAN_A138."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A139."</em></span>
+		<td><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($calPref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A139."</em></span>
 		</td>
 	</tr>
 
@@ -1005,9 +1046,9 @@ $text .= "
 		<td>".EC_ADLAN_A200."<br /></td>
 		<td>
 			<select name='eventpost_editmode' class='tbox'>
-			<option value='0' ".($pref['eventpost_editmode']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A201."</option>
-			<option value='1' ".($pref['eventpost_editmode']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A202."</option>
-			<option value='2' ".($pref['eventpost_editmode']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A203."</option>
+			<option value='0' ".($calPref['eventpost_editmode']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A201."</option>
+			<option value='1' ".($calPref['eventpost_editmode']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A202."</option>
+			<option value='2' ".($calPref['eventpost_editmode']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A203."</option>
 			</select>
 		</td>
 	</tr>
@@ -1021,9 +1062,9 @@ $text .= "
 		</td>
 		<td>
 			<select name='eventpost_caltime' class='tbox'>
-			<option value='1' ".($pref['eventpost_caltime']=='1'?" selected='selected' ":'')." > Server </option>
-			<option value='2' ".($pref['eventpost_caltime']=='2'?" selected='selected' ":'')." > Site </option>
-			<option value='3' ".($pref['eventpost_caltime']=='3'?" selected='selected' ":'')." > User </option>
+			<option value='1' ".($calPref['eventpost_caltime']=='1'?" selected='selected' ":'')." > Server </option>
+			<option value='2' ".($calPref['eventpost_caltime']=='2'?" selected='selected' ":'')." > Site </option>
+			<option value='3' ".($calPref['eventpost_caltime']=='3'?" selected='selected' ":'')." > User </option>
 			</select><br /><span class='field-help'>".EC_ADLAN_A129."</span>
 		</td>
 	</tr>
@@ -1034,12 +1075,12 @@ $text .= "
 		</td>
 		<td>
 			<select name='eventpost_timedisplay' class='tbox'>
-			<option value='1' ".($pref['eventpost_timedisplay']=='1'?" selected='selected' ":'')." > 24-hour hhmm </option>
-			<option value='4' ".($pref['eventpost_timedisplay']=='4'?" selected='selected' ":'')." > 24-hour hh:mm </option>
-			<option value='2' ".($pref['eventpost_timedisplay']=='2'?" selected='selected' ":'')." > 12-hour </option>
-			<option value='3' ".($pref['eventpost_timedisplay']=='3'?" selected='selected' ":'')." > Custom </option>
+			<option value='1' ".($calPref['eventpost_timedisplay']=='1'?" selected='selected' ":'')." > 24-hour hhmm </option>
+			<option value='4' ".($calPref['eventpost_timedisplay']=='4'?" selected='selected' ":'')." > 24-hour hh:mm </option>
+			<option value='2' ".($calPref['eventpost_timedisplay']=='2'?" selected='selected' ":'')." > 12-hour </option>
+			<option value='3' ".($calPref['eventpost_timedisplay']=='3'?" selected='selected' ":'')." > Custom </option>
 			</select>
-            <input class='tbox' type='text' name='eventpost_timecustom' size='20' value='".$pref['eventpost_timecustom']."' maxlength='30' />
+            <input class='tbox' type='text' name='eventpost_timecustom' size='20' value='".$calPref['eventpost_timecustom']."' maxlength='30' />
 			<br /><span class='field-help'>".EC_ADLAN_A128."</span>
 		</td>
 	</tr>
@@ -1050,12 +1091,12 @@ $text .= "
 		</td>
 		<td>
 			<select name='eventpost_dateevent' class='tbox'>
-			<option value='1' ".($pref['eventpost_dateevent']=='1'?" selected='selected' ":'')." > dayofweek day month yyyy </option>
-			<option value='2' ".($pref['eventpost_dateevent']=='2'?" selected='selected' ":'')." > dyofwk day mon yyyy </option>
-			<option value='3' ".($pref['eventpost_dateevent']=='3'?" selected='selected' ":'')." > dyofwk dd-mm-yy </option>
-			<option value='0' ".($pref['eventpost_dateevent']=='0'?" selected='selected' ":'')." > Custom </option>
+			<option value='1' ".($calPref['eventpost_dateevent']=='1'?" selected='selected' ":'')." > dayofweek day month yyyy </option>
+			<option value='2' ".($calPref['eventpost_dateevent']=='2'?" selected='selected' ":'')." > dyofwk day mon yyyy </option>
+			<option value='3' ".($calPref['eventpost_dateevent']=='3'?" selected='selected' ":'')." > dyofwk dd-mm-yy </option>
+			<option value='0' ".($calPref['eventpost_dateevent']=='0'?" selected='selected' ":'')." > Custom </option>
 			</select>
-            <input class='tbox' type='text' name='eventpost_eventdatecustom' size='20' value='".$pref['eventpost_eventdatecustom']."' maxlength='30' />
+            <input class='tbox' type='text' name='eventpost_eventdatecustom' size='20' value='".$calPref['eventpost_eventdatecustom']."' maxlength='30' />
 			<br /><span class='field-help'>".EC_ADLAN_A168."</span>
 		</td>
 	</tr>
@@ -1066,13 +1107,13 @@ $text .= "
 		</td>
 		<td>
 			<select name='eventpost_datenext' class='tbox'>
-			<option value='1' ".($pref['eventpost_datenext']=='1'?" selected='selected' ":'')." > dd month </option>
-			<option value='2' ".($pref['eventpost_datenext']=='2'?" selected='selected' ":'')." > dd mon </option>
-			<option value='3' ".($pref['eventpost_datenext']=='3'?" selected='selected' ":'')." > month dd </option>
-			<option value='4' ".($pref['eventpost_datenext']=='4'?" selected='selected' ":'')." > mon dd </option>
-			<option value='0' ".($pref['eventpost_datenext']=='0'?" selected='selected' ":'')." > Custom </option>
+			<option value='1' ".($calPref['eventpost_datenext']=='1'?" selected='selected' ":'')." > dd month </option>
+			<option value='2' ".($calPref['eventpost_datenext']=='2'?" selected='selected' ":'')." > dd mon </option>
+			<option value='3' ".($calPref['eventpost_datenext']=='3'?" selected='selected' ":'')." > month dd </option>
+			<option value='4' ".($calPref['eventpost_datenext']=='4'?" selected='selected' ":'')." > mon dd </option>
+			<option value='0' ".($calPref['eventpost_datenext']=='0'?" selected='selected' ":'')." > Custom </option>
 			</select>
-            <input class='tbox' type='text' name='eventpost_nextdatecustom' size='20' value='".$pref['eventpost_nextdatecustom']."' maxlength='30' />
+            <input class='tbox' type='text' name='eventpost_nextdatecustom' size='20' value='".$calPref['eventpost_nextdatecustom']."' maxlength='30' />
 			<br /><span class='field-help'>".EC_ADLAN_A168."</span>
 		</td>
 	</tr>
@@ -1085,7 +1126,7 @@ $text .= "
 	if (e107::isInstalled('pdf')) { $listOpts['2'] = EC_ADLAN_A196; }
 	foreach ($listOpts as $v => $t)
 	{
-		$s = $pref['eventpost_printlists'] == $v ? " selected='selected'" : '';
+		$s = $calPref['eventpost_printlists'] == $v ? " selected='selected'" : '';
 		$text .= "<option value='{$v}'{$s}>{$t}</option>\n";
 	}
 	$text .= "
@@ -1095,25 +1136,25 @@ $text .= "
 
 	<tr>
 		<td>".EC_ADLAN_A95."</td>
-		<td><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":'')." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A96."</em></span>
+		<td><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($calPref['eventpost_asubs']==1?" checked='checked' ":'')." />&nbsp;&nbsp;<span class='field-help'><em>".EC_ADLAN_A96."</em></span>
 		</td>
 	</tr>
 	
 	<tr>
 		<td>".EC_ADLAN_A92."</td>
-		<td><input class='tbox' type='text' name='eventpost_mailfrom' size='60' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
+		<td><input class='tbox' type='text' name='eventpost_mailfrom' size='60' value='".$calPref['eventpost_mailfrom']."' maxlength='100' />
 		</td>
 	</tr>  
 
 	<tr>
 		<td>".EC_ADLAN_A91."</td>
-		<td><input class='tbox' type='text' name='eventpost_mailsubject' size='60' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
+		<td><input class='tbox' type='text' name='eventpost_mailsubject' size='60' value='".$calPref['eventpost_mailsubject']."' maxlength='100' />
 		</td>
 	</tr>  
 
 	<tr>
 		<td>".EC_ADLAN_A93."</td>
-		<td><input class='tbox' type='text' name='eventpost_mailaddress' size='60' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
+		<td><input class='tbox' type='text' name='eventpost_mailaddress' size='60' value='".$calPref['eventpost_mailaddress']."' maxlength='100' />
 		</td>
 	</tr>  
 
@@ -1121,9 +1162,9 @@ $text .= "
 		<td>".EC_ADLAN_A114."<br /></td>
 		<td>
 			<select name='eventpost_emaillog' class='tbox'>
-			<option value='0' ".($pref['eventpost_emaillog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
-			<option value='1' ".($pref['eventpost_emaillog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A115."  </option>
-			<option value='2' ".($pref['eventpost_emaillog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A116." </option>
+			<option value='0' ".($calPref['eventpost_emaillog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
+			<option value='1' ".($calPref['eventpost_emaillog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A115."  </option>
+			<option value='2' ".($calPref['eventpost_emaillog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A116." </option>
 			</select>
 		</td>
 	</tr>

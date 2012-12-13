@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,6 +16,8 @@
 
 /**
  *	e107 Event calendar plugin
+ *
+ * Event calendar plugin - large calendar display
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
@@ -47,7 +49,7 @@ if (isset($_POST['printlists']))
 	exit();
 } 
 
-//e107::getScParser();
+
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 $calSc = new event_calendar_shortcodes();
 
@@ -101,10 +103,6 @@ $monthend	= mktime(0, 0, 0, $month + 1, 1, $year) - 1;	// End of month to be sho
 $calSc->ecalClass = &$ecal_class;
 $calSc->setCalDate($dateArray);
 $calSc->catFilter = $cat_filter;
-
-//setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
-//callScFunc('event_calendar_shortcodes','setCalDate', $dateArray);			// Tell shortcodes the date to display
-//setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
 
 
 //-------------------------------------------------
@@ -191,7 +189,6 @@ $text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calSc
 for ($i = 0; $i < 7; $i++)
 {
 	$calSc->headerDay = $ecal_class->day_offset_string($i);
-	//setScVar('event_calendar_shortcodes', 'headerDay', $ecal_class->day_offset_string($i));
 	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER, FALSE, $calSc);
 } 
 $text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calSc);
@@ -212,8 +209,6 @@ for ($c = 1; $c <= $numberdays; $c++)
 {	// Loop through the number of days in this month
 	$calSc->todayStart = $start;			// Start of current day
 	$calSc->curDay = $c;					// Current day of month
-	//setScVar('event_calendar_shortcodes', 'todayStart', $start);			// Start of current day
-	//setScVar('event_calendar_shortcodes', 'curDay', $c);					// Current day of month
 
 	$got_ev = array_key_exists($c, $events) && is_array($events[$c]) && count($events[$c]) > 0;		// Flag set if events on this day
   
@@ -232,24 +227,24 @@ for ($c = 1; $c <= $numberdays; $c++)
     } 
 	if ($got_ev)
 	{
-      foreach($events[$c] as $ev)
-      {
-		if ($ev['startofevent'])
+		foreach($events[$c] as $ev)
 		{
-		  $ev['indicat'] = '';
-		  $ev['imagesize'] = '8';
-		  $ev['fulltopic'] = TRUE;
-		}
-		else
-		{
-		  $ev['indicat'] = '';
-		  $ev['imagesize'] = '4';
-		  $ev['fulltopic'] = FALSE;
-		}
-		//setScVar('event_calendar_shortcodes', 'event', $ev);			// Give shortcodes the event data
-		$calSc->event = $ev;
-		$text .= $e107->tp->parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calSc);
-	  } 
+			if ($ev['startofevent'])
+			{
+			  $ev['indicat'] = '';
+			  $ev['imagesize'] = '8';
+			  $ev['fulltopic'] = TRUE;
+			}
+			else
+			{
+			  $ev['indicat'] = '';
+			  $ev['imagesize'] = '4';
+			  $ev['fulltopic'] = FALSE;
+			}
+			//setScVar('event_calendar_shortcodes', 'event', $ev);			// Give shortcodes the event data
+			$calSc->event = $ev;
+			$text .= $e107->tp->parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calSc);
+		} 
 	}
 	$text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calSc);
 
