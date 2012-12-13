@@ -594,16 +594,17 @@ class e_form
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
+		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		
 		if(vartrue($options['inline']))
 		{
-			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' ></div>
-				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' />
+			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
+				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
 			";		
 		}
 		else
 		{
-			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' {$required} />";		
+			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 		
 		return $text;
