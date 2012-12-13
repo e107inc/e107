@@ -2,11 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * These messages are for the 'user' pages of the event calendar (including event entry/editing)
+ * These messages are for the event entry/editing functions on the 'user' pages of the event calendar. Also 'notify'
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_class.php,v $
  * $Revision$
@@ -17,7 +17,7 @@
 /**
  *	e107 Event calendar plugin
  *
- *	Language file - anything called up in ecal_class.php and similar
+ *	Language file - anything called up in ecal_class.php, notify and similar
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar

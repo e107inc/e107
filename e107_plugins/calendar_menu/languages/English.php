@@ -2,11 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * These messages are for the 'user' pages of the event calendar (including event entry/editing)
+ * These messages are for the 'user' pages of the event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
  * $Revision$
@@ -254,6 +254,8 @@ define('EC_LAN_178', "Accept Entries");
 define('EC_LAN_179', "Confirmation of multiple event entry");
 define('EC_LAN_180', 'RECORDS NOT SAVED - DB UPDATE ERROR');
 define('EC_LAN_181', "You aren't allowed to do that!");
+define('EC_LAN_182', 'Sign up to receive email notification of events');
+define('EC_LAN_183', 'Create printable lists of events');
 
 define('EC_LAN_VIEWCALENDAR', 'View Calendar');
 define('EC_LAN_VIEWALLEVENTS', 'View all events');

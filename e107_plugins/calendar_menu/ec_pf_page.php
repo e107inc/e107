@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,6 +16,8 @@
 
 /**
  *	e107 Event calendar plugin
+ *
+ *	Event calendar - generate lists
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
@@ -56,7 +58,7 @@ unset($ec_qs);
 if (e_QUERY) $ec_qs = explode('.', e_QUERY); 
 else
 {
-  if (!isset($pref['eventpost_printlists']) || ($pref['eventpost_printlists'] == 0))
+  if (!isset($ecal_class->pref['eventpost_printlists']) || ($ecal_class->pref['eventpost_printlists'] == 0))
     header('location:'.SITEURL);   // If disabled, just go back to index page
 }
 
@@ -102,7 +104,7 @@ if (count($EVENT_CAL_PDF_NAMES) == 1)
 //  echo "Assign template: ".$ec_pdf_template."<br />";
 }
 
-$ec_enable_pdf = ($pref['eventpost_printlists'] > 1) && is_readable(e_PLUGIN."pdf/e107pdf.php");
+$ec_enable_pdf = ($ecal_class->pref['eventpost_printlists'] > 1) && is_readable(e_PLUGIN."pdf/e107pdf.php");
 
 if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 {

@@ -22,7 +22,7 @@
 		<pref name="eventpost_showmouseover">0</pref>
 		<pref name="eventpost_showeventcount">1</pref>
 		<pref name="eventpost_forum">1</pref>
-		<pref name="eventpost_recentshow">0</pref>
+		<pref name="eventpost_recentshow">LV</pref>
 		<pref name="eventpost_weekstart">sun</pref>
 		<pref name="eventpost_lenday">1</pref>
 		<pref name="eventpost_dateformat">1</pref>

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -12,6 +12,17 @@
  * $Revision$
  * $Date$
  * $Author$
+ */
+
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	Language file - installation
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id$;
  */
 
 // Install
@@ -25,3 +36,6 @@ define('EC_ADINST_LAN_04', 'To activate please go to your menus screen and selec
 define('EC_ADINST_LAN_06', 'Default category entered');
 define('EC_ADINST_LAN_07', 'Error adding default category');
 define('EC_ADINST_LAN_08', 'Default category already in DB');
+define('EC_ADINST_LAN_09', 'Preferences already converted for 2.0');
+define('EC_ADINST_LAN_10', 'Preferences converted ready for 2.0');
+
