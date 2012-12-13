@@ -64,8 +64,11 @@
 	
 	define("ADMIN_SORT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/sort_16.png' alt='' title='Sort' />"); //TODO LAN
 	define("ADMIN_SORT_ICON_PATH", e_IMAGE."admin_images/sort_16.png");
+ 
+ 	define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
+
 	
-*/	
+*/
 
 
 
