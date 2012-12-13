@@ -1193,8 +1193,10 @@ class e_navigation
 								
 				if (isset($row['link_parent']) && $row['link_parent'] != 0)
 				{
-					$id = $row['link_parent'];
-					$ret[$id]['link_sub'][] = $row;
+					$pid = $row['link_parent'];
+				//	$ret[$id]['link_sub'][] = $row;
+					$sub['sub-'.$pid][] = $row;
+					
 				}
 				else
 				{
@@ -1211,19 +1213,38 @@ class e_navigation
 						$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
 						if(vartrue($sublinkArray))
 						{
-							$ret[$id]['link_sub'] = $sublinkArray;
+							$sub['sub-'.$id] = $sublinkArray;
+							//$ret[$id]['link_sub'] = $sublinkArray;
 						}
 					}
 				}
 				
 			}
 		}
+
+		return $this->compile($ret, $sub);
 		
 		return $ret;
 
 	}
 
-
+	function compile($ret, $sub)
+	{
+		$new = array();
+		
+		foreach($ret as $k=>$v)
+		{
+			$new[$k] = $v;
+			$p = $v['link_id'];
+			if(isset($sub['sub-'.$p]))
+			{
+				$new[$k]['link_sub'] = $sub['sub-'.$p];	
+			}				
+		}
+					
+		return $new;	
+	}
+		
 
 	/**
 	 * Render the Front-end Links. (and eventually the back-end too)
