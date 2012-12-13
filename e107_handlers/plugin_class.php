@@ -794,7 +794,7 @@ class e107plugin
 		}
 	}
 
-	function manage_link($action, $link_url, $link_name, $link_class = 0)
+	function manage_link($action, $link_url, $link_name, $link_class = 0, $options=array())
 	{
 
 		$sql = e107::getDb();
@@ -816,7 +816,8 @@ class e107plugin
 		$link_url = $tp->toDB($link_url, true);
 		$link_name = $tp->toDB($link_name, true);
 		$path = str_replace("../", "", $link_url); // This should clean up 'non-standard' links
-		$path = $tp->createConstants($path); // Add in standard {e_XXXX} directory constants if we can
+		$path = $tp->createConstants($path); // Add in standard {e_XXXX} directory constants if we can	
+		
 		if ($action == 'add')
 		{
 			$link_t = $sql->db_Count('links');
@@ -832,7 +833,7 @@ class e107plugin
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
 						'link_class'		 => vartrue($linkclass,'0'),
-						'link_function'		 => ''
+						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : "")
 					);
 					return $sql->db_Insert('links', $linkData); // TODO: Add the _FIELD_DEFS array
 			}
@@ -1647,11 +1648,15 @@ class e107plugin
 
 		foreach ($array['link'] as $link)
 		{
-			$attrib = $link['@attributes'];
-			$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
-			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
-			$url = $attrib['url'];
-			$perm = (isset($attrib['perm']) ? $attrib['perm'] : 'everyone');
+			$attrib 	= $link['@attributes'];
+			$linkName 	= (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
+			$remove 	= (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+			$url 		= vartrue($attrib['url']);
+			$perm 		= vartrue($attrib['perm'],'everyone'); 
+			
+			$options 	= array(
+				'link_function'=>vartrue($attrib['function'])
+			);
 
 			switch ($function)
 			{
@@ -1660,7 +1665,7 @@ class e107plugin
 
 					if (!$remove) // Add any non-deprecated link
 					{
-						$result = $this->manage_link('add', $url, $linkName, $perm);
+						$result = $this->manage_link('add', $url, $linkName, $perm, $options);
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
@@ -1670,7 +1675,7 @@ class e107plugin
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
 					{
-						$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						$status = ($this->manage_link('remove', $url, $linkName,false, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
 					}
 					break;
