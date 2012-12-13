@@ -472,17 +472,18 @@ class media_form_ui extends e_admin_form_ui
 		
 		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
 		{
-			foreach($pref['e_imageresize'] as $val)
+			foreach($pref['e_imageresize'] as $k=>$val)
 			{
 			
 				$options[$k]		= ucfirst($k). " [img] bbcode";
 			}
 		}
 		
-		
+		$options = $pref['resize_dimensions'];
 		
 		foreach($options as $key=>$title)
 		{
+			$title = ucwords(str_replace("-"," ",$key));
 			$valW = vartrue($curval[$key]['w']);
 			$valH = vartrue($curval[$key]['h']);
 		
