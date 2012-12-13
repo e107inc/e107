@@ -1780,21 +1780,21 @@ class e107plugin
 			case 'install': // Probably best to leave well alone
 				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
 				{
-					e107::getConfig('core')->add("e_imageresize",$tag['folder']); //FIXME - should be saved as an array; 
-					$mes->debug('Adding imageResize for: '.$tag['folder']);
-				}
-			
+					e107::getConfig('core')->setPref('resize_dimensions/'.$this->plugFolder."-bbcode", array('w'=>300,'h'=>300));
+					$mes->debug('Adding imageResize for: '.$this->plugFolder);
+				}		
 			break;
 			
 			case 'uninstall': // Probably best to leave well alone
 				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
 				{
-					// e107::getConfig('core')->add("e_imageresize",$tag['folder']);
+					//e107::getConfig('core')->removePref('resize_dimensions/'.$this->plugFolder);
+					//e107::getConfig('core')->removePref('e_imageresize/'.$this->plugFolder);
+					e107::getConfig('core')->removePref('resize_dimensions/'.$this->plugFolder."-bbcode");
+					$mes->debug('Removing imageResize for: '.$this->plugFolder."-bbcode");
 				}
 			
-			break;
-		
-		
+			break;	
 		}
 		
              
