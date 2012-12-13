@@ -279,12 +279,24 @@ class e107plugin
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
 
-			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
+			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml - no longer relevant. 
 			if ($plugin_path == $plug_info['folder'])
 			{
 				if (array_key_exists($plugin_path, $pluginDBList))
 				{ // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
+					
+						// Check for name (lan) changes
+					if (vartrue($plug_info['@attributes']['lan']) && $pluginDBList[$plugin_path]['plugin_name'] != $plug_info['@attributes']['lan'])
+					{
+						// print_a($plug_info);
+						$pluginDBList[$plugin_path]['status'] = 'update';
+						$pluginDBList[$plugin_path]['plugin_name'] = $plug_info['@attributes']['lan'];
+						$this->plugFolder = $plugin_path;
+						$this->XmlLanguageFiles('upgrade');
+					}
+					
+					
 
 					// Check for missing plugin_category in plugin table.
 					if ($pluginDBList[$plugin_path]['plugin_category'] == '' || $pluginDBList[$plugin_path]['plugin_category'] != $plug_info['category'])
@@ -787,7 +799,7 @@ class e107plugin
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-
+		
 		if (!is_numeric($link_class))
 		{
 			$link_class = strtolower($link_class);
@@ -797,8 +809,9 @@ class e107plugin
 			$plug_perm['mainadmin'] = e_UC_MAINADMIN;
 			$plug_perm['admin'] = e_UC_ADMIN;
 			$plug_perm['nobody'] = e_UC_NOBODY;
-			$link_class = ($plug_perm[$link_class]) ? $plug_perm[$link_class] : e_UC_PUBLIC;
+			$link_class = ($plug_perm[$link_class]) ? intval($plug_perm[$link_class]) : e_UC_PUBLIC;
 		}
+
 
 		$link_url = $tp->toDB($link_url, true);
 		$link_name = $tp->toDB($link_name, true);
@@ -818,7 +831,7 @@ class e107plugin
 						'link_order'		 => $link_t + 1,
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
-						'link_class'		 => $link_class,
+						'link_class'		 => vartrue($linkclass,'0'),
 						'link_function'		 => ''
 					);
 					return $sql->db_Insert('links', $linkData); // TODO: Add the _FIELD_DEFS array
@@ -1246,6 +1259,9 @@ class e107plugin
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
 
 		$this->plugFolder = $plug['plugin_path'];
+		
+	
+		
 		$this->unInstallOpts = $options;
 
 		$addons = explode(',', $plug['plugin_addons']);
@@ -1274,12 +1290,8 @@ class e107plugin
 			$canContinue = FALSE;
 		}
 			
-	
-		
-		if (varset($plug_vars['languageFiles']))
-		{
-			$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
-		}
+		// Load install longuage file and set lan_global pref. 
+		$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
@@ -1558,40 +1570,69 @@ class e107plugin
 	 * @param object $tag
 	 * @return none
 	 */
-	function XmlLanguageFiles($function, $tag, $when = '')
+	function XmlLanguageFiles($function, $tag='', $when = '')
 	{
 		$core = e107::getConfig('core');
-
-		foreach ($tag['file'] as $val)
+	
+		$updated = false;
+		
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_install.php"; // always check for English so we have a fall-bak
+		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_install.php";		
+		
+		if(file_exists($path_a) || file_exists($path_b))
 		{
-			$att = $val['@attributes'];
-
-			if ($when == 'pre') // just check for install language file BEFORE install.
-
-			{
-				if ($att['type'] == 'install')
-				{
-					$file = str_replace('--LAN--', e_LANGUAGE, $att['path']);
-					$fullpath_file = e_PLUGIN.$this->plugFolder."/".$file;
-					include_lan($fullpath_file);
-					return;
-				}
-			}
-			elseif ($att['type'] == 'log')
-			{
-				switch ($function)
-				{
-					case 'install':
-					case 'upgrade':
-					case 'refresh':
-						$core->setPref('logLanguageFile/'.$this->plugFolder, $att['path']);
-						break;
-					case 'uninstall':
-						$core->removePref('logLanguageFile/'.$this->plugFolder);
-						break;
-				}
-			}
+			e107::lan($this->plugFolder,'install',true);	
 		}
+			
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_global.php"; // always check for English so we have a fall-bak
+		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_global.php";		
+		
+		if(file_exists($path_a) || file_exists($path_b))
+		{
+			switch ($function)
+			{
+				case 'install':
+				case 'upgrade':
+				case 'refresh':
+					e107::getMessage()->addDebug("Adding ".$this->plugFolder." to lan_global_list");
+					e107::lan($this->plugFolder,'global',true);
+					$core->setPref('lan_global_list/'.$this->plugFolder, $this->plugFolder);
+					$updated = true;
+					break;
+				case 'uninstall':
+					$core->removePref('lan_global_list/'.$this->plugFolder);
+					$update = true;
+				break;
+			}	
+		}
+			
+	
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_log.php";  // always check for English so we have a fall-bak
+		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_log.php";
+		
+		if(file_exists($path_a) || file_exists($path_b))
+		{
+			switch ($function)
+			{
+				case 'install':
+				case 'upgrade':
+				case 'refresh':
+					$core->setPref('lan_log_list/'.$this->plugFolder, $this->plugFolder);
+					$updated = true;
+					break;
+				case 'uninstall':
+					$core->removePref('lan_log_list/'.$this->plugFolder);
+					$updated = true;
+				break;
+			}	
+		}
+				
+	
+		if($updated === true)
+		{
+			$core->save();	//FIXME do this quietly without an s-message
+		}
+	
 	}
 
 	/**
@@ -1610,7 +1651,7 @@ class e107plugin
 			$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
 			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
 			$url = $attrib['url'];
-			$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
+			$perm = (isset($attrib['perm']) ? $attrib['perm'] : 'everyone');
 
 			switch ($function)
 			{
@@ -2360,6 +2401,9 @@ class e107plugin
 		$bbcodeList = array_merge($bbcodeList, $bbcodeClassList);
 		
 		$sqlList = $fl->get_files(e_PLUGIN.$plugin_path, '_sql\.php$', "standard", 1);
+		
+
+		
 
 		// Search Shortcodes
 		foreach ($shortcodeList as $sc)

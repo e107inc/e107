@@ -566,10 +566,28 @@ if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the c
 }
 unset($customLan);
 
+$sql->db_Mark_Time('Start: Global Language Files');
+if(isset($pref['lan_global_list']))
+{
+	foreach($pref['lan_global_list'] as $path)
+	{
+		e107::plugLan($path,'global',true);			
+	}			
+}
+
+
+
+$sql->db_Mark_Time('Start: CHAPT challenge');
+
+
 e107::getSession()
 	->challenge() // Create a unique challenge string for CHAP login
 	->check(); // Token protection
 
+	
+	
+	
+	
 //
 // N: misc setups: online user tracking, cache
 //

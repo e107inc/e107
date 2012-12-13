@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.9 2009-10-22 04:14:45 e107coders Exp $ -->
-<e107Plugin name="Statistic Logging" lan="ADSTAT_L3" version="2.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Statistic Logging" lan="LAN_PLUGIN_LOG_NAME" version="2.1" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
-	<description lan="ADSTAT_L1">This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.</description>
-	<languageFiles>
-		<file type='log' path='languages/--LAN--_admin_log.php' />
-	</languageFiles>
+	<description lan="LAN_PLUGIN_LOG_DESCRIPTION">This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.</description>
 	<adminLinks>
-		<link url='admin_config.php' description='ADSTAT_L33' icon='images/stats_32.png' iconSmall='images/stats_16.png' primary='true' >ADSTAT_L33</link>	
+		<link url='admin_config.php' description='ADSTAT_L33' icon='images/stats_32.png' iconSmall='images/stats_16.png' primary='true' >LAN_PLUGIN_LOG_CONFIGURE</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}log/stats.php?1" >ADSTAT_L34</link>
+		<link url="{e_PLUGIN}log/stats.php?1" >LAN_PLUGIN_LOG_LINK</link>
 	</siteLinks>	
 	<mainPrefs>
 		<pref name="statActivate">0</pref>

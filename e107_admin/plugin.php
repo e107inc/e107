@@ -913,6 +913,13 @@ class pluginManager{
 			foreach($pluginList as $plug)
 			{
 				e107::loadLanFiles($plug['plugin_path'],'admin');
+				
+				if($this->action == "avail")
+				{
+					e107::lan($plug['plugin_path'],'global', true); // Load language files. 
+				}
+					
+				
 
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
 

@@ -49,12 +49,16 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 // Main language file should automatically be loaded
 // Load language files for log messages
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php'); //... for core functions
-if(is_array($pref['logLanguageFile'])) //... and for any plugins which support it
+
+if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {
-	foreach($pref['logLanguageFile'] as $path => $file)
+	foreach($pref['lan_log_list'] as $path => $file)
 	{
 		$file = str_replace('--LAN--', e_LANGUAGE, $file);
-		include_lan(e_PLUGIN.$path.'/'.$file);
+		
+		echo "orig = ".$file."     ";
+		e107::lan($path,'log',true);
+		//include_lan(e_PLUGIN.$path.'/'.$file);
 	}
 }
 

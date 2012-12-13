@@ -7,10 +7,10 @@
  *
 */
 define("BNRLAN_1", "Banner #%d deleted.");
-define("BNRLAN_2", "Please confirm you wish to delete this banner - once deleted it cannot be retrieved");
-define("BNRLAN_5", "Confirm Delete Banner");
+define("BNRLAN_2", "Please confirm you wish to delete this banner - once deleted it cannot be retrieved");  //FIXME Use Generic
+define("BNRLAN_5", "Confirm Delete Banner");  //FIXME Use Generic
 define("BNRLAN_6", "Delete cancelled.");
-define("BNRLAN_7", "Existing Banners");
+define("BNRLAN_7", "Existing Banners");  //FIXME Use Generic
 define("BNRLAN_8", "Banner ID");
 define("BNRLAN_9", "Client");
 define("BNRLAN_10", "Clickthroughs");
@@ -21,8 +21,8 @@ define("BNRLAN_15", "No banners yet.");
 define("BNRLAN_16", "Unlimited");
 define("BNRLAN_17", "None");
 define("BNRLAN_21", "Ends");
-define("BNRLAN_22", "Update Banner");
-define("BNRLAN_23", "Add New Banner");
+define("BNRLAN_22", "Update Banner");  //FIXME Use Generic
+define("BNRLAN_23", "Add New Banner");  //FIXME Use Generic
 define("BNRLAN_24", "Campaign");
 
 define("BNRLAN_27", "Client");
@@ -47,12 +47,12 @@ define("BNRLAN_58", "Banner front page");
 define("BNRLAN_59", "Create new banner");
 define("BNRLAN_60", "campaigns");
 define("BNRLAN_61", "Banner menu");
-define("BNRLAN_62", "Banner Options");
-define("BNRLAN_63", "Banner Created");
-define("BNRLAN_64", "Banner Updated");
+define("BNRLAN_62", "Banner Options");  //FIXME Use Generic
+define("BNRLAN_63", "Banner Created");  //FIXME Use Generic
+define("BNRLAN_64", "Banner Updated");  //FIXME Use Generic
 
 define("BANNER_MENU_L1", "Advertisement");
-define("BANNER_MENU_L2", "Banner menu configuration saved");
+define("BANNER_MENU_L2", "Banner menu configuration saved"); //FIXME Use Generic
 define("BANNER_MENU_L3", "Caption");
 //define("BANNER_MENU_L5", "Banner Configuration");
 define("BANNER_MENU_L6", "choose campaigns to show in menu");
@@ -79,5 +79,5 @@ define("BNRLAN_67", "No campaigns yet.");
 define("BNRLAN_68", "Banner Menu Configuration");
 
 // Plugin manager
-define("BNRLAN_100", "Add advertising banners to your e107 website");
+
 ?>

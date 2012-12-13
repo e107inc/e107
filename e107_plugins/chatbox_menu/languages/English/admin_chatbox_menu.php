@@ -53,17 +53,11 @@ define("CHBLAN_36", "Chatbox Display options");
 define("CHBLAN_37", "Normal chatbox");
 define("CHBLAN_38", "Use javascript code to update posts dynamically (AJAX)");
 define('CHBLAN_39', 'Nothing changed - not updated');
-define('CHBLAN_40', 'Chatbox');
-define('CHBLAN_41', 'Chatbox Menu');
-define('CHBLAN_42', '');
-define('CHBLAN_43', '');
+// define('CHBLAN_40', 'Chatbox');
+// define('CHBLAN_41', 'Chatbox Menu');
 
-// Admin Log 
-define('LAN_AL_CHBLAN_01','Chatbox settings updated');
-define('LAN_AL_CHBLAN_02','Chatbox pruned');
-define('LAN_AL_CHBLAN_03','Chatbox posts recalculated');
-define('LAN_AL_CHBLAN_04','');
-define('LAN_AL_CHBLAN_05','');
+
+
 
 
 ?>

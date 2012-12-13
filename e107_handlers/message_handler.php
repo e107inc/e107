@@ -259,7 +259,7 @@ class eMessage
 	 * @param boolean $session
 	 * @return eMessage
 	 */
-	public function addDebug($message, $mstack = 'default', $session = false)
+	public function addDebug($message, $mstack = 'default', $session = false) //TODO Add different types of DEBUG depending on the debug mode. 
 	{
 		return $this->addStack($message, $mstack, E_MESSAGE_DEBUG, $session);
 	}

@@ -2076,6 +2076,7 @@ class e107
 	 * 	e107::plugLan('forum', 'lan_forum');
 	 *
 	 * 	// import defeinitions from /e107_plugins/featurebox/languages/[CurrentLanguage]_admin_featurebox.php
+	 *  // OR /e107_plugins/featurebox/languages/[CurrentLanguage]/[CurrentLanguage]_admin_featurebox.php (auto-detected)
 	 * 	e107::plugLan('featurebox', 'admin_featurebox', true);
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php
@@ -2111,9 +2112,17 @@ class e107
 			 $fname = e_LANGUAGE;
 		}
 
-		$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
+		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
+		{
+			$path = e_PLUGIN.$plugin.'/languages/'.e_LANGUAGE.'/'.$fname.'.php';	
+		} 
+		else
+		{
+			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
+		}
 		
-		//echo "path = ".$path.'<br>';
+		e107::getMessage()->addDebug("Attempting to Load: ".$path);		
+		
 		
 		e107::setRegistry($cstring, true);
 		self::includeLan($path, false);
@@ -2187,7 +2196,8 @@ class e107
 				self::themeLan($fname, null);
 				break;
 			default :
-				self::plugLan($type,$fname, false);
+				$opt = ($options === true) ? true : false;
+				self::plugLan($type,$fname, $opt);
 				break;
 		}	
 		

@@ -1313,7 +1313,7 @@ class e_parse
 		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination
 		// - causes crashes if '::' in site name
 		//TODO - marj - find a way to use language method here XOR remove the limit of 24 characters.
-		if($opts['defs'] && (strlen($text) < 25) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
+		if($opts['defs'] && (strlen($text) < 35) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
 			return constant(trim($text));
 		}
