@@ -2,16 +2,11 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2009 e107 Inc (e107.org)
+* Copyright (c) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Custom FAQ install/uninstall/update routines
-*
-* $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs_setup.php,v $
-* $Revision$
-* $Date$
-* $Author$
 *
 */
 
@@ -40,7 +35,7 @@ class faqs_setup
 
 		
 		$query2 = "INSERT INTO #faqs_info (`faq_info_id`, `faq_info_title`, `faq_info_about`, `faq_info_parent`, `faq_info_class`, `faq_info_order`, `faq_info_icon`) VALUES 
-(1, 'General', 'General FaQS', 0, 0, 0, ''),
+(1, 'General', 'General Faqs', 0, 0, 0, ''),
 (2, 'Misc', 'Other FAQs', 0, 0, 1, '');";
 
 		$status = ($sql->db_Select_gen($query2)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;

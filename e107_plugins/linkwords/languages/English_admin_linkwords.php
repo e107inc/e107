@@ -130,14 +130,7 @@ define('LAN_LW_HELP_02','Define the words which become clickable links, or which
   Defines which options are active.
   ');
 
-// Admin log related
-define('LAN_AL_LINKWD_00', 'Linkword-related message');
-define('LAN_AL_LINKWD_01', 'Linkword Added');
-define('LAN_AL_LINKWD_02', 'Linkword Edited');
-define('LAN_AL_LINKWD_03', 'Linkword deleted');
-define('LAN_AL_LINKWD_04', 'Linkword options updated');
-define('LAN_AL_LINKWD_05', 'Linkwords version update');					// Used in 0.7-compatible stub only
-define('LAN_AL_LINKWD_06', '');
+
 
 
 

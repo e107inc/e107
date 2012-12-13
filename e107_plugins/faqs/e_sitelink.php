@@ -31,9 +31,8 @@ class faqs_sitelinks // include plugin-folder in the name.
 		$links = array();
 			
 		$links[] = array(
-			'name'			=> "FAQ Categories",
-			'function'		=> "faqCategories",
-			'description' 	=> "FAQ Category links"
+			'name'			=> LAN_PLUGIN_FAQS_FUNCTIONNAME, // "FAQ Categories",
+			'function'		=> "faqCategories"
 		);	
 		
 		
@@ -45,6 +44,7 @@ class faqs_sitelinks // include plugin-folder in the name.
 	function faqCategories() 
 	{
 		$sql = e107::getDb();
+		$tp = e107::getParser();
 		$sublinks = array();
 		
 		$sql->db_Select("faqs_info","*","faq_info_id != '' ORDER BY faq_info_order");
@@ -52,7 +52,7 @@ class faqs_sitelinks // include plugin-folder in the name.
 		while($row = $sql->db_Fetch())
 		{
 			$sublinks[] = array(
-				'link_name'			=> $row['faq_info_title'],
+				'link_name'			=> $tp->toHtml($row['faq_info_title'],'','TITLE'),
 				'link_url'			=> '{e_PLUGIN}faqs/faqs.php?cat.'.$row['faq_info_id'],
 				'link_description'	=> $row['faq_info_about'],
 				'link_button'		=> '',
