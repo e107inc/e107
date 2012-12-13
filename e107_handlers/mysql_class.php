@@ -825,7 +825,8 @@ class e_db_mysql
 
 			case 'str':
 			case 'string':
-				return "'{$fieldValue}'";
+				//return "'{$fieldValue}'";
+				return "'".$this->escape($fieldValue, false)."'";
 				break;
 
 			case 'float':
@@ -838,7 +839,8 @@ class e_db_mysql
 			break;
 
 			case 'null':
-				return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
+				//return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
+				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->escape($fieldValue, false)."'" : 'NULL');
 				break;
 
 			case 'escape':
