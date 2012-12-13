@@ -1155,33 +1155,18 @@ class e_parse
 	public function text_truncate($text, $len = 200, $more = ' ... ')
 	{
 		// Always valid
-		if(strlen($text) <= $len)
+		if($this->ustrlen($text) <= $len)
 		{
 			return $text;
 		}
-/* shouldn't be needed
-		if (strtolower(CHARSET) !== 'utf-8')
-		{
-			// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
-			$ret = substr($text,0,$len);
-		}
-		else
-*/
-		{
-			// It's a utf-8 string here - don't know whether it's longer than allowed length yet
-			preg_match('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
-				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',
-				$text, $matches);
-			// return if utf-8 length is less than max as well
-			if (empty($matches[2]))
-			{
-				return $text;
-			}
-			$ret = $matches[1];
-		}
+		
+		$tret = $this->usubstr($text, 0, $len);
+
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
+		
+		// FIXME - INVESTIGATE this one, switch to utf8 aware methods
 		$leftAmp = strrpos(substr($ret, -8), '&');
 		if($leftAmp)
 		{
