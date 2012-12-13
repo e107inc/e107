@@ -2121,7 +2121,10 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
 		}
 		
-		e107::getMessage()->addDebug("Attempting to Load: ".$path);		
+		if(E107_DBG_INCLUDES)
+		{
+			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
+		}	
 		
 		
 		e107::setRegistry($cstring, true);
