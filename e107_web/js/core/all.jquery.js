@@ -139,6 +139,7 @@ $(document).ready(function()
         		$(this).datepicker({
         			 dateFormat: $(this).attr("data-date-format"),
         			 ampm: $(this).attr("data-date-ampm"),
+					 firstDay: $(this).attr("data-date-firstday"),
         			 showButtonPanel: true
         		 });    		 
     		});
@@ -148,6 +149,7 @@ $(document).ready(function()
         			 dateFormat: $(this).attr("data-date-format"),
         			 timeFormat: $(this).attr("data-time-format"),
         			 ampm: $(this).attr("data-date-ampm"),
+					 firstDay: $(this).attr("data-date-firstday"),
         			 showButtonPanel: true
         		 });    		 
     		});
@@ -159,6 +161,7 @@ $(document).ready(function()
         		$(this).datepicker({
         			dateFormat: $(this).attr("data-date-format"),
         			ampm: $(this).attr("data-date-ampm"),
+					firstDay: $(this).attr("data-date-firstday"),
         			defaultDate: $("#"+newid).val(),
         			onSelect: function(dateText, inst) {
 				      $("#"+newid).val(dateText);
