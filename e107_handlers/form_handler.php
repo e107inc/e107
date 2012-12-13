@@ -810,7 +810,7 @@ class e_form
 	
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
-		$ret .=	$this->textarea($name, $value, $rows, 50, $options, $counter);
+		$ret .=	$this->textarea($name, $value, $rows, 150, $options, $counter);
 			
 		$ret .= "</div>\n";
 		
@@ -2242,14 +2242,14 @@ class e_form
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 
-		if(vartrue($required_data[0])) // HTML5 'required' field. 
+		if(vartrue($required_data[0]) || vartrue($attributes['required'])) // HTML5 'required' attribute 
 		{
 			$parms['required'] = 1;	
 		}
 		
-		if(vartrue($required_data[3])) // HTML5 'pattern' field. 
+		if(vartrue($required_data[3]) || vartrue($attributes['pattern'])) // HTML5 'pattern' attribute
 		{
-			$parms['pattern'] = $required_data[3];	
+			$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]) ;	
 		}
 
 		switch($attributes['type'])
@@ -2273,7 +2273,7 @@ class e_form
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
-				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			break;
 
 			case 'textarea':
@@ -2850,11 +2850,7 @@ class e_form
 					if($submitopt)
 					{
 						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
-						$text .= '
-							<div class="options">
-								After submit: '.$this->radio_multi('__after_submit_action', $submitopt, $selected, false).'
-							</div>
-						';
+						
 					}
 
 					$triggers = vartrue($fdata['triggers'], 'auto');
@@ -2874,7 +2870,21 @@ class e_form
 
 					foreach ($triggers as $trigger => $tdata)
 					{
+						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
 						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+						$text .= ($trigger == 'submit' && $submitopt) ?'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+								<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+								<li>
+									<div class="options left" style="padding:5px">
+										<b>After submit:</b><br />'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
+									</div>
+								</li>
+								</ul>': ''; //FIXME Find better Bootstrap classes/styling. 
+								
+						$text .= ($trigger == 'submit') ?"</div>" : "";
+						
 						if(isset($tdata[2]))
 						{
 							$text .= $this->hidden($trigger.'_value', $tdata[2]);

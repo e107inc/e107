@@ -167,15 +167,15 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
-         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE), 
+         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), 
 		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'data'=> 'int','width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),	// User id
-			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => TRUE),	// User date
+			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => TRUE),	
             'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
        		'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
-			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => true ),	
+			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => true, 'noedit'=>true),	
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);
 		 

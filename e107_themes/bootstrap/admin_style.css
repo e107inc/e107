@@ -23,6 +23,8 @@
 .clear-r					{ clear: left }
 .smalltext					{ font-size: 11px; }
 .nowrap						{ white-space:nowrap; }
+.field-spacer 				{ margin-bottom: 3px; } /* multi-fields per row separator */
+
 
 .e-tabs						{ padding:0px }
 e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
