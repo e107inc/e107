@@ -455,7 +455,7 @@ class eIPHandler
 			{	// Match found
 				if (($val['time_limit'] == 0) || ($val['time_limit'] > $now))
 				{	// Indefinite ban, or timed ban (not expired) or whitelist entry
-					if ($val['action']== BAN_TYPE_LEGACY) return BAN_TYPE_MANUAL;		// Precautionary
+					if ($val['action']== eIPHandler::BAN_TYPE_LEGACY) return eIPHandler::BAN_TYPE_MANUAL;		// Precautionary
 					$this->matchAddress = $val['ip'];
 					return $val['action'];			// OK to just return - PHP should release the memory used by $checkLists
 				}
