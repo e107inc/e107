@@ -817,17 +817,21 @@ class e_db_mysql
 			case 'int':
 			case 'integer':
 				return (int) $fieldValue;
-				break;
+			break;
 
 			case 'cmd':
 				return $fieldValue;
-				break;
+			break;
+			
+			case 'safestr':
+				return "'{$fieldValue}'";
+			break;
 
 			case 'str':
 			case 'string':
 				//return "'{$fieldValue}'";
 				return "'".$this->escape($fieldValue, false)."'";
-				break;
+			break;
 
 			case 'float':
 				// fix - convert localized float numbers
@@ -845,7 +849,7 @@ class e_db_mysql
 
 			case 'escape':
 				return "'".$this->escape($fieldValue, false)."'";
-				break;
+			break;
 				
 			case 'array':
 				if(is_array($fieldValue))
@@ -859,7 +863,7 @@ class e_db_mysql
 			default:
 				if($fieldValue == '') { return "''"; }
 				return "'".e107::getParser()->toDB($fieldValue)."'";
-				break;
+			break;
 	  	}
 	}
 
