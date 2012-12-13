@@ -696,15 +696,15 @@ class themeHandler
 		
 		$previewbutton = (!$mode ? "<input class='button top' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
 		
-		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
+		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : E_32_TRUE;
 	//	$info_icon = "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
 		
-			$info_icon = "<a data-toggle='modal' href='".e_SELF."?id=".$theme['path']."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='info' class='icon S32' /></a>";
+			$info_icon = "<a data-toggle='modal' href='".e_SELF."?id=".$theme['path']."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
 	
-		$preview_icon = "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'><img src='".e_IMAGE_ABS."admin_images/search_32.png' alt='Preview' /></a>";
+		$preview_icon = "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 	
 		
-		$admin_icon = ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S32' />";
+		$admin_icon = ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
 		{

@@ -454,6 +454,11 @@ if (!defined('E_16_FAILEDLOGIN')) {
 	define('E_16_FAILEDLOGIN', "<i class='S16 e-failedlogin-16'></i>");
 }
 
+
+define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
+
+
+
 	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
 	
