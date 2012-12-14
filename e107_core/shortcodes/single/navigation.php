@@ -9,11 +9,17 @@ function navigation_shortcode($parm='')
 		'alt'		=> 4
 	);
 	
-	$cat = varset($types[$parm], 1);
+	$category = varset($types[$parm], 1);
 	$tmpl = vartrue($parm, 'main');
 	
-	$data = e107::getNav()->getData($cat);		
+	//$data = e107::getNav()->getData($cat);		
 			
-	return e107::getNav()->render($data, $tmpl);				
+	//return e107::getNav()->render($data, $tmpl);			
+	$nav = e107::getNav();
+	
+	$template		= e107::getCoreTemplate('navigation', $tmpl);	
+	$data 			= $nav->collection($category);
+	
+	return $nav->render($data, $template);
 }
 	
