@@ -1219,7 +1219,41 @@ class e_navigation
 	{
 		return 'nomd5_sitelinks_';
 	}
+	
+	protected function retrieveAddon($id, $function, $orderStart = 0)
+	{
+		list($path, $method) = explode('::', $function);
+		$path = preg_replace('[^\w]', '', $path);
+		
+		if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+		{
+			$class = $path."_sitelinks";
+			$sublinkArray = e107::callMethod($class, $method); 
+			if(!is_array($sublinkArray) || empty($sublinkArray))
+			{
+				return;
+			}
+			
+			$i = $orderStart;
+			foreach ($sublinkArray as $addonLink) 
+			{
+				$i++;
+				/*if(!isset($addonLinks['link_parent']))*/ $addonLink['link_parent'] = $id;
+				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_id'] = $id.'-'.$i;
+				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_order'] = $i;
+				$this->data[$category][$addonLink['link_parent']][$addonLink['link_id']] = $link;
+				$this->indeces['flat'][$addonLink['link_id']] = $addonLink['link_parent'];
+				$this->indeces['ordered'][$addonLink['link_id']] = $addonLink['link_order'];
+				if(isset($addonLink['link_function']) && !empty($addonLink['link_function']))
+				{
+					$this->indeces['dynamic'][$addonLink['link_id']] = $addonLink['link_function'];
+					$this->retrieveAddon($addonLink['link_id'], $addonLink['link_function'], $addonLink['link_order']);
+				}
+			}
+		}
+	}
 
+	// FIXME syscache
 	protected function initData($category)
 	{
 		$sql 	= e107::getDb('sqlSiteLinks');
@@ -1255,44 +1289,10 @@ class e_navigation
 		// cache it
 	}
 	
-	protected function retrieveAddon($id, $function, $orderStart = 0)
-	{
-		list($path, $method) = explode('::', $function);
-		$path = preg_replace('[^\w]', '', $path);
-		
-		if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
-		{
-			$class = $path."_sitelinks";
-			$sublinkArray = e107::callMethod($class, $method); 
-			if(!is_array($sublinkArray) || empty($sublinkArray))
-			{
-				return;
-			}
-			
-			$i = $orderStart;
-			foreach ($sublinkArray as $addonLink) 
-			{
-				$i++;
-				/*if(!isset($addonLinks['link_parent']))*/ $addonLink['link_parent'] = $id;
-				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_id'] = $id.'-'.$i;
-				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_order'] = $i;
-				$this->data[$category][$addonLink['link_parent']][$addonLink['link_id']] = $link;
-				$this->indeces['flat'][$addonLink['link_id']] = $addonLink['link_parent'];
-				$this->indeces['ordered'][$addonLink['link_id']] = $addonLink['link_order'];
-				if(isset($addonLink['link_function']) && !empty($addonLink['link_function']))
-				{
-					$this->indeces['dynamic'][$addonLink['link_id']] = $addonLink['link_function'];
-					$this->retrieveAddon($addonLink['link_id'], $addonLink['link_function'], $addonLink['link_order']);
-				}
-			}
-		}
-		
-		return array();
-	}
-	
 	/**
 	 * Retrive link data
 	 * We retrieve ALWAYS the whole data if there is missing cached data
+	 * FIXME syscache
 	 */
 	public function retrieve($category = 1, $parent = 0)
 	{
@@ -1322,14 +1322,86 @@ class e_navigation
 		return $this->data[$category][$parent];
 	}
 
+	/**
+	 * Prepare site links data for the renderer
+	 * @todo maybe some kind of dead loop protection 
+	 * 
+	 * Returned array structure: index key is item ID, containing array same as #links table, 
+	 * additonal 'link_sub' array, containing current row children (same structure, recursive, 
+	 * no sub-level restrictions)
+	 * 
+	 * @param int $category render type
+	 * @param int $parent starting from parent node
+	 * @param bool $flat if true, sub-levels wont be processed
+	 * @return array milti-level or flat navigation data
+	 */
 	public function collection($category = 1, $parent = 0, $flat = false)
 	{
+		$this->initData($category);
+		if(!vartrue($this->data[$category]) || !vartrue($this->data[$category][$parent])) return array();
 		
+		$ret = array();
+		
+		// re-order, required only when there is dynamic (3rd party) data available
+		if(!empty($this->indeces['dynamic']))
+		{
+			$ids = array_keys($this->data[$category][$parent]);
+			$index = array();
+			
+			foreach ($ids as $id) 
+			{
+				$index[$id] = $this->indeces['ordered'][$id];
+			}
+			
+			asort($index, SORT_NUMERIC);
+			$ids = array_keys($index);
+			foreach ($ids as $id) 
+			{
+				$ret[$id] = $this->data[$category][$parent][$id];
+			}
+		}
+		else
+		{
+			$ret = $this->data[$category][$parent];
+		}
+		
+		//only current node needed
+		if($flat) return $ret;
+		
+		// process subs - recursion
+		foreach ($ret as $id => $_data) 
+		{
+			$ret[$id]['link_sub'] = $this->collection($category, $_data['link_id'], false);
+		}
+		
+		return $ret;
 	}
-
+	
+	function render($data, $template, $useCache = true) 
+	{
+		if(empty($data) || empty($template) || !is_array($template)) return '';
+		
+		$sc 			= e107::getScBatch('navigation');	
+		$sc->template 	= $template; 
+		
+		$ret = $template['start'];
+		foreach ($data as $_data) 
+		{
+			$sc->setVars($_data);
+			$itemTmpl = count($_data['link_sub']) > 0 ? $template['item_submenu'] : $template['item'];
+			$ret .= e107::getParser()->parseTemplate($itemTmpl, TRUE);
+			
+		}
+		$ret .= $template['end'];
+		
+		// FIXME $useCache
+		return $ret;
+	}
+	
 	/**
 	 * Return a standardized clean array structure for all links. 
 	 */
+/*
 	function getData($cat=1)
 	{	
 		$sql 	= e107::getDb('sqlSiteLinks');
@@ -1378,8 +1450,10 @@ class e_navigation
 		
 		return $ret;
 
-	}
+	}*/
 
+
+/*
 	function compile($ret, $sub)
 	{
 		$new = array();
@@ -1395,7 +1469,8 @@ class e_navigation
 		}
 					
 		return $new;	
-	}
+	}*/
+
 		
 
 	/**
@@ -1404,6 +1479,7 @@ class e_navigation
 	 * @param template to use. 
 	 * TODO Support for side-menu templates and others. 
 	 */
+/*
 	function render($data, $type = 'main') 
 	{							
 		$sc 			= e107::getScBatch('navigation');	
@@ -1422,7 +1498,8 @@ class e_navigation
 		$text .= $template['end'];
 		
 		return $text;	
-	}
+	}*/
+
 	
 	
 		
@@ -1471,7 +1548,7 @@ class navigation_shortcodes extends e_shortcode
 		foreach($this->var['link_sub'] as $val)
 		{
 			$this->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($this->template['submenu_item'],TRUE);		
+			$text .= e107::getParser()->parseTemplate($this->template['submenu_item'], TRUE);		
 		}
 
 		$text .= $this->template['submenu_end'];
