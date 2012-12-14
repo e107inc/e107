@@ -1441,7 +1441,7 @@ class e107
 	
 	/**
 	 * Retrieve Navigation Menu handler singleton object
-	 * @return e_media
+	 * @return e_navigation
 	 */
 	public static function getNav()
 	{
