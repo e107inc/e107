@@ -1160,7 +1160,7 @@ class e_parse
 			return $text;
 		}
 		
-		$tret = $this->usubstr($text, 0, $len);
+		$ret = $this->usubstr($text, 0, $len);
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt

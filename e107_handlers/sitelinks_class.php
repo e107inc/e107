@@ -548,72 +548,93 @@ class sitelinks
  */
 class e_navigation
 {
+	/**
+	 * @var array Admin link structure
+	 */
+	var $admin_cat = array();
+	
+	/**
+	 * Structure: $data[category][parentId] = array(Link Data)
+	 * @var array DB data
+	 */
+	var $data = null;
+	
+	/**
+	 * Structure: $indeces[flat][link_id] = link_parent; $indeces[ordered][link_id] = link_order
+	 * @var array
+	 */
+	var $indeces = null;
+	
+	/**
+	 * Structure $this->_md5cache[$category] = md5HASH
+	 * @var md5 hash used for build unique cache string per category and user classes
+	 */
+	protected $_md5cache = array();
 	
 	//FIXME array structure - see $this->admin();
 	function adminCats()
 	{
+		if(count($this->admin_cat)) return $this->admin_cat;
 		$pref = e107::getPref();
 		
-		$admin_cat = array();
+		$this->admin_cat['title'][1] = ADLAN_CL_1;
+		$this->admin_cat['id'][1] = 'setMenu';
+		$this->admin_cat['img'][1] = E_16_CAT_SETT;
+		$this->admin_cat['lrg_img'][1] = E_32_CAT_SETT;
+		$this->admin_cat['sort'][1] = true;
 		
-		$admin_cat['title'][1] = ADLAN_CL_1;
-		$admin_cat['id'][1] = 'setMenu';
-		$admin_cat['img'][1] = E_16_CAT_SETT;
-		$admin_cat['lrg_img'][1] = E_32_CAT_SETT;
-		$admin_cat['sort'][1] = true;
+		$this->admin_cat['title'][2] = ADLAN_CL_2;
+		$this->admin_cat['id'][2] = 'userMenu';
+		$this->admin_cat['img'][2] = E_16_CAT_USER;
+		$this->admin_cat['lrg_img'][2] = E_32_CAT_USER;
+		$this->admin_cat['sort'][2] = true;
 		
-		$admin_cat['title'][2] = ADLAN_CL_2;
-		$admin_cat['id'][2] = 'userMenu';
-		$admin_cat['img'][2] = E_16_CAT_USER;
-		$admin_cat['lrg_img'][2] = E_32_CAT_USER;
-		$admin_cat['sort'][2] = true;
+		$this->admin_cat['title'][3] = ADLAN_CL_3;
+		$this->admin_cat['id'][3] = 'contMenu';
+		$this->admin_cat['img'][3] = E_16_CAT_CONT;
+		$this->admin_cat['lrg_img'][3] = E_32_CAT_CONT;
+		$this->admin_cat['sort'][3] = true;
 		
-		$admin_cat['title'][3] = ADLAN_CL_3;
-		$admin_cat['id'][3] = 'contMenu';
-		$admin_cat['img'][3] = E_16_CAT_CONT;
-		$admin_cat['lrg_img'][3] = E_32_CAT_CONT;
-		$admin_cat['sort'][3] = true;
-		
-		$admin_cat['title'][4] = ADLAN_CL_6;
-		$admin_cat['id'][4] = 'toolMenu';
-		$admin_cat['img'][4] = E_16_CAT_TOOL;
-		$admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
-		$admin_cat['sort'][4] = true;
+		$this->admin_cat['title'][4] = ADLAN_CL_6;
+		$this->admin_cat['id'][4] = 'toolMenu';
+		$this->admin_cat['img'][4] = E_16_CAT_TOOL;
+		$this->admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
+		$this->admin_cat['sort'][4] = true;
 		
 		// Manage
-		$admin_cat['title'][5] = LAN_MANAGE;
-		$admin_cat['id'][5] = 'managMenu';
-		$admin_cat['img'][5] = E_16_CAT_MANAGE;
-		$admin_cat['lrg_img'][5] = E_32_CAT_MANAGE;
-		$admin_cat['sort'][5] = TRUE;
+		$this->admin_cat['title'][5] = LAN_MANAGE;
+		$this->admin_cat['id'][5] = 'managMenu';
+		$this->admin_cat['img'][5] = E_16_CAT_MANAGE;
+		$this->admin_cat['lrg_img'][5] = E_32_CAT_MANAGE;
+		$this->admin_cat['sort'][5] = TRUE;
 		
 		if(vartrue($pref['admin_separate_plugins']))
 		{
-			$admin_cat['title'][6] = ADLAN_CL_7;
-			$admin_cat['id'][6] = 'plugMenu';
-			$admin_cat['img'][6] = E_16_CAT_PLUG;
-			$admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
-			$admin_cat['sort'][6] = false;	
+			$this->admin_cat['title'][6] = ADLAN_CL_7;
+			$this->admin_cat['id'][6] = 'plugMenu';
+			$this->admin_cat['img'][6] = E_16_CAT_PLUG;
+			$this->admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
+			$this->admin_cat['sort'][6] = false;	
 		}
 		else
 		{
 			// Misc.
-			$admin_cat['title'][6] = ADLAN_CL_8;
-			$admin_cat['id'][6] = 'miscMenu';
-			$admin_cat['img'][6] = E_16_CAT_MISC;
-			$admin_cat['lrg_img'][6] = E_32_CAT_MISC;
-			$admin_cat['sort'][6] = TRUE;
+			$this->admin_cat['title'][6] = ADLAN_CL_8;
+			$this->admin_cat['id'][6] = 'miscMenu';
+			$this->admin_cat['img'][6] = E_16_CAT_MISC;
+			$this->admin_cat['lrg_img'][6] = E_32_CAT_MISC;
+			$this->admin_cat['sort'][6] = TRUE;
 		}
 		
 		//About menu    - No 20 -  leave space for user-categories.
-		$admin_cat['title'][20] = ADLAN_CL_20;
-		$admin_cat['id'][20] = 'aboutMenu';
-		$admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
-		$admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
-		$admin_cat['sort'][20] = false;	
+		$this->admin_cat['title'][20] = ADLAN_CL_20;
+		$this->admin_cat['id'][20] = 'aboutMenu';
+		$this->admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
+		$this->admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
+		$this->admin_cat['sort'][20] = false;	
 				
 		
-		return $admin_cat;
+		return $this->admin_cat;
 		
 	}
 	
@@ -1174,6 +1195,137 @@ class e_navigation
 	}
 
 
+	public function cacheString($category, $type = 'sys')
+	{
+		if(!isset($this->_md5cache[$category]))
+		{
+			$uclist = e107::getUser()->getClassList();
+			sort($uclist, SORT_NUMERIC);
+			$this->_md5cache[$category] = md5($category.$uclist);
+		}
+		switch ($type) 
+		{
+			case 'sys':
+				return $this->cacheBase().$this->_md5cache[$category];
+			break;
+			
+			case 'md5':
+				return $this->_md5cache[$category];
+			break;
+		}
+	}
+
+	public function cacheBase()
+	{
+		return 'nomd5_sitelinks_';
+	}
+
+	protected function initData($category)
+	{
+		$sql 	= e107::getDb('sqlSiteLinks');
+		$cache 	= e107::getCache();
+		
+		if(null === $this->data) $this->data = array();
+		elseif(!isset($this->data[$category])) $this->data[$category] = array();
+		
+		if(null === $this->indeces) $this->indeces = array('flat' => array(), 'parents' => array(), 'ordered' => array(), 'dynamic' => array());
+		
+		$where = $category > 0 ? "link_category=".(int) $category.' AND ' : '';
+		$query = "SELECT * FROM `#links` WHERE ".$where."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
+		
+		if($sql->gen($query))
+		{
+			while($link = $sql->fetch())
+			{
+				$this->data[$category][$link['link_parent']][$link['link_id']] = $link;
+				$this->indeces['flat'][$link['link_id']] = $link['link_parent'];
+				$this->indeces['ordered'][$link['link_id']] = $link['link_order'];
+				if(!empty($link['link_function'])) 
+				{
+					$this->indeces['dynamic'][$link['link_id']] = $link['link_function'];
+					$this->retrieveAddon($link['link_id'], $link['link_function'],  $link['link_order']);
+				}
+			}
+		}
+		else
+		{
+			$this->data[$category] = array();
+		}
+		
+		// cache it
+	}
+	
+	protected function retrieveAddon($id, $function, $orderStart = 0)
+	{
+		list($path, $method) = explode('::', $function);
+		$path = preg_replace('[^\w]', '', $path);
+		
+		if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+		{
+			$class = $path."_sitelinks";
+			$sublinkArray = e107::callMethod($class, $method); 
+			if(!is_array($sublinkArray) || empty($sublinkArray))
+			{
+				return;
+			}
+			
+			$i = $orderStart;
+			foreach ($sublinkArray as $addonLink) 
+			{
+				$i++;
+				/*if(!isset($addonLinks['link_parent']))*/ $addonLink['link_parent'] = $id;
+				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_id'] = $id.'-'.$i;
+				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_order'] = $i;
+				$this->data[$category][$addonLink['link_parent']][$addonLink['link_id']] = $link;
+				$this->indeces['flat'][$addonLink['link_id']] = $addonLink['link_parent'];
+				$this->indeces['ordered'][$addonLink['link_id']] = $addonLink['link_order'];
+				if(isset($addonLink['link_function']) && !empty($addonLink['link_function']))
+				{
+					$this->indeces['dynamic'][$addonLink['link_id']] = $addonLink['link_function'];
+					$this->retrieveAddon($addonLink['link_id'], $addonLink['link_function'], $addonLink['link_order']);
+				}
+			}
+		}
+		
+		return array();
+	}
+	
+	/**
+	 * Retrive link data
+	 * We retrieve ALWAYS the whole data if there is missing cached data
+	 */
+	public function retrieve($category = 1, $parent = 0)
+	{
+		$cache 	= e107::getCache();
+		
+		if(null === $this->data || !isset($this->data[$category])) $this->initData($category);
+		
+		// runtime cached
+		if(isset($this->data[$category][$parent]))
+		{
+			$this->data[$category][$parent];
+		}
+		
+		$uclist = e107::getUser()->getClassList();
+		sort($uclist, SORT_NUMERIC);
+		$cachestr = md5($category.$parent.$uclist);
+		
+		$cached = $cache->retrieve_sys($this->cacheString($category, 'sys'));
+		if(false !== $cached)
+		{
+			// apply runtime cache and indices
+			return $this->data[$category][$parent];
+		}
+
+		// init data and indeces per category
+		
+		return $this->data[$category][$parent];
+	}
+
+	public function collection($category = 1, $parent = 0, $flat = false)
+	{
+		
+	}
 
 	/**
 	 * Return a standardized clean array structure for all links. 
