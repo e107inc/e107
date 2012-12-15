@@ -360,6 +360,7 @@ define('LAN_UI_FORM_METHOD_ERROR', 'FATAL ERROR: The field name <strong>%1$s</st
 define('LAN_UI_BATCH_UPDATE_SUCCESS', '<strong>%1$s</strong> set for <strong>%2$d</strong> record(s).');
 define('LAN_UI_BATCH_REVERSED_SUCCESS', '<strong>%1$d</strong> records successfully reversed.');
 define('LAN_UI_BATCH_BOOL_SUCCESS', '<strong>%1$d</strong> records successfully updated.');
+define('LAN_UI_BATCH_DEATTACH_SUCCESS', '<strong>%1$s</strong> removed from <strong>%2$d</strong> record(s).');
 
 define('LAN_UI_EDIT_LABEL', 'Update record #%1$s');
 define('LAN_UI_CREATE_LABEL', 'Create new record');
