@@ -557,13 +557,13 @@ class e_navigation
 	 * Structure: $data[category][parentId] = array(Link Data)
 	 * @var array DB data
 	 */
-	var $data = null;
+//	var $data = null;
 	
 	/**
 	 * Structure: $indeces[flat][link_id] = link_parent; $indeces[ordered][link_id] = link_order
 	 * @var array
 	 */
-	var $indeces = null;
+//	var $indeces = null;
 	
 	/**
 	 * Structure $this->_md5cache[$category] = md5HASH
@@ -1219,7 +1219,14 @@ class e_navigation
 	{
 		return 'nomd5_sitelinks_';
 	}
-	
+
+
+
+
+
+
+
+	// UNUSED 
 	protected function retrieveAddon($id, $function, $orderStart = 0)
 	{
 		list($path, $method) = explode('::', $function);
@@ -1254,6 +1261,7 @@ class e_navigation
 	}
 
 	// FIXME syscache
+	/*
 	protected function initData($category)
 	{
 		$sql 	= e107::getDb('sqlSiteLinks');
@@ -1274,6 +1282,7 @@ class e_navigation
 				$this->data[$category][$link['link_parent']][$link['link_id']] = $link;
 				$this->indeces['flat'][$link['link_id']] = $link['link_parent'];
 				$this->indeces['ordered'][$link['link_id']] = $link['link_order'];
+				
 				if(!empty($link['link_function'])) 
 				{
 					$this->indeces['dynamic'][$link['link_id']] = $link['link_function'];
@@ -1288,12 +1297,13 @@ class e_navigation
 		
 		// cache it
 	}
-	
+	*/
 	/**
 	 * Retrive link data
 	 * We retrieve ALWAYS the whole data if there is missing cached data
 	 * FIXME syscache
 	 */
+	 /*
 	public function retrieve($category = 1, $parent = 0)
 	{
 		$cache 	= e107::getCache();
@@ -1321,7 +1331,7 @@ class e_navigation
 		
 		return $this->data[$category][$parent];
 	}
-
+	*/
 	/**
 	 * Prepare site links data for the renderer
 	 * @todo maybe some kind of dead loop protection 
@@ -1335,6 +1345,7 @@ class e_navigation
 	 * @param bool $flat if true, sub-levels wont be processed
 	 * @return array milti-level or flat navigation data
 	 */
+	 /*
 	public function collection($category = 1, $parent = 0, $flat = false)
 	{
 		$this->initData($category);
@@ -1376,140 +1387,131 @@ class e_navigation
 		
 		return $ret;
 	}
-	
-	function render($data, $template, $useCache = true) 
+	*/
+
+
+
+
+
+
+	/**
+	 * TODO Cache
+	 */
+	public function render($data, $template, $useCache = true) 
 	{
 		if(empty($data) || empty($template) || !is_array($template)) return '';
 		
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
+		$ret 			= $template['start'];
 		
-		$ret = $template['start'];
+		
 		foreach ($data as $_data) 
 		{
 			$sc->setVars($_data);
-			$itemTmpl = count($_data['link_sub']) > 0 ? $template['item_submenu'] : $template['item'];
-			$ret .= e107::getParser()->parseTemplate($itemTmpl, TRUE);
-			
+			$active			= ($this->isActive($_data)) ? "_active" : "";
+			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
+			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE);			
 		}
+		
 		$ret .= $template['end'];
 		
-		// FIXME $useCache
 		return $ret;
 	}
+
 	
 	/**
-	 * Return a standardized clean array structure for all links. 
+	 * --------------- CODE-EFFICIENT APPROACH -------------------------
+	 * Less than 10 lines of code (once retrieve() is working)
+	 * FIXME syscache
 	 */
-/*
-	function getData($cat=1)
+	public function initData($cat=1)
 	{	
 		$sql 	= e107::getDb('sqlSiteLinks');
 		$ins 	= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
-		$query 	= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
+		$query 	= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order,link_parent ASC";
 		
 		$ret = array();
+		$data = array();
 		
-		if($sql->db_Select_gen($query))
+	//	$data = $sql->retrieve($query,true);  // FIXME $sql->retrieve() fails. 
+		if($sql->gen($query))
 		{
 			while ($row = $sql->db_Fetch())
 			{
-								
-				if (isset($row['link_parent']) && $row['link_parent'] != 0)
-				{
-					$pid = $row['link_parent'];
-				//	$ret[$id]['link_sub'][] = $row;
-					$sub['sub-'.$pid][] = $row;
-					
-				}
-				else
-				{
-					$id = $row['link_id'];
-					$ret[$id] = $row;
-				}	
-					
-				if(vartrue($row['link_function']))
-				{
-					list($path,$method) = explode("::",$row['link_function']);
-					if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
-					{
-						$class = $path."_sitelinks";
-						$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
-						if(vartrue($sublinkArray))
-						{
-							$sub['sub-'.$id] = $sublinkArray;
-							//$ret[$id]['link_sub'] = $sublinkArray;
-						}
-					}
-				}
-				
+				$id = $row['link_id'];
+				$data [$id] = $row;								
 			}
 		}
-
-		return $this->compile($ret, $sub);
 		
-		return $ret;
+		$outArray = array();
+		return $this->compile($data, $outArray);		
+	}
 
-	}*/
-
-
-/*
-	function compile($ret, $sub)
-	{
-		$new = array();
-		
-		foreach($ret as $k=>$v)
-		{
-			$new[$k] = $v;
-			$p = $v['link_id'];
-			if(isset($sub['sub-'.$p]))
-			{
-				$new[$k]['link_sub'] = $sub['sub-'.$p];	
-			}				
-		}
-					
-		return $new;	
-	}*/
-
-		
 
 	/**
-	 * Render the Front-end Links. (and eventually the back-end too)
-	 * @param data array - see getData() above. Follows e107_links table format. 
-	 * @param template to use. 
-	 * TODO Support for side-menu templates and others. 
+	 * Compile Array Structure
 	 */
-/*
-	function render($data, $type = 'main') 
-	{							
-		$sc 			= e107::getScBatch('navigation');	
-		$template		= e107::getCoreTemplate('navigation', $type);	
-		$sc->template 	= $template; // parse the template to the shortcodes. (sub menus)
-		
-		$text = $template['start'];
-		
-		foreach($data as $lnk)
-		{
-			$sc->setVars($lnk);		
-			$item = varset($lnk['link_sub']) ? $template['item_submenu'] : $template['item'];
-			$text .= e107::getParser()->parseTemplate($item,TRUE);	
-		}
-		
-		$text .= $template['end'];
-		
-		return $text;	
-	}*/
+	protected function compile(&$inArray, &$outArray, $pid = 0) 
+	{
+	    if(!is_array($inArray) || !is_array($outArray)){ return; }
+	
+	    foreach($inArray as $key => $val) 
+	    {
+	        if($val['link_parent'] == $pid) 
+	        {
+	            $val['link_sub'] = $this->isDynamic($val);
+	            $this->compile($inArray, $val['link_sub'], $val['link_id']);
+	            $outArray[] = $val;   
+	        }
+	    }
+		return $outArray;
+	}
 
-	
-	
+
+	/**
+	 * Check for Dynamic Function
+	 */
+	protected function isDynamic($row)
+	{
+		if(vartrue($row['link_function']))
+		{
+			list($path,$method) = explode("::",$row['link_function']);
+			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+			{
+				$class = $path."_sitelinks";
+				if($sublinkArray = e107::callMethod($class,$method)) //TODO Cache it.
+				{
+					return $sublinkArray;
+				} 
+			}
+		}		
 		
+		return array();	
+	}
 	
+	/**
+	* TODO Active Link Detection; 
+	* 
+	*/
+	public function isActive($data='')
+	{
+		return false;
+	}
 	
 }
 
 
 
-// TODO - 'active links', SEF etc. 
+
+
+
+
+
+
+
+
+// TODO SEF etc. 
 class navigation_shortcodes extends e_shortcode
 {
 	
@@ -1547,8 +1549,10 @@ class navigation_shortcodes extends e_shortcode
 			
 		foreach($this->var['link_sub'] as $val)
 		{
-			$this->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($this->template['submenu_item'], TRUE);		
+			$this->setVars($val);		
+			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";	
+			$tmpl = (count($val['link_sub'])>0) ? $this->template['submenu_loweritem'] : $this->template['submenu_item'.$active];	
+			$text .= e107::getParser()->parseTemplate($tmpl, TRUE);		
 		}
 
 		$text .= $this->template['submenu_end'];
