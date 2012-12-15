@@ -24,11 +24,14 @@ if (!defined('e107_INIT')) { exit; }
 //
 
         if (count($this->aTraffic)) { // Simple counts
-            $text .= "\n<table class='fborder'>\n";
-            $text .= "<tr><td class='fcaption' style='width:15%'>Item</td>
-                    <td class='fcaption' style='text-align:right;width:15%'>Count&nbsp;</td>
-                    <td class='fcaption'>&nbsp;</td>
-                    </tr>\n";
+            $text .= "\n<table class='fborder table table-condensed table-striped'>\n";
+            $text .= "<thead>
+            		<tr>
+            		<th class='fcaption' style='width:15%'>Item</th>
+                    <th class='fcaption' style='text-align:right;width:15%'>Count&nbsp;</th>
+                    <th class='fcaption'>&nbsp;</th>
+                    </tr>
+                    </thead>\n";
             foreach ($this->aTraffic as $key=>$aVals) {
                 $text .= "<tr>
                         <td class='forumheader3'>".
@@ -58,13 +61,20 @@ if (!defined('e107_INIT')) { exit; }
         // Fancy timed counts
         //
         if (count($this->aTrafficTimed)) {
-            $text .= "\n<table class='fborder'>\n";
-            $text .= "<tr><td class='fcaption'>Item</td><td class='fcaption'>Count&nbsp;</td>
-                    <td class='fcaption'>Tot Time (ms)&nbsp;</td>
-                    <td class='fcaption'>Avg Time (us)&nbsp;</td>
-                    <td class='fcaption'>Min Time (us)&nbsp;</td>
-                    <td class='fcaption'>Max Time (us)&nbsp;</td>
-                    </tr>\n";
+            $text .= "\n<table class='fborder table table-condensed table-striped'>\n";
+            $text .= "
+            <thead>
+            	<tr>
+            		<th class='fcaption'>Item</th>
+            		<th class='fcaption'>Count&nbsp;</th>
+                    <th class='fcaption'>Tot Time (ms)&nbsp;</th>
+                    <th class='fcaption'>Avg Time (us)&nbsp;</th>
+                    <th class='fcaption'>Min Time (us)&nbsp;</th>
+                    <th class='fcaption'>Max Time (us)&nbsp;</th>
+				</tr>
+             </thead>\n";
+			 
+			 
             foreach ($this->aTrafficTimed as $key=>$aVals) {
                 if (substr($key,0,8)=='TRAF_CAL') continue;
                 $text .= "<tr>
