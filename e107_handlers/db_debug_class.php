@@ -217,7 +217,7 @@ class e107_db_debug {
 		}
 
 		if ($badCount) {
-			$text .= "\n<table class='fborder'>\n";
+			$text .= "\n<table class='fborder table table-striped'>\n";
 			$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
@@ -234,7 +234,7 @@ class e107_db_debug {
 		// Optionally list good queries
 		//
 		if ($okCount && E107_DBG_SQLDETAILS) {
-			$text .= "\n<table class='fborder'>\n";
+			$text .= "\n<table class='fborder table table-striped'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
@@ -284,7 +284,7 @@ class e107_db_debug {
 		if (!E107_DBG_TIMEDETAILS) return '';
 
 		$totTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
-		$text = "\n<table class='fborder'>\n";
+		$text = "\n<table class='fborder table table-striped table-condensed'>\n";
 		$bRowHeaders=FALSE;
 		reset($this->aTimeMarks);
 		$aSum=$this->aTimeMarks[0]; // create a template from the 'real' array
@@ -368,7 +368,7 @@ class e107_db_debug {
 		// Stats by Table
 		//
 
-		$text .= "\n<table class='fborder'>\n";
+		$text .= "\n<table class='fborder table table-striped table-condensed'>\n";
 
 		$bRowHeaders=FALSE;
 		$aSum=$this->aDBbyTable['core']; // create a template from the 'real' array
@@ -448,14 +448,17 @@ class e107_db_debug {
 		}
 
 
-		$text = "<table class='fborder' style='width: 100%'>
-			<tr><td class='fcaption' colspan='4'><b>Shortcode / BBCode</b></td></tr>
+		$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
+			
+			<thead>
 			<tr>
-			<td class='fcaption' style='width: 10%;'>Type</td>
-			<td class='fcaption' style='width: 10%;'>Code</td>
-			<td class='fcaption' style='width: 10%;'>Parm</td>
-			<td class='fcaption' style='width: 10%;'>Post ID</td>
-			</tr>\n";
+				<th class='fcaption' style='width: 10%;'>Type</th>
+				<th class='fcaption' style='width: 10%;'>Code</th>
+				<th class='fcaption' style='width: 10%;'>Parm</th>
+				<th class='fcaption' style='width: 10%;'>Post ID</th>
+			</tr>
+			</thead>
+			<tbody>\n";
 
  		foreach($this -> scbbcodes as $codes)
 		{
@@ -466,7 +469,7 @@ class e107_db_debug {
 				<td class='forumheader3' style='width: 10%;'>".($codes['postID'] ? $codes['postID'] : "&nbsp;")."</td>
 				</tr>\n";
 		}
-		$text .= "</table>";
+		$text .= "</tbody></table>";
 		return $text;
 	}
 
@@ -480,79 +483,84 @@ class e107_db_debug {
 		global $e107;
 		$sql = e107::getDb();
 		
-		$text = "<table class='fborder debug-footer' style='width: 100%'>
-			<tr><td class='fcaption debug-footer-caption' colspan='4'><b>Paths &amp; Variables</b></td></tr>
+		$text = "<table class='fborder table table-striped table-condensed debug-footer' style='width:100%'>
+		<colgroup>
+		<col style='width:20%' />
+		<col style='width:auto' />
+		</colgroup>
+		<thead>
 			<tr>
-			<td class='forumheader3'>\n";
-			
-		$text .= "e_DOMAIN: '".e_DOMAIN."'<br />";
-		$text .= "e_SUBDOMAIN: '".e_SUBDOMAIN."'<br />";
-		$text .= "e_HTTP: '".e_HTTP."'<br />";
-		$text .= "e_BASE: '".e_BASE."'<br />";
-		$text .= "e_PLUGIN: '".e_PLUGIN."'<br />";
-		$text .= "e_THEME: '".e_THEME."'<br />";
-		$text .= "e_MENU: '".e_MENU."'<br />";
-		$text .= "THEME: '".THEME."'<br />";
-		$text .= "THEME_LAYOUT: '".THEME_LAYOUT."'<br />";
-		
-		
-			
-		$text .= "<br />";
-		$text .= "e_LANGUAGE: '".e_LANGUAGE."'<br />";
-		$text .= "e_LAN: '".e_LAN."'<br />";
-		$text .= "e_LOCALE: '".e_LOCALE."'<br />";
-		
-		$text .= "<br />";
-		$text .= "META_OG: '".META_OG."'<br />";
-		$text .= "META_DESCRIPTION: '".META_DESCRIPTION."'<br />";
-		$text .= "<br />";
-		
-		$text .= "USERID: '".USERID."'<br />";
-		$text .= "USERNAME: '".USERNAME."'<br />";
-		$text .= "USERURL: '".USERURL."'<br />";
-		$text .= "USEREMAIL: '".USEREMAIL."'<br />";
-		$text .= "USERCLASS: '".USERCLASS."'<br />";
-		$text .= "USERREALM: '".USERREALM."'<br />";
-		$text .= "USERVIEWED: '".USERVIEWED."'<br />";
-		$text .= "USERVISITS: '".USERVISITS."'<br />";		
-		$text .= "USERIMAGE: '".USERIMAGE."'<br />";	
-		$text .= "USERSESS: '".USERSESS."'<br />";		
-		$text .= "USERJOINED: '".USERJOINED."'<br />";									
-	
-		$text .= "<br />";
-		
-		$text .= "SQL Language: '".$sql->mySQLlanguage."'<br />";
-		$text .= "<br />";					
-		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
-		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
-		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
-		$text .= "\$_SERVER['REQUEST_URI']: '".$_SERVER['REQUEST_URI']."'<br />";
-		$text .= "</td></tr>
-		<tr><td class='forumheader3'>\n";
-			
-  	  	$text .= "<pre>".htmlspecialchars(print_r($e107,TRUE))."</pre>";
-  	  	$text .= "</td></tr>\n";
-		$text .= "<tr><td class='fcaption' colspan='4'><b>Session</b></td></tr>
-					<tr><td class='forumheader3'>\n";
-  	  	$text .= "<pre>".htmlspecialchars(print_r($_SESSION,TRUE))."</pre>";
+				<th class='fcaption debug-footer-caption left' colspan='2'><b>Paths &amp; Variables</b></th>
+			</tr>
+		</thead>
+		<tbody>\n";
 
-		$text .= "</td></tr></table>";
+
+		$inc = array(
+			'HEADERF','FOOTERF','FILE_UPLOADS','FLOODPROTECT','FLOODTIMEOUT','CHARSET',
+			'GUESTS_ONLINE','MEMBERS_ONLINE','PAGE_NAME','STANDARDS_MODE','TIMEOFFSET',
+			'TOTAL_ONLINE','THEME','THEME_ABS','THEME_LAYOUT','META_OG','META_DESCRIPTION','MPREFIX'
+		);
+		
+		$userCon = get_defined_constants(true);
+		ksort($userCon['user']);
+		
+		foreach($userCon['user'] as $k=>$v)
+		{
+			if(E107_DBG_ALLERRORS || in_array($k,$inc) ||  substr($k,0,5) == 'ADMIN'  ||  substr($k,0,2) == 'E_' || substr($k,0,2) == 'e_' || substr($k,0,4) == 'E107' || substr($k,0,4) == 'SITE' ||  substr($k,0,4) == 'USER' || substr($k,0,4) == 'CORE')
+			{
+				$text .= "
+				<tr>
+					<td class='forumheader3'>".$k."</td>
+					<td class='forumheader3'>".htmlspecialchars($v)."</td>
+				</tr>";		
+			}
+		}
+				
+			
+					
+		$text .= "
+			
+		
+			<tr>
+				<td class='forumheader3'>SQL Language</td>
+				<td class='forumheader3'>".$sql->mySQLlanguage."</td>
+			</tr>
+
+			<tr>
+				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($e107,TRUE))."</pre></td>
+			</tr>
+			<tr>
+				<td class='fcaption' colspan='2'><h2>Session</h2></td>
+			</tr>
+			<tr>
+				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($_SESSION,TRUE))."</pre></td>
+			</tr>
+			
+		</tbody>
+		</table>";
 
 		return $text;
 	}
 
 
 	function Show_DEPRECATED(){
-		if (!E107_DBG_DEPRECATED){
+		if (!E107_DBG_DEPRECATED)
+		{
 			return FALSE;
-		} else {
-			$text = "<table class='fborder' style='width: 100%'>
+		} 
+		else 
+		{
+			$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>The following deprecated functions were used:</b></td></tr>
+			<thead>
 			<tr>
-			<td class='fcaption' style='width: 10%;'>Function</td>
-			<td class='fcaption' style='width: 10%;'>File</td>
-			<td class='fcaption' style='width: 10%;'>Line</td>
-			</tr>\n";
+			<th class='fcaption' style='width: 10%;'>Function</th>
+			<th class='fcaption' style='width: 10%;'>File</th>
+			<th class='fcaption' style='width: 10%;'>Line</th>
+			</tr>
+			</thead>
+			<tbody>\n";
 
 			foreach($this->deprecated_funcs as $funcs)
 			{
@@ -562,7 +570,7 @@ class e107_db_debug {
 				<td class='forumheader3' style='width: 10%;'>{$funcs['line']}</td>
 				</tr>\n";
 			}
-			$text .= "</table>";
+			$text .= "</tbody></table>";
 			return $text;
 		}
 	}
@@ -604,7 +612,7 @@ class e107_db_debug {
 		// Dump the debug log
 		//
 
-		$text .= "\n<table class='fborder'>\n";
+		$text .= "\n<table class='fborder table table-striped'>\n";
 
 		$bRowHeaders=FALSE;
 		
@@ -628,7 +636,7 @@ class e107_db_debug {
 		if (!E107_DBG_INCLUDES) return FALSE;
 
 		$aIncList = get_included_files();
-		$text = "<table class='fborder'>\n";
+		$text = "<table class='fborder table table-striped'>\n";
 		$text .= "<tr><td class='forumheader3'>".
 							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $aIncList).
 							"&nbsp;</td></tr>\n";
