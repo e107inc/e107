@@ -8,11 +8,8 @@
 *
 * Featurebox administration
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-* $Revision$
-* $Date$
-* $Author$
-*
+* $URL$
+* $Id$
 */
 require_once("../../class2.php");
 if (!getperms("P") || !plugInstalled('featurebox')) 
@@ -177,10 +174,10 @@ class fb_main_ui extends e_admin_ui
 		'fb_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'data'=> 'int', 'width' =>'5%', 'forced'=> TRUE),
      	'fb_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',		'data'=> 'int',	'width' => '5%',  'filter'=>TRUE, 'batch'=>TRUE),
 		'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left'), 
-     	'fb_text' 			=> array('title'=> "Message Text",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
+     	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
 		//DEPRECATED 'fb_mode' 			=> array('title'=> FBLAN_12,			'type' => 'dropdown',		'data'=> 'int',	'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 		//DEPRECATED 'fb_rendertype' 	=> array('title'=> FBLAN_22,			'type' => 'dropdown',		'data'=> 'int',	'width' => 'auto', 'noedit' => TRUE),	
-        'fb_template' 		=> array('title'=> FBLAN_25,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
+        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
 		'fb_image' 			=> array('title'=> "Image",				'type' => 'image',			'width' => 'auto', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60'),
 		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
 		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'width' => 'auto', 'filter' => true, 'batch' => true),	// User id
