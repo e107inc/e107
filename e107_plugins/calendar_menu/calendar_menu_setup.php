@@ -76,6 +76,16 @@ class calendar_menu_setup // must match folder name ie. <pluginfolder>_setup
 		{
 			$required = TRUE;
 		}
+		$pref = e107::pref('core');              		 	// Core Prefs Array.
+
+		foreach($pref as $k=>$v)
+		{
+			if(substr($k, 0, 10) == 'eventpost_')
+			{
+				$required = TRUE;							// Need to remove core prefs
+				break;
+			}
+		}
 		//print_a($data);
 		return $required;
 	}
@@ -119,7 +129,28 @@ class calendar_menu_setup // must match folder name ie. <pluginfolder>_setup
 		}
 		else
 		{
-			$mes->add(EC_ADINST_LAN_09, E_MESSAGE_INFO);		// Nothing to do - prefs already moved
+			$corePrefs = e107::getConfig('core');				// Core Prefs Object.
+			$pref = e107::pref('core');              		 	// Core Prefs Array.
+			$removed = FALSE;
+
+			foreach ($calPref as $k => $v)
+			{
+				if (isset($pref[$k]))
+				{
+					$corePrefs->remove($k);
+					$removed = TRUE;
+				}
+			}
+
+			if ($removed)
+			{
+				$corePrefs->save();
+				$mes->add(EC_ADINST_LAN_11, E_MESSAGE_INFO);		// Old prefs removed from core
+			}
+			else
+			{
+				$mes->add(EC_ADINST_LAN_09, E_MESSAGE_INFO);		// Nothing to do - prefs already moved
+			}
 		}
 	}
 
