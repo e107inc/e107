@@ -2726,7 +2726,7 @@ class e107
 			define('e_WEB_ABS', $this->get_override_http('WEB'));
 			define('e_JS_ABS', $this->get_override_http('WEB_JS'));
 			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
-			define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
+	//		define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
 			define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
 			
 			define('e_JS', $this->get_override_http('WEB_JS')); // ABS Alias 
