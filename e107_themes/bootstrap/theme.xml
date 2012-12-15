@@ -12,7 +12,7 @@
 		<image>fullpreview.png</image>
 	</screenshots>
 	<layouts>
-		<layout name='default' title='2 Columns' preview='preview.jpg' default='true' previewFull='fullpreview.png' >
+		<layout name='default' title='2 Columns' default='true'>
 		<custompages>usersettings.php</custompages>
 		</layout>
 	</layouts>
