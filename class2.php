@@ -1445,7 +1445,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		  	// Create the data to be stored
 	  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') "))
 			{
-		  		ecache::clear_sys('Config_core');
+		  		ecacXXXhe::clear_sys('Config_core');
 				return true;
 			}
 			else
