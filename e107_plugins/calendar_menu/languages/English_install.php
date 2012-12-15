@@ -38,4 +38,5 @@ define('EC_ADINST_LAN_07', 'Error adding default category');
 define('EC_ADINST_LAN_08', 'Default category already in DB');
 define('EC_ADINST_LAN_09', 'Preferences already converted for 2.0');
 define('EC_ADINST_LAN_10', 'Preferences converted ready for 2.0');
+define('EC_ADINST_LAN_11', 'Old preferences removed from core');
 
