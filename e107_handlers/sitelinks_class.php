@@ -813,7 +813,7 @@ class e_navigation
 					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
 					$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
-					$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plug_id[$plugin_path], 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
 				}
 			}
 		}	
@@ -1491,11 +1491,23 @@ class e_navigation
 	}
 	
 	/**
-	* TODO Active Link Detection; 
+	* TODO Extensive Active Link Detection; 
 	* 
 	*/
 	public function isActive($data='')
 	{
+		$dbLink = e_HTTP. e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);;
+		
+		if(E107_DBG_PATH)
+		{
+			e107::getMessage()->addDebug("db=".$dbLink);
+		}
+	
+		if(e_REQUEST_HTTP == $dbLink)
+		{
+			return true;	
+		}
+		
 		return false;
 	}
 	
@@ -1529,7 +1541,7 @@ class navigation_shortcodes extends e_shortcode
 	
 	function sc_link_image($parm='')
 	{
-		return e107::getParser()->replaceConstants($this->var['link_image']);	
+		return e107::getParser()->replaceConstants(vartrue($this->var['link_image']));	
 	}
 		
 	
@@ -1551,7 +1563,7 @@ class navigation_shortcodes extends e_shortcode
 		{
 			$this->setVars($val);		
 			$active	= (e107::getNav()->isActive($val)) ? "_active" : "";	
-			$tmpl = (count($val['link_sub'])>0) ? $this->template['submenu_loweritem'] : $this->template['submenu_item'.$active];	
+			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem']) : varset($this->template['submenu_item'.$active]);	
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE);		
 		}
 

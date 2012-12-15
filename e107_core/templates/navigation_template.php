@@ -31,8 +31,8 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 ';
 
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
+	<li class="dropdown active">
+		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_NAME}
 		<b class="caret"></b>
 		</a>
@@ -41,8 +41,8 @@ $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 ';	
 
 $NAVIGATION_TEMPLATE['main']['item_active'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
+	<li class="dropdown active">
+		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_NAME}
 		</a>
 	</li>
@@ -91,7 +91,7 @@ $NAVIGATION_TEMPLATE['side']['item'] 				= '<li><a href="{LINK_URL}">{LINK_NAME}
 $NAVIGATION_TEMPLATE['side']['item_submenu'] 		= '<li class="nav-header">{LINK_NAME}</li>{LINK_SUB}
 														';
 
-$NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+$NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>
 														';
 
 $NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
@@ -102,7 +102,7 @@ $NAVIGATION_TEMPLATE['side']['submenu_start'] 		= '';
 $NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
 													';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
+$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>
 													';
 
 $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
