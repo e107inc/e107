@@ -8,11 +8,8 @@
 *
 * Featurebox Category Tree model
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/tree.php,v $
-* $Revision$
-* $Date$
-* $Author$
-*
+* $URL$
+* $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
