@@ -2718,14 +2718,21 @@ class e_admin_controller_ui extends e_admin_controller
 		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
 		$selected = array_values($this->getPosted($multi_name, array()));
 
-		//if(empty($selected)) return $this; - allow empty (no selected) submit for custom batch handlers - e.g. Export CSV
-		// requires writeParams['batchNoCheck'] == true!!!
-
+		if(empty($selected))
+		{
+			$params = $this->getFieldAttr($field, 'writeParms', array());
+			if(!is_array($params)) parse_str($params, $params);
+			if(!vartrue($params['batchNoCheck']))
+			{
+				return $this;
+			}
+		}
+		
 		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
 		$this->setTriggersEnabled(false); //disable further triggering
-
+		
 		switch($trigger[0])
 		{
 			case 'delete': //FIXME - confirmation screen
@@ -2748,7 +2755,6 @@ class e_admin_controller_ui extends e_admin_controller
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $field, $value);
-					break;
 				}
 			break;
 
@@ -2760,24 +2766,81 @@ class e_admin_controller_ui extends e_admin_controller
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $field);
-					break;
 				}
 			break;
 			
-			case 'append':
-				//TODO - append value to existing field value. eg. userclasses. 
+			// see commma, userclasses batch options
+			case 'attach':
+			case 'deattach':
+			case 'addAll':
+			case 'clearAll':
+				$field = $trigger[1];
+				$value = $trigger[2];
+				
+				if($trigger[0] == 'addAll')
+				{
+					$parms = $this->getFieldAttr($field, 'writeParms', array());
+					if(!is_array($parms)) parse_str($parms, $parms);
+					
+					$value = isset($parms['data']) && !empty($parms['data']) ? $parms['data'] : array();
+					if(empty($value)) return $this;
+					if(!is_array($value)) $value = array_map('trim', explode(',', $value));
+				}
+				
+				if(method_exists($this, 'handleCommaBatch')) 
+				{
+					$this->handleCommaBatch($selected, $field, $value, $trigger[0]);
+				}
 			break;
-
-			default:
-				$field = $trigger[0];
-				$value = $trigger[1];
-				$params = $this->getFieldAttr($field, 'writeParms', array());
-				if(!is_array($params)) parse_str($params, $params);
-
-				if(!vartrue($params['batchNoCheck']) && empty($selected))
+			
+			// append to userclass list
+			case 'ucadd':
+			case 'ucremove':
+				//if(empty($selected)) return $this;
+				$field = $trigger[1];
+				$class = $trigger[2];
+				$user = e107::getUser();
+				$e_userclass = e107::getUserClass(); 
+				
+				// check userclass manager class
+				if (!isset($e_userclass->class_tree[$class]) || !$user->checkClass($e_userclass->class_tree[$class]))
 				{
 					return $this;
 				}
+
+				if(method_exists($this, 'handleCommaBatch')) 
+				{
+					$trigger[0] = $trigger[0] == 'ucadd' ? 'attach' : 'deattach';
+					$this->handleCommaBatch($selected, $field, $class, $trigger[0]);
+				}
+			break;
+			
+			// add all to userclass list
+			// clear userclass list
+			case 'ucaddall':
+			case 'ucdelall':
+				$field = $trigger[1];
+				$user = e107::getUser();
+				$e_userclass = e107::getUserClass(); 
+				$parms = $this->getFieldAttr($field, 'writeParms', array());
+				if(!is_array($parms)) parse_str($parms, $parms);
+				if(!vartrue($parms['classlist'])) return $this;
+				
+				$classes = $e_userclass->uc_required_class_list($parms['classlist']);
+				foreach ($classes as $id => $label) 
+				{
+				// check userclass manager class
+					if (!isset($e_userclass->class_tree[$class]) || !$user->checkClass($e_userclass->class_tree[$class]))
+					{
+						unset($classes[$id]);
+					}
+				}
+				$this->handleCommaBatch($selected, $field, $classes, $trigger[1] === 'ucdelall' ? 'clearAll' : 'addAll');
+			break;
+			
+			default:
+				$field = $trigger[0];
+				$value = $trigger[1];
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($field).'Batch';
@@ -3803,6 +3866,78 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setMessages();
 	}
 
+	public function handleCommaBatch($selected, $field, $value, $type)
+	{
+		$tree = $this->getTreeModel();
+		$cnt = $rcnt = 0;
+		$value = e107::getParser()->toDb($value);
+		
+		switch ($type) 
+		{
+			case 'attach':
+			case 'deattach':
+				$this->_setModel();
+				foreach ($selected as $key => $id) 
+				{
+					$node = $tree->getNode($id);
+					if(!$node) continue;
+					// quick fix, FIXME field ID name not set in the tree model, investigate
+					if(!$node->getFieldIdName()) $node->setFieldIdName($this->pid);
+					
+					$val = $node->get($field);
+					
+					if(empty($val)) $val = array();
+					elseif(!is_array($val)) $val = explode(',', $val);
+					
+					if($type === 'deattach')
+					{
+						$search = array_search($value, $val);
+						if(false === $search) continue;
+						unset($val[$search]);
+						$val = implode(',', $val);
+						$node->set($field, $val);
+						$check = $this->getModel()->setData($node->getData())->save(false, true);
+						
+						if(false === $check) $this->getModel()->setMessages();
+						else $rcnt++;
+					}
+					
+					// attach it
+					if(false === in_array($value, $val))
+					{
+						$val[] = $value; 
+						$val = implode(',', array_unique($val));
+						$node->set($field, $val);
+						$check = $this->getModel()->setData($node->getData())->save(false, true);
+						if(false === $check) $this->getModel()->setMessages();
+						else $cnt++;
+					}
+				}
+				$this->_model = null;
+			break;
+				
+			case 'addAll':
+				if(is_array($value)) $value = implode(',', array_map('trim', $value));
+				//$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+			break;
+				
+			case 'clearAll':
+				//$rcnt = $this->getTreeModel()->update($field, '', $selected, $value, false);
+			break;
+		}
+
+		if($cnt)
+		{
+			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt))->setMessages();
+		}
+		elseif($rcnt)
+		{
+			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_DEATTACH_SUCCESS, $vttl, $cnt))->setMessages();
+		}
+	}
+
 	/**
 	 * Batch default (field) trigger
 	 * @param array $selected
@@ -3832,7 +3967,7 @@ class e_admin_ui extends e_admin_controller_ui
 			return; 
 		}
 		
-		$cnt = $this->getTreeModel()->update($field, $val, $selected, $value, false);
+		$cnt = $this->getTreeModel()->update($field, $val, $selected, true, false);
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
@@ -4231,15 +4366,15 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->dataFields = array();
 			foreach ($this->fields as $key => $att)
 			{
-				if((false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
+				if(($key !== 'options' && false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
 				
-				if($att['data'] == 'comma') //XXX quick fix so it can be stored. 
-				{
-					$this->dataFields[$key] = 'str';	
-				}
+				// if($att['data'] == 'comma') //XXX quick fix so it can be stored. 
+				// {
+					// $this->dataFields[$key] = 'str';	
+				// }
 			}
 		}
 		// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
@@ -4706,7 +4841,28 @@ class e_admin_form_ui extends e_form
 							$option['boolreverse__'.$key] = LAN_BOOL_REVERSE;
 						}
 					break;
-
+					
+					case 'comma':
+						// TODO lan
+						$options = isset($parms['data']) && !empty($parms['data']) ? $parms['data'] : array();
+						if(empty($options)) continue;
+						if(!is_array($options)) $options = array_map('trim', explode(',', $options));
+						
+						$_option = array();
+						foreach ($options as $value) 
+						{
+							$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
+							$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+						}
+						if(isset($parms['addAll'])) $option['attach_all__'.$key] = vartrue($parms['addAll'], '(add all)');	
+						if(isset($parms['clearAll']))
+						{
+							$_option['deattach_all__'.$key] = vartrue($parms['clearAll'], '(clear all)');	
+						}
+						$option = array_merge($option, $_option);
+						unset($_option);
+					break;
+						
 					case 'templates':
 					case 'layouts':
 						$parms['raw'] = true;
@@ -4768,12 +4924,24 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'userclass':
-					case 'userclasses':
 						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
 						foreach($classes as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
 						}
+					break;
+					case 'userclasses':
+						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
+						$_option = array();
+						foreach ($classes as $k => $v) 
+						{
+							$option['ucadd__'.$key.'__'.$k] = 'Add '.$v;	
+							$_option['ucremove__'.$key.'__'.$k] = 'Remove '.$v;	
+						}
+						$option['ucaddall__'.$key] = '(add all)';	
+						$_option['ucdelall__'.$key] = '(clear all)';
+						$option = array_merge($option, $_option);
+						unset($_option);
 					break;
 
 					case 'method':

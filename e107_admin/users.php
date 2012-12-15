@@ -213,7 +213,7 @@ class users_admin_ui extends e_admin_ui
  		'user_email' 		=> array('title' => LAN_USER_08,	'type' => 'text',	'width' => 'auto'),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'method' , 'data' =>'comma', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'type' => 'datestamp', 	'width' => 'auto'),
@@ -225,6 +225,7 @@ class users_admin_ui extends e_admin_ui
 		'user_admin' 		=> array('title' => LAN_USER_22,	'type' => 'boolean', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_perms' 		=> array('title' => LAN_USER_23,	'type' => 'method', 	'width' => 'auto'),
 		'user_pwchange'		=> array('title' => LAN_USER_24,	'type'=>'datestamp' , 'width' => 'auto'),
+		//'commatest'				=> array('title' => 'TEST',	'type'=>'comma' , 'writeParms' => 'data=test1,test2,test3&addAll&clearAll', 'width' => 'auto', 'filter'=>true, 'batch'=>true),
 					
 	);
 	
@@ -266,6 +267,7 @@ class users_admin_ui extends e_admin_ui
 				$this->fields[$field] = array('title' => $label,'width' => 'auto','type'=>'text', 'noedit'=>true);
 			}
 		}
+		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
 		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'bbarea',	'width' => 'auto');
 		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center');
@@ -1885,41 +1887,41 @@ class users_admin_form_ui extends e_admin_form_ui
 	}	
 	
 	
+	/*
 	function user_class($curval,$mode)
-	{
-				
-		$e_userclass 	= new user_class;
-		$frm 			= e107::getForm();
-		$list 			= $e_userclass->uc_required_class_list("classes");
-   		
-		if($mode == 'filter')
 		{
-			return $list;	
-		}
+					
+			$e_userclass 	= new user_class;
+			$frm 			= e107::getForm();
+			$list 			= $e_userclass->uc_required_class_list("classes");
+							 if($mode == 'filter')
+			{
+				return $list;	
+			}
+			
+			if($mode == 'write') //FIXME userclasses are NOT be saved since they are an array. 
+			{		
+				return $frm->selectbox('user_class', $list, $curval, 'description=1&multiple=1');
+				// return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');// doesn't work correctly. 	
+			}
+			
+			
+			//FIXME TODO - option to append userclass to existing value. 
+			if($mode == 'batch')
+			{
+				//$list['#delete'] = "(clear userclass)"; // special 
+				return $list;	
+			}
+						  $tmp = explode(",",$curval);
+			$text = array();
+			foreach($tmp as $v)
+			{
+				$text[] = $list[$v];	
+			}
+			return implode("<br />",$text); // $list[$curval];
+					
+		}*/
 		
-		if($mode == 'write') //FIXME userclasses are NOT be saved since they are an array. 
-		{		
-			return $frm->selectbox('user_class', $list, $curval, 'description=1&multiple=1');
-			// return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');// doesn't work correctly. 	
-		}
-		
-		
-		//FIXME TODO - option to append userclass to existing value. 
-		if($mode == 'batch')
-		{
-			$list['#delete'] = "(clear userclass)"; // special 
-			return $list;	
-		}
-        
-		$tmp = explode(",",$curval);
-		$text = array();
-		foreach($tmp as $v)
-		{
-			$text[] = $list[$v];	
-		}
-		return implode("<br />",$text); // $list[$curval];
-				
-	}	
 	
 	
 	function user_status($curval,$mode)
