@@ -27,9 +27,10 @@ e107::getSession()->shutdown();
 // System browser CACHE control - defaults to no cache; override in e107_config or on the fly
 // This is temporary solution, we'll implement more flexible way for cache control override
 // per page, more investigation needed about cache related headers, browser quirks etc
+// Auto-detect from session (registered per page, per user session)
 if(!defined('e_NOCACHE'))
 {
-	define('e_NOCACHE', true);
+	define('e_NOCACHE', !e107::canCache());
 }
 
 //
@@ -306,7 +307,14 @@ if (abs($_serverTime - $lastSet) > 120)
 // H Final HTML
 //
 // browser cache control - FIXME - use this value as AJAX requests cache control!
-echo "\n<!-- ".md5(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'))." -->\n";
+// TODO - create the $bcache string via e107 class method, use it in the canCache() method
+$uclist = e107::getUser()->getClassList();
+sort($uclist, SORT_NUMERIC);
+$bcache = (deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache')).'.'.implode(',', $uclist); 
+echo "\n<!-- ".md5($bcache)." -->\n";
+
+unset($uclist, $bcache);
+
 if(!deftrue('e_POWEREDBY_DISABLE'))
 {
 	// TODO lan
@@ -323,10 +331,9 @@ $etag = md5($page);
 
 //header('Pragma:');
 // previously disabled or there is posted data
-$canCache = false;
-if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
+$canCache = e107::canCache();
+if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
 {
-	$canCache = true;
 	header("Cache-Control: must-revalidate", true);	
 	if(e107::getPref('site_page_expires')) // TODO - allow per page
 	{ 
@@ -337,6 +344,10 @@ if(!deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QU
 		$time = time()+ (integer) e107::getPref('site_page_expires');
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 	}
+}
+else
+{
+	$canCache = false;
 }
 
 $pref['compression_level'] = 6;
@@ -379,7 +390,6 @@ header("X-Powered-By: e107", true); // no less secure than e107-specific html.
 if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 {
 	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
-	
 	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
 	{
 		header('HTTP/1.1 304 Not Modified');
