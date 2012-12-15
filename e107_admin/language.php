@@ -368,8 +368,13 @@ require_once (e_ADMIN."footer.php");
 
 function multilang_prefs()
 {
-	global $pref,$lanlist,$emessage;
+	global $pref,$lanlist;
+	$mes = e107::getMessage();
 	$frm = e107::getForm();
+	
+	$lanlist = array('English'); //XXX Remove later. 
+	
+	$mes->addInfo("Alpha version currently supports only the English language. After most features are stable and English terms are optimized - translation will be possible.");
 	
 	$text = "
 	<form method='post' action='".e_SELF."' id='linkform'>
@@ -383,17 +388,12 @@ function multilang_prefs()
 				<tbody>
 					<tr>
 						<td>".LANG_LAN_14.": </td>
-						<td>
-						<select name='mainsitelanguage' class='box select'>";
+						<td>";
+
 						$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
-						foreach ($lanlist as $lan)
-						{
-							$sel = ($lan == $sellan) ? " selected='selected'" : "";
-							$text .= "
-													<option value='{$lan}'{$sel}>".$lan."</option>
-								";
-						}
-						$text .= "</select>
+					
+						$text .= $frm->selectbox('mainsitelanguage',$lanlist,$sellan,"useValues=1");
+						$text .= "
 						</td>
 					</tr>
 					<tr>
@@ -462,7 +462,7 @@ function multilang_prefs()
 		</fieldset>
 	</form>\n";
 	
-	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_13, $emessage->render().$text); // "Language Preferences";
+	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_13, $mes->render().$text); // "Language Preferences";
 }
 
 // ----------------------------------------------------------------------------

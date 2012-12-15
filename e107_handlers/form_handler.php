@@ -1024,6 +1024,16 @@ class e_form
 		{
 			$text .= $this->option('&nbsp;', '');
 		}
+		
+		if(varset($options['useValues'])) // use values as keys. 
+		{
+			$new = array();
+			foreach($option_array as $v)
+			{
+				$new[$v] = $v;	
+			}	
+			$option_array = $new;	
+		}
 
 		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
 		return $text;
