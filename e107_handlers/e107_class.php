@@ -2937,6 +2937,46 @@ class e107
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 	}
+	
+	/**
+	 * Basic implementation of Browser cache control per user session. Awaiting improvement in future versions
+	 * If no argument is passed it returns 
+	 * boolean (if current page is cacheable).
+	 * If string is passed, it's asumed to be aboslute request path (e_REQUEST_URI alike)
+	 * If true is passed, e_REQUEST_URI is registered
+	 */
+	public static function canCache($set = null)
+	{
+		$_data = e107::getSession()->get('__sessionBrowserCache');
+		if(!is_array($_data)) $_data = array();
+		
+		if(null === $set)
+		{
+			return in_array(e_REQUEST_URI, $_data);
+		}
+		
+		// remove e_REQUEST_URI from the set
+		if(false === $set)
+		{
+			$check = array_search(e_REQUEST_URI, $_data);
+			if(false !== $check) 
+			{
+				unset($_data[$check]);
+				e107::getSession()->set('__sessionBrowserCache', $_data);
+				return;
+			}
+		}
+		
+		if(true === $set)
+		{
+			$set = e_REQUEST_URI;
+		}
+		
+		if(empty($set) || !is_string($set) || in_array($set, $_data)) return;
+		
+		$_data[]  = $set;
+		e107::getSession()->set('__sessionBrowserCache', array_unique($_data));
+	}
 
 	/**
 	 * Check if current request is secure (https)
