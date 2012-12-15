@@ -398,73 +398,6 @@ if ($action == 'ne' || $action == 'ed')
 {
 	if ($ecal_class->cal_super || check_class($ecal_class->pref['eventpost_admin']))
 	{
-		function make_calendar($boxname, $boxvalue)
-		{
-			global $ecal_class;
-		  	$frm = e107::getForm();
-
-			$opt = array(
-				'type' => 'date',
-				'dateformat' => $ecal_class->dcal_format_string,
-				'firstDay' => $ecal_class->ec_first_day_of_week,		// 0 = Sunday.    @TODO: Can't change firstday ATM!
-				'size' => 12
-				);
-			return $frm->datepicker($boxname,$boxvalue,$opt);
-		}
-
-
-		function make_hourmin($boxname,$cur_hour,$cur_minute)
-		{
-			global $ecal_class;			// @TODO:
-			if (isset($ecal_class->pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
-			// @TODO: Need to restrict width of select box
-			$retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
-			for($count = '00'; $count <= '23'; $count++)
-			{
-				$val = sprintf("%02d", $count);
-				$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
-			}
-			$retval .= "</select>\n
-				<select name='{$boxname}minute' class='tbox'>\n";
-			for($count = '00'; $count <= '59'; $count+= $incval)
-			{
-				$val = sprintf("%02d", $count);
-				$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
-			}
-			$retval .= "</select>\n";
-			return $retval;
-		}
-
-		function recur_select($curval)
-		{
-			global $ecal_class;			// @TODO:
-			while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
-			$ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
-			foreach ($ecal_class->recur_type as $k => $v)
-			{
-				$selected = ($curval == $k) ? " selected = 'selected'" : "";
-				$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-			}
-			$ret .= "</select>\n";
-			return $ret;
-		}
-		
-		
-		function recur_week_select($curval)
-		{
-			global $ecal_class;			// @TODO:
-			$disp = $curval < 100 ? " style='display:none;'" : "";
-			$curval -= intval($curval % 10);		// Should make it an exact multiple of 100
-			$ret = "<span id='rec_week_sel'{$disp}><select class='tbox' name='ec_recur_week'>";
-			foreach ($ecal_class->recur_week as $k => $v)
-			{
-				$selected = ($curval == $k) ? " selected = 'selected'" : "";
-				$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-			}
-			$ret .= "</select></span>\n";
-			return $ret;
-		}
-
 
 	switch ($action)
 	{
@@ -624,17 +557,17 @@ if ($action == 'ne' || $action == 'ed')
     $text .= "
 		<tr><td class='forumheader3'>".EC_LAN_72." </td><td class='forumheader3'> ".EC_LAN_67." ";
 
-    $text .= make_calendar("start_date",$ne_startdate)."&nbsp;&nbsp;&nbsp;".EC_LAN_73." ".make_calendar("end_date",$ne_enddate);
+    $text .= $ecal_class->makeCalendar("start_date",$ne_startdate)."&nbsp;&nbsp;&nbsp;".EC_LAN_73." ".$ecal_class->makeCalendar("end_date",$ne_enddate);
     $text .= "</td></tr>
 		<tr><td class='forumheader3'>".EC_LAN_71." </td><td class='forumheader3'>".EC_LAN_67;
 
-	$text .= make_hourmin("ne_",$ne_hour,$ne_minute)."&nbsp;&nbsp;".EC_LAN_73.make_hourmin('end_',$end_hour,$end_minute);
+	$text .= $ecal_class->makeHourmin("ne_",$ne_hour,$ne_minute)."&nbsp;&nbsp;".EC_LAN_73.$ecal_class->makeHourmin('end_',$end_hour,$end_minute);
 	$text .= "<br /><input type='checkbox' name='allday' value='1' ".(isset($allday) && $allday == 1 ? "checked='checked'" :"")." />";
     $text .= EC_LAN_64."
 		</td></tr>
 
 		<tr><td class='forumheader3'>".EC_LAN_65."</td><td class='forumheader3'>";
-	$text .= recur_week_select($recurring)."&nbsp;&nbsp;".recur_select($recurring);
+	$text .= $ecal_class->recurWeekSelect($recurring)."&nbsp;&nbsp;".$ecal_class->recurSelect($recurring);
 	$disp = $recurring && ($action == 'ne') ? '' : " style='display:none;'";
 	$text .= "<span id='gen_multiple'{$disp}><input type='checkbox' name='ec_gen_multiple' value='1' onchange=\"check_mult(this.checked);\"/>".EC_LAN_86."</span>";
     $text .= "<br /><span class='smalltext'>".EC_LAN_63."</span>
@@ -913,14 +846,5 @@ unset($tim_arr);
 
 require_once(FOOTERF);
 
-
-/*
-function headerjs()
-{
-  global $cal;
-  $script = $cal->load_files();
-  return $script;
-}
-*/
 
 ?>
