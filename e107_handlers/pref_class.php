@@ -491,7 +491,7 @@ class e_pref extends e_front_model
 	 *
 	 * @param boolean $from_post merge post data
 	 * @param boolean $force
-	 * @param boolean $session_messages use session messages //FIXME Appears to be ignored on "Settings successfully saved."; 
+	 * @param boolean $session_messages use session messages //FIXME Appears to be ignored on "Settings successfully saved. 
 	 * @return boolean|integer 0 - no change, true - saved, false - error
 	 */
 	public function save($from_post = true, $force = false, $session_messages = false)
@@ -559,7 +559,7 @@ class e_pref extends e_front_model
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
 						if(!$disallow_logs) $admin_log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
-						ecache::clear_sys('Config_'.$this->alias.'_backup');
+						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
 					}
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
@@ -609,7 +609,7 @@ class e_pref extends e_front_model
 	{
 		if(!$this->pref_cache)
 		{
-			$this->pref_cache = ecache::retrieve_sys('Config_'.$this->alias, 24 * 60, true);
+			$this->pref_cache = e107::getCache()->retrieve_sys('Config_'.$this->alias, 24 * 60, true);
 		}
 
 		return ($toArray && $this->pref_cache ? e107::getArrayStorage()->ReadArray($this->pref_cache) : $this->pref_cache);
@@ -636,7 +636,7 @@ class e_pref extends e_front_model
 		}
 		if($save)
 		{
-			ecache::set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
+			e107::getCache()->set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
 		}
 		return $this;
 	}
@@ -654,7 +654,7 @@ class e_pref extends e_front_model
 		{
 			$this->pref_cache = '';
 		}
-		ecache::clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
+		e107::getCache()->clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
 		return $this;
 	}
 

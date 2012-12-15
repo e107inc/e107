@@ -832,6 +832,12 @@ class e107
 		{
 			e107_require_once(e_HANDLER.'pref_class.php'); 
 			self::$_core_config_arr[$name] = new e_core_pref($name, $load);		
+			
+			if($name == 'core') // prevent loop between pref and cache handlers. 
+			{
+				e107::getCache()->UserCacheActive = self::getPref('cachestatus');
+				e107::getCache()->SystemCacheActive = self::getPref('syscachestatus');	
+			}
 		}
 
 		return self::$_core_config_arr[$name];

@@ -36,8 +36,8 @@ class ecache {
 
 	function __construct()
 	{
-		$this->UserCacheActive = e107::getPref('cachestatus');
-		$this->SystemCacheActive = e107::getPref('syscachestatus');
+		//$this->UserCacheActive = e107::getPref('cachestatus');
+		//$this->SystemCacheActive = e107::getPref('syscachestatus');
 	}
 
 	/**
@@ -105,7 +105,7 @@ class ecache {
 	{
 		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
-			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
+			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
 			if (file_exists($cache_file))
 			{
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
@@ -133,9 +133,10 @@ class ecache {
 	}
 
 	/**
-	* @return string
-	* @param string $query
+	* @return string 
+	* @param string $CacheTag
 	* @param int $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param boolean $force
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
@@ -147,7 +148,7 @@ class ecache {
 		}
 		else
 		{
-			return ecache::retrieve($CacheTag, $MaximumAge, $ForcedCheck, true);
+			return self::retrieve($CacheTag, $MaximumAge, $ForcedCheck, true);
 		}
 	}
 
@@ -165,7 +166,7 @@ class ecache {
 	{
 		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
-			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
+			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
 			@file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
 			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
@@ -189,7 +190,7 @@ class ecache {
 		}
 		else
 		{
-			ecache::set($CacheTag, $Data, $ForceCache, $bRaw, true);
+			self::set($CacheTag, $Data, $ForceCache, $bRaw, true);
 		}
 	}
 
@@ -207,12 +208,14 @@ class ecache {
 	{
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
-		$ret = ecache::delete(e_CACHE_CONTENT, $file, $syscache);
+		$ret = self::delete(e_CACHE_CONTENT, $file, $syscache);
 
 		if($CacheTag && $related) //TODO - too dirty - add it to the $file pattern above
 		{
-			ecache::delete(e_CACHE_CONTENT, 'nq_'.$file, $syscache);
-			ecache::delete(e_CACHE_CONTENT, 'nomd5_'.$file, $syscache);
+			self::delete(e_CACHE_CONTENT, 'nq_'.$file, $syscache);
+			self::delete(e_CACHE_CONTENT, 'nomd5_'.$file, $syscache);
+			//ecache::delete(e_CACHE_CONTENT, 'nq_'.$file, $syscache);
+			//ecache::delete(e_CACHE_CONTENT, 'nomd5_'.$file, $syscache);
 		}
 		return $ret;
 	}
@@ -230,7 +233,8 @@ class ecache {
 		}
 		else
 		{
-			ecache::clear($CacheTag, true, $related);
+			self::clear($CacheTag, true, $related);
+		//	ecache::clear($CacheTag, true, $related);
 		}
 	}
 
