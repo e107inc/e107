@@ -1422,29 +1422,17 @@ class e_navigation
 	
 	/**
 	 * --------------- CODE-EFFICIENT APPROACH -------------------------
-	 * Less than 10 lines of code (once retrieve() is working)
 	 * FIXME syscache
 	 */
 	public function initData($cat=1)
 	{	
-		$sql 	= e107::getDb('sqlSiteLinks');
-		$ins 	= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
-		$query 	= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order,link_parent ASC";
-		
-		$ret = array();
-		$data = array();
-		
-	//	$data = $sql->retrieve($query,true);  // FIXME $sql->retrieve() fails. 
-		if($sql->gen($query))
-		{
-			while ($row = $sql->db_Fetch())
-			{
-				$id = $row['link_id'];
-				$data [$id] = $row;								
-			}
-		}
-		
-		$outArray = array();
+		$sql 		= e107::getDb('sqlSiteLinks');
+		$ins 		= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
+		$query 		= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order,link_parent ASC";
+		$ret 		= array();
+		$outArray 	= array();
+		$data 		= $sql->retrieve($query,true);  // FIXME $sql->retrieve() fails. 
+
 		return $this->compile($data, $outArray);		
 	}
 
