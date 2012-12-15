@@ -297,6 +297,100 @@ class ecal_class
 
 
 	/**
+	 *	Generate code to display a date entry box with date picker
+	 *
+	 *	@param string $boxname - name of the date picker
+	 *	@param integer $boxvalue - Unix time stamp for initial value
+	 *
+	 *	@return string - html to display date box
+	 */
+	public function makeCalendar($boxname, $boxvalue)
+	{
+		$frm = e107::getForm();
+
+		$opt = array(
+			'type' => 'date',
+			'dateformat' => $this->dcal_format_string,
+			'firstDay' => $this->ec_first_day_of_week,		// 0 = Sunday.
+			'size' => 12
+			);
+		return $frm->datepicker($boxname,$boxvalue,$opt);
+	}
+
+
+	/**
+	 *	Generate code to display time entry dropdowns for hours and minutes
+	 *
+	 *	@param string $boxname - name of the date picker
+	 *	@param integer $cur_hour - time
+	 *	@param integer $cur_minute - time
+	 *
+	 *	@return string - html to display time dropdowns
+	 *
+	 *	@TODO: dropdowns need to be smaller
+	 */
+	public function makeHourmin($boxname,$cur_hour,$cur_minute)
+	{
+		if (isset($this->pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
+		// @TODO: Need to restrict width of select box
+		$retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox'>\n";
+		for($count = '00'; $count <= '23'; $count++)
+		{
+			$val = sprintf("%02d", $count);
+			$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
+		}
+		$retval .= "</select>\n
+			<select name='{$boxname}minute' class='tbox'>\n";
+		for($count = '00'; $count <= '59'; $count+= $incval)
+		{
+			$val = sprintf("%02d", $count);
+			$retval .= "<option ".(isset($cur_minute) && $count == $cur_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>\n";
+		}
+		$retval .= "</select>\n";
+		return $retval;
+	}
+
+
+
+	/**
+	 *	Generate HTML for 'recurring event' options
+	 *
+	 *	@param integer $curval - code for current setting
+	 */
+	public function recurSelect($curval)
+	{
+		while ($curval > 150) { $curval -= 100; }		// Could have values up to about 406
+		$ret = "<select class='tbox' name='ec_recur_type' onchange=\"proc_recur(this.value);\">";
+		foreach ($this->recur_type as $k => $v)
+		{
+			$selected = ($curval == $k) ? " selected = 'selected'" : "";
+			$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+		}
+		$ret .= "</select>\n";
+		return $ret;
+	}
+	
+	
+	/**
+	 *	Generate HTML for recurring week options
+	 */
+	public function recurWeekSelect($curval)
+	{
+		$disp = $curval < 100 ? " style='display:none;'" : "";
+		$curval -= intval($curval % 10);		// Should make it an exact multiple of 100
+		$ret = "<span id='rec_week_sel'{$disp}><select class='tbox' name='ec_recur_week'>";
+		foreach ($this->recur_week as $k => $v)
+		{
+			$selected = ($curval == $k) ? " selected = 'selected'" : "";
+			$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+		}
+		$ret .= "</select></span>\n";
+		return $ret;
+	}
+
+
+
+	/**
 	 *	Return day of week string relative to the start of the week
 	 */
 	public function day_offset_string($doff)
