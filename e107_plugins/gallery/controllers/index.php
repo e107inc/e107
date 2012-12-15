@@ -90,7 +90,7 @@ class plugin_gallery_index_controller extends eControllerFront
 			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
 		}	
 		$text = $template['CAT_START'].$text.$template['CAT_END'];
-		$this->addTitle(GALLERY_LAN_TITLE)
+		$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)
 			->addBody($text);
 	}
 	
@@ -150,7 +150,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$text .= $tp->parseTemplate($template['LIST_END'],TRUE);
 		
 		$this->addTitle($catname)
-			->addTitle(GALLERY_LAN_TITLE)
+			->addTitle(LAN_PLUGIN_GALLERY_TITLE)
 			->addBody($text);
 	}
 }
