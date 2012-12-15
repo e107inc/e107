@@ -429,7 +429,7 @@ class e_db_mysql
 				{
 					return null;
 				}
-				elseif(!$select && $this->gen($table, $debug))
+				elseif(!$select && !$this->gen($table, $debug))
 				{
 					return null;
 				}
@@ -441,7 +441,7 @@ class e_db_mysql
 				{
 					return array();
 				}
-				elseif(!$select && $this->gen($table, $debug))
+				elseif(!$select && !$this->gen($table, $debug))
 				{
 					return array();
 				}
@@ -453,7 +453,7 @@ class e_db_mysql
 				{
 					return array();
 				}
-				elseif(!$select && $this->gen($table, $debug))
+				elseif(!$select && !$this->gen($table, $debug))
 				{
 					return array();
 				}
