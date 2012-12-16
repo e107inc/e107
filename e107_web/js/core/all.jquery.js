@@ -645,11 +645,13 @@ $(document).ready(function()
 	
 	function expandit(e) {
 				
-		
-		var href = ($(e).is("a")) ? $(e).attr("href") : '';
-
-						
-			if(href === "#" || href == "") 
+		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
+			if($(e).is("a"))
+			{
+				var href = $(e).attr("href");	
+			}
+				
+			if(href === "#" || e === null) 
 			{
 				idt = $(e).next("div");	
 				
@@ -658,6 +660,8 @@ $(document).ready(function()
 			}
 			
 			var id = "#" + e; 		
+			
+			
 			$(id).toggle("slow");
 			return false;
 	};
