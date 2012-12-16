@@ -212,6 +212,9 @@ define("DOWLAN_197", "random");
 define("DOWLAN_198", "Filter"); //FIXME Use Generic
 
 
+define('DOWLAN_FP_01', 'Front page');
+define('DOWLAN_FP_02', 'Category list');
+
 
 define("DOWLAN_HELP_1", "Help");
 define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");
