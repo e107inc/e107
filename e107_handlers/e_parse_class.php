@@ -2129,7 +2129,7 @@ class e_parse
 					'{e_WEB_JS}'		=> $e107->getFolder('web_js'),
 					'{e_WEB_CSS}'		=> $e107->getFolder('web_css'),
 					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_images'),
-					'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
+			//		'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
 
 					'{e_IMAGE}' 	=> $e107->getFolder('images'),
 					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),

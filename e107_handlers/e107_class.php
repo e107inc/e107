@@ -437,7 +437,7 @@ class e107
 		
 		$ret['WEB_CSS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'css/';
 		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'images/';
-		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
+	//	$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
 
 		$ret['DOWNLOADS_DIRECTORY']			= $ret['MEDIA_FILES_DIRECTORY'];
 		$ret['UPLOADS_DIRECTORY'] 			= $ret['MEDIA_UPLOAD_DIRECTORY'];
@@ -2692,7 +2692,7 @@ class e107
 			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
 			define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
 			define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
-			define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
+	//		define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
 
 			define('e_CACHE', $this->get_override_rel('CACHE'));
 			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));

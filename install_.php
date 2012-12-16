@@ -384,6 +384,7 @@ class e_install
 		$e_forms->add_button("start", LANINS_035);
 		$this->template->SetTag("stage_content", "<div  style='text-align: center;'><div class='alert alert-info alert-block'><label for='language'>".LANINS_005."</label></div>\n<br /><br /><br />\n".$e_forms->return_form()."</div>");
 		$this->logLine('Stage 1 completed');
+		
 	}
 
 
@@ -471,9 +472,12 @@ class e_install
 		
 		$this->previous_steps['paths']['hash'] = $hash;
 
+		$omit = array('FILES_DIRECTORY','WEB_IMAGES_DIRECTORY');
 		
 		foreach($this->e107->e107_dirs as $dir => $p)
 		{
+			if(in_array($dir, $omit)) { continue; }	
+			
 			$this->e107->e107_dirs[$dir] = str_replace("[hash]", $hash, $this->e107->e107_dirs[$dir]);
 					
 			if(!is_dir($this->e107->e107_dirs[$dir]))
