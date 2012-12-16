@@ -17,10 +17,10 @@
 define("LANINS_001", "e107 Installation");
 
 
-define("LANINS_002", "Stage ");
+define("LANINS_002", "Step ");
 define("LANINS_003", "1");
 define("LANINS_004", "Language Selection");
-define("LANINS_005", "Please choose language to use during installation procedure");
+define("LANINS_005", "Please choose the language to use during installation");
 define("LANINS_006", "Set Language");
 define("LANINS_007", "4");
 define("LANINS_008", "PHP &amp; MySQL Versions Check / File Permissions Check");
@@ -52,7 +52,7 @@ define("LANINS_027", "MySQL Database:");
 define("LANINS_028", "Create Database?");
 define("LANINS_029", "Table prefix:");
 define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. “hostname:port” or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
-define("LANINS_031", "The username you wish e107 to use for connecting to your MySQL server");
+define("LANINS_031", "The username you wish e107 to use to connect to your MySQL server");
 define("LANINS_032", "The Password for the user you just entered");
 define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes referred to as a schema. If the user has database create permissions you can opt to create the database automatically if it doesn't already exist.");
 define("LANINS_034", "The prefix you wish e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one database schema.");
@@ -116,7 +116,7 @@ Also please delete install.php from your server after you have clicked the butto
 define("LANINS_070", "e107 was unable to save the main config file to your server.
 
 Please ensure the <b>e107_config.php</b> file has the correct permissions");
-define("LANINS_071", "Finalising Installation");
+define("LANINS_071", "Installation Complete");
 
 define("LANINS_072", "Admin Username");
 define("LANINS_073", "This is the name you will use to login into the site. If you wish to use this as your display name also");
@@ -177,6 +177,6 @@ define("LANINS_118", "Install Plugins");
 define("LANINS_119", "Install all plugins that the theme may require.");
 define("LANINS_120", "8");
 define('LANINS_121', 'e107_config.php is not an empty file');
-define('LANINS_122', 'Possibly you have an existing installation');
+define('LANINS_122', 'You might have an existing installation');
 
 				
