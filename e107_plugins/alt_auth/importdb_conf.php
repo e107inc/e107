@@ -32,13 +32,13 @@ require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');
 
 
-if($_POST['update'])
+if(vartrue($_POST['update']))
 {
 //	$message = update_importdb_prefs();
 	$message = alt_auth_post_options('importdb');
 }
 
-if($message)
+if(vartrue($message))
 {
 	e107::getRender()->tablerender("","<div style='text-align:center;'>".$message."</div>");
 }

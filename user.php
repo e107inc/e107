@@ -136,7 +136,7 @@ if (isset($id))
 		exit;
 	}
 
-	if($pref['profile_comments'])
+	if(vartrue($pref['profile_comments']))
 	{
 		require_once(e_HANDLER."comment_class.php");
 		$comment_edit_query = 'comment.user.'.$id;

@@ -27,7 +27,7 @@ require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
 $mes = e107::getMessage();
 
 $message = '';
-if($_POST['update'])
+if(vartrue($_POST['update']))
 {
 	// $message .= alt_auth_post_options('radius');
 	$mes->addSuccess(alt_auth_post_options('radius'));
@@ -58,14 +58,14 @@ $frm = new form;
 $text = $frm -> form_open("post",e_SELF);
 $text .= "<table class='table adminform'>";
 $text .= "<tr><td>".LAN_RADIUS_01."</td><td>";
-$text .= $frm -> form_text("radius_server", 35, $radius['radius_server'], 120);
+$text .= $frm -> form_text("radius_server", 35, vartrue($radius['radius_server']), 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td>".LAN_RADIUS_02."</td><td>";
-$text .= $frm -> form_text('radius_secret', 35, $radius['radius_secret'], 200);
+$text .= $frm -> form_text('radius_secret', 35, vartrue($radius['radius_secret']), 200);
 $text .= "</td></tr>";
 
-$tmp = alt_auth_get_field_list('radius',$frm, $ldap, FALSE);
+$tmp = alt_auth_get_field_list('radius',$frm, vartrue($ldap), FALSE);
 if ($tmp)
 {
 	$text .= "<tr><td class='forumheader2' colspan='2'>".LAN_ALT_27."</td></tr>".$tmp;

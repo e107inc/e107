@@ -23,11 +23,11 @@ class core_system_error_controller extends eController
 		$this->addTitle(LAN_ERROR_7);
 		//var_dump($this->getRequest()->getRouteHistory());
 		$errorText = "<img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_21.'<br />'.LAN_ERROR_9."<br /><br />";
-		if (strlen($errFrom)) $errorText .= LAN_ERROR_23." <a href='{$errFrom}' rel='external'>{$errFrom}</a> ".LAN_ERROR_24." -- ".LAN_ERROR_19."<br /><br />";
+		if (strlen(vartrue($errFrom))) $errorText .= LAN_ERROR_23." <a href='{$errFrom}' rel='external'>{$errFrom}</a> ".LAN_ERROR_24." -- ".LAN_ERROR_19."<br /><br />";
 		
 	
 		$errorText .= "<h3>".LAN_ERROR_45."</h3>";
-		if($errReturnTo) 
+		if(vartrue($errReturnTo)) 
 		{
 			foreach ($errReturnTo as $url => $label)
 			{
