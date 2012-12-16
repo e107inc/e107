@@ -89,6 +89,12 @@ class ecache {
 			$CheckTag = '';
 		}
 		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);
+		
+		if($syscache === true)
+		{
+			$CheckTag = ''; // no MD5 on system cache. XXX To be Checked. 
+		}
+		
 		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
 		return $fname;
@@ -190,7 +196,7 @@ class ecache {
 		}
 		else
 		{
-			self::set($CacheTag, $Data, $ForceCache, $bRaw, true);
+			self::set($CacheTag, $Data, $ForceCache, $bRaw, true);			
 		}
 	}
 
