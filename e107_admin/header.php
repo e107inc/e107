@@ -110,7 +110,7 @@ e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 {
 	$threshold = (time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+	e107::getDb()->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
 }
 
 //
@@ -423,7 +423,7 @@ if ($e107_popup != 1)
 	// (legacy?) function admin_purge_related moved to boot.php
 
 
-	$sql->db_Mark_Time('Parse Admin Header');
+	e107::getDb()->db_Mark_Time('Parse Admin Header');
 		
 	//NEW - Iframe mod
 	if (!deftrue('e_IFRAME'))
@@ -432,7 +432,7 @@ if ($e107_popup != 1)
 		parse_admin($ADMIN_HEADER);
 	}
 
-	$sql->db_Mark_Time('(End: Parse Admin Header)');
+	e107::getDb()->db_Mark_Time('(End: Parse Admin Header)');
 }
 
 // XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it

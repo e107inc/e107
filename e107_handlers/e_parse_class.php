@@ -1852,14 +1852,14 @@ class e_parse
 			'e_WEB_JS/' 		=> '{e_WEB_JS}',
 			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
 			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
-			'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
+		//	'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
 
 			'e_BASE/' 			=> '{e_BASE}',
 			'e_ADMIN/' 			=> '{e_ADMIN}',
 			'e_IMAGE/' 			=> '{e_IMAGE}',
 			'e_THEME/' 			=> '{e_THEME}',
 			'e_PLUGIN/' 		=> '{e_PLUGIN}',
-			'e_HANDLER/' 		=> '{e_WEB_PACK}', // BC
+			'e_HANDLER/' 		=> '{e_HANDLER}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
 			'e_WEB/' 			=> '{e_ADMIN}',
 		);
@@ -2156,7 +2156,7 @@ class e_parse
 					'{e_WEB_JS}'		=> e_WEB_JS,
 					'{e_WEB_CSS}'		=> e_WEB_CSS,
 					'{e_WEB_IMAGE}'		=> e_WEB_IMAGE,
-					'{e_WEB_PACK}'		=> e_WEB_PACK,
+				//	'{e_WEB_PACK}'		=> e_WEB_PACK,
 
 					'{e_IMAGE}'		=> e_IMAGE,
 					'{e_PLUGIN}'	=> e_PLUGIN,
