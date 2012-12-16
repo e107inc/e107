@@ -70,6 +70,18 @@ function tablestyle($caption, $text, $mode)
 		return;
 	}
 	
+	if($mode == 'loginbox')
+	{
+		 echo '<div class="well sidebar-nav">
+		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
+		 
+           '.$text.'
+			
+        </div><!--/.well -->';
+          return;
+	}
+			
+		
 	
 	switch($type) 
 	{

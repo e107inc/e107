@@ -774,49 +774,51 @@ class e_navigation
 	
 		$plugs = e107::getObject('e107plugin');
 		
-	
-		foreach($pref['plug_installed'] as $plug=>$vers)
+		if(vartrue($pref['plug_installed']))
 		{
-	
-			$plugs->parse_plugin($plug);
-			
-	
-			$plugin_path = $plug;
-			$name = $plugs->plug_vars['@attributes']['name'];
-			
-	/*		echo "<h1>".$name." ($plug)</h1>";
-			print_a($plugs->plug_vars);*/
-			if(!varset($plugs->plug_vars['adminLinks']['link']))
+			foreach($pref['plug_installed'] as $plug=>$vers)
 			{
-				continue;	
-			}
-	
-			foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
-			{
-				if(varset($tag['@attributes']['primary']) !='true')
-				{
-					continue;
-				}
-				loadLanFiles($plugin_path, 'admin');
-				
-				$att = $tag['@attributes'];
-	
 		
-				$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
-				$eplug_conffile 	= $att['url'];
-				$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
-				$eplug_icon 		= $plugin_path.'/'.$att['icon'];
-				$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+				$plugs->parse_plugin($plug);
 				
-				if (varset($eplug_conffile))
+		
+				$plugin_path = $plug;
+				$name = $plugs->plug_vars['@attributes']['name'];
+				
+		/*		echo "<h1>".$name." ($plug)</h1>";
+				print_a($plugs->plug_vars);*/
+				if(!varset($plugs->plug_vars['adminLinks']['link']))
 				{
-					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
-					$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
-					$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					continue;	
 				}
-			}
-		}	
+		
+				foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
+				{
+					if(varset($tag['@attributes']['primary']) !='true')
+					{
+						continue;
+					}
+					loadLanFiles($plugin_path, 'admin');
+					
+					$att = $tag['@attributes'];
+		
+			
+					$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
+					$eplug_conffile 	= $att['url'];
+					$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
+					$eplug_icon 		= $plugin_path.'/'.$att['icon'];
+					$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+					
+					if (varset($eplug_conffile))
+					{
+						$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
+						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
+						$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					}
+				}
+			}	
+		}
 	
 		
 	//	print_a($plugs->plug_vars['adminLinks']['link']);
