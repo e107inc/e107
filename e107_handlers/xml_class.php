@@ -620,12 +620,18 @@ class xmlClass
 		{
 			return $vars;
 		}
-		
-	
+			
 		foreach($this->arrayTags as $p)
 		{
-			
-			list($vl,$sub) = explode("/",$p);
+			if(strpos($p,"/")!==false)
+			{
+				list($vl,$sub) = explode("/",$p);	
+			}
+			else
+			{
+				$vl = $p;
+				$sub = false;	
+			}
 			
 			if($sub)
 			{
