@@ -104,6 +104,8 @@ class e_form
 			$method = "post";	
 		}
 	
+		$class = "";
+	
 		parse_str($options,$options);
 	
 		$target = str_replace("&", "&amp;", $target);
@@ -722,9 +724,11 @@ class e_form
 	{
 		if(is_string($options)) parse_str($options, $options);
 		
+		$addon = "";
+		
 		if(vartrue($options['generate']))
 		{
-			$addon .= '&nbsp;<a href="#" class="smalltext" id="Spn_PasswordGenerator" >Generate</a> | <a class="smalltext" href="#" id="showPwd">Show</a><br />';	
+			$addon .= '&nbsp;<a href="#" class="smalltext e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> | <a class="smalltext e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
 		}
 		
 		if(vartrue($options['strength']))
@@ -732,11 +736,11 @@ class e_form
 			$addon .= "<div><div id='pwdColor' class='progress' style='float:left;display:inline-block;width:215px'><div class='bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";	
 		}
 		
-		$options = $this->format_options('text', $name, $options);
-		$options['class'] = vartrue($options['class'],'e-password');
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = vartrue($options['required'], 1);
-		
+		$options['class'] = vartrue($options['class'],'e-password');
+		$options = $this->format_options('text', $name, $options);
+
 		//never allow id in format name-value for text fields
 		$text = "<input type='password' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 
@@ -768,7 +772,7 @@ class e_form
 	}
 
 	/**
-	 * Bbcode Area. Name, value, template, form-id, size, options array eg. counter
+	 * Bbcode Area. Name, value, template, media-Cat, size, options array eg. counter
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
@@ -1725,7 +1729,7 @@ class e_form
 			// there is no other way for now - prepare user data
 			if('user' == vartrue($data['type']) /* && isset($data['readParms']['idField'])*/)
 			{
-				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
+				if(varset($data['readParms']) && is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
 				if(isset($data['readParms']['idField']))
 				{
 					$data['readParms']['__idval'] = $fieldvalues[$data['readParms']['idField']];
@@ -1795,7 +1799,7 @@ class e_form
 		{
 			case 'options':
 				
-				if($attributes['type'] == "method") // Allow override with 'options' function.
+				if(varset($attributes['type']) == "method") // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))

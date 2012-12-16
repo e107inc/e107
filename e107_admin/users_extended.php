@@ -523,7 +523,14 @@ class users_ext
 
 	function show_extended($current = '')  // Show existing fields List.
 	{
-        global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
+        global $ue, $curtype,$mySQLdefaultdb, $action, $sub_action;
+        
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
+		
  			if($current == 'new')
 			{
 					$mode = 'new';
@@ -539,7 +546,7 @@ class users_ext
 				list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
 			}
 
-			$text .= "
+			$text = "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-user-extended-create'>";
 
@@ -552,16 +559,16 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_10.":</td>
 			<td>user_";
-			if(is_array($current) && $current['user_extended_struct_name'])
+			if(is_array($current) && varset($current['user_extended_struct_name']))
 			{
 				$text .= $current['user_extended_struct_name']."
-				<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
+				<input type='hidden' name='user_field' value='".vartrue($current['user_extended_struct_name'])."' />
 				";
 			}
 			else
 			{
 				$text .= "
-				<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
+				<input class='tbox' type='text' name='user_field' size='40' value='".vartrue($current['user_extended_struct_name'])."' maxlength='50' />
 				";
 			}
 			$text .= "
@@ -572,7 +579,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_12.":</td>
 			<td colspan='3'>
-			<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
+			<input class='tbox' type='text' name='user_text' size='40' value='".vartrue($current['user_extended_struct_text'])."' maxlength='50' /><br />
 			<span class='field-help'>".EXTLAN_13."</span>
 			</td>
 			</tr>
@@ -584,7 +591,7 @@ class users_ext
 			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
 			foreach($ue->user_extended_types as $key => $val)
 			{
-				$selected = ($current['user_extended_struct_type'] == $key) ? " selected='selected'": "";
+				$selected = (vartrue($current['user_extended_struct_type']) == $key) ? " selected='selected'": "";
 				$text .= "<option value='".$key."' $selected>".$val."</option>";
 			}
 			$curtype = $current['user_extended_struct_type'];
@@ -608,8 +615,9 @@ class users_ext
 
 			$text .= "<div id='values' style='display:$val_hide'>\n";
 			$text .= "<div id='value_container' >\n";
-			$curVals = explode(",",$current['user_extended_struct_values']);
-			if(count($curVals) == 0){
+			$curVals = explode(",",varset($current['user_extended_struct_values']));
+			if(count($curVals) == 0)
+			{
 				$curVals[]='';
 			}
 			$i=0;
@@ -622,7 +630,7 @@ class users_ext
 			}
 			$text .= "
 			</div>
-			<input type='button' class='btn button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<input type='button' class='btn btn-primary button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
@@ -691,7 +699,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_16."</td>
 			<td colspan='3'>
-			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
+			<input class='tbox' type='text' name='user_default' size='40' value='".vartrue($current['user_extended_struct_default'])."' />
 			</td>
 			</tr>
 
@@ -726,7 +734,7 @@ class users_ext
 			<select class='tbox' name='user_parent'>";
 			foreach($this->catNums as $k)
 			{
-				$sel = ($k == $current['user_extended_struct_parent']) ? " selected='selected' " : "";
+				$sel = ($k == varset($current['user_extended_struct_parent'])) ? " selected='selected' " : "";
 				$text .= "<option value='{$k}' {$sel}>".$this->catList[$k][0]['user_extended_struct_name']."</option>\n";
 			}
 			$text .= "</select>
@@ -740,9 +748,9 @@ class users_ext
 			<select class='tbox' name='user_required'>
 			";
 			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
-			foreach($_r as $k => $v)
+			foreach($_r as $k => $v) //FIXME change to $frm->selectbox() 
 			{
-				$sel = ($current['user_extended_struct_required'] == $k ? " selected='selected' " : "");
+				$sel = (varset($current['user_extended_struct_required']) == $k ? " selected='selected' " : "");
 				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";
 			}
 
@@ -756,21 +764,21 @@ class users_ext
 			<tr>
 			<td >".EXTLAN_5."</td>
 			<td colspan='3'>
-			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
+			".r_userclass("user_applicable", varset($current['user_extended_struct_applicable']), 'off', 'member, admin, main, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 
 			<tr>
 			<td>".EXTLAN_6."</td>
 			<td colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, main, readonly, classes')."<br /><span class='field-help'>".EXTLAN_22."</span>
+			".r_userclass("user_read", varset($current['user_extended_struct_read']), 'off', 'public, member, admin, main, readonly, classes')."<br /><span class='field-help'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
 			<tr>
 			<td>".EXTLAN_7."</td>
 			<td colspan='3'>
-			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, main, classes')."<br /><span class='field-help'>".EXTLAN_21."</span>
+			".r_userclass("user_write", varset($current['user_extended_struct_write']), 'off', 'member, admin, main, classes')."<br /><span class='field-help'>".EXTLAN_21."</span>
 			</td>
 			</tr>
 

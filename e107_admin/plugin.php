@@ -299,7 +299,7 @@ class pluginManager{
 		
 		$mes->addWarning("This area is experimental and may produce unpredictable results.");
 
-		$from = intval($_GET['frm']);
+		$from = intval(varset($_GET['frm']));
 	
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 		$file = "http://e107.org/feed?frm=".$from;
@@ -1317,7 +1317,7 @@ class pluginBuilder
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
-			if($_GET['newplugin'])
+			if(vartrue($_GET['newplugin']))
 			{
 				$this->pluginName = $_GET['newplugin'];
 			}

@@ -56,7 +56,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 	{
 		$file = str_replace('--LAN--', e_LANGUAGE, $file);
 		
-		echo "orig = ".$file."     ";
+	//	echo "orig = ".$file."     ";
 		e107::lan($path,'log',true);
 		//include_lan(e_PLUGIN.$path.'/'.$file);
 	}

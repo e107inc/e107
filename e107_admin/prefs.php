@@ -457,21 +457,21 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			<tr>
 				<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
 				<td>
-				<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
+				<input class='tbox' type='text' name='smtp_server' size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' />
 				</td>
 			</tr>
 	
 			<tr>
 				<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
 				<td style='width:50%;' >
-				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
+				<input class='tbox' type='text' name='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' />
 				</td>
 			</tr>
 	
 			<tr>
 				<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
 				<td>
-				<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
+				<input class='tbox' type='password' name='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' />
 				</td>
 			</tr>
 
@@ -505,7 +505,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 			// Sendmail. -------------->
-				$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
+				
 				$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
 				$text .= "
 				<tr>
@@ -517,8 +517,8 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			
 				</table></div>";
 			*/
-			
-				$text .= "<div class='s-message info e-hideme' id='sendmail' {$senddisp}>
+				$senddisp = (varset($pref['mailer']) != 'sendmail') ? "e-hideme" : '';
+				$text .= "<div class='s-message info {$senddisp}' id='sendmail' >
 							Not available in this release
 						</div>";
 						
@@ -536,7 +536,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					'texthtml' => LAN_MAILOUT_126,
 					'texttheme' => LAN_MAILOUT_127
 				);	
-				$text .= $frm->selectbox('mail_sendstyle', $emFormat,$pref['mail_sendstyle']); 
+				$text .= $frm->selectbox('mail_sendstyle', $emFormat, vartrue($pref['mail_sendstyle'])); 
 				$text .= "
 					</td>
 				</tr>
@@ -1806,7 +1806,7 @@ $text .= "
 						<td>".PRFLAN_196."</td>
 						<td>
 						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'])."
-						<div class='field-help'>".PRFLAN_196a." <strong>".e_LOG_ABS."</strong></div>
+						<div class='field-help'>".PRFLAN_196a." <strong>".e_LOG."</strong></div>
 						</td>
 					</tr>
 					<tr>

@@ -284,8 +284,8 @@ class e_media
 		$qry .= "AND media_cat_class IN (".USERCLASS_LIST.") ";
 		$qry .= "ORDER BY media_cat_order";
 		
-		e107::getDb()->db_Select_gen($qry);
-		while($row = e107::getDb()->db_Fetch(mySQL_ASSOC))
+		e107::getDb()->gen($qry);
+		while($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 		{
 			$id = $row['media_cat_category'];
 			$ret[$id] = $row;
