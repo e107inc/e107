@@ -901,7 +901,7 @@ class uclass_manager
 
     	$this->fields = array(
 			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),
-			'userclass_id'				=> array('title'=> ID,			'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
+			'userclass_id'				=> array('title'=> LAN_ID,		'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
             'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
 			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
          	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
