@@ -1354,7 +1354,7 @@ class e_menuManager {
 				if($link)
 				{
          			$tmp[$id]['name'] = ucwords(str_replace("_menu","",$menu_name));
-					if($prev == $id && ($tmp[$id]['name']!=$prev_name))
+					if(vartrue($prev) == $id && ($tmp[$id]['name']!=$prev_name))
 					{
 	                	$tmp[$id]['name'] .= ":".$prev_name;
 					}

@@ -39,7 +39,7 @@ $ldap_ver[1]='2';
 $ldap_ver[2]='3';
 
 $message = '';
-if($_POST['update'])
+if(vartrue($_POST['update']))
 {
 	$message .= alt_auth_post_options('ldap');
 }
@@ -71,28 +71,28 @@ $text .= "<tr><td>".LDAPLAN_12."</td><td>";
 $text .= $frm -> form_select_open("ldap_servertype");
 foreach($server_types as $v)
 {
-	$sel = ($ldap['ldap_servertype'] == $v) ? " Selected='selected'" : '';
+	$sel = (vartrue($ldap['ldap_servertype']) == $v) ? " Selected='selected'" : '';
 	$text .= $frm -> form_option($v, $sel, $v);
 }
 $text .= $frm -> form_select_close();
 $text .= "</td></tr>";
 
 $text .= "<tr><td>".LDAPLAN_1."</td><td>";
-$text .= $frm -> form_text("ldap_server", 35, $ldap['ldap_server'], 120);
+$text .= $frm -> form_text("ldap_server", 35, vartrue($ldap['ldap_server']), 120);
 $text .= "</td></tr>";
 $text .= "<tr><td>".LDAPLAN_2."</td><td>";
-$text .= $frm -> form_text("ldap_basedn", 35, $ldap['ldap_basedn'], 120);
+$text .= $frm -> form_text("ldap_basedn", 35, vartrue($ldap['ldap_basedn']), 120);
 $text .= "</td></tr>";
 $text .= "<tr><td>".LDAPLAN_14."</td><td>";
-$text .= $frm -> form_text("ldap_ou", 35, $ldap['ldap_ou'], 60);
+$text .= $frm -> form_text("ldap_ou", 35, vartrue($ldap['ldap_ou']), 60);
 $text .= "</td></tr>";
 
 $text .= "<tr><td>".LDAPLAN_3."</td><td>";
-$text .= $frm -> form_text("ldap_user", 35, $ldap['ldap_user'], 120);
+$text .= $frm -> form_text("ldap_user", 35, vartrue($ldap['ldap_user']), 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td>".LDAPLAN_4."</td><td>";
-$text .= $frm -> form_text("ldap_passwd", 35, $ldap['ldap_passwd'], 120);
+$text .= $frm -> form_text("ldap_passwd", 35, vartrue($ldap['ldap_passwd']), 120);
 $text .= "</td></tr>";
 
 $text .= "<tr><td>".LDAPLAN_5."</td><td>";

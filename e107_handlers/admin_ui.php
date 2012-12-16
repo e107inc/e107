@@ -1759,7 +1759,7 @@ class e_admin_controller
 	 */
 	public function addHeader($content)
 	{
-		$this->getResponse()->addHeaderContent($content);
+		$this->getResponse()->addHeaderContent(vartrue($content));
 		return $this;
 	}
 

@@ -213,7 +213,7 @@ class login_menu_class
         $lbox_stats[0]['stat_items']    = LOGIN_MENU_L17;
         $lbox_stats[0]['stat_new']      = 0;
         $lbox_stats[0]['stat_nonew']    = LOGIN_MENU_L26.' '.LOGIN_MENU_L17;
-        if($get_stats) {
+        if(vartrue($get_stats)) {
             $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
         }
         
@@ -346,7 +346,7 @@ class login_menu_class
         if(($tmp = getcachedvars('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
 
         $ret = array();
-		if (is_readable(e_PLUGIN.$plugin_path.'/plugin.xml'))
+		if (is_readable(e_PLUGIN.vartrue($plugin_path).'/plugin.xml'))
 		{
 			require_once(e_HANDLER.'xml_class.php');
 			$xml = new xmlClass;

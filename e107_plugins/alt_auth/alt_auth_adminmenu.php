@@ -333,6 +333,7 @@ function alt_auth_post_options($prefix)
 function altAuthGetPasswordSelector($name, $frm, $currentSelection = '', $getExtended = FALSE)
 {
 	$password_methods = ExtendedPasswordHandler::GetPasswordTypes($getExtended); 
+	$text = "";
 	$text .= $frm->form_select_open($name);
 	foreach($password_methods as $k => $v)
 	{
