@@ -100,25 +100,25 @@ if (!$dont_check_update)
 	}
 	*/
 	
-	$dbupdateplugs = e107::getConfig('core')->get('plug_installed');
-		
-	// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
-	foreach ($dbupdateplugs as $path => $ver)
+	if($dbupdateplugs = e107::getConfig('core')->get('plug_installed'))
 	{
-		if(!is_file(e_PLUGIN.$path."/plugin.xml")) 
-		{		
-			$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';  // DEPRECATED - left for BC only. 
-			if (is_readable($fname)) include_once($fname);
-		}
-		
-		$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
-		if (is_readable($fname))
+		// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
+		foreach ($dbupdateplugs as $path => $ver)
 		{
-			$dbupdatep[$path] =  $path ; // ' 0.7.x forums '.LAN_UPDATE_9.' 0.8 forums';
-			include_once($fname);
-		} 
+			if(!is_file(e_PLUGIN.$path."/plugin.xml")) 
+			{		
+				$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';  // DEPRECATED - left for BC only. 
+				if (is_readable($fname)) include_once($fname);
+			}
+			
+			$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
+			if (is_readable($fname))
+			{
+				$dbupdatep[$path] =  $path ; // ' 0.7.x forums '.LAN_UPDATE_9.' 0.8 forums';
+				include_once($fname);
+			} 
+		}
 	}
-
 
 	// List of potential updates
 	if (defined('TEST_UPDATE'))
@@ -1106,7 +1106,10 @@ function update_706_to_800($type='')
 	{
 		foreach($user_media_dirs as $md)
 		{
-			mkdir(e_MEDIA.$md);	
+			if(!is_dir(e_MEDIA.$md))
+			{
+				mkdir(e_MEDIA.$md);		
+			}			
 		}	
 	}
 	

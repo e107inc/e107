@@ -167,7 +167,11 @@ class e107plugin
 		$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
-		$plugVersions 	= e107::getConfig('core')->get('plug_installed');
+		
+		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
+		{
+			return FALSE;
+		}
 				
 		foreach($plugVersions as $path=>$version)
 		{

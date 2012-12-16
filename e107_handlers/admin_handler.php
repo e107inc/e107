@@ -50,11 +50,17 @@ if (!function_exists('multiarray_sort')) {
         {
         	($order=='asc')? asort($sort_values) : arsort($sort_values);
         }
-        else
+		elseif(isset($sort_values))
         {
              $case ? natsort($sort_values) : natcasesort($sort_values);
              if($order != 'asc') $sort_values = array_reverse($sort_values, true);
         }
+		
+		if(!isset($sort_values))
+		{
+			return;				
+		}
+			
         reset ($sort_values);
 
         while (list ($arr_key, $arr_val) = each ($sort_values))
