@@ -27,7 +27,7 @@
 
 define('LAN_EC_MAIL_01', 'Event Calendar Subscribers');
 define('LAN_EC_MAIL_02', 'No categories defined, or database error');
-define('LAN_EC_MAIL_03', 'Category: ');
+define('LAN_EC_MAIL_03', 'Category: ');  //FIXME Use Generic
 define('LAN_EC_MAIL_04', 'Calendar Subscriptions');
 define('LAN_EC_MAIL_05', 'Process notifications of events on the calendar');
 define('LAN_EC_MAIL_06', 'Mail subscriptions run started at ');
