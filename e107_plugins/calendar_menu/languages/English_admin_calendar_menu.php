@@ -44,30 +44,30 @@ define('EC_LAN_163', "Event Listing");
 // If any 'EC_LAN_xxx' not found, look in language file for user pages.
 
 define('EC_ADLAN_A09', 'Main Calendar');
-define('EC_ADLAN_A10', "Configuration");
-define('EC_ADLAN_A11', "Categories");
+define('EC_ADLAN_A10', "Configuration"); //FIXME Use Generic
+define('EC_ADLAN_A11', "Categories"); //FIXME Use Generic
 define('EC_ADLAN_A12', "Calendar");
-define('EC_ADLAN_A13', "Edit");
+define('EC_ADLAN_A13', "Edit"); //FIXME Use Generic
 define('EC_ADLAN_A14', "New");
-define('EC_ADLAN_A15', "Delete");
-define('EC_ADLAN_A16', "Confirm");
+define('EC_ADLAN_A15', "Delete"); //FIXME Use Generic
+define('EC_ADLAN_A16', "Confirm"); //FIXME Use Generic
 define('EC_ADLAN_A17', "Proceed");
 define('EC_ADLAN_A18', "Action");
 define('EC_ADLAN_A19', "Administer Categories");
 define('EC_ADLAN_A20', "Calendar Categories");
 define('EC_ADLAN_A21', "Category name");
 define('EC_ADLAN_A22', "Adds a field to be used as a link to a forum thread or external site");	
-define('EC_ADLAN_A23', "Create category");
-define('EC_ADLAN_A24', "Edit category");
-define('EC_ADLAN_A25', "Save");
-define('EC_ADLAN_A26', "Category created");
+define('EC_ADLAN_A23', "Create category"); //FIXME Use Generic
+define('EC_ADLAN_A24', "Edit category"); //FIXME Use Generic
+define('EC_ADLAN_A25', "Save"); //FIXME Use Generic
+define('EC_ADLAN_A26', "Category created"); //FIXME Use Generic
 define('EC_ADLAN_A27', "Unable to create category");
-define('EC_ADLAN_A28', "Changes Saved");
-define('EC_ADLAN_A29', "Unable to save changes");
+define('EC_ADLAN_A28', "Changes Saved"); //FIXME Use Generic
+define('EC_ADLAN_A29', "Unable to save changes"); //FIXME Use Generic
 
-define('EC_ADLAN_A30', "Category Deleted");
+define('EC_ADLAN_A30', "Category Deleted"); //FIXME Use Generic
 define('EC_ADLAN_A31', "Tick the confirm box to delete");
-define('EC_ADLAN_A32', "Unable to delete this category");
+define('EC_ADLAN_A32', "Unable to delete this category"); //FIXME Use Generic
 define('EC_ADLAN_A33', "None defined");
 define('EC_ADLAN_A34', "Calendar Administrator Class");
 //define('EC_ADLAN_A35', "");
@@ -174,12 +174,12 @@ define('EC_ADLAN_A172', "Value is time from update in hours; zero to disable, 'L
 define('EC_ADLAN_A173', "Subscriptions");
 define('EC_ADLAN_A174', "No subscription entries found");
 define('EC_ADLAN_A175', "UID");
-define('EC_ADLAN_A176', "User Name");
-define('EC_ADLAN_A177', "Category");
+define('EC_ADLAN_A176', "User Name"); //FIXME Use Generic
+define('EC_ADLAN_A177', "Category"); //FIXME Use Generic
 define('EC_ADLAN_A178', "Problems");
 define('EC_ADLAN_A179', "Actions");
-define('EC_ADLAN_A180', "Deleted subscription record no ");
-define('EC_ADLAN_A181', "Delete failed for record no ");
+define('EC_ADLAN_A180', "Deleted subscription record no "); //FIXME Use Generic
+define('EC_ADLAN_A181', "Delete failed for record no "); //FIXME Use Generic
 define('EC_ADLAN_A182', "Total --NUM-- entries in database");
 define('EC_ADLAN_A183', "Calendar Menu mouseover shows event title");
 define('EC_ADLAN_A184', "may not work with all browsers");
