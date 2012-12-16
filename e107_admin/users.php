@@ -282,7 +282,8 @@ class users_admin_ui extends e_admin_ui
 		// if(isset ($_POST['adduser']))
 		// {
 			// addUser();		
-		// }	
+		// }	
+
 	}
 
 	/**
@@ -1978,6 +1979,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 		
 		extract($row);
+		$text = "";
 		$text .= "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />

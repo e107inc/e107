@@ -263,7 +263,7 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 	else
 	{
 		$mes->addDebug("Couldn't Read LanFile... ");
-		$ns -> tablerender($res['caption'],$mes->render(). $res['text']);	 
+		$ns -> tablerender(vartrue($res['caption']), $mes->render(). vartrue($res['text']));	 
 	}
 	
 

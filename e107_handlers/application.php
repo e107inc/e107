@@ -1701,7 +1701,7 @@ class eRouter
 		}
 
 		// final fallback
-		if(!$route)
+		if(!vartrue($route))
 		{
 			if($request->routed)
 			{
