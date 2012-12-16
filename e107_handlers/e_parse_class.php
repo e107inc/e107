@@ -1891,7 +1891,7 @@ class e_parse
 	 * TODO - runtime cache of search/replace arrays (object property) when $mode !== ''
 	 * @param string $text
 	 * @param string $mode [optional]	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
-	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
+	 * 									'abs' = produce truncated URL path, e.g. e107plugins/etc
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
@@ -1913,7 +1913,7 @@ class e_parse
 				$e107->getFolder('web_js'),
 				$e107->getFolder('web_css'),
 				$e107->getFolder('web_image'),
-				$e107->getFolder('web_pack'),
+				//$e107->getFolder('web_pack'),
 				e_IMAGE_ABS,
 				e_THEME_ABS,
 				$e107->getFolder('images'),
@@ -1952,7 +1952,7 @@ class e_parse
 						e_FILE_ABS,
 						e_THEME_ABS,
 				//		e_DOWNLOAD_ABS, //impossible when download is done via php.
-						'', //no ABS path available
+						'', // handlers - no ABS path available
 						e_MEDIA_ABS,
 						e_WEB_ABS,
 						defset('THEME_ABS'),
@@ -1982,7 +1982,7 @@ class e_parse
 						SITEURLBASE.e_FILE_ABS, // deprecated
 						SITEURLBASE.e_THEME_ABS,
 						//SITEURL.$e107->getFolder('downloads'),
-						'', //no ABS path available
+						'', //  handlers - no ABS path available
 						SITEURLBASE.e_MEDIA_ABS,
 						SITEURLBASE.e_WEB_ABS,
 						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',

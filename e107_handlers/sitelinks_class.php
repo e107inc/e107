@@ -1524,12 +1524,13 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_url($parm='')
 	{
-		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], TRUE, TRUE);
+		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], 'full', TRUE);
 	}
 	
 	function sc_link_image($parm='')
 	{
-		return e107::getParser()->replaceConstants(vartrue($this->var['link_image']));	
+		if (!vartrue($this->var['link_image'])) return '';
+		return e107::getParser()->replaceConstants($this->var['link_image'], 'full', TRUE);	
 	}
 		
 	
