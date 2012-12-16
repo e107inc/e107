@@ -457,10 +457,8 @@ class themeHandler
 		
 		// Show All Themes
 		if($mode == "choose")
-		{
-			
-		
-		//	$text = "";
+		{	
+			$text = "";
 			foreach ($this->themeArray as $key=>$theme)
 			{
 				$text .= $this->renderTheme(FALSE, $theme);

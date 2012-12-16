@@ -1119,7 +1119,7 @@ class e_navigation
 		global $td;
 		$tp = e107::getParser();
 		$mes = e107::getMessage();
-		
+		$cols = defset('ADLINK_COLS',3);
 	
 		
 		$text = '';
@@ -1138,7 +1138,7 @@ class e_navigation
 	
 				if($mode != "div" && $mode != 'div-icon-only')
 				{
-					if ($td == (ADLINK_COLS+1))
+					if ($td == ($cols +1))
 					{
 						$text .= '</tr>';
 						$td = 1;
@@ -1431,7 +1431,7 @@ class e_navigation
 		$query 		= "SELECT * FROM #links WHERE ".$ins."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order,link_parent ASC";
 		$ret 		= array();
 		$outArray 	= array();
-		$data 		= $sql->retrieve($query,true);  // FIXME $sql->retrieve() fails. 
+		$data 		= $sql->retrieve($query,true);  
 
 		return $this->compile($data, $outArray);		
 	}

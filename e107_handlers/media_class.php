@@ -29,7 +29,7 @@ class e_media
 				'text'			=> e_MEDIA_FILE,
 				'multipart'		=> e_MEDIA_FILE,
 				'application'	=> e_MEDIA_FILE,
-				'audio'			=> e_MEDIA_AUDIO,
+		//		'audio'			=> e_MEDIA_AUDIO,
 				'image'			=> e_MEDIA_IMAGE,
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
