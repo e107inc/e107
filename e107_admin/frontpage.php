@@ -40,9 +40,11 @@ $emessage = &eMessage::getInstance();
 
 require_once (e_HANDLER.'userclass_class.php');
 
+$frontPref = e107::pref('core');              		 	// Get prefs
+
 // Get list of possible options for front page
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
-$front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
+//$front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);		// Its a plugin now
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
 if($sql->db_Select('page', 'page_id, page_title', "page_theme=''"))
@@ -55,9 +57,9 @@ if($sql->db_Select('page', 'page_id, page_title', "page_theme=''"))
 }
 
 // Now let any plugins add to the options - must append to the $front_page array as above
-if(varset($pref['e_frontpage_list']))
+if(varset($frontPref['e_frontpage_list']))
 {
-	foreach($pref['e_frontpage_list'] as $val)
+	foreach($frontPref['e_frontpage_list'] as $val)
 	{
 		if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
 		{
@@ -66,12 +68,14 @@ if(varset($pref['e_frontpage_list']))
 	}
 }
 
+
+
 // Now sort out list of rules for display (based on $pref data to start with)
 $gotpub = FALSE;
-if(is_array($pref['frontpage']))
+if(is_array($frontPref['frontpage']))
 {
 	$i = 1;
-	foreach($pref['frontpage'] as $class => $val)
+	foreach($frontPref['frontpage'] as $class => $val)
 	{
 		if($class == 'all')
 		{
@@ -80,7 +84,7 @@ if(is_array($pref['frontpage']))
 		}
 		if($val)
 		{ // Only add non-null pages
-			$fp_settings[$i] = array('order' => $i, 'class' => $class, 'page' => $val, 'force' => varset($pref['frontpage_force'][$class], ''));
+			$fp_settings[$i] = array('order' => $i, 'class' => $class, 'page' => $val, 'force' => varset($frontPref['frontpage_force'][$class], ''));
 			$i ++;
 		}
 	}
@@ -88,12 +92,12 @@ if(is_array($pref['frontpage']))
 else
 { // Legacy stuff to convert
 	$fp_settings = array();
-	$fp_settings[] = array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => varset($pref['frontpage'], 'news.php'), 'force' => '');
+	$fp_settings[] = array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => varset($frontPref['frontpage'], 'news.php'), 'force' => '');
 }
 
 if(!$gotpub)
 { // Need a 'default' setting - usually 'all'
-	$fp_settings[] = array('order' => $i, 'class' => e_UC_PUBLIC, 'page' => (isset($pref['frontpage']['all']) ? $pref['frontpage']['all'] : 'news.php'), 'force' => '');
+	$fp_settings[] = array('order' => $i, 'class' => e_UC_PUBLIC, 'page' => (isset($frontPref['frontpage']['all']) ? $frontPref['frontpage']['all'] : 'news.php'), 'force' => '');
 }
 
 $fp_update_prefs = FALSE;
@@ -207,7 +211,6 @@ if(isset($_POST['fp_save_new']))
 	}
 	else
 	{ // Someone playing games
-		//$ns->tablerender(LAN_UPDATED, "<div style='text-align:center'><b>"."Software error"."</b></div>");
 		$emessage->add('Software error', E_MESSAGE_ERROR);
 	}
 }
@@ -239,9 +242,11 @@ if($fp_update_prefs)
 		$fp_list[$fp_settings[$i]['class']] = $fp_settings[$i]['page'];
 		$fp_force[$fp_settings[$i]['class']] = $fp_settings[$i]['force'];
 	}
-	$pref['frontpage'] = $fp_list;
-	$pref['frontpage_force'] = $fp_force;
-	save_prefs();
+
+	$corePrefs = e107::getConfig('core');				// Core Prefs Object.
+	$corePrefs->set('frontpage', $fp_list);
+	$corePrefs->set('frontpage_force', $fp_force);
+	$result = $corePrefs->save(FALSE, TRUE);
 	$emessage->add(FRTLAN_1, E_MESSAGE_SUCCESS);
 }
 
