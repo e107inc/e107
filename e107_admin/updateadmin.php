@@ -17,7 +17,8 @@
 
 require_once('../class2.php');
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::lan('core','updateadmin',true);
 
 $e_sub_cat = 'admin_pass';
 
@@ -93,8 +94,8 @@ else
 					</tr>
 					<tr>
 						<td>".UDALAN_5.":</td>
-						<td>
-							<input class='tbox input-text' type='password' name='a_password' size='60' value='' maxlength='20' />
+						<td>".$frm->password('a_password','',20,'generate=1&strength=1')."
+							
 						</td>
 					</tr>
 					<tr>

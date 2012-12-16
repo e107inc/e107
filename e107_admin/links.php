@@ -68,7 +68,7 @@ class links_admin_ui extends e_admin_ui
 	protected $perPage 		= 0;
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
-	protected $listOrder = 'link_order ASC';
+	protected $listOrder = 'link_category,link_order ASC';
 	protected $listSorting = true; // TODO - should enable the 'sort' icon in the 'options' column. 
 
 
@@ -78,14 +78,14 @@ class links_admin_ui extends e_admin_ui
 	protected $fields = array(
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
-		'link_id'			=> array('title'=> ID, 				'noedit'=>TRUE),
+		'link_id'			=> array('title'=> LAN_ID, 				'noedit'=>TRUE),
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'required' => true, 'validate' => true),
 		'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_url'	   		=> array('title'=> LCLAN_93, 		'width'=>'auto', 'type'=>'text', 'required'=>true,'validate' => true),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'width' => 'auto'),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
-		'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+		'link_category' 	=> array('title'=> LAN_TEMPLATE, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
@@ -111,15 +111,15 @@ class links_admin_ui extends e_admin_ui
 	{
 		$this->fields['link_category']['writeParms'] = array(
 			1	=> "1 - Main",
-			2	=> "2 - Alt",
-			3	=> "3 - Alt",
+			2	=> "2 - Sidebar",
+			3	=> "3 - Footer",
 			4	=> "4 - Alt",
 			5	=> "5 - Alt",
-			6	=> "6 - Alt",
-			7	=> "7 - Alt",
-			8	=> "8 - Alt",
-			9	=> "9 - Alt",
-			10	=> "10 - Alt"
+	//		6	=> "6 - Alt", // If these are required, something is not right with the themeing method. 
+	//		7	=> "7 - Alt",
+	//		8	=> "8 - Alt",
+	//		9	=> "9 - Alt",
+	//		10	=> "10 - Alt"
 		);
 
 		$this->fields['link_open']['writeParms'] = array(
