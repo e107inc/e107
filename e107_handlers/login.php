@@ -288,7 +288,13 @@ class userlogin
 				{  // We've found the entry of interest
 					if (strlen($fp))
 					{
-						$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						if (strpos($fp, 'http') === FALSE)
+						{
+							$fp = str_replace(e_HTTP, '', $fp);		// This handles sites in a subdirectory properly (normally, will replace nothing)
+							$fp = SITEURL.$fp;
+						}
+						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						$redir = $this->e107->tp->replaceConstants($fp, TRUE, FALSE);
 		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;

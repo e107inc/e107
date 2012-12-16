@@ -24,7 +24,10 @@
  *	@version 	$Id$;
  */
 
-require_once('../../class2.php');
+if (!defined('e_SINGLE_ENTRY'))
+{
+	require_once('../../class2.php');
+}
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
 
