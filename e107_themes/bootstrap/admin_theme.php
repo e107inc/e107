@@ -480,21 +480,21 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
 	// FOR BC 
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_32.png");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_32.png");
-	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_32.png");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_32.png");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_32.png");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_32.png");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_32.png");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_32.png");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_32.png");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_32.png");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_32.png");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_32.png");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_32.png");
-	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_32.png");
-	define("ADMIN_SORT_ICON_PATH", e_IMAGE."admin_images/sort_32.png");
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_32.png");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_32.png");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_32.png");
+	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_32.png");
+	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_32.png");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_32.png");
+	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_32.png");
+	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_32.png");
+	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_32.png");
+	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_32.png");
+	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_32.png");
+	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE_ABS."admin_images/execute_32.png");
+	define("ADMIN_SORT_ICON_PATH", e_IMAGE_ABS."admin_images/sort_32.png");
 
 
 function theme_head() {
