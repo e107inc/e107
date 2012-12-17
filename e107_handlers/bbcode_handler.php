@@ -584,7 +584,7 @@ class e_bbcode
 		$text = preg_replace('/<tr([\w :\-_;="]*)?>/i', "[tr]",$text);
 		$text = preg_replace('/<td([\w :\-_;="]*)?>/i', "\t[td]",$text);
 		$text = preg_replace('/<blockquote([\w :\-_;="]*)?>/i', "[blockquote]",$text);
-		$text = preg_replace('/<p([\w :\-_;="]*)?>/i', "[p]",$text);
+		$text = preg_replace('/<p([\w :\-_;="]*)?>/i', "",$text);  // Causes issues : [p] [/p] everywhere. 
 		
 		
 		$ehttp = str_replace("/",'\/',e_HTTP);
@@ -596,8 +596,8 @@ class e_bbcode
 		$convert = array(		
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
-			array(	"[/p]\n",			"</p>\n"),
-			array(	"[/p]\n",			"</p>"),
+			array(	"\n",			"</p>\n"),
+			array(	"\n",			"</p>"),
 			array(	"[/list]",		'</ul>\n'),
 			array(	"[/list]",		'</ul>'),
 			array(	"[/list]",		'</ol>\n'),
