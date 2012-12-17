@@ -12,8 +12,10 @@
 		<image>fullpreview.png</image>
 	</screenshots>
 	<layouts>
-		<layout name='default' title='2 Columns' default='true'>
-		<custompages>usersettings.php</custompages>
+		<layout name='default' title='Default' default='true' />
+		<layout name='hero' title='Hero'>
+			<custompages>usersettings.php</custompages>
 		</layout>
+		<layout name='marketing-narrow' title='Marketing Narrow' />
 	</layouts>
 </e107Theme>
