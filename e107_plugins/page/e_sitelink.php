@@ -14,12 +14,15 @@
  * $Author$
  *
 */
+//require_once("../../class2.php");
 
 if (!defined('e107_INIT')) { exit; }
 /*if(!plugInstalled('gsitemap'))
 { 
 	return;
 }*/
+//$pg = new page_sitelinks;
+//$pg->myfunction();
 
 
 class page_sitelinks // include plugin-folder in the name.
@@ -30,7 +33,7 @@ class page_sitelinks // include plugin-folder in the name.
 			
 		$links[] = array(
 			'name'			=> "All Pages",
-			'function'		=> "myfunction",
+			'function'		=> "pageNav",
 			'description' 	=> ""
 		);	
 		
@@ -39,30 +42,39 @@ class page_sitelinks // include plugin-folder in the name.
 	
 	
 
-	function myfunction() 
+	function pageNav() 
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
 		
-		$sql->db_Select("page","*","page_theme = '' ORDER BY page_title");
+		$query = "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 
 		
-		while($row = $sql->db_Fetch())
+		// $sql->db_Select("page","*","page_theme = '' ORDER BY page_title");
+		$data = $sql->retrieve($query, true);
+		$sublinks = array();
+		
+		foreach($data as $row)
 		{
 			$sublinks[] = array(
+				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
 				'link_url'			=> 'page.php?'.$row['page_id'],
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',
-				'link_order'		=> '',
-				'link_parent'		=> '',
+				'link_order'		=> $row['page_order'],
+				'link_parent'		=> 0,
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class'])
 			);
 		}
 		
-		return $sublinks;
-	    
+		
+		$outArray 	= array();
+		$ret =  e107::getNav()->compile($sublinks, $outArray);		
+		// print_a($ret);
+		return $ret;
+	    //	compile();
 	}
 	
 }
