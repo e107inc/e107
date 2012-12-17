@@ -2136,7 +2136,7 @@ class error_handler
 		{
 			foreach ($this->errors as $key => $value)
 			{
-				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
+				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
 				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
 				$ret .= "</td>\n\t</tr>";
 				if($index == 0) { $index = 1; } else { $index = 0; }
@@ -2151,7 +2151,7 @@ class error_handler
 			}
 		}
 
-		return ($ret) ? "<table class='fborder'>\n".$ret."</table>" : FALSE;
+		return ($ret) ? "<table class='table table-condensed fborder'>\n".$ret."</table>" : FALSE;
 	}
 
 	function trigger_error($information, $level)
