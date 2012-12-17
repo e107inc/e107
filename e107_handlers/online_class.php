@@ -214,7 +214,7 @@ class e_online
 			}
 
 			// Always allow localhost - any problems are usually semi-intentional!
-			if (($row['online_ip'] != '127.0.0.1') && ($row['online_ip'] != e107::LOCALHOST_IP))
+			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP))
 			{
 				// Check for excessive access
 				if ($row['online_pagecount'] > $online_bancount)

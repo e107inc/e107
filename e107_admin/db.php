@@ -672,7 +672,7 @@ class system_tools
 				</table>
 
 				<div class='buttons-bar center'>
-					".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
+					".$frm->admin_button('exportXmlFile', "Export File", 'other')."
 				</div>
 			</fieldset>
 		</form>	";

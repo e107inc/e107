@@ -134,9 +134,9 @@ if ( ! isset($LOGIN_MENU_LOGGED))
     - LM_STAT_LABEL
     - LM_STAT_EMPTY
 
-*/
-
-    $sc_style['LM_MAINTENANCE']['pre'] = '<div style="text-align:center"><strong>';
+    ---------------- Legacy Layout --------------------------------
+ 
+   	$sc_style['LM_MAINTENANCE']['pre'] = '<div style="text-align:center"><strong>';
 	$sc_style['LM_MAINTENANCE']['post'] = '</strong></div><br />';
 
     $sc_style['LM_ADMINLINK']['pre'] = '';
@@ -164,6 +164,48 @@ if ( ! isset($LOGIN_MENU_LOGGED))
 		{LM_BULLET} {LM_LOGOUT}
 		{LM_STATS}
 		{LM_LISTNEW_LINK}
+	';
+*/
+
+// New Template for v2. Bullets via CSS etc. Login-Menu Stats may require work. 
+
+    $sc_style['LM_MAINTENANCE']['pre'] = '<li class="login-menu-maintenance">';
+	$sc_style['LM_MAINTENANCE']['post'] = '</li>';
+
+    $sc_style['LM_ADMINLINK']['pre'] = '<li class="login-menu-admin">';
+	$sc_style['LM_ADMINLINK']['post'] = '</li>';
+
+    $sc_style['LM_EXTERNAL_LINKS']['pre'] = '<li class="login-menu-external">';
+	$sc_style['LM_EXTERNAL_LINKS']['post'] = '</li>';
+
+    $sc_style['LM_STATS']['pre'] = '<li class="nav-header login-menu-stats smalltext">'.LOGIN_MENU_L25.':</li><li>';
+	$sc_style['LM_STATS']['post'] = '</li>';
+
+    $sc_style['LM_LISTNEW_LINK']['pre'] = '<li class="login-menu-listnew">';
+	$sc_style['LM_LISTNEW_LINK']['post'] = '</li>';
+
+    $sc_style['LM_ADMIN_CONFIGURE']['pre'] = '<li class="login-menu-admin-config">';
+	$sc_style['LM_ADMIN_CONFIGURE']['post'] = '</li>';
+	
+    $sc_style['LM_LOGOUT']['pre'] = '<li class="login-menu-logout">';
+	$sc_style['LM_LOGOUT']['post'] = '</li>';
+	
+    $sc_style['LM_LOGOUT']['pre'] = '<li class="login-menu-logout">';
+	$sc_style['LM_LOGOUT']['post'] = '</li>';
+
+	
+	$LOGIN_MENU_LOGGED = '
+	<ul class="login-menu-logged nav nav-list">
+		{LM_MAINTENANCE}
+		{LM_ADMINLINK}
+		<li class="login-menu-usersettings">{LM_USERSETTINGS}</li>
+		<li class="login-menu-profile">{LM_PROFILE}</li>
+		{LM_ADMIN_CONFIGURE}
+		{LM_EXTERNAL_LINKS}
+		{LM_LOGOUT}
+		{LM_STATS}
+		{LM_LISTNEW_LINK}
+	</ul>
 	';
 }
 
