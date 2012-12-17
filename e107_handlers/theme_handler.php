@@ -1134,7 +1134,7 @@ class themeHandler
 			//TODO LANs
 			$mes->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
 			$mes->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
-			$mes->add("Custom Pages: ".print_a($customPages,true), E_MESSAGE_SUCCESS);
+			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
