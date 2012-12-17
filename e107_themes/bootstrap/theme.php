@@ -106,12 +106,12 @@ function tablestyle($caption, $text, $mode)
 	{
 		//FIXME Use Bootstrap css. ie. span4 etc. 
 		case 'menu' :
-			echo '
-				<div class="block">
-					<h4 class="caption">'.$caption.'</h4>
-					'.$text.'
-				</div>
-			';
+			echo '<div class="well sidebar-nav">
+		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
+		 
+           '.$text.'
+			
+        </div><!--/.well -->';
 		break;
 		
 		case 'span4' :
@@ -130,12 +130,11 @@ function tablestyle($caption, $text, $mode)
 	
 		default:
 			echo '
-				<div class="block">
-					<h1 class="caption">'.$caption.'</h1>
-					<div class="block-text">
+				<h2>'.$caption.'</h2>
+					<p>
 						'.$text.'
-					</div>
-				</div>
+					</p>
+				
 			';
 		break;
 	}
@@ -171,6 +170,7 @@ $HEADER['default'] = '
           {MENU=1}
         </div><!--/span-->
 		<div class="span9">
+		 {SETSTYLE=default}
 ';
 
 $FOOTER['default'] = '

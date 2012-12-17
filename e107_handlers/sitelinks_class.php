@@ -1442,10 +1442,10 @@ class e_navigation
 	/**
 	 * Compile Array Structure
 	 */
-	protected function compile(&$inArray, &$outArray, $pid = 0) 
+	public function compile(&$inArray, &$outArray, $pid = 0) 
 	{
 	    if(!is_array($inArray) || !is_array($outArray)){ return; }
-	
+		
 	    foreach($inArray as $key => $val) 
 	    {
 	        if($val['link_parent'] == $pid) 
