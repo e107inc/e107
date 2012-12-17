@@ -1144,7 +1144,7 @@ class e_menuManager {
 		//FIXME extract
 		extract($row);
 		if(!$menu_id){ return; }
-		include_once(e_HANDLER.'admin_handler.php');
+	//	include_once(e_HANDLER.'admin_handler.php');
 		$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		//TODO we need a CSS class for this
 		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span class='required'>*</span> " : "";
@@ -1243,10 +1243,14 @@ class e_menuManager {
 		
 		if(!$this->dragDrop)
 		{
-			
-			ob_start();
+				
+		
+	
 
-			$ns->tablerender($caption, $text);
+			return $ns->tablerender($caption, $text,'', true);
+			
+					ob_start();
+			
 			$THEX = ob_get_contents();
 			ob_end_clean();
 		
