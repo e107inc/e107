@@ -44,18 +44,16 @@ class page_sitelinks // include plugin-folder in the name.
 
 	function pageNav() 
 	{
-		$sql = e107::getDb();
-		$sublinks = array();
-		
-		$query = "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 
-		
-		// $sql->db_Select("page","*","page_theme = '' ORDER BY page_title");
-		$data = $sql->retrieve($query, true);
-		$sublinks = array();
-		
+		$sql 		= e107::getDb();
+		$sublinks 	= array();
+		$arr 		= array();		
+		$query		 = "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 	
+		$data 		= $sql->retrieve($query, true);
+
 		foreach($data as $row)
 		{
-			$sublinks[] = array(
+			$pid = $row['page_chapter'];
+			$sublinks[$pid][] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
 				'link_url'			=> 'page.php?'.$row['page_id'],
@@ -63,18 +61,40 @@ class page_sitelinks // include plugin-folder in the name.
 				'link_button'		=> '',
 				'link_category'		=> '',
 				'link_order'		=> $row['page_order'],
-				'link_parent'		=> 0,
+				'link_parent'		=> $row['page_chapter'],
 				'link_open'			=> '',
 				'link_class'		=> intval($row['page_class'])
 			);
 		}
 		
+		$books = $sql->retrieve("page_chapters","*",1, true);
+		
+		foreach($books as $row)
+		{
+			
+			$arr[] = array(
+				'link_id'			=> $row['chapter_id'],
+				'link_name'			=> $row['chapter_name'],
+				'link_url'			=> 'page.php?'.$row['chapter_id'],
+				'link_description'	=> '',
+				'link_button'		=> '',
+				'link_category'		=> '',
+				'link_order'		=> $row['chapter_order'],
+				'link_parent'		=> $row['chapter_parent'],
+				'link_open'			=> '',
+				'link_class'		=> 0, 
+				'link_sub'			=> varset($sublinks[$row['chapter_id']])
+			);	
+			
+		}
 		
 		$outArray 	= array();
-		$ret =  e107::getNav()->compile($sublinks, $outArray);		
-		// print_a($ret);
+		$ret =  e107::getNav()->compile($arr, $outArray);		
+
+	//	$mes = e107::getMessage();
+	//	$mes->addDebug( print_a($ret,true));
+		
 		return $ret;
-	    //	compile();
 	}
 	
 }

@@ -1464,6 +1464,11 @@ class e_navigation
 	 */
 	protected function isDynamic($row)
 	{
+		if(varset($row['link_sub']))
+		{
+			return $row['link_sub'];	
+		}
+		
 		if(vartrue($row['link_function']))
 		{
 			list($path,$method) = explode("::",$row['link_function']);
