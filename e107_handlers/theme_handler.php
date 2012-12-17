@@ -870,7 +870,7 @@ class themeHandler
 				{
 					foreach ($pref['sitetheme_custompages'][$key] as $cp)
 					{
-						$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='e-expandit'>".trim($cp)."</a>&nbsp;";
+						$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 						if($count > 4)
 						{
 							$custompage_diz .= "...";
@@ -881,14 +881,14 @@ class themeHandler
 				}
 				else
 				{
-					$custompage_diz = "<a href='#element-to-be-shown-{$key}' class='e-expandit'>None</a> ";
+					$custompage_diz = "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-mini e-expandit'>None</a> ";
 				}
 
 				
 				$itext .= "</td>
 								<td style='vertical-align:top'>";
 				// Default
-				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
+				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
 				
 				$itext .= "</td>";
 				
@@ -949,29 +949,35 @@ class themeHandler
 			
 			foreach ($theme['css'] as $css)
 			{
+					
 				$text2 = "";
 				
-				if($mode == 1 && substr($css['name'], 0, 6) == "admin_")
-				{
-					continue;
-				}
 				
-				if($mode == 2)
+				
+				if($mode == 2) // ADMIN MODE
 				{
+					if($css['name'] == "style.css" || !vartrue($css['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
+					{
+						continue;
+					}
+									
 					if(!$css['nonadmin'])
 					{
 						$text2 = "
-							<td class='center'>
-							<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+							<td class='center'>".
+							$frm->radio('admincss', $css['name'], vartrue($pref['admincss'],"admin_style.css"))."
 							</td>
-							<td>".$css['name']."</td>
-							<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+							<td><label for='admincss'>".$css['name']."</label></td>
+							<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 					}
 				}
 				
-				if($mode == 1)
+				if($mode == 1) // SITE-THEME Mode
 				{
-
+					if(substr($css['name'], 0, 6) == "admin_")
+					{
+						continue;
+					}
 					
 					$text2 = "
 						<td class='center'>
@@ -1128,7 +1134,7 @@ class themeHandler
 			//TODO LANs
 			$mes->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
 			$mes->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
-			$mes->add("Custom Pages: ".implode(" ",$customPages), E_MESSAGE_SUCCESS);
+			$mes->add("Custom Pages: ".print_a($customPages,true), E_MESSAGE_SUCCESS);
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
@@ -1432,28 +1438,32 @@ class themeHandler
 				$name = $val['@attributes']['name'];
 				unset($val['@attributes']['name']);
 				$lays[$name] = $val;
+				
 				if(isset($val['customPages']))
 				{
 					$custom[$name] = array_filter(explode(" ", $val['customPages']));
 				}
+				if(isset($val['custompages']))
+				{
+					$custom[$name] = array_filter(explode(" ", $val['custompages']));
+				}
 			}
 		}
 		
-		$vars['layouts'] = $lays;
-		$vars['path'] = $path;
-		$vars['custompages'] = $custom;
-		
-	/*
-		$mes = e107::getMessage();
+		$vars['layouts'] 		= $lays;
+		$vars['path'] 			= $path;
+		$vars['custompages'] 	= $custom;
+	/*	
+		$mes = e107::getMessage(); // DEBUG
 	
-		if($path == "bootstrap" || $path == "jayya")
+		if($path == "bootstrap" || $path == "e107v4a")
 		{
 			$mes->addDebug("<h2>".$path."</h2>");
 			$mes->addDebug(print_a($vars,true));
 			$mes->addDebug("<hr />");
 		}
+	*/
 	
-	*/	
 		return $vars;
 	}
 
