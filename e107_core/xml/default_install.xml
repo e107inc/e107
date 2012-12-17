@@ -785,7 +785,7 @@ City, State, Country
 			<field name="menu_name">counter_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">siteinfo/</field>
 			<field name="menu_layout"></field>
@@ -807,7 +807,7 @@ City, State, Country
 			<field name="menu_name">compliance_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">siteinfo/</field>
 			<field name="menu_layout"></field>
@@ -818,7 +818,7 @@ City, State, Country
 			<field name="menu_name">other_news_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
@@ -840,7 +840,7 @@ City, State, Country
 			<field name="menu_name">other_news2_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
@@ -873,7 +873,7 @@ City, State, Country
 			<field name="menu_name">news_months_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
@@ -895,7 +895,7 @@ City, State, Country
 			<field name="menu_name">news_categories_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
@@ -906,7 +906,7 @@ City, State, Country
 			<field name="menu_name">latestnews_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
@@ -928,7 +928,7 @@ City, State, Country
 			<field name="menu_name">powered_by_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">siteinfo/</field>
 			<field name="menu_layout"></field>
@@ -939,7 +939,7 @@ City, State, Country
 			<field name="menu_name">sitebutton_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">siteinfo/</field>
 			<field name="menu_layout"></field>
@@ -950,7 +950,7 @@ City, State, Country
 			<field name="menu_name">news_months_menu</field>
 			<field name="menu_location">1</field>
 			<field name="menu_order">1</field>
-			<field name="menu_class"></field>
+			<field name="menu_class">0</field>
 			<field name="menu_pages"></field>
 			<field name="menu_path">news/</field>
 			<field name="menu_layout"></field>
