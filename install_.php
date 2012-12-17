@@ -50,7 +50,15 @@ define("e_UC_NOBODY", 255);*/
 
 define("E107_INSTALL",TRUE);
 
-error_reporting(E_ALL ^ E_NOTICE); //3rd Party Plugins may cause PHP Notices at the conclusion of installation. 
+if($_SERVER['QUERY_STRING'] != "debug")
+{
+	error_reporting(E_ALL ^ E_NOTICE); //3rd Party Plugins may cause PHP Notices at the conclusion of installation. 
+}
+else
+{
+	error_reporting(E_ALL);	
+}
+
 //error_reporting(E_ALL);
 
 function e107_ini_set($var, $value)
@@ -1203,13 +1211,19 @@ class e_install
 	protected function htaccess()
 	{
 		$error = "";
-		
+			
 		if(!file_exists(".htaccess"))
 		{
 			if(!rename("e107.htaccess",".htaccess"))
 			{
 				$error = "IMPORTANT: Please rename e107.htaccess to .htaccess";
 			}
+			elseif($_SERVER['QUERY_STRING'] == "debug")
+			{
+				rename(".htaccess","e107.htaccess");
+				$error = "DEBUG: Rename from e107.htaccess to .htaccess was successful";		
+			}
+			
 		}
 		else
 		{		
@@ -1273,7 +1287,9 @@ class e_install
 		$themeImportFile = array();
 		$themeImportFile[0] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml";
 		$themeImportFile[1] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install/install.xml";
-		$themeImportFile[3] = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
+		// $themeImportFile[3] = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
+
+		$XMLImportfile = false;
 
 		if(vartrue($this->previous_steps['generate_content']))
 		{
@@ -1286,10 +1302,7 @@ class e_install
 				}
 			}
 		}
-		else
-		{
-			$XMLImportfile = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
-		}
+
 
 
 		$tp = e107::getParser();
@@ -1299,12 +1312,18 @@ class e_install
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 
-		//should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
-		e107::getXml()->e107Import($XMLImportfile, 'add', true, false); // Add missing core pref values
+		
+		$coreConfig = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";		
+		e107::getXml()->e107Import($coreConfig, 'add', true, false); // Add core pref values
 		$this->logLine('Core prefs written');
 		
-
+		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
+		{
+			e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
+			$this->logLine('Theme Prefs/Tables (install.xml) written');
+		}
+		
 		//Create default plugin-table entries.
 //		e107::getConfig('core')->clearPrefCache();
 		e107::getPlugin()->update_plugins_table();
@@ -1326,16 +1345,6 @@ class e_install
 			}
 		}
 
-		// Media import
-		/*
-		e107::getMedia()->import('news',e_IMAGE.'newspost_images/') //TODO remove when news are pluginized
-			->import('page',e_IMAGE.'custom/') //TODO remove when pages are pluginized
-			// ->importIcons(e_PLUGIN) - icons for plugins are imported on install
-			->importIcons(e_IMAGE."icons/")
-			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/images/")
-			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/icons/");
-		$this->logLine('Media imported to media manager');
-		*/
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
@@ -2069,9 +2078,9 @@ $data = '<!DOCTYPE html>
 
       <div class="footer">
         <p class="pull-left">&copy; e107 Inc. 2012</p>
-        <p class="pull-right">Version: '.e_VERSION.'</p>
+        <p class="pull-right">Version: '.e_VERSION.'</p> 
       </div>
-
+	 <div>{debug_info}</div>
     </div> <!-- /container -->
 
     <!-- The javascript
