@@ -530,7 +530,7 @@ class page_admin_ui extends e_admin_ui
 				
 				// fixed - last parameter (allinfo) should be false as getLayout method is returning non-usable formatted array
 				$templates = e107::getLayouts('', 'page', 'front', '', false, false); 
-				$templates['menu'] = "Sidebar"; // ie. a MENU item. //TODO 
+			//	$templates['menu'] = "Sidebar"; // ie. a MENU item. //TODO 
 	
 				$text .= "
 					<tr>

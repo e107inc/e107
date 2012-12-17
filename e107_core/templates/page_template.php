@@ -77,21 +77,25 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 	
 #### No table render example template ####
-	$PAGE_TEMPLATE['custom']['start'] = '<div class="cpage_body">'; 
-	
-	$PAGE_TEMPLATE['custom']['body'] = ''; 
-	
-	$PAGE_TEMPLATE['custom']['authorize'] = '
-	
+	$PAGE_TEMPLATE['custom']['start'] 			= '<div class="cpage_body">'; 
+	$PAGE_TEMPLATE['custom']['body'] 			= ''; 
+	$PAGE_TEMPLATE['custom']['authorize'] 		= '
 	';
 	
-	$PAGE_TEMPLATE['custom']['restricted'] = '
-	
+	$PAGE_TEMPLATE['custom']['restricted'] 		= '
 	';
 	
-	$PAGE_TEMPLATE['custom']['end'] = '</div>'; 
+	$PAGE_TEMPLATE['custom']['end'] 			= '</div>'; 
+	$PAGE_TEMPLATE['custom']['noTableRender'] 	= true;
+	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
-
-	$PAGE_TEMPLATE['custom']['noTableRender'] = true;
-	$PAGE_TEMPLATE['custom']['tableRender'] = '';
+	
+#### Panel Template - Used by e107_plugins/page/page_menu.php 
+	$PAGE_TEMPLATE['panel']['start'] 			= ''; 
+	$PAGE_TEMPLATE['panel']['body'] 			= '{CPAGEBODY}'; 
+	$PAGE_TEMPLATE['panel']['authorize'] 		= '';
+	$PAGE_TEMPLATE['panel']['restricted'] 		= '';
+	$PAGE_TEMPLATE['panel']['end'] 				= ''; 
+	$PAGE_TEMPLATE['panel']['noTableRender'] 	= false;
+	$PAGE_TEMPLATE['panel']['tableRender'] 		= '';	
 	
