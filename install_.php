@@ -593,11 +593,11 @@ class e_install
 
 				//TODO Add option to continue install even if DB exists.
 
-				if($this->previous_steps['mysql']['createdb'] == 1)
+				if($this->previous_steps['mysql']['createdb'] == 1 || !$DB_ALREADY_EXISTS)
 				{
 				    $query = 'CREATE DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
 				}
-				else
+				elseif($DB_ALREADY_EXISTS)
 				{
 				    $query = 'ALTER DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
 				}

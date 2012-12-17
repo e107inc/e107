@@ -773,10 +773,11 @@ class xmlClass
 	 */
 	public function e107Export($xmlprefs, $tables, $debug = FALSE)
 	{
+		error_reporting(0);
 		require_once(e_ADMIN."ver.php");
 
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
-		$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
+		$text .= "<e107Export version=\"".$e107info['e107_version']."\" timestamp=\"".time()."\" >\n";
 
 		if(varset($xmlprefs)) // Export Core Preferences.
 		{
@@ -789,7 +790,7 @@ class xmlClass
 				{
 					if(isset($val))
 					{
-						$text .= "\t\t<".$type." name='$key'>".$this->e107ExportValue($val)."</".$type.">\n";
+						$text .= "\t\t<".$type." name=\"".$key."\">".$this->e107ExportValue($val)."</".$type.">\n";
 					}
 				}
 			}
@@ -803,13 +804,13 @@ class xmlClass
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				e107::getDB()->db_Select($eTable, "*");
-				$text .= "\t<dbTable name='$eTable'>\n";
+				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				while($row = e107::getDB()-> db_Fetch())
 				{
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
-						$text .= "\t\t\t<field name='".$key."'>".$this->e107ExportValue($val,$key)."</field>\n";
+						$text .= "\t\t\t<field name=\"".$key."\">".$this->e107ExportValue($val,$key)."</field>\n";
 					}
 
 					$text .= "\t\t</item>\n";
