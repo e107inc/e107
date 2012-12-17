@@ -64,11 +64,11 @@ if (isset($_POST['metasubmit']))
 	$emessage->add(METLAN_1." (".e_LANGUAGE.")", E_MESSAGE_SUCCESS);
 }
 
-$meta = $pref['meta_tag'];
-$meta_diz = $pref['meta_description'];
-$meta_keywords = $pref['meta_keywords'];
-$meta_copyright = $pref['meta_copyright'];
-$meta_author = $pref['meta_author'];
+$meta 			= vartrue($pref['meta_tag']);
+$meta_diz 		= vartrue($pref['meta_description']);
+$meta_keywords 	= vartrue($pref['meta_keywords']);
+$meta_copyright = vartrue($pref['meta_copyright']);
+$meta_author 	= vartrue($pref['meta_author']);
 
 $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
@@ -83,27 +83,27 @@ $text = "
 					<tr>
 						<td>".METLAN_9."</td>
 						<td>
-							<textarea class='tbox textarea e-autoheight' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
+							<textarea class='tbox textarea e-autoheight' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>".METLAN_10."</td>
 						<td>
-							<textarea class='tbox textarea e-autoheight' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
+							<textarea class='tbox textarea e-autoheight' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>
 						</td>
 					</tr>
 
 					<tr>
 						<td>".METLAN_11."</td>
 						<td>
-							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value='".$meta_copyright[e_LANGUAGE]."' />
+							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".varset($meta_copyright[e_LANGUAGE])."\" />
 						</td>
 					</tr>
 
 					<tr>
 						<td>".METLAN_13."</td>
 						<td>
-							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" />
+							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".varset($meta_author[e_LANGUAGE])."\" />
 						</td>
 					</tr>
 
@@ -111,7 +111,7 @@ $text = "
 						<td>".METLAN_2."</td>
 						<td>
 							<textarea class='tbox textarea e-autoheight' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
-							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE]))."</textarea>
+							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea>
 							<div class='smalltext field-help'>eg. &lt;meta name='author' content='your name' /&gt; </div>
 						</td>
 					</tr>
@@ -119,8 +119,8 @@ $text = "
 					<tr>
 						<td>".METLAN_12."</td>
 						<td>
-							<div class='auto-toggle-area autocheck'>
-								<input class='checkbox' type='checkbox' name='meta_news_summary' value='1'".($pref['meta_news_summary'] ? " checked='checked'" : '')." />
+							<div class='auto-toggle-area autocheck'>".
+							$frm->checkbox('meta_news_summary',1, varset($pref['meta_news_summary']))."
 							</div>
 						</td>
 					</tr>
