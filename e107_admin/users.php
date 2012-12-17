@@ -225,7 +225,6 @@ class users_admin_ui extends e_admin_ui
 		'user_admin' 		=> array('title' => LAN_USER_22,	'type' => 'boolean', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_perms' 		=> array('title' => LAN_USER_23,	'type' => 'method', 	'width' => 'auto'),
 		'user_pwchange'		=> array('title' => LAN_USER_24,	'type'=>'datestamp' , 'width' => 'auto'),
-		//'commatest'				=> array('title' => 'TEST',	'type'=>'comma' , 'writeParms' => 'data=test1,test2,test3&addAll&clearAll', 'width' => 'auto', 'filter'=>true, 'batch'=>true),
 					
 	);
 	
