@@ -52,14 +52,14 @@ if(!$OTHERNEWS2_STYLE) {
 }
 
 if(!defined("OTHERNEWS2_LIMIT")){
-	define("OTHERNEWS2_LIMIT",5);
+//	define("OTHERNEWS2_LIMIT",5);
 }
 
 if(!defined("OTHERNEWS2_ITEMLINK")){
-	define("OTHERNEWS2_ITEMLINK","");
+	// define("OTHERNEWS2_ITEMLINK","");
 }
 if(!defined("OTHERNEWS2_CATLINK")){
-	define("OTHERNEWS2_CATLINK","");
+//	define("OTHERNEWS2_CATLINK","");
 }
 if(!defined("OTHERNEWS2_CATICON")){
 	define("OTHERNEWS2_CATICON","border:0px");
@@ -69,58 +69,75 @@ if(!defined("OTHERNEWS2_THUMB")){
 }
 
 if(!defined("OTHERNEWS2_COLS")){
-	define("OTHERNEWS2_COLS","1");
+	// define("OTHERNEWS2_COLS","1");
 }
 
 if(!defined("OTHERNEWS2_CELL")){
-	define("OTHERNEWS2_CELL","padding:0px;vertical-align:top");
+	// define("OTHERNEWS2_CELL","");
 }
 
 if(!defined("OTHERNEWS2_SPACING")){
-	define("OTHERNEWS2_SPACING","0");
+	// define("OTHERNEWS2_SPACING","0");
 }
 
-$param['itemlink'] = OTHERNEWS2_ITEMLINK;
-$param['thumbnail'] = OTHERNEWS2_THUMB;
-$param['catlink'] = OTHERNEWS2_CATLINK;
-$param['caticon'] = OTHERNEWS2_CATICON;
+$param['itemlink'] 		= defset('OTHERNEWS2_ITEMLINK','');
+$param['thumbnail'] 	= OTHERNEWS2_THUMB;
+$param['catlink'] 		= defset('OTHERNEWS2_CATLINK','');
+$param['caticon'] 		= OTHERNEWS2_CATICON;
 
-$style = OTHERNEWS2_CELL;
-$nbr_cols = OTHERNEWS2_COLS;
+$style 					= defset('OTHERNEWS2_CELL','padding:0px;vertical-align:top');
+$nbr_cols 				= defset('OTHERNEWS2_COLS', 1);
 
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS2_LIMIT;
+WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
+AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,". defset('OTHERNEWS2_LIMIT',5);
 
-if ($sql->db_Select_gen($query)) {
-	$text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS2_SPACING."'>";
-	$t = 0;
-	$wid = floor(100/$nbr_cols);
-	while ($row = $sql->db_Fetch()) {
-		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
-		$text .= "\n<td style='$style ; width:$wid%;'>\n";
-
-		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
-
-		$text .= "\n</td>\n";
-		if (($t+1) % $nbr_cols == 0) {
-			$text .= "</tr>";
-			$t++;
+if ($sql->db_Select_gen($query)) 
+{
+	$text = "";	
+	
+	if(OTHERNEWS2_COLS !== false)
+	{			
+		$text = "<table style='width:100%' cellpadding='0' cellspacing='".defset('OTHERNEWS2_SPACING',0)."'>";
+		$t = 0;
+		$wid = floor(100/$nbr_cols);
+		while ($row = $sql->db_Fetch()) 
+		{
+			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
+			$text .= "\n<td style='$style ; width:$wid%;'>\n";
+	
+			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
+	
+			$text .= "\n</td>\n";
+			if (($t+1) % $nbr_cols == 0) {
+				$text .= "</tr>";
+				$t++;
+			}
+			else {
+				$t++;
+			}
 		}
-		else {
+	
+		while ($t % $nbr_cols != 0)
+		{
+			$text .= "<td style='width:$wid'>&nbsp;</td>\n";
+			$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 			$t++;
+	
+		}
+		$text .= "</table>";
+	}
+	else // perfect for divs. 
+	{
+		while ($row = $sql->db_Fetch()) 
+		{
+			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
 		}
 	}
-
-	while ($t % $nbr_cols != 0){
-		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
-		$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
-		$t++;
-
-	}
-	$text .= "</table>";
-
+		
+	
 
 	// Save Data
 	ob_start();
