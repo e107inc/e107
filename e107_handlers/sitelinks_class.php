@@ -49,7 +49,7 @@ class sitelinks
 					if(vartrue($row['link_function']))
 					{
 						list($path,$method) = explode("::",$row['link_function']);
-						if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+						if(file_exists(e_PLUGIN.$path."/e_sitelink.php") && include_once(e_PLUGIN.$path."/e_sitelink.php"))
 						{
 							$class = $path."_sitelinks";
 							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
@@ -58,6 +58,7 @@ class sitelinks
 								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
 							}
 						}
+
 					}
 				}
 			}
@@ -152,7 +153,7 @@ class sitelinks
 					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
                 }  
 			}
-			$text .= implode($style['linkseparator'], $render_link);
+			$text .= implode(varset($style['linkseparator']), $render_link);
 			$text .= $style['postlink'];
 			if ($style['linkdisplay'] == 2)	
 			{
@@ -297,7 +298,7 @@ class sitelinks
 				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
 				$highlighted = TRUE;
 			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) 
+			if ($this->hilite(varset($linkInfo['link_url']), varset($style['linkclass_hilite']))== TRUE) 
 			{
 				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
