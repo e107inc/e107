@@ -1908,6 +1908,7 @@ class e_form
 			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
 			break;
 
+			case 'comma':
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
 				
@@ -1926,7 +1927,7 @@ class e_form
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
 
-				if(vartrue($opts['multiple']) || vartrue($attributes['data']) == 'comma')
+				if(vartrue($opts['multiple']) || vartrue($attributes['type']) == 'comma')
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -2401,9 +2402,10 @@ class e_form
 			break;
 
 			case 'dropdown':
-				
+			case 'comma':	
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
+				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);

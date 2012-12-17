@@ -2398,9 +2398,10 @@ class e_front_model extends e_model
 				$qry['_FIELD_TYPES'][$key] = $type; //_FIELD_TYPES much more optional now...
 			}
 			
-			if($qry['_FIELD_TYPES'][$key] == 'comma') //XXX quick fix. 
+			if($qry['_FIELD_TYPES'][$key] == 'set') //new 'set' type, could be moved in mysql handler now
 			{
-				$qry['_FIELD_TYPES'][$key] = 'str';			
+				$qry['_FIELD_TYPES'][$key] = 'str';		
+				if(is_array($this->getData($key)))	$this->setData($key, implode(',', $this->getData($key)));
 			}
 			$qry['data'][$key] = $this->getData($key);
 			
@@ -3278,6 +3279,11 @@ class e_front_tree_model extends e_tree_model
 			$ids = explode(',', $ids);
 		}
 
+		if(true === $syncvalue)
+		{
+			$syncvalue = $value;
+		}
+		
 		if($sanitize)
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);

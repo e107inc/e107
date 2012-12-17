@@ -2781,8 +2781,8 @@ class e_admin_controller_ui extends e_admin_controller
 				{
 					$parms = $this->getFieldAttr($field, 'writeParms', array());
 					if(!is_array($parms)) parse_str($parms, $parms);
-					
-					$value = isset($parms['data']) && !empty($parms['data']) ? $parms['data'] : array();
+					unset($parms['__options']);
+					$value = $parms;
 					if(empty($value)) return $this;
 					if(!is_array($value)) $value = array_map('trim', explode(',', $value));
 				}
@@ -2829,13 +2829,15 @@ class e_admin_controller_ui extends e_admin_controller
 				$classes = $e_userclass->uc_required_class_list($parms['classlist']);
 				foreach ($classes as $id => $label) 
 				{
-				// check userclass manager class
-					if (!isset($e_userclass->class_tree[$class]) || !$user->checkClass($e_userclass->class_tree[$class]))
+					// check userclass manager class
+					if (!isset($e_userclass->class_tree[$id]) || !$user->checkClass($e_userclass->class_tree[$id]))
 					{
+						// TODO lan
+						$this->getTreeModel()->addMessageWarning(sprintf('You don\'t have management permissions on <strong> %1$s </strong>', $label));
 						unset($classes[$id]);
 					}
 				}
-				$this->handleCommaBatch($selected, $field, $classes, $trigger[1] === 'ucdelall' ? 'clearAll' : 'addAll');
+				$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
 			break;
 			
 			default:
@@ -2979,6 +2981,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				case 'dropdown': // TODO - ask Steve if this check is required
 				case 'lanlist':
+				case 'comma':
 					if(is_array($value))
 					{
 						// no sanitize here - data is added to model posted stack
@@ -2988,13 +2991,6 @@ class e_admin_controller_ui extends e_admin_controller
 					}
 				break;
 	
-			}
-
-			if($attributes['data'] == 'comma') 
-			{
-				$value = implode(',', $value);	
-				$model->setData($attributes['data'], 'str');
-				
 			}
 	
 			if(vartrue($attributes['dataPath']))
@@ -3326,9 +3322,11 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 			{
-				switch ($this->fields[$filterField]['data']) 
+				$_type = $this->fields[$filterField]['data'];
+				if($this->fields[$filterField]['type'] === 'comma') $_type = 'set'; 
+				switch ($_type) 
 				{
-					case 'comma':
+					case 'set':
 						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."',".$this->fields[$filterField]['__tableField'].")";
 					break;
 					
@@ -3881,9 +3879,6 @@ class e_admin_ui extends e_admin_controller_ui
 				{
 					$node = $tree->getNode($id);
 					if(!$node) continue;
-					// quick fix, FIXME field ID name not set in the tree model, investigate
-					if(!$node->getFieldIdName()) $node->setFieldIdName($this->pid);
-					
 					$val = $node->get($field);
 					
 					if(empty($val)) $val = array();
@@ -3917,25 +3912,73 @@ class e_admin_ui extends e_admin_controller_ui
 			break;
 				
 			case 'addAll':
-				if(is_array($value)) $value = implode(',', array_map('trim', $value));
-				//$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+				if(!empty($value))
+				{
+					if(is_array($value)) $value = implode(',', array_map('trim', $value));
+					
+					$cnt = $this->getTreeModel()->update($field, $value, $selected, true, true);
+				}
+				else
+				{
+					// TODO lan
+					$this->getTreeModel()->addMessageWarning("Comma list is empty, aborting.");
+				}
 			break;
 				
 			case 'clearAll':
-				//$rcnt = $this->getTreeModel()->update($field, '', $selected, $value, false);
+				$allowed = !is_array($value) ? explode(',', $value) : $value;
+				if(!$allowed)
+				{
+					$rcnt = $this->getTreeModel()->update($field, '', $selected, '', true);
+				}
+				else
+				{
+					$this->_setModel();
+					foreach ($selected as $key => $id) 
+					{
+						$node = $tree->getNode($id);
+						if(!$node) continue;
+						
+						$val = $node->get($field);
+						
+						// nothing to do
+						if(empty($val)) break;
+						elseif(!is_array($val)) $val = explode(',', $val);
+						
+						// remove only allowed, see userclass
+						foreach ($val as $_k => $_v) 
+						{
+							if(in_array($_v, $allowed))
+							{
+								unset($val[$_k]);
+							}
+						}
+						
+						$val = !empty($val) ? implode(',', $val) : '';
+						$node->set($field, $val);
+						$check = $this->getModel()->setData($node->getData())->save(false, true);
+						
+						if(false === $check) $this->getModel()->setMessages();
+						else $rcnt++;
+					}
+					$this->_model = null;
+				}
+				// format for proper message
+				$value = implode(',', $allowed);
 			break;
 		}
 
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt))->setMessages();
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_UPDATE_SUCCESS, $vttl, $cnt));
 		}
 		elseif($rcnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_DEATTACH_SUCCESS, $vttl, $cnt))->setMessages();
+			$this->getTreeModel()->addMessageSuccess(sprintf(LAN_UI_BATCH_DEATTACH_SUCCESS, $vttl, $rcnt));
 		}
+		$this->getTreeModel()->setMessages();
 	}
 
 	/**
@@ -4366,15 +4409,20 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->dataFields = array();
 			foreach ($this->fields as $key => $att)
 			{
+				if($att['type'] == 'comma' && (!vartrue($att['data']) || !vartrue($att['rule'])))
+				{
+					$att['data'] = 'set';
+					$att['validate'] = 'set';
+					$_parms = vartrue($att['writeParms'], array());
+					if(is_string($_parms)) parse_str($_parms, $_parms);
+					unset($_parms['__options']);
+					$att['rule'] = $_parms;
+					unset($_parms);
+				}
 				if(($key !== 'options' && false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
-				
-				// if($att['data'] == 'comma') //XXX quick fix so it can be stored. 
-				// {
-					// $this->dataFields[$key] = 'str';	
-				// }
 			}
 		}
 		// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
@@ -4844,23 +4892,37 @@ class e_admin_form_ui extends e_form
 					
 					case 'comma':
 						// TODO lan
-						$options = isset($parms['data']) && !empty($parms['data']) ? $parms['data'] : array();
-						if(empty($options)) continue;
-						if(!is_array($options)) $options = array_map('trim', explode(',', $options));
+						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						$opts = $parms['__options'];
+						unset($parms['__options']); //remove element options if any
 						
-						$_option = array();
-						foreach ($options as $value) 
+						$options = $parms ? $parms : array();
+						if(empty($options)) continue;
+						
+						
+						if($type == 'batch')
 						{
-							$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
-							$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+							$_option = array();
+							foreach ($options as $value) 
+							{
+								$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
+								$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+							}
+							if(isset($parms['addAll'])) $option['attach_all__'.$key] = vartrue($parms['addAll'], '(add all)');	
+							if(isset($parms['clearAll']))
+							{
+								$_option['deattach_all__'.$key] = vartrue($parms['clearAll'], '(clear all)');	
+							}
+							$option = array_merge($option, $_option);
+							unset($_option);
 						}
-						if(isset($parms['addAll'])) $option['attach_all__'.$key] = vartrue($parms['addAll'], '(add all)');	
-						if(isset($parms['clearAll']))
+						else
 						{
-							$_option['deattach_all__'.$key] = vartrue($parms['clearAll'], '(clear all)');	
-						}
-						$option = array_merge($option, $_option);
-						unset($_option);
+							foreach($parms as $k => $name)
+							{
+								$option[$key.'__'.$k] = $name;
+							}
+						}						
 					break;
 						
 					case 'templates':
