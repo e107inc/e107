@@ -1,4 +1,6 @@
- body 						{ padding-top: 75px; padding-bottom: 40px; }
+/* info: Default stylesheet */
+
+body 						{ padding-top: 75px; padding-bottom: 40px; }
       	
 .well 						{ padding:10px; }
 .navbar 					{ background-color: #081D28; }
@@ -110,7 +112,7 @@ legend 						{ display:none }
 
 input::-webkit-input-placeholder { font-style:italic  }
 
-input:-moz-placeholder 		{ font-style:italic }​
+input:-moz-placeholder 		{ font-style:italic }
 
 
 

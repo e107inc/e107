@@ -152,7 +152,7 @@ if (varset($e107_popup) != 1)
 		fclose($logfp);
 	}
 	
-	if (function_exists('theme_renderinfo'))
+	if (function_exists('theme_renderinfo')) 
 	{
 		theme_renderinfo($rinfo);
 	}
@@ -315,10 +315,10 @@ echo "\n<!-- ".md5($bcache)." -->\n";
 
 unset($uclist, $bcache);
 
-if(!deftrue('e_POWEREDBY_DISABLE'))
+if(!deftrue('e_POWEREDBY_DISABLE')) 
 {
-	// TODO lan
-	echo "<div id='powered-by-e107' class='e-footer-info'>Proudly powered by <a href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
+	// No IDs or Classes - hinder js disable. 
+	echo "<div style='margin:20px; text-align:center; display:block; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 }
 echo "</body></html>";
 

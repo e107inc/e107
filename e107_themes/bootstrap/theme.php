@@ -48,6 +48,25 @@ function theme_head()
 	return $ret;
 }
 
+
+
+$OTHERNEWS_STYLE = '<div class="span4">
+              		<h2>{NEWSTITLE}</h2>
+              		<p>{NEWSSUMMARY}</p>
+              		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
+            		</div><!--/span-->';
+
+$OTHERNEWS2_STYLE = '<div class="span4">
+              		<h2>{NEWSTITLE}</h2>
+              		<p>{NEWSSUMMARY}</p>
+              		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
+            		</div><!--/span-->';
+					
+define('OTHERNEWS_COLS',false); // no tables, only divs. 
+define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
+define('OTHERNEWS2_COLS',false); // no tables, only divs. 
+define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
+
 function tablestyle($caption, $text, $mode) 
 {
 	global $style;
@@ -96,12 +115,7 @@ function tablestyle($caption, $text, $mode)
 		break;
 		
 		case 'span4' :
-			echo '
-				<div class="span4">
-              		<h2>'.$caption.'</h2>
-              		<p>'.$text.'</p>
-            	</div><!--/span-->
-			';
+			echo $text; 
 		break;
 		
 		case 'box':
@@ -158,9 +172,17 @@ $HEADER['default'] = '
         </div><!--/span-->
 		<div class="span9">
 ';
+
 $FOOTER['default'] = '
 		 {SETSTYLE=span4}
-		{MENU=2}
+		 
+		 <div class="row-fluid">
+            {MENU=2}
+      	</div><!--/row-->
+		 <div class="row-fluid">
+            {MENU=3}
+      	</div><!--/row-->	
+      	
 		</div><!--/span-->
 	</div><!--/row-->
 

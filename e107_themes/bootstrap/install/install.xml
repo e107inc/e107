@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.0.0 (git)" timestamp="1355712017" >
+	<database>
+	<dbTable name="generic">
+		<item>
+			<field name="gen_id">1</field>
+			<field name="gen_type">wmessage</field>
+			<field name="gen_datestamp">1145848343</field>
+			<field name="gen_user_id">1</field>
+			<field name="gen_ip">Hello World!</field>
+			<field name="gen_intdata">0</field>
+			<field name="gen_chardata"><![CDATA[This is a template for a simple marketing or informational website. The text you are reading is the &#039;Welcome Message&#039; and the items below are &quot;News Items&quot;. ]]></field>
+		</item>
+	</dbTable>
+	<dbTable name="news">
+		<item>
+			<field name="news_id">1</field>
+			<field name="news_title">Welcome to e107</field>
+			<field name="news_sef">welcome-to-e107</field>
+			<field name="news_body">Your first news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355612400</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary"></field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">2</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-2</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,2</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">3</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-3</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,2</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">4</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-4</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,2</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">5</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-5</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,3</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">6</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-6</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,3</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">7</field>
+			<field name="news_title">Heading</field>
+			<field name="news_sef">item-7</field>
+			<field name="news_body">An example news item</field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords"></field>
+			<field name="news_meta_description"></field>
+			<field name="news_datestamp">1355709743</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,3</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</field>
+			<field name="news_thumbnail"></field>
+			<field name="news_sticky">0</field>
+		</item>
+	</dbTable>
+	<dbTable name="menus">
+			<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">other_news_menu</field>
+			<field name="menu_location">2</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">0</field>
+			<field name="menu_name">other_news2_menu</field>
+			<field name="menu_location">3</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+	</dbTable>
+	<dbTable name="page">
+		<item>
+			<field name="page_id">1</field>
+			<field name="page_title">New Article 1</field>
+			<field name="page_sef">new-article-1</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a nunc eget nulla rutrum fringilla sed vel nisl. Suspendisse at erat a neque pulvinar sodales. Etiam dictum erat erat. Pellentesque dictum convallis massa, eu varius sapien gravida a. Suspendisse auctor, mi a tempor tincidunt, lorem felis gravida libero, nec mattis eros felis eu neque. Etiam vel sagittis ipsum. Morbi at libero accumsan mauris tincidunt adipiscing sed vitae mauris. Aenean suscipit consectetur dignissim. Aliquam ornare diam vitae libero suscipit eget facilisis nisl ultrices? Curabitur luctus turpis ac lorem iaculis id interdum massa blandit! Curabitur placerat massa at neque accumsan porta. Nulla sed tortor id sapien dapibus auctor at eget mi. Sed ultrices lacinia viverra.
+
+				Mauris in purus mauris. Nulla facilisi. Suspendisse dui enim, dapibus sed accumsan non, gravida eget nulla. Praesent ullamcorper, est ac viverra congue, nisl lacus imperdiet sem, et laoreet velit mauris sed leo. Donec erat mi, luctus quis suscipit pretium, luctus sed orci. Proin eu ultricies sem. Nam mollis turpis non erat fermentum congue.
+
+				Nullam adipiscing, purus et varius blandit, arcu nisi pretium urna, a euismod eros eros quis turpis! Aliquam quis mi turpis, in varius neque. Aliquam erat volutpat. Vestibulum venenatis ipsum dapibus ante dictum egestas. Pellentesque eget nisi ligula, id accumsan eros. Aenean vitae felis vitae sapien mattis pellentesque non nec dolor. Nulla facilisi.
+
+				Quisque in tortor turpis, sed venenatis nunc. Nunc tellus elit, suscipit et accumsan ac, mollis et risus. Phasellus consectetur sapien in felis semper non tempor tortor mollis. Ut id leo vel magna rhoncus aliquet. Nunc eget sollicitudin felis. Vestibulum tempor, justo et congue dignissim, augue ipsum malesuada libero, id suscipit felis mi vitae erat. Etiam suscipit lacinia sapien, ac gravida nisi lobortis non. Suspendisse dictum risus in est egestas egestas. Aenean et nisi sed odio sollicitudin placerat vel ut magna. Nulla facilisi. Proin condimentum ultricies vulputate. Morbi dapibus elit a tellus elementum congue! In vitae aliquet leo. Proin tempus tincidunt magna, sit amet malesuada ipsum ornare sed. Sed lorem augue, aliquam sit amet hendrerit sed; venenatis in massa. Sed iaculis amet.
+			</field>
+			<field name="page_author">0</field>
+			<field name="page_datestamp">1355716852</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_theme"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+		</item>
+		<item>
+			<field name="page_id">2</field>
+			<field name="page_title">New Article 2</field>
+			<field name="page_sef">new-article-2</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a nunc eget nulla rutrum fringilla sed vel nisl. Suspendisse at erat a neque pulvinar sodales. Etiam dictum erat erat. Pellentesque dictum convallis massa, eu varius sapien gravida a. Suspendisse auctor, mi a tempor tincidunt, lorem felis gravida libero, nec mattis eros felis eu neque. Etiam vel sagittis ipsum. Morbi at libero accumsan mauris tincidunt adipiscing sed vitae mauris. Aenean suscipit consectetur dignissim. Aliquam ornare diam vitae libero suscipit eget facilisis nisl ultrices? Curabitur luctus turpis ac lorem iaculis id interdum massa blandit! Curabitur placerat massa at neque accumsan porta. Nulla sed tortor id sapien dapibus auctor at eget mi. Sed ultrices lacinia viverra.Mauris in purus mauris. Nulla facilisi. Suspendisse dui enim, dapibus sed accumsan non, gravida eget nulla. Praesent ullamcorper, est ac viverra congue, nisl lacus imperdiet sem, et laoreet velit mauris sed leo. Donec erat mi, luctus quis suscipit pretium, luctus sed orci. Proin eu ultricies sem. Nam mollis turpis non erat fermentum congue.Nullam adipiscing, purus et varius blandit, arcu nisi pretium urna, a euismod eros eros quis turpis! Aliquam quis mi turpis, in varius neque. Aliquam erat volutpat. Vestibulum venenatis ipsum dapibus ante dictum egestas. Pellentesque eget nisi ligula, id accumsan eros. Aenean vitae felis vitae sapien mattis pellentesque non nec dolor. Nulla facilisi.Quisque in tortor turpis, sed venenatis nunc. Nunc tellus elit, suscipit et accumsan ac, mollis et risus. Phasellus consectetur sapien in felis semper non tempor tortor mollis. Ut id leo vel magna rhoncus aliquet. Nunc eget sollicitudin felis. Vestibulum tempor, justo et congue dignissim, augue ipsum malesuada libero, id suscipit felis mi vitae erat. Etiam suscipit lacinia sapien, ac gravida nisi lobortis non. Suspendisse dictum risus in est egestas egestas. Aenean et nisi sed odio sollicitudin placerat vel ut magna. Nulla facilisi. Proin condimentum ultricies vulputate. Morbi dapibus elit a tellus elementum congue! In vitae aliquet leo. Proin tempus tincidunt magna, sit amet malesuada ipsum ornare sed. Sed lorem augue, aliquam sit amet hendrerit sed; venenatis in massa. Sed iaculis amet.</field>
+			<field name="page_author">0</field>
+			<field name="page_datestamp">1355717781</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_theme"></field>
+			<field name="page_template">panel</field>
+			<field name="page_order">9999</field>
+		</item>
+	</dbTable>
+	<dbTable name="page_chapters">
+		<item>
+			<field name="chapter_id">1</field>
+			<field name="chapter_parent">0</field>
+			<field name="chapter_name">General</field>
+			<field name="chapter_sef"></field>
+			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tempor odio. Quisque volutpat lorem nec lectus congue suscipit. In hac habitasse platea dictumst. Etiam odio nisi, egestas vitae amet.
+			</field>
+			<field name="chapter_meta_keywords"></field>
+			<field name="chapter_manager">0</field>
+			<field name="chapter_icon"></field>
+			<field name="chapter_order">0</field>
+		</item>
+		<item>
+			<field name="chapter_id">2</field>
+			<field name="chapter_parent">1</field>
+			<field name="chapter_name">Chapter 1</field>
+			<field name="chapter_sef"></field>
+			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut nunc ac neque egestas ullamcorper. In convallis semper hendrerit. Etiam non dolor nisl, varius facilisis dui. Nunc egestas massa nunc.
+			</field>
+			<field name="chapter_meta_keywords"></field>
+			<field name="chapter_manager">0</field>
+			<field name="chapter_icon"></field>
+			<field name="chapter_order">0</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

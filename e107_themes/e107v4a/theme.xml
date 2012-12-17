@@ -37,7 +37,7 @@
                 	<menu name='powered_by' />
 				</area>
 			</menuPresets>
-			<customPages>news.php usersettings.php</customPages>
+			<custompages>news.php usersettings.php</custompages>
         </layout>
 	</layouts>
 </e107Theme>
