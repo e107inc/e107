@@ -928,7 +928,7 @@ class user_class
 	public function isEditableClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[vartrue($class_id)])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		return TRUE;
 	}
 
