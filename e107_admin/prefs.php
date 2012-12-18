@@ -1028,8 +1028,8 @@ $text .= "
 								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
 								foreach($v as $tk=>$idk)
 								{
-									$opt['placeholder'] = $tk;
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]),100,$opt);								
+									$eopt = array('placeholder'=> $tk);
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
 								}	
 								$text .= "</div>";
 								
