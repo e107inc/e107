@@ -412,7 +412,7 @@ class user_class
 		}
 
 		// Inverted Classes
-		if(strpos($optlist, 'no-excludes') !== TRUE)
+		if(strpos($optlist, 'no-excludes') === FALSE)
 		{
 			if (strpos($optlist, 'is-checkbox') !== FALSE)
 			{
@@ -646,9 +646,9 @@ class user_class
 			$ret .= $this->vetted_sub_tree($treename, $callback, $p, 0, $current_value, $perms, $opt_options);
 		}
 
-		
+
 		// Inverted classes. (negative values for exclusion). 
-		if(strpos($optlist, 'no-excludes') !== TRUE)
+		if(strpos($optlist, 'no-excludes') === FALSE)
 		{
 			if (strpos($optlist, 'is-checkbox') !== FALSE)
 			{

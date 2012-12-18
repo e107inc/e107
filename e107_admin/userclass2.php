@@ -544,7 +544,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	}
 
 //	$class_text = $e_userclass->uc_checkboxes('init_classes', $initial_classes, 'classes, force', TRUE);
-	$class_text = $e_userclass->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force');
+	$class_text = $e_userclass->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force, no-excludes');
 
 	$mes->addInfo(UCSLAN_49);
 
