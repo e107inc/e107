@@ -14,6 +14,7 @@
  *  $Author: NixanR $
  *
 */
+define("LAN_PLUGIN_DOWNLOAD_NAME", "Загрузки");
 define("LAN_DL_OPTIONS", "Параметры");
 define("LAN_DL_DOWNLOAD_OPT_GENERAL", "Общие");
 define("LAN_DL_DOWNLOAD_OPT_BROKEN", "Отчет");
@@ -211,6 +212,8 @@ define("DOWLAN_195", "Тип зеркала");
 define("DOWLAN_196", "список");
 define("DOWLAN_197", "случайный");
 define("DOWLAN_198", "Фильтр");
+define("DOWLAN_FP_01", "Главная страница");
+define("DOWLAN_FP_02", "Список категорий");
 define("DOWLAN_HELP_1", "Справка");
 define("DOWLAN_HELP_2", "<p>Создание / редактирование загрузки.</p><p>Вводите только одно из: Файл, URL или зеркало.</p><p>Удостоверьтесь, чтобы выбрали категорию, в противном случае Ваша загрузка не будет видима на странице загрузок.</p>");
 define("DOWLAN_HELP_3", "Справка: категории");
