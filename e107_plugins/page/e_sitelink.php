@@ -2,28 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Sitelinks configuration module - gsitemap
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/page/e_sitelink.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
 */
-//require_once("../../class2.php");
+
 
 if (!defined('e107_INIT')) { exit; }
-/*if(!plugInstalled('gsitemap'))
-{ 
-	return;
-}*/
-//$pg = new page_sitelinks;
-//$pg->myfunction();
-
 
 class page_sitelinks // include plugin-folder in the name.
 {
@@ -47,7 +33,7 @@ class page_sitelinks // include plugin-folder in the name.
 		$sql 		= e107::getDb();
 		$sublinks 	= array();
 		$arr 		= array();		
-		$query		 = "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 	
+		$query		= "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 	
 		$data 		= $sql->retrieve($query, true);
 
 		foreach($data as $row)
@@ -56,7 +42,7 @@ class page_sitelinks // include plugin-folder in the name.
 			$sublinks[$pid][] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
-				'link_url'			=> 'page.php?'.$row['page_id'],
+				'link_url'			=> vartrue($row['page_sef'],'page.php?'.$row['page_id']), 
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',
@@ -67,7 +53,7 @@ class page_sitelinks // include plugin-folder in the name.
 			);
 		}
 		
-		$books = $sql->retrieve("page_chapters","*",1, true);
+		$books = $sql->retrieve("page_chapters","*", 1, true);
 		
 		foreach($books as $row)
 		{
@@ -75,7 +61,7 @@ class page_sitelinks // include plugin-folder in the name.
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
-				'link_url'			=> 'page.php?'.$row['chapter_id'],
+				'link_url'			=> vartrue($row['chapter_sef'],'#'),
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',

@@ -1407,10 +1407,8 @@ class e_navigation
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
 		$ret 			= $template['start'];
-		
-		
 		foreach ($data as $_data) 
-		{
+		{		
 			$sc->setVars($_data);
 			$active			= ($this->isActive($_data)) ? "_active" : "";
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
@@ -1528,6 +1526,11 @@ class navigation_shortcodes extends e_shortcode
 	function sc_link_name($parm='')
 	{
 		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
+	}
+	
+	function sc_link_parent($parm='')
+	{
+		return intval($this->var['link_parent']);		
 	}
 
 	function sc_link_url($parm='')
