@@ -88,7 +88,7 @@ $NAVIGATION_TEMPLATE['side']['start'] 				= '<ul class="nav nav-list"><li class=
 $NAVIGATION_TEMPLATE['side']['item'] 				= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
 														';
 
-$NAVIGATION_TEMPLATE['side']['item_submenu'] 		= '<li class="nav-header">{LINK_NAME}</li>{LINK_SUB}
+$NAVIGATION_TEMPLATE['side']['item_submenu'] 		= '<li class="nav-header">{LINK_NAME}{LINK_SUB}</li>
 														';
 
 $NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>
@@ -99,11 +99,16 @@ $NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
 
 $NAVIGATION_TEMPLATE['side']['submenu_start'] 		= '';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>
-													';
+$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}">{LINK_NAME}</a></li>';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>
-													';
+$NAVIGATION_TEMPLATE['side']['submenu_loweritem'] = '
+			<li role="menuitem" class="dropdown-submenu">
+				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_NAME}</a>
+				{LINK_SUB}
+			</li>
+';
+
+$NAVIGATION_TEMPLATE['side']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_NAME}</a></li>';
 
 $NAVIGATION_TEMPLATE['side']['submenu_end'] 		= '';
 
