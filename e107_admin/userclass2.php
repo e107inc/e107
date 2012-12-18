@@ -707,6 +707,7 @@ $ns->tablerender(UCSLAN_21, $text);
 //-----------------------------------
   case 'test' :
     if (!check_class(e_UC_MAINADMIN)) break;
+	break;			// ...And disable for everyone at present
 	if (isset($_POST['add_db_fields']))
 	{	// Add the extra DB fields
 	  $message = "Add DB fields: ";
@@ -803,10 +804,10 @@ $ns->tablerender(UCSLAN_21, $text);
 
   $checked_class_list = implode(',',$_POST['classes_select']);
   $text = "<table style='".ADMIN_WIDTH."'><tr><td style='text-align:left'>";
-  $text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), $checked_class_list);
+  $text .= $e_userclass->vetted_tree('classes_select', array($e_userclass,'checkbox'), $checked_class_list, 'is-checkbox');
   $text .= "Classes: ".$checked_class_list;
   $text .= "</td><td style='text-align:left'>";
-  $text .= $e_userclass->vetted_tree('normalised_classes_select',array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list));
+  $text .= $e_userclass->vetted_tree('normalised_classes_select', array($e_userclass,'checkbox'), $e_userclass->normalise_classes($checked_class_list), 'is-checkbox');
   $text .= "Normalised Classes: ".$e_userclass->normalise_classes($checked_class_list);
   $text .= "</td></tr></table>";
   $ns->tablerender('Nested checkboxes, showing the effect of the normalise() routine', $text);
