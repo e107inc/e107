@@ -384,8 +384,10 @@ class user_class
 
 			filter - only show those classes where member is in a class permitted to view them - e.g. as the new 'visible to' field - added for 0.8
 			force  - show all classes (subject to the other options, including matchclass) - added for 2.0
+			all - alias for 'force'
 
 			no-excludes - if present, doesn't show the 'not member of' list
+			is-checkbox - if present, suppresses the <optgroup...> construct round the 'not member of' list
 
 			editable - can only appear on its own - returns list of those classes the user can edit (manage)
 
@@ -412,7 +414,14 @@ class user_class
 		// Inverted Classes
 		if(strpos($optlist, 'no-excludes') !== TRUE)
 		{
-			$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			if (strpos($optlist, 'is-checkbox') !== FALSE)
+			{
+				$text .= "\n".UC_LAN_INVERTLABEL."<br />\n";
+			}
+			else
+			{
+				$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			}
 			foreach ($show_classes as $k => $v)
 			{
 				if($k != e_UC_PUBLIC && $k != e_UC_NOBODY && $k != e_UC_READONLY)  // remove everyone, nobody and readonly from list.
@@ -441,9 +450,33 @@ class user_class
 	public function uc_required_class_list($optlist = '', $just_ids = FALSE)
 	{
 		$ret = array();
-		if (!$optlist) $optlist = 'public,guest,nobody,member,classes';		// Set defaults to simplify ongoing processing
+		$opt_arr = array();
 
-		if ($optlist == 'editable')
+		if ($optlist)
+		{
+			$opt_arr = explode(',',$optlist);
+		}
+		foreach ($opt_arr as &$v)
+		{
+			$v = trim($v);
+		}
+		$opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
+
+		if (isset($opt_arr['no-excludes'])) unset($opt_arr['no-excludes']);
+		if (isset($opt_arr['is-checkbox'])) unset($opt_arr['is-checkbox']);
+
+		if (count($opt_arr) == 0)
+		{
+			$opt_arr = array('public' => 1, 'guest' => 1, 'nobody' => 1, 'member' => 1, 'classes' => 1);
+		}
+
+		if (isset($opt_arr['all']))
+		{
+			unset($opt_arr['all']);
+			$opt_arr['force'] = 1;
+		}
+
+		if (isset($opt_arr['editable']))
 		{
 			$temp = array_flip(explode(',',$this->get_editable_classes()));
 			if ($just_ids) return $temp;
@@ -454,14 +487,7 @@ class user_class
 			return $temp;
 		}
 
-		//TODO - $optlist == all
-		$opt_arr = explode(',',$optlist);
-		foreach ($opt_arr as $k => $v)
-		{
-			$opt_arr[$k] = trim($v);
-		}
 
-		$opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
 
 		if (isset($opt_arr['force'])) unset($opt_arr['filter']);
 
@@ -498,7 +524,7 @@ class user_class
 					)
 					)
 				{
-				  $ret[$uc_id] = $just_ids ? '1' : $this->class_tree[$uc_id]['userclass_name'];
+					$ret[$uc_id] = $just_ids ? '1' : $this->class_tree[$uc_id]['userclass_name'];
 				}
 			}
 		}
@@ -551,22 +577,32 @@ class user_class
 
 	/**
 	 *	Used by @see{vetted_tree()} to generate lower levels of tree
+	 *
+	 *	@param string $listnum - class number of the parent. Is negative if the class is 'Everyone except...' (Must be a string because 0 == -0)
+	 *	@param integer $nest_level - indicates our level in the tree - 0 is the top level; increases as we descend the tree. Positive value.
+	 *	@param string $current_value - comma-separated list of integers indicating classes selected. (Spaces not permitted)
+	 *	@param array $perms - list of classes we are allowed to display
+	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 */
-	protected function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
+	protected function vetted_sub_tree($treename, $callback, $listnum, $nest_level, $current_value, $perms, $opt_options)
 	{
 		$ret = '';
 		$nest_level++;
-		if(isset($this->class_tree[$listnum]['class_children']))
+		$listIndex = abs($listnum);
+		$classSign = (substr($listnum, 0, 1) == '-') ? '-' : '+';
+		//echo "Subtree: {$listnum}, {$nest_level}, {$current_value}, {$classSign}:{$listIndex}<br />";
+		if(isset($this->class_tree[$listIndex]['class_children']))
 		{
-			foreach ($this->class_tree[$listnum]['class_children'] as $p)
+			foreach ($this->class_tree[$listIndex]['class_children'] as $p)
 			{
-				
+				$classValue = $classSign.$p;
 				// Looks like we don't need to differentiate between function and class calls
 				if (isset($perms[$p]))
 				{
-					$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
+					$ret .= call_user_func($callback, $treename, $classValue, $current_value, $nest_level, $opt_options);
 				}
-				$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
+				
+				$ret .= $this->vetted_sub_tree($treename, $callback, $classValue, $nest_level, $current_value, $perms, $opt_options);
 			}					
 				
 			
@@ -587,9 +623,10 @@ class user_class
 	 *		Alternative callbacks can be used to achieve different layouts/styles
 	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	 *	@param string $optlist works the same as for @see uc_dropdown()
+	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 *	@return string - formatted HTML for tree
 	*/
-	public function vetted_tree($treename, $callback='', $current_value='', $optlist = '',$opt_options = '')
+	public function vetted_tree($treename, $callback='', $current_value='', $optlist = '', $opt_options = '')
 	{
 		$ret = '';
 		if (!$callback) $callback=array($this,'select');
@@ -598,21 +635,43 @@ class user_class
 		$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
 		if (isset($perms[e_UC_BLANK]))
 		{
-			$ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0, $opt_options);
+			$ret .= call_user_func($callback, $treename, e_UC_BLANK, $current_value, 0, $opt_options);
 		}
 		foreach ($this->class_parents as $p)
 		{
-			
 			if (isset($perms[$p]))
 			{
-				$ret .= call_user_func($callback,$treename, $p,$current_value,0, $opt_options);
+				$ret .= call_user_func($callback, $treename, $p, $current_value, 0, $opt_options);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms, $opt_options);
+			$ret .= $this->vetted_sub_tree($treename, $callback, $p, 0, $current_value, $perms, $opt_options);
 		}
+
 		
 		// Inverted classes. (negative values for exclusion). 
-		//FIXME - inverted class functionality lost during development. 
-		
+		if(strpos($optlist, 'no-excludes') !== TRUE)
+		{
+			if (strpos($optlist, 'is-checkbox') !== FALSE)
+			{
+				$ret .= "\n".UC_LAN_INVERTLABEL."<br />\n";
+			}
+			else
+			{
+				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			}
+			foreach ($this->class_parents as $k => $p)		// Currently key and data are the same
+			{
+			//echo "Class parent: {$k}:{$p}<br />";
+				if($k != e_UC_PUBLIC && $k != e_UC_NOBODY && $k != e_UC_READONLY)  // remove everyone, nobody and readonly from list.
+				{
+					if (isset($perms[$p]))
+					{
+						$ret .= call_user_func($callback, $treename, '-'.$p, $current_value, 0, $opt_options);
+					}
+				}
+				$ret .= $this->vetted_sub_tree($treename, $callback, '-'.$p, 0, $current_value, $perms, $opt_options);
+			}
+			$ret .= "</optgroup>\n";
+		}
 		return $ret;
 	}
 
@@ -623,17 +682,21 @@ class user_class
 	 *	Can be used as a basis for similar functions
 	 *
 	 *	@param string $treename	- name of tree elements (not used with select; used with checkboxes, for example)
-	 *	@param integer $classnum - user class being displayed.
-	 *			- special value e_UC_BLANK adds a blank option in the list.
+	 *	@param string $classnum - user class being displayed. This may be negative to indicate 'everyone but...'
+	 *			- special numeric part e_UC_BLANK adds a blank option in the list.
 	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	 *	@param integer $nest_level - 'depth' of this item in the tree. Zero is base level. May be used to indent or highlight dependent on level
+	 *	@param string $opt_options - passed to callback function; not otherwise used
+	 *
 	 *	@return string - option list
 	 */
-	public function select($treename, $classnum, $current_value, $nest_level)
+	public function select($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 		$tmp = explode(',',$current_value);
-		$sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
+		$sel = in_array($classnum, $tmp) ? " selected='selected'" : '';
 		if ($nest_level == 0)
 		{
 			$prefix = '';
@@ -649,7 +712,7 @@ class user_class
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
 			$style = '';
 		}
-		return "<option value='{$classnum}'{$sel}{$style}>".$prefix.$this->class_tree[$classnum]['userclass_name']."</option>\n";
+		return "<option value='{$classSign}{$classIndex}'{$sel}{$style}>".$prefix.$this->class_tree[$classIndex]['userclass_name']."</option>\n";
 	}
 
 
@@ -657,9 +720,11 @@ class user_class
 	 *	Callback for vetted_tree - displays indented checkboxes with class name only
 	 *	See @link select for parameter details
 	 */
-	public function checkbox($treename, $classnum, $current_value, $nest_level)
+	public function checkbox($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return '';
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return '';
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
 		if ($nest_level == 0)
@@ -670,7 +735,7 @@ class user_class
 		{
 			$style = " style='text-indent:".(1.2*$nest_level)."em'";
 		}
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$this->class_tree[$classIndex]['userclass_name']."</div>\n";
 	}
 
 
@@ -678,9 +743,11 @@ class user_class
 	 *	Callback for vetted_tree - displays indented checkboxes with class name, and description in brackets
 	 *	See @link select for parameter details
 	 */
-	public function checkbox_desc($treename, $classnum, $current_value, $nest_level)
+	public function checkbox_desc($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return '';
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return '';
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
 		if ($nest_level == 0)
@@ -695,9 +762,9 @@ class user_class
 		$id = "{$treename}_{$classnum}";
 		
 		return "<div {$style}><label>
-			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</label></div>\n";
+			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</label></div>\n";
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
 
 

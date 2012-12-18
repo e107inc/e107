@@ -880,12 +880,24 @@ class e_form
 		';
 	}
 
+
+	/**
+	 *	Callback function used with $this->uc_checkbox
+	 *
+	 *	@see user_class->select() for parameters
+	 */
 	function _uc_checkbox_cb($treename, $classnum, $current_value, $nest_level, $field_options)
 	{
 		if($classnum == e_UC_BLANK)
 			return '';
 
-		$tmp = explode(',', $current_value); //TODO add support for when $current_value is an array.
+		if (!is_array($current_value))
+		{
+			$tmp = explode(',', $current_value);
+		}
+
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
 
 		$class = $style = '';
 		if($nest_level == 0)
@@ -898,7 +910,7 @@ class e_form
 		}
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
 
-		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classIndex).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
 
 
