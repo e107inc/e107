@@ -48,10 +48,11 @@ $mes = e107::getMessage();
 $message = '';
 
 /**
- * @todo user_class::isEditableClass() thinks public (0) is editable?!
+ *	See whether a user class is fully editable.
+ *
  * @param integer $class_id
- * @param boolean $redirect
- * @return boolean
+ * @param boolean $redirect - if TRUE, will redirect to site home page if class not fully editable.
+ * @return boolean - TRUE if class fully editable, FALSE if not.
  */
 function check_allowed($class_id, $redirect = true)
 {
@@ -63,8 +64,8 @@ function check_allowed($class_id, $redirect = true)
 		exit;
 	}
 
-	// fix public (0) case here for now
-	if(!$class_id || !$uc->isEditableClass($class_id))
+
+	if(!$uc->isEditableClass($class_id))
 	{
 		if(!$redirect) return false;
 		e107::getMessage()->addSession('You can\'t edit system user classes!', E_MESSAGE_ERROR);
@@ -82,7 +83,7 @@ if (e_QUERY)
 	{
 		$uc_qs = array($_GET['action'], $_GET['id']);
 	}
-   else $uc_qs = explode(".", e_QUERY);
+   else $uc_qs = explode('.', e_QUERY);
 }
 $action = varset($uc_qs[0]);
 $params = varset($uc_qs[1],'');
@@ -259,15 +260,13 @@ if (isset($_POST['createclass']))		// Add or edit
 
 	$tempID = intval(varset($_POST['userclass_id'], -1));
 	if (($tempID < 0) && $e_userclass->ucGetClassIDFromName($class_record['userclass_name']))
-	{	// Duplicate name
-		//$message = UCSLAN_63;
-		$emessage->add(UCSLAN_63, E_MESSAGE_WARNING);
+	{
+		$emessage->add(UCSLAN_63, E_MESSAGE_WARNING);	// Duplicate name
 		$forwardVals = TRUE;
 	}
 	elseif ($e_userclass->checkAdminInfo($class_record, $tempID) === FALSE)
 	{
-		//$message = UCSLAN_86;
-		$emessage->add(UCSLAN_86);
+		$emessage->add(UCSLAN_86);		// Some fixed values changed
 	}
 
 	if (!$forwardVals)
@@ -909,7 +908,7 @@ class uclass_manager
 			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
             'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
-   			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center')
+   			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
 
 	}
@@ -949,7 +948,8 @@ class uclass_manager
 
             foreach($classes as $row)
 			{
-				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');
+				$this->fields['options']['readParms']['deleteClass'] = $e_userclass->isEditableClass($row['userclass_id']) ? '' : e_UC_NOBODY;
+				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');	// @TODO: Suppress delete icon on fixed classes.
 			}
 
 			$text .= "</tbody></table></fieldset></form>";
