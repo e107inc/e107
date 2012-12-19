@@ -3,10 +3,6 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/languages/English_admin_rss_menu.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 
@@ -33,8 +29,8 @@ define("RSS_BUG", "Bugtracker");
 define("RSS_FOR", "Forum");
 define("RSS_DL", "Downloads");
 
-define("RSS_PLUGIN_LAN_1", "RSS");
-define("RSS_PLUGIN_LAN_2", "RSS Feeds from your site");
+//define("RSS_PLUGIN_LAN_1", "RSS");
+//define("RSS_PLUGIN_LAN_2", "RSS Feeds from your site");
 
 define("RSS_PLUGIN_LAN_6", "Feed Links");
 define("RSS_PLUGIN_LAN_7", "The rss feed of the news");
@@ -60,12 +56,12 @@ define("RSS_LAN_ERROR_7", "Some required fields are missing.");
 define("RSS_LAN_ADMIN_1", "Existing RSS feeds");
 define("RSS_LAN_ADMIN_2", "Id");
 define("RSS_LAN_ADMIN_3", "Path");
-define("RSS_LAN_ADMIN_4", "Name");
+//define("RSS_LAN_ADMIN_4", "Name");
 define("RSS_LAN_ADMIN_5", "Url");
 define("RSS_LAN_ADMIN_6", "Text");
 define("RSS_LAN_ADMIN_7", "Limit");
 define("RSS_LAN_ADMIN_8", "Visibility");
-define("RSS_LAN_ADMIN_9", "Type");
+//define("RSS_LAN_ADMIN_9", "Type");
 define("RSS_LAN_ADMIN_10", "rss feed create entry");
 define("RSS_LAN_ADMIN_11", "rss feed import feeds");
 define("RSS_LAN_ADMIN_12", "Topic id");
@@ -96,6 +92,7 @@ define("RSS_LAN_3", "noauthor@nospam.com");
 
 // Admin log messages
 //-------------------
+/*
 define('LAN_AL_RSS_01','RSS feed deleted');
 define('LAN_AL_RSS_02','RSS feed created');
 define('LAN_AL_RSS_03','RSS feed updated');
@@ -103,4 +100,5 @@ define('LAN_AL_RSS_04','RSS feed imported');
 define('LAN_AL_RSS_05','RSS limits updated');
 define('LAN_AL_RSS_06','RSS settings updated');
 define('LAN_AL_RSS_07','');
+*/
 ?>

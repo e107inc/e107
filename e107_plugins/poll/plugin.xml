@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.11 2009-10-20 03:49:22 e107coders Exp $ -->
-<e107Plugin name="Poll" lan="POLL_ADLAN01" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Poll" lan="LAN_PLUGIN_POLL_NAME" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
-	<description lan="POLL_ADLAN02">The poll plugin allows you to define polls in either a menu or forum post.</description>
-	<category>content</category>  
-	<languageFiles>
-		<file type='log' path='languages/--LAN--_admin_poll.php' />
-	</languageFiles>
+	<description lan="LAN_PLUGIN_POLL_DESCRIPTION">The poll plugin allows you to define polls in either a menu or forum post.</description>
+	<category>content</category> 
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright> 
 	<adminLinks>
 		<link url='admin_config.php' description='POLL_ADLAN03' icon='images/polls_32.png' iconSmall='images/polls_16.png' primary='true' >POLL_ADLAN03</link>	
 	</adminLinks>
