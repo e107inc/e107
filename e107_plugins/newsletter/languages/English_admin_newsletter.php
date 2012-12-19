@@ -8,22 +8,18 @@
  *
  * Plugin - newsfeeds
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/languages/English_admin_newsletter.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+ * $Id$
 */
 
-define('NLLAN_01', 'Newsletter');
-define('NLLAN_02', 'Provides a quick and easy way to configure and send newsletters');
-define('NLLAN_03', 'Configure Newsletters');
+//define('NLLAN_01', 'Newsletter');
+//define('NLLAN_02', 'Provides a quick and easy way to configure and send newsletters');
+//define('NLLAN_03', 'Configure Newsletters');
 define('NLLAN_04', 'The newsletter plugin has been successfully installed. To configure, return to your main admin page and click on \'Newsletter\' in the plugin section.');
 define('NLLAN_05', 'No newsletters defined yet');
 
 define('NLLAN_06', 'Name');
 define('NLLAN_07', 'Subscribers');
-define('NLLAN_08', 'Options');
+//define('NLLAN_08', 'Options');
 define('NLLAN_09', 'Are you sure you want to delete this newsletter?');
 define('NLLAN_10', 'Existing Newsletters');
 
@@ -31,18 +27,18 @@ define('NLLAN_11', 'No newsletter issues yet');
 define('NLLAN_12', 'Issue');
 define('NLLAN_13', '[ Parent ID ] Subject/Title');
 define('NLLAN_14', 'Mailed?');
-define('NLLAN_15', 'Options');
+//define('NLLAN_15', 'Options');
 define('NLLAN_16', 'yes');
 define('NLLAN_17', 'Not sent out - click to send');
 define('NLLAN_18', 'Are you sure you want to mail this issue to subscribers?');
 define('NLLAN_19', 'Are you sure you want to delete this newsletter issue?');
 define('NLLAN_20', 'Existing Issues');
-define('NLLAN_21', 'Title');
-define('NLLAN_22', 'Description');
+//define('NLLAN_21', 'Title');
+//define('NLLAN_22', 'Description');
 define('NLLAN_23', 'Header');
 define('NLLAN_24', 'Footer');
-define('NLLAN_25', 'Update Newsletter');
-define('NLLAN_26', 'Create Newsletter');
+//define('NLLAN_25', 'Update Newsletter');
+//define('NLLAN_26', 'Create Newsletter');
 define('NLLAN_27', 'Newsletter updated in database.');
 define('NLLAN_28', 'Newsletter defined and saved in database.');
 //define('NLLAN_29', 'No newsletters defined yet.');
