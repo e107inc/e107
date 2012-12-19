@@ -14,7 +14,7 @@
  * $Author$
  *
 */
-define("GSLAN_Name", "Sitemap");
+//define("GSLAN_Name", "Sitemap");
 define("GSLAN_1", "Site Link");
 define("GSLAN_2", "Import?");
 define("GSLAN_3", "Type");
