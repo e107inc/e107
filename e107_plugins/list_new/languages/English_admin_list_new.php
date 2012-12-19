@@ -25,7 +25,7 @@
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "List New Items"); }
 
 // define("LIST_PLUGIN_1", "List");
-define("LIST_PLUGIN_2", "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
+//define("LIST_PLUGIN_2", "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
 define("LIST_PLUGIN_3", "Configure Main Menu");
 define("LIST_PLUGIN_4", "The List_new plugin is now ready to be used.");
 
