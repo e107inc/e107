@@ -28,12 +28,22 @@ class page_sitelinks // include plugin-folder in the name.
 	
 	
 
-	function pageNav() 
+	function pageNav($parm='') 
 	{
+		if(vartrue($parm))
+		{
+			parse_str($parm,$options);	
+		}
+			
 		$sql 		= e107::getDb();
 		$sublinks 	= array();
 		$arr 		= array();		
-		$query		= "SELECT p.*, c.* FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ORDER BY c.chapter_order,p.page_order"; 	
+
+		$query		= "SELECT * FROM #page WHERE ";
+		$query 		.= vartrue($options['chapter']) ? "page_chapter = ".intval($options['chapter']) : 1;	 		
+		$query 		.= " ORDER BY page_order"; 
+	//	$query		.= vartrue($options['limit']) ? " LIMIT ".intval($options['limit']) : "";	
+		
 		$data 		= $sql->retrieve($query, true);
 
 		foreach($data as $row)
@@ -53,7 +63,22 @@ class page_sitelinks // include plugin-folder in the name.
 			);
 		}
 		
-		$books = $sql->retrieve("page_chapters","*", 1, true);
+
+	//	$filter = vartrue($options['book']) ? "chapter_id = ".intval($options['book']) : 1;	
+		$filter = 1;
+		
+		if(vartrue($options['chapter']))
+		{
+			$filter = "chapter_id > ".intval($options['chapter']);
+		}
+
+		if(vartrue($options['book']))
+		{
+			$filter = "chapter_id > ".intval($options['book']);
+		}
+
+
+		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
 		
 		foreach($books as $row)
 		{
@@ -72,11 +97,21 @@ class page_sitelinks // include plugin-folder in the name.
 				'link_sub'			=> varset($sublinks[$row['chapter_id']])
 			);	
 			
+
+			$parent = vartrue($options['book']) ? intval($row['chapter_parent']) : 0;
+			
 		}
 		
+		
+	//	print_a($arr);
+		
+	//	echo "<h3>Compiled</h3>";
 		$outArray 	= array();
-		$ret =  e107::getNav()->compile($arr, $outArray);		
+		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
 
+	//		print_a($ret);
+	
+	
 	//	$mes = e107::getMessage();
 	//	$mes->addDebug( print_a($ret,true));
 		
