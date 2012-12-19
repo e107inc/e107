@@ -10,10 +10,10 @@
 +-----------------------------------------------------------------------------+
 */
 
-define('PDF_PLUGIN_LAN_1', 'PDF');
-define('PDF_PLUGIN_LAN_2', 'PDF creation support using TCPDF');
-define('PDF_PLUGIN_LAN_3', 'PDF');
-define('PDF_PLUGIN_LAN_4', 'This plugin is now ready to be used.');
+//define('PDF_PLUGIN_LAN_1', 'PDF');
+//define('PDF_PLUGIN_LAN_2', 'PDF creation support using TCPDF');
+//define('PDF_PLUGIN_LAN_3', 'PDF');
+//define('PDF_PLUGIN_LAN_4', 'This plugin is now ready to be used.');
 
 define('PDF_LAN_1', 'PDF');
 define('PDF_LAN_2', 'PDF preferences');
@@ -31,8 +31,8 @@ define('PDF_LAN_13', 'show logo on pdf?');
 define('PDF_LAN_14', 'show sitename on pdf?');
 define('PDF_LAN_15', 'show creator page url on pdf?');
 define('PDF_LAN_16', 'show page numbers on pdf?');
-define('PDF_LAN_17', 'update');
-define('PDF_LAN_18', 'PDF preferences successfully updated');
+//define('PDF_LAN_17', 'update');
+//define('PDF_LAN_18', 'PDF preferences successfully updated');
 define('PDF_LAN_19', 'Page');
 define('PDF_LAN_20', 'error reporting');
 define('PDF_LAN_21', 'Font name');
@@ -49,6 +49,6 @@ define('PDF_LAN_31', 'FONT LIST');
 
 
 // Admin logging
-define('LAN_AL_PDF_01', 'PDF settings updated');
+//define('LAN_AL_PDF_01', 'PDF settings updated');
 
 ?>
