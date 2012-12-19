@@ -1107,7 +1107,9 @@ class user_class_admin extends user_class
 	public function __construct()
 	{
 		parent::__construct();
-		$this->isAdmin = TRUE;
+		if (!(getperms('4') || getperms('0'))) return;
+	
+		$this->isAdmin = TRUE;			// We have full class management rights
 	}
 
 
@@ -1119,7 +1121,7 @@ class user_class_admin extends user_class
 	*/
 	public function calc_tree()
 	{
-		$this->readTree(TRUE);			// Make sure we have accurate data
+		$this->readTree(TRUE);						// Make sure we have accurate data
 		foreach ($this->class_parents as $cp)
 		{
 			$rights = array();
@@ -1256,8 +1258,14 @@ class user_class_admin extends user_class
 
 
 	/*
-	Next two routines generate a graphical tree, including option to open/close branches
-	*/
+	 *	Next two routines generate a graphical tree, including option to open/close branches
+	 *
+	 *	function show_graphical subtree() is for internal use, called from function show_graphical_tree
+	 *
+	 *	@param int $listnum - class number of first element to display, along with its children
+	 *	@param array $indent_images - array of images with which to start each line
+	 *	@param boolean $is_last - TRUE if this is the last element on the current branch of the tree
+	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
 		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
@@ -1295,7 +1303,7 @@ class user_class_admin extends user_class
 		if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
 		// Next (commented out) line gives a 'conventional' link
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
-		if($this->isEditableClass($this->class_tree[$listnum]['userclass_id']))
+		if($this->queryCanEditClass($this->class_tree[$listnum]['userclass_id']))
 		{
 			$url = e_SELF.'?action=edit&amp;id='.$this->class_tree[$listnum]['userclass_id'];
 			$onc = '';
@@ -1323,16 +1331,16 @@ class user_class_admin extends user_class
 			{
 				$indent_images[] = 'line.gif';
 			}
-			foreach ($this->class_tree[$listnum]['class_children'] as $p)
+			if (isset($this->class_tree[$listnum]['class_children'])) foreach ($this->class_tree[$listnum]['class_children'] as $p)
 			{
 				$num_children--;
 				if ($num_children)
 				{	// Use icon indicating more below
-				  $ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
+					$ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
 				}
 				else
 				{ // else last entry on this tree
-				  $ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
+					$ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
 				}
 			}
 			$ret .= "</div>";
@@ -1344,6 +1352,7 @@ class user_class_admin extends user_class
 
 	/**
 	 * Create graphical class tree, including clickable links to expand/contract branches.
+	 *
 	 * @param boolean $show_debug - TRUE to display additional information against each class
 	 * @return string - text for display
 	 */
@@ -1382,7 +1391,7 @@ class user_class_admin extends user_class
 		if ($inc_id && isset($classrec['userclass_id'])) $ret['userclass_id'] = $classrec['userclass_id'];
 		foreach ($this->field_list as $fl => $val)
 		{
-		  if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
+			if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
 		}
 		return $ret;
 	}
@@ -1462,17 +1471,19 @@ class user_class_admin extends user_class
 	 *	TODO: use new array function
 	 *	@param array $classrec - class data
 	 *	@return boolean TRUE on success, FALSE on failure
+	 *
+	 *	Note - only updates those fields which are present in the passed array, and ignores unexpected fields.
 	 */
 	public function save_edited_class($classrec)
 	{
 		if (!$classrec['userclass_id'])
 		{
-			echo "Programming bungle on save<br />";
+			echo 'Programming bungle on save - no ID field<br />';
 			return FALSE;
 		}
 		$qry = '';
 		$spacer = '';
-		if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+		if (isset($classrec['userclass_type']) && ($classrec['userclass_type'] == UC_TYPE_GROUP))
 		{	// Need to make sure our ID is in the accumulation array
 			$temp = explode(',',$classrec['userclass_accum']);
 			if (!in_array($classrec['userclass_id'], $temp))
@@ -1500,6 +1511,37 @@ class user_class_admin extends user_class
 
 
 
+	/**
+	 *	Check if a user may edit a user class.
+	 *	@param integer $classID > 0
+	 *	@param string $classList - comma-separated list of class IDs; defaults to those of current user
+	 *
+	 *	@return integer:
+	 *				0 - if editing not allowed at all
+	 *				1 - if restricted editing allowed (usually because its a fixed class)
+	 *				2 - All editing rights allowed
+	 */
+	public function queryCanEditClass($classID, $classList = USERCLASS_LIST)
+	{
+		if (!isset($this->class_tree[$classID])) return 0;			// Class doesn't exist - no hope of editing!
+		
+		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1);
+		if (isset($blockers[$classID])) return 0;					// Don't allow edit of some fixed classes
+
+		$canEdit = $this->isAdmin;
+		$possibles = array_flip(explode(',',$classList));
+		if (isset($possibles[$this->class_tree[$classID]['userclass_editclass']])) $canEdit = TRUE;
+		
+		if (!$canEdit) return 0;
+
+		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return  1;	// Restricted edit of fixed classes
+		if (isset($this->fixed_classes[$classID])) return 1;			// This picks up fixed classes such as e_UC_PUBLIC outside the main range
+
+		return 2;						// Full edit rights - a 'normal' class
+	}
+
+
+
 
 	/**
 	 *	Check if a class may be deleted. (Fixed classes, classes with descendants cannot be deleted)
@@ -1509,12 +1551,12 @@ class user_class_admin extends user_class
 	public function queryCanDeleteClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up fixed classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		if (!isset($this->class_tree[$classID])) return FALSE;
 		if (count($this->class_tree[$classID]['class_children'])) return FALSE;		// Can't delete class with descendants
 		foreach ($this->class_tree as $c)
 		{
-			if ($c['userclass_editclass'] == $classID) return FALSE;
+			if ($c['userclass_editclass'] == $classID) return FALSE;				// Class specified as managing or using another class
 			if ($c['userclass_visibility'] == $classID) return FALSE;
 		}
 		return TRUE;

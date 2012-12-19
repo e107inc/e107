@@ -48,27 +48,38 @@ $mes = e107::getMessage();
 $message = '';
 
 /**
- *	See whether a user class is fully editable.
+ *	See whether a user class is editable.
+ *
+ *	(Note: On fixed classes, only some fields are editable)
  *
  * @param integer $class_id
- * @param boolean $redirect - if TRUE, will redirect to site home page if class not fully editable.
- * @return boolean - TRUE if class fully editable, FALSE if not.
+ * @param boolean $redirect - if TRUE, will redirect to site home page if class not editable.
+ * @param boolean $fullEdit - set TRUE if full editing required, FALSE if some editing permitted
+ *
+ * @return boolean - TRUE if class editable (fully or partially), FALSE if not.
  */
-function check_allowed($class_id, $redirect = true)
+function checkAllowed($classID, $redirect = true, $fullEdit = FALSE)
 {
-	$uc = e107::getUserClass();
-	if (!isset($uc->class_tree[$class_id]) || (!getperms('0') && !check_class($uc->class_tree[$class_id]['userclass_editclass'])))
+	global $e_userclass;					// TODO: Get rid of this (we need the system admin object; not the user-level object)
+	$editLevel = $fullEdit ? 2 : 1;
+	if ($e_userclass->queryCanEditClass($classID) >= $editLevel)
 	{
-		if(!$redirect) return false;
+		return TRUE;
+	}
+	
+	if ($redirect)
+	{
 		header('location:'.SITEURL);
 		exit;
 	}
 
+	return FALSE;
 
+	// Next bit probably redundant - editing of some parts of system class data is allowed.
 	if(!$uc->isEditableClass($class_id))
 	{
 		if(!$redirect) return false;
-		e107::getMessage()->addSession('You can\'t edit system user classes!', E_MESSAGE_ERROR);
+		e107::getMessage()->addSession(UCSLAN_90, E_MESSAGE_ERROR);
 		header('location:'.e_SELF);
 		exit;
 	}
@@ -97,7 +108,7 @@ if(e_AJAX_REQUEST)
 	{
 	    require_once(e_HANDLER.'js_helper.php');
 	    $jshelper = new e_jshelper();
-	    if(!check_allowed($class_num, false))
+	    if(!checkAllowed($class_num, false))
 		{
 			//This will raise an error
 			//'Access denied' is the message which will be thrown
@@ -186,30 +197,26 @@ if (isset($_POST['set_initial_classes']))
 //---------------------------------------------------
 if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 {
-	$class_id = intval(array_shift(array_keys($_POST['etrigger_delete'])));
-	check_allowed($class_id);
-	/* done already by check_allowed()
-	if (($class_id >= e_UC_SPECIAL_BASE) && ($class_id <= e_UC_SPECIAL_END))
-	{
-	  $message = UCSLAN_29;
-	}*/
-	//elseif ($_POST['confirm'])
+	$classID = intval(array_shift(array_keys($_POST['etrigger_delete'])));
+	//checkAllowed($classID);
+
+	if ($e_userclass->queryCanDeleteClass($classID))
 	{
 		if ($e_userclass->delete_class($class_id) !== FALSE)
 		{
-			userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
-			if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+			userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($classID).")");
+			if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$classID}' OR user_class REGEXP('^{$classID},') OR user_class REGEXP(',{$classID},') OR user_class REGEXP(',{$classID}$')"))
 			{	// Delete existing users from class
 				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 				{
 					$uidList[$row['user_id']] = $row['user_class'];
 				}
-				$e_userclass->class_remove($class_id, $uidList);
+				$e_userclass->class_remove($classID, $uidList);
 			}
 			$e_pref = e107::getConfig();
-			if($e_pref->isData('frontpage/'.$class_id))
+			if($e_pref->isData('frontpage/'.$classID))
 			{
-				$e_pref->removePref('frontpage/'.$class_id)->save(false);
+				$e_pref->removePref('frontpage/'.$classID)->save(false);
 			}
 			/*if (isset($pref['frontpage'][$class_id]))
 			{
@@ -223,10 +230,10 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 			$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
 		}
 	}
-/*	else
+	else
 	{
-		$message = UCSLAN_4;
-	}*/
+		$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
+	}
 }
 
 
@@ -236,27 +243,9 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 //---------------------------------------------------
 if (isset($_POST['createclass']))		// Add or edit
 {
-	$class_record = array(
-		'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
-		'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
-		'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
-		'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
-		'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
-		'userclass_icon' 		=> $tp->toDB(varset($_POST['userclass_icon'],'')),
-		'userclass_type'		=> intval(varset($_POST['userclass_type'],UC_TYPE_STD))
-		);
-	if ($class_record['userclass_type'] == UC_TYPE_GROUP)
-	{
-		$temp = array();
-		foreach ($_POST['group_classes_select'] as $gc)
-		{
-			$temp[] = intval($gc);
-		}
-		$class_record['userclass_accum'] = implode(',',$temp);
-	}
-
-	$do_tree = FALSE;		// Set flag to rebuild tree if no errors
-	$forwardVals = FALSE;	// Set to ripple through existing values to a subsequent pass
+	$fullEdit = TRUE;			// Most of the time, we are allowed to edit everything
+	$do_tree = FALSE;			// Set flag to rebuild tree if no errors
+	$forwardVals = FALSE;		// Set to ripple through existing values to a subsequent pass
 
 	$tempID = intval(varset($_POST['userclass_id'], -1));
 	if (($tempID < 0) && $e_userclass->ucGetClassIDFromName($class_record['userclass_name']))
@@ -264,19 +253,49 @@ if (isset($_POST['createclass']))		// Add or edit
 		$emessage->add(UCSLAN_63, E_MESSAGE_WARNING);	// Duplicate name
 		$forwardVals = TRUE;
 	}
-	elseif ($e_userclass->checkAdminInfo($class_record, $tempID) === FALSE)
+	if ($tempID > 0)
+	{
+		$fullEdit = $e_userclass->queryCanEditClass($tempID) == 2;
+	}
+	
+	$class_record = array(
+		'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
+		'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
+		'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
+		'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
+		'userclass_icon' 		=> $tp->toDB(varset($_POST['userclass_icon'],''))
+		);
+
+	if ($fullEdit)
+	{
+		$class_record['userclass_name'] = varset($tp->toDB($_POST['userclass_name']),'');
+		$class_record['userclass_type']	= intval(varset($_POST['userclass_type'],UC_TYPE_STD));
+		if ($class_record['userclass_type'] == UC_TYPE_GROUP)
+		{
+			$temp = array();
+			foreach ($_POST['group_classes_select'] as $gc)
+			{
+				$temp[] = intval($gc);
+			}
+			$class_record['userclass_accum'] = implode(',',$temp);
+		}
+	}
+
+
+	if ($e_userclass->checkAdminInfo($class_record, $tempID) === FALSE)
 	{
 		$emessage->add(UCSLAN_86);		// Some fixed values changed
+		$forwardVals = TRUE;
 	}
 
 	if (!$forwardVals)
 	{
 		if ($tempID > 0)
 		{		// Editing existing class here
-			check_allowed($tempID);
+			checkAllowed($tempID);
 			$class_record['userclass_id'] = $tempID;
 			$e_userclass->save_edited_class($class_record);
-			userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
+			userclass2_adminlog('03',"ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 			$do_tree = TRUE;
 			//$message .= UCSLAN_5;
 			$emessage->add(UCSLAN_5, E_MESSAGE_SUCCESS);
@@ -319,11 +338,11 @@ if (isset($_POST['createclass']))		// Add or edit
 		}
 	}
 
-  if ($do_tree)
-  {
-	$e_userclass->calc_tree();
-	$e_userclass->save_tree();
-  }
+	if ($do_tree)
+	{
+		$e_userclass->calc_tree();
+		$e_userclass->save_tree();
+	}
 }
 
 
@@ -366,10 +385,12 @@ switch ($action)
 //		Class management
 //-----------------------------------
   case 'config' :
+	$fullEdit = TRUE;
 	if(isset($_POST['existing']))
 	{
 		$params = 'edit';
 		$class_num = intval(varset($_POST['existing'],0));
+		$fullEdit = $e_userclass->queryCanEditClass($class_num) == 2;
 	}
 	else
 	{
@@ -389,7 +410,7 @@ switch ($action)
 	{
 		if (!$forwardVals)
 		{	// Get the values from DB (else just recycle data uer was trying to store)
-			check_allowed($class_num);
+			checkAllowed($class_num);
 			$sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
 			$class_record = $sql->db_Fetch();
 			$userclass_id = $class_record['userclass_id'];			// Update fields from DB if editing
@@ -422,9 +443,16 @@ switch ($action)
 	$text .= "
 		<tr>
 		<td>".UCSLAN_12."</td>
-		<td>
-		<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='{$userclass_name}' />
-		<div class='field-help'>".UCSLAN_30."</div></td>
+		<td>";
+	if ($fullEdit)
+	{
+		$text .= "<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='{$userclass_name}' />";
+	}
+	else
+	{
+		$text .= "{$userclass_name}<input type='hidden' name='userclass_name' value='{$userclass_name}' />";
+	}
+	$text .= "<div class='field-help'>".UCSLAN_30."</div></td>
 
 		</tr>
 		<tr>
@@ -445,12 +473,21 @@ switch ($action)
 	$text .= "
 		<tr>
 		<td>".UCSLAN_79."</td>
-		<td>\n
+		<td>";
+	$classTypes = array(UC_TYPE_STD => UCSLAN_80, UC_TYPE_GROUP => UCSLAN_81);
+	if ($fullEdit)
+	{
+		$text .= "\n
 		<select name='userclass_type' class='tbox' onchange='setGroupStatus(this)'>
 		<option value='".UC_TYPE_STD."'".(UC_TYPE_STD == $userclass_type ? " selected='selected'" : "").">".UCSLAN_80."</option>\n
 		<option value='".UC_TYPE_GROUP."'".(UC_TYPE_GROUP == $userclass_type ? " selected='selected'" : "").">".UCSLAN_81."</option>\n
-		</select>\n
-		<div class='field-help'>".UCSLAN_82."</div></td>
+		</select>\n";
+	}
+	else
+	{
+		$text .= $classTypes[$userclass_type]."<input type='hidden' name='userclass_type' value='{$userclass_type}' />";
+	}
+	$text .= "<div class='field-help'>".UCSLAN_82."</div></td>
 	  	</tr>
 	";
 
@@ -948,8 +985,8 @@ class uclass_manager
 
             foreach($classes as $row)
 			{
-				$this->fields['options']['readParms']['deleteClass'] = $e_userclass->isEditableClass($row['userclass_id']) ? '' : e_UC_NOBODY;
-				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');	// @TODO: Suppress delete icon on fixed classes.
+				$this->fields['options']['readParms']['deleteClass'] = $e_userclass->queryCanDeleteClass($row['userclass_id']) ? '' : e_UC_NOBODY;
+				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');
 			}
 
 			$text .= "</tbody></table></fieldset></form>";
@@ -966,6 +1003,7 @@ require_once(e_ADMIN.'footer.php');
 
 
 
+// @TODO: Is this function still required?
 function headerjs()
 {
 	$params  = e107::getRegistry('pageParams');
