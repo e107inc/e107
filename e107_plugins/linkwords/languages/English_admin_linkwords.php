@@ -8,21 +8,7 @@
  *
  * Linkwords plugin - language file (only needed for admin)
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/languages/English_admin_linkwords.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
-
-
-/**
- *	e107 Linkword plugin
- *
- *	@package	e107_plugins
- *	@subpackage	linkwords
- *	@version 	$Id$;
- *
- *	Language file
+ * $Id*
  */
 
 define("LWLAN_1", "Field(s) left blank.");
@@ -96,11 +82,11 @@ define('LWLAN_65', 'When checked, suppresses clickable link if points to current
 
 
 // Installation-related
-define('LWLANINS_1', 'Linkwords');
-define('LWLANINS_2', 'This plugin links specified words with a defined link and/or tooltip');
-define('LWLANINS_3', 'Configure LinkWords');
-define('LWLANINS_4', 'To configure please click on the link in the plugins section of the admin front page');
-define('LWLANINS_5', 'Upgrade complete');
+//define('LWLANINS_1', 'Linkwords');
+//define('LWLANINS_2', 'This plugin links specified words with a defined link and/or tooltip');
+//define('LWLANINS_3', 'Configure LinkWords');
+//define('LWLANINS_4', 'To configure please click on the link in the plugins section of the admin front page');
+//define('LWLANINS_5', 'Upgrade complete');
 
 
 // Help text

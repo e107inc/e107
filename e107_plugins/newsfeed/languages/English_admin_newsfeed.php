@@ -8,16 +8,14 @@
  *
  * Plugin - newsfeeds
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/languages/English_admin_newsfeed.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
 
-define("NFLAN_01", "Newsfeeds");
-define("NFLAN_02", "This plugin will retrieve rss feeds from other websites and display them according to your preferences");
+//define("NFLAN_01", "Newsfeeds");
+//define("NFLAN_02", "This plugin will retrieve rss feeds from other websites and display them according to your preferences");
 define("NFLAN_03", "Configure newsfeeds");
 define("NFLAN_04", "Newsfeeds plugin has been successfully installed. To add newsfeeds and configure, return to the main admin page and click on the newsfeeds icon in the plugin section.");
 define("NFLAN_05", "Edit");
