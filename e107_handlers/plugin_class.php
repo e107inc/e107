@@ -1570,7 +1570,7 @@ class e107plugin
 	}
 
 	/**
-	 * Process XML Tag <LanguageFiles>
+	 * Process XML Tag <LanguageFiles> // DEPRECATED - using _install _log and _global
 	 * @param object $function
 	 * @param object $tag
 	 * @return none
@@ -1581,7 +1581,7 @@ class e107plugin
 	
 		$updated = false;
 		
-		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_install.php"; // always check for English so we have a fall-bak
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_install.php"; // always check for English so we have a fall-back
 		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_install.php";		
 		
 		if(file_exists($path_a) || file_exists($path_b))
@@ -1589,7 +1589,7 @@ class e107plugin
 			e107::lan($this->plugFolder,'install',true);	
 		}
 			
-		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_global.php"; // always check for English so we have a fall-bak
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_global.php"; // always check for English so we have a fall-back
 		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_global.php";		
 		
 		if(file_exists($path_a) || file_exists($path_b))
@@ -1612,7 +1612,7 @@ class e107plugin
 		}
 			
 	
-		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_log.php";  // always check for English so we have a fall-bak
+		$path_a = e_PLUGIN.$this->plugFolder."/languages/English_log.php";  // always check for English so we have a fall-back
 		$path_b = e_PLUGIN.$this->plugFolder."/languages/English/English_log.php";
 		
 		if(file_exists($path_a) || file_exists($path_b))
