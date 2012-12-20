@@ -1311,12 +1311,17 @@ class e107
 	 *
 	 * @return Hybrid_Auth
 	 */
-	public static function getHybridAuth()
+	public static function getHybridAuth($config = null)
 	{
-		$config = array(
-			'base_url' => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
-			'providers' => e107::getPref('social_login', array())	
-		);
+		if(null === $config)
+		{
+			$config = array(
+				'base_url' => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+				'providers' => e107::getPref('social_login', array()),
+				'debug_mode' => false,
+				'debug_file' => ''
+			);
+		}
 		return new Hybrid_Auth($config);
 	}
 

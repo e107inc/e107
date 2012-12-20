@@ -1491,11 +1491,19 @@ class e_user extends e_user_model
 		// don't allow if main admin browse front-end or there is already user session
 		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
 		
-		// detect all currently connected providers
-		$hybrid = e107::getHybridAuth(); // init the auth class
-
-		$connected = Hybrid_Auth::getConnectedProviders();
-		
+		try
+		{
+			// detect all currently connected providers
+			$hybrid = e107::getHybridAuth(); // init the auth class
+			$connected = Hybrid_Auth::getConnectedProviders();
+		}
+		catch(Exception $e)
+		{
+			e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+			$session = e107::getSession();
+			$session->set('HAuthError', true);
+			$connected = false;
+		}
 		// no active session found 
 		if(!$connected) return $this;
 		
