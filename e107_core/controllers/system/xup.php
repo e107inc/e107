@@ -34,6 +34,7 @@ class core_system_xup_controller extends eController
 		if($session->get('HAuthError'))
 		{
 			$allow = false;
+			$session->set('HAuthError', null);
 		}
 		
 		if($allow && vartrue($_GET['provider']))
@@ -60,9 +61,10 @@ class core_system_xup_controller extends eController
 		if($session->get('HAuthError'))
 		{
 			$allow = false;
+			$session->set('HAuthError', null);
 		}
 
-		if(vartrue($_GET['provider']))
+		if($allow && vartrue($_GET['provider']))
 		{
 			require_once(e_HANDLER."user_handler.php");
 			$provider = new e_user_provider($_GET['provider']);
