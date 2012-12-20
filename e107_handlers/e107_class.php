@@ -2198,20 +2198,21 @@ class e107
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
 	 */
-	public static function lan($type,$fname = null,$options = null)
+	public static function lan($type, $fname = null, $options = null)
 	{
+		$options = $options ? true : false;
 		switch ($type)
 		{
 			case 'core' :
-				self::coreLan($fname,$options);
+				self::coreLan($fname, $options);
 			break;
 	
 			case 'theme' :
-				self::themeLan($fname, null);
+				self::themeLan($fname, null,  $options);
 				break;
 			default :
-				$opt = ($options === true) ? true : false;
-				self::plugLan($type,$fname, $opt);
+				
+				self::plugLan($type, $fname, $options);
 				break;
 		}	
 		
