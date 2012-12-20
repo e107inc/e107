@@ -1467,8 +1467,8 @@ $text .= "
 	
 					$text .= "
 						<td>".PRFLAN_178."</td>
-						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] )."
-							".$frm->select_open('password_CHAP');
+						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
+						//."	".$frm->select_open('password_CHAP');
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
 
