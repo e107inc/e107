@@ -714,9 +714,8 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-
 $text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
-$ns->tablerender(LAN_SIGNUP_79, $text);
+$ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text);
 require_once(FOOTERF);
 exit;
 

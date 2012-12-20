@@ -29,58 +29,53 @@ class core_system_xup_controller extends eController
 	
 	public function actionSignup()
 	{
-		// echo 'Signup controller';
-		//$back = 'system/xup/test';
+		$allow = true;
+		$session = e107::getSession();
+		if($session->get('HAuthError'))
+		{
+			$allow = false;
+		}
 		
-		// FIXME - pref for default XUP - e.g. Facebook, use it when GET is empty
-		if(vartrue($_GET['provider']))
+		if($allow && vartrue($_GET['provider']))
 		{
 			require_once(e_HANDLER."user_handler.php");
 			$provider = new e_user_provider($_GET['provider']);
-			//$provider->setBackUrl(e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)));
 			try
 			{
 				$provider->signup($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
-				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage());
-			//	print_a($provider->getUserProfile());
-			//	echo '<br /><br /><a href="'.e107::getUrl()->create($this->backUrl).'">Test page</a>';
-				return;
+				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
 			}
-			// print_a($provider->getUserProfile());
-			//return;
 		}
 		
-		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
+		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : e107::getUrl()->create($this->backUrl));
 	}
 	
 	public function actionLogin()
 	{
-		//echo 'Login controller';
+		$allow = true;
+		$session = e107::getSession();
+		if($session->get('HAuthError'))
+		{
+			$allow = false;
+		}
 
-		// FIXME - pref for default XUP - e.g. Facebook, use it when GET is empty
 		if(vartrue($_GET['provider']))
 		{
 			require_once(e_HANDLER."user_handler.php");
 			$provider = new e_user_provider($_GET['provider']);
-			//$provider->setBackUrl(e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)));
 			try
 			{
 				$provider->login($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
-				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage());
-			//	print_a($provider->getUserProfile());
-			//	echo '<br /><br /><a href="'.e107::getUrl()->create($this->backUrl).'">Test page</a>';
-				return;
+				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
 			}
-			// print_a($provider->getUserProfile());
-			//return;
 		}
-		e107::getRedirect()->redirect(e107::getUrl()->create($this->backUrl));
+		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : e107::getUrl()->create($this->backUrl));
 	}
 	
 	public function actionTest()
@@ -112,7 +107,9 @@ class core_system_xup_controller extends eController
 		}
 		catch (Exception $e)
 		{
-			e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage());
+			e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+			$session = e107::getSession();
+			$session->set('HAuthError', true);
 		}
 		//echo 'End point';
 	}

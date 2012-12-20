@@ -853,7 +853,6 @@ class e_user_provider
 		if(!empty($config))
 		{
 			$this->_config = $config;
-			$this->hybridauth = new Hybrid_Auth($this->_config);
 		}
 		else 
 		{
@@ -861,16 +860,29 @@ class e_user_provider
 				"base_url" => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
 				"providers" => e107::getPref('social_login', array())	
 			);
-			$this->hybridauth = e107::getHybridAuth();
+			
 		}
-
+		
+		$this->hybridauth = e107::getHybridAuth($this->_config);
 		$this->setProvider($provider);
 		//require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
 	}
 	
 	public function setProvider($provider)
 	{
-		$this->_provider = $provider && isset($this->_config['providers'][$provider]) ? $provider : null;
+		$provider = ucfirst(strtolower($provider));
+		if(isset($this->_config['providers'][$provider]) && $this->_config['providers'][$provider]['enabled'])
+		{
+			if($this->_config['providers'][$provider]['enabled'] && vartrue($this->_config['providers'][$provider]['keys']))
+			{
+				$valid = true;
+				foreach ($this->_config['providers'][$provider]['keys'] as $_key => $_value) 
+				{
+					if(empty($_value)) $valid = false;
+				}
+				if($valid) $this->_provider = $provider;
+			}
+		}
 	}
 	
 	public function setBackUrl($url)
