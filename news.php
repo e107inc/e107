@@ -214,27 +214,36 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	require_once(HEADERF);
 	$action = $currentNewsAction;
 
+	/*
 	if(!$NEWSLISTSTYLE)
+		{
+			$NEWSLISTSTYLE = "
+			<div style='padding:3px;width:100%'>
+			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+			<tr>
+			<td style='vertical-align:top;padding:3px;width:20px'>
+			{NEWSCATICON}
+			</td><td style='text-align:left;padding:3px'>
+			{NEWSTITLELINK=extend}
+			<br />
+			{NEWSSUMMARY}
+			<span class='smalltext'>
+			{NEWSDATE}
+			{NEWSCOMMENTS}
+			</span>
+			</td><td style='width:55px'>
+			{NEWSTHUMBNAIL}
+			</td></tr></table>
+			</div>\n";
+	
+		}*/
+	
+	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE;
+	else 
 	{
-		$NEWSLISTSTYLE = "
-		<div style='padding:3px;width:100%'>
-		<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
-		<tr>
-		<td style='vertical-align:top;padding:3px;width:20px'>
-		{NEWSCATICON}
-		</td><td style='text-align:left;padding:3px'>
-		{NEWSTITLELINK=extend}
-		<br />
-		{NEWSSUMMARY}
-		<span class='smalltext'>
-		{NEWSDATE}
-		{NEWSCOMMENTS}
-		</span>
-		</td><td style='width:55px'>
-		{NEWSTHUMBNAIL}
-		</td></tr></table>
-		</div>\n";
-
+		$tmp = e107::getTemplate('news', 'news', 'list');
+		$template = $tmp['item'];
+		unset($tmp);
 	}
 
 	$param = array();
@@ -249,7 +258,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 
 	foreach($newsList as $row)
 	{
-		$text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
+		$text .= $ix->render_newsitem($row, 'return', '', $template, $param);
 	}
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
@@ -389,9 +398,15 @@ if ($action == 'extend')
 
 		$param = array();
 		$param['current_action'] = $action;
-
+		if(vartrue($NEWSSTYLE)) $template =  $NEWSSTYLE;
+		else 
+		{
+			$tmp = e107::getTemplate('news', 'news', 'view');
+			$template = $tmp['item'];
+			unset($tmp);
+		}
 		ob_start();
-		$ix->render_newsitem($news, 'extend', '', '', $param);
+		$ix->render_newsitem($news, 'extend', '', $template, $param);
 		if(e107::getRegistry('news/page_allow_comments'))
 		{
 			global $comment_edit_query; //FIXME - kill me
@@ -501,7 +516,7 @@ switch ($action)
 
 	case 'default' :
 	default :
-		$action = '';
+		//$action = '';
 		$cacheString = 'news.php_default_';		// Make sure its sensible
 		//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type<2" );
 
@@ -601,7 +616,9 @@ switch($action)
 	case 'item':
 		setNewsFrontMeta($newsAr[1]);
 		break;
+	
 	case 'list':
+	default:
 		setNewsFrontMeta($newsAr[1], 'category');
 		break;
 }
@@ -698,6 +715,13 @@ else
 	$thispostday = 0;
 	$pref['newsHeaderDate'] = 1;
 	$gen = new convert();
+	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE;
+	else 
+	{
+		$tmp = e107::getTemplate('news', 'news', 'list');
+		$template = $tmp['item'];
+		unset($tmp);
+	}
 
 	if (!defined("DATEHEADERCLASS")) {
 		define("DATEHEADERCLASS", "nextprev");
@@ -741,7 +765,7 @@ else
 			unset($news['news_render_type']);
 		}
 
-		$ix->render_newsitem($news, 'default', '', '', $param);
+		$ix->render_newsitem($news, 'default', '', $template, $param);
 		$i++;
 	}
 

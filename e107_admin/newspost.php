@@ -294,7 +294,7 @@ class news_admin_ui extends e_admin_ui
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),		  		
- 				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'readParms'=>'link={e_BASE}news.php?extend.[id]&dialog=1'),
+ 				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'method', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'readParms'=>'link={e_BASE}news.php?extend.[id]&dialog=1'),
 				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -523,6 +523,17 @@ class news_form_ui extends e_admin_form_ui
 		$link = e107::getParser()->replaceConstants($curval);			
 			
 		return "<a class='e-dialog' href='{$link}'><img src='{$url}' alt='{$curval}' /></a>";
+	}
+	
+	function news_title($value, $mode)
+	{
+		if($mode == 'read')
+		{
+			$news_item = $this->getController()->getListModel()->toArray();
+			$url = e107::getUrl()->create('news/view/item', $news_item);
+			return "<a class='e-tip' href='{$url}' title='Open in new tab' rel='external'>".$value."</a>";
+		}
+		return $value;
 	}
 }
 
