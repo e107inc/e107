@@ -648,26 +648,27 @@ class e107_user_extended
 		  break;
 
 		case EUF_PREDEFINED : // predefined list, shown in dropdown
-		  $filename = e_ADMIN.'sql/extended_'.trim($struct['user_extended_struct_values']).'.php';
-		  if (!is_readable($filename)) return 'No file: '.$filename;
-		  require($filename);
-		  $list_name = $struct['user_extended_struct_values'].'_list';
-		  $display_func = $struct['user_extended_struct_values'].'_value';
-		  if (!function_exists($display_func)) $display_func = '';
-		  $source_data = $$list_name;
-		  $ret = "<select {$include} name='{$fname}'>\n";
-		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
-		  foreach($source_data as $v)
-		  {
-			$val = $v[0];
-			$choice = trim($v[1]);
-			if ($display_func) $choice = $display_func($val,$choice);
-			$sel = ($curval == $val) ? " selected='selected' " : "";
-			$ret .= "<option value='{$val}' {$sel}>{$choice}</option>\n";
-		  }
-		  $ret .= "</select>\n";
-		  return $ret;
-		  break;
+			$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
+			$filename = e_ADMIN.'sql/extended_'.$listRoot.'.php';
+			if (!is_readable($filename)) return 'No file: '.$filename;
+			require_once($filename);
+			$className = 'extended_'.$listRoot;
+			if (!class_exists($className)) return '?????';
+			$temp = new $className();
+			if (!method_exists($className, 'getValue')) return '???-???';
+			$temp->pointerReset();
+			
+			$ret = "<select {$include} name='{$fname}'>\n";
+			$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chooses it.
+			while (FALSE !== ($row = $temp->getValue(0, 'next')))
+			{
+				$val = key($row);
+				$choice = $temp->getValue($val, 'display');
+				$sel = ($curval == $val) ? " selected='selected' " : '';
+				$ret .= "<option value='{$val}' {$sel}>{$choice}</option>\n";
+			}
+			$ret .= "</select>\n";
+			return $ret;
 
 		case EUF_DB_FIELD : //db_field
 				global $sql;
@@ -881,25 +882,22 @@ class e107_user_extended
 		return $uinfo[$field_name];
 	}
 
-	// Given a predefined list field, returns the display text corresponding to the passed value
-	function user_extended_display_text($table,$value)
+
+	/**
+	 *	Given a predefined list field, returns the display text corresponding to the passed value
+	 *
+	 *	@TODO: consider whether to cache the class object
+	 */
+	function user_extended_display_text($table, $value)
 	{
-	  $filename = e_ADMIN.'sql/extended_'.$table.'.php';
-	  if (!is_readable($filename)) return 'No file: '.$filename;
-	  require_once($filename);
-	  $list_name = $table.'_list';
-	  $display_func = $table.'_value';
-	  if (!function_exists($display_func)) $display_func = '';
-	  $source_data = $$list_name;
-	  foreach($source_data as $v)
-	  {
-		if ($value == $v[0])
-		{
-		  if ($display_func) return $display_func($v[0],$v[1]);
-		  return $v[1];
-		}
-	  }
-	  return '????';
+		$filename = e_ADMIN.'sql/extended_'.$table.'.php';
+		if (!is_readable($filename)) return 'No file: '.$filename;
+		require_once($filename);
+		$className = 'extended_'.$table;
+		if (!class_exists($className)) return '?????';
+		$temp = new $className();
+		if (!method_exists($className, 'getValue')) return '???-???';
+		return $temp->getValue($value);
 	}
 
 }
