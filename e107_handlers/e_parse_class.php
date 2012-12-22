@@ -2140,6 +2140,7 @@ class e_parse
 					'{e_HANDLER}'	=> $e107->getFolder('handlers'),
 					'{e_MEDIA}'		=> $e107->getFolder('media'),
 					'{e_WEB}'		=> $e107->getFolder('web'),
+					'{e_UPLOAD}'	=> $e107->getFolder('upload'),
 					);
 					
 			break;
@@ -2167,6 +2168,7 @@ class e_parse
 					'{e_HANDLER}'	=> e_HANDLER,
 					'{e_MEDIA}'		=> e_MEDIA,
 					'{e_WEB}'		=> e_WEB,
+					'{e_UPLOAD}'	=> e_UPLOAD,
 				);
 			break;
 
