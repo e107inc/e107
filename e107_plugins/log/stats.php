@@ -1045,7 +1045,9 @@ class siteStats
 			$totalu += $info['unq'];
 		}
 
+		$text = "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) 
 		{
 			if($info['ttl'])
@@ -1104,7 +1106,9 @@ class siteStats
 
 		$totalArray = $this -> arraySort($totalArray, "ttlv");
 
-		$text .= "<table class='fborder' style='width: 100%;'>\n
+		$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 			<colgroup>
 			  <col style='width: 20%;' />
 			  <col style='width: 60%;' />
@@ -1146,7 +1150,9 @@ class siteStats
 		}
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text .= "<br />		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($uniqueArray as $key => $info) 
 		{
 			if ($info['ttlv'])
@@ -1253,7 +1259,9 @@ class siteStats
 
 			$total = array_sum($browserArray);
 			
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 					 <tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 					 <tr><td class='fcaption' style='width: 20%;'>
 					 <a title='".($this -> order ? ADSTAT_L48 : ADSTAT_L49)."' href='".e_SELF."?".($show_version ? "3" : "14").($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a>
@@ -1384,7 +1392,9 @@ class siteStats
 			}
 
 			$total = array_sum($osArray);
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 			  <tr>\n<td class='fcaption' style='width: 20%;'>
 			  <a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></td>\n
@@ -1479,7 +1489,9 @@ class siteStats
 			}
 
 			$total = array_sum($domArray);
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 				<tr>\n<td class='fcaption' style='width: 20%;'>
 				<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?5".($this -> order ? "" : ".1" )."'>".ADSTAT_L28."</a></td>\n
@@ -1578,7 +1590,9 @@ class siteStats
 			}
 
 			$total = array_sum($screenArray);
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 					<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 
@@ -1657,7 +1671,9 @@ class siteStats
 				$total += $info['ttl'];
 			}
 
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 				<tr>\n<td class='fcaption' style='width: 40%;'><a title='".($this -> order ? "show cropped url" : "show full url")."' href='".e_SELF."?7".($this -> order ? "" : ".1" )."'>".ADSTAT_L30."</a></td>\n<td class='fcaption' style='width: 50%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 			$count = 0;
@@ -1739,7 +1755,9 @@ class siteStats
 
 			$queryArray = $this -> arraySort($statQuery, 0);
 			$total = array_sum($queryArray);
-			$text .= "<table class='fborder' style='width: 100%;'>\n
+			$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n
 				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
 				<tr>\n<td class='fcaption' style='width: 60%;'>".ADSTAT_L31."</td>\n<td class='fcaption' style='width: 30%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 			$count = 1;
@@ -1787,7 +1805,9 @@ class siteStats
 
 		$gen = new convert;
 		$recentArray = array_reverse($this -> fileRecent, TRUE);
-		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
+		$text = "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
 
 		foreach($recentArray as $key => $info) 
 		{
@@ -1905,7 +1925,9 @@ class siteStats
 
 	//	print_a($dayarray);;
 
-		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text = "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		foreach($dayarray as $date => $total) 
 		{
@@ -1920,7 +1942,9 @@ class siteStats
 		}
 
 		$text .= "</table>";
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "<br />		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 
 		if (!isset($total['dayunique'])) $total['dayunique'] = 0;
@@ -1939,7 +1963,9 @@ class siteStats
 		}
 		$text .= "</table>";
 
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "<br />		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		$newArray = $this -> arraySort($pagearray, "total");
 		foreach($newArray as $key => $total) 
@@ -1952,7 +1978,9 @@ class siteStats
 
 		}
 		$text .= "</table>";
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "<br />		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 		$newArray = $this -> arraySort($pagearray, "unique");
 
 		foreach($newArray as $key => $total) {
@@ -2016,7 +2044,9 @@ class siteStats
 
 		$tmpArray = $this -> arraySort($monthTotal, "totalv");
 
-		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L37."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L37."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		foreach($monthTotal as $date => $total) {
 
@@ -2030,7 +2060,9 @@ class siteStats
 		}
 		$text .= "</table>";
 
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L38."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "<br />		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+<table class='table fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L38."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		foreach($monthTotal as $date => $total) {
 			$barWidth = round(($total['uniquev']/$utotal) * 100, 2);

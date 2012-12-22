@@ -93,7 +93,7 @@ $TEMPLATE_LIST_NEW['PAGE_NEW_END'] = "
 //MULTI COLOMNS LAYOUT MASTER -----------------------------------------------------------
 $TEMPLATE_LIST_NEW['COL_START'] = "
 <div style='text-align:center;'>
-<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
+<table class='table fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
 <tr>";
 $TEMPLATE_LIST_NEW['COL_WELCOME'] = "<td colspan='{LIST_COL_COLS}' class='forumheader3'>{LIST_COL_WELCOMETEXT}<br /><br /></td>";
 $TEMPLATE_LIST_NEW['COL_ROWSWITCH'] = "</tr><tr>";

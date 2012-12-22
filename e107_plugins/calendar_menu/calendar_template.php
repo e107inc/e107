@@ -63,7 +63,7 @@ $sc_style['EC_NEXT_YEAR']['post'] = '';
 
 
 $CALENDAR_TIME_TABLE = "
-<table cellpadding='0' cellspacing='1' class='fborder' style='width:100%'>
+<table cellpadding='0' cellspacing='1' class='table fborder' style='width:100%'>
 <tr>
 	<td class='forumheader' style='width:18%; text-align:left'>{EC_PREV_MONTH}</td>
 	<td class='fcaption' style='width:64%; text-align:center'>{EC_CURRENT_MONTH}</td>
@@ -101,7 +101,7 @@ $CALENDAR_NAVIGATION_TABLE = "
 $sc_style['EC_EVENTLIST_CAPTION']['pre'] = "<tr><td class='fcaption' colspan='2'>";
 $sc_style['EC_EVENTLIST_CAPTION']['post'] = ":<br /><br /></td></tr>\n";
 
-$EVENT_EVENTLIST_TABLE_START = "<table style='width:100%' class='fborder'>{EC_EVENTLIST_CAPTION}";
+$EVENT_EVENTLIST_TABLE_START = "<table style='width:100%' class='table fborder'>{EC_EVENTLIST_CAPTION}";
 $EVENT_EVENTLIST_TABLE_END = "</table>";
 
 
@@ -110,7 +110,7 @@ $EVENT_EVENTLIST_TABLE_END = "</table>";
 $sc_style['EC_EVENTARCHIVE_CAPTION']['pre'] = "<tr><td colspan='2' class='fcaption'>";
 $sc_style['EC_EVENTARCHIVE_CAPTION']['post'] = "</td></tr>\n";
 
-$EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:100%' class='fborder'>{EC_EVENTARCHIVE_CAPTION}";
+$EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:100%' class='table fborder'>{EC_EVENTARCHIVE_CAPTION}";
 $EVENT_ARCHIVE_TABLE = "
 <tr>
 	<td style='width:35%; vertical-align:top' class='forumheader3'>{EC_EVENT_RECENT_ICON}{EC_EVENTARCHIVE_DATE}</td>
@@ -123,7 +123,7 @@ $EVENT_ARCHIVE_TABLE_END = "</table>";
 
 
 // EVENT SHOW EVENT ------------------------------------------------------------
-$EVENT_EVENT_TABLE_START = "<table style='width:100%' class='fborder' cellspacing='0' cellpadding='0'>";
+$EVENT_EVENT_TABLE_START = "<table style='width:100%' class='table fborder' cellspacing='0' cellpadding='0'>";
 $EVENT_EVENT_TABLE_END = "</table>";
 
 $sc_style['EC_EVENT_HEADING_DATE']['pre'] = "";
@@ -199,7 +199,7 @@ $EVENT_EVENT_TABLE = "
 //------------------------------------------
 $CALENDAR_CALENDAR_START = "
 <div style='text-align:center'>
-<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:100%'>
+<table cellpadding='0' cellspacing='1' class='table fborder' style='background-color:#DDDDDD; width:100%'>
 <colgroup>
 <col style='width:14%; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;' />
 <col style='width:14%; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;' />
@@ -252,7 +252,7 @@ $CALENDAR_SHOWEVENT = "<table cellspacing='0' cellpadding='0' style='width:100%;
 //------------------------------------------
 $CALENDAR_MENU_HDG_LINK_CLASS = "class='forumlink'";			// Class, and optional style, for menu heading if its a clickable link
 $CALENDAR_MENU_START = "<div style='text-align:center'>";
-$CALENDAR_MENU_TABLE_START =  "<table cellpadding='0' cellspacing='1' style='width:100%;' class='fborder'>";	// colgroup doesn't work!
+$CALENDAR_MENU_TABLE_START =  "<table cellpadding='0' cellspacing='1' style='width:100%;' class='table fborder'>";	// colgroup doesn't work!
 
 $CALENDAR_MENU_END = "</tr></table></div>";
 
