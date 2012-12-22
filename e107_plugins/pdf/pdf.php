@@ -26,7 +26,6 @@ $parms = varset($qs[1],'');
 
 //include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
 
-//require_once(e_PLUGIN.'pdf/tcpdf.php');		//require the ufpdf class
 require_once(e_PLUGIN.'pdf/e107pdf.php');	//require the e107pdf class
 $pdf = new e107PDF();
 
