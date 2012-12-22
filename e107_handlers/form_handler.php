@@ -737,7 +737,7 @@ class e_form
 		}
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
-		$options['required'] = vartrue($options['required'], 1);
+		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password');
 		$options = $this->format_options('text', $name, $options);
 
