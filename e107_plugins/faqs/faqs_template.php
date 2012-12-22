@@ -36,7 +36,7 @@ if(!defined("USER_WIDTH"))
 // FAQ - PARENT LIST ---------------------------------------------------------
 
 	$FAQ_CAT_START = "
-		<table class='fborder' style='".USER_WIDTH."'>
+		<table class='table fborder' style='".USER_WIDTH."'>
 		<tr>
 			<td colspan='2' style='text-align:center; width:55%' class='fcaption'>".FAQLAN_41."</td>
 			<td class='fcaption' style='width:20%;text-align:center'>".FAQLAN_42."</td>
@@ -66,7 +66,7 @@ if(!defined("USER_WIDTH"))
 // FAQ - LIST ---------------------------------------------------------
 
 	$FAQ_LIST_START = "
-        <table class='fborder' style='".USER_WIDTH."'>       ";
+        <table class='table fborder' style='".USER_WIDTH."'>       ";
 
     $FAQ_LIST_LOOP .= "
             <tr>
@@ -82,7 +82,7 @@ if(!defined("USER_WIDTH"))
 
 	$FAQ_VIEW_TEMPLATE =
         "
-        <table class='fborder' style='margin-left:auto;margin-right:auto;padding:0px;".USER_WIDTH.";' >
+        <table class='table fborder' style='margin-left:auto;margin-right:auto;padding:0px;".USER_WIDTH.";' >
         <tr>
 			<td class='forumheader3' style='vertical-align:top;width:30px'>
 				<img src='".e_PLUGIN_ABS."faqs/images/q.png' alt='' />

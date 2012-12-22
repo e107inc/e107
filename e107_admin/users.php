@@ -1731,8 +1731,8 @@ class users_admin_ui extends e_admin_ui
 		$tot = $obj->getTotalMails();
 		$found = false;
 		$DEL = ($pref['mail_bounce_delete']) ? true : false;
-		$text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr><td class='fcaption' style='width:5%'>#</td><td class='fcaption'>e107-id</td><td class='fcaption'>email</td><td class='fcaption'>Subject</td><td class='fcaption'>Bounce</td></tr>\n";
+		$text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table>
+		<tr><td style='width:5%'>#</td><td>e107-id</td><td>email</td><td>Subject</td><td>Bounce</td></tr>\n";
 		for ($i = 1; $i <= $tot; $i++)
 		{
 			$head = $obj->getHeaders($i);
@@ -1783,7 +1783,7 @@ class users_admin_ui extends e_admin_ui
 					$wmails[$i] = "'".$result[0]."'";
 				}
 			}
-			$text .= "<tr><td class='forumheader3'>".$i."</td><td class='forumheader3'>".$id[$i]."</td><td class='forumheader3'>".(isset ($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td class='forumheader3'>".$head['subject']."</td><td class='forumheader3'>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
+			$text .= "<tr><td>".$i."</td><td>".$id[$i]."</td><td>".(isset ($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td>".$head['subject']."</td><td>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
 			$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
 		}
 		if ($del_count)
@@ -1794,10 +1794,10 @@ class users_admin_ui extends e_admin_ui
 		{
 		// Option to delete emails - only if there are some in the list
 			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
+			<td style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 		}
 		$text .= "</table></form></div>";
@@ -1931,27 +1931,27 @@ class users_admin_form_ui extends e_admin_form_ui
 		$text = "";
 			if ($row['user_perms'] == "0")
 			{
-				$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
+				$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
 			}
 			else
 				if ($row['user_admin'])
 				{
-					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;;text-align:center'><a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'>".LAN_ADMIN."</a></div>";
+					$text .= "<div style='padding-left:3px;padding-right:3px;;text-align:center'><a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'>".LAN_ADMIN."</a></div>";
 				}
 				else
 					if ($row['user_ban'] == 1)
 					{
-						$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".LAN_BANNED."</a></div>";
+						$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".LAN_BANNED."</a></div>";
 					}
 					else
 						if ($row['user_ban'] == 2)
 						{
-							$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
+							$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
 						}
 						else
 							if ($row['user_ban'] == 3)
 							{
-								$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_BOUNCED."</div>";
+								$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_BOUNCED."</div>";
 							}
 							else
 							{
