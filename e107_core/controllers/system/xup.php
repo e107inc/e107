@@ -51,7 +51,7 @@ class core_system_xup_controller extends eController
 			}
 		}
 		
-		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : e107::getUrl()->create($this->backUrl));
+		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : $this->backUrl);
 	}
 	
 	public function actionLogin()
@@ -77,7 +77,7 @@ class core_system_xup_controller extends eController
 				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
 			}
 		}
-		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : e107::getUrl()->create($this->backUrl));
+		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : $this->backUrl);
 	}
 	
 	public function actionTest()
@@ -95,8 +95,14 @@ class core_system_xup_controller extends eController
 		if($provider) print_a($provider->getUserProfile());
 		
 		echo '<br /><br /><a href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
+		
+		echo '<h3>Facebook</h3>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Facebook').'">Test login with Facebook</a>';
 		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Facebook').'">Test signup with Facebook</a>';
+		
+		echo '<h3>Twitter</h3>';
+		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Twitter').'">Test login with Twitter</a>';
+		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Twitter').'">Test signup with Twitter</a>';
 	}
 	
 	public function actionEndpoint()
@@ -113,6 +119,5 @@ class core_system_xup_controller extends eController
 			$session = e107::getSession();
 			$session->set('HAuthError', true);
 		}
-		//echo 'End point';
 	}
 }
