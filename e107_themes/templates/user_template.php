@@ -51,7 +51,7 @@ $USER_SHORT_TEMPLATE_START = "
 	</div>
 	<br />
 	<br />
-	<table style='".USER_WIDTH."' class='fborder e-list'>
+	<table style='".USER_WIDTH."' class='table fborder e-list'>
 	<thead>
 	<tr>
 	<td class='fcaption' style='width:2%'>&nbsp;</td>
@@ -120,7 +120,7 @@ $sc_style['USER_PICTURE']['post']="</td>";
 
 $USER_FULL_TEMPLATE = "
 <div class='content user'>
-<table style='".USER_WIDTH."' class='fborder'>
+<table style='".USER_WIDTH."' class='table fborder'>
 <tr>
 	<td colspan='2' class='fcaption center'>".LAN_USER_58." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>

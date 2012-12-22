@@ -8,7 +8,7 @@ if(!isset($ONLINE_TABLE_START))
 {
 	$ONLINE_TABLE_START = "
 		<div style='text-align:center'>
-		<table class='fborder' style='".USER_WIDTH."'>
+		<table class='table fborder' style='".USER_WIDTH."'>
 		<tr>
 			<td class='forumheader' style='width:3%'>&nbsp;</td>
 			<td class='forumheader' style='width:43%'>".ONLINE_EL10."</td>

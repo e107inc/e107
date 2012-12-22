@@ -108,7 +108,7 @@ $USERSETTINGS_EDIT_CAPTION 				= LAN_USET_39; 	// 'Update User Settings'
 
 $USERSETTINGS_EDIT = "
 <div style='text-align:center'>
-	<table style='".USER_WIDTH."' class='fborder adminform'>
+	<table style='".USER_WIDTH."' class='table fborder adminform'>
     	<colgroup span='2'>
     		<col class='col-label' />
     		<col class='col-control' />

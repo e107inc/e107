@@ -11,7 +11,7 @@ if(!isset($FPW_TABLE))
 		$FPW_TABLE = "
 		<div style='text-align:center'>
 		<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>
-		<table style='".USER_WIDTH."' class='fborder'>
+		<table style='".USER_WIDTH."' class='table fborder'>
 
 		<tr>
 		<td class='fcaption' colspan='2'>".LAN_05."</td>
