@@ -17,13 +17,16 @@
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
-if (!isset($pref['plug_installed']['newsletter']) || !getperms("P")) 
+if (!isset($pref['plug_installed']['newsletter']) || !getperms('P')) 
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'newsletter';
-require_once(e_ADMIN."auth.php");
+
+$nl = new newsletter;			// This needs to be before 'auth.php' to work with some themes
+
+require_once(e_ADMIN.'auth.php');
 
 if (e_QUERY) 
 {
@@ -36,8 +39,6 @@ else
 	$action = FALSE;
 	$id = FALSE;
 }
-
-$nl = new newsletter;
 
 
 if(!e_QUERY)
