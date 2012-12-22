@@ -25,7 +25,7 @@ $USERPOSTS_NP_TABLE = $USERPOSTS_TEMPLATE['np_table']; // BC, will be removed
 	$USERPOSTS_TEMPLATE['comments_table_start'] = "
 	<div id='up-comments-container'>
 		{NEXTPREV}
-		<table class='fborder up-comments' id='up-comments'>
+		<table class='table fborder up-comments' id='up-comments'>
 	";
 	$USERPOSTS_COMMENTS_TABLE_START = $USERPOSTS_TEMPLATE['comments_table_start']; // BC, will be removed
 
@@ -67,7 +67,7 @@ $USERPOSTS_NP_TABLE = $USERPOSTS_TEMPLATE['np_table']; // BC, will be removed
 	<div style='text-align:center'>
 		{NEXTPREV}
 		<form method='post' action='".e_REQUEST_URL."'>
-		<table class='fborder up-forum' id='up-forum'>
+		<table class='table fborder up-forum' id='up-forum'>
 	";
 	$USERPOSTS_FORUM_TABLE_START = $USERPOSTS_TEMPLATE['forum_table_start']; // BC, will be removed
 
