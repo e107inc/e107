@@ -38,7 +38,9 @@ define('FRTLAN_51', 'Other');
 define('FRTLAN_52', 'None');
 define('FRTLAN_53', 'User Class');
 
-//0.8
-define("FRTLAN_PAGE_TITLE", 'Front Page');
-define("FRTLAN_54", 'Are you sure?');
+// 2.0
+define('FRTLAN_PAGE_TITLE', 'Front Page');
+define('FRTLAN_54', 'Are you sure?');
+define('FRTLAN_55', 'Confirm delete rule?');
+
 ?>
