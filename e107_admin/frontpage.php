@@ -401,7 +401,7 @@ class frontpage
 							<input class='image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
 							<input class='image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
 							<input class='image edit' type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
-							<input class='image delete' type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
+							<input class='image delete' type='image' title='".LAN_DELETE."' data-confirm='".FRTLAN_55."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 						</td>
 					</tr>";
 		}
