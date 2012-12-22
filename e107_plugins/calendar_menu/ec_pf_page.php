@@ -322,13 +322,13 @@ if ($cal_totev > 0)
 		$ec_last_day = $thisevent_start_date['mday'];
 	}
 
-// Add footer
-  $cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template], FALSE, $calSc);
-  if ($ec_output_type == 'print') $cal_text .= "</form>\n";
+	// Add footer
+	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template], FALSE, $calSc);
+	if ($ec_output_type == 'print') $cal_text .= "</form>\n";
 }
 else
 {
-  $cal_text.= EC_LAN_148;
+	$cal_text.= EC_LAN_148;
 }
 
 switch($ec_output_type)
@@ -344,11 +344,7 @@ switch($ec_output_type)
 	
 	case 'pdf':
 		//TODO find a way to pass initialisation options etc to PDF driver
-		include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'.php');
-//		define('FPDF_FONTPATH', 'font/');
-		//require the ufpdf class
-//		require_once (e_PLUGIN.'pdf/ufpdf.php');
-		//require the e107pdf class
+		//include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php'); - shouldn't be needed
 		require_once (e_PLUGIN.'pdf/e107pdf.php');
 		$pdf = new e107PDF();
 		//	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);

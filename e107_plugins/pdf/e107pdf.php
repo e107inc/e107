@@ -26,8 +26,15 @@ TODO:
 define ('PDF_DEBUG', FALSE);
 
 define('K_PATH_MAIN', '');
-define('K_PATH_URL', SITEURL);		// Used with forms (TODO: check validity)
+define('K_PATH_URL', SITEURL);			// Used with forms (TODO: check validity)
+define('K_CELL_HEIGHT_RATIO', 1.25);
 
+// Following may be used (among others)
+	//define ('K_PATH_FONTS', K_PATH_MAIN.'fonts/');
+	define ('K_PATH_CACHE', e_CACHE_CONTENT);
+	define ('K_PATH_URL_CACHE', K_PATH_URL.e_CACHE_CONTENT);
+	define ('K_PATH_IMAGES', K_PATH_MAIN.'images/');
+	define ('K_BLANK_IMAGE', K_PATH_IMAGES.'_blank.png');
 
 /*
 The full tcpdf distribution includes a utility to generate new fonts, as well as lots of other fonts.
@@ -42,7 +49,7 @@ include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
 //extend tcpdf class from package with custom functions
 class e107PDF extends TCPDF
 {
-	protected	$pdfPrefs = array();			// Prefs - loaded before creating a pdf
+	protected	$pdfPref = array();			// Prefs - loaded before creating a pdf
 
 	/**
 	 *	Constructor
@@ -55,7 +62,8 @@ class e107PDF extends TCPDF
 	 */
 	public function __construct($orientation='P',$unit='mm',$format='A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false)
 	{
-		global $pdfpref;
+		$this->getPDFPrefs();
+
 		//Call parent constructor
 		parent::__construct($orientation,$unit,$format, $unicode, $encoding, $diskcache);
 		//Initialization
@@ -90,26 +98,13 @@ class e107PDF extends TCPDF
 	//get preferences from db
 	function getPDFPrefs()
 	{
-		global $sql, $eArrayStorage;
-
-		if(!is_object($eArrayStorage))
+		$this->pdfPref = e107::pref('pdf');         // retrieve pref array.
+		if (count($this->pdfPref) == 0)
 		{
-			e107_require_once(e_HANDLER.'arraystorage_class.php');
-			$eArrayStorage = new ArrayData();
+			$this->pdfPref = $this->getDefaultPDFPrefs();
 		}
 
-		if(!is_object($sql)){ $sql = new db; }
-		$num_rows = $sql -> db_Select('core', '*', "e107_name='pdf' ");
-		if($num_rows == 0)
-		{
-			$tmp = $this->getDefaultPDFPrefs();
-			$tmp2 = $eArrayStorage->WriteArray($tmp);
-			$sql -> db_Insert('core', "'pdf', '".$tmp2."' ");
-			$sql -> db_Select('core', '*', "e107_name='pdf' ");
-		}
-		$row = $sql -> db_Fetch();
-		$pdfPref = $eArrayStorage->ReadArray($row['e107_value']);
-		return $pdfPref;
+		return $this->pdfPref;
 	}
 
 
@@ -153,8 +148,8 @@ class e107PDF extends TCPDF
 	{
 		$tp = e107::getParser();
 
-		//call get preferences
-		$this->pdfPref = $this->getPDFPrefs();
+		// Make sure prefs up to date
+		$this->getPDFPrefs();
 
 		//define logo and source pageurl (before the parser!)
 		if(is_readable(THEME.'images/logopdf.png'))
@@ -166,6 +161,10 @@ class e107PDF extends TCPDF
 			$logo = e_IMAGE.'logo.png';
 		}
 		define('PDFLOGO', $logo);					//define logo to add in header
+		if (substr($text[6], -1) == '?')
+		{
+			$text[6] = substr($text[6], 0, -1);
+		}
 		define('PDFPAGEURL', $text[6]);				//define page url to add in header
 
 		//parse the data
@@ -176,15 +175,41 @@ class e107PDF extends TCPDF
 			$text[$k] = $tp->toHTML($v, TRUE, 'BODY');
 		}
 
+
+
+
+// In the code that follows, the commented out lines beginning $pdf-> are things which could potentially be set.
+
+//set image scale factor
+//$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+//set some language-dependent strings
+//$pdf->setLanguageArray($l);
+
+
+
 		//set some variables
 		$this->SetMargins($this->pdfPref['pdf_margin_left'],$this->pdfPref['pdf_margin_top'],$this->pdfPref['pdf_margin_right']);
+//$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+//$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
 		$this->SetAutoPageBreak(true,25);			// Force new page break at 25mm from bottom
 		$this->SetPrintHeader(TRUE);
+
+// set default header data
+//$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
+//$pdf->setFooterData($tc=array(0,64,0), $lc=array(0,64,128));
+
+// set default monospaced font
+//$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 		//start creating the pdf and adding the data
 		$this->DefOrientation=(varset($text[7], 'P') == 'L' ? 'L' : 'P'); 	// Page orientation - P=portrait, L=landscape
 		$this->AliasNbPages();						//calculate current page + number of pages
 		$this->AddPage();							//start page
+
+//$pdf->setFontSubsetting(true);
+
 		$this->SetFont($this->pdfPref['pdf_font_family'],'',$this->pdfPref['pdf_font_size']);				//set font
 		$this->SetHeaderFont(array($this->pdfPref['pdf_font_family'],'',$this->pdfPref['pdf_font_size']));
 		$this->SetFooterFont(array($this->pdfPref['pdf_font_family'],'',$this->pdfPref['pdf_font_size']));
@@ -272,7 +297,8 @@ class e107PDF extends TCPDF
 		if($this->pdfPref['pdf_show_page_number'])
 		{
 			$this->SetFont($this->pdfPref['pdf_font_family'],'I',$this->pdfPref['pdf_font_size_page_number']);
-			$this->Cell($cellwidth,5,PDF_LAN_19.' '.$this->PageNo().'/{nb}',0,1,$align);		// {nb} is an alias for the total number of pages
+			//$this->Cell($cellwidth,5,PDF_LAN_19.' '.$this->PageNo().'/{nb}',0,1,$align);		// {nb} is an alias for the total number of pages
+			$this->Cell($cellwidth,5,PDF_LAN_19.' '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(),0,1,$align);
 		}
 
 		$this->SetFont($this->pdfPref['pdf_font_family'],'',$this->pdfPref['pdf_font_size']);
@@ -299,7 +325,8 @@ class e107PDF extends TCPDF
 	 */
 	protected function _getfontpath() 
 	{
-		return str_replace(e_HTTP, e_ROOT, e_PLUGIN_ABS.'pdf/font/');
+		//return str_replace(e_HTTP, e_ROOT, e_PLUGIN_ABS.'pdf/fonts/');
+		return e_PLUGIN.'pdf/fonts/';
 	}
 
 

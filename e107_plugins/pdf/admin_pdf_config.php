@@ -16,7 +16,7 @@
 */
 
 require_once('../../class2.php');
-if (!getperms("P") || !plugInstalled('pdf')) 
+if (!getperms('P') || !plugInstalled('pdf')) 
 {
 	header('location:'.e_BASE.'index.php');
 	exit;
@@ -24,37 +24,83 @@ if (!getperms("P") || !plugInstalled('pdf'))
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
-e107_require_once(e_HANDLER.'arraystorage_class.php');
-$eArrayStorage = new ArrayData();
+
+
+//e107_require_once(e_HANDLER.'arraystorage_class.php');
+//$eArrayStorage = new ArrayData();
 unset($text);
 
 include_lan(e_PLUGIN.'pdf/languages/English_admin_pdf.php');
 
-if(isset($_POST['update_pdf']))
-{
-	$message = updatePDFPrefs();
-}
 
-
-function updatePDFPrefs()
+/**
+ *	Update prefs to new values.
+ *
+ *	@param boolean $setDefaults = set all prefs to default values if TRUE
+ */
+function updatePDFPrefs(&$oldPrefs, $setDefaults = FALSE)
 {
-	global $sql, $eArrayStorage, $tp, $admin_log;
-	while(list($key, $value) = each($_POST))
+	$tp = e107::getParser();
+	$prefChanges = array();
+	$pdfNew = e107::getPlugConfig('pdf');
+	$mes = eMessage::getInstance();
+	$prefList = getDefaultPDFPrefs();
+
+	if ($setDefaults)
 	{
-		foreach($_POST as $k => $v)
+		$oldPrefs = $prefList;
+		$adminEvent = 'PDF_02';
+		$adminMessage = PDF_LAN_33;
+		$prefChanges[] = 'all => defaults';
+		foreach($prefList as $k => $default)
 		{
-			if(strpos($k, 'pdf_') === 0)
+			$pdfNew->set($k, $default);
+		}
+	}
+	else
+	{
+		$adminEvent = 'PDF_01';
+		$adminMessage = PDF_LAN_18;
+		foreach($prefList as $k => $default)
+		{
+			if (isset($_POST[$k]))
 			{
-				$pdfpref[$k] = $tp->toDB($v);
+				$newVal = $tp->toDB($_POST[$k]);
+				if ($oldPrefs[$k] != $newVal)
+				{
+					$oldPrefs[$k] = $newVal;
+					$pdfNew->set($k, $newVal);
+					$prefChanges[] = $k.' => '.$newVal;
+				}
+			}
+			elseif (!isset($oldPrefs[$k]))
+			{
+				$oldPrefs[$k] = $default;	// Restore any lost prefs
 			}
 		}
 	}
-	//create new array of preferences
-	$tmp = $eArrayStorage->WriteArray($pdfpref);
-	$sql -> db_Update("core", "e107_value='{$tmp}' WHERE e107_name='pdf' ");
-	$admin_log->logArrayAll('PDF_01',$pdfpref);
-	$message = PDF_LAN_18;
-	return $message;
+	if (count($prefChanges))
+	{
+		$result = $pdfNew->save();
+		if ($result === TRUE)
+		{
+			// Do admin logging
+			$logString = implode('[!br!]', $prefChanges);
+			e107::getAdminLog()->log_event($adminEvent, $logString, E_LOG_INFORMATIVE, '');
+			$mes->add($adminMessage, E_MESSAGE_SUCCESS);	
+		}
+		elseif ($result === FALSE)
+		{
+			$mes->add(PDF_LAN_32, E_MESSAGE_ERROR);		
+		}
+		else
+		{		// Should never happen
+			$mes->add('PDF Unexpected result: '.$result, E_MESSAGE_INFO);
+
+		}
+	}
+	//$admin_log->logArrayAll('PDF_01',$pdfpref);
+	//return $message;
 }
 
 
@@ -80,36 +126,21 @@ function getDefaultPDFPrefs()
 
 function getPDFPrefs()
 {
-	global $eArrayStorage;
-	$sql = e107::getDb(); 
-
-	if(!is_object($sql)){ $sql = new db; }
-	$num_rows = $sql -> db_Select("core", "*", "e107_name='pdf' ");
-	if($num_rows == 0)
+	$ans = e107::pref('pdf');         // retrieve pref array.
+	if (count($ans) == 0)
 	{
-		$tmp = getDefaultPDFPrefs();
-		$tmp2 = $eArrayStorage->WriteArray($tmp);
-		$sql -> db_Insert("core", "'pdf', '".$tmp2."' ");
-		$sql -> db_Select("core", "*", "e107_name='pdf' ");
+		$ans = getDefaultPDFPrefs();
 	}
-	$row = $sql -> db_Fetch();
-	$pdfpref = $eArrayStorage->ReadArray($row['e107_value']);
-	return $pdfpref;
+
+	return $ans;
 }
-
-
-if(isset($message))
-{
-	$caption = PDF_LAN_1;
-	$ns -> tablerender($caption, $message);
-}
-
-$pdfpref = getPDFPrefs();
-
-if(!is_object($sql)){ $sql = new db; }
 
 // Default list just in case
 $fontlist=array('times','courier','helvetica','symbol');
+
+
+
+
 
 
 function getFontInfo($fontName)
@@ -121,7 +152,7 @@ function getFontInfo($fontName)
 	//$desc=array('Ascent'=>900,'Descent'=>-300,'CapHeight'=>-29,'Flags'=>96,'FontBBox'=>'[-879 -434 1673 900]','ItalicAngle'=>-16.5,'StemV'=>70,'MissingWidth'=>600);
 	//$up=-125;
 	//$ut=50;
-	include(e_PLUGIN.'pdf/font/'.$fontName);
+	include(e_PLUGIN.'pdf/fonts/'.$fontName);
 	return array('type' => $type, 'weight' => $dw, 'codes' => count($cw), 'name' => $name);
 }
 
@@ -132,7 +163,7 @@ function getFontList($match = '')
 	require_once(e_HANDLER.'file_class.php');
 	$fl = new e_file();
 	if (!$match) $match = '~^uni2cid';
-	$fileList = $fl->get_files(e_PLUGIN.'pdf/font/',$match, 'standard', 1);
+	$fileList = $fl->get_files(e_PLUGIN.'pdf/fonts/',$match, 'standard', 1);
 	$fontList = array();
 	$intList = array();
 	foreach ($fileList as $v)
@@ -171,6 +202,35 @@ function getFontList($match = '')
 	//print_a($fontList);
 	return $fontList;
 }
+
+
+
+$pdfpref = getPDFPrefs();
+
+
+
+if(isset($_POST['update_pdf']))
+{
+//	$message = updatePDFPrefs();
+	updatePDFPrefs($pdfpref, FALSE);
+}
+
+
+if(isset($_POST['default_pdf']))
+{
+	updatePDFPrefs($pdfpref, TRUE);
+}
+
+e107::getRender()->tablerender(PDF_LAN_35, eMessage::getInstance()->render());
+
+
+/*
+if(isset($message))
+{
+	$caption = PDF_LAN_1;
+	$ns -> tablerender($caption, $message);
+}
+*/
 
 
 $fontList = getFontList();
@@ -267,7 +327,8 @@ $text .= "
 </tr>
 </table>
 <div class='buttons-bar center'>
-	".$frm->admin_button('update_pdf', LAN_UPDATE, 'update')."
+	".$rs->form_button('submit', 'update_pdf', LAN_UPDATE)."&nbsp;&nbsp;&nbsp;&nbsp;
+	".$rs->form_button('submit', 'default_pdf', PDF_LAN_34)."
 </div>
 ".$rs -> form_close()."
 ";
@@ -290,10 +351,10 @@ foreach ($fontList as $font => $info)
 	$text .= "<tr><td>{$font}</td><td>{$info['info']['type']}</td><td>{$variants}</td><td>{$info['info']['weight']}</td><td>{$info['info']['codes']}</td></tr>\n";
 }
 
-$text .= "</table>";
+$text .= '</table>';
 $ns->tablerender(PDF_LAN_31, $text);
 
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 ?>

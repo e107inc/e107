@@ -32,7 +32,7 @@ define('PDF_LAN_14', 'show sitename on pdf?');
 define('PDF_LAN_15', 'show creator page url on pdf?');
 define('PDF_LAN_16', 'show page numbers on pdf?');
 //define('PDF_LAN_17', 'update');
-//define('PDF_LAN_18', 'PDF preferences successfully updated');
+define('PDF_LAN_18', 'PDF preferences successfully updated');
 define('PDF_LAN_19', 'Page');
 define('PDF_LAN_20', 'error reporting');
 define('PDF_LAN_21', 'Font name');
@@ -46,7 +46,10 @@ define('PDF_LAN_28', 'bold');			// Bold font type
 define('PDF_LAN_29', 'ital');			// Italic font type
 define('PDF_LAN_30', 'boldital');		// Bold italic font type
 define('PDF_LAN_31', 'FONT LIST');
-
+define('PDF_LAN_32', 'Error saving PDF plugin prefs');
+define('PDF_LAN_33', 'Default prefs set');
+define('PDF_LAN_34', 'Defaults');
+define('PDF_LAN_35', 'PDF Plugin Preferences');
 
 // Admin logging
 //define('LAN_AL_PDF_01', 'PDF settings updated');
