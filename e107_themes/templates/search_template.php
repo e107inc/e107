@@ -26,7 +26,7 @@ if (!isset($SEARCH_SHORTCODE)) {
 if (!isset($SEARCH_TOP_TABLE)) {
 	$SEARCH_TOP_TABLE = "<div style='text-align: center'>
 	<form id='searchform' method='get' action='".e_SELF."'>
-	<table style='".USER_WIDTH."' class='fborder'><tr>
+	<table style='".USER_WIDTH."' class='table fborder'><tr>
 	<td class='forumheader3' style='width: 40%'>".LAN_199."</td>
 	<td class='forumheader3' style='width: 60%; white-space: nowrap'>
 	{SEARCH_MAIN_SEARCHFIELD}&nbsp;{SEARCH_MAIN_SUBMIT}&nbsp;{ENHANCED_ICON}

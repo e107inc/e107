@@ -61,21 +61,23 @@ class db_verify
 		$this->tables['core'] = $this->getTables($core_data);
 		
 		$this->sqlLanguageTables = $this->getSqlLanguages();
-		
-		foreach($pref['e_sql_list'] as $path => $file)
+		if(varset($pref['e_sql_list']))
 		{
-			$filename = e_PLUGIN.$path.'/'.$file.'.php';
-			if(is_readable($filename))
+			foreach($pref['e_sql_list'] as $path => $file)
 			{
-				$id = str_replace('_sql','',$file);
-				$data = file_get_contents($filename);
-				$this->tables[$id] = $this->getTables($data);
-		      	unset($data);				
-			}
-			else
-			{
-				$message = str_replace("[x]",$filename,DBVLAN_22);
-		      	$mes->add($message, E_MESSAGE_WARNING);
+				$filename = e_PLUGIN.$path.'/'.$file.'.php';
+				if(is_readable($filename))
+				{
+					$id = str_replace('_sql','',$file);
+					$data = file_get_contents($filename);
+					$this->tables[$id] = $this->getTables($data);
+			      	unset($data);				
+				}
+				else
+				{
+					$message = str_replace("[x]",$filename,DBVLAN_22);
+			      	$mes->add($message, E_MESSAGE_WARNING);
+				}
 			}
 		}
 		

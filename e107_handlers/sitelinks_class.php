@@ -49,7 +49,7 @@ class sitelinks
 					if(vartrue($row['link_function']))
 					{
 						list($path,$method) = explode("::",$row['link_function']);
-						if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+						if(file_exists(e_PLUGIN.$path."/e_sitelink.php") && include_once(e_PLUGIN.$path."/e_sitelink.php"))
 						{
 							$class = $path."_sitelinks";
 							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
@@ -58,6 +58,7 @@ class sitelinks
 								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
 							}
 						}
+
 					}
 				}
 			}
@@ -152,7 +153,7 @@ class sitelinks
 					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
                 }  
 			}
-			$text .= implode($style['linkseparator'], $render_link);
+			$text .= implode(varset($style['linkseparator']), $render_link);
 			$text .= $style['postlink'];
 			if ($style['linkdisplay'] == 2)	
 			{
@@ -297,7 +298,7 @@ class sitelinks
 				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
 				$highlighted = TRUE;
 			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) 
+			if ($this->hilite(varset($linkInfo['link_url']), varset($style['linkclass_hilite']))== TRUE) 
 			{
 				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
@@ -774,49 +775,51 @@ class e_navigation
 	
 		$plugs = e107::getObject('e107plugin');
 		
-	
-		foreach($pref['plug_installed'] as $plug=>$vers)
+		if(vartrue($pref['plug_installed']))
 		{
-	
-			$plugs->parse_plugin($plug);
-			
-	
-			$plugin_path = $plug;
-			$name = $plugs->plug_vars['@attributes']['name'];
-			
-	/*		echo "<h1>".$name." ($plug)</h1>";
-			print_a($plugs->plug_vars);*/
-			if(!varset($plugs->plug_vars['adminLinks']['link']))
+			foreach($pref['plug_installed'] as $plug=>$vers)
 			{
-				continue;	
-			}
-	
-			foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
-			{
-				if(varset($tag['@attributes']['primary']) !='true')
-				{
-					continue;
-				}
-				loadLanFiles($plugin_path, 'admin');
-				
-				$att = $tag['@attributes'];
-	
 		
-				$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
-				$eplug_conffile 	= $att['url'];
-				$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
-				$eplug_icon 		= $plugin_path.'/'.$att['icon'];
-				$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+				$plugs->parse_plugin($plug);
 				
-				if (varset($eplug_conffile))
+		
+				$plugin_path = $plug;
+				$name = $plugs->plug_vars['@attributes']['name'];
+				
+		/*		echo "<h1>".$name." ($plug)</h1>";
+				print_a($plugs->plug_vars);*/
+				if(!varset($plugs->plug_vars['adminLinks']['link']))
 				{
-					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
-					$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
-					$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					continue;	
 				}
-			}
-		}	
+		
+				foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
+				{
+					if(varset($tag['@attributes']['primary']) !='true')
+					{
+						continue;
+					}
+					loadLanFiles($plugin_path, 'admin');
+					
+					$att = $tag['@attributes'];
+		
+			
+					$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
+					$eplug_conffile 	= $att['url'];
+					$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
+					$eplug_icon 		= $plugin_path.'/'.$att['icon'];
+					$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+					
+					if (varset($eplug_conffile))
+					{
+						$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
+						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
+						$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+					}
+				}
+			}	
+		}
 	
 		
 	//	print_a($plugs->plug_vars['adminLinks']['link']);
@@ -1404,10 +1407,8 @@ class e_navigation
 		$sc 			= e107::getScBatch('navigation');	
 		$sc->template 	= $template; 
 		$ret 			= $template['start'];
-		
-		
 		foreach ($data as $_data) 
-		{
+		{		
 			$sc->setVars($_data);
 			$active			= ($this->isActive($_data)) ? "_active" : "";
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
@@ -1440,10 +1441,10 @@ class e_navigation
 	/**
 	 * Compile Array Structure
 	 */
-	protected function compile(&$inArray, &$outArray, $pid = 0) 
+	public function compile(&$inArray, &$outArray, $pid = 0) 
 	{
 	    if(!is_array($inArray) || !is_array($outArray)){ return; }
-	
+		
 	    foreach($inArray as $key => $val) 
 	    {
 	        if($val['link_parent'] == $pid) 
@@ -1462,6 +1463,11 @@ class e_navigation
 	 */
 	protected function isDynamic($row)
 	{
+		if(varset($row['link_sub']))
+		{
+			return $row['link_sub'];	
+		}
+		
 		if(vartrue($row['link_function']))
 		{
 			list($path,$method) = explode("::",$row['link_function']);
@@ -1521,15 +1527,21 @@ class navigation_shortcodes extends e_shortcode
 	{
 		return e107::getParser()->toHtml($this->var['link_name'],false,'defs');		
 	}
+	
+	function sc_link_parent($parm='')
+	{
+		return intval($this->var['link_parent']);		
+	}
 
 	function sc_link_url($parm='')
 	{
-		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], TRUE, TRUE);
+		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], 'full', TRUE);
 	}
 	
 	function sc_link_image($parm='')
 	{
-		return e107::getParser()->replaceConstants(vartrue($this->var['link_image']));	
+		if (!vartrue($this->var['link_image'])) return '';
+		return e107::getParser()->replaceConstants($this->var['link_image'], 'full', TRUE);	
 	}
 		
 	

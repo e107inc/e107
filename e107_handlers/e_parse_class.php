@@ -1852,14 +1852,14 @@ class e_parse
 			'e_WEB_JS/' 		=> '{e_WEB_JS}',
 			'e_WEB_CSS/' 		=> '{e_WEB_CSS}',
 			'e_WEB_IMAGE/' 		=> '{e_WEB_IMAGE}',
-			'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
+		//	'e_WEB_PACK/' 		=> '{e_WEB_PACK}',
 
 			'e_BASE/' 			=> '{e_BASE}',
 			'e_ADMIN/' 			=> '{e_ADMIN}',
 			'e_IMAGE/' 			=> '{e_IMAGE}',
 			'e_THEME/' 			=> '{e_THEME}',
 			'e_PLUGIN/' 		=> '{e_PLUGIN}',
-			'e_HANDLER/' 		=> '{e_WEB_PACK}', // BC
+			'e_HANDLER/' 		=> '{e_HANDLER}', // BC
 			'e_MEDIA/' 			=> '{e_MEDIA}',
 			'e_WEB/' 			=> '{e_ADMIN}',
 		);
@@ -1891,7 +1891,7 @@ class e_parse
 	 * TODO - runtime cache of search/replace arrays (object property) when $mode !== ''
 	 * @param string $text
 	 * @param string $mode [optional]	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
-	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
+	 * 									'abs' = produce truncated URL path, e.g. e107plugins/etc
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
@@ -1913,7 +1913,7 @@ class e_parse
 				$e107->getFolder('web_js'),
 				$e107->getFolder('web_css'),
 				$e107->getFolder('web_image'),
-				$e107->getFolder('web_pack'),
+				//$e107->getFolder('web_pack'),
 				e_IMAGE_ABS,
 				e_THEME_ABS,
 				$e107->getFolder('images'),
@@ -1952,7 +1952,7 @@ class e_parse
 						e_FILE_ABS,
 						e_THEME_ABS,
 				//		e_DOWNLOAD_ABS, //impossible when download is done via php.
-						'', //no ABS path available
+						'', // handlers - no ABS path available
 						e_MEDIA_ABS,
 						e_WEB_ABS,
 						defset('THEME_ABS'),
@@ -1982,7 +1982,7 @@ class e_parse
 						SITEURLBASE.e_FILE_ABS, // deprecated
 						SITEURLBASE.e_THEME_ABS,
 						//SITEURL.$e107->getFolder('downloads'),
-						'', //no ABS path available
+						'', //  handlers - no ABS path available
 						SITEURLBASE.e_MEDIA_ABS,
 						SITEURLBASE.e_WEB_ABS,
 						defset('THEME_ABS') ? SITEURLBASE.THEME_ABS : '',
@@ -2129,7 +2129,7 @@ class e_parse
 					'{e_WEB_JS}'		=> $e107->getFolder('web_js'),
 					'{e_WEB_CSS}'		=> $e107->getFolder('web_css'),
 					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_images'),
-					'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
+			//		'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
 
 					'{e_IMAGE}' 	=> $e107->getFolder('images'),
 					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
@@ -2140,6 +2140,7 @@ class e_parse
 					'{e_HANDLER}'	=> $e107->getFolder('handlers'),
 					'{e_MEDIA}'		=> $e107->getFolder('media'),
 					'{e_WEB}'		=> $e107->getFolder('web'),
+					'{e_UPLOAD}'	=> $e107->getFolder('upload'),
 					);
 					
 			break;
@@ -2156,7 +2157,7 @@ class e_parse
 					'{e_WEB_JS}'		=> e_WEB_JS,
 					'{e_WEB_CSS}'		=> e_WEB_CSS,
 					'{e_WEB_IMAGE}'		=> e_WEB_IMAGE,
-					'{e_WEB_PACK}'		=> e_WEB_PACK,
+				//	'{e_WEB_PACK}'		=> e_WEB_PACK,
 
 					'{e_IMAGE}'		=> e_IMAGE,
 					'{e_PLUGIN}'	=> e_PLUGIN,
@@ -2167,6 +2168,7 @@ class e_parse
 					'{e_HANDLER}'	=> e_HANDLER,
 					'{e_MEDIA}'		=> e_MEDIA,
 					'{e_WEB}'		=> e_WEB,
+					'{e_UPLOAD}'	=> e_UPLOAD,
 				);
 			break;
 

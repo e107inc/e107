@@ -25,6 +25,7 @@ class core_system_rewrite_url extends eUrlConfig
 			'rules' => array(
 				'error404'		=> 'error/notfound',
 				'hello'			=> 'error/hello-world',
+				'<controller>/<action>'	=> '<controller>/<action>',
 			) 
 		);
 	}

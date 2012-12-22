@@ -24,7 +24,10 @@
  *	@version 	$Id$;
  */
 
-require_once('../../class2.php');
+if (!defined('e_SINGLE_ENTRY'))
+{
+	require_once('../../class2.php');
+}
 $e107 = e107::getInstance();
 
 if (!$e107->isInstalled('calendar_menu'))
@@ -60,7 +63,7 @@ if ((USER) && (isset($ecal_class->pref['eventpost_asubs']) && ($ecal_class->pref
 			} 
 			// print $cal_row .  $cal_subs[$cal_row] . "<br />";
 		} 
-		$caltext = "<table class='fborder' width='97%'>
+		$caltext = "<table class='table fborder' width='97%'>
 	<tr><td class='fcaption' >" . EC_LAN_130 . "</td></tr>
 	<tr><td class='forumheader3' ><a href='calendar.php'>" . EC_LAN_131 . "</a></tr>
 	<tr><td class='fcaption' >&nbsp;</td></tr></table>";
@@ -68,7 +71,7 @@ if ((USER) && (isset($ecal_class->pref['eventpost_asubs']) && ($ecal_class->pref
 	else
 	{
 		$caltext = "<form id='calsubs' action='" . e_SELF . "' method='post' >
-	<table class='fborder' width='97%'>
+	<table class='table fborder' width='97%'>
 	<tr><td class='fcaption' colspan='3'>" . EC_LAN_125 . "</td></tr>
 	<tr><td class='forumheader2' >" . EC_LAN_126 . "</td><td class='forumheader2' >" . EC_LAN_127 . "</td><td class='forumheader2' >" . EC_LAN_136 . "</td></tr>"; 
 

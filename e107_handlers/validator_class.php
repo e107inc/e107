@@ -558,8 +558,9 @@ class e_validator
 				return true;
 			break;
 
+			case 'set':
 			case 'enum':
-				$tmp = explode('#', $cond);
+				$tmp = array_map('trim', explode(',', $cond));
 				if(!$value || !in_array($value, $tmp))
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);

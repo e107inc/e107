@@ -149,7 +149,7 @@ class e107
 		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
-		'e_admin_icons'					 => '{e_HANDLER}admin_handler.php',
+	//	'e_admin_icons'					 => '{e_HANDLER}admin_handler.php', // DEPRECATED
 		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
 		'e_admin_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
@@ -437,7 +437,7 @@ class e107
 		
 		$ret['WEB_CSS_DIRECTORY'] 			= $ret['WEB_DIRECTORY'].'css/';
 		$ret['WEB_IMAGES_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'images/';
-		$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
+	//	$ret['WEB_PACKS_DIRECTORY'] 		= $ret['WEB_DIRECTORY'].'packages/';
 
 		$ret['DOWNLOADS_DIRECTORY']			= $ret['MEDIA_FILES_DIRECTORY'];
 		$ret['UPLOADS_DIRECTORY'] 			= $ret['MEDIA_UPLOAD_DIRECTORY'];
@@ -1311,12 +1311,17 @@ class e107
 	 *
 	 * @return Hybrid_Auth
 	 */
-	public static function getHybridAuth()
+	public static function getHybridAuth($config = null)
 	{
-		$config = array(
-			'base_url' => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
-			'providers' => e107::getPref('social_login', array())	
-		);
+		if(null === $config)
+		{
+			$config = array(
+				'base_url' => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+				'providers' => e107::getPref('social_login', array()),
+				'debug_mode' => false,
+				'debug_file' => ''
+			);
+		}
 		return new Hybrid_Auth($config);
 	}
 
@@ -2193,20 +2198,21 @@ class e107
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
 	 */
-	public static function lan($type,$fname = null,$options = null)
+	public static function lan($type, $fname = null, $options = null)
 	{
+		$options = $options ? true : false;
 		switch ($type)
 		{
 			case 'core' :
-				self::coreLan($fname,$options);
+				self::coreLan($fname, $options);
 			break;
 	
 			case 'theme' :
-				self::themeLan($fname, null);
+				self::themeLan($fname, null,  $options);
 				break;
 			default :
-				$opt = ($options === true) ? true : false;
-				self::plugLan($type,$fname, $opt);
+				
+				self::plugLan($type, $fname, $options);
 				break;
 		}	
 		
@@ -2692,7 +2698,7 @@ class e107
 			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
 			define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
 			define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
-			define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
+	//		define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
 
 			define('e_CACHE', $this->get_override_rel('CACHE'));
 			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));

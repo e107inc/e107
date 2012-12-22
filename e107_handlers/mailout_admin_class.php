@@ -1090,8 +1090,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
 			$this->e107->ns-> tablerender("<div style='text-align:center'>".$this->tasks[$type]['title']."</div>", $text);
-			require_once(e_ADMIN."footer.php");
-			exit;
+			return;
 		}
 
 		$text .= "

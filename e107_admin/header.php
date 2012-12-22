@@ -35,26 +35,21 @@ else
 	require_once (e_BASE.$e107->getFolder('themes').'templates/admin_template.php');
 }
 
-
-e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
-e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+if(e_PAGE != 'menus.php') // Quick fix for Menu Manager inactive drop-down problem. 
+{
+	e107::js('core', 	'colorbox/jquery.colorbox-min.js', 'jquery', 2);
+	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
+}
 
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 
-//e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-//e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-//e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
 
 e107::css('core', 	'chosen/chosen.css', 'jquery');
 e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
 
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 
-
-// e107::js("core",	"core/mediaManager.js","jquery",3);
-//e107::js("core",	"tooltip/jquery.tipsy.js","jquery",3);
-//e107::css('core', 	'tooltip/tipsy.css', 'jquery');
 
 e107::js("core",	"tags/jquery.tagit.js","jquery",3);
 e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
@@ -110,7 +105,7 @@ e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 {
 	$threshold = (time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+	e107::getDb()->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
 }
 
 //
@@ -423,7 +418,7 @@ if ($e107_popup != 1)
 	// (legacy?) function admin_purge_related moved to boot.php
 
 
-	$sql->db_Mark_Time('Parse Admin Header');
+	e107::getDb()->db_Mark_Time('Parse Admin Header');
 		
 	//NEW - Iframe mod
 	if (!deftrue('e_IFRAME'))
@@ -432,7 +427,7 @@ if ($e107_popup != 1)
 		parse_admin($ADMIN_HEADER);
 	}
 
-	$sql->db_Mark_Time('(End: Parse Admin Header)');
+	e107::getDb()->db_Mark_Time('(End: Parse Admin Header)');
 }
 
 // XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it

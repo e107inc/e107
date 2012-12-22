@@ -50,7 +50,15 @@ define("e_UC_NOBODY", 255);*/
 
 define("E107_INSTALL",TRUE);
 
-error_reporting(E_ALL ^ E_NOTICE); //3rd Party Plugins may cause PHP Notices at the conclusion of installation. 
+if($_SERVER['QUERY_STRING'] != "debug")
+{
+	error_reporting(E_ALL ^ E_NOTICE); //3rd Party Plugins may cause PHP Notices at the conclusion of installation. 
+}
+else
+{
+	error_reporting(E_ALL);	
+}
+
 //error_reporting(E_ALL);
 
 function e107_ini_set($var, $value)
@@ -255,174 +263,6 @@ class e_install
 		else
 		{
 			$this->previous_steps = array();
-     		$langarr = array(
-        		"aa" => "Afar",
-        		"ab" => "Abkhazian",
-        		"af" => "Afrikaans",
-        		"am" => "Amharic",
-        		"ar" => "Arabic",
-        		"as" => "Assamese",
-        		"ae" => "Avestan",
-        		"ay" => "Aymara",
-        		"az" => "Azerbaijani",
-        		"ba" => "Bashkir",
-        		"be" => "Belarusian",
-        		"bn" => "Bengali",
-	            "bh" => "Bihari",
-	            "bi" => "Bislama",
-	            "bo" => "Tibetan",
-	            "bs" => "Bosnian",
-	            "br" => "Breton",
-	            "bg" => "Bulgarian",
-	            "ca" => "Catalan",
-	            "cs" => "Czech",
-	            "ch" => "Chamorro",
-	            "ce" => "Chechen",
-	            "cn" => "ChineseSimp",
-	            "cv" => "Chuvash",
-	            "kw" => "Cornish",
-	            "co" => "Corsican",
-	            "cy" => "Welsh",
-	            "da" => "Danish",
-	            "de" => "German",
-	            "dz" => "Dzongkha",
-	            "el" => "Greek",
-	            "en" => "English",
-	            "eo" => "Esperanto",
-	            "et" => "Estonian",
-	            "eu" => "Basque",
-	            "fo" => "Faroese",
-	            "fa" => "Persian",
-	            "fj" => "Fijian",
-	            "fi" => "Finnish",
-	            "fr" => "French",
-	            "fy" => "Frisian",
-	            "gd" => "Gaelic",
-	            "ga" => "Irish",
-	            "gl" => "Gallegan",
-	            "gv" => "Manx",
-	            "gn" => "Guarani",
-	            "gu" => "Gujarati",
-	            "ha" => "Hausa",
-	            "he" => "Hebrew",
-	            "hz" => "Herero",
-	            "hi" => "Hindi",
-	            "ho" => "Hiri Motu",
-	            "hr" => "Croatian",
-	            "hu" => "Hungarian",
-	            "hy" => "Armenian",
-	            "iu" => "Inuktitut",
-	            "ie" => "Interlingue",
-	            "id" => "Indonesian",
-	            "ik" => "Inupiaq",
-	            "is" => "Icelandic",
-	            "it" => "Italian",
-	            "jw" => "Javanese",
-	            "ja" => "Japanese",
-	            "kl" => "Kalaallisut",
-	            "kn" => "Kannada",
-	            "ks" => "Kashmiri",
-	            "ka" => "Georgian",
-	            "kk" => "Kazakh",
-	            "km" => "Khmer",
-	            "ki" => "Kikuyu",
-	            "rw" => "Kinyarwanda",
-	            "ky" => "Kirghiz",
-	            "kv" => "Komi",
-	            "ko" => "Korean",
-	            "ku" => "Kurdish",
-	            "lo" => "Lao",
-	            "la" => "Latin",
-	            "lv" => "Latvian",
-	            "ln" => "Lingala",
-	            "lt" => "Lithuanian",
-	            "lb" => "Letzeburgesch",
-	            "mh" => "Marshall",
-	            "ml" => "Malayalam",
-	            "mr" => "Marathi",
-	            "mk" => "Macedonian",
-	            "mg" => "Malagasy",
-	            "mt" => "Maltese",
-	            "mo" => "Moldavian",
-	            "mn" => "Mongolian",
-	            "mi" => "Maori",
-	            "ms" => "Malay",
-	            "my" => "Burmese",
-	            "na" => "Nauru",
-	            "nv" => "Navajo",
-
-	            "ng" => "Ndonga",
-	            "ne" => "Nepali",
-	            "nl" => "Dutch",
-	            "no" => "Norwegian",
-
-	            "ny" => "Chichewa",
-	            "or" => "Oriya",
-	            "om" => "Oromo",
-	            "pa" => "Panjabi",
-	            "pi" => "Pali",
-	            "pl" => "Polish",
-	            "pt" => "Portuguese",
-	            "ps" => "Pushto",
-	            "qu" => "Quechua",
-	            "ro" => "Romanian",
-	            "rn" => "Rundi",
-	            "ru" => "Russian",
-	            "sg" => "Sango",
-	            "sa" => "Sanskrit",
-	            "si" => "Sinhalese",
-	            "sk" => "Slovak",
-	            "sl" => "Slovenian",
-
-	            "sm" => "Samoan",
-	            "sn" => "Shona",
-	            "sd" => "Sindhi",
-	            "so" => "Somali",
-
-	            "es" => "Spanish",
-	            "sq" => "Albanian",
-	            "sc" => "Sardinian",
-	            "sr" => "Serbian",
-	            "ss" => "Swati",
-	            "su" => "Sundanese",
-	            "sw" => "Swahili",
-	            "sv" => "Swedish",
-	            "ty" => "Tahitian",
-	            "ta" => "Tamil",
-	            "tt" => "Tatar",
-	            "te" => "Telugu",
-	            "tg" => "Tajik",
-	            "tl" => "Tagalog",
-	            "th" => "Thai",
-	            "ti" => "Tigrinya",
-
-	            "tn" => "Tswana",
-	            "ts" => "Tsonga",
-	            "tk" => "Turkmen",
-	            "tr" => "Turkish",
-	            "tw" => "ChineseTrad",
-	            "ug" => "Uighur",
-	            "uk" => "Ukrainian",
-	            "ur" => "Urdu",
-	            "uz" => "Uzbek",
-	            "vi" => "Vietnamese",
-
-	            "wo" => "Wolof",
-	            "xh" => "Xhosa",
-	            "yi" => "Yiddish",
-	            "yo" => "Yoruba",
-	            "za" => "Zhuang",
-	           // "zh" => "Chinese",
-	            "zu" => "Zulu"
-	        	);
-            $langsrv = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-            if (!in_array($langsrv, array_keys($langarr)))
-                {
-                        $langsrv = 'en';
-                }
-            if (!isset($this->previous_steps['language']))
-                        $this->previous_steps['language'] = $langarr[$langsrv];
-
 		}
 		$this->get_lan_file();
 		$this->post_data = $_POST;
@@ -552,6 +392,7 @@ class e_install
 		$e_forms->add_button("start", LANINS_035);
 		$this->template->SetTag("stage_content", "<div  style='text-align: center;'><div class='alert alert-info alert-block'><label for='language'>".LANINS_005."</label></div>\n<br /><br /><br />\n".$e_forms->return_form()."</div>");
 		$this->logLine('Stage 1 completed');
+		
 	}
 
 
@@ -639,9 +480,12 @@ class e_install
 		
 		$this->previous_steps['paths']['hash'] = $hash;
 
+		$omit = array('FILES_DIRECTORY','WEB_IMAGES_DIRECTORY');
 		
 		foreach($this->e107->e107_dirs as $dir => $p)
 		{
+			if(in_array($dir, $omit)) { continue; }	
+			
 			$this->e107->e107_dirs[$dir] = str_replace("[hash]", $hash, $this->e107->e107_dirs[$dir]);
 					
 			if(!is_dir($this->e107->e107_dirs[$dir]))
@@ -757,11 +601,11 @@ class e_install
 
 				//TODO Add option to continue install even if DB exists.
 
-				if($this->previous_steps['mysql']['createdb'] == 1)
+				if($this->previous_steps['mysql']['createdb'] == 1 || !$DB_ALREADY_EXISTS)
 				{
 				    $query = 'CREATE DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
 				}
-				else
+				elseif($DB_ALREADY_EXISTS)
 				{
 				    $query = 'ALTER DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
 				}
@@ -1367,13 +1211,19 @@ class e_install
 	protected function htaccess()
 	{
 		$error = "";
-		
+			
 		if(!file_exists(".htaccess"))
 		{
 			if(!rename("e107.htaccess",".htaccess"))
 			{
 				$error = "IMPORTANT: Please rename e107.htaccess to .htaccess";
 			}
+			elseif($_SERVER['QUERY_STRING'] == "debug")
+			{
+				rename(".htaccess","e107.htaccess");
+				$error = "DEBUG: Rename from e107.htaccess to .htaccess was successful";		
+			}
+			
 		}
 		else
 		{		
@@ -1437,7 +1287,9 @@ class e_install
 		$themeImportFile = array();
 		$themeImportFile[0] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml";
 		$themeImportFile[1] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install/install.xml";
-		$themeImportFile[3] = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
+		// $themeImportFile[3] = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
+
+		$XMLImportfile = false;
 
 		if(vartrue($this->previous_steps['generate_content']))
 		{
@@ -1450,10 +1302,7 @@ class e_install
 				}
 			}
 		}
-		else
-		{
-			$XMLImportfile = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";
-		}
+
 
 
 		$tp = e107::getParser();
@@ -1463,12 +1312,18 @@ class e_install
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 
-		//should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly.
 		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
-		e107::getXml()->e107Import($XMLImportfile, 'add', true, false); // Add missing core pref values
+		
+		$coreConfig = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";		
+		e107::getXml()->e107Import($coreConfig, 'add', true, false); // Add core pref values
 		$this->logLine('Core prefs written');
 		
-
+		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
+		{
+			e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
+			$this->logLine('Theme Prefs/Tables (install.xml) written');
+		}
+		
 		//Create default plugin-table entries.
 //		e107::getConfig('core')->clearPrefCache();
 		e107::getPlugin()->update_plugins_table();
@@ -1490,16 +1345,6 @@ class e_install
 			}
 		}
 
-		// Media import
-		/*
-		e107::getMedia()->import('news',e_IMAGE.'newspost_images/') //TODO remove when news are pluginized
-			->import('page',e_IMAGE.'custom/') //TODO remove when pages are pluginized
-			// ->importIcons(e_PLUGIN) - icons for plugins are imported on install
-			->importIcons(e_IMAGE."icons/")
-			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/images/")
-			->importIcons(e_THEME.$this->previous_steps['prefs']['sitetheme']."/icons/");
-		$this->logLine('Media imported to media manager');
-		*/
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
@@ -2233,9 +2078,9 @@ $data = '<!DOCTYPE html>
 
       <div class="footer">
         <p class="pull-left">&copy; e107 Inc. 2012</p>
-        <p class="pull-right">Version: '.e_VERSION.'</p>
+        <p class="pull-right">Version: '.e_VERSION.'</p> 
       </div>
-
+	 <div>{debug_info}</div>
     </div> <!-- /container -->
 
     <!-- The javascript

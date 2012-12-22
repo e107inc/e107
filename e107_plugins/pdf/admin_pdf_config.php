@@ -267,7 +267,7 @@ $text .= "
 </tr>
 </table>
 <div class='buttons-bar center'>
-	".$rs -> form_button("submit", "update_pdf", PDF_LAN_17)."
+	".$frm->admin_button('update_pdf', LAN_UPDATE, 'update')."
 </div>
 ".$rs -> form_close()."
 ";

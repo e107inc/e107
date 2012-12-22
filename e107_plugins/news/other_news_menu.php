@@ -16,10 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-global $e107cache;
-
 // Load Data
-if($cacheData = $e107cache->retrieve("nq_othernews"))
+if($cacheData = e107::getCache()->retrieve("nq_othernews"))
 {
 	echo $cacheData;
 	return;
@@ -76,13 +74,13 @@ if(!defined("OTHERNEWS_SPACING")){
 	define("OTHERNEWS_SPACING","0");
 }
 
-$param['itemlink'] = OTHERNEWS_ITEMLINK;
-$param['thumbnail'] = OTHERNEWS_THUMB;
-$param['catlink'] = OTHERNEWS_CATLINK;
-$param['caticon'] = OTHERNEWS_CATICON;
+$param['itemlink'] 		= defset('OTHERNEWS_ITEMLINK');
+$param['thumbnail'] 	= defset('OTHERNEWS_THUMB');
+$param['catlink'] 		= defset('OTHERNEWS_CATLINK');
+$param['caticon'] 		= defset('OTHERNEWS_CATICON');
 
-$style = OTHERNEWS_CELL;
-$nbr_cols = OTHERNEWS_COLS;
+$style 					= defset('OTHERNEWS_CELL');
+$nbr_cols 				= defset('OTHERNEWS_COLS');
 
 
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
@@ -90,33 +88,51 @@ LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND FIND_IN_SET(2, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
-if ($sql->db_Select_gen($query)){
-	$text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
-	$t = 0;
-	$wid = floor(100/$nbr_cols);
-	while ($row = $sql->db_Fetch()) {
-		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
-		$text .= "\n<td style='$style ; width:$wid%;'>\n";
-		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
-
-		$text .= "\n</td>\n";
-		if (($t+1) % $nbr_cols == 0) {
-			$text .= "</tr>";
-			$t++;
+if ($sql->db_Select_gen($query))
+{
+	$text = "";
+		
+	if(OTHERNEWS_COLS !== false)
+	{
+		$text .= "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
+		$t = 0;		
+		
+		$wid = floor(100/$nbr_cols);
+		while ($row = $sql->db_Fetch()) 
+		{
+			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
+			$text .= "\n<td style='$style ; width:$wid%;'>\n";
+			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
+	
+			$text .= "\n</td>\n";
+			if (($t+1) % $nbr_cols == 0) {
+				$text .= "</tr>";
+				$t++;
+			}
+			else {
+				$t++;
+			}
 		}
-		else {
+	
+	
+		while ($t % $nbr_cols != 0)
+		{
+			$text .= "<td style='width:$wid'>&nbsp;</td>\n";
+			$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 			$t++;
+	
 		}
+		
+		$text .= "</table>";		
+	}
+	else // perfect for divs. 
+	{
+		while ($row = $sql->db_Fetch()) 
+		{
+			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
+		}				
 	}
 
-
-	while ($t % $nbr_cols != 0){
-		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
-		$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
-		$t++;
-
-	}
-	$text .= "</table>";
 
 
 	// Save Data
@@ -125,7 +141,7 @@ if ($sql->db_Select_gen($query)){
 	$ns->tablerender(TD_MENU_L1, $text, 'other_news');
 
 	$cache_data = ob_get_flush();
-	$e107cache->set("nq_othernews", $cache_data);
+	e107::getCache()->set("nq_othernews", $cache_data);
 }
 
 ?>

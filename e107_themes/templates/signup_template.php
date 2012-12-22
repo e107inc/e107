@@ -205,7 +205,7 @@ if(!defined($SIGNUP_BODY))
 	{SIGNUP_XUP}
 	<div id='default'>
 		{SIGNUP_XUP_ACTION}
-		<table class='fborder' style='".USER_WIDTH."'>
+		<table class='table fborder' style='".USER_WIDTH."'>
 			{SIGNUP_DISPLAYNAME}
 			{SIGNUP_LOGINNAME}
 			{SIGNUP_REALNAME}

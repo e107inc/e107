@@ -1028,8 +1028,8 @@ $text .= "
 								$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
 								foreach($v as $tk=>$idk)
 								{
-									$opt['placeholder'] = $tk;
-									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]),100,$opt);								
+									$eopt = array('placeholder'=> $tk);
+									$text .= "<br />".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt);								
 								}	
 								$text .= "</div>";
 								
@@ -1467,8 +1467,8 @@ $text .= "
 	
 					$text .= "
 						<td>".PRFLAN_178."</td>
-						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] )."
-							".$frm->select_open('password_CHAP');
+						<td>".$frm->selectbox('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
+						//."	".$frm->select_open('password_CHAP');
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
 

@@ -24,7 +24,10 @@
  *	@version 	$Id$;
  */
 
-require_once('../../class2.php');
+if (!defined('e_SINGLE_ENTRY'))
+{
+	require_once('../../class2.php');
+}
 $e107 = e107::getInstance();
 $frm = e107::getForm();
 
@@ -201,7 +204,7 @@ if ($mult_count > 1)
 {	// Need to handle writing of multiple events - display confirmation form
 	$message = str_replace('-NUM-', count($mult_count), EC_LAN_88);
 	$text = "
-		<form method='post' action='".e_SELF."?mc.{$ev_start}.{$ev_end}' id='mulconf'><table style='width:98%' class='fborder' >
+		<form method='post' action='".e_SELF."?mc.{$ev_start}.{$ev_end}' id='mulconf'><table style='width:98%' class='table fborder' >
 		<colgroup><col style='width:30%' /><col style='width:70%' /></colgroup>
 		<tr><td class='forumheader3 warning' colspan='2'>".$message."<br />".EC_LAN_89."</td></tr>";
 	if ($ev_allday)
@@ -552,7 +555,7 @@ if ($action == 'ne' || $action == 'ed')
 
 	$text .= "
 		<form method='post' action='".e_SELF."' id='linkform' onsubmit='return calcheckform(this, submitted,{$ecal_class->java_format_code})'>
-		<table style='width:98%' class='fborder' ><colgroup><col style='width:20%' /><col style='width:80%' /></colgroup>";
+		<table style='width:98%' class='table fborder' ><colgroup><col style='width:20%' /><col style='width:80%' /></colgroup>";
 
     $text .= "
 		<tr><td class='forumheader3'>".EC_LAN_72." </td><td class='forumheader3'> ".EC_LAN_67." ";

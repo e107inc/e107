@@ -9,11 +9,11 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("UCSLAN_1", "Cleared all users from class.");
-define("UCSLAN_2", "Class users updated.");
-define("UCSLAN_3", "Class deleted.");
+//define("UCSLAN_1", "Cleared all users from class.");
+//define("UCSLAN_2", "Class users updated.");
+define("UCSLAN_3", 'Class deleted.');
 // define("UCSLAN_4", "Please tick the confirm box to delete this user class"); currently not in use
-define("UCSLAN_5", "Class updated.");
+define("UCSLAN_5", 'Class updated.');
 define("UCSLAN_6", "Class saved to database.");
 define("UCSLAN_7", "No user classes yet.");
 define("UCSLAN_8", "Existing Classes");
@@ -24,19 +24,19 @@ define("UCSLAN_12", "Class Name");
 define("UCSLAN_13", "Class Description");
 define("UCSLAN_14", "Update User Class");
 define("UCSLAN_15", "Create New Class");
-define("UCSLAN_16", "Assign users to class");
-define("UCSLAN_17", "Remove");
+//define("UCSLAN_16", "Assign users to class");
+//define("UCSLAN_17", "Remove");
 define("UCSLAN_18", "Clear Class");
-define("UCSLAN_19", "Assign users to");
+//define("UCSLAN_19", "Assign users to");
 define("UCSLAN_20", "class");
-define("UCSLAN_21", "User Class Settings");
-define("UCSLAN_22", "Users - click to move ...");
-define("UCSLAN_23", "Users in this class ...");
-define("UCSLAN_24", "Class Manager");
-define("UCSLAN_25", 'Define/Edit Classes');
+//define("UCSLAN_21", "User Class Settings");
+//define("UCSLAN_22", "Users - click to move ...");
+//define("UCSLAN_23", "Users in this class ...");
+define("UCSLAN_24", 'Class Manager');
+define("UCSLAN_25", 'Create/Edit Classes');
 define("UCSLAN_26", 'Class Membership');
 define("UCSLAN_27", 'Debug Help');
-define("UCSLAN_28", 'Modify Class Membership');
+//define("UCSLAN_28", 'Modify Class Membership');
 define("UCSLAN_29", 'That class must not be deleted');
 define("UCSLAN_30", 'Short name displayed in selectors');
 define("UCSLAN_31", 'Information about applicability of class');
@@ -98,7 +98,7 @@ define('UCSLAN_86', 'Some settings not allowed for admin classes - they have bee
 define('UCSLAN_87', 'Recently joined users');
 define('UCSLAN_88', 'Identified search bots');
 define('UCSLAN_89', 'Checked classes are members of the group');
-define('UCSLAN_90', 'You can\'t edit system user classes!');
+define('UCSLAN_90', 'You can\'t edit certain system user classes!');
 define('UCSLAN_91', '');
 
 

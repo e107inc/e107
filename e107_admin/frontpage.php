@@ -70,6 +70,27 @@ if(varset($frontPref['e_frontpage_list']))
 
 
 
+// Make sure links relative to SITEURL
+foreach($front_page as &$front_value)
+{
+	if(is_array($front_value['page']))
+	{ // Its a URL with multiple options
+		foreach($front_value['page'] as &$multipage)
+		{
+			$multipage = str_replace(e_HTTP, '', $multipage);
+			//if (substr($multipage, 0, 1) != '/') $multipage = '/'.$multipage;
+		}
+	}
+	else
+	{
+		$front_value = str_replace(e_HTTP, '', $front_value);
+		//if (substr($front_value, 0, 1) != '/') $front_value = '/'.$front_value;
+	}
+}
+
+
+
+
 // Now sort out list of rules for display (based on $pref data to start with)
 $gotpub = FALSE;
 if(is_array($frontPref['frontpage']))
@@ -102,9 +123,13 @@ if(!$gotpub)
 
 $fp_update_prefs = FALSE;
 
+
+/*
+Following code replaced - values not passed on image clicks with Firefox
 if(isset($_POST['fp_inc']))
 {
 	$mv = intval($_POST['fp_inc']);
+	echo "Increment: {$mv}<br />";
 	if(($mv > 1) && ($mv <= count($fp_settings)))
 	{
 		$temp = $fp_settings[$mv - 1];
@@ -117,6 +142,7 @@ if(isset($_POST['fp_inc']))
 elseif(isset($_POST['fp_dec']))
 {
 	$mv = intval($_POST['fp_dec']);
+	echo "Decrement: {$mv}<br />";
 	if(($mv > 0) && ($mv < count($fp_settings)))
 	{
 		$temp = $fp_settings[$mv + 1];
@@ -126,6 +152,44 @@ elseif(isset($_POST['fp_dec']))
 		frontpage_adminlog('01', 'Dec '.$mv);
 	}
 }
+*/
+
+if (isset($_POST))
+{
+	foreach ($_POST as $k => $v)
+	{
+		$incDec = substr($k, 0, 6);
+		$idNum = substr($k, 6);
+		if ($incDec == 'fp_inc')
+		{
+			$mv = intval($idNum);
+			if(($mv > 1) && ($mv <= count($fp_settings)))
+			{
+				$temp = $fp_settings[$mv - 1];
+				$fp_settings[$mv - 1] = $fp_settings[$mv];
+				$fp_settings[$mv] = $temp;
+				$fp_update_prefs = TRUE;
+				frontpage_adminlog('01', 'Inc '.$mv);
+			}
+			break;
+		}
+		elseif ($incDec == 'fp_dec')
+		{
+			$mv = intval($idNum);
+			if(($mv > 0) && ($mv < count($fp_settings)))
+			{
+				$temp = $fp_settings[$mv + 1];
+				$fp_settings[$mv + 1] = $fp_settings[$mv];
+				$fp_settings[$mv] = $temp;
+				$fp_update_prefs = TRUE;
+				frontpage_adminlog('01', 'Dec '.$mv);
+			}
+			break;
+		}
+	}
+}
+
+
 
 // Edit an existing rule
 if(isset($_POST['fp_edit_rule']))
@@ -334,8 +398,8 @@ class frontpage
 						<td>".$this->lookup_path($current_value['page'])."</td>
 						<td>".$this->lookup_path($current_value['force'])."</td>
 						<td class='center'>
-							<input class='image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
-							<input class='image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
+							<input class='image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
+							<input class='image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
 							<input class='image edit' type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
 							<input class='image delete' type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 						</td>

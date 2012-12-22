@@ -30,7 +30,7 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 {
    $DOWNLOAD_CAT_TABLE_START = "
       <div style='text-align:center'>
-         <table class='fborder' style='".USER_WIDTH."'>\n
+         <table class='table fborder' style='".USER_WIDTH."'>\n
 		      <colgroup>
 		         <col style='width:3%'/>
 		         <col style='width:60%'/>
@@ -139,7 +139,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
    $DOWNLOAD_LIST_TABLE_START = "
       <div style='text-align:center'>
          <form method='post' action='".e_SELF."?".e_QUERY."'>
-            <table class='fborder' style='".USER_WIDTH."'>\n
+            <table class='table fborder' style='".USER_WIDTH."'>\n
                <colgroup>
                   <col style='width:35%;'/>
                   <col style='width:15%;'/>
@@ -266,7 +266,7 @@ if(!isset($DOWNLOAD_VIEW_TABLE))
 {
 	$DOWNLOAD_VIEW_TABLE = "
       <div style='text-align:center'>
-		   <table class='fborder' style='".USER_WIDTH."'>
+		   <table class='table fborder' style='".USER_WIDTH."'>
 		      <colgroup>
 		         <col style='width:30%;'>
 		         <col style='width:70%;'>
@@ -321,7 +321,7 @@ if(!isset($DOWNLOAD_MIRROR_START))
 {
 	$DOWNLOAD_MIRROR_START = "
 	<div style='text-align:center'>
-	   <table class='fborder' style='".USER_WIDTH."'>
+	   <table class='table fborder' style='".USER_WIDTH."'>
 	      <colgroup>
 	         <col style='width:1%'/>
 	         <col style='width:29%'/>

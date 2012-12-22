@@ -19,12 +19,13 @@ function getChallenge()
 // Passed current form
 function hashLoginPassword(doForm)
 {
-  if (typeof(hex_md5) == "undefined") return;
-  if (typeof(challenge) == "undefined") return;
+	getChallenge();
+	if (typeof(hex_md5) == "undefined") return;
+	if (typeof(challenge) == "undefined") return;
 
-  doForm.hashchallenge.value = hex_md5(hex_md5(hex_md5(doForm.userpass.value) + doForm.username.value) + challenge);
-  doForm.userpass.value = "";		// Don't send plaintext password back 
-  return true;
+	doForm.hashchallenge.value = hex_md5(hex_md5(hex_md5(doForm.userpass.value) + doForm.username.value) + challenge);
+	doForm.userpass.value = "";		// Don't send plaintext password back 
+	return true;
 }
 
 

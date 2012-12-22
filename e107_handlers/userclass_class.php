@@ -384,8 +384,10 @@ class user_class
 
 			filter - only show those classes where member is in a class permitted to view them - e.g. as the new 'visible to' field - added for 0.8
 			force  - show all classes (subject to the other options, including matchclass) - added for 2.0
+			all - alias for 'force'
 
 			no-excludes - if present, doesn't show the 'not member of' list
+			is-checkbox - if present, suppresses the <optgroup...> construct round the 'not member of' list
 
 			editable - can only appear on its own - returns list of those classes the user can edit (manage)
 
@@ -410,9 +412,16 @@ class user_class
 		}
 
 		// Inverted Classes
-		if(strpos($optlist, 'no-excludes') !== TRUE)
+		if(strpos($optlist, 'no-excludes') === FALSE)
 		{
-			$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			if (strpos($optlist, 'is-checkbox') !== FALSE)
+			{
+				$text .= "\n".UC_LAN_INVERTLABEL."<br />\n";
+			}
+			else
+			{
+				$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			}
 			foreach ($show_classes as $k => $v)
 			{
 				if($k != e_UC_PUBLIC && $k != e_UC_NOBODY && $k != e_UC_READONLY)  // remove everyone, nobody and readonly from list.
@@ -441,9 +450,33 @@ class user_class
 	public function uc_required_class_list($optlist = '', $just_ids = FALSE)
 	{
 		$ret = array();
-		if (!$optlist) $optlist = 'public,guest,nobody,member,classes';		// Set defaults to simplify ongoing processing
+		$opt_arr = array();
 
-		if ($optlist == 'editable')
+		if ($optlist)
+		{
+			$opt_arr = explode(',',$optlist);
+		}
+		foreach ($opt_arr as &$v)
+		{
+			$v = trim($v);
+		}
+		$opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
+
+		if (isset($opt_arr['no-excludes'])) unset($opt_arr['no-excludes']);
+		if (isset($opt_arr['is-checkbox'])) unset($opt_arr['is-checkbox']);
+
+		if (count($opt_arr) == 0)
+		{
+			$opt_arr = array('public' => 1, 'guest' => 1, 'nobody' => 1, 'member' => 1, 'classes' => 1);
+		}
+
+		if (isset($opt_arr['all']))
+		{
+			unset($opt_arr['all']);
+			$opt_arr['force'] = 1;
+		}
+
+		if (isset($opt_arr['editable']))
 		{
 			$temp = array_flip(explode(',',$this->get_editable_classes()));
 			if ($just_ids) return $temp;
@@ -454,14 +487,7 @@ class user_class
 			return $temp;
 		}
 
-		//TODO - $optlist == all
-		$opt_arr = explode(',',$optlist);
-		foreach ($opt_arr as $k => $v)
-		{
-			$opt_arr[$k] = trim($v);
-		}
 
-		$opt_arr = array_flip($opt_arr);		// This also eliminates duplicates which could arise from applying the other options, although shouldn't matter
 
 		if (isset($opt_arr['force'])) unset($opt_arr['filter']);
 
@@ -498,7 +524,7 @@ class user_class
 					)
 					)
 				{
-				  $ret[$uc_id] = $just_ids ? '1' : $this->class_tree[$uc_id]['userclass_name'];
+					$ret[$uc_id] = $just_ids ? '1' : $this->class_tree[$uc_id]['userclass_name'];
 				}
 			}
 		}
@@ -551,22 +577,32 @@ class user_class
 
 	/**
 	 *	Used by @see{vetted_tree()} to generate lower levels of tree
+	 *
+	 *	@param string $listnum - class number of the parent. Is negative if the class is 'Everyone except...' (Must be a string because 0 == -0)
+	 *	@param integer $nest_level - indicates our level in the tree - 0 is the top level; increases as we descend the tree. Positive value.
+	 *	@param string $current_value - comma-separated list of integers indicating classes selected. (Spaces not permitted)
+	 *	@param array $perms - list of classes we are allowed to display
+	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 */
-	protected function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
+	protected function vetted_sub_tree($treename, $callback, $listnum, $nest_level, $current_value, $perms, $opt_options)
 	{
 		$ret = '';
 		$nest_level++;
-		if(isset($this->class_tree[$listnum]['class_children']))
+		$listIndex = abs($listnum);
+		$classSign = (substr($listnum, 0, 1) == '-') ? '-' : '+';
+		//echo "Subtree: {$listnum}, {$nest_level}, {$current_value}, {$classSign}:{$listIndex}<br />";
+		if(isset($this->class_tree[$listIndex]['class_children']))
 		{
-			foreach ($this->class_tree[$listnum]['class_children'] as $p)
+			foreach ($this->class_tree[$listIndex]['class_children'] as $p)
 			{
-				
+				$classValue = $classSign.$p;
 				// Looks like we don't need to differentiate between function and class calls
 				if (isset($perms[$p]))
 				{
-					$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
+					$ret .= call_user_func($callback, $treename, $classValue, $current_value, $nest_level, $opt_options);
 				}
-				$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
+				
+				$ret .= $this->vetted_sub_tree($treename, $callback, $classValue, $nest_level, $current_value, $perms, $opt_options);
 			}					
 				
 			
@@ -587,9 +623,10 @@ class user_class
 	 *		Alternative callbacks can be used to achieve different layouts/styles
 	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	 *	@param string $optlist works the same as for @see uc_dropdown()
+	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 *	@return string - formatted HTML for tree
 	*/
-	public function vetted_tree($treename, $callback='', $current_value='', $optlist = '',$opt_options = '')
+	public function vetted_tree($treename, $callback='', $current_value='', $optlist = '', $opt_options = '')
 	{
 		$ret = '';
 		if (!$callback) $callback=array($this,'select');
@@ -598,21 +635,43 @@ class user_class
 		$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
 		if (isset($perms[e_UC_BLANK]))
 		{
-			$ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0, $opt_options);
+			$ret .= call_user_func($callback, $treename, e_UC_BLANK, $current_value, 0, $opt_options);
 		}
 		foreach ($this->class_parents as $p)
 		{
-			
 			if (isset($perms[$p]))
 			{
-				$ret .= call_user_func($callback,$treename, $p,$current_value,0, $opt_options);
+				$ret .= call_user_func($callback, $treename, $p, $current_value, 0, $opt_options);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms, $opt_options);
+			$ret .= $this->vetted_sub_tree($treename, $callback, $p, 0, $current_value, $perms, $opt_options);
 		}
-		
+
+
 		// Inverted classes. (negative values for exclusion). 
-		//FIXME - inverted class functionality lost during development. 
-		
+		if(strpos($optlist, 'no-excludes') === FALSE)
+		{
+			if (strpos($optlist, 'is-checkbox') !== FALSE)
+			{
+				$ret .= "\n".UC_LAN_INVERTLABEL."<br />\n";
+			}
+			else
+			{
+				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			}
+			foreach ($this->class_parents as $k => $p)		// Currently key and data are the same
+			{
+			//echo "Class parent: {$k}:{$p}<br />";
+				if($k != e_UC_PUBLIC && $k != e_UC_NOBODY && $k != e_UC_READONLY)  // remove everyone, nobody and readonly from list.
+				{
+					if (isset($perms[$p]))
+					{
+						$ret .= call_user_func($callback, $treename, '-'.$p, $current_value, 0, $opt_options);
+					}
+				}
+				$ret .= $this->vetted_sub_tree($treename, $callback, '-'.$p, 0, $current_value, $perms, $opt_options);
+			}
+			$ret .= "</optgroup>\n";
+		}
 		return $ret;
 	}
 
@@ -623,17 +682,21 @@ class user_class
 	 *	Can be used as a basis for similar functions
 	 *
 	 *	@param string $treename	- name of tree elements (not used with select; used with checkboxes, for example)
-	 *	@param integer $classnum - user class being displayed.
-	 *			- special value e_UC_BLANK adds a blank option in the list.
+	 *	@param string $classnum - user class being displayed. This may be negative to indicate 'everyone but...'
+	 *			- special numeric part e_UC_BLANK adds a blank option in the list.
 	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	 *	@param integer $nest_level - 'depth' of this item in the tree. Zero is base level. May be used to indent or highlight dependent on level
+	 *	@param string $opt_options - passed to callback function; not otherwise used
+	 *
 	 *	@return string - option list
 	 */
-	public function select($treename, $classnum, $current_value, $nest_level)
+	public function select($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 		$tmp = explode(',',$current_value);
-		$sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
+		$sel = in_array($classnum, $tmp) ? " selected='selected'" : '';
 		if ($nest_level == 0)
 		{
 			$prefix = '';
@@ -649,7 +712,7 @@ class user_class
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
 			$style = '';
 		}
-		return "<option value='{$classnum}'{$sel}{$style}>".$prefix.$this->class_tree[$classnum]['userclass_name']."</option>\n";
+		return "<option value='{$classSign}{$classIndex}'{$sel}{$style}>".$prefix.$this->class_tree[$classIndex]['userclass_name']."</option>\n";
 	}
 
 
@@ -657,9 +720,11 @@ class user_class
 	 *	Callback for vetted_tree - displays indented checkboxes with class name only
 	 *	See @link select for parameter details
 	 */
-	public function checkbox($treename, $classnum, $current_value, $nest_level)
+	public function checkbox($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return '';
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return '';
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
 		if ($nest_level == 0)
@@ -670,7 +735,7 @@ class user_class
 		{
 			$style = " style='text-indent:".(1.2*$nest_level)."em'";
 		}
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$this->class_tree[$classIndex]['userclass_name']."</div>\n";
 	}
 
 
@@ -678,9 +743,11 @@ class user_class
 	 *	Callback for vetted_tree - displays indented checkboxes with class name, and description in brackets
 	 *	See @link select for parameter details
 	 */
-	public function checkbox_desc($treename, $classnum, $current_value, $nest_level)
+	public function checkbox_desc($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
-		if ($classnum == e_UC_BLANK)  return '';
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		if ($classIndex == e_UC_BLANK)  return '';
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
 		if ($nest_level == 0)
@@ -695,9 +762,9 @@ class user_class
 		$id = "{$treename}_{$classnum}";
 		
 		return "<div {$style}><label>
-			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</label></div>\n";
+			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</label></div>\n";
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
 
 
@@ -861,7 +928,7 @@ class user_class
 	public function isEditableClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[vartrue($class_id)])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		return TRUE;
 	}
 
@@ -1040,7 +1107,9 @@ class user_class_admin extends user_class
 	public function __construct()
 	{
 		parent::__construct();
-		$this->isAdmin = TRUE;
+		if (!(getperms('4') || getperms('0'))) return;
+	
+		$this->isAdmin = TRUE;			// We have full class management rights
 	}
 
 
@@ -1052,7 +1121,7 @@ class user_class_admin extends user_class
 	*/
 	public function calc_tree()
 	{
-		$this->readTree(TRUE);			// Make sure we have accurate data
+		$this->readTree(TRUE);						// Make sure we have accurate data
 		foreach ($this->class_parents as $cp)
 		{
 			$rights = array();
@@ -1189,8 +1258,14 @@ class user_class_admin extends user_class
 
 
 	/*
-	Next two routines generate a graphical tree, including option to open/close branches
-	*/
+	 *	Next two routines generate a graphical tree, including option to open/close branches
+	 *
+	 *	function show_graphical subtree() is for internal use, called from function show_graphical_tree
+	 *
+	 *	@param int $listnum - class number of first element to display, along with its children
+	 *	@param array $indent_images - array of images with which to start each line
+	 *	@param boolean $is_last - TRUE if this is the last element on the current branch of the tree
+	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
 		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
@@ -1228,7 +1303,7 @@ class user_class_admin extends user_class
 		if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
 		// Next (commented out) line gives a 'conventional' link
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
-		if($this->isEditableClass($this->class_tree[$listnum]['userclass_id']))
+		if($this->queryCanEditClass($this->class_tree[$listnum]['userclass_id']))
 		{
 			$url = e_SELF.'?action=edit&amp;id='.$this->class_tree[$listnum]['userclass_id'];
 			$onc = '';
@@ -1256,16 +1331,16 @@ class user_class_admin extends user_class
 			{
 				$indent_images[] = 'line.gif';
 			}
-			foreach ($this->class_tree[$listnum]['class_children'] as $p)
+			if (isset($this->class_tree[$listnum]['class_children'])) foreach ($this->class_tree[$listnum]['class_children'] as $p)
 			{
 				$num_children--;
 				if ($num_children)
 				{	// Use icon indicating more below
-				  $ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
+					$ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
 				}
 				else
 				{ // else last entry on this tree
-				  $ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
+					$ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
 				}
 			}
 			$ret .= "</div>";
@@ -1277,6 +1352,7 @@ class user_class_admin extends user_class
 
 	/**
 	 * Create graphical class tree, including clickable links to expand/contract branches.
+	 *
 	 * @param boolean $show_debug - TRUE to display additional information against each class
 	 * @return string - text for display
 	 */
@@ -1315,7 +1391,7 @@ class user_class_admin extends user_class
 		if ($inc_id && isset($classrec['userclass_id'])) $ret['userclass_id'] = $classrec['userclass_id'];
 		foreach ($this->field_list as $fl => $val)
 		{
-		  if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
+			if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
 		}
 		return $ret;
 	}
@@ -1395,17 +1471,19 @@ class user_class_admin extends user_class
 	 *	TODO: use new array function
 	 *	@param array $classrec - class data
 	 *	@return boolean TRUE on success, FALSE on failure
+	 *
+	 *	Note - only updates those fields which are present in the passed array, and ignores unexpected fields.
 	 */
 	public function save_edited_class($classrec)
 	{
 		if (!$classrec['userclass_id'])
 		{
-			echo "Programming bungle on save<br />";
+			echo 'Programming bungle on save - no ID field<br />';
 			return FALSE;
 		}
 		$qry = '';
 		$spacer = '';
-		if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+		if (isset($classrec['userclass_type']) && ($classrec['userclass_type'] == UC_TYPE_GROUP))
 		{	// Need to make sure our ID is in the accumulation array
 			$temp = explode(',',$classrec['userclass_accum']);
 			if (!in_array($classrec['userclass_id'], $temp))
@@ -1433,6 +1511,37 @@ class user_class_admin extends user_class
 
 
 
+	/**
+	 *	Check if a user may edit a user class.
+	 *	@param integer $classID > 0
+	 *	@param string $classList - comma-separated list of class IDs; defaults to those of current user
+	 *
+	 *	@return integer:
+	 *				0 - if editing not allowed at all
+	 *				1 - if restricted editing allowed (usually because its a fixed class)
+	 *				2 - All editing rights allowed
+	 */
+	public function queryCanEditClass($classID, $classList = USERCLASS_LIST)
+	{
+		if (!isset($this->class_tree[$classID])) return 0;			// Class doesn't exist - no hope of editing!
+		
+		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1);
+		if (isset($blockers[$classID])) return 0;					// Don't allow edit of some fixed classes
+
+		$canEdit = $this->isAdmin;
+		$possibles = array_flip(explode(',',$classList));
+		if (isset($possibles[$this->class_tree[$classID]['userclass_editclass']])) $canEdit = TRUE;
+		
+		if (!$canEdit) return 0;
+
+		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return  1;	// Restricted edit of fixed classes
+		if (isset($this->fixed_classes[$classID])) return 1;			// This picks up fixed classes such as e_UC_PUBLIC outside the main range
+
+		return 2;						// Full edit rights - a 'normal' class
+	}
+
+
+
 
 	/**
 	 *	Check if a class may be deleted. (Fixed classes, classes with descendants cannot be deleted)
@@ -1442,12 +1551,12 @@ class user_class_admin extends user_class
 	public function queryCanDeleteClass($classID)
 	{
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
-		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		if (isset($this->fixed_classes[$classID])) return FALSE;			// This picks up fixed classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		if (!isset($this->class_tree[$classID])) return FALSE;
 		if (count($this->class_tree[$classID]['class_children'])) return FALSE;		// Can't delete class with descendants
 		foreach ($this->class_tree as $c)
 		{
-			if ($c['userclass_editclass'] == $classID) return FALSE;
+			if ($c['userclass_editclass'] == $classID) return FALSE;				// Class specified as managing or using another class
 			if ($c['userclass_visibility'] == $classID) return FALSE;
 		}
 		return TRUE;

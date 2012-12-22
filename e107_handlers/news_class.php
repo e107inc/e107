@@ -316,34 +316,36 @@ class news {
 
 		if ($n_restrict == 'userclass')
 		{
-			$news['news_id'] = 0;
-			$news['news_title'] = LAN_NEWS_1;
-			$news['data'] = LAN_NEWS_2;
-			$news['news_extended'] = "";
-			$news['news_allow_comments'] = 1;
-			$news['news_start'] = 0;
-			$news['news_end'] = 0;
-			$news['news_render_type'] = 0;
-			$news['comment_total'] = 0;
+			$news['news_id'] 				= 0;
+			$news['news_title'] 			= LAN_NEWS_1;
+			$news['data'] 					= LAN_NEWS_2;
+			$news['news_extended'] 			= "";
+			$news['news_allow_comments'] 	= 1;
+			$news['news_start'] 			= 0;
+			$news['news_end'] 				= 0;
+			$news['news_render_type'] 		= 0;
+			$news['comment_total'] 			= 0;
 		}
 
 		$tmp = array();
-		$tmp['caticon'] = ICONSTYLE;
-		$tmp['commentoffstring'] = COMMENTOFFSTRING;
-		$tmp['commentlink'] = COMMENTLINK;
-		$tmp['trackbackstring'] = (defined("TRACKBACKSTRING") ? TRACKBACKSTRING : "");
-		$tmp['trackbackbeforestring'] = (defined("TRACKBACKBEFORESTRING") ? TRACKBACKBEFORESTRING : "");
-		$tmp['trackbackafterstring'] = (defined("TRACKBACKAFTERSTRING") ? TRACKBACKAFTERSTRING : "");
-		$tmp['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
-		$tmp['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
-		$tmp['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-		$tmp['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+		$tmp['caticon'] 				= defset('ICONSTYLE');
+		$tmp['commentoffstring'] 		= defset('COMMENTOFFSTRING');
+		$tmp['commentlink'] 			= defset('COMMENTLINK');
+		$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');
+		$tmp['trackbackbeforestring'] 	= defset('TRACKBACKBEFORESTRING');
+		$tmp['trackbackafterstring'] 	= defset('TRACKBACKAFTERSTRING');
+		$tmp['itemlink'] 				= defset('NEWSLIST_ITEMLINK');
+		$tmp['thumbnail'] 				= defset('NEWSLIST_THUMB', "border:0px");
+		$tmp['catlink']  				= defset('NEWSLIST_CATLINK');
+		$tmp['caticon'] 				= defset('NEWSLIST_CATICON', defset('ICONSTYLE'));
 
 		if(!$param) $param = array();
 		$param = array_merge($tmp, $param);
 
 
 // Next three images aren't always defined by the caller, even if most of $param is.
+//XXX All of this should be done via CSS from v2 on. 
+
 		if (!isset($param['image_nonew_small']))
 		{
 		  if (!defined("IMAGE_nonew_small"))
@@ -374,23 +376,36 @@ class news {
 		cachevars('current_news_item', $news);
 		cachevars('current_news_param', $param);
 
-		if ($news['news_render_type'] == 1 && $mode != "extend") {
-			if (function_exists("news_list")) {
+		if ($news['news_render_type'] == 1 && $mode != "extend") 
+		{
+			if (function_exists("news_list")) 
+			{
 				$NEWS_PARSE = news_list($news);
-			} else if ($NEWSLISTSTYLE) {
+			}
+			else if ($NEWSLISTSTYLE) 
+			{
 				$NEWS_PARSE = $NEWSLISTSTYLE;
-			} else {
+			} 
+			else 
+			{
 				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".LAN_NEWS_100." {NEWSDATE} | {NEWSCOMMENTS}</div>";
 			}
-		} else {
-			if ($NEWS_TEMPLATE) {
+		}
+		else 
+		{
+			if ($NEWS_TEMPLATE) 
+			{
 				$NEWS_PARSE = $NEWS_TEMPLATE;
-			} else {
+			} 
+			else 
+			{
 				if (function_exists("news_style")) 
 				{
 					$action = varset($param['current_action'], 'default');
 					$NEWS_PARSE = news_style($news, $action, $param);
-				} else {
+				}
+				else 
+				{
 					$NEWS_PARSE = $NEWSSTYLE;
 				}
 			}

@@ -283,7 +283,7 @@ class page_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> 'ID',			'width'=>'5%', 			'forced'=> TRUE),
-            'page_chapter' 		=> array('title'=> 'Book/Chapter', 		'type' => 'dropdown', 	'width' => '10%', 'filter' => true, 'batch'=>true),
+            'page_chapter' 		=> array('title'=> 'Book/Chapter', 		'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true),
             'page_title'	   	=> array('title'=> LAN_TITLE, 		'type' => 'text', 		'width'=>'25%','readParms'=>'link={e_BASE}page.php?[id]&dialog=1'),
 			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 		'width' => 'auto','nolist'=>true),
 			
@@ -300,7 +300,7 @@ class page_admin_ui extends e_admin_ui
 			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);
 	
-		protected $fieldpref = array("page_id","page_title","page_template","page_author","page_class");
+		protected $fieldpref = array("page_id","page_title","page_chapter","page_template","page_author","page_class");
 
 
 		protected $books = array();
@@ -530,7 +530,7 @@ class page_admin_ui extends e_admin_ui
 				
 				// fixed - last parameter (allinfo) should be false as getLayout method is returning non-usable formatted array
 				$templates = e107::getLayouts('', 'page', 'front', '', false, false); 
-				$templates['menu'] = "Sidebar"; // ie. a MENU item. //TODO 
+			//	$templates['menu'] = "Sidebar"; // ie. a MENU item. //TODO 
 	
 				$text .= "
 					<tr>

@@ -93,7 +93,7 @@ class links_admin_ui extends e_admin_ui
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
-	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','options');
+	protected $fieldpref =  array('checkboxes','link_id','link_name','link_sefurl','link_class','link_category','options');
 
 	protected $prefs = array(
 		'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),

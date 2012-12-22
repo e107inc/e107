@@ -78,7 +78,7 @@ class userlogin
 		$username = trim($username);
 		$userpass = trim($userpass);
 
-		if($_E107['cli'] && ($username == ""))
+		if($_E107['cli'] && ($username == ''))
 		{
 			return FALSE;
 		}
@@ -111,7 +111,7 @@ class userlogin
 				{
 					if ($this->lookupUser($username, $forceLogin))
 					{
-						if ($this->checkUserPassword($userpass, $response, $forceLogin) === TRUE)
+						if ($this->checkUserPassword($username, $userpass, $response, $forceLogin) === TRUE)
 						{
 							$authorized = true;
 							$result = LOGIN_CONTINUE;		// Valid User exists in local DB
@@ -131,7 +131,7 @@ class userlogin
 				{
 					if ($method != 'none')
 					{
-						$auth_file = e_PLUGIN."alt_auth/".$method."_auth.php";
+						$auth_file = e_PLUGIN.'alt_auth/'.$method.'_auth.php';
 						if (file_exists($auth_file))
 						{
 							require_once(e_PLUGIN.'alt_auth/alt_auth_login_class.php');
@@ -165,7 +165,7 @@ class userlogin
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 
 		// Check secure image
-		if (!$forceLogin && $pref['logcode'] && extension_loaded("gd"))
+		if (!$forceLogin && $pref['logcode'] && extension_loaded('gd'))
 		{
 			require_once(e_HANDLER."secure_img_handler.php");
 			$sec_img = new secure_image;
@@ -183,7 +183,7 @@ class userlogin
 			}
 		}
 
-		if ($authorized !== true && $this->checkUserPassword($userpass, $response, $forceLogin) !== true)
+		if ($authorized !== true && $this->checkUserPassword($username, $userpass, $response, $forceLogin) !== true)
 		{
 			return $this->invalidLogin($username,LOGIN_BAD_PW);
 		}
@@ -288,7 +288,13 @@ class userlogin
 				{  // We've found the entry of interest
 					if (strlen($fp))
 					{
-						$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						if (strpos($fp, 'http') === FALSE)
+						{
+							$fp = str_replace(e_HTTP, '', $fp);		// This handles sites in a subdirectory properly (normally, will replace nothing)
+							$fp = SITEURL.$fp;
+						}
+						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$this->e107->tp->replaceConstants($fp, TRUE, FALSE);
+						$redir = $this->e107->tp->replaceConstants($fp, TRUE, FALSE);
 		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;
@@ -353,6 +359,11 @@ class userlogin
 		return TRUE;
 	}
 
+
+
+	/**
+	 *	Generate a DB query to look up a user, dependent on the various login options supported.
+	 */
 	public function getLookupQuery($username, $forceLogin, $dbAlias = '')
 	{
 		$pref = e107::getPref();
@@ -378,13 +389,15 @@ class userlogin
 	/**
 	 * Checks user password againt preferences set etc
 	 * Assumes that $this->userData array already set up
+	 *
+	 * @param string $username - the user name string as entered (might not relate to the intended user at this stage)
 	 * @param string $userpass - as entered
 	 * @param string $response - received string if CHAP used
 	 * @param boolean $forceLogin - TRUE if login is being forced from clicking signup link; normally FALSE
 	 * @return TRUE if valid password
 	 *		   otherwise FALSE
 	 */
-	protected function checkUserPassword($userpass, $response, $forceLogin)
+	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
 		
@@ -402,7 +415,7 @@ class userlogin
 		}
 
 		// FIXME - [SecretR] $username is not set and I really can't get the idea.
-		$username = $this->userData['user_loginname']; // TODO for Steve - temporary fix, where $username comes from?
+		//$username = $this->userData['user_loginname']; // TODO for Steve - temporary fix, where $username comes from?
 		
 		// Now check password
 		if ($forceLogin)
@@ -415,9 +428,11 @@ class userlogin
 		else
 		{
 			$session = e107::getSession();
-			if ((($pref['password_CHAP'] > 0) && ($response && $session->is('challenge')) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
+			$gotChallenge = $session->is('challenge');
+			//$aLogVal = "U: {$username}, P: ******, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']} Prf: {$pref['password_CHAP']}/{$gotChallenge}";
+			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
-	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login","U: {$username}, P: {$userpass}, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
+			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
@@ -426,7 +441,7 @@ class userlogin
 			else
 			{
 				// Plaintext password
-	//		  	$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login","U: {$username}, P: {$userpass}, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']}",FALSE,LOG_TO_ROLLING);
+			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login",$aLogVal, FALSE,LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_BAD_PW);

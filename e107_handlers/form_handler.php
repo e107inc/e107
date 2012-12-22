@@ -737,7 +737,7 @@ class e_form
 		}
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
-		$options['required'] = vartrue($options['required'], 1);
+		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password');
 		$options = $this->format_options('text', $name, $options);
 
@@ -880,12 +880,24 @@ class e_form
 		';
 	}
 
+
+	/**
+	 *	Callback function used with $this->uc_checkbox
+	 *
+	 *	@see user_class->select() for parameters
+	 */
 	function _uc_checkbox_cb($treename, $classnum, $current_value, $nest_level, $field_options)
 	{
 		if($classnum == e_UC_BLANK)
 			return '';
 
-		$tmp = explode(',', $current_value); //TODO add support for when $current_value is an array.
+		if (!is_array($current_value))
+		{
+			$tmp = explode(',', $current_value);
+		}
+
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
 
 		$class = $style = '';
 		if($nest_level == 0)
@@ -898,7 +910,7 @@ class e_form
 		}
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
 
-		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classIndex).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
 
 
@@ -1908,6 +1920,7 @@ class e_form
 			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
 			break;
 
+			case 'comma':
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
 				
@@ -1926,7 +1939,7 @@ class e_form
 				$opts = $wparms['__options'];
 				unset($wparms['__options']);
 
-				if(vartrue($opts['multiple']) || vartrue($attributes['data']) == 'comma')
+				if(vartrue($opts['multiple']) || vartrue($attributes['type']) == 'comma')
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -2401,9 +2414,10 @@ class e_form
 			break;
 
 			case 'dropdown':
-				
+			case 'comma':	
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
+				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);

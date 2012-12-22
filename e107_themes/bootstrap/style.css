@@ -2,98 +2,9 @@
 body 						{ padding-top: 75px; padding-bottom: 40px; }
 .well 						{ padding:10px; }
 
-/* E107 CORE CSS *********************************************************************************************/
-.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
 
-/*
- * e107 v0.800 - new class definitions
- */
- 
-/* Core Formatting */
-.left		{ text-align: left }
-.right		{ text-align: right }
-.center		{ text-align: center }
-.f-left		{ float: left }
-.f-right	{ float: right }
-.top		{ vertical-align: top }
-.middle		{ vertical-align: middle }
-.bottom		{ vertical-align: bottom }
-.clear		{ clear: both }
-.clear-l	{ clear: right }
-.clear-r	{ clear: left }
-.smalltext	{ font-size: 11px; }
-.nowrap		{ white-space:nowrap; }
-
-/* Core Icons */
-img.icon		{ vertical-align: middle; border: 0 }
-img.icon.list	{ margin: 0px 5px 5px 0px }
-img.icon.action {  }
-img.S16		{ width: 16px; height: 16px }
-img.S32		{ width: 32px; height: 32px }
-img.S64		{ width: 64px; height: 64px }
-img.S128		{ width: 128px; height: 128px }
 /*******************************************************************************************************************/
 
-
-
-/* Lists */
-ul,ol       { list-style:none; }
-
-/* Tools */
-/*.no-display { display:none; }*/
-.no-margin  { margin:0 !important; }
-.no-padding { padding:0 !important; }
-.no-bg      { background:none !important; }
-.clear		{ clear: both; }
-
-pre {
-	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
-	white-space: pre-wrap; /* css-3 */
-	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-	white-space: -pre-wrap; /* Opera 4-6 */
-	white-space: -o-pre-wrap; /* Opera 7 */
-	/* width: 99%; */
-	word-wrap: break-word; /* Internet Explorer 5.5+ */
-}
-
-/********** Page Loading Status default style */
-#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; background-color: transparent; }
-#loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
-#loading-mask img { margin: 10px auto; }
-
-/********** Element Loading Status default style */
-.element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
-
-/********** Auto complete default style */
-div.e-autocomplete {
-  position:absolute;
-  width:250px;
-  background-color:white;
-  border:1px solid #c0c0c0;
-  margin:0;
-  padding:0;
-}
-div.e-autocomplete ul {
-  list-style-type:none;
-  margin:0;
-  padding:0;
-  font-weight: bold; font-size: 11px
-}
-div.e-autocomplete ul li.selected { background-color: #f5f5f5;}
-div.e-autocomplete ul li {
-  list-style-type:none;
-  display:block;
-  margin:0;
-  padding: 5px;
-  cursor:pointer;
-
-}
-div.e-autocomplete ul li span.informal { font-weight: normal; font-size: 9px}
-
-/******** Tabs JS */
-ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
-ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
-.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
 
 /********** Misc */
 .e-pointer { cursor: pointer; } /* Pointer Hand */

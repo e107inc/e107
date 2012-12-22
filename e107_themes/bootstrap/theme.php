@@ -1,6 +1,9 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
-
+/*
+ * This is a 100% Pure Bootstrap Theme for e107 v2 
+ */
+ 
 define("VIEWPORT","width=device-width, initial-scale=1.0");
 
 e107::lan('theme');
@@ -9,30 +12,18 @@ e107::css('core','bootstrap/css/bootstrap.min.css');
 e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
 e107::css('core','bootstrap/css/jquery-ui.custom.css');
 
-//$register_sc[]='FS_ADMIN_ALT_NAV';
-$no_core_css = TRUE;
+//$no_core_css = TRUE;
 
-define("STANDARDS_MODE",TRUE);
+//define("STANDARDS_MODE",TRUE);
 
-// TODO - JS/CSS handling via JSManager
 function theme_head() 
 {
 	return; 
-	
+
+	/*	
 	$theme_pref = e107::getThemePref();
-
+	
 	$ret = '';
-	$ret .= '
-		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />
-		<!--[if IE]>
-		<link rel="stylesheet" href="'.THEME_ABS.'ie_all.css" type="text/css" media="all" />
-		<![endif]-->
-		<!--[if lte IE 7]>
-			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
-		<![endif]-->
-	';
-
-
 
     if(THEME_LAYOUT == "alternate") // as matched by $HEADER['alternate'];
 	{
@@ -43,12 +34,32 @@ function theme_head()
 	{
         $ret .= "<!-- Include Something Else --> ";
 	}
-
-
+	
 	return $ret;
+	*/
 }
 
-function tablestyle($caption, $text, $mode) 
+
+
+$OTHERNEWS_STYLE = '<div class="span4">
+              		<h2>{NEWSTITLE}</h2>
+              		<p>{NEWSSUMMARY}</p>
+              		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
+            		</div><!--/span-->';
+
+$OTHERNEWS2_STYLE = '<div class="span4">
+              		<h2>{NEWSTITLE}</h2>
+              		<p>{NEWSSUMMARY}</p>
+              		<p><a class="btn" href="{NEWSURL}">View details &raquo;</a></p>
+            		</div><!--/span-->';
+					
+define('OTHERNEWS_COLS',false); // no tables, only divs. 
+define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
+define('OTHERNEWS2_COLS',false); // no tables, only divs. 
+define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
+
+
+function tablestyle($caption, $text, $mode='') 
 {
 	global $style;
 	
@@ -58,38 +69,45 @@ function tablestyle($caption, $text, $mode)
 		$type = 'box';
 	}
 	
-	if($mode == 'wm')
+	if($mode == 'wm') // Welcome Message Style. 
 	{
 		
 		echo '<div class="hero-unit">
             <h1>'.$caption.'</h1>
             <p>'.$text.'</p>
-            <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+            <p><a href="'.e_ADMIN.'admin.php" class="btn btn-primary btn-large">Go to Admin area &raquo;</a></p>
           </div>';	
 		
 		return;
 	}
 	
+	if($mode == 'loginbox') // Login Box Style. 
+	{
+		 echo '<div class="well sidebar-nav">
+		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
+		 
+           '.$text.'
+			
+        </div><!--/.well -->';
+          return;
+	}
+			
+		
 	
 	switch($type) 
 	{
-		//FIXME Use Bootstrap css. ie. span4 etc. 
+		// Default Menu/Side-Panel Style
 		case 'menu' :
-			echo '
-				<div class="block">
-					<h4 class="caption">'.$caption.'</h4>
-					'.$text.'
-				</div>
-			';
+			echo '<div class="well sidebar-nav">
+		 <ul class="nav nav-list"><li class="nav-header">'.$caption.'</li></ul>
+		 
+           '.$text.'
+			
+        </div><!--/.well -->';
 		break;
 		
 		case 'span4' :
-			echo '
-				<div class="span4">
-              		<h2>'.$caption.'</h2>
-              		<p>'.$text.'</p>
-            	</div><!--/span-->
-			';
+			echo $text; 
 		break;
 		
 		case 'box':
@@ -102,18 +120,21 @@ function tablestyle($caption, $text, $mode)
 			';
 		break;
 	
-		default:
+		default: // Main Content Style. 
 			echo '
-				<div class="block">
-					<h1 class="caption">'.$caption.'</h1>
-					<div class="block-text">
+				<h2>'.$caption.'</h2>
+					<p>
 						'.$text.'
-					</div>
-				</div>
+					</p>
+				
 			';
 		break;
 	}
 }
+
+
+
+// TODO Convert to : default-home and default-other layouts. 
 
 $HEADER['default'] = '
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -145,10 +166,19 @@ $HEADER['default'] = '
           {MENU=1}
         </div><!--/span-->
 		<div class="span9">
+		 {SETSTYLE=default}
 ';
+
 $FOOTER['default'] = '
 		 {SETSTYLE=span4}
-		{MENU=2}
+		 
+		 <div class="row-fluid">
+            {MENU=2}
+      	</div><!--/row-->
+		 <div class="row-fluid">
+            {MENU=3}
+      	</div><!--/row-->	
+      	
 		</div><!--/span-->
 	</div><!--/row-->
 
@@ -160,8 +190,23 @@ $FOOTER['default'] = '
 
 </div><!--/.fluid-container-->';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // HERO http://twitter.github.com/bootstrap/examples/hero.html
-//FIXME insert shortcodes while maintaing classes. 
+//FIXME insert shortcodes while maintaining only bootstrap classes. 
 
 $HEADER['hero'] = '
 
@@ -214,7 +259,7 @@ $HEADER['hero'] = '
      */
      
      
-//FIXME insert shortcodes while maintaing classes. 
+//FIXME insert shortcodes while maintaining classes. 
 $FOOTER['hero'] = '
  </div>
 
