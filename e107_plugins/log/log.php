@@ -23,18 +23,37 @@
 		err_referer - referrer if came via error page
 		qry = 1 to log query part as well
 
-// Normally the file is 'silent' - if any errors occur, not sure where they'll appear - (file type now text/html instead of text/css)
+// Normally the file is 'silent' - if any errors occur, any error message appears in the page header.
 */
 //error_reporting(0);
-$_E107['minimum'] = true;
-require_once("../../class2.php");
-if (!e107::isInstalled('log')) 
+error_reporting(E_ALL);
+
+
+/**
+ *	Set up path to log files.
+ *	The log file directory contains a flag file which defines whether logging is enabled.
+ */
+function setLogPath()
 {
-	header('Location: '.e_BASE.'index.php');
-	exit;
+	$siteRoot = realpath(dirname(__FILE__).'./../../').'/';
+	@include_once($siteRoot.'e107_config.php');
+	if (!isset($mySQLdefaultdb)) return FALSE;
+	if (!isset($mySQLprefix)) return FALSE;
+
+	$hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);	
+	$logDir = $siteRoot.$SYSTEM_DIRECTORY.$hash.'/logs/';
+	$logEnable = 0;
+	@include_once($logDir.'LogFlag.php');		// See if logging enabled
+	define('e_LOG', $logDir);
+	return $logEnable;
 }
 
+
+if (!setLogPath()) exit();				// Could be logging disabled, missing files, all sorts of things. Just do nothing.
+
 define('log_INIT', TRUE);
+
+
 
 // Array of page names which should have individual query values recorded.
 // The top level array index is the page name.
@@ -46,7 +65,7 @@ $pageUnique = array('page' => 1, 'content' => array('content'));
 $logVals = urldecode(base64_decode($_GET['lv']));
 
 
-file_put_contents(e_LOG."test.log",print_r($logVals,true)); // , FILE_APPEND | LOCK_EX
+//file_put_contents(e_LOG."test.log",print_r($logVals,true)); // , FILE_APPEND | LOCK_EX
 
 parse_str($logVals, $vals);
 
@@ -54,7 +73,7 @@ parse_str($logVals, $vals);
 // @todo may be able to remove this check once minimum PHP version finalised
 if (function_exists('date_default_timezone_get'))
 {
-// Just set a default - it should default to UTC if no timezone set
+	// Just set a default - it should default to UTC if no timezone set
 	date_default_timezone_set(@date_default_timezone_get());
 }
 
@@ -63,8 +82,8 @@ if (function_exists('date_default_timezone_get'))
 header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
-//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
-//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
+//$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
+//$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
 
 $colour = strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
 $res = strip_tags((isset($vals['res']) ? $vals['res'] : ''));
@@ -76,7 +95,7 @@ $date = date('z.Y', time());
 $logPfile = e_LOG.'logp_'.$date.'.php';
 
 //$logString = "Colour: {$colour}  Res: {$res}  Self: {$self} Referrer: {$ref} ErrCode: {$vals['err_direct']}\n";
-//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
+//$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
 
 
 // vet resolution and colour depth some more - avoid dud values
@@ -104,7 +123,7 @@ if ($err_code = strip_tags((isset($vals['err_direct']) ? $vals['err_direct'] : '
 	$ref = addslashes(strip_tags(isset($vals['err_referer']) ? $vals['err_referer'] : ''));
 // Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
 //	$log_string = $err_code.",".$self.",".$ref;
-//  $logfp = fopen("logs/errpages.csv", 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+//  $logfp = fopen(e_LOG."errpages.csv", 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
 	$err_code .= ':';
 }
 
@@ -126,6 +145,7 @@ if($ref && !strstr($ref, $_SERVER['HTTP_HOST']))
 	}
 }
 
+
 $pageDisallow = "cache|file|eself|admin";
 $tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 $tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
@@ -145,7 +165,7 @@ if ($logQry)
 	$pageName .= '+'.$match[3];			// All queries match
 }
 $pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
-//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
+//$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 
 $p_handle = fopen($logPfile, 'r+');
 if($p_handle && flock( $p_handle, LOCK_EX ) ) 
@@ -186,7 +206,7 @@ if(!strstr($ipAddresses, $ip))
 	}
 	$siteUnique ++;
 	$ipAddresses .= $ip.".";		// IP address is stored as hex string
-	require_once("loginfo.php");
+	require_once('loginfo.php');
 }
 
 
@@ -208,73 +228,71 @@ $data = "<?php
 
 if ($p_handle)
 {
-  ftruncate( $p_handle, 0 );
-  fseek( $p_handle, 0 );
-  fwrite($p_handle, $data);
-  fclose($p_handle);
+	ftruncate($p_handle, 0 );
+	fseek( $p_handle, 0 );
+	fwrite($p_handle, $data);
+	fclose($p_handle);
 }
 
 
 // Get current IP address - return as a hex-encoded string
-if(!function_exists('getip'))
+function getip() 
 {
-	function getip() 
+	$ip = $_SERVER['REMOTE_ADDR'];
+	if (getenv('HTTP_X_FORWARDED_FOR')) 
 	{
-		$ip = $_SERVER['REMOTE_ADDR'];
-		if (getenv('HTTP_X_FORWARDED_FOR')) 
-		{
-			if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
-			{  
-				$ip2 = array('#^0\..*#', 
-					   '#^127\..*#', 							// Local loopbacks
-					   '#^192\.168\..*#', 						// RFC1918 - Private Network
-					   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-					   '#^10\..*#', 							// RFC1918 - Private Network
-					   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
-					   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-					   );
-				$ip = preg_replace($ip2, $ip, $ip3[1]);
-			}
-		}
-		if ($ip == "") 
-		{
-			$ip = "x.x.x.x";
-		}
-		if (strpos($ip, ':') === FALSE)
-		{	// Its an IPV4 address - return it as 32-character packed hex string
-			$ipa = explode(".", $ip);
-			return str_repeat('0000',5).'ffff'.sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-		}
-		else
-		{	// Its IPV6
-			if (strpos($ip,'.') !== FALSE)
-			{  // IPV4 'tail' to deal with
-				$temp = strrpos($ip,':') +1;
-				$ipa = explode('.',substr($ip,$temp));
-				$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-			}
-			// Now 'normalise' the address
-			$temp = explode(':',$ip);
-			$s = 8 - count($temp);		// One element will of course be the blank
-			foreach ($temp as $f)
-			{
-				if ($f == '')
-				{
-					$ret .= '0000';		// Always put in one set of zeros for the blank
-					if ($s > 0)
-					{
-						$ret .= str_repeat('0000',$s);
-						$s = 0;
-					}
-				}
-				else
-				{
-					$ret .= sprintf('%04x',hexdec($f));
-				}
-			}
-			return $ret;
+		if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+		{  
+			$ip2 = array('#^0\..*#', 
+				   '#^127\..*#', 							// Local loopbacks
+				   '#^192\.168\..*#', 						// RFC1918 - Private Network
+				   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+				   '#^10\..*#', 							// RFC1918 - Private Network
+				   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+				   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+				   );
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
 		}
 	}
+	if ($ip == "") 
+	{
+		$ip = "x.x.x.x";
+	}
+	if (strpos($ip, ':') === FALSE)
+	{	// Its an IPV4 address - return it as 32-character packed hex string
+		$ipa = explode(".", $ip);
+		return str_repeat('0000',5).'ffff'.sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
+	}
+	else
+	{	// Its IPV6
+		if (strpos($ip,'.') !== FALSE)
+		{  // IPV4 'tail' to deal with
+			$temp = strrpos($ip,':') +1;
+			$ipa = explode('.',substr($ip,$temp));
+			$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
+		}
+		// Now 'normalise' the address
+		$temp = explode(':',$ip);
+		$s = 8 - count($temp);		// One element will of course be the blank
+		foreach ($temp as $f)
+		{
+			if ($f == '')
+			{
+				$ret .= '0000';		// Always put in one set of zeros for the blank
+				if ($s > 0)
+				{
+					$ret .= str_repeat('0000',$s);
+					$s = 0;
+				}
+			}
+			else
+			{
+				$ret .= sprintf('%04x',hexdec($f));
+			}
+		}
+		return $ret;
+	}
 }
+
 
 ?>

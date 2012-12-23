@@ -97,7 +97,7 @@ $(function() {
 	var logString 	= 'referer=' + ref + '&colour=' + colord + '&eself=' + eself + '&res=' + res + '".$err_flag."';
 	logString 		= rstr2b64(logString);
 	
-	var url = '".e_PLUGIN_ABS."log/log.php';
+	var url = '".SITEURLBASE.e_PLUGIN_ABS."log/log.php';
 	var dataText = 'lv='+logString;
 	
 	$.ajax({
@@ -105,7 +105,7 @@ $(function() {
 		url: url,             
 		data: {'lv' :logString},              
 		success: function() {         
-		//	alert(logString);
+			//alert(logString);
 		}
 	});
 });
