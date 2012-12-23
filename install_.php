@@ -1326,7 +1326,7 @@ class e_install
 		
 		//Create default plugin-table entries.
 //		e107::getConfig('core')->clearPrefCache();
-		e107::getPlugin()->update_plugins_table();
+		e107::getPlugin()->update_plugins_table('update');
 		$this->logLine('Plugins table updated');
 
 		// Install Theme-required plugins
@@ -1345,7 +1345,7 @@ class e_install
 			}
 		}
 
-		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.
+		e107::getSingleton('e107plugin')->save_addon_prefs('update'); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
 
 		$tm = e107::getSingleton('themeHandler');

@@ -66,7 +66,7 @@ if(e_AJAX_REQUEST && isset($_GET['src'])) // Ajax
 		$dir 		= basename($unarc[0]['filename']);
 		$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
 		
-		e107::getSingleton('e107plugin')->update_plugins_table();
+		e107::getSingleton('e107plugin')->update_plugins_table('update');
 		e107::getDb()->db_Select_gen("SELECT plugin_id FROM #plugin WHERE plugin_path = '".$plugPath."' LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC);
 		$status = e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
@@ -528,7 +528,7 @@ class pluginManager{
 				$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 			}
 
-			$plugin->save_addon_prefs();
+			$plugin->save_addon_prefs('update');
 
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
@@ -651,7 +651,7 @@ class pluginManager{
 			}
 			else
 			{
-				 $plugin ->save_addon_prefs();
+				 $plugin ->save_addon_prefs('update');
 				$admin_log->log_event('PLUGMAN_01', $this->id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
 				$this->show_message($text, E_MESSAGE_SUCCESS);
 			}
@@ -745,7 +745,7 @@ class pluginManager{
 
 
 		$emessage->add($text, E_MESSAGE_SUCCESS);
-		$plugin->save_addon_prefs();
+		$plugin->save_addon_prefs('update');
 
    }
 
@@ -773,7 +773,7 @@ class pluginManager{
     function pluginCheck()
 	{
 		global $plugin;
-		$plugin->update_plugins_table();
+		$plugin->update_plugins_table('update');
     }
 		// ----------------------------------------------------------
 		//        render plugin information ...
