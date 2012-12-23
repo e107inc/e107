@@ -196,7 +196,7 @@ class system_tools
 
 		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
 		{
-			$this->plugin_viewscan();
+			$this->plugin_viewscan('refresh');
 		}
 
 		if(vartrue($_POST['perform_utf8_convert']))
@@ -843,7 +843,7 @@ class system_tools
 	 * Plugin Folder Scanner
 	 * @return none
 	 */
-	private function plugin_viewscan()
+	private function plugin_viewscan($mode = 'update')
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
 		$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
@@ -858,8 +858,8 @@ class system_tools
 
 		require_once (e_HANDLER."plugin_class.php");
 		$ep = new e107plugin();
-		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
-		$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
+		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
+		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
 
 		/* we all are awaiting for PHP5 only support - method chaining...
 		$mes->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)

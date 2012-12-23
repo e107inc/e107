@@ -211,10 +211,18 @@ class e107plugin
 		return count($needed) ? $needed : FALSE;		
 	}
 
+
+
 	/**
 	 * Check for new plugins, create entry in plugin table and remove deleted plugins
+	 *
+	 *	@param string $mode = install|upgrade|refresh|uninstall - defines the intent of the call
+	 *
+	 *	'upgrade' and 'refresh' are very similar in intent, and often take the same actions:
+	 *		'upgrade' signals a possible change to the installed list of plugins
+	 *		'refresh' validates the stored data for existing plugins, recreating any that has gone missing
 	 */
-	function update_plugins_table()
+	function update_plugins_table($mode = 'upgrade')
 	{
 		
 		$sql = e107::getDb();
@@ -300,7 +308,10 @@ class e107plugin
 						$this->XmlLanguageFiles('upgrade');
 					}
 					
-					
+					if ($mode == 'refresh')
+					{
+						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], $plugin_path)) $sp = TRUE;
+					}
 
 					// Check for missing plugin_category in plugin table.
 					if ($pluginDBList[$plugin_path]['plugin_category'] == '' || $pluginDBList[$plugin_path]['plugin_category'] != $plug_info['category'])
@@ -527,7 +538,7 @@ class e107plugin
 	}
 	
 	/**
-	 * Field atributes ($field_attrib array) as they have to be defined in plugin.xml:
+	 * Field attributes ($field_attrib array) as they have to be defined in plugin.xml:
 	 * name - REQUIRED string
 	 * text -  (string|constant name) field label 
 	 * type - REQUIRED (constant name) see EUF_* constants in e107_user_extended class
@@ -545,6 +556,7 @@ class e107plugin
 	 * @param string $field_name normalized field name (see self::ue_field_name())
 	 * @param array $field_attrib
 	 * @param string $field_source used for system user fields 
+	 *
 	 * @return boolean success
 	 */
 	function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
@@ -882,7 +894,8 @@ class e107plugin
 							$pref[$k] = $v;
 							break;
 
-						case 'update':
+						case 'update' :
+						case 'upgrade' :
 						case 'refresh':
 							// Only update if $pref doesn't exist
 							if (!isset($pref[$k]))
@@ -908,7 +921,8 @@ class e107plugin
 					switch ($action)
 					{
 						case 'add':
-						case 'update':
+						case 'update' :
+						case 'upgrade' :
 						case 'refresh':
 							if (!in_array($v, $tmp))
 								$tmp[] = $v;
@@ -926,7 +940,8 @@ class e107plugin
 						case 'add':
 							$pref[$k][$path] = $v;
 							break;
-						case 'update':
+						case 'update' :
+						case 'upgrade' :
 						case 'refresh':
 							if (!isset($pref[$k][$path]))
 								$pref[$k][$path] = $v;
@@ -1295,7 +1310,7 @@ class e107plugin
 			$canContinue = FALSE;
 		}
 			
-		// Load install longuage file and set lan_global pref. 
+		// Load install language file and set lan_global pref. 
 		$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
@@ -1569,10 +1584,79 @@ class e107plugin
 		return $canContinue;
 	}
 
+
+
 	/**
-	 * Process XML Tag <LanguageFiles> // DEPRECATED - using _install _log and _global
-	 * @param object $function
-	 * @param object $tag
+	 *	Look for a language file in the two acceptable places.
+	 *	If found, update the appropriate pref 
+	 *
+	 *	@param string $fileEnd - the suffix of the file name (e.g. '_global')
+	 *	@param string $prefName - the name of the pref to be updated
+	 *	@param string $when = install|upgrade|refresh|uninstall ('update' also supported as alias for 'upgrade')
+	 *	@param string $isInstalled - flag indicates whether plugin installed
+	 *			- if false, any preference is removed.
+	 *			- if TRUE, any preference is added
+	 *			- so set TRUE to add value to pref regardless
+	 *	@param string $plugin - name of plugin folder. If empty string, $this->plugFolder is used.
+	 *
+	 *	@return boolean TRUE if pref changed
+	 */
+	public function XmlLanguageFileCheck($fileEnd, $prefName, $when, $isInstalled, $plugin = '')
+	{
+		$core = e107::getConfig('core');
+		
+		if (trim($plugin) == '') $plugin = $this->plugFolder;
+		if (!$isInstalled) $when = 'uninstall';
+	
+		$updated = false;
+
+		$path_a = e_PLUGIN.$plugin.'/languages/English'.$fileEnd.'.php';  // always check for English so we have a fall-back
+		$path_b = e_PLUGIN.$plugin.'/languages/English/English'.$fileEnd.'.php';
+		$pathEntry = '';
+
+		if (file_exists($path_a))
+		{
+			$pathEntry = '--LAN--'.$fileEnd.'.php';
+		}
+		elseif (file_exists($path_b))
+		{
+			$pathEntry = '--LAN--/--LAN--'.$fileEnd.'.php';
+		}
+
+		$currentPref = $core->getPref($prefName.'/'.$plugin);
+		echo 'Path: '.$plugin.' Current: '.$currentPref.'  New: '.$pathEntry.'<br />';
+		switch ($when)
+		{
+			case 'install':
+			case 'upgrade':
+			case 'update' :
+			case 'refresh':
+				if ($currentPref != $pathEntry)
+				{
+					e107::getMessage()->addDebug('Adding '.$plugin.' to '.$prefName);
+					$core->setPref($prefName.'/'.$plugin, $pathEntry);
+					$updated = true;
+				}
+				break;
+			case 'uninstall':
+				if ($currentPref)
+				{
+					e107::getMessage()->addDebug('Removing '.$plugin.' from '.$prefName);
+					$core->removePref($prefName.'/'.$plugin);
+					$updated = true;
+				}
+			break;
+		}	
+		return $updated;
+	}
+
+
+
+	/**
+	 * Process XML Tag <LanguageFiles> // Tag is DEPRECATED - using _install _log and _global
+	 * @param object $function - should $when have been used?
+	 * @param object $tag (not used?)
+	 *	@param string $when = install|upgrade|refresh|uninstall
 	 * @return none
 	 */
 	function XmlLanguageFiles($function, $tag='', $when = '')
@@ -2259,7 +2343,17 @@ class e107plugin
 		return $text;
 	}
 
-	function save_addon_prefs() // scan the plugin table and create path-array-prefs for each addon.
+
+	/*
+	 *	scan the plugin table and create path-array-prefs for each addon.
+	 *
+	 *	@param string $mode = install|upgrade|refresh|uninstall - defines the intent of the call
+	 *
+	 *	'upgrade' and 'refresh' are very similar in intent, and often take the same actions:
+	 *		'upgrade' signals a possible change to the installed list of plugins - usually an upgrade
+	 *		'refresh' validates the stored data for existing plugins, recreating any that has gone missing
+	 */
+	function save_addon_prefs($mode = 'upgrade') 
 	{
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');

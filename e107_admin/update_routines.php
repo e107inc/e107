@@ -1066,7 +1066,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Update plugin table');
 		require_once(e_HANDLER.'plugin_class.php');
 		$ep = new e107plugin;
-		$ep -> update_plugins_table();
+		$ep -> update_plugins_table('update');
 	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
 	 //	catch_error($sql);
 	}
@@ -1435,8 +1435,8 @@ function update_70x_to_706($type='')
 		// update new fields
         require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
-		$ep->update_plugins_table();
-		$ep->save_addon_prefs();
+		$ep->update_plugins_table('update');
+		$ep->save_addon_prefs('update');
 	}
 
 	if (!isset($pref['displayname_maxlength']))
