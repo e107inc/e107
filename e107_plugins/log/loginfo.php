@@ -15,18 +15,18 @@ $logIfile = e_LOG."logi_{$date}.php";
 $i_handle = fopen($logIfile, 'r+');
 if($i_handle && flock( $i_handle, LOCK_EX ) ) 
 {
-  $log_file_contents = '';
-  while (!feof($i_handle))
-  {  // Assemble a string of data
-    $log_file_contents.= fgets($i_handle,1000);
-  }
-  $log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
-  if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
+	$log_file_contents = '';
+	while (!feof($i_handle))
+	{  // Assemble a string of data
+		$log_file_contents.= fgets($i_handle,1000);
+	}
+	$log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
+	if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
 }
 else
 {
-  echo "Couldn't log data<br /><br /><br /><br />";
-  exit;
+	echo "Couldn't log data<br /><br /><br /><br />";
+	exit;
 }
 
 $browser = getBrowser($agent);
@@ -34,64 +34,85 @@ $os = getOs($agent);
 
 if($screenstats && $screenstats != "@") 
 {
-  if(array_key_exists($screenstats, $screenInfo)) 
-  {
-	$screenInfo[$screenstats] ++;
-  } 
-  else 
-  {
-	$screenInfo[$screenstats] = 1;
-  }
+	if(array_key_exists($screenstats, $screenInfo)) 
+	{
+		$screenInfo[$screenstats] ++;
+	} 
+	else 
+	{
+		$screenInfo[$screenstats] = 1;
+	}
 }
 
-if(array_key_exists($browser, $browserInfo)) {
+if(array_key_exists($browser, $browserInfo)) 
+{
 	$browserInfo[$browser] ++;
-} else {
+} 
+else 
+{
 	$browserInfo[$browser] = 1;
 }
 
-if(array_key_exists($os, $osInfo)) {
+if(array_key_exists($os, $osInfo)) 
+{
 	$osInfo[$os] ++;
-} else {
+} 
+else 
+{
 	$osInfo[$os] =1;
 }
 
 /* referer data ... */
-if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) {
-	if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) {
+if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) 
+{
+	if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) 
+	{
 		$refdom = $match[0];
-		if(array_key_exists($refdom, $refInfo)) {
+		if(array_key_exists($refdom, $refInfo)) 
+		{
 			$refInfo[$refdom]['ttl'] ++;
-		} else {
+		} 
+		else 
+		{
 			$refInfo[$refdom] = array('url' => $ref, 'ttl' => 1);
 		}
 	}
 }
 
 /* is the referal from Google? If so get search string ... */
-if(preg_match("#q=(.*?)($|&)#is", $oldref, $match)) {
+if(preg_match("#q=(.*?)($|&)#is", $oldref, $match)) 
+{
 	$schstr = trim($match[1]);
 	$schstr = htmlentities(urldecode($schstr));
-	if(array_key_exists($schstr, $searchInfo) && $schstr) {
+	if(array_key_exists($schstr, $searchInfo) && $schstr) 
+	{
 		$searchInfo[$schstr] ++;
-	} else {
+	} 
+	else 
+	{
 		$searchInfo[$schstr] = 1;
 	}
 }
 
-if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) {
+if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) 
+{
 	$host = trim(strtolower(substr($tmp, strrpos($tmp, ".")+1)));
-	if(!is_numeric($host) && !strstr($host, "calhost")) {
-		if(array_key_exists($host, $domainInfo)) {
+	if(!is_numeric($host) && !strstr($host, "calhost")) 
+	{
+		if(array_key_exists($host, $domainInfo)) 
+		{
 			$domainInfo[$host] ++;
-		} else {
+		} 
+		else 
+		{
 			$domainInfo[$host] =1;
 		}
 	}
 }
 
 /* last 20 visitors */
-if(count($visitInfo) >= 20) {
+if(count($visitInfo) >= 20) 
+{
 	$length = 20;
 	$offset = count($visitInfo)-$length;
 	$visitInfo = array_slice($visitInfo, $offset, $length);
@@ -123,14 +144,15 @@ $data .= '?>';
 
 if ($i_handle)
 {
-  ftruncate($i_handle, 0);
-  fseek( $i_handle, 0 );
-  fwrite($i_handle, $data);
-  fclose($i_handle);
+	ftruncate($i_handle, 0);
+	fseek( $i_handle, 0 );
+	fwrite($i_handle, $data);
+	fclose($i_handle);
 }
 
 
-function getBrowser($agent) {
+function getBrowser($agent) 
+{
 	//
 	// All "root" browsers must come at the end of the list, unfortunately.
 	// Otherwise, browsers based on them will never be seen.
@@ -231,10 +253,11 @@ function getBrowser($agent) {
 			}
 		}
 	}
-	return ("Unknown");
+	return ('Unknown');
 }
 
-function getOs($agent) {
+function getOs($agent) 
+{
 	// http://www.zytrax.com/tech/web/browser_ids.htm
 	$os = array(
 		// mobile come first - latest rules could break the check
@@ -290,5 +313,5 @@ function getOs($agent) {
 			}
 		}
 	}
-	return ("Unspecified");
+	return ('Unspecified');
 }

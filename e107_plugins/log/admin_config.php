@@ -19,7 +19,6 @@
  *	@subpackage	log
  *	@version 	$Id$;
  *
- *	@todo Change log directory to use new system log directory
  */
 
 require_once('../../class2.php');
@@ -35,13 +34,13 @@ require_once(e_HANDLER.'userclass_class.php');
 
 $frm = e107::getForm();
 
-define('LOGPATH', e_PLUGIN.'log/');
+define('LogFlagFile', 'LogFlag.php');
 
 include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin_log.php');
 
 if (e_QUERY) 
 {
-  $sl_qs = explode(".", e_QUERY);
+	$sl_qs = explode('.', e_QUERY);
 }
 $action = varset($sl_qs[0],'config');
 $params = varset($sl_qs[1],'');
@@ -215,38 +214,39 @@ if(IsSet($_POST['wipeSubmit']))
 
 
 
-if(!is_writable(LOGPATH."logs")) 
+if(!is_writable(e_LOG)) 
 {
 	$message = "<b>".ADSTAT_L38."</b>";
 }
 
 if (isset($_POST['updatesettings'])) 
 {
-  $statList = array(		// Type = 0 for direct text, 1 for integer
-	'statActivate' 		=> 0,
-	'statCountAdmin' 	=> 0,
-	'statUserclass' 	=> 0,
-	'statBrowser'		=> 1,
-	'statOs'			=> 1,
-	'statScreen' 		=> 1,
-	'statDomain' 		=> 1,
-	'statRefer' 		=> 1,
-	'statQuery' 		=> 1,
-	'statRecent' 		=> 1,
-	'statDisplayNumber' => 0,
-	'statPrevMonth'		=> 1
-  );
-  $logStr = '';
-  foreach ($statList as $k => $type)
-  {
-    switch ($type)
+	$statList = array(		// Type = 0 for direct text, 1 for integer
+		'statActivate' 		=> 0,
+		'statCountAdmin' 	=> 0,
+		'statUserclass' 	=> 0,
+		'statBrowser'		=> 1,
+		'statOs'			=> 1,
+		'statScreen' 		=> 1,
+		'statDomain' 		=> 1,
+		'statRefer' 		=> 1,
+		'statQuery' 		=> 1,
+		'statRecent' 		=> 1,
+		'statDisplayNumber' => 0,
+		'statPrevMonth'		=> 1
+	);
+	$logStr = '';
+	foreach ($statList as $k => $type)
 	{
-	  case 0 : $pref[$k] = $_POST[$k]; break;
-	  case 1 : $pref[$k] = intval($_POST[$k]); break;
+		switch ($type)
+		{
+		  case 0 : $pref[$k] = $_POST[$k]; break;
+		  case 1 : $pref[$k] = intval($_POST[$k]); break;
+		}
+		$logStr .= "[!br!]{$k} => ".$pref[$k];
 	}
-	$logStr .= "[!br!]{$k} => ".$pref[$k];
-  }
 	save_prefs();
+	file_put_contents(e_LOG.LogFlagFile, "<?php\n\$logEnable={$pref['statActivate']};\n?>\n");		// Logging task uses to see if logging enabled
 	$admin_log->log_event('STAT_02',ADSTAT_L82.$logStr,'');
 	$message = ADSTAT_L17;
 }
@@ -254,7 +254,7 @@ if (isset($_POST['updatesettings']))
 
 if (isset($message)) 
 {
-  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 
