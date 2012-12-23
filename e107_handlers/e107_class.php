@@ -2921,7 +2921,7 @@ class e107
 			{
 				if(stristr($_SERVER['QUERY_STRING'], $res))
 				 {
-					die('Access denied.');
+					// die('Access denied.');
 				}
 			}
 		}

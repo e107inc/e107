@@ -1,5 +1,21 @@
 <?php
 /*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: ../e107_languages/English/admin/lan_plugin.php,v $
+ * $Revision: 1.0 $
+ * $Date: 2012/12/23 10:00:00 $
+ * $Author: $
+ */
+
+
+/*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
@@ -30,7 +46,6 @@ define("EPL_ADLAN_17", "More info...");
 define("EPL_ADLAN_18", "Unable to successfully create table(s) for this plugin.");
 define("EPL_ADLAN_19", "Database tables successfully created.");
 // define("EPL_ADLAN_20", "Preference settings successfully created."); // duplicate of EPL_ADLAN_8;
-
 define("EPL_ADLAN_21", "Plugin is already installed.");
 define("EPL_ADLAN_22", "Installed");
 define("EPL_ADLAN_23", "Not installed");
@@ -60,18 +75,9 @@ define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activa
 define("EPL_ADLAN_46", "PCLZIP extract error:");
 define("EPL_ADLAN_47", "PCLTAR extract error: ");
 define("EPL_ADLAN_48", "code:");
-define('EPL_ADLAN_49', "Tables not deleted during uninstall process by request");
-
-// define("EPL_CANCEL", "Cancel"); use LAN_CANCEL instead !!
-// define("EPL_EMAIL", "email");
-define("EPL_WEBSITE", "Website");
-// define("EPL_OPTIONS", "Options"); use LAN_OPTIONS instead!
-define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
-define("EPL_DIRECTORY", "directory.");
-define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
-define("EPL_UPGRADE", "Upgrade");
-
+define("EPL_ADLAN_49", "Tables not deleted during uninstall process by request");
 define("EPL_ADLAN_50", "Comments successfully deleted");
+
 
 define("EPL_ADLAN_53", "Directory not writable");
 define("EPL_ADLAN_54", "Please select the options for uninstalling the plugin:");
@@ -82,33 +88,45 @@ define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinsta
 define("EPL_ADLAN_59", "Delete plugin files");
 define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
-define('EPL_ADLAN_62', 'Cancel uninstall');
-define('EPL_ADLAN_63', 'Uninstall:');
-define('EPL_ADLAN_64', 'Folder');
-
-define ('EPL_ADLAN_70','Required plugin not installed: ');
-define ('EPL_ADLAN_71','Newer plugin version required: ');
-define ('EPL_ADLAN_72',' Version: ');
-define ('EPL_ADLAN_73','Required PHP extension not loaded: ');
-define ('EPL_ADLAN_74','Newer PHP version required: ');
-define ('EPL_ADLAN_75','Newer MySQL version required: ');
-define ('EPL_ADLAN_76','Error in plugin.xml');
-define ('EPL_ADLAN_77','Cannot find plugin.xml');
-define ('EPL_ADLAN_78','Delete User Classes created by plugin:');
-define ('EPL_ADLAN_79','Only delete these if you have not used them for other purposes.');
-define ('EPL_ADLAN_80','Delete extended user fields created by plugin:');
-define ('EPL_ADLAN_81','Xhtml');
-define ('EPL_ADLAN_82','Icon');
-define ('EPL_ADLAN_83','Notes');
-define ('EPL_ADLAN_84','Install Selected');
-define ('EPL_ADLAN_85','Uninstall Selected');
-define ('EPL_ADLAN_86','All files removed from ');
-define ('EPL_ADLAN_87','File deletion failed ');
+define("EPL_ADLAN_62", "Cancel uninstall");
+define("EPL_ADLAN_63", "Uninstall:");
+define("EPL_ADLAN_64", "Folder");
 
 
-define('LAN_UPGRADE_SUCCESSFUL', 'Upgrade Successful');
-define('LAN_INSTALL_SUCCESSFUL', 'Installation Successful');
-define('LAN_INSTALL_FAIL', 'Installation Failed');
+
+
+
+define("EPL_ADLAN_70","Required plugin not installed: ");
+define("EPL_ADLAN_71","Newer plugin version required: ");
+define("EPL_ADLAN_72"," Version: ");
+define("EPL_ADLAN_73","Required PHP extension not loaded: ");
+define("EPL_ADLAN_74","Newer PHP version required: ");
+define("EPL_ADLAN_75","Newer MySQL version required: ");
+define("EPL_ADLAN_76","Error in plugin.xml");
+define("EPL_ADLAN_77","Cannot find plugin.xml");
+define("EPL_ADLAN_78","Delete User Classes created by plugin:");
+define("EPL_ADLAN_79","Only delete these if you have not used them for other purposes.");
+define("EPL_ADLAN_80","Delete extended user fields created by plugin:");
+define("EPL_ADLAN_81","Xhtml");
+define("EPL_ADLAN_82","Icon");
+define("EPL_ADLAN_83","Notes");
+define("EPL_ADLAN_84","Install Selected");
+define("EPL_ADLAN_85","Uninstall Selected");
+define("EPL_ADLAN_86","All files removed from ");
+define("EPL_ADLAN_87","File deletion failed ");
+
+// define("EPL_CANCEL", "Cancel"); use LAN_CANCEL instead !!
+// define("EPL_EMAIL", "email");
+// define("EPL_OPTIONS", "Options"); use LAN_OPTIONS instead!
+define("EPL_WEBSITE", "Website");
+define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
+define("EPL_DIRECTORY", "directory.");
+define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
+define("EPL_UPGRADE", "Upgrade");
+
+define("LAN_UPGRADE_SUCCESSFUL", "Upgrade Successful");
+define("LAN_INSTALL_SUCCESSFUL", "Installation Successful");
+define("LAN_INSTALL_FAIL", "Installation Failed");
 
 
 ?>

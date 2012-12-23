@@ -349,14 +349,14 @@ $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms
 $sLogo = siteinfo_shortcodes::sc_logo();
 */
 
-$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'_common','help=Used by Facebook and others. Should be a square image.');
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'_common','help='.PRFLAN_65);
 
 $text .= "
 						</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_214."</td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help=Used by some themes as the header image on some pages.')."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'_common','help='.PRFLAN_66)."</td>
 					</tr>
 					<tr>
 						<td>".PRFLAN_5."</td>
@@ -1076,13 +1076,13 @@ $text .= "
 				
 		$signup_option_names = array(
 	//	"signup_option_loginname" 	=> "Login Name",
-		"signup_option_email_confirm" 	=> "Email Confirmation",
+		"signup_option_email_confirm" 	=> CUSTSIG_9,  // "Email Confirmation"
 		"signup_option_realname" 		=> CUSTSIG_2,
 		"signup_option_signature" 		=> CUSTSIG_6,
 		"signup_option_image" 			=> CUSTSIG_7,
 		"signup_option_class" 			=> CUSTSIG_17,
 		'signup_option_customtitle'		=> CUSTSIG_20,
-		'signup_option_hideemail'		=> 'Option to hide email'
+		'signup_option_hideemail'		=> CUSTSIG_10  // 'Option to hide email'
 	);
 
 	foreach($signup_option_names as $value => $key)
@@ -1537,7 +1537,7 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>Allow users to post comments: </td>
+						<td>".PRFLAN_99."</td>
 						<td>
 							".$frm->radio_switch('comments_disabled', $pref['comments_disabled'], LAN_NO, LAN_YES,array('reverse'=>1))."
 						</td>
@@ -1577,22 +1577,19 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>Moderate Comments made by: </td>
+						<td>".PRFLAN_222."</td>
 						<td>
-							".
-							
-							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
-							"
-							<div class='field-help'>Comments will require manual approval by an admin prior to being visible to other users</div>
+							".$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes")."
+							<div class='field-help'>".PRFLAN_67."</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Comment Sorting: </td>
+						<td>".PRFLAN_224."</td>
 						<td>";
 						
 						$comment_sort = array(
-							"desc"	=> "Most recent comments first", //default //TODO LAN
-							'asc'	=> "Most recent comments last" 
+							"desc"	=> PRFLAN_225,
+							"asc"	=> PRFLAN_226 
 						);
 					
 					$text .= $frm->selectbox('comments_sort',$comment_sort, $pref['comments_moderate'])."
@@ -1684,11 +1681,11 @@ $text .= "
 				<tbody>";
 	
 		$js_options = array(
-			'auto'	=> 'Auto (on-demand)', 	// load based on dependency
-			'admin'	=> 'Admin Area', 		// Always load in admin
-			'front'	=> 'Front-End', 		// Always load in front-end
-			'all'	=> "Both",				// Always load in admin and front-end
-			'none'	=> 'Disabled' 			// disabled
+			'auto'	=> PRFLAN_231, 		// load based on dependency
+			'admin'	=> PRFLAN_232, 		// Always load in admin
+			'front'	=> PRFLAN_233, 		// Always load in front-end
+			'all'	=> PRFLAN_234,		// Always load in admin and front-end
+			'none'	=> PRFLAN_235 		// disabled
 		);	
 	
 		
@@ -1698,8 +1695,8 @@ $text .= "
 
 		
 		$js_types = array(
-			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
-			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),		
+			array('id'	=> 'prototype',		'name'=> PRFLAN_236),		// Prototype (local)
+			array('id'	=> 'jquery', 		'name'=> PRFLAN_237),		// jQuery (local)
  		);	
 		
 		//TODO // separate switch for CDN.. or automatic fall-back. 	
@@ -1727,28 +1724,28 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>Disable scripts consolidation</td>
+						<td>".PRFLAN_238."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>If disabled, scripts will be loaded in one consolidated file</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Enable consolidated scripts zlib compression:</td>
+						<td>".PRFLAN_239."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts server cache:</td>
+						<td>".PRFLAN_240."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
 						</td>
 					</tr>
 					<tr>
-						<td>Disable consolidated scripts browser cache:</td>
+						<td>".PRFLAN_241."</td>
 						<td>
 							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>Used only when script consolidation is enabled</div>
@@ -1818,7 +1815,8 @@ $text .= "
 ";
 
 $auth_dropdown = '';
-if($authlist)
+// Notice: Undefined variable: authlist, Line 1822 of \e107_admin\prefs.php
+if(isset($authlist))
 {
 	$auth_dropdown = "\n".$frm->select_open('auth_method')."\n";
 	foreach($authlist as $a)
@@ -1893,24 +1891,24 @@ function pref_submit($post_id = '')
 function prefs_adminmenu()
 {
 	$var['core-prefs-main']['text'] = PRFLAN_1;
-	$var['core-prefs-email']['text'] = "Email &amp; Contact Info.";
+	$var['core-prefs-email']['text'] = PRFLAN_18; // Email &amp; Contact Info.
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 	$var['core-prefs-sociallogin']['text'] = "Social Logins";
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
-	$var['core-prefs-uploads']['text'] = "File Uploading"; // TODO LAN
+	$var['core-prefs-uploads']['text'] = PRFLAN_20;    // File Uploading
 	
-	$var['core-prefs-header1']['header'] = "Advanced Options";	
+	$var['core-prefs-header1']['header'] = LAN_OPTIONS_ADV;	
 	
 	$var['core-prefs-display']['text'] = PRFLAN_13;
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-date']['text'] = PRFLAN_21;	
-	$var['core-prefs-javascript']['text'] = "Javascript Framework"; // TODO LAN
+	$var['core-prefs-javascript']['text'] = PRFLAN_230;  // Javascript Framework
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
-	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+	e107::getNav()->admin(LAN_OPTIONS_BASIC.'--id--prev_nav', 'core-prefs-main', $var);
 }
 

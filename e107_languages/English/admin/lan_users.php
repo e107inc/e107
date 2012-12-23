@@ -162,79 +162,79 @@ define("USRLAN_154", "Clear email for checked");
 define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
 define("USRLAN_156", "Email address is already in use");
 
-define('USRLAN_160', 'Total --COUNT-- users of type --TYPE-- pruned');
-define('USRLAN_161', 'User ID --UID-- name --NAME-- banned');
-define('USRLAN_162', 'User ID --UID-- name --NAME-- unbanned');
-define('USRLAN_163', 'User ID --UID-- deleted');
-define('USRLAN_164', 'User ID --UID-- name --NAME-- (--EMAIL--) made admin');
-define('USRLAN_165', 'User ID --UID-- name --NAME-- admin status revoked');
-define('USRLAN_166', 'User ID --UID-- name --NAME-- approved');
+define("USRLAN_160", "Total --COUNT-- users of type --TYPE-- pruned");
+define("USRLAN_161", "User ID --UID-- name --NAME-- banned");
+define("USRLAN_162", "User ID --UID-- name --NAME-- unbanned");
+define("USRLAN_163", "User ID --UID-- deleted");
+define("USRLAN_164", "User ID --UID-- name --NAME-- (--EMAIL--) made admin");
+define("USRLAN_165", "User ID --UID-- name --NAME-- admin status revoked");
+define("USRLAN_166", "User ID --UID-- name --NAME-- approved");
 //FIX ME USERLAN_160 - USERLAN_166 need to be reworked avoid duplication. 
 
-define('USRLAN_167', 'Validation email ID --ID-- resent to --NAME-- at --EMAIL--');
-define('USRLAN_168', 'Re-send --COUNT-- validation emails');
-define('USRLAN_169', 'Total --COUNT-- bounced emails deleted');
-define('USRLAN_170', 'Random user name');
-define('USRLAN_171', 'Random password');
-define('USRLAN_172', 'Password set');
-define('USRLAN_173', 'Login name set');
-define('USRLAN_174', 'User name --NAME-- created');
-define('USRLAN_175', '');
+define("USRLAN_167", "Validation email ID --ID-- resent to --NAME-- at --EMAIL--");
+define("USRLAN_168", "Re-send --COUNT-- validation emails");
+define("USRLAN_169", "Total --COUNT-- bounced emails deleted");
+define("USRLAN_170", "Random user name");
+define("USRLAN_171", "Random password");
+define("USRLAN_172", "Password set");
+define("USRLAN_173", "Login name set");
+define("USRLAN_174", "User name --NAME-- created");
+define("USRLAN_175", "");
 
-define('USRLAN_179', 'User banned: ');
-define('USRLAN_180', 'IP address of {IP} appears on whitelist; IP not banned.');
-define('USRLAN_181', 'Choose option for user status and sending confirmation email to the user');
-define('USRLAN_182', 'Invalid characters in login name'); // duplicate - USRLAN_92, used for 'verify' user action
-define('USRLAN_183', 'That login name already in use');  // wrong used with  'reqverify' user action
-define('USRLAN_184', 'Length of login name outside limits');
-define('USRLAN_185', 'A user account has been created for you at {SITEURL} with the following login:<br /><br /><b>Login Name:</b> {LOGINNAME}<br /><b>Password:</b> {PASSWORD}<br/><b>Activation link:</b> {ACTIVATION_LINK}<br /><br />');
-define('USRLAN_186', 'Please go to the site as soon as possible and log in, then change your password using the \'Settings\' option.<br /><br />You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.');
-define('USRLAN_187', 'Access to website: ');
-define('USRLAN_188', 'Email sent successfully');
-define('USRLAN_189', 'Error sending email');
+define("USRLAN_179", "User banned: ");
+define("USRLAN_180", "IP address of {IP} appears on whitelist; IP not banned.");
+define("USRLAN_181", "Choose option for user status and sending confirmation email to the user");
+define("USRLAN_182", "Invalid characters in login name"); // duplicate - USRLAN_92, used for "verify" user action
+define("USRLAN_183", "That login name already in use");  // wrong used with  "reqverify" user action
+define("USRLAN_184", "Length of login name outside limits");
+define("USRLAN_185", "A user account has been created for you at {SITEURL} with the following login:<br /><br /><b>Login Name:</b> {LOGINNAME}<br /><b>Password:</b> {PASSWORD}<br/><b>Activation link:</b> {ACTIVATION_LINK}<br /><br />");
+define("USRLAN_186", "Please go to the site as soon as possible and log in, then change your password using the \"Settings\" option.<br /><br />You can also change other settings at the same time.<br /><br />Note that your password cannot be recovered if you lose it.");
+define("USRLAN_187", "Access to website: ");
+define("USRLAN_188", "Email sent successfully");
+define("USRLAN_189", "Error sending email");
 
-define('USRLAN_190', 'New user probationary period (days)');
-define('USRLAN_191', 'Administrator can impose restrictions during this period in some areas');
-define('USRLAN_192', ''); // was 'days' use value in lan_date.php instead. 
-define('USRLAN_193', 'Nothing changed - not saved');
-define('USRLAN_194', 'Signature may be modified by');
-define('USRLAN_195', '');
+define("USRLAN_190", "New user probationary period (days)");
+define("USRLAN_191", "Administrator can impose restrictions during this period in some areas");
+define("USRLAN_192", ""); // was days use value in lan_date.php instead. 
+define("USRLAN_193", "Nothing changed - not saved");
+define("USRLAN_194", "Signature may be modified by");
+define("USRLAN_195", "");
 
 //User Ranks phrases
-// define('USRLAN_196', 'User ranks'); // use LAN_USER_RANKS
-define('USRLAN_197', 'Source');
-define('USRLAN_198', 'Field Name');
-define('USRLAN_199', 'Operation');
-define('USRLAN_200', 'Value');
-define('USRLAN_201', 'Number of comments');
-define('USRLAN_202', 'Number of site visits');
-define('USRLAN_203', 'Number of days member');
-define('USRLAN_204', 'Core');
-// define('USRLAN_205', 'Plugin'); // Use LAN_PLUGIN
-define('USRLAN_206', 'Current Calculation');
-define('USRLAN_207', 'Type');
-define('USRLAN_208', 'Rank Name');
-define('USRLAN_209', 'Lower Threshold');
-define('USRLAN_210', 'Lang Prefix');
-define('USRLAN_211', 'Rank Image');
-define('USRLAN_212', 'User Rank'); 
-// define('USRLAN_213', 'Are you sure you want to delete this rank'); // use LAN_CONFIRMDEL
-define('USRLAN_214', 'Add New Rank');
-define('USRLAN_215', 'Update Ranks');
-define('USRLAN_216', '--select image--');
-define('USRLAN_217', 'User Ranks Updated');
-define('USRLAN_218', 'Deletion of User Rank');
+// define("USRLAN_196", "User ranks"); // use LAN_USER_RANKS
+define("USRLAN_197", "Source");
+define("USRLAN_198", "Field Name");
+define("USRLAN_199", "Operation");
+define("USRLAN_200", "Value");
+define("USRLAN_201", "Number of comments");
+define("USRLAN_202", "Number of site visits");
+define("USRLAN_203", "Number of days member");
+define("USRLAN_204", "Core");
+// define("USRLAN_205", "Plugin"); // Use LAN_PLUGIN
+define("USRLAN_206", "Current Calculation");
+define("USRLAN_207", "Type");
+define("USRLAN_208", "Rank Name");
+define("USRLAN_209", "Lower Threshold");
+define("USRLAN_210", "Lang Prefix");
+define("USRLAN_211", "Rank Image");
+define("USRLAN_212", "User Rank"); 
+// define("USRLAN_213", "Are you sure you want to delete this rank"); // use LAN_CONFIRMDEL
+define("USRLAN_214", "Add New Rank");
+define("USRLAN_215", "Update Ranks");
+define("USRLAN_216", "--select image--");
+define("USRLAN_217", "User Ranks Updated");
+define("USRLAN_218", "Deletion of User Rank");
 
-define('USRLAN_219', 'Older than 30 days');
+define("USRLAN_219", "Older than 30 days");
 
-define('LAN_MAINADMIN','Main Admin');
-define('LAN_NOTVERIFIED','Not Verified');
-define('LAN_BANNED','Banned');
-define('LAN_BOUNCED','Bounced');
+define("LAN_MAINADMIN","Main Admin");
+define("LAN_NOTVERIFIED","Not Verified");
+define("LAN_BANNED","Banned");
+define("LAN_BOUNCED","Bounced");
 
 
-define('USRLAN_220', 'All Userclasses');
-define('USRLAN_221', 'Edit admin perms');
+define("USRLAN_220", "All Userclasses");
+define("USRLAN_221", "Edit admin perms");
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
@@ -247,12 +247,12 @@ define("UCSLAN_7", "Set Classes");
 define("UCSLAN_8", "Notify User");
 define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
-define('UCSLAN_11', 'Class membership for user ID --UID-- changed to --CLASSES--');
-define('UCSLAN_12', 'Member privileges only');
+define("UCSLAN_11", "Class membership for user ID --UID-- changed to --CLASSES--");
+define("UCSLAN_12", "Member privileges only");
 
 
 // from admin/lan_userinfo.php
-define("USFLAN_1", "Unable to find poster's IP address - no information is available.");
+define("USFLAN_1", "Unable to find poster"s IP address - no information is available.");
 // define("USFLAN_2", "Error");
 define("USFLAN_3", "Messages posted from IP address");
 define("USFLAN_4", "Host");
@@ -261,9 +261,9 @@ define("USFLAN_6", "User ID");
 define("USFLAN_7", "User Information");
 
 
-define('USRLAN_AS_1', 'Login as %s');
-define('USRLAN_AS_2', 'Logout from %s account');
-define('USRLAN_AS_3', 'You are already logged in as another user account. Please logout first.');
+define("USRLAN_AS_1", "Login as %s");
+define("USRLAN_AS_2", "Logout from %s account");
+define("USRLAN_AS_3", "You are already logged in as another user account. Please logout first.");
 
 // Always search lan_admin.php before adding more. 
 
