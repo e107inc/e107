@@ -176,7 +176,9 @@ define("LANINS_117", "Website Preferences");
 define("LANINS_118", "Install Plugins");
 define("LANINS_119", "Install all plugins that the theme may require.");
 define("LANINS_120", "8");
-define('LANINS_121', 'e107_config.php is not an empty file');
-define('LANINS_122', 'You might have an existing installation');
+define("LANINS_121", "e107_config.php is not an empty file");
+define("LANINS_122", "You might have an existing installation");
+define("LANINS_123", "Optional: Your public name or alias. Leave blank to use the user name");
+define("LANINS_124", "Please choose a password of at least 8 characters");
 
 				
