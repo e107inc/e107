@@ -310,7 +310,8 @@ class e107plugin
 					
 					if ($mode == 'refresh')
 					{
-						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], $plugin_path)) $sp = TRUE;
+						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
+						if ($this->XmlLanguageFileCheck('_global', 'lan_global_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], TRUE, $plugin_path)) $sp = TRUE;
 					}
 
 					// Check for missing plugin_category in plugin table.
@@ -1597,15 +1598,20 @@ class e107plugin
 	 *			- if false, any preference is removed.
 	 *			- if TRUE, any preference is added
 	 *			- so set TRUE to add value to pref regardless
-	 *	@param string $plugin - name of plugin folder. If empty string, $this->plugFolder is used.
+	 *	@param boolean $justPath 
+	 *		- if TRUE, plugin name is written to pref, as a generic string which requires a search to locate the file. 
+	 *		- if FALSE, a precise path within the plugin folder, which includes '--LAN--' strings to substitute for language, is written
+	 *	@param string $plugin - name of plugin folder. If empty string, $this->plugFolder is used (may not always exist).
 	 *
 	 *	@return boolean TRUE if pref changed
 	 */
-	public function XmlLanguageFileCheck($fileEnd, $prefName, $when, $isInstalled, $plugin = '')
+	public function XmlLanguageFileCheck($fileEnd, $prefName, $when, $isInstalled, $justPath = FALSE, $plugin = '')
 	{
 		$core = e107::getConfig('core');
 		
 		if (trim($plugin) == '') $plugin = $this->plugFolder;
+		if (!$plugin) return FALSE;			// No plugin name - error
+
 		if (!$isInstalled) $when = 'uninstall';
 	
 		$updated = false;
@@ -1616,15 +1622,15 @@ class e107plugin
 
 		if (file_exists($path_a))
 		{
-			$pathEntry = '--LAN--'.$fileEnd.'.php';
+			$pathEntry = $justPath ? $plugin : '--LAN--'.$fileEnd.'.php';
 		}
 		elseif (file_exists($path_b))
 		{
-			$pathEntry = '--LAN--/--LAN--'.$fileEnd.'.php';
+			$pathEntry = $justPath ? $plugin : '--LAN--/--LAN--'.$fileEnd.'.php';
 		}
 
 		$currentPref = $core->getPref($prefName.'/'.$plugin);
-		echo 'Path: '.$plugin.' Current: '.$currentPref.'  New: '.$pathEntry.'<br />';
+		echo 'Path: '.$plugin.' Pref: '.$prefName.' Current: '.$currentPref.'  New: '.$pathEntry.'<br />';
 		switch ($when)
 		{
 			case 'install':
