@@ -50,8 +50,6 @@ define("DOWLAN_25",  "Submit Download");
 define("DOWLAN_26",  "Uploads enabled?");
 define("DOWLAN_27",  "Download");
 define("DOWLAN_28",  "None");
-define("DOWLAN_29",  "Downloads"); //FIXME Use Generic
-define("DOWLAN_30",  "Create Download"); //FIXME Use Generic
 define("DOWLAN_31",  "Categories");
 define("DOWLAN_32",  "Downloads");
 define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME Use Generic
