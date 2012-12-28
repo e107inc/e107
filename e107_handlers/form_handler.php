@@ -210,17 +210,21 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
+
+
 	
 	function number($name, $value, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		$maxlength = vartrue($parms['maxlength'], 255);
-		unset($parms['maxlength']);
-		if(!vartrue($parms['size'])) $parms['size'] = 15;
-		if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner input-small';
+		if (vartrue($options['maxlength'])) $maxlength = $options['maxlength'];
+		unset($options['maxlength']);
+		if(!vartrue($options['size'])) $options['size'] = 15;
+		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small';
 		if(!$value) $value = '0';
-		return $this->text($name, $value, $maxlength, $parms);	
+		return $this->text($name, $value, $maxlength, $options);	
 	}
+
+
 	
 	function email($name, $value, $maxlength = 200, $options = array())
 	{
@@ -229,6 +233,8 @@ class e_form
 		return "<input type='email' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />
 		";
 	}
+
+
 
 	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
