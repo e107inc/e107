@@ -333,14 +333,14 @@ class ecal_class
 	{
 		if (isset($this->pref['eventpost_fivemins'])) $incval = 5; else $incval = 1;
 		// @TODO: Need to restrict width of select box
-		$retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox select'>\n";
+		$retval = " <select name='{$boxname}hour' id='{$boxname}hour' class='tbox select' style='width:70px'>\n";
 		for($count = '00'; $count <= '23'; $count++)
 		{
 			$val = sprintf("%02d", $count);
 			$retval .= "<option value='{$val}' ".(isset($cur_hour) && $count == $cur_hour ? "selected='selected'" :"")." >".$val."</option>\n";
 		}
 		$retval .= "</select>\n
-			<select name='{$boxname}minute' class='tbox'>\n";
+			<select name='{$boxname}minute' class='tbox select' style='width:70px'>\n";
 		for($count = '00'; $count <= '59'; $count+= $incval)
 		{
 			$val = sprintf("%02d", $count);
