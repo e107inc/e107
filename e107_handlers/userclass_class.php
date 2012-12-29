@@ -1762,6 +1762,31 @@ class user_class_admin extends user_class
 	}
 
 
+
+	/**
+	 *	Write the current userclass tree to the file e_TEMP.'userclasses.xml'
+	 *
+	 *	@return TRUE on success, FALSE on fail.
+	 */
+	public function makeXMLFile()
+	{
+		$xml = "<dbTable name=\"userclass_classes\">\n";
+		foreach ($this->class_tree as $uc => $d)
+		{
+			$xml .= "\t<item>\n";
+			$xml .= "\t\t<field name=\"userclass_id\">{$uc}</field>\n";
+			foreach ($this->field_list as $f => $v)
+			{
+				$xml .= "\t\t<field name=\"{$f}\">{$d[$f]}</field>\n";
+			}
+			$xml .= "\t</item>\n";
+		}
+		$xml .= "</dbTable>\n";
+		return (file_put_contents(e_TEMP.'userclasses.xml', $xml) === FALSE) ? FALSE : TRUE;
+	}
+
+
+
 	/**
 	 *	Clear user class cache
 	 *	@return none
