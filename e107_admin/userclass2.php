@@ -669,32 +669,39 @@ $ns->tablerender(UCSLAN_21, $text);
 
 	if (isset($_POST['flatten_class_tree']))
 	{	// Remove the default tree
-	  $message = UCSLAN_65;
-	  $sql->db_Update("userclass_classes", "userclass_parent='0'");
-	  $e_userclass->calc_tree();
-	  $e_userclass->save_tree();
-	  $e_userclass->readTree(TRUE);		// Need to re-read the tree to show correct info
-	  $message .= UCSLAN_64;
+		$message = UCSLAN_65;
+		$sql->db_Update('userclass_classes', "userclass_parent='0'");
+		$e_userclass->calc_tree();
+		$e_userclass->save_tree();
+		$e_userclass->readTree(TRUE);		// Need to re-read the tree to show correct info
+		$message .= UCSLAN_64;
 	}
 
 	if (isset($_POST['rebuild_tree']))
 	{
-	  $message = UCSLAN_70;
-	  $e_userclass->calc_tree();
-	  $e_userclass->save_tree();
-	  $message .= UCSLAN_64;
+		$message = UCSLAN_70;
+		$e_userclass->calc_tree();
+		$e_userclass->save_tree();
+		$message .= UCSLAN_64;
+	}
+
+	if ($params == 'xml') $params = '.xml'; else $params = '';
+	
+	if (isset($_POST['create_xml_db']) && ($params == '.xml'))
+	{
+		$message = $e_userclass->makeXMLFile() ? 'XML file created' : 'Error creating XML file';
 	}
 
 	if ($message)
 	{
-	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 
 	$mes = e107::getMessage();
 
 	$mes->addWarning(UCSLAN_52."<br />".UCSLAN_53);
 
-	$text = "<form method='post' action='".e_SELF."?options' id='treesetForm'>
+	$text = "<form method='post' action='".e_SELF."?options{$params}' id='treesetForm'>
 		<table class='table adminform'>
 		<colgroup>
 		<col class='col-label' />
@@ -710,8 +717,18 @@ $ns->tablerender(UCSLAN_21, $text);
 			</td><td>
 			".$frm->admin_button('flatten_class_tree','no-value','delete', UCSLAN_58)."
 			</td>
-		</tr>
-		</table></form>";
+		</tr>";
+	if ($params == '.xml')
+	{
+		$text .= "<tr>
+			<td>".'Create XML file of DB'."<br /><span class='smalltext'>".'Dev aid to set initial values'."</span><br />
+			</td><td>
+			".$frm->admin_button('create_xml_db','no-value','create', 'Create')."
+			</td>
+		</tr>";
+
+	}
+	$text .= "</table></form>";
 		
 	$ns->tablerender(UCSLAN_61, $mes->render().$text);
 
