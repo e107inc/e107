@@ -40,19 +40,19 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 */
-define('e_UC_ADMINMOD'		,249);
-define('e_UC_MODS'			,248);
-define('e_UC_NEWUSER'		,247);					// Users in 'probationary' period
-define('e_UC_BOTS'			,246);					// Reserved to identify search bots
+define('e_UC_ADMINMOD'		,249);			// Admins (includes main admins)
+define('e_UC_MODS'			,248);			// Moderators (who aren't admins)
+define('e_UC_NEWUSER'		,247);			// Users in 'probationary' period
+define('e_UC_BOTS'			,246);			// Reserved to identify search bots
 											// 243..245 reserved for future predefined user classes
 define('e_UC_SPECIAL_BASE'	,243);			// Assign class IDs 243 and above for fixed/special purposes
 define('e_UC_SPECIAL_END'	,255);				// Highest 'special' class
 
 define('UC_ICON_DIR',		e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
 
-define('e_UC_BLANK'			,'-1');
-define('UC_TYPE_STD'		, '0');
-define('UC_TYPE_GROUP'		, '1');
+define('e_UC_BLANK'			,'-1');			// Code for internal use
+define('UC_TYPE_STD'		, '0');			// User class is 'normal'
+define('UC_TYPE_GROUP'		, '1');			// User class is a group or list of subsidiary classes
 
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
@@ -131,7 +131,7 @@ class user_class
 		}
 		else
 		{
-			$this->sql_r->db_Select('userclass_classes', '*', "ORDER BY userclass_parent", 'nowhere');		// The order statement should give a consistent return
+			$this->sql_r->db_Select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere');		// The order statement should give a consistent return
 
 			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
 			{
@@ -140,7 +140,7 @@ class user_class
 			}
 
 
-			// Add in any fixed classes that aren't already defined
+			// Add in any fixed classes that aren't already defined (they historically didn't have a DB entry, although now its facilitated (and necessary for tree structure)
 			foreach ($this->fixed_classes as $c => $d)
 			{
 				if (!isset($this->class_tree[$c]))
@@ -195,7 +195,8 @@ class user_class
 
 
 
-	/** Given the list of 'base' classes a user belongs to, returns a comma separated list including ancestors. Duplicates stripped
+	/** 
+	 *	Given the list of 'base' classes a user belongs to, returns a comma separated list including ancestors. Duplicates stripped
 	 *
 	 *	@param string $startList - comma-separated list of classes user belongs to
 	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
@@ -225,7 +226,8 @@ class user_class
 
 
 
-	/** Returns a list of user classes which can be edited by the specified classlist
+	/** 
+	 *	Returns a list of user classes which can be edited by the specified classlist
 	 *
 	 *	@param string $classList - comma-separated list of classes to consider - default current user's class list
 	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
@@ -256,6 +258,7 @@ class user_class
 
 	/**
 	 *	Combines the selected editable classes into the main class list for a user.
+	 *
 	 *	@param array|string $combined - the complete list of current class memberships
 	 *	@param array|string $possible - the classes which are being edited
 	 *	@param array|string $actual - the actual membership of the editable classes
@@ -286,7 +289,8 @@ class user_class
 
 
 
-	/** Remove the fixed classes from a class list
+	/** 
+	 *	Remove the fixed classes from a class list
 	 *	Removes all classes in the reserved block, as well as e_UC_PUBLIC
 	 *	@param array|string $inClasses - the complete list of current class memberships
 	 *	@return string|array of user classes; format is the same as $inClasses
@@ -631,6 +635,7 @@ class user_class
 		$ret = '';
 		if (!$callback) $callback=array($this,'select');
 		$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
+		$notCheckbox = (strpos($optlist, 'is-checkbox') === FALSE);
 
 		$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
 		if (isset($perms[e_UC_BLANK]))
@@ -650,13 +655,13 @@ class user_class
 		// Inverted classes. (negative values for exclusion). 
 		if(strpos($optlist, 'no-excludes') === FALSE)
 		{
-			if (strpos($optlist, 'is-checkbox') !== FALSE)
+			if ($notCheckbox)
 			{
-				$ret .= "\n".UC_LAN_INVERTLABEL."<br />\n";
+				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
 			}
 			else
 			{
-				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$ret .= "\n".UC_LAN_INVERTLABEL."<br />\n";
 			}
 			foreach ($this->class_parents as $k => $p)		// Currently key and data are the same
 			{
@@ -670,7 +675,10 @@ class user_class
 				}
 				$ret .= $this->vetted_sub_tree($treename, $callback, '-'.$p, 0, $current_value, $perms, $opt_options);
 			}
-			$ret .= "</optgroup>\n";
+			if ($notCheckbox)
+			{
+				$ret .= "</optgroup>\n";
+			}
 		}
 		return $ret;
 	}
