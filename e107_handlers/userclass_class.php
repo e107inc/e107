@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -46,7 +46,7 @@ define('e_UC_NEWUSER'		,247);			// Users in 'probationary' period
 define('e_UC_BOTS'			,246);			// Reserved to identify search bots
 											// 243..245 reserved for future predefined user classes
 define('e_UC_SPECIAL_BASE'	,243);			// Assign class IDs 243 and above for fixed/special purposes
-define('e_UC_SPECIAL_END'	,255);				// Highest 'special' class
+define('e_UC_SPECIAL_END'	,255);			// Highest 'special' class
 
 define('UC_ICON_DIR',		e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
 
@@ -386,7 +386,7 @@ class user_class
 			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
 			blank - puts an empty option at the top of select dropdowns
 
-			filter - only show those classes where member is in a class permitted to view them - e.g. as the new 'visible to' field - added for 0.8
+			filter - only show those classes where member is in a class permitted to view them - e.g. as the new 'visible to' field - added for 2.0
 			force  - show all classes (subject to the other options, including matchclass) - added for 2.0
 			all - alias for 'force'
 
@@ -960,7 +960,7 @@ class user_class
 		$ret = array();
 		$classList = str_replace(' ','', $classList); // clean up white spaces
 		if ($includeAncestors) $classList = $this->get_all_user_classes($classList);
-		$class_regex = "(^|,)(".str_replace(",", "|", $classList).")(,|$)";
+		$class_regex = '(^|,)('.str_replace(',', '|', $classList).')(,|$)';
 		$qry = "SELECT user_id,{$fieldList} FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
 		if ($this->sql_r->db_Select_gen($qry))
 		{
@@ -974,48 +974,54 @@ class user_class
 }
 
 
-//========================================================================
-//			Functions from previous userclass_class handler
-//========================================================================
-// Implemented for backwards compatibility/convenience.
+/**========================================================================
+ *			Functions from previous userclass_class handler
+ * ========================================================================
+ * Implemented for backwards compatibility/convenience.
 
-// ************** DEPRECATED - use new class-based functions
-// Refer to the corresponding class-based functions for full details
-
-/*
-With $optlist you can now specify which classes are shown in the dropdown.
-All or none can be included, separated by comma (or whatever).
-Valid options are:
-public
-guest
-nobody
-member
-readonly
-admin
-main - main admin
-classes - shows all classes
-matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
-
-filter - only show those classes where member is in a class permitted to view them - i.e. as the new 'visible to' field
-force  - show all classes (subject to the other options, including matchclass)
-
-$mode = 'off' turns off listing of admin/main admin classes unless enabled in $optlist (can probably be deprecated - barely used)
-
-*/
+ * ************** DEPRECATED - use new class-based functions **************
+ *
+ * Functionality should be sufficiently similar to the original functions to not notice (and will
+ * be more consistent with the preferred class-based functions).
+ *
+ * Refer to the corresponding class-based functions for full details
+ *
+ *	Consistent interface:
+ *
+ *	@param string $fieldname - name to use for the element
+ *	@param mixed $curval - current value of field - as CSV if multiple values
+ *	@param string $mode = (off|admin...) - affects display - 
+ *	@param string $optlist - comma-separated list which specifies the classes to be shown:
+ *		public
+ *		guest
+ *		nobody
+ *		member
+ *		readonly
+ *		admin
+ *		main - main admin
+ *		classes - shows all classes
+ *		matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
+ *
+ *		filter - only show those classes where member is in a class permitted to view them - i.e. as the new 'visible to' field
+ *		force  - show all classes (subject to the other options, including matchclass)
+ *
+ *		$mode = 'off' turns off listing of admin/main admin classes unless enabled in $optlist (can probably be deprecated - barely used)
+ *
+ */
 
 
 function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "")
 {
-//  echo "Call r_userclass{$fieldname}, CV: {$curval}  opts: {$optlist}<br />";
-  global $e_userclass;
-  if ($mode != 'off')
-  {	// Handle legacy code
-	if ($optlist) $optlist .= ',';
-	$optlist .= 'admin,main';
-	if ($mode != 'admin') $optlist .= ',readonly';
-  }
-  if (!is_object($e_userclass)) $e_userclass = new user_class;
-  return $e_userclass->uc_dropdown($fieldname,$curval,$optlist);
+	//  echo "Call r_userclass{$fieldname}, CV: {$curval}  opts: {$optlist}<br />";
+	global $e_userclass;
+	if ($mode != 'off')
+	{	// Handle legacy code
+		if ($optlist) $optlist .= ',';
+		$optlist .= 'admin,main';
+		if ($mode != 'admin') $optlist .= ',readonly';
+	}
+	if (!is_object($e_userclass)) $e_userclass = new user_class;
+	return $e_userclass->uc_dropdown($fieldname,$curval,$optlist);
 }
 
 
@@ -1023,12 +1029,12 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "")
 // $curval is a comma separated list of class IDs for boxes which are checked.
 function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
-//  echo "Call r_userclass_check: {$curval}<br />";
-  global $e_userclass;
-  if (!is_object($e_userclass)) $e_userclass = new user_class;
-  $ret = $e_userclass->uc_checkboxes($fieldname,$curval,$optlist);
-  if ($ret) $ret = "<div class='check-block'>".$ret."</div>";
-  return $ret;
+	//  echo "Call r_userclass_check: {$curval}<br />";
+	global $e_userclass;
+	if (!is_object($e_userclass)) $e_userclass = new user_class;
+	$ret = $e_userclass->uc_checkboxes($fieldname,$curval,$optlist);
+	if ($ret) $ret = "<div class='check-block'>".$ret."</div>";
+	return $ret;
 }
 
 
@@ -1036,9 +1042,9 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 function get_userclass_list()
 {
 //  echo "Call get_userclass_list<br />";
-  global $e_userclass;
-  if (!is_object($e_userclass)) $e_userclass = new user_class;
-  return $e_userclass->uc_get_classlist();
+	global $e_userclass;
+	if (!is_object($e_userclass)) $e_userclass = new user_class;
+	return $e_userclass->uc_get_classlist();
 }
 
 
@@ -1046,9 +1052,9 @@ function get_userclass_list()
 function r_userclass_name($id)
 {
 //  echo "Call r_userclass_name<br />";
-  global $e_userclass;
-  if (!is_object($e_userclass)) $e_userclass = new user_class;
-  return $e_userclass->uc_get_classname($id);
+	global $e_userclass;
+	if (!is_object($e_userclass)) $e_userclass = new user_class;
+	return $e_userclass->uc_get_classname($id);
 }
 
 
@@ -1058,7 +1064,7 @@ function r_userclass_name($id)
 // Deprecated functions to hopefully be removed
 function r_userclass_radio($fieldname, $curval = '')
 {
-  echo "Deprecated function r_userclass_radio not used in core - mutter if you'd like it implemented<br />";
+	echo "Deprecated function r_userclass_radio not used in core - mutter if you'd like it implemented<br />";
 }
 
 //========================================================================
@@ -1432,7 +1438,7 @@ class user_class_admin extends user_class
 		{
 			if (!isset($this->class_tree[$i])) return $i;
 		}
-		// Big system!! Assign a class in the 0.8-only block above 255
+		// Big system!! Assign a class in the 2.0-only block above 255
 		for ($i = e_UC_SPECIAL_END+1; ($i < 32767); $i++)
 		{
 			if (!isset($this->class_tree[$i])) return $i;
@@ -1476,7 +1482,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Save class data after editing
-	 *	TODO: use new array function
+	 *
 	 *	@param array $classrec - class data
 	 *	@return boolean TRUE on success, FALSE on failure
 	 *
@@ -1590,7 +1596,7 @@ class user_class_admin extends user_class
 
 
 	/**
-	 *	Delete a class, and all users who are members of that class.
+	 *	Delete a class, and update class membership for all users who are members of that class.
 	 *	@param integer $classID > 0
 	 *	@return boolean TRUE on success, FALSE on error
 	 */
@@ -1600,10 +1606,10 @@ class user_class_admin extends user_class
 		{
 			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
 			{
-				$sql2 = new db;
+				$sql2 = e107::getDb('sql2');
 				while ($row = $this->sql_r->db_Fetch())
 				{
-					$newClass = self::ucRemove($classID,$row['user_class']);
+					$newClass = self::ucRemove($classID, $row['user_class']);
 					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
 				}
 			}
@@ -1643,7 +1649,7 @@ class user_class_admin extends user_class
 
 
 	/**
-	 *	Removes  all users in list from a specified user class
+	 *	Removes all users in list from a specified user class
 	 *	(Moved in from e_userclass class)
 	 *	@param integer $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
