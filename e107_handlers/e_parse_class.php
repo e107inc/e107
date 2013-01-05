@@ -199,7 +199,8 @@ class e_parse
 
 
 	/**
-	 *	Check for HTML closing tag for input elements, without corresponding opening tag
+	 *	Check for umatched 'dangerous' HTML tags
+	 *		(these can destroy page layout where users are able to post HTML)
 	 *
 	 *	@param string $data
 	 *	@param string $tagList - if empty, uses default list of input tags. Otherwise a CSV list of tags to check (any type)
@@ -217,17 +218,41 @@ class e_parse
 		{
 			$checkTags = explode(',', $tagList);
 		}
-		$data = strtolower(preg_replace('#\[code.*?\[\/code\]#i', '', $data));		// Ignore code blocks. All lower case simplifies subsequent processing
-		foreach ($checkTags as $tag)
+		$tagArray = array_flip($checkTags);
+		foreach ($tagArray as &$v) { $v = 0; };		// Data fields become zero; keys are tag names.
+		$data = strtolower(preg_replace('#\[code\].*?\[\/code\]#i', '', $data));            // Ignore code blocks. All lower case simplifies the rest
+		$matches = array();
+		if (!preg_match_all('#<(\/|)([^<>]*?[^\/])>#', $data, $matches, PREG_SET_ORDER))
 		{
-			$aCount = substr_count($data,  '<'.$tag);			// Count opening tags
-			$bCount = substr_count($data,  '</'.$tag);			// Count closing tags
-			if ($aCount != $bCount)
-			{
-				return TRUE;		// Potentially abusive HTML found - tags don't balance
+			//echo "No tags found<br />";
+			return TRUE;				// No tags found; so all OK
+		}
+		//print_a($matches);
+		foreach ($matches as $m)
+		{
+			// $m[0] is the complete tag; $m[1] is '/' or empty; $m[2] is the tag and any attributes
+			list ($tag) = explode(' ', $m[2], 2);
+			if (!isset($tagArray[$tag])) continue;			// Not a tag of interest
+			if ($m[1] == '/')
+			{	// Closing tag
+				if ($tagArray[$tag] == 0) 
+				{
+					//echo "Close before open: {$tag}<br />";
+					return TRUE;		// Closing tag before we've had an opening tag
+				}
+				$tagArray[$tag]--;		// Obviously had at least one opening tag
+			}
+			else
+			{	// Opening tag
+				$tagArray[$tag]++;
 			}
 		}
-		return FALSE;		// Nothing detected
+		//print_a($tagArray);
+		foreach ($tagArray as $t)
+		{
+			if ($t > 0) return TRUE;		// More opening tags than closing tags
+		}
+		return FALSE;						// OK now
 	}
 
 
