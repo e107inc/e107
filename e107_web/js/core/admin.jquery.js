@@ -1,8 +1,5 @@
 $(document).ready(function()
 {
-	
-	
-	
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
 						
@@ -181,23 +178,28 @@ $(document).ready(function()
 		
 		// Check ALl Button
 		$("#e-check-all").click(function(){
-			$("input[type=\"checkbox\"]").attr("checked", "checked");
+			$('input[type="checkbox"]').attr("checked", "checked");
 		});
 		
 		// Uncheck all button. 
 		$("#e-uncheck-all").click(function(){
-			$("input[type=\"checkbox\"]").removeAttr("checked");
+			$('input[type="checkbox"]').removeAttr("checked");
 		});
 		
 		
 		
 		// Check-All checkbox toggle
-		$("input.toggle-all").click(function(evt){
+		$("input.toggle-all").click(function(evt) {
+			var selector = 'input[type="checkbox"].checkbox';
+			if($(this).val().startsWith('jstarget:')) {
+				selector = 'input[type="checkbox"][name^="' + $(this).val().split(/jstarget\:/)[1] + '"]';
+			}
+			
 			if($(this).is(":checked")){
-				$("input[type=\"checkbox\"].checkbox").attr("checked", "checked");
+				$(selector).attr("checked", "checked");
 			}
 			else{
-				$("input[type=\"checkbox\"].checkbox").removeAttr("checked");
+				$(selector).removeAttr("checked");
 			}
 		});
 		

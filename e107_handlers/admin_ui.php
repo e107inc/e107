@@ -3294,14 +3294,9 @@ class e_admin_controller_ui extends e_admin_controller
 		
 	}
 
-
-
-
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
-		
-		
 		$searchQry = array();
 		$filterFrom = array();
 		$request  = $this->getRequest();
@@ -3365,8 +3360,7 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			
-			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || null === vartrue($var['type']))
+			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || !vartrue($var['type']))
 			{
 				continue;
 			}
@@ -3378,9 +3372,17 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'user', 'email'); //method?
-			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types))
+			$searchable_types = array('text', 'textarea', 'bbarea', 'email', 'int', 'integer', 'str', 'string'); //method? 'user', 
+			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
+				if($var['type'] == 'int' || $var['type'] == 'integer')
+				{
+					if(is_numeric($searchQuery))
+					{
+						$filter[] = $var['__tableField']."=".$searchQuery;
+					}
+					continue;
+				}
 				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
 				if($isfilter)
 				{
@@ -4816,6 +4818,73 @@ class e_admin_form_ui extends e_form
 					}
 				});
 		",'prototype');
+		
+		// TODO implement ajax queue
+		// FIXME - dirty way to register events after ajax update - DO IT RIGHT - see all.jquery, create object
+		// and use handler, re-register them global after ajax update (context)
+		e107::js('footer-inline',"
+			var filterRunning = false, request;
+			var applyAfterAjax = function(context) {
+				\$('.e-hideme', context).hide();
+				\$('.e-expandit', context).show();
+		      	\$('.e-expandit', context).click(function () {
+		       		var href = (\$(this).is('a')) ? \$(this).attr('href') : '';
+		       		if(href == '' && \$(this).attr('data-target'))
+		       		{
+		       			href = '#' + \$(this).attr('data-target');	
+		       		}
+					if(href === '#' || href == '') 
+					{
+						idt = \$(this).nextAll('div');	
+						\$(idt).toggle('slow');
+						 return true;			
+					}
+		       		//var id = $(this).attr('href');   		
+					\$(href).toggle('slow');
+					return false;
+				}); 
+				\$('input.toggle-all', context).click(function(evt) {
+					var selector = 'input[type=\"checkbox\"].checkbox';
+					if(\$(this).val().startsWith('jstarget:')) {
+						selector = 'input[type=\"checkbox\"][name^=\"' + \$(this).val().split(/jstarget\:/)[1] + '\"]';
+					}
+					
+					if(\$(this).is(':checked')){
+						\$(selector).attr('checked', 'checked');
+					}
+					else{
+						\$(selector).removeAttr('checked');
+					}
+				});
+			};
+			var searchQueryHandler = function (e) {
+				var el = \$(this), frm = el.parents('form'), cont = frm.nextAll('.e-container');
+				if(cont.length < 1 || frm.length < 1 || (el.val().length > 0 && el.val().length < 3)) return;
+				e.preventDefault();
+				
+				if(filterRunning && request) request.abort();
+				filterRunning = true;
+				
+				cont.css({ opacity: 0.5 });
+				
+				request = \$.get(frm.attr('action'), frm.serialize(), function(data){
+					filterRunning = false;
+					setTimeout(function() {
+						if(filterRunning) {
+							//cont.css({ opacity: 1 });
+							return;
+						}
+						cont.html(data).css({ opacity: 1 });
+						applyAfterAjax(cont);
+					}, 700);
+				}, 'html')
+				.error(function() {
+					filterRunning = false;
+					cont.css({ opacity: 1 });
+				});
+			};
+			\$('#searchquery').keyup(searchQueryHandler);
+		", 'jquery');
 
 		return $text;
 	}
