@@ -277,6 +277,10 @@ class users_admin_ui extends e_admin_ui
 			unset($this->fields['checkboxes']);
 			unset($this->fields['options']);			
 		}	
+		
+		//FIXME - handle user extended search...
+		//$this->_alias_parsed = false;
+		//$this->parseAliases();
 
 		// if(isset ($_POST['adduser']))
 		// {
