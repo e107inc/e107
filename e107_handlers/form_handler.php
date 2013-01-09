@@ -1034,7 +1034,7 @@ class e_form
 		if(vartrue($options['multiple']))
 		{
 			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
-			$selected = explode(",",$selected);
+			if(!is_array($selected)) $selected = explode(",",$selected);
 		}
 		$text = $this->select_open($name, $options)."\n";
 
