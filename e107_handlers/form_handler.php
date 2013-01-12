@@ -2507,9 +2507,9 @@ class e_form
 			break;
 
 			case 'hidden':
+				$value = (isset($parms['value'])) ? $parms['value'] : $value;
 				$ret = (vartrue($parms['show']) ? ($value ? $value : varset($parms['empty'], $value)) : '');
-				$value = (vartrue($parms['value'])) ? $parms['value'] : $value;
-				echo "key=".$key."<br />value=".$value;
+				//echo "<br />key=".$key."<br />value=".$value;
 				$ret =  $ret.$this->hidden($key, $value);
 			break;
 
