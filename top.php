@@ -22,28 +22,32 @@ if(!defined('IMODE')) define('IMODE', 'lite'); // BC
 
 e107::coreLan('top');
 
-if (!e_QUERY)
-{
-	$action = 'top';
-	$subaction = 'all';
-	$from = 0;
-	$view = 10;
-}
-else
+$action = 'top';
+$subaction = 'all';
+$from = 0;
+$view = 10;
+
+if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
-	$from = intval($tmp[0]);
-	$action = $tmp[1];
-	$subaction = $tmp[2];
-	$view = ($tmp[3] ? intval($tmp[3]) : 10);
+	$from = intval(varset($tmp[0], 0));
+	$action = varset($tmp[1], 'top');
+	$subaction = varset($tmp[2], 'all');
+	$view = (isset($tmp[3]) ? intval($tmp[3]) : 10);
 }
 if ($action == 'top')
 {
 	define('e_PAGETITLE', LAN_8);
-} elseif ($action == 'active')
+} 
+elseif ($action == 'active')
 {
 	define('e_PAGETITLE', LAN_7);
 }
+else
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}	
 
 
 require_once (HEADERF);
@@ -118,10 +122,15 @@ if ($action == 'active')
 
 		$text .= "</table>\n</div>";
 
+		$ftotal = $sql->db_Count('forum_t', '(*)', 'WHERE `thread_parent` = 0');
+		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
+		$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
 		$ns->tablerender(LAN_7, $text, 'nfp');
+		/*
 		require_once (e_HANDLER.'np_class.php');
 		$ftotal = $sql->db_Count('forum_thread', '(*)', 'WHERE 1');
 		$ix = new nextprev('top.php', $from, $view, $ftotal, '', 'active.forum.'.$view);
+		*/
 	}
 }
 if ($action == 'top')
@@ -182,13 +191,20 @@ if ($action == 'top')
 			}
 		}
 		$text .= "</table>\n</div>";
+		if ($subaction == 'forum') 
+		{
+			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
+			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
+			$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
+		}
 		$ns->tablerender(TOP_LAN_0, $text);
+		/*
 		if ($subaction == 'forum')
 		{
 			require_once (e_HANDLER.'np_class.php');
 			$ftotal = $sql->db_Count('user_extended', '(*)', 'WHERE `user_plugin_forum_posts` > 0');
 			$ix = new nextprev('top.php', $from, $view, $ftotal, 'Forum Posts', 'top.forum.'.$view);
-		}
+		}*/
 	}
 
 
