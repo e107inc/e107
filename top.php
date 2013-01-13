@@ -4,7 +4,7 @@
 |     e107 website system
 |
 |     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
+|     Copyright (C) 2008-2013 e107 Inc (e107.org)
 |
 |
 |     Released under the terms and conditions of the
@@ -31,7 +31,7 @@ if (e_QUERY)
 	$subaction = varset($tmp[2], 'all');
 	$view = (isset($tmp[3]) ? intval($tmp[3]) : 10);
 }
-if ($action == 'top') 
+if ($action == 'top')
 {
 	define('e_PAGETITLE', ': '.LAN_8);
 } 
@@ -46,7 +46,7 @@ else
 }	
 	
 require_once(HEADERF);
-if ($action == 'active') 
+if ($action == 'active')
 {
 	require_once(e_HANDLER.'userclass_class.php');
 	 
@@ -123,7 +123,7 @@ if ($action == 'active')
 		 
 		$ftotal = $sql->db_Count('forum_t', '(*)', 'WHERE `thread_parent` = 0');
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
-		$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
+		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
 		/*
 		require_once(e_HANDLER."np_class.php");
@@ -132,14 +132,14 @@ if ($action == 'active')
 		*/
 	}
 }
-if ($action == 'top') 
+if ($action == 'top')
 {
 	require_once(e_HANDLER.'level_handler.php');
 	define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
 	define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
 	define('IMAGE_rank_moderator_image', ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
-	 
-	if ($subaction == 'forum' || $subaction == 'all') 
+
+	if ($subaction == 'forum' || $subaction == 'all')
 	{
 		$top_forum_posters = $sql->db_Select('user', '*', "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
 		$text = "
@@ -169,20 +169,21 @@ if ($action == 'top')
 		{
 			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
-			$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
+			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		}
 		$ns->tablerender(TOP_LAN_0, $text);
 		/*
-		if ($subaction == 'forum') 
+		if ($subaction == 'forum')
 		{
 			require_once(e_HANDLER."np_class.php");
 			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
 			$ix = new nextprev("top.php", $from, $view, $ftotal, "Forum Posts", "top.forum.".$view."");
 		} */
 	}
-	 
-	 
-	if ($subaction == "comment" || $subaction == "all") {
+
+
+	if ($subaction == 'comment' || $subaction == 'all')
+	{
 		$top_forum_posters = $sql->db_Select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>

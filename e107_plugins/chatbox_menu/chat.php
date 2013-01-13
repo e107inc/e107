@@ -4,7 +4,7 @@
 |     e107 website system
 |
 |     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)
-|     Copyright (C) 2008-2011 e107 Inc (e107.org)
+|     Copyright (C) 2008-2013 e107 Inc (e107.org)
 |
 |
 |     Released under the terms and conditions of the
@@ -16,7 +16,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
+require_once('../../class2.php');
 if (!isset($pref['plug_installed']['chatbox_menu']))
 {
 	header('Location: '.e_BASE.'index.php');
@@ -30,7 +30,8 @@ require_once(HEADERF);
 $sql->db_Select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->db_Fetch();
 
-if (!check_class($row['menu_class'])) {
+if (!check_class($row['menu_class'])) 
+{
 	$ns->tablerender(CHATBOX_L23, "<div style='text-align:center'>".CHATBOX_L24."</div>");
 	require_once(FOOTERF);
 	exit;
@@ -75,30 +76,35 @@ if($_POST['moderate'] && CB_MOD)
 }
 
 // when coming from search.php
-if (strstr(e_QUERY, "fs")) {
-	$cgtm = str_replace(".fs", "", e_QUERY);
+if (strstr(e_QUERY, "fs")) 
+{
+	$cgtm = intval(str_replace(".fs", "", e_QUERY));
 	$fs = TRUE;
 }
 // end search
 
-if (e_QUERY ? $from = e_QUERY : $from = 0);
+if (e_QUERY ? $from = intval(e_QUERY) : $from = 0);
 
-$chat_total = $sql->db_Count("chatbox");
+$chat_total = $sql->db_Count('chatbox');
 
 $qry_where = (CB_MOD ? "1" : "cb_blocked=0");
 
 // when coming from search.php calculate page number
-if ($fs) {
+if ($fs) 
+{
 	$page_count = 0;
 	$row_count = 0;
 	$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
-	while ($row = $sql -> db_Fetch()) {
-		if ($row['cb_id'] == $cgtm) {
+	while ($row = $sql -> db_Fetch()) 
+	{
+		if ($row['cb_id'] == $cgtm) 
+		{
 			$from = $page_count;
 			break;
 		}
 		$row_count++;
-		if ($row_count == 30) {
+		if ($row_count == 30) 
+		{
 			$row_count = 0;
 			$page_count += 30;
 		}
@@ -161,11 +167,14 @@ if($message)
 	$ns->tablerender("", $message);
 }
 
+$parms = "{$chat_total},30,{$from},".e_SELF.'?[FROM]';
+$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
+
 $ns->tablerender(CHATBOX_L20, $text);
 
 
-require_once(e_HANDLER."np_class.php");
-$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L21);
+//require_once(e_HANDLER."np_class.php");
+//$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L21);
 
 require_once(FOOTERF);
 ?>
