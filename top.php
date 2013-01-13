@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -12,7 +12,7 @@
  * $Id$
  *
 */
-require_once ('class2.php');
+require_once('class2.php');
 
 $ns = e107::getRender();
 $pref = e107::getPref();
@@ -50,7 +50,7 @@ else
 }	
 
 
-require_once (HEADERF);
+require_once(HEADERF);
 if ($action == 'active')
 {
 	require_once (e_HANDLER.'userclass_class.php');
@@ -124,7 +124,7 @@ if ($action == 'active')
 
 		$ftotal = $sql->db_Count('forum_t', '(*)', 'WHERE `thread_parent` = 0');
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
-		$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
+		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
 		/*
 		require_once (e_HANDLER.'np_class.php');
@@ -195,7 +195,7 @@ if ($action == 'top')
 		{
 			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
-			$text .= '<br />'.$tp->parseTemplate("{NEXTPREV={$parms}}");
+			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		}
 		$ns->tablerender(TOP_LAN_0, $text);
 		/*
@@ -255,8 +255,8 @@ if ($action == 'top')
 		$text .= "</table>\n</div>";
 		$ns->tablerender(TOP_LAN_3, $text);
 	}
-
-	if ($subaction == "chat" || $subaction == "all")
+	 
+	if ($subaction == 'chat' || $subaction == 'all') 
 	{
 		$top_forum_posters = $sql->db_Select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
 		$text = "
@@ -305,5 +305,5 @@ if ($action == 'top')
 		$ns->tablerender(TOP_LAN_5, $text);
 	}
 }
-require_once (FOOTERF);
+require_once(FOOTERF);
 ?>
