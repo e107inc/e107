@@ -336,6 +336,18 @@ class news_admin_ui extends e_admin_ui
 
 	function init()
 	{
+		
+		//TODO Handle Ping Services // see e107_plugins/gsitemap/e_module.php =
+		// needs to be integrated into core and removed from gsitemap. 
+		// Loop through $pref['news_ping_services']	and ping.
+		 
+		if(vartrue($_POST['news_ping'],false))
+		{
+			$mes = e107::getMessage();
+			$mes->addDebug("Ping not yet implemented",'default',true);			
+		}
+		
+		
 		$sql = e107::getDb();
 		$sql->db_Select_gen("SELECT category_id,category_name FROM #news_category");
 		while($row = $sql->db_Fetch())
@@ -345,16 +357,13 @@ class news_admin_ui extends e_admin_ui
 		}
 		asort($this->cats);
 		$this->fields['news_category']['writeParms'] = $this->cats;
-		
-
-		
+				
 		$this->fields['news_render_type']['writeParms'] = $this->news_renderTypes; // array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
-		
 		$this->newspost = new admin_newspost;
-		
 		$this->newspost->news_renderTypes = $this->news_renderTypes;
-	
 		$this->newspost->observer();
+		
+	
 
  
 	}
@@ -1444,6 +1453,7 @@ class admin_newspost
 		{
 			 $this->noPermissions();
 		}
+	
 		$temp = array();
 		$temp['newsposts'] 				= intval($_POST['newsposts']);
 	   	$temp['newsposts_archive'] 		= intval($_POST['newsposts_archive']);
@@ -1458,6 +1468,7 @@ class admin_newspost
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
+		$temp['news_ping_services']		= explode("\n",$_POST['news_ping_services']);
 		$temp['news_sefbase']			= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_sefbase']);
 
 		e107::getConfig()->updatePref($temp);
@@ -2154,6 +2165,12 @@ class admin_newspost
 								<td>Meta description: </td>
 								<td>".$frm->textarea('news_meta_description', $tp->post_toForm(vartrue($_POST['news_meta_description'])), 7)."</td>
 							</tr>
+							
+							<tr>
+								<td>Notify Ping Services: </td>
+								<td>".$frm->checkbox('news_ping',1, 1)."</td>
+							</tr>
+							
 						</tbody>
 					</table>
 				</fieldset>
@@ -2717,6 +2734,13 @@ class admin_newspost
 								</td>
 							</tr>
 							<tr>
+								<td>Ping Services</td>
+								<td>
+									".$frm->textarea('news_ping_services', implode("\n",$pref['news_ping_services']), 4, 100)."
+									<div class='field-help'>Notify these services when you create/update news items.</div>
+								</td>
+							</tr>
+							<tr>
 								<td>".NWSLAN_86."</td>
 								<td>
 									".$frm->checkbox_switch('news_cats', 1, $pref['news_cats'])."
@@ -2744,8 +2768,8 @@ class admin_newspost
 		$text .= "
 							<tr>
 								<td>".NWSLAN_115."</td>
-								<td>
-									<div id='newsposts-archive-cont'>".$frm->selectbox('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."</div>
+								<td id='newsposts-archive-cont'>
+									".$frm->selectbox('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."
 									<div class='field-help'>".NWSLAN_116."</div>
 								</td>
 							</tr>
