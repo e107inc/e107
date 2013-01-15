@@ -66,7 +66,8 @@ class gallery_shortcodes extends e_shortcode
 		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
 		
 		$srcFull = $tp->thumbUrl($this->var['media_url'], $this->attFull);
-		if(isset($parm['actualPreview']))
+		
+		if(vartrue($parms['actualPreview'])) 
 		{
 			$srcFull = $tp->replaceConstants($this->var['media_url'], 'full');
 		}
