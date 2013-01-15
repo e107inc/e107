@@ -990,7 +990,7 @@ class admin_newspost
 
 		if(isset($_POST['etrigger_ecolumns'])) //elseif fails.
 		{
-        	$this->_observe_saveColumns();
+        //	$this->_observe_saveColumns();
 		}
 	}
 

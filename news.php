@@ -238,7 +238,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	
 		}*/
 	
-	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE;
+	if(vartrue($NEWSLISTSTYLE))
+	{
+		 $template =  $NEWSLISTSTYLE;
+	}
 	else 
 	{
 		$tmp = e107::getTemplate('news', 'news', 'list');
@@ -398,7 +401,15 @@ if ($action == 'extend')
 
 		$param = array();
 		$param['current_action'] = $action;
-		if(vartrue($NEWSSTYLE)) $template =  $NEWSSTYLE;
+		
+		if(vartrue($NEWSSTYLE)) 
+		{
+			$template =  $NEWSSTYLE;
+		}
+		elseif(function_exists("news_style")) // BC
+		{
+			$template = news_style($news, 'extend', $param);	
+		}
 		else 
 		{
 			$tmp = e107::getTemplate('news', 'news', 'view');
@@ -732,6 +743,24 @@ else
 	$param = array();
 	$param['current_action'] = $action;
 	
+	// Get Correct Template 
+	if(vartrue($NEWSSTYLE)) 
+	{
+		$template =  $NEWSSTYLE;
+	}
+	elseif(function_exists("news_style")) // BC
+	{
+		$template = news_style($news, $action, $param);	
+	}
+	else 
+	{
+		$tmp = e107::getTemplate('news', 'news', 'view');
+		$template = $tmp['item'];
+		unset($tmp);
+	}
+	
+	
+	
 	// NEW - news category title when in list
 	if($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name']))
 	{
@@ -764,7 +793,7 @@ else
 		{
 			unset($news['news_render_type']);
 		}
-
+		// $template = false;
 		$ix->render_newsitem($news, 'default', '', $template, $param);
 		$i++;
 	}
