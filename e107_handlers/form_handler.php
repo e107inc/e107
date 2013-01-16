@@ -2267,7 +2267,7 @@ class e_form
 		if(is_string($parms)) parse_str($parms, $parms);
 
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
-		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])==2)) // quick fix (maybe 'noedit'=>'readonly'?)
+		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
 			if(vartrue($attributes['writeParms'])) // eg. different size thumbnail on the edit page. 
 			{
@@ -2275,15 +2275,37 @@ class e_form
 			}
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
+		
+		// FIXME standard - writeParams['__options'] is introduced for list elements, bundle adding to writeParms is non reliable way
+		$writeParamsOptionable =  array('dropdown', 'comma', 'radio', 'lanlist', 'language', 'user');
+		$writeParamsDisabled =  array('layouts', 'templates', 'userclass', 'userclasses');
 
+		// FIXME it breaks all list like elements - dropdowns, radio, etc
 		if(vartrue($required_data[0]) || vartrue($attributes['required'])) // HTML5 'required' attribute 
 		{
-			$parms['required'] = 1;	
+			// FIXME - another approach, raise standards, remove checks
+			if(in_array($attributes['type'], $writeParamsOptionable))
+			{
+				$parms['__options']['required'] = 1;	
+			}
+			elseif(!in_array($attributes['type'], $writeParamsDisabled))
+			{
+				$parms['required'] = 1;	
+			}
 		}
 		
+		// FIXME it breaks all list like elements - dropdowns, radio, etc
 		if(vartrue($required_data[3]) || vartrue($attributes['pattern'])) // HTML5 'pattern' attribute
 		{
-			$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]) ;	
+			// FIXME - another approach, raise standards, remove checks
+			if(in_array($attributes['type'], $writeParamsOptionable))
+			{
+				$parms['__options']['pattern'] = vartrue($attributes['pattern'], $required_data[3]);
+			}
+			elseif(!in_array($attributes['type'], $writeParamsDisabled))
+			{
+				$parms['pattern'] = vartrue($attributes['pattern'], $required_data[3]);	
+			}
 		}
 
 		switch($attributes['type'])
@@ -2431,9 +2453,9 @@ class e_form
 
 			case 'radio':
 				// TODO - more options (multi-line, help)
-				/*$eloptions  = vartrue($parms['__options'], array());
+				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
-				unset($parms['__options']);*/
+				unset($parms['__options']);
 				$ret =  vartrue($eloptions['pre']).$this->radio_multi($key, $parms, $value, false).vartrue($eloptions['post']);
 			break;
 
