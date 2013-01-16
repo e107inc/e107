@@ -159,7 +159,7 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',	'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',	'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
-			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'required' => true),
          	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
@@ -217,6 +217,7 @@ class media_cat_ui extends e_admin_ui
 		$type = $this->getRequest()->getPosted('media_cat_type', 'image').'_';
 		
 		$increment = ($this->ownerCount[$new_data['media_cat_owner']] +1);
+		if(empty($new_data['media_cat_sef'])) $new_data['media_cat_sef'] = eHelper::title2sef($new_data['media_cat_title']);
 		$new_data['media_cat_category'] = $new_data['media_cat_owner'].'_'.$type.$increment;
 		//print_a($new_data); exit;
 		return $new_data;
@@ -232,6 +233,8 @@ class media_cat_ui extends e_admin_ui
 			$mes->addError(LAN_IMA_001);
 			return FALSE;
 		}
+		
+		if(empty($new_data['media_cat_sef'])) $new_data['media_cat_sef'] = eHelper::title2sef($new_data['media_cat_title']);
 		
 		return $new_data;
 	}

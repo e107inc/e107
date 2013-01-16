@@ -4225,7 +4225,7 @@ class eHelper
 		
 		if(null === $type)
 		{
-			$type = e107::getPref('url_sef_translate'); // FIXME - site preference
+			$type = e107::getPref('url_sef_translate'); 
 		}
 		$tp = e107::getParser();
 		switch ($type) 
