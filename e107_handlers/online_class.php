@@ -60,6 +60,7 @@ class e_online
 {
 	
 	public $users = array();	
+	public $guests = array();	
 	
 	
 	function __construct()
@@ -242,20 +243,16 @@ class e_online
 				$sql->db_Delete('online', '`online_timestamp` < '.(time() - $online_timeout));
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
-				$total_online = $sql->db_Count('online');
-				if ($members_online = $sql->db_Select('online', '*', 'online_user_id != 0'))
+			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
+				if ($total_online = $sql->db_Select_gen('SELECT * FROM #online WHERE online_pagecount > 0 ORDER BY online_timestamp DESC'))
 				{
 					$member_list = '';
+					$members_online = 0;
 					$listuserson = array();
 					while ($row = $sql->db_Fetch())
 					{
 						$row['online_bot'] = $this->isBot($row['online_agent']);
-						
-						
-						$vals = explode('.', $row['online_user_id'], 2);
-						$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
-						$listuserson[$row['online_user_id']] = $row['online_location'];
-						
+				
 						// Sort into usable format and add bot field. 
 						$user = array(
 							'user_id'			=> $vals[0],
@@ -271,7 +268,20 @@ class e_online
 							'online_user_id'	=> $row['online_user_id']
 						);	
 		
-						$this->users[] = $user;	
+						if($row['online_user_id'] != 0)
+						{
+							$vals = explode('.', $row['online_user_id'], 2);
+							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
+							$listuserson[$row['online_user_id']] = $row['online_location'];
+		
+							$this->users[] = $user;		
+							$members_online++;
+						}
+						else 
+						{
+							$this->guests[] = $user;	
+						}
+						
 						
 					}
 				}
@@ -310,6 +320,11 @@ class e_online
 		
 	}
 
+	function guestList()
+	{
+		return $this->guests;		
+		
+	}
 
 	
 	
