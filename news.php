@@ -748,10 +748,6 @@ else
 	{
 		$template =  $NEWSSTYLE;
 	}
-	elseif(function_exists("news_style")) // BC
-	{
-		$template = news_style($news, $action, $param);	
-	}
 	else 
 	{
 		$tmp = e107::getTemplate('news', 'news', 'view');
@@ -779,8 +775,15 @@ else
 	}
 
 	$i= 1;
-	while(isset($newsAr[$i]) && $i <= $interval) {
+	while(isset($newsAr[$i]) && $i <= $interval) 
+	{
 		$news = $newsAr[$i];
+		
+		if(function_exists("news_style")) // BC
+		{
+			$template = news_style($news, $action, $param);	
+		}
+		
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
 		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader']))
