@@ -2,7 +2,8 @@
 if ( ! defined('e107_INIT')) { exit(); }
 
 define('STANDARDS_MODE', TRUE);
-define("VIEWPORT","width=device-width, initial-scale=1.0");
+// define("VIEWPORT","width=device-width, initial-scale=1.0");
+define("VIEWPORT","width=1080");
 
 e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
@@ -595,9 +596,9 @@ function tablestyle($caption, $text, $mode)
 
 	case 'site_info' :
 		echo '
-			<div class="well sidebar-nav" style="padding:10px">  
+			<div class="well sidebar-nav" >  
 				<div class="nav-header">'.$caption.'</div>
-				<p>
+				<p style="padding:10px">
 					'.$text.'
 				</p>
 			</div>
