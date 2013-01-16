@@ -227,8 +227,8 @@ EOF;
 	
 		
 	$panelOnline = "
-		
-			<table class='table table-condensed adminlist'>
+			
+			<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
 			<colgroup>
 				<col style='width: 10%' />
 	            <col style='width: 25%' />
@@ -250,14 +250,14 @@ EOF;
 		$online = $ol->userList() + $ol->guestList();
 			
 	//	echo "Users: ".print_a($online);
-		
+	
 			foreach ($online as $val)
 			{
 				$panelOnline .= "<tr>
 					<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
 						<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 						<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
-						<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".basename($val['user_location'])."</a></td>
+						<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
 						<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
 					</tr>
 					";
