@@ -1839,6 +1839,7 @@ class e107plugin
 					$data['owner'] = $folder;
 					$data['category'] = $folder."_".$type;	
 					$data['title'] = $v['@value'];
+					$data['sef'] = vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
 					$data['class'] = 253;
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
