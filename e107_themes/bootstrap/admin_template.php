@@ -221,7 +221,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{ADMIN_LOG=request}
 			{ADMIN_MSG}
 			{ADMIN_PLUGINS}
-			{ADMIN_UPDATE}
+			
 		
 			{SETSTYLE=site_info}
 			{ADMIN_SITEINFO}

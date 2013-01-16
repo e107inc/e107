@@ -193,6 +193,10 @@ EOF;
 		{
 		 		$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
 		}
+		elseif(e107::isInstalled('awstats')) 
+		{
+		 		$text2 .= $ns->tablerender("Visitors this Month", $this->renderStats(),"core-infopanel_stats",true);
+		}
 		else
 		{
 			$text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
@@ -220,11 +224,11 @@ EOF;
 	
 	
 	$ol = e107::getOnline();
-//	echo "Users: ".print_a($ol->userList());
+	
 		
 	$panelOnline = "
 		
-			<table class='table adminlist'>
+			<table class='table table-condensed adminlist'>
 			<colgroup>
 				<col style='width: 10%' />
 	            <col style='width: 25%' />
@@ -241,13 +245,12 @@ EOF;
 					<th class='center'>Agent</th>
 				</tr>
 			</thead>
-			<tbody>";
-		
-		
-			
+			<tbody>";	
 
-			$online = $ol->userList();
-	
+		$online = $ol->userList() + $ol->guestList();
+			
+	//	echo "Users: ".print_a($online);
+		
 			foreach ($online as $val)
 			{
 				$panelOnline .= "<tr>
@@ -339,18 +342,18 @@ EOF;
 	
 		if($row['user_bot'] === true)
 		{
-			return "<i class='browser e-bot-32'></i>";	
+			return "<i class='browser e-bot-16'></i>";	
 		}
 		
 		foreach($types as $icon=>$b)
 		{
 			if(strpos($row['user_agent'], $b)!==false)
 			{
-				return "<i class='browsers e-".$icon."-32' ></i>";	
+				return "<i class='browsers e-".$icon."-16' ></i>";	
 			}
 		}
 
-		return "<i class='browsers e-firefox-32'></i>"; // FIXME find a default icon. 
+		return "<i class='browsers e-firefox-16'></i>"; // FIXME find a default icon. 
 	}
 
 	
@@ -490,7 +493,11 @@ EOF;
 	
 	function getStats() 
 	{
-		
+		if(file_exists(e_PLUGIN."awstats/awstats.graph.php")) //FIXME Cam: Find a generic solution. 
+		{
+			require_once(e_PLUGIN."awstats/awstats.graph.php");
+			return;	
+		}
 
 		
 		
