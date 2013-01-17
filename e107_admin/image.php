@@ -190,6 +190,10 @@ class media_cat_ui extends e_admin_ui
 		{
 			$this->fields['media_cat_category']['noedit'] = true;
 		}
+		elseif($this->getAction() == 'edit')
+		{
+			$this->fields['media_cat_type']['noedit'] = true;
+		}
 
 		$sql = e107::getDb();
 		
@@ -217,9 +221,9 @@ class media_cat_ui extends e_admin_ui
 		$type = $this->getRequest()->getPosted('media_cat_type', 'image').'_';
 		
 		$increment = ($this->ownerCount[$new_data['media_cat_owner']] +1);
-		if(empty($new_data['media_cat_sef'])) $new_data['media_cat_sef'] = eHelper::title2sef($new_data['media_cat_title']);
 		$new_data['media_cat_category'] = $new_data['media_cat_owner'].'_'.$type.$increment;
-		//print_a($new_data); exit;
+		if(empty($new_data['media_cat_sef'])) $new_data['media_cat_sef'] = eHelper::title2sef($new_data['media_cat_title']);
+
 		return $new_data;
 	}
 	
