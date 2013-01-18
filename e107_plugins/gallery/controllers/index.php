@@ -47,10 +47,10 @@ class plugin_gallery_index_controller extends eControllerFront
 	 */
 	protected $filter = array(
 		'category' => array(
-			'cat' => array('regex', '/[\w\pL\s\-+.,\']+/u'),
+			'cat' => array('regex', '/[\w\pL\s\-+.,]+/u'),
 		),
 		'list' => array(
-			'cat' => array('regex', '/[\w\pL\s\-+.,\']+/u'),
+			'cat' => array('regex', '/[\w\pL\s\-+.,]+/u'),
 			'frm' => array('int'),
 		),
 	);
@@ -107,7 +107,7 @@ class plugin_gallery_index_controller extends eControllerFront
 			$_cid = null;
 			foreach ($this->catList as $id => $row) 
 			{
-				if($cid === $row['media_cat_title'])
+				if($cid === $row['media_cat_sef'])
 				{
 					$_cid = $id;
 					break;

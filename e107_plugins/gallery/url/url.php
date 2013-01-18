@@ -23,7 +23,7 @@ class plugin_gallery_url extends eUrlConfig
 			// rule set array
 			'rules' => array(
 				'/' 	=> 'index/category',
-				'list' 	=> array('index/list', 'mapVars' => array('media_cat_category' => 'cat', 'from' => 'frm'), 'allowVars' 	=> array('cat', 'frm'),),
+				'list' 	=> array('index/list', 'mapVars' => array('media_cat_sef' => 'cat', 'from' => 'frm'), 'allowVars' 	=> array('cat', 'frm'),),
 			) 
 		);
 	}
