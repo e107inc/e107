@@ -20,14 +20,14 @@ class plugin_gallery_rewrite_url extends eUrlConfig
 				'allowVars' => array('cat', 'frm'),
 			
 				// custom assemble/parse URL regex template
-				'varTemplates' => array('galleryCat' => '[\w\pL\s\-+.,\']+'),
+				'varTemplates' => array('galleryCat' => '[\w\pL\s\-+.,]+'),
 			),
 			
 			// rule set array
 			'rules' => array(
 				'/' 					=> 'index/category',
 				// allow only mapped vars - cat and frm parameters to be passed 
-				'<cat:{galleryCat}>' 	=> array('index/list', 'mapVars' => array('media_cat_title' => 'cat', 'from' => 'frm')),
+				'<cat:{galleryCat}>' 	=> array('index/list', 'mapVars' => array('media_cat_sef' => 'cat', 'from' => 'frm')),
 			) 
 		);
 	}
