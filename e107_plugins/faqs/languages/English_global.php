@@ -5,6 +5,6 @@
 *
 * 'FAQ plugin' global language defines
 */
-define("LAN_PLUGIN_FAQS_NAME", "FAQ plugin");
+define("LAN_PLUGIN_FAQS_NAME", "FAQs");
 define("LAN_PLUGIN_FAQ_DESCRIPTION", "A simple plugin to add Frequently Asked Questions to your website.");
 ?>
