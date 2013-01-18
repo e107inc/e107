@@ -3891,18 +3891,21 @@ class e_admin_ui extends e_admin_controller_ui
 						$search = array_search($value, $val);
 						if(false === $search) continue;
 						unset($val[$search]);
+						sort($val);
 						$val = implode(',', $val);
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
 						
 						if(false === $check) $this->getModel()->setMessages();
 						else $rcnt++;
+						continue;
 					}
 					
 					// attach it
 					if(false === in_array($value, $val))
 					{
 						$val[] = $value; 
+						sort($val);
 						$val = implode(',', array_unique($val));
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
@@ -3916,14 +3919,18 @@ class e_admin_ui extends e_admin_controller_ui
 			case 'addAll':
 				if(!empty($value))
 				{
-					if(is_array($value)) $value = implode(',', array_map('trim', $value));
+					if(is_array($value))
+					{ 
+						sort($value);	
+						$value = implode(',', array_map('trim', $value));
+					}
 					
 					$cnt = $this->getTreeModel()->update($field, $value, $selected, true, true);
 				}
 				else
 				{
 					// TODO lan
-					$this->getTreeModel()->addMessageWarning("Comma list is empty, aborting.");
+					$this->getTreeModel()->addMessageWarning("Comma list is empty, aborting.")->setMessages();
 				}
 			break;
 				
@@ -3956,6 +3963,7 @@ class e_admin_ui extends e_admin_controller_ui
 							}
 						}
 						
+						sort($val);
 						$val = !empty($val) ? implode(',', $val) : '';
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
@@ -3965,6 +3973,7 @@ class e_admin_ui extends e_admin_controller_ui
 					}
 					$this->_model = null;
 				}
+
 				// format for proper message
 				$value = implode(',', $allowed);
 			break;
@@ -4961,7 +4970,8 @@ class e_admin_form_ui extends e_form
 					
 					case 'comma':
 						// TODO lan
-						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						if(!isset($parms['__options'])) $parms['__options'] = array();
+						if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
 						unset($parms['__options']); //remove element options if any
 						
@@ -4971,26 +4981,56 @@ class e_admin_form_ui extends e_form
 						
 						if($type == 'batch')
 						{
-							$_option = array();
-							foreach ($options as $value) 
+							$_option = array(); 
+
+							if(isset($options['addAll']))
 							{
-								$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
-								$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+								$option['attach_all__'.$key] = vartrue($options['addAll'], '(add all)');	
+								unset($options['addAll']);
 							}
-							if(isset($parms['addAll'])) $option['attach_all__'.$key] = vartrue($parms['addAll'], '(add all)');	
-							if(isset($parms['clearAll']))
+							if(isset($options['clearAll']))
 							{
-								$_option['deattach_all__'.$key] = vartrue($parms['clearAll'], '(clear all)');	
+								$_option['deattach_all__'.$key] = vartrue($options['clearAll'], '(clear all)');	
+								unset($options['clearAll']);
+							}
+							
+							if(vartrue($opts['simple']))
+							{
+								foreach ($options as $value) 
+								{
+									$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
+									$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+								}
+							}
+							else 
+							{
+								foreach ($options as $value => $label) 
+								{
+									$option['attach__'.$key.'__'.$value] = 'Add '.$label;	
+									$_option['deattach__'.$key.'__'.$value] = 'Remove '.$label;	
+								}
 							}
 							$option = array_merge($option, $_option);
 							unset($_option);
 						}
 						else
 						{
-							foreach($parms as $k => $name)
+							unset($options['addAll'], $options['clearAll']);
+							if(vartrue($opts['simple']))
 							{
-								$option[$key.'__'.$k] = $name;
+								foreach($options as $k)
+								{
+									$option[$key.'__'.$k] = $k;
+								}
 							}
+							else
+							{
+								foreach($options as $k => $name)
+								{
+									$option[$key.'__'.$k] = $name;
+								}
+							}
+
 						}						
 					break;
 						
