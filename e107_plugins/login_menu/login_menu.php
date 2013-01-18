@@ -159,7 +159,7 @@ if (USER == TRUE || ADMIN == TRUE)
 			{
 				if(isset($pref['plug_installed']['list_new']))
 				{
-					$text .= '<br /><a href="'.e_PLUGIN.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
+					$text .= '<br /><a href="'.e_PLUGIN_ABS.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
 				}
 			}
 		}
@@ -200,7 +200,7 @@ else
 			$text = $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
 		}
 
-		$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
+		$text .= '<form method="post" action="'.e_REQUEST_URI.'">';
 		$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 		$text .= '</form>';
 	}
