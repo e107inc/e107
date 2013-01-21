@@ -1974,7 +1974,7 @@ class e_form
 				}
 
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
-				$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
+				$value = vartrue($attributes['writeParms']['__options']['pre']).vartrue($attributes['writeParms'][$value]).vartrue($attributes['writeParms']['__options']['post']);
 			break;
 
 			case 'text':
