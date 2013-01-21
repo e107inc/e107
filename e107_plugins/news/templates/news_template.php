@@ -49,19 +49,19 @@ $NEWS_TEMPLATE['view']['item']        = '
 <div class="newsbox">
 	<div class="leftbox">
 		<div class="leftbox_title_bg">
-			<div class="leftbox_title">
+			<h1 class="leftbox_title">
 				{NEWSTITLE}
-			</div>
+			</h1>
 		</div>
 		<div class="meta">
 			<div class="author mediumtext">
 				{NEWSDATE=short}&nbsp;&nbsp;&nbsp;{NEWSAUTHOR}
 			</div>
 		</div>
-	  <div class="newsbbody">
+	  <p class="newsbbody">
 			{NEWSIMAGE}
 			{NEWSBODY} {EXTENDED}
-		</div>
+		</p>
 		<div class="clear"></div>
 		<div class="metabottom">
 			<div class="metaicons">
