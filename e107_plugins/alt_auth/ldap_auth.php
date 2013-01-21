@@ -20,7 +20,7 @@
  *	@version 	$Id$;
  */
 
-class auth_login
+class auth_login extends alt_auth_base
 {
 	private	$server;		// The LDAP server (array of possible servers)
 	private $dn;			// LDAP domain
@@ -49,11 +49,10 @@ class auth_login
 	{
 		$this->copyAttribs = array();
 		$this->copyMethods = array();
-		$sql = e107::getDB('altAuth');
-		$sql->db_Select('alt_auth', '*', "auth_type = 'ldap' ");
-		while ($row = $sql->db_Fetch())
+		$ldap = $this->altAuthGetParams('ldap');
+
+		foreach ($ldap as $row)
 		{
-			$ldap[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
 			if ((strpos($row['auth_parmname'], 'ldap_xf_') === 0) && $ldap[$row['auth_parmname']]) // Attribute to copy on successful login
 			{
 				$this->copyAttribs[substr($row['auth_parmname'], strlen('ldap_xf_'))] = $ldap[$row['auth_parmname']]; // Key = LDAP attribute. Value = e107 field name
@@ -62,7 +61,6 @@ class auth_login
 			{	// Any fields with non-null 'copy' methods
 				$this->copyMethods[substr($row['auth_parmname'], strlen('ldap_pm_'))] = $ldap[$row['auth_parmname']]; // Key = e107 field name. Value = copy method
 			}
-			unset($row['auth_parmname']);
 		}
 		$this->server = explode(',', $ldap['ldap_server']);
 		$this->serverType = $ldap['ldap_servertype'];

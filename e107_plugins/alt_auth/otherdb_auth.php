@@ -30,7 +30,7 @@
 	AUTH_SUCCESS 		= valid login
 */
 
-class auth_login
+class auth_login extends alt_auth_base
 {
 
 	public	$Available = FALSE;		// Flag indicates whether DB connection available
@@ -47,7 +47,7 @@ class auth_login
 	public function __construct()
 	{
 		$this->ErrorText = '';
-		$this->conf = altAuthGetParams('otherdb');
+		$this->conf = $this->altAuthGetParams('otherdb');
 		$this->Available = TRUE;
 	}
 

@@ -27,10 +27,10 @@ Potential enhancements:
 Error recfrom: 10054 - winsock error for 'connection reset'
 */
 
-define('RADIUS_DEBUG',TRUE);
-class auth_login
-{
+define('RADIUS_DEBUG',FALSE);
 
+class auth_login extends alt_auth_base
+{
 	private $server;
 	private	$secret;
 	private	$port;
@@ -49,7 +49,7 @@ class auth_login
 	function __construct()
 	{
 		$this->copyAttribs = array();
-		$radius = altAuthGetParams('radius');
+		$radius = $this->altAuthGetParams('radius');
 
 		$this->server = explode(',',$radius['radius_server']);
 		$this->port = 1812;								// Assume fixed port number for now - 1812 (UDP) is listed for servers, 1645 for authentification. (1646, 1813 for accounting)
