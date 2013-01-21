@@ -564,32 +564,32 @@ class e_form
 		
 		$dateFormat = varset($options['dateformat']) ? trim($options['dateformat']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$timeFormat = varset($options['timeformat']) ? trim($options['timeformat']) :e107::getPref('inputtime', '%H:%M:%S'); 
-						
+		
 		$type		= varset($options['type']) ? trim($options['type']) : "date"; // 'datetime'
 		
 	//	echo "TYPE=".$type;
 			
 		$ampm		= (preg_match("/%l|%I|%p|%P/",$timeFormat)) ? 'true' : 'false';					
-	
+
 		$dformat = e107::getDate()->toMask($dateFormat);
 		$tformat = e107::getDate()->toMask($timeFormat);
-				
+
 		$id = $this->name2id($name);
-		
+
 		$classes = array(
 			'date'		=> 'e-date',
 		//	'time'		=> 'e-time',
 			'datetime'	=> 'e-datetime'
 		);
-		
+
 		$def = array(
 			'date'		=> $dateFormat,
 		//	'time'		=> $timeFormat,
 			'datetime'	=> $dateFormat." ".$timeFormat
 		);
-			
+
 		$defdisp = (isset($def[$type])) ? $def[$type] : $def['date'];
-		$defdisp = e107::getDate()->toMask($defdisp);
+	//	$defdisp = e107::getDate()->toMask($defdisp);
 		
 		if ($datestamp)
 		{
@@ -608,16 +608,16 @@ class e_form
 		{
 			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
 				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
-			";		
+			";
 		}
 		else
 		{
 			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
 		}
-		
+
 		return $text;
 
-		
+
 	}
 
 	/**
