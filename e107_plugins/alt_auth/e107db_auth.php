@@ -31,7 +31,7 @@
 	AUTH_SUCCESS 		= valid login
 */
 
-class auth_login
+class auth_login extends alt_auth_base
 {
 	public	$Available = FALSE;		// Flag indicates whether DB connection available
 	public	$ErrorText;				// e107 error string on exit
@@ -46,7 +46,7 @@ class auth_login
 	public function __construct()
 	{
 		$this->ErrorText = '';
-		$this->conf = altAuthGetParams('e107db');
+		$this->conf = $this->altAuthGetParams('e107db');
 		$this->Available = TRUE;
 	}
 

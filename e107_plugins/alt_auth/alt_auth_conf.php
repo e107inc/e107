@@ -44,6 +44,8 @@ require_once(e_HANDLER.'user_extended_class.php');
 $euf = new e107_user_extended;
 
 
+$pref = e107::pref('core');
+
 if(isset($_POST['updateprefs']))
 {
 	unset($temp);
@@ -53,7 +55,7 @@ if(isset($_POST['updateprefs']))
 	$temp['auth_badpassword'] = intval($_POST['auth_badpassword']);
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
-		save_prefs();		// Only save if changes
+		save_prefs();		// Only save if changes  @TODO:
 		header('location:'.e_SELF);
 		exit;
 	}
@@ -70,7 +72,7 @@ if(isset($_POST['updateeufs']))
 	$au = implode(',',$authExtended);
 	if ($au != $pref['auth_extended'])
 	{
-		$pref['auth_extended'] = $au;
+		$pref['auth_extended'] = $au;				// @TODO:
 		save_prefs();
 		$admin_log->log_event('AUTH_02',$au,'');
 	}
@@ -90,11 +92,11 @@ if (isset($pref['auth_nouser']))
 	}
 	unset($pref['auth_nouser']);
 	if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
-	save_prefs();
+	save_prefs();			// @TODO
 }
 
 
-$authlist = alt_auth_get_authlist();
+$authlist = alt_auth_admin::alt_auth_get_authlist();
 if (isset($pref['auth_extended']))
 {
 	$authExtended = explode(',',$pref['auth_extended']);
@@ -111,6 +113,10 @@ if(isset($message))
 	e107::getRender()->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
+
+$altAuthAdmin = new alt_auth_admin();
+
+
 $text = "
 <div>
 <form method='post' action='".e_SELF."'>
@@ -122,7 +128,7 @@ $text = "
 <tr>
 <td>".LAN_ALT_1.": </td>
 <td>".
-alt_auth_get_dropdown('auth_method', $pref['auth_method'], 'e107')."
+$altAuthAdmin->alt_auth_get_dropdown('auth_method', $pref['auth_method'], 'e107')."
 </td>
 </tr>
 
@@ -154,7 +160,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>".alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
 <div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>

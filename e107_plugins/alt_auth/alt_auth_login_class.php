@@ -34,6 +34,41 @@ define('AUTH_UNKNOWN', 4);
 define('AUTH_NOT_AVAILABLE', 5);
 define('AUTH_NORESOURCE', 6);		// Used to indicate, for example, that a required PHP module isn't loaded
 
+
+/**
+ *	Methods used by a number of alt_auth classes.
+ *	The login authorisation classes are descendants of this one.
+ *	Admin functions also use it - a little extra overhead by including this file, but less of a problem for admin
+ */
+class alt_auth_base
+{
+	public function __construct()
+	{
+	}
+
+
+	/**
+	 *	Get configuration parameters for an authentication method
+	 *
+	 *	@param string $prefix - the method
+	 *
+	 *	@return array
+	 */
+	public function altAuthGetParams($prefix)
+	{
+		$sql = e107::getDb();
+
+		$sql->db_Select('alt_auth', '*', "auth_type = '".$prefix."' ");
+		$parm = array();
+		while($row = $sql->db_Fetch())
+		{
+			$parm[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+		}
+		return $parm;
+	}
+}
+
+
 class alt_login
 {
 	protected $e107;
