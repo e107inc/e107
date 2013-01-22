@@ -1536,10 +1536,58 @@ class pluginBuilder
 				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
 				'copyright'		=> array('copyright'),
-		//		'languageFile'	=> array('type','path'),
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
 			);
+			
+			// Load old plugin.php file if it exists; 
+			$legacyFile = e_PLUGIN.$this->pluginName."/plugin.php";		
+			if(file_exists($legacyFile))
+			{
+				require_once($legacyFile);	
+				$mes = e107::getMessage();
+				$mes->addInfo("Loading plugin.php file");
+				
+				$defaults = array(
+					"main-name"					=> $eplug_name,
+					"author-name"				=> $eplug_author,
+					"author-url"				=> $eplug_url,
+					"description-description"	=> $eplug_description,
+					"summary-summary"			=> $eplug_description
+				);
+				
+				if(count($eplug_tables) && !file_exists(e_PLUGIN.$this->pluginName."/".$this->pluginName."_sql.php"))
+				{
+					
+					$cont = '';
+					foreach($eplug_tables as $tab)
+					{
+						if(strpos($tab,"INSERT INTO")!==FALSE)
+						{
+							continue;	
+						}
+						
+						$cont .= "\n".str_replace("\t"," ",$tab);	
+						
+					}
+					
+					if(file_put_contents(e_PLUGIN.$this->pluginName."/".$this->pluginName."_sql.php",$cont))
+					{
+						$mes->addInfo($this->pluginName."_sql.php as been generated",'default',true);	
+						$red = e107::getRedirect();
+						$red->redirect(e_REQUEST_URL,true);
+					//	$red->redirect(e_SELF."?mode=create&newplugin=".$this->pluginName."&createFiles=1&step=2",true);
+					}
+					else 
+					{
+						$msg = $this->pluginName."_sql.php is missing!<br />";
+						$msg .= "Please create <b>".$this->pluginName."_sql.php</b> in your plugin directory with the following content:<pre>".$cont."</pre>";
+						$mes->addWarning($msg);	
+					}
+					
+					
+				}
+			}
 			
 			$text = "<table class='table adminlist'>";
 					
@@ -1552,7 +1600,7 @@ class pluginBuilder
 					$nm = $key.'-'.$type;
 					$name = "xml[$nm]";	
 					$size = (count($val)==1) ? 'span7' : 'span2';
-					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type)."</div>";	
+					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type, vartrue($defaults[$nm]))."</div>";	
 				}	
 			
 				$text .= "</div></td></tr>";
@@ -1565,13 +1613,12 @@ class pluginBuilder
 		}
 		
 		
-		function xmlInput($name, $info)
+		function xmlInput($name, $info, $default='')
 		{
 			$frm = e107::getForm();	
 			list($cat,$type) = explode("-",$info);
 			
 			$size 		= 30;
-			$default 	= '';
 			$help		= '';
 			
 			switch ($info)
@@ -1610,14 +1657,13 @@ class pluginBuilder
 				break;
 				
 				case 'author-name':
-					$default 	= USERNAME;
+					$default 	= (vartrue($default)) ? $default : USERNAME;
 					$required 	= true;
 					$help 		= "Author Name";
 					$pattern	= "[A-Za-z \.0-9]*";
 				break;
 				
 				case 'author-url':
-					$default 	= '';
 					$required 	= true;
 					$help 		= "Author Website Url";
 				//	$pattern	= "https?://.+";
@@ -1741,7 +1787,7 @@ $template = <<<TEMPLATE
 	</adminLinks>
 </e107Plugin>
 TEMPLATE;
-
+// TODO
 /*
 	<siteLinks>
 		<link url="{e_PLUGIN}_blank/_blank.php" perm="everyone">Blank</link>		
