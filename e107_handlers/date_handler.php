@@ -79,7 +79,7 @@ class convert
 			default:
 				if(strpos($mask, '%') === FALSE)
 				{
-					$mask = $this->toMask($mask);
+					$mask = $this->toMask($mask,true);
 				}				
 			break;
 		}
