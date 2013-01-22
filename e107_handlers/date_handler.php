@@ -75,6 +75,13 @@ class convert
 				}
 			//	$datestamp += TIMEOFFSET;
 			break;
+			
+			default:
+				if(strpos($mask, '%') === FALSE)
+				{
+					$mask = $this->toMask($mask);
+				}				
+			break;
 		}
 		
 		// 
@@ -98,9 +105,9 @@ class convert
 	
 	
 	/** 
-	 * Converts from one date function mask to the other and vice-versa. 
+	 * Converts to new date-mask format or vice-versa when $legacy is TRUE 
 	 */
-	function toMask($mask)
+	function toMask($mask, $legacy = false)
 	{
 		$convert = array(
 			'%Y'	=> 'yy',
@@ -129,7 +136,7 @@ class convert
 		$s = array_keys($convert);
 		$r = array_values($convert);	
 		
-		if(strpos($mask, '%') === FALSE)
+		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
 		{
 			return str_replace($r, $s,$mask);
 		}
