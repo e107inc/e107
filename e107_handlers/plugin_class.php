@@ -364,12 +364,21 @@ class e107plugin
 	}
 
 
-	function manage_tables($action, $var) {
+	function manage_tables($action, $var) 
+	{
 		global $sql;
 		if ($action == 'add') {
-			if (is_array($var)) {
-				foreach($var as $tab) {
-					if (!$sql->db_Query($tab)) {
+			if (is_array($var)) 
+			{
+				foreach($var as $tab) 
+				{
+					if(strtolower(CHARSET) == 'utf8' && !preg_match("/MyISAM.*CHARSET ?= ?utf8/i",$tab)) // Make all tables utf-8. 
+					{
+						$tab = str_replace("MyISAM", "MyISAM DEFAULT CHARSET=utf8", $tab);		
+					}
+
+					if (!$sql->db_Query($tab)) 
+					{
 						return FALSE;
 					}
 				}
