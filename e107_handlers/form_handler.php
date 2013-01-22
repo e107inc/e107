@@ -589,7 +589,6 @@ class e_form
 		);
 
 		$defdisp = (isset($def[$type])) ? $def[$type] : $def['date'];
-	//	$defdisp = e107::getDate()->toMask($defdisp);
 		
 		if ($datestamp)
 		{
