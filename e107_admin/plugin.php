@@ -1671,7 +1671,7 @@ class pluginBuilder
 			switch ($type) 
 			{
 				case 'date':
-					$text = $frm->datepicker($name,time(),'dateformat=yy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'dateformat=yy-mm-dd'.$req);		
 				break;
 				
 				case 'description':
@@ -1784,7 +1784,7 @@ TEMPLATE;
 		{
 			$frm = e107::getForm();
 					
-			$modes = array("main"=>"Main Area","cat"=>"Categories");
+			$modes = array("main"=>"Main Area","cat"=>"Categories","other1"=>"Other 1","other2"=>"Other 2");
 			
 		//	echo "TABLE COUNT= ".$this->tableCount ;
 			
@@ -1907,7 +1907,8 @@ TEMPLATE;
 					"userclass"	=> "DropDown (userclasses)",
 					"datestamp"	=> "Date",
 					"method"	=> "Custom Function",
-					"hidden"	=> "Hidden"
+					"hidden"	=> "Hidden",
+					"user"		=> "User",
 					);	
 				break;
 				
@@ -1980,6 +1981,7 @@ TEMPLATE;
 				case 'start':
 				case 'end':
 				case 'datestamp':
+				case 'date':
 					$ret['title'] = 'LAN_DATESTAMP';
 					$ret['type'] = 'datestamp';
 					$ret['batch'] = false;
@@ -2094,7 +2096,7 @@ TEMPLATE;
 			$type = $val['type'];
 			
 			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date','varchar','char');
 			
 			
 			if(in_array(strtolower($type),$strings))
@@ -2220,6 +2222,8 @@ $text .= "
 				"'filter' => '1'",
 				"'validate' => '1'",
 				", 'fieldpref' => '1'",
+				"'type' => ''",
+				"'data' => ''"
 			 );
 			 
 			$repl = array(
@@ -2230,7 +2234,9 @@ $text .= "
 				"'batch' => true",
 				"'filter' => true",
 				"'validate' => true",
-				""
+				"",
+				"'type' => null",
+				"'data' => null"
 				  );
 			
 	
@@ -2245,7 +2251,7 @@ $text .= "
 				
 				foreach($vars['fields'] as $k=>$v)
 				{
-					if($v['fieldpref'])
+					if($v['fieldpref'] && $k != 'checkboxes' && $k !='options')
 					{
 						$FIELDPREF[] = "'".$k."'";
 					}							
