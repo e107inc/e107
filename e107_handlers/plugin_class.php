@@ -705,7 +705,7 @@ class e107plugin
 
 	function manage_extended_field_sql($action, $field_name)
 	{
-		$f = e_ADMIN.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
+		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
 		
 		if(!is_readable($f)) return false;
 		

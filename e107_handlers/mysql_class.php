@@ -1857,7 +1857,7 @@ class e_db_mysql
 			}
 			else
 			{		// Need to try and find a table definition
-				$searchArray = array(e_ADMIN.'sql/db_field_defs.php');
+				$searchArray = array(e_CORE.'sql/db_field_defs.php');
 				// e107::getPref() shouldn't be used inside db handler! See db_IsLang() comments
 				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
 				foreach ($sqlFiles as $p => $f)
