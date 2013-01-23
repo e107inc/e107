@@ -1154,13 +1154,13 @@ class users_ext
 
 				if ($tmp[$f]['type']=="db field")
 				{
-					if (is_readable(e_ADMIN.'sql/extended_'.$f.'.php'))
+					if (is_readable(e_CORE.'sql/extended_'.$f.'.php'))
 					{
 	             	$ret .= ($this->process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
 				}
 					else
 					{
-						$ret .= str_replace('--FILE--',e_ADMIN.'sql/extended_'.$f.'.php',EXTLAN_78);
+						$ret .= str_replace('--FILE--',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
 					}
 				}
 			}
