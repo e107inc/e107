@@ -1183,7 +1183,7 @@ class users_ext
 			if($ue->user_extended_remove($f, $f))
 			{
 				$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
-				if(is_readable(e_ADMIN."sql/extended_".$f.".php")){
+				if(is_readable(e_CORE."sql/extended_".$f.".php")){
 	             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
 				}
 			}
@@ -1200,7 +1200,7 @@ class users_ext
 	function process_sql($f)
 	{
 	    global $sql;
-		$filename = e_ADMIN."sql/extended_".$f.".php";
+		$filename = e_CORE."sql/extended_".$f.".php";
 		$fd = fopen ($filename, "r");
 		$sql_data = fread($fd, filesize($filename));
 		fclose ($fd);

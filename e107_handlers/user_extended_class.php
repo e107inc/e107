@@ -649,7 +649,7 @@ class e107_user_extended
 
 		case EUF_PREDEFINED : // predefined list, shown in dropdown
 			$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
-			$filename = e_ADMIN.'sql/extended_'.$listRoot.'.php';
+			$filename = e_CORE.'sql/extended_'.$listRoot.'.php';
 			if (!is_readable($filename)) return 'No file: '.$filename;
 			require_once($filename);
 			$className = 'extended_'.$listRoot;
@@ -890,7 +890,7 @@ class e107_user_extended
 	 */
 	function user_extended_display_text($table, $value)
 	{
-		$filename = e_ADMIN.'sql/extended_'.$table.'.php';
+		$filename = e_CORE.'sql/extended_'.$table.'.php';
 		if (!is_readable($filename)) return 'No file: '.$filename;
 		require_once($filename);
 		$className = 'extended_'.$table;
