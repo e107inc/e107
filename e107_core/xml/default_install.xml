@@ -97,7 +97,7 @@
 		<core name="frontpage_force"><![CDATA[array (
   0 => '',
 )]]></core>
-		<core name="html_abuse">1</core>
+		<core name="html_abuse">0</core>
 		<core name="im_height">80</core>
 		<core name="im_path">/usr/X11R6/bin/</core>
 		<core name="im_width">80</core>
