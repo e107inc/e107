@@ -13,63 +13,41 @@ global $sc_style;
 ###### Default list item (temporary) - TODO rewrite news, template standards ######
 //$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
-$NEWS_TEMPLATE['list']['item']        = '
-<div class="newsbox">
-	<div class="leftbox">
-		<div class="leftbox_title_bg">
-			<div class="leftbox_title">
-				{NEWSTITLE}
-			</div>
-		</div>
-		<div class="meta">
-			<div class="author">
-				{NEWSDATE=short}&nbsp;&nbsp;&nbsp;{NEWSAUTHOR}
-			</div>
-		</div>
-	  <div class="newsbbody">
+$NEWS_TEMPLATE['list']['item'] = '
+	<div class="news-list-item">
+		<h2>{NEWSTITLE}</h2>
+		<div class="item-date">{NEWSDATE=short}</div>
+		<div class="item-author">{NEWSAUTHOR}</div>
+ 
+		<div class="item-body">
 			{NEWSIMAGE}
-			{NEWSBODY} {EXTENDED}
+			{NEWSBODY}
+			{EXTENDED}
 		</div>
-		<div class="clear"></div>
-		<div class="metabottom">
-			<div class="metaicons">
-    		{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
-			</div>
-			{NEWSCOMMENTS}
-	  </div>
+		<div class="item-options">
+			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
+		</div>
 	</div>
-</div>
 ';
 //$NEWS_MENU_TEMPLATE['list']['separator']   = '<br />';
 
 ###### Default view item (temporary) - TODO rewrite news, template standards ######
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['view']['end']         = '</ul>';
-$NEWS_TEMPLATE['view']['item']        = '
-<div class="newsbox">
-	<div class="leftbox">
-		<div class="leftbox_title_bg">
-			<h1 class="leftbox_title">
-				{NEWSTITLE}
-			</h1>
-		</div>
-		<div class="meta">
-			<div class="author mediumtext">
-				{NEWSDATE=short}&nbsp;&nbsp;&nbsp;{NEWSAUTHOR}
-			</div>
-		</div>
-	  <p class="newsbbody">
+$NEWS_TEMPLATE['view']['item'] = '
+	<div class="news-view-item">
+		<h2>{NEWSTITLE}</h2>
+		<div class="item-date">{NEWSDATE=short}</div>
+		<div class="item-author">{NEWSAUTHOR}</div>
+ 
+		<div class="item-body">
 			{NEWSIMAGE}
-			{NEWSBODY} {EXTENDED}
-		</p>
-		<div class="clear"></div>
-		<div class="metabottom">
-			<div class="metaicons">
-    		{EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
-			</div>
-   		{NEWSCOMMENTS}
-	  </div>
+			{NEWSBODY}
+			{EXTENDED}
+		</div>
+		<div class="item-options">
+			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
+		</div>
 	</div>
-</div>
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
