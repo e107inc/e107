@@ -57,7 +57,7 @@ class db_verify
 			
 		$this->backUrl = e_SELF;	
 			
-		$core_data = file_get_contents(e_ADMIN.'sql/core_sql.php');
+		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
 		$this->tables['core'] = $this->getTables($core_data);
 		
 		$this->sqlLanguageTables = $this->getSqlLanguages();

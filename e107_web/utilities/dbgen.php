@@ -26,12 +26,12 @@ $dbAdm = new db_table_admin();
 
 
 // Create an array of all tables
-$tableStruct = $dbAdm->get_table_def('',e_ADMIN.'sql/core_sql.php');
+$tableStruct = $dbAdm->get_table_def('',e_CORE.'sql/core_sql.php');
 $tableArray = array();
 
 foreach ($tableStruct as $t)
 {
-	$tableArray[$t[1]] = array('src' => e_ADMIN.'sql/core_sql.php', 'desc' => 'core:'.$t[1]);
+	$tableArray[$t[1]] = array('src' => e_CORE.'sql/core_sql.php', 'desc' => 'core:'.$t[1]);
 }
 
 
