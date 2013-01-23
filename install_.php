@@ -1593,7 +1593,7 @@ class e_install
 			return nl2br(LANINS_085." '{$this->previous_steps['mysql']['db']}'\n\n<b>".LANINS_083."\n</b><i>".mysql_error($link)."</i>");
 		}
 
-		$filename = "{$this->e107->e107_dirs['ADMIN_DIRECTORY']}sql/core_sql.php";
+		$filename = "{$this->e107->e107_dirs['CORE_DIRECTORY']}sql/core_sql.php";
 		$fd = fopen ($filename, "r");
 		$sql_data = fread($fd, filesize($filename));
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip comments

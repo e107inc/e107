@@ -9,7 +9,7 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("DBVLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
+define("DBVLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/e107_core/sql</b> directory.");
 // define("DBLAN_2", "Verifying all");
 
 define("DBVLAN_4", "Table");

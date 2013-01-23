@@ -86,7 +86,7 @@ Please click the button to create the database tables and save all your settings
 define("LANINS_058", "7");
 define("LANINS_060", "Unable to read the sql datafile
 
-Please ensure the file <b>core_sql.php</b> exists in the <b>/e107_admin/sql</b> directory.");
+Please ensure the file <b>core_sql.php</b> exists in the <b>/e107_core/sql</b> directory.");
 define("LANINS_061", "e107 was unable to create all of the required database tables.
 Please clear the database and rectify any problems before trying again.");
 
