@@ -200,7 +200,7 @@ else
 			$text = $tp->parseTemplate($LOGIN_MENU_MESSAGE, true, $login_menu_shortcodes);
 		}
 
-		$text .= '<form method="post" action="'.e_REQUEST_URI.'">';
+		$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
 		$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 		$text .= '</form>';
 	}
