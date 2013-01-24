@@ -414,7 +414,7 @@ class eIPHandler
 		if ($vals === FALSE) return $ret;
 		if (substr($vals[0], 0, 5) != '<?php')
 		{
-			echo 'Invalid message file';
+			echo 'Invalid list file';
 			die();			// Debatable, because admins can't get in if this fails. But can manually delete the file.
 		}
 		unset($vals[0]);
