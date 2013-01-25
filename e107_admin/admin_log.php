@@ -239,8 +239,8 @@ if(($action == "confdel") || ($action == "auditdel"))
 				</table>
 				<div class='buttons-bar center'>
 					<input type='hidden' name='backdeltype' value='{$action}' />
-					$frm->admin_button('confirmdeleteold', 'no-value', 'delete', RL_LAN_049); 
-					$frm->admin_button('confirmcancelold', 'no-value', 'delete', LAN_CANCEL);					
+					".$frm->admin_button('confirmdeleteold', 'no-value', 'delete', RL_LAN_049)."
+					".$frm->admin_button('confirmcancelold', 'no-value', 'delete', LAN_CANCEL)."				
 				</div>
 			</fieldset>
 		</form>
