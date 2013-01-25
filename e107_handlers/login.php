@@ -135,7 +135,7 @@ class userlogin {
 						$row = $sql->db_Fetch(MYSQL_ASSOC);
 						if ($row['online_timestamp'] < (time() - $online_timeout))
 						{	// Allow the login (user probably went away quite a while ago) - leave option to log if next line uncommented
-							$sql->db_Insert('generic', "0, 'failed_login', '".time()."', 0, '{$fip}', '$user_id', '".$tp->toDB('Debug - user already logged in'.' ::: '.LAN_LOGIN_1.': '.$username)."' ");
+							//$sql->db_Insert('generic', "0, 'failed_login', '".time()."', 0, '{$fip}', '$user_id', '".$tp->toDB('Debug - user already logged in'.' ::: '.LAN_LOGIN_1.': '.$username)."' ");
 						}
 						else
 						{
