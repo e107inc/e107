@@ -462,12 +462,101 @@ class themeHandler
 			foreach ($this->themeArray as $key=>$theme)
 			{
 				$text .= $this->renderTheme(FALSE, $theme);
+				// print_a($theme);
 			}
 			$text .= "<div class='clear'>&nbsp;</div>";
 			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $mes->render().$text);
 			
 			
 		}
+		
+		
+		if($mode == "online")
+		{
+			$e107 = e107::getInstance();
+			$xml = e107::getXml();
+			$mes = e107::getMessage();
+			
+			$mes->addWarning("This area is experimental, incomplete and may produce unpredictable results.");
+	
+			$from = intval(varset($_GET['frm']));
+		
+		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
+			$file = "http://e107.org/feed?type=theme&frm=".$from;
+			
+			$xml->setOptArrayTags('theme'); // make sure 'theme' tag always returns an array
+			$xdata = $xml->loadXMLfile($file,'advanced');
+	
+			$total = $xdata['@attributes']['total'];
+	
+	
+		//	print_a($xdata);
+			//TODO use admin_ui including filter capabilities by sending search queries back to the xml script. 
+	
+			// XML data array. 
+			$c = 1;
+				$text = "";
+			foreach($xdata['theme'] as $r)
+			{
+				$mes->addDebug(print_a($r,true));	
+				
+				$theme = array(
+					'name'		=> $r['@attributes']['name'],
+					'summary'	=> $r['description'][0],
+					'preview' 	=> array($r['@attributes']['screenshot']),
+					'date'		=> $r['@attributes']['date'],
+					'version'	=> $r['@attributes']['version']
+				);
+				
+				$text .= $this->renderTheme(FALSE, $theme);
+				/*
+    		
+			    [author] => e107 Inc
+			    [summary] => Bootstrap e107 admin theme
+			    [category] => generic
+			    [keywords] => Array
+			        (
+			            [word] => Array
+			                (
+			                    [0] => bootstrap
+			                    [1] => clean
+			                )
+			
+			        )
+					[name] => bootstrap
+			    [version] => 1.0
+			    [date] => 2012-12-01
+			    [compatibility] => 2.0
+			    [releaseUrl] => 
+			    [email] => e107inc@something.com
+			    [website] => http://e107.org
+			    [info] => Bootstrap e107 admin theme
+			    [compliance] => Array
+			        (
+			            [@attributes] => Array
+			                (
+			                    [xhtml] => 
+			                    [css] => 
+			                )
+			
+			        )
+			
+			    [xhtmlcompliant] => 
+			    [csscompliant] => 
+			    [path] => bootstrap		
+							
+			*/	
+				
+			}	
+				
+			$text .= "<div class='clear'>&nbsp;</div>";
+			$ns->tablerender(TPVLAN_26." :: Available for Download", $mes->render().$text);
+				
+			
+		}
+		
+		
+		
 
 		
 		echo "</form>\n</div>\n";
@@ -714,8 +803,8 @@ class themeHandler
 	//		print_a($theme);	
 		}
 	//	
-		
-		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".(vartrue($theme['preview'][0]) ? "<img  src='".e_THEME.$theme['path'] ."/".$theme['preview'][0]."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
+		$previewPath = (substr($theme['preview'][0],0,4) == 'http') ? $theme['preview'][0] : e_THEME.$theme['path'] ."/".$theme['preview'][0];
+		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".(vartrue($theme['preview'][0]) ? "<img  src='".$previewPath."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
 		
 		// Choose a Theme to Install.
 		if(!$mode)
