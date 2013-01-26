@@ -142,6 +142,9 @@ function theme_adminmenu()
 
 		$var['choose']['text'] = TPVLAN_51;
 		$var['choose']['link'] = e_SELF."?choose";
+		
+		$var['online']['text'] = "Find Themes";
+		$var['online']['link'] = e_SELF."?online";
 
 		$var['upload']['text'] = TPVLAN_38;
 		$var['upload']['link'] = e_SELF."?upload";

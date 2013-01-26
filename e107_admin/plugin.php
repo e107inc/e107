@@ -302,7 +302,7 @@ class pluginManager{
 		$from = intval(varset($_GET['frm']));
 	
 	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
-		$file = "http://e107.org/feed?frm=".$from;
+		$file = "http://e107.org/feed?type=plugin&frm=".$from;
 		
 		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
 		$xdata = $xml->loadXMLfile($file,'advanced');

@@ -3,13 +3,14 @@
 	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
 	<summary>Bootstrap e107 admin theme</summary>
 	<description>Bootstrap e107 admin theme</description>
+	<category>generic</category>
 	<keywords>
 		<word>bootstrap</word>
 		<word>clean</word>
 	</keywords>
 	<screenshots>
 		<image>preview.jpg</image>
-		<image>fullpreview.png</image>
+		<image>fullpreview.jpg</image>
 	</screenshots>
 	<layouts>
 		<layout name='default' title='Default' default='true' />
