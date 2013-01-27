@@ -340,6 +340,12 @@ class e107PDF extends TCPDF
 	 */
 	function filePathModify($fileName, $source = '')
 	{
+		// Leave off-site links unchanged
+		if (strpos($fileName, 'http://') === 0) return $fileName;
+		if (strpos($fileName, 'https://') === 0) return $fileName;
+		if (strpos($fileName, 'ftp://') === 0) return $fileName;
+		
+		// Assumed to be a 'local' link here
 		if (substr($fileName,0,1) == '/')
 		{	// Its an absolute file reference
 			return str_replace(e_HTTP,e_ROOT,$fileName);
