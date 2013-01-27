@@ -20,7 +20,9 @@ if (!getperms('0'))
 	header("location:".e_BASE."index.php");
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('language', true);
+
 $e_sub_cat = 'language';
 require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
@@ -372,9 +374,13 @@ function multilang_prefs()
 	$mes = e107::getMessage();
 	$frm = e107::getForm();
 	
-	$lanlist = array('English'); //XXX Remove later. 
-	
-	$mes->addInfo("Alpha version currently supports only the English language. After most features are stable and English terms are optimized - translation will be possible.");
+	//XXX Remove later. 
+	// Enable only for developers - SetEnv E_ENVIRONMENT develop
+	if(!isset($_SERVER['E_ENVIRONMENT']) || $_SERVER['E_ENVIRONMENT'] !== 'develop') 
+	{
+		$lanlist = array('English'); 
+		$mes->addInfo("Alpha version currently supports only the English language. After most features are stable and English terms are optimized - translation will be possible.");
+	}
 	
 	$text = "
 	<form method='post' action='".e_SELF."' id='linkform'>
