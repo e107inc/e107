@@ -340,6 +340,13 @@ class e107PDF extends TCPDF
 	 */
 	function filePathModify($fileName, $source = '')
 	{
+		// This handles the fact that local images use absolute links in web pages
+		if (strpos($fileName, SITEURL) === 0)
+		{
+			$fileName = e_BASE.str_replace(SITEURL, '', $fileName);
+			return $fileName;
+		}
+
 		// Leave off-site links unchanged
 		if (strpos($fileName, 'http://') === 0) return $fileName;
 		if (strpos($fileName, 'https://') === 0) return $fileName;
