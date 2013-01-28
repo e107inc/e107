@@ -95,8 +95,8 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 
 function Size_Select($formid='size_selector') {
 	$text ="<!-- Start of Size selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
-	$text .="<div style='position:absolute; bottom:30px; right:125px'>";
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right'>";
+	$text .="<div style='position:absolute; bottom:30px; right:125px;display:none' id='{$formid}'>";
 	$text .= "<table class='fborder' style='background-color: #fff'>
 	<tr><td class='forumheader3'>
 	<select class='tbox bb-sizeselect' name='sizeselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
@@ -116,8 +116,8 @@ function Size_Select($formid='size_selector') {
 function Color_Select($formid='col_selector') {
 
 	$text = "<!-- Start of Color selector -->
-	<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right; display: none' id='{$formid}' onclick=\"this.style.display='none'\" >
-	<div style='position: absolute; bottom: 30px; right: 145px; width: 221px'>";
+	<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right' >
+	<div style='position: absolute; bottom: 30px; right: 145px; width: 221px; display: none' id='{$formid}' onclick=\"this.style.display='none'\">";
 
 	$text .= "<script type='text/javascript'>
 	//<![CDATA[
@@ -199,8 +199,8 @@ function PreImage_Select($formid)
     sort($imagelist);
 
 	$text ="<!-- Start of PreImage selector -->
-	<div class='bb-preimageselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:999;float:right;display:none' id='{$formid}'>";
-	$text .="<div style='position:absolute; bottom:30px; right:100px'>";
+	<div class='bb-preimageselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:999;float:right'>";
+	$text .="<div style='position:absolute; bottom:30px; right:100px;display:none' id='{$formid}'>";
 	$text .= "<table class='fborder bb-preimageselect' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
@@ -273,8 +273,8 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir = '')
 		}
 	}
 	$text ="<!-- Start of PreFile selector -->
-	<div class='bb-prefileselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
-	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
+	<div class='bb-prefileselect' style='margin-left:0px;margin-right:100px; position:relative;z-index:1000;float:right'>";
+	$text .="<div style='position:absolute; bottom:30px; right:75px;display:none' id='{$formid}'>";
 	$text .= "<table class='fborder bb-prefileselect' style='background-color: #fff'>
 	<tr><td class='forumheader3' style='white-space: nowrap'>";
 
@@ -323,8 +323,8 @@ function Emoticon_Select($formid='emoticon_selector')
 {
 	require_once(e_HANDLER."emote.php");
 	$text ="<!-- Start of Emoticon selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}' onclick=\"this.style.display='none'\" >
-		<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;'>
+	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right' >
+		<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;display:none' id='{$formid}' onclick=\"this.style.display='none'\">
 			<table class='fborder' style='background-color:#fff;'>
 			<tr><td class='forumheader3'>
 			".r_emote()."
