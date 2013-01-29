@@ -468,6 +468,7 @@ class language{
 		if($this->detect) // Language-Change Trigger Detected. 
 		{
 			// new - e_language moved to e107 namespace - $_SESSION['e107']['e_language']
+			$oldlan = $session->get('e_language');
 			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($session->get('e_language'))))
 			{
 				$session->set('e_language', $this->detect);	
@@ -485,8 +486,13 @@ class language{
 					unset($_COOKIE['e107_language']);
 				}
 			}
-			
 			$user_language = $this->detect;		
+
+			// new system trigger 'lanset' 
+			if($oldlan && $oldlan !== $this->detect)
+			{
+				e107::getEvent()->trigger('lanset', array('new' => $this->detect, 'old' => $oldlan));
+			}
 		}
 		else // No Language-change Trigger Detected. 
 		{	
