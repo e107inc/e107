@@ -417,6 +417,7 @@ class themeHandler
 		global $pref;
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
+		$tp = e107::getParser();
 		
 		echo "<div>
 		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
@@ -484,9 +485,9 @@ class themeHandler
 		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 			$file = "http://e107.org/feed?type=theme&frm=".$from;
 			
-			$xml->setOptArrayTags('theme'); // make sure 'theme' tag always returns an array
-			$xdata = $xml->loadXMLfile($file,'advanced');
-	
+			$xml->setOptArrayTags('theme,screenshots/image'); // make sure 'theme' tag always returns an array
+		//	$xdata = $xml->loadXMLfile($file,'advanced',true);
+			$xdata = $xml->loadXMLfile($file,true,false);
 			$total = $xdata['@attributes']['total'];
 	
 	
@@ -501,11 +502,13 @@ class themeHandler
 				$mes->addDebug(print_a($r,true));	
 				
 				$theme = array(
-					'name'		=> $r['@attributes']['name'],
-					'summary'	=> $r['description'][0],
-					'preview' 	=> array($r['@attributes']['screenshot']),
-					'date'		=> $r['@attributes']['date'],
-					'version'	=> $r['@attributes']['version']
+					'name'			=> $r['@attributes']['name'],
+					'summary'		=> $r['description'][0],
+					'preview' 		=> $r['screenshots']['image'],
+					'date'			=> $r['@attributes']['date'],
+					'version'		=> $r['@attributes']['version'],
+					'thumbnail'		=> $r['@attributes']['thumbnail'],
+					'description'	=> varset($r['description'])
 				);
 				
 				$text .= $this->renderTheme(FALSE, $theme);
@@ -550,6 +553,16 @@ class themeHandler
 			}	
 				
 			$text .= "<div class='clear'>&nbsp;</div>";
+			
+			$amount = 10;
+		
+		
+			if($total > $amount)
+			{
+				$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+				$text .= "<div style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+			}
+			
 			$ns->tablerender(TPVLAN_26." :: Available for Download", $mes->render().$text);
 				
 			
@@ -622,14 +635,14 @@ class themeHandler
 	{
 			
 		global $pref;
-		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
-		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-		$preview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
+		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
+		$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 
 		
-		$text = "<div  style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-			<table class='table adminlist'>
-			<tr><th colspan='2'><b>".$theme['name']."</b></th></tr>";
+		$text 			= "<div  style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
+							<table class='table adminlist'>
+							<tr><th colspan='2'><b>".$theme['name']."</b></th></tr>";
 			
 		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
@@ -763,48 +776,60 @@ class themeHandler
 		}
 	}
 	
+	/**
+		 mode = 0 :: normal
+		 mode = 1 :: selected site theme
+		 mode = 2 :: selected admin theme
+	*/
 	function renderTheme($mode = FALSE, $theme)
 	{
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
-		/*
-		 mode = 0 :: normal
-		 mode = 1 :: selected site theme
-		 mode = 2 :: selected admin theme
-		 */
 		
-	//	global $ns,$pref,$frm;
-
 		
-		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
-		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-		$preview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
-		
-		$previewbutton = (!$mode ? "<input class='button top' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
-		
-		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : E_32_TRUE;
-	//	$info_icon = "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		
-			$info_icon = "<a data-toggle='modal' href='".e_SELF."?id=".$theme['path']."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
-	
-		$preview_icon = "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
-	
-		
-		$admin_icon = ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
+		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
+		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
+		$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : E_32_TRUE;
+	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
+		$info_icon 		= "<a data-toggle='modal' href='".e_SELF."?id=".$theme['path']."' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
+		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
+		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
 		{
 			$admin_icon = "";	
 		}
 		
-		if($theme['path'] == 'bootstrap')
+		if($theme['name'] == 'bootstrap')
 		{
-	//		print_a($theme);	
+		//	print_a($theme);	
 		}
 	//	
-		$previewPath = (substr($theme['preview'][0],0,4) == 'http') ? $theme['preview'][0] : e_THEME.$theme['path'] ."/".$theme['preview'][0];
-		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".(vartrue($theme['preview'][0]) ? "<img  src='".$previewPath."' style='width:200px; height:160px;' alt='' />" : "<img class='admin-theme-thumb' src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
+	//	$thumbPath = (substr($theme['thumbnail'],0,4) == 'http') ? $theme['thumbnail'] : e_THEME.$theme['path'] ."/".$theme['preview'][0];
+	//	$thumbnail = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >";
+		
+		if(substr($theme['thumbnail'],0,4) == 'http')
+		{
+			$thumbPath = $theme['thumbnail'];	
+			$previewPath = $theme['preview'][0];	
+		}
+		elseif(vartrue($theme['preview'][0]))
+		{
+			$thumbPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
+			$previewPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
+		}
+		else 
+		{
+			$thumbPath = e_IMAGE_ABS."admin_images/nopreview.png";
+			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
+		}
+		
+		$thumbnail = "<img src='".$thumbPath."' style='width:200px; height:160px;'  alt='' />";
+		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog e-tip' href='".$previewPath."'>".E_32_SEARCH."</a>";
+	
+	//	$thumbnail .= "</a>";
 		
 		// Choose a Theme to Install.
 		if(!$mode)
@@ -826,7 +851,7 @@ class themeHandler
 			
 			$text = "
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
-					<div class='admin-theme-thumb'>".$newpreview."</div>
+					<div class='admin-theme-thumb'>".$thumbnail."</div>
 					<div class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
 					<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>	
 				</div>";
@@ -860,7 +885,7 @@ class themeHandler
 		<tr>
 			<td><b>".TPVLAN_11."</b></td>
 			<td>".$theme['version']."</td>
-			<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$newpreview."</td>
+			<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
 			</tr>";
 		
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
@@ -1472,11 +1497,13 @@ class themeHandler
 		if(file_exists(e_THEME.$path."/preview.jpg"))
 		{
 			$themeArray['preview'] = array("preview.jpg");
+			$themeArray['thumbnail'] = "preview.jpg";
 		}
 		
 		if(file_exists(e_THEME.$path."/preview.png"))
 		{
 			$themeArray['preview'] = array("preview.png");
+			$themeArray['thumbnail'] = "preview.png";
 		}
 	//	 echo "<h2>".$themeArray['name']."</h2>";
 	//	 print_a($lays);
@@ -1497,21 +1524,22 @@ class themeHandler
 			
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
 		
-		$vars['name'] = varset($vars['@attributes']['name']);
-		$vars['version'] = varset($vars['@attributes']['version']);
-		$vars['date'] = varset($vars['@attributes']['date']);
-		$vars['compatibility'] = varset($vars['@attributes']['compatibility']);
-		$vars['releaseUrl'] = varset($vars['@attributes']['releaseUrl']);
-		$vars['email'] = varset($vars['author']['@attributes']['email']);
-		$vars['website'] = varset($vars['author']['@attributes']['url']);
-		$vars['author'] = varset($vars['author']['@attributes']['name']);
-		$vars['info'] = varset($vars['description']);
-		$vars['category'] = $this->getThemeCategory(varset($vars['category']));
+		$vars['name'] 			= varset($vars['@attributes']['name']);
+		$vars['version'] 		= varset($vars['@attributes']['version']);
+		$vars['date'] 			= varset($vars['@attributes']['date']);
+		$vars['compatibility'] 	= varset($vars['@attributes']['compatibility']);
+		$vars['releaseUrl'] 	= varset($vars['@attributes']['releaseUrl']);
+		$vars['email'] 			= varset($vars['author']['@attributes']['email']);
+		$vars['website'] 		= varset($vars['author']['@attributes']['url']);
+		$vars['author'] 		= varset($vars['author']['@attributes']['name']);
+		$vars['info'] 			= varset($vars['description']);
+		$vars['category'] 		= $this->getThemeCategory(varset($vars['category']));
 		$vars['xhtmlcompliant'] = varset($vars['compliance']['@attributes']['xhtml']);
-		$vars['csscompliant'] = varset($vars['compliance']['@attributes']['css']);
-		$vars['path'] = $path;
+		$vars['csscompliant'] 	= varset($vars['compliance']['@attributes']['css']);
+		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
-		$vars['preview'] = varset($vars['screenshots']['image']);
+		$vars['preview'] 		= varset($vars['screenshots']['image']);
+		$vars['thumbnail'] 		= $vars['preview'][0];
 		
 		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
 		
@@ -1542,9 +1570,9 @@ class themeHandler
 		$vars['layouts'] 		= $lays;
 		$vars['path'] 			= $path;
 		$vars['custompages'] 	= $custom;
-	/*	
+
 		$mes = e107::getMessage(); // DEBUG
-	
+	/*
 		if($path == "bootstrap" || $path == "e107v4a")
 		{
 			$mes->addDebug("<h2>".$path."</h2>");
