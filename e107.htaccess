@@ -7,6 +7,30 @@
 	ErrorDocument 500 /error.php?500
 </FilesMatch>
 
+# secure htaccess file
+<Files .htaccess>
+Â order allow,deny
+Â deny from all
+</Files>
+
+# protect e107_config.php
+<Files e107_config.php>
+order allow,deny
+deny from all
+</Files>
+
+# Block Bad Bots
+# SetEnvIfNoCase ^User-Agent$ .*(craftbot|download|extract|stripper|sucker|ninja|clshttp|webspider|leacher|collector|grabber|webpictures) HTTP_SAFE_BADBOT
+# SetEnvIfNoCase ^User-Agent$ .*(libwww-perl|aesop_com_spiderman) HTTP_SAFE_BADBOT
+# Deny from env=HTTP_SAFE_BADBOT
+
+
+# Disable directory browsing
+Options All -Indexes
+
+# limit file uploads to 10mb
+# LimitRequestBody 10240000
+
 <IfModule mod_rewrite.c>
 ### enable rewrites
 	Options +FollowSymLinks 
