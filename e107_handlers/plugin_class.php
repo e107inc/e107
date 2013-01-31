@@ -2050,6 +2050,12 @@ class e107plugin
 		{
 			$key = varset($tag['@attributes']['name']);
 			$value = vartrue($tag['@value']);
+			
+			if(substr($value,0,5) == "e_UC_") // Convert Userclass constants. 
+			{
+				$value = constant($value);	
+			}
+			
 			$remove = (varset($tag['@attributes']['deprecate']) == 'true') ? TRUE : FALSE;
 
 			if (varset($tag['@attributes']['value']))
