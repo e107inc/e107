@@ -102,7 +102,7 @@ else {
 
 
 
-$mode = (e_QUERY) ? e_QUERY :"main" ;
+$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
 
 if(vartrue($_POST['selectadmin']))
 {
@@ -129,30 +129,31 @@ require_once("footer.php");
 
 function theme_adminmenu()
 {
-	global $mode;
-	$mode = e_QUERY;
+	//global $mode;
 	
-   	$e107 = &e107::getInstance();
+	$mode = varset($_GET['mode'],'main');
+	
+  // 	$e107 = &e107::getInstance();
 
 		$var['main']['text'] = TPVLAN_33;
 		$var['main']['link'] = e_SELF;
 
 		$var['admin']['text'] = TPVLAN_34;
-		$var['admin']['link'] = e_SELF."?admin";
+		$var['admin']['link'] = e_SELF."?mode=admin";
 
 		$var['choose']['text'] = TPVLAN_51;
-		$var['choose']['link'] = e_SELF."?choose";
+		$var['choose']['link'] = e_SELF."?mode=choose";
 		
 		$var['online']['text'] = "Find Themes";
-		$var['online']['link'] = e_SELF."?online";
+		$var['online']['link'] = e_SELF."?mode=online";
 
 		$var['upload']['text'] = TPVLAN_38;
-		$var['upload']['link'] = e_SELF."?upload";
+		$var['upload']['link'] = e_SELF."?mode=upload";
 
-        $selected = (e_QUERY) ? e_QUERY : "main";
+      //  $selected = (e_QUERY) ? e_QUERY : "main";
 
 
-		e107::getNav()->admin(TPVLAN_26, $selected, $var);
+		e107::getNav()->admin(TPVLAN_26, $mode, $var);
 }
 
 
