@@ -478,7 +478,7 @@ class themeHandler
 			$xml = e107::getXml();
 			$mes = e107::getMessage();
 			
-			$mes->addWarning("This area is experimental, incomplete and may produce unpredictable results.");
+		//	$mes->addWarning("This area is experimental.");
 	
 			$from = intval(varset($_GET['frm']));
 		
@@ -503,13 +503,15 @@ class themeHandler
 				
 				$theme = array(
 					'name'			=> $r['@attributes']['name'],
-					'summary'		=> $r['description'][0],
+					'category'		=> $r['category'],
 					'preview' 		=> $r['screenshots']['image'],
 					'date'			=> $r['@attributes']['date'],
 					'version'		=> $r['@attributes']['version'],
 					'thumbnail'		=> $r['@attributes']['thumbnail'],
 					'url'			=> $r['@attributes']['url'],
-					'description'	=> varset($r['description'])
+					'author'		=> $r['@attributes']['author'],
+					'website'		=> $r['@attributes']['authorUrl'],
+					'description'	=> varset($r['description']),
 				);
 				
 				$text .= $this->renderTheme(FALSE, $theme);
@@ -639,21 +641,50 @@ class themeHandler
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 		$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
-
+		$description 	= vartrue($theme['description'],'');
 		
-		$text 			= "<div  style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-							<table class='table adminlist'>
-							<tr><th colspan='2'><b>".$theme['name']."</b></th></tr>";
+		$text = "<table class='table table-striped'>
+				<tr><th colspan='2'><h3>".$theme['name']." ".$theme['version']."</h3></th></tr>";
+							
+		
 			
 		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
-		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
-			<td style='vertical-align:top'>XHTML ";
-		$text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
-		$text .= "  &nbsp;&nbsp;  CSS ";
-		$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
-		$text .= "</td></tr>";
+	
+		$text .= $description ? "<tr><td style='vertical-align:top; width:24%'><b>Description</b>:</td><td style='vertical-align:top'>".$description."</td></tr>" : "";
+	
+	
+	//	$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
+	//		<td style='vertical-align:top'>XHTML ";
+	//	$text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+	//	$text .= "  &nbsp;&nbsp;  CSS ";
+	//	$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+	//	$text .= "</td></tr>";
+		
+		if(vartrue($theme['category']))
+		{
+			$text .= "<tr><td><b>Category</b></td><td>".$theme['category']."</td></tr>";			
+		}
+		
+		
+		if(count($theme['preview']))
+		{
+			$text .= "<tr><td colspan='2'>";
+			foreach($theme['preview'] as $pic)
+			{
+				$text .= "<div style='padding:5px;width:700px'>
+					<img src='".$pic."' alt='' />
+					</div>";	
+				
+			}
+			
+			$text .= "</td>
+					</tr>";	
+			
+			
+		}
+		
 		
 		// New in 0.8    WORK IN PROGRESS ----
 		if($theme['layouts'])
@@ -702,12 +733,12 @@ class themeHandler
 			$itext .= "</table></td></tr>";
 		}
 		
-		$text .= "<tr><td><b>".TPVLAN_22.": </b></td><td colspan='2'>";
-		foreach ($theme['css'] as $val)
-		{
-			$text .= $val['name']."<br />";
-		}
-		$text .= "</td></tr>";
+	//	$text .= "<tr><td><b>".TPVLAN_22.": </b></td><td colspan='2'>";
+	//	foreach ($theme['css'] as $val)
+	//	{
+	//		$text .= $val['name']."<br />";
+	//	}
+	//	$text .= "</td></tr>";
 		
 		$text .= $itext."</table>";
 	//	$text .= "<div class='right'><a href='#themeInfo_".$theme['id']."' class='e-expandit'>Close</a></div>";
@@ -805,12 +836,11 @@ class themeHandler
 			$d = http_build_query($theme,false,'&');
 			$url = e_SELF."?src=".base64_encode($d);
 			$id = $frm->name2id($theme['name']);
-			$main_icon 	= "<span id='{$id}' style='vertical-align:middle'>
-		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><img src='".e_IMAGE_ABS."generic/download.png' alt='' /></button>
-		</span>";		
-		
-		$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax e-tip' title='Download' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-
+			$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax e-tip' title='Download' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+			$info_icon 	= "<a data-toggle='modal' href='".$url."&amp;info=1' data-cache='false' data-target='#myModal' class='e-tip' title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
+			
+			//XXX modal-Cache is currently enabled by default. Awaiting inclusion of data-cache feature. 
+			// See here: https://github.com/twitter/bootstrap/pull/4224
 			
 		}
 		
