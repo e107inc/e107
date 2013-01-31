@@ -73,11 +73,18 @@ if(e_AJAX_REQUEST)
 
 if(e_AJAX_REQUEST)
 {
-	if(isset($_GET['src'])) // Process Theme Download. 
+	if(vartrue($_GET['src'])) // Process Theme Download. 
 	{				
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string,$p);
-	//	echo $p['url'];
+		
+		if(vartrue($_GET['info']))
+		{		
+			echo $themec->renderThemeInfo($p);
+		//	print_a($p);
+			exit;
+		}
+				
 		$remotefile = $p['url'];
 			
 		$localfile = md5($remotefile.time()).".zip";
@@ -156,7 +163,7 @@ else
 		 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			    <h3>Theme Info.</h3>
+			    &nbsp;
 			    </div>
 			    <div class="modal-body">
 			    <p>Loading…</p>
