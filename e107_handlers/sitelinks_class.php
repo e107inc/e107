@@ -1535,7 +1535,16 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_url($parm='')
 	{
-		return e_BASE. e107::getParser()->replaceConstants($this->var['link_url'], 'full', TRUE);
+		if($this->var['link_url'][0] != "{" && strpos($this->var['link_url'],"://")===false)
+		{
+			$url = "{e_BASE}".$this->var['link_url']; // Add e_BASE to links like: 'news.php' or 'contact.php' 	
+		}
+		else
+		{
+			$url = $this->var['link_url'];	
+		}	
+		
+		return e107::getParser()->replaceConstants($url, 'full', TRUE);
 	}
 	
 	function sc_link_image($parm='')
