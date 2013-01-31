@@ -508,6 +508,7 @@ class themeHandler
 					'date'			=> $r['@attributes']['date'],
 					'version'		=> $r['@attributes']['version'],
 					'thumbnail'		=> $r['@attributes']['thumbnail'],
+					'url'			=> $r['@attributes']['url'],
 					'description'	=> varset($r['description'])
 				);
 				
@@ -554,7 +555,7 @@ class themeHandler
 				
 			$text .= "<div class='clear'>&nbsp;</div>";
 			
-			$amount = 10;
+			$amount = 20;
 		
 		
 			if($total > $amount)
@@ -797,6 +798,24 @@ class themeHandler
 		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-tip e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<input class='top e-tip' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
 		
+		
+		if($_GET['mode'] == 'online')
+		{
+
+			$d = http_build_query($theme,false,'&');
+			$url = e_SELF."?src=".base64_encode($d);
+			$id = $frm->name2id($theme['name']);
+			$main_icon 	= "<span id='{$id}' style='vertical-align:middle'>
+		<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><img src='".e_IMAGE_ABS."generic/download.png' alt='' /></button>
+		</span>";		
+		
+		$main_icon = "<a data-src='".$url."' href='#' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='e-ajax e-tip' title='Download' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
+
+			
+		}
+		
+		
+		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
 		{
 			$admin_icon = "";	
@@ -852,7 +871,7 @@ class themeHandler
 			$text = "
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
 					<div class='admin-theme-thumb'>".$thumbnail."</div>
-					<div class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
+					<div id='".$frm->name2id($theme['name'])."' class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
 					<div class='admin-theme-title'>".$theme['name']." ".$theme['version']."</div>	
 				</div>";
 			return $text;
