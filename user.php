@@ -21,6 +21,28 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 global $user;
 $user['user_id'] = USERID;
 
+if(e_AJAX_REQUEST)
+{
+	if(vartrue($_GET['q']))
+	{
+		$q = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
+		if($sql->select("user", "user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT 15"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$data[] = $row['user_name'];
+			}
+			
+			if(count($data))
+			{
+				echo json_encode($data);	
+			}
+		}		
+	}
+	exit;
+}
+
+
 // require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
 require_once(e_HANDLER."form_handler.php");
 

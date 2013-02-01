@@ -205,7 +205,17 @@ class e_form
 				$options['class'] = 'tbox input-text';
 			}
 		}	
-
+		
+		if(vartrue($options['typeahead']))
+		{
+			$options['data-provide'] ="typeahead";	
+			if(vartrue($options['typeahead']) == 'users')
+			{
+				$options['data-source'] = e_BASE."user.php";			
+			}
+			
+		}
+		
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
@@ -1363,6 +1373,12 @@ class e_form
 					if($optval) $ret .= " $optval";
 					break;
 			}
+
+			if(substr($option,0,5) =='data-')
+			{
+				$ret .= " ".$option." = '{$optval}'";	
+			}
+				
 		}
 
 		return $ret;
@@ -1417,7 +1433,7 @@ class e_form
 
 		foreach (array_keys($user_options) as $key)
 		{
-			if(!isset($def_options[$key])) unset($user_options[$key]);//remove it?
+			if(!isset($def_options[$key]) && substr($key,0,5)!='data-') unset($user_options[$key]); // data-xxxx exempt //remove it?
 		}
 
 		$user_options['name'] = $name; //required for some of the automated tasks
