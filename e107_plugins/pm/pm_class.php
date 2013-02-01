@@ -607,6 +607,8 @@ class private_message
 	 */
 	function pm_get_outbox($uid = USERID, $from = 0, $limit = 10)
 	{
+		$sql = e107::getDb();
+		
 		$ret = array();
 		$total_messages = 0;
 		$uid = intval($uid);
@@ -619,10 +621,11 @@ class private_message
 		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
-		if($this->e107->sql->db_Select_gen($qry))
+		
+		if($sql->db_Select_gen($qry))
 		{
-			$total_messages = $this->e107->sql->total_results;		// Total number of messages
-			$ret['messages'] = $this->e107->sql->db_getList();
+			$total_messages = $sql->total_results;		// Total number of messages
+			$ret['messages'] = $sql->db_getList();
 		}
 		$ret['total_messages'] = $total_messages;
 		return $ret;

@@ -62,9 +62,14 @@ if($action == '')
 }
 
 
-$pm_prefs = $sysprefs->getArray('pm_prefs');
+// $pm_prefs = $sysprefs->getArray('pm_prefs');
+$pm_prefs = e107::getPlugPref('pm');
+
+
+
 
 //pm_prefs record not found in core table, set to defaults and create record
+/*
 if(!is_array($pm_prefs))
 {
 	require_once(e_PLUGIN.'pm/pm_default.php');
@@ -73,9 +78,10 @@ if(!is_array($pm_prefs))
 	$emessage->add(ADLAN_PM_3, E_MESSAGE_INFO);
 	$e107->admin_log->log_event('PM_ADM_01', '');
 }
-
+*/
 
 // Couple of bits of BC/upgrade
+/*
 $savePMP = FALSE;
 if (isset($pref['pm_limits']))
 {
@@ -104,10 +110,10 @@ if (isset($pm_prefs['allow_userclass']))
 
 if ($savePMP)
 {
-	$sysprefs->setArray('pm_prefs');
-	$emessage->add(ADLAN_PM_80, E_MESSAGE_SUCCESS);
+	// $sysprefs->setArray('pm_prefs');
+	// $emessage->add(ADLAN_PM_80, E_MESSAGE_SUCCESS);
 }
-
+*/
 
 //include_lan(e_PLUGIN.'pm/languages/admin/'.e_LANGUAGE.'.php');
 	
@@ -124,8 +130,10 @@ if (isset($_POST['update_prefs']))
 	}
 	if ($e107->admin_log->logArrayDiffs($temp, $pm_prefs, 'PM_ADM_02'))
 	{
-		$sysprefs->setArray('pm_prefs');
-		$emessage->add(ADLAN_PM_4, E_MESSAGE_SUCCESS);
+	//	$sysprefs->setArray('pm_prefs');
+	//print_a($temp);
+		e107::getPlugConfig('pm')->setPref($temp)->save();
+	//	$emessage->add(ADLAN_PM_4, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
@@ -210,7 +218,7 @@ if(isset($_POST['updatelimits']))
 	if($pm_prefs['pm_limits'] != $limitVal)
 	{
 		$pm_prefs['pm_limits'] = $limitVal;
-		$sysprefs->setArray('pm_prefs');
+		//$sysprefs->setArray('pm_prefs');
 		$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
 	}
 	foreach(array_keys($_POST['inbox_count']) as $id)
