@@ -1,4 +1,6 @@
-/*
+//<?php
+ /* 
+ *//*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
  *
@@ -15,8 +17,10 @@
 
 include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 
-global $sysprefs, $pm_prefs;
-$pm_prefs = $sysprefs->getArray("pm_prefs");
+// global $sysprefs, $pm_prefs;
+// $pm_prefs = $sysprefs->getArray("pm_prefs");
+$pm_prefs = e107::getPlugPref('pm');
+
 if(check_class($pm_prefs['pm_class']))
 {
 	if(file_exists(THEME.'forum/pm.png'))

@@ -35,7 +35,9 @@ class pmbox_manager
 	public function __construct($prefs)
 	{
 		$this->pmDB = e107::getDb();
-		$this->pmPrefs = $prefs;
+		// $this->pmPrefs = $prefs;
+		
+		$this->pmPrefs = e107::getPlugPref('pm');
 	}
 
 

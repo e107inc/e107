@@ -6,4 +6,24 @@
 	<adminLinks>
 		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
 	</adminLinks>
+	<pluginPrefs>
+		<pref name="title">PMLAN_PM</pref>
+		<pref name="animate">1</pref>
+		<pref name="dropdown">0</pref>
+		<pref name="read_timeout">0</pref>
+		<pref name="unread_timeout">0</pref>
+		<pref name="popup">0</pref>
+		<pref name="popup_delay"></pref>
+		<pref name="perpage">10</pref>
+		<pref name="pm_class">e_UC_MEMBER</pref>
+		<pref name="notify_class">e_UC_ADMIN</pref>
+		<pref name="receipt_class">e_UC_MEMBER</pref>
+		<pref name="attach_class">e_UC_ADMIN</pref>
+		<pref name="attach_size">500</pref>
+		<pref name="sendall_class">e_UC_ADMIN</pref>
+		<pref name="multi_class">e_UC_ADMIN</pref>
+		<pref name="allow_userclass">1</pref>
+		<pref name="pm_limits">0</pref>
+		<pref name="pm_max_send">100</pref>
+	</pluginPrefs>
 </e107Plugin>

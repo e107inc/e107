@@ -57,7 +57,9 @@ if (!$action) $action = 'inbox';
 
 $pm_proc_id = intval(varset($qs[1],0));
 
-$pm_prefs = $sysprefs->getArray('pm_prefs');
+//$pm_prefs = $sysprefs->getArray('pm_prefs');
+
+$pm_prefs = e107::getPlugPref('pm');
 
 
 $pm_prefs['perpage'] = intval($pm_prefs['perpage']);
@@ -74,9 +76,9 @@ if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	exit;
 }
 
-setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
+//setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
 $pmManager = new pmbox_manager($pm_prefs);
-setScVar('pm_handler_shortcodes','pmManager', &$pmManager);
+//setScVar('pm_handler_shortcodes','pmManager', &$pmManager);
 
 
 
@@ -157,7 +159,11 @@ class pm_extended extends private_message
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pm_blocks = $this->block_get();
 		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
-		setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+		
+		$sc = e107::getScBatch('pm',TRUE);
+		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		$txt .= $this->e107->tp->parseTemplate($PM_INBOX_HEADER, true);
 		if($pmlist['total_messages'])
@@ -165,7 +171,10 @@ class pm_extended extends private_message
 			foreach($pmlist['messages'] as $rec)
 			{
 				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
-				setScVar('pm_handler_shortcodes','pmInfo', $rec);
+			//	setScVar('pm_handler_shortcodes','pmInfo', $rec);
+				$sc->setVars($rec);	
+				
+				
 				$txt .= $this->e107->tp->parseTemplate($PM_INBOX_TABLE, true);
 			}
 		}
@@ -189,26 +198,34 @@ class pm_extended extends private_message
 	 */
 	function show_outbox($start = 0)
 	{
+		$tp = e107::getParser();
+		
 		$tpl_file = THEME.'pm_template.php';
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pmlist = $this->pm_get_outbox(USERID, $start, $this->pmPrefs['perpage']);
-		setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+		
+		$sc = e107::getScBatch('pm',TRUE);
+		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+		
+		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true);
 		if($pmlist['total_messages'])
 		{
 			foreach($pmlist['messages'] as $rec)
 			{
 				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
-				setScVar('pm_handler_shortcodes','pmInfo', $rec);
-				$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_TABLE, true);
+			//	setScVar('pm_handler_shortcodes','pmInfo', $rec);
+				$sc->setVars($rec);	
+				$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true);
 			}
 		}
 		else
 		{
-			$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_OUTBOX_EMPTY, true);
 		}
-		$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_FOOTER, true);
+		$txt .= $tp->parseTemplate($PM_OUTBOX_FOOTER, true);
 		$txt .= '</form>';
 		return $txt;
 	}
@@ -227,7 +244,9 @@ class pm_extended extends private_message
 		$tpl_file = THEME.'pm_template.php';
 		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pm_info = $this->pm_get($pmid);
-		setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+		$sc = e107::getScBatch('pm',TRUE);
+		$sc->setVars($pm_info);	
 		if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
 		{
 			$this->e107->ns->tablerender(LAN_PM, LAN_PM_60);
@@ -271,14 +290,17 @@ class pm_extended extends private_message
 		$tpl_file = THEME.'pm_template.php';
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
-		setScVar('pm_handler_shortcodes','pmBlocks', $pmBlocks);
+		$sc = e107::getScBatch('pm',TRUE);
+		$sc->pmBlocks = $pmBlocks; 
+	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_HEADER, true);
 		if($pmTotalBlocked = count($pmBlocks))
 		{
 			foreach($pmBlocks as $pmBlocked)
 			{
-				setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
+				$sc->pmBlocked = $pmBlocked; 
+			//	setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
 				$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_TABLE, true);
 			}
 		}

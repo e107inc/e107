@@ -68,7 +68,7 @@ $sc_style['PM_REPLY']['post'] = "</td>
 ";
 
 $PM_SEND_PM = "<div style='text-align: center'>
-<table style='width:95%' class='fborder'>
+<table style='width:95%' class='table fborder'>
 <tr>
 	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
@@ -95,7 +95,7 @@ $PM_SEND_PM = "<div style='text-align: center'>
 ";
 
 $PM_INBOX_HEADER = "
-<table class='fborder' style='width:95%'>
+<table class='table fborder' style='width:95%'>
 <tr>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
@@ -135,15 +135,18 @@ $PM_INBOX_FOOTER = "
 ";
 
 $PM_OUTBOX_HEADER = "
-<table class='fborder' style='width:95%'>
+<table class='table fborder' style='width:95%'>
+<thead>
 <tr>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
-	<td class='fcaption' style='width:22%'>".LAN_PM_2."</td>
-	<td class='fcaption' style='width:30%'>".LAN_PM_33."</td>
-	<td class='fcaption' style='width:8%'>&nbsp;</td>
+	<th class='fcaption' style='width:1%'>&nbsp;</th>
+	<th class='fcaption' style='width:1%'>&nbsp;</th>
+	<th class='fcaption' style='width:38%'>".LAN_PM_5."</th>
+	<th class='fcaption' style='width:22%'>".LAN_PM_2."</th>
+	<th class='fcaption' style='width:30%'>".LAN_PM_33."</th>
+	<th class='fcaption' style='width:8%'>&nbsp;</th>
 </tr>
+</thead>
+<tbody>
 ";
 
 $PM_OUTBOX_TABLE = "
@@ -171,12 +174,13 @@ $PM_OUTBOX_FOOTER = "
 	</td>
 </tr>
 {PM_NEXTPREV=outbox}
+</tbody>
 </table>
 ";
 
 
 $PM_BLOCKED_HEADER = "
-<table class='fborder' style='width:95%'>
+<table class='table fborder' style='width:95%'>
 <tr>
 	<td class='fcaption' style='width:5%'>&nbsp;</td>
 	<td class='fcaption' style='width:48%'>".LAN_PM_68."</td>
@@ -213,7 +217,7 @@ $PM_BLOCKED_FOOTER = "
 
 $PM_SHOW =
 "<div style='text-align: center'>
-<table class='fborder' style='width:95%'>
+<table class='table fborder' style='width:95%'>
 <tr>
 	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
 </tr>
