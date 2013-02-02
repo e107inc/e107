@@ -52,7 +52,9 @@ class page_sitelinks // include plugin-folder in the name.
 			$sublinks[$pid][] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
-				'link_url'			=> vartrue($row['page_sef'],'page.php?'.$row['page_id']), 
+			//	'link_url'			=> vartrue($row['page_sef'],'page.php?id='.$row['page_id']), 
+				'link_url'			=> 'page.php?id='.$row['page_id'], 
+			//	'link_url'			=> e107::getUrl()->create('page/view', $row, 'allow=page_id,page_sef'), //XXX FIXME - bad links created. 
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',
@@ -86,7 +88,10 @@ class page_sitelinks // include plugin-folder in the name.
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
-				'link_url'			=> vartrue($row['chapter_sef'],'#'),
+				//TODO SEFURLS using chapter_sef. 
+				'link_url'			=> ($row['chapter_parent'] == 0) ? 'page.php?bk='.$row['chapter_id'] : 'page.php?ch='.$row['chapter_id'], 
+			//	'link_url'			=> vartrue($row['chapter_sef'],'#'),
+				
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',

@@ -110,7 +110,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 	$PAGE_TEMPLATE['nav']['caption']				= "Articles";
 	
-	$PAGE_TEMPLATE['nav']['start'] 					= '<ul>';
+	$PAGE_TEMPLATE['nav']['start'] 					= '<ul class="page-nav">';
 	
 // Main Link
 	$PAGE_TEMPLATE['nav']['item']				 	= '
@@ -161,7 +161,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['nav']['end'] 					= '</ul>';	
 	
 	
-	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul id="{LINK_PARENT}" role="menu" >';
+	$PAGE_TEMPLATE['nav']['submenu_start'] 			= '<ul class="page-nav" id="{LINK_PARENT}" role="menu" >';
 	
 	
 	$PAGE_TEMPLATE['nav']['submenu_item'] 			= '

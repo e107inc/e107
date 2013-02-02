@@ -27,6 +27,4 @@ class page_shortcodes extends e_shortcode
 		}
 }
 
-
-
 ?>

@@ -15,11 +15,12 @@ if (!defined('e107_INIT')) { exit; }
  *
  *	Shortcodes for custom page display
  */
-class page_shortcodes extends e_shortcode
+class cpage_shortcodes extends e_shortcode
 {
+	// var $var; // parsed DB values
 
-	function sc_cpagetitle()
-	{
+	function sc_cpagetitle($parm='')
+	{	
 		return e107::getParser()->toHTML($this->getParserVars()->title, true, 'TITLE');
 	}
 	
@@ -30,7 +31,7 @@ class page_shortcodes extends e_shortcode
 	}
 
 
-	function sc_cpagebody()
+	function sc_cpagebody($parm='')
 	{
 		// already parsed
 		return $this->getParserVars()->text;
