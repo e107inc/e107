@@ -220,6 +220,7 @@ define("LAN_DELETE","Delete");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
 define('LAN_SETSAVED','Your settings have been saved');
