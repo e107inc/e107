@@ -262,6 +262,8 @@ class e_parse_shortcode
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
 		if(trim($className)==""){ return; }
+			
+			
 				
 		$_class_fname = $className;
 			
@@ -273,8 +275,16 @@ class e_parse_shortcode
 				$overrideClass = $className;
 			}
 			// e.g. class plugin_myplug_news_shortcodes
-			$_class_fname = $overrideClass;
-			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $overrideClass);
+			
+			if($pluginName != null)
+			{
+				$_class_fname = $overrideClass;
+				$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $overrideClass);
+			}
+			else
+			{
+				$className = $overrideClass;	
+			}
 		}
 		elseif(is_string($pluginName))
 		{
@@ -318,12 +328,13 @@ class e_parse_shortcode
 			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
 			{
-				echo "Couldn't Find Class '".$className."' in <b>".$path."</b>";
+				echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
 			}
 		}
 		elseif(E107_DBG_BBSC || E107_DBG_SC)
 		{
-			echo "Couldn't Load: <b>".$path."</b>";
+			echo "<h3>Couldn't Load: <b>".$path."</b></h3>";
+			
 		}
 
 		// TODO - throw exception?
