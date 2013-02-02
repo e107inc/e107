@@ -30,6 +30,23 @@ if(!e_QUERY)
 		exit;
 	}
 }
+elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
+{
+	require_once(HEADERF);
+	$text = $e107CorePage->listChapters($_GET['bk']);
+	$ns->tablerender('', $text, 'page-book-list'); // TODO FIXME Caption eg. "book title"
+	require_once(FOOTERF);
+	exit;	
+}
+elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
+{
+	require_once(HEADERF);
+
+	$text = $e107CorePage->listPages($_GET['ch']);
+	$ns->tablerender('', $text, 'page-chapter-list'); // TODO FIXME Caption eg. "book title"
+	require_once(FOOTERF);
+	exit;		
+}
 else
 {
 	
@@ -68,12 +85,22 @@ class pageClass
 	function __construct($debug=FALSE)
 	{
 		/* constructor */
-
-		$tmp = explode(".", e_QUERY);
-		$this->pageID = intval($tmp[0]);
-		$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
-		$this->pageTitles = array();
-		$this->bullet = '';
+		if(!vartrue($_GET['id'])) // legacy URLs  /page.php?x
+		{
+			$tmp 				= explode(".", e_QUERY);
+			$this->pageID 		= intval($tmp[0]);
+			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+			$this->pageTitles 	= array();
+			$this->bullet 		= '';
+		}
+		else // NEW URLS  /page.php?id=x // TODO Complete and test. 
+		{
+			$tmp 				= explode(".", e_QUERY);
+			$this->pageID 		= intval($_GET['id']);
+			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0); // Not sure what this is?
+			$this->pageTitles 	= array();
+			$this->bullet 		= '';	// deprecated - use CSS instead.  	
+		}
 		
 		// TODO nq_ (no query) cache string
 		$this->cacheString = 'page_'.$this->pageID.'_'.$this->pageSelected;
@@ -115,14 +142,14 @@ class pageClass
 		{
 			while($row = $sql->db_Fetch())
 			{
-				$text .= "<h2>".$tp->toHtml($row['chapter_name'])."</h2>"; // Book Title. 			
+				$text .= "<h3 class='page-book-list'>".$tp->toHtml($row['chapter_name'])."</h3>"; // Book Title. 			
 				$text .= $this->listChapters($row['chapter_id']);
 			}			
 		}	
 		
-		$text .= "<h1>Other Pages</h1>"; // Book Title. 		
+		$text .= "<h3>Other Articles</h3>"; // Book Title. 		
 		$text .= $this->listPages(0);	// Pages unassigned to Book/Chapters. 
-		e107::getRender()->tablerender(LAN_PAGE_11, $text,"cpage_list");
+		e107::getRender()->tablerender("Articles", $text,"cpage_list");
 	}
 
 
@@ -131,16 +158,20 @@ class pageClass
 	//XXX - May be better to compile into assoc 'tree' array first. ie. books/chapters/pages. 
 	function listChapters($book=1)
 	{
-		$sql = e107::getDb();
+		$sql = e107::getDb('chap');
 		$tp = e107::getParser();
 		
 		if($sql->db_Select("page_chapters", "*", "chapter_parent = ".intval($book)."  ORDER BY chapter_order ASC "))
 		{
+			$text .= "<ul class='page-chapters-list'>";
 			while($row = $sql->db_Fetch())
 			{
-				$text .= "<h3>".$tp->toHtml($row['chapter_name'])."</h3>"; // Chapter Title. 
+				$text .= "<li>";
+				$text .= "<h4>".$tp->toHtml($row['chapter_name'])."</h4>"; // Chapter Title. 
 				$text .= $this->listPages(intval($row['chapter_id']));	
-			}			
+				$text .= "</li>";
+			}	
+			$text .= "</ul>";		
 		}	
 		
 		return $text;		
@@ -151,7 +182,7 @@ class pageClass
 	// TODO template for page list
 	function listPages($chapt=0)
 	{
-		$sql = e107::getDb();
+		$sql = e107::getDb('pg');
 		$tp = e107::getParser();
 		
 		if(!e107::getPref('listPages', false))
@@ -160,19 +191,20 @@ class pageClass
 		}
 		else
 		{
-			if(!$sql->db_Select("page", "*", "page_theme='' AND page_chapter=".$chapt." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
+			if(!$sql->db_Select("page", "*", "page_theme='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
 				$text = LAN_PAGE_2;
 			}
 			else
 			{
+				$text .= "<ul class='page-pages-list'>";
 				$pageArray = $sql->db_getList();
 				foreach($pageArray as $page)
 				{
 					$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef');
-					$text .= $this->bullet." <a href='".$url."'>".$tp->toHtml($page['page_title'])."</a><br />"; //XXX Better to use <ul> and <li> ??
+					$text .= "<li><a href='".$url."'>".$tp->toHtml($page['page_title'])."</a></li>"; 
 				}
-				
+				$text .= "</ul>";
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
@@ -207,7 +239,7 @@ class pageClass
 			$ret['cachecontrol'] = false;
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
-			$this->batch = e107::getScBatch('page')->setVars(new e_vars($ret))->setScVar('page', array());
+			$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array());
 			
 			define("e_PAGETITLE", $ret['title']);
 			return;
@@ -218,7 +250,7 @@ class pageClass
 		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'));
 		if(empty($this->template)) $this->template = e107::getCoreTemplate('page', 'default');
 		
-		$this->batch = e107::getScBatch('page');
+		$this->batch = e107::getScBatch('page',null,'cpage');
 
 		$this->pageText = $this->page['page_text'];
 
@@ -286,7 +318,7 @@ class pageClass
 		if($this->cacheData['COMMENT_FLAG'])
 		{
 			$vars = new e_vars(array('comments' => $this->pageComment(true)));
-			$comments = e107::getScBatch('page')->setVars($vars)->cpagecomments();
+			$comments = e107::getScBatch('page',null,'cpage')->setVars($vars)->cpagecomments();
 		} 
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
 		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
