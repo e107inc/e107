@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_admin_log.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 define("ADSTAT_ON", "On");
@@ -28,7 +24,7 @@ define("ADSTAT_L9", "Countries/domains visited from");
 define("ADSTAT_L10", "Referrers");
 define("ADSTAT_L11", "Search queries");
 define("ADSTAT_L12", "Reset stats");
-define("ADSTAT_L13", "this will erase the all-time stats - careful!<br />Deletes stats to the end of yesterday.<br />There is a separate menu option to delete selected historical data");
+define("ADSTAT_L13", "This will erase the all-time stats - careful! Deletes stats to the end of yesterday. There is a separate menu option to delete selected historical data"); // TODO: Condense this help field (minimize)
 define("ADSTAT_L14", "Page counts");
 define("ADSTAT_L15", "Update Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");
@@ -94,7 +90,7 @@ define ('ADSTAT_L75', 'Records for deletion');
 define ('ADSTAT_L76', 'Caution! Once deleted, the data cannot be recovered. Backup or export your database first');
 define ('ADSTAT_L77', 'Records deleted:');
 define ('ADSTAT_L78', 'Show previous month as well as current month for non-page access stats');
-define ('ADSTAT_L79', '(Only used if monthly stats collected)');
+define ('ADSTAT_L79', 'Only used if monthly stats collected');
 define ('ADSTAT_L80', 'The following pages were deleted:');
 define ('ADSTAT_L81', 'Statistics cleared:');
 define ('ADSTAT_L82', 'Following values now set:');

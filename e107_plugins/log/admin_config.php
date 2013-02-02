@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,15 +10,6 @@
  *
  * $URL$
  * $Id$
- */
-
-/**
- *	e107 Stats logging plugin
- *
- *	@package	e107_plugins
- *	@subpackage	log
- *	@version 	$Id$;
- *
  */
 
 require_once('../../class2.php');
@@ -33,6 +24,7 @@ require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 
 $frm = e107::getForm();
+$emessage = eMessage::getInstance();
 
 define('LogFlagFile', 'LogFlag.php');
 
@@ -209,14 +201,14 @@ if(IsSet($_POST['wipeSubmit']))
 	}
 	$admin_log->log_event('STAT_01',ADSTAT_L81.$logStr,'');
 
-	$message = ADSTAT_L25;
+	$message = ADSTAT_L25; // TODO:$emessage
 }
 
 
 
 if(!is_writable(e_LOG)) 
 {
-	$message = "<b>".ADSTAT_L38."</b>";
+	$message = "<b>".ADSTAT_L38."</b>"; // TODO:$emessage
 }
 
 if (isset($_POST['updatesettings'])) 
@@ -248,7 +240,8 @@ if (isset($_POST['updatesettings']))
 	save_prefs();
 	file_put_contents(e_LOG.LogFlagFile, "<?php\n\$logEnable={$pref['statActivate']};\n?>\n");		// Logging task uses to see if logging enabled
 	$admin_log->log_event('STAT_02',ADSTAT_L82.$logStr,'');
-	$message = ADSTAT_L17;
+	//$message = ADSTAT_L17;
+	$emessage->add(ADSTAT_L17, E_MESSAGE_SUCCESS); // FIX: seems not functional
 }
 
 
@@ -339,22 +332,24 @@ switch ($action)
 	</tr>
 
 	<tr>
-	<td>".ADSTAT_L78."<br /><span class='smalltext'>".ADSTAT_L79."</span></td>
+	<td>".ADSTAT_L78."</td>
 	<td>
-	<input type='checkbox' name='statPrevMonth' value='1'".(varset($pref['statPrevMonth'],0) ? " checked='checked'" : "")." />
+	<input type='checkbox' name='statPrevMonth' value='1'".(varset($pref['statPrevMonth'],0) ? " checked='checked'" : "")." /><span class='field-help'>".ADSTAT_L79."</span>
 	</td></tr>
 
 	<tr>
-	<td>".ADSTAT_L12."<br /><span class='smalltext'>".ADSTAT_L13."</span></td>
+	<td>".ADSTAT_L12."</td>
 	<td>
-	".ADSTAT_L14."<input type='checkbox' name='wipe[statWipePage]' value='1' /><br />
-	".ADSTAT_L6."<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /><br />
-	".ADSTAT_L7." <input type='checkbox' name='wipe[statWipeOs]' value='1' /><br />
-	".ADSTAT_L8." <input type='checkbox' name='wipe[statWipeScreen]' value='1' /><br />
-	".ADSTAT_L9."<input type='checkbox' name='wipe[statWipeDomain]' value='1' /><br />
-	".ADSTAT_L10."<input type='checkbox' name='wipe[statWipeRefer]' value='1' /><br />
-	".ADSTAT_L11."<input type='checkbox' name='wipe[statWipeQuery]' value='1' /><br />
-	<br /><input class='button' type='submit' name='wipeSubmit' value='".ADSTAT_L12."' />
+	<input type='checkbox' name='wipe[statWipePage]' value='1' /> ".ADSTAT_L14."<br />
+	<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /> ".ADSTAT_L6."<br />
+	<input type='checkbox' name='wipe[statWipeOs]' value='1' /> ".ADSTAT_L7."<br />
+	<input type='checkbox' name='wipe[statWipeScreen]' value='1' /> ".ADSTAT_L8."<br />
+	<input type='checkbox' name='wipe[statWipeDomain]' value='1' /> ".ADSTAT_L9."<br />
+	<input type='checkbox' name='wipe[statWipeRefer]' value='1' /> ".ADSTAT_L10."<br />
+	<input type='checkbox' name='wipe[statWipeQuery]' value='1' /> ".ADSTAT_L11."<br />
+	<br />
+	".$frm->admin_button('wipeSubmit', ADSTAT_L12, 'delete')."
+	<span class='field-help'>".ADSTAT_L13."</span>
 	</td>
 	</tr>
 
