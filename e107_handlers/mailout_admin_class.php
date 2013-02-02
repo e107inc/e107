@@ -1044,8 +1044,8 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</tbody></table>\n</fieldset>";
 
 		$text .= "<div class='buttons-bar center'>
-			<input class='button' type='submit' name='email_delete' value=\"".LAN_DELETE."\" />
-			&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />
+			<input class='btn button' type='submit' name='email_delete' value=\"".LAN_DELETE."\" />
+			&nbsp;<input class='btn button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />
 		</div>";
 
 		$text .= "</form></div>";

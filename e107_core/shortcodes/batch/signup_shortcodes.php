@@ -35,7 +35,7 @@ class signup_shortcodes extends e_shortcode
 		<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
 		<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
 		<br />
-		<input class='button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
+		<input class='btn button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
 		</div></form>
 		";
 		}

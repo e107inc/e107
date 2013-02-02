@@ -424,7 +424,7 @@ switch ($action)
 	$text .= "
 	  <tr>
 		<td class='forumheader3' style='text-align:center' colspan='4'>
-				<input class='button' type='submit' name='generate_filetypes_xml' value='".UPLLAN_56."' />
+				<input class='btn button' type='submit' name='generate_filetypes_xml' value='".UPLLAN_56."' />
 		</td>
 	  </tr>
 	</table></form>
