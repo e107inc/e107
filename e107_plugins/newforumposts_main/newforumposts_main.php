@@ -23,7 +23,7 @@ $query = ($pref['nfp_posts'] ? 'thread_lastpost' : 'thread_datestamp');
 include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 
 $path = e_PLUGIN.'forum/';
-global $sql, $ns;
+global $sql, $ns, $pref;
 // get template ...
 
 if (file_exists(THEME.'newforumpost.php')) {
