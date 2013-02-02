@@ -117,7 +117,7 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_submit_button($parm='')
 	{
-		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='button' />";	
+		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='btn button' />";	
 	}
 
 }

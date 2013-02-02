@@ -250,7 +250,7 @@ class user_select
 			}
 			$text .= "
 			</select>
-			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()' />
+			<input type='button' class='btn button' value='".US_LAN_1."' onClick='SelectUser()' />
 			</td>
 
 			</tr>

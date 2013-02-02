@@ -861,7 +861,7 @@ class e_menuManager {
 		$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
 		foreach ($this->menu_areas as $menu_act)
 		{
-			$text .= "<input type='submit' class='button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
+			$text .= "<input type='submit' class='btn button' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
 		}
 
 
@@ -869,7 +869,7 @@ class e_menuManager {
 		{
 			if(isset($pref['sitetheme_layouts'][$layout]['menuPresets']))
 			{
-		    	$text .= "<input type='submit' class='button' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
+		    	$text .= "<input type='submit' class='btn button' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
 				$text .= "<input type='hidden' name='menuPreset' value='".$layout."' />";
 			}
 			$text .= "<input type='hidden'  name='curLayout' value='".$layout."' />";

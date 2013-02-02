@@ -51,7 +51,7 @@ if($_POST['cancel_emails'])
 
     $text = "<div style='text-align:center;width:220px'><br />".LAN_MAILOUT_66;   // Cancelled Successfully;
     $text .= "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
-	<br /><input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
+	<br /><input type='button' class='btn button' name='close' value='Close' onclick=\"window.close()\" />
      </div></div>";
 
     $ns -> tablerender(LAN_MAILOUT_59, $text);
@@ -244,7 +244,7 @@ $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sende
 		echo "<div style='text-align:center;width:200px'><br />".LAN_MAILOUT_61."</div>";
 		echo "</body></html>";
         echo "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
-			<input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
+			<input type='button' class='btn button' name='close' value='Close' onclick=\"window.close()\" />
     		 </div>";
 		exit;
 	}
@@ -407,7 +407,7 @@ $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sende
 	}
 
 echo "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
-	<br /><input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
+	<br /><input type='button' class='btn button' name='close' value='Close' onclick=\"window.close()\" />
      </div>";
 echo "</body></html>";
 

@@ -1798,10 +1798,10 @@ class users_admin_ui extends e_admin_ui
 		{
 		// Option to delete emails - only if there are some in the list
 			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td style='text-align: center;'><input class='button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td style='text-align: center;'><input class='button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td style='text-align: center;'><input class='button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td style='text-align: center;'><input class='button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
+			<td style='text-align: center;'><input class='btn button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td style='text-align: center;'><input class='btn button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td style='text-align: center;'><input class='btn button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td style='text-align: center;'><input class='btn button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 		}
 		$text .= "</table></form></div>";

@@ -26,7 +26,7 @@ function custom_shortcode($parm)
 			{
 				$ret .= "<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>\n<div class='loginc_div'>\n".LOGIN_MENU_L1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n";
 				$ret .= ($pref['user_tracking'] == "cookie") ? "<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n" : "";
-				$ret .= "<input class='button loginc' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
+				$ret .= "<input class='btn button loginc' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />";
 				if($pref['user_reg'])
 				{
 					$ret .= "&nbsp;&nbsp;<a class='loginc signup' href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";

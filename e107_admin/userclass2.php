@@ -818,12 +818,12 @@ $ns->tablerender(UCSLAN_21, $text);
 		<table class='table adminform'>
 		<tr><td class='fcaption' style='text-align:center' colspan='2'>Test Functions and Information</td></tr>";
 	$text .= "<tr><td style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
-	$text .= "<tr><td><input class='button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
-	$text .= "<td><input class='button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
-	$text .= "<tr><td><input class='button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
-	$text .= "<td><input class='button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
-	$text .= "<tr><td><input class='button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
-	$text .= "<td><input class='button' type='submit' name='' value='Spare' />Spare</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
+	$text .= "<td><input class='btn button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
+	$text .= "<td><input class='btn button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
+	$text .= "<tr><td><input class='btn button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
+	$text .= "<td><input class='btn button' type='submit' name='' value='Spare' />Spare</td></tr>";
 	$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 	$text .= "<tr><td colspan='2'>".$e_userclass->show_tree(TRUE)."</td></tr>";
 
@@ -868,7 +868,7 @@ $ns->tablerender(UCSLAN_21, $text);
   $text = "Single class: ".$_POST['class_select']."<br />
        Multi-select: ".implode(',',$_POST['multi_class_select'])."<br />
        Check boxes: ".implode(',',$_POST['classes_select'])."<br />";
-  $text .= "<input class='button' type='submit' value='Click to save' />
+  $text .= "<input class='btn button' type='submit' value='Click to save' />
 	</form>	</div>";
   $ns->tablerender('Click on the button - the settings above should be remembered, and the $_POST values displayed', $text);
     break;				// End of 'debug'

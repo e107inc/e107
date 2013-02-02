@@ -222,7 +222,7 @@ class admin_shortcodes
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= " (".$slng->convert($sql->mySQLlanguage).")
-			: <span class='button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			: <span class='btn button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode('<br />', $aff);
@@ -811,13 +811,13 @@ class admin_shortcodes
 					<div style='text-align:center'>";
 					if(!$sql->db_Count('preset', '(*)', " WHERE preset_name='".$tp->toDB($existing, true)."'  "))
 					{
-						$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_SAVE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";
+						$pst_text .= "<input type='button' class='btn button' name='save_preset' value='".LAN_SAVE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";
 					}
 					else
 					{
-						$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_UPDATE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";
+						$pst_text .= "<input type='button' class='btn button' name='save_preset' value='".LAN_UPDATE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";
 						$pst_text .= "<input type='hidden' name='del_id' value='$pid' />
-						<input type='submit' class='button' name='delete_preset' value='".LAN_DELETE."' onclick=\"return jsconfirm('".$tp->toJS(LAN_PRESET_CONFIRMDEL." [".$existing."]")."')\" />";
+						<input type='submit' class='btn button' name='delete_preset' value='".LAN_DELETE."' onclick=\"return jsconfirm('".$tp->toJS(LAN_PRESET_CONFIRMDEL." [".$existing."]")."')\" />";
 					}
 					$pst_text .= "</div></form>";
 					return $ns->tablerender(LAN_PRESET, $pst_text, '', true);
