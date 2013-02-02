@@ -25,7 +25,7 @@ if(!e_QUERY)
 	$tmp = $e107CorePage->listBooks();
 	if(is_array($tmp))
 	{
-		$ns->tablerender($tmp['title'], $tmp['text']);
+		$ns->tablerender($tmp['title'], $tmp['text'], 'cpage');
 		require_once(FOOTERF);
 		exit;
 	}
@@ -34,7 +34,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
 	require_once(HEADERF);
 	$text = $e107CorePage->listChapters($_GET['bk']);
-	$ns->tablerender('', $text, 'page-book-list'); // TODO FIXME Caption eg. "book title"
+	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;	
 }
@@ -43,7 +43,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	require_once(HEADERF);
 
 	$text = $e107CorePage->listPages($_GET['ch']);
-	$ns->tablerender('', $text, 'page-chapter-list'); // TODO FIXME Caption eg. "book title"
+	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
 	require_once(FOOTERF);
 	exit;		
 }
@@ -193,7 +193,7 @@ class pageClass
 		{
 			if(!$sql->db_Select("page", "*", "page_theme='' AND page_chapter=".intval($chapt)." AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC "))
 			{
-				$text = LAN_PAGE_2;
+				$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
 			{
