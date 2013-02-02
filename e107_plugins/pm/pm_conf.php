@@ -300,6 +300,7 @@ function yes_no($fname, $curval = '')
 
 function show_options($pm_prefs)
 {
+	$frm    = e107::getForm();
 	$txt = "
 	<fieldset id='plugin-pm-prefs'>
 	<form method='post' action='".e_SELF."'>
@@ -375,12 +376,12 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_81."</td>
-		<td>".form::form_text('pm_option-pm_max_send', 5, $pm_prefs['pm_max_send'], 5)."<span style='field-help'>".ADLAN_PM_82."</span></td>
+		<td>".form::form_text('pm_option-pm_max_send', 5, $pm_prefs['pm_max_send'], 5)."<span class='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	</tbody>
 	</table>
 	<div class='buttons-bar center'>
-	".e107::getForm()->admin_button('update_prefs','no-value','update',ADLAN_PM_32)."
+		".$frm->admin_button('update_prefs','no-value','update', LAN_UPDATE)."
 	</div>
 	</form>
 	</fieldset>
@@ -445,19 +446,19 @@ function show_limits($pm_prefs)
 	";
 
 	if (isset($limitList)) 
-	{
+	{ 
 		foreach($limitList as $row)
 		{
 			$txt .= "
 			<tr>
 			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
 			<td>
-			".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> 
-			".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
+			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
+			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
 			</td>
 			<td>
-			".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> 
-			".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
+			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> <br />
+			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
 			</td>
 			</tr>
 			";
@@ -476,7 +477,7 @@ function show_limits($pm_prefs)
 	</tbody>
 	</table>
 	<div class="buttons-bar center">
-	'.$frm->admin_button('updatelimits','no-value','update',ADLAN_PM_42).'
+	'.$frm->admin_button('updatelimits','no-value','update', LAN_UPDATE).'
 	</div>
 	</form>
 	</fieldset>';
@@ -521,12 +522,12 @@ function add_limit($pm_prefs)
 	<tr>
 	<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
 	<td>
-		".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> 
-		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
+		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> <br />
+		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
 	</td>
 	<td>
-		".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> 
-		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
+		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> <br />
+		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
 	</td>
 	</tr>
 
@@ -536,7 +537,7 @@ function add_limit($pm_prefs)
 	</tbody>
 	</table>
 	<div class="buttons-bar center">
-	'.$frm->admin_button('addlimit','no-value','update',ADLAN_PM_43).'
+	'.$frm->admin_button('addlimit','no-value','update', LAN_ADD).'
 	</div>
 	</form>
 	</fieldset>';
@@ -589,7 +590,7 @@ function show_maint($pmPrefs)
 	</tbody>
 	</table>
 	<div class='buttons-bar center'>
-	".e107::getForm()->admin_button('pm_maint_execute','no-value','delete',ADLAN_PM_61)."
+	".e107::getForm()->admin_button('pm_maint_execute','no-value','delete', LAN_EXECUTE)."
 	</div>
 	</form>
 	</fieldset>
