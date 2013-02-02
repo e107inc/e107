@@ -1016,12 +1016,19 @@ class e107
 	 * Override is possible only if class is not already instantiated by shortcode parser
 	 *
 	 * <code><?php
-	 * // core news shortcodes
+	 * 
+	 * // Core news shortcodes (news_shortcodes.php using class news_shortcodes )
 	 * e107::getScObject('news');
+	 * 
+	 * // Core page shortcodes (page_shortcodes.php.php with class cpage_shortcode)  
+	 * e107::getScObject('page', null,'cpage'); 
+	 * 
 	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/shortcodes/batch/my_shortcodes.php
 	 * e107::getScObject('my', 'myplugin');
+	 * 
 	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/news_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', true);
+	 * 
 	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/mynews_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', 'mynews');
 	 * </code>
