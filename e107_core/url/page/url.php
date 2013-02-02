@@ -48,7 +48,7 @@ class core_page_url extends eUrlConfig
 		if('--FROM--' != vartrue($params['page'])) $page = varset($params['page']) ? intval($params['page']) : '0';
 		else $page = '--FROM--';
 		
-		$url .= intval($params['id']).($page ? '.'.$page : '');
+		$url .= "id=".intval($params['id']).($page ? '.'.$page : '');
 		return $url;
 	}
 
