@@ -1078,6 +1078,9 @@ class e_form
 	// Callback for vetted_tree - Creates the option list for a selection box
 	function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
 	{
+		$classIndex = abs($classnum);			// Handle negative class values
+		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		
 		if($classnum == e_UC_BLANK)
 			return $this->option('&nbsp;', '');
 
@@ -1097,8 +1100,9 @@ class e_form
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		}
-		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
+		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), '{$classSign}{$classIndex}', ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
 	}
+
 
 	function optgroup_open($label, $disabled = false)
 	{
