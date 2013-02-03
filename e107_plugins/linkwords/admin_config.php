@@ -2,27 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Linkwords plugin - admin page
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
-
-
-/**
- *	e107 Linkword plugin
- *
- *	@package	e107_plugins
- *	@subpackage	linkwords
- *	@version 	$Id$;
- *
- *	Administration page
+ * $URL$
+ * $Id$
  */
 
 require_once('../../class2.php');
@@ -147,7 +134,7 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 		{
 			if ($sql -> db_Insert('linkwords', $data))
 			{
-				$message = LWLAN_2;
+				$message = LWLAN_2; // TODO FIX $emessage style
 				$admin_log->log_event('LINKWD_01',$logString,'');
 			}
 			else
@@ -160,7 +147,7 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 			$id = intval(varset($_POST['lw_edit_id'],0));
 			if (($id > 0) && $sql -> db_UpdateArray('linkwords', $data, ' WHERE `linkword_id`='.$id))
 			{
-				$message = LWLAN_3;
+				$message = LWLAN_3; // TODO FIX $emessage style
 				$logString = 'ID: '.$id.'[!br!]'.$logString;
 				$admin_log->log_event('LINKWD_02',$logString,'');
 			}
@@ -239,7 +226,7 @@ $text = "
 <tr>
 	<td>".LWLAN_62."</td>
 	<td>
-		<input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /> ".LWLAN_63."
+		<input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /><span class='field-help'>".LWLAN_63."</span>
 	</td>
 </tr>
 
@@ -269,7 +256,7 @@ if (($action == 'words') || ($action == 'edit'))
   {
 	$text .= LWLAN_4;
   }
-  else // TODO FIX table below needs proper GUI
+  else // TODO FIX table below needs input button to $frm style 
   {
 	$text = "
 	<table class='table adminlist'>
@@ -277,7 +264,7 @@ if (($action == 'words') || ($action == 'edit'))
 	  	<col style='width:  5%; vertical-align:top;' />
 	  	<col style='width: 15%; vertical-align:top;' />
 	  	<col style='width: 20%; vertical-align:top;' />
-	  	<col style='width: 5%; vertical-align:top;' />
+	  	<col style='width: 10%; vertical-align:top;' />
 	  	<col style='width: 25%; vertical-align:top;' />
 	  	<col style='width: 5%; vertical-align:top;' />
 	  	<col style='width: 10%; vertical-align:top; text-align: center;' />
@@ -298,21 +285,21 @@ if (($action == 'words') || ($action == 'edit'))
 	{
 		$text .= "
 		<tr>
-		<td>{$row['linkword_id']}</td>
-		<td>{$row['linkword_word']}</td>
-		<td>{$row['linkword_link']}</td>
-		<td>".($row['linkword_newwindow'] ? LAN_YES : LAN_NO)."</td>
-		<td>{$row['linkword_tooltip']}</td>
-		<td>".($row['linkword_tip_id'] > 0 ? $row['linkword_tip_id'] : '')."</td>
-		<td >".$lwaction_vals[$row['linkword_active']]."</td>
-		<td >
-		<form action='".e_SELF."' method='post' id='myform_{$row['linkword_id']}'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: {$row['linkword_id']} ]')\">
-		<div>
-		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LWLAN_16."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
-		<input class='button' type='submit' value='".LWLAN_17."' id='delete_{$row['linkword_id']}' name='delete_{$row['linkword_id']}' />
-		</div>
-		</form>\n
-		</td>
+			<td>{$row['linkword_id']}</td>
+			<td>{$row['linkword_word']}</td>
+			<td>{$row['linkword_link']}</td>
+			<td>".($row['linkword_newwindow'] ? LAN_YES : LAN_NO)."</td>
+			<td>{$row['linkword_tooltip']}</td>
+			<td>".($row['linkword_tip_id'] > 0 ? $row['linkword_tip_id'] : '')."</td>
+			<td>".$lwaction_vals[$row['linkword_active']]."</td>
+			<td>
+				<form action='".e_SELF."' method='post' id='myform_{$row['linkword_id']}'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: {$row['linkword_id']} ]')\">
+				<div>
+					<input class='btn button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LAN_EDIT."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
+					<input class='btn button' type='submit' value='".LAN_DELETE."' id='delete_{$row['linkword_id']}' name='delete_{$row['linkword_id']}' />
+				</div>
+				</form>\n
+			</td>
 		</tr>
 		";
 	}
@@ -343,9 +330,9 @@ if ($action=='options')
   foreach ($lw_context_areas as $lw_key=>$lw_desc)
   {
     $checked = $pref['lw_context_visibility'][$lw_key] ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} /> {$lw_desc}<span class='field-help>".LWLAN_27."</span><br />";
+	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} /> {$lw_desc}<br />";
   }
-  $text .= "</td>
+  $text .= "<span class='field-help'>".LWLAN_27."</span></td>
   </tr>
 
   <tr>
@@ -370,7 +357,7 @@ if ($action=='options')
 
 </table>
 <div class='buttons-bar center'>
-".$frm->admin_button('saveopts_linkword','no-value','submit', LWLAN_30)."
+	".$frm->admin_button('saveopts_linkword','no-value','submit', LAN_UPDATE)."
 </div>
 </form>
 </div>\n";
@@ -380,7 +367,7 @@ $ns -> tablerender(LWLAN_32, $text);
 
 
 
-function admin_config_adminmenu()
+function admin_config_adminmenu() // TODO FIX v2 style
 {
   if (e_QUERY) 
   {
