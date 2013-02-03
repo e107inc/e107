@@ -343,7 +343,7 @@ if ($action=='options')
   foreach ($lw_context_areas as $lw_key=>$lw_desc)
   {
     $checked = $pref['lw_context_visibility'][$lw_key] ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} /> {$lw_desc}s<pan class='field-help>".LWLAN_27."</span><br />";
+	$text .= "<input type='checkbox' name='lw_visibility_area[]' value='{$lw_key}' {$checked} /> {$lw_desc}<span class='field-help>".LWLAN_27."</span><br />";
   }
   $text .= "</td>
   </tr>
