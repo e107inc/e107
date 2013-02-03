@@ -809,22 +809,25 @@ class user_class
 	 */
 	public function uc_get_classname($id)
 	{
-		if (isset($this->class_tree[$id]))
+		$cn = abs($id);
+		$ucString = '';
+		
+		if (isset($this->class_tree[$cn]))
 		{
-			return $this->class_tree[$id]['userclass_name'];
+			$ucString = $this->class_tree[$cn]['userclass_name'];
 		}
-		if (isset($this->fixed_classes[$id]))
+		elseif (isset($this->fixed_classes[$cn]))
 		{
-			return $this->fixed_classes[$id];
+			$ucString = $this->fixed_classes[$cn];
 		}
 
 		if($id < 0)
 		{
-			$val = abs($id);
-			$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
-			return str_replace('--CLASS--', $name, UC_LAN_INVERT);
+			//$val = abs($id);
+			//$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
+			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
 		}
-		return '';
+		return $ucString;
 	}
 
 
