@@ -24,7 +24,7 @@ require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 
 $frm = e107::getForm();
-$emessage = eMessage::getInstance();
+$mes = e107::getMessage();
 
 define('LogFlagFile', 'LogFlag.php');
 
@@ -201,14 +201,15 @@ if(IsSet($_POST['wipeSubmit']))
 	}
 	$admin_log->log_event('STAT_01',ADSTAT_L81.$logStr,'');
 
-	$message = ADSTAT_L25; // TODO:$emessage
+	//$message = ADSTAT_L25; // TODO:$emessage
+	$mes->addSuccess(LAN_UPDATED);
 }
-
 
 
 if(!is_writable(e_LOG)) 
 {
-	$message = "<b>".ADSTAT_L38."</b>"; // TODO:$emessage
+	//$message = "<b>".ADSTAT_L38."</b>"; 
+	$mes->addError(ADSTAT_L28);
 }
 
 if (isset($_POST['updatesettings'])) 
@@ -241,15 +242,16 @@ if (isset($_POST['updatesettings']))
 	file_put_contents(e_LOG.LogFlagFile, "<?php\n\$logEnable={$pref['statActivate']};\n?>\n");		// Logging task uses to see if logging enabled
 	$admin_log->log_event('STAT_02',ADSTAT_L82.$logStr,'');
 	//$message = ADSTAT_L17;
-	$emessage->add(ADSTAT_L17, E_MESSAGE_SUCCESS); // FIX: seems not functional
+	//$mes->addSuccess(LAN_SETSAVED); // replaced by save_prefs(); 
 }
 
-
+/*
 if (isset($message)) 
 {
 	$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
 }
-
+*/
+$ns->tablerender($caption, $mes->render() . $text);
 
 function gen_select($prompt,$name,$value)
 {
@@ -283,35 +285,35 @@ switch ($action)
 	<form method='post' action='".e_SELF."'>
 	<table class='table adminform'>
 	<colgroup>
-	  <col style='width:50%' />
-	  <col style='width:50%' />
+		<col style='width:50%' />
+		<col style='width:50%' />
 	</colgroup>
 
 	<tr>
 	<td>".ADSTAT_L4."</td>
 	<td>
-	<input type='radio' name='statActivate' value='1'".($pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
-	<input type='radio' name='statActivate' value='0'".(!$pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+		<input type='radio' name='statActivate' value='1'".($pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+		<input type='radio' name='statActivate' value='0'".(!$pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
 	</tr>
 
 	<tr>
-	<td>".ADSTAT_L18."</td>
-	<td>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
+		<td>".ADSTAT_L18."</td>
+		<td>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
 	</tr>
 
 	<tr>
 	<td>".ADSTAT_L20."</td>
 	<td>
-	<input type='radio' name='statCountAdmin' value='1'".($pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
-	<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
-	</td>
+		<input type='radio' name='statCountAdmin' value='1'".($pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+		<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+		</td>
 	</tr>
 
 	<tr>
 	<td>".ADSTAT_L21."</td>
 	<td>
-	<input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' />
+		<input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' />
 	</td>
 	</tr>
 
@@ -333,29 +335,29 @@ switch ($action)
 
 	<tr>
 	<td>".ADSTAT_L78."</td>
-	<td>
-	<input type='checkbox' name='statPrevMonth' value='1'".(varset($pref['statPrevMonth'],0) ? " checked='checked'" : "")." /><span class='field-help'>".ADSTAT_L79."</span>
-	</td></tr>
+		<td>
+		".$frm->checkbox('statPrevMonth', 1, varset($pref['statPrevMonth'],0))."<span class='field-help'>".ADSTAT_L79."</span>
+		</td>
+	</tr>
 
 	<tr>
 	<td>".ADSTAT_L12."</td>
 	<td>
-	<input type='checkbox' name='wipe[statWipePage]' value='1' /> ".ADSTAT_L14."<br />
-	<input type='checkbox' name='wipe[statWipeBrowser]' value='1' /> ".ADSTAT_L6."<br />
-	<input type='checkbox' name='wipe[statWipeOs]' value='1' /> ".ADSTAT_L7."<br />
-	<input type='checkbox' name='wipe[statWipeScreen]' value='1' /> ".ADSTAT_L8."<br />
-	<input type='checkbox' name='wipe[statWipeDomain]' value='1' /> ".ADSTAT_L9."<br />
-	<input type='checkbox' name='wipe[statWipeRefer]' value='1' /> ".ADSTAT_L10."<br />
-	<input type='checkbox' name='wipe[statWipeQuery]' value='1' /> ".ADSTAT_L11."<br />
-	<br />
-	".$frm->admin_button('wipeSubmit', ADSTAT_L12, 'delete')."
-	<span class='field-help'>".ADSTAT_L13."</span>
+		".$frm->checkbox('wipe[statWipePage]', 1)." ".ADSTAT_L14."<br />
+		".$frm->checkbox('wipe[statWipeBrowser]', 1)." ".ADSTAT_L6."<br />
+		".$frm->checkbox('wipe[statWipeOs]', 1)." ".ADSTAT_L7."<br />
+		".$frm->checkbox('wipe[statWipeScreen]', 1)." ".ADSTAT_L8."<br />
+		".$frm->checkbox('wipe[statWipeDomain]', 1)." ".ADSTAT_L9."<br />
+		".$frm->checkbox('wipe[statWipeRefer]', 1)." ".ADSTAT_L10."<br />
+		".$frm->checkbox('wipe[statWipeQuery]', 1)." ".ADSTAT_L11."<br />
+		<br />
+			".$frm->admin_button('wipeSubmit', LAN_RESET, 'delete')."<span class='field-help'>".ADSTAT_L13."</span>
 	</td>
 	</tr>
 
 	<tr>
-	<td>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</span></td>
-	<td><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
+		<td>".ADSTAT_L26."</td>
+		<td><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' /><span class='field-help'>".ADSTAT_L27."</span>
 	</td>
 	</tr>
 	";

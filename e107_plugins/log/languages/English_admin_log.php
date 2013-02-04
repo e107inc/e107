@@ -26,9 +26,9 @@ define("ADSTAT_L11", "Search queries");
 define("ADSTAT_L12", "Reset stats");
 define("ADSTAT_L13", "This will erase the all-time stats - careful! Deletes stats to the end of yesterday. There is a separate menu option to delete selected historical data"); // TODO: Condense this help field (minimize)
 define("ADSTAT_L14", "Page counts");
-define("ADSTAT_L15", "Update Statistic Settings");
+//define("ADSTAT_L15", "Update Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");
-define("ADSTAT_L17", "Statistic settings updated");
+//define("ADSTAT_L17", "Statistic settings updated");
 define("ADSTAT_L18", "Allow access to main statistics page to ...");
 define("ADSTAT_L19", "Recent visitors");
 define("ADSTAT_L20", "Count admin visits");
