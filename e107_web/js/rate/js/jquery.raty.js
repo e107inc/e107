@@ -45,12 +45,12 @@
 				if (self.opt.score) {
 					self.opt.score = methods.between(self.opt.score, 0, self.opt.number);					
 				}
-
+				
 				for (var i = 1; i <= self.opt.number; i++) {
 					$('<img />', {
 						src		: self.opt.path + ((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
 						alt		: i,
-						class	: self.opt.css,
+						'class'	: self.opt.css,
 						title	: (i <= self.opt.hints.length && self.opt.hints[i - 1] !== null) ? self.opt.hints[i - 1] : i
 					}).appendTo(self);
 
