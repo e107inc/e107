@@ -36,7 +36,7 @@ define("ADSTAT_L21", "Maximum records to display on stats page");
 define("ADSTAT_L22", "Run update routine");
 define("ADSTAT_L23", "logs from a previous version of e107 have been detected, update them here");
 define("ADSTAT_L24", "Go to update script");
-define("ADSTAT_L25", "Selected stats reset");
+//define("ADSTAT_L25", "Selected stats reset");
 define("ADSTAT_L26", "Remove page entries");
 define("ADSTAT_L27", "If your stats have incorrect pages, you can remove them here");
 define("ADSTAT_L28", "Open page");
