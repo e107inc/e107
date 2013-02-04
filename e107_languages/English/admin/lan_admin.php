@@ -268,6 +268,7 @@ define("LAN_GOPAGE", "Go to page:");
 define("LAN_DATESTAMP","Date stamp");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
+define("LAN_ACTIVE","Active");
 
 define("LAN_BAN","Ban");
 define("LAN_RATING", "Rating");
@@ -315,6 +316,7 @@ define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
 define("LAN_USER", "User");
 define("LAN_OWNER", "Owner");
+define("LAN_NAME", "Name");
 define("LAN_ID", "ID");
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
@@ -329,9 +331,6 @@ define("LAN_KEYWORDS","Keywords");
 define("LAN_IMAGE","Image");
 define("LAN_TEMPLATE","Template");
 define("LAN_TYPE", "Type");
-
-
-
 
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");

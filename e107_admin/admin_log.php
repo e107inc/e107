@@ -50,6 +50,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 // Load language files for log messages
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php'); //... for core functions
 
+$mes = e107::getMessage();
+
 if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {
 	foreach($pref['lan_log_list'] as $path => $file)
@@ -96,14 +98,16 @@ if(isset($_POST['setoptions']))
 	if($admin_log->logArrayDiffs($temp, $pref, 'ADLOG_01') || $admin_log->logArrayDiffs($temp, $pref, 'ADLOG_04'))
 	{
 		save_prefs(); // Only save if changes
-		$emessage->add(RL_LAN_006, E_MESSAGE_SUCCESS);
+		//$emessage->add(RL_LAN_006, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		$emessage->add(LAN_NO_CHANGE);
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if(e_QUERY)
 { // Must explode after calling auth.php
