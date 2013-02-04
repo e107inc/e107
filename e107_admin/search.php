@@ -339,7 +339,7 @@ elseif ($query[0] == 'edit')
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_handler' value='no-value'><span>".LAN_UPDATE."</span></button>
+				".$frm->admin_button('update_handler', 'no-value', 'update', LAN_UPDATE)."
 			</div>
 		</fieldset>
 	</form>
