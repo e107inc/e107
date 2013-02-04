@@ -27,6 +27,8 @@ include_lan( e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/admin_chatbox_menu.
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."message_handler.php");
+$mes = e107::getMessage();
 
 if (isset($_POST['updatesettings'])) 
 {
@@ -40,14 +42,14 @@ if (isset($_POST['updatesettings']))
 	{
 		save_prefs();		// Only save if changes
 		$e107cache->clear("nq_chatbox");
-		$message = CHBLAN_1;
 	}
 	else
 	{
-		$message = CHBLAN_39;
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
 
+; 
 
 if (isset($_POST['prune'])) 
 {
@@ -57,7 +59,7 @@ if (isset($_POST['prune']))
 	$sql->db_Delete("chatbox", "cb_datestamp < '{$prunetime}' ");
 	$admin_log->log_event('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
 	$e107cache->clear("nq_chatbox");
-	$message = CHBLAN_28;
+	$mes->addSuccess(CHBLAN_28);
 }
 
 if (isset($_POST['recalculate'])) 
@@ -82,13 +84,10 @@ if (isset($_POST['recalculate']))
 			$sql->db_Update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
 		}
 	$admin_log->log_event('CHBLAN_03','', E_LOG_INFORMATIVE, '');
-	$message = CHBLAN_33;
+	$mes->addSuccess(CHBLAN_33);
 }
 
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>"); //  $mes->addSuccess?
-}
+$ns->tablerender($caption, $mes->render() . $text);
 
 $chatbox_posts = $pref['chatbox_posts'];
 
@@ -163,7 +162,7 @@ $text .= "</select>
 	}
 
 	$text .= "<tr>
-	<td>".CHBLAN_21.":</td>
+	<td>".LAN_PRUNE.":</td>
 	<td>
 	".CHBLAN_23." <select name='chatbox_prune' class='tbox'>
 	<option></option>
@@ -172,7 +171,7 @@ $text .= "</select>
 	<option value='2592000'>".CHBLAN_26."</option>
 	<option value='1'>".CHBLAN_27."</option>
 	</select>
-	".$frm->admin_button('prune', CHBLAN_21, 'other')."
+	".$frm->admin_button('prune', LAN_PRUNE, 'other')."
 	<span class='field-help'>".CHBLAN_22."</span>
 	</td>
 	</tr>";
