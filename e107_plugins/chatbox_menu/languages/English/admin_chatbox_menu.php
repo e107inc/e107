@@ -10,7 +10,7 @@
 |     Encoding:
 +----------------------------------------------------------------------------+
 */
-define("CHBLAN_1", "Chatbox settings updated.");
+//define("CHBLAN_1", "Chatbox settings updated.");
 define("CHBLAN_2", "Moderated.");
 define("CHBLAN_3", "No chatbox posts yet.");
 define("CHBLAN_4", "Member");
@@ -30,7 +30,7 @@ define("CHBLAN_17", "Wordwrap count");
 define("CHBLAN_18", "words longer than the number you set here will be wrapped");
 //define("CHBLAN_19", "Update Chatbox Settings");
 define("CHBLAN_20", "Chatbox Settings");
-define("CHBLAN_21", "Prune");
+//define("CHBLAN_21", "Prune");
 define("CHBLAN_22", "Delete posts older than a certain time period");
 define("CHBLAN_23", "Delete posts older than ");
 
