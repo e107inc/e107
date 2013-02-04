@@ -26,6 +26,7 @@ include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 require_once(e_ADMIN."auth.php");
 
 $frm = e107::getForm();
+$mes = e107::getMessage();
 	
 if (isset($_POST['updatesettings'])) 
 {
@@ -39,19 +40,17 @@ if (isset($_POST['updatesettings']))
 	if ($admin_log->logArrayDiffs($temp, $pref, 'TRACK_01'))
 	{
 		save_prefs();		// Only save if changes
-		$message = TRACKBACK_L4;
+		//$message = TRACKBACK_L4;
 	}
 	else
 	{
-		$message = TRACKBACK_L17;
+		//$message = TRACKBACK_L17;
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
 
 	
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
+$ns->tablerender($caption, $mes->render() . $text);
 	
 
 $text = "
@@ -60,8 +59,8 @@ $text = "
 <tr>
 	<td>".TRACKBACK_L7."</td>
 	<td>
-		<input type='radio' name='trackbackEnabled' value='1'".($pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L5."&nbsp;&nbsp;
-		<input type='radio' name='trackbackEnabled' value='0'".(!$pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".TRACKBACK_L6."
+		<input type='radio' name='trackbackEnabled' value='1'".($pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
+		<input type='radio' name='trackbackEnabled' value='0'".(!$pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."
 	</td>
 </tr>
 
