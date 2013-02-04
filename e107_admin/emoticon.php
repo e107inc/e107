@@ -28,7 +28,9 @@ $e_sub_cat = 'emoticon';
 
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+
+//$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 
 if(!$sql->db_Count("core", "(*)", "WHERE e107_name = 'emote_default' AND e107_value !='' "))
 {	// Set up the default emotes
@@ -47,19 +49,23 @@ if (isset($_POST['active']))
 		$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$update = true;
-		$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+		//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+		//$mes->addSucces(LAN_UPDATED);
 	}
 	else
 	{
-		$emessage->add(LAN_NO_CHANGE);
+		//$emessage->add(LAN_NO_CHANGE);
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 
 }
 
+$ns->tablerender($caption, $mes->render() . $text);
 
 /* get packs */
 require_once(e_HANDLER."file_class.php");
-$fl = new e_file;
+//$fl = new e_file;
+$fl = e107::getFile();
 $emote = new emotec;
 $one_pack = FALSE;
 
@@ -86,11 +92,13 @@ foreach($_POST as $key => $value)
 		$pref['emotepack'] = str_replace("defPack_", "", $key);
 		if(save_prefs())
 		{
-			$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+			//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+			$mes->addSucces(LAN_UPDATED);
 		}
 		else
 		{
-			$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
+			//$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
+			$mes->addInfo(LAN_NO_CHANGE);
 		}
 		$admin_log->log_event('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		break;
@@ -103,6 +111,7 @@ foreach($_POST as $key => $value)
 	}
 }
 
+$ns->tablerender($caption, $mes->render() . $text);
 
 
 $check = TRUE;
@@ -135,13 +144,13 @@ class emotec
 	// List available emote packs
 	function listPacks()
 	{
-		global $pref;
+		//global $pref;
+		$pref = e107::getPref();
 		$frm = e107::getForm();
 		$fl = e107::getFile();
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		
-		
+				
 
 		$text = "
 	<div class='admintabs' id='tab-container'>
@@ -164,7 +173,7 @@ class emotec
 							</td>
 							<td>
 								<div class='auto-toggle-area autocheck'>
-									<input type='checkbox' class='checkbox' name='smiley_activate' value='1'".($pref['smiley_activate'] ? " checked='checked'" : '')." />
+									".$frm->checkbox('smiley_activate', 1, varset($pref['smiley_activate'],0))."
 								</div>
 							</td>
 						</tr>
@@ -190,10 +199,10 @@ class emotec
 						</colgroup>
 						<thead>
 							<tr>
-								<th class='center'>".EMOLAN_2."</th>
+								<th class='center'>".LAN_NAME."</th>
 								<th class='center'>".EMOLAN_3."</th>
-								<th class='center'>".EMOLAN_8."</th>
-								<th class='center'>".EMOLAN_9."</th>
+								<th class='center'>".LAN_STATUS."</th>
+								<th class='center'>".LAN_OPTIONS."</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -228,7 +237,7 @@ class emotec
 
 			$text .= "
 								</td>
-								<td class='center middle'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<button type='submit' name='defPack_".$pack."' value='".EMOLAN_11."'><span>".EMOLAN_11."</span></button>")."</td>
+								<td class='center middle'>".($pref['emotepack'] == $pack ? LAN_ACTIVE : "<button type='submit' name='defPack_".$pack."' value='".EMOLAN_11."'><span>".EMOLAN_11."</span></button>")."</td>
 								<td>";
 								
 								
@@ -286,7 +295,7 @@ class emotec
 		$text = "
 		<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 			<fieldset id='core-emoticon-configure'>
-				<legend class='e-hideme'>".EMOLAN_15."</legend>
+				<legend class='e-hideme'>".LAN_EDIT."</legend>
 				<div class='info-bar'><strong>".sprintf(EMOLAN_31, count($eArray))."</strong></div>
 				<table class='table adminlist'>
 					<colgroup>
@@ -297,7 +306,7 @@ class emotec
 					<thead>
 						<tr>
 							<th>".EMOLAN_5."</th>
-							<th>".EMOLAN_2."</th>
+							<th>".LAN_NAME."</th>
 							<th class='last'>".EMOLAN_6."<span class='field-help'> ( ".EMOLAN_7." )</span></th>
 						</tr>
 					</thead>
@@ -345,7 +354,7 @@ class emotec
 		</fieldset>
 	</form>";
 
-		$e107->ns->tablerender(EMOLAN_PAGE_TITLE.' - '.EMOLAN_15.": '".$packID."'", $text);
+		$e107->ns->tablerender(EMOLAN_PAGE_TITLE.' - '.LAN_EDIT.": '".$packID."'", $text);
 	}
 
 
@@ -414,11 +423,11 @@ class emotec
 
 		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'"))
 		{
-			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16, false, false);
+			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', LAN_SETSAVED, false, false);
 		}
 		else
 		{
-			e107::getMessage()->addAuto($sql->insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16, false, false);
+			e107::getMessage()->addAuto($sql->insert("core", "'emote_".$packID."', '$tmp' "), 'insert', LAN_SETSAVED, false, false);
 		}
 	}
 
@@ -444,8 +453,8 @@ class emotec
 			if(strpos($value,' ')!==FALSE)
 			{	// Highlight any directory names containing spaces - not allowed
 				$msg = "
-					<strong>".EMOLAN_17."</strong> ".EMOLAN_18."
-					<div>".EMOLAN_19.": {$value}</div>
+					<strong>".EMOLAN_17."</strong> ".EMOLAN_18.":
+					<div>".LAN_NAME.": {$value}</div>
 					<div>".EMOLAN_20.": ".e_IMAGE_ABS."emotes/</div>
 				";
 				$emessage->add($msg, E_MESSAGE_ERROR);

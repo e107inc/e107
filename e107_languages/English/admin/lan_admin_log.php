@@ -7,7 +7,7 @@ define('RL_LAN_002', "Rolling Log");
 // define('RL_LAN_003', 'User Audit Trail Maintenance');
 //define('RL_LAN_004', "Admin/Rolling Log Upgraded");
 define('RL_LAN_005', "Configure/View system logs");
-define('RL_LAN_006', "Options Updated");
+//define('RL_LAN_006', "Options Updated");
 // define('RL_LAN_007', "User Audit Trail Options");
 define('RL_LAN_008', "Rolling Log is active:");
 define('RL_LAN_009', "Rolling Log History length in days");
