@@ -45,7 +45,8 @@ require_once(e_HANDLER.'file_class.php');
 $fl = new e_file;
 
 require_once(e_HANDLER.'message_handler.php');
-$emessage = eMessage::getInstance();
+//$emessage = eMessage::getInstance();
+$mes = e107::getMessage();
 
 //@FIXME mix up in banner language files
 //include_//lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_menus.php');
@@ -92,7 +93,7 @@ if (isset($_POST['update_menu']))
 		$menuPref->save(false, true, false);
 
 		//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
-		$emessage->add(BANNER_MENU_L2, E_MESSAGE_SUCCESS);
+		//$emessage->add(BANNER_MENU_L2, E_MESSAGE_SUCCESS);
 	}
 }
 
@@ -147,7 +148,7 @@ if (vartrue($_POST['createbanner']) || vartrue($_POST['updatebanner']))
 /* DELETE ACTIONS */
 if (isset($_POST['delete_cancel']))
 {
-	$emessage->addSession(BNRLAN_6);
+	$mes->addSession(BNRLAN_6);
 
 	//redirect to main
 	session_write_close();
@@ -158,19 +159,19 @@ if (vartrue($action) == "delete" && $sub_action && varsettrue($_POST['delete_con
 {
 	if($sql->db_Delete("banner", "banner_id=".intval($sub_action)))
 	{
-		$emessage->addSession(sprintf(BNRLAN_1, $sub_action), E_MESSAGE_SUCCESS);
+		$mes->addSession(sprintf(BNRLAN_1, $sub_action), E_MESSAGE_SUCCESS);
 		banners_adminlog('04','Id: '.intval($sub_action));
 	}
-	else $emessage->addSession(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
+	else $mes->addSession(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
 
 	//redirect to main
 	session_write_close();
 	header('Location:'.e_SELF);
 	exit;
 }
-elseif ($action == "delete" && $sub_action)
+elseif ($action == "delete" && $sub_action) 
 { // shown only if JS is disabled or by direct url hit (?delete.banner_id)
-	$emessage->add(BNRLAN_2, E_MESSAGE_WARNING);
+	$mes->addWarning(BNRLAN_2);
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<fieldset id='core-banner-delete-confirm'>
@@ -183,7 +184,7 @@ elseif ($action == "delete" && $sub_action)
 		</fieldset>
 		</form>
 	";
-	$e107->ns->tablerender(BNRLAN_5, $emessage->render().$text);
+	$ns->tablerender(BNRLAN_5, $mes->render() . $text);
 
 	require_once(e_ADMIN."footer.php");
 	exit;
@@ -316,7 +317,7 @@ if (!$action) {
 		</script>
 	";
 
-	$e107->ns->tablerender(BNRLAN_42.' - '.BNRLAN_7, $emessage->render().$text);
+	$ns->tablerender(BNRLAN_42.' - '.BNRLAN_7, $mes->render() . $text);
 }
 
 if ($action == "create") {
@@ -398,7 +399,7 @@ if ($action == "create") {
 		unset($for_var);
 		//TODO - ajax add campaign
 		$text .= "
-							</select> ".$frm->admin_button('add_new_campaign', BNRLAN_26a, 'action', '', array('other' => "onclick=\"e107Helper.toggle('add-new-campaign-cont', false); \$('banner_campaign_sel').selectedIndex=0; return false;\""))."
+							</select> ".$frm->admin_button('add_new_campaign', BNRLAN_26a, 'other', '', array('other' => "onclick=\"e107Helper.toggle('add-new-campaign-cont', false); \$('banner_campaign_sel').selectedIndex=0; return false;\""))."
 							</div>
 
 							<div class='field-spacer e-hideme' id='add-new-campaign-cont'>
@@ -436,7 +437,7 @@ if ($action == "create") {
 		unset($for_var);
 		//TODO - ajax add client
 		$text .= "
-						</select> ".$frm->admin_button('add_new_client', BNRLAN_29a, 'action', '', array('other' => "onclick=\"e107Helper.toggle('add-new-client-cont', false); \$('banner_client_sel').selectedIndex=0; return false;\""))."
+						</select> ".$frm->admin_button('add_new_client', BNRLAN_29a, 'other', '', array('other' => "onclick=\"e107Helper.toggle('add-new-client-cont', false); \$('banner_client_sel').selectedIndex=0; return false;\""))."
 						</div>
 
 						<div class='field-spacer e-hideme' id='add-new-client-cont'>
@@ -504,7 +505,7 @@ if ($action == "create") {
 						<td>".BNRLAN_32."</td>
 						<td>
 							<div class='field-spacer'>
-								<button class='action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
+								<button class='btn button action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
 							</div>
 							<div class='e-hideme' id='banner-repo'>
 	";
@@ -651,7 +652,7 @@ if ($action == "create") {
 	</form>
 		";
 
-	$e107->ns->tablerender(BNRLAN_42.' - '.($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23), $text);
+	$ns->tablerender(BNRLAN_42.' - '.($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23), $text);
 
 }
 
@@ -731,8 +732,8 @@ if ($action == "menu")
 		}
 		$text .= "
 									<div class='field-spacer'>
-										".$frm->admin_button('check_all', LAN_CHECKALL, 'action')."
-										".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'action')."
+										".$frm->admin_button('check_all', LAN_CHECKALL, 'other')."
+										".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'other')."
 									</div>
 		";
 	}
@@ -866,7 +867,7 @@ if ($action == "menu")
 		</script>
 	";
 */
-	$e107->ns->tablerender(BNRLAN_68, $emessage->render().$text);
+	$ns->tablerender(BNRLAN_68, $mes->render() . $text);
 }
 
 
@@ -894,11 +895,12 @@ require_once(e_ADMIN."footer.php");
 // Log event to admin log
 function banners_adminlog($msg_num='00', $woffle='')
 {
-  global $pref, $admin_log;
+  global $admin_log;
+  $pref = e107::getPref();
+
 //  if (!varset($pref['admin_log_log']['admin_banners'],0)) return;
   $admin_log->log_event('BANNER_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
-
 
 
 ?>

@@ -21,8 +21,8 @@ define("BNRLAN_15", "No banners yet.");
 define("BNRLAN_16", "Unlimited");
 define("BNRLAN_17", "None");
 define("BNRLAN_21", "Ends");
-define("BNRLAN_22", "Update Banner");  //FIXME Use Generic
-define("BNRLAN_23", "Add New Banner");  //FIXME Use Generic
+//define("BNRLAN_22", "Update Banner");  //FIXME Use Generic
+//define("BNRLAN_23", "Add New Banner");  //FIXME Use Generic
 define("BNRLAN_24", "Campaign");
 
 define("BNRLAN_27", "Client");
@@ -52,10 +52,10 @@ define("BNRLAN_63", "Banner Created");  //FIXME Use Generic
 define("BNRLAN_64", "Banner Updated");  //FIXME Use Generic
 
 define("BANNER_MENU_L1", "Advertisement");
-define("BANNER_MENU_L2", "Banner menu configuration saved"); //FIXME Use Generic
+//define("BANNER_MENU_L2", "Banner menu configuration saved"); //FIXME Use Generic
 define("BANNER_MENU_L3", "Caption");
 //define("BANNER_MENU_L5", "Banner Configuration");
-define("BANNER_MENU_L6", "choose campaigns to show in menu");
+define("BANNER_MENU_L6", "Choose campaigns to show in menu");
 //define("BANNER_MENU_L7", "available campaigns");
 //define("BANNER_MENU_L8", "selected campaigns");
 //define("BANNER_MENU_L9", "remove selection");
