@@ -9,8 +9,8 @@
 
 # secure htaccess file
 <Files .htaccess>
-Â order allow,deny
-Â deny from all
+order allow,deny
+deny from all
 </Files>
 
 # protect e107_config.php
