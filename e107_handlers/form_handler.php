@@ -1100,7 +1100,7 @@ class e_form
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		}
-		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), '{$classSign}{$classIndex}', ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
+		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classSign.$classIndex, ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
 	}
 
 

@@ -50,7 +50,7 @@ define('e_UC_SPECIAL_END'	,255);			// Highest 'special' class
 
 define('UC_ICON_DIR',		e_IMAGE_ABS.'generic/');		// Directory for the icons used in the admin tree displays
 
-define('e_UC_BLANK'			,'-1');			// Code for internal use
+define('e_UC_BLANK'			,'-32767');		// Code for internal use - needs to be large to avoid confusion with 'not a member of...'
 define('UC_TYPE_STD'		, '0');			// User class is 'normal'
 define('UC_TYPE_GROUP'		, '1');			// User class is a group or list of subsidiary classes
 
@@ -720,7 +720,12 @@ class user_class
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
 			$style = '';
 		}
-		return "<option value='{$classSign}{$classIndex}'{$sel}{$style}>".$prefix.$this->class_tree[$classIndex]['userclass_name']."</option>\n";
+		$ucString = $this->class_tree[$classIndex]['userclass_name'];
+		if ($classSign == '-')
+		{
+			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+		}
+		return "<option value='{$classSign}{$classIndex}'{$sel}{$style}>".$prefix.$ucString."</option>\n";
 	}
 
 
@@ -743,7 +748,12 @@ class user_class
 		{
 			$style = " style='text-indent:".(1.2*$nest_level)."em'";
 		}
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$this->class_tree[$classIndex]['userclass_name']."</div>\n";
+		$ucString = $this->class_tree[$classIndex]['userclass_name'];
+		if ($classSign == '-')
+		{
+			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+		}
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
 	}
 
 
@@ -769,8 +779,13 @@ class user_class
 		
 		$id = "{$treename}_{$classnum}";
 		
+		$ucString = $this->class_tree[$classIndex]['userclass_name'];
+		if ($classSign == '-')
+		{
+			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+		}
 		return "<div {$style}><label>
-			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</label></div>\n";
+			".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, "id=".$id)." ".$ucString.'  ('.$this->class_tree[$classIndex]['userclass_description'].")</label></div>\n";
 		
 		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
@@ -810,7 +825,7 @@ class user_class
 	public function uc_get_classname($id)
 	{
 		$cn = abs($id);
-		$ucString = '';
+		$ucString = 'Class:'.$id;			// Debugging aid - this should be overridden
 		
 		if (isset($this->class_tree[$cn]))
 		{
