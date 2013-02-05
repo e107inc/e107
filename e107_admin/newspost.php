@@ -2841,7 +2841,7 @@ class admin_newspost
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>
-						".$frm->admin_button('save_prefs', NWSLAN_89, 'update')."
+						".$frm->admin_button('save_prefs', LAN_UPDATE, 'update')."
 					</div>
 				</fieldset>
 			</form>
