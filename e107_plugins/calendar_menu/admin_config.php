@@ -37,7 +37,11 @@ if (!getperms('P'))
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
 
 require_once(e_HANDLER.'form_handler.php');
-$frm = new e_form();
+$frm = e107::getForm();
+
+require_once(e_HANDLER.'message_handler.php');
+$mes = e107::getMessage();
+
 
 $sql = e107::getDb();
 $uc = e107::getUserClass();		// Userclass object pointer
@@ -102,16 +106,18 @@ function logPrefChanges(&$prefList, &$oldPref, $logRef)
 			// Do admin logging
 			$logString = implode('[!br!]', $prefChanges);
 			$admin_log->log_event($logRef,$logString,'');
-			$mes->add('Calendar prefs updated', E_MESSAGE_SUCCESS);	
+			//$mes->add('Calendar prefs updated', E_MESSAGE_SUCCESS);	
+			$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
 		}
 		elseif ($result === FALSE)
 		{
-			$mes->add('Error saving calendar prefs', E_MESSAGE_ERROR);		
+			//$mes->add('Error saving calendar prefs', E_MESSAGE_ERROR);		
+			$mes->addError("Error saving calendar prefs"); // TODO LAN
 		}
 		else
 		{		// Should never happen
-			$mes->add('Unexpected result: '.$result, E_MESSAGE_INFO);
-
+			//$mes->add('Unexpected result: '.$result, E_MESSAGE_INFO);
+			$mes->addInfo('Unexpected result: '.$result);
 		}
 	}
 }
@@ -164,7 +170,8 @@ if (isset($_POST['updatesettings']))
 {
 	logPrefChanges($prefSettings['updateOptions'], $calPref, 'EC_ADM_06');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	$message = EC_ADLAN_A204; 				// "Calendar settings updated.";
+	//$message = EC_ADLAN_A204; 			// "Calendar settings updated.";
+	$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
 }
 
 
@@ -173,7 +180,8 @@ if (isset($_POST['updateforthcoming']))
 {
 	logPrefChanges($prefSettings['updateForthcoming'], $calPref, 'EC_ADM_07');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	$message = EC_ADLAN_A109; 				// "Forthcoming Events settings updated.";
+	//$message = EC_ADLAN_A109; 			// "Forthcoming Events settings updated.";
+	$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
 }
 
 
@@ -201,7 +209,8 @@ if (isset($_POST['deleteold']) && isset($_POST['eventpost_deleteoldmonths']))
 		$ec_qs[1] = $old_date;
 	}
 	else
-		$message = EC_ADLAN_A148;
+		//$message = EC_ADLAN_A148;
+		$mes->addError(EC_ADLAN_A148);
 }
 
 
@@ -246,7 +255,8 @@ if (isset($_POST['confirmdeleteold']) && ($action == 'backdel'))
 if (isset($_POST['confirmdelcache']) && ($action == 'cachedel'))
 {
   $e107cache->clear('nq_event_cal');
-  $message = EC_ADLAN_A163;
+  //$message = EC_ADLAN_A163;
+  $mes->addSuccess(EC_ADLAN_A163); // TODO LAN
   $action = 'maint';			// Re-display maintenance menu
 }
 
@@ -263,12 +273,12 @@ if ($action == 'confdel')
 	</tr>
 	</table>
 	<div class='buttons-bar center'>
-		".$frm->admin_button('confirmdeleteold', EC_ADLAN_A205, 'delete')."
+		".$frm->admin_button('confirmdeleteold', LAN_UI_DELETE_LABEL, 'delete')."
 	</div>
 	</form>
 	</div>";
 	
-	$ns->tablerender(EC_ADLAN_A205, $text); 
+	$ns->tablerender(LAN_UI_DELETE_LABEL, $text); 
 }
 
 
@@ -283,10 +293,10 @@ if ($action == 'confcache')
 	</tr>
 	</table>
 	<div class='buttons-bar center'>
-		".$frm->admin_button('confirmdelcache', EC_ADLAN_A205, 'delete')."
+		".$frm->admin_button('confirmdelcache', LAN_UI_DELETE_LABEL, 'delete')."
 	</form>";
 	
-	$ns->tablerender(EC_ADLAN_A205, $text);
+	$ns->tablerender(LAN_UI_DELETE_LABEL, $text);
 }
 
 
@@ -294,18 +304,22 @@ if ($action == 'confcache')
 if (isset($ec_qs[2]) && isset($ec_qs[3]) && ($action == 'subs') && ($ec_qs[2] == 'del') && is_numeric($ec_qs[3]))
 {
 	if ($sql->db_Delete('event_subs',"event_subid='{$ec_qs[3]}'"))
-		$message = EC_ADLAN_A180.$ec_qs[3];
+		//$message = EC_ADLAN_A180.$ec_qs[3];
+		$mes->addSuccess(LAN_DELETED.$ec_qs[3]);
 	else
-		$message = EC_ADLAN_A181.$ec_qs[3];
+		//$message = EC_ADLAN_A181.$ec_qs[3];
+		$mes->addError(LAN_DELETED_FAILED.$ec_qs[3]);
 }
 
-
+/*
 if (isset($message) && ($message != "")) 
 {
 	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>"); // TODO v2 style
 	$message = '';
 }
+*/
 
+$ns->tablerender($caption, $mes->render() . $text); 
 
 
 //category
