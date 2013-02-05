@@ -3,13 +3,13 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 
-|     Copyright (C) 2008-2012 e107 Inc (e107.org)
+|     Copyright (C) 2008-2013 e107 Inc (e107.org)
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.7/e107_admin/credits.php $
-|     $Id: credits.php 12477 2011-12-28 03:12:22Z e107coders $
+|     $URL$
+|     $Id$
 +----------------------------------------------------------------------------+
 */
 
@@ -51,7 +51,7 @@ require_once(e_ADMIN."auth.php");
                         Twitter Bootstrap, MagpieRSS, PCLZip, PCLTar, TinyMCE,<br />
                         Nuvolo Icons, PHPMailer, FPDF, UFPDF, PHP UTF8
                     </p>
-                    <div class="copyright">Copyright <a href="http://e107.org/content/About-Us:The-Team" title="e107 Team">e107 Inc.</a> 2008-2012</div>
+                    <div class="copyright">Copyright <a href="http://e107.org/content/About-Us:The-Team" title="e107 Team">e107 Inc.</a> 2008-2013</div>
                 </div>
             </div>
         	

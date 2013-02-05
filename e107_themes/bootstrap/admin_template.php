@@ -238,7 +238,7 @@ $ADMIN_FOOTER = '
       <hr>
 
       <footer class="center"> 
-		Copyright &copy; 2008-2012 e107 Inc (e107.org)<br />
+		Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
       </footer>
 
     </div><!--/.fluid-container-->';
