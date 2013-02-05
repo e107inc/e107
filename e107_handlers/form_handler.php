@@ -2836,6 +2836,11 @@ class e_form
 			{
 				$key = $att['field'];
 			}
+			
+			if($key == 'checkboxes' || $key == 'options')
+			{
+				continue;	
+			}
 
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
@@ -2853,7 +2858,7 @@ class e_form
 					$keyName .= '['.$path.']';
 				}
 			}
-
+		//	print_a($att)."<br />";
 			// type null - system (special) fields
 			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
