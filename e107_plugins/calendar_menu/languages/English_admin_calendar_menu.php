@@ -24,6 +24,8 @@
  *	@version 	$Id$;
  */
 
+// TODO LAN REWRITE
+
 define('EC_ADLAN_1', 'Event Calendar');
 
 define('EC_LAN_12', "Monday");
@@ -178,8 +180,8 @@ define('EC_ADLAN_A176', "User Name"); //FIXME Use Generic
 define('EC_ADLAN_A177', "Category"); //FIXME Use Generic
 define('EC_ADLAN_A178', "Problems");
 define('EC_ADLAN_A179', "Actions");
-define('EC_ADLAN_A180', "Deleted subscription record no "); //FIXME Use Generic
-define('EC_ADLAN_A181', "Delete failed for record no "); //FIXME Use Generic
+//define('EC_ADLAN_A180', "Deleted subscription record no "); //FIXME Use Generic
+//define('EC_ADLAN_A181', "Delete failed for record no "); //FIXME Use Generic
 define('EC_ADLAN_A182', "Total --NUM-- entries in database");
 define('EC_ADLAN_A183', "Calendar Menu mouseover shows event title");
 define('EC_ADLAN_A184', "may not work with all browsers");
@@ -203,7 +205,7 @@ define('EC_ADLAN_A201', 'BBCode (Standard)');
 define('EC_ADLAN_A202', 'BBCode with help');
 define('EC_ADLAN_A203', 'WYSIWYG');
 define('EC_ADLAN_A204', 'Calendar settings updated.');
-define('EC_ADLAN_A205', 'Confirm Delete');
+//define('EC_ADLAN_A205', 'Confirm Delete');
 define('EC_ADLAN_A206', 'This plugin is a fully featured event calendar with calendar menu.');
 define('EC_ADLAN_A207', 'Calendar Settings');
 define('EC_ADLAN_A208', 'Events can be added by:');
