@@ -70,7 +70,7 @@ a.cpage-np.current { text-decoration: none; }
 /******** SyS Messages / Message text formatting */
 /* message boxes */
 .s-message { }
-
+/*
 .s-message div.info,
 .s-message div.error,
 .s-message div.success,

@@ -468,16 +468,23 @@ class eMessage
 	 */
 	public static function formatMessage($mstack, $type, $message)
 	{
-		if (empty($message)) return '';
+		$bstrap = array('info'=>'alert-info','error'=>'alert-error','success'=>'alert-success');
+		$bclass = vartrue($bstrap[$type]) ? " ".$bstrap[$type] : "";
+		
+		if (empty($message))
+		{
+			 return '';
+		}
 		elseif (is_array($message))
 		{
 			$message = array_unique($message); // quick fix for duplicates. 
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
+		
 		return "
-			<div class='s-message {$type}'>
+			<div class='s-message alert alert-block {$type} {$bclass}'>
 				<i class='s-message-icon s-message-".$type."'></i>
-				<div class='s-message-title'>".self::getTitle($type, $mstack)."</div>
+				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
 					{$message}
 				</div>
@@ -910,19 +917,19 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		  require_once(e_THEME.'index.html');
 		  exit;
 		}
-		echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
+		echo "<div class='alert alert-block alert-error' style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
 		break;
 
 	  case "MESSAGE":
-		if(strstr(e_SELF, "forum_post.php"))
+		if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here. 
 		{
 			return;
 		}
-		$ns->tablerender("", "<div style='text-align:center'><b>{$message}</b></div>");
+		$ns->tablerender("", "<div class='alert alert-block' style='text-align:center'><b>{$message}</b></div>");
 		break;
 
 		case "ADMIN_MESSAGE":
-		$ns->tablerender("Admin Message", "<div style='text-align:center'><b>{$message}</b></div>");
+		$ns->tablerender("Admin Message", "<div class='alert'><b>{$message}</b></div>");
 		break;
 
 		case "ALERT":
