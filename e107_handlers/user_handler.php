@@ -1456,7 +1456,7 @@ class e_userperms
 		return "
 			<div class='buttons-bar center'>
 				".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
-				".$frm->admin_button('go_back', ADMSLAN_70)."
+				".$frm->admin_button('go_back', LAN_BACK, 'cancel')."
 			</div>
 		";
 	}
