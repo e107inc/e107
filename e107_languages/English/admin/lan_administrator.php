@@ -81,7 +81,7 @@ define("ADMSLAN_68", "Configure email notification");
 // define("ADMSLAN_69", "is already an administrator and must be edited.");
 
 // 0.8
-define("ADMSLAN_70", "Return to Administrator Listing");
+// define("ADMSLAN_70", "Return to Administrator Listing");
 define("ADMSLAN_71", "Click here to display privileges");
 
 define('ADMSLAN_72', 'Admin ID: --ID-- name: --NAME-- new permissions: ');
@@ -91,5 +91,5 @@ define('ADMSLAN_74', 'General');
 // define('ADMSLAN_75', '');
 define("ADMSLAN_76", "Manage language-packs");
 
-define("ADMSLAN_2", "Site Administrator <strong>%s</strong> updated in database.");
+define("ADMSLAN_2", "Site Administrator <strong>%s</strong> updated in database."); //XXX Needs to be replaced
 ?>
