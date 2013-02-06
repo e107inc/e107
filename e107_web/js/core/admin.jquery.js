@@ -128,8 +128,8 @@ $(document).ready(function()
 		
 		// Sorting
 		var fixHelper = function(e, ui) {
-			ui.closest("tr").switchClass( "odd", "highlight-odd", 0 );
-			ui.closest("tr").switchClass( "even", "highlight-even", 0 );
+			ui.closest("tr").switchClass( "odd", "highlight-odd e-sort", 0 );
+			ui.closest("tr").switchClass( "even", "highlight-even e-sort", 0 );
 			ui.children().each(function() {
 				$(this).width($(this).width());
 			// 	$(this).closest("tr").switchClass( "odd", "highlight-odd", 0 );
@@ -150,7 +150,9 @@ $(document).ready(function()
 			    var newSortValue = allItems.indexOf( $(ui.item).attr("id") );
 			 //   alert($(ui.item).attr("id") + " was moved to index " + newSortValue);
 			 	$(".highlight-even").switchClass( "highlight-even", "even", 600 );
-				$(".highlight-odd").switchClass( "highlight-odd", "odd", 600 );   
+				$(".highlight-odd").switchClass( "highlight-odd", "odd", 600 );
+				$("tr.e-sort").removeClass( "e-sort");  
+				  
 			},
 			
 			update: function(event, ui) {         	
