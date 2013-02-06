@@ -1878,21 +1878,22 @@ class e_form
 					
 					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
 					{
-						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?".(e_QUERY ? e_QUERY."&amp;ajax_used=1" : "ajax_used=1")."' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
-					}		
-			
-					$value .= "<a href='".e_SELF."?{$query}' class='e-tip' title='".LAN_EDIT."' data-placement='left'>
-					<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
-	
-/*
-						$value .= "<a href='".e_SELF."?{$query}' class='btn e-tip' title='".LAN_EDIT."' data-placement='left'>
-					".ADMIN_EDIT_ICON."
-					</a>";
-					*/
+						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+						$value .= "<a class='e-sort' style='cursor:move' href='".e_SELF."?mode={$mode}&action=sort&ajax_used=1' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
+					}	
 					
-					
-					
-	
+					$cls = false;
+					if(varset($parms['editClass']))
+					{
+						$cls = (deftrue($parms['editClass'])) ? constant($parms['editClass']) : $parms['editClass'];
+
+					}	
+					if(false === $cls || check_class($cls))
+					{
+						$value .= "<a href='".e_SELF."?{$query}' class='e-tip' title='".LAN_EDIT."' data-placement='left'>
+						<img class='icon action edit list' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>";
+					}
+
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']))
 					{
@@ -1927,6 +1928,14 @@ class e_form
 					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
+				
+				if(vartrue($attributes['inline'])) $parms['editable'] = true;
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$value = "<a class='e-tip e-editable' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&action=inline&id={$id}&ajax_used=1' href='#'>".$value."</a>";
+				}
+				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
 			break;
@@ -2008,6 +2017,8 @@ class e_form
 			break;
 
 			case 'text':
+				// attribute alias
+				if(vartrue($attributes['inline'])) $parms['editable'] = true;
 				
 				if(vartrue($parms['truncate']))
 				{
@@ -2029,10 +2040,10 @@ class e_form
 					$value = "<a class='e-tip {$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
 				}
 				
-				//XXX NEW Inline-editing support. Handling of $_POST not done yet. 
-				if(vartrue($parms['editable']))
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$value = "<a class='e-tip e-editable'data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."' href='#'>".$value."</a>";
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$value = "<a class='e-tip e-editable' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&action=inline&id={$id}&ajax_used=1' href='#'>".$value."</a>";
 				}
 				
 
