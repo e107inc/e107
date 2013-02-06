@@ -4203,10 +4203,13 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			
 			list($tmp,$id) = explode("-", $row, 2);
-			if($sql->db_Update($this->table, $this->sortField." = ".intval($c)." WHERE ".$this->pid." = ".intval($id)))
+			$id = preg_replace('/[^\w\-]/', '', $id);
+			if(!is_numeric($id)) $id = "'{$id}'";
+			if($sql->db_Update($this->table, $this->sortField." = {$c} WHERE ".$this->pid." = ".$id))
 			{
 				$updated[] = $id;
 			}
+			echo($sql->getLastQuery()."\n");
 			$c++;		
 		}
 		//echo "Updated ".implode(",",$updated);
