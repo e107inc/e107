@@ -45,6 +45,9 @@ $loginClass = new login_menu_class();
 $menuPref = e107::getConfig('menu');				// Pref object
 $loginPrefs = $menuPref->getPref('login_menu');		// Array of login-related values
 
+require_once(e_HANDLER.'message_handler.php');
+$mes = e107::getMessage();
+
 if (isset($_POST['update_menu']))
 {
     //sort/show/hide links - Start
@@ -100,8 +103,9 @@ if (isset($_POST['update_menu']))
 	//$menuPref->setPref('login_menu', $loginPrefs);
 	$menuPref->save(false, true, false);
 	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
-	$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
-
+	//$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
+	$mes->addSuccess();
+	$ns->tablerender("", $mes->render() . $text); 
 }
 
 if (!isset($loginPrefs['new_news']))
@@ -113,47 +117,49 @@ if (!isset($loginPrefs['new_news']))
 
 $frm = e107::getForm();
 
-$text = '
-	<form action="'.e_SELF.'" method="post">
-	<table class="table adminform" >
+$text = "
+	<form method='post' action='".e_SELF."'>
+	<table class='table adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 	
-    '.$loginClass->render_config_links().'
+    ".$loginClass->render_config_links()."
+    ";
+
     
+  /*
     <tr>
-    <td colspan="2" class="fcaption">'.LOGIN_MENU_L42.'</td>
+   	 <td colspan="2">'.LOGIN_MENU_L42.'</td>
     </tr>
-    
+  */
+
+ $text .= "
 	<tr>
-	<td style="width:35%" class="forumheader3">'.LOGIN_MENU_L31.'</td>
-	<td style="width:65%" class="forumheader3">
-	<input type="checkbox" name="pref[new_news]" value="1"'.($loginPrefs['new_news'] == 1 ? ' checked="checked"' : '').' />
-	</td>
+		<td>".LOGIN_MENU_L31."</td>
+		<td>".$frm->checkbox('pref[new_news]', 1, varset($loginPrefs['new_news'],0))."</td>
 	</tr>
 
 	<tr>
-	<td style="width:35%" class="forumheader3">'.LOGIN_MENU_L34.'</td>
-	<td style="width:65%" class="forumheader3">
-	<input type="checkbox" name="pref[new_comments]" value="1"'.($loginPrefs['new_comments'] == 1 ? ' checked="checked"' : '').' />
-	</td>
+		<td>".LOGIN_MENU_L34."</td>
+		<td>".$frm->checkbox('pref[new_comments]', 1, varset($loginPrefs['new_comments'],0))."</td>
 	</tr>
 
 	<tr>
-	<td style="width:35%" class="forumheader3">'.LOGIN_MENU_L36.'</td>
-	<td style="width:65%" class="forumheader3">
-	<input type="checkbox" name="pref[new_members]" value="1"'.($loginPrefs['new_members'] == 1 ? ' checked="checked"' : '').' />
-	</td>
+		<td>".LOGIN_MENU_L36."</td>
+		<td>".$frm->checkbox('pref[new_members]', 1, varset($loginPrefs['new_members'],0))."</td>
 	</tr>
 	
-	'.$loginClass->render_config_stats().'
+		".$loginClass->render_config_stats()."
 	</table>
-	<div class="buttons-bar center">
-	<tr>
-	'.$frm->admin_button('update_menu', LAN_SAVE, 'update').'
+	
+	<div class='buttons-bar center'>
+		".$frm->admin_button('update_menu', LAN_SAVE, 'update')."
 	</div>
 
 	</form>
-	</div>
-	';
+	";
 
 $ns->tablerender(LOGIN_MENU_L41, $text);
 
