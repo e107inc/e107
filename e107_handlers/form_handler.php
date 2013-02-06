@@ -215,6 +215,9 @@ class e_form
 			}		
 		}
 		
+	
+		
+		
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
@@ -2024,6 +2027,12 @@ class e_form
 					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
 					$dialog = vartrue($parms['dialog']) ? "e-dialog" : "";
 					$value = "<a class='e-tip {$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
+				}
+				
+				//XXX NEW Inline-editing support. Handling of $_POST not done yet. 
+				if(vartrue($parms['editable']))
+				{
+					$value = "<a class='e-tip e-editable'data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."' href='#'>".$value."</a>";
 				}
 				
 

@@ -167,7 +167,7 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
-         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE), 
+         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1'), 
          	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), 
 		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'data'=> 'int','width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),	// User id

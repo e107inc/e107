@@ -20,6 +20,8 @@ $(document).ready(function()
 			// $(this).css( 'cursor', 'pointer' )
 		});
 		
+		$.fn.editable.defaults.mode = 'popup';
+		$('.e-editable').editable();
 		
 		
 		// run tips on .field-help 
