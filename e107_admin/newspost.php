@@ -1204,14 +1204,14 @@ class admin_newspost
 			return false;
 		}
         $this->clear_cache();
-
+		
         if(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']))
         {
-			if($this->getSubAction() != 'edit')
+			if($this->getAction() != 'edit')
 			{
 	        	session_write_close();
-				$rurl = e_SELF.(varsettrue($ret['id']) ? "?create.edit.".$ret['id'] : '');
-				header('Location:'.($rurl ? $rurl : e_SELF));
+				$rurl = e_SELF.(vartrue($ret['news_id']) ? '?mode='.$_GET['mode'].'&action=edit&id='.$ret['news_id'] : '');
+				header('Location: '.$rurl);
 				exit;
 			}
         }
