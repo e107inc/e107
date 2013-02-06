@@ -12,6 +12,29 @@ $(document).ready(function()
     	 $(".e-expandit").show();   	 
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
     	 
+    	 	 
+	 	$('.e-typeahead').each(function() { 		
+	 		
+			var id = $(this).attr("id");
+			var name = '#' + id.replace('-usersearch', '');
+			var newval = $(this).attr("data-value");
+	 		$(this).typeahead({
+	 		source: $(this).attr("data-source"), 
+	 		updater: function(text, type){
+		 		if(type == 'value')
+		 		{
+		 			$(name).val(text);	
+		 		}
+	 			return text;	
+	 			}
+	 		})
+	 	});
+    	 
+    	 
+    	 
+    	 
+    	 
+    	 
     	 
 		 //check all
 		 $("#check-all").click(function(event){
