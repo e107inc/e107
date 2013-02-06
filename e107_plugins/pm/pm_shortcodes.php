@@ -113,9 +113,9 @@ class pm_shortcodes extends e_shortcode
 		{
 			$frm = e107::getForm();
 			//TODO Use $frm->userpicker();
-			return $frm->text('pm_to','',10,'typeahead=users');
+			return $frm->text('pm_to','',20,'typeahead=users');
 			
-			$ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
+			// $ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
 		}
 		return $ret;
 	}

@@ -332,7 +332,7 @@ class pm_extended extends private_message
 	 */
 	function post_pm()
 	{
-		print_a($_POST);
+		// print_a($_POST);
 		
 		
 		if(!check_class($this->pmPrefs['pm_class']))
@@ -628,11 +628,14 @@ if(isset($_POST['postpm']))
 	$action = 'outbox';
 }
 
-
+$mes = e107::getMessage();
 
 if($message != '')
 {
-	$ns->tablerender('', $message);
+	
+	$mes->add($message);
+	
+//	$ns->tablerender('', "<div class='alert alert-block'>". $message."</div>");
 }
 
 
@@ -643,7 +646,7 @@ if($message != '')
 switch ($action)
 {
 	case 'send' :
-		$ns->tablerender(LAN_PM, $pm->show_send($pm_proc_id));
+		$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_proc_id));
 		break;
 
 	case 'reply' :
@@ -652,25 +655,25 @@ switch ($action)
 		{
 			if($pm_info['pm_to'] != USERID)
 			{
-				$ns->tablerender(LAN_PM, LAN_PM_56);
+				$ns->tablerender(LAN_PM, $mes->render() . LAN_PM_56);
 			}
 			else
 			{
-				$ns->tablerender(LAN_PM, $pm->show_send($pm_info));
+				$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_info));
 			}
 		}
 		else
 		{
-			$ns->tablerender(LAN_PM, LAN_PM_57);
+			$ns->tablerender(LAN_PM, $mes->render() . LAN_PM_57);
 		}
 		break;
 
 	case 'inbox' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $pm->show_inbox($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
 		break;
 
 	case 'outbox' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_26, $pm->show_outbox($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_26, $mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
 		break;
 
 	case 'show' :
@@ -678,7 +681,7 @@ switch ($action)
 		break;
 
 	case 'blocked' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_66, $pm->showBlocked($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_66, $mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
 		break;
 }
 
