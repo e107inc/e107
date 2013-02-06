@@ -366,7 +366,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   background-color: #408140 \9;
 }
 
-
+tr.e-sort { box-shadow: 0 5px 8px #cccccc; -webkit-box-shadow: 0 5px 8px #cccccc; -moz-box-shadow: 0 5px 8px #cccccc;}
 
 /* ****************************** ICONS ************************************* */
 
