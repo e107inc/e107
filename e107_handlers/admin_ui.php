@@ -2224,9 +2224,14 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $listOrder = null;
 	
 	/**
-	 * @var string SQL order, false to disable order, null is default order
+	 * @var field containing the order number
 	 */
 	protected $sortField = null;
+	
+	/**
+	 * @var reorder step
+	 */
+	protected $orderStep = 1;
 
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
@@ -4198,6 +4203,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$sql = e107::getDb();
 		$c = ($_GET['from']) ? intval($_GET['from']) : 0;
 		$updated = array();
+		$step = $this->orderStep ? intval($this->orderStep) : 1;
 		
 		foreach($_POST['all'] as $row)
 		{
@@ -4210,7 +4216,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$updated[] = $id;
 			}
 			// echo($sql->getLastQuery()."\n");
-			$c++;		
+			$c += $step;		
 		}
 		//echo "Updated ".implode(",",$updated);
 	}
