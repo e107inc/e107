@@ -41,6 +41,10 @@ if(e_PAGE != 'menus.php') // Quick fix for Menu Manager inactive drop-down probl
 	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 }
 
+ 
+e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
+e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
+
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
 e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 
