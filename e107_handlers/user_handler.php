@@ -1144,6 +1144,8 @@ class e_userperms
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
 	 );
+	 
+	
 
 
 	function __construct()
@@ -1408,7 +1410,8 @@ class e_userperms
 								<td class='label'>".ADMSLAN_16.": </td>
 								<td class='control'>
 									".$ad_name."
-									<input type='hidden' name='ad_name' size='60' value='{$ad_name}' />
+									<input type='hidden' name='ad_name' value='{$ad_name}' />
+									<input type='hidden' name='a_id' value='{$a_id}' />
 								</td>
 							</tr>
 							<tr>
@@ -1452,7 +1455,6 @@ class e_userperms
 		$frm = e107::getForm();
 		return "
 			<div class='buttons-bar center'>
-				<input type='hidden' name='a_id' value='{$a_id}' />
 				".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
 				".$frm->admin_button('go_back', ADMSLAN_70)."
 			</div>
@@ -1501,9 +1503,11 @@ class e_userperms
 		$tp = e107::getParser();
 
 		$modID = intval($uid);
+		$mes = e107::getMessage();
 		if ($modID == 0)
 		{
-			exit();
+			$mes->addError("Malfunction at line ".__LINE__ ." of user_handler.php");
+			return;
 		}
 
 		$sysuser = e107::getSystemUser($modID, false);
