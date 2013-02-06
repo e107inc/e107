@@ -12,6 +12,12 @@
 * $Id$
 *
 */
+
+/* TODO
+- Needs rewriting to V2 style including $msg->
+- LAN
+*/
+
 class forumAdmin
 {
 
@@ -97,15 +103,15 @@ class forumAdmin
 		{
 			if($sql->db_Delete('forum', "forum_id = {$id}"))
 			{
-				$ret .= 'Forum parent successfully deleted';
+				$ret .= 'Forum parent successfully deleted'; // TODO LAN
 			}
 			else
 			{
-				$ret .= 'Forum parent could not be deleted';
+				$ret .= 'Forum parent could not be deleted'; // TODO LAN
 			}
 			return $ret;
 		}
-		return 'The forum parent has the following info: <br />'.$ret;
+		return 'The forum parent has the following info: <br />'.$ret; // TODO LAN
 
 	}
 
@@ -153,12 +159,12 @@ class forumAdmin
 		{
 			if($this->deleteForum($id))
 			{
-				$ret .= "Forum {$id} successfully deleted";
+				$ret .= "Forum {$id} successfully deleted"; // TODO LAN
 			}
 			else
 			{
-				$ret .= "Forum {$id} could not be deleted";
-			}
+				$ret .= "Forum {$id} could not be deleted"; // TODO LAN
+			} 
 			return $ret;
 		}
 
@@ -175,11 +181,11 @@ class forumAdmin
 		{
 			if($this->deleteForum($id))
 			{
-				$ret .= "Sub-forum {$id} successfully deleted";
+				$ret .= "Sub-forum {$id} successfully deleted"; // TODO LAN
 			}
 			else
 			{
-				$ret .= "Sub-forum {$id} could not be deleted";
+				$ret .= "Sub-forum {$id} could not be deleted"; // TODO LAN
 			}
 			return $ret;
 		}
@@ -193,10 +199,11 @@ class forumAdmin
 	{
 		$ns = e107::getRender();
 		$this->show_message($txt);
+		$frm = e107::getForm();
 		$txt = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
-		<div style='text-align:center'>".FORLAN_180."<br /><br />
-		".$frm->admin_button('confirm', LAN_UI_DELETE_LABEL, 'submit')."
+		<div style='text-align:center'>".LAN_CONFDELETE."<br /><br />
+			".$frm->admin_button('confirm', LAN_UI_DELETE_LABEL, 'submit')."
 		<input type='submit' class='button' name='confirm' value='".LAN_DELETE."' />
 		</div>
 		</form>
@@ -214,9 +221,9 @@ class forumAdmin
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table class='table adminlist'>
 		<tr>
-		<td>".FORLAN_151."</td>
-		<td>".FORLAN_31."</td>
-		<td>".FORLAN_32."</td>
+		<td>".LAN_ID."</td>
+		<td>".LAN_NAME."</td>
+		<td>".LAN_DESCRIPTION."</td>
 		<td>".FORLAN_37."</td>
 		<td>".FORLAN_20."</td>
 		</tr>
@@ -255,26 +262,26 @@ class forumAdmin
 
 		$txt .= "
 		<tr>
-		<td>".FORLAN_151."</td>
-		<td>".FORLAN_31."</td>
-		<td>".FORLAN_32."</td>
-		<td>".FORLAN_37."</td>
-		<td>&nbsp;</td>
+			<td>".LAN_ID."</td>
+			<td>".LAN_NAME."</td>
+			<td>".LAN_DESCRIPTION."</td>
+			<td>".FORLAN_37."</td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
-		<td style='vertical-align:top'>&nbsp;</td>
-		<td><input class='tbox' type='text' name='subname_new' value='' size='30' maxlength='255' /></td>
-		<td><textarea cols='60' rows='2' class='tbox' name='subdesc_new'></textarea></td>
-		<td><input class='tbox' type='text' name='suborder_new' value='' size='3' maxlength='4' /></td>
-		<td>&nbsp;</td>
+			<td style='vertical-align:top'>&nbsp;</td>
+			<td><input class='tbox' type='text' name='subname_new' value='' size='30' maxlength='255' /></td>
+			<td><textarea cols='60' rows='2' class='tbox' name='subdesc_new'></textarea></td>
+			<td><input class='tbox' type='text' name='suborder_new' value='' size='3' maxlength='4' /></td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
-		<td colspan='5' style='text-align:center'>".$frm->admin_button('create_sub', FORLAN_148, 'submit')."</td>
+			<td colspan='5' style='text-align:center'>".$frm->admin_button('create_sub', LAN_CREATE, 'submit')."</td>
 		</tr>
 		</table>
 		</form>
 		";
-		$ns->tablerender(FORLAN_149, $txt); // LAN
+		$ns->tablerender(FORLAN_149, $txt); // TODO LAN
 	}
 
 	function show_existing_forums($sub_action, $id, $mode = false)
@@ -438,7 +445,7 @@ class forumAdmin
 		<table class='table adminform'>
 
 		<tr>
-		<td>".FORLAN_31.":</td>
+		<td>".LAN_NAME.":</td>
 		<td>
 		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($row['forum_name'])."' maxlength='250' />
 		</td>
@@ -525,43 +532,39 @@ class forumAdmin
 		</tr>
 
 		<tr>
-		<td>".FORLAN_31.":</td>
-		<td>
-		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm(vartrue($fInfo['forum_name']))."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span>
-		</td>
+			<td>".LAN_NAME.":</td>
+			<td><input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm(vartrue($fInfo['forum_name']))."' maxlength='250' /><span class='field-help'>".FORLAN_179."</span></td>
 		</tr>
 
 		<tr>
-		<td>".FORLAN_32.":</td>
-		<td>
-		<textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm(vartrue($fInfo['forum_description']))."</textarea>
-		</td>
+			<td>".LAN_DESCRIPTION.":</td>
+			<td><textarea class='tbox' name='forum_description' cols='50' rows='5'>".$tp->toForm(vartrue($fInfo['forum_description']))."</textarea></td>
 		</tr>
 
 		<tr>
-		<td>".FORLAN_33.":</td>
-		<td>";
-		$text .= $e107->user_class->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
-
-		$text .= "</td>
+			<td>".FORLAN_33.":</td>
+			<td>";
+			$text .= $e107->user_class->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes')."<span class='field-help'>".FORLAN_34."</span>";
+			$text .= "</td>
 		</tr>
+		
 		<tr>
-		<td>".FORLAN_23.":</td>
-		<td>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
-		</tr>
-
-		<tr>
-		<td>".FORLAN_142.":</td>
-		<td>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+			<td>".FORLAN_23.":</td>
+			<td>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
 
 		<tr>
-		<td>".FORLAN_184.":</td>
-		<td>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+			<td>".FORLAN_142.":</td>
+			<td>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
 
-		<tr style='vertical-align:top'>
-		<td colspan='2'  style='text-align:center'>";
+		<tr>
+			<td>".FORLAN_184.":</td>
+			<td>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+		</tr>
+		</table>
+		
+		<div class='buttons-bar center'>";
 		if ($sub_action == "edit")
 		{
 			$text .= $frm->admin_button('update_forum', LAN_UPDATE, 'update');
@@ -570,10 +573,10 @@ class forumAdmin
 		{
 			$text .= $frm->admin_button('submit_forum', LAN_CREATE, 'submit');
 		}
-		$text .= "</td>
-		</tr>
-		</table>
-		</form>";
+		$text .= "
+		</div>
+		</form>
+";
 		$ns->tablerender(FORLAN_28, $text);
 	}
 
@@ -784,14 +787,14 @@ class forumAdmin
 		<td style='width:75%'>".FORLAN_132.":</td>
 		<td style='width:25%'>".($fPref->get('hilightsticky') ? "<input type='checkbox' name='forum_hilightsticky' value='1' checked='checked' />" : "<input type='checkbox' name='forum_hilightsticky' value='1' />")."<span class='field-help'>".FORLAN_133."</span></td>
 		</tr>
-
-		<tr>
-		<td colspan='2'  style='text-align:center'>
-		".$frm->admin_button('updateoptions', LAN_UPDATE, 'update')."
-		</td>
-		</tr>
 		</table>
-		</form>";
+	
+
+		<div class='buttons-bar center'>
+			".$frm->admin_button('updateoptions', LAN_UPDATE, 'update')."
+		</div>
+		</form>
+";
 		$ns->tablerender(FORLAN_62, $emessage->render().$text);
 	}
 

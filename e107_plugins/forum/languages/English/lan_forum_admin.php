@@ -18,7 +18,7 @@ define("FORLAN_6", "Cancel");
 define("FORLAN_7", "Forum Options");
 define("FORLAN_8", "Forums pruned.");
 define("FORLAN_9", "Prune not required.");
-define("FORLAN_10", "Options Saved");
+//define("FORLAN_10", "Options Saved");
 define("FORLAN_11", "Forum created");
 define("FORLAN_12", "Forum updated");
 define("FORLAN_13", "Parent created");
@@ -39,8 +39,8 @@ define("FORLAN_27", "You need to define at least one forum parent before creatin
 define("FORLAN_28", "Forums");
 define("FORLAN_29", "No forums yet.");
 define("FORLAN_30", "Existing Forums");
-define("FORLAN_31", "Name");
-define("FORLAN_32", "Description");
+//define("FORLAN_31", "Name");
+//define("FORLAN_32", "Description");
 define("FORLAN_33", "Moderators");
 define("FORLAN_34", "Choose userclass for moderators of this forum");
 //define("FORLAN_35", "Update Forum");
@@ -79,7 +79,7 @@ define('FORLAN_66', 'Not installed');
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
 //define("FORLAN_72", "Update Order");
-define("FORLAN_73", "Order Updated");
+//define("FORLAN_73", "Order Updated");
 
 define("FORLAN_75", "Parents");
 define("FORLAN_76", "Forums Front Page");
@@ -165,11 +165,11 @@ define("FORLAN_143", "Indicates who can post to the forum");
 define("FORLAN_144", "Moderators set");
 define("FORLAN_145", "Configure sub-forums");
 define("FORLAN_146", "No sub-forums yet");
-define("FORLAN_147", "Update sub-forums");
-define("FORLAN_148", "Create sub-forums");
+//define("FORLAN_147", "Update sub-forums");
+//define("FORLAN_148", "Create sub-forums");
 define("FORLAN_149", "sub-forums");
 define("FORLAN_150", "sub-forum");
-define("FORLAN_151", "ID");
+//define("FORLAN_151", "ID");
 define("FORLAN_152", "posts");
 define("FORLAN_153", "Tools");
 define("FORLAN_154", "Reply Deleted");
@@ -211,6 +211,5 @@ define('FORLAN_185', 'Indicates who can create new threads');
 
 define('FORLAN_186', 'Threads per page');
 define('FORLAN_187', 'Number of threads displayed per page');
-
 
 ?>
