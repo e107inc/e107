@@ -1255,6 +1255,10 @@ class e_form
 			case 'submit':
 				$options['class'] .= 'btn-success';
 			break;
+			
+			case 'cancel':
+				// use this for neutral colors. 
+			break;
 
 			case 'delete':
 				$options['class'] .= 'btn-danger';
