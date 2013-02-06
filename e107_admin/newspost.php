@@ -1115,8 +1115,8 @@ class admin_newspost
 		// ##### Format and submit item to DB
 		
 		$ix = new news;
-
-		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdatetime'), 0);
+		// jQuery UI temporary date-time fix - inputdatetime -> inputdate
+		$_POST['news_start'] = vartrue(e107::getDate()->convert($_POST['news_start'],'inputdate'), 0);
 
 		if($_POST['news_start'])
 		{
@@ -1129,7 +1129,7 @@ class admin_newspost
 
 		if($_POST['news_end'])
 		{
-			$_POST['news_end'] = e107::getDate()->convert($_POST['news_end'],'inputdatetime');
+			$_POST['news_end'] = e107::getDate()->convert($_POST['news_end'],'inputdate');
 		}
 		else
 		{
@@ -1138,7 +1138,7 @@ class admin_newspost
 		
 		if($_POST['news_datestamp'])
 		{
-			$_POST['news_datestamp'] = e107::getDate()->convert($_POST['news_datestamp'],'inputdatetime');
+			$_POST['news_datestamp'] = e107::getDate()->convert($_POST['news_datestamp'],'inputdate');
 		}
 		else
 		{
