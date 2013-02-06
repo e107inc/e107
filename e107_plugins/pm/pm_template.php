@@ -95,7 +95,7 @@ $PM_SEND_PM = "<div style='text-align: center'>
 ";
 
 $PM_INBOX_HEADER = "
-<table class='table fborder' style='width:95%'>
+<table class='table table-striped fborder>
 <tr>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
@@ -135,7 +135,7 @@ $PM_INBOX_FOOTER = "
 ";
 
 $PM_OUTBOX_HEADER = "
-<table class='table fborder' style='width:95%'>
+<table class='table table-striped fborder'>
 <thead>
 <tr>
 	<th class='fcaption' style='width:1%'>&nbsp;</th>
@@ -180,7 +180,7 @@ $PM_OUTBOX_FOOTER = "
 
 
 $PM_BLOCKED_HEADER = "
-<table class='table fborder' style='width:95%'>
+<table class='table table-striped fborder'>
 <tr>
 	<td class='fcaption' style='width:5%'>&nbsp;</td>
 	<td class='fcaption' style='width:48%'>".LAN_PM_68."</td>
@@ -217,7 +217,7 @@ $PM_BLOCKED_FOOTER = "
 
 $PM_SHOW =
 "<div style='text-align: center'>
-<table class='table fborder' style='width:95%'>
+<table class='table fborder'>
 <tr>
 	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
 </tr>

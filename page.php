@@ -23,9 +23,11 @@ if(!e_QUERY)
 	require_once(HEADERF);
 //	$tmp = $e107CorePage->listPages();
 	$tmp = $e107CorePage->listBooks();
+	
+//	$text = $tp->parseTemplate("{PAGE_NAVIGATION=book=2}",true);
 	if(is_array($tmp))
 	{
-		$ns->tablerender($tmp['title'], $tmp['text'], 'cpage');
+		$ns->tablerender($tmp['title'], $text, 'cpage');
 		require_once(FOOTERF);
 		exit;
 	}
