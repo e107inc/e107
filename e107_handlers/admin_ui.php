@@ -135,7 +135,7 @@ class e_admin_request
 		// Set current id
 		if(isset($this->_request_qry[$this->_id_key]))
 		{
-			$this->_id = intval($this->_request_qry[$this->_id_key]);
+			$this->_id = preg_replace('/[^\w\-]/', '', $this->_request_qry[$this->_id_key]);
 		}
 
 		$this->_posted_qry =& $_POST; //raw?
@@ -2222,6 +2222,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string SQL order, false to disable order, null is default order
 	 */
 	protected $listOrder = null;
+	
+	/**
+	 * @var string SQL order, false to disable order, null is default order
+	 */
+	protected $sortField = null;
 
 	/**
 	 * Structure same as TreeModel parameters used for building the load() SQL
@@ -4115,7 +4120,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListObserver()
 	{
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
-		$this->addTitle('List'); // FIXME - get captions from dispatch list
+		$this->addTitle(LAN_LIST); // FIXME - get captions from dispatch list
 	}
 
 	/**
@@ -4125,6 +4130,86 @@ class e_admin_ui extends e_admin_controller_ui
 	public function FilterAjaxPage()
 	{
 		return $this->renderAjaxFilterResponse($this->listQry); //listQry will be used only if available
+	}
+	
+	/**
+	 * Inline edit action
+	 * @return void
+	 */
+	public function InlineAjaxPage()
+	{
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		if(!vartrue($_POST['name']) || !vartrue($this->fields[$_POST['name']]))
+		{
+			header($protocol.': 404 Not Found', true, 404);
+			header("Status: 404 Not Found", true, 404);
+			echo 'Field not found'; // FIXME lan
+			return;
+		}
+		
+		$_name = $_POST['name'];
+		$_value = $_POST['value'];
+		$parms = $this->fields[$_name]['readParms'] ? $this->fields[$_name]['readParms'] : '';
+		if(!is_array($parms)) parse_str($parms, $parms);
+		if(vartrue($parms['editable'])) $this->fields[$_name]['inline'] = true;
+		
+		if(vartrue($this->fields[$_name]['noedit']) || vartrue($this->fields[$_name]['nolist']) || !vartrue($this->fields[$_name]['inline']))
+		{
+			header($protocol.': 403 Forbidden', true, 403);
+			header("Status: 403 Forbidden", true, 403);
+			echo 'Forbidden'; // FIXME lan
+			return;
+		}
+		
+		$model = $this->getModel()->load($this->getId());
+		
+		$res = $model->setPostedData($_name, $_value, false)
+			->save(true);
+			
+		if($model->hasError())
+		{
+			// using 400
+			header($protocol.': 400 Bad Request', true, 400);
+			header("Status: 400 Bad Request", true, 400);
+			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
+			$message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
+			if(!empty($message)) echo implode(' ', $message);
+			return;
+		}
+	}
+
+	
+	/**
+	 * Drag-n-Drop sort action
+	 * @return void
+	 */
+	public function SortAjaxPage()
+	{
+		if(!isset($_POST['all']) || empty($_POST['all']))
+		{
+			return;
+		}
+		if(!$this->sortField)
+		{
+			echo 'Missing sort field value';
+			return;
+		}
+		
+		$sql = e107::getDb();
+		$c = ($_GET['from']) ? intval($_GET['from']) : 0;
+		$updated = array();
+		
+		foreach($_POST['all'] as $row)
+		{
+			
+			list($tmp,$id) = explode("-", $row, 2);
+			if($sql->db_Update($this->table, $this->sortField." = ".intval($c)." WHERE ".$this->pid." = ".intval($id)))
+			{
+				$updated[] = $id;
+			}
+			$c++;		
+		}
+		//echo "Updated ".implode(",",$updated);
 	}
 
 	/**

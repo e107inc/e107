@@ -310,6 +310,7 @@ define("LAN_MEDIAMANAGER", "Media Manager");
 define("LAN_MOREINFO","More Information...");
 define("LAN_COMMENTMAN", "Comments Manager");
 
+define("LAN_LIST", "List");
 define("LAN_FILTER", "Filter");
 define("LAN_NO_RECORDS", "No Records Found");
 define("LAN_STATUS", "Status");

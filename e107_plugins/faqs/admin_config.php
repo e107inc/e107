@@ -162,6 +162,7 @@ class faq_main_ui extends e_admin_ui
 		protected $perPage 		= 10;
 		protected $batchDelete	= true;
 		protected $listOrder	= 'faq_order ASC';
+		protected $sortField	= 'faq_order';
 		
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
@@ -175,7 +176,7 @@ class faq_main_ui extends e_admin_ui
             'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
        		'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
-			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => true, 'noedit'=>true),	
+			'faq_order' 			=> array('title'=> LAN_ORDER,			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center','nolist' => false, 'noedit'=>false),	
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);
 		 
@@ -191,27 +192,6 @@ class faq_main_ui extends e_admin_ui
 	
 	public function init()
 	{
-		if(e_AJAX_REQUEST) // ajax link sorting. 
-		{
-			$sql = e107::getDb();
-			$c= ($_GET['from']) ? intval($_GET['from']) : 0;
-			$updated = array();
-			foreach($_POST['all'] as $row)
-			{
-				
-				list($tmp,$id) = explode("-",$row);
-				if($sql->db_Update("faqs","faq_order = ".intval($c)." WHERE faq_id = ".intval($id)))
-				{
-					$updated[] = $id;
-				}
-				$c++;		
-			}
-			
-		//	echo "Updated ".implode(",",$updated);
-			exit;
-		}	
-		
-		
 	}
 	
 	

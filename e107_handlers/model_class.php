@@ -1361,6 +1361,8 @@ class e_model extends e_object
 		}
 		else
 		{
+			if(!is_numeric($id)) $id = "'{$id}'";
+			
 			$res = $sql->db_Select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
