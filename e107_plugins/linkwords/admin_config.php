@@ -22,6 +22,11 @@ require_once(e_ADMIN.'auth.php');
 include_lan(e_PLUGIN.'linkwords/languages/'.e_LANGUAGE.'_admin_linkwords.php');
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
+require_once(e_HANDLER.'message_handler.php');
+$mes = e107::getMessage();
+
+$tp = e107::getParser();
+
 $lw_context_areas = array(
 			'TITLE' => LWLAN_33,
 			'SUMMARY' => LWLAN_34,
@@ -54,16 +59,17 @@ function lw_act_opts($curval)
 		
 $deltest = array_flip($_POST);
 
-if(isset($deltest[LWLAN_17]))
+if(isset($deltest[LAN_DELETE]))
 {
-	$delete_id = intval(str_replace('delete_', '', $deltest[LWLAN_17]));
+	$delete_id = intval(str_replace('delete_', '', $deltest[LAN_DELETE]));
 
 	if ($sql->db_Count('linkwords', '(*)', "WHERE linkword_id = ".$delete_id))
 	{
 		$sql->db_Delete('linkwords', 'linkword_id='.$delete_id);
 		$admin_log->log_event('LINKWD_03','ID: '.$delete_id,'');
 		$e107->ecache->clear_sys(LW_CACHE_TAG);
-		$message = LWLAN_19;
+		//$message = LWLAN_19;
+		$mes->addSuccess(LAN_DELETED);
 	}
 }
 
@@ -116,15 +122,15 @@ if (isset($_POST['saveopts_linkword']))
 
 if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 {
-	if(!$_POST['linkwords_word'] && $_POST['linkwords_url'])
+	if(!$_POST['linkwords_word'] && $_POST['linkwords_url']) // TODO FIX check is not functional
 	{	// Key fields empty
-		$message = LWLAN_1;
+		$mes->addError(LAN_REQUIRED_BLANK);
 	}
 	else
 	{
-		$data['linkword_word'] = $tp -> toDB($_POST['linkword_word']);
-		$data['linkword_link'] = $tp -> toDB($_POST['linkword_link']);
-		$data['linkword_tooltip'] = $tp -> toDB($_POST['linkword_tooltip']);
+		$data['linkword_word'] = $tp->toDB($_POST['linkword_word']);
+		$data['linkword_link'] = $tp->toDB($_POST['linkword_link']);
+		$data['linkword_tooltip'] = $tp->toDB($_POST['linkword_tooltip']);
 		$data['linkword_tip_id'] = intval($_POST['linkword_tip_id']);
 		$data['linkword_active'] = intval($_POST['linkword_active']);
 		$data['linkword_newwindow'] = isset($_POST['linkword_newwindow']) ? 1 : 0;
@@ -132,39 +138,38 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 		$logString = implode('[!br!]',$data);
 		if (isset($_POST['submit_linkword']))
 		{
-			if ($sql -> db_Insert('linkwords', $data))
+			if ($sql->db_Insert('linkwords', $data))
 			{
-				$message = LWLAN_2; // TODO FIX $emessage style
 				$admin_log->log_event('LINKWD_01',$logString,'');
+				$mes->addSuccess(LAN_CREATED);
 			}
 			else
 			{
-				$message = LWLAN_57;
+				//$message = LWLAN_57;
+				$mes->addError(LAN_CREATED_FAILED);
 			}
 		}
 		elseif (isset($_POST['update_linkword']))
 		{
 			$id = intval(varset($_POST['lw_edit_id'],0));
-			if (($id > 0) && $sql -> db_UpdateArray('linkwords', $data, ' WHERE `linkword_id`='.$id))
+			if (($id > 0) && $sql->db_UpdateArray('linkwords', $data, ' WHERE `linkword_id`='.$id))
 			{
-				$message = LWLAN_3; // TODO FIX $emessage style
+				//$message = LWLAN_3;
+				$mes->addSuccess(LAN_UPDATED);
 				$logString = 'ID: '.$id.'[!br!]'.$logString;
 				$admin_log->log_event('LINKWD_02',$logString,'');
 			}
 			else
 			{
-				$message = LWLAN_57;
+				//$message = LWLAN_57;
+				$mes->addError(LAN_UPDATED_FAILED);
 			}
 		}
 		$e107->ecache->clear_sys(LW_CACHE_TAG);
 	}
 }
 
-
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
+$ns->tablerender($caption, $mes->render() . $text);
 
 
 $chkNewWindow = " checked='checked'";			// Open links in new window by default
@@ -271,17 +276,17 @@ if (($action == 'words') || ($action == 'edit'))
 	  	<col style='width: 15%; vertical-align:top; text-align: center;' />
 		</colgroup>	
 	<tr>
-		<td>".LWLAN_61."</td>
+		<td>".LAN_ID."</td>
 		<td>".LWLAN_5."</td>
 		<td>".LWLAN_6."</td>
 		<td>".LWLAN_56."</td>
 		<td>".LWLAN_50."</td>
 		<td>".LWLAN_60."</td>
 		<td>".LWLAN_7."</td>
-		<td>".LWLAN_8."</td>
+		<td>".LAN_OPTIONS."</td>
 	</tr>\n";
 
-	while($row = $sql -> db_Fetch())
+	while($row = $sql->db_Fetch())
 	{
 		$text .= "
 		<tr>
@@ -306,7 +311,7 @@ if (($action == 'words') || ($action == 'edit'))
 	$text .= "</table>";
   }
 
-  $ns -> tablerender(LWLAN_11, $text);
+  $ns->tablerender(LWLAN_11, $mes->render() . $text);
 }
 
 
@@ -362,7 +367,7 @@ if ($action=='options')
 </form>
 </div>\n";
 
-$ns -> tablerender(LWLAN_32, $text);
+$ns -> tablerender(LAN_OPTIONS, $text);
 }
 
 
@@ -381,7 +386,7 @@ function admin_config_adminmenu() // TODO FIX v2 style
   $var['words']['text'] = LWLAN_24;
   $var['words']['link'] = "admin_config.php";
 	
-  $var['options']['text'] = LWLAN_25;
+  $var['options']['text'] = LAN_OPTIONS;
   $var['options']['link'] ="admin_config.php?options";
 	
   show_admin_menu(LWLAN_23, $action, $var);

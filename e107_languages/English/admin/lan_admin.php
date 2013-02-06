@@ -236,6 +236,7 @@ define("LAN_CREATED_FAILED","Creation Unsuccessful");
 define("LAN_DELETED_FAILED","Deletion Unsuccessful");
 define("LAN_UPDATED_FAILED","Update Unsuccessful");
 define("LAN_NO_CHANGE","Nothing updated as no changes were made.");
+define("LAN_REQUIRED_BLANK", "Required field(s) left blank.");
 define("LAN_TRY_AGAIN","Please try again.");
 define("LAN_NEVER", "Never");
 define("LAN_PRUNE", "Prune");
