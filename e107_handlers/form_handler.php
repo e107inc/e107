@@ -208,12 +208,11 @@ class e_form
 		
 		if(vartrue($options['typeahead']))
 		{
-			$options['data-provide'] ="typeahead";	
 			if(vartrue($options['typeahead']) == 'users')
 			{
-				$options['data-source'] = e_BASE."user.php";			
-			}
-			
+				$options['data-source'] = e_BASE."user.php";	
+				$options['class'] .= " e-typeahead";			
+			}		
 		}
 		
 		$options = $this->format_options('text', $name, $options);
@@ -642,6 +641,14 @@ class e_form
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
+		
+		//TODO Auto-calculate $name_fld from $id_fld ie. append "_usersearch" here ?
+		
+		return $this->text($name_fld,$default_name,20, "typeahead=users&readonly=".vartrue($options['readonly']))
+		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# ".$default_id;
+
+
+		/*
 
 		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
 
@@ -657,9 +664,9 @@ class e_form
 				<div class="e-autocomplete"></div>
 		</div>
 		';
-		// FIXME - switch to external JS, jQuery support
+				
 		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
-		//TODO - external JS
+
 		e107::getJs()->footerInline("
 	            //autocomplete fields
 	             \$\$('input[name={$name_fld}]').each(function(el) {
@@ -695,7 +702,7 @@ class e_form
 				});
 		");
 		return $ret;
-
+		*/
 	}
 	
 	
@@ -1045,6 +1052,7 @@ class e_form
 			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 			if(!is_array($selected)) $selected = explode(",",$selected);
 		}
+		
 		$text = $this->select_open($name, $options)."\n";
 
 		if(isset($options['default']))

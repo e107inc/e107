@@ -137,7 +137,11 @@ class pm_extended extends private_message
 		$tpl_file = THEME.'pm_template.php';
 		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
-		setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+		
+		$sc = e107::getScBatch('pm',TRUE);
+		$sc->setVars($pm_info);
+		
 		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
 		$this->e107->tp->parseTemplate($PM_SEND_PM, TRUE).
@@ -155,35 +159,39 @@ class pm_extended extends private_message
 
 	function show_inbox($start = 0)
 	{
+		$tp = e107::getParser();
+		
 		$tpl_file = THEME.'pm_template.php';
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		
 		$pm_blocks = $this->block_get();
 		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
+		
 	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
 		
 		$sc = e107::getScBatch('pm',TRUE);
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		$txt .= $this->e107->tp->parseTemplate($PM_INBOX_HEADER, true);
+		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true);
+		
 		if($pmlist['total_messages'])
 		{
 			foreach($pmlist['messages'] as $rec)
 			{
 				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
-			//	setScVar('pm_handler_shortcodes','pmInfo', $rec);
 				$sc->setVars($rec);	
-				
-				
-				$txt .= $this->e107->tp->parseTemplate($PM_INBOX_TABLE, true);
+				$txt .= $tp->parseTemplate($PM_INBOX_TABLE, true);
 			}
 		}
 		else
 		{
-			$txt .= $this->e107->tp->parseTemplate($PM_INBOX_EMPTY, true);
+			$txt .= $tp->parseTemplate($PM_INBOX_EMPTY, true);
 		}
-		$txt .= $this->e107->tp->parseTemplate($PM_INBOX_FOOTER, true);
+		
+		$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true);
 		$txt .= "</form>";
+		
 		return $txt;
 	}
 
@@ -324,6 +332,9 @@ class pm_extended extends private_message
 	 */
 	function post_pm()
 	{
+		print_a($_POST);
+		
+		
 		if(!check_class($this->pmPrefs['pm_class']))
 		{
 			return LAN_PM_12;

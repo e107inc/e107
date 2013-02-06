@@ -26,11 +26,12 @@ if(e_AJAX_REQUEST)
 	if(vartrue($_GET['q']))
 	{
 		$q = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
-		if($sql->select("user", "user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT 15"))
+		if($sql->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT 15"))
 		{
 			while($row = $sql->db_Fetch())
 			{
-				$data[] = $row['user_name'];
+				$id = $row['user_id'];
+				$data[$id] = $row['user_name'];
 			}
 			
 			if(count($data))
