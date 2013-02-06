@@ -95,18 +95,21 @@ $PM_SEND_PM = "<div style='text-align: center'>
 ";
 
 $PM_INBOX_HEADER = "
-<table class='table table-striped fborder>
+<table class='table table-striped fborder'>
+<thead>
 <tr>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
-	<td class='fcaption' style='width:22%'>".LAN_PM_31."</td>
-	<td class='fcaption' style='width:30%'>".LAN_PM_32."</td>
-	<td class='fcaption' style='width:8%'>&nbsp;</td>
+	<th class='fcaption' style='width:1%'>&nbsp;</th>
+	<th class='fcaption' style='width:1%'>&nbsp;</th>
+	<th class='fcaption' style='width:38%'>".LAN_PM_5."</th>
+	<th class='fcaption' style='width:22%'>".LAN_PM_31."</th>
+	<th class='fcaption' style='width:30%'>".LAN_PM_32."</th>
+	<th class='fcaption' style='width:8%'>&nbsp;</th>
 </tr>
+</thead>
 ";
 
 $PM_INBOX_TABLE = "
+<tbody>
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
@@ -131,6 +134,7 @@ $PM_INBOX_FOOTER = "
 	</td>
 </tr>
 {PM_NEXTPREV=inbox}
+</tbody>
 </table>
 ";
 
