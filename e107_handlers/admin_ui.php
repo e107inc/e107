@@ -4209,7 +4209,7 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$updated[] = $id;
 			}
-			echo($sql->getLastQuery()."\n");
+			// echo($sql->getLastQuery()."\n");
 			$c++;		
 		}
 		//echo "Updated ".implode(",",$updated);
