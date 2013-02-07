@@ -318,6 +318,11 @@ class signup_shortcodes extends e_shortcode
 		
 		  $done_heading = FALSE;
 		  
+		  if(!count($extList))
+		  {
+			continue;	
+		  }
+		  
 		  foreach($extList as $ext)
 		  {
 		  	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
