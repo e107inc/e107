@@ -283,11 +283,11 @@ class page_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> 'ID',			'width'=>'5%', 			'forced'=> TRUE),
-            'page_chapter' 		=> array('title'=> 'Book/Chapter', 		'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true),
+            'page_chapter' 		=> array('title'=> 'Book/Chapter', 		'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
             'page_title'	   	=> array('title'=> LAN_TITLE, 		'type' => 'text', 		'width'=>'25%','readParms'=>'link={e_BASE}page.php?[id]&dialog=1'),
 			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 		'width' => 'auto','nolist'=>true),
 			
-			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 		'width' => 'auto','filter' => true, 'batch'=>true),
+			'page_template' 	=> array('title'=> 'Template', 		'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
          	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'user', 		'width' => 'auto', 'thclass' => 'left'),
 			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'width' => 'auto'),
             'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 	'width' => 'auto',  'filter' => true, 'batch' => true),
@@ -305,6 +305,7 @@ class page_admin_ui extends e_admin_ui
 
 		protected $books = array();
 		protected $cats = array();
+		protected $templates = array();
 
 		function init()
 		{
@@ -327,7 +328,8 @@ class page_admin_ui extends e_admin_ui
 			}
 						
 			
-			
+			$this->templates = e107::getLayouts('', 'page', 'front', '', false, false); 
+			$this->fields['page_template']['writeParms'] = $this->templates;
 			
 			
 			$sql = e107::getDb();
@@ -529,13 +531,13 @@ class page_admin_ui extends e_admin_ui
 				
 				
 				// fixed - last parameter (allinfo) should be false as getLayout method is returning non-usable formatted array
-				$templates = e107::getLayouts('', 'page', 'front', '', false, false); 
+				
 			//	$templates['menu'] = "Sidebar"; // ie. a MENU item. //TODO 
 	
 				$text .= "
 					<tr>
 						<td>Template</td>
-						<td>". $frm->selectbox('page_template',$templates,$row['page_template'])  ."</td>
+						<td>". $frm->selectbox('page_template',$this->templates,$row['page_template'])  ."</td>
 					</tr>
 				";
 				

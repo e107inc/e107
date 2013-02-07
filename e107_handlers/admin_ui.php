@@ -4143,12 +4143,14 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function InlineAjaxPage()
 	{
+		$this->logajax('Field not found');
 		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 		if(!vartrue($_POST['name']) || !vartrue($this->fields[$_POST['name']]))
 		{
 			header($protocol.': 404 Not Found', true, 404);
 			header("Status: 404 Not Found", true, 404);
 			echo 'Field not found'; // FIXME lan
+			$this->logajax('Field not found');
 			return;
 		}
 		
@@ -4163,9 +4165,11 @@ class e_admin_ui extends e_admin_controller_ui
 			header($protocol.': 403 Forbidden', true, 403);
 			header("Status: 403 Forbidden", true, 403);
 			echo 'Forbidden'; // FIXME lan
+			$this->logajax("Forbidden");
 			return;
 		}
 		
+		$this->logajax("OK?");
 		$model = $this->getModel()->load($this->getId());
 		
 		$res = $model->setPostedData($_name, $_value, false)
@@ -4176,6 +4180,7 @@ class e_admin_ui extends e_admin_controller_ui
 			// using 400
 			header($protocol.': 400 Bad Request', true, 400);
 			header("Status: 400 Bad Request", true, 400);
+			$this->logajax("Bad Request");
 			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
 			$message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
 			if(!empty($message)) echo implode(' ', $message);
@@ -4183,6 +4188,17 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 	}
 
+	// Temporary - but useful. :-)
+	public function logajax($message)
+	{
+		$message = date('r')."\n".$message."\n";
+		$message .= print_r($_POST,true);
+		$message .= print_r($_GET,true);
+		$message .= "---------------";
+		
+		file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);
+	}
+	
 	
 	/**
 	 * Drag-n-Drop sort action
