@@ -20,7 +20,7 @@
 define("WMLAN_00","Welcome Messages");
 define("WMLAN_01","Create New Message");
 define("WMLAN_02","Message");
-define("WMLAN_03","Visibility");
+//define("WMLAN_03","Visibility");
 define("WMLAN_04","Message Text");
 
 define("WMLAN_05","Enclose");
