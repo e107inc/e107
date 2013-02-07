@@ -1846,6 +1846,8 @@ class e_form
 			$parms = $attributes['readParms'];
 		}
 	
+		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
+		
 		$tp = e107::getParser();
 		switch($field) // special fields
 		{
@@ -1934,7 +1936,7 @@ class e_form
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
 				
-				if(vartrue($attributes['inline'])) $parms['editable'] = true;
+				
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
@@ -1973,17 +1975,19 @@ class e_form
 			case 'comma':
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
-				
+
 				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
 				{
-					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
-					break;
+					//FIXME return no value at all when 'editable=1' is a readParm. See FAQs templates. 
+				//	$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
+				//	break; 
 				}
-
+				
 				// NEW - multiple (array values) support
 				// FIXME - add support for multi-level arrays (option groups)
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				$wparms = $attributes['writeParms'];
+				
 				if(!is_array(varset($wparms['__options']))) parse_str($wparms['__options'], $wparms['__options']);
 
 				$opts = $wparms['__options'];
@@ -2005,8 +2009,17 @@ class e_form
 					if(isset($wparms[$value])) $ret = $wparms[$value];
 					$value = $ret;
 				}
+	
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 				
+				// Inline Editing. //FIXME - doesn't save data
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$source = str_replace('"',"'",json_encode($wparms));
+					$value = "<a class='e-tip e-editable' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+				}
+								
 				// return ;
 			break;
 
@@ -2022,8 +2035,6 @@ class e_form
 			break;
 
 			case 'text':
-				// attribute alias
-				if(vartrue($attributes['inline'])) $parms['editable'] = true;
 				
 				if(vartrue($parms['truncate']))
 				{
@@ -2048,9 +2059,8 @@ class e_form
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a class='e-tip e-editable' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&action=inline&id={$id}&ajax_used=1' href='#'>".$value."</a>";
+					$value = "<a class='e-tip e-editable' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
 				}
-				
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 			break;
