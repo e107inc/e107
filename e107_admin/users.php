@@ -1397,10 +1397,11 @@ class users_admin_ui extends e_admin_ui
 			$tmp['data']['gen_user_id'] = varset($_POST['new_calc_pfx'],0);
 			$tmp['data']['gen_chardata'] = varset($_POST['new_calc_img']);
 			$tmp['data']['gen_intdata'] = varset($_POST['new_calc_lower']);
+
+			e107::getMessage()->addSuccess(LAN_UPDATED);
 		}
 		
 		e107::getCache()->clear_sys('nomd5_user_ranks');
-		e107::getMessage()->add(USRLAN_217,E_MESSAGE_SUCCESS);
 	}
 
 	function RanksDeleteTrigger($posted)
@@ -1410,11 +1411,11 @@ class users_admin_ui extends e_admin_ui
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 		if (e107::getDb()->delete('generic',"gen_id='{$rankId}'"))
 		{
-			e107::getMessage()->add(USRLAN_218,E_MESSAGE_SUCCESS);
+			e107::getMessage()->addSucces(LAN_DELETED);
 		}
 		else
 		{
-			e107::getMessage()->add(USRLAN_218,E_MESSAGE_FAIL);
+			e107::getMessage()->addError(LAN_DELETED_FAILED);
 		}
 	}
 
@@ -1519,7 +1520,7 @@ class users_admin_ui extends e_admin_ui
 		
 		$text .= '</table>
 		<div class="buttons-bar center">
-		'.$frm->admin_trigger('update', 'no-value', 'update', USRLAN_215).'
+		'.$frm->admin_trigger('update', 'no-value', 'update', LAN_UPDATE).'
 		</div>
 		</form>';
 		

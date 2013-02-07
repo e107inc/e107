@@ -220,10 +220,10 @@ define('USRLAN_211', 'Rank Image');
 define('USRLAN_212', 'User Rank'); 
 // define('USRLAN_213', 'Are you sure you want to delete this rank'); // use LAN_CONFIRMDEL
 define('USRLAN_214', 'Add New Rank');
-define('USRLAN_215', 'Update Ranks');
+//define('USRLAN_215', 'Update Ranks');
 define('USRLAN_216', '--select image--');
-define('USRLAN_217', 'User Ranks Updated');
-define('USRLAN_218', 'Deletion of User Rank');
+//define('USRLAN_217', 'User Ranks Updated');
+//define('USRLAN_218', 'Deletion of User Rank');
 
 define('USRLAN_219', 'Older than 30 days');
 
