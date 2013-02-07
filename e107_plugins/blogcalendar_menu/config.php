@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Plugin Administration - Blog calendar menu
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/config.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 $eplug_admin = TRUE;
@@ -25,13 +23,18 @@ if (!getperms("1"))
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-	
+
+require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."message_handler.php");
+$frm = e107::getForm();
+$mes = e107::getMessage();
+
 if (isset($_POST['update_menu'])) 
 {
 	$temp = array();
 	while (list($key, $value) = each($_POST)) 
 	{
-		if ($value != BLOGCAL_CONF3) 
+		if ($value != LAN_UPDATE) // ???
 		{
 			$temp[$key] = $value;
 		}
@@ -40,52 +43,56 @@ if (isset($_POST['update_menu']))
 	{
 		save_prefs();
 	}
-	$ns->tablerender("", "<div style='text-align:center'><b>".BLOGCAL_CONF5."</b></div>");
 }
-	
-$text = "<div style='text-align:center'>
+
+$ns->tablerender($caption, $mes->render() . $text);
+
+$text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
-	<table style='width:85%' class='fborder' >
+	<table class='table adminform' >
+	<colgroup span='2'>
+    	<col class='col-label' />
+    	<col class='col-control' />
+    </colgroup>
 	 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".BLOGCAL_CONF1.": </td>
-	<td style='width:60%' class='forumheader3'>
-	<select class='tbox' name='blogcal_mpr'>";
+		<td>".BLOGCAL_CONF1.": </td>
+		<td>
+			<select class='tbox' name='blogcal_mpr'>";
 	
-// if the nr of months per row is undefined, default to 3
-$months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:
-"3";
-for($i = 1; $i <= 12; $i++) {
-	$text .= "<option value='$i'";
-	$text .= $months_per_row == $i?"selected":
-	"";
-	$text .= ">$i</option>";
-}
-	
-$text .= "</select>
-	</td>
+			// if the nr of months per row is undefined, default to 3
+			$months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:
+			"3";
+			for($i = 1; $i <= 12; $i++) {
+				$text .= "<option value='$i'";
+				$text .= $months_per_row == $i?"selected":
+				"";
+				$text .= ">$i</option>";
+			}
+				
+			$text .= "</select>
+		</td>
 	</tr>
 	 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".BLOGCAL_CONF2.": </td>
-	<td style='width:60%' class='forumheader3'>
-	<input class='tbox' type='text' name='blogcal_padding' size='20' value='";
-// if the cellpadding isn't defined
-$padding = $pref['blogcal_padding']?$pref['blogcal_padding']:
-"2";
-$text .= $padding;
-$text .= "' maxlength='100' />
-	</td>
-	</tr>
-	 
-	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'>
-	<input class='button' type='submit' name='update_menu' value='".BLOGCAL_CONF3."' />
-	</td>
+		<td>".BLOGCAL_CONF2.": </td>
+		<td><input class='tbox' type='text' name='blogcal_padding' size='20' value='";
+		// if the cellpadding isn't defined
+		$padding = $pref['blogcal_padding']?$pref['blogcal_padding']:
+		"2";
+		$text .= $padding;
+		$text .= "' maxlength='100' />
+		</td>
 	</tr>
 	</table>
+	
+	<div class='buttons-bar center'>
+		".$frm->admin_button('update_menu', LAN_UPDATE, 'update')." 
+
+	</div>
 	</form>
-	</div>";
+";
+
 $ns->tablerender(BLOGCAL_CONF4, $text);
 	
 require_once(e_ADMIN."footer.php");
