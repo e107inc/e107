@@ -25,14 +25,15 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'wmessage';
 
-
 require_once("auth.php");
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
+require_once(e_HANDLER.'message_handler.php');
 
 $rs = new form;
-$frm = new e_form;
+$frm = e107::getForm();
+$mes = e107::getMessage();
 
 vartrue($action) == '';
 if (e_QUERY) 
@@ -55,7 +56,15 @@ if (isset($_POST['wm_update']))
 	$wm_title = $tp->toDB($_POST['wm_caption']);
 	$wmId = intval($_POST['wm_id']);
 	welcome_adminlog('02', $wmId, $wm_title);
-	$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	//$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	if ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	{
+		$mes->addSuccess(LAN_UPDATED);
+	}
+	else 
+	{
+		$mes->addError(LAN_UPDATED_FAILED); // TODO ? $sql show error?
+	}
 }
 
 if (isset($_POST['wm_insert'])) 
@@ -63,7 +72,15 @@ if (isset($_POST['wm_insert']))
 	$wmtext = $tp->toDB($_POST['data']);
 	$wmtitle = $tp->toDB($_POST['wm_caption']);
 	welcome_adminlog('01', 0, $wmtitle);
-	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
+	//$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
+	if ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' "))
+	{
+		$mes->addSuccess(LAN_CREATED);
+	}
+	else
+	{
+		$mes->addError(LAN_CREATED_FAILED); // TODO ? $sql show error?
+	}
 }
 
 if (isset($_POST['updateoptions'])) 
@@ -82,7 +99,10 @@ if (isset($_POST['updateoptions']))
 	{
 		save_prefs();
 		welcome_adminlog('04', 0, $pref['wm_enclose'].', '.$pref['wmessage_sc']);
-		$message = LAN_SETSAVED;
+	}
+	else 
+	{
+		$mes->addInfo(LAN_NOCHANGE_NOTSAVED);
 	}
 }
 
@@ -90,13 +110,25 @@ if (isset($_POST['main_delete']))
 {
 	$del_id = array_keys($_POST['main_delete']);
 	welcome_adminlog('03', $wmId, '');
-	$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
+	//$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
+	if ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' "))
+	{
+		$mes->addSuccess(LAN_DELETED);
+	}
+	else 
+	{
+		$mes->addError(LAN_DELETED_FAILED); // TODO ? $sql show error?
+	}
 }
 
+/*
 if (isset($message)) 
 {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
+*/
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 // Show Existing -------
 if ($action == "main" || $action == "") 
@@ -105,19 +137,19 @@ if ($action == "main" || $action == "")
 	{
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
-		$text .= "<div style='text-align:center'>
+		$text .= "
             <table class='table adminlist'>
 			<colgroup>
 				<col style='width:5%' />
-				<col style='width:60%' />
-				<col style='width:20%' />
+				<col style='width:70%' />
+				<col style='width:10%' />
 				<col style='width:10%' />
    			</colgroup>
 			<thead>
 			<tr>
-				<th>ID</th>
+				<th>".LAN_ID."</th>
 				<th>".WMLAN_02."</th>
-				<th class='center'>".WMLAN_03."</th>
+				<th class='center'>".LAN_VISIBILITY."</th>
 				<th class='center'>".LAN_OPTIONS."</th>
 			</tr>
 			</thead>
@@ -137,12 +169,13 @@ if ($action == "main" || $action == "")
 			</tr>";
 		}
 
-		$text .= "</tbody></table></div>";
+		$text .= "</tbody></table>";
 		$text .= $rs->form_close();
 	} else {
-		$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
+		//$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
+		$mes->addInfo(WMLAN_09);
 	}
-	$ns->tablerender(WMLAN_00, $text);
+	$ns->tablerender(WMLAN_00, $mes->render() . $text);
 }
 
 // Create and Edit
@@ -156,7 +189,6 @@ if ($action == "create" || $action == "edit")
 	}
 
 	$text = "
-		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'  id='wmform'>
 		<fieldset id='code-wmessage-create'>
         <table class='table adminform'>
@@ -186,7 +218,7 @@ if ($action == "create" || $action == "edit")
 	$text .= "
 		</td>
 		</tr>
-		<tr><td>".WMLAN_03."</td>
+		<tr><td>".LAN_VISIBILITY."</td>
 		<td>".r_userclass("wm_active", vartrue($row['gen_intdata']), "off", "public,guest,nobody,member,admin,classes")."</td></tr>
 		</table>";
 
@@ -199,21 +231,23 @@ if ($action == "create" || $action == "edit")
 	}
 	else
 	{
-    	$text .= $frm->admin_button('wm_insert', LAN_CREATE);
+    	$text .= $frm->admin_button('wm_insert', LAN_CREATE, 'create');
 	}
 
 	$text .= "<input type='hidden' name='wm_id' value='".$id."' />";
 	$text .= "</div>
 		</fieldset>
 		</form>
-		</div>";
-	$ns->tablerender(WMLAN_01, $text);
+		";
+	$ns->tablerender(WMLAN_01, $mes->render() . $text);
 }
 
 
 if ($action == "opt") {
-	global $pref, $ns;
-	$text = "<div style='text-align:center'>
+	$pref = e107::getPref();
+	$ns = e107::getRender();
+	
+	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<fieldset id='code-wmessage-options'>
         <table class='table adminform'>
@@ -240,16 +274,14 @@ if ($action == "opt") {
 		</tr>
 		</table>
 
-		<div class='buttons-bar center'>";
-
-		$text .= $frm->admin_button('updateoptions', LAN_SAVE);
-        $text .= "
+		<div class='buttons-bar center'>
+			".$text .= $frm->admin_button('updateoptions', LAN_SAVE)."
 		</div>
 		</fieldset>
 		</form>
-		</div>";
+		";
 
-	$ns->tablerender(WMLAN_00.": ".LAN_PREFS, $text);
+	$ns->tablerender(WMLAN_00.": ".LAN_PREFS, $mes->render() . $text);
 
 
 }
