@@ -2,21 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/languages/admin/English.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
+*/
 
-define("CLOCK_AD_L1", "Clock menu configuration saved");
+//define("CLOCK_AD_L1", "Clock menu configuration saved");
 define("CLOCK_AD_L2", "Caption");
-define("CLOCK_AD_L3", "Update Menu Settings");
+//define("CLOCK_AD_L3", "Update Menu Settings");
 define("CLOCK_AD_L4", "Clock Menu Config");
 define("CLOCK_AD_L5", "AM/PM");
 define("CLOCK_AD_L6", "If checked, you will display time with US format (0-12 AM/PM format). Unchecked you will display a 'military' format 0-24 format");
