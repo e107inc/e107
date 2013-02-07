@@ -27,10 +27,15 @@ if(vartrue($_GET['iframe']) == 1)
 
 $e_sub_cat = 'main';
 
-if($pref['adminstyle'] == 'infopanel')
+if(strpos($pref['adminstyle'], 'infopanel') === 0)
 {
 	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
-	$adp = new adminstyle_infopanel;	
+	$_class = 'adminstyle_'.$pref['adminstyle'];
+	if(class_exists($_class, false))
+	{
+		$adp = new $_class;	
+	}
+	else $adp = new adminstyle_infopanel;	
 }
 
 
