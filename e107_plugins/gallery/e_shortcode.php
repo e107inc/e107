@@ -134,7 +134,7 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_nextprev($parm='')
 	{
 		// we passs both fields, the router will convert one of them to 'cat' variable, based on the current URL config
-		$url = 'url::gallery/index/list?media_cat_category='.$this->curCat.'--AMP--media_cat_title='.$this->var['media_cat_title'].'--AMP--frm=--FROM--::full=1';
+		$url = 'route::gallery/index/list?media_cat_category='.$this->curCat.'--AMP--media_cat_sef='.$this->var['media_cat_sef'].'--AMP--frm=--FROM--::full=1';
 		$parm = 'total='.$this->total.'&amount='.$this->amount.'&current='.$this->from.'&url='.rawurlencode($url); // .'&url='.$url;
 		$text .= e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
 		return $text;	
