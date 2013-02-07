@@ -195,7 +195,7 @@ $(document).ready(function()
 		// Check-All checkbox toggle
 		$("input.toggle-all").click(function(evt) {
 			var selector = 'input[type="checkbox"].checkbox';
-			if($(this).val().startsWith('jstarget:')) {
+			if($(this).val().indexOf('jstarget:') === 0) {
 				selector = 'input[type="checkbox"][name^="' + $(this).val().split(/jstarget\:/)[1] + '"]';
 			}
 			
