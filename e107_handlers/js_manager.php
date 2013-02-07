@@ -224,6 +224,13 @@ class e_jsmanager
 	{
 		// Try to auto-detect runtime location
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
+		
+		$customJqueryUrls = e107::getPref('library-jquery-urls');
+		
+		if(vartrue($customJqueryUrls) && $this->_in_admin === false)
+		{
+			$this->_libraries['jquery'] = explode("\n", $customJqueryUrls);	
+		}
 
 		// Try to load browser cache id from core preferences
 		//$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
@@ -234,13 +241,13 @@ class e_jsmanager
 	//	$core_libs = e107::getPref('e_jslib_core');
 		$this->_core_prefs = e107::getPref('e_jslib_core');
 		$core = array();
-		
+
 		if(is_array($this->_core_prefs))
 		{
 			foreach($this->_core_prefs as $id=>$vis)
 			{
 				$this->_dependence = $id;
-			
+
 				if(!$this->libDisabled($id,$vis))
 				{
 				 	//echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
