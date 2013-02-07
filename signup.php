@@ -177,7 +177,7 @@ if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 
 		$text .="<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
-		$text .= "<input class='button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
+		$text .= "<input class='btn button' type='submit' name='submit_resend' value=\"".LAN_SIGNUP_47."\" />";  // resend activation email.
 		$text .= "</td>
 		</tr>
 		</table>
@@ -287,9 +287,7 @@ if(getperms('0')) // allow main admin to view signup page for design/testing.
 {
 	//$mes = e107::getMessage();
 	//$mes->debug("You are currently logged in.");
-	 $SIGNUP_BEGIN = "<div class='s-message'>
-	 <div class='error'> You are currently logged in.
-	 </div></div>". $SIGNUP_BEGIN;		
+	 $SIGNUP_BEGIN = "<div class='alert alert-block alert-error'> You are currently logged in.</div>". $SIGNUP_BEGIN;		
 }
 
 
