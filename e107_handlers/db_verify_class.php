@@ -742,6 +742,20 @@ class db_verify
 
 	function getFields($data, $print = false)
 	{
+		
+		// Clean $data and add ` ` arond field-names - prevents issues when field == field-type. 
+		$tmp = explode("\n",$data);
+		$newline = array();
+		
+		foreach($tmp as $line)
+		{
+			$line = trim($line);
+			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*)/","`$1`", $line);				
+		}
+		
+		$data = implode("\n",$newline);
+		// --------------------
+		
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
