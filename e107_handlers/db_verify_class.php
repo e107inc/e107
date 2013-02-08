@@ -267,7 +267,6 @@ class db_verify
 					$this->results[$tbl][$field]['_valid'] = $info;
 					$this->results[$tbl][$field]['_invalid'] = $sqlFieldData[$field];
 					$this->results[$tbl][$field]['_file'] = $selection;
-					 
 				}
 				
 				
@@ -278,7 +277,6 @@ class db_verify
 			// Check Index data
 			foreach($fileIndexData as $field => $info )
 			{
-				  					
 				if(!is_array($sqlIndexData[$field])) // missing index. 
 				{
 					// print_a($info);
@@ -742,12 +740,12 @@ class db_verify
 
 
 
-	function getFields($data)
+	function getFields($data, $print = false)
 	{
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 	
 	//	echo $regex."<br /><br />";
 	
@@ -765,7 +763,7 @@ class db_verify
 		
 		$ret = array();
 		
-	
+	 if($print) var_dump($regex, $m);
 			
 		foreach($m[1] as $k=>$val)
 		{
@@ -782,13 +780,15 @@ class db_verify
 	}
 	
 	
-	function getIndex($data)
+	function getIndex($data, $print = false)
 	{
 		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w,`]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
 		
 		$ret = array();
+		
+		if($print) var_dump($regex, $m);
 		
 		// Standard Detection Method. 
 		foreach($m[3] as $k=>$val)
