@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English_admin_poll.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 //define("POLL_ADLAN01", "Poll");
@@ -22,7 +18,7 @@ define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add 
 define("POLL_ADLAN05", "Main Poll: ");
 define("POLL_ADLAN06", "Forum Thread: ");
 define("POLL_ADLAN07", "Type");
-define("POLL_ADLAN08", "Poll deleted");
+//define("POLL_ADLAN08", "Poll deleted");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
@@ -73,7 +69,7 @@ define("POLLAN_43", "You do not have the required permissions to vote in this po
 define("POLLAN_44", "Delete this poll?");
 */
 
-define("POLLAN_46", "Field(s) left blank");
+//define("POLLAN_46", "Field(s) left blank");
 
 // Log messages
 define('LAN_AL_POLL_01','Poll deleted');
