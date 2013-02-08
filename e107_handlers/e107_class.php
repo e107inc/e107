@@ -1424,7 +1424,7 @@ class e107
 	
 	/**
 	 * Retrieve plugin handler singleton object
-	 * @return e_ranks
+	 * @return e107plugin
 	 */
 	public static function getPlugin()
 	{

@@ -182,7 +182,7 @@ class e107plugin
 				$curVal = floatval($version);
 				$fileVal = floatval($data['@attributes']['version']);
 				
-				if($ret = $this->execute_function($path, 'upgrade', 'required')) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
+				if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
 				{
 					if($mode == 'boolean')
 					{
@@ -2109,9 +2109,10 @@ class e107plugin
 	 * @param object $path [unused]
 	 * @param object $what install|uninstall|upgrade
 	 * @param object $when pre|post
+	 * @param array $callbackData callback method arguments
 	 * @return boolean FALSE
 	 */
-	function execute_function($path = null, $what = '', $when = '')
+	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
 		$mes = eMessage::getInstance();
 		
@@ -2157,6 +2158,7 @@ class e107plugin
 					{
 						$mes->add("Executing setup function <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
 					}
+					if(null !== $callbackData) return call_user_func_array(array($obj, $method_name), $callbackData);
 					return call_user_func(array($obj, $method_name), $this);
 				}
 				else
