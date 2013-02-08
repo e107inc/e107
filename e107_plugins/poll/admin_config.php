@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 require_once("../../class2.php");
@@ -27,6 +23,7 @@ include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."message_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 
 if(isset($_POST)) 
@@ -36,6 +33,8 @@ if(isset($_POST))
 
 $rs = new form;
 $poll = new poll;
+$frm = e107::getForm();
+$mes = e107::getMessage();
 
 if (isset($_POST['reset']))
 {
@@ -43,12 +42,13 @@ if (isset($_POST['reset']))
 	define("RESET", TRUE);
 } 
 
-
-	$emessage = eMessage::getInstance();
+//$emessage = eMessage::getInstance();
 	
 if (varset($_POST['delete'])) 
 {
-	$message = $poll->delete_poll(key($_POST['delete']));
+	//$message = $poll->delete_poll(key($_POST['delete']));
+	$poll->delete_poll(key($_POST['delete'])); // TODO check security?
+	$mes->addSuccess(LAN_DELETED);
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 	$_GET['mode']='list';
 }
@@ -59,12 +59,15 @@ if (isset($_POST['submit']))
 	if($_POST['poll_title'])
 	{
 		define("POLLID",$_POST['poll_id']);
-		$emessage->add($poll -> submit_poll(), E_MESSAGE_SUCCESS);
+		//$emessage->add($poll -> submit_poll(), E_MESSAGE_SUCCESS);
+		$poll -> submit_poll();
+		$mes->addSuccess(LAN_CREATED);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 	}
 	else
 	{
-		$emessage->add(POLLAN_46, E_MESSAGE_SUCCESS);
+		//$emessage->add(POLLAN_46, E_MESSAGE_SUCCESS);
+		$mes->addError(LAN_REQUIRED_BLANK);
 	}
 	$_GET['mode']='list';
 
@@ -88,16 +91,17 @@ if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST[
 			
 		$poll_total = $sql->db_Select("polls");
 		$text = $poll -> renderPollForm();
-		$ns->tablerender(POLLAN_MENU_CAPTION." :: ".POLLAN_2, $text);
+		$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_2, $mes->render() . $text);
 }
 
 
-
+/*
 if (isset($message))
 {
 	$emessage->add($message, E_MESSAGE_SUCCESS);
 
 }
+*/
 
 if(!varset($_POST['edit']) && ($_GET['mode']=="list" || !$_GET['mode']))
 {
@@ -159,8 +163,8 @@ function poll_list()
 	$sql = e107::getDb();
 	$ns = e107::getRender();
 	$tp = e107::getParser();
-	$frm = new e_form(true);
-	
+	$frm = e107::getForm();
+	$mes = e107::getMessage();
 	
 	global $user_pref;
 	if(isset($_POST['etrigger_ecolumns'])) //TODO User 
@@ -173,7 +177,7 @@ function poll_list()
 
 	//TODO Add more column options. 
 	$fields = array(
-			'poll_id'				=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE),
+			'poll_id'				=> array('title'=> LAN_ID, 'width'=>'5%', 'forced'=> TRUE),
             'poll_title'	   		=> array('title'=> POLLAN_3, 'width'=>'auto'),
 			'poll_options' 			=> array('title'=> POLLAN_4, 'type' => 'text', 'width' => 'auto', 'thclass' => 'center' ),	 // No real vetting
 		//	'poll_start_datestamp' 	=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
@@ -189,7 +193,7 @@ function poll_list()
 	
 	
 	
-	$text = "<div style='text-align:center'><div>
+	$text = "
 		<form action='".e_SELF."' method='post' id='del_poll'>";
 	
 	if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
@@ -201,9 +205,10 @@ function poll_list()
 			
 		while ($row = $sql->db_Fetch())
 		{
-			extract($row);
+			extract($row); // FIXME
 			
-			$text .= "<tr>
+			$text .= "
+			<tr>
 				<td>$poll_id</td>";
 				$text .= (in_array("poll_title",$fieldpref)) ? "<td class='left'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>" : "";              
                 $text .= (in_array("poll_options",$fieldpref)) ? "<td class='left'>".(str_replace(chr(1),"<br />",$poll_options))."</td>" : "";
@@ -215,19 +220,20 @@ function poll_list()
 					<input type='image' name='edit[{$poll_id}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
 					<input type='image' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</td>
-				</tr>";
+			</tr>";
 		}
 		$text .= "</tbody></table>";
 	}
 	else 
 	{
-	  $text .= "<div style='text-align:center'>".POLLAN_7."</div>";
+		//$text .= "<div style='text-align:center'>".POLLAN_7."</div>";
+		$mes->addInfo(POLLAN_7);
 	}
-	$text .= "</form></div></div>";
+	$text .= "</form>";
 	
-	$emessage = eMessage::getInstance();
+	//$emessage = eMessage::getInstance();
 	
-	$ns->tablerender(POLLAN_MENU_CAPTION." :: ".POLLAN_1,$emessage->render(). $text);
+	$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_1, $mes->render(). $text);
 }
 
 

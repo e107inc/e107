@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -67,8 +63,8 @@ class poll
 			{
 				admin_purge_related("poll", $existing);
 			}
-			$admin_log->log_event('POLL_01',POLL_ADLAN08.': '.$existing,'');
-			return POLL_ADLAN08;
+			$admin_log->log_event('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
+			//return POLL_ADLAN08;
 		}
 	}
 
@@ -126,7 +122,7 @@ class poll
 			}
 
 			$admin_log->log_event('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
-			$message = POLLAN_45;
+			//$message = POLLAN_45;
 		} 
 		else 
 		{
@@ -629,13 +625,13 @@ class poll
 			
 			if (POLLACTION == 'edit')
 			{
-				$text .= $frm->admin_button('submit',POLLAN_22,'submit')."
+				$text .= $frm->admin_button('submit', LAN_UPDATE, 'update')."
 				
 				<input type='hidden' name='poll_id' value='".intval($_POST['poll_id'])."' /> ";
 			}
 			else
 			{
-				$text .= $frm->admin_button('submit','no-value','submit',POLLAN_23);
+				$text .= $frm->admin_button('submit','no-value','submit', LAN_CREATE);
 			//	$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_23."' /> ";
 			}
 		} 
