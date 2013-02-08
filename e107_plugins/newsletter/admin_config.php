@@ -2,17 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Administration - Site Maintenance
+ * Plugin - Newsletter
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+ * $URL$
+ * $Id$
 */
 require_once('../../class2.php');
 if (!getperms('P')) 
@@ -24,6 +21,9 @@ $e_sub_cat = 'newsletter';
 require_once(e_ADMIN.'auth.php');
 // Include ren_help for display_help (while showing BBcodes)
 require_once(e_HANDLER.'ren_help.php');
+
+require_once(e_HANDLER.'message_handler.php');
+$mes = e107::getMessage();
 
 if (e_QUERY) 
 {
@@ -78,6 +78,7 @@ class newsletter
 	{
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		$mes = e107::getMessage();
 		$this->e107 = e107::getInstance(); // TODO remove?
 
 		foreach($_POST as $key => $value)
@@ -105,9 +106,13 @@ class newsletter
 			$this->createIssue();
 		}
 
-		if($this -> message)
+		/*if($this -> message)
 		{
 			$ns->tablerender('', "<div style='text-align:center'><b>".$this -> message.'</b></div>');
+		}*/
+		if($mes)
+		{
+			$ns->tablerender($caption, $mes->render() . $text);
 		}
 	}
 
@@ -116,35 +121,41 @@ class newsletter
 	{
 		$sql = e107::getDb();
 		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
 
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
-			$text = NLLAN_05;
+			//$text = NLLAN_05;
+			$mes->addInfo(NLLAN_05);
 		}
 		else
 		{
 			$text = "<form action='".e_SELF."' id='newsletterform' method='post'>
 			<table class='table adminlist'>
+			<colgroup>
+				<col style='width: 5%; text-align: center;' />
+				<col style='width: 65%;' />
+				<col style='width: 20%; text-align: center;' />
+				<col style='width: 10%; text-align: center;' />
+			</colgroup>
 			<tr>
-			<td style='width:5%;>".NLLAN_55."</td>
-			<td style='width:65%'>".NLLAN_06."</td>
-			<td style='width:20%;>".NLLAN_07."</td>
-			<td style='width:10%;>".NLLAN_08."</td>
+				<td>".LAN_ID."</td>
+				<td>".LAN_NAME."</td>
+				<td>".NLLAN_07."</td>
+				<td>".LAN_OPTIONS."</td>
 			</tr>
 			";
 
-			$nlArray = $this->e107->sql->db_getList();
+			$nlArray = $sql->db_getList();
 			foreach($nlArray as $data)
 			{
-				$text .= "<tr>
-				<td style='width:5%; text-align: center;'>".$data['newsletter_id']."</td>
-				<td style='width:65%'>".$data['newsletter_title']."</td>
-				<td style='width:20%;>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
-				<td style='width:10%; text-align: center;'>
-				<a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$this->e107->tp->toJS(NLLAN_09." [ID: ".$data['newsletter_id']." ]")."') \"/>
-				
-				</td>
+				$text .= "
+				<tr>
+					<td>".$data['newsletter_id']."</td>
+					<td>".$data['newsletter_title']."</td>
+					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
+					<td><a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/></td>
 				</tr>
 				";
 			}
@@ -153,22 +164,30 @@ class newsletter
 			</form>
 			";
 		}
-		$this->e107->ns->tablerender(NLLAN_10, $text);
+		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
-			$text = NLLAN_11;
+			//$text = NLLAN_11;
+			$mes->addinfo(NLLAN_11);
 		}
 		else
 		{
 			$text = "<form action='".e_SELF."' id='newsletterform2' method='post'>
 			<table class='table adminlist'>
+			<colgroup>
+				<col style='width: 5%;  text-align: center;' />
+				<col style='width: 10%; text-align: center;' />
+				<col style='width: 65%;' />
+				<col style='width: 10%; text-align: center;' />
+				<col style='width: 10%; text-align: center;' />
+			</colgroup>
 			<tr>
-			<td style='width:5%;>ID</td>
-			<td style='width:10%;>".NLLAN_12."</td>
-			<td style='width:65%'>".NLLAN_13."</td>
-			<td style='width:10%;>".NLLAN_14."</td>
-			<td style='width:10%;>".NLLAN_15."</td>
+				<td>".LAN_ID."</td>
+				<td>".NLLAN_12."</td>
+				<td>".NLLAN_13."</td>
+				<td>".NLLAN_14."</td>
+				<td>".LAN_OPTIONS."</td>
 			</tr>
 			";
 
@@ -176,14 +195,13 @@ class newsletter
 
 			foreach($nlArray as $data)
 			{
-				$text .= "<tr>
-				<td style='width:5%; text-align: center;'>".$data['newsletter_id']."</td>
-				<td style='width:10%; text-align: center;'>".$data['newsletter_issue']."</td>
-				<td style='width:65%'>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-				<td style='width:10%; text-align: center;'>".($data['newsletter_flag'] ? NLLAN_16 : "<input class='button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$this->e107->tp->toJS(NLLAN_18)."') \" />")."</td>
-				<td style='width:10%; text-align: center;'>
-				<a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$this->e107->tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
+				$text .= "
+				<tr>
+					<td>".$data['newsletter_id']."</td>
+					<td>".$data['newsletter_issue']."</td>
+					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
+					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
+					<td><a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
 				
 				</td>
 				</tr>
@@ -194,7 +212,7 @@ class newsletter
 			</form>
 			";
 		}
-		$ns->tablerender(NLLAN_20, $text);
+		$ns->tablerender(NLLAN_20, $mes->render() . $text);
 	}
 
 
@@ -218,11 +236,11 @@ class newsletter
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<tr>
-			<td>".NLLAN_21."</td>
+			<td>".LAN_TITLE."</td>
 			<td><input class='tbox' type='text' name='newsletter_title' size='60' value='{$newsletter_title}' maxlength='200' /></td>
 		</tr>
 		<tr>
-			<td>".NLLAN_22."</td>
+			<td>".LAN_DESCRIPTION."</td>
 			<td><textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10'>{$newsletter_text}</textarea></td>
 		</tr>
 		<tr>
@@ -234,13 +252,14 @@ class newsletter
 			<td><textarea class='tbox' id='data' name='newsletter_footer' cols='80' rows='5'>{$newsletter_footer}</textarea></td>
 		</tr>	
 		</table>
+		
 		<div class='buttons-bar center'>
-		".($edit ? $frm->admin_button('createNewsletter', NLLAN_25, 'submit')."\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createNewsletter', NLLAN_26, 'submit'))."
+		".($edit ? $frm->admin_button('createNewsletter', LAN_UPDATE, 'update')."\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createNewsletter', LAN_CREATE, 'create'))."
 		</div>
 		</form>
 		";
 
-		$caption = ($edit ? NLLAN_25 : NLLAN_26);
+		$caption = ($edit ? LAN_PLUGIN_NEWSLETTER_NAME.' - '.LAN_UPDATE : LAN_PLUGIN_NEWSLETTER_NAME.' - '.LAN_CREATE);
 
 		$ns->tablerender($caption, $text);
 	}
@@ -258,6 +277,7 @@ class newsletter
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+		$mes = e107::getMessage();
 
 		$letter['newsletter_title']		= $tp->toDB($_POST['newsletter_title']);
 		$letter['newsletter_text']		= $tp->toDB($_POST['newsletter_text']);
@@ -267,13 +287,15 @@ class newsletter
 		if(isset($_POST['editid']))
 		{
 			$sql -> db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
-			$this -> message = NLLAN_27;
+			//$this -> message = NLLAN_27;
+			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
 			$sql->db_Insert('newsletter', $letter);
-			$this -> message = NLLAN_28;
+			//$this -> message = NLLAN_28;
+			$mes->addSuccess(LAN_CREATED);
 		}
 	}
 
@@ -283,6 +305,8 @@ class newsletter
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
 
 		// Passed data is from DB
 		if($edit)
@@ -294,7 +318,8 @@ class newsletter
 
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0' "))
 		{
-			$this -> message = NLLAN_05;
+			//$this -> message = NLLAN_05;
+			$mes->addInfo(NLLAN_05);
 			return;
 		}
 
@@ -304,18 +329,18 @@ class newsletter
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<tr>
-		<td>".NLLAN_30."</td>
-		<td>
+			<td>".NLLAN_30."</td>
+			<td>
 
-		<select name='newsletter_parent' class='tbox'>
-		";
+			<select name='newsletter_parent' class='tbox'>
+			";
 
-		foreach($nlArray as $nl)
-		{
-			$text .= "<option value='".$nl['newsletter_id']."'>".$nl['newsletter_title']."</option>\n";
-		}
+			foreach($nlArray as $nl)
+			{
+				$text .= "<option value='".$nl['newsletter_id']."'>".$nl['newsletter_title']."</option>\n";
+			}
 
-		$text .= "</select>
+			$text .= "</select></td>
 
 		<tr>
 			<td>".NLLAN_31."</td>
@@ -332,7 +357,7 @@ class newsletter
 		</tr>
 		</table>
 		<div class='buttons-bar center'>
-			".($edit ? $frm->admin_button('createIssue', NLLAN_34, 'update')."\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createIssue', NLLAN_35, 'submit'))."
+			".($edit ? $frm->admin_button('createIssue', LAN_UPDATE, 'update')."\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : $frm->admin_button('createIssue', LAN_CREATE, 'submit'))."
 		</div>
 		</form>
 		</div>
@@ -340,28 +365,36 @@ class newsletter
 
 		$caption = ($edit ? NLLAN_36 : NLLAN_37);
 
-		$ns->tablerender($caption, $text);
+		$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
 	function createIssue()
 	{
-		$letter['newsletter_title'] =  $this->e107->tp->toDB($_POST['newsletter_title']);
-		$letter['newsletter_text'] =   $this->e107->tp->toDB($_POST['newsletter_text']);
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+
+		$letter['newsletter_title'] =  $tp->toDB($_POST['newsletter_title']);
+		$letter['newsletter_text'] =   $tp->toDB($_POST['newsletter_text']);
 		$letter['newsletter_parent'] = intval($_POST['newsletter_parent']);
-		$letter['newsletter_issue'] =  $this->e107->tp->toDB($_POST['newsletter_issue']);
+		$letter['newsletter_issue'] =  $tp->toDB($_POST['newsletter_issue']);
 
 		if (isset($_POST['editid']))
 		{
-			$this->e107->sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
-			$this -> message = NLLAN_38;
+			$sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
+			//$this -> message = NLLAN_38;
+			$mes->addSucces(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$this->e107->sql->db_Insert('newsletter', $letter);
-			$this -> message = NLLAN_39;
+			$sql->db_Insert('newsletter', $letter);
+			//$this -> message = NLLAN_39;
+			$mes->addSuccess(NLLAN_39);
 		}
+
+		$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
@@ -377,6 +410,7 @@ class newsletter
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDb();
+		$mes = e107::getMessage();
 
 		$issue = intval(str_replace('nlmailnow_', '', $issue));
 
@@ -460,14 +494,18 @@ class newsletter
 		if ($counters['add'] == 0)
 		{
 			$mailer->deleteEmail($mailMainID);			// No subscribers - delete email
-			$this->message = NLLAN_41;
+			//$this->message = NLLAN_41;
+			$mes->addError(NLLAN_41);
 		}
 		else
 		{
 			$mailer->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
-			$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
+			//$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
+			$mes->addSuccess(str_replace('--COUNT--', $counters['add'], NLLAN_40));
 		}
 		$sql->db_Update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
+
+		$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
@@ -484,7 +522,7 @@ class newsletter
 
 		if($sql->db_Select("newsletter", "*", "newsletter_id='{$id}'"))
 		{
-			$foo = $this->e107->sql->db_Fetch();
+			$foo = $sql->db_Fetch();
 			if(!$foo['newsletter_parent'])
 			{
 				$this -> defineNewsletter($foo);
@@ -505,19 +543,22 @@ class newsletter
 	function deleteNewsletter()
 	{
 		$sql = e107::getDb();
+		$mes = e107::getMessage();
 
 		$tmp = each($_POST['delete']);
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
 			$sql->db_Delete('newsletter', "newsletter_id='{$id}'");
-			$this -> message = NLLAN_42;
+			//$this -> message = NLLAN_42;
+			$mes->addSuccess(LAN_DELETED);
 		}
 		else
 		{
 			$id = intval(str_replace('issue_', '', $tmp['key']));
 			$sql->db_Delete('newsletter', "newsletter_id='{$id}' ");
-			$this -> message = NLLAN_43;
+			//$this -> message = NLLAN_43;
+			$mes->addSuccess(LAN_DELETED);
 		}
 	}
 
@@ -551,27 +592,40 @@ class newsletter
 	function view_subscribers($p_id)
 	{
 		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
+
 		$nl_sql = new db;
 		$_nl_sanatized = '';
 
-		if(!$nl_sql -> db_Select('newsletter', '*', 'newsletter_id='.$p_id))
-		{	// Check if newsletter id is available
-			$vs_text .= "<br /><br /><span style='text-align:center'>".NLLAN_56."<br /><br/>
-					 <input class='button' type=button value='".NLLAN_57."' onClick=\"window.location='".e_SELF."'\"></span>";
-			$ns -> tablerender(NLLAN_58, $vs_text);
+		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
+		{	
+			$mes->addError(NLLAN_56);
+			$vs_text .= "<div class='buttonsbar center'>
+							<input class='button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
+						</div>";
+			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 			return;
 		} 
 		else 
 		{
 		  $vs_text .= "
-				<form action='".e_SELF."' id='newsletterform' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<form action='".e_SELF."' id='newsletterform' method='post'>
+			<table class='table adminlist'>
+			<colgroup>
+				<col style='width: 5%;  text-align: center;' />
+				<col style='width: 35%;' />
+				<col style='width: 45%;' />
+				<col style='width: 15%; text-align: center;' />
+			</colgroup>
+
 				<tr>
-				<td style='width:5%;>".NLLAN_55."</td>
-				<td style='width:35%'>".NLLAN_59."</td>
-				<td style='width:45%;'>".NLLAN_60."</td>
-				<td style='width:15%;>".NLLAN_61."</td>
+					<td>".LAN_ID."</td>
+					<td>".LAN_NAME."</td>
+					<td>".LAN_EMAIL."</td>
+					<td>".LAN_OPTIONS."</td>
 				</tr>";
+
 			if($nl_row = $nl_sql-> db_Fetch())
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
@@ -595,16 +649,12 @@ class newsletter
 						$nl_sql -> db_Select("user", "*", "user_id=".$val);
 						if($nl_row = $nl_sql-> db_Fetch())
 						{
-							$vs_text .= "<tr>
-								<td style='text-align: center;'>{$val}
-								</td>
-								<td><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
-								</td>
-								<td>".$nl_row['user_email']."
-								</td>
-								<td style='text-align: center;'><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>
-							".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."
-							</td>
+							$vs_text .= "
+							<tr>
+								<td>".$val."</td>
+								<td><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a></td>
+								<td>".$nl_row['user_email']."</td>
+								<td><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
 							</tr>";
 							$_last_subscriber = $val;
 						}
@@ -622,17 +672,22 @@ class newsletter
 		}
 
 		$vs_text .= "
-		  <tr>
-		  <td colspan='4'>".NLLAN_63.": ".$subscribers_total_count."</td>
-		  </tr>
-		  <tr><td colspan='4' style='text-align:center;'><br /><input class='button' type='submit' value='".NLLAN_64."' /></td></tr>
-		  </table></form>
+		<tr>
+			<td colspan='4'>".NLLAN_63.": ".$subscribers_total_count."</td>
+		</tr>
+		 </table>
+			 <div class='buttonsbar center'>
+			 	".$frm->admin_button('submit', LAN_BACK, 'submit')."
+			 </div>			
+		 </form>
 		  ";
 		if ($_nl_sanatized == 1)
 		{
-			$vs_text .= "<br /><div style='text-align:center;'>".NLLAN_66."</div>";
+			//$vs_text .= "<br /><div style='text-align:center;'>".NLLAN_66."</div>";
+			$mes->addInfo(NLLAN_66);
 		}
-		$ns->tablerender(NLLAN_65.' '.$p_id, $vs_text);
+		
+		$ns->tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 	}
  
 
