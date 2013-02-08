@@ -319,6 +319,7 @@ define("LAN_URL", "URL");
 define("LAN_USER", "User");
 define("LAN_OWNER", "Owner");
 define("LAN_NAME", "Name");
+define('LAN_EMAIL','Email address');
 define("LAN_ID", "ID");
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");

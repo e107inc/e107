@@ -199,9 +199,9 @@ class users_admin_ui extends e_admin_ui
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',				'type' => null, 'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 	
-		'user_id' 			=> array('title' => 'Id',			'type' =>'integer',		'width' => '5%','forced' => true),
+		'user_id' 			=> array('title' => LAN_ID,			'type' =>'integer',		'width' => '5%','forced' => true),
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
-		'user_ban' 			=> array('title' => LAN_STATUS,	'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
+		'user_ban' 			=> array('title' => LAN_STATUS,		'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
 		'user_name' 		=> array('title' => LAN_USER_01,	'type' => 'text',	'width' => 'auto','thclass' => 'left first'), // Display name
  		'user_loginname' 	=> array('title' => LAN_USER_02,	'type' => 'text',	'width' => 'auto'), // User name
@@ -210,7 +210,7 @@ class users_admin_ui extends e_admin_ui
  		'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'password',	'width' => 'auto'), //TODO add md5 option to form handler? 
 		'user_sess' 		=> array('title' => 'Session',		'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'type' => 'text',	'width' => 'auto'), // Avatar
- 		'user_email' 		=> array('title' => LAN_USER_08,	'type' => 'text',	'width' => 'auto'),
+ 		'user_email' 		=> array('title' => LAN_EMAIL,		'type' => 'text',	'width' => 'auto'),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
 		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'filter'=>true, 'batch'=>true),
