@@ -67,7 +67,8 @@ class e_parse_shortcode
 	protected $addedCodes = NULL; 		// Pointer to a class or array to be used on a single call
 	protected $registered_codes = array(); // Shortcodes added by plugins TODO make it private
 	protected $scClasses = array(); // Batch shortcode classes - TODO make it private
-	protected $scOverride = array(); // Array of codes found in override/ dir
+	protected $scOverride = array(); // Array of codes found in override/shortcodes dir
+	protected $scBatchOverride = array(); // Array of codes found in override/shortcodes/batch dir
 	/**
 	 * @var e_vars
 	 */
@@ -81,7 +82,7 @@ class e_parse_shortcode
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
-		$this->loadCoreShortcodes();
+		//$this->loadCoreShortcodes(); DEPRECATED
 
 	}
 
@@ -263,11 +264,18 @@ class e_parse_shortcode
 	{
 		if(trim($className)==""){ return; }
 			
-			
-				
 		$_class_fname = $className;
+		
+		$globalOverride = false;
+		if(null === $overrideClass && in_array($className, $this->scBatchOverride))
+		{
+			$className = 'override_'.$className;
+			$globalOverride = true;
+		}
+		
+		
 			
-		// plugin override
+		// forced override
 		if($overrideClass)
 		{
 			if(true === $overrideClass)
@@ -299,15 +307,17 @@ class e_parse_shortcode
 		{
 			return $this->scClasses[$className];
 		}
-
-		$path = ($pluginName ? e_PLUGIN.$pluginName.'/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
 		
-		$pathBC = e_PLUGIN.$pluginName.'/'.$_class_fname.'.php';
-		
-		if(is_readable($pathBC)) // BC  - required. 
+		if(!$pluginName)
 		{
-			$path = $pathBC;
-		}		
+			$path = ($globalOverride ? e_CORE.'override/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
+		}
+		else
+		{
+			// BC  - required. 
+			$pathBC = e_PLUGIN.$pluginName.'/';
+			$path = (is_readable($pathBC.$_class_fname.'.php') ? $pathBC : e_PLUGIN.$pluginName.'/shortcodes/batch/').$_class_fname.'.php';
+		}
 		
 		// If it already exists - don't include it again. 
 		if (class_exists($className, false)) // don't allow __autoload()
@@ -355,7 +365,19 @@ class e_parse_shortcode
 			{
 				$code = strtoupper(trim($code));
 				$this->registered_codes[$code]['type'] = 'override';
+				$this->registered_codes[$code]['path'] = e_CORE.'override/shortcodes/single/';
+				$this->registered_codes[$code]['function'] = 'override_'.strtolower($code).'_shortcode'; 
 				$this->scOverride[] = $code;
+			}
+		}
+		if (e107::getPref('sc_batch_override'))
+		{
+			$tmp = explode(',', e107::getPref('sc_batch_override'));
+			foreach ($tmp as $code)
+			{
+				//$code = strtoupper(trim($code));
+				//$this->registered_codes[$code]['type'] = 'override';
+				$this->scBatchOverride[] = $code;
 			}
 		}
 		return $this;
@@ -483,26 +505,27 @@ class e_parse_shortcode
 		return $this;
 	}
 
-	/**
+	/** 
+	 * DEPRECATED admin_shortcodes now loaded inside admin parse function (see boot.php)
 	 * Register Core Shortcode Batches.
 	 * FIXME - make it smarter - currently loaded all the time (even on front-end)
-	 *
+	 * 
 	 * @return e_parse_shortcode
 	 */
-	function loadCoreShortcodes()
-	{
-		$coreBatchList = array('admin_shortcodes');
-
-		foreach ($coreBatchList as $cb)
-		{
-			$path = e_CORE.'shortcodes/batch/'.$cb.".php";
-			if (include_once($path))
-			{
-				$this->registerClassMethods($cb, $path);
-			}
-		}
-		return $this;
-	}
+	// function loadCoreShortcodes()
+	// {
+		// $coreBatchList = array('admin_shortcodes');
+// 
+		// foreach ($coreBatchList as $cb)
+		// {
+			// $path = e_CORE.'shortcodes/batch/'.$cb.".php";
+			// if (include_once($path))
+			// {
+				// $this->registerClassMethods($cb, $path);
+			// }
+		// }
+		// return $this;
+	// }
 
 	function isRegistered($code)
 	{
@@ -727,11 +750,12 @@ class e_parse_shortcode
 							}*/
 
 							break;
-
+						
+						case 'override':
 						case 'func':
 							//It is a function, so include the file and call the function
 							$_function = $this->registered_codes[$code]['function'];
-							if ($this->registered_codes[$code]['path'])
+							if (!function_exists($_function) && $this->registered_codes[$code]['path'])
 							{
 								include_once($this->registered_codes[$code]['path'].strtolower($code).'.php');
 
@@ -746,9 +770,9 @@ class e_parse_shortcode
 							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 							break;
 
-						case 'override':
-							$scFile = e_CORE.'override/shortcodes/'.strtolower($code).'.sc';
-							break;
+						// case 'override':
+							// $scFile = e_CORE.'override/shortcodes/'.strtolower($code).'.sc';
+							// break;
 
 						case 'theme':
 							$scFile = THEME.strtolower($code).'.sc';

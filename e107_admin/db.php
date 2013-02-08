@@ -819,24 +819,46 @@ class system_tools
 		
 		$mes = e107::getMessage();
 		$f = e107::getFile();
+		$config = e107::getConfig();
 
 		$scList = '';
 
-		$fList = $f->get_files(e_CORE.'override/shortcodes', '\.sc$');
+		$fList = $f->get_files(e_CORE.'override/shortcodes/single', '\.php$');
 		if(count($fList))
 		{
 			$tmp = array();
 			foreach($fList as $file)
 			{
-				$tmp[] = strtoupper(substr($file['fname'], 0, -3));
+				$tmp[] = strtoupper(substr($file['fname'], 0, -4));
 			}
 			$scList = implode(',', $tmp);
 			unset($tmp);
 		}
-		$pref['sc_override'] = $scList;
-		save_prefs();
+		$config->set('sc_override', $scList)->save(false);
+		
+
+		$fList = $f->get_files(e_CORE.'override/shortcodes/batch', '\.php$');
+		if(count($fList))
+		{
+			$tmp = array();
+			foreach($fList as $file)
+			{
+				$tmp[] = substr($file['fname'], 0, -4);
+			}
+			$scList = implode(',', $tmp);
+			unset($tmp);
+		}
+		$config->set('sc_batch_override', $scList)->save(false);
+		//$pref['sc_override'] = $scList;
+		//save_prefs();
 	//	$mes->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
-		e107::getRender()->tablerender(DBLAN_56, DBLAN_57.':<br />'.$pref['sc_override']);
+		// FIXME lan
+		e107::getRender()->tablerender(
+			DBLAN_56, DBLAN_57.': '
+			.($config->get('sc_override') ? '<br />'.$config->get('sc_override') : '(empty)')
+			.'<br />Batch shortcodes: '
+			.($config->get('sc_batch_override') ? '<br />'.$config->get('sc_batch_override') : '(empty)')
+		);
 	}
 
 	/**
