@@ -242,7 +242,24 @@ class e_parse_shortcode
 	/**
 	 * Get registered SC object
 	 * Normally you would use the proxy of this method - e107::getScBatch()
-	 * DRAFT!
+	 * Global File Override ClassName/Path examples:
+	 * 1. Core signup shortcodes
+	 * 	- Origin ClassName: signup_shortcodes
+	 * 	- Origin Location: core/shortcodes/batch/signup_shortcodes.php
+	 * 	- File Override ClassName: override_signup_shortcodes
+	 * 	- File Override Location: core/override/shortcodes/batch/signup_shortcodes.php
+	 * 
+	 * 2. Plugin 'gallery' global shortcode batch (e_shortcode.php)
+	 * 	- Origin ClassName: gallery_shortcodes
+	 * 	- Origin Location: plugins/gallery/e_shortcode.php
+	 * 	- File Override ClassName: override_gallery_shortcodes
+	 * 	- File Override Location: core/override/shortcodes/batch/gallery_shortcodes.php
+	 * 
+	 * 3. Plugin 'forum' regular shortcode batch
+	 * 	- Origin ClassName: plugin_forum_view_shortcodes
+	 * 	- Origin Location: plugins/forum/shortcodes/batch/view_shortcodes.php
+	 * 	- File Override ClassName: override_plugin_forum_view_shortcodes
+	 * 	- File Override Location: core/override/shortcodes/batch/forum_view_shortcodes.php
 	 *
 	 * <code><?php
 	 * // simple use
@@ -263,18 +280,19 @@ class e_parse_shortcode
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
 		if(trim($className)==""){ return; }
-			
+
 		$_class_fname = $className;
-		
-		$globalOverride = false;
-		if(null === $overrideClass && in_array($className, $this->scBatchOverride))
+		if($pluginName === TRUE)
 		{
-			$className = 'override_'.$className;
-			$globalOverride = true;
+			$pluginName = str_replace("_shortcodes","",$className);		
+		}
+		elseif(is_string($pluginName))
+		{
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
 		
+		$globalOverride = $this->isBatchOverride($className);
 		
-			
 		// forced override
 		if($overrideClass)
 		{
@@ -294,29 +312,42 @@ class e_parse_shortcode
 				$className = $overrideClass;	
 			}
 		}
-		elseif(is_string($pluginName))
-		{
-			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
-		}
-		elseif($pluginName === TRUE)
-		{
-			$pluginName = str_replace("_shortcodes","",$className);		
-		}
-	
-		if ($this->isScClass($className)) // Includes global Shortcode Classes. ie. e_shortcode.php 
-		{
-			return $this->scClasses[$className];
-		}
 		
 		if(!$pluginName)
 		{
-			$path = ($globalOverride ? e_CORE.'override/shortcodes/batch/' : e_CORE.'shortcodes/batch/').$_class_fname.'.php';
+			if(!$globalOverride)
+			{
+				$path = e_CORE.'shortcodes/batch/'.$_class_fname.'.php';
+			}
+			else 
+			{
+				$path = e_CORE.'override/shortcodes/batch/'.$_class_fname.'.php';
+				$className = 'override_'.$className;
+			}
 		}
 		else
 		{
-			// BC  - required. 
-			$pathBC = e_PLUGIN.$pluginName.'/';
-			$path = (is_readable($pathBC.$_class_fname.'.php') ? $pathBC : e_PLUGIN.$pluginName.'/shortcodes/batch/').$_class_fname.'.php';
+			if(!$globalOverride)
+			{
+				// do nothing if it's e_shortcode batch global
+				if($pluginName.'_shortcodes' !== $className)
+				{
+					// BC  - required. 
+					$pathBC = e_PLUGIN.$pluginName.'/';
+					$path = (is_readable($pathBC.$_class_fname.'.php') ? $pathBC : e_PLUGIN.$pluginName.'/shortcodes/batch/').$_class_fname.'.php';
+				}
+			}
+			else 
+			{
+				$path = e_CORE.'override/shortcodes/batch/'.$pluginName.'/'.$_class_fname.'.php';
+				$className = 'override_'.$className;
+			}
+		}
+		
+		// Includes global Shortcode Classes (e_shortcode.php) or already loaded batch 
+		if ($this->isScClass($className)) 
+		{
+			return $this->scClasses[$className];
 		}
 		
 		// If it already exists - don't include it again. 
@@ -456,19 +487,37 @@ class e_parse_shortcode
 		{
 			return $this;
 		}
-
+		
 		foreach ($pref as $key => $val)
 		{
-			$path = e_PLUGIN.$key.'/e_shortcode.php';
-			$classFunc = $key.'_shortcodes';
+			$globalOverride = $this->isBatchOverride($key.'_shortcodes');
+			if($globalOverride)
+			{
+				$path = e_CORE.'override/shortcodes/batch/'.$key.'_shortcodes.php';
+				$classFunc = 'override_'.$key.'_shortcodes';
+			}
+			else
+			{
+				$path = e_PLUGIN.$key.'/e_shortcode.php';
+				$classFunc = $key.'_shortcodes';
+			}
+			
 			if (!include_once($path))
 			{
-				continue;
+				// try to switch back to the batch origin in case it's an override
+				if($globalOverride)
+				{
+					$path = e_PLUGIN.$key.'/e_shortcode.php';
+					$classFunc = $key.'_shortcodes';
+					if (!include_once($path))
+					{
+						continue;
+					}
+				}
+				else continue;
 			}
-
-			$this->registerClassMethods($classFunc, $path, false);
-
 			
+			$this->registerClassMethods($classFunc, $path, false);
 		}
 		return $this;
 	}
@@ -555,8 +604,10 @@ class e_parse_shortcode
 		return in_array($code, $this->scOverride);
 	}
 
-
-
+	function isBatchOverride($name)
+	{
+		return in_array($name, $this->scBatchOverride);
+	}
 
 	/**
 	 *	Parse the shortcodes in some text
