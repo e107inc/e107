@@ -2,17 +2,13 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newforumposts_main/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
+ * $URL$
+ * $Id$
+*/
 
 require_once ('../../class2.php');
 if(!getperms('1'))
@@ -25,8 +21,11 @@ require_once (e_HANDLER.'userclass_class.php');
 
 include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 require_once (e_ADMIN.'auth.php');
+require_once (e_HANDLER.'message_handler.php');
+
 
 $frm = e107::getForm();
+$mes = e107::getMessage(); 
 
 if(isset($_POST['updatesettings']))
 {
@@ -37,14 +36,16 @@ if(isset($_POST['updatesettings']))
 	$pref['nfp_posts'] = vartrue($_POST['nfp_posts']);
 	$pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
 	save_prefs();
-	$message = "".NFPM_L13."";
+	//$message = "".NFPM_L13."";
 }
 
+/*
 if(vartrue($message))
 {
 	$ns->tablerender("", "<div style='text-align:center'><b>$message</b></div>");
 }
-
+*/
+$ns->tablerender($caption, $mes->render() . $text);
 
 $text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' id='menu_conf_form'>
