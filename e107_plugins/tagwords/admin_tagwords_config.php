@@ -21,6 +21,8 @@ if (!getperms("P"))
 }
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."message_handler.php");
+$mes = e107::getMessage();
 
 require_once(e_PLUGIN."tagwords/tagwords_class.php");
 $tag = new tagwords();
@@ -29,13 +31,16 @@ $tag = new tagwords();
 if(isset($_POST['updatesettings']))
 {
 	$tag->update_prefs();
-	$message = LAN_TAG_ADMIN_1;
+	$mes->addSuccess(LAN_UPDATED);
 }
 
+/*
 if(isset($message))
 {
 	$tag->show_message($message, $caption='', $type='ns');
 }
+*/
+$ns->tablerender($caption, $mes->render() . $text);
 
 $tag->tagwords_options();
 

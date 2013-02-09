@@ -36,7 +36,7 @@ define("LAN_TAG_19", "choose sort");
 define("LAN_TAG_20", "choose style");
 define("LAN_TAG_21", "each tag on a separate line");
 
-define("LAN_TAG_ADMIN_1", "preferences updated");
+//define("LAN_TAG_ADMIN_1", "preferences updated");
 
 define("LAN_TAG_OPT_1", "tagwords preferences");
 define("LAN_TAG_OPT_2", "minimum word appearance needed for tagcloud/taglist");

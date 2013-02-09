@@ -194,9 +194,10 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	<td>".LAN_TAG_OPT_24."</td>
 	<td>{TAG_OPT_ACTIVEAREAS}</td>
 </tr>
-<tr>
-	<td colspan='2' style='text-align:center'>{TAG_OPT_BUTTON}</td>
-</tr>
+</table>
+<div class='buttonsbar center'>
+	{TAG_OPT_BUTTON}
+</div>
 </table>
 </form>";
 
