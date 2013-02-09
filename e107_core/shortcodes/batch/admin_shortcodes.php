@@ -565,25 +565,26 @@ class admin_shortcodes
 		return $ret;
 	}
 
-
+	// FIXME - make it work
 	function sc_admin_pm($parm)
 	{
-		$text = '<li class="dropdown">
-		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
-		<i class="icon-envelope icon-white active"></i> 3
-		<b class="caret"></b>
-		</a> 
-		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
-		    <ul class="nav-list">
-	    <li class="nav-header">Unread Messages</li>
-	    <li><a href="#">Incoming Message Number 1</a></li>
-	      <li><a href="#">Incoming Message Number 2</a></li>
-	        <li><a href="#">Incoming Message Number 3</a></li>
-	         <li class="divider"></li>
-	    </ul>
-		<textarea class="e-tip input-block-level" title="Example Only"></textarea>
-		<button class="dropdown-toggle btn btn-primary" >Send</button>	
-		</div>
+		if(!e107::isInstalled('pm')) return;
+		$text = '
+		<li class="dropdown">
+			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+				<i class="icon-envelope icon-white active"></i> 3 <b class="caret"></b>
+			</a> 
+			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
+				<ul class="nav-list">
+		    		<li class="nav-header">Unread Messages</li>
+		    		<li><a href="#">Incoming Message Number 1</a></li>
+		      		<li><a href="#">Incoming Message Number 2</a></li>
+		        	<li><a href="#">Incoming Message Number 3</a></li>
+		         	<li class="divider"></li>
+		   		</ul>
+				<textarea class="e-tip input-block-level" title="Example Only"></textarea>
+				<button class="dropdown-toggle btn btn-primary">Send</button>	
+			</div>
 		</li>
 		';
 		
@@ -1651,32 +1652,35 @@ class admin_shortcodes
 
 		if($type == 'language')
 		{
-			$languages = array('English','French');
-			$c = 0;
-			foreach($languages as $lng)
-			{			
-				$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-black'></i> " : "&nbsp;";
-				
-				$tmp[$c]['text'] = $lng." (TO DO)";
-				$tmp[$c]['description'] = '';
-				$tmp[$c]['link'] = '#';
-				$tmp[$c]['image'] = $checked; 
-				$tmp[$c]['image_large'] = '';
-				$tmp[$c]['image_src'] = '';
-				$tmp[$c]['image_large_src'] = '';
-				$tmp[$c]['perm'] = '';
-				$c++;		
-			}
 			
-			$menu_vars['language']['text'] = ""; // e_LANGUAGE;
-			$menu_vars['language']['link'] = '#';
-			$menu_vars['language']['image'] = "<i class='icon-globe icon-white'></i>" ;
-			$menu_vars['language']['image_src'] = ADLAN_46;
-			$menu_vars['language']['perm'] = '';	
-			$menu_vars['language']['sub'] = $tmp;		
+			$languages = e107::getLanguage()->installed();//array('English','French');
+			if(count($languages) > 1)
+			{
+				$c = 0;
+				foreach($languages as $lng)
+				{			
+					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-black'></i> " : "&nbsp;";
+					
+					$tmp[$c]['text'] = $lng;
+					$tmp[$c]['description'] = '';
+					$tmp[$c]['link'] = $lng == e_LANGUAGE ? '#' : e_SELF.'?elan='.$lng;
+					$tmp[$c]['image'] = $checked; 
+					$tmp[$c]['image_large'] = '';
+					$tmp[$c]['image_src'] = '';
+					$tmp[$c]['image_large_src'] = '';
+					$tmp[$c]['perm'] = '';
+					$c++;		
+				}
+				
+				$menu_vars['language']['text'] = ""; // e_LANGUAGE;
+				$menu_vars['language']['link'] = '#';
+				$menu_vars['language']['image'] = "<i class='icon-globe icon-white'></i>" ;
+				$menu_vars['language']['image_src'] = ADLAN_46;
+				$menu_vars['language']['perm'] = '';	
+				$menu_vars['language']['sub'] = $tmp;	
+			}	
 			
 		}	
-
 		
 		return $menu_vars;
 	}
