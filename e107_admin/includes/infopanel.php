@@ -205,7 +205,8 @@ EOF;
 	
 	// ---------------------Latest Stuff ---------------------------
 	
-		require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
+		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
+		e107::getScBatch('admin');
 		
 		$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
 		$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);

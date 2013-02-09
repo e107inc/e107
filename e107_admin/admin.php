@@ -27,6 +27,7 @@ if(vartrue($_GET['iframe']) == 1)
 
 $e_sub_cat = 'main';
 
+
 if(strpos($pref['adminstyle'], 'infopanel') === 0)
 {
 	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
@@ -39,8 +40,8 @@ if(strpos($pref['adminstyle'], 'infopanel') === 0)
 }
 
 
-
-require_once('auth.php');
+require_once(e_ADMIN.'boot.php');
+require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
 // require_once (e_HANDLER."message_handler.php");
