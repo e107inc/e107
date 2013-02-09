@@ -166,6 +166,8 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
+		unset($text); // FIXME  fix to prevent 'existing newsletters' table from showing twice 
+
 		if(!$sql->db_Select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
 			//$text = NLLAN_11;
@@ -320,9 +322,9 @@ class newsletter
 		{
 			//$this -> message = NLLAN_05;
 			$mes->addInfo(NLLAN_05);
-			return;
 		}
-
+		else 
+		{
 		$nlArray = $sql -> db_getList();
 
 		$text .= "
@@ -362,7 +364,7 @@ class newsletter
 		</form>
 		</div>
 		";
-
+		}
 		$caption = ($edit ? NLLAN_36 : NLLAN_37);
 
 		$ns->tablerender($caption, $mes->render() . $text);
@@ -374,6 +376,7 @@ class newsletter
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$ns = e107::getRender();
 
 		$letter['newsletter_title'] =  $tp->toDB($_POST['newsletter_title']);
 		$letter['newsletter_text'] =   $tp->toDB($_POST['newsletter_text']);
