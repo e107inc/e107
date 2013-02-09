@@ -1201,7 +1201,7 @@ class e107
 	 * @param boolean $singleton default true
 	 * @return e_file
 	 */
-	public static function getFile($singleton = true)
+	public static function getFile($singleton = false)
 	{
 		if($singleton)
 		{
