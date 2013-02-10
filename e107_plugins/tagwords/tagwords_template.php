@@ -195,7 +195,7 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	<td>{TAG_OPT_ACTIVEAREAS}</td>
 </tr>
 </table>
-<div class='buttonsbar center'>
+<div class='buttons-bar center'>
 	{TAG_OPT_BUTTON}
 </div>
 </table>
