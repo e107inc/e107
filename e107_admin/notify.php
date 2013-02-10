@@ -37,13 +37,15 @@ require_once('auth.php');
 
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
+require_once(e_HANDLER.'message_handler.php');
 
-$emessage = &eMessage::getInstance();
+//$emessage = &eMessage::getInstance();
 
 $rs = new form;
-$frm = new e_form;
+$frm = e107::getForm();
 $nc = new notify_config;
 $uc = new user_class;
+$mes = e107::getMessage();
 
 $uc->fixed_classes['email'] = 'Email Address =>';
 $uc->text_class_link['email'] = 'email';
@@ -52,15 +54,17 @@ if (isset($_POST['update']))
 {
 	if($nc -> update())
 	{
-    	$message = LAN_UPDATED;
-        $style = E_MESSAGE_SUCCESS;
+    	//$message = LAN_UPDATED;
+        //$style = E_MESSAGE_SUCCESS;
+        //$mes->addSuccess(LAN_UPDATED);
 	}
 	else
 	{
-    	$message = LAN_UPDATED_FAILED;
-		$style = E_MESSAGE_FAILED;
+    	//$message = LAN_UPDATED_FAILED;
+		//$style = E_MESSAGE_FAILED;
+		$mes->addError(LAN_UPDATED_FAILED);
 	}
-	$emessage->add($message, $style);
+	//$emessage->add($message, $style);
 
  //	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
 }
@@ -74,7 +78,11 @@ class notify_config
 
 	function notify_config() 
 	{
-		global $sysprefs, $eArrayStorage, $tp, $sql,$pref;
+		global $sysprefs, $eArrayStorage;
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$pref = e107::getPref();
+
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
@@ -111,9 +119,13 @@ class notify_config
 
 	function config()
 	{
-		global $ns, $rs, $frm, $emessage;
+		//global $ns, $rs, $frm, $emessage;
+		$ns = e107::getRender();
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
 
-		$text = "<div style='text-align: center'>
+
+		$text = "
 		<div>".NT_LAN_2.":</div>
 		<form action='".e_SELF."?results' method='post' id='scanform'>
 		<fieldset id='core-notify-config'>
@@ -209,15 +221,17 @@ class notify_config
 		</div>
 		</fieldset>
 		</form>
-		</div>";
+		";
 
-		$ns -> tablerender(NT_LAN_1,$emessage->render(). $text);
+		$ns -> tablerender(NT_LAN_1, $mes->render() . $text);
 	}
 
 
 	function render_event($id, $description) 
 	{
-		global $rs, $tp, $uc;
+		global $uc; // $rs
+		$tp = e107::getParser();
+
 		$text = "
 			<tr>
 				<td >".$description.":	</td>
