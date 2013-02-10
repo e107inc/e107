@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Plugin administration - newsfeeds
+ * Plugin administration - Trackback
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 require_once("../../class2.php");
@@ -24,7 +22,6 @@ if (!getperms("P") || !plugInstalled('trackback'))
 include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
-
 $frm = e107::getForm();
 $mes = e107::getMessage();
 	
@@ -48,20 +45,15 @@ if (isset($_POST['updatesettings']))
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
-
 	
 $ns->tablerender($caption, $mes->render() . $text);
-	
 
 $text = "
 <form method='post' action='".e_SELF."'>
 <table class='table adminform'>
 <tr>
 	<td>".TRACKBACK_L7."</td>
-	<td>
-		<input type='radio' name='trackbackEnabled' value='1'".($pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
-		<input type='radio' name='trackbackEnabled' value='0'".(!$pref['trackbackEnabled'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."
-	</td>
+	<td>".$frm->radio_switch('trackbackEnabled', $pref['trackbackEnabled'])."</td>
 </tr>
 
 <tr>
@@ -74,8 +66,6 @@ $text = "
 </form>
 </div>
 ";
-
-
 
 $ns->tablerender(TRACKBACK_L10, $text);
 	
