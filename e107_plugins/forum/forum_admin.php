@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -26,7 +26,7 @@ $e_sub_cat = 'forum';
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
-require_once(e_HANDLER.'ren_help.php');
+require_once(e_HANDLER.'ren_help.php'); // FIXME
 require_once(e_PLUGIN.'forum/forum_class.php');
 require_once(e_PLUGIN.'forum/forum_admin_class.php');
 //$emessage = eMessage::getInstance();
@@ -191,13 +191,17 @@ if(isset($_POST['submit_parent']))
 	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
 	if($sql->db_Insert('forum',$tmp))
 	{
-		$forum->show_message(FORLAN_22.' - '.LAN_CREATED);
+		//$forum->show_message(FORLAN_22.' - '.LAN_CREATED);
+		$mes->addSuccess(LAN_CREATED);
 	}
 	else
 	{
-		$forum->show_message(FORLAN_22.' - '.LAN_CREATED_FAILED);
+		//$forum->show_message(FORLAN_22.' - '.LAN_CREATED_FAILED);
+		$mes->addError(LAN_CREATED_FAILED);
 	}
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if(isset($_POST['update_parent']))
 {
@@ -214,9 +218,12 @@ if(isset($_POST['update_parent']))
 	$tmp['data']['forum_postclass'] = $_POST['forum_postclass'];
 	$tmp['data']['forum_threadclass'] = $_POST['forum_threadclass'];
 	$sql->db_Update('forum', $tmp);
-	$forum->show_message(FORLAN_14);
+	//$forum->show_message(FORLAN_14);
+	$mes->addSucces(LAN_UPDATED);
 	$action = 'main';
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if(isset($_POST['submit_forum']))
 {
@@ -229,15 +236,19 @@ if(isset($_POST['submit_forum']))
 	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
 	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
 	$tmp['forum_parent'] = (int)$_POST['forum_parent'];
-	if($sql->db_Insert('forum',$tmp))
+	if($sql->db_Insert('forum', $tmp))
 	{
-		$forum->show_message(FORLAN_36.' - '.LAN_CREATED);
+		//$forum->show_message(FORLAN_36.' - '.LAN_CREATED);
+		$mes->addSuccess(LAN_CREATED);
 	}
 	else
 	{
-		$forum->show_message(FORLAN_36.' - '.LAN_CREATED_FAILED);
+		//$forum->show_message(FORLAN_36.' - '.LAN_CREATED_FAILED);
+		$mes->addError(LAN_CREATED_FAILED);
 	}
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if(isset($_POST['update_forum']))
 {
@@ -254,9 +265,12 @@ if(isset($_POST['update_forum']))
 	$sql->db_Update('forum', $tmp);
 	$sql->db_Update('forum', $tmp2);
 
-	$forum->show_message(FORLAN_12);
+	//$forum->show_message(FORLAN_12);
+	$mes->addSucces(LAN_UPDATED);
 	$action = 'main';
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if (isset($_POST['update_order']))
 {
@@ -299,12 +313,17 @@ if (isset($_POST['updateoptions']))
 //	$forum->show_message(FORLAN_10);
 }
 
+$ns->tablerender($caption, $mes->render() . $text);
+
 if (isset($_POST['do_prune']))
 {
 	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
-	$forum->show_message($msg);
+	//$forum->show_message($msg);
+	$mes->addSucces($msg);
 	$action = 'main';
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if (isset($_POST['frsubmit']))
 {
@@ -325,12 +344,20 @@ if (isset($_POST['frsubmit']))
 	}
 }
 
+$ns->tablerender($caption, $mes->render() . $text);
 
 if (vartrue($delete) == 'main') {
 	if ($sql->db_Delete('forum', "forum_id='$del_id' ")) {
-		$forum->show_message(FORLAN_96);
+		//$forum->show_message(FORLAN_96);
+		$mes->addSucces(LAN_DELETED);
+	}
+	else 
+	{
+		$mes->addError(LAN_DELETED_FAILED);
 	}
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 if (vartrue($action) == 'create')
 {
@@ -350,10 +377,16 @@ if ($delete == 'cat')
 	if ($sql->db_Delete('forum', "forum_id='$del_id' "))
 	{
 		$sql->db_Delete('forum', "forum_parent='$del_id' ");
-		$forum->show_message(FORLAN_97);
+		$mes->addSucces(LAN_DELETED);
 		$action = 'main';
 	}
+	else 
+	{
+		$mes->addError(LAN_DELETED_FAILED);
+	}	
 }
+
+$ns->tablerender($caption, $mes->render() . $text);
 
 switch($action)
 {
@@ -402,7 +435,8 @@ switch($action)
 if ($delete == 'reported')
 {
 	$sql->db_Delete("generic", "gen_id='$del_id' ");
-	$forum->show_message(FORLAN_118);
+	//$forum->show_message(FORLAN_118);
+	$mes->addSucces(LAN_DELETED);
 }
 
 
