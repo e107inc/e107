@@ -31,16 +31,19 @@ define("LAN_ONLINE_9", "on ");
 define("LAN_ONLINE_10", "Online Menu");
 
 //admin
-define("LAN_ONLINE_ADMIN_ENABLED", "enabled");
-define("LAN_ONLINE_ADMIN_DISABLED", "disabled");
+//define("LAN_ONLINE_ADMIN_ENABLED", "enabled");
+//define("LAN_ONLINE_ADMIN_DISABLED", "disabled");
 
-define("LAN_ONLINE_ADMIN_0", "preferences online menu / lastseen menu");
+//define("LAN_ONLINE_ADMIN_0", "online menu / lastseen menu");
 define("LAN_ONLINE_ADMIN_1", "lastseen menu");
-define("LAN_ONLINE_ADMIN_2", "caption lastseen menu:");
-define("LAN_ONLINE_ADMIN_3", "number of records to display:");
+define("LAN_ONLINE_ADMIN_2", "Caption lastseen menu");
+define("LAN_ONLINE_ADMIN_3", "Number of records to display");
 define("LAN_ONLINE_ADMIN_4", "online menu");
-define("LAN_ONLINE_ADMIN_5", "caption online menu:");
-define("LAN_ONLINE_ADMIN_6", "show list of members online?<br />displays a comma seperated list of members");
-define("LAN_ONLINE_ADMIN_7", "show extended list of members online?<br />displays a list of 'member viewing page'");
+define("LAN_ONLINE_ADMIN_5", "Caption online menu");
+define("LAN_ONLINE_ADMIN_6", "Show list of members online?");
+define("LAN_ONLINE_ADMIN_7", "Show extended list of members online?");
+define("LAN_ONLINE_ADMIN_8", "Displays a comma seperated list of members.");
+define("LAN_ONLINE_ADMIN_9", "Displays a list of members viewing a page.")
+
 
 ?>
