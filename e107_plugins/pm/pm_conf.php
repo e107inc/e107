@@ -50,7 +50,8 @@ require_once(e_PLUGIN.'pm/pm_class.php');
 //require_once(e_HANDLER.'userclass_class.php');		Should already be loaded
 require_once(e_HANDLER.'form_handler.php');
 require_once (e_HANDLER.'message_handler.php');
-$emessage = &eMessage :: getInstance();
+//$emessage = &eMessage :: getInstance();
+$mes = e107::getMessage();
 
 $action = e_QUERY;
 
@@ -137,7 +138,8 @@ if (isset($_POST['update_prefs']))
 	}
 	else
 	{
-		$emessage->add(ADLAN_PM_76, E_MESSAGE_INFO);
+		//$emessage->add(ADLAN_PM_76, E_MESSAGE_INFO);
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
 
@@ -174,7 +176,7 @@ if (isset($_POST['pm_maint_execute']))
 		{
 			foreach ($ma as $m)
 			{
-				$emessage->add($m, $k);
+				$mes->add($m, $k);
 			}
 		}
 	}
@@ -187,7 +189,8 @@ if(isset($_POST['addlimit']))
 	$id = intval($_POST['newlimit_class']);
 	if($sql->db_Select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
 	{
-		$emessage->add(ADLAN_PM_5, E_MESSAGE_INFO);		// 'Limit for selected user class already exists'
+		//$emessage->add(ADLAN_PM_5, E_MESSAGE_INFO);		// 'Limit for selected user class already exists'
+		$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
 	}
 	else
 	{
@@ -202,12 +205,14 @@ if(isset($_POST['addlimit']))
 		if($sql->db_Insert('generic', $limArray))
 		{
 			$e107->admin_log->logArrayAll('PM_ADM_05', $limArray);
-			$emessage->add(ADLAN_PM_6, E_MESSAGE_SUCCESS);
+			//$emessage->add(ADLAN_PM_6, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(ADLAN_PM_6);
 		}
 		else
 		{
 			$e107->admin_log->log_event('PM_ADM_08', '');
-			$emessage->add(ADLAN_PM_7, E_MESSAGE_ERROR);
+			//$emessage->add(ADLAN_PM_7, E_MESSAGE_ERROR);
+			$mes->addError(ADLAN_PM_7); 
 		}
 	}
 }
@@ -219,7 +224,8 @@ if(isset($_POST['updatelimits']))
 	{
 		$pm_prefs['pm_limits'] = $limitVal;
 		//$sysprefs->setArray('pm_prefs');
-		$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
+		//$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(ADLAN_PM_8);
 	}
 	foreach(array_keys($_POST['inbox_count']) as $id)
 	{
@@ -230,12 +236,14 @@ if(isset($_POST['updatelimits']))
 			if($sql->db_Delete('generic','gen_id = '.$id))
 			{
 				$e107->admin_log->log_event('PM_ADM_07', 'ID: '.$id);
-				$emessage->add($id.ADLAN_PM_9, E_MESSAGE_SUCCESS);
+				//$emessage->add($id.ADLAN_PM_9, E_MESSAGE_SUCCESS);
+				$mes->addSuccess($id.ADLAN_PM_9);
 			}
 			else
 			{
 				$e107->admin_log->log_event('PM_ADM_10', '');
-				$emessage->add($id.ADLAN_PM_10, E_MESSAGE_ERROR);
+				//$emessage->add($id.ADLAN_PM_10, E_MESSAGE_ERROR);
+				$mes->addError($id.ADLAN_PM_10);
 			}
 		}
 		else
@@ -249,24 +257,27 @@ if(isset($_POST['updatelimits']))
 			if ($sql->db_Update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 			{
 				$e107->admin_log->logArrayAll('PM_ADM_06', $limArray);
-				$emessage->add($id.ADLAN_PM_11, E_MESSAGE_SUCCESS);
+				//$emessage->add($id.ADLAN_PM_11, E_MESSAGE_SUCCESS);
+				$mes->addSuccess($id.ADLAN_PM_11);
 			}
 			else
 			{
 				$e107->admin_log->log_event('PM_ADM_09', '');
-				$emessage->add($id.ADLAN_PM_7, E_MESSAGE_ERROR);
+				//$emessage->add($id.ADLAN_PM_7, E_MESSAGE_ERROR);
+				$mes->addError($id.ADLAN_PM_7);
 			}
 		}
 	}
 }
 
 
-
+/*
 if ($emessage->hasMessage())
 {
 	$e107->ns->tablerender(ADLAN_PM_58, $emessage->render());
 }
-
+*/
+$ns->tablerender($caption, $mes->render() . $text);
 
 
 switch ($action)

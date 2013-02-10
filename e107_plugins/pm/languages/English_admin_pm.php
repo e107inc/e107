@@ -68,7 +68,7 @@ define('ADLAN_PM_72', 'No PM timeouts set');
 define('ADLAN_PM_73', '--COUNT-- time-expired PMs deleted');
 define('ADLAN_PM_74', 'Removed --COUNT-- messages sent by deleted users');
 define('ADLAN_PM_75', 'Removed --COUNT-- messages received by deleted users');
-define('ADLAN_PM_76', 'No changes made - nothing logged');
+//define('ADLAN_PM_76', 'No changes made - nothing logged');
 define('ADLAN_PM_77', '(Empty all fields and Update to delete a limit)');
 define('ADLAN_PM_78', 'Check attachments');
 define('ADLAN_PM_79', '--ORPHANS-- unused attachments deleted. --MISSING-- missing attachments noted');
