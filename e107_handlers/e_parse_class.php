@@ -802,7 +802,11 @@ class e_parse
 
 
 
-
+	/**
+	 *	Truncate an html string to leave specified number of characters outside html tags
+	 *	Caution! May leave an unclosed html tag
+	 *	Caution! utf-8 patch not properly tested
+	 */
 	function html_truncate ($text, $len = 200, $more = ' ... ')
 	{
 		$pos = 0;
@@ -811,10 +815,10 @@ class e_parse
 		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
-			switch($text{$pos})
+			switch($text[$pos])
 			{
 				case "<" :
-				if($text{$pos+1} == "/")
+				if($text[$pos+1] == "/")
 				{
 					$closing_tag = TRUE;
 				}
@@ -824,7 +828,7 @@ class e_parse
 				break;
 				
 				case ">" :
-				if($text{$pos-1} == "/")
+				if($text[$pos-1] == "/")
 				{
 					$closing_tag = TRUE;
 				}
@@ -838,7 +842,7 @@ class e_parse
 				break;
 				
 				case "&" :
-				if($text{$pos+1} == "#")
+				if($text[$pos+1] == "#")
 				{
 					$end = strpos(substr($text, $pos, 7), ";");
 					if($end !== FALSE)
@@ -855,9 +859,31 @@ class e_parse
 					break;
 				}
 				default:
-				$pos++;
-				if(!$intag) {$curlen++;}
-				break;
+					if (CHARSET == 'utf-8')
+					{
+						$c = ord($text[$pos]);		// Convert current character to an integer
+						if (($c & 0x80) === 0)
+						{
+							$pos++;					// Its a single-byte character
+						}
+						elseif (($c & 0xe0) === 0xc0)
+						{
+							$pos+= 2;				// Its a 2-byte character
+						}
+						elseif (($c & 0xf0) === 0xe0)
+						{
+							$pos+= 3;				// Its a 3-byte character
+						}
+						else
+						{
+							$pos+= 4;				// Assume ifs 4 bytes (could carry on = theoretically there are 5-byte and 6-byte sequences)
+						}
+					}
+					else
+					{
+						$pos++;
+					}
+					if(!$intag) {$curlen++;}
 			}
 		}
 		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos+1) : substr($text, 0, $pos));
