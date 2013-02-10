@@ -604,7 +604,7 @@ class newsletter
 		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
 			$mes->addError(NLLAN_56);
-			$vs_text .= "<div class='buttonsbar center'>
+			$vs_text .= "<div class='buttons-bar center'>
 							<input class='button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
 						</div>";
 			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
@@ -679,7 +679,7 @@ class newsletter
 			<td colspan='4'>".NLLAN_63.": ".$subscribers_total_count."</td>
 		</tr>
 		 </table>
-			 <div class='buttonsbar center'>
+			 <div class='buttons-bar center'>
 			 	".$frm->admin_button('submit', LAN_BACK, 'submit')."
 			 </div>			
 		 </form>
