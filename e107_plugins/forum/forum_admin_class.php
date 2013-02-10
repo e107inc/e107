@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -90,7 +90,10 @@ class forumAdmin
 	function delete_parent($id, $confirm = false)
 	{
 		$sql = e107::getDb();
-		$ret = '';
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+
+		//$ret = '';
 		if($sql->db_Select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
 			$fList = $sql->db_getList();
@@ -103,17 +106,20 @@ class forumAdmin
 		{
 			if($sql->db_Delete('forum', "forum_id = {$id}"))
 			{
-				$ret .= 'Forum parent successfully deleted'; // TODO LAN
+				//$ret .= 'Forum parent successfully deleted'; 
+				$mes->addSuccess("Forum parent successfully deleted"); // TODO LAN
 			}
 			else
 			{
-				$ret .= 'Forum parent could not be deleted'; // TODO LAN
+				//$ret .= 'Forum parent could not be deleted'; // TODO LAN
+				$mes->addError("Forum parent could not be deleted"); // TODO LAN
 			}
 			return $ret;
 		}
-		return 'The forum parent has the following info: <br />'.$ret; // TODO LAN
+		//return 'The forum parent has the following info: <br />'.$ret; // TODO LAN
 
 	}
+
 
 	function deleteForum($forumId)
 	{
@@ -133,7 +139,7 @@ class forumAdmin
 		$f = new e107Forum;
 		if($sql->db_Select('forum_thread', 'thread_id','thread_forum_id='.$forumId))
 		{
-			$list = $e107->sql->db_getList();
+			$list = $sql->db_getList();
 			foreach($list as $t)
 			{
 				$f->threadDelete($t['thread_id'], false);
@@ -146,7 +152,10 @@ class forumAdmin
 	{
 		$sql = e107::getDb();
 		$tp  = e107::getParser();
-		$ret = '';
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+
+		//$ret = '';
 		if($sql->db_Select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
 			$fList = $sql->db_getList();
@@ -159,18 +168,22 @@ class forumAdmin
 		{
 			if($this->deleteForum($id))
 			{
-				$ret .= "Forum {$id} successfully deleted"; // TODO LAN
+				//$ret .= "Forum {$id} successfully deleted"; // TODO LAN
+				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
-				$ret .= "Forum {$id} could not be deleted"; // TODO LAN
-			} 
-			return $ret;
+				//$ret .= "Forum {$id} could not be deleted"; // TODO LAN
+				$mes->addError(LAN_DELETED_FAILED);
+			} 			
 		}
 
 		$sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
 		$row = $sql->db_Fetch();
-		return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		//return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$mes->addInfo("Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads and {$row['forum_replies']} replies."); //FIXME combine multiple info's into one message
+
+		$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 	function delete_sub($id, $confirm = FALSE)
@@ -290,6 +303,8 @@ class forumAdmin
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
 
 		$subList = $for->forumGetSubs();
 
@@ -301,19 +316,20 @@ class forumAdmin
 		{
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
-		$text .= "
-		<table class='table adminlist'>
-		<tr>
-		<td colspan='2' text-align:center'>".FORLAN_28."</td>
-		<td text-align:center'>".FORLAN_80."</td>
-		</tr>";
 
 		if (!$parent_amount = $sql->db_Select('forum', '*', "forum_parent='0' ORDER BY forum_order ASC"))
 		{
-			$text .= "<tr><td style='text-align:center' colspan='3'>".FORLAN_29."</td></tr>";
+			//$text .= "<tr><td style='text-align:center' colspan='3'>".FORLAN_29."</td></tr>";
+			$mes->addInfo(FORLAN_29);
 		}
 		else
 		{
+			$text .= "
+			<table class='table adminlist'>
+			<tr>
+				<td colspan='2'>".FORLAN_28."</td>
+				<td>".LAN_OPTIONS."</td>
+			</tr>";
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$parentList[] = $row;
@@ -405,15 +421,16 @@ class forumAdmin
 		if (!$mode)
 		{
 			$text .= "</table></div>";
-			$e107->ns->tablerender(FORLAN_30, $text);
+			$ns->tablerender(FORLAN_30, $mes->render() . $text);
 		}
 		else
 		{
-			$text .= "<tr>\n<td colspan='4' style='text-align:center'>\n".$frm->admin_button('update_order', LAN_UPDATE, 'update')."\n</td>\n</tr>\n</table>\n</form>";
-			$e107->ns->tablerender(FORLAN_37, $text);
+			$text .= "<tr><td colspan='4' style='text-align:center'>\n".$frm->admin_button('update_order', LAN_UPDATE, 'update')."\n</td>\n</tr>\n</table>\n</form>";
+			$ns->tablerender(FORLAN_37, $mes->render() . $text);
 		}
 
 	}
+
 
 	function create_parents($sub_action, $id)
 	{
@@ -443,32 +460,28 @@ class forumAdmin
 		$text = "
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table class='table adminform'>
-
+		<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
-		<td>".LAN_NAME.":</td>
-		<td>
-		<input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($row['forum_name'])."' maxlength='250' />
-		</td>
+			<td>".LAN_NAME.":</td>
+			<td><input class='tbox' type='text' name='forum_name' size='60' value='".$tp->toForm($row['forum_name'])."' maxlength='250' /></td>
 		</tr>
-
 		<tr>
-		<td>".FORLAN_23.":</td>
-		<td>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
+			<td>".FORLAN_23.":</td>
+			<td>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_24."</span></td>
 		</tr>
-
 		<tr>
-		<td>".FORLAN_142.":</td>
-		<td>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
+			<td>".FORLAN_142.":</td>
+			<td>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_143."</span></td>
 		</tr>
-
 		<tr>
-		<td>".FORLAN_184.":</td>
-		<td>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
+			<td>".FORLAN_184.":</td>
+			<td>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."<span class='field-help'>".FORLAN_185."</span></td>
 		</tr>
-
-		<tr style='vertical-align:top'>
-		<td colspan='2'  style='text-align:center'>";
-
+		</table>
+		<div class='buttons-bar center'>";
 		if ($sub_action == 'edit')
 		{
 			$text .= $frm->admin_button('update_parent', LAN_UPDATE, 'update');
@@ -477,10 +490,8 @@ class forumAdmin
 		{
 			$text .= $frm->admin_button('submit_parent', LAN_CREATE, 'submit');
 		}
-
-		$text .= "</td>
-		</tr>
-		</table>
+		$text .= "
+		</div>
 		</form>";
 
 		$ns->tablerender(FORLAN_75, $text);
@@ -499,7 +510,7 @@ class forumAdmin
 		{
 			if ($sql->db_Select('forum', '*', "forum_id=$id"))
 			{
-				$fInfo = $e107->sql->db_Fetch(MYSQL_ASSOC);
+				$fInfo = $sql->db_Fetch(MYSQL_ASSOC);
 			}
 		}
 		else
@@ -580,11 +591,13 @@ class forumAdmin
 		$ns->tablerender(FORLAN_28, $text);
 	}
 
-	function show_message($message)
+	
+	function show_message($message) // FIX
 	{
 		$ns = e107::getRender();
 		$ns->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>"); //FIX: v2 style = render?
 	}
+	
 
 	function show_tools()
 	{
@@ -596,56 +609,56 @@ class forumAdmin
 		$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<table class='table adminlist'>
-		<tr style='width:100%'>
-		<td>".FORLAN_156."</td>
+		<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
+		<tr>
+			<td>".FORLAN_156."</td>
 		</tr>
 		<tr>
-		<td>
-		";
-		if($sql->db_Select("forum", "*", "1 ORDER BY forum_order"))
-		{
-			$fList = $sql->db_getList();
-			foreach($fList as $f)
+			<td>
+			";
+			if($sql->db_Select("forum", "*", "1 ORDER BY forum_order"))
 			{
-				$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
+				$fList = $sql->db_getList();
+				foreach($fList as $f)
+				{
+					$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
+				}
+				$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".FORLAN_157."</strong>";
 			}
-			$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".FORLAN_157."</strong>";
-		}
-		$txt .= "
-		</td>
+			$txt .= "
+			</td>
 		</tr>
 		<tr>
-		<td>".FORLAN_158."</td>
+			<td>".FORLAN_158."</td>
 		</tr>
 		<tr>
-		<td>
-		<input type='checkbox' name='lastpost' value='1' /> ".FORLAN_159." <br />&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type='checkbox' name='lastpost_nothread' value='1' checked='checked' /> ".FORLAN_160."
-		</td>
+			<td>
+			<input type='checkbox' name='lastpost' value='1' /> ".FORLAN_159." <br />&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type='checkbox' name='lastpost_nothread' value='1' checked='checked' /> ".FORLAN_160."
+			</td>
 		</tr>
 		<tr>
-		<td>".FORLAN_161."</td>
-		</tr>
-		<tr>
-		<td>
-			<input type='checkbox' name='counts' value='1' /> ".FORLAN_162."<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='counts_threads' value='1' /><span style='text-align: center'> ".FORLAN_182."<br />".FORLAN_183."</span><br />
-		</td>
-		</tr>
-		<tr>
-		<td>".FORLAN_163."</td>
+			<td>".FORLAN_161."</td>
 		</tr>
 		<tr>
 		<td>
-		<input type='checkbox' name='userpostcounts' value='1' /> ".FORLAN_164."<br />
-		</td>
+				<input type='checkbox' name='counts' value='1' /> ".FORLAN_162."<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='counts_threads' value='1' /><span style='text-align: center'> ".FORLAN_182."<br />".FORLAN_183."</span><br />
+			</td>
 		</tr>
 		<tr>
-		<td style='text-align:center'>
-		".$frm->admin_button('tools', LAN_EXECUTE, 'submit')."
-		</td>
+			<td>".FORLAN_163."</td>
+		</tr>
+		<tr>
+			<td><input type='checkbox' name='userpostcounts' value='1' /> ".FORLAN_164."<br /></td>
 		</tr>
 		</table>
+		<div class='buttons-bar center'>
+			".$frm->admin_button('tools', LAN_EXECUTE, 'submit')."
+		</div>
 		</form>
 		";
 		$ns->tablerender(FORLAN_166, $txt);
@@ -657,8 +670,9 @@ class forumAdmin
 		$ns = e107::getRender();
 		$sql    = e107::getDb(); 
 		$e107 = e107::getInstance();
-		$emessage = eMessage::getInstance();
+		//$emessage = eMessage::getInstance();
 		$frm = e107::getForm();
+		$mes = e107::getMessage();
 
 		$poll_installed = plugInstalled('poll');
 
@@ -675,135 +689,138 @@ class forumAdmin
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table class='table adminform'>
-
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
-		<td style='width:75%'>".FORLAN_44.":</td>
-		<td style='width:25%'>".($fPref->get('enclose') ? "<input type='checkbox' name='forum_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='forum_enclose' value='1' />")."<span class='field-help'>".FORLAN_45."</div></td>
+			<td>".FORLAN_44.":</td>
+			<td>".($fPref->get('enclose') ? "<input type='checkbox' name='forum_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='forum_enclose' value='1' />")."<span class='field-help'>".FORLAN_45."</div></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_65.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_title' size='15' value='".$fPref->get('title')."' maxlength='100' /></td>
+			<td>".FORLAN_65.":</td>
+			<td><input class='tbox' type='text' name='forum_title' size='15' value='".$fPref->get('title')."' maxlength='100' /></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_47.":</td>
-		<td style='width:25%'>".($fPref->get('notify') ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."<span class='field-help'>".FORLAN_48."</span></td>
+			<td>".FORLAN_47.":</td>
+			<td>".($fPref->get('notify') ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."<span class='field-help'>".FORLAN_48."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_177.":</td>
-		<td style='width:25%'>".($fPref->get('notify_on') ? "<input type='checkbox' name='email_notify_on' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify_on' value='1' />")."<span class='field-help'>".FORLAN_178."</span></td>
+			<td>".FORLAN_177.":</td>
+			<td>".($fPref->get('notify_on') ? "<input type='checkbox' name='email_notify_on' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify_on' value='1' />")."<span class='field-help'>".FORLAN_178."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_49.":</td>";
-		if($poll_installed)
-		{
-//			<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
-			$text .= "<td style='width:25%'>".$e107->user_class->uc_dropdown('forum_poll', $fPref->get('poll'), 'admin,classes').'<span class="field-help">'.FORLAN_50.'</span></td>';
-		}
-		else
-		{
-			$text .= "<td style='width:25%'>".FORLAN_66."</td>";
-		}
-		$text .= "
+			<td>".FORLAN_49.":</td>";
+			if($poll_installed)
+			{
+			//<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+				$text .= "<td>".$e107->user_class->uc_dropdown('forum_poll', $fPref->get('poll'), 'admin,classes').'<span class="field-help">'.FORLAN_50.'</span></td>';
+			}
+			else
+			{
+				$text .= "<td>".FORLAN_66."</td>";
+			}
+			$text .= "
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_70.":"; 
+			<td>".FORLAN_70.":"; 
 
-		if(!$pref['image_post'])
-		{
-			$text .= "<br /><b>".FORLAN_139."</b>"; // TODO LAN
-		}
-		if(!is_writable(e_PLUGIN.'forum/attachments'))
-		{
-			$text .= "<br /><b>Attachment dir (".e_PLUGIN_ABS.'forum/attachments'.") is not writable!</b>"; // TODO LAN
-		}
+			if(!$pref['image_post'])
+			{
+				$text .= "<br /><b>".FORLAN_139."</b>"; // TODO LAN
+			}
+			if(!is_writable(e_PLUGIN.'forum/attachments'))
+			{
+				$text .= "<br /><b>Attachment dir (".e_PLUGIN_ABS.'forum/attachments'.") is not writable!</b>"; // TODO LAN
+			}
 
-		$text .= "</td>
-		<td style='width:25%'>".($fPref->get('attach') ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."<span class='field-help'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
+			$text .= "</td>
+			<td>".($fPref->get('attach') ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."<span class='field-help'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_134.":</td>
-		<td style='width:25%'><input class='tbox' type='text' size='3' maxlength='5' name='forum_maxwidth' value='".$fPref->get('maxwidth')."' /><span class='field-help'>".FORLAN_135."</span></td>
+			<td>".FORLAN_134.":</td>
+			<td><input class='tbox' type='text' size='3' maxlength='5' name='forum_maxwidth' value='".$fPref->get('maxwidth')."' /><span class='field-help'>".FORLAN_135."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_136.":</td>
-		<td style='width:25%'>".($fPref->get('linkimg') ? "<input type='checkbox' name='forum_linkimg' value='1' checked='checked' />" : "<input type='checkbox' name='forum_linkimg' value='1' />")."<span class='field-help'>".FORLAN_137."</span></td>
+			<td>".FORLAN_136.":</td>
+			<td>".($fPref->get('linkimg') ? "<input type='checkbox' name='forum_linkimg' value='1' checked='checked' />" : "<input type='checkbox' name='forum_linkimg' value='1' />")."<span class='field-help'>".FORLAN_137."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_51.":</td>
-		<td style='width:25%'>".($fPref->get('track') ? "<input type='checkbox' name='forum_track' value='1' checked='checked' />" : "<input type='checkbox' name='forum_track' value='1' />")."<span class='field-help'>".FORLAN_52."</span></td>
+			<td>".FORLAN_51.":</td>
+			<td>".($fPref->get('track') ? "<input type='checkbox' name='forum_track' value='1' checked='checked' />" : "<input type='checkbox' name='forum_track' value='1' />")."<span class='field-help'>".FORLAN_52."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_112.":</td>
-		<td style='width:25%'>".($fPref->get('redirect') ? "<input type='checkbox' name='forum_redirect' value='1' checked='checked' />" : "<input type='checkbox' name='forum_redirect' value='1' />")."<span class='field-help'>".FORLAN_113."</span></td>
+			<td>".FORLAN_112.":</td>
+			<td>".($fPref->get('redirect') ? "<input type='checkbox' name='forum_redirect' value='1' checked='checked' />" : "<input type='checkbox' name='forum_redirect' value='1' />")."<span class='field-help'>".FORLAN_113."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_116.":</td>
-		<td style='width:25%'>".($fPref->get('reported_post_email') ? "<input type='checkbox' name='reported_post_email' value='1' checked='checked' />" : "<input type='checkbox' name='reported_post_email' value='1' />")."<span class='field-help'>".FORLAN_122."</span></td>
-		</tr>
-
-
-		<tr>
-		<td style='width:75%'>".FORLAN_126.":</td>
-		<td style='width:25%'>".($fPref->get('forum_tooltip') ? "<input type='checkbox' name='forum_tooltip' value='1' checked='checked' />" : "<input type='checkbox' name='forum_tooltip' value='1' />")."<span class='field-help'>".FORLAN_127."</span></td>
-		</tr>
-
-		<tr>
-		<td style='width:75%'>".FORLAN_128.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_tiplength' size='15' value='".$fPref->get('tiplength')."' maxlength='20' /><span class='field-help'>".FORLAN_129."</span></td>
+			<td>".FORLAN_116.":</td>
+			<td>".($fPref->get('reported_post_email') ? "<input type='checkbox' name='reported_post_email' value='1' checked='checked' />" : "<input type='checkbox' name='reported_post_email' value='1' />")."<span class='field-help'>".FORLAN_122."</span></td>
 		</tr>
 
 
 		<tr>
-		<td style='width:75%'>".FORLAN_53.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_eprefix' size='15' value='".$fPref->get('eprefix')."' maxlength='20' /><span class='field-help'>".FORLAN_54."</span></td>
+			<td>".FORLAN_126.":</td>
+			<td>".($fPref->get('forum_tooltip') ? "<input type='checkbox' name='forum_tooltip' value='1' checked='checked' />" : "<input type='checkbox' name='forum_tooltip' value='1' />")."<span class='field-help'>".FORLAN_127."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_55.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_popular' size='3' value='".$fPref->get('popular')."' maxlength='3' /><span class='field-help'>".FORLAN_56."</span></td>
+			<td>".FORLAN_128.":</td>
+			<td><input class='tbox' type='text' name='forum_tiplength' size='15' value='".$fPref->get('tiplength')."' maxlength='20' /><span class='field-help'>".FORLAN_129."</span></td>
+		</tr>
+
+
+		<tr>
+			<td>".FORLAN_53.":</td>
+			<td><input class='tbox' type='text' name='forum_eprefix' size='15' value='".$fPref->get('eprefix')."' maxlength='20' /><span class='field-help'>".FORLAN_54."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_57.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_postspage' size='3' value='".$fPref->get('postspage')."' maxlength='3' /><span class='field-help'>".FORLAN_58."</span></td>
+			<td>".FORLAN_55.":</td>
+			<td><input class='tbox' type='text' name='forum_popular' size='3' value='".$fPref->get('popular')."' maxlength='3' /><span class='field-help'>".FORLAN_56."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_186.":</td>
-		<td style='width:25%'><input class='tbox' type='text' name='forum_threadspage' size='3' value='".$fPref->get('threadspage')."' maxlength='3' /><span class='field-help'>".FORLAN_187."</span></td>
+			<td>".FORLAN_57.":</td>
+			<td><input class='tbox' type='text' name='forum_postspage' size='3' value='".$fPref->get('postspage')."' maxlength='3' /><span class='field-help'>".FORLAN_58."</span></td>
 		</tr>
 
 		<tr>
-		<td style='width:75%'>".FORLAN_132.":</td>
-		<td style='width:25%'>".($fPref->get('hilightsticky') ? "<input type='checkbox' name='forum_hilightsticky' value='1' checked='checked' />" : "<input type='checkbox' name='forum_hilightsticky' value='1' />")."<span class='field-help'>".FORLAN_133."</span></td>
+			<td>".FORLAN_186.":</td>
+			<td><input class='tbox' type='text' name='forum_threadspage' size='3' value='".$fPref->get('threadspage')."' maxlength='3' /><span class='field-help'>".FORLAN_187."</span></td>
+		</tr>
+
+		<tr>
+			<td>".FORLAN_132.":</td>
+			<td>".($fPref->get('hilightsticky') ? "<input type='checkbox' name='forum_hilightsticky' value='1' checked='checked' />" : "<input type='checkbox' name='forum_hilightsticky' value='1' />")."<span class='field-help'>".FORLAN_133."</span></td>
 		</tr>
 		</table>
 	
-
 		<div class='buttons-bar center'>
 			".$frm->admin_button('updateoptions', LAN_UPDATE, 'update')."
 		</div>
 		</form>
 ";
-		$ns->tablerender(FORLAN_62, $emessage->render().$text);
+		$ns->tablerender(FORLAN_62, $mes->render() . $text);
 	}
 
 	function show_reported ($sub_action, $id)
 	{
-		global $rs; // FIX replace by $frm?
+		global $rs; // FIX replace by $frm
 		$sql = e107::getDb();
 		$ns = e107::getRender(); 
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
 
 		if ($sub_action) {
 			$sql -> db_Select("generic", "*", "gen_id='".$sub_action."'");
@@ -813,83 +830,73 @@ class forumAdmin
 			$con = new convert;
 			$text = "
 			<table class='table adminlist'>
+			<colgroup span='2'>
+    			<col class='col-label' />
+    			<col class='col-control' />
+    		</colgroup>
 			<tr>
-			<td>
-			".FORLAN_171.":
-			</td>
-			<td>
-			<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a>
+				<td>".FORLAN_171.":</td>
+				<td><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a></td>
+			</tr>
+			<tr>
+				<td>".FORLAN_173.":</td>
+				<td>".$row['gen_ip']."</td>
+			</tr>
+			<tr>
+				<td>".FORLAN_174.":</td>
+				<td><a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
 			</td>
 			</tr>
 			<tr>
-			<td>
-			".FORLAN_173.":
-			</td>
-			<td>
-			".$row['gen_ip']."
-			</td>
+				<td>".FORLAN_175.":</td>
+				<td>".$con -> convert_date($row['gen_datestamp'], "long")."</td>
 			</tr>
 			<tr>
-			<td>
-			".FORLAN_174.":
-			</td>
-			<td>
-			<a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
-			</td>
+				<td>".FORLAN_176.":</td>
+				<td>".$row['gen_chardata']."</td>
 			</tr>
 			<tr>
-			<td>
-			".FORLAN_175.":
-			</td>
-			<td>
-			".$con -> convert_date($row['gen_datestamp'], "long")."
-			</td>
-			</tr>
-			<tr>
-			<td>
-			".FORLAN_176.":
-			</td>
-			<td>
-			".$row['gen_chardata']."
+				<td style='text-align:center' colspan='2'>
+				".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
+				".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
+				".$rs->form_close()."
 			</td>
 			</tr>
-			<tr>
-			<td style='text-align:center' colspan='2'>
-			".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
-			".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
-			".$rs->form_close()."
-			</td>
-			</tr>\n";
-			$text .= "</table>";
-			$text .= "</div>";
+			</table>";
+
 			$ns -> tablerender(FORLAN_116, $text);
-		} else {
-			if ($reported_total = $sql->db_Select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
-			{
-				$text .= "<table class='table adminlist'>
-				<tr>
-				<td style='width:80%' >".FORLAN_170."</td>
-				<td style='width:20%; text-align:center'>".FORLAN_80."</td>
-				</tr>";
-				while ($row = $sql->db_Fetch())
-				{
-					$text .= "<tr>
-					<td style='width:80%'><a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
-					<td style='width:20%; text-align:center; vertical-align:top; white-space: nowrap'>
-					".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
-					".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
-					".$rs->form_close()."
-					</td>
-					</tr>\n";
-				}
-				$text .= "</table>";
-			}
+
+			} 
 			else
 			{
-				$text = "<div style='text-align:center'>".FORLAN_121."</div>";
+				if ($reported_total = $sql->db_Select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
+				{
+					$text .= "
+					<table class='table adminlist'>
+					<tr>
+						<td>".FORLAN_170."</td>
+						<td>".LAN_OPTIONS."</td>
+					</tr>";
+					while ($row = $sql->db_Fetch())
+					{
+						$text .= "<tr>
+						<td<a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
+						<td text-align:center; vertical-align:top; white-space: nowrap'>
+						".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
+						".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
+						".$rs->form_close()."
+						</td>
+						</tr>\n";
+					}
+					$text .= "</table>";
+				}
+				else
+				{
+					//$text = "<div style='text-align:center'>".FORLAN_121."</div>";
+					$mes->addInfo(FORLAN_121);
+				}
+				$ns->tablerender(FORLAN_116, $mes->render() . $text);
 			}
-			$ns->tablerender(FORLAN_116, $text);
-		}
 	}
 
 	function show_prune()
@@ -914,19 +921,17 @@ class forumAdmin
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table class='table adminlist'>
 		<tr>
-		<td>".FORLAN_60."</td>
-		</tr>
-		<tr>
-
-		<td>".FORLAN_87."
-		<input class='tbox' type='text' name='prune_days' size='6' value='' maxlength='3' />
-		</td>
+			<td>".FORLAN_60."</td>
 		</tr>
 
 		<tr>
-		<td>".FORLAN_2."<br />
-		".FORLAN_89." <input type='radio' name='prune_type' value='delete' />&nbsp;&nbsp;&nbsp;
-		".FORLAN_90." <input type='radio' name='prune_type' value='make_inactive' checked='checked' />
+			<td>".FORLAN_87." <input class='tbox' type='text' name='prune_days' size='6' value='' maxlength='3' /></td>
+		</tr>
+
+		<tr>
+			<td>".FORLAN_2."<br />
+				".FORLAN_89." <input type='radio' name='prune_type' value='delete' />&nbsp;&nbsp;&nbsp;
+				".FORLAN_90." <input type='radio' name='prune_type' value='make_inactive' checked='checked' />
 		</td>
 		</tr>
 
@@ -942,12 +947,11 @@ class forumAdmin
 		}
 
 
-		$text .= "<tr>
-		<td colspan='2'  style='text-align:center'>
-		".$frm->admin_button('do_prune', LAN_PRUNE, 'submit')."
-		</td>
-		</tr>
+		$text .= "
 		</table>
+		<div class='buttons-bar center'>
+			".$frm->admin_button('do_prune', LAN_PRUNE, 'submit')."
+		</div>
 		</form>";
 		$ns->tablerender(LAN_PRUNE, $text);
 	}
@@ -958,20 +962,25 @@ class forumAdmin
 		global $for;
 		$ns = e107::getRender();
 		$sql = e107::getDB();
-		$e107 = e107::getInstance(); // FIX: needed?
+		$e107 = e107::getInstance(); // FIX needed?
 		$forumList = $for->forum_getforums('all');
 		$parentList = $for->forum_getparents('list');
 		$subList   = $for->forumGetSubs('bysub');
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 
-		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='table adminlist'>";
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<table class='table adminlist'>
+		<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>";
 
 		foreach($parentList as $p)
 		{
 			$txt .= "
 			<tr>
-			<td colspan='2' ><strong>".$tp->toHTML($p['forum_name'])."</strong></td>
+				<td colspan='2' ><strong>".$tp->toHTML($p['forum_name'])."</strong></td>
 			</tr>
 			";
 
@@ -979,29 +988,27 @@ class forumAdmin
 			{
 				$txt .= "
 				<tr>
-				<td>{$f['forum_name']}</td>
-				<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+					<td>{$f['forum_name']}</td>
+					<td>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
 				</tr>
 				";
 				foreach($subList[$f['forum_id']] as $s)
 				{
 					$txt .= "
 					<tr>
-					<td>&nbsp;&nbsp;&nbsp;&nbsp;{$s['forum_name']}</td>
-					<td>".$e107->user_class->uc_dropdown("mods[{$s['forum_id']}]", $s['forum_moderators'], 'admin,classes')."</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;{$s['forum_name']}</td>
+						<td>".$e107->user_class->uc_dropdown("mods[{$s['forum_id']}]", $s['forum_moderators'], 'admin,classes')."</td>	
 					</tr>
 					";
 				}
 			}
 		}
 			$txt .= "
-			<tr>
-			<td colspan='2'  style='text-align:center'>
-			".$frm->admin_button('setMods', LAN_UPDATE, 'update')."
-			</td>
-			</tr>
-
-			</table></form>";
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('setMods', LAN_UPDATE, 'update')."
+			</div>
+			</form>";
 			$ns->tablerender(FORLAN_33, $txt);  // FIX: LAN button update was WMGLAN_4." ".FORLAN_33)
 		}
 
@@ -1041,81 +1048,80 @@ class forumAdmin
 			$text = "
 			<form method='post' action='".e_SELF."?rules'  id='wmform'>
 			<table class='table adminform'>
-			<tr>";
-
-			$text .= "
-
-			<td style='width:20%'>".WMGLAN_1.": <br />
-			".WMGLAN_6.":";
-			if (vartrue($guest_rules['gen_intdata']))
-			{
-				$text .= "<input type='checkbox' name='guest_active' value='1'  checked='checked' />";
-			}
-			else
-			{
-				$text .= "<input type='checkbox' name='guest_active' value='1' />";
-			}
-			$text .= "</td>
-			<td>
-			<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guesttext</textarea>
-			<br />
-			<input class='helpbox' type='text' name='helpguest' size='100' />
-			<br />
-			".display_help('helpb', 1, 'addtext1', 'help1')."
-			</td>
+			<colgroup span='2'>
+    			<col class='col-label' />
+    			<col class='col-control' />
+    		</colgroup>
+			<tr>
+				<td>".WMGLAN_1.": <br />
+				".WMGLAN_6.":";
+				if (vartrue($guest_rules['gen_intdata']))
+				{
+					$text .= "<input type='checkbox' name='guest_active' value='1'  checked='checked' />";
+				}
+				else
+				{
+					$text .= "<input type='checkbox' name='guest_active' value='1' />";
+				}
+				$text .= "</td>
+				
+				<td>
+					<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guesttext</textarea>
+					<br />
+					<input class='helpbox' type='text' name='helpguest' size='100' />
+					<br />
+					".display_help('helpb', 1, 'addtext1', 'help1')."
+				</td>
 			</tr>
 
 			<tr>
-			<td style='width:20%'>".WMGLAN_2.": <br />
-			".WMGLAN_6.":";
-			if (vartrue($member_rules['gen_intdata']))
-			{
-				$text .= "<input type='checkbox' name='member_active' value='1'  checked='checked' />";
-			}
-			else
-			{
-				$text .= "<input type='checkbox' name='member_active' value='1' />";
-			}
-			$text .= "</td>
-			<td>
-			<textarea class='tbox' name='memberrules' cols='70' rows='10'>$membertext</textarea>
-			<br />
-			<input class='helpbox' type='text' name='helpmember' size='100' /> 
-			<br />
-			".display_help('helpb', 1, 'addtext2', 'help2')."
-			</td>
+				<td>".WMGLAN_2.": <br />
+				".WMGLAN_6.":";
+				if (vartrue($member_rules['gen_intdata']))
+				{
+					$text .= "<input type='checkbox' name='member_active' value='1'  checked='checked' />";
+				}
+				else
+				{
+					$text .= "<input type='checkbox' name='member_active' value='1' />";
+				}
+				$text .= "</td>
+				
+				<td>
+					<textarea class='tbox' name='memberrules' cols='70' rows='10'>$membertext</textarea>
+					<br />
+					<input class='helpbox' type='text' name='helpmember' size='100' /> 
+					<br />
+					".display_help('helpb', 1, 'addtext2', 'help2')."
+				</td>
 			</tr>
 
 			<tr>
-			<td style='width:20%'>".WMGLAN_3.": <br />
-			".WMGLAN_6.": ";
+				<td>".WMGLAN_3.": <br />
+				".WMGLAN_6.": ";
 
-			if (vartrue($admin_rules['gen_intdata']))
-			{
-				$text .= "<input type='checkbox' name='admin_active' value='1'  checked='checked' />";
-			}
-			else
-			{
-				$text .= "<input type='checkbox' name='admin_active' value='1' />";
-			}
+				if (vartrue($admin_rules['gen_intdata']))
+				{
+					$text .= "<input type='checkbox' name='admin_active' value='1'  checked='checked' />";
+				}
+				else
+				{
+					$text .= "<input type='checkbox' name='admin_active' value='1' />";
+				}
 
-			$text .= "</td>
-			<td>
-			<textarea class='tbox' name='adminrules' cols='70' rows='10'>$admintext</textarea>
-			<br />
-			<input class='helpbox' type='text' name='helpadmin' size='100' />
-			<br />
-			".display_help('helpb', 1, 'addtext3', 'help3')."
-			</td>
-			</tr>
-
-			<tr style='vertical-align:top'>
-			<td>&nbsp;</td>
-			<td>
-			".$frm->admin_button('frsubmit', WMGLAN_4, 'submit')."
-			</td>
+				$text .= "</td>
+				<td>
+					<textarea class='tbox' name='adminrules' cols='70' rows='10'>$admintext</textarea>
+					<br />
+					<input class='helpbox' type='text' name='helpadmin' size='100' />
+					<br />
+					".display_help('helpb', 1, 'addtext3', 'help3')."
+				</td>
 			</tr>
 			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('frsubmit', LAN_UPDATE, 'submit')."
+			</div>
 			</form>";
 
 			$ns->tablerender(WMGLAN_5, $text);
