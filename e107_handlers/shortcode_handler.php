@@ -291,7 +291,7 @@ class e_parse_shortcode
 			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
 		
-		$globalOverride = $this->isBatchOverride($className);
+		$globalOverride = $this->isBatchOverride(str_replace('plugin_', '', $className));
 		
 		// forced override
 		if($overrideClass)
@@ -339,7 +339,7 @@ class e_parse_shortcode
 			}
 			else 
 			{
-				$path = e_CORE.'override/shortcodes/batch/'.$pluginName.'/'.$_class_fname.'.php';
+				$path = e_CORE.'override/shortcodes/batch/'.$pluginName.'_'.$_class_fname.'.php';
 				$className = 'override_'.$className;
 			}
 		}
