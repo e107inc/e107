@@ -50,7 +50,7 @@ if (isset($_POST['active']))
 		save_prefs();
 		$update = true;
 		//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
-		//$mes->addSucces(LAN_UPDATED);
+		//$mes->addSuccess(LAN_UPDATED);
 	}
 	else
 	{
@@ -93,7 +93,7 @@ foreach($_POST as $key => $value)
 		if(save_prefs())
 		{
 			//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
-			$mes->addSucces(LAN_UPDATED);
+			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
