@@ -107,18 +107,20 @@ class forumAdmin
 			if($sql->db_Delete('forum', "forum_id = {$id}"))
 			{
 				//$ret .= 'Forum parent successfully deleted'; 
-				$mes->addSuccess("Forum parent successfully deleted"); // TODO LAN
+				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
 				//$ret .= 'Forum parent could not be deleted'; // TODO LAN
-				$mes->addError("Forum parent could not be deleted"); // TODO LAN
+				$mes->addError(LAN_DELETED_FAILED); 
 			}
-			return $ret;
+			//return $ret;
+			$ns->tablerender($caption, $mes->render(). $text);
 		}
 		//return 'The forum parent has the following info: <br />'.$ret; // TODO LAN
 
 	}
+
 
 
 	function deleteForum($forumId)
@@ -190,22 +192,29 @@ class forumAdmin
 	{
 		$sql = e107::getDb();
 		$tp  = e107::getParser();
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+
 		if($confirm)
 		{
 			if($this->deleteForum($id))
 			{
-				$ret .= "Sub-forum {$id} successfully deleted"; // TODO LAN
+				//$ret .= "Sub-forum {$id} successfully deleted"; // TODO LAN
+				$mes->addSuccess(LAN_DELETED);
 			}
 			else
 			{
-				$ret .= "Sub-forum {$id} could not be deleted"; // TODO LAN
+				//$ret .= "Sub-forum {$id} could not be deleted"; // TODO LAN
+				$mes->addError(LAN_DELETED);
 			}
-			return $ret;
+			//return $ret;
 		}
 
 		$sql->db_Select('forum', '*', 'forum_id = '.$id);
 		$row = $sql->db_Fetch();
-		return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		//return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$mes->addInfo("Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies."); // FIXME show just once  on confirm and not LAN_DELETED
+		$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 	function delete_show_confirm($txt)
@@ -425,7 +434,7 @@ class forumAdmin
 		}
 		else
 		{
-			$text .= "<tr><td colspan='4' style='text-align:center'>\n".$frm->admin_button('update_order', LAN_UPDATE, 'update')."\n</td>\n</tr>\n</table>\n</form>";
+			$text .= "</table><div class='buttons-bar center'>".$frm->admin_button('update_order', LAN_UPDATE, 'update')."</div></form>";
 			$ns->tablerender(FORLAN_37, $mes->render() . $text);
 		}
 
