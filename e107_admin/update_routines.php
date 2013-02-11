@@ -1429,6 +1429,15 @@ function update_70x_to_706($type='')
 		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
 	  }
 	}
+	
+	if (!isset($pref['shortcode_legacy_list']))
+	{
+	  if ($just_check) return update_needed();
+	  // Reset, legacy and new shortcode list will be generated in plugin update routine
+	  $pref['shortcode_legacy_list'] = array();
+	  $pref['shortcode_list'] = array();
+	  save_prefs();
+	}
 
 	if (!$just_check)
 	{
@@ -1445,6 +1454,7 @@ function update_70x_to_706($type='')
 	  $pref['displayname_maxlength'] = 15;
 	  save_prefs();
 	}
+
 
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
 	if ($just_check) return TRUE;

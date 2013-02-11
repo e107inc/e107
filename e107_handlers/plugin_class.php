@@ -290,7 +290,7 @@ class e107plugin
 
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
-
+			
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml - no longer relevant. 
 			if ($plugin_path == $plug_info['folder'])
 			{
@@ -1630,7 +1630,7 @@ class e107plugin
 		}
 
 		$currentPref = $core->getPref($prefName.'/'.$plugin);
-		echo 'Path: '.$plugin.' Pref: '.$prefName.' Current: '.$currentPref.'  New: '.$pathEntry.'<br />';
+		//echo 'Path: '.$plugin.' Pref: '.$prefName.' Current: '.$currentPref.'  New: '.$pathEntry.'<br />';
 		switch ($when)
 		{
 			case 'install':
@@ -2378,7 +2378,12 @@ class e107plugin
 		{
 			$core->update($var.'_list', "");
 		}
-
+		
+		// reset
+		$core->set('bbcode_list', array())
+			->set('shortcode_legacy_list', array())
+			->set('shortcode_list', array());
+		
 		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
 
 		if ($sql->db_Select_gen($query))
@@ -2388,7 +2393,7 @@ class e107plugin
 				$is_installed = ($row['plugin_installflag'] == 1);
 				$tmp = explode(",", $row['plugin_addons']);
 				$path = $row['plugin_path'];
-
+				
 				if ($is_installed)
 				{
 					foreach ($tmp as $val)
@@ -2402,19 +2407,35 @@ class e107plugin
 				}
 
 				// search for .bb and .sc files.
+				$scl_array = array();
 				$sc_array = array();
 				$bb_array = array();
 				$sql_array = array();
 
 				foreach ($tmp as $adds)
 				{
-					if (substr($adds, -3) == ".sc")
+					// legacy shortcodes - plugin root *.sc files
+					if (substr($adds, -3) === ".sc")
 					{
 						$sc_name = substr($adds, 0, -3); // remove the .sc
 						if ($is_installed)
 						{
+							$scl_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
+						}
+						else
+						{
+							$scl_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
+						}
+					}
+					// new shortcodes location - shortcodes/single/*.php
+					elseif (substr($adds, 0, 3) === "sc_")
+					{
+						$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
+						
+						if ($is_installed)
+						{
 							$sc_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
-							}
+						}
 						else
 						{
 							$sc_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
@@ -2443,7 +2464,7 @@ class e107plugin
 						$core->setPref('e_sql_list/'.$path, $adds);
 					}
 				}
-
+				
 				// Build Bbcode list (will be empty if plugin not installed)
 				if (count($bb_array) > 0)
 				{
@@ -2452,6 +2473,12 @@ class e107plugin
 				}
 
 				// Build shortcode list - do if uninstalled as well
+				if (count($scl_array) > 0)
+				{
+					ksort($scl_array);
+					$core->setPref('shortcode_legacy_list/'.$path, $scl_array);
+				}
+				
 				if (count($sc_array) > 0)
 				{
 					ksort($sc_array);
@@ -2512,7 +2539,8 @@ class e107plugin
 		}
 
 		// Grab List of Shortcodes & BBcodes
-		$shortcodeList = $fl->get_files(e_PLUGIN.$plugin_path, '\.sc$', "standard", 1);
+		$shortcodeLegacyList = $fl->get_files(e_PLUGIN.$plugin_path, '\.sc$', "standard", 1);
+		$shortcodeList = $fl->get_files(e_PLUGIN.$plugin_path.'/shortcodes/single', '\.php$', "standard", 1);
 		
 		$bbcodeList		= $fl->get_files(e_PLUGIN.$plugin_path, '\.bb$', "standard", 1);
 		$bbcodeClassList= $fl->get_files(e_PLUGIN.$plugin_path, '^bb_(.*)\.php$', "standard", 1);
@@ -2520,15 +2548,19 @@ class e107plugin
 		
 		$sqlList = $fl->get_files(e_PLUGIN.$plugin_path, '_sql\.php$', "standard", 1);
 		
-
-		
-
 		// Search Shortcodes
-		foreach ($shortcodeList as $sc)
+		foreach ($shortcodeLegacyList as $sc)
 		{
 			if (is_readable(e_PLUGIN.$plugin_path."/".$sc['fname']))
 			{
 				$p_addons[] = $sc['fname'];
+			}
+		}
+		foreach ($shortcodeList as $sc)
+		{
+			if (is_readable(e_PLUGIN.$plugin_path."/shortcodes/single/".$sc['fname']))
+			{
+				$p_addons[] = 'sc_'.$sc['fname'];
 			}
 		}
 
