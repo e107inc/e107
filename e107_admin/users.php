@@ -1345,6 +1345,7 @@ class users_admin_ui extends e_admin_ui
 		$config->set('ranks_calc', $ranks_calc);
 		$config->set('ranks_flist', $ranks_flist);
 		$config->save();
+		$config->resetMessages();
 
 		//Delete existing rank data
 		e107::getDb()->delete('generic',"gen_type = 'user_rank_data'");
@@ -1397,10 +1398,10 @@ class users_admin_ui extends e_admin_ui
 			$tmp['data']['gen_user_id'] = varset($_POST['new_calc_pfx'],0);
 			$tmp['data']['gen_chardata'] = varset($_POST['new_calc_img']);
 			$tmp['data']['gen_intdata'] = varset($_POST['new_calc_lower']);
-
-			e107::getMessage()->addSuccess(LAN_UPDATED);
+			e107::getDb()->insert('generic', $tmp);
 		}
 		
+		e107::getMessage()->addSuccess(LAN_UPDATED);
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 	}
 
@@ -1411,7 +1412,7 @@ class users_admin_ui extends e_admin_ui
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 		if (e107::getDb()->delete('generic',"gen_id='{$rankId}'"))
 		{
-			e107::getMessage()->addSucces(LAN_DELETED);
+			e107::getMessage()->addSuccess(LAN_DELETED);
 		}
 		else
 		{
