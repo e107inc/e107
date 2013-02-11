@@ -219,7 +219,7 @@ if(isset($_POST['update_parent']))
 	$tmp['data']['forum_threadclass'] = $_POST['forum_threadclass'];
 	$sql->db_Update('forum', $tmp);
 	//$forum->show_message(FORLAN_14);
-	$mes->addSucces(LAN_UPDATED);
+	$mes->addSuccess(LAN_UPDATED);
 	$action = 'main';
 }
 
@@ -266,7 +266,7 @@ if(isset($_POST['update_forum']))
 	$sql->db_Update('forum', $tmp2);
 
 	//$forum->show_message(FORLAN_12);
-	$mes->addSucces(LAN_UPDATED);
+	$mes->addSuccess(LAN_UPDATED);
 	$action = 'main';
 }
 
@@ -319,7 +319,7 @@ if (isset($_POST['do_prune']))
 {
 	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
 	//$forum->show_message($msg);
-	$mes->addSucces($msg);
+	$mes->addSuccess($msg);
 	$action = 'main';
 }
 
@@ -349,7 +349,7 @@ $ns->tablerender($caption, $mes->render() . $text);
 if (vartrue($delete) == 'main') {
 	if ($sql->db_Delete('forum', "forum_id='$del_id' ")) {
 		//$forum->show_message(FORLAN_96);
-		$mes->addSucces(LAN_DELETED);
+		$mes->addSuccess(LAN_DELETED);
 	}
 	else 
 	{
@@ -377,7 +377,7 @@ if ($delete == 'cat')
 	if ($sql->db_Delete('forum', "forum_id='$del_id' "))
 	{
 		$sql->db_Delete('forum', "forum_parent='$del_id' ");
-		$mes->addSucces(LAN_DELETED);
+		$mes->addSuccess(LAN_DELETED);
 		$action = 'main';
 	}
 	else 
@@ -436,7 +436,7 @@ if ($delete == 'reported')
 {
 	$sql->db_Delete("generic", "gen_id='$del_id' ");
 	//$forum->show_message(FORLAN_118);
-	$mes->addSucces(LAN_DELETED);
+	$mes->addSuccess(LAN_DELETED);
 }
 
 

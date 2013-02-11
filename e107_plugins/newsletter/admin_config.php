@@ -387,7 +387,7 @@ class newsletter
 		{
 			$sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
 			//$this -> message = NLLAN_38;
-			$mes->addSucces(LAN_UPDATED);
+			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
