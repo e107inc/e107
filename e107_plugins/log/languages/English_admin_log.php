@@ -10,8 +10,8 @@
  * $Id$
  */
 
-define("ADSTAT_ON", "On");
-define("ADSTAT_OFF", "Off");
+//define("ADSTAT_ON", "On");
+//define("ADSTAT_OFF", "Off");
 define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");
 define("ADSTAT_L2", "The statistics logger has been successfully installed. To activate, please go to the config screen and click Activate.<br /><b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>");
 define("ADSTAT_L3", "Statistic Logging");
