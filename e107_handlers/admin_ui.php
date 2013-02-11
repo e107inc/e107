@@ -5214,14 +5214,27 @@ class e_admin_form_ui extends e_form
 					case 'userclasses':
 						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
 						$_option = array();
-						foreach ($classes as $k => $v) 
+						
+						if($type == 'batch')
 						{
-							$option['ucadd__'.$key.'__'.$k] = 'Add '.$v;	
-							$_option['ucremove__'.$key.'__'.$k] = 'Remove '.$v;	
+							// FIXME Lan
+							foreach ($classes as $k => $v) 
+							{
+								$option['ucadd__'.$key.'__'.$k] = LAN_ADD.' '.$v;	
+								$_option['ucremove__'.$key.'__'.$k] = 'Remove '.$v;	
+							}
+							$option['ucaddall__'.$key] = '(add all)';	
+							$_option['ucdelall__'.$key] = '(clear all)';
+							$option = array_merge($option, $_option);
 						}
-						$option['ucaddall__'.$key] = '(add all)';	
-						$_option['ucdelall__'.$key] = '(clear all)';
-						$option = array_merge($option, $_option);
+						else
+						{
+							foreach ($classes as $k => $v) 
+							{
+								$option[$key.'__'.$k] = $v;	
+							}
+						}
+						
 						unset($_option);
 					break;
 
