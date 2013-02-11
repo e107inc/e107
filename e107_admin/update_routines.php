@@ -1060,6 +1060,20 @@ function update_706_to_800($type='')
 
 	// -------------------  Populate Plugin Table With Changes ------------------ 
 	
+	
+	if (!isset($pref['shortcode_legacy_list']))
+	{
+	  	if ($just_check) return update_needed('Legacy shortcode conversion');
+	 	// Reset, legacy and new shortcode list will be generated in plugin update routine
+	  	$pref['shortcode_legacy_list'] = array();
+	 	$pref['shortcode_list'] = array();
+	  	save_prefs();
+	  
+	  	$ep = e107::getPlugin();
+		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
+		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
+	}
+	
 	// This has to be done after the table is upgraded
 	if($sql->db_Select('plugin', 'plugin_category', "plugin_category = ''"))
 	{
@@ -1428,15 +1442,6 @@ function update_70x_to_706($type='')
 		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
 		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
 	  }
-	}
-	
-	if (!isset($pref['shortcode_legacy_list']))
-	{
-	  if ($just_check) return update_needed();
-	  // Reset, legacy and new shortcode list will be generated in plugin update routine
-	  $pref['shortcode_legacy_list'] = array();
-	  $pref['shortcode_list'] = array();
-	  save_prefs();
 	}
 
 	if (!$just_check)
