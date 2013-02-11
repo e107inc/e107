@@ -446,30 +446,61 @@ class e_parse_shortcode
 	protected function loadPluginSCFiles()
 	{
 		$pref = e107::getPref('shortcode_list');
+		$prefl = e107::getPref('shortcode_legacy_list');
 
+		// new shortcodes - functions, shortcode/single/*.php
 		if ($pref)
 		{
 			foreach ($pref as $path => $namearray)
 			{
 				foreach ($namearray as $code => $uclass)
 				{
+					$code = strtoupper($code);
+					if (!$this->isRegistered($code))
+					{
+						if($this->isOverride($code))
+						{
+							$this->registered_codes[$code]['type'] = 'override';
+							$this->registered_codes[$code]['function'] = 'override_'.strtolower($code).'_shortcode';
+							$this->registered_codes[$code]['path'] = e_CORE.'override/shortcodes/single/';
+							$this->registered_codes[$code]['perms'] = $uclass; 
+							continue;
+						}
+						$this->registered_codes[$code]['type'] = 'plugin';
+						$this->registered_codes[$code]['function'] = strtolower($code).'_shortcode';
+						$this->registered_codes[$code]['path'] = e_PLUGIN.$path.'/shortcodes/single/';
+						$this->registered_codes[$code]['perms'] = $uclass; 
+					}
+				}
+			}
+		}
+
+		// legacy .sc - plugin root
+		if ($prefl)
+		{
+			foreach ($prefl as $path => $namearray)
+			{
+				foreach ($namearray as $code => $uclass)
+				{
+					// XXX old? investigate
 					if ($code == 'shortcode_config')
 					{
 						include_once(e_PLUGIN.$path.'/shortcode_config.php');
 					}
 					else
 					{
-						$code = strtoupper($code);
+						$code = strtoupper($code); 
 						if (!$this->isRegistered($code))
 						{
-							$this->registered_codes[$code]['type'] = 'plugin';
+							$this->registered_codes[$code]['type'] = 'plugin_legacy';
 							$this->registered_codes[$code]['path'] = $path;
-							$this->registered_codes[$code]['perms'] = $uclass; // XXX how we get this?
+							$this->registered_codes[$code]['perms'] = $uclass; 
 						}
 					}
 				}
 			}
 		}
+
 		return $this;
 	}
 
@@ -578,7 +609,7 @@ class e_parse_shortcode
 
 	function isRegistered($code)
 	{
-		return in_array($code, $this->registered_codes);
+		return array_key_exists($code, $this->registered_codes);
 	}
 
 	public function resetScClass($className, $object)
@@ -804,6 +835,7 @@ class e_parse_shortcode
 						
 						case 'override':
 						case 'func':
+						case 'plugin':
 							//It is a function, so include the file and call the function
 							$_function = $this->registered_codes[$code]['function'];
 							if (!function_exists($_function) && $this->registered_codes[$code]['path'])
@@ -811,13 +843,14 @@ class e_parse_shortcode
 								include_once($this->registered_codes[$code]['path'].strtolower($code).'.php');
 
 							}
+							
 							if (function_exists($_function))
 							{
 								$ret = call_user_func($_function, $parm, $sc_mode);
 							}
 							break;
 
-						case 'plugin':
+						case 'plugin_legacy':
 							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
 							break;
 

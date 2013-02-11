@@ -75,6 +75,7 @@
 		<core name="e_shortcode_list"><![CDATA[array (
   'siteinfo' => 'siteinfo',
 )]]></core>
+		<core name="shortcode_list"><![CDATA[array ()]]></core>
 		<core name="e_sitelink_list"><![CDATA[array (
   'news' => 'news',
   'page' => 'page',

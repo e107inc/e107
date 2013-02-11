@@ -936,6 +936,10 @@ class system_tools
 					{
 						$ret_code = $ep->checkAddon($row['plugin_path'], $this_addon); // See whether spaces before opening tag or after closing tag
 					}
+					elseif(strpos($this_addon, 'sc_') === 0)
+					{
+						$this_addon = substr($this_addon, 3). ' (sc)';
+					}
 					$text .= "<div class='clear'>";
 					$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
 					$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
