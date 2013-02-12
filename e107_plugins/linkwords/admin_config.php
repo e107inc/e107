@@ -259,7 +259,8 @@ if (($action == 'words') || ($action == 'edit'))
   $text = "<div class='center'>\n";
   if(!$sql -> db_Select("linkwords"))
   {
-	$text .= LWLAN_4;
+	//$text .= LWLAN_4;
+	$mes->addInfo(LWLAN_4);
   }
   else // TODO FIX table below needs input button to $frm style 
   {
