@@ -1475,28 +1475,37 @@ class admin_shortcodes
 
 		// ---------------- Cameron's Bit ---------------------------------
 
-			if(!varsettrue($pref['admin_separate_plugins']))
+		if(!varsettrue($pref['admin_separate_plugins']))
+		{
+        	// Convert Plugin Categories to Core Categories.
+			$convert = array(
+				'settings' 	=> array(1,'setMenu'),
+				'users'		=> array(2,'userMenu'),
+				'content'	=> array(3,'contMenu'),
+				'tools'		=> array(4,'toolMenu'),
+				'manage'	=> array(6,'managMenu'),
+				'misc'		=> array(7,'miscMenu'),
+				'help'		=> array(20,'helpMenu')
+			);
+
+             foreach($tmp as $pg)
+			 {
+			 	$id = $convert[$pg['category']][1];
+             	$menu_vars[$id]['sub'][] = $pg;
+			 }
+		   	 unset($menu_vars['plugMenu']);
+			 
+		
+			// Clean up - remove empty main sections
+			foreach ($menu_vars as $_m => $_d) 
 			{
-            	// Convert Plugin Categories to Core Categories.
-				$convert = array(
-					'settings' 	=> array(1,'setMenu'),
-					'users'		=> array(2,'userMenu'),
-					'content'	=> array(3,'contMenu'),
-					'tools'		=> array(4,'toolMenu'),
-					'manage'	=> array(6,'managMenu'),
-					'misc'		=> array(7,'miscMenu'),
-					'help'		=> array(20,'helpMenu')
-				);
-
-	             foreach($tmp as $pg)
-				 {
-				 	$id = $convert[$pg['category']][1];
-	             	$menu_vars[$id]['sub'][] = $pg;
-				 }
-			   	 unset($menu_vars['plugMenu']);
+				if(!isset($_d['sub']) || empty($_d['sub']))
+				{
+					unset($menu_vars[$_m]);
+				}
 			}
+		}
 
-       //     print_a($menu_vars);
 		// ------------------------------------------------------------------
 
 		//added option to disable leave/logout (ll) - more flexibility for theme developers
