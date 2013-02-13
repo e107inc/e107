@@ -280,6 +280,7 @@ class page_admin_ui extends e_admin_ui
 		protected $batchCopy 	= true;	
 		protected $sortField	= 'page_order';
 		protected $orderStep 	= 10;
+		protected $itemRoute 	= 'page/view?page_id=page_id&page_sef=page_sef';
 	//		protected $listSorting = true; 
 		
 		protected $fields = array(

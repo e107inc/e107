@@ -2224,12 +2224,12 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $listOrder = null;
 	
 	/**
-	 * @var field containing the order number
+	 * @var string field containing the order number
 	 */
 	protected $sortField = null;
 	
 	/**
-	 * @var reorder step
+	 * @var int reorder step
 	 */
 	protected $orderStep = 1;
 
