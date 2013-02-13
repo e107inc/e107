@@ -162,8 +162,8 @@ $(document).ready(function()
 				var linkid = $(ui.item).attr("id"); 
 			//	 $("td").removeClass("e-moving","slow"); 
 			     	
-				var script = $(".e-sort:first").attr("href");
-			//	alert(script);
+				var script = $(".sort-trigger:first").attr("href"); 
+
 				$.ajax({
 				  type: "POST",
 				  url: script,
