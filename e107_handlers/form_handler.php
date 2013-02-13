@@ -2012,7 +2012,7 @@ class e_form
 	
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 				
-				// Inline Editing. //FIXME - doesn't save data
+				// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
@@ -2048,12 +2048,12 @@ class e_form
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
-				if(vartrue($parms['link']) && $id && is_numeric($id) ) 
+				if(vartrue($parms['link']) && $id && is_numeric($id)) 
 				{
 					$link = str_replace('[id]',$id,$parms['link']);
 					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-					$dialog = vartrue($parms['dialog']) ? "e-dialog" : "";
-					$value = "<a class='e-tip {$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
+					$dialog = vartrue($parms['dialog']) ? " e-dialog" : "";
+					$value = "<a class='e-tip{$dialog}' href='".$link."' title='Quick View'>".$value."</a>";
 				}
 				
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up

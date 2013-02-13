@@ -52,9 +52,7 @@ class page_sitelinks // include plugin-folder in the name.
 			$sublinks[$pid][] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
-			//	'link_url'			=> vartrue($row['page_sef'],'page.php?id='.$row['page_id']), 
-				'link_url'			=> 'page.php?id='.$row['page_id'], 
-			//	'link_url'			=> e107::getUrl()->create('page/view', $row, 'allow=page_id,page_sef'), //XXX FIXME - bad links created. 
+				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')),
 				'link_description'	=> '',
 				'link_button'		=> '',
 				'link_category'		=> '',

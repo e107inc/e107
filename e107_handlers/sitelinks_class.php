@@ -1535,7 +1535,11 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_url($parm='')
 	{
-		if($this->var['link_url'][0] != "{" && strpos($this->var['link_url'],"://")===false)
+		if(strpos($this->var['link_url'], e_HTTP) === 0)
+		{
+			$url = "{e_BASE}".substr($this->var['link_url'], strlen(e_HTTP));
+		}
+		elseif($this->var['link_url'][0] != "{" && strpos($this->var['link_url'],"://")===false)
 		{
 			$url = "{e_BASE}".$this->var['link_url']; // Add e_BASE to links like: 'news.php' or 'contact.php' 	
 		}
