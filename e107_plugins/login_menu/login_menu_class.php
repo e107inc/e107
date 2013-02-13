@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -171,7 +171,7 @@ class login_menu_class
 
     function get_forum_stats($get_stats=true) 
 	{
-        global $sql;
+		$sql = e107::getDb();
         
         if(!e107::isInstalled('forum'))
             return array();
@@ -204,7 +204,7 @@ class login_menu_class
 
     function get_chatbox_menu_stats() 
 	{
-        global $sql;
+		$sql = e107::getDb();
         
         if(!e107::isInstalled('chatbox_menu'))
             return array();
@@ -339,14 +339,16 @@ class login_menu_class
 
 
 	/**
-	 *	@todo - $plugin_path is undefined - needs to be obtained from somewhere
+	 *	Get data for a plugin
+	 *
+	 *	@param string $plugid - name (= base directory) of the required plugin
 	 */
     function get_plugin_data($plugid) 
 	{
         if(($tmp = getcachedvars('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
 
         $ret = array();
-		if (is_readable(e_PLUGIN.vartrue($plugin_path).'/plugin.xml'))
+		if (is_readable(e_PLUGIN.$plugid.'/plugin.xml'))
 		{
 			require_once(e_HANDLER.'xml_class.php');
 			$xml = new xmlClass;
