@@ -1886,7 +1886,7 @@ class e_form
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
-						$value .= "<a class='e-sort' style='display:inline-block;vertical-align:middle;cursor:move' href='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
+						$value .= "<a class='e-sort sort-trigger' style='display:inline-block;vertical-align:middle;cursor:move' href='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='Re-order'>".ADMIN_SORT_ICON."</a> ";	
 					}	
 					
 					$cls = false;
