@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright 2008-2011 e107 Inc (e107.org)
+* Copyright 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -58,7 +58,6 @@
  *
  */
 
-// define("BAN_TYPE_LEGACY",0); // Quick fix for PHP Notice.  If the error is triggered from somewhere else, the class name needs adding - eIPHandler::BAN_TYPE_LEGACY 
 
 class eIPHandler
 {
@@ -271,8 +270,8 @@ class eIPHandler
 		if ($ip == 'ff02:0000:0000:0000:0000:0000:0000:0001') return FALSE;
 		if ($ip == '::1') return FALSE;											// localhost
 		if ($ip == '0000:0000:0000:0000:0000:0000:0000:0001') return FALSE;
+		if (substr($ip, 0, 5) == 'fc00:') return FALSE;							// local addresses
 		// @todo add:
-		// fc00::/7 - local addresses
 		// ::0 (all zero) - invalid
 		// ff02::1:ff00:0/104 - Solicited-Node multicast addresses - add?
 		// 2001:0000::/29 through 2001:01f8::/29 - special purpose addresses
@@ -717,7 +716,7 @@ class eIPHandler
 	 */
 	function makeDomainQuery($email, $fieldName = 'banlist_ip')
 	{
-		global $tp;
+		$tp = e107::getParser();
 		if (($tv = strrpos('@', $email)) !== FALSE)
 		{
 			$email = substr($email, $tv+1);
@@ -852,8 +851,8 @@ class eIPHandler
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		
-		//global $admin_log;
+		$admin_log = e107::getAdminLog();
+
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
 		if ($sql->db_Select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
 		{
