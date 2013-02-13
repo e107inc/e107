@@ -278,6 +278,8 @@ class page_admin_ui extends e_admin_ui
 		protected $perPage 		= 10;
 		protected $batchDelete 	= true;
 		protected $batchCopy 	= true;	
+		protected $sortField	= 'page_order';
+		protected $orderStep 	= 10;
 	//		protected $listSorting = true; 
 		
 		protected $fields = array(
@@ -294,7 +296,7 @@ class page_admin_ui extends e_admin_ui
 			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
 		//	'page_password' 	=> array('title'=> LAN_USER_05, 	'type' => 'text', 'width' => 'auto'),								
-			'page_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
+			'page_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'inline'=>true),
 	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
 
 			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
@@ -309,25 +311,6 @@ class page_admin_ui extends e_admin_ui
 
 		function init()
 		{
-			
-			if(e_AJAX_REQUEST) // ajax sorting. 
-			{
-				$sql = e107::getDb();
-				$c= ($_GET['from']) ? intval($_GET['from']) : 0;
-				if(isset($_POST['all']))
-				{
-					foreach($_POST['all'] as $row)
-					{
-						list($tmp,$id) = explode("-",$row);
-						$sql->db_Update("page","page_order = ".intval($c)." WHERE page_id = ".intval($id));
-						$c++;		
-					}
-				}
-			//	echo "<script>alert('hello');</script>";
-				exit;
-			}
-						
-			
 			$this->templates = e107::getLayouts('', 'page', 'front', '', false, false); 
 			$this->fields['page_template']['writeParms'] = $this->templates;
 			
