@@ -1490,7 +1490,10 @@ class e_navigation
 	*/
 	public function isActive($data='')
 	{
-		$dbLink = e_HTTP. e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);;
+		// already checked by compile() or external source
+		if(isset($data['link_active'])) return $data['link_active'];
+		
+		$dbLink = e_HTTP. e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);
 		
 		if(E107_DBG_PATH)
 		{

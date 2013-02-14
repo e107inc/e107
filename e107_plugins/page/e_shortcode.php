@@ -14,17 +14,18 @@ class page_shortcodes extends e_shortcode
 {
 		function sc_page_navigation($parm) // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
 		{
-			require_once(e_PLUGIN."page/e_sitelink.php");
-			
-			$links = new page_sitelinks;
+			// FIXME sitelink class should be page_sitelink
+			$links = e107::getAddon('page', 'e_sitelink', 'page_sitelinks');
 			
 			$data = $links->pageNav($parm);
 
-			$template = e107::getCoreTemplate('page','nav');	
+			$template = e107::getCoreTemplate('page','nav');
+			if(isset($data['title']) && !vartrue($template['noAutoTitle']))
+			{
+				$data = $data['body'];
+			}	
 					
 			return e107::getNav()->render($data, $template) ;
 					
 		}
 }
-
-?>
