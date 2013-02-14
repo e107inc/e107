@@ -1640,7 +1640,42 @@ class e107
 		return self::getRegistry('admin/ui/dispatcher');
 	}
 
+	/**
+	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
+	 * FIXME ASAP extremely bad standard e.g. e_sitelink.php -> plugin_sitelinks. Should be e_sitelinks.php -> plugin_sitelinks or e_sitelink.php -> plugin_sitelink
+	 * FIXME override from e.g. core/override/addons/
+	 * 
+	 * @param string $pluginName e.g. faq, page
+	 * @param string $addonName eg. e_cron, e_url, e_module
+	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
+	 * @return none
+	 */
+	public static function getAddon($pluginName, $addonName, $className = true)
+	{
+		$filename = $addonName; // e.g. 'e_cron';
+		
+		// fixme, temporary adding 's' to className, should be core fixed, better naming
+		if(true === $className) $className = $pluginName.'_'.substr($addonName, 2).'s'; // remove 'e_'
 
+		$elist = self::getPref($filename.'_list'); 
+		if(!isset($elist[$pluginName])) return null;
+		
+		// TODO override check comes here
+		$path = e_PLUGIN.$pluginName.'/'.$filename.'.php';
+		// e.g. include e_module, e_meta etc
+		if(false === $className) return include_once($path);
+
+		if(!class_exists($className, false))
+		{
+			include_once($path);
+		}
+		
+		if(!class_exists($className, false))
+		{
+			return null;
+		}
+		return new $className;
+	}
 
 	/**
 	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php

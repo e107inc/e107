@@ -12,7 +12,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $template = e107::getCoreTemplate('page','nav');
 
-// auto mode - detect the current location
+### Auto mode - detect the current location
 if(empty($parm))
 {
 	$request = e107::getRegistry('core/pages/request');
@@ -37,8 +37,18 @@ if(empty($parm))
 	if($parm) $parm = http_build_query($parm);
 }
 
-$text = e107::getParser()->parseTemplate("{PAGE_NAVIGATION={$parm}}", true);
+### Retrieve
+$links = e107::getAddon('page', 'e_sitelink', 'page_sitelinks');
+$data = $links->pageNav($parm);
+if(isset($data['title']) && !vartrue($template['noAutoTitle']))
+{
+	// use chapter title
+	$template['caption'] = $data['title'];
+	$data = $data['body'];
+}
+$text = e107::getNav()->render($data, $template) ;
 
+### Render
 e107::getRender()->tablerender($template['caption'], $text, 'page-navigation-menu');
 
 ?>
