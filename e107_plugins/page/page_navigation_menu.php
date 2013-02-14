@@ -12,7 +12,32 @@ if (!defined('e107_INIT')) { exit; }
 
 $template = e107::getCoreTemplate('page','nav');
 
-$text = e107::getParser()->parseTemplate("{PAGE_NAVIGATION}", true);
+// auto mode - detect the current location
+if(empty($parm))
+{
+	$request = e107::getRegistry('core/pages/request');
+	$parm = array();
+	if($request && is_array($request))
+	{
+		switch ($request['action']) 
+		{
+			case 'listChapters':
+				$parm['book'] = $request['id'];
+			break;
+			
+			case 'listPages':
+				$parm['chapter'] = $request['id'];
+			break;
+			
+			case 'showPage':
+				$parm['page'] = $request['id'];
+			break;
+		}
+	}
+	if($parm) $parm = http_build_query($parm);
+}
+
+$text = e107::getParser()->parseTemplate("{PAGE_NAVIGATION={$parm}}", true);
 
 e107::getRender()->tablerender($template['caption'], $text, 'page-navigation-menu');
 

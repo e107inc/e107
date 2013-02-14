@@ -17,9 +17,11 @@ e107::coreLan('page');
 
 $e107CorePage = new pageClass(false);
 
-
+// Important - save request BEFORE any output (header footer) - used in navigation menu
 if(!e_QUERY)
 {
+	$e107CorePage->setRequest('listBooks');
+	
 	require_once(HEADERF);
 //	$tmp = $e107CorePage->listPages();
 	$tmp = $e107CorePage->listBooks();
@@ -34,6 +36,8 @@ if(!e_QUERY)
 }
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
+	$e107CorePage->setRequest('listChapters');
+	
 	require_once(HEADERF);
 	$text = $e107CorePage->listChapters($_GET['bk']);
 	$ns->tablerender('', $text, 'cpage'); // TODO FIXME Caption eg. "book title"
@@ -42,6 +46,8 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 }
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
+	$e107CorePage->setRequest('listPages');
+	
 	require_once(HEADERF);
 
 	$text = $e107CorePage->listPages($_GET['ch']);
@@ -51,7 +57,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 }
 else
 {
-	
+	$e107CorePage->setRequest('showPage');
 	$e107CorePage->processViewPage();
 	
 	require_once(HEADERF);
@@ -130,6 +136,31 @@ class pageClass
 		}
 		
 		
+	}
+
+	// XXX temporary solution - upcoming page rewrite
+	public function setRequest($request)
+	{
+		switch ($request) 
+		{
+			case 'listChapters':
+				$id = intval($_GET['bk']);
+			break;
+			
+			case 'listPages':
+				$id = intval($_GET['ch']);
+			break;
+			
+			case 'showPage':
+				$id = $this->pageID;
+			break;
+			
+			case 'listBooks':
+			default:
+				$id = 0;
+			break;
+		}
+		e107::setRegistry('core/pages/request', array('action' => $request, 'id' => $id));
 	}
 
 	

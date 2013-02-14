@@ -30,6 +30,7 @@ class page_sitelinks // include plugin-folder in the name.
 
 	function pageNav($parm='') 
 	{
+		$options = array();
 		if(vartrue($parm))
 		{
 			parse_str($parm,$options);	
@@ -45,11 +46,11 @@ class page_sitelinks // include plugin-folder in the name.
 	//	$query		.= vartrue($options['limit']) ? " LIMIT ".intval($options['limit']) : "";	
 		
 		$data 		= $sql->retrieve($query, true);
-
+		$_pdata 	= array();
 		foreach($data as $row)
 		{
 			$pid = $row['page_chapter'];
-			$sublinks[$pid][] = array(
+			$sublinks[$pid][] = $_pdata[] = array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'],
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id')),
@@ -69,7 +70,9 @@ class page_sitelinks // include plugin-folder in the name.
 		
 		if(vartrue($options['chapter']))
 		{
-			$filter = "chapter_id > ".intval($options['chapter']);
+			//$filter = "chapter_id > ".intval($options['chapter']);
+			$outArray 	= array();
+			return e107::getNav()->compile($_pdata, $outArray, $options['chapter']);	
 		}
 
 		if(vartrue($options['book']))
@@ -107,7 +110,6 @@ class page_sitelinks // include plugin-folder in the name.
 		
 		
 	//	print_a($arr);
-		
 	//	echo "<h3>Compiled</h3>";
 		$outArray 	= array();
 		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
