@@ -1655,7 +1655,7 @@ class e107
 		$filename = $addonName; // e.g. 'e_cron';
 		
 		// fixme, temporary adding 's' to className, should be core fixed, better naming
-		if(true === $className) $className = $pluginName.'_'.substr($addonName, 2).'s'; // remove 'e_'
+		if(true === $className) $className = $pluginName.'_'.substr($addonName, 2); // remove 'e_'
 
 		$elist = self::getPref($filename.'_list'); 
 		if(!isset($elist[$pluginName])) return null;
