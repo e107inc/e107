@@ -19,6 +19,13 @@
 */
 
 
+/*
+@TODO: Needs detailed review/fixing:
+	- Handle XML-based default prefs
+	- Review existing definitions of constants
+	- Define new constants (e_CORE, etc) properly
+*/
+
 /* ####################################################
 
 
@@ -31,13 +38,19 @@ people it shouldn't be used by.
 
 */
 
-define("ACTIVE", false);
+define('ACTIVE', false);
+//define('ACTIVE', TRUE);
 
-//FIXME build e_CACHE from e107_config.php - resetcore.php is a stand alone page
-define('e_CACHE', '../cache/');
 
 /* #################################################### */
 
+
+
+if(ACTIVE !== true) 
+{
+	echo "<span class='headertext2'>Currently disabled. To enable please open this file in a text editor and follow the instructions to activate.</span>";
+	exit;
+}
 
 $register_globals = true;
 if(function_exists('ini_get'))
@@ -56,13 +69,26 @@ if($register_globals == true)
 	unset($global);
 }
 
-require_once("../../e107_config.php");
-//TODO build e_CACHE from e107_config.php - resetcore.php is a stand alone page
+
+// build e_CACHE and other constants from e107_config.php - resetcore.php is a stand alone page
+$siteRoot = realpath(dirname(__FILE__).'./../../').'/';
+require_once($siteRoot.'e107_config.php');
+if (!isset($mySQLdefaultdb)) return FALSE;
+if (!isset($mySQLprefix)) return FALSE;
+
+$hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);	
+
+
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
-define("e107_INIT", TRUE);
+define('e_CACHE', $siteRoot.$SYSTEM_DIRECTORY.$hash.'/cache/');
+define('e_CORE', $siteRoot.'core/');				// @TODO: Allow for override
+
+define('e107_INIT', TRUE);
+
+
 require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
@@ -83,13 +109,11 @@ $eArrayStorage = new ArrayData();
 <br />
 <?php
 
-if(ACTIVE !== true) {
-	echo "<span class='headertext2'>Currently disabled. To enable please open this file in a text editor and follow the instructions to activate.</span>";
-	exit;
-}
 
-if (isset($_POST['usubmit'])) {
-	if (($row = e_verify()) !== FALSE) {
+if (isset($_POST['usubmit'])) 
+{
+	if (($row = e_verify()) !== FALSE) 
+	{
 		extract($row);
 
 		$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
@@ -125,7 +149,8 @@ if (isset($_POST['usubmit'])) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
-	if (($at = e_verify()) === FALSE) {
+	if (($at = e_verify()) === FALSE) 
+	{
 		exit;
 	}
 
@@ -149,23 +174,29 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 
 
 	$pref_language = "English";
-	include_once("../../".$LANGUAGES_DIRECTORY."English/lan_prefs.php");
-	require_once("../../".$FILES_DIRECTORY."def_e107_prefs.php");
+	include_once("../../".$LANGUAGES_DIRECTORY.'English/lan_prefs.php');
+	require_once(e_CORE.'def_e107_prefs.php');
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
 
 	mysql_query("DELETE FROM ".$mySQLprefix."core WHERE e107_name='SitePrefs' OR e107_name='SitePrefs_Backup'");
-	if (!mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')")) {
+	if (!mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')")) 
+	{
 		$message = "Rebuild failed ...";
 		$END = TRUE;
-	} else {
+	} 
+	else 
+	{
 		mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
 		$message = "Core reset. <br /><br /><a href='../../index.php'>Click here to continue</a>";
 		$END = TRUE;
 	}
 }
 
-function recurse_pref($ppost) {
+
+
+function recurse_pref($ppost) 
+{
 	$search = array("\"", "'", "\\", '\"', "\'", "$", "?");
 	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;", "&copy;");
 	foreach ($ppost as $key => $value) {
@@ -296,12 +327,18 @@ echo "<span class='headertext2'>
 	</body>
 	</html>";
 
+
+/**
+ *	Verify main admin data
+ */
 function e_verify() {
 	global $mySQLprefix;
-	if (ACTIVE !== TRUE) {
-		exit;
+	if (ACTIVE !== TRUE) 
+	{
+		exit();
 	}
-	if (MAGIC_QUOTES_GPC == FALSE) {
+	if (MAGIC_QUOTES_GPC == FALSE) 
+	{
 		$a_name = addslashes($_POST['a_name']);
 	}
 	else
@@ -314,15 +351,26 @@ function e_verify() {
 	$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='".$a_name."'");
 	$row = mysql_fetch_array($result);
 
-	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && (ACTIVE === TRUE)) {
+	// @TODO: Will need to handle other password encodings as well
+	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && (ACTIVE === TRUE)) 
+	{
 		clear_cache();
 		return $row;
-	} else {
+	} 
+	else 
+	{
 		return FALSE;
 	}
 }
 
-function clear_cache() {
+
+
+
+/**
+ *	Clear all cache files
+ */
+function clear_cache() 
+{
 	// $dir = "../cache/";
 	$dir = e_CACHE;
 	$pattern = "*.cache.php";
