@@ -33,22 +33,22 @@ if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php'
 
 if (isset($_POST['viewallevents']))
 {
-    Header('Location: '.e_PLUGIN.'calendar_menu/event.php?'.intval($_POST['enter_new_val']));
-	exit;
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?' . $_POST['enter_new_val']);
+	exit();
 } 
 if (isset($_POST['doit']))
 {
-    Header('Location: '.e_PLUGIN.'calendar_menu/event.php?ne.'.intval($_POST['enter_new_val']));
-	exit;
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?ne.' . $_POST['enter_new_val']);
+	exit();
 }
 if (isset($_POST['subs']))
 {
-    Header('Location: '.e_PLUGIN.'calendar_menu/subscribe.php');
-	exit;
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/subscribe.php');
+	exit();
 } 
 if (isset($_POST['printlists']))
 {
-    Header('Location: '.e_PLUGIN.'calendar_menu/ec_pf_page.php');
+    Header('Location: '.e_PLUGIN_ABS.'calendar_menu/ec_pf_page.php');
 	exit();
 } 
 
@@ -83,7 +83,7 @@ unset($dateArray);
 if (e_QUERY)
 {
 	$qs = explode('.', e_QUERY);	// Get date from query
-	$dateArray	= getdate($qs[0]);
+	$dateArray	= $ecal_class->gmgetdate($qs[0]);
 }
 if (!isset($dateArray))
 {	// Show current month
@@ -99,8 +99,8 @@ $nowday		= $ecal_class->cal_date['mday'];
 
 
 // Set date window for display
-$monthstart	= mktime(0, 0, 0, $month, 1, $year);			// Start of month to be shown
-$monthend	= mktime(0, 0, 0, $month + 1, 1, $year) - 1;	// End of month to be shown
+$monthstart	= gmmktime(0, 0, 0, $month, 1, $year);			// Start of month to be shown
+$monthend	= gmmktime(0, 0, 0, $month + 1, 1, $year) - 1;	// End of month to be shown
 
 
 $calSc->ecalClass = &$ecal_class;
@@ -128,51 +128,51 @@ $events = array();
 foreach ($ev_list as $row)
 {
 	$row['startofevent'] = TRUE;			// This sets 'large print' and so on for the first day of an event
-	  
+
 	// check for recurring events in this month (could also use is_array($row['event_start']) as a test)
 	if($row['event_recurring'] != '0')
 	{  // There could be several dates for the same event, if its a daily/weekly event
-	    $t_start = $row['event_start'];
+		$t_start = $row['event_start'];
 		foreach ($t_start as $ev_start)
 		{
 		// Need to save event, copy marker for date
-		  $row['event_start'] = $ev_start;
-		  $events[date('j',$ev_start)][] = $row;
+			$row['event_start'] = $ev_start;
+			$events[gmdate('j',$ev_start)][] = $row;
 		}
 	}
 	else
 	{  // Its a 'normal' event
-		$tmp	= date('j',$row['event_start']);		// Day of month for start
+		$tmp	= gmdate('j',$row['event_start']);		// Day of month for start
 		if ($row['event_allday'])
 		{
 			$tmp2 = $tmp;			// Same day for start and end
 		}
 		else
 		{
-			$tmp2	= date('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
+			$tmp2	= gmdate('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
 		}
 		if(($row['event_start']>=$monthstart) && ($row['event_start']<=$monthend))
 		{	// Start within month
-		  $events[$tmp][] = $row;
-		  $tmp++;
-		  if ($row['event_end']>$monthend)
-		  {  // End outside month
-			$tmp2	= date("t", $monthstart); // number of days in this month
-		  }
+			$events[$tmp][] = $row;
+			$tmp++;
+			if ($row['event_end']>$monthend)
+			{  // End outside month
+				$tmp2	= gmdate("t", $monthstart); // number of days in this month
+			}
 		}
 		else
 		{	// Start before month
-		  $tmp = 1;
-		  if ($row['event_end']>$monthend)
-		  {  // End outside month
-			$tmp2	= date("t", $monthstart); // number of days in this month
-		  }
+			$tmp = 1;
+			if ($row['event_end']>$monthend)
+			{  // End outside month
+				$tmp2	= gmdate("t", $monthstart); // number of days in this month
+			}
 		}
 		// Now put in markers for all 'non-start' days within current month
 		$row['startofevent'] = FALSE;
 		for ($c= $tmp; $c<=$tmp2; $c++) 
 		{
-		  $events[$c][] = $row;
+			$events[$c][] = $row;
 		}
 	}
 }
@@ -182,7 +182,7 @@ foreach ($ev_list as $row)
 // ****** CAUTION - the category dropdown also used $sql object - take care to avoid interference!
 
 $start		= $monthstart;
-$numberdays	= date('t', $start); // number of days in this month
+$numberdays	= gmdate("t", $start); // number of days in this month
 
 $text = "";
 $text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calSc);
@@ -198,7 +198,7 @@ $text .= $e107->tp->parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calSc);
 
 
 // Calculate number of days to skip before 'real' days on first line of calendar
-$firstdayoffset = date('w',$start) - $ecal_class->ec_first_day_of_week;
+$firstdayoffset = gmdate('w',$start) - $ecal_class->ec_first_day_of_week;
 if ($firstdayoffset < 0) $firstdayoffset+= 7;
 
 for ($i=0; $i<$firstdayoffset; $i++) 
