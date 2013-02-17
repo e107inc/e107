@@ -229,8 +229,8 @@ class event_calendar_shortcodes
 		$this->day = varset($curDate['mday'], 0);				// Day number being shown - rarely relevant
 		$this->month = $curDate['mon'];							// Number of month being shown
 		$this->year	= $curDate['year'];							// Number of year being shown
-		$this->monthStart	= mktime(0, 0, 0, $curDate['mon'], 1, $curDate['year']);			// Start of month to be shown
-		$this->monthEnd	= mktime(0, 0, 0, $curDate['mon'] + 1, 1, $curDate['year']) - 1;	// End of month to be shown
+		$this->monthStart	= gmmktime(0, 0, 0, $curDate['mon'], 1, $curDate['year']);			// Start of month to be shown
+		$this->monthEnd	= gmmktime(0, 0, 0, $curDate['mon'] + 1, 1, $curDate['year']) - 1;	// End of month to be shown
 		
 		
 		// Calculate date code for previous month
@@ -241,7 +241,7 @@ class event_calendar_shortcodes
 			$this->prevMonth = 12;
 			$prevYear--;
 		} 
-		$this->previous = mktime(0, 0, 0, $this->prevMonth, 1, $prevYear);		// Previous month - Used by nav
+		$this->previous = gmmktime(0, 0, 0, $this->prevMonth, 1, $prevYear);		// Previous month - Used by nav
 
 		// Calculate date code for next month
 		$this->nextMonth = $curDate['mon'] + 1;
@@ -251,13 +251,13 @@ class event_calendar_shortcodes
 			$this->nextMonth	= 1;
 			$nextYear++;
 		} 
-		$this->next = mktime(0, 0, 0, $this->nextMonth, 1, $nextYear);		// Next month - used by nav
+		$this->next = gmmktime(0, 0, 0, $this->nextMonth, 1, $nextYear);		// Next month - used by nav
 
 
 		$this->py	= $curDate['year']-1;									// Number of previous year for nav
-		$this->prevLink = mktime(0, 0, 0, $curDate['mon'], 1, $this->py);
+		$this->prevLink = gmmktime(0, 0, 0, $curDate['mon'], 1, $this->py);
 		$this->ny	= $curDate['year'] + 1;								// Number of next year for nav
-		$this->nextLink = mktime(0, 0, 0, $curDate['mon'], 1, $this->ny);
+		$this->nextLink = gmmktime(0, 0, 0, $curDate['mon'], 1, $this->ny);
 
 		$this->prop		= gmmktime(0, 0, 0, $curDate['mon'], $curDate['mday'], $curDate['year']);		// Sets start date for new event entry
 
@@ -305,7 +305,7 @@ class event_calendar_shortcodes
 		$ret = '';
 		for ($ii = 0; $ii < 12; $ii++)
 		{
-			$monthJump = mktime(0, 0, 0, $ii+1, 1, $this->year);
+			$monthJump = gmmktime(0, 0, 0, $ii+1, 1, $this->year);
 			$ret .= "<a href='".e_SELF."?".$monthJump."'>".$this->monthabb[$ii]."</a> &nbsp;";
 		}
 		return $ret;
@@ -360,7 +360,10 @@ class event_calendar_shortcodes
 			return "<input class='button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' title='".EC_LAN_183."' />";
 		}
 		else
+		{
+			return '';
 		  return 'Cant print lists';
+		}
 	}
 
 	// Categories listing
@@ -539,7 +542,7 @@ class event_calendar_shortcodes
 	public function sc_ec_mail_link($parm = '')
 	{
 		$cal_dayarray = getdate($this->event['event_start']);
-		$cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
+		$cal_linkut = gmmktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
 		return ' '.SITEURLBASE.e_PLUGIN_ABS.'calendar_menu/event.php?'.$cal_linkut.' ';
 	}
 
