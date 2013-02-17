@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2010 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,31 +15,33 @@
 
 require_once('../../class2.php');
 
-require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+
 
 if (isset($_POST['viewallevents']))
 {
     Header('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?' . $_POST['enter_new_val']);
-	exit;
+	exit();
 } 
 if (isset($_POST['doit']))
 {
     Header('Location: '.e_PLUGIN_ABS.'calendar_menu/event.php?ne.' . $_POST['enter_new_val']);
-	exit;
+	exit();
 }
 if (isset($_POST['subs']))
 {
     Header('Location: '.e_PLUGIN_ABS.'calendar_menu/subscribe.php');
-	exit;
+	exit();
 } 
 if (isset($_POST['printlists']))
 {
     Header('Location: '.e_PLUGIN_ABS.'calendar_menu/ec_pf_page.php');
-	exit;
+	exit();
 } 
 
+
+require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
-define("PAGE_NAME", EC_LAN_121);
+define('PAGE_NAME', EC_LAN_121);
 
 require_once('ecal_class.php');
 $ecal_class = new ecal_class;
@@ -66,8 +68,9 @@ if(varset($qs[0],'') == '')
 } 
 else
 {	// Get date from query
-	$datearray	= getdate($qs[0]);
+	$datearray	= $ecal_class->gmgetdate($qs[0]);
 }
+
 
 // Note: A lot of the following variables are used within the shortcodes
 $month		= $datearray['mon'];							// Number of month being shown
@@ -127,70 +130,70 @@ $ev_list = $ecal_class->get_events($monthstart, $monthend, FALSE, $cat_filter, T
 // For each day there is then a sub-array entry for each event
 // Note that the new class-based retrieval adds an 'is_recent' flag to the data if changed according to the configured criteria
 $events = array();
-	foreach ($ev_list as $row)
-	{
-		$row['startofevent'] = TRUE;			// This sets 'large print' and so on for the first day of an event
-	  
-		// check for recurring events in this month (could also use is_array($row['event_start']) as a test)
-		if($row['event_recurring'] != '0')
-		{  // There could be several dates for the same event, if its a daily/weekly event
-			$t_start = $row['event_start'];
-			foreach ($t_start as $ev_start)
-			{
-				// Need to save event, copy marker for date
-				$row['event_start'] = $ev_start;
-				$events[date('j',$ev_start)][] = $row;
+foreach ($ev_list as $row)
+{
+	$row['startofevent'] = TRUE;			// This sets 'large print' and so on for the first day of an event
+
+	// check for recurring events in this month (could also use is_array($row['event_start']) as a test)
+	if($row['event_recurring'] != '0')
+	{  // There could be several dates for the same event, if its a daily/weekly event
+		$t_start = $row['event_start'];
+		foreach ($t_start as $ev_start)
+		{
+		// Need to save event, copy marker for date
+			$row['event_start'] = $ev_start;
+			$events[gmdate('j',$ev_start)][] = $row;
+		}
+	}
+	else
+	{  // Its a 'normal' event
+		$tmp	= gmdate('j',$row['event_start']);		// Day of month for start
+		if ($row['event_allday'])
+		{
+			$tmp2 = $tmp;			// Same day for start and end
+		}
+		else
+		{
+			$tmp2	= gmdate('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
+		}
+		if(($row['event_start']>=$monthstart) && ($row['event_start']<=$monthend))
+		{	// Start within month
+			$events[$tmp][] = $row;
+			$tmp++;
+			if ($row['event_end']>$monthend)
+			{  // End outside month
+				$tmp2	= gmdate("t", $monthstart); // number of days in this month
 			}
 		}
 		else
-		{  // Its a 'normal' event
-			$tmp	= date('j',$row['event_start']);		// Day of month for start
-			if ($row['event_allday'])
-			{
-				$tmp2 = $tmp;			// Same day for start and end
-			}
-			else
-			{
-				$tmp2	= date('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
-			}
-
-			if(($row['event_start']>=$monthstart) && ($row['event_start']<=$monthend))
-			{	// Start within month
-				$events[$tmp][] = $row;
-				$tmp++;
-				if ($row['event_end']>$monthend)
-				{  // End outside month
-					$tmp2	= date("t", $monthstart); // number of days in this month
-				}
-			}
-			else
-			{	// Start before month
-				$tmp = 1;
-				if ($row['event_end']>$monthend)
-				{  // End outside month
-					$tmp2	= date("t", $monthstart); // number of days in this month
-				}
-			}
-			// Now put in markers for all 'non-start' days within current month
-			$row['startofevent'] = FALSE;
-			for ($c= $tmp; $c<=$tmp2; $c++) 
-			{
-				$events[$c][] = $row;
+		{	// Start before month
+			$tmp = 1;
+			if ($row['event_end']>$monthend)
+			{  // End outside month
+				$tmp2	= gmdate("t", $monthstart); // number of days in this month
 			}
 		}
+		// Now put in markers for all 'non-start' days within current month
+		$row['startofevent'] = FALSE;
+		for ($c= $tmp; $c<=$tmp2; $c++) 
+		{
+			$events[$c][] = $row;
+		}
 	}
+}
 
 
 
 // ****** CAUTION - the category dropdown also used $sql object - take care to avoid interference!
 
 $start		= $monthstart;
-$numberdays	= date("t", $start); // number of days in this month
+$numberdays	= gmdate("t", $start); // number of days in this month
 
 $text = "";
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calendar_shortcodes);
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calendar_shortcodes);
 
+// Display the column headers
 for ($i = 0; $i < 7; $i++)
 {
   $day = $ecal_class->day_offset_string($i);
@@ -200,7 +203,7 @@ $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calendar_sh
 
 
 // Calculate number of days to skip before 'real' days on first line of calendar
-$firstdayoffset = date('w',$start) - $ecal_class->ec_first_day_of_week;
+$firstdayoffset = gmdate('w',$start) - $ecal_class->ec_first_day_of_week;
 if ($firstdayoffset < 0) $firstdayoffset+= 7;
 
 for ($c=0; $c<$firstdayoffset; $c++) 
@@ -212,9 +215,9 @@ $loop = $firstdayoffset;
 
 for ($c = 1; $c <= $numberdays; $c++)
 {	// Loop through the number of days in this month
-  $startt	= $start;			// Used by shortcodes - start of current day
-  $stopp	= $start + 86399;	// End of current day
-  $got_ev 	= array_key_exists($c, $events) && is_array($events[$c]) && count($events[$c]) > 0;		// Flag set if events today
+	$startt	= $start;			// Used by shortcodes - start of current day
+	$stopp	= $start + 86399;	// End of current day
+	$got_ev 	= array_key_exists($c, $events) && is_array($events[$c]) && count($events[$c]) > 0;		// Flag set if events today
   
    // Highlight the current day.
     if ($nowday == $c && $month == $nowmonth && $year == $nowyear)
@@ -231,44 +234,44 @@ for ($c = 1; $c <= $numberdays; $c++)
     } 
 	if ($got_ev)
 	{
-      foreach($events[$c] as $ev)
-      {
-		if ($ev['startofevent'])
+		foreach($events[$c] as $ev)
 		{
-		  $ev['indicat'] = "";
-		  $ev['imagesize'] = "8";
-		  $ev['fulltopic'] = TRUE;
-		}
-		else
-		{
-		  $ev['indicat'] = "";
-		  $ev['imagesize'] = "4";
-		  $ev['fulltopic'] = FALSE;
-		}
-		$text .= $tp -> parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calendar_shortcodes);
-	  } 
+			if ($ev['startofevent'])
+			{
+			  $ev['indicat'] = '';
+			  $ev['imagesize'] = '8';
+			  $ev['fulltopic'] = TRUE;
+			}
+			else
+			{
+			  $ev['indicat'] = '';
+			  $ev['imagesize'] = '4';
+			  $ev['fulltopic'] = FALSE;
+			}
+			$text .= $tp -> parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calendar_shortcodes);
+		} 
 	}
 	$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calendar_shortcodes);
 
-  $loop++;
-  if ($loop == 7)
-  {
-    $loop = 0;
-	if($c != $numberdays)
+	$loop++;
+	if ($loop == 7)
 	{
-	  $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calendar_shortcodes);
+		$loop = 0;
+		if($c != $numberdays)
+		{
+		  $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calendar_shortcodes);
+		}
 	}
-  }
-  $start += 86400;
+	$start += 86400;
 }
 
 //remainder cells to end the row properly with empty cells
 if($loop!=0)
 {
-  for ($c=$loop; $c<7; $c++) 
-  {
-	$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calendar_shortcodes);
-  }
+	for ($c=$loop; $c<7; $c++) 
+	{
+		$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calendar_shortcodes);
+	}
 }
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calendar_shortcodes);
 

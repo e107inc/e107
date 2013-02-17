@@ -95,7 +95,7 @@ if ($cal_super && (isset($_POST['ne_insert']) || isset($_POST['ne_update'])))
 	$ev_email		= $tp -> toDB($_POST['ne_email']);
 	$ev_category	= intval($_POST['ne_category']);
 	$ev_thread		= $tp -> toDB($_POST['ne_thread']);
-	$temp_date 		= getdate($ecal_class->make_date(0,0,$_POST['start_date']));
+	$temp_date 		= $ecal_class->gmgetdate($ecal_class->make_date(0,0,$_POST['start_date']));
 	$ev_allday		= intval($_POST['allday']);
 	$recurring		= intval($_POST['ec_recur_type']);
 	if ($recurring >= 100) $recurring += intval($_POST['ec_recur_week']) - 100;
