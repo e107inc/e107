@@ -18,7 +18,7 @@ if (!defined('e107_INIT')) { exit; }
 /**
  * 
  * @package e107
- * @subpackage handlers
+ * @subpackage e107_handlers
  * @version $Id$
  * @todo hardcoded text
  * 

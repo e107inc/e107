@@ -17,7 +17,7 @@
 
 /**
 * @package e107
-* @subpackage handlers
+* @subpackage e107_handlers
 * @version $Id$;
 *
 * Routines to manage IP addresses and banning.
