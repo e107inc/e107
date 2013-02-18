@@ -38,7 +38,8 @@ if ($use_imagecode)
 
 if (!USER) 
 {
-	require_once(e_HANDLER."form_handler.php");
+	if (!defined('LOGINMESSAGE')) define('LOGINMESSAGE', '');		// LOGINMESSAGE only appears with errors
+	require_once(e_HANDLER.'form_handler.php');
 	$rs = new form;
 	$text = "";
     $allowEmailLogin = varset($pref['allowEmailLogin'],0);
