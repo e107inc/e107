@@ -268,6 +268,7 @@ CREATE TABLE mail_content (
 	mail_title varchar(100) NOT NULL default '',
 	mail_subject varchar(100) NOT NULL default '',
 	mail_body text,
+	mail_body_templated text,
 	mail_other text,
 	PRIMARY KEY (mail_source_id),
 	KEY mail_content_status (mail_content_status)
