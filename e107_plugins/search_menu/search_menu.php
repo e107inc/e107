@@ -47,7 +47,7 @@ if (isset($custom_query[1]) && $custom_query[1] != '') {
 	$height = (isset($custom_query[3]) && $custom_query[3]) ? $custom_query[3] : '16';
 		$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: ".$width."px; height: ".$height."px; border: 0px; vertical-align: middle' name='s' />";
 } else {
-	$search_button = "<input class='button search' type='submit' name='s' value='".LAN_180."' />";
+	$search_button = "<input class='btn button search' type='submit' name='s' value='".LAN_180."' />";
 }
 
 if (isset($custom_query[5]) && $custom_query[5]) {

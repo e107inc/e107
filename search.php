@@ -300,8 +300,8 @@ $value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
 $SEARCH_VARS->SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
 if ($search_prefs['selector'] == 1) 
 {
-  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input class='btn button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
+  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input class='btn button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 
 $SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
