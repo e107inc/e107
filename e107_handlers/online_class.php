@@ -255,8 +255,6 @@ class e_online
 				
 						// Sort into usable format and add bot field. 
 						$user = array(
-							'user_id'			=> $vals[0],
-							'user_name'			=> $vals[1],
 							'user_location'		=> $row['online_location'],
 							'user_bot'			=> $this->isBot($row['online_agent']),
 							'user_agent'		=> $row['online_agent'],
@@ -271,6 +269,8 @@ class e_online
 						if($row['online_user_id'] != 0)
 						{
 							$vals = explode('.', $row['online_user_id'], 2);
+							$user['user_id'] = $vals[0];
+							$user['user_name'] = $vals[1];
 							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
 							$listuserson[$row['online_user_id']] = $row['online_location'];
 		
@@ -279,6 +279,8 @@ class e_online
 						}
 						else 
 						{
+							$user['user_id'] = 0;
+							$user['user_name'] = 'guest';		// Maybe should just be an empty string?
 							$this->guests[] = $user;	
 						}
 						
