@@ -82,6 +82,7 @@ class notify_config
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$pref = e107::getPref();
+		$sql = e107::getDb();
 
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
