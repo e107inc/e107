@@ -2727,10 +2727,11 @@ class e_admin_controller_ui extends e_admin_controller
 		//$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
 		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
 		$selected = array_values($this->getPosted($multi_name, array()));
+		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
-		if(empty($selected))
+		if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
 		{
-			$params = $this->getFieldAttr($field, 'writeParms', array());
+			$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
 			if(!is_array($params)) parse_str($params, $params);
 			if(!vartrue($params['batchNoCheck']))
 			{
@@ -2738,8 +2739,14 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
-		$selected = array_map('intval', $selected);
-		$trigger = $tp->toDB(explode('__', $batch_trigger));
+		if($selected)
+		{
+			foreach ($selected as $i => $_sel) 
+			{
+				$selected[$i] = preg_replace('/[^\w\-]/', '', $_sel);
+			}
+		}
+		
 
 		$this->setTriggersEnabled(false); //disable further triggering
 		
@@ -3774,7 +3781,6 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListDeleteBatch($selected)
 	{
-	
 		if(!$this->getBatchDelete())
 		{
 			e107::getMessage()->add(LAN_UI_BATCHDEL_ERROR, E_MESSAGE_WARNING);
@@ -3791,15 +3797,19 @@ class e_admin_ui extends e_admin_controller_ui
 			else
 			{
 				// already confirmed, resurrect selected values
-				$selected = array_map('intval', explode(',', $this->getPosted('delete_confirm_value')));
+				$selected = explode(',', $this->getPosted('delete_confirm_value'));
+				foreach ($selected as $i => $_sel) 
+				{
+					$selected[$i] = preg_replace('/[^\w\-]/', '', $_sel);
+				}
 			}
-			
 		}
 
 		// delete one by one - more control, less performance
 		// pass  afterDelete() callback to tree delete method
 		$set_messages = true;
-	
+		$delcount = 0;
+		$nfcount = 0;
 		foreach ($selected as $id)
 		{
 			$data = array();
@@ -3810,6 +3820,7 @@ class e_admin_ui extends e_admin_controller_ui
 				if($this->beforeDelete($data, $id))
 				{
 					$check = $this->getTreeModel()->delete($id);
+					if($check) $delcount++;
 					if(!$this->afterDelete($data, $id, $check))
 					{
 						$set_messages = false;
@@ -3818,13 +3829,20 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 			else
 			{
-				$set_messages = "Couldn't get model";	
+				$set_messages = true;	
+				$nfcount++; 
 			}
 		}
 
 		//$this->getTreeModel()->delete($selected);
-		if($set_messages) $this->getTreeModel()->setMessages();
-		
+		if($set_messages) 
+		{
+			$this->getTreeModel()->setMessages();
+			// FIXME lan
+			if($delcount) e107::getMessage()->addSuccess(sprintf('<strong>%1$d records</strong> successfully deleted.', $delcount));
+			if($nfcount) e107::getMessage()->addError(sprintf('<strong>%1$d records</strong> not found and not deleted.', $nfcount));
+		}
+
 		//$this->redirect();
 	}
 
