@@ -41,6 +41,13 @@ class news_shortcodes extends e_shortcode
 		return $this->e107->tp->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
 	}
 
+	function sc_newsurltitle()
+	{
+		$title = $this->sc_newstitle();
+		// FIXME generic parser toAttribute method (currently toAttribute() isn't appropriate)
+		return '<a href="'.$this->sc_newsurl().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
+	}
+	
 	function sc_newsbody($parm)
 	{
 		e107::getBB()->setClass("news");

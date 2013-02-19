@@ -1847,6 +1847,7 @@ class e_form
 		}
 	
 		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
+		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
 		$tp = e107::getParser();
 		switch($field) // special fields
