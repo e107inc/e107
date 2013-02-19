@@ -84,8 +84,9 @@ class notify_config
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 
-		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
-		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
+//		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
+//		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
+		$this->notify_prefs = e107::getConfig('notify')->getPref();
 
 		$recalibrate = FALSE;
 		// load every e_notify.php file.
@@ -260,7 +261,7 @@ class notify_config
 
 	function update() 
 	{
-		global $sql, $pref, $tp, $eArrayStorage, $admin_log;
+		global $sql, $pref, $eArrayStorage;
 		$this->changeList = array();
 		foreach ($_POST['event'] as $key => $value)
 		{
@@ -278,11 +279,15 @@ class notify_config
 		 	$pref['notify'] = FALSE;
 		}
 	  	save_prefs();
+		/*
 		$s_prefs = $tp -> toDB($this -> notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
+		*/
+		e107::getConfig('notify')->updatePref($this->notify_prefs);
+		if (e107::getConfig('notify')->save(FALSE))
 		{
-			$admin_log->logArrayAll('NOTIFY_01',$this->changeList);
+			e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
 			return TRUE;
 		}
 		else
