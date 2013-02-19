@@ -30,13 +30,15 @@ $(document).ready(function()
 			var t = $(this).nextAll(".field-help");
 			t.hide();
 		//	alert('hello');
-			$(this).tooltip({title: function() {
-				var tip = t.text();			
-				 return tip; 
+			$(this).tooltip({
+				title: function() {
+					var tip = t.html();			
+					return tip; 
 				},
 				fade: true,
 				html: true,
-				placement: 'right'  
+				placement: 'right',
+				delay: { show: 300, hide: 600 } 
 			});
 		
 		});

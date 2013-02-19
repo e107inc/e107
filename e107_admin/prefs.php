@@ -1120,8 +1120,7 @@ $text .= "
 						<td>".PRFLAN_192.":</td>
 						<td>
 							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
-							<div class='field-help'>".PRFLAN_193."</div>
-							<div class='field-help'>".PRFLAN_194."</div>
+							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
 						</td>
 					</tr>
 					<tr>
