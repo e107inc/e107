@@ -199,7 +199,7 @@ define('PRFLAN_190', 'Salted');
 define('PRFLAN_191', '(md5 is usually adequate for an Intranet, and often for other sites)');
 define('PRFLAN_192', 'Generate random predefined login names according to a pattern');
 define('PRFLAN_193', 'To allow users to set their own login names, leave blank');
-define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered.');
+define('PRFLAN_194', '# alpha[br]. numeric[br]* alphanumeric[br]Other chars used as entered.');
 define('PRFLAN_195', 'Changed values:');
 define('PRFLAN_196', 'Log all page accesses');
 define('PRFLAN_197', 'Auto-login new user after clicking on signup link');
