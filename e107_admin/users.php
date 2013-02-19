@@ -1877,7 +1877,12 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 	function user_ban($curval,$mode)
 	{
-		$bo = array('Active',LAN_BANNED,LAN_NOTVERIFIED,LAN_BOUNCED);
+		$bo = array(
+			'<span class="label label-success">Active</span>',
+			"<span class='label label-important'>".LAN_BANNED."</span>",
+			"<span class='label'>".LAN_NOTVERIFIED."</span>",
+			"<span class='label label-inverse'>".LAN_BOUNCED."</span>"
+		);
 		
 		if($mode == 'filter' || $mode == 'batch')
 		{
@@ -1934,6 +1939,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	{
 	
 		$row = $this->getController()->getListModel()->getData();
+	
 		$text = "";
 			if ($row['user_perms'] == "0")
 			{
@@ -1952,7 +1958,7 @@ class users_admin_form_ui extends e_admin_form_ui
 					else
 						if ($row['user_ban'] == 2)
 						{
-							$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
+							$text .= "<div class='label' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
 						}
 						else
 							if ($row['user_ban'] == 3)
