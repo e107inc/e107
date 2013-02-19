@@ -92,19 +92,21 @@ class news_cat_ui extends e_admin_ui
 		protected $pid			= "category_id";
 		protected $perPage = 0; //no limit
 		protected $batchDelete = false;
+		protected $sortField = 'category_order';
+		protected $listOrder	= "category_order ASC";
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'category_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'category_icon' 			=> array('title'=> LAN_ICON,			'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       	
-         	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+         	'category_name' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true, 'inline' => true),
          
          	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE),
 			'category_meta_keywords' 	=> array('title'=> "Meta Keywords",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 			'category_sef' 				=> array('title'=> "SEF Url String",	'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE), // Display name
 			'category_manager' 			=> array('title'=> "Manage Permissions",'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
 		);
 
 		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description','category_manager', 'category_order', 'options');
@@ -123,13 +125,45 @@ class news_cat_ui extends e_admin_ui
 		
 		public function beforeCreate($new_data)
 		{
-	
+			if(empty($new_data['category_sef']))
+			{
+				$new_data['category_sef'] = eHelper::title2sef($new_data['category_name']);
+			}
+			else 
+			{
+				$new_data['category_sef'] = eHelper::secureSef($new_data['category_sef']);
+			}
+			$sef = e107::getParser()->toDB($new_data['category_sef']);
+			
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}'"))
+			{
+				e107::getMessage()->addError('Please choose unique SEF URL string for this category');
+				return false;
+			}
+			
+			if(empty($new_data['category_order']))
+			{
+				$c = e107::getDb()->count('news_category');
+				$new_data['category_order'] = $c ? $c : 0;
+			}
+			
+			return $new_data;
 		}
 		
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-	
+			if(empty($new_data['category_sef']))
+			{
+				$new_data['category_sef'] = eHelper::title2sef($new_data['category_name']);
+			}
+			$sef = e107::getParser()->toDB($new_data['category_sef']);
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id!=".intval($id)))
+			{
+				e107::getMessage()->addError('Please choose unique SEF URL string for this category');
+				return false;
+			}
+			return $new_data;
 		}
 
 }

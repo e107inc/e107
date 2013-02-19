@@ -14,17 +14,18 @@ global $sc_style;
 //$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
 $NEWS_TEMPLATE['list']['item'] = '
-	<div class="news-list-item">
-		<h2>{NEWSTITLE}</h2>
-		<div class="item-date">{NEWSDATE=short}</div>
-		<div class="item-author">{NEWSAUTHOR}</div>
- 
-		<div class="item-body">
+	<div class="list-item">
+		<h2>{NEWSURLTITLE}</h2>
+		<div class="category">in {NEWSCATEGORY}</div>
+		<div class="date">{NEWSDATE=short}</div>
+		<div class="author">{NEWSAUTHOR}</div>
+ 		
+		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
 			{EXTENDED}
 		</div>
-		<div class="item-options">
+		<div class="options">
 			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
@@ -35,19 +36,44 @@ $NEWS_TEMPLATE['list']['item'] = '
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['view']['end']         = '</ul>';
 $NEWS_TEMPLATE['view']['item'] = '
-	<div class="news-view-item">
+	<div class="view-item">
 		<h2>{NEWSTITLE}</h2>
-		<div class="item-date">{NEWSDATE=short}</div>
-		<div class="item-author">{NEWSAUTHOR}</div>
- 
-		<div class="item-body">
+		<div class="category">in {NEWSCATEGORY}</div>
+		<div class="date">{NEWSDATE=short}</div>
+		<div class="author">{NEWSAUTHOR}</div>
+
+		<div class="body">
 			{NEWSIMAGE}
 			{NEWSBODY}
 			{EXTENDED}
 		</div>
-		<div class="item-options">
+		<div class="options">
 			{NEWSCOMMENTS} {EMAILICON} {PRINTICON} {PDFICON} {ADMINOPTIONS}
 		</div>
 	</div>
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
+
+
+###### news_categories.sc (temporary) - TODO rewrite news, template standards ######
+$NEWS_TEMPLATE['category']['body'] = '
+	<div style="padding:5px"><div style="border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px">
+	{NEWSCATICON}&nbsp;{NEWSCATEGORY}
+	</div>
+	{NEWSCAT_ITEM}
+	</div>
+';
+
+$NEWS_TEMPLATE['category']['item'] = '
+	<div style="width:100%;padding-bottom:2px">
+	<table style="width:100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td style="width:2px;vertical-align:top">&#8226;
+	</td>
+	<td style="text-align:left;vertical-align:top;padding-left:3px">
+	{NEWSTITLELINK}
+	<br />
+	</td></tr>
+	</table>
+	</div>
+';
