@@ -782,7 +782,7 @@ if(($action == 'maint'))
 	<tr>
 		<td style='width:40%;vertical-align:top;'>".EC_ADLAN_A142." </td>
 		<td style='width:60%;vertical-align:top;'>
-			<select name='eventpost_fmonths' class='tbox'>
+			<select name='eventpost_deleteoldmonths' class='tbox'>
 			<option value='12' selected='selected'>12</option>
 			<option value='11'>11</option>
 			<option value='10'>10</option>
