@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Mailout handling - selector for 'core' users
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $Revision: 11315 $
+ * $Date: 2010-02-10 18:18:01 +0000 (Wed, 10 Feb 2010) $
+ * $Author: secretr $
  *
 */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
+ *	@version 	$Id: mailout_class.php 11315 2010-02-10 18:18:01Z secretr $;
  *
  *	@todo	last visit date needs XHTML calendar on display, and needs to accept varying input formats
  */
@@ -278,14 +278,20 @@ class core_mailout
 	
 			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));								
 			$var[1]['html'] 	= $frm->selectbox('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
-			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));	// FIXME: Should include date selector
-			$var[3]['html'] 	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_1_value',varset($selectVals['extended_1_value'], ''));
-			$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',varset($selectVals['extended_2_value'],''));
-
+			//$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));
+			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$admin->makeCalendar('last_visit_date', varset($selectVals['last_visit_date'], 0));
 			$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
 			$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
-			$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
-			$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+
+			$extFields			= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE);
+			if ($extFields !== FALSE)	// Only display next bit if UEFs defined
+			{
+				$var[3]['html'] 	= $extFields.LAN_MAILOUT_48." ".$frm->text('extended_1_value',varset($selectVals['extended_1_value'], ''));
+				$var[4]['html'] 	= $admin->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." ".$frm->text('extended_2_value',varset($selectVals['extended_2_value'],''));
+
+				$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+				$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+			}
 		}
 		else // Display existing values
 		{ 	
@@ -320,21 +326,24 @@ class core_mailout
 				$var[2]['html'] = $selectVals['last_visit_match'].' '.gmstrftime("%D-%M-%Y",$selectVals['last_visit_date']); //FIXME use e107 date function. 
 				$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
 			}
-			if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
+			$extFields	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE);
+			if ($extFields !== FALSE)
 			{
-				$var[3]['html'] = $selectVals['extended_1_name'].' '.$selectVals['extended_1_value'];
-				$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
-			}
-			if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
-			{
-				$var[4]['html'] = $selectVals['extended_2_name'].' '.$selectVals['extended_2_value'];
-				$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+				if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
+				{
+					$var[3]['html'] = $selectVals['extended_1_name'].' '.$selectVals['extended_1_value'];
+					$var[3]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+				}
+				if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
+				{
+					$var[4]['html'] = $selectVals['extended_2_name'].' '.$selectVals['extended_2_value'];
+					$var[4]['caption'] 	= LAN_MAILOUT_46;	// Extended user field		
+				}
 			}
 			
 		}
 
 		return $var;
-
 	}
 }
 

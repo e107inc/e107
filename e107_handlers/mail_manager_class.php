@@ -2,25 +2,25 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Mailout - mail database API and utility routines
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.8/e107_handlers/redirection_class.php $
+ * $Id: redirection_class.php 11922 2010-10-27 11:31:18Z secretr $
+ * $Revision: 12125 $
 */
 
 /**
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
+ *	@version 	$Id: mail_manager_class.php 12125 2011-04-08 05:11:38Z e107coders $;
  *
  *	@todo - consider whether to extract links in text-only emails
+ *	@todo - support separate template for the text part of emails
 
 This class isolates the caller from the underlying database used to buffer and send emails.
 Also includes a number of useful routines
@@ -72,15 +72,32 @@ mail_content			- Details of the email to be sent to a number of people
 	mail_last_date		Don't send after this date/time
 	mail_title			A description of the mailout - not sent
 	mail_subject		Subject line
-	mail_body			Body text
+	mail_body			Body text - the 'raw' text as entered/specified by the user
+	mail_body_templated	Complete body text after applying the template, but before any variable substitutions
 	mail_other			Evaluates to an array of misc info - cc, bcc, attachments etc
 
+mail_other constituents:
+	mail_sender_email	Sender's email address
+	mail_sender_name	Sender's name
+	mail_copy_to		Any recipients to copy
+	mail_bcopy_to		Any recipients to BCC
+	mail_attach			Comma-separated list of attachments
+	mail_send_style		Send style -  HTML, text, template name etc
+	mail_selectors		Details of the selection criteria used for recipients (Only used internally)
+	mail_include_images	TRUE if to embed images, FALSE to add link to them
+	mail_body_alt		If non-empty, use for alternate email text (generally the 'plain text' alternative)
+	mail_overrides		If non-empty, any overrides for the mailer, set by the template
 
-Within internal arrays, a flat structure is adopted. Variables relating to DB values all begin 'mail_' - others are internal (volatile) control variables
+
+
+Within internal arrays, a flat structure is adopted, with 'mail_other' merged with the rest of the 'mail_content' values.
+Variables relating to DB values all begin 'mail_' - others are internal (volatile) control variables
 
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');		// May be needed by anything loading this class
 
 define('MAIL_STATUS_SENT', 0);			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
 define('MAIL_STATUS_BOUNCED', 1);
@@ -115,8 +132,11 @@ class e107MailManager
 	protected	$queryCount = array();		// Stores total number of records if SQL_CALC_ROWS is used (index = db object #)
 	protected	$currentBatchInfo = array();	// Used during batch send to hold info about current mailout
 	protected	$currentMailBody = '';			// Buffers current mail body
+	protected	$currentTextBody = '';			// Alternative text body (if required)
 
 	protected	$mailer = NULL;				// Mailer class when required
+	protected	$mailOverrides = FALSE;		// Any overrides to be passed to the mailer
+
 
 	// Array defines DB types to be used
 	protected	$dbTypes = array(
@@ -149,6 +169,7 @@ class e107MailManager
 			'mail_title' 		=> 'todb',
 			'mail_subject' 		=> 'todb',
 			'mail_body' 		=> 'todb',
+			'mail_body_templated' => 'todb',
 			'mail_other' 		=> 'string'			// Don't want entities here!
 		)
 	);
@@ -160,6 +181,7 @@ class e107MailManager
 		),
 		'mail_content' => array(
 			'mail_body' => '',
+			'mail_body_templated' => '',
 			'mail_other' => ''
 		)
 	);
@@ -171,9 +193,11 @@ class e107MailManager
 					'mail_copy_to'		=> 1,
 					'mail_bcopy_to'		=> 1,
 					'mail_attach'		=> 1,
-					'mail_send_style'	=> 1,
+					'mail_send_style'	=> 1,			// HTML, text, template name etc
 					'mail_selectors'	=> 1,			// Only used internally
-					'mail_include_images' => 1			// Used to determine whether to embed images, or link to them
+					'mail_include_images' => 1,			// Used to determine whether to embed images, or link to them
+					'mail_body_alt'		=> 1,			// If non-empty, use for alternate email text (generally the 'plain text' alternative)
+					'mail_overrides'	=> 1
 		);
 	
 	// List of fields which are the status counts of an email, and their titles
@@ -190,9 +214,10 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct($overrides = FALSE)
 	{
 		$this->e107 = e107::getInstance();
+		$this->mailOverrides = $overrides;
 	}
 
 
@@ -269,18 +294,21 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
-
 		if (isset($data['mail_other']))
 		{
 			$array = new ArrayData;
-			$tmp = $array->ReadArray($data['mail_other']);
+			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);
 			}
+			else
+			{
+				$res['Array_ERROR'] = 'No array found';
+			}
 			unset($res['mail_other']);
 		}
-		elseif ($addMissing)
+		if ($addMissing)
 		{
 			foreach ($this->dbOther as $f => $v)
 			{
@@ -398,7 +426,7 @@ class e107MailManager
 		$array = new ArrayData;
 		if (isset($data['mail_other']))
 		{
-			$tmp = $array->ReadArray($data['mail_other']);
+			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);
@@ -414,7 +442,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$tmp = $array->ReadArray($data['mail_target_info']);
+			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;
@@ -434,7 +462,10 @@ class e107MailManager
 	}
 
 
-	// Internal function to create a db object for our use if none exists
+
+	/**
+	 *	Internal function to create a db object for our use if none exists
+	 */
 	protected function checkDB($which = 1)
 	{
 		if (($which == 1) && ($this->db == NULL))
@@ -448,7 +479,9 @@ class e107MailManager
 	}
 
 
-	// Internal function to create a mailer object for our use if none exists
+	/**
+	 * Internal function to create a mailer object for our use if none exists
+	 */
 	protected function checkMailer()
 	{
 		if ($this->mailer != NULL) return;
@@ -456,13 +489,29 @@ class e107MailManager
 		{
 			require_once(e_HANDLER.'mail.php');
 		}
-		$this->mailer = new e107Email;		// Could add in overrides here
+		$this->mailer = new e107Email($this->mailOverrides);
 	}
 
 
 
+	/** 
+	 *	Set the override values for the mailer object.
+	 *
+	 *	@param array $overrides - see mail.php for details of accepted values
+	 *
+	 *	@return boolean TRUE if accepted, FALSE if rejected
+	 */
+	public function setMailOverrides($overrides)
+	{
+		if ($this->mailer != NULL) return FALSE;		// Mailer already created - it's too late!
+		$this->mailOverrides = $overrides;
+	}
+
+
+
+
 	/**
-	 * Convert numeric represntation of mail status to a text string
+	 * Convert numeric representation of mail status to a text string
 	 * 
 	 * @param integer $status - numeric value of status
 	 * @return string text value
@@ -532,7 +581,7 @@ class e107MailManager
 
 
 	/**
-	 * Get next email from selection
+	 * Get next email from selection (usually from selectEmails() )
 	 * @return Returns array of email data if available - FALSE if no further data, no active query, or other error
 	 */
 	public function getNextEmail()
@@ -545,7 +594,6 @@ class e107MailManager
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
-//			return array_merge($this->dbToMail($result), $this->dbToTarget($result));
 		}
 		else
 		{
@@ -569,6 +617,8 @@ class e107MailManager
 	 * Call to send next email from selection
 	 * 
 	 * @return Returns TRUE if successful, FALSE on fail (or no more to go)
+	 *
+	 *	@todo Could maybe save parsed page in cache if more than one email to go
 	 */
 	public function sendNextEmail()
 	{
@@ -579,6 +629,10 @@ class e107MailManager
 			return FALSE;
 		}
 
+		/**
+		 *	The $email variable has all the email data in 'flat' form, including that of the current recipient.
+		 *	field $email['mail_target_info'] has variable substitution information relating to the current recipient
+		 */
 		if (count($this->currentBatchInfo))
 		{
 			//print_a($this->currentBatchInfo);
@@ -587,6 +641,7 @@ class e107MailManager
 				//echo "New email body: {$this->currentBatchInfo['mail_source_id']} != {$email['mail_source_id']}<br />";
 				$this->currentBatchInfo = array();		// New source email - clear stored info
 				$this->currentMailBody = '';			// ...and clear cache for message body
+				$this->currentTextBody = '';
 			}
 		}
 		if (count($this->currentBatchInfo) == 0)
@@ -615,45 +670,23 @@ class e107MailManager
 
 		if (!$this->currentMailBody)
 		{
-			$this->currentMailBody = $this->makeEmailBody($email['mail_body'], $email['mail_send_style'], varset($email['mail_include_images'], FALSE));
-		}
-		// Do any substitutions
-		$search = array();
-		$replace = array();
-		foreach ($email['mail_target_info'] as $k => $v)
-		{
-			$search[] = '|'.$k.'|';
-			$replace[] = $v;
-		}
-		$email['mail_body'] = str_replace($search, $replace, $this->currentMailBody);
-		$email['send_html'] = ($email['mail_send_style'] != 'textonly');
-		
-		// Set up any extra mailer parameters that need it
-		if (!vartrue($email['e107_header']))
-		{
-			$temp = intval($email['mail_recipient_id']).'/'.intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/';
-			$email['e107_header'] = $temp.md5($temp);		// Set up an ID
-		}
-		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
-		{
-			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
-			if (is_array($email['mail_attach']))
+			if (isset($email['mail_body_templated']))
 			{
-				foreach ($email['mail_attach'] as $k => $v)
-				{
-					$email['mail_attach'][$k] = $downDir.$v;
-				}
+				$this->currentMailBody = $email['mail_body_templated'];
 			}
 			else
 			{
-				$email['mail_attach'] = $downDir.$email['mail_attach'];
+				$this->currentMailBody = $email['mail_body'];
 			}
+			$this->currentTextBody = $email['mail_body_alt'];		// May be null
 		}
+		
+		$mailToSend = $this->makeEmailBlock($email);			// Substitute mail-specific variables, attachments etc
 
 //		print_a($email);
 
 		// Try and send
-		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $email, TRUE);
+		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
 
 //		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
 		
@@ -739,6 +772,84 @@ class e107MailManager
 			e107::getEvent()->trigger('maildone', $email);
 		}
 
+		return $result;
+	}
+
+
+
+	/**
+	 *	Given an email block, creates an array of data compatible with PHPMailer, including any necessary substitutions
+	 */
+	protected function makeEmailBlock($email)
+	{
+		$mailSubsInfo = array(
+	 		'email_subject' => 'mail_subject',
+			'email_sender_email' => 'mail_sender_email',
+			'email_sender_name' => 'mail_sender_name',
+			// 'email_replyto'		- Optional 'reply to' field 
+			// 'email_replytonames'	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+			'email_copy_to'	=> 'mail_copy_to', 		// - comma-separated list of cc addresses.
+			//'email_cc_names' - comma-separated list of cc names. Optional, used only if $eml['email_copy_to'] specified
+			'email_bcopy_to' => 'mail_bcopy_to',
+			// 'email_bcc_names' - comma-separated list of bcc names. Optional, used only if $eml['email_copy_to'] specified
+			//'bouncepath'		- Sender field (used for bounces)
+			//'returnreceipt'	- email address for notification of receipt (reading)
+			//'email_inline_images'	- array of files for inline images
+			//'priority'		- Email priority (1 = High, 3 = Normal, 5 = low)
+			//'extra_header'	- additional headers (format is name: value
+			//'wordwrap'		- Set wordwrap value
+			//'split'			- If true, sends an individual email to each recipient
+			);
+		$result = array();
+		if (!isset($email['mail_source_id'])) $email['mail_source_id'] = 0;
+		if (!isset($email['mail_target_id'])) $email['mail_target_id'] = 0;
+		if (!isset($email['mail_recipient_id'])) $email['mail_recipient_id'] = 0;
+		foreach ($mailSubsInfo as $k => $v)
+		{
+			if (isset($email[$v]))
+			{
+				$result[$k] = $email[$v];
+			}
+		}
+
+		// Do any substitutions
+		$search = array();
+		$replace = array();
+		foreach ($email['mail_target_info'] as $k => $v)
+		{
+			$search[] = '|'.$k.'|';
+			$replace[] = $v;
+		}
+		$result['email_body'] = str_replace($search, $replace, $this->currentMailBody);
+		if ($this->currentTextBody)
+		{
+			$result['mail_body_alt'] = str_replace($search, $replace, $this->currentTextBody);
+		}
+		$result['send_html'] = ($email['mail_send_style'] != 'textonly');
+		$result['add_html_header'] = FALSE;				// We look after our own headers
+		
+		// Set up any extra mailer parameters that need it
+		if (!vartrue($email['e107_header']))
+		{
+			$temp = intval($email['mail_recipient_id']).'/'.intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/';
+			$result['e107_header'] = $temp.md5($temp);		// Set up an ID
+		}
+		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
+		{
+			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
+			if (is_array($email['mail_attach']))
+			{
+				foreach ($email['mail_attach'] as $k => $v)
+				{
+					$result['email_attach'][$k] = $downDir.$v;
+				}
+			}
+			else
+			{
+				$result['email_attach'] = $downDir.trim($email['mail_attach']);
+			}
+		}
+		if (isset($email['mail_overrides']) && is_array($email['mail_overrides'])) $result = array_merge($result, $email['mail_overrides']);
 		return $result;
 	}
 
@@ -1314,71 +1425,171 @@ class e107MailManager
 
 
 
-	/**
-	 * Creates email body text according to options
-	 * @param $text string - text to process
-	 * @param $format string - options:
-	 *				textonly - generate plain text email
-	 *				texthtml - HTML format email, no theme info
-	 *				texttheme - HTML format email, including current theme stylesheet etc
-	 * @param boolean $incImages - valid only with HTML output; 
-	 *					if true any 'absolute' format images are embedded in the source of the email.
-	 *					if FALSE, absolute links are converted to URLs on the local server		
-	 * @return string - updated body
-	 */
-	protected function makeEmailBody($text, $format = 'textonly', $incImages = TRUE)
+//-----------------------------------------------------
+//		Function call to send a templated email
+//-----------------------------------------------------
+
+/**
+ *	Send an email to any number of recipients, using a template
+ *
+ *	The template may contain normal shortcodes, which must already have been loaded. @see e107_themes/email_template.php
+ *
+ *	The template (or other body text) may also contain field names in the form |USER_NAME| (as used in the bulk mailer edit page). These are
+ *	filled in from $templateData - field name corresponds to the array index name (case-sensitive)
+ *
+ *	The template definition may contain an array $template['email_overrides'] of values which override normal mailer settings.
+ *
+ *	The template definition MUST contain a template variable $template['email_body']
+ *
+ *	In general, any template definition which isn't overridden uses the default which should be specified in e_THEME.'templates/email_templates.php'
+ *
+ *	There is a presumption that the email is being templated because it contains HTML, although this isn't mandatory.
+ *
+ *	Any language string constants required in the template must be defined either by loading the requisite language file prior to calling this
+ *	routine, or by loading them in the template file.
+ *
+ *	@param array|string $templateName - if a string, the name of the template - information is loaded from theme and default templates.
+ *					- if an array, template data as returned by gettemplateInfo() (and defined in the template files)
+ *			- if empty, sends a simple email using the default template (much as the original sendemail() function in mail.php)
+ *	@param array $emailData - defines the email information (generally as the 'mail_content' and 'mail_other' info above):
+ *					$emailData = array(
+						'mail_create_app' => 'notify',
+						'mail_title' => 'NOTIFY',
+						'mail_subject' => $subject,
+						'mail_sender_email' => $pref['siteadminemail'],
+						'mail_sender_name'	=> $pref['siteadmin'],
+						'mail_send_style'	=> 'textonly',
+						'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
+						'mail_body' => $message
+					);
+ *	@param array|string $recipientData - if a string, its the email address of a single recipient.
+ *		- if an array, each entry is the data for a single recipient, as the 'mail_recipients' definition above
+ *									$recipientData = array('mail_recipient_id' => $row['user_id'],
+											 'mail_recipient_name' => $row['user_name'],
+											 'mail_recipient_email' => $row['user_email']
+											 );	
+ *						....and other data as appropriate
+ *	@param boolean|array $extra - any additional parameters to be passed to the mailer - as accepted by arraySet method.
+ *			These parameters will override any defaults, and any set in the template
+ *	if ($extra['mail_force_queue'] is TRUE, the mail will be added to the queue regardless of the number of recipients
+ *
+ *	@return boolean TRUE if either added to queue, or sent, successfully (does NOT indicate receipt). FALSE on any error
+ *		(Note that with a small number of recipients FALSE indicates that one or more emails weren't sent - some may have been sent successfully)
+ */
+
+	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
 	{
-		global $pref;
-		if ($format == 'textonly')
-		{	// Plain text email - strip bbcodes etc
-			$temp = $this->e107->tp->toHTML($text, TRUE, 'E_BODY_PLAIN');		// Decode bbcodes into HTML, plain text as far as possible etc
-			return stripslashes(strip_tags($temp));								// Have to do strip_tags() again in case bbcode added some
+		if (!is_array($emailData)) return FALSE;
+		if (!is_array($recipientData))
+		{
+			$recipientData = array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData);
+		}
+		$emailData['mail_content_status'] = MAIL_STATUS_TEMP;
+
+		if ($templateName == '')
+		{
+			$templateName = varset($email['mail_send_style'], 'textonly');		// Safest default if nothing specified
+		}
+		$templateName = trim($templateName);
+		if ($templateName == '') return FALSE;
+
+
+		// Get template data, override email settings as appropriate
+		require_once(e_HANDLER.'mail_template_class.php');
+		$ourTemplate = new e107MailTemplate();
+		if (!$ourTemplate->setNewTemplate($templateName)) return FALSE;		// Probably template not found if error
+		if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
+		$emailData['mail_body_templated'] = $ourTemplate->mainBodyText;
+		$this->currentMailBody = $emailData['mail_body_templated'];			// In case we send immediately
+		$emailData['mail_body_alt'] = $ourTemplate->altBodyText;
+		$this->currentTextBody = $emailData['mail_body_alt'];
+		if (!isset($emailData['mail_overrides']))
+		{
+			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
+		}
+	
+
+		$forceQueue = FALSE;
+		if (is_array($extra) && isset($extra['mail_force_queue']))
+		{
+			$forceQueue = $extra['mail_force_queue'];
+			unset($extra['mail_force_queue']);
 		}
 
-		$consts = $incImages ? ',consts_abs' : 'consts_full';			// If inline images, absolute constants so we can change them
-
-		// HTML format email here
-		$mail_head = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-		$mail_head .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-		$mail_head .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-		if ($format == 'texttheme') 
+		if ((count($recipientData) <= 5) && !$forceQueue)	// Arbitrary upper limit for sending multiple emails immediately
 		{
-			$styleFile = THEME.'emailstyle.css';
-			if (!is_readable($styleFile)) { $styleFile = e_THEME.$pref['sitetheme']."/style.css"; }
-			$style_css = file_get_contents($styleFile);
-			$mail_head .= "<style>\n".$style_css."\n</style>";
+			if ($this->mailer == NULL)
+			{
+				e107_require_once(e_HANDLER.'mail.php');
+				$this->mailer = new e107Email($extra);
+			}
+			$tempResult = TRUE;
+			$eCount = 0;
+			
+			// @TODO: Generate alt text etc
+			
+
+			foreach ($recipientData as $recip)
+			{
+				// Fill in other bits of email
+				$emailData['mail_target_info'] = $recip;
+				$mailToSend = $this->makeEmailBlock($emailData);			// Substitute mail-specific variables, attachments etc
+				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, TRUE))
+				{
+					$tempResult = FALSE;
+				}
+				else
+				{	// Success here
+					if ($eCount == 0)
+					{	// Only send these on first email - otherwise someone could get inundated!
+						unset($emailData['mail_copy_to']);
+						unset($emailData['mail_bcopy_to']);
+					}
+					$eCount++;		// Count number of successful emails sent
+				}
+			}
+			return $tempResult;
 		}
-		$mail_head .= "</head>\n";
 
-
-		$message_body = $mail_head."<body>\n";
-		if ($format == 'texttheme') 
+		// To many recipients to send at once - add to the emailing queue
+		// @TODO - handle any other relevant $extra fields
+		$result = $this->saveEmail($emailData, TRUE);
+		if ($result === FALSE)
 		{
-			$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
-			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</div></div></body></html>";
+			// TODO: Handle error
+			return FALSE;			// Probably nothing else we can do
+		}
+		elseif (is_numeric($result))
+		{
+			$mailMainID = $emailData['mail_source_id'] = $result;
 		}
 		else
 		{
-			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</body></html>";
-			$message_body = str_replace("&quot;", '"', $message_body);
+			// TODO: Handle strange error
+			return FALSE;			// Probably nothing else we can do
 		}
+		$this->mailInitCounters($mailMainID);			// Initialise counters for emails added
 
-		$message_body = stripslashes($message_body);
-
-
-		if (!$incImages)
+		// Now add email addresses to the list
+		foreach ($recipientData as $email)
 		{
-			// Handle internally generated 'absolute' links - they need the full URL
-			$message_body = str_replace("src='".e_HTTP, "src='".SITEURL, $message_body);
-			$message_body = str_replace('src="'.e_HTTP, 'src="'.SITEURL, $message_body);
-			$message_body = str_replace("href='".e_HTTP, "src='".SITEURL, $message_body);
-			$message_body = str_replace('href="'.e_HTTP, 'src="'.SITEURL, $message_body);
+			$result = $this->mailAddNoDup($mailMainID, $email, MAIL_STATUS_TEMP);
 		}
-
-//		print_a($message_body);
-		return $message_body;
+		$this->mailUpdateCounters($mailMainID);			// Update the counters
+		$counters = $this->mailRetrieveCounters($mailMainID);		// Retrieve the counters
+		if ($counters['add'] == 0)
+		{
+			$this->deleteEmail($mailMainID);			// Probably a fault, but precautionary - delete email 
+			// Don't treat as an error if no recipients
+		}
+		else
+		{
+			$this->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
+		}
+		return TRUE;
 	}
-	
+
 }
+
 
 ?>

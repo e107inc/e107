@@ -47,7 +47,7 @@ $action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 	  $text .= 'Email addresses may be contributed by plugins (such as newsletter), and duplicates are removed when the mail is sent<br />';
 	  $text .= 'Any attachment is selected from the list of valid downloads.<br />';
 	  $text .= 'Mail may be sent as plain text (most universal, and least at risk of being classed as spam), or as HTML (in which case a plain text alternative is automatically generated). The theme style
-				may optionally be added to the email';
+				may optionally be added to the email. Alternatively a predefined template can be selected.';
 	  break;
 	case 'recipients' :
 		$text = 'Shows all recipients or potential recipients of an email, together with current status';

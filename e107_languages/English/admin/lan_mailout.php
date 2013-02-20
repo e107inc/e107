@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -225,8 +225,8 @@ define('LAN_MAILOUT_203', 'No sender name specified');
 define('LAN_MAILOUT_204', 'No sender email address specified');
 define('LAN_MAILOUT_205', 'Email send format error');
 define('LAN_MAILOUT_206', 'Invalid mail ID (--ID--) specified');
-define('LAN_MAILOUT_207', '');
-define('LAN_MAILOUT_208', '');
+define('LAN_MAILOUT_207', 'Template load error');
+define('LAN_MAILOUT_208', 'Template conversion error');
 define('LAN_MAILOUT_209', '');
 define('LAN_MAILOUT_210', '');
 
@@ -245,7 +245,7 @@ define('LAN_MAILOUT_219', 'Partial');
 define('LAN_MAILOUT_220', 'Email ID --ID-- cancelled');
 define('LAN_MAILOUT_221', 'Error cancelling email with ID --ID--');
 define('LAN_MAILOUT_222', 'Default email format');
-define('LAN_MAILOUT_223', '(Used for some non-bulk emails)');
+define('LAN_MAILOUT_223', '(Used for some system-generated emails)');
 define('LAN_MAILOUT_224', 'Inc. Images');
 define('LAN_MAILOUT_225', 'Include images in email');
 define('LAN_MAILOUT_226', '--COUNT-- orphaned recipient record(s) removed');
@@ -253,7 +253,7 @@ define('LAN_MAILOUT_227', 'Deleted --COUNT-- records from --TABLE--');
 define('LAN_MAILOUT_228', '--COUNT-- anomalies in mail_content corrected; records: --RECORDS--');
 define('LAN_MAILOUT_229', 'Email ID --ID-- put on hold');
 define('LAN_MAILOUT_230', 'Error holding email with ID --ID--');
-define('LAN_MAILOUT_231', 'Processing method');
+define('LAN_MAILOUT_231', 'Bounced emails - Processing method');
 define('LAN_MAILOUT_232', 'None');
 define('LAN_MAILOUT_233', 'Auto-process script');
 define('LAN_MAILOUT_234', 'Mail account');
@@ -276,7 +276,12 @@ define('LAN_MAILOUT_250', '--- End of notification ---');
 define('LAN_MAILOUT_251', 'Copy and edit');
 define('LAN_MAILOUT_252', 'Does various consistency checks on the data, corrects counts, deletes temporary data');
 define('LAN_MAILOUT_253', 'No recipients found - check for database corruption');
-define('LAN_MAILOUT_254', '');
+define('LAN_MAILOUT_254', 'View templated email');
+define('LAN_MAILOUT_255', 'Templated Email, ID: ');
+define('LAN_MAILOUT_256', 'Return');
+define('LAN_MAILOUT_257', 'Generated template');
+define('LAN_MAILOUT_258', 'Template: ');
+define('LAN_MAILOUT_259', '');
 
 
 define('LAN_SEND', 'Send');
