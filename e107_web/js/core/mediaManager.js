@@ -36,6 +36,10 @@ $(document).ready(function()
 		
 		eMediaAttribute();	
 	});
+	$("#float").change(function () {  
+		
+		eMediaAttribute();	
+	});
 	
 	function eMediaAttribute(e)
 	{		
@@ -57,6 +61,7 @@ $(document).ready(function()
 		var margin_bottom 	= $('#margin-bottom').val();	
 		var margin_right 	= $('#margin-right').val();	
 		var margin_left 	= $('#margin-left').val();	
+		var _float 			= $('#float').val();	
 						
 		if(width !='')
 		{				
@@ -86,6 +91,11 @@ $(document).ready(function()
 		if(margin_bottom !='')
 		{				
 			style  = style + 'margin-bottom:' + margin_bottom + 'px;';	
+		}
+
+		if(_float =='left' || _float =='right')
+		{				
+			style  = style + 'float:' + _float + ';';	
 		}
 		
 		bb = '[img';
