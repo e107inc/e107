@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -399,6 +399,7 @@ switch ($action)
 	case 'sent' :
 	case 'pending' :
 	case 'held' :
+	case 'mailshowtemplate' :
 		if (isset($_POST['etrigger_ecolumns']))
 		{
 			$mailAdmin->mailbodySaveColumnPref($action);
@@ -554,6 +555,10 @@ switch ($action)
 		$mailAdmin->showEmailList($action, -1, -1);
 		break;
 
+	case 'mailshowtemplate' :	// Show the templated email
+		$mailAdmin->showEmailTemplate($mailId);
+		break;
+
 	case 'maildelete' :			// NOTE:: need to set previous page in form
 		$mailAdmin->showDeleteConfirm($mailId, $pageMode);
 		break;
@@ -679,7 +684,14 @@ function saveMailPrefs(&$emessage)
 	if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
 	$temp['mailer'] = $_POST['mailer'];
 	// Allow qmail as an option as well - works much as sendmail
-	if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE)) $temp['sendmail'] = $e107->tp->toDB($_POST['sendmail']);
+	if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE))
+	{
+		$temp['sendmail'] = $e107->tp->toDB($_POST['sendmail']);
+	}
+	else
+	{
+		$temp['sendmail'] = '';
+	}
 	$temp['smtp_server'] 	= $e107->tp->toDB($_POST['smtp_server']);
 	$temp['smtp_username'] 	= $e107->tp->toDB($_POST['smtp_username']);
 	$temp['smtp_password'] 	= $e107->tp->toDB($_POST['smtp_password']);

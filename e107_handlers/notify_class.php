@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -33,7 +33,7 @@ class notify
 	{
 		global $e_event;
 		
-		$this->notify_prefs = e107::getConfig("notify")->getPref();
+		$this->notify_prefs = e107::getConfig('notify')->getPref();
 	
 		if(varset($this->notify_prefs['event']))
 		{
@@ -54,8 +54,7 @@ class notify
 	/**
 	 * Send an email notification following an event.
 	 *
-	 * For up to a (hard-coded) number of recipients, the mail is sent immediately.
-	 * Otherwise its added to the queue
+	 * The email is sent via a common interface, which will send immediately for small numbers of recipients, and queue for larger.
 	 * 
 	 * @param string $id - identifies event actions
 	 * @param string $subject - subject for email
@@ -78,7 +77,18 @@ class notify
 			$emailFilter = $this->notify_prefs['event'][$id]['email'];
 		}
 		$blockOriginator = FALSE;		// TODO: set this using a pref
-		if (is_numeric($this -> notify_prefs['event'][$id]['class']))
+		$recipients = array();
+
+		if ($notifyTarget == 'email')
+		{	// Single email address - that can always go immediately
+			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
+			{
+				$recipients[] = array(
+								 'mail_recipient_email' => $this->notify_prefs['event'][$id]['email']
+								 );	
+			}
+		}
+		elseif (is_numeric($this->notify_prefs['event'][$id]['class']))
 		{
 			switch ($notifyTarget)
 			{
@@ -102,80 +112,39 @@ class notify
 			}
 			if (FALSE !== ($count = $e107->sql->db_Select_gen($qry)))
 			{
-				if ($count <= 5)
-				{	// Arbitrary number below which we send emails immediately
-					e107_require_once(e_HANDLER.'mail.php');
-					while ($email = $e107->sql->db_Fetch())
+				// Now add email addresses to the list
+				while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				{
+					if ($row['user_email'] != $emailFilter)
 					{
-						if ($email['user_email'] != $emailFilter)
-						{
-							sendemail($email['user_email'], $subject, $message, $email['user_name']);
-						}
+						$recipients[] = array('mail_recipient_id' => $row['user_id'],
+										 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
+										 'mail_recipient_email' => $row['user_email']
+										 );	
 					}
 				}
-				else
-				{	// Otherwise add to mailout queue
-					require_once(e_HANDLER.'mail_manager_class.php');
-					$mailer = new e107MailManager;
-
-
-					// Start by creating the mail body
-					$mailData = array(
-						'mail_content_status' => MAIL_STATUS_TEMP,
-						'mail_create_app' => 'notify',
-						'mail_title' => 'NOTIFY',
-						'mail_subject' => $subject,
-						'mail_sender_email' => $pref['siteadminemail'],
-						'mail_sender_name'	=> $pref['siteadmin'],
-						'mail_send_style'	=> 'textonly',
-						'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
-						'mail_body' => $message
-					);
-					$result = $mailer->saveEmail($mailData, TRUE);
-					if (is_numeric($result))
-					{
-						$mailMainID = $mailData['mail_source_id'] = $result;
-					}
-					else
-					{
-						// TODO: Handle error
-						return;			// Probably nothing else we can do
-					}
-					$mailer->mailInitCounters($mailMainID);			// Initialise counters for emails added
-
-					// Now add email addresses to the list
-					while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
-					{
-						if ($row['user_email'] != $emailFilter)
-						{
-							$uTarget = array('mail_recipient_id' => $row['user_id'],
-											 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
-											 'mail_recipient_email' => $row['user_email']
-											 );	
-							$result = $mailer->mailAddNoDup($mailMainID, $uTarget, MAIL_STATUS_TEMP);
-						}
-					}
-					$mailer->mailUpdateCounters($mailMainID);			// Update the counters
-					$counters = $mailer->mailRetrieveCounters($mailMainID);		// Retrieve the counters
-					if ($counters['add'] == 0)
-					{
-						$mailer->deleteEmail($mailMainID);			// Probably a fault, but precautionary - delete email 
-					}
-					else
-					{
-						$mailer->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
-					}
-				}
-				$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 			}
 		}
-		elseif ($notifyTarget == 'email')
-		{	// Single email address - that can always go immediately
-			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
-			{
-				e107_require_once(e_HANDLER.'mail.php');
-				sendemail($this->notify_prefs['event'][$id]['email'], $subject, $message);
-			}
+
+		if (count($recipients))
+		{
+			require_once(e_HANDLER.'mail_manager_class.php');
+			$mailer = new e107MailManager;
+
+			// Create the mail body
+			$mailData = array(
+				'mail_content_status' => MAIL_STATUS_TEMP,
+				'mail_create_app' => 'notify',
+				'mail_title' => 'NOTIFY',
+				'mail_subject' => $subject,
+				'mail_sender_email' => e107::getPref('siteadminemail'),
+				'mail_sender_name'	=> e107::getPref('siteadmin'),
+				'mail_send_style'	=> 'textonly',
+				'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
+				'mail_body' => $message
+			);
+			$result = $mailer->sendEmails('NOTIFY_TEMPLATE', $mailData, $recipients);
+			$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 	}
 }

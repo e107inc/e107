@@ -2,25 +2,25 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Mailout - admin-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $Revision: 12775 $
+ * $Date: 2012-06-01 09:09:14 +0100 (Fri, 01 Jun 2012) $
+ * $Author: e107coders $
  *
-*/
+ */
 
 /**
  *	Various admin-related mailout functions, mostly to do with creating and handling forms. 
  * 
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
+ *	@version 	$Id: mailout_admin_class.php 12775 2012-06-01 08:09:14Z e107coders $;
 */
 
 
@@ -29,6 +29,7 @@ TODO:
 	1. Use API to downloads plugin to get available files (when available)
 	2. Fuller checking prior to send
 	3. May want more control over date display format
+	4. Use new date picker
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -85,6 +86,7 @@ class mailoutAdminClass extends e107MailManager
 			'mail_notify_complete' => array('title' => LAN_MAILOUT_243,  'nolist' => 'TRUE'),
 			'mail_last_date' 	=> array('title' => LAN_MAILOUT_129, 'proc' => 'sdatetime'),
 			'mail_body' 		=> array('title' => LAN_MAILOUT_100, 'proc' => 'trunc200'),
+			'mail_body_templated' => array('title' => LAN_MAILOUT_257, 'proc' => 'chars'),
 		//	'mail_other' = array('title' => LAN_MAILOUT_84),
 			'mail_sender_email' => array('title' => LAN_MAILOUT_149),
 			'mail_sender_name'	=> array('title' => LAN_MAILOUT_150),
@@ -125,11 +127,12 @@ class mailoutAdminClass extends e107MailManager
 			);
 
 
-	// Options for mail listing dropdown
+	// Options for mail listing dropdown - actions apertaining to a stored email
 	protected $modeOptions = array(
 		'saved' => array(
 			'mailedit' => LAN_MAILOUT_163,
-			'maildelete' => LAN_DELETE
+			'maildelete' => LAN_DELETE,
+			'mailshowtemplate' => LAN_MAILOUT_254
 			),
 		'pending' => array(
 			'mailsendimmediately' => "Send Immediately",
@@ -156,7 +159,8 @@ class mailoutAdminClass extends e107MailManager
 	// List of fields to be included in email display for various options
 	protected $mailDetailDisplay = array(
 		'basic' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200),
-		'send' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 500)
+		'send' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 500, 'mail_send_style' => 1),
+		'template' => array('mail_source_id' => 1, 'mail_title' => 1, 'mail_subject' => 1, 'mail_body' => 200, 'mail_body_templated' => 'chars'),
 	);
 	
 
@@ -169,8 +173,6 @@ class mailoutAdminClass extends e107MailManager
 	public function __construct($mode = '')
 	{
 		parent::__construct();
-	//	require_once(e_HANDLER.'calendar/calendar_class.ph_');
-	//	$this->_cal = new DHTML_Calendar(true);
 
 		$dbTable = '';
 		if (isset($this->tasks[$mode]))
@@ -350,10 +352,12 @@ class mailoutAdminClass extends e107MailManager
 
 
 
+
+
 	/**
 	 * Generate the HTML for displaying actions box for emails
 	 * 
-	 * Options given depend on $mode, and also values in the email data.
+	 * Options given depend on $mode (saved|sent|pending|held), and also values in the email data.
 	 *
 	 * @param array $mailData - array of email-related info
 	 * @return string HTML for display
@@ -552,6 +556,8 @@ class mailoutAdminClass extends e107MailManager
 	 * @param string $name - name for <select>
 	 * @param string $curSel - current select value
 	 * @return text for display
+	 *
+	 *	@TODO: Doesn't give correct count for core classes where no data initialised
 	 */
 	public function userClassesTotals($name, $curSel) 
 	{
@@ -570,6 +576,7 @@ class mailoutAdminClass extends e107MailManager
 		$query = "SELECT uc.*, count(u.user_id) AS members
 				FROM #userclass_classes AS uc
 				LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
+				WHERE NOT uc.userclass_id IN (".e_UC_PUBLIC.','.e_UC_NOBODY.','.e_UC_READONLY.','.e_UC_BOTS.")
 				GROUP BY uc.userclass_id
 						";
 
@@ -593,11 +600,12 @@ class mailoutAdminClass extends e107MailManager
 	 * @param string $list_name - name for <select>
 	 * @param string $curval - current select value
 	 * @param boolean $add_blank - add a blank line before the options if TRUE
-	 * @return text for display
+	 * @return text for display if any extended fields defined; FALSE if none available
 	 */
 	public function ret_extended_field_list($list_name, $curval = '', $add_blank = FALSE)
 	{
 		$ue = e107::getUserExt();			// Get the extended field handler
+		if (count($ue->fieldDefinitions) == 0) return FALSE;
 		$ret = "<select name='{$list_name}' class='tbox'>\n";
 		if ($add_blank) $ret .= "<option value=''>&nbsp;</option>\n";
 
@@ -634,8 +642,8 @@ class mailoutAdminClass extends e107MailManager
 						'mail_copy_to'		=> $_POST['email_cc'],
 						'mail_bcopy_to'		=> $_POST['email_bcc'],
 						'mail_attach'		=> trim($_POST['email_attachment']),
-						'mail_send_style'	=> varset($_POST['send_style'],'textonly'),
-						'mail_include_images' => (isset($_POST['mail_include_images']) ? 1 : 0)
+						'mail_send_style'	=> varset($_POST['email_send_style'],'textonly'),
+						'mail_include_images' => (isset($_POST['email_include_images']) ? 1 : 0)
 					); 
 					
 		$ret = $tp->toDB($ret);	// recursive 
@@ -661,7 +669,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $fullCheck - TRUE to check all fields that are required (immediately prior to sending); FALSE to just check a few basics (prior to save)
 	 * @return TRUE if OK. Array of error messages if any errors found
 	 */
-	public function checkEmailPost($email, $fullCheck = FALSE)
+	public function checkEmailPost(&$email, $fullCheck = FALSE)
 	{
 		$errList = array();
 		if (count($email) < 3)
@@ -673,15 +681,38 @@ class mailoutAdminClass extends e107MailManager
 		if (!trim($email['mail_body'])) $errList[] = LAN_MAILOUT_202;
 		if (!trim($email['mail_sender_name'])) $errList[] = LAN_MAILOUT_203;
 		if (!trim($email['mail_sender_email'])) $errList[] = LAN_MAILOUT_204;
-		switch ($email['mail_send_style'])
-		{
-			case 'textonly' :
-			case 'texthtml' :
-			case 'texttheme' :
-				break;
-			default :
-				$errList[] = LAN_MAILOUT_205;
+		if (strlen($email['mail_send_style']) == 0)
+		{	// Can be a template name now
+			$errList[] = LAN_MAILOUT_205;
+			break;
 		}
+		else
+		{
+			// Get template data, override email settings as appropriate
+			require_once(e_HANDLER.'mail_template_class.php');
+			$ourTemplate = new e107MailTemplate();
+			$templateName = $email['mail_send_style'];
+			if (!$ourTemplate->setNewTemplate($templateName))
+			{
+				$errList[] = LAN_MAILOUT_207.':'.$templateName;
+				print_a($ourTemplate);						// Probably template not found if error
+			}
+			if (!$ourTemplate->makeEmailBody($email['mail_body'], $email['mail_include_images']))
+			{
+				$errList[] = LAN_MAILOUT_205.':'.$templateName;
+				print_a($ourTemplate);
+			}
+			else
+			{
+				$email['mail_body_templated'] = $ourTemplate->mainBodyText;
+				$email['mail_body_alt'] = $ourTemplate->altBodyText;
+				if (count($ourTemplate->lastTemplateData['email_overrides']))
+				{
+					$email['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
+				}
+			}
+		}
+
 		if (count($errList) == 0)
 		{
 			return TRUE;
@@ -709,14 +740,48 @@ class mailoutAdminClass extends e107MailManager
 			return "<tr><td colspan='2'>Programming bungle - invalid option value: {$options}</td></tr>";
 		}
 
-		$res = '';
+		$text = '';
 		foreach ($this->mailDetailDisplay[$options] as $k => $v)
 		{
-			$res .= '<tr><td>'.$this->fields['mail_content'][$k]['title'].'</td><td>';
-			$res .= ($v > 1) ? $tp->text_truncate($mailSource[$k], $v, '...') : $mailSource[$k];
-			$res .= '</td></tr>'."\n";
+			$text .= '<tr><td>'.$this->fields['mail_content'][$k]['title'].'</td><td>';
+			$val = $mailSource[$k];
+			if (is_numeric($v))
+			{
+				$text .= ($v > 1) ? $tp->text_truncate($val, $v, '...') : $val;
+			}
+			else
+			{
+				switch ($v)
+				{
+					case 'username' :
+						$text .= $this->getUserName($val);
+						break;
+					case 'sdatetime' :
+						$text .= $gen->convert_date($val, 'short');
+						break;
+					case 'trunc200' :
+						$text .= $this->e107->tp->text_truncate($val, 200, '...');
+						break;
+					case 'chars' :			// Show generated html as is
+						$text .= htmlspecialchars($val, ENT_COMPAT, 'UTF-8');
+						break;
+					case 'contentstatus' :
+						$text .= $this->statusToText($val);
+						break;
+					case 'selectors' :
+						$text .= 'cannot display';
+						break;
+					case 'yesno' :
+						$text .= $val ? LAN_YES : LAN_NO;
+						break;
+					case 'default' :
+					default :
+						$text .= $val;
+				}
+			}
+			$text .= '</td></tr>'."\n";
 		}
-		return $res;
+		return $text;
 	}
 
 
@@ -729,7 +794,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @return text for display
 	 */
 	 //FIXME use $frm->selectbox() instead. 
-	public function sendStyleSelect($curval = '', $name = 'send_style')
+	public function sendStyleSelect($curval = '', $name = 'email_send_style', $incTemplates = TRUE)
 	{
 
 		$emFormat = array(
@@ -744,6 +809,15 @@ class mailoutAdminClass extends e107MailManager
 		{
 			$selected = ($key == $curval) ? " selected='selected'" : '';
 			$text .= "<option value='".$key."'{$selected}>".$val."</option>\n";
+		}
+		if ($incTemplates)
+		{
+			$tList = self::getEmailTemplateNames('user');
+			foreach ($tList as $key=>$val)
+			{
+				$selected = ($key == $curval) ? " selected='selected'" : '';
+				$text .= "<option value='".$key."'{$selected}>".LAN_MAILOUT_258.$val."</option>\n";
+			}
 		}
 		$text .="</select>\n";
 		return $text;
@@ -774,7 +848,7 @@ class mailoutAdminClass extends e107MailManager
 			//$ns->tablerender('ERROR!!', );
 			//exit;
 		}
-		
+
 		$email_subject = varset($mailSource['mail_subject'], '');
 		$email_body = $tp->toForm(varset($mailSource['mail_body'],''));
 		$email_id = varset($mailSource['mail_source_id'],'');
@@ -891,7 +965,7 @@ class mailoutAdminClass extends e107MailManager
 
 		$text .= $this->sendStyleSelect(varset($mailSource['mail_send_style'], ''));
 		$checked = (isset($mailSource['mail_include_images']) && $mailSource['mail_include_images']) ? " checked='checked'" : '';
-		$text .= "&nbsp;&nbsp;<input type='checkbox' name='mail_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
+		$text .= "&nbsp;&nbsp;<input type='checkbox' name='email_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
 		$text .="
 		</td></tr>\n
 			<tr>
@@ -946,7 +1020,11 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
-	// Helper function manages the shortcodes which can be inserted
+
+
+	/**
+	 *		Helper function manages the shortcodes which can be inserted
+	 */
 	function sc_Select($container='sc_selector') 
 	{
 		$text ="
@@ -1003,6 +1081,49 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
+
+	/**
+	 *	Show the generated template of a saved email
+	 */
+	public function showEmailTemplate($mailId)
+	{
+		$mailData = $this->retrieveEmail($mailId);
+		
+		$text = "<div style='text-align:center'>";
+
+		if ($mailData === FALSE)
+		{
+			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79.'</div></div>';
+			$this->e107->ns-> tablerender("<div style='text-align:center'>".LAN_MAILOUT_171."</div>", $text);
+			exit;
+		}
+
+		$text .= "
+			<form action='".e_SELF."?mode=saved' id='email_show_template' method='post'>
+			<fieldset id='email-show-template'>
+			<table class='table adminlist'>
+			<colgroup>
+				<col class='col-label' />
+				<col class='col-control' />
+			</colgroup>
+			<tbody>";
+
+		$text .= $this->showMailDetail($mailData, 'template');
+		$text .= '<tr><td>'.LAN_MAILOUT_172.'</td><td>'.$this->statusToText($mailData['mail_content_status'])."<input type='hidden' name='mailIDConf' value='{$mailID}' /></td></tr>";
+
+		$text .= "</tbody></table>\n</fieldset>";
+
+		$text .= "<div class='buttons-bar center'>
+			<input class='btn button' type='submit' name='email_delete' value=\"".LAN_MAILOUT_256."\" />
+		</div>";
+
+		$text .= "</form></div>";
+		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_255.$mailId.'</div>', $text);
+	}
+
+
+
+
 	/**
 	 * Show a screen to confirm deletion of an email
 	 * 
@@ -1057,7 +1178,7 @@ class mailoutAdminClass extends e107MailManager
 	/**
 	 * Generate the HTML to show a list of emails of a particular type, in tabular form
 	 * 
-	 * @param $type - type of email to display
+	 * @param $type - type of email to display (saved|sent|pending|held)
 	 * @param $from - offset into table of candidates
 	 * @param $amount - number to return
 	 * @return text for display
@@ -1124,6 +1245,9 @@ class mailoutAdminClass extends e107MailManager
 						case 'trunc200' :
 							$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
 							break;
+						case 'chars' :			// Show generated html as is
+							$text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
+							break;
 						case 'contentstatus' :
 							$text .= $this->statusToText($row[$fieldName]);
 							break;
@@ -1166,7 +1290,7 @@ class mailoutAdminClass extends e107MailManager
 	 * Generate a list of emails to send
 	 * Returns various information to display in a confirmation screen
 	 *
-	 * The email and its recipients are stored in the DB with a tag of 'MAIL_STATUS_TEMP' of its a new email (no change if already on hold)
+	 * The email and its recipients are stored in the DB with a tag of 'MAIL_STATUS_TEMP' if its a new email (no change if already on hold)
 	 * 
 	 * @param array $mailData - Details of the email, selection criteria etc
 	 * @param boolean $fromHold - FALSE if this is a 'new' email to send, TRUE if its already been put on hold (selects processing path)
@@ -1300,6 +1424,10 @@ class mailoutAdminClass extends e107MailManager
 
 
 
+
+	/**
+	 *
+	 */
 	protected function makeAdvancedOptions($initHide = FALSE)
 	{
 		// Separate table for advanced mailout options
@@ -1326,46 +1454,39 @@ class mailoutAdminClass extends e107MailManager
 
 
 
+	/**
+	 *
+	 */
 	public function makeCalendar($calName, $calVal = '', $dateOrder = 'dmy')
 	{
 		// Determine formatting strings this way, to give sensible default
 		switch ($dateOrder)
 		{
 			case 'mdy' :
-				$dateString = '%m/%d/%Y %H:%I';
-				$dispString = 'm/d/Y H:I';
+				$dFormat = '%m/%d/%y';
+				$tFormat = '%H:%M';
 				break;
 			case 'ymd' :
-				$dateString = '%Y/%m/%d %H:%I';
-				$dispString = 'Y/m/d H:I';
+				$dFormat = '%Y/%m/%d';
+				$tFormat = ' %H:%M';
 				break;
 			case 'dmy' :
 			default :
-				$dateString = '%d/%m/%Y %H:%I';
-				$dispString = 'd/m/Y H:I';
+				$dFormat = '%d/%m/%Y';
+				$tFormat = ' %H:%M';
 		}
-		$calOptions = array(
-			'showsTime' => TRUE,
-			'showOthers' => false,
-			'weekNumbers' => false,
-			'ifFormat' => $dateString
-			);
-		$calAttrib = array(
-			'class' => 'tbox',
-			'size' => 15,			// Number of characters
-			'name' => $calName,
-			'value' => (($calVal == '') ? '' : date($dispString,$calVal))
-		);
-		
 
-		list($dformat,$tformat) = explode(" ",$dateString);
-		$options['type'] 		= 'datetime';
-		$options['dateFormat'] 	= $dformat;
-		$options['timeFormat'] 	= $tformat; 
+		$options = array(
+			'type' => 'datetime',
+			'dateformat' => $dFormat,
+			'timeformat' => $tFormat,
+			'firstDay' => 1,		// 0 = Sunday.
+			'size' => 12
+			);
+//		$options['dateFormat'] 	= $dformat;
+//		$options['timeFormat'] 	= $tformat; 
 		
 		return e107::getForm()->datepicker($calName,$calVal,$options);
-		
-		// return $this->_cal->make_input_field($calOptions, $calAttrib);
 	}
 
 
@@ -1455,6 +1576,9 @@ class mailoutAdminClass extends e107MailManager
 								break;
 							case 'trunc200' :
 								$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
+								break;
+							case 'chars' :			// Show generated html as is
+								$text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
 								break;
 							case 'contentstatus' :
 								$text .= $this->statusToText($row[$fieldName]);
@@ -1667,6 +1791,42 @@ class mailoutAdminClass extends e107MailManager
 
 		$this->e107->admin_log->log_event('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');
 		return $noError;
+	}
+
+
+
+	/**
+	 *	Get a list of all the available email templates, by name and variable name
+	 *
+	 *	@param string $sel - currently (all|system|user) - selects template type
+	 *
+	 *	@return array - key is the variable name of the template, value is the stored template name
+	 */
+	public function getEmailTemplateNames($sel = 'all')
+	{
+		$ret = array();
+		foreach (array(e_THEME.'templates/email_template.php', THEME.'templates/email_template.php') as $templateFileName )	// Override file then defaults
+		if (is_readable($templateFileName))
+		{
+			require($templateFileName);
+			$tVars = get_defined_vars();
+			if (isset($tVars['GLOBALS'])) unset($tVars['GLOBALS']);
+			foreach ($tVars as $tKey => $tData)
+			{
+				if (is_array($tData) && isset($tData['template_name']))
+				{
+					if (!isset($tData['template_type']) || ($tData['template_type'] == 'all') || ($tData['template_type'] == $sel))
+					{
+						$ret[$tKey] = $tData['template_name'];
+					}
+				}
+				if ($tKey != 'ret')
+				{
+					unset($tVars[$tKey]);
+				}
+			}
+		}
+		return $ret;
 	}
 }
 
