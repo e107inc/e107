@@ -28,7 +28,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	
 	if(ADMIN)
 	{
-		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle\">Switch to BBCODE</a></div>');");	
+		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-small\">Switch to bbcode</a></div>');");	
 	}
 	else 
 	{
@@ -69,12 +69,12 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 		 	$('a.e-wysiwyg-toggle').toggle(function(){
 		 			var id = $(this).attr('id'); // eg. news-body	
 		 			$('#bbcode-panel-'+id+'--preview').show();
-		 			$(this).text('Switch to WYSIWYG');
+		 			$(this).text('Switch to wysiwyg');
 		           tinyMCE.execCommand('mceRemoveControl', false, id);
 			}, function () {
 					 var id = $(this).attr('id');
 					 $('#bbcode-panel-'+id+'--preview').hide();
-					 $(this).text('Switch to BBCODE');
+					 $(this).text('Switch to bbcode');
 		            tinyMCE.execCommand('mceAddControl', false, id);
 			});	
 			
