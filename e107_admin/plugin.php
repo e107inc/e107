@@ -885,7 +885,7 @@ class pluginManager{
 		if($this->action == "avail")
 		{
 			$text .= "
-					<div class='buttons-bar left'>".$frm->admin_button($button_mode, $button_caption, $button_action)."</div>";
+					<div class='buttons-bar center'>".$frm->admin_button($button_mode, $button_caption, $button_action)."</div>";
 		}
 		$text .= "
 				</fieldset>
