@@ -242,6 +242,7 @@ class wysiwyg
 			'editor_selector' 	=> 'e-wysiwyg',
 			'editor_deselector'	=> 'e-wysiwyg-off',
 			'theme'				=> 'advanced',
+			'skin'				=> 'bootstrap', // See https://github.com/gtraxx/tinymce-skin-bootstrap
 			'plugins'			=> $this->filter_plugins($config['tinymce_plugins'])
 		);
 
