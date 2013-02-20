@@ -1715,7 +1715,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if(!count($_POST['batch_selected']))
 		{
-			$mes->addError("Please check at least one image.");
+			$mes->addError("Please check at least one file.");
 			return;
 		}
 		
