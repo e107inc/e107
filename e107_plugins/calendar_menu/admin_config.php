@@ -8,10 +8,8 @@
  *
  * Event calendar plugin - admin functions
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL*
+ * $Id$
  */
 
 /**
@@ -47,7 +45,7 @@ $sql = e107::getDb();
 $uc = e107::getUserClass();		// Userclass object pointer
 $message = '';
 $calendarmenu_text = '';
-$calendarmenu_msg  = '';
+
 $calPref = e107::pref('calendar_menu');
 
 /**
@@ -66,7 +64,7 @@ function logPrefChanges(&$prefList, &$oldPref, $logRef)
 	$calNew = e107::getPlugConfig('calendar_menu');		// Initialize calendar_menu prefs.
 	$tp = e107::getParser();
 	$prefChanges = array();
-	$mes = eMessage::getInstance();
+	$mes = e107::getMessage();
 
 	foreach ($prefList as $prefName => $process)
 	{
@@ -106,18 +104,15 @@ function logPrefChanges(&$prefList, &$oldPref, $logRef)
 			// Do admin logging
 			$logString = implode('[!br!]', $prefChanges);
 			$admin_log->log_event($logRef,$logString,'');
-			//$mes->add('Calendar prefs updated', E_MESSAGE_SUCCESS);	
-			$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
+			//$mes->addSuccess(LAN_UPDATED); 
 		}
 		elseif ($result === FALSE)
-		{
-			//$mes->add('Error saving calendar prefs', E_MESSAGE_ERROR);		
+		{		
 			$mes->addError("Error saving calendar prefs"); // TODO LAN
 		}
 		else
-		{		// Should never happen
-			//$mes->add('Unexpected result: '.$result, E_MESSAGE_INFO);
-			$mes->addInfo('Unexpected result: '.$result);
+		{	// Should never happen
+			$mes->addInfo('Unexpected result: '.$result); // TODO LAN
 		}
 	}
 }
@@ -170,8 +165,7 @@ if (isset($_POST['updatesettings']))
 {
 	logPrefChanges($prefSettings['updateOptions'], $calPref, 'EC_ADM_06');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	//$message = EC_ADLAN_A204; 			// "Calendar settings updated.";
-	$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
+	//$mes->addSuccess();
 }
 
 
@@ -180,8 +174,7 @@ if (isset($_POST['updateforthcoming']))
 {
 	logPrefChanges($prefSettings['updateForthcoming'], $calPref, 'EC_ADM_07');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-	//$message = EC_ADLAN_A109; 			// "Forthcoming Events settings updated.";
-	$mes->addSuccess(LAN_UPDATED); // TODO FIX "double success message in green box"
+	//$mes->addSuccess(); 
 }
 
 
@@ -192,7 +185,7 @@ if (e_QUERY)
 	$action = preg_replace('#\W#', '',$ec_qs[0]);
 }
 
-require_once('ecal_class.php');
+require_once('ecal_class.php'); 
 $ecal_class = new ecal_class;
 
 
@@ -240,11 +233,13 @@ if (isset($_POST['confirmdeleteold']) && ($action == 'backdel'))
 	{
 		// Add in a log event
 		$ecal_class->cal_log(4,"db_Delete - earlier than {$old_string} (past {$back_count} months)",$qry);
-		$message = EC_ADLAN_A146.$old_string.EC_ADLAN_A147;
+		//$message = EC_ADLAN_A146.$old_string.EC_ADLAN_A147;
+		$mes->addSuccess(EC_ADLAN_A146 . $old_string . EC_ADLAN_A147);
 	}
 	else
 	{
-		$message = EC_ADLAN_A149." : ".$sql->mySQLresult;
+		//$message = EC_ADLAN_A149." : ".$sql->mySQLresult;
+		$mes->addError(EC_ADLAN_A149." : ".$sql->mySQLresult);
 	}
 
 	$action = 'maint';
@@ -258,6 +253,7 @@ if (isset($_POST['confirmdelcache']) && ($action == 'cachedel'))
   //$message = EC_ADLAN_A163;
   $mes->addSuccess(EC_ADLAN_A163); // TODO LAN
   $action = 'maint';			// Re-display maintenance menu
+  $ns->tablerender($caption, $mes->render() . $text);
 }
 
 
@@ -277,9 +273,10 @@ if ($action == 'confdel')
 	</div>
 	</form>
 	</div>";
-	
-	$ns->tablerender(LAN_UI_DELETE_LABEL, $text); 
+
+	$ns->tablerender(LAN_UI_DELETE_LABEL, $mes->render() . $text); 
 }
+
 
 
 // Prompt to clear cache
@@ -295,29 +292,19 @@ if ($action == 'confcache')
 	<div class='buttons-bar center'>
 		".$frm->admin_button('confirmdelcache', LAN_UI_DELETE_LABEL, 'delete')."
 	</form>";
-	
-	$ns->tablerender(LAN_UI_DELETE_LABEL, $text);
 }
+
 
 
 // Just delete odd email subscriptions
 if (isset($ec_qs[2]) && isset($ec_qs[3]) && ($action == 'subs') && ($ec_qs[2] == 'del') && is_numeric($ec_qs[3]))
 {
 	if ($sql->db_Delete('event_subs',"event_subid='{$ec_qs[3]}'"))
-		//$message = EC_ADLAN_A180.$ec_qs[3];
 		$mes->addSuccess(LAN_DELETED.$ec_qs[3]);
 	else
-		//$message = EC_ADLAN_A181.$ec_qs[3];
 		$mes->addError(LAN_DELETED_FAILED.$ec_qs[3]);
 }
 
-/*
-if (isset($message) && ($message != "")) 
-{
-	$ns->tablerender('', "<div style='text-align:center'><b>{$message}</b></div>"); // TODO v2 style
-	$message = '';
-}
-*/
 
 $ns->tablerender($caption, $mes->render() . $text); 
 
@@ -366,24 +353,25 @@ if($action == 'cat')
 		{ 	// New record so add it
 			if ($calendarmenu_db->db_Insert("event_cat", $calPars))
 			{
-				$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
+				$mes->addSuccess(LAN_CREATED);
 				$admin_log->log_event(EC_ADM_08,$calPars['event_cat_name'],'');
 			}
 			else
 			{
-				$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A27."</strong></td></tr>";
+
+				$mes->addError(LAN_CREATED_FAILED);
 			} 
 		}
 		else
 		{ 	// Update existing
 			if ($calendarmenu_db->db_UpdateArray("event_cat", $calPars, 'WHERE `event_cat_id` = '.$calendarmenu_id))
 			{ 	// Changes saved
-				$calendarmenu_msg .= "<tr><td colspan='2'><b>".EC_ADLAN_A28."</b></td></tr>";
+				$mes->addSuccess(LAN_UPDATED);
 				$admin_log->log_event(EC_ADM_09,'ID: '.$calendarmenu_id.', '.$calPars['event_cat_name'],'');
 			}
 			else
 			{
-				$calendarmenu_msg .= "<tr><td colspan='2'><b>".EC_ADLAN_A29."</b></td></tr>";
+				$mes->addError(LAN_UPDATED_FAILED);
 			} 
 		}
 		// Now see if we need to send a test email
@@ -412,7 +400,7 @@ if($action == 'cat')
 				$calendarmenu_db->db_Select('event_cat', '*', 'event_cat_id='.$calendarmenu_id);
 				$calendarmenu_row = $calendarmenu_db->db_Fetch() ;
 				extract($calendarmenu_row);
-				$calendarmenu_cap1 = EC_ADLAN_A24;
+				$calendarmenu_cap1 = LAN_EDIT ." ". LAN_CATEGORY;
 				$calendarmenu_edit = TRUE;
 				if ($ecal_send_email != 0)
 				{  // Need to send a test email
@@ -439,10 +427,15 @@ if($action == 'cat')
 				  $user_email = USEREMAIL;
 				  $user_name  = USERNAME;
 				  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $calPref['eventpost_mailaddress'], $calPref['eventpost_mailfrom']); 
+				  
 				  if ($send_result)
-					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
+				  {
+				  	$mes->addSuccess(EC_ADLAN_A187);
+				  }
 				  else
-					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A188.$ecal_send_email."</strong></td></tr>";
+				  {
+				  	$mes->addError(EC_ADLAN_A188);
+				  }
 				}
 				break;
 
@@ -452,7 +445,7 @@ if($action == 'cat')
 				// set all fields to zero/blank
 				$calendar_category_name = '';
 				$calendar_category_description = '';
-				$calendarmenu_cap1 = EC_ADLAN_A23;
+				$calendarmenu_cap1 = LAN_CREATE ." ". LAN_CATEGORY;
 				$calendarmenu_edit = TRUE;
 				$event_cat_name = '';		// Define some variables for notice removal
 				$event_cat_description = '';
@@ -472,24 +465,24 @@ if($action == 'cat')
 				{
 					if ($calendarmenu_db->db_Select('event', 'event_id', 'event_category='.$calendarmenu_id, 'nowhere'))
 					{
-						$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A59."</strong></td></tr>";
+						$mes->addError(EC_ADLAN_A59);
 					}
 					else
 					{
 						if ($calendarmenu_db->db_Delete('event_cat', 'event_cat_id='.$calendarmenu_id))
 						{
 							$admin_log->log_event(EC_ADM_10,'ID: '.$calendarmenu_id,'');
-							$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
+							$mes->addSuccess(LAN_DELETED);
 						}
 						else
 						{
-						  $calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A32."</strong></td></tr>";
+							$mes->addError(LAN_DELETED_FAILED);
 						}
 					} 
 				}
 				else
 				{
-					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A31."</strong></td></tr>";
+					$mes->addError(LAN_CONFIRMDEL);
 				} 
 				$calendarmenu_dodel = TRUE;
 				$calendarmenu_edit = FALSE;
@@ -514,7 +507,6 @@ if($action == 'cat')
 					<input type='hidden' value='update' name='calendarmenu_action' />
 				</th>
 			</tr>
-			{$calendarmenu_msg}
 			<tr>
 				<td>".EC_ADLAN_A21."</td> 
 				<td><input type='text' style='width:150px' class='tbox' name='event_cat_name' value='{$event_cat_name}' /></td>
@@ -579,7 +571,7 @@ if($action == 'cat')
 			<tr>
 				<td style='vertical-align:top;'>".EC_ADLAN_A84;
 		if ($calendarmenu_do == 1) 
-		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_1' value='".EC_ADLAN_A186."' class='tbox' />"; // TODO / FIX v2 style
+		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_1' value='".EC_ADLAN_A186."' class='btn tbox' />"; 
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg1' >".$event_cat_msg1."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
@@ -590,7 +582,7 @@ if($action == 'cat')
 			<tr>
 				<td style='vertical-align:top;'>".EC_ADLAN_A117;
 		if ($calendarmenu_do == 1) 
-		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_2' value='".EC_ADLAN_A186."' class='tbox' />"; // TODO / FIX v2 style
+		  $calendarmenu_text .= "<br /><br /><br /><input type='submit' name='send_email_2' value='".EC_ADLAN_A186."' class='btn tbox' />"; 
 		$calendarmenu_text .= "</td>
 				<td><textarea rows='5' cols='80' class='tbox' name='event_cat_msg2' >".$event_cat_msg2."</textarea>";
 		if ($event_cat_name != EC_DEFAULT_CATEGORY)
@@ -599,9 +591,16 @@ if($action == 'cat')
 				</td>
 			</tr>		
 			</table>
-			<div class='buttons-bar center'>
-				".$frm->admin_button('submits', LAN_UPDATE, 'update')."
-			</div>
+			<div class='buttons-bar center'>";
+				if($calendarmenu_do == 1)
+				{
+					$calendarmenu_text .= $frm->admin_button('submits', LAN_UPDATE, 'update');
+				}
+				else
+				{
+					$calendarmenu_text .= $frm->admin_button('submits', LAN_CREATE, 'update');	
+				}
+		$calendermenu_text .= "</div>
 			</fieldset>
 			</form>";
 		} 
@@ -624,14 +623,10 @@ if($action == 'cat')
 			$calendarmenu_catopt .= "<option value=0'>".EC_ADLAN_A33."</option>";
 		} 
 
-		$emessage = eMessage::getInstance();
-		echo $emessage->render().$text;
-
 		$calendarmenu_text .= "
 		<form id='calform' method='post' action='".e_SELF."?cat'>
 		
 		<table class='table adminform'>
-		{$calendarmenu_msg}
 		<tr>
 			<td>".EC_ADLAN_A11."<input type='hidden' value='dothings' name='calendarmenu_action' /></td>
 			<td><select name='calendarmenu_selcat' class='tbox'>{$calendarmenu_catopt}</select></td>
@@ -639,10 +634,10 @@ if($action == 'cat')
 		<tr>
 			<td>".EC_ADLAN_A18."</td>
 			<td>
-				<input type='radio' name='calendarmenu_recdel' value='1' checked='checked' /> ".EC_ADLAN_A13."<br />
-				<input type='radio' name='calendarmenu_recdel' value='2' /> ".EC_ADLAN_A14."<br />
-				<input type='radio' name='calendarmenu_recdel' value='3' /> ".EC_ADLAN_A15."
-				<input type='checkbox' name='calendarmenu_okdel' value='1' />".EC_ADLAN_A16."
+				<input type='radio' name='calendarmenu_recdel' value='1' checked='checked' /> ".LAN_EDIT."<br />
+				<input type='radio' name='calendarmenu_recdel' value='2' /> ".LAN_CREATE."<br />
+				<input type='radio' name='calendarmenu_recdel' value='3' /> ".LAN_DELETE."
+				<input type='checkbox' name='calendarmenu_okdel' value='1' /> ".LAN_CONFDELETE."
 			</td>
 		</tr>
 		</table>
@@ -653,7 +648,7 @@ if($action == 'cat')
 	}
 	if(isset($calendarmenu_text))
 	{
-	  $ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A19, $calendarmenu_text);
+	  $ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A19, $mes->render() . $calendarmenu_text);
 	}
 }
 
@@ -671,8 +666,6 @@ if($action == 'forthcoming')
 	if (!isset($calPref['eventpost_linkheader']))  $calPref['eventpost_linkheader'] = '0';
 	if (!isset($calPref['eventpost_namelink']))    $calPref['eventpost_namelink'] = '1';
 
-	$emessage = eMessage::getInstance();
-	echo $emessage->render().$text;
 
 	$text = "
 	<form method='post' action='".e_SELF."?forthcoming'>
@@ -772,7 +765,7 @@ if($action == 'forthcoming')
 	</form>
 	</div>";
 	
-	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A100, $text); // TODO
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A100, $mes->render() . $text); 
 }   // End of Forthcoming Events Menu Options
 
 
@@ -782,9 +775,6 @@ if($action == 'forthcoming')
 
 if(($action == 'maint'))
 {
-	$emessage = eMessage::getInstance();
-	echo $emessage->render().$text;
-
 	$text = "
 	<form method='post' action='".e_SELF."?maint'>
 	<fieldset id='plugin-ecal-maintenance'>
@@ -792,7 +782,7 @@ if(($action == 'maint'))
 	<tr>
 		<td style='width:40%;vertical-align:top;'>".EC_ADLAN_A142." </td>
 		<td style='width:60%;vertical-align:top;'>
-			<select name='eventpost_deleteoldmonths' class='tbox'>
+			<select name='eventpost_fmonths' class='tbox'>
 			<option value='12' selected='selected'>12</option>
 			<option value='11'>11</option>
 			<option value='10'>10</option>
@@ -817,7 +807,7 @@ if(($action == 'maint'))
 	</form>
 	<br /><br />";
 	
-	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A141, $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A141, $mes->render() . $text);
 
 	$text = "
 	<form method='post' action='".e_SELF."?maint'>
@@ -832,7 +822,7 @@ if(($action == 'maint'))
 	</fieldset>
 	</form>";
 	
-	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A159, $text);
+	$ns->tablerender(EC_ADLAN_1." - ".EC_ADLAN_A159, $mes->render() . $text);
 
 }
 
@@ -842,8 +832,8 @@ if(($action == 'maint'))
 
 if($action == 'subs')
 {
-	$emessage = eMessage::getInstance();
-	echo $emessage->render().$text;
+	$mes = e107::getMessage();
+	echo $mes->render() . $text;
 
 	$from = 0;
 	$amount = 20;		// Number per page - could make configurable later if required
@@ -935,8 +925,6 @@ if($action == 'config')
 		return $ret;
 	}
 
-		$emessage = eMessage::getInstance();
-		echo $emessage->render().$text;
 
 	$text = "
 	<form method='post' action='".e_SELF."'>
