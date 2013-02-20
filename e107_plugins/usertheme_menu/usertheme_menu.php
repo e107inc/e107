@@ -44,7 +44,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 	if (count($themelist))
 	{
 		$defaulttheme = $pref['sitetheme'];
-		$count = 0;
+		$themecount[$defaulttheme] = 0;
 
 		$totalct = $sql->db_Select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
  

@@ -116,6 +116,7 @@ class sitelinks
 			$aSubStyle = $style;
         }
 		
+		$text = '';
         if ($style['linkdisplay'] != 3) 
 		{
             foreach ($this->eLinkList['head_menu'] as $key => $link)
