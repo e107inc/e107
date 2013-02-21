@@ -78,7 +78,7 @@ class faq_cat_ui extends e_admin_ui
          	'faq_info_title' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 
          	'faq_info_about' 			=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => '5%'),		
-			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
+			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'inline'=>true),
 			'faq_info_order' 			=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'left' ),					
 			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
 		);	

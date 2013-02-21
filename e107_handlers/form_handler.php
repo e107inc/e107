@@ -313,7 +313,9 @@ class e_form
 		$url .= "&amp;iframe=1";
 		$title = "Media Manager : ".$category;
 
-		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>";
+		$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorbox. 
+	// $ret = "<a title=\"{$title}\" data-toggle='modal' data-cache='false' data-target='#eModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
 	$footer = '';
@@ -662,7 +664,7 @@ class e_form
 		
 		//TODO Auto-calculate $name_fld from $id_fld ie. append "_usersearch" here ?
 		
-		return $this->text($name_fld,$default_name,20, "typeahead=users&readonly=".vartrue($options['readonly']))
+		return $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
 		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# ".$default_id;
 
 
@@ -2180,17 +2182,52 @@ class e_form
 			break;
 
 			case 'userclass':
-				$value = $this->_uc->uc_get_classname($value);
+				$dispvalue = $this->_uc->uc_get_classname($value);
+					// Inline Editing.  
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+
+					$array = e107::getUserClass()->uc_required_class_list(); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
+					$source = str_replace('"',"'",json_encode($array));
+					
+					//NOTE Leading ',' required on $value; so it picks up existing value.
+					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+				}
+				else 
+				{
+					$value = $dispvalue;	
+				}
 			break;
 
 			case 'userclasses':
+			
 				$classes = explode(',', $value);
-				$value = array();
+				$uv = array();
 				foreach ($classes as $cid)
 				{
-					$value[] = $this->_uc->uc_get_classname($cid);
+					$uv[] = $this->_uc->uc_get_classname($cid);
 				}
-				$value = implode(vartrue($parms['separator'],"<br />"), $value);
+				$dispvalue = implode(vartrue($parms['separator'],"<br />"), $uv);
+				
+				// Inline Editing.  
+				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+
+					$array = e107::getUserClass()->uc_required_class_list('classes'); //XXX Ugly looking (non-standard) function naming - TODO discuss name change. 
+					$source = str_replace('"',"'",json_encode($array));
+					
+					//NOTE Leading ',' required on $value; so it picks up existing value.
+					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+				}
+				else 
+				{
+					$value = $dispvalue;	
+				}
+				
+				
+				
 			break;
 
 			/*case 'user_name':

@@ -213,7 +213,7 @@ class users_admin_ui extends e_admin_ui
  		'user_email' 		=> array('title' => LAN_EMAIL,		'type' => 'text',	'width' => 'auto'),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'inline'=>true, 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'type' => 'datestamp', 	'width' => 'auto'),
@@ -1975,7 +1975,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		
 	}
 	
-	
+	//TODO Reduce to simple edit/delete buttons only Other options included on edit page or available via inline or batch editing. 
 	function options($val, $mode) // old drop-down options. 
 	{
 		$controller = $this->getController();
@@ -1995,8 +1995,9 @@ class users_admin_form_ui extends e_admin_form_ui
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
-				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='tbox' style='width:75%'>
+				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' title='Modify' style='text-align:left;width:75%'>
 				<option selected='selected' value=''>&nbsp;</option>";
+				
 		if ($user_perms != "0")
 		{
 			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
