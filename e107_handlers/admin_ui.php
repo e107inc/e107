@@ -2998,6 +2998,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				case 'dropdown': // TODO - ask Steve if this check is required
 				case 'lanlist':
+				case 'userclasses':
 				case 'comma':
 					if(is_array($value))
 					{
@@ -3044,6 +3045,8 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function doAfterSubmit($id = 0, $noredirect_for = '')
 	{
+		if(e_AJAX_REQUEST) return;
+		
 		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action') && $noredirect_for == $this->getAction())
 		{
 			return;
@@ -4188,10 +4191,13 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		
 		$this->logajax("OK?");
-		$model = $this->getModel()->load($this->getId());
 		
-		$res = $model->setPostedData($_name, $_value, false)
-			->save(true);
+		$model = $this->getModel()->load($this->getId());
+		$_POST = array(); //reset post
+		$_POST[$_name] = $_value; // set current field only
+		
+		// generic handler - same as regular edit form submit
+		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 			
 		if($model->hasError())
 		{
@@ -4209,6 +4215,8 @@ class e_admin_ui extends e_admin_controller_ui
 	// Temporary - but useful. :-)
 	public function logajax($message)
 	{
+		return;
+		
 		$message = date('r')."\n".$message."\n";
 		$message .= print_r($_POST,true);
 		$message .= print_r($_GET,true);
