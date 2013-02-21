@@ -157,7 +157,17 @@ $(document).ready(function()
 		
 		
 		// Dates --------------------------------------------------
-					
+		/*	
+			// http://tarruda.github.com/bootstrap-datetimepicker/
+			//	$('.e-datetime').datetimepicker();
+			
+			$('.e-datetime').datetimepicker({
+    	 		language: 'en',
+    	  		pick12HourFormat: true
+ 	  	 	});
+		
+		*/
+			
 			$("input.e-date").each(function() {
         		$(this).datepicker({
         			 dateFormat: $(this).attr("data-date-format"),
@@ -168,15 +178,23 @@ $(document).ready(function()
     		});
     		
     		$("input.e-datetime").each(function() {
+    		//	var name = $(this).attr("name");
+    		//	var val = $(this).val();
+    			
+    		//	alert(name + ': ' + val);
+    			
         		$(this).datetimepicker({
         			 dateFormat: $(this).attr("data-date-format"),
         			 timeFormat: $(this).attr("data-time-format"),
+        			 defaultDate: $(this).val(),
+        			 defaultValue: $(this).val(),
+        			 setDate: $(this).val(),
         			 ampm: $(this).attr("data-date-ampm"),
-					 firstDay: $(this).attr("data-date-firstday"),
+				//	 firstDay: $(this).attr("data-date-firstday"),
         			 showButtonPanel: true
         		 });    		 
     		});
-    		
+    	
     		// Inline versions 
     		$("div.e-date").each(function() {
     			var id = $(this).attr("id");
@@ -207,7 +225,7 @@ $(document).ready(function()
         		 $(this).datetimepicker('setDate', $("#"+newid).val());   		 
     		});
     		
- 		  	
+	
 		
 		// Tabs -----------------------------------------------------
 		

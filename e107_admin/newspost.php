@@ -1974,6 +1974,14 @@ class admin_newspost
 		else
 		{
 			// $text .= $frm->selectbox("cat_id",$this->news_category,$_POST['cat_id']);
+			$catopt = array();
+			foreach ($this->news_categories as $row)
+			{
+				$catopt[$row['category_id']] = $tp->toHTML($row['category_name'], FALSE, "LINKTEXT");
+			}
+			
+			$text .= $frm->selectbox("cat_id", $catopt, $_POST['cat_id']);
+			/*
 			$text .= $frm->select_open('cat_id');
 
 			foreach ($this->news_categories as $row)
@@ -1981,6 +1989,8 @@ class admin_newspost
 					$text .= $frm->option($tp->toHTML($row['category_name'], FALSE, "LINKTEXT"), $row['category_id'], varset($_POST['cat_id']) == $row['category_id']);
 			}
 			$text .= "</select>";
+			*/
+			
 		}
 		$text .= "
 								</td>
@@ -2012,7 +2022,7 @@ class admin_newspost
 		";
 
 		//XXX multiple-selections at once. (comma separated) - working
-		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1",array(NWSLAN_74))."
+		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1")."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
@@ -2255,7 +2265,7 @@ class admin_newspost
 										<div class='field-spacer'>
 		";
 
-		$text .= $frm->datepicker("news_datestamp",vartrue($_POST['news_datestamp']),"type=datetime");
+		$text .= $frm->datepicker("news_datestamp",vartrue($_POST['news_datestamp']),"type=date"); //XXX should be 'datetime' when working correctly. 
 
 		$text .= "</div>";
 		/*
