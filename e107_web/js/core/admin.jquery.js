@@ -49,6 +49,10 @@ $(document).ready(function()
 	  	});
 	
 	
+		$(".e-multiselect").multiselect();
+
+		$('.e-select').selectpicker();
+	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 	
 	
@@ -61,7 +65,7 @@ $(document).ready(function()
 		$(".e-tags").tagit();
 		
 		
-		$(".e-multiselect").chosen();
+	//	$(".e-multiselect").chosen();
 		
 		
 

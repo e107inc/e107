@@ -438,7 +438,7 @@ class user_class
 		}
 
 		// Only return the select box if we've ended up with some options
-		if ($text) $text = "\n<select class='tbox select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+		if ($text) $text = "\n<select class='tbox select e-select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
 		return $text;
 	}
 

@@ -432,7 +432,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					<tr>
 						<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
 						<td>
-						<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
+						<select class='tbox e-select' name='mailer' onchange='disp(this.value)'>\n";
 						$mailers = array('php','smtp','sendmail');
 						foreach($mailers as $opt)
 						{
@@ -477,7 +477,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 			<tr>
 				<td>".LAN_MAILOUT_90."</td><td>
-				<select class='tbox' name='smtp_options'>\n
+				<select class='tbox e-select' name='smtp_options'>\n
 				<option value=''>".LAN_MAILOUT_96."</option>\n";
 			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
 			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";

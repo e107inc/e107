@@ -45,12 +45,22 @@ if(e_PAGE != 'menus.php') // Quick fix for Menu Manager inactive drop-down probl
 e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
 e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
 
+e107::css('core', 	'bootstrap-select/bootstrap-select.min.css', 'jquery');
+e107::js('core', 	'bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
+
+e107::css('core', 	'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
+e107::js('core', 	'bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
+
+//e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
+//e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+
 e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
+
 e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
 
 
-e107::css('core', 	'chosen/chosen.css', 'jquery');
-e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
+//e107::css('core', 	'chosen/chosen.css', 'jquery');
+//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
 
 e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
 
