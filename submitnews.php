@@ -137,7 +137,7 @@ if (!defined("USER_WIDTH")) { define("USER_WIDTH","width:95%"); }
 $text = "
 <div style='text-align:center'>
   <form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' onsubmit='return frmVerify()'>
-    <table style='".USER_WIDTH."' class='fborder'>";
+    <table style='".USER_WIDTH."' class='table fborder'>";
 
 if (!empty($pref['news_subheader']))
 {
@@ -176,7 +176,7 @@ if (!$sql->db_Select("news_category"))
 else
 {
 	$text .= "
-		<select name='cat_id' class='tbox'>";
+		<select name='cat_id' class='e-select tbox'>";
 	while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch(MYSQL_NUM))
 	{
 		$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
@@ -235,7 +235,7 @@ if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upl
 $text .= "
       <tr>
         <td colspan='2' style='text-align:center' class='forumheader'>
-          <input class='button' type='submit' name='submitnews_submit' value='".LAN_136."' />
+          <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
         </td>
       </tr>
     </table>
