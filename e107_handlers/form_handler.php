@@ -770,7 +770,7 @@ class e_form
 		
 		if(vartrue($options['generate']))
 		{
-			$addon .= '&nbsp;<a href="#" class="smalltext e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> | <a class="smalltext e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
+			$addon .= '&nbsp;<a href="#" class="btn btn-small e-tip" id="Spn_PasswordGenerator" title="Generate a password">Generate</a> <a class="btn btn-small e-tip" href="#" id="showPwd" title="Display the password">Show</a><br />';	
 		}
 		
 		if(vartrue($options['strength']))

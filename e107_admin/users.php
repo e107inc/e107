@@ -1268,7 +1268,7 @@ class users_admin_ui extends e_admin_ui
 				".USRLAN_120."
 			</td>
 			<td>
-				<a href='#set_class' class='e-expandit'>".USRLAN_120."</a>
+				<a href='#set_class' class='btn e-expandit'>".USRLAN_120."</a>
 				<div class='e-hideme' id='set_class'>
 				{$temp}
 				</div>
@@ -1281,7 +1281,7 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-				<a href='#set_perms' class='e-expandit'>Set Permissions</a>
+				<a href='#set_perms' class='btn e-expandit'>Set Permissions</a>
 				<div class='e-hideme' id='set_perms'>
 		";
 			
