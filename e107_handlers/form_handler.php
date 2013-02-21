@@ -623,9 +623,24 @@ class e_form
 		}
 		else
 		{
+			// http://tarruda.github.com/bootstrap-datetimepicker/ 
+			//XXX Problem -doesn't support non-numerical date formats. eg. 2 February, 2013
+			/*
+			$text .= "	
+			<div class='{$class} input-append date'>
+		    <input data-format='{$dformat}' type='text' id='{$id}' value='{$value}' />
+		    <span class='add-on'>
+		      <i data-time-icon='icon-time' data-date-icon='icon-calendar'></i>
+		    </span>
+		  </div>";
+			*/
+			
+			
 			$text .= "<input class='{$class}' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-time-format='{$tformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' {$required} />";		
 		}
 
+	//	$text .= " ({$dformat}) ".$value;
+			
 		return $text;
 
 
@@ -1028,6 +1043,10 @@ class e_form
 		if($options['multiple'])
 		{
 			$options['class'] .= ' e-multiselect';	
+		}
+		else 
+		{
+			$options['class'] .= ' e-select';		
 		}		
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
