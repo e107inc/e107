@@ -28,7 +28,7 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	
 	if(ADMIN)
 	{
-		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-small\">Switch to bbcode</a></div>');");	
+		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-mini\">Switch to bbcode</a></div>');");	
 	}
 	else 
 	{
