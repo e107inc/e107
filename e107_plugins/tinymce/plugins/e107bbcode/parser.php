@@ -15,7 +15,11 @@ require_once("../../../../class2.php");
 
 if($_POST['mode'] == 'tohtml')
 {
-	$content = $tp->toDB($_POST['content']);
+	// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
+	$content = stripslashes($_POST['content']);
+	$content = e107::getBB()->htmltoBBcode($content);	
+	
+	$content = $tp->toDB($content);
 	e107::getBB()->setClass($_SESSION['media_category']);
 	// XXX @Cam this breaks new lines, currently we use \n instead [br]
 	//echo $tp->toHtml(str_replace("\n","",$content), true);
