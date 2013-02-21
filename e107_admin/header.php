@@ -51,6 +51,8 @@ e107::js('core', 	'bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
 e107::css('core', 	'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
 e107::js('core', 	'bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
 
+e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
+
 //e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
 //e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 
