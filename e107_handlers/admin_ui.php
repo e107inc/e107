@@ -4899,7 +4899,7 @@ class e_admin_form_ui extends e_form
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
-					<div class='left'>
+					<div class='left' style='margin-top:10px;margin-bottom:-10px'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."
 						".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
@@ -5040,8 +5040,9 @@ class e_admin_form_ui extends e_form
 			return '';
 		}
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
+		// XXX Quick Fix for styling - correct. 
 		$text = "
-			<div class='buttons-bar left'>
+			<div class='navbar navbar-inner left' style='padding-left:30px; padding-top:6px; margin-top:-20px;border-top:0px'>
          		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit reset', 'id' => false))."
 					".$this->option(LAN_BATCH_LABEL_SELECTED, '')."
