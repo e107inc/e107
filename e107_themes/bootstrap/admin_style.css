@@ -1,6 +1,6 @@
 /* info: Default stylesheet */
 
-body 						{ padding-top: 75px; padding-bottom: 40px; }
+body 						{ padding-top: 75px; padding-bottom: 40px; background-color: #EEEEEE}
       	
 .well 						{ padding:10px; }
 .navbar 					{  }
@@ -76,44 +76,42 @@ a.brand:hover img 			{
 								-ms-filter: blur(13px);
 							}
 */
-@media (min-width: 1300px) { 
+@media (min-width: 1300px) 					{ 
 	
-.sidebar-nav 				{ font-size:12px; }
+.sidebar-nav 								{ font-size:12px; }
 
 } 
 
-.modal 						{ min-width:800px; }
+.modal 										{ min-width:800px; }
  
 @media (min-width: 1500px) { 
 	
-.sidebar-nav 				{ font-size:15px; }
+.sidebar-nav 								{ font-size:15px; }
 
 } 
       
-.nav-collapse 				{ margin-top:8px; }
+.nav-collapse 								{ margin-top:8px; }
 
 .dropdown-menu i,
-.dropdown-menu img 			{ padding: 0px 0px; margin-right: 10px; }
+.dropdown-menu img 							{ padding: 0px 0px; margin-right: 10px; }
 
-/* breaks latest dropdown skin */
-.dropdown-menu a 			{
-						       /* filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");  Firefox 10+, Firefox on Android */
-						       /*filter: gray;  IE6-9 */
-						        /*-webkit-filter: grayscale(100%); Chrome 19+, Safari 6+, Safari 6+ iOS */
-							}
-
+.nav ul li ul.dropdown-menu > li a 			{
+						       					filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+						       					filter: gray; /* IE6-9 */
+						       					-webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+											}
 
 
-.dropdown-menu a:hover 		{ filter: none;   -webkit-filter: grayscale(0%); }
+.nav ul li ul.dropdown-menu a:hover 		{ filter: none;   -webkit-filter: grayscale(0%); }
 
-legend 						{ display:none }
+legend 										{ display:none }
 
-.btn 						{ vertical-align: top; }
+.btn 										{ vertical-align: top; }
 
 
-input::-webkit-input-placeholder { font-style:italic  }
+input::-webkit-input-placeholder 			{ font-style:italic  }
 
-input:-moz-placeholder 		{ font-style:italic }
+input:-moz-placeholder 						{ font-style:italic }
 
 
 
@@ -165,18 +163,16 @@ img.S32:hover 				{}
 
 /*******************************************************************************************************************/
 /* Admin List Table */ 
-.adminlist, .adminform 		{ width:100%;  border:1px solid #ddd;}
-.adminlist th 				{ border-bottom:1px solid #ddd;    }
-.adminlist td 				{ border-bottom:1px solid #ddd; border-right: 1px solid #ddd;  }
+.adminlist, .adminform 						{ width:100%;  border:1px solid #ddd;}
+.adminlist th 								{ border-bottom:1px solid #ddd;    }
+.adminlist td 								{ border-bottom:1px solid #ddd; border-right: 1px solid #ddd;  }
 .adminlist th.last,
-.adminlist td.last 			{ border-right: 0px solid;}
-.adminlist tr.last td		{ border-bottom: 0px solid;}
-.adminlist thead 			{ background-color:#f2f2f2; }
-.adminlist tr.even			{ background-color:#f6f6f6; }
-.adminlist .col-selection-cont { position: relative; float:right; }
+.adminlist td.last 							{ border-right: 0px solid;}
+.adminlist tr.last td						{ border-bottom: 0px solid;}
+.adminlist thead 							{ background-color:#f2f2f2; }
+.adminlist tr.even							{ background-color:#f6f6f6; }
+.adminlist .col-selection-cont 				{ position: relative; float:right; }
 
-.col-selection-cont .col-selection { text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px; overflow:visible; position: absolute; z-index:101; right:0px;}
-.col-selection .col-selection-body { padding: 5px; clear: both; }
 
 
 /******** SyS Messages / Message text formatting */
@@ -572,4 +568,33 @@ i.e-safari-16{ background-position: -406px 0; width: 16px; height: 16px; }
 i.e-safari-32{ background-position: -427px 0; width: 32px; height: 32px; } 
 i.e-seamonkey-16{ background-position: -464px 0; width: 16px; height: 16px; } 
 i.e-seamonkey-32{ background-position: -485px 0; width: 32px; height: 32px; } 
+
+
+
+/* NEw */
+
+tr.first									{ background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
+
+/* Dark Drop-Down Menus */
+ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;     background-color: rgb(23, 23, 23); }
+ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
+ul.col-selection > li a 					{ padding: 5px 0px 5px 25px; color: rgb(153, 153, 153); }
+ul.col-selection > li a label 				{ padding-left:0px }
+
+.nav ul li ul.dropdown-menu 				{ margin-top:-5px; border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
+.nav ul li ul.dropdown-menu > li a 			{ border-top: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(32, 32, 32); }
+.nav ul li ul.dropdown-menu > li a 			{ padding-top:5px; padding-bottom:5px; color: rgb(153, 153, 153); }
+.nav ul li ul.dropdown-menu > li a:hover 	{ color: rgb(255, 255, 255); }
+
+
+/* FIXME drop-down caret needs to be remove */
+
+.navbar-inverse .nav li.dropdown.open > .dropdown-toggle, .navbar-inverse .nav li.dropdown.active > .dropdown-toggle, .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
+    color: rgb(255, 255, 255);
+  	background-color: rgb(39, 39, 39);
+    border-top: 1px solid rgb(51, 51, 51);
+    border-left:1px solid rgb(51, 51, 51);
+    border-top:1px solid rgb(51, 51, 51);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
 

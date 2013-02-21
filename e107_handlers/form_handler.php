@@ -889,10 +889,25 @@ class e_form
 	*/
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
+		if(!is_array($options)) parse_str($options, $options);
 		$options = $this->format_options('checkbox', $name, $options);
+		
 		$options['checked'] = $checked; //comes as separate argument just for convenience
-		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
-
+		
+		$text = "";
+		
+		if(vartrue($options['label'])) // Bootstrap compatible markup
+		{
+			$text .= "<label class='checkbox'>";	
+		}
+		
+		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		
+		if(vartrue($options['label']))
+		{
+			$text .= $options['label']."</label>";	
+		}
+		return $text;
 	}
 
 	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
@@ -1572,13 +1587,23 @@ class e_form
 	function columnSelector($columnsArray, $columnsDefault = '', $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
+		
+		/*
         $text = "
 		<div class='col-selection-cont e-tip' data-placement='left' title='Select columns to display'>
 			<a href='#".$id."' class='e-show-if-js e-expandit' >"
 				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
 			."</a>
-			<div id='".$id."' class='e-show-if-js e-hideme col-selection'><div class='col-selection-body'>
+			<div id='".$id."' class='e-show-if-js e-hideme col-selection'>
+			<div class='col-selection-body dropdown'>
+			<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'>
 		";
+		*/
+		$text = '<div class="dropdown e-tip pull-right" data-placement="left">
+    <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <ul class="dropdown-menu col-selection e-noclick" role="menu" aria-labelledby="dLabel">
+    <li class="nav-header">Display Columns</li>';
+		
         unset($columnsArray['options'], $columnsArray['checkboxes']);
 
 		foreach($columnsArray as $key => $fld)
@@ -1587,26 +1612,55 @@ class e_form
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$ttl = isset($fld['title']) ? defset($fld['title'], $fld['title']) : $key;
+				// $text .= "
+					// <div class='field-spacer'>
+						// ".$this->checkbox_label($ttl, 'e-columns[]', $key, $checked)."
+					// </div>
+				// ";
+// 				
 				$text .= "
-					<div class='field-spacer'>
-						".$this->checkbox_label($ttl, 'e-columns[]', $key, $checked)."
-					</div>
+					<li role='menuitem'><a href='#'>
+						".$this->checkbox('e-columns[]', $key, $checked,'label='.$ttl)."
+					</a>
+					</li>
 				";
 			}
 		}
 
 		// has issues with the checkboxes.
-        $text .= "
+        $text .= "<li>
 				<div id='{$id}-button' class='right'>
-					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'other')."
+					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'btn-small')."
 				</div>
-			</div></div>
-		</div>
-		";
+				</li>
+				</ul>
+			</div>";
+			
+	//	$text .= "</div></div>";
 
 		$text .= "";
+	
+	
+	/*
+	$text = '<div class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    <li>hi</li>
+    </ul>
+    </div>';
+	*/	
 		return $text;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	function colGroup($fieldarray, $columnPref = '')
 	{
