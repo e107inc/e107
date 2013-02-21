@@ -1035,7 +1035,7 @@ class media_admin_ui extends e_admin_ui
 			
 					<tr>
 						<td>Text flow: </td>
-						<td>".$frm->selectbox('float', array('default'=>'Default','left'=>'Right','right'=>"Left"))."</td>
+						<td>".$frm->selectbox('float', array('default'=>'Default','left'=>"Left",'right'=>'Right'))."</td>
 					</tr>
 					
 					<tr>
