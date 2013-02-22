@@ -188,19 +188,7 @@ EOF;
 		
 		$text2 = $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true); 
 	
-		// REQUIRES Log Plugin to be installed. 
-		if (e107::isInstalled('log')) 
-		{
-		 		$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
-		}
-		elseif(e107::isInstalled('awstats')) 
-		{
-		 		$text2 .= $ns->tablerender("Visitors this Month", $this->renderStats(),"core-infopanel_stats",true);
-		}
-		else
-		{
-			$text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
-		}
+	
 	
 	
 	// ---------------------Latest Stuff ---------------------------
@@ -208,126 +196,12 @@ EOF;
 		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 		e107::getScBatch('admin');
 		
-	/*	
-$dashboard = '
-  <div class="tab-header">
-          <span class="pull-right">
-          <span class="options">
-            <div class="btn-group">
-              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-              <ul class="dropdown-menu black-box-dropdown dropdown-left">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </div>
-          </span>
-        </span>
-  </div>
+	
 
-  <ul class="nav nav-tabs">
-    <li class=""><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
-    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-hdd"></i> Online</a></li>
-  </ul>
-  <div class="tab-content">
 
-    <div class="tab-pane" id="tab1">
-      <div class="separator">
-        <div class="inner-well clearfix">
-  <div class="pull-left">
-    Antivirus status
-  </div>
-
-  <div class="pull-right">
-    <input rel="confirm-check" id="VKZp4" class="checky" checked="checked" type="checkbox">
-    <label for="VKZp4" class="checky"><span></span></label>
-  </div>
-</div>
-
-<div class="inner-well clearfix">
-  <div class="pull-left">
-    Proxy server status
-  </div>
-
-  <div class="pull-right">
-    <input rel="confirm-check" id="FNNqp" class="checky" type="checkbox">
-    <label for="FNNqp" class="checky"><span></span></label>
-  </div>
-</div>
-      </div>
-      <div class="separator">
-        <div class="inner-well">
-          <div id="stats1" style="width: 100%; height: 100px; padding: 0px; position: relative;"><canvas height="100" width="100" class="base"></canvas><canvas style="position: absolute; left: 0px; top: 0px;" height="100" width="100" class="overlay"></canvas><div class="tickLabels" style="font-size:smaller"><div class="xAxis x1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:center;left:-5px;top:100px;width:25px">Dec</div><div class="tickLabel" style="position:absolute;text-align:center;left:27px;top:100px;width:25px">Jan</div><div class="tickLabel" style="position:absolute;text-align:center;left:59px;top:100px;width:25px">Feb</div></div><div class="yAxis y1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:right;top:88px;right:100px;width:0px">0</div><div class="tickLabel" style="position:absolute;text-align:right;top:67px;right:100px;width:0px">1000</div><div class="tickLabel" style="position:absolute;text-align:right;top:46px;right:100px;width:0px">2000</div><div class="tickLabel" style="position:absolute;text-align:right;top:25px;right:100px;width:0px">3000</div><div class="tickLabel" style="position:absolute;text-align:right;top:4px;right:100px;width:0px">4000</div></div></div></div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="tab-pane active" id="tab2">
-      <div class="separator">
-        <div class="inner-well">
-          <div id="stats2" style="width: 100%; height: 100px; padding: 0px; position: relative;"><canvas height="100" width="532" class="base"></canvas><canvas style="position: absolute; left: 0px; top: 0px;" height="100" width="532" class="overlay"></canvas><div class="tickLabels" style="font-size:smaller"><div class="xAxis x1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:center;left:-7px;top:87px;width:76px">Dec 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:80px;top:87px;width:76px">Dec 16</div><div class="tickLabel" style="position:absolute;text-align:center;left:172px;top:87px;width:76px">Jan 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:259px;top:87px;width:76px">Jan 16</div><div class="tickLabel" style="position:absolute;text-align:center;left:351px;top:87px;width:76px">Feb 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:432px;top:87px;width:76px">Feb 15</div></div><div class="yAxis y1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:right;top:69px;right:508px;width:24px">0</div><div class="tickLabel" style="position:absolute;text-align:right;top:51px;right:508px;width:24px">1000</div><div class="tickLabel" style="position:absolute;text-align:right;top:33px;right:508px;width:24px">2000</div><div class="tickLabel" style="position:absolute;text-align:right;top:15px;right:508px;width:24px">3000</div><div class="tickLabel" style="position:absolute;text-align:right;top:-2px;right:508px;width:24px">4000</div></div></div></div>
-        </div>
-      </div>
-      <div class="separator">
-        <div class="inner-well clearfix">
-  <div class="pull-left">
-    Antivirus status
-  </div>
-
-  <div class="pull-right">
-    <input rel="confirm-check" id="GhVm3" class="checky" checked="checked" type="checkbox">
-    <label for="GhVm3" class="checky"><span></span></label>
-  </div>
-</div>
-
-<div class="inner-well clearfix">
-  <div class="pull-left">
-    Proxy server status
-  </div>
-
-  <div class="pull-right">
-    <input rel="confirm-check" id="mxaz8" class="checky" type="checkbox">
-    <label for="mxaz8" class="checky"><span></span></label>
-  </div>
-</div>
-      </div>
-      <div class="padded">
-        <div id="fix-stats2">
-  <p>
-    <a rel="action" class="button mini rounded inset light-gray">Delete stats</a>
-  </p>
-
-  <div style="display: none;" rel="confirm-action">
-
-    <div class="inner-well clearfix">
-      <b>Are you sure?</b>
-      <div class="pull-right">
-        <input rel="confirm-check" id="gtnDu" class="checky" type="checkbox">
-        <label for="gtnDu" class="checky green"><span></span></label>
-      </div>
-    </div>
-
-    <div class="clearfix vpadded">
-      <div class="pull-left">
-        <a style="display: none;" href="#" class="button red" rel="confirm-do">Delete</a>
-      </div>
-      <div class="pull-right">
-        <a href="#" class="button gray" rel="confirm-cancel">Cancel</a>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-      </div>
-    </div>
-  </div>';
 		
-	$text .= $ns->tablerender("Website Status",$dashboard,"",true);	
-*/		
+		$text2 .= $ns->tablerender("Website Status", $this->renderWebsiteStatus(),"",true);	
+		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
 	//	$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
@@ -341,55 +215,14 @@ $dashboard = '
 		*/
 	
 	
+	$text .= $this->renderLatestComments();
+	
+	
 	// ---------------------- Who's Online  ------------------------
 	// TODO Could use a new _menu item instead.
 	
 	
-	$ol = e107::getOnline();
-	
-		
-	$panelOnline = "
-			
-			<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
-			<colgroup>
-				<col style='width: 10%' />
-	            <col style='width: 25%' />
-				<col style='width: 10%' />
-				<col style='width: 40%' />
-				<col style='width: auto' />
-			</colgroup>
-			<thead>
-				<tr>
-					<th>Timestamp</th>
-					<th>Username</th>
-					<th>IP</th>
-					<th>Page</th>
-					<th class='center'>Agent</th>
-				</tr>
-			</thead>
-			<tbody>";	
-
-		$online = $ol->userList() + $ol->guestList();
-			
-	//	echo "Users: ".print_a($online);
-	
-			foreach ($online as $val)
-			{
-				$panelOnline .= "<tr>
-					<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
-						<td>".$this->renderOnlineName($val['online_user_id'])."</td>
-						<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
-						<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
-						<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
-					</tr>
-					";
-			}
-//$tp->text_truncate(str_replace("/"," / ",$val['user_agent']),20,'...')
-	
-		$panelOnline .= "</tbody></table>
-		";
-		
-		$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
+	//	$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
 		
 	// --------------------- User Selected Menus -------------------
 		
@@ -447,6 +280,134 @@ $dashboard = '
 
 	}
 
+	function renderChart()
+	{
+		// REQUIRES Log Plugin to be installed. 
+		
+		
+		
+		if (e107::isInstalled('log')) 
+		{
+			return $this->renderStats();
+		 	//	$text2 .= $ns->tablerender("Visitors Last 10 Days", $this->renderStats(),"core-infopanel_stats",true);
+		}
+		elseif(e107::isInstalled('awstats')) 
+		{
+			return $this->renderStats();
+		 	// 	$text2 .= $ns->tablerender("Visitors this Month", $this->renderStats(),"core-infopanel_stats",true);
+		}
+		else
+		{
+			return "Log Statistics Plugin Not Installed";
+			// $text2 .= $ns->tablerender("Visitors This Week", "Log Statistics Plugin Not Installed","core-infopanel_stats",true);	
+		}
+		
+	}
+
+
+	function renderWebsiteStatus()
+	{
+		/* 
+		 // Settings button if needed. 
+		<div class="tab-header">
+		          <span class="pull-right">
+		          <span class="options">
+		            <div class="btn-group">
+		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
+		              <ul class="dropdown-menu black-box-dropdown dropdown-left">
+		                <li><a href="#">Action</a></li>
+		                <li><a href="#">Another action</a></li>
+		                <li><a href="#">Something else here</a></li>
+		                <li class="divider"></li>
+		                <li><a href="#">Separated link</a></li>
+		              </ul>
+		            </div>
+		          </span>
+		        </span>
+		  </div>
+		 */
+		
+		
+		
+		$dashboard = '
+		  <ul class="nav nav-tabs">
+		    <li class=""><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
+		    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-hdd"></i> Online</a></li>
+		  </ul>
+		  
+		  <div class="tab-content" style="min-height:300px">
+		
+			<div class="tab-pane" id="tab1">
+		      <div class="separator">
+			'.$this->renderChart().'		
+		      </div>		
+		    </div>
+		
+		    <div class="tab-pane active" id="tab2">
+		      <div class="separator">
+		        '.$this->renderOnlineUsers().'
+		      </div>
+			</div>
+			
+		  </div>';	
+
+		return $dashboard;
+	}
+
+
+
+
+
+	function renderOnlineUsers()
+	{
+		
+		$ol = e107::getOnline();
+		$tp = e107::getParser();
+
+		$panelOnline = "
+				
+				<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
+				<colgroup>
+					<col style='width: 10%' />
+		            <col style='width: 25%' />
+					<col style='width: 10%' />
+					<col style='width: 40%' />
+					<col style='width: auto' />
+				</colgroup>
+				<thead>
+					<tr class='first'>
+						<th>Timestamp</th>
+						<th>Username</th>
+						<th>IP</th>
+						<th>Page</th>
+						<th class='center'>Agent</th>
+					</tr>
+				</thead>
+				<tbody>";	
+
+		$online = $ol->userList() + $ol->guestList();
+				
+		//	echo "Users: ".print_a($online);
+		
+		foreach ($online as $val)
+		{
+			$panelOnline .= "
+			<tr>
+				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
+				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
+				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
+				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
+				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
+			</tr>
+			";
+		}
+
+	
+		$panelOnline .= "</tbody></table>";
+		
+		return $panelOnline;
+	}	
+
 
 	function browserIcon($row)
 	{
@@ -487,6 +448,73 @@ $dashboard = '
 		}
 		return $val;
 	}
+	
+	
+	function renderLatestComments()
+	{
+		return;
+		
+		$text = '
+		  <ul class="recent-comments">
+
+        <li class="separator">
+          <div class="avatar pull-left">
+            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
+          </div>
+
+          <div class="article-post">
+            <div class="user-info"> Posted by jordan, 3 days ago </div>
+            <div class="user-content">
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
+              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
+              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
+            </div>
+          </div>
+        </li>
+
+    
+
+        <li class="separator">
+          <div class="avatar pull-left">
+            <img src="'.e_IMAGE.'generic/blank_avatar.jpg" style="width:48px;height:48px" />
+          </div>
+
+          <div class="article-post">
+            <div class="user-info"> Posted by jordan, 3 days ago </div>
+            <div class="user-content">
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+              Vivamus sed auctor nibh congue, ligula vitae tempus pharetra...
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-mini"><i class="icon-pencil"></i> Edit</button>
+              <button class="btn btn-mini"><i class="icon-remove"></i> Delete</button>
+              <button class="btn btn-mini"><i class="icon-ok"></i> Approve</button>
+            </div>
+          </div>
+        </li>
+
+    
+    <li class="separator" style="text-align: center">
+      <a class="btn" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+    </li>
+  </ul>';		
+		
+		$ns = e107::getRender();
+		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
+	}
+		
+		
+		
+	
+	
 	
 	
 	
