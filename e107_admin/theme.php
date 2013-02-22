@@ -194,7 +194,17 @@ if(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
 	$mode = "main";
 }
 
-$themec -> showThemes($mode);
+if($mode == 'convert')
+{
+	new theme_builder;	
+}
+else 
+{
+	$themec -> showThemes($mode);	
+}
+
+
+
 // <a data-toggle="modal" href="'.e_SELF.'" data-target="#myModal" class="btn" >Launch demo modal</a>
 
 
@@ -224,6 +234,9 @@ function theme_adminmenu()
 
 		$var['upload']['text'] = TPVLAN_38;
 		$var['upload']['link'] = e_SELF."?mode=upload";
+		
+		$var['convert']['text'] = "Convert";
+		$var['convert']['link'] = e_SELF."?mode=convert";
 
       //  $selected = (e_QUERY) ? e_QUERY : "main";
 
@@ -231,7 +244,446 @@ function theme_adminmenu()
 		e107::getNav()->admin(TPVLAN_26, $mode, $var);
 }
 
+class theme_builder 
+{
+	var $themeName = "";
+	var $remove = array();
+	
+		function __construct()
+		{
+			$this->themeName = $_GET['newtheme'];
+			
+			if(vartrue($_GET['step']) == 3)
+			{	
+				$this->step3();	
+				return;
+			}
+			
+			if(vartrue($_GET['step']) == 2)
+			{
+				$this->step2();	
+			}
+			else 
+			{
+				$this->step1();
+			}
+				
+		}		
+	
+		function step1()
+		{
+			
+			$fl = e107::getFile();
+			$frm = e107::getForm();
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+			$plugFolders = $fl->get_dirs(e_THEME);	
+			foreach($plugFolders as $dir)
+			{
+				if(file_exists(e_THEME.$dir."/theme.xml") || $dir == 'templates')
+				{
+					continue;	
+				}	
+				$newDir[$dir] = $dir;
+			}
+			
+			$mes->addInfo("This Wizard will build a theme.xml meta file for your theme.<br />
+				Before you start: <ul>
+						<li>Create a new writable folder in the ".e_PLUGIN." directory eg. <b>myplugin</b></li>
+						<li>Select your theme's folder to begin.</li>
+				</ul>
+			");
+			
+			$text = $frm->open('createPlugin','get',e_SELF."?mode=convert");
+			$text .= "<table class='table adminform'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+				<tr>
+					<td>Select your plugin's folder</td>
+					<td>".$frm->selectbox("newtheme",$newDir)."</td>
+				</tr>";
+				
+				
+				$text .= "
+				<tr>
+					<td>Create Files</td>
+					<td>".$frm->checkbox('createFiles',1,1)."</td>
+				</tr>";
+				
+				
+			$text .= "				
+				</table>
+				<div class='buttons-bar center'>
+				".$frm->admin_button('step', 2,'other','Go')."
+				</div>";
+			
+			$text .= $frm->close();
+			
+			$ns->tablerender("Theme Converter", $mes->render() . $text);			
+			
+		}	
 
+		function step2()
+		{
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			$frm = e107::getForm();
+			
+			$data = array(
+				'main' 			=> array('name','lang','version','date', 'compatibility'),
+				'author' 		=> array('name','url'),
+				'summary' 		=> array('summary'),
+				'description' 	=> array('description'),
+				'keywords' 		=> array('one','two'),
+				'category'		=> array('category'),
+				'copyright'		=> array('copyright')
+		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
+		//		'sitelinks'		=> array('url','description','icon','iconSmall')
+			);			
+					
+			$legacyFile = e_THEME.$this->themeName."/theme.php";		
+			if(file_exists($legacyFile))
+			{
+				$legacyData = file_get_contents($legacyFile);	
+				
+				$regex = '/\$([\w]*)\s*=\s*("|\')([\w @.\/:<\>,\'\[\] !()]*)("|\');/im';
+				preg_match_all($regex, $legacyData, $matches);
+				
+				$leg = array();
+				
+				foreach($matches[1] as $i => $m)
+				{
+					$leg[$m] = strip_tags($matches[3][$i]);	
+					if(substr($m,0,5) == 'theme' || $m == "CUSTOMPAGES")
+					{
+						$search[] = $matches[0][$i];		
+					}					
+				}
+				
+				$defaults = array(
+					"main-name"					=> vartrue($leg['themename']),
+					"author-name"				=> vartrue($leg['themeauthor']),
+					"author-url"				=> vartrue($leg['themewebsite']),
+					"description-description"	=> '',
+					"summary-summary"			=> vartrue($leg['themeinfo']),
+					"custompages"				=> vartrue($leg['CUSTOMPAGES']),
+				);
+				
+				$search[] = "Steve Dunstan";
+				$search[] = "jalist@e107.org";
+				
+				$_SESSION['themebulder-remove'] = $search;
+				
+				$mes->addInfo("Loading theme.php file");						
+			}	
+			
+			$text = $frm->open('newtheme-step3','post', e_SELF.'?mode=convert&newtheme='.$this->themeName.'&step=3');
+			$text .= "<table class='table adminlist'>";
+			foreach($data as $key=>$val)
+			{
+				$text.= "<tr><td>$key</td><td>
+				<div class='controls'>";
+				foreach($val as $type)
+				{
+					$nm = $key.'-'.$type;
+					$name = "xml[$nm]";	
+					$size = (count($val)==1) ? 'span7' : 'span2';
+					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type, vartrue($defaults[$nm]))."</div>";	
+				}	
+			
+				$text .= "</div></td></tr>";
+				
+				
+			}
+			
+			
+			$text .= "</table>";
+			$text .= "
+			<div class='buttons-bar center'>"
+			.$frm->hidden('newtheme', $this->themeName)
+			.$frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
+			.$frm->admin_button('step', 3,'other','Generate')."
+			</div>";
+			
+			$text .= $frm->close();
+			
+			$ns->tablerender("Theme Converter", $mes->render() . $text);		
+		}
+					
+				
+		function step3()
+		{
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			
+		//	print_a($_POST);
+			
+			if($_POST['xml'])
+			{
+				$xmlText =	$this->createXml($_POST['xml']);
+			}	
+			
+			$ns->tablerender("theme.xml", $mes->render(). "<pre>".$xmlText."</pre>");
+			
+			$legacyFile = e_THEME.$this->themeName."/theme.php";		
+			if(file_exists($legacyFile))
+			{
+				$legacyData = file_get_contents($legacyFile);	
+			}
+			
+			$legacyData = $this->cleanUp($legacyData);
+			
+			$output = nl2br(htmlentities($legacyData));
+			
+			// $legacyData = str_replace("\n\n\n","\n",$legacyData);
+			
+			$ns->tablerender("theme.php (updated)",  $output);
+		}	
+
+
+		function cleanUp($text)
+		{
+			$search = array();
+			$replace = array();
+		
+			$search[0] 	= '$HEADER ';
+			$replace[0]	= '$HEADER["default"] ';
+
+			$search[1] 	= '$FOOTER ';
+			$replace[1]	= '$FOOTER["default"] ';	
+			
+			// Early 0.6 and 0.7 Themes 
+
+			$search[2] 	= '$CUSTOMHEADER ';
+			$replace[2]	= '$HEADER["custom"] ';
+
+			$search[3] 	= '$CUSTOMFOOTER ';
+			$replace[3]	= '$FOOTER["custom"] ';
+			
+			//TODO Handle v1.x style themes. eg. $CUSTOMHEADER['something'];
+
+			$text = str_replace($_SESSION['themebulder-remove'],"",$text);
+					
+			$text = str_replace($search, $replace, $text);
+			
+			return $text;	
+		}
+
+
+		function createXml($data)
+		{
+			$ns = e107::getRender();
+			$mes = e107::getMessage();
+			$tp = e107::getParser();
+			
+			foreach($data as $key=>$val)
+			{
+				$key = strtoupper(str_replace("-","_",$key));
+				$newArray[$key] = $val;			
+			}	
+				
+			if(vartrue($newArray['CUSTOMPAGES']))
+			{
+				$newArray['CUSTOMPAGES'] = trim($newArray['CUSTOMPAGES']);			
+				$LAYOUTS = "<layout name='custom' title='Custom'>\n";
+				$LAYOUTS .= "			<custompages>{CUSTOMPAGES}</custompages>\n";
+				$LAYOUTS .= "		</layout>";
+			}
+			else
+			{		
+				$LAYOUTS = "";
+			}
+			
+
+$template = <<<TEMPLATE
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="{MAIN_NAME}" lan="{MAIN_LANG}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" >
+	<author name="{AUTHOR_NAME}" url="{AUTHOR_URL}" />
+	<summary lan="">{SUMMARY_SUMMARY}</summary>
+	<description lan="">{DESCRIPTION_DESCRIPTION}</description>
+	<keywords>
+		<word>{KEYWORDS_ONE}</word>
+		<word>{KEYWORDS_TWO}</word>
+	</keywords>
+	<category>{CATEGORY_CATEGORY}</category>
+	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
+	<screenshots>
+		<image>preview.jpg</image>
+		<image>fullpreview.jpg</image>
+	</screenshots>
+	<layouts>
+		<layout name='default' title='Default' default='true' />
+		{LAYOUTS}
+	</layouts>
+</e107Theme>
+TEMPLATE;
+
+			
+			$template = str_replace("{LAYOUTS}",$LAYOUTS, $template);
+			
+			$result = e107::getParser()->simpleParse($template, $newArray);
+			$path = e_THEME.$this->themeName."/theme.xml";
+			
+			if(file_put_contents($path,$result))
+			{
+				$mes->addSuccess("Saved: ".$path);
+			}
+			else 
+			{
+				$mes->addError("Couldn't Save: ".$path);
+			}
+			
+			$mes->addWarning("Please update your theme.php file with the data below");
+			
+			return  htmlentities($result);
+
+
+		}
+				
+	
+	
+			function xmlInput($name, $info, $default='')
+		{
+			$frm = e107::getForm();	
+			list($cat,$type) = explode("-",$info);
+			
+			$size 		= 30;
+			$help		= '';
+			
+			switch ($info)
+			{
+				
+				case 'main-name':
+					$help 		= "The name of your plugin. (Must be written in English)";
+					$required 	= true;
+					$pattern 	= "[A-Za-z ]*";
+				break;
+		
+				case 'main-lang':
+					$help 		= "If you have a language file, enter the LAN_XXX value for the plugin's name";
+					$required 	= false;
+					$placeholder= " ";
+					$pattern 	= "[A-Z0-9_]*";
+				break;
+				
+				case 'main-date':
+					$help 		= "Creation date of your plugin";
+					$required 	= true;
+				break;
+				
+				case 'main-version':
+					$default 	= '1.0';
+					$required 	= true;
+					$help 		= "The version of your plugin. Format: x.x";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+				break;
+
+				case 'main-compatibility':
+					$default 	= '2.0';
+					$required 	= true;
+					$help 		= "Compatible with this version of e107";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+				break;
+				
+				case 'author-name':
+					$default 	= (vartrue($default)) ? $default : USERNAME;
+					$required 	= true;
+					$help 		= "Author Name";
+					$pattern	= "[A-Za-z \.0-9]*";
+				break;
+				
+				case 'author-url':
+					$required 	= true;
+					$help 		= "Author Website Url";
+				//	$pattern	= "https?://.+";
+				break;
+				
+				//case 'main-installRequired':
+				//	return "Installation required: ".$frm->radio_switch($name,'',LAN_YES, LAN_NO);
+				//break;	
+				
+				case 'summary-summary':
+					$help 		= "A short one-line description of the plugin. (!@#$%^&* characters not permitted) <br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 100;
+					$placeholder= " ";
+					$pattern	= "[A-Za-z,() \.0-9]*";
+				break;	
+				
+				case 'keywords-one':
+				case 'keywords-two':
+					$help 		= "Keyword/Tag for this plugin<br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 20;
+					$placeholder= " ";
+					$pattern 	= '^[a-z]*$';
+				break;	
+				
+				case 'description-description':
+					$help 		= "A full description of the plugin<br />(Must be written in English)";
+					$required 	= true;
+					$size 		= 100;
+					$placeholder = " ";
+					$pattern	= "[A-Za-z \.0-9]*";
+				break;
+				
+					
+				case 'category-category':
+					$help 		= "What category of plugin is this?";
+					$required 	= true;
+					$size 		= 20;
+				break;
+						
+				default:
+					
+				break;
+			}
+
+			$req = ($required == true) ? "&required=1" : "";	
+			$placeholder = (varset($placeholder)) ? $placeholder : $type;
+			$pat = ($pattern) ? "&pattern=".$pattern : "";
+			
+			switch ($type) 
+			{
+				case 'date':
+					$text = $frm->datepicker($name, time(), 'dateformat=yyyy-mm-dd'.$req);		
+				break;
+				
+				case 'description':
+					$text = $frm->textarea($name,$default, 3, 100, $req);	// pattern not supported. 	
+				break;
+								
+						
+				case 'category':
+					$options = array(
+					'settings'	=> 'settings',
+					'users'		=> 'users', 
+					'content'	=> 'content',
+					'tools'		=> 'tools',
+					'manage'	=> 'manage',
+					'misc'		=> 'misc',
+					'menu'		=> 'menu',
+					'about'		=> 'about'
+					);
+				
+					$text = $frm->selectbox($name, $options,'','required=1', true);	
+				break;
+				
+				
+				default:
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat);	
+				break;
+			}
+	
+			
+			$text .= ($help) ? "<span class='field-help'>".$help."</span>" : "";
+			return $text;
+			
+		}		
+}
 
 
 

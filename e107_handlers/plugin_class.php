@@ -127,11 +127,20 @@ class e107plugin
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @return array plugin details
 	 */
-	function getall($flag)
+	function getall($flag='all')
 	{
 		$sql = e107::getDb();
 
-		if ($sql->db_Select("plugin", "*", "plugin_installflag = ".(int) $flag." ORDER BY plugin_path ASC"))
+		if($flag == 'all')
+		{
+			$qry = "SELECT * FROM #plugin ORDER BY plugin_path ASC";	
+		}
+		else
+		{
+			$qry = "SELECT * FROM #plugin WHERE plugin_installflag = ".(int) $flag." ORDER BY plugin_path ASC";		
+		}
+
+		if ($sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;
@@ -148,9 +157,9 @@ class e107plugin
 	{
 		$sql = e107::getDb();
 
-		if ($sql->db_Select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
+		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
 		{
-			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			$row = $sql->fetch(MYSQL_ASSOC);
 			return intval($row['plugin_id']);
 		}
 		
@@ -2386,7 +2395,7 @@ class e107plugin
 		
 		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
 
-		if ($sql->db_Select_gen($query))
+		if ($sql->gen($query))
 		{
 			while ($row = $sql->db_Fetch())
 			{
