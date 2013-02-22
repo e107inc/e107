@@ -318,7 +318,7 @@ class UserHandler
 		do
 		{
 			$newname = $this->generateRandomString($pattern, $seed);
-		} while ($ul_sql->db_Select('user','user_id',"`user_loginname`='{$newname}'"));
+		} while ($ul_sql->select('user','user_id',"`user_loginname`='{$newname}'"));
 		return $newname;
 	}
 
@@ -692,7 +692,7 @@ Following fields auto-filled in code as required:
 		}
 		if ($force)
 		{	// Remove 'orphaned' extended user field records
-			$sql->db_Select_gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
+			$sql->gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL");
 		}
 		return $temp1;
@@ -798,7 +798,7 @@ Following fields auto-filled in code as required:
 		}
 		if ($uid) { $qry = '`user_id`='.$uid; }
 		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
-		if (FALSE === $db->db_Select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
+		if (FALSE === $db->select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
 		{
 			$error = 'User not found: '.$uid.'/'.$emailAddress;
 		}
@@ -1222,10 +1222,9 @@ class e_userperms
 		$tp = e107::getParser();
 
 		$plg = e107::getPlugin();
-		$installed = $plg->getall(1);
+		$allPlugins = $plg->getall();
 		
-	//	print_a($installed);
-		foreach($installed as $k=>$row2)
+		foreach($allPlugins as $k=>$row2)
 		{
 			if($plg->parse_plugin($row2['plugin_path']))
 			{
@@ -1346,12 +1345,17 @@ class e_userperms
 	function renderPerms($perms,$uniqueID='')
 	{
 		$tmp = explode(".",$perms);
+		$tmp = array_filter($tmp);
+		
 		$permdiz = $this->getPermList();
+
 		$ptext = array();
 		
 		foreach($tmp as $p)
 		{
-			$ptext[] = is_array($permdiz[$p]) ? $permdiz[$p][0] : $permdiz[$p];
+			// if(trim($p) == ""){ continue; }
+			$val = vartrue($permdiz[$p],'missing '.$p);
+			$ptext[] = is_array($permdiz[$p]) ? $permdiz[$p][0] : $val;
 		}
 
 		$id = "id_".$uniqueID;
