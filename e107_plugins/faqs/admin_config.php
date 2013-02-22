@@ -44,7 +44,7 @@ class faq_admin extends e_admin_dispatcher
 	);	
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> 'FAQs', 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/create'	=> array('caption'=> 'Create FAQ', 'perm' => '0'),
 		'cat/list' 		=> array('caption'=> 'Categories', 'perm' => '0'),
 		'cat/create' 	=> array('caption'=> "Create Category", 'perm' => '0'),
