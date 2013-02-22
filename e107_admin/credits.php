@@ -37,7 +37,7 @@ e107::css('inline',$css);
 require_once(e_ADMIN."auth.php");
 
 
- $text ='<div class="wrapper">
+ $text .='<div class="wrapper">
         	<div class="wrapper-middle">
                 <div class="credits-content">
                     <h1>v2+ Developers</h1>

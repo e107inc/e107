@@ -208,8 +208,129 @@ EOF;
 		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
 		e107::getScBatch('admin');
 		
-		$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
-		$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
+	/*	
+$dashboard = '
+  <div class="tab-header">
+          <span class="pull-right">
+          <span class="options">
+            <div class="btn-group">
+              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
+              <ul class="dropdown-menu black-box-dropdown dropdown-left">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </div>
+          </span>
+        </span>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li class=""><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
+    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-hdd"></i> Online</a></li>
+  </ul>
+  <div class="tab-content">
+
+    <div class="tab-pane" id="tab1">
+      <div class="separator">
+        <div class="inner-well clearfix">
+  <div class="pull-left">
+    Antivirus status
+  </div>
+
+  <div class="pull-right">
+    <input rel="confirm-check" id="VKZp4" class="checky" checked="checked" type="checkbox">
+    <label for="VKZp4" class="checky"><span></span></label>
+  </div>
+</div>
+
+<div class="inner-well clearfix">
+  <div class="pull-left">
+    Proxy server status
+  </div>
+
+  <div class="pull-right">
+    <input rel="confirm-check" id="FNNqp" class="checky" type="checkbox">
+    <label for="FNNqp" class="checky"><span></span></label>
+  </div>
+</div>
+      </div>
+      <div class="separator">
+        <div class="inner-well">
+          <div id="stats1" style="width: 100%; height: 100px; padding: 0px; position: relative;"><canvas height="100" width="100" class="base"></canvas><canvas style="position: absolute; left: 0px; top: 0px;" height="100" width="100" class="overlay"></canvas><div class="tickLabels" style="font-size:smaller"><div class="xAxis x1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:center;left:-5px;top:100px;width:25px">Dec</div><div class="tickLabel" style="position:absolute;text-align:center;left:27px;top:100px;width:25px">Jan</div><div class="tickLabel" style="position:absolute;text-align:center;left:59px;top:100px;width:25px">Feb</div></div><div class="yAxis y1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:right;top:88px;right:100px;width:0px">0</div><div class="tickLabel" style="position:absolute;text-align:right;top:67px;right:100px;width:0px">1000</div><div class="tickLabel" style="position:absolute;text-align:right;top:46px;right:100px;width:0px">2000</div><div class="tickLabel" style="position:absolute;text-align:right;top:25px;right:100px;width:0px">3000</div><div class="tickLabel" style="position:absolute;text-align:right;top:4px;right:100px;width:0px">4000</div></div></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tab-pane active" id="tab2">
+      <div class="separator">
+        <div class="inner-well">
+          <div id="stats2" style="width: 100%; height: 100px; padding: 0px; position: relative;"><canvas height="100" width="532" class="base"></canvas><canvas style="position: absolute; left: 0px; top: 0px;" height="100" width="532" class="overlay"></canvas><div class="tickLabels" style="font-size:smaller"><div class="xAxis x1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:center;left:-7px;top:87px;width:76px">Dec 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:80px;top:87px;width:76px">Dec 16</div><div class="tickLabel" style="position:absolute;text-align:center;left:172px;top:87px;width:76px">Jan 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:259px;top:87px;width:76px">Jan 16</div><div class="tickLabel" style="position:absolute;text-align:center;left:351px;top:87px;width:76px">Feb 1</div><div class="tickLabel" style="position:absolute;text-align:center;left:432px;top:87px;width:76px">Feb 15</div></div><div class="yAxis y1Axis" style="color:#fff"><div class="tickLabel" style="position:absolute;text-align:right;top:69px;right:508px;width:24px">0</div><div class="tickLabel" style="position:absolute;text-align:right;top:51px;right:508px;width:24px">1000</div><div class="tickLabel" style="position:absolute;text-align:right;top:33px;right:508px;width:24px">2000</div><div class="tickLabel" style="position:absolute;text-align:right;top:15px;right:508px;width:24px">3000</div><div class="tickLabel" style="position:absolute;text-align:right;top:-2px;right:508px;width:24px">4000</div></div></div></div>
+        </div>
+      </div>
+      <div class="separator">
+        <div class="inner-well clearfix">
+  <div class="pull-left">
+    Antivirus status
+  </div>
+
+  <div class="pull-right">
+    <input rel="confirm-check" id="GhVm3" class="checky" checked="checked" type="checkbox">
+    <label for="GhVm3" class="checky"><span></span></label>
+  </div>
+</div>
+
+<div class="inner-well clearfix">
+  <div class="pull-left">
+    Proxy server status
+  </div>
+
+  <div class="pull-right">
+    <input rel="confirm-check" id="mxaz8" class="checky" type="checkbox">
+    <label for="mxaz8" class="checky"><span></span></label>
+  </div>
+</div>
+      </div>
+      <div class="padded">
+        <div id="fix-stats2">
+  <p>
+    <a rel="action" class="button mini rounded inset light-gray">Delete stats</a>
+  </p>
+
+  <div style="display: none;" rel="confirm-action">
+
+    <div class="inner-well clearfix">
+      <b>Are you sure?</b>
+      <div class="pull-right">
+        <input rel="confirm-check" id="gtnDu" class="checky" type="checkbox">
+        <label for="gtnDu" class="checky green"><span></span></label>
+      </div>
+    </div>
+
+    <div class="clearfix vpadded">
+      <div class="pull-left">
+        <a style="display: none;" href="#" class="button red" rel="confirm-do">Delete</a>
+      </div>
+      <div class="pull-right">
+        <a href="#" class="button gray" rel="confirm-cancel">Cancel</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+      </div>
+    </div>
+  </div>';
+		
+	$text .= $ns->tablerender("Website Status",$dashboard,"",true);	
+*/		
+		
+	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
+	//	$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
 	/*
 	
 			$text .= "<li class='span6'>

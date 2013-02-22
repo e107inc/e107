@@ -216,15 +216,16 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 		
 			{ADMIN_PWORD}
 			{ADMIN_HELP}
-			{ADMIN_STATUS=request}
-			{ADMIN_LATEST=request}
+			{ADMIN_SITEINFO=creditsonly}
+			{SETSTYLE=admin_menu}
+			{ADMIN_STATUS=infopanel}
+			{ADMIN_LATEST=infopanel}
 			{ADMIN_LOG=request}
-			{ADMIN_MSG}
+			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
 			
 		
-			{SETSTYLE=site_info}
-			{ADMIN_SITEINFO}
+			
 			{SETSTYLE=none}
 			
          </div>
