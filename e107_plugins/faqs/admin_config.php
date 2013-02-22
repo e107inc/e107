@@ -67,7 +67,7 @@ class faq_cat_ui extends e_admin_ui
 		protected $pid			= "faq_info_id";
 		protected $perPage 		= 5; //no limit
 		protected $listOrder	= 'faq_info_order ASC';
-
+		protected $sortField	= 'faq_info_order';
 	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
