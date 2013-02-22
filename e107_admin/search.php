@@ -69,7 +69,9 @@ if (!isset($search_prefs['boundary']))
 
 if (vartrue($save_search))
 {
-	$serialpref = addslashes(serialize($search_prefs));
+	
+	// $serialpref = addslashes(serialize($search_prefs));
+	$serialpref = e107::getArrayStorage()->writeArray($search_prefs, true);
 	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
 	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
@@ -97,7 +99,8 @@ if (isset($_POST['update_main']))
 		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
 	}
 
-	$tmp = addslashes(serialize($search_prefs));
+//	$tmp = addslashes(serialize($search_prefs));
+	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
 
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
@@ -135,7 +138,8 @@ if (isset($_POST['update_handler']))
 	$search_prefs[$handler_type][$query[2]]['pre_title'] = intval($_POST['pre_title']);
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
-	$tmp = addslashes(serialize($search_prefs));
+//	$tmp = addslashes(serialize($search_prefs));
+	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
@@ -166,7 +170,8 @@ if (isset($_POST['update_prefs']))
 
 	if ($admin_log->logArrayDiffs($temp, $search_prefs, 'SEARCH_01'))
 	{
-		$tmp = addslashes(serialize($search_prefs));
+	//	$tmp = addslashes(serialize($search_prefs));
+		$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
 		$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 		if($check)
 		{
@@ -378,7 +383,7 @@ else
 							<td>".$value."</td>
 							<td class='center'>".r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='core_handlers[".$key."][order]' class='tbox select order'>
+								<select name='core_handlers[".$key."][order]' class='tbox select e-select order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
@@ -404,7 +409,7 @@ else
 							<td>".$search_info[0]['qtype']."</td>
 							<td class='center'>".r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='plug_handlers[".$plug_dir."][order]' class='tbox select order'>
+								<select name='plug_handlers[".$plug_dir."][order]' class='tbox select e-select order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= (vartrue($search_prefs['plug_handlers'][$plug_dir]['order']) == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
