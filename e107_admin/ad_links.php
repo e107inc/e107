@@ -638,8 +638,8 @@ $array_functions = array(
 $array_functions = e107::getNav()->adminLinks(); // replacement see e107_handlers/sitelinks.php
 
 
-
-if(!defset('e_PAGETITLE'))
+// SecretR - BC only, obsolete meta title auto detection
+if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 {
 	foreach($array_functions as $val)
 	{
@@ -650,6 +650,3 @@ if(!defset('e_PAGETITLE'))
 		}
 	}
 }
-
-
-?>
