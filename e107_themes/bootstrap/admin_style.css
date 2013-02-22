@@ -678,6 +678,19 @@ i.searchquery	{
 	border-bottom: 1px solid rgb(221, 221, 221);
 	color: rgb(153, 153, 153);
 }
+
+.popover,
+.popover-title {
+	background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%);
+	border-bottom: 0px;	
+}
+
+/* Attempt to Hide the white arrow */
+.navbar .navbar-inner .nav > li > .dropdown-menu:after {
+	display: none !important;
+	content: none;
+}
+
 /*
 
 body { background-color: rgb(68, 68, 68); }
