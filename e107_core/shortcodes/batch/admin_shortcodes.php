@@ -305,6 +305,12 @@ class admin_shortcodes
 
 	function sc_admin_latest($parm)
 	{
+		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		{
+			return;
+		}
+		
+		
 		if (ADMIN) {
 			if (!function_exists('admin_latest'))
 			{
@@ -853,6 +859,12 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
+		if($parm == 'creditsonly' && e_PAGE != "credits.php")
+		{
+			return;
+		}	
+		
+		
 		if (ADMIN)
 		{
 			global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
@@ -939,6 +951,11 @@ class admin_shortcodes
 
 	function sc_admin_status($parm)
 	{
+		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		{
+			return;
+		}
+				
 		if (getperms('0') || getperms('4'))
 		{
 			if (!function_exists('admin_status'))
@@ -1001,6 +1018,12 @@ class admin_shortcodes
 					{
 						$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
 					}
+					
+					if($parm == 'list')
+					{
+					//	$text = str_replace("<div style='padding-bottom: 2px;'>","<li>",$text);;	
+					}
+					
 					$text .= "\n\t\t\t\t\t</div>";
 					
 					

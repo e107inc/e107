@@ -40,7 +40,7 @@ e-tabs fieldset 			{ padding:0px ; padding-left:3px; border-top:0px;}
 
 td.center, th.center 		{ text-align:center }
 
-.col-label 					{ width:30%; }
+.col-label 					{ width:25%; }
 
 .sidebar-nav 				{ padding: 9px 0; font-size:11px; min-width:150px; }
 
@@ -163,7 +163,7 @@ img.S32:hover 				{}
 
 /*******************************************************************************************************************/
 /* Admin List Table */ 
-.adminlist, .adminform 						{ width:100%;  border:1px solid #ddd;}
+.adminlist, .adminform 						{ width:100%;  border:1px solid #ddd; background-color: #F6F6F6}
 .adminlist th 								{ border-bottom:1px solid #ddd;    }
 .adminlist td 								{ border-bottom:1px solid #ddd; border-right: 1px solid #ddd;  }
 .adminlist th.last,
@@ -573,13 +573,14 @@ i.e-seamonkey-32{ background-position: -485px 0; width: 32px; height: 32px; }
 
 /* NEw */
 
-tr.first									{ background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
-
+tr.first									{ font: 12px HelveticaNeue,Helvetica,Arial; color: rgb(102, 102, 102); background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
+tr.first a									{ color: rgb(102, 102, 102); }
 /* Dark Drop-Down Menus */
-ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;     background-color: rgb(23, 23, 23); }
+ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101; max-height:600px; overflow:auto; background-color: rgb(23, 23, 23); }
 ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
 ul.col-selection > li a 					{ padding: 3px 0px 0px 25px; color: rgb(153, 153, 153); }
 ul.col-selection > li a label 				{ padding-left:0px; display:block; line-height:25px; }
+
 
 .nav ul li ul.dropdown-menu 				{ margin-top:-5px; border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
 .nav ul li ul.dropdown-menu > li a 			{ border-top: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(32, 32, 32); }
