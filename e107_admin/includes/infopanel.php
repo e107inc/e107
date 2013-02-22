@@ -53,11 +53,14 @@ EOF;
 		
 	  	$this->getStats();
 		
+		global $user_pref, $pref; // quick fix. 
+		
 		e107::js('inline',$code,'jquery');
 		
 		
 		if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		{
+			
 			$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
 			
 			save_prefs('user');
@@ -126,7 +129,7 @@ EOF;
 	
 		//TODO LANs throughout.
 		
-		global $style;
+		global $style, $user_pref;
 
 		// ---------------------- Start Panel --------------------------------
 
@@ -165,6 +168,26 @@ EOF;
 		
 		$mainPanel = "
 		<div id='core-infopanel_mye107' >
+		";
+		
+		/*
+		$mainPanel .= '<span class="pull-right">
+		          <span class="options">
+		            <div class="btn-group">
+		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
+		              <ul class="dropdown-menu black-box-dropdown dropdown-right">
+		                <li>'.$this->render_infopanel_icons().'</li>
+		              </ul>
+		            </div>
+		          </span>
+		        </span>';
+		
+		*/
+		$mainPanel .= "
+		
+		
+		
+		
 			
 				<div class='left' style='padding:32px'>";
 			
@@ -273,7 +296,7 @@ EOF;
 		}
 		else
 		{
-			echo $frm->open('infopanel');
+			echo $frm->open('infopanel','post',e_SELF);
 			echo $this->render_infopanel_options(true);	
 			echo $frm->close();
 		}
@@ -332,7 +355,7 @@ EOF;
 		$dashboard = '
 		  <ul class="nav nav-tabs">
 		    <li class=""><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
-		    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-hdd"></i> Online</a></li>
+		    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
 		  </ul>
 		  
 		  <div class="tab-content" style="min-height:300px">
