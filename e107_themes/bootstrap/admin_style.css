@@ -587,7 +587,7 @@ ul.col-selection > li a label 				{ padding-left:0px; display:block; line-height
 
 .nav ul li ul.dropdown-menu 				{ margin-top:-5px; border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
 .nav ul li ul.dropdown-menu > li a 			{ border-top: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(32, 32, 32); }
-.nav ul li ul.dropdown-menu > li a 			{ padding-top:5px; padding-bottom:5px; color: rgb(153, 153, 153); }
+.nav ul li ul.dropdown-menu > li a 			{ padding-top:5px; padding-bottom:5px; color: rgb(200,200,200); }
 .nav ul li ul.dropdown-menu > li a:hover 	{ color: rgb(255, 255, 255); }
 
 
