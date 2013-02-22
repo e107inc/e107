@@ -48,7 +48,7 @@ define("ADSTAT_L32", "Page Tidy");
 // define("ADSTAT_L34", "Site Stats");
 define ('ADSTAT_L35', 'Options');
 define ('ADSTAT_L36', 'Data Export');
-define ('ADSTAT_L37', 'Create export file');
+//define ('ADSTAT_L37', 'Create export file');
 define ('ADSTAT_L38', "You must set the e107_plugins/log/logs folder to be writable");
 define ('ADSTAT_L39', 'Stats Logging Functions');
 define ('ADSTAT_L40', 'Export log data');
