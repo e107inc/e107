@@ -671,7 +671,7 @@ class e_admin_response
 	 * @param boolean|string $glue
 	 * @return unknown
 	 */
-	function getTitle($namespace = 'default', $reset = false, $glue = ' - ')
+	function getTitle($namespace = 'default', $reset = false, $glue = '  ')
 	{
 		$content = array();
 		if(isset($this->_title[$namespace]) && is_array($this->_title[$namespace]))
@@ -687,7 +687,9 @@ class e_admin_response
 			return ($glue ? $content : implode($this->_title_separator, $content));
 		}
 
-		return implode($glue, $content);
+		$glue = ' <i class="icon-play e-breadcrumb"></i> '; // admin-ui used only by bootstrap. 
+
+		return $head. implode($glue, $content).$foot;
 	}
 
 	/**
@@ -4881,7 +4883,7 @@ class e_admin_form_ui extends e_form
 			parse_str($input_options, $input_options);
 		}
 		$input_options['id'] = false;
-		$input_options['class'] = 'tbox input-text filter';
+		$input_options['class'] = 'tbox input-text filter ';
 		$controller = $this->getController();
 		$filter_pre = vartrue($controller->preFiliterMarkup);
 		$filter_post = vartrue($controller->postFiliterMarkup);
@@ -4908,7 +4910,7 @@ class e_admin_form_ui extends e_form
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
 					<div class='left' style='margin-top:10px;margin-bottom:-10px'>
-						".$this->text('searchquery', $current_query[0], 50, $input_options)."
+						".$this->text('searchquery', $current_query[0], 50, $input_options)."<i class='icon-search searchquery'></i>
 						".$this->select_open('filter_options', array('class' => 'e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
 							".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 							".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."

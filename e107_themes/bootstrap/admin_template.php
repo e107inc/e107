@@ -207,17 +207,19 @@ $ADMIN_HEADER = '<div class="navbar navbar-inverse navbar-fixed-top">
 
 $ADMIN_HEADER .= '<div class="container-fluid">
       <div class="row-fluid">
-        <div class="span2">
+        <div class="span2" id="left-panel">
         	{SETSTYLE=admin_menu}
 		
 			{ADMIN_MENU}
 			{ADMIN_MENUMANAGER} 
-			{SETSTYLE=site_info}
+			
 		
 			{ADMIN_PWORD}
+			{SETSTYLE=site_info}
+			
 			{ADMIN_HELP}
 			{ADMIN_SITEINFO=creditsonly}
-			{SETSTYLE=admin_menu}
+			{SETSTYLE=default}
 			{ADMIN_STATUS=infopanel}
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_LOG=request}
@@ -229,20 +231,18 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{SETSTYLE=none}
 			
          </div>
-        <div class="span10">';
+        <div class="span10" id="right-panel" >';
 
 
 $ADMIN_FOOTER = '
         </div><!--/span-->
       </div><!--/row-->
+     
 
-      <hr>
-
-      <footer class="center"> 
+    </div><!--/.fluid-container-->
+    <footer class="center mute"> 
 		Copyright &copy; 2008-2013 e107 Inc (e107.org)<br />
-      </footer>
-
-    </div><!--/.fluid-container-->';
+      </footer>';
 
 
 
