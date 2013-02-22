@@ -2816,7 +2816,7 @@ class e_form
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']."</legend>
 						".vartrue($options['table_pre'])."
-						<table class='table adminlist' id='{$elid}-list-table'>
+						<table class='table adminlist table-striped' id='{$elid}-list-table'>
 							".$this->colGroup($fields, $current_fields)."
 							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
 							<tbody id='e-sort'>

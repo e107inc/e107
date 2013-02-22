@@ -664,6 +664,17 @@ i.searchquery	{
  
 }
 
+
+.nav-header {
+    padding-bottom:10px; 
+}
+
+.ui-tabs .ui-tabs-nav li a, .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a
+{
+	background-color: rgb(230, 230, 230);
+	border-bottom: 1px solid rgb(221, 221, 221);
+	color: rgb(153, 153, 153);
+}
 /*
 
 body { background-color: rgb(68, 68, 68); }
