@@ -1014,7 +1014,7 @@ class e_admin_dispatcher
 	 * @param string|array|e_admin_request $request [optional]
 	 * @param e_admin_response $response
 	 */
-	public function __construct($request = null, $response = null, $auto_observe = true)
+	public function __construct($auto_observe = true, $request = null, $response = null)
 	{
 		// we let know some admin routines we are in UI mod - related with some legacy checks and fixes
 		if(!defined('e_ADMIN_UI'))
@@ -1142,6 +1142,24 @@ class e_admin_dispatcher
 		if(!$this->defaultAction) $this->defaultAction = $action;
 
 		return $this;
+	}
+
+	/**
+	 * Get admin menu array
+	 * @return array
+	 */
+	public function getMenuData()
+	{
+		return $this->adminMenu;
+	}
+
+	/**
+	 * Get admin menu array
+	 * @return array
+	 */
+	public function getMenuAliases()
+	{
+		return $this->adminMenuAliases;
 	}
 
 	/**
@@ -1536,6 +1554,7 @@ class e_admin_controller
 
 	/**
 	 * Check against allowed/disallowed actions
+	 * FIXME check plugin admin access (check_class(P)), confirm e-token is verified
 	 */
 	public function checkAccess()
 	{
@@ -1728,12 +1747,22 @@ class e_admin_controller
 	/**
 	 * Add page title, response proxy method
 	 *
-	 * @param string $title
+	 * @param string $title if boolean true - current menu caption will be used
 	 * @param boolean $meta add to meta as well
 	 * @return e_admin_controller
 	 */
-	public function addTitle($title, $meta = true)
+	public function addTitle($title = true, $meta = true)
 	{
+		if(true === $title)
+		{
+			$_dispatcher = $this->getDispatcher();
+			$data = $_dispatcher->getMenuData();
+			$search = $this->getMode().'/'.$this->getAction();
+			if(isset($data[$search])) $res = $data[$search];
+			else return $this;
+			
+			$title = $res['caption'];
+		}
 		$this->getResponse()->appendTitle($title);
 		if($meta) $this->addMetaTitle($title);
 		return $this;
@@ -4148,7 +4177,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListObserver()
 	{
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
-		$this->addTitle(LAN_LIST); // FIXME - get captions from dispatch list
+		$this->addTitle(); 
 	}
 
 	/**
@@ -4303,7 +4332,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function EditObserver()
 	{
 		$this->getModel()->load($this->getId());
-		$this->addTitle(LAN_UPDATE, true);
+		$this->addTitle();
 	}
 
 	/**
@@ -4348,7 +4377,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function CreateObserver()
 	{
 		$this->setTriggersEnabled(true);
-		$this->addTitle(LAN_CREATE, true);
+		$this->addTitle();
 	}
 
 	/**
@@ -4439,10 +4468,14 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getConfig()->setMessages();
 
 	}
+	
+	public function PrefsObserver()
+	{
+		$this->addTitle();
+	}
 
 	public function PrefsPage()
 	{
-		$this->addTitle(LAN_PREFS);
 		return $this->getUI()->getSettings();
 	}
 
