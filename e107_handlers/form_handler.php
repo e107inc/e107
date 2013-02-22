@@ -2246,7 +2246,8 @@ class e_form
 					$source = str_replace('"',"'",json_encode($array));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+					
 				}
 				else 
 				{
@@ -2273,7 +2274,7 @@ class e_form
 					$source = str_replace('"',"'",json_encode($array));
 					
 					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+					$value = "<a class='e-tip e-editable' data-placement='left' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
 				}
 				else 
 				{
@@ -2551,8 +2552,12 @@ class e_form
 				{
 					$value = time();
 				}
-
-				if(vartrue($parms['hidden']))
+				
+				if(vartrue($parms['readonly'])) // different to 'attribute-readonly' since the value may be auto-generated. 
+				{
+					$ret =  $this->renderValue($key, $value, $attributes).$this->hidden($key, $value);
+				}
+				elseif(vartrue($parms['hidden']))
 				{
 					$ret =  $this->hidden($key, $value);
 				}

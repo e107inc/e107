@@ -45,15 +45,6 @@ require_once(e_HANDLER.'iphandler_class.php');		// This is probably already load
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 
-
-
-
-
-
-
-
-// XXX THIS IS SET UP FOR LATER USE. 
-
 class banlist_admin extends e_admin_dispatcher
 {
 
@@ -71,21 +62,22 @@ class banlist_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			
-	
-	//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-	//	'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
-		
-
+		'main/list'			=> array('caption'=> BANLAN_14, 'perm' => '4'),
+		'main/create'		=> array('caption'=> BANLAN_25, 'perm' => '4'),
+		// Use FILTER to view whitelist instead. 
+	//	'main/white'		=> array('caption'=> BANLAN_52, 'perm' => '4','url'=>"?searchquery=&filter_options=banlist_bantype__100&mode=main&action=list"),
+	//	'main/whadd'		=> array('caption'=> BANLAN_53, 'perm' => '4'),
+		'main/transfer'		=> array('caption'=> BANLAN_35, 'perm' => '4'),
+		'main/times'		=> array('caption'=> BANLAN_15, 'perm' => '0'),
+		'main/options'		=> array('caption'=> LAN_OPTIONS, 'perm' => '0'),
+		'main/banlog'		=> array('caption'=> BANLAN_81, 'perm' => '0'),
 	);
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'				
+		'main/edit'	=> 'main/list'						
 	);	
 	
-	protected $menuTitle = 'myplugin';
+	protected $menuTitle = BANLAN_16;
 }
 
 
@@ -95,21 +87,24 @@ class banlist_admin extends e_admin_dispatcher
 class banlist_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'ban';
-		protected $pluginName		= 'myplugin';
+		protected $pluginTitle		= 'Ban';
+		// protected $pluginName		= 'myplugin';
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_ip';
 		protected $perPage 			= 10; 
 			
-		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'banlist_ip' =>   array ( 'title' => 'Ip', 'type' => 'text', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_bantype' =>   array ( 'title' => 'Bantype', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_banexpires' =>   array ( 'title' => 'Banexpires', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_admin' =>   array ( 'title' => 'Admin', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' =>   array ( 'title' => 'Reason', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_notes' =>   array ( 'title' => 'Notes', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' =>   array ( 'title' => 'Options', 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		//FIXME banlist_ip should be data => 'str' - however, edit link will not contain a value for 'id' when this is the case. 
+		//FIXME need to edit/display primary key value. ie. banlist_ip	
+		protected $fields 	= array (  
+		  'checkboxes' 			=>   array ( 'title' => '', 				'type' => null, 		'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'banlist_ip' 			=>   array ( 'title' => 'Ip', 				'type' => 'ip', 		'data' => 'int', 'noedit'=>false, 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_bantype' 	=>   array ( 'title' => 'Type', 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_datestamp' 	=>   array ( 'title' => 'LAN_DATESTAMP', 	'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'options' 			=>   array ( 'title' => 'Options', 			'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('checkboxes', 'banlist_ip', 'banlist_bantype', 'banlist_datestamp', 'banlist_banexpires', 'banlist_reason', 'banlist_notes', 'options');
@@ -127,19 +122,42 @@ class banlist_ui extends e_admin_ui
 		// optional
 		public function init()
 		{
-			
+			if($_POST['something']) // example 
+			{
+				$this->processSomething();				
+			}		
 		}
 	
 		
-		public function customPage()
+		public function addPage()
 		{
-			$ns = e107::getRender();
-			$text = 'Hello World!';
-			$ns->tablerender('Hello',$text);	
-			
+			//$ns = e107::getRender();
+			//$text = 'Hello World!';
+			//$ns->tablerender('Hello',$text);				
+		}
+
+		
+		public function transferPage()
+		{
+			//FIXME Put Import code in here. 
 		}
 		
-			
+		public function timesPage()
+		{
+			//FIXME Put Times code in here. 
+		}		
+
+		
+		public function optionsPage()
+		{
+			//FIXME Put Options code in here. 
+		}				
+
+		public function banlogPage()
+		{
+			//FIXME Put LogPage code in here. 
+		}	
+
 }
 				
 
@@ -151,21 +169,24 @@ class banlist_form_ui extends e_admin_form_ui
 	// Custom Method/Function 
 	function banlist_bantype($curVal,$mode)
 	{
-		$frm = e107::getForm();		
+	
+		$ipAdministrator = new banlistManager;
+		
+		// print_a($ipAdministrator->banTypes);
 		 		
 		switch($mode)
 		{
 			case 'read': // List Page
-				return $curVal;
+				return "<div class='nowrap' title='".$ipAdministrator->getBanTypeString($curVal, TRUE)."'>".$ipAdministrator->getBanTypeString($curVal, FALSE)."</div>";					
 			break;
 			
 			case 'write': // Edit Page
-				return $frm->text('banlist_bantype',$curVal);		
+				return $this->selectbox('banlist_bantype',$ipAdministrator->banTypes, $curVal);		
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  $ipAdministrator->banTypes; 
 			break;
 		}
 	}
@@ -174,16 +195,33 @@ class banlist_form_ui extends e_admin_form_ui
 	// Custom Method/Function 
 	function banlist_banexpires($curVal,$mode)
 	{
-		$frm = e107::getForm();		
-		 		
+		
+		$pref = e107::getPref();
+		$date = e107::getDate();
+		$opts = $this->banexpires();
+			 		
 		switch($mode)
 		{
 			case 'read': // List Page
-				return $curVal;
+				$id = $this->getController()->getListModel()->get('banlist_ip');
+			//	$val =  ($curVal ? strftime($pref['ban_date_format'], $curVal).(($curVal < time()) ? ' ('.BANLAN_34.')' : '') : LAN_NEVER); // ."<br />".$this->banexpires();
+			//	$val .= " (".$curVal.")";
+				// $mod = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+				$val = vartrue($curVal) ? $date->computeLapse(time(), $curVal) : LAN_NEVER;		
+				
+				if(vartrue($curVal) && $curVal < time())
+				{
+					$val = 	BANLAN_34;
+				}
+									
+				$source = str_replace('"',"'",json_encode($opts));
+				return "<a class='e-tip e-editable' data-name='banlist_banexpires' data-source=\"".$source."\"  data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$val."</a>";
+				
 			break;
 			
 			case 'write': // Edit Page
-				return $frm->text('banlist_banexpires',$curVal);		
+				return $this->selectbox('banlist_banexpires',$opts, $curVal);
+				// return $frm->text('banlist_banexpires',$curVal);		
 			break;
 			
 			case 'filter':
@@ -193,18 +231,49 @@ class banlist_form_ui extends e_admin_form_ui
 		}
 	}
 
+
+	function banexpires()
+	{
+		$intervals = array(0, 1, 2, 3, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 336, 672);
+
+		$opts = array();
+
+		foreach ($intervals as $i)
+		{
+			$words = "";
+			
+			if ($i == 0)
+			{
+				$words = $zero_text ? $zero_text : LAN_NEVER;
+			}
+			elseif (($i % 24) == 0 && $i !== 24)
+			{
+				$words = floor($i / 24).' '.BANLAN_23;
+			}
+			else
+			{
+				$words = $i.' '.BANLAN_24;
+			}
+			
+			$calc = time() + ($i * 60 * 60);
+			
+			$opts[$calc] = $words; 
+		}
+		
+		return $opts;		
+	}
+
 }		
 		
-/*		
+	
 new banlist_admin();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
-require_once(e_ADMIN."footer.php");
-exit;
 
-*/
+
+
 
 
 
@@ -246,7 +315,10 @@ if (e_QUERY)
 	unset($tmp);
 }
 
-
+if($_GET['action']) // Temporary Fix. 
+{
+	$action = $_GET['action'];	
+}
 
 if (isset($_POST['update_ban_prefs']))		// Update ban messages
 {
@@ -435,7 +507,7 @@ else
  */
 function ban_time_dropdown($click_js = '', $zero_text = LAN_NEVER, $curval = -1, $drop_name = 'ban_time')
 {
-	global $frm;
+	$frm = e107::getForm();
 	$intervals = array(0, 1, 2, 3, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 336, 672);
 
 	$ret = $frm->select_open($drop_name, array('other' => $click_js, 'id' => false));
@@ -751,6 +823,12 @@ switch ($action)
 	case 'add' :		// Add a new ban
 	case 'whedit' :		// Edit existing whitelist entry
 	case 'whadd' :		// Add a new whitelist entry
+	
+		if(!E107_DEBUG_LEVEL)
+		{
+			break;	
+		}
+	
 		if (!isset($banlist_reason)) $banlist_reason = '';
 		if (!isset($banlist_ip)) $banlist_ip = '';
 		if (!isset($banlist_notes)) $banlist_notes = '';
@@ -995,6 +1073,12 @@ switch ($action)
 	case 'list' :
 	case 'white' :
 	default :
+		
+		if(!E107_DEBUG_LEVEL)
+		{
+			break;	
+		}
+		
 		if (($action != 'list') && ($action != 'white'))
 			$action = 'list';
 
@@ -1301,5 +1385,8 @@ function headerjs()
 
 	return $ret;
 }
+
+require_once(e_ADMIN."footer.php");
+exit;
 
 ?>

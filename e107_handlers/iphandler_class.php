@@ -1134,11 +1134,23 @@ class eIPHandler
 class banlistManager
 {
 	private $ourConfigDir = '';
-
+	public $banTypes = array();
 
 	public function __construct()
 	{
 		$this->ourConfigDir = e107::getIPHandler()->getConfigDir();
+		$this->banTypes = array( // Used in Admin-ui. 
+			'-1' 				=> BANLAN_101, // manual
+			'-2'				=> BANLAN_102, // Flood
+			'-3'				=> BANLAN_103, // Hits
+			'-4'				=> BANLAN_104, // Logins
+			'-5'				=> BANLAN_105, // Imported
+			'-6'				=> BANLAN_106, // Users
+			'-8'				=> BANLAN_107, // Imported
+			'100'				=> BANLAN_120 // Whitelist
+		);
+		
+		
 	}
 
 	/**
