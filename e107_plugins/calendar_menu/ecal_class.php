@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2002-2012 e107 Inc (e107.org)
+* Copyright (C) 2002-2013 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -70,6 +70,8 @@ class ecal_class
 	
 	var $ec_first_day_of_week = 0;		// First day of the week
 	var $days = array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);	// Array Sunday..Saturday
+	var $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
+
 	public $recur_type = array(
 				'0' => EC_LAN_RECUR_00,		// 'no'
 				'1' => EC_LAN_RECUR_01,		//'annual'
@@ -365,7 +367,9 @@ class ecal_class
 	// time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
 	function gmgetdate($date)
 	{
-		return getdate($date-date('Z'));
+		$value = getdate($date-date('Z'));
+		$value['month'] = $this->months[$value['mon'] - 1];		// Looks like getdate doesn't use the specified site language
+		return $value;
 	}
 
 
@@ -375,6 +379,7 @@ class ecal_class
 	function clockToAbs($val)
 	{
 		$temp = getdate($val);
+		$temp['month'] = $this->months[$temp['mon'] - 1];		// Looks like getdate doesn't use the specified site language
 		return gmmktime($temp['hours'], $temp['minutes'], $temp['seconds'], $temp['mon'], $temp['mday'], $temp['year']);
 	}
 

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2002-2012 e107 Inc (e107.org)
+ * Copyright (C) 2002-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -390,31 +390,33 @@ function decode_date($date_string,$last_day = FALSE)
 // For the last date we want end of next 
 function gen_drop($drop_type)
 {
-  $text = "<select name='".($drop_type ? 'end_date' : 'start_date')."' class='tbox' style='width:140px;' >\n";
-  if ($drop_type)
-  {
-    $start_date = strtotime("-3 months");
-	$match_date = strtotime("+3 months");	// Propose 3-month list
-  }
-  else
-  {
-    $start_date = strtotime("-9 months");
-//	$match_date = strtotime("-1 months");
-	$match_date = time();    // Use current month for start date
-  }
+	global $ecal_class;
+	
+	$text = "<select name='".($drop_type ? 'end_date' : 'start_date')."' class='tbox' style='width:140px;' >\n";
+	if ($drop_type)
+	{
+		$start_date = strtotime("-3 months");
+		$match_date = strtotime("+3 months");	// Propose 3-month list
+	}
+	else
+	{
+		$start_date = strtotime("-9 months");
+	//	$match_date = strtotime("-1 months");
+		$match_date = time();    // Use current month for start date
+	}
 
-  // Get date to be 1st of month
-  $date = getdate($match_date);
-  $match_date = mktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
- 
-  for ($i = 0; $i < 24; $i++)
-  { 
-    $sel_text = (($match_date == $start_date) ? "selected='selected'" : "");
-    $date = getdate($start_date);
-    $text .= "<option value = '{$date['year']}{$date['mon']}' {$sel_text}>{$date['month']} {$date['year']} </option>\n";
-	$start_date = mktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
-  }
-  $text .= "</select>\n";
-  return $text;
+	// Get date to be 1st of month
+	$date = $ecal_class->gmgetdate($match_date);
+	$match_date = gmmktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
+	
+	for ($i = 0; $i < 24; $i++)
+	{ 
+		$sel_text = (($match_date == $start_date) ? "selected='selected'" : "");
+		$date = $ecal_class->gmgetdate($start_date);
+		$text .= "<option value = '{$date['year']}{$date['mon']}' {$sel_text}>{$date['month']} {$date['year']} </option>\n";
+		$start_date = gmmktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
+	}
+	$text .= "</select>\n";
+	return $text;
 }
 ?>
