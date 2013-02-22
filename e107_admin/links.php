@@ -129,25 +129,6 @@ class links_admin_ui extends e_admin_ui
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
 		
-		
-		if(e_AJAX_REQUEST) // ajax link sorting. 
-		{
-			$sql = e107::getDb();
-			$c= ($_GET['from']) ? intval($_GET['from']) : 0;
-			if(isset($_POST['all']))
-			{
-				foreach($_POST['all'] as $row)
-				{
-					list($tmp,$id) = explode("-",$row);
-					$sql->db_Update("links","link_order = ".intval($c)." WHERE link_id = ".intval($id));
-					$c++;		
-				}
-			}
-			echo "Updating";
-			exit;
-		}
-		
-		
 	}
 
 	public function handleListLinkParentBatch($selected, $value)
