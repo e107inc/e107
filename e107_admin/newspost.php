@@ -336,12 +336,12 @@ class news_admin_ui extends e_admin_ui
 				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
     			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'data' => 'int',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
-                'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 	'data' => 'int',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+                'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
   				
   				'news_start'			=> array('title' => "Start", 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                        				
-  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclasses', 'data' => 'int',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclasses', 'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 				'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'comma', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'reverse=1'),
@@ -441,7 +441,7 @@ class news_admin_ui extends e_admin_ui
 		
 	function settingsPage()
 	{
-		$this->newspost->show_news_prefs();	
+		return $this->newspost->show_news_prefs();	
 	}
 
 
@@ -2890,7 +2890,7 @@ class admin_newspost
 				</fieldset>
 			</form>
 		";
-		echo e107::getMessage()->render().$text;
+		return e107::getMessage()->render().$text;
 		// e107::getRender()->tablerender(NWSLAN_90, e107::getMessage()->render().$text);
 	}
 

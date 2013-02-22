@@ -588,7 +588,7 @@ class users_ext
 			$text .= "<tr>
 			<td >".EXTLAN_14."</td>
 			<td colspan='3'>
-			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
+			<select onchange='changeHelp(this.value)' class='tbox e-select' name='user_type' id='user_type'>";
 			foreach($ue->user_extended_types as $key => $val)
 			{
 				$selected = (vartrue($current['user_extended_struct_type']) == $key) ? " selected='selected'": "";
@@ -637,7 +637,7 @@ class users_ext
 
 			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
 			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
-            $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox' name='table_db' onchange=\"this.form.submit()\" >
+            $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
             <option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$result = mysql_list_tables($mySQLdefaultdb);
 			while ($row2 = mysql_fetch_row($result))
@@ -653,7 +653,7 @@ class users_ext
      	if($_POST['table_db'] || $curVals[0])
 		{
 			// Field ID
-			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox' name='field_id' >\n
+			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
@@ -665,7 +665,7 @@ class users_ext
 			}
     		$text .= " </select></td></tr><tr><td>";
              // Field Value
-			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox' name='field_value' >
+			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
@@ -677,7 +677,7 @@ class users_ext
 			}
     		$text .= " </select></td></tr><tr><td>";
 
-			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox' name='field_order' >
+			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
@@ -731,7 +731,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_44."</td>
 			<td colspan='3'>
-			<select class='tbox' name='user_parent'>";
+			<select class='tbox e-select' name='user_parent'>";
 			foreach($this->catNums as $k)
 			{
 				$sel = ($k == varset($current['user_extended_struct_parent'])) ? " selected='selected' " : "";
@@ -745,7 +745,7 @@ class users_ext
 			<tr>
 			<td>".EXTLAN_18."</td>
 			<td colspan='3'>
-			<select class='tbox' name='user_required'>
+			<select class='tbox e-select' name='user_required'>
 			";
 			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
 			foreach($_r as $k => $v) //FIXME change to $frm->selectbox() 
@@ -786,7 +786,7 @@ class users_ext
 			<td>".EXTLAN_49."
 			</td>
 			<td colspan='3'>
-			<select class='tbox' name='user_hide'>
+			<select class='tbox e-select' name='user_hide'>
 			";
 			if($current_hide)
 			{

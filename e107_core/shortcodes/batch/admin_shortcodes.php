@@ -859,7 +859,7 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE != "credits.php")
+		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php")
 		{
 			return;
 		}	
