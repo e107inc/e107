@@ -39,7 +39,7 @@ require_once(e_ADMIN."auth.php");
 
  $text .='<div class="wrapper">
         	<div class="wrapper-middle">
-                <div class="credits-content">
+                <div class="well credits-content">
                     <h1>v2+ Developers</h1>
                     <p>
                         Cameron Hanly, Miroslav Yovchev, Steven Davies,<br />
