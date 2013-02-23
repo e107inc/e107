@@ -48,24 +48,35 @@ $(document).ready(function()
 	    	e.stopPropagation();
 	  	});
 	
-	
-		$(".e-multiselect").multiselect();
 
-		$('.e-select').selectpicker();
+		// BC Compatible 
+		$("select.tbox").each(function() {
+			
+			var multi = $(this).attr('multiple');
+			
+			if(multi === undefined)
+			{
+				$(this).selectpicker();	
+			}
+			else
+			{
+				$(this).multiselect();	
+			}
+			
+		});
+		
+		
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 	
 	
-			$(".e-radio-multi").each(function() {
+		$(".e-radio-multi").each(function() {
 		//	$(this).nextAll(".field-help").hide();
 		//	$(this).nextAll(":input").tipsy({title: 'hello'});
 			
 		});
 		
 		$(".e-tags").tagit();
-		
-		
-	//	$(".e-multiselect").chosen();
 		
 		
 
