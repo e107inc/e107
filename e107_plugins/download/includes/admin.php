@@ -53,10 +53,10 @@ class plugin_download_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'cat/list'			=> array('caption'=> DOWLAN_31, 'perm'=>'P'),
+		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
-		'main/settings' 	=> array('caption'=> 'Settings', 'perm' => 'P'),
-		'main/maint' 		=> array('caption'=> DOWLAN_165, 'perm' => 'P'),
+		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+	//	'main/maint' 		=> array('caption'=> DOWLAN_165, 'perm' => 'P'),
 		'main/limits'		=> array('caption'=> DOWLAN_112, 'perm' => 'P'),
 		'main/mirror'		=> array('caption'=> DOWLAN_128, 'perm' => 'P')
 	);
@@ -103,13 +103,13 @@ class plugin_download_admin extends e_admin_dispatcher
 	 * Navigation menu title
 	 * @var string
 	 */
-	protected $menuTitle = 'Downloads Menu';
+	protected $menuTitle = LAN_PLUGIN_DOWNLOAD_NAME;
 }
 
 
 class download_cat_ui extends e_admin_ui
 { 	 	 
-		protected $pluginTitle	= 'Download Categories';
+		protected $pluginTitle	= LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName	= 'download';
 		protected $table 		= "download_category";
 		protected $pid			= "download_category_id";
@@ -188,7 +188,7 @@ class download_cat_form_ui extends e_admin_form_ui
 class download_main_admin_ui extends e_admin_ui
 {
 		// required
-		protected $pluginTitle = "Downloads";
+		protected $pluginTitle = LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName = 'download';
 		protected $table = "download"; // DB Table, table alias is supported. Example: 'r.release'
 		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #download AS m LEFT JOIN #user AS u ON m.download_author = u.user_id "; // without any Order or Limit.
@@ -476,7 +476,7 @@ $columnInfo = array(
 		
 		function limitsPage()
 		{
-			showLimits();
+			$this->showLimits();
 		}
 		
 		function maintPage()
@@ -490,6 +490,521 @@ $columnInfo = array(
 			$this->show_existing_mirrors();
 		}
 		
+
+
+		function showLimits()
+		{
+			$sql = e107::getDb();
+			$ns = e107::getRender();
+			$tp = e107::getParser();
+			
+			global $pref;
+			
+			if ($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
+			{
+				$classList = $sql->db_getList();
+			}
+			if ($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
+			{
+				while($row = $sql->db_Fetch())
+				{
+					$limitList[$row['limit_classnum']] = $row;
+				}
+			}
+			$txt = "
+				<form method='post' action='".e_SELF."?".e_QUERY."'>
+				<table class='table adminform'>
+				<tr>
+					<td colspan='4' style='text-align:left'>
+				";
+				if(vartrue($pref['download_limits']) == 1)
+				{
+					$chk = "checked = 'checked'";
+				}
+				else
+				{
+					$chk = "";
+				}
+		
+				$txt .= "
+					<input type='checkbox' name='download_limits' {$chk}/> ".DOWLAN_125."
+					</td>
+				</tr>
+				<tr>
+					<th class='fcaption'>".DOWLAN_67."</th>
+					<th class='fcaption'>".DOWLAN_113."</th>
+					<th class='fcaption'>".DOWLAN_107."</th>
+					<th class='fcaption'>".DOWLAN_108."</th>
+				</tr>
+			";
+		
+			if(is_array(vartrue($limitList)))
+			{
+				foreach($limitList as $row)
+				{
+					$txt .= "
+					<tr>
+					<td>".$row['limit_id']."</td>
+					<td>".r_userclass_name($row['limit_classnum'])."</td>
+					<td>
+						<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
+						<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
+					</td>
+					<td>
+						<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
+						<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
+					</td>
+					</tr>
+					";
+				}
+			}
+			$txt .= "
+			</table>
+			<div class='buttons-bar center'>
+			<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."'/>
+			</div>
+			
+			<table class='table adminlist'>
+			<tr>
+			<td colspan='4'><br/><br/></td>
+			</tr>
+			<tr>
+			<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
+			<td>
+				<input type='text' class='tbox' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
+				<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
+			</td>
+			<td>
+				<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
+				<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
+			</td>
+			</tr>
+			<tr>
+			
+			";
+		
+			$txt .= "</table>
+			<div class='buttons-bar center'>
+			<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."'/>
+			</div></form>";
+			echo $txt;
+		
+		//	$ns->tablerender(DOWLAN_112, $txt);
+			// require_once(e_ADMIN.'footer.php');
+			// exit;
+		}
+
+
+		
+		function showMaint() //XXX Deprecated. 
+		{
+			$mes = e107::getMessage();
+			$mes->addInfo("Deprecated Area - please use filter instead under 'Manage' ");
+			
+			global $pref;
+			$ns = e107::getRender();
+			$sql = e107::getDb();
+			$frm = e107::getForm();
+			$tp = e107::getParser();
+			
+		   if (isset($_POST['dl_maint'])) {
+		      switch ($_POST['dl_maint'])
+		      {
+		         case 'duplicates':
+		         {
+		            $title = DOWLAN_166;
+		            $query = 'SELECT GROUP_CONCAT(d.download_id SEPARATOR ",") as gc, d.download_id, d.download_name, d.download_url, dc.download_category_name
+		                      FROM #download as d
+		                      LEFT JOIN #download_category AS dc ON dc.download_category_id=d.download_category
+		                      GROUP BY d.download_url
+		                      HAVING COUNT(d.download_id) > 1
+		               ';
+		            $text = "";
+		            $count = $sql->db_Select_gen($query);
+		            $foundSome = false;
+		            if ($count) {
+		               $currentURL = "";
+		               while($row = $sql->db_Fetch()) {
+		                  if (!$foundSome) {
+		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     			<table class="table adminform">';
+		                     $text .= '<tr>';
+		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.DOWLAN_27.'</th>';
+		                     $text .= '<th>'.DOWLAN_11.'</th>';
+		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                     $text .= '</tr>';
+		                     $foundSome = true;
+		                  }
+		                  $query = "SELECT d.*, dc.* FROM `#download` AS d
+		                     LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category
+		                     WHERE download_id IN (".$row['gc'].")
+		                     ORDER BY download_id ASC";
+		                  $count = $sql2->db_Select_gen($query);
+		                  while($row = $sql2->db_Fetch()) {
+		                     $text .= '<tr>';
+		                     if ($currentURL != $row['download_url']) {
+		                        $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
+		                        $currentURL = $row['download_url'];
+		                     } else {
+		                        $text .= '<td>*</td>';
+		                     }
+		                     $text .= '<td>'.$row['download_id'].'</td>';
+		                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                     $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
+		                     $text .= '<td>
+		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
+		   				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				               </td>';
+		                     $text .= '</tr>';
+		                  }
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+						e107::getMessage()->addInfo(DOWLAN_172);
+		            }
+		            break;
+		         }
+		         case 'orphans':
+		         {
+		            $title = DOWLAN_167;
+		            $text = "";
+		            require_once(e_HANDLER."file_class.php");
+		            $efile = new e_file();
+		            $files = $efile->get_files(e_DOWNLOAD);
+		            $foundSome = false;
+		            foreach($files as $file) {
+		               if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+		                  if (!$foundSome) {
+		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     <table class="table adminform">';
+		                     $text .= '<tr>';
+		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.DOWLAN_182.'</th>';
+		                     $text .= '<th>'.DOWLAN_66.'</th>';
+		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                     $text .= '</tr>';
+		                     $foundSome = true;
+		                  }
+		                  $filesize = (is_readable(e_DOWNLOAD.$row['download_url']) ? $e107->parseMemorySize(filesize(e_DOWNLOAD.$file['fname'])) : DOWLAN_181);
+		                  $filets   = (is_readable(e_DOWNLOAD.$row['download_url']) ? $gen->convert_date(filectime(e_DOWNLOAD.$file['fname']), "long") : DOWLAN_181);
+		                  $text .= '<tr>';
+		                  $text .= '<td>'.$tp->toHTML($file['fname']).'</td>';
+		                  $text .= '<td>'.$filets.'</td>';
+		                  $text .= '<td>'.$filesize.'</td>';
+		   //TODO               $text .= '<td>
+		   //TODO                           <a href="'.e_SELF.'?create.add.'. urlencode($file["fname"]).'">'.E_16_CREATE.'</a>
+		   //TODO					            <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$file["fname"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_173.' [ '.$file["fname"].' ]').'") \'/>
+		   //TODO					         </td>';
+		                  $text .= '</tr>';
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+		            	e107::getMessage()->addInfo(DOWLAN_174);
+		  
+		            }
+		            break;
+		         }
+		         case 'missing':
+		         {
+		            $title = DOWLAN_168;
+		            $text = "";
+		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category";
+		            $count = $sql->db_Select_gen($query);
+		            $foundSome = false;
+		            if ($count) {
+		               while($row = $sql->db_Fetch()) {
+		                  if (!is_readable(e_DOWNLOAD.$row['download_url'])) {
+		                     if (!$foundSome)
+							 {
+		   		              // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+								 
+		                        $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                        		<table class="adminlist">';
+		                        $text .= '<tr>';
+		                        $text .= '<th>'.DOWLAN_67.'</th>';
+		                        $text .= '<th>'.DOWLAN_27.'</th>';
+		                        $text .= '<th>'.DOWLAN_11.'</th>';
+		                        $text .= '<th>'.DOWLAN_13.'</th>';
+		                        $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                        $text .= '</tr>';
+		                        $foundSome = true;
+		                     }
+		                     $text .= '<tr>';
+		                     $text .= '<td>'.$row['download_id'].'</td>';
+		                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name']).'</a></td>';
+		                     $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
+		                     $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
+		                     $text .= '<td>
+		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.missing">'.ADMIN_EDIT_ICON.'</a>
+		   					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					            </td>';
+		                     $text .= '</tr>';
+		                  }
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+		            	e107::getMessage()->addInfo(DOWLAN_172);
+		              //  $text = DOWLAN_172;
+		            }
+		            break;
+		         }
+		         case 'inactive':
+		         {
+		            $title = DOWLAN_169;
+		            $text = "";
+		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE download_active=0";
+		            $count = $sql->db_Select_gen($query);
+		            $foundSome = false;
+		            if ($count) {
+		               while($row = $sql->db_Fetch()) {
+		                  if (!$foundSome)
+		                  {
+		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     		<table class="table adminform">';
+		                     $text .= '<tr>';
+		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.DOWLAN_27.'</th>';
+		                     $text .= '<th>'.DOWLAN_11.'</th>';
+		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                     $text .= '</tr>';
+		                     $foundSome = true;
+		                  }
+		                  
+		                  $text .= '<tr>';
+		                  $text .= '<td>'.$row['download_id'].'</td>';
+		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                  $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
+		                  if (strlen($row['download_url']) > 0) {
+		                     $text .= '<td>'.$row['download_url'].'</td>';
+		                  } else {
+		   					   $mirrorArray = download::makeMirrorArray($row['download_mirror'], TRUE);
+		                     $text .= '<td>';
+		                     foreach($mirrorArray as $mirror) {
+		                        $text .= $mirror['url'].'<br/>';
+		                     }
+		                     $text .= '</td>';
+		                  }
+		                  $text .= '<td>
+		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.inactive">'.ADMIN_EDIT_ICON.'</a>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				            </td>';
+		                  $text .= '</tr>';
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+		            	e107::getMessage()->addInfo(DOWLAN_172);
+		               // $text = DOWLAN_172;
+		            }
+		            break;
+		         }
+		         case 'nocategory':
+		         {
+		            $title = DOWLAN_178;
+		            $text = "";
+		            $query = "SELECT * FROM `#download` WHERE download_category=0";
+		            $count = $sql->db_Select_gen($query);
+		            $foundSome = false;
+		            if ($count) {
+		               while($row = $sql->db_Fetch()) {
+		                  if (!$foundSome) {
+		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		                     $text .= '
+		                     <form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     <table class="table adminlist">';
+		                     $text .= '<tr>';
+		                     $text .= '<th>'.DOWLAN_67.'</th>';
+		                     $text .= '<th>'.DOWLAN_27.'</th>';
+		                     $text .= '<th>'.DOWLAN_13.'</th>';
+		                     $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                     $text .= '</tr>';
+		                     $foundSome = true;
+		                  }
+		                  $text .= '<tr>';
+		                  $text .= '<td>'.$row['download_id'].'</td>';
+		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                  if (strlen($row['download_url']) > 0) {
+		                     $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
+		                  } else {
+		   					   $mirrorArray = download::makeMirrorArray($row['download_mirror'], TRUE);
+		                     $text .= '<td>';
+		                     foreach($mirrorArray as $mirror) {
+		                        $text .= $mirror['url'].'<br/>';
+		                     }
+		                     $text .= '</td>';
+		                  }
+		                  $text .= '<td>
+		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.nocategory">'.ADMIN_EDIT_ICON.'</a>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				            </td>';
+		                  $text .= '</tr>';
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+		            	e107::getMessage()->addInfo(DOWLAN_172);
+		              // $text = DOWLAN_172;
+		            }
+		            break;
+		         }
+		         case 'filesize':
+		         {
+		            $title = DOWLAN_66;
+		            $text = "";
+		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE d.download_url<>''";
+		            $count = $sql->db_Select_gen($query);
+		            $foundSome = false;
+		            if ($count) {
+		               while($row = $sql->db_Fetch()) {
+		                  if (is_readable(e_DOWNLOAD.$row['download_url'])) {
+		                     $filesize = filesize(e_DOWNLOAD.$row['download_url']);
+		                     if ($filesize <> $row['download_filesize']) {
+		                        if (!$foundSome) {
+		   		                 // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		                           $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                           		<table class="table adminlist">';
+		                           $text .= '<tr>';
+		                           $text .= '<th>'.DOWLAN_67.'</th>';
+		                           $text .= '<th>'.DOWLAN_27.'</th>';
+		                           $text .= '<th>'.DOWLAN_11.'</th>';
+		                           $text .= '<th>'.DOWLAN_13.'</th>';
+		                           $text .= '<th>'.DOWLAN_180.'</th>';
+		                           $text .= '<th>'.LAN_OPTIONS.'</th>';
+		                           $text .= '</tr>';
+		                           $foundSome = true;
+		                        }
+		                        $text .= '<tr>';
+		                        $text .= '<td>'.$row['download_id'].'</td>';
+		                        $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                        $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
+		                        $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
+		                        $text .= '<td>'.$row['download_filesize'].' / ';
+		                        $text .= $filesize;
+		                        $text .= '</td>';
+		                        $text .= '<td>
+		                                    <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.filesize">'.ADMIN_EDIT_ICON.'</a>
+		   					                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					               </td>';
+		                        $text .= '</tr>';
+		                     }
+		                  }
+		               }
+		            }
+		            if ($foundSome) {
+		               $text .= '</table></form>';
+		            }
+		            else
+		            {
+		            	e107::getMessage()->addInfo(DOWLAN_172);
+		              // $text = DOWLAN_172;
+		            }
+		            break;
+		         }
+		         case 'log':
+		         {
+		            $text = "log - view manage download history log";
+		            header('location: '.e_ADMIN.'admin_log.php?downlog');
+		            exit();
+		            break;
+		         }
+		      }
+		   }
+		   else {
+		      $title = DOWLAN_193;
+		      $text = DOWLAN_179;
+		      $eform = new e_form();
+		      $text = "
+		      	<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-main-form'>
+		      		<fieldset id='core-db-plugin-scan'>
+		      		<legend class='e-hideme'>".DOWLAN_10."</legend>
+		      			<table class='table adminform'>
+		      			<colgroup span='2'>
+		      				<col style='width: 40%'></col>
+		      				<col style='width: 60%'></col>
+		      			</colgroup>
+		      			<tbody>
+		      				<tr>
+		      					<td>".DOWLAN_166."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'duplicates').$eform->label(DOWLAN_185, 'dl_maint', 'duplicates')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_167."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'orphans').$eform->label(DOWLAN_186, 'dl_maint', 'orphans')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_168."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'missing').$eform->label(DOWLAN_187, 'dl_maint', 'missing')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_169."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'inactive').$eform->label(DOWLAN_188, 'dl_maint', 'inactive')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_178."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'nocategory').$eform->label(DOWLAN_189, 'dl_maint', 'nocategory')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_66."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'filesize').$eform->label(DOWLAN_190, 'dl_maint', 'filesize')."
+		      					</td>
+		      				</tr>
+		      				<tr>
+		      					<td>".DOWLAN_171."</td>
+		      					<td>
+		      						".$eform->radio('dl_maint', 'log').$eform->label(DOWLAN_191, 'dl_maint', 'log')."
+		      					</td>
+		      				</tr>
+		
+		      				</tbody>
+		      			</table>
+		      			<div class='buttons-bar center'>
+		      				".$eform->admin_button('trigger_db_execute', DOWLAN_192, 'execute')."
+		      			</div>
+		      		</fieldset>
+		      	</form>
+		      	";
+		   }
+		   
+		   echo $text;
+		   // 	$ns->tablerender(DOWLAN_165.$title, $text);
+		}
+
+
 		
 		
 		function saveSettings()

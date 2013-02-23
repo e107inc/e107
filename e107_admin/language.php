@@ -197,6 +197,8 @@ if (varset($action) == "tools")
 		$data = file_get_contents($script);
 		
 		$dir = dirname($script);
+		
+		$dir = str_replace("/includes","",$dir);
 		$plugin = basename($dir);
 		
 		$newLangs = array(
@@ -693,7 +695,7 @@ function show_tools()
 						<tr>
 							<td>".LAN_CHECK_1."</td>
 							<td>
-								<select name='language' class='tbox e-select'>
+								<select name='language' class='tbox'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -728,7 +730,7 @@ function show_tools()
 						<tr>
 							<td>".LANG_LAN_23."</td>
 							<td>
-								<select name='language' class='tbox e-select'>
+								<select name='language' class='tbox'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -753,7 +755,7 @@ function show_tools()
 						<tr>
 							<td>Search for Deprecated Lans</td>
 							<td>
-								<select name='deprecatedLans' class='tbox e-select'>
+								<select name='deprecatedLans' class='tbox'>
 									<option value=''>".LAN_SELECT."</option>";
 									
 									$fl = e107::getFile();
