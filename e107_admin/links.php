@@ -45,8 +45,8 @@ class links_admin extends e_admin_dispatcher
 	);
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LCLAN_62, 'perm' => 'I'),
-		'main/create' 	=> array('caption'=> LCLAN_63, 'perm' => 'I'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'I'),
+		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => 'I'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => 'I'),
 		'main/sublinks'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')
 	);
@@ -81,11 +81,11 @@ class links_admin_ui extends e_admin_ui
 		'link_id'			=> array('title'=> LAN_ID, 			'noedit'=>TRUE),
 		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' => true, 'validate' => true),
 		'link_parent' 		=> array('title'=> 'Sublink of', 	'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-		'link_url'	   		=> array('title'=> LCLAN_93, 		'width'=>'auto', 'type'=>'text', 'inline'=>true, 'required'=>true,'validate' => true),
+		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'text', 'inline'=>true, 'required'=>true,'validate' => true),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'text', 'inline'=>true, 'width' => 'auto'),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-		'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
-		'link_category' 	=> array('title'=> LAN_TEMPLATE, 		'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
+		'link_category' 	=> array('title'=> LAN_TEMPLATE, 	'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 		'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
