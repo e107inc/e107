@@ -322,7 +322,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender("Converter".SEP."Step 1", $mes->render() . $text);			
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 1", $mes->render() . $text);			
 			
 		}	
 
@@ -409,8 +409,8 @@ class theme_builder
 			</div>";
 			
 			$text .= $frm->close();
-			
-			$ns->tablerender("Converter".SEP."Step 2", $mes->render() . $text);		
+
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 2", $mes->render() . $text);		
 		}
 					
 				
@@ -557,27 +557,27 @@ TEMPLATE;
 			{
 				
 				case 'main-name':
-					$help 		= "The name of your plugin. (Must be written in English)";
+					$help 		= "The name of your theme. (Must be written in English)";
 					$required 	= true;
 					$pattern 	= "[A-Za-z ]*";
 				break;
 		
 				case 'main-lang':
-					$help 		= "If you have a language file, enter the LAN_XXX value for the plugin's name";
+					$help 		= "If you have a language file, enter the LAN_XXX value for the theme's name";
 					$required 	= false;
 					$placeholder= " ";
 					$pattern 	= "[A-Z0-9_]*";
 				break;
 				
 				case 'main-date':
-					$help 		= "Creation date of your plugin";
+					$help 		= "Creation date of your theme";
 					$required 	= true;
 				break;
 				
 				case 'main-version':
 					$default 	= '1.0';
 					$required 	= true;
-					$help 		= "The version of your plugin. Format: x.x";
+					$help 		= "The version of your theme. Format: x.x";
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 
@@ -615,7 +615,7 @@ TEMPLATE;
 				
 				case 'keywords-one':
 				case 'keywords-two':
-					$help 		= "Keyword/Tag for this plugin<br />(Must be written in English)";
+					$help 		= "Keyword/Tag for this theme<br />(Must be written in English)";
 					$required 	= true;
 					$size 		= 20;
 					$placeholder= " ";
@@ -623,7 +623,7 @@ TEMPLATE;
 				break;	
 				
 				case 'description-description':
-					$help 		= "A full description of the plugin<br />(Must be written in English)";
+					$help 		= "A full description of the theme<br />(Must be written in English)";
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
@@ -632,7 +632,7 @@ TEMPLATE;
 				
 					
 				case 'category-category':
-					$help 		= "What category of plugin is this?";
+					$help 		= "What category of theme is this?";
 					$required 	= true;
 					$size 		= 20;
 				break;
@@ -658,18 +658,15 @@ TEMPLATE;
 								
 						
 				case 'category':
-					$options = array(
-					'settings'	=> 'settings',
-					'users'		=> 'users', 
-					'content'	=> 'content',
-					'tools'		=> 'tools',
-					'manage'	=> 'manage',
-					'misc'		=> 'misc',
-					'menu'		=> 'menu',
-					'about'		=> 'about'
-					);
+										
+				$allowedCategories = array(
+					'generic', 'adult', 'blog', 'clan', 'children',
+					'corporate', 'forum', 'gaming', 'gallery', 'news',
+		 			'social', 'video', 'multimedia');	
+					
+				sort($allowedCategories);
 				
-					$text = $frm->selectbox($name, $options,'','required=1', true);	
+					$text = $frm->selectbox($name, $allowedCategories,'','useValues=1&required=1', true);	
 				break;
 				
 				

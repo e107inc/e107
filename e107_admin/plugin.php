@@ -850,7 +850,7 @@ class pluginManager{
 		}
 		if($this->action == "avail")
 		{
-			$uninstalled = $plugin->getall(0);
+			$uninstalled = $plugin->getall(0);		
 			$caption = EPL_ADLAN_23;
 			$pluginRenderPlugin = $this->pluginRenderPlugin($uninstalled);
 			$button_mode = "install-selected";
