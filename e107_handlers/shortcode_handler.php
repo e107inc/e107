@@ -249,14 +249,14 @@ class e_parse_shortcode
 	 * 	- File Override ClassName: override_signup_shortcodes
 	 * 	- File Override Location: core/override/shortcodes/batch/signup_shortcodes.php
 	 * 
-	 * 2. Plugin 'gallery' global shortcode batch (e_shortcode.php)
-	 * 	- Origin ClassName: gallery_shortcodes
+	 * 2. Plugin 'gallery' global shortcode batch (e_shortcode.php) 
+	 * 	- Origin ClassName: gallery_shortcodes //FIXME Should be gallery_shortcode? (more below)
 	 * 	- Origin Location: plugins/gallery/e_shortcode.php
 	 * 	- File Override ClassName: override_gallery_shortcodes
 	 * 	- File Override Location: core/override/shortcodes/batch/gallery_shortcodes.php
 	 * 
 	 * 3. Plugin 'forum' regular shortcode batch
-	 * 	- Origin ClassName: plugin_forum_view_shortcodes
+	 * 	- Origin ClassName: plugin_forum_view_shortcodes //FIXME Should be forum_shortcodes? (more below)
 	 * 	- Origin Location: plugins/forum/shortcodes/batch/view_shortcodes.php
 	 * 	- File Override ClassName: override_plugin_forum_view_shortcodes
 	 * 	- File Override Location: core/override/shortcodes/batch/forum_view_shortcodes.php
@@ -279,16 +279,26 @@ class e_parse_shortcode
 	 */
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
+		
+		/* FIXME Discuss Generic plugin Class naming. (excluding specific calls with $overrideClass. 
+		// Defaults should be: 
+			e_shortcode.php 			 = {plugin}_shortcode 
+		  	{plugin}_shortcodes.php 	= {plugin}_shortcodes
+		*/
+		
 		if(trim($className)==""){ return; }
 
 		$_class_fname = $className;
-		if($pluginName === TRUE)
+		if($pluginName === TRUE) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
 		{
-			$pluginName = str_replace("_shortcodes","",$className);		
+			$pluginName = str_replace("_shortcodes","",$className);	
+			$manualCall = true; 	
 		}
 		elseif(is_string($pluginName))
 		{
-			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
+			// FIXME "plugin_ " should NOT be used or be necessary. 
+			// FIXME Core classes should use special naming to avoid comflicts, not plugins.  
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className); 
 		}
 		
 		$globalOverride = $this->isBatchOverride(str_replace('plugin_', '', $className));
@@ -327,11 +337,12 @@ class e_parse_shortcode
 		}
 		else
 		{
+
 			if(!$globalOverride)
-			{
+			{				
 				// do nothing if it's e_shortcode batch global
-				if($pluginName.'_shortcodes' !== $className)
-				{
+				if($pluginName.'_shortcodes' !== $className || $manualCall == true) // manual call by plugin, not e_shortcode.php
+				{			
 					// BC  - required. 
 					$pathBC = e_PLUGIN.$pluginName.'/';
 					$path = (is_readable($pathBC.$_class_fname.'.php') ? $pathBC : e_PLUGIN.$pluginName.'/shortcodes/batch/').$_class_fname.'.php';
@@ -374,7 +385,7 @@ class e_parse_shortcode
 		}
 		elseif(E107_DBG_BBSC || E107_DBG_SC)
 		{
-			echo "<h3>Couldn't Load: <b>".$path."</b></h3>";
+			echo "<h3>Couldn't Load: <b>".$path." with class-name: {$className} and pluginName {$pluginName}</b></h3>";
 			
 		}
 
