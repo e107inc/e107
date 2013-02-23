@@ -687,7 +687,7 @@ class e_admin_response
 			return ($glue ? $content : implode($this->_title_separator, $content));
 		}
 
-		$glue = ' <i class="icon-play e-breadcrumb"></i> '; // admin-ui used only by bootstrap. 
+		$glue = deftrue('SEP',' - '); // Defined by admin theme. // admin-ui used only by bootstrap. 
 
 		return $head. implode($glue, $content).$foot;
 	}
