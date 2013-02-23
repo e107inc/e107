@@ -241,7 +241,7 @@ class system_tools
 			$mes->addSuccess("Folder and File permissions have been updated");			
 		}
 		
-		e107::getRender()->tablerender("Correcting File and Directory Permissions", $mes->render());	
+		e107::getRender()->tablerender(DBLAN_10.SEP."Correcting File and Directory Permissions", $mes->render());	
 		
 	}
 
@@ -294,7 +294,7 @@ class system_tools
 				</fieldset>
 			</form>";
 
-		e107::getRender()->tablerender("Convert Database to UTF-8", $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP."Convert Database to UTF-8", $mes->render().$text);
 
 	}
 
@@ -563,7 +563,7 @@ class system_tools
 					</form>\n";
 
 
-		e107::getRender()->tablerender(DBLAN_59, $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_59, $mes->render().$text);
 
 	}
 
@@ -678,7 +678,7 @@ class system_tools
 		</form>	";
 
 
-		e107::getRender()->tablerender("Export Options",$mes->render(). $text);
+		e107::getRender()->tablerender(DBLAN_10.SEP."Export Options",$mes->render(). $text);
 
 
 	}
@@ -716,7 +716,7 @@ class system_tools
 		}
 
 	//	$mes->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
-		e107::getRender()->tablerender(DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
 	}
 
 	/**
@@ -804,7 +804,7 @@ class system_tools
 					</fieldset>
 				</form>\n\n";
 
-		e107::getRender()->tablerender(DBLAN_10.' :: '.DBLAN_20." :: ".ucwords($type), $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_20.SEP.ucwords($type), $mes->render().$text);
 
 		return $text;
 	}
@@ -979,7 +979,7 @@ class system_tools
 				</form>
 			";
 
-		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_22, $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_22, $mes->render().$text);
 	}
 }
 
@@ -1211,7 +1211,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_39, $mes->render().$text);
+		$e107->ns->tablerender(DBLAN_10.SEP.DBLAN_39, $mes->render().$text);
 	}
 	else
 	{
@@ -1518,7 +1518,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			</form>
 		";
 
-		$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_50, $mes->render().$text);
+		$e107->ns->tablerender(DBLAN_10.SEP.DBLAN_50, $mes->render().$text);
 	}
 }
 

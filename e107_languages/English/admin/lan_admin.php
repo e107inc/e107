@@ -334,6 +334,7 @@ define("LAN_KEYWORDS","Keywords");
 define("LAN_IMAGE","Image");
 define("LAN_TEMPLATE","Template");
 define("LAN_TYPE", "Type");
+define("LAN_CATEGORIES", "Categories");
 
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");

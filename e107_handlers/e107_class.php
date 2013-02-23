@@ -2236,6 +2236,7 @@ class e107
 	 * @param string $type : 'theme' or plugin name
 	 * @param $string $fname (optional): relative path to the theme or plugin language folder. (same as in the other functions)
 	 * when missing, [e_LANGUAGE].php will be used. 
+	 * @param $options : Set to True for admin. 
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery',e_LANGUAGE."_something.php"); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
@@ -2320,9 +2321,13 @@ class e107
 				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'.php'; // menu language file.
 				break;
 			case 'admin' :
-				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php';
-				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php';
+				
+				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php'; 
+				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php'; 
 				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/admin/'.e_LANGUAGE.'.php';
+				$searchPath[4] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_admin.php'; // Preferred. 
+				$searchPath[5] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin.php'; // consistent with English_global.php, English_log.php etc. 
+				
 				break;
 			case 'theme' :
 				$searchPath[1] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';

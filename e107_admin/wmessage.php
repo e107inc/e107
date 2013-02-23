@@ -21,17 +21,16 @@ if (!getperms("M"))
 	 exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::lan('core','wmessage',true);
 
 $e_sub_cat = 'wmessage';
 
 require_once("auth.php");
-require_once(e_HANDLER.'form_handler.php');
+
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
-require_once(e_HANDLER.'message_handler.php');
 
-$rs = new form;
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
@@ -136,7 +135,8 @@ if ($action == "main" || $action == "")
 	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
 	{
 		$wmList = $sql->db_getList();
-		$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
+	//	$text = $rs->form_open('post', e_SELF, 'myform_wmessage', '', '');
+		$text = $frm->open('myform_wmessage','post',e_SELF);
 		$text .= "
             <table class='table adminlist'>
 			<colgroup>
@@ -170,12 +170,14 @@ if ($action == "main" || $action == "")
 		}
 
 		$text .= "</tbody></table>";
-		$text .= $rs->form_close();
+		$text .= $frm->close();
+	
 	} else {
 		//$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
 		$mes->addInfo(WMLAN_09);
 	}
-	$ns->tablerender(WMLAN_00, $mes->render() . $text);
+	
+	$ns->tablerender(WMLAN_00.SEP.LAN_MANAGE, $mes->render() . $text);
 }
 
 // Create and Edit
@@ -212,7 +214,7 @@ if ($action == "create" || $action == "edit")
 		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea>
 		<br />";
 
-		$text .= display_help("helpb", "admin");
+		$text .= display_help("helpb", "admin"); //XXX Serves as BC Check 
 
 
 	$text .= "
@@ -239,7 +241,8 @@ if ($action == "create" || $action == "edit")
 		</fieldset>
 		</form>
 		";
-	$ns->tablerender(WMLAN_01, $mes->render() . $text);
+	
+	$ns->tablerender(WMLAN_01.SEP.LAN_CREATE, $mes->render() . $text);
 }
 
 
@@ -281,7 +284,7 @@ if ($action == "opt") {
 		</form>
 		";
 
-	$ns->tablerender(WMLAN_00.": ".LAN_PREFS, $mes->render() . $text);
+	$ns->tablerender(WMLAN_00.SEP.LAN_PREFS, $mes->render() . $text);
 
 
 }
@@ -292,14 +295,14 @@ function wmessage_adminmenu()
 	$act = e_QUERY;
 	$action = vartrue($act,'main');
 	
-	$var['main']['text'] = WMLAN_00;
+	$var['main']['text'] = LAN_MANAGE;
 	$var['main']['link'] = e_SELF;
-	$var['create']['text'] = WMLAN_01;
+	$var['create']['text'] = LAN_CREATE;
 	$var['create']['link'] = e_SELF."?create";
 	$var['opt']['text'] = LAN_PREFS;
 	$var['opt']['link'] = e_SELF."?opt";
 
-	show_admin_menu(LAN_OPTIONS, $action, $var);
+	show_admin_menu(WMLAN_00, $action, $var);
 }
 
 require_once("footer.php");

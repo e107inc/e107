@@ -560,7 +560,7 @@ $text .= "</form></div><br /><br />";
 $text .= $e_userclass->show_graphical_tree();
 
 
-$ns->tablerender(UCSLAN_21, $text);
+$ns->tablerender(ADLAN_38.SEP.LAN_CREATE, $text);
 
     break;				// End of 'config' option
 
@@ -621,7 +621,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $text .= UCSLAN_39;
 	}
 	$text .= "</td></tr></table></form></div>";
-	$ns->tablerender(UCSLAN_40, $mes->render() . $text);
+	$ns->tablerender(ADLAN_38.SEP.UCSLAN_40, $mes->render() . $text);
 
     break;				// End of 'initial'
 
@@ -730,7 +730,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	}
 	$text .= "</table></form>";
 		
-	$ns->tablerender(UCSLAN_61, $mes->render().$text);
+	$ns->tablerender(ADLAN_38.SEP.LAN_PREFS, $mes->render().$text);
 
 
 	$text = "<form method='post' action='".e_SELF."?options' id='maintainForm'>
@@ -906,7 +906,7 @@ function userclass2_adminmenu()
 	$var['list']['link'] = 'userclass2.php';
 
 
-	$var['config']['text'] = UCSLAN_25;
+	$var['config']['text'] = LAN_CREATE; // UCSLAN_25;
 	$var['config']['link'] = 'userclass2.php?config';
 
 //DEPRECATED - use admin->users instead.
@@ -920,7 +920,7 @@ function userclass2_adminmenu()
 
 	if (check_class(e_UC_MAINADMIN))
 	{
-		$var['options']['text'] = UCSLAN_50;
+		$var['options']['text'] = LAN_PREFS; // UCSLAN_50;
 		$var['options']['link'] ='userclass2.php?options';
 
 		if (defined('UC_DEBUG_OPTS'))
@@ -935,7 +935,7 @@ function userclass2_adminmenu()
 			$var['specials']['link'] ="userclass2.php?special";
 		}
 	}
-	show_admin_menu(UCSLAN_51, $action, $var);
+	show_admin_menu(ADLAN_38, $action, $var);
 }
 
 

@@ -62,10 +62,10 @@ class news_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> NWSLAN_44, 'perm' => 'H'),
+		'main/list'			=> array('caption'=> LAN_LIST, 'perm' => 'H'),
 		'main/create' 		=> array('caption'=> NWSLAN_45, 'perm' => 'H'),  // Create/Edit News Item
 	//	'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Category List
-		'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => 'H'), // Create Category. 
+		'cat/list' 			=> array('caption'=> LAN_CATEGORIES, 'perm' => 'H'), // Create Category. 
 		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'H'), // Category List
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'), // Preferences
 	//	'main/submitted'	=> array('caption'=> "Old Submitted ", 'perm' => 'N'), // Submitted News
@@ -86,7 +86,7 @@ class news_admin extends e_admin_dispatcher
 
 class news_cat_ui extends e_admin_ui
 {
-		protected $pluginTitle	= 'News Categories';
+		protected $pluginTitle	= ADLAN_0; // "News"
 		protected $pluginName	= 'core';
 		protected $table 		= "news_category";
 		protected $pid			= "category_id";
@@ -180,7 +180,7 @@ class news_cat_form_ui extends e_admin_form_ui
 
 class news_sub_ui extends e_admin_ui
 {
-		protected $pluginTitle	= NWSLAN_47;
+		protected $pluginTitle	= ADLAN_0; // "News"
 		protected $pluginName	= 'core';
 		protected $table 		= "submitnews";
 		protected $pid			= "submitnews_id";
@@ -333,15 +333,15 @@ class news_admin_ui extends e_admin_ui
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-    			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_sef'				=> array('title' => LAN_SEFURL, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+    			'user_name'				=> array('title' => LAN_AUTHOR, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'data' => 'int',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
                 'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 	'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
   				
   				'news_start'			=> array('title' => "Start", 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                        				
-  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclasses', 'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+  				'news_class'			=> array('title' => LAN_VISIBILITY, 		'type' => 'userclasses', 'data' => 'int', 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 				'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'comma', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'data' => 'int' , 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1','writeParms'=>'reverse=1'),
@@ -824,8 +824,8 @@ class admin_newspost
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_sef'				=> array('title' => 'SEF URL', 		'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-    			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+				'news_sef'				=> array('title' => LAN_SEFURL, 		'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+    			'user_name'				=> array('title' => LAN_AUTHOR, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                 'category_name'			=> array('title' => NWSLAN_6, 		'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
   				
@@ -833,7 +833,7 @@ class admin_newspost
        			'news_end'				=> array('title' => "End", 			'type' => 'datestamp', 	'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                        
   				
-  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'data'=> 'str', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+  				'news_class'			=> array('title' => LAN_VISIBILITY, 		'type' => 'userclass', 	'data'=> 'str', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'data'=> 'comma', 'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false),
 			   	'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'data'=> 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
                 'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'data'=> 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false),
@@ -1511,7 +1511,7 @@ class admin_newspost
 		{
 			e107::getAdminLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
 			$this->clear_cache();
-			//$this->show_message(NWSLAN_119, E_MESSAGE_SUCCESS);
+			
 		}
 	}
 
@@ -2035,7 +2035,7 @@ class admin_newspost
 		// -------- News Author ---------------------
         $text .="
 							<tr>
-								<td>".LAN_NEWS_50.":</td>
+								<td>".LAN_AUTHOR.":</td>
 								<td>
 		";
 
@@ -2290,7 +2290,7 @@ class admin_newspost
 
 		$text .= "
 								<tr>
-									<td>".NWSLAN_22.":</td>
+									<td>".LAN_VISIBILITY.":</td>
 									<td>
 										".$frm->uc_select('news_userclass[]', vartrue($_POST['news_class'],0), 'nobody,public,guest,member,admin,classes,language', 'description=1&multiple=1')."
 										<div class='field-help'>
@@ -2666,7 +2666,7 @@ class admin_newspost
 						<thead>
 							<tr>
 								<th class='center'>".LAN_NEWS_45."</th>
-								<th class='center'>".NWSLAN_122."</th>
+								<th class='center'>".LAN_ICON."</th>
 								<th>".NWSLAN_6."</th>
 								<th>Manage Permissions</th>
 								<th class='center last'>".LAN_OPTIONS."</th>
@@ -2675,10 +2675,10 @@ class admin_newspost
 						</thead>
 						<tbody>
 		";
-		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.* FROM #news_category AS ncat  ORDER BY ncat.category_order ASC"))
+		if ($category_total = e107::getDb()->gen("SELECT ncat.* FROM #news_category AS ncat  ORDER BY ncat.category_order ASC"))
 		{
 			$tindex = 100;
-			while ($category = e107::getDb()->db_Fetch()) {
+			while ($category = e107::getDb()->fetch()) {
 
 				$icon = '';
 				if ($category['category_icon'])
@@ -2760,6 +2760,8 @@ class admin_newspost
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 
+		$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
+
 		$text = "
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
@@ -2774,7 +2776,7 @@ class admin_newspost
 								<td>".NWSLAN_127."</td>
 								<td>
 									".$frm->text('news_sefbase', $pref['news_sefbase'])."
-									<div class='field-help'>".sprintf(NWSLAN_128, e_ADMIN_ABS.'eurl.php').'<strong>'.SITEURL.($pref['news_sefbase'] ? $pref['news_sefbase'].'/' : '')."</strong></div>
+									<div class='field-help'>".$sefbaseDiz.'<strong>'.SITEURL.($pref['news_sefbase'] ? $pref['news_sefbase'].'/' : '')."</strong></div>
 								</td>
 							</tr>
 							<tr>
