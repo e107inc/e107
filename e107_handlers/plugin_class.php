@@ -127,11 +127,11 @@ class e107plugin
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @return array plugin details
 	 */
-	function getall($flag='all')
+	function getall($flag)
 	{
 		$sql = e107::getDb();
 
-		if($flag == 'all')
+		if($flag === 'all')
 		{
 			$qry = "SELECT * FROM #plugin ORDER BY plugin_path ASC";	
 		}
@@ -140,7 +140,7 @@ class e107plugin
 			$qry = "SELECT * FROM #plugin WHERE plugin_installflag = ".(int) $flag." ORDER BY plugin_path ASC";		
 		}
 
-		if ($sql->gen($qry))
+		if ($sql->db_Select_gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;

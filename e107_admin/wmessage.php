@@ -214,7 +214,7 @@ if ($action == "create" || $action == "edit")
 		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm(vartrue($row['gen_chardata']))."</textarea>
 		<br />";
 
-		$text .= display_help("helpb", "admin"); //XXX Serves as BC Check 
+	//	$text .= display_help("helpb", "admin"); //XXX Serves as BC Check 
 
 
 	$text .= "

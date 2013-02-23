@@ -262,6 +262,11 @@ if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile'
 
 function disableUnused($data)
 {
+	$data = str_replace("2008-2010","2008-2013", $data);
+	$data = str_replace(' * $URL$
+ * $Revision$
+ * $Id$
+ * $Author$',"",$data);	
 
 	$tmp = explode("\n",$data);
 	foreach($tmp as $line)
@@ -1084,7 +1089,7 @@ function unused($lanfile,$script)
 		
 		if(count($_SESSION['language-tools-unused'])>0)
 		{
-			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused','Disable All Unused','submit').
+			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused','Disable All Unused','delete').
 			$frm->hidden('disable-unused-lanfile',$lanfile)."</div>";
 		}
 		
@@ -1219,7 +1224,7 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 	
 	if($disabled == " (disabled)")
 	{
-		$color = "background-color:#DFFFDF";	
+		$color = "background-color:#DFFFDF";
 	}	
 
 	if(!$found)
