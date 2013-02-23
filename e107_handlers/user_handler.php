@@ -1222,7 +1222,7 @@ class e_userperms
 		$tp = e107::getParser();
 
 		$plg = e107::getPlugin();
-		$allPlugins = $plg->getall();
+		$allPlugins = $plg->getall(1); // Needs all for 'reading' and 'installed' for writing. 
 		
 		foreach($allPlugins as $k=>$row2)
 		{
