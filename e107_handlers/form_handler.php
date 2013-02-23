@@ -805,7 +805,7 @@ class e_form
 		// auto-height support
 		if(!vartrue($options['noresize']))
 		{
-			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox textarea e-autoheight';
+			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox span7 e-autoheight';
 		}
 
 		$options = $this->format_options('textarea', $name, $options);
@@ -836,8 +836,8 @@ class e_form
 			case 'large':
 			default:
 				$rows = '15';
-				$size = 'large';
-				$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
+				$size = 'large span10';
+			//	$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
 			break;
 		}
 
@@ -1273,7 +1273,9 @@ class e_form
 		$btype = 'submit';
 		if(strpos($action, 'action') === 0) $btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
-		$options['class'] = 'btn '.$action.' ';//shorthand
+		
+		$options['class'] = vartrue($options['class']);
+		$options['class'] .= ' btn '.$action.' ';//shorthand
 		if(empty($label)) $label = $value;
 		
 		switch ($action)

@@ -101,9 +101,9 @@ class cron_admin_ui extends e_admin_ui
 				$executeID = key($_POST['cron_execute']);
 				$this->cronExecute($executeID);
 			}
-
+	
 			
-			if (!vartrue(e107::getPref('e_cron_pwd')))
+			if (!vartrue(e107::getPref('e_cron_pwd')) || varset($_POST['generate_pwd']))
 			{
 				$pwd = $this->setCronPwd();
 			}
@@ -354,13 +354,17 @@ class cron_admin_ui extends e_admin_ui
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = LAN_CRON_15.":<br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd']."</pre>". LAN_CRON_16;
+				$setpwd_message = $frm->open("generate")
+				.LAN_CRON_15.":<br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd'];
+				
+				$setpwd_message .= "</pre>". LAN_CRON_16;
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
 					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_DOMAIN."/cpanel'>Go to cPanel</a></div>";
 					
 				}
-					
+				$setpwd_message .= $frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'pull-right btn btn-small'));
+				$setpwd_message .= $frm->close();	
 				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 			}
