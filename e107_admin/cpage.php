@@ -198,7 +198,7 @@ class page_admin_form_ui extends e_admin_form_ui
 
 class page_chapters_ui extends e_admin_ui
 {
-		protected $pluginTitle	= 'Page Chapters';
+		protected $pluginTitle	= 'Page';
 		protected $pluginName	= 'core';
 		protected $table 		= "page_chapters";
 		protected $pid			= "chapter_id";

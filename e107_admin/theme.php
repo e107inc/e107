@@ -290,7 +290,7 @@ class theme_builder
 			
 			$mes->addInfo("This Wizard will build a theme.xml meta file for your theme.<br />
 				Before you start: <ul>
-						<li>Create a new writable folder in the ".e_PLUGIN." directory eg. <b>myplugin</b></li>
+						<li>Make sure your theme's directory is writable</b></li>
 						<li>Select your theme's folder to begin.</li>
 				</ul>
 			");
@@ -302,17 +302,17 @@ class theme_builder
 							<col class='col-control' />
 						</colgroup>
 				<tr>
-					<td>Select your plugin's folder</td>
+					<td>Select your theme's folder</td>
 					<td>".$frm->selectbox("newtheme",$newDir)."</td>
 				</tr>";
 				
-				
+				/*
 				$text .= "
 				<tr>
 					<td>Create Files</td>
 					<td>".$frm->checkbox('createFiles',1,1)."</td>
 				</tr>";
-				
+				*/
 				
 			$text .= "				
 				</table>
@@ -322,7 +322,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender("Theme Converter", $mes->render() . $text);			
+			$ns->tablerender("Converter".SEP."Step 1", $mes->render() . $text);			
 			
 		}	
 
@@ -410,7 +410,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender("Theme Converter", $mes->render() . $text);		
+			$ns->tablerender("Converter".SEP."Step 2", $mes->render() . $text);		
 		}
 					
 				

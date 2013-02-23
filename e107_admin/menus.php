@@ -135,7 +135,7 @@ if($_POST)
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(ADLAN_6." :: ".LAN_MENULAYOUT, $text, 'menus_config');
+            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, $text, 'menus_config');
 		}
 		else // Within the IFrame.
 		{

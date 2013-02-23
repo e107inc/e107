@@ -9,16 +9,16 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("NWSLAN_1", "News story deleted.");
-define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
-define("NWSLAN_3", "No news items yet.");
+// define("NWSLAN_1", "News story deleted.");
+// define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
+// define("NWSLAN_3", "No news items yet.");
 define("NWSLAN_4", "News - Existing News");
-define("NWSLAN_5", "Open HTML Editor");
+// define("NWSLAN_5", "Open HTML Editor");
 define("NWSLAN_6", "Category");
 
-define("NWSLAN_9", "tick to confirm");
+// define("NWSLAN_9", "tick to confirm");
 define("NWSLAN_10", "No news categories");
-define("NWSLAN_11", "Add/Edit Categories");
+// define("NWSLAN_11", "Add/Edit Categories");
 define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Extended");
@@ -29,7 +29,7 @@ define("NWSLAN_18", "Allow comments to be posted to this news item");
 define("NWSLAN_19", "Activation");
 
 define("NWSLAN_21", "Activate between");
-define("NWSLAN_22", "Visibility");
+// define("NWSLAN_22", "Visibility");
 
 define("NWSLAN_24", "Preview again");
 define("NWSLAN_25", "Update news in database");
@@ -71,17 +71,17 @@ define("NWSLAN_58", "Post");
 define("NWSLAN_59", "No submitted news");
 // define("NWSLAN_60", "Submitted News"); //already defined above.
 
-define("NWSLAN_62", "Go to page: ");
+// define("NWSLAN_62", "Go to page: ");
 define("NWSLAN_63", "Search newsposts");
 
 define("NWSLAN_66", "Upload");
 define("NWSLAN_67", "Image");
-define("NWSLAN_68", "File");
+// define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
 // define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");  // deprecated see lan_admin.php
 // define("NWSLAN_71", "The ".e_IMAGE."newspost_images folder is not writable.  You need to CHMOD 777 the folder before uploading any images.");  // deprecated see lan_admin.php
 define("NWSLAN_72", "Only show news item between certain dates");
-define("NWSLAN_73", "Render type");
+// define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");
 define("NWSLAN_75", "Default - post to front page");
 define("NWSLAN_76", "Title only - post to front page");
@@ -121,66 +121,66 @@ define("NWSLAN_117", "Set the title for the news archive");
 //define("NWSLAN_119", "Settings Saved"); - already done in pref handler
 define("NWSLAN_120", "Text to show at the top of Submit News");
 define("NWSLAN_121", "Nothing found for %s");
-define("NWSLAN_122", "Icon");
+// define("NWSLAN_122", "Icon");
 
 //sn
 define("NWSLAN_123", "Posted");
-define("NWSLAN_124", "User");
-define("NWSLAN_125", "Email");
-define("NWSLAN_126", "IP");
+// define("NWSLAN_124", "User");
+// define("NWSLAN_125", "Email");
+// define("NWSLAN_126", "IP");
 
 define("NWSLAN_127", "URL identifier");
 define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: ");
 
-define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
-define("LAN_NEWS_6", "News entered into database.");
-define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
-define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
-define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
-define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
-define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
-define("LAN_NEWS_13", "Comments are turned <b>off</b>.");
-define("LAN_NEWS_14", "<br />Activation period: ");
-define("LAN_NEWS_15", "Body length: ");
-define("LAN_NEWS_16", "b. Extended length: ");
-define("LAN_NEWS_17", "b.");
-define("LAN_NEWS_18", "Info");
-define("LAN_NEWS_19",  "Now");
-define("LAN_NEWS_21", "News updated in database.");
+// define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
+// define("LAN_NEWS_6", "News entered into database.");
+// define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
+// define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
+// define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
+// define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
+// define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
+// define("LAN_NEWS_13", "Comments are turned <b>off</b>.");
+// define("LAN_NEWS_14", "<br />Activation period: ");
+// define("LAN_NEWS_15", "Body length: ");
+// define("LAN_NEWS_16", "b. Extended length: ");
+// define("LAN_NEWS_17", "b.");
+// define("LAN_NEWS_18", "Info");
+// define("LAN_NEWS_19",  "Now");
+// define("LAN_NEWS_21", "News updated in database.");
 
-define("LAN_NEWS_22", "Thumbnail");
+// define("LAN_NEWS_22", "Thumbnail");
 define("LAN_NEWS_23", "Choose an image for this news item");
-define("LAN_NEWS_24", "Image + Auto-Thumbnail");
-define("LAN_NEWS_25", "Auto-Thumbnail size");
-define("LAN_NEWS_26", "add new upload field");
+// define("LAN_NEWS_24", "Image + Auto-Thumbnail");
+// define("LAN_NEWS_25", "Auto-Thumbnail size");
+// define("LAN_NEWS_26", "add new upload field");
 define("LAN_NEWS_27", "Summary");
 
 define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");
 define("LAN_NEWS_30", "If selected, news item will appear above all others");
-define("LAN_NEWS_31", "This news post is <b>sticky</b> (it will be shown above all other items). ");
+// define("LAN_NEWS_31", "This news post is <b>sticky</b> (it will be shown above all other items). ");
 define("LAN_NEWS_32", "Date stamp");
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Add trackback URLs");
-define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
+// define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
 define("LAN_NEWS_37", "<b>Trackback URLs:</b> (one URL per line)");
-define("LAN_NEWS_38", "Insert images");
+// define("LAN_NEWS_38", "Insert images");
 
-define("LAN_NEWS_39", "click on file to insert at cursor position");
-define("LAN_NEWS_40", "Insert download links");
+// define("LAN_NEWS_39", "click on file to insert at cursor position");
+// define("LAN_NEWS_40", "Insert download links");
 
-define("LAN_NEWS_42", "Files");
+// define("LAN_NEWS_42", "Files");
 // define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");  // deprecated see lan_admin.php
-define("LAN_NEWS_44", "Trackback not enabled.");
+// define("LAN_NEWS_44", "Trackback not enabled.");
 define("LAN_NEWS_45", "ID");
-define("LAN_NEWS_46", "News item not updated as no changes were made.");
-define('LAN_NEWS_47', 'Nothing changed - not updated');
-define("LAN_NEWS_48", "No Image");
+// define("LAN_NEWS_46", "News item not updated as no changes were made.");
+// define('LAN_NEWS_47', 'Nothing changed - not updated');
+// define("LAN_NEWS_48", "No Image");
 
 define("LAN_NEWS_49", "Render-type");
-define("LAN_NEWS_50", "Author");
+// define("LAN_NEWS_50", "Author");
 define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 
 define("LAN_NEWS_52", "General Information");

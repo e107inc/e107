@@ -521,7 +521,7 @@ class users_ext
 
 	}
 
-	function show_extended($current = '')  // Show existing fields List.
+	function show_extended($current = '')  // Show Add fields List.
 	{
         global $ue, $curtype,$mySQLdefaultdb, $action, $sub_action;
         
@@ -830,7 +830,7 @@ class users_ext
 
 		//		$text .= "</div>";
 		$emessage = e107::getMessage();
-		$ns->tablerender(EXTLAN_9,$emessage->render().$text);
+		$ns->tablerender(EXTLAN_9.SEP.LAN_ADD,$emessage->render().$text);
 	}
 
 
@@ -986,7 +986,7 @@ class users_ext
 		// ======= end added by Cam.
 		$text .= "</div></form></div>";
 		$emessage = e107::getMessage();
-		$ns->tablerender(EXTLAN_9, $emessage->render().$text);
+		$ns->tablerender(EXTLAN_9.SEP.LAN_CATEGORIES, $emessage->render().$text);
 	}
 
 
@@ -1089,7 +1089,7 @@ class users_ext
 
 		$emessage = e107::getMessage();
 
-		$ns->tablerender(EXTLAN_56,$emessage->render(). $txt);
+		$ns->tablerender(EXTLAN_9.SEP.EXTLAN_56,$emessage->render(). $txt);
 
 	}
 

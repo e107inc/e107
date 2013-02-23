@@ -433,7 +433,7 @@ class themeHandler
 				}
 			}
 			
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_33, $mes->render().$text);
 		}
 		
 		// Show Admin Configuration
@@ -447,7 +447,7 @@ class themeHandler
 					$text = $this->renderTheme(2, $theme);
 				}
 			}
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_34, $mes->render().$text);
 		}
 		
 		// Show Upload Form
@@ -466,7 +466,7 @@ class themeHandler
 				// print_a($theme);
 			}
 			$text .= "<div class='clear'>&nbsp;</div>";
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_39, $mes->render().$text);
 			
 			
 		}
@@ -566,7 +566,7 @@ class themeHandler
 				$text .= "<div style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 			}
 			
-			$ns->tablerender(TPVLAN_26." :: Available for Download", $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
 				
 			
 		}
@@ -630,7 +630,7 @@ class themeHandler
 				\n";
 		}
 		
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $mes->render().$text);
+		$ns->tablerender(TPVLAN_26.SEP.TPVLAN_38, $mes->render().$text);
 	}
 
 	

@@ -87,7 +87,7 @@ class banlist_admin extends e_admin_dispatcher
 class banlist_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Ban';
+		protected $pluginTitle		= BANLAN_16;
 		// protected $pluginName		= 'myplugin';
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_ip';
@@ -641,7 +641,7 @@ switch ($action)
 			$text .= "&nbsp;&nbsp;&nbsp;".str_replace('--NUM--', $num_entry, BANLAN_87);
 		}
 		
-		e107::getRender()->tablerender("<div style='text-align:center'>".BANLAN_86.'</div>', $text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_86, $text);
 		break;
 
 
@@ -748,7 +748,7 @@ switch ($action)
 				</fieldset>
 			</form>
 		";
-		e107::getRender()->tablerender(BANLAN_72, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.LAN_OPTIONS, $emessage->render().$text);
 		break;
 
 	case 'times' :
@@ -816,7 +816,7 @@ switch ($action)
 			</form>
 			";
 
-		e107::getRender()->tablerender(BANLAN_77, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_77, $emessage->render().$text);
 		break;
 
 	case 'edit' :		// Edit an existing ban
@@ -1067,7 +1067,7 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender(BANLAN_35, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_35, $emessage->render().$text);
 		break;		// End case 'transfer'
 
 	case 'list' :

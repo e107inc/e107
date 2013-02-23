@@ -4,6 +4,7 @@ if ( ! defined('e107_INIT')) { exit(); }
 define('STANDARDS_MODE', TRUE);
 // define("VIEWPORT","width=device-width, initial-scale=1.0");
 define("VIEWPORT","width=1080");
+define("SEP"," <i class='icon-play e-breadcrumb'></i> ");
 
 e107::lan('theme');
 e107::js('core','bootstrap/js/bootstrap.min.js');
@@ -631,6 +632,7 @@ function tablestyle($caption, $text, $mode)
 
 $HEADER = '';
 $FOOTER = '';
+
 
 define('ICONMAIL', 'email_16.png');
 define('ICONPRINT', 'print_16.png');

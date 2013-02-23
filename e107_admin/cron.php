@@ -56,7 +56,7 @@ class cron_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'Comments';
+	protected $menuTitle = PAGE_NAME;
 }
 
 class cron_admin_ui extends e_admin_ui

@@ -390,7 +390,7 @@ class pluginManager{
 			$text .= "<div style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 		}
 		
-		e107::getRender()->tablerender(ADLAN_98." :: ".$caption, $mes->render(). $text);
+		e107::getRender()->tablerender(ADLAN_98.SEP.$caption, $mes->render(). $text);
 	}
 	
 	
@@ -827,7 +827,7 @@ class pluginManager{
 				</form>\n";
 			}
 
-         e107::getRender()->tablerender(ADLAN_98." :: ".EPL_ADLAN_38, $text);
+         e107::getRender()->tablerender(ADLAN_98.SEP.EPL_ADLAN_38, $text);
 	}
 
 // -----------------------------------------------------------------------------
@@ -893,7 +893,7 @@ class pluginManager{
 		";
 
 		$emessage = &eMessage::getInstance();
-		e107::getRender()->tablerender(ADLAN_98." :: ".$caption, $emessage->render(). $text);
+		e107::getRender()->tablerender(ADLAN_98.SEP.$caption, $emessage->render(). $text);
 	}
 
 
@@ -1248,7 +1248,7 @@ class pluginManager{
 			</fieldset>
 			</form>
 			";
-			e107::getRender()->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+			e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 
@@ -1406,18 +1406,10 @@ class pluginBuilder
 				<div class='buttons-bar center'>
 				".$frm->admin_button('step', 2,'other','Go')."
 				</div>";
-		
-			
-			
-			
-			
-			
-			
-			
-			
+
 			$text .= $frm->close();
 			
-			$ns->tablerender("Plugin Builder", $mes->render() . $text);			
+			$ns->tablerender(ADLAN_98.SEP."Plugin Builder", $mes->render() . $text);			
 			
 		}
 
@@ -1511,7 +1503,7 @@ class pluginBuilder
 			$mes->addInfo("Review ALL tabs before clicking 'Generate'.");	
 		
 			
-			$ns->tablerender("Plugin Builder", $mes->render() . $text);		
+			$ns->tablerender(ADLAN_98.SEP."Plugin Builder".SEP."Step 2", $mes->render() . $text);		
 		}
 
 
@@ -2427,7 +2419,7 @@ exit;
 			
 			echo $mes->render();
 			
-			$ns->tablerender(LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
+			$ns->tablerender(LADLAN_98.SEP."Plugin Builder".SEP.LAN_CREATED.": plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");	
 	
 			
 			$ns->tablerender(LAN_CREATED.": admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
