@@ -16,11 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if (e_QUERY)
-{
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-}
+$action = vartrue($_GET['action']);
+
 
 switch(vartrue($action)) {
    case 'create' :{
@@ -74,5 +71,9 @@ switch(vartrue($action)) {
     $text = "";
    }
 }
-$ns -> tablerender(DOWLAN_HELP_1, $text);
+if($text)
+{
+	$ns -> tablerender(DOWLAN_HELP_1, $text);	
+}
+
 ?>
