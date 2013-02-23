@@ -196,9 +196,31 @@ if (varset($action) == "tools")
 		
 		$data = file_get_contents($script);
 		
+		$dir = dirname($script);
+		$plugin = basename($dir);
+		
+		$newLangs = array(
+			0 		=>  $dir."/languages/English/English_admin_".$plugin.".php",
+			1 		=>  $dir."/languages/English_admin_".$plugin.".php",
+			2 		=>  $dir."/languages/English_admin.php",
+			3 		=>  $dir."/languages/English/English_admin.php"
+		);
+		
+	//	if(strpos($data, 'e_admin_dispatcher')!==false)
+		{
+			foreach($newLangs as $path)
+			{
+				if(file_exists($path))
+				{
+					return $path; 	
+				}	
+			}
+		}
+		// 
+		
+		
 		preg_match_all("/.*(include_lan|require_once|include|include_once) ?\((.*e_LANGUAGE.*?\.php)/i",$data,$match);
 		
-
 		$srch = array(" ",'e_PLUGIN.', 'e_LANGUAGEDIR', '.e_LANGUAGE.', "'", '"', "'.");
 		$repl = array("", e_PLUGIN, e_LANGUAGEDIR, "English", "", "", "");
 
@@ -210,9 +232,47 @@ if (varset($action) == "tools")
 				return $arrt;	
 			}
 		}
+		
+		
+		
 			
 		return $arr[0];
 	}
+
+
+if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile']))
+{
+	$mes = e107::getMessage();
+	
+	$data = file_get_contents($_POST['disable-unused-lanfile']);
+	
+	$new = disableUnused($data);
+	if(file_put_contents($_POST['disable-unused-lanfile'],$new))
+	{
+		$mes->addSuccess("Overwriting ".$_POST['disable-unused-lanfile']);
+	}
+	else 
+	{
+		$mes->addError("Couldn't overwrite ".$_POST['disable-unused-lanfile']);	
+	}
+	
+	$ns->tablerender("Processed".SEP.$_POST['disable-unused-lanfile'],$mes->render()."<pre>".htmlentities($new)."</pre>");
+	
+}
+
+function disableUnused($data)
+{
+
+	$tmp = explode("\n",$data);
+	foreach($tmp as $line)
+	{
+		$ret = getDefined($line);	
+		$newline[] = (in_array($ret['define'],$_SESSION['language-tools-unused']) && substr($line,0,2) !='//') ? "// ".$line : $line;	
+	}
+	
+	return implode("\n",$newline);
+	
+}
 
 
 if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
@@ -223,15 +283,18 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 	$script = $_POST['deprecatedLans'];
 
 				
-//	$scriptname = str_replace("lan_","",basename($lanfile));
 	
-	if(strpos($script,'admin')!=true) // Plugin 
+	
+	if(strpos($script,e_ADMIN)!==false) // CORE
 	{
-		$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($script);	
+		$mes->addDebug("Mode: Core Admin Calculated");
+		//$scriptname = str_replace("lan_","",basename($lanfile));
+		$lanfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($script);		
 	}
-	else  // admin area. 
+	else  // Plugin 
 	{
-		$lanfile = findIncludedFiles($script);	
+		$mes->addDebug("Mode: Search Plugins");
+		$lanfile = findIncludedFiles($script);		
 	}	
 	
 	if(!is_readable($script))
@@ -263,8 +326,8 @@ if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
 		} 		
 	}
 	else
-	{
-		$mes->addDebug("Couldn't Read LanFile... ");
+	{		
+		$mes->addError("No Language file found!");
 		$ns -> tablerender(vartrue($res['caption']), $mes->render(). vartrue($res['text']));	 
 	}
 	
@@ -468,7 +531,7 @@ function multilang_prefs()
 		</fieldset>
 	</form>\n";
 	
-	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_13, $mes->render().$text); // "Language Preferences";
+	e107::getRender()->tablerender(ADLAN_132.SEP.LAN_PREFS, $mes->render().$text); // "Language Preferences";
 }
 
 // ----------------------------------------------------------------------------
@@ -600,7 +663,7 @@ function multilang_db()
 			</fieldset>
 		";
 		
-		e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_16, $emessage->render().$text);
+		e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_16, $emessage->render().$text); // Languages -> Tables
 	}
 }
 // ----------------------------------------------------------------------------
@@ -625,7 +688,7 @@ function show_tools()
 						<tr>
 							<td>".LAN_CHECK_1."</td>
 							<td>
-								<select name='language' class='tbox select'>
+								<select name='language' class='tbox e-select'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -660,7 +723,7 @@ function show_tools()
 						<tr>
 							<td>".LANG_LAN_23."</td>
 							<td>
-								<select name='language' class='tbox select'>
+								<select name='language' class='tbox e-select'>
 									<option value=''>".LAN_SELECT."</option>";
 								$languages = explode(",", e_LANLIST);
 								sort($languages);
@@ -685,7 +748,7 @@ function show_tools()
 						<tr>
 							<td>Search for Deprecated Lans</td>
 							<td>
-								<select name='deprecatedLans' class='tbox select'>
+								<select name='deprecatedLans' class='tbox e-select'>
 									<option value=''>".LAN_SELECT."</option>";
 									
 									$fl = e107::getFile();
@@ -741,7 +804,7 @@ function show_tools()
 	
 
 	
-	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $mes->render().$text);
+	e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_21, $mes->render().$text);
 }
 
 
@@ -945,8 +1008,13 @@ function grab_lans($path, $language, $filter = "")
  */
 function unused($lanfile,$script)
 {
-	$mes = e107::getMessage();
 	
+	$mes = e107::getMessage();
+	$frm = e107::getForm();
+	
+
+	
+	unset($_SESSION['language-tools-unused']);
 //	$mes->addInfo("LAN=".$lanfile."<br />Script = ".$script);
 		
 	
@@ -963,13 +1031,11 @@ function unused($lanfile,$script)
 
 	if(!$compare)
 	{
-		$mes = e107::getMessage();
 		$mes->add("Couldn't read ".$script, E_MESSAGE_ERROR);
 	}
 	
 	if(!$lanDefines)
 	{
-		$mes = e107::getMessage();
 		$mes->add("Couldn't read ".$lanfile, E_MESSAGE_ERROR);
 	}
 
@@ -980,8 +1046,8 @@ function unused($lanfile,$script)
 	
 	if($lanDefines && $compare)
 	{
-
-		$text = "<table class='table adminlist'>
+		$text = $frm->open('language-unused');
+		$text .= "<table class='table adminlist'>
 		<colgroup>
 			<col style='width:40%' />
 			<col style='auto' />
@@ -1015,6 +1081,14 @@ function unused($lanfile,$script)
 	 	}
 
 		$text .= "</tbody></table>";
+		
+		if(count($_SESSION['language-tools-unused'])>0)
+		{
+			$text .= "<div class='buttons-bar center'>".$frm->admin_button('disabled-unused','Disable All Unused','submit').
+			$frm->hidden('disable-unused-lanfile',$lanfile)."</div>";
+		}
+		
+		$text .= $frm->close();
 		
 		
 		$mes->addInfo("<b>Pink items are likely to be unused LANs.<br />Comment out and test thoroughly.</b>");
@@ -1115,7 +1189,12 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 
 		if(!$found)
 		{
+			// echo "<br />Unused: ".$needle;
 			$text .= "-";
+			if(!$disabled)
+			{
+				$_SESSION['language-tools-unused'][] = $needle;	
+			} 	
 		}
 		$text .= "</td>";
 		
@@ -1143,7 +1222,10 @@ function compareit($needle,$haystack,$value='',$disabled=FALSE){
 		$color = "background-color:#DFFFDF";	
 	}	
 
-	
+	if(!$found)
+	{
+		$needle = "<a class='e-tip' href='#' title=\"".$value."\">".$needle."</a>";	
+	}
 	
 	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text."</tr>";
 }
