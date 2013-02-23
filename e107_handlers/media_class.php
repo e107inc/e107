@@ -426,7 +426,7 @@ class e_media
 
 		
 	/**
-	 * Generate Simple Thumbnail window for image-selection 
+	 * Generate Simple Thumbnail window for image -selection 
 	 * TODO Use Whole-page popup window
 	 * TODO Add an upload Tab?. 
 	 * TODO Real-time ajax filter by keyword

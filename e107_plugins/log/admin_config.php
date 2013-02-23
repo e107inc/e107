@@ -246,7 +246,7 @@ $ns->tablerender($caption, $mes->render() . $text);
 
 function gen_select($prompt,$name,$value)
 {
-  $ret = "<div style='padding-bottom: 4px'>".$prompt."&nbsp;&nbsp;"."<select name='{$name}' class='tbox e-select'>\n
+  $ret = "<div style='padding-bottom: 4px'>".$prompt."&nbsp;&nbsp;"."<select name='{$name}' class='tbox'>\n
 		<option value='0' ".($value == 0 ? " selected='selected'" : "").">".ADSTAT_L50."</option>\n
 		<option value='1' ".($value == 1 ? " selected='selected'" : "").">".ADSTAT_L49."</option>\n
 		<option value='2' ".($value == 2 ? " selected='selected'" : "").">".ADSTAT_L48."</option>\n
@@ -258,7 +258,7 @@ function gen_select($prompt,$name,$value)
 function data_type_select($name,$value)
 {
   global $stats_list;
-  $ret = "<select name='{$name}' class='tbox e-select'  onchange=\"settypebox(this.value);\">\n
+  $ret = "<select name='{$name}' class='tbox'  onchange=\"settypebox(this.value);\">\n
 		<option value='page' ".($value == 'page' ? " selected='selected'" : "").">".ADSTAT_L52."</option>\n";
   foreach ($stats_list as $k=>$v)
   {
@@ -381,7 +381,7 @@ switch ($action)
 
 	// Period selection type for page data
 	$text .= "<tr><td>".ADSTAT_L41."</td><td>\n
-	<select class='tbox e-select' name='export_date' id='export_date' onchange=\"setdatebox(this.value);\" ".($export_type=='page' ? "" : "style='display:none'" ).">\n
+	<select class='tbox' name='export_date' id='export_date' onchange=\"setdatebox(this.value);\" ".($export_type=='page' ? "" : "style='display:none'" ).">\n
 	<option value='1'".($export_date==1 ? " selected='selected'" : "").">".ADSTAT_L42."</option>\n
 	<option value='2'".($export_date==2 ? " selected='selected'" : "").">".ADSTAT_L43."</option>\n
 	<option value='3'".($export_date==3 ? " selected='selected'" : "").">".ADSTAT_L44."</option>\n
@@ -391,7 +391,7 @@ switch ($action)
 	
 	// Period selection type for non-page data
 	$text .= "
-	<select class='tbox e-select' name='export2_date' id='export2_date' onchange=\"setdatebox(this.value);\"  ".($export_type=='page' ? "style='display:none'" : "").">\n
+	<select class='tbox' name='export2_date' id='export2_date' onchange=\"setdatebox(this.value);\"  ".($export_type=='page' ? "style='display:none'" : "").">\n
 	<option value='3'".($export2_date==3 ? " selected='selected'" : "").">".ADSTAT_L44."</option>\n
 	<option value='4'".($export2_date==4 ? " selected='selected'" : "").">".ADSTAT_L45."</option>\n
 	</select>";
@@ -405,7 +405,7 @@ switch ($action)
 	
 	// Now put the various dropdowns - their visibility is controlled by the export_type dropdown
 
-	$text .= "<select class='tbox e-select' name='export_day' id='export_day'>\n";
+	$text .= "<select class='tbox' name='export_day' id='export_day'>\n";
 	for ($i = 1; $i < 32; $i++) 
 	{ 
 	  $selected = $export_day == $i ? " selected='selected'" : "";
@@ -414,7 +414,7 @@ switch ($action)
 	$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
 
 
-	$text .= "<select class='tbox e-select' name='export_month' id='export_month'>\n";
+	$text .= "<select class='tbox' name='export_month' id='export_month'>\n";
 	for ($i = 1; $i < 13; $i++) 
 	{ 
 	  $selected = $export_month == $i ? " selected='selected'" : "";
@@ -423,7 +423,7 @@ switch ($action)
 	$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
 		
 	$this_year = date("Y");
-	$text .= "<select class='tbox e-select' name='export_year' id='export_year'>\n";
+	$text .= "<select class='tbox' name='export_year' id='export_year'>\n";
 	for ($i = $this_year; $i > $this_year - 6; $i--) 
 	{ 
 	  $selected = $export_year == $i ? " selected='selected'" : "";
@@ -440,13 +440,13 @@ switch ($action)
 	{
 	// Separators, quotes
 	$text .= "<tr><td>".ADSTAT_L59."</td><td>\n
-			<select class='tbox e-select' name='export_char'>";
+			<select class='tbox' name='export_char'>";
 	foreach ($separator_list as $k=>$v)
 	{
 	  $selected = $export_char == $k ? " selected='selected'" : "";
 	  $text .= "<option value='{$k}'{$selected}>{$v}</option>\n";
 	}
-	$text .= "</select>\n&nbsp;&nbsp;&nbsp;&nbsp;<select class='tbox e-select' name='export_quote'>\n";
+	$text .= "</select>\n&nbsp;&nbsp;&nbsp;&nbsp;<select class='tbox' name='export_quote'>\n";
 	foreach ($quote_list as $k=>$v)
 	{
 	  $selected = $export_quote == $k ? " selected='selected'" : "";
@@ -528,7 +528,7 @@ switch ($action)
 			$admin_log->log_event('STAT_04',ADSTAT_L83.$logStr,'');
 		  }
 		$text .= "<tr><td>".ADSTAT_L70."</td>";
-		$text .= "<td><select class='tbox e-select' name='delete_month'>\n";
+		$text .= "<td><select class='tbox' name='delete_month'>\n";
 		$match_month = date("n");
 		for ($i = 1; $i < 13; $i++) 
 		{ 
@@ -538,7 +538,7 @@ switch ($action)
 		$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
 			
 		$this_year = date("Y");
-		$text .= "<select class='tbox e-select' name='delete_year' id='export_year'>\n";
+		$text .= "<select class='tbox' name='delete_year' id='export_year'>\n";
 		for ($i = $this_year; $i > $this_year - 6; $i--) 
 		{ 
 		  $selected = ($this_year - 2) == $i ? " selected='selected'" : "";
