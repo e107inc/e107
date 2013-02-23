@@ -157,17 +157,20 @@ class download_shortcodes
       // convert "recent_download_days" to seconds
       return ($dlrow['download_datestamp'] > time()-($pref['recent_download_days']*86400) ? '<img src="'.IMAGE_NEW.'" alt="" style="vertical-align:middle" />' : '');
    }
+   
    function sc_download_list_filesize()
    {
       global $dlrow, $e107;
       return $e107->parseMemorySize($dlrow['download_filesize']);
    }
+
    function sc_download_list_datestamp()
    {
       global $dlrow;
       $gen = new convert;
       return $gen->convert_date($dlrow['download_datestamp'], "short");
    }
+   
    function sc_download_list_thumb()
    {
       global $dlrow,$parm;
@@ -182,15 +185,20 @@ class download_shortcodes
       	return $img;
       }
    }
+   
    function sc_download_list_id()
    {
       global $dlrow;
       return $dlrow['download_id'];
    }
+   
    function sc_download_list_rating()
    {
-      global $dlrow,$tp;
-	  return $tp->rate("download", $dlrow['download_id']);
+      global $dlrow;
+	  
+	  return e107::getForm()->rate("download", $dlrow['download_id']);
+	  
+	  
       $rater = new rater();
       $ratearray = $rater->getrating("download", $dlrow['download_id']);
      	if (!$ratearray[0]) {

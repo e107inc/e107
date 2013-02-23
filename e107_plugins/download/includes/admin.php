@@ -194,7 +194,7 @@ class download_main_admin_ui extends e_admin_ui
 		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #download AS m LEFT JOIN #user AS u ON m.download_author = u.user_id "; // without any Order or Limit.
 		
 		//required - default column user prefs
-		protected $fieldpref = array('checkboxes', 'download_id', 'download_category', 'download_name', 'fb_template', 'fb_class', 'fb_order', 'options');
+		protected $fieldpref = array('checkboxes', 'download_image', 'download_id', 'download_datestamp', 'download_category', 'download_name', 'download_active', 'download_class', 'fb_order', 'options');
 	
 		//
 
@@ -214,7 +214,7 @@ class download_main_admin_ui extends e_admin_ui
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
 			'download_id'				=> array('title'=> ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
-            'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),		
+            'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'download_author_email' 	=> array('title'=> DOWLAN_16, 			'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
@@ -223,7 +223,7 @@ class download_main_admin_ui extends e_admin_ui
 		 	
 		 	'download_filesize' 		=> array('title'=> DOWLAN_66,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),			
 		 	'download_requested' 		=> array('title'=> DOWLAN_29, 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'right', 'class' => 'right'),
-			'download_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',	'width' => 'auto',	'batch' => TRUE, 'filter'=>TRUE),		
+			'download_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',	'width' => 'auto',	'inline'=>true, 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'download_datestamp' 		=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),
 			
@@ -231,7 +231,7 @@ class download_main_admin_ui extends e_admin_ui
 			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
-			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
+			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
 			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			
 			'download_mirror' 			=> array('title'=> DOWLAN_128,			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
@@ -628,9 +628,9 @@ $columnInfo = array(
 	         <div>
 	            <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
 	               <fieldset id='download-create'>
-	                  <table class='table adminlist'>
+	                  <table class='table adminform'>
 	                     <tr>
-	                        <td style='width:20%;'>".DOWLAN_13."</td>
+	                        <td>".DOWLAN_13."</td>
 	                        <td style='width:80%'>
 	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
 							  
@@ -681,9 +681,9 @@ $columnInfo = array(
 	               </table>
 	            </fieldset>
 	            <fieldset id='download-edit-external'>
-	               <table class='table adminlist'>
+	               <table class='table adminform'>
 	                  <tr>
-	                       <td style='width:20%;'>".DOWLAN_149."</td>
+	                       <td>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
 	                          <input class='tbox' type='text' name='download_url_external' size='70' value='{$download_url_external}' maxlength='255'/>
 	                       </td>
@@ -761,17 +761,19 @@ $columnInfo = array(
 	               </table>
 	            </fieldset>
 	            <fieldset id='download-edit-therest'>
-	               <table style='".ADMIN_WIDTH."' class='adminlist'>
+	               <table class='table adminform'>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_11."</td>
 	                     <td style='width:80%'>";
+	                     
+	                     
 	      $text .= $download->getCategorySelectList($download_category);
 	   // $text .= download::getCategorySelectList($download_category);
 		
 	      $text .= "     </td>
 	                  </tr>
 	                  <tr>
-	                     <td style='width:20%;'>".DOWLAN_12."</td>
+	                     <td >".DOWLAN_12."</td>
 	                     <td style='width:80%'>
 	                        <input class='tbox' type='text' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
 	                     </td>
@@ -1428,7 +1430,7 @@ $columnInfo = array(
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		   				<fieldset id='core-download-download1'>
 		            	   <div>
-		            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
+		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
 		            		         <col style='width:70%'/>
@@ -1478,7 +1480,7 @@ $columnInfo = array(
 		            		      </tr>
 		            		      <tr>
 		            		         <td>".DOWLAN_164."</td>
-		            		         <td><input name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
+		            		         <td><input type='text' name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
 		            		         </td>
 		            		      </tr>
 		            		   </table>

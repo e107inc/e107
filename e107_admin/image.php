@@ -538,12 +538,13 @@ class media_form_ui extends e_admin_form_ui
 	// e-dialog-close
 		$text = $this->renderValue('options',$value,'',$id);
 	
+		// File Picker. 
 		if($_GET['action'] == 'dialog')
 		{		
-			$text .= "<input type='button' value='Select' class='e-media-select e-dialog-save e-dialog-close' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
+			$text .= "<input type='button' value='Select' data-placement='left' class='e-media-select e-dialog-save e-dialog-close btn' data-id='{$id}' data-name=\"".$title."\" data-target='{$tagid}' data-bbcode='{$bbcode}' data-path='{$path}' data-preview='{$preview}' title=\"".$title."\"  />";
 		}
 		
-		return $text;
+		return "<div class='nowrap'>".$text."</div>";
 		
 	}
 	
@@ -574,7 +575,7 @@ class media_form_ui extends e_admin_form_ui
 		}
 
 
-		$text = "<select class='tbox e-multiselect' name='media_category[]' multiple='multiple'>";
+		$text = "<select class='tbox' name='media_category[]' multiple='multiple'>";
 		$cats = $this->getController()->getMediaCategory();
 		
 		foreach($cats as $key => $val)

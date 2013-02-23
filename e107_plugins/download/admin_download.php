@@ -357,10 +357,10 @@ function showLimits()
 			</td>
 		</tr>
 		<tr>
-			<td class='fcaption'>".DOWLAN_67."</td>
-			<td class='fcaption'>".DOWLAN_113."</td>
-			<td class='fcaption'>".DOWLAN_107."</td>
-			<td class='fcaption'>".DOWLAN_108."</td>
+			<th class='fcaption'>".DOWLAN_67."</th>
+			<th class='fcaption'>".DOWLAN_113."</th>
+			<th class='fcaption'>".DOWLAN_107."</th>
+			<th class='fcaption'>".DOWLAN_108."</th>
 		</tr>
 	";
 
@@ -390,7 +390,7 @@ function showLimits()
 	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."'/>
 	</div>
 	
-	<table class='adminlist'>
+	<table class='table adminlist'>
 	<tr>
 	<td colspan='4'><br/><br/></td>
 	</tr>
