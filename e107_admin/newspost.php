@@ -2021,7 +2021,7 @@ class admin_newspost
 								<td>
 		";
 
-		//XXX multiple-selections at once. (comma separated) - working
+		//XXX multiple -selections at once. (comma separated) - working
 		$text .= $frm->selectbox('news_render_type', $this->news_renderTypes, vartrue($_POST['news_render_type']), "multiple=1")."
 										<div class='field-help'>
 											".NWSLAN_74."

@@ -176,7 +176,7 @@ if (!$sql->db_Select("news_category"))
 else
 {
 	$text .= "
-		<select name='cat_id' class='e-select tbox'>";
+		<select name='cat_id' class='tbox'>";
 	while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch(MYSQL_NUM))
 	{
 		$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";

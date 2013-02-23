@@ -383,7 +383,7 @@ else
 							<td>".$value."</td>
 							<td class='center'>".r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='core_handlers[".$key."][order]' class='tbox select e-select order'>
+								<select name='core_handlers[".$key."][order]' class='tbox order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
@@ -409,7 +409,7 @@ else
 							<td>".$search_info[0]['qtype']."</td>
 							<td class='center'>".r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='plug_handlers[".$plug_dir."][order]' class='tbox select e-select order'>
+								<select name='plug_handlers[".$plug_dir."][order]' class='tbox order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= (vartrue($search_prefs['plug_handlers'][$plug_dir]['order']) == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
