@@ -16,8 +16,10 @@
 
 require_once ("../../class2.php");
 
-include_lan(e_PLUGIN."faqs/languages/faq_lan_".e_LANGUAGE.".php");
-include_lan(e_PLUGIN."faqs/languages/admin/faq_lan_".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
+
+
+//include_lan(e_PLUGIN."faqs/languages/admin/faq_lan_".e_LANGUAGE.".php");
 
 
 require_once (e_HANDLER."form_handler.php");
@@ -189,7 +191,7 @@ class faq
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs',TRUE);
 		
-	//	var_dump($sc);
+		// var_dump($sc);
 		
 		while ($rw = $sql->db_Fetch())
 		{
