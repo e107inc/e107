@@ -44,8 +44,11 @@ require_once (e_ADMIN.'ad_links.php'); //FIXME - see 'FIXME' in sc_admin_navigat
 
 if (!defined('ADMIN_WIDTH'))
 {
-	define('ADMIN_WIDTH', "width: 95%");
+	define('ADMIN_WIDTH', "width:100%;");
 }
+
+
+
 
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG

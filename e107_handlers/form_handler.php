@@ -542,7 +542,7 @@ class e_form
 		$cat 		= vartrue($sc_parameters['media']) ? $tp->toDB($sc_parameters['media']) : "_common_file";	
 		
 		$default_label 	= ($default) ? $default : "Choose a file";
-		$label 		= "<span id='{$name_id}_prev' >".basename($default_label)."</span>";
+		$label 		= "<span id='{$name_id}_prev' class='btn btn-small'>".basename($default_label)."</span>";
 			
 		
 	//	$ret .= $this->mediaUrl($cat, $label,$name_id,"mode=dialog&action=list");
@@ -1057,14 +1057,7 @@ class e_form
 	function select_open($name, $options = array())
 	{
 		$options = $this->format_options('select', $name, $options);
-		if($options['multiple'])
-		{
-			$options['class'] .= ' e-multiselect';	
-		}
-		else 
-		{
-			$options['class'] .= ' e-select';		
-		}		
+	
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
