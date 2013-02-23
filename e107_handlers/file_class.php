@@ -546,7 +546,114 @@ class e_file
 	
 	
 	
-	
+
+	/**
+	 * File retrieval function. by Cam.
+	 * @param $file actual path or {e_} path to file. 
+	 * 
+	 */
+	function send($file) 
+	{
+		global $e107;
+		
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+		
+		
+		$DOWNLOADS_DIRECTORY = e_BASE.e107::getFolder('DOWNLOADS');
+		$FILES_DIRECTORY = e_BASE.e107::getFolder('FILES');
+		$MEDIA_DIRECTORY	= realpath(e_MEDIA_FILE);
+		
+		$file = $tp->replaceConstants($file);
+		
+			
+		@set_time_limit(10 * 60);
+		@session_write_close();
+		@e107_ini_set("max_execution_time", 10 * 60);
+		while (@ob_end_clean()); // kill all output buffering else it eats server resources
+		@ob_implicit_flush(TRUE);
+		
+		
+		$filename = $file;
+		$file = basename($file);
+		$path = realpath($filename);
+		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
+		$path_public = realpath($FILES_DIRECTORY."public/");
+		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY)) 
+		{
+	        if(E107_DEBUG_LEVEL > 0 && ADMIN)
+			{
+				echo "Failed to Download <b>".$file."</b><br />";
+				echo "The file-path <b>".$path."<b> didn't match with either <b>{$path_downloads}</b> or <b>{$path_public}</b><br />";
+				echo "Downloads Path: ".$path_downloads. " (".$DOWNLOADS_DIRECTORY.")";
+				exit();
+	        }
+			else
+			{
+				header("location: {$e107->base_path}");
+				exit();
+			}
+		} 
+		else 
+		{
+			if (is_file($filename) && is_readable($filename) && connection_status() == 0) 
+			{
+				$seek = 0;
+				if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+				{
+					$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
+				}
+				if (isset($_SERVER['HTTP_RANGE']))
+				{
+					$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
+				}
+				$bufsize = 2048;
+				ignore_user_abort(true);
+				$data_len = filesize($filename);
+				if ($seek > ($data_len - 1)) { $seek = 0; }
+				if ($filename == null) { $filename = basename($this->data); }
+				$res =& fopen($filename, 'rb');
+				if ($seek)
+				{
+					fseek($res , $seek);
+				}
+				$data_len -= $seek;
+				header("Expires: 0");
+				header("Cache-Control: max-age=30" );
+				header("Content-Type: application/force-download");
+				header("Content-Disposition: attachment; filename=\"{$file}\"");
+				header("Content-Length: {$data_len}");
+				header("Pragma: public");
+				if ($seek)
+				{
+					header("Accept-Ranges: bytes");
+					header("HTTP/1.0 206 Partial Content");
+					header("status: 206 Partial Content");
+					header("Content-Range: bytes {$seek}-".($data_len - 1)."/{$data_len}");
+				}
+				while (!connection_aborted() && $data_len > 0)
+				{
+					echo fread($res , $bufsize);
+					$data_len -= $bufsize;
+				}
+				fclose($res);
+			} 
+			else 
+			{
+	            if(E107_DEBUG_LEVEL > 0 && ADMIN)
+				{
+	              	echo "file failed =".$file."<br />";
+					echo "path =".$path."<br />";
+	                exit();
+				}
+				else
+				{
+				  	header("location: ".e_BASE."index.php");
+					exit();
+				}
+			}
+		}
+	}	
 	
 	
 	

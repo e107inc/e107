@@ -1527,8 +1527,12 @@ $columnInfo = array(
 		            {
 		               $filesize = filesize($DOWNLOADS_DIRECTORY.$dlInfo['download_url']);
 		            }
+					elseif($dlInfo['download_url'][0] == '{')
+					{
+						$filesize = filesize($tp->replaceConstants($dlInfo['download_url']));
+					}
 		            else
-		            {
+		            {  	
 		               $filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$dlInfo['download_url']);
 		            }
 				}
@@ -1593,8 +1597,8 @@ $columnInfo = array(
 			$dlInfo['download_thumb']				= $tp->toDB($_POST['download_thumb']);
 	      	$dlInfo['download_image']				= $tp->toDB($_POST['download_image']);
 	      	$dlInfo['download_comment']				= $tp->toDB($_POST['download_comment']);
-	      	$dlInfo['download_class']				= intval($_POST['download_class']);
-	      	$dlInfo['download_visible']				= intval($_POST['download_visible']);
+	      	$dlInfo['download_class']				= $tp->toDB($_POST['download_class']);
+	      	$dlInfo['download_visible']				= $tp->toDB($_POST['download_visible']);
 			$dlInfo['download_datestamp']			= e107::getDate()->convert($_POST['download_datestamp'],'inputdate');
 			
 	
