@@ -1,10 +1,12 @@
 <?php
 /*
-* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
+* Copyright (c) e107 Inc 2008-2013 - e107.org, 
+* Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 *
-* 'FAQ plugin' global language defines
+* 'FAQ plugin' global language definitions
 */
-define("LAN_PLUGIN_FAQS_NAME", "FAQs");
-define("LAN_PLUGIN_FAQ_DESCRIPTION", "A simple plugin to add Frequently Asked Questions to your website.");
+
+define("LAN_PLUGIN_FAQS_NAME", 			"FAQs");
+define("LAN_PLUGIN_FAQS_DESCRIPTION", 	"A simple plugin to add Frequently Asked Questions to your website.");
+
 ?>
