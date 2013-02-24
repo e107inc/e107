@@ -127,11 +127,14 @@ h1.bbcode, h2.bbcode, h3.bbcode, h4.bbcode, h5.bbcode, h6.bbcode {  }/* override
 
 div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
-
+#comments-container { list-style: none outside none; margin:0px }
+#comments-container > li { padding: 5px 0px }
 /* default comments layout   */
 
 
-
+/*
+ 
+ XXX Get Comments looking reasonable on bootstrap AND old themes. 
 .comment-box										{ padding-bottom:10px; margin-bottom:10px; border-top:1px solid #C0C0C0;  }
 
 .comment-box-left									{ float:left; text-align:center; width:15%; min-width:100px; max-width:150px }
@@ -161,6 +164,9 @@ img.user-avatar										{ max-width:128px; -webkit-box-shadow:#CCCCCC 0px 0px 1
     resize: none;
     width: auto !important;
 }
+
+
+
 .comment-status										{ float:right; font-style: italic }
 
 a.comment-edit										{ }
@@ -174,7 +180,7 @@ a.comment-edit										{ }
 .comment-moderate									{ text-align:center }
 
 .comment-rate										{ text-align:right; float:right; width:100px }
-
+*/
 div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-comment-edit-active								{ -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
 .e-comment-edit-success								{ padding:5px; text-align:center; background-color:#DFFFDF; border: 1px solid #009900; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
@@ -183,10 +189,11 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-rate-up img										{ opacity: 0.4 }
 .e-rate-down img									{ opacity: 0.4 }
 
+/*
 #comments-container .comment-box:nth-child(even) {
      background: red;
 }
-    
+ */   
 .divider 											{ border-bottom: 1px solid silver;  font-size: 18px;  margin-bottom: 30px;  position: relative;  text-align: center; }
 .divider span 										{ padding: 0 15px; position: relative; top: 10px; }
 
