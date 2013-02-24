@@ -17,20 +17,22 @@ if($_POST['mode'] == 'tohtml')
 {
 	// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 	$content = stripslashes($_POST['content']);
-	$content = e107::getBB()->htmltoBBcode($content);	
+//	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
 	
 	$content = $tp->toDB($content);
 	e107::getBB()->setClass($_SESSION['media_category']);
 	// XXX @Cam this breaks new lines, currently we use \n instead [br]
 	//echo $tp->toHtml(str_replace("\n","",$content), true);
 	echo $tp->toHtml($content, true);
+	
 	e107::getBB()->clearClass();	
 }
 
 if($_POST['mode'] == 'tobbcode')
 {
-	 //echo $_POST['content'];
+	// echo $_POST['content'];
 	$content = stripslashes($_POST['content']);
+//	$content = str_replace("../","",$content); // quick fix for image-path issue. 
 	echo e107::getBB()->htmltoBBcode($content);	
 }
 
