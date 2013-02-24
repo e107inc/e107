@@ -712,7 +712,30 @@ i.searchquery	{
 	background-color:white;
 	}
 	
-	
+/********************* Make Bootstrap Tabs more like Jquery-ui **********************/	
+
+.nav-tabs 						{ border-bottom: 1px solid rgb(221, 221, 221); margin-bottom:0px;}
+.nav-tabs li 					{  margin-right: 2px; }
+.nav-tabs li a  				{ cursor: pointer; background-color: rgb(230, 230, 230); color: rgb(153, 153, 153); margin-bottom:-1px;
+    							  padding: 0px 15px; line-height: 34px; border-bottom: 1px solid rgb(221, 221, 221);
+								}
+.nav-tabs li a:hover 			{ background-color: rgb(255, 255, 255); color: rgb(0, 67, 138); }
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus
+{
+	background-color: rgb(255, 255, 255);
+	cursor: text;	
+}
+
+.tab-pane 						{ background-color: #F6F6F6; }
+.tab-pane table.adminform 		{ border-top:0px}	
+.tab-pane table.adminform td 	{ border-top:0px}
+.tab-pane table.adminform tr 	{ border-bottom:1px solid #DDDDDD}	
+
+/****************************************************************/	
+
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

@@ -50,6 +50,17 @@ if (e_QUERY)
 	unset($tmp);
 }
 
+if(deftrue('e_DEMOMODE') && varset($_POST['update_admin']))
+{
+	
+	$mes = e107::getMessage();
+	$ns = e107::getRender();
+	$mes->addWarning(LAN_DEMO_FORBIDDEN);
+	$ns->tablerender("Forbidden",$mes->render());	
+	require_once("footer.php");
+	exit;
+		
+}
 
 if (isset($_POST['update_admin'])) // Permissions updated
 {	
