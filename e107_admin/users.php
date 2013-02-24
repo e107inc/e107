@@ -1991,7 +1991,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		
 		extract($row);
 		$text = "";
-		$text .= "<div>
+		$head = "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
@@ -2053,14 +2053,17 @@ class users_admin_form_ui extends e_admin_form_ui
 		}
 		elseif ($user_id != USERID || getperms("0"))
 		{
-			$text .= "<option value='userclass'>".USRLAN_36."</option>\n";
+		//	$text .= "<option value='userclass'>".USRLAN_36."</option>\n"; // DEPRECATED. inline & batch should be enough. 
 		}
 		if ($user_perms != "0")
 		{
 			$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
 		}
-		$text .= "</select></div>";
-		return $text;	
+		
+		$foot = "</select></div>";
+
+		
+		return ($text) ? $head.$text.$foot : "";	
 	}
 
 	
