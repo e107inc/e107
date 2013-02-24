@@ -217,7 +217,7 @@ class news {
 			{
 				$data['news_id'] = $news['news_id'];
 				$message = LAN_NEWS_6;
-				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
+				$emessage->add(LAN_CREATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
 
 				//moved down - prevent wrong mysql_insert_id
@@ -232,7 +232,7 @@ class news {
 			{
 				$error = true;
 				$message = "<strong>".LAN_NEWS_7."</strong>";
-				$emessage->add(LAN_NEWS_7, E_MESSAGE_ERROR, $smessages);
+				$emessage->add(LAN_UPDATED, E_MESSAGE_ERROR, $smessages);
 			}
 		}
 
