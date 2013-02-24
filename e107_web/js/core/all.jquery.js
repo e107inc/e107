@@ -390,12 +390,12 @@ $(document).ready(function()
 			iframe:true,
 			width:"60%",
 			height:"70%",
-
+			preloading:false,
 			speed:10,
 			opacity: 0.7,
-			fastIframe:false,
+			fastIframe: false,
 			onComplete: function() { 
-				$("iframe").contents().find("body").addClass("mediaBody");   
+				// $("iframe").contents().find("body").addClass("mediaBody");   
 			}
 
 

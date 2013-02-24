@@ -13,6 +13,11 @@
  *
 */
 
+if($_GET['action'] == 'dialog')
+{
+	define('e_MINIMAL',true);
+}
+
 if (!defined('e107_INIT'))
 {
 	require_once("../class2.php");

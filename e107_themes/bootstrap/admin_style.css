@@ -690,7 +690,29 @@ i.searchquery	{
 	display: none !important;
 	content: none;
 }
+/* Color Box */
+.mediaBody h4 {
+	padding:10px 10px;
+}
 
+.media-select-count {
+	margin-top:-40px;	
+	padding:10px;
+}
+
+#cboxOverlay{ background-color:#000000;}
+
+#colorbox{ 
+	-moz-border-radius:9px;
+	-webkit-border-radius:9px;
+	border-radius:9px;
+	-moz-box-shadow:5px 5px 20px #000000;
+	-webkit-box-shadow:5px 5px 20px #000000;
+	box-shadow:5px 5px 20px #000000;	
+	background-color:white;
+	}
+	
+	
 /*
 
 body { background-color: rgb(68, 68, 68); }
