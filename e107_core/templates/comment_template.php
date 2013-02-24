@@ -20,14 +20,14 @@ if (!defined("USER_WIDTH")){ define("USER_WIDTH", "width:100%"); }
 global $sc_style;
 global $pref, $comrow, $row2, $tp, $NEWIMAGE, $USERNAME, $RATING;
 
-$sc_style['SUBJECT']['pre'] = "<b>";
-$sc_style['SUBJECT']['post'] = "</b>";
+$sc_style['SUBJECT']['pre'] = "";
+$sc_style['SUBJECT']['post'] = "";
 
-$sc_style['USERNAME']['pre'] = "<b>";
-$sc_style['USERNAME']['post'] = "</b>";
+$sc_style['USERNAME']['pre'] = "";
+$sc_style['USERNAME']['post'] = "";
 
-$sc_style['TIMEDATE']['pre'] = "";
-$sc_style['TIMEDATE']['post'] = "";
+$sc_style['TIMEDATE']['pre'] = "<small>";
+$sc_style['TIMEDATE']['post'] = "</small>";
 
 $sc_style['AVATAR']['pre'] = "";
 $sc_style['AVATAR']['post'] = "";
@@ -89,11 +89,11 @@ $sc_style['COMMENT_RATE']['post'] 		= '</div>';
 //$sc_style['USER_AVATAR']['pre']  		= '<div class="comment-avatar center">';
 //$sc_style['USER_AVATAR']['post'] 		= '</div>';
 
-$sc_style['COMMENT_MODERATE']['pre']	= '<span class="comment-moderate span2">';
-$sc_style['COMMENT_MODERATE']['post']	= '</span>';
+$sc_style['COMMENT_MODERATE']['pre']	= '<div class="comment-moderate btn-group span2">';
+$sc_style['COMMENT_MODERATE']['post']	= '</div>';
 
-$sc_style['MODERATE']['pre']	= '<span class="span2">';
-$sc_style['MODERATE']['post']	= '</span>';
+$sc_style['MODERATE']['pre']	= '<div class="span12" style="padding:10px">';
+$sc_style['MODERATE']['post']	= '</div>';
 
 
 $COMMENT_TEMPLATE['FORM']			= "
@@ -115,36 +115,41 @@ $COMMENT_TEMPLATE['FORM']			= "
 	<div class='clear_b'><!-- --></div>"; 
 
 
+$COMMENT_TEMPLATE['ITEM_START'] = "<ul class='comments'>";
+
+$COMMENT_TEMPLATE['ITEM_END'] 	= "</ul>";
+
+
 $COMMENT_TEMPLATE['ITEM'] = '
-	<div class="comment-box-left pull-left span1">
-		{COMMENT_AVATAR}
-	</div>
-
-	<div class="comment-box-right pull-left span10">
-		
-
-			<span class="comment-box-username span1">{USERNAME}</span>
-			<span class="comment-box-date span2">{TIMEDATE}</span>
-			
-			<span class="comment-status span2">{COMMENT_STATUS}</span>
-			<span class="comment-user-badge-bar span6">
-				{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}			
-			</span>
-
-			<div class="clear_b H5"><!-- --></div>
-			<div id="{COMMENT_ITEMID}-edit" contentEditable="false" class="span12">
-			<p>
-			{COMMENT}
-			</p>
+	
+		<div class="comment-box-left pull-left span1">
+			{COMMENT_AVATAR}
+		</div>	
+		<div class="comment-box-right pull-left span11">
+			<div class="row-fluid">
+				
+					<div class="comment-box-username span1">{USERNAME}</div>
+					<div class="comment-box-date span2">{TIMEDATE}</div>
+					<div class="comment-status span3">{COMMENT_STATUS}</div>
+					<div class="comment-moderate span6">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
+				
 			</div>
 			
-		
-	</div>';
+			<div class="row-fluid">	
+				<div class="span12" id="{COMMENT_ITEMID}-edit" contentEditable="false" >
+					<p>
+						{COMMENT}
+					</p>
+				</div>
+			</div>	
+			
+		</div>
+	';
 	
 
 
 
-$COMMENT_TEMPLATE['LAYOUT'] 		= '{COMMENTFORM}{COMMENTS}{MODERATE}';
+$COMMENT_TEMPLATE['LAYOUT'] 		= '{COMMENTFORM}{COMMENTS} <div style="padding:10px 0px">{MODERATE}</div>';
 										
 
 ?>

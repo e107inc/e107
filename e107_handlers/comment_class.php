@@ -95,9 +95,9 @@ class comment
 				</table>
 				<br />";
 			*/	
-			$COMMENT_TEMPLATE['ITEM_START'] = "";
+			
 			$COMMENT_TEMPLATE['ITEM'] 		= $COMMENTSTYLE;	
-			$COMMENT_TEMPLATE['ITEM_END'] 	= "";
+			
 			$COMMENT_TEMPLATE['LAYOUT'] 	= "{COMMENTS}{COMMENTFORM}{MODERATE}{COMMENTNAV}";
 			$COMMENT_TEMPLATE['FORM']			= "<table style='width:100%'>
 													{SUBJECT_INPUT}
@@ -399,8 +399,12 @@ class comment
 		
 		$COMMENT_TEMPLATE 					= $this->template; 
 		
-		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
-		$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
+	//	$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
+	//	$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
+		
+		//XXX Do NOT add to template - too important to allow for modification. 
+		$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
+		$COMMENT_TEMPLATE['ITEM_END']		= "\n</li>\n";
 			
 		if (vartrue($pref['nested_comments']))
 		{
@@ -945,15 +949,18 @@ class comment
 		
 		if($text)
 		{
+			$modcomment = "<div class='comment-options'>";		
 			if($this->totalComments && getperms("B"))
 			{
-					$modcomment = "<div class='comment-moderate'>";		
+					
 				//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
-					$modcomment .= "<a class='btn' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
-					$modcomment .= "</div>";
+					$modcomment .= "<a class='btn btn-mini' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
+					
+					
 			}
 			
 			$modcomment .= 	$this->nextprev($table,$id,$from);
+			$modcomment .= "</div>";
 		}	
 	// ---------------------------
 		
@@ -968,7 +975,8 @@ class comment
 		
 		if($text)
 		{
-			$text = "<div id='comments-container'>\n".$text."\n</div>";
+			//XXX Do NOT add to template - too important to allow for modification. 
+			$text = "<ul id='comments-container'>\n".$text."\n</ul>";
 		}
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
@@ -1049,7 +1057,9 @@ class comment
 		$lock 			= '';
 
 		if ($sql->db_Select_gen($query))
-		{			
+		{
+		//	$text .= "<ul class='comments'>";
+						
 			$width = 0; 			
 			$rows = $sql->db_getList(); //Shortcodes could use $sql, so just grab all results
 
@@ -1073,6 +1083,8 @@ class comment
 				}
 			} // end loop
 			
+		//	$text .= "</ul>";
+			
 		} // end if
 					
 		return array('comments'=> $text,'lock'=> $lock);		
@@ -1088,9 +1100,9 @@ class comment
 		
 		// from calculations are done by eNav() js. 
 		return "
-		<a class='e-ajax btn' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
+		<a class='e-ajax btn btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
 		
-		<a class='e-ajax btn' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
+		<a class='e-ajax btn btn-mini' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
 		
 		";	
 		

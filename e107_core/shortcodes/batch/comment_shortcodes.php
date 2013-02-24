@@ -91,7 +91,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			if ($thisaction == "comment" && $pref['nested_comments']) 
 			{
-				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn' data-type='".$this->var['comment_type']."' data-target='".e_BASE."comment.php' href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+				$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-mini' data-type='".$this->var['comment_type']."' data-target='".e_BASE."comment.php' href='".SITEURL."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 			}
 		}
 		return $REPLY;
@@ -179,14 +179,14 @@ class comment_shortcodes extends e_shortcode
 		}
 		
 		// TODO put into a <ul> drop-down format. 
-		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn'>Delete</a> ";
+		$text = "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-delete-".$this->var['comment_id']."' class='e-comment-delete btn btn-mini'>Delete</a> ";
 		
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
-			$text .= "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-approve-".$this->var['comment_id']."' class='e-comment-approve'>Approve</a> ";
+			$text .= "<a href='#' data-target='".e_BASE."comment.php' id='e-comment-approve-".$this->var['comment_id']."' class='e-comment-approve btn btn-mini'>Approve</a> ";
 		}
 		return $text;
-		
+		/*
 		$url 		= e_PAGE."?".e_QUERY;
 		
 		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
@@ -195,6 +195,7 @@ class comment_shortcodes extends e_shortcode
 		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
 			
 		return $unblock.$block.$delete.$userinfo;
+		 * */
 	}
 	
 	
@@ -260,7 +261,7 @@ class comment_shortcodes extends e_shortcode
 		}
 		else
 		{
-			return e107::getForm()->textarea('comment',$this->var['comval'], 3, 50,$options);						
+			return e107::getForm()->textarea('comment',$this->var['comval'], 3, 80,$options);						
 		}		
 	}		
 	
