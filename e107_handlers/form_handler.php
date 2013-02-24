@@ -269,7 +269,7 @@ class e_form
 		// eg. <img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
 		// The button itself could be replaced with an icon just for this purpose.
 		return $this->imagepicker($name, $default, $label, 'media=_icon');
-
+		/*
 		$e107 = e107::getInstance();
 		$id = $this->name2id($name);
 		$sc_parameters .= '&id='.$id;
@@ -286,6 +286,7 @@ class e_form
 		";
 
 		return $ret;
+		*/
 	}
 
 	/**
@@ -981,8 +982,26 @@ class e_form
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		// $options['class'] = 'inline';	
-		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
-
+		$text = "";
+		
+		if(vartrue($options['label'])) // Bootstrap compatible markup
+		{
+			$text .= "<label class='radio'>";	
+		}
+		
+		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
+		
+		if(vartrue($options['help']))
+		{
+			$text .= "<div class='field-help'>".$options['help']."</div>";
+		}
+		
+		if(vartrue($options['label']))
+		{
+			$text .= $options['label']."</label>";	
+		}
+		
+		return $text;
 	}
 
 	/**
@@ -1027,19 +1046,44 @@ class e_form
 	 */
 	function radio_multi($name, $elements, $checked, $multi_line = false, $help = null)
 	{
+		/* // Bootstrap Test. 
+		 return'    <label class="checkbox">
+    <input type="checkbox" value="">
+    Option one is this and that—be sure to include why its great
+    </label>
+     
+    <label class="radio">
+    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+    Option one is this and that—be sure to include why its great
+    </label>
+    <label class="radio">
+    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+    Option two can be something else and selecting it will deselect option one
+    </label>';
+		*/
+		
+		
 		$text = array();
 		if(is_string($elements)) parse_str($elements, $elements);
 		
 		foreach ($elements as $value => $label)
 		{
 			$label = defset($label, $label);
+			
 			$helpLabel = (is_array($help)) ? vartrue($help[$value]) : $help;
+		
+		// Bootstrap Style Code - for use later. 	
+		//	$options['label'] = $label;
+		//	$options['help'] = $helpLabel;
+		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value, $options);
+	
 			$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
 		if(!$multi_line)
 			return implode("&nbsp;&nbsp;", $text);
-
-		return "<div class='field-spacer'>".implode("</div><div class='field-spacer'>", $text)."</div>";
+		
+		// return implode("\n", $text);
+		return "<div class='field-spacer haa'>".implode("</div><div class='field-spacer'>", $text)."</div>";
 
 	}
 
@@ -3107,16 +3151,32 @@ class e_form
 					{
 						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
 						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
-						$text .= ($trigger == 'submit' && $submitopt) ?'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
-								<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-								<li>
-									<div class="options left" style="padding:5px">
-										<b>After submit:</b><br />'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
-									</div>
-								</li>
-								</ul>': ''; //FIXME Find better Bootstrap classes/styling. 
+						
+						if($trigger == 'submit' && $submitopt)
+						{
+						
+							$text .= 
+							'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+									<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu col-selection">
+									<li class="nav-header">After submit:</li>
+							';
+							
+							foreach($defsubmitopt as $k=>$v)
+							{
+								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected,"label=".$v)."</a></li>";	
+							}
+							
+							//$text .= '
+							//		<li role="menuitem">
+							//			<div class="options left" style="padding:5px">
+							//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
+							//			</div></li>';
+										
+									
+							$text .= '</ul>';
+						} 
 								
 						$text .= ($trigger == 'submit') ?"</div>" : "";
 						

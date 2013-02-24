@@ -651,7 +651,7 @@ i.e-breadcrumb {
 		margin-top:3px;
 }
 
-footer 		{ padding-top:60px; color: rgb(153, 153, 153); }
+footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 
 #searchquery {
 	padding-left:22px; 
