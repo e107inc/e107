@@ -515,6 +515,7 @@ class e_media
 			$w		= 64;
 			$h		= 64;
 			$total 	= 500;
+			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64",$search);
 			// $total	= $this->countIcons($cat); //TODO
 		}
 		
@@ -531,17 +532,11 @@ class e_media
 
 		if($navMode === false)
 		{
-			/*
-			 *     <div class="input-append">
-    <input class="span2" id="appendedInputButtons" type="text">
-    <button class="btn" type="button">Search</button>
-    <button class="btn" type="button">Options</button>
-    </div>
-			 */
-			
-			
-			
-			$text .= "<div style='margin-top:10px'>Filter: <input type='text' id='media-search' title='Enter some text to filter results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />";
+
+			// Inline style to override jquery-ui stuff. 
+			$text .= "<div class='input-append' style='margin-top:10px;font-size:12px'>
+			<input type='text' style='padding-left:24px;margin-right:-20px' id='media-search' title='Enter some text to filter results' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' />
+			<i class='icon-search searchquery' style='top:4px;left:-212px'></i>";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 			$text .= "<button type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason. 
 	
