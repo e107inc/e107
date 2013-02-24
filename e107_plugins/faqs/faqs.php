@@ -19,9 +19,6 @@ require_once ("../../class2.php");
 include_lan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
 
-//include_lan(e_PLUGIN."faqs/languages/admin/faq_lan_".e_LANGUAGE.".php");
-
-
 require_once (e_HANDLER."form_handler.php");
 require_once (e_HANDLER."userclass_class.php");
 require_once (e_HANDLER."ren_help.php");

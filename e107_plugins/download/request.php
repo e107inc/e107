@@ -1,7 +1,7 @@
 <?php
 require_once("../../class2.php");
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
+include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
 $id = FALSE;
 
