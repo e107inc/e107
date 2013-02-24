@@ -1399,7 +1399,7 @@ class e_userperms
 		$a_id = $row['user_id'];
 		$ad_name = $row['user_name'];
 		$a_perms = $row['user_perms'];
-
+	/*
 		$text = "
 			<form method='post' action='".e_SELF."' id='myform'>
 				<fieldset id='core-administrator-edit'>
@@ -1411,36 +1411,73 @@ class e_userperms
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".ADMSLAN_16.": </td>
-								<td class='control'>
-									".$ad_name."
-									<input type='hidden' name='ad_name' value='{$ad_name}' />
-									<input type='hidden' name='a_id' value='{$a_id}' />
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".ADMSLAN_18."</td>
 								<td class='control'>
 								
 
 		";
+	*/
+	
+	$text = "<form method='post' action='".e_SELF."' id='myform'>
+				<fieldset id='core-administrator-edit'>
+					<legend class='e-hideme'>".ADMSLAN_52."</legend>";
 
-		$text .= $this->renderPermTable('grouped',$a_perms);
+	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area. 
+	$text .= '
+		 <ul class="nav nav-tabs">
+		    <li class="active"><a href="#tab1" data-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
+		    <li><a href="#tab2" data-toggle="tab">'.$this->renderSectionDiz('plugin').'</a></li>
+		    <li><a href="#tab3" data-toggle="tab">'.$this->renderSectionDiz('language').'</a></li>
+		     <li><a href="#tab4" data-toggle="tab">'.$this->renderSectionDiz('main').'</a></li>
+		  </ul>
+		  
+		  <div class="tab-content">
 		
+			<div class="tab-pane active " id="tab1">
+		      <div class="separator">
+			'.$this->renderPermTable('core',$a_perms).'
+		      </div>		
+		    </div>
 		
-
-		$text .= $this->renderCheckAllButtons()."
+		    <div class="tab-pane" id="tab2">
+		      <div class="separator">
+		        '.$this->renderPermTable('plugin',$a_perms).'
+		      </div>
+			</div>
 			
-		</td>
-		</tr>
-				</tbody>
-					</table>
+			<div class="tab-pane" id="tab3">
+		      <div class="separator">
+		        '.$this->renderPermTable('language',$a_perms).'
+		      </div>
+			</div>
+			
+			<div class="tab-pane" id="tab4">
+		      <div class="separator">
+		        '.$this->renderPermTable('main',$a_perms).'
+		      </div>
+			</div>
+			
+		  </div>';	
+
+
+	//	$text .= $this->renderPermTable('grouped',$a_perms);
+		
+		
+
+		$text .= $this->renderCheckAllButtons(); 
+		
+	//	$text .= "</td></tr></tbody></table>";
+					
+					$text .= "
 					".$this->renderSubmitButtons()."
+					<input type='hidden' name='ad_name' value='{$ad_name}' />
+					<input type='hidden' name='a_id' value='{$a_id}' />
 				</fieldset>
 			</form>
 		";
 
-		$ns->tablerender(ADMSLAN_52, $text);
+	//	$text .= $this->renderPermTable('core',$a_perms);
+
+		$ns->tablerender(ADMSLAN_52.SEP.$ad_name, $text);
 	}
 
 	function renderCheckAllButtons()
@@ -1468,8 +1505,29 @@ class e_userperms
 	function renderPermTable($type,$a_perms='')
 	{
 		$groupedList = $this->getPermList($type);
-		$text = "";
+			
+		if($type != 'grouped')
+		{
+			$text = "\t\t<table class='table adminform'>
+			<colgroup>
+				<col class='center' style='width:50px' />
+				<col style='width:50px' />
+				<col  />
+			</colgroup>
+			<tbody>";
+		//	$text .= "<tr><td class='field-section' colspan='3'><h4>".$this->renderSectionDiz($type)."</h4></td></tr>"; //XXX Lan - General
+		//	$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
+			foreach($groupedList as $key=>$diz)
+			{
+				$text .= $this->checkb($key, $a_perms, $diz);
+			}
+			$text .= "</tbody>
+			</table>";	
+			
+			return $text;
+		}
 		
+		$text = "";
 		foreach($groupedList as $section=>$list)
 		{
 			$text .= "\t\t<table class='table adminlist'>
