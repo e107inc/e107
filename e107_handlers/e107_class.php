@@ -2392,11 +2392,11 @@ class e107
 		{
 			define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));	
 		}
-		
+				
 		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
 
 		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST
-		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST)
+		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST || deftrue('e_MINIMAL'))
 		{
 			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
 

@@ -284,7 +284,7 @@ $(document).ready(function()
   			$(id).load(src,function() {
   				// alert(src);
   			//	$(this).hide();
-    		//	 $(this).SlideUp();
+    			// $(this).SlideLeft();
 			});
 				
 			

@@ -543,12 +543,14 @@ class e_media
 			$text .= "&nbsp;<button type='button' title='previous page' class='btn e-nav e-media-nav e-tip'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&laquo;</button>"; // see next page of images. 
 		
 			$text .= "<button type='button' title='next page' class='btn e-nav e-media-nav e-tip' style='text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' >&raquo;</button>"; // see next page of images. 
-			$text .= "</div>
+			$text .= "</div>";
+		
+			$text .= "
 			<div id='media-select-container'>";	
 		}
 		
-		
 		$text .= "<div class='media-select-count' style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
+		
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{

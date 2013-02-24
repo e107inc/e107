@@ -27,16 +27,19 @@ e107::coreLan('footer', true);
 // DEPRECATED - plugins should load their lans manually
 // plugin autoload, will be removed in the future! 
 // here mostly because of BC reasons
-$_plugins = e107::getPref('plug_installed');
-if(is_array($_plugins) && count($_plugins) > 0)
+if(!deftrue('e_MINIMAL'))
 {
-	$_plugins = array_keys($_plugins);
-	foreach ($_plugins as $_p) 
+
+	$_plugins = e107::getPref('plug_installed');
+	if(is_array($_plugins) && count($_plugins) > 0)
 	{
-		e107::loadLanFiles($_p, 'admin');
+		$_plugins = array_keys($_plugins);
+		foreach ($_plugins as $_p) 
+		{
+			e107::loadLanFiles($_p, 'admin');
+		}
 	}
 }
-
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
 
