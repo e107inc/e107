@@ -8,5 +8,5 @@
 
 define("LAN_PLUGIN_FAQS_NAME", 			"FAQs");
 define("LAN_PLUGIN_FAQS_DESCRIPTION", 	"A simple plugin to add Frequently Asked Questions to your website.");
-
+define("LAN_PLUGIN_FAQS_FUNCTIONNAME",	"FAQ Categories");
 ?>
