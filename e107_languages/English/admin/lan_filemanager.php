@@ -34,7 +34,7 @@ define("FMLAN_22", "Upload");
 
 //define("FMLAN_26", "Deleted");
 //define("FMLAN_27", "successfully");
-define("FMLAN_28", "Unable to delete");
+//define("FMLAN_28", "Unable to delete");
 define("FMLAN_29", "Path");
 define("FMLAN_30", "Up level");
 define("FMLAN_31", "folder");
