@@ -9,7 +9,7 @@
  * Custom Menus/Pages Administration
  * Admin-related functions for custom page and menu creation
 */
-
+define('e_MINIMAL',true);
 require_once('../class2.php');
 
 if (!getperms("5|J")) { header('location:'.e_ADMIN.'admin.php'); exit; }
