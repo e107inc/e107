@@ -2561,7 +2561,8 @@ class e_form
 
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
-				$ret =  $this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'),$options );
+				// Media = media-category owner used by media-manager. 
+				$ret =  $this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options );
 			break;
 
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
