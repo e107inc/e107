@@ -716,7 +716,7 @@ i.searchquery	{
 
 .nav-tabs 						{ border-bottom: 1px solid rgb(221, 221, 221); margin-bottom:0px;}
 .nav-tabs li 					{  margin-right: 2px; }
-.nav-tabs li a  				{ cursor: pointer; background-color: rgb(230, 230, 230); color: rgb(153, 153, 153); margin-bottom:-1px;
+.nav-tabs li a  				{ cursor: pointer; background-color: rgb(230, 230, 230); color: rgb(153, 153, 153); 
     							  padding: 0px 15px; line-height: 34px; border-bottom: 1px solid rgb(221, 221, 221);
 								}
 .nav-tabs li a:hover 			{ background-color: rgb(255, 255, 255); color: rgb(0, 67, 138); }
@@ -725,9 +725,11 @@ i.searchquery	{
 {
 	background-color: rgb(255, 255, 255);
 	cursor: text;	
+	margin-bottom:-1px;
+
 }
 
-.tab-pane 						{ background-color: #F6F6F6; }
+.tab-pane 						{  }
 .tab-pane table.adminform 		{ border-top:0px}	
 .tab-pane table.adminform td 	{ border-top:0px}
 .tab-pane table.adminform tr 	{ border-bottom:1px solid #DDDDDD}	
