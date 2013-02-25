@@ -331,11 +331,9 @@ class cron_admin_ui extends e_admin_ui
 
 			$lastRefresh = ($ago < 10000) ? $lastRun : LAN_NEVER;
 	
-			$mes->add(LAN_STATUS.": <b>".$status."</b>", E_MESSAGE_INFO);
-	
-	
-			$mes->add(LAN_CRON_11.": <b>".$this->activeCrons."</b>", E_MESSAGE_INFO);
-			$mes->add(LAN_CRON_12.": ".$lastRefresh, E_MESSAGE_INFO);
+			$mes->addInfo(LAN_STATUS.": <b>".$status."</b>");
+			$mes->addInfo(LAN_CRON_11.": <b>".$this->activeCrons."</b>");
+			$mes->addInfo(LAN_CRON_12.": ".$lastRefresh."<br /><br />");
 			
 			
 	
@@ -346,24 +344,24 @@ class cron_admin_ui extends e_admin_ui
 			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
 			if($isWin)
 			{
-				$mes->add(LAN_CRON_13, E_MESSAGE_WARNING);
+				$mes->addWarning(LAN_CRON_13);
 			}
 			if (!$isWin && $actualPerm != 755) // is_executable() is not reliable. 
 			{
-				$mes->add(LAN_CRON_14, E_MESSAGE_WARNING);
+				$mes->addWarning(LAN_CRON_14);
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = $frm->open("generate")
-				.LAN_CRON_15.":<br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd'];
+				$setpwd_message = $frm->open("generate")."<small>"
+				.LAN_CRON_15.":</small><br /><pre style='color:black'>".rtrim($_SERVER['DOCUMENT_ROOT'], '/').e_HTTP."cron.php ".$pref['e_cron_pwd'];
 				
-				$setpwd_message .= "</pre>". LAN_CRON_16;
+				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
 					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_DOMAIN."/cpanel'>Go to cPanel</a></div>";
 					
 				}
-				$setpwd_message .= $frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'pull-right btn btn-small'));
+				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'btn btn-small'));
 				$setpwd_message .= $frm->close();	
 				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
