@@ -961,14 +961,14 @@ class media_admin_ui extends e_admin_ui
 		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
 						
 		$text = "
-			<div class='admintabs' id='tab-container'>
-			<ul class='e-tabs' id='core-emote-tabs'>
-				<li id='tab-select'><a href='#core-media-select'>Choose from Library</a></li>
-				<li id='tab-upload'><a href='#core-media-upload'>Upload a File</a></li>";
+			
+			<ul class='nav nav-tabs'>
+				<li class='active'><a data-toggle='tab' href='#core-media-select'>Choose from Library</a></li>
+				<li><a data-toggle='tab' href='#core-media-upload'>Upload a File</a></li>";
 		
 		if($bbcodeMode)
 		{
-			$text .= "<li id='tab-style'><a href='#core-media-style'>Appearance</a></li>\n";	
+			$text .= "<li><a data-toggle='tab' href='#core-media-style'>Appearance</a></li>\n";	
 		}
 		
 		if($_GET['from'])
@@ -979,7 +979,8 @@ class media_admin_ui extends e_admin_ui
 				
 		$text .= "
 			</ul>
-			<fieldset id='core-media-select'>
+			<div class='tab-content'>
+			<div class='tab-pane active' id='core-media-select'>
 			<legend>Library</legend>
 			<div class='table' style='display:block; height:500px'>
 		
@@ -1000,9 +1001,9 @@ class media_admin_ui extends e_admin_ui
 			
 		$text .= "
 			</div>
-			</fieldset>
+			</div>
 			
-			<fieldset id='core-media-upload'>
+			<div class='tab-pane' id='core-media-upload'>
 			<legend>Upload</legend>";
 			
 		$this->fields['media_category']['readonly']	= TRUE;
@@ -1013,7 +1014,7 @@ class media_admin_ui extends e_admin_ui
 	//	$text .=  $this->CreatePage(); // comment me out to test plupload
 				
 		$text .= "	
-			</fieldset>";
+			</div>";
 		
 		/* In BBCODE-Mode this dialog rerturns an [img] bbcode to the 'tagid' container with the appropriate parms generated. 
 		 * eg. [img style=float:left;margin-right:3px]{e_MEDIA_IMAGE}someimage.jpg[/img]
@@ -1510,7 +1511,7 @@ class media_admin_ui extends e_admin_ui
 	//	$files = $fl->get_files(e_MEDIA."temp/");
 		$files = $fl->get_files(e_TEMP);
 		
-		e107::js('core','core/admin.js','prototype');
+	//	e107::js('core','core/admin.js','prototype');
 
 
 		//TODO Detect XML file, and if found - read that instead of the directory.

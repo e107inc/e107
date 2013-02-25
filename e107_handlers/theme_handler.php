@@ -914,287 +914,282 @@ class themeHandler
 		
 		$text = "
 		<h2 class='caption'>".$theme['name']."</h2>
-        <div id='tab-container' class='e-tabs'>
-        <ul id='core-thememanager-tabs'>
-        <li><a href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
+        
+        <ul class='nav nav-tabs'>
+        <li class='active'><a data-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
 		
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
-			$text .= "<li><a href='#core-thememanager-help'>".LAN_HELP."</a></li>";
+			$text .= "<li><a data-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
 		}
 		
 		$text .= "</ul>
-		<fieldset id='core-thememanager-configure'>
-        <table class='table adminform'>
-        	<colgroup>
-        		<col class='col-label' />
-        		<col class='col-control' />
-				<col class='col-control' />
-        	</colgroup>
-		<tr>
-			<td><b>".TPVLAN_11."</b></td>
-			<td>".$theme['version']."</td>
-			<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
-			</tr>";
-		
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
-		
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_CATEGORY."</b>:</td><td style='vertical-align:top'>".$theme['category']."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
-			<td style='vertical-align:top'>";
-		$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
-		$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
-		$text .= "</td></tr>";
-		
-		// site theme..
-		if($mode == 1)
-		{
-			
-			$text .= "
+		<div class='tab-content'>
+			<div class='tab-pane active'  id='core-thememanager-configure'>
+		        <table class='table adminform'>
+		        	<colgroup>
+		        		<col class='col-label' />
+		        		<col class='col-control' />
+						<col class='col-control' />
+		        	</colgroup>
 				<tr>
-                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
-					<td colspan='2' style='vertical-align:top width:auto;'>";
-			
-			if(varset($theme['plugins']))
-			{
-				foreach ($theme['plugins'] as $key=>$val)
-				{
-					$text .= $this->renderPlugins($theme['plugins']);
-					$text .= "&nbsp;";
-				}
-			}
-			
-			$text .= "&nbsp;</td>
-				</tr>";
-			
-			$text .= "
-				<tr>
-                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
-					<td colspan='2' style='vertical-align:top width:auto;'>
-					<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
-					<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
-					</td>
-				</tr>";
-		}
+					<td><b>".TPVLAN_11."</b></td>
+					<td>".$theme['version']."</td>
+					<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
+					</tr>";
 		
-		// New in 0.8   ----   site theme.
-		if($mode == 1)
-		{
-			
-			$itext = "<tr>
-					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
-					<td colspan='2' style='vertical-align:top'>
-                    <table class='table adminlist'>
-                      	<colgroup>
-                      		<col class='col-tm-layout-default' style='width:10%' />
-                      		<col class='col-tm-layout-name' style='width:20%' />
-							<col class='col-tm-layout-visibility' style='width:35%' />
-							<col class='col-tm-layout-preset' style='width:35%' />
-                      	</colgroup>
-						<tr>";
-			$itext .= ($mode == 1) ? "<td class='center top'>".TPVLAN_55."</td>" : "";
-			$itext .= "
-							<td>".TPVLAN_52."</td>
-							<td>".TPVLAN_56."</td>
-							<td>".TPVLAN_54."</td>
-
-						</tr>\n";
-
-			
-			foreach ($theme['layouts'] as $key=>$val)
-			{
-				$itext .= "
-							<tr>";
-				if($mode == 1)
-				{
-					if(!$pref['sitetheme_deflayout'])
-					{
-						$pref['sitetheme_deflayout'] = ($val['@attributes']['default'] == 'true') ? $key : "";
-					}
-					$itext .= "<td class='center'>\n";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
 					
-					$itext .= "
-									<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout'] == $key ? " checked='checked'" : "")." />
-								</td>";
-				}
-				
-				$itext .= "<td style='vertical-align:top'>";
-			//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
-				$itext .= $val['@attributes']['title'];
-			//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
-				
-				$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
-				$custompage_diz = "";
-				$count = 1;
-				if(isset($pref['sitetheme_custompages'][$key]) && count($pref['sitetheme_custompages'][$key]) > 0)
-				{
-					foreach ($pref['sitetheme_custompages'][$key] as $cp)
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_CATEGORY."</b>:</td><td style='vertical-align:top'>".$theme['category']."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
+						<td style='vertical-align:top' colspan='2'>";
+					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
+					$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
+					$text .= "</td></tr>";
+		
+					// site theme..
+					if($mode == 1)
 					{
-						$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
-						if($count > 4)
+						
+						$text .= "
+							<tr>
+			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
+								<td colspan='2' style='vertical-align:top width:auto;'>";
+						
+						if(varset($theme['plugins']))
 						{
-							$custompage_diz .= "...";
-						break;
+							foreach ($theme['plugins'] as $key=>$val)
+							{
+								$text .= $this->renderPlugins($theme['plugins']);
+								$text .= "&nbsp;";
+							}
 						}
-						$count++;
-					}
-				}
-				else
-				{
-					$custompage_diz = "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-mini e-expandit'>None</a> ";
-				}
-
-				
-				$itext .= "</td>
-								<td style='vertical-align:top'>";
-				// Default
-				$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
-				
-				$itext .= "</td>";
-				
-				$itext .= "<td>";
-				
-				$itext .= (varset($val['menuPresets'])) ? $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset") : "";
-				$itext .= "</td>
-
+						
+						$text .= "&nbsp;</td>
 							</tr>";
-			}
+						
+						$text .= "
+							<tr>
+			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
+								<td colspan='2' style='vertical-align:top width:auto;'>
+								<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
+								<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
+								</td>
+							</tr>";
+					}
+		
+					// New in 0.8   ----   site theme.
+					if($mode == 1)
+					{
+						
+						$itext = "<tr>
+								<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
+								<td colspan='2' style='vertical-align:top'>
+			                    <table class='table adminlist'>
+			                      	<colgroup>
+			                      		<col class='col-tm-layout-default' style='width:10%' />
+			                      		<col class='col-tm-layout-name' style='width:20%' />
+										<col class='col-tm-layout-visibility' style='width:35%' />
+										<col class='col-tm-layout-preset' style='width:35%' />
+			                      	</colgroup>
+									<tr>";
+						$itext .= ($mode == 1) ? "<td class='center top'>".TPVLAN_55."</td>" : "";
+						$itext .= "
+										<td>".TPVLAN_52."</td>
+										<td>".TPVLAN_56."</td>
+										<td>".TPVLAN_54."</td>
 			
-			$itext .= "</table></td></tr>";
-		}
+									</tr>\n";
+			
+						
+						foreach ($theme['layouts'] as $key=>$val)
+						{
+							$itext .= "
+										<tr>";
+							if($mode == 1)
+							{
+								if(!$pref['sitetheme_deflayout'])
+								{
+									$pref['sitetheme_deflayout'] = ($val['@attributes']['default'] == 'true') ? $key : "";
+								}
+								$itext .= "<td class='center'>\n";
+								
+								$itext .= "
+												<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout'] == $key ? " checked='checked'" : "")." />
+											</td>";
+							}
+							
+							$itext .= "<td style='vertical-align:top'>";
+						//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
+							$itext .= $val['@attributes']['title'];
+						//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
+							
+							$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
+							$custompage_diz = "";
+							$count = 1;
+							if(isset($pref['sitetheme_custompages'][$key]) && count($pref['sitetheme_custompages'][$key]) > 0)
+							{
+								foreach ($pref['sitetheme_custompages'][$key] as $cp)
+								{
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									if($count > 4)
+									{
+										$custompage_diz .= "...";
+									break;
+									}
+									$count++;
+								}
+							}
+							else
+							{
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-mini e-expandit'>None</a> ";
+							}
+			
+							
+							$itext .= "</td>
+											<td style='vertical-align:top'>";
+							// Default
+							$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
+							
+							$itext .= "</td>";
+							
+							$itext .= "<td>";
+							
+							$itext .= (varset($val['menuPresets'])) ? $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset") : "";
+							$itext .= "</td>
+			
+										</tr>";
+						}
+						
+						$itext .= "</table></td></tr>";
+					}
 
 		
 		//		$itext .= !$mode ? "<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
 		
-		if($mode == 2)
-		{
-			
-			$astext = "";
-			$file = e107::getFile();
-			
-			$adminstyles = $file->get_files(e_ADMIN."includes");
-			
-			$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
-			
-			foreach ($adminstyles as $as)
-			{
-				$style = str_replace(".php", "", $as['fname']);
-				$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
-			}
-			$astext .= "</select>";
-			
-			$text .= "
-			<tr>
-				<td><b>".TPVLAN_41.":</b></td>
-				<td colspan='2'>".$astext."</td>
-			</tr>
-			\n";
-		}
+					if($mode == 2)
+					{
+						
+						$astext = "";
+						$file = e107::getFile();
+						
+						$adminstyles = $file->get_files(e_ADMIN."includes");
+						
+						$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
+						
+						foreach ($adminstyles as $as)
+						{
+							$style = str_replace(".php", "", $as['fname']);
+							$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
+						}
+						$astext .= "</select>";
+						
+						$text .= "
+						<tr>
+							<td><b>".TPVLAN_41.":</b></td>
+							<td colspan='2'>".$astext."</td>
+						</tr>
+						\n";
+					}
 
 		
-		$text .= $itext;
-		
-		if(array_key_exists("multipleStylesheets", $theme) && $mode)
-		{
-			$text .= "
-				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
-				<td colspan='2' style='vertical-align:top'>
-				<table class='table adminlist' >
-				<tr>
-                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
-			  		<td style='width:20%'>".TPVLAN_52."</td>
-					<td class='left'>".TPVLAN_7."</td>
-				</tr>";
-
-			
-			foreach ($theme['css'] as $css)
-			{
+					$text .= $itext;
 					
-				$text2 = "";
-				
-				
-				
-				if($mode == 2) // ADMIN MODE
-				{
-					if($css['name'] == "style.css" || !vartrue($css['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
+					if(array_key_exists("multipleStylesheets", $theme) && $mode)
 					{
-						continue;
+						$text .= "
+							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
+							<td colspan='2' style='vertical-align:top'>
+							<table class='table adminlist' >
+							<tr>
+			                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
+						  		<td style='width:20%'>".TPVLAN_52."</td>
+								<td class='left'>".TPVLAN_7."</td>
+							</tr>";
+			
+						
+						foreach ($theme['css'] as $css)
+						{
+								
+							$text2 = "";
+							
+							
+							
+							if($mode == 2) // ADMIN MODE
+							{
+								if($css['name'] == "style.css" || !vartrue($css['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
+								{
+									continue;
+								}
+												
+								if(!$css['nonadmin'])
+								{
+									$text2 = "
+										<td class='center'>".
+										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'],"admin_style.css"))."
+										</td>
+										<td><label for='admincss'>".$css['name']."</label></td>
+										<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+								}
+							}
+							
+							if($mode == 1) // SITE-THEME Mode
+							{
+								if(substr($css['name'], 0, 6) == "admin_")
+								{
+									continue;
+								}
+								
+								$text2 = "
+									<td class='center'>
+									<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+									</td>
+									<td>".$css['name']."
+									</td>
+									<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+							}
+							
+							$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
+						
+						}
+						
+						$text .= "</table></td></tr>";
 					}
-									
-					if(!$css['nonadmin'])
+
+		
+					if($mode == 1)
 					{
-						$text2 = "
-							<td class='center'>".
-							$frm->radio('admincss', $css['name'], vartrue($pref['admincss'],"admin_style.css"))."
-							</td>
-							<td><label for='admincss'>".$css['name']."</label></td>
-							<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-					}
-				}
-				
-				if($mode == 1) // SITE-THEME Mode
-				{
-					if(substr($css['name'], 0, 6) == "admin_")
-					{
-						continue;
+						$text .= $this->renderThemeConfig();
 					}
 					
-					$text2 = "
-						<td class='center'>
-						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
-						</td>
-						<td>".$css['name']."
-						</td>
-						<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-				}
-				
-				$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
+					$text .= "</table>
+
+
+			   		<div class='center buttons-bar'>";
 			
-			}
+					if($mode == 2) // admin
+					{
+						$mainid = "selectmain[".$theme['id']."]";
+						$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
+						$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
+					
+					}
+					else // main
+					{
+						$adminid = "selectadmin[".$theme['id']."]";
+						$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+						$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
+					}
+					
+					$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
 			
-			$text .= "</table></td></tr>";
-		}
-
-		
-		if($mode == 1)
-		{
-			$text .= $this->renderThemeConfig();
-		}
-		
-		$text .= "</table>
-
-
-		   		<div class='center buttons-bar'>";
-		
-		if($mode == 2) // admin
-		{
-			$mainid = "selectmain[".$theme['id']."]";
-			$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
-			$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
-		
-		}
-		else // main
-		{
-			$adminid = "selectadmin[".$theme['id']."]";
-			$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
-			$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
-		}
-		
-		$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
-		
-		$text .= "
-				</div>
-
-
-
-		</fieldset>
-
-
-			<fieldset><div class='tab-border' id='core-thememanager-help'>".$this->renderThemeHelp()."</div></fieldset>
-
+					$text .= "</div>
+			</div>
+			
+			 <div class='tab-pane' id='core-thememanager-help'>".$this->renderThemeHelp()."</div>
         </div>
 		\n";
 		

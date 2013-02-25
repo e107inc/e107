@@ -1762,7 +1762,7 @@ $text .= "
 					
 					";
 					
-					
+		/*			
 		e107::js('inline',"			
 						\$\$('#e-jslib-nocombine', '#e-jslib-nocombine-1').invoke('observe', 'change', function(event) {
 							var element = event.findElement('input'), check = !parseInt(element.value);
@@ -1781,7 +1781,7 @@ $text .= "
 						eHandleJsForm(".($pref['e_jslib_nocombine'] ? 'false' : 'true').");
 					
 					","prototype");
-	
+		*/
 	
 
 //Advanced Features

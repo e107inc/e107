@@ -312,7 +312,7 @@ if (abs($_serverTime - $lastSet) > 120)
 	 */
 	// echo "<script type='text/javascript'>\n";
 	
-	e107::js('footer-inline',"SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');",'prototype');
+//	e107::js('footer-inline',"SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');",'prototype');
 	
 	//echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
      //  </script>\n";

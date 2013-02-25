@@ -149,46 +149,50 @@ class emotec
 		$frm = e107::getForm();
 		$fl = e107::getFile();
 		$ns = e107::getRender();
-		$mes = e107::getMessage();
-				
+		$mes = e107::getMessage();		
 
 		$text = "
-	<div class='admintabs' id='tab-container'>
-		<ul class='e-tabs' id='core-emote-tabs'>
-			<li id='tab-activate'><a href='#emoticon-activate'>".EMOLAN_1."</a></li>
-			<li id='tab-packages'><a href='#emoticon-packages'>".EMOLAN_13."</a></li>
+	
+		<ul class='nav nav-tabs'>
+			<li class='active'><a href='#emoticon-activate' data-toggle='tab'>".EMOLAN_1."</a></li>
+			<li><a href='#emoticon-packages' data-toggle='tab'>".EMOLAN_13."</a></li>
 		</ul>
-		<form method='post' action='".e_SELF."'>
-			<fieldset id='emoticon-activate'>
-				<legend>".EMOLAN_1."</legend>
-				<table class='table adminlist'>
-					<colgroup>
-						<col style='width:30%' />
-						<col style='width:70%' />
-					</colgroup>
-					<tbody>
-						<tr>
-							<td>
-								".EMOLAN_4.":
-							</td>
-							<td>
-								<div class='auto-toggle-area autocheck'>
-									".$frm->checkbox('smiley_activate', 1, varset($pref['smiley_activate'],0))."
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class='buttons-bar center'>
-				".$frm->admin_button('active','active','update',LAN_UPDATE)."
-				</div>
-			</fieldset>
-		</form>
+		
+		<div class='tab-content'>
+			<div class='tab-pane active' id='emoticon-activate'>
+			<fieldset>
+				<form method='post' action='".e_SELF."'>
+					<legend>".EMOLAN_1."</legend>
+						<table class='table adminform'>
+							<colgroup>
+								<col style='width:30%' />
+								<col style='width:70%' />
+							</colgroup>
+							<tbody>
+								<tr>
+									<td>
+										".EMOLAN_4.":
+									</td>
+									<td>
+										<div class='auto-toggle-area autocheck'>
+											".$frm->checkbox('smiley_activate', 1, varset($pref['smiley_activate'],0))."
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+						".$frm->admin_button('active','active','update',LAN_UPDATE)."
+						</div>
+					<fieldset>
+				</form>
+			</div>
 		";
 
 		$text .= "
+			<div class='tab-pane' id='emoticon-packages'>
 			<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
-				<fieldset id='emoticon-packages'>
+				<fieldset>
 					<legend>".EMOLAN_13."</legend>
 					<table class='table adminlist'>
 						<colgroup>
@@ -266,7 +270,9 @@ class emotec
 					</table>
 				</fieldset>
 			</form>
+			</div>
 		</div>
+
 		";
 
 		$ns->tablerender(EMOLAN_PAGE_TITLE, $mes->render().$text);

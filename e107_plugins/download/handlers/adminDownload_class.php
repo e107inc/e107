@@ -619,7 +619,7 @@ class adminDownload extends download
 
       $text = "
       <div class='admintabs' id='tab-container'>
-         <ul class='e-tabs e-hideme' id='core-download-tabs'>
+         <ul class='e-taXXbs' e-hideme' id='core-download-tabs'>
             <li id='tab-general'><a href='#download-create'>".DOWLAN_175."</a></li>
             <li id='tab-external'><a href='#download-edit-external'>".DOWLAN_176."</a></li>
             <li id='tab-mirror'><a href='#download-edit-mirror'>".DOWLAN_128."</a></li>
@@ -1471,7 +1471,7 @@ class adminDownload extends download
          );
                  $text = "
               <div class='admintabs' id='tab-container'>
-                  <ul class='e-tabs e-hideme' id='download-option-tabs'>
+                  <ul class='e-tabXXs e-hideme' id='download-option-tabs'>
                       <li id='tab-download1'><a href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
                       <li id='tab-download2'><a href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
                       <li id='tab-download3'><a href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
