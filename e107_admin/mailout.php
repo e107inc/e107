@@ -8,10 +8,8 @@
  *
  * Administration - Mailout
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -97,8 +95,10 @@ require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
 require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
+
 require_once (e_HANDLER.'message_handler.php');
-$emessage = &eMessage :: getInstance();
+$mes = e107::getMessage();
+$tp = e107::getParser();
 
 if($_GET['mode']=="process")
 {
@@ -119,7 +119,7 @@ if($_GET['mode']=="process")
 
 
 
-$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+$action = $tp->toDB(varset($_GET['mode'],'makemail'));
 $pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
 $mailId = intval(varset($_GET['m'],0));
 $targetId = intval(varset($_GET['t'],0));
@@ -192,7 +192,7 @@ switch ($action)
 			{		//		Send test email - uses standard 'single email' handler
 				if(trim($_POST['testaddress']) == '')
 				{
-					$emessage->add(LAN_MAILOUT_19, E_MESSAGE_ERROR);
+					$mes->addError(LAN_MAILOUT_19);
 					$subAction = 'error';
 				}
 				else
@@ -203,18 +203,18 @@ switch ($action)
 					$sendto = trim($_POST['testaddress']);
 					if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
 					{
-						$emessage->add(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106, E_MESSAGE_ERROR);
+						$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 					} 
 					else 
 					{
-						$emessage->add(LAN_MAILOUT_81. ' ('.$sendto.')', E_MESSAGE_SUCCESS);
+						$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
 						$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
 					}
 				}
 			}
 			elseif (isset($_POST['updateprefs']))
 			{
-				saveMailPrefs($emessage);
+				saveMailPrefs($mes); // TODO check if functional, $emessage -> $mes
 			}
 		}
 		break;
@@ -226,7 +226,7 @@ switch ($action)
 			$mailData = $mailAdmin->retrieveEmail($mailId);
 			if ($mailData === FALSE)
 			{
-				$emessage->add(LAN_MAILOUT_164.':'.$mailId, E_MESSAGE_ERROR);
+				$mes->addError(LAN_MAILOUT_164.':'.$mailId);
 				break;
 			}
 			unset($mailData['mail_source_id']);
@@ -240,7 +240,7 @@ switch ($action)
 			$mailData = $mailAdmin->retrieveEmail($mailId);
 			if ($mailData === FALSE)
 			{
-				$emessage->add(LAN_MAILOUT_164.':'.$mailId, E_MESSAGE_ERROR);
+				$mes->addError(LAN_MAILOUT_164.':'.$mailId);
 				break;
 			}
 		}
@@ -288,11 +288,11 @@ switch ($action)
 				if (is_numeric($result))
 				{
 					$mailData['mail_source_id'] = $result;
-					$emessage->add(LAN_MAILOUT_145, E_MESSAGE_SUCCESS);
+					$mes->addSuccess(LAN_MAILOUT_145);
 				}
 				else
 				{
-					$emessage->add(LAN_MAILOUT_146, E_MESSAGE_ERROR);
+					$mes->addError(LAN_MAILOUT_146);
 				}
 				break;
 			case 'update' :
@@ -301,11 +301,11 @@ switch ($action)
 				if (is_numeric($result))
 				{
 					$mailData['mail_source_id'] = $result;
-					$emessage->add(LAN_MAILOUT_147, E_MESSAGE_SUCCESS);
+					$mes->addSuccess(LAN_MAILOUT_147);
 				}
 				else
 				{
-					$emessage->add(LAN_MAILOUT_146, E_MESSAGE_ERROR);
+					$mes->addError(LAN_MAILOUT_146);
 				}
 				break;
 		}
@@ -315,7 +315,7 @@ switch ($action)
 		$action = 'held';
 		if ($mailAdmin->holdEmail($mailId))
 		{
-			$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_229), E_MESSAGE_SUCCESS);
+			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_229));
 		}
 		else
 		{
@@ -327,7 +327,7 @@ switch ($action)
 		$action = $pageMode;		// Want to return to some other page
 		if ($mailAdmin->cancelEmail($mailId))
 		{
-			$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_220), E_MESSAGE_SUCCESS);
+			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
 		}
 		else
 		{
@@ -349,7 +349,7 @@ switch ($action)
 		{
 			if ($mailAdmin->activateEmail($mailId, TRUE))
 			{
-				$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_187), E_MESSAGE_SUCCESS);
+				$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
 			}
 			else
 			{
@@ -388,7 +388,7 @@ switch ($action)
 
 	case 'mailonedelete' :
 	case 'debug' :
-		$emessage->add('Not implemented yet', E_MESSAGE_ERROR);
+		$mes->addError('Not implemented yet');
 		break;
 
 	case 'mailtargets' :
@@ -410,7 +410,7 @@ switch ($action)
 		if (isset($_POST['email_dross']))
 		if ($mailAdmin->dbTidy())			// Admin logging done in this routine
 		{
-			$emessage->add(LAN_MAILOUT_184, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(LAN_MAILOUT_184);
 		}
 		else
 		{
@@ -428,8 +428,8 @@ switch ($action)
 
 
 	default :
-		$emessage->add('Code malfunction 23! ('.$action.')', E_MESSAGE_ERROR);
-		$e107->ns->tablerender(LAN_MAILOUT_97, $emessage->render());
+		$mes->addError('Code malfunction 23! ('.$action.')');
+		$ns->tablerender(LAN_MAILOUT_97, $mes->render());
 		exit;			// Could be a hack attempt
 }	// switch($action) - end of 'executive' tasks
 
@@ -458,7 +458,7 @@ switch ($midAction)
 				}
 				else
 				{
-					$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_167), E_MESSAGE_SUCCESS);
+					$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_167));
 				}
 			}
 			if (isset($result['recipients']))
@@ -469,7 +469,7 @@ switch ($midAction)
 				}
 				else
 				{
-					$emessage->add(str_replace(array('--ID--', '--NUM--'), array($mailId, $result['recipients']), LAN_MAILOUT_170), E_MESSAGE_SUCCESS);
+					$mes->addSuccess(str_replace(array('--ID--', '--NUM--'), array($mailId, $result['recipients']), LAN_MAILOUT_170));
 				}
 			}
 		}
@@ -489,7 +489,7 @@ switch ($midAction)
 		}
 		if ($mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
-			$emessage->add(LAN_MAILOUT_185, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(LAN_MAILOUT_185);
 			$admin_log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
@@ -509,13 +509,13 @@ if (is_array($errors) && (count($errors) > 0))
 {
 	foreach ($errors as $e)
 	{
-		$emessage->add($e, E_MESSAGE_ERROR);
+		$mes->addError($e);
 	}
 	unset($errors);
 }
-if ($emessage->hasMessage())
+if ($mes->hasMessage())
 {
-	 $ns->tablerender(LAN_MAILOUT_97, $emessage->render());
+	 $ns->tablerender(LAN_MAILOUT_97, $mes->render());
 }
 
 
@@ -592,7 +592,7 @@ require_once(e_ADMIN.'footer.php');
  */
 function sendImmediately($id)
 {
-	global $emessage;
+	$mes = e107::getMessage();
 	
 	$text = "<div id='mstatus'>Processing Mailout ID: ".$id."</div>";
 	$text .= "<div id='progress' style='margin-bottom:30px'>&nbsp;</div>";
@@ -628,9 +628,9 @@ function sendImmediately($id)
 	</script>";
 	
 	
-	$emessage->add($text, E_MESSAGE_SUCCESS);
+	$mes->addSuccess($text);
 	
-	e107::getRender()->tablerender("Sending...", $emessage->render());
+	e107::getRender()->tablerender("Sending...", $mes->render());
 
 }
 
@@ -675,10 +675,11 @@ function sendProgress()
 
 
 // Update Preferences. (security handled elsewhere)
-function saveMailPrefs(&$emessage)
+function saveMailPrefs(&$mes) // $emessage to $mes, working?
 {
-	global $pref;
+	$pref = e107::getPref();
 	$e107 = e107::getInstance();
+
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
 	unset($temp);
 	if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
@@ -746,11 +747,10 @@ function saveMailPrefs(&$emessage)
 	if ($e107->admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
 	{
 		save_prefs();		// Only save if changes - generates its own message
-//		$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
 
@@ -762,10 +762,11 @@ function saveMailPrefs(&$emessage)
 
 function show_prefs($mailAdmin)
 {
-	global $pref;
+	$pref = e107::getPref();
 	$e107 = e107::getInstance();
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
+	$ns = e107::getRender();
 
 
 	e107::getCache()->CachePageMD5 = '_';
@@ -1023,8 +1024,8 @@ function show_prefs($mailAdmin)
 
 	</form>";
 
-	$caption = ADLAN_136.' :: '.LAN_PREFS;
-	$e107->ns->tablerender($caption,$mes->render(). $text);
+	$caption = ADLAN_136.SEP.LAN_PREFS;
+	$ns->tablerender($caption, $mes->render(). $text);
 }
 
 
@@ -1038,9 +1039,7 @@ function show_maint($debug = FALSE)
 	$ns = e107::getRender();
 	$frm = e107::getForm();
 	
-	$text = "<div style='text-align:center'>";
-
-	$text .= "
+	$text = "
 			<form action='".e_SELF."?mode=maint' id='email_maint' method='post'>
 			<fieldset id='email-maint'>
 			<table class='table adminlist'>
@@ -1055,22 +1054,18 @@ function show_maint($debug = FALSE)
 		
 		".$frm->admin_button('email_dross','no-value','delete',LAN_SUBMIT)."
 		<br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
-		$text .= "</tbody></table>\n</fieldset></form></div>";
+		$text .= "</tbody></table>\n</fieldset></form>";
 
-		$ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $mes->render().$text);
-
-//	$text .= "</table></div>";
+		$ns->tablerender(ADLAN_136.SEP.ADLAN_40, $mes->render().$text);
 }
-
-
-
 
 
 
 function mailout_adminmenu() 
 {
-	$e107 = e107::getInstance();
-	$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+	$tp = e107::getParser();
+
+	$action = $tp->toDB(varset($_GET['mode'],'makemail'));
 	if($action == 'mailedit')
 	{
     	$action = 'makemail';
@@ -1107,8 +1102,6 @@ function mailout_adminmenu()
     }
 	show_admin_menu(LAN_MAILOUT_15, $action, $var);
 }
-
-
 
 
 function headerjs()
@@ -1163,6 +1156,4 @@ function headerjs()
 
 	return $text;
 }
-
-
 ?>
