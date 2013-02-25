@@ -2,17 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Languages
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
+ * $URL$
+ * $Id$
  */
 require_once ("../class2.php");
 if (!getperms('0'))
@@ -28,7 +25,7 @@ require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
 require_once (e_HANDLER."message_handler.php");
 $frm = e107::getForm();
-$emessage = e107::getMessage();
+$mes = e107::getMessage();
 $tabs = table_list(); // array("news","content","links");
 $lanlist = e107::getLanguage()->installed();// Bugfix - don't use e_LANLIST as it's cached (SESSION)
 $message = '';
@@ -52,11 +49,11 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
 		save_prefs(); // Only save if changes
-		$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
+		//$mes->addSuccess(LAN_SETSAVED, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		$emessage->add(LAN_NO_CHANGE);
+		$mes->addInfo(LAN_NO_CHANGE);
 	}
 }
 // ----------------- delete tables ---------------------------------------------
@@ -71,13 +68,13 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'])
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
 			if (mysql_query($qry))
 			{
-				$message .= sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table).'[!br!]';
-				$emessage->add(sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table), E_MESSAGE_SUCCESS);
+				$message .= sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table).'[!br!]'; // can be removed?
+				$mes->addSuccess(sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table));
 			}
 			else
 			{
-				$message .= sprintf(LANG_LAN_29, $_POST['lang_choices'].' '.$del_table).'[!br!]';
-				$emessage->add(sprintf(LANG_LAN_29, $_POST['lang_choices'].' '.$del_table), E_MESSAGE_WARNING);
+				$message .= sprintf(LANG_LAN_29, $_POST['lang_choices'].' '.$del_table).'[!br!]'; // can be removed?
+				$mes->addWarning(sprintf(LANG_LAN_29, $_POST['lang_choices'].' '.$del_table));
 			}
 		}
 	}
@@ -100,20 +97,20 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 			$copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
 			if ($sql->db_CopyTable($value, "lan_".$lang."_".$value, $_POST['drop'], $copdata))
 			{
-				$message .= sprintf(LANG_LAN_30, $_POST['language'].' '.$value).'[!br!]';
-				$emessage->add(sprintf(LANG_LAN_30, $_POST['language'].' '.$value), E_MESSAGE_SUCCESS);
+				$message .= sprintf(LANG_LAN_30, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
+				$mes->addSuccess(sprintf(LANG_LAN_30, $_POST['language'].' '.$value));
 			}
 			else
 			{
 				if (!$_POST['drop'])
 				{
-					$message .= sprintf(LANG_LAN_00, $_POST['language'].' '.$value).'[!br!]';
-					$emessage->add(sprintf(LANG_LAN_00, $_POST['language'].' '.$value), E_MESSAGE_WARNING);
+					$message .= sprintf(LANG_LAN_00, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
+					$mes->addWarning(sprintf(LANG_LAN_00, $_POST['language'].' '.$value));
 				}
 				else
 				{
-					$message .= sprintf(LANG_LAN_01, $_POST['language'].' '.$value).'[!br!]';
-					$emessage->add(sprintf(LANG_LAN_01, $_POST['language'].' '.$value), E_MESSAGE_WARNING);
+					$message .= sprintf(LANG_LAN_01, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
+					$mes->addWarning(sprintf(LANG_LAN_01, $_POST['language'].' '.$value));
 				}
 			}
 		}
@@ -124,20 +121,20 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 				// Remove table.
 				if (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value))
 				{
-					$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]';
-					$emessage->add($_POST['language'].' '.$value.' '.LAN_DELETED, E_MESSAGE_SUCCESS);
+					$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]'; // can be removed?
+					$mes->addSuccess($_POST['language'].' '.$value.' '.LAN_DELETED);
 				}
 				else
 				{
-					$message .= sprintf(LANG_LAN_02, $_POST['language'].' '.$value).'[!br!]';
-					$emessage->add(sprintf(LANG_LAN_02, $_POST['language'].' '.$value), E_MESSAGE_WARNING);
+					$message .= sprintf(LANG_LAN_02, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
+					$mes->addWarning(sprintf(LANG_LAN_02, $_POST['language'].' '.$value));
 				}
 			}
 			else
 			{
 				// leave table. LANG_LAN_32
-				$message .= sprintf(LANG_LAN_32, $_POST['language'].' '.$value).'[!br!]';
-				$emessage->add(sprintf(LANG_LAN_32, $_POST['language'].' '.$value));
+				$message .= sprintf(LANG_LAN_32, $_POST['language'].' '.$value).'[!br!]'; // can be removed?
+				$mes->addInfo(sprintf(LANG_LAN_32, $_POST['language'].' '.$value));
 			}
 		}
 	}
@@ -174,11 +171,11 @@ if (varset($_POST['ziplang']) && varset($_POST['language']))
 	{
 		$text = zip_up_lang($_POST['language']);
 		$admin_log->log_event('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
-		$emessage->add(LANG_LAN_25.': '.$text);	
+		$mes->addInfo(LANG_LAN_25.': '.$text);	
 	}
 	else
 	{
-		$emessage->add(LANG_LAN_36,E_MESSAGE_WARNING);		
+		$mes->addWarning(LANG_LAN_36);		
 	}
 }
 if (varset($action) == "tools")
@@ -288,7 +285,7 @@ function disableUnused($data)
 	$data = str_replace(' * $URL$
  * $Revision$
  * $Id$
- * $Author$',"",$data);	
+ * $Author$',"",$data);	// TODO FIXME ?
 
 	$tmp = explode("\n",$data);
 	foreach($tmp as $line)
@@ -441,7 +438,7 @@ if (isset($_POST['edit_existing']))
 		</fieldset>
 	</form>
 	";
-	$ns->tablerender($_POST['lang_choices'], $emessage->render().$text);
+	$ns->tablerender($_POST['lang_choices'], $mes->render().$text);
 }
 require_once (e_ADMIN."footer.php");
 // ---------------------------------------------------------------------------
@@ -449,7 +446,8 @@ require_once (e_ADMIN."footer.php");
 
 function multilang_prefs()
 {
-	global $pref,$lanlist;
+	global $lanlist;
+	$pref = e107::getPref();
 	$mes = e107::getMessage();
 	$frm = e107::getForm();
 	
@@ -542,7 +540,7 @@ function multilang_prefs()
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>".
-			$frm->admin_button('submit_prefs','no-value','update',LAN_SAVE)."
+				$frm->admin_button('submit_prefs','no-value','update',LAN_SAVE)."
 			</div>
 		</fieldset>
 	</form>\n";
@@ -591,11 +589,13 @@ function table_list()
 
 function multilang_db()
 {
-	global $pref, $emessage, $lanlist, $tabs;
+	global $lanlist, $tabs;
 	
 	$sql = e107::getDb();
 	$frm = e107::getForm();
 	$tp = e107::getParser();
+	$mes = e107::getMessage();
+	$pref = e107::getPref();
 	
 	if (isset($pref['multilanguage']) && $pref['multilanguage'])
 	{
@@ -679,7 +679,7 @@ function multilang_db()
 			</fieldset>
 		";
 		
-		e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_16, $emessage->render().$text); // Languages -> Tables
+		e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_16, $mes->render().$text); // Languages -> Tables
 	}
 }
 // ----------------------------------------------------------------------------
@@ -909,7 +909,7 @@ function available_langpacks()
 
 function language_adminmenu()
 {
-	global $pref;
+	$pref = e107::getPref();
 	
 	$action = e_QUERY;
 	
@@ -1109,12 +1109,12 @@ function unused($lanfile,$script,$reverse=false)
 
 	if(!$compare)
 	{
-		$mes->add("Couldn't read ".$script, E_MESSAGE_ERROR);
+		$mes->addError("Couldn't read ".$script);
 	}
 	
 	if(!$lanDefines)
 	{
-		$mes->add("Couldn't read ".$lanfile, E_MESSAGE_ERROR);
+		$mes->addError("Couldn't read ".$lanfile);
 	}
 
 	$srch = array("<?php","<?","?>");
