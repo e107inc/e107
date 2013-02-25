@@ -1947,14 +1947,17 @@ class admin_newspost
 */
 
 		$text .= "
-		<div class='admintabs' id='tab-container'>
-			<ul class='e-tabs' id='core-emote-tabs'>
-				<li id='tab-general'><a href='#core-newspost-create'>".LAN_NEWS_52."</a></li>
-				<li id='tab-seo'><a href='#core-newspost-seo'>SEO</a></li>
-				<li id='tab-advanced'><a href='#core-newspost-edit-options'>".LAN_NEWS_53."</a></li>
-			</ul>
-			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
-				<fieldset id='core-newspost-create'>
+			<ul class='nav nav-tabs'>
+		    <li class='active'><a href='#core-newspost-create' data-toggle='tab'>".LAN_NEWS_52."</a></li>
+		    <li><a href='#core-newspost-seo' data-toggle='tab'>SEO</a></li>
+		    <li><a href='#core-newspost-edit-options' data-toggle='tab'>".LAN_NEWS_53."</a></li>
+		  </ul>
+		  <form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
+			
+		  <div class='tab-content'>
+				
+				<div class='tab-pane active' id='core-newspost-create'>
+				<fieldset>
 					<legend>".LAN_NEWS_52."</legend>
 					<table class='table adminform'>
 						<colgroup>
@@ -2094,23 +2097,29 @@ class admin_newspost
 		$text .= "<tr>
 					
 					<td colspan='2'>\n";
-		$text .= "<div class='e-tabs'>
-		<ul>
-			<li><a href='#news-body-container'>".NWSLAN_13."</a></li>
-			<li><a href='#news-extended-container'>".NWSLAN_14."</a></li>
-		</ul>";
+		
+		$text .= '<ul class="nav nav-tabs">
+		    <li class="active"><a href="#news-body-container" data-toggle="tab">'.NWSLAN_13.'</a></li>
+		    <li><a href="#news-extended-container" data-toggle="tab">'.NWSLAN_14.'</a></li>
+		  </ul>
+		  <div class="tab-content">';
+		
 		
 		$val = (strstr($tp->post_toForm(vartrue($_POST['news_body'])), "[img]http") ? $tp->post_toForm(vartrue($_POST['news_body'])) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
-        $text .= "<div id='news-body-container' class='e-tab'>";
+        $text .= "<div id='news-body-container' class='tab-pane active'>";
         $text .= $frm->bbarea('news_body', $val, 'news', 'news');
-		$text .= "</div><div id='news-extended-container' class='t-container'>";
-		
-		
+		$text .= "</div>";		
+		$text .= "<div id='news-extended-container' class='tab-pane'>";
+			
 		$val = (strstr($tp->post_toForm(vartrue($_POST['news_extended'])), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
 		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news','large');
 		
 		$text .= "</div>
 			</div></td></tr>";
+			
+			
+			
+			
 		//-----------
 		
 		/*		
@@ -2174,12 +2183,12 @@ class admin_newspost
 							</tr>
 						</tbody>
 					</table>
-				</fieldset>
+				</fieldset></div>
 		";
 
 		//BEGIN SEO block
-		$text .= "
-				<fieldset id='core-newspost-seo'>
+		$text .= "<div class='tab-pane' id='core-newspost-seo'>
+				<fieldset>
 					<legend>SEO</legend>
 					<table class='table adminform'>
 						<colgroup>
@@ -2217,12 +2226,12 @@ class admin_newspost
 							
 						</tbody>
 					</table>
-				</fieldset>
+				</fieldset></div>
 		";
 
 		//BEGIN Options block
-		$text .= "
-				<fieldset id='core-newspost-edit-options'>
+		$text .= "<div class='tab-pane' id='core-newspost-edit-options'>
+				<fieldset>
 					<legend>".LAN_NEWS_53."</legend>
 					<table class='table adminform'>
 						<colgroup>
@@ -2334,10 +2343,10 @@ class admin_newspost
 		$data = array('method'=>'form', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'create_item');	
 		$text .= $frm->renderHooks($data);
 		
-		$text .= "
-						</tbody>
+		$text .= "</tbody>
 					</table>
 				</fieldset>
+				</div>
 				<div class='buttons-bar center'>
 					".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'other')."
 					".$frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
