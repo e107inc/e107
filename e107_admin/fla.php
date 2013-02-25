@@ -26,10 +26,11 @@ $e_sub_cat = 'failed_login';
 require_once('auth.php');
 
 require_once(e_HANDLER.'form_handler.php');
-$frm = new e_form();
+$frm = e107::getForm();
 
 require_once(e_HANDLER.'message_handler.php');
-$emessage = &eMessage::getInstance();
+//$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 
 $tmp = (e_QUERY) ? explode('.', e_QUERY) : '';
 $from = intval(varset($tmp[0], 0));
@@ -81,7 +82,7 @@ if(isset($_POST['delbanSubmit']))
 	}
 	if ($delcount)
 	{
-		$emessage->add(FLALAN_3.": ".$delcount, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(FLALAN_3.": ".$delcount);
 	}
 
 	$bancount = 0;
@@ -93,7 +94,7 @@ if(isset($_POST['delbanSubmit']))
 			//if (!$e107->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
 			if (!e107::getIPHandler()->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
 			{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
-				$emessage->add(str_replace(FLALAN_18,'--IP--',$at['gen_ip']), E_MESSAGE_WARNING);
+				$mes->addWarning(str_replace(FLALAN_18,'--IP--',$at['gen_ip']));
 			}
 			else $bancount++;
 			$banlist_ip = $at['gen_ip'];
@@ -102,7 +103,7 @@ if(isset($_POST['delbanSubmit']))
 			$sql->db_Delete("generic", "gen_id='{$ban}' ");
 		}
 	}
-	$emessage->add(FLALAN_5.": ".$bancount, $bancount ? E_MESSAGE_SUCCESS : E_MESSAGE_INFO);
+	$mes->add(FLALAN_5.": ".$bancount, $bancount ? E_MESSAGE_SUCCESS : E_MESSAGE_INFO); // FIXME
 }
 
 
@@ -117,7 +118,7 @@ if(e_QUERY == 'dabl')
 		}
 	}
 	//XXX - add delcount to the message
-	$emessage->add(FLALAN_17, E_MESSAGE_SUCCESS);
+	$mes->addSuccess(FLALAN_17);
 }
 
 
@@ -132,7 +133,7 @@ if($sql->db_Select('generic', "*", "gen_type='auto_banned' ORDER BY gen_datestam
 	}
 
 	$message .= "<div class='right'>(<a href='".e_SELF."?dabl'>".FLALAN_16."</a>)</div>";
-	$emessage->add($message);
+	$mes->addInfo($message);
 
 }
 
@@ -140,7 +141,8 @@ $gen = new convert;
 $fla_total = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'");
 if(!$sql->db_Select('generic', '*', "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
-	$text = $emessage->render()."<div class='center'>".FLALAN_2."</div>";
+	//$text = $mes->render()."<div class='center'>".FLALAN_2."</div>";
+	$mes->addInfo(FLALAN_2);
 }
 else
 {
@@ -218,7 +220,7 @@ else
 
 }
 
-$e107->ns->tablerender(ADLAN_146, $emessage->render().$text);
+$ns->tablerender(ADLAN_146, $mes->render().$text);
 
 require_once("footer.php");
 /**
