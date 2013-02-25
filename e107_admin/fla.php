@@ -29,7 +29,6 @@ require_once(e_HANDLER.'form_handler.php');
 $frm = e107::getForm();
 
 require_once(e_HANDLER.'message_handler.php');
-//$emessage = &eMessage::getInstance();
 $mes = e107::getMessage();
 
 $tmp = (e_QUERY) ? explode('.', e_QUERY) : '';

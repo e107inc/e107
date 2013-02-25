@@ -28,8 +28,8 @@ require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
 require_once(e_HANDLER."form_handler.php");
 
-$frm = new e_form();
-$emessage = &eMessage::getInstance();
+$frm = e107::getForm();
+$mes = e107::getMessage();
 $lck = new lancheck;
 
 
@@ -136,12 +136,12 @@ if(isset($_POST['submit']))
 	{
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_ERROR;
 		$message = '';
-		$emessage->add(LAN_CHECK_17, E_MESSAGE_ERROR);
+		$mes->addError(LAN_CHECK_17);
 	}
 	else
 	{
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
-		$emessage->add(sprintf(LAN_CHECK_23, basename($writeit)), E_MESSAGE_SUCCESS);
+		$mes->addSuccess(sprintf(LAN_CHECK_23, basename($writeit)));
 	}
 	fclose($writeit);
 
@@ -155,7 +155,7 @@ if(isset($_POST['submit']))
 	
 
 
-	$e107->ns->tablerender($caption, $emessage->render().$message);
+	$ns->tablerender($caption, $mes->render().$message);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
@@ -279,11 +279,11 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	{
 		e107::getConfig()->setPref('lancheck/'.$_POST['language'],1);
 		e107::getConfig()->save(FALSE);
-		$mes->add(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>', E_MESSAGE_SUCCESS);		
+		$mes->addSuccess(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>');		
 	}
 	else  
 	{
-		$mes->add(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>', E_MESSAGE_WARNING);
+		$mes->addWarning(LAN_CHECK_27.'<b>'.$lck->error_count.'</b>');
 	}
 	
 
@@ -300,7 +300,7 @@ class lancheck
 	var $error_count=0;
 	
 	function check_core_lanfiles($checklan,$subdir=''){
-		global $frm;
+		$frm = e107::getForm();
 		
 		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
 		$check = $this->get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
@@ -506,7 +506,7 @@ class lancheck
 	// for plugins and themes - checks what kind of language files directory structure we have
 	function check_lanfiles($mode, $comp_name, $base_lan="English", $target_lan)
 	{
-		global $frm;
+		$frm = e107::getForm();
 		
 		$folder['P'] = e_PLUGIN.$comp_name;
 		$folder['T'] = e_THEME.$comp_name;
@@ -594,7 +594,9 @@ class lancheck
 	}
 	
 	function edit_lanfiles($dir1,$dir2,$f1,$f2){
-		global $e107, $emessage, $lan;
+		global $e107, $lan;
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
 	
 		/*    echo "<br />dir1 = $dir1";
 		echo "<br />file1 = $f1";
@@ -713,7 +715,7 @@ class lancheck
 			</form>
 		";
 	
-		$e107->ns->tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24, $text);
+		$ns->tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24, $text);
 		require_once(e_ADMIN."footer.php");
 		exit;
 	
@@ -820,7 +822,9 @@ function lancheck_adminmenu() {
 
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_language.php");
 
-	global $action,$pref;
+	global $action;
+	$pref = e107::getPref();
+	
 	if ($action == "") {
 		$action = "tools";
 	}
@@ -843,5 +847,5 @@ function lancheck_adminmenu() {
 	e107::getNav()->admin(ADLAN_132, $action, $var);
 }
 
-	$ns -> tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_1, LAN_CHECK_26);
+	$ns->tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_1, LAN_CHECK_26);
 	require_once(e_ADMIN."footer.php");
