@@ -123,10 +123,10 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	$cal_text .= 	"<tr>
 	<td class='forumheader3'>".EC_LAN_153."</td>
 	<td class='forumheader3' style='text_align:center'>";
-	$cal_text .= gen_drop(FALSE)."</td>
+	$cal_text .= gen_drop(FALSE, $ecal_class)."</td>
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_154."</td>
-	<td class='forumheader3' style='text_align:center'>".gen_drop(TRUE)."</td>
+	<td class='forumheader3' style='text_align:center'>".gen_drop(TRUE, $ecal_class)."</td>
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_155."</td>
 	<td class='forumheader3' style='text_align:center'>";
@@ -438,7 +438,7 @@ function decode_date($date_string, $last_day = FALSE)
 // Generate monthly drop-down - FALSE = first, TRUE = last
 // For the first date we want beginning of previous year to end of current year
 // For the last date we want end of next 
-function gen_drop($drop_type)
+function gen_drop($drop_type, $ecal_class)
 {
 	$text = "<select name='".($drop_type ? 'end_date' : 'start_date')."' class='tbox' style='width:140px;' >\n";
 	if ($drop_type)
@@ -454,15 +454,15 @@ function gen_drop($drop_type)
 	}
 
 	// Get date to be 1st of month
-	$date = getdate($match_date);
-	$match_date = mktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
+	$date = $ecal_class->gmgetdate($match_date);
+	$match_date = gmmktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
  
 	for ($i = 0; $i < 24; $i++)
 	{ 
 		$sel_text = (($match_date == $start_date) ? "selected='selected'" : "");
-		$date = getdate($start_date);
+		$date = $ecal_class->gmgetdate($start_date);
 		$text .= "<option value = '{$date['year']}{$date['mon']}' {$sel_text}>{$date['month']} {$date['year']} </option>\n";
-		$start_date = mktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
+		$start_date = gmmktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
 	}
 	$text .= "</select>\n";
 	return $text;
