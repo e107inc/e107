@@ -8,10 +8,8 @@
  *
  * Mailout - admin-related functions
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 12775 $
- * $Date: 2012-06-01 09:09:14 +0100 (Fri, 01 Jun 2012) $
- * $Author: e107coders $
+ * $URL$
+ * $Id$
  *
  */
 
@@ -419,7 +417,7 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function loadMailHandlers($options = 'all')
 	{
-		global $pref;
+		$pref = e107::getPref();
 
 		$ret = 0;
 		$toLoad = explode(',', $options);
@@ -832,7 +830,7 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	function show_mailform(&$mailSource)
 	{
-		global $pref,$HANDLERS_DIRECTORY;
+		global $HANDLERS_DIRECTORY;
 		global $mailAdmin;
 		
 		$sql = e107::getDb();
@@ -840,11 +838,11 @@ class mailoutAdminClass extends e107MailManager
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$pref = e107::getPref();
 		
 		if (!is_array($mailSource))
 		{
-			$mes = e107::getMessage();
-			$mes->add('Coding error - mail not array (521)', E_MESSAGE_ERROR);
+			$mes->addError('Coding error - mail not array (521)');
 			//$ns->tablerender('ERROR!!', );
 			//exit;
 		}
@@ -858,7 +856,7 @@ class mailoutAdminClass extends e107MailManager
 		if(strpos($_SERVER['SERVER_SOFTWARE'],'mod_gzip') && !is_readable(e_HANDLER.'phpmailer/.htaccess'))
 		{
 			$warning = LAN_MAILOUT_40.' '.$HANDLERS_DIRECTORY.'phpmailer/ '.LAN_MAILOUT_41;
-			$ns->tablerender(LAN_MAILOUT_42, $warning);
+			$ns->tablerender(LAN_MAILOUT_42, $mes->render().$warning);
 		}
 
 		$debug = (e_MENU == "debug") ? "?[debug]" : "";
@@ -1016,7 +1014,7 @@ class mailoutAdminClass extends e107MailManager
 		</form>
 		</div>";
 
-		$ns->tablerender(LAN_MAILOUT_15,$mes->render(). $text);		// Render the complete form
+		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_15, $mes->render(). $text);		// Render the complete form
 	}
 
 
@@ -1087,14 +1085,15 @@ class mailoutAdminClass extends e107MailManager
 	 */
 	public function showEmailTemplate($mailId)
 	{
+		$mes = e107::getMessage();
+		$ns = e107::getRender();
+
 		$mailData = $this->retrieveEmail($mailId);
 		
-		$text = "<div style='text-align:center'>";
-
 		if ($mailData === FALSE)
 		{
-			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79.'</div></div>';
-			$this->e107->ns-> tablerender("<div style='text-align:center'>".LAN_MAILOUT_171."</div>", $text);
+			$mes->addInfo(LAN_MAILOUT_79);
+			$ns-> tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $mes->render().$text);
 			exit;
 		}
 
@@ -1114,11 +1113,11 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</tbody></table>\n</fieldset>";
 
 		$text .= "<div class='buttons-bar center'>
-			<input class='btn button' type='submit' name='email_delete' value=\"".LAN_MAILOUT_256."\" />
-		</div>";
+					".$frm->admin_button('email_delete', LAN_MAILOUT_256, 'other')." 
+				</div>";
 
-		$text .= "</form></div>";
-		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_255.$mailId.'</div>', $text);
+		$text .= "</form>";
+		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_255.$mailId, $text);
 	}
 
 
@@ -1134,13 +1133,14 @@ class mailoutAdminClass extends e107MailManager
 	public function showDeleteConfirm($mailID, $nextPage = 'saved')
 	{
 		$mailData = $this->retrieveEmail($mailID);
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
 		
-		$text = "<div style='text-align:center'>";
-
 		if ($mailData === FALSE)
 		{
-			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
-			$this->e107->ns-> tablerender("<div style='text-align:center'>".LAN_MAILOUT_171."</div>", $text);
+			$mes->addInfo(LAN_MAILOUT_79);
+			$ns-> tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $mes->render().$text);
 			exit;
 		}
 
@@ -1165,12 +1165,12 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</tbody></table>\n</fieldset>";
 
 		$text .= "<div class='buttons-bar center'>
-			<input class='btn button' type='submit' name='email_delete' value=\"".LAN_DELETE."\" />
-			&nbsp;<input class='btn button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />
-		</div>";
+					".$frm->admin_button('email_delete', LAN_DELETE, 'delete')."
+					".$frm->admin_button('email_cancel', LAN_CANCEL, 'cancel')."
+				</div>
+				</form>";
 
-		$text .= "</form></div>";
-		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_171."</div>", $text);
+		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $text);
 	}
 
 
@@ -1188,6 +1188,10 @@ class mailoutAdminClass extends e107MailManager
 		// Need to select main email entries; count number of addresses attached to each
 		$gen = new convert;
 		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
+
 		switch ($type)
 		{
 			case 'sent' :
@@ -1205,16 +1209,14 @@ class mailoutAdminClass extends e107MailManager
 	  
 		$emails_found = array();			// Log ID and count for later
 
-		$text = "<div style='text-align:center'>";
-
 		if (!$count)
 		{
-			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
-			$this->e107->ns-> tablerender("<div style='text-align:center'>".$this->tasks[$type]['title']."</div>", $text);
+			$mes->addInfo(LAN_MAILOUT_79);
+			$ns->tablerender($this->tasks[$type]['title'], $mes->render() . $text);
 			return;
 		}
 
-		$text .= "
+		$text = "
 			<form action='".e_SELF.'?'.e_QUERY."' id='email_list' method='post'>
 			<fieldset id='emails-list'>
 			<table class='table adminlist'>";
@@ -1243,7 +1245,7 @@ class mailoutAdminClass extends e107MailManager
 							$text .= $gen->convert_date($row[$fieldName], 'short');
 							break;
 						case 'trunc200' :
-							$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
+							$text .= $tp->text_truncate($row[$fieldName], 200, '...');
 							break;
 						case 'chars' :			// Show generated html as is
 							$text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
@@ -1273,14 +1275,14 @@ class mailoutAdminClass extends e107MailManager
 		}
 		$text .= "</tbody></table><br /><br />\n";
 
-		if ($totalCount > $count)
+		if ($totalCount > $count) 
 		{
 			$parms = "{$totalCount},{$amount},{$from},".e_SELF."?mode={$type}&amp;count={$amount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}";
-			$text .= $this->e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+			$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
-		$text .= '</fieldset></form><br /></div>';
-		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".$this->tasks[$type]['title']."</div>", $text);
+		$text .= '</fieldset></form>';
+		$ns->tablerender(ADLAN_136.SEP.$this->tasks[$type]['title'], $text);
 	}
 
 
@@ -1363,9 +1365,8 @@ class mailoutAdminClass extends e107MailManager
 
 		// We've got all the email addresses here - display a confirmation form
 		// Include start/end dates for send
-		$text = "<div style='text-align:center'>";
 
-		$text .= "
+		$text = "
 			<form action='".e_SELF.'?mode=marksend&amp;m='.$mailMainID."' id='email_send' method='post'>
 			<fieldset id='email-send'>
 			<table class='table adminlist'>
@@ -1419,7 +1420,7 @@ class mailoutAdminClass extends e107MailManager
 		</form>
 		</div>";
 		
-		e107::getRender()->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_179."</div>",$mes->render(). $text);
+		e107::getRender()->tablerender(ADLAN_136.SEP.LAN_MAILOUT_179, $mes->render(). $text);
 	}	// End of previewed email
 
 
@@ -1501,15 +1502,15 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$gen = new convert;
 		$frm = e107::getForm();
+		$mes = e107::getMessage();
+		$tp = e107::getRender();
 
 		$mailData = $this->retrieveEmail($mailID);
 		
-		$text = "<div style='text-align:center'>";
-
 		if ($mailData === FALSE)
 		{
-			$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
-			$this->e107->ns-> tablerender("<div style='text-align:center'>".LAN_MAILOUT_171."</div>", $text);
+			$mes->addInfo(LAN_MAILOUT_79);
+			$ns-> tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $mes->render().$text);
 			exit;
 		}
 
@@ -1625,13 +1626,11 @@ class mailoutAdminClass extends e107MailManager
 			if ($totalCount > $count)
 			{
 				$parms = "{$totalCount},{$this->showCount},{$this->showFrom},".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$this->showCount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}";
-				$text .= $this->e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
 		}
 
-		$text .= "</div>";
-
-		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_181."</div>", $text);
+		$ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_181, $mes->render() . $text);
 	}
 
 

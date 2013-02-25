@@ -8,12 +8,12 @@
  *
  * Administration - Site Maintenance
  *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
+
+// TODO - MAJOR LAN REWRITE NEEDED 
 
 define('CORE_DATE_ORDER', 'dmy');			// Temporary until we find somewhere better to put it.
 											// Defines order of field entry/display in date boxes
@@ -33,9 +33,9 @@ define('LAN_MAILOUT_12','All Members');
 define('LAN_MAILOUT_13','All Unverified Members ');
 define('LAN_MAILOUT_14','Display Name');
 define('LAN_MAILOUT_15','Mailout');
-define('LAN_MAILOUT_16','username');
-define('LAN_MAILOUT_17','signup link');
-define('LAN_MAILOUT_18','user id');
+define('LAN_MAILOUT_16','Username');
+define('LAN_MAILOUT_17','Signup link');
+define('LAN_MAILOUT_18','User ID');
 define('LAN_MAILOUT_19','No target email address specified');
 define('LAN_MAILOUT_20','Sendmail-path');
 define('LAN_MAILOUT_21','Bulk mailing Entries');
