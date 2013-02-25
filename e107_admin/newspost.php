@@ -258,36 +258,66 @@ class news_sub_form_ui extends e_admin_form_ui
 		$submitnews_title 	= $row->get('submitnews_title');
 		$submitnews_file 	= $row->get('submitnews_file');
 		$submitnews_item 	= $row->get('submitnews_item');
+
+	//	$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
 		
-		$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
-		$text .= $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');
+		
+		$text .= "<a data-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."' class='e-tip' title='".LAN_PREVIEW."'>";
+		$text .= $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');	
 		$text .= '</a>';
-		$text .= "<div id='submitted_".$submitnews_id."' title='".$tp->toAttribute($submitnews_title)."' style='display:none'>".$tp->toHTML($submitnews_item,TRUE);
+		
+		$text .= '
+
+		 <div id="submitted_'.$submitnews_id.'" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+			    <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
+			    </div>
+			    <div class="modal-body">
+			    <p>';
+		
+		$text .= $tp->toHTML($submitnews_item,TRUE);
 				
 		if($submitnews_file)
 		{
 			$tmp = explode(',',$submitnews_file);
+			
 			$text .= "<br />";
+			
+			
 			foreach($tmp as $imgfile)
-			{
-				$text .= "<br /><img src='".e_UPLOAD.$imgfile."' alt='".$imgfile."' />";					
+			{				
+				$url = $tp->thumbUrl(e_UPLOAD.$imgfile,array('aw'=>400),true);
+				$text .= "<br /><img src='".$url."' alt='".$imgfile."' />";					
 			}
 		}
-		$text .= "\n</div>";
-		return $text;
+		
+			    
+		$text .= '</p>
+			    </div>
+			    <div class="modal-footer">
+			    <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+			    </div>
+			    </div>';		
+			
+		return $text;	
+			
+
 
 	}
 	
 	// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
 	{
-	
+		
 		if($attributes['mode'] == 'read')
 		{
+			$text = "<div class='btn-group'>";
 			$approved = $this->getController()->getListModel()->get('submitnews_auth'); // approved;
 			if($approved == 0)
 			{
-				$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
+				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
+				$text = "<a href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
 			else // Already submitted; 
@@ -296,7 +326,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			}
 					
 			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete'.$delcls));
-			
+			$text .= "</div>";
 			return $text;
 		}
 	}
@@ -405,10 +435,10 @@ class news_admin_ui extends e_admin_ui
 	function createPage()
 	{
 		// print_a($_POST);
-		if(isset($_POST['submitnews']))
+		if(isset($_GET['sub']))
 		{
-			$id = key($_POST['submitnews']);
-	
+			$id = intval($_GET['sub']);
+			
 			$this->loadSubmitted($id); 	
 		}
 		else
@@ -464,22 +494,23 @@ class news_admin_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-			if ($sql->db_Select("submitnews", "*", "submitnews_id=".intval($id), TRUE))
+		if ($sql->select("submitnews", "*", "submitnews_id=".intval($id)))
 			{
+	
 				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
-				$row = $sql->db_Fetch();
+				$row = $sql->fetch();
 				$_POST['news_title'] = $row['submitnews_title'];
 				$_POST['news_body'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
 
-				if (defsettrue('e_WYSIWYG'))
-				{
-				  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
-				  if (substr($_POST['news_body'],0,6) == '[html]') $_POST['news_body'] = substr($_POST['news_body'],6);
-					$_POST['news_body'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
-					$_POST['news_body'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
-				}
-				else
+			//	if (defsettrue('e_WYSIWYG'))
+			//	{
+			//	  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
+			//	  if (substr($_POST['news_body'],0,6) == '[html]') $_POST['news_body'] = substr($_POST['news_body'],6);
+			//		$_POST['news_body'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
+			//		$_POST['news_body'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
+			//	}
+			//	else
 				{
 					$_POST['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
 					
