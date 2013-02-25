@@ -334,6 +334,7 @@ define("LAN_KEYWORDS","Keywords");
 define("LAN_IMAGE","Image");
 define("LAN_TEMPLATE","Template");
 define("LAN_TYPE", "Type");
+define("LAN_NONE", "None");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 

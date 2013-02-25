@@ -8,10 +8,8 @@
  *
  * Administration Area - Front page
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -36,7 +34,7 @@ $e_sub_cat = 'frontpage';
 require_once ('auth.php');
 require_once (e_HANDLER.'form_handler.php');
 require_once (e_HANDLER.'message_handler.php');
-$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 
 require_once (e_HANDLER.'userclass_class.php');
 
@@ -275,7 +273,7 @@ if(isset($_POST['fp_save_new']))
 	}
 	else
 	{ // Someone playing games
-		$emessage->add('Software error', E_MESSAGE_ERROR);
+		$mes->addError('Software error'); // TODO LAN
 	}
 }
 
@@ -311,7 +309,6 @@ if($fp_update_prefs)
 	$corePrefs->set('frontpage', $fp_list);
 	$corePrefs->set('frontpage_force', $fp_force);
 	$result = $corePrefs->save(FALSE, TRUE);
-	$emessage->add(FRTLAN_1, E_MESSAGE_SUCCESS);
 }
 
 
@@ -325,17 +322,17 @@ if(isset($_POST['fp_add_new']))
 {
 	$text = $fp->edit_rule(array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => 'news.php', 'force' => FALSE)); // Display edit form as well
 	$text .= $fp->select_class($fp_settings, FALSE);
-	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_42, $text);
+	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_42, $text);
 }
 elseif(isset($_POST['fp_edit_rule']))
 {
 	$text = $fp->edit_rule($fp_settings[key($_POST['fp_edit_rule'])]); // Display edit form as well
 	$text .= $fp->select_class($fp_settings, FALSE);
-	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_46, $text);
+	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_46, $text);
 }
 else
 { // Just show existing rules
-	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_13, $emessage->render().$fp->select_class($fp_settings, TRUE));
+	$ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_13, $mes->render().$fp->select_class($fp_settings, TRUE));
 }
 
 
@@ -379,7 +376,7 @@ class frontpage
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first'>".FRTLAN_40."</th>
+							<th class='first'>".LAN_ORDER."</th>
 							<th>".FRTLAN_53."</th>
 							<th>".FRTLAN_49."</th>
 							<th>".FRTLAN_35."</th>
@@ -401,7 +398,7 @@ class frontpage
 							<input class='image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc".$order."' />
 							<input class='image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec".$order."' />
 							<input class='image edit' type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
-							<input class='image delete' type='image' title='".LAN_DELETE."' data-confirm='".FRTLAN_55."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
+							<input class='image delete' type='image' title='".LAN_DELETE."' data-confirm='". LAN_CONFDELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 						</td>
 					</tr>";
 		}
@@ -507,7 +504,7 @@ class frontpage
 				<div class='buttons-bar center'>
 					".$this->frm->hidden('fp_order', $rule_info['order'])."
 					".FRTLAN_43.e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
-					".$this->frm->admin_button('fp_save_new', FRTLAN_12, 'update')."
+					".$this->frm->admin_button('fp_save_new', LAN_UPDATE, 'update')."
 					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
 			</fieldset>
@@ -551,7 +548,7 @@ class frontpage
 		if(strlen($path))
 			return FRTLAN_51.":".$path; // 'Other'
 		else
-			return FRTLAN_52; // 'None'
+			return LAN_NONE; // 'None'
 	}
 
 
@@ -671,7 +668,7 @@ function headerjs()
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
-			(".e_jshelper::toString(FRTLAN_54).").addModLan('core', 'delete_confirm');
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 		</script>
 		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
