@@ -45,7 +45,8 @@ require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
 // require_once (e_HANDLER."message_handler.php");
-$emessage = e107::getMessage();
+//$emessage = e107::getMessage();
+$mes = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'classis';		// Shouldn't be needed - but just in case
 
@@ -57,7 +58,7 @@ if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
 	$ns -> tablerender(ADLAN_ERR_1, $text);*/
 
-	$emessage->add($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/", E_MESSAGE_WARNING);
+	$mes->addWarning($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/");
 }
 
 /* Not used in 0.8
@@ -95,7 +96,7 @@ $allowed_types = get_filetypes();			// Get allowed types according to filetypes.
 if (count($allowed_types) == 0)
 {
 	$allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1);
-	$emessage->add("Setting default filetypes: ".implode(', ',array_keys($allowed_types)), E_MESSAGE_INFO);
+	$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($allowed_types)));
 
 }
 
@@ -140,13 +141,13 @@ foreach ($public as $dir)
 if (isset($potential))
 {
 	//$text = ADLAN_ERR_3."<br /><br />";
-	$emessage->add(ADLAN_ERR_3, E_MESSAGE_WARNING);
+	$mes->addWarning(ADLAN_ERR_3);
 	$text = '<ul>';
 	foreach ($potential as $p_file)
 	{
 		$text .= '<li>'.$p_file.'</li>';
 	}
-	$emessage->add($text, E_MESSAGE_WARNING);
+	$mes->addWarning($text);
 	//$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
