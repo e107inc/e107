@@ -28,13 +28,27 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 	
 	if(ADMIN)
 	{
-		define("SWITCH_TO_BB","$('#'+id).after('<div><a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-mini\">Switch to bbcode</a></div>');");	
-	}
+	    $insert = "$('#'+id).after('<div>";
+	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-mini\">Switch to bbcode<\/a>";
+        
+	     if(e_PAGE == 'mailout.php')
+        {
+            $insert .= "&nbsp;&nbsp;<a href=\"#\" class=\"btn btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|DISPLAYNAME|\" >".LAN_MAILOUT_14."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|SIGNUP_LINK|\" >".LAN_MAILOUT_17."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|USERID|\" >".LAN_MAILOUT_18."<\/a>";           
+        }
+        
+	    $insert .= "</div>');";
+        
+		define("SWITCH_TO_BB",$insert);	
+	
+    }
 	else 
 	{
 		define("SWITCH_TO_BB","");
 	}
-	
+    	
 //	print_a($_POST);
 	
 	// <div><a href='#' class='e-wysiwyg-switch' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'".$tinyMceID."');expandit('".$toggleID."');\">Toggle WYSIWYG</a></div>
@@ -50,6 +64,13 @@ if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php") )
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 		       			
 			});
+			
+			$('.tinyInsert').click(function() {
+                                            
+                var val = $(this).attr('data-value'); 
+                tinyMCE.selectedInstance.execCommand('mceInsertContent',0,val);
+                return false;       
+            });
 						
 				
 			// When new tab is added - convert textarea to TinyMce. 

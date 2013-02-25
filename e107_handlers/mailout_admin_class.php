@@ -977,14 +977,7 @@ class mailoutAdminClass extends e107MailManager
 			<div>";
 
 	//	$text .= display_help('helpb','mailout');
-
-		if(e_WYSIWYG) 
-		{
-			$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='btn button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
-			<input type='button' class='btn button' name='usrlink' value=\"".LAN_MAILOUT_14."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|DISPLAYNAME|')\" />
-			<input type='button' class='btn button' name='usrlink' value=\"".LAN_MAILOUT_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
-			<input type='button' class='btn button' name='usrid' value=\"".LAN_MAILOUT_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
-		}
+ 
 
 		$text .="
 			</div></td>
