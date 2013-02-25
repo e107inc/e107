@@ -36,8 +36,9 @@ require_once('auth.php');
 
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."message_handler.php");
-$frm = new e_form(true);
-$emessage = e107::getMessage();
+//$frm = new e_form(true);
+$frm = e107::getForm();
+$mes = e107::getMessage();
 $prm = e107::getUserPerms();
 
 $action = '';
@@ -75,7 +76,7 @@ if (isset($_POST['edit_admin']) || $action == "edit")
 	if ((!$sql->db_Select("user", "*", "user_id=".$theid))
 		|| !($row = $sql->db_Fetch()))
 	{
-		$emessage->add("Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}", E_MESSAGE_DEBUG);	// Debug code - shouldn't be executed
+		$mes->addDebug("Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}");	// Debug code - shouldn't be executed
 	}
 }
 
@@ -93,14 +94,14 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 		<br /><br />
 		<a href='".e_ADMIN_ABS."administrator.php'>".ADMSLAN_4."</a>";
 
-		$emessage->add($text, E_MESSAGE_ERROR);
-		$ns->tablerender(LAN_ERROR, $emessage->render());
+		$mes->addError($text);
+		$ns->tablerender(LAN_ERROR, $mes->render());
 
 		require_once("footer.php");
 		exit;
 	}
 
-	e107::getMessage()->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
+	$mes->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
 	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
 	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }

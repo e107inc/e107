@@ -40,7 +40,7 @@ define('BANLAN_29','Message to show to banned user');
 define('BANLAN_30','Ban duration');
 define('BANLAN_31','(Use an empty message if you wish the user to get a blank screen)');
 define('BANLAN_32','Indefinite');
-define('BANLAN_33','Settings Updated');
+//define('BANLAN_33','Settings Updated');
 define('BANLAN_34','Expired');
 define('BANLAN_35','Import/Export');
 define('BANLAN_36','Export Types');
