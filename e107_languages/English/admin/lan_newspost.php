@@ -48,7 +48,7 @@ define("NWSLAN_36", "News Category Updated");
 define("NWSLAN_37", "Are you sure you want to delete this category?");
 define("NWSLAN_38", "Are you sure you want to delete this submitted news item?");
 define("NWSLAN_39", "Are you sure you want to delete this news item?");
-define("NWSLAN_40", "Title");
+//define("NWSLAN_40", "Title");
 
 //define("NWSLAN_42", "Untitled"); - not allowed anymore
 define("NWSLAN_43", "No news items");
