@@ -27,11 +27,10 @@ $e_sub_cat = 'filemanage';
 require_once("auth.php");
 require_once(e_HANDLER.'upload_handler.php');
 require_once(e_HANDLER."form_handler.php");
-$frm = new e_form();
+$frm = e107::getForm();
 
 require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
-//FIXME - messages
+$mes = e107::getMessage(); //FIXME
 
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_UPLOAD)) ? TRUE : FALSE;
 
@@ -82,11 +81,13 @@ if (isset($_POST['deleteconfirm']))
 			if (@unlink($destination_file))
 			{
 				$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
+				//$mes->addSuccess(LAN_DELETED.": <br />."$destination_file."<br />") // FIXME syntax
 				$deleteList[] = $destination_file;
 			}
 			else
 			{
 				$message .= FMLAN_28." '".$destination_file."'.<br />";
+				//$mes->addError(LAN_DELETED_FAILED.": <br />."$destination_file."<br />) // FIXME syntax
 			}
 		}
 
@@ -101,12 +102,12 @@ if (isset($_POST['deleteconfirm']))
 				$newpath = $_POST['movepath'];
 				if (rename(e_BASE.$delfile,$newpath.$newfile))
 				{
-					$message .= FMLAN_38." ".$newpath.$newfile."<br />";
+					$message .= FMLAN_38." ".$newpath.$newfile."<br />"; // FIXME 
 					$moveList[] = e_BASE.$delfile.'=>'.$newpath.$newfile;
 				}
 				else
 				{
-					$message .= FMLAN_39." ".$newpath.$newfile."<br />";
+					$message .= FMLAN_39." ".$newpath.$newfile."<br />"; // FIXME 
 					$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
 				}
 			}
@@ -140,14 +141,14 @@ if (isset($_POST['upload']))
 		{
 			if ($files['error'][$key])
 			{
-				$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name;
+				$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name; // FIXME 
 			}
 			elseif ($files['size'][$key]) 
 			{
 				$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
 				if (($uploaded === FALSE) || !is_array($uploaded))
 				{
-					$message .= $spacer.FMLAN_51.$name;
+					$message .= $spacer.FMLAN_51.$name; // FIXME 
 					$spacer = '<br />';
 				}
 				else
@@ -160,7 +161,7 @@ if (isset($_POST['upload']))
 						}
 						else
 						{	// Most likely errors trapped earlier.
-							$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname'];
+							$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname']; // FIXME 
 						}
 						$spacer = '<br />';
 					}
@@ -176,7 +177,7 @@ if (isset($_POST['upload']))
 
 
 
-if ($message)
+if ($message) // FIXME 
 {
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
