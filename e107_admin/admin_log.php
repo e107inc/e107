@@ -69,8 +69,10 @@ unset($qs);
 require_once (e_ADMIN.'auth.php');
 require_once (e_HANDLER.'message_handler.php');
 require_once (e_HANDLER.'form_handler.php');
-$emessage = &eMessage::getInstance();
-$frm = new e_form(false);
+//$emessage = &eMessage::getInstance();
+//$frm = new e_form(false);
+$mes = e107::getMessage();
+$frm = e107::getForm();
 
 define('AL_DATE_TIME_FORMAT', 'y-m-d  H:i:s');
 
@@ -167,12 +169,12 @@ if(isset($back_count) && isset($next_action))
 		$qs[1] = $old_date;
 		$qs[2] = $back_count;
 	}
-	else $emessage->add(RL_LAN_050, E_MESSAGE_WARNING);
+	else $mes->addWarning(RL_LAN_050);
 		//$message = RL_LAN_050;
 }
 
 if(!isset($admin_log))
-	$emessage->add("Admin Log not valid", E_MESSAGE_WARNING);
+	$mes->addWarning("Admin Log not valid");
 	//$message .= "  Admin Log not valid";
 
 // Actually delete back events - admin or user audit log
@@ -203,16 +205,16 @@ if(($action == "backdel") && isset($_POST['backdeltype']))
 		{
 			// Add in a log event
 			$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
-			$emessage->add($message, E_MESSAGE_SUCCESS);
+			$mes->addSuccess($message);
 			$admin_log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 		}
 		else
 		{
 			//$message = RL_LAN_054." : ".$sql->mySQLresult;
-			$emessage->add(RL_LAN_054." : ".$sql->mySQLresult, E_MESSAGE_WARNING);
+			$mes->addWarning(RL_LAN_054." : ".$sql->mySQLresult);
 		}
 	} else
-		$emessage->add(RL_LAN_056); //info
+		$mes->addInfo(LAN_NO_CHANGE); 
 
 	$action = "config";
 	unset($qs[1]);
@@ -503,7 +505,7 @@ if($action == "config")
 					<tr>
 						<td>".RL_LAN_045." </td>
 						<td>
-							".gen_log_delete('rolllog_clearadmin').RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."						
+							".gen_log_delete('rolllog_clearadmin')." ".RL_LAN_046.$frm->admin_button('deleteoldadmin', 'no-value', 'delete', RL_LAN_049)."						
 						</td>
 					</tr>
 	";
@@ -514,7 +516,7 @@ if($action == "config")
 					<tr>
 						<td>".RL_LAN_066." </td>
 						<td>
-							".gen_log_delete('rolllog_clearaudit').RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."
+							".gen_log_delete('rolllog_clearaudit')." ".RL_LAN_046.$frm->admin_button('deleteoldaudit', 'no-value', 'delete', RL_LAN_049)."
 						</td>
 					</tr>
 				</tbody>
@@ -525,7 +527,7 @@ if($action == "config")
 	</fieldset>
 	";
 
-	$ns->tablerender(RL_LAN_121, $emessage->render().$text);
+	$ns->tablerender(RL_LAN_121, $mes->render().$text);
 }
 
 //====================================================================
@@ -568,7 +570,7 @@ if(isset($page_title[$action]))
 		'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 
 		'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 
 		'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033),  
-		'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
+		'online' => array(RL_LAN_019, RL_LAN_020, LAN_ID, LAN_USER, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
 
 
@@ -1042,7 +1044,7 @@ if(isset($page_title[$action]))
 		$text .= "<div class='nextprev-bar'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 	}
 
-	$ns->tablerender("{$page_title[$action]}", $emessage->render().$text);
+	$ns->tablerender("{$page_title[$action]}", $mes->render().$text);
 }
 
 function admin_log_adminmenu()
