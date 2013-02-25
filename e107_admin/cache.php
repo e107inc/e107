@@ -34,10 +34,8 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'cache';
 
 require_once("auth.php");
-
 $frm = e107::getForm();
-
-$emessage = eMessage::getInstance();
+$mes = e107::getMessage();
 
 if (e107::getPref('cachestatus') == '2')
 {
@@ -192,7 +190,7 @@ $text = "
 		</fieldset>
 	</form>";
 
-e107::getRender()->tablerender(CACLAN_3, $emessage->render().$text);
+e107::getRender()->tablerender(CACLAN_3, $mes->render().$text);
 
 require_once("footer.php");
 

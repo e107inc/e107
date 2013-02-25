@@ -2,16 +2,14 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Area - Emotions Settings & Packs
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 
@@ -28,8 +26,6 @@ $e_sub_cat = 'emoticon';
 
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
-
-//$emessage = &eMessage::getInstance();
 $mes = e107::getMessage();
 
 if(!$sql->db_Count("core", "(*)", "WHERE e107_name = 'emote_default' AND e107_value !='' "))
@@ -49,12 +45,9 @@ if (isset($_POST['active']))
 		$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$update = true;
-		//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
-		//$mes->addSuccess(LAN_UPDATED);
 	}
 	else
 	{
-		//$emessage->add(LAN_NO_CHANGE);
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
 
@@ -64,7 +57,6 @@ $ns->tablerender($caption, $mes->render() . $text);
 
 /* get packs */
 require_once(e_HANDLER."file_class.php");
-//$fl = new e_file;
 $fl = e107::getFile();
 $emote = new emotec;
 $one_pack = FALSE;
@@ -92,12 +84,10 @@ foreach($_POST as $key => $value)
 		$pref['emotepack'] = str_replace("defPack_", "", $key);
 		if(save_prefs())
 		{
-			//$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
-			//$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
 			$mes->addInfo(LAN_NO_CHANGE);
 		}
 		$admin_log->log_event('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
@@ -131,8 +121,8 @@ class emotec
 	function emotec()
 	{
 		/* constructor */
-		global $fl;
-		$this -> packArray = $fl -> get_dirs(e_IMAGE."emotes");
+		$fl = e107::getFile();
+		$this -> packArray = $fl->get_dirs(e_IMAGE."emotes");
 
 		if(isset($_POST['sub_conf']))
 		{	// Update stored pack configuration
@@ -144,7 +134,6 @@ class emotec
 	// List available emote packs
 	function listPacks()
 	{
-		//global $pref;
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		$fl = e107::getFile();
@@ -282,8 +271,10 @@ class emotec
 	// Configure an individual emote pack
 	function emoteConf($packID)
 	{
-		global $e107, $fl, $sysprefs, $tp;
+		global $e107, $sysprefs;
 		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$fl = e107::getFile();
 		
 		$corea = "emote_".$packID;
 
@@ -367,7 +358,10 @@ class emotec
 	// Generate an XML file - packname.xml in root emoticon directory
 	function emoteXML($packID, $strip_xtn = TRUE)
 	{
-		global $emessage, $fl, $sysprefs, $tp;
+		global $sysprefs;
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		$tp = e107::getParser();
 
 		$fname = e_IMAGE."emotes/".$packID."/emoticons.xml";
 		$backname = e_IMAGE."emotes/".$packID."/emoticons.bak";
@@ -407,11 +401,11 @@ class emotec
 
 		if (file_put_contents($fname,$f_string) === FALSE)
 		{
-			$emessage->add('<strong>'.EMOLAN_30.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname), E_MESSAGE_WARNING);
+			$mes->addWarning('<strong>'.EMOLAN_30.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
 		}
 		else
 		{
-			$emessage->add('<strong>'.EMOLAN_29.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname), E_MESSAGE_SUCCESS);
+			$mes->addSuccess('<strong>'.EMOLAN_29.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname));
 		}
 	}
 
@@ -419,7 +413,9 @@ class emotec
 	// Save configuration for an emote pack that's been edited
 	function saveConf()
 	{
-		global $sql, $tp;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 
 		$packID = $_POST['packID'];
 		unset($_POST['sub_conf'], $_POST['packID']);
@@ -442,7 +438,10 @@ class emotec
 	// Return false to disable listing of packs
 	function installCheck($do_one = FALSE)
 	{
-		global $e107, $emessage, $sql, $fl;
+		global $e107;
+		$sql = e107::getDb(); 
+		$fl = e107::getFile();
+		$ns = e107::getRender();
 
 		// Pick up a list of emote packs from the database
 		$pack_local = array();
@@ -463,8 +462,8 @@ class emotec
 					<div>".LAN_NAME.": {$value}</div>
 					<div>".EMOLAN_20.": ".e_IMAGE_ABS."emotes/</div>
 				";
-				$emessage->add($msg, E_MESSAGE_ERROR);
-				$e107->ns->tablerender(EMOLAN_PAGE_TITLE.' - '.EMOLAN_21, $emessage->render());
+				$mes->addError($msg);
+				$ns->tablerender(EMOLAN_PAGE_TITLE.' - '.EMOLAN_21, $mes->render());
 				return FALSE;
 			}
 
@@ -622,7 +621,7 @@ class emotec
 					else
 					{
 					  //echo "Unsupported XML File Format<br /><br />";
-					  $emessage->add(EMOLAN_33, E_MESSAGE_WARNING);
+					  $mes->addWarning(EMOLAN_33);
 					  $no_error = FALSE;
 					}
 
@@ -636,8 +635,6 @@ class emotec
 				if($confFile['type'] == "php")
 				{
 					include_once(e_IMAGE."emotes/".$value."/".$confFile['file']);
-					//$emessage->add(EMOLAN_25." '{$value}'", E_MESSAGE_INFO);
-
 					$File_type = EMOLAN_24;
 					$tmp = $_emoteconf;		// Use consistent name
 				}
@@ -652,13 +649,11 @@ class emotec
 				  {	// Assume new pack
 				    $sql->db_Insert("core", "'emote_".$value."', '{$tmp}' ");
 				  }
-				  //echo "<div style='text-align: center;'><b>".$File_type." '</b> ".$value."'</div>";
-				  $emessage->add("<strong>{$File_type}</strong> '{$value}'", E_MESSAGE_INFO);
+				  $mes->addInfo("<strong>{$File_type}</strong> '{$value}'");
 				}
 				else
 				{  // Error occurred
-				  //echo "<div style='text-align: center;'><b>".EMOLAN_27." '</b> ".$value."'</div>";
-				  $emessage->add(EMOLAN_27." '{$value}'", E_MESSAGE_ERROR);
+				  $mes->addError(EMOLAN_27." '{$value}'");
 				}
 			}
 		}
@@ -669,12 +664,10 @@ class emotec
 		{
 		   	foreach ($pack_local as $p => $d)
 			{
-		    	$emessage->add(EMOLAN_34.$p.EMOLAN_35, E_MESSAGE_INFO);
+		    	$mes->addInfo(EMOLAN_34.$p.EMOLAN_35);
 		  		$sql->db_Delete("core","`e107_name` = 'emote_{$p}'");
 			}
 		}
-
-		//echo $emessage->render();
 
 	  	return TRUE;
 	}
