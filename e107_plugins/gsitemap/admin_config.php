@@ -35,6 +35,7 @@ class gsitemap
 		/* constructor */
 		
 		$mes = e107::getMessage();
+		
 
 		$this->freq_list = array
 		(
@@ -44,7 +45,7 @@ class gsitemap
 			"weekly"	=>	GSLAN_14,
 			"monthly"	=>	GSLAN_15,
 			"yearly"	=>	GSLAN_16,
-			"never"		=>	GSLAN_17
+			"never"		=>	LAN_NEVER
 		);
 
 		if(isset($_POST['edit']))
@@ -96,6 +97,7 @@ class gsitemap
 
 	function showList()
 	{
+		
 		$mes = e107::getMessage();
 		$sql = e107::getDb();
 		$ns = e107::getRender();
@@ -103,7 +105,8 @@ class gsitemap
 		$frm = e107::getForm();
 		
 		$gen = new convert;
-		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
+		
+		$count = $sql -> select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
 		if (!$count)
 		{
@@ -116,8 +119,7 @@ class gsitemap
 			$mes->addInfo($text);
 			
 			$ns -> tablerender(GSLAN_40, $mes->render());
-			require_once(e_ADMIN."footer.php");
-			exit;
+			return;
 		}
 		else
 		{
@@ -136,8 +138,8 @@ class gsitemap
                 <thead>
 				<tr class='first last' >
 				<th style='text-align: center;'>Id</th>
-				<th>".GSLAN_25."</th>
-				<th>".GSLAN_26."</th>
+				<th>".LAN_NAME."</th>
+				<th>".LAN_URL."</th>
 				<th style='text-align: center'>".GSLAN_27."</th>
 				<th style='text-align: center' >".GSLAN_28."</th>
 				<th style='text-align: center' >".GSLAN_9."</th>
@@ -185,7 +187,7 @@ class gsitemap
 		
 		$e_idt = array_keys($_POST['edit']);
 
-		if($sql -> db_Select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
+		if($sql -> select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
 		{
 			$foo = $sql -> db_Fetch();
 			$foo['gsitemap_name'] = $tp -> toFORM($foo['gsitemap_name']);
@@ -205,14 +207,14 @@ class gsitemap
 		$mes = e107::getMessage();
 		
 		
-		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
+		$count = $sql -> select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
 		
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
 		<table class='table adminform'>
 
 		<tr>
-		<td style='width:25%'>".GSLAN_25."
+		<td style='width:25%'>".LAN_NAME."
 		<span class='smalltext'>&nbsp;</span></td>
 		<td>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_name' size='40' value='".$editArray['gsitemap_name']."' maxlength='100' />
@@ -220,7 +222,7 @@ class gsitemap
 		</tr>
 
 		<tr>
-		<td style='width:25%'>".GSLAN_26."
+		<td style='width:25%'>".LAN_URL."
 		<span class='smalltext'>&nbsp;</span></td>
 		<td>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_url' size='40' value='".$editArray['gsitemap_url']."' maxlength='100' />
@@ -235,7 +237,8 @@ class gsitemap
 		<td>
 		<select class='tbox' name='gsitemap_freq' >\n";
 
-		foreach($this->freq_list as $k=>$fq){
+		foreach($this->freq_list as $k=>$fq)
+		{
 			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
 			$text .= "<option value='$k' $sel>".$fq."</option>\n";
 		}
@@ -261,7 +264,7 @@ class gsitemap
 
 
 		<tr>
-		<td>".GSLAN_30."</td>
+		<td>".LAN_ORDER."</td>
 		<td><select name='gsitemap_order' class='tbox'>";
 
 		for($i=0;$i<$count;$i++){
@@ -273,7 +276,7 @@ class gsitemap
 		</tr>
 
 		<tr>
-		<td>".GSLAN_31."</td>
+		<td>".LAN_VISIBILITY."</td>
 		<td>";
 		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], 'off', "nobody,public,guest,member,admin,classes,language");
 		$text .="
@@ -360,22 +363,22 @@ class gsitemap
 		$importArray = array();
 
 		/* sitelinks ... */
-		$sql -> db_Select("links", "*", "ORDER BY link_order ASC", "no-where");
+		$sql -> select("links", "*", "ORDER BY link_order ASC", "no-where");
 		$nfArray = $sql -> db_getList();
 		foreach($nfArray as $row)
 		{
-			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['link_name']."' "))
+			if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['link_name']."' "))
 			{
 				$importArray[] = array('name' => $row['link_name'], 'url' => $row['link_url'], 'type' => GSLAN_1);
 			}
 		}
 
 		/* custom pages ... */
-		$sql -> db_Select("page", "*", "ORDER BY page_datestamp ASC", "no-where");
+		$sql -> select("page", "*", "ORDER BY page_datestamp ASC", "no-where");
 		$nfArray = $sql -> db_getList();
 		foreach($nfArray as $row)
 		{
-			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['page_title']."' "))
+			if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['page_title']."' "))
 			{
 				$importArray[] = array('name' => $row['page_title'], 'url' => "page.php?".$row['page_id'],'type' => "Custom Page");
 			}
@@ -386,11 +389,11 @@ class gsitemap
 		/* forums ... */
 		if(plugInstalled('forum'))
 		{ 
-			$sql -> db_Select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
+			$sql -> select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
 			$nfArray = $sql -> db_getList();
 			foreach($nfArray as $row)
 			{
-				if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
+				if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
 				{
 					$importArray[] = array('name' => $row['forum_name'], 'url' => $PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
 				}
@@ -401,15 +404,15 @@ class gsitemap
 		/* content pages ... */
 		if(plugInstalled('content'))
 		{ 	
-			$sql -> db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
+			$sql -> select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
 			$nfArray = $sql -> db_getList();
 			foreach($nfArray as $row)
 			{
-				$sql2 -> db_Select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
+				$sql2 -> select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
 				$nfArray2 = $sql2 -> db_getList();
 				foreach($nfArray2 as $row2)
 				{
-					if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
+					if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
 					{
 						$importArray[] = array('name' => $row2['content_heading'], 'url' => $PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
 					}
@@ -430,9 +433,9 @@ class gsitemap
 		<thead>
 		<tr>
 		<td>".GSLAN_2."</td>
-		<td>".GSLAN_3."</td>
-		<td>".GSLAN_4."</td>
-		<td>".GSLAN_5."</td>
+		<td>".LAN_TYPE."</td>
+		<td>".LAN_NAME."</td>
+		<td>".LAN_URL."</td>
 		</tr>
 		</thead>
 		<tbody>
