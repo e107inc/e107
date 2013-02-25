@@ -1024,7 +1024,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($bbcodeMode)
 		{
-			$text .= "<fieldset id='core-media-style'>
+			$text .= "<div class='tab-pane' id='core-media-style'>
 				<legend>Appearance</legend>
 				<table class='table adminform'>
 				<colgroup>
@@ -1071,7 +1071,7 @@ class media_admin_ui extends e_admin_ui
 			<img id='preview' src='".e_IMAGE_ABS."generic/blank.gif' style='border:1px solid silver; min-width:220px; min-height:180px;' />
 			
 			</td></tr></table>
-			</fieldset>";
+			</div>";
 		}	
 		$text .= "</div>";
 		
