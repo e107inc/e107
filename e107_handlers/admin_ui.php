@@ -2355,6 +2355,17 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return deftrue($this->pluginTitle, $this->pluginTitle);
 	}
+	
+	
+	/**
+	 * Get Tab data
+	 * @return array
+	 */
+	public function getTabs()
+	{
+		return $this->tabs;
+	}
+	
 
 	/**
 	 * Get all field data
@@ -4761,11 +4772,12 @@ class e_admin_form_ui extends e_form
 		$forms = $models = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
+				
 				//'url' => e_SELF,
 				//'query' => 'self', or custom GET query, self is default
-				'tabs' => true, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
 				'fieldsets' => array(
 					'create' => array(
+						'tabs'	=> $controller->getTabs(), //used within a single form. 
 						'legend' => $legend,
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
 						'header' => $form_start,

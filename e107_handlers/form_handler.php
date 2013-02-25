@@ -663,14 +663,15 @@ class e_form
 	{
 		if(!is_array($options)) parse_str($options, $options);
 		
+		$default_name = vartrue($default_name,USERNAME);
+		$default_id = vartrue($default_id,USERID);
+		
 		//TODO Auto-calculate $name_fld from $id_fld ie. append "_usersearch" here ?
 		
 		return $this->text($name_fld,$default_name,20, "class=e-tip&title=Type name of user&typeahead=users&readonly=".vartrue($options['readonly']))
 		.$this->hidden($id_fld,$default_id, array('id' => $this->name2id($id_fld)))." id# ".$default_id;
 
-
 		/*
-
 		$label_fld = str_replace('_', '-', $name_fld).'-upicker-lable';
 
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
@@ -728,7 +729,7 @@ class e_form
 	
 	
 	/**
-	 * A 'Rating' element
+	 * A Rating element
 	 * @var $text 
 	 */
 	function rate($table,$id,$options=null)
@@ -2936,7 +2937,7 @@ class e_form
 	 * 		'id'  => 'myplugin',
 	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php', //if not set, e_SELF is used
 	 * 		'query' => 'mode=main&amp;action=edit&id=1', //or e_QUERY if not set
-	 * 		'tabs' => true, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
+	 * 		'tabs' => true, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1) //XXX Multiple triggers in a single form?
 	 * 		'fieldsets' => array(
 	 * 			'general' => array(
 	 * 				'legend' => 'Fieldset Legend',
@@ -2972,7 +2973,8 @@ class e_form
 			$model = $models[$fid];
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
-
+			
+			
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 				<div>
@@ -2980,10 +2982,38 @@ class e_form
 				".$this->token()."
 			";
 
-			foreach ($form['fieldsets'] as $elid => $data)
+			foreach ($form['fieldsets'] as $elid => $data) //XXX rename 'fieldsets' to 'forms' ?
 			{
 				$elid = $form['id'].'-'.$elid;
-				$text .= $this->renderCreateFieldset($elid, $data, $model);
+		
+								
+				if(vartrue($data['tabs'])) // Tabs Present 
+				{
+					$text .= '<ul class="nav nav-tabs">';
+					foreach($data['tabs'] as $i=>$label)
+					{	
+						$class = ($i == 0) ? 'class="active" ' : '';
+						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab">'.$label.'</a></li>';
+					}
+					$text .= ' </ul><div class="tab-content">';	
+					
+					foreach($data['tabs'] as $tabId=>$label)
+					{
+						$active = ($tabId == 0) ? 'active' : '';
+						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
+						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
+						$text .= "</div>";	
+					}
+					
+					$text .= "</div>";				 
+				 	
+				}
+				else   // No Tabs Present 
+				{
+					$text .= $this->renderCreateFieldset($elid, $data, $model, false);			
+				}
+				
+				$text .= $this->renderCreateButtonsBar($elid, $data, $model);	// Create/Update Buttons etc. 
 			}
 
 			$text .= "
@@ -2992,7 +3022,7 @@ class e_form
 			</form>
 			";
 			
-			e107::js('footer-inline',"Form.focusFirstElement('{$form['id']}-form');",'prototype');
+			// e107::js('footer-inline',"Form.focusFirstElement('{$form['id']}-form');",'prototype');
 			// e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
 		}
 		if(!$nocontainer)
@@ -3009,8 +3039,9 @@ class e_form
 	 * @param array $fdata fieldset data
 	 * @param e_admin_model $model
 	 */
-	function renderCreateFieldset($id, $fdata, $model)
+	function renderCreateFieldset($id, $fdata, $model, $tab=0)
 	{
+		
 		$text = vartrue($fdata['fieldset_pre'])."
 			<fieldset id='{$id}'>
 				<legend>".vartrue($fdata['legend'])."</legend>
@@ -3029,6 +3060,13 @@ class e_form
 		$hidden_fields = array();
 		foreach($fdata['fields'] as $key => $att)
 		{
+			
+			if($tab !== false && varset($att['tab'],0) !== $tab)
+			{
+				continue;
+			}
+				
+			
 			// convert aliases - not supported in edit mod
 			if(vartrue($att['alias']) && !$model->hasData($key))
 			{
@@ -3078,6 +3116,7 @@ class e_form
 					}
 				}
 
+				/*
 				if('hidden' === $att['type'])
 				{
 					parse_str(varset($att['writeParms']), $tmp);
@@ -3089,6 +3128,8 @@ class e_form
 					}
 					unset($tmp);
 				}
+				 
+				 */
 				$text .= "
 					<tr>
 						<td>
@@ -3112,7 +3153,14 @@ class e_form
 
 		$text .= "
 					</tbody>
-				</table>
+				</table></fieldset>";
+				
+		$text .= vartrue($fdata['fieldset_post']);
+		
+		return $text;		
+		
+		/*		
+		$text .= "
 				".implode("\n", $hidden_fields)."
 				".$required_help."
 				".vartrue($fdata['table_post'])."
@@ -3188,11 +3236,218 @@ class e_form
 
 		$text .= "
 				</div>
-			</fieldset>
+			
+			".vartrue($fdata['fieldset_post'])."
+		";
+		return $text;
+		 */
+	}
+	
+	
+	function renderCreateButtonsBar($id, $fdata, $model, $tab=0)
+	{
+		/*
+		$text = vartrue($fdata['fieldset_pre'])."
+			<fieldset id='{$id}'>
+				<legend>".vartrue($fdata['legend'])."</legend>
+				".vartrue($fdata['table_pre'])."
+				<table class='table adminform'>
+					<colgroup>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>
+		";
+		*/
+		
+		
+		// required fields - model definition
+		$model_required = $model->getValidationRules();
+		$required_help = false;
+		$hidden_fields = array();
+		foreach($fdata['fields'] as $key => $att)
+		{
+			
+			if($att['tab'] !== $tab)
+			{
+				continue;
+			}
+				
+			
+			// convert aliases - not supported in edit mod
+			if(vartrue($att['alias']) && !$model->hasData($key))
+			{
+				$key = $att['field'];
+			}
+			
+			if($key == 'checkboxes' || $key == 'options')
+			{
+				continue;	
+			}
+
+			$parms = vartrue($att['formparms'], array());
+			if(!is_array($parms)) parse_str($parms, $parms);
+			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
+
+			$valPath = trim(vartrue($att['dataPath'], $key), '/');
+			$keyName = $key;
+			if(strpos($valPath, '/')) //not TRUE, cause string doesn't start with /
+			{
+				$tmp = explode('/', $valPath);
+				$keyName = array_shift($tmp);
+				foreach ($tmp as $path)
+				{
+					$keyName .= '['.$path.']';
+				}
+			}
+		//	print_a($att)."<br />";
+			// type null - system (special) fields
+			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
+			{
+				$required = '';
+				$required_class = '';
+				if(isset($model_required[$key]) || vartrue($att['validate']))
+				{
+					$required = $this->getRequiredString();
+					$required_class = ' class="required-label"'; // TODO - add 'required-label' to the core CSS definitions
+					$required_help = true;
+					if(vartrue($att['validate']))
+					{
+						// override
+						$model_required[$key] = array();
+						$model_required[$key][] = true === $att['validate'] ? 'required' : $att['validate'];
+						$model_required[$key][] = varset($att['rule']);
+						$model_required[$key][] = $att['title'];
+						$model_required[$key][] = varset($att['error']);
+					}
+				}
+
+				
+				if('hidden' === $att['type'])
+				{
+					parse_str(varset($att['writeParms']), $tmp);
+					if(!vartrue($tmp['show']))
+					{
+						$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+						unset($tmp);
+						continue;
+					}
+					unset($tmp);
+				}
+				 
+				/*
+				$text .= "
+					<tr>
+						<td>
+							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
+						</td>
+						<td>
+							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
+							{$help}
+						</td>
+					</tr>
+				";
+				 * */
+			}
+			//if($bckp) $model->remove($bckp);
+
+		}
+
+		if($required_help)
+		{
+		//	$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
+		}
+
+	//	$text .= "
+	//				</tbody>
+	//			</table></fieldset>";
+		
+	
+				
+		$text .= "
+				".implode("\n", $hidden_fields)."
+				".$required_help."
+				".vartrue($fdata['table_post'])."
+				<div class='buttons-bar center'>
+		";
+					// After submit options
+					$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
+					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
+					if(true === $submitopt)
+					{
+						$submitopt = $defsubmitopt;
+					}
+
+					if($submitopt)
+					{
+						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
+						
+					}
+
+					$triggers = vartrue($fdata['triggers'], 'auto');
+					if(is_string($triggers) && 'auto' === $triggers)
+					{
+						$triggers = array();
+						if($model->getId())
+						{
+							$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
+						}
+						else
+						{
+							$triggers['submit'] = array(LAN_CREATE, 'create', 0);
+						}
+						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
+					}
+
+					foreach ($triggers as $trigger => $tdata)
+					{
+						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
+						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+						
+						if($trigger == 'submit' && $submitopt)
+						{
+						
+							$text .= 
+							'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+									<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu col-selection">
+									<li class="nav-header">After submit:</li>
+							';
+							
+							foreach($defsubmitopt as $k=>$v)
+							{
+								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected,"label=".$v)."</a></li>";	
+							}
+							
+							//$text .= '
+							//		<li role="menuitem">
+							//			<div class="options left" style="padding:5px">
+							//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
+							//			</div></li>';
+										
+									
+							$text .= '</ul>';
+						} 
+								
+						$text .= ($trigger == 'submit') ?"</div>" : "";
+						
+						if(isset($tdata[2]))
+						{
+							$text .= $this->hidden($trigger.'_value', $tdata[2]);
+						}
+					}
+
+		$text .= "
+				</div>
+			
 			".vartrue($fdata['fieldset_post'])."
 		";
 		return $text;
 	}
+	
+	
 
 	// JUST A DRAFT - generic renderForm solution
 	function renderForm($forms, $nocontainer = false)
