@@ -69,7 +69,6 @@ unset($qs);
 require_once (e_ADMIN.'auth.php');
 require_once (e_HANDLER.'message_handler.php');
 require_once (e_HANDLER.'form_handler.php');
-//$emessage = &eMessage::getInstance();
 //$frm = new e_form(false);
 $mes = e107::getMessage();
 $frm = e107::getForm();
@@ -100,7 +99,6 @@ if(isset($_POST['setoptions']))
 	if($admin_log->logArrayDiffs($temp, $pref, 'ADLOG_01') || $admin_log->logArrayDiffs($temp, $pref, 'ADLOG_04'))
 	{
 		save_prefs(); // Only save if changes
-		//$emessage->add(RL_LAN_006, E_MESSAGE_SUCCESS);
 	}
 	else
 	{

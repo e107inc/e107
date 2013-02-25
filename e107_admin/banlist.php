@@ -290,7 +290,7 @@ require_once('auth.php');
 $frm = e107::getForm();
 // $frm = new e_form(true);
 
-$emessage = e107::getMessage();
+$mes = e107::getMessage();
 
 $pref = e107::getPref();
 
@@ -350,7 +350,7 @@ if (isset($_POST['update_ban_prefs']))		// Update ban messages
 		$ipAdministrator->writeBanMessageFile();
 		banlist_adminlog('08','');
 		//$ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
-		$emessage->add(BANLAN_33, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(BANLAN_33);
 	}
 }
 
@@ -365,7 +365,7 @@ if (isset($_POST['ban_ip']))
 	{
 		$message = BANLAN_27.' '.$new_ban_ip;
 		//$ns->tablerender(BANLAN_9, $message);
-		$emessage->add(BANLAN_33, $message);
+		$mes->add(BANLAN_33, $message);
 		$_POST['ban_ip'] = $new_ban_ip;
 	}
 
@@ -475,7 +475,7 @@ if ($writeBanFile)
 	{
 		$ipAdministrator->writeBanMessageFile();		// Message file must exist - may not on fresh site
 		banlist_adminlog('08','');
-		$emessage->add(BANLAN_33, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(LAN_UPDATED);
 	}
 }
 
@@ -582,7 +582,7 @@ switch ($action)
 		if (isset($_POST['delete_ban_log']))
 		{
 			$message = ($ipAdministrator->deleteLogFile() ? BANLAN_89 : BANLAN_90);
-			e107::getRender()->tablerender(BANLAN_88, "<div style='text-align:center; font-weight:bold'>".$message."</div>");
+			e107::getRender()->tablerender(BANLAN_88, "<div style='text-align:center; font-weight:bold'>".$message."</div>"); // FIXME
 		}
 		$from = 0;
 		$amount = 20;		// Number per page - could make configurable later if required
@@ -656,14 +656,14 @@ switch ($action)
 			$pref['ban_retrigger'] = intval($_POST['ban_retrigger']);
 			$pref['ban_date_format'] = $tp->toDB($_POST['ban_date_format']);
 			save_prefs();						// @todo FIXME log detail of changes. Right prefs to use?
-			$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(LAN_SETSAVED);
 		}
 
 		if (isset($_POST['remove_expired_bans']))
 		{
 			$result = $sql->db_Delete('banlist',"`banlist_bantype` < ".eIPHandler::BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
 			banlist_adminlog('12', $result);
-			$emessage->add(str_replace('--NUM--', $result, BANLAN_48), E_MESSAGE_SUCCESS);
+			$mes->addSuccess(str_replace('--NUM--', $result, BANLAN_48));
 		}
 
 		list($ban_access_guest, $ban_access_member) = explode(',', varset($pref['ban_max_online_access'], '100,200'));
@@ -748,7 +748,7 @@ switch ($action)
 				</fieldset>
 			</form>
 		";
-		e107::getRender()->tablerender(BANLAN_16.SEP.LAN_OPTIONS, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.LAN_OPTIONS, $mes->render().$text);
 		break;
 
 	case 'times' :
@@ -816,7 +816,7 @@ switch ($action)
 			</form>
 			";
 
-		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_77, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_77, $mes->render().$text);
 		break;
 
 	case 'edit' :		// Edit an existing ban
@@ -946,7 +946,7 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender($page_title[$action], $emessage->render().$text);
+		e107::getRender()->tablerender($page_title[$action], $mes->render().$text);
 		break;		// End of 'Add' and 'Edit'
 
 
@@ -959,14 +959,13 @@ switch ($action)
 			if (($files = process_uploaded_files(e_UPLOAD, FALSE, array('overwrite' => TRUE, 'max_file_count' => 1, 'file_mask' => 'csv'))) === FALSE)
 			{ // Invalid file
 				$error = true;
-				$message = BANLAN_47;
-				$emessage->add($message, E_MESSAGE_ERROR);
+				$mes->addError(BANLAN_47);
 			}
 			if(empty($files) || varsettrue($files[0]['error']))
 			{
 				$error = true;
 				if(varset($files[0]['message']))
-					$emessage->add($files[0]['message'], E_MESSAGE_ERROR);
+					$mes->addError($files[0]['message']);
 			}
 			if(!$error)
 			{ // Got a file of some sort
@@ -1067,7 +1066,7 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_35, $emessage->render().$text);
+		e107::getRender()->tablerender(BANLAN_16.SEP.BANLAN_35, $mes->render().$text);
 		break;		// End case 'transfer'
 
 	case 'list' :
@@ -1192,7 +1191,7 @@ switch ($action)
 			</form>
 		";
 
-		e107::getRender()->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $emessage->render().$text);
+		e107::getRender()->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $mes->render().$text);
 		// End of case 'list' and the default case
 }		// End switch ($action)
 
@@ -1262,7 +1261,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 {
 	$sql = e107::getDb();
 	$pref['ban_durations'] = e107::getPref('ban_durations');
-	$emessage = &eMessage::getInstance();
+	$mes = e107::getMessage();
 	
 	//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
 	// Renumber imported bans
@@ -1290,7 +1289,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 					}
 					else
 					{
-						$emessage->add(BANLAN_49.$line_num, E_MESSAGE_ERROR);
+						$mes->addError(BANLAN_49.$line_num);
 						return BANLAN_49.$line_num;
 					}
 				}
@@ -1329,7 +1328,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 			//	  echo count($field_list)." elements, query: ".$qry."<br />";
 			if (!$sql->db_Select_gen($qry))
 			{
-				$emessage->add(BANLAN_50.$line_num, E_MESSAGE_ERROR);
+				$mes->addError(BANLAN_50.$line_num);
 				return BANLAN_50.$line_num;
 			}
 		}
@@ -1338,7 +1337,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 	if ($override_imports)
 		$sql->db_Delete('banlist', "`banlist_bantype` = ".eIPHandler::BAN_TYPE_TEMPORARY);
 	@unlink($filename);		// Delete file once done
-	$emessage->add(str_replace('--NUM--', $line_num, BANLAN_51).$filename, E_MESSAGE_SUCCESS);
+	$mes->addSuccess(str_replace('--NUM--', $line_num, BANLAN_51).$filename);
 	return str_replace('--NUM--', $line_num, BANLAN_51).$filename;
 }
 
