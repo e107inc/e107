@@ -664,10 +664,10 @@ class e_media
 	{
 		$mes = e107::getMessage();	
 		$tp = e107::getParser();
-		$f = e107::getFile()->get_file_info($oldpath,TRUE);
+		$sql = e107::getDb();
 		
 	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
-		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		if(file_exists($newpath) && ($f = e107::getFile()->get_file_info($oldpath,TRUE)))
 		{
 			$this->log($newpath." already exists and will be renamed during import.");
 			$mes->addWarning($newpath." already exists and was renamed during import.");	
@@ -675,6 +675,14 @@ class e_media
 			$newpath = $this->getPath($f['mime']).'/'.$file;						
 		}
 		
+		if($sql->select("core_media","media_url","media_url LIKE '%".$tp->createConstants($newpath,'rel')."' LIMIT 1"))
+		{
+			// $mes->addWarning($newpath." detected in media-manager.");
+			$this->log("Import not performed. ".$newpath." detected in media table already.");	
+			$row = $sql->fetch();
+			$newpath = $row['media_url'];
+		}
+
 		return $newpath;	
 	}
 	
@@ -751,7 +759,7 @@ class e_media
 	public function log($message)
 	{
 		if($this->logging == false) return; 
-		$insert = "\n".$message;
+		$insert = "\n\n".date('r')."\n".$message;
 		file_put_contents(e_LOG."mediaUpload.log",$insert,FILE_APPEND | LOCK_EX);	
 	}
 	
@@ -769,8 +777,13 @@ class e_media
 		
 		if(!file_exists($oldpath))
 		{
+			// Check it hasn't been imported already. 	
+			if($newpath = $this->checkDupe($oldpath, $file))
+			{
+				return $newpath; 
+			}
 			$this->log("Line: ".__LINE__." Couldn't find the file: ".$oldpath);
-			$mes->add("Couldn't find the file: ".$oldpath, E_MESSAGE_ERROR);
+			$mes->addError("Couldn't find the file: ".$oldpath);
 			return;
 		}	
 			

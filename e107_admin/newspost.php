@@ -195,8 +195,8 @@ class news_sub_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'submitnews_id'				=> array('title'=> LAN_ID,				'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
-         	'submitnews_title' 			=> array('title'=> LAN_TITLE,			'type' => 'method',			'width' => '65%', 'thclass' => 'left', 'readonly'=>TRUE),
-         	'submitnews_datestamp'		=> array('title' => LAN_NEWS_32, 		'type' => 'date', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),      	     
+         	'submitnews_title' 			=> array('title'=> LAN_TITLE,			'type' => 'method',			'width' => '35%', 'thclass' => 'left', 'readonly'=>TRUE),
+         	'submitnews_datestamp'		=> array('title' => LAN_NEWS_32, 		'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),      	     
         
 			'submitnews_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
 		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
