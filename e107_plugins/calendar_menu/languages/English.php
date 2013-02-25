@@ -180,7 +180,7 @@ define('EC_LAN_100', "Invalid Category Selection");
 define('EC_LAN_105', "* Required Field");		
 define('EC_LAN_106', "Events");	
 //define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");		
-define('EC_LAN_108', "Event Calendar Upgraded.  See the 'readme.pdf' file for detailed information.");	
+define('EC_LAN_108', "Event Calendar Upgraded.  See the e107 wiki file for detailed information.");	
 define('EC_LAN_109', "Unable to delete this event.");	
 define('EC_LAN_110', "Event Number ");	
 define('EC_LAN_111', "All the events on ");	
@@ -210,6 +210,7 @@ define('EC_LAN_134', "You have to provide a category name");
 define('EC_LAN_135', "Event");
 define('EC_LAN_136', "Category Description");
 define('EC_LAN_137', "Future Events");
+define('EC_LAN_138', '---End of List---');
 
 define('EC_LAN_140', "Forthcoming Events");
 define('EC_LAN_141', "No forthcoming events");
@@ -298,7 +299,7 @@ define('NT_LAN_EC_8', 'Event Calendar - Event modified');
 */
 
 // Prefs - language defines can be used in various places where text is set through the admin screens
-define('EC_MAILOUT_SUBJECT', "Advice of calendar event");	// Use shortcode EC_MAIL_SUBJECT
+define('EC_MAILOUT_SUBJECT', 'Advice of calendar event');	// Use shortcode EC_MAIL_SUBJECT
 
 
 ?>

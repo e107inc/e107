@@ -65,7 +65,7 @@ $sc_style['EC_PR_LIST_TITLE']['post'] = "</h3>";
 $EVENT_CAL_PDF_NAMES['default'] = EC_LAN_165;
 $EVENT_CAL_PDF_HEADER['default'] = "{EC_PR_LIST_TITLE}<br />{EC_PR_CAT_LIST}<br />".EC_LAN_168."{EC_PR_LIST_START=%d-%m-%Y}<br />".EC_LAN_169."{EC_PR_LIST_END=%d-%m-%Y}<br />";
 $EVENT_CAL_PDF_BODY['default'] = "{EC_PR_CHANGE_YEAR}{EC_PR_CHANGE_MONTH}{EC_MAIL_SHORT_DATE} {EC_MAIL_TIME_START}  {EC_MAIL_TITLE}<br />\n";
-$EVENT_CAL_PDF_FOOTER['default'] = "---End of List---<br /><br />{EC_IFNOT_DISPLAY=EC_NOW_DATE}{EC_IFNOT_DISPLAY=EC_NOW_TIME}<br />{EC_PRINT_BUTTON}";
+$EVENT_CAL_PDF_FOOTER['default'] = EC_LAN_138."<br /><br />{EC_IFNOT_DISPLAY=EC_NOW_DATE}{EC_IFNOT_DISPLAY=EC_NOW_TIME}<br />{EC_PRINT_BUTTON}";
 
 
 // - A simple tabular style

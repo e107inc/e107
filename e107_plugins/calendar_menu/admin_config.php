@@ -521,7 +521,7 @@ if($action == 'cat')
 			</tr>	
 			<tr>
 				<td>".EC_ADLAN_A94."</td>
-				<td>".$uc->uc_dropdown('event_cat_addclass', $event_cat_addclass, 'public, nobody, member, admin, classes')."</td>
+				<td>".$uc->uc_dropdown('event_cat_addclass', $event_cat_addclass, 'public, nobody, member, admin, classes, no-excludes')."</td>
 			</tr>			
 			<tr>
 				<td>".EC_ADLAN_A219."</td>
@@ -562,7 +562,7 @@ if($action == 'cat')
 			</tr>
 			<tr>
 				<td>".EC_ADLAN_A82."</td>
-				<td>".$uc->uc_dropdown('event_cat_force_class', $event_cat_force_class, 'nobody, member, admin, classes')."</td>
+				<td>".$uc->uc_dropdown('event_cat_force_class', $event_cat_force_class, 'nobody, member, admin, classes, no-excludes')."</td>
 			</tr>			
 			<tr>
 				<td>".EC_ADLAN_A83."</td>
@@ -936,14 +936,14 @@ if($action == 'config')
 	</colgroup>
 	<tr>
 		<td>".EC_ADLAN_A208." </td>
-		<td>". $uc->uc_dropdown('eventpost_admin', $calPref['eventpost_admin'], 'public, nobody, member, admin, classes')."
+		<td>". $uc->uc_dropdown('eventpost_admin', $calPref['eventpost_admin'], 'public, nobody, member, admin, classes, no-excludes')."
 		</td>
 	</tr>
 	";
 $text .= "
 	<tr>
 		<td>".EC_ADLAN_A211." </td>
-		<td>". $uc->uc_dropdown('eventpost_super', $calPref['eventpost_super'],  'public, nobody, member, admin, classes')."
+		<td>". $uc->uc_dropdown('eventpost_super', $calPref['eventpost_super'],  'public, nobody, member, admin, classes, no-excludes')."
 		</td>
 	</tr>
 

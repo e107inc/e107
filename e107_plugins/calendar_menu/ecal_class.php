@@ -73,6 +73,8 @@ class ecal_class
 	
 	var $ec_first_day_of_week = 0;		// First day of the week
 	public $days = array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);	// Array Sunday..Saturday
+	private $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, 
+						EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);		// 'Long' month names
 	public $recur_type = array(
 					'0' => EC_LAN_RECUR_00,		// 'no'
 					'1' => EC_LAN_RECUR_01,		//'annual'
@@ -497,7 +499,9 @@ class ecal_class
 	 */
 	function gmgetdate($date)
 	{
-		return getdate($date-date('Z'));
+		$value = getdate($date-date('Z'));
+		$value['month'] = $this->months[$value['mon'] - 1];             // Looks like getdate doesn't use the specified site language
+		return $value;
 	}
 
 
