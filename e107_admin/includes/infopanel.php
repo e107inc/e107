@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -53,7 +53,8 @@ EOF;
 		
 	  	$this->getStats();
 		
-		global $user_pref, $pref; // quick fix. 
+		global $user_pref; // quick fix. 
+		$pref = e107::getPref();  
 		
 		e107::js('inline',$code,'jquery');
 		

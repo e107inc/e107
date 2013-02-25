@@ -79,7 +79,7 @@ $e_sub_cat = 'image';
 
 
 // $frm = new e_form(); //new form handler
-$emessage = eMessage::getInstance();
+$mes = e107::getMessage();
 
 class media_admin extends e_admin_dispatcher
 {
@@ -1993,7 +1993,7 @@ if (isset($_POST['submit_show_delete_multi']))
 		if(!empty($message))
 		{
 			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
-			$emessage->add(implode(', ', $message).' '.IMALAN_28, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(implode(', ', $message).' '.IMALAN_28);
 		}
 	}
 }
@@ -2028,7 +2028,7 @@ if (isset($_POST['submit_show_deleteall']))
 		}
 
 		$message = $count." ".IMALAN_26;
-		$emessage->add($message, E_MESSAGE_SUCCESS);
+		$mes->addSuccess($message);
 		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
 		unset($imgList);
 	}
@@ -2073,7 +2073,7 @@ if (isset($_POST['submit_avdelete_multi']))
 			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $uids).")");
 		}
 
-		$emessage->add(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
 		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
 
 		unset($search_users);
@@ -2381,7 +2381,7 @@ if (isset($_POST['check_avatar_sizes']))
 	</table>
 	";
 
-	$ns->tablerender(IMALAN_37, $emessage->render().$text);
+	$ns->tablerender(IMALAN_37, $mes->render().$text);
 }
 
 

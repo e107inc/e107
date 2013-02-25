@@ -80,14 +80,14 @@ if (isset($_POST['deleteconfirm']))
 			$destination_file = e_BASE.$delfile;
 			if (@unlink($destination_file))
 			{
-				$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
-				//$mes->addSuccess(LAN_DELETED.": <br />."$destination_file."<br />") // FIXME syntax
+				//$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
+				$mes->addSuccess(LAN_DELETED.": <br />.".$destination_file."<br />"); 
 				$deleteList[] = $destination_file;
 			}
 			else
 			{
-				$message .= FMLAN_28." '".$destination_file."'.<br />";
-				//$mes->addError(LAN_DELETED_FAILED.": <br />."$destination_file."<br />) // FIXME syntax
+				//$message .= FMLAN_28." '".$destination_file."'.<br />";
+				$mes->addError(LAN_DELETED_FAILED.": <br />.".$destination_file."<br />");
 			}
 		}
 
@@ -102,13 +102,14 @@ if (isset($_POST['deleteconfirm']))
 				$newpath = $_POST['movepath'];
 				if (rename(e_BASE.$delfile,$newpath.$newfile))
 				{
-					$message .= FMLAN_38." ".$newpath.$newfile."<br />"; // FIXME 
+					//$message .= FMLAN_38." ".$newpath.$newfile."<br />"; 
+					$mes->addSuccess(FMLAN_38.":".$newpath.$newfile);
 					$moveList[] = e_BASE.$delfile.'=>'.$newpath.$newfile;
 				}
 				else
 				{
-					$message .= FMLAN_39." ".$newpath.$newfile."<br />"; // FIXME 
-					$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
+					//$message .= FMLAN_39." ".$newpath.$newfile."<br />";
+					$mes->addError((!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : ""); // TODO check if this message actually works
 				}
 			}
 		}
@@ -141,14 +142,16 @@ if (isset($_POST['upload']))
 		{
 			if ($files['error'][$key])
 			{
-				$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name; // FIXME 
+				//$message .= $spacer.FMLAN_10.' '.$files['error'][$key].': '.$name; 
+				$mes->addError($files['error'][$key].': '.$name); 
 			}
 			elseif ($files['size'][$key]) 
 			{
 				$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
 				if (($uploaded === FALSE) || !is_array($uploaded))
 				{
-					$message .= $spacer.FMLAN_51.$name; // FIXME 
+					//$message .= $spacer.FMLAN_51.$name; // FIXME 
+					$mes->addError($name);
 					$spacer = '<br />';
 				}
 				else
@@ -161,7 +164,8 @@ if (isset($_POST['upload']))
 						}
 						else
 						{	// Most likely errors trapped earlier.
-							$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname']; // FIXME 
+							//$message .= $spacer.FMLAN_10.' '.$inf['error'].' ('.$inf['message'].'): '.$inf['rawname']; // FIXME 
+							$mes->addError($inf['error'].' ('.$inf['message'].'): '.$inf['rawname']);
 						}
 						$spacer = '<br />';
 					}
@@ -176,12 +180,14 @@ if (isset($_POST['upload']))
 }
 
 
+$ns->tablerender($caption, $mes->render() . $text);
 
-if ($message) // FIXME 
+/*
+if ($message) 
 {
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
-
+*/
 
 
 if (strpos(e_QUERY, ".") && !is_dir(realpath(e_BASE.$path)))

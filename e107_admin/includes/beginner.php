@@ -2,22 +2,18 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/includes/beginner.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 
 if($_GET['mode'] == "e_advanced"){
 	$pref['adminstyle'] = "classis";
@@ -46,7 +42,7 @@ if($_GET['mode'] == "e_advanced"){
 
 	if($buts != '')
 	{
-		$ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);
+		$ns->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
 	}
 
 
