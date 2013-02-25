@@ -140,7 +140,7 @@ class e107plugin
 			$qry = "SELECT * FROM #plugin WHERE plugin_installflag = ".(int) $flag." ORDER BY plugin_path ASC";		
 		}
 
-		if ($sql->db_Select_gen($qry))
+		if ($sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;
@@ -248,24 +248,24 @@ class e107plugin
 		$sp = FALSE;
 
 		$pluginDBList = array();
-		if ($sql->db_Select('plugin', "*")) // Read all the plugin DB info into an array to save lots of accesses
+		if ($sql->select('plugin', "*")) // Read all the plugin DB info into an array to save lots of accesses
 
 		{
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch(MYSQL_ASSOC))
 			{
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
 				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 				}
 		}
-
+		$sql->db_Mark_Time('Start Scanning Plugin Files');
 		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		foreach ($plugList as $num => $val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.
 		{
 			$key = basename($val['path']);
 			$pluginList[$key] = $val;
 		}
-
+		$sql->db_Mark_Time('After Scanning Plugin Files');
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 		require_once(e_HANDLER."message_handler.php");
 		$mes = eMessage::getInstance();
@@ -394,7 +394,7 @@ class e107plugin
 		{
 			if ($plug_info['status'] == 'read')
 			{ // In table, not on server - delete it
-				$sql->db_Delete('plugin', "`plugin_id`={$plug_info['plugin_id']}");
+				$sql->delete('plugin', "`plugin_id`={$plug_info['plugin_id']}");
 				//			echo "Deleted: ".$plug_path."<br />";
 				}
 			if ($plug_info['status'] == 'update')
@@ -404,7 +404,7 @@ class e107plugin
 				{
 					$temp[] = "`{$p_f}` = '{$plug_info[$p_f]}'";
 				}
-				$sql->db_Update('plugin', implode(", ", $temp)."  WHERE `plugin_id`={$plug_info['plugin_id']}");
+				$sql->update('plugin', implode(", ", $temp)."  WHERE `plugin_id`={$plug_info['plugin_id']}");
 				//			echo "Updated: ".$plug_path."<br />";
 				}
 		}
@@ -477,9 +477,9 @@ class e107plugin
 		$id = (int) $id;
 		if (!isset($getinfo_results[$id]) || $force == true)
 		{
-			if ($sql->db_Select('plugin', '*', "plugin_id = ".$id))
+			if ($sql->select('plugin', '*', "plugin_id = ".$id))
 			{
-				$getinfo_results[$id] = $sql->db_Fetch();
+				$getinfo_results[$id] = $sql->fetch();
 			}
 			else
 			{
@@ -846,8 +846,8 @@ class e107plugin
 		
 		if ($action == 'add')
 		{
-			$link_t = $sql->db_Count('links');
-			if (!$sql->db_Count('links', '(*)', "WHERE link_url = '{$path}' OR link_name = '{$link_name}'"))
+			$link_t = $sql->count('links');
+			if (!$sql->count('links', '(*)', "WHERE link_url = '{$path}' OR link_name = '{$link_name}'"))
 			{
 					$linkData = array(
 						'link_name'			 => $link_name,
@@ -861,7 +861,7 @@ class e107plugin
 						'link_class'		 => vartrue($linkclass,'0'),
 						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : "")
 					);
-					return $sql->db_Insert('links', $linkData); // TODO: Add the _FIELD_DEFS array
+					return $sql->insert('links', $linkData); // TODO: Add the _FIELD_DEFS array
 			}
 			else
 			{
@@ -870,11 +870,11 @@ class e107plugin
 		}
 		if ($action == 'remove')
 		{ // Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
-			if (($path && $sql->db_Select('links', 'link_id,link_order', "link_url = '{$path}'")) || $sql->db_Select('links', 'link_id,link_order', "link_name = '{$link_name}'"))
+			if (($path && $sql->select('links', 'link_id,link_order', "link_url = '{$path}'")) || $sql->select('links', 'link_id,link_order', "link_name = '{$link_name}'"))
 			{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$sql->db_Update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
-					return $sql->db_Delete('links', "link_id = {$row['link_id']}");
+					return $sql->delete('links', "link_id = {$row['link_id']}");
 			}
 		}
 	}
@@ -984,7 +984,7 @@ class e107plugin
 			}
 			$qry = implode(" OR ", $tmp);
 			//			echo $qry."<br />";
-			return $sql->db_Delete('comments', $qry);
+			return $sql->delete('comments', $qry);
 		}
 	}
 
@@ -1465,7 +1465,7 @@ class e107plugin
 
 		if ($function == 'install' || $function == 'upgrade')
 		{
-			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -1474,7 +1474,7 @@ class e107plugin
 
 		if ($function == 'uninstall')
 		{
-			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			unset($p_installed[$plug['plugin_path']]);
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
@@ -2308,7 +2308,7 @@ class e107plugin
 
 		$eplug_addons = $this->getAddons($eplug_folder);
 
-		$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int) $id);
+		$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int) $id);
 
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 		$p_installed[$plug['plugin_path']] = $plug['plugin_version'];
@@ -2397,7 +2397,7 @@ class e107plugin
 
 		if ($sql->gen($query))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				$is_installed = ($row['plugin_installflag'] == 1);
 				$tmp = explode(",", $row['plugin_addons']);
