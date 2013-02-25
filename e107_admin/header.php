@@ -79,7 +79,7 @@ e107::js("core",	"core/all.jquery.js","jquery",4); // Load all default functions
 
 
 
-e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
+// e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 
 
 //
@@ -382,11 +382,13 @@ e107::getJs()->renderJs('header', 5);
  * Fire Event e107:loaded - Prototype only
  */
 //\$('e-js-css').remove();
+/*
 e107::js('inline',"
 document.observe('dom:loaded', function () {
 e107Event.trigger('loaded', null, document);
 });
 ",'prototype',5);
+ */
 
 e107::getJs()->renderJs('header_inline', 5);
 

@@ -1134,15 +1134,17 @@ $columnInfo = array(
 	
 	
 	      $text = "
-	      <div class='admintabs' id='tab-container'>
-	         <ul class='e-tabs' id='core-download-tabs'>
-	            <li id='tab-general'><a href='#download-create'>".DOWLAN_175."</a></li>
-	            <li id='tab-external'><a href='#download-edit-external'>".DOWLAN_176."</a></li>
-	            <li id='tab-mirror'><a href='#download-edit-mirror'>".DOWLAN_128."</a></li>
+	     
+	         <ul class='nav nav-tabs'>
+	            <li class='active'><a data-toggle='tab' href='#download-create'>".DOWLAN_175."</a></li>
+	            <li><a data-toggle='tab' href='#download-edit-external'>".DOWLAN_176."</a></li>
+	            <li><a data-toggle='tab' href='#download-edit-mirror'>".DOWLAN_128."</a></li>
 	         </ul>
-	         <div>
-	            <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
-	               <fieldset id='download-create'>
+	         <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
+	          <div class='tab-content'>
+	          <div class='tab-pane active' id='download-create'>
+	            
+	               
 	                  <table class='table adminform'>
 	                     <tr>
 	                        <td>".DOWLAN_13."</td>
@@ -1194,8 +1196,8 @@ $columnInfo = array(
 	                     </td>
 	                  </tr>
 	               </table>
-	            </fieldset>
-	            <fieldset id='download-edit-external'>
+	            </div>
+	            <div class='tab-pane' id='download-edit-external'>
 	               <table class='table adminform'>
 	                  <tr>
 	                       <td>".DOWLAN_149."</td>
@@ -1210,8 +1212,8 @@ $columnInfo = array(
 	                       </td>
 	                  </tr>
 	               </table>
-	            </fieldset>
-	            <fieldset id='download-edit-mirror'>
+	            </div>
+	            <div  class='tab-pane' id='download-edit-mirror'>
 	               <table class='table adminlist'>
 	                  <tr>
 	                     <td style='width:20%'><span title='".DOWLAN_129."' style='cursor:help'>".DOWLAN_128."</span></td>
@@ -1274,7 +1276,8 @@ $columnInfo = array(
 	      $download_author_email = $subAction != "edit" && $download_author_email == "" ? USEREMAIL : $download_author_email;
 	      $text .= "
 	               </table>
-	            </fieldset>
+	            </div>
+	           </div>
 	            <fieldset id='download-edit-therest'>
 	               <table class='table adminform'>
 	                  <tr>
@@ -1457,8 +1460,9 @@ $columnInfo = array(
 	 
 	
 	      $text .= "
-	      	<tr style=''>
-	        <td colspan='2' style='text-align:center'>";
+	      	   
+	               </table>
+	        <div class='buttonsbar center'>";
 	                     
 		
 						 
@@ -1471,13 +1475,13 @@ $columnInfo = array(
 	      }
 	
 	      $text .= "
-	                     </td>
-	                  </tr>
-	               </table>
+	                     </div>
+	             
 	            </fieldset>
 	         </form>
-	         </div>
-	         </div>";
+	    
+	        
+	        ";
 	     // $ns->tablerender(ADLAN_24, $text);
 	     echo $text;
 	   }
@@ -1938,16 +1942,17 @@ $columnInfo = array(
 		      );
 		
 		   	$text = "
-				   <div class='admintabs' id='tab-container'>
-					   <ul class='e-tabs e-hideme' id='download-option-tabs'>
-						   <li id='tab-download1'><a href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
-						   <li id='tab-download2'><a href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
-						   <li id='tab-download3'><a href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li id='tab-download4'><a href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
+				   
+					   <ul class='nav nav-tabs'>
+						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
 					   </ul>
-		
+						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-		   				<fieldset id='core-download-download1'>
+		        		<div class='tab-content'>
+		   				<div class='tab-pane active' id='core-download-download1'>
 		            	   <div>
 		            		   <table class='table adminform'>
 		            		      <colgroup>
@@ -2004,10 +2009,10 @@ $columnInfo = array(
 		            		      </tr>
 		            		   </table>
 		            		</div>
-				   		</fieldset>
-		   				<fieldset id='core-download-download2'>
+				   		</div>
+		   				<div class='tab-pane' id='core-download-download2'>
 		            	   <div>
-		            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
+		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
 		            		         <col style='width:70%'/>
@@ -2022,10 +2027,10 @@ $columnInfo = array(
 		            		      </tr>
 		            		   </table>
 		            		</div>
-				   		</fieldset>
-		   				<fieldset id='core-download-download3'>
+				   		</div>
+		   				<div class='tab-pane' id='core-download-download3'>
 		            	   <div>
-		            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
+		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
 		            		         <col style='width:70%'/>
@@ -2044,10 +2049,10 @@ $columnInfo = array(
 		            		      </tr>
 		            		   </table>
 		            		</div>
-				   		</fieldset>
-		   				<fieldset id='core-download-download4'>
+				   		</div>
+		   				<div class='tab-pane' id='core-download-download4'>
 		            	   <div>
-		            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
+		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
 		            		         <col style='width:70%'/>
@@ -2058,12 +2063,13 @@ $columnInfo = array(
 		            		      </tr>
 		            		   </table>
 		            		</div>
-				   		</fieldset>
+				   		</div>
 						   <div class='buttons-bar center'>
 		                  <input class='button' type='submit' name='updatedownlaodoptions' value='".DOWLAN_64."'/>
 		               </div>
-		              </form>
+		              
 		           </div>
+		           </form>
 		      ";
 		     // $ns->tablerender(LAN_DL_OPTIONS, $text);
 		      echo $text;

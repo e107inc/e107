@@ -1455,38 +1455,40 @@ class pluginBuilder
 			}
 		
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&step=3');
-			$text .= "<div class='admintabs' id='tab-container'>\n";
-			$text .= "<ul class='e-tabs' id='core-emote-tabs'>\n";
-			$text .= "<li id='tab-xml'><a href='#xml'>Basic Info.</a></li>";
+			
+			$text .= "<ul class='nav nav-tabs'>\n";
+			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>Basic Info.</a></li>";
 			
 			$this->tableCount = count($ret['tables']);
 			
 			foreach($ret['tables'] as $key=>$table)
 			{
-				$text .= "<li id='tab-".$table."'><a href='#".$table."'>Table: ".$table."</a></li>";
+				$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
 			}
-			$text .= "<li id='tab-preferences'><a href='#preferences'>Preferences</a></li>";
+			$text .= "<li><a data-toggle='tab'  href='#preferences'>Preferences</a></li>";
 			
 			$text .= "</ul>";
+			
+			$text .= "<div class='tab-content'>\n";
+			
+			$text .= "<div class='tab-pane active' id='xml'>\n";
+			$text .= $this->pluginXml(); 
+			$text .= "</div>";
 				
 			foreach($ret['tables'] as $key=>$table)
 			{
-				$text .= "<fieldset id='".$table."'>\n";
+				$text .= "<div class='tab-pane' id='".$table."'>\n";
 				$fields = $dv->getFields($ret['data'][$key]);
-				
-			
 				$text .= $this->form($table,$fields);
-				$text .= "</fieldset>";	
+				$text .= "</div>";	
 			}
 			
-			$text .= "<fieldset id='preferences'>\n";
+			$text .= "<div class='tab-pane' id='preferences'>\n";
 			$text .= $this->prefs(); 
-			$text .= "</fieldset>";
+			$text .= "</div>";
 			
 			
-			$text .= "<fieldset id='xml'>\n";
-			$text .= $this->pluginXml(); 
-			$text .= "</fieldset>";
+			
 			
 			$text .= "</div>";
 			
@@ -1581,7 +1583,7 @@ class pluginBuilder
 				}
 			}
 			
-			$text = "<table class='table adminlist'>";
+			$text = "<table class='table adminform'>";
 					
 			foreach($data as $key=>$val)
 			{
