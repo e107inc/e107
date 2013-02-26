@@ -96,14 +96,14 @@ if(!$core_pref->get('timezone'))
 }
 
 $frm = e107::getForm(false, true); //enable inner tabindex counter
-$emessage = e107::getMessage();
+$mes = e107::getMessage();
 $tp = e107::getParser();
 
 /*	RESET DISPLAY NAMES	*/
 if(isset($_POST['submit_resetdisplaynames']))
 {
 	e107::getDb()->db_Update('user', 'user_name=user_loginname');
-	$emessage->add(PRFLAN_157);
+	$mes->addInfo(PRFLAN_157);
 }
 
 //echo '<pre>';
@@ -140,7 +140,7 @@ if(isset($_POST['updateprefs']))
 	if (($_POST['user_reg_veri'] == 1 || $_POST['allowEmailLogin'] == 1) && $_POST['disable_emailcheck'])
 	{
 		$_POST['disable_emailcheck'] = 0;
-		$emessage->add(PRFLAN_211, E_MESSAGE_ERROR);
+		$mes->addError(PRFLAN_211);
     }
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
@@ -166,12 +166,12 @@ if(isset($_POST['updateprefs']))
 				if($value < $pref_limits[$key]['min'])
 				{
 					$value = $pref_limits[$key]['min'];
-					$emessage->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
+					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
 				}
 				if($value > $pref_limits[$key]['max'])
 				{
 					$value = $pref_limits[$key]['max'];
-					$emessage->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
+					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
 				}
 			}
 			else
@@ -186,7 +186,7 @@ if(isset($_POST['updateprefs']))
 			if(!preg_match('/^[\w\-]+$/', $value))
 			{
 				$newValue = e_COOKIE;
-				$emessage->addWarning(PRFLAN_219);
+				$mes->addWarning(PRFLAN_219);
 			}
 			else 
 			{
@@ -255,11 +255,11 @@ function sendTest()
 		$sendto = trim($_POST['testaddress']);
 		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
 		{
-			$mes->add(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106, E_MESSAGE_ERROR);
+			$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		} 
 		else 
 		{
-			$mes->add(LAN_MAILOUT_81. ' ('.$sendto.')', E_MESSAGE_SUCCESS);
+			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
 			$log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
 		}
 	}
@@ -267,11 +267,6 @@ function sendTest()
 }
 
 /*
-if(isset($message))
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-
 if(e_QUERY == "u")
 {
 	$ns->tablerender("", "<div style='text-align:center'><b>".PRFLAN_106."</b></div>");
@@ -1859,7 +1854,7 @@ $text .= "
 </div>
 ";
 
-$e107->ns->tablerender(PRFLAN_53, $emessage->render().$text);
+$ns->tablerender(PRFLAN_53, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
 

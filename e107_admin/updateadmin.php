@@ -27,7 +27,7 @@ require_once(e_HANDLER.'message_handler.php');
 // require_once(e_HANDLER.'user_handler.php'); //use e107::getUserSession() instead. 
 require_once(e_HANDLER.'validator_class.php');
 $userMethods = e107::getUserSession();
-$emessage = e107::getMessage();
+$mes = e107::getMessage();
 $frm = e107::getForm();
 
 if (isset($_POST['update_settings'])) 
@@ -57,20 +57,20 @@ if (isset($_POST['update_settings']))
 			{
 				$admin_log->log_event('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
-				$emessage->add(UDALAN_3." ".ADMINNAME, E_MESSAGE_SUCCESS);
+				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
 				$e_event -> trigger('adpword');
-				$ns->tablerender(UDALAN_2, $emessage->render());
+				$ns->tablerender(UDALAN_2, $mes->render());
 			}
 			else 
 			{
-				$emessage->add(UDALAN_1.' '.LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-				$ns->tablerender(LAN_UPDATED_FAILED, $emessage->render());
+				$mes->addError(UDALAN_1.' '.LAN_UPDATED_FAILED);
+				$ns->tablerender(LAN_UPDATED_FAILED, $mes->render());
 			}
 		}
 		else 
 		{
-			$emessage->add(UDALAN_1.' '.LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-			$ns->tablerender(LAN_UPDATED_FAILED, $emessage->render());
+			$mes->addError(UDALAN_1.' '.LAN_UPDATED_FAILED);
+			$ns->tablerender(LAN_UPDATED_FAILED, $mes->render());
 		}
 	}
 } 
