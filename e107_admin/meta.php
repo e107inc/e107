@@ -8,10 +8,8 @@
  *
  * Administration Area - Meta Tags
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision$
- * $Date$
- * $Author$
+ * $URL$
+ * $Id$
  *
 */
 require_once("../class2.php");
@@ -25,8 +23,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'meta';
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$mes = e107::getMessage();
 $frm = e107::getForm();
+$ns = e107::getRender();
 
 if (isset($_POST['metasubmit']))
 {
@@ -61,7 +60,7 @@ if (isset($_POST['metasubmit']))
 
 	$admin_log->log_event('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
 	save_prefs();
-	$emessage->add(METLAN_1." (".e_LANGUAGE.")", E_MESSAGE_SUCCESS);
+	//$mes->add(METLAN_1." (".e_LANGUAGE.")", E_MESSAGE_SUCCESS);
 }
 
 $meta 			= vartrue($pref['meta_tag']);
@@ -73,7 +72,7 @@ $meta_author 	= vartrue($pref['meta_author']);
 $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
 		<fieldset id='core-meta-settings'>
-			<legend class='e-hideme'>".METLAN_8." (".e_LANGUAGE.")"."</legend>
+			<legend class='e-hideme'>".METLAN_00." (".e_LANGUAGE.")"."</legend>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -81,60 +80,45 @@ $text = "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".METLAN_9."</td>
-						<td>
-							<textarea class='tbox textarea e-autoheight' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>
-						</td>
+						<td>".LAN_DESCRIPTION."</td>
+						<td><textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>	</td>
 					</tr>
 					<tr>
-						<td>".METLAN_10."</td>
-						<td>
-							<textarea class='tbox textarea e-autoheight' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>
-						</td>
+						<td>".LAN_KEYWORDS."</td>
+						<td><textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea></td>
 					</tr>
-
 					<tr>
-						<td>".METLAN_11."</td>
-						<td>
-							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".varset($meta_copyright[e_LANGUAGE])."\" />
-						</td>
+						<td>".LAN_COPYRIGHT."</td>
+						<td><input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".varset($meta_copyright[e_LANGUAGE])."\" /></td>
 					</tr>
 
 					<tr>
-						<td>".METLAN_13."</td>
-						<td>
-							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".varset($meta_author[e_LANGUAGE])."\" />
-						</td>
+						<td>".LAN_AUTHOR."</td>
+						<td><input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".varset($meta_author[e_LANGUAGE])."\" /></td>
 					</tr>
 
 					<tr>
-						<td>".METLAN_2."</td>
-						<td>
-							<textarea class='tbox textarea e-autoheight' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
-							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea>
-							<div class='smalltext field-help'>eg. &lt;meta name='author' content='your name' /&gt; </div>
-						</td>
+						<td>".METLAN_1."</td>
+						<td><textarea class='tbox textarea e-autoheight' id='meta' name='meta' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea><span class='field-help'>".METLAN_2."</span></td>
 					</tr>
-
 					<tr>
-						<td>".METLAN_12."</td>
+						<td>".METLAN_3."</td>
 						<td>
 							<div class='auto-toggle-area autocheck'>".
-							$frm->checkbox('meta_news_summary',1, varset($pref['meta_news_summary']))."
+								$frm->checkbox('meta_news_summary',1, varset($pref['meta_news_summary']))."
 							</div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>".
-			$frm->admin_button('metasubmit','no-value','create',METLAN_3)."
+				$frm->admin_button('metasubmit','no-value','update', LAN_UPDATE)."
 			</div>
 		</fieldset>
 	</form>
-
 ";
 
-$e107->ns->tablerender(METLAN_8." (".e_LANGUAGE.")", $emessage->render().$text);
+$ns->tablerender(METLAN_00." (".e_LANGUAGE.")", $mes->render().$text);
 
 require_once("footer.php");
 /**
@@ -144,7 +128,6 @@ require_once("footer.php");
  */
 function headerjs()
 {
-	
 	$ret = "
 		<script type='text/javascript'>
 			var e107Admin = {}

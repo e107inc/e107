@@ -337,7 +337,7 @@ define("LAN_TYPE", "Type");
 define("LAN_NONE", "None");
 define("LAN_CATEGORIES", "Categories");
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
-
+define("LAN_COPYRIGHT", "Copyright");
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");
 define("LAN_SECURITYL_5", "Balanced");
