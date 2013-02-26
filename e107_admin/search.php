@@ -36,7 +36,7 @@ $query = explode('.', e_QUERY);
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
 $search_handlers['news'] = ADLAN_0;
-$search_handlers['comments'] = SEALAN_6;
+$search_handlers['comments'] = ADLAN_114;
 $search_handlers['users'] = SEALAN_7;
 $search_handlers['downloads'] = ADLAN_24;
 $search_handlers['pages'] = SEALAN_39;
@@ -258,16 +258,16 @@ if ($query[0] == 'settings')
 					<tr>
 						<td>".SEALAN_3."</td>
 						<td>
-							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySql', SEALAN_31)."&nbsp;
+							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', SEALAN_31)."&nbsp;
 							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=5')."&nbsp;".SEALAN_32."
-							<div class='field-help'>".SEALAN_49."</div>
+							<span class='field-help'>".SEALAN_49."</span>
 						</td>
 					</tr>
 					<tr>
 						<td>".SEALAN_47."</td>
 						<td>
 							".$frm->radio_switch('boundary', $search_prefs['boundary'])."
-							<div class='field-help'>".SEALAN_48."</div>
+							<span class='field-help'>".SEALAN_48."</span>
 						</td>
 					</tr>
 				</tbody>
@@ -333,9 +333,9 @@ elseif ($query[0] == 'edit')
 					<tr>
 						<td>".SEALAN_26.":</td>
 						<td>
-							<input type='radio' class='radio' id='pre-title-1' name='pre_title' value='1'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 1) ? " checked='checked'" : "")." /><label for='pre-title-1'>".SEALAN_22."</label><br />
-							<input type='radio' class='radio' id='pre-title-0' name='pre_title' value='0'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 0) ? " checked='checked'" : "")." /><label for='pre-title-0'>".SEALAN_17."</label><br />
-							<input type='radio' class='radio' id='pre-title-2' name='pre_title' value='2'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 2) ? " checked='checked'" : "")." /><label for='pre-title-2'>".SEALAN_23."</label>
+							<input type='radio' class='radio' id='pre-title-1' name='pre_title' value='1'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 1) ? " checked='checked'" : "")." /><label for='pre-title-1'>". ADLAN_133."</label><br />
+							<input type='radio' class='radio' id='pre-title-0' name='pre_title' value='0'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 0) ? " checked='checked'" : "")." /><label for='pre-title-0'>".LAN_DISABLED."</label><br />
+							<input type='radio' class='radio' id='pre-title-2' name='pre_title' value='2'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 2) ? " checked='checked'" : "")." /><label for='pre-title-2'>".SEALAN_23.":</label>
 							<div>
 								<input class='tbox input-text' type='text' name='pre_title_alt' value='".$tp -> toForm($search_prefs[$handler_type][$query[2]]['pre_title_alt'])."' size='20' />
 							</div>
@@ -502,7 +502,7 @@ function search_adminmenu()
 	$var['main']['text'] = SEALAN_41;
 	$var['main']['link'] = e_SELF;
 
-	$var['settings']['text'] = SEALAN_42;
+	$var['settings']['text'] = ADLAN_4;
 	$var['settings']['link'] = e_SELF."?settings";
 
 	e107::getNav()->admin(SEALAN_40, $action, $var);
