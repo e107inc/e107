@@ -25,7 +25,7 @@ e107::coreLan('newspost', true);
 
 // ------------------------------
 // done in class2: require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
-$newspost = new admin_newspost(e_QUERY, vartrue($pst));
+$newspost = new admin_newspost(e_QUERY);
 e107::setRegistry('_newspost_admin', $newspost);
 $gen = new convert();
 
@@ -830,7 +830,7 @@ class admin_newspost
 
 	public $error = false;
 
-	function __construct($qry='', $pstobj='')
+	function __construct($qry='')
 	{
 		global $user_pref;
 		
@@ -841,8 +841,6 @@ class admin_newspost
 		require_once(e_HANDLER."cache_handler.php");
 		require_once(e_HANDLER."news_class.php");
 
-
-		$this->_pst = $pstobj;
 
 		$this->fieldpref = varset($user_pref['admin_news_columns'], array('news_id', 'news_title', 'news_author', 'news_render_type', 'options'));
 

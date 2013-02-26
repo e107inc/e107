@@ -535,7 +535,7 @@ class adminDownload extends download
 /*
    function create_download($subAction='', $id='')
    {
-      global $download, $e107, $cal, $tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array, $pst;
+      global $download, $e107, $cal, $tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array;
       require_once(e_PLUGIN.'download/download_shortcodes.php');
       require_once(e_HANDLER."form_handler.php");
 
@@ -576,8 +576,7 @@ class adminDownload extends download
       $download_status[0] = DOWLAN_122;
       $download_status[1] = DOWLAN_123;
       $download_status[2] = DOWLAN_124;
-      $preset = $pst->read_preset("admin_downloads");  // read preset values into array
-      extract($preset);
+
 
       if (!$sql->db_Select("download_category"))
       {
@@ -1196,7 +1195,7 @@ class adminDownload extends download
 
    function show_categories($subAction, $id)
    {
-      global $download, $sql, $sql2, $rs, $ns, $tp, $pst;
+      global $download, $sql, $sql2, $rs, $ns, $tp;
 
       require_once(e_HANDLER."form_handler.php");
       $frm = new e_form();
@@ -1388,8 +1387,7 @@ class adminDownload extends download
          }
       }
 
-      $preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
-      extract($preset);
+
 
       $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
       $text = "<div>
