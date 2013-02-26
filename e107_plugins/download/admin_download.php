@@ -45,14 +45,6 @@ require_once(e_HANDLER."file_class.php");
 
 $fl = new e_file;
 
-// -------- Presets. ------------
-require_once(e_HANDLER."preset_class.php");
-$pst = new e_preset;
-$pst->form = array("myform","dlform"); // form id of the form that will have it's values saved.
-$pst->page = array("download.php?create","download.php?cat"); // display preset options on which page(s).
-$pst->id = array("admin_downloads","admin_dl_cat");
-// -------------------------------
-
 $download = new download();
 // $adminDownload = new adminDownload();
 

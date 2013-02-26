@@ -43,14 +43,6 @@ require_once(e_HANDLER."file_class.php");
 
 $fl = new e_file;
 
-// -------- Presets. ------------
-require_once(e_HANDLER."preset_class.php");
-$pst = new e_preset;
-$pst->form = array("myform","dlform"); // form id of the form that will have it's values saved.
-$pst->page = array("download.php?create","download.php?cat"); // display preset options on which page(s).
-$pst->id = array("admin_downloads","admin_dl_cat");
-// -------------------------------
-
 
 $rs = new form;
 $frm = new e_form;
@@ -58,12 +50,7 @@ $download = new download;
 
 require_once("auth.php");
 
- /*
-One form example (no arrays needed)
-$pst->form = "myform"; // form id of the form that will have it's values saved.
-$pst->page = "download.php?create"; // display preset options on which page.
-$pst->save_preset("admin_downloads");  // unique name for the preset
-*/
+
 
 
 
@@ -797,7 +784,7 @@ class download
 
 	function create_download($sub_action, $id)
 	{
-		global $cal,$tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
+		global $cal,$tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array;
 		require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
 
 		$mirrorArray = array();
@@ -805,8 +792,7 @@ class download
 		$download_status[0] = DOWLAN_122;
 		$download_status[1] = DOWLAN_123;
 		$download_status[2] = DOWLAN_124;
-		$preset = $pst->read_preset("admin_downloads");  // read preset values into array
-		extract($preset);
+
 
 		if (!$sql->db_Select("download_category"))
 		{
@@ -1420,7 +1406,7 @@ class download
 
 	function show_categories($sub_action, $id)
 	{
-		global $sql, $rs, $ns, $tp, $pst;
+		global $sql, $rs, $ns, $tp;
 
 		if (!is_object($sql2)) {
 			$sql2 = new db;
@@ -1579,7 +1565,7 @@ class download
 			}
 		}
 
-		$preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
+
 		extract($preset);
 
 		$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;

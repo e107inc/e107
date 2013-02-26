@@ -1052,7 +1052,7 @@ $columnInfo = array(
 			
 		//	print_a($this);
 	
-	      	global $e107, $cal, $rs, $ns, $file_array, $image_array, $thumb_array, $pst;
+	      	global $e107, $cal, $rs, $ns, $file_array, $image_array, $thumb_array;
 	      	require_once(e_PLUGIN.'download/download_shortcodes.php');
 			require_once(e_PLUGIN.'download/handlers/download_class.php');
 	      	require_once(e_HANDLER."form_handler.php");
