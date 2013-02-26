@@ -2387,8 +2387,8 @@ class admin_newspost
 
 		";
 
-		$emessage = eMessage::getInstance();
-		echo $emessage->render().$text;
+		$mes = e107::getMessage();
+		echo $mes->render().$text;
 		// $e107->ns->tablerender($this->getSubAction() == 'edit' ? NWSLAN_29a : NWSLAN_29, $emessage->render().$text);
 	}
 
