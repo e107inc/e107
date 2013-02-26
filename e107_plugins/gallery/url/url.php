@@ -39,7 +39,8 @@ class plugin_gallery_url extends eUrlConfig
 			'labels' => array(
 				'name' => 'Gallery', // Module name
 				'label' => 'Gallery default', // Current profile name
-				'description' => 'SEF URLs disabled. Example: http://mysite.com/gallery/?cat=gallery_1', //
+				'description' => 'SEF URLs disabled.', //
+				'examples'  => array("{e_PLUGIN_ABS}gallery/?cat=gallery_1")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

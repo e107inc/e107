@@ -43,7 +43,8 @@ class plugin_gallery_rewrite_url extends eUrlConfig
 			'labels' => array(
 				'name' => 'Gallery', // Module name
 				'label' => 'Gallery SEF', // Current profile name
-				'description' => 'SEF URLs enabled. Example: http://mysite.com/gallery/My Gallery Title', //
+				'description' => 'SEF URLs enabled.',
+				'examples'      => array('{SITEURL}gallery/my-gallery-title'), //
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

@@ -104,9 +104,10 @@ class core_user_url extends eUrlConfig
 		// static may be used for performance
 		static $admin = array(
 			'labels' => array(
-				'name' => LAN_EURL_CORE_USER, // Module name
-				'label' => LAN_EURL_USER_DEFAULT_LABEL, // Current profile name
-				'description' => LAN_EURL_USER_DEFAULT_DESCR, //
+				'name'          => LAN_EURL_CORE_USER, // Module name
+				'label'         => LAN_EURL_DEFAULT, // Current profile name
+				'description'   => LAN_EURL_LEGACY, //
+				'examples'      => array("{SITEURL}user.php?id.1")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

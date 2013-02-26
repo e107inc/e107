@@ -53,6 +53,7 @@ class core_page_sef_noid_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_PAGE, // Module name
 				'label' => LAN_EURL_PAGE_SEFNOID_LABEL, // Current profile name
 				'description' => LAN_EURL_PAGE_SEFNOID_DESCR, //
+				'examples'  => array("{SITEURL}page/page-title")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

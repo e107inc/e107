@@ -33,6 +33,7 @@ class core_system_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_SYSTEM, // Module name
 				'label' => LAN_EURL_SYSTEM_DEFAULT_LABEL, // Current profile name
 				'description' => LAN_EURL_SYSTEM_DEFAULT_DESCR, //
+				'examples'  => array("{SITEURL}?route=system/error/notfound")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

@@ -39,6 +39,7 @@ class core_search_rewrite_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_SEARCH, // Module name
 				'label' => LAN_EURL_SEARCH_REWRITE_LABEL, // Current profile name
 				'description' => LAN_EURL_SEARCH_REWRITE_DESCR, //
+				'examples'  => array("{SITEURL}search/")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

@@ -60,6 +60,7 @@ class core_news_sef_full_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_NEWS, // Module name
 				'label' => LAN_EURL_NEWS_REWRITEF_LABEL, // Current profile name
 				'description' => LAN_EURL_NEWS_REWRITEF_DESCR, //
+				'examples'  => array("{SITEURL}news/news-category/news-title","{SITEURL}news/category/new-category")
 			),
 			
 			'form' => array(), // Under construction - additional configuration options

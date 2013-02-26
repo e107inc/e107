@@ -52,6 +52,7 @@ class core_page_sef_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_PAGE, // Module name
 				'label' => LAN_EURL_PAGE_SEF_LABEL, // Current profile name
 				'description' => LAN_EURL_PAGE_SEF_DESCR, //
+				'examples'  => array("{SITEURL}page/1/page-name")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
