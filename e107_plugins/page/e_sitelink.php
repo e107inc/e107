@@ -11,7 +11,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class page_sitelinks // include plugin-folder in the name.
+class page_sitelink // include plugin-folder in the name.
 {
 	function config()
 	{	
