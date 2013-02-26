@@ -53,8 +53,9 @@ class core_search_url extends eUrlConfig
 		static $admin = array(
 			'labels' => array(
 				'name' => LAN_EURL_CORE_SEARCH, // Module name
-				'label' => LAN_EURL_SEARCH_DEFAULT_LABEL, // Current profile name
-				'description' => LAN_EURL_SEARCH_DEFAULT_DESCR, //
+				'label' => LAN_EURL_DEFAULT, // Current profile name
+				'description' => LAN_EURL_LEGACY, //
+				'examples'  => array("{SITEURL}search.php")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

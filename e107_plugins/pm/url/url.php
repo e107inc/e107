@@ -147,9 +147,10 @@ class plugin_pm_url extends eUrlConfig
 		e107::plugLan('pm', 'admin_pm', true);
 		static $admin = array(
 			'labels' => array(
-				'name' => ADLAN_PM, // Module name
-				'label' => ADLAN_PM_URL_DEFAULT_LABEL, // Current profile name
-				'description' => ADLAN_PM_URL_DEFAULT_DESCR, //
+				'name'          => LAN_PLUGIN_PM_NAME, // Module name
+				'label'         => LAN_PLUGIN_PM_URL_DEFAULT_LABEL, // Current profile name
+				'description'   => LAN_PLUGIN_PM_URL_DEFAULT_DESCR, //
+				'examples'      => array("{e_PLUGIN_ABS}pm/pm.php")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

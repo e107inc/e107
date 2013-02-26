@@ -70,49 +70,66 @@ define("LAN_EURL_UC", "Under Construction");
 
 define("LAN_EURL_CORE_MAIN", "Site Root Namespace - alias not in use.");
 
+
+define("LAN_EURL_DEFAULT",    "Default");
+define("LAN_EURL_FRIENDLY",   "Friendly");
+define("LAN_EURL_LEGACY", "Legacy direct URLs.");
+
+define("LAN_EURL_REWRITE_LABEL", "Friendly URLs");
+define("LAN_EURL_REWRITE_DESCR", "Search engine and user friendly URLs.");
+
+
 // News
 define("LAN_EURL_CORE_NEWS", "News");
-define("LAN_EURL_NEWS_DEFAULT_LABEL", "Default");
-define("LAN_EURL_NEWS_DEFAULT_DESCR", "Legacy direct URLs. Examples: <br />http://yoursite.com/news.php<br />http://yoursite.com/news.php?extend.1 <em>(view news item)</em>");
-define("LAN_EURL_NEWS_REWRITE_LABEL", "Friendly URLs without ID (no performance, more friendly)");
-define("LAN_EURL_NEWS_REWRITE_DESCR", "Demonstrates manual link parsing and assembling.<br />Examples: <br />http://yoursite.com/news<br />http://yoursite.com/news/News Title <em>(view news item)</em>");
-define("LAN_EURL_NEWS_REWRITEX_LABEL", "Friendly URLs with ID (performance wise)");
-define("LAN_EURL_NEWS_REWRITEX_DESCR", "Demonstrates automated link parsing and assembling based on predefined route rules.<br />Examples: <br />http://yoursite.com/news<br />http://yoursite.com/news/1/News Title <em>(view news item)</em>");
+//define("LAN_EURL_NEWS_DEFAULT_LABEL", "Default");
+//define("LAN_EURL_NEWS_DEFAULT_DESCR", "Legacy direct URLs.");
+
 define("LAN_EURL_NEWS_REWRITEF_LABEL", "Full Friendly URLs (no performance and most friendly)");
-define("LAN_EURL_NEWS_REWRITEF_DESCR", "Examples: <br />http://yoursite.com/news/News Category/News Title<em>(view news item)</em><br />http://yoursite.com/news/Category/News Category <em>(list news items)</em>");
+define("LAN_EURL_NEWS_REWRITEF_DESCR", "");
+
+define("LAN_EURL_NEWS_REWRITE_LABEL", "Friendly URLs without ID (no performance, more friendly)");
+define("LAN_EURL_NEWS_REWRITE_DESCR", "Demonstrates manual link parsing and assembling.");
+
+define("LAN_EURL_NEWS_REWRITEX_LABEL", "Friendly URLs with ID (performance wise)");
+define("LAN_EURL_NEWS_REWRITEX_DESCR", "Demonstrates automated link parsing and assembling based on predefined route rules.");
+
 
 // Downloads 
 //define("LAN_EURL_CORE_DOWNLOADS", "Downloads");
 
 // Users
 define("LAN_EURL_CORE_USER", "Users");
-define("LAN_EURL_USER_DEFAULT_LABEL", "Default");
-define("LAN_EURL_USER_DEFAULT_DESCR", "Legacy direct URLs. Example: http://yoursite.com/user.php?id.1");
+//define("LAN_EURL_USER_DEFAULT_LABEL", "Default");
+//define("LAN_EURL_USER_DEFAULT_DESCR", "Legacy direct URLs.");
+
 define("LAN_EURL_USER_REWRITE_LABEL", "Friendly URLs");
-define("LAN_EURL_USER_REWRITE_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/user/UserDisplayName");
+define("LAN_EURL_USER_REWRITE_DESCR", "Search engine and user friendly URLs.");
 
 // Users
 define("LAN_EURL_CORE_PAGE", "Custom Pages");
-define("LAN_EURL_PAGE_DEFAULT_LABEL", "Default");
-define("LAN_EURL_PAGE_DEFAULT_DESCR", "Legacy direct URLs. Example: http://yoursite.com/page.php?1");
+//define("LAN_EURL_PAGE_DEFAULT_LABEL", "Default");
+//define("LAN_EURL_PAGE_DEFAULT_DESCR", "Legacy direct URLs. ");
+
 define("LAN_EURL_PAGE_SEF_LABEL", "Friendly URLs with ID (performance)");
-define("LAN_EURL_PAGE_SEF_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/1/Page-Name");
+define("LAN_EURL_PAGE_SEF_DESCR", "Search engine and user friendly URLs.");
+
 define("LAN_EURL_PAGE_SEFNOID_LABEL", "Friendly URLs without ID (no performance, more friendly)");
-define("LAN_EURL_PAGE_SEFNOID_DESCR", "Search engine and user friendly URLs. <br />Example: http://yoursite.com/page/Page-Name");
+define("LAN_EURL_PAGE_SEFNOID_DESCR", "Search engine and user friendly URLs.");
 
 // Search
 define("LAN_EURL_CORE_SEARCH", "Search");
 define("LAN_EURL_SEARCH_DEFAULT_LABEL", "Default Search URL");
-define("LAN_EURL_SEARCH_DEFAULT_DESCR", "Legacy direct URL. Example: http://yoursite.com/search.php");
+define("LAN_EURL_SEARCH_DEFAULT_DESCR", "Legacy direct URL.");
 define("LAN_EURL_SEARCH_REWRITE_LABEL", "Friendly URL");
-define("LAN_EURL_SEARCH_REWRITE_DESCR", "Example: http://yoursite.com/search/");
+define("LAN_EURL_SEARCH_REWRITE_DESCR", "");
 
 // System
 define("LAN_EURL_CORE_SYSTEM", "System");
 define("LAN_EURL_SYSTEM_DEFAULT_LABEL", "Default System URLs");
-define("LAN_EURL_SYSTEM_DEFAULT_DESCR", "URLs for pages like Not Found, Acess denied, etc. Example: http://yoursite.com/?route=system/error/notfound");
+define("LAN_EURL_SYSTEM_DEFAULT_DESCR", "URLs for pages like Not Found, Access denied, etc.");
+
 define("LAN_EURL_SYSTEM_REWRITE_LABEL", "Friendly System URLs");
-define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Acess denied, etc.<br />Example: http://yoursite.com/system/error404");
+define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Access denied, etc.");
 
 // System
 define("LAN_EURL_CORE_INDEX", "Front Page");

@@ -233,8 +233,17 @@ class eurl_admin_ui extends e_admin_controller_ui
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
-							<col class='col-control' />
+							
 						</colgroup>
+						<thead>
+						  <tr>
+						      <th>".LAN_TYPE."</th>
+						      <th>".LAN_URL."</th>
+						     
+						  </tr>
+						</thead>
+						
+						
 						<tbody>
 		";
 		
@@ -375,6 +384,46 @@ class eurl_admin_form_ui extends e_admin_form_ui
 	{
 		return $this->getSettings();
 	}
+    
+    
+    
+    public function moreInfo($title,$info)
+    {
+        $tp = e107::getParser();
+       
+        $id = 'eurl_'.$this->name2id($title);
+        
+        $text .= "<a data-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
+        $text .= $title;  
+        $text .= '</a>';
+        
+        $text .= '
+
+         <div id="'.$id.'" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4>'.$tp->toHtml($title,false,'TITLE').'</h4>
+                </div>
+                <div class="modal-body">
+                <p>';
+        
+        $text .= $info;
+       
+                
+        $text .= '</p>
+                </div>
+                <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+                </div>
+                </div>';           
+        
+        return $text;
+        
+    }
+    
+    
+    
+    
 	
 	public function moduleRows($data)
 	{
@@ -389,16 +438,29 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			";
 		}
 		
+        $PLUGINS_DIRECTORY = e107::getFolder("PLUGINS");
+        $srch = array("{SITEURL}","{e_PLUGIN_ABS}");
+        $repl = array(SITEURL,SITEURL.$PLUGINS_DIRECTORY);
+        
 		foreach ($data as $obj) 
 		{
 			$admin = $obj->config->admin();
 			$section = vartrue($admin['labels'], array());
-			$text .= "
-				<tr>
-					<td>".vartrue($section['name'], eHelper::labelize($obj->module))."</td>
-					<td>
-			";
-			
+            $rowspan = count($obj->locations)+1;
+            $module = $obj->module;
+           
+          /*
+			$info .= "
+                <tr>
+                    <td rowspan='$rowspan'><a class='e-tip' style='display:block' title='".LAN_EURL_LOCATION.$path."'>
+                    ".vartrue($section['name'], eHelper::labelize($obj->module))."
+                    </a></td>
+               </tr>
+            ";
+          */
+            $opt = "";   
+			$info = "<table class='table table-striped'>";
+            
 			foreach ($obj->locations as $index => $location) 
 			{
 				$objSub = $obj->defaultLocation != $location ? eDispatcher::getConfigObject($obj->module, $location) : false; 
@@ -410,36 +472,68 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				elseif($obj->defaultLocation != $location) $section = array();
 				
 				$id = 'eurl-'.str_replace('_', '-', $obj->module).'-'.$index;
-				$module = $obj->module;
+				
 				$checked = varset($obj->current[$module]) == $location ? ' checked="checked"' : '';
 				
 				$path = eDispatcher::getConfigPath($module, $location, false);
-				if(!is_readable($path)) $path = str_replace('/url.php', '/', $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true)).' <em>('.LAN_EURL_LOCATION_NONE.')</em>';
-				else $path = $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true);
-				
+				if(!is_readable($path))
+				{
+				    $path = str_replace('/url.php', '/', $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true)).' <em>('.LAN_EURL_LOCATION_NONE.')</em>';
+                    $diz = LAN_EURL_DEFAULT;
+                }
+				else
+				{
+				    $path = $tp->replaceConstants(eDispatcher::getConfigPath($module, $location, true), true);
+                    $diz  = (basename($path) != 'url.php' ) ? LAN_EURL_FRIENDLY : LAN_EURL_DEFAULT;
+				}
+				    
+
 				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
 				$cssClass = $checked ? 'e-showme' : 'e-hideme';
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
-				// XXX use e_form
-				$text .= "
-				
-					<a href='#{$id}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' class='icon' alt='' /></a>
-					<input type='radio' class='radio' id='{$id}' name='eurl_config[$module]' value='{$location}'{$checked} /><label for='{$id}'>".$label."</label>
-					<div class='{$cssClass}' id='{$id}-info'>
-						<div class='indent'>
-							<strong>".LAN_EURL_LOCATION."</strong> ".$path."
-							<p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p>
-						</div>
-					</div>
-					<div class='spacer'><!-- --></div>
-				";
-			}
-			$text .= "
+
+				 $exampleUrl = array();
+                foreach($section['examples'] as $ex)
+                {
+                    $exampleUrl[] = str_replace($srch,$repl,$ex);    
+                    
+                }
+                
+                 if(strpos($path,'noid')!==false)
+                {
+               //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
+                }
+                
+                $selected = varset($obj->current[$module]) == $location ? "selected='selected'" : '';
+                $opt .= "<option value='{$location}' {$selected} >".$diz.": ".$exampleUrl[0]."</option>";
+               
+				$info .= "<tr><td>".$label."
+					
 					</td>
-				</tr>
-			";
+					<td><strong>".LAN_EURL_LOCATION."</strong> ".$path."
+                    <p>".vartrue($section['description'], LAN_EURL_PROFILE_INFO)."</p><small>".implode("<br />", $exampleUrl)."</small></td></tr>
+					
+				";
+
+			}
+			$info .= "</table>";
+			
+            $title = vartrue($section['name'], eHelper::labelize($obj->module));
+             $text .= "
+                <tr>
+                    <td>".$this->moreInfo($title, $info)."</td>
+                    <td><select name='eurl_config[$module]' class='span6 tbox'>".$opt."</select></td>
+               </tr>";
 		}
 
+		
+		
+		
+		
+		
+		
+		
+		
 		/*
 		For Miro - intuitive interface example. All configs are contained within one e_url.php file. 
 		Root namespacing automatically calculated based on selection. 

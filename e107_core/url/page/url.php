@@ -62,8 +62,9 @@ class core_page_url extends eUrlConfig
 		static $admin = array(
 			'labels' => array(
 				'name' => LAN_EURL_CORE_PAGE, // Module name
-				'label' => LAN_EURL_PAGE_DEFAULT_LABEL, // Current profile name
-				'description' => LAN_EURL_PAGE_DEFAULT_DESCR, //
+				'label' => LAN_EURL_DEFAULT, // Current profile name
+				'description' => LAN_EURL_LEGACY, //
+				'examples'  => array("{SITEURL}page.php?1","{SITEURL}page.php?id=1")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
