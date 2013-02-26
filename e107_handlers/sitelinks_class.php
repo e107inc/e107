@@ -743,6 +743,7 @@ class e_navigation
 				$val['title'] = $val[1];
 				$val['link'] = $val[0];
 				$val['caption'] = $val['2'];
+                $val['cat'] = $val['4'];
 				$val['perms'] = $val['3'];
 				$array_functions_assoc[$key] = $val;
 			}
@@ -750,6 +751,24 @@ class e_navigation
 	
 	    return $array_functions_assoc;
 	}
+    
+    /**
+     * Convert from plugin category found in plugin.xml to Navigation Category ID number. 
+     */
+    function plugCatToCoreCat($cat)
+    {
+            $convert = array(
+                'settings'  => array(1,'setMenu'),
+                'users'     => array(2,'userMenu'),
+                'content'   => array(3,'contMenu'),
+                'tools'     => array(4,'toolMenu'),
+                'manage'    => array(6,'managMenu'),
+                'misc'      => array(7,'miscMenu'),
+                'help'      => array(20,'helpMenu')
+            );
+
+            return (int) vartrue($convert[$cat][0]);
+    }
 		
 	// Function renders all the plugin links according to the required icon size and layout style
 	// - common to the various admin layouts such as infopanel, classis etc. 
@@ -785,9 +804,11 @@ class e_navigation
 		
 				$plugin_path = $plug;
 				$name = $plugs->plug_vars['@attributes']['name'];
-				
-		/*		echo "<h1>".$name." ($plug)</h1>";
-				print_a($plugs->plug_vars);*/
+			/*	
+				echo "<h1>".$name." ($plug)</h1>";
+				print_a($plugs->plug_vars);
+                */
+
 				if(!varset($plugs->plug_vars['adminLinks']['link']))
 				{
 					continue;	
@@ -815,7 +836,14 @@ class e_navigation
 						$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
 						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" :  E_32_PLUGIN;
-						$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".varset($plug_id[$plugin_path]), 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+						$plugin_array['p-'.$plugin_path] = array(
+						  'link'      => e_PLUGIN.$plugin_path."/".$eplug_conffile, 
+						  'title'     => $eplug_name, 'caption' => $eplug_caption, 
+						  'perms'     => "P".varset($plug_id[$plugin_path]), 
+						  'icon'      => $plugin_icon, 
+						  'icon_32'   => $plugin_icon_32,
+						  'cat'       => $this->plugCatToCoreCat($plugs->plug_vars['category'])
+                        );
 					}
 				}
 			}	
