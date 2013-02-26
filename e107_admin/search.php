@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -27,8 +27,8 @@ require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."message_handler.php");
 require_once (e_HANDLER.'form_handler.php');
-$frm = new e_form(true);
-$emessage = &eMessage::getInstance();
+$frm = e107::getForm();
+$mes = e107::getMessage();
 $e_userclass = new user_class();
 
 $query = explode('.', e_QUERY);
@@ -105,14 +105,14 @@ if (isset($_POST['update_main']))
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
-		$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(LAN_UPDATED);
 		$admin_log->log_event('SEARCH_04','',E_LOG_INFORMATIVE,'');
 	}
-	elseif(0 === $check) $emessage->add(LAN_NO_CHANGE); //info
+	elseif(0 === $check) $mes->addInfo(LAN_NO_CHANGE);
 	else
 	{
-		$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-		$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
+		$mes->addError(LAN_UPDATED_FAILED);
+		$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 	}
 }
 
@@ -143,14 +143,14 @@ if (isset($_POST['update_handler']))
 	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
-		$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+		$mes->addSuccess(LAN_UPDATED);
 		$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 	}
-	elseif(0 === $check) $emessage->add(LAN_NO_CHANGE); //info
+	elseif(0 === $check) $mes->addInfo(LAN_NO_CHANGE);
 	else
 	{
-		$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-		$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
+		$mes->addError(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
+		$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 	}
 
 }
@@ -175,16 +175,16 @@ if (isset($_POST['update_prefs']))
 		$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 		if($check)
 		{
-			$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+			$mes->addSuccess(LAN_UPDATED);
 			$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
 		}
 		else //it's an error
 		{
-			$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
-			$emessage->add(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText(), E_MESSAGE_ERROR);
+			$mes->addError(LAN_UPDATED_FAILED);
+			$mes->addError(LAN_ERROR." ".$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 		}
 	}
-	else $emessage->add(LAN_NO_CHANGE); //info
+	else $mes->addInfo(LAN_NO_CHANGE);
 
 	unset($temp);
 	$temp['search_restrict'] = intval($_POST['search_restrict']);
@@ -196,7 +196,7 @@ if (isset($_POST['update_prefs']))
 }
 
 require_once(e_HANDLER."form_handler.php");
-$rs = new form;
+$rs = new form; //FIXME
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
@@ -280,7 +280,7 @@ if ($query[0] == 'settings')
 
 ";
 
-	$e107->ns->tablerender(SEALAN_20, $emessage->render().$text);
+$ns->tablerender(SEALAN_20, $mes->render().$text);
 
 }
 elseif ($query[0] == 'edit')
@@ -350,7 +350,7 @@ elseif ($query[0] == 'edit')
 	</form>
 	";
 
-	$e107->ns->tablerender($caption, $emessage->render().$text);
+	$ns->tablerender($caption, $mes->render().$text);
 
 }
 else
@@ -486,7 +486,7 @@ else
 		</form>
 	";
 
-	$e107->ns->tablerender(SEALAN_1, $emessage->render().$text);
+	$ns->tablerender(SEALAN_1, $mes->render().$text);
 }
 
 
@@ -507,5 +507,4 @@ function search_adminmenu()
 
 	e107::getNav()->admin(SEALAN_40, $action, $var);
 }
-
 ?>

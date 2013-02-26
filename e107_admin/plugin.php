@@ -668,7 +668,7 @@ class pluginManager{
 		$plugin 	= e107::getPlugin();
 
 	  	$sql 		= e107::getDb();
-   		$emessage 	= eMessage::getInstance();
+   		$mes 		= e107::getMessage(); 
 		$plug 		= $plugin->getinfo($this->id);
 
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
@@ -692,7 +692,7 @@ class pluginManager{
 				if (true !== $result)
 				{
 					//$text .= EPL_ADLAN_9.'<br />';
-					$emessage->addWarning(EPL_ADLAN_9)
+					$mes->addWarning(EPL_ADLAN_9)
 						->addDebug($result);
 				}
 				else
@@ -744,7 +744,7 @@ class pluginManager{
 		}
 
 
-		$emessage->add($text, E_MESSAGE_SUCCESS);
+		$mes->addSuccess($text);
 		$plugin->save_addon_prefs('update');
 
    }
@@ -838,6 +838,7 @@ class pluginManager{
 		global $plugin;
 		$frm = e107::getForm();
 		$e107 = e107::getInstance();
+		$mes = e107::getMessage();
 
 		if($this->action == "" || $this->action == "installed")
 		{
@@ -892,8 +893,7 @@ class pluginManager{
 			</form>
 		";
 
-		$emessage = &eMessage::getInstance();
-		e107::getRender()->tablerender(ADLAN_98.SEP.$caption, $emessage->render(). $text);
+		e107::getRender()->tablerender(ADLAN_98.SEP.$caption, $mes->render(). $text);
 	}
 
 
@@ -1255,8 +1255,8 @@ class pluginManager{
         function show_message($message, $type = E_MESSAGE_INFO, $session = false)
 		{
 		// ##### Display comfort ---------
-			$emessage = &eMessage::getInstance();
-			$emessage->add($message, $type, $session);
+			$mes = e107::getMessage();
+			$mes->add($message, $type, $session);
 		}
 
         function pluginMenuOptions()
