@@ -38,7 +38,7 @@ if(empty($parm))
 }
 
 ### Retrieve
-$links = e107::getAddon('page', 'e_sitelink', 'page_sitelinks');
+$links = e107::getAddon('page', 'e_sitelink', 'page_sitelink');
 $data = $links->pageNav($parm);
 if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 {

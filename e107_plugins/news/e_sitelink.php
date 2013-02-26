@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
 
 //TODO Lans
 
-class news_sitelinks // include plugin-folder in the name.
+class news_sitelink // include plugin-folder in the name.
 {
 	function config()
 	{	

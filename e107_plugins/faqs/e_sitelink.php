@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 }*/
 
 
-class faqs_sitelinks // include plugin-folder in the name.
+class faqs_sitelink // include plugin-folder in the name.
 {
 	function config()
 	{

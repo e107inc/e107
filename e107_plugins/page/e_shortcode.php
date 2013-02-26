@@ -15,7 +15,7 @@ class page_shortcodes extends e_shortcode
 		function sc_page_navigation($parm) // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
 		{
 			// FIXME sitelink class should be page_sitelink
-			$links = e107::getAddon('page', 'e_sitelink', 'page_sitelinks');
+			$links = e107::getAddon('page', 'e_sitelink', 'page_sitelink');
 			
 			$data = $links->pageNav($parm);
 

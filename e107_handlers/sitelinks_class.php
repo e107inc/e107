@@ -51,7 +51,7 @@ class sitelinks
 						list($path,$method) = explode("::",$row['link_function']);
 						if(file_exists(e_PLUGIN.$path."/e_sitelink.php") && include_once(e_PLUGIN.$path."/e_sitelink.php"))
 						{
-							$class = $path."_sitelinks";
+							$class = $path."_sitelink";
 							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it.
 							if(vartrue($sublinkArray))
 							{
@@ -1252,179 +1252,6 @@ class e_navigation
 	}
 
 
-
-
-
-
-
-	// UNUSED 
-	protected function retrieveAddon($id, $function, $orderStart = 0)
-	{
-		list($path, $method) = explode('::', $function);
-		$path = preg_replace('[^\w]', '', $path);
-		
-		if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
-		{
-			$class = $path."_sitelinks";
-			$sublinkArray = e107::callMethod($class, $method); 
-			if(!is_array($sublinkArray) || empty($sublinkArray))
-			{
-				return;
-			}
-			
-			$i = $orderStart;
-			foreach ($sublinkArray as $addonLink) 
-			{
-				$i++;
-				/*if(!isset($addonLinks['link_parent']))*/ $addonLink['link_parent'] = $id;
-				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_id'] = $id.'-'.$i;
-				/*if(!isset($addonLinks['link_id']))*/ $addonLink['link_order'] = $i;
-				$this->data[$category][$addonLink['link_parent']][$addonLink['link_id']] = $link;
-				$this->indeces['flat'][$addonLink['link_id']] = $addonLink['link_parent'];
-				$this->indeces['ordered'][$addonLink['link_id']] = $addonLink['link_order'];
-				if(isset($addonLink['link_function']) && !empty($addonLink['link_function']))
-				{
-					$this->indeces['dynamic'][$addonLink['link_id']] = $addonLink['link_function'];
-					$this->retrieveAddon($addonLink['link_id'], $addonLink['link_function'], $addonLink['link_order']);
-				}
-			}
-		}
-	}
-
-	// FIXME syscache
-	/*
-	protected function initData($category)
-	{
-		$sql 	= e107::getDb('sqlSiteLinks');
-		$cache 	= e107::getCache();
-		
-		if(null === $this->data) $this->data = array();
-		elseif(!isset($this->data[$category])) $this->data[$category] = array();
-		
-		if(null === $this->indeces) $this->indeces = array('flat' => array(), 'parents' => array(), 'ordered' => array(), 'dynamic' => array());
-		
-		$where = $category > 0 ? "link_category=".(int) $category.' AND ' : '';
-		$query = "SELECT * FROM `#links` WHERE ".$where."  link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
-		
-		if($sql->gen($query))
-		{
-			while($link = $sql->fetch())
-			{
-				$this->data[$category][$link['link_parent']][$link['link_id']] = $link;
-				$this->indeces['flat'][$link['link_id']] = $link['link_parent'];
-				$this->indeces['ordered'][$link['link_id']] = $link['link_order'];
-				
-				if(!empty($link['link_function'])) 
-				{
-					$this->indeces['dynamic'][$link['link_id']] = $link['link_function'];
-					$this->retrieveAddon($link['link_id'], $link['link_function'],  $link['link_order']);
-				}
-			}
-		}
-		else
-		{
-			$this->data[$category] = array();
-		}
-		
-		// cache it
-	}
-	*/
-	/**
-	 * Retrive link data
-	 * We retrieve ALWAYS the whole data if there is missing cached data
-	 * FIXME syscache
-	 */
-	 /*
-	public function retrieve($category = 1, $parent = 0)
-	{
-		$cache 	= e107::getCache();
-		
-		if(null === $this->data || !isset($this->data[$category])) $this->initData($category);
-		
-		// runtime cached
-		if(isset($this->data[$category][$parent]))
-		{
-			$this->data[$category][$parent];
-		}
-		
-		$uclist = e107::getUser()->getClassList();
-		sort($uclist, SORT_NUMERIC);
-		$cachestr = md5($category.$parent.$uclist);
-		
-		$cached = $cache->retrieve_sys($this->cacheString($category, 'sys'));
-		if(false !== $cached)
-		{
-			// apply runtime cache and indices
-			return $this->data[$category][$parent];
-		}
-
-		// init data and indeces per category
-		
-		return $this->data[$category][$parent];
-	}
-	*/
-	/**
-	 * Prepare site links data for the renderer
-	 * @todo maybe some kind of dead loop protection 
-	 * 
-	 * Returned array structure: index key is item ID, containing array same as #links table, 
-	 * additonal 'link_sub' array, containing current row children (same structure, recursive, 
-	 * no sub-level restrictions)
-	 * 
-	 * @param int $category render type
-	 * @param int $parent starting from parent node
-	 * @param bool $flat if true, sub-levels wont be processed
-	 * @return array milti-level or flat navigation data
-	 */
-	 /*
-	public function collection($category = 1, $parent = 0, $flat = false)
-	{
-		$this->initData($category);
-		if(!vartrue($this->data[$category]) || !vartrue($this->data[$category][$parent])) return array();
-		
-		$ret = array();
-		
-		// re-order, required only when there is dynamic (3rd party) data available
-		if(!empty($this->indeces['dynamic']))
-		{
-			$ids = array_keys($this->data[$category][$parent]);
-			$index = array();
-			
-			foreach ($ids as $id) 
-			{
-				$index[$id] = $this->indeces['ordered'][$id];
-			}
-			
-			asort($index, SORT_NUMERIC);
-			$ids = array_keys($index);
-			foreach ($ids as $id) 
-			{
-				$ret[$id] = $this->data[$category][$parent][$id];
-			}
-		}
-		else
-		{
-			$ret = $this->data[$category][$parent];
-		}
-		
-		//only current node needed
-		if($flat) return $ret;
-		
-		// process subs - recursion
-		foreach ($ret as $id => $_data) 
-		{
-			$ret[$id]['link_sub'] = $this->collection($category, $_data['link_id'], false);
-		}
-		
-		return $ret;
-	}
-	*/
-
-
-
-
-
-
 	/**
 	 * TODO Cache
 	 */
@@ -1501,7 +1328,7 @@ class e_navigation
 			list($path,$method) = explode("::",$row['link_function']);
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
-				$class = $path."_sitelinks";
+				$class = $path."_sitelink";
 				if($sublinkArray = e107::callMethod($class,$method)) //TODO Cache it.
 				{
 					return $sublinkArray;
