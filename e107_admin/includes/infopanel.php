@@ -355,19 +355,19 @@ EOF;
 		
 		$dashboard = '
 		  <ul class="nav nav-tabs">
-		    <li class=""><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
-		    <li class="active"><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
+		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-globe"></i> Stats</a></li>
+		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
 		  </ul>
 		  
 		  <div class="tab-content" style="min-height:300px">
 		
-			<div class="tab-pane" id="tab1">
+			<div class="tab-pane active" id="tab1">
 		      <div class="separator">
 			'.$this->renderChart().'		
 		      </div>		
 		    </div>
 		
-		    <div class="tab-pane active" id="tab2">
+		    <div class="tab-pane" id="tab2">
 		      <div class="separator">
 		        '.$this->renderOnlineUsers().'
 		      </div>
