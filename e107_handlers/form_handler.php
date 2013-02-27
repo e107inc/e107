@@ -1194,14 +1194,28 @@ class e_form
 		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
 
-	function option($option_title, $value, $selected = false, $options = array())
+    /**
+     * <option> tag generation. 
+     * @param $option_title 
+     * @param $value
+     * @param $selected
+     * @param $options (eg. disabled=1)
+     */
+	function option($option_title, $value, $selected = false, $options = '')
 	{
+	    if(is_string($options)) parse_str($options, $options);
+       
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
+		
 		return "<option value='{$value}'".$this->get_attributes($options).">".defset($option_title, $option_title)."</option>";
 	}
 
+
+    /**
+    * Use selectbox() instead. 
+    */
 	function option_multi($option_array, $selected = false, $options = array())
 	{
 		if(is_string($option_array)) parse_str($option_array, $option_array);
@@ -3468,6 +3482,7 @@ class e_form
 	
 
 	// JUST A DRAFT - generic renderForm solution
+	/*
 	function renderForm($forms, $nocontainer = false)
 	{
 		$text = '';
@@ -3503,8 +3518,9 @@ class e_form
 		}
 		return $text;
 	}
-
+    */
 	// JUST A DRAFT - generic renderFieldset solution, will be split to renderTable, renderCol/Row/Box etc
+	/*
 	function renderFieldset($id, $fdata)
 	{
 		$colgroup = '';
@@ -3602,8 +3618,9 @@ class e_form
 		";
 		return $text;
 	}
-
+    */
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
+	/*
 	function filterType($fieldarray)
 	{
 		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
@@ -3613,9 +3630,10 @@ class e_form
 	{
 		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
 	}
-
+    */
 	/**
-	 * Generates a batch options select component
+	 * DEPRECATED!!! Use e_admin_form_ui::renderBatch()   
+     * Generates a batch options select component
 	 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
 	 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
 	 *
@@ -3623,13 +3641,15 @@ class e_form
 	 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
 	 * @return string the HTML for the form component
 	 */
+	/*
 	function batchoptions($options, $ucOptions = null)
 	{
+
 		$text = "
          <div class='f-left btn-group'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
-				".$this->option('With selected...', '')."
+				".$this->option('With selected...', '', true, 'hellodisabled')."
 		";
 
 
@@ -3697,6 +3717,7 @@ class e_form
 
 		return $text;
 	}
+     */
 }
 
 class form 

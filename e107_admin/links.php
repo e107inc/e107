@@ -70,7 +70,8 @@ class links_admin_ui extends e_admin_ui
 	protected $batchCopy 	= true;
 	protected $listOrder = 'link_category,link_order ASC';
 	protected $listSorting = true; 
-
+    
+    //FIXME TOOD - Filter out 'unassigned' entries by default. 
 
 	public $current_parent = 0;
 	public $sublink_data = null;
