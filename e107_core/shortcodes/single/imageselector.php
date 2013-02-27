@@ -85,7 +85,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 		$text .= "\n<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
 		<option value=''>".$label."</option>\n";
 
-		require_once(e_HANDLER.'admin_handler.php');
+
 		foreach ($imagelist as $imagedirlabel => $icons)
 		{
 			if(!vartrue($parms['media'])) $imagedirlabel = str_replace('../', '', $tp->replaceConstants($imagedirlabel));

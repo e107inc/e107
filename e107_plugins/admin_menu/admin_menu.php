@@ -22,10 +22,6 @@ if (ADMIN == TRUE)
 	$tp = e107::getParser();
 	$pref = e107::getPref();
 	$ns = e107::getRender();
-
-	// require_once(e_HANDLER."userclass_class.php");
-//	require_once(e_ADMIN."ad_links.php");
-	require_once(e_HANDLER.'admin_handler.php');
 	
 	$nav = e107::getNav();
 	

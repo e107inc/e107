@@ -5,7 +5,7 @@ if (ADMIN) {
 	global $sql, $pref, $tp;
 	parse_str($parm);
 	require(e_ADMIN.'ad_links.php');
-	require_once(e_HANDLER.'admin_handler.php');
+
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		list($cat_link, $anchor) = explode('#', $cat_link, 2);
 		
