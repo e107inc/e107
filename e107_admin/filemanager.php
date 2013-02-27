@@ -26,11 +26,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
 require_once(e_HANDLER.'upload_handler.php');
-require_once(e_HANDLER."form_handler.php");
-$frm = e107::getForm();
 
-require_once (e_HANDLER."message_handler.php");
-$mes = e107::getMessage(); //FIXME
+$frm = e107::getForm();
+$mes = e107::getMessage(); 
 
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_UPLOAD)) ? TRUE : FALSE;
 

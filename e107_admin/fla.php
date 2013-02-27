@@ -25,10 +25,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'failed_login';
 require_once('auth.php');
 
-require_once(e_HANDLER.'form_handler.php');
 $frm = e107::getForm();
-
-require_once(e_HANDLER.'message_handler.php');
 $mes = e107::getMessage();
 
 $tmp = (e_QUERY) ? explode('.', e_QUERY) : '';

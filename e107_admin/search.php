@@ -25,8 +25,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER."message_handler.php");
-require_once (e_HANDLER.'form_handler.php');
+
 $frm = e107::getForm();
 $mes = e107::getMessage();
 $e_userclass = new user_class();
