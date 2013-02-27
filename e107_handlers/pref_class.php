@@ -78,6 +78,7 @@ class e_pref extends e_front_model
 		require_once(e_HANDLER.'cache_handler.php');
 
 		$this->prefid = preg_replace('/[^\w\-]/', '', $prefid);
+		e107::getMessage()->setUnique($this->prefid); // attempt to fix 
 		if(empty($alias))
 		{
 			$alias = $prefid;
@@ -514,7 +515,7 @@ class e_pref extends e_front_model
 
 		if(!$this->data_has_changed && !$force)
 		{
-			e107::getMessage()->addInfo('Settings not saved as no changes were made.', 'default', $session_messages);
+			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages)->moveStack($this->prefid);
 			return 0;
 		}
 
@@ -564,12 +565,13 @@ class e_pref extends e_front_model
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 
-				if(!$disallow_logs) $admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01');
+				if(!$disallow_logs) $admin_log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages('PREFS_01', E_LOG_INFORMATIVE, '', $this->prefid);
 				//BC
 				if($this->alias === 'core')
 				{
 					$pref = $this->getPref();
 				}
+				e107::getMessage()->moveStack($this->prefid);
 				return true;
 			}
 			elseif(e107::getDb()->getLastErrorNumber())
@@ -577,7 +579,9 @@ class e_pref extends e_front_model
 				if(!$disallow_logs)
 					$admin_log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
 					->logError('Settings not saved.', true, $session_messages)
-					->flushMessages('PREFS_03');
+					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
+					
+				e107::getMessage()->moveStack($this->prefid);
 				return false;
 			}
 		}
@@ -588,13 +592,16 @@ class e_pref extends e_front_model
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			if(!$disallow_logs)
 				$admin_log->logError('Settings not saved.', true, $session_messages)
-				->flushMessages('LAN_FIXME');
+				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
+				
+			e107::getMessage()->moveStack($this->prefid);
 			return false;
 		}
 		else
 		{
-			e107::getMessage()->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
-			if(!$disallow_logs) $admin_log->flushMessages('LAN_FIXME');
+			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages);
+			if(!$disallow_logs) $admin_log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
+			e107::getMessage()->moveStack($this->prefid);
 			return 0;
 		}
 	}

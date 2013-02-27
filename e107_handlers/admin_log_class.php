@@ -505,10 +505,10 @@ class e_admin_log
 	 *	@param string $logTitle - title for log entry
 	 *	@param int $logImportance - passed directly to admin log
 	 *	@param string $logEventCode - passed directly to admin log
-	 *
+	 *	@param string $mstack [optional] message stack passed to message handler
 	 *	@return e_admin_log
 	 */
-	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '')
+	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
 	{
 		$mes = e107::getMessage();
 
@@ -531,7 +531,12 @@ class e_admin_log
 			}
 			if ($m['dislevel'] != LOG_MESSAGE_NODISPLAY)
 			{
-				$mes->add($m['message'], $m['dislevel'], $m['session']);
+				if($mstack) 
+				{
+					$mes->addStack($m['message'], $mstack, $m['dislevel'], $m['session']);
+					// move to main stack OUTSIDE if needed 
+				}
+				else $mes->add($m['message'], $m['dislevel'], $m['session']);
 			}
 		}
 		e107::getAdminLog()->log_event($logTitle, $logString, $logImportance, $logEventCode);
