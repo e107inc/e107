@@ -41,7 +41,7 @@ if(e_PAGE != 'menus.php') // Quick fix for Menu Manager inactive drop-down probl
 	e107::css('core', 	'colorbox/colorbox.css', 'jquery');
 }
 
-e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
+// e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
  
 e107::css('core', 	'bootstrap-editable/css/bootstrap-editable.css', 'jquery');
 e107::js('core', 	'bootstrap-editable/js/bootstrap-editable.min.js', 'jquery', 2);
