@@ -6,8 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
  */
 
 require_once("../../class2.php");
@@ -22,9 +20,8 @@ $e_sub_cat = 'poll';
 include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."form_handler.php"); // FIXME using 'form' instead of 'e_form'
 
 if(isset($_POST)) 
 {
@@ -36,17 +33,15 @@ $poll = new poll;
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
+
 if (isset($_POST['reset']))
 {
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['multipleChoice'], $_POST['showResults'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear']);
 	define("RESET", TRUE);
 } 
 
-//$emessage = eMessage::getInstance();
-	
 if (varset($_POST['delete'])) 
 {
-	//$message = $poll->delete_poll(key($_POST['delete']));
 	$poll->delete_poll(key($_POST['delete'])); // TODO check security?
 	$mes->addSuccess(LAN_DELETED);
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
@@ -59,14 +54,12 @@ if (isset($_POST['submit']))
 	if($_POST['poll_title'])
 	{
 		define("POLLID",$_POST['poll_id']);
-		//$emessage->add($poll -> submit_poll(), E_MESSAGE_SUCCESS);
 		$poll -> submit_poll();
 		$mes->addSuccess(LAN_CREATED);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 	}
 	else
 	{
-		//$emessage->add(POLLAN_46, E_MESSAGE_SUCCESS);
 		$mes->addError(LAN_REQUIRED_BLANK);
 	}
 	$_GET['mode']='list';
@@ -94,14 +87,6 @@ if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST[
 		$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_2, $mes->render() . $text);
 }
 
-
-/*
-if (isset($message))
-{
-	$emessage->add($message, E_MESSAGE_SUCCESS);
-
-}
-*/
 
 if(!varset($_POST['edit']) && ($_GET['mode']=="list" || !$_GET['mode']))
 {
@@ -186,11 +171,7 @@ function poll_list()
 			
 			'options' 				=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
 	);
-	
-	
-	
-	
-	
+		
 	
 	
 	$text = "
@@ -226,18 +207,12 @@ function poll_list()
 	}
 	else 
 	{
-		//$text .= "<div style='text-align:center'>".POLLAN_7."</div>";
 		$mes->addInfo(POLLAN_7);
 	}
 	$text .= "</form>";
 	
-	//$emessage = eMessage::getInstance();
-	
 	$ns->tablerender(POLLAN_MENU_CAPTION." - ".POLLAN_1, $mes->render(). $text);
 }
-
-
-
 
 
 function admin_config_adminmenu() 

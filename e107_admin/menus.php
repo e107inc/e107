@@ -2,14 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
 
 if(isset($_GET['configure']))
@@ -89,15 +85,12 @@ if(strpos(e_QUERY, 'configure') !== FALSE )
 $e_sub_cat = 'menus';
 
 require_once(e_HANDLER."file_class.php");
-require_once(e_HANDLER."form_handler.php");
-require_once (e_HANDLER.'message_handler.php');
 require_once(e_HANDLER."menumanager_class.php");
 
-
-	$rs = new form;
-	$frm = new e_form();
-	$men = new e_menuManager(0);   // use 1 for dragdrop.
-
+$rs = new form;
+$frm = e107::getForm();
+$men = new e_menuManager(0);   // use 1 for dragdrop.
+$mes = e107::getMessage();
 
 if(e_AJAX_REQUEST)
 {
@@ -119,12 +112,11 @@ if($_POST)
 }
 
 
-
+		//FIXME still used in e_HANDLER.menumanager_class.php
 		if (vartrue($message) != "")
 		{
 			echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 		}
-
 
 		//BC - configure and dot delimiter deprecated
 		if (!isset($_GET['configure']))

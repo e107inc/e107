@@ -144,7 +144,6 @@ if(isset($_POST['send-contactus']))
     }
 	else
 	{
-		require_once(e_HANDLER."message_handler.php"); //FIXME needs removing
 		message_handler("P_ALERT", $error);
 	}
 
