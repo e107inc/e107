@@ -66,8 +66,11 @@ if (varset($e107_popup) != 1)
 	//
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
-	parseheader((varset($ph) ? $cust_footer : $FOOTER));
-	
+	if(!deftrue('e_IFRAME'))
+    {
+	   parseheader((varset($ph) ? $cust_footer : $FOOTER));
+    }
+    
 	$eTimingStop = microtime();
 	global $eTimingStart;
 	$clockTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
@@ -158,7 +161,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info smalltext'>{$rinfo}</div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info smalltext'><small>{$rinfo}</small></div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)

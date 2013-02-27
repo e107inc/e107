@@ -533,8 +533,48 @@ e107Event.trigger('loaded', null, document);
 
 e107::getJs()->renderJs('header_inline', 5);
 
-echo "</head>
-<body".$body_onload.">\n";
+echo "</head>\n";
+
+
+// ---------- New in 2.0 -------------------------------------------------------
+
+    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
+
+  //  echo "DEF = ".$def."<br />";
+
+    if($def == 'legacyCustom' || $def=='legacyDefault' )  // 0.6 themes.
+    {
+      //    echo "MODE 0.6";
+        if($def == 'legacyCustom')
+        {
+            $HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+            $FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+        }
+    }
+    elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7 themes
+    {
+        // echo " MODE 0.7";
+        $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
+        $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
+    }
+    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
+    {
+      //    echo " MODE 0.8";
+        $HEADER = $HEADER[$def];
+        $FOOTER = $FOOTER[$def];
+    }
+    
+    if(deftrue('e_IFRAME'))
+    {
+        $HEADER = "";
+        $FOOTER = ""; 
+        $body_onload = " style='padding:15px;margin:0px'";   //TODO e-iframe css class.       
+    }
+
+
+
+
+echo "<body".$body_onload.">\n";
 
 // Header included notification, from this point header includes are not possible
 define('HEADER_INIT', TRUE);
@@ -559,35 +599,6 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
-
-// ---------- New in 0.8 -------------------------------------------------------
-
-    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
-
-  //  echo "DEF = ".$def."<br />";
-
-	if($def == 'legacyCustom' || $def=='legacyDefault' )  // 0.6 themes.
-	{
-	  //	echo "MODE 0.6";
-	 	if($def == 'legacyCustom')
-		{
-			$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-			$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
-		}
-	}
-	elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7 themes
-	{
-	  	// echo " MODE 0.7";
-		$HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
-		$FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
-	}
-    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
-	{
-	  //	echo " MODE 0.8";
-		$HEADER = $HEADER[$def];
-		$FOOTER = $FOOTER[$def];
-	}
-
 	//XXX - remove all page detections
 	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
 	{

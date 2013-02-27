@@ -575,6 +575,42 @@ class admin_shortcodes
 	function sc_admin_pm($parm)
 	{
 		if(!e107::isInstalled('pm')) return;
+        
+        $sql = e107::getDb();
+        $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0');
+       
+       if ($count >0)
+       {
+            $countDisp = ' <span class="label label-info">'.$count.'</span> ' ;
+       }
+       else
+      {
+            $countDisp = '';    
+      }
+           
+       $text = '<ul class="nav nav-pills">
+        <li class="dropdown">
+            <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+                <i class="icon-envelope icon-white active"></i>'.$countDisp.'<b class="caret"></b>
+            </a> 
+            <ul class="dropdown-menu" role="menu" >
+                <li class="nav-header">Private Messages</li>
+                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?searchquery=&amp;iframe=1&amp;filter_options=bool__pm_to__'.USERID.'" >Inbox</a></li>
+                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?searchquery=&amp;iframe=1&amp;filter_options=bool__pm_from__'.USERID.'">Outbox</a></li>
+                    <li><a class="e-dialog" href="'.e_PLUGIN.'pm/admin_config.php?mode=main&amp;action=create&amp;iframe=1">Compose</a></li>
+                </ul>
+        </li>
+        </ul>
+        '; 
+        
+        return $text;
+        
+      //  e107_plugins/pm/pm.php
+        
+        
+        
+        
+        
 		$text = '
 		<li class="dropdown">
 			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
@@ -1291,7 +1327,9 @@ class admin_shortcodes
 			$menu_vars = $this->getOtherNav($parm);	
 			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
 		}
-
+        
+        
+        
 		// MAIN LINK
 		if($parm != 'no-main')
 		{
@@ -1641,7 +1679,7 @@ class admin_shortcodes
 				$c = 0;
 				foreach($languages as $lng)
 				{			
-					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-black'></i> " : "&nbsp;";
+					$checked = ($lng == e_LANGUAGE) ? "<i class='icon-ok icon-white'></i> " : "<i >&nbsp;</i>&nbsp;";
 					
 					$tmp[$c]['text'] = $lng;
 					$tmp[$c]['description'] = '';
